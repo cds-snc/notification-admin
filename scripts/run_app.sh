@@ -1,4 +1,3 @@
 #!/bin/bash
 
-source environment.sh
-flask run -p 6012
+flask run -p 6012 --host=0.0.0.0
