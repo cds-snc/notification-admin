@@ -105,3 +105,25 @@ When running locally static assets are served by Flask at http://localhost:6012/
 When running on preview, staging and production there’s a bit more to it:
 
 ![notify-static-after](https://user-images.githubusercontent.com/355079/50343595-6ea5de80-051f-11e9-85cf-2c20eb3cdefa.png)
+
+
+## Translations
+
+- Wrap your template text
+
+```
+<h1>{{ _('Hello') }}</h1>
+```
+
+- Extract
+
+```bash
+pybabel extract -F babel.cfg -k _l -o messages.pot .
+pybabel update -i messages.pot -d app/translations
+```
+
+- Compile 
+
+```bash
+pybabel compile -d app/translations
+```

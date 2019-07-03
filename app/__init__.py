@@ -16,6 +16,8 @@ from flask import (
     session,
     url_for,
 )
+
+from flask_babel import Babel
 from flask._compat import string_types
 from flask.globals import _lookup_req_object, _request_ctx_stack
 from flask_login import LoginManager, current_user
@@ -112,6 +114,14 @@ def create_app(application):
 
     application.config.from_object(configs[notify_environment])
     asset_fingerprinter._asset_root = application.config['ASSET_PATH']
+
+    application.config["BABEL_DEFAULT_LOCALE"] = "en"
+    babel = Babel(application)
+
+    @babel.localeselector
+    def get_locale():
+        print("********************************* fr *********************************")
+        return "fr"
 
     init_app(application)
 
