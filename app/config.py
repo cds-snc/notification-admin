@@ -91,10 +91,10 @@ class Development(Config):
     LOGO_UPLOAD_BUCKET_NAME = 'public-logos-tools'
     MOU_BUCKET_NAME = 'notify.tools-mou'
 
-    ADMIN_CLIENT_SECRET = 'dev-notify-secret-key'
-    API_HOST_NAME = 'http://localhost:6011'
-    DANGEROUS_SALT = 'dev-notify-salt'
-    SECRET_KEY = 'dev-notify-secret-key'
+    ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET', 'dev-notify-secret-key')
+    API_HOST_NAME = os.environ.get('API_HOST_NAME', 'http://localhost:6011')
+    DANGEROUS_SALT = os.environ.get('DANGEROUS_SALT', 'dev-notify-salt')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-notify-secret-key')
     ANTIVIRUS_API_HOST = 'http://localhost:6016'
     ANTIVIRUS_API_KEY = 'test-key'
 

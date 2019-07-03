@@ -44,4 +44,6 @@ RUN set -ex && pip3 install -r requirements.txt
 RUN yarn
 RUN yarn build
 
+RUN make generate-version-file
+
 CMD ["flask", "run", "-p", "6012", "--host=0.0.0.0"]
