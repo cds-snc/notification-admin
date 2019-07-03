@@ -120,8 +120,8 @@ def create_app(application):
 
     @babel.localeselector
     def get_locale():
-        print("********************************* fr *********************************")
-        return "fr"
+        lang = request.accept_languages.best_match(application.config['LANGUAGES'])
+        return lang
 
     init_app(application)
 
