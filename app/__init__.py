@@ -120,7 +120,9 @@ def create_app(application):
 
     @babel.localeselector
     def get_locale():
-        lang = request.accept_languages.best_match(application.config['LANGUAGES'])
+        requestLang = request.accept_languages.best_match(application.config['LANGUAGES'])
+        lang = session.get("userlang", requestLang)
+        session["userlang"] = lang
         return lang
 
     init_app(application)

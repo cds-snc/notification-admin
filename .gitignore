@@ -72,6 +72,9 @@ environment.sh
 .env
 .envrc
 
+
+.vscode
+
 # CloudFoundry
 .cf
 package-lock.json

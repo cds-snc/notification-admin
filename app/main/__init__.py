@@ -28,6 +28,7 @@ from app.main.views import (  # noqa isort:skip
     register,
     send,
     service_settings,
+    set_lang,
     sign_in,
     sign_out,
     styleguide,
