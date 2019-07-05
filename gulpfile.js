@@ -136,9 +136,9 @@ const sass = () => {
 
 const images = () => {
   return src([
-      paths.src + 'images/**/*',
       paths.toolkit + 'images/**/*',
-      paths.template + 'assets/images/**/*'
+      paths.template + 'assets/images/**/*',
+      paths.src + 'images/**/*',
     ])
     .pipe(dest(paths.dist + 'images/'))
 };
