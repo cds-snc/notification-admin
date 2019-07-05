@@ -27,7 +27,6 @@ const paths = {
   dist: 'app/static/',
   templates: 'app/templates/',
   npm: 'node_modules/',
-  template: 'node_modules/govuk_template_jinja/',
   toolkit: 'node_modules/govuk_frontend_toolkit/'
 };
 
@@ -38,10 +37,6 @@ const paths = {
 
 const copy = {
   govuk_template: {
-    template: () => {
-      return src(paths.template + 'views/layouts/main_template.html')
-       .pipe(dest(paths.templates));
-    },
     css: () => {
       return src(paths.template + 'assets/stylesheets/**/*.css')
         .pipe(plugins.sass({
@@ -188,7 +183,7 @@ const lint = {
 // Default: compile everything
 const defaultTask = parallel(
   series(
-    copy.govuk_template.template,
+    //copy.govuk_template.template,
     copy.govuk_template.images,
     copy.govuk_template.fonts,
     copy.govuk_template.css,
