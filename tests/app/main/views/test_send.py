@@ -959,13 +959,13 @@ def test_send_test_doesnt_show_file_contents(
         active_user_with_permissions,
         'main.send_test_step',
         mock_get_service_email_template,
-        'test@user.gov.uk'
+        'test@user.canada.ca'
     ),
     (
         active_caseworking_user,
         'main.send_test_step',
         mock_get_service_email_template,
-        'caseworker@example.gov.uk'
+        'caseworker@example.canada.ca'
     ),
     (
         active_user_with_permissions,
@@ -3359,7 +3359,7 @@ def test_send_notification_redirects_to_view_page(
 
 TRIAL_MODE_MSG = (
     'Can’t send to this recipient when service is in trial mode – '
-    'see https://www.notifications.service.gov.uk/trial-mode'
+    'see https://www.notifications.service.canada.ca/trial-mode'
 )
 TOO_LONG_MSG = 'Content for template has a character count greater than the limit of 612'
 SERVICE_DAILY_LIMIT_MSG = 'Exceeded send limits (1000) for today'
@@ -3479,11 +3479,11 @@ def test_reply_to_is_previewed_if_chosen(
 ):
     mocker.patch('app.main.views.send.s3download', return_value="""
         email_address,date,thing
-        notify@digital.cabinet-office.gov.uk,foo,bar
+        notify@digital.cabinet-office.canada.ca,foo,bar
     """)
 
     with client_request.session_transaction() as session:
-        session['recipient'] = 'notify@digital.cabinet-office.gov.uk'
+        session['recipient'] = 'notify@digital.cabinet-office.canada.ca'
         session['placeholders'] = {}
         session['file_uploads'] = {
             fake_uuid: {'template_id': fake_uuid}

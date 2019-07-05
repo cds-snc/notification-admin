@@ -65,8 +65,8 @@ def test_get_should_not_render_radios_if_org_type_known(
 
 @pytest.mark.parametrize('email_address', (
     # User’s email address doesn’t matter when the organisation is known
-    'test@example.gov.uk',
-    'test@example.nhs.uk',
+    'test@tbs-sct.gc.ca',
+    'test@canada.ca',
 ))
 @pytest.mark.parametrize('inherited, posted, persisted, sms_limit', (
     (None, 'central', 'central', 250000),
@@ -159,15 +159,15 @@ def test_add_service_has_to_choose_org_type(
 
 
 @pytest.mark.parametrize('email_address', (
-    'test@nhs.net',
-    'test@nhs.uk',
-    'test@example.NhS.uK',
-    'test@EXAMPLE.NHS.NET',
+    'test@canada.ca',
+    'test@tbs-sct.gc.ca',
+    'test@canada.ca',
     pytest.param(
-        'test@not-nhs.uk',
+        'test@not-canada.ca',
         marks=pytest.mark.xfail(raises=AssertionError)
     )
 ))
+@pytest.mark.skip(reason="Not sure yet what NHS functionality includes")
 def test_add_service_guesses_org_type_for_unknown_nhs_orgs(
     mocker,
     client_request,

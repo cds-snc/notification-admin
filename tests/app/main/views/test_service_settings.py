@@ -1390,13 +1390,13 @@ def test_should_redirect_after_request_to_go_live(
         '\n'
         '---\n'
         'Organisation type: Central\n'
-        'Agreement signed: Can’t tell (domain is user.gov.uk).\n'
+        'Agreement signed: Can’t tell (domain is user.canada.ca).\n'
         '{formatted_displayed_volumes}'
         'Consent to research: Yes\n'
         'Other live services: No\n'
         '\n'
         '---\n'
-        'Request sent by test@user.gov.uk\n'
+        'Request sent by test@user.canada.ca\n'
     ).format(
         service_id=SERVICE_ONE_ID,
         displayed_volumes=displayed_volumes,
@@ -1460,7 +1460,7 @@ def test_request_to_go_live_displays_go_live_notes_in_zendesk_ticket(
         'Other live services: No\n'
         '\n'
         '---\n'
-        'Request sent by test@user.gov.uk\n'
+        'Request sent by test@user.canada.ca\n'
     ).format(
         service_id=SERVICE_ONE_ID,
         go_live_note=go_live_note
@@ -2063,7 +2063,7 @@ def test_service_verify_reply_to_address(
     notification = {
         "id": fake_uuid,
         "status": status,
-        "to": "email@example.gov.uk",
+        "to": "email@example.canada.ca",
         "service_id": SERVICE_ONE_ID,
         "template_id": TEMPLATE_ONE_ID,
         "notification_type": "email",
@@ -2112,7 +2112,7 @@ def test_add_reply_to_email_address_fails_if_notification_not_delivered_in_45_se
     notification = {
         "id": fake_uuid,
         "status": "sending",
-        "to": "email@example.gov.uk",
+        "to": "email@example.canada.ca",
         "service_id": SERVICE_ONE_ID,
         "template_id": TEMPLATE_ONE_ID,
         "notification_type": "email",
@@ -2258,14 +2258,14 @@ def test_edit_reply_to_email_address_sends_verification_notification_if_address_
         'app.service_api_client.verify_reply_to_email_address', return_value={"data": {"id": "123"}}
     )
     fixture(mocker)
-    data['email_address'] = "test@example.gov.uk"
+    data['email_address'] = "test@tbs-sct.gc.ca"
     client_request.post(
         'main.service_edit_email_reply_to',
         service_id=SERVICE_ONE_ID,
         reply_to_email_id=fake_uuid,
         _data=data
     )
-    mock_verify.assert_called_once_with(SERVICE_ONE_ID, "test@example.gov.uk")
+    mock_verify.assert_called_once_with(SERVICE_ONE_ID, "test@tbs-sct.gc.ca")
 
 
 @pytest.mark.parametrize('fixture, data, api_default_args', [
@@ -4308,7 +4308,7 @@ def test_show_email_branding_request_page_when_email_branding_is_set(
     pytest.param('foo', 'Nope', marks=pytest.mark.xfail(raises=AssertionError)),
 ))
 @pytest.mark.parametrize('org_name, expected_organisation', (
-    (None, 'Can’t tell (domain is user.gov.uk)'),
+    (None, 'Can’t tell (domain is user.canada.ca)'),
     ('Test Organisation', 'Test Organisation'),
 ))
 def test_submit_email_branding_request(
@@ -4354,7 +4354,7 @@ def test_submit_email_branding_request(
         ]).format(expected_organisation, requested_branding),
         subject='Email branding request - service one',
         ticket_type='question',
-        user_email='test@user.gov.uk',
+        user_email='test@user.canada.ca',
         user_name='Test User',
         tags=['notify_action_add_branding'],
     )

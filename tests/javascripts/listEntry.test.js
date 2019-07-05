@@ -11,15 +11,15 @@ afterAll(() => {
 describe("List entry", () => {
   const domains = [
     'gov.uk',
-    'dwp.gov.uk',
-    'hmrc.gov.uk',
-    'defra.gov.uk',
-    'beis.gov.uk',
-    'dcms.gov.uk',
-    'dfe.gov.uk',
-    'did.gov.uk',
-    'dvla.gov.uk',
-    'dvsa.gov.uk'
+    'dwp.canada.ca',
+    'hmrc.canada.ca',
+    'defra.canada.ca',
+    'beis.canada.ca',
+    'dcms.canada.ca',
+    'dfe.canada.ca',
+    'did.canada.ca',
+    'dvla.canada.ca',
+    'dvsa.canada.ca'
   ];
   let inputList;
 
@@ -65,7 +65,7 @@ describe("List entry", () => {
           <span class="form-label">
             Domain names
             <span class="form-hint">
-              For example cabinet-office.gov.uk
+              For example cabinet-office.canada.ca
             </span>
           </span>
         </legend>

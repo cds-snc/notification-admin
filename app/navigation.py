@@ -41,6 +41,7 @@ class HeaderNavigation(Navigation):
 
     mapping = {
         'support': {
+            'set_lang',
             'bat_phone',
             'feedback',
             'support',
@@ -549,6 +550,7 @@ class MainNavigation(Navigation):
         'service_switch_live',
         'service_set_permission',
         'services_or_dashboard',
+        'set_lang',
         'show_accounts_or_dashboard',
         'sign_in',
         'sign_out',
@@ -815,6 +817,7 @@ class CaseworkNavigation(Navigation):
         'services_or_dashboard',
         'set_free_sms_allowance',
         'service_set_letter_branding',
+        'set_lang',
         'set_organisation_type',
         'set_sender',
         'set_template_sender',
@@ -1088,6 +1091,7 @@ class OrgNavigation(Navigation):
         'services_or_dashboard',
         'set_free_sms_allowance',
         'service_set_letter_branding',
+        'set_lang',
         'set_organisation_type',
         'set_sender',
         'set_template_sender',

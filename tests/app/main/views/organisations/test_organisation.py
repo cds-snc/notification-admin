@@ -454,7 +454,7 @@ def test_view_organisation_domains(
         side_effect=lambda org_id: organisation_json(
             org_id,
             'Org 1',
-            domains=['example.gov.uk', 'test.example.gov.uk'],
+            domains=['example.canada.ca', 'test.example.canada.ca'],
         )
     )
 
@@ -464,8 +464,8 @@ def test_view_organisation_domains(
     )
 
     assert [textbox['value'] for textbox in page.select('input[type=text]')] == [
-        'example.gov.uk',
-        'test.example.gov.uk',
+        'example.canada.ca',
+        'test.example.canada.ca',
         '',
         '',
         '',
@@ -490,15 +490,15 @@ def test_view_organisation_domains(
 @pytest.mark.parametrize('post_data, expected_persisted', (
     (
         {
-            'domains-0': 'example.gov.uk',
-            'domains-2': 'example.gov.uk',
-            'domains-3': 'EXAMPLE.GOV.UK',
-            'domains-5': 'test.gov.uk',
+            'domains-0': 'example.canada.ca',
+            'domains-2': 'example.canada.ca',
+            'domains-3': 'EXAMPLE.canada.ca',
+            'domains-5': 'test.canada.ca',
         },
         {
             'domains': [
-                'example.gov.uk',
-                'test.gov.uk',
+                'example.canada.ca',
+                'test.canada.ca',
             ]
         }
     ),

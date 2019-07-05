@@ -112,7 +112,10 @@ class Test(Development):
     LOGO_UPLOAD_BUCKET_NAME = 'public-logos-test'
     MOU_BUCKET_NAME = 'test-mou'
     NOTIFY_ENVIRONMENT = 'test'
-    API_HOST_NAME = 'http://you-forgot-to-mock-an-api-call-to'
+    ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET', 'dev-notify-secret-key')
+    API_HOST_NAME = os.environ.get('API_HOST_NAME', 'http://localhost:6011')
+    DANGEROUS_SALT = os.environ.get('DANGEROUS_SALT', 'dev-notify-salt')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-notify-secret-key')
     TEMPLATE_PREVIEW_API_HOST = 'http://localhost:9999'
     ANTIVIRUS_API_HOST = 'https://test-antivirus'
     ANTIVIRUS_API_KEY = 'test-antivirus-secret'
