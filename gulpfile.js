@@ -39,7 +39,7 @@ const paths = {
 const copy = {
   govuk_template: {
     template: () => {
-      return src(paths.template + 'views/layouts/govuk_template.html')
+      return src(paths.template + 'views/layouts/main_template.html')
        .pipe(dest(paths.templates));
     },
     css: () => {
@@ -121,10 +121,10 @@ const sass = () => {
     .pipe(plugins.prettyerror())
     .pipe(plugins.sass({
       outputStyle: 'compressed',
-      includePaths: [
+      /*includePaths: [
         paths.npm + 'govuk-elements-sass/public/sass/',
         paths.toolkit + 'stylesheets/'
-      ]
+      ]*/
     }))
     .pipe(plugins.base64('../..'))
     .pipe(dest(paths.dist + 'stylesheets/'))

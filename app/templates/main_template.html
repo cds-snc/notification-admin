@@ -1,0 +1,98 @@
+{% block top_of_page %}{% endblock %}
+<!DOCTYPE html>
+<!--[if lt IE 9]><html class="lte-ie8" lang="{{ html_lang|default('en') }}"><![endif]-->
+<!--[if gt IE 8]><!--><html lang="{{ html_lang|default('en') }}"><!--<![endif]-->
+  <head>
+    <meta charset="utf-8" />
+    <title>{% block page_title %}{% endblock %}</title>
+
+    <!--[if gt IE 8]><!--><link rel="stylesheet" media="screen" href="{{ asset_path }}stylesheets/govuk-template.css?0.24.1"/><!--<![endif]-->
+    <!--[if IE 6]><link rel="stylesheet" media="screen" href="{{ asset_path }}stylesheets/govuk-template-ie6.css?0.24.1"/><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" media="screen" href="{{ asset_path }}stylesheets/govuk-template-ie7.css?0.24.1"/><![endif]-->
+    <!--[if IE 8]><link rel="stylesheet" media="screen" href="{{ asset_path }}stylesheets/govuk-template-ie8.css?0.24.1"/><![endif]-->
+    <!--[if lt IE 9]><script src="{{ asset_path }}javascripts/ie.js?0.24.1"></script><![endif]-->
+
+    <link rel="shortcut icon" href="{{ asset_path }}images/favicon.ico?0.24.1" type="image/x-icon" />
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset_path }}images/apple-touch-icon-180x180.png?0.24.1">
+    <link rel="apple-touch-icon" sizes="167x167" href="{{ asset_path }}images/apple-touch-icon-167x167.png?0.24.1">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset_path }}images/apple-touch-icon-152x152.png?0.24.1">
+    <link rel="apple-touch-icon" href="{{ asset_path }}images/apple-touch-icon.png?0.24.1">
+
+    
+    <meta name="theme-color" content="#0b0c0c" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% block head %}{% endblock %}
+
+    
+    <meta property="og:image" content="{{ asset_path }}images/opengraph-image.png?0.24.1">
+  </head>
+
+  <body class="{% block body_classes %}{% endblock %}">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+    {% block body_start %}{% endblock %}
+
+    <div id="skiplink-container">
+      <div>
+        <a href="#content" class="skiplink">{{ skip_link_message|default('Skip to main content') }}</a>
+      </div>
+    </div>
+
+    <div id="global-cookie-message">
+      
+        {% block cookie_message %}{% endblock %}
+      
+    </div>
+
+    
+    <header role="banner" id="global-header" class="{% block header_class %}{% endblock %}">
+      <div class="header-wrapper">
+        <div class="header-global">
+          <div class="header-logo">
+            <a href="{{ homepage_url|default('https://www.canada.ca') }}" title="{{ logo_link_title|default('Go to the Canada.ca homepage') }}" id="logo" class="content">
+              {{ global_header_text|default('Canada.ca') }}
+            </a>
+          </div>
+          {% block inside_header %}{% endblock %}
+        </div>
+        {% block proposition_header %}{% endblock %}
+      </div>
+    </header>
+    
+
+    {% block after_header %}{% endblock %}
+
+    <div id="global-header-bar"></div>
+
+    {% block content %}{% endblock %}
+
+    <footer class="group js-footer" id="footer" role="contentinfo">
+
+      <div class="footer-wrapper">
+        {% block footer_top %}{% endblock %}
+
+        <div class="footer-meta">
+          <div class="footer-meta-inner">
+            {% block footer_support_links %}{% endblock %}
+
+          </div>
+
+          <div class="copyright">
+           
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div id="global-app-error" class="app-error hidden"></div>
+
+
+    {% block body_end %}{% endblock %}
+
+    
+    <script>if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '');</script>
+  </body>
+</html>

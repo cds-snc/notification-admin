@@ -1,4 +1,4 @@
-{% extends "govuk_template.html" %}
+{% extends "main_template.html" %}
 {% from "components/banner.html" import banner %}
 
 {% block head %}
@@ -17,18 +17,17 @@
   <!--[if IE 8]>
   <link rel="stylesheet" media="screen" href="{{ asset_url('stylesheets/main-ie8.css') }}" />
   <![endif]-->
-  <meta name="google-site-verification" content="niWnSqImOWz6mVQTYqNb5tFK8HaKSB4b3ED4Z9gtUQ0" />
   {% block meta %}
   {% endblock %}
 {% endblock %}
 
 {% block page_title %}
-   {% block per_page_title %}{% endblock %} – GOV.UK Notify
+   {% block per_page_title %}{% endblock %} – Notify
 {% endblock %}
 
 {% block cookie_message %}
   <p>
-    GOV.UK Notify uses cookies to make the site simpler.
+    Notify uses cookies to make the site simpler.
     <a href="{{ url_for("main.cookies") }}">Find out more about cookies</a>
   </p>
 {% endblock %}
@@ -68,7 +67,7 @@
 {% endblock %}
 
 
-{% set global_header_text = "GOV.UK <span id='product-name'>Notify</span>"|safe %}
+{% set global_header_text = "<span id='product-name'>Notify</span>"|safe %}
 
 {% set homepage_url = url_for('main.show_accounts_or_dashboard') %}
 
