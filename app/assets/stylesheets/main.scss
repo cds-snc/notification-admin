@@ -3,21 +3,45 @@ $path: '/static/images/';
 
 // Dependencies from GOV.UK Frontend Toolkit
 // https://github.com/alphagov/govuk_frontend_toolkit/
-@import 'conditionals';
-@import 'shims';
-@import 'measurements';
-@import 'css3';
-@import 'colours';
-@import 'typography';
-@import 'grid_layout';
-@import 'helpers';
-@import 'design-patterns/buttons';
+
+// CDS => copied into this repo to avoid npm dependencies
+@import 'toolkit/conditionals';
+@import 'toolkit/shims';
+@import 'toolkit/measurements';
+@import 'toolkit/css3';
+@import 'toolkit/colours';
+@import 'toolkit/typography';
+@import 'toolkit/grid_layout';
+@import 'toolkit/helpers';
+@import 'toolkit/design-patterns/buttons';
 
 // Dependencies from GOVU.UK Frontend Toolkit, rewritten for this application
-@import 'url-helpers';
+
+
+// URL Helpers
+// @import 'tookit/url-helpers';
+$path: false !default;
+
+// A function which can either output a image-url to be used with the Rails
+// Asset Pipeline or Compass or a plain url which is prefixed with a defined
+// path variable.
+
+@function file-url($file) {
+  $url: '';
+  @if $path {
+    $url: url($path + $file);
+  } @else {
+    $url: image-url($file);
+  }
+  @return $url;
+}
+
+// ====================================================
 
 // Dependencies from GOV.UK Elements
 // https://github.com/alphagov/govuk_elements
+
+// CDS => copied into this repo to avoid npm dependencies
 @import 'elements/helpers';
 @import 'elements/reset';
 @import 'elements/buttons';
@@ -30,6 +54,8 @@ $path: '/static/images/';
 @import 'elements/lists';
 @import 'elements/panels';
 @import 'elements/tables';
+
+// ====================================================
 
 
 // Specific to this application
