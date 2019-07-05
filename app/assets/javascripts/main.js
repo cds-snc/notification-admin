@@ -16,7 +16,7 @@ $(() => $('.banner-dangerous').eq(0).trigger('focus'));
 //
 
 (function () {
-    "use strict"
+    "use strict";
     var root = this;
     if(typeof root.GOVUK === 'undefined') { root.GOVUK = {}; }
   
@@ -77,7 +77,7 @@ $(() => $('.banner-dangerous').eq(0).trigger('focus'));
     };
   }).call(this);
   (function () {
-    "use strict"
+    "use strict";
     var root = this;
     if(typeof root.GOVUK === 'undefined') { root.GOVUK = {}; }
   
@@ -92,7 +92,7 @@ $(() => $('.banner-dangerous').eq(0).trigger('focus'));
     };
   }).call(this);
   (function() {
-    "use strict"
+    "use strict";
   
     // add cookie message
     if (window.GOVUK && GOVUK.addCookieMessage) {
@@ -104,7 +104,7 @@ $(() => $('.banner-dangerous').eq(0).trigger('focus'));
       var els = document.querySelectorAll('.js-header-toggle'),
           i, _i;
       for(i=0,_i=els.length; i<_i; i++){
-        els[i].addEventListener('click', function(e){
+        els[i].addEventListener('click', function(e){ // jshint ignore:line
           e.preventDefault();
           var target = document.getElementById(this.getAttribute('href').substr(1)),
               targetClass = target.getAttribute('class') || '',

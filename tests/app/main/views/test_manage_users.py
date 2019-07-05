@@ -33,7 +33,7 @@ from tests.conftest import (
             'Can Manage API integration'
         ),
         (
-            'ZZZZZZZZ zzzzzzz@example.gov.uk '
+            'ZZZZZZZZ zzzzzzz@example.canada.ca '
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
@@ -53,7 +53,7 @@ from tests.conftest import (
             'Can’t Manage API integration'
         ),
         (
-            'ZZZZZZZZ zzzzzzz@example.gov.uk '
+            'ZZZZZZZZ zzzzzzz@example.canada.ca '
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
@@ -72,7 +72,7 @@ from tests.conftest import (
             'Can’t Manage API integration'
         ),
         (
-            'ZZZZZZZZ zzzzzzz@example.gov.uk '
+            'ZZZZZZZZ zzzzzzz@example.canada.ca '
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
@@ -91,7 +91,7 @@ from tests.conftest import (
             'Can’t Manage API integration'
         ),
         (
-            'ZZZZZZZZ zzzzzzz@example.gov.uk '
+            'ZZZZZZZZ zzzzzzz@example.canada.ca '
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
@@ -110,7 +110,7 @@ from tests.conftest import (
             'Can’t Manage API integration'
         ),
         (
-            'ZZZZZZZZ zzzzzzz@example.gov.uk '
+            'ZZZZZZZZ zzzzzzz@example.canada.ca '
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
@@ -134,7 +134,7 @@ def test_should_show_overview_page(
 ):
     current_user = user(fake_uuid)
     other_user = copy.deepcopy(active_user_view_permissions)
-    other_user['email_address'] = 'zzzzzzz@example.gov.uk'
+    other_user['email_address'] = 'zzzzzzz@example.canada.ca'
     other_user['name'] = 'ZZZZZZZZ'
     other_user['id'] = 'zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz'
 
@@ -164,7 +164,7 @@ def test_should_show_caseworker_on_overview_page(
     service_one['permissions'].append('caseworking')
     current_user = active_user_view_permissions(fake_uuid)
     other_user = active_caseworking_user(uuid.uuid4())
-    other_user['email_address'] = 'zzzzzzz@example.gov.uk'
+    other_user['email_address'] = 'zzzzzzz@example.canada.ca'
 
     mocker.patch('app.user_api_client.get_user', return_value=current_user)
     mocker.patch('app.models.user.Users.client', return_value=[
@@ -185,7 +185,7 @@ def test_should_show_caseworker_on_overview_page(
     )
     # [1:5] are invited users
     assert normalize_spaces(page.select('.user-list-item')[6].text) == (
-        'Test User zzzzzzz@example.gov.uk '
+        'Test User zzzzzzz@example.canada.ca '
         'Can’t See dashboard '
         'Can Send messages '
         'Can’t Add and edit templates '
@@ -539,7 +539,7 @@ def test_cant_edit_user_folder_permissions_for_platform_admin_users(
         service_id=SERVICE_ONE_ID,
         user_id=fake_uuid,
     )
-    assert normalize_spaces(page.select('main p')[0].text) == 'platform@admin.gov.uk Change'
+    assert normalize_spaces(page.select('main p')[0].text) == 'platform@admin.canada.ca Change'
     assert normalize_spaces(page.select('main p')[2].text) == (
         'Platform admin users can access all template folders.'
     )
@@ -672,7 +672,7 @@ def test_should_show_folder_permission_form_if_service_has_folder_permissions_en
 
 
 @pytest.mark.parametrize('email_address, gov_user', [
-    ('test@example.gov.uk', True),
+    ('test@tbs-sct.gc.ca', True),
     ('test@nonwhitelist.com', False)
 ])
 def test_invite_user(
@@ -685,7 +685,7 @@ def test_invite_user(
     mock_get_template_folders,
     mock_get_organisations,
 ):
-    sample_invite['email_address'] = 'test@example.gov.uk'
+    sample_invite['email_address'] = 'test@tbs-sct.gc.ca'
 
     assert is_gov_user(email_address) == gov_user
     mocker.patch('app.models.user.InvitedUsers.client', return_value=[sample_invite])
@@ -706,7 +706,7 @@ def test_invite_user(
     )
     assert page.h1.string.strip() == 'Team members'
     flash_banner = page.find('div', class_='banner-default-with-tick').string.strip()
-    assert flash_banner == 'Invite sent to test@example.gov.uk'
+    assert flash_banner == 'Invite sent to test@tbs-sct.gc.ca'
 
     expected_permissions = {'manage_api_keys', 'manage_service', 'manage_templates', 'send_messages', 'view_activity'}
 
@@ -723,7 +723,7 @@ def test_invite_user(
     ('email_auth')
 ])
 @pytest.mark.parametrize('email_address, gov_user', [
-    ('test@example.gov.uk', True),
+    ('test@tbs-sct.gc.ca', True),
     ('test@nonwhitelist.com', False)
 ])
 def test_invite_user_with_email_auth_service(
@@ -739,7 +739,7 @@ def test_invite_user_with_email_auth_service(
     mock_get_template_folders,
 ):
     service_one['permissions'].append('email_auth')
-    sample_invite['email_address'] = 'test@example.gov.uk'
+    sample_invite['email_address'] = 'test@tbs-sct.gc.ca'
 
     assert is_gov_user(email_address) is gov_user
     mocker.patch('app.models.user.InvitedUsers.client', return_value=[sample_invite])
@@ -764,7 +764,7 @@ def test_invite_user_with_email_auth_service(
 
     assert page.h1.string.strip() == 'Team members'
     flash_banner = page.find('div', class_='banner-default-with-tick').string.strip()
-    assert flash_banner == 'Invite sent to test@example.gov.uk'
+    assert flash_banner == 'Invite sent to test@tbs-sct.gc.ca'
 
     expected_permissions = {'manage_api_keys', 'manage_service', 'manage_templates', 'send_messages', 'view_activity'}
 
@@ -816,7 +816,7 @@ def test_cancel_invited_user_doesnt_work_if_user_not_invited_to_this_service(
 
 @pytest.mark.parametrize('invite_status, expected_text', [
     ('pending', (
-        'invited_user@test.gov.uk (invited) '
+        'invited_user@test.canada.ca (invited) '
         'Can See dashboard '
         'Can Send messages '
         'Can’t Add and edit templates '
@@ -825,7 +825,7 @@ def test_cancel_invited_user_doesnt_work_if_user_not_invited_to_this_service(
         'Cancel invitation'
     )),
     ('cancelled', (
-        'invited_user@test.gov.uk (cancelled invite) '
+        'invited_user@test.canada.ca (cancelled invite) '
         # all permissions are greyed out
         'Can’t See dashboard '
         'Can’t Send messages '
@@ -870,7 +870,7 @@ def test_manage_users_does_not_show_accepted_invite(
     assert page.h1.string.strip() == 'Team members'
     user_lists = page.find_all('div', {'class': 'user-list'})
     assert len(user_lists) == 1
-    assert not page.find(text='invited_user@test.gov.uk')
+    assert not page.find(text='invited_user@test.canada.ca')
 
 
 def test_user_cant_invite_themselves(
@@ -940,7 +940,7 @@ def test_manage_user_page_shows_how_many_folders_user_can_view(
 
     page = client_request.get('main.manage_users', service_id=service_one['id'])
 
-    user_div = page.select_one("h3[title='notify@digital.cabinet-office.gov.uk']").parent
+    user_div = page.select_one("h3[title='notify@digital.cabinet-office.canada.ca']").parent
     assert user_div.select_one('.tick-cross-list-hint:last-child').text.strip() == expected_message
 
 
@@ -957,7 +957,7 @@ def test_manage_user_page_doesnt_show_folder_hint_if_service_has_no_folders(
 
     page = client_request.get('main.manage_users', service_id=service_one['id'])
 
-    user_div = page.select_one("h3[title='notify@digital.cabinet-office.gov.uk']").parent
+    user_div = page.select_one("h3[title='notify@digital.cabinet-office.canada.ca']").parent
     assert user_div.find('.tick-cross-list-hint:last-child') is None
 
 
@@ -976,7 +976,7 @@ def test_manage_user_page_doesnt_show_folder_hint_if_service_cant_edit_folder_pe
 
     page = client_request.get('main.manage_users', service_id=service_one['id'])
 
-    user_div = page.select_one("h3[title='notify@digital.cabinet-office.gov.uk']").parent
+    user_div = page.select_one("h3[title='notify@digital.cabinet-office.canada.ca']").parent
     assert user_div.find('.tick-cross-list-hint:last-child') is None
 
 
@@ -1094,7 +1094,7 @@ def test_edit_user_email_without_changing_goes_back_to_team_members(
     assert mock_update_user_attribute.called is False
 
 
-@pytest.mark.parametrize('original_email_address', ['test@gov.uk', 'test@example.com'])
+@pytest.mark.parametrize('original_email_address', ['test@canada.ca', 'test@example.com'])
 def test_edit_user_email_can_change_any_email_address_to_a_gov_email_address(
     client_request,
     active_user_with_permissions,
@@ -1111,7 +1111,7 @@ def test_edit_user_email_can_change_any_email_address_to_a_gov_email_address(
         service_id=SERVICE_ONE_ID,
         user_id=active_user_with_permissions['id'],
         _data={
-            'email_address': 'new-email-address@gov.uk'
+            'email_address': 'new-email-address@canada.ca'
         },
         _expected_status=302,
         _expected_redirect=url_for(
@@ -1176,7 +1176,7 @@ def test_confirm_edit_user_email_page(
     mock_get_users_by_service,
     mock_get_user,
 ):
-    new_email = 'new_email@gov.uk'
+    new_email = 'new_email@canada.ca'
     with client_request.session_transaction() as session:
         session['team_member_email_change'] = new_email
 
@@ -1240,7 +1240,7 @@ def test_confirm_edit_user_email_changes_user_email(
                  side_effect=[active_user_with_permissions, api_user_active])
     mock_event_handler = mocker.patch('app.main.views.manage_users.create_email_change_event')
 
-    new_email = 'new_email@gov.uk'
+    new_email = 'new_email@canada.ca'
     with client_request.session_transaction() as session:
         session['team_member_email_change'] = new_email
 
@@ -1273,7 +1273,7 @@ def test_confirm_edit_user_email_doesnt_change_user_email_for_non_team_member(
     mock_get_users_by_service,
 ):
     with client_request.session_transaction() as session:
-        session['team_member_email_change'] = 'new_email@gov.uk'
+        session['team_member_email_change'] = 'new_email@canada.ca'
     client_request.post(
         'main.confirm_edit_user_email',
         service_id=SERVICE_ONE_ID,

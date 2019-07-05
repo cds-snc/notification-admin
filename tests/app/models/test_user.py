@@ -17,7 +17,7 @@ def test_anonymous_user(app_):
 def test_user(app_):
     user_data = {'id': 1,
                  'name': 'Test User',
-                 'email_address': 'test@user.gov.uk',
+                 'email_address': 'test@user.canada.ca',
                  'mobile_number': '+4412341234',
                  'state': 'pending',
                  'failed_login_count': 0,
@@ -27,7 +27,7 @@ def test_user(app_):
 
     assert user.id == 1
     assert user.name == 'Test User'
-    assert user.email_address == 'test@user.gov.uk'
+    assert user.email_address == 'test@user.canada.ca'
     assert user.mobile_number == '+4412341234'
     assert user.state == 'pending'
 

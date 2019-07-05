@@ -978,7 +978,7 @@ def test_get_live_services_report(client, platform_admin_user, mocker):
         return_value={'data': [
             {'service_id': 1, 'service_name': 'jessie the oak tree', 'organisation_name': 'Forest',
                 'consent_to_research': True, 'contact_name': 'Forest fairy', 'organisation_type': 'Ecosystem',
-                'contact_email': 'forest.fairy@digital.cabinet-office.gov.uk', 'contact_mobile': '+447700900986',
+                'contact_email': 'forest.fairy@digital.cabinet-office.canada.ca', 'contact_mobile': '+447700900986',
                 'live_date': 'Sat, 29 Mar 2014 00:00:00 GMT', 'sms_volume_intent': 100, 'email_volume_intent': 50,
                 'letter_volume_intent': 20, 'sms_totals': 300, 'email_totals': 1200, 'letter_totals': 0,
                 'free_sms_fragment_limit': 100},
@@ -998,7 +998,7 @@ def test_get_live_services_report(client, platform_admin_user, mocker):
         + 'Contact mobile,Live date,SMS volume intent,Email volume intent,Letter volume intent,SMS sent this year,'
         + 'Emails sent this year,Letters sent this year,Free sms allowance\r\n'
 
-        + '1,Forest,Ecosystem,jessie the oak tree,True,Forest fairy,forest.fairy@digital.cabinet-office.gov.uk,'
+        + '1,Forest,Ecosystem,jessie the oak tree,True,Forest fairy,forest.fairy@digital.cabinet-office.canada.ca,'
         + '+447700900986,29-03-2014,100,50,20,300,1200,0,100\r\n'
 
         + '2,Forest,Ecosystem,james the pine tree,,,,,,,60,0,0,0,0,200'
@@ -1014,7 +1014,7 @@ def test_get_performance_platform_report(client, platform_admin_user, mocker):
         return_value={'data': [
             {'service_id': 'abc123', 'service_name': 'jessie the oak tree', 'organisation_name': 'Forest',
                 'consent_to_research': True, 'contact_name': 'Forest fairy', 'organisation_type': 'Ecosystem',
-                'contact_email': 'forest.fairy@digital.cabinet-office.gov.uk', 'contact_mobile': '+447700900986',
+                'contact_email': 'forest.fairy@digital.cabinet-office.canada.ca', 'contact_mobile': '+447700900986',
                 'live_date': 'Sat, 29 Mar 2014 00:00:00 GMT', 'sms_volume_intent': 100, 'email_volume_intent': 50,
                 'letter_volume_intent': 20, 'sms_totals': 300, 'email_totals': 1200, 'letter_totals': 0},
             {'service_id': 'def456', 'service_name': 'james the pine tree', 'organisation_name': 'Forest',

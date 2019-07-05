@@ -30,7 +30,7 @@ def test_should_return_404_when_email_address_does_not_exist(
     client,
     mock_get_user_by_email_not_found,
 ):
-    data = json.dumps({'email': 'no_user@d.gov.uk', 'created_at': str(datetime.utcnow())})
+    data = json.dumps({'email': 'no_user@d.canada.ca', 'created_at': str(datetime.utcnow())})
     token = generate_token(data, app_.config['SECRET_KEY'], app_.config['DANGEROUS_SALT'])
     response = client.get(url_for_endpoint_with_token('.new_password', token=token))
     assert response.status_code == 404

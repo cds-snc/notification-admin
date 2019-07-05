@@ -752,12 +752,12 @@ def test_update_delivery_status_and_receive_text_message_callbacks(
 @pytest.mark.parametrize('endpoint, data, fixture', [
     (
         'main.delivery_status_callback',
-        {"url": "https://hello2.gov.uk", "bearer_token": "bearer_token_set"},
+        {"url": "https://hello2.canada.ca", "bearer_token": "bearer_token_set"},
         mock_get_valid_service_callback_api
     ),
     (
         'main.received_text_messages_callback',
-        {"url": "https://hello3.gov.uk", "bearer_token": "bearer_token_set"},
+        {"url": "https://hello3.canada.ca", "bearer_token": "bearer_token_set"},
         mock_get_valid_service_inbound_api
     ),
 ])
