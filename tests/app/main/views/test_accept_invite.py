@@ -35,7 +35,7 @@ def test_existing_user_accept_invite_calls_api_and_redirects_to_dashboard(
     response = client.get(url_for('main.accept_invite', token='thisisnotarealtoken'))
 
     mock_check_invite_token.assert_called_with('thisisnotarealtoken')
-    mock_get_unknown_user_by_email.assert_called_with('invited_user@test.gov.uk')
+    mock_get_unknown_user_by_email.assert_called_with('invited_user@test.canada.ca')
     assert mock_accept_invite.call_count == 1
     mock_add_user_to_service.assert_called_with(
         expected_service,
@@ -108,7 +108,7 @@ def test_invite_goes_in_session(
     mock_add_user_to_service,
     mock_accept_invite,
 ):
-    sample_invite['email_address'] = 'test@user.gov.uk'
+    sample_invite['email_address'] = 'test@user.canada.ca'
     mocker.patch('app.invite_api_client.check_token', return_value=sample_invite)
 
     client_request.get(
@@ -124,7 +124,7 @@ def test_invite_goes_in_session(
     )
 
     with client_request.session_transaction() as session:
-        assert session['invited_user']['email_address'] == 'test@user.gov.uk'
+        assert session['invited_user']['email_address'] == 'test@user.canada.ca'
 
 
 @pytest.mark.parametrize('user, landing_page_title', [
@@ -215,7 +215,7 @@ def test_existing_signed_out_user_accept_invite_redirects_to_sign_in(
     response = client.get(url_for('main.accept_invite', token='thisisnotarealtoken'), follow_redirects=True)
 
     mock_check_invite_token.assert_called_with('thisisnotarealtoken')
-    mock_get_unknown_user_by_email.assert_called_with('invited_user@test.gov.uk')
+    mock_get_unknown_user_by_email.assert_called_with('invited_user@test.canada.ca')
     mock_add_user_to_service.assert_called_with(expected_service,
                                                 USER_ONE_ID,
                                                 expected_permissions,
@@ -248,7 +248,7 @@ def test_new_user_accept_invite_calls_api_and_redirects_to_registration(
     response = client.get(url_for('main.accept_invite', token='thisisnotarealtoken'))
 
     mock_check_invite_token.assert_called_with('thisisnotarealtoken')
-    mock_dont_get_user_by_email.assert_called_with('invited_user@test.gov.uk')
+    mock_dont_get_user_by_email.assert_called_with('invited_user@test.canada.ca')
 
     assert response.status_code == 302
     assert response.location == expected_redirect_location
@@ -267,7 +267,7 @@ def test_new_user_accept_invite_calls_api_and_views_registration_page(
     response = client.get(url_for('main.accept_invite', token='thisisnotarealtoken'), follow_redirects=True)
 
     mock_check_invite_token.assert_called_with('thisisnotarealtoken')
-    mock_dont_get_user_by_email.assert_called_with('invited_user@test.gov.uk')
+    mock_dont_get_user_by_email.assert_called_with('invited_user@test.canada.ca')
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
@@ -275,7 +275,7 @@ def test_new_user_accept_invite_calls_api_and_views_registration_page(
 
     assert normalize_spaces(page.select_one('main p').text) == (
         'Your account will be created with this email address: '
-        'invited_user@test.gov.uk'
+        'invited_user@test.canada.ca'
     )
 
     form = page.find('form')
@@ -285,7 +285,7 @@ def test_new_user_accept_invite_calls_api_and_views_registration_page(
     email = form.find('input', type='hidden', id='email_address')
 
     assert email
-    assert email.attrs['value'] == 'invited_user@test.gov.uk'
+    assert email.attrs['value'] == 'invited_user@test.canada.ca'
     assert name
     assert password
     assert service
@@ -417,7 +417,7 @@ def test_signed_in_existing_user_cannot_use_anothers_invite(
     flash_banners = page.find_all('div', class_='banner-dangerous')
     assert len(flash_banners) == 1
     banner_contents = flash_banners[0].text.strip()
-    assert "You’re signed in as test@user.gov.uk." in banner_contents
+    assert "You’re signed in as test@user.canada.ca." in banner_contents
     assert "This invite is for another email address." in banner_contents
     assert "Sign out and click the link again to accept this invite." in banner_contents
     assert mock_accept_invite.call_count == 0
@@ -431,8 +431,8 @@ def test_accept_invite_does_not_treat_email_addresses_as_case_sensitive(
     mock_accept_invite,
     mock_get_user_by_email
 ):
-    # the email address of api_user_active is 'test@user.gov.uk'
-    sample_invite['email_address'] = 'TEST@user.gov.uk'
+    # the email address of api_user_active is 'test@user.canada.ca'
+    sample_invite['email_address'] = 'TEST@user.canada.ca'
     mocker.patch('app.invite_api_client.check_token', return_value=sample_invite)
     mocker.patch('app.models.user.Users.client', return_value=[api_user_active])
 
@@ -538,7 +538,7 @@ def test_existing_user_accepts_and_sets_email_auth(
         _expected_redirect=url_for('main.service_dashboard', service_id=service_one['id'], _external=True),
     )
 
-    mock_get_unknown_user_by_email.assert_called_once_with('test@user.gov.uk')
+    mock_get_unknown_user_by_email.assert_called_once_with('test@user.canada.ca')
     mock_update_user_attribute.assert_called_once_with(USER_ONE_ID, auth_type='email_auth')
     mock_add_user_to_service.assert_called_once_with(ANY, USER_ONE_ID, ANY, ANY)
 

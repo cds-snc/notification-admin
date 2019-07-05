@@ -246,7 +246,7 @@ def _user_with_permissions():
     user_data = {'id': 999,
                  'name': 'Test User',
                  'password': 'somepassword',
-                 'email_address': 'test@user.gov.uk',
+                 'email_address': 'test@user.canada.ca',
                  'mobile_number': '+4412341234',
                  'state': 'active',
                  'failed_login_count': 0,

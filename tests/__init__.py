@@ -3,11 +3,14 @@ from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 import pytest
+from dotenv import load_dotenv
 from flask import url_for
 from flask.testing import FlaskClient
 from flask_login import login_user
 
 from app.models.user import User
+
+load_dotenv()
 
 
 class TestClient(FlaskClient):
@@ -46,7 +49,7 @@ def created_by_json(id_, name='', email_address=''):
 def user_json(
     id_='1234',
     name='Test User',
-    email_address='test@gov.uk',
+    email_address='test@canada.ca',
     mobile_number='+447700900986',
     password_changed_at=None,
     permissions={generate_uuid(): [
@@ -93,7 +96,7 @@ def invited_user(
     _id='1234',
     service=None,
     from_user='1234',
-    email_address='testinviteduser@gov.uk',
+    email_address='testinviteduser@canada.ca',
     permissions=None,
     status='pending',
     created_at=datetime.utcnow(),
@@ -326,7 +329,7 @@ def org_invite_json(id_, invited_by, org_id, email_address, created_at, status):
     }
 
 
-TEST_USER_EMAIL = 'test@user.gov.uk'
+TEST_USER_EMAIL = 'test@user.canada.ca'
 
 
 def create_test_api_user(state, permissions={}):
@@ -409,7 +412,7 @@ def notification_json(
         if template_type == 'letter':
             to = '1 Example Street'
         elif template_type == 'email':
-            to = 'example@gov.uk'
+            to = 'example@canada.ca'
         else:
             to = '07123456789'
     if sent_at is None:

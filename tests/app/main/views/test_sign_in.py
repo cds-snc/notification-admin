@@ -87,8 +87,8 @@ def test_logged_in_user_redirects_to_account(
 
 
 @pytest.mark.parametrize('email_address, password', [
-    ('valid@example.gov.uk', 'val1dPassw0rd!'),
-    (' valid@example.gov.uk  ', '  val1dPassw0rd!  '),
+    ('valid@example.canada.ca', 'val1dPassw0rd!'),
+    (' valid@example.canada.ca  ', '  val1dPassw0rd!  '),
 ])
 def test_process_sms_auth_sign_in_return_2fa_template(
     client,
@@ -107,7 +107,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     assert response.status_code == 302
     assert response.location == url_for('.two_factor', _external=True)
     mock_verify_password.assert_called_with(api_user_active['id'], password)
-    mock_get_user_by_email.assert_called_with('valid@example.gov.uk')
+    mock_get_user_by_email.assert_called_with('valid@example.canada.ca')
 
 
 def test_process_email_auth_sign_in_return_2fa_template(
@@ -122,7 +122,7 @@ def test_process_email_auth_sign_in_return_2fa_template(
 
     response = client.post(
         url_for('main.sign_in'), data={
-            'email_address': 'valid@example.gov.uk',
+            'email_address': 'valid@example.canada.ca',
             'password': 'val1dPassw0rd!'})
     assert response.status_code == 302
     assert response.location == url_for('.two_factor_email_sent', _external=True)
@@ -136,7 +136,7 @@ def test_should_return_locked_out_true_when_user_is_locked(
 ):
     resp = client.post(
         url_for('main.sign_in'), data={
-            'email_address': 'valid@example.gov.uk',
+            'email_address': 'valid@example.canada.ca',
             'password': 'whatIsMyPassword!'})
     assert resp.status_code == 200
     assert 'The email address or password you entered is incorrect' in resp.get_data(as_text=True)
@@ -148,7 +148,7 @@ def test_should_return_200_when_user_does_not_exist(
 ):
     response = client.post(
         url_for('main.sign_in'), data={
-            'email_address': 'notfound@gov.uk',
+            'email_address': 'notfound@canada.ca',
             'password': 'doesNotExist!'})
     assert response.status_code == 200
     assert 'The email address or password you entered is incorrect' in response.get_data(as_text=True)
@@ -161,7 +161,7 @@ def test_should_return_redirect_when_user_is_pending(
 ):
     response = client.post(
         url_for('main.sign_in'), data={
-            'email_address': 'pending_user@example.gov.uk',
+            'email_address': 'pending_user@example.canada.ca',
             'password': 'val1dPassw0rd!'}, follow_redirects=True)
 
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
@@ -176,7 +176,7 @@ def test_should_attempt_redirect_when_user_is_pending(
 ):
     response = client.post(
         url_for('main.sign_in'), data={
-            'email_address': 'pending_user@example.gov.uk',
+            'email_address': 'pending_user@example.canada.ca',
             'password': 'val1dPassw0rd!'})
     assert response.location == url_for('main.resend_email_verification', _external=True)
     assert response.status_code == 302
@@ -191,7 +191,7 @@ def test_email_address_is_treated_case_insensitively_when_signing_in_as_invited_
     mock_accept_invite,
     mock_send_verify_code
 ):
-    sample_invite['email_address'] = 'TEST@user.gov.uk'
+    sample_invite['email_address'] = 'TEST@user.canada.ca'
 
     mocker.patch(
         'app.models.user.User.from_email_address_and_password_or_none',
@@ -203,7 +203,7 @@ def test_email_address_is_treated_case_insensitively_when_signing_in_as_invited_
 
     response = client.post(
         url_for('main.sign_in'), data={
-            'email_address': 'test@user.gov.uk',
+            'email_address': 'test@user.canada.ca',
             'password': 'val1dPassw0rd!'})
 
     assert mock_accept_invite.called

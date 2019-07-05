@@ -14,7 +14,7 @@ def test_should_render_forgot_password(client):
 
 
 @pytest.mark.parametrize('email_address', [
-    'test@user.gov.uk',
+    'test@user.canada.ca',
     'someuser@notonwhitelist.com'
 ])
 def test_should_redirect_to_password_reset_sent_for_valid_email(

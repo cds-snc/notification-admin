@@ -102,7 +102,7 @@ upload-static:
 	aws s3 cp --region eu-west-1 --recursive --cache-control max-age=315360000,immutable ./app/static s3://${DNS_NAME}-static
 
 .PHONY: test
-test: venv ## Run tests
+test:
 	./scripts/run_tests.sh
 
 .PHONY: freeze-requirements

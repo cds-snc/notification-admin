@@ -45,7 +45,7 @@ def test_get_support_index_page(
     (QUESTION_TICKET_TYPE, 'Ask a question or give feedback'),
 ])
 @pytest.mark.parametrize('logged_in, expected_form_field, expected_contact_details', [
-    (True, type(None), 'We’ll reply to test@user.gov.uk'),
+    (True, type(None), 'We’ll reply to test@user.canada.ca'),
     (False, element.Tag, None),
 ])
 def test_choose_support_type(
@@ -183,7 +183,7 @@ def test_passes_user_details_through_flow(
     mock_post.assert_called_with(
         subject='Notify feedback',
         message=ANY,
-        user_email='test@user.gov.uk',
+        user_email='test@user.canada.ca',
         user_name='Test User',
         ticket_type=ticket_type,
         p1=ANY
