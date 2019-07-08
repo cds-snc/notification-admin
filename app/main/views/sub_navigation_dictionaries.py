@@ -12,32 +12,8 @@ def features_nav():
                     "name": "Text messages",
                     "link": "main.features_sms",
                 },
-                {
-                    "name": "Letters",
-                    "link": "main.features_letters",
-                },
             ]
-        },
-        {
-            "name": "Roadmap",
-            "link": "main.roadmap",
-        },
-        {
-            "name": "Trial mode",
-            "link": "main.trial_mode_new",
-        },
-        {
-            "name": "Message status",
-            "link": "main.message_status",
-        },
-        {
-            "name": "Security",
-            "link": "main.security",
-        },
-        {
-            "name": "Terms of use",
-            "link": "main.terms",
-        },
+        }
     ]
 
 

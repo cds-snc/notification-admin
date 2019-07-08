@@ -431,7 +431,7 @@ def test_user_with_only_send_and_view_sees_letter_page(
         'Templates Two week reminder'
     )
     assert normalize_spaces(page.select_one('title').text) == (
-        'Two week reminder – Templates – service one – Notify'
+        'Two week reminder – Templates – service one – Notification'
     )
 
 
@@ -627,7 +627,7 @@ def test_should_be_able_to_view_a_template_with_links(
         'Templates Two week reminder'
     )
     assert normalize_spaces(page.select_one('title').text) == (
-        'Two week reminder – Templates – service one – Notify'
+        'Two week reminder – Templates – service one – Notification'
     )
 
     links_in_page = page.select('.pill-separate-item')

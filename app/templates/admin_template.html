@@ -22,7 +22,7 @@
 {% endblock %}
 
 {% block page_title %}
-   {% block per_page_title %}{% endblock %} – Notificaiton
+   {% block per_page_title %}{% endblock %} – Notification
 {% endblock %}
 
 {% block cookie_message %}
@@ -39,7 +39,6 @@
       <a href="#proposition-links" class="js-header-toggle menu">Menu</a>
       <nav id="proposition-menu">
         <ul id="proposition-links">
-          <li><a href="{{ url_for('main.support') }}" {{ header_navigation.is_selected('support') }}>Support</a></li>
           {% if current_user.is_authenticated %}
             <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>Documentation</a></li>
             <li><a href="{{ url_for('main.user_profile') }}" {{ header_navigation.is_selected('user-profile') }}>{{ current_user.name }}</a></li>
@@ -55,8 +54,6 @@
             </a></li>
             <li><a href="{{ url_for('main.sign_out')}}">Sign out</a></li>
           {% else %}
-            <li><a href="{{ url_for('main.features') }}" {{ header_navigation.is_selected('features') }}>Features</a></li>
-            <li><a href="{{ url_for('main.pricing' )}}" {{ header_navigation.is_selected('pricing') }}>Pricing</a></li>
             <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>Documentation</a></li>
             <li><a href="{{ url_for('main.sign_in' )}}" {{ header_navigation.is_selected('sign-in') }}>Sign in</a></li>
           {% endif %}
@@ -80,34 +77,23 @@
     <div class="footer-categories-wrapper">
       <div class="grid-row">
         <div class="column-one-quarter">
-          <ul>
-            <li><a href="{{ url_for('main.support') }}">Support</a></li>
-            <li><a href="https://status.notifications.service.gov.uk">System status</a></li>
-            <li><a href="https://www.gov.uk/performance/govuk-notify">Performance</a></li>
-            <li><a href="https://ukgovernmentdigital.slack.com/messages/govuk-notify">Slack channel</a></li>
-            <li><a href="https://gds.blog.gov.uk/category/notify/">Blog</a></li>
-          </ul>
-        </div>
-        <div class="column-one-quarter">
-          <ul>
-            <li><a href="{{ url_for("main.features") }}">Features</a></li>
-            <li><a href="{{ url_for("main.roadmap") }}">Roadmap</a></li>
-            <li><a href="{{ url_for("main.trial_mode_new") }}">Trial mode</a></li>
-            <li><a href="{{ url_for("main.message_status") }}">Message status</a></li>
-            <li><a href="{{ url_for("main.security") }}">Security</a></li>
+          <ul> 
+            <li><a href="{{ url_for("main.documentation") }}">Documentation</a></li>
             <li><a href="{{ url_for("main.terms") }}">Terms of use</a></li>
           </ul>
         </div>
         <div class="column-one-quarter">
           <ul>
-            <li><a href="{{ url_for("main.pricing") }}">Pricing</a></li>
-            <li><a href="{{ url_for("main.how_to_pay") }}">How to pay</a></li>
+            <li><a href="{{ url_for("main.features") }}">Features</a></li>
+            <li><a href="{{ url_for("main.message_status") }}">Message status</a></li>
           </ul>
         </div>
         <div class="column-one-quarter">
           <ul>
-            <li><a href="{{ url_for("main.documentation") }}">Documentation</a></li>
+              <li><a href="{{ url_for("main.security") }}">Security</a></li>
           </ul>
+        </div>
+        <div class="column-one-quarter">
         </div>
       </div>
     </div>
