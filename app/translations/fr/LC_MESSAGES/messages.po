@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-03 14:18-0400\n"
+"POT-Creation-Date: 2019-07-08 11:36-0400\n"
 "PO-Revision-Date: 2019-07-03 11:43-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -37,6 +37,10 @@ msgid ""
 msgstr ""
 "FR Choose a client to integrate our API with your web application or "
 "back-office system. Links to documentation open in a new tab."
+
+#: app/templates/views/signedout.html:18
+msgid "Send emails, text messages and letters to your users"
+msgstr "FR Send emails, text messages and letters to your users"
 
 #: app/templates/views/agreement/_agreement-choose.html:2
 msgid "Hello"
