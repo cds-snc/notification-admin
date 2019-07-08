@@ -11,7 +11,7 @@ steps:
     - -e
     - SQLALCHEMY_DATABASE_URI=postgresql://postgres@postgres/notification_api
     - --network=cloudbuild
-    - gcr.io/ca-notifier/api
+    - gcr.io/$PROJECT_ID/api
 - name: jwilder/dockerize:0.6.1
   args: ['dockerize', '-timeout=60s', '-wait=tcp://api:6011']
 - name: "gcr.io/cloud-builders/gcloud"
@@ -24,9 +24,9 @@ steps:
     - --project=$PROJECT_ID
     - --keyring=deploy
     - --key=env
-- name: "gcr.io/ca-notifier/test-env-admin@sha256:01d4a4ee15b0fe9345ed3f0dedec0bca68bdbdd3358e6f7ec240e2eaff160fb2"
-  entrypoint: /bin/bash
-  args: ["-c", "/workspace/scripts/bootstrap.sh && make test"]
+- name: "gcr.io/$PROJECT_ID/testing-env-admin:latest"
+  entrypoint: /bin/sh
+  args: ["-c", "sh /workspace/scripts/bootstrap.sh && make test"]
   env:
     - 'API_HOST_NAME=http://api:6011'
 options:
