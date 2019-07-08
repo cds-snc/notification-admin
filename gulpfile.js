@@ -27,7 +27,7 @@ const paths = {
   dist: 'app/static/',
   templates: 'app/templates/',
   npm: 'node_modules/',
-  template: 'node_modules/govuk_template_jinja/',
+  template: 'node_modules/@cdssnc/cds_template_jinja/',
   toolkit: 'node_modules/govuk_frontend_toolkit/'
 };
 
@@ -40,7 +40,7 @@ const copy = {
 
   govuk_template: {
     template: () => {
-      return src(paths.template + 'views/layouts/govuk_template.html')
+      return src(paths.template + 'views/layouts/notification_template.html')
        .pipe(dest(paths.templates));
     },
     css: () => {
