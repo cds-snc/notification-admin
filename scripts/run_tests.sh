@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Run project tests
 #
@@ -20,11 +20,7 @@ function display_result {
   fi
 }
 
-if [[ -z "$VIRTUAL_ENV" ]] && [[ -d venv ]]; then
-  source ./venv/bin/activate
-fi
-
-make test-requirements
+# make test-requirements
 display_result $? 1 "Requirements check"
 
 flake8 .
