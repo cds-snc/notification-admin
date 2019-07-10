@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-SHELL := /bin/bash
+SHELL := /bin/sh #bash
 DATE = $(shell date +%Y-%m-%dT%H:%M:%S)
 
 PIP_ACCEL_CACHE ?= ${CURDIR}/cache/pip-accel
