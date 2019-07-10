@@ -28,7 +28,7 @@ from notifications_utils.template import (
     SMSPreviewTemplate,
 )
 from notifications_utils.timezones import (
-    convert_utc_to_bst,
+    convert_utc_to_est,
     utc_string_to_aware_gmt_datetime,
 )
 from orderedset._orderedset import OrderedSet
@@ -512,9 +512,9 @@ def get_default_sms_sender(sms_senders):
 
 def printing_today_or_tomorrow():
     now_utc = datetime.utcnow()
-    now_bst = convert_utc_to_bst(now_utc)
+    now_est = convert_utc_to_est(now_utc)
 
-    if now_bst.time() < time(17, 30):
+    if now_est.time() < time(17, 30):
         return 'today'
     else:
         return 'tomorrow'
