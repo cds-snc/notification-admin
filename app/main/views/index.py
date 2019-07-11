@@ -164,7 +164,7 @@ def email_template():
             '\n'
             '10. Three'
             '\n\n'
-            'This is an example of an email sent using GOV.UK Notify.'
+            'This is an example of an email sent using Notification.'
             '\n\n'
             'https://www.notifications.service.gov.uk'
         )

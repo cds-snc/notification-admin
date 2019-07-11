@@ -101,11 +101,11 @@ def test_show_agreement_page(
 @pytest.mark.parametrize('crown, expected_status, expected_file_fetched, expected_file_served', (
     (
         True, 200, 'crown.pdf',
-        'GOV.UK Notify data sharing and financial agreement.pdf',
+        'Notification data sharing and financial agreement.pdf',
     ),
     (
         False, 200, 'non-crown.pdf',
-        'GOV.UK Notify data sharing and financial agreement (non-crown).pdf',
+        'Notification data sharing and financial agreement (non-crown).pdf',
     ),
     (
         None, 404, None,
@@ -378,12 +378,12 @@ def test_accept_agreement_page_persists(
 @pytest.mark.parametrize('name, email, expected_paragraph', (
     (None, None, (
         'I confirm that I have the legal authority to accept the '
-        'GOV.UK Notify data sharing and financial agreement (version '
+        'Notification data sharing and financial agreement (version '
         '1.2) and that Test Organisation will be bound by it.'
     )),
     ('Firstname Lastname', 'test@example.com', (
         'I confirm that I have the legal authority to accept the '
-        'GOV.UK Notify data sharing and financial agreement (version '
+        'Notification data sharing and financial agreement (version '
         '1.2) on behalf of Firstname Lastname (test@example.com) and '
         'that Test Organisation will be bound by it.'
     )),
@@ -452,12 +452,12 @@ def test_confirm_agreement_page_persists(
     (
         True,
         'crown.pdf',
-        'GOV.UK Notify data sharing and financial agreement.pdf',
+        'Notification data sharing and financial agreement.pdf',
     ),
     (
         False,
         'non-crown.pdf',
-        'GOV.UK Notify data sharing and financial agreement (non-crown).pdf',
+        'Notification data sharing and financial agreement (non-crown).pdf',
     ),
 ])
 def test_downloading_agreement(

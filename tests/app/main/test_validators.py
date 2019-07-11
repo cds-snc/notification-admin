@@ -12,7 +12,7 @@ from app.main.validators import (
 
 
 @pytest.mark.parametrize('password', [
-    'govuknotify', '11111111', 'kittykat', 'blackbox'
+    'notification', '11111111', 'kittykat', 'blackbox'
 ])
 def test_should_raise_validation_error_for_password(
     client,

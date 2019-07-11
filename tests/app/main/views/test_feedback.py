@@ -90,7 +90,7 @@ def test_get_feedback_page(client, ticket_type, expected_status_code):
         'agreement',
         (
             'Please can you tell me if there’s an agreement in place '
-            'between GOV.UK Notify and my organisation?'
+            'between Notification and my organisation?'
         )
     ),
     (
