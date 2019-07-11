@@ -26,25 +26,7 @@ def test_non_logged_in_user_can_see_homepage(
     )
 
     assert page.select_one('meta[name=description]')['content'].strip() == (
-<<<<<<< HEAD
         'Notificaiton lets you send emails and text messages to your users.'
-=======
-        'GOV.UK Notify lets you send emails, text messages and letters '
-        'to your users. Try it now if you work in central government, a '
-        'local authority, or the NHS.'
-    )
-
-    assert normalize_spaces(page.select_one('#whos-using-notify').text) == (
-        'Who’s using GOV.UK Notify '
-        'Services '
-        '9,999 services '
-        'Organisations '
-        '111 organisations '
-        'See the list of services and organisations.'
-    )
-    assert page.select_one('#whos-using-notify a')['href'] == (
-        'https://www.gov.uk/performance/govuk-notify/government-services'
->>>>>>> 04144b55be5c0d01ea3315c75d1a8be430bbf0de
     )
 
 
