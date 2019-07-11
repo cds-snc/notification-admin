@@ -1,7 +1,7 @@
 {
   "name": "notifications-admin",
   "version": "0.0.1",
-  "description": "Admin front end for GOV.UK Notify",
+  "description": "Admin front end for Notification",
   "engines": {
     "node": "10"
   },

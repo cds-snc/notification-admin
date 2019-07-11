@@ -131,7 +131,7 @@ class Organisation(JSONModel):
 
         return (
             'Your organisation ({}) has already accepted the '
-            'GOV.UK&nbsp;Notify data sharing and financial '
+            'Notification data sharing and financial '
             'agreement.'.format(self.name)
         )
 

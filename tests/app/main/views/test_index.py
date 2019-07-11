@@ -26,7 +26,7 @@ def test_non_logged_in_user_can_see_homepage(
     )
 
     assert page.select_one('meta[name=description]')['content'].strip() == (
-        'Notificaiton lets you send emails and text messages to your users.'
+        'Notification lets you send emails and text messages to your users.'
     )
 
 
@@ -155,7 +155,7 @@ def test_terms_is_generic_if_user_is_not_logged_in(
         True,
         (
             'Your organisation (Cabinet Office) has already accepted '
-            'the GOV.UK Notify data sharing and financial agreement.'
+            'the Notification data sharing and financial agreement.'
         ),
         None,
     ),
