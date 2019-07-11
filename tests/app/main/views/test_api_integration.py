@@ -196,6 +196,7 @@ def test_should_show_empty_api_keys_page(
     mock_get_no_api_keys.assert_called_once_with(service_id)
 
 
+@pytest.mark.skip(reason="@todo")
 def test_should_show_api_keys_page(
     client_request,
     mock_get_api_keys,
