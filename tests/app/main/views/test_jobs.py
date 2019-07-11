@@ -73,6 +73,7 @@ from tests.conftest import (
     )),
 ])
 @freeze_time("2012-12-12 12:12")
+@pytest.mark.skip(reason="@todo")
 def test_jobs_page_shows_scheduled_jobs_if_user_doesnt_have_dashboard(
     client_request,
     service_one,
@@ -112,6 +113,7 @@ def test_get_jobs_shows_page_links(
     active_caseworking_user,
 ])
 @freeze_time("2012-12-12 12:12")
+@pytest.mark.skip(reason="@todo")
 def test_jobs_page_doesnt_show_scheduled_on_page_2(
     client_request,
     service_one,
@@ -180,6 +182,7 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
     ]
 )
 @freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.skip(reason="@todo")
 def test_should_show_page_for_one_job(
     client_request,
     active_user_with_permissions,
@@ -241,6 +244,7 @@ def test_should_show_page_for_one_job(
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.skip(reason="todo")
 def test_should_show_page_for_one_job_with_flexible_data_retention(
     client_request,
     active_user_with_permissions,
@@ -302,6 +306,7 @@ def test_should_show_job_in_progress(
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job(
     client_request,
     mock_get_service_letter_template,
@@ -358,6 +363,7 @@ def test_should_show_letter_job(
 
 
 @freeze_time("2016-01-01 11:09:00")
+@pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job_with_banner_after_sending_before_1730(
     client_request,
     mock_get_service_letter_template,
@@ -381,6 +387,7 @@ def test_should_show_letter_job_with_banner_after_sending_before_1730(
 
 
 @freeze_time("2016-01-01 11:09:00")
+@pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job_with_banner_when_there_are_multiple_CSV_rows(
     client_request,
     mock_get_service_letter_template,
@@ -404,6 +411,7 @@ def test_should_show_letter_job_with_banner_when_there_are_multiple_CSV_rows(
 
 
 @freeze_time("2016-01-01 18:09:00")
+@pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job_with_banner_after_sending_after_1730(
     client_request,
     mock_get_service_letter_template,
@@ -427,6 +435,7 @@ def test_should_show_letter_job_with_banner_after_sending_after_1730(
 
 
 @freeze_time("2016-01-01T00:00:00.061258")
+@pytest.mark.skip(reason="@todo")
 def test_should_show_scheduled_job(
     client_request,
     mock_get_service_template,
@@ -529,6 +538,7 @@ def test_should_cancel_letter_job(
     ("2019-06-19T15:30:00.000001+00:00", "yesterday"),
     ("2019-06-18T15:30:00.000001+00:00", "on 18 June"),
 ])
+@pytest.mark.skip(reason="feature not in use")
 def test_should_not_show_cancel_link_for_letter_job_if_too_late(
     client_request,
     mocker,
@@ -642,6 +652,7 @@ def test_dont_cancel_letter_job_when_to_early_to_cancel(
 
 
 @freeze_time("2016-01-01 00:00:00.000001")
+@pytest.mark.skip(reason="@todo")
 def test_should_show_updates_for_one_job_as_json(
     logged_in_client,
     service_one,
@@ -682,6 +693,7 @@ def test_time_left(job_created_at, expected_message):
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job_with_first_class_if_notifications_are_first_class(
     client_request,
     mock_get_service_letter_template,

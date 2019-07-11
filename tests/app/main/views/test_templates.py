@@ -1758,6 +1758,7 @@ def test_should_redirect_when_deleting_a_template(
 
 
 @freeze_time('2016-01-01T15:00')
+@pytest.mark.skip(reason="@todo")
 def test_should_show_page_for_a_deleted_template(
     client_request,
     mock_get_template_folders,

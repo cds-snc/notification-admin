@@ -159,6 +159,7 @@ def test_notification_status_shows_expected_back_link(
 
 
 @freeze_time("2012-01-01 01:01")
+@pytest.mark.skip(reason="@todo")
 def test_notification_page_doesnt_link_to_template_in_tour(
     client_request,
     fake_uuid,
@@ -179,6 +180,7 @@ def test_notification_page_doesnt_link_to_template_in_tour(
 
 
 @freeze_time("2016-01-01 01:01")
+@pytest.mark.skip(reason="feature not in use")
 def test_notification_page_shows_page_for_letter_notification(
     client_request,
     mocker,
@@ -253,6 +255,7 @@ def test_notification_page_shows_page_for_letter_notification(
         'Postage: second class',
     ),
 ))
+@pytest.mark.skip(reason="feature not in use")
 def test_notification_page_shows_page_for_letter_sent_with_test_key(
     client_request,
     mocker,
@@ -327,6 +330,7 @@ def test_notification_page_shows_page_for_letter_sent_with_test_key(
     ),
 ))
 @freeze_time("2016-01-01 01:01")
+@pytest.mark.skip(reason="feature not in use")
 def test_notification_page_shows_cancelled_or_failed_letter(
     client_request,
     mocker,
@@ -440,6 +444,7 @@ def test_notification_page_does_not_show_cancel_link_for_letter_which_cannot_be_
 
 
 @freeze_time("2016-01-01 18:00")
+@pytest.mark.skip(reason="feature not in use")
 def test_notification_page_shows_page_for_first_class_letter_notification(
     client_request,
     mocker,

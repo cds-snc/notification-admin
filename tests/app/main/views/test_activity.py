@@ -619,6 +619,7 @@ def test_big_numbers_and_search_dont_show_for_letters(
         ('letter', 'technical-failure', 'Technical failure 27 September at 5:30pm', False),
     ]
 )
+@pytest.mark.skip(reason="@todo")
 def test_sending_status_hint_displays_correctly_on_notifications_page(
     client_request,
     service_one,
