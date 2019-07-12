@@ -40,12 +40,14 @@
             {% endif %}
           </div>
         </div>
+        <!--
         <div class='column-one-third'>
           <h2 class='heading-small'>Letters</h2>
           <div class="keyline-block">
             {{ big_number(letter_sent, 'sent', smaller=True) }}
           </div>
         </div>
+        -->
       </div>
 
       <div class='grid-row'>
@@ -59,20 +61,22 @@
             {{ big_number(
               (sms_chargeable * sms_rate),
               'spent',
-              currency="£",
+              currency="$",
               smaller=True
             ) }}
           </div>
         </div>
         <div class='column-one-third'>
+          <!-- 
           <div class="keyline-block">
             {{ big_number(
                 letter_cost,
                 'spent',
-                currency="£",
+                currency="$",
                 smaller=True
               ) }}
           </div>
+          -->
         </div>
 
       </div>
@@ -96,7 +100,7 @@
             {% call field(align='left') %}
               {{ big_number(
                 (sms_rate * month.paid) + month.letter_total,
-                currency="£",
+                currency="$",
                 smallest=True
               ) }}
               <ul>
@@ -126,7 +130,7 @@
     <div class="grid-row">
       <div class="column-half">
         <p class="align-with-heading-copy">
-          Financial year ends 31 March.
+          <!-- Financial year ends 31 March. -->
         </p>
       </div>
       <div class="column-half">

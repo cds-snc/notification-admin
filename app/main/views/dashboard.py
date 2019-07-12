@@ -160,7 +160,7 @@ def usage(service_id):
         years=get_tuples_of_financial_years(
             partial(url_for, '.usage', service_id=service_id),
             start=current_financial_year - 1,
-            end=current_financial_year + 1,
+            end=current_financial_year,
         ),
         **calculate_usage(yearly_usage,
                           free_sms_allowance)
