@@ -251,7 +251,7 @@ def performance_platform_xlsx():
             datetime.strptime(
                 row["live_date"], '%a, %d %b %Y %X %Z'
             ).strftime("%Y-%m-%dT%H:%M:%S") + "Z" if row["live_date"] else None,
-            "govuk-notify",
+            "notification",
             1
         ])
 

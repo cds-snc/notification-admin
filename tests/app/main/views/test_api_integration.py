@@ -54,7 +54,7 @@ def test_should_show_api_page_with_lots_of_notifications(
     )
     rows = page.find_all('div', {'class': 'api-notifications-item'})
     assert ' '.join(rows[len(rows) - 1].text.split()) == (
-        'Only showing the first 50 messages. Notify deletes messages after 7 days.'
+        'Only showing the first 50 messages. Notification deletes messages after 7 days.'
     )
 
 

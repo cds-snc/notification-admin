@@ -24,7 +24,7 @@ def test_render_sign_in_template_for_new_user(
 def test_sign_in_explains_session_timeout(client):
     response = client.get(url_for('main.sign_in', next='/foo'))
     assert response.status_code == 200
-    assert 'We signed you out because you haven’t used Notify for a while.' in response.get_data(as_text=True)
+    assert 'We signed you out because you haven’t used Notification for a while.' in response.get_data(as_text=True)
 
 
 def test_sign_in_explains_other_browser(logged_in_client, api_user_active, mocker):
@@ -36,8 +36,10 @@ def test_sign_in_explains_other_browser(logged_in_client, api_user_active, mocke
 
     response = logged_in_client.get(url_for('main.sign_in', next='/foo'))
 
+    assert_str = 'We signed you out because you logged in to Notification on another device'
+
     assert response.status_code == 200
-    assert 'We signed you out because you logged in to Notify on another device' in response.get_data(as_text=True)
+    assert assert_str in response.get_data(as_text=True)
 
 
 def test_doesnt_redirect_to_sign_in_if_no_session_info(

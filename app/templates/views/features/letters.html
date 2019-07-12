@@ -10,11 +10,11 @@
   <h1 class="heading heading-large">Letters</h1>
   <p>Notification will print, pack and post your letters for you.</p>
   {% if not current_user.is_authenticated %}
-    <p><a href="{{ url_for('main.register') }}">Create an account</a> and try Notify for yourself.</p>
+    <p><a href="{{ url_for('main.register') }}">Create an account</a> and try Notification for yourself.</p>
   {% endif %}
 
   <h2 class="heading heading-medium">Features</h2>
-  <p>Notify makes it easy to:</p>
+  <p>Notification makes it easy to:</p>
   <ul class="list list-bullet">
     <li>create reusable letter templates</li>
     <li>personalise the content of your letter</li>
@@ -23,13 +23,13 @@
   <p>You can also <a href="{{ url_for('.documentation') }}">integrate with our API</a> to send letters automatically.</p>
 
   <h3 class="heading-small">Choose your postage</h3>
-  <p>Notify can send letters by first or second class post.</p>
+  <p>Notification can send letters by first or second class post.</p>
   <p>First class letters are delivered one day after they’re dispatched. Second class letters are delivered 2 days after they’re dispatched.</p>
   <p>Letters sent before 5:30pm are dispatched the next working day (Monday to Friday). Royal Mail delivers from Monday to Saturday, excluding bank holidays.</p>
 
   <h3 class="heading heading-small">Upload your own letters</h3>
-  <p>You can create reusable letter templates in Notify, or upload and send your own letters with the Notify API.</p>
-  <p>Use the <a href="https://docs.notifications.service.gov.uk/documentation/images/notify-pdf-letter-spec-v2.3.pdf">letter specification document</a> to help you set up your letter, save it as a PDF, then upload it to Notify.<p>
+  <p>You can create reusable letter templates in Notification, or upload and send your own letters with the Notification API.</p>
+  <p>Use the <a href="https://docs.notifications.service.gov.uk/documentation/images/notify-pdf-letter-spec-v2.3.pdf">letter specification document</a> to help you set up your letter, save it as a PDF, then upload it to Notification.<p>
   <p>Read our <a href="{{ url_for('.documentation') }}">API documentation</a> for more information.</p>
 
   <h2 class="heading heading-medium">Pricing</h2>

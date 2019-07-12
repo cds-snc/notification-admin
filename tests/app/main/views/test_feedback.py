@@ -149,7 +149,7 @@ def test_passed_non_logged_in_user_details_through_flow(client, mocker, ticket_t
         _external=True,
     )
     mock_post.assert_called_with(
-        subject='Notify feedback',
+        subject='Notification feedback',
         message='blah\n',
         user_email='rip@gmail.com',
         user_name='Steve Irwin',
@@ -186,7 +186,7 @@ def test_passes_user_details_through_flow(
     )
 
     mock_post.assert_called_with(
-        subject='Notify feedback',
+        subject='Notification feedback',
         message=ANY,
         user_email='test@user.canada.ca',
         user_name='Test User',

@@ -106,7 +106,7 @@ def feedback(ticket_type):
         )
 
         zendesk_client.create_ticket(
-            subject='Notify feedback',
+            subject='Notification feedback',
             message=feedback_msg,
             ticket_type=ticket_type,
             p1=out_of_hours_emergency,
