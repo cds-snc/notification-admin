@@ -1031,6 +1031,6 @@ def test_get_performance_platform_report(client, platform_admin_user, mocker):
         file_stream=response.get_data(),
     ) == [
         ['service_id', 'agency', 'service_name', '_timestamp', 'service', 'count'],
-        ['abc123', 'Forest', 'jessie the oak tree', '2014-03-29T00:00:00Z', 'govuk-notify', 1],
-        ['def456', 'Forest', 'james the pine tree', '', 'govuk-notify', 1],
+        ['abc123', 'Forest', 'jessie the oak tree', '2014-03-29T00:00:00Z', 'notification', 1],
+        ['def456', 'Forest', 'james the pine tree', '', 'notification', 1],
     ]
