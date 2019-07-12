@@ -10,11 +10,11 @@
   <h1 class="heading heading-large">Emails</h1>
   <p>Send an unlimited number of emails for free with Notification.</p>
   {% if not current_user.is_authenticated %}
-    <p><a href="{{ url_for('main.register') }}">Create an account</a> and try Notify for yourself.</p>
+    <p><a href="{{ url_for('main.register') }}">Create an account</a> and try Notification for yourself.</p>
   {% endif %}
 
   <h2 class="heading heading-medium">Features</h2>
-  <p>Notify makes it easy to:</p>
+  <p>Notification makes it easy to:</p>
   <ul class="list list-bullet">
     <li>create reusable email templates</li>
     <li>personalise the content of your emails</li>
@@ -27,9 +27,9 @@
   <p>You can change your branding in your service settings.</p>
 
   <h3 class="heading heading-small">Send files by email</h3>
-  <p>Notify offers a safe and reliable way to send files by email.</p>
+  <p>Notification offers a safe and reliable way to send files by email.</p>
   <p>Upload a file using our API, then send your users an email with a link to download it.</p>
-  <p>Notify uses encrypted links instead of email attachments because:</p>
+  <p>Notification uses encrypted links instead of email attachments because:</p>
   <ul class="list list-bullet">
     <li>they’re more secure</li>
     <!--<li>you can track when the recipient downloads your document</li>-->
@@ -39,12 +39,12 @@
   <p>Read our <a href="{{ url_for('.documentation') }}">API documentation</a> for more information.</p>
 
   <h3 class="heading heading-small">Add a reply-to address</h3>
-  <p>Notify lets you choose the email address that users reply to.</p>
+  <p>Notification lets you choose the email address that users reply to.</p>
   <p>Emails with a reply-to address seem more trustworthy and are less likely to be labelled as spam.</p>
   <p>You can add reply-to addresses in your service settings.</p>
 
   <h2 class="heading heading-medium">Pricing</h2>
-  <p>It’s free to send emails through Notify.</p>
+  <p>It’s free to send emails through Notification.</p>
   <p><a href="{{ url_for('.pricing') }}">See pricing</a> for more details.</p>
 
 {% endblock %}

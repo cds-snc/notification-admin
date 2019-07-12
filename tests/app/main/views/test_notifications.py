@@ -326,7 +326,7 @@ def test_notification_page_shows_page_for_letter_sent_with_test_key(
     ),
     (
         'technical-failure',
-        'Technical failure – Notify will resend once the team have fixed the problem',
+        'Technical failure – Notification will resend once the team have fixed the problem',
     ),
 ))
 @freeze_time("2016-01-01 01:01")
@@ -583,7 +583,7 @@ def test_notifification_page_shows_error_message_if_precompiled_letter_cannot_be
     )
 
     error_message = page.find('p', class_='notification-status-cancelled').text
-    assert normalize_spaces(error_message) == "Validation failed – this isn’t a PDF file that Notify can read"
+    assert normalize_spaces(error_message) == "Validation failed – this isn’t a PDF file that Notification can read"
 
 
 def test_should_404_for_unknown_extension(

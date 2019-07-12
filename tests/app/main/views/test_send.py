@@ -552,7 +552,7 @@ def test_upload_csv_invalid_extension(
     )
 
     assert resp.status_code == 200
-    assert "invalid.txt isn’t a spreadsheet that Notify can read" in resp.get_data(as_text=True)
+    assert "invalid.txt isn’t a spreadsheet that Notification can read" in resp.get_data(as_text=True)
 
 
 def test_upload_valid_csv_redirects_to_check_page(
@@ -3099,7 +3099,7 @@ def test_check_messages_shows_over_max_row_error(
         page.find('div', class_='banner-dangerous').text.split()
     ) == (
         'Your file has too many rows '
-        'Notify can process up to 11,111 rows at once. '
+        'Notification can process up to 11,111 rows at once. '
         'Your file has 99,999 rows. '
         'Skip to file contents'
     )
