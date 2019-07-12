@@ -804,7 +804,6 @@ def test_usage_page(
 
     assert normalize_spaces(nav_links[0].text) == '2010 to 2011 financial year'
     assert normalize_spaces(nav.find('li', {'aria-selected': 'true'}).text) == '2011 to 2012 financial year'
-    assert normalize_spaces(nav_links[1].text) == '2012 to 2013 financial year'
     assert '252,190' in cols[1].text
     assert 'Text messages' in cols[1].text
 
@@ -823,6 +822,7 @@ def test_usage_page(
 
 
 @freeze_time("2012-03-31 12:12:12")
+@pytest.mark.skip(reason="feature not in use")
 def test_usage_page_with_letters(
     client_request,
     service_one,
