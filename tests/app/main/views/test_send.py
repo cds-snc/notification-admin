@@ -3545,7 +3545,6 @@ def test_sms_sender_is_previewed(
             }
         }
         session['sender_id'] = sms_sender
-    print(extra_args)
     page = client_request.get(
         endpoint,
         service_id=SERVICE_ONE_ID,

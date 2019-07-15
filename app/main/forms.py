@@ -11,7 +11,6 @@ from notifications_utils.columns import Columns
 from notifications_utils.formatters import strip_whitespace
 from notifications_utils.recipients import (
     InvalidPhoneError,
-    normalise_phone_number,
     validate_phone_number,
 )
 from wtforms import (
