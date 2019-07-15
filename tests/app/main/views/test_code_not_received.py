@@ -72,8 +72,8 @@ def test_should_render_correct_resend_template_for_pending_user(
 
 
 @pytest.mark.parametrize('phone_number_to_register_with', [
-    '+447700900460',
-    '+1800-555-555',
+    '+16502532222',
+    '+4966921809',
 ])
 def test_should_resend_verify_code_and_update_mobile_for_pending_user(
     client,

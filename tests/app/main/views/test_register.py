@@ -29,8 +29,8 @@ def test_logged_in_user_redirects_to_account(
 
 
 @pytest.mark.parametrize('phone_number_to_register_with', [
-    '+4407700900460',
-    '+1800-555-555',
+    '+16502532222',
+    '+4966921809',
 ])
 @pytest.mark.parametrize('password', [
     'the quick brown fox',
@@ -90,7 +90,7 @@ def test_process_register_returns_200_when_mobile_number_is_invalid(
                                  'password': 'validPassword!'})
 
     assert response.status_code == 200
-    assert 'Must not contain letters or symbols' in response.get_data(as_text=True)
+    assert 'Not a valid international number' in response.get_data(as_text=True)
 
 
 def test_should_return_200_when_email_is_not_gov_uk(
@@ -103,7 +103,7 @@ def test_should_return_200_when_email_is_not_gov_uk(
     response = client.post(url_for('main.register'),
                            data={'name': 'Bad Mobile',
                                  'email_address': 'bad_mobile@example.not.right',
-                                 'mobile_number': '+44123412345',
+                                 'mobile_number': '+16502532222',
                                  'password': 'validPassword!'})
 
     assert response.status_code == 200
@@ -131,7 +131,7 @@ def test_should_add_user_details_to_session(
         data={
             'name': 'Test Codes',
             'email_address': email_address,
-            'mobile_number': '+4407700900460',
+            'mobile_number': '+16502532222',
             'password': 'validPassword!'
         },
     )
@@ -147,7 +147,7 @@ def test_should_return_200_if_password_is_blacklisted(
     response = client.post(url_for('main.register'),
                            data={'name': 'Bad Mobile',
                                  'email_address': 'bad_mobile@example.canada.ca',
-                                 'mobile_number': '+44123412345',
+                                 'mobile_number': '+16502532222',
                                  'password': 'password'})
 
     response.status_code == 200
@@ -163,7 +163,7 @@ def test_register_with_existing_email_sends_emails(
     user_data = {
         'name': 'Already Hasaccount',
         'email_address': api_user_active['email_address'],
-        'mobile_number': '+4407700900460',
+        'mobile_number': '+16502532222',
         'password': 'validPassword!'
     }
 
@@ -243,7 +243,7 @@ def test_register_from_invite(
         data={
             'name': 'Registered in another Browser',
             'email_address': invited_user.email_address,
-            'mobile_number': '+4407700900460',
+            'mobile_number': '+16502532222',
             'service': str(invited_user.id),
             'password': 'somreallyhardthingtoguess',
             'auth_type': 'sms_auth'
@@ -254,7 +254,7 @@ def test_register_from_invite(
     mock_register_user.assert_called_once_with(
         'Registered in another Browser',
         invited_user.email_address,
-        '+4407700900460',
+        '+16502532222',
         'somreallyhardthingtoguess',
         'sms_auth',
     )
@@ -319,7 +319,7 @@ def test_register_from_email_auth_invite(
     data = {
         'name': 'invited user',
         'email_address': sample_invite['email_address'],
-        'mobile_number': '07700900001',
+        'mobile_number': '6502532222',
         'password': 'FSLKAJHFNvdzxgfyst',
         'service': sample_invite['service'],
         'auth_type': 'email_auth',

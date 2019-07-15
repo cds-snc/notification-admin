@@ -218,10 +218,10 @@ def test_registration_from_org_invite_404s_if_user_not_in_session(
         'name': 'Bad Mobile',
         'mobile_number': 'not good',
         'password': 'validPassword!'
-    }, 'Must not contain letters or symbols'],
+    }, 'Not a valid international number'],
     [{
         'name': 'Bad Password',
-        'mobile_number': '+44123412345',
+        'mobile_number': '+4966921809',
         'password': 'password'
     }, 'Choose a password that’s harder to guess'],
 ])
@@ -260,7 +260,7 @@ def test_registration_from_org_invite_has_different_email_or_organisation(
 
     response = client.post(url_for('main.register_from_org_invite'), data={
         'name': 'Test User',
-        'mobile_number': '+4407700900460',
+        'mobile_number': '+16502532222',
         'password': 'validPassword!',
         'email_address': session['invited_org_user']['email_address'],
         'organisation': session['invited_org_user']['organisation']
@@ -284,7 +284,7 @@ def test_org_user_registers_with_email_already_in_use(
 
     response = client.post(url_for('main.register_from_org_invite'), data={
         'name': 'Test User',
-        'mobile_number': '+4407700900460',
+        'mobile_number': '+16502532222',
         'password': 'validPassword!',
         'email_address': session['invited_org_user']['email_address'],
         'organisation': session['invited_org_user']['organisation']
@@ -318,7 +318,7 @@ def test_org_user_registration(
     response = client.post(url_for('main.register_from_org_invite'), data={
         'name': 'Test User',
         'email_address': session['invited_org_user']['email_address'],
-        'mobile_number': '+4407700900460',
+        'mobile_number': '+16502532222',
         'password': 'validPassword!',
         'organisation': session['invited_org_user']['organisation']
     })
@@ -330,14 +330,14 @@ def test_org_user_registration(
     mock_register_user.assert_called_once_with(
         'Test User',
         session['invited_org_user']['email_address'],
-        '+4407700900460',
+        '+16502532222',
         'validPassword!',
         'sms_auth'
     )
     mock_send_verify_code.assert_called_once_with(
         '6ce466d0-fd6a-11e5-82f5-e0accb9d11a6',
         'sms',
-        '+4407700900460',
+        '+16502532222',
     )
 
 

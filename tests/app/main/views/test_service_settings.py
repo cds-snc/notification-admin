@@ -3565,7 +3565,7 @@ def test_switch_service_enable_international_sms(
 
 @pytest.mark.parametrize('start_permissions, contact_details, end_permissions', [
     (['upload_document'], 'http://example.com/', []),
-    ([], '0207 123 4567', ['upload_document']),
+    ([], '6502532222', ['upload_document']),
 ])
 def test_service_switch_can_upload_document_shows_permission_page_if_service_contact_details_exist(
     logged_in_platform_admin_client,
@@ -3613,7 +3613,7 @@ def test_service_switch_can_upload_document_turning_permission_on_with_no_contac
 @pytest.mark.parametrize('contact_details_type, contact_details_value', [
     ('url', 'http://example.com/'),
     ('email_address', 'old@example.com'),
-    ('phone_number', '0207 12345'),
+    ('phone_number', '6502532222'),
 ])
 def test_service_switch_can_upload_document_lets_contact_details_be_added_and_shows_permission_page(
     logged_in_platform_admin_client,
@@ -3842,7 +3842,7 @@ def test_cant_resume_active_service(
 @pytest.mark.parametrize('contact_details_type, contact_details_value', [
     ('url', 'http://example.com/'),
     ('email_address', 'me@example.com'),
-    ('phone_number', '0207 123 4567'),
+    ('phone_number', '6502532222'),
 ])
 def test_service_set_contact_link_prefills_the_form_with_the_existing_contact_details(
     client_request,
@@ -3862,7 +3862,7 @@ def test_service_set_contact_link_prefills_the_form_with_the_existing_contact_de
 @pytest.mark.parametrize('contact_details_type, old_value, new_value', [
     ('url', 'http://example.com/', 'http://new-link.com/'),
     ('email_address', 'old@example.com', 'new@example.com'),
-    ('phone_number', '0207 12345', '0207 56789'),
+    ('phone_number', '6502532222', '6502532223'),
 ])
 def test_service_set_contact_link_updates_contact_details_and_redirects_to_settings_page(
     client_request,
@@ -3910,7 +3910,7 @@ def test_service_set_contact_link_updates_contact_details_for_the_selected_field
             'contact_details_type': 'url',
             'url': 'http://www.new-url.com',
             'email_address': 'me@example.com',
-            'phone_number': '0207 123 4567'
+            'phone_number': '6502532222'
         },
         _follow_redirects=True
     )
