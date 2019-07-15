@@ -24,15 +24,15 @@ def test_get_user_phone_number_when_only_inbound_exists(mocker):
     mock_get_inbound_sms = mocker.patch(
         'app.main.views.conversation.service_api_client.get_inbound_sms_by_id',
         return_value={
-            'user_number': '4407900900123',
-            'notify_number': '07900000002'
+            'user_number': '+16502532222',
+            'notify_number': '6502532222'
         }
     )
     mock_get_notification = mocker.patch(
         'app.main.views.conversation.notification_api_client.get_notification',
         side_effect=HTTPError(response=Mock(status_code=404)),
     )
-    assert get_user_number('service', 'notification') == '07900 900123'
+    assert get_user_number('service', 'notification') == '+1 650-253-2222'
     mock_get_inbound_sms.assert_called_once_with('service', 'notification')
     assert mock_get_notification.called is False
 
@@ -45,10 +45,10 @@ def test_get_user_phone_number_when_only_outbound_exists(mocker):
     mock_get_notification = mocker.patch(
         'app.main.views.conversation.notification_api_client.get_notification',
         return_value={
-            'to': '15550000000'
+            'to': '+16502532222'
         }
     )
-    assert get_user_number('service', 'notification') == '+1 555-000-0000'
+    assert get_user_number('service', 'notification') == '+1 650-253-2222'
     mock_get_inbound_sms.assert_called_once_with('service', 'notification')
     mock_get_notification.assert_called_once_with('service', 'notification')
 
@@ -165,8 +165,8 @@ def test_view_conversation(
             normalize_spaces(statuses[index].text),
         ) == expected
 
-    mock_get_inbound_sms.assert_called_once_with(SERVICE_ONE_ID, user_number='07123 456789')
-    mock.assert_called_once_with(SERVICE_ONE_ID, to='07123 456789', template_type='sms')
+    mock_get_inbound_sms.assert_called_once_with(SERVICE_ONE_ID, user_number='+1 650-253-2222')
+    mock.assert_called_once_with(SERVICE_ONE_ID, to='+1 650-253-2222', template_type='sms')
 
 
 def test_view_conversation_updates(
@@ -195,7 +195,7 @@ def test_view_conversation_updates(
     assert response.status_code == 200
     assert json.loads(response.get_data(as_text=True)) == {'messages': 'foo'}
 
-    mock_get_partials.assert_called_once_with(SERVICE_ONE_ID, '07123 456789')
+    mock_get_partials.assert_called_once_with(SERVICE_ONE_ID, '+1 650-253-2222')
 
 
 @freeze_time("2012-01-01 00:00:00")
@@ -213,8 +213,8 @@ def test_view_conversation_with_empty_inbound(
         return_value={
             'has_next': False,
             'data': [{
-                'user_number': '07900000001',
-                'notify_number': '07900000002',
+                'user_number': '6502532223',
+                'notify_number': '6502532222',
                 'content': '',
                 'created_at': datetime.utcnow().isoformat(),
                 'id': fake_uuid
@@ -371,7 +371,7 @@ def test_conversation_reply_redirects_with_phone_number_from_notification(
 
     for element, expected_text in [
         ('h1', 'Preview of ‘Two week reminder’'),
-        ('.sms-message-recipient', 'To: 07123 456789'),
+        ('.sms-message-recipient', 'To: +1 650-253-2222'),
         ('.sms-message-wrapper', 'service one: Template <em>content</em> with & entity'),
     ]:
         assert normalize_spaces(page.select_one(element).text) == expected_text
@@ -382,7 +382,7 @@ def test_get_user_phone_number_when_not_a_standard_phone_number(mocker):
         'app.main.views.conversation.service_api_client.get_inbound_sms_by_id',
         return_value={
             'user_number': 'ALPHANUM3R1C',
-            'notify_number': '07900000002'
+            'notify_number': '6502532222'
         }
     )
     mocker.patch(

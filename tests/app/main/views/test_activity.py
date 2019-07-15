@@ -130,7 +130,7 @@ def test_can_show_notifications(
             **extra_args
         )
     text_of_first_row = page.select('tbody tr')[0].text
-    assert '07123456789' in text_of_first_row
+    assert '6502532222' in text_of_first_row
     assert (
         'template content' in text_of_first_row or
         'template subject' in text_of_first_row
@@ -558,7 +558,7 @@ def test_redacts_templates_that_should_be_redacted(
     )
 
     assert normalize_spaces(page.select('tbody tr th')[0].text) == (
-        '07123456789 hello hidden'
+        '6502532222 hello hidden'
     )
 
 

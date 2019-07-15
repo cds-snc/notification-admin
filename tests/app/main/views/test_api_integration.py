@@ -37,7 +37,7 @@ def test_should_show_api_page(
     rows = page.find_all('details')
     assert len(rows) == 5
     for index, row in enumerate(rows):
-        assert row.find('h3').string.strip() == '07123456789'
+        assert row.find('h3').string.strip() == '6502532222'
 
 
 def test_should_show_api_page_with_lots_of_notifications(
@@ -429,7 +429,7 @@ def test_should_show_whitelist_page(
     )
     textboxes = page.find_all('input', {'type': 'text'})
     for index, value in enumerate(
-        ['test@example.com'] + [''] * 4 + ['07900900000'] + [''] * 4
+        ['test@example.com'] + [''] * 4 + ['6502532222'] + [''] * 4
     ):
         assert textboxes[index]['value'] == value
 
@@ -441,8 +441,8 @@ def test_should_update_whitelist(
     data = OrderedDict([
         ('email_addresses-1', 'test@example.com'),
         ('email_addresses-3', 'test@example.com'),
-        ('phone_numbers-0', '07900900000'),
-        ('phone_numbers-2', '+1800-555-555'),
+        ('phone_numbers-0', '6502532222'),
+        ('phone_numbers-2', '+4966921809'),
     ])
 
     client_request.post(
@@ -453,7 +453,7 @@ def test_should_update_whitelist(
 
     mock_update_whitelist.assert_called_once_with(SERVICE_ONE_ID, {
         'email_addresses': ['test@example.com', 'test@example.com'],
-        'phone_numbers': ['07900900000', '+1800-555-555']})
+        'phone_numbers': ['6502532222', '+4966921809']})
 
 
 def test_should_validate_whitelist_items(

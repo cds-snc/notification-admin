@@ -11,7 +11,6 @@ from notifications_utils.columns import Columns
 from notifications_utils.formatters import strip_whitespace
 from notifications_utils.recipients import (
     InvalidPhoneError,
-    normalise_phone_number,
     validate_phone_number,
 )
 from wtforms import (
@@ -878,10 +877,9 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
             self.email_address.validators = [DataRequired(), Length(min=5, max=255), ValidEmail()]
 
         elif self.contact_details_type.data == 'phone_number':
-            # we can't use the existing phone number validation functions here since we want to allow landlines
             def valid_phone_number(self, num):
                 try:
-                    normalise_phone_number(num.data)
+                    validate_phone_number(num.data)
                     return True
                 except InvalidPhoneError:
                     raise ValidationError('Must be a valid phone number')

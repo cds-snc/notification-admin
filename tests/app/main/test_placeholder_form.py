@@ -28,18 +28,18 @@ def test_form_class_not_mutated(app_):
     (False, 'email address', 'email', 'test@tbs-sct.gc.ca', None),
 
     (False, 'phone number', 'sms', '', 'Can’t be empty'),
-    (False, 'phone number', 'sms', '+1-2345-678890', 'Not a UK mobile number'),
-    (False, 'phone number', 'sms', '07900900123', None),
-    (False, 'phone number', 'sms', '+44(0)7900 900-123', None),
+    (False, 'phone number', 'sms', '+4966921809', 'Not a valid local number'),
+    (False, 'phone number', 'sms', '6502532222', None),
+    (False, 'phone number', 'sms', '+16502532222', None),
 
-    (True, 'phone number', 'sms', '+123', 'Not enough digits'),
-    (True, 'phone number', 'sms', '+44(0)7900 900-123', None),
-    (True, 'phone number', 'sms', '+1-2345-678890', None),
+    (True, 'phone number', 'sms', '+123', 'Not a valid international number'),
+    (True, 'phone number', 'sms', '+16502532222', None),
+    (True, 'phone number', 'sms', '+4966921809', None),
 
     (False, 'anything else', 'sms', '', 'Can’t be empty'),
     (False, 'anything else', 'email', '', 'Can’t be empty'),
 
-    (True, 'phone number', 'sms', 'invalid', 'Must not contain letters or symbols'),
+    (True, 'phone number', 'sms', 'invalid', 'Not a valid international number'),
     (True, 'phone number', 'email', 'invalid', None),
     (True, 'phone number', 'letter', 'invalid', None),
     (True, 'email address', 'sms', 'invalid', None),

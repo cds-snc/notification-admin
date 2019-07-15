@@ -114,7 +114,7 @@ def test_user_information_page_shows_information_about_user(
 
     assert document.xpath("//h1/text()[normalize-space()='Apple Bloom']")
     assert document.xpath("//p/text()[normalize-space()='test@canada.ca']")
-    assert document.xpath("//p/text()[normalize-space()='+447700900986']")
+    assert document.xpath("//p/text()[normalize-space()='+16502532222']")
 
     assert document.xpath("//h2/text()[normalize-space()='Live services']")
     assert document.xpath("//a/text()[normalize-space()='Nature Therapy']")

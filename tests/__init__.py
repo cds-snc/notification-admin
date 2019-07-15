@@ -50,7 +50,7 @@ def user_json(
     id_='1234',
     name='Test User',
     email_address='test@canada.ca',
-    mobile_number='+447700900986',
+    mobile_number='+16502532222',
     password_changed_at=None,
     permissions={generate_uuid(): [
         'view_activity',
@@ -414,7 +414,7 @@ def notification_json(
         elif template_type == 'email':
             to = 'example@canada.ca'
         else:
-            to = '07123456789'
+            to = '6502532222'
     if sent_at is None:
         sent_at = str(datetime.utcnow().time())
     if created_at is None:
@@ -492,7 +492,7 @@ def single_notification_json(
 
     data = {
         'sent_at': sent_at,
-        'to': '07123456789',
+        'to': '6502532222',
         'billable_units': 1,
         'status': status,
         'created_at': created_at,
