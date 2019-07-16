@@ -15,6 +15,9 @@
     <link rel="shortcut icon" href="{{ asset_path }}images/favicon.ico?0.24.2" type="image/x-icon" />
     <meta name="theme-color" content="#0b0c0c" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="module" src="https://unpkg.com/@cdssnc/cds-tag@0.0.1/dist/cds-tag/cds-tag.esm.js"></script>
+    <script nomodule src="https://unpkg.com/@cdssnc/cds-tag@0.0.1/dist/cds-tag.js"></script>
+  
     {% block head %}{% endblock %}
   </head>
 
@@ -29,33 +32,46 @@
       </div>
     </div>
 
-    <div id="global-cookie-message">
-      
-        {% block cookie_message %}{% endblock %}
-      
-    </div>
-
     
     <header role="banner" id="global-header" class="{% block header_class %}{% endblock %}">
       <div class="header-wrapper">
+
+         
         <div class="header-global">
           <div class="header-logo">
             <a href="{{ homepage_url|default('https://www.canada.ca') }}" title="{{ logo_link_title|default('Go to the Canada.ca homepage') }}" id="logo" class="content">
               <img src="{{ asset_path }}images/fip/goc--header-logo.svg" width="250" alt="">
               
               {{ global_header_text|default('Canada.ca') }}
+
             </a>
           </div>
           {% block inside_header %}{% endblock %}
+
+         
         </div>
+
+        
         {% block proposition_header %}{% endblock %}
       </div>
     </header>
+
+    
     
 
     {% block after_header %}{% endblock %}
 
-    <div id="global-header-bar"></div>
+    {% block global_header_bar %}
+    <div id="global-header-bar">
+    </div>
+    {% endblock %}
+
+    {% block alpha_header %}
+    <div id="alpha">
+       <div><cds-tag bkd-color="#f90277" text="Alpha"></cds-tag></div>
+      </div>
+    </div>
+    {% endblock %}
 
     {% block content %}{% endblock %}
 
