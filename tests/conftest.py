@@ -16,6 +16,7 @@ from app import create_app
 from . import (
     TestClient,
     api_key_json,
+    assert_url_expected,
     generate_uuid,
     invite_json,
     job_json,
@@ -270,7 +271,14 @@ def get_non_default_letter_contact_block(mocker):
 @pytest.fixture(scope='function')
 def mock_add_letter_contact(mocker):
     def _add_letter_contact(service_id, contact_block, is_default=False):
-        return
+        return {'data': {
+            'id': '1234',
+            'service_id': service_id,
+            'contact_block': '1 Example Street',
+            'is_default': True,
+            'created_at': str(datetime.utcnow()),
+            'updated_at': None
+        }}
 
     return mocker.patch('app.service_api_client.add_letter_contact', side_effect=_add_letter_contact)
 
@@ -2868,6 +2876,9 @@ def client_request(
         def login(user, service=service_one):
             logged_in_client.login(user, mocker, service)
 
+        def logout():
+            logged_in_client.logout(None)
+
         @staticmethod
         def get(
             endpoint,
@@ -2932,7 +2943,7 @@ def client_request(
             )
             assert resp.status_code == _expected_status
             if _expected_redirect:
-                assert resp.location == _expected_redirect
+                assert_url_expected(resp.location, _expected_redirect)
             return BeautifulSoup(resp.data.decode('utf-8'), 'html.parser')
 
     return ClientRequest
