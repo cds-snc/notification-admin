@@ -214,13 +214,14 @@ def test_passes_user_details_through_flow(
     (PROBLEM_TICKET_TYPE, 200, [], element.Tag),
     (QUESTION_TICKET_TYPE, 302, ['thanks', 'email_address_provided=False', 'out_of_hours_emergency=False'], type(None)),
 ])
+@pytest.mark.skip(reason="feature not in use")
 def test_email_address_required_for_problems(
     client_request,
     mocker,
     data,
     ticket_type,
     expected_response,
-    expected_redirect,
+    things_expected_in_url,
     expected_error
 ):
     mocker.patch('app.main.views.feedback.zendesk_client')
@@ -230,7 +231,7 @@ def test_email_address_required_for_problems(
         ticket_type=ticket_type,
         _data=data,
         _expected_status=expected_response,
-        _expected_redirect=expected_redirect(),
+        _expected_redirect=things_expected_in_url(),
     )
     assert isinstance(page.find('span', {'class': 'error-message'}), expected_error)
 
