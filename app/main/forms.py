@@ -590,10 +590,6 @@ class CreateServiceForm(StripWhitespaceForm):
     organisation_type = organisation_type()
 
 
-class OrganisationTypeForm(StripWhitespaceForm):
-    organisation_type = organisation_type()
-
-
 class NewOrganisationForm(
     RenameOrganisationForm,
     OrganisationOrganisationTypeForm,
