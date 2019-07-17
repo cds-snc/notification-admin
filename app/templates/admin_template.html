@@ -54,6 +54,13 @@
             </a></li>
             <li><a href="{{ url_for('main.sign_out')}}">Sign out</a></li>
           {% else %}
+            <li><a href="{{ url_for('main.set_lang')}}?from={{request.path}}">
+              {% if session["userlang"] == "en" %}
+                Français
+              {% else %}
+                English
+              {% endif %}
+            </a></li>
             <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>Documentation</a></li>
             <li><a href="{{ url_for('main.sign_in' )}}" {{ header_navigation.is_selected('sign-in') }}>Sign in</a></li>
           {% endif %}
