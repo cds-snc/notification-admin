@@ -15,7 +15,7 @@ def test_owasp_useful_headers_set(
     assert response.headers['X-XSS-Protection'] == '1; mode=block'
     assert response.headers['Content-Security-Policy'] == (
         "default-src 'self' static.example.com 'unsafe-inline';"
-        "script-src 'self' static.example.com *.google-analytics.com 'unsafe-inline' 'unsafe-eval' data:;"
+        "script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
         "connect-src 'self' *.google-analytics.com;"
         "object-src 'self';"
         "font-src 'self' static.example.com data:;"
@@ -37,7 +37,7 @@ def test_headers_non_ascii_characters_are_replaced(
     assert response.status_code == 200
     assert response.headers['Content-Security-Policy'] == (
         "default-src 'self' static.example.com 'unsafe-inline';"
-        "script-src 'self' static.example.com *.google-analytics.com 'unsafe-inline' 'unsafe-eval' data:;"
+        "script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
         "connect-src 'self' *.google-analytics.com;"
         "object-src 'self';"
         "font-src 'self' static.example.com data:;"
