@@ -4,4 +4,4 @@
 exclude = venv*,__pycache__,node_modules,cache
 ignore = W503
 max-complexity = 14
-max-line-length = 120
+max-line-length = 130
