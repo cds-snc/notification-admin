@@ -28,13 +28,6 @@
         <a href="#content" class="skiplink">{{ skip_link_message|default('Skip to main content') }}</a>
       </div>
     </div>
-
-    <div id="global-cookie-message">
-      
-        {% block cookie_message %}{% endblock %}
-      
-    </div>
-
     
     <header role="banner" id="global-header" class="{% block header_class %}{% endblock %}">
       <div class="header-wrapper">
@@ -42,13 +35,15 @@
           <div class="header-logo">
             <a href="{{ homepage_url|default('https://www.canada.ca') }}" title="{{ logo_link_title|default('Go to the Canada.ca homepage') }}" id="logo" class="content">
               <img src="{{ asset_path }}images/fip/goc--header-logo.svg" width="250" alt="">
-              
-              {{ global_header_text|default('Canada.ca') }}
             </a>
+            
           </div>
           {% block inside_header %}{% endblock %}
         </div>
-        {% block proposition_header %}{% endblock %}
+        <div class="app-name">{{ global_header_text|default('Canada.ca') }} <span class="cds-tag alpha">Alpha</span></div>
+        {% block proposition_header %}{% endblock %} 
+
+        
       </div>
     </header>
     
