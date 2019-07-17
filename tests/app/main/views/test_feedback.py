@@ -179,8 +179,8 @@ def test_passes_user_details_through_flow(
         _expected_status=302,
         _expected_redirect=url_for(
             'main.thanks',
-            out_of_hours_emergency=False,
             email_address_provided=True,
+            out_of_hours_emergency=False,
             _external=True,
         ),
     )
@@ -210,9 +210,25 @@ def test_passes_user_details_through_flow(
     {'feedback': 'blah', 'name': 'Fred'},
     {'feedback': 'blah'},
 ])
-@pytest.mark.parametrize('ticket_type, expected_response, things_expected_in_url, expected_error', [
-    (PROBLEM_TICKET_TYPE, 200, [], element.Tag),
-    (QUESTION_TICKET_TYPE, 302, ['thanks', 'email_address_provided=False', 'out_of_hours_emergency=False'], type(None)),
+@pytest.mark.parametrize('ticket_type, expected_response, expected_redirect, expected_error', [
+    (
+        PROBLEM_TICKET_TYPE,
+        200,
+        lambda: None,
+        element.Tag,
+    ),
+    (
+        QUESTION_TICKET_TYPE,
+        302,
+        partial(
+            url_for,
+            '.thanks',
+            email_address_provided=False,
+            out_of_hours_emergency=False,
+            _external=True,
+        ),
+        type(None),
+    ),
 ])
 @pytest.mark.skip(reason="feature not in use")
 def test_email_address_required_for_problems(
@@ -221,7 +237,7 @@ def test_email_address_required_for_problems(
     data,
     ticket_type,
     expected_response,
-    things_expected_in_url,
+    expected_redirect,
     expected_error
 ):
     mocker.patch('app.main.views.feedback.zendesk_client')
@@ -231,7 +247,7 @@ def test_email_address_required_for_problems(
         ticket_type=ticket_type,
         _data=data,
         _expected_status=expected_response,
-        _expected_redirect=things_expected_in_url(),
+        _expected_redirect=expected_redirect(),
     )
     assert isinstance(page.find('span', {'class': 'error-message'}), expected_error)
 
