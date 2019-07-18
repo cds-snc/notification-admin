@@ -14,7 +14,7 @@ def test_sets_metadata(client, mocker):
 
     mocked_get_s3_object.assert_called_once_with('1234', '5678')
     mocked_s3_object.copy_from.assert_called_once_with(
-        CopySource='test-notifications-csv-upload/service-1234-notify/5678.csv',
+        CopySource='development-notification-canada-ca-csv-upload/service-1234-notify/5678.csv',
         Metadata={'baz': 'True', 'foo': 'bar'},
         MetadataDirective='REPLACE',
         ServerSideEncryption='AES256',
