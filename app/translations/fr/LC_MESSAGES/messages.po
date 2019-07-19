@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-08 11:36-0400\n"
+"POT-Creation-Date: 2019-07-19 10:40-0400\n"
 "PO-Revision-Date: 2019-07-03 11:43-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -23,8 +23,8 @@ msgid "Documentation"
 msgstr "FR Documentation"
 
 #: app/templates/views/documentation.html:10
-msgid "Notify API to send messages automatically."
-msgstr "FR Notify API to send messages automatically."
+msgid "Notification API to send messages automatically."
+msgstr ""
 
 #: app/templates/views/documentation.html:11
 msgid "Clients"
@@ -38,6 +38,18 @@ msgstr ""
 "FR Choose a client to integrate our API with your web application or "
 "back-office system. Links to documentation open in a new tab."
 
+#: app/templates/views/register.html:14
+msgid "Create an account"
+msgstr ""
+
+#: app/templates/views/register.html:17
+msgid "Must be a federal government email address"
+msgstr ""
+
+#: app/templates/views/register.html:20
+msgid "We’ll send you a security code by text message"
+msgstr ""
+
 #: app/templates/views/signedout.html:18
 msgid "Send emails, text messages and letters to your users"
 msgstr "FR Send emails, text messages and letters to your users"
@@ -45,4 +57,7 @@ msgstr "FR Send emails, text messages and letters to your users"
 #: app/templates/views/agreement/_agreement-choose.html:2
 msgid "Hello"
 msgstr "Bonjour"
+
+#~ msgid "Notify API to send messages automatically."
+#~ msgstr "FR Notify API to send messages automatically."
 
