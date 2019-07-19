@@ -15,17 +15,16 @@
       <div class="grid-row">
         <div class="column-two-thirds">
           <h1>
-            {{ _('Send emails, text messages and letters to your users') }}
+            {{ _('Send emails and text messages to your users') }}
           </h1>
           <p>
-            Try Notification now if you work in the federal government.
+            {{ _('Try Notification if you work in the federal government.') }}
           </p>
           <div class="button-container">
             <a class="button button-start" href='{{ url_for('.register' )}}'>
-              Create an account
+              {{ _('Create an account') }}
             </a>
-            or <a href="{{ url_for('.sign_in' )}}">sign in</a> if you’ve used
-            it before
+            {{ _('or') }} <a href="{{ url_for('.sign_in' )}}">{{ _('sign in') }}</a> {{ _('if you’ve used it before') }}
           </div>
         </div>
       </div>
@@ -36,11 +35,10 @@
     <div class="grid-row">
       <div class="column-half">
         <h2>
-          Control your content
+          {{ _('Control your content') }}
         </h2>
         <p>
-          You don’t need any technical knowledge to create email,
-          text&nbsp;message or letter templates.
+          {{ _('You don’t need any technical knowledge to create email, or text message templates.') }}
         </p>
       </div>
       <div class="column-half">
@@ -50,13 +48,12 @@
   </div>
   <div class="product-page-section">
     <h2 class="with-keyline">
-      Send messages manually or automatically
+      {{ _('Send messages manually or automatically') }}
     </h2>
     <div class="grid-row">
       <div class="column-half">
         <p>
-          Upload a spreadsheet of email&nbsp;addresses or
-          phone&nbsp;numbers and Notification sends the messages.
+          {{ _('Upload a spreadsheet of email addresses or phone numbers and Notification sends the messages.') }}
         </p>
         <img
           src="{{ asset_url('images/product/03-spreadsheet.svg') }}"
@@ -65,8 +62,7 @@
       </div>
       <div class="column-half">
         <p>
-          Integrate the Notification API with your web&nbsp;application or
-          back office system.
+          {{ _('Integrate Notification with your web application or back off system.') }}
         </p>
         <img
           src="{{ asset_url('images/product/04-api.svg') }}"
@@ -80,8 +76,7 @@
     <div class="grid-row">
       <div class="column-half">
         <p>
-          <a href="{{ url_for('main.support') }}">Contact us</a> if you have a question or want
-          to give feedback.
+          <a href="{{ url_for('main.support') }}">{{ _('Contact us') }}</a> {{ _('if you have a question or want to give feedback.') }}
         </p>
       </div>
       <div class="column-half">
