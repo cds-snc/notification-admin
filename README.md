@@ -1,6 +1,10 @@
-# notifications-admin
+# Notifications-admin
 
 Notifications admin application.
+
+## Upstream
+This repo is a clone / modifed version of:
+https://github.com/alphagov/notifications-admin
 
 ## Features of this application
 
@@ -109,6 +113,17 @@ When running on preview, staging and production there’s a bit more to it:
 
 ```
 <h1>{{ _('Hello') }}</h1>
+```
+
+- For form hints 
+
+Set a variable
+
+```
+ <div class="extra-tracking">
+  {% set hint_txt = _('We’ll send you a security code by text message') %}
+  {{ textbox(form.mobile_number, width='3-4', hint=hint_txt) }}
+ </div>
 ```
 
 - Extract
