@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-19 10:40-0400\n"
+"POT-Creation-Date: 2019-07-19 15:17-0400\n"
 "PO-Revision-Date: 2019-07-03 11:43-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
+
+#: app/main/forms.py:492
+msgid "Please enter security code"
+msgstr ""
 
 #: app/templates/views/documentation.html:9
 msgid "Documentation"
@@ -54,10 +58,25 @@ msgstr ""
 msgid "Send emails, text messages and letters to your users"
 msgstr "FR Send emails, text messages and letters to your users"
 
-#: app/templates/views/agreement/_agreement-choose.html:2
-msgid "Hello"
-msgstr "Bonjour"
+#: app/templates/views/two-factor.html:8
+msgid "Text verification"
+msgstr ""
+
+#: app/templates/views/two-factor.html:15
+msgid "Check your phone"
+msgstr ""
+
+#: app/templates/views/two-factor.html:16
+msgid "Continue"
+msgstr ""
+
+#: app/templates/views/two-factor.html:17
+msgid "Not received a text message?"
+msgstr ""
+
+#: app/templates/views/two-factor.html:18
+msgid "We’ve sent you a text message with a security code."
+msgstr ""
 
 #~ msgid "Notify API to send messages automatically."
 #~ msgstr "FR Notify API to send messages automatically."
-
