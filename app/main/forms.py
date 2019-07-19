@@ -4,6 +4,7 @@ from itertools import chain
 
 import pytz
 from flask import request
+from flask_babel import _
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
 from flask_wtf.file import FileField as FileField_wtf
