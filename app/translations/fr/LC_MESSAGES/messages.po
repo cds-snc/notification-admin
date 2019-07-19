@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-19 10:40-0400\n"
+"POT-Creation-Date: 2019-07-19 14:30-0400\n"
 "PO-Revision-Date: 2019-07-03 11:43-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -53,6 +53,18 @@ msgstr ""
 #: app/templates/views/signedout.html:18
 msgid "Send emails, text messages and letters to your users"
 msgstr "FR Send emails, text messages and letters to your users"
+
+#: app/templates/views/two-factor-email.html:13
+msgid "We’ve emailed you a link to sign in to Notification."
+msgstr ""
+
+#: app/templates/views/two-factor-email.html:14
+msgid "Use the link to open Notification in a new browser window."
+msgstr ""
+
+#: app/templates/views/two-factor-email.html:15
+msgid "Not received an email"
+msgstr ""
 
 #: app/templates/views/agreement/_agreement-choose.html:2
 msgid "Hello"
