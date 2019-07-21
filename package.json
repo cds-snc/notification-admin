@@ -24,7 +24,7 @@
     "govuk-elements-sass": "3.1.2",
     "govuk_frontend_toolkit": "8.1.0",
     "@cdssnc/cds_template_jinja": "0.0.2",
-    "gulp": "4.0.0",
+    "gulp": "4.0.2",
     "gulp-add-src": "1.0.0",
     "gulp-babel": "8.0.0",
     "gulp-base64-inline": "1.0.4",
