@@ -4,6 +4,7 @@ from itertools import chain
 
 import pytz
 from flask import request
+from flask_babel import _
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
 from flask_wtf.file import FileField as FileField_wtf
@@ -489,7 +490,7 @@ class TwoFactorForm(StripWhitespaceForm):
         self.validate_code_func = validate_code_func
         super(TwoFactorForm, self).__init__(*args, **kwargs)
 
-    sms_code = SMSCode('Text message code')
+    sms_code = SMSCode(_('Please enter security code'))
 
     def validate(self):
 
