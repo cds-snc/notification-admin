@@ -75,9 +75,6 @@ def mock_get_service_settings_page_common(
         'International text messages Off Change',
         'Receive text messages Off Change',
 
-        'Label Value Action',
-        'Send letters Off Change',
-
     ]),
     (platform_admin_user, [
 
@@ -96,9 +93,6 @@ def mock_get_service_settings_page_common(
         'Text messages start with service name On Change',
         'International text messages Off Change',
         'Receive text messages Off Change',
-
-        'Label Value Action',
-        'Send letters Off Change',
 
         'Label Value Action',
         'Live Off Change',
@@ -160,10 +154,10 @@ def test_no_go_live_link_for_service_without_organisation(
     page = client_request.get('main.service_settings', service_id=SERVICE_ONE_ID)
 
     assert page.find('h1').text == 'Settings'
-    assert normalize_spaces(page.select('tr')[16].text) == (
+    assert normalize_spaces(page.select('tr')[14].text) == (
         'Live No (organisation must be set first)'
     )
-    assert normalize_spaces(page.select('tr')[18].text) == (
+    assert normalize_spaces(page.select('tr')[16].text) == (
         'Organisation Not set Central government Change'
     )
 
@@ -188,7 +182,7 @@ def test_organisation_name_links_to_org_dashboard(
         'main.service_settings', service_id=SERVICE_ONE_ID
     )
 
-    org_row = response.select('tr')[18]
+    org_row = response.select('tr')[16]
     assert org_row.find('a')['href'] == url_for('main.organisation_dashboard', org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find('a').text) == 'Test Organisation'
 
@@ -211,9 +205,6 @@ def test_organisation_name_links_to_org_dashboard(
         'International text messages On Change',
         'Receive text messages On Change',
 
-        'Label Value Action',
-        'Send letters Off Change',
-
     ]),
     (['email', 'sms', 'email_auth'], [
 
@@ -231,26 +222,6 @@ def test_organisation_name_links_to_org_dashboard(
         'Text messages start with service name On Change',
         'International text messages Off Change',
         'Receive text messages Off Change',
-
-        'Label Value Action',
-        'Send letters Off Change',
-
-    ]),
-    (['letter'], [
-
-        'Service name service one Change',
-        'Sign-in method Text message code Change',
-
-        'Label Value Action',
-        'Send emails Off Change',
-
-        'Label Value Action',
-        'Send text messages Off Change',
-
-        'Label Value Action',
-        'Send letters On Change',
-        'Sender addresses 1 Example Street Manage',
-        'Letter branding Not set Change',
 
     ]),
 ])
@@ -292,6 +263,7 @@ def test_if_cant_send_letters_then_cant_see_letter_contact_block(
     assert 'Letter contact block' not in response
 
 
+@pytest.mark.skip(reason="feature not in use")
 def test_letter_contact_block_shows_none_if_not_set(
     client_request,
     service_one,
@@ -312,6 +284,7 @@ def test_letter_contact_block_shows_none_if_not_set(
     assert 'default' in div.attrs['class'][0]
 
 
+@pytest.mark.skip(reason="feature not in use")
 def test_escapes_letter_contact_block(
     client_request,
     service_one,
@@ -1835,7 +1808,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
         multiple_sms_senders,
         mock_get_service_settings_page_common,
 ):
-    service_one['permissions'] = ['email', 'sms', 'letter']
+    service_one['permissions'] = ['email', 'sms']
 
     page = client_request.get(
         'main.service_settings',
@@ -1849,12 +1822,10 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
 
     assert get_row(page, 3) == "Reply-to email addresses test@example.com …and 2 more Manage"
     assert get_row(page, 6) == "Text message sender Example …and 2 more Manage"
-    assert get_row(page, 11) == "Sender addresses 1 Example Street …and 2 more Manage"
 
 
 @pytest.mark.parametrize('sender_list_page, expected_output', [
     ('main.service_email_reply_to', 'test@example.com (default) Change'),
-    ('main.service_letter_contact_details', '1 Example Street (default) Change'),
     ('main.service_sms_senders', 'GOVUK (default) Change')
 ])
 def test_api_ids_dont_show_on_option_pages_with_a_single_sender(
