@@ -319,11 +319,7 @@ class User(JSONModel, UserMixin):
 
     @property
     def default_organisation_type(self):
-        if self.default_organisation:
-            return self.default_organisation.organisation_type
-        if self.has_nhs_email_address:
-            return 'nhs'
-        return None
+        return 'central' # CDS note: defaulted to central (hides radio options)
 
     @property
     def has_access_to_live_and_trial_mode_services(self):

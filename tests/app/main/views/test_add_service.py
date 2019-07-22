@@ -35,21 +35,6 @@ def test_get_should_render_add_service_template(
     )
     page = client_request.get('main.add_service')
     assert page.select_one('h1').text.strip() == 'About your service'
-    assert page.select_one('input[name=name]')['value'] == ''
-    assert [
-        label.text.strip() for label in page.select('.multiple-choice label')
-    ] == [
-        'Central government',
-        'Local government',
-        'NHS',
-    ]
-    assert [
-        radio['value'] for radio in page.select('.multiple-choice input')
-    ] == [
-        'central',
-        'local',
-        'nhs',
-    ]
 
 
 def test_get_should_not_render_radios_if_org_type_known(
@@ -70,11 +55,8 @@ def test_get_should_not_render_radios_if_org_type_known(
 ))
 @pytest.mark.parametrize('inherited, posted, persisted, sms_limit', (
     (None, 'central', 'central', 250000),
-    ('central', None, 'central', 250000),
-    ('nhs', None, 'nhs', 25000),
-    ('local', None, 'local', 25000),
-    ('central', 'local', 'central', 250000),
 ))
+@pytest.mark.skip(reason="feature not in use - defaults to central")
 def test_should_add_service_and_redirect_to_tour_when_no_services(
     mocker,
     client_request,
@@ -129,6 +111,7 @@ def test_should_add_service_and_redirect_to_tour_when_no_services(
     mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(101, sms_limit)
 
 
+@pytest.mark.skip(reason="feature not in use - defaults to central")
 def test_add_service_has_to_choose_org_type(
     mocker,
     client_request,
@@ -193,9 +176,7 @@ def test_add_service_guesses_org_type_for_unknown_nhs_orgs(
 
 
 @pytest.mark.parametrize('organisation_type, free_allowance', [
-    ('central', 250 * 1000),
-    ('local', 25 * 1000),
-    ('nhs', 25 * 1000),
+    ('central', 250 * 1000)
 ])
 def test_should_add_service_and_redirect_to_dashboard_when_existing_service(
     app_,
