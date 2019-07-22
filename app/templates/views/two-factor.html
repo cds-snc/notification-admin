@@ -5,17 +5,17 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  Text verification
+{{ _('Text verification') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
 <div class="grid-row">
   <div class="column-two-thirds">
-    <h1 class="heading-large">Check your phone</h1>
-
-    <p>We’ve sent you a text message with a security code.</p>
-
+    <h1 class="heading-large">{{ _('Check your phone') }}</h1>
+    {% set continue = _('Continue') %}
+    {% set link_txt = _('Not received a text message?') %}
+    <p>{{ _('We’ve sent you a text message with a security code.') }}</p>
     {% call form_wrapper(class="extra-tracking") %}
       {{ textbox(
         form.sms_code,
@@ -23,9 +23,9 @@
         autofocus=True
       ) }}
       {{ page_footer(
-        "Continue",
+        continue,
         secondary_link=url_for('main.check_and_resend_text_code'),
-        secondary_link_text='Not received a text message?'
+        secondary_link_text=link_txt
       ) }}
     {% endcall %}
   </div>
