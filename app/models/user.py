@@ -319,7 +319,7 @@ class User(JSONModel, UserMixin):
 
     @property
     def default_organisation_type(self):
-        return 'central' # CDS note: defaulted to central (hides radio options)
+        return 'central'  # CDS note: defaulted to central (hides radio options)
 
     @property
     def has_access_to_live_and_trial_mode_services(self):
