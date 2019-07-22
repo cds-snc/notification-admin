@@ -584,9 +584,9 @@ class OrganisationDomainsForm(StripWhitespaceForm):
 
 class CreateServiceForm(StripWhitespaceForm):
     name = StringField(
-        u'What’s your service called?',
+        _('What’s your service called?'),
         validators=[
-            DataRequired(message='Can’t be empty')
+            DataRequired(message=_('Can’t be empty'))
         ])
     organisation_type = organisation_type()
 

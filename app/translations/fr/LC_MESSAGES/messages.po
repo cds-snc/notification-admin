@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-19 13:21-0400\n"
+"POT-Creation-Date: 2019-07-22 08:21-0400\n"
 "PO-Revision-Date: 2019-07-19 13:22-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -17,6 +17,30 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
+
+#: app/main/forms.py:493
+msgid "Please enter security code"
+msgstr ""
+
+#: app/main/forms.py:587
+msgid "What’s your service called?"
+msgstr ""
+
+#: app/main/forms.py:589
+msgid "Can’t be empty"
+msgstr ""
+
+#: app/templates/views/add-service.html:16
+msgid "About your service"
+msgstr ""
+
+#: app/templates/views/add-service.html:20
+msgid "You can change this later"
+msgstr ""
+
+#: app/templates/views/add-service.html:26
+msgid "Add service"
+msgstr ""
 
 #: app/templates/views/documentation.html:9
 msgid "Documentation"
@@ -36,6 +60,18 @@ msgid ""
 "office system. Links to documentation open in a new tab."
 msgstr ""
 
+#: app/templates/views/register.html:14 app/templates/views/signedout.html:25
+msgid "Create an account"
+msgstr ""
+
+#: app/templates/views/register.html:17
+msgid "Must be a federal government email address"
+msgstr ""
+
+#: app/templates/views/register.html:20
+msgid "We’ll send you a security code by text message"
+msgstr ""
+
 #: app/templates/views/signedout.html:18
 msgid "Send emails and text messages to your users"
 msgstr "Envoyer des emails et des SMS à vos utilisateurs"
@@ -43,10 +79,6 @@ msgstr "Envoyer des emails et des SMS à vos utilisateurs"
 #: app/templates/views/signedout.html:21
 msgid "Try Notification if you work in the federal government."
 msgstr "Essayez Notification si vous travaillez au gouvernement fédéral."
-
-#: app/templates/views/signedout.html:25
-msgid "Create an account"
-msgstr ""
 
 #: app/templates/views/signedout.html:27
 msgid "or"
@@ -90,5 +122,37 @@ msgstr ""
 
 #: app/templates/views/signedout.html:79
 msgid "if you have a question or want to give feedback."
+msgstr ""
+
+#: app/templates/views/two-factor-email.html:13
+msgid "We’ve emailed you a link to sign in to Notification."
+msgstr ""
+
+#: app/templates/views/two-factor-email.html:14
+msgid "Use the link to open Notification in a new browser window."
+msgstr ""
+
+#: app/templates/views/two-factor-email.html:15
+msgid "Not received an email"
+msgstr ""
+
+#: app/templates/views/two-factor.html:8
+msgid "Text verification"
+msgstr ""
+
+#: app/templates/views/two-factor.html:15
+msgid "Check your phone"
+msgstr ""
+
+#: app/templates/views/two-factor.html:16
+msgid "Continue"
+msgstr ""
+
+#: app/templates/views/two-factor.html:17
+msgid "Not received a text message?"
+msgstr ""
+
+#: app/templates/views/two-factor.html:18
+msgid "We’ve sent you a text message with a security code."
 msgstr ""
 
