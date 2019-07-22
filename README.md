@@ -126,6 +126,17 @@ Set a variable
  </div>
 ```
 
+For forms
+
+```
+from flask_babel import _
+```
+
+Wrap your text
+```
+_('Your text here')
+```
+
 - Extract
 
 ```bash

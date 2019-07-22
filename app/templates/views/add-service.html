@@ -13,18 +13,18 @@
 
 <div class="grid-row">
   <div class="column-two-thirds">
-
-    {{ page_header('About your service') }}
+    {% set header_txt = _('About your service') %}
+    {{ page_header(header_txt) }}
 
     {% call form_wrapper() %}
-
-      {{ textbox(form.name, hint="You can change this later") }}
-
+      {% set hint_txt = _('You can change this later') %}
+      {{ textbox(form.name, hint=hint_txt) }}
+      {# not in use - default to central for all users  #}
       {% if not current_user.default_organisation_type %}
         {{ radios(form.organisation_type) }}
       {% endif %}
-
-      {{ page_footer('Add service') }}
+      {% set button_txt = _('Add service') %}
+      {{ page_footer(button_txt) }}
 
     {% endcall %}
 
