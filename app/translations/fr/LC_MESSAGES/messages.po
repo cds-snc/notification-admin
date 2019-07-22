@@ -7,7 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2019-07-22 15:17-0400\n"
+=======
+"POT-Creation-Date: 2019-07-22 10:30-0400\n"
+>>>>>>> master
 "PO-Revision-Date: 2019-07-19 13:22-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -30,6 +34,7 @@ msgstr ""
 msgid "Can’t be empty"
 msgstr ""
 
+<<<<<<< HEAD
 #: app/templates/admin_template.html:90
 msgid "Terms of Use"
 msgstr ""
@@ -40,6 +45,14 @@ msgstr ""
 
 #: app/templates/admin_template.html:100
 msgid "Security"
+=======
+#: app/main/forms.py:1449
+msgid "New template"
+msgstr ""
+
+#: app/main/forms.py:1452
+msgid "Select the type of template you want to add"
+>>>>>>> master
 msgstr ""
 
 #: app/templates/views/add-service.html:16
