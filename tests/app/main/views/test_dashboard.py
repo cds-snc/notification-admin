@@ -577,7 +577,6 @@ def test_monthly_shows_letters_in_breakdown(
 
     assert normalize_spaces(columns[0].text) == 'emails'
     assert normalize_spaces(columns[1].text) == 'text messages'
-    assert normalize_spaces(columns[2].text) == 'letters'
 
 
 @pytest.mark.parametrize('endpoint', [
@@ -613,7 +612,7 @@ def test_monthly_has_equal_length_tables(
         service_id=service_one['id']
     )
 
-    assert page.select_one('.table-field-headings th').get('width') == "25%"
+    assert page.select_one('.table-field-headings th').get('width') == "33%"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")

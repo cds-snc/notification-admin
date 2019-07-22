@@ -584,9 +584,9 @@ class OrganisationDomainsForm(StripWhitespaceForm):
 
 class CreateServiceForm(StripWhitespaceForm):
     name = StringField(
-        u'What’s your service called?',
+        _('What’s your service called?'),
         validators=[
-            DataRequired(message='Can’t be empty')
+            DataRequired(message=_('Can’t be empty'))
         ])
     organisation_type = organisation_type()
 
@@ -1446,10 +1446,10 @@ class TemplateAndFoldersSelectionForm(Form):
     add_new_folder_name = StringField('Folder name', validators=[required_for_ops('add-new-folder')])
     move_to_new_folder_name = StringField('Folder name', validators=[required_for_ops('move-to-new-folder')])
 
-    add_template_by_template_type = RadioFieldWithRequiredMessage('New template', validators=[
+    add_template_by_template_type = RadioFieldWithRequiredMessage(_('New template'), validators=[
         required_for_ops('add-new-template'),
         Optional(),
-    ], required_message='Select the type of template you want to add')
+    ], required_message=_('Select the type of template you want to add'))
 
 
 class ClearCacheForm(StripWhitespaceForm):

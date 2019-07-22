@@ -33,7 +33,6 @@
           'Month',
           'Emails',
           'Text messages',
-          'letters',
         ],
         field_headings_visible=False,
         equal_length=True
@@ -45,7 +44,6 @@
           {% for counts, template_type in [
             (month.email_counts, 'email'),
             (month.sms_counts, 'sms'),
-            (month.letter_counts, 'letter')
           ] %}
             {% call field(align='left') %}
               {{ big_number(
