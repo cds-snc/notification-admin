@@ -9,15 +9,12 @@
 
 <div class="grid-row">
   <div class="column-two-thirds">
-    <h1 class="heading-large">Resend email link</h1>
-
-    <p> Email messages sometimes take a few minutes to arrive. If you do not recieve the email, you can resend it.</p>
-    <p> If you no longer have access to the email address you registered for this service, speak to your service manager to reset the email.</p>
-
+    <h1 class="heading-large">{{ _('Resend email link') }}</h1>
+    <p>{{ _('Sometimes email messages take a few minutes to arrive. If you do not recieve the email, you can resend it.') }}</p>
     <p>
   		<a class="button" href="{{url_for('main.resend_email_link')}}" role="button">Resend email link</a>
   	</p>
-
+    <p>{{ _('Has your email address changed since you joined Notification? Please ask your account manager to reset it.') }}</p>
   </div>
 </div>
 
