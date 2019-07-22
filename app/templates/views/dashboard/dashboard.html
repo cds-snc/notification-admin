@@ -28,16 +28,18 @@
     {{ ajax_block(partials, updates_url, 'inbox', interval=5) }}
 
     {{ ajax_block(partials, updates_url, 'totals', interval=5) }}
+    {% set msg_txt = _('Check messages sent per month') %}
     {{ show_more(
       url_for('.monthly', service_id=current_service.id),
-      'See messages sent per month'
+      msg_txt
     ) }}
 
     {% if partials['has_template_statistics'] %}
       {{ ajax_block(partials, updates_url, 'template-statistics', interval=5) }}
+      {% set template_txt = _('Check templates used by month') %}
       {{ show_more(
         url_for('.template_usage', service_id=current_service.id),
-        'See templates used by month'
+        template_txt
       ) }}
     {% endif %}
 

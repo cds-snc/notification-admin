@@ -190,3 +190,11 @@ msgstr ""
 msgid "We’ve sent you a text message with a security code."
 msgstr ""
 
+#: app/templates/views/dashboard/dashboard.html:31
+msgid "Check messages sent per month"
+msgstr ""
+
+#: app/templates/views/dashboard/dashboard.html:39
+msgid "Check templates used by month"
+msgstr ""
+
