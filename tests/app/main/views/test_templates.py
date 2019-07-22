@@ -54,7 +54,7 @@ def test_should_show_empty_page_when_no_templates(
         'Templates'
     )
     assert normalize_spaces(page.select_one('main p').text) == (
-        'You need a template before you can send emails or text messages.'
+        'You need to create a template to send emails or text messages. You can also create folders to organize your templates.'
     )
     assert page.select_one('#add_new_folder_form')
     assert page.select_one('#add_new_template_form')
@@ -75,7 +75,7 @@ def test_should_show_add_template_form_if_service_has_folder_permission(
         'Templates'
     )
     assert normalize_spaces(page.select_one('main p').text) == (
-        'You need a template before you can send emails or text messages.'
+        'You need to create a template to send emails or text messages. You can also create folders to organize your templates.'
     )
     assert [
         (item['name'], item['value']) for item in page.select('[type=radio]')
