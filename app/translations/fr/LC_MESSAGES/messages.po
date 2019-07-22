@@ -7,7 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2019-07-22 08:21-0400\n"
+=======
+"POT-Creation-Date: 2019-07-22 07:14-0400\n"
+>>>>>>> master
 "PO-Revision-Date: 2019-07-19 13:22-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -22,6 +26,7 @@ msgstr ""
 msgid "Please enter security code"
 msgstr ""
 
+<<<<<<< HEAD
 #: app/main/forms.py:587
 msgid "What’s your service called?"
 msgstr ""
@@ -42,6 +47,8 @@ msgstr ""
 msgid "Add service"
 msgstr ""
 
+=======
+>>>>>>> master
 #: app/templates/views/documentation.html:9
 msgid "Documentation"
 msgstr ""
@@ -60,6 +67,25 @@ msgid ""
 "office system. Links to documentation open in a new tab."
 msgstr ""
 
+<<<<<<< HEAD
+=======
+#: app/templates/views/email-not-received.html:12
+msgid "Resend email link"
+msgstr ""
+
+#: app/templates/views/email-not-received.html:13
+msgid ""
+"Sometimes email messages take a few minutes to arrive. If you do not "
+"recieve the email, you can resend it."
+msgstr ""
+
+#: app/templates/views/email-not-received.html:17
+msgid ""
+"Has your email address changed since you joined Notification? Please ask "
+"your account manager to reset it."
+msgstr ""
+
+>>>>>>> master
 #: app/templates/views/register.html:14 app/templates/views/signedout.html:25
 msgid "Create an account"
 msgstr ""
