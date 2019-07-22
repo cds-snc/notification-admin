@@ -86,19 +86,19 @@
       <div class="grid-row">
         <div class="column-one-quarter">
           <ul> 
-            <li><a href="{{ url_for("main.documentation") }}">Documentation</a></li>
-            <li><a href="{{ url_for("main.terms") }}">Terms of use</a></li>
+            <li><a href="{{ url_for("main.terms") }}">
+              {% set terms_txt = _('Terms of Use') %}
+              {{ terms_txt }}</a></li>
+            <li><a href="{{ url_for("main.message_status") }}">
+              {% set status_txt = _('Message status') %}
+              {{ status_txt }}</a></li>
           </ul>
         </div>
         <div class="column-one-quarter">
           <ul>
-            <li><a href="{{ url_for("main.features") }}">Features</a></li>
-            <li><a href="{{ url_for("main.message_status") }}">Message status</a></li>
-          </ul>
-        </div>
-        <div class="column-one-quarter">
-          <ul>
-              <li><a href="{{ url_for("main.security") }}">Security</a></li>
+              <li><a href="{{ url_for("main.security") }}">
+                {% set security_txt = _('Security') %}
+                {{ security_txt }}</a></li>
           </ul>
         </div>
         <div class="column-one-quarter">
