@@ -96,6 +96,51 @@ msgid ""
 "office system. Links to documentation open in a new tab."
 msgstr ""
 
+#: app/templates/views/manage-users.html:9
+#: app/templates/views/manage-users.html:15
+msgid "Team members"
+msgstr ""
+
+#: app/templates/views/manage-users.html:17
+msgid "Share templates with your team"
+msgstr ""
+
+#: app/templates/views/manage-users.html:39
+msgid "invited"
+msgstr ""
+
+#: app/templates/views/manage-users.html:43
+msgid "you"
+msgstr ""
+
+#: app/templates/views/manage-users.html:63
+msgid "Cannot see any folders"
+msgstr ""
+
+#: app/templates/views/manage-users.html:67
+msgid "Can see all folders"
+msgstr ""
+
+#: app/templates/views/manage-users.html:74
+msgid "Signs in with a text message code"
+msgstr ""
+
+#: app/templates/views/manage-users.html:76
+msgid "Signs in with an email link"
+msgstr ""
+
+#: app/templates/views/manage-users.html:84
+msgid "Cancel invitation"
+msgstr ""
+
+#: app/templates/views/manage-users.html:86
+msgid "Edit team member"
+msgstr ""
+
+#: app/templates/views/manage-users.html:97
+msgid "Invite someone to join your team"
+msgstr ""
+
 #: app/templates/views/register.html:14 app/templates/views/signedout.html:24
 msgid "Create an account"
 msgstr ""
