@@ -121,7 +121,7 @@ def email_address(label='Email address', gov_user=True, required=True):
     if required:
         validators.append(DataRequired(message='Can’t be empty'))
 
-    return EmailField(label, validators)
+    return EmailField(label, validators, render_kw={'spellcheck': 'false'})
 
 
 class UKMobileNumber(TelField):
@@ -248,7 +248,24 @@ def organisation_type(label='Who runs this service?'):
         choices=[
             ('central', 'Central government'),
             ('local', 'Local government'),
-            ('nhs', 'NHS'),
+            ('nhs_central', 'NHS – central government agency or public body'),
+            ('nhs_local', 'NHS Trust or Clinical Commissioning Group'),
+            ('nhs_local', 'GP practice'),
+            ('emergency_service', 'Emergency service'),
+            ('school_or_college', 'School or college'),
+            ('other', 'Other'),
+        ],
+        validators=[DataRequired()],
+    )
+
+
+def nhs_organisation_type(label='Who runs this service?'):
+    return RadioField(
+        label,
+        choices=[
+            ('nhs_central', 'NHS – central government agency or public body'),
+            ('nhs_local', 'NHS Trust or Clinical Commissioning Group'),
+            ('nhs_local', 'GP practice'),
         ],
         validators=[DataRequired()],
     )
@@ -589,6 +606,10 @@ class CreateServiceForm(StripWhitespaceForm):
             DataRequired(message=_('Can’t be empty'))
         ])
     organisation_type = organisation_type()
+
+
+class CreateNhsServiceForm(CreateServiceForm):
+    organisation_type = nhs_organisation_type()
 
 
 class NewOrganisationForm(
@@ -1098,6 +1119,11 @@ class DateFilterForm(StripWhitespaceForm):
     include_from_test_key = BooleanField("Include test keys", default="checked", false_values={"N"})
 
 
+class RequiredDateFilterForm(StripWhitespaceForm):
+    start_date = DateField("Start Date")
+    end_date = DateField("End Date")
+
+
 class SearchByNameForm(StripWhitespaceForm):
 
     search = SearchField('Search by name')
@@ -1486,26 +1512,26 @@ class AcceptAgreementForm(StripWhitespaceForm):
         )
 
     version = StringField(
-        'Which version of the agreement are you accepting?'
+        'Which version of the agreement do you want to accept?'
     )
 
     who = RadioField(
-        'Who is accepting the agreement?',
+        'Who are you accepting the agreement for?',
         choices=(
             (
                 'me',
-                'I’m accepting the agreement',
+                'Yourself',
             ),
             (
                 'someone-else',
-                'I’m accepting the agreement on behalf of someone else',
+                'Someone else',
             ),
         ),
         validators=[DataRequired()],
     )
 
     on_behalf_of_name = StringField(
-        'Who are you accepting the agreement on behalf of?'
+        'What’s their name?'
     )
 
     on_behalf_of_email = email_address(

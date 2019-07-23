@@ -19,8 +19,8 @@
     {% call form_wrapper() %}
       {% set hint_txt = _('You can change this later') %}
       {{ textbox(form.name, hint=hint_txt) }}
-      {# not in use - default to central for all users  #}
-      {% if not current_user.default_organisation_type %}
+
+      {% if not default_organisation_type %}
         {{ radios(form.organisation_type) }}
       {% endif %}
       {% set button_txt = _('Add service') %}
