@@ -86,19 +86,19 @@
       <div class="grid-row">
         <div class="column-one-quarter">
           <ul> 
-            <li><a href="{{ url_for("main.terms") }}">
-              {% set terms_txt = _('Terms of Use') %}
-              {{ terms_txt }}</a></li>
-            <li><a href="{{ url_for("main.message_status") }}">
-              {% set status_txt = _('Message status') %}
-              {{ status_txt }}</a></li>
+            <li>
+              <a href="{{ url_for("main.terms") }}">{{ _('Terms of Use') }}</a>
+            </li>
+            <li>
+              <a href="{{ url_for("main.message_status") }}">{{ _('Message status') }}</a>
+            </li>
           </ul>
         </div>
         <div class="column-one-quarter">
           <ul>
-              <li><a href="{{ url_for("main.security") }}">
-                {% set security_txt = _('Security') %}
-                {{ security_txt }}</a></li>
+              <li>
+                <a href="{{ url_for("main.security") }}">{{ _('Security') }}</a>
+              </li>
           </ul>
         </div>
         <div class="column-one-quarter">
@@ -110,10 +110,10 @@
 
 {% block footer_support_links %}
   <nav class="footer-nav">
-    <a href="{{ url_for("main.privacy") }}">Privacy</a>
-    <a href="{{ url_for("main.cookies") }}">Cookies</a>
+    <a href="{{ url_for("main.privacy") }}">{{ _('Privacy') }}</a>
+    <a href="{{ url_for("main.cookies") }}">{{ _('Cookies') }}</a>
     {% if current_service and current_service.research_mode %}
-    <span id="research-mode" class="research-mode">research mode</span>
+    <span id="research-mode" class="research-mode">{{ _('research mode') }}</span>
     {% endif %}
   </nav>
 {% endblock %}

@@ -21,9 +21,7 @@
             {{ _('Try Notification if you work in the federal government.') }}
           </p>
           <div class="button-container">
-            <a class="button button-start" href='{{ url_for('.register' )}}'>
-              {{ _('Create an account') }}
-            </a>
+            <a class="button button-start" href='{{ url_for('.register' )}}'>{{ _('Create an account') }}</a>
             {{ _('or') }} <a href="{{ url_for('.sign_in' )}}">{{ _('sign in') }}</a> {{ _('if you’ve used it before') }}
           </div>
         </div>
@@ -62,7 +60,7 @@
       </div>
       <div class="column-half">
         <p>
-          {{ _('Integrate Notification with your web application or back off system.') }}
+          {{ _('Integrate Notification with your web application or back office system.') }}
         </p>
         <img
           src="{{ asset_url('images/product/04-api.svg') }}"
