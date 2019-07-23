@@ -6,14 +6,15 @@
 {% from "components/live-search.html" import live_search %}
 
 {% block service_page_title %}
-  Team members
+  {{ _('Team members') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <h1 class="heading-medium">
-    Team members
+    {{ _('Team members') }}
   </h1>
+  <p>{{ _('Share templates with your team') }}</p>
 
   {% if show_search_box %}
     <div data-module="autofocus">
@@ -22,19 +23,22 @@
   {% endif %}
 
   <div class="user-list">
+
+     
     {% for user in users %}
       <div class="user-list-item">
+          
         <h3 title="{{ user.email_address }}">
           {%- if user.name -%}
             <span class="heading-small live-search-relevant">{{ user.name }}</span>&ensp;
           {%- endif -%}
           <span class="hint">
             {%- if user.status == 'pending' -%}
-              <span class="live-search-relevant">{{ user.email_address }}</span> (invited)
+              <span class="live-search-relevant">{{ user.email_address }}</span> ({{ _('invited') }})
             {%- elif user.status == 'cancelled' -%}
               <span class="live-search-relevant">{{ user.email_address }}</span> (cancelled invite)
             {%- elif user.id == current_user.id -%}
-              <span class="live-search-relevant">(you)</span>
+              <span class="live-search-relevant">({{ _('you') }})</span>
             {% else %}
               <span class="live-search-relevant">{{ user.email_address }}</span>
             {% endif %}
@@ -54,20 +58,20 @@
                 {% set folder_count = user.template_folders_for_service(current_service) | length %}
 
                 {% if folder_count == 0 %}
-                  Cannot see any folders
+                {{ _('Cannot see any folders') }}
                 {% elif folder_count != current_service.all_template_folders | length %}
                   Can see {{ folder_count }} folder{% if folder_count > 1 %}s{% endif %}
                 {% else %}
-                  Can see all folders
+                {{ _('Can see all folders') }}
                 {% endif%}
               </div>
             {% endif %}
             {% if current_service.has_permission('email_auth') %}
               <div class="tick-cross-list-hint">
                 {% if user.auth_type == 'sms_auth' %}
-                  Signs in with a text message code
+                {{ _('Signs in with a text message code') }}
                 {% else %}
-                  Signs in with an email link
+                {{ _('Signs in with an email link') }}
                 {% endif %}
               </div>
             {% endif %}
@@ -75,9 +79,9 @@
           {% if current_user.has_permissions('manage_service') %}
             <li class="tick-cross-list-edit-link">
               {% if user.status == 'pending' %}
-                <a href="{{ url_for('.cancel_invited_user', service_id=current_service.id, invited_user_id=user.id)}}">Cancel invitation</a>
+                <a href="{{ url_for('.cancel_invited_user', service_id=current_service.id, invited_user_id=user.id)}}">{{ _('Cancel invitation') }}</a>
               {% elif user.state == 'active' and current_user.id != user.id %}
-                <a href="{{ url_for('.edit_user_permissions', service_id=current_service.id, user_id=user.id)}}">Edit team member</a>
+                <a href="{{ url_for('.edit_user_permissions', service_id=current_service.id, user_id=user.id)}}">{{ _('Edit team member') }}</a>
               {% endif %}
             </li>
           {% endif %}
@@ -88,7 +92,7 @@
 
   {% if current_user.has_permissions('manage_service') %}
     <div class="js-stick-at-bottom-when-scrolling">
-      <a href="{{ url_for('.invite_user', service_id=current_service.id) }}" class="button-secondary">Invite a team member</a>
+      <a href="{{ url_for('.invite_user', service_id=current_service.id) }}" class="button-secondary">{{ _('Invite someone to join your team') }}</a>
     </div>
   {% endif %}
 

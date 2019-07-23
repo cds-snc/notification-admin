@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-23 09:14-0400\n"
+"POT-Creation-Date: 2019-07-23 10:35-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -18,23 +18,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-#: app/main/forms.py:493
+#: app/main/forms.py:510
 msgid "Please enter security code"
 msgstr ""
 
-#: app/main/forms.py:587
+#: app/main/forms.py:604
 msgid "What’s your service called?"
 msgstr ""
 
-#: app/main/forms.py:589
+#: app/main/forms.py:606
 msgid "Can’t be empty"
 msgstr ""
 
-#: app/main/forms.py:1449
+#: app/main/forms.py:1475
 msgid "New template"
 msgstr ""
 
-#: app/main/forms.py:1452
+#: app/main/forms.py:1478
 msgid "Select the type of template you want to add"
 msgstr ""
 
@@ -90,6 +90,55 @@ msgstr ""
 msgid ""
 "Choose a client to integrate our API with your web application or back "
 "office system. Links to documentation open in a new tab."
+msgstr ""
+
+#: app/templates/views/manage-users.html:9
+#: app/templates/views/manage-users.html:15
+msgid "Team members"
+msgstr ""
+
+#: app/templates/views/manage-users.html:17
+msgid "Share templates with your team"
+msgstr ""
+
+#: app/templates/views/manage-users.html:19
+msgid "Current team members"
+msgstr ""
+
+#: app/templates/views/manage-users.html:39
+msgid "invited"
+msgstr ""
+
+#: app/templates/views/manage-users.html:43
+msgid "you"
+msgstr ""
+
+#: app/templates/views/manage-users.html:63
+msgid "Cannot see any folders"
+msgstr ""
+
+#: app/templates/views/manage-users.html:67
+msgid "Can see all folders"
+msgstr ""
+
+#: app/templates/views/manage-users.html:74
+msgid "Signs in with a text message code"
+msgstr ""
+
+#: app/templates/views/manage-users.html:76
+msgid "Signs in with an email link"
+msgstr ""
+
+#: app/templates/views/manage-users.html:84
+msgid "Cancel invitation"
+msgstr ""
+
+#: app/templates/views/manage-users.html:86
+msgid "Edit team member"
+msgstr ""
+
+#: app/templates/views/manage-users.html:97
+msgid "Invite someone to join your team"
 msgstr ""
 
 #: app/templates/views/register.html:14 app/templates/views/signedout.html:24
