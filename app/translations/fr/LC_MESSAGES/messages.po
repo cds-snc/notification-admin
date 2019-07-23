@@ -101,10 +101,6 @@ msgstr ""
 msgid "Share templates with your team"
 msgstr ""
 
-#: app/templates/views/manage-users.html:19
-msgid "Current team members"
-msgstr ""
-
 #: app/templates/views/manage-users.html:39
 msgid "invited"
 msgstr ""
