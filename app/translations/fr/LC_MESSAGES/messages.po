@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-23 10:35-0400\n"
+"POT-Creation-Date: 2019-07-23 11:37-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -60,6 +60,10 @@ msgstr ""
 
 #: app/templates/admin_template.html:116
 msgid "research mode"
+msgstr ""
+
+#: app/templates/components/api-key.html:4
+msgid "API data:"
 msgstr ""
 
 #: app/templates/views/add-service.html:16
@@ -255,5 +259,25 @@ msgstr ""
 
 #: app/templates/views/templates/choose.html:34
 msgid "You can also create folders to organize your templates."
+msgstr ""
+
+#: app/templates/views/templates/template.html:51
+msgid "Last edited"
+msgstr ""
+
+#: app/templates/views/templates/template.html:59
+msgid "See previous versions"
+msgstr ""
+
+#: app/templates/views/templates/template.html:66
+msgid "Delete this template"
+msgstr ""
+
+#: app/templates/views/templates/template.html:74
+msgid "Hide personal information from screen and logs after sending"
+msgstr ""
+
+#: app/templates/views/templates/template.html:79
+msgid "Personalisation is hidden after sending"
 msgstr ""
 
