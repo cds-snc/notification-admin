@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-22 15:17-0400\n"
-"PO-Revision-Date: 2019-07-19 13:22-0400\n"
+"POT-Creation-Date: 2019-07-23 09:14-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -30,6 +30,14 @@ msgstr ""
 msgid "Can’t be empty"
 msgstr ""
 
+#: app/main/forms.py:1449
+msgid "New template"
+msgstr ""
+
+#: app/main/forms.py:1452
+msgid "Select the type of template you want to add"
+msgstr ""
+
 #: app/templates/admin_template.html:90
 msgid "Terms of Use"
 msgstr ""
@@ -40,12 +48,18 @@ msgstr ""
 
 #: app/templates/admin_template.html:100
 msgid "Security"
-#: app/main/forms.py:1449
-msgid "New template"
 msgstr ""
 
-#: app/main/forms.py:1452
-msgid "Select the type of template you want to add"
+#: app/templates/admin_template.html:113
+msgid "Privacy"
+msgstr ""
+
+#: app/templates/admin_template.html:114
+msgid "Cookies"
+msgstr ""
+
+#: app/templates/admin_template.html:116
+msgid "research mode"
 msgstr ""
 
 #: app/templates/views/add-service.html:16
@@ -74,27 +88,11 @@ msgstr ""
 
 #: app/templates/views/documentation.html:12
 msgid ""
-"Choose a client to integrate our API with your web application or back-"
+"Choose a client to integrate our API with your web application or back "
 "office system. Links to documentation open in a new tab."
 msgstr ""
 
-#: app/templates/views/email-not-received.html:12
-msgid "Resend email link"
-msgstr ""
-
-#: app/templates/views/email-not-received.html:13
-msgid ""
-"Sometimes email messages take a few minutes to arrive. If you do not "
-"recieve the email, you can resend it."
-msgstr ""
-
-#: app/templates/views/email-not-received.html:17
-msgid ""
-"Has your email address changed since you joined Notification? Please ask "
-"your account manager to reset it."
-msgstr ""
-
-#: app/templates/views/register.html:14 app/templates/views/signedout.html:25
+#: app/templates/views/register.html:14 app/templates/views/signedout.html:24
 msgid "Create an account"
 msgstr ""
 
@@ -108,53 +106,53 @@ msgstr ""
 
 #: app/templates/views/signedout.html:18
 msgid "Send emails and text messages to your users"
-msgstr "Envoyer des emails et des SMS à vos utilisateurs"
+msgstr ""
 
 #: app/templates/views/signedout.html:21
 msgid "Try Notification if you work in the federal government."
-msgstr "Essayez Notification si vous travaillez au gouvernement fédéral."
+msgstr ""
 
-#: app/templates/views/signedout.html:27
+#: app/templates/views/signedout.html:25
 msgid "or"
 msgstr ""
 
-#: app/templates/views/signedout.html:27
+#: app/templates/views/signedout.html:25
 msgid "sign in"
 msgstr ""
 
-#: app/templates/views/signedout.html:27
+#: app/templates/views/signedout.html:25
 msgid "if you’ve used it before"
 msgstr ""
 
-#: app/templates/views/signedout.html:38
+#: app/templates/views/signedout.html:36
 msgid "Control your content"
 msgstr ""
 
-#: app/templates/views/signedout.html:41
+#: app/templates/views/signedout.html:39
 msgid ""
 "You don’t need any technical knowledge to create email, or text message "
 "templates."
 msgstr ""
 
-#: app/templates/views/signedout.html:51
+#: app/templates/views/signedout.html:49
 msgid "Send messages manually or automatically"
 msgstr ""
 
-#: app/templates/views/signedout.html:56
+#: app/templates/views/signedout.html:54
 msgid ""
 "Upload a spreadsheet of email addresses or phone numbers and Notification"
 " sends the messages."
 msgstr ""
 
-#: app/templates/views/signedout.html:65
-msgid "Integrate Notification with your web application or back off system."
+#: app/templates/views/signedout.html:63
+msgid "Integrate Notification with your web application or back office system."
 msgstr ""
 
-#: app/templates/views/signedout.html:79
+#: app/templates/views/signedout.html:77
 msgid "Contact us"
 msgstr ""
 
-#: app/templates/views/signedout.html:79
+#: app/templates/views/signedout.html:77
 msgid "if you have a question or want to give feedback."
 msgstr ""
 
@@ -196,5 +194,21 @@ msgstr ""
 
 #: app/templates/views/dashboard/dashboard.html:39
 msgid "Check templates used by month"
+msgstr ""
+
+#: app/templates/views/templates/choose.html:26
+msgid "You need to create a template to send"
+msgstr ""
+
+#: app/templates/views/templates/choose.html:29
+msgid "emails, text messages or letters"
+msgstr ""
+
+#: app/templates/views/templates/choose.html:31
+msgid "emails or text messages"
+msgstr ""
+
+#: app/templates/views/templates/choose.html:34
+msgid "You can also create folders to organize your templates."
 msgstr ""
 
