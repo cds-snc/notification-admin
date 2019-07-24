@@ -2,3 +2,4 @@ canada.ca
 gc.ca
 cds-snc.ca
 ontario.ca
+novascotia.ca
