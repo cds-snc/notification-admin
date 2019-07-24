@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-23 11:31-0400\n"
+"POT-Creation-Date: 2019-07-24 08:03-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -62,6 +62,99 @@ msgstr ""
 msgid "research mode"
 msgstr ""
 
+#: app/templates/components/api-key.html:4
+msgid "API data:"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:1
+msgid "Format"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:3
+msgid "To put a title in your template, use a hash:"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:7
+msgid "This is a title"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:11
+msgid "To make bullet points, use asterisks:"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:15
+msgid "point 1"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:16
+msgid "point 2"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:17
+msgid "point 3"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:21
+msgid ""
+"To emphasize text, use a caret. There will be a grey bar beside the text "
+"you want to emphasize"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:25
+msgid "You must tell us if your circumstances change"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:29
+msgid "To add a horizontal line, use three dashes:"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:33
+msgid "First paragraph"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:39
+msgid "Second paragraph"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-optional-content.html:2
+msgid "Optional content"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-optional-content.html:4
+msgid ""
+"You can enter optional content in your template by uploading a "
+"spreadsheet with information about your users."
+msgstr ""
+
+#: app/templates/partials/templates/guidance-optional-content.html:6
+msgid ""
+"For example, your spreadsheet may include the age of each user. You want "
+"users who are under 18 to receive optional content. Use double brackets "
+"and ‘??’ to include the optional content."
+msgstr ""
+
+#: app/templates/partials/templates/guidance-optional-content.html:10
+msgid "((under18??Please get your application signed by a parent or guardian.))"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-optional-content.html:14
+msgid ""
+"For each recipient on your spreadsheet, you must indicate ‘yes’ to show "
+"or ‘no’ to hide this content"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-personalisation.html:2
+msgid "Add personal information"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-personalisation.html:5
+msgid "Use double brackets to add personal information about the recipient:"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-personalisation.html:9
+msgid "Hello ((first name)), your reference is ((ref number))"
+msgstr ""
+
 #: app/templates/views/add-service.html:16
 msgid "About your service"
 msgstr ""
@@ -92,6 +185,23 @@ msgid ""
 "office system. Links to documentation open in a new tab."
 msgstr ""
 
+#: app/templates/views/email-not-received.html:5
+#: app/templates/views/email-not-received.html:12
+msgid "Resend email link"
+msgstr ""
+
+#: app/templates/views/email-not-received.html:13
+msgid ""
+"Sometimes email messages take a few minutes to arrive. If you don’t "
+"recieve the email, you can resend it."
+msgstr ""
+
+#: app/templates/views/email-not-received.html:17
+msgid ""
+"Has your email address changed since you joined Notification? Please ask "
+"your account manager to reset it."
+msgstr ""
+
 #: app/templates/views/manage-users.html:9
 #: app/templates/views/manage-users.html:15
 msgid "Team members"
@@ -101,39 +211,39 @@ msgstr ""
 msgid "Share templates with your team"
 msgstr ""
 
-#: app/templates/views/manage-users.html:39
+#: app/templates/views/manage-users.html:37
 msgid "invited"
 msgstr ""
 
-#: app/templates/views/manage-users.html:43
+#: app/templates/views/manage-users.html:41
 msgid "you"
 msgstr ""
 
-#: app/templates/views/manage-users.html:63
+#: app/templates/views/manage-users.html:61
 msgid "Cannot see any folders"
 msgstr ""
 
-#: app/templates/views/manage-users.html:67
+#: app/templates/views/manage-users.html:65
 msgid "Can see all folders"
 msgstr ""
 
-#: app/templates/views/manage-users.html:74
+#: app/templates/views/manage-users.html:72
 msgid "Signs in with a text message code"
 msgstr ""
 
-#: app/templates/views/manage-users.html:76
+#: app/templates/views/manage-users.html:74
 msgid "Signs in with an email link"
 msgstr ""
 
-#: app/templates/views/manage-users.html:84
+#: app/templates/views/manage-users.html:82
 msgid "Cancel invitation"
 msgstr ""
 
-#: app/templates/views/manage-users.html:86
+#: app/templates/views/manage-users.html:84
 msgid "Edit team member"
 msgstr ""
 
-#: app/templates/views/manage-users.html:97
+#: app/templates/views/manage-users.html:95
 msgid "Invite someone to join your team"
 msgstr ""
 
@@ -175,7 +285,7 @@ msgstr ""
 
 #: app/templates/views/signedout.html:39
 msgid ""
-"You don’t need any technical knowledge to create email, or text message "
+"You don’t need any technical knowledge to create email or text message "
 "templates."
 msgstr ""
 
@@ -276,4 +386,10 @@ msgstr ""
 #: app/templates/views/templates/template.html:79
 msgid "Personalisation is hidden after sending"
 msgstr ""
+
+#~ msgid ""
+#~ "You don’t need any technical knowledge"
+#~ " to create email, or text message "
+#~ "templates."
+#~ msgstr ""
 
