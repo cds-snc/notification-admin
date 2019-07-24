@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-23 11:37-0400\n"
+"POT-Creation-Date: 2019-07-24 12:59-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -158,6 +158,120 @@ msgstr ""
 
 #: app/templates/views/signedout.html:77
 msgid "if you have a question or want to give feedback."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:10
+msgid "Terms of use"
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:13
+msgid ""
+"These terms apply to use of Notification. Your account manager must "
+"accept them."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:16
+msgid "When using Notification"
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:18
+msgid ""
+"GOV.UK’s Service Manual provides useful standards for <a "
+"href=\"https://www.gov.uk/service-manual/design/sending-emails-and-text-"
+"messages\">writing text messages and emails</a>. Notification recommends "
+"that you consider these standards as guidance, while adjusting for the "
+"Canadian context."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:20
+msgid "You must:"
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:22
+msgid "complete all security steps required by your organization."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:23
+msgid "tell us immediately if you have any security breaches."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:24
+msgid ""
+"keep your API (Application Programming Interface) codes secure. API "
+"technology allows different software applications to communicate with "
+"each other."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:25
+msgid ""
+"get consent to send messages and to use data. This consent must meet "
+"standards set by privacy legislation including the federal Privacy Act."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:26
+msgid ""
+"check that the data you add to Notification is accurate and complies with"
+" privacy legislation including the federal Privacy Act."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:27
+msgid ""
+"not send messages containing any personally or commercially sensitive "
+"information."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:28
+msgid ""
+"not send unsolicited messages. Messages must be about transactions or "
+"subscriptions. Please follow the <a href=\"https://www.gov.uk/service-"
+"manual/design/sending-emails-and-text-messages#transactional-"
+"messages\">transaction</a> and <a href=\"https://www.gov.uk/service-"
+"manual/design/sending-emails-and-text-messages#subscription-"
+"messages\">subscription</a> criteria in the GOV.UK Service Manual. Please"
+" remember that other parts of the GOV.UK Manual may not apply in the "
+"Canadian context."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:31
+msgid ""
+"If you don’t follow these terms, we may need to stop sending your "
+"messages."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:33
+msgid "Notification will:"
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:35
+msgid ""
+"send the messages you write, as long as these messages comply with our "
+"terms of use."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:36
+msgid ""
+"show how Notification is working through our <a "
+"href=\"https://www.gov.uk/performance/govuk-notify\">performance</a> and "
+"<a href=\"https://status.notifications.service.gov.uk/\">status</a> "
+"pages."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:37
+msgid "keep your data <a href=\"/features/security\">secure</a>."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:38
+msgid ""
+"give you one month’s notice by email if we change our terms of use or "
+"delivery providers."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:41
+msgid "Leaving Notification"
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:43
+msgid "We’ll delete all your data when we close your account."
 msgstr ""
 
 #: app/templates/views/two-factor-email.html:13
