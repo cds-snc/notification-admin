@@ -1,14 +1,14 @@
 {% from "components/banner.html" import banner_wrapper %}
 
 {% call banner_wrapper(type='tour') %}
-    <p class="heading-medium">Try sending yourself this example</p>
+    <p class="heading-medium">{{ _('Try sending yourself this example') }}</p>
     <div class="grid-row bottom-gutter {% if help != '1' %}greyed-out-step{% endif %}">
       <div class="column-one-sixth">
         <p class="heading-large" style="float: left;">1.</p>
       </div>
       <div class="column-five-sixths">
         <p>
-          Every message is sent from a template
+          {{ _('Every message is sent from a template') }}
         </p>
       </div>
     </div>
@@ -18,7 +18,7 @@
       </div>
       <div class="column-five-sixths">
         <p>
-          The template pulls in the data you provide
+          {{ _('The template pulls information from your data') }}
         </p>
       </div>
     </div>
@@ -28,11 +28,11 @@
       </div>
       <div class="column-five-sixths">
         <p>
-          Notification delivers the message
+          {{ _('Notification delivers the message') }}
         </p>
         {% if help == '3' %}
           <a href='{{ url_for(".go_to_dashboard_after_tour", service_id=current_service.id, example_template_id=template.id) }}'>
-            Now go to your dashboard
+            {{ _('Now go to your dashboard') }}
           </a>
         {% endif %}
       </div>
