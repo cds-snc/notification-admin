@@ -6,13 +6,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Email branding
+  Change email branding
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Email branding',
+    'Change email branding',
     back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
 
@@ -39,7 +39,7 @@
     </fieldset>
     <p class="form-group">
       We’ll email you once your branding’s ready to use, or if we need any
-      more info.
+      more information.
     </p>
     {{ page_footer('Request new branding') }}
   {% endcall %}
