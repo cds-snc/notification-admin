@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-24 12:59-0400\n"
+"POT-Creation-Date: 2019-07-25 10:39-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -42,11 +42,11 @@ msgstr ""
 msgid "Terms of Use"
 msgstr ""
 
-#: app/templates/admin_template.html:93
+#: app/templates/admin_template.html:93 app/templates/views/features.html:39
 msgid "Message status"
 msgstr ""
 
-#: app/templates/admin_template.html:100
+#: app/templates/admin_template.html:100 app/templates/views/features.html:54
 msgid "Security"
 msgstr ""
 
@@ -64,6 +64,26 @@ msgstr ""
 
 #: app/templates/components/api-key.html:4
 msgid "API data:"
+msgstr ""
+
+#: app/templates/partials/tour.html:4
+msgid "Try sending yourself this example"
+msgstr ""
+
+#: app/templates/partials/tour.html:11
+msgid "Every message is sent from a template"
+msgstr ""
+
+#: app/templates/partials/tour.html:21
+msgid "The template pulls information from your data"
+msgstr ""
+
+#: app/templates/partials/tour.html:31
+msgid "Notification delivers the message"
+msgstr ""
+
+#: app/templates/partials/tour.html:35
+msgid "Now go to your dashboard"
 msgstr ""
 
 #: app/templates/partials/templates/guidance-formatting.html:1
@@ -202,6 +222,197 @@ msgid ""
 "your account manager to reset it."
 msgstr ""
 
+#: app/templates/views/features.html:11
+msgid "Features"
+msgstr ""
+
+#: app/templates/views/features.html:12
+msgid ""
+"If you work for the federal government, you can use Notification to "
+"update your users."
+msgstr ""
+
+#: app/templates/views/features.html:13
+msgid "Notification makes it easy to create, customise and send:"
+msgstr ""
+
+#: app/templates/views/features.html:15
+msgid "emails"
+msgstr ""
+
+#: app/templates/views/features.html:16
+msgid "text messages"
+msgstr ""
+
+#: app/templates/views/features.html:19
+msgid "You do not need any technical knowledge to use Notification."
+msgstr ""
+
+#: app/templates/views/features.html:21 app/templates/views/register.html:14
+#: app/templates/views/signedout.html:24
+msgid "Create an account"
+msgstr ""
+
+#: app/templates/views/features.html:21
+msgid "for free and try it yourself."
+msgstr ""
+
+#: app/templates/views/features.html:24
+msgid "Reusable message templates"
+msgstr ""
+
+#: app/templates/views/features.html:25
+msgid ""
+"To send an email or text with Notification, you need to create a reusable"
+" message template first."
+msgstr ""
+
+#: app/templates/views/features.html:26
+msgid ""
+"Templates let you send the same thing to lots of people, as often as you "
+"need to, without writing a new message each time."
+msgstr ""
+
+#: app/templates/views/features.html:28
+msgid "Personalised content"
+msgstr ""
+
+#: app/templates/views/features.html:29
+msgid ""
+"Notification makes it easy to send personalised messages from a single "
+"template."
+msgstr ""
+
+#: app/templates/views/features.html:30
+msgid ""
+"If you want to include personalized content in your message, you can add "
+"a placeholder.  Each time you send a message, you can fill the "
+"placeholder with details such as a name or reference number. You can do "
+"this manually or upload a list of personal details and let Notification "
+"do it for you."
+msgstr ""
+
+#: app/templates/views/features.html:32
+msgid "Bulk sending"
+msgstr ""
+
+#: app/templates/views/features.html:33
+msgid ""
+"To send a batch of messages at once, upload a list of contact details to "
+"Notification. You can also schedule the date and time for sending emails "
+"or text messages."
+msgstr ""
+
+#: app/templates/views/features.html:35
+msgid "Application Programming Interface (API) integration"
+msgstr ""
+
+#: app/templates/views/features.html:36
+msgid ""
+"You can integrate Notification’s API with your web application or back-"
+"office system to send messages automatically."
+msgstr ""
+
+#: app/templates/views/features.html:37
+msgid "Read our"
+msgstr ""
+
+#: app/templates/views/features.html:37
+msgid "API documentation"
+msgstr ""
+
+#: app/templates/views/features.html:37
+msgid "for more information."
+msgstr ""
+
+#: app/templates/views/features.html:40
+msgid ""
+"Notification’s real-time dashboard lets you see the number of messages "
+"sent. You can also check the current status of any message to learn when "
+"it was delivered."
+msgstr ""
+
+#: app/templates/views/features.html:41
+msgid "Read more about how"
+msgstr ""
+
+#: app/templates/views/features.html:41
+msgid "message status"
+msgstr ""
+
+#: app/templates/views/features.html:41
+msgid "works."
+msgstr ""
+
+#: app/templates/views/features.html:43
+msgid "Permissions"
+msgstr ""
+
+#: app/templates/views/features.html:44
+msgid ""
+"Control which members of your team can see, create, edit and send "
+"messages."
+msgstr ""
+
+#: app/templates/views/features.html:45
+msgid "Notification lets you:"
+msgstr ""
+
+#: app/templates/views/features.html:47
+msgid "set different permission levels for each team member"
+msgstr ""
+
+#: app/templates/views/features.html:48
+msgid "invite team members who don’t have a government email address"
+msgstr ""
+
+#: app/templates/views/features.html:49
+msgid "choose who else can manage team members"
+msgstr ""
+
+#: app/templates/views/features.html:52
+msgid ""
+"We send messages through several different providers. If one provider "
+"fails, Notification switches to another so that your messages are not "
+"affected."
+msgstr ""
+
+#: app/templates/views/features.html:55
+msgid ""
+"Notification protects and manages data to meet the needs of government "
+"services."
+msgstr ""
+
+#: app/templates/views/features.html:57
+msgid "Hide sensitive information"
+msgstr ""
+
+#: app/templates/views/features.html:58
+msgid ""
+"Notification lets you redact personal information from your messages "
+"after they’ve been sent. Only the recipient can see their personal "
+"information."
+msgstr ""
+
+#: app/templates/views/features.html:60
+msgid "Two-factor authentication"
+msgstr ""
+
+#: app/templates/views/features.html:61
+msgid ""
+"Notification uses two-factor authentication (2FA) to keep your account "
+"secure. When you sign in, we'll send a unique one-time code to your phone"
+" and ask you to enter it before we let you use your account."
+msgstr ""
+
+#: app/templates/views/features.html:62
+msgid "Read more about"
+msgstr ""
+
+#: app/templates/views/features.html:62
+msgid "security"
+msgstr ""
+
 #: app/templates/views/manage-users.html:9
 #: app/templates/views/manage-users.html:15
 msgid "Team members"
@@ -245,10 +456,6 @@ msgstr ""
 
 #: app/templates/views/manage-users.html:95
 msgid "Invite someone to join your team"
-msgstr ""
-
-#: app/templates/views/register.html:14 app/templates/views/signedout.html:24
-msgid "Create an account"
 msgstr ""
 
 #: app/templates/views/register.html:17
