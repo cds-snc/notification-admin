@@ -3,6 +3,7 @@ $(() => $("time.timeago").timeago());
 $(() => GOVUK.stickAtTopWhenScrolling.init());
 $(() => GOVUK.stickAtBottomWhenScrolling.init());
 
+
 var showHideContent = new GOVUK.ShowHideContent();
 showHideContent.init();
 
@@ -19,10 +20,6 @@ $(() => $('.banner-dangerous').eq(0).trigger('focus'));
     "use strict";
     var root = this;
     if(typeof root.GOVUK === 'undefined') { root.GOVUK = {}; }
-
-    root.GOVUK.TrackError = function(){
-      //do nothing
-    };
   
     /*
       Cookie methods

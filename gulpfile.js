@@ -90,7 +90,7 @@ const javascripts = () => {
       paths.src + 'javascripts/updateContent.js',
       paths.src + 'javascripts/listEntry.js',
       paths.src + 'javascripts/liveSearch.js',
-      paths.src + 'javascripts/errorTracking.js',
+      //paths.src + 'javascripts/errorTracking.js',
       paths.src + 'javascripts/preventDuplicateFormSubmissions.js',
       paths.src + 'javascripts/fullscreenTable.js',
       paths.src + 'javascripts/previewPane.js',
@@ -108,12 +108,12 @@ const javascripts = () => {
       paths.npm + 'jquery/dist/jquery.min.js',
       paths.npm + 'jquery-migrate/dist/jquery-migrate.min.js',
       paths.npm + 'query-command-supported/dist/queryCommandSupported.min.js',
-      paths.npm + 'diff-dom/dist/index.js',
+      paths.npm + 'diff-dom/diffDOM.js',
       paths.npm + 'timeago/jquery.timeago.js',
       paths.npm + 'textarea-caret/index.js'
     ]))
     .pipe(plugins.uglify())
-    .pipe(plugins.concat('all.js'))
+    .pipe(plugins.concat('all.min.js'))
     .pipe(dest(paths.dist + 'javascripts/'))
 };
 
