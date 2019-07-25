@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-24 13:48-0400\n"
+"POT-Creation-Date: 2019-07-25 09:41-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -64,6 +64,26 @@ msgstr ""
 
 #: app/templates/components/api-key.html:4
 msgid "API data:"
+msgstr ""
+
+#: app/templates/partials/tour.html:4
+msgid "Try sending yourself this example"
+msgstr ""
+
+#: app/templates/partials/tour.html:11
+msgid "Every message is sent from a template"
+msgstr ""
+
+#: app/templates/partials/tour.html:21
+msgid "The template pulls information from your data"
+msgstr ""
+
+#: app/templates/partials/tour.html:31
+msgid "Notification delivers the message"
+msgstr ""
+
+#: app/templates/partials/tour.html:35
+msgid "Now go to your dashboard"
 msgstr ""
 
 #: app/templates/partials/templates/guidance-formatting.html:1
