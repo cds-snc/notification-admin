@@ -2,21 +2,9 @@
   "use strict";
 
   Modules.TrackError = function() {
-
-    this.start = function(component) {
-
-      if (!ga) return;
-
-      ga(
-        'send',
-        'event',
-        'Error',
-        $(component).data('error-type'),
-        $(component).data('error-label')
-      );
-
-    };
+    // removed for now
+    return;
 
   };
 
-})(window.GOVUK.Modules);
+})();
