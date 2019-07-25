@@ -10,13 +10,13 @@
 
 <h1 class="heading-large">{{ _('Features') }}</h1>
 <p>{{ _('If you work for the federal government, you can use Notification to update your users.') }}</p>
-<p>{{ _('Notification makes it easy to create, customise and send:') }}</p>
+<p>{{ _('Notification makes it easy to create, customize and send:') }}</p>
 <ul class="list list-bullet">
   <li><a href="{{ url_for('main.features_email') }}">{{ _('emails') }}</a></li>
   <li><a href="{{ url_for('main.features_sms') }}">{{ _('text messages') }}</a></li>
   <!-- <li><a href="{{ url_for('main.features_letters') }}">letters</a></li> -->
 </ul>
-<p>{{ _('You do not need any technical knowledge to use Notification.') }}</p>
+<p>{{ _('You do not need technical knowledge to use Notification.') }}</p>
 {% if not current_user.is_authenticated %}
   <p><a href="{{ url_for('main.register') }}">{{ _('Create an account') }}</a> {{ _('for free and try it yourself.') }}</p>
 {% endif %}
@@ -27,7 +27,7 @@
 
 <h2 class="heading-medium">{{ _('Personalised content') }}</h2>
 <p>{{ _('Notification makes it easy to send personalised messages from a single template.') }}</p>
-<p>{{ _('If you want to include personalized content in your message, you can add a placeholder.  Each time you send a message, you can fill the placeholder with details such as a name or reference number. You can do this manually or upload a list of personal details and let Notification do it for you.') }}</p>
+<p>{{ _('If you want to include personalised content in your message, you can add a placeholder.  Each time you send a message, you can fill the placeholder with details such as a name or reference number. You can do this manually or upload a list of personal details and let Notification do it for you.') }}</p>
 
 <h2 class="heading-medium">{{ _('Bulk sending') }}</h2>
 <p>{{ _('To send a batch of messages at once, upload a list of contact details to Notification. You can also schedule the date and time for sending emails or text messages.') }}</p>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-25 09:41-0400\n"
+"POT-Creation-Date: 2019-07-25 10:44-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -233,7 +233,7 @@ msgid ""
 msgstr ""
 
 #: app/templates/views/features.html:13
-msgid "Notification makes it easy to create, customise and send:"
+msgid "Notification makes it easy to create, customize and send:"
 msgstr ""
 
 #: app/templates/views/features.html:15
@@ -245,7 +245,7 @@ msgid "text messages"
 msgstr ""
 
 #: app/templates/views/features.html:19
-msgid "You do not need any technical knowledge to use Notification."
+msgid "You do not need technical knowledge to use Notification."
 msgstr ""
 
 #: app/templates/views/features.html:21 app/templates/views/register.html:14
@@ -285,7 +285,7 @@ msgstr ""
 
 #: app/templates/views/features.html:30
 msgid ""
-"If you want to include personalized content in your message, you can add "
+"If you want to include personalised content in your message, you can add "
 "a placeholder.  Each time you send a message, you can fill the "
 "placeholder with details such as a name or reference number. You can do "
 "this manually or upload a list of personal details and let Notification "
@@ -598,5 +598,23 @@ msgstr ""
 #~ "You don’t need any technical knowledge"
 #~ " to create email, or text message "
 #~ "templates."
+#~ msgstr ""
+
+#~ msgid "Notification makes it easy to create, customise and send:"
+#~ msgstr ""
+
+#~ msgid "You do not need any technical knowledge to use Notification."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If you want to include personalized "
+#~ "content in your message, you can "
+#~ "add a placeholder.  Each time you "
+#~ "send a message, you can fill the"
+#~ " placeholder with details such as a"
+#~ " name or reference number. You can"
+#~ " do this manually or upload a "
+#~ "list of personal details and let "
+#~ "Notification do it for you."
 #~ msgstr ""
 
