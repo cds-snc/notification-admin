@@ -45,6 +45,7 @@ def test_from_utils_template_calls_through(
     (None, None)
 ])
 def test_from_database_object_makes_request(
+    app_,
     mocker,
     client,
     partial_call,
@@ -70,7 +71,7 @@ def test_from_database_object_makes_request(
         'values': None,
         'filename': expected_filename,
     }
-    headers = {'Authorization': 'Token my-secret-key'}
+    headers = {'Authorization': 'Token {}'.format('dev-notify-secret-key')}
 
     request_mock.assert_called_once_with(expected_url, json=data, headers=headers)
 
@@ -104,7 +105,7 @@ def test_page_count_unpacks_from_json_response(
     mock_template_preview.assert_called_once_with(*expected_template_preview_args)
 
 
-def test_from_example_template_makes_request(mocker):
+def test_from_example_template_makes_request(app_, mocker):
     request_mock = mocker.patch('app.template_previews.requests.post')
     template = {}
     filename = 'geo'
@@ -113,7 +114,7 @@ def test_from_example_template_makes_request(mocker):
 
     request_mock.assert_called_once_with(
         'http://localhost:9999/preview.png',
-        headers={'Authorization': 'Token my-secret-key'},
+        headers={'Authorization': 'Token {}'.format('dev-notify-secret-key')},
         json={'values': None,
               'template': template,
               'filename': filename,
