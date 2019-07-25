@@ -120,8 +120,9 @@ class Test(Development):
     ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET', 'dev-notify-secret-key')
     API_HOST_NAME = os.environ.get('API_HOST_NAME', 'http://localhost:6011')
     DANGEROUS_SALT = os.environ.get('DANGEROUS_SALT', 'dev-notify-salt')
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-notify-secret-key')
+    SECRET_KEY = 'dev-notify-secret-key'
     TEMPLATE_PREVIEW_API_HOST = 'http://localhost:9999'
+    TEMPLATE_PREVIEW_API_KEY = 'dev-notify-secret-key'
     ANTIVIRUS_API_HOST = 'https://test-antivirus'
     ANTIVIRUS_API_KEY = 'test-antivirus-secret'
 

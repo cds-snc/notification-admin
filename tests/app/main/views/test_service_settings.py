@@ -1822,7 +1822,6 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
 
     assert get_row(page, 3) == "Reply-to email addresses test@example.com …and 2 more Manage"
     assert get_row(page, 6) == "Text message senders Example …and 2 more Manage"
-    assert get_row(page, 11) == "Sender addresses 1 Example Street …and 2 more Manage"
 
 
 @pytest.mark.parametrize('sender_list_page, index, expected_output', [
