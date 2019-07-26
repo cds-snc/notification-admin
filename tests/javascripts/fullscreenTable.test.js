@@ -171,21 +171,31 @@ describe('FullscreenTable', () => {
     });
 
     test("when the page has loaded", () => {
+      // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
+      setTimeout(function(){ 
+        expect(window.getComputedStyle(tableFrame)['height']).toEqual('268px');
+      ; }, 200);
 
-      // the frames should crop to the top 268px of the table that is visible
-      expect(window.getComputedStyle(tableFrame)['height']).toEqual('268px');
-      expect(window.getComputedStyle(numberColumnFrame)['height']).toEqual('268px');
-
+      // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
+      setTimeout(function(){ 
+        expect(window.getComputedStyle(numberColumnFrame)['height']).toEqual('268px');
+      ; }, 200);
     });
 
     test("when the page has scrolled", () => {
 
       // scroll the window so the table fills the height of the window (768px)
       windowMock.scrollBy(500);
+      
+      // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
+      setTimeout(function(){ 
+        expect(window.getComputedStyle(tableFrame)['height']).toEqual('768px');
+      ; }, 200);
 
-      // the frames should crop to the window height
-      expect(window.getComputedStyle(tableFrame)['height']).toEqual('768px');
-      expect(window.getComputedStyle(numberColumnFrame)['height']).toEqual('768px');
+      // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
+      setTimeout(function(){ 
+        expect(window.getComputedStyle(numberColumnFrame)['height']).toEqual('768px');
+      ; }, 200);
 
     });
 
@@ -194,9 +204,15 @@ describe('FullscreenTable', () => {
       // resize the window by 232px (from 768px to 1000px)
       windowMock.resizeTo({ height: 1000, width: 1024 });
 
-      // the frames should crop to the top 500px of the table now visible
-      expect(window.getComputedStyle(tableFrame)['height']).toEqual('500px');
-      expect(window.getComputedStyle(numberColumnFrame)['height']).toEqual('500px');
+      // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
+      setTimeout(function(){ 
+        expect(window.getComputedStyle(tableFrame)['height']).toEqual('500px');
+        ; }, 200);
+
+      // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
+      setTimeout(function(){ 
+        expect(window.getComputedStyle(tableFrame)['height']).toEqual('500px');
+        ; }, 200);
 
     });
 
