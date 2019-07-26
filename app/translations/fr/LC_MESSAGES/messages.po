@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-25 14:54-0400\n"
+"POT-Creation-Date: 2019-07-26 10:30-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -444,7 +444,7 @@ msgid "Cancel invitation"
 msgstr ""
 
 #: app/templates/views/manage-users.html:84
-msgid "Edit team member"
+msgid "Change details"
 msgstr ""
 
 #: app/templates/views/manage-users.html:95
@@ -759,10 +759,15 @@ msgstr ""
 #~ "fails, Notification switches to another "
 #~ "so that your messages are not "
 #~ "affected."
+#~ msgstr ""
+
 #~ msgid ""
 #~ "Sometimes email messages take a few "
 #~ "minutes to arrive. If you don’t "
 #~ "recieve the email, you can resend "
 #~ "it."
+#~ msgstr ""
+
+#~ msgid "Edit team member"
 #~ msgstr ""
 
