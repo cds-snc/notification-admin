@@ -7,6 +7,7 @@ from flask import url_for
 from notifications_python_client.errors import HTTPError
 
 from app.s3_client.s3_logo_client import EMAIL_LOGO_LOCATION_STRUCTURE, TEMP_TAG
+from app.utils import get_logo_cdn_domain
 from tests.conftest import (
     mock_get_email_branding,
     normalize_spaces,
@@ -206,7 +207,7 @@ def test_create_new_email_branding_when_branding_saved(
             'colour': data['colour'],
             'name': data['name'],
             'text': data['text'],
-            'cdn_url': 'https://static-logos.cdn.com',
+            'cdn_url': get_logo_cdn_domain(),
             'brand_type': data['brand_type']
         }
     )
@@ -301,7 +302,7 @@ def test_update_existing_branding(
         url_for('.update_email_branding', logo=temp_filename, branding_id=fake_uuid),
         content_type='multipart/form-data',
         data={'colour': data['colour'], 'name': data['name'], 'text': data['text'],
-              'cdn_url': 'https://static-logos.cdn.com',
+              'cdn_url': get_logo_cdn_domain(),
               'brand_type': data['brand_type']
               }
     )
