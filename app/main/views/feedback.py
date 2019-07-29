@@ -105,14 +105,17 @@ def feedback(ticket_type):
             '' if user_email else '{} (no email address supplied)'.format(form.name.data)
         )
 
-        zendesk_client.create_ticket(
-            subject='Notification feedback',
-            message=feedback_msg,
-            ticket_type=ticket_type,
-            p1=out_of_hours_emergency,
-            user_email=user_email,
-            user_name=user_name
-        )
+        # send email here
+        current_user.send_support_email(feedback_msg)
+
+        #zendesk_client.create_ticket(
+        #    subject='Notification feedback',
+        #    message=feedback_msg,
+        #    ticket_type=ticket_type,
+        #    p1=out_of_hours_emergency,
+        #    user_email=user_email,
+        #    user_name=user_name
+        #)
         return redirect(url_for(
             '.thanks',
             out_of_hours_emergency=out_of_hours_emergency,

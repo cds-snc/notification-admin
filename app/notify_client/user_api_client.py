@@ -110,6 +110,11 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = '/user/{0}/email-already-registered'.format(user_id)
         self.post(endpoint, data=data)
 
+    def send_support_email(self, user_id, message):
+        data = {'email': "bethany.dunfield@cds-snc.ca", 'message': message}
+        endpoint = '/user/{0}/support-email'.format(user_id)
+        self.post(endpoint, data=data)
+
     @cache.delete('user-{user_id}')
     def check_verify_code(self, user_id, code, code_type):
         data = {'code_type': code_type, 'code': code}
