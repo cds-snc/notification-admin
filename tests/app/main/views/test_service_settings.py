@@ -66,7 +66,7 @@ def mock_get_service_settings_page_common(
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
-        'Email branding GOV.UK Change',
+        'Email branding default Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -85,7 +85,7 @@ def mock_get_service_settings_page_common(
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
-        'Email branding GOV.UK Change',
+        'Email branding default Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -99,7 +99,7 @@ def mock_get_service_settings_page_common(
         'Count in list of live services Yes Change',
         'Organisation Test Organisation Central government Change',
         'Free text message allowance 250,000 Change',
-        'Email branding GOV.UK Change',
+        'Email branding default Change',
         'Letter branding Not set Change',
         'Data retention email Change',
         'Receive inbound SMS Off Change',
@@ -4290,6 +4290,7 @@ def test_update_service_organisation_does_not_update_if_same_value(
     mock_update_service_organisation.called is False
 
 
+@pytest.mark.skip(reason="feature not in use")
 def test_show_email_branding_request_page_when_no_email_branding_is_set(
     client_request,
     mock_get_email_branding
@@ -4312,6 +4313,7 @@ def test_show_email_branding_request_page_when_no_email_branding_is_set(
         assert radios[index]['value'] == option
 
 
+@pytest.mark.skip(reason="feature not in use")
 def test_show_email_branding_request_page_when_email_branding_is_set(
     client_request,
     mock_get_email_branding,
@@ -4352,6 +4354,7 @@ def test_show_email_branding_request_page_when_email_branding_is_set(
     (None, 'Can’t tell (domain is user.canada.ca)'),
     ('Test Organisation', 'Test Organisation'),
 ))
+@pytest.mark.skip(reason="feature not in use")
 def test_submit_email_branding_request(
     client_request,
     mocker,
@@ -4390,7 +4393,7 @@ def test_submit_email_branding_request(
             'http://localhost/services/596364a0-858e-42c8-9062-a8fe822260eb',
             '',
             '---',
-            'Current branding: GOV.UK',
+            'Current branding: default',
             'Branding requested: {}',
         ]).format(expected_organisation, requested_branding),
         subject='Email branding request - service one',

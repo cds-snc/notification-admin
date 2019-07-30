@@ -414,7 +414,7 @@ class Service(JSONModel):
     @cached_property
     def email_branding_name(self):
         if self.email_branding is None:
-            return 'GOV.UK'
+            return 'default'
         return self.email_branding['name']
 
     @property
