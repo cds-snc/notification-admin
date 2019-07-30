@@ -121,10 +121,10 @@
   {% endcall %}
 {%- endmacro %}
 
-{% macro edit_field(text, link, permissions=[]) -%}
+{% macro edit_field(text, link, permissions=[], attributes="") -%}
   {% call field(align='right') %}
     {% if not permissions or current_user.has_permissions(*permissions) %}
-      <a href="{{ link }}">{{ text }}</a>
+      <a {{attributes}} href="{{ link }}">{{ text }}</a>
     {% endif %}
   {% endcall %}
 {%- endmacro %}

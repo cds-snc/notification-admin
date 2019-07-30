@@ -1040,6 +1040,8 @@ def link_service_to_organisation(service_id):
 @user_has_permissions('manage_service')
 def branding_request(service_id):
 
+    abort(404)
+
     branding_type = 'govuk'
 
     if current_service.email_branding:
