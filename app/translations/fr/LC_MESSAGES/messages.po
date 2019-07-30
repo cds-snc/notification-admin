@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-26 10:30-0400\n"
+"POT-Creation-Date: 2019-07-30 13:47-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -223,6 +223,7 @@ msgid ""
 msgstr ""
 
 #: app/templates/views/features.html:11
+#: app/templates/views/features/text-messages.html:16
 msgid "Features"
 msgstr ""
 
@@ -248,8 +249,9 @@ msgstr ""
 msgid "You do not need technical knowledge to use Notification."
 msgstr ""
 
-#: app/templates/views/features.html:21 app/templates/views/register.html:14
-#: app/templates/views/signedout.html:24
+#: app/templates/views/features.html:21
+#: app/templates/views/features/text-messages.html:13
+#: app/templates/views/register.html:14 app/templates/views/signedout.html:24
 msgid "Create an account"
 msgstr ""
 
@@ -503,6 +505,7 @@ msgstr ""
 msgid "Integrate Notification with your web application or back office system."
 msgstr ""
 
+#: app/templates/views/features/text-messages.html:27
 #: app/templates/views/signedout.html:77
 msgid "Contact us"
 msgstr ""
@@ -663,6 +666,81 @@ msgstr ""
 
 #: app/templates/views/dashboard/dashboard.html:39
 msgid "Check templates used by month"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:5
+#: app/templates/views/features/text-messages.html:10
+msgid "Text messages"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:11
+msgid ""
+"Send thousands of free text messages to Canadian and international "
+"numbers with Notification."
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:13
+msgid "and try Notification for yourself"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:17
+msgid "Notification makes it easy to:"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:19
+msgid "create reusable text message templates"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:20
+msgid "personalize the content of your texts"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:21
+msgid "send and schedule bulk messages"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:22
+msgid "You can also"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:22
+msgid "integrate with our API"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:22
+msgid "to send text messages automatically"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:24
+msgid "Receive text messages"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:25
+msgid "Users can send messages to your service or reply to your texts."
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:26
+msgid ""
+"You can see and reply to the messages you receive, or set up your own "
+"automated processes to manage replies."
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:27
+msgid "to request a unique number for text message replies."
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:29
+msgid "Show people who sent your texts"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:30
+msgid ""
+"When you send a text message with Notification, the sender name tells "
+"people who it's from."
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:31
+msgid "You can change the text message sender name in your service settings."
 msgstr ""
 
 #: app/templates/views/templates/choose.html:26
