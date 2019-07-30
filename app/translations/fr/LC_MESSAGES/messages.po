@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-30 13:47-0400\n"
+"POT-Creation-Date: 2019-07-30 14:08-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -223,6 +223,7 @@ msgid ""
 msgstr ""
 
 #: app/templates/views/features.html:11
+#: app/templates/views/features/emails.html:16
 #: app/templates/views/features/text-messages.html:16
 msgid "Features"
 msgstr ""
@@ -250,6 +251,7 @@ msgid "You do not need technical knowledge to use Notification."
 msgstr ""
 
 #: app/templates/views/features.html:21
+#: app/templates/views/features/emails.html:13
 #: app/templates/views/features/text-messages.html:13
 #: app/templates/views/register.html:14 app/templates/views/signedout.html:24
 msgid "Create an account"
@@ -668,6 +670,70 @@ msgstr ""
 msgid "Check templates used by month"
 msgstr ""
 
+#: app/templates/views/features/emails.html:5
+#: app/templates/views/features/emails.html:10
+msgid "Emails"
+msgstr ""
+
+#: app/templates/views/features/emails.html:11
+msgid "Send an unlimited number of free emails with Notification."
+msgstr ""
+
+#: app/templates/views/features/emails.html:13
+msgid "and try Notification for yourself."
+msgstr ""
+
+#: app/templates/views/features/emails.html:17
+#: app/templates/views/features/text-messages.html:17
+msgid "Notification makes it easy to:"
+msgstr ""
+
+#: app/templates/views/features/emails.html:19
+msgid "create reusable email templates"
+msgstr ""
+
+#: app/templates/views/features/emails.html:20
+msgid "personalize the content of your emails"
+msgstr ""
+
+#: app/templates/views/features/emails.html:21
+#: app/templates/views/features/text-messages.html:21
+msgid "send and schedule bulk messages"
+msgstr ""
+
+#: app/templates/views/features/emails.html:23
+msgid "Your developers can also"
+msgstr ""
+
+#: app/templates/views/features/emails.html:23
+#: app/templates/views/features/text-messages.html:22
+msgid "integrate with our API"
+msgstr ""
+
+#: app/templates/views/features/emails.html:23
+msgid "to send emails automatically."
+msgstr ""
+
+#: app/templates/views/features/emails.html:25
+msgid "Add a reply-to address"
+msgstr ""
+
+#: app/templates/views/features/emails.html:26
+msgid ""
+"Notification lets you choose the email address where users can send their"
+" reply."
+msgstr ""
+
+#: app/templates/views/features/emails.html:27
+msgid ""
+"Emails with a reply-to address seem more trustworthy and are less likely "
+"to be labelled as spam."
+msgstr ""
+
+#: app/templates/views/features/emails.html:28
+msgid "You can add reply-to addresses in your service settings."
+msgstr ""
+
 #: app/templates/views/features/text-messages.html:5
 #: app/templates/views/features/text-messages.html:10
 msgid "Text messages"
@@ -683,10 +749,6 @@ msgstr ""
 msgid "and try Notification for yourself"
 msgstr ""
 
-#: app/templates/views/features/text-messages.html:17
-msgid "Notification makes it easy to:"
-msgstr ""
-
 #: app/templates/views/features/text-messages.html:19
 msgid "create reusable text message templates"
 msgstr ""
@@ -695,16 +757,8 @@ msgstr ""
 msgid "personalize the content of your texts"
 msgstr ""
 
-#: app/templates/views/features/text-messages.html:21
-msgid "send and schedule bulk messages"
-msgstr ""
-
 #: app/templates/views/features/text-messages.html:22
 msgid "You can also"
-msgstr ""
-
-#: app/templates/views/features/text-messages.html:22
-msgid "integrate with our API"
 msgstr ""
 
 #: app/templates/views/features/text-messages.html:22
