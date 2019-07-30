@@ -65,7 +65,14 @@
 
     this.activateStickyElements = function() {
       var oldClass = 'js-will-stick-at-bottom-when-scrolling';
-      var newClass = 'js-stick-at-bottom-when-scrolling';
+      var newClass = 'do-js-stick-at-bottom-when-scrolling';
+
+      // remove the sticky footer -> if ...
+      // no templates / folders items exist for the user
+      // see: https://github.com/cds-snc/notification-api/issues/152
+      if($('.template-list-item').length === 0 ){
+        $('.js-stick-at-bottom-when-scrolling').removeClass("js-stick-at-bottom-when-scrolling");
+      }
 
       this.states.forEach(state => {
         state.$el
