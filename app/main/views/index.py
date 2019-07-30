@@ -64,6 +64,7 @@ def verify_mobile():
 
 @main.route('/cookies')
 def cookies():
+    abort(404)
     return render_template('views/cookies.html')
 
 
