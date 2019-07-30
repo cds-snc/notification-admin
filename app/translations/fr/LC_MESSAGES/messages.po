@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-30 14:08-0400\n"
+"POT-Creation-Date: 2019-07-30 15:42-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -660,6 +660,46 @@ msgstr ""
 
 #: app/templates/views/two-factor.html:18
 msgid "We’ve sent you a text message with a security code."
+msgstr ""
+
+#: app/templates/views/api/index.html:8 app/templates/views/api/index.html:14
+msgid "API integration for developers"
+msgstr ""
+
+#: app/templates/views/api/index.html:19
+msgid "API keys"
+msgstr ""
+
+#: app/templates/views/api/index.html:22
+msgid "Safelist"
+msgstr ""
+
+#: app/templates/views/api/index.html:25
+msgid "Callbacks"
+msgstr ""
+
+#: app/templates/views/api/index.html:32
+msgid "Message log"
+msgstr ""
+
+#: app/templates/views/api/index.html:36
+msgid "Refresh"
+msgstr ""
+
+#: app/templates/views/api/index.html:43
+msgid "When you send messages via the API they’ll appear here."
+msgstr ""
+
+#: app/templates/views/api/index.html:46 app/templates/views/api/index.html:92
+msgid "Notification deletes messages after 7 days."
+msgstr ""
+
+#: app/templates/views/api/index.html:78
+msgid "View"
+msgstr ""
+
+#: app/templates/views/api/index.html:88
+msgid "Only showing the first 50 messages."
 msgstr ""
 
 #: app/templates/views/dashboard/dashboard.html:31
