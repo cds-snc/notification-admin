@@ -1,10 +1,9 @@
 from flask import current_app, redirect, render_template, session, url_for
-from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
 from app import billing_api_client, service_api_client
 from app.main import main
-from app.main.forms import CreateNhsServiceForm, CreateServiceForm
+from app.main.forms import CreateServiceForm
 from app.utils import email_safe, user_is_gov_user, user_is_logged_in
 
 
@@ -47,14 +46,10 @@ def _create_example_template(service_id):
 @user_is_logged_in
 @user_is_gov_user
 def add_service():
-    default_organisation_type = current_user.default_organisation_type
-    if default_organisation_type == 'nhs':
-        form = CreateNhsServiceForm()
-        default_organisation_type = None
-    else:
-        form = CreateServiceForm(
-            organisation_type=default_organisation_type
-        )
+    default_organisation_type = "central"
+    form = CreateServiceForm(
+        organisation_type=default_organisation_type
+    )
     heading = 'About your service'
 
     if form.validate_on_submit():
@@ -63,7 +58,7 @@ def add_service():
 
         service_id, error = _create_service(
             service_name,
-            default_organisation_type or form.organisation_type.data,
+            default_organisation_type,
             email_from,
             form,
         )
