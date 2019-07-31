@@ -415,16 +415,16 @@ def test_route_invalid_permissions(
             service_one)
 
 
-def test_should_show_whitelist_page(
+def test_should_show_safelist_page(
     client_request,
     mock_login,
     api_user_active,
     mock_get_service,
     mock_has_permissions,
-    mock_get_whitelist,
+    mock_get_safelist,
 ):
     page = client_request.get(
-        'main.whitelist',
+        'main.safelist',
         service_id=SERVICE_ONE_ID,
     )
     textboxes = page.find_all('input', {'type': 'text'})
@@ -434,9 +434,9 @@ def test_should_show_whitelist_page(
         assert textboxes[index]['value'] == value
 
 
-def test_should_update_whitelist(
+def test_should_update_safelist(
     client_request,
-    mock_update_whitelist,
+    mock_update_safelist,
 ):
     data = OrderedDict([
         ('email_addresses-1', 'test@example.com'),
@@ -446,23 +446,23 @@ def test_should_update_whitelist(
     ])
 
     client_request.post(
-        'main.whitelist',
+        'main.safelist',
         service_id=SERVICE_ONE_ID,
         _data=data,
     )
 
-    mock_update_whitelist.assert_called_once_with(SERVICE_ONE_ID, {
+    mock_update_safelist.assert_called_once_with(SERVICE_ONE_ID, {
         'email_addresses': ['test@example.com', 'test@example.com'],
         'phone_numbers': ['6502532222', '+4966921809']})
 
 
-def test_should_validate_whitelist_items(
+def test_should_validate_safelist_items(
     client_request,
-    mock_update_whitelist,
+    mock_update_safelist,
 ):
 
     page = client_request.post(
-        'main.whitelist',
+        'main.safelist',
         service_id=SERVICE_ONE_ID,
         _data=OrderedDict([
             ('email_addresses-1', 'abc'),
@@ -480,7 +480,7 @@ def test_should_validate_whitelist_items(
     assert jump_links[1].string.strip() == 'Enter valid phone numbers'
     assert jump_links[1]['href'] == '#phone_numbers'
 
-    assert mock_update_whitelist.called is False
+    assert mock_update_safelist.called is False
 
 
 @pytest.mark.parametrize('endpoint', [

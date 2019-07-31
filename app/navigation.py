@@ -316,7 +316,7 @@ class HeaderNavigation(Navigation):
         'view_template_version',
         'view_template_version_preview',
         'view_template_versions',
-        'whitelist',
+        'safelist',
     }
 
 
@@ -426,7 +426,7 @@ class MainNavigation(Navigation):
             'delivery_status_callback',
             'received_text_messages_callback',
             'revoke_api_key',
-            'whitelist',
+            'safelist',
         },
     }
 
@@ -875,7 +875,7 @@ class CaseworkNavigation(Navigation):
         'view_template_version',
         'view_template_version_preview',
         'view_template_versions',
-        'whitelist',
+        'safelist',
     }
 
 
@@ -1154,5 +1154,5 @@ class OrgNavigation(Navigation):
         'view_template_version',
         'view_template_version_preview',
         'view_template_versions',
-        'whitelist',
+        'safelist',
     }
