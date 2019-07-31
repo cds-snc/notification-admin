@@ -307,12 +307,12 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     def get_monthly_notification_stats(self, service_id, year):
         return self.get(url='/service/{}/notifications/monthly?year={}'.format(service_id, year))
 
-    def get_whitelist(self, service_id):
+    def get_safelist(self, service_id):
         return self.get(url='/service/{}/whitelist'.format(service_id))
 
     @cache.delete('service-{service_id}')
-    def update_whitelist(self, service_id, data):
-        return self.put(url='/service/{}/whitelist'.format(service_id), data=data)
+    def update_safelist(self, service_id, data):
+        return self.put(url='/service/{}/safelist'.format(service_id), data=data)
 
     def get_inbound_sms(self, service_id, user_number=''):
         # POST prevents the user phone number leaking into our logs

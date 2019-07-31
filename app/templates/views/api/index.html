@@ -19,7 +19,7 @@
       <a class="pill-separate-item" href="{{ url_for('.api_keys', service_id=current_service.id) }}">{{ _('API keys') }}</a>
     </div>
     <div class="column-one-third">
-      <a class="pill-separate-item" href="{{ url_for('.whitelist', service_id=current_service.id) }}">{{ _('Safelist') }}</a>
+      <a class="pill-separate-item" href="{{ url_for('.safelist', service_id=current_service.id) }}">{{ _('Safelist') }}</a>
     </div>
     <div class="column-one-third">
       <a class="pill-separate-item" href="{{ url_for(callbacks_link, service_id=current_service.id) }}">{{ _('Callbacks') }}</a>
