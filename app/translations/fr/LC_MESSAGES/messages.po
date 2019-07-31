@@ -824,7 +824,7 @@ msgid "to request a unique number for text message replies."
 msgstr ""
 
 #: app/templates/views/features/text-messages.html:29
-msgid "Show people who sent your texts"
+msgid "Show the sender of your texts"
 msgstr ""
 
 #: app/templates/views/features/text-messages.html:30
@@ -941,5 +941,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Edit team member"
+#~ msgstr ""
+
+#~ msgid "Show people who sent your texts"
 #~ msgstr ""
 
