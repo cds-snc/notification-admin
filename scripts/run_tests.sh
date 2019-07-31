@@ -20,7 +20,7 @@ function display_result {
   fi
 }
 
-# make test-requirements
+make test-requirements
 display_result $? 1 "Requirements check"
 
 flake8 .
