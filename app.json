@@ -1,8 +1,5 @@
 {
   "name": "notification-admin",
-  "scripts": {
-    "postdeploy": "scripts/version.sh"
-  },
   "env": {
     "ADMIN_CLIENT_SECRET": {
       "required": true
