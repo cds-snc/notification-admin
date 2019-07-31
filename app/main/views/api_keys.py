@@ -85,7 +85,7 @@ def create_api_key(service_id):
     form = CreateKeyForm(current_service.api_keys)
     form.key_type.choices = [
         (KEY_TYPE_NORMAL, 'Live – sends to anyone'),
-        (KEY_TYPE_TEAM, 'Team and whitelist – limits who you can send to'),
+        (KEY_TYPE_TEAM, 'Team and safelist – limits who you can send to'),
         (KEY_TYPE_TEST, 'Test – pretends to send messages'),
     ]
     disabled_options, option_hints = [], {}
