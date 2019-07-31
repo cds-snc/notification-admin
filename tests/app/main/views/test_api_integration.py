@@ -33,7 +33,7 @@ def test_should_show_api_page(
         'main.api_integration',
         service_id=SERVICE_ONE_ID,
     )
-    assert page.h1.string.strip() == 'API integration'
+    assert page.h1.string.strip() == 'API integration for developers'
     rows = page.find_all('details')
     assert len(rows) == 5
     for index, row in enumerate(rows):
