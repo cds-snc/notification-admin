@@ -8,8 +8,7 @@
   "scripts": {
     "test": "gulp lint && jest --config tests/javascripts/jest.config.js tests/javascripts",
     "build": "gulp",
-    "watch": "gulp watch",
-    "heroku-postbuild": "npm build"
+    "watch": "gulp watch"
   },
   "repository": {
     "type": "git",

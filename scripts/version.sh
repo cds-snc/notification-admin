@@ -1,0 +1,1 @@
+make generate-version-file
