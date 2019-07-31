@@ -1,8 +1,5 @@
 {
   "name": "notification-admin",
-  "scripts": {
-    "postdeploy": "scripts/heroku.sh"
-  },
   "env": {
     "ADMIN_CLIENT_SECRET": {
       "required": true
@@ -36,6 +33,9 @@
     },
     "WERKZEUG_DEBUG_PIN": {
       "required": true
+    },
+    "HEROKU_APP_NAME": {
+      "required": true
     }
   },
   "formation": {},
@@ -43,6 +43,9 @@
   "buildpacks": [
     {
       "url": "heroku/python"
+    },
+    {
+      "url": "heroku/nodejs"
     }
   ],
   "stack": "heroku-18"
