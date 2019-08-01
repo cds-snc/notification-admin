@@ -715,10 +715,7 @@ msgstr "Vous n’avez pas reçu de message texte?"
 
 #: app/templates/views/two-factor.html:18
 msgid "We’ve sent you a text message with a security code."
-<<<<<<< HEAD
 msgstr "Nous vous avons envoyé un code de sécurité par message texte."
-=======
-msgstr ""
 
 #: app/templates/views/api/index.html:8 app/templates/views/api/index.html:14
 msgid "API integration for developers"
