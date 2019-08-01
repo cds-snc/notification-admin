@@ -4,14 +4,11 @@ from unittest.mock import patch
 from urllib.parse import parse_qs, urlparse
 
 import pytest
-from dotenv import load_dotenv
 from flask import url_for
 from flask.testing import FlaskClient
 from flask_login import login_user
 
 from app.models.user import User
-
-load_dotenv()
 
 
 class TestClient(FlaskClient):
