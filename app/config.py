@@ -5,6 +5,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+if os.environ.get('VCAP_APPLICATION'):
+    # on cloudfoundry, config is a json blob in VCAP_APPLICATION - unpack it, and populate
+    # standard environment variables from it
+    from app.cloudfoundry_config import extract_cloudfoundry_config
+    extract_cloudfoundry_config()
+
+
 class Config(object):
     LANGUAGES = ['en', 'fr']
     ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET')
@@ -98,11 +105,30 @@ class Development(Config):
     REDIS_URL = 'redis://localhost:6379/0'
 
 
+class Test(Development):
+    DEBUG = True
+    TESTING = True
+    STATSD_ENABLED = False
+    WTF_CSRF_ENABLED = False
+    MOU_BUCKET_NAME = 'test-mou'
+    NOTIFY_ENVIRONMENT = 'test'
+    ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET', 'dev-notify-secret-key')
+    API_HOST_NAME = os.environ.get('API_HOST_NAME', 'http://localhost:6011')
+    DANGEROUS_SALT = os.environ.get('DANGEROUS_SALT', 'dev-notify-salt')
+    SECRET_KEY = 'dev-notify-secret-key'
+    TEMPLATE_PREVIEW_API_HOST = 'http://localhost:9999'
+    TEMPLATE_PREVIEW_API_KEY = 'dev-notify-secret-key'
+    ANTIVIRUS_API_HOST = 'https://test-antivirus'
+    ANTIVIRUS_API_KEY = 'test-antivirus-secret'
+    ASSET_DOMAIN = 'static.example.com'
+    ASSET_PATH = 'https://static.example.com/'
+
+
 class Live(Config):
     SHOW_STYLEGUIDE = False
     HEADER_COLOUR = '#005EA5'  # $govuk-blue
     HTTP_PROTOCOL = 'https'
-    STATSD_ENABLED = False
+    STATSD_ENABLED = True
     MOU_BUCKET_NAME = 'notifications.service.gov.uk-mou'
     NOTIFY_ENVIRONMENT = 'live'
     CHECK_PROXY_HEADER = False
@@ -111,4 +137,5 @@ class Live(Config):
 configs = {
     'development': Development,
     'production': Live,
+    'test': Test
 }
