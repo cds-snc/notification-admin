@@ -1,4 +1,8 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 if os.environ.get('VCAP_APPLICATION'):
     # on cloudfoundry, config is a json blob in VCAP_APPLICATION - unpack it, and populate
