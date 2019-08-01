@@ -380,7 +380,7 @@ class User(JSONModel, UserMixin):
 
     def send_already_registered_email(self):
         user_api_client.send_already_registered_email(self.id, self.email_address)
-    
+
     def send_support_email(self, message):
         user_api_client.send_support_email(self.id, message)
 

@@ -5,7 +5,6 @@ from flask import abort, redirect, render_template, request, session, url_for
 from flask_login import current_user
 
 from app import convert_to_boolean, current_service, service_api_client
-from app.extensions import zendesk_client
 from app.main import main
 from app.main.forms import Feedback, Problem, SupportType, Triage
 
@@ -90,7 +89,6 @@ def feedback(ticket_type):
 
     if form.validate_on_submit():
         user_email = form.email_address.data
-        user_name = form.name.data or None
         if current_service:
             service_string = 'Service: "{name}"\n{url}\n'.format(
                 name=current_service.name,
@@ -108,14 +106,6 @@ def feedback(ticket_type):
         # send email here
         current_user.send_support_email(feedback_msg)
 
-        #zendesk_client.create_ticket(
-        #    subject='Notification feedback',
-        #    message=feedback_msg,
-        #    ticket_type=ticket_type,
-        #    p1=out_of_hours_emergency,
-        #    user_email=user_email,
-        #    user_name=user_name
-        #)
         return redirect(url_for(
             '.thanks',
             out_of_hours_emergency=out_of_hours_emergency,
