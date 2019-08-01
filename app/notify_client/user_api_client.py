@@ -19,6 +19,7 @@ class UserApiClient(NotifyAdminAPIClient):
     def init_app(self, app):
         super().init_app(app)
         self.admin_url = app.config['ADMIN_BASE_URL']
+        self.contact_email = app.config['CONTACT_EMAIL']
 
     def register_user(self, name, email_address, mobile_number, password, auth_type):
         data = {
@@ -111,7 +112,7 @@ class UserApiClient(NotifyAdminAPIClient):
         self.post(endpoint, data=data)
 
     def send_support_email(self, user_id, message):
-        data = {'email': "bethany.dunfield@cds-snc.ca", 'message': message}
+        data = {'email': self.contact_email, 'message': message}
         endpoint = '/user/{0}/support-email'.format(user_id)
         self.post(endpoint, data=data)
 
