@@ -789,11 +789,6 @@ msgstr ""
 msgid "are included in the safelist automatically."
 msgstr ""
 
->>>>>>> master
-#: app/templates/views/dashboard/dashboard.html:31
-msgid "Check messages sent per month"
-msgstr "Voir les messages envoyés par mois"
-
 #: app/templates/views/dashboard/dashboard.html:39
 msgid "Voir les modèles utilisés par mois"
 msgstr "Voir les modèles utilisés par mois"
