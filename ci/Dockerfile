@@ -21,4 +21,6 @@ RUN npm run build
 
 RUN make generate-version-file
 
-CMD ["flask", "run", "-p", "6012", "--host=0.0.0.0"]
+ENV PORT=6012
+
+CMD ["sh", "-c", "gunicorn -c gunicorn_config.py application"]
