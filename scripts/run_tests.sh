@@ -21,7 +21,7 @@ function display_result {
 }
 
 # make test-requirements
-display_result $? 1 "Requirements check"
+# display_result $? 1 "Requirements check"
 
 flake8 .
 display_result $? 1 "Code style check"

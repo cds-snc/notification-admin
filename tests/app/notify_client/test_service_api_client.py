@@ -347,7 +347,7 @@ def test_returns_value_from_cache(
     (service_api_client, 'suspend_service', [SERVICE_ONE_ID], {}),
     (service_api_client, 'resume_service', [SERVICE_ONE_ID], {}),
     (service_api_client, 'remove_user_from_service', [SERVICE_ONE_ID, ''], {}),
-    (service_api_client, 'update_whitelist', [SERVICE_ONE_ID, {}], {}),
+    (service_api_client, 'update_safelist', [SERVICE_ONE_ID, {}], {}),
     (service_api_client, 'create_service_inbound_api', [SERVICE_ONE_ID] + [''] * 3, {}),
     (service_api_client, 'update_service_inbound_api', [SERVICE_ONE_ID] + [''] * 4, {}),
     (service_api_client, 'add_reply_to_email_address', [SERVICE_ONE_ID, ''], {}),
@@ -388,29 +388,29 @@ def test_deletes_service_cache(
         'service-{}-templates'.format(SERVICE_ONE_ID),
     ]),
     ('update_service_template', [FAKE_TEMPLATE_ID, 'foo', 'sms', 'bar', SERVICE_ONE_ID], [
-        'service-{}-templates'.format(SERVICE_ONE_ID),
-        'template-{}-version-None'.format(FAKE_TEMPLATE_ID),
         'template-{}-versions'.format(FAKE_TEMPLATE_ID),
+        'template-{}-version-None'.format(FAKE_TEMPLATE_ID),
+        'service-{}-templates'.format(SERVICE_ONE_ID),
     ]),
     ('redact_service_template', [SERVICE_ONE_ID, FAKE_TEMPLATE_ID], [
-        'service-{}-templates'.format(SERVICE_ONE_ID),
-        'template-{}-version-None'.format(FAKE_TEMPLATE_ID),
         'template-{}-versions'.format(FAKE_TEMPLATE_ID),
+        'template-{}-version-None'.format(FAKE_TEMPLATE_ID),
+        'service-{}-templates'.format(SERVICE_ONE_ID),
     ]),
     ('update_service_template_sender', [SERVICE_ONE_ID, FAKE_TEMPLATE_ID, 'foo'], [
-        'service-{}-templates'.format(SERVICE_ONE_ID),
-        'template-{}-version-None'.format(FAKE_TEMPLATE_ID),
         'template-{}-versions'.format(FAKE_TEMPLATE_ID),
+        'template-{}-version-None'.format(FAKE_TEMPLATE_ID),
+        'service-{}-templates'.format(SERVICE_ONE_ID),
     ]),
     ('update_service_template_postage', [SERVICE_ONE_ID, FAKE_TEMPLATE_ID, 'first'], [
-        'service-{}-templates'.format(SERVICE_ONE_ID),
-        'template-{}-version-None'.format(FAKE_TEMPLATE_ID),
         'template-{}-versions'.format(FAKE_TEMPLATE_ID),
+        'template-{}-version-None'.format(FAKE_TEMPLATE_ID),
+        'service-{}-templates'.format(SERVICE_ONE_ID),
     ]),
     ('delete_service_template', [SERVICE_ONE_ID, FAKE_TEMPLATE_ID], [
-        'service-{}-templates'.format(SERVICE_ONE_ID),
-        'template-{}-version-None'.format(FAKE_TEMPLATE_ID),
         'template-{}-versions'.format(FAKE_TEMPLATE_ID),
+        'template-{}-version-None'.format(FAKE_TEMPLATE_ID),
+        'service-{}-templates'.format(SERVICE_ONE_ID),
     ]),
 ])
 def test_deletes_caches_when_modifying_templates(

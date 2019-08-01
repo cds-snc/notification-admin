@@ -2414,7 +2414,7 @@ def mock_get_usage(mocker, service_one, fake_uuid):
         ]
 
     return mocker.patch(
-        'app.billing_api_client.get_service_usage_ft', side_effect=_get_usage)
+        'app.billing_api_client.get_service_usage', side_effect=_get_usage)
 
 
 @pytest.fixture(scope='function')
@@ -2508,7 +2508,7 @@ def mock_get_billable_units(mocker):
         ]
 
     return mocker.patch(
-        'app.billing_api_client.get_billable_units_ft', side_effect=_get_usage)
+        'app.billing_api_client.get_billable_units', side_effect=_get_usage)
 
 
 @pytest.fixture(scope='function')
@@ -2526,7 +2526,7 @@ def mock_get_future_usage(mocker, service_one, fake_uuid):
         ]
 
     return mocker.patch(
-        'app.billing_api_client.get_service_usage_ft', side_effect=_get_usage)
+        'app.billing_api_client.get_service_usage', side_effect=_get_usage)
 
 
 @pytest.fixture(scope='function')
@@ -2535,7 +2535,7 @@ def mock_get_future_billable_units(mocker):
         return []
 
     return mocker.patch(
-        'app.billing_api_client.get_billable_units_ft', side_effect=_get_usage)
+        'app.billing_api_client.get_billable_units', side_effect=_get_usage)
 
 
 @pytest.fixture(scope='function')
@@ -2726,22 +2726,22 @@ def mock_update_email_branding(mocker):
 
 
 @pytest.fixture(scope='function')
-def mock_get_whitelist(mocker):
-    def _get_whitelist(service_id):
+def mock_get_safelist(mocker):
+    def _get_safelist(service_id):
         return {
             'email_addresses': ['test@example.com'],
             'phone_numbers': ['6502532222']
         }
 
     return mocker.patch(
-        'app.service_api_client.get_whitelist', side_effect=_get_whitelist
+        'app.service_api_client.get_safelist', side_effect=_get_safelist
     )
 
 
 @pytest.fixture(scope='function')
-def mock_update_whitelist(mocker):
+def mock_update_safelist(mocker):
     return mocker.patch(
-        'app.service_api_client.update_whitelist'
+        'app.service_api_client.update_safelist'
     )
 
 

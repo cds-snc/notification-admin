@@ -7,7 +7,6 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-from urllib.parse import urlparse
 
 import ago
 import dateutil
@@ -415,15 +414,7 @@ def email_or_sms_not_enabled(template_type, permissions):
 
 
 def get_logo_cdn_domain():
-    parsed_uri = urlparse(current_app.config['ADMIN_BASE_URL'])
-
-    if parsed_uri.netloc.startswith('localhost'):
-        return 'static-logos.notify.tools'
-
-    subdomain = parsed_uri.hostname.split('.')[0]
-    domain = parsed_uri.netloc[len(subdomain + '.'):]
-
-    return "static-logos.{}".format(domain)
+    return "{}.{}".format(current_app.config['LOGO_UPLOAD_BUCKET_NAME'], current_app.config['ASSET_DOMAIN'])
 
 
 def parse_filter_args(filter_dict):

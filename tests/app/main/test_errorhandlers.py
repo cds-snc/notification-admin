@@ -45,7 +45,7 @@ def test_csrf_returns_400(logged_in_client, mocker):
     csrf_err = CSRFError('400 Bad Request: The CSRF tokens do not match.')
     mocker.patch('app.main.views.index.render_template', side_effect=csrf_err)
 
-    response = logged_in_client.get('/cookies')
+    response = logged_in_client.get('/features/terms')
 
     assert response.status_code == 400
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
@@ -56,10 +56,10 @@ def test_csrf_redirects_to_sign_in_page_if_not_signed_in(client, mocker):
     csrf_err = CSRFError('400 Bad Request: The CSRF tokens do not match.')
     mocker.patch('app.main.views.index.render_template', side_effect=csrf_err)
 
-    response = client.get('/cookies')
+    response = client.get('/accounts')
 
     assert response.status_code == 302
-    assert response.location == url_for('main.sign_in', next='/cookies', _external=True)
+    assert response.location == url_for('main.sign_in', next='/accounts', _external=True)
 
 
 def test_405_returns_something_went_wrong_page(client, mocker):

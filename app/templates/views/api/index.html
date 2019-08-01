@@ -5,45 +5,45 @@
 {% from "components/message-count-label.html" import message_count_label %}
 
 {% block service_page_title %}
-  API integration
+  {{ _('API integration for developers') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <h1 class="heading-medium bottom-gutter-3-2">
-    API integration
+    {{ _('API integration for developers') }}
   </h1>
 
   <nav class="grid-row bottom-gutter-1-2">
     <div class="column-one-third">
-      <a class="pill-separate-item" href="{{ url_for('.api_keys', service_id=current_service.id) }}">API keys</a>
+      <a class="pill-separate-item" href="{{ url_for('.api_keys', service_id=current_service.id) }}">{{ _('API keys') }}</a>
     </div>
     <div class="column-one-third">
-      <a class="pill-separate-item" href="{{ url_for('.whitelist', service_id=current_service.id) }}">Whitelist</a>
+      <a class="pill-separate-item" href="{{ url_for('.safelist', service_id=current_service.id) }}">{{ _('Safelist') }}</a>
     </div>
     <div class="column-one-third">
-      <a class="pill-separate-item" href="{{ url_for(callbacks_link, service_id=current_service.id) }}">Callbacks</a>
+      <a class="pill-separate-item" href="{{ url_for(callbacks_link, service_id=current_service.id) }}">{{ _('Callbacks') }}</a>
     </div>
   </nav>
 
   <div class="grid-row">
     <div class="column-half">
       <h2 class="heading-small">
-        Message log
+        {{ _('Message log') }}
       </h2>
     </div>
     <div class="column-half align-with-heading-copy-right">
-      <a href="{{ url_for('.api_integration', service_id=current_service.id) }}">Refresh</a>
+      <a href="{{ url_for('.api_integration', service_id=current_service.id) }}">{{ _('Refresh') }}</a>
     </div>
   </div>
   <div class="api-notifications">
     {% if not api_notifications.notifications %}
       <div class="api-notifications-item">
         <p class="api-notifications-item-meta">
-          When you send messages via the API they’ll appear here.
+          {{ _('When you send messages via the API they’ll appear here.') }}
         </p>
         <p class="api-notifications-item-meta">
-          Notification deletes messages after 7 days.
+          {{ _('Notification deletes messages after 7 days.') }}
         </p>
       </div>
     {% endif %}
@@ -75,7 +75,7 @@
               {% endif %}
             {% endfor %}
             {% if notification.status not in ('pending-virus-check', 'virus-scan-failed') %}
-              <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">View {{ message_count_label(1, notification.template.template_type, suffix='') }}</a>
+              <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">{{ _('View') }} {{ message_count_label(1, notification.template.template_type, suffix='') }}</a>
             {% endif %}
           </dl>
         </div>
@@ -85,11 +85,11 @@
       <div class="api-notifications-item">
         {% if api_notifications.notifications|length == 50 %}
           <p class="api-notifications-item-meta">
-            Only showing the first 50 messages.
+            {{ _('Only showing the first 50 messages.') }}
           </p>
         {% endif %}
         <p class="api-notifications-item-meta">
-          Notification deletes messages after 7 days.
+          {{ _('Notification deletes messages after 7 days.') }}
         </p>
       </div>
     {% endif %}

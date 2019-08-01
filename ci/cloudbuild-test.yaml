@@ -26,7 +26,7 @@ steps:
     - --key=env
 - name: "gcr.io/$PROJECT_ID/testing-env-admin:latest"
   entrypoint: /bin/sh
-  args: ["-c", "sh /workspace/scripts/bootstrap.sh && make test"]
+  args: ["-c", "/workspace/scripts/bootstrap.sh && make test"]
   env:
     - 'API_HOST_NAME=http://api:6011'
 options:

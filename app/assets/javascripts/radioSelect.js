@@ -69,27 +69,39 @@
       let render = (state, data) => {
         $component.html(states[state].render(data));
       };
-      let choices = $('label', $component).toArray().map(function(element) {
-        let $element = $(element);
-        return {
-          'id': $element.attr('for'),
-          'label': $.trim($element.text()),
-          'value': $element.prev('input').attr('value')
-        };
-      });
-      let categories = $component.data('categories').split(',');
+
+      let data = {};
+
+      // Maximum seems to be four days - generate all ranges for those hours
+      for (i = 0; i < 4; i++){ 
+        let date = (i == 0 ? moment().add(i, 'days') : moment().add(i, 'days').startOf("day"));
+        let category = moment(date).calendar().split("at")[0];
+
+        data[category] = [];
+
+        let remaining = (i == 0 ? 24 - date.hour() : 24);
+
+        for (j = (i == 0 ? 1 : 0); j < remaining; j++){
+          let hour = moment(date).add(j,"hours").startOf("hour");
+          data[category].push(
+            {
+              id: hour.calendar(),
+              label: hour.calendar(),
+              value: hour.utc().format().replace("Z","")
+            }
+          );
+        }
+      }
+
       let name = $component.find('input').eq(0).attr('name');
 
       $component
         .on('click', '.js-category-button', function(event) {
 
           event.preventDefault();
-          let wordsInDay = $(this).attr('value').split(' ');
-          let day = wordsInDay[wordsInDay.length - 1].toLowerCase();
+          let category = $(this).attr('value');
           render('choose', {
-            'choices': choices.filter(
-              element => element.label.toLowerCase().indexOf(day) > -1
-            ),
+            'choices': data[category],
             'name': name
           });
           focusSelected();
@@ -103,7 +115,7 @@
           event.preventDefault();
           let value = $('input', this).attr('value');
           render('chosen', {
-            'choices': choices.filter(
+            'choices': Object.values(data).flat().filter(
               element => element.value == value
             ),
             'name': name
@@ -121,7 +133,7 @@
           event.preventDefault();
           let value = $(this).attr('value');
           render('chosen', {
-            'choices': choices.filter(
+            'choices': Object.values(data).flat().filter(
               element => element.value == value
             ),
             'name': name
@@ -133,7 +145,7 @@
 
           event.preventDefault();
           render('initial', {
-            'categories': categories,
+            'categories': Object.keys(data),
             'name': name
           });
           focusSelected();
@@ -141,7 +153,7 @@
         });
 
       render('initial', {
-        'categories': categories,
+        'categories': Object.keys(data),
         'name': name
       });
 

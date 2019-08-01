@@ -4,6 +4,7 @@ from io import StringIO
 from pathlib import Path
 
 import pytest
+from flask import current_app
 from freezegun import freeze_time
 
 from app import format_datetime_relative
@@ -297,13 +298,7 @@ def test_generate_notifications_csv_calls_twice_if_next_link(
 def test_get_cdn_domain_on_localhost(client, mocker):
     mocker.patch.dict('app.current_app.config', values={'ADMIN_BASE_URL': 'http://localhost:6012'})
     domain = get_logo_cdn_domain()
-    assert domain == 'static-logos.notify.tools'
-
-
-def test_get_cdn_domain_on_non_localhost(client, mocker):
-    mocker.patch.dict('app.current_app.config', values={'ADMIN_BASE_URL': 'https://some.admintest.com'})
-    domain = get_logo_cdn_domain()
-    assert domain == 'static-logos.admintest.com'
+    assert domain == "{}.{}".format(current_app.config['LOGO_UPLOAD_BUCKET_NAME'], current_app.config['ASSET_DOMAIN'])
 
 
 @pytest.mark.parametrize('time, human_readable_datetime', [

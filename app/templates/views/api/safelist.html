@@ -8,7 +8,7 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Whitelist
+  {{ _('Safelist') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -16,33 +16,33 @@
   {% if form.email_addresses.errors or form.phone_numbers.errors %}
     {% call banner_wrapper(type='dangerous') %}
       <h1 class='banner-title'>
-        There was a problem with your whitelist
+        {{ _('There was a problem with your safelist') }}
       </h1>
-      <p>Fix these errors:</p>
+      <p>{{ _('Fix these errors:') }}</p>
       <ul>
         {% if form.email_addresses.errors %}
           <li>
-            <a href="#{{ form.email_addresses.name }}">Enter valid email addresses</a>
+            <a href="#{{ form.email_addresses.name }}">{{ _('Enter valid email addresses') }} </a>
           </li>
         {% endif %}
         {% if form.phone_numbers.errors %}
           <li>
-            <a href="#{{ form.phone_numbers.name }}">Enter valid phone numbers</a>
+            <a href="#{{ form.phone_numbers.name }}">{{ _('Enter valid phone numbers') }}</a>
           </li>
         {% endif %}
       </ul>
     {% endcall %}
   {% else %}
     {{ page_header(
-      'Whitelist',
+      'Safelist',
       back_link=url_for('main.api_integration', service_id=current_service.id)
     ) }}
   {% endif %}
 
   <p>
-    You and members of
-    <a href="{{ url_for('main.manage_users', service_id=current_service.id) }}">your team</a>
-    are included in the whitelist automatically.
+    {{ _('You and members of') }}
+    <a href="{{ url_for('main.manage_users', service_id=current_service.id) }}">{{ _('your team') }}</a>
+    {{ _('are included in the safelist automatically.') }}
   </p>
 
   {% call form_wrapper() %}

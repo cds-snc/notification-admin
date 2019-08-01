@@ -14,6 +14,7 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY')
     DANGEROUS_SALT = os.environ.get('DANGEROUS_SALT')
     ZENDESK_API_KEY = os.environ.get('ZENDESK_API_KEY')
+    CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'CDSPlatform.PlateformesSNC@tbs-sct.gc.ca')
 
     # if we're not on cloudfoundry, we can get to this app from localhost. but on cloudfoundry its different
     ADMIN_BASE_URL = os.environ.get('ADMIN_BASE_URL', 'http://localhost:6012')
@@ -65,12 +66,12 @@ class Config(object):
     CSV_UPLOAD_BUCKET_NAME = os.getenv('CSV_UPLOAD_BUCKET_NAME', 'development-notification-canada-ca-csv-upload')
     ACTIVITY_STATS_LIMIT_DAYS = 7
     TEST_MESSAGE_FILENAME = 'Report'
-
     STATSD_ENABLED = False
     STATSD_HOST = "statsd.hostedgraphite.com"
     STATSD_PORT = 8125
     NOTIFY_ENVIRONMENT = 'development'
-    LOGO_UPLOAD_BUCKET_NAME = 'public-logos-local'
+    LOGO_UPLOAD_BUCKET_NAME = os.getenv('ASSET_UPLOAD_BUCKET_NAME', 'development-notification-canada-ca-asset-upload')
+    ASSET_DOMAIN = os.getenv('ASSET_DOMAIN', 's3.amazonaws.com')
     MOU_BUCKET_NAME = 'local-mou'
     ROUTE_SECRET_KEY_1 = os.environ.get('ROUTE_SECRET_KEY_1', '')
     ROUTE_SECRET_KEY_2 = os.environ.get('ROUTE_SECRET_KEY_2', '')
@@ -78,8 +79,6 @@ class Config(object):
 
     REDIS_URL = os.environ.get('REDIS_URL')
     REDIS_ENABLED = os.environ.get('REDIS_ENABLED') == '1'
-
-    ASSET_DOMAIN = ''
     ASSET_PATH = '/static/'
 
     NOTIFY_SERVICE_ID = 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553'
@@ -91,19 +90,13 @@ class Development(Config):
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
     STATSD_ENABLED = False
-    CSV_UPLOAD_BUCKET_NAME = os.getenv('CSV_UPLOAD_BUCKET_NAME', 'development-notification-canada-ca-csv-upload')
-    LOGO_UPLOAD_BUCKET_NAME = 'public-logos-tools'
     MOU_BUCKET_NAME = 'notify.tools-mou'
-
     ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET', 'dev-notify-secret-key')
     API_HOST_NAME = os.environ.get('API_HOST_NAME', 'http://localhost:6011')
     DANGEROUS_SALT = os.environ.get('DANGEROUS_SALT', 'dev-notify-salt')
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-notify-secret-key')
     ANTIVIRUS_API_HOST = 'http://localhost:6016'
     ANTIVIRUS_API_KEY = 'test-key'
-
-    ASSET_PATH = '/static/'
-
     REDIS_URL = 'redis://localhost:6379/0'
 
 
@@ -112,8 +105,6 @@ class Test(Development):
     TESTING = True
     STATSD_ENABLED = False
     WTF_CSRF_ENABLED = False
-    CSV_UPLOAD_BUCKET_NAME = os.getenv('CSV_UPLOAD_BUCKET_NAME', 'development-notification-canada-ca-csv-upload')
-    LOGO_UPLOAD_BUCKET_NAME = 'public-logos-test'
     MOU_BUCKET_NAME = 'test-mou'
     NOTIFY_ENVIRONMENT = 'test'
     ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET', 'dev-notify-secret-key')
@@ -124,7 +115,6 @@ class Test(Development):
     TEMPLATE_PREVIEW_API_KEY = 'dev-notify-secret-key'
     ANTIVIRUS_API_HOST = 'https://test-antivirus'
     ANTIVIRUS_API_KEY = 'test-antivirus-secret'
-
     ASSET_DOMAIN = 'static.example.com'
     ASSET_PATH = 'https://static.example.com/'
 
@@ -133,13 +123,9 @@ class Preview(Config):
     HTTP_PROTOCOL = 'https'
     HEADER_COLOUR = '#F499BE'  # $baby-pink
     STATSD_ENABLED = True
-    CSV_UPLOAD_BUCKET_NAME = os.getenv('CSV_UPLOAD_BUCKET_NAME', 'development-notification-canada-ca-csv-upload')
-    LOGO_UPLOAD_BUCKET_NAME = 'public-logos-preview'
     MOU_BUCKET_NAME = 'notify.works-mou'
     NOTIFY_ENVIRONMENT = 'preview'
     CHECK_PROXY_HEADER = False
-    ASSET_DOMAIN = 'static.notify.works'
-    ASSET_PATH = 'https://static.notify.works/'
 
 
 class Staging(Config):
@@ -147,13 +133,9 @@ class Staging(Config):
     HTTP_PROTOCOL = 'https'
     HEADER_COLOUR = '#6F72AF'  # $mauve
     STATSD_ENABLED = True
-    CSV_UPLOAD_BUCKET_NAME = os.getenv('CSV_UPLOAD_BUCKET_NAME', 'development-notification-canada-ca-csv-upload')
-    LOGO_UPLOAD_BUCKET_NAME = 'public-logos-staging'
     MOU_BUCKET_NAME = 'staging-notify.works-mou'
     NOTIFY_ENVIRONMENT = 'staging'
     CHECK_PROXY_HEADER = False
-    ASSET_DOMAIN = 'static.staging-notify.works'
-    ASSET_PATH = 'https://static.staging-notify.works/'
 
 
 class Live(Config):
@@ -161,13 +143,9 @@ class Live(Config):
     HEADER_COLOUR = '#005EA5'  # $govuk-blue
     HTTP_PROTOCOL = 'https'
     STATSD_ENABLED = True
-    CSV_UPLOAD_BUCKET_NAME = os.getenv('CSV_UPLOAD_BUCKET_NAME', 'development-notification-canada-ca-csv-upload')
-    LOGO_UPLOAD_BUCKET_NAME = 'public-logos-production'
     MOU_BUCKET_NAME = 'notifications.service.gov.uk-mou'
     NOTIFY_ENVIRONMENT = 'live'
     CHECK_PROXY_HEADER = False
-    ASSET_DOMAIN = 'static.notifications.service.gov.uk'
-    ASSET_PATH = 'https://static.notifications.service.gov.uk/'
 
 
 class CloudFoundryConfig(Config):
