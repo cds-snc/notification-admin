@@ -99,6 +99,7 @@ def test_get_feedback_page(client, ticket_type, expected_status_code):
     ),
 ])
 @freeze_time('2016-12-12 12:00:00.000000')
+@pytest.mark.skip(reason="feature not in use")
 def test_get_feedback_page_with_prefilled_body(
     client_request,
     mocker,
@@ -131,6 +132,7 @@ def test_get_feedback_page_with_prefilled_body(
 
 @freeze_time('2016-12-12 12:00:00.000000')
 @pytest.mark.parametrize('ticket_type', [PROBLEM_TICKET_TYPE, QUESTION_TICKET_TYPE])
+@pytest.mark.skip(reason="feature not in use")
 def test_passed_non_logged_in_user_details_through_flow(client, mocker, ticket_type):
     mock_post = mocker.patch('app.main.views.feedback.zendesk_client.create_ticket')
 
@@ -164,6 +166,7 @@ def test_passed_non_logged_in_user_details_through_flow(client, mocker, ticket_t
     {'feedback': 'blah', 'name': 'Ignored', 'email_address': 'ignored@email.com'}
 ])
 @pytest.mark.parametrize('ticket_type', [PROBLEM_TICKET_TYPE, QUESTION_TICKET_TYPE])
+@pytest.mark.skip(reason="feature not in use")
 def test_passes_user_details_through_flow(
     client_request,
     mocker,
@@ -293,6 +296,7 @@ def test_email_address_must_be_valid_if_provided_to_support_form(
     (QUESTION_TICKET_TYPE, 'yes', False, False),
 
 ])
+@pytest.mark.skip(reason="feature not in use")
 def test_urgency(
     client_request,
     mocker,

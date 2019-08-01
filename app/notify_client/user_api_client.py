@@ -19,6 +19,7 @@ class UserApiClient(NotifyAdminAPIClient):
     def init_app(self, app):
         super().init_app(app)
         self.admin_url = app.config['ADMIN_BASE_URL']
+        self.contact_email = app.config['CONTACT_EMAIL']
 
     def register_user(self, name, email_address, mobile_number, password, auth_type):
         data = {
@@ -108,6 +109,11 @@ class UserApiClient(NotifyAdminAPIClient):
     def send_already_registered_email(self, user_id, to):
         data = {'email': to}
         endpoint = '/user/{0}/email-already-registered'.format(user_id)
+        self.post(endpoint, data=data)
+
+    def send_support_email(self, user_id, message):
+        data = {'email': self.contact_email, 'message': message}
+        endpoint = '/user/{0}/support-email'.format(user_id)
         self.post(endpoint, data=data)
 
     @cache.delete('user-{user_id}')
