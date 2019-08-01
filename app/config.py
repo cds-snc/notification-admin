@@ -5,13 +5,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-if os.environ.get('VCAP_APPLICATION'):
-    # on cloudfoundry, config is a json blob in VCAP_APPLICATION - unpack it, and populate
-    # standard environment variables from it
-    from app.cloudfoundry_config import extract_cloudfoundry_config
-    extract_cloudfoundry_config()
-
-
 class Config(object):
     LANGUAGES = ['en', 'fr']
     ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET')
@@ -87,10 +80,10 @@ class Config(object):
     ASSET_PATH = '/static/'
 
     NOTIFY_SERVICE_ID = 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553'
+    NOTIFY_LOG_PATH = ''
 
 
 class Development(Config):
-    NOTIFY_LOG_PATH = 'application.log'
     DEBUG = True
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
@@ -105,74 +98,17 @@ class Development(Config):
     REDIS_URL = 'redis://localhost:6379/0'
 
 
-class Test(Development):
-    DEBUG = True
-    TESTING = True
-    STATSD_ENABLED = False
-    WTF_CSRF_ENABLED = False
-    MOU_BUCKET_NAME = 'test-mou'
-    NOTIFY_ENVIRONMENT = 'test'
-    ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET', 'dev-notify-secret-key')
-    API_HOST_NAME = os.environ.get('API_HOST_NAME', 'http://localhost:6011')
-    DANGEROUS_SALT = os.environ.get('DANGEROUS_SALT', 'dev-notify-salt')
-    SECRET_KEY = 'dev-notify-secret-key'
-    TEMPLATE_PREVIEW_API_HOST = 'http://localhost:9999'
-    TEMPLATE_PREVIEW_API_KEY = 'dev-notify-secret-key'
-    ANTIVIRUS_API_HOST = 'https://test-antivirus'
-    ANTIVIRUS_API_KEY = 'test-antivirus-secret'
-    ASSET_DOMAIN = 'static.example.com'
-    ASSET_PATH = 'https://static.example.com/'
-
-
-class Preview(Config):
-    HTTP_PROTOCOL = 'https'
-    HEADER_COLOUR = '#F499BE'  # $baby-pink
-    STATSD_ENABLED = True
-    MOU_BUCKET_NAME = 'notify.works-mou'
-    NOTIFY_ENVIRONMENT = 'preview'
-    CHECK_PROXY_HEADER = False
-
-
-class Staging(Config):
-    SHOW_STYLEGUIDE = False
-    HTTP_PROTOCOL = 'https'
-    HEADER_COLOUR = '#6F72AF'  # $mauve
-    STATSD_ENABLED = True
-    MOU_BUCKET_NAME = 'staging-notify.works-mou'
-    NOTIFY_ENVIRONMENT = 'staging'
-    CHECK_PROXY_HEADER = False
-
-
 class Live(Config):
     SHOW_STYLEGUIDE = False
     HEADER_COLOUR = '#005EA5'  # $govuk-blue
     HTTP_PROTOCOL = 'https'
-    STATSD_ENABLED = True
+    STATSD_ENABLED = False
     MOU_BUCKET_NAME = 'notifications.service.gov.uk-mou'
     NOTIFY_ENVIRONMENT = 'live'
     CHECK_PROXY_HEADER = False
 
 
-class CloudFoundryConfig(Config):
-    pass
-
-
-# CloudFoundry sandbox
-class Sandbox(CloudFoundryConfig):
-    HTTP_PROTOCOL = 'https'
-    HEADER_COLOUR = '#F499BE'  # $baby-pink
-    STATSD_ENABLED = True
-    CSV_UPLOAD_BUCKET_NAME = os.getenv('CSV_UPLOAD_BUCKET_NAME', 'development-notification-canada-ca-csv-upload')
-    LOGO_UPLOAD_BUCKET_NAME = 'cf-sandbox-notifications-logo-upload'
-    NOTIFY_ENVIRONMENT = 'sandbox'
-
-
 configs = {
     'development': Development,
-    'test': Test,
-    'preview': Preview,
-    'staging': Staging,
-    'live': Live,
     'production': Live,
-    'sandbox': Sandbox
 }
