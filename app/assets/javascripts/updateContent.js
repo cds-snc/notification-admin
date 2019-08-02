@@ -33,6 +33,12 @@
         if (response.stop === 1) {
           poll = function(){};
         }
+        $(".local-datetime-short").each(function(index) {
+          let time = moment($(this).text().trim());
+          if(time.isValid()){
+            $(this).text(time.format("D MMM, kk:mm a"));
+          }
+        })
       }
     ).fail(
       () => poll = function(){}

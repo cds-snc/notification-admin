@@ -44,7 +44,7 @@
       {% endcall %}
       {% if item.expiry_date %}
         {% call field(align='right') %}
-          <span class='hint'>Revoked {{ item.expiry_date|format_datetime_short }}</span>
+          <span class='hint'>Revoked <span class="local-datetime-short">{{ item.expiry_date }}</span></span>
         {% endcall %}
       {% else %}
         {% call field(align='right', status='error') %}
