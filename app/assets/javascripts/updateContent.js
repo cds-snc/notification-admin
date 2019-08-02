@@ -38,7 +38,7 @@
           if(time.isValid()){
             $(this).text(time.format("D MMM, kk:mm a"));
           }
-        })
+        });
       }
     ).fail(
       () => poll = function(){}

@@ -8,26 +8,28 @@ $(".local-datetime-short").each(function(index) {
   if(time.isValid()){
     $(this).text(time.format("D MMM, kk:mm a"));
   }
-})
+});
 
 $(".local-datetime-full").each(function(index) {
     let time = moment($(this).text().trim());
     if(time.isValid()){
       $(this).text(time.format("LLL"));
     }
-})
+});
+
 $(".relative-time-future").each(function(index) {
   let time = moment($(this).text().trim());
   if(time.isValid()){
     $(this).text(time.toNow());
   }
-})
+});
+
 $(".relative-time-past").each(function(index) {
   let time = moment($(this).text().trim());
   if(time.isValid()){
     $(this).text(time.fromNow());
   }
-})
+});
 
 var showHideContent = new GOVUK.ShowHideContent();
 showHideContent.init();
