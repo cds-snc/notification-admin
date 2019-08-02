@@ -46,7 +46,7 @@ test_results.xml
 *,cover
 
 # Translations
-*.mo
+#*.mo
 *.pot
 
 # Django stuff:
