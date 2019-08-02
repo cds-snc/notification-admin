@@ -21,7 +21,7 @@ permissions = (
     ('view_activity', 'See dashboard'),
     ('send_messages', 'Send messages'),
     ('manage_templates', 'Add and edit templates'),
-    ('manage_service', 'Manage settings, team and usage'),
+    ('manage_service', 'Manage settings and teams'),
     ('manage_api_keys', 'Manage API integration'),
 )
 

@@ -23,7 +23,7 @@
         ) }}
         {{ task_list_item(
           current_service.has_team_members,
-          'Add a team member who can manage settings, team and usage',
+          'Add a team member who can manage settings and teams',
           url_for('main.manage_users', service_id=current_service.id),
         ) }}
         {{ task_list_item(

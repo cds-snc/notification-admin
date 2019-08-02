@@ -29,7 +29,7 @@ from tests.conftest import (
             'Can See dashboard '
             'Can Send messages '
             'Can Add and edit templates '
-            'Can Manage settings, team and usage '
+            'Can Manage settings and teams '
             'Can Manage API integration'
         ),
         (
@@ -37,7 +37,7 @@ from tests.conftest import (
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
-            'Can’t Manage settings, team and usage '
+            'Can’t Manage settings and teams '
             'Can’t Manage API integration '
             'Change details'
         )
@@ -49,7 +49,7 @@ from tests.conftest import (
             'Can’t See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
-            'Can’t Manage settings, team and usage '
+            'Can’t Manage settings and teams '
             'Can’t Manage API integration'
         ),
         (
@@ -57,7 +57,7 @@ from tests.conftest import (
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
-            'Can’t Manage settings, team and usage '
+            'Can’t Manage settings and teams '
             'Can’t Manage API integration'
         ),
     ),
@@ -68,7 +68,7 @@ from tests.conftest import (
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
-            'Can’t Manage settings, team and usage '
+            'Can’t Manage settings and teams '
             'Can’t Manage API integration'
         ),
         (
@@ -76,7 +76,7 @@ from tests.conftest import (
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
-            'Can’t Manage settings, team and usage '
+            'Can’t Manage settings and teams '
             'Can’t Manage API integration'
         )
     ),
@@ -87,7 +87,7 @@ from tests.conftest import (
             'Can See dashboard '
             'Can’t Send messages '
             'Can Add and edit templates '
-            'Can’t Manage settings, team and usage '
+            'Can’t Manage settings and teams '
             'Can’t Manage API integration'
         ),
         (
@@ -95,7 +95,7 @@ from tests.conftest import (
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
-            'Can’t Manage settings, team and usage '
+            'Can’t Manage settings and teams '
             'Can’t Manage API integration'
         )
     ),
@@ -106,7 +106,7 @@ from tests.conftest import (
             'Can See dashboard '
             'Can’t Send messages '
             'Can Add and edit templates '
-            'Can’t Manage settings, team and usage '
+            'Can’t Manage settings and teams '
             'Can’t Manage API integration'
         ),
         (
@@ -114,7 +114,7 @@ from tests.conftest import (
             'Can See dashboard '
             'Can’t Send messages '
             'Can’t Add and edit templates '
-            'Can’t Manage settings, team and usage '
+            'Can’t Manage settings and teams '
             'Can’t Manage API integration'
         )
     ),
@@ -180,7 +180,7 @@ def test_should_show_caseworker_on_overview_page(
         'Can See dashboard '
         'Can’t Send messages '
         'Can’t Add and edit templates '
-        'Can’t Manage settings, team and usage '
+        'Can’t Manage settings and teams '
         'Can’t Manage API integration'
     )
     # [1:5] are invited users
@@ -189,7 +189,7 @@ def test_should_show_caseworker_on_overview_page(
         'Can’t See dashboard '
         'Can Send messages '
         'Can’t Add and edit templates '
-        'Can’t Manage settings, team and usage '
+        'Can’t Manage settings and teams '
         'Can’t Manage API integration'
     )
 
@@ -830,7 +830,7 @@ def test_cancel_invited_user_doesnt_work_if_user_not_invited_to_this_service(
         'Can See dashboard '
         'Can Send messages '
         'Can’t Add and edit templates '
-        'Can Manage settings, team and usage '
+        'Can Manage settings and teams '
         'Can Manage API integration '
         'Cancel invitation'
     )),
@@ -840,7 +840,7 @@ def test_cancel_invited_user_doesnt_work_if_user_not_invited_to_this_service(
         'Can’t See dashboard '
         'Can’t Send messages '
         'Can’t Add and edit templates '
-        'Can’t Manage settings, team and usage '
+        'Can’t Manage settings and teams '
         'Can’t Manage API integration'
     )),
 ])

@@ -17,7 +17,7 @@
   {% endif %}
     <li><a href="{{ url_for('.manage_users', service_id=current_service.id) }}" {{ main_navigation.is_selected('team-members') }}>Team members</a></li>
   {% if current_user.has_permissions('manage_service', allow_org_user=True) %}
-    <li><a href="{{ url_for('.usage', service_id=current_service.id) }}" {{ main_navigation.is_selected('usage') }}>Usage</a></li>
+    <!--<li><a href="{{ url_for('.usage', service_id=current_service.id) }}" {{ main_navigation.is_selected('usage') }}>Usage</a></li>-->
   {% endif %}
   {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
     <li><a href="{{ url_for('.service_settings', service_id=current_service.id) }}" {{ main_navigation.is_selected('settings') }}>Settings</a></li>

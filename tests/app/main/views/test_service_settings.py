@@ -680,9 +680,9 @@ def test_should_check_if_estimated_volumes_provided(
     'count_of_invites_with_manage_service,'
     'expected_user_checklist_item'
 ), [
-    (1, 0, 'Add a team member who can manage settings, team and usage Not completed'),
-    (2, 0, 'Add a team member who can manage settings, team and usage Completed'),
-    (1, 1, 'Add a team member who can manage settings, team and usage Completed'),
+    (1, 0, 'Add a team member who can manage settings and teams Not completed'),
+    (2, 0, 'Add a team member who can manage settings and teams Completed'),
+    (1, 1, 'Add a team member who can manage settings and teams Completed'),
 ])
 @pytest.mark.parametrize('count_of_templates, expected_templates_checklist_item', [
     (0, 'Add templates with examples of the content you plan to send Not completed'),
