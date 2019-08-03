@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-02 11:51-0400\n"
+"POT-Creation-Date: 2019-08-02 13:47-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -43,6 +43,8 @@ msgid "Terms of Use"
 msgstr "Conditions d’utilisation"
 
 #: app/templates/admin_template.html:93 app/templates/views/features.html:39
+#: app/templates/views/message-status.html:5
+#: app/templates/views/message-status.html:10
 msgid "Message status"
 msgstr "État du message"
 
@@ -473,6 +475,7 @@ msgid "Read more about"
 msgstr "En savoir plus au sujet de"
 
 #: app/templates/views/features.html:60
+#: app/templates/views/message-status.html:12
 msgid "security"
 msgstr "la sécurité"
 
@@ -520,6 +523,164 @@ msgstr "Modifier les renseignements"
 #: app/templates/views/manage-users.html:95
 msgid "Invite someone to join your team"
 msgstr "Inviter une personne à se joindre à votre équipe"
+
+#: app/templates/views/message-status.html:11
+msgid ""
+"Notification’s real-time dashboard lets you check when your message was "
+"delivered. You can also check the status of your messages"
+msgstr ""
+
+#: app/templates/views/message-status.html:12
+msgid "For"
+msgstr ""
+
+#: app/templates/views/message-status.html:12
+msgid ""
+"this information is only available for 7 days after a message has been "
+"sent. You can download a report, including a list of sent messages, for "
+"your own records."
+msgstr ""
+
+#: app/templates/views/message-status.html:16
+msgid ""
+"A picture of the sending flow of messages in Notification, showing the "
+"three states of Sending, Delivered and Failed. Also shows the next steps "
+"when messages fail, deleting data and trying a new method for permanent "
+"failures, and trying again or trying a new method for temporary failures"
+msgstr ""
+
+#: app/templates/views/message-status.html:19
+msgid "Types of message status"
+msgstr ""
+
+#: app/templates/views/message-status.html:20
+msgid ""
+"Notification has the following types of message status (API message "
+"status may be different and is found in"
+msgstr ""
+
+#: app/templates/views/message-status.html:20
+msgid "technical documentation):"
+msgstr ""
+
+#: app/templates/views/features/emails.html:5
+#: app/templates/views/features/emails.html:10
+#: app/templates/views/message-status.html:23
+msgid "Emails"
+msgstr ""
+
+#: app/templates/views/message-status.html:24
+msgid "Message statuses – emails"
+msgstr ""
+
+#: app/templates/views/message-status.html:25
+msgid "Status"
+msgstr ""
+
+#: app/templates/views/message-status.html:26
+msgid "Description"
+msgstr ""
+
+#: app/templates/views/message-status.html:34
+#: app/templates/views/message-status.html:75
+msgid "Sending"
+msgstr ""
+
+#: app/templates/views/message-status.html:35
+msgid "Notification has sent the message to the email provider."
+msgstr ""
+
+#: app/templates/views/message-status.html:37
+#: app/templates/views/message-status.html:81
+msgid "Delivered"
+msgstr ""
+
+#: app/templates/views/message-status.html:38
+#: app/templates/views/message-status.html:82
+msgid ""
+"The message was successfully delivered. Notification will not tell you if"
+" a user has opened or read a message."
+msgstr ""
+
+#: app/templates/views/message-status.html:40
+msgid "Email address does not exist"
+msgstr ""
+
+#: app/templates/views/message-status.html:41
+msgid ""
+"The provider could not deliver the message because the email address was "
+"wrong. You should remove these email addresses from your database."
+msgstr ""
+
+#: app/templates/views/message-status.html:43
+msgid "Inbox not accepting messages right now"
+msgstr ""
+
+#: app/templates/views/message-status.html:44
+msgid ""
+"The provider could not deliver the message after trying for 72 hours. "
+"This can happen when the recipient’s inbox is full. You can try to send "
+"the message again."
+msgstr ""
+
+#: app/templates/views/message-status.html:46
+#: app/templates/views/message-status.html:90
+msgid "Technical failure"
+msgstr ""
+
+#: app/templates/views/message-status.html:47
+msgid ""
+"There was a connection problem between Notification and the email "
+"provider. You’ll have to try sending your messages again."
+msgstr ""
+
+#: app/templates/views/message-status.html:67
+msgid "Message statuses – text messages"
+msgstr ""
+
+#: app/templates/views/message-status.html:76
+msgid "Notification has sent the message to the cellular provider."
+msgstr ""
+
+#: app/templates/views/message-status.html:78
+msgid "Sent internationally"
+msgstr ""
+
+#: app/templates/views/message-status.html:79
+msgid ""
+"The message was sent to an international number. The mobile networks in "
+"some countries do not provide any more delivery information."
+msgstr ""
+
+#: app/templates/views/message-status.html:84
+msgid "Phone number does not exist"
+msgstr ""
+
+#: app/templates/views/message-status.html:85
+msgid ""
+"The provider could not deliver the message because the phone number was "
+"wrong. You should remove these phone numbers from your database. You’ll "
+"still be charged for text messages to numbers that do not exist."
+msgstr ""
+
+#: app/templates/views/message-status.html:87
+msgid "Phone not accepting messages right now"
+msgstr ""
+
+#: app/templates/views/message-status.html:88
+msgid ""
+"The provider could not deliver the message after trying for 72 hours. "
+"This can happen when the recipient’s phone is off. You can try to send "
+"the message again. You’ll still be charged for text messages to phones "
+"that are not accepting messages."
+msgstr ""
+
+#: app/templates/views/message-status.html:91
+msgid ""
+"There was a connection problem between Notification and the cellular "
+"provider. You’ll have to try sending your messages again. You will not be"
+" charged for text messages that are affected by a technical failure."
+msgstr ""
 
 #: app/templates/views/register.html:17
 msgid "Must be a federal government email address"
@@ -854,11 +1015,6 @@ msgstr "Voir les modèles utilisés par mois"
 msgid "Check templates used by month"
 msgstr ""
 
-#: app/templates/views/features/emails.html:5
-#: app/templates/views/features/emails.html:10
-msgid "Emails"
-msgstr ""
-
 #: app/templates/views/features/emails.html:11
 msgid "Send an unlimited number of free emails with Notification."
 msgstr ""
@@ -1015,4 +1171,17 @@ msgstr ""
 #: app/templates/views/templates/template.html:79
 msgid "Personalisation is hidden after sending"
 msgstr "La personnalisation est masquée après l’envoi"
+
+#~ msgid ""
+#~ "A picture of the sending flow of"
+#~ " messages in Notification, showing the "
+#~ "three states of Sending, Delivered and"
+#~ " Failed. Also shows the next\n"
+#~ "           steps when messages fail, "
+#~ "deleting data and trying a new "
+#~ "method for permanent failures, and "
+#~ "trying again or trying a new "
+#~ "method for\n"
+#~ "           temporary failures"
+#~ msgstr ""
 
