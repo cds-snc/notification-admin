@@ -450,11 +450,15 @@ def test_triage_redirects_to_correct_url(client, choice, expected_redirect_param
     response = client.post(url_for('main.triage'), data={'severe': choice})
     assert response.status_code == 302
     assert response.location == url_for(
-        'main.feedback',
-        ticket_type=PROBLEM_TICKET_TYPE,
-        severe=expected_redirect_param,
-        _external=True,
+        'main.support',
+        _external=True
     )
+    # assert response.location == url_for(
+    #     'main.feedback',
+    #     ticket_type=PROBLEM_TICKET_TYPE,
+    #     severe=expected_redirect_param,
+    #     _external=True,
+    # )
 
 
 @pytest.mark.parametrize(
@@ -531,7 +535,7 @@ def test_should_be_shown_the_bat_email(
     assert logged_in_response.status_code == expected_status_code_when_logged_in
     assert logged_in_response.location == expected_redirect_when_logged_in(_external=True)
 
-
+@pytest.mark.skip(reason="feature not in use")
 def test_bat_email_page(
     client,
     active_user_with_permissions,
