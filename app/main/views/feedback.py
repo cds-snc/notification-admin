@@ -39,6 +39,9 @@ def support():
 
 @main.route('/support/triage', methods=['GET', 'POST'])
 def triage():
+
+    return redirect(url_for('main.support'))
+
     form = Triage()
     if form.validate_on_submit():
         return redirect(url_for(
@@ -126,6 +129,8 @@ def feedback(ticket_type):
 
 @main.route('/support/escalate', methods=['GET', 'POST'])
 def bat_phone():
+
+    return redirect(url_for('main.support'))
 
     if current_user.is_authenticated:
         return redirect(url_for('main.feedback', ticket_type=PROBLEM_TICKET_TYPE))
