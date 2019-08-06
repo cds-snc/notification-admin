@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-06 08:45-0400\n"
+"POT-Creation-Date: 2019-08-06 11:55-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -122,10 +122,8 @@ msgstr "puce 3"
 #: app/templates/partials/templates/guidance-formatting.html:21
 msgid ""
 "To emphasize text, use a caret. There will be a grey bar beside the text "
-"you want to emphasize"
+"you want to emphasize:"
 msgstr ""
-"Pour mettre l’accent sur du texte, utilisez un caret. Une barre grise "
-"s’affichera à côté du texte que vous voulez accentuer"
 
 #: app/templates/partials/templates/guidance-formatting.html:25
 msgid "You must tell us if your circumstances change"
@@ -174,13 +172,16 @@ msgstr ""
 "un tuteur.)"
 
 #: app/templates/partials/templates/guidance-optional-content.html:14
-msgid ""
-"For each recipient on your spreadsheet, you must indicate ‘yes’ to show "
-"or ‘no’ to hide this content"
+msgid "For each recipient on your spreadsheet, you must indicate:"
 msgstr ""
-"Pour chaque destinataire figurant sur votre feuille de calcul, vous devez"
-" indiquer « oui » pour afficher le contenu ou « non » pour masquer le "
-"contenu"
+
+#: app/templates/partials/templates/guidance-optional-content.html:15
+msgid "‘yes’ to show optional content"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-optional-content.html:16
+msgid "‘no’ to hide optional content"
+msgstr ""
 
 #: app/templates/partials/templates/guidance-personalisation.html:2
 msgid "Add personal information"
@@ -230,6 +231,10 @@ msgstr ""
 "Choisissez un client pour intégrer notre API à votre application Web ou à"
 " votre système administratif. Les liens de la documentation s’ouvrent "
 "dans un nouvel onglet."
+
+#: app/templates/views/edit-email-template.html:22
+msgid "Your recipients won’t see this:"
+msgstr ""
 
 #: app/templates/views/email-not-received.html:5
 #: app/templates/views/email-not-received.html:12
@@ -405,6 +410,7 @@ msgid "works."
 msgstr "works."
 
 #: app/templates/views/features.html:43
+#: app/templates/views/manage-users/permissions.html:6
 msgid "Permissions"
 msgstr "Autorisations"
 
@@ -479,6 +485,15 @@ msgstr "En savoir plus au sujet de"
 #: app/templates/views/message-status.html:12
 msgid "security"
 msgstr "la sécurité"
+
+#: app/templates/views/invite-user.html:9
+#: app/templates/views/invite-user.html:14
+msgid "Invite a team member"
+msgstr ""
+
+#: app/templates/views/invite-user.html:15
+msgid "Send invitation email"
+msgstr ""
 
 #: app/templates/views/manage-users.html:9
 #: app/templates/views/manage-users.html:15
@@ -1245,6 +1260,20 @@ msgstr ""
 msgid "You can change the text message sender name in your service settings."
 msgstr ""
 
+#: app/templates/views/manage-users/permissions.html:9
+msgid "All team members can see sent messages."
+msgstr ""
+
+#: app/templates/views/manage-users/permissions.html:20
+msgid "Platform admin users can access all template folders."
+msgstr ""
+
+#: app/templates/views/manage-users/permissions.html:25
+msgid ""
+"Not available because this team member hasn’t added a phone&nbsp;number "
+"to their profile"
+msgstr ""
+
 #: app/templates/views/templates/choose.html:26
 msgid "You need to create a template to send"
 msgstr "Vous devez créer un modèle pour envoyer"
@@ -1295,4 +1324,25 @@ msgstr "La personnalisation est masquée après l’envoi"
 #~ "method for\n"
 #~ "           temporary failures"
 #~ msgstr ""
+
+#~ msgid ""
+#~ "To emphasize text, use a caret. "
+#~ "There will be a grey bar beside"
+#~ " the text you want to emphasize"
+#~ msgstr ""
+#~ "Pour mettre l’accent sur du texte, "
+#~ "utilisez un caret. Une barre grise "
+#~ "s’affichera à côté du texte que "
+#~ "vous voulez accentuer"
+
+#~ msgid ""
+#~ "For each recipient on your spreadsheet,"
+#~ " you must indicate ‘yes’ to show "
+#~ "or ‘no’ to hide this content"
+#~ msgstr ""
+#~ "Pour chaque destinataire figurant sur "
+#~ "votre feuille de calcul, vous devez "
+#~ "indiquer « oui » pour afficher le"
+#~ " contenu ou « non » pour "
+#~ "masquer le contenu"
 
