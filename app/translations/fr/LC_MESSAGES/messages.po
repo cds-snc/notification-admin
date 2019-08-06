@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-02 13:47-0400\n"
+"POT-Creation-Date: 2019-08-06 08:45-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -49,6 +49,7 @@ msgid "Message status"
 msgstr "État du message"
 
 #: app/templates/admin_template.html:100 app/templates/views/features.html:52
+#: app/templates/views/security.html:9
 msgid "Security"
 msgstr "Sécurité"
 
@@ -455,7 +456,7 @@ msgstr ""
 "contenus dans vos messages après qu’ils ont été envoyés. Seul le "
 "destinataire peut voir ses renseignements personnels."
 
-#: app/templates/views/features.html:58
+#: app/templates/views/features.html:58 app/templates/views/security.html:40
 msgid "Two-factor authentication"
 msgstr "Authentification à deux facteurs"
 
@@ -689,6 +690,116 @@ msgstr "Veuillez entrer une adresse de courriel du gouvernement fédéral."
 #: app/templates/views/register.html:20
 msgid "We’ll send you a security code by text message"
 msgstr "Nous vous enverrons un code de sécurité par message texte."
+
+#: app/templates/views/security.html:10
+msgid ""
+"Notification is built for the needs of government services. It is set up "
+"to:"
+msgstr ""
+
+#: app/templates/views/security.html:12
+msgid "protect user data"
+msgstr ""
+
+#: app/templates/views/security.html:13
+msgid "keep systems secure"
+msgstr ""
+
+#: app/templates/views/security.html:14
+msgid "manage risks around information"
+msgstr ""
+
+#: app/templates/views/security.html:17
+msgid "Data"
+msgstr ""
+
+#: app/templates/views/security.html:18
+msgid "On Notification, data is encrypted:"
+msgstr ""
+
+#: app/templates/views/security.html:20
+msgid "when it passes through the service"
+msgstr ""
+
+#: app/templates/views/security.html:21
+msgid "when it’s stored on the service"
+msgstr ""
+
+#: app/templates/views/security.html:23
+msgid "Any user data you upload is only held for 7 days."
+msgstr ""
+
+#: app/templates/views/security.html:25
+msgid "Technical security"
+msgstr ""
+
+#: app/templates/views/security.html:26
+msgid "Other technical security controls on Notification include:"
+msgstr ""
+
+#: app/templates/views/security.html:28
+msgid ""
+"protective monitoring to record activity, and raise alerts about any "
+"suspicious activity."
+msgstr ""
+
+#: app/templates/views/security.html:29
+msgid ""
+"using codes called JSON Web Tokens when your service talks to "
+"Notification. Unlike codes for API keys, JSON Web Tokens have encryption "
+"and expiry settings."
+msgstr ""
+
+#: app/templates/views/security.html:32
+msgid "Protect sensitive information"
+msgstr ""
+
+#: app/templates/views/security.html:33
+msgid ""
+"Some messages include sensitive information like security codes or "
+"password reset links."
+msgstr ""
+
+#: app/templates/views/security.html:34
+msgid ""
+"If you’re sending a message with sensitive information, you can hide "
+"those details on the dashboard once the message has been sent. Only the "
+"message recipient will be able to see their information."
+msgstr ""
+
+#: app/templates/views/security.html:36
+msgid "User permissions and signing in"
+msgstr ""
+
+#: app/templates/views/security.html:37
+msgid ""
+"You can set different user permissions in Notification. This lets you "
+"control which team members have access to certain parts of Notification."
+msgstr ""
+
+#: app/templates/views/security.html:41
+msgid "To sign in to Notification you’ll need to enter:"
+msgstr ""
+
+#: app/templates/views/security.html:43
+msgid "your email address and password"
+msgstr ""
+
+#: app/templates/views/security.html:44
+msgid "a text message code that Notification sends to your phone"
+msgstr ""
+
+#: app/templates/views/security.html:48
+msgid "Please"
+msgstr ""
+
+#: app/templates/views/security.html:48
+msgid "contact us"
+msgstr ""
+
+#: app/templates/views/security.html:48
+msgid "if your team needs email links instead of text message codes."
+msgstr ""
 
 #: app/templates/views/signedout.html:18
 msgid "Send emails and text messages to your users"
