@@ -3,27 +3,34 @@
 {% from "components/table.html" import mapping_table, row, settings_row, text_field, optional_text_field, edit_field, field, boolean_field with context %}
 
 {% block service_page_title %}
-  Settings
+  {{ _('Settings') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
-    <h1 class="heading-medium">Settings</h1>
+    <h1 class="heading-medium">{{ _('Settings') }}</h1>
 
     <div class="bottom-gutter-3-2 settings-table body-copy-table">
+      {% set caption_txt = _('General') %}
+      {% set heading_1 = _('Label') %}
+      {% set heading_2 = _('Value') %}
+      {% set heading_3 = _('Action') %}
 
       {% call mapping_table(
-        caption='General',
-        field_headings=['Label', 'Value', 'Action'],
+        caption=caption_txt,
+        field_headings=[heading_1, heading_2, heading_3],
         field_headings_visible=False,
         caption_visible=False
       ) %}
 
         {% call row() %}
-          {{ text_field('Service name') }}
+          {% set heading_1 = _('Service name') %}
+          {% set change_txt = _('Change') %}
+
+          {{ text_field(heading_1) }}
           {{ text_field(current_service.name) }}
           {{ edit_field(
-              'Change',
+              change_txt,
               url_for('.service_name_change', service_id=current_service.id),
               permissions=['manage_service']
             )
@@ -31,26 +38,31 @@
         {% endcall %}
 
         {% call row() %}
-          {{ text_field('Sign-in method') }}
+          {% set txt = _('Sign-in method') %}
+          {{ text_field(txt) }}
+          {% set txt = _('Email link or text message code') %}
+          {% set txt_code = _('Text message code') %}
           {{ text_field(
-            'Email link or text message code'
+            txt
             if 'email_auth' in current_service.permissions
-            else 'Text message code'
+            else txt_code
           ) }}
+          {% set change_txt = _('Change') %}
           {{ edit_field(
-              'Change',
+              change_txt,
               url_for('.service_set_auth_type',
               service_id=current_service.id),
               permissions=['manage_service']
             )
           }}
         {% endcall %}
-
+        {% set change_txt = _('Change') %}
+        {% set contact_txt = _('Contact details') %}
         {% call settings_row(if_has_permission='upload_document') %}
-          {{ text_field('Contact details') }}
+          {{ text_field(contact_txt) }}
           {{ text_field(current_service.contact_link, truncate=true) }}
           {{ edit_field(
-              'Change',
+              change_txt,
               url_for('.service_set_contact_link',
               service_id=current_service.id),
               permissions=['manage_service']
@@ -59,19 +71,24 @@
         {% endcall %}
 
       {% endcall %}
-
+      {% set caption = _('Email settings') %}
+      {% set heading_1 = _('Label') %}
+      {% set heading_2 = _('Value') %}
+      {% set heading_3 = _('Action') %}
       {% call mapping_table(
-        caption='Email settings',
-        field_headings=['Label', 'Value', 'Action'],
+        caption=caption,
+        field_headings=[heading_1, heading_2, heading_3],
         field_headings_visible=False,
         caption_visible=True
       ) %}
 
         {% call row() %}
-          {{ text_field('Send emails') }}
+          {% set send_txt = _('Email settings') %}
+          {% set change_txt = _('Change') %}
+          {{ text_field(send_txt) }}
           {{ boolean_field('email' in current_service.permissions) }}
           {{ edit_field(
-            'Change',
+            change_txt,
             url_for(
               '.service_set_channel',
               channel='email',
@@ -82,29 +99,33 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='email') %}
-          {{ text_field('Reply-to email addresses') }}
+          {% set reply_txt = _('Reply-to email addresses') %}
+          {% set not_set_txt = _('Not set') %}
+          {{ text_field(reply_txt) }}
           {% call field(status='default' if current_service.count_email_reply_to_addresses == 0 else '') %}
-            {{ current_service.default_email_reply_to_address or 'Not set' }}
+            {{ current_service.default_email_reply_to_address or not_set_txt }}
             {% if current_service.count_email_reply_to_addresses > 1 %}
               <div class="hint">
                 {{ '…and %d more' | format(current_service.count_email_reply_to_addresses - 1) }}
               </div>
             {% endif %}
           {% endcall %}
+          {% set manage_txt = _('Manage') %}
           {{ edit_field(
-              'Manage',
+              manage_txt,
               url_for('.service_email_reply_to',
               service_id=current_service.id),
               permissions=['manage_service','manage_api_keys']
             )
           }}
         {% endcall %}
-
+        {% set change_txt = _('Change') %}
         {% call settings_row(if_has_permission='email') %}
-          {{ text_field('Email branding') }}
+          {% set branding_txt = _('Email branding') %}
+          {% set your_branding_txt = _('Email branding') %}
           {{ text_field('Your branding<br> ({})'.format(current_service.email_branding_name)|safe if current_service.email_branding else current_service.email_branding_name) }}
           {{ edit_field(
-            'Change',
+            change_txt,
             url_for('.branding_request', service_id=current_service.id),
             permissions=['manage_service'],
             attributes="style=display:none"
@@ -112,19 +133,21 @@
         {% endcall %}
 
       {% endcall %}
-
+      {% set change_txt = _('Change') %}
+      {% set caption = _('Text message settings') %}
       {% call mapping_table(
-        caption='Text message settings',
+        caption=caption,
         field_headings=['Label', 'Value', 'Action'],
         field_headings_visible=False,
         caption_visible=True
       ) %}
 
         {% call row() %}
-          {{ text_field('Send text messages') }}
+          {% set send_text = _('Send text messages') %}
+          {{ text_field(send_text) }}
           {{ boolean_field('sms' in current_service.permissions) }}
           {{ edit_field(
-            'Change',
+            change_txt,
             url_for(
               '.service_set_channel',
               service_id=current_service.id,
@@ -135,7 +158,8 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {{ text_field('Text message senders') }}
+          {% set text = _('Text message senders') %}
+          {{ text_field(text) }}
           {% call field(status='default' if current_service.default_sms_sender == "None" else '') %}
             {{ current_service.default_sms_sender | string | nl2br | safe if current_service.default_sms_sender else 'None'}}
             {% if current_service.count_sms_senders > 1 %}
@@ -144,8 +168,9 @@
               </div>
             {% endif %}
           {% endcall %}
+          {% set manage_text = _('Manage') %}
           {{ edit_field(
-              'Manage',
+              manage_text,
               url_for('.service_sms_senders',
               service_id=current_service.id),
               permissions=['manage_service','manage_api_keys']
@@ -154,10 +179,12 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {{ text_field('Start text messages with service name') }}
+          {% set text = _('Start text messages with service name') %}
+          {{ text_field(text) }}
           {{ boolean_field(current_service.prefix_sms) }}
+          {% set change_txt = _('Change') %}
           {{ edit_field(
-              'Change',
+              change_txt,
               url_for('.service_set_sms_prefix',
               service_id=current_service.id),
               permissions=['manage_service']
@@ -166,10 +193,12 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {{ text_field('Send international text messages') }}
+          {% set text = _('Send international text messages') %}
+          {{ text_field(text) }}
           {{ boolean_field('international_sms' in current_service.permissions) }}
+          {% set change_txt = _('Change') %}
           {{ edit_field(
-              'Change',
+              change_txt,
               url_for('.service_set_international_sms',
               service_id=current_service.id),
               permissions=['manage_service']
@@ -178,10 +207,12 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {{ text_field('Receive text messages') }}
+          {% set text = _('Receive text messages') %}
+          {{ text_field(text) }}
           {{ boolean_field('inbound_sms' in current_service.permissions) }}
+          {% set change_txt = _('Change') %}
           {{ edit_field(
-              'Change',
+              change_txt,
               url_for('.service_set_inbound_sms',
               service_id=current_service.id),
               permissions=['manage_service']
@@ -251,34 +282,34 @@
     </div>
   -->
     {% if current_service.trial_mode %}
-      <h2 class="heading-medium top-gutter-0">Your service is in trial mode</h2>
+      <h2 class="heading-medium top-gutter-0">{{ _('Your service is in trial mode') }}</h2>
 
       <ul class='list list-bullet'>
-        <li>you can only send messages to yourself</li>
-        <li>you can add people to your team, then you can send messages to them too</li>
-        <li>you can only send {{ current_service.message_limit }} messages per day</li>
+        <li>{{ _('you can only send messages to yourself') }}</li>
+        <li>{{ _('you can add people to your team, then you can send messages to them too') }}</li>
+        <li>{{ _('you can only send') }} {{ current_service.message_limit }} {{ _('messages per day') }}</li>
       </ul>
 
       <p>
         {% if current_user.has_permissions('manage_service') %}
-          To remove these restrictions, you can send us a 
-          <a href="{{ url_for('.request_to_go_live', service_id=current_service.id) }}">request to go live</a>.
+          {{ _('To remove these restrictions, you can send us a') }}
+          <a href="{{ url_for('.request_to_go_live', service_id=current_service.id) }}">{{ _('request to go live') }}</a>.
         {% else %}
-          Your service manager can ask to have these restrictions removed.
+          {{ _('Your service manager can ask to have these restrictions removed.') }}
         {% endif %}
         </p>
 
     {% else %}
-      <h2 class="heading-medium top-gutter-0">Your service is live</h2>
+      <h2 class="heading-medium top-gutter-0">{{ _('Your service is live') }}</h2>
 
       <p>
-        You can send up to
-        {{ "{:,}".format(current_service.message_limit) }} messages
+        {{ _('You can send up to') }}
+        {{ "{:,}".format(current_service.message_limit) }} {{ _('messages') }}
         per day.
       </p>
       <p>
-        Problems or comments?
-        <a href="{{ url_for('main.support') }}">Give feedback</a>.
+        {{ _('Problems or comments?') }}
+        <a href="{{ url_for('main.support') }}">{{ _('Give feedback') }}</a>.
       </p>
 
     {% endif %}
@@ -287,7 +318,7 @@
 
       <div class="settings-table body-copy-table top-gutter-4-3">
 
-        <h2 class="heading-medium">Platform admin settings</h2>
+        <h2 class="heading-medium">{{ _('Platform admin settings') }}</h2>
 
         {% call mapping_table(
           caption='Settings',
@@ -321,7 +352,7 @@
                   {{ current_service.organisation.name }}
                 </a>
               {% else %}
-                <span class="table-field-status-default">Not set</span>
+                <span class="table-field-status-default">{{ _('Not set') }}</span>
               {% endif %}
               {% if current_service.organisation_type %}
                 <div class="hint">
@@ -383,13 +414,13 @@
       <p class="top-gutter-1-2">
         <span class="page-footer-delete-link page-footer-delete-link-without-button">
           <a href="{{ url_for('.archive_service', service_id=current_service.id) }}">
-            Delete this service
+            {{ _('Delete this service') }}
           </a>
         </span>
         {% if current_user.platform_admin %}
           <span class="page-footer-delete-link">
             <a href="{{ url_for('.suspend_service', service_id=current_service.id) }}" class="page-footer-delete-link">
-                Suspend service
+                {{ _('Suspend service') }}
               </a>
           </span>
         {% endif %}
@@ -398,11 +429,11 @@
     {% if (not current_service.active) and current_user.platform_admin %}
       <p>
         <div class="hint bottom-gutter-1-2">
-          Service suspended
+          {{ _('Service suspended') }}
         </div>
         <span class="page-footer-delete-link page-footer-delete-link-without-button">
           <a href="{{ url_for('.resume_service', service_id=current_service.id) }}">
-            Resume service
+            {{ _('Resume service') }}
           </a>
         </span>
       </p>

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-06 11:55-0400\n"
+"POT-Creation-Date: 2019-08-06 14:37-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -267,6 +267,39 @@ msgstr "Vous pouvez changer cela plus tard"
 #: app/templates/views/add-service.html:26
 msgid "Add service"
 msgstr "Ajouter un service"
+
+#: app/templates/views/choose-account.html:51
+#: app/templates/views/choose-account.html:57
+msgid "Choose service"
+msgstr ""
+
+#: app/templates/views/choose-account.html:66
+msgid "Platform admin"
+msgstr ""
+
+#: app/templates/views/choose-account.html:72
+msgid "All organisations"
+msgstr ""
+
+#: app/templates/views/choose-account.html:75
+msgid "organisations"
+msgstr ""
+
+#: app/templates/views/choose-account.html:75
+msgid "live services"
+msgstr ""
+
+#: app/templates/views/choose-account.html:82
+msgid "Live services"
+msgstr ""
+
+#: app/templates/views/choose-account.html:97
+msgid "Trial mode services"
+msgstr ""
+
+#: app/templates/views/choose-account.html:117
+msgid "Add a new service"
+msgstr ""
 
 #: app/templates/views/documentation.html:9
 msgid "Documentation"
@@ -542,6 +575,22 @@ msgstr "En savoir plus au sujet de"
 #: app/templates/views/message-status.html:12
 msgid "security"
 msgstr "la sécurité"
+
+#: app/templates/views/forgot-password.html:7
+msgid "Create a new password"
+msgstr ""
+
+#: app/templates/views/forgot-password.html:14
+msgid "Forgot your password?"
+msgstr ""
+
+#: app/templates/views/forgot-password.html:16
+msgid "We’ll send you an email to create a new password."
+msgstr ""
+
+#: app/templates/views/forgot-password.html:17
+msgid "Send email"
+msgstr ""
 
 #: app/templates/views/invite-user.html:9
 #: app/templates/views/invite-user.html:14
@@ -871,6 +920,183 @@ msgstr ""
 
 #: app/templates/views/security.html:48
 msgid "if your team needs email links instead of text message codes."
+msgstr ""
+
+#: app/templates/views/service-settings.html:6
+#: app/templates/views/service-settings.html:11
+msgid "Settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:14
+msgid "General"
+msgstr ""
+
+#: app/templates/views/service-settings.html:15
+#: app/templates/views/service-settings.html:75
+msgid "Label"
+msgstr ""
+
+#: app/templates/views/service-settings.html:16
+#: app/templates/views/service-settings.html:76
+msgid "Value"
+msgstr ""
+
+#: app/templates/views/service-settings.html:17
+#: app/templates/views/service-settings.html:77
+msgid "Action"
+msgstr ""
+
+#: app/templates/views/service-settings.html:27
+msgid "Service name"
+msgstr ""
+
+#: app/templates/views/service-settings.html:28
+#: app/templates/views/service-settings.html:50
+#: app/templates/views/service-settings.html:59
+#: app/templates/views/service-settings.html:87
+#: app/templates/views/service-settings.html:122
+#: app/templates/views/service-settings.html:136
+#: app/templates/views/service-settings.html:185
+#: app/templates/views/service-settings.html:199
+#: app/templates/views/service-settings.html:213
+msgid "Change"
+msgstr ""
+
+#: app/templates/views/service-settings.html:41
+msgid "Sign-in method"
+msgstr ""
+
+#: app/templates/views/service-settings.html:43
+msgid "Email link or text message code"
+msgstr ""
+
+#: app/templates/views/service-settings.html:44
+msgid "Text message code"
+msgstr ""
+
+#: app/templates/views/service-settings.html:60
+msgid "Contact details"
+msgstr ""
+
+#: app/templates/views/service-settings.html:74
+#: app/templates/views/service-settings.html:86
+msgid "Email settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:102
+msgid "Reply-to email addresses"
+msgstr ""
+
+#: app/templates/views/service-settings.html:103
+#: app/templates/views/service-settings.html:355
+msgid "Not set"
+msgstr ""
+
+#: app/templates/views/service-settings.html:113
+#: app/templates/views/service-settings.html:171
+msgid "Manage"
+msgstr ""
+
+#: app/templates/views/service-settings.html:124
+#: app/templates/views/service-settings.html:125
+msgid "Email branding"
+msgstr ""
+
+#: app/templates/views/service-settings.html:137
+msgid "Text message settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:146
+msgid "Send text messages"
+msgstr ""
+
+#: app/templates/views/service-settings.html:161
+msgid "Text message senders"
+msgstr ""
+
+#: app/templates/views/service-settings.html:182
+msgid "Start text messages with service name"
+msgstr ""
+
+#: app/templates/views/service-settings.html:196
+msgid "Send international text messages"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:24
+#: app/templates/views/service-settings.html:210
+msgid "Receive text messages"
+msgstr ""
+
+#: app/templates/views/service-settings.html:285
+msgid "Your service is in trial mode"
+msgstr ""
+
+#: app/templates/views/service-settings.html:288
+msgid "you can only send messages to yourself"
+msgstr ""
+
+#: app/templates/views/service-settings.html:289
+msgid "you can add people to your team, then you can send messages to them too"
+msgstr ""
+
+#: app/templates/views/service-settings.html:290
+msgid "you can only send"
+msgstr ""
+
+#: app/templates/views/service-settings.html:290
+msgid "messages per day"
+msgstr ""
+
+#: app/templates/views/service-settings.html:295
+msgid "To remove these restrictions, you can send us a"
+msgstr ""
+
+#: app/templates/views/service-settings.html:296
+msgid "request to go live"
+msgstr ""
+
+#: app/templates/views/service-settings.html:298
+msgid "Your service manager can ask to have these restrictions removed."
+msgstr ""
+
+#: app/templates/views/service-settings.html:303
+msgid "Your service is live"
+msgstr ""
+
+#: app/templates/views/service-settings.html:306
+msgid "You can send up to"
+msgstr ""
+
+#: app/templates/views/service-settings.html:307
+msgid "messages"
+msgstr ""
+
+#: app/templates/views/service-settings.html:311
+msgid "Problems or comments?"
+msgstr ""
+
+#: app/templates/views/service-settings.html:312
+msgid "Give feedback"
+msgstr ""
+
+#: app/templates/views/service-settings.html:321
+msgid "Platform admin settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:417
+msgid "Delete this service"
+msgstr ""
+
+#: app/templates/views/service-settings.html:423
+msgid "Suspend service"
+msgstr ""
+
+#: app/templates/views/service-settings.html:432
+msgid "Service suspended"
+msgstr ""
+
+#: app/templates/views/service-settings.html:436
+msgid "Resume service"
 msgstr ""
 
 #: app/templates/views/signedout.html:18
@@ -1283,10 +1509,6 @@ msgstr ""
 
 #: app/templates/views/features/text-messages.html:22
 msgid "to send text messages automatically"
-msgstr ""
-
-#: app/templates/views/features/text-messages.html:24
-msgid "Receive text messages"
 msgstr ""
 
 #: app/templates/views/features/text-messages.html:25
