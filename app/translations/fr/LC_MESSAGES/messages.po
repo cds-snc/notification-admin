@@ -69,6 +69,63 @@ msgstr "mode de recherche"
 msgid "API data:"
 msgstr "Données de l’API :"
 
+#: app/templates/error/400.html:2
+msgid "Bad Request"
+msgstr ""
+
+#: app/templates/error/401.html:2
+msgid "Unauthorized"
+msgstr ""
+
+#: app/templates/error/401.html:7
+msgid "You are not authorized to see this page."
+msgstr ""
+
+#: app/templates/error/403.html:10
+msgid "You do not have permission to view this page."
+msgstr ""
+
+#: app/templates/error/404.html:2 app/templates/error/404.html:7
+#: app/templates/error/410.html:7
+msgid "Page could not be found"
+msgstr ""
+
+#: app/templates/error/404.html:10 app/templates/error/410.html:10
+msgid "Check you’ve entered the correct web address."
+msgstr ""
+
+#: app/templates/error/410.html:2
+msgid "Page not found"
+msgstr ""
+
+#: app/templates/error/413.html:2
+msgid "File too big"
+msgstr ""
+
+#: app/templates/error/413.html:7
+msgid "The file you uploaded was too big"
+msgstr ""
+
+#: app/templates/error/413.html:12
+msgid "Files must be smaller than 5 MB."
+msgstr ""
+
+#: app/templates/error/413.html:15
+msgid "Go back and try again."
+msgstr ""
+
+#: app/templates/error/500.html:2
+msgid "Server error"
+msgstr ""
+
+#: app/templates/error/500.html:7
+msgid "Sorry, we’re experiencing technical difficulties"
+msgstr ""
+
+#: app/templates/error/500.html:9
+msgid "Try again later."
+msgstr ""
+
 #: app/templates/partials/tour.html:4
 msgid "Try sending yourself this example"
 msgstr "Essayez de vous envoyer cet exemple"
