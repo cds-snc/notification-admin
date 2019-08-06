@@ -535,6 +535,7 @@ def test_should_be_shown_the_bat_email(
     assert logged_in_response.status_code == expected_status_code_when_logged_in
     assert logged_in_response.location == expected_redirect_when_logged_in(_external=True)
 
+
 @pytest.mark.skip(reason="feature not in use")
 def test_bat_email_page(
     client,
