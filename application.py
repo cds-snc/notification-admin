@@ -1,9 +1,11 @@
+import os
+
+import sentry_sdk
 from dotenv import load_dotenv
 from flask import Flask
-from app import create_app
-import sentry_sdk
-import os
 from sentry_sdk.integrations.flask import FlaskIntegration
+
+from app import create_app
 
 load_dotenv()
 
