@@ -525,6 +525,7 @@ msgid "works."
 msgstr "works."
 
 #: app/templates/views/features.html:43
+#: app/templates/views/manage-users/permissions.html:6
 msgid "Permissions"
 msgstr "Autorisations"
 
@@ -599,22 +600,6 @@ msgstr "En savoir plus au sujet de"
 #: app/templates/views/message-status.html:12
 msgid "security"
 msgstr "la sécurité"
-
-#: app/templates/views/forgot-password.html:7
-msgid "Create a new password"
-msgstr ""
-
-#: app/templates/views/forgot-password.html:14
-msgid "Forgot your password?"
-msgstr ""
-
-#: app/templates/views/forgot-password.html:16
-msgid "We’ll send you an email to create a new password."
-msgstr ""
-
-#: app/templates/views/forgot-password.html:17
-msgid "Send email"
-msgstr ""
 
 #: app/templates/views/manage-users.html:9
 #: app/templates/views/manage-users.html:15
@@ -1423,6 +1408,20 @@ msgstr ""
 
 #: app/templates/views/features/text-messages.html:31
 msgid "You can change the text message sender name in your service settings."
+msgstr ""
+
+#: app/templates/views/manage-users/permissions.html:9
+msgid "All team members can see sent messages."
+msgstr ""
+
+#: app/templates/views/manage-users/permissions.html:20
+msgid "Platform admin users can access all template folders."
+msgstr ""
+
+#: app/templates/views/manage-users/permissions.html:25
+msgid ""
+"Not available because this team member hasn’t added a phone&nbsp;number "
+"to their profile"
 msgstr ""
 
 #: app/templates/views/templates/choose.html:26
