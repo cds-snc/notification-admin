@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-06 08:45-0400\n"
+"POT-Creation-Date: 2019-08-06 11:10-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -69,6 +69,63 @@ msgstr "mode de recherche"
 msgid "API data:"
 msgstr "Données de l’API :"
 
+#: app/templates/error/400.html:2
+msgid "Bad Request"
+msgstr ""
+
+#: app/templates/error/401.html:2
+msgid "Unauthorized"
+msgstr ""
+
+#: app/templates/error/401.html:7
+msgid "You are not authorized to see this page."
+msgstr ""
+
+#: app/templates/error/403.html:10
+msgid "You do not have permission to view this page."
+msgstr ""
+
+#: app/templates/error/404.html:2 app/templates/error/404.html:7
+#: app/templates/error/410.html:7
+msgid "Page could not be found"
+msgstr ""
+
+#: app/templates/error/404.html:10 app/templates/error/410.html:10
+msgid "Check you’ve entered the correct web address."
+msgstr ""
+
+#: app/templates/error/410.html:2
+msgid "Page not found"
+msgstr ""
+
+#: app/templates/error/413.html:2
+msgid "File too big"
+msgstr ""
+
+#: app/templates/error/413.html:7
+msgid "The file you uploaded was too big"
+msgstr ""
+
+#: app/templates/error/413.html:12
+msgid "Files must be smaller than 5 MB."
+msgstr ""
+
+#: app/templates/error/413.html:15
+msgid "Go back and try again."
+msgstr ""
+
+#: app/templates/error/500.html:2
+msgid "Server error"
+msgstr ""
+
+#: app/templates/error/500.html:7
+msgid "Sorry, we’re experiencing technical difficulties"
+msgstr ""
+
+#: app/templates/error/500.html:9
+msgid "Try again later."
+msgstr ""
+
 #: app/templates/partials/tour.html:4
 msgid "Try sending yourself this example"
 msgstr "Essayez de vous envoyer cet exemple"
@@ -122,10 +179,8 @@ msgstr "puce 3"
 #: app/templates/partials/templates/guidance-formatting.html:21
 msgid ""
 "To emphasize text, use a caret. There will be a grey bar beside the text "
-"you want to emphasize"
+"you want to emphasize:"
 msgstr ""
-"Pour mettre l’accent sur du texte, utilisez un caret. Une barre grise "
-"s’affichera à côté du texte que vous voulez accentuer"
 
 #: app/templates/partials/templates/guidance-formatting.html:25
 msgid "You must tell us if your circumstances change"
@@ -174,13 +229,16 @@ msgstr ""
 "un tuteur.)"
 
 #: app/templates/partials/templates/guidance-optional-content.html:14
-msgid ""
-"For each recipient on your spreadsheet, you must indicate ‘yes’ to show "
-"or ‘no’ to hide this content"
+msgid "For each recipient on your spreadsheet, you must indicate:"
 msgstr ""
-"Pour chaque destinataire figurant sur votre feuille de calcul, vous devez"
-" indiquer « oui » pour afficher le contenu ou « non » pour masquer le "
-"contenu"
+
+#: app/templates/partials/templates/guidance-optional-content.html:15
+msgid "‘yes’ to show optional content"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-optional-content.html:16
+msgid "‘no’ to hide optional content"
+msgstr ""
 
 #: app/templates/partials/templates/guidance-personalisation.html:2
 msgid "Add personal information"
@@ -230,6 +288,10 @@ msgstr ""
 "Choisissez un client pour intégrer notre API à votre application Web ou à"
 " votre système administratif. Les liens de la documentation s’ouvrent "
 "dans un nouvel onglet."
+
+#: app/templates/views/edit-email-template.html:22
+msgid "Your recipients won’t see this:"
+msgstr ""
 
 #: app/templates/views/email-not-received.html:5
 #: app/templates/views/email-not-received.html:12
@@ -1295,4 +1357,25 @@ msgstr "La personnalisation est masquée après l’envoi"
 #~ "method for\n"
 #~ "           temporary failures"
 #~ msgstr ""
+
+#~ msgid ""
+#~ "To emphasize text, use a caret. "
+#~ "There will be a grey bar beside"
+#~ " the text you want to emphasize"
+#~ msgstr ""
+#~ "Pour mettre l’accent sur du texte, "
+#~ "utilisez un caret. Une barre grise "
+#~ "s’affichera à côté du texte que "
+#~ "vous voulez accentuer"
+
+#~ msgid ""
+#~ "For each recipient on your spreadsheet,"
+#~ " you must indicate ‘yes’ to show "
+#~ "or ‘no’ to hide this content"
+#~ msgstr ""
+#~ "Pour chaque destinataire figurant sur "
+#~ "votre feuille de calcul, vous devez "
+#~ "indiquer « oui » pour afficher le"
+#~ " contenu ou « non » pour "
+#~ "masquer le contenu"
 
