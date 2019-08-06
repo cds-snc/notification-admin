@@ -18,6 +18,7 @@ pytz==2019.1
 gunicorn==19.7.1  # pyup: ignore, >19.8 breaks eventlet patching
 eventlet==0.25.0
 notifications-python-client==5.3.0
+sentry-sdk[flask]==0.10.2
 
 Babel==2.7.0
 Flask-Babel==0.12.2
@@ -32,10 +33,10 @@ itsdangerous==0.24  # pyup: <1.0.0
 git+https://github.com/cds-snc/notifier-utils.git@34.0.8#egg=notifications-utils==34.0.8
 
 ## The following requirements were added by pip freeze:
-awscli==1.16.209
+awscli==1.16.211
 bleach==3.1.0
 boto3==1.6.16
-botocore==1.12.199
+botocore==1.12.201
 certifi==2019.6.16
 chardet==3.0.4
 Click==7.0
@@ -66,7 +67,7 @@ PyPDF2==1.26.0
 python-dateutil==2.8.0
 python-json-logger==0.1.11
 PyYAML==4.2b1
-redis==3.3.4
+redis==3.3.5
 requests==2.22.0
 rsa==3.4.2
 s3transfer==0.2.1
