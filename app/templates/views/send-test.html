@@ -23,9 +23,10 @@
   ) %}
     <div class="grid-row">
       <div class="column-two-thirds {% if form.placeholder_value.label.text == 'phone number' %}extra-tracking{% endif %}">
+        {% set hint_txt = _('Optional') %}
         {{ textbox(
           form.placeholder_value,
-          hint='Optional' if optional_placeholder else None,
+          hint=hint_txt if optional_placeholder else None,
           width='1-1',
         ) }}
       </div>
@@ -38,11 +39,12 @@
     {% if link_to_upload %}
       <p>
         <a href="{{ url_for('.send_messages', service_id=current_service.id, template_id=template.id) }}">
-          Upload a list of {{ recipient_count_label(999, template.template_type) }}
+          {{ _('Upload a list of') }} {{ recipient_count_label(999, template.template_type) }}
         </a>
       </p>
     {% endif %}
-    {{ page_footer('Continue') }}
+    {% set txt = _('Continue') %}
+    {{ page_footer(txt) }}
   {% endcall %}
 
   {{ template|string }}

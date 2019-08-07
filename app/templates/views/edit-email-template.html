@@ -6,7 +6,7 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  {{ heading_action }} email template
+  {{ heading_action }} {{_('email template') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -26,8 +26,9 @@
           {% if current_user.platform_admin %}
              {{ radios(form.process_type) }}
           {% endif %}
+          {% set txt = _('Save') %}
           {{ sticky_page_footer(
-            'Save'
+            txt
           ) }}
         </div>
         <aside class="column-whole">
