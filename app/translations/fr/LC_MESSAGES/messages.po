@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-07 10:11-0400\n"
+"POT-Creation-Date: 2019-08-07 12:01-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -634,6 +634,31 @@ msgstr "En savoir plus au sujet de"
 msgid "security"
 msgstr "la sécurité"
 
+#: app/templates/views/forgot-password.html:7
+msgid "Create a new password"
+msgstr ""
+
+#: app/templates/views/forgot-password.html:14
+msgid "Forgot your password?"
+msgstr ""
+
+#: app/templates/views/forgot-password.html:16
+msgid "We’ll send you an email to create a new password."
+msgstr ""
+
+#: app/templates/views/forgot-password.html:17
+msgid "Send email"
+msgstr ""
+
+#: app/templates/views/invite-user.html:9
+#: app/templates/views/invite-user.html:14
+msgid "Invite a team member"
+msgstr ""
+
+#: app/templates/views/invite-user.html:15
+msgid "Send invitation email"
+msgstr ""
+
 #: app/templates/views/manage-users.html:9
 #: app/templates/views/manage-users.html:15
 msgid "Team members"
@@ -1165,19 +1190,19 @@ msgstr ""
 msgid "Data retention"
 msgstr ""
 
-#: app/templates/views/service-settings.html:378
+#: app/templates/views/service-settings.html:382
 msgid "Delete this service"
 msgstr ""
 
-#: app/templates/views/service-settings.html:384
+#: app/templates/views/service-settings.html:388
 msgid "Suspend service"
 msgstr ""
 
-#: app/templates/views/service-settings.html:393
+#: app/templates/views/service-settings.html:397
 msgid "Service suspended"
 msgstr ""
 
-#: app/templates/views/service-settings.html:397
+#: app/templates/views/service-settings.html:401
 msgid "Resume service"
 msgstr ""
 
@@ -1520,8 +1545,7 @@ msgid "See all uploaded files"
 msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:9
-#: app/templates/views/dashboard/monthly.html:16
-msgid "Messages sent"
+msgid "Messages sent,"
 msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:10
@@ -1529,7 +1553,11 @@ msgid "to"
 msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:10
-msgid "financial year"
+msgid "fiscal year"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:16
+msgid "Messages sent"
 msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:26
@@ -1551,7 +1579,7 @@ msgid "failed"
 msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:73
-msgid "Financial year ends 31 March."
+msgid "Fiscal year ends 31 March."
 msgstr ""
 
 #: app/templates/views/features/emails.html:11
@@ -1757,5 +1785,11 @@ msgstr "La personnalisation est masquée après l’envoi"
 #~ msgstr ""
 
 #~ msgid "Email Branding"
+#~ msgstr ""
+
+#~ msgid "financial year"
+#~ msgstr ""
+
+#~ msgid "Financial year ends 31 March."
 #~ msgstr ""
 

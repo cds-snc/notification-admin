@@ -6,8 +6,8 @@
 {% extends "withnav_template.html" %}
 
 {% block service_page_title %}
-  Messages sent,
-  {{ selected_year }} _(('to')) {{ selected_year + 1 }} _(('fiscal year'))
+  {{ _(('Messages sent,')) }}
+  {{ selected_year }} {{ _(('to')) }} {{ selected_year + 1 }} {{ _(('fiscal year')) }}
 {% endblock %}
 
 {% block maincolumn_content %}
