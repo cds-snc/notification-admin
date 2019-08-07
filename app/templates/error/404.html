@@ -1,13 +1,13 @@
 {% extends "withoutnav_template.html" %}
-{% block per_page_title %}Page could not be found{% endblock %}
+{% block per_page_title %}{{ _('Page could not be found') }}{% endblock %}
 {% block maincolumn_content %}
     <div class="grid-row">
       <div class="column-two-thirds">
         <h1 class="heading-large">
-          Page could not be found
+          {{ _('Page could not be found') }}
         </h1>
         <p>
-          Check you’ve entered the correct web address.
+          {{ _('Check you’ve entered the correct web address.') }}
         </p>
       </div>
     </div>

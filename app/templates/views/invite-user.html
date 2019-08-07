@@ -6,13 +6,16 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Invite a team member
+  {{ _('Invite a team member') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
+{% set invite_txt = _('Invite a team member') %}
+{% set send_txt = _('Send invitation email') %}
+
   {{ page_header(
-    'Invite a team member',
+    invite_txt,
     back_link=url_for('main.manage_users', service_id=current_service.id)
   ) }}
 
@@ -22,7 +25,7 @@
 
     {% include 'views/manage-users/permissions.html' %}
 
-    {{ page_footer('Send invitation email') }}
+    {{ page_footer(send_txt) }}
 
   {% endcall %}
 

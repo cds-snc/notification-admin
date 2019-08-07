@@ -3,10 +3,10 @@
 
 <fieldset class="form-group">
   <legend class="form-label heading-small">
-    Permissions
+    {{ _('Permissions') }} 
   </legend>
   <span class="hint">
-    All team members can see sent messages.
+    {{ _('All team members can see sent messages.') }}
   </span>
   {% for field in form.permissions_fields %}
     {{ checkbox(field) }}
@@ -17,16 +17,17 @@
   {{ checkboxes_nested(form.folder_permissions, form.folder_permissions.children(), hide_legend=True, collapsible_opts={ 'field': 'folder' }) }}
 {% elif user and user.platform_admin %}
   <p class="bottom-gutter">
-    Platform admin users can access all template folders.
+    {{ _('Platform admin users can access all template folders.') }}
   </p>
 {% endif %}
 
 {% if service_has_email_auth %}
+{% set hint_txt = _('Not available because this team member hasn’t added a phone&nbsp;number to their profile') %}
   {% if not mobile_number %}
     {{ radios(
       form.login_authentication,
       disable=['sms_auth'],
-      option_hints={'sms_auth': 'Not available because this team member hasn’t added a phone&nbsp;number to their profile'|safe}
+      option_hints={'sms_auth': hint_txt|safe}
     ) }}
   {% else %}
     {{ radios(form.login_authentication) }}
