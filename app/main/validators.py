@@ -1,4 +1,5 @@
 import re
+import time
 
 import pwnedpasswords
 from flask import current_app
@@ -35,6 +36,7 @@ class Blacklist:
                         return
 
                 except Exception:
+                    time.sleep(0.5)
                     pass
 
             if hibp_bad_password_found:
