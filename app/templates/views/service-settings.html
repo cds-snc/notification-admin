@@ -6,28 +6,28 @@
   {{ _('Settings') }}
 {% endblock %}
 
+{% set change_txt = _('Change') %}
+
 {% block maincolumn_content %}
 
     <h1 class="heading-medium">{{ _('Settings') }}</h1>
 
     <div class="bottom-gutter-3-2 settings-table body-copy-table">
-      {% set caption_txt = _('General') %}
+      {% set caption = _('General') %}
       {% set heading_1 = _('Label') %}
       {% set heading_2 = _('Value') %}
       {% set heading_3 = _('Action') %}
 
       {% call mapping_table(
-        caption=caption_txt,
+        caption=caption,
         field_headings=[heading_1, heading_2, heading_3],
         field_headings_visible=False,
         caption_visible=False
       ) %}
 
         {% call row() %}
-          {% set heading_1 = _('Service name') %}
-          {% set change_txt = _('Change') %}
-
-          {{ text_field(heading_1) }}
+          {% set txt = _('Service name') %}
+          {{ text_field(txt) }}
           {{ text_field(current_service.name) }}
           {{ edit_field(
               change_txt,
@@ -41,13 +41,12 @@
           {% set txt = _('Sign-in method') %}
           {{ text_field(txt) }}
           {% set txt = _('Email link or text message code') %}
-          {% set txt_code = _('Text message code') %}
+          {% set else_txt = _('Text message code') %}
           {{ text_field(
             txt
             if 'email_auth' in current_service.permissions
-            else txt_code
+            else else_txt
           ) }}
-          {% set change_txt = _('Change') %}
           {{ edit_field(
               change_txt,
               url_for('.service_set_auth_type',
@@ -56,10 +55,10 @@
             )
           }}
         {% endcall %}
-        {% set change_txt = _('Change') %}
-        {% set contact_txt = _('Contact details') %}
+
         {% call settings_row(if_has_permission='upload_document') %}
-          {{ text_field(contact_txt) }}
+          {% set txt = _('Contact details') %}
+          {{ text_field(txt) }}
           {{ text_field(current_service.contact_link, truncate=true) }}
           {{ edit_field(
               change_txt,
@@ -71,10 +70,13 @@
         {% endcall %}
 
       {% endcall %}
+
+
       {% set caption = _('Email settings') %}
       {% set heading_1 = _('Label') %}
       {% set heading_2 = _('Value') %}
       {% set heading_3 = _('Action') %}
+
       {% call mapping_table(
         caption=caption,
         field_headings=[heading_1, heading_2, heading_3],
@@ -83,9 +85,8 @@
       ) %}
 
         {% call row() %}
-          {% set send_txt = _('Email settings') %}
-          {% set change_txt = _('Change') %}
-          {{ text_field(send_txt) }}
+          {% set txt = _('Send emails') %}
+          {{ text_field(txt) }}
           {{ boolean_field('email' in current_service.permissions) }}
           {{ edit_field(
             change_txt,
@@ -99,31 +100,32 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='email') %}
-          {% set reply_txt = _('Reply-to email addresses') %}
-          {% set not_set_txt = _('Not set') %}
-          {{ text_field(reply_txt) }}
+          {% set txt = _('Reply-to email addresses') %}
+          {% set not_set = _('Not set') %}
+          {{ text_field(txt) }}
           {% call field(status='default' if current_service.count_email_reply_to_addresses == 0 else '') %}
-            {{ current_service.default_email_reply_to_address or not_set_txt }}
+            {{ current_service.default_email_reply_to_address or not_set }}
             {% if current_service.count_email_reply_to_addresses > 1 %}
               <div class="hint">
                 {{ '…and %d more' | format(current_service.count_email_reply_to_addresses - 1) }}
               </div>
             {% endif %}
           {% endcall %}
-          {% set manage_txt = _('Manage') %}
+          {% set txt = _('Manage') %}
           {{ edit_field(
-              manage_txt,
+              txt,
               url_for('.service_email_reply_to',
               service_id=current_service.id),
               permissions=['manage_service','manage_api_keys']
             )
           }}
         {% endcall %}
-        {% set change_txt = _('Change') %}
+
         {% call settings_row(if_has_permission='email') %}
-          {% set branding_txt = _('Email branding') %}
-          {% set your_branding_txt = _('Email branding') %}
-          {{ text_field('Your branding<br> ({})'.format(current_service.email_branding_name)|safe if current_service.email_branding else current_service.email_branding_name) }}
+          {% set txt = _('Email branding') %}
+          {{ text_field(txt) }}
+          {% set txt = _('Your branding<br> ({})') %}
+          {{ text_field(txt.format(current_service.email_branding_name)|safe if current_service.email_branding else current_service.email_branding_name) }}
           {{ edit_field(
             change_txt,
             url_for('.branding_request', service_id=current_service.id),
@@ -133,18 +135,22 @@
         {% endcall %}
 
       {% endcall %}
-      {% set change_txt = _('Change') %}
+
       {% set caption = _('Text message settings') %}
+      {% set heading_1 = _('Label') %}
+      {% set heading_2 = _('Value') %}
+      {% set heading_3 = _('Action') %}
+
       {% call mapping_table(
         caption=caption,
-        field_headings=['Label', 'Value', 'Action'],
+        field_headings=[heading_1, heading_2, heading_3],
         field_headings_visible=False,
         caption_visible=True
       ) %}
 
         {% call row() %}
-          {% set send_text = _('Send text messages') %}
-          {{ text_field(send_text) }}
+          {% set txt = _('Send text messages') %}
+          {{ text_field(txt) }}
           {{ boolean_field('sms' in current_service.permissions) }}
           {{ edit_field(
             change_txt,
@@ -158,9 +164,10 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {% set text = _('Text message senders') %}
-          {{ text_field(text) }}
-          {% call field(status='default' if current_service.default_sms_sender == "None" else '') %}
+          {% set txt = _('Text message senders') %}
+          {% set default = _('default') %}
+          {{ text_field(txt) }}
+          {% call field(status=default if current_service.default_sms_sender == "None" else '') %}
             {{ current_service.default_sms_sender | string | nl2br | safe if current_service.default_sms_sender else 'None'}}
             {% if current_service.count_sms_senders > 1 %}
               <div class="hint">
@@ -168,9 +175,9 @@
               </div>
             {% endif %}
           {% endcall %}
-          {% set manage_text = _('Manage') %}
+          {% set txt = _('Manage') %}
           {{ edit_field(
-              manage_text,
+              txt,
               url_for('.service_sms_senders',
               service_id=current_service.id),
               permissions=['manage_service','manage_api_keys']
@@ -179,10 +186,9 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {% set text = _('Start text messages with service name') %}
-          {{ text_field(text) }}
+          {% set txt = _('Start text messages with service name') %}
+          {{ text_field(txt) }}
           {{ boolean_field(current_service.prefix_sms) }}
-          {% set change_txt = _('Change') %}
           {{ edit_field(
               change_txt,
               url_for('.service_set_sms_prefix',
@@ -193,10 +199,9 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {% set text = _('Send international text messages') %}
-          {{ text_field(text) }}
+          {% set txt = _('Send international text messages') %}
+          {{ text_field(txt) }}
           {{ boolean_field('international_sms' in current_service.permissions) }}
-          {% set change_txt = _('Change') %}
           {{ edit_field(
               change_txt,
               url_for('.service_set_international_sms',
@@ -207,10 +212,9 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {% set text = _('Receive text messages') %}
-          {{ text_field(text) }}
+          {% set txt = _('Receive text messages') %}
+          {{ text_field(txt) }}
           {{ boolean_field('inbound_sms' in current_service.permissions) }}
-          {% set change_txt = _('Change') %}
           {{ edit_field(
               change_txt,
               url_for('.service_set_inbound_sms',
@@ -221,72 +225,13 @@
         {% endcall %}
 
       {% endcall %}
-      <!--
-      {% call mapping_table(
-        caption='Letter settings',
-        field_headings=['Label', 'Value', 'Action'],
-        field_headings_visible=False,
-        caption_visible=True
-      ) %}
-
-        {% call row() %}
-          {{ text_field('Send letters') }}
-          {{ boolean_field('letter' in current_service.permissions) }}
-          {{ edit_field(
-            'Change',
-            url_for(
-              '.service_set_channel',
-              channel='letter',
-              service_id=current_service.id
-            ),
-            permissions=['manage_service']
-          )}}
-        {% endcall %}
-
-        {% call settings_row(if_has_permission='letter') %}
-          {{ text_field('Sender addresses') }}
-          {% call field(status='' if current_service.count_letter_contact_details else 'default') %}
-            {% if current_service.default_letter_contact_block %}
-              {{ current_service.default_letter_contact_block_html }}
-            {% elif current_service.count_letter_contact_details %}
-              Blank
-            {% else %}
-              Not set
-            {% endif %}
-            {% if current_service.count_letter_contact_details > 1 %}
-              <div class="hint">
-                {{ '…and %d more' | format(current_service.count_letter_contact_details - 1) }}
-              </div>
-            {% endif %}
-          {% endcall %}
-          {{ edit_field(
-              'Manage',
-              url_for('.service_letter_contact_details',
-              service_id=current_service.id),
-              permissions=['manage_service','manage_api_keys']
-          )
-          }}
-        {% endcall %}
-
-        {% call settings_row(if_has_permission='letter') %}
-          {{ text_field('Letter branding') }}
-          {{ optional_text_field(current_service.letter_branding.name) }}
-          {{ edit_field(
-            'Change',
-            url_for('.request_letter_branding', service_id=current_service.id),
-            permissions=['manage_service']
-          )}}
-        {% endcall %}
-
-      {% endcall %}
-    </div>
-  -->
+     
     {% if current_service.trial_mode %}
       <h2 class="heading-medium top-gutter-0">{{ _('Your service is in trial mode') }}</h2>
 
       <ul class='list list-bullet'>
         <li>{{ _('you can only send messages to yourself') }}</li>
-        <li>{{ _('you can add people to your team, then you can send messages to them too') }}</li>
+        <li>{{ _('you can add people to your team, then you can send messages to them tool') }}</li>
         <li>{{ _('you can only send') }} {{ current_service.message_limit }} {{ _('messages per day') }}</li>
       </ul>
 
@@ -304,8 +249,8 @@
 
       <p>
         {{ _('You can send up to') }}
-        {{ "{:,}".format(current_service.message_limit) }} {{ _('messages') }}
-        per day.
+        {{ "{:,}".format(current_service.message_limit) }} {{ _('messages
+        per day.') }}
       </p>
       <p>
         {{ _('Problems or comments?') }}
@@ -320,39 +265,51 @@
 
         <h2 class="heading-medium">{{ _('Platform admin settings') }}</h2>
 
+        {% set caption = _('Settings') %}
+        {% set heading_1 = _('Label') %}
+        {% set heading_2 = _('Value') %}
+        {% set heading_3 = _('Action') %}
+
         {% call mapping_table(
-          caption='Settings',
-          field_headings=['Label', 'Value', 'Action'],
+          caption=caption,
+          field_headings=[heading_1, heading_2, heading_3],
           field_headings_visible=False,
           caption_visible=False
         ) %}
 
           {% call row() %}
-            {{ text_field('Live')}}
+            {% set txt = _('Live') %}
+            {{ text_field(txt)}}
             {% if current_service.trial_mode and not current_service.organisation %}
-              {{ text_field('No (organisation must be set first)') }}
+              {% set txt = _('No (organisation must be set first)') %}
+              {{ text_field(txt) }}
               {{ text_field('') }}
             {% else %}
               {{ boolean_field(not current_service.trial_mode) }}
-              {{ edit_field('Change', url_for('.service_switch_live', service_id=current_service.id)) }}
+              {{ edit_field(change_txt, url_for('.service_switch_live', service_id=current_service.id)) }}
             {% endif %}
           {% endcall %}
 
           {% call row() %}
-            {{ text_field('Count in list of live services')}}
-            {{ text_field('Yes' if current_service.count_as_live else 'No') }}
-            {{ edit_field('Change', url_for('.service_switch_count_as_live', service_id=current_service.id)) }}
+            {% set txt = _('Count in list of live services') %}
+            {% set yes_txt = _('Yes') %}
+            {% set no_txt = _('No') %}
+            {{ text_field(txt)}}
+            {{ text_field(yes_txt if current_service.count_as_live else no_txt) }}
+            {{ edit_field(change_txt, url_for('.service_switch_count_as_live', service_id=current_service.id)) }}
           {% endcall %}
 
           {% call row() %}
-            {{ text_field('Organisation')}}
+            {% set txt = _('Organisation') %}
+            {{ text_field(txt)}}
             {% call field() %}
               {% if current_service.organisation_id %}
                 <a href="{{ url_for('main.organisation_dashboard', org_id=current_service.organisation_id) }}">
                   {{ current_service.organisation.name }}
                 </a>
               {% else %}
-                <span class="table-field-status-default">{{ _('Not set') }}</span>
+                {% set txt = _('Not set') %}
+                <span class="table-field-status-default">{{txt}}</span>
               {% endif %}
               {% if current_service.organisation_type %}
                 <div class="hint">
@@ -368,30 +325,34 @@
                 </div>
               {% endif %}
             {% endcall %}
-            {{ edit_field('Change', url_for('.link_service_to_organisation', service_id=current_service.id)) }}
+            {{ edit_field(change_txt, url_for('.link_service_to_organisation', service_id=current_service.id)) }}
           {% endcall %}
 
           {% call row() %}
-            {{ text_field('Free text message allowance')}}
+            {% set txt = _('Free text message allowance') %}
+            {{ text_field(txt)}}
             {{ text_field('{:,}'.format(current_service.free_sms_fragment_limit)) }}
-            {{ edit_field('Change', url_for('.set_free_sms_allowance', service_id=current_service.id)) }}
+            {{ edit_field(change_txt, url_for('.set_free_sms_allowance', service_id=current_service.id)) }}
           {% endcall %}
           {% call row() %}
-            {{ text_field('Email branding' )}}
+            {% set txt = _('Email branding') %}
+            {{ text_field(txt)}}
             {{ text_field(current_service.email_branding_name) }}
-            {{ edit_field('Change', url_for('.service_set_email_branding', service_id=current_service.id)) }}
+            {{ edit_field(change_txt, url_for('.service_set_email_branding', service_id=current_service.id)) }}
           {% endcall %}
           {% call row() %}
-            {{ text_field('Letter branding')}}
+            {% set txt = _('Letter branding') %}
+            {{ text_field(txt)}}
             {{ optional_text_field(current_service.letter_branding.name) }}
-            {{ edit_field('Change', url_for('.service_set_letter_branding', service_id=current_service.id)) }}
+            {{ edit_field(change_txt, url_for('.service_set_letter_branding', service_id=current_service.id)) }}
           {% endcall %}
           {% call row() %}
-            {{ text_field('Data retention')}}
+            {% set txt = _('Data retention') %}
+            {{ text_field(txt)}}
             {% call field() %}
                 {{ current_service.data_retention | join(', ', attribute='notification_type') }}
             {% endcall %}
-            {{ edit_field('Change', url_for('.data_retention', service_id=current_service.id)) }}
+            {{ edit_field(change_txt, url_for('.data_retention', service_id=current_service.id)) }}
           {% endcall %}
 
           {% for permission in service_permissions %}
@@ -399,7 +360,7 @@
               {% call row() %}
                 {{ text_field(service_permissions[permission].title)}}
                 {{ boolean_field(current_service.has_permission(permission)) }}
-                {{ edit_field('Change', url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, permission=permission if not service_permissions[permission].endpoint else None)) }}
+                {{ edit_field(change_txt, url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, permission=permission if not service_permissions[permission].endpoint else None)) }}
               {% endcall %}
             {% endif %}
           {% endfor %}
