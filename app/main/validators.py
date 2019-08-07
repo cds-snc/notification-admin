@@ -23,7 +23,6 @@ class Blacklist:
         self.message = message
 
     def __call__(self, form, field):
-        import pdb; pdb.set_trace()
         if current_app.config.get('HIPB_ENABLED', None):
             hibp_bad_password_found = False
             for _ in range(0, 3):  # Try 3 times. If the HIPB API is down then fall back to the old banlist.
