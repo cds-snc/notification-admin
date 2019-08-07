@@ -73,7 +73,7 @@ def mock_get_service_settings_page_common(
         'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
-        'Receive text messages Off Change',
+        # 'Receive text messages Off Change',
 
     ]),
     (platform_admin_user, [
@@ -92,7 +92,7 @@ def mock_get_service_settings_page_common(
         'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
-        'Receive text messages Off Change',
+        # 'Receive text messages Off Change',
 
         'Label Value Action',
         'Live Off Change',
@@ -102,7 +102,7 @@ def mock_get_service_settings_page_common(
         'Email branding default Change',
         'Letter branding Not set Change',
         'Data retention email Change',
-        'Receive inbound SMS Off Change',
+        # 'Receive inbound SMS Off Change',
         'User auth type editing Off Change',
         'Uploading documents Off Change',
     ]),
@@ -154,10 +154,10 @@ def test_no_go_live_link_for_service_without_organisation(
     page = client_request.get('main.service_settings', service_id=SERVICE_ONE_ID)
 
     assert page.find('h1').text == 'Settings'
-    assert normalize_spaces(page.select('tr')[14].text) == (
+    assert normalize_spaces(page.select('tr')[13].text) == (
         'Live No (organisation must be set first)'
     )
-    assert normalize_spaces(page.select('tr')[16].text) == (
+    assert normalize_spaces(page.select('tr')[15].text) == (
         'Organisation Not set Central government Change'
     )
 
@@ -182,7 +182,7 @@ def test_organisation_name_links_to_org_dashboard(
         'main.service_settings', service_id=SERVICE_ONE_ID
     )
 
-    org_row = response.select('tr')[16]
+    org_row = response.select('tr')[15]
     assert org_row.find('a')['href'] == url_for('main.organisation_dashboard', org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find('a').text) == 'Test Organisation'
 
@@ -203,7 +203,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages On Change',
-        'Receive text messages On Change',
+        # 'Receive text messages On Change',
 
     ]),
     (['email', 'sms', 'email_auth'], [
@@ -221,7 +221,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
-        'Receive text messages Off Change',
+        # 'Receive text messages Off Change',
 
     ]),
 ])

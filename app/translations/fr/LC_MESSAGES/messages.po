@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-06 11:55-0400\n"
+"POT-Creation-Date: 2019-08-07 10:11-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -68,6 +68,72 @@ msgstr "mode de recherche"
 #: app/templates/components/api-key.html:4
 msgid "API data:"
 msgstr "Données de l’API :"
+
+#: app/templates/components/message-count-label.html:4
+msgid "message"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:6
+msgid "messages"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:11
+msgid "text message"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:13
+#: app/templates/views/features.html:16
+msgid "text messages"
+msgstr "messages textes"
+
+#: app/templates/components/message-count-label.html:17
+msgid "email"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:19
+#: app/templates/views/features.html:15
+msgid "emails"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:23
+msgid "letter"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:25
+msgid "letters"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:33
+msgid "recipient"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:35
+msgid "recipients"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:40
+msgid "phone number"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:42
+msgid "phone numbers"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:46
+msgid "email address"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:48
+msgid "email addresses"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:52
+msgid "address"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:54
+msgid "addresses"
+msgstr ""
 
 #: app/templates/error/400.html:2
 msgid "Bad Request"
@@ -268,6 +334,39 @@ msgstr "Vous pouvez changer cela plus tard"
 msgid "Add service"
 msgstr "Ajouter un service"
 
+#: app/templates/views/choose-account.html:51
+#: app/templates/views/choose-account.html:57
+msgid "Choose service"
+msgstr ""
+
+#: app/templates/views/choose-account.html:66
+msgid "Platform admin"
+msgstr ""
+
+#: app/templates/views/choose-account.html:71
+msgid "All organisations"
+msgstr ""
+
+#: app/templates/views/choose-account.html:73
+msgid "organisations"
+msgstr ""
+
+#: app/templates/views/choose-account.html:73
+msgid "live services"
+msgstr ""
+
+#: app/templates/views/choose-account.html:80
+msgid "Live services"
+msgstr ""
+
+#: app/templates/views/choose-account.html:95
+msgid "Trial mode services"
+msgstr ""
+
+#: app/templates/views/choose-account.html:115
+msgid "Add a new service"
+msgstr ""
+
 #: app/templates/views/documentation.html:9
 msgid "Documentation"
 msgstr ""
@@ -332,14 +431,6 @@ msgstr ""
 #: app/templates/views/features.html:13
 msgid "Notification makes it easy to create, customize and send:"
 msgstr "Notification facilite la création, la personnalisation et l’envoi de :"
-
-#: app/templates/views/features.html:15
-msgid "emails"
-msgstr ""
-
-#: app/templates/views/features.html:16
-msgid "text messages"
-msgstr "messages textes"
 
 #: app/templates/views/features.html:19
 msgid "You do not need technical knowledge to use Notification."
@@ -543,15 +634,6 @@ msgstr "En savoir plus au sujet de"
 msgid "security"
 msgstr "la sécurité"
 
-#: app/templates/views/invite-user.html:9
-#: app/templates/views/invite-user.html:14
-msgid "Invite a team member"
-msgstr ""
-
-#: app/templates/views/invite-user.html:15
-msgid "Send invitation email"
-msgstr ""
-
 #: app/templates/views/manage-users.html:9
 #: app/templates/views/manage-users.html:15
 msgid "Team members"
@@ -636,6 +718,7 @@ msgstr ""
 msgid "technical documentation):"
 msgstr ""
 
+#: app/templates/views/dashboard/monthly.html:28
 #: app/templates/views/features/emails.html:5
 #: app/templates/views/features/emails.html:10
 #: app/templates/views/message-status.html:23
@@ -871,6 +954,231 @@ msgstr ""
 
 #: app/templates/views/security.html:48
 msgid "if your team needs email links instead of text message codes."
+msgstr ""
+
+#: app/templates/views/service-settings.html:6
+#: app/templates/views/service-settings.html:13
+#: app/templates/views/service-settings.html:268
+msgid "Settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:9
+msgid "Change"
+msgstr ""
+
+#: app/templates/views/service-settings.html:16
+msgid "General"
+msgstr ""
+
+#: app/templates/views/service-settings.html:17
+#: app/templates/views/service-settings.html:76
+#: app/templates/views/service-settings.html:140
+#: app/templates/views/service-settings.html:269
+msgid "Label"
+msgstr ""
+
+#: app/templates/views/service-settings.html:18
+#: app/templates/views/service-settings.html:77
+#: app/templates/views/service-settings.html:141
+#: app/templates/views/service-settings.html:270
+msgid "Value"
+msgstr ""
+
+#: app/templates/views/service-settings.html:19
+#: app/templates/views/service-settings.html:78
+#: app/templates/views/service-settings.html:142
+#: app/templates/views/service-settings.html:271
+msgid "Action"
+msgstr ""
+
+#: app/templates/views/service-settings.html:29
+msgid "Service name"
+msgstr ""
+
+#: app/templates/views/service-settings.html:41
+msgid "Sign-in method"
+msgstr ""
+
+#: app/templates/views/service-settings.html:43
+msgid "Email link or text message code"
+msgstr ""
+
+#: app/templates/views/service-settings.html:44
+msgid "Text message code"
+msgstr ""
+
+#: app/templates/views/service-settings.html:60
+msgid "Contact details"
+msgstr ""
+
+#: app/templates/views/service-settings.html:75
+msgid "Email settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:88
+msgid "Send emails"
+msgstr ""
+
+#: app/templates/views/service-settings.html:103
+msgid "Reply-to email addresses"
+msgstr ""
+
+#: app/templates/views/service-settings.html:104
+#: app/templates/views/service-settings.html:311
+msgid "Not set"
+msgstr ""
+
+#: app/templates/views/service-settings.html:114
+#: app/templates/views/service-settings.html:178
+msgid "Manage"
+msgstr ""
+
+#: app/templates/views/service-settings.html:125
+#: app/templates/views/service-settings.html:338
+msgid "Email branding"
+msgstr ""
+
+#: app/templates/views/service-settings.html:127
+msgid "Your branding<br> ({})"
+msgstr "FR Your branding<br> ({})"
+
+#: app/templates/views/service-settings.html:139
+msgid "Text message settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:152
+msgid "Send text messages"
+msgstr ""
+
+#: app/templates/views/service-settings.html:167
+msgid "Text message senders"
+msgstr ""
+
+#: app/templates/views/service-settings.html:168
+msgid "default"
+msgstr ""
+
+#: app/templates/views/service-settings.html:189
+msgid "Start text messages with service name"
+msgstr ""
+
+#: app/templates/views/service-settings.html:202
+msgid "Send international text messages"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:24
+#: app/templates/views/service-settings.html:215
+msgid "Receive text messages"
+msgstr ""
+
+#: app/templates/views/service-settings.html:230
+msgid "Your service is in trial mode"
+msgstr ""
+
+#: app/templates/views/service-settings.html:233
+msgid "you can only send messages to yourself"
+msgstr ""
+
+#: app/templates/views/service-settings.html:234
+msgid "you can add people to your team, then you can send messages to them tool"
+msgstr ""
+
+#: app/templates/views/service-settings.html:235
+msgid "you can only send"
+msgstr ""
+
+#: app/templates/views/service-settings.html:235
+msgid "messages per day"
+msgstr ""
+
+#: app/templates/views/service-settings.html:240
+msgid "To remove these restrictions, you can send us a"
+msgstr ""
+
+#: app/templates/views/service-settings.html:241
+msgid "request to go live"
+msgstr ""
+
+#: app/templates/views/service-settings.html:243
+msgid "Your service manager can ask to have these restrictions removed."
+msgstr ""
+
+#: app/templates/views/service-settings.html:248
+msgid "Your service is live"
+msgstr ""
+
+#: app/templates/views/service-settings.html:251
+msgid "You can send up to"
+msgstr ""
+
+#: app/templates/views/service-settings.html:252
+msgid ""
+"messages\n"
+"        per day."
+msgstr ""
+
+#: app/templates/views/service-settings.html:256
+msgid "Problems or comments?"
+msgstr ""
+
+#: app/templates/views/service-settings.html:257
+msgid "Give feedback"
+msgstr ""
+
+#: app/templates/views/service-settings.html:266
+msgid "Platform admin settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:281
+msgid "Live"
+msgstr ""
+
+#: app/templates/views/service-settings.html:284
+msgid "No (organisation must be set first)"
+msgstr ""
+
+#: app/templates/views/service-settings.html:294
+msgid "Count in list of live services"
+msgstr ""
+
+#: app/templates/views/service-settings.html:295
+msgid "Yes"
+msgstr ""
+
+#: app/templates/views/service-settings.html:296
+msgid "No"
+msgstr ""
+
+#: app/templates/views/service-settings.html:303
+msgid "Organisation"
+msgstr ""
+
+#: app/templates/views/service-settings.html:332
+msgid "Free text message allowance"
+msgstr ""
+
+#: app/templates/views/service-settings.html:344
+msgid "Letter branding"
+msgstr ""
+
+#: app/templates/views/service-settings.html:350
+msgid "Data retention"
+msgstr ""
+
+#: app/templates/views/service-settings.html:378
+msgid "Delete this service"
+msgstr ""
+
+#: app/templates/views/service-settings.html:384
+msgid "Suspend service"
+msgstr ""
+
+#: app/templates/views/service-settings.html:393
+msgid "Service suspended"
+msgstr ""
+
+#: app/templates/views/service-settings.html:397
+msgid "Resume service"
 msgstr ""
 
 #: app/templates/views/signedout.html:18
@@ -1190,12 +1498,60 @@ msgstr ""
 msgid "are included in the safelist automatically."
 msgstr ""
 
+#: app/templates/views/dashboard/dashboard.html:10
+#: app/templates/views/dashboard/dashboard.html:17
+msgid "Dashboard"
+msgstr ""
+
+#: app/templates/views/dashboard/dashboard.html:25
+msgid "In the last 7 days"
+msgstr ""
+
 #: app/templates/views/dashboard/dashboard.html:31
 msgid "Check messages sent per month"
 msgstr "Voir les modèles utilisés par mois"
 
 #: app/templates/views/dashboard/dashboard.html:39
 msgid "Check templates used by month"
+msgstr ""
+
+#: app/templates/views/dashboard/dashboard.html:48
+msgid "See all uploaded files"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:9
+#: app/templates/views/dashboard/monthly.html:16
+msgid "Messages sent"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:10
+msgid "to"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:10
+msgid "financial year"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:26
+msgid "Total spend"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:27
+msgid "Month"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:29
+#: app/templates/views/features/text-messages.html:5
+#: app/templates/views/features/text-messages.html:10
+msgid "Text messages"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:60
+msgid "failed"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:73
+msgid "Financial year ends 31 March."
 msgstr ""
 
 #: app/templates/views/features/emails.html:11
@@ -1258,11 +1614,6 @@ msgstr ""
 msgid "You can add reply-to addresses in your service settings."
 msgstr ""
 
-#: app/templates/views/features/text-messages.html:5
-#: app/templates/views/features/text-messages.html:10
-msgid "Text messages"
-msgstr ""
-
 #: app/templates/views/features/text-messages.html:11
 msgid ""
 "Send thousands of free text messages to Canadian and international "
@@ -1283,10 +1634,6 @@ msgstr ""
 
 #: app/templates/views/features/text-messages.html:22
 msgid "to send text messages automatically"
-msgstr ""
-
-#: app/templates/views/features/text-messages.html:24
-msgid "Receive text messages"
 msgstr ""
 
 #: app/templates/views/features/text-messages.html:25
@@ -1402,4 +1749,13 @@ msgstr "La personnalisation est masquée après l’envoi"
 #~ "indiquer « oui » pour afficher le"
 #~ " contenu ou « non » pour "
 #~ "masquer le contenu"
+
+#~ msgid "you can add people to your team, then you can send messages to them too"
+#~ msgstr ""
+
+#~ msgid "messages"
+#~ msgstr ""
+
+#~ msgid "Email Branding"
+#~ msgstr ""
 
