@@ -7,7 +7,7 @@
 
 {% block service_page_title %}
   Messages sent,
-  {{ selected_year }} to {{ selected_year + 1 }} financial year
+  {{ selected_year }} _(('to')) {{ selected_year + 1 }} _(('fiscal year'))
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -66,7 +66,7 @@
   {% endif %}
 
   <p class="align-with-heading-copy">
-    Financial year ends 31 March.
+    {{ _(('Fiscal year ends 31 March.')) }}
   </p>
 
 {% endblock %}
