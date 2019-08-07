@@ -4,18 +4,18 @@
 {% extends "withnav_template.html" %}
 
 {% block service_page_title %}
-  Copy an existing template
+  {{ _('Copy an existing template') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
     <div class="bottom-gutter-1-2">
-      <h1 class="heading-large">Copy an existing template</h1>
+      <h1 class="heading-large">{{ _('Copy an existing template') }}</h1>
       {{ copy_folder_path(template_folder_path, current_service.id, from_service, current_user) }}
     </div>
     {% if not services_templates_and_folders.templates_to_show %}
       <p class="template-list-empty">
-        This folder is empty
+        {{ _('This folder is empty') }}
       </p>
     {% else %}
       {{ live_search(target_selector='#template-list .template-list-item', show=True, form=search_form) }}
