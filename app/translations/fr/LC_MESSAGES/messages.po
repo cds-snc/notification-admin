@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-07 13:27-0400\n"
+"POT-Creation-Date: 2019-08-07 14:41-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -53,11 +53,11 @@ msgstr "État du message"
 msgid "Security"
 msgstr "Sécurité"
 
-#: app/templates/admin_template.html:113
+#: app/templates/admin_template.html:113 app/templates/views/privacy.html:9
 msgid "Privacy"
 msgstr "Confidentialité"
 
-#: app/templates/admin_template.html:114
+#: app/templates/admin_template.html:114 app/templates/views/cookies.html:11
 msgid "Cookies"
 msgstr "Témoins"
 
@@ -334,37 +334,162 @@ msgstr "Vous pouvez changer cela plus tard"
 msgid "Add service"
 msgstr "Ajouter un service"
 
-#: app/templates/views/choose-account.html:51
-#: app/templates/views/choose-account.html:57
+#: app/templates/views/cancelled-invitation.html:2
+msgid "Invitation has been cancelled"
+msgstr ""
+
+#: app/templates/views/cancelled-invitation.html:7
+msgid "The invitation you were sent has been cancelled"
+msgstr ""
+
+#: app/templates/views/cancelled-invitation.html:10
+msgid "decided to cancel this invitation."
+msgstr ""
+
+#: app/templates/views/cancelled-invitation.html:13
+msgid "If you need access to"
+msgstr ""
+
+#: app/templates/views/cancelled-invitation.html:13
+msgid ", you’ll have to ask them to invite you again."
+msgstr ""
+
+#: app/templates/views/change-email-continue.html:4
+#: app/templates/views/password-reset-sent.html:4
+#: app/templates/views/password-reset-sent.html:11
+#: app/templates/views/registration-continue.html:4
+#: app/templates/views/resend-email-verification.html:6
+#: app/templates/views/resend-email-verification.html:11
+msgid "Check your email"
+msgstr ""
+
+#: app/templates/views/change-email-continue.html:9
+#: app/templates/views/registration-continue.html:9
+msgid "Check your email​"
+msgstr ""
+
+#: app/templates/views/change-email-continue.html:10
+#: app/templates/views/registration-continue.html:10
+msgid "An email has been sent to"
+msgstr ""
+
+#: app/templates/views/change-email-continue.html:11
+msgid "Click the link in the email to confirm the change to your email address."
+msgstr ""
+
+#: app/templates/views/choose-account.html:25
+msgid "live service"
+msgstr ""
+
+#: app/templates/views/choose-account.html:45
+#: app/templates/views/choose-account.html:116
+msgid "Add a new service"
+msgstr ""
+
+#: app/templates/views/choose-account.html:52
+#: app/templates/views/choose-account.html:58
 msgid "Choose service"
 msgstr ""
 
-#: app/templates/views/choose-account.html:66
+#: app/templates/views/choose-account.html:67
 msgid "Platform admin"
 msgstr ""
 
-#: app/templates/views/choose-account.html:71
+#: app/templates/views/choose-account.html:72
 msgid "All organisations"
 msgstr ""
 
-#: app/templates/views/choose-account.html:73
+#: app/templates/views/choose-account.html:74
 msgid "organisations"
 msgstr ""
 
-#: app/templates/views/choose-account.html:73
+#: app/templates/views/choose-account.html:74
 msgid "live services"
 msgstr ""
 
-#: app/templates/views/choose-account.html:80
+#: app/templates/views/choose-account.html:81
 msgid "Live services"
 msgstr ""
 
-#: app/templates/views/choose-account.html:95
+#: app/templates/views/choose-account.html:96
 msgid "Trial mode services"
 msgstr ""
 
-#: app/templates/views/choose-account.html:115
-msgid "Add a new service"
+#: app/templates/views/cookies.html:13
+msgid "Notification puts small files (known as ‘cookies’) onto your computer."
+msgstr ""
+
+#: app/templates/views/cookies.html:15
+msgid "These cookies are used to remember you once you’ve logged in."
+msgstr ""
+
+#: app/templates/views/cookies.html:17
+msgid "Find out"
+msgstr ""
+
+#: app/templates/views/cookies.html:17
+msgid "how to manage cookies"
+msgstr ""
+
+#: app/templates/views/cookies.html:20
+msgid "Session cookies"
+msgstr ""
+
+#: app/templates/views/cookies.html:22
+msgid ""
+"We store session cookies on your computer to help keep your information\n"
+"        secure while you use the service."
+msgstr ""
+
+#: app/templates/views/cookies.html:28 app/templates/views/cookies.html:57
+#: app/templates/views/user-profile.html:28
+msgid "Name"
+msgstr ""
+
+#: app/templates/views/cookies.html:29 app/templates/views/cookies.html:58
+msgid "Purpose"
+msgstr ""
+
+#: app/templates/views/cookies.html:30 app/templates/views/cookies.html:59
+msgid "Expires"
+msgstr ""
+
+#: app/templates/views/cookies.html:36
+msgid "notify_admin_session"
+msgstr ""
+
+#: app/templates/views/cookies.html:39
+msgid "Used to keep you logged in"
+msgstr ""
+
+#: app/templates/views/cookies.html:42
+msgid "20 hours"
+msgstr ""
+
+#: app/templates/views/cookies.html:48
+msgid "Introductory message cookie"
+msgstr ""
+
+#: app/templates/views/cookies.html:50
+msgid ""
+"When you first use the service, you may see a pop-up ‘welcome’ message.\n"
+"        Once you’ve seen the message, we store a cookie on your computer "
+"so it\n"
+"        knows not to show it again."
+msgstr ""
+
+#: app/templates/views/cookies.html:65
+msgid "seen_cookie_message"
+msgstr ""
+
+#: app/templates/views/cookies.html:68
+msgid ""
+"Saves a message to let us know that you have seen our cookie\n"
+"                    message"
+msgstr ""
+
+#: app/templates/views/cookies.html:72
+msgid "1 month"
 msgstr ""
 
 #: app/templates/views/documentation.html:9
@@ -388,12 +513,55 @@ msgstr ""
 " votre système administratif. Les liens de la documentation s’ouvrent "
 "dans un nouvel onglet."
 
+#: app/templates/views/edit-email-template.html:9
+msgid "email template"
+msgstr ""
+
 #: app/templates/views/edit-email-template.html:22
 msgid "Your recipients won’t see this:"
 msgstr ""
 
+#: app/templates/views/edit-email-template.html:29
+#: app/templates/views/edit-letter-template.html:20
+#: app/templates/views/edit-sms-template.html:30
+msgid "Save"
+msgstr ""
+
+#: app/templates/views/edit-letter-template.html:9
+msgid "letter template"
+msgstr ""
+
+#: app/templates/views/edit-sms-template.html:9
+msgid "text message template"
+msgstr ""
+
+#: app/templates/views/edit-sms-template.html:13
+msgid "{} text message template"
+msgstr ""
+
+#: app/templates/views/edit-sms-template.html:20
+msgid "Your recipients won’t see this"
+msgstr ""
+
+#: app/templates/views/email-link-invalid.html:5
+msgid "Invalid email link"
+msgstr ""
+
+#: app/templates/views/email-link-invalid.html:12
+msgid "The link has expired"
+msgstr ""
+
+#: app/templates/views/email-link-invalid.html:14
+msgid "Sign in again"
+msgstr ""
+
+#: app/templates/views/email-link-invalid.html:14
+msgid "to get a new link."
+msgstr ""
+
 #: app/templates/views/email-not-received.html:5
 #: app/templates/views/email-not-received.html:12
+#: app/templates/views/email-not-received.html:15
 msgid "Resend email link"
 msgstr "\"msgstr \"Renvoyer un courriel"
 
@@ -441,7 +609,12 @@ msgstr ""
 #: app/templates/views/features.html:21
 #: app/templates/views/features/emails.html:13
 #: app/templates/views/features/text-messages.html:13
-#: app/templates/views/register.html:14 app/templates/views/signedout.html:24
+#: app/templates/views/register-from-invite.html:7
+#: app/templates/views/register-from-invite.html:14
+#: app/templates/views/register-from-org-invite.html:7
+#: app/templates/views/register-from-org-invite.html:14
+#: app/templates/views/register.html:7 app/templates/views/register.html:14
+#: app/templates/views/signedout.html:24
 msgid "Create an account"
 msgstr "Créez un compte"
 
@@ -635,10 +808,13 @@ msgid "security"
 msgstr "la sécurité"
 
 #: app/templates/views/forgot-password.html:7
+#: app/templates/views/new-password.html:7
+#: app/templates/views/new-password.html:16
 msgid "Create a new password"
 msgstr ""
 
 #: app/templates/views/forgot-password.html:14
+#: app/templates/views/signin.html:33
 msgid "Forgot your password?"
 msgstr ""
 
@@ -863,13 +1039,66 @@ msgid ""
 " charged for text messages that are affected by a technical failure."
 msgstr ""
 
+#: app/templates/views/new-password.html:19
+msgid "You can now create a new password for your account."
+msgstr ""
+
+#: app/templates/views/new-password.html:22
+#: app/templates/views/register-from-invite.html:29
+#: app/templates/views/register-from-org-invite.html:24
+#: app/templates/views/register.html:27 app/templates/views/send-test.html:46
+#: app/templates/views/signin.html:34 app/templates/views/two-factor.html:16
+#: app/templates/views/verify-mobile.html:22
+msgid "Continue"
+msgstr "Continuer"
+
+#: app/templates/views/new-password.html:23
+#: app/templates/views/register-from-invite.html:27
+#: app/templates/views/register-from-org-invite.html:22
+#: app/templates/views/register.html:24
+msgid "At least 8 characters"
+msgstr ""
+
+#: app/templates/views/new-password.html:29
+msgid ""
+"Message about email address does not exist. Some one needs to figure out "
+"the words here."
+msgstr ""
+
+#: app/templates/views/password-reset-sent.html:13
+msgid "Click the link in the email to reset your password."
+msgstr ""
+
+#: app/templates/views/privacy.html:4
+msgid "Privacy notice: how we use your data"
+msgstr ""
+
+#: app/templates/views/register-from-invite.html:16
+msgid "Your account will be created with this email address:"
+msgstr ""
+
+#: app/templates/views/register-from-invite.html:22
+#: app/templates/views/register-from-org-invite.html:19
+#: app/templates/views/register.html:20
+msgid "We’ll send you a security code by text message"
+msgstr "Nous vous enverrons un code de sécurité par message texte."
+
+#: app/templates/views/register-from-org-invite.html:15
+msgid "Your account will be created with this email:"
+msgstr ""
+
 #: app/templates/views/register.html:17
 msgid "Must be a federal government email address"
 msgstr "Veuillez entrer une adresse de courriel du gouvernement fédéral."
 
-#: app/templates/views/register.html:20
-msgid "We’ll send you a security code by text message"
-msgstr "Nous vous enverrons un code de sécurité par message texte."
+#: app/templates/views/registration-continue.html:11
+#: app/templates/views/resend-email-verification.html:13
+msgid "Click the link in the email to continue your registration."
+msgstr ""
+
+#: app/templates/views/resend-email-verification.html:12
+msgid "A new confirmation email has been sent to"
+msgstr ""
 
 #: app/templates/views/security.html:10
 msgid ""
@@ -982,6 +1211,70 @@ msgstr ""
 msgid "if your team needs email links instead of text message codes."
 msgstr ""
 
+#: app/templates/views/send-test.html:26
+msgid "Optional"
+msgstr ""
+
+#: app/templates/views/send-test.html:42 app/templates/views/send.html:9
+msgid "Upload a list of"
+msgstr ""
+
+#: app/templates/views/send.html:13
+msgid "Upload a list of {}"
+msgstr ""
+
+#: app/templates/views/send.html:20
+msgid "Choose a file"
+msgstr ""
+
+#: app/templates/views/send.html:27
+msgid "Your file needs to look like this example"
+msgstr ""
+
+#: app/templates/views/send.html:29
+msgid "Save your file as a"
+msgstr ""
+
+#: app/templates/views/send.html:30
+msgid "Comma Separated Values"
+msgstr ""
+
+#: app/templates/views/send.html:31
+msgid "Tab Separated Values"
+msgstr ""
+
+#: app/templates/views/send.html:32
+msgid "Open Document Spreadsheet"
+msgstr ""
+
+#: app/templates/views/send.html:33
+msgid "CSV"
+msgstr ""
+
+#: app/templates/views/send.html:34
+msgid "TSV"
+msgstr ""
+
+#: app/templates/views/send.html:35
+msgid "ODS"
+msgstr ""
+
+#: app/templates/views/send.html:36
+msgid "or Microsoft Excel spreadsheet"
+msgstr ""
+
+#: app/templates/views/send.html:40
+msgid "Example"
+msgstr ""
+
+#: app/templates/views/send.html:54
+msgid "Download this example"
+msgstr ""
+
+#: app/templates/views/send.html:57
+msgid "Your file will populate this template"
+msgstr ""
+
 #: app/templates/views/service-settings.html:6
 #: app/templates/views/service-settings.html:13
 #: app/templates/views/service-settings.html:267
@@ -989,6 +1282,7 @@ msgid "Settings"
 msgstr ""
 
 #: app/templates/views/service-settings.html:9
+#: app/templates/views/user-profile.html:11
 msgid "Change"
 msgstr ""
 
@@ -1000,6 +1294,7 @@ msgstr ""
 #: app/templates/views/service-settings.html:76
 #: app/templates/views/service-settings.html:140
 #: app/templates/views/service-settings.html:268
+#: app/templates/views/user-profile.html:17
 msgid "Label"
 msgstr ""
 
@@ -1007,6 +1302,7 @@ msgstr ""
 #: app/templates/views/service-settings.html:77
 #: app/templates/views/service-settings.html:141
 #: app/templates/views/service-settings.html:269
+#: app/templates/views/user-profile.html:18
 msgid "Value"
 msgstr ""
 
@@ -1014,6 +1310,7 @@ msgstr ""
 #: app/templates/views/service-settings.html:78
 #: app/templates/views/service-settings.html:142
 #: app/templates/views/service-settings.html:270
+#: app/templates/views/user-profile.html:19
 msgid "Action"
 msgstr ""
 
@@ -1118,6 +1415,7 @@ msgid "messages per day"
 msgstr ""
 
 #: app/templates/views/service-settings.html:240
+#: app/templates/views/trial-mode.html:20
 msgid "To remove these restrictions, you can"
 msgstr ""
 
@@ -1164,10 +1462,12 @@ msgid "Count in list of live services"
 msgstr ""
 
 #: app/templates/views/service-settings.html:294
+#: app/templates/views/user-profile.html:63
 msgid "Yes"
 msgstr ""
 
 #: app/templates/views/service-settings.html:295
+#: app/templates/views/user-profile.html:64
 msgid "No"
 msgstr ""
 
@@ -1201,6 +1501,10 @@ msgstr ""
 
 #: app/templates/views/service-settings.html:400
 msgid "Resume service"
+msgstr ""
+
+#: app/templates/views/signedout.html:8
+msgid "Notification"
 msgstr ""
 
 #: app/templates/views/signedout.html:18
@@ -1248,20 +1552,54 @@ msgstr ""
 "les numéros de téléphone des destinataires et Notification enverra les "
 "messages aux destinataires voulus."
 
-#: app/templates/views/signedout.html:63
+#: app/templates/views/signedout.html:56
+msgid ""
+"A screenshot of a spreadsheet with columns for email address, name and "
+"colour"
+msgstr ""
+
+#: app/templates/views/signedout.html:64
 msgid "Integrate Notification with your web application or back office system."
 msgstr ""
 "Intégrer Notification à votre application Web ou à votre système "
 "administratif"
 
+#: app/templates/views/signedout.html:66
+msgid "A screenshot of some computer code with a notify.send_email function"
+msgstr ""
+
 #: app/templates/views/features/text-messages.html:27
-#: app/templates/views/signedout.html:77
+#: app/templates/views/signedout.html:79
 msgid "Contact us"
 msgstr "Communiquez avec nous"
 
-#: app/templates/views/signedout.html:77
+#: app/templates/views/signedout.html:79
 msgid "if you have a question or want to give feedback."
 msgstr "pour toute question ou commentaire."
+
+#: app/templates/views/signin.html:7
+msgid "Sign in"
+msgstr ""
+
+#: app/templates/views/signin.html:16
+msgid "You need to sign in again"
+msgstr ""
+
+#: app/templates/views/signin.html:19
+msgid "We signed you out because you logged in to Notification on another device."
+msgstr ""
+
+#: app/templates/views/signin.html:23
+msgid "We signed you out because you haven’t used Notification for a while."
+msgstr ""
+
+#: app/templates/views/signin.html:29
+msgid "If you do not have an account, you can"
+msgstr ""
+
+#: app/templates/views/signin.html:30
+msgid "create one now"
+msgstr ""
 
 #: app/templates/views/terms-of-use.html:10
 msgid "Terms of use"
@@ -1417,6 +1755,80 @@ msgstr "Fermer votre compte"
 msgid "We’ll delete all your data when we close your account."
 msgstr "Nous supprimerons toutes vos données au moment de fermer votre compte."
 
+#: app/templates/views/text-not-received-2.html:13
+#: app/templates/views/text-not-received.html:7
+#: app/templates/views/text-not-received.html:14
+msgid "Check your mobile number"
+msgstr ""
+
+#: app/templates/views/text-not-received-2.html:15
+#: app/templates/views/text-not-received.html:16
+msgid ""
+"Check your mobile phone number is correct and then resend the security "
+"code."
+msgstr ""
+
+#: app/templates/views/text-not-received-2.html:18
+msgid "Mobile phone number"
+msgstr ""
+
+#: app/templates/views/text-not-received-2.html:24
+#: app/templates/views/text-not-received.html:17
+#: app/templates/views/verification-not-received.html:11
+#: app/templates/views/verification-not-received.html:19
+msgid "Resend security code"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:4 app/templates/views/trial-mode.html:9
+msgid "Trial mode"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:11
+msgid ""
+"When you set up a new service it will start in trial mode. This lets you "
+"try out Notification, with a few restrictions."
+msgstr ""
+
+#: app/templates/views/trial-mode.html:12
+msgid "A service in trial mode can only:"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:14
+msgid "send 50 text messages and emails per day"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:15
+msgid "send messages to you and other people in your team"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:16
+msgid "create letter templates, but not send them"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:25
+msgid "send us a request to go live."
+msgstr ""
+
+#: app/templates/views/trial-mode.html:29
+msgid "Before you can request to go live, you must:"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:31
+msgid "sign our data sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:32
+msgid "accept our terms of use"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:33
+msgid "set up your service so you’re ready to send and receive messages"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:36
+msgid "When we receive your request we’ll get back to you within one working day."
+msgstr ""
+
 #: app/templates/views/two-factor-email.html:13
 msgid "We’ve emailed you a link to sign in to Notification."
 msgstr ""
@@ -1439,10 +1851,6 @@ msgstr "Vérification par message texte"
 msgid "Check your phone"
 msgstr "Vérifiez vos messages textes"
 
-#: app/templates/views/two-factor.html:16
-msgid "Continue"
-msgstr "Continuer"
-
 #: app/templates/views/two-factor.html:17
 msgid "Not received a text message?"
 msgstr "Vous n’avez pas reçu de message texte?"
@@ -1450,6 +1858,65 @@ msgstr "Vous n’avez pas reçu de message texte?"
 #: app/templates/views/two-factor.html:18
 msgid "We’ve sent you a text message with a security code."
 msgstr "Nous vous avons envoyé un code de sécurité par message texte."
+
+#: app/templates/views/user-profile.html:6
+#: app/templates/views/user-profile.html:13
+#: app/templates/views/user-profile.html:16
+msgid "Your profile"
+msgstr ""
+
+#: app/templates/views/user-profile.html:35
+msgid "Email address"
+msgstr ""
+
+#: app/templates/views/user-profile.html:46
+msgid "Mobile number"
+msgstr ""
+
+#: app/templates/views/user-profile.html:53
+msgid "Password"
+msgstr ""
+
+#: app/templates/views/user-profile.html:54
+msgid "Last changed "
+msgstr ""
+
+#: app/templates/views/user-profile.html:62
+msgid "Use platform admin view"
+msgstr ""
+
+#: app/templates/views/verification-not-received.html:4
+msgid "Resend verification code"
+msgstr ""
+
+#: app/templates/views/verification-not-received.html:13
+msgid ""
+"Text messages sometimes take a few minutes to arrive. If you do not "
+"receive the text message, you can resend it."
+msgstr ""
+
+#: app/templates/views/verification-not-received.html:15
+msgid ""
+"If you no longer have access to the phone with the number you registered "
+"for this service, speak to your service manager to reset the number."
+msgstr ""
+
+#: app/templates/views/verify-mobile.html:4
+#: app/templates/views/verify-mobile.html:11
+msgid "Confirm your mobile number"
+msgstr ""
+
+#: app/templates/views/verify-mobile.html:13
+msgid "We’ve sent you a security code by text message."
+msgstr ""
+
+#: app/templates/views/verify-mobile.html:16
+msgid "Enter security code"
+msgstr ""
+
+#: app/templates/views/verify-mobile.html:18
+msgid "I haven’t received a text"
+msgstr ""
 
 #: app/templates/views/api/index.html:8 app/templates/views/api/index.html:14
 msgid "API integration for developers"
