@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-07 12:49-0400\n"
+"POT-Creation-Date: 2019-08-07 13:27-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -1542,8 +1542,7 @@ msgid "See all uploaded files"
 msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:9
-#: app/templates/views/dashboard/monthly.html:16
-msgid "Messages sent"
+msgid "Messages sent,"
 msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:10
@@ -1551,7 +1550,11 @@ msgid "to"
 msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:10
-msgid "financial year"
+msgid "fiscal year"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:16
+msgid "Messages sent"
 msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:26
@@ -1573,7 +1576,7 @@ msgid "failed"
 msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:73
-msgid "Financial year ends 31 March."
+msgid "Fiscal year ends 31 March."
 msgstr ""
 
 #: app/templates/views/features/emails.html:11
