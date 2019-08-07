@@ -1,8 +1,8 @@
 <h1 class='banner-title' data-module="track-error" data-error-type="Trying to send letters in trial mode" data-error-label="{{ upload_id }}">
-  You can’t send
+  {{ _('You can’t send') }}
   {{ 'this letter' if count_of_recipients == 1 else 'these letters' }}
 </h1>
 <p>
-  In <a href="{{ url_for('.trial_mode_new') }}">trial mode</a> you
-  can only preview how your letters will look
+  {{ _('In') }} <a href="{{ url_for('.trial_mode_new') }}">{{ _('trial mode') }}</a> you
+  {{ _('can only preview how your letters will look') }}
 </p>
