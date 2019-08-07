@@ -48,13 +48,13 @@
 {% endmacro %}
 
 {% block per_page_title %}
-  Choose service
+  {{ _('Choose service') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <h1 class="heading-large {% if current_user.has_access_to_live_and_trial_mode_services %}visually-hidden{% endif %}">
-    Choose service
+    {{ _('Choose service') }}
   </h1>
 
   <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}top-gutter-2-3{% endif %}">
@@ -63,39 +63,39 @@
       <div class="grid-row">
         <div class="column-one-quarter">
           <h2>
-            Platform admin
+            {{ _('Platform admin') }}
           </h2>
         </div>
         <ul class="column-three-quarters">
           <li class="browse-list-item">
-            <a href="{{ url_for('.organisations') }}" class="browse-list-link">All organisations</a>
+            <a href="{{ url_for('.organisations') }}" class="browse-list-link">{{ _('All organisations') }}</a>
             <p class="browse-list-hint">
-              {{ org_count|format_thousands }} organisations, {{ live_service_count|format_thousands }} live services
+              {{ org_count|format_thousands }} {{ _('organisations') }}, {{ live_service_count|format_thousands }} {{ _('live services') }}
             </p>
           </li>
         </ul>
       </div>
       <div class="keyline-block"></div>
     {% endif %}
-
+    {% set heading_txt = _('Live services') %}
     {% if current_user.organisations %}
       {{ service_list(
-        heading='Live services',
+        heading=heading_txt,
         show_heading=current_user.trial_mode_services,
         organisations=current_user.organisations,
         services=current_user.live_services_not_belonging_to_users_organisations
       ) }}
     {% else %}
       {{ service_list(
-        heading='Live services',
+        heading=heading_txt,
         show_heading=(current_user.trial_mode_services and current_user.live_services),
         services=current_user.live_services
       ) }}
     {% endif %}
-
+    {% set trial_txt = _('Trial mode services') %}
     {% if current_user.trial_mode_services %}
       {{ service_list(
-        heading='Trial mode services',
+        heading=trial_txt,
         show_heading=(current_user.organisations or current_user.live_services),
         services=current_user.trial_mode_services
       ) }}
@@ -112,7 +112,7 @@
           </div>
           <div class="column-three-quarters">
       {% endif %}
-      <a href="{{ url_for('.add_service') }}" class="button-secondary">Add a new service</a>
+      <a href="{{ url_for('.add_service') }}" class="button-secondary">{{ _('Add a new service') }}</a>
       {% if current_user.has_access_to_live_and_trial_mode_services %}
           </div>
         </div>
