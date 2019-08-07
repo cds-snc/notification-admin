@@ -4,7 +4,7 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  Sign in
+  {{ _('Sign in') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -13,28 +13,29 @@
   <div class="column-two-thirds">
 
     {% if again %}
-      <h1 class="heading-large">You need to sign in again</h1>
+      <h1 class="heading-large">{{ _('You need to sign in again') }}</h1>
       {% if other_device %}
         <p>
-          We signed you out because you logged in to Notification on another device.
+          {{ _('We signed you out because you logged in to Notification on another device.') }}
         </p>
       {% else %}
         <p>
-          We signed you out because you haven’t used Notification for a while.
+          {{ _('We signed you out because you haven’t used Notification for a while.') }}
         </p>
       {% endif %}
     {% else %}
       <h1 class="heading-large">Sign in</h1>
       <p>
-        If you do not have an account, you can
-        <a href="{{ url_for('.register') }}">create one now</a>.
+        {{ _('If you do not have an account, you can') }}
+        <a href="{{ url_for('.register') }}">{{ _('create one now') }}</a>.
       </p>
     {% endif %}
-
+    {% set forgot = _('Forgot your password?') %}
+    {% set btn = _('Continue') %}
     {% call form_wrapper(autocomplete=True) %}
       {{ textbox(form.email_address, autocomplete='email') }}
       {{ textbox(form.password, autocomplete='current-password') }}
-      {{ page_footer("Continue", secondary_link=url_for('.forgot_password'), secondary_link_text="Forgot your password?") }}
+      {{ page_footer(btn, secondary_link=url_for('.forgot_password'), secondary_link_text=forgot) }}
     {% endcall %}
   </div>
 </div>

@@ -4,7 +4,7 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-Create an account
+{{ _('Create an account') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -21,9 +21,11 @@ Create an account
         {{ textbox(form.mobile_number, width='3-4', hint=hint_txt) }}
       </div>
       <input class="visually-hidden" aria-hidden="true" tabindex="-1" id="defeat-chrome-autocomplete">
-      {{ textbox(form.password, hint="At least 8 characters", width='3-4', autocomplete='new-password') }}
+      {% set txt = _('At least 8 characters') %}
+      {{ textbox(form.password, hint=txt, width='3-4', autocomplete='new-password') }}
       {{form.auth_type}}
-      {{ page_footer("Continue") }}
+      {% set txt = _('Continue') %}
+      {{ page_footer(txt) }}
     {% endcall %}
   </div>
 </div>
