@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-07 12:01-0400\n"
+"POT-Creation-Date: 2019-08-07 13:27-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -974,6 +974,7 @@ msgid "Please"
 msgstr ""
 
 #: app/templates/views/security.html:48
+#: app/templates/views/service-settings.html:240
 msgid "contact us"
 msgstr ""
 
@@ -983,7 +984,7 @@ msgstr ""
 
 #: app/templates/views/service-settings.html:6
 #: app/templates/views/service-settings.html:13
-#: app/templates/views/service-settings.html:268
+#: app/templates/views/service-settings.html:267
 msgid "Settings"
 msgstr ""
 
@@ -998,21 +999,21 @@ msgstr ""
 #: app/templates/views/service-settings.html:17
 #: app/templates/views/service-settings.html:76
 #: app/templates/views/service-settings.html:140
-#: app/templates/views/service-settings.html:269
+#: app/templates/views/service-settings.html:268
 msgid "Label"
 msgstr ""
 
 #: app/templates/views/service-settings.html:18
 #: app/templates/views/service-settings.html:77
 #: app/templates/views/service-settings.html:141
-#: app/templates/views/service-settings.html:270
+#: app/templates/views/service-settings.html:269
 msgid "Value"
 msgstr ""
 
 #: app/templates/views/service-settings.html:19
 #: app/templates/views/service-settings.html:78
 #: app/templates/views/service-settings.html:142
-#: app/templates/views/service-settings.html:271
+#: app/templates/views/service-settings.html:270
 msgid "Action"
 msgstr ""
 
@@ -1049,7 +1050,7 @@ msgid "Reply-to email addresses"
 msgstr ""
 
 #: app/templates/views/service-settings.html:104
-#: app/templates/views/service-settings.html:311
+#: app/templates/views/service-settings.html:310
 msgid "Not set"
 msgstr ""
 
@@ -1059,7 +1060,7 @@ msgid "Manage"
 msgstr ""
 
 #: app/templates/views/service-settings.html:125
-#: app/templates/views/service-settings.html:338
+#: app/templates/views/service-settings.html:337
 msgid "Email branding"
 msgstr ""
 
@@ -1117,92 +1118,88 @@ msgid "messages per day"
 msgstr ""
 
 #: app/templates/views/service-settings.html:240
-msgid "To remove these restrictions, you can send us a"
+msgid "To remove these restrictions, you can"
 msgstr ""
 
-#: app/templates/views/service-settings.html:241
-msgid "request to go live"
-msgstr ""
-
-#: app/templates/views/service-settings.html:243
+#: app/templates/views/service-settings.html:242
 msgid "Your service manager can ask to have these restrictions removed."
 msgstr ""
 
-#: app/templates/views/service-settings.html:248
+#: app/templates/views/service-settings.html:247
 msgid "Your service is live"
 msgstr ""
 
-#: app/templates/views/service-settings.html:251
+#: app/templates/views/service-settings.html:250
 msgid "You can send up to"
 msgstr ""
 
-#: app/templates/views/service-settings.html:252
+#: app/templates/views/service-settings.html:251
 msgid ""
 "messages\n"
 "        per day."
 msgstr ""
 
-#: app/templates/views/service-settings.html:256
+#: app/templates/views/service-settings.html:255
 msgid "Problems or comments?"
 msgstr ""
 
-#: app/templates/views/service-settings.html:257
+#: app/templates/views/service-settings.html:256
 msgid "Give feedback"
 msgstr ""
 
-#: app/templates/views/service-settings.html:266
+#: app/templates/views/service-settings.html:265
 msgid "Platform admin settings"
 msgstr ""
 
-#: app/templates/views/service-settings.html:281
+#: app/templates/views/service-settings.html:280
 msgid "Live"
 msgstr ""
 
-#: app/templates/views/service-settings.html:284
+#: app/templates/views/service-settings.html:283
 msgid "No (organisation must be set first)"
 msgstr ""
 
-#: app/templates/views/service-settings.html:294
+#: app/templates/views/service-settings.html:293
 msgid "Count in list of live services"
 msgstr ""
 
-#: app/templates/views/service-settings.html:295
+#: app/templates/views/service-settings.html:294
 msgid "Yes"
 msgstr ""
 
-#: app/templates/views/service-settings.html:296
+#: app/templates/views/service-settings.html:295
 msgid "No"
 msgstr ""
 
-#: app/templates/views/service-settings.html:303
+#: app/templates/views/service-settings.html:302
 msgid "Organisation"
 msgstr ""
 
-#: app/templates/views/service-settings.html:332
+#: app/templates/views/service-settings.html:331
 msgid "Free text message allowance"
 msgstr ""
 
-#: app/templates/views/service-settings.html:344
+#: app/templates/views/service-settings.html:343
 msgid "Letter branding"
 msgstr ""
 
-#: app/templates/views/service-settings.html:350
+#: app/templates/views/service-settings.html:349
 msgid "Data retention"
 msgstr ""
 
-#: app/templates/views/service-settings.html:382
+#: app/templates/views/service-settings.html:381
 msgid "Delete this service"
 msgstr ""
 
-#: app/templates/views/service-settings.html:388
+#: app/templates/views/service-settings.html:387
 msgid "Suspend service"
 msgstr ""
 
-#: app/templates/views/service-settings.html:397
+#: app/templates/views/service-settings.html:396
 msgid "Service suspended"
 msgstr ""
 
-#: app/templates/views/service-settings.html:401
+#: app/templates/views/service-settings.html:400
 msgid "Resume service"
 msgstr ""
 
@@ -1787,9 +1784,9 @@ msgstr "La personnalisation est masquée après l’envoi"
 #~ msgid "Email Branding"
 #~ msgstr ""
 
-#~ msgid "financial year"
+#~ msgid "To remove these restrictions, you can send us a"
 #~ msgstr ""
 
-#~ msgid "Financial year ends 31 March."
+#~ msgid "request to go live"
 #~ msgstr ""
 

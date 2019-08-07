@@ -373,7 +373,7 @@ def test_should_not_hit_api_if_service_name_hasnt_changed(
 @pytest.mark.parametrize('user, expected_text, expected_link', [
     (
         active_user_with_permissions,
-        'To remove these restrictions, you can send us a request to go live.',
+        'To remove these restrictions, you can contact us.',
         True,
     ),
     (
@@ -409,8 +409,8 @@ def test_show_restricted_service(
     assert normalize_spaces(request_to_live.text) == expected_text
 
     if expected_link:
-        assert request_to_live_link.text.strip() == 'request to go live'
-        assert request_to_live_link['href'] == url_for('main.request_to_go_live', service_id=SERVICE_ONE_ID)
+        assert request_to_live_link.text.strip() == 'contact us'
+        assert request_to_live_link['href'] == url_for('.feedback', ticket_type='ask-question-give-feedback')
     else:
         assert not request_to_live_link
 
