@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-06 11:55-0400\n"
+"POT-Creation-Date: 2019-08-06 13:33-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -68,6 +68,72 @@ msgstr "mode de recherche"
 #: app/templates/components/api-key.html:4
 msgid "API data:"
 msgstr "Données de l’API :"
+
+#: app/templates/components/message-count-label.html:4
+msgid "message"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:6
+msgid "messages"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:11
+msgid "text message"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:13
+#: app/templates/views/features.html:16
+msgid "text messages"
+msgstr "messages textes"
+
+#: app/templates/components/message-count-label.html:17
+msgid "email"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:19
+#: app/templates/views/features.html:15
+msgid "emails"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:23
+msgid "letter"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:25
+msgid "letters"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:33
+msgid "recipient"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:35
+msgid "recipients"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:40
+msgid "phone number"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:42
+msgid "phone numbers"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:46
+msgid "email address"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:48
+msgid "email addresses"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:52
+msgid "address"
+msgstr ""
+
+#: app/templates/components/message-count-label.html:54
+msgid "addresses"
+msgstr ""
 
 #: app/templates/error/400.html:2
 msgid "Bad Request"
@@ -333,14 +399,6 @@ msgstr ""
 msgid "Notification makes it easy to create, customize and send:"
 msgstr "Notification facilite la création, la personnalisation et l’envoi de :"
 
-#: app/templates/views/features.html:15
-msgid "emails"
-msgstr ""
-
-#: app/templates/views/features.html:16
-msgid "text messages"
-msgstr "messages textes"
-
 #: app/templates/views/features.html:19
 msgid "You do not need technical knowledge to use Notification."
 msgstr ""
@@ -543,15 +601,6 @@ msgstr "En savoir plus au sujet de"
 msgid "security"
 msgstr "la sécurité"
 
-#: app/templates/views/invite-user.html:9
-#: app/templates/views/invite-user.html:14
-msgid "Invite a team member"
-msgstr ""
-
-#: app/templates/views/invite-user.html:15
-msgid "Send invitation email"
-msgstr ""
-
 #: app/templates/views/manage-users.html:9
 #: app/templates/views/manage-users.html:15
 msgid "Team members"
@@ -636,6 +685,7 @@ msgstr ""
 msgid "technical documentation):"
 msgstr ""
 
+#: app/templates/views/dashboard/monthly.html:28
 #: app/templates/views/features/emails.html:5
 #: app/templates/views/features/emails.html:10
 #: app/templates/views/message-status.html:23
@@ -1190,12 +1240,60 @@ msgstr ""
 msgid "are included in the safelist automatically."
 msgstr ""
 
+#: app/templates/views/dashboard/dashboard.html:10
+#: app/templates/views/dashboard/dashboard.html:17
+msgid "Dashboard"
+msgstr ""
+
+#: app/templates/views/dashboard/dashboard.html:25
+msgid "In the last 7 days"
+msgstr ""
+
 #: app/templates/views/dashboard/dashboard.html:31
 msgid "Check messages sent per month"
 msgstr "Voir les modèles utilisés par mois"
 
 #: app/templates/views/dashboard/dashboard.html:39
 msgid "Check templates used by month"
+msgstr ""
+
+#: app/templates/views/dashboard/dashboard.html:48
+msgid "See all uploaded files"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:9
+#: app/templates/views/dashboard/monthly.html:16
+msgid "Messages sent"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:10
+msgid "to"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:10
+msgid "financial year"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:26
+msgid "Total spend"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:27
+msgid "Month"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:29
+#: app/templates/views/features/text-messages.html:5
+#: app/templates/views/features/text-messages.html:10
+msgid "Text messages"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:60
+msgid "failed"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:73
+msgid "Financial year ends 31 March."
 msgstr ""
 
 #: app/templates/views/features/emails.html:11
@@ -1256,11 +1354,6 @@ msgstr ""
 
 #: app/templates/views/features/emails.html:28
 msgid "You can add reply-to addresses in your service settings."
-msgstr ""
-
-#: app/templates/views/features/text-messages.html:5
-#: app/templates/views/features/text-messages.html:10
-msgid "Text messages"
 msgstr ""
 
 #: app/templates/views/features/text-messages.html:11

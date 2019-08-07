@@ -1,28 +1,28 @@
 {% macro message_count_label(count, template_type, suffix='sent') -%}
   {% if template_type == None %}
     {%- if count == 1 -%}
-      message
+      {{ _('message') }}
     {%- else -%}
-      messages
+    {{ _('messages') }}
     {%- endif -%}
   {% endif %}
   {%- if template_type == 'sms' -%}
     {%- if count == 1 -%}
-      text message
+    {{ _('text message') }}
     {%- else -%}
-      text messages
+    {{ _('text messages') }}
     {%- endif -%}
   {%- elif template_type == 'email' -%}
     {%- if count == 1 -%}
-      email
+      {{ _('email') }}
     {%- else -%}
-      emails
+    {{ _('emails') }}
     {%- endif -%}
   {%- elif template_type == 'letter' -%}
     {%- if count == 1 -%}
-      letter
+    {{ _('letter') }}
     {%- else -%}
-      letters
+    {{ _('letters') }}
     {%- endif -%}
   {%- endif %} {{ suffix }}
 {%- endmacro %}
@@ -30,28 +30,28 @@
 {% macro recipient_count_label(count, template_type) -%}
   {% if template_type == None %}
     {%- if count == 1 -%}
-      recipient
+      {{ _('recipient') }}
     {%- else -%}
-      recipients
+    {{ _('recipients') }}
     {%- endif -%}
   {% endif %}
   {%- if template_type == 'sms' -%}
     {%- if count == 1 -%}
-      phone number
+      {{ _('phone number') }}
     {%- else -%}
-      phone numbers
+      {{ _('phone numbers') }}
     {%- endif -%}
   {%- elif template_type == 'email' -%}
     {%- if count == 1 -%}
-      email address
+      {{ _('email address') }}
     {%- else -%}
-      email addresses
+      {{ _('email addresses') }}
     {%- endif -%}
   {%- elif template_type == 'letter' -%}
     {%- if count == 1 -%}
-      address
+      {{ _('address') }}
     {%- else -%}
-      addresses
+      {{ _('addresses') }}
     {%- endif -%}
   {%- endif %}
 {%- endmacro %}
