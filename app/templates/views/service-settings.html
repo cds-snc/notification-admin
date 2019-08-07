@@ -210,7 +210,7 @@
           )
           }}
         {% endcall %}
-
+        <!--
         {% call settings_row(if_has_permission='sms') %}
           {% set txt = _('Receive text messages') %}
           {{ text_field(txt) }}
@@ -223,7 +223,7 @@
           )
           }}
         {% endcall %}
-
+        -->
       {% endcall %}
      
     {% if current_service.trial_mode %}
@@ -357,11 +357,15 @@
 
           {% for permission in service_permissions %}
             {% if not service_permissions[permission].requires or current_service.has_permission(service_permissions[permission].requires) %}
-              {% call row() %}
-                {{ text_field(service_permissions[permission].title)}}
-                {{ boolean_field(current_service.has_permission(permission)) }}
-                {{ edit_field(change_txt, url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, permission=permission if not service_permissions[permission].endpoint else None)) }}
-              {% endcall %}
+
+              {% if not permission == "inbound_sms" %}
+                {% call row() %}
+                  {{ text_field(service_permissions[permission].title)}}
+                  {{ boolean_field(current_service.has_permission(permission)) }}
+                  {{ edit_field('Change', url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, permission=permission if not service_permissions[permission].endpoint else None)) }}
+                {% endcall %}
+              {% endif %}
+
             {% endif %}
           {% endfor %}
 
