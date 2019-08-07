@@ -19,7 +19,8 @@
   <p>
     {{ _('To remove these restrictions, you can') }}
     {% if current_service and current_service.trial_mode %}
-      <a href="{{ url_for('.request_to_go_live', service_id=current_service.id) }}">{{ _('send us a request to go live') }}</a>.
+
+      <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">contact us</a>.
     {% else %}
       {{ _('send us a request to go live.') }}
     {% endif %}
