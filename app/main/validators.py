@@ -1,5 +1,8 @@
 import re
+import time
 
+import pwnedpasswords
+from flask import current_app
 from notifications_utils.field import Field
 from notifications_utils.recipients import (
     InvalidEmailError,
@@ -21,6 +24,24 @@ class Blacklist:
         self.message = message
 
     def __call__(self, form, field):
+        if current_app.config.get('HIPB_ENABLED', None):
+            hibp_bad_password_found = False
+            for _ in range(0, 3):  # Try 3 times. If the HIPB API is down then fall back to the old banlist.
+                try:
+                    response = pwnedpasswords.check(field.data)
+                    if response > 0:
+                        hibp_bad_password_found = True
+                        break
+                    elif response == 0:
+                        return
+
+                except Exception:
+                    time.sleep(0.5)
+                    pass
+
+            if hibp_bad_password_found:
+                raise ValidationError(self.message)
+
         if field.data in blacklisted_passwords:
             raise ValidationError(self.message)
 

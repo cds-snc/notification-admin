@@ -23,6 +23,7 @@ sentry-sdk[flask]==0.10.2
 Babel==2.7.0
 Flask-Babel==0.12.2
 python-dotenv==0.10.3
+pwnedpasswords==2.0.0
 
 # PaaS
 awscli-cwlogs>=1.4,<1.5

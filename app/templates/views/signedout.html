@@ -76,7 +76,7 @@
     <div class="grid-row">
       <div class="column-half">
         <p>
-          <a href="{{ url_for('main.support') }}">{{ _('Contact us') }}</a> {{ _('if you have a question or want to give feedback.') }}
+          <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('Contact us') }}</a> {{ _('if you have a question or want to give feedback.') }}
         </p>
       </div>
       <div class="column-half">
