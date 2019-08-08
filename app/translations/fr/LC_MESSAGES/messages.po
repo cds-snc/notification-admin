@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-07 14:41-0400\n"
+"POT-Creation-Date: 2019-08-08 09:29-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -112,27 +112,37 @@ msgid "recipients"
 msgstr ""
 
 #: app/templates/components/message-count-label.html:40
+#: app/templates/partials/check/too-many-messages.html:26
 msgid "phone number"
 msgstr ""
 
 #: app/templates/components/message-count-label.html:42
+#: app/templates/partials/check/too-many-messages.html:34
 msgid "phone numbers"
 msgstr ""
 
 #: app/templates/components/message-count-label.html:46
+#: app/templates/partials/check/too-many-messages.html:24
 msgid "email address"
 msgstr ""
 
 #: app/templates/components/message-count-label.html:48
+#: app/templates/partials/check/too-many-messages.html:32
 msgid "email addresses"
 msgstr ""
 
 #: app/templates/components/message-count-label.html:52
+#: app/templates/partials/check/too-many-messages.html:28
 msgid "address"
 msgstr ""
 
 #: app/templates/components/message-count-label.html:54
+#: app/templates/partials/check/too-many-messages.html:36
 msgid "addresses"
+msgstr ""
+
+#: app/templates/components/page-header.html:17
+msgid "Back"
 msgstr ""
 
 #: app/templates/error/400.html:2
@@ -211,6 +221,93 @@ msgstr "Notification envoie le message"
 #: app/templates/partials/tour.html:35
 msgid "Now go to your dashboard"
 msgstr "Allez à votre tableau de bord"
+
+#: app/templates/partials/check/message-too-long.html:6
+msgid "Message too long"
+msgstr ""
+
+#: app/templates/partials/check/message-too-long.html:9
+msgid "Text messages can’t be longer than"
+msgstr ""
+
+#: app/templates/partials/check/message-too-long.html:9
+#: app/templates/partials/check/message-too-long.html:10
+msgid "characters."
+msgstr ""
+
+#: app/templates/partials/check/message-too-long.html:10
+msgid "Your message is"
+msgstr ""
+
+#: app/templates/partials/check/not-allowed-to-send-to.html:2
+msgid "You can’t send to"
+msgstr ""
+
+#: app/templates/partials/check/not-allowed-to-send-to.html:10
+#: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
+msgid "In"
+msgstr ""
+
+#: app/templates/partials/check/not-allowed-to-send-to.html:10
+#: app/templates/partials/check/too-many-messages.html:11
+#: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
+msgid "trial mode"
+msgstr ""
+
+#: app/templates/partials/check/not-allowed-to-send-to.html:10
+msgid ""
+"you can only\n"
+"  send to yourself and members of your team"
+msgstr ""
+
+#: app/templates/partials/check/sent-previously.html:2
+msgid "These messages have already been sent today"
+msgstr ""
+
+#: app/templates/partials/check/sent-previously.html:5
+msgid "If you need to resend them, rename the file and upload it again."
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:3
+msgid "Too many recipients"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:5
+msgid "Daily limit reached"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:9
+msgid "You can only send"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:9
+#: app/templates/views/service-settings.html:235
+msgid "messages per day"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:11
+msgid "in"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:18
+msgid "You can still send"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:18
+msgid "messages today, but"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:20
+msgid "contains"
+msgstr ""
+
+#: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:2
+msgid "You can’t send"
+msgstr ""
+
+#: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:7
+msgid "can only preview how your letters will look"
+msgstr ""
 
 #: app/templates/partials/templates/guidance-formatting.html:1
 msgid "Format"
@@ -1410,10 +1507,6 @@ msgstr ""
 msgid "you can only send"
 msgstr ""
 
-#: app/templates/views/service-settings.html:235
-msgid "messages per day"
-msgstr ""
-
 #: app/templates/views/service-settings.html:240
 #: app/templates/views/trial-mode.html:20
 msgid "To remove these restrictions, you can"
@@ -1515,6 +1608,7 @@ msgstr "Envoyer des courriels et des messages textes à vos utilisateurs"
 msgid "Try Notification if you work in the federal government."
 msgstr "Faites l’essai de Notification si vous travaillez au gouvernement fédéral,"
 
+#: app/templates/views/check/column-errors.html:78
 #: app/templates/views/signedout.html:25
 msgid "or"
 msgstr "ou"
@@ -1987,6 +2081,113 @@ msgstr ""
 msgid "are included in the safelist automatically."
 msgstr ""
 
+#: app/templates/views/check/column-errors.html:9
+msgid "a column called"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:10
+msgid "columns called"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:15
+msgid "Skip to file contents"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:20
+msgid "Error"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:33
+msgid "Your file has too many rows"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:36
+msgid "Notification can process up to"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:37
+msgid ""
+"rows at once. Your\n"
+"          file has"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:38
+msgid "rows."
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:44
+msgid "Your file is missing some rows"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:48
+msgid "It needs at least one row of data, and"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:55
+msgid "It needs at least one row of data."
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:62
+msgid "Your file needs"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:71
+msgid "Right now it has"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:80
+msgid "Your file has more than one column called"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:89
+msgid "Delete or rename one of these columns and try again."
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:93
+msgid "and"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:95
+msgid ""
+"The columns in your file need to match the double brackets in\n"
+"          your template"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:99
+msgid "Your file is missing"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:143
+msgid "Re-upload your file"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:152
+msgid "Back to top"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:209
+#: app/templates/views/check/column-errors.html:214
+#: app/templates/views/check/column-errors.html:216
+msgid "Only showing the first"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:209
+#: app/templates/views/check/column-errors.html:216
+msgid "rows"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:214
+msgid "rows with errors"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:221
+msgid "Only showing rows with errors"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:225
+msgid "Preview of"
+msgstr ""
+
 #: app/templates/views/dashboard/dashboard.html:10
 #: app/templates/views/dashboard/dashboard.html:17
 msgid "Dashboard"
@@ -2185,6 +2386,15 @@ msgstr "courriels ou messages textes"
 #: app/templates/views/templates/choose.html:34
 msgid "You can also create folders to organize your templates."
 msgstr "Vous pouvez aussi créer des dossiers pour classer vos modèles."
+
+#: app/templates/views/templates/copy.html:7
+#: app/templates/views/templates/copy.html:13
+msgid "Copy an existing template"
+msgstr ""
+
+#: app/templates/views/templates/copy.html:18
+msgid "This folder is empty"
+msgstr ""
 
 #: app/templates/views/templates/template.html:51
 msgid "Last edited"
