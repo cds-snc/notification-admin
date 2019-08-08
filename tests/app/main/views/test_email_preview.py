@@ -48,7 +48,6 @@ def test_displays_both_branding(client, mock_get_email_branding_with_both_brand_
     response = client.get(url_for('main.email_template', branding_style="1"))
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    print(page.body)
     assert response.status_code == 200
     mock_get_email_branding_with_both_brand_type.assert_called_once_with('1')
 

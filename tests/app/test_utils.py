@@ -336,7 +336,7 @@ def test_get_cdn_domain_on_localhost(client, mocker):
     ('2018-03-23 15:00', '23 March at 3:00pm'),
 
 ])
-@pytest.mark.skip(reason="@todo")
+@pytest.mark.skip(reason="Featured replaced by JS")
 def test_format_datetime_relative(time, human_readable_datetime):
     with freeze_time('2018-03-21 12:00'):
         assert format_datetime_relative(time) == human_readable_datetime
