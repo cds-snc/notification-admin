@@ -43,19 +43,18 @@ def test_displays_govuk_branding(client, mock_get_email_branding_with_govuk_bran
     assert page.find("a", attrs={"href": "https://www.canada.ca"})
 
 
-@pytest.mark.skip(reason="@todo")
 def test_displays_both_branding(client, mock_get_email_branding_with_both_brand_type):
 
     response = client.get(url_for('main.email_template', branding_style="1"))
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-
+    print(page.body)
     assert response.status_code == 200
     mock_get_email_branding_with_both_brand_type.assert_called_once_with('1')
 
     assert page.find("a", attrs={"href": "https://www.canada.ca"})
     assert page.find("img", attrs={"src": re.compile("example.png$")})
-    assert page.select("body > table:nth-of-type(3) table > tr:nth-of-type(1) > td:nth-of-type(2)")[0]\
+    assert page.select("body > table:nth-of-type(2) table > tr:nth-of-type(1) > td:nth-of-type(2)")[0]\
         .get_text().strip() == 'Organisation text'  # brand text is set
 
 
