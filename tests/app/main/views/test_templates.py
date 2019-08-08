@@ -1766,7 +1766,6 @@ def test_should_redirect_when_deleting_a_template(
 
 
 @freeze_time('2016-01-01T15:00')
-@pytest.mark.skip(reason="@todo")
 def test_should_show_page_for_a_deleted_template(
     client_request,
     mock_get_template_folders,
@@ -1788,7 +1787,7 @@ def test_should_show_page_for_a_deleted_template(
     content = str(page)
     assert url_for("main.edit_service_template", service_id=SERVICE_ONE_ID, template_id=fake_uuid) not in content
     assert url_for("main.send_test", service_id=SERVICE_ONE_ID, template_id=fake_uuid) not in content
-    assert page.select('p.hint')[0].text.strip() == 'This template was deleted today at 3:00pm.'
+    assert page.select('p.hint')[0].text.strip() == 'This template was deleted 2016-01-01 15:00:00.000000.'
     assert 'Delete this template' not in page.select_one('main').text
 
     mock_get_deleted_template.assert_called_with(SERVICE_ONE_ID, template_id, None)

@@ -24,19 +24,19 @@ from tests.conftest import (
         ),
         (
             'export 1/1/2016.xls '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
         (
             'all email addresses.xlsx '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
         (
             'applicants.ods '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
         (
             'thisisatest.csv '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
     )),
     (active_caseworking_user, (
@@ -45,35 +45,35 @@ from tests.conftest import (
         ),
         (
             'send_me_later.csv '
-            'Sending 1 January at 11:09am 1'
+            'Sending 2016-01-01 11:09:00.061258 1'
         ),
         (
             'even_later.csv '
-            'Sending 1 January at 11:09pm 1'
+            'Sending 2016-01-01 23:09:00.061258 1'
         ),
         (
             'File Sending Delivered Failed'
         ),
         (
             'export 1/1/2016.xls '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
         (
             'all email addresses.xlsx '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
         (
             'applicants.ods '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
         (
             'thisisatest.csv '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
     )),
 ])
 @freeze_time("2012-12-12 12:12")
-@pytest.mark.skip(reason="@todo")
+# This test assumes EST
 def test_jobs_page_shows_scheduled_jobs_if_user_doesnt_have_dashboard(
     client_request,
     service_one,
@@ -113,7 +113,6 @@ def test_get_jobs_shows_page_links(
     active_caseworking_user,
 ])
 @freeze_time("2012-12-12 12:12")
-@pytest.mark.skip(reason="@todo")
 def test_jobs_page_doesnt_show_scheduled_on_page_2(
     client_request,
     service_one,
@@ -131,19 +130,19 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
         ),
         (
             'export 1/1/2016.xls '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
         (
             'all email addresses.xlsx '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
         (
             'applicants.ods '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
         (
             'thisisatest.csv '
-            'Sent 12 December at 12:12pm 1 0 0'
+            'Sent 2012-12-12T12:12:00.000000+0000 1 0 0'
         ),
     )):
         assert normalize_spaces(page.select('tr')[index].text) == row
@@ -182,7 +181,6 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
     ]
 )
 @freeze_time("2016-01-01 11:09:00.061258")
-@pytest.mark.skip(reason="@todo")
 def test_should_show_page_for_one_job(
     client_request,
     active_user_with_permissions,
@@ -206,7 +204,7 @@ def test_should_show_page_for_one_job(
 
     assert page.h1.text.strip() == 'thisisatest.csv'
     assert ' '.join(page.find('tbody').find('tr').text.split()) == (
-        '6502532222 template content Delivered 1 January at 11:10am'
+        '6502532222 template content Delivered 11:10:00.061258'
     )
     assert page.find('div', {'data-key': 'notifications'})['data-resource'] == url_for(
         'main.view_job_updates',
@@ -227,7 +225,7 @@ def test_should_show_page_for_one_job(
     assert normalize_spaces(page.select_one('tbody tr').text) == normalize_spaces(
         '6502532222 '
         'template content '
-        'Delivered 1 January at 11:10am'
+        'Delivered 11:10:00.061258'
     )
     assert page.select_one('tbody tr a')['href'] == url_for(
         'main.view_notification',
@@ -244,7 +242,6 @@ def test_should_show_page_for_one_job(
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
-@pytest.mark.skip(reason="todo")
 def test_should_show_page_for_one_job_with_flexible_data_retention(
     client_request,
     active_user_with_permissions,
@@ -326,11 +323,11 @@ def test_should_show_letter_job(
     )
     assert normalize_spaces(page.h1.text) == 'thisisatest.csv'
     assert normalize_spaces(page.select('p.bottom-gutter')[0].text) == (
-        'Sent by Test User on 1 January at 11:09am Printing starts today at 5:30pm'
+        'Sent by Test User on 2016-01-01 11:09:00.061258 Printing starts today at 5:30pm'
     )
     assert page.select('.banner-default-with-tick') == []
     assert normalize_spaces(page.select('tbody tr')[0].text) == (
-        '1 Example Street template subject 1 January at 11:09am'
+        '1 Example Street template subject 2016-01-01 11:09:00.061258'
     )
     assert normalize_spaces(page.select('.keyline-block')[0].text) == (
         '1 Letter'
@@ -435,7 +432,6 @@ def test_should_show_letter_job_with_banner_after_sending_after_1730(
 
 
 @freeze_time("2016-01-01T00:00:00.061258")
-@pytest.mark.skip(reason="@todo")
 def test_should_show_scheduled_job(
     client_request,
     mock_get_service_template,
@@ -451,7 +447,7 @@ def test_should_show_scheduled_job(
     )
 
     assert normalize_spaces(page.select('main p')[1].text) == (
-        'Sending Two week reminder today at midnight'
+        'Sending Two week reminder 2016-01-02T00:00:00.061258'
     )
     assert page.select('main p a')[0]['href'] == url_for(
         'main.view_template_version',
@@ -652,7 +648,6 @@ def test_dont_cancel_letter_job_when_to_early_to_cancel(
 
 
 @freeze_time("2016-01-01 00:00:00.000001")
-@pytest.mark.skip(reason="@todo")
 def test_should_show_updates_for_one_job_as_json(
     logged_in_client,
     service_one,
@@ -675,8 +670,8 @@ def test_should_show_updates_for_one_job_as_json(
     assert '6502532222' in content['notifications']
     assert 'Status' in content['notifications']
     assert 'Delivered' in content['notifications']
-    assert '12:01am' in content['notifications']
-    assert 'Sent by Test User on 1 January at midnight' in content['status']
+    assert '00:01:00.000001' in content['notifications']
+    assert '2016-01-01T00:00:00.000001+0000' in content['status']
 
 
 @pytest.mark.parametrize(
