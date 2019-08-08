@@ -1,4 +1,9 @@
-{% macro tick_cross(yes, label, truthy_hint='Can', falsey_hint='Can’t') %}
+{% set true_txt = _('Can') %}
+{% set false_txt = _('Can’t') %}
+{% set done_txt = _('Done:') %}
+{% set not_done_txt = _('Not done:') %}
+
+{% macro tick_cross(yes, label, truthy_hint=true_txt, falsey_hint=false_txt) %}
   <li>
     {% if yes %}
       <span class="tick-cross-tick">
@@ -15,5 +20,5 @@
 {% endmacro %}
 
 {% macro tick_cross_done_not_done(yes, label) %}
-  {{ tick_cross(yes, label, truthy_hint='Done: ', falsey_hint='Not done: ') }}
+  {{ tick_cross(yes, label, truthy_hint=done_txt, falsey_hint=not_done_txt) }}
 {% endmacro %}

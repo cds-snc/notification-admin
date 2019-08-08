@@ -22,7 +22,7 @@
             <span class="folder-heading-folder">{{ folder.name }}</span>
           {% endif %}
         {% else %}
-          <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type) }}" title="Templates" class="{% if loop.length > 2 %}folder-heading-folder-root-truncated{% endif %}">Templates</a>
+          <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type) }}" title="Templates" class="{% if loop.length > 2 %}folder-heading-folder-root-truncated{% endif %}">{{ _('Templates') }}</a>
         {% endif %}
         {% if not loop.last %}{{ folder_path_separator() }}{% endif %}
       {% endif %}
@@ -40,7 +40,7 @@
   {% if folder_path %}
     <h2 class="heading-medium folder-heading">
       {% if folder_path|length == 1 %}
-        <a href="{{ url_for('.choose_template_to_copy', service_id=current_service_id) }}">Services</a>
+        <a href="{{ url_for('.choose_template_to_copy', service_id=current_service_id) }}">{{ _('Services') }}</a>
         {{ folder_path_separator() }}
       {% endif %}
       {% for folder in folder_path %}
