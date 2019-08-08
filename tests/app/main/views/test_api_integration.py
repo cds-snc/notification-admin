@@ -196,7 +196,6 @@ def test_should_show_empty_api_keys_page(
     mock_get_no_api_keys.assert_called_once_with(service_id)
 
 
-@pytest.mark.skip(reason="@todo")
 def test_should_show_api_keys_page(
     client_request,
     mock_get_api_keys,
@@ -205,7 +204,7 @@ def test_should_show_api_keys_page(
     rows = [normalize_spaces(row.text) for row in page.select('main tr')]
 
     assert rows[0] == 'API keys Action'
-    assert rows[1] == 'another key name Revoked 1 January at 1:00am'
+    assert rows[1] == 'another key name Revoked 1969-12-31'
     assert rows[2] == 'some key name Revoke'
 
     mock_get_api_keys.assert_called_once_with(SERVICE_ONE_ID)

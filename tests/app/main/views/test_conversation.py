@@ -73,7 +73,6 @@ def test_get_user_phone_number_raises_if_both_api_requests_fail(mocker):
     (False, 'Hello Jo'),
 ])
 @freeze_time("2012-01-01 00:00:00")
-@pytest.mark.skip(reason="@todo")
 def test_view_conversation(
     client_request,
     mocker,
@@ -109,55 +108,55 @@ def test_view_conversation(
     for index, expected in enumerate([
         (
             'message-8',
-            'yesterday at 2:59pm',
+            '2011-12-31T14:59:53',
         ),
         (
             'message-7',
-            'yesterday at 2:59pm',
+            '2011-12-31T14:59:54',
         ),
         (
             'message-6',
-            'yesterday at 4:59pm',
+            '2011-12-31T16:59:55',
         ),
         (
             'message-5',
-            'yesterday at 6:59pm',
+            '2011-12-31T18:59:56',
         ),
         (
             'message-4',
-            'yesterday at 8:59pm',
+            '2011-12-31T20:59:57',
         ),
         (
             'message-3',
-            'yesterday at 10:59pm',
+            '2011-12-31T22:59:58',
         ),
         (
             'message-2',
-            'yesterday at 10:59pm',
+            '2011-12-31T22:59:59',
         ),
         (
             'message-1',
-            'yesterday at 11:00pm',
+            '2011-12-31T23:00:00',
         ),
         (
             expected_outbound_content,
-            'yesterday at midnight',
+            '2012-01-01T00:00:00+00:00',
         ),
         (
             expected_outbound_content,
-            'yesterday at midnight',
+            '2012-01-01T00:00:00+00:00',
         ),
         (
             expected_outbound_content,
-            'yesterday at midnight',
+            '2012-01-01T00:00:00+00:00',
         ),
         (
             expected_outbound_content,
-            'yesterday at midnight',
+            '2012-01-01T00:00:00+00:00',
         ),
         (
             expected_outbound_content,
-            'yesterday at midnight',
+            '2012-01-01T00:00:00+00:00',
         ),
     ]):
         assert (
