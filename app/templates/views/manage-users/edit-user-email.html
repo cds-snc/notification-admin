@@ -5,20 +5,21 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  Change team member’s email address
+  {{ _('Change team member’s email address') }}
 {% endblock %}
 
 {% block maincolumn_content %}
-
+  {% set txt = _('Change team member’s email address') %}
   {{ page_header(
-    'Change team member’s email address',
+    txt,
     back_link=url_for('main.edit_user_permissions', service_id=current_service.id, user_id=user.id)
   ) }}
 
-  <p id="user_name">This will change the email address for {{ user.name }}.</p>
+  <p id="user_name">{{ _('This will change the email address for') }} {{ user.name }}.</p>
   {% call form_wrapper() %}
     {{ textbox(form.email_address, width='1-1', safe_error_message=True) }}
-    {{ page_footer('Save') }}
+    {% set txt = _('Save') %}
+    {{ page_footer(txt) }}
   {% endcall %}
 
 {% endblock %}

@@ -1,17 +1,17 @@
 <p>
-  To use Notification your organisation ({{ current_service.organisation.name }}) must accept the Notification data sharing and financial agreement.
+  {{ _('To use Notification your organisation') }} ({{ current_service.organisation.name }}) {{ _('must accept the Notification data sharing and financial agreement.') }}
 </p>
 <p>
-  This agreement only needs to be accepted once and will then cover all Notification services from
+  {{ _('This agreement only needs to be accepted once and will then cover all Notification services from') }}
   {{ current_service.organisation.name }}.
 </p>
 <p>
-  It needs to be accepted by, or on behalf of someone who can sign contracts for your organisation.
+  {{ _('It needs to be accepted by, or on behalf of someone who can sign contracts for your organisation.') }}
 </p>
 <p>
-  <a href="{{ url_for('main.service_download_agreement', service_id=current_service.id) }}">Download a copy of the agreement</a>.
+  <a href="{{ url_for('main.service_download_agreement', service_id=current_service.id) }}">{{ _('Download a copy of the agreement') }}</a>.
 </p>
 <p>
-  The agreement contains commercially sensitive information, so don’t share it more widely than you need to.
+  {{ _('The agreement contains commercially sensitive information, so don’t share it more widely than you need to.') }}
 </p>
-<a href="{{ url_for('main.service_accept_agreement', service_id=current_service.id) }}" class="button">Continue</a>
+<a href="{{ url_for('main.service_accept_agreement', service_id=current_service.id) }}" class="button">{{ _('Continue') }}</a>

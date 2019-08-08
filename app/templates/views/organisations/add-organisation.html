@@ -6,14 +6,14 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  New organisation
+  {{ _('New organisation') }}
 {% endblock %}
 
 {% block fullwidth_content %}
   <div id="content">
     <div class="navigation-service">
-      <a href="{{ url_for('.organisations') }}" class="navigation-service-back-to">All organisations</a>
-      <a href="{{ url_for('main.choose_account') }}" class="navigation-service-switch">Switch service</a>
+      <a href="{{ url_for('.organisations') }}" class="navigation-service-back-to">{{ _('All organisations') }}</a>
+      <a href="{{ url_for('main.choose_account') }}" class="navigation-service-switch">{{ _('Switch service') }}</a>
     </div>
 
     <main role="main">
@@ -27,7 +27,8 @@
             {{textbox(form.name)}}
             {{radios(form.organisation_type)}}
             {{radios(form.crown_status)}}
-            {{ page_footer('Save') }}
+            {% set button_txt = _('Save') %}
+            {{ page_footer(button_txt) }}
           {% endcall %}
         </div>
       </div>

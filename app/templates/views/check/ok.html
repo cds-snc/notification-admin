@@ -10,7 +10,7 @@
 {% set file_contents_header_id = 'file-preview' %}
 {% macro skip_to_file_contents() %}
   <p class="visually-hidden">
-    <a href="#{{ file_contents_header_id }}">Skip to file contents</a>
+    <a href="#{{ file_contents_header_id }}">{{ _('Skip to file contents') }}</a>
   </p>
 {% endmacro %}
 
@@ -40,9 +40,9 @@
         ) }}
       {% endif %}
       {% if template.template_type != 'letter' or not request.args.from_test %}
-      <button type="submit" class="button">Send {{ count_of_recipients }} {{ message_count_label(count_of_recipients, template.template_type, suffix='') }}</button>
+      <button type="submit" class="button">{{ _('Send') }} {{ count_of_recipients }} {{ message_count_label(count_of_recipients, template.template_type, suffix='') }}</button>
       {% else %}
-        <a href="{{ url_for('main.check_messages_preview', service_id=current_service.id, template_id=template.id, upload_id=upload_id, filetype='pdf') }}" download class="button">Download as a PDF</a>
+        <a href="{{ url_for('main.check_messages_preview', service_id=current_service.id, template_id=template.id, upload_id=upload_id, filetype='pdf') }}" download class="button">{{ _('Download as a PDF') }}</a>
       {% endif %}
     </form>
   </div>
@@ -88,7 +88,7 @@
 
   {% if count_of_displayed_recipients < count_of_recipients %}
     <p class="table-show-more-link">
-      Only showing the first {{ count_of_displayed_recipients }} rows
+      {{ _('Only showing the first')}} {{ count_of_displayed_recipients }} {{ _('rows') }}
     </p>
   {% endif %}
 

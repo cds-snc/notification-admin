@@ -6,25 +6,29 @@
 {% from "components/page-footer.html" import page_footer %}
 
 {% block service_page_title %}
-  API keys
+  {{ _('API keys') }}
 {% endblock %}
 
 {% block maincolumn_content %}
-
+  {% set heading_1 = _('API keys') %}
   {{ page_header(
-    'API keys',
+    heading_1,
     back_link=url_for('main.api_integration', service_id=current_service.id)
   ) }}
-
+  
+  {% set empty_txt = _('You haven’t created any API keys yet') %}
+  {% set keys_txt = _('API keys') %}
+  {% set heading_1 = _('API keys') %}
+  {% set heading_2 = _('Action') %}
   <div class="body-copy-table">
     {% call(item, row_number) list_table(
       current_service.api_keys,
-      empty_message="You haven’t created any API keys yet",
-      caption="API keys",
+      empty_message=empty_txt,
+      caption=keys_txt,
       caption_visible=false,
       field_headings=[
-        'API keys',
-        'Action'
+        heading_1,
+        heading_2
       ],
       field_headings_visible=False
     ) %}
@@ -33,29 +37,29 @@
           {{ item.name }}
           <div class="hint">
             {% if item.key_type == 'normal' %}
-              Live – sends to anyone
+              {{ _('Live – sends to anyone') }}
             {% elif item.key_type == 'team' %}
-              Team and safelist – limits who you can send to
+              {{ _('Team and safelist – limits who you can send to') }}
             {% elif item.key_type == 'test' %}
-              Test – pretends to send messages
+              {{ _('Test – pretends to send messages') }}
             {% endif %}
           </div>
         </div>
       {% endcall %}
       {% if item.expiry_date %}
         {% call field(align='right') %}
-          <span class='hint'>Revoked <span class="local-datetime-short">{{ item.expiry_date }}</span></span>
+          <span class='hint'>{{ _('Revoked') }} <span class="local-datetime-short">{{ item.expiry_date }}</span></span>
         {% endcall %}
       {% else %}
         {% call field(align='right', status='error') %}
-          <a href='{{ url_for('.revoke_api_key', service_id=current_service.id, key_id=item.id) }}'>Revoke</a>
+          <a href='{{ url_for('.revoke_api_key', service_id=current_service.id, key_id=item.id) }}'>{{ _('Revoke') }}</a>
         {% endcall %}
       {% endif %}
     {% endcall %}
   </div>
 
   <div class="js-stick-at-bottom-when-scrolling">
-    <a href="{{ url_for('.create_api_key', service_id=current_service.id) }}" class="button-secondary">Create an API key</a>
+    <a href="{{ url_for('.create_api_key', service_id=current_service.id) }}" class="button-secondary">{{ _('Create an API key') }}</a>
   </div>
 
 {% endblock %}
