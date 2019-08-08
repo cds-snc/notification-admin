@@ -388,7 +388,7 @@ def test_view_inbox_updates(
 
 
 @freeze_time("2016-07-01 13:00")
-@pytest.mark.skip(reason="@todo")
+# This test assumes EST
 def test_download_inbox(
     logged_in_client,
     mock_get_inbound_sms,
@@ -407,14 +407,14 @@ def test_download_inbox(
     )
     assert response.get_data(as_text=True) == (
         'Phone number,Message,Received\r\n'
-        '6502532222,message-1,2016-07-01 13:00\r\n'
-        '6502532222,message-2,2016-07-01 12:59\r\n'
-        '6502532222,message-3,2016-07-01 12:59\r\n'
-        '07900900002,message-4,2016-07-01 10:59\r\n'
-        '07900900004,message-5,2016-07-01 08:59\r\n'
-        '07900900006,message-6,2016-07-01 06:59\r\n'
-        '07900900008,message-7,2016-07-01 04:59\r\n'
-        '07900900008,message-8,2016-07-01 04:59\r\n'
+        '6502532220,message-1,2016-07-01 08:00\r\n'
+        '6502532220,message-2,2016-07-01 07:59\r\n'
+        '6502532220,message-3,2016-07-01 07:59\r\n'
+        '6502532222,message-4,2016-07-01 05:59\r\n'
+        '6502532224,message-5,2016-07-01 03:59\r\n'
+        '6502532226,message-6,2016-07-01 01:59\r\n'
+        '6502532228,message-7,2016-06-30 23:59\r\n'
+        '6502532228,message-8,2016-06-30 23:59\r\n'
     )
 
 
@@ -616,7 +616,7 @@ def test_monthly_has_equal_length_tables(
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
-@pytest.mark.skip(reason="@todo")
+# This test assumes EST
 def test_should_show_upcoming_jobs_on_dashboard(
     client_request,
     mock_get_service_templates,
@@ -639,10 +639,10 @@ def test_should_show_upcoming_jobs_on_dashboard(
     assert len(table_rows) == 2
 
     assert 'send_me_later.csv' in table_rows[0].find_all('th')[0].text
-    assert 'Sending today at 11:09am' in table_rows[0].find_all('th')[0].text
+    assert 'Sending 2016-01-01 11:09:00.061258' in table_rows[0].find_all('th')[0].text
     assert table_rows[0].find_all('td')[0].text.strip() == '1'
     assert 'even_later.csv' in table_rows[1].find_all('th')[0].text
-    assert 'Sending today at 11:09pm' in table_rows[1].find_all('th')[0].text
+    assert 'Sending 2016-01-01 23:09:00.061258' in table_rows[1].find_all('th')[0].text
     assert table_rows[1].find_all('td')[0].text.strip() == '1'
 
 
@@ -745,7 +745,7 @@ def test_correct_font_size_for_big_numbers(
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
-@pytest.mark.skip(reason="@todo")
+# This test assumes EST
 def test_should_show_recent_jobs_on_dashboard(
     client_request,
     mock_get_service_templates,
@@ -776,7 +776,7 @@ def test_should_show_recent_jobs_on_dashboard(
             "thisisatest.csv",
     )):
         assert filename in table_rows[index].find_all('th')[0].text
-        assert 'Sent 1 January at 11:09' in table_rows[index].find_all('th')[0].text
+        assert '2016-01-01T11:09:00.061258+0000' in table_rows[index].find_all('th')[0].text
         for column_index, count in enumerate((1, 0, 0)):
             assert table_rows[index].find_all('td')[column_index].text.strip() == str(count)
 

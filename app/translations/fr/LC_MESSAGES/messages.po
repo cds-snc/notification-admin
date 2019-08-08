@@ -309,6 +309,19 @@ msgstr ""
 msgid "can only preview how your letters will look"
 msgstr ""
 
+#: app/templates/partials/notifications/notifications.html:6
+msgid "Recipient"
+msgstr ""
+
+#: app/templates/partials/notifications/notifications.html:7
+#: app/templates/views/message-status.html:25
+msgid "Status"
+msgstr ""
+
+#: app/templates/partials/notifications/notifications.html:27
+msgid "Only showing the first 50 rows"
+msgstr ""
+
 #: app/templates/partials/templates/guidance-formatting.html:1
 msgid "Format"
 msgstr "Mise en forme"
@@ -360,6 +373,18 @@ msgstr "Premier paragraphe"
 #: app/templates/partials/templates/guidance-formatting.html:39
 msgid "Second paragraph"
 msgstr "Deuxième paragraphe"
+
+#: app/templates/partials/templates/guidance-links.html:1
+msgid "Links and URLs"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-links.html:3
+msgid "Always use full URLs, starting with https://"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-links.html:7
+msgid "Apply now at https://www.canada.ca/example"
+msgstr ""
 
 #: app/templates/partials/templates/guidance-optional-content.html:2
 msgid "Optional content"
@@ -418,6 +443,24 @@ msgid "Hello ((first name)), your reference is ((ref number))"
 msgstr ""
 "Bonjour ((prénom)), votre numéro de référence est le ((numéro de "
 "référence))."
+
+#: app/templates/partials/templates/guidance-send-a-document.html:2
+msgid "Send a document by email"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-send-a-document.html:5
+msgid ""
+"Use double brackets to add a placeholder field to your template. This "
+"will contain a secure link to download the document."
+msgstr ""
+
+#: app/templates/partials/templates/guidance-send-a-document.html:9
+msgid "Download your document at: ((link_to_document))"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-send-a-document.html:12
+msgid "Next, use the API to upload your document."
+msgstr ""
 
 #: app/templates/views/add-service.html:16
 msgid "About your service"
@@ -493,6 +536,9 @@ msgid "Platform admin"
 msgstr ""
 
 #: app/templates/views/choose-account.html:72
+#: app/templates/views/organisations/add-organisation.html:15
+#: app/templates/views/organisations/index.html:7
+#: app/templates/views/organisations/index.html:24
 msgid "All organisations"
 msgstr ""
 
@@ -505,10 +551,12 @@ msgid "live services"
 msgstr ""
 
 #: app/templates/views/choose-account.html:81
+#: app/templates/views/find-users/user-information.html:16
 msgid "Live services"
 msgstr ""
 
 #: app/templates/views/choose-account.html:96
+#: app/templates/views/find-users/user-information.html:32
 msgid "Trial mode services"
 msgstr ""
 
@@ -630,9 +678,13 @@ msgstr ""
 msgid "Your recipients won’t see this:"
 msgstr ""
 
+#: app/templates/views/api/callbacks/delivery-status-callback.html:37
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:35
 #: app/templates/views/edit-email-template.html:29
 #: app/templates/views/edit-letter-template.html:20
 #: app/templates/views/edit-sms-template.html:30
+#: app/templates/views/manage-users/edit-user-email.html:21
+#: app/templates/views/organisations/add-organisation.html:30
 msgid "Save"
 msgstr ""
 
@@ -813,6 +865,8 @@ msgstr "Reportez-vous à notre"
 msgid "API documentation"
 msgstr "documentation sur l’API"
 
+#: app/templates/views/api/callbacks/delivery-status-callback.html:21
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:19
 #: app/templates/views/features.html:37
 msgid "for more information."
 msgstr "pour en savoir plus."
@@ -1039,10 +1093,6 @@ msgstr ""
 msgid "Message statuses – emails"
 msgstr ""
 
-#: app/templates/views/message-status.html:25
-msgid "Status"
-msgstr ""
-
 #: app/templates/views/message-status.html:26
 msgid "Description"
 msgstr ""
@@ -1152,6 +1202,10 @@ msgstr ""
 msgid "You can now create a new password for your account."
 msgstr ""
 
+#: app/templates/views/agreement/_agreement.html:17
+#: app/templates/views/agreement/agreement-accept.html:35
+#: app/templates/views/agreement/service-agreement.html:33
+#: app/templates/views/api/keys/create.html:20
 #: app/templates/views/new-password.html:22
 #: app/templates/views/register-from-invite.html:29
 #: app/templates/views/register-from-org-invite.html:24
@@ -1186,6 +1240,7 @@ msgstr ""
 msgid "Your account will be created with this email address:"
 msgstr ""
 
+#: app/templates/views/agreement/agreement-confirm.html:31
 #: app/templates/views/register-from-invite.html:22
 #: app/templates/views/register-from-org-invite.html:19
 #: app/templates/views/register.html:20
@@ -1415,6 +1470,7 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
+#: app/templates/views/api/keys.html:22
 #: app/templates/views/service-settings.html:19
 #: app/templates/views/service-settings.html:78
 #: app/templates/views/service-settings.html:142
@@ -1465,6 +1521,7 @@ msgstr ""
 msgid "Manage"
 msgstr ""
 
+#: app/templates/views/email-branding/select-branding.html:6
 #: app/templates/views/service-settings.html:125
 #: app/templates/views/service-settings.html:337
 msgid "Email branding"
@@ -1674,6 +1731,7 @@ msgstr ""
 msgid "A screenshot of some computer code with a notify.send_email function"
 msgstr ""
 
+#: app/templates/views/agreement/service-agreement-choose.html:26
 #: app/templates/views/features/text-messages.html:27
 #: app/templates/views/signedout.html:79
 msgid "Contact us"
@@ -2024,21 +2082,190 @@ msgstr ""
 msgid "I haven’t received a text"
 msgstr ""
 
+#: app/templates/views/agreement/_agreement-choose.html:2
+msgid ""
+"Before you can go live on Notification, your organisation needs to accept"
+" to our data sharing and financial agreement."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-choose.html:5
+#: app/templates/views/agreement/service-agreement-choose.html:23
+msgid "There are different agreements for crown and non-crown organisations."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-choose.html:8
+msgid "Get in touch"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-choose.html:8
+msgid ""
+"to tell us whether or not you work for a crown organisation. If you’re "
+"not sure\n"
+"  we’ll help you work it out."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-signed.html:2
+#: app/templates/views/agreement/service-agreement-signed.html:18
+msgid "Your organisation"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-signed.html:2
+#: app/templates/views/agreement/service-agreement-signed.html:18
+msgid ""
+"has already accepted the Notification data sharing and financial "
+"agreement. You can"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-signed.html:3
+#: app/templates/views/agreement/service-agreement-signed.html:19
+msgid "download a copy"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-signed.html:6
+#: app/templates/views/agreement/_agreement.html:15
+#: app/templates/views/agreement/agreement-public.html:21
+msgid ""
+"The agreement contains commercially sensitive information, so don’t share"
+" it more widely than you need to."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:2
+#: app/templates/views/agreement/service-agreement.html:19
+msgid "To use Notification your organisation"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:2
+#: app/templates/views/agreement/service-agreement.html:19
+msgid "must accept the Notification data sharing and financial agreement."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:5
+msgid ""
+"This agreement only needs to be accepted once and will then cover all "
+"Notification services from"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:9
+msgid ""
+"It needs to be accepted by, or on behalf of someone who can sign "
+"contracts for your organisation."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:12
+msgid "Download a copy of the agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-accept.html:10
+#: app/templates/views/agreement/agreement-accept.html:17
+msgid "Accept the data sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-accept.html:34
+msgid "The version number is on the front page, for example ‘3.6’"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-choose.html:5
+#: app/templates/views/agreement/agreement-choose.html:17
+#: app/templates/views/agreement/agreement-confirm.html:7
+#: app/templates/views/agreement/agreement-signed.html:5
+#: app/templates/views/agreement/agreement-signed.html:17
+#: app/templates/views/agreement/agreement.html:5
+#: app/templates/views/agreement/agreement.html:17
+#: app/templates/views/agreement/service-agreement-choose.html:5
+#: app/templates/views/agreement/service-agreement-choose.html:12
+#: app/templates/views/agreement/service-agreement-signed.html:5
+#: app/templates/views/agreement/service-agreement-signed.html:12
+#: app/templates/views/agreement/service-agreement.html:5
+#: app/templates/views/agreement/service-agreement.html:12
+msgid "Notification data sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-confirm.html:24
+#: app/templates/views/agreement/agreement-confirm.html:28
+msgid ""
+"I confirm that I have the legal authority to accept the Notification data"
+" sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-confirm.html:24
+msgid "on behalf of"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-confirm.html:24
+#: app/templates/views/agreement/agreement-confirm.html:28
+msgid "and that"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-confirm.html:24
+#: app/templates/views/agreement/agreement-confirm.html:28
+msgid "will be bound by it."
+msgstr ""
+
+#: app/templates/views/agreement/agreement-public.html:5
+#: app/templates/views/agreement/agreement-public.html:14
+msgid "Download the Notification data sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-public.html:18
+msgid "Download the agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-public.html:18
+msgid "for"
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement-choose.html:19
+msgid ""
+"Before you can go live on Notification, your organisation needs to\n"
+"      accept to our data sharing and financial agreement."
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement-choose.html:26
+msgid ""
+"to tell us\n"
+"      whether or not you work for a crown organisation. If you’re not "
+"sure we’ll help you work it out."
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement-signed.html:22
+#: app/templates/views/agreement/service-agreement.html:31
+msgid ""
+"The agreement is confidential and should not be shared outside your "
+"organisation."
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement.html:22
+msgid ""
+"This must be done by, or on behalf of, someone with the authority to sign"
+" contracts for"
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement.html:25
+msgid "Once accepted, the agreement covers all Notify services from"
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement.html:28
+msgid "Download a copy of the data sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/api/callbacks.html:9
+#: app/templates/views/api/index.html:25
+msgid "Callbacks"
+msgstr ""
+
 #: app/templates/views/api/index.html:8 app/templates/views/api/index.html:14
 msgid "API integration for developers"
 msgstr ""
 
-#: app/templates/views/api/index.html:19
+#: app/templates/views/api/index.html:19 app/templates/views/api/keys.html:9
+#: app/templates/views/api/keys.html:13 app/templates/views/api/keys.html:20
+#: app/templates/views/api/keys.html:21
 msgid "API keys"
 msgstr ""
 
 #: app/templates/views/api/index.html:22
 #: app/templates/views/api/safelist.html:11
 msgid "Safelist"
-msgstr ""
-
-#: app/templates/views/api/index.html:25
-msgid "Callbacks"
 msgstr ""
 
 #: app/templates/views/api/index.html:32
@@ -2063,6 +2290,36 @@ msgstr ""
 
 #: app/templates/views/api/index.html:88
 msgid "Only showing the first 50 messages."
+msgstr ""
+
+#: app/templates/views/api/keys.html:19
+msgid "You haven’t created any API keys yet"
+msgstr ""
+
+#: app/templates/views/api/keys.html:40
+msgid "Live – sends to anyone"
+msgstr ""
+
+#: app/templates/views/api/keys.html:42
+msgid "Team and safelist – limits who you can send to"
+msgstr ""
+
+#: app/templates/views/api/keys.html:44
+msgid "Test – pretends to send messages"
+msgstr ""
+
+#: app/templates/views/api/keys.html:51
+msgid "Revoked"
+msgstr ""
+
+#: app/templates/views/api/keys.html:55
+msgid "Revoke"
+msgstr ""
+
+#: app/templates/views/api/keys.html:62
+#: app/templates/views/api/keys/create.html:10
+#: app/templates/views/api/keys/create.html:14
+msgid "Create an API key"
 msgstr ""
 
 #: app/templates/views/api/safelist.html:19
@@ -2093,6 +2350,67 @@ msgstr ""
 msgid "are included in the safelist automatically."
 msgstr ""
 
+#: app/templates/views/api/callbacks/delivery-status-callback.html:8
+#: app/templates/views/api/callbacks/delivery-status-callback.html:14
+msgid "Callbacks for delivery receipts"
+msgstr ""
+
+#: app/templates/views/api/callbacks/delivery-status-callback.html:21
+msgid ""
+"When you send an email or text message, we can tell you if Notification "
+"was able to deliver it. Check the"
+msgstr ""
+
+#: app/templates/views/api/callbacks/delivery-status-callback.html:21
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:19
+msgid "callback documentation"
+msgstr ""
+
+#: app/templates/views/api/callbacks/delivery-status-callback.html:23
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:21
+msgid "Must start with https://"
+msgstr ""
+
+#: app/templates/views/api/callbacks/delivery-status-callback.html:30
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:28
+msgid "At least 10 characters"
+msgstr ""
+
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:8
+msgid "Callbacks for received text messages"
+msgstr ""
+
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:19
+msgid ""
+"When you receive a text message in Notification, we can forward it to "
+"your system. Check the"
+msgstr ""
+
+#: app/templates/views/api/keys/create.html:19
+msgid "Name for this key"
+msgstr ""
+
+#: app/templates/views/api/keys/show.html:6
+#: app/templates/views/api/keys/show.html:13
+msgid "New API key"
+msgstr ""
+
+#: app/templates/views/api/keys/show.html:17
+msgid "Copy your key to somewhere safe."
+msgstr ""
+
+#: app/templates/views/api/keys/show.html:20
+msgid "You won’t be able to see it again once you leave this page."
+msgstr ""
+
+#: app/templates/views/api/keys/show.html:24
+msgid "API key"
+msgstr ""
+
+#: app/templates/views/api/keys/show.html:29
+msgid "Back to API keys"
+msgstr ""
+
 #: app/templates/views/check/column-errors.html:9
 msgid "a column called"
 msgstr ""
@@ -2102,10 +2420,13 @@ msgid "columns called"
 msgstr ""
 
 #: app/templates/views/check/column-errors.html:15
+#: app/templates/views/check/ok.html:13
+#: app/templates/views/check/row-errors.html:12
 msgid "Skip to file contents"
 msgstr ""
 
 #: app/templates/views/check/column-errors.html:20
+#: app/templates/views/check/row-errors.html:17
 msgid "Error"
 msgstr ""
 
@@ -2174,30 +2495,78 @@ msgid "Re-upload your file"
 msgstr ""
 
 #: app/templates/views/check/column-errors.html:152
+#: app/templates/views/check/row-errors.html:58
 msgid "Back to top"
 msgstr ""
 
 #: app/templates/views/check/column-errors.html:209
 #: app/templates/views/check/column-errors.html:214
 #: app/templates/views/check/column-errors.html:216
+#: app/templates/views/check/ok.html:91
+#: app/templates/views/check/row-errors.html:99
+#: app/templates/views/check/row-errors.html:101
 msgid "Only showing the first"
 msgstr ""
 
 #: app/templates/views/check/column-errors.html:209
 #: app/templates/views/check/column-errors.html:216
+#: app/templates/views/check/ok.html:91
+#: app/templates/views/check/row-errors.html:101
 msgid "rows"
 msgstr ""
 
 #: app/templates/views/check/column-errors.html:214
+#: app/templates/views/check/row-errors.html:99
 msgid "rows with errors"
 msgstr ""
 
 #: app/templates/views/check/column-errors.html:221
+#: app/templates/views/check/row-errors.html:106
 msgid "Only showing rows with errors"
 msgstr ""
 
 #: app/templates/views/check/column-errors.html:225
 msgid "Preview of"
+msgstr ""
+
+#: app/templates/views/check/ok.html:43
+msgid "Send"
+msgstr ""
+
+#: app/templates/views/check/ok.html:45
+msgid "Download as a PDF"
+msgstr ""
+
+#: app/templates/views/check/row-errors.html:28
+msgid "There is a problem with"
+msgstr ""
+
+#: app/templates/views/check/row-errors.html:31
+msgid "You need to"
+msgstr ""
+
+#: app/templates/views/check/row-errors.html:35
+msgid "There are some problems with"
+msgstr ""
+
+#: app/templates/views/check/row-errors.html:38
+msgid "You need to:"
+msgstr ""
+
+#: app/templates/views/conversations/conversation.html:27
+msgid "Send a text message to this phone number"
+msgstr ""
+
+#: app/templates/views/conversations/messages.html:23
+msgid "sending"
+msgstr ""
+
+#: app/templates/views/conversations/messages.html:27
+msgid "Failed"
+msgstr ""
+
+#: app/templates/views/conversations/messages.html:27
+msgid "sent"
 msgstr ""
 
 #: app/templates/views/dashboard/dashboard.html:10
@@ -2257,6 +2626,14 @@ msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:73
 msgid "Fiscal year ends 31 March."
+msgstr ""
+
+#: app/templates/views/email-branding/manage-branding.html:27
+msgid "Logos should be PNG files, 108px high"
+msgstr ""
+
+#: app/templates/views/email-branding/select-branding.html:25
+msgid "New brand"
 msgstr ""
 
 #: app/templates/views/features/emails.html:11
@@ -2369,6 +2746,103 @@ msgstr ""
 msgid "You can change the text message sender name in your service settings."
 msgstr ""
 
+#: app/templates/views/find-users/find-users-by-email.html:6
+#: app/templates/views/find-users/find-users-by-email.html:12
+msgid "Find users by email"
+msgstr ""
+
+#: app/templates/views/find-users/find-users-by-email.html:20
+msgid "Find users by email, or by partial email"
+msgstr ""
+
+#: app/templates/views/find-users/find-users-by-email.html:30
+msgid "Search"
+msgstr ""
+
+#: app/templates/views/find-users/find-users-by-email.html:51
+msgid "No users found."
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:5
+msgid "User information for"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:28
+msgid "No live services"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:44
+msgid "No services in trial mode"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:48
+msgid "Last login"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:50
+msgid "This person has never logged in"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:52
+msgid "Last logged in"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:60
+msgid "failed login attempts"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:66
+msgid "Archive user"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-email.html:7
+msgid "Confirm change of email address"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-email.html:20
+msgid "New email address:"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-email.html:24
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:24
+msgid "We will send"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-email.html:24
+msgid "an email to tell them about the change."
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-email.html:25
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:25
+msgid "Confirm"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:7
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:11
+msgid "Confirm change of mobile number"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:20
+msgid "New mobile number:"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:24
+msgid "a text message to tell them about the change."
+msgstr ""
+
+#: app/templates/views/manage-users/edit-user-email.html:8
+#: app/templates/views/manage-users/edit-user-email.html:12
+msgid "Change team member’s email address"
+msgstr ""
+
+#: app/templates/views/manage-users/edit-user-email.html:18
+msgid "This will change the email address for"
+msgstr ""
+
+#: app/templates/views/manage-users/edit-user-mobile.html:8
+msgid "Change team member’s mobile number"
+msgstr ""
+
 #: app/templates/views/manage-users/permissions.html:9
 msgid "All team members can see sent messages."
 msgstr ""
@@ -2381,6 +2855,78 @@ msgstr ""
 msgid ""
 "Not available because this team member hasn’t added a phone&nbsp;number "
 "to their profile"
+msgstr ""
+
+#: app/templates/views/organisations/add-organisation.html:9
+#: app/templates/views/organisations/index.html:56
+msgid "New organisation"
+msgstr ""
+
+#: app/templates/views/organisations/add-organisation.html:16
+#: app/templates/views/organisations/index.html:17
+msgid "Switch service"
+msgstr ""
+
+#: app/templates/views/organisations/index.html:38
+msgid "live service(s)"
+msgstr ""
+
+#: app/templates/views/organisations/index.html:41
+msgid "archived"
+msgstr ""
+
+#: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:8
+#: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:12
+msgid "Confirm organisation name change"
+msgstr ""
+
+#: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:23
+msgid "Your organisation name will be changed from"
+msgstr ""
+
+#: app/templates/views/templates/_move_to.html:18
+msgid "Add to new folder"
+msgstr ""
+
+#: app/templates/views/templates/_move_to.html:26
+msgid "Add new folder"
+msgstr ""
+
+#: app/templates/views/templates/_move_to.html:40
+msgid "Nothing selected"
+msgstr ""
+
+#: app/templates/views/templates/_template.html:6
+msgid "This template was deleted"
+msgstr ""
+
+#: app/templates/views/templates/_template.html:10
+msgid "If you need to send this"
+msgstr ""
+
+#: app/templates/views/templates/_template.html:12
+msgid "or edit this template, contact your manager."
+msgstr ""
+
+#: app/templates/views/templates/_template_history.html:5
+msgid "Edit made"
+msgstr ""
+
+#: app/templates/views/templates/_template_history.html:7
+msgid "Created"
+msgstr ""
+
+#: app/templates/views/templates/_template_list.html:18
+#: app/templates/views/templates/copy.html:18
+msgid "This folder is empty"
+msgstr ""
+
+#: app/templates/views/templates/_template_list.html:20
+msgid "There are no"
+msgstr ""
+
+#: app/templates/views/templates/_template_list.html:20
+msgid "templates in this folder"
 msgstr ""
 
 #: app/templates/views/templates/choose.html:26
@@ -2402,10 +2948,6 @@ msgstr "Vous pouvez aussi créer des dossiers pour classer vos modèles."
 #: app/templates/views/templates/copy.html:7
 #: app/templates/views/templates/copy.html:13
 msgid "Copy an existing template"
-msgstr ""
-
-#: app/templates/views/templates/copy.html:18
-msgid "This folder is empty"
 msgstr ""
 
 #: app/templates/views/templates/template.html:51

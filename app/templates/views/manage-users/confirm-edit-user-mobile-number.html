@@ -4,25 +4,26 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  Confirm change of mobile number
+  {{ _('Confirm change of mobile number') }}
 {% endblock %}
 
 {% block maincolumn_content %}
-
+{% set header_txt = _('Confirm change of mobile number') %}
 {{ page_header(
-  'Confirm change of mobile number',
+  header_txt,
   back_link=url_for('.edit_user_mobile_number', service_id=service_id, user_id=user.id)
 ) }}
 
 <div class="grid-row">
   <div class="column-whole">
   {% call form_wrapper() %}
-    <p>New mobile number:</p>
+    <p>{{ _('New mobile number:') }}</p>
     <div class="panel panel-border-wide bottom-gutter">
       <p>{{ new_mobile_number }}</p>
     </div>
-    <p>We will send {{ user.name }} a text message to tell them about the change.</p>
-    {{ page_footer('Confirm') }}
+    <p>{{ _('We will send') }} {{ user.name }} {{ _('a text message to tell them about the change.') }}</p>
+    {% set txt = _('Confirm') %}
+    {{ page_footer(txt) }}
   {% endcall %}
   </div>
 </div>

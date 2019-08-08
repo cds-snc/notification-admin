@@ -24,7 +24,7 @@
         </div>
       {% endif %}
       <p>
-        Logos should be PNG files, 108px high
+        {{ _('Logos should be PNG files, 108px high') }}
       </p>
       {{ file_upload(form.file, button_text='{} logo'.format('Update' if email_branding else 'Upload')) }}
       {% call form_wrapper() %}

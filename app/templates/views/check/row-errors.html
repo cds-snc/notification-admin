@@ -9,12 +9,12 @@
 {% set file_contents_header_id = 'file-preview' %}
 {% macro skip_to_file_contents() %}
   <p class="visually-hidden">
-    <a href="#{{ file_contents_header_id }}">Skip to file contents</a>
+    <a href="#{{ file_contents_header_id }}">{{ _('Skip to file contents') }}</a>
   </p>
 {% endmacro %}
 
 {% block service_page_title %}
-  Error
+  {{ _('Error') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -25,17 +25,17 @@
     {% call banner_wrapper(type='dangerous') %}
       {% if row_errors|length == 1 %}
         <h1 class='banner-title' data-module="track-error" data-error-type="Bad rows" data-error-label="{{ upload_id }}">
-          There is a problem with {{ original_file_name }}
+          {{ _('There is a problem with') }} {{ original_file_name }}
         </h1>
         <p>
-          You need to {{ row_errors[0] }}
+          {{ _('You need to') }} {{ row_errors[0] }}
         </p>
       {% else %}
         <h1 class='banner-title' data-module="track-error" data-error-type="Bad rows" data-error-label="{{ upload_id }}">
-          There are some problems with {{ original_file_name }}
+          {{ _('There are some problems with') }} {{ original_file_name }}
         </h1>
         <p>
-          You need to:
+          {{ _('You need to:') }}
         </p>
         <ul class="list-bullet">
           {% for error in row_errors %}
@@ -55,7 +55,7 @@
         button_text='Re-upload your file'
       ) }}
     </div>
-    <a href="#content" class="back-to-top-link">Back to top</a>
+    <a href="#content" class="back-to-top-link">{{ _('Back to top') }}</a>
   </div>
 
   <div class="fullscreen-content" data-module="fullscreen-table">
@@ -96,14 +96,14 @@
   {% if count_of_displayed_recipients < count_of_recipients %}
     <p class="table-show-more-link">
       {% if row_errors and not recipients.missing_column_headers %}
-        Only showing the first {{ count_of_displayed_recipients }} rows with errors
+        {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows with errors') }}
       {% else %}
-        Only showing the first {{ count_of_displayed_recipients }} rows
+        {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }}
       {% endif %}
     </p>
   {% elif row_errors and not recipients.missing_column_headers %}
     <p class="table-show-more-link">
-      Only showing rows with errors
+      {{ _('Only showing rows with errors') }}
     </p>
   {% endif %}
 

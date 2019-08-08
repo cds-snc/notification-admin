@@ -3,33 +3,33 @@
 {% from "components/api-key.html" import api_key %}
 
 {% block service_page_title %}
-  New API key
+  {{ _('New API key') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
 
     <h1 class="heading-large">
-      New API key
+      {{ _('New API key') }}
     </h1>
 
     <p>
-      Copy your key to somewhere safe.
+      {{ _('Copy your key to somewhere safe.') }}
     </p>
     <p>
-      You won’t be able to see it again once you leave this page.
+      {{ _('You won’t be able to see it again once you leave this page.') }}
     </p>
 
     <div class="bottom-gutter-2">
-
+      {% set txt = _('API key') %}
       {{ api_key(
         '{}-{}-{}'.format(key_name, service_id, secret),
-        'API key'
+        txt
       ) }}
-
+      {% set link_txt = _('Back to API keys') %}
       {{ page_footer(
         secondary_link=url_for('.api_keys', service_id=current_service.id),
-        secondary_link_text='Back to API keys'
+        secondary_link_text=link_txt
       ) }}
 
     </div>

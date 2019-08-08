@@ -4,7 +4,7 @@
 {% from "components/page-header.html" import page_header %}
 
 {% block per_page_title %}
-  All organisations
+  {{ _('All organisations') }}
 {% endblock %}
 
 {% block fullwidth_content %}
@@ -14,14 +14,14 @@
       <div class="navigation-service-name">
         &nbsp;
       </div>
-      <a href="{{ url_for('main.choose_account') }}" class="navigation-service-switch">Switch service</a>
+      <a href="{{ url_for('main.choose_account') }}" class="navigation-service-switch">{{ _('Switch service') }}</a>
     </div>
 
     <main role="main">
       <div class="grid-row top-gutter-2-3">
         <div class="column-one-quarter">
           <h1>
-            All organisations
+            {{ _('All organisations') }}
           </h1>
         </div>
         <div class="column-three-quarters">
@@ -35,10 +35,10 @@
                   <a href="{{ url_for('main.organisation_dashboard', org_id=org.id) }}" class="browse-list-link">{{ org.name }}</a>
                   <p class="browse-list-hint">
                     {{ org.count_of_live_services }}
-                    live service{% if org.count_of_live_services != 1 %}s{% endif %}
+                    {{ _('live service(s)') }}
                   </p>
                   {% if not org.active %}
-                    <span class="table-field-status-default heading-medium">- archived</span>
+                    <span class="table-field-status-default heading-medium">- {{_('archived') }}</span>
                   {% endif %}
                 </li>
               {% endfor %}
@@ -53,7 +53,7 @@
             &nbsp;
           </div>
           <div class="column-three-quarters">
-            <a href="{{ url_for('main.add_organisation') }}" class="button-secondary">New organisation</a>
+            <a href="{{ url_for('main.add_organisation') }}" class="button-secondary">{{ _('New organisation') }}</a>
           </div>
         </div>
       </div>

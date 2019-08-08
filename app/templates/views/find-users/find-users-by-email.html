@@ -3,13 +3,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  Find users by email
+  {{ _('Find users by email') }}
 {% endblock %}
 
 {% block platform_admin_content %}
 
   <h1 class="heading-large">
-    Find users by email
+    {{ _('Find users by email') }}
   </h1>
 
 
@@ -17,16 +17,17 @@
       action=url_for('.find_users_by_email'),
       class='grid-row'
   ) %}
+    {% set label_txt = _('Find users by email, or by partial email') %}
     <div class="column-three-quarters">
       {{ textbox(
         form.search,
         width='1-1',
-        label='Find users by email, or by partial email'
+        label=label_txt
       ) }}
     </div>
     <div class="column-one-quarter align-button-with-textbox">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <button type="submit" class="button">Search</button>
+      <button type="submit" class="button">{{ _('Search') }}</button>
     </div>
   {% endcall %}
 
@@ -47,6 +48,6 @@
     </ul>
   </nav>
   {% elif users_found == [] %}
-    <p class="browse-list-hint">No users found.</p>
+    <p class="browse-list-hint">{{ _('No users found.') }}</p>
   {% endif %}
 {% endblock %}
