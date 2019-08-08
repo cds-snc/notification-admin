@@ -159,7 +159,6 @@ def test_notification_status_shows_expected_back_link(
 
 
 @freeze_time("2012-01-01 01:01")
-@pytest.mark.skip(reason="@todo")
 def test_notification_page_doesnt_link_to_template_in_tour(
     client_request,
     fake_uuid,
@@ -174,7 +173,7 @@ def test_notification_page_doesnt_link_to_template_in_tour(
     )
 
     assert normalize_spaces(page.select('main p:nth-of-type(1)')[0].text) == (
-        "‘sample template’ was sent by Test User on 1 January at 1:01am"
+        "‘sample template’ was sent by Test User on 2012-01-01T01:01:00+00:00"
     )
     assert len(page.select('main p:nth-of-type(1) a')) == 0
 

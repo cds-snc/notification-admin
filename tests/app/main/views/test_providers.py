@@ -141,7 +141,6 @@ stub_provider_history = {
 }
 
 
-@pytest.mark.skip(reason="@todo")
 def test_should_show_all_providers(
     client,
     platform_admin_user,
@@ -177,7 +176,7 @@ def test_should_show_all_providers(
     assert table_data[1].text.strip() == "1"
     assert table_data[2].text.strip() == "42"
     assert table_data[3].text.strip() == "True"
-    assert table_data[4].text.strip() == "16 January at 3:20pm"
+    assert table_data[4].text.strip() == "2017-01-16T15:20:40"
     assert table_data[5].text.strip() == "Test User"
     assert table_data[6].find_all("a")[0]['href'] == '/provider/6005e192-4738-4962-beec-ebd982d0b03f/edit'
 
