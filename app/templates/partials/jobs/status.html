@@ -2,17 +2,17 @@
   <p class='bottom-gutter'>
     {% if job.scheduled_for %}
       {% if job.processing_started %}
-        Sent by {{ job.created_by.name }} on <span class="local-datetime-short">{{ job.processing_started}}</span>
+        {{ _('Sent by') }} {{ job.created_by.name }} {{ _('on') }} <span class="local-datetime-short">{{ job.processing_started}}</span>
         {% if template_type == "letter" %}
           <p id="printing-info">
             {{ letter_print_day }}
           </p>
         {% endif %}
       {% else %}
-        Uploaded by {{ job.created_by.name }} on <span class="local-datetime-short">{{ job.created_at}}</span>
+        {{ _('Uploaded by') }} {{ job.created_by.name }} {{ _('on') }} <span class="local-datetime-short">{{ job.created_at}}</span>
       {% endif %}
     {% else %}
-      Sent by {{ job.created_by.name }} on <span class="local-datetime-short">{{ job.created_at}}</span>
+      {{ _('Sent by') }} {{ job.created_by.name }} {{ _('on') }} <span class="local-datetime-short">{{ job.created_at}}</span>
       {% if template_type == "letter" %}
         <p id="printing-info">
           {{ letter_print_day }}
