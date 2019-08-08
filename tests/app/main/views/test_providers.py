@@ -2,7 +2,6 @@ import copy
 import re
 from datetime import datetime
 
-import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
