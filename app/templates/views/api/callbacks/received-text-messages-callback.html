@@ -5,7 +5,7 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Callbacks for received text messages
+  {{ _('Callbacks for received text messages') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -16,23 +16,24 @@
   <div class="grid-row">
     <div class="column-five-sixths">
       <p>
-        When you receive a text message in Notification, we can forward it to your system.
-        Check the <a href="{{ url_for('.callbacks') }}"> callback documentation </a> for more information.
+        {{ _('When you receive a text message in Notification, we can forward it to your system. Check the') }} <a href="{{ url_for('.callbacks') }}"> {{ _('callback documentation') }} </a> {{ _('for more information.') }}
       </p>
-
+      {% set hint_txt = _('Must start with https://') %}
       {% call form_wrapper() %}
         {{ textbox(
           form.url,
           width='1-1',
-          hint='Must start with https://'
+          hint=hint_txt
         ) }}
+        {% set hint_txt = _('At least 10 characters') %}
         {{ textbox(
           form.bearer_token,
           width='1-1',
-          hint='At least 10 characters',
+          hint=hint_txt,
           autocomplete='new-password'
         ) }}
-        {{ page_footer('Save') }}
+        {% set button_txt = _('Save') %}
+        {{ page_footer(button_txt) }}
       {% endcall %}
     </div>
   </div>

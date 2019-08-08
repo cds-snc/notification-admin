@@ -2,35 +2,35 @@
 {% from "components/page-header.html" import page_header %}
 
 {% block service_page_title %}
-Notification data sharing and financial agreement
+{{ _('Notification data sharing and financial agreement') }} 
 {% endblock %}
 
 {% block maincolumn_content %}
 
 <div class="grid-row">
   <div class="column-five-sixths">
-
+    {% set txt = _('Notification data sharing and financial agreement') %}
     {{ page_header(
-      'Notification data sharing and financial agreement',
+      txt,
       back_link=url_for('main.request_to_go_live', service_id=current_service.id)
     )}}
 
     <p>
-      To use Notification your organisation ({{ current_service.organisation.name }}) must accept the Notification data sharing and financial agreement.
+      {{ _('To use Notification your organisation') }} ({{ current_service.organisation.name }}) {{ _('must accept the Notification data sharing and financial agreement.') }}
     </p>
     <p>
-      This must be done by, or on behalf of, someone with the authority to sign contracts for {{ current_service.organisation.name }}.
+      {{ _('This must be done by, or on behalf of, someone with the authority to sign contracts for') }} {{ current_service.organisation.name }}.
     </p>
     <p>
-      Once accepted, the agreement covers all Notify services from {{ current_service.organisation.name }}.
+      {{ _('Once accepted, the agreement covers all Notify services from') }} {{ current_service.organisation.name }}.
     </p>
     <p>
-      <a href="{{ url_for('main.service_download_agreement', service_id=current_service.id) }}">Download a copy of the data sharing and financial agreement</a>.
+      <a href="{{ url_for('main.service_download_agreement', service_id=current_service.id) }}">{{ _('Download a copy of the data sharing and financial agreement') }}</a>.
     </p>
     <p>
-      The agreement is confidential and should not be shared outside your organisation.
+      {{ _('The agreement is confidential and should not be shared outside your organisation.') }}
     </p>
-    <a href="{{ url_for('main.service_accept_agreement', service_id=current_service.id) }}" class="button">Continue</a>
+    <a href="{{ url_for('main.service_accept_agreement', service_id=current_service.id) }}" class="button">{{ _('Continue') }}</a>
 
   </div>
 </div>

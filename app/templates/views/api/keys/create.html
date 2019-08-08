@@ -7,20 +7,21 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Create an API key
+  {{ _('Create an API key') }}
 {% endblock %}
 
 {% block maincolumn_content %}
-
+  {% set header_txt = _('Create an API key') %}
   {{ page_header(
-    'Create an API key',
+    header_txt,
     back_link=url_for('main.api_keys', service_id=current_service.id)
   ) }}
-
+  {% set label_txt = _('Name for this key') %}
+  {% set button_txt = _('Continue') %}
   {% call form_wrapper() %}
-    {{ textbox(form.key_name, label='Name for this key') }}
+    {{ textbox(form.key_name, label=label_txt) }}
     {{ radios(form.key_type, disable=disabled_options, option_hints=option_hints) }}
-    {{ page_footer('Continue') }}
+    {{ page_footer(button_txt) }}
   {% endcall %}
 
 {% endblock %}
