@@ -89,6 +89,8 @@ class Config(object):
     NOTIFY_SERVICE_ID = 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553'
     NOTIFY_LOG_PATH = ''
 
+    HIPB_ENABLED = True
+
 
 class Development(Config):
     DEBUG = True

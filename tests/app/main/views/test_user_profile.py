@@ -95,7 +95,7 @@ def test_should_render_change_email_continue_after_authenticate_email(
         session['new-email'] = 'new_notify@notify.canada.ca'
     page = client_request.post(
         'main.user_profile_email_authenticate',
-        data={'password': '12345'},
+        data={'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02'},
         _expected_status=200,
     )
     assert 'Click the link in the email to confirm the change to your email address.' in page.text
@@ -169,7 +169,7 @@ def test_should_redirect_after_mobile_number_authenticate(
 
     client_request.post(
         'main.user_profile_mobile_number_authenticate',
-        _data={'password': '12345667'},
+        _data={'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02'},
         _expected_status=302,
         _expected_redirect=url_for(
             'main.user_profile_mobile_number_confirm',
@@ -247,8 +247,8 @@ def test_should_redirect_after_password_change(
     client_request.post(
         'main.user_profile_password',
         _data={
-            'new_password': 'the new password',
-            'old_password': 'the old password',
+            'new_password': 'A97592577C84C4E9F5C956666401B2904149194A68211D0A791C1E13A3181239',
+            'old_password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02',
         },
         _expected_status=302,
         _expected_redirect=url_for(
