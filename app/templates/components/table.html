@@ -172,7 +172,7 @@
           {{ notification.status|format_notification_status_as_time(
             notification.created_at,
             (notification.updated_at or notification.created_at)
-          ) }}
+          )|safe }}
         {% endif %}
       </span>
       {% if displayed_on_single_line %}</span>{% endif %}
