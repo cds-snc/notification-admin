@@ -253,7 +253,7 @@
       </p>
       <p>
         {{ _('Problems or comments?') }}
-        <a href="{{ url_for('main.support') }}">{{ _('Give feedback') }}</a>.
+        <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('Give feedback') }}</a>.
       </p>
 
     {% endif %}

@@ -1,6 +1,7 @@
 from datetime import datetime
 from unittest.mock import ANY
 
+import pwnedpasswords
 import pytest
 from bs4 import BeautifulSoup
 from flask import session, url_for
@@ -36,8 +37,8 @@ def test_logged_in_user_redirects_to_account(
     '+4966921809',
 ])
 @pytest.mark.parametrize('password', [
-    'the quick brown fox',
-    '   the   quick   brown   fox   ',
+    'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02',
+    'rZXdoBku   z6U37DDXIa   AfpBR1OTJcS  ZOGICLCz4dMtmopS  3KsVauIrtcgq s1eU02',
 ])
 def test_register_creates_new_user_and_redirects_to_continue_page(
     client,
@@ -90,7 +91,7 @@ def test_process_register_returns_200_when_mobile_number_is_invalid(
                            data={'name': 'Bad Mobile',
                                  'email_address': 'bad_mobile@example.canada.ca',
                                  'mobile_number': 'not good',
-                                 'password': 'validPassword!'})
+                                 'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02'})
 
     assert response.status_code == 200
     assert 'Not a valid international number' in response.get_data(as_text=True)
@@ -107,7 +108,7 @@ def test_should_return_200_when_email_is_not_gov_uk(
                            data={'name': 'Bad Mobile',
                                  'email_address': 'bad_mobile@example.not.right',
                                  'mobile_number': '+16502532222',
-                                 'password': 'validPassword!'})
+                                 'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02'})
 
     assert response.status_code == 200
     assert 'Enter a government email address' in response.get_data(as_text=True)
@@ -135,11 +136,16 @@ def test_should_add_user_details_to_session(
             'name': 'Test Codes',
             'email_address': email_address,
             'mobile_number': '+16502532222',
-            'password': 'validPassword!'
+            'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02'
         },
     )
     assert response.status_code == 302
     assert session['user_details']['email'] == email_address
+
+
+def test_blacklist1_can_contact_hibp_api(app_):
+    response = pwnedpasswords.check("testing 123")
+    assert response == 1       # "testing 123" respondes with 1
 
 
 def test_should_return_200_if_password_is_blacklisted(
@@ -167,7 +173,7 @@ def test_register_with_existing_email_sends_emails(
         'name': 'Already Hasaccount',
         'email_address': api_user_active['email_address'],
         'mobile_number': '+16502532222',
-        'password': 'validPassword!'
+        'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02'
     }
 
     response = client.post(url_for('main.register'),
@@ -248,7 +254,7 @@ def test_register_from_invite(
             'email_address': invited_user.email_address,
             'mobile_number': '+16502532222',
             'service': str(invited_user.id),
-            'password': 'somreallyhardthingtoguess',
+            'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02',
             'auth_type': 'sms_auth'
         }
     )
@@ -258,7 +264,7 @@ def test_register_from_invite(
         'Registered in another Browser',
         invited_user.email_address,
         '+16502532222',
-        'somreallyhardthingtoguess',
+        'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02',
         'sms_auth',
     )
 
@@ -291,7 +297,7 @@ def test_register_from_invite_when_user_registers_in_another_browser(
             'email_address': api_user_active['email_address'],
             'mobile_number': api_user_active['mobile_number'],
             'service': str(api_user_active['id']),
-            'password': 'somreallyhardthingtoguess',
+            'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02',
             'auth_type': 'sms_auth'
         }
     )
@@ -323,7 +329,7 @@ def test_register_from_email_auth_invite(
         'name': 'invited user',
         'email_address': sample_invite['email_address'],
         'mobile_number': '6502532222',
-        'password': 'FSLKAJHFNvdzxgfyst',
+        'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02',
         'service': sample_invite['service'],
         'auth_type': 'email_auth',
     }
@@ -373,7 +379,7 @@ def test_can_register_email_auth_without_phone_number(
         'name': 'invited user',
         'email_address': sample_invite['email_address'],
         'mobile_number': '',
-        'password': 'FSLKAJHFNvdzxgfyst',
+        'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02',
         'service': sample_invite['service'],
         'auth_type': 'email_auth'
     }
@@ -400,7 +406,7 @@ def test_cannot_register_with_sms_auth_and_missing_mobile_number(
     response = client.post(url_for('main.register'),
                            data={'name': 'Missing Mobile',
                                  'email_address': 'missing_mobile@example.canada.ca',
-                                 'password': 'validPassword!'})
+                                 'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02'})
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
