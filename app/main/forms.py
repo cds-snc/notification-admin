@@ -611,6 +611,13 @@ class CreateServiceForm(StripWhitespaceForm):
 class CreateNhsServiceForm(CreateServiceForm):
     organisation_type = nhs_organisation_type()
 
+class SecurityKeyForm(StripWhitespaceForm):
+    name = StringField(
+        _('What’s your key called?'),
+        validators=[
+            DataRequired(message=_('Can’t be empty'))
+        ])
+    
 
 class NewOrganisationForm(
     RenameOrganisationForm,

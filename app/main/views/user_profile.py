@@ -22,6 +22,7 @@ from app.main.forms import (
     ConfirmPasswordForm,
     ServiceOnOffSettingForm,
     TwoFactorForm,
+    SecurityKeyForm
 )
 from app.models.user import User
 from app.utils import user_is_gov_user, user_is_logged_in
@@ -215,6 +216,25 @@ def user_profile_security_keys_confirm_delete(keyid):
     flash('Are you sure you want to remove security key {}?'.format(keyid), 'remove')
     return render_template(
         'views/user-profile/security-keys.html'
+    )
+
+@main.route("/user-profile/security_keys/add", methods=['GET', 'POST'])
+@user_is_logged_in
+def user_profile_add_security_keys():
+
+    form = SecurityKeyForm()
+
+    if form.validate_on_submit():
+        #service_api_client.update_safelist(service_id, {
+            #'email_addresses': list(filter(None, form.email_addresses.data)),
+            #'phone_numbers': list(filter(None, form.phone_numbers.data))
+        #})
+        flash('Key added', 'default_with_tick')
+        return redirect(url_for('.user_profile_security_keys'))
+
+    return render_template(
+        'views/user-profile/add-security-keys.html',
+        form=form
     )
 
 

@@ -1,0 +1,29 @@
+{% extends "withoutnav_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block per_page_title %}
+  {{ heading }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    {% set header_txt = _('Key') %}
+    {{ page_header(header_txt) }}
+
+    {% call form_wrapper() %}
+      {% set hint_txt = _('Something to remember your key by') %}
+      {{ textbox(form.name, hint=hint_txt) }}
+      {% set button_txt = _('Add key') %}
+      {{ page_footer(button_txt) }}
+
+    {% endcall %}
+
+  </div>
+</div>
+
+{% endblock %}
