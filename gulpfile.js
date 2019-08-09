@@ -82,6 +82,8 @@ const javascripts = () => {
       paths.src + 'javascripts/stick-to-window-when-scrolling.js',
       paths.src + 'javascripts/detailsPolyfill.js',
       paths.src + 'javascripts/apiKey.js',
+      paths.src + 'javascripts/cbor.js',
+      paths.src + 'javascripts/fido2.js',
       paths.src + 'javascripts/autofocus.js',
       paths.src + 'javascripts/highlightTags.js',
       paths.src + 'javascripts/fileUpload.js',
