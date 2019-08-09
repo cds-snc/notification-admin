@@ -2,6 +2,7 @@ import json
 
 from flask import (
     flash,
+    request,
     abort,
     current_app,
     redirect,
@@ -11,6 +12,7 @@ from flask import (
 )
 from flask_login import current_user
 from notifications_utils.url_safe_token import check_token
+from notifications_python_client.errors import HTTPError
 
 from app import user_api_client
 from app.main import main
@@ -217,6 +219,20 @@ def user_profile_security_keys():
 @main.route("/user-profile/security_keys/<keyid>", methods=['GET', 'POST'])
 @user_is_logged_in
 def user_profile_security_keys_confirm_delete(keyid):
+    if request.method == 'POST':
+        try:
+            user_api_client.delete_security_key_user(current_user.id, key=keyid)
+            msg = "Key deleted"
+            flash(msg, 'default_with_tick')
+            return redirect(url_for('.user_profile_security_keys'))
+        except HTTPError as e:
+            msg = "Something didn't work properly"
+            if e.status_code == 400 and msg in e.message:
+                flash(msg, 'info')
+                return redirect(url_for('.user_profile_security_keys'))
+            else:
+                abort(500, e) 
+
     flash('Are you sure you want to remove security key {}?'.format(keyid), 'remove')
     return render_template(
         'views/user-profile/security-keys.html'
