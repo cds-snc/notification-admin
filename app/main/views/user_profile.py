@@ -1,4 +1,5 @@
 import json
+import base64
 
 from flask import (
     flash,
@@ -244,13 +245,33 @@ def user_profile_security_keys_confirm_delete(keyid):
 @main.route("/user-profile/security_keys/add", methods=['GET', 'POST'])
 @user_is_logged_in
 def user_profile_add_security_keys():
+    if request.method == 'POST':
+        result = user_api_client.register_security_key(current_user.id, name="hello", key="123")
+        return base64.b64decode(result["data"])
+    
+    form = SecurityKeyForm()
+    return render_template(
+        'views/user-profile/add-security-keys.html',
+        form=form
+    )
+
+    
+
+@main.route("/user-profile/security_keys/complete", methods=['POST'])
+@user_is_logged_in
+def user_profile_complete_security_keys():
     form = SecurityKeyForm()
 
     if form.validate_on_submit():
         if form.data:
-            user_api_client.add_security_key_user(current_user.id, name=form.keyname.data, key="123")
-            flash('Key added', 'default_with_tick')
-            return redirect(url_for('.user_profile_security_keys'))
+            result = user_api_client.register_security_key(current_user.id, name=form.keyname.data, key="123")
+            print("===================")
+            print(result)
+            return response.json(result)
+            
+            #user_api_client.add_security_key_user(current_user.id, name=form.keyname.data, key="123")
+            #flash('Key added', 'default_with_tick')
+            #return redirect(url_for('.user_profile_security_keys'))
 
     return render_template(
         'views/user-profile/add-security-keys.html',

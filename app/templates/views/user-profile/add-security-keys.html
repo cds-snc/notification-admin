@@ -10,6 +10,10 @@
 
 {% block maincolumn_content %}
 
+<script>
+ var csrf_token = "{{ csrf_token() }}";
+</script>
+
 <div class="grid-row">
   <div class="column-two-thirds">
     {% set header_txt = _('Key') %}
@@ -19,7 +23,7 @@
       {% set hint_txt = _('Something to remember your key by') %}
       {{ textbox(form.keyname, hint=hint_txt) }}
       {% set button_txt = _('Add key') %}
-      {{ page_footer(button_txt) }}
+      {{ page_footer(button_text=button_txt,button_id="register-key") }}
 
     {% endcall %}
 
