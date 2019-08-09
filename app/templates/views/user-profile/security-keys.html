@@ -29,13 +29,16 @@
       field_headings_visible=False,
       caption_visible=False
     ) %}
-      {% call row() %}
-        {% set txt = _('Name') %}
-        {% set delete_txt = _('Remove') %}
-        {{ text_field(txt) }}
-        {{ text_field(current_user.name) }}
-        {{ edit_field(delete_txt, url_for('.user_profile_security_keys_confirm_delete', keyid='123')) }}
-      {% endcall %}
+
+    {% for key in current_user.security_keys %}
+        {% call row() %}
+          {% set txt = _('Name') %}
+          {% set delete_txt = _('Remove') %}
+          {{ text_field(txt) }}
+          {{ text_field(key.name) }}
+          {{ edit_field(delete_txt, url_for('.user_profile_security_keys_confirm_delete', keyid=key.id)) }}
+        {% endcall %}
+      {% endfor %}
     {% endcall %}
   </div>
 

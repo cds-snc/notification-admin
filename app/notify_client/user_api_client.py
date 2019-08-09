@@ -195,18 +195,26 @@ class UserApiClient(NotifyAdminAPIClient):
     def get_security_keys_for_user(self, user_id):
         endpoint = '/user/{}/fido2_keys'.format(user_id)
         return [{
-            'id': 1,
-            'name': "a",
+            'id': "1",
+            'name': "the name a",
+            'key': "key 1",
         }, {
-            'name': "a",
-            'key': "the key",
+            'id': "2",
+            'name': "the name b",
+            'key': "key 2",
+        },
+            {
+            'id': "3",
+            'name': "the name c",
+            'key': "key 3",
         }]
         # return self.get(endpoint)
 
     def add_security_key_user(self, user_id, name, key):
         endpoint = '/user/{}/fido2_keys'.format(user_id)
-        data = {'name': name, 'key': key}
-        return self.post(endpoint, data)
+        data = {'result': 'true', 'name': name, 'key': key}
+        return data
+        # return self.post(endpoint, data)
 
     def delete_security_key_user(self, user_id, key):
         endpoint = '/user/{}/fido2_keys'.format(user_id)
