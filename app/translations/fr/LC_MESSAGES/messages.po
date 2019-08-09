@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-08 11:34-0400\n"
+"POT-Creation-Date: 2019-08-09 08:48-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -68,6 +68,42 @@ msgstr "mode de recherche"
 #: app/templates/components/api-key.html:4
 msgid "API data:"
 msgstr "Données de l’API :"
+
+#: app/templates/components/big-number.html:47
+#: app/templates/components/big-number.html:51
+#: app/templates/views/dashboard/monthly.html:60
+msgid "failed"
+msgstr ""
+
+#: app/templates/components/big-number.html:54
+msgid "No failures"
+msgstr ""
+
+#: app/templates/components/file-upload.html:1
+msgid "Choose file"
+msgstr ""
+
+#: app/templates/components/file-upload.html:33
+#: app/templates/views/check/column-errors.html:78
+#: app/templates/views/signedout.html:25
+msgid "or"
+msgstr "ou"
+
+#: app/templates/components/file-upload.html:38
+msgid "Submit"
+msgstr ""
+
+#: app/templates/components/folder-path.html:25
+msgid "Templates"
+msgstr ""
+
+#: app/templates/components/folder-path.html:43
+msgid "Services"
+msgstr ""
+
+#: app/templates/components/list-entry.html:31
+msgid "number"
+msgstr ""
 
 #: app/templates/components/message-count-label.html:4
 msgid "message"
@@ -143,6 +179,30 @@ msgstr ""
 
 #: app/templates/components/page-header.html:17
 msgid "Back"
+msgstr ""
+
+#: app/templates/components/task-list.html:5
+msgid "Completed"
+msgstr ""
+
+#: app/templates/components/task-list.html:7
+msgid "Not completed"
+msgstr ""
+
+#: app/templates/components/tick-cross.html:1
+msgid "Can"
+msgstr ""
+
+#: app/templates/components/tick-cross.html:2
+msgid "Can’t"
+msgstr ""
+
+#: app/templates/components/tick-cross.html:3
+msgid "Done:"
+msgstr ""
+
+#: app/templates/components/tick-cross.html:4
+msgid "Not done:"
 msgstr ""
 
 #: app/templates/error/400.html:2
@@ -309,17 +369,107 @@ msgstr ""
 msgid "can only preview how your letters will look"
 msgstr ""
 
+#: app/templates/partials/jobs/notifications.html:5
+msgid "No messages to show"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:6
 #: app/templates/partials/notifications/notifications.html:6
+#: app/templates/views/activity/notifications.html:9
 msgid "Recipient"
 msgstr ""
 
+#: app/templates/partials/jobs/notifications.html:7
 #: app/templates/partials/notifications/notifications.html:7
+#: app/templates/views/activity/notifications.html:10
 #: app/templates/views/message-status.html:25
 msgid "Status"
 msgstr ""
 
+#: app/templates/partials/jobs/notifications.html:13
+#: app/templates/views/message-status.html:34
+#: app/templates/views/message-status.html:75
+msgid "Sending"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:17
+msgid "Cancel sending"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:38
+msgid "Report is"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:38
+msgid "complete…"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:42
+msgid "Download this report"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:72
 #: app/templates/partials/notifications/notifications.html:27
 msgid "Only showing the first 50 rows"
+msgstr ""
+
+#: app/templates/partials/jobs/status.html:5
+#: app/templates/partials/jobs/status.html:15
+msgid "Sent by"
+msgstr ""
+
+#: app/templates/partials/jobs/status.html:5
+#: app/templates/partials/jobs/status.html:12
+#: app/templates/partials/jobs/status.html:15
+msgid "on"
+msgstr ""
+
+#: app/templates/partials/jobs/status.html:12
+msgid "Uploaded by"
+msgstr ""
+
+#: app/templates/partials/notifications/status.html:13
+msgid "test"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:3
+msgid "To put a heading in your template, use a hash:"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:7
+msgid "# This is a heading"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:11
+#: app/templates/partials/templates/guidance-formatting.html:11
+msgid "To make bullet points, use asterisks:"
+msgstr "Utilisez des astérisques pour les puces dans une énumération"
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:15
+#: app/templates/partials/templates/guidance-formatting.html:15
+msgid "* point 1"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:16
+#: app/templates/partials/templates/guidance-formatting.html:16
+msgid "* point 2"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:17
+#: app/templates/partials/templates/guidance-formatting.html:17
+msgid "* point 3"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:21
+msgid "To insert a page break, use three asterisks:"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:25
+msgid "Content on page 1"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:29
+msgid "Content on page 2"
 msgstr ""
 
 #: app/templates/partials/templates/guidance-formatting.html:1
@@ -333,24 +483,8 @@ msgstr ""
 "hachage :"
 
 #: app/templates/partials/templates/guidance-formatting.html:7
-msgid "This is a title"
-msgstr "Ceci est un titre"
-
-#: app/templates/partials/templates/guidance-formatting.html:11
-msgid "To make bullet points, use asterisks:"
-msgstr "Utilisez des astérisques pour les puces dans une énumération"
-
-#: app/templates/partials/templates/guidance-formatting.html:15
-msgid "point 1"
-msgstr "puce 1"
-
-#: app/templates/partials/templates/guidance-formatting.html:16
-msgid "point 2"
-msgstr "puce 2"
-
-#: app/templates/partials/templates/guidance-formatting.html:17
-msgid "point 3"
-msgstr "puce 3"
+msgid "# This is a title"
+msgstr ""
 
 #: app/templates/partials/templates/guidance-formatting.html:21
 msgid ""
@@ -1097,11 +1231,6 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: app/templates/views/message-status.html:34
-#: app/templates/views/message-status.html:75
-msgid "Sending"
-msgstr ""
-
 #: app/templates/views/message-status.html:35
 msgid "Notification has sent the message to the email provider."
 msgstr ""
@@ -1210,7 +1339,8 @@ msgstr ""
 #: app/templates/views/register-from-invite.html:29
 #: app/templates/views/register-from-org-invite.html:24
 #: app/templates/views/register.html:27 app/templates/views/send-test.html:46
-#: app/templates/views/signin.html:34 app/templates/views/two-factor.html:16
+#: app/templates/views/signin.html:34 app/templates/views/templates/add.html:12
+#: app/templates/views/two-factor.html:16
 #: app/templates/views/verify-mobile.html:22
 msgid "Continue"
 msgstr "Continuer"
@@ -1677,11 +1807,6 @@ msgstr "Envoyer des courriels et des messages textes à vos utilisateurs"
 msgid "Try Notification if you work in the federal government."
 msgstr "Faites l’essai de Notification si vous travaillez au gouvernement fédéral,"
 
-#: app/templates/views/check/column-errors.html:78
-#: app/templates/views/signedout.html:25
-msgid "or"
-msgstr "ou"
-
 #: app/templates/views/signedout.html:25
 msgid "sign in"
 msgstr "ouvrez une session"
@@ -2080,6 +2205,10 @@ msgstr ""
 
 #: app/templates/views/verify-mobile.html:18
 msgid "I haven’t received a text"
+msgstr ""
+
+#: app/templates/views/activity/notifications.html:6
+msgid "No messages found &thinsp;(messages are kept for {} days)"
 msgstr ""
 
 #: app/templates/views/agreement/_agreement-choose.html:2
@@ -2620,10 +2749,6 @@ msgstr ""
 msgid "Text messages"
 msgstr ""
 
-#: app/templates/views/dashboard/monthly.html:60
-msgid "failed"
-msgstr ""
-
 #: app/templates/views/dashboard/monthly.html:73
 msgid "Fiscal year ends 31 March."
 msgstr ""
@@ -2929,6 +3054,14 @@ msgstr ""
 msgid "templates in this folder"
 msgstr ""
 
+#: app/templates/views/templates/add.html:8
+msgid "Add new template or folder"
+msgstr ""
+
+#: app/templates/views/templates/add.html:13
+msgid "What do you want to add?"
+msgstr ""
+
 #: app/templates/views/templates/choose.html:26
 msgid "You need to create a template to send"
 msgstr "Vous devez créer un modèle pour envoyer"
@@ -3020,3 +3153,16 @@ msgstr "La personnalisation est masquée après l’envoi"
 
 #~ msgid "request to go live"
 #~ msgstr ""
+
+#~ msgid "This is a title"
+#~ msgstr "Ceci est un titre"
+
+#~ msgid "point 1"
+#~ msgstr "puce 1"
+
+#~ msgid "point 2"
+#~ msgstr "puce 2"
+
+#~ msgid "point 3"
+#~ msgstr "puce 3"
+
