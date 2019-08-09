@@ -218,9 +218,7 @@ class UserApiClient(NotifyAdminAPIClient):
 
     def delete_security_key_user(self, user_id, key):
         endpoint = '/user/{}/fido2_keys'.format(user_id)
-        print("============================")
-        print(key)
-        data = {'key': "a", 'key': "b"}
+        data = {'key': "a"}
         return data
         #return self.delete(endpoint, data)
 

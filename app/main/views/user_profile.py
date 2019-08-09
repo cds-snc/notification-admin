@@ -207,6 +207,7 @@ def user_profile_password():
         form=form
     )
 
+
 @main.route("/user-profile/security_keys", methods=['GET', 'POST'])
 @user_is_logged_in
 def user_profile_security_keys():
@@ -215,6 +216,7 @@ def user_profile_security_keys():
         'views/user-profile/security-keys.html',
         num_keys=num_keys
     )
+
 
 @main.route("/user-profile/security_keys/<keyid>", methods=['GET', 'POST'])
 @user_is_logged_in
@@ -231,25 +233,25 @@ def user_profile_security_keys_confirm_delete(keyid):
                 flash(msg, 'info')
                 return redirect(url_for('.user_profile_security_keys'))
             else:
-                abort(500, e) 
+                abort(500, e)
 
     flash('Are you sure you want to remove security key {}?'.format(keyid), 'remove')
     return render_template(
         'views/user-profile/security-keys.html'
     )
 
+
 @main.route("/user-profile/security_keys/add", methods=['GET', 'POST'])
 @user_is_logged_in
 def user_profile_add_security_keys():
-    result = None
     form = SecurityKeyForm()
 
     if form.validate_on_submit():
         if form.data:
-            result = user_api_client.add_security_key_user(current_user.id, name=form.keyname.data, key="123")
+            user_api_client.add_security_key_user(current_user.id, name=form.keyname.data, key="123")
             flash('Key added', 'default_with_tick')
             return redirect(url_for('.user_profile_security_keys'))
-    
+
     return render_template(
         'views/user-profile/add-security-keys.html',
         form=form
