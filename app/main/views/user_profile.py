@@ -1,6 +1,7 @@
 import json
 
 from flask import (
+    flash,
     abort,
     current_app,
     redirect,
@@ -199,6 +200,21 @@ def user_profile_password():
     return render_template(
         'views/user-profile/change-password.html',
         form=form
+    )
+
+@main.route("/user-profile/security_keys", methods=['GET', 'POST'])
+@user_is_logged_in
+def user_profile_security_keys():
+    return render_template(
+        'views/user-profile/security-keys.html'
+    )
+
+@main.route("/user-profile/security_keys/<keyid>", methods=['GET', 'POST'])
+@user_is_logged_in
+def user_profile_security_keys_confirm_delete(keyid):
+    flash('Are you sure you want to remove security key {}?'.format(keyid), 'remove')
+    return render_template(
+        'views/user-profile/security-keys.html'
     )
 
 
