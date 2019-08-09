@@ -60,7 +60,7 @@
       {% call row() %}
         {% set txt = _('Security Key(s)') %}
         {{ text_field(txt) }}
-        {{ text_field(2) }}
+        {{ text_field(num_keys) }}
         {{ edit_field(change, url_for('.user_profile_security_keys')) }}
       {% endcall %}
 

@@ -35,8 +35,10 @@ NEW_MOBILE_PASSWORD_CONFIRMED = 'new-mob-password-confirmed'
 @main.route("/user-profile")
 @user_is_logged_in
 def user_profile():
+    num_keys = len(current_user.security_keys)
     return render_template(
         'views/user-profile.html',
+        num_keys=num_keys,
         can_see_edit=current_user.is_gov_user,
     )
 
@@ -206,8 +208,10 @@ def user_profile_password():
 @main.route("/user-profile/security_keys", methods=['GET', 'POST'])
 @user_is_logged_in
 def user_profile_security_keys():
+    num_keys = len(current_user.security_keys)
     return render_template(
-        'views/user-profile/security-keys.html'
+        'views/user-profile/security-keys.html',
+        num_keys=num_keys
     )
 
 @main.route("/user-profile/security_keys/<keyid>", methods=['GET', 'POST'])
@@ -221,17 +225,15 @@ def user_profile_security_keys_confirm_delete(keyid):
 @main.route("/user-profile/security_keys/add", methods=['GET', 'POST'])
 @user_is_logged_in
 def user_profile_add_security_keys():
-
+    result = None
     form = SecurityKeyForm()
 
     if form.validate_on_submit():
-        #service_api_client.update_safelist(service_id, {
-            #'email_addresses': list(filter(None, form.email_addresses.data)),
-            #'phone_numbers': list(filter(None, form.phone_numbers.data))
-        #})
-        flash('Key added', 'default_with_tick')
-        return redirect(url_for('.user_profile_security_keys'))
-
+        if form.data:
+            result = user_api_client.add_security_key_user(current_user.id, name=form.keyname.data, key="123")
+            flash('Key added', 'default_with_tick')
+            return redirect(url_for('.user_profile_security_keys'))
+    
     return render_template(
         'views/user-profile/add-security-keys.html',
         form=form
