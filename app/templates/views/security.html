@@ -7,7 +7,7 @@
 
 {% block content_column_content %}
   <h1 class="heading-large">{{ _('Security') }}</h1>
-  <p>{{ _('The security review of this service is currently ongoing.')}}</p>
+  <p>{{ _('The security review of this service is ongoing.')}}</p>
   <p>
     {{ _('If you have any specific security requirements please')}} <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('share them with us') }}</a>.
   </p>
@@ -16,6 +16,9 @@
     {{ _('For your reference we are provding a link to their <a href="https://www.notifications.service.gov.uk/features/security" target="new">security page (English only)</a> ')}}
   </p>
 
+  {% endblock %}
+
+  {# The below code is commented out #}
   {# 
   <h2 class="heading-medium">{{ _('Protect sensitive information') }}</h2>
   <p>{{ _('Some messages include sensitive information like security codes or password reset links.') }}</p>
@@ -35,6 +38,6 @@
   <p>
     {{ _('Please') }} <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('contact us') }}</a> {{ _('if your team needs email links instead of text message codes.') }}
   </p>
-#}
+#} 
 
-{% endblock %}
+
