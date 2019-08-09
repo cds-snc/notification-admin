@@ -191,6 +191,20 @@ class UserApiClient(NotifyAdminAPIClient):
     def get_organisations_and_services_for_user(self, user_id):
         endpoint = '/user/{}/organisations-and-services'.format(user_id)
         return self.get(endpoint)
+    
+    def get_security_keys_user(self, user_id):
+        endpoint = '/user/{}/fido2_keys'.format(user_id)
+        return self.get(endpoint)
+    
+    def add_security_key_user(self, user_id, name, key):
+        endpoint = '/user/{}/fido2_keys'.format(user_id)
+        data = {'name': name, 'key': key}
+        return self.post(endpoint, data)
+    
+    def delete_security_key_user(self, user_id, key):
+        endpoint = '/user/{}/fido2_keys'.format(user_id)
+        data = {'key': name, 'key': key}
+        return self.delete(endpoint, data) 
 
 
 user_api_client = UserApiClient()
