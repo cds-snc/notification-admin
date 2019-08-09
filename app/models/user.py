@@ -251,6 +251,10 @@ class User(JSONModel, UserMixin):
     def email_domain(self):
         return self.email_address.split('@')[-1]
 
+    @property
+    def security_keys(self):
+        return user_api_client.get_security_keys_for_user(self.id)
+
     @cached_property
     def orgs_and_services(self):
         return user_api_client.get_organisations_and_services_for_user(self.id)
