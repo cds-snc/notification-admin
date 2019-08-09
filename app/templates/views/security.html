@@ -7,28 +7,16 @@
 
 {% block content_column_content %}
   <h1 class="heading-large">{{ _('Security') }}</h1>
-  <p>{{ _('Notification is built for the needs of government services. It is set up to:')}}</p>
-  <ul class="list list-bullet">
-    <li>{{ _('protect user data') }}</li>
-    <li>{{ _('keep systems secure') }}</li>
-    <li>{{ _('manage risks around information') }}</li>
-  </ul>
-  
-  <h2 class="heading-medium">{{ _('Data') }}</h2>
-  <p>{{ _('On Notification, data is encrypted:') }}</p>
-  <ul class="list list-bullet">
-    <li>{{ _('when it passes through the service') }}</li>
-    <li>{{ _('when it’s stored on the service') }}</li>
-  </ul>
-  <p>{{ _('Any user data you upload is only held for 7 days.') }}</p>
-  
-  <h2 class="heading-medium">{{ _('Technical security') }}</h2>
-  <p>{{ _('Other technical security controls on Notification include:') }}</p>
-  <ul class="list list-bullet">
-    <li>{{ _('protective monitoring to record activity, and raise alerts about any suspicious activity.') }}</li>
-    <li>{{ _('using codes called JSON Web Tokens when your service talks to Notification. Unlike codes for API keys, JSON Web Tokens have encryption and expiry settings.') }}</li>
-  </ul>
+  <p>{{ _('The security review of this service is currently ongoing.')}}</p>
+  <p>
+    {{ _('If you have any specific security requirements please')}} <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('share them with us') }}</a>.
+  </p>
+  <p>
+    {{ _('This service was orginally developed by the <a href="https://github.com/topics/govuk-notify" target="new">UK government</a>.')}}
+    {{ _('For your reference we are provding a link to their <a href="https://www.notifications.service.gov.uk/features/security" target="new">security page (English only)</a> ')}}
+  </p>
 
+  {# 
   <h2 class="heading-medium">{{ _('Protect sensitive information') }}</h2>
   <p>{{ _('Some messages include sensitive information like security codes or password reset links.') }}</p>
   <p>{{ _('If you’re sending a message with sensitive information, you can hide those details on the dashboard once the message has been sent. Only the message recipient will be able to see their information.') }}</p>
@@ -47,4 +35,6 @@
   <p>
     {{ _('Please') }} <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('contact us') }}</a> {{ _('if your team needs email links instead of text message codes.') }}
   </p>
+#}
+
 {% endblock %}
