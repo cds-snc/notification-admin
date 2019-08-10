@@ -15,8 +15,17 @@
       throw new Error('Error getting registration data!');
     })
     .then(CBOR.decode).then(function(options) {
-      console.log(options);
       return navigator.credentials.create(options);
+    }).then(function(attestation) {
+      return fetch('/user-profile/security_keys/complete', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/cbor', 'X-CSRFToken': csrf_token},
+        body: CBOR.encode({
+            "name": $("#keyname").val(),
+            "attestationObject": new Uint8Array(attestation.response.attestationObject),
+            "clientDataJSON": new Uint8Array(attestation.response.clientDataJSON),
+        })
+      });
     })
 
     //

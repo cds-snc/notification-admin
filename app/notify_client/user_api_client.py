@@ -210,16 +210,15 @@ class UserApiClient(NotifyAdminAPIClient):
         }]
         # return self.get(endpoint)
 
-    def register_security_key(self, user_id, name, key):
+    def register_security_key(self, user_id):
         endpoint = '/user/{}/fido2_keys/register'.format(user_id)
         return self.post(endpoint, {})
     
     
-    def add_security_key_user(self, user_id, name, key):
+    def add_security_key_user(self, user_id, payload):
         endpoint = '/user/{}/fido2_keys'.format(user_id)
-        data = {'result': 'true', 'name': name, 'key': key}
-        return data
-        # return self.post(endpoint, data)
+        data = {'payload': payload}
+        return self.post(endpoint, data)
 
     def delete_security_key_user(self, user_id, key):
         endpoint = '/user/{}/fido2_keys'.format(user_id)
