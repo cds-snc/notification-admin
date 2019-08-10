@@ -246,7 +246,7 @@ def user_profile_security_keys_confirm_delete(keyid):
 @user_is_logged_in
 def user_profile_add_security_keys():
     if request.method == 'POST':
-        result = user_api_client.register_security_key(current_user.id, name="hello", key="123")
+        result = user_api_client.register_security_key(current_user.id)
         return base64.b64decode(result["data"])
     
     form = SecurityKeyForm()
@@ -256,27 +256,14 @@ def user_profile_add_security_keys():
     )
 
     
-
 @main.route("/user-profile/security_keys/complete", methods=['POST'])
 @user_is_logged_in
 def user_profile_complete_security_keys():
-    form = SecurityKeyForm()
-
-    if form.validate_on_submit():
-        if form.data:
-            result = user_api_client.register_security_key(current_user.id, name=form.keyname.data, key="123")
-            print("===================")
-            print(result)
-            return response.json(result)
-            
-            #user_api_client.add_security_key_user(current_user.id, name=form.keyname.data, key="123")
-            #flash('Key added', 'default_with_tick')
-            #return redirect(url_for('.user_profile_security_keys'))
-
-    return render_template(
-        'views/user-profile/add-security-keys.html',
-        form=form
-    )
+    data = request.get_data()
+    payload = base64.b64encode(data).decode("utf-8") 
+    resp = user_api_client.add_security_key_user(current_user.id, payload)
+    print(resp)
+    return "OK"
 
 
 @main.route("/user-profile/disable-platform-admin-view", methods=['GET', 'POST'])
