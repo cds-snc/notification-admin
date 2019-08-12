@@ -7,44 +7,10 @@
 
 {% block content_column_content %}
   <h1 class="heading-large">{{ _('Security') }}</h1>
-  <p>{{ _('Notification is built for the needs of government services. It is set up to:')}}</p>
-  <ul class="list list-bullet">
-    <li>{{ _('protect user data') }}</li>
-    <li>{{ _('keep systems secure') }}</li>
-    <li>{{ _('manage risks around information') }}</li>
-  </ul>
-  
-  <h2 class="heading-medium">{{ _('Data') }}</h2>
-  <p>{{ _('On Notification, data is encrypted:') }}</p>
-  <ul class="list list-bullet">
-    <li>{{ _('when it passes through the service') }}</li>
-    <li>{{ _('when it’s stored on the service') }}</li>
-  </ul>
-  <p>{{ _('Any user data you upload is only held for 7 days.') }}</p>
-  
-  <h2 class="heading-medium">{{ _('Technical security') }}</h2>
-  <p>{{ _('Other technical security controls on Notification include:') }}</p>
-  <ul class="list list-bullet">
-    <li>{{ _('protective monitoring to record activity, and raise alerts about any suspicious activity.') }}</li>
-    <li>{{ _('using codes called JSON Web Tokens when your service talks to Notification. Unlike codes for API keys, JSON Web Tokens have encryption and expiry settings.') }}</li>
-  </ul>
-
-  <h2 class="heading-medium">{{ _('Protect sensitive information') }}</h2>
-  <p>{{ _('Some messages include sensitive information like security codes or password reset links.') }}</p>
-  <p>{{ _('If you’re sending a message with sensitive information, you can hide those details on the dashboard once the message has been sent. Only the message recipient will be able to see their information.') }}</p>
-
-  <h2 class="heading-medium">{{ _('User permissions and signing in') }}</h2>
-  <p>{{ _('You can set different user permissions in Notification. This lets you control which team members have access to certain parts of Notification.') }}
-  </p>
-
-  <h2 class="heading-medium">{{  _('Two-factor authentication') }}</h2>
-  <p>{{ _('To sign in to Notification you’ll need to enter:') }}</p>
-  <ul class="list list-bullet">
-    <li>{{ _('your email address and password') }}</li>
-    <li>{{ _('a text message code that Notification sends to your phone') }}</li>
-  </ul>
-
   <p>
-    {{ _('Please') }} <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('contact us') }}</a> {{ _('if your team needs email links instead of text message codes.') }}
+    {{ _('GOV.UK developed the original <a href="https://github.com/topics/govuk-notify" target="new">notification system</a> and its UK <a href="https://www.notifications.service.gov.uk/features/security" target="new">security protections</a>.')}}
+  </p>
+  <p>
+    {{ _('The Canadian notification team is reviewing the security protections needed to run the system within a Government of Canada context. If your service has specific security needs, ')}}<a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('please let us know')}}</a>.
   </p>
 {% endblock %}
