@@ -1,13 +1,14 @@
 (function(Modules) {
-
   "use strict";
-
+  let now_txt = window.polyglot.t("now");
+  let done_txt = window.polyglot.t("done");
+  let chosen_time_button = window.polyglot.t("chosen_time_button");
   let states = {
-    'initial': Hogan.compile(`
+    initial: Hogan.compile(`
       <div class="radio-select-column">
         <div class="multiple-choice js-multiple-choice">
           <input checked="checked" id="{{name}}-0" name="{{name}}" type="radio" value="">
-          <label class="block-label js-block-label" for="{{name}}-0">Now</label>
+          <label class="block-label js-block-label" for="{{name}}-0">{{now_txt}}</label>
         </div>
       </div>
       <div class="radio-select-column">
@@ -16,11 +17,11 @@
         {{/categories}}
       </div>
     `),
-    'choose': Hogan.compile(`
+    choose: Hogan.compile(`
       <div class="radio-select-column">
         <div class="multiple-choice js-multiple-choice js-initial-option">
           <input checked="checked" id="{{name}}-0" name="{{name}}" type="radio" value="">
-          <label for="{{name}}-0">Now</label>
+          <label for="{{name}}-0">{{now_txt}}</label>
         </div>
       </div>
       <div class="radio-select-column">
@@ -30,14 +31,14 @@
             <label for="{{id}}">{{label}}</label>
           </div>
         {{/choices}}
-        <input type='button' class='js-reset-button js-reset-button-block' value='Done' />
+        <input type='button' class='js-reset-button js-reset-button-block' value='{{done_txt}}' />
       </div>
     `),
-    'chosen': Hogan.compile(`
+    chosen: Hogan.compile(`
       <div class="radio-select-column">
         <div class="multiple-choice js-multiple-choice js-initial-option">
           <input id="{{name}}-0" name="{{name}}" type="radio" value="">
-          <label for="{{name}}-0">Now</label>
+          <label for="{{name}}-0">{{now_txt}}</label>
         </div>
       </div>
       <div class="radio-select-column">
@@ -49,22 +50,25 @@
         {{/choices}}
       </div>
       <div class="radio-select-column">
-        <input type='button' class='category-link js-reset-button' value='Choose a different time' />
+        <input type='button' class='category-link js-reset-button' value='{{chosen_time_button}}' />
       </div>
     `)
   };
 
   let focusSelected = function() {
     setTimeout(
-      () => $('[type=radio]:checked').next('label').blur().trigger('focus').addClass('selected'),
+      () =>
+        $("[type=radio]:checked")
+          .next("label")
+          .blur()
+          .trigger("focus")
+          .addClass("selected"),
       50
     );
   };
 
   Modules.RadioSelect = function() {
-
     this.start = function(component) {
-
       let $component = $(component);
       let render = (state, data) => {
         $component.html(states[state].render(data));
@@ -73,94 +77,103 @@
       let data = {};
 
       // Maximum seems to be four days - generate all ranges for those hours
-      for (i = 0; i < 4; i++){ 
-        let date = (i == 0 ? moment().add(i, 'days') : moment().add(i, 'days').startOf("day"));
-        let category = moment(date).calendar().split("at")[0];
+      for (i = 0; i < 4; i++) {
+        let date =
+          i == 0
+            ? moment().add(i, "days")
+            : moment()
+                .add(i, "days")
+                .startOf("day");
+        let category = moment(date)
+          .calendar()
+          .split("at")[0];
 
         data[category] = [];
 
-        let remaining = (i == 0 ? 24 - date.hour() : 24);
+        let remaining = i == 0 ? 24 - date.hour() : 24;
 
-        for (j = (i == 0 ? 1 : 0); j < remaining; j++){
-          let hour = moment(date).add(j,"hours").startOf("hour");
-          data[category].push(
-            {
-              id: hour.calendar(),
-              label: hour.calendar(),
-              value: hour.utc().format().replace("Z","")
-            }
-          );
+        for (j = i == 0 ? 1 : 0; j < remaining; j++) {
+          let hour = moment(date)
+            .add(j, "hours")
+            .startOf("hour");
+          data[category].push({
+            id: hour.calendar(),
+            label: hour.calendar(),
+            value: hour
+              .utc()
+              .format()
+              .replace("Z", "")
+          });
         }
       }
 
-      let name = $component.find('input').eq(0).attr('name');
+      let name = $component
+        .find("input")
+        .eq(0)
+        .attr("name");
 
       $component
-        .on('click', '.js-category-button', function(event) {
-
+        .on("click", ".js-category-button", function(event) {
           event.preventDefault();
-          let category = $(this).attr('value');
-          render('choose', {
-            'choices': data[category],
-            'name': name
+          let category = $(this).attr("value");
+          render("choose", {
+            choices: data[category],
+            name: name,
+            now_txt: now_txt,
+            done_txt: done_txt
           });
           focusSelected();
-
         })
-        .on('click', '.js-option', function(event) {
-
+        .on("click", ".js-option", function(event) {
           // stop click being triggered by keyboard events
           if (!event.pageX) return true;
 
           event.preventDefault();
-          let value = $('input', this).attr('value');
-          render('chosen', {
-            'choices': Object.values(data).flat().filter(
-              element => element.value == value
-            ),
-            'name': name
+          let value = $("input", this).attr("value");
+          render("chosen", {
+            choices: Object.values(data)
+              .flat()
+              .filter(element => element.value == value),
+            name: name,
+            now_txt: now_txt,
+            chosen_time_button: chosen_time_button
           });
           focusSelected();
-
         })
-        .on('keydown', 'input[type=radio]', function(event) {
-
+        .on("keydown", "input[type=radio]", function(event) {
           // intercept keypresses which aren’t enter or space
           if (event.which !== 13 && event.which !== 32) {
             return true;
           }
 
           event.preventDefault();
-          let value = $(this).attr('value');
-          render('chosen', {
-            'choices': Object.values(data).flat().filter(
-              element => element.value == value
-            ),
-            'name': name
+          let value = $(this).attr("value");
+          render("chosen", {
+            choices: Object.values(data)
+              .flat()
+              .filter(element => element.value == value),
+            name: name,
+            now_txt: now_txt
           });
           focusSelected();
-
         })
-        .on('click', '.js-reset-button', function(event) {
-
+        .on("click", ".js-reset-button", function(event) {
           event.preventDefault();
-          render('initial', {
-            'categories': Object.keys(data),
-            'name': name
+          render("initial", {
+            categories: Object.keys(data),
+            name: name,
+            now_txt: now_txt
           });
           focusSelected();
-
         });
 
-      render('initial', {
-        'categories': Object.keys(data),
-        'name': name
+      render("initial", {
+        categories: Object.keys(data),
+        name: name,
+        now_txt: now_txt
       });
 
-      $component.css({'height': 'auto'});
-
+      $component.css({ height: "auto" });
     };
-
   };
-
 })(window.GOVUK.Modules);

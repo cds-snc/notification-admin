@@ -107,6 +107,13 @@ navigation = {
 }
 
 
+def get_current_locale(application):
+    requestLang = request.accept_languages.best_match(application.config['LANGUAGES'])
+    lang = session.get("userlang", requestLang)
+    session["userlang"] = lang
+    return lang
+
+
 def create_app(application):
     setup_commands(application)
 
@@ -120,10 +127,7 @@ def create_app(application):
 
     @babel.localeselector
     def get_locale():
-        requestLang = request.accept_languages.best_match(application.config['LANGUAGES'])
-        lang = session.get("userlang", requestLang)
-        session["userlang"] = lang
-        return lang
+        return get_current_locale(application)
 
     init_app(application)
 
@@ -232,7 +236,8 @@ def init_app(application):
         return {
             'asset_path': application.config['ASSET_PATH'],
             'header_colour': application.config['HEADER_COLOUR'],
-            'asset_url': asset_fingerprinter.get_url
+            'asset_url': asset_fingerprinter.get_url,
+            'current_lang': get_current_locale(application)
         }
 
 
