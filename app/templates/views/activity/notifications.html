@@ -3,16 +3,18 @@
 {% from "components/table.html" import list_table, field, text_field, link_field, right_aligned_field_heading, hidden_field_heading, row_heading, notification_status_field %}
 
 <div class="ajax-block-container" id='pill-selected-item'>
-
+  {% set empty_txt = _('No messages found &thinsp;(messages are kept for {} days)') %}
   {% if notifications %}
-    <div class='dashboard-table'>
+    <div class='dashboard-table'>c
+  {% set heading_1 = _('Recipient') %}
+  {% set heading_2 = _('Status') %}
   {% endif %}
     {% call(item, row_number) list_table(
       notifications,
       caption="Recent activity",
       caption_visible=False,
-      empty_message='No messages found &thinsp;(messages are kept for {} days)'.format(limit_days)|safe,
-      field_headings=['Recipient', 'Status'],
+      empty_message=empty_txt.format(limit_days)|safe,
+      field_headings=[ heading_1, heading_2],
       field_headings_visible=False
     ) %}
       {% call row_heading() %}

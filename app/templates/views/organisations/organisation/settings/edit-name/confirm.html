@@ -5,13 +5,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block org_page_title %}
-  Confirm organisation name change
+  {{ _('Confirm organisation name change') }}
 {% endblock %}
 
 {% block maincolumn_content %}
-
+  {% set header_txt = _('Confirm organisation name change') %}
   {{ page_header(
-    'Confirm organisation name change',
+    header_txt,
     back_link=url_for('.organisation_settings', org_id=current_org.id)
   ) }}
 
@@ -20,7 +20,7 @@
 
     {% call form_wrapper() %}
       {{ textbox(form.password, autocomplete='current-password') }}
-      <p> Your organisation name will be changed from {{ current_org.name }} to {{ new_name }} </p>
+      <p> {{ _('Your organisation name will be changed from') }} {{ current_org.name }} to {{ new_name }} </p>
       {{ page_footer('Confirm') }}
     {% endcall %}
     </div>

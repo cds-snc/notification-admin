@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block page_title %}
-  Notification
+  {{ _('Notification') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -53,18 +53,20 @@
         <p>
           {{ _('Upload a spreadsheet of email addresses or phone numbers and Notification sends the messages.') }}
         </p>
+        {% set alt = _('A screenshot of a spreadsheet with columns for email address, name and colour') %}
         <img
           src="{{ asset_url('images/product/03-spreadsheet.svg') }}"
-          alt="A screenshot of a spreadsheet with columns for email address, name and colour"
+          alt=alt
         >
       </div>
       <div class="column-half">
         <p>
           {{ _('Integrate Notification with your web application or back office system.') }}
         </p>
+        {% set alt = _('A screenshot of some computer code with a notify.send_email function') %}
         <img
           src="{{ asset_url('images/product/04-api.svg') }}"
-          alt="A screenshot of some computer code with a notify.send_email function"
+          alt=alt
         >
       </div>
     </div>
@@ -74,7 +76,7 @@
     <div class="grid-row">
       <div class="column-half">
         <p>
-          <a href="{{ url_for('main.support') }}">{{ _('Contact us') }}</a> {{ _('if you have a question or want to give feedback.') }}
+          <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('Contact us') }}</a> {{ _('if you have a question or want to give feedback.') }}
         </p>
       </div>
       <div class="column-half">

@@ -3,11 +3,11 @@
 <div class="bottom-gutter">
   {% call banner_wrapper(type='dangerous') %}
     <h1 class='banner-title'>
-      Message too long
+      {{ _('Message too long') }}
     </h1>
     <p>
-      Text messages can’t be longer than {{ SMS_CHAR_COUNT_LIMIT }} characters.
-      Your message is {{ template.content_count }} characters.
+      {{ _('Text messages can’t be longer than') }} {{ SMS_CHAR_COUNT_LIMIT }} {{ _('characters.') }}
+      {{ _('Your message is') }} {{ template.content_count }} {{ _('characters.') }}
     </p>
   {% endcall %}
 </div>

@@ -73,7 +73,6 @@ def mock_get_service_settings_page_common(
         'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
-        'Receive text messages Off Change',
 
     ]),
     (platform_admin_user, [
@@ -92,7 +91,6 @@ def mock_get_service_settings_page_common(
         'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
-        'Receive text messages Off Change',
 
         'Label Value Action',
         'Live Off Change',
@@ -102,9 +100,8 @@ def mock_get_service_settings_page_common(
         'Email branding default Change',
         'Letter branding Not set Change',
         'Data retention email Change',
-        'Receive inbound SMS Off Change',
-        'User auth type editing Off Change',
-        'Uploading documents Off Change',
+        'Email authentication Off Change',
+        'Send files by email Off Change',
     ]),
 ])
 def test_should_show_overview(
@@ -154,10 +151,10 @@ def test_no_go_live_link_for_service_without_organisation(
     page = client_request.get('main.service_settings', service_id=SERVICE_ONE_ID)
 
     assert page.find('h1').text == 'Settings'
-    assert normalize_spaces(page.select('tr')[14].text) == (
+    assert normalize_spaces(page.select('tr')[13].text) == (
         'Live No (organisation must be set first)'
     )
-    assert normalize_spaces(page.select('tr')[16].text) == (
+    assert normalize_spaces(page.select('tr')[15].text) == (
         'Organisation Not set Central government Change'
     )
 
@@ -182,7 +179,7 @@ def test_organisation_name_links_to_org_dashboard(
         'main.service_settings', service_id=SERVICE_ONE_ID
     )
 
-    org_row = response.select('tr')[16]
+    org_row = response.select('tr')[15]
     assert org_row.find('a')['href'] == url_for('main.organisation_dashboard', org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find('a').text) == 'Test Organisation'
 
@@ -203,7 +200,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages On Change',
-        'Receive text messages On Change',
+        # 'Receive text messages On Change',
 
     ]),
     (['email', 'sms', 'email_auth'], [
@@ -221,7 +218,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
-        'Receive text messages Off Change',
+        # 'Receive text messages Off Change',
 
     ]),
 ])
@@ -373,7 +370,7 @@ def test_should_not_hit_api_if_service_name_hasnt_changed(
 @pytest.mark.parametrize('user, expected_text, expected_link', [
     (
         active_user_with_permissions,
-        'To remove these restrictions, you can send us a request to go live.',
+        'To remove these restrictions, you can contact us.',
         True,
     ),
     (
@@ -409,8 +406,8 @@ def test_show_restricted_service(
     assert normalize_spaces(request_to_live.text) == expected_text
 
     if expected_link:
-        assert request_to_live_link.text.strip() == 'request to go live'
-        assert request_to_live_link['href'] == url_for('main.request_to_go_live', service_id=SERVICE_ONE_ID)
+        assert request_to_live_link.text.strip() == 'contact us'
+        assert request_to_live_link['href'] == url_for('.feedback', ticket_type='ask-question-give-feedback')
     else:
         assert not request_to_live_link
 
@@ -3627,7 +3624,7 @@ def test_service_switch_can_upload_document_shows_permission_page_if_service_con
         follow_redirects=True
     )
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    assert normalize_spaces(page.h1.text) == 'Uploading documents'
+    assert normalize_spaces(page.h1.text) == 'Send files by email'
 
 
 def test_service_switch_can_upload_document_turning_permission_on_with_no_contact_details_shows_form(
@@ -3675,7 +3672,7 @@ def test_service_switch_can_upload_document_lets_contact_details_be_added_and_sh
     )
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
-    assert normalize_spaces(page.h1.text) == 'Uploading documents'
+    assert normalize_spaces(page.h1.text) == 'Send files by email'
 
 
 @pytest.mark.parametrize('user', (

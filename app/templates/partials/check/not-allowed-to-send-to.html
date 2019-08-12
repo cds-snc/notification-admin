@@ -1,5 +1,5 @@
 <h1 class='banner-title' data-module="track-error" data-error-type="Trial mode: bad recipients" data-error-label="{{ upload_id }}">
-  You can’t send to
+  {{ _('You can’t send to') }}
   {{ 'this' if count_of_recipients == 1 else 'these' }}
   {{ template_type_label }}
   {%- if count_of_recipients != 1 -%}
@@ -7,6 +7,6 @@
   {%- endif %}
 </h1>
 <p>
-  In <a href="{{ url_for('.trial_mode_new') }}">trial mode</a> you can only
-  send to yourself and members of your team
+  {{ _('In') }} <a href="{{ url_for('.trial_mode_new') }}">{{ _('trial mode') }}</a> {{ _('you can only
+  send to yourself and members of your team') }}
 </p>

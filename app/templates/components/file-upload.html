@@ -1,7 +1,8 @@
+{% set upload_txt = _('Choose file') %}
 {% macro file_upload(
   field,
   action=None,
-  button_text="Choose file",
+  button_text=upload_txt,
   alternate_link=None,
   alternate_link_text=None,
   hint=None
@@ -29,11 +30,11 @@
     </label>
     {% if alternate_link and alternate_link_text %}
       <span class="file-upload-alternate-link">
-        or <a href="{{ alternate_link }}">{{ alternate_link_text }}</a>
+        {{ _('or') }} <a href="{{ alternate_link }}">{{ alternate_link_text }}</a>
       </span>
     {% endif %}
     <label class="file-upload-filename" for="{{ field.name }}"></label>
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <button type="submit" class="file-upload-submit">Submit</button>
+    <button type="submit" class="file-upload-submit">{{ _('Submit') }}</button>
   </form>
 {% endmacro %}

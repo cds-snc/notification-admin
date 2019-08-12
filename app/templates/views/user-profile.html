@@ -3,53 +3,68 @@
 {% from "components/table.html" import mapping_table, row, text_field, optional_text_field, edit_field, field, boolean_field with context %}
 
 {% block per_page_title %}
-  Your profile
+  {{ _('Your profile') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
-  <h1 class="heading-large">Your profile</h1>
+  {% set change = _('Change') %}
+
+  <h1 class="heading-large">{{ _('Your profile') }}</h1>
 
   <div class="body-copy-table">
+    {% set caption = _('Your profile') %}
+    {% set heading_1 = _('Label') %}
+    {% set heading_2 = _('Value') %}
+    {% set heading_3 = _('Action') %}
+
     {% call mapping_table(
       caption='Your profile',
-      field_headings=['Label', 'Value', 'Action'],
+      field_headings=[heading_1, heading_2, heading_3],
       field_headings_visible=False,
       caption_visible=False
     ) %}
       {% call row() %}
-        {{ text_field('Name') }}
+        {% set txt = _('Name') %}
+        {{ text_field(txt) }}
         {{ text_field(current_user.name) }}
-        {{ edit_field('Change', url_for('.user_profile_name')) }}
+        {{ edit_field(change, url_for('.user_profile_name')) }}
       {% endcall %}
 
       {% call row() %}
-        {{ text_field('Email address') }}
+        {% set txt = _('Email address') %}
+        {{ text_field(txt) }}
         {{ text_field(current_user.email_address) }}
         {% if can_see_edit %}
-          {{ edit_field('Change', url_for('.user_profile_email')) }}
+          {{ edit_field(change, url_for('.user_profile_email')) }}
         {% else %}
           {{ text_field('') }}
         {% endif %}
       {% endcall %}
 
       {% call row() %}
-        {{ text_field('Mobile number') }}
+        {% set txt = _('Mobile number') %}
+        {{ text_field(txt) }}
         {{ optional_text_field(current_user.mobile_number) }}
-        {{ edit_field('Change', url_for('.user_profile_mobile_number')) }}
+        {{ edit_field(change, url_for('.user_profile_mobile_number')) }}
       {% endcall %}
 
       {% call row() %}
-        {{ text_field('Password') }}
-        {{ text_field('Last changed ' + current_user.password_changed_at|format_delta) }}
-        {{ edit_field('Change', url_for('.user_profile_password')) }}
+        {% set txt = _('Password') %}
+        {% set last_change_txt = _('Last changed ') %}
+        {{ text_field(txt) }}
+        {{ text_field(last_change_txt + current_user.password_changed_at|format_delta) }}
+        {{ edit_field(change, url_for('.user_profile_password')) }}
       {% endcall %}
 
       {% if current_user.platform_admin or session.get('disable_platform_admin_view') %}
         {% call row() %}
-          {{ text_field('Use platform admin view') }}
-          {{ text_field('Yes' if not session.get('disable_platform_admin_view') else 'No') }}
-          {{ edit_field('Change', url_for('.user_profile_disable_platform_admin_view')) }}
+          {% set txt = _('Use platform admin view') %}
+          {% set yes_txt = _('Yes') %}
+          {% set no_txt = _('No') %}
+          {{ text_field(txt) }}
+          {{ text_field(yes_txt if not session.get('disable_platform_admin_view') else no_txt) }}
+          {{ edit_field(change, url_for('.user_profile_disable_platform_admin_view')) }}
         {% endcall %}
       {% endif %}
 

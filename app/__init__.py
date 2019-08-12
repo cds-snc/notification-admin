@@ -426,7 +426,7 @@ def format_notification_status(status, template_type):
 
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(
-        {'created', 'pending', 'sending'}, ' since {}'.format(created)
+        {'created', 'pending', 'sending'}, ' since <span class="local-datetime-short">{}</span>'.format(created)
     ).get(status, updated)
 
 

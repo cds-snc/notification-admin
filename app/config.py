@@ -28,6 +28,9 @@ class Config(object):
     TEMPLATE_PREVIEW_API_KEY = os.environ.get('TEMPLATE_PREVIEW_API_KEY', 'my-secret-key')
 
     # Hosted graphite statsd prefix
+    STATSD_ENABLED = False
+    STATSD_HOST = os.getenv('STATSD_HOST')
+    STATSD_PORT = 8125
     STATSD_PREFIX = os.getenv('STATSD_PREFIX')
 
     # Logging
@@ -88,6 +91,8 @@ class Config(object):
 
     NOTIFY_SERVICE_ID = 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553'
     NOTIFY_LOG_PATH = ''
+
+    HIPB_ENABLED = True
 
 
 class Development(Config):

@@ -6,28 +6,30 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  {{ heading_action }} text message template
+  {{ heading_action }} {{ _('text message template') }}
 {% endblock %}
 
 {% block maincolumn_content %}
-
+    {% set txt = _('{} text message template') %}
     {{ page_header(
-      '{} text message template'.format(heading_action),
+      txt.format(heading_action),
       back_link=url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.choose_template', service_id=current_service.id, template_folder_id=template_folder_id)
     ) }}
 
     {% call form_wrapper() %}
+      {% set txt = _('Your recipients won’t see this') %}
       <div class="grid-row">
         <div class="column-two-thirds">
-          {{ textbox(form.name, width='1-1', hint='Your recipients won’t see this') }}
+          {{ textbox(form.name, width='1-1', hint=txt) }}
         </div>
         <div class="column-two-thirds">
           {{ textbox(form.template_content, highlight_tags=True, width='1-1', rows=5) }}
           {% if current_user.platform_admin %}
             {{ radios(form.process_type) }}
           {% endif %}
+          {% set txt = _('Save') %}
           {{ sticky_page_footer(
-            'Save'
+            txt
           ) }}
         </div>
         <aside class="column-whole">

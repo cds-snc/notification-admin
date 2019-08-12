@@ -6,36 +6,41 @@
 {% from "components/table.html" import list_table, text_field, index_field, index_field_heading %}
 
 {% block service_page_title %}
-  Upload a list of {{ recipient_count_label(999, template.template_type) }}
+  {{ _('Upload a list of') }} {{ recipient_count_label(999, template.template_type) }}
 {% endblock %}
 
 {% block maincolumn_content %}
-
+  {% set txt = _('Upload a list of {}') %}
   {{ page_header(
-    'Upload a list of {}'.format(recipient_count_label(999, template.template_type)),
+    txt.format(recipient_count_label(999, template.template_type)),
     back_link=url_for('main.send_one_off', service_id=current_service.id, template_id=template.id)
   ) }}
 
   <div class="page-footer bottom-gutter">
+    {% set txt = _('Choose a file') %}
     {{file_upload(
       form.file,
-      button_text='Choose a file'
+      button_text=txt
     )}}
   </div>
 
-  <h2 class="heading-medium">Your file needs to look like this example</h2>
+  <h2 class="heading-medium">{{ _('Your file needs to look like this example') }}</h2>
   <p class="hint">
-    Save your file as a
-    <acronym title="Comma Separated Values">CSV</acronym>,
-    <acronym title="Tab Separated Values">TSV</acronym>,
-    <acronym title="Open Document Spreadsheet">ODS</acronym>,
-    or Microsoft Excel spreadsheet
+    {{ _('Save your file as a') }}
+    {% set type_1 = _('Comma Separated Values') %}
+    {% set type_2 = _('Tab Separated Values') %}
+    {% set type_3 = _('Open Document Spreadsheet') %}
+    <acronym title=type_1>{{ _('CSV') }}</acronym>,
+    <acronym title=type_2>{{ _('TSV') }}</acronym>,
+    <acronym title=type_3>{{ _('ODS') }}</acronym>,
+    {{ _('or Microsoft Excel spreadsheet') }}
   </p>
 
   <div class="spreadsheet" data-module="fullscreen-table">
+    {% set hint= _('Example') %}
     {% call(item, row_number) list_table(
       example,
-      caption="Example",
+      caption=hint,
       caption_visible=False,
       field_headings=[''] + column_headings
     ) %}
@@ -46,10 +51,10 @@
     {% endcall %}
   </div>
   <p class="table-show-more-link">
-    <a href="{{ url_for('.get_example_csv', service_id=current_service.id, template_id=template.id) }}" download>Download this example</a>
+    <a href="{{ url_for('.get_example_csv', service_id=current_service.id, template_id=template.id) }}" download>{{ _('Download this example') }}</a>
   </p>
 
-  <h2 class="heading-medium">Your file will populate this template ({{ template.name }})</h2>
+  <h2 class="heading-medium">{{ _('Your file will populate this template')}} ({{ template.name }})</h2>
   {{ template|string }}
 
 {% endblock %}

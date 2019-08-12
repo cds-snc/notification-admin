@@ -595,31 +595,30 @@ def test_big_numbers_and_search_dont_show_for_letters(
 @freeze_time("2017-09-27 16:30:00.000000")
 @pytest.mark.parametrize(
     "message_type, status, expected_hint_status, single_line", [
-        ('email', 'created', 'Sending since 27 September at 5:30pm', True),
-        ('email', 'sending', 'Sending since 27 September at 5:30pm', True),
-        ('email', 'temporary-failure', 'Inbox not accepting messages right now 27 September at 5:31pm', False),
-        ('email', 'permanent-failure', 'Email address doesn’t exist 27 September at 5:31pm', False),
-        ('email', 'delivered', 'Delivered 27 September at 5:31pm', True),
-        ('sms', 'created', 'Sending since 27 September at 5:30pm', True),
-        ('sms', 'sending', 'Sending since 27 September at 5:30pm', True),
-        ('sms', 'temporary-failure', 'Phone not accepting messages right now 27 September at 5:31pm', False),
-        ('sms', 'permanent-failure', 'Phone number doesn’t exist 27 September at 5:31pm', False),
-        ('sms', 'delivered', 'Delivered 27 September at 5:31pm', True),
-        ('letter', 'created', '27 September at 5:30pm', True),
-        ('letter', 'pending-virus-check', '27 September at 5:30pm', True),
-        ('letter', 'sending', '27 September at 5:30pm', True),
-        ('letter', 'delivered', '27 September at 5:30pm', True),
-        ('letter', 'received', '27 September at 5:30pm', True),
-        ('letter', 'accepted', '27 September at 5:30pm', True),
-        ('letter', 'cancelled', '27 September at 5:30pm', False),  # The API won’t return cancelled letters
-        ('letter', 'permanent-failure', '27 September at 5:31pm', False),  # Deprecated for ‘cancelled’
-        ('letter', 'temporary-failure', '27 September at 5:30pm', False),  # Not currently a real letter status
-        ('letter', 'virus-scan-failed', 'Virus detected 27 September at 5:30pm', False),
-        ('letter', 'validation-failed', 'Validation failed 27 September at 5:30pm', False),
-        ('letter', 'technical-failure', 'Technical failure 27 September at 5:30pm', False),
+        ('email', 'created', 'Sending since 2017-09-27T16:30:00+00:00', True),
+        ('email', 'sending', 'Sending since 2017-09-27T16:30:00+00:00', True),
+        ('email', 'temporary-failure', 'Inbox not accepting messages right now 16:31:00', False),
+        ('email', 'permanent-failure', 'Email address doesn’t exist 16:31:00', False),
+        ('email', 'delivered', 'Delivered 16:31:00', True),
+        ('sms', 'created', 'Sending since 2017-09-27T16:30:00+00:00', True),
+        ('sms', 'sending', 'Sending since 2017-09-27T16:30:00+00:00', True),
+        ('sms', 'temporary-failure', 'Phone not accepting messages right now 16:31:00', False),
+        ('sms', 'permanent-failure', 'Phone number doesn’t exist 16:31:00', False),
+        ('sms', 'delivered', 'Delivered 16:31:00', True),
+        ('letter', 'created', '2017-09-27T16:30:00+00:00', True),
+        ('letter', 'pending-virus-check', '2017-09-27T16:30:00+00:00', True),
+        ('letter', 'sending', '2017-09-27T16:30:00+00:00', True),
+        ('letter', 'delivered', '2017-09-27T16:30:00+00:00', True),
+        ('letter', 'received', '2017-09-27T16:30:00+00:00', True),
+        ('letter', 'accepted', '2017-09-27T16:30:00+00:00', True),
+        ('letter', 'cancelled', '2017-09-27T16:30:00+00:00', False),  # The API won’t return cancelled letters
+        ('letter', 'permanent-failure', '16:31:00', False),  # Deprecated for ‘cancelled’
+        ('letter', 'temporary-failure', '2017-09-27T16:30:00+00:00', False),  # Not currently a real letter status
+        ('letter', 'virus-scan-failed', 'Virus detected 2017-09-27T16:30:00+00:00', False),
+        ('letter', 'validation-failed', 'Validation failed 2017-09-27T16:30:00+00:00', False),
+        ('letter', 'technical-failure', 'Technical failure 2017-09-27T16:30:00+00:00', False),
     ]
 )
-@pytest.mark.skip(reason="@todo")
 def test_sending_status_hint_displays_correctly_on_notifications_page(
     client_request,
     service_one,

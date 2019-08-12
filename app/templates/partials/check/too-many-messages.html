@@ -1,39 +1,39 @@
 <h1 class='banner-title' data-module="track-error" data-error-type="Trial mode: too many recipients" data-error-label="{{ upload_id }}">
   {% if original_file_name %}
-    Too many recipients
+    {{ _('Too many recipients') }}
   {% else %}
-    Daily limit reached
+    {{ _('Daily limit reached') }}
   {% endif %}
 </h1>
 <p>
-  You can only send {{ current_service.message_limit }} messages per day
+  {{ _('You can only send') }} {{ current_service.message_limit }} {{ _('messages per day') }}
   {%- if current_service.trial_mode %}
-    in <a href="{{ url_for('.trial_mode_new')}}">trial mode</a>
+    {{ _('in') }} <a href="{{ url_for('.trial_mode_new')}}">{{ _('trial mode') }}</a>
   {%- endif -%}
   .
 </p>
 {% if original_file_name %}
   <p>
     {% if current_service.message_limit != remaining_messages %}
-      You can still send {{ remaining_messages }} messages today, but
+      {{ _('You can still send') }} {{ remaining_messages }} {{ _('messages today, but') }}
     {% endif %}
-    ‘{{ original_file_name }}’ contains
+    ‘{{ original_file_name }}’ {{ _('contains') }}
     {{ count_of_recipients }}
     {% if count_of_recipients == 1 -%}
       {%- if template.template_type == 'email' -%}
-        email address
+        {{ _('email address') }}
       {%- elif template.template_type == 'sms' -%}
-        phone number
+        {{ _('phone number') }}
       {%- elif template.template_type == 'letter' -%}
-        address
+        {{ _('address') }}
       {%- endif -%}
     {%- else -%}
       {%- if template.template_type == 'email' -%}
-        email addresses
+        {{ _('email addresses') }}
       {%- elif template.template_type == 'sms' -%}
-        phone numbers
+        {{ _('phone numbers') }}
       {%- elif template.template_type == 'letter' -%}
-        addresses
+        {{ _('addresses') }}
       {%- endif -%}
     {%- endif -%}.
   </p>

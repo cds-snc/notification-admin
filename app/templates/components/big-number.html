@@ -44,14 +44,14 @@
           {% if failure_link %}
             <a href="{{ failure_link }}">
               {{ "{:,}".format(failures) }}
-              failed – {{ failure_percentage }}%
+              {{ _('failed') }} – {{ failure_percentage }}%
             </a>
           {% else %}
             {{ "{:,}".format(failures) }}
-            failed – {{ failure_percentage }}%
+            {{ _('failed') }} – {{ failure_percentage }}%
           {% endif %}
         {% else %}
-          No failures
+          {{ _('No failures') }}
         {% endif %}
       </div>
     {% endif %}

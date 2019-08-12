@@ -3,13 +3,13 @@
 {% from "components/page-footer.html" import page_footer %}
 
 {% block per_page_title %}
-  Check your email
+  {{ _('Check your email') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
-<h1 class="heading-large">Check your email</h1>
-<p class="email-confirm">A new confirmation email has been sent to {{ email }}</p>
-<p>Click the link in the email to continue your registration.</p>
+<h1 class="heading-large">{{ _('Check your email') }}</h1>
+<p class="email-confirm">{{ _('A new confirmation email has been sent to') }} {{ email }}</p>
+<p>{{ _('Click the link in the email to continue your registration.') }}</p>
 
 {% endblock %}

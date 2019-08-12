@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-06 11:55-0400\n"
+"POT-Creation-Date: 2019-08-12 12:40-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -43,18 +43,21 @@ msgid "Terms of Use"
 msgstr "Conditions d’utilisation"
 
 #: app/templates/admin_template.html:93 app/templates/views/features.html:39
+#: app/templates/views/message-status.html:5
+#: app/templates/views/message-status.html:10
 msgid "Message status"
 msgstr "État du message"
 
 #: app/templates/admin_template.html:100 app/templates/views/features.html:52
+#: app/templates/views/security.html:9
 msgid "Security"
 msgstr "Sécurité"
 
-#: app/templates/admin_template.html:113
+#: app/templates/admin_template.html:113 app/templates/views/privacy.html:9
 msgid "Privacy"
 msgstr "Confidentialité"
 
-#: app/templates/admin_template.html:114
+#: app/templates/admin_template.html:114 app/templates/views/cookies.html:11
 msgid "Cookies"
 msgstr "Témoins"
 
@@ -66,666 +69,141 @@ msgstr "mode de recherche"
 msgid "API data:"
 msgstr "Données de l’API :"
 
-#: app/templates/partials/tour.html:4
-msgid "Try sending yourself this example"
-msgstr "Essayez de vous envoyer cet exemple."
-
-#: app/templates/partials/tour.html:11
-msgid "Every message is sent from a template"
-msgstr "Chaque message est envoyé à partir d’un modèle."
-
-#: app/templates/partials/tour.html:21
-msgid "The template pulls information from your data"
-msgstr "Le modèle extrait de l’information à partir de vos données."
-
-#: app/templates/partials/tour.html:31
-msgid "Notification delivers the message"
-msgstr "Notification envoie le message."
-
-#: app/templates/partials/tour.html:35
-msgid "Now go to your dashboard"
-msgstr "Allez à votre tableau de bord."
-
-#: app/templates/partials/templates/guidance-formatting.html:1
-msgid "Format"
-msgstr "Mise en forme"
-
-#: app/templates/partials/templates/guidance-formatting.html:3
-msgid "To put a title in your template, use a hash:"
-msgstr "Pour insérer un titre dans votre modèle, utilisez un croisillon :"
-
-#: app/templates/partials/templates/guidance-formatting.html:7
-msgid "This is a title"
-msgstr "Ceci est un titre."
-
-#: app/templates/partials/templates/guidance-formatting.html:11
-msgid "To make bullet points, use asterisks:"
-msgstr "Utilisez des astérisques pour les puces dans une énumération :"
-
-#: app/templates/partials/templates/guidance-formatting.html:15
-msgid "point 1"
-msgstr "puce 1"
-
-#: app/templates/partials/templates/guidance-formatting.html:16
-msgid "point 2"
-msgstr "puce 2"
-
-#: app/templates/partials/templates/guidance-formatting.html:17
-msgid "point 3"
-msgstr "puce 3"
-
-#: app/templates/partials/templates/guidance-formatting.html:21
-msgid "To emphasize text, use a caret. There will be a grey bar beside the text "
-"you want to emphasize"
-msgstr "Pour mettre l’accent sur du texte, utilisez un caret. Une barre grise s’affichera à côté "
-"du texte que vous voulez accentuer."
-
-#: app/templates/partials/templates/guidance-formatting.html:25
-msgid "You must tell us if your circumstances change"
-msgstr "Si votre situation change, vous devez nous en informer."
-
-#: app/templates/partials/templates/guidance-formatting.html:29
-msgid "To add a horizontal line, use three dashes:"
-msgstr "Pour insérer une ligne horizontale, utilisez trois tirets :"
-
-#: app/templates/partials/templates/guidance-formatting.html:33
-msgid "First paragraph"
-msgstr "Premier paragraphe"
-
-#: app/templates/partials/templates/guidance-formatting.html:39
-msgid "Second paragraph"
-msgstr "Deuxième paragraphe"
-
-#: app/templates/partials/templates/guidance-optional-content.html:2
-msgid "Optional content"
-msgstr "Contenu facultatif"
-
-#: app/templates/partials/templates/guidance-optional-content.html:4
-msgid "You can enter optional content in your template by uploading a "
-"spreadsheet with information about your users."
-msgstr "Vous pouvez entrer du contenu facultatif dans votre modèle en téléchargeant une "
-"feuille de calcul contenant des renseignements sur vos utilisateurs."
-
-#: app/templates/partials/templates/guidance-optional-content.html:6
-msgid "For example, your spreadsheet may include the age of each user. You want "
-"users who are under 18 to receive optional content. Use double brackets "
-"and ‘??’ to include the optional content."
-msgstr "Par exemple, votre feuille de calcul peut indiquer l’âge de chaque utilisateur. Vous "
-"voulez que les utilisateurs de moins de 18 ans reçoivent le contenu facultatif. Utilisez des "
-"parenthèses doubles et deux points d’interrogation (« ?? ») pour inclure le contenu facultatif."
-
-#: app/templates/partials/templates/guidance-optional-content.html:10
-msgid "((under18??Please get your application signed by a parent or guardian.))"
-msgstr "((moins de 18 ans??Veuillez faire signer votre demande par un parent ou un tuteur.))"
-
-#: app/templates/partials/templates/guidance-optional-content.html:14
-msgid "For each recipient on your spreadsheet, you must indicate ‘yes’ to show "
-"or ‘no’ to hide this content"
-msgstr "Pour chaque destinataire figurant sur votre feuille de calcul, vous devez indiquer "
-"« oui » pour afficher le contenu ou « non » pour masquer le contenu."
-
-#: app/templates/partials/templates/guidance-personalisation.html:2
-msgid "Add personal information"
-msgstr "Ajouter des renseignements personnels"
-
-#: app/templates/partials/templates/guidance-personalisation.html:5
-msgid "Use double brackets to add personal information about the recipient:"
-msgstr "Utilisez des parenthèses doubles pour ajouter des renseignements personnels d’un "
-"destinataire :"
-
-#: app/templates/partials/templates/guidance-personalisation.html:9
-msgid "Hello ((first name)), your reference is ((ref number))"
-msgstr "Bonjour ((prénom)), votre numéro de référence est le ((numéro de référence))."
-
-#: app/templates/views/add-service.html:16
-msgid "About your service"
-msgstr "À propos de votre service"
-
-#: app/templates/views/add-service.html:20
-msgid "You can change this later"
-msgstr "Vous pouvez changer cela plus tard."
-
-#: app/templates/views/add-service.html:26
-msgid "Add service"
-msgstr "Ajouter un service"
-
-#: app/templates/views/documentation.html:9
-msgid "Documentation"
-msgstr "Documentation"
-
-#: app/templates/views/documentation.html:10
-msgid "Notification API to send messages automatically."
-msgstr "L’API Notification enverra les messages automatiquement."
-
-#: app/templates/views/documentation.html:11
-msgid "Clients"
-msgstr "Clients"
-
-#: app/templates/views/documentation.html:12
-msgid "Choose a client to integrate our API with your web application or back "
-"office system. Links to documentation open in a new tab."
-msgstr "Choisissez un client pour intégrer notre API à votre application Web ou à votre "
-"système administratif. Les liens de la documentation s’ouvrent dans un nouvel onglet."
-
-#: app/templates/views/email-not-received.html:5
-#: app/templates/views/email-not-received.html:12
-msgid "Resend email link"
-msgstr "Renvoyer un courriel"
-
-#: app/templates/views/email-not-received.html:13
-msgid "Sometimes email messages take a few minutes to arrive. If you don’t "
-"receive the email, you can resend it."
-msgstr "Parfois, les courriels prennent quelques minutes à parvenir à destination. Si vous ne "
-"recevez pas un courriel, vous pouvez le renvoyer."
-
-#: app/templates/views/email-not-received.html:17
-msgid "Has your email address changed since you joined Notification? Please ask "
-"your account manager to reset it."
-msgstr "Votre adresse de courriel a-t-elle changé depuis que vous utilisez l’API "
-"Notification? Veuillez demander à votre gestionnaire de compte de la réinitialiser."
-
-#: app/templates/views/features.html:11
-msgid "Features"
-msgstr "Fonctionnalités"
-
-#: app/templates/views/features.html:12
-msgid "If you work for the federal government, you can use Notification to "
-"update your users."
-msgstr "Si vous travaillez pour le gouvernement fédéral, vous pouvez utiliser Notification pour "
-"mettre à jour vos utilisateurs."
-
-#: app/templates/views/features.html:13
-msgid "Notification makes it easy to create, customize and send:"
-msgstr "Notification facilite la création, la personnalisation et l’envoi de :"
-
-#: app/templates/views/features.html:15
-msgid "emails"
-msgstr "courriels"
-
-#: app/templates/views/features.html:16
-msgid "text messages"
-msgstr "messages textes"
-
-#: app/templates/views/features.html:19
-msgid "You do not need technical knowledge to use Notification."
-msgstr "Vous n’avez pas besoin de connaissances techniques pour utiliser Notification."
-
-#: app/templates/views/features.html:21 app/templates/views/register.html:14
-#: app/templates/views/signedout.html:24
-msgid "Create an account"
-msgstr "Créez un compte"
-
-#: app/templates/views/features.html:21
-msgid "for free and try it yourself."
-msgstr "gratuitement et faites-en l’essai!"
-
-#: app/templates/views/features.html:24
-msgid "Reusable message templates"
-msgstr "Modèles de messages réutilisables"
-
-#: app/templates/views/features.html:25
-msgid "To send an email or text with Notification, you need to create a reusable"
-"message template first."
-msgstr "Pour envoyer un courriel ou un message texte au moyen de Notification, vous devez "
-"d’abord créer un modèle de message réutilisable."
-
-#: app/templates/views/features.html:26
-msgid "Templates let you send the same thing to lots of people, as often as you "
-"need, without writing a new message each time."
-msgstr "Les modèles vous permettent d’envoyer le même message à de nombreuses "
-"personnes, aussi souvent que vous le souhaitez, sans avoir à rédiger le message de nouveau "
-"chaque fois."
-
-#: app/templates/views/features.html:28
-msgid "Personalized content"
-msgstr "Contenu personnalisé"
-
-#: app/templates/views/features.html:29
-msgid "Notification makes it easy to send personalized messages from a single "
-"template."
-msgstr "Notification facilite l’envoi de messages personnalisés à partir d’un seul modèle."
-
-#: app/templates/views/features.html:30
-msgid "If you want to include personalized content in your message, you can add "
-"a placeholder.  Each time you send a message, you can fill the "
-"placeholder with details such as a name or reference number. You can do "
-"this manually or upload a list of personal details and let Notification "
-"do it for you."
-msgstr "Si vous voulez inclure du contenu personnalisé dans votre message, vous pouvez "
-"ajouter un espace réservé. Chaque fois que vous envoyez un message, vous pouvez ajouter "
-"des renseignements tels qu’un nom ou un numéro de référence dans l’espace réservé. "
-"Vous pouvez ajouter les renseignements manuellement ou télécharger une liste de "
-"renseignements personnels et laisser Notification le faire pour vous."
-
-
-#: app/templates/views/features.html:32
-msgid "Bulk sending"
-msgstr "Envoi en lot"
-
-#: app/templates/views/features.html:33
-msgid "To send a batch of messages at once, upload a list of contact details to "
-"Notification. You can also schedule the date and time for sending emails "
-"or text messages."
-msgstr "Pour envoyer un lot de messages en même temps, téléchargez une liste de "
-"coordonnées dans Notification. Vous pouvez également déterminer la date et l’heure d’envoi "
-"des courriels ou des messages textes."
-
-#: app/templates/views/features.html:35
-msgid "Application Programming Interface (API) integration"
-msgstr "Intégration de l’interface de programmation d’applications (API)"
-
-#: app/templates/views/features.html:36
-msgid "You can integrate Notification’s API with your web application or back-"
-"office system to send messages automatically."
-msgstr "Vous pouvez intégrer l’API Notification à votre application Web ou à "
-"votre système administratif pour envoyer des messages automatiquement."
-
-#: app/templates/views/features.html:37
-msgid "Read our"
-msgstr "Reportez-vous à notre"
-
-#: app/templates/views/features.html:37
-msgid "API documentation"
-msgstr "documentation sur l’API"
-
-#: app/templates/views/features.html:37
-msgid "for more information."
-msgstr "pour en savoir plus."
-
-#: app/templates/views/features.html:40
-msgid ""Notification’s real-time dashboard lets you see the number of messages "
-"sent. You can also check the current status of any message to learn when "
-"it was delivered."
-msgstr "Le tableau de bord en temps réel de Notification vous permet de voir le nombre de "
-"messages envoyés. Vous pouvez également vérifier l’état actuel de n’importe quel message "
-"pour connaître sa date et son heure d’envoi."
-
-
-#: app/templates/views/features.html:41
-msgid "Read more about how"
-msgstr "En savoir plus sur"
-
-#: app/templates/views/features.html:41
-msgid "message status"
-msgstr "l’état des messages"
-
-#: app/templates/views/features.html:41
-msgid "works."
-msgstr "travaux."
-
-#: app/templates/views/features.html:43
-msgid "Permissions"
-msgstr "Autorisations"
-
-#: app/templates/views/features.html:44
-msgid "Control which members of your team can see, create, edit and send "
-"messages."
-msgstr "Définissez quels membres de votre équipe peuvent voir, créer, modifier et envoyer des "
-"messages."
-
-#: app/templates/views/features.html:45
-msgid "Notification lets you:"
-msgstr "Notification vous permet d’effectuer ce qui suit :"
-
-#: app/templates/views/features.html:47
-msgid "set different permission levels for each team member"
-msgstr "établir différents niveaux d’autorisation pour chaque membre de l’équipe;"
-
-#: app/templates/views/features.html:48
-msgid "invite team members who don’t have a government email address"
-msgstr "inviter des membres d’équipe qui n’ont pas d’adresse de courriel gouvernementale;"
-
-#: app/templates/views/features.html:49
-msgid "choose who else can manage team members"
-msgstr "désigner les autres personnes qui peuvent gérer les membres de l’équipe."
-
-#: app/templates/views/features.html:53
-msgid "Notification protects and manages data to meet the needs of government "
-"services."
-msgstr "Notification protège et gère les données pour répondre aux besoins en matière de "
-"services gouvernementaux."
-
-#: app/templates/views/features.html:55
-msgid "Hide sensitive information"
-msgstr "Masquer les renseignements de nature délicate"
-
-#: app/templates/views/features.html:56
-msgid "Notification lets you redact personal information from your messages "
-"after they’ve been sent. Only the recipient can see their personal "
-"information."
-msgstr "Notification vous permet de masquer les renseignements personnels contenus dans "
-"vos messages après qu’ils ont été envoyés. Seul le destinataire peut voir ses renseignements "
-"personnels."
-
-#: app/templates/views/features.html:58
-msgid "Two-factor authentication"
-msgstr "Authentification à deux facteurs"
-
-#: app/templates/views/features.html:59
-msgid "Notification uses two-factor authentication (2FA) to keep your account "
-"secure. When you sign in, we'll send a unique one-time code to your phone"
-" and ask you to enter it before we let you use your account."
-msgstr "Notification utilise l’authentification à deux facteurs (A2F) pour assurer la sécurité de "
-"votre compte. Au moment de créer votre compte, vous recevrez un code unique par message "
-"texte et devrez l’entrer avant de pouvoir utiliser votre compte."
-
-#: app/templates/views/features.html:60
-msgid "Read more about"
-msgstr "En savoir plus au sujet de"
-
-#: app/templates/views/features.html:60
-msgid "security"
-msgstr "la sécurité"
-
-#: app/templates/views/manage-users.html:9
-#: app/templates/views/manage-users.html:15
-msgid "Team members"
-msgstr "Membres de l’équipe"
-
-#: app/templates/views/manage-users.html:17
-msgid "Share templates with your team"
-msgstr "Partager des modèles avec votre équipe"
-
-#: app/templates/views/manage-users.html:37
-msgid "invited"
-msgstr "membre invité"
-
-#: app/templates/views/manage-users.html:41
-msgid "you"
-msgstr "vous"
-
-#: app/templates/views/manage-users.html:61
-msgid "Cannot see any folders"
-msgstr "Ne peut voir aucun dossier"
-
-#: app/templates/views/manage-users.html:65
-msgid "Can see all folders"
-msgstr "Peut voir tous les dossiers"
-
-#: app/templates/views/manage-users.html:72
-msgid "Signs in with a text message code"
-msgstr "Se connecte à l’aide d’un code envoyé par message texte"
-
-#: app/templates/views/manage-users.html:74
-msgid "Signs in with an email link"
-msgstr "Se connecte à l’aide d’un lien envoyé par courriel"
-
-#: app/templates/views/manage-users.html:82
-msgid "Cancel invitation"
-msgstr "Annuler l’invitation"
-
-#: app/templates/views/manage-users.html:84
-msgid "Change details"
-msgstr "Modifier les renseignements"
-
-#: app/templates/views/manage-users.html:95
-msgid "Invite someone to join your team"
-msgstr "Inviter une personne à se joindre à votre équipe"
-
-#: app/templates/views/register.html:17
-msgid "Must be a federal government email address"
-msgstr "Veuillez entrer une adresse de courriel du gouvernement fédéral."
-
-#: app/templates/views/register.html:20
-msgid "We’ll send you a security code by text message"
-msgstr "Nous vous enverrons un code de sécurité par message texte."
-
-#: app/templates/views/signedout.html:18
-msgid "Send emails and text messages to your users"
-msgstr "Envoyer des courriels et des messages textes à vos utilisateurs"
-
-#: app/templates/views/signedout.html:21
-msgid "Try Notification if you work in the federal government."
-msgstr "Faites l’essai de Notification si vous travaillez au gouvernement fédéral."
-
+#: app/templates/components/big-number.html:47
+#: app/templates/components/big-number.html:51
+#: app/templates/views/dashboard/monthly.html:60
+msgid "failed"
+msgstr ""
+
+#: app/templates/components/big-number.html:54
+msgid "No failures"
+msgstr ""
+
+#: app/templates/components/file-upload.html:1
+msgid "Choose file"
+msgstr ""
+
+#: app/templates/components/file-upload.html:33
+#: app/templates/views/check/column-errors.html:78
 #: app/templates/views/signedout.html:25
 msgid "or"
 msgstr "ou"
 
-#: app/templates/views/signedout.html:25
-msgid "sign in"
-msgstr "ouvrez une session"
+#: app/templates/components/file-upload.html:38
+msgid "Submit"
+msgstr ""
 
-#: app/templates/views/signedout.html:25
-msgid "if you’ve used it before"
-msgstr "si vous avez déjà utilisé l’API."
+#: app/templates/components/folder-path.html:25
+msgid "Templates"
+msgstr ""
 
-#: app/templates/views/signedout.html:36
-msgid "Control your content"
-msgstr "Contrôler votre contenu"
+#: app/templates/components/folder-path.html:43
+msgid "Services"
+msgstr ""
 
-#: app/templates/views/signedout.html:39
-msgid "You don’t need any technical knowledge to create email or text message "
-"templates."
-msgstr "Vous n’avez pas besoin de connaissances techniques pour créer des modèles de "
-"courriels ou de messages textes."
+#: app/templates/components/list-entry.html:31
+msgid "number"
+msgstr ""
 
-#: app/templates/views/signedout.html:49
-msgid "Send messages manually or automatically"
-msgstr "Envoyer les messages manuellement ou automatiquement"
+#: app/templates/components/message-count-label.html:4
+msgid "message"
+msgstr ""
 
-#: app/templates/views/signedout.html:54
-msgid "Upload a spreadsheet of email addresses or phone numbers and Notification"
-" sends the messages."
-msgstr "Téléchargez une feuille de calcul contenant les adresses de courriel ou les numéros "
-"de téléphone des destinataires, et Notification enverra les messages."
+#: app/templates/components/message-count-label.html:6
+msgid "messages"
+msgstr ""
 
-#: app/templates/views/signedout.html:63
-msgid "Integrate Notification with your web application or back office system."
-msgstr "Intégrer Notification à votre application Web ou à votre système administratif."
+#: app/templates/components/message-count-label.html:11
+msgid "text message"
+msgstr ""
 
-#: app/templates/views/signedout.html:77
-msgid "Contact us"
-msgstr "Communiquez avec nous"
+#: app/templates/components/message-count-label.html:13
+#: app/templates/views/features.html:16
+msgid "text messages"
+msgstr "messages textes"
 
-#: app/templates/views/signedout.html:77
-msgid "if you have a question or want to give feedback."
-msgstr "pour toute question ou commentaire."
+#: app/templates/components/message-count-label.html:17
+msgid "email"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:10
-msgid "Terms of use"
-msgstr "Conditions d’utilisation"
+#: app/templates/components/message-count-label.html:19
+#: app/templates/views/features.html:15
+msgid "emails"
+msgstr "courriels"
 
-#: app/templates/views/terms-of-use.html:13
-msgid "These terms apply to use of Notification. Your account manager must "
-"accept them."
-msgstr "Ces conditions s’appliquent à l’utilisation de Notification. Votre gestionnaire de compte"
-"doit les accepter."
+#: app/templates/components/message-count-label.html:23
+msgid "letter"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:16
-msgid "When using Notification"
-msgstr "Lorsque vous utilisez Notification :"
+#: app/templates/components/message-count-label.html:25
+msgid "letters"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:18
-msgid "GOV.UK’s Service Manual provides useful standards for <a "
-"href=\"https://www.gov.uk/service-manual/design/sending-emails-and-text-"
-"messages\">writing text messages and emails</a>. Notification recommends "
-"that you consider these standards as guidance, while adjusting for the "
-"Canadian context."
-msgstr "Le manuel sur les normes relatives aux services publics du Royaume-Uni (GOV.UK "
-"Service Manual; en anglais seulement) contient des normes utiles pour <a "
-"href=\"https://www.gov.uk/service-manual/design/sending-emails-and-text-"
-"messages\">la rédaction de messages textes et de courriels</a>. Nous vous recommandons "
-"d’utiliser ces normes comme des lignes directrices, tout en les adaptant "
-"au contexte canadien."
+#: app/templates/components/message-count-label.html:33
+msgid "recipient"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:20
-msgid "You must:"
-msgstr "Vous devez :"
+#: app/templates/components/message-count-label.html:35
+msgid "recipients"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:22
-msgid "complete all security steps required by your organization."
-msgstr "prendre toutes les mesures de sécurité requises par votre organisation;"
+#: app/templates/components/message-count-label.html:40
+#: app/templates/partials/check/too-many-messages.html:26
+msgid "phone number"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:23
-msgid "tell us immediately if you have any security breaches."
-msgstr "nous aviser immédiatement de toute atteinte à la sécurité;"
+#: app/templates/components/message-count-label.html:42
+#: app/templates/partials/check/too-many-messages.html:34
+msgid "phone numbers"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:24
-msgid "keep your API (Application Programming Interface) codes secure. API "
-"technology allows different software applications to communicate with "
-"each other."
-msgstr "veiller à la sécurité de vos codes d’API. La technologie des API permet à différentes "
-"applications logicielles de communiquer entre elles;"
+#: app/templates/components/message-count-label.html:46
+#: app/templates/partials/check/too-many-messages.html:24
+msgid "email address"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:25
-msgid "get consent to send messages and to use data. This consent must meet "
-"standards set by privacy legislation including the federal Privacy Act."
-msgstr "obtenir le consentement requis pour pouvoir envoyer des messages et utiliser des "
-"données. Ce consentement doit être conforme aux normes établies par la législation sur la "
-"protection des renseignements personnels, y compris la <i>Loi sur la protection des "
-"renseignements personnels;</i>"
+#: app/templates/components/message-count-label.html:48
+#: app/templates/partials/check/too-many-messages.html:32
+msgid "email addresses"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:26
-msgid "check that the data you add to Notification is accurate and complies with"
-" privacy legislation including the federal Privacy Act."
-msgstr "vous assurer que les données que vous ajoutez à Notification sont exactes et "
-"conformes à la législation sur la protection des renseignements personnels, y compris la <i>Loi</i)"
-"<i>sur la protection des renseignements personnels;</i>"
+#: app/templates/components/message-count-label.html:52
+#: app/templates/partials/check/too-many-messages.html:28
+msgid "address"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:27
-msgid "not send messages containing any personally or commercially sensitive "
-"information."
-msgstr "vous abstenir d’envoyer des messages contenant des renseignements personnels ou "
-"commerciaux de nature délicate;"
+#: app/templates/components/message-count-label.html:54
+#: app/templates/partials/check/too-many-messages.html:36
+msgid "addresses"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:28
-msgid "not send unsolicited messages. Messages must be about transactions or "
-"subscriptions. Please follow the <a href=\"https://www.gov.uk/service-"
-"manual/design/sending-emails-and-text-messages#transactional-"
-"messages\">transaction</a> and <a href=\"https://www.gov.uk/service-"
-"manual/design/sending-emails-and-text-messages#subscription-"
-"messages\">subscription</a> criteria in the GOV.UK Service Manual. Please"
-" remember that other parts of the GOV.UK Manual may not apply in the "
-"Canadian context."
-msgstr "vous abstenir d’envoyer des messages non sollicités. Les messages doivent porter "
-"sur des transactions ou des abonnements. Veuillez respecter les critères relatifs aux "
-"transactions et aux abonnements aux pages suivantes du manuel sur les normes relatives aux"
-"services publics du Royaume-Uni (en anglais) : <a href=\"https://www.gov.uk/service-"
-"manual/design/sending-emails-and-text-messages#transactional-"
-"messages\">transaction</a> et <a href=\"https://www.gov.uk/service-"
-"manual/design/sending-emails-and-text-messages#subscription-"
-"messages\">subscription</a>. Veuillez "
-"garder à l’esprit que les autres sections du manuel pourraient ne pas s’appliquer "
-"au contexte canadien."
+#: app/templates/components/page-header.html:17
+msgid "Back"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:31
-msgid "If you don’t follow these terms, we may need to stop sending your "
-"messages."
-msgstr "Si vous ne respectez pas ces conditions, nous pourrions être dans l’obligation de cesser d’envoyer vos messages."
+#: app/templates/components/task-list.html:5
+msgid "Completed"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:33
-msgid "Notification will:"
-msgstr "Notification :"
+#: app/templates/components/task-list.html:7
+msgid "Not completed"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:35
-msgid "send the messages you write, as long as these messages comply with our "
-"terms of use."
-msgstr "envoie les messages que vous rédigez, dans la mesure où ces messages sont "
-"conformes à nos conditions d’utilisation;"
+#: app/templates/components/tick-cross.html:1
+msgid "Can"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:36
-msgid "show how Notification is working through our <a "
-"href=\"https://www.gov.uk/performance/govuk-notify\">performance</a> and "
-"<a href=\"https://status.notifications.service.gov.uk/\">status</a> "
-"pages."
-msgstr "est expliqué aux pages suivantes : <a "
-"href=\"https://www.gov.uk/performance/govuk-notify\">performance</a> et "
-"<a href= "https://status.notifications.service.gov.uk/ ">état</a>; "
+#: app/templates/components/tick-cross.html:2
+msgid "Can’t"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:37
-msgid "keep your data <a href=\"/features/security\">secure</a>."
-msgstr "assure la <a href=\"/fonctionalités/sécurité\">sécurité</a> de vos données;"
+#: app/templates/components/tick-cross.html:3
+msgid "Done:"
+msgstr ""
 
-#: app/templates/views/terms-of-use.html:38
-msgid "give you one month’s notice by email if we change our terms of use or "
-"delivery providers."
-msgstr "vous envoie un préavis d’un mois par courriel en cas de modification des conditions "
-"d’utilisation ou des fournisseurs."
-
-#: app/templates/views/terms-of-use.html:41
-msgid "Leaving Notification"
-msgstr "Quitter Notification"
-
-#: app/templates/views/terms-of-use.html:43
-msgid "We’ll delete all your data when we close your account."
-msgstr "Nous supprimerons toutes vos données au moment de fermer votre compte."
-
-#: app/templates/views/two-factor-email.html:13
-msgid "We’ve emailed you a link to sign in to Notification."
-msgstr "Nous vous avons envoyé un lien par courriel pour vous connecter à Notification."
-
-#: app/templates/views/two-factor-email.html:14
-msgid "Use the link to open Notification in a new browser window."
-msgstr "Utilisez le lien pour ouvrir Notification dans une nouvelle fenêtre."
-
-#: app/templates/views/two-factor-email.html:15
-msgid "Not received an email"
-msgstr "Vous n’avez pas reçu de courriel?"
-
-#: app/templates/views/two-factor.html:8
-msgid "Text verification"
-msgstr "Vérification par message texte"
-
-#: app/templates/views/two-factor.html:15
-msgid "Check your phone"
-msgstr "Vérifiez vos messages textes."
-
-#: app/templates/views/two-factor.html:16
-msgid "Continue"
-msgstr "Continuer"
-
-#: app/templates/views/two-factor.html:17
-msgid "Not received a text message?"
-msgstr "Vous n’avez pas reçu de message texte?"
-
-#: app/templates/views/two-factor.html:18
-msgid "We’ve sent you a text message with a security code."
-msgstr "Nous vous avons envoyé un code de sécurité par message texte."
-#: app/templates/views/dashboard/dashboard.html:31
-msgid "Check messages sent per month"
-msgstr "Voir les messages envoyés par mois"
-
-#: app/templates/views/dashboard/dashboard.html:39
-msgid "Check templates used by month"
-msgstr "Voir les modèles utilisés par mois"
-
-#: app/templates/views/templates/choose.html:26
-msgid "You need to create a template to send"
-msgstr "Vous devez créer un modèle pour envoyer"
-
-#: app/templates/views/templates/choose.html:29
-msgid "emails, text messages or letters"
-msgstr "des courriels, des messages textes ou des lettres."
-
-#: app/templates/views/templates/choose.html:31
-msgid "emails or text messages"
-msgstr "courriels ou messages textes"
-
-#: app/templates/views/templates/choose.html:34
-msgid "You can also create folders to organize your templates."
-msgstr "Vous pouvez aussi créer des dossiers pour classer vos modèles."
-
-#: app/templates/views/templates/template.html:51
-msgid "Last edited"
-msgstr "Date de la dernière modification : "
-
-#: app/templates/views/templates/template.html:59
-msgid "See previous versions"
-msgstr "Voir les versions précédentes"
-
-#: app/templates/views/templates/template.html:66
-msgid "Delete this template"
-msgstr "Supprimer ce modèle"
-
-#: app/templates/views/templates/template.html:74
-msgid "Hide personal information from screen and logs after sending"
-msgstr "Masquer les renseignements personnels de l’écran et des journaux de bord après "
-"l’envoi"
-
-#: app/templates/views/templates/template.html:79
-msgid "Personalisation is hidden after sending"
-msgstr "La personnalisation est masquée après l’envoi."
+#: app/templates/components/tick-cross.html:4
+msgid "Not done:"
+msgstr ""
 
 #: app/templates/error/400.html:2
 msgid "Bad Request"
@@ -784,11 +262,294 @@ msgstr "Désolé, nous éprouvons des difficultés techniques."
 msgid "Try again later."
 msgstr "Veuillez réessayer plus tard."
 
+#: app/templates/partials/tour.html:4
+msgid "Try sending yourself this example"
+msgstr "Essayez de vous envoyer cet exemple."
+
+#: app/templates/partials/tour.html:11
+msgid "Every message is sent from a template"
+msgstr "Chaque message est envoyé à partir d’un modèle."
+
+#: app/templates/partials/tour.html:21
+msgid "The template pulls information from your data"
+msgstr "Le modèle extrait de l’information à partir de vos données."
+
+#: app/templates/partials/tour.html:31
+msgid "Notification delivers the message"
+msgstr "Notification envoie le message."
+
+#: app/templates/partials/tour.html:35
+msgid "Now go to your dashboard"
+msgstr "Allez à votre tableau de bord."
+
+#: app/templates/partials/check/message-too-long.html:6
+msgid "Message too long"
+msgstr ""
+
+#: app/templates/partials/check/message-too-long.html:9
+msgid "Text messages can’t be longer than"
+msgstr ""
+
+#: app/templates/partials/check/message-too-long.html:9
+#: app/templates/partials/check/message-too-long.html:10
+msgid "characters."
+msgstr ""
+
+#: app/templates/partials/check/message-too-long.html:10
+msgid "Your message is"
+msgstr ""
+
+#: app/templates/partials/check/not-allowed-to-send-to.html:2
+msgid "You can’t send to"
+msgstr ""
+
+#: app/templates/partials/check/not-allowed-to-send-to.html:10
+#: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
+msgid "In"
+msgstr ""
+
+#: app/templates/partials/check/not-allowed-to-send-to.html:10
+#: app/templates/partials/check/too-many-messages.html:11
+#: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
+msgid "trial mode"
+msgstr ""
+
+#: app/templates/partials/check/not-allowed-to-send-to.html:10
+msgid ""
+"you can only\n"
+"  send to yourself and members of your team"
+msgstr ""
+
+#: app/templates/partials/check/sent-previously.html:2
+msgid "These messages have already been sent today"
+msgstr ""
+
+#: app/templates/partials/check/sent-previously.html:5
+msgid "If you need to resend them, rename the file and upload it again."
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:3
+msgid "Too many recipients"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:5
+msgid "Daily limit reached"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:9
+msgid "You can only send"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:9
+#: app/templates/views/service-settings.html:235
+msgid "messages per day"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:11
+msgid "in"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:18
+msgid "You can still send"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:18
+msgid "messages today, but"
+msgstr ""
+
+#: app/templates/partials/check/too-many-messages.html:20
+msgid "contains"
+msgstr ""
+
+#: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:2
+msgid "You can’t send"
+msgstr ""
+
+#: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:7
+msgid "can only preview how your letters will look"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:5
+msgid "No messages to show"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:6
+#: app/templates/partials/notifications/notifications.html:6
+#: app/templates/views/activity/notifications.html:9
+msgid "Recipient"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:7
+#: app/templates/partials/notifications/notifications.html:7
+#: app/templates/views/activity/notifications.html:10
+#: app/templates/views/message-status.html:25
+msgid "Status"
+msgstr "État"
+
+#: app/templates/partials/jobs/notifications.html:13
+#: app/templates/views/message-status.html:34
+#: app/templates/views/message-status.html:75
+msgid "Sending"
+msgstr "Envoi en cours"
+
+#: app/templates/partials/jobs/notifications.html:17
+msgid "Cancel sending"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:38
+msgid "Report is"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:38
+msgid "complete…"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:42
+msgid "Download this report"
+msgstr ""
+
+#: app/templates/partials/jobs/notifications.html:72
+#: app/templates/partials/notifications/notifications.html:27
+msgid "Only showing the first 50 rows"
+msgstr ""
+
+#: app/templates/partials/jobs/status.html:5
+#: app/templates/partials/jobs/status.html:15
+msgid "Sent by"
+msgstr ""
+
+#: app/templates/partials/jobs/status.html:5
+#: app/templates/partials/jobs/status.html:12
+#: app/templates/partials/jobs/status.html:15
+msgid "on"
+msgstr ""
+
+#: app/templates/partials/jobs/status.html:12
+msgid "Uploaded by"
+msgstr ""
+
+#: app/templates/partials/notifications/status.html:13
+msgid "test"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:3
+msgid "To put a heading in your template, use a hash:"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:7
+msgid "# This is a heading"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:11
+#: app/templates/partials/templates/guidance-formatting.html:11
+msgid "To make bullet points, use asterisks:"
+msgstr "Utilisez des astérisques pour les puces dans une énumération :"
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:15
+#: app/templates/partials/templates/guidance-formatting.html:15
+msgid "* point 1"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:16
+#: app/templates/partials/templates/guidance-formatting.html:16
+msgid "* point 2"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:17
+#: app/templates/partials/templates/guidance-formatting.html:17
+msgid "* point 3"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:21
+msgid "To insert a page break, use three asterisks:"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:25
+msgid "Content on page 1"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting-letters.html:29
+msgid "Content on page 2"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-formatting.html:1
+msgid "Format"
+msgstr "Mise en forme"
+
+#: app/templates/partials/templates/guidance-formatting.html:3
+msgid "To put a title in your template, use a hash:"
+msgstr "Pour insérer un titre dans votre modèle, utilisez un croisillon :"
+
+#: app/templates/partials/templates/guidance-formatting.html:7
+msgid "# This is a title"
+msgstr ""
+
 #: app/templates/partials/templates/guidance-formatting.html:21
 msgid ""
 "To emphasize text, use a caret. There will be a grey bar beside the text "
 "you want to emphasize:"
-msgstr "Pour mettre l’accent sur une partie du texte, veuillez utiliser un point d’insertion. Une barre grise apparaîtra à côté du texte sur lequel vous souhaitez mettre l’accent."
+msgstr ""
+"Pour mettre l’accent sur une partie du texte, veuillez utiliser un point "
+"d’insertion. Une barre grise apparaîtra à côté du texte sur lequel vous "
+"souhaitez mettre l’accent."
+
+#: app/templates/partials/templates/guidance-formatting.html:25
+msgid "You must tell us if your circumstances change"
+msgstr "Si votre situation change, vous devez nous en informer."
+
+#: app/templates/partials/templates/guidance-formatting.html:29
+msgid "To add a horizontal line, use three dashes:"
+msgstr "Pour insérer une ligne horizontale, utilisez trois tirets :"
+
+#: app/templates/partials/templates/guidance-formatting.html:33
+msgid "First paragraph"
+msgstr "Premier paragraphe"
+
+#: app/templates/partials/templates/guidance-formatting.html:39
+msgid "Second paragraph"
+msgstr "Deuxième paragraphe"
+
+#: app/templates/partials/templates/guidance-links.html:1
+msgid "Links and URLs"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-links.html:3
+msgid "Always use full URLs, starting with https://"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-links.html:7
+msgid "Apply now at https://www.canada.ca/example"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-optional-content.html:2
+msgid "Optional content"
+msgstr "Contenu facultatif"
+
+#: app/templates/partials/templates/guidance-optional-content.html:4
+msgid ""
+"You can enter optional content in your template by uploading a "
+"spreadsheet with information about your users."
+msgstr ""
+"Vous pouvez entrer du contenu facultatif dans votre modèle en "
+"téléchargeant une feuille de calcul contenant des renseignements sur vos "
+"utilisateurs."
+
+#: app/templates/partials/templates/guidance-optional-content.html:6
+msgid ""
+"For example, your spreadsheet may include the age of each user. You want "
+"users who are under 18 to receive optional content. Use double brackets "
+"and ‘??’ to include the optional content."
+msgstr ""
+"Par exemple, votre feuille de calcul peut indiquer l’âge de chaque "
+"utilisateur. Vous voulez que les utilisateurs de moins de 18 ans "
+"reçoivent le contenu facultatif. Utilisez des parenthèses doubles et deux"
+" points d’interrogation (« ?? ») pour inclure le contenu facultatif."
+
+#: app/templates/partials/templates/guidance-optional-content.html:10
+msgid "((under18??Please get your application signed by a parent or guardian.))"
+msgstr ""
+"((moins de 18 ans??Veuillez faire signer votre demande par un parent ou "
+"un tuteur.))"
 
 #: app/templates/partials/templates/guidance-optional-content.html:14
 msgid "For each recipient on your spreadsheet, you must indicate:"
@@ -802,18 +563,561 @@ msgstr "“oui” pour afficher le contenu optionnel"
 msgid "‘no’ to hide optional content"
 msgstr "“non” pour cacher le contenu optionnel."
 
+#: app/templates/partials/templates/guidance-personalisation.html:2
+msgid "Add personal information"
+msgstr "Ajouter des renseignements personnels"
+
+#: app/templates/partials/templates/guidance-personalisation.html:5
+msgid "Use double brackets to add personal information about the recipient:"
+msgstr ""
+"Utilisez des parenthèses doubles pour ajouter des renseignements "
+"personnels d’un destinataire :"
+
+#: app/templates/partials/templates/guidance-personalisation.html:9
+msgid "Hello ((first name)), your reference is ((ref number))"
+msgstr ""
+"Bonjour ((prénom)), votre numéro de référence est le ((numéro de "
+"référence))."
+
+#: app/templates/partials/templates/guidance-send-a-document.html:2
+msgid "Send a document by email"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-send-a-document.html:5
+msgid ""
+"Use double brackets to add a placeholder field to your template. This "
+"will contain a secure link to download the document."
+msgstr ""
+
+#: app/templates/partials/templates/guidance-send-a-document.html:9
+msgid "Download your document at: ((link_to_document))"
+msgstr ""
+
+#: app/templates/partials/templates/guidance-send-a-document.html:12
+msgid "Next, use the API to upload your document."
+msgstr ""
+
+#: app/templates/views/add-service.html:16
+msgid "About your service"
+msgstr "À propos de votre service"
+
+#: app/templates/views/add-service.html:20
+msgid "You can change this later"
+msgstr "Vous pouvez changer cela plus tard."
+
+#: app/templates/views/add-service.html:26
+msgid "Add service"
+msgstr "Ajouter un service"
+
+#: app/templates/views/cancelled-invitation.html:2
+msgid "Invitation has been cancelled"
+msgstr ""
+
+#: app/templates/views/cancelled-invitation.html:7
+msgid "The invitation you were sent has been cancelled"
+msgstr ""
+
+#: app/templates/views/cancelled-invitation.html:10
+msgid "decided to cancel this invitation."
+msgstr ""
+
+#: app/templates/views/cancelled-invitation.html:13
+msgid "If you need access to"
+msgstr ""
+
+#: app/templates/views/cancelled-invitation.html:13
+msgid ", you’ll have to ask them to invite you again."
+msgstr ""
+
+#: app/templates/views/change-email-continue.html:4
+#: app/templates/views/password-reset-sent.html:4
+#: app/templates/views/password-reset-sent.html:11
+#: app/templates/views/registration-continue.html:4
+#: app/templates/views/resend-email-verification.html:6
+#: app/templates/views/resend-email-verification.html:11
+msgid "Check your email"
+msgstr ""
+
+#: app/templates/views/change-email-continue.html:9
+#: app/templates/views/registration-continue.html:9
+msgid "Check your email​"
+msgstr ""
+
+#: app/templates/views/change-email-continue.html:10
+#: app/templates/views/registration-continue.html:10
+msgid "An email has been sent to"
+msgstr ""
+
+#: app/templates/views/change-email-continue.html:11
+msgid "Click the link in the email to confirm the change to your email address."
+msgstr ""
+
+#: app/templates/views/choose-account.html:25
+msgid "live service"
+msgstr ""
+
+#: app/templates/views/choose-account.html:45
+#: app/templates/views/choose-account.html:116
+msgid "Add a new service"
+msgstr ""
+
+#: app/templates/views/choose-account.html:52
+#: app/templates/views/choose-account.html:58
+msgid "Choose service"
+msgstr ""
+
+#: app/templates/views/choose-account.html:67
+msgid "Platform admin"
+msgstr ""
+
+#: app/templates/views/choose-account.html:72
+#: app/templates/views/organisations/add-organisation.html:15
+#: app/templates/views/organisations/index.html:7
+#: app/templates/views/organisations/index.html:24
+msgid "All organisations"
+msgstr ""
+
+#: app/templates/views/choose-account.html:74
+msgid "organisations"
+msgstr ""
+
+#: app/templates/views/choose-account.html:74
+msgid "live services"
+msgstr ""
+
+#: app/templates/views/choose-account.html:81
+#: app/templates/views/find-users/user-information.html:16
+msgid "Live services"
+msgstr ""
+
+#: app/templates/views/choose-account.html:96
+#: app/templates/views/find-users/user-information.html:32
+msgid "Trial mode services"
+msgstr ""
+
+#: app/templates/views/cookies.html:13
+msgid "Notification puts small files (known as ‘cookies’) onto your computer."
+msgstr ""
+
+#: app/templates/views/cookies.html:15
+msgid "These cookies are used to remember you once you’ve logged in."
+msgstr ""
+
+#: app/templates/views/cookies.html:17
+msgid "Find out"
+msgstr ""
+
+#: app/templates/views/cookies.html:17
+msgid "how to manage cookies"
+msgstr ""
+
+#: app/templates/views/cookies.html:20
+msgid "Session cookies"
+msgstr ""
+
+#: app/templates/views/cookies.html:22
+msgid ""
+"We store session cookies on your computer to help keep your information\n"
+"        secure while you use the service."
+msgstr ""
+
+#: app/templates/views/cookies.html:28 app/templates/views/cookies.html:57
+#: app/templates/views/user-profile.html:28
+msgid "Name"
+msgstr ""
+
+#: app/templates/views/cookies.html:29 app/templates/views/cookies.html:58
+msgid "Purpose"
+msgstr ""
+
+#: app/templates/views/cookies.html:30 app/templates/views/cookies.html:59
+msgid "Expires"
+msgstr ""
+
+#: app/templates/views/cookies.html:36
+msgid "notify_admin_session"
+msgstr ""
+
+#: app/templates/views/cookies.html:39
+msgid "Used to keep you logged in"
+msgstr ""
+
+#: app/templates/views/cookies.html:42
+msgid "20 hours"
+msgstr ""
+
+#: app/templates/views/cookies.html:48
+msgid "Introductory message cookie"
+msgstr ""
+
+#: app/templates/views/cookies.html:50
+msgid ""
+"When you first use the service, you may see a pop-up ‘welcome’ message.\n"
+"        Once you’ve seen the message, we store a cookie on your computer "
+"so it\n"
+"        knows not to show it again."
+msgstr ""
+
+#: app/templates/views/cookies.html:65
+msgid "seen_cookie_message"
+msgstr ""
+
+#: app/templates/views/cookies.html:68
+msgid ""
+"Saves a message to let us know that you have seen our cookie\n"
+"                    message"
+msgstr ""
+
+#: app/templates/views/cookies.html:72
+msgid "1 month"
+msgstr ""
+
 #: app/templates/views/documentation.html:9
 msgid "Documentation"
 msgstr "Documentation"
 
+#: app/templates/views/documentation.html:10
+msgid "Notification API to send messages automatically."
+msgstr "L’API Notification enverra les messages automatiquement."
+
+#: app/templates/views/documentation.html:11
+msgid "Clients"
+msgstr "Clients"
+
+#: app/templates/views/documentation.html:12
+msgid ""
+"Choose a client to integrate our API with your web application or back "
+"office system. Links to documentation open in a new tab."
+msgstr ""
+"Choisissez un client pour intégrer notre API à votre application Web ou à"
+" votre système administratif. Les liens de la documentation s’ouvrent "
+"dans un nouvel onglet."
+
+#: app/templates/views/documentation.html:14
+msgid "Maintained by CDS:"
+msgstr ""
+
+#: app/templates/views/documentation.html:19
+msgid "Java-API-Library-Documentation"
+msgstr ""
+
+#: app/templates/views/documentation.html:24
+msgid "Maintained by GOV.UK:"
+msgstr ""
+
+#: app/templates/views/edit-email-template.html:9
+msgid "email template"
+msgstr ""
 
 #: app/templates/views/edit-email-template.html:22
 msgid "Your recipients won’t see this:"
 msgstr "Vos destinataires ne verront pas ceci :"
 
-#: app/templates/views/features.html:15
-msgid "emails"
-msgstr "courriels"
+#: app/templates/views/api/callbacks/delivery-status-callback.html:37
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:35
+#: app/templates/views/edit-email-template.html:29
+#: app/templates/views/edit-letter-template.html:20
+#: app/templates/views/edit-sms-template.html:30
+#: app/templates/views/manage-users/edit-user-email.html:21
+#: app/templates/views/organisations/add-organisation.html:30
+msgid "Save"
+msgstr ""
+
+#: app/templates/views/edit-letter-template.html:9
+msgid "letter template"
+msgstr ""
+
+#: app/templates/views/edit-sms-template.html:9
+msgid "text message template"
+msgstr ""
+
+#: app/templates/views/edit-sms-template.html:13
+msgid "{} text message template"
+msgstr ""
+
+#: app/templates/views/edit-sms-template.html:20
+msgid "Your recipients won’t see this"
+msgstr ""
+
+#: app/templates/views/email-link-invalid.html:5
+msgid "Invalid email link"
+msgstr ""
+
+#: app/templates/views/email-link-invalid.html:12
+msgid "The link has expired"
+msgstr ""
+
+#: app/templates/views/email-link-invalid.html:14
+msgid "Sign in again"
+msgstr ""
+
+#: app/templates/views/email-link-invalid.html:14
+msgid "to get a new link."
+msgstr ""
+
+#: app/templates/views/email-not-received.html:5
+#: app/templates/views/email-not-received.html:12
+#: app/templates/views/email-not-received.html:15
+msgid "Resend email link"
+msgstr "Renvoyer un courriel"
+
+#: app/templates/views/email-not-received.html:13
+msgid ""
+"Sometimes email messages take a few minutes to arrive. If you don’t "
+"receive the email, you can resend it."
+msgstr ""
+"Parfois, les courriels prennent quelques minutes à parvenir à "
+"destination. Si vous ne recevez pas un courriel, vous pouvez le renvoyer."
+
+#: app/templates/views/email-not-received.html:17
+msgid ""
+"Has your email address changed since you joined Notification? Please ask "
+"your account manager to reset it."
+msgstr ""
+"Votre adresse de courriel a-t-elle changé depuis que vous utilisez l’API "
+"Notification? Veuillez demander à votre gestionnaire de compte de la "
+"réinitialiser."
+
+#: app/templates/views/features.html:11
+#: app/templates/views/features/emails.html:16
+#: app/templates/views/features/text-messages.html:16
+msgid "Features"
+msgstr "Fonctionnalités"
+
+#: app/templates/views/features.html:12
+msgid ""
+"If you work for the federal government, you can use Notification to "
+"update your users."
+msgstr ""
+"Si vous travaillez pour le gouvernement fédéral, vous pouvez utiliser "
+"Notification pour mettre à jour vos utilisateurs."
+
+#: app/templates/views/features.html:13
+msgid "Notification makes it easy to create, customize and send:"
+msgstr "Notification facilite la création, la personnalisation et l’envoi de :"
+
+#: app/templates/views/features.html:19
+msgid "You do not need technical knowledge to use Notification."
+msgstr ""
+"Vous n’avez pas besoin de connaissances techniques pour utiliser "
+"Notification."
+
+#: app/templates/views/features.html:21
+#: app/templates/views/features/emails.html:13
+#: app/templates/views/features/text-messages.html:13
+#: app/templates/views/register-from-invite.html:7
+#: app/templates/views/register-from-invite.html:14
+#: app/templates/views/register-from-org-invite.html:7
+#: app/templates/views/register-from-org-invite.html:14
+#: app/templates/views/register.html:7 app/templates/views/register.html:14
+#: app/templates/views/signedout.html:24
+msgid "Create an account"
+msgstr "Créez un compte"
+
+#: app/templates/views/features.html:21
+msgid "for free and try it yourself."
+msgstr "gratuitement et faites-en l’essai!"
+
+#: app/templates/views/features.html:24
+msgid "Reusable message templates"
+msgstr "Modèles de messages réutilisables"
+
+#: app/templates/views/features.html:25
+msgid ""
+"To send an email or text with Notification, you need to create a reusable"
+" message template first."
+msgstr ""
+
+#: app/templates/views/features.html:26
+msgid ""
+"Templates let you send the same thing to lots of people, as often as you "
+"need, without writing a new message each time."
+msgstr ""
+"Les modèles vous permettent d’envoyer le même message à de nombreuses "
+"personnes, aussi souvent que vous le souhaitez, sans avoir à rédiger le "
+"message de nouveau chaque fois."
+
+#: app/templates/views/features.html:28
+msgid "Personalized content"
+msgstr "Contenu personnalisé"
+
+#: app/templates/views/features.html:29
+msgid ""
+"Notification makes it easy to send personalized messages from a single "
+"template."
+msgstr ""
+"Notification facilite l’envoi de messages personnalisés à partir d’un "
+"seul modèle."
+
+#: app/templates/views/features.html:30
+msgid ""
+"If you want to include personalized content in your message, you can add "
+"a placeholder.  Each time you send a message, you can fill the "
+"placeholder with details such as a name or reference number. You can do "
+"this manually or upload a list of personal details and let Notification "
+"do it for you."
+msgstr ""
+"Si vous voulez inclure du contenu personnalisé dans votre message, vous "
+"pouvez ajouter un espace réservé. Chaque fois que vous envoyez un "
+"message, vous pouvez ajouter des renseignements tels qu’un nom ou un "
+"numéro de référence dans l’espace réservé. Vous pouvez ajouter les "
+"renseignements manuellement ou télécharger une liste de renseignements "
+"personnels et laisser Notification le faire pour vous."
+
+#: app/templates/views/features.html:32
+msgid "Bulk sending"
+msgstr "Envoi en lot"
+
+#: app/templates/views/features.html:33
+msgid ""
+"To send a batch of messages at once, upload a list of contact details to "
+"Notification. You can also schedule the date and time for sending emails "
+"or text messages."
+msgstr ""
+"Pour envoyer un lot de messages en même temps, téléchargez une liste de "
+"coordonnées dans Notification. Vous pouvez également déterminer la date "
+"et l’heure d’envoi des courriels ou des messages textes."
+
+#: app/templates/views/features.html:35
+msgid "Application Programming Interface (API) integration"
+msgstr "Intégration de l’interface de programmation d’applications (API)"
+
+#: app/templates/views/features.html:36
+msgid ""
+"You can integrate Notification’s API with your web application or back-"
+"office system to send messages automatically."
+msgstr ""
+"Vous pouvez intégrer l’API Notification à votre application Web ou à "
+"votre système administratif pour envoyer des messages automatiquement."
+
+#: app/templates/views/features.html:37
+msgid "Read our"
+msgstr "Reportez-vous à notre"
+
+#: app/templates/views/features.html:37
+msgid "API documentation"
+msgstr "documentation sur l’API"
+
+#: app/templates/views/api/callbacks/delivery-status-callback.html:21
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:19
+#: app/templates/views/features.html:37
+msgid "for more information."
+msgstr "pour en savoir plus."
+
+#: app/templates/views/features.html:40
+msgid ""
+"Notification’s real-time dashboard lets you see the number of messages "
+"sent. You can also check the current status of any message to learn when "
+"it was delivered."
+msgstr ""
+
+#: app/templates/views/features.html:41
+msgid "Read more about how"
+msgstr "En savoir plus sur"
+
+#: app/templates/views/features.html:41
+msgid "message status"
+msgstr "l’état des messages"
+
+#: app/templates/views/features.html:41
+msgid "works."
+msgstr "travaux."
+
+#: app/templates/views/features.html:43
+#: app/templates/views/manage-users/permissions.html:6
+msgid "Permissions"
+msgstr "Autorisations"
+
+#: app/templates/views/features.html:44
+msgid ""
+"Control which members of your team can see, create, edit and send "
+"messages."
+msgstr ""
+"Définissez quels membres de votre équipe peuvent voir, créer, modifier et"
+" envoyer des messages."
+
+#: app/templates/views/features.html:45
+msgid "Notification lets you:"
+msgstr "Notification vous permet d’effectuer ce qui suit :"
+
+#: app/templates/views/features.html:47
+msgid "set different permission levels for each team member"
+msgstr "établir différents niveaux d’autorisation pour chaque membre de l’équipe;"
+
+#: app/templates/views/features.html:48
+msgid "invite team members who don’t have a government email address"
+msgstr ""
+"inviter des membres d’équipe qui n’ont pas d’adresse de courriel "
+"gouvernementale;"
+
+#: app/templates/views/features.html:49
+msgid "choose who else can manage team members"
+msgstr "désigner les autres personnes qui peuvent gérer les membres de l’équipe."
+
+#: app/templates/views/features.html:53
+msgid ""
+"Notification protects and manages data to meet the needs of government "
+"services."
+msgstr ""
+"Notification protège et gère les données pour répondre aux besoins en "
+"matière de services gouvernementaux."
+
+#: app/templates/views/features.html:55
+msgid "Hide sensitive information"
+msgstr "Masquer les renseignements de nature délicate"
+
+#: app/templates/views/features.html:56
+msgid ""
+"Notification lets you redact personal information from your messages "
+"after they’ve been sent. Only the recipient can see their personal "
+"information."
+msgstr ""
+"Notification vous permet de masquer les renseignements personnels "
+"contenus dans vos messages après qu’ils ont été envoyés. Seul le "
+"destinataire peut voir ses renseignements personnels."
+
+#: app/templates/views/features.html:58 app/templates/views/security.html:40
+msgid "Two-factor authentication"
+msgstr "Authentification à deux facteurs"
+
+#: app/templates/views/features.html:59
+msgid ""
+"Notification uses two-factor authentication (2FA) to keep your account "
+"secure. When you sign in, we'll send a unique one-time code to your phone"
+" and ask you to enter it before we let you use your account."
+msgstr ""
+"Notification utilise l’authentification à deux facteurs (A2F) pour "
+"assurer la sécurité de votre compte. Au moment de créer votre compte, "
+"vous recevrez un code unique par message texte et devrez l’entrer avant "
+"de pouvoir utiliser votre compte."
+
+#: app/templates/views/features.html:60
+msgid "Read more about"
+msgstr "En savoir plus au sujet de"
+
+#: app/templates/views/features.html:60
+#: app/templates/views/message-status.html:12
+msgid "security"
+msgstr "la sécurité"
+
+#: app/templates/views/forgot-password.html:7
+#: app/templates/views/new-password.html:7
+#: app/templates/views/new-password.html:16
+msgid "Create a new password"
+msgstr ""
+
+#: app/templates/views/forgot-password.html:14
+#: app/templates/views/signin.html:33
+msgid "Forgot your password?"
+msgstr ""
+
+#: app/templates/views/forgot-password.html:16
+msgid "We’ll send you an email to create a new password."
+msgstr ""
+
+#: app/templates/views/forgot-password.html:17
+msgid "Send email"
+msgstr ""
 
 #: app/templates/views/invite-user.html:9
 #: app/templates/views/invite-user.html:14
@@ -824,11 +1128,59 @@ msgstr "Inviter un membre de l’équipe."
 msgid "Send invitation email"
 msgstr "Envoyer un courriel d’invitation"
 
+#: app/templates/views/manage-users.html:9
+#: app/templates/views/manage-users.html:15
+msgid "Team members"
+msgstr "Membres de l’équipe"
+
+#: app/templates/views/manage-users.html:17
+msgid "Share templates with your team"
+msgstr "Partager des modèles avec votre équipe"
+
+#: app/templates/views/manage-users.html:37
+msgid "invited"
+msgstr "membre invité"
+
+#: app/templates/views/manage-users.html:41
+msgid "you"
+msgstr "vous"
+
+#: app/templates/views/manage-users.html:61
+msgid "Cannot see any folders"
+msgstr "Ne peut voir aucun dossier"
+
+#: app/templates/views/manage-users.html:65
+msgid "Can see all folders"
+msgstr "Peut voir tous les dossiers"
+
+#: app/templates/views/manage-users.html:72
+msgid "Signs in with a text message code"
+msgstr "Se connecte à l’aide d’un code envoyé par message texte"
+
+#: app/templates/views/manage-users.html:74
+msgid "Signs in with an email link"
+msgstr "Se connecte à l’aide d’un lien envoyé par courriel"
+
+#: app/templates/views/manage-users.html:82
+msgid "Cancel invitation"
+msgstr "Annuler l’invitation"
+
+#: app/templates/views/manage-users.html:84
+msgid "Change details"
+msgstr "Modifier les renseignements"
+
+#: app/templates/views/manage-users.html:95
+msgid "Invite someone to join your team"
+msgstr "Inviter une personne à se joindre à votre équipe"
+
 #: app/templates/views/message-status.html:11
 msgid ""
 "Notification’s real-time dashboard lets you check when your message was "
 "delivered. You can also check the status of your messages"
-msgstr "Le tableau de bord en temps réel d’Avis vous permet de vérifier quand votre message a été livré. Vous pouvez aussi vérifier l’état de vos messages."
+msgstr ""
+"Le tableau de bord en temps réel d’Avis vous permet de vérifier quand "
+"votre message a été livré. Vous pouvez aussi vérifier l’état de vos "
+"messages."
 
 #: app/templates/views/message-status.html:12
 msgid "For"
@@ -839,7 +1191,10 @@ msgid ""
 "this information is only available for 7 days after a message has been "
 "sent. You can download a report, including a list of sent messages, for "
 "your own records."
-msgstr "ces renseignements sont seulement disponibles pendant sept jours après qu’un message a été envoyé. Vous pouvez télécharger un rapport, y compris une liste des messages envoyés, pour vos dossiers."
+msgstr ""
+"ces renseignements sont seulement disponibles pendant sept jours après "
+"qu’un message a été envoyé. Vous pouvez télécharger un rapport, y compris"
+" une liste des messages envoyés, pour vos dossiers."
 
 #: app/templates/views/message-status.html:16
 msgid ""
@@ -847,8 +1202,13 @@ msgid ""
 "three states of Sending, Delivered and Failed. Also shows the next steps "
 "when messages fail, deleting data and trying a new method for permanent "
 "failures, and trying again or trying a new method for temporary failures"
-msgstr "Une image du flux d’envoi de messages dans Avis, affichant les trois étapes de l’Envoi, de la Livraison et de l’Échec. Affiche également les prochaines étapes lorsque la livraison des messages échoue, supprimer les données et essayer une nouvelle méthode de résolution des échecs permanents et essayer de nouveau ou essayer une nouvelle méthode de résolution des échecs temporaires."
-
+msgstr ""
+"Une image du flux d’envoi de messages dans Avis, affichant les trois "
+"étapes de l’Envoi, de la Livraison et de l’Échec. Affiche également les "
+"prochaines étapes lorsque la livraison des messages échoue, supprimer les"
+" données et essayer une nouvelle méthode de résolution des échecs "
+"permanents et essayer de nouveau ou essayer une nouvelle méthode de "
+"résolution des échecs temporaires."
 
 #: app/templates/views/message-status.html:19
 msgid "Types of message status"
@@ -858,12 +1218,15 @@ msgstr "Types d’états de messages."
 msgid ""
 "Notification has the following types of message status (API message "
 "status may be different and is found in"
-msgstr "Les avis ont les types d’états de message suivant (l’état de messages API pourrait être différent et se trouve dans"
+msgstr ""
+"Les avis ont les types d’états de message suivant (l’état de messages API"
+" pourrait être différent et se trouve dans"
 
 #: app/templates/views/message-status.html:20
 msgid "technical documentation):"
 msgstr "la documentation technique):"
 
+#: app/templates/views/dashboard/monthly.html:28
 #: app/templates/views/features/emails.html:5
 #: app/templates/views/features/emails.html:10
 #: app/templates/views/message-status.html:23
@@ -874,18 +1237,9 @@ msgstr "Courriels"
 msgid "Message statuses – emails"
 msgstr "États de messages - courriels"
 
-#: app/templates/views/message-status.html:25
-msgid "Status"
-msgstr "État"
-
 #: app/templates/views/message-status.html:26
 msgid "Description"
 msgstr "Description"
-
-#: app/templates/views/message-status.html:34
-#: app/templates/views/message-status.html:75
-msgid "Sending"
-msgstr "Envoi en cours"
 
 #: app/templates/views/message-status.html:35
 msgid "Notification has sent the message to the email provider."
@@ -901,7 +1255,9 @@ msgstr "Livré"
 msgid ""
 "The message was successfully delivered. Notification will not tell you if"
 " a user has opened or read a message."
-msgstr "Le message a été livré avec succès. Avis ne vous informera pas si un utilisateur a ouvert ou lu un message."
+msgstr ""
+"Le message a été livré avec succès. Avis ne vous informera pas si un "
+"utilisateur a ouvert ou lu un message."
 
 #: app/templates/views/message-status.html:40
 msgid "Email address does not exist"
@@ -911,7 +1267,10 @@ msgstr "L’adresse courriel n’existe pas."
 msgid ""
 "The provider could not deliver the message because the email address was "
 "wrong. You should remove these email addresses from your database."
-msgstr "Le fournisseur ne peut pas livrer le message puisque l’adresse courriel était erronée". Vous devriez supprimer ces adresses courriel de votre base de données."
+msgstr ""
+"Le fournisseur ne peut pas livrer le message puisque l’adresse courriel "
+"était erronée\". Vous devriez supprimer ces adresses courriel de votre "
+"base de données."
 
 #: app/templates/views/message-status.html:43
 msgid "Inbox not accepting messages right now"
@@ -922,8 +1281,10 @@ msgid ""
 "The provider could not deliver the message after trying for 72 hours. "
 "This can happen when the recipient’s inbox is full. You can try to send "
 "the message again."
-msgstr "Le fournisseur ne peut pas livrer le message après avoir essayé pendant 72 heures."
-"Cela peut se produire si la boîte de réception du destinataire est pleine. Vous pouvez essayer d’envoyer le message de nouveau."
+msgstr ""
+"Le fournisseur ne peut pas livrer le message après avoir essayé pendant "
+"72 heures.Cela peut se produire si la boîte de réception du destinataire "
+"est pleine. Vous pouvez essayer d’envoyer le message de nouveau."
 
 #: app/templates/views/message-status.html:46
 #: app/templates/views/message-status.html:90
@@ -934,7 +1295,9 @@ msgstr "Échec technique"
 msgid ""
 "There was a connection problem between Notification and the email "
 "provider. You’ll have to try sending your messages again."
-msgstr "Il y avait un problème de connexion entre Avis et le fournisseur de courriel. Vous devrez essayer d’envoyer vos messages de nouveau."
+msgstr ""
+"Il y avait un problème de connexion entre Avis et le fournisseur de "
+"courriel. Vous devrez essayer d’envoyer vos messages de nouveau."
 
 #: app/templates/views/message-status.html:67
 msgid "Message statuses – text messages"
@@ -952,7 +1315,10 @@ msgstr "Envoyé à l’échelle internationale."
 msgid ""
 "The message was sent to an international number. The mobile networks in "
 "some countries do not provide any more delivery information."
-msgstr "Le message a été envoyé à un numéro international. Les réseaux cellulaires de certains pays ne fournissent plus de renseignements de livraison."
+msgstr ""
+"Le message a été envoyé à un numéro international. Les réseaux "
+"cellulaires de certains pays ne fournissent plus de renseignements de "
+"livraison."
 
 #: app/templates/views/message-status.html:84
 msgid "Phone number does not exist"
@@ -963,7 +1329,11 @@ msgid ""
 "The provider could not deliver the message because the phone number was "
 "wrong. You should remove these phone numbers from your database. You’ll "
 "still be charged for text messages to numbers that do not exist."
-msgstr "Le fournisseur ne pouvait pas livrer le message parce que le numéro de téléphone était erroné. Vous devriez supprimer ces adresses courriel de votre base de données. Les messages envoyés aux numéros qui n’existent pas vous seront tout de même facturés."
+msgstr ""
+"Le fournisseur ne pouvait pas livrer le message parce que le numéro de "
+"téléphone était erroné. Vous devriez supprimer ces adresses courriel de "
+"votre base de données. Les messages envoyés aux numéros qui n’existent "
+"pas vous seront tout de même facturés."
 
 #: app/templates/views/message-status.html:87
 msgid "Phone not accepting messages right now"
@@ -975,20 +1345,98 @@ msgid ""
 "This can happen when the recipient’s phone is off. You can try to send "
 "the message again. You’ll still be charged for text messages to phones "
 "that are not accepting messages."
-msgstr "Le fournisseur ne peut pas livrer le message après avoir essayé pendant 72 heures. Cela peut se produire si le téléphone du destinataire est éteint. Vous pouvez essayer d’envoyer le message de nouveau. Les messages textes qui ont été envoyés aux téléphones qui n’acceptent pas de messages vous seront tout de même facturés."
+msgstr ""
+"Le fournisseur ne peut pas livrer le message après avoir essayé pendant "
+"72 heures. Cela peut se produire si le téléphone du destinataire est "
+"éteint. Vous pouvez essayer d’envoyer le message de nouveau. Les messages"
+" textes qui ont été envoyés aux téléphones qui n’acceptent pas de "
+"messages vous seront tout de même facturés."
 
 #: app/templates/views/message-status.html:91
 msgid ""
 "There was a connection problem between Notification and the cellular "
 "provider. You’ll have to try sending your messages again. You will not be"
 " charged for text messages that are affected by a technical failure."
-msgstr "Il y avait un problème de connexion entre Avis et le fournisseur de service cellulaire. Vous devrez essayer d’envoyer vos messages de nouveau. Les messages textes qui sont affectés par une défaillance technique vous seront facturés."
+msgstr ""
+"Il y avait un problème de connexion entre Avis et le fournisseur de "
+"service cellulaire. Vous devrez essayer d’envoyer vos messages de "
+"nouveau. Les messages textes qui sont affectés par une défaillance "
+"technique vous seront facturés."
+
+#: app/templates/views/new-password.html:19
+msgid "You can now create a new password for your account."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:17
+#: app/templates/views/agreement/agreement-accept.html:35
+#: app/templates/views/agreement/service-agreement.html:33
+#: app/templates/views/api/keys/create.html:20
+#: app/templates/views/new-password.html:22
+#: app/templates/views/register-from-invite.html:29
+#: app/templates/views/register-from-org-invite.html:24
+#: app/templates/views/register.html:27 app/templates/views/send-test.html:46
+#: app/templates/views/signin.html:34 app/templates/views/templates/add.html:12
+#: app/templates/views/two-factor.html:16
+#: app/templates/views/verify-mobile.html:22
+msgid "Continue"
+msgstr "Continuer"
+
+#: app/templates/views/new-password.html:23
+#: app/templates/views/register-from-invite.html:27
+#: app/templates/views/register-from-org-invite.html:22
+#: app/templates/views/register.html:24
+msgid "At least 8 characters"
+msgstr ""
+
+#: app/templates/views/new-password.html:29
+msgid ""
+"Message about email address does not exist. Some one needs to figure out "
+"the words here."
+msgstr ""
+
+#: app/templates/views/password-reset-sent.html:13
+msgid "Click the link in the email to reset your password."
+msgstr ""
+
+#: app/templates/views/privacy.html:4
+msgid "Privacy notice: how we use your data"
+msgstr ""
+
+#: app/templates/views/register-from-invite.html:16
+msgid "Your account will be created with this email address:"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-confirm.html:31
+#: app/templates/views/register-from-invite.html:22
+#: app/templates/views/register-from-org-invite.html:19
+#: app/templates/views/register.html:20
+msgid "We’ll send you a security code by text message"
+msgstr "Nous vous enverrons un code de sécurité par message texte."
+
+#: app/templates/views/register-from-org-invite.html:15
+msgid "Your account will be created with this email:"
+msgstr ""
+
+#: app/templates/views/register.html:17
+msgid "Must be a federal government email address"
+msgstr "Veuillez entrer une adresse de courriel du gouvernement fédéral."
+
+#: app/templates/views/registration-continue.html:11
+#: app/templates/views/resend-email-verification.html:13
+msgid "Click the link in the email to continue your registration."
+msgstr ""
+
+#: app/templates/views/resend-email-verification.html:12
+msgid "A new confirmation email has been sent to"
+msgstr ""
 
 #: app/templates/views/security.html:10
 msgid ""
 "Notification is built for the needs of government services. It is set up "
 "to:"
-msgstr "Avis est construit pour les besoins des services gouvernementaux. Le système est établi pour :"
+msgstr ""
+"Avis est construit pour les besoins des services gouvernementaux. Le "
+"système est établi pour :"
 
 #: app/templates/views/security.html:12
 msgid "protect user data"
@@ -1020,29 +1468,37 @@ msgstr "lorsqu’elles sont entreposées dans le service."
 
 #: app/templates/views/security.html:23
 msgid "Any user data you upload is only held for 7 days."
-msgstr "Toutes les données d’utilisateur que vous téléversez sont seulement retenues pendant sept jours."
+msgstr ""
+"Toutes les données d’utilisateur que vous téléversez sont seulement "
+"retenues pendant sept jours."
 
 #: app/templates/views/security.html:25
 msgid "Technical security"
 msgstr "Sécurité technique"
 
-
 #: app/templates/views/security.html:26
 msgid "Other technical security controls on Notification include:"
-msgstr "D’autres mesures de contrôle de sécurité techniques dans Avis comprennent :"
+msgstr ""
+"D’autres mesures de contrôle de sécurité techniques dans Avis comprennent"
+" :"
 
 #: app/templates/views/security.html:28
 msgid ""
 "protective monitoring to record activity, and raise alerts about any "
 "suspicious activity."
-msgstr "la surveillance protectrice d’enregistrer l’activité et soulever des alertes au sujet de toute activité suspecte."
+msgstr ""
+"la surveillance protectrice d’enregistrer l’activité et soulever des "
+"alertes au sujet de toute activité suspecte."
 
 #: app/templates/views/security.html:29
 msgid ""
 "using codes called JSON Web Tokens when your service talks to "
 "Notification. Unlike codes for API keys, JSON Web Tokens have encryption "
 "and expiry settings."
-msgstr "en utilisant des codes nommés jetons Web JSON lorsque votre service communique avec Avis. Contrairement aux codes pour les clés API, les jetons Web JSON possèdent des réglages de chiffrement et d’expiration."
+msgstr ""
+"en utilisant des codes nommés jetons Web JSON lorsque votre service "
+"communique avec Avis. Contrairement aux codes pour les clés API, les "
+"jetons Web JSON possèdent des réglages de chiffrement et d’expiration."
 
 #: app/templates/views/security.html:32
 msgid "Protect sensitive information"
@@ -1052,14 +1508,20 @@ msgstr "Protection des renseignements de nature délicate"
 msgid ""
 "Some messages include sensitive information like security codes or "
 "password reset links."
-msgstr "Certains messages comprennent des renseignements de nature délicate comme des codes de sécurité ou des liens de réinitialisation de mot de passe."
+msgstr ""
+"Certains messages comprennent des renseignements de nature délicate comme"
+" des codes de sécurité ou des liens de réinitialisation de mot de passe."
 
 #: app/templates/views/security.html:34
 msgid ""
 "If you’re sending a message with sensitive information, you can hide "
 "those details on the dashboard once the message has been sent. Only the "
 "message recipient will be able to see their information."
-msgstr "Si vous envoyez un message comprenant des renseignements de nature délicate, vous pouvez cacher ces détails sur le tableau de bord une fois que le message a été envoyé. Seulement le destinataire du message sera en mesure de consulter ses renseignements."
+msgstr ""
+"Si vous envoyez un message comprenant des renseignements de nature "
+"délicate, vous pouvez cacher ces détails sur le tableau de bord une fois "
+"que le message a été envoyé. Seulement le destinataire du message sera en"
+" mesure de consulter ses renseignements."
 
 #: app/templates/views/security.html:36
 msgid "User permissions and signing in"
@@ -1069,7 +1531,10 @@ msgstr "Permissions d’utilisateurs et ouverture de session"
 msgid ""
 "You can set different user permissions in Notification. This lets you "
 "control which team members have access to certain parts of Notification."
-msgstr "Vous pouvez établir différentes permissions d’utilisateurs dans Avis. Cela vous permet de contrôler quels membres de l’équipe ont accès à certaines parties d’Avis."
+msgstr ""
+"Vous pouvez établir différentes permissions d’utilisateurs dans Avis. "
+"Cela vous permet de contrôler quels membres de l’équipe ont accès à "
+"certaines parties d’Avis."
 
 #: app/templates/views/security.html:41
 msgid "To sign in to Notification you’ll need to enter:"
@@ -1088,18 +1553,902 @@ msgid "Please"
 msgstr "Veuillez"
 
 #: app/templates/views/security.html:48
+#: app/templates/views/service-settings.html:240
 msgid "contact us"
 msgstr "communiquer avec nous"
 
 #: app/templates/views/security.html:48
 msgid "if your team needs email links instead of text message codes."
-msgstr "si votre équipe a besoin de liens courriels au lieu de codes par message texte."
+msgstr ""
+"si votre équipe a besoin de liens courriels au lieu de codes par message "
+"texte."
+
+#: app/templates/views/send-test.html:26
+msgid "Optional"
+msgstr ""
+
+#: app/templates/views/send-test.html:42 app/templates/views/send.html:9
+msgid "Upload a list of"
+msgstr ""
+
+#: app/templates/views/send.html:13
+msgid "Upload a list of {}"
+msgstr ""
+
+#: app/templates/views/send.html:20
+msgid "Choose a file"
+msgstr ""
+
+#: app/templates/views/send.html:27
+msgid "Your file needs to look like this example"
+msgstr ""
+
+#: app/templates/views/send.html:29
+msgid "Save your file as a"
+msgstr ""
+
+#: app/templates/views/send.html:30
+msgid "Comma Separated Values"
+msgstr ""
+
+#: app/templates/views/send.html:31
+msgid "Tab Separated Values"
+msgstr ""
+
+#: app/templates/views/send.html:32
+msgid "Open Document Spreadsheet"
+msgstr ""
+
+#: app/templates/views/send.html:33
+msgid "CSV"
+msgstr ""
+
+#: app/templates/views/send.html:34
+msgid "TSV"
+msgstr ""
+
+#: app/templates/views/send.html:35
+msgid "ODS"
+msgstr ""
+
+#: app/templates/views/send.html:36
+msgid "or Microsoft Excel spreadsheet"
+msgstr ""
+
+#: app/templates/views/send.html:40
+msgid "Example"
+msgstr ""
+
+#: app/templates/views/send.html:54
+msgid "Download this example"
+msgstr ""
+
+#: app/templates/views/send.html:57
+msgid "Your file will populate this template"
+msgstr ""
+
+#: app/templates/views/service-settings.html:6
+#: app/templates/views/service-settings.html:13
+#: app/templates/views/service-settings.html:267
+msgid "Settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:9
+#: app/templates/views/user-profile.html:11
+msgid "Change"
+msgstr ""
+
+#: app/templates/views/service-settings.html:16
+msgid "General"
+msgstr ""
+
+#: app/templates/views/service-settings.html:17
+#: app/templates/views/service-settings.html:76
+#: app/templates/views/service-settings.html:140
+#: app/templates/views/service-settings.html:268
+#: app/templates/views/user-profile.html:17
+msgid "Label"
+msgstr ""
+
+#: app/templates/views/service-settings.html:18
+#: app/templates/views/service-settings.html:77
+#: app/templates/views/service-settings.html:141
+#: app/templates/views/service-settings.html:269
+#: app/templates/views/user-profile.html:18
+msgid "Value"
+msgstr ""
+
+#: app/templates/views/api/keys.html:22
+#: app/templates/views/service-settings.html:19
+#: app/templates/views/service-settings.html:78
+#: app/templates/views/service-settings.html:142
+#: app/templates/views/service-settings.html:270
+#: app/templates/views/user-profile.html:19
+msgid "Action"
+msgstr ""
+
+#: app/templates/views/service-settings.html:29
+msgid "Service name"
+msgstr ""
+
+#: app/templates/views/service-settings.html:41
+msgid "Sign-in method"
+msgstr ""
+
+#: app/templates/views/service-settings.html:43
+msgid "Email link or text message code"
+msgstr ""
+
+#: app/templates/views/service-settings.html:44
+msgid "Text message code"
+msgstr ""
+
+#: app/templates/views/service-settings.html:60
+msgid "Contact details"
+msgstr ""
+
+#: app/templates/views/service-settings.html:75
+msgid "Email settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:88
+msgid "Send emails"
+msgstr ""
+
+#: app/templates/views/service-settings.html:103
+msgid "Reply-to email addresses"
+msgstr ""
+
+#: app/templates/views/service-settings.html:104
+#: app/templates/views/service-settings.html:310
+msgid "Not set"
+msgstr ""
+
+#: app/templates/views/service-settings.html:114
+#: app/templates/views/service-settings.html:178
+msgid "Manage"
+msgstr ""
+
+#: app/templates/views/email-branding/select-branding.html:6
+#: app/templates/views/service-settings.html:125
+#: app/templates/views/service-settings.html:337
+msgid "Email branding"
+msgstr ""
+
+#: app/templates/views/service-settings.html:127
+msgid "Your branding<br> ({})"
+msgstr ""
+
+#: app/templates/views/service-settings.html:139
+msgid "Text message settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:152
+msgid "Send text messages"
+msgstr ""
+
+#: app/templates/views/service-settings.html:167
+msgid "Text message senders"
+msgstr ""
+
+#: app/templates/views/service-settings.html:168
+msgid "default"
+msgstr ""
+
+#: app/templates/views/service-settings.html:189
+msgid "Start text messages with service name"
+msgstr ""
+
+#: app/templates/views/service-settings.html:202
+msgid "Send international text messages"
+msgstr ""
+
+#: app/templates/views/features/text-messages.html:24
+#: app/templates/views/service-settings.html:215
+msgid "Receive text messages"
+msgstr "Recevoir des messages texte"
+
+#: app/templates/views/service-settings.html:230
+msgid "Your service is in trial mode"
+msgstr ""
+
+#: app/templates/views/service-settings.html:233
+msgid "you can only send messages to yourself"
+msgstr ""
+
+#: app/templates/views/service-settings.html:234
+msgid "you can add people to your team, then you can send messages to them tool"
+msgstr ""
+
+#: app/templates/views/service-settings.html:235
+msgid "you can only send"
+msgstr ""
+
+#: app/templates/views/service-settings.html:240
+#: app/templates/views/trial-mode.html:20
+msgid "To remove these restrictions, you can"
+msgstr ""
+
+#: app/templates/views/service-settings.html:242
+msgid "Your service manager can ask to have these restrictions removed."
+msgstr ""
+
+#: app/templates/views/service-settings.html:247
+msgid "Your service is live"
+msgstr ""
+
+#: app/templates/views/service-settings.html:250
+msgid "You can send up to"
+msgstr ""
+
+#: app/templates/views/service-settings.html:251
+msgid ""
+"messages\n"
+"        per day."
+msgstr ""
+
+#: app/templates/views/service-settings.html:255
+msgid "Problems or comments?"
+msgstr ""
+
+#: app/templates/views/service-settings.html:256
+msgid "Give feedback"
+msgstr ""
+
+#: app/templates/views/service-settings.html:265
+msgid "Platform admin settings"
+msgstr ""
+
+#: app/templates/views/service-settings.html:280
+msgid "Live"
+msgstr ""
+
+#: app/templates/views/service-settings.html:283
+msgid "No (organisation must be set first)"
+msgstr ""
+
+#: app/templates/views/service-settings.html:293
+msgid "Count in list of live services"
+msgstr ""
+
+#: app/templates/views/service-settings.html:294
+#: app/templates/views/user-profile.html:63
+msgid "Yes"
+msgstr ""
+
+#: app/templates/views/service-settings.html:295
+#: app/templates/views/user-profile.html:64
+msgid "No"
+msgstr ""
+
+#: app/templates/views/service-settings.html:302
+msgid "Organisation"
+msgstr ""
+
+#: app/templates/views/service-settings.html:331
+msgid "Free text message allowance"
+msgstr ""
+
+#: app/templates/views/service-settings.html:343
+msgid "Letter branding"
+msgstr ""
+
+#: app/templates/views/service-settings.html:349
+msgid "Data retention"
+msgstr ""
+
+#: app/templates/views/service-settings.html:381
+msgid "Delete this service"
+msgstr ""
+
+#: app/templates/views/service-settings.html:387
+msgid "Suspend service"
+msgstr ""
+
+#: app/templates/views/service-settings.html:396
+msgid "Service suspended"
+msgstr ""
+
+#: app/templates/views/service-settings.html:400
+msgid "Resume service"
+msgstr ""
+
+#: app/templates/views/signedout.html:8
+msgid "Notification"
+msgstr ""
+
+#: app/templates/views/signedout.html:18
+msgid "Send emails and text messages to your users"
+msgstr "Envoyer des courriels et des messages textes à vos utilisateurs"
+
+#: app/templates/views/signedout.html:21
+msgid "Try Notification if you work in the federal government."
+msgstr "Faites l’essai de Notification si vous travaillez au gouvernement fédéral."
+
+#: app/templates/views/signedout.html:25
+msgid "sign in"
+msgstr "ouvrez une session"
+
+#: app/templates/views/signedout.html:25
+msgid "if you’ve used it before"
+msgstr "si vous avez déjà utilisé l’API."
+
+#: app/templates/views/signedout.html:36
+msgid "Control your content"
+msgstr "Contrôler votre contenu"
+
+#: app/templates/views/signedout.html:39
+msgid ""
+"You don’t need any technical knowledge to create email or text message "
+"templates."
+msgstr ""
+"Vous n’avez pas besoin de connaissances techniques pour créer des modèles"
+" de courriels ou de messages textes."
+
+#: app/templates/views/signedout.html:49
+msgid "Send messages manually or automatically"
+msgstr "Envoyer les messages manuellement ou automatiquement"
+
+#: app/templates/views/signedout.html:54
+msgid ""
+"Upload a spreadsheet of email addresses or phone numbers and Notification"
+" sends the messages."
+msgstr ""
+"Téléchargez une feuille de calcul contenant les adresses de courriel ou "
+"les numéros de téléphone des destinataires, et Notification enverra les "
+"messages."
+
+#: app/templates/views/signedout.html:56
+msgid ""
+"A screenshot of a spreadsheet with columns for email address, name and "
+"colour"
+msgstr ""
+
+#: app/templates/views/signedout.html:64
+msgid "Integrate Notification with your web application or back office system."
+msgstr ""
+"Intégrer Notification à votre application Web ou à votre système "
+"administratif."
+
+#: app/templates/views/signedout.html:66
+msgid "A screenshot of some computer code with a notify.send_email function"
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement-choose.html:26
+#: app/templates/views/features/text-messages.html:27
+#: app/templates/views/signedout.html:79
+msgid "Contact us"
+msgstr "Communiquez avec nous"
+
+#: app/templates/views/signedout.html:79
+msgid "if you have a question or want to give feedback."
+msgstr "pour toute question ou commentaire."
+
+#: app/templates/views/signin.html:7
+msgid "Sign in"
+msgstr ""
+
+#: app/templates/views/signin.html:16
+msgid "You need to sign in again"
+msgstr ""
+
+#: app/templates/views/signin.html:19
+msgid "We signed you out because you logged in to Notification on another device."
+msgstr ""
+
+#: app/templates/views/signin.html:23
+msgid "We signed you out because you haven’t used Notification for a while."
+msgstr ""
+
+#: app/templates/views/signin.html:29
+msgid "If you do not have an account, you can"
+msgstr ""
+
+#: app/templates/views/signin.html:30
+msgid "create one now"
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:10
+msgid "Terms of use"
+msgstr "Conditions d’utilisation"
+
+#: app/templates/views/terms-of-use.html:13
+msgid ""
+"These terms apply to use of Notification. Your account manager must "
+"accept them."
+msgstr ""
+"Ces conditions s’appliquent à l’utilisation de Notification. Votre "
+"gestionnaire de comptedoit les accepter."
+
+#: app/templates/views/terms-of-use.html:16
+msgid "When using Notification"
+msgstr "Lorsque vous utilisez Notification :"
+
+#: app/templates/views/terms-of-use.html:18
+msgid ""
+"GOV.UK’s Service Manual provides useful standards for <a "
+"href=\"https://www.gov.uk/service-manual/design/sending-emails-and-text-"
+"messages\">writing text messages and emails</a>. Notification recommends "
+"that you consider these standards as guidance, while adjusting for the "
+"Canadian context."
+msgstr ""
+"Le manuel sur les normes relatives aux services publics du Royaume-Uni "
+"(GOV.UK Service Manual; en anglais seulement) contient des normes utiles "
+"pour <a href=\"https://www.gov.uk/service-manual/design/sending-emails-"
+"and-text-messages\">la rédaction de messages textes et de courriels</a>. "
+"Nous vous recommandons d’utiliser ces normes comme des lignes "
+"directrices, tout en les adaptant au contexte canadien."
+
+#: app/templates/views/terms-of-use.html:20
+msgid "You must:"
+msgstr "Vous devez :"
+
+#: app/templates/views/terms-of-use.html:22
+msgid "complete all security steps required by your organization."
+msgstr "prendre toutes les mesures de sécurité requises par votre organisation;"
+
+#: app/templates/views/terms-of-use.html:23
+msgid "tell us immediately if you have any security breaches."
+msgstr "nous aviser immédiatement de toute atteinte à la sécurité;"
+
+#: app/templates/views/terms-of-use.html:24
+msgid ""
+"keep your API (Application Programming Interface) codes secure. API "
+"technology allows different software applications to communicate with "
+"each other."
+msgstr ""
+"veiller à la sécurité de vos codes d’API. La technologie des API permet à"
+" différentes applications logicielles de communiquer entre elles;"
+
+#: app/templates/views/terms-of-use.html:25
+msgid ""
+"get consent to send messages and to use data. This consent must meet "
+"standards set by privacy legislation including the federal Privacy Act."
+msgstr ""
+"obtenir le consentement requis pour pouvoir envoyer des messages et "
+"utiliser des données. Ce consentement doit être conforme aux normes "
+"établies par la législation sur la protection des renseignements "
+"personnels, y compris la <i>Loi sur la protection des renseignements "
+"personnels;</i>"
+
+#: app/templates/views/terms-of-use.html:26
+msgid ""
+"check that the data you add to Notification is accurate and complies with"
+" privacy legislation including the federal Privacy Act."
+msgstr ""
+"vous assurer que les données que vous ajoutez à Notification sont exactes"
+" et conformes à la législation sur la protection des renseignements "
+"personnels, y compris la <i>Loi</i)<i>sur la protection des "
+"renseignements personnels;</i>"
+
+#: app/templates/views/terms-of-use.html:27
+msgid ""
+"not send messages containing any personally or commercially sensitive "
+"information."
+msgstr ""
+"vous abstenir d’envoyer des messages contenant des renseignements "
+"personnels ou commerciaux de nature délicate;"
+
+#: app/templates/views/terms-of-use.html:28
+msgid ""
+"not send unsolicited messages. Messages must be about transactions or "
+"subscriptions. Please follow the <a href=\"https://www.gov.uk/service-"
+"manual/design/sending-emails-and-text-messages#transactional-"
+"messages\">transaction</a> and <a href=\"https://www.gov.uk/service-"
+"manual/design/sending-emails-and-text-messages#subscription-"
+"messages\">subscription</a> criteria in the GOV.UK Service Manual. Please"
+" remember that other parts of the GOV.UK Manual may not apply in the "
+"Canadian context."
+msgstr ""
+"vous abstenir d’envoyer des messages non sollicités. Les messages doivent"
+" porter sur des transactions ou des abonnements. Veuillez respecter les "
+"critères relatifs aux transactions et aux abonnements aux pages suivantes"
+" du manuel sur les normes relatives auxservices publics du Royaume-Uni "
+"(en anglais) : <a href=\"https://www.gov.uk/service-manual/design"
+"/sending-emails-and-text-messages#transactional-"
+"messages\">transaction</a> et <a href=\"https://www.gov.uk/service-"
+"manual/design/sending-emails-and-text-messages#subscription-"
+"messages\">subscription</a>. Veuillez garder à l’esprit que les autres "
+"sections du manuel pourraient ne pas s’appliquer au contexte canadien."
+
+#: app/templates/views/terms-of-use.html:31
+msgid ""
+"If you don’t follow these terms, we may need to stop sending your "
+"messages."
+msgstr ""
+"Si vous ne respectez pas ces conditions, nous pourrions être dans "
+"l’obligation de cesser d’envoyer vos messages."
+
+#: app/templates/views/terms-of-use.html:33
+msgid "Notification will:"
+msgstr "Notification :"
+
+#: app/templates/views/terms-of-use.html:35
+msgid ""
+"send the messages you write, as long as these messages comply with our "
+"terms of use."
+msgstr ""
+"envoie les messages que vous rédigez, dans la mesure où ces messages sont"
+" conformes à nos conditions d’utilisation;"
+
+#: app/templates/views/terms-of-use.html:36
+msgid ""
+"show how Notification is working through our <a "
+"href=\"https://www.gov.uk/performance/govuk-notify\">performance</a> and "
+"<a href=\"https://status.notifications.service.gov.uk/\">status</a> "
+"pages."
+msgstr ""
+"est expliqué aux pages suivantes : <a "
+"href=\"https://www.gov.uk/performance/govuk-notify\">performance</a> et "
+"<a href= \"https://status.notifications.service.gov.uk/ \">état</a>; "
+
+#: app/templates/views/terms-of-use.html:37
+msgid "keep your data <a href=\"/features/security\">secure</a>."
+msgstr ""
+"assure la <a href=\"/fonctionalités/sécurité\">sécurité</a> de vos "
+"données;"
+
+#: app/templates/views/terms-of-use.html:38
+msgid ""
+"give you one month’s notice by email if we change our terms of use or "
+"delivery providers."
+msgstr ""
+"vous envoie un préavis d’un mois par courriel en cas de modification des "
+"conditions d’utilisation ou des fournisseurs."
+
+#: app/templates/views/terms-of-use.html:41
+msgid "Leaving Notification"
+msgstr "Quitter Notification"
+
+#: app/templates/views/terms-of-use.html:43
+msgid "We’ll delete all your data when we close your account."
+msgstr "Nous supprimerons toutes vos données au moment de fermer votre compte."
+
+#: app/templates/views/text-not-received-2.html:13
+#: app/templates/views/text-not-received.html:7
+#: app/templates/views/text-not-received.html:14
+msgid "Check your mobile number"
+msgstr ""
+
+#: app/templates/views/text-not-received-2.html:15
+#: app/templates/views/text-not-received.html:16
+msgid ""
+"Check your mobile phone number is correct and then resend the security "
+"code."
+msgstr ""
+
+#: app/templates/views/text-not-received-2.html:18
+msgid "Mobile phone number"
+msgstr ""
+
+#: app/templates/views/text-not-received-2.html:24
+#: app/templates/views/text-not-received.html:17
+#: app/templates/views/verification-not-received.html:11
+#: app/templates/views/verification-not-received.html:19
+msgid "Resend security code"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:4 app/templates/views/trial-mode.html:9
+msgid "Trial mode"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:11
+msgid ""
+"When you set up a new service it will start in trial mode. This lets you "
+"try out Notification, with a few restrictions."
+msgstr ""
+
+#: app/templates/views/trial-mode.html:12
+msgid "A service in trial mode can only:"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:14
+msgid "send 50 text messages and emails per day"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:15
+msgid "send messages to you and other people in your team"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:16
+msgid "create letter templates, but not send them"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:25
+msgid "send us a request to go live."
+msgstr ""
+
+#: app/templates/views/trial-mode.html:29
+msgid "Before you can request to go live, you must:"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:31
+msgid "sign our data sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:32
+msgid "accept our terms of use"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:33
+msgid "set up your service so you’re ready to send and receive messages"
+msgstr ""
+
+#: app/templates/views/trial-mode.html:36
+msgid "When we receive your request we’ll get back to you within one working day."
+msgstr ""
+
+#: app/templates/views/two-factor-email.html:13
+msgid "We’ve emailed you a link to sign in to Notification."
+msgstr ""
+"Nous vous avons envoyé un lien par courriel pour vous connecter à "
+"Notification."
+
+#: app/templates/views/two-factor-email.html:14
+msgid "Use the link to open Notification in a new browser window."
+msgstr "Utilisez le lien pour ouvrir Notification dans une nouvelle fenêtre."
+
+#: app/templates/views/two-factor-email.html:15
+msgid "Not received an email"
+msgstr "Vous n’avez pas reçu de courriel?"
+
+#: app/templates/views/two-factor.html:8
+msgid "Text verification"
+msgstr "Vérification par message texte"
+
+#: app/templates/views/two-factor.html:15
+msgid "Check your phone"
+msgstr "Vérifiez vos messages textes."
+
+#: app/templates/views/two-factor.html:17
+msgid "Not received a text message?"
+msgstr "Vous n’avez pas reçu de message texte?"
+
+#: app/templates/views/two-factor.html:18
+msgid "We’ve sent you a text message with a security code."
+msgstr "Nous vous avons envoyé un code de sécurité par message texte."
+
+#: app/templates/views/user-profile.html:6
+#: app/templates/views/user-profile.html:13
+#: app/templates/views/user-profile.html:16
+msgid "Your profile"
+msgstr ""
+
+#: app/templates/views/user-profile.html:35
+msgid "Email address"
+msgstr ""
+
+#: app/templates/views/user-profile.html:46
+msgid "Mobile number"
+msgstr ""
+
+#: app/templates/views/user-profile.html:53
+msgid "Password"
+msgstr ""
+
+#: app/templates/views/user-profile.html:54
+msgid "Last changed "
+msgstr ""
+
+#: app/templates/views/user-profile.html:62
+msgid "Use platform admin view"
+msgstr ""
+
+#: app/templates/views/verification-not-received.html:4
+msgid "Resend verification code"
+msgstr ""
+
+#: app/templates/views/verification-not-received.html:13
+msgid ""
+"Text messages sometimes take a few minutes to arrive. If you do not "
+"receive the text message, you can resend it."
+msgstr ""
+
+#: app/templates/views/verification-not-received.html:15
+msgid ""
+"If you no longer have access to the phone with the number you registered "
+"for this service, speak to your service manager to reset the number."
+msgstr ""
+
+#: app/templates/views/verify-mobile.html:4
+#: app/templates/views/verify-mobile.html:11
+msgid "Confirm your mobile number"
+msgstr ""
+
+#: app/templates/views/verify-mobile.html:13
+msgid "We’ve sent you a security code by text message."
+msgstr ""
+
+#: app/templates/views/verify-mobile.html:16
+msgid "Enter security code"
+msgstr ""
+
+#: app/templates/views/verify-mobile.html:18
+msgid "I haven’t received a text"
+msgstr ""
+
+#: app/templates/views/activity/notifications.html:6
+msgid "No messages found &thinsp;(messages are kept for {} days)"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-choose.html:2
+msgid ""
+"Before you can go live on Notification, your organisation needs to accept"
+" to our data sharing and financial agreement."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-choose.html:5
+#: app/templates/views/agreement/service-agreement-choose.html:23
+msgid "There are different agreements for crown and non-crown organisations."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-choose.html:8
+msgid "Get in touch"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-choose.html:8
+msgid ""
+"to tell us whether or not you work for a crown organisation. If you’re "
+"not sure\n"
+"  we’ll help you work it out."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-signed.html:2
+#: app/templates/views/agreement/service-agreement-signed.html:18
+msgid "Your organisation"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-signed.html:2
+#: app/templates/views/agreement/service-agreement-signed.html:18
+msgid ""
+"has already accepted the Notification data sharing and financial "
+"agreement. You can"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-signed.html:3
+#: app/templates/views/agreement/service-agreement-signed.html:19
+msgid "download a copy"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement-signed.html:6
+#: app/templates/views/agreement/_agreement.html:15
+#: app/templates/views/agreement/agreement-public.html:21
+msgid ""
+"The agreement contains commercially sensitive information, so don’t share"
+" it more widely than you need to."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:2
+#: app/templates/views/agreement/service-agreement.html:19
+msgid "To use Notification your organisation"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:2
+#: app/templates/views/agreement/service-agreement.html:19
+msgid "must accept the Notification data sharing and financial agreement."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:5
+msgid ""
+"This agreement only needs to be accepted once and will then cover all "
+"Notification services from"
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:9
+msgid ""
+"It needs to be accepted by, or on behalf of someone who can sign "
+"contracts for your organisation."
+msgstr ""
+
+#: app/templates/views/agreement/_agreement.html:12
+msgid "Download a copy of the agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-accept.html:10
+#: app/templates/views/agreement/agreement-accept.html:17
+msgid "Accept the data sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-accept.html:34
+msgid "The version number is on the front page, for example ‘3.6’"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-choose.html:5
+#: app/templates/views/agreement/agreement-choose.html:17
+#: app/templates/views/agreement/agreement-confirm.html:7
+#: app/templates/views/agreement/agreement-signed.html:5
+#: app/templates/views/agreement/agreement-signed.html:17
+#: app/templates/views/agreement/agreement.html:5
+#: app/templates/views/agreement/agreement.html:17
+#: app/templates/views/agreement/service-agreement-choose.html:5
+#: app/templates/views/agreement/service-agreement-choose.html:12
+#: app/templates/views/agreement/service-agreement-signed.html:5
+#: app/templates/views/agreement/service-agreement-signed.html:12
+#: app/templates/views/agreement/service-agreement.html:5
+#: app/templates/views/agreement/service-agreement.html:12
+msgid "Notification data sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-confirm.html:24
+#: app/templates/views/agreement/agreement-confirm.html:28
+msgid ""
+"I confirm that I have the legal authority to accept the Notification data"
+" sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-confirm.html:24
+msgid "on behalf of"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-confirm.html:24
+#: app/templates/views/agreement/agreement-confirm.html:28
+msgid "and that"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-confirm.html:24
+#: app/templates/views/agreement/agreement-confirm.html:28
+msgid "will be bound by it."
+msgstr ""
+
+#: app/templates/views/agreement/agreement-public.html:5
+#: app/templates/views/agreement/agreement-public.html:14
+msgid "Download the Notification data sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-public.html:18
+msgid "Download the agreement"
+msgstr ""
+
+#: app/templates/views/agreement/agreement-public.html:18
+msgid "for"
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement-choose.html:19
+msgid ""
+"Before you can go live on Notification, your organisation needs to\n"
+"      accept to our data sharing and financial agreement."
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement-choose.html:26
+msgid ""
+"to tell us\n"
+"      whether or not you work for a crown organisation. If you’re not "
+"sure we’ll help you work it out."
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement-signed.html:22
+#: app/templates/views/agreement/service-agreement.html:31
+msgid ""
+"The agreement is confidential and should not be shared outside your "
+"organisation."
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement.html:22
+msgid ""
+"This must be done by, or on behalf of, someone with the authority to sign"
+" contracts for"
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement.html:25
+msgid "Once accepted, the agreement covers all Notify services from"
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement.html:28
+msgid "Download a copy of the data sharing and financial agreement"
+msgstr ""
+
+#: app/templates/views/api/callbacks.html:9
+#: app/templates/views/api/index.html:25
+msgid "Callbacks"
+msgstr "Rappels"
 
 #: app/templates/views/api/index.html:8 app/templates/views/api/index.html:14
 msgid "API integration for developers"
 msgstr "Intégration de l’API pour les développeurs"
 
-#: app/templates/views/api/index.html:19
+#: app/templates/views/api/index.html:19 app/templates/views/api/keys.html:9
+#: app/templates/views/api/keys.html:13 app/templates/views/api/keys.html:20
+#: app/templates/views/api/keys.html:21
 msgid "API keys"
 msgstr "Clés API"
 
@@ -1107,10 +2456,6 @@ msgstr "Clés API"
 #: app/templates/views/api/safelist.html:11
 msgid "Safelist"
 msgstr "Liste sécurisée"
-
-#: app/templates/views/api/index.html:25
-msgid "Callbacks"
-msgstr "Rappels"
 
 #: app/templates/views/api/index.html:32
 msgid "Message log"
@@ -1135,6 +2480,36 @@ msgstr "Afficher"
 #: app/templates/views/api/index.html:88
 msgid "Only showing the first 50 messages."
 msgstr "Affichant seulement les 50 premiers messages."
+
+#: app/templates/views/api/keys.html:19
+msgid "You haven’t created any API keys yet"
+msgstr ""
+
+#: app/templates/views/api/keys.html:40
+msgid "Live – sends to anyone"
+msgstr ""
+
+#: app/templates/views/api/keys.html:42
+msgid "Team and safelist – limits who you can send to"
+msgstr ""
+
+#: app/templates/views/api/keys.html:44
+msgid "Test – pretends to send messages"
+msgstr ""
+
+#: app/templates/views/api/keys.html:51
+msgid "Revoked"
+msgstr ""
+
+#: app/templates/views/api/keys.html:55
+msgid "Revoke"
+msgstr ""
+
+#: app/templates/views/api/keys.html:62
+#: app/templates/views/api/keys/create.html:10
+#: app/templates/views/api/keys/create.html:14
+msgid "Create an API key"
+msgstr ""
 
 #: app/templates/views/api/safelist.html:19
 msgid "There was a problem with your safelist"
@@ -1164,13 +2539,287 @@ msgstr "votre équipe"
 msgid "are included in the safelist automatically."
 msgstr "sont compris dans la liste sécurisée automatiquement."
 
+#: app/templates/views/api/callbacks/delivery-status-callback.html:8
+#: app/templates/views/api/callbacks/delivery-status-callback.html:14
+msgid "Callbacks for delivery receipts"
+msgstr ""
+
+#: app/templates/views/api/callbacks/delivery-status-callback.html:21
+msgid ""
+"When you send an email or text message, we can tell you if Notification "
+"was able to deliver it. Check the"
+msgstr ""
+
+#: app/templates/views/api/callbacks/delivery-status-callback.html:21
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:19
+msgid "callback documentation"
+msgstr ""
+
+#: app/templates/views/api/callbacks/delivery-status-callback.html:23
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:21
+msgid "Must start with https://"
+msgstr ""
+
+#: app/templates/views/api/callbacks/delivery-status-callback.html:30
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:28
+msgid "At least 10 characters"
+msgstr ""
+
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:8
+msgid "Callbacks for received text messages"
+msgstr ""
+
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:19
+msgid ""
+"When you receive a text message in Notification, we can forward it to "
+"your system. Check the"
+msgstr ""
+
+#: app/templates/views/api/keys/create.html:19
+msgid "Name for this key"
+msgstr ""
+
+#: app/templates/views/api/keys/show.html:6
+#: app/templates/views/api/keys/show.html:13
+msgid "New API key"
+msgstr ""
+
+#: app/templates/views/api/keys/show.html:17
+msgid "Copy your key to somewhere safe."
+msgstr ""
+
+#: app/templates/views/api/keys/show.html:20
+msgid "You won’t be able to see it again once you leave this page."
+msgstr ""
+
+#: app/templates/views/api/keys/show.html:24
+msgid "API key"
+msgstr ""
+
+#: app/templates/views/api/keys/show.html:29
+msgid "Back to API keys"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:9
+msgid "a column called"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:10
+msgid "columns called"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:15
+#: app/templates/views/check/ok.html:13
+#: app/templates/views/check/row-errors.html:12
+msgid "Skip to file contents"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:20
+#: app/templates/views/check/row-errors.html:17
+msgid "Error"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:33
+msgid "Your file has too many rows"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:36
+msgid "Notification can process up to"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:37
+msgid ""
+"rows at once. Your\n"
+"          file has"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:38
+msgid "rows."
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:44
+msgid "Your file is missing some rows"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:48
+msgid "It needs at least one row of data, and"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:55
+msgid "It needs at least one row of data."
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:62
+msgid "Your file needs"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:71
+msgid "Right now it has"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:80
+msgid "Your file has more than one column called"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:89
+msgid "Delete or rename one of these columns and try again."
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:93
+msgid "and"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:95
+msgid ""
+"The columns in your file need to match the double brackets in\n"
+"          your template"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:99
+msgid "Your file is missing"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:143
+msgid "Re-upload your file"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:152
+#: app/templates/views/check/row-errors.html:58
+msgid "Back to top"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:209
+#: app/templates/views/check/column-errors.html:214
+#: app/templates/views/check/column-errors.html:216
+#: app/templates/views/check/ok.html:91
+#: app/templates/views/check/row-errors.html:99
+#: app/templates/views/check/row-errors.html:101
+msgid "Only showing the first"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:209
+#: app/templates/views/check/column-errors.html:216
+#: app/templates/views/check/ok.html:91
+#: app/templates/views/check/row-errors.html:101
+msgid "rows"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:214
+#: app/templates/views/check/row-errors.html:99
+msgid "rows with errors"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:221
+#: app/templates/views/check/row-errors.html:106
+msgid "Only showing rows with errors"
+msgstr ""
+
+#: app/templates/views/check/column-errors.html:225
+msgid "Preview of"
+msgstr ""
+
+#: app/templates/views/check/ok.html:43
+msgid "Send"
+msgstr ""
+
+#: app/templates/views/check/ok.html:45
+msgid "Download as a PDF"
+msgstr ""
+
+#: app/templates/views/check/row-errors.html:28
+msgid "There is a problem with"
+msgstr ""
+
+#: app/templates/views/check/row-errors.html:31
+msgid "You need to"
+msgstr ""
+
+#: app/templates/views/check/row-errors.html:35
+msgid "There are some problems with"
+msgstr ""
+
+#: app/templates/views/check/row-errors.html:38
+msgid "You need to:"
+msgstr ""
+
+#: app/templates/views/conversations/conversation.html:27
+msgid "Send a text message to this phone number"
+msgstr ""
+
+#: app/templates/views/conversations/messages.html:23
+msgid "sending"
+msgstr ""
+
+#: app/templates/views/conversations/messages.html:27
+msgid "Failed"
+msgstr ""
+
+#: app/templates/views/conversations/messages.html:27
+msgid "sent"
+msgstr ""
+
+#: app/templates/views/dashboard/dashboard.html:10
+#: app/templates/views/dashboard/dashboard.html:17
+msgid "Dashboard"
+msgstr ""
+
+#: app/templates/views/dashboard/dashboard.html:25
+msgid "In the last 7 days"
+msgstr ""
+
 #: app/templates/views/dashboard/dashboard.html:31
 msgid "Check messages sent per month"
-msgstr "Vérifiez les messages envoyés par mois."
+msgstr "Voir les messages envoyés par mois"
 
 #: app/templates/views/dashboard/dashboard.html:39
 msgid "Check templates used by month"
-msgstr "Vérifiez les modèles utilisés par mois."
+msgstr "Voir les modèles utilisés par mois"
+
+#: app/templates/views/dashboard/dashboard.html:48
+msgid "See all uploaded files"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:9
+msgid "Messages sent,"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:10
+msgid "to"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:10
+msgid "fiscal year"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:16
+msgid "Messages sent"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:26
+msgid "Total spend"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:27
+msgid "Month"
+msgstr ""
+
+#: app/templates/views/dashboard/monthly.html:29
+#: app/templates/views/features/text-messages.html:5
+#: app/templates/views/features/text-messages.html:10
+msgid "Text messages"
+msgstr "Messages textes."
+
+#: app/templates/views/dashboard/monthly.html:73
+msgid "Fiscal year ends 31 March."
+msgstr ""
+
+#: app/templates/views/email-branding/manage-branding.html:27
+msgid "Logos should be PNG files, 108px high"
+msgstr ""
+
+#: app/templates/views/email-branding/select-branding.html:25
+msgid "New brand"
+msgstr ""
 
 #: app/templates/views/features/emails.html:11
 msgid "Send an unlimited number of free emails with Notification."
@@ -1220,28 +2869,30 @@ msgstr "Ajoutez une adresse de réponse."
 msgid ""
 "Notification lets you choose the email address where users can send their"
 " reply."
-msgstr "Avis vous permet de sélectionner l’adresse courriel à laquelle les utilisateurs peuvent envoyer leurs réponses."
+msgstr ""
+"Avis vous permet de sélectionner l’adresse courriel à laquelle les "
+"utilisateurs peuvent envoyer leurs réponses."
 
 #: app/templates/views/features/emails.html:27
 msgid ""
 "Emails with a reply-to address seem more trustworthy and are less likely "
 "to be labelled as spam."
-msgstr "Les courriels possédant une adresse de réponse semblent plus dignes de confiance et sont moins susceptibles d’être étiquetés comme étant des pourriels."
+msgstr ""
+"Les courriels possédant une adresse de réponse semblent plus dignes de "
+"confiance et sont moins susceptibles d’être étiquetés comme étant des "
+"pourriels."
 
 #: app/templates/views/features/emails.html:28
 msgid "You can add reply-to addresses in your service settings."
 msgstr "Vous pouvez ajouter des adresses de réponse dans vos réglages de service."
 
-#: app/templates/views/features/text-messages.html:5
-#: app/templates/views/features/text-messages.html:10
-msgid "Text messages"
-msgstr "Messages textes."
-
 #: app/templates/views/features/text-messages.html:11
 msgid ""
 "Send thousands of free text messages to Canadian and international "
 "numbers with Notification."
-msgstr "Envoyez des milliers de messages textes gratuits à des numéros canadiens et internationaux à l’aide d’Avis."
+msgstr ""
+"Envoyez des milliers de messages textes gratuits à des numéros canadiens "
+"et internationaux à l’aide d’Avis."
 
 #: app/templates/views/features/text-messages.html:13
 msgid "and try Notification for yourself"
@@ -1259,19 +2910,19 @@ msgstr "la personnalisation du contenu de vos messages textes"
 msgid "to send text messages automatically"
 msgstr "pour envoyer des messages textes automatiquement"
 
-#: app/templates/views/features/text-messages.html:24
-msgid "Receive text messages"
-msgstr "Recevoir des messages texte"
-
 #: app/templates/views/features/text-messages.html:25
 msgid "Users can send messages to your service or reply to your texts."
-msgstr "Les utilisateurs peuvent envoyer des messages à votre service ou répondre à vos messages textes."
+msgstr ""
+"Les utilisateurs peuvent envoyer des messages à votre service ou répondre"
+" à vos messages textes."
 
 #: app/templates/views/features/text-messages.html:26
 msgid ""
 "You can see and reply to the messages you receive, or set up your own "
 "automated processes to manage replies."
-msgstr "Vous pouvez lire et répondre aux messages que vous recevez ou établir vos propres processus automatisés de gestion des réponses."
+msgstr ""
+"Vous pouvez lire et répondre aux messages que vous recevez ou établir vos"
+" propres processus automatisés de gestion des réponses."
 
 #: app/templates/views/features/text-messages.html:27
 msgid "to request a unique number for text message replies."
@@ -1285,31 +2936,253 @@ msgstr "Afficher l’expéditeur de vos messages textes"
 msgid ""
 "When you send a text message with Notification, the sender name tells "
 "people who it's from."
-msgstr "Lorsque vous envoyez un message texte avec Avis, le nom de l’expéditeur indique qui envoie le message."
+msgstr ""
+"Lorsque vous envoyez un message texte avec Avis, le nom de l’expéditeur "
+"indique qui envoie le message."
 
 #: app/templates/views/features/text-messages.html:31
 msgid "You can change the text message sender name in your service settings."
-msgstr "Vous pouvez modifier le nom de l’expéditeur des messages textes dans vos réglages de service."
+msgstr ""
+"Vous pouvez modifier le nom de l’expéditeur des messages textes dans vos "
+"réglages de service."
+
+#: app/templates/views/find-users/find-users-by-email.html:6
+#: app/templates/views/find-users/find-users-by-email.html:12
+msgid "Find users by email"
+msgstr ""
+
+#: app/templates/views/find-users/find-users-by-email.html:20
+msgid "Find users by email, or by partial email"
+msgstr ""
+
+#: app/templates/views/find-users/find-users-by-email.html:30
+msgid "Search"
+msgstr ""
+
+#: app/templates/views/find-users/find-users-by-email.html:51
+msgid "No users found."
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:5
+msgid "User information for"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:28
+msgid "No live services"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:44
+msgid "No services in trial mode"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:48
+msgid "Last login"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:50
+msgid "This person has never logged in"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:52
+msgid "Last logged in"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:60
+msgid "failed login attempts"
+msgstr ""
+
+#: app/templates/views/find-users/user-information.html:66
+msgid "Archive user"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-email.html:7
+msgid "Confirm change of email address"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-email.html:20
+msgid "New email address:"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-email.html:24
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:24
+msgid "We will send"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-email.html:24
+msgid "an email to tell them about the change."
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-email.html:25
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:25
+msgid "Confirm"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:7
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:11
+msgid "Confirm change of mobile number"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:20
+msgid "New mobile number:"
+msgstr ""
+
+#: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:24
+msgid "a text message to tell them about the change."
+msgstr ""
+
+#: app/templates/views/manage-users/edit-user-email.html:8
+#: app/templates/views/manage-users/edit-user-email.html:12
+msgid "Change team member’s email address"
+msgstr ""
+
+#: app/templates/views/manage-users/edit-user-email.html:18
+msgid "This will change the email address for"
+msgstr ""
+
+#: app/templates/views/manage-users/edit-user-mobile.html:8
+msgid "Change team member’s mobile number"
+msgstr ""
 
 #: app/templates/views/manage-users/permissions.html:9
 msgid "All team members can see sent messages."
 msgstr "Tous les membres de l’équipe peuvent voir les messages envoyés."
 
-
 #: app/templates/views/manage-users/permissions.html:20
 msgid "Platform admin users can access all template folders."
-msgstr "Les utilisateurs administrateurs de la plateforme peuvent accéder à tous les dossiers de modèles."
+msgstr ""
+"Les utilisateurs administrateurs de la plateforme peuvent accéder à tous "
+"les dossiers de modèles."
 
 #: app/templates/views/manage-users/permissions.html:25
 msgid ""
 "Not available because this team member hasn’t added a phone&nbsp;number "
 "to their profile"
-msgstr "Non disponible puisque ce membre d’équipe n’a pas ajouté un numéro de téléphone dans son profil d’utilisateur."
+msgstr ""
+"Non disponible puisque ce membre d’équipe n’a pas ajouté un numéro de "
+"téléphone dans son profil d’utilisateur."
+
+#: app/templates/views/organisations/add-organisation.html:9
+#: app/templates/views/organisations/index.html:56
+msgid "New organisation"
+msgstr ""
+
+#: app/templates/views/organisations/add-organisation.html:16
+#: app/templates/views/organisations/index.html:17
+msgid "Switch service"
+msgstr ""
+
+#: app/templates/views/organisations/index.html:38
+msgid "live service(s)"
+msgstr ""
+
+#: app/templates/views/organisations/index.html:41
+msgid "archived"
+msgstr ""
+
+#: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:8
+#: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:12
+msgid "Confirm organisation name change"
+msgstr ""
+
+#: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:23
+msgid "Your organisation name will be changed from"
+msgstr ""
+
+#: app/templates/views/templates/_move_to.html:18
+msgid "Add to new folder"
+msgstr ""
+
+#: app/templates/views/templates/_move_to.html:26
+msgid "Add new folder"
+msgstr ""
+
+#: app/templates/views/templates/_move_to.html:40
+msgid "Nothing selected"
+msgstr ""
+
+#: app/templates/views/templates/_template.html:6
+msgid "This template was deleted"
+msgstr ""
+
+#: app/templates/views/templates/_template.html:10
+msgid "If you need to send this"
+msgstr ""
+
+#: app/templates/views/templates/_template.html:12
+msgid "or edit this template, contact your manager."
+msgstr ""
+
+#: app/templates/views/templates/_template_history.html:5
+msgid "Edit made"
+msgstr ""
+
+#: app/templates/views/templates/_template_history.html:7
+msgid "Created"
+msgstr ""
+
+#: app/templates/views/templates/_template_list.html:18
+#: app/templates/views/templates/copy.html:18
+msgid "This folder is empty"
+msgstr ""
+
+#: app/templates/views/templates/_template_list.html:20
+msgid "There are no"
+msgstr ""
+
+#: app/templates/views/templates/_template_list.html:20
+msgid "templates in this folder"
+msgstr ""
+
+#: app/templates/views/templates/add.html:8
+msgid "Add new template or folder"
+msgstr ""
+
+#: app/templates/views/templates/add.html:13
+msgid "What do you want to add?"
+msgstr ""
+
+#: app/templates/views/templates/choose.html:26
+msgid "You need to create a template to send"
+msgstr "Vous devez créer un modèle pour envoyer"
+
+#: app/templates/views/templates/choose.html:29
+msgid "emails, text messages or letters"
+msgstr "des courriels, des messages textes ou des lettres."
+
+#: app/templates/views/templates/choose.html:31
+msgid "emails or text messages"
+msgstr "courriels ou messages textes"
+
+#: app/templates/views/templates/choose.html:34
+msgid "You can also create folders to organize your templates."
+msgstr "Vous pouvez aussi créer des dossiers pour classer vos modèles."
+
+#: app/templates/views/templates/copy.html:7
+#: app/templates/views/templates/copy.html:13
+msgid "Copy an existing template"
+msgstr ""
+
+#: app/templates/views/templates/template.html:51
+msgid "Last edited"
+msgstr "Date de la dernière modification : "
+
+#: app/templates/views/templates/template.html:59
+msgid "See previous versions"
+msgstr "Voir les versions précédentes"
 
 #: app/templates/views/templates/template.html:66
 msgid "Delete this template"
-msgstr "Supprimez ce modèle."
+msgstr "Supprimer ce modèle"
 
+#: app/templates/views/templates/template.html:74
+msgid "Hide personal information from screen and logs after sending"
+msgstr ""
+"Masquer les renseignements personnels de l’écran et des journaux de bord "
+"après l’envoi"
+
+#: app/templates/views/templates/template.html:79
+msgid "Personalisation is hidden after sending"
+msgstr "La personnalisation est masquée après l’envoi."
 
 #~ msgid ""
 #~ "A picture of the sending flow of"
@@ -1332,7 +3205,7 @@ msgstr "Supprimez ce modèle."
 #~ "Pour mettre l’accent sur du texte, "
 #~ "utilisez un caret. Une barre grise "
 #~ "s’affichera à côté du texte que "
-#~ "vous voulez accentuer"
+#~ "vous voulez accentuer."
 
 #~ msgid ""
 #~ "For each recipient on your spreadsheet,"
@@ -1343,5 +3216,42 @@ msgstr "Supprimez ce modèle."
 #~ "votre feuille de calcul, vous devez "
 #~ "indiquer « oui » pour afficher le"
 #~ " contenu ou « non » pour "
-#~ "masquer le contenu"
+#~ "masquer le contenu."
+
+#~ msgid "This is a title"
+#~ msgstr "Ceci est un titre."
+
+#~ msgid "point 1"
+#~ msgstr "puce 1"
+
+#~ msgid "point 2"
+#~ msgstr "puce 2"
+
+#~ msgid "point 3"
+#~ msgstr "puce 3"
+
+#~ msgid ""
+#~ "To send an email or text with "
+#~ "Notification, you need to create a "
+#~ "reusablemessage template first."
+#~ msgstr ""
+#~ "Pour envoyer un courriel ou un "
+#~ "message texte au moyen de Notification,"
+#~ " vous devez d’abord créer un modèle"
+#~ " de message réutilisable."
+
+#~ msgid ""
+#~ "\"Notification’s real-time dashboard lets "
+#~ "you see the number of messages "
+#~ "sent. You can also check the "
+#~ "current status of any message to "
+#~ "learn when it was delivered."
+#~ msgstr ""
+#~ "Le tableau de bord en temps réel"
+#~ " de Notification vous permet de voir"
+#~ " le nombre de messages envoyés. Vous"
+#~ " pouvez également vérifier l’état actuel"
+#~ " de n’importe quel message pour "
+#~ "connaître sa date et son heure "
+#~ "d’envoi."
 
