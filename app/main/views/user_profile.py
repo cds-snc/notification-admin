@@ -262,8 +262,7 @@ def user_profile_complete_security_keys():
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8") 
     resp = user_api_client.add_security_key_user(current_user.id, payload)
-    print(resp)
-    return "OK"
+    return resp['id']
 
 
 @main.route("/user-profile/disable-platform-admin-view", methods=['GET', 'POST'])
