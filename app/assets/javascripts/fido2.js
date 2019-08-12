@@ -3,7 +3,13 @@
 
   $("body").on("click", "button[data-button-id='register-key']", function(e) {
     e.preventDefault()
-    console.log($(this).text());
+    
+    let name = $.trim($("#keyname").val())
+    
+    if(name == ""){
+      alert("Name must not be empty");
+      return
+    }
 
     fetch('/user-profile/security_keys/add', {
       method: 'POST',
@@ -26,6 +32,8 @@
             "clientDataJSON": new Uint8Array(attestation.response.clientDataJSON),
         })
       });
+    }).then(function(response) {
+      window.location = '/user-profile/security_keys';
     })
 
     //
