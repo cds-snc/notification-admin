@@ -328,6 +328,7 @@ def archive_service(service_id):
         abort(403)
     if request.method == 'POST':
         service_api_client.archive_service(service_id)
+        session.pop('service_id', None)
         flash(
             '‘{}’ was deleted'.format(current_service.name),
             'default_with_tick',
