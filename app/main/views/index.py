@@ -28,13 +28,9 @@ def index():
     if current_user and current_user.is_authenticated:
         return redirect(url_for('main.choose_account'))
 
-    requestLang = request.accept_languages.best_match(current_app.config['LANGUAGES'])
-    lang = session.get("userlang", requestLang)
-
     return render_template(
         'views/signedout.html',
-        counts=status_api_client.get_count_of_live_services_and_organisations(),
-        html_lang=lang
+        counts=status_api_client.get_count_of_live_services_and_organisations()
     )
 
 

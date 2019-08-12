@@ -74,9 +74,9 @@ const copy = {
   }
 };
 
-
 const javascripts = () => {
   return src([
+      paths.src + 'javascripts/main.min.js',
       paths.toolkit + 'javascripts/govuk/modules.js',
       paths.toolkit + 'javascripts/govuk/show-hide-content.js',
       paths.src + 'javascripts/stick-to-window-when-scrolling.js',

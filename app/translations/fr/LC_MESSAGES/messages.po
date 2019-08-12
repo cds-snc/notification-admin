@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-09 08:48-0400\n"
+"POT-Creation-Date: 2019-08-12 11:40-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -64,6 +64,18 @@ msgstr "Témoins"
 #: app/templates/admin_template.html:116
 msgid "research mode"
 msgstr "mode de recherche"
+
+#: app/templates/main_template.html:21
+msgid "Now"
+msgstr "Now FR"
+
+#: app/templates/main_template.html:22
+msgid "Done"
+msgstr "Done FR"
+
+#: app/templates/main_template.html:23
+msgid "Choose a different time"
+msgstr "Choose a different time FR"
 
 #: app/templates/components/api-key.html:4
 msgid "API data:"

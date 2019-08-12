@@ -137,6 +137,20 @@ Wrap your text
 _('Your text here')
 ```
 
+For JavaScript
+
+```
+// add your text to main_template
+window.APP_PHRASES = {
+        now: "{{ _('Now') }}",
+      }
+```
+
+```
+// in your JS file
+let now_txt = window.polyglot.t("now");
+```
+
 - Extract
 
 ```bash
