@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-12 12:40-0400\n"
+"POT-Creation-Date: 2019-08-12 13:25-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -48,20 +48,21 @@ msgstr "Conditions d’utilisation"
 msgid "Message status"
 msgstr "État du message"
 
-#: app/templates/admin_template.html:100 app/templates/views/features.html:52
+#: app/templates/admin_template.html:100 app/templates/admin_template.html:116
+#: app/templates/views/privacy.html:8
+msgid "Privacy"
+msgstr "Confidentialité"
+
+#: app/templates/admin_template.html:103 app/templates/views/features.html:52
 #: app/templates/views/security.html:9
 msgid "Security"
 msgstr "Sécurité"
 
-#: app/templates/admin_template.html:113 app/templates/views/privacy.html:9
-msgid "Privacy"
-msgstr "Confidentialité"
-
-#: app/templates/admin_template.html:114 app/templates/views/cookies.html:11
+#: app/templates/admin_template.html:117 app/templates/views/cookies.html:11
 msgid "Cookies"
 msgstr "Témoins"
 
-#: app/templates/admin_template.html:116
+#: app/templates/admin_template.html:119
 msgid "research mode"
 msgstr "mode de recherche"
 
@@ -1076,7 +1077,7 @@ msgstr ""
 "contenus dans vos messages après qu’ils ont été envoyés. Seul le "
 "destinataire peut voir ses renseignements personnels."
 
-#: app/templates/views/features.html:58 app/templates/views/security.html:40
+#: app/templates/views/features.html:58
 msgid "Two-factor authentication"
 msgstr "Authentification à deux facteurs"
 
@@ -1402,6 +1403,26 @@ msgstr ""
 msgid "Privacy notice: how we use your data"
 msgstr ""
 
+#: app/templates/views/privacy.html:10
+msgid ""
+"GOV.UK developed the original <a href=\"https://github.com/topics/govuk-"
+"notify\" target=\"new\">notification system</a> and its UK <a "
+"href=\"https://www.notifications.service.gov.uk/privacy\" "
+"target=\"new\">privacy protections</a>."
+msgstr ""
+
+#: app/templates/views/privacy.html:13
+msgid ""
+"The Canadian notification team is reviewing privacy requirements under "
+"the <a href=\"https://laws-lois.justice.gc.ca/eng/acts/P-21/index.html\" "
+"target=\"new\">Privacy Act</a>. If your service has specific privacy "
+"needs, "
+msgstr ""
+
+#: app/templates/views/privacy.html:13 app/templates/views/security.html:14
+msgid "please let us know"
+msgstr ""
+
 #: app/templates/views/register-from-invite.html:16
 msgid "Your account will be created with this email address:"
 msgstr ""
@@ -1430,138 +1451,20 @@ msgstr ""
 msgid "A new confirmation email has been sent to"
 msgstr ""
 
-#: app/templates/views/security.html:10
+#: app/templates/views/security.html:11
 msgid ""
-"Notification is built for the needs of government services. It is set up "
-"to:"
+"GOV.UK developed the original <a href=\"https://github.com/topics/govuk-"
+"notify\" target=\"new\">notification system</a> and its UK <a "
+"href=\"https://www.notifications.service.gov.uk/features/security\" "
+"target=\"new\">security protections</a>."
 msgstr ""
-"Avis est construit pour les besoins des services gouvernementaux. Le "
-"système est établi pour :"
-
-#: app/templates/views/security.html:12
-msgid "protect user data"
-msgstr "protéger les données d’utilisateurs"
-
-#: app/templates/views/security.html:13
-msgid "keep systems secure"
-msgstr "garder les systèmes sécurisés"
 
 #: app/templates/views/security.html:14
-msgid "manage risks around information"
-msgstr "gérer les risques à l’égard de l’information"
-
-#: app/templates/views/security.html:17
-msgid "Data"
-msgstr "Données"
-
-#: app/templates/views/security.html:18
-msgid "On Notification, data is encrypted:"
-msgstr "Dans Avis, les données sont chiffrées :"
-
-#: app/templates/views/security.html:20
-msgid "when it passes through the service"
-msgstr "lorsqu’elles passent dans le service"
-
-#: app/templates/views/security.html:21
-msgid "when it’s stored on the service"
-msgstr "lorsqu’elles sont entreposées dans le service."
-
-#: app/templates/views/security.html:23
-msgid "Any user data you upload is only held for 7 days."
-msgstr ""
-"Toutes les données d’utilisateur que vous téléversez sont seulement "
-"retenues pendant sept jours."
-
-#: app/templates/views/security.html:25
-msgid "Technical security"
-msgstr "Sécurité technique"
-
-#: app/templates/views/security.html:26
-msgid "Other technical security controls on Notification include:"
-msgstr ""
-"D’autres mesures de contrôle de sécurité techniques dans Avis comprennent"
-" :"
-
-#: app/templates/views/security.html:28
 msgid ""
-"protective monitoring to record activity, and raise alerts about any "
-"suspicious activity."
+"The Canadian notification team is reviewing the security protections "
+"needed to run the system within a Government of Canada context. If your "
+"service has specific security needs, "
 msgstr ""
-"la surveillance protectrice d’enregistrer l’activité et soulever des "
-"alertes au sujet de toute activité suspecte."
-
-#: app/templates/views/security.html:29
-msgid ""
-"using codes called JSON Web Tokens when your service talks to "
-"Notification. Unlike codes for API keys, JSON Web Tokens have encryption "
-"and expiry settings."
-msgstr ""
-"en utilisant des codes nommés jetons Web JSON lorsque votre service "
-"communique avec Avis. Contrairement aux codes pour les clés API, les "
-"jetons Web JSON possèdent des réglages de chiffrement et d’expiration."
-
-#: app/templates/views/security.html:32
-msgid "Protect sensitive information"
-msgstr "Protection des renseignements de nature délicate"
-
-#: app/templates/views/security.html:33
-msgid ""
-"Some messages include sensitive information like security codes or "
-"password reset links."
-msgstr ""
-"Certains messages comprennent des renseignements de nature délicate comme"
-" des codes de sécurité ou des liens de réinitialisation de mot de passe."
-
-#: app/templates/views/security.html:34
-msgid ""
-"If you’re sending a message with sensitive information, you can hide "
-"those details on the dashboard once the message has been sent. Only the "
-"message recipient will be able to see their information."
-msgstr ""
-"Si vous envoyez un message comprenant des renseignements de nature "
-"délicate, vous pouvez cacher ces détails sur le tableau de bord une fois "
-"que le message a été envoyé. Seulement le destinataire du message sera en"
-" mesure de consulter ses renseignements."
-
-#: app/templates/views/security.html:36
-msgid "User permissions and signing in"
-msgstr "Permissions d’utilisateurs et ouverture de session"
-
-#: app/templates/views/security.html:37
-msgid ""
-"You can set different user permissions in Notification. This lets you "
-"control which team members have access to certain parts of Notification."
-msgstr ""
-"Vous pouvez établir différentes permissions d’utilisateurs dans Avis. "
-"Cela vous permet de contrôler quels membres de l’équipe ont accès à "
-"certaines parties d’Avis."
-
-#: app/templates/views/security.html:41
-msgid "To sign in to Notification you’ll need to enter:"
-msgstr "Pour ouvrir une session dans Avis, vous devrez saisir :"
-
-#: app/templates/views/security.html:43
-msgid "your email address and password"
-msgstr "votre adresse électronique et votre mot de passe"
-
-#: app/templates/views/security.html:44
-msgid "a text message code that Notification sends to your phone"
-msgstr "un code par message texte qu’Avis envoie à votre téléphone portable."
-
-#: app/templates/views/security.html:48
-msgid "Please"
-msgstr "Veuillez"
-
-#: app/templates/views/security.html:48
-#: app/templates/views/service-settings.html:240
-msgid "contact us"
-msgstr "communiquer avec nous"
-
-#: app/templates/views/security.html:48
-msgid "if your team needs email links instead of text message codes."
-msgstr ""
-"si votre équipe a besoin de liens courriels au lieu de codes par message "
-"texte."
 
 #: app/templates/views/send-test.html:26
 msgid "Optional"
@@ -1768,6 +1671,10 @@ msgstr ""
 #: app/templates/views/trial-mode.html:20
 msgid "To remove these restrictions, you can"
 msgstr ""
+
+#: app/templates/views/service-settings.html:240
+msgid "contact us"
+msgstr "communiquer avec nous"
 
 #: app/templates/views/service-settings.html:242
 msgid "Your service manager can ask to have these restrictions removed."
@@ -3254,4 +3161,133 @@ msgstr "La personnalisation est masquée après l’envoi."
 #~ " de n’importe quel message pour "
 #~ "connaître sa date et son heure "
 #~ "d’envoi."
+
+#~ msgid ""
+#~ "Notification is built for the needs "
+#~ "of government services. It is set "
+#~ "up to:"
+#~ msgstr ""
+#~ "Avis est construit pour les besoins "
+#~ "des services gouvernementaux. Le système "
+#~ "est établi pour :"
+
+#~ msgid "protect user data"
+#~ msgstr "protéger les données d’utilisateurs"
+
+#~ msgid "keep systems secure"
+#~ msgstr "garder les systèmes sécurisés"
+
+#~ msgid "manage risks around information"
+#~ msgstr "gérer les risques à l’égard de l’information"
+
+#~ msgid "Data"
+#~ msgstr "Données"
+
+#~ msgid "On Notification, data is encrypted:"
+#~ msgstr "Dans Avis, les données sont chiffrées :"
+
+#~ msgid "when it passes through the service"
+#~ msgstr "lorsqu’elles passent dans le service"
+
+#~ msgid "when it’s stored on the service"
+#~ msgstr "lorsqu’elles sont entreposées dans le service."
+
+#~ msgid "Any user data you upload is only held for 7 days."
+#~ msgstr ""
+#~ "Toutes les données d’utilisateur que "
+#~ "vous téléversez sont seulement retenues "
+#~ "pendant sept jours."
+
+#~ msgid "Technical security"
+#~ msgstr "Sécurité technique"
+
+#~ msgid "Other technical security controls on Notification include:"
+#~ msgstr ""
+#~ "D’autres mesures de contrôle de sécurité"
+#~ " techniques dans Avis comprennent :"
+
+#~ msgid ""
+#~ "protective monitoring to record activity, "
+#~ "and raise alerts about any suspicious"
+#~ " activity."
+#~ msgstr ""
+#~ "la surveillance protectrice d’enregistrer "
+#~ "l’activité et soulever des alertes au"
+#~ " sujet de toute activité suspecte."
+
+#~ msgid ""
+#~ "using codes called JSON Web Tokens "
+#~ "when your service talks to Notification."
+#~ " Unlike codes for API keys, JSON "
+#~ "Web Tokens have encryption and expiry"
+#~ " settings."
+#~ msgstr ""
+#~ "en utilisant des codes nommés jetons "
+#~ "Web JSON lorsque votre service "
+#~ "communique avec Avis. Contrairement aux "
+#~ "codes pour les clés API, les "
+#~ "jetons Web JSON possèdent des réglages"
+#~ " de chiffrement et d’expiration."
+
+#~ msgid "Protect sensitive information"
+#~ msgstr "Protection des renseignements de nature délicate"
+
+#~ msgid ""
+#~ "Some messages include sensitive information"
+#~ " like security codes or password "
+#~ "reset links."
+#~ msgstr ""
+#~ "Certains messages comprennent des "
+#~ "renseignements de nature délicate comme "
+#~ "des codes de sécurité ou des liens"
+#~ " de réinitialisation de mot de passe."
+
+#~ msgid ""
+#~ "If you’re sending a message with "
+#~ "sensitive information, you can hide "
+#~ "those details on the dashboard once "
+#~ "the message has been sent. Only "
+#~ "the message recipient will be able "
+#~ "to see their information."
+#~ msgstr ""
+#~ "Si vous envoyez un message comprenant"
+#~ " des renseignements de nature délicate, "
+#~ "vous pouvez cacher ces détails sur "
+#~ "le tableau de bord une fois que"
+#~ " le message a été envoyé. Seulement"
+#~ " le destinataire du message sera en"
+#~ " mesure de consulter ses renseignements."
+
+#~ msgid "User permissions and signing in"
+#~ msgstr "Permissions d’utilisateurs et ouverture de session"
+
+#~ msgid ""
+#~ "You can set different user permissions"
+#~ " in Notification. This lets you "
+#~ "control which team members have access"
+#~ " to certain parts of Notification."
+#~ msgstr ""
+#~ "Vous pouvez établir différentes permissions"
+#~ " d’utilisateurs dans Avis. Cela vous "
+#~ "permet de contrôler quels membres de "
+#~ "l’équipe ont accès à certaines parties"
+#~ " d’Avis."
+
+#~ msgid "To sign in to Notification you’ll need to enter:"
+#~ msgstr "Pour ouvrir une session dans Avis, vous devrez saisir :"
+
+#~ msgid "your email address and password"
+#~ msgstr "votre adresse électronique et votre mot de passe"
+
+#~ msgid "a text message code that Notification sends to your phone"
+#~ msgstr "un code par message texte qu’Avis envoie à votre téléphone portable."
+
+#~ msgid "Please"
+#~ msgstr "Veuillez"
+
+#~ msgid "if your team needs email links instead of text message codes."
+#~ msgstr ""
+#~ "si votre équipe a besoin de liens"
+#~ " courriels au lieu de codes par "
+#~ "message texte."
 
