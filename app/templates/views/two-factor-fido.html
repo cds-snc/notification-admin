@@ -1,0 +1,25 @@
+{% extends "withoutnav_template.html" %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block per_page_title %}
+  {{ title }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+<div id='two-factor-fido' class="grid-row">
+  <div class="column-two-thirds">
+    <h1 class="heading-large">{{ _(title) }}</h1>
+    <p>{{ _('We have found a Fido2 key associated with your account.') }}</p>
+    <p>{{ _('Follow the browser window instructions to authenticate.') }}</p>
+    {{ page_footer(
+      secondary_link=url_for('main.email_not_received'),
+      secondary_link_text=link_txt
+    ) }}
+  </div>
+</div>
+<script>
+  var csrf_token = "{{ csrf_token() }}";
+</script>
+
+{% endblock %}

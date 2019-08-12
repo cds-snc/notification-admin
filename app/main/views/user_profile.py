@@ -265,6 +265,28 @@ def user_profile_complete_security_keys():
     return resp['id']
 
 
+@main.route("/user-profile/security_keys/authenticate", methods=['POST'])
+def user_profile_authenticate_security_keys():
+    result = user_api_client.authenticate_security_keys(session['user_details']['id'])
+    return base64.b64decode(result["data"])
+
+
+@main.route("/user-profile/security_keys/validate", methods=['POST'])
+def user_profile_validate_security_keys():
+    data = request.get_data()
+    payload = base64.b64encode(data).decode("utf-8") 
+    resp = user_api_client.validate_security_keys(session['user_details']['id'], payload)
+
+    user = User.from_id(session['user_details']['id'] or current_user.id)
+
+    # the user will have a new current_session_id set by the API - store it in the cookie for future requests
+    session['current_session_id'] = user.current_session_id
+    user.activate()
+    user.login()
+
+    return resp["status"]
+
+
 @main.route("/user-profile/disable-platform-admin-view", methods=['GET', 'POST'])
 @user_is_logged_in
 def user_profile_disable_platform_admin_view():

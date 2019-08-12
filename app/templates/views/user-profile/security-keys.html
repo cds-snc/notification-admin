@@ -25,7 +25,7 @@
 
     {% call mapping_table(
       caption='Your profile',
-      field_headings=[heading_1, heading_2, heading_3],
+      field_headings=[heading_1, heading_2, heading_3, heading_4],
       field_headings_visible=False,
       caption_visible=False
     ) %}
@@ -41,11 +41,14 @@
       {% endfor %}
     {% endcall %}
   </div>
-
+  <script>
+    var csrf_token = "{{ csrf_token() }}";
+   </script>
   <div class="js-stick-at-bottom-when-scrolling">
     <div class="grid-row">
       <div class="column-three-quarters">
         <a href="{{ url_for('main.user_profile_add_security_keys') }}" class="button-secondary">{{ _('New security key') }}</a>
+        <a id="test-fido2-keys" href="#" class="button-secondary">{{ _('Test keys') }}</a>
       </div>
     </div>
   </div>
