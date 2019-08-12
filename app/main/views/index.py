@@ -1,11 +1,9 @@
 from flask import (
     abort,
-    current_app,
     make_response,
     redirect,
     render_template,
     request,
-    session,
     url_for,
 )
 from flask_login import current_user

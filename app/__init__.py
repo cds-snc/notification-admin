@@ -106,6 +106,7 @@ navigation = {
     'org_navigation': OrgNavigation(),
 }
 
+
 def get_current_locale(application):
     requestLang = request.accept_languages.best_match(application.config['LANGUAGES'])
     lang = session.get("userlang", requestLang)

@@ -217,7 +217,7 @@ const watchForChanges = parallel(
 
 exports.default = defaultTask;
 
-exports.lint = series(lint.sass, lint.js);
+exports.lint = series(lint.sass);
 
 // Optional: recompile on changes
 exports.watch = series(defaultTask, watchForChanges);
