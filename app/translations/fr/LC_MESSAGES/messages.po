@@ -396,7 +396,6 @@ msgid "Notification lets you redact personal information from your messages "
 msgstr "Notification vous permet de masquer les renseignements personnels contenus dans "
 "vos messages après qu’ils ont été envoyés. Seul le destinataire peut voir ses renseignements "
 "personnels."
-."
 
 #: app/templates/views/features.html:58
 msgid "Two-factor authentication"
@@ -499,7 +498,7 @@ msgstr "Contrôler votre contenu"
 msgid "You don’t need any technical knowledge to create email or text message "
 "templates."
 msgstr "Vous n’avez pas besoin de connaissances techniques pour créer des modèles de "
-courriels ou de messages textes."
+"courriels ou de messages textes."
 
 #: app/templates/views/signedout.html:49
 msgid "Send messages manually or automatically"
@@ -722,7 +721,7 @@ msgstr "Supprimer ce modèle"
 #: app/templates/views/templates/template.html:74
 msgid "Hide personal information from screen and logs after sending"
 msgstr "Masquer les renseignements personnels de l’écran et des journaux de bord après "
-l’envoi"
+"l’envoi"
 
 #: app/templates/views/templates/template.html:79
 msgid "Personalisation is hidden after sending"
