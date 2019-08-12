@@ -7,38 +7,10 @@
 
 {% block content_column_content %}
   <h1 class="heading-large">{{ _('Security') }}</h1>
-  <p>{{ _('The security review of this service is ongoing.')}}</p>
   <p>
-    {{ _('If you have any specific security requirements please')}} <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('share them with us') }}</a>.
+    {{ _('GOV.UK developed the original <a href="https://github.com/topics/govuk-notify" target="new">notification system</a> and its UK <a href="https://www.notifications.service.gov.uk/features/security" target="new">security protections.</a>')}}
   </p>
   <p>
-    {{ _('This service was orginally developed by the <a href="https://github.com/topics/govuk-notify" target="new">UK government</a>.')}}
-    {{ _('For reference we are providing a link to their <a href="https://www.notifications.service.gov.uk/features/security" target="new">security page (English only)</a> ')}}
+    {{ _('The Canadian notification team is reviewing the security protections needed to run the system within a Government of Canada context. If your service has specific security needs, ')}}<a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('please let us know.')}}</a>
   </p>
-
-  {% endblock %}
-
-  {# The below code is commented out #}
-  {# 
-  <h2 class="heading-medium">{{ _('Protect sensitive information') }}</h2>
-  <p>{{ _('Some messages include sensitive information like security codes or password reset links.') }}</p>
-  <p>{{ _('If you’re sending a message with sensitive information, you can hide those details in the service dashboard once the message has been sent. Only the message recipient will be able to see their information.') }}</p>
-  <p>{{ _('When sending information system data retention is set to 7 days by default. This value can be customized should you require it.') }}</p>
-
-  <h2 class="heading-medium">{{ _('User permissions and signing in') }}</h2>
-  <p>{{ _('You can set different user permissions in Notification. This lets you control which team members have access to certain parts of Notification.') }}
-  </p>
-
-  <h2 class="heading-medium">{{  _('Two-factor authentication') }}</h2>
-  <p>{{ _('To sign in to Notification you’ll need to enter:') }}</p>
-  <ul class="list list-bullet">
-    <li>{{ _('your email address and password') }}</li>
-    <li>{{ _('a text message code that Notification sends to your phone') }}</li>
-  </ul>
-
-  <p>
-    {{ _('Please') }} <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('contact us') }}</a> {{ _('if your team needs email links instead of text message codes.') }}
-  </p>
-#} 
-
-
+{% endblock %}
