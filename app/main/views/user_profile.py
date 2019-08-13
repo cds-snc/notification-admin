@@ -267,11 +267,11 @@ def user_profile_complete_security_keys():
 
 @main.route("/user-profile/security_keys/authenticate", methods=['POST'])
 def user_profile_authenticate_security_keys():
-    uId = current_user.id
-    if(session.get('user_details')):
-        uId = session['user_details']['id']
-    user = User.from_id(uId)
-    result = user_api_client.authenticate_security_keys(user.id)
+    if(session['user_details']):
+        user_id = session['user_details']['id']
+    else:
+        user_id = current_user.id
+    result = user_api_client.authenticate_security_keys(user_id)
     return base64.b64decode(result["data"])
 
 
@@ -280,19 +280,19 @@ def user_profile_validate_security_keys():
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8") 
     
-    uId = current_user.id
-    if(session.get('user_details')):
-        uId = session['user_details']['id']
-    user = User.from_id(uId)
-    
-    resp = user_api_client.validate_security_keys(uId, payload)
+    if(session['user_details']):
+        user_id = session['user_details']['id']
+    else:
+        user_id = current_user.id
+
+    resp = user_api_client.validate_security_keys(user_id, payload)
+    user = User.from_id(user_id)
 
     # the user will have a new current_session_id set by the API - store it in the cookie for future requests
     session['current_session_id'] = user.current_session_id
-    user.activate()
     user.login()
 
-    return resp["status"]
+    return resp["status"]   
 
 
 @main.route("/user-profile/disable-platform-admin-view", methods=['GET', 'POST'])
