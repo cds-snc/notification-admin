@@ -1,19 +1,19 @@
-import json
 import base64
+import json
 
 from flask import (
-    flash,
-    request,
     abort,
     current_app,
+    flash,
     redirect,
     render_template,
+    request,
     session,
     url_for,
 )
 from flask_login import current_user
-from notifications_utils.url_safe_token import check_token
 from notifications_python_client.errors import HTTPError
+from notifications_utils.url_safe_token import check_token
 
 from app import user_api_client
 from app.main import main
@@ -23,9 +23,9 @@ from app.main.forms import (
     ChangeNameForm,
     ChangePasswordForm,
     ConfirmPasswordForm,
+    SecurityKeyForm,
     ServiceOnOffSettingForm,
     TwoFactorForm,
-    SecurityKeyForm
 )
 from app.models.user import User
 from app.utils import user_is_gov_user, user_is_logged_in
