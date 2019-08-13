@@ -271,7 +271,7 @@ def user_profile_complete_security_keys():
 
 @main.route("/user-profile/security_keys/authenticate", methods=['POST'])
 def user_profile_authenticate_security_keys():
-    if(session['user_details']):
+    if(session.get('user_details')):
         user_id = session['user_details']['id']
     else:
         user_id = current_user.id
@@ -284,7 +284,7 @@ def user_profile_validate_security_keys():
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8") 
     
-    if(session['user_details']):
+    if(session.get('user_details')):
         user_id = session['user_details']['id']
     else:
         user_id = current_user.id

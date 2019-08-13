@@ -11,11 +11,15 @@
 
 {% block maincolumn_content %}
 
+  <div class="test-key-message"></div>
+
   {% set title_txt = _('Security Key(s)') %}
   {{ page_header(
     title_txt,
     back_link=url_for('.user_profile')
   ) }}
+
+  
 
   <div class="body-copy-table">
     {% set caption = _('Your profile') %}

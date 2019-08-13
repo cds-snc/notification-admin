@@ -124,9 +124,17 @@
       })
       .then(function(response) {
         if (response.ok) {
-          alert("Yay");
+          var html = '<div class="bottom-gutter">'
+              html+='<div class="banner-default-with-tick">Key(s) worked</div>';
+              html+='</div>';
+          $('.test-key-message').html(html)
         } else {
-          alert("Boo");
+          var html = '<div class="bottom-gutter">'
+              html+='<div class="banner-dangerous" role="group" tabindex="-1">Key(s) failed</div>';
+              html+='</div>';
+
+          $('.test-key-message').html(html)
+
         }
       });
   });
