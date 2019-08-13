@@ -199,7 +199,7 @@ class UserApiClient(NotifyAdminAPIClient):
     def register_security_key(self, user_id):
         endpoint = '/user/{}/fido2_keys/register'.format(user_id)
         return self.post(endpoint, {})
-    
+
     def add_security_key_user(self, user_id, payload):
         endpoint = '/user/{}/fido2_keys'.format(user_id)
         data = {'payload': payload}

@@ -245,26 +245,25 @@ def user_profile_security_keys_confirm_delete(keyid):
 @main.route("/user-profile/security_keys/add", methods=['GET', 'POST'])
 @user_is_logged_in
 def user_profile_add_security_keys():
-    
     form = SecurityKeyForm()
 
-    if(form.keyname.data == "" ):
+    if(form.keyname.data == ""):
         form.validate_on_submit()
     elif request.method == 'POST':
         result = user_api_client.register_security_key(current_user.id)
         return base64.b64decode(result["data"])
-    
+
     return render_template(
         'views/user-profile/add-security-keys.html',
         form=form
     )
 
-    
+
 @main.route("/user-profile/security_keys/complete", methods=['POST'])
 @user_is_logged_in
 def user_profile_complete_security_keys():
     data = request.get_data()
-    payload = base64.b64encode(data).decode("utf-8") 
+    payload = base64.b64encode(data).decode("utf-8")
     resp = user_api_client.add_security_key_user(current_user.id, payload)
     return resp['id']
 
@@ -282,8 +281,8 @@ def user_profile_authenticate_security_keys():
 @main.route("/user-profile/security_keys/validate", methods=['POST'])
 def user_profile_validate_security_keys():
     data = request.get_data()
-    payload = base64.b64encode(data).decode("utf-8") 
-    
+    payload = base64.b64encode(data).decode("utf-8")
+
     if(session.get('user_details')):
         user_id = session['user_details']['id']
     else:
@@ -296,7 +295,7 @@ def user_profile_validate_security_keys():
     session['current_session_id'] = user.current_session_id
     user.login()
 
-    return resp["status"]   
+    return resp["status"]
 
 
 @main.route("/user-profile/disable-platform-admin-view", methods=['GET', 'POST'])
