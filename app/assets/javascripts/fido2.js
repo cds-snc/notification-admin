@@ -36,14 +36,16 @@
   })
 
   $("body").on("click", "button[data-button-id='register-key']", function(e) {
-    e.preventDefault()
     
     let name = $.trim($("#keyname").val())
     
     if(name == ""){
-      alert("Name must not be empty");
-      return
+      return true;
     }
+
+    e.preventDefault();
+
+    console.log("fetch key")
 
     fetch('/user-profile/security_keys/add', {
       method: 'POST',

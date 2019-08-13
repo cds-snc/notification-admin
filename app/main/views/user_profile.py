@@ -245,11 +245,15 @@ def user_profile_security_keys_confirm_delete(keyid):
 @main.route("/user-profile/security_keys/add", methods=['GET', 'POST'])
 @user_is_logged_in
 def user_profile_add_security_keys():
-    if request.method == 'POST':
+    form = SecurityKeyForm()
+
+    if(not form.keyname.data):
+        form.validate_on_submit()
+    elif request.method == 'POST':
         result = user_api_client.register_security_key(current_user.id)
         return base64.b64decode(result["data"])
     
-    form = SecurityKeyForm()
+    
     return render_template(
         'views/user-profile/add-security-keys.html',
         form=form
