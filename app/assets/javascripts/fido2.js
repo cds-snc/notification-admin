@@ -2,111 +2,134 @@
   "use strict";
 
   $(document).on("ready", function() {
-    if($('#two-factor-fido').length){
-      fetch('/user-profile/security_keys/authenticate', {
-        method: 'POST',
-        headers:{
-          'X-CSRFToken': csrf_token
+    if ($("#two-factor-fido").length) {
+      fetch("/user-profile/security_keys/authenticate", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrf_token
         }
-      }).then(function(response) {
-        if(response.ok) return response.arrayBuffer();
-        throw new Error('Error getting registration data!');
       })
-      .then(CBOR.decode).then(function(options) {
-        return navigator.credentials.get(options);
-      }).then(function(assertion) {
-        return fetch('/user-profile/security_keys/validate', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/cbor', 'X-CSRFToken': csrf_token},
-          body: CBOR.encode({
-            "credentialId": new Uint8Array(assertion.rawId),
-            "authenticatorData": new Uint8Array(assertion.response.authenticatorData),
-            "clientDataJSON": new Uint8Array(assertion.response.clientDataJSON),
-            "signature": new Uint8Array(assertion.response.signature)
-          })
+        .then(function(response) {
+          if (response.ok) return response.arrayBuffer();
+          throw new Error("Error getting registration data!");
+        })
+        .then(CBOR.decode)
+        .then(function(options) {
+          return navigator.credentials.get(options);
+        })
+        .then(function(assertion) {
+          return fetch("/user-profile/security_keys/validate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/cbor",
+              "X-CSRFToken": csrf_token
+            },
+            body: CBOR.encode({
+              credentialId: new Uint8Array(assertion.rawId),
+              authenticatorData: new Uint8Array(
+                assertion.response.authenticatorData
+              ),
+              clientDataJSON: new Uint8Array(assertion.response.clientDataJSON),
+              signature: new Uint8Array(assertion.response.signature)
+            })
+          });
+        })
+        .then(function(response) {
+          if (response.ok) {
+            window.location = "/";
+          } else {
+            alert("Bad key");
+          }
         });
-      }).then(function(response) {
-        if(response.ok) {
-          window.location = '/';
-        } else {
-          alert("Bad key")
-        }
-      })
     }
-  })
+  });
 
   $("body").on("click", "button[data-button-id='register-key']", function(e) {
-    
-    let name = $.trim($("#keyname").val())
-    
-    if(name == ""){
+    let name = $.trim($("#keyname").val());
+
+    if (name == "") {
       return true;
     }
 
     e.preventDefault();
 
-    console.log("fetch key")
-
-    fetch('/user-profile/security_keys/add', {
-      method: 'POST',
-      headers:{
-        'X-CSRFToken': csrf_token
+    fetch("/user-profile/security_keys/add", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrf_token
       }
-    }).then(function(response) {
-      if(response.ok) return response.arrayBuffer();
-      throw new Error('Error getting registration data!');
     })
-    .then(CBOR.decode).then(function(options) {
-      return navigator.credentials.create(options);
-    }).then(function(attestation) {
-      return fetch('/user-profile/security_keys/complete', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/cbor', 'X-CSRFToken': csrf_token},
-        body: CBOR.encode({
-            "name": name,
-            "attestationObject": new Uint8Array(attestation.response.attestationObject),
-            "clientDataJSON": new Uint8Array(attestation.response.clientDataJSON),
-        })
+      .then(function(response) {
+        if (response.ok) return response.arrayBuffer();
+        throw new Error("Error getting registration data!");
+      })
+      .then(CBOR.decode)
+      .then(function(options) {
+        return navigator.credentials.create(options);
+      })
+      .then(function(attestation) {
+        return fetch("/user-profile/security_keys/complete", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/cbor",
+            "X-CSRFToken": csrf_token
+          },
+          body: CBOR.encode({
+            name: name,
+            attestationObject: new Uint8Array(
+              attestation.response.attestationObject
+            ),
+            clientDataJSON: new Uint8Array(attestation.response.clientDataJSON)
+          })
+        });
+      })
+      .then(function(response) {
+        window.location = "/user-profile/security_keys";
       });
-    }).then(function(response) {
-      window.location = '/user-profile/security_keys';
-    })
   });
 
   $("body").on("click", "#test-fido2-keys", function(e) {
-    e.preventDefault()
-    
-    fetch('/user-profile/security_keys/authenticate', {
-      method: 'POST',
-      headers:{
-        'X-CSRFToken': csrf_token
+    e.preventDefault();
+
+    fetch("/user-profile/security_keys/authenticate", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrf_token
       }
-    }).then(function(response) {
-      if(response.ok) return response.arrayBuffer();
-      throw new Error('Error getting registration data!');
     })
-    .then(CBOR.decode).then(function(options) {
-      return navigator.credentials.get(options);
-    }).then(function(assertion) {
-      return fetch('/user-profile/security_keys/validate', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/cbor', 'X-CSRFToken': csrf_token},
-        body: CBOR.encode({
-          "credentialId": new Uint8Array(assertion.rawId),
-          "authenticatorData": new Uint8Array(assertion.response.authenticatorData),
-          "clientDataJSON": new Uint8Array(assertion.response.clientDataJSON),
-          "signature": new Uint8Array(assertion.response.signature)
-        })
+      .then(function(response) {
+        if (response.ok) return response.arrayBuffer();
+        throw new Error("Error getting registration data!");
+      })
+      .then(CBOR.decode)
+      .then(function(options) {
+        return navigator.credentials.get(options);
+      })
+      .then(function(assertion) {
+        return fetch("/user-profile/security_keys/validate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/cbor",
+            "X-CSRFToken": csrf_token
+          },
+          body: CBOR.encode({
+            credentialId: new Uint8Array(assertion.rawId),
+            authenticatorData: new Uint8Array(
+              assertion.response.authenticatorData
+            ),
+            clientDataJSON: new Uint8Array(assertion.response.clientDataJSON),
+            signature: new Uint8Array(assertion.response.signature)
+          })
+        });
+      })
+      .then(function(response) {
+        if (response.ok) {
+          alert("Yay");
+        } else {
+          alert("Boo");
+        }
       });
-    }).then(function(response) {
-      if(response.ok) {
-        alert("Yay")
-      } else {
-        alert("Boo")
-      }
-    })
   });
-  
 
   Modules.Fido2 = function() {};
 })(window.GOVUK.Modules);
