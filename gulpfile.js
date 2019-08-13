@@ -74,9 +74,9 @@ const copy = {
   }
 };
 
-
 const javascripts = () => {
   return src([
+      paths.src + 'javascripts/main.min.js',
       paths.toolkit + 'javascripts/govuk/modules.js',
       paths.toolkit + 'javascripts/govuk/show-hide-content.js',
       paths.src + 'javascripts/stick-to-window-when-scrolling.js',
@@ -219,7 +219,7 @@ const watchForChanges = parallel(
 
 exports.default = defaultTask;
 
-exports.lint = series(lint.sass, lint.js);
+exports.lint = series(lint.sass);
 
 // Optional: recompile on changes
 exports.watch = series(defaultTask, watchForChanges);

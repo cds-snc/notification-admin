@@ -267,7 +267,11 @@ def user_profile_complete_security_keys():
 
 @main.route("/user-profile/security_keys/authenticate", methods=['POST'])
 def user_profile_authenticate_security_keys():
-    result = user_api_client.authenticate_security_keys(session['user_details']['id'])
+    uId = current_user.id
+    if(session.get('user_details')):
+        uId = session['user_details']['id']
+    user = User.from_id(uId)
+    result = user_api_client.authenticate_security_keys(user.id)
     return base64.b64decode(result["data"])
 
 
@@ -275,9 +279,13 @@ def user_profile_authenticate_security_keys():
 def user_profile_validate_security_keys():
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8") 
-    resp = user_api_client.validate_security_keys(session['user_details']['id'], payload)
-
-    user = User.from_id(session['user_details']['id'] or current_user.id)
+    
+    uId = current_user.id
+    if(session.get('user_details')):
+        uId = session['user_details']['id']
+    user = User.from_id(uId)
+    
+    resp = user_api_client.validate_security_keys(uId, payload)
 
     # the user will have a new current_session_id set by the API - store it in the cookie for future requests
     session['current_session_id'] = user.current_session_id

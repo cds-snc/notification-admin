@@ -1,7 +1,7 @@
 {% block top_of_page %}{% endblock %}
 <!DOCTYPE html>
-<!--[if lt IE 9]><html class="lte-ie8" lang="{{ html_lang|default('en') }}"><![endif]-->
-<!--[if gt IE 8]><!--><html lang="{{ html_lang|default('en') }}"><!--<![endif]-->
+<!--[if lt IE 9]><html class="lte-ie8" lang="{{ current_lang|default('en') }}"><![endif]-->
+<!--[if gt IE 8]><!--><html lang="{{ current_lang|default('en') }}"><!--<![endif]-->
   <head>
     <meta charset="utf-8" />
     <title>{% block page_title %}Notification{% endblock %}</title>
@@ -15,6 +15,14 @@
     <link rel="shortcut icon" href="{{ asset_path }}images/favicon.ico?0.24.2" type="image/x-icon" />
     <meta name="theme-color" content="#0b0c0c" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+      window.APP_LANG = "{{ current_lang }}";
+      window.APP_PHRASES = {
+        now: "{{ _('Now') }}",
+        done: "{{ _('Done') }}",
+        chosen_time_button: "{{ _('Choose a different time') }}",
+      }
+    </script>
     {% block head %}{% endblock %}
   </head>
 
