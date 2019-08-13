@@ -1150,6 +1150,7 @@ def api_user_active(fake_uuid, email_address='test@user.canada.ca'):
                  'organisations': [],
                  'current_session_id': None,
                  'logged_in_at': None,
+                 'security_keys': []
                  }
     return user_data
 
@@ -1170,6 +1171,7 @@ def api_user_active_email_auth(fake_uuid, email_address='test@user.canada.ca'):
                  'services': [],
                  'organisations': [],
                  'current_session_id': None,
+                 'security_keys': []
                  }
     return user_data
 
@@ -1531,6 +1533,15 @@ def mock_get_user(mocker, user=None):
 
     return mocker.patch(
         'app.user_api_client.get_user', side_effect=_get_user)
+
+
+@pytest.fixture(scope='function')
+def mock_get_security_keys(mocker, user=None):
+    if user is None:
+        user = api_user_active(sample_uuid())
+
+    return mocker.patch(
+        'app.user_api_client.get_security_keys_for_user', result=[])
 
 
 @pytest.fixture(scope='function')
