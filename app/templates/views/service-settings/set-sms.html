@@ -21,13 +21,6 @@
         {{ '{:,}'.format(current_service.free_sms_fragment_limit) }} text messages each
         financial year.
       </p>
-      <p>
-        It costs 1.58 pence (plus VAT) for each text message you send
-        after your free allowance.
-      </p>
-      <p>
-        See <a href="{{ url_for(".pricing", _anchor="letters") }}">pricing</a> for more details.
-      </p>
       {% call form_wrapper() %}
         {{ radios(form.enabled) }}
         {{ page_footer('Save') }}
