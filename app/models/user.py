@@ -139,7 +139,7 @@ class User(JSONModel, UserMixin):
 
         if self.email_auth:
             user_api_client.send_verify_code(self.id, 'email', None, request.args.get('next'))
-        if self.sms_auth:
+        if self.sms_auth and len(self.security_keys) == 0:
             user_api_client.send_verify_code(self.id, 'sms', self.mobile_number)
 
         return True
@@ -250,6 +250,10 @@ class User(JSONModel, UserMixin):
     @property
     def email_domain(self):
         return self.email_address.split('@')[-1]
+
+    @property
+    def security_keys(self):
+        return user_api_client.get_security_keys_for_user(self.id)
 
     @cached_property
     def orgs_and_services(self):

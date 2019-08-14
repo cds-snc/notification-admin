@@ -58,6 +58,12 @@ def two_factor_email(token):
 def two_factor():
     user_id = session['user_details']['id']
 
+    # Check if a FIDO2 key exists, if yes, return template
+    user = User.from_id(user_id)
+
+    if len(user.security_keys):
+        return render_template('views/two-factor-fido.html')
+
     def _check_code(code):
         return user_api_client.check_verify_code(user_id, code, "sms")
 
