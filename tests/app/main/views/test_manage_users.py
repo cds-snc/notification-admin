@@ -278,7 +278,8 @@ def test_manage_users_page_shows_member_auth_type_if_service_has_email_auth_acti
     mock_get_users_by_service,
     mock_get_invites_for_service,
     mock_get_template_folders,
-    displays_auth_type
+    displays_auth_type,
+    mock_get_security_keys
 ):
     if service_has_email_auth:
         service_one['permissions'].append('email_auth')
@@ -750,6 +751,7 @@ def test_invite_user_with_email_auth_service(
     auth_type,
     mock_get_organisations,
     mock_get_template_folders,
+    mock_get_security_keys
 ):
     service_one['permissions'].append('email_auth')
     sample_invite['email_address'] = email_address

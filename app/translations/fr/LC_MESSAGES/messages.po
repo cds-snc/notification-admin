@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-14 07:49-0700\n"
+"POT-Creation-Date: 2019-08-14 13:49-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -26,43 +26,70 @@ msgstr "Veuillez entrer le code de sécurité."
 msgid "What’s your service called?"
 msgstr " Quel est le nom de votre service?"
 
-#: app/main/forms.py:606
+#: app/main/forms.py:606 app/main/forms.py:619
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
 
-#: app/main/forms.py:1475
+#: app/main/forms.py:617
+msgid "What’s your key called?"
+msgstr ""
+
+#: app/main/forms.py:1483
 msgid "New template"
 msgstr "Nouveau modèle"
 
-#: app/main/forms.py:1478
+#: app/main/forms.py:1486
 msgid "Select the type of template you want to add"
 msgstr "Sélectionnez le type de modèle que vous voulez ajouter."
 
-#: app/templates/admin_template.html:90
+#: app/templates/admin_template.html:24 app/templates/admin_template.html:65
+#: app/templates/views/signedout.html:8
+msgid "Notification"
+msgstr ""
+
+#: app/templates/admin_template.html:31
+msgid "Menu"
+msgstr ""
+
+#: app/templates/admin_template.html:35 app/templates/admin_template.html:57
+#: app/templates/views/documentation.html:9
+msgid "Documentation"
+msgstr "Documentation"
+
+#: app/templates/admin_template.html:38
+#: app/templates/views/choose-account.html:67
+msgid "Platform admin"
+msgstr ""
+
+#: app/templates/admin_template.html:47
+msgid "Sign out"
+msgstr ""
+
+#: app/templates/admin_template.html:58 app/templates/views/signin.html:7
+msgid "Sign in"
+msgstr ""
+
+#: app/templates/admin_template.html:80
 msgid "Terms of Use"
 msgstr "Conditions d’utilisation"
 
-#: app/templates/admin_template.html:93 app/templates/views/features.html:39
+#: app/templates/admin_template.html:83 app/templates/views/features.html:39
 #: app/templates/views/message-status.html:5
 #: app/templates/views/message-status.html:10
 msgid "Message status"
 msgstr "État du message"
 
-#: app/templates/admin_template.html:100 app/templates/admin_template.html:116
-#: app/templates/views/privacy.html:8
+#: app/templates/admin_template.html:90 app/templates/admin_template.html:105
+#: app/templates/views/privacy.html:10
 msgid "Privacy"
 msgstr "Confidentialité"
 
-#: app/templates/admin_template.html:103 app/templates/views/features.html:52
+#: app/templates/admin_template.html:93 app/templates/views/features.html:52
 #: app/templates/views/security.html:9
 msgid "Security"
 msgstr "Sécurité"
 
-#: app/templates/admin_template.html:117 app/templates/views/cookies.html:11
-msgid "Cookies"
-msgstr "Témoins"
-
-#: app/templates/admin_template.html:119
+#: app/templates/admin_template.html:107
 msgid "research mode"
 msgstr "mode de recherche"
 
@@ -610,15 +637,41 @@ msgstr ""
 msgid "Next, use the API to upload your document."
 msgstr ""
 
-#: app/templates/views/add-service.html:16
-msgid "About your service"
-msgstr "À propos de votre service"
+#: app/templates/views/add-service.html:23
+msgid "Name your service in both official languages"
+msgstr ""
 
-#: app/templates/views/add-service.html:20
+#: app/templates/views/add-service.html:26
+msgid "Notification displays your service name:"
+msgstr ""
+
+#: app/templates/views/add-service.html:29
+msgid "at the start of every text message"
+msgstr ""
+
+#: app/templates/views/add-service.html:30
+msgid "as the ‘from’ address on emails you send"
+msgstr ""
+
+#: app/templates/views/add-service.html:34
+msgid ""
+"Your service name must include both English and French. It can’t be "
+"longer than 255 characters."
+msgstr ""
+
+#: app/templates/views/add-service.html:36
+msgid "For example:"
+msgstr ""
+
+#: app/templates/views/add-service.html:39
+msgid "Canadian Digital Service (CDS) | Service numérique canadien (SNC)"
+msgstr ""
+
+#: app/templates/views/add-service.html:47
 msgid "You can change this later"
 msgstr "Vous pouvez changer cela plus tard."
 
-#: app/templates/views/add-service.html:26
+#: app/templates/views/add-service.html:53
 msgid "Add service"
 msgstr "Ajouter un service"
 
@@ -679,10 +732,6 @@ msgstr ""
 msgid "Choose service"
 msgstr ""
 
-#: app/templates/views/choose-account.html:67
-msgid "Platform admin"
-msgstr ""
-
 #: app/templates/views/choose-account.html:72
 #: app/templates/views/organisations/add-organisation.html:15
 #: app/templates/views/organisations/index.html:7
@@ -707,6 +756,10 @@ msgstr ""
 #: app/templates/views/find-users/user-information.html:32
 msgid "Trial mode services"
 msgstr ""
+
+#: app/templates/views/cookies.html:11
+msgid "Cookies"
+msgstr "Témoins"
 
 #: app/templates/views/cookies.html:13
 msgid "Notification puts small files (known as ‘cookies’) onto your computer."
@@ -736,6 +789,7 @@ msgstr ""
 
 #: app/templates/views/cookies.html:28 app/templates/views/cookies.html:57
 #: app/templates/views/user-profile.html:28
+#: app/templates/views/user-profile/security-keys.html:39
 msgid "Name"
 msgstr ""
 
@@ -784,10 +838,6 @@ msgstr ""
 #: app/templates/views/cookies.html:72
 msgid "1 month"
 msgstr ""
-
-#: app/templates/views/documentation.html:9
-msgid "Documentation"
-msgstr "Documentation"
 
 #: app/templates/views/documentation.html:10
 msgid "Notification API to send messages automatically."
@@ -1142,51 +1192,6 @@ msgstr "Inviter un membre de l’équipe."
 msgid "Send invitation email"
 msgstr "Envoyer un courriel d’invitation"
 
-#: app/templates/views/manage-users.html:9
-#: app/templates/views/manage-users.html:15
-msgid "Team members"
-msgstr "Membres de l’équipe"
-
-#: app/templates/views/manage-users.html:17
-msgid "Share templates with your team"
-msgstr "Partager des modèles avec votre équipe"
-
-#: app/templates/views/manage-users.html:37
-msgid "invited"
-msgstr "membre invité"
-
-#: app/templates/views/manage-users.html:41
-msgid "you"
-msgstr "vous"
-
-#: app/templates/views/manage-users.html:61
-msgid "Cannot see any folders"
-msgstr "Ne peut voir aucun dossier"
-
-#: app/templates/views/manage-users.html:65
-msgid "Can see all folders"
-msgstr "Peut voir tous les dossiers"
-
-#: app/templates/views/manage-users.html:72
-msgid "Signs in with a text message code"
-msgstr "Se connecte à l’aide d’un code envoyé par message texte"
-
-#: app/templates/views/manage-users.html:74
-msgid "Signs in with an email link"
-msgstr "Se connecte à l’aide d’un lien envoyé par courriel"
-
-#: app/templates/views/manage-users.html:82
-msgid "Cancel invitation"
-msgstr "Annuler l’invitation"
-
-#: app/templates/views/manage-users.html:84
-msgid "Change details"
-msgstr "Modifier les renseignements"
-
-#: app/templates/views/manage-users.html:95
-msgid "Invite someone to join your team"
-msgstr "Inviter une personne à se joindre à votre équipe"
-
 #: app/templates/views/message-status.html:11
 msgid ""
 "Notification’s real-time dashboard lets you check when your message was "
@@ -1416,20 +1421,32 @@ msgstr ""
 msgid "Privacy notice: how we use your data"
 msgstr ""
 
-#: app/templates/views/privacy.html:10
-msgid ""
-"GOV.UK developed the original <a href=\"https://github.com/topics/govuk-"
-"notify\" target=\"new\">notification system</a> and its UK <a "
-"href=\"https://www.notifications.service.gov.uk/privacy\" "
-"target=\"new\">privacy protections</a>."
+#: app/templates/views/privacy.html:11
+msgid "GOV.UK developed the"
+msgstr ""
+
+#: app/templates/views/privacy.html:11
+msgid "original notification system"
+msgstr ""
+
+#: app/templates/views/privacy.html:11
+msgid "and its UK"
+msgstr ""
+
+#: app/templates/views/privacy.html:11
+msgid "privacy protections"
 msgstr ""
 
 #: app/templates/views/privacy.html:13
-msgid ""
-"The Canadian notification team is reviewing privacy requirements under "
-"the <a href=\"https://laws-lois.justice.gc.ca/eng/acts/P-21/index.html\" "
-"target=\"new\">Privacy Act</a>. If your service has specific privacy "
-"needs, "
+msgid "The Notification team is reviewing privacy requirements under the"
+msgstr ""
+
+#: app/templates/views/privacy.html:13
+msgid "Privacy Act"
+msgstr ""
+
+#: app/templates/views/privacy.html:13
+msgid "If your service has specific privacy needs, "
 msgstr ""
 
 #: app/templates/views/privacy.html:13 app/templates/views/security.html:14
@@ -1563,6 +1580,7 @@ msgstr ""
 #: app/templates/views/service-settings.html:140
 #: app/templates/views/service-settings.html:268
 #: app/templates/views/user-profile.html:17
+#: app/templates/views/user-profile/security-keys.html:26
 msgid "Label"
 msgstr ""
 
@@ -1571,6 +1589,7 @@ msgstr ""
 #: app/templates/views/service-settings.html:141
 #: app/templates/views/service-settings.html:269
 #: app/templates/views/user-profile.html:18
+#: app/templates/views/user-profile/security-keys.html:27
 msgid "Value"
 msgstr ""
 
@@ -1580,6 +1599,7 @@ msgstr ""
 #: app/templates/views/service-settings.html:142
 #: app/templates/views/service-settings.html:270
 #: app/templates/views/user-profile.html:19
+#: app/templates/views/user-profile/security-keys.html:28
 msgid "Action"
 msgstr ""
 
@@ -1732,12 +1752,12 @@ msgid "Count in list of live services"
 msgstr ""
 
 #: app/templates/views/service-settings.html:294
-#: app/templates/views/user-profile.html:63
+#: app/templates/views/user-profile.html:70
 msgid "Yes"
 msgstr ""
 
 #: app/templates/views/service-settings.html:295
-#: app/templates/views/user-profile.html:64
+#: app/templates/views/user-profile.html:71
 msgid "No"
 msgstr ""
 
@@ -1771,10 +1791,6 @@ msgstr ""
 
 #: app/templates/views/service-settings.html:400
 msgid "Resume service"
-msgstr ""
-
-#: app/templates/views/signedout.html:8
-msgid "Notification"
 msgstr ""
 
 #: app/templates/views/signedout.html:18
@@ -1843,10 +1859,6 @@ msgstr "Communiquez avec nous"
 msgid "if you have a question or want to give feedback."
 msgstr "pour toute question ou commentaire."
 
-#: app/templates/views/signin.html:7
-msgid "Sign in"
-msgstr ""
-
 #: app/templates/views/signin.html:16
 msgid "You need to sign in again"
 msgstr ""
@@ -1884,33 +1896,35 @@ msgid "When using Notification"
 msgstr "Lorsque vous utilisez Notification :"
 
 #: app/templates/views/terms-of-use.html:18
-msgid ""
-"GOV.UK’s Service Manual provides useful standards for <a "
-"href=\"https://www.gov.uk/service-manual/design/sending-emails-and-text-"
-"messages\">writing text messages and emails</a>. Notification recommends "
-"that you consider these standards as guidance, while adjusting for the "
-"Canadian context."
+msgid "Consider when to"
 msgstr ""
-"Le manuel sur les normes relatives aux services publics du Royaume-Uni "
-"(GOV.UK Service Manual; en anglais seulement) contient des normes utiles "
-"pour <a href=\"https://www.gov.uk/service-manual/design/sending-emails-"
-"and-text-messages\">la rédaction de messages textes et de courriels</a>. "
-"Nous vous recommandons d’utiliser ces normes comme des lignes "
-"directrices, tout en les adaptant au contexte canadien."
 
-#: app/templates/views/terms-of-use.html:20
+#: app/templates/views/terms-of-use.html:18
+msgid ""
+"send emails or text messages and how to write them</a>. You can read more"
+" about this in the GOV.UK Service Manual."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:21
+msgid ""
+"GOV.UK developed the original notification system. Canada’s Notification "
+"team recommends following the UK guide, while adjusting for the Canadian "
+"context."
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:24
 msgid "You must:"
 msgstr "Vous devez :"
 
-#: app/templates/views/terms-of-use.html:22
+#: app/templates/views/terms-of-use.html:26
 msgid "complete all security steps required by your organization."
 msgstr "prendre toutes les mesures de sécurité requises par votre organisation;"
 
-#: app/templates/views/terms-of-use.html:23
+#: app/templates/views/terms-of-use.html:27
 msgid "tell us immediately if you have any security breaches."
 msgstr "nous aviser immédiatement de toute atteinte à la sécurité;"
 
-#: app/templates/views/terms-of-use.html:24
+#: app/templates/views/terms-of-use.html:28
 msgid ""
 "keep your API (Application Programming Interface) codes secure. API "
 "technology allows different software applications to communicate with "
@@ -1919,7 +1933,7 @@ msgstr ""
 "veiller à la sécurité de vos codes d’API. La technologie des API permet à"
 " différentes applications logicielles de communiquer entre elles;"
 
-#: app/templates/views/terms-of-use.html:25
+#: app/templates/views/terms-of-use.html:29
 msgid ""
 "get consent to send messages and to use data. This consent must meet "
 "standards set by privacy legislation including the federal Privacy Act."
@@ -1930,7 +1944,7 @@ msgstr ""
 "personnels, y compris la <i>Loi sur la protection des renseignements "
 "personnels;</i>"
 
-#: app/templates/views/terms-of-use.html:26
+#: app/templates/views/terms-of-use.html:30
 msgid ""
 "check that the data you add to Notification is accurate and complies with"
 " privacy legislation including the federal Privacy Act."
@@ -1940,7 +1954,7 @@ msgstr ""
 "personnels, y compris la <i>Loi</i)<i>sur la protection des "
 "renseignements personnels;</i>"
 
-#: app/templates/views/terms-of-use.html:27
+#: app/templates/views/terms-of-use.html:31
 msgid ""
 "not send messages containing any personally or commercially sensitive "
 "information."
@@ -1948,7 +1962,7 @@ msgstr ""
 "vous abstenir d’envoyer des messages contenant des renseignements "
 "personnels ou commerciaux de nature délicate;"
 
-#: app/templates/views/terms-of-use.html:28
+#: app/templates/views/terms-of-use.html:32
 msgid ""
 "not send unsolicited messages. Messages must be about transactions or "
 "subscriptions. Please follow the <a href=\"https://www.gov.uk/service-"
@@ -1970,7 +1984,7 @@ msgstr ""
 "messages\">subscription</a>. Veuillez garder à l’esprit que les autres "
 "sections du manuel pourraient ne pas s’appliquer au contexte canadien."
 
-#: app/templates/views/terms-of-use.html:31
+#: app/templates/views/terms-of-use.html:35
 msgid ""
 "If you don’t follow these terms, we may need to stop sending your "
 "messages."
@@ -1978,11 +1992,11 @@ msgstr ""
 "Si vous ne respectez pas ces conditions, nous pourrions être dans "
 "l’obligation de cesser d’envoyer vos messages."
 
-#: app/templates/views/terms-of-use.html:33
+#: app/templates/views/terms-of-use.html:37
 msgid "Notification will:"
 msgstr "Notification :"
 
-#: app/templates/views/terms-of-use.html:35
+#: app/templates/views/terms-of-use.html:39
 msgid ""
 "send the messages you write, as long as these messages comply with our "
 "terms of use."
@@ -1990,7 +2004,7 @@ msgstr ""
 "envoie les messages que vous rédigez, dans la mesure où ces messages sont"
 " conformes à nos conditions d’utilisation;"
 
-#: app/templates/views/terms-of-use.html:36
+#: app/templates/views/terms-of-use.html:40
 msgid ""
 "show how Notification is working through our <a "
 "href=\"https://www.gov.uk/performance/govuk-notify\">performance</a> and "
@@ -2001,13 +2015,13 @@ msgstr ""
 "href=\"https://www.gov.uk/performance/govuk-notify\">performance</a> et "
 "<a href= \"https://status.notifications.service.gov.uk/ \">état</a>; "
 
-#: app/templates/views/terms-of-use.html:37
+#: app/templates/views/terms-of-use.html:41
 msgid "keep your data <a href=\"/features/security\">secure</a>."
 msgstr ""
 "assure la <a href=\"/fonctionalités/sécurité\">sécurité</a> de vos "
 "données;"
 
-#: app/templates/views/terms-of-use.html:38
+#: app/templates/views/terms-of-use.html:42
 msgid ""
 "give you one month’s notice by email if we change our terms of use or "
 "delivery providers."
@@ -2015,11 +2029,11 @@ msgstr ""
 "vous envoie un préavis d’un mois par courriel en cas de modification des "
 "conditions d’utilisation ou des fournisseurs."
 
-#: app/templates/views/terms-of-use.html:41
+#: app/templates/views/terms-of-use.html:45
 msgid "Leaving Notification"
 msgstr "Quitter Notification"
 
-#: app/templates/views/terms-of-use.html:43
+#: app/templates/views/terms-of-use.html:47
 msgid "We’ll delete all your data when we close your account."
 msgstr "Nous supprimerons toutes vos données au moment de fermer votre compte."
 
@@ -2111,6 +2125,14 @@ msgstr "Utilisez le lien pour ouvrir Notification dans une nouvelle fenêtre."
 msgid "Not received an email"
 msgstr "Vous n’avez pas reçu de courriel?"
 
+#: app/templates/views/two-factor-fido.html:13
+msgid "We have found a Fido2 key associated with your account."
+msgstr ""
+
+#: app/templates/views/two-factor-fido.html:14
+msgid "Follow the browser window instructions to authenticate."
+msgstr ""
+
 #: app/templates/views/two-factor.html:8
 msgid "Text verification"
 msgstr "Vérification par message texte"
@@ -2130,6 +2152,7 @@ msgstr "Nous vous avons envoyé un code de sécurité par message texte."
 #: app/templates/views/user-profile.html:6
 #: app/templates/views/user-profile.html:13
 #: app/templates/views/user-profile.html:16
+#: app/templates/views/user-profile/security-keys.html:25
 msgid "Your profile"
 msgstr ""
 
@@ -2149,7 +2172,13 @@ msgstr ""
 msgid "Last changed "
 msgstr ""
 
-#: app/templates/views/user-profile.html:62
+#: app/templates/views/user-profile.html:61
+#: app/templates/views/user-profile/security-keys.html:9
+#: app/templates/views/user-profile/security-keys.html:16
+msgid "Security Key(s)"
+msgstr ""
+
+#: app/templates/views/user-profile.html:69
 msgid "Use platform admin view"
 msgstr ""
 
@@ -3098,6 +3127,30 @@ msgstr ""
 msgid "Personalisation is hidden after sending"
 msgstr "La personnalisation est masquée après l’envoi."
 
+#: app/templates/views/user-profile/add-security-keys.html:19
+msgid "Key"
+msgstr ""
+
+#: app/templates/views/user-profile/add-security-keys.html:23
+msgid "Something to remember your key by"
+msgstr ""
+
+#: app/templates/views/user-profile/add-security-keys.html:25
+msgid "Add key"
+msgstr ""
+
+#: app/templates/views/user-profile/security-keys.html:40
+msgid "Remove"
+msgstr ""
+
+#: app/templates/views/user-profile/security-keys.html:54
+msgid "New security key"
+msgstr ""
+
+#: app/templates/views/user-profile/security-keys.html:55
+msgid "Test keys"
+msgstr ""
+
 #~ msgid ""
 #~ "A picture of the sending flow of"
 #~ " messages in Notification, showing the "
@@ -3335,4 +3388,80 @@ msgstr "La personnalisation est masquée après l’envoi."
 #~ "Vous pouvez modifier le nom de "
 #~ "l’expéditeur des messages textes dans "
 #~ "vos réglages de service."
+
+#~ msgid "About your service"
+#~ msgstr "À propos de votre service"
+
+#~ msgid "Team members"
+#~ msgstr "Membres de l’équipe"
+
+#~ msgid "Share templates with your team"
+#~ msgstr "Partager des modèles avec votre équipe"
+
+#~ msgid "invited"
+#~ msgstr "membre invité"
+
+#~ msgid "you"
+#~ msgstr "vous"
+
+#~ msgid "Cannot see any folders"
+#~ msgstr "Ne peut voir aucun dossier"
+
+#~ msgid "Can see all folders"
+#~ msgstr "Peut voir tous les dossiers"
+
+#~ msgid "Signs in with a text message code"
+#~ msgstr "Se connecte à l’aide d’un code envoyé par message texte"
+
+#~ msgid "Signs in with an email link"
+#~ msgstr "Se connecte à l’aide d’un lien envoyé par courriel"
+
+#~ msgid "Cancel invitation"
+#~ msgstr "Annuler l’invitation"
+
+#~ msgid "Change details"
+#~ msgstr "Modifier les renseignements"
+
+#~ msgid "Invite someone to join your team"
+#~ msgstr "Inviter une personne à se joindre à votre équipe"
+
+#~ msgid ""
+#~ "GOV.UK developed the original <a "
+#~ "href=\"https://github.com/topics/govuk-notify\" "
+#~ "target=\"new\">notification system</a> and its "
+#~ "UK <a "
+#~ "href=\"https://www.notifications.service.gov.uk/privacy\" "
+#~ "target=\"new\">privacy protections</a>."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The Canadian notification team is "
+#~ "reviewing privacy requirements under the "
+#~ "<a href=\"https://laws-"
+#~ "lois.justice.gc.ca/eng/acts/P-21/index.html\" "
+#~ "target=\"new\">Privacy Act</a>. If your "
+#~ "service has specific privacy needs, "
+#~ msgstr ""
+
+#~ msgid ""
+#~ "GOV.UK’s Service Manual provides useful "
+#~ "standards for <a href=\"https://www.gov.uk"
+#~ "/service-manual/design/sending-emails-and-"
+#~ "text-messages\">writing text messages and "
+#~ "emails</a>. Notification recommends that you"
+#~ " consider these standards as guidance, "
+#~ "while adjusting for the Canadian "
+#~ "context."
+#~ msgstr ""
+#~ "Le manuel sur les normes relatives "
+#~ "aux services publics du Royaume-Uni "
+#~ "(GOV.UK Service Manual; en anglais "
+#~ "seulement) contient des normes utiles "
+#~ "pour <a href=\"https://www.gov.uk/service-"
+#~ "manual/design/sending-emails-and-text-"
+#~ "messages\">la rédaction de messages textes "
+#~ "et de courriels</a>. Nous vous "
+#~ "recommandons d’utiliser ces normes comme "
+#~ "des lignes directrices, tout en les "
+#~ "adaptant au contexte canadien."
 
