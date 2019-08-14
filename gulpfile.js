@@ -88,12 +88,10 @@ const javascripts = () => {
       paths.src + 'javascripts/highlightTags.js',
       paths.src + 'javascripts/fileUpload.js',
       paths.src + 'javascripts/expandCollapse.js',
-      paths.src + 'javascripts/moment.js',
       paths.src + 'javascripts/radioSelect.js',
       paths.src + 'javascripts/updateContent.js',
       paths.src + 'javascripts/listEntry.js',
       paths.src + 'javascripts/liveSearch.js',
-      //paths.src + 'javascripts/errorTracking.js',
       paths.src + 'javascripts/preventDuplicateFormSubmissions.js',
       paths.src + 'javascripts/fullscreenTable.js',
       paths.src + 'javascripts/previewPane.js',
@@ -126,10 +124,6 @@ const sass = () => {
     .pipe(plugins.prettyerror())
     .pipe(plugins.sass({
       outputStyle: 'compressed',
-      /*includePaths: [
-        paths.npm + 'govuk-elements-sass/public/sass/',
-        paths.toolkit + 'stylesheets/'
-      ]*/
     }))
     .pipe(plugins.base64('../..'))
     .pipe(dest(paths.dist + 'stylesheets/'))
