@@ -475,7 +475,7 @@ class PermissionsForm(PermissionsAbstract):
 
 
 class InviteUserForm(PermissionsForm):
-    email_address = email_address(gov_user=False)
+    email_address = email_address(gov_user=True)
 
     def __init__(self, invalid_email_address, *args, **kwargs):
         super().__init__(*args, **kwargs)
