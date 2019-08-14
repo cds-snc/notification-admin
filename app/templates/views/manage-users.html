@@ -68,9 +68,9 @@
             {% endif %}
             {% if current_service.has_permission('email_auth') %}
               <div class="tick-cross-list-hint">
-                {% if len(user.security_keys) > 0  %}
+                {% if user.security_keys|length > 0  %}
                 {{ _('Signs in with a Fido2 key') }}
-                {% elsif user.auth_type == 'sms_auth'  %}
+                {% elif user.auth_type == 'sms_auth'  %}
                 {{ _('Signs in with a text message code') }}
                 {% else %}
                 {{ _('Signs in with an email link') }}
