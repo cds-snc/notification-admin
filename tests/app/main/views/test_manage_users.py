@@ -774,7 +774,7 @@ def test_invite_user_with_email_auth_service(
         _follow_redirects=True,
         _expected_status=200,
     )
-    
+
     if(gov_user):
         assert page.h1.string.strip() == 'Team members'
         flash_banner = page.find('div', class_='banner-default-with-tick').string.strip()
