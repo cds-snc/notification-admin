@@ -4,12 +4,15 @@
   {{ _('Privacy notice: how we use your data') }}
 {% endblock %}
 
-{% block maincolumn_content %}
-<h1 class="heading-large">{{ _('Privacy') }}</h1>
-<p>
-  {{ _('GOV.UK developed the original <a href="https://github.com/topics/govuk-notify" target="new">notification system</a> and its UK <a href="https://www.notifications.service.gov.uk/privacy" target="new">privacy protections</a>.')}}
-</p>
-<p>
-  {{ _('The Canadian notification team is reviewing privacy requirements under the <a href="https://laws-lois.justice.gc.ca/eng/acts/P-21/index.html" target="new">Privacy Act</a>. If your service has specific privacy needs, ')}}<a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('please let us know')}}</a>.
-</p>
+  {% block maincolumn_content %}
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 class="heading-large">{{ _('Privacy') }}</h1>
+      <p>{{ _('GOV.UK developed the') }} <a href="https://github.com/alphagov/notifications-admin" target="new">{{ _('original notification system') }}</a> {{ _('and its UK') }} <a href="https://www.notifications.service.gov.uk/privacy">{{ _('privacy protections') }}.</a>
+      <p>
+          {{ _('The Notification team is reviewing privacy requirements under the')}} <a href="https://laws-lois.justice.gc.ca/eng/acts/P-21/index.html">{{ _('Privacy Act') }}</a>. {{ _('If your service has specific privacy needs, ') }}<a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('please let us know')}}</a>.
+      </p>
+     
+    </div>
+  </div>
 {% endblock %}

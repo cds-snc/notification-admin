@@ -11,11 +11,38 @@
 
 {% block maincolumn_content %}
 
+<style>
+    /* inline this as the */
+    .form-wrap .form-group .form-label{
+      font-weight:bold;
+    }
+</style>
+
 <div class="grid-row">
   <div class="column-two-thirds">
-    {% set header_txt = _('About your service') %}
+    {% set header_txt = _('Name your service in both official languages') %}
     {{ page_header(header_txt) }}
 
+    <p>{{ _('Notification displays your service name:') }}</p>
+    <p>
+      <ul class="list-bullet">
+          <li>{{ _('at the start of every text message') }}</li>
+          <li>{{ _('as the ‘from’ address on emails you send') }}</li>
+      </ul>
+    </p>
+
+    <p>{{ _('Your service name must include both English and French. It can’t be longer than 255 characters.') }}</p>
+
+    <p>{{ _('For example:') }}<br>
+
+    <ul class="list-bullet">
+      <li>{{ _('Canadian Digital Service (CDS) | Service numérique canadien (SNC)') }}</li>
+      <li>cds-snc.ca</li>
+    </ul>
+
+  </p>
+
+    <div class="form-wrap">
     {% call form_wrapper() %}
       {% set hint_txt = _('You can change this later') %}
       {{ textbox(form.name, hint=hint_txt) }}
@@ -27,6 +54,7 @@
       {{ page_footer(button_txt) }}
 
     {% endcall %}
+    </div>
 
   </div>
 </div>

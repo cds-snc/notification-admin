@@ -50,7 +50,7 @@ def add_service():
     form = CreateServiceForm(
         organisation_type=default_organisation_type
     )
-    heading = 'About your service'
+    heading = 'Name your service in both official languages'
 
     if form.validate_on_submit():
         email_from = email_safe(form.name.data)
