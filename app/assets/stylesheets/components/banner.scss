@@ -49,7 +49,7 @@
   @extend %banner;
   @include bold-19;
   background: $white;
-  color: $text-colour;
+  color: $error-colour;
   border: 5px solid $error-colour;
   margin: 15px 0;
   text-align: left;
@@ -61,19 +61,6 @@
   .button {
     @include button($error-colour);
     margin-top: 10px;
-  }
-
-  a {
-
-    &:link,
-    &:visited {
-      color: $error-colour;
-    }
-
-    &:hover {
-      color: $mellow-red;
-    }
-
   }
 
   .list {
