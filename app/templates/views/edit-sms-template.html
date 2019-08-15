@@ -17,6 +17,9 @@
     ) }}
 
     {% call form_wrapper() %}
+      <div class="form-group">
+        <a href="{{ url_for('main.features_templates') }}">{{ _(('Formatting Guide')) }}</a>
+      </div>
       {% set txt = _('Your recipients won’t see this') %}
       <div class="grid-row">
         <div class="column-two-thirds">
@@ -32,12 +35,6 @@
             txt
           ) }}
         </div>
-        <aside class="column-whole">
-          {% include "partials/templates/guidance-personalisation.html" %}
-          {% include "partials/templates/guidance-optional-content.html" %}
-          {% include "partials/templates/guidance-links.html" %}
-          {% include "partials/templates/guidance-character-count.html" %}
-        </aside>
       </div>
     {% endcall %}
 

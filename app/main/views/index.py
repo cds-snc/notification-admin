@@ -273,6 +273,13 @@ def features_letters():
         navigation_links=features_nav()
     )
 
+@main.route('/features/templates')
+def features_templates():
+    return render_template(
+        'views/features/templates.html',
+        navigation_links=features_nav()
+    )
+
 
 @main.route('/features/security', endpoint='security')
 def security():
