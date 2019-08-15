@@ -1,5 +1,4 @@
 from flask import (
-    Markup,
     abort,
     flash,
     redirect,
