@@ -19,6 +19,9 @@
     {% call form_wrapper() %}
       <div class="grid-row">
         <div class="column-five-sixths">
+          <div class="form-group">
+            <a href="{{ url_for('main.features_templates') }}">{{ _(('Formatting Guide')) }}</a>
+          </div>
           {% set hint_txt = _('Your recipients won’t see this:') %}
           {{ textbox(form.name, width='1-1', hint=hint_txt, rows=10) }}
           {{ textbox(form.subject, width='1-1', highlight_tags=True, rows=2) }}
@@ -31,15 +34,6 @@
             txt
           ) }}
         </div>
-        <aside class="column-whole">
-          {% include "partials/templates/guidance-formatting.html" %}
-          {% include "partials/templates/guidance-personalisation.html" %}
-          {% include "partials/templates/guidance-optional-content.html" %}
-          {% include "partials/templates/guidance-links.html" %}
-          {% if current_service.has_permission('upload_document') %}
-            {% include "partials/templates/guidance-send-a-document.html" %}
-          {% endif %}
-        </aside>
       </div>
     {% endcall %}
 

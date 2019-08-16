@@ -12,6 +12,10 @@ def features_nav():
                     "name": "Text messages",
                     "link": "main.features_sms",
                 },
+                {
+                    "name": "Template Formatting",
+                    "link": "main.features_templates",
+                },
             ]
         }
     ]
