@@ -6,7 +6,7 @@ $(() => GOVUK.stickAtBottomWhenScrolling.init());
 $(".local-datetime-short").each(function(index) {
   let time = moment($(this).text().trim());
   if(time.isValid()){
-    $(this).text(time.format("D MMM, kk:mm a"));
+    $(this).text(time.format("D MMM, HH:mm a"));
   }
 });
 

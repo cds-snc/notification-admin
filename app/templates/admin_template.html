@@ -1,6 +1,5 @@
 {% extends "main_template.html" %}
 {% from "components/banner.html" import banner %}
-
 {% block head %}
   <!--[if gt IE 8]><!-->
   <link rel="stylesheet" media="screen" href="{{ asset_url('stylesheets/main.css') }}" />
@@ -22,28 +21,21 @@
 {% endblock %}
 
 {% block page_title %}
-   {% block per_page_title %}{% endblock %} – Notification
-{% endblock %}
-
-{% block cookie_message %}
-  <p>
-    Notification uses cookies to make the site simpler.
-    <a href="{{ url_for("main.cookies") }}">Find out more about cookies</a>
-  </p>
+   {% block per_page_title %}{% endblock %} – {{ _('Notification') }}
 {% endblock %}
 
 {% block header_class %}with-proposition{% endblock %}
 {% block proposition_header %}
   <div class="header-proposition">
     <div class="content">
-      <a href="#proposition-links" class="js-header-toggle menu">Menu</a>
+      <a href="#proposition-links" class="js-header-toggle menu">{{ _('Menu') }}</a>
       <nav id="proposition-menu">
         <ul id="proposition-links">
           {% if current_user.is_authenticated %}
-            <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>Documentation</a></li>
+            <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>{{ _('Documentation') }}</a></li>
             <li><a href="{{ url_for('main.user_profile') }}" {{ header_navigation.is_selected('user-profile') }}>{{ current_user.name }}</a></li>
             {% if current_user.platform_admin %}
-              <li><a href="{{ url_for('main.platform_admin') }}" {{ header_navigation.is_selected('platform-admin') }}>Platform admin</a></li>
+              <li><a href="{{ url_for('main.platform_admin') }}" {{ header_navigation.is_selected('platform-admin') }}>{{ _('Platform admin') }}</a></li>
             {% endif %}
             <li><a href="{{ url_for('main.set_lang')}}?from={{request.path}}">
               {% if session["userlang"] == "en" %}
@@ -52,7 +44,7 @@
                 English
               {% endif %}
             </a></li>
-            <li><a href="{{ url_for('main.sign_out')}}">Sign out</a></li>
+            <li><a href="{{ url_for('main.sign_out')}}">{{ _('Sign out') }}</a></li>
           {% else %}
             <li>
               <a href="{{ url_for('main.set_lang')}}?from={{request.path}}">
@@ -62,18 +54,16 @@
                 English
               {% endif %}
             </a></li>
-            <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>Documentation</a></li>
-            <li><a href="{{ url_for('main.sign_in' )}}" {{ header_navigation.is_selected('sign-in') }}>Sign in</a></li>
+            <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>{{ _('Documentation') }}</a></li>
+            <li><a href="{{ url_for('main.sign_in' )}}" {{ header_navigation.is_selected('sign-in') }}>{{ _('Sign in') }}</a></li>
           {% endif %}
         </ul>
       </nav>
     </div>
   </div>
 {% endblock %}
-
-
+{% set notification_txt = _('Notification') %}
 {% set global_header_text = "<span id='product-name'>Notification</span>"|safe %}
-
 {% set homepage_url = url_for('main.show_accounts_or_dashboard') %}
 
 {% block content %}
@@ -97,7 +87,7 @@
         <div class="column-one-quarter">
           <ul>
             <li>
-                <a href="{{ url_for("main.privacy") }}">    {{ _('Privacy') }}</a>
+                <a href="{{ url_for("main.privacy") }}">{{ _('Privacy') }}</a>
               </li>
               <li>
                 <a href="{{ url_for("main.security") }}">{{ _('Security') }}</a>
@@ -110,19 +100,14 @@
     </div>
   </div>
 {% endblock %}
-
 {% block footer_support_links %}
   <nav class="footer-nav">
     <a href="{{ url_for("main.privacy") }}">{{ _('Privacy') }}</a>
-    <!--<a href="{{ url_for("main.cookies") }}">{{ _('Cookies') }}</a>-->
     {% if current_service and current_service.research_mode %}
     <span id="research-mode" class="research-mode">{{ _('research mode') }}</span>
     {% endif %}
   </nav>
 {% endblock %}
-
-
-
 {% block body_end %}
   <script type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>
 {% endblock %}

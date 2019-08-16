@@ -11,6 +11,7 @@ from tests.conftest import url_for_endpoint_with_token
 
 def test_should_show_overview_page(
     client_request,
+    mock_get_security_keys
 ):
     page = client_request.get(('main.user_profile'))
     assert page.select_one('h1').text.strip() == 'Your profile'
@@ -19,7 +20,8 @@ def test_should_show_overview_page(
 
 def test_overview_page_shows_disable_for_platform_admin(
     client_request,
-    platform_admin_user
+    platform_admin_user,
+    mock_get_security_keys
 ):
     client_request.login(platform_admin_user)
     page = client_request.get(('main.user_profile'))
@@ -29,7 +31,8 @@ def test_overview_page_shows_disable_for_platform_admin(
 
 
 def test_should_show_name_page(
-    client_request
+    client_request,
+    mock_get_security_keys
 ):
     page = client_request.get(('main.user_profile_name'))
     assert page.select_one('h1').text.strip() == 'Change your name'
@@ -38,7 +41,8 @@ def test_should_show_name_page(
 def test_should_redirect_after_name_change(
     client_request,
     mock_update_user_attribute,
-    mock_email_is_not_already_in_use
+    mock_email_is_not_already_in_use,
+    mock_get_security_keys
 ):
     client_request.post(
         'main.user_profile_name',
@@ -262,6 +266,7 @@ def test_non_gov_user_cannot_see_change_email_link(
     client_request,
     api_nongov_user_active,
     mock_get_organisations,
+    mock_get_security_keys
 ):
     client_request.login(api_nongov_user_active)
     page = client_request.get('main.user_profile')

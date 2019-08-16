@@ -475,7 +475,7 @@ class PermissionsForm(PermissionsAbstract):
 
 
 class InviteUserForm(PermissionsForm):
-    email_address = email_address(gov_user=False)
+    email_address = email_address(gov_user=True)
 
     def __init__(self, invalid_email_address, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -610,6 +610,14 @@ class CreateServiceForm(StripWhitespaceForm):
 
 class CreateNhsServiceForm(CreateServiceForm):
     organisation_type = nhs_organisation_type()
+
+
+class SecurityKeyForm(StripWhitespaceForm):
+    keyname = StringField(
+        _('What’s your key called?'),
+        validators=[
+            DataRequired(message=_('Can’t be empty'))
+        ])
 
 
 class NewOrganisationForm(

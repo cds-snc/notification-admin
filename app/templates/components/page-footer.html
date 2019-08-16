@@ -6,12 +6,14 @@
   secondary_link=False,
   secondary_link_text=None,
   delete_link=False,
-  delete_link_text="delete"
+  delete_link_text="delete",
+  button_id="btn"
 ) %}
   <div class="page-footer">
     {% if button_text %}
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <button
+        data-button-id={{button_id}}
         type="submit"
         class="button{% if destructive %}-destructive{% endif %}"
         {% if button_name %}name="{{ button_name }}"{% endif %}

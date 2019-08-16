@@ -57,6 +57,13 @@
         {{ edit_field(change, url_for('.user_profile_password')) }}
       {% endcall %}
 
+      {% call row() %}
+        {% set txt = _('Security Key(s)') %}
+        {{ text_field(txt) }}
+        {{ text_field(num_keys) }}
+        {{ edit_field(change, url_for('.user_profile_security_keys')) }}
+      {% endcall %}
+
       {% if current_user.platform_admin or session.get('disable_platform_admin_view') %}
         {% call row() %}
           {% set txt = _('Use platform admin view') %}
@@ -69,6 +76,9 @@
       {% endif %}
 
     {% endcall %}
+
+
+    
   </div>
 
 {% endblock %}

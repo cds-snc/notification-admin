@@ -13,6 +13,8 @@ def test_should_render_two_factor_page(
     client,
     api_user_active,
     mock_get_user_by_email,
+    mock_get_security_keys,
+    mock_get_user
 ):
     # TODO this lives here until we work out how to
     # reassign the session after it is lost mid register process
@@ -40,6 +42,7 @@ def test_should_login_user_and_should_redirect_to_next_url(
     mock_get_user_by_email,
     mock_check_verify_code,
     mock_create_event,
+    mock_get_security_keys
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -63,6 +66,7 @@ def test_should_login_user_and_not_redirect_to_external_url(
     mock_check_verify_code,
     mock_get_services_with_one_service,
     mock_create_event,
+    mock_get_security_keys
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -81,6 +85,7 @@ def test_should_login_user_and_redirect_to_show_accounts(
     mock_get_user_by_email,
     mock_check_verify_code,
     mock_create_event,
+    mock_get_security_keys
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -96,8 +101,10 @@ def test_should_login_user_and_redirect_to_show_accounts(
 def test_should_return_200_with_sms_code_error_when_sms_code_is_wrong(
     client,
     api_user_active,
+    mock_get_user,
     mock_get_user_by_email,
     mock_check_verify_code_code_not_found,
+    mock_get_security_keys
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -117,6 +124,7 @@ def test_should_login_user_when_multiple_valid_codes_exist(
     mock_check_verify_code,
     mock_get_services_with_one_service,
     mock_create_event,
+    mock_get_security_keys
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -135,6 +143,7 @@ def test_two_factor_should_set_password_when_new_password_exists_in_session(
     mock_get_services_with_one_service,
     mock_update_user_password,
     mock_create_event,
+    mock_get_security_keys
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -155,7 +164,8 @@ def test_two_factor_returns_error_when_user_is_locked(
     api_user_locked,
     mock_get_locked_user,
     mock_check_verify_code_code_not_found,
-    mock_get_services_with_one_service
+    mock_get_services_with_one_service,
+    mock_get_security_keys
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -186,6 +196,7 @@ def test_two_factor_should_activate_pending_user(
     mock_check_verify_code,
     mock_create_event,
     mock_activate_user,
+    mock_get_security_keys
 ):
     mocker.patch('app.user_api_client.get_user', return_value=api_user_pending)
     mocker.patch('app.service_api_client.get_services', return_value={'data': []})
@@ -206,6 +217,7 @@ def test_valid_two_factor_email_link_logs_in_user(
     mock_get_services_with_one_service,
     mocker,
     mock_create_event,
+    mock_get_security_keys
 ):
     mocker.patch('app.user_api_client.check_verify_code', return_value=(True, ''))
 

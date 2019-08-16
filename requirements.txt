@@ -34,10 +34,10 @@ itsdangerous==0.24  # pyup: <1.0.0
 git+https://github.com/cds-snc/notifier-utils.git@34.0.10#egg=notifications-utils==34.0.10
 
 ## The following requirements were added by pip freeze:
-awscli==1.16.219
+awscli==1.16.220
 bleach==3.1.0
 boto3==1.6.16
-botocore==1.12.209
+botocore==1.12.210
 certifi==2019.6.16
 chardet==3.0.4
 Click==7.0

@@ -1,5 +1,4 @@
 from flask import (
-    Markup,
     abort,
     flash,
     redirect,
@@ -47,12 +46,7 @@ def sign_in():
                 return redirect(url_for('.two_factor_email_sent'))
 
         # Vague error message for login in case of user not known, locked, inactive or password not verified
-        flash(Markup(
-            (
-                "The email address or password you entered is incorrect."
-                " <a href={password_reset}>Forgot your password</a>?"
-            ).format(password_reset=url_for('.forgot_password'))
-        ))
+        flash("The email address or password you entered is incorrect.")
 
     other_device = current_user.logged_in_elsewhere()
     return render_template(

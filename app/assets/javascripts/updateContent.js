@@ -34,9 +34,12 @@
           poll = function(){};
         }
         $(".local-datetime-short").each(function(index) {
-          let time = moment($(this).text().trim());
-          if(time.isValid()){
-            $(this).text(time.format("D MMM, kk:mm a"));
+          let time = $(this).text().trim()
+          if(time.includes("T")){
+            time = moment(time);
+            if(time.isValid()){
+              $(this).text(time.format("D MMM, HH:mm a"));
+            }
           }
         });
       }

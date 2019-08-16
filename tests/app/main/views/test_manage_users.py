@@ -278,7 +278,8 @@ def test_manage_users_page_shows_member_auth_type_if_service_has_email_auth_acti
     mock_get_users_by_service,
     mock_get_invites_for_service,
     mock_get_template_folders,
-    displays_auth_type
+    displays_auth_type,
+    mock_get_security_keys
 ):
     if service_has_email_auth:
         service_one['permissions'].append('email_auth')
@@ -714,18 +715,21 @@ def test_invite_user(
         },
         _follow_redirects=True,
     )
-    assert page.h1.string.strip() == 'Team members'
-    flash_banner = page.find('div', class_='banner-default-with-tick').string.strip()
-    assert flash_banner == 'Invite sent to test@tbs-sct.gc.ca'
+    if(gov_user):
+        assert page.h1.string.strip() == 'Team members'
+        flash_banner = page.find('div', class_='banner-default-with-tick').string.strip()
+        assert flash_banner == 'Invite sent to test@tbs-sct.gc.ca'
+        expected_permissions = {'manage_api_keys', 'manage_service', 'manage_templates', 'send_messages', 'view_activity'}
 
-    expected_permissions = {'manage_api_keys', 'manage_service', 'manage_templates', 'send_messages', 'view_activity'}
-
-    app.invite_api_client.create_invite.assert_called_once_with(sample_invite['from_user'],
-                                                                sample_invite['service'],
-                                                                email_address,
-                                                                expected_permissions,
-                                                                'sms_auth',
-                                                                [])
+        app.invite_api_client.create_invite.assert_called_once_with(sample_invite['from_user'],
+                                                                    sample_invite['service'],
+                                                                    email_address,
+                                                                    expected_permissions,
+                                                                    'sms_auth',
+                                                                    [])
+    else:
+        assert page.h1.string.strip() == 'Invite a team member'
+        app.invite_api_client.create_invite.assert_not_called()
 
 
 @pytest.mark.parametrize('auth_type', [
@@ -747,9 +751,10 @@ def test_invite_user_with_email_auth_service(
     auth_type,
     mock_get_organisations,
     mock_get_template_folders,
+    mock_get_security_keys
 ):
     service_one['permissions'].append('email_auth')
-    sample_invite['email_address'] = 'test@tbs-sct.gc.ca'
+    sample_invite['email_address'] = email_address
 
     assert is_gov_user(email_address) is gov_user
     mocker.patch('app.models.user.InvitedUsers.client', return_value=[sample_invite])
@@ -772,18 +777,21 @@ def test_invite_user_with_email_auth_service(
         _expected_status=200,
     )
 
-    assert page.h1.string.strip() == 'Team members'
-    flash_banner = page.find('div', class_='banner-default-with-tick').string.strip()
-    assert flash_banner == 'Invite sent to test@tbs-sct.gc.ca'
+    if(gov_user):
+        assert page.h1.string.strip() == 'Team members'
+        flash_banner = page.find('div', class_='banner-default-with-tick').string.strip()
+        assert flash_banner == 'Invite sent to test@tbs-sct.gc.ca'
+        expected_permissions = {'manage_api_keys', 'manage_service', 'manage_templates', 'send_messages', 'view_activity'}
 
-    expected_permissions = {'manage_api_keys', 'manage_service', 'manage_templates', 'send_messages', 'view_activity'}
-
-    app.invite_api_client.create_invite.assert_called_once_with(sample_invite['from_user'],
-                                                                sample_invite['service'],
-                                                                email_address,
-                                                                expected_permissions,
-                                                                auth_type,
-                                                                [])
+        app.invite_api_client.create_invite.assert_called_once_with(sample_invite['from_user'],
+                                                                    sample_invite['service'],
+                                                                    email_address,
+                                                                    expected_permissions,
+                                                                    auth_type,
+                                                                    [])
+    else:
+        assert page.h1.string.strip() == 'Invite a team member'
+        app.invite_api_client.create_invite.assert_not_called()
 
 
 def test_cancel_invited_user_cancels_user_invitations(

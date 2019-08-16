@@ -34,7 +34,7 @@ def test_get_should_render_add_service_template(
         return_value=org_json,
     )
     page = client_request.get('main.add_service')
-    assert page.select_one('h1').text.strip() == 'About your service'
+    assert page.select_one('h1').text.strip() == 'Name your service in both official languages'
     assert page.select_one('input[name=name]')['value'] == ''
     assert [
         label.text.strip() for label in page.select('.multiple-choice label')
@@ -50,7 +50,7 @@ def test_get_should_not_render_radios_if_org_type_known(
 ):
     mock_get_organisation_by_domain(mocker, organisation_type='central')
     page = client_request.get('main.add_service')
-    assert page.select_one('h1').text.strip() == 'About your service'
+    assert page.select_one('h1').text.strip() == 'Name your service in both official languages'
     assert page.select_one('input[name=name]')['value'] == ''
     assert not page.select('.multiple-choice')
 
@@ -178,7 +178,7 @@ def test_get_should_only_show_nhs_org_types_radios_if_user_has_nhs_email(
         return_value=None,
     )
     page = client_request.get('main.add_service')
-    assert page.select_one('h1').text.strip() == 'About your service'
+    assert page.select_one('h1').text.strip() == 'Name your service in both official languages'
     assert page.select_one('input[name=name]')['value'] == ''
     assert [
         label.text.strip() for label in page.select('.multiple-choice label')

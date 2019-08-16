@@ -105,6 +105,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     mock_get_user,
     mock_get_user_by_email,
     mock_verify_password,
+    mock_get_security_keys,
     email_address,
     password,
 ):
@@ -114,6 +115,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
             'password': password})
     assert response.status_code == 302
     assert response.location == url_for('.two_factor', _external=True)
+    mock_get_security_keys.assert_called_with(api_user_active['id'])
     mock_verify_password.assert_called_with(api_user_active['id'], password)
     mock_get_user_by_email.assert_called_with('valid@example.canada.ca')
 
@@ -197,7 +199,8 @@ def test_email_address_is_treated_case_insensitively_when_signing_in_as_invited_
     api_user_active,
     sample_invite,
     mock_accept_invite,
-    mock_send_verify_code
+    mock_send_verify_code,
+    mock_get_security_keys
 ):
     sample_invite['email_address'] = 'TEST@user.canada.ca'
 

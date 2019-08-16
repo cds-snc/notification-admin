@@ -1,14 +1,18 @@
+import base64
 import json
 
 from flask import (
     abort,
     current_app,
+    flash,
     redirect,
     render_template,
+    request,
     session,
     url_for,
 )
 from flask_login import current_user
+from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import check_token
 
 from app import user_api_client
@@ -19,6 +23,7 @@ from app.main.forms import (
     ChangeNameForm,
     ChangePasswordForm,
     ConfirmPasswordForm,
+    SecurityKeyForm,
     ServiceOnOffSettingForm,
     TwoFactorForm,
 )
@@ -33,8 +38,10 @@ NEW_MOBILE_PASSWORD_CONFIRMED = 'new-mob-password-confirmed'
 @main.route("/user-profile")
 @user_is_logged_in
 def user_profile():
+    num_keys = len(current_user.security_keys)
     return render_template(
         'views/user-profile.html',
+        num_keys=num_keys,
         can_see_edit=current_user.is_gov_user,
     )
 
@@ -200,6 +207,95 @@ def user_profile_password():
         'views/user-profile/change-password.html',
         form=form
     )
+
+
+@main.route("/user-profile/security_keys", methods=['GET', 'POST'])
+@user_is_logged_in
+def user_profile_security_keys():
+    num_keys = len(current_user.security_keys)
+    return render_template(
+        'views/user-profile/security-keys.html',
+        num_keys=num_keys
+    )
+
+
+@main.route("/user-profile/security_keys/<keyid>", methods=['GET', 'POST'])
+@user_is_logged_in
+def user_profile_security_keys_confirm_delete(keyid):
+    if request.method == 'POST':
+        try:
+            user_api_client.delete_security_key_user(current_user.id, key=keyid)
+            msg = "Key deleted"
+            flash(msg, 'default_with_tick')
+            return redirect(url_for('.user_profile_security_keys'))
+        except HTTPError as e:
+            msg = "Something didn't work properly"
+            if e.status_code == 400 and msg in e.message:
+                flash(msg, 'info')
+                return redirect(url_for('.user_profile_security_keys'))
+            else:
+                abort(500, e)
+
+    flash('Are you sure you want to remove security key {}?'.format(keyid), 'remove')
+    return render_template(
+        'views/user-profile/security-keys.html'
+    )
+
+
+@main.route("/user-profile/security_keys/add", methods=['GET', 'POST'])
+@user_is_logged_in
+def user_profile_add_security_keys():
+    form = SecurityKeyForm()
+
+    if(form.keyname.data == ""):
+        form.validate_on_submit()
+    elif request.method == 'POST':
+        result = user_api_client.register_security_key(current_user.id)
+        return base64.b64decode(result["data"])
+
+    return render_template(
+        'views/user-profile/add-security-keys.html',
+        form=form
+    )
+
+
+@main.route("/user-profile/security_keys/complete", methods=['POST'])
+@user_is_logged_in
+def user_profile_complete_security_keys():
+    data = request.get_data()
+    payload = base64.b64encode(data).decode("utf-8")
+    resp = user_api_client.add_security_key_user(current_user.id, payload)
+    return resp['id']
+
+
+@main.route("/user-profile/security_keys/authenticate", methods=['POST'])
+def user_profile_authenticate_security_keys():
+    if(session.get('user_details')):
+        user_id = session['user_details']['id']
+    else:
+        user_id = current_user.id
+    result = user_api_client.authenticate_security_keys(user_id)
+    return base64.b64decode(result["data"])
+
+
+@main.route("/user-profile/security_keys/validate", methods=['POST'])
+def user_profile_validate_security_keys():
+    data = request.get_data()
+    payload = base64.b64encode(data).decode("utf-8")
+
+    if(session.get('user_details')):
+        user_id = session['user_details']['id']
+    else:
+        user_id = current_user.id
+
+    resp = user_api_client.validate_security_keys(user_id, payload)
+    user = User.from_id(user_id)
+
+    # the user will have a new current_session_id set by the API - store it in the cookie for future requests
+    session['current_session_id'] = user.current_session_id
+    user.login()
+
+    return resp["status"]
 
 
 @main.route("/user-profile/disable-platform-admin-view", methods=['GET', 'POST'])

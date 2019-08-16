@@ -1,0 +1,60 @@
+{% extends "withoutnav_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/table.html" import mapping_table, row, text_field, optional_text_field, edit_field, delete_field, field, boolean_field with context %}
+
+{% block per_page_title %}
+  {{ _('Security Key(s)') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  <div class="test-key-message"></div>
+
+  {% set title_txt = _('Security Key(s)') %}
+  {{ page_header(
+    title_txt,
+    back_link=url_for('.user_profile')
+  ) }}
+
+  
+
+  <div class="body-copy-table">
+    {% set caption = _('Your profile') %}
+    {% set heading_1 = _('Label') %}
+    {% set heading_2 = _('Value') %}
+    {% set heading_3 = _('Action') %}
+
+    {% call mapping_table(
+      caption='Your profile',
+      field_headings=[heading_1, heading_2, heading_3, heading_4],
+      field_headings_visible=False,
+      caption_visible=False
+    ) %}
+
+    {% for key in current_user.security_keys %}
+        {% call row() %}
+          {% set txt = _('Name') %}
+          {% set delete_txt = _('Remove') %}
+          {{ text_field(txt) }}
+          {{ text_field(key.name) }}
+          {{ edit_field(delete_txt, url_for('.user_profile_security_keys_confirm_delete', keyid=key.id)) }}
+        {% endcall %}
+      {% endfor %}
+    {% endcall %}
+  </div>
+  <script>
+    var csrf_token = "{{ csrf_token() }}";
+   </script>
+  <div class="js-stick-at-bottom-when-scrolling">
+    <div class="grid-row">
+      <div class="column-three-quarters">
+        <a href="{{ url_for('main.user_profile_add_security_keys') }}" class="button-secondary">{{ _('New security key') }}</a>
+        <a id="test-fido2-keys" href="#" class="button-secondary">{{ _('Test keys') }}</a>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
