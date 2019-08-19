@@ -237,7 +237,7 @@
 
       <p>
         {% if current_user.has_permissions('manage_service') %}
-          {{ _('To remove these restrictions, you can')}} <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _(('contact us')) }}</a>.
+          {{ _('To remove these restrictions, you can')}} <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('contact us') }}</a>.
         {% else %}
           {{ _('Your service manager can ask to have these restrictions removed.') }}
         {% endif %}
