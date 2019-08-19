@@ -1,3 +1,5 @@
+import os
+import hashlib
 from notifications_python_client.errors import HTTPError
 
 from app.models.roles_and_permissions import (
@@ -22,6 +24,7 @@ class UserApiClient(NotifyAdminAPIClient):
         self.contact_email = app.config['CONTACT_EMAIL']
 
     def register_user(self, name, email_address, mobile_number, password, auth_type):
+        password = self._create_message_digest(password)
         data = {
             "name": name,
             "email_address": email_address,
@@ -76,6 +79,7 @@ class UserApiClient(NotifyAdminAPIClient):
 
     @cache.delete('user-{user_id}')
     def update_password(self, user_id, password):
+        password = self._create_message_digest(password)
         data = {"_password": password}
         url = "/user/{}/update-password".format(user_id)
         user_data = self.post(url, data=data)
@@ -84,6 +88,7 @@ class UserApiClient(NotifyAdminAPIClient):
     @cache.delete('user-{user_id}')
     def verify_password(self, user_id, password):
         try:
+            password = self._create_message_digest(password)
             url = "/user/{}/verify/password".format(user_id)
             data = {"password": password}
             self.post(url, data=data)
@@ -217,6 +222,9 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = '/user/{}/fido2_keys/validate'.format(user_id)
         data = {'payload': payload}
         return self.post(endpoint, data)
+
+    def _create_message_digest(self, password):
+        return hashlib.sha256((password + os.getenv("DANGEROUS_SALT")).encode('utf-8')).hexdigest()
 
 
 user_api_client = UserApiClient()
