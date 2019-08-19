@@ -1,5 +1,6 @@
-import os
 import hashlib
+import os
+
 from notifications_python_client.errors import HTTPError
 
 from app.models.roles_and_permissions import (
