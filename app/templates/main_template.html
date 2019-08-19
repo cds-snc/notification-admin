@@ -62,24 +62,26 @@
 
     {% block content %}{% endblock %}
 
-    <footer class="group js-footer" id="footer" role="contentinfo">
+    <footer>
+      <div class="group js-footer" id="footer">
 
-      <div class="footer-wrapper">
-        {% block footer_top %}{% endblock %}
+        <div class="footer-wrapper">
+          {% block footer_top %}{% endblock %}
+        </div>
       </div>
+
+      <div id="global-app-error" class="app-error hidden"></div>
+
+      {% block footer_fip %}
+      <div id="global-footer-fip" class="footer-fip">
+        <div class="footer_support_links">
+        </div>
+        <div>
+          <img style="margin-top:20px;margin-bottom:20px;" src="{{ asset_path }}images/fip/goc--footer-logo.svg" width="168" alt="">
+        </div>
+      </div>
+      {% endblock %}
     </footer>
-
-    <div id="global-app-error" class="app-error hidden"></div>
-
-    {% block footer_fip %}
-    <div id="global-footer-fip" class="footer-fip">
-      <div class="footer_support_links">
-      </div>
-      <div>
-        <img style="margin-top:20px;margin-bottom:20px;" src="{{ asset_path }}images/fip/goc--footer-logo.svg" width="168" alt="">
-      </div>
-    </div>
-    {% endblock %}
 
     {% block body_end %}{% endblock %}
 
