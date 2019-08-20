@@ -1,274 +1,57 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   id="Layer_1"
-   viewBox="0 0 960 640"
-   style="zoom: 1;"
-   version="1.1"
-   sodipodi:docname="01-templates-fr.svg"
-   inkscape:version="0.92.4 (f8dce91, 2019-08-02)">
-  <metadata
-     id="metadata4087">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs4085" />
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1850"
-     inkscape:window-height="1016"
-     id="namedview4083"
-     showgrid="false"
-     inkscape:zoom="1.309375"
-     inkscape:cx="447.80016"
-     inkscape:cy="325.99447"
-     inkscape:window-x="1004"
-     inkscape:window-y="1107"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="Layer_1" />
-  <style
-     id="style4050">.st0{fill:#FFD419;} .st1{fill:#004A1E;} .st2{fill:#DADADA;} .st3{fill:#FFFFFF;} .st4{fill:#0B0B0B;} .st5{fill:#00823B;} .st6{fill:#8C8C8C;}</style>
-  <path
-     class="st0"
-     d="M587 266.9v215.7H53.1V266.9H587m4-4H49.1v223.7H591V262.9z"
-     id="path4052" />
-  <path
-     class="st1"
-     d="M55 541h190.9v60.7H55z"
-     id="path4054" />
-  <path
-     class="st2"
-     d="M0 40V10C0 4.5 4.5 0 10 0h940c5.5 0 10 4.5 10 10v30"
-     id="path4058" />
-  <circle
-     class="st3"
-     cx="25.4"
-     cy="20"
-     r="8.5"
-     id="circle4060" />
-  <circle
-     class="st3"
-     cx="49.1"
-     cy="20"
-     r="8.5"
-     id="circle4062" />
-  <circle
-     class="st3"
-     cx="72.9"
-     cy="20"
-     r="8.5"
-     id="circle4064" />
-  <path
-     class="st4"
-     d="M1,40 h958 v65 H1  z "
-     id="path4066" />
-  <path
-     class="st5"
-     d="M55 534h190.9v60.7H55z"
-     id="path4068" />
-  <path
-     class="st6"
-     d="M585 268.9v211.7H55.1V268.9H585m2-2H53.1v215.7H587V266.9z"
-     id="path4076" />
-  <path
-     class="st2"
-     d="M0 636h960v4H0z"
-     id="path4078" />
-  <path
-     class="st2"
-     d="M4 640V40h952v600h4V36H0v604z"
-     id="path4080" />
-  <flowRoot
-     xml:space="preserve"
-     id="flowRoot4105"
-     style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;letter-spacing:0px;word-spacing:0px"><flowRegion
-       id="flowRegion4107"><rect
-         id="rect4109"
-         width="541.47974"
-         height="109.97614"
-         x="45.823387"
-         y="142.81622" /></flowRegion><flowPara
-       id="flowPara4111" /></flowRoot>  <text
-     xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-     x="51.169716"
-     y="155.2957"
-     id="text68"><tspan
-       sodipodi:role="line"
-       x="51.169716"
-       y="155.2957"
-       id="tspan62"><tspan
-         x="51.169716"
-         y="155.2957"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:32px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold'"
-         id="tspan58">Modèle d'ajout de message texte</tspan><tspan
-         dx="0"
-         x="549.91974"
-         y="155.2957"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:32px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold'"
-         id="tspan60" /></tspan><tspan
-       sodipodi:role="line"
-       x="51.169716"
-       y="155.2957"
-       id="tspan66"><tspan
-         x="51.169716"
-         y="205.2957"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:32px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold'"
-         id="tspan64" /></tspan></text>
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-     x="54.988068"
-     y="250.50119"
-     id="text4123"><tspan
-       sodipodi:role="line"
-       id="tspan4121"
-       x="54.988068"
-       y="250.50119"
-       style="font-size:32px;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Message</tspan></text>
-  <rect
-     style="fill:#ffd419;stroke-width:0.5443933"
-     id="rect5053"
-     width="55.369949"
-     height="28.830584"
-     x="155.41766"
-     y="291.16949"
-     ry="14.415292"
-     rx="4.8921227" />
-  <rect
-     style="fill:#ffd419;stroke-width:0.52138025"
-     id="rect5053-6"
-     width="50.787605"
-     height="28.830584"
-     x="193.79474"
-     y="372.79233"
-     ry="14.415292"
-     rx="4.487257" />
-  <rect
-     style="fill:#ffd419;stroke-width:0.71052146"
-     id="rect5053-6-8"
-     width="94.319824"
-     height="28.830584"
-     x="130.40572"
-     y="411.74222"
-     ry="14.415292"
-     rx="8.3334761" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-     x="69.498306"
-     y="313.73279"
-     id="text88"><tspan
-       sodipodi:role="line"
-       x="69.498306"
-       y="313.73279"
-       id="tspan74"><tspan
-         x="69.498306"
-         y="313.73279"
-         style="font-size:24px;line-height:1"
-         id="tspan70">Salut ((nom)), </tspan><tspan
-         dx="0"
-         x="244.48268"
-         y="313.73279"
-         style="font-size:24px;line-height:1"
-         id="tspan72" /></tspan><tspan
-       sodipodi:role="line"
-       x="69.498306"
-       y="353.73279"
-       id="tspan78"><tspan
-         x="69.498306"
-         y="353.73279"
-         style="font-size:24px;line-height:1"
-         id="tspan76">J'essaie Notification. Aujourd'hui nous </tspan></tspan><tspan
-       sodipodi:role="line"
-       x="69.498306"
-       y="393.73279"
-       id="tspan82"><tspan
-         x="69.498306"
-         y="393.73279"
-         style="font-size:24px;line-height:1"
-         id="tspan80">sommes ((jour)) et ma couleur préférée </tspan></tspan><tspan
-       sodipodi:role="line"
-       x="69.498306"
-       y="433.73279"
-       id="tspan86"><tspan
-         x="69.498306"
-         y="433.73279"
-         style="font-size:24px;line-height:1"
-         id="tspan84">est ((couleur)).</tspan></tspan></text>
-  <flowRoot
-     xml:space="preserve"
-     id="flowRoot4163"
-     style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;letter-spacing:0px;word-spacing:0px"><flowRegion
-       id="flowRegion4165"><rect
-         id="rect4167"
-         width="175.65633"
-         height="41.241051"
-         x="62.625298"
-         y="543.77087" /></flowRegion><flowPara
-       id="flowPara4169" /></flowRoot>  <flowRoot
-     xml:space="preserve"
-     id="flowRoot4171"
-     style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;letter-spacing:0px;word-spacing:0px"><flowRegion
-       id="flowRegion4173"><rect
-         id="rect4175"
-         width="181.75418"
-         height="48.594273"
-         x="55"
-         y="541" /></flowRegion><flowPara
-       id="flowPara4177" /></flowRoot>  <flowRoot
-     xml:space="preserve"
-     id="flowRoot4179"
-     style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;letter-spacing:0px;word-spacing:0px"><flowRegion
-       id="flowRegion4181"><rect
-         id="rect4183"
-         width="173.36516"
-         height="46.587112"
-         x="65.680191"
-         y="544.53461" /></flowRegion><flowPara
-       id="flowPara4185" /></flowRoot>  <flowRoot
-     xml:space="preserve"
-     id="flowRoot4187"
-     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
-       id="flowRegion4189"><rect
-         id="rect4191"
-         width="181.76611"
-         height="44.295944"
-         x="310.83533"
-         y="543.77087" /></flowRegion><flowPara
-       id="flowPara4193">Sauvegarder</flowPara></flowRoot>  <text
-     xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-     x="72.553757"
-     y="573.81451"
-     id="text94"><tspan
-       sodipodi:role="line"
-       x="72.553757"
-       y="573.81451"
-       id="tspan92"><tspan
-         x="72.553757"
-         y="573.81451"
-         style="font-size:24px;fill:#ffffff"
-         id="tspan90">Sauvegarder</tspan></tspan></text>
-</svg>
+<svg width="960" height="640" xmlns="http://www.w3.org/2000/svg">
+ <metadata id="metadata4087">image/svg+xml</metadata>
+
+ <style>.st0{fill:#FFD419;} .st1{fill:#004A1E;} .st2{fill:#DADADA;} .st3{fill:#FFFFFF;} .st4{fill:#0B0B0B;} .st5{fill:#00823B;} .st6{fill:#8C8C8C;}</style>Sauvegarder
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <path id="path4052" d="m587,266.9l0,215.7l-533.9,0l0,-215.7l533.9,0m4,-4l-541.9,0l0,223.7l541.9,0l0,-223.7z" class="st0"/>
+  <path id="path4054" d="m55,541l190.9,0l0,60.7l-190.9,0l0,-60.7z" class="st1"/>
+  <path id="path4058" d="m0,40l0,-30c0,-5.5 4.5,-10 10,-10l940,0c5.5,0 10,4.5 10,10l0,30" class="st2"/>
+  <circle id="circle4060" r="8.5" cy="20" cx="25.4" class="st3"/>
+  <circle id="circle4062" r="8.5" cy="20" cx="49.1" class="st3"/>
+  <circle id="circle4064" r="8.5" cy="20" cx="72.9" class="st3"/>
+  <path id="path4066" d="m1,40l958,0l0,65l-958,0l0,-65z" class="st4"/>
+  <path id="path4068" d="m55,534l190.9,0l0,60.7l-190.9,0l0,-60.7z" class="st5"/>
+  <path id="path4076" d="m585,268.9l0,211.7l-529.9,0l0,-211.7l529.9,0m2,-2l-533.9,0l0,215.7l533.9,0l0,-215.7z" class="st6"/>
+  <path id="path4078" d="m0,636l960,0l0,4l-960,0l0,-4z" class="st2"/>
+  <path id="path4080" d="m4,640l0,-600l952,0l0,600l4,0l0,-604l-960,0l0,604l4,0z" class="st2"/>
+  <text font-style="normal" font-weight="normal" font-size="40px" font-family="sans-serif" fill="#000000" id="text68" y="155.2957" x="51.169716" xml:space="preserve">
+   <tspan id="tspan62" y="155.2957" x="51.169716">
+    <tspan font-style="normal" font-weight="bold" font-size="32px" font-family="Arial" id="tspan58" y="155.2957" x="51.169716">Modèle d'ajout de message texte</tspan>
+    <tspan font-style="normal" font-weight="bold" font-size="32px" font-family="Arial" id="tspan60" y="155.2957" x="549.91974" dx="0"/>
+   </tspan>
+   <tspan id="tspan66" y="155.2957" x="51.169716">
+    <tspan font-style="normal" font-weight="bold" font-size="32px" font-family="Arial" id="tspan64" y="205.2957" x="51.169716"/>
+   </tspan>
+  </text>
+  <text font-style="normal" font-weight="normal" font-size="40px" font-family="sans-serif" fill="#000000" id="text4123" y="250.50119" x="54.988068" xml:space="preserve">
+   <tspan font-size="32px" font-family="Arial" font-weight="normal" font-style="normal" y="250.50119" x="54.988068" id="tspan4121">Message</tspan>
+  </text>
+  <rect fill="#ffd419" stroke-width="0.544393" rx="4.892123" ry="14.415292" y="297.16949" x="143.41766" height="28.830584" width="55.369949" id="rect5053"/>
+  <rect fill="#ffd419" stroke-width="0.52138" rx="4.487257" ry="14.415292" y="375.79233" x="181.79474" height="28.830584" width="50.787605" id="rect5053-6"/>
+  <rect fill="#ffd419" stroke-width="0.710521" rx="8.333476" ry="14.415292" y="414.74222" x="120.40572" height="28.830584" width="94.319824" id="rect5053-6-8"/>
+  <text font-style="normal" font-weight="normal" font-size="40px" font-family="sans-serif" fill="#000000" id="text94" y="574.81451" x="79.553757" xml:space="preserve">
+   <tspan id="tspan92" y="574.81451" x="79.553757">
+    <tspan font-size="24px" fill="#ffffff" id="tspan90" y="574.81451" x="79.553757">Sauvegarder</tspan>
+   </tspan>
+  </text>
+  <text font-style="normal" font-weight="normal" font-size="40px" font-family="sans-serif" fill="#000000" id="text88" y="316.73279" x="71.013931" xml:space="preserve">
+   <tspan id="tspan74" y="316.73279" x="71.013931">
+    <tspan font-size="24px" id="tspan70" y="316.73279" x="71.013931">Salut ((nom)),</tspan>
+    <tspan font-size="24px" id="tspan72" y="316.73279" x="245.998305" dx="0"/>
+   </tspan>
+   <tspan id="tspan78" y="356.73279" x="71.013931">
+    <tspan font-size="24px" id="tspan76" y="356.73279" x="71.013931">J'essaie Notification. Aujourd'hui nous</tspan>
+   </tspan>
+   <tspan id="tspan82" y="396.73279" x="71.013931">
+    <tspan font-size="24px" id="tspan80" y="396.73279" x="71.013931">sommes ((jour)) et ma couleur préférée</tspan>
+   </tspan>
+   <tspan id="tspan86" y="436.73279" x="71.013931">
+    <tspan font-size="24px" id="tspan84" y="436.73279" x="71.013931">est ((couleur)).</tspan>
+   </tspan>
+  </text>
+ </g></svg>
