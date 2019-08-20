@@ -13,16 +13,18 @@
 {% macro sub_navigation(
   item_set
 ) %}
-  <nav class="sub-navigation">
+  <nav aria-label="sub-navigation" id="sub-navigation" class="sub-navigation">
     <ol itemscope itemtype="http://schema.org/ItemList">
       {% for item in item_set %}
         {{ sub_navigation_item(item) }}
         {% if item.sub_navigation_items %}
-          <ol itemscope itemtype="http://schema.org/ItemList">
-            {% for sub_item in item.sub_navigation_items %}
-              {{ sub_navigation_item(sub_item) }}
-            {% endfor %}
-          </ol>
+          <li>
+            <ol itemscope itemtype="http://schema.org/ItemList">
+              {% for sub_item in item.sub_navigation_items %}
+                {{ sub_navigation_item(sub_item) }}
+              {% endfor %}
+            </ol>
+          </li>
         {% endif %}
       {% endfor %}
     </ol>
