@@ -40,7 +40,11 @@
         </p>
       </div>
       <div class="column-half">
-        <img src="{{ asset_url('images/product/01-templates.svg') }}" alt="">
+        {% if current_lang == "fr" %}
+          <img src="{{ asset_url('images/product/01-templates-fr.svg') }}" alt="" />
+        {% else %}
+          <img src="{{ asset_url('images/product/01-templates.svg') }}" alt="" />
+        {% endif %}
       </div>
     </div>
   </div>
@@ -54,10 +58,11 @@
           {{ _('Upload a spreadsheet of email addresses or phone numbers and Notification sends the messages.') }}
         </p>
         {% set alt = _('A screenshot of a spreadsheet with columns for email address, name and colour') %}
-        <img
-          src="{{ asset_url('images/product/03-spreadsheet.svg') }}"
-          alt=alt
-        >
+        {% if current_lang == "fr" %}
+          <img src="{{ asset_url('images/product/03-spreadsheet-fr.svg') }}" alt="" />
+        {% else %}
+          <img src="{{ asset_url('images/product/03-spreadsheet.svg') }}" alt="" />
+        {% endif %}
       </div>
       <div class="column-half">
         <p>

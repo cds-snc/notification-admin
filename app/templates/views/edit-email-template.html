@@ -20,7 +20,7 @@
       <div class="grid-row">
         <div class="column-five-sixths">
           <div class="form-group">
-            <a href="{{ url_for('main.features_templates') }}">{{ _(('Formatting Guide')) }}</a>
+            <a href="{{ url_for('main.features_templates') }}">{{ _('Formatting Guide') }}</a>
           </div>
           {% set hint_txt = _('Your recipients won’t see this:') %}
           {{ textbox(form.name, width='1-1', hint=hint_txt, rows=10) }}
