@@ -110,7 +110,7 @@ navigation = {
 def get_current_locale(application):
     requestLang = request.accept_languages.best_match(application.config['LANGUAGES'])
     if requestLang is None:
-        requestLang == "en"
+        requestLang = "en"
     lang = session.get("userlang", requestLang)
     session["userlang"] = lang
     return lang
