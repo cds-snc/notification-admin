@@ -88,7 +88,6 @@ const javascripts = () => {
       paths.src + 'javascripts/highlightTags.js',
       paths.src + 'javascripts/fileUpload.js',
       paths.src + 'javascripts/expandCollapse.js',
-      paths.src + 'javascripts/radioSelect.js',
       paths.src + 'javascripts/updateContent.js',
       paths.src + 'javascripts/listEntry.js',
       paths.src + 'javascripts/liveSearch.js',
