@@ -88,7 +88,6 @@ const javascripts = () => {
       paths.src + 'javascripts/highlightTags.js',
       paths.src + 'javascripts/fileUpload.js',
       paths.src + 'javascripts/expandCollapse.js',
-      paths.src + 'javascripts/radioSelect.js',
       paths.src + 'javascripts/updateContent.js',
       paths.src + 'javascripts/listEntry.js',
       paths.src + 'javascripts/liveSearch.js',
@@ -168,12 +167,7 @@ const lint = {
         paths.src + 'stylesheets/*.scss',
         paths.src + 'stylesheets/components/*.scss',
         paths.src + 'stylesheets/views/*.scss',
-      ])
-      .pipe(plugins.sassLint({
-        'options': { 'formatter': 'stylish' }
-      }))
-      .pipe(plugins.sassLint.format())
-      .pipe(plugins.sassLint.failOnError());
+      ]);
   },
   'js': (cb) => {
     return src(paths.src + 'javascripts/**/*.js')
