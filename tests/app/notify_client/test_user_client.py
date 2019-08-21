@@ -57,7 +57,9 @@ def test_client_updates_password_separately(mocker, api_user_active):
     mock_update_password = mocker.patch('app.notify_client.user_api_client.UserApiClient.post')
 
     user_api_client.update_password(api_user_active['id'], expected_params['_password'])
-    mock_update_password.assert_called_once_with(expected_url, data=expected_params)
+    mock_update_password.assert_called_once_with(
+        expected_url,
+        data={'_password': '272dfee24acc4d6cc0f81a26d17a406cad1ee7579bcc1671c22f530b6d6845c3'})
 
 
 def test_client_activates_if_pending(mocker, api_user_pending):
