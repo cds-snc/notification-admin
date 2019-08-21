@@ -2,7 +2,8 @@ const path = require("path");
 const webpack = require("webpack");
 
 module.exports = {
-  mode: "production", //development
+  //mode: "production", //development
+  mode: "development",
   entry: "./app/assets/javascripts/index.js",
   watch: true,
   output: {
