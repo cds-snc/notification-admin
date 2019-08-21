@@ -167,12 +167,7 @@ const lint = {
         paths.src + 'stylesheets/*.scss',
         paths.src + 'stylesheets/components/*.scss',
         paths.src + 'stylesheets/views/*.scss',
-      ])
-      .pipe(plugins.sassLint({
-        'options': { 'formatter': 'stylish' }
-      }))
-      .pipe(plugins.sassLint.format())
-      .pipe(plugins.sassLint.failOnError());
+      ]);
   },
   'js': (cb) => {
     return src(paths.src + 'javascripts/**/*.js')
