@@ -21,7 +21,14 @@
     @include button($grey-3);
     margin-right: $gutter-half;
 
+    &:focus {
+      color: #000;
+      outline: 2px solid #00823b;
+    }
+
   }
+
+  
 
   .js-done-button-block {
 

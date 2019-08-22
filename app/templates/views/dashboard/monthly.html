@@ -6,8 +6,8 @@
 {% extends "withnav_template.html" %}
 
 {% block service_page_title %}
-  {{ _(('Messages sent,')) }}
-  {{ selected_year }} {{ _(('to')) }} {{ selected_year + 1 }} {{ _(('fiscal year')) }}
+  {{ _('Messages sent,') }}
+  {{ selected_year }} {{ _('to') }} {{ selected_year + 1 }} {{ _('fiscal year') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -70,7 +70,7 @@
   {% endif %}
 
   <p class="align-with-heading-copy">
-    {{ _(('Fiscal year ends 31 March.')) }}
+    {{ _('Fiscal year ends 31 March.') }}
   </p>
 
 {% endblock %}
