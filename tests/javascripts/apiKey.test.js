@@ -117,13 +117,6 @@ describe('API key', () => {
 
       });
 
-      test("It should set the component's minimum height based on its height when the page loads", () => {
-
-        // to prevent the position of the button moving when the state changes
-        expect(window.getComputedStyle(component)['min-height']).toEqual(`${componentHeightOnLoad}px`);
-
-      });
-
     });
 
     describe("If you click the 'Copy API key to clipboard' button", () => {
