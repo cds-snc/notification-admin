@@ -2,9 +2,12 @@
   "use strict";
 
   Modules.TemplateFolderForm = function() {
-    console.log(window);
-    console.log(window.polygot);
-    console.log(window.moment);
+    
+    //console.log(window);
+    //console.log(window.polygot);
+    //console.log(window.moment);
+    var test = window.polyglot.t("now")
+    console.log("wt", test)
 
     this.start = function(templateFolderForm) {
       this.$form = $(templateFolderForm);
