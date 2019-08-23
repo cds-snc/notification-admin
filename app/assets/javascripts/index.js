@@ -12,5 +12,11 @@ if (el) {
   ReactDOM.render(<ScheduleMessage days={days} />, el);
 }
 
+console.log("test");
+console.log(window.APP_PHRASES);
+console.log("t2");
+
 window.moment = Moment;
 window.polyglot = new Polyglot({ phrases: APP_PHRASES, locale: APP_LANG });
+
+console.log(window.polyglot);

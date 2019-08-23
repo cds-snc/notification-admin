@@ -2,6 +2,9 @@
   "use strict";
 
   Modules.TemplateFolderForm = function() {
+    console.log(window);
+    console.log(window.polygot);
+    console.log(window.moment);
 
     this.start = function(templateFolderForm) {
       this.$form = $(templateFolderForm);
@@ -232,7 +235,7 @@
     this.nothingSelectedButtons = $(`
       <div id="nothing_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button-secondary" value="add-new-template">New template</button>
+          <button class="button-secondary" value="add-new-template">TEST</button>
           <button class="button-secondary" value="add-new-folder">New folder</button>
           <div class="template-list-selected-counter">
             <span class="template-list-selected-counter__count" aria-hidden="true">
