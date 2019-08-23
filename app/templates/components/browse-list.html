@@ -8,7 +8,7 @@
               <a href="{{ item.link }}" class="browse-list-link{% if item.destructive %}-destructive{% endif %}">{{ item.title }}</a>
               {% if item.hint %}
                 <div class="browse-list-hint">
-                  {{ item.hint }}
+                  {{ _(item.hint) }}
                 </div>
               {% endif %}
             </li>

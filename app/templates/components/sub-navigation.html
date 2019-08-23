@@ -5,7 +5,7 @@
       itemtype="http://schema.org/ListItem"
   >
     <a href="{{ url_for(item['link']) }}" itemprop="item">
-      <span itemprop="name">{{item['name']}}</span>
+      <span itemprop="name">{{ _(item['name']) }}</span>
     </a>
   </li>
 {% endmacro %}
@@ -21,7 +21,8 @@
           <li>
             <ol itemscope itemtype="http://schema.org/ItemList">
               {% for sub_item in item.sub_navigation_items %}
-                {{ sub_navigation_item(sub_item) }}
+                {% set sub_item_text = _(sub_navigation_item(sub_item)) %}
+                {{ sub_item_text }}
               {% endfor %}
             </ol>
           </li>
