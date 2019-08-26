@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-    {% set txt = _('{} email message template') %}
+    {% set txt = _('{} email template') %}
     {{ page_header(
       txt.format(heading_action),
       back_link=url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.choose_template', service_id=current_service.id, template_folder_id=template_folder_id)
