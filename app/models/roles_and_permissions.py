@@ -1,4 +1,5 @@
 from itertools import chain
+from flask_babel import _
 
 roles = {
     'send_messages': ['send_texts', 'send_emails', 'send_letters'],
@@ -18,11 +19,11 @@ roles_by_permission = {
 all_permissions = set(roles_by_permission.values())
 
 permissions = (
-    ('view_activity', 'See dashboard'),
-    ('send_messages', 'Send messages'),
-    ('manage_templates', 'Add and edit templates'),
-    ('manage_service', 'Manage settings and teams'),
-    ('manage_api_keys', 'Manage API integration'),
+    ('view_activity', _('See dashboard')),
+    ('send_messages', _('Send messages')),
+    ('manage_templates', _('Add and edit templates')),
+    ('manage_service', _('Manage settings and teams')),
+    ('manage_api_keys', _('Manage API integration')),
 )
 
 

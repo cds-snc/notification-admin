@@ -43,7 +43,7 @@
   </ul>
 
   <h2 class="heading-medium">{{ _('Leaving Notification') }}</h2>
-  <p>You can leave Notification at any time. Just <a href="{{url_for('.feedback', ticket_type='ask-question-give-feedback')}}">contact us</a> and we’ll close your account.</p>
+  <p>{{ _('You can leave Notification at any time. Just') }} <a href="{{url_for('.feedback', ticket_type='ask-question-give-feedback')}}">{{ _('contact us') }}</a> {{ _('and we’ll close your account.') }}</p>
   <p>{{ _('We’ll delete all your data when we close your account.')}} </p>
 
 {% endblock %}

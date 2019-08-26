@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-23 13:05-0400\n"
+"POT-Creation-Date: 2019-08-26 12:12-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -13,6 +13,30 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
+
+#: app/main/forms.py:122 app/main/forms.py:146 app/main/forms.py:152
+#: app/main/forms.py:158 app/main/forms.py:165 app/main/forms.py:373
+#: app/main/forms.py:383 app/main/forms.py:409 app/main/forms.py:421
+#: app/main/forms.py:424 app/main/forms.py:534 app/main/forms.py:542
+#: app/main/forms.py:561 app/main/forms.py:577 app/main/forms.py:606
+#: app/main/forms.py:619 app/main/forms.py:638 app/main/forms.py:658
+#: app/main/forms.py:663 app/main/forms.py:1206 app/main/forms.py:1211
+#: app/main/forms.py:1219 app/main/forms.py:1224 app/main/forms.py:1274
+#: app/main/forms.py:1381 app/main/forms.py:1392 app/main/forms.py:1557
+msgid "Can’t be empty"
+msgstr "Ce champ doit être rempli."
+
+#: app/main/forms.py:371 app/templates/views/user-profile.html:35
+msgid "Email address"
+msgstr "Adresse courriel"
+
+#: app/main/forms.py:376 app/templates/views/user-profile.html:53
+msgid "Password"
+msgstr "Mot de passe"
+
+#: app/main/forms.py:377
+msgid "Enter your password"
+msgstr ""
 
 # French translations for PROJECT.
 # Copyright (C) 2019 ORGANIZATION
@@ -26,12 +50,49 @@ msgstr "Veuillez entrer le code de sécurité."
 msgid "What’s your service called?"
 msgstr " Quel est le nom de votre service?"
 
-#: app/main/forms.py:606 app/main/forms.py:619
-msgid "Can’t be empty"
-msgstr "Ce champ doit être rempli."
-
 #: app/main/forms.py:617
 msgid "What’s your key called?"
+msgstr ""
+
+#: app/main/forms.py:657
+msgid "Template name"
+msgstr ""
+
+#: app/main/forms.py:661
+msgid "Message"
+msgstr ""
+
+#: app/main/forms.py:1163
+msgid "Search by email address"
+msgstr ""
+
+#: app/main/forms.py:1164
+msgid "Search by phone number"
+msgstr ""
+
+#: app/main/forms.py:1381
+msgid "Folder name"
+msgstr ""
+
+#: app/main/forms.py:1442
+msgid "Email"
+msgstr "Courriel"
+
+#: app/main/forms.py:1443
+msgid "Text message"
+msgstr "Message texte"
+
+#: app/main/forms.py:1444
+msgid "Letter"
+msgstr ""
+
+#: app/main/forms.py:1445 app/templates/views/templates/copy.html:7
+#: app/templates/views/templates/copy.html:13
+msgid "Copy an existing template"
+msgstr ""
+
+#: app/main/forms.py:1477
+msgid "Choose a folder"
 msgstr ""
 
 #: app/main/forms.py:1486 app/templates/main_template.html:23
@@ -41,6 +102,53 @@ msgstr "Nouveau modèle"
 #: app/main/forms.py:1489
 msgid "Select the type of template you want to add"
 msgstr "Sélectionnez le type de modèle que vous voulez ajouter."
+
+#: app/main/validators.py:79
+msgid "Enter a valid email address"
+msgstr ""
+
+#: app/main/views/sign_in.py:50
+msgid "The email address or password you entered is incorrect."
+msgstr ""
+
+#: app/main/views/two_factor.py:25
+msgid "Email resent"
+msgstr ""
+
+#: app/main/views/two_factor.py:25
+#: app/templates/views/change-email-continue.html:4
+#: app/templates/views/password-reset-sent.html:4
+#: app/templates/views/password-reset-sent.html:11
+#: app/templates/views/registration-continue.html:4
+#: app/templates/views/resend-email-verification.html:6
+#: app/templates/views/resend-email-verification.html:11
+msgid "Check your email"
+msgstr "Vérifier votre courriel"
+
+#: app/models/roles_and_permissions.py:22
+msgid "See dashboard"
+msgstr ""
+
+#: app/models/roles_and_permissions.py:23
+msgid "Send messages"
+msgstr ""
+
+#: app/models/roles_and_permissions.py:24
+msgid "Add and edit templates"
+msgstr ""
+
+#: app/models/roles_and_permissions.py:25
+msgid "Manage settings and teams"
+msgstr ""
+
+#: app/models/roles_and_permissions.py:26
+msgid "Manage API integration"
+msgstr ""
+
+#: app/models/service.py:523 app/templates/components/folder-path.html:25
+#: app/templates/main_nav.html:10
+msgid "Templates"
+msgstr "Modèles"
 
 #: app/templates/admin_template.html:24 app/templates/admin_template.html:65
 #: app/templates/views/signedout.html:8
@@ -99,10 +207,6 @@ msgstr "mode de recherche"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: app/templates/components/folder-path.html:25 app/templates/main_nav.html:10
-msgid "Templates"
-msgstr "Modèles"
-
 #: app/templates/main_nav.html:14
 msgid "Uploaded files"
 msgstr ""
@@ -151,12 +255,29 @@ msgstr ""
 msgid "Choose a different time"
 msgstr ""
 
+#: app/templates/main_template.html:28
+msgid "Clear"
+msgstr ""
+
+#: app/templates/main_template.html:29
+#: app/templates/views/templates/_move_to.html:18
+msgid "Add to new folder"
+msgstr "Ajouter à un nouveau dossier"
+
+#: app/templates/main_template.html:30
+msgid "Move"
+msgstr ""
+
 #: app/templates/org_template.html:16
 #: app/templates/views/organisations/add-organisation.html:16
 #: app/templates/views/organisations/index.html:17
 #: app/templates/withnav_template.html:19
 msgid "Switch service"
 msgstr "Changer de service"
+
+#: app/templates/withoutnav_template.html:7
+msgid "Back to"
+msgstr ""
 
 #: app/templates/components/api-key.html:4
 msgid "API data:"
@@ -496,6 +617,7 @@ msgid "complete…"
 msgstr "complété…"
 
 #: app/templates/partials/jobs/notifications.html:42
+#: app/templates/views/notifications.html:64
 msgid "Download this report"
 msgstr "Télécharger ce rapport"
 
@@ -746,15 +868,6 @@ msgstr "Si vous avez besoin d’accéder à"
 msgid ", you’ll have to ask them to invite you again."
 msgstr "vous aurez à leur demander de vous réinviter. "
 
-#: app/templates/views/change-email-continue.html:4
-#: app/templates/views/password-reset-sent.html:4
-#: app/templates/views/password-reset-sent.html:11
-#: app/templates/views/registration-continue.html:4
-#: app/templates/views/resend-email-verification.html:6
-#: app/templates/views/resend-email-verification.html:11
-msgid "Check your email"
-msgstr "Vérifier votre courriel"
-
 #: app/templates/views/change-email-continue.html:9
 #: app/templates/views/registration-continue.html:9
 msgid "Check your email​"
@@ -933,6 +1046,10 @@ msgstr "Maintenu par GOV.UK"
 #: app/templates/views/edit-email-template.html:9
 msgid "email template"
 msgstr "modèle de courriel"
+
+#: app/templates/views/edit-email-template.html:13
+msgid "{} email message template"
+msgstr ""
 
 #: app/templates/views/edit-email-template.html:23
 #: app/templates/views/edit-sms-template.html:21
@@ -1263,15 +1380,16 @@ msgstr "Envoyer un courriel d’invitation"
 
 #: app/templates/views/manage-users.html:17
 msgid "Share templates with your team"
-msgstr ""
+msgstr "Partager des modèles avec votre équipe"
 
 #: app/templates/views/manage-users.html:37
 msgid "invited"
 msgstr ""
 
 #: app/templates/views/manage-users.html:41
+#: app/templates/views/organisations/organisation/users/index.html:37
 msgid "you"
-msgstr ""
+msgstr "vous"
 
 #: app/templates/views/manage-users.html:61
 msgid "Cannot see any folders"
@@ -1303,7 +1421,7 @@ msgstr ""
 
 #: app/templates/views/manage-users.html:97
 msgid "Invite someone to join your team"
-msgstr ""
+msgstr "Inviter une personne à se joindre à votre équipe"
 
 #: app/templates/views/message-status.html:11
 msgid ""
@@ -1531,6 +1649,14 @@ msgstr "Au moins 8 caractères"
 msgid ""
 "Message about email address does not exist. Some one needs to figure out "
 "the words here."
+msgstr ""
+
+#: app/templates/views/notifications.html:66
+msgid "Data available for"
+msgstr ""
+
+#: app/templates/views/notifications.html:66
+msgid "days"
 msgstr ""
 
 #: app/templates/views/password-reset-sent.html:13
@@ -1836,6 +1962,7 @@ msgid "To remove these restrictions, you can"
 msgstr "Pour enlever ces limites, vous pouvez"
 
 #: app/templates/views/service-settings.html:240
+#: app/templates/views/terms-of-use.html:46
 msgid "contact us"
 msgstr "communiquer avec nous"
 
@@ -2174,6 +2301,14 @@ msgstr ""
 msgid "Leaving Notification"
 msgstr "Quitter Notification"
 
+#: app/templates/views/terms-of-use.html:46
+msgid "You can leave Notification at any time. Just"
+msgstr ""
+
+#: app/templates/views/terms-of-use.html:46
+msgid "and we’ll close your account."
+msgstr ""
+
 #: app/templates/views/terms-of-use.html:47
 msgid "We’ll delete all your data when we close your account."
 msgstr "Nous supprimerons toutes vos données au moment de fermer votre compte."
@@ -2306,17 +2441,9 @@ msgstr "Nous vous avons envoyé un code de sécurité par message texte."
 msgid "Your profile"
 msgstr "Votre profil"
 
-#: app/templates/views/user-profile.html:35
-msgid "Email address"
-msgstr "Adresse courriel"
-
 #: app/templates/views/user-profile.html:46
 msgid "Mobile number"
 msgstr "Téléphone cellulaire"
-
-#: app/templates/views/user-profile.html:53
-msgid "Password"
-msgstr "Mot de passe"
 
 #: app/templates/views/user-profile.html:54
 msgid "Last changed "
@@ -3228,10 +3355,6 @@ msgid ""
 "        financial year."
 msgstr ""
 
-#: app/templates/views/templates/_move_to.html:18
-msgid "Add to new folder"
-msgstr "Ajouter à un nouveau dossier"
-
 #: app/templates/views/templates/_move_to.html:26
 msgid "Add new folder"
 msgstr "Ajouter un nouveau dossier"
@@ -3292,11 +3415,6 @@ msgstr "courriels ou messages textes"
 #: app/templates/views/templates/choose.html:34
 msgid "You can also create folders to organize your templates."
 msgstr "Vous pouvez aussi créer des dossiers pour classer vos modèles."
-
-#: app/templates/views/templates/copy.html:7
-#: app/templates/views/templates/copy.html:13
-msgid "Copy an existing template"
-msgstr ""
 
 #: app/templates/views/templates/template.html:51
 msgid "Last edited"

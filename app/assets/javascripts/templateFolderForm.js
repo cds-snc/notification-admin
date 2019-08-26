@@ -2,12 +2,6 @@
   "use strict";
 
   Modules.TemplateFolderForm = function() {
-    
-    //console.log(window);
-    //console.log(window.polygot);
-    //console.log(window.moment);
-    var test = window.polyglot.t("now")
-    console.log("wt", test)
 
     this.start = function(templateFolderForm) {
       this.$form = $(templateFolderForm);
@@ -109,7 +103,7 @@
 
     this.addClearButton = function(state) {
       let selector = 'button[value=add-new-template]';
-      let $clear = this.makeButton('Clear', {
+      let $clear = this.makeButton(window.polyglot.t('clear_button'), {
         'onclick': () => {
 
           // uncheck all templates and folders
@@ -176,8 +170,8 @@
     };
 
     this.selectionStatus = {
-      'default': 'Nothing selected',
-      'selected': numSelected => `${numSelected} selected`,
+      'default': window.polyglot.t('nothing_selected'),
+      'selected': numSelected => `${numSelected}` + window.polyglot.t('selected'),
       'update': numSelected => {
         let message = (numSelected > 0) ? this.selectionStatus.selected(numSelected) : this.selectionStatus.default;
 
@@ -238,8 +232,8 @@
     this.nothingSelectedButtons = $(`
       <div id="nothing_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button-secondary" value="add-new-template">TEST</button>
-          <button class="button-secondary" value="add-new-folder">New folder</button>
+          <button class="button-secondary" value="add-new-template">${window.polyglot.t('new_template_button')}</button>
+          <button class="button-secondary" value="add-new-folder">${window.polyglot.t('new_folder_button')}</button>
           <div class="template-list-selected-counter">
             <span class="template-list-selected-counter__count" aria-hidden="true">
               ${this.selectionStatus.default}
@@ -253,7 +247,7 @@
       <div id="items_selected">
         <div class="js-stick-at-bottom-when-scrolling">
           <button class="button-secondary" value="move-to-existing-folder">Move</button>
-          <button class="button-secondary" value="move-to-new-folder">Add to new folder</button>
+          <button class="button-secondary" value="move-to-new-folder">${window.polyglot.t('add_to_new_folder')}</button>
           <div class="template-list-selected-counter" aria-hidden="true">
             <span class="template-list-selected-counter__count" aria-hidden="true">
               ${this.selectionStatus.selected(1)}
