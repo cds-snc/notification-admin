@@ -109,7 +109,7 @@ class MultiCheckboxField(SelectMultipleField):
     option_widget = CheckboxInput()
 
 
-def email_address(label='Email address', gov_user=True, required=True):
+def email_address(label=_('Email address'), gov_user=True, required=True):
 
     validators = [
         ValidEmail(),
@@ -819,12 +819,12 @@ class SupportType(StripWhitespaceForm):
 
 class Feedback(StripWhitespaceForm):
     name = StringField('Name')
-    email_address = email_address(label='Email address', gov_user=False, required=False)
+    email_address = email_address(label=_('Email address'), gov_user=False, required=False)
     feedback = TextAreaField('Your message', validators=[DataRequired(message="Can’t be empty")])
 
 
 class Problem(Feedback):
-    email_address = email_address(label='Email address', gov_user=False)
+    email_address = email_address(label=_('Email address'), gov_user=False)
 
 
 class Triage(StripWhitespaceForm):
@@ -891,8 +891,8 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
     )
 
     url = StringField("URL")
-    email_address = EmailField("Email address")
-    phone_number = StringField("Phone number")
+    email_address = EmailField(_("Email address"))
+    phone_number = StringField(_("Phone number"))
 
     def validate(self):
 
@@ -1135,7 +1135,7 @@ class RequiredDateFilterForm(StripWhitespaceForm):
 class SearchByNameForm(StripWhitespaceForm):
 
     search = SearchField(
-        'Search by name',
+        _('Search by name'),
         validators=[DataRequired("You need to enter full or partial name to search by.")],
     )
 
@@ -1143,7 +1143,7 @@ class SearchByNameForm(StripWhitespaceForm):
 class SearchUsersByEmailForm(StripWhitespaceForm):
 
     search = SearchField(
-        'Search by name or email address',
+        _('Search by name or email address'),
         validators=[
             DataRequired("You need to enter full or partial email address to search by.")
         ],
@@ -1152,7 +1152,7 @@ class SearchUsersByEmailForm(StripWhitespaceForm):
 
 class SearchUsersForm(StripWhitespaceForm):
 
-    search = SearchField('Search by name or email address')
+    search = SearchField(_('Search by name or email address'))
 
 
 class SearchNotificationsForm(StripWhitespaceForm):

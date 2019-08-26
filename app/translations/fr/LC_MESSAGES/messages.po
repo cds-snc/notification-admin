@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-26 12:12-0400\n"
+"POT-Creation-Date: 2019-08-26 13:30-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -13,6 +13,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
+
+#: app/main/forms.py:112 app/main/forms.py:371 app/main/forms.py:822
+#: app/main/forms.py:827 app/main/forms.py:894
+#: app/templates/views/user-profile.html:35
+msgid "Email address"
+msgstr "Adresse courriel"
 
 #: app/main/forms.py:122 app/main/forms.py:146 app/main/forms.py:152
 #: app/main/forms.py:158 app/main/forms.py:165 app/main/forms.py:373
@@ -25,10 +31,6 @@ msgstr ""
 #: app/main/forms.py:1381 app/main/forms.py:1392 app/main/forms.py:1557
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
-
-#: app/main/forms.py:371 app/templates/views/user-profile.html:35
-msgid "Email address"
-msgstr "Adresse courriel"
 
 #: app/main/forms.py:376 app/templates/views/user-profile.html:53
 msgid "Password"
@@ -60,6 +62,18 @@ msgstr ""
 
 #: app/main/forms.py:661
 msgid "Message"
+msgstr ""
+
+#: app/main/forms.py:895
+msgid "Phone number"
+msgstr ""
+
+#: app/main/forms.py:1138
+msgid "Search by name"
+msgstr ""
+
+#: app/main/forms.py:1146 app/main/forms.py:1155
+msgid "Search by name or email address"
 msgstr ""
 
 #: app/main/forms.py:1163
@@ -149,6 +163,18 @@ msgstr ""
 #: app/templates/main_nav.html:10
 msgid "Templates"
 msgstr "Modèles"
+
+#: app/models/template_list.py:134
+msgid "Email template"
+msgstr ""
+
+#: app/models/template_list.py:135
+msgid "Text message template"
+msgstr ""
+
+#: app/models/template_list.py:136
+msgid "Letter template"
+msgstr ""
 
 #: app/templates/admin_template.html:24 app/templates/admin_template.html:65
 #: app/templates/views/signedout.html:8
@@ -3142,6 +3168,7 @@ msgid "Pricing"
 msgstr ""
 
 #: app/templates/views/features/emails.html:30
+#: app/templates/views/service-settings/set-email.html:20
 msgid "It’s free to send emails through Notification."
 msgstr ""
 

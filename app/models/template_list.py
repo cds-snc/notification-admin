@@ -1,3 +1,5 @@
+from flask_babel import _
+
 class TemplateList():
 
     def __init__(
@@ -129,9 +131,9 @@ class TemplateListTemplate(TemplateListItem):
         super().__init__(template, ancestors)
         self.service_id = service_id
         self.hint = {
-            'email': 'Email template',
-            'sms': 'Text message template',
-            'letter': 'Letter template',
+            'email': _('Email template'),
+            'sms': _('Text message template'),
+            'letter': _('Letter template'),
         }.get(template['template_type'])
 
 
