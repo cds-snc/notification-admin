@@ -1,7 +1,7 @@
 {% extends "content_template.html" %}
 
 {% block per_page_title %}
-  Documentation
+  {{ _('Documentation') }}
 {% endblock %}
 
 {% block content_column_content %}
@@ -33,5 +33,4 @@
       <li><a href="https://docs.notifications.service.gov.uk/{{ key }}.html" target="_blank" rel="noopener">{{ label }}</a></li>
     {% endfor %}
   </ul>
-
 {% endblock %}

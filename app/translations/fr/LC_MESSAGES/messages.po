@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-08-26 13:30-0400\n"
+"POT-Creation-Date: 2019-08-26 13:37-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -186,6 +186,7 @@ msgid "Menu"
 msgstr ""
 
 #: app/templates/admin_template.html:35 app/templates/admin_template.html:57
+#: app/templates/views/documentation.html:4
 #: app/templates/views/documentation.html:9
 msgid "Documentation"
 msgstr "Documentation"
@@ -826,7 +827,7 @@ msgstr "Envoyer un document par courriel"
 msgid ""
 "Use double brackets to add a placeholder field to your template. This "
 "will contain a secure link to download the document."
-msgstr ""
+msgstr "Utiliser les crochets doubles pour ajouter un champ à votre modèle. Cela "
 
 #: app/templates/partials/templates/guidance-send-a-document.html:9
 msgid "Download your document at: ((link_to_document))"
@@ -1152,7 +1153,7 @@ msgstr ""
 "Notification? Veuillez demander à votre gestionnaire de compte de la "
 "réinitialiser."
 
-#: app/templates/views/features.html:11
+#: app/templates/views/features.html:6 app/templates/views/features.html:11
 #: app/templates/views/features/emails.html:16
 #: app/templates/views/features/text-messages.html:16
 msgid "Features"

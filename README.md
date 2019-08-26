@@ -3,6 +3,7 @@
 Notifications admin application.
 
 ## Upstream
+
 This repo is a clone / modifed version of:
 https://github.com/alphagov/notifications-admin
 
@@ -12,6 +13,11 @@ https://github.com/alphagov/notifications-admin
  - Create and manage services
  - Send batch emails and SMS by uploading a CSV
  - Show history of notifications
+
+## Functional constraints
+
+- We currently do not support sending of letters
+- We currently do not receive a response if text messages were delivered or not
 
 ## First-time setup
 
@@ -38,17 +44,71 @@ version of Node.
     npm rebuild node-sass
 ```
 
-The app runs within a virtual environment. We use mkvirtualenv for easier working with venvs
-```shell
-    pip install virtualenvwrapper
-    mkvirtualenv -p /usr/local/bin/python3 notifications-admin
+### Local installation instruction 
+
+On OS X:
+
+1. Install PyEnv with Homebrew. This will preserve your sanity. 
+
+`brew install pyenv`
+
+2. Install Python 3.6.9 or whatever is the latest
+
+`pyenv install 3.6.9`
+
+3. If you expect no conflicts, set `3.6.9` as you default
+
+`pyenv global 3.6.9`
+
+4. Ensure it installed by running
+
+`python --version` 
+
+if it did not, take a look here: https://github.com/pyenv/pyenv/issues/660
+
+5. Install `virtualenv`:
+
+`pip install virtualenvwrapper`
+
+6. Add the following to your shell rc file. ex: `.bashrc` or `.zshrc`
+
+```
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/Devel
+source  ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 ```
 
-Install dependencies and build the frontend assets:
-```shell
-    workon notifications-admin
-    ./scripts/bootstrap.sh
-```
+7. Restart your terminal and make your virtual environtment:
+
+`mkvirtualenv -p ~/.pyenv/versions/3.6.9/bin/python notifications-admin`
+
+8. You can now return to your environment any time by entering
+
+`workon notifications-admin`
+
+9. Decrypt our existing set of environment variables
+
+`gcloud kms decrypt --project=[PROJECT_NAME] --plaintext-file=.env --ciphertext-file=.env.enc --location=global --keyring=[KEY_RING] --key=[KEY_NAME]`
+
+A sane set of defaults exists in `.env.example`
+
+10. Install all dependencies
+
+`pip3 install -r requirements.txt`
+
+11. Generate the version file ?!?
+
+`make generate-version-file`
+
+12.  Run the service
+
+`flask run -p 6012 --host=0.0.0.0`
+
+13. To test
+
+`pip3 install -r requirements_for_test.txt`
+
+`make test`
 
 ## Rebuilding the frontend assets
 
@@ -57,31 +117,6 @@ in a separate terminal from the app
 ```shell
     npm run watch
 ```
-
-## Create a local environment.sh file containing the following:
-
-```
-echo "
-export NOTIFY_ENVIRONMENT='development'
-export FLASK_APP=application.py
-export FLASK_DEBUG=1
-export WERKZEUG_DEBUG_PIN=off
-"> environment.sh
-```
-
-## AWS credentials
-
-Your aws credentials should be stored in a folder located at `~/.aws`. Follow [Amazon's instructions](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-config-files) for storing them correctly
-
-
-## Running the application
-
-```shell
-    workon notifications-admin
-    ./scripts/run_app.sh
-```
-
-Then visit [localhost:6012](http://localhost:6012)
 
 
 ## Updating application dependencies

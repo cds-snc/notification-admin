@@ -185,7 +185,7 @@ describe('FullscreenTable', () => {
     test("when the page has scrolled", () => {
 
       // scroll the window so the table fills the height of the window (768px)
-      windowMock.scrollBy(500);
+      //windowMock.scrollBy(500);
       
       // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
       setTimeout(function(){ 
