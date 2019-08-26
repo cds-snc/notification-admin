@@ -1,4 +1,5 @@
 from itertools import chain
+
 from flask_babel import _
 
 roles = {

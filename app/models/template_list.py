@@ -1,5 +1,6 @@
 from flask_babel import _
 
+
 class TemplateList():
 
     def __init__(

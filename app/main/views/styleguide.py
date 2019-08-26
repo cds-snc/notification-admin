@@ -1,6 +1,5 @@
 from flask import abort, current_app, render_template
 from flask_wtf import FlaskForm as Form
-from flask_babel import _
 from notifications_utils.template import Template
 from wtforms import (
     FileField,

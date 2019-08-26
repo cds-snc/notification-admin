@@ -7,8 +7,8 @@ from flask import (
     session,
     url_for,
 )
-from flask_login import current_user
 from flask_babel import _
+from flask_login import current_user
 
 from app import login_manager
 from app.main import main
