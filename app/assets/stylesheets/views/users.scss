@@ -4,6 +4,7 @@ $item-top-padding: $gutter-half;
 
   @include core-19;
   margin-bottom: $gutter;
+  margin-top: $gutter;
 
   &-item {
 
