@@ -22,6 +22,12 @@
     </div>
   {% endif %}
 
+  {% if current_user.has_permissions('manage_service') %}
+    <div>
+      <a href="{{ url_for('.invite_user', service_id=current_service.id) }}" class="button-secondary">{{ _('Invite someone to join your team') }}</a>
+    </div>
+  {% endif %}
+
   <div class="user-list">
 
      
@@ -91,11 +97,5 @@
       </div>
     {% endfor %}
   </div>
-
-  {% if current_user.has_permissions('manage_service') %}
-    <div class="js-stick-at-bottom-when-scrolling">
-      <a href="{{ url_for('.invite_user', service_id=current_service.id) }}" class="button-secondary">{{ _('Invite someone to join your team') }}</a>
-    </div>
-  {% endif %}
 
 {% endblock %}
