@@ -3,6 +3,7 @@ import time
 
 import pwnedpasswords
 from flask import current_app
+from flask_babel import _
 from notifications_utils.field import Field
 from notifications_utils.recipients import (
     InvalidEmailError,
@@ -26,7 +27,7 @@ class Blacklist:
     def __call__(self, form, field):
         if current_app.config.get('HIPB_ENABLED', None):
             hibp_bad_password_found = False
-            for _ in range(0, 3):  # Try 3 times. If the HIPB API is down then fall back to the old banlist.
+            for i in range(0, 3):  # Try 3 times. If the HIPB API is down then fall back to the old banlist.
                 try:
                     response = pwnedpasswords.check(field.data)
                     if response > 0:
@@ -75,7 +76,7 @@ class ValidGovEmail:
 class ValidEmail(Email):
 
     def __init__(self):
-        super().__init__('Enter a valid email address')
+        super().__init__(_('Enter a valid email address'))
 
     def __call__(self, form, field):
 

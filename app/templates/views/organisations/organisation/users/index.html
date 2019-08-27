@@ -34,7 +34,7 @@
             {%- elif user.status == 'cancelled' -%}
               {{ user.email_address }} (cancelled invite)
             {%- elif user.id == current_user.id -%}
-              (you)
+              ({{ _('you') }})
             {% else %}
               {{ user.email_address }}
             {% endif %}

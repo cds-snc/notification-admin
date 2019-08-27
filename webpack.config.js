@@ -3,7 +3,7 @@ const webpack = require("webpack");
 
 module.exports = {
   //mode: "production", //development
-  mode: "development",
+  mode: "production",
   entry: "./app/assets/javascripts/index.js",
   watch: true,
   output: {
