@@ -231,7 +231,17 @@ def get_all_personalisation_from_notification(notification):
     if notification['template']['template_type'] == 'sms':
         notification['personalisation']['phone_number'] = notification['to']
 
-    return notification['personalisation']
+    # Extract any file objects from the personalization
+    file_keys = [
+        k for k, v in (notification['personalisation'] or {}).items() if isinstance(v, dict) and 'document' in v
+    ]
+
+    personalisation_data = notification['personalisation'].copy()
+
+    for key in file_keys:
+        personalisation_data[key] = personalisation_data[key]['document']['url']
+
+    return personalisation_data
 
 
 @main.route("/services/<service_id>/download-notifications.csv")
