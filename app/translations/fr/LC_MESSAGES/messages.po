@@ -38,7 +38,7 @@ msgstr "Mot de passe"
 
 #: app/main/forms.py:377
 msgid "Enter your password"
-msgstr ""
+msgstr "Entrez votre mot de passe"
 
 # French translations for PROJECT.
 # Copyright (C) 2019 ORGANIZATION
@@ -54,39 +54,39 @@ msgstr " Quel est le nom de votre service?"
 
 #: app/main/forms.py:617
 msgid "What’s your key called?"
-msgstr ""
+msgstr "Quel est le nom de votre clé?"
 
 #: app/main/forms.py:657
 msgid "Template name"
-msgstr ""
+msgstr "Nom du modèle"
 
 #: app/main/forms.py:661
 msgid "Message"
-msgstr ""
+msgstr "Message"
 
 #: app/main/forms.py:895
 msgid "Phone number"
-msgstr ""
+msgstr "Numéro de téléphone"
 
 #: app/main/forms.py:1138
 msgid "Search by name"
-msgstr ""
+msgstr "Recherche par nom"
 
 #: app/main/forms.py:1146 app/main/forms.py:1155
 msgid "Search by name or email address"
-msgstr ""
+msgstr "Recherche par nom ou adresse électronique"
 
 #: app/main/forms.py:1163
 msgid "Search by email address"
-msgstr ""
+msgstr "Recherche par adresse électronique"
 
 #: app/main/forms.py:1164
 msgid "Search by phone number"
-msgstr ""
+msgstr "Recherche par numéro de téléphone"
 
 #: app/main/forms.py:1381
 msgid "Folder name"
-msgstr ""
+msgstr "Nom du dossier"
 
 #: app/main/forms.py:1442
 msgid "Email"
@@ -98,16 +98,16 @@ msgstr "Message texte"
 
 #: app/main/forms.py:1444
 msgid "Letter"
-msgstr ""
+msgstr "Lettre"
 
 #: app/main/forms.py:1445 app/templates/views/templates/copy.html:7
 #: app/templates/views/templates/copy.html:13
 msgid "Copy an existing template"
-msgstr ""
+msgstr "Copier un modèle existant"
 
 #: app/main/forms.py:1477
 msgid "Choose a folder"
-msgstr ""
+msgstr "Choisir un dossier"
 
 #: app/main/forms.py:1486 app/templates/main_template.html:23
 msgid "New template"
@@ -119,15 +119,15 @@ msgstr "Sélectionnez le type de modèle que vous voulez ajouter."
 
 #: app/main/validators.py:79
 msgid "Enter a valid email address"
-msgstr ""
+msgstr "Entrez une adresse courriel valide"
 
 #: app/main/views/sign_in.py:50
 msgid "The email address or password you entered is incorrect."
-msgstr ""
+msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact."
 
 #: app/main/views/two_factor.py:25
 msgid "Email resent"
-msgstr ""
+msgstr "Courriel renvoyé"
 
 #: app/main/views/two_factor.py:25
 #: app/templates/views/change-email-continue.html:4
@@ -141,23 +141,23 @@ msgstr "Vérifier votre courriel"
 
 #: app/models/roles_and_permissions.py:22
 msgid "See dashboard"
-msgstr ""
+msgstr "Voir le tableau de bord"
 
 #: app/models/roles_and_permissions.py:23
 msgid "Send messages"
-msgstr ""
+msgstr "Envoyer des messages"
 
 #: app/models/roles_and_permissions.py:24
 msgid "Add and edit templates"
-msgstr ""
+msgstr "Ajouter et modifier des modèles"
 
 #: app/models/roles_and_permissions.py:25
 msgid "Manage settings and teams"
-msgstr ""
+msgstr "Gérer les paramètres et les équipes"
 
 #: app/models/roles_and_permissions.py:26
 msgid "Manage API integration"
-msgstr ""
+msgstr "Gérer l’intégration de l’interface de programmation d’applications (API)"
 
 #: app/models/service.py:523 app/templates/components/folder-path.html:25
 #: app/templates/main_nav.html:10
@@ -166,24 +166,24 @@ msgstr "Modèles"
 
 #: app/models/template_list.py:134
 msgid "Email template"
-msgstr ""
+msgstr "Modèle de courriel"
 
 #: app/models/template_list.py:135
 msgid "Text message template"
-msgstr ""
+msgstr "Modèle de message texte"
 
 #: app/models/template_list.py:136
 msgid "Letter template"
-msgstr ""
+msgstr "Modèle de lettre"
 
 #: app/templates/admin_template.html:24 app/templates/admin_template.html:65
 #: app/templates/views/signedout.html:8
 msgid "Notification"
-msgstr ""
+msgstr "Notification"
 
 #: app/templates/admin_template.html:31
 msgid "Menu"
-msgstr ""
+msgstr "Menu"
 
 #: app/templates/admin_template.html:35 app/templates/admin_template.html:57
 #: app/templates/views/documentation.html:4
@@ -198,7 +198,7 @@ msgstr "Administrateur de la plateforme"
 
 #: app/templates/admin_template.html:47
 msgid "Sign out"
-msgstr ""
+msgstr "Quitter"
 
 #: app/templates/admin_template.html:58 app/templates/views/signin.html:7
 msgid "Sign in"
@@ -236,11 +236,11 @@ msgstr "Tableau de bord"
 
 #: app/templates/main_nav.html:14
 msgid "Uploaded files"
-msgstr ""
+msgstr "Fichiers téléchargés"
 
 #: app/templates/main_nav.html:19
 msgid "Uploads"
-msgstr ""
+msgstr "Téléchargements"
 
 #: app/templates/main_nav.html:21 app/templates/views/manage-users.html:9
 #: app/templates/views/manage-users.html:15
@@ -255,19 +255,19 @@ msgstr "Paramètres"
 
 #: app/templates/main_nav.html:29
 msgid "API integration"
-msgstr ""
+msgstr "Intégration de l’interface de programmation d’applications (API)"
 
 #: app/templates/main_template.html:21
 msgid "Now"
-msgstr ""
+msgstr "Maintenant"
 
 #: app/templates/main_template.html:22
 msgid "Done"
-msgstr ""
+msgstr "Terminer"
 
 #: app/templates/main_template.html:24
 msgid "New folder"
-msgstr ""
+msgstr "Nouveau dossier"
 
 #: app/templates/main_template.html:25
 #: app/templates/views/templates/_move_to.html:40
@@ -276,15 +276,15 @@ msgstr "Rien n’est sélectionné"
 
 #: app/templates/main_template.html:26
 msgid "selected"
-msgstr ""
+msgstr "sélectionné"
 
 #: app/templates/main_template.html:27
 msgid "Choose a different time"
-msgstr ""
+msgstr "Choisir un autre moment"
 
 #: app/templates/main_template.html:28
 msgid "Clear"
-msgstr ""
+msgstr "Effacer"
 
 #: app/templates/main_template.html:29
 #: app/templates/views/templates/_move_to.html:18
@@ -293,7 +293,7 @@ msgstr "Ajouter à un nouveau dossier"
 
 #: app/templates/main_template.html:30
 msgid "Move"
-msgstr ""
+msgstr "Déplacer"
 
 #: app/templates/org_template.html:16
 #: app/templates/views/organisations/add-organisation.html:16
@@ -304,7 +304,7 @@ msgstr "Changer de service"
 
 #: app/templates/withoutnav_template.html:7
 msgid "Back to"
-msgstr ""
+msgstr "Retour à"
 
 #: app/templates/components/api-key.html:4
 msgid "API data:"
@@ -428,11 +428,11 @@ msgstr "Non compléter"
 
 #: app/templates/components/tick-cross.html:1
 msgid "Can"
-msgstr ""
+msgstr "Peut"
 
 #: app/templates/components/tick-cross.html:2
 msgid "Can’t"
-msgstr "Peut"
+msgstr "Ne Peut pas"
 
 #: app/templates/components/tick-cross.html:3
 msgid "Done:"
@@ -839,33 +839,34 @@ msgstr "Ensuite, utilisez l’API pour téléverser votre document."
 
 #: app/templates/views/add-service.html:23
 msgid "Name your service in both official languages"
-msgstr ""
+msgstr "Nommer votre service dans les deux langues officielles"
 
 #: app/templates/views/add-service.html:26
 msgid "Notification displays your service name:"
-msgstr ""
+msgstr "Notification affiche le nom de votre service :"
 
 #: app/templates/views/add-service.html:29
 msgid "at the start of every text message"
-msgstr ""
+msgstr "au début de chaque message texte"
 
 #: app/templates/views/add-service.html:30
 msgid "as the ‘from’ address on emails you send"
-msgstr ""
+msgstr "dans l’adresse de l'expéditeur dans les courriels que vous envoyez"
 
 #: app/templates/views/add-service.html:34
 msgid ""
 "Your service name must include both English and French. It can’t be "
 "longer than 255 characters."
-msgstr ""
+msgstr "Le nom de votre service doit être en français et en anglais. Il ne peut compter"
+"plus de 255 caractères."
 
 #: app/templates/views/add-service.html:36
 msgid "For example:"
-msgstr ""
+msgstr "Par exemple :"
 
 #: app/templates/views/add-service.html:39
 msgid "Canadian Digital Service (CDS) | Service numérique canadien (SNC)"
-msgstr ""
+msgstr "Canadian Digital Service (CDS) | Service numérique canadien (SNC)"
 
 #: app/templates/views/add-service.html:47
 msgid "You can change this later"
@@ -1076,12 +1077,12 @@ msgstr "modèle de courriel"
 
 #: app/templates/views/edit-email-template.html:13
 msgid "{} email message template"
-msgstr ""
+msgstr "{} modèle de message électronique"
 
 #: app/templates/views/edit-email-template.html:23
 #: app/templates/views/edit-sms-template.html:21
 msgid "Formatting Guide"
-msgstr ""
+msgstr "Guide de formatage"
 
 #: app/templates/views/edit-email-template.html:25
 msgid "Your recipients won’t see this:"
@@ -1394,7 +1395,7 @@ msgstr "Nous vous enverrons un courriel pour créer un nouveau mot de passe"
 
 #: app/templates/views/forgot-password.html:17
 msgid "Send email"
-msgstr ""
+msgstr "Envoyer un courriel"
 
 #: app/templates/views/invite-user.html:9
 #: app/templates/views/invite-user.html:14
@@ -1411,7 +1412,7 @@ msgstr "Partager des modèles avec votre équipe"
 
 #: app/templates/views/manage-users.html:37
 msgid "invited"
-msgstr ""
+msgstr "invités"
 
 #: app/templates/views/manage-users.html:41
 #: app/templates/views/organisations/organisation/users/index.html:37
@@ -1420,31 +1421,31 @@ msgstr "vous"
 
 #: app/templates/views/manage-users.html:61
 msgid "Cannot see any folders"
-msgstr ""
+msgstr "Ne peut voir aucun dossier"
 
 #: app/templates/views/manage-users.html:65
 msgid "Can see all folders"
-msgstr ""
+msgstr "Peut voir tous les dossiers"
 
 #: app/templates/views/manage-users.html:72
 msgid "Signs in with a Fido2 key"
-msgstr ""
+msgstr "Se connecte avec une clé Fido2"
 
 #: app/templates/views/manage-users.html:74
 msgid "Signs in with a text message code"
-msgstr ""
+msgstr "Se connecte à l’aide d’un code envoyé par message texte"
 
 #: app/templates/views/manage-users.html:76
 msgid "Signs in with an email link"
-msgstr ""
+msgstr "Se connecte à l'aide d’un lien envoyé par courriel"
 
 #: app/templates/views/manage-users.html:84
 msgid "Cancel invitation"
-msgstr ""
+msgstr "Annuler l’invitation"
 
 #: app/templates/views/manage-users.html:86
 msgid "Change details"
-msgstr ""
+msgstr "Modifier les renseignements"
 
 #: app/templates/views/manage-users.html:97
 msgid "Invite someone to join your team"
@@ -1680,11 +1681,11 @@ msgstr ""
 
 #: app/templates/views/notifications.html:66
 msgid "Data available for"
-msgstr ""
+msgstr "Données disponibles pour"
 
 #: app/templates/views/notifications.html:66
 msgid "days"
-msgstr ""
+msgstr "jours"
 
 #: app/templates/views/password-reset-sent.html:13
 msgid "Click the link in the email to reset your password."
@@ -1714,15 +1715,15 @@ msgstr "protections de la vie » « privée"
 
 #: app/templates/views/privacy.html:13
 msgid "The Notification team is reviewing privacy requirements under the"
-msgstr ""
+msgstr "L’équipe de Notification examine les exigences relatives à la vie privée aux termes de la"
 
 #: app/templates/views/privacy.html:13
 msgid "Privacy Act"
-msgstr ""
+msgstr "Loi sur la protection des renseignements personnels"
 
 #: app/templates/views/privacy.html:13
 msgid "If your service has specific privacy needs, "
-msgstr ""
+msgstr "Si votre service a des besoins particuliers en matière de protection de la vie privée,"
 
 #: app/templates/views/privacy.html:13 app/templates/views/security.html:14
 msgid "please let us know"
@@ -1758,11 +1759,11 @@ msgstr "Un nouveau courriel de confirmation a été envoyé à"
 
 #: app/templates/views/roadmap.html:5 app/templates/views/roadmap.html:10
 msgid "Roadmap"
-msgstr ""
+msgstr "Feuille de route"
 
 #: app/templates/views/roadmap.html:12
 msgid "Coming Soon"
-msgstr ""
+msgstr "À venir bientôt"
 
 #: app/templates/views/security.html:11
 msgid ""
@@ -2192,20 +2193,23 @@ msgstr "Lorsque vous utilisez Notification :"
 
 #: app/templates/views/terms-of-use.html:18
 msgid "Consider when to"
-msgstr ""
+msgstr "Tenir compte du moment opportun pour"
 
 #: app/templates/views/terms-of-use.html:18
 msgid ""
 "send emails or text messages and how to write them</a>. You can read more"
 " about this in the GOV.UK Service Manual."
-msgstr ""
+msgstr "envoyer des courriels ou des messages textes et de la façon de les rédiger</a>. Pour plus d’information à ce"
+"sujet, consulter le manuel de service sur GOV.UK."
 
 #: app/templates/views/terms-of-use.html:21
 msgid ""
 "GOV.UK developed the original notification system. Canada’s Notification "
 "team recommends following the UK guide, while adjusting for the Canadian "
 "context."
-msgstr ""
+msgstr "GOV.UK a mis au point le système de notification original. L’équipe de Notification "
+"pour le Canada recommande de suivre le guide britannique en veillant à l’adapter "
+"au contexte canadien."
 
 #: app/templates/views/terms-of-use.html:24
 msgid "You must:"
@@ -2330,11 +2334,11 @@ msgstr "Quitter Notification"
 
 #: app/templates/views/terms-of-use.html:46
 msgid "You can leave Notification at any time. Just"
-msgstr ""
+msgstr "Vous pouvez quitter Notification en tout temps. Vous n'avez qu’à"
 
 #: app/templates/views/terms-of-use.html:46
 msgid "and we’ll close your account."
-msgstr ""
+msgstr "et nous fermerons votre compte."
 
 #: app/templates/views/terms-of-use.html:47
 msgid "We’ll delete all your data when we close your account."
@@ -2364,7 +2368,7 @@ msgstr "Numéro de téléphone cellulaire"
 #: app/templates/views/verification-not-received.html:11
 #: app/templates/views/verification-not-received.html:19
 msgid "Resend security code"
-msgstr ""
+msgstr "Renvoyer le code de sécurité"
 
 #: app/templates/views/trial-mode.html:4 app/templates/views/trial-mode.html:9
 msgid "Trial mode"
@@ -2439,11 +2443,11 @@ msgstr "Vous n’avez pas reçu de courriel?"
 
 #: app/templates/views/two-factor-fido.html:13
 msgid "We have found a Fido2 key associated with your account."
-msgstr ""
+msgstr "Nous avons trouvé une clé Fido2 associée à votre compte."
 
 #: app/templates/views/two-factor-fido.html:14
 msgid "Follow the browser window instructions to authenticate."
-msgstr ""
+msgstr "Suivre les instructions dans la fenêtre du navigateur pour vous authentifier."
 
 #: app/templates/views/two-factor.html:8
 msgid "Text verification"
@@ -3468,27 +3472,27 @@ msgstr "La personnalisation est masquée après l’envoi."
 
 #: app/templates/views/user-profile/add-security-keys.html:19
 msgid "Key"
-msgstr ""
+msgstr "Clé"
 
 #: app/templates/views/user-profile/add-security-keys.html:23
 msgid "Something to remember your key by"
-msgstr ""
+msgstr "Un indice pour vous aider à vous rappeler du nom de votre clé"
 
 #: app/templates/views/user-profile/add-security-keys.html:25
 msgid "Add key"
-msgstr ""
+msgstr "Ajouter une clé"
 
 #: app/templates/views/user-profile/security-keys.html:40
 msgid "Remove"
-msgstr ""
+msgstr "Retirer"
 
 #: app/templates/views/user-profile/security-keys.html:54
 msgid "New security key"
-msgstr ""
+msgstr "Nouvelle clé de sécurité"
 
 #: app/templates/views/user-profile/security-keys.html:55
 msgid "Test keys"
-msgstr ""
+msgstr "Clés d’essai"
 
 #~ msgid ""
 #~ "A picture of the sending flow of"
