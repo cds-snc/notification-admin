@@ -1974,7 +1974,7 @@ msgid "you can only send messages to yourself"
 msgstr "vous ne pouvez qu’envoyer des messages à vous-même"
 
 #: app/templates/views/service-settings.html:234
-msgid "you can add people to your team, then you can send messages to them tool"
+msgid "you can add people to your team, then you can send messages to them too"
 msgstr ""
 "Vous pouvez ajouter des personnes à votre équipe, puis leur envoyer aussi"
 " des » « messages"
