@@ -50,7 +50,7 @@ msgstr "Veuillez entrer le code de sécurité."
 
 #: app/main/forms.py:604
 msgid "What’s your service called?"
-msgstr " Quel est le nom de votre service?"
+msgstr "Quel est le nom de votre service?"
 
 #: app/main/forms.py:617
 msgid "What’s your key called?"
@@ -74,11 +74,11 @@ msgstr "Recherche par nom"
 
 #: app/main/forms.py:1146 app/main/forms.py:1155
 msgid "Search by name or email address"
-msgstr "Recherche par nom ou adresse électronique"
+msgstr "Recherche par nom ou adresse courriel"
 
 #: app/main/forms.py:1163
 msgid "Search by email address"
-msgstr "Recherche par adresse électronique"
+msgstr "Recherche par adresse courriel"
 
 #: app/main/forms.py:1164
 msgid "Search by phone number"
@@ -662,11 +662,11 @@ msgstr "Envoyé par"
 #: app/templates/partials/jobs/status.html:12
 #: app/templates/partials/jobs/status.html:15
 msgid "on"
-msgstr "sur"
+msgstr "Activé"
 
 #: app/templates/partials/jobs/status.html:12
 msgid "Uploaded by"
-msgstr "Téléverser par"
+msgstr "Téléversé par"
 
 #: app/templates/partials/notifications/status.html:13
 msgid "test"
@@ -1481,9 +1481,9 @@ msgid ""
 "when messages fail, deleting data and trying a new method for permanent "
 "failures, and trying again or trying a new method for temporary failures"
 msgstr ""
-"Une image du flux d’envoi de messages dans Avis, affichant les trois "
-"étapes de l’Envoi, de la Livraison et de l’Échec. Affiche également les "
-"prochaines étapes lorsque la livraison des messages échoue, supprimer les"
+"Une image du flux d’envoi de messages dans Notification, affichant les trois "
+"états : envoi en cours, envoi réussi et échec. Affiche également les "
+"prochaines étapes lorsque l'envoi des messages échoue, supprimer les"
 " données et essayer une nouvelle méthode de résolution des échecs "
 "permanents et essayer de nouveau ou essayer une nouvelle méthode de "
 "résolution des échecs temporaires."
@@ -1681,7 +1681,7 @@ msgstr ""
 
 #: app/templates/views/notifications.html:66
 msgid "Data available for"
-msgstr "Données disponibles pour"
+msgstr "Données disponibles pendant"
 
 #: app/templates/views/notifications.html:66
 msgid "days"
@@ -1690,12 +1690,12 @@ msgstr "jours"
 #: app/templates/views/password-reset-sent.html:13
 msgid "Click the link in the email to reset your password."
 msgstr ""
-"Cliquer sur le lien dans le courriel pour réinitialiser votre mot de "
+"Cliquez sur le lien dans le courriel pour réinitialiser votre mot de "
 "passe."
 
 #: app/templates/views/privacy.html:4
 msgid "Privacy notice: how we use your data"
-msgstr "Avis de confidentialité: comment nous utilisons vos données"
+msgstr "Avis de confidentialité : comment nous utilisons vos données"
 
 #: app/templates/views/privacy.html:11
 msgid "GOV.UK developed the"
@@ -1727,11 +1727,11 @@ msgstr "Si votre service a des besoins particuliers en matière de protection de
 
 #: app/templates/views/privacy.html:13 app/templates/views/security.html:14
 msgid "please let us know"
-msgstr "veuillez nous faire savoir"
+msgstr "veuillez nous en informer"
 
 #: app/templates/views/register-from-invite.html:16
 msgid "Your account will be created with this email address:"
-msgstr "Votre compte sera créé avec cette adresse courriel:"
+msgstr "Votre compte sera créé avec cette adresse courriel :"
 
 #: app/templates/views/agreement/agreement-confirm.html:31
 #: app/templates/views/register-from-invite.html:22
@@ -1742,11 +1742,11 @@ msgstr "Nous vous enverrons un code de sécurité par message texte."
 
 #: app/templates/views/register-from-org-invite.html:15
 msgid "Your account will be created with this email:"
-msgstr "Votre compte sera créé avec ce courriel"
+msgstr "Votre compte sera créé avec cette adresse courriel :"
 
 #: app/templates/views/register.html:17
 msgid "Must be a federal government email address"
-msgstr "Veuillez entrer une adresse de courriel du gouvernement fédéral."
+msgstr "Veuillez entrer une adresse courriel du gouvernement fédéral."
 
 #: app/templates/views/registration-continue.html:11
 #: app/templates/views/resend-email-verification.html:13
@@ -1779,10 +1779,10 @@ msgid ""
 "needed to run the system within a Government of Canada context. If your "
 "service has specific security needs, "
 msgstr ""
-"L’équipe de notification canadienne examine les protections de sécurité »"
-" « nécessaires pour faire fonctionner le système à l’intérieur d’un "
-"contexte du gouvernement » « du Canada. Si votre service a des besoins en"
-" sécurité particuliers,"
+"L’équipe de notification canadienne examine les protections de sécurité "
+"nécessaires pour faire fonctionner le système dans le contexte "
+"du gouvernement du Canada. Si votre service a des besoins particuliers"
+"en matière de sécurité,"
 
 #: app/templates/views/send-test.html:26
 msgid "Optional"
@@ -1802,7 +1802,7 @@ msgstr "Choisir un fichier"
 
 #: app/templates/views/send.html:27
 msgid "Your file needs to look like this example"
-msgstr "Votre fichier a besoin de ressemble à cet exemple"
+msgstr "Votre fichier doit ressembler à cet exemple"
 
 #: app/templates/views/send.html:29
 msgid "Save your file as a"
@@ -1952,7 +1952,7 @@ msgstr "Expéditeur de messages textes"
 
 #: app/templates/views/service-settings.html:168
 msgid "default"
-msgstr "par défaut"
+msgstr "Par défaut"
 
 #: app/templates/views/service-settings.html:189
 msgid "Start text messages with service name"
@@ -1972,22 +1972,22 @@ msgstr "Votre service est en mode d’essai"
 
 #: app/templates/views/service-settings.html:233
 msgid "you can only send messages to yourself"
-msgstr "vous ne pouvez qu’envoyer des messages à vous-même"
+msgstr "Vous ne pouvez qu’envoyer des messages à vous-même"
 
 #: app/templates/views/service-settings.html:234
 msgid "you can add people to your team, then you can send messages to them tool"
 msgstr ""
 "Vous pouvez ajouter des personnes à votre équipe, puis leur envoyer aussi"
-" des » « messages"
+"des messages"
 
 #: app/templates/views/service-settings.html:235
 msgid "you can only send"
-msgstr "vous ne pouvez qu’envoyer"
+msgstr "Vous ne pouvez qu’envoyer"
 
 #: app/templates/views/service-settings.html:240
 #: app/templates/views/trial-mode.html:20
 msgid "To remove these restrictions, you can"
-msgstr "Pour enlever ces limites, vous pouvez"
+msgstr "Pour supprimer ces restrictions, vous pouvez"
 
 #: app/templates/views/service-settings.html:240
 #: app/templates/views/terms-of-use.html:46
@@ -1997,8 +1997,8 @@ msgstr "communiquer avec nous"
 #: app/templates/views/service-settings.html:242
 msgid "Your service manager can ask to have these restrictions removed."
 msgstr ""
-"Votre gestionnaire de service peut faire une demande pour enlever ces "
-"limites"
+"Votre gestionnaire de service peut faire une demande pour supprimer ces "
+"restrictions"
 
 #: app/templates/views/service-settings.html:247
 msgid "Your service is live"
@@ -2530,20 +2530,20 @@ msgstr "je n’ai pas reçu de texte"
 
 #: app/templates/views/activity/notifications.html:6
 msgid "No messages found &thinsp;(messages are kept for {} days)"
-msgstr "Aucun message trouvé &thinsp; (les messages sont conserve pour {} jours)"
+msgstr "Aucun message trouvé &thinsp; (les messages sont conservés pendant {} jours)"
 
 #: app/templates/views/agreement/_agreement-choose.html:2
 msgid ""
 "Before you can go live on Notification, your organisation needs to accept"
 " to our data sharing and financial agreement."
 msgstr ""
-"Avant d’être n direct sur Notification, votre organisation a besoin "
-"d’accepter notre » « partage de données et notre accord financier."
+"Avant d’accéder à Notification en ligne, votre organisation doit "
+"accepter notre entente de partage de données et notre accord financier."
 
 #: app/templates/views/agreement/_agreement-choose.html:5
 #: app/templates/views/agreement/service-agreement-choose.html:23
 msgid "There are different agreements for crown and non-crown organisations."
-msgstr "Il y a différente entente pour les sociétés d’État et les autres sociétés"
+msgstr "Il existe différentes ententes pour les sociétés d’État et les autres sociétés."
 
 #: app/templates/views/agreement/_agreement-choose.html:8
 msgid "Get in touch"
@@ -2556,7 +2556,7 @@ msgid ""
 "  we’ll help you work it out."
 msgstr ""
 "pour nous dire si vous travaillez pour une société d’État ou non. Si vous"
-" n’êtes pas » « certain, nous vous aiderons à le savoir."
+"n’êtes pas certain, nous vous aiderons à le savoir."
 
 #: app/templates/views/agreement/_agreement-signed.html:2
 #: app/templates/views/agreement/service-agreement-signed.html:18
@@ -2752,7 +2752,7 @@ msgstr "Lorsque vous envoyez des messages par l’API, ils apparaîtront ici."
 
 #: app/templates/views/api/index.html:46 app/templates/views/api/index.html:92
 msgid "Notification deletes messages after 7 days."
-msgstr "Avis supprime les messages après sept jours."
+msgstr "Notification supprime les messages après 7 jours."
 
 #: app/templates/views/api/index.html:78
 msgid "View"
@@ -2760,7 +2760,7 @@ msgstr "Afficher"
 
 #: app/templates/views/api/index.html:88
 msgid "Only showing the first 50 messages."
-msgstr "Affichant seulement les 50 premiers messages."
+msgstr "Affiche seulement les 50 premiers messages."
 
 #: app/templates/views/api/keys.html:19
 msgid "You haven’t created any API keys yet"
@@ -2773,8 +2773,8 @@ msgstr "En direct – envoyer à tous"
 #: app/templates/views/api/keys.html:42
 msgid "Team and safelist – limits who you can send to"
 msgstr ""
-"Équipe et liste de confiance – limitez le nombre de personnes auxquels "
-"vous faites » « des envois"
+"Équipe et liste de confiance — limitez le nombre de personnes "
+"auxquelles vous faites des envois"
 
 #: app/templates/views/api/keys.html:44
 msgid "Test – pretends to send messages"
@@ -3442,7 +3442,7 @@ msgstr "des courriels, des messages textes ou des lettres."
 
 #: app/templates/views/templates/choose.html:31
 msgid "emails or text messages"
-msgstr "courriels ou messages textes"
+msgstr "des courriels ou des messages textes"
 
 #: app/templates/views/templates/choose.html:34
 msgid "You can also create folders to organize your templates."
