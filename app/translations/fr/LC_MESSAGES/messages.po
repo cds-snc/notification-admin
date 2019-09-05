@@ -1376,7 +1376,7 @@ msgstr "En savoir plus au sujet de"
 #: app/templates/views/features.html:60
 #: app/templates/views/message-status.html:12
 msgid "security"
-msgstr "la sécurité"
+msgstr "sécurité"
 
 #: app/templates/views/forgot-password.html:7
 #: app/templates/views/new-password.html:7
@@ -1456,13 +1456,13 @@ msgid ""
 "Notification’s real-time dashboard lets you check when your message was "
 "delivered. You can also check the status of your messages"
 msgstr ""
-"Le tableau de bord en temps réel d’Avis vous permet de vérifier quand "
+"Le tableau de bord en temps réel de Notification vous permet de vérifier si "
 "votre message a été livré. Vous pouvez aussi vérifier l’état de vos "
 "messages."
 
 #: app/templates/views/message-status.html:12
 msgid "For"
-msgstr "Pour"
+msgstr "Pour des questions de"
 
 #: app/templates/views/message-status.html:12
 msgid ""
@@ -1470,9 +1470,9 @@ msgid ""
 "sent. You can download a report, including a list of sent messages, for "
 "your own records."
 msgstr ""
-"ces renseignements sont seulement disponibles pendant sept jours après "
+"ces renseignements sont seulement disponibles pendant 7 jours après "
 "qu’un message a été envoyé. Vous pouvez télécharger un rapport, y compris"
-" une liste des messages envoyés, pour vos dossiers."
+"une liste des messages envoyés, pour vos dossiers."
 
 #: app/templates/views/message-status.html:16
 msgid ""
@@ -1490,19 +1490,19 @@ msgstr ""
 
 #: app/templates/views/message-status.html:19
 msgid "Types of message status"
-msgstr "Types d’états de messages."
+msgstr "Types d’état des messages"
 
 #: app/templates/views/message-status.html:20
 msgid ""
 "Notification has the following types of message status (API message "
 "status may be different and is found in"
 msgstr ""
-"Les avis ont les types d’états de message suivant (l’état de messages API"
-" pourrait être différent et se trouve dans"
+"Notification comprend les types suivants d’état des messages (les états "
+"des messages d'API pourraient être différents et se trouvent dans"
 
 #: app/templates/views/message-status.html:20
 msgid "technical documentation):"
-msgstr "la documentation technique):"
+msgstr "la documentation technique) :"
 
 #: app/templates/views/dashboard/monthly.html:28
 #: app/templates/views/features/emails.html:5
@@ -1513,7 +1513,7 @@ msgstr "Courriels"
 
 #: app/templates/views/message-status.html:24
 msgid "Message statuses – emails"
-msgstr "États de messages - courriels"
+msgstr "États des messages - courriels"
 
 #: app/templates/views/message-status.html:26
 msgid "Description"
@@ -1521,7 +1521,7 @@ msgstr "Description"
 
 #: app/templates/views/message-status.html:35
 msgid "Notification has sent the message to the email provider."
-msgstr "Avis a envoyé le message au fournisseur de service de courriel."
+msgstr "Notification a envoyé le message au fournisseur de messagerie."
 
 #: app/templates/views/message-status.html:37
 #: app/templates/views/message-status.html:81
@@ -1534,25 +1534,25 @@ msgid ""
 "The message was successfully delivered. Notification will not tell you if"
 " a user has opened or read a message."
 msgstr ""
-"Le message a été livré avec succès. Avis ne vous informera pas si un "
+"Le message a été livré avec succès. Notification ne vous informera pas si un"
 "utilisateur a ouvert ou lu un message."
 
 #: app/templates/views/message-status.html:40
 msgid "Email address does not exist"
-msgstr "L’adresse courriel n’existe pas."
+msgstr "L’adresse courriel n’existe pas"
 
 #: app/templates/views/message-status.html:41
 msgid ""
 "The provider could not deliver the message because the email address was "
 "wrong. You should remove these email addresses from your database."
 msgstr ""
-"Le fournisseur ne peut pas livrer le message puisque l’adresse courriel "
-"était erronée\". Vous devriez supprimer ces adresses courriel de votre "
+"Le fournisseur n'a pas pu livrer le message puisque l’adresse courriel "
+"était erronée. Vous devriez supprimer ces adresses courriel de votre "
 "base de données."
 
 #: app/templates/views/message-status.html:43
 msgid "Inbox not accepting messages right now"
-msgstr "La boîte de réception n’accepte pas de messages à l’heure actuelle."
+msgstr "La boîte de réception n’accepte pas de messages à l’heure actuelle"
 
 #: app/templates/views/message-status.html:44
 msgid ""
@@ -1560,8 +1560,8 @@ msgid ""
 "This can happen when the recipient’s inbox is full. You can try to send "
 "the message again."
 msgstr ""
-"Le fournisseur ne peut pas livrer le message après avoir essayé pendant "
-"72 heures.Cela peut se produire si la boîte de réception du destinataire "
+"Le fournisseur n'a pas réussi à livrer le message après avoir essayé pendant "
+"72 heures. Cela peut se produire si la boîte de réception du destinataire "
 "est pleine. Vous pouvez essayer d’envoyer le message de nouveau."
 
 #: app/templates/views/message-status.html:46
@@ -1574,27 +1574,27 @@ msgid ""
 "There was a connection problem between Notification and the email "
 "provider. You’ll have to try sending your messages again."
 msgstr ""
-"Il y avait un problème de connexion entre Avis et le fournisseur de "
-"courriel. Vous devrez essayer d’envoyer vos messages de nouveau."
+"Il y a eu un problème de connexion entre Notification et le fournisseur "
+"de messagerie. Vous devrez essayer d’envoyer vos messages de nouveau."
 
 #: app/templates/views/dashboard/monthly.html:29
 #: app/templates/views/features/text-messages.html:5
 #: app/templates/views/features/text-messages.html:10
 #: app/templates/views/message-status.html:65
 msgid "Text messages"
-msgstr "Messages textes."
+msgstr "Messages textes"
 
 #: app/templates/views/message-status.html:67
 msgid "Message statuses – text messages"
-msgstr "États de messages – messages textes."
+msgstr "États des messages – messages textes"
 
 #: app/templates/views/message-status.html:76
 msgid "Notification has sent the message to the cellular provider."
-msgstr "Avis a envoyé le message au fournisseur de service cellulaire."
+msgstr "Notification a envoyé le message au fournisseur de téléphonie cellulaire."
 
 #: app/templates/views/message-status.html:78
 msgid "Sent internationally"
-msgstr "Envoyé à l’échelle internationale."
+msgstr "Envoyé à l’international"
 
 #: app/templates/views/message-status.html:79
 msgid ""
@@ -1602,12 +1602,12 @@ msgid ""
 "some countries do not provide any more delivery information."
 msgstr ""
 "Le message a été envoyé à un numéro international. Les réseaux "
-"cellulaires de certains pays ne fournissent plus de renseignements de "
+"mobiles de certains pays ne fournissent plus de renseignements de "
 "livraison."
 
 #: app/templates/views/message-status.html:84
 msgid "Phone number does not exist"
-msgstr "Le numéro de téléphone n’existe pas."
+msgstr "Le numéro de téléphone n’existe pas"
 
 #: app/templates/views/message-status.html:85
 msgid ""
@@ -1615,14 +1615,14 @@ msgid ""
 "wrong. You should remove these phone numbers from your database. You’ll "
 "still be charged for text messages to numbers that do not exist."
 msgstr ""
-"Le fournisseur ne pouvait pas livrer le message parce que le numéro de "
-"téléphone était erroné. Vous devriez supprimer ces adresses courriel de "
-"votre base de données. Les messages envoyés aux numéros qui n’existent "
-"pas vous seront tout de même facturés."
+"Le fournisseur n'a pas pu livrer le message parce que le numéro de "
+"téléphone était erroné. Vous devriez supprimer ces numéros de téléphone "
+"de votre base de données. Les messages textes envoyés aux numéros qui "
+"n’existent pas vous seront tout de même facturés."
 
 #: app/templates/views/message-status.html:87
 msgid "Phone not accepting messages right now"
-msgstr "Le téléphone n’accepte pas de messages à l’heure actuelle."
+msgstr "Le téléphone n’accepte pas de messages à l’heure actuelle"
 
 #: app/templates/views/message-status.html:88
 msgid ""
@@ -1631,10 +1631,10 @@ msgid ""
 "the message again. You’ll still be charged for text messages to phones "
 "that are not accepting messages."
 msgstr ""
-"Le fournisseur ne peut pas livrer le message après avoir essayé pendant "
+"Le fournisseur n'a pas pu livrer le message après avoir essayé pendant "
 "72 heures. Cela peut se produire si le téléphone du destinataire est "
 "éteint. Vous pouvez essayer d’envoyer le message de nouveau. Les messages"
-" textes qui ont été envoyés aux téléphones qui n’acceptent pas de "
+"textes qui ont été envoyés aux téléphones qui n’acceptent pas de "
 "messages vous seront tout de même facturés."
 
 #: app/templates/views/message-status.html:91
@@ -1643,10 +1643,10 @@ msgid ""
 "provider. You’ll have to try sending your messages again. You will not be"
 " charged for text messages that are affected by a technical failure."
 msgstr ""
-"Il y avait un problème de connexion entre Avis et le fournisseur de "
-"service cellulaire. Vous devrez essayer d’envoyer vos messages de "
+"Il y a eu un problème de connexion entre Notification et le fournisseur de "
+"téléphonie cellulaire. Vous devrez essayer d’envoyer vos messages de "
 "nouveau. Les messages textes qui sont affectés par une défaillance "
-"technique vous seront facturés."
+"technique ne vous seront pas facturés."
 
 #: app/templates/views/new-password.html:19
 msgid "You can now create a new password for your account."
@@ -2152,7 +2152,7 @@ msgstr "pour toute question ou commentaire."
 
 #: app/templates/views/signin.html:16
 msgid "You need to sign in again"
-msgstr "vous avez besoin de vous reconnecter"
+msgstr "Vous devez vous reconnecter."
 
 #: app/templates/views/signin.html:19
 msgid "We signed you out because you logged in to Notification on another device."
@@ -2164,15 +2164,15 @@ msgstr ""
 msgid "We signed you out because you haven’t used Notification for a while."
 msgstr ""
 "Nous vous avons déconnecté puisque vous n’avez pas utilisé Notification "
-"depuis » « un moment."
+"depuis un certain temps."
 
 #: app/templates/views/signin.html:29
 msgid "If you do not have an account, you can"
-msgstr "Si vous n’avez pas un compte, vous pouvez"
+msgstr "Si vous n’avez pas de compte, vous pouvez"
 
 #: app/templates/views/signin.html:30
 msgid "create one now"
-msgstr "en créer un nouveau maintenant"
+msgstr "en créer un maintenant"
 
 #: app/templates/views/terms-of-use.html:5
 #: app/templates/views/terms-of-use.html:10
@@ -2185,7 +2185,7 @@ msgid ""
 "accept them."
 msgstr ""
 "Ces conditions s’appliquent à l’utilisation de Notification. Votre "
-"gestionnaire de comptedoit les accepter."
+"gestionnaire de compte doit les accepter."
 
 #: app/templates/views/terms-of-use.html:16
 msgid "When using Notification"
@@ -2356,8 +2356,8 @@ msgid ""
 "Check your mobile phone number is correct and then resend the security "
 "code."
 msgstr ""
-"Vérifier que votre numéro de téléphone cellulaire est correct et renvoyer"
-" le \"code\" de » « sécurité"
+"Vérifiez que votre numéro de téléphone cellulaire est correct et renvoyez"
+"le code de sécurité."
 
 #: app/templates/views/text-not-received-2.html:18
 msgid "Mobile phone number"
@@ -3104,16 +3104,16 @@ msgstr "Nouvelle marque"
 
 #: app/templates/views/features/emails.html:11
 msgid "Send an unlimited number of free emails with Notification."
-msgstr "Envoyez un nombre illimité de courriels gratuits à l’aide d’Avis."
+msgstr "Envoyez un nombre illimité de courriels gratuits à l’aide de Notification."
 
 #: app/templates/views/features/emails.html:13
 msgid "and try Notification for yourself."
-msgstr "et essayez Avis pour vous-mêmes."
+msgstr "et essayez Notification pour vous-mêmes."
 
 #: app/templates/views/features/emails.html:17
 #: app/templates/views/features/text-messages.html:17
 msgid "Notification makes it easy to:"
-msgstr "Avis facilite :"
+msgstr "Notification facilite :"
 
 #: app/templates/views/features/emails.html:19
 msgid "create reusable email templates"
@@ -3126,7 +3126,7 @@ msgstr "la personnalisation du contenu de vos courriels"
 #: app/templates/views/features/emails.html:21
 #: app/templates/views/features/text-messages.html:21
 msgid "send and schedule bulk messages"
-msgstr "l’envoi et la planification de l’envoi de messages en vrac."
+msgstr "l’envoi et la planification de l’envoi de messages en vrac"
 
 #: app/templates/views/features/emails.html:23
 #: app/templates/views/features/text-messages.html:22
@@ -3151,8 +3151,8 @@ msgid ""
 "Notification lets you choose the email address where users can send their"
 " reply."
 msgstr ""
-"Avis vous permet de sélectionner l’adresse courriel à laquelle les "
-"utilisateurs peuvent envoyer leurs réponses."
+"Notification vous permet de sélectionner l’adresse courriel à laquelle les "
+"utilisateurs peuvent répondre."
 
 #: app/templates/views/features/emails.html:27
 msgid ""
@@ -3191,11 +3191,11 @@ msgid ""
 "numbers with Notification."
 msgstr ""
 "Envoyez des milliers de messages textes gratuits à des numéros canadiens "
-"et internationaux à l’aide d’Avis."
+"et internationaux à l’aide de Notification."
 
 #: app/templates/views/features/text-messages.html:13
 msgid "and try Notification for yourself"
-msgstr "et essayez Avis pour vous-mêmes."
+msgstr "et essayez Notification pour vous-mêmes."
 
 #: app/templates/views/features/text-messages.html:19
 msgid "create reusable text message templates"
@@ -3304,7 +3304,7 @@ msgstr "Nous enverrons"
 
 #: app/templates/views/manage-users/confirm-edit-user-email.html:24
 msgid "an email to tell them about the change."
-msgstr "un courriel pour les informer du changement"
+msgstr "un courriel pour les informer du changement."
 
 #: app/templates/views/manage-users/confirm-edit-user-email.html:25
 #: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:25
@@ -3512,10 +3512,10 @@ msgstr "Clés d’essai"
 #~ "There will be a grey bar beside"
 #~ " the text you want to emphasize"
 #~ msgstr ""
-#~ "Pour mettre l’accent sur du texte, "
-#~ "utilisez un caret. Une barre grise "
-#~ "s’affichera à côté du texte que "
-#~ "vous voulez accentuer."
+#~ "Pour mettre du texte en évidence, "
+#~ "utilisez un caret (accent circonflexe). "
+#~ "Une barre grise s’affichera à côté du "
+#~ "texte que vous voulez mettre en évidence."
 
 #~ msgid ""
 #~ "For each recipient on your spreadsheet,"
@@ -3547,8 +3547,8 @@ msgstr "Clés d’essai"
 #~ msgstr ""
 #~ "Pour envoyer un courriel ou un "
 #~ "message texte au moyen de Notification,"
-#~ " vous devez d’abord créer un modèle"
-#~ " de message réutilisable."
+#~ "vous devez d’abord créer un modèle"
+#~ "de message réutilisable."
 
 #~ msgid ""
 #~ "\"Notification’s real-time dashboard lets "
@@ -3558,10 +3558,10 @@ msgstr "Clés d’essai"
 #~ "learn when it was delivered."
 #~ msgstr ""
 #~ "Le tableau de bord en temps réel"
-#~ " de Notification vous permet de voir"
-#~ " le nombre de messages envoyés. Vous"
-#~ " pouvez également vérifier l’état actuel"
-#~ " de n’importe quel message pour "
+#~ "de Notification vous permet de voir"
+#~ "le nombre de messages envoyés. Vous"
+#~ "pouvez également vérifier l’état actuel"
+#~ "de n’importe quel message pour "
 #~ "connaître sa date et son heure "
 #~ "d’envoi."
 
@@ -3570,12 +3570,12 @@ msgstr "Clés d’essai"
 #~ "of government services. It is set "
 #~ "up to:"
 #~ msgstr ""
-#~ "Avis est construit pour les besoins "
+#~ "Notification est construit pour les besoins "
 #~ "des services gouvernementaux. Le système "
-#~ "est établi pour :"
+#~ "est configuré pour :"
 
 #~ msgid "protect user data"
-#~ msgstr "protéger les données d’utilisateurs"
+#~ msgstr "protéger les données des utilisateurs"
 
 #~ msgid "keep systems secure"
 #~ msgstr "garder les systèmes sécurisés"
@@ -3587,7 +3587,7 @@ msgstr "Clés d’essai"
 #~ msgstr "Données"
 
 #~ msgid "On Notification, data is encrypted:"
-#~ msgstr "Dans Avis, les données sont chiffrées :"
+#~ msgstr "Dans Notification, les données sont chiffrées :"
 
 #~ msgid "when it passes through the service"
 #~ msgstr "lorsqu’elles passent dans le service"
@@ -3607,7 +3607,7 @@ msgstr "Clés d’essai"
 #~ msgid "Other technical security controls on Notification include:"
 #~ msgstr ""
 #~ "D’autres mesures de contrôle de sécurité"
-#~ " techniques dans Avis comprennent :"
+#~ " techniques dans Notification comprennent :"
 
 #~ msgid ""
 #~ "protective monitoring to record activity, "
@@ -3627,7 +3627,7 @@ msgstr "Clés d’essai"
 #~ msgstr ""
 #~ "en utilisant des codes nommés jetons "
 #~ "Web JSON lorsque votre service "
-#~ "communique avec Avis. Contrairement aux "
+#~ "communique avec Notification. Contrairement aux "
 #~ "codes pour les clés API, les "
 #~ "jetons Web JSON possèdent des réglages"
 #~ " de chiffrement et d’expiration."
@@ -3671,19 +3671,19 @@ msgstr "Clés d’essai"
 #~ " to certain parts of Notification."
 #~ msgstr ""
 #~ "Vous pouvez établir différentes permissions"
-#~ " d’utilisateurs dans Avis. Cela vous "
+#~ " d’utilisateurs dans Notification. Cela vous "
 #~ "permet de contrôler quels membres de "
 #~ "l’équipe ont accès à certaines parties"
-#~ " d’Avis."
+#~ "de Notification."
 
 #~ msgid "To sign in to Notification you’ll need to enter:"
-#~ msgstr "Pour ouvrir une session dans Avis, vous devrez saisir :"
+#~ msgstr "Pour ouvrir une session dans Notification, vous devrez saisir :"
 
 #~ msgid "your email address and password"
 #~ msgstr "votre adresse électronique et votre mot de passe"
 
 #~ msgid "a text message code that Notification sends to your phone"
-#~ msgstr "un code par message texte qu’Avis envoie à votre téléphone portable."
+#~ msgstr "un code par message texte que Notification envoie à votre téléphone cellulaire."
 
 #~ msgid "Please"
 #~ msgstr "Veuillez"
@@ -3723,7 +3723,7 @@ msgstr "Clés d’essai"
 #~ "people who it's from."
 #~ msgstr ""
 #~ "Lorsque vous envoyez un message texte"
-#~ " avec Avis, le nom de l’expéditeur"
+#~ " avec Notification, le nom de l’expéditeur"
 #~ " indique qui envoie le message."
 
 #~ msgid "You can change the text message sender name in your service settings."
