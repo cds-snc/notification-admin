@@ -924,7 +924,7 @@ msgstr "Ajouter un nouveau service"
 #: app/templates/views/choose-account.html:52
 #: app/templates/views/choose-account.html:58
 msgid "Choose service"
-msgstr "Choisir un service"
+msgstr "Choisissez un service"
 
 #: app/templates/views/choose-account.html:72
 #: app/templates/views/organisations/add-organisation.html:15
@@ -1241,7 +1241,7 @@ msgstr ""
 "pouvez ajouter un espace réservé. Chaque fois que vous envoyez un "
 "message, vous pouvez ajouter des renseignements tels qu’un nom ou un "
 "numéro de référence dans l’espace réservé. Vous pouvez ajouter les "
-"renseignements manuellement ou télécharger une liste de renseignements "
+"renseignements manuellement, ou télécharger une liste de renseignements "
 "personnels et laisser Notification les ajouter pour vous."
 
 #: app/templates/views/features.html:32
@@ -1291,19 +1291,19 @@ msgid ""
 "it was delivered."
 msgstr "Le tableau de bord en temps réel de Notification vous permet de "
 "voir le nombre de messages envoyés. Vous pouvez également consulter l'état "
-"actuel de vos messages afin de connaître la date et l'heure de leur envoi."
+"actuel de vos messages afin de connaître le moment de leur livraison."
 
 #: app/templates/views/features.html:41
 msgid "Read more about how"
-msgstr "En savoir plus sur le fonctionnement de l'"
+msgstr "Lisez davantage sur"
 
 #: app/templates/views/features.html:41
 msgid "message status"
-msgstr "état des messages"
+msgstr "l'état des messages"
 
 #: app/templates/views/features.html:41
 msgid "works."
-msgstr "."
+msgstr "et leur fonctionnement."
 
 #: app/templates/views/features.html:43
 #: app/templates/views/manage-users/permissions.html:6
@@ -1324,17 +1324,17 @@ msgstr "Notification vous permet d’effectuer ce qui suit :"
 
 #: app/templates/views/features.html:47
 msgid "set different permission levels for each team member"
-msgstr "établir différents niveaux d’autorisation pour chaque membre de l’équipe;"
+msgstr "Établir différents niveaux d’autorisation pour chaque membre de l’équipe"
 
 #: app/templates/views/features.html:48
 msgid "invite team members who don’t have a government email address"
 msgstr ""
-"inviter des membres d’équipe qui n’ont pas d’adresse courriel "
-"gouvernementale;"
+"Inviter des membres d’équipe qui n’ont pas d’adresse courriel "
+"gouvernementale"
 
 #: app/templates/views/features.html:49
 msgid "choose who else can manage team members"
-msgstr "désigner les autres personnes qui peuvent gérer les membres de l’équipe."
+msgstr "Désigner les autres personnes qui peuvent gérer les membres de l’équipe"
 
 #: app/templates/views/features.html:53
 msgid ""
@@ -1375,7 +1375,7 @@ msgstr ""
 
 #: app/templates/views/features.html:60
 msgid "Read more about"
-msgstr "En savoir plus au sujet de la "
+msgstr "Lisez davantage au sujet de la "
 
 #: app/templates/views/features.html:60
 #: app/templates/views/message-status.html:12
@@ -1707,7 +1707,7 @@ msgstr "GOV.UK a développé le"
 
 #: app/templates/views/privacy.html:11
 msgid "original notification system"
-msgstr "système de notification original"
+msgstr "système de notification original (en anglais)"
 
 #: app/templates/views/privacy.html:11
 msgid "and its UK"
@@ -1715,7 +1715,7 @@ msgstr "et les"
 
 #: app/templates/views/privacy.html:11
 msgid "privacy protections"
-msgstr "protections relatives à la vie privée propres au Royaume-Uni"
+msgstr "protections de la vie privée propres au Royaume-Uni (en anglais)"
 
 #: app/templates/views/privacy.html:13
 msgid "The Notification team is reviewing privacy requirements under the"
@@ -1723,7 +1723,7 @@ msgstr "L’équipe de Notification examine les exigences relatives à la vie pr
 
 #: app/templates/views/privacy.html:13
 msgid "Privacy Act"
-msgstr "Loi sur la protection des renseignements personnels"
+msgstr "<i>Loi sur la protection des renseignements personnels</i>"
 
 #: app/templates/views/privacy.html:13
 msgid "If your service has specific privacy needs, "
@@ -1858,7 +1858,7 @@ msgstr "Votre fichier remplira ce modèle"
 #: app/templates/views/service-settings.html:9
 #: app/templates/views/user-profile.html:11
 msgid "Change"
-msgstr "Changer"
+msgstr "Modifier"
 
 #: app/templates/views/service-settings.html:16
 msgid "General"
@@ -1932,7 +1932,7 @@ msgstr "Non défini"
 #: app/templates/views/service-settings.html:114
 #: app/templates/views/service-settings.html:178
 msgid "Manage"
-msgstr "Réglages"
+msgstr "Configurer"
 
 #: app/templates/views/email-branding/select-branding.html:6
 #: app/templates/views/service-settings.html:125
@@ -2224,11 +2224,11 @@ msgstr "Vous devez :"
 
 #: app/templates/views/terms-of-use.html:26
 msgid "complete all security steps required by your organization."
-msgstr "prendre toutes les mesures de sécurité requises par votre organisation;"
+msgstr "prendre toutes les mesures de sécurité requises par votre organisation."
 
 #: app/templates/views/terms-of-use.html:27
 msgid "tell us immediately if you have any security breaches."
-msgstr "nous aviser immédiatement de toute atteinte à la sécurité;"
+msgstr "nous aviser immédiatement de toute atteinte à la sécurité."
 
 #: app/templates/views/terms-of-use.html:28
 msgid ""
@@ -2236,8 +2236,8 @@ msgid ""
 "technology allows different software applications to communicate with "
 "each other."
 msgstr ""
-"veiller à la sécurité de vos codes d’API. La technologie des API permet à"
-" différentes applications logicielles de communiquer entre elles;"
+"veiller à la sécurité de vos codes d’API. La technologie des API permet à "
+"différentes applications logicielles de communiquer entre elles."
 
 #: app/templates/views/terms-of-use.html:29
 msgid ""
@@ -2246,19 +2246,17 @@ msgid ""
 msgstr ""
 "obtenir le consentement requis pour pouvoir envoyer des messages et "
 "utiliser des données. Ce consentement doit être conforme aux normes "
-"établies par la législation sur la protection des renseignements "
-"personnels, y compris la <i>Loi sur la protection des renseignements "
-"personnels;</i>"
+"établies par les lois sur la protection de la vie privée, notamment "
+"la <i>Loi sur la protection des renseignements personnels.</i>"
 
 #: app/templates/views/terms-of-use.html:30
 msgid ""
 "check that the data you add to Notification is accurate and complies with"
 " privacy legislation including the federal Privacy Act."
 msgstr ""
-"vous assurer que les données que vous ajoutez à Notification sont exactes"
-" et conformes à la législation sur la protection des renseignements "
-"personnels, y compris la <i>Loi sur la protection des "
-"renseignements personnels;</i>"
+"vous assurer que les données que vous ajoutez à Notification sont exactes "
+"et conformes aux lois sur la protection de la vie privée, notamment "
+"la <i>Loi sur la protection des renseignements personnels.</i>"
 
 #: app/templates/views/terms-of-use.html:31
 msgid ""
@@ -2266,7 +2264,7 @@ msgid ""
 "information."
 msgstr ""
 "vous abstenir d’envoyer des messages contenant des renseignements "
-"personnels ou commerciaux de nature délicate;"
+"personnels ou commerciaux de nature délicate."
 
 #: app/templates/views/terms-of-use.html:32
 msgid ""
@@ -2300,15 +2298,15 @@ msgstr ""
 
 #: app/templates/views/terms-of-use.html:37
 msgid "Notification will:"
-msgstr "Notification :"
+msgstr "Notification va :"
 
 #: app/templates/views/terms-of-use.html:39
 msgid ""
 "send the messages you write, as long as these messages comply with our "
 "terms of use."
 msgstr ""
-"envoie les messages que vous rédigez, dans la mesure où ces messages sont"
-" conformes à nos conditions d’utilisation;"
+"envoyer les messages que vous rédigez, dans la mesure où ces messages sont"
+" conformes à nos conditions d’utilisation."
 
 #: app/templates/views/terms-of-use.html:40
 msgid ""
@@ -2317,22 +2315,22 @@ msgid ""
 "<a href=\"https://status.notifications.service.gov.uk/\">status</a> "
 "pages."
 msgstr ""
-"est expliqué aux pages suivantes (en anglais) : <a "
-"href=\"https://www.gov.uk/performance/govuk-notify\">performance</a> et "
-"<a href= \"https://status.notifications.service.gov.uk/ \">état</a>; "
+"vous montrer comment l'API fonctionne dans les pages suivantes : <a "
+"href=\"https://www.gov.uk/performance/govuk-notify\">Performance</a> et "
+"<a href= \"https://status.notifications.service.gov.uk/ \">État</a>. "
 
 #: app/templates/views/terms-of-use.html:41
 msgid "keep your data <a href=\"/features/security\">secure</a>."
 msgstr ""
-"assure la <a href=\"/fonctionalités/sécurité\">sécurité</a> de vos "
-"données;"
+"assurer la <a href=\"/fonctionalités/sécurité\">sécurité</a> de vos "
+"données."
 
 #: app/templates/views/terms-of-use.html:42
 msgid ""
 "give you one month’s notice by email if we change our terms of use or "
 "delivery providers."
 msgstr ""
-"vous envoie un préavis d’un mois par courriel en cas de modification des "
+"vous envoyer un préavis d’un mois par courriel en cas de modification des "
 "conditions d’utilisation ou des fournisseurs."
 
 #: app/templates/views/terms-of-use.html:45
@@ -2462,7 +2460,7 @@ msgstr "Vérification par message texte"
 
 #: app/templates/views/two-factor.html:15
 msgid "Check your phone"
-msgstr "Vérifiez vos messages textes."
+msgstr "Vérifiez vos messages textes"
 
 #: app/templates/views/two-factor.html:17
 msgid "Not received a text message?"
@@ -2514,7 +2512,7 @@ msgid ""
 "If you no longer have access to the phone with the number you registered "
 "for this service, speak to your service manager to reset the number."
 msgstr ""
-"Si vous n’avez plus accès au téléphone ayant le numéro que vous avez "
+"Si vous n’avez plus accès au téléphone correspondant au numéro que vous avez "
 "enregistré pour ce service, communiquez avec votre gestionnaire de service "
 "pour réinitialiser le numéro."
 
@@ -2843,8 +2841,8 @@ msgid ""
 "When you send an email or text message, we can tell you if Notification "
 "was able to deliver it. Check the"
 msgstr ""
-"Lorsque vous envoyer un courriel ou un message texte, nous pouvons vous "
-"dire si Notification a été capable de le livrer. Vérifiez la"
+"Lorsque vous envoyez un courriel ou un message texte, nous pouvons vous "
+"dire si Notification a réussi à le livrer. Vérifiez la"
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:21
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:19
@@ -3584,13 +3582,12 @@ msgstr "Clés d’essai"
 #~ "current status of any message to "
 #~ "learn when it was delivered."
 #~ msgstr ""
-#~ "Le tableau de bord en temps réel"
-#~ "de Notification vous permet de voir"
-#~ "le nombre de messages envoyés. Vous"
-#~ "pouvez également vérifier l’état actuel"
-#~ "de n’importe quel message pour "
-#~ "connaître sa date et son heure "
-#~ "d’envoi."
+#~ "Le tableau de bord en temps réel "
+#~ "de Notification vous permet de voir "
+#~ "le nombre de messages envoyés. Vous "
+#~ "pouvez également vérifier l’état actuel "
+#~ "de vos messages afin de connaître "
+#~ "le moment de leur livraison."
 
 #~ msgid ""
 #~ "Notification is built for the needs "
