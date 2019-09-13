@@ -50,7 +50,7 @@ def organisations():
 @user_is_platform_admin
 def add_organisation():
     form = NewOrganisationForm()
-
+    print(form.validate_on_submit())
     if form.validate_on_submit():
         return redirect(url_for(
             '.organisation_settings',
