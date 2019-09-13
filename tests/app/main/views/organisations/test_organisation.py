@@ -96,6 +96,7 @@ def test_page_to_create_new_organisation(
         ('radio', 'organisation_type', 'emergency_service'),
         ('radio', 'organisation_type', 'school_or_college'),
         ('radio', 'organisation_type', 'other'),
+        ('hidden', 'organisation_type', 'central'),
         ('radio', 'crown_status', 'crown'),
         ('radio', 'crown_status', 'non-crown'),
         ('hidden', 'csrf_token', ANY),
