@@ -4,7 +4,7 @@ steps:
 - name: jwilder/dockerize:0.6.1
   args: ['dockerize', '-timeout=60s', '-wait=tcp://postgres:5432']
 - name: gcr.io/cloud-builders/docker
-  args: 
+  args:
     - run
     - -d
     - --name=api
@@ -30,4 +30,4 @@ steps:
   env:
     - 'API_HOST_NAME=http://api:6011'
 options:
- machineType: 'N1_HIGHCPU_8'
+ machineType: 'N1_HIGHCPU_32'
