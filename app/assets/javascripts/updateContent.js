@@ -34,12 +34,9 @@
           poll = function(){};
         }
         $(".local-datetime-short").each(function(index) {
-          let time = $(this).text().trim()
-          if(time.includes("T")){
-            time = moment(time);
-            if(time.isValid()){
-              $(this).text(time.format("D MMM, HH:mm a"));
-            }
+          let datetime  = new Date($(this).text());
+          if(datetime instanceof Date && !isNaN(datetime)){
+            $(this).text(datetime.toLocaleString("en-US", {month: "short", day: "numeric", hour: "numeric", minute: "2-digit"}))
           }
         });
       }
