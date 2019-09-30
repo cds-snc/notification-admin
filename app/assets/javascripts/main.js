@@ -4,9 +4,9 @@ $(() => GOVUK.stickAtTopWhenScrolling.init());
 $(() => GOVUK.stickAtBottomWhenScrolling.init());
 
 $(".local-datetime-short").each(function(index) {
-  let time = moment($(this).text().trim());
-  if(time.isValid()){
-    $(this).text(time.format("D MMM, HH:mm a"));
+  let datetime  = new Date($(this).text());
+  if(datetime instanceof Date && !isNaN(datetime)){
+    $(this).text(datetime.toLocaleString("en-US", {month: "short", day: "numeric", hour: "numeric", minute: "2-digit"}))
   }
 });
 
@@ -47,19 +47,19 @@ $(() => $('.banner-dangerous').eq(0).trigger('focus'));
     "use strict";
     var root = this;
     if(typeof root.GOVUK === 'undefined') { root.GOVUK = {}; }
-  
+
     /*
       Cookie methods
       ==============
-  
+
       Usage:
-  
+
         Setting a cookie:
         GOVUK.cookie('hobnob', 'tasty', { days: 30 });
-  
+
         Reading a cookie:
         GOVUK.cookie('hobnob');
-  
+
         Deleting a cookie:
         GOVUK.cookie('hobnob', null);
     */
@@ -108,19 +108,19 @@ $(() => $('.banner-dangerous').eq(0).trigger('focus'));
     "use strict";
     var root = this;
     if(typeof root.GOVUK === 'undefined') { root.GOVUK = {}; }
-  
+
     GOVUK.addCookieMessage = function () {
-      
+
     };
   }).call(this);
   (function() {
     "use strict";
-  
+
     // add cookie message
     if (window.GOVUK && GOVUK.addCookieMessage) {
       GOVUK.addCookieMessage();
     }
-  
+
     // header navigation toggle
     if (document.querySelectorAll && document.addEventListener){
       var els = document.querySelectorAll('.js-header-toggle'),
@@ -131,7 +131,7 @@ $(() => $('.banner-dangerous').eq(0).trigger('focus'));
           var target = document.getElementById(this.getAttribute('href').substr(1)),
               targetClass = target.getAttribute('class') || '',
               sourceClass = this.getAttribute('class') || '';
-  
+
           if(targetClass.indexOf('js-visible') !== -1){
             target.setAttribute('class', targetClass.replace(/(^|\s)js-visible(\s|$)/, ''));
           } else {
