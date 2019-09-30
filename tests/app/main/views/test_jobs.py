@@ -447,7 +447,7 @@ def test_should_show_scheduled_job(
     )
 
     assert normalize_spaces(page.select('main p')[1].text) == (
-        'Sending Two week reminder at 2016-01-02T00:00:00.061258'
+        'Sending Two week reminder 2016-01-02T00:00:00.061258'
     )
     assert page.select('main p a')[0]['href'] == url_for(
         'main.view_template_version',
