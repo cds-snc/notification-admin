@@ -1,0 +1,41 @@
+{% extends "withnav_template.html" %}
+{% from "components/file-upload.html" import file_upload %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ '{} email branding'.format('Update' if is_update else 'Create')}}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {{ page_header(
+    '{} email branding'.format('Update' if is_update else 'Add'),
+    back_link=url_for('main.service_settings', service_id=current_service.id)
+  ) }}
+  <div class="grid-row">
+    <div class="column-three-quarters">
+      {% if upload_filename %}
+        <div id="logo-img">
+          <img src="https://{{ cdn_url }}/{{ upload_filename }}"/>
+        </div>
+      {% endif %}
+      <p>
+        Logos should be SVG files, cropped to artwork bounds and with all fonts outlined.
+      </p>
+      {{ file_upload(file_upload_form.file, button_text='{} logo'.format('Update' if is_update else 'Upload')) }}
+      {% call form_wrapper() %}
+        <div class="form-group">
+          <div style='margin-top:15px;'>{{ upload_filename }}</div>
+          {{ page_footer(
+            'Submit Branding Request',
+            button_name='operation',
+            button_value='branding-details'
+          ) }}
+        </div>
+      {% endcall %}
+    </div>
+
+{% endblock %}

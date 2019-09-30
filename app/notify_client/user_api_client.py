@@ -122,6 +122,11 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = '/user/{0}/support-email'.format(user_id)
         self.post(endpoint, data=data)
 
+    def send_branding_request(self, user_id, serviceID, filename):
+        data = {'email': self.contact_email, 'serviceID', serviceID, 'filename': filename}
+        endpoint = '/user/{0}/branding-request'.format(user_id)
+        self.post(endpoint, data=data)
+
     @cache.delete('user-{user_id}')
     def check_verify_code(self, user_id, code, code_type):
         data = {'code_type': code_type, 'code': code}
