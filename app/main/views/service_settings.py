@@ -30,7 +30,6 @@ from app import (
 from app.extensions import zendesk_client
 from app.main import main
 from app.main.forms import (
-    BrandingOptionsEmail,
     ConfirmPasswordForm,
     EstimateUsageForm,
     FreeSMSAllowance,
@@ -52,13 +51,15 @@ from app.main.forms import (
     SetEmailBranding,
     SetLetterBranding,
     SMSPrefixForm,
-    branding_options_dict,
+    SVGFileUpload,
 )
+from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
     SENDING_STATUSES,
     email_safe,
+    get_logo_cdn_domain,
     user_has_permissions,
     user_is_gov_user,
     user_is_platform_admin,
@@ -1039,52 +1040,31 @@ def link_service_to_organisation(service_id):
 
 
 @main.route("/services/<service_id>/branding-request/email", methods=['GET', 'POST'])
+@main.route("/services/<service_id>/branding-request/email/<path:logo>", methods=['GET', 'POST'])
 @user_has_permissions('manage_service')
-def branding_request(service_id):
+def branding_request(service_id, logo=None):
+    file_upload_form = SVGFileUpload()
+    file_upload_form_submitted = file_upload_form.file.data
 
-    abort(404)
+    logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
 
-    branding_type = 'govuk'
+    upload_filename = None
 
-    if current_service.email_branding:
-        branding_type = current_service.email_branding['brand_type']
-
-    form = BrandingOptionsEmail(
-        options=branding_type
-    )
-
-    if form.validate_on_submit():
-        zendesk_client.create_ticket(
-            subject='Email branding request - {}'.format(current_service.name),
-            message=(
-                'Organisation: {organisation}\n'
-                'Service: {service_name}\n'
-                '{dashboard_url}\n'
-                '\n---'
-                '\nCurrent branding: {current_branding}'
-                '\nBranding requested: {branding_requested}'
-            ).format(
-                organisation=current_service.organisation.as_info_for_branding_request(current_user.email_domain),
-                service_name=current_service.name,
-                dashboard_url=url_for('main.service_dashboard', service_id=current_service.id, _external=True),
-                current_branding=current_service.email_branding_name,
-                branding_requested=branding_options_dict[form.options.data],
-            ),
-            ticket_type=zendesk_client.TYPE_QUESTION,
-            user_email=current_user.email_address,
-            user_name=current_user.name,
-            tags=['notify_action_add_branding'],
+    if file_upload_form_submitted:
+        upload_filename = upload_email_logo(
+            file_upload_form.file.data.filename,
+            file_upload_form.file.data,
+            current_app.config['AWS_REGION'],
+            user_id=session["user_id"]
         )
-
-        flash((
-            'Thanks for your branding request. We’ll get back to you '
-            'within one working day.'
-        ), 'default')
-        return redirect(url_for('.service_settings', service_id=service_id))
+        current_user.send_branding_request(current_service.id, upload_filename)
 
     return render_template(
-        'views/service-settings/branding/email-options.html',
-        form=form,
+        'views/service-settings/branding/manage-email-branding.html',
+        file_upload_form=file_upload_form,
+        cdn_url=get_logo_cdn_domain(),
+        upload_filename=upload_filename,
+        logo=logo
     )
 
 
