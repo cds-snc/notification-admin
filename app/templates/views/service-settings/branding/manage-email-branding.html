@@ -6,29 +6,27 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  {{ '{} email branding'.format('Update' if is_update else 'Create')}}
+  {{ _('Update email branding') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    '{} email branding'.format('Update' if is_update else 'Add'),
+    _('Update email branding'),
     back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
   <div class="grid-row">
     <div class="column-three-quarters">
       {% if upload_filename %}
         <div>
-          <p>Your logo has been uploaded, and a Branding Request has been made to Support.</p>
+          <p>{{ _('Your logo has been uploaded, and a Branding Request has been made to Support.') }}</p>
         </div>
         <div id="logo-img">
           <img src="https://{{ cdn_url }}/{{ upload_filename }}"/>
         </div>
       {% endif %}
-      <p>
-        Logos should be SVG files, cropped to artwork bounds and with all fonts outlined.
-      </p>
-      {{ file_upload(file_upload_form.file, button_text='{} logo'.format('Update' if is_update else 'Upload')) }}
+      {% set btn_txt = _('Upload logo') %}
+      {{ file_upload(file_upload_form.file, button_text=btn_txt ) }}
     </div>
 
 {% endblock %}
