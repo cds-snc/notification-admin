@@ -387,7 +387,7 @@ class User(JSONModel, UserMixin):
 
     def send_support_email(self, message):
         user_api_client.send_support_email(self.id, message)
-    
+
     def send_branding_request(self, serviceID, filename):
         user_api_client.send_branding_request(self.id, serviceID, filename)
 

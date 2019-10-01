@@ -30,7 +30,6 @@ from app import (
 from app.extensions import zendesk_client
 from app.main import main
 from app.main.forms import (
-    BrandingOptionsEmail,
     ConfirmPasswordForm,
     EstimateUsageForm,
     FreeSMSAllowance,
@@ -52,22 +51,18 @@ from app.main.forms import (
     SetEmailBranding,
     SetLetterBranding,
     SMSPrefixForm,
-    branding_options_dict,
     SVGFileUpload,
 )
+from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
     SENDING_STATUSES,
     email_safe,
+    get_logo_cdn_domain,
     user_has_permissions,
     user_is_gov_user,
     user_is_platform_admin,
-    get_logo_cdn_domain,
-)
-
-from app.s3_client.s3_logo_client import (
-    upload_email_logo
 )
 
 PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
@@ -1048,9 +1043,7 @@ def link_service_to_organisation(service_id):
 @main.route("/services/<service_id>/branding-request/email/<path:logo>", methods=['GET', 'POST'])
 @user_has_permissions('manage_service')
 def branding_request(service_id, logo=None):
-    
     file_upload_form = SVGFileUpload()
-
     file_upload_form_submitted = file_upload_form.file.data
 
     logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
@@ -1058,7 +1051,6 @@ def branding_request(service_id, logo=None):
     upload_filename = None
 
     if file_upload_form_submitted:
-        print("file upload")
         upload_filename = upload_email_logo(
             file_upload_form.file.data.filename,
             file_upload_form.file.data,
@@ -1067,13 +1059,12 @@ def branding_request(service_id, logo=None):
         )
         current_user.send_branding_request(current_service.id, upload_filename)
 
-
     return render_template(
         'views/service-settings/branding/manage-email-branding.html',
         file_upload_form=file_upload_form,
         cdn_url=get_logo_cdn_domain(),
         upload_filename=upload_filename,
-        logo = logo
+        logo=logo
     )
 
 
