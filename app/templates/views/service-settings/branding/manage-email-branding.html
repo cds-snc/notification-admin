@@ -18,6 +18,9 @@
   <div class="grid-row">
     <div class="column-three-quarters">
       {% if upload_filename %}
+        <div>
+          <p>Your logo has been uploaded, and a Branding Request has been made to Support.</p>
+        </div>
         <div id="logo-img">
           <img src="https://{{ cdn_url }}/{{ upload_filename }}"/>
         </div>
@@ -26,16 +29,6 @@
         Logos should be SVG files, cropped to artwork bounds and with all fonts outlined.
       </p>
       {{ file_upload(file_upload_form.file, button_text='{} logo'.format('Update' if is_update else 'Upload')) }}
-      {% call form_wrapper() %}
-        <div class="form-group">
-          <div style='margin-top:15px;'>{{ upload_filename }}</div>
-          {{ page_footer(
-            'Submit Branding Request',
-            button_name='operation',
-            button_value='branding-details'
-          ) }}
-        </div>
-      {% endcall %}
     </div>
 
 {% endblock %}

@@ -1048,7 +1048,7 @@ def link_service_to_organisation(service_id):
 @main.route("/services/<service_id>/branding-request/email/<path:logo>", methods=['GET', 'POST'])
 @user_has_permissions('manage_service')
 def branding_request(service_id, logo=None):
-
+    
     file_upload_form = SVGFileUpload()
 
     file_upload_form_submitted = file_upload_form.file.data
@@ -1058,12 +1058,15 @@ def branding_request(service_id, logo=None):
     upload_filename = None
 
     if file_upload_form_submitted:
+        print("file upload")
         upload_filename = upload_email_logo(
             file_upload_form.file.data.filename,
             file_upload_form.file.data,
             current_app.config['AWS_REGION'],
             user_id=session["user_id"]
         )
+        current_user.send_branding_request(current_service.id, upload_filename)
+
 
     return render_template(
         'views/service-settings/branding/manage-email-branding.html',
