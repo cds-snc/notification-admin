@@ -80,3 +80,5 @@ environment.sh
 .cf
 
 notify.code-workspace
+
+schedule-message.html

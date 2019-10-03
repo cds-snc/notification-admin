@@ -12,5 +12,17 @@ if (el) {
   ReactDOM.render(<ScheduleMessage days={days} />, el);
 }
 
+/*
+if (!window.APP_PHRASES || typeof APP_PHRASES === "undefined") {
+  APP_PHRASES = {
+    now: "Now"
+  };
+}
+
+if (!window.APP_LANG || typeof APP_LANG === "undefined") {
+  APP_LANG = "en";
+}
+*/
+
 window.moment = Moment;
 window.polyglot = new Polyglot({ phrases: APP_PHRASES, locale: APP_LANG });

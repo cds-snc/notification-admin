@@ -9,16 +9,13 @@ import { DayButtons } from "./DayButtons";
 import { TimeInputs } from "./TimeInputs";
 
 export class ScheduleMessage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentDayLabel: "Now",
-      showTimeInputs: false,
-      currentDate: this.props.days[0]["date"],
-      hour: getCurrentTime().hour,
-      amPM: getCurrentTime().amPM
-    };
-  }
+  state = {
+    currentDayLabel: "Now",
+    showTimeInputs: false,
+    currentDate: this.props.days[0]["date"],
+    hour: getCurrentTime().hour,
+    amPM: getCurrentTime().amPM
+  };
 
   componentDidMount() {
     this.handleChange();
@@ -80,9 +77,11 @@ export class ScheduleMessage extends React.Component {
       if (showTimeInputs) {
         hour = document.querySelector("input[name=hour]").value;
         amPM = document.querySelector("input[name=amPM]:checked").value;
+        this.setFieldValue(getDateFromString({ currentDate, hour, amPM }));
+      } else {
+        // default to "now"
+        this.setFieldValue("");
       }
-
-      this.setFieldValue(getDateFromString({ currentDate, hour, amPM }));
     } catch (e) {
       console.log(e);
     }
