@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-01 11:30-0700\n"
+"POT-Creation-Date: 2019-10-04 11:47-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -625,6 +625,7 @@ msgid "Status"
 msgstr "État"
 
 #: app/templates/partials/jobs/notifications.html:13
+#: app/templates/views/dashboard/_upcoming.html:28
 #: app/templates/views/message-status.html:34
 #: app/templates/views/message-status.html:75
 msgid "Sending"
@@ -1069,11 +1070,11 @@ msgstr ""
 msgid "Maintained by CDS:"
 msgstr "Maintenu par le SNC :"
 
-#: app/templates/views/documentation.html:19
-msgid "Java-API-Library-Documentation"
-msgstr "Documentation-Biblioth`que-API-Java"
+#: app/templates/views/documentation.html:20
+msgid "java-api-documentation"
+msgstr ""
 
-#: app/templates/views/documentation.html:24
+#: app/templates/views/documentation.html:25
 msgid "Maintained by GOV.UK:"
 msgstr "Maintenu par GOV.UK :"
 
@@ -3929,4 +3930,7 @@ msgstr "Clés d’essai"
 
 #~ msgid "{} email message template"
 #~ msgstr "{} modèle de message de courriel"
+
+#~ msgid "Java-API-Library-Documentation"
+#~ msgstr "API-Java-client-Documentation"
 

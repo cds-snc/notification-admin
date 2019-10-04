@@ -16,8 +16,14 @@
     {% for key, label in [
       ('java', 'Java'),
     ] %}
-      {% set url = _('Java-API-Library-Documentation') %}
-      <li><a href="https://github.com/cds-snc/notification-api/wiki/{{url}}" target="_blank" rel="noopener">{{ label }}</a></li>
+      
+    {% if current_lang == "fr" %}
+    <li><a href="https://github.com/cds-snc/notification-api/wiki/API-Java-client-Documentation" target="_blank" rel="noopener">{{ label }}</a></li>
+    {% else %}
+    <li><a href="https://github.com/cds-snc/notification-api/wiki/Java-API-Library-Documentation" target="_blank" rel="noopener">{{ label }}</a></li>
+    {% endif %}
+      
+      
     {% endfor %}
   </ul>
 
