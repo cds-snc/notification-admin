@@ -4,6 +4,7 @@ import Polyglot from "node-polyglot";
 import Moment from "moment";
 import { getDays } from "./schedule/dateUtils";
 import { ScheduleMessage } from "./schedule/ScheduleMessage";
+import { DiffDOM } from "diff-dom";
 
 let el = document.getElementById("schedule-send-at");
 
@@ -25,4 +26,5 @@ if (!window.APP_LANG || typeof APP_LANG === "undefined") {
 */
 
 window.moment = Moment;
+window.DiffDOM = DiffDOM;
 window.polyglot = new Polyglot({ phrases: APP_PHRASES, locale: APP_LANG });
