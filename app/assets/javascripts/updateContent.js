@@ -2,63 +2,61 @@
   "use strict";
 
   var queues = {};
-  var dd = new diffDOM();
+  //var dd = new diffDOM();
+  var dd = new window.DiffDOM();
 
-  var getRenderer = $component => response => dd.apply(
-    $component.get(0),
-    dd.diff($component.get(0), $(response[$component.data('key')]).get(0))
-  );
+  var getRenderer = $component => response =>
+    dd.apply(
+      $component.get(0),
+      dd.diff($component.get(0), $(response[$component.data("key")]).get(0))
+    );
 
-  var getQueue = resource => (
-    queues[resource] = queues[resource] || []
-  );
+  var getQueue = resource => (queues[resource] = queues[resource] || []);
 
   var flushQueue = function(queue, response) {
-    while(queue.length) queue.shift()(response);
+    while (queue.length) queue.shift()(response);
   };
 
   var clearQueue = queue => (queue.length = 0);
 
   var poll = function(renderer, resource, queue, interval, form) {
-
-    if (document.visibilityState !== "hidden" && queue.push(renderer) === 1) $.ajax(
-      resource,
-      {
-        'method': form ? 'post' : 'get',
-        'data': form ? $('#' + form).serialize() : {}
-      }
-    ).done(
-      response => {
-        flushQueue(queue, response);
-        if (response.stop === 1) {
-          poll = function(){};
-        }
-        $(".local-datetime-short").each(function(index) {
-          let datetime  = new Date($(this).text());
-          if(datetime instanceof Date && !isNaN(datetime)){
-            $(this).text(datetime.toLocaleString("en-US", {month: "short", day: "numeric", hour: "numeric", minute: "2-digit"}))
+    if (document.visibilityState !== "hidden" && queue.push(renderer) === 1)
+      $.ajax(resource, {
+        method: form ? "post" : "get",
+        data: form ? $("#" + form).serialize() : {}
+      })
+        .done(response => {
+          flushQueue(queue, response);
+          if (response.stop === 1) {
+            poll = function() {};
           }
-        });
-      }
-    ).fail(
-      () => poll = function(){}
-    );
+          $(".local-datetime-short").each(function(index) {
+            let datetime = new Date($(this).text());
+            if (datetime instanceof Date && !isNaN(datetime)) {
+              $(this).text(
+                datetime.toLocaleString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit"
+                })
+              );
+            }
+          });
+        })
+        .fail(() => (poll = function() {}));
 
-    setTimeout(
-      () => poll.apply(window, arguments), interval
-    );
+    setTimeout(() => poll.apply(window, arguments), interval);
   };
 
   Modules.UpdateContent = function() {
-
-    this.start = component => poll(
-      getRenderer($(component)),
-      $(component).data('resource'),
-      getQueue($(component).data('resource')),
-      ($(component).data('interval-seconds') || 1.5) * 1000,
-      $(component).data('form')
-    );
-
+    this.start = component =>
+      poll(
+        getRenderer($(component)),
+        $(component).data("resource"),
+        getQueue($(component).data("resource")),
+        ($(component).data("interval-seconds") || 1.5) * 1000,
+        $(component).data("form")
+      );
   };
-
 })(window.GOVUK.Modules);
