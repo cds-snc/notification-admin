@@ -19,6 +19,8 @@ from app.main.views.feedback import QUESTION_TICKET_TYPE
 from app.main.views.sub_navigation_dictionaries import features_nav, pricing_nav
 from app.utils import get_logo_cdn_domain, user_is_logged_in
 
+from app.main.forms import Feedback, Problem, SupportType, Triage
+
 
 @main.route('/')
 def index():
@@ -26,9 +28,16 @@ def index():
     if current_user and current_user.is_authenticated:
         return redirect(url_for('main.choose_account'))
 
+    form = Feedback()
+    if form.validate_on_submit():
+        return redirect(url_for(
+            '/',
+            ticket_type=form.support_type.data,
+        ))
+
     return render_template(
         'views/signedout.html',
-        counts=status_api_client.get_count_of_live_services_and_organisations()
+        form=form
     )
 
 

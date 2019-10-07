@@ -1,4 +1,7 @@
 {% extends "fullwidth_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
 
 {% block meta %}
   <meta name="description" content="Notification lets you send emails and text messages to your users.">
@@ -9,7 +12,7 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-
+  <!-- intro -->
   <div class="product-page-intro">
     <div class="product-page-intro-wrapper override-elements-content" id="content">
       <div class="grid-row">
@@ -28,66 +31,110 @@
       </div>
     </div>
   </div>
+  <!-- end intro -->
 
+  <!-- section 1 -->
   <div class="product-page-section">
     <div class="grid-row">
       <div class="column-half">
-        <h2>
-          {{ _('Control your content') }}
-        </h2>
-        <p>
-          {{ _('You don’t need any technical knowledge to create email or text message templates.') }}
-        </p>
+        {% if current_lang == "fr" %}
+          <img src="{{ asset_url('images/product/01-dashboard-fr.svg') }}" alt="" />
+        {% else %}
+          <img src="{{ asset_url('images/product/01-dashboard-en.png') }}" alt="" />
+        {% endif %}
+      </div>
+      <div class="column-half">
+        <h2>Header</h2>
+        <p>Text here.</p>
+      </div>
+    </div>
+  </div>
+  <!-- end section 1 -->
+
+  <!-- section 2 -->
+  <div class="product-page-section">
+    <div class="grid-row">
+      <div class="column-half">
+          <h2>Header</h2>
+          <p>Text here.</p>
       </div>
       <div class="column-half">
         {% if current_lang == "fr" %}
-          <img src="{{ asset_url('images/product/01-templates-fr.svg') }}" alt="" />
+        <img src="{{ asset_url('images/product/01-templates-fr.svg') }}" alt="" />
         {% else %}
-          <img src="{{ asset_url('images/product/01-templates.svg') }}" alt="" />
+        <img src="{{ asset_url('images/product/01-templates.svg') }}" alt="" />
         {% endif %}
       </div>
     </div>
   </div>
+  <!-- end section 2 -->
+
+  <!-- background colour swap -->
+  <div class="homepage-colour-swap">
+  <!-- section 3 -->
   <div class="product-page-section">
-    <h2 class="with-keyline">
-      {{ _('Send messages manually or automatically') }}
-    </h2>
-    <div class="grid-row">
-      <div class="column-half">
-        <p>
-          {{ _('Upload a spreadsheet of email addresses or phone numbers and Notification sends the messages.') }}
-        </p>
-        {% set alt = _('A screenshot of a spreadsheet with columns for email address, name and colour') %}
-        {% if current_lang == "fr" %}
-          <img src="{{ asset_url('images/product/03-spreadsheet-fr.svg') }}" alt="" />
-        {% else %}
-          <img src="{{ asset_url('images/product/03-spreadsheet.svg') }}" alt="" />
-        {% endif %}
-      </div>
-      <div class="column-half">
-        <p>
-          {{ _('Integrate Notification with your web application or back office system.') }}
-        </p>
-        {% set alt = _('A screenshot of some computer code with a notify.send_email function') %}
-        <img
-          src="{{ asset_url('images/product/04-api.svg') }}"
-          alt=alt
-        >
+      <div class="grid-row">
+        <div class="column-half">
+          {% if current_lang == "fr" %}
+            <img src="{{ asset_url('images/product/01-spreadsheet-fr.svg') }}" alt="" />
+          {% else %}
+            <img src="{{ asset_url('images/product/01-templates.svg') }}" alt="" />
+          {% endif %}
+        </div>
+        <div class="column-half">
+          <h2>Header</h2>
+          <p>Text here.</p>
+        </div>
       </div>
     </div>
-  </div>
+    <!-- end section 3 -->
+    
   
-  <div class="product-page-section">
-    <div class="grid-row">
-      <div class="column-half">
-        <p>
-          <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('Contact us') }}</a> {{ _('if you have a question or want to give feedback.') }}
-        </p>
-      </div>
-      <div class="column-half">
+    <!-- section 4 -->
+    <div class="product-page-section">
+      <div class="grid-row">
+        <div class="column-half">
+            <h2>Header</h2>
+            <p>Text here.</p>
+        </div>
+        <div class="column-half">
+          <img src="{{ asset_url('images/product/01-code.svg') }}" alt="" />
+        </div>
       </div>
     </div>
+    <!-- end section 4 -->
+
   </div>
+  <!-- end background colour swap -->
+
+
+     <!-- contact us -->
+     <div class="product-page-section">
+        <div class="grid-row">
+          <div class="column-half">
+              <h2>Contact US</h2>
+             
+              {% call form_wrapper() %}
+               {{ textbox(form.name, width='1-1') }}
+               {{ textbox(form.email_address, width='1-1') }}
+               {{ textbox(form.feedback, width='1-1', hint='', rows=10) }}
+              {{ page_footer(
+                'Send',
+              ) }}
+          {% endcall %}
+
+
+          </div>
+          <div class="column-half">
+          </div>
+        </div>
+      </div>
+      <!-- end contact us -->
+
+
+
+  
+  
 
 
 {% endblock %}

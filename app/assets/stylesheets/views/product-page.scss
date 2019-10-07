@@ -12,7 +12,6 @@
       @extend %site-width-container;
 
       @include media(desktop) {
-
         background-image: file-url('product/proposition-illustration.png');
         background-size: 320px;
         background-repeat: no-repeat;
@@ -21,9 +20,14 @@
         @include ie-lte(8) {
           background-image: none;
         }
-
       }
+    }
 
+    // swap image for fr
+    &-wrapper:lang(fr) {
+      @include media(desktop) {
+        background-image: file-url('product/01-screen-fr.svg');
+      }
     }
 
     h1 {
