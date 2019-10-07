@@ -651,7 +651,7 @@ msgstr "Télécharger ce rapport"
 #: app/templates/partials/jobs/notifications.html:72
 #: app/templates/partials/notifications/notifications.html:27
 msgid "Only showing the first 50 rows"
-msgstr "Ne montre que les 50 premières rangées"
+msgstr "Ne montre que les 50 premières rangées"
 
 #: app/templates/partials/jobs/status.html:5
 #: app/templates/partials/jobs/status.html:15
@@ -688,7 +688,7 @@ msgstr "Utilisez des astérisques pour les puces dans une énumération :"
 #: app/templates/partials/templates/guidance-formatting-letters.html:15
 #: app/templates/partials/templates/guidance-formatting.html:15
 msgid "* point 1"
-msgstr "* point 1 "
+msgstr "* point 1 "
 
 #: app/templates/partials/templates/guidance-formatting-letters.html:16
 #: app/templates/partials/templates/guidance-formatting.html:16
@@ -706,11 +706,11 @@ msgstr "Pour insérer un saut de page, utilisez trois astérisques :"
 
 #: app/templates/partials/templates/guidance-formatting-letters.html:25
 msgid "Content on page 1"
-msgstr "Contenu de la page 1"
+msgstr "Contenu de la page 1"
 
 #: app/templates/partials/templates/guidance-formatting-letters.html:29
 msgid "Content on page 2"
-msgstr "Contenu de la page 2"
+msgstr "Contenu de la page 2"
 
 #: app/templates/partials/templates/guidance-formatting.html:1
 msgid "Format"
@@ -963,7 +963,7 @@ msgstr "Témoins"
 msgid "Notification puts small files (known as ‘cookies’) onto your computer."
 msgstr ""
 "les notifications mettent des petits fichiers (connu sous le nom de « "
-"témoins ») sur votre ordinateur."
+"témoins ») sur votre ordinateur."
 
 #: app/templates/views/cookies.html:15
 msgid "These cookies are used to remember you once you’ve logged in."
@@ -989,7 +989,7 @@ msgid ""
 "        secure while you use the service."
 msgstr ""
 "Nous conservons les témoins de session sur votre ordinateur pour garder "
-"vos renseignements en sécurité pendant que vous utilisez le service."
+"vos renseignements en sécurité pendant que vous utilisez le service."
 
 #: app/templates/views/cookies.html:28 app/templates/views/cookies.html:57
 #: app/templates/views/user-profile.html:28
@@ -1015,7 +1015,7 @@ msgstr "Utilisé pour garder votre session ouverte"
 
 #: app/templates/views/cookies.html:42
 msgid "20 hours"
-msgstr "20 heures"
+msgstr "20 heures"
 
 #: app/templates/views/cookies.html:48
 msgid "Introductory message cookie"
@@ -1043,11 +1043,11 @@ msgid ""
 "                    message"
 msgstr ""
 "Enregistre un message pour nous laisser savoir que vous avez vu notre "
-"message témoin"
+"message témoin"
 
 #: app/templates/views/cookies.html:72
 msgid "1 month"
-msgstr "1 mois"
+msgstr "1 mois"
 
 #: app/templates/views/documentation.html:10
 msgid "Notification API to send messages automatically."
@@ -1211,7 +1211,7 @@ msgid ""
 " message template first."
 msgstr ""
 "Pour envoyer un courriel ou un message texte avec Notification, vous "
-"devez d'abord créer un modèle de message réutilisable."
+"devez d'abord créer un modèle de message réutilisable."
 
 #: app/templates/views/features.html:26
 msgid ""
@@ -1681,7 +1681,7 @@ msgstr "Continuer"
 #: app/templates/views/register-from-org-invite.html:22
 #: app/templates/views/register.html:24
 msgid "At least 8 characters"
-msgstr "Au moins 8 caractères"
+msgstr "Au moins 8 caractères"
 
 #: app/templates/views/new-password.html:29
 msgid ""
@@ -1721,7 +1721,7 @@ msgstr "et les"
 
 #: app/templates/views/privacy.html:11
 msgid "privacy protections"
-msgstr "protections de la vie privée propres au Royaume-Uni (en anglais)"
+msgstr "protections de la vie privée propres au Royaume-Uni (en anglais)"
 
 #: app/templates/views/privacy.html:13
 msgid "The Notification team is reviewing privacy requirements under the"
@@ -1787,7 +1787,7 @@ msgid ""
 "target=\"new\">security protections</a>."
 msgstr ""
 "GOV.UK a développé le <a href=\"https://github.com/topics/govuk-notify\" "
-"target=\"new\">système de notification</a> original ainsi que les <a "
+"target=\"new\">système de notification</a> original ainsi que les <a "
 "href=\"https://www.notifications.service.gov.uk/features/security\" "
 "target=\"new\">protections en matière de sécurité</a> propres au Royaume-"
 "Uni."
@@ -1997,7 +1997,7 @@ msgstr "Vous ne pouvez qu’envoyer des messages à vous-même"
 msgid "you can add people to your team, then you can send messages to them too"
 msgstr ""
 "Vous pouvez ajouter des personnes à votre équipe, puis aussi leur envoyer"
-" des messages"
+" des messages"
 
 #: app/templates/views/service-settings.html:235
 msgid "you can only send"
@@ -2146,7 +2146,7 @@ msgid ""
 "colour"
 msgstr ""
 "Une capture d'écran d’une feuille de calcul avec des colonnes pour "
-"l’adresse courriel, le nom et la couleur"
+"l’adresse courriel, le nom et la couleur"
 
 #: app/templates/views/signedout.html:69
 msgid "Integrate Notification with your web application or back office system."
@@ -2177,13 +2177,13 @@ msgstr "Vous devez vous reconnecter"
 msgid "We signed you out because you logged in to Notification on another device."
 msgstr ""
 "Nous vous avons déconnecté puisque vous vous êtes connecté à Notification"
-" sur un autre appareil."
+" sur un autre appareil."
 
 #: app/templates/views/signin.html:23
 msgid "We signed you out because you haven’t used Notification for a while."
 msgstr ""
 "Nous vous avons déconnecté puisque vous n’avez pas utilisé Notification "
-"depuis un certain temps."
+"depuis un certain temps."
 
 #: app/templates/views/signin.html:29
 msgid "If you do not have an account, you can"
@@ -2377,7 +2377,7 @@ msgid ""
 "code."
 msgstr ""
 "Vérifiez que votre numéro de téléphone cellulaire est correct et "
-"renvoyezle code de sécurité."
+"renvoyezle code de sécurité."
 
 #: app/templates/views/text-not-received-2.html:18
 msgid "Mobile phone number"
@@ -2409,7 +2409,7 @@ msgstr "Un service en mode d’essai vous limite à :"
 
 #: app/templates/views/trial-mode.html:14
 msgid "send 50 text messages and emails per day"
-msgstr "envoyer 50 messages textes et courriels par jour"
+msgstr "envoyer 50 messages textes et courriels par jour"
 
 #: app/templates/views/trial-mode.html:15
 msgid "send messages to you and other people in your team"
@@ -2522,7 +2522,7 @@ msgid ""
 "receive the text message, you can resend it."
 msgstr ""
 "Les messages textes peuvent prendre quelques minutes à arriver. Si vous "
-"ne recevez pas le message texte, vous pouvez le renvoyer."
+"ne recevez pas le message texte, vous pouvez le renvoyer."
 
 #: app/templates/views/verification-not-received.html:15
 msgid ""
@@ -2632,7 +2632,7 @@ msgid ""
 "Notification services from"
 msgstr ""
 "Cette entente ne doit être acceptée qu'une seule fois. Elle couvrira "
-"alors tous les services de Notification de"
+"alors tous les services de Notification de"
 
 #: app/templates/views/agreement/_agreement.html:9
 msgid ""
@@ -2737,7 +2737,7 @@ msgid ""
 "organisation."
 msgstr ""
 "L’entente est confidentielle et ne devrait pas être partagée à "
-"l’extérieur de votre organisation. "
+"l’extérieur de votre organisation. "
 
 #: app/templates/views/agreement/service-agreement.html:22
 msgid ""
@@ -2803,7 +2803,7 @@ msgstr "Affiche seulement les 50 premiers messages."
 
 #: app/templates/views/api/keys.html:19
 msgid "You haven’t created any API keys yet"
-msgstr "Vous n’avez pas encore créé de clés de l’API "
+msgstr "Vous n’avez pas encore créé de clés de l’API "
 
 #: app/templates/views/api/keys.html:40
 msgid "Live – sends to anyone"
@@ -2813,7 +2813,7 @@ msgstr "En service – envoie à quiconque"
 msgid "Team and safelist – limits who you can send to"
 msgstr ""
 "Équipe et liste de confiance — limite le nombre de personnes à qui vous "
-"pouvez faire des envois"
+"pouvez faire des envois"
 
 #: app/templates/views/api/keys.html:44
 msgid "Test – pretends to send messages"
@@ -2872,7 +2872,7 @@ msgid ""
 "was able to deliver it. Check the"
 msgstr ""
 "Lorsque vous envoyez un courriel ou un message texte, nous pouvons vous "
-"dire si Notification a réussi à le livrer. Vérifiez la"
+"dire si Notification a réussi à le livrer. Vérifiez la"
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:21
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:19
@@ -2887,7 +2887,7 @@ msgstr "Doit commencer par https://"
 #: app/templates/views/api/callbacks/delivery-status-callback.html:30
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:28
 msgid "At least 10 characters"
-msgstr "Au moins 10 caractères"
+msgstr "Au moins 10 caractères"
 
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:8
 msgid "Callbacks for received text messages"
@@ -2899,7 +2899,7 @@ msgid ""
 "your system. Check the"
 msgstr ""
 "Lorsque vous recevez un message texte dans Notification, nous pouvons le "
-"transférer à votre système. Vérifiez le"
+"transférer à votre système. Vérifiez le"
 
 #: app/templates/views/api/keys/create.html:19
 msgid "Name for this key"
@@ -2918,7 +2918,7 @@ msgstr "Copiez votre clé à un endroit sûr."
 msgid "You won’t be able to see it again once you leave this page."
 msgstr ""
 "Vous ne serez pas en mesure de la voir à nouveau une fois que vous aurez "
-"quitté cette page."
+"quitté cette page."
 
 #: app/templates/views/api/keys/show.html:24
 msgid "API key"
@@ -3003,7 +3003,7 @@ msgid ""
 "          your template"
 msgstr ""
 "Les colonnes de votre fichier doivent correspondre aux parenthèses "
-"doubles compris dans votre modèle"
+"doubles compris dans votre modèle"
 
 #: app/templates/views/check/column-errors.html:99
 msgid "Your file is missing"
@@ -3091,7 +3091,7 @@ msgstr "envoyé"
 
 #: app/templates/views/dashboard/dashboard.html:25
 msgid "In the last 7 days"
-msgstr "Dans les 7 derniers jours"
+msgstr "Dans les 7 derniers jours"
 
 #: app/templates/views/dashboard/dashboard.html:31
 msgid "Check messages sent per month"
@@ -3131,7 +3131,7 @@ msgstr "Mois"
 
 #: app/templates/views/dashboard/monthly.html:73
 msgid "Fiscal year ends 31 March."
-msgstr "L’exercice financier se termine le 31 mars."
+msgstr "L’exercice financier se termine le 31 mars."
 
 #: app/templates/views/email-branding/manage-branding.html:27
 msgid "Logos should be PNG files, 108px high"
@@ -3376,7 +3376,7 @@ msgstr "Changer l’adresse courriel d’un membre de l’équipe"
 
 #: app/templates/views/manage-users/edit-user-email.html:18
 msgid "This will change the email address for"
-msgstr "Cela changera l’adresse courriel pour "
+msgstr "Cela changera l’adresse courriel pour "
 
 #: app/templates/views/manage-users/edit-user-mobile.html:8
 msgid "Change team member’s mobile number"
