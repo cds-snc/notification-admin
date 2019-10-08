@@ -18,10 +18,10 @@
       <div class="grid-row">
         <div class="column-two-thirds">
           <h1>
-            {{ _('Send emails and text messages to your users') }}
+            {{ _('Send service updates and messages over email and SMS') }}
           </h1>
           <p>
-            {{ _('Try Notification if you work in the federal government.') }}
+            {{ _('Try Notify if you work in the federal government.') }}
           </p>
           <div class="button-container">
             <a class="button button-start" href='{{ url_for('.register' )}}'>{{ _('Create an account') }}</a>
@@ -44,97 +44,99 @@
         {% endif %}
       </div>
       <div class="column-half">
-        <h2>Header</h2>
-        <p>Text here.</p>
+        <h2>{{ _('Measure the effectiveness and relevance of your notifications') }}</h2>
+        <p>{{ _('The Notify dashboard lets you track the status of all your notifications and mailings. See at a glance the number of messages that have been received and opened.') }}</p>
       </div>
     </div>
   </div>
   <!-- end section 1 -->
 
+
+  <!-- background colour swap -->
+  <div class="homepage-colour-swap">
+
   <!-- section 2 -->
   <div class="product-page-section">
     <div class="grid-row">
       <div class="column-half">
-          <h2>Header</h2>
-          <p>Text here.</p>
+          <h2>{{ _('Manually send personalized messages to your users') }}</h2>
+          <p>{{ _('Upload a spreadsheet containing the recipients email addresses or phone numbers, and Notify will send your message to them all in a batch.') }}</p>
+          <p>
+            {{ _('If you need help organizeing your users’ information, Notify’s spreadsheet template is a great place to start.') }}
+          </p>
+          <p>
+            <a class="button" style="background-color:#005ea5" href='{{ url_for('.register' )}}'>{{ _('Create an account') }}</a>
+               
       </div>
       <div class="column-half">
         {% if current_lang == "fr" %}
-        <img src="{{ asset_url('images/product/01-templates-fr.svg') }}" alt="" />
+        <img src="{{ asset_url('images/product/01-spreadsheet-fr.svg') }}" alt="" />
         {% else %}
-        <img src="{{ asset_url('images/product/01-templates.svg') }}" alt="" />
+        <img src="{{ asset_url('images/product/01-spreadsheet-en.png') }}" alt="" />
         {% endif %}
       </div>
     </div>
   </div>
   <!-- end section 2 -->
-
-  <!-- background colour swap -->
-  <div class="homepage-colour-swap">
+  
   <!-- section 3 -->
   <div class="product-page-section">
-      <div class="grid-row">
-        <div class="column-half">
-          {% if current_lang == "fr" %}
-            <img src="{{ asset_url('images/product/01-spreadsheet-fr.svg') }}" alt="" />
-          {% else %}
-            <img src="{{ asset_url('images/product/01-templates.svg') }}" alt="" />
-          {% endif %}
-        </div>
-        <div class="column-half">
-          <h2>Header</h2>
-          <p>Text here.</p>
-        </div>
-      </div>
-    </div>
-    <!-- end section 3 -->
-    
-  
-    <!-- section 4 -->
-    <div class="product-page-section">
-      <div class="grid-row">
-        <div class="column-half">
-            <h2>Header</h2>
-            <p>Text here.</p>
-        </div>
-        <div class="column-half">
+    <div class="grid-row">
+      <div class="column-half">
           <img src="{{ asset_url('images/product/01-code.svg') }}" alt="" />
-        </div>
+      </div>
+      <div class="column-half">
+        <h2>{{ _('Integrate Notify into your web application or admin system') }}</h2>
+        <p>{{ _('The Notify API sends messages automatically. Choose a client to integrate your API with your web application or admin stystem.') }}</p>
+        <p>
+          <a href="#">{{ _('Learn how to integrate with our API') }}</a>
+        </p>
       </div>
     </div>
-    <!-- end section 4 -->
+  </div>
+  <!-- end section 3 -->
 
   </div>
   <!-- end background colour swap -->
-
-
-     <!-- contact us -->
-     <div class="product-page-section">
-        <div class="grid-row">
-          <div class="column-half">
-              <h2>Contact US</h2>
-             
-              {% call form_wrapper() %}
-               {{ textbox(form.name, width='1-1') }}
-               {{ textbox(form.email_address, width='1-1') }}
-               {{ textbox(form.feedback, width='1-1', hint='', rows=10) }}
-              {{ page_footer(
-                'Send',
-              ) }}
-          {% endcall %}
-
-
-          </div>
-          <div class="column-half">
-          </div>
-        </div>
+  
+  <!-- section 4 -->
+  <div class="product-page-section">
+    <div class="grid-row">
+      <div class="column-half">
+          <h2>{{ _('Control your content') }}</h2>
+          <p>{{ _('You don’t need to be a developer to create email or SMS templates for your users.') }}</p>
+          <p>{{ _('Notify uses standard text editing tools and a simple templating language for filling in personalized information.') }}</p>
       </div>
-      <!-- end contact us -->
-
-
-
+      <div class="column-half">
+          {% if current_lang == "fr" %}
+          <img src="{{ asset_url('images/product/01-templates-fr.svg') }}" alt="" />
+          {% else %}
+          <img src="{{ asset_url('images/product/01-templates.svg') }}" alt="" />
+          {% endif %}
+      </div>
+    </div>
+  </div>
+  <!-- end section 4 -->
   
-  
-
-
+  <!-- background colour swap -->
+  <div class="homepage-colour-swap" style="margin-bottom:0">
+    <!-- contact us -->
+    <div class="product-page-section">
+      <div class="grid-row">
+        <div class="column-half">
+            <h2>{{ _('Contact the notify team')}}</h2>
+            {% call form_wrapper() %}
+              {{ textbox(form.name, width='1-1') }}
+              {{ textbox(form.email_address, width='1-1') }}
+              {{ textbox(form.feedback, width='1-1', hint='', rows=10) }}
+            {{ page_footer(
+              'Send',
+            ) }}
+            {% endcall %}
+        </div>
+        <div class="column-half"></div>
+      </div>
+    </div>
+    <!-- end contact us -->
+  </div>
 {% endblock %}
