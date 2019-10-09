@@ -22,7 +22,7 @@ from app.utils import get_logo_cdn_domain, user_is_logged_in
 from app.main.forms import Feedback, Problem, SupportType, Triage
 
 
-@main.route('/')
+@main.route('/', methods=['GET', 'POST'])
 def index():
 
     if current_user and current_user.is_authenticated:
