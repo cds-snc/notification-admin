@@ -812,9 +812,9 @@ class SupportType(StripWhitespaceForm):
 
 
 class Feedback(StripWhitespaceForm):
-    name = StringField('Your name')
+    name = StringField(_('Your name'))
     email_address = email_address(label=_('Your email'), gov_user=False, required=False)
-    feedback = TextAreaField('Message', validators=[DataRequired(message="Can’t be empty")])
+    feedback = TextAreaField(_('Message'), validators=[DataRequired(message="Can’t be empty")])
 
 
 class Problem(Feedback):
