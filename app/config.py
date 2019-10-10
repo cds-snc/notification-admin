@@ -72,6 +72,7 @@ class Config(object):
     SHOW_STYLEGUIDE = True
     WTF_CSRF_ENABLED = True
     WTF_CSRF_TIME_LIMIT = None
+    WTF_I18N_ENABLED = True
     CSV_UPLOAD_BUCKET_NAME = os.getenv('CSV_UPLOAD_BUCKET_NAME', 'notification-alpha-canada-ca-csv-upload')
     ACTIVITY_STATS_LIMIT_DAYS = 7
     TEST_MESSAGE_FILENAME = 'Report'
@@ -97,6 +98,7 @@ class Config(object):
 
 
 class Development(Config):
+    WTF_I18N_ENABLED = True
     DEBUG = True
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
@@ -116,6 +118,7 @@ class Test(Development):
     TESTING = True
     STATSD_ENABLED = False
     WTF_CSRF_ENABLED = False
+    WTF_I18N_ENABLED = True
     MOU_BUCKET_NAME = 'test-mou'
     NOTIFY_ENVIRONMENT = 'test'
     ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET', 'dev-notify-secret-key')

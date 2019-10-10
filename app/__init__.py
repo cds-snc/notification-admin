@@ -125,10 +125,12 @@ def create_app(application):
     asset_fingerprinter._asset_root = application.config['ASSET_PATH']
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
+    application.config["WTF_I18N_ENABLED"] = True
     babel = Babel(application)
 
     @babel.localeselector
     def get_locale():
+        print(get_current_locale(application))
         return get_current_locale(application)
 
     init_app(application)
