@@ -117,12 +117,12 @@
     </div>
   </div>
   <!-- end section 4 -->
-  
+ 
   <!-- background colour swap -->
   <div class="homepage-colour-swap" style="margin-bottom:0">
     <!-- contact us -->
     <div class="product-page-section">
-      <div class="grid-row">
+      <div id="contact-form" class="grid-row">
         <div class="column-half">
             <h2>{{ _('Contact the notify team')}}</h2>
             {% call form_wrapper() %}
@@ -145,4 +145,13 @@
     </div>
     <!-- end contact us -->
   </div>
+
+  {% if scrollTo == "true"  %}
+    <script>
+        var el = document.getElementById("contact-form");
+        el.scrollIntoView();
+    </script>
+  {% endif %}
+  
+  
 {% endblock %}

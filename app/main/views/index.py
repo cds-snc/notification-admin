@@ -29,15 +29,23 @@ def index():
         return redirect(url_for('main.choose_account'))
 
     form = Feedback()
+
     if form.validate_on_submit():
         return redirect(url_for(
-            '/',
-            ticket_type=form.support_type.data,
+            '.thanks',
         ))
+
+    if request.method == 'POST':
+        return render_template(
+        'views/signedout.html',
+        form=form,
+        scrollTo="true"
+        )
 
     return render_template(
         'views/signedout.html',
-        form=form
+        form=form,
+        scrollTo="false"
     )
 
 
