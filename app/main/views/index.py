@@ -15,11 +15,10 @@ from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 from app import email_branding_client, letter_branding_client, status_api_client
 from app.main import main
 from app.main.forms import FieldWithNoneOption, SearchByNameForm
-from app.main.views.feedback import QUESTION_TICKET_TYPE
 from app.main.views.sub_navigation_dictionaries import features_nav, pricing_nav
 from app.utils import get_logo_cdn_domain, user_is_logged_in
 
-from app.main.forms import Feedback, Problem, SupportType, Triage
+from app.main.forms import ContactNotifyTeam
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -28,7 +27,7 @@ def index():
     if current_user and current_user.is_authenticated:
         return redirect(url_for('main.choose_account'))
 
-    form = Feedback()
+    form = ContactNotifyTeam()
 
     if form.validate_on_submit():
         return redirect(url_for(

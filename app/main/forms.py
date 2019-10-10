@@ -811,8 +811,22 @@ class SupportType(StripWhitespaceForm):
     )
 
 
+class ContactNotifyTeam(StripWhitespaceForm):
+    not_empty = _('Can’t be empty')
+    name = StringField(_('Your name'),validators=[DataRequired(message=not_empty)])
+    
+    email_address = email_address(label=_('Your email'), required=True)
+    feedback = TextAreaField(_('Message'), validators=[DataRequired(message=not_empty)])
+
+
 class Feedback(StripWhitespaceForm):
-    name = StringField(_('Your name'))
+    name = StringField(_('Your name'),validators=[
+            DataRequired(message="Can’t be empty"),
+            Length(max=11, message="Enter 11 characters or fewer"),
+            Length(min=4, message="Enter 4 characters or more"),
+            LettersNumbersAndFullStopsOnly(),
+            DoesNotStartWithDoubleZero(),
+        ])
     email_address = email_address(label=_('Your email'), gov_user=False, required=False)
     feedback = TextAreaField(_('Message'), validators=[DataRequired(message="Can’t be empty")])
 
