@@ -1,8 +1,8 @@
 import calendar
 from datetime import datetime
+from flask_babel import _
 from functools import partial
 from itertools import groupby
-from flask_babel import _
 
 from flask import (
     Response,
