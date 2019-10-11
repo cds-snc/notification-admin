@@ -110,7 +110,7 @@ class MultiCheckboxField(SelectMultipleField):
     option_widget = CheckboxInput()
 
 
-def email_address(label=_('Email address'), gov_user=True, required=True):
+def email_address(label=_l('Email address'), gov_user=True, required=True):
 
     validators = [
         ValidEmail(),
@@ -147,14 +147,14 @@ def uk_mobile_number(label='Mobile number'):
                           validators=[DataRequired(message=_('Can’t be empty'))])
 
 
-def international_phone_number(label='Mobile number'):
+def international_phone_number(label=_l('Mobile number')):
     return InternationalPhoneNumber(
         label,
         validators=[DataRequired(message=_('Can’t be empty'))]
     )
 
 
-def password(label='Password'):
+def password(label=_l('Password')):
     return PasswordField(label,
                          validators=[DataRequired(message=_('Can’t be empty')),
                                      Length(8, 255, message='Must be at least 8 characters'),
@@ -370,7 +370,7 @@ class LoginForm(StripWhitespaceForm):
 
 
 class RegisterUserForm(StripWhitespaceForm):
-    name = StringField('Full name',
+    name = StringField(_l('Full name'),
                        validators=[DataRequired(message=_('Can’t be empty'))])
     email_address = email_address()
     mobile_number = international_phone_number()
