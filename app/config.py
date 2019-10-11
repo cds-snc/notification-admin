@@ -26,12 +26,8 @@ class Config(object):
 
     TEMPLATE_PREVIEW_API_HOST = os.environ.get('TEMPLATE_PREVIEW_API_HOST', 'http://localhost:6013')
     TEMPLATE_PREVIEW_API_KEY = os.environ.get('TEMPLATE_PREVIEW_API_KEY', 'my-secret-key')
-
-    
     NOTIFY_SERVICE_ID = 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553'
     NOTIFY_USER_ID = '6af522d0-2915-4e52-83a3-3690455a5fe6'
-    
-    
     # Hosted graphite statsd prefix
     STATSD_ENABLED = False
     STATSD_HOST = os.getenv('STATSD_HOST')

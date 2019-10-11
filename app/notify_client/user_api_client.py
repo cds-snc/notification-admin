@@ -123,7 +123,7 @@ class UserApiClient(NotifyAdminAPIClient):
         data = {'email': self.contact_email, 'message': message}
         endpoint = '/user/{0}/support-email'.format(self.notify_user_id)
         self.post(endpoint, data=data)
-    
+
     def send_support_email(self, user_id, message):
         data = {'email': self.contact_email, 'message': message}
         endpoint = '/user/{0}/support-email'.format(user_id)
