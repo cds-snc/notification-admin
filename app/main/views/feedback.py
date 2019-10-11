@@ -26,15 +26,7 @@ def get_prefilled_message():
     )
 
 
-@main.route('/support', methods=['GET', 'POST'])
-def support():
-    form = SupportType()
-    if form.validate_on_submit():
-        return redirect(url_for(
-            '.feedback',
-            ticket_type=form.support_type.data,
-        ))
-    return render_template('views/support/index.html', form=form)
+
 
 
 @main.route('/support/triage', methods=['GET', 'POST'])
