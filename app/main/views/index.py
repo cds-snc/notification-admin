@@ -16,7 +16,6 @@ from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 from app import (
     email_branding_client,
     letter_branding_client,
-    status_api_client,
     user_api_client,
 )
 from app.main import main
