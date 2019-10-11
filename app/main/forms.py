@@ -499,7 +499,7 @@ class TwoFactorForm(StripWhitespaceForm):
         self.validate_code_func = validate_code_func
         super(TwoFactorForm, self).__init__(*args, **kwargs)
 
-    sms_code = SMSCode(_('Please enter security code'))
+    sms_code = SMSCode(_l('Please enter security code'))
 
     def validate(self):
 
@@ -1155,8 +1155,8 @@ class SearchNotificationsForm(StripWhitespaceForm):
     to = SearchField()
 
     labels = {
-        'email': _('Search by email address'),
-        'sms': _('Search by phone number'),
+        'email': _l('Search by email address'),
+        'sms': _l('Search by phone number'),
     }
 
     def __init__(self, message_type, *args, **kwargs):
