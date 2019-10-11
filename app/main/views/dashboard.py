@@ -1,6 +1,5 @@
 import calendar
 from datetime import datetime
-from flask_babel import _
 from functools import partial
 from itertools import groupby
 
@@ -13,6 +12,7 @@ from flask import (
     session,
     url_for,
 )
+from flask_babel import _
 from flask_login import current_user
 from werkzeug.utils import redirect
 
