@@ -6,7 +6,7 @@ from flask_login import current_user
 
 from app import convert_to_boolean, current_service, service_api_client
 from app.main import main
-from app.main.forms import Feedback, Problem, SupportType, Triage
+from app.main.forms import Feedback, Problem, Triage
 
 QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
 PROBLEM_TICKET_TYPE = "report-problem"
@@ -26,7 +26,9 @@ def get_prefilled_message():
     )
 
 
-
+@main.route('/support', methods=['GET', 'POST'])
+def support():
+    return render_template('views/support/index.html')
 
 
 @main.route('/support/triage', methods=['GET', 'POST'])
