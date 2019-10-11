@@ -3,7 +3,7 @@ import time
 
 import pwnedpasswords
 from flask import current_app
-from flask_babel import _, lazy_gettext as _l
+from flask_babel import _
 from notifications_utils.field import Field
 from notifications_utils.recipients import (
     InvalidEmailError,

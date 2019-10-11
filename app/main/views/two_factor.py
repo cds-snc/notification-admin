@@ -8,7 +8,7 @@ from flask import (
     session,
     url_for,
 )
-from flask_babel import _, lazy_gettext as _l
+from flask_babel import _
 from flask_login import current_user
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import check_token

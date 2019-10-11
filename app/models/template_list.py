@@ -1,4 +1,4 @@
-from flask_babel import _, lazy_gettext as _l
+from flask_babel import _
 
 
 class TemplateList():
