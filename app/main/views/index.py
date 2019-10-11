@@ -1,11 +1,14 @@
 from flask import (
     abort,
+    current_app,
     make_response,
     redirect,
     render_template,
     request,
     url_for,
 )
+
+from app.models.user import User
 from flask_login import current_user
 from notifications_utils.international_billing_rates import (
     INTERNATIONAL_BILLING_RATES,
@@ -20,6 +23,8 @@ from app.utils import get_logo_cdn_domain, user_is_logged_in
 
 from app.main.forms import ContactNotifyTeam
 
+from app import user_api_client
+
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -30,6 +35,15 @@ def index():
     form = ContactNotifyTeam()
 
     if form.validate_on_submit():
+        msg = 'Contact Name: {}\nContact Email: {}\nMessage: {}'.format(
+            form.name.data,
+            form.email_address.data,
+            form.feedback.data,
+        )
+
+        # send email here
+        user_api_client.send_contact_email(msg)
+
         return redirect(url_for(
             '.thanks',
         ))
