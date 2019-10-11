@@ -7,23 +7,27 @@ from flask import (
     request,
     url_for,
 )
-
-from app.models.user import User
 from flask_login import current_user
 from notifications_utils.international_billing_rates import (
     INTERNATIONAL_BILLING_RATES,
 )
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
-from app import email_branding_client, letter_branding_client, status_api_client
+from app import (
+    email_branding_client,
+    letter_branding_client,
+    status_api_client,
+    user_api_client,
+)
 from app.main import main
-from app.main.forms import FieldWithNoneOption, SearchByNameForm
+from app.main.forms import (
+    ContactNotifyTeam,
+    FieldWithNoneOption,
+    SearchByNameForm,
+)
 from app.main.views.sub_navigation_dictionaries import features_nav, pricing_nav
+from app.models.user import User
 from app.utils import get_logo_cdn_domain, user_is_logged_in
-
-from app.main.forms import ContactNotifyTeam
-
-from app import user_api_client
 
 
 @main.route('/', methods=['GET', 'POST'])
