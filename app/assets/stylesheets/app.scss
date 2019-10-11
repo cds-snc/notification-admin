@@ -378,8 +378,14 @@ details .arrow {
 .homepage-colour-swap{
   background-color: #cddae6;
   padding:2rem 0;
-  margin-bottom:2rem;
 }
 
+@media (min-width: 641px){
+  #footer .footer-wrapper {
+      padding-top: 20px;
+  }
 
-
+  #footer .footer-categories-wrapper{
+    padding-bottom: 0;
+  }
+}
