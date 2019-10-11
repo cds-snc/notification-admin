@@ -1,6 +1,6 @@
 from itertools import chain
 
-from flask_babel import _, lazy_gettext as _l
+from flask_babel import lazy_gettext as _l
 
 roles = {
     'send_messages': ['send_texts', 'send_emails', 'send_letters'],

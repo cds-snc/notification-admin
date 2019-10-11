@@ -2,7 +2,7 @@ import calendar
 from datetime import datetime
 from functools import partial
 from itertools import groupby
-from flask_babel import _, lazy_gettext as _l
+from flask_babel import _
 
 from flask import (
     Response,
