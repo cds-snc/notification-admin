@@ -7,7 +7,7 @@ from flask import (
     session,
     url_for,
 )
-from flask_babel import _
+from flask_babel import _, lazy_gettext as _l
 from flask_login import current_user
 
 from app import login_manager

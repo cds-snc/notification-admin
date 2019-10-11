@@ -2,6 +2,7 @@ import calendar
 from datetime import datetime
 from functools import partial
 from itertools import groupby
+from flask_babel import _, lazy_gettext as _l
 
 from flask import (
     Response,
@@ -518,10 +519,10 @@ def get_tuples_of_financial_years(
 ):
     return (
         (
-            'financial year',
+            _('financial year'),
             year,
             partial_url(year=year),
-            '{} to {}'.format(year, year + 1),
+            _('{} to {}').format(year, year + 1),
         )
         for year in range(start, end + 1)
     )

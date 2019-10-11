@@ -156,7 +156,7 @@ msgid "Manage settings and teams"
 msgstr "Gérer les paramètres et les équipes"
 
 #: app/models/roles_and_permissions.py:27
-msgid "XManage API integration"
+msgid "Manage API integration"
 msgstr "Gérer l’intégration de l’interface de programmation d’applications (API)"
 
 #: app/models/template_list.py:135
@@ -3582,10 +3582,6 @@ msgstr "Nouvelle clé de sécurité"
 #: app/templates/views/user-profile/security-keys.html:55
 msgid "Test keys"
 msgstr "Clés d’essai"
-
-#: app/templates/views/platform-admin/_base_template.html:22
-msgid "Inbound SMS numbers"
-msgstr "Fr Inbound SMS numbers"
 
 #~ msgid ""
 #~ "A picture of the sending flow of"

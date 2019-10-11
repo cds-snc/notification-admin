@@ -4,7 +4,7 @@ from itertools import chain
 
 import pytz
 from flask import request
-from flask_babel import _
+from flask_babel import _, lazy_gettext as _l
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
 from flask_wtf.file import FileField as FileField_wtf
@@ -805,7 +805,7 @@ class SupportType(StripWhitespaceForm):
         'How can we help you?',
         choices=[
             ('report-problem', 'Report a problem'),
-            ('ask-question-give-feedback', 'Ask a question or give feedback'),
+            ('ask-question-give-feedback', _('Ask a question or give feedback')),
         ],
         validators=[DataRequired()]
     )
@@ -814,7 +814,7 @@ class SupportType(StripWhitespaceForm):
 class Feedback(StripWhitespaceForm):
     name = StringField('Name')
     email_address = email_address(label=_('Email address'), gov_user=False, required=False)
-    feedback = TextAreaField('Your message', validators=[DataRequired(message="Can’t be empty")])
+    feedback = TextAreaField(_('Your message'), validators=[DataRequired(message="Can’t be empty")])
 
 
 class Problem(Feedback):
