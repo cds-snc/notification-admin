@@ -360,12 +360,12 @@ class StripWhitespaceStringField(StringField):
 
 
 class LoginForm(StripWhitespaceForm):
-    email_address = EmailField(_('Email address'), validators=[
+    email_address = EmailField(_l('Email address'), validators=[
         Length(min=5, max=255),
         DataRequired(message=_('Can’t be empty')),
         ValidEmail()
     ])
-    password = PasswordField(_('Password'), validators=[
+    password = PasswordField(_l('Password'), validators=[
         DataRequired(message=_('Enter your password'))
     ])
 
