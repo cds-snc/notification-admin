@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-15 10:49-0600\n"
+"POT-Creation-Date: 2019-10-15 10:19-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -60,9 +60,8 @@ msgstr "FR Phone number doesn’t exist"
 msgid "Sent"
 msgstr "FR Sent"
 
-#: app/main/forms.py:113 app/main/forms.py:362 app/main/forms.py:816
-#: app/main/forms.py:821 app/main/forms.py:888
-#: app/templates/views/user-profile.html:35
+#: app/main/forms.py:113 app/main/forms.py:362 app/main/forms.py:830
+#: app/main/forms.py:897 app/templates/views/user-profile.html:35
 msgid "Email address"
 msgstr "Adresse courriel"
 
@@ -72,9 +71,10 @@ msgstr "Adresse courriel"
 #: app/main/forms.py:415 app/main/forms.py:525 app/main/forms.py:533
 #: app/main/forms.py:552 app/main/forms.py:568 app/main/forms.py:597
 #: app/main/forms.py:613 app/main/forms.py:632 app/main/forms.py:652
-#: app/main/forms.py:657 app/main/forms.py:1200 app/main/forms.py:1205
-#: app/main/forms.py:1213 app/main/forms.py:1218 app/main/forms.py:1268
-#: app/main/forms.py:1375 app/main/forms.py:1386 app/main/forms.py:1551
+#: app/main/forms.py:657 app/main/forms.py:815 app/main/forms.py:1209
+#: app/main/forms.py:1214 app/main/forms.py:1222 app/main/forms.py:1227
+#: app/main/forms.py:1277 app/main/forms.py:1384 app/main/forms.py:1395
+#: app/main/forms.py:1560
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
 
@@ -115,7 +115,8 @@ msgstr "Quel est le nom de votre clé?"
 msgid "Template name"
 msgstr "Nom du modèle"
 
-#: app/main/forms.py:655
+#: app/main/forms.py:655 app/main/forms.py:818 app/main/forms.py:826
+#: app/templates/views/signedout.html:135
 msgid "Message"
 msgstr "Message"
 
@@ -129,56 +130,66 @@ msgstr ""
 msgid "Your message"
 msgstr ""
 
-#: app/main/forms.py:889
+#: app/main/forms.py:816 app/main/forms.py:822
+#: app/templates/views/signedout.html:129
+msgid "Your name"
+msgstr "Votre nom"
+
+#: app/main/forms.py:817 app/main/forms.py:825
+#: app/templates/views/signedout.html:132
+msgid "Your email"
+msgstr "Votre courriel"
+
+#: app/main/forms.py:898    
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: app/main/forms.py:1132
+#: app/main/forms.py:1141
 msgid "Search by name"
 msgstr "Recherche par nom"
 
-#: app/main/forms.py:1140 app/main/forms.py:1149
+#: app/main/forms.py:1149 app/main/forms.py:1158
 msgid "Search by name or email address"
 msgstr "Recherche par nom ou par adresse courriel"
 
-#: app/main/forms.py:1157
+#: app/main/forms.py:1166
 msgid "Search by email address"
 msgstr "Recherche par adresse courriel"
 
-#: app/main/forms.py:1158
+#: app/main/forms.py:1167
 msgid "Search by phone number"
 msgstr "Recherche par numéro de téléphone"
 
-#: app/main/forms.py:1375
+#: app/main/forms.py:1384
 msgid "Folder name"
 msgstr "Nom du dossier"
 
-#: app/main/forms.py:1436
+#: app/main/forms.py:1445
 msgid "Email"
 msgstr "Courriel"
 
-#: app/main/forms.py:1437
+#: app/main/forms.py:1446
 msgid "Text message"
 msgstr "Message texte"
 
-#: app/main/forms.py:1438
+#: app/main/forms.py:1447
 msgid "Letter"
 msgstr "Lettre"
 
-#: app/main/forms.py:1439 app/templates/views/templates/copy.html:7
+#: app/main/forms.py:1448 app/templates/views/templates/copy.html:7
 #: app/templates/views/templates/copy.html:13
 msgid "Copy an existing template"
 msgstr "Copier un modèle existant"
 
-#: app/main/forms.py:1471
+#: app/main/forms.py:1480
 msgid "Choose a folder"
 msgstr "Choisir un dossier"
 
-#: app/main/forms.py:1480 app/templates/main_template.html:23
+#: app/main/forms.py:1489 app/templates/main_template.html:23
 msgid "New template"
 msgstr "Nouveau modèle"
 
-#: app/main/forms.py:1483
+#: app/main/forms.py:1492
 msgid "Select the type of template you want to add"
 msgstr "Sélectionnez le type de modèle que vous voulez ajouter"
 
@@ -245,7 +256,7 @@ msgid "Letter template"
 msgstr "Modèle de lettre"
 
 #: app/templates/admin_template.html:24 app/templates/admin_template.html:65
-#: app/templates/views/signedout.html:8
+#: app/templates/views/signedout.html:11
 msgid "Notification"
 msgstr "Notification"
 
@@ -399,7 +410,7 @@ msgstr "Choisir un fichier"
 
 #: app/templates/components/file-upload.html:33
 #: app/templates/views/check/column-errors.html:78
-#: app/templates/views/signedout.html:25
+#: app/templates/views/signedout.html:28
 msgid "or"
 msgstr "ou"
 
@@ -1260,7 +1271,7 @@ msgstr ""
 #: app/templates/views/register-from-org-invite.html:7
 #: app/templates/views/register-from-org-invite.html:14
 #: app/templates/views/register.html:7 app/templates/views/register.html:14
-#: app/templates/views/signedout.html:24
+#: app/templates/views/signedout.html:27 app/templates/views/signedout.html:68
 msgid "Create an account"
 msgstr "Créez un compte"
 
@@ -2148,75 +2159,100 @@ msgstr "Service interrompu"
 msgid "Resume service"
 msgstr "Reprendre le service"
 
-#: app/templates/views/signedout.html:18
-msgid "Send emails and text messages to your users"
-msgstr "Envoyez des courriels et des messages textes à vos utilisateurs"
-
 #: app/templates/views/signedout.html:21
-msgid "Try Notification if you work in the federal government."
-msgstr "Faites l’essai de Notification si vous travaillez au gouvernement fédéral."
+msgid "Send service updates and messages over email and SMS"
+msgstr "Envoyer des courriels et des messages textes á vos utilistateurs"
 
-#: app/templates/views/signedout.html:25
+#: app/templates/views/signedout.html:24
+msgid "Try Notify if you work in the federal government."
+msgstr "Faites l'essai de Notification si vous travaillez au gouvernement fédéral"
+
+#: app/templates/views/signedout.html:28
 msgid "sign in"
 msgstr "ouvrez une session"
 
-#: app/templates/views/signedout.html:25
+#: app/templates/views/signedout.html:28
 msgid "if you’ve used it before"
 msgstr "si vous avez déjà utilisé l’API."
 
-#: app/templates/views/signedout.html:36
+#: app/templates/views/signedout.html:47
+msgid "Measure the effectiveness and relevance of your notifications"
+msgstr "Évaluez l'efficacité de vos envois auprès de vos destinataires"
+
+#: app/templates/views/signedout.html:48
+msgid ""
+"The Notify dashboard lets you track the status of all your notifications "
+"and mailings. See at a glance the number of messages that have been "
+"received and opened."
+msgstr ""
+"Le tableau de bord de Notification vous permettra de faire un suivi sur "
+"vos envois. Découvrez en un seul coup d'oeil le nombre des messages qui "
+"ont été reçus."
+
+#: app/templates/views/signedout.html:62
+msgid "Manually send personalized messages to your users"
+msgstr "Envoyer manuellement des messages personnalisés à vos utilisateur"
+
+#: app/templates/views/signedout.html:63
+msgid ""
+"Upload a spreadsheet containing the recipients email addresses or phone "
+"numbers, and Notify will send your message to them all in a batch."
+msgstr ""
+"Téléverser une feuille de calcul contenant les adresses courriels ou les "
+"numéros de téléphones des destinataires, et Notifications enverra les "
+"messages."
+
+#: app/templates/views/signedout.html:65
+msgid ""
+"If you need help organizing your users’ information, Notify’s spreadsheet"
+" template is a great place to start."
+msgstr ""
+"Vous ne savez pas comment rassembler vos contacts? Vous trouverez notre "
+"modèle pour vous aider à lister les informations de contact de vos "
+"destinataires."
+
+#: app/templates/views/signedout.html:89
+msgid "Integrate Notify into your web application or admin system"
+msgstr ""
+"Intégrer Notification à votre application Web ou à votre système "
+"administratif."
+
+#: app/templates/views/signedout.html:90
+msgid ""
+"The Notify API sends messages automatically. Choose a client to integrate"
+" your API with your web application or admin stystem."
+msgstr ""
+"L'API Notification enverra les messages automatiquement. Choisissez un "
+"client pour intégrer notre API à votre application Web ou à votre système"
+" administratif."
+
+#: app/templates/views/signedout.html:92
+msgid "Learn how to integrate with our API"
+msgstr "Découvrez comment intégrer votre API"
+
+#: app/templates/views/signedout.html:106
 msgid "Control your content"
 msgstr "Gérez votre contenu"
 
-#: app/templates/views/signedout.html:39
+#: app/templates/views/signedout.html:107
 msgid ""
-"You don’t need any technical knowledge to create email or text message "
-"templates."
+"You don’t need to be a developer to create email or SMS templates for "
+"your users."
 msgstr ""
-"Vous n’avez pas besoin de connaissances techniques pour créer des modèles"
-" de courriels ou de messages textes."
+"Vous n'avez pas besoin d'être développeur pour créer des modèles de "
+"courrier électronique ou SMS vos utilisateurs."
 
-#: app/templates/views/signedout.html:53
-msgid "Send messages manually or automatically"
-msgstr "Envoyez des messages de façon manuelle ou automatique"
-
-#: app/templates/views/signedout.html:58
+#: app/templates/views/signedout.html:108
 msgid ""
-"Upload a spreadsheet of email addresses or phone numbers and Notification"
-" sends the messages."
+"Notify uses standard text editing tools and a simple templating language "
+"for filling in personalized information."
 msgstr ""
-"Téléchargez une feuille de calcul contenant les adresses courriel ou les "
-"numéros de téléphone des destinataires, et Notification enverra les "
-"messages."
+"Vous n'avez pas besoin de connaissances techniques pour créer des modèles"
+" de ccourriels ou des messages textes."
 
-#: app/templates/views/signedout.html:60
-msgid ""
-"A screenshot of a spreadsheet with columns for email address, name and "
-"colour"
-msgstr ""
-"Une capture d'écran d’une feuille de calcul avec des colonnes pour "
-"l’adresse courriel, le nom et la couleur"
-
-#: app/templates/views/signedout.html:69
-msgid "Integrate Notification with your web application or back office system."
-msgstr ""
-"Intégrez Notification à votre application Web ou à votre système "
-"administratif."
-
-#: app/templates/views/signedout.html:71
-msgid "A screenshot of some computer code with a notify.send_email function"
-msgstr ""
-"Une capture d'écran d’une partie du code informatique avec une fonction "
-"notification.envoyer_courriel"
-
-#: app/templates/views/agreement/service-agreement-choose.html:26
-#: app/templates/views/signedout.html:84
-msgid "Contact us"
-msgstr "Communiquez avec nous"
-
-#: app/templates/views/signedout.html:84
-msgid "if you have a question or want to give feedback."
-msgstr "pour toute question ou commentaire."
+#: app/templates/views/signedout.html:127
+msgid "Contact the Notify team"
+msgstr "Contacter l'équipe"
 
 #: app/templates/views/signin.html:16
 msgid "You need to sign in again"
@@ -2764,6 +2800,10 @@ msgstr ""
 "Avant d’entrer en service avec Notification, votre organisation doit "
 "accepter notre notre entente de partage des données et notre entente "
 "financière."
+
+#: app/templates/views/agreement/service-agreement-choose.html:26
+msgid "Contact us"
+msgstr "Communiquez avec nous"
 
 #: app/templates/views/agreement/service-agreement-choose.html:26
 msgid ""
@@ -3991,4 +4031,67 @@ msgstr "Clés d’essai"
 
 #~ msgid "java-api-documentation"
 #~ msgstr ""
+
+#~ msgid "Send emails and text messages to your users"
+#~ msgstr "Envoyez des courriels et des messages textes à vos utilisateurs"
+
+#~ msgid "Try Notification if you work in the federal government."
+#~ msgstr ""
+#~ "Faites l’essai de Notification si vous"
+#~ " travaillez au gouvernement fédéral."
+
+#~ msgid ""
+#~ "You don’t need any technical knowledge"
+#~ " to create email or text message "
+#~ "templates."
+#~ msgstr ""
+#~ "Vous n’avez pas besoin de connaissances"
+#~ " techniques pour créer des modèles de"
+#~ " courriels ou de messages textes."
+
+#~ msgid "Send messages manually or automatically"
+#~ msgstr "Envoyez des messages de façon manuelle ou automatique"
+
+#~ msgid ""
+#~ "Upload a spreadsheet of email addresses"
+#~ " or phone numbers and Notification "
+#~ "sends the messages."
+#~ msgstr ""
+#~ "Téléchargez une feuille de calcul "
+#~ "contenant les adresses courriel ou les"
+#~ " numéros de téléphone des destinataires,"
+#~ " et Notification enverra les messages."
+
+#~ msgid ""
+#~ "A screenshot of a spreadsheet with "
+#~ "columns for email address, name and "
+#~ "colour"
+#~ msgstr ""
+#~ "Une capture d'écran d’une feuille de "
+#~ "calcul avec des colonnes pour l’adresse"
+#~ " courriel, le nom et la couleur"
+
+#~ msgid "Integrate Notification with your web application or back office system."
+#~ msgstr ""
+#~ "Intégrez Notification à votre application "
+#~ "Web ou à votre système administratif."
+
+#~ msgid "A screenshot of some computer code with a notify.send_email function"
+#~ msgstr ""
+#~ "Une capture d'écran d’une partie du "
+#~ "code informatique avec une fonction "
+#~ "notification.envoyer_courriel"
+
+#~ msgid "if you have a question or want to give feedback."
+#~ msgstr "pour toute question ou commentaire."
+
+#~ msgid ""
+#~ "If you need help organizeing your "
+#~ "users’ information, Notify’s spreadsheet "
+#~ "template is a great place to "
+#~ "start."
+#~ msgstr ""
+
+#~ msgid "Contact the notify team"
+#~ msgstr "Contacter l'équipe"
 

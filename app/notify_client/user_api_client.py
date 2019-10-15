@@ -23,6 +23,8 @@ class UserApiClient(NotifyAdminAPIClient):
         super().init_app(app)
         self.admin_url = app.config['ADMIN_BASE_URL']
         self.contact_email = app.config['CONTACT_EMAIL']
+        self.notify_user_id = app.config['NOTIFY_USER_ID']
+        self.notify_service_id = app.config['NOTIFY_SERVICE_ID']
 
     def register_user(self, name, email_address, mobile_number, password, auth_type):
         password = self._create_message_digest(password)
@@ -115,6 +117,11 @@ class UserApiClient(NotifyAdminAPIClient):
     def send_already_registered_email(self, user_id, to):
         data = {'email': to}
         endpoint = '/user/{0}/email-already-registered'.format(user_id)
+        self.post(endpoint, data=data)
+
+    def send_contact_email(self, message):
+        data = {'email': self.contact_email, 'message': message}
+        endpoint = '/user/{0}/support-email'.format(self.notify_user_id)
         self.post(endpoint, data=data)
 
     def send_support_email(self, user_id, message):

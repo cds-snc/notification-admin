@@ -375,5 +375,25 @@ details .arrow {
   display:none;
 }
 
+.homepage-colour-swap{
+  background-color: #cddae6;
+  padding:2rem 0;
+}
 
+@media (min-width: 641px){
+  #footer .footer-wrapper {
+      padding-top: 20px;
+  }
 
+  #footer .footer-categories-wrapper{
+    padding-bottom: 0;
+  }
+}
+
+main {
+  font-family: "Helvetica Neue", Helvetica, Arial,sans-serif;
+}
+
+.product-page-intro h1{
+  font-family: "Helvetica Neue", Helvetica, Arial,sans-serif;
+}
