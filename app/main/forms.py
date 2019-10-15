@@ -4,7 +4,6 @@ from itertools import chain
 
 import pytz
 from flask import request
-from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
@@ -121,7 +120,7 @@ def email_address(label=_l('Email address'), gov_user=True, required=True):
         validators.append(ValidGovEmail())
 
     if required:
-        validators.append(DataRequired(message=_('Can’t be empty')))
+        validators.append(DataRequired(message=_l('Can’t be empty')))
 
     return EmailField(label, validators, render_kw={'spellcheck': 'false'})
 
@@ -145,26 +144,26 @@ class InternationalPhoneNumber(TelField):
 
 def uk_mobile_number(label='Mobile number'):
     return UKMobileNumber(label,
-                          validators=[DataRequired(message=_('Can’t be empty'))])
+                          validators=[DataRequired(message=_l('Can’t be empty'))])
 
 
 def international_phone_number(label=_l('Mobile number')):
     return InternationalPhoneNumber(
         label,
-        validators=[DataRequired(message=_('Can’t be empty'))]
+        validators=[DataRequired(message=_l('Can’t be empty'))]
     )
 
 
 def password(label=_l('Password')):
     return PasswordField(label,
-                         validators=[DataRequired(message=_('Can’t be empty')),
+                         validators=[DataRequired(message=_l('Can’t be empty')),
                                      Length(8, 255, message='Must be at least 8 characters'),
                                      Blacklist(message='Choose a password that’s harder to guess')])
 
 
 class SMSCode(StringField):
     validators = [
-        DataRequired(message=_('Can’t be empty')),
+        DataRequired(message=_l('Can’t be empty')),
         Regexp(regex=r'^\d+$', message='Numbers only'),
         Length(min=5, message='Not enough numbers'),
         Length(max=5, message='Too many numbers'),
@@ -362,17 +361,17 @@ class StripWhitespaceStringField(StringField):
 class LoginForm(StripWhitespaceForm):
     email_address = EmailField(_l('Email address'), validators=[
         Length(min=5, max=255),
-        DataRequired(message=_('Can’t be empty')),
+        DataRequired(message=_l('Can’t be empty')),
         ValidEmail()
     ])
     password = PasswordField(_l('Password'), validators=[
-        DataRequired(message=_('Enter your password'))
+        DataRequired(message=_l('Enter your password'))
     ])
 
 
 class RegisterUserForm(StripWhitespaceForm):
     name = StringField(_l('Full name'),
-                       validators=[DataRequired(message=_('Can’t be empty'))])
+                       validators=[DataRequired(message=_l('Can’t be empty'))])
     email_address = email_address()
     mobile_number = international_phone_number()
     password = password()
@@ -398,7 +397,7 @@ class RegisterUserFromInviteForm(RegisterUserForm):
 
     def validate_mobile_number(self, field):
         if self.auth_type.data == 'sms_auth' and not field.data:
-            raise ValidationError(_('Can’t be empty'))
+            raise ValidationError(_l('Can’t be empty'))
 
 
 class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
@@ -410,10 +409,10 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
 
     name = StringField(
         'Full name',
-        validators=[DataRequired(message=_('Can’t be empty'))]
+        validators=[DataRequired(message=_l('Can’t be empty'))]
     )
 
-    mobile_number = InternationalPhoneNumber('Mobile number', validators=[DataRequired(message=_('Can’t be empty'))])
+    mobile_number = InternationalPhoneNumber('Mobile number', validators=[DataRequired(message=_l('Can’t be empty'))])
     password = password()
     organisation = HiddenField('organisation')
     email_address = HiddenField('email_address')
@@ -523,7 +522,7 @@ class RenameServiceForm(StripWhitespaceForm):
     name = StringField(
         u'Service name',
         validators=[
-            DataRequired(message=_('Can’t be empty'))
+            DataRequired(message=_l('Can’t be empty'))
         ])
 
 
@@ -531,7 +530,7 @@ class RenameOrganisationForm(StripWhitespaceForm):
     name = StringField(
         u'Organisation name',
         validators=[
-            DataRequired(message=_('Can’t be empty'))
+            DataRequired(message=_l('Can’t be empty'))
         ])
 
 
@@ -550,7 +549,7 @@ class OrganisationCrownStatusForm(StripWhitespaceForm):
             ('unknown', 'Not sure'),
         ],
         validators=[
-            DataRequired(message=_('Can’t be empty'))
+            DataRequired(message=_l('Can’t be empty'))
         ],
     )
 
@@ -566,7 +565,7 @@ class OrganisationAgreementSignedForm(StripWhitespaceForm):
             ('unknown', 'No (but we have some service-specific agreements in place)'),
         ],
         validators=[
-            DataRequired(message=_('Can’t be empty'))
+            DataRequired(message=_l('Can’t be empty'))
         ],
     )
 
@@ -593,9 +592,9 @@ class OrganisationDomainsForm(StripWhitespaceForm):
 
 class CreateServiceForm(StripWhitespaceForm):
     name = StringField(
-        _('What’s your service called?'),
+        _l('What’s your service called?'),
         validators=[
-            DataRequired(message=_('Can’t be empty'))
+            DataRequired(message=_l('Can’t be empty'))
         ])
     organisation_type = OrganisationTypeField('Who runs this service?')
 
@@ -609,9 +608,9 @@ class CreateNhsServiceForm(CreateServiceForm):
 
 class SecurityKeyForm(StripWhitespaceForm):
     keyname = StringField(
-        _('What’s your key called?'),
+        _l('What’s your key called?'),
         validators=[
-            DataRequired(message=_('Can’t be empty'))
+            DataRequired(message=_l('Can’t be empty'))
         ])
 
 
@@ -630,7 +629,7 @@ class FreeSMSAllowance(StripWhitespaceForm):
     free_sms_allowance = IntegerField(
         'Numbers of text message fragments per year',
         validators=[
-            DataRequired(message=_('Can’t be empty'))
+            DataRequired(message=_l('Can’t be empty'))
         ]
     )
 
@@ -649,13 +648,13 @@ class ConfirmPasswordForm(StripWhitespaceForm):
 
 class BaseTemplateForm(StripWhitespaceForm):
     name = StringField(
-        _('Template name'),
-        validators=[DataRequired(message=_("Can’t be empty"))])
+        _l('Template name'),
+        validators=[DataRequired(message=_l("Can’t be empty"))])
 
     template_content = TextAreaField(
-        _('Message'),
+        _l('Message'),
         validators=[
-            DataRequired(message=_("Can’t be empty")),
+            DataRequired(message=_l("Can’t be empty")),
             NoCommasInPlaceHolders()
         ]
     )
@@ -806,7 +805,7 @@ class SupportType(StripWhitespaceForm):
         'How can we help you?',
         choices=[
             ('report-problem', 'Report a problem'),
-            ('ask-question-give-feedback', _('Ask a question or give feedback')),
+            ('ask-question-give-feedback', _l('Ask a question or give feedback')),
         ],
         validators=[DataRequired()]
     )
@@ -814,12 +813,12 @@ class SupportType(StripWhitespaceForm):
 
 class Feedback(StripWhitespaceForm):
     name = StringField('Name')
-    email_address = email_address(label=_('Email address'), gov_user=False, required=False)
-    feedback = TextAreaField(_('Your message'), validators=[DataRequired(message="Can’t be empty")])
+    email_address = email_address(label=_l('Email address'), gov_user=False, required=False)
+    feedback = TextAreaField(_l('Your message'), validators=[DataRequired(message="Can’t be empty")])
 
 
 class Problem(Feedback):
-    email_address = email_address(label=_('Email address'), gov_user=False)
+    email_address = email_address(label=_l('Email address'), gov_user=False)
 
 
 class Triage(StripWhitespaceForm):
@@ -886,8 +885,8 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
     )
 
     url = StringField("URL")
-    email_address = EmailField(_("Email address"))
-    phone_number = StringField(_("Phone number"))
+    email_address = EmailField(_l("Email address"))
+    phone_number = StringField(_l("Phone number"))
 
     def validate(self):
 
@@ -1130,7 +1129,7 @@ class RequiredDateFilterForm(StripWhitespaceForm):
 class SearchByNameForm(StripWhitespaceForm):
 
     search = SearchField(
-        _('Search by name'),
+        _l('Search by name'),
         validators=[DataRequired("You need to enter full or partial name to search by.")],
     )
 
@@ -1138,7 +1137,7 @@ class SearchByNameForm(StripWhitespaceForm):
 class SearchUsersByEmailForm(StripWhitespaceForm):
 
     search = SearchField(
-        _('Search by name or email address'),
+        _l('Search by name or email address'),
         validators=[
             DataRequired("You need to enter full or partial email address to search by.")
         ],
@@ -1147,7 +1146,7 @@ class SearchUsersByEmailForm(StripWhitespaceForm):
 
 class SearchUsersForm(StripWhitespaceForm):
 
-    search = SearchField(_('Search by name or email address'))
+    search = SearchField(_l('Search by name or email address'))
 
 
 class SearchNotificationsForm(StripWhitespaceForm):
@@ -1198,12 +1197,12 @@ class CallbackForm(StripWhitespaceForm):
 class ServiceReceiveMessagesCallbackForm(CallbackForm):
     url = StringField(
         "URL",
-        validators=[DataRequired(message=_('Can’t be empty')),
+        validators=[DataRequired(message=_l('Can’t be empty')),
                     Regexp(regex="^https.*", message='Must be a valid https URL')]
     )
     bearer_token = PasswordFieldShowHasContent(
         "Bearer token",
-        validators=[DataRequired(message=_('Can’t be empty')),
+        validators=[DataRequired(message=_l('Can’t be empty')),
                     Length(min=10, message='Must be at least 10 characters')]
     )
 
@@ -1211,12 +1210,12 @@ class ServiceReceiveMessagesCallbackForm(CallbackForm):
 class ServiceDeliveryStatusCallbackForm(CallbackForm):
     url = StringField(
         "URL",
-        validators=[DataRequired(message=_('Can’t be empty')),
+        validators=[DataRequired(message=_l('Can’t be empty')),
                     Regexp(regex="^https.*", message='Must be a valid https URL')]
     )
     bearer_token = PasswordFieldShowHasContent(
         "Bearer token",
-        validators=[DataRequired(message=_('Can’t be empty')),
+        validators=[DataRequired(message=_l('Can’t be empty')),
                     Length(min=10, message='Must be at least 10 characters')]
     )
 
@@ -1266,7 +1265,7 @@ def get_placeholder_form_instance(
         field = StringField(placeholder_name)
     else:
         field = StringField(placeholder_name, validators=[
-            DataRequired(message=_('Can’t be empty'))
+            DataRequired(message=_l('Can’t be empty'))
         ])
 
     PlaceholderForm.placeholder_value = field
@@ -1373,7 +1372,7 @@ class TemplateFolderForm(StripWhitespaceForm):
             ]
 
     users_with_permission = MultiCheckboxField('Team members who can see this folder')
-    name = StringField(_('Folder name'), validators=[DataRequired(message=_('Can’t be empty'))])
+    name = StringField(_l('Folder name'), validators=[DataRequired(message=_l('Can’t be empty'))])
 
 
 def required_for_ops(*operations):
@@ -1384,7 +1383,7 @@ def required_for_ops(*operations):
             # super weird
             raise validators.StopValidation('Must be empty')
         if form.op in operations and not any(field.raw_data):
-            raise validators.StopValidation(_('Can’t be empty'))
+            raise validators.StopValidation(_l('Can’t be empty'))
     return validate
 
 
@@ -1434,10 +1433,10 @@ class TemplateAndFoldersSelectionForm(Form):
         ]
 
         self.add_template_by_template_type.choices = list(filter(None, [
-            ('email', _('Email')),
-            ('sms', _('Text message')),
-            ('letter', _('Letter')) if allow_adding_letter_template else None,
-            ('copy-existing', _('Copy an existing template')) if allow_adding_copy_of_template else None,
+            ('email', _l('Email')),
+            ('sms', _l('Text message')),
+            ('letter', _l('Letter')) if allow_adding_letter_template else None,
+            ('copy-existing', _l('Copy an existing template')) if allow_adding_copy_of_template else None,
         ]))
 
     def is_selected(self, template_folder_id):
@@ -1469,7 +1468,7 @@ class TemplateAndFoldersSelectionForm(Form):
     # this means '__NONE__' (self.ALL_TEMPLATES option) is selected when no form data has been submitted
     # set default to empty string so process_data method doesn't perform any transformation
     move_to = NestedRadioField(
-        _('Choose a folder'),
+        _l('Choose a folder'),
         default='',
         validators=[
             required_for_ops('move-to-existing-folder'),
@@ -1478,10 +1477,10 @@ class TemplateAndFoldersSelectionForm(Form):
     add_new_folder_name = StringField('Folder name', validators=[required_for_ops('add-new-folder')])
     move_to_new_folder_name = StringField('Folder name', validators=[required_for_ops('move-to-new-folder')])
 
-    add_template_by_template_type = RadioFieldWithRequiredMessage(_('New template'), validators=[
+    add_template_by_template_type = RadioFieldWithRequiredMessage(_l('New template'), validators=[
         required_for_ops('add-new-template'),
         Optional(),
-    ], required_message=_('Select the type of template you want to add'))
+    ], required_message=_l('Select the type of template you want to add'))
 
 
 class ClearCacheForm(StripWhitespaceForm):
@@ -1549,7 +1548,7 @@ class AcceptAgreementForm(StripWhitespaceForm):
     def __validate_if_nominating(self, field):
         if self.who.data == 'someone-else':
             if not field.data:
-                raise ValidationError(_('Can’t be empty'))
+                raise ValidationError(_l('Can’t be empty'))
         else:
             field.data = ''
 
