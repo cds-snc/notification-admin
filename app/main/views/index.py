@@ -12,23 +12,52 @@ from notifications_utils.international_billing_rates import (
 )
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
-from app import email_branding_client, letter_branding_client, status_api_client
+from app import email_branding_client, letter_branding_client, user_api_client
 from app.main import main
-from app.main.forms import FieldWithNoneOption, SearchByNameForm
-from app.main.views.feedback import QUESTION_TICKET_TYPE
+from app.main.forms import (
+    ContactNotifyTeam,
+    FieldWithNoneOption,
+    SearchByNameForm,
+)
 from app.main.views.sub_navigation_dictionaries import features_nav, pricing_nav
 from app.utils import get_logo_cdn_domain, user_is_logged_in
 
+QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
 
-@main.route('/')
+
+@main.route('/', methods=['GET', 'POST'])
 def index():
 
     if current_user and current_user.is_authenticated:
         return redirect(url_for('main.choose_account'))
 
+    form = ContactNotifyTeam()
+
+    if form.validate_on_submit():
+        msg = 'Contact Name: {}\nContact Email: {}\nMessage: {}'.format(
+            form.name.data,
+            form.email_address.data,
+            form.feedback.data,
+        )
+
+        # send email here
+        user_api_client.send_contact_email(msg)
+
+        return redirect(url_for(
+            '.thanks',
+        ))
+
+    if request.method == 'POST':
+        return render_template(
+            'views/signedout.html',
+            form=form,
+            scrollTo="true"
+        )
+
     return render_template(
         'views/signedout.html',
-        counts=status_api_client.get_count_of_live_services_and_organisations()
+        form=form,
+        scrollTo="false"
     )
 
 
