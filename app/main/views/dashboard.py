@@ -12,7 +12,6 @@ from flask import (
     session,
     url_for,
 )
-from flask_babel import _
 from flask_login import current_user
 from werkzeug.utils import redirect
 
@@ -519,10 +518,10 @@ def get_tuples_of_financial_years(
 ):
     return (
         (
-            _('financial year'),
+            'financial year',
             year,
             partial_url(year=year),
-            _('{} to {}').format(year, year + 1),
+            '{} to {}'.format(year, year + 1),	
         )
         for year in range(start, end + 1)
     )
