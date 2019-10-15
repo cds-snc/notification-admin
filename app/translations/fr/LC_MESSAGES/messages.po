@@ -14,7 +14,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
+#: app/__init__.py:412
+msgid "Sent"
+msgstr "FR Sent"
 
+#: app/main/views/send.py:765
+msgid "Personalise this message"
+msgstr "FR Personalise this message"
+
+#: app/main/views/add_service.py:54 app/templates/views/add-service.html:23
+msgid "Name your service in both official languages"
+msgstr "FR Name your service in both official languages"
 
 #: app/main/forms.py:373
 msgid "Full name"

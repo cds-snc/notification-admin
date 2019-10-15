@@ -13,6 +13,7 @@ from flask import (
     session,
     url_for,
 )
+from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils import SMS_CHAR_COUNT_LIMIT
@@ -761,7 +762,7 @@ def get_send_test_page_title(template_type, help_argument, entering_recipient, n
         return 'Example text message'
     if entering_recipient:
         return 'Send ‘{}’'.format(name)
-    return 'Personalise this message'
+    return _('Personalise this message')
 
 
 def is_current_user_the_recipient():

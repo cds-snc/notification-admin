@@ -20,6 +20,7 @@ from flask import (
 from flask._compat import string_types
 from flask.globals import _lookup_req_object, _request_ctx_stack
 from flask_babel import Babel
+from flask_babel import _
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import CSRFError
@@ -409,7 +410,7 @@ def format_notification_status(status, template_type):
             'sending': 'Sending',
             'created': 'Sending',
             'pending': 'Sending',
-            'sent': 'Sent'
+            'sent': _('Sent')
         },
         'letter': {
             'failed': '',
