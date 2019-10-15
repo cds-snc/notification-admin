@@ -814,7 +814,7 @@ class SupportType(StripWhitespaceForm):
 class ContactNotifyTeam(StripWhitespaceForm):
     not_empty = _('Can’t be empty')
     name = StringField(_('Your name'), validators=[DataRequired(message=not_empty)])
-    email_address = email_address(label=_('Your email'))
+    email_address = email_address(label=_('Your email'), gov_user=False)
     feedback = TextAreaField(_('Message'), validators=[DataRequired(message=not_empty)])
 
 
