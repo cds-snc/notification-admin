@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-09 10:38-0400\n"
+"POT-Creation-Date: 2019-10-15 10:19-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -14,8 +14,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-#: app/main/forms.py:113 app/main/forms.py:362 app/main/forms.py:821
-#: app/main/forms.py:888 app/templates/views/user-profile.html:35
+#: app/main/forms.py:113 app/main/forms.py:362 app/main/forms.py:830
+#: app/main/forms.py:897 app/templates/views/user-profile.html:35
 msgid "Email address"
 msgstr "Adresse courriel"
 
@@ -25,9 +25,10 @@ msgstr "Adresse courriel"
 #: app/main/forms.py:415 app/main/forms.py:525 app/main/forms.py:533
 #: app/main/forms.py:552 app/main/forms.py:568 app/main/forms.py:597
 #: app/main/forms.py:613 app/main/forms.py:632 app/main/forms.py:652
-#: app/main/forms.py:657 app/main/forms.py:1200 app/main/forms.py:1205
-#: app/main/forms.py:1213 app/main/forms.py:1218 app/main/forms.py:1268
-#: app/main/forms.py:1375 app/main/forms.py:1386 app/main/forms.py:1551
+#: app/main/forms.py:657 app/main/forms.py:815 app/main/forms.py:1209
+#: app/main/forms.py:1214 app/main/forms.py:1222 app/main/forms.py:1227
+#: app/main/forms.py:1277 app/main/forms.py:1384 app/main/forms.py:1395
+#: app/main/forms.py:1560
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
 
@@ -59,68 +60,71 @@ msgstr "Quel est le nom de votre clé?"
 msgid "Template name"
 msgstr "Nom du modèle"
 
-#: app/main/forms.py:655 app/main/forms.py:817
+#: app/main/forms.py:655 app/main/forms.py:818 app/main/forms.py:826
+#: app/templates/views/signedout.html:135
 msgid "Message"
 msgstr "Message"
 
-#: app/main/forms.py:815
+#: app/main/forms.py:816 app/main/forms.py:822
+#: app/templates/views/signedout.html:129
 msgid "Your name"
 msgstr "Votre nom"
 
-#: app/main/forms.py:816
+#: app/main/forms.py:817 app/main/forms.py:825
+#: app/templates/views/signedout.html:132
 msgid "Your email"
 msgstr "Votre courriel"
 
-#: app/main/forms.py:889
+#: app/main/forms.py:898
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: app/main/forms.py:1132
+#: app/main/forms.py:1141
 msgid "Search by name"
 msgstr "Recherche par nom"
 
-#: app/main/forms.py:1140 app/main/forms.py:1149
+#: app/main/forms.py:1149 app/main/forms.py:1158
 msgid "Search by name or email address"
 msgstr "Recherche par nom ou par adresse courriel"
 
-#: app/main/forms.py:1157
+#: app/main/forms.py:1166
 msgid "Search by email address"
 msgstr "Recherche par adresse courriel"
 
-#: app/main/forms.py:1158
+#: app/main/forms.py:1167
 msgid "Search by phone number"
 msgstr "Recherche par numéro de téléphone"
 
-#: app/main/forms.py:1375
+#: app/main/forms.py:1384
 msgid "Folder name"
 msgstr "Nom du dossier"
 
-#: app/main/forms.py:1436
+#: app/main/forms.py:1445
 msgid "Email"
 msgstr "Courriel"
 
-#: app/main/forms.py:1437
+#: app/main/forms.py:1446
 msgid "Text message"
 msgstr "Message texte"
 
-#: app/main/forms.py:1438
+#: app/main/forms.py:1447
 msgid "Letter"
 msgstr "Lettre"
 
-#: app/main/forms.py:1439 app/templates/views/templates/copy.html:7
+#: app/main/forms.py:1448 app/templates/views/templates/copy.html:7
 #: app/templates/views/templates/copy.html:13
 msgid "Copy an existing template"
 msgstr "Copier un modèle existant"
 
-#: app/main/forms.py:1471
+#: app/main/forms.py:1480
 msgid "Choose a folder"
 msgstr "Choisir un dossier"
 
-#: app/main/forms.py:1480 app/templates/main_template.html:23
+#: app/main/forms.py:1489 app/templates/main_template.html:23
 msgid "New template"
 msgstr "Nouveau modèle"
 
-#: app/main/forms.py:1483
+#: app/main/forms.py:1492
 msgid "Select the type of template you want to add"
 msgstr "Sélectionnez le type de modèle que vous voulez ajouter"
 
@@ -2202,7 +2206,7 @@ msgstr ""
 " de ccourriels ou des messages textes."
 
 #: app/templates/views/signedout.html:127
-msgid "Contact the notify team"
+msgid "Contact the Notify team"
 msgstr "Contacter l'équipe"
 
 #: app/templates/views/signin.html:16
@@ -4036,4 +4040,7 @@ msgstr "Clés d’essai"
 #~ "template is a great place to "
 #~ "start."
 #~ msgstr ""
+
+#~ msgid "Contact the notify team"
+#~ msgstr "Contacter l'équipe"
 
