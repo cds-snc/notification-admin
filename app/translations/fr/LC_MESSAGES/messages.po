@@ -33,7 +33,7 @@ msgstr "La boîte de réception n’accepte pas de messages à l’heure actuell
 msgid "Email address doesn’t exist"
 msgstr "FR Email address doesn’t exist"
 
-#: app/__init__.py:399 app/__init__.py:409
+#: app/__init__.py:399 app/__init__.py:402 app/__init__.py:409
 #: app/templates/views/message-status.html:37
 #: app/templates/views/message-status.html:81
 msgid "Delivered"

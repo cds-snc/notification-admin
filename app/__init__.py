@@ -399,7 +399,7 @@ def format_notification_status(status, template_type):
             'delivered': _('Delivered'),
             'sending': _('Sending'),
             'created': _('Sending'),
-            'sent': 'Delivered)'
+            'sent': _('Delivered')
         },
         'sms': {
             'failed': _('Failed'),
