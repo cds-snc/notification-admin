@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-04 11:47-0400\n"
+"POT-Creation-Date: 2019-10-15 10:49-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -14,21 +14,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-#: app/__init__.py:412
+#: app/__init__.py:395 app/__init__.py:405
+#: app/templates/views/conversations/messages.html:27
+msgid "Failed"
+msgstr "Échec"
+
+#: app/__init__.py:396 app/__init__.py:406
+#: app/templates/views/message-status.html:46
+#: app/templates/views/message-status.html:90
+msgid "Technical failure"
+msgstr "Échec technique"
+
+#: app/__init__.py:397 app/templates/views/message-status.html:43
+msgid "Inbox not accepting messages right now"
+msgstr "La boîte de réception n’accepte pas de messages à l’heure actuelle"
+
+#: app/__init__.py:398
+msgid "Email address doesn’t exist"
+msgstr "FR Email address doesn’t exist"
+
+#: app/__init__.py:399 app/__init__.py:409
+#: app/templates/views/message-status.html:37
+#: app/templates/views/message-status.html:81
+msgid "Delivered"
+msgstr "Livraison réussie"
+
+#: app/__init__.py:400 app/__init__.py:401 app/__init__.py:410
+#: app/__init__.py:411 app/__init__.py:412
+#: app/templates/partials/jobs/notifications.html:13
+#: app/templates/views/dashboard/_upcoming.html:28
+#: app/templates/views/message-status.html:34
+#: app/templates/views/message-status.html:75
+msgid "Sending"
+msgstr "Envoi en cours"
+
+#: app/__init__.py:407 app/templates/views/message-status.html:87
+msgid "Phone not accepting messages right now"
+msgstr "Le téléphone n’accepte pas de messages à l’heure actuelle"
+
+#: app/__init__.py:408
+msgid "Phone number doesn’t exist"
+msgstr "FR Phone number doesn’t exist"
+
+#: app/__init__.py:413
 msgid "Sent"
 msgstr "FR Sent"
-
-#: app/main/views/send.py:765
-msgid "Personalise this message"
-msgstr "FR Personalise this message"
-
-#: app/main/views/add_service.py:54 app/templates/views/add-service.html:23
-msgid "Name your service in both official languages"
-msgstr "FR Name your service in both official languages"
-
-#: app/main/forms.py:373
-msgid "Full name"
-msgstr "FR Full name"
 
 #: app/main/forms.py:113 app/main/forms.py:362 app/main/forms.py:816
 #: app/main/forms.py:821 app/main/forms.py:888
@@ -48,6 +78,10 @@ msgstr "Adresse courriel"
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
 
+#: app/main/forms.py:150 app/templates/views/user-profile.html:46
+msgid "Mobile number"
+msgstr "Téléphone cellulaire"
+
 #: app/main/forms.py:157 app/main/forms.py:367
 #: app/templates/views/user-profile.html:53
 msgid "Password"
@@ -56,6 +90,10 @@ msgstr "Mot de passe"
 #: app/main/forms.py:368
 msgid "Enter your password"
 msgstr "Entrez votre mot de passe"
+
+#: app/main/forms.py:373
+msgid "Full name"
+msgstr "FR Full name"
 
 # French translations for PROJECT.
 # Copyright (C) 2019 ORGANIZATION
@@ -80,6 +118,16 @@ msgstr "Nom du modèle"
 #: app/main/forms.py:655
 msgid "Message"
 msgstr "Message"
+
+#: app/main/forms.py:808
+#: app/templates/views/support/ask-question-give-feedback.html:7
+#: app/templates/views/support/ask-question-give-feedback.html:13
+msgid "Ask a question or give feedback"
+msgstr ""
+
+#: app/main/forms.py:817
+msgid "Your message"
+msgstr ""
 
 #: app/main/forms.py:889
 msgid "Phone number"
@@ -137,6 +185,14 @@ msgstr "Sélectionnez le type de modèle que vous voulez ajouter"
 #: app/main/validators.py:79
 msgid "Enter a valid email address"
 msgstr "Entrez une adresse courriel valide"
+
+#: app/main/views/add_service.py:54 app/templates/views/add-service.html:23
+msgid "Name your service in both official languages"
+msgstr "FR Name your service in both official languages"
+
+#: app/main/views/send.py:765
+msgid "Personalise this message"
+msgstr "FR Personalise this message"
 
 #: app/main/views/sign_in.py:50
 msgid "The email address or password you entered is incorrect."
@@ -198,8 +254,8 @@ msgid "Menu"
 msgstr "Menu"
 
 #: app/templates/admin_template.html:35 app/templates/admin_template.html:57
-#: app/templates/views/documentation.html:4
-#: app/templates/views/documentation.html:9
+#: app/templates/views/documentation.html:2
+#: app/templates/views/documentation.html:5
 msgid "Documentation"
 msgstr "Documentation"
 
@@ -213,6 +269,7 @@ msgid "Sign out"
 msgstr "Déconnexion"
 
 #: app/templates/admin_template.html:58 app/templates/views/signin.html:7
+#: app/templates/views/signin.html:27
 msgid "Sign in"
 msgstr "Connexion"
 
@@ -641,13 +698,6 @@ msgstr "Destinataire"
 msgid "Status"
 msgstr "État"
 
-#: app/templates/partials/jobs/notifications.html:13
-#: app/templates/views/dashboard/_upcoming.html:28
-#: app/templates/views/message-status.html:34
-#: app/templates/views/message-status.html:75
-msgid "Sending"
-msgstr "Envoi en cours"
-
 #: app/templates/partials/jobs/notifications.html:17
 msgid "Cancel sending"
 msgstr "Annuler l’envoi"
@@ -859,10 +909,6 @@ msgstr "Téléchargez votre document au : ([lien_au_document])"
 msgid "Next, use the API to upload your document."
 msgstr "Ensuite, utilisez l’API pour téléverser votre document."
 
-#: app/templates/views/add-service.html:23
-msgid "Name your service in both official languages"
-msgstr "Nommer votre service dans les deux langues officielles"
-
 #: app/templates/views/add-service.html:26
 msgid "Notification displays your service name:"
 msgstr "Notification affiche le nom de votre service :"
@@ -1066,15 +1112,15 @@ msgstr ""
 msgid "1 month"
 msgstr "1 mois"
 
-#: app/templates/views/documentation.html:10
+#: app/templates/views/documentation.html:6
 msgid "Notification API to send messages automatically."
 msgstr "L’API Notification enverra les messages automatiquement."
 
-#: app/templates/views/documentation.html:11
+#: app/templates/views/documentation.html:7
 msgid "Clients"
 msgstr "Clients"
 
-#: app/templates/views/documentation.html:12
+#: app/templates/views/documentation.html:10
 msgid ""
 "Choose a client to integrate our API with your web application or back "
 "office system. Links to documentation open in a new tab."
@@ -1083,15 +1129,19 @@ msgstr ""
 "àvotre système administratif. Les liens de la documentation s’ouvrent "
 "dans un nouvel onglet."
 
-#: app/templates/views/documentation.html:14
+#: app/templates/views/documentation.html:20
+msgid "Changer votre point de connexion API"
+msgstr ""
+
+#: app/templates/views/documentation.html:27
+msgid "Changing your endpoint"
+msgstr ""
+
+#: app/templates/views/documentation.html:32
 msgid "Maintained by CDS:"
 msgstr "Maintenu par le SNC :"
 
-#: app/templates/views/documentation.html:20
-msgid "java-api-documentation"
-msgstr ""
-
-#: app/templates/views/documentation.html:25
+#: app/templates/views/documentation.html:55
 msgid "Maintained by GOV.UK:"
 msgstr "Maintenu par GOV.UK :"
 
@@ -1550,11 +1600,6 @@ msgstr "Description"
 msgid "Notification has sent the message to the email provider."
 msgstr "Notification a envoyé le message au fournisseur de messagerie."
 
-#: app/templates/views/message-status.html:37
-#: app/templates/views/message-status.html:81
-msgid "Delivered"
-msgstr "Livraison réussie"
-
 #: app/templates/views/message-status.html:38
 #: app/templates/views/message-status.html:82
 msgid ""
@@ -1577,10 +1622,6 @@ msgstr ""
 "était erronée. Vous devriez supprimer ces adresses courriel de votre base"
 " de données."
 
-#: app/templates/views/message-status.html:43
-msgid "Inbox not accepting messages right now"
-msgstr "La boîte de réception n’accepte pas de messages à l’heure actuelle"
-
 #: app/templates/views/message-status.html:44
 msgid ""
 "The provider could not deliver the message after trying for 72 hours. "
@@ -1591,11 +1632,6 @@ msgstr ""
 "pendant 72 heures. Cela peut se produire si la boîte de réception du "
 "destinataire est pleine. Vous pouvez essayer d’envoyer le message de "
 "nouveau."
-
-#: app/templates/views/message-status.html:46
-#: app/templates/views/message-status.html:90
-msgid "Technical failure"
-msgstr "Échec technique"
 
 #: app/templates/views/message-status.html:47
 msgid ""
@@ -1646,10 +1682,6 @@ msgstr ""
 "téléphone était erroné. Vous devriez supprimer ces numéros de téléphone "
 "de votre base de données. Les messages textes envoyés aux numéros qui "
 "n’existent pas vous seront tout de même facturés."
-
-#: app/templates/views/message-status.html:87
-msgid "Phone not accepting messages right now"
-msgstr "Le téléphone n’accepte pas de messages à l’heure actuelle"
 
 #: app/templates/views/message-status.html:88
 msgid ""
@@ -2511,11 +2543,6 @@ msgstr "Nous vous avons envoyé un code de sécurité par message texte."
 msgid "Your profile"
 msgstr "Votre profil"
 
-#: app/main/forms.py:150 app/templates/views/user-profile.html:46
-#: app/templates/views/user-profile.html:46
-msgid "Mobile number"
-msgstr "Téléphone cellulaire"
-
 #: app/templates/views/user-profile.html:54
 msgid "Last changed "
 msgstr "Dernier changement"
@@ -3063,6 +3090,8 @@ msgid "Only showing rows with errors"
 msgstr "Ne montre que les rangées avec des erreurs"
 
 #: app/templates/views/check/column-errors.html:225
+#: app/templates/views/notifications/check.html:7
+#: app/templates/views/notifications/check.html:54
 msgid "Preview of"
 msgstr "Aperçu de"
 
@@ -3097,10 +3126,6 @@ msgstr "Envoyer un message texte avec ce numéro de téléphone"
 #: app/templates/views/conversations/messages.html:23
 msgid "sending"
 msgstr "envoi en cours"
-
-#: app/templates/views/conversations/messages.html:27
-msgid "Failed"
-msgstr "Échec"
 
 #: app/templates/views/conversations/messages.html:27
 #: app/templates/views/dashboard/_totals.html:4
@@ -3492,6 +3517,18 @@ msgstr ""
 
 #: app/templates/views/service-settings/branding/manage-email-branding.html:28
 msgid "Upload logo"
+msgstr ""
+
+#: app/templates/views/support/ask-question-give-feedback.html:20
+msgid "Do you want a reply?"
+msgstr ""
+
+#: app/templates/views/support/ask-question-give-feedback.html:21
+msgid "Leave your details below if you’d like a response."
+msgstr ""
+
+#: app/templates/views/support/ask-question-give-feedback.html:25
+msgid "We’ll reply to"
 msgstr ""
 
 #: app/templates/views/templates/_move_to.html:26
@@ -3951,4 +3988,7 @@ msgstr "Clés d’essai"
 
 #~ msgid "Java-API-Library-Documentation"
 #~ msgstr "API-Java-client-Documentation"
+
+#~ msgid "java-api-documentation"
+#~ msgstr ""
 

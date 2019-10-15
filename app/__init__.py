@@ -392,24 +392,24 @@ def format_notification_type(notification_type):
 def format_notification_status(status, template_type):
     return {
         'email': {
-            'failed': 'Failed',
-            'technical-failure': 'Technical failure',
-            'temporary-failure': 'Inbox not accepting messages right now',
-            'permanent-failure': 'Email address doesn’t exist',
-            'delivered': 'Delivered',
-            'sending': 'Sending',
-            'created': 'Sending',
-            'sent': 'Delivered'
+            'failed': _('Failed'),
+            'technical-failure': _('Technical failure'),
+            'temporary-failure': _('Inbox not accepting messages right now'),
+            'permanent-failure': _('Email address doesn’t exist'),
+            'delivered': _('Delivered'),
+            'sending': _('Sending'),
+            'created': _('Sending'),
+            'sent': 'Delivered)'
         },
         'sms': {
-            'failed': 'Failed',
-            'technical-failure': 'Technical failure',
-            'temporary-failure': 'Phone not accepting messages right now',
-            'permanent-failure': 'Phone number doesn’t exist',
-            'delivered': 'Delivered',
-            'sending': 'Sending',
-            'created': 'Sending',
-            'pending': 'Sending',
+            'failed': _('Failed'),
+            'technical-failure': _('Technical failure'),
+            'temporary-failure': _('Phone not accepting messages right now'),
+            'permanent-failure': _('Phone number doesn’t exist'),
+            'delivered': _('Delivered'),
+            'sending': _('Sending'),
+            'created': _('Sending'),
+            'pending': _('Sending'),
             'sent': _('Sent')
         },
         'letter': {
