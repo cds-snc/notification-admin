@@ -1057,7 +1057,7 @@ def branding_request(service_id, logo=None):
             current_app.config['AWS_REGION'],
             user_id=session["user_id"]
         )
-        current_user.send_branding_request(current_service.id, upload_filename)
+        current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
 
     return render_template(
         'views/service-settings/branding/manage-email-branding.html',
