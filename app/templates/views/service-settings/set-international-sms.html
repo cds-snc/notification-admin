@@ -17,12 +17,7 @@
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
       <p>
-        Messages to international mobile numbers are charged at 1, 2, or
-        3 times the cost of messages to UK mobile numbers.</p>
-      <p>
-        See <a href="{{ url_for(".pricing") }}">pricing</a> for the list
-        of rates.
-      </p>
+        Charges may apply for messages sent to international phone numbers – so be careful!</p>
       {% call form_wrapper() %}
         {{ radios(form.enabled) }}
         {{ page_footer('Save') }}
