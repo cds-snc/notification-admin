@@ -30,7 +30,7 @@
     "gulp": "4.0.2",
     "gulp-add-src": "1.0.0",
     "gulp-babel": "8.0.0",
-    "gulp-base64-inline": "1.0.4",
+    "gulp-base64-inline": "1.0.6",
     "gulp-concat": "2.6.1",
     "gulp-include": "2.4.1",
     "gulp-sass": "4.0.2",
@@ -48,9 +48,9 @@
     "snyk": "^1.232.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.2",
-    "@babel/preset-env": "^7.6.2",
-    "@babel/preset-react": "^7.0.0",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "gulp-css-url-adjuster": "0.2.3",
@@ -60,7 +60,7 @@
     "jest": "24.9.0",
     "jshint": "2.10.2",
     "jshint-stylish": "2.2.1",
-    "webpack": "^4.41.0",
+    "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
   },
   "snyk": true
