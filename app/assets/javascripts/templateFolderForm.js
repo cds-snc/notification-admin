@@ -171,7 +171,12 @@
 
     this.selectionStatus = {
       'default': window.polyglot.t('nothing_selected'),
-      'selected': numSelected => `${numSelected}` + window.polyglot.t('selected'),
+      'selected': numSelected => {
+        if (numSelected === 1) {
+          return `${numSelected} ` + window.polyglot.t('selection')
+        }
+        return `${numSelected} ` + window.polyglot.t('selections')
+      },
       'update': numSelected => {
         let message = (numSelected > 0) ? this.selectionStatus.selected(numSelected) : this.selectionStatus.default;
 
