@@ -14,6 +14,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
+#: app/templates/views/privacy.html:13
+msgid "https://laws-lois.justice.gc.ca/eng/acts/P-21/index.html"
+msgstr "https://laws-lois.justice.gc.ca/fra/lois/P-21/index.html"
+
 #: app/__init__.py:395 app/__init__.py:405
 #: app/templates/views/conversations/messages.html:27
 msgid "Failed"
@@ -1470,7 +1474,7 @@ msgstr "sécurité"
 #: app/templates/views/new-password.html:7
 #: app/templates/views/new-password.html:16
 msgid "Create a new password"
-msgstr "Créer un nouveau mot de passe"
+msgstr "Créez un nouveau mot de passe"
 
 #: app/templates/views/forgot-password.html:14
 #: app/templates/views/signin.html:33
