@@ -30,7 +30,7 @@
     "gulp": "4.0.2",
     "gulp-add-src": "1.0.0",
     "gulp-babel": "8.0.0",
-    "gulp-base64-inline": "1.0.5",
+    "gulp-base64-inline": "1.0.6",
     "gulp-concat": "2.6.1",
     "gulp-include": "2.4.1",
     "gulp-sass": "4.0.2",
