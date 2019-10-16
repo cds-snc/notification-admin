@@ -14,6 +14,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
+#: app/templates/main_template.html:30
+msgid "Cancel"
+msgstr "Annuler"
+
 #: app/templates/main_template.html:26
 msgid "selection"
 msgstr "sélection"

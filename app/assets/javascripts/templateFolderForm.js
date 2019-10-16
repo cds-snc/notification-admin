@@ -84,7 +84,7 @@
 
     this.addCancelButton = function(state) {
       let selector = `[value=${state.key}]`;
-      let $cancel = this.makeButton('Cancel', {
+      let $cancel = this.makeButton(window.polyglot.t('cancel_button'), {
         'onclick': () => {
 
           // clear existing data
