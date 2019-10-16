@@ -4,7 +4,7 @@
 {% from "components/page-header.html" import govuk_back_link, page_header %}
 
 {% block service_page_title %}
-  {{ "Error" if error else "Preview of ‘{}’".format(template.name) }}
+  {{ "Error" if error else _('Preview of') + ' ‘' + template.name + '’' }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -51,7 +51,7 @@
     </div>
   {% else %}
     {{ page_header(
-      'Preview of ‘{}’'.format(template.name),
+      _('Preview of') + ' ‘' + template.name + '’',
       back_link=back_link
     ) }}
   {% endif %}

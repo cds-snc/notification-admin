@@ -14,6 +14,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
+#: app/__init__.py:395 app/__init__.py:405
+#: app/templates/views/conversations/messages.html:27
+msgid "Failed"
+msgstr "Échec"
+
+#: app/__init__.py:396 app/__init__.py:406
+#: app/templates/views/message-status.html:46
+#: app/templates/views/message-status.html:90
+msgid "Technical failure"
+msgstr "Échec technique"
+
+#: app/__init__.py:397 app/templates/views/message-status.html:43
+msgid "Inbox not accepting messages right now"
+msgstr "La boîte de réception n’accepte pas de messages à l’heure actuelle"
+
+#: app/__init__.py:398
+msgid "Email address doesn’t exist"
+msgstr "FR Email address doesn’t exist"
+
+#: app/__init__.py:399 app/__init__.py:402 app/__init__.py:409
+#: app/templates/views/message-status.html:37
+#: app/templates/views/message-status.html:81
+msgid "Delivered"
+msgstr "Livraison réussie"
+
+#: app/__init__.py:400 app/__init__.py:401 app/__init__.py:410
+#: app/__init__.py:411 app/__init__.py:412
+#: app/templates/partials/jobs/notifications.html:13
+#: app/templates/views/dashboard/_upcoming.html:28
+#: app/templates/views/message-status.html:34
+#: app/templates/views/message-status.html:75
+msgid "Sending"
+msgstr "Envoi en cours"
+
+#: app/__init__.py:407 app/templates/views/message-status.html:87
+msgid "Phone not accepting messages right now"
+msgstr "Le téléphone n’accepte pas de messages à l’heure actuelle"
+
+#: app/__init__.py:408
+msgid "Phone number doesn’t exist"
+msgstr "FR Phone number doesn’t exist"
+
+#: app/__init__.py:413
+msgid "Sent"
+msgstr "FR Sent"
+
 #: app/main/forms.py:113 app/main/forms.py:362 app/main/forms.py:830
 #: app/main/forms.py:897 app/templates/views/user-profile.html:35
 msgid "Email address"
@@ -32,13 +78,22 @@ msgstr "Adresse courriel"
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
 
-#: app/main/forms.py:367 app/templates/views/user-profile.html:53
+#: app/main/forms.py:150 app/templates/views/user-profile.html:46
+msgid "Mobile number"
+msgstr "Téléphone cellulaire"
+
+#: app/main/forms.py:157 app/main/forms.py:367
+#: app/templates/views/user-profile.html:53
 msgid "Password"
 msgstr "Mot de passe"
 
 #: app/main/forms.py:368
 msgid "Enter your password"
 msgstr "Entrez votre mot de passe"
+
+#: app/main/forms.py:373
+msgid "Full name"
+msgstr "FR Full name"
 
 # French translations for PROJECT.
 # Copyright (C) 2019 ORGANIZATION
@@ -65,6 +120,16 @@ msgstr "Nom du modèle"
 msgid "Message"
 msgstr "Message"
 
+#: app/main/forms.py:808
+#: app/templates/views/support/ask-question-give-feedback.html:7
+#: app/templates/views/support/ask-question-give-feedback.html:13
+msgid "Ask a question or give feedback"
+msgstr ""
+
+#: app/main/forms.py:817
+msgid "Your message"
+msgstr ""
+
 #: app/main/forms.py:816 app/main/forms.py:822
 #: app/templates/views/signedout.html:129
 msgid "Your name"
@@ -75,7 +140,7 @@ msgstr "Votre nom"
 msgid "Your email"
 msgstr "Votre courriel"
 
-#: app/main/forms.py:898
+#: app/main/forms.py:898    
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
@@ -131,6 +196,14 @@ msgstr "Sélectionnez le type de modèle que vous voulez ajouter"
 #: app/main/validators.py:79
 msgid "Enter a valid email address"
 msgstr "Entrez une adresse courriel valide"
+
+#: app/main/views/add_service.py:54 app/templates/views/add-service.html:23
+msgid "Name your service in both official languages"
+msgstr "FR Name your service in both official languages"
+
+#: app/main/views/send.py:765
+msgid "Personalise this message"
+msgstr "FR Personalise this message"
 
 #: app/main/views/sign_in.py:50
 msgid "The email address or password you entered is incorrect."
@@ -207,6 +280,7 @@ msgid "Sign out"
 msgstr "Déconnexion"
 
 #: app/templates/admin_template.html:58 app/templates/views/signin.html:7
+#: app/templates/views/signin.html:27
 msgid "Sign in"
 msgstr "Connexion"
 
@@ -635,13 +709,6 @@ msgstr "Destinataire"
 msgid "Status"
 msgstr "État"
 
-#: app/templates/partials/jobs/notifications.html:13
-#: app/templates/views/dashboard/_upcoming.html:28
-#: app/templates/views/message-status.html:34
-#: app/templates/views/message-status.html:75
-msgid "Sending"
-msgstr "Envoi en cours"
-
 #: app/templates/partials/jobs/notifications.html:17
 msgid "Cancel sending"
 msgstr "Annuler l’envoi"
@@ -852,10 +919,6 @@ msgstr "Téléchargez votre document au : ([lien_au_document])"
 #: app/templates/partials/templates/guidance-send-a-document.html:12
 msgid "Next, use the API to upload your document."
 msgstr "Ensuite, utilisez l’API pour téléverser votre document."
-
-#: app/templates/views/add-service.html:23
-msgid "Name your service in both official languages"
-msgstr "Nommer votre service dans les deux langues officielles"
 
 #: app/templates/views/add-service.html:26
 msgid "Notification displays your service name:"
@@ -1548,11 +1611,6 @@ msgstr "Description"
 msgid "Notification has sent the message to the email provider."
 msgstr "Notification a envoyé le message au fournisseur de messagerie."
 
-#: app/templates/views/message-status.html:37
-#: app/templates/views/message-status.html:81
-msgid "Delivered"
-msgstr "Livraison réussie"
-
 #: app/templates/views/message-status.html:38
 #: app/templates/views/message-status.html:82
 msgid ""
@@ -1575,10 +1633,6 @@ msgstr ""
 "était erronée. Vous devriez supprimer ces adresses courriel de votre base"
 " de données."
 
-#: app/templates/views/message-status.html:43
-msgid "Inbox not accepting messages right now"
-msgstr "La boîte de réception n’accepte pas de messages à l’heure actuelle"
-
 #: app/templates/views/message-status.html:44
 msgid ""
 "The provider could not deliver the message after trying for 72 hours. "
@@ -1589,11 +1643,6 @@ msgstr ""
 "pendant 72 heures. Cela peut se produire si la boîte de réception du "
 "destinataire est pleine. Vous pouvez essayer d’envoyer le message de "
 "nouveau."
-
-#: app/templates/views/message-status.html:46
-#: app/templates/views/message-status.html:90
-msgid "Technical failure"
-msgstr "Échec technique"
 
 #: app/templates/views/message-status.html:47
 msgid ""
@@ -1644,10 +1693,6 @@ msgstr ""
 "téléphone était erroné. Vous devriez supprimer ces numéros de téléphone "
 "de votre base de données. Les messages textes envoyés aux numéros qui "
 "n’existent pas vous seront tout de même facturés."
-
-#: app/templates/views/message-status.html:87
-msgid "Phone not accepting messages right now"
-msgstr "Le téléphone n’accepte pas de messages à l’heure actuelle"
 
 #: app/templates/views/message-status.html:88
 msgid ""
@@ -2534,10 +2579,6 @@ msgstr "Nous vous avons envoyé un code de sécurité par message texte."
 msgid "Your profile"
 msgstr "Votre profil"
 
-#: app/templates/views/user-profile.html:46
-msgid "Mobile number"
-msgstr "Téléphone cellulaire"
-
 #: app/templates/views/user-profile.html:54
 msgid "Last changed "
 msgstr "Dernier changement"
@@ -3089,6 +3130,8 @@ msgid "Only showing rows with errors"
 msgstr "Ne montre que les rangées avec des erreurs"
 
 #: app/templates/views/check/column-errors.html:225
+#: app/templates/views/notifications/check.html:7
+#: app/templates/views/notifications/check.html:54
 msgid "Preview of"
 msgstr "Aperçu de"
 
@@ -3123,10 +3166,6 @@ msgstr "Envoyer un message texte avec ce numéro de téléphone"
 #: app/templates/views/conversations/messages.html:23
 msgid "sending"
 msgstr "envoi en cours"
-
-#: app/templates/views/conversations/messages.html:27
-msgid "Failed"
-msgstr "Échec"
 
 #: app/templates/views/conversations/messages.html:27
 #: app/templates/views/dashboard/_totals.html:4
@@ -3518,6 +3557,18 @@ msgstr ""
 
 #: app/templates/views/service-settings/branding/manage-email-branding.html:28
 msgid "Upload logo"
+msgstr ""
+
+#: app/templates/views/support/ask-question-give-feedback.html:20
+msgid "Do you want a reply?"
+msgstr ""
+
+#: app/templates/views/support/ask-question-give-feedback.html:21
+msgid "Leave your details below if you’d like a response."
+msgstr ""
+
+#: app/templates/views/support/ask-question-give-feedback.html:25
+msgid "We’ll reply to"
 msgstr ""
 
 #: app/templates/views/templates/_move_to.html:26

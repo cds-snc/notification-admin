@@ -1,6 +1,6 @@
 from itertools import chain
 
-from flask_babel import _
+from flask_babel import lazy_gettext as _l
 
 roles = {
     'send_messages': ['send_texts', 'send_emails', 'send_letters'],
@@ -20,11 +20,11 @@ roles_by_permission = {
 all_permissions = set(roles_by_permission.values())
 
 permissions = (
-    ('view_activity', _('See dashboard')),
-    ('send_messages', _('Send messages')),
-    ('manage_templates', _('Add and edit templates')),
-    ('manage_service', _('Manage settings and teams')),
-    ('manage_api_keys', _('Manage API integration')),
+    ('view_activity', _l('See dashboard')),
+    ('send_messages', _l('Send messages')),
+    ('manage_templates', _l('Add and edit templates')),
+    ('manage_service', _l('Manage settings and teams')),
+    ('manage_api_keys', _l('Manage API integration')),
 )
 
 
