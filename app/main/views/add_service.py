@@ -1,4 +1,5 @@
 from flask import current_app, redirect, render_template, session, url_for
+from flask_babel import _
 from notifications_python_client.errors import HTTPError
 
 from app import billing_api_client, service_api_client
@@ -50,7 +51,7 @@ def add_service():
     form = CreateServiceForm(
         organisation_type=default_organisation_type
     )
-    heading = 'Name your service in both official languages'
+    heading = _('Name your service in both official languages')
 
     if form.validate_on_submit():
         email_from = email_safe(form.name.data)
