@@ -3,9 +3,9 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
-
+{% set page_title = _('Send international text messages') %}
 {% block service_page_title %}
-  Send international text messages
+ {{ page_title }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -13,14 +13,15 @@
   <div class="grid-row">
     <div class="column-five-sixths">
       {{ page_header(
-        'Send international text messages',
+        page_title,
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
       <p>
-        Charges may apply for messages sent to international phone numbers – so be careful!</p>
+        {{ _('Charges may apply for messages sent to international phone numbers – so be careful!') }}</p>
       {% call form_wrapper() %}
         {{ radios(form.enabled) }}
-        {{ page_footer('Save') }}
+        {% set save_txt = _('Save') %}
+        {{ page_footer(save_txt) }}
       {% endcall %}
     </div>
   </div>
