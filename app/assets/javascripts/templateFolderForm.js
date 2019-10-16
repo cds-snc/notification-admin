@@ -246,7 +246,7 @@
     this.itemsSelectedButtons = $(`
       <div id="items_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button-secondary" value="move-to-existing-folder">Move</button>
+          <button class="button-secondary" value="move-to-existing-folder">${window.polyglot.t('move')}</button>
           <button class="button-secondary" value="move-to-new-folder">${window.polyglot.t('add_to_new_folder')}</button>
           <div class="template-list-selected-counter" aria-hidden="true">
             <span class="template-list-selected-counter__count" aria-hidden="true">
