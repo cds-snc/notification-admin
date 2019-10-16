@@ -1,6 +1,6 @@
 {
   "name": "notifications-admin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Admin front end for Notification",
   "engines": {
     "node": "10"
