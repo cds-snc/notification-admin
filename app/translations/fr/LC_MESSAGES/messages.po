@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-15 10:19-0400\n"
+"POT-Creation-Date: 2019-10-16 15:11-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -30,33 +30,33 @@ msgstr "sélections"
 msgid "https://laws-lois.justice.gc.ca/eng/acts/P-21/index.html"
 msgstr "https://laws-lois.justice.gc.ca/fra/lois/P-21/index.html"
 
-#: app/__init__.py:395 app/__init__.py:405
+#: app/__init__.py:394 app/__init__.py:404
 #: app/templates/views/conversations/messages.html:27
 msgid "Failed"
 msgstr "Échec"
 
-#: app/__init__.py:396 app/__init__.py:406
+#: app/__init__.py:395 app/__init__.py:405
 #: app/templates/views/message-status.html:46
 #: app/templates/views/message-status.html:90
 msgid "Technical failure"
 msgstr "Échec technique"
 
-#: app/__init__.py:397 app/templates/views/message-status.html:43
+#: app/__init__.py:396 app/templates/views/message-status.html:43
 msgid "Inbox not accepting messages right now"
 msgstr "La boîte de réception n’accepte pas de messages à l’heure actuelle"
 
-#: app/__init__.py:398
+#: app/__init__.py:397
 msgid "Email address doesn’t exist"
 msgstr "FR Email address doesn’t exist"
 
-#: app/__init__.py:399 app/__init__.py:402 app/__init__.py:409
+#: app/__init__.py:398 app/__init__.py:401 app/__init__.py:408
 #: app/templates/views/message-status.html:37
 #: app/templates/views/message-status.html:81
 msgid "Delivered"
 msgstr "Livraison réussie"
 
-#: app/__init__.py:400 app/__init__.py:401 app/__init__.py:410
-#: app/__init__.py:411 app/__init__.py:412
+#: app/__init__.py:399 app/__init__.py:400 app/__init__.py:409
+#: app/__init__.py:410 app/__init__.py:411
 #: app/templates/partials/jobs/notifications.html:13
 #: app/templates/views/dashboard/_upcoming.html:28
 #: app/templates/views/message-status.html:34
@@ -64,15 +64,15 @@ msgstr "Livraison réussie"
 msgid "Sending"
 msgstr "Envoi en cours"
 
-#: app/__init__.py:407 app/templates/views/message-status.html:87
+#: app/__init__.py:406 app/templates/views/message-status.html:87
 msgid "Phone not accepting messages right now"
 msgstr "Le téléphone n’accepte pas de messages à l’heure actuelle"
 
-#: app/__init__.py:408
+#: app/__init__.py:407
 msgid "Phone number doesn’t exist"
 msgstr "FR Phone number doesn’t exist"
 
-#: app/__init__.py:413
+#: app/__init__.py:412
 msgid "Sent"
 msgstr "FR Sent"
 
@@ -142,10 +142,6 @@ msgstr "Message"
 msgid "Ask a question or give feedback"
 msgstr ""
 
-#: app/main/forms.py:817
-msgid "Your message"
-msgstr ""
-
 #: app/main/forms.py:816 app/main/forms.py:822
 #: app/templates/views/signedout.html:129
 msgid "Your name"
@@ -156,7 +152,7 @@ msgstr "Votre nom"
 msgid "Your email"
 msgstr "Votre courriel"
 
-#: app/main/forms.py:898    
+#: app/main/forms.py:898
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
@@ -1172,6 +1168,10 @@ msgstr "Maintenu par le SNC :"
 msgid "Maintained by GOV.UK:"
 msgstr "Maintenu par GOV.UK :"
 
+#: app/templates/views/documentation.html:74
+msgid "Direct connection to API"
+msgstr ""
+
 #: app/templates/views/edit-email-template.html:9
 msgid "email template"
 msgstr "modèle de courriel"
@@ -1196,6 +1196,7 @@ msgstr "Vos destinataires ne verront pas ceci :"
 #: app/templates/views/edit-sms-template.html:33
 #: app/templates/views/manage-users/edit-user-email.html:21
 #: app/templates/views/organisations/add-organisation.html:31
+#: app/templates/views/service-settings/set-international-sms.html:23
 #: app/templates/views/service-settings/set-sms.html:26
 msgid "Save"
 msgstr "Enregistrer"
@@ -2054,6 +2055,7 @@ msgid "Start text messages with service name"
 msgstr "Commencer les messages textes avec le nom du service"
 
 #: app/templates/views/service-settings.html:202
+#: app/templates/views/service-settings/set-international-sms.html:6
 msgid "Send international text messages"
 msgstr "Envoyer des messages textes internationaux"
 
@@ -3548,6 +3550,12 @@ msgstr ""
 msgid "Enter start date in format YYYY-MM-DD"
 msgstr ""
 
+#: app/templates/views/service-settings/set-international-sms.html:20
+msgid ""
+"Charges may apply for messages sent to international phone numbers – so "
+"be careful!"
+msgstr "Des frais peuvent s'appliquer pour les messages envoyés à des numéros de téléphone internationaux - faites attention!"
+
 #: app/templates/views/service-settings/set-sms.html:20
 msgid "You have a free allowance of"
 msgstr "Vous disposez de"
@@ -4110,4 +4118,7 @@ msgstr "Clés d’essai"
 
 #~ msgid "Contact the notify team"
 #~ msgstr "Contacter l'équipe"
+
+#~ msgid "Your message"
+#~ msgstr ""
 
