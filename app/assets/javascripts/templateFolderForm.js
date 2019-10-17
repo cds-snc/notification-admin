@@ -84,7 +84,7 @@
 
     this.addCancelButton = function(state) {
       let selector = `[value=${state.key}]`;
-      let $cancel = this.makeButton('Cancel', {
+      let $cancel = this.makeButton(window.polyglot.t('cancel_button'), {
         'onclick': () => {
 
           // clear existing data
@@ -171,7 +171,12 @@
 
     this.selectionStatus = {
       'default': window.polyglot.t('nothing_selected'),
-      'selected': numSelected => `${numSelected}` + window.polyglot.t('selected'),
+      'selected': numSelected => {
+        if (numSelected === 1) {
+          return `${numSelected} ` + window.polyglot.t('selection')
+        }
+        return `${numSelected} ` + window.polyglot.t('selections')
+      },
       'update': numSelected => {
         let message = (numSelected > 0) ? this.selectionStatus.selected(numSelected) : this.selectionStatus.default;
 
@@ -246,7 +251,7 @@
     this.itemsSelectedButtons = $(`
       <div id="items_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button-secondary" value="move-to-existing-folder">Move</button>
+          <button class="button-secondary" value="move-to-existing-folder">${window.polyglot.t('move')}</button>
           <button class="button-secondary" value="move-to-new-folder">${window.polyglot.t('add_to_new_folder')}</button>
           <div class="template-list-selected-counter" aria-hidden="true">
             <span class="template-list-selected-counter__count" aria-hidden="true">

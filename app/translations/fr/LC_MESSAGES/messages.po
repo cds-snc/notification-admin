@@ -14,6 +14,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
+#: app/templates/main_template.html:30
+msgid "Cancel"
+msgstr "Annuler"
+
+#: app/templates/main_template.html:26
+msgid "selection"
+msgstr "sélection"
+
+#: app/templates/main_template.html:27
+msgid "selections"
+msgstr "sélections"
+
+#: app/templates/views/privacy.html:13
+msgid "https://laws-lois.justice.gc.ca/eng/acts/P-21/index.html"
+msgstr "https://laws-lois.justice.gc.ca/fra/lois/P-21/index.html"
+
 #: app/__init__.py:394 app/__init__.py:404
 #: app/templates/views/conversations/messages.html:27
 msgid "Failed"
@@ -1471,7 +1487,7 @@ msgstr "sécurité"
 #: app/templates/views/new-password.html:7
 #: app/templates/views/new-password.html:16
 msgid "Create a new password"
-msgstr "Créer un nouveau mot de passe"
+msgstr "Créez un nouveau mot de passe"
 
 #: app/templates/views/forgot-password.html:14
 #: app/templates/views/signin.html:33

@@ -10,14 +10,14 @@
       {{ radios_nested(templates_and_folders_form.move_to, move_to_children, option_hints=option_hints) }}
       </div>
       <div class="js-will-stick-at-bottom-when-scrolling">
-      {{ page_footer('Move', button_name='operation', button_value='move-to-existing-folder') }}
+      {{ page_footer(_('Move'), button_name='operation', button_value='move-to-existing-folder') }}
       </div>
     </div>
     <div id="move_to_new_folder_form">
       <fieldset class="js-will-stick-at-bottom-when-scrolling">
         <legend class="visuallyhidden">{{ _('Add to new folder') }}</legend>
         {{ textbox(templates_and_folders_form.move_to_new_folder_name, width='1-1') }}
-        {{ page_footer('Add to new folder', button_name='operation', button_value='move-to-new-folder') }}
+        {{ page_footer(_('Add to new folder'), button_name='operation', button_value='move-to-new-folder') }}
       </fieldset>
     </div>
   {% endif %}
@@ -25,7 +25,7 @@
     <fieldset class="js-will-stick-at-bottom-when-scrolling">
       <legend class="visuallyhidden">{{ _('Add new folder') }}</legend>
       {{ textbox(templates_and_folders_form.add_new_folder_name, width='1-1') }}
-      {{ page_footer('Add new folder', button_name='operation', button_value='add-new-folder') }}
+      {{ page_footer(_('Add new folder'), button_name='operation', button_value='add-new-folder') }}
     </fieldset>
   </div>
   <div id="add_new_template_form">
@@ -33,7 +33,7 @@
     {{ radios(templates_and_folders_form.add_template_by_template_type) }}
     </div>
     <div class="js-will-stick-at-bottom-when-scrolling">
-    {{ page_footer('Continue', button_name='operation', button_value='add-new-template') }}
+    {{ page_footer(_('Continue'), button_name='operation', button_value='add-new-template') }}
     </div>
   </div>
   <div class="selection-counter visuallyhidden" role="status" aria-live="polite">
