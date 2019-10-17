@@ -3538,7 +3538,7 @@ msgstr ""
 msgid ""
 "Charges may apply for messages sent to international phone numbers – so "
 "be careful!"
-msgstr "Des frais peuvent s'appliquer pour les messages envoyés à des numéros de téléphone internationaux - faites attention!"
+msgstr "Attention! Des frais pourraient s’appliquer aux messages envoyés à des numéros de téléphone internationaux."
 
 #: app/templates/views/service-settings/set-sms.html:20
 msgid "You have a free allowance of"
