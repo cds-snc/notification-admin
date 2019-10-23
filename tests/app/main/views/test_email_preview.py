@@ -51,7 +51,7 @@ def test_displays_both_branding(client, mock_get_email_branding_with_both_brand_
     assert response.status_code == 200
     mock_get_email_branding_with_both_brand_type.assert_called_once_with('1')
 
-    #assert page.find("a", attrs={"href": "https://www.canada.ca"})
+    # assert page.find("a", attrs={"href": "https://www.canada.ca"})
     assert page.find("img", attrs={"src": re.compile("example.png$")})
     assert page.select("body > table:nth-of-type(2) table > tr:nth-of-type(1) > td:nth-of-type(2)")[0]\
         .get_text().strip() == 'Organisation text'  # brand text is set
