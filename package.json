@@ -45,7 +45,7 @@
     "react-dom": "^16.10.2",
     "textarea-caret": "3.1.0",
     "timeago": "1.6.7",
-    "snyk": "^1.232.0"
+    "snyk": "^1.235.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
