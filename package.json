@@ -42,7 +42,7 @@
     "node-polyglot": "^2.4.0",
     "query-command-supported": "1.0.0",
     "react": "^16.10.2",
-    "react-dom": "^16.10.2",
+    "react-dom": "^16.11.0",
     "textarea-caret": "3.1.0",
     "timeago": "1.6.7",
     "snyk": "^1.232.0"
