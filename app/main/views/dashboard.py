@@ -2,7 +2,6 @@ import calendar
 from datetime import datetime
 from functools import partial
 from itertools import groupby
-from flask_babel import (_ , lazy_gettext as _l)
 
 from flask import (
     Response,
@@ -13,6 +12,8 @@ from flask import (
     session,
     url_for,
 )
+from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from werkzeug.utils import redirect
 
@@ -419,8 +420,9 @@ def get_month_name(string):
         11: _l("November"),
         12: _l("December"),
     }
-    
+
     return translatedMonth.get(int(monthNumber), _l("Invalid month"))
+
 
 def yyyy_mm_to_datetime(string):
     return datetime(int(string[0:4]), int(string[5:7]), 1)
@@ -541,7 +543,7 @@ def get_tuples_of_financial_years(
             _l('financial year'),
             year,
             partial_url(year=year),
-            '{} {} {}'.format(year, _('to'),  year + 1),
+            '{} {} {}'.format(year, _('to'), year + 1),
         )
         for year in range(start, end + 1)
     )
