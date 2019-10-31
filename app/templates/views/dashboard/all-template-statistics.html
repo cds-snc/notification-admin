@@ -5,12 +5,12 @@
 {% extends "withnav_template.html" %}
 
 {% block service_page_title %}
-  Templates used
+  {{ _('Templates used') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
-  <h1 class="heading-large">Templates used</h1>
+  <h1 class="heading-large">{{ _('Templates used') }}</h1>
 
   <div class="bottom-gutter-3-2">
     {{ pill(
@@ -25,9 +25,11 @@
       <h2>{{ month.name }}</h2>
       {% if not month.templates_used %}
         <p class="table-no-data">
-          No messages sent
+          {{ _('No messages sent') }}
         </p>
       {% else %}
+        {% set template_txt = _('Template') %}
+        {% set messages_txt = _('Messages sent') %}
         <div class='dashboard-table template-usage-table'>
           {% call(item, row_number) list_table(
             month.templates_used,
@@ -35,8 +37,8 @@
             caption_visible=False,
             empty_message='',
             field_headings=[
-              'Template',
-              'Messages sent'
+                template_txt,
+                messages_txt 
             ],
             field_headings_visible=False
           ) %}

@@ -2,6 +2,7 @@ import calendar
 from datetime import datetime
 from functools import partial
 from itertools import groupby
+from flask_babel import (_ , lazy_gettext as _l)
 
 from flask import (
     Response,
@@ -209,9 +210,9 @@ def inbox_download(service_id):
     return Response(
         Spreadsheet.from_rows(
             [[
-                'Phone number',
-                'Message',
-                'Received',
+                _l('Phone number'),
+                _l('Message'),
+                _l('Received'),
             ]] + [[
                 message['user_number'],
                 message['content'].lstrip(('=+-@')),
@@ -396,11 +397,30 @@ def format_monthly_stats_to_list(historical_stats):
         dict(
             date=key,
             future=yyyy_mm_to_datetime(key) > datetime.utcnow(),
-            name=yyyy_mm_to_datetime(key).strftime('%B'),
+            name=get_month_name(key),
             **aggregate_status_types(value)
         ) for key, value in historical_stats.items()
     ), key=lambda x: x['date'])
 
+
+def get_month_name(string):
+    monthNumber = yyyy_mm_to_datetime(string).strftime('%-m')
+    translatedMonth = {
+        1: _l("January"),
+        2: _l("February"),
+        3: _l("March"),
+        4: _l("April"),
+        5: _l("May"),
+        6: _l("June"),
+        7: _l("July"),
+        8: _l("August"),
+        9: _l("September"),
+        10: _l("October"),
+        11: _l("November"),
+        12: _l("December"),
+    }
+    
+    return translatedMonth.get(int(monthNumber), _l("Invalid month"))
 
 def yyyy_mm_to_datetime(string):
     return datetime(int(string[0:4]), int(string[5:7]), 1)
@@ -518,10 +538,10 @@ def get_tuples_of_financial_years(
 ):
     return (
         (
-            'financial year',
+            _l('financial year'),
             year,
             partial_url(year=year),
-            '{} to {}'.format(year, year + 1),
+            '{} {} {}'.format(year, _('to'),  year + 1),
         )
         for year in range(start, end + 1)
     )
