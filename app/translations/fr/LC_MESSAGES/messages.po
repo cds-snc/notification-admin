@@ -200,7 +200,7 @@ msgstr "FR Name your service in both official languages"
 
 #: app/main/views/dashboard.py:215
 msgid "Received"
-msgstr ""
+msgstr "FR Received"
 
 #: app/main/views/dashboard.py:409
 msgid "January"
@@ -252,11 +252,11 @@ msgstr "Décembre"
 
 #: app/main/views/dashboard.py:423
 msgid "Invalid month"
-msgstr ""
+msgstr "FR Invalid month"
 
 #: app/main/views/dashboard.py:541
 msgid "financial year"
-msgstr ""
+msgstr "FR financial year"
 
 #: app/main/views/dashboard.py:544
 #: app/templates/views/dashboard/monthly.html:10
@@ -586,11 +586,11 @@ msgstr "envoi en cours"
 
 #: app/templates/components/pill.html:25
 msgid "delivered"
-msgstr ""
+msgstr "FR delivered"
 
 #: app/templates/components/pill.html:27
 msgid "total"
-msgstr ""
+msgstr "FR total"
 
 #: app/templates/components/task-list.html:5
 msgid "Completed"
@@ -3339,15 +3339,15 @@ msgstr "FR Provided as PDF"
 
 #: app/templates/views/dashboard/write-first-messages.html:1
 msgid "Get started"
-msgstr ""
+msgstr "FR Get started"
 
 #: app/templates/views/dashboard/write-first-messages.html:6
 msgid "Write an email, text message or letter"
-msgstr ""
+msgstr "FR Write an email, text message or letter"
 
 #: app/templates/views/dashboard/write-first-messages.html:8
 msgid "Write an email or text message"
-msgstr ""
+msgstr "FR Write an email or text message"
 
 #: app/templates/views/email-branding/manage-branding.html:27
 msgid "Logos should be PNG files, 108px high"
