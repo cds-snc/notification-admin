@@ -204,43 +204,43 @@ msgstr ""
 
 #: app/main/views/dashboard.py:409
 msgid "January"
-msgstr ""
+msgstr "Janvier"
 
 #: app/main/views/dashboard.py:410
 msgid "February"
-msgstr ""
+msgstr "Février"
 
 #: app/main/views/dashboard.py:411
 msgid "March"
-msgstr ""
+msgstr "Mars"
 
 #: app/main/views/dashboard.py:412
 msgid "April"
-msgstr ""
+msgstr "Avril"
 
 #: app/main/views/dashboard.py:413
 msgid "May"
-msgstr ""
+msgstr "Mai"
 
 #: app/main/views/dashboard.py:414
 msgid "June"
-msgstr ""
+msgstr "Juin"
 
 #: app/main/views/dashboard.py:415
 msgid "July"
-msgstr "July FR"
+msgstr "Juillet"
 
 #: app/main/views/dashboard.py:416
 msgid "August"
-msgstr ""
+msgstr "Août"
 
 #: app/main/views/dashboard.py:417
 msgid "September"
-msgstr ""
+msgstr "Septembre"
 
 #: app/main/views/dashboard.py:418
 msgid "October"
-msgstr ""
+msgstr "Octobre"
 
 #: app/main/views/dashboard.py:419
 msgid "November"
@@ -248,7 +248,7 @@ msgstr ""
 
 #: app/main/views/dashboard.py:420
 msgid "December"
-msgstr ""
+msgstr "Décembre"
 
 #: app/main/views/dashboard.py:423
 msgid "Invalid month"
