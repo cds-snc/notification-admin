@@ -14,7 +14,6 @@ from app.main.views.dashboard import (
     format_monthly_stats_to_list,
     get_dashboard_totals,
     get_free_paid_breakdown_for_billable_units,
-    get_tuples_of_financial_years,
 )
 from tests import (
     service_json,
