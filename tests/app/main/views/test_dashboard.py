@@ -1,7 +1,6 @@
 import copy
 import json
 from datetime import datetime
-from unittest.mock import call
 
 import pytest
 from bs4 import BeautifulSoup
@@ -1217,11 +1216,6 @@ def test_format_monthly_stats_empty_case():
     assert format_monthly_stats_to_list({}) == []
 
 
-def test_format_monthly_stats_labels_month():
-    resp = format_monthly_stats_to_list({'2016-07': {}})
-    assert resp[0]['name'] == 'July'
-
-
 def test_format_monthly_stats_has_stats_with_failure_rate():
     resp = format_monthly_stats_to_list({
         '2016-07': {'sms': _stats(3, 1, 2)}
@@ -1317,54 +1311,6 @@ def test_get_free_paid_breakdown_for_billable_units(now, expected_number_of_mont
             {'free': 0, 'name': 'February', 'paid': 2000, 'letter_total': 0, 'letters': [], 'letter_cumulative': 0},
             {'free': 0, 'name': 'March', 'paid': 0, 'letter_total': 0, 'letters': [], 'letter_cumulative': 0}
         ][:expected_number_of_months]
-
-
-def test_get_tuples_of_financial_years():
-    assert list(get_tuples_of_financial_years(
-        lambda year: 'http://example.com?year={}'.format(year),
-        start=2040,
-        end=2041,
-    )) == [
-        ('financial year', 2040, 'http://example.com?year=2040', '2040 to 2041'),
-        ('financial year', 2041, 'http://example.com?year=2041', '2041 to 2042'),
-    ]
-
-
-def test_get_tuples_of_financial_years_defaults_to_2015():
-    assert 2015 in list(get_tuples_of_financial_years(
-        lambda year: 'http://example.com?year={}'.format(year),
-        end=2040,
-    ))[0]
-
-
-@freeze_time("2016-01-01 11:09:00.061258")
-def test_should_show_all_jobs_with_valid_statuses(
-    logged_in_client,
-    mock_get_template_statistics,
-    mock_get_service_statistics,
-    mock_get_service_templates_when_no_templates_exist,
-    mock_get_jobs,
-    mock_get_usage,
-    mock_get_inbound_sms_summary
-):
-    logged_in_client.get(url_for('main.service_dashboard', service_id=SERVICE_ONE_ID))
-
-    first_call = mock_get_jobs.call_args_list[0]
-    # first call - checking for any jobs
-    assert first_call == call(SERVICE_ONE_ID)
-    second_call = mock_get_jobs.call_args_list[1]
-    # second call - scheduled jobs only
-    assert second_call == call(SERVICE_ONE_ID, statuses=['scheduled'])
-    # third call - everything but scheduled and cancelled
-    third_call = mock_get_jobs.call_args_list[2]
-    assert third_call == call(SERVICE_ONE_ID, limit_days=7, statuses={
-        'pending',
-        'in progress',
-        'finished',
-        'sending limits exceeded',
-        'ready to send',
-        'sent to dvla'
-    })
 
 
 def test_org_breadcrumbs_do_not_show_if_service_has_no_org(
