@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-16 15:11-0400\n"
+"POT-Creation-Date: 2019-10-31 15:30-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -13,22 +13,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
-
-#: app/templates/main_template.html:30
-msgid "Cancel"
-msgstr "Annuler"
-
-#: app/templates/main_template.html:26
-msgid "selection"
-msgstr "sélection"
-
-#: app/templates/main_template.html:27
-msgid "selections"
-msgstr "sélections"
-
-#: app/templates/views/privacy.html:13
-msgid "https://laws-lois.justice.gc.ca/eng/acts/P-21/index.html"
-msgstr "https://laws-lois.justice.gc.ca/fra/lois/P-21/index.html"
 
 #: app/__init__.py:394 app/__init__.py:404
 #: app/templates/views/conversations/messages.html:27
@@ -132,7 +116,7 @@ msgid "Template name"
 msgstr "Nom du modèle"
 
 #: app/main/forms.py:655 app/main/forms.py:818 app/main/forms.py:826
-#: app/templates/views/signedout.html:135
+#: app/main/views/dashboard.py:214 app/templates/views/signedout.html:135
 msgid "Message"
 msgstr "Message"
 
@@ -152,7 +136,7 @@ msgstr "Votre nom"
 msgid "Your email"
 msgstr "Votre courriel"
 
-#: app/main/forms.py:898
+#: app/main/forms.py:898 app/main/views/dashboard.py:213
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
@@ -172,19 +156,20 @@ msgstr "Recherche par adresse courriel"
 msgid "Search by phone number"
 msgstr "Recherche par numéro de téléphone"
 
-#: app/main/forms.py:1384
+#: app/main/forms.py:1384 app/main/forms.py:1486 app/main/forms.py:1487
 msgid "Folder name"
 msgstr "Nom du dossier"
 
-#: app/main/forms.py:1445
+#: app/main/forms.py:1445 app/main/views/templates.py:192
 msgid "Email"
 msgstr "Courriel"
 
-#: app/main/forms.py:1446
+#: app/main/forms.py:1446 app/main/views/templates.py:191
 msgid "Text message"
 msgstr "Message texte"
 
-#: app/main/forms.py:1447
+#: app/main/forms.py:1447 app/main/views/templates.py:193
+#: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
 msgstr "Lettre"
 
@@ -213,6 +198,71 @@ msgstr "Entrez une adresse courriel valide"
 msgid "Name your service in both official languages"
 msgstr "FR Name your service in both official languages"
 
+#: app/main/views/dashboard.py:215
+msgid "Received"
+msgstr "FR Received"
+
+#: app/main/views/dashboard.py:409
+msgid "January"
+msgstr "Janvier"
+
+#: app/main/views/dashboard.py:410
+msgid "February"
+msgstr "Février"
+
+#: app/main/views/dashboard.py:411
+msgid "March"
+msgstr "Mars"
+
+#: app/main/views/dashboard.py:412
+msgid "April"
+msgstr "Avril"
+
+#: app/main/views/dashboard.py:413
+msgid "May"
+msgstr "Mai"
+
+#: app/main/views/dashboard.py:414
+msgid "June"
+msgstr "Juin"
+
+#: app/main/views/dashboard.py:415
+msgid "July"
+msgstr "Juillet"
+
+#: app/main/views/dashboard.py:416
+msgid "August"
+msgstr "Août"
+
+#: app/main/views/dashboard.py:417
+msgid "September"
+msgstr "Septembre"
+
+#: app/main/views/dashboard.py:418
+msgid "October"
+msgstr "Octobre"
+
+#: app/main/views/dashboard.py:419
+msgid "November"
+msgstr ""
+
+#: app/main/views/dashboard.py:420
+msgid "December"
+msgstr "Décembre"
+
+#: app/main/views/dashboard.py:423
+msgid "Invalid month"
+msgstr "FR Invalid month"
+
+#: app/main/views/dashboard.py:541
+msgid "financial year"
+msgstr "FR financial year"
+
+#: app/main/views/dashboard.py:544
+#: app/templates/views/dashboard/monthly.html:10
+msgid "to"
+msgstr "à"
+
 #: app/main/views/send.py:765
 msgid "Personalise this message"
 msgstr "FR Personalise this message"
@@ -220,6 +270,10 @@ msgstr "FR Personalise this message"
 #: app/main/views/sign_in.py:50
 msgid "The email address or password you entered is incorrect."
 msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact."
+
+#: app/main/views/templates.py:190
+msgid "All"
+msgstr ""
 
 #: app/main/views/two_factor.py:25
 msgid "Email resent"
@@ -371,23 +425,33 @@ msgid "Nothing selected"
 msgstr "Rien n’est sélectionné"
 
 #: app/templates/main_template.html:26
-msgid "selected"
-msgstr "sélectionné"
+msgid "selection"
+msgstr "sélection"
 
 #: app/templates/main_template.html:27
+msgid "selections"
+msgstr "sélections"
+
+#: app/templates/main_template.html:28
 msgid "Choose a different time"
 msgstr "Choisir un autre moment"
 
-#: app/templates/main_template.html:28
+#: app/templates/main_template.html:29
 msgid "Clear"
 msgstr "Effacer"
 
-#: app/templates/main_template.html:29
+#: app/templates/main_template.html:30
+msgid "Cancel"
+msgstr "Annuler"
+
+#: app/templates/main_template.html:31
 #: app/templates/views/templates/_move_to.html:18
+#: app/templates/views/templates/_move_to.html:20
 msgid "Add to new folder"
 msgstr "Ajouter à un nouveau dossier"
 
-#: app/templates/main_template.html:30
+#: app/templates/main_template.html:32
+#: app/templates/views/templates/_move_to.html:13
 msgid "Move"
 msgstr "Déplacer"
 
@@ -408,6 +472,7 @@ msgstr "Données de l’API :"
 
 #: app/templates/components/big-number.html:47
 #: app/templates/components/big-number.html:51
+#: app/templates/components/pill.html:29
 #: app/templates/views/dashboard/monthly.html:60
 msgid "failed"
 msgstr "échec"
@@ -513,6 +578,19 @@ msgstr "adresses"
 #: app/templates/components/page-header.html:17
 msgid "Back"
 msgstr "Retour"
+
+#: app/templates/components/pill.html:23
+#: app/templates/views/conversations/messages.html:23
+msgid "sending"
+msgstr "envoi en cours"
+
+#: app/templates/components/pill.html:25
+msgid "delivered"
+msgstr "FR delivered"
+
+#: app/templates/components/pill.html:27
+msgid "total"
+msgstr "FR total"
 
 #: app/templates/components/task-list.html:5
 msgid "Completed"
@@ -1747,7 +1825,9 @@ msgstr "Vous pouvez maintenant créer un nouveau mot de passe pour votre compte.
 #: app/templates/views/register-from-invite.html:29
 #: app/templates/views/register-from-org-invite.html:24
 #: app/templates/views/register.html:27 app/templates/views/send-test.html:46
-#: app/templates/views/signin.html:34 app/templates/views/templates/add.html:12
+#: app/templates/views/signin.html:34
+#: app/templates/views/templates/_move_to.html:36
+#: app/templates/views/templates/add.html:12
 #: app/templates/views/two-factor.html:16
 #: app/templates/views/verify-mobile.html:22
 msgid "Continue"
@@ -1765,6 +1845,12 @@ msgid ""
 "Message about email address does not exist. Some one needs to figure out "
 "the words here."
 msgstr ""
+
+#: app/templates/views/find-services/find-services-by-name.html:30
+#: app/templates/views/find-users/find-users-by-email.html:30
+#: app/templates/views/notifications.html:48
+msgid "Search"
+msgstr "Chercher"
 
 #: app/templates/views/notifications.html:66
 msgid "Data available for"
@@ -1805,6 +1891,10 @@ msgid "The Notification team is reviewing privacy requirements under the"
 msgstr ""
 "L’équipe de Notification examine les exigences relatives à la vie privée "
 "aux termes de la"
+
+#: app/templates/views/privacy.html:13
+msgid "https://laws-lois.justice.gc.ca/eng/acts/P-21/index.html"
+msgstr "https://laws-lois.justice.gc.ca/fra/lois/P-21/index.html"
 
 #: app/templates/views/privacy.html:13
 msgid "Privacy Act"
@@ -3181,14 +3271,31 @@ msgstr "Vous avez besoin de:"
 msgid "Send a text message to this phone number"
 msgstr "Envoyer un message texte avec ce numéro de téléphone"
 
-#: app/templates/views/conversations/messages.html:23
-msgid "sending"
-msgstr "envoi en cours"
-
 #: app/templates/views/conversations/messages.html:27
 #: app/templates/views/dashboard/_totals.html:4
 msgid "sent"
 msgstr "envoyé"
+
+#: app/templates/views/dashboard/all-template-statistics.html:8
+#: app/templates/views/dashboard/all-template-statistics.html:13
+#: app/templates/views/dashboard/template-statistics.html:7
+msgid "Templates used"
+msgstr "FR Templates used"
+
+#: app/templates/views/dashboard/all-template-statistics.html:28
+msgid "No messages sent"
+msgstr "FR No messages sent"
+
+#: app/templates/views/dashboard/all-template-statistics.html:31
+#: app/templates/views/dashboard/template-statistics.html:8
+msgid "Template"
+msgstr "FR Template"
+
+#: app/templates/views/dashboard/all-template-statistics.html:32
+#: app/templates/views/dashboard/monthly.html:16
+#: app/templates/views/dashboard/template-statistics.html:9
+msgid "Messages sent"
+msgstr "Messages envoyés"
 
 #: app/templates/views/dashboard/dashboard.html:25
 msgid "In the last 7 days"
@@ -3211,16 +3318,8 @@ msgid "Messages sent,"
 msgstr "Messages envoyés"
 
 #: app/templates/views/dashboard/monthly.html:10
-msgid "to"
-msgstr "à"
-
-#: app/templates/views/dashboard/monthly.html:10
 msgid "fiscal year"
 msgstr "exercice financier"
-
-#: app/templates/views/dashboard/monthly.html:16
-msgid "Messages sent"
-msgstr "Messages envoyés"
 
 #: app/templates/views/dashboard/monthly.html:26
 msgid "Total spend"
@@ -3230,9 +3329,25 @@ msgstr "Total dépensé"
 msgid "Month"
 msgstr "Mois"
 
-#: app/templates/views/dashboard/monthly.html:73
+#: app/templates/views/dashboard/monthly.html:75
 msgid "Fiscal year ends 31 March."
 msgstr "L’exercice financier se termine le 31 mars."
+
+#: app/templates/views/dashboard/template-statistics.html:25
+msgid "Provided as PDF"
+msgstr "FR Provided as PDF"
+
+#: app/templates/views/dashboard/write-first-messages.html:1
+msgid "Get started"
+msgstr "FR Get started"
+
+#: app/templates/views/dashboard/write-first-messages.html:6
+msgid "Write an email, text message or letter"
+msgstr "FR Write an email, text message or letter"
+
+#: app/templates/views/dashboard/write-first-messages.html:8
+msgid "Write an email or text message"
+msgstr "FR Write an email or text message"
 
 #: app/templates/views/email-branding/manage-branding.html:27
 msgid "Logos should be PNG files, 108px high"
@@ -3380,11 +3495,6 @@ msgstr "Chercher des services par leur nom"
 #: app/templates/views/find-services/find-services-by-name.html:20
 msgid "Find services by name, or by partial name"
 msgstr "Chercher des services par leur nom ou par une partie du nom"
-
-#: app/templates/views/find-services/find-services-by-name.html:30
-#: app/templates/views/find-users/find-users-by-email.html:30
-msgid "Search"
-msgstr "Chercher"
 
 #: app/templates/views/find-services/find-services-by-name.html:50
 msgid "No services found."
@@ -3554,7 +3664,9 @@ msgstr ""
 msgid ""
 "Charges may apply for messages sent to international phone numbers – so "
 "be careful!"
-msgstr "Attention! Des frais pourraient s’appliquer aux messages envoyés à des numéros de téléphone internationaux."
+msgstr ""
+"Attention! Des frais pourraient s’appliquer aux messages envoyés à des "
+"numéros de téléphone internationaux."
 
 #: app/templates/views/service-settings/set-sms.html:20
 msgid "You have a free allowance of"
@@ -3596,6 +3708,7 @@ msgid "We’ll reply to"
 msgstr ""
 
 #: app/templates/views/templates/_move_to.html:26
+#: app/templates/views/templates/_move_to.html:28
 msgid "Add new folder"
 msgstr "Ajouter un nouveau dossier"
 
@@ -4121,4 +4234,7 @@ msgstr "Clés d’essai"
 
 #~ msgid "Your message"
 #~ msgstr ""
+
+#~ msgid "selected"
+#~ msgstr "sélectionné"
 

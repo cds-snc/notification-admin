@@ -18,8 +18,21 @@
         {% if show_count %}
             {{ big_number(count, **big_number_args) }}
         {% endif %}
-            <div class="pill-label{% if not show_count %} pill-centered-item{% endif %}">{{ label }}</div>
-      {% if current_value == option %}
+            <div class="pill-label{% if not show_count %} pill-centered-item{% endif %}">  
+            {% if label == "sending" %}
+                {{ _('sending') }}
+            {% elif label == "delivered" %}
+              {{ _('delivered') }}
+            {% elif label == "total" %}
+              {{ _('total') }}
+            {% elif label == "failed" %}
+              {{ _('failed') }}
+            {% else %}
+             {{label}}
+            {% endif %}
+
+          </div>
+            {% if current_value == option %}
           </div>
       {% else %}
           </a>

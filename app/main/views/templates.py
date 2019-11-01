@@ -3,6 +3,7 @@ from string import ascii_uppercase
 
 from dateutil.parser import parse
 from flask import abort, flash, redirect, render_template, request, url_for
+from flask_babel import _
 from flask_login import current_user
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
@@ -186,10 +187,10 @@ def process_folder_management_form(form, current_folder_id):
 
 def get_template_nav_label(value):
     return {
-        'all': 'All',
-        'sms': 'Text message',
-        'email': 'Email',
-        'letter': 'Letter',
+        'all': _('All'),
+        'sms': _('Text message'),
+        'email': _('Email'),
+        'letter': _('Letter'),
     }[value]
 
 

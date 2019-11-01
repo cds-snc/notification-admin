@@ -5,11 +5,10 @@
   //var dd = new diffDOM();
   var dd = new window.DiffDOM();
 
-  var getRenderer = $component => response =>
-    dd.apply(
-      $component.get(0),
-      dd.diff($component.get(0), $(response[$component.data("key")]).get(0))
-    );
+  var getRenderer = $component => response => {
+    var contentStr = $(response[$component.data("key")]).get(0);
+    return dd.apply($component.get(0), dd.diff($component.get(0), contentStr));
+  };
 
   var getQueue = resource => (queues[resource] = queues[resource] || []);
 
