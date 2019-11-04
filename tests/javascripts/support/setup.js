@@ -1,12 +1,9 @@
-
-
 // set up jQuery
 window.jQuery = require('jquery');
 $ = window.jQuery;
 
 // load module code
 require('govuk_frontend_toolkit/javascripts/govuk/modules.js');
-
 
 // setting up translations
 window.APP_LANG = "en"
