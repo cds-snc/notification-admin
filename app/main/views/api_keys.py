@@ -8,7 +8,6 @@ from flask import (
     url_for,
 )
 
-from flask_babel import _
 from flask_babel import lazy_gettext as _l
 
 from flask_login import current_user

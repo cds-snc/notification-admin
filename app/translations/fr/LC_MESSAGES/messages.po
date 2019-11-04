@@ -519,6 +519,22 @@ msgstr "FR O'Clock"
 msgid "Hour to send"
 msgstr "FR Hour to send"
 
+#: app/templates/main_template.html:75
+msgid "Copied to clipboard"
+msgstr "FR Copied to clipboard"
+
+#: app/templates/main_template.html:76
+msgid "Show"
+msgstr "FR Show"
+
+#: app/templates/main_template.html:77
+msgid "Copy"
+msgstr "FR Copy"
+
+#: app/templates/main_template.html:78
+msgid "to clipboard"
+msgstr "FR to clipboard"
+
 #: app/templates/org_template.html:16
 #: app/templates/views/organisations/add-organisation.html:16
 #: app/templates/views/organisations/index.html:17
