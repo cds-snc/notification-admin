@@ -129,15 +129,15 @@ def revoke_api_key(service_id, key_id):
     key_name = current_service.get_api_key(key_id)['name']
     if request.method == 'GET':
         flash([
-            "Are you sure you want to revoke ‘{}’?".format(key_name),
-            "You will not be able to use this API key to connect to Notification."
+            "{} ‘{}’?".format(_l('Are you sure you want to revoke'), key_name),
+            _l("You will not be able to use this API key to connect to Notification.")
         ], 'revoke this API key')
         return render_template(
-            'views/api/keys.html',
+            'views/api/keys.html', 
         )
     elif request.method == 'POST':
         api_key_api_client.revoke_api_key(service_id=service_id, key_id=key_id)
-        flash('‘{}’ was revoked'.format(key_name), 'default_with_tick')
+        flash('‘{}’ {}'.format(key_name, _l('was revoked')), 'default_with_tick')
         return redirect(url_for('.api_keys', service_id=service_id))
 
 

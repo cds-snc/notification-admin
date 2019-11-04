@@ -2305,6 +2305,7 @@ msgstr "Non (les organisations doivent être définies d'abord)"
 msgid "Count in list of live services"
 msgstr "Compte dans la liste de services en fonction"
 
+#: app/templates/flash_messages.html:6
 #: app/templates/views/service-settings.html:294
 #: app/templates/views/user-profile.html:70
 msgid "Yes"
@@ -3099,6 +3100,22 @@ msgstr "FR Not available because your service is in "
 #: app/main/views/api_keys.py:101
 msgid "trial mode"
 msgstr "mode d'essai"
+
+#: app/main/views/api_keys.py:132
+msgid "Are you sure you want to revoke"
+msgstr "FR Are you sure you want to revoke"
+
+#: app/main/views/api_keys.py:133
+msgid "You will not be able to use this API key to connect to Notification."
+msgstr "FR You will not be able to use this API key to connect to Notification."
+
+#: app/main/views/api_keys.py:134
+msgid "revoke this API key"
+msgstr "FR revoke this API key"
+
+#: app/main/views/api_keys.py:140
+msgid "was revoked"
+msgstr "FR was revoked"
 
 #: app/templates/views/api/keys.html:51
 msgid "Revoked"
