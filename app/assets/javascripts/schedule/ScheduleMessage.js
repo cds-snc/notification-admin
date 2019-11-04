@@ -8,9 +8,17 @@ import {
 import { DayButtons } from "./DayButtons";
 import { TimeInputs } from "./TimeInputs";
 
+let nowLabel = "Now Label"
+
+/*
+if (window.polyglot.t) {
+  nowLabel = window.polyglot.t("now");
+}
+*/
+
 export class ScheduleMessage extends React.Component {
   state = {
-    currentDayLabel: "Now",
+    currentDayLabel: nowLabel,
     showTimeInputs: false,
     currentDate: this.props.days[0]["date"],
     hour: getCurrentTime().hour,
@@ -56,7 +64,7 @@ export class ScheduleMessage extends React.Component {
     const { amPM, hour } = this.state;
     this.setState(
       {
-        showTimeInputs: labelValue === "Now" ? false : true,
+        showTimeInputs: labelValue === nowLabel ? false : true,
         currentDayLabel: labelValue,
         currentDate: date,
         hour: todayIsSelected(labelValue) ? getCurrentTime().hour : hour,

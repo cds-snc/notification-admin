@@ -1,9 +1,9 @@
 import moment from "moment";
 
-export const getDays = () => {
+export const getDays = nowLabel => {
   let data = [
     {
-      label: "Now",
+      label: nowLabel,
       date: moment(new Date())
         .utc()
         .format("YYYY-MM-DD")
@@ -92,7 +92,14 @@ export const getMaxHour = () => {
 };
 
 export const todayIsSelected = label => {
-  if (label.trim() === "Today") {
+
+  let today = "Today"
+
+  if (window.polyglot.t) {
+    today = window.polyglot.t("today");
+  }
+
+  if (label.trim() === today.trim()) {
     return true;
   }
 

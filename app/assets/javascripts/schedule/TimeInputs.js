@@ -14,6 +14,15 @@ const disabledIf = today => {
 export class TimeInputs extends React.Component {
   render() {
     const { hour, amPM, isToday, handleAmPM, handleHour } = this.props;
+    
+    let AMLabel = 'am'
+    let PMLabel = 'pm'
+
+    if (window.polyglot.t) {
+      AMLabel = window.polyglot.t(AMLabel);
+      PMLabel = window.polyglot.t(PMLabel);
+    }
+    
     return (
       <div className="time-box">
         <Hour
@@ -24,7 +33,7 @@ export class TimeInputs extends React.Component {
         />
         <div className="time-radios">
           <RadioButton
-            label="AM"
+            label={AMLabel}
             id="am-pm-0"
             name="amPM"
             aria-label="AM"
@@ -34,7 +43,7 @@ export class TimeInputs extends React.Component {
           />
 
           <RadioButton
-            label="PM"
+            label={PMLabel}
             id="am-pm-1"
             name="amPM"
             aria-label="PM"
