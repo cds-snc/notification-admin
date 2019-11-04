@@ -1,20 +1,49 @@
 {% block top_of_page %}{% endblock %}
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="{{ current_lang|default('en') }}"><![endif]-->
-<!--[if gt IE 8]><!--><html lang="{{ current_lang|default('en') }}"><!--<![endif]-->
+<!--[if gt IE 8]><!--><html
+  lang="{{ current_lang|default('en') }}"
+><!--<![endif]-->
   <head>
     <meta charset="utf-8" />
     <title>{% block page_title %}Notification{% endblock %}</title>
 
-    <!--[if gt IE 8]><!--><link rel="stylesheet" media="screen" href="{{ asset_path }}stylesheets/notification-template.css?0.24.2"/><!--<![endif]-->
-    <!--[if IE 6]><link rel="stylesheet" media="screen" href="{{ asset_path }}stylesheets/notification-template-ie6.css?0.24.2"/><![endif]-->
-    <!--[if IE 7]><link rel="stylesheet" media="screen" href="{{ asset_path }}stylesheets/notification-template-ie7.css?0.24.2"/><![endif]-->
-    <!--[if IE 8]><link rel="stylesheet" media="screen" href="{{ asset_path }}stylesheets/notification-template-ie8.css?0.24.2"/><![endif]-->
-    <!--[if lt IE 9]><script src="{{ asset_path }}javascripts/ie.js?0.24.1"></script><![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link
+      rel="stylesheet"
+      media="screen"
+      href="{{ asset_path }}stylesheets/notification-template.css?0.24.2"
+    />
+    <!--<![endif]-->
+    <!--[if IE 6
+      ]><link
+        rel="stylesheet"
+        media="screen"
+        href="{{ asset_path }}stylesheets/notification-template-ie6.css?0.24.2"
+    /><![endif]-->
+    <!--[if IE 7
+      ]><link
+        rel="stylesheet"
+        media="screen"
+        href="{{ asset_path }}stylesheets/notification-template-ie7.css?0.24.2"
+    /><![endif]-->
+    <!--[if IE 8
+      ]><link
+        rel="stylesheet"
+        media="screen"
+        href="{{ asset_path }}stylesheets/notification-template-ie8.css?0.24.2"
+    /><![endif]-->
+    <!--[if lt IE 9
+      ]><script src="{{ asset_path }}javascripts/ie.js?0.24.1"></script
+    ><![endif]-->
 
-    <link rel="shortcut icon" href="{{ asset_path }}images/favicon.ico?0.24.2" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="{{ asset_path }}images/favicon.ico?0.24.2"
+      type="image/x-icon"
+    />
     <meta name="theme-color" content="#0b0c0c" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script>
       window.APP_LANG = "{{ current_lang }}";
       window.APP_PHRASES = {
@@ -29,41 +58,76 @@
         clear_button: "{{ _('Clear') }}",
         cancel_button: "{{ _('Cancel') }}",
         add_to_new_folder: "{{ _('Add to new folder') }}",
-        move: "{{ _('Move') }}"
-      }
+        move: "{{ _('Move') }}",
+        am: "{{ _('AM')}}",
+        pm: "{{ _('PM')}}",
+        today: "{{_('Today')}}",
+        tomorrow: "{{_('Tomorrow')}}",
+        monday: "{{_('Monday')}}",
+        tuesday: "{{_('Tuesday')}}",
+        wednesday: "{{_('Wednesday')}}",
+        thursday: "{{_('Thursday')}}",
+        friday: "{{_('Friday')}}",
+        saturday: "{{_('Saturday')}}",
+        sunday: "{{_('Sunday')}}",
+        o_clock: "{{_('o_clock')}}",
+        hour_to_send: "{{ _('Hour to send') }}"
+
+        
+      };
     </script>
     {% block head %}{% endblock %}
   </head>
 
   <body class="{% block body_classes %}{% endblock %}">
-    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+    <script>
+      document.body.className = document.body.className
+        ? document.body.className + " js-enabled"
+        : "js-enabled";
+    </script>
 
     {% block body_start %}{% endblock %}
 
     <div id="skiplink-container">
       <div>
-        <a href="#content" class="skiplink">{{ skip_link_message|default('Skip to main content') }}</a>
+        <a
+          href="#content"
+          class="skiplink"
+          >{{ skip_link_message|default('Skip to main content') }}</a
+        >
       </div>
     </div>
-    
-    <header role="banner" id="global-header" class="{% block header_class %}{% endblock %}">
+
+    <header
+      role="banner"
+      id="global-header"
+      class="{% block header_class %}{% endblock %}"
+    >
       <div class="header-wrapper">
         <div class="header-global">
           <div class="header-logo">
-            <a href="{{ homepage_url|default('https://www.canada.ca') }}" title="{{ logo_link_title|default('Go to the Canada.ca homepage') }}" id="logo" class="content">
-              <img src="{{ asset_path }}images/fip/goc--header-logo.svg" width="250" alt="Government of Canada">
+            <a
+              href="{{ homepage_url|default('https://www.canada.ca') }}"
+              title="{{ logo_link_title|default('Go to the Canada.ca homepage') }}"
+              id="logo"
+              class="content"
+            >
+              <img
+                src="{{ asset_path }}images/fip/goc--header-logo.svg"
+                width="250"
+                alt="Government of Canada"
+              />
             </a>
-            
           </div>
           {% block inside_header %}{% endblock %}
         </div>
-        <div class="app-name">{{ global_header_text|default('Canada.ca') }} <span class="cds-tag alpha">Alpha</span></div>
-        {% block proposition_header %}{% endblock %} 
-
-        
+        <div class="app-name">
+          {{ global_header_text|default('Canada.ca') }}
+          <span class="cds-tag alpha">Alpha</span>
+        </div>
+        {% block proposition_header %}{% endblock %}
       </div>
     </header>
-    
 
     {% block after_header %}{% endblock %}
 
@@ -73,7 +137,6 @@
 
     <footer>
       <div class="group js-footer" id="footer">
-
         <div class="footer-wrapper">
           {% block footer_top %}{% endblock %}
         </div>
@@ -83,10 +146,14 @@
 
       {% block footer_fip %}
       <div id="global-footer-fip" class="footer-fip">
-        <div class="footer_support_links">
-        </div>
+        <div class="footer_support_links"></div>
         <div>
-          <img style="margin-top:20px;margin-bottom:20px;" src="{{ asset_path }}images/fip/goc--footer-logo.svg" width="168" alt="">
+          <img
+            style="margin-top:20px;margin-bottom:20px;"
+            src="{{ asset_path }}images/fip/goc--footer-logo.svg"
+            width="168"
+            alt=""
+          />
         </div>
       </div>
       {% endblock %}
@@ -95,13 +162,24 @@
     {% block body_end %}{% endblock %}
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-102484926-14"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-102484926-14"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-102484926-14', {'anonymize_ip': true});
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "UA-102484926-14", { anonymize_ip: true });
     </script>
-    <script>if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '');</script>
+    <script>
+      if (typeof window.GOVUK === "undefined")
+        document.body.className = document.body.className.replace(
+          "js-enabled",
+          ""
+        );
+    </script>
   </body>
 </html>

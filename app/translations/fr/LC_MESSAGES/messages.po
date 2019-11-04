@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-31 15:30-0400\n"
+"POT-Creation-Date: 2019-11-04 13:28-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -116,7 +116,7 @@ msgid "Template name"
 msgstr "Nom du modèle"
 
 #: app/main/forms.py:655 app/main/forms.py:818 app/main/forms.py:826
-#: app/main/views/dashboard.py:214 app/templates/views/signedout.html:135
+#: app/main/views/dashboard.py:215 app/templates/views/signedout.html:135
 msgid "Message"
 msgstr "Message"
 
@@ -136,7 +136,7 @@ msgstr "Votre nom"
 msgid "Your email"
 msgstr "Votre courriel"
 
-#: app/main/forms.py:898 app/main/views/dashboard.py:213
+#: app/main/forms.py:898 app/main/views/dashboard.py:214
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
@@ -182,7 +182,7 @@ msgstr "Copier un modèle existant"
 msgid "Choose a folder"
 msgstr "Choisir un dossier"
 
-#: app/main/forms.py:1489 app/templates/main_template.html:23
+#: app/main/forms.py:1489 app/templates/main_template.html:52
 msgid "New template"
 msgstr "Nouveau modèle"
 
@@ -198,67 +198,67 @@ msgstr "Entrez une adresse courriel valide"
 msgid "Name your service in both official languages"
 msgstr "FR Name your service in both official languages"
 
-#: app/main/views/dashboard.py:215
+#: app/main/views/dashboard.py:216
 msgid "Received"
 msgstr "FR Received"
 
-#: app/main/views/dashboard.py:409
+#: app/main/views/dashboard.py:410
 msgid "January"
 msgstr "Janvier"
 
-#: app/main/views/dashboard.py:410
+#: app/main/views/dashboard.py:411
 msgid "February"
 msgstr "Février"
 
-#: app/main/views/dashboard.py:411
+#: app/main/views/dashboard.py:412
 msgid "March"
 msgstr "Mars"
 
-#: app/main/views/dashboard.py:412
+#: app/main/views/dashboard.py:413
 msgid "April"
 msgstr "Avril"
 
-#: app/main/views/dashboard.py:413
+#: app/main/views/dashboard.py:414
 msgid "May"
 msgstr "Mai"
 
-#: app/main/views/dashboard.py:414
+#: app/main/views/dashboard.py:415
 msgid "June"
 msgstr "Juin"
 
-#: app/main/views/dashboard.py:415
+#: app/main/views/dashboard.py:416
 msgid "July"
 msgstr "Juillet"
 
-#: app/main/views/dashboard.py:416
+#: app/main/views/dashboard.py:417
 msgid "August"
 msgstr "Août"
 
-#: app/main/views/dashboard.py:417
+#: app/main/views/dashboard.py:418
 msgid "September"
 msgstr "Septembre"
 
-#: app/main/views/dashboard.py:418
+#: app/main/views/dashboard.py:419
 msgid "October"
 msgstr "Octobre"
 
-#: app/main/views/dashboard.py:419
+#: app/main/views/dashboard.py:420
 msgid "November"
 msgstr ""
 
-#: app/main/views/dashboard.py:420
+#: app/main/views/dashboard.py:421
 msgid "December"
 msgstr "Décembre"
 
-#: app/main/views/dashboard.py:423
+#: app/main/views/dashboard.py:424
 msgid "Invalid month"
 msgstr "FR Invalid month"
 
-#: app/main/views/dashboard.py:541
+#: app/main/views/dashboard.py:543
 msgid "financial year"
 msgstr "FR financial year"
 
-#: app/main/views/dashboard.py:544
+#: app/main/views/dashboard.py:546
 #: app/templates/views/dashboard/monthly.html:10
 msgid "to"
 msgstr "à"
@@ -407,53 +407,105 @@ msgstr "Paramètres"
 msgid "API integration"
 msgstr "Intégration de l’interface de programmation d’applications (API)"
 
-#: app/templates/main_template.html:21
+#: app/templates/main_template.html:50
 msgid "Now"
 msgstr "Maintenant"
 
-#: app/templates/main_template.html:22
+#: app/templates/main_template.html:51
 msgid "Done"
 msgstr "Terminer"
 
-#: app/templates/main_template.html:24
+#: app/templates/main_template.html:53
 msgid "New folder"
 msgstr "Nouveau dossier"
 
-#: app/templates/main_template.html:25
+#: app/templates/main_template.html:54
 #: app/templates/views/templates/_move_to.html:40
 msgid "Nothing selected"
 msgstr "Rien n’est sélectionné"
 
-#: app/templates/main_template.html:26
+#: app/templates/main_template.html:55
 msgid "selection"
 msgstr "sélection"
 
-#: app/templates/main_template.html:27
+#: app/templates/main_template.html:56
 msgid "selections"
 msgstr "sélections"
 
-#: app/templates/main_template.html:28
+#: app/templates/main_template.html:57
 msgid "Choose a different time"
 msgstr "Choisir un autre moment"
 
-#: app/templates/main_template.html:29
+#: app/templates/main_template.html:58
 msgid "Clear"
 msgstr "Effacer"
 
-#: app/templates/main_template.html:30
+#: app/templates/main_template.html:59
 msgid "Cancel"
 msgstr "Annuler"
 
-#: app/templates/main_template.html:31
+#: app/templates/main_template.html:60
 #: app/templates/views/templates/_move_to.html:18
 #: app/templates/views/templates/_move_to.html:20
 msgid "Add to new folder"
 msgstr "Ajouter à un nouveau dossier"
 
-#: app/templates/main_template.html:32
+#: app/templates/main_template.html:61
 #: app/templates/views/templates/_move_to.html:13
 msgid "Move"
 msgstr "Déplacer"
+
+#: app/templates/main_template.html:62
+msgid "AM"
+msgstr "FR AM"
+
+#: app/templates/main_template.html:63
+msgid "PM"
+msgstr "FR PM"
+
+#: app/templates/main_template.html:64
+msgid "Today"
+msgstr "FR Today"
+
+#: app/templates/main_template.html:65
+msgid "Tomorrow"
+msgstr "FR Tomorrow"
+
+#: app/templates/main_template.html:66
+msgid "Monday"
+msgstr "FR Monday"
+
+#: app/templates/main_template.html:67
+msgid "Tuesday"
+msgstr "FR Tuesday"
+
+#: app/templates/main_template.html:68
+msgid "Wednesday"
+msgstr "FR Wednesday"
+
+#: app/templates/main_template.html:69
+msgid "Thursday"
+msgstr "FR Thursday"
+
+#: app/templates/main_template.html:70
+msgid "Friday"
+msgstr "FR Friday"
+
+#: app/templates/main_template.html:71
+msgid "Saturday"
+msgstr "FR Saturday"
+
+#: app/templates/main_template.html:72
+msgid "Sunday"
+msgstr "FR Sunday"
+
+#: app/templates/main_template.html:73
+msgid "o_clock"
+msgstr "FR O'Clock"
+
+#: app/templates/main_template.html:74
+msgid "Hour to send"
+msgstr "FR Hour to send"
 
 #: app/templates/org_template.html:16
 #: app/templates/views/organisations/add-organisation.html:16
@@ -4237,4 +4289,7 @@ msgstr "Clés d’essai"
 
 #~ msgid "selected"
 #~ msgstr "sélectionné"
+
+#~ msgid "O'Clock"
+#~ msgstr "FR O'Clock"
 
