@@ -120,6 +120,18 @@ msgstr "Nom du modèle"
 msgid "Message"
 msgstr "Message"
 
+#: app/main/forms.py:788
+msgid "Type of key"
+msgstr "FR Type of key"
+
+#: app/main/forms.py:795
+msgid "You need to give the key a name"
+msgstr "FR You need to give the key a name"
+
+#: app/main/forms.py:800
+msgid "A key with this name already exists"
+msgstr "FR A key with this name already exists"
+
 #: app/main/forms.py:808
 #: app/templates/views/support/ask-question-give-feedback.html:7
 #: app/templates/views/support/ask-question-give-feedback.html:13
@@ -3050,19 +3062,27 @@ msgstr "Affiche seulement les 50 premiers messages."
 msgid "You haven’t created any API keys yet"
 msgstr "Vous n’avez pas encore créé de clés de l’API "
 
-#: app/templates/views/api/keys.html:40
+#: app/main/views/api_keys.py:90 app/templates/views/api/keys.html:40
 msgid "Live – sends to anyone"
 msgstr "En service – envoie à quiconque"
 
-#: app/templates/views/api/keys.html:42
+#: app/main/views/api_keys.py:91 app/templates/views/api/keys.html:42
 msgid "Team and safelist – limits who you can send to"
 msgstr ""
 "Équipe et liste de confiance — limite le nombre de personnes à qui vous "
 "pouvez faire des envois"
 
-#: app/templates/views/api/keys.html:44
+#: app/main/views/api_keys.py:92 app/templates/views/api/keys.html:44
 msgid "Test – pretends to send messages"
 msgstr "Essai – prétend envoyer des messages"
+
+#: app/main/views/api_keys.py:99
+msgid "Not available because your service is in "
+msgstr "FR Not available because your service is in "
+
+#: app/main/views/api_keys.py:101
+msgid "trial mode"
+msgstr "mode d'essai"
 
 #: app/templates/views/api/keys.html:51
 msgid "Revoked"
