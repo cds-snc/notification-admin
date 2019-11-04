@@ -7,9 +7,7 @@ from flask import (
     request,
     url_for,
 )
-
 from flask_babel import lazy_gettext as _l
-
 from flask_login import current_user
 
 from app import (
@@ -133,7 +131,7 @@ def revoke_api_key(service_id, key_id):
             _l("You will not be able to use this API key to connect to Notification.")
         ], 'revoke this API key')
         return render_template(
-            'views/api/keys.html', 
+            'views/api/keys.html',
         )
     elif request.method == 'POST':
         api_key_api_client.revoke_api_key(service_id=service_id, key_id=key_id)
