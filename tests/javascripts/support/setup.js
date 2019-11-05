@@ -11,7 +11,11 @@ window.APP_PHRASES = {
     copied_to_clipboard: "Copied to clipboard",
     show: "Show",
     copy: "Copy",
-    to_clipboard: "to clipboard"
+    to_clipboard: "to clipboard",
+    add_another: "Add another",
+    number: "number",
+    remaining: "remaining",
+    remove: "Remove"
 }
 
 var Polyglot = require("node-polyglot");

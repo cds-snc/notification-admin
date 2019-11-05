@@ -34,7 +34,7 @@
     {% endcall %}
   {% else %}
     {{ page_header(
-      'Safelist',
+      _('Safelist'),
       back_link=url_for('main.api_integration', service_id=current_service.id)
     ) }}
   {% endif %}
@@ -52,20 +52,20 @@
 
         {{ list_entry(
           form.email_addresses,
-          item_name='email address',
+          item_name=_('email address'),
           autocomplete=False
         ) }}
 
         {{ list_entry(
           form.phone_numbers,
-          item_name='phone number',
+          item_name=_('phone number'),
           autocomplete=False
         ) }}
 
       </div>
     </div>
 
-    {{ page_footer('Save') }}
+    {{ page_footer(_('Save')) }}
 
   {% endcall %}
 
