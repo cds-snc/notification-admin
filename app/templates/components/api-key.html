@@ -1,4 +1,4 @@
-{% macro api_key(key, name=None, thing="API key") %}
+{% macro api_key(key, name=None, thing=_("API key")) %}
   {% if name %}
     <h2 class="api-key-name">
       {% set api_data = _('API data:') %}

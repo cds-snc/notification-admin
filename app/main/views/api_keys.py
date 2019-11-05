@@ -7,6 +7,7 @@ from flask import (
     request,
     url_for,
 )
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 
 from app import (
@@ -84,16 +85,17 @@ def api_keys(service_id):
 def create_api_key(service_id):
     form = CreateKeyForm(current_service.api_keys)
     form.key_type.choices = [
-        (KEY_TYPE_NORMAL, 'Live – sends to anyone'),
-        (KEY_TYPE_TEAM, 'Team and safelist – limits who you can send to'),
-        (KEY_TYPE_TEST, 'Test – pretends to send messages'),
+        (KEY_TYPE_NORMAL, _l('Live – sends to anyone')),
+        (KEY_TYPE_TEAM, _l('Team and safelist – limits who you can send to')),
+        (KEY_TYPE_TEST, _l('Test – pretends to send messages')),
     ]
     disabled_options, option_hints = [], {}
     if current_service.trial_mode:
         disabled_options = [KEY_TYPE_NORMAL]
         option_hints[KEY_TYPE_NORMAL] = Markup(
-            'Not available because your service is in '
-            '<a href="/features/trial-mode">trial mode</a>'
+            _l('Not available because your service is in ') +
+            '<a href="/features/trial-mode">' +
+            _l('trial mode') + '</a>'
         )
     if current_service.has_permission('letter'):
         option_hints[KEY_TYPE_TEAM] = 'Can’t be used to send letters'
@@ -125,15 +127,15 @@ def revoke_api_key(service_id, key_id):
     key_name = current_service.get_api_key(key_id)['name']
     if request.method == 'GET':
         flash([
-            "Are you sure you want to revoke ‘{}’?".format(key_name),
-            "You will not be able to use this API key to connect to Notification."
+            "{} ‘{}’?".format(_l('Are you sure you want to revoke'), key_name),
+            _l("You will not be able to use this API key to connect to Notification.")
         ], 'revoke this API key')
         return render_template(
             'views/api/keys.html',
         )
     elif request.method == 'POST':
         api_key_api_client.revoke_api_key(service_id=service_id, key_id=key_id)
-        flash('‘{}’ was revoked'.format(key_name), 'default_with_tick')
+        flash('‘{}’ {}'.format(key_name, _l('was revoked')), 'default_with_tick')
         return redirect(url_for('.api_keys', service_id=service_id))
 
 

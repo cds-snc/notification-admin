@@ -785,19 +785,19 @@ class CreateKeyForm(StripWhitespaceForm):
         super().__init__(*args, **kwargs)
 
     key_type = RadioField(
-        'Type of key',
+        _l('Type of key'),
         validators=[
             DataRequired()
         ]
     )
 
     key_name = StringField(u'Description of key', validators=[
-        DataRequired(message='You need to give the key a name')
+        DataRequired(message=_l('You need to give the key a name'))
     ])
 
     def validate_key_name(self, key_name):
         if key_name.data.lower() in self.existing_key_names:
-            raise ValidationError('A key with this name already exists')
+            raise ValidationError(_l('A key with this name already exists'))
 
 
 class SupportType(StripWhitespaceForm):
