@@ -3800,6 +3800,8 @@ msgstr ""
 msgid "You haven’t added any reply-to email addresses yet"
 msgstr "FR You haven’t added any reply-to email addresses yet"
 
+#: app/templates/views/service-settings/email-reply-to/add.html:9
+#: app/templates/views/service-settings/email-reply-to/add.html:15
 #: app/templates/views/service-settings/email_reply_to.html:48
 msgid "Add reply-to email address"
 msgstr "FR Add reply-to email address"
@@ -3903,6 +3905,7 @@ msgstr "FR Change reply-to email address"
 msgid "Delete"
 msgstr "FR Delete"
 
+#: app/templates/views/service-settings/email-reply-to/add.html:23
 #: app/templates/views/service-settings/email-reply-to/edit.html:16
 msgid ""
 "This should be a shared inbox managed by your team, not your own email "
@@ -3910,6 +3913,10 @@ msgid ""
 msgstr ""
 "FR This should be a shared inbox managed by your team, not your own email"
 " address."
+
+#: app/templates/views/service-settings/email-reply-to/add.html:31
+msgid "Add"
+msgstr "FR Add"
 
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "This is the default reply-to address for"
