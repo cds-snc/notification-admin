@@ -922,6 +922,7 @@ class ServiceReplyToEmailForm(StripWhitespaceForm):
     email_address = email_address(label=_l(label_text), gov_user=False)
     is_default = BooleanField(_l("Make this email address the default"))
 
+
 class ServiceSmsSenderForm(StripWhitespaceForm):
     sms_sender = StringField(
         'Text message sender',
