@@ -250,6 +250,10 @@ msgstr "Entrez une adresse courriel valide"
 msgid "Name your service in both official languages"
 msgstr "FR Name your service in both official languages"
 
+#: app/main/views/api_keys.py:65
+msgid "Safelist updated"
+msgstr "FR Safelist updated"
+
 #: app/main/views/api_keys.py:88 app/templates/views/api/keys.html:40
 msgid "Live – sends to anyone"
 msgstr "En service – envoie à quiconque"
