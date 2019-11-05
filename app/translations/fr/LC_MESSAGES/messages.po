@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-05 08:26-0500\n"
+"POT-Creation-Date: 2019-11-05 10:15-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -71,10 +71,10 @@ msgstr "Adresse courriel"
 #: app/main/forms.py:415 app/main/forms.py:525 app/main/forms.py:533
 #: app/main/forms.py:552 app/main/forms.py:568 app/main/forms.py:597
 #: app/main/forms.py:613 app/main/forms.py:632 app/main/forms.py:652
-#: app/main/forms.py:657 app/main/forms.py:815 app/main/forms.py:1209
-#: app/main/forms.py:1214 app/main/forms.py:1222 app/main/forms.py:1227
-#: app/main/forms.py:1277 app/main/forms.py:1384 app/main/forms.py:1395
-#: app/main/forms.py:1560
+#: app/main/forms.py:657 app/main/forms.py:815 app/main/forms.py:1217
+#: app/main/forms.py:1222 app/main/forms.py:1230 app/main/forms.py:1235
+#: app/main/forms.py:1285 app/main/forms.py:1392 app/main/forms.py:1403
+#: app/main/forms.py:1568
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
 
@@ -156,81 +156,90 @@ msgstr "Votre courriel"
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: app/main/forms.py:963 app/main/forms.py:979
+#: app/main/forms.py:921
+msgid "Reply-to email address"
+msgstr "FR Reply-to email address"
+
+#: app/main/forms.py:923
+msgid "Make this email address the default"
+msgstr ""
+
+#: app/main/forms.py:963 app/main/forms.py:980
 #: app/templates/components/table.html:134
 msgid "On"
 msgstr "FR On"
 
-#: app/main/forms.py:964 app/main/forms.py:980
+#: app/main/forms.py:964 app/main/forms.py:983
 #: app/templates/components/table.html:135
 msgid "Off"
 msgstr "FR Off"
 
-#: app/main/forms.py:988 app/templates/views/check/ok.html:42
+#: app/main/forms.py:996 app/templates/views/check/ok.html:42
 msgid "Send"
 msgstr "Envoyer"
 
-#: app/main/forms.py:989 app/templates/components/message-count-label.html:19
+#: app/main/forms.py:997 app/templates/components/message-count-label.html:19
 #: app/templates/views/features.html:15
+#: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "emails"
 msgstr "courriels"
 
-#: app/main/forms.py:990 app/templates/components/message-count-label.html:13
+#: app/main/forms.py:998 app/templates/components/message-count-label.html:13
 #: app/templates/views/features.html:16
 msgid "text messages"
 msgstr "messages textes"
 
-#: app/main/forms.py:991 app/templates/components/message-count-label.html:25
+#: app/main/forms.py:999 app/templates/components/message-count-label.html:25
 msgid "letters"
 msgstr "lettres"
 
-#: app/main/forms.py:1141
+#: app/main/forms.py:1149
 msgid "Search by name"
 msgstr "Recherche par nom"
 
-#: app/main/forms.py:1149 app/main/forms.py:1158
+#: app/main/forms.py:1157 app/main/forms.py:1166
 msgid "Search by name or email address"
 msgstr "Recherche par nom ou par adresse courriel"
 
-#: app/main/forms.py:1166
+#: app/main/forms.py:1174
 msgid "Search by email address"
 msgstr "Recherche par adresse courriel"
 
-#: app/main/forms.py:1167
+#: app/main/forms.py:1175
 msgid "Search by phone number"
 msgstr "Recherche par numéro de téléphone"
 
-#: app/main/forms.py:1384 app/main/forms.py:1486 app/main/forms.py:1487
+#: app/main/forms.py:1392 app/main/forms.py:1494 app/main/forms.py:1495
 msgid "Folder name"
 msgstr "Nom du dossier"
 
-#: app/main/forms.py:1445 app/main/views/templates.py:192
+#: app/main/forms.py:1453 app/main/views/templates.py:192
 msgid "Email"
 msgstr "Courriel"
 
-#: app/main/forms.py:1446 app/main/views/templates.py:191
+#: app/main/forms.py:1454 app/main/views/templates.py:191
 msgid "Text message"
 msgstr "Message texte"
 
-#: app/main/forms.py:1447 app/main/views/templates.py:193
+#: app/main/forms.py:1455 app/main/views/templates.py:193
 #: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
 msgstr "Lettre"
 
-#: app/main/forms.py:1448 app/templates/views/templates/copy.html:7
+#: app/main/forms.py:1456 app/templates/views/templates/copy.html:7
 #: app/templates/views/templates/copy.html:13
 msgid "Copy an existing template"
 msgstr "Copier un modèle existant"
 
-#: app/main/forms.py:1480
+#: app/main/forms.py:1488
 msgid "Choose a folder"
 msgstr "Choisir un dossier"
 
-#: app/main/forms.py:1489 app/templates/main_template.html:52
+#: app/main/forms.py:1497 app/templates/main_template.html:52
 msgid "New template"
 msgstr "Nouveau modèle"
 
-#: app/main/forms.py:1492
+#: app/main/forms.py:1500
 msgid "Select the type of template you want to add"
 msgstr "Sélectionnez le type de modèle que vous voulez ajouter"
 
@@ -348,7 +357,7 @@ msgstr "à"
 msgid "Personalise this message"
 msgstr "FR Personalise this message"
 
-#: app/main/views/service_settings.py:144
+#: app/main/views/service_settings.py:142
 #: app/templates/views/service-settings/name.html:9
 #: app/templates/views/service-settings/name.html:15
 msgid "Change your service name"
@@ -1421,6 +1430,7 @@ msgstr "Vos destinataires ne verront pas ceci :"
 #: app/templates/views/edit-sms-template.html:33
 #: app/templates/views/manage-users/edit-user-email.html:21
 #: app/templates/views/organisations/add-organisation.html:31
+#: app/templates/views/service-settings/email-reply-to/edit.html:9
 #: app/templates/views/service-settings/name.html:32
 #: app/templates/views/service-settings/set-email.html:23
 #: app/templates/views/service-settings/set-international-sms.html:23
@@ -2184,6 +2194,7 @@ msgid "Your file will populate this template"
 msgstr "Votre fichier remplira ce modèle"
 
 #: app/templates/views/service-settings.html:9
+#: app/templates/views/service-settings/email_reply_to.html:36
 #: app/templates/views/user-profile.html:11
 msgid "Change"
 msgstr "Modifier"
@@ -2249,6 +2260,7 @@ msgid "Send emails"
 msgstr "Envoyer des courriels"
 
 #: app/templates/views/service-settings.html:103
+#: app/templates/views/service-settings/email_reply_to.html:7
 msgid "Reply-to email addresses"
 msgstr "Adresses courriel de réponse"
 
@@ -2286,6 +2298,7 @@ msgid "Text message senders"
 msgstr "Expéditeurs de messages textes"
 
 #: app/templates/views/service-settings.html:168
+#: app/templates/views/service-settings/email_reply_to.html:31
 msgid "default"
 msgstr "Par défaut"
 
@@ -3783,17 +3796,47 @@ msgstr ""
 msgid "Enter start date in format YYYY-MM-DD"
 msgstr ""
 
+#: app/templates/views/service-settings/email_reply_to.html:23
+msgid "You haven’t added any reply-to email addresses yet"
+msgstr "FR You haven’t added any reply-to email addresses yet"
+
+#: app/templates/views/service-settings/email-reply-to/add.html:9
+#: app/templates/views/service-settings/email-reply-to/add.html:15
+#: app/templates/views/service-settings/email_reply_to.html:48
+msgid "Add reply-to email address"
+msgstr "FR Add reply-to email address"
+
+#: app/templates/views/service-settings/email_reply_to.html:54
+msgid ""
+"You need to add at least one reply-to address so recipients can reply to "
+"your messages."
+msgstr ""
+"FR You need to add at least one reply-to address so recipients can reply "
+"to your messages."
+
+#: app/templates/views/service-settings/email_reply_to.html:57
+msgid "Emails with a reply-to address:"
+msgstr "FR Emails with a reply-to address:"
+
+#: app/templates/views/service-settings/email_reply_to.html:60
+msgid "are less likely to be labelled as spam"
+msgstr "FR are less likely to be labelled as spam"
+
+#: app/templates/views/service-settings/email_reply_to.html:61
+msgid "appear more trustworthy"
+msgstr "FR appear more trustworthy"
+
 #: app/templates/views/service-settings/name.html:21
 msgid "Users will see your service name:"
 msgstr "FR Users will see your service name: "
 
 #: app/templates/views/service-settings/name.html:24
 msgid "as your email sender name"
-msgstr ""
+msgstr "FR as your email sender name"
 
 #: app/templates/views/service-settings/name.html:27
 msgid "Users will see your service name as your email sender name."
-msgstr ""
+msgstr "FR Users will see your service name as your email sender name."
 
 #: app/templates/views/service-settings/set-auth-type.html:24
 msgid ""
@@ -3854,9 +3897,34 @@ msgstr ""
 msgid "Upload logo"
 msgstr ""
 
+#: app/templates/views/service-settings/email-reply-to/edit.html:8
+msgid "Change reply-to email address"
+msgstr "FR Change reply-to email address"
+
+#: app/templates/views/service-settings/email-reply-to/edit.html:10
+msgid "Delete"
+msgstr "FR Delete"
+
+#: app/templates/views/service-settings/email-reply-to/add.html:23
+#: app/templates/views/service-settings/email-reply-to/edit.html:16
+msgid ""
+"This should be a shared inbox managed by your team, not your own email "
+"address."
+msgstr ""
+"FR This should be a shared inbox managed by your team, not your own email"
+" address."
+
+#: app/templates/views/service-settings/email-reply-to/add.html:31
+msgid "Add"
+msgstr "FR Add"
+
+#: app/templates/views/service-settings/email-reply-to/edit.html:30
+msgid "This is the default reply-to address for"
+msgstr "FR This is the default reply-to address for"
+
 #: app/templates/views/support/ask-question-give-feedback.html:20
 msgid "Do you want a reply?"
-msgstr ""
+msgstr "FR Do you want a reply?"
 
 #: app/templates/views/support/ask-question-give-feedback.html:21
 msgid "Leave your details below if you’d like a response."

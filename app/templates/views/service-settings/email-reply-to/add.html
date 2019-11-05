@@ -6,13 +6,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Add reply-to email address
+  {{ _('Add reply-to email address') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Add reply-to email address',
+    _('Add reply-to email address'),
     back_link=url_for('main.service_email_reply_to', service_id=current_service.id)
   ) }}
 
@@ -20,7 +20,7 @@
     {{ textbox(
       form.email_address,
       width='1-1',
-      hint='This should be a shared inbox managed by your team, not your own email address',
+      hint=_('This should be a shared inbox managed by your team, not your own email address.'),
       safe_error_message=True
     ) }}
     {% if not first_email_address %}
@@ -28,7 +28,7 @@
         {{ checkbox(form.is_default) }}
       </div>
     {% endif %}
-    {{ page_footer('Add') }}
+    {{ page_footer(_('Add')) }}
   {% endcall %}
 
 {% endblock %}
