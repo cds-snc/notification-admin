@@ -235,15 +235,15 @@ msgstr "Recherche par numéro de téléphone"
 
 #: app/main/forms.py:1219 app/main/forms.py:1232
 msgid "Must be a valid https URL"
-msgstr ""
+msgstr "FR Must be a valid https URL"
 
 #: app/main/forms.py:1222 app/main/forms.py:1235
 msgid "Bearer token"
-msgstr ""
+msgstr "FR Bearer token"
 
 #: app/main/forms.py:1224 app/main/forms.py:1237
 msgid "Must be at least 10 characters"
-msgstr ""
+msgstr "FR Must be at least 10 characters"
 
 #: app/main/forms.py:1243
 msgid "Send text messages to international phone numbers"
