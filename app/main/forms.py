@@ -918,8 +918,9 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
 
 
 class ServiceReplyToEmailForm(StripWhitespaceForm):
-    email_address = email_address(label='Reply-to email address', gov_user=False)
-    is_default = BooleanField("Make this email address the default")
+    label_text = _l('Reply-to email address')
+    email_address = email_address(label=_l(label_text), gov_user=False)
+    is_default = BooleanField(_l("Make this email address the default"))
 
 
 class ServiceSmsSenderForm(StripWhitespaceForm):

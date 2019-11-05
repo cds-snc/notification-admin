@@ -5,15 +5,17 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
-
+{% set txt = _('Change reply-to email address') %}
+{% set save_txt = _('Save') %}
+{% set delete_txt = _('Delete') %}
 {% block service_page_title %}
- Change reply-to email address
+  {{ txt }}
 {% endblock %}
 
 {% block maincolumn_content %}
-
+  {% set hint_txt = _('This should be a shared inbox managed by your team, not your own email address.') %}
   {{ page_header(
-    'Change reply-to email address',
+    txt,
     back_link=url_for('main.service_email_reply_to', service_id=current_service.id)
   ) }}
   {% call form_wrapper() %}
@@ -21,21 +23,21 @@
       form.email_address,
       width='1-1',
       safe_error_message=True,
-      hint='This should be a shared inbox managed by your team, not your own email address.'
+      hint=hint_txt
     ) }}
     {% if form.is_default.data %}
       <p class="form-group">
-        This is the default reply-to address for {{ current_service.name }} emails
+        {{ _('This is the default reply-to address for')}} {{ current_service.name }} {{ _('emails') }}
       </p>
-      {{ page_footer('Save') }}
+      {{ page_footer(save_txt) }}
     {% else %}
       <div class="form-group">
         {{ checkbox(form.is_default) }}
       </div>
       {{ page_footer(
-        'Save',
+        save_txt,
         delete_link=url_for('.service_confirm_delete_email_reply_to', service_id=current_service.id, reply_to_email_id=reply_to_email_address_id),
-        delete_link_text='Delete'
+        delete_link_text=delete_txt
       ) }}
     {% endif %}
   {% endcall %}
