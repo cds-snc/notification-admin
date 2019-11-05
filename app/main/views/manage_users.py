@@ -67,7 +67,7 @@ def invite_user(service_id):
             form.folder_permissions.data,
         )
 
-        flash('Invite sent to {}'.format(invited_user.email_address), 'default_with_tick')
+        flash('{} {}'.format(_l('Invite sent to'), invited_user.email_address), 'default_with_tick')
         return redirect(url_for('.manage_users', service_id=service_id))
 
     return render_template(

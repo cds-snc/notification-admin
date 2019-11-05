@@ -431,16 +431,16 @@ class PermissionsForm(PermissionsAbstract):
         if all_template_folders is not None:
             self.folder_permissions.all_template_folders = all_template_folders
             self.folder_permissions.choices = [
-                (item['id'], item['name']) for item in ([{'name': 'Templates', 'id': None}] + all_template_folders)
+                (item['id'], item['name']) for item in ([{'name': _l('Templates'), 'id': None}] + all_template_folders)
             ]
 
-    folder_permissions = NestedCheckboxesField('Folders this team member can see')
+    folder_permissions = NestedCheckboxesField(_l('Folders this team member can see'))
 
     login_authentication = RadioField(
-        'Sign in using',
+        _l('Sign in using'),
         choices=[
-            ('sms_auth', 'Text message code'),
-            ('email_auth', 'Email link'),
+            ('sms_auth', _l('Text message code')),
+            ('email_auth', _l('Email link')),
         ],
         validators=[DataRequired()]
     )

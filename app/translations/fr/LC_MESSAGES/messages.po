@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-05 12:34-0500\n"
+"POT-Creation-Date: 2019-11-05 14:05-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -95,10 +95,28 @@ msgstr "Entrez votre mot de passe"
 msgid "Full name"
 msgstr "FR Full name"
 
-# French translations for PROJECT.
-# Copyright (C) 2019 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2019
+#: app/main/forms.py:434 app/templates/components/folder-path.html:25
+#: app/templates/main_nav.html:10
+msgid "Templates"
+msgstr "Modèles"
+
+#: app/main/forms.py:437
+msgid "Folders this team member can see"
+msgstr "FR Folders this team member can see"
+
+#: app/main/forms.py:440
+msgid "Sign in using"
+msgstr "FR Sign in using"
+
+#: app/main/forms.py:442 app/templates/views/service-settings.html:44
+#: app/templates/views/service-settings/set-auth-type.html:31
+msgid "Text message code"
+msgstr "Code par message texte"
+
+#: app/main/forms.py:443
+msgid "Email link"
+msgstr "FR Email link"
+
 #: app/main/forms.py:501
 msgid "Please enter security code"
 msgstr "Veuillez entrer le code de sécurité."
@@ -209,11 +227,11 @@ msgstr "messages textes"
 msgid "letters"
 msgstr "lettres"
 
-#: app/main/forms.py:1118
+#: app/main/forms.py:1119
 msgid "Email addresses"
 msgstr "FR Email addresses"
 
-#: app/main/forms.py:1131
+#: app/main/forms.py:1132
 msgid "Mobile numbers"
 msgstr "FR Mobile numbers"
 
@@ -385,6 +403,10 @@ msgstr "FR financial year"
 msgid "to"
 msgstr "à"
 
+#: app/main/views/manage_users.py:70
+msgid "Invite sent to"
+msgstr ""
+
 #: app/main/views/send.py:765
 msgid "Personalise this message"
 msgstr "FR Personalise this message"
@@ -522,10 +544,6 @@ msgstr "Oui"
 #: app/templates/views/dashboard/dashboard.html:17
 msgid "Dashboard"
 msgstr "Tableau de bord"
-
-#: app/templates/components/folder-path.html:25 app/templates/main_nav.html:10
-msgid "Templates"
-msgstr "Modèles"
 
 #: app/templates/main_nav.html:14
 msgid "Uploaded files"
@@ -733,10 +751,6 @@ msgstr "Soumettre"
 msgid "Services"
 msgstr "Services"
 
-#: app/templates/components/list-entry.html:31
-msgid "number"
-msgstr "nombre"
-
 #: app/templates/components/message-count-label.html:4
 msgid "message"
 msgstr "message"
@@ -767,6 +781,7 @@ msgstr "destinataires"
 
 #: app/templates/components/message-count-label.html:40
 #: app/templates/partials/check/too-many-messages.html:26
+#: app/templates/views/api/safelist.html:61
 msgid "phone number"
 msgstr "numéro de téléphone"
 
@@ -777,6 +792,7 @@ msgstr "numéros de téléphone"
 
 #: app/templates/components/message-count-label.html:46
 #: app/templates/partials/check/too-many-messages.html:24
+#: app/templates/views/api/safelist.html:55
 msgid "email address"
 msgstr "adresse courriel"
 
@@ -1484,6 +1500,7 @@ msgstr "Vos destinataires ne verront pas ceci :"
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:37
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:35
+#: app/templates/views/api/safelist.html:68
 #: app/templates/views/edit-email-template.html:32
 #: app/templates/views/edit-letter-template.html:20
 #: app/templates/views/edit-sms-template.html:33
@@ -2302,11 +2319,6 @@ msgstr "Méthode de connexion"
 #: app/templates/views/service-settings/set-auth-type.html:21
 msgid "Email link or text message code"
 msgstr "Lien courriel ou code par message texte"
-
-#: app/templates/views/service-settings.html:44
-#: app/templates/views/service-settings/set-auth-type.html:31
-msgid "Text message code"
-msgstr "Code par message texte"
 
 #: app/templates/views/service-settings.html:60
 msgid "Contact details"
@@ -3184,6 +3196,7 @@ msgstr "Clés API"
 
 #: app/templates/views/api/index.html:22
 #: app/templates/views/api/safelist.html:11
+#: app/templates/views/api/safelist.html:37
 msgid "Safelist"
 msgstr "Liste de confiance"
 
