@@ -1116,7 +1116,7 @@ class Whitelist(StripWhitespaceForm):
         ),
         min_entries=5,
         max_entries=5,
-        label="Email addresses"
+        label=_l("Email addresses")
     )
 
     phone_numbers = FieldList(
@@ -1129,7 +1129,7 @@ class Whitelist(StripWhitespaceForm):
         ),
         min_entries=5,
         max_entries=5,
-        label="Mobile numbers"
+        label=_l("Mobile numbers")
     )
 
 

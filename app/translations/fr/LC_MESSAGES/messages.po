@@ -193,7 +193,15 @@ msgstr "messages textes"
 msgid "letters"
 msgstr "lettres"
 
-#: app/main/forms.py:1149
+#: app/main/forms.py:1118
+msgid "Email addresses"
+msgstr "FR Email addresses"
+
+#: app/main/forms.py:1131
+msgid "Mobile numbers"
+msgstr "FR Mobile numbers"
+
+#: app/main/forms.py:1150
 msgid "Search by name"
 msgstr "Recherche par nom"
 
@@ -250,6 +258,10 @@ msgstr "Entrez une adresse courriel valide"
 #: app/main/views/add_service.py:54 app/templates/views/add-service.html:23
 msgid "Name your service in both official languages"
 msgstr "FR Name your service in both official languages"
+
+#: app/main/views/api_keys.py:65
+msgid "Safelist updated"
+msgstr "FR Safelist updated"
 
 #: app/main/views/api_keys.py:88 app/templates/views/api/keys.html:40
 msgid "Live – sends to anyone"
@@ -624,6 +636,24 @@ msgstr "FR Copy"
 #: app/templates/main_template.html:78
 msgid "to clipboard"
 msgstr "FR to clipboard"
+
+#: app/templates/main_template.html:79
+msgid "Add another"
+msgstr "FR Add another"
+
+#: app/templates/components/list-entry.html:31
+#: app/templates/main_template.html:80
+msgid "number"
+msgstr "FR number"
+
+#: app/templates/main_template.html:81
+msgid "remaining"
+msgstr "FR remaining"
+
+#: app/templates/main_template.html:82
+#: app/templates/views/user-profile/security-keys.html:40
+msgid "Remove"
+msgstr "Retirer"
 
 #: app/templates/org_template.html:16
 #: app/templates/views/organisations/add-organisation.html:16
@@ -4029,10 +4059,6 @@ msgstr "Un indice pour vous aider à vous rappeler du nom de votre clé"
 #: app/templates/views/user-profile/add-security-keys.html:25
 msgid "Add key"
 msgstr "Ajouter une clé"
-
-#: app/templates/views/user-profile/security-keys.html:40
-msgid "Remove"
-msgstr "Retirer"
 
 #: app/templates/views/user-profile/security-keys.html:54
 msgid "New security key"

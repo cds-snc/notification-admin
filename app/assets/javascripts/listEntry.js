@@ -28,7 +28,7 @@
   ListEntry.prototype.entryTemplate = Hogan.compile(
     '<div class="list-entry">' +
       '<label for="{{{id}}}" class="text-box-number-label">' +
-        '<span class="visuallyhidden">{{listItemName}} number </span>{{number}}.' +
+        '<span class="visuallyhidden">{{listItemName}} {{numberTranslation}} </span>{{number}}.' +
       '</label>' +
       '<input' +
         ' name="{{name}}-{{index}}"' +
@@ -38,13 +38,13 @@
       '/>' +
       '{{#button}}' +
         '<button type="button" class="button-secondary list-entry-remove">' +
-          'Remove<span class="visuallyhidden"> {{listItemName}} number {{number}}</span>' +
+          '{{removeTranslation}}<span class="visuallyhidden"> {{listItemName}} {{numberTranslation}} {{number}}</span>' +
         '</button>' +
       '{{/button}}' +
     '</div>'
   );
   ListEntry.prototype.addButtonTemplate = Hogan.compile(
-    '<button type="button" class="button-secondary list-entry-add">Add another {{listItemName}} ({{entriesLeft}} remaining)</button>'
+    '<button type="button" class="button-secondary list-entry-add">{{addAnotherTranslation}} {{listItemName}} ({{entriesLeft}} {{remainingTranslation}})</button>'
   );
   ListEntry.prototype.getSharedAttributes = function () {
     var $inputs = this.$wrapper.find('input'),
@@ -182,7 +182,11 @@
             'name' : this.getId(),
             'value' : entry,
             'listItemName' : this.listItemName,
-            'sharedAttributes': this.sharedAttributes
+            'sharedAttributes': this.sharedAttributes,
+            'addAnotherTranslation': window.polyglot.t("add_another"),
+            'numberTranslation': window.polyglot.t("number"),
+            'removeTranslation': window.polyglot.t("remove"),
+            'remainingTranslation': window.polyglot.t("remaining")
           };
 
       if (entryNumber > 1) {
@@ -193,7 +197,11 @@
     if (this.entries.length < this.maxEntries) {
       this.$wrapper.append(this.addButtonTemplate.render({
         'listItemName' : this.listItemName,
-        'entriesLeft' : (this.maxEntries - this.entries.length)
+        'entriesLeft' : (this.maxEntries - this.entries.length),
+        'addAnotherTranslation': window.polyglot.t("add_another"),
+        'numberTranslation': window.polyglot.t("number"),
+        'removeTranslation': window.polyglot.t("remove"),
+        'remainingTranslation': window.polyglot.t("remaining")
       }));
     }
   };
