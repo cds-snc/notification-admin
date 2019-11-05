@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-05 12:01-0700\n"
+"POT-Creation-Date: 2019-11-05 15:27-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -71,10 +71,10 @@ msgstr "Adresse courriel"
 #: app/main/forms.py:415 app/main/forms.py:525 app/main/forms.py:533
 #: app/main/forms.py:552 app/main/forms.py:568 app/main/forms.py:597
 #: app/main/forms.py:613 app/main/forms.py:632 app/main/forms.py:652
-#: app/main/forms.py:657 app/main/forms.py:815 app/main/forms.py:930
-#: app/main/forms.py:1218 app/main/forms.py:1223 app/main/forms.py:1231
-#: app/main/forms.py:1236 app/main/forms.py:1286 app/main/forms.py:1393
-#: app/main/forms.py:1404 app/main/forms.py:1569
+#: app/main/forms.py:657 app/main/forms.py:680 app/main/forms.py:815
+#: app/main/forms.py:930 app/main/forms.py:1218 app/main/forms.py:1223
+#: app/main/forms.py:1231 app/main/forms.py:1236 app/main/forms.py:1286
+#: app/main/forms.py:1393 app/main/forms.py:1404 app/main/forms.py:1569
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
 
@@ -123,6 +123,25 @@ msgstr "Nom du modèle"
 #: app/main/views/dashboard.py:215 app/templates/views/signedout.html:135
 msgid "Message"
 msgstr "Message"
+
+#: app/main/forms.py:662
+msgid "Use priority queue?"
+msgstr "FR Use priority queue?"
+
+#: app/main/forms.py:664 app/templates/flash_messages.html:6
+#: app/templates/views/service-settings.html:294
+#: app/templates/views/user-profile.html:70
+msgid "Yes"
+msgstr "Oui"
+
+#: app/main/forms.py:665 app/templates/views/service-settings.html:295
+#: app/templates/views/user-profile.html:71
+msgid "No"
+msgstr "Non"
+
+#: app/main/forms.py:679
+msgid "Subject"
+msgstr "FR Subject"
 
 #: app/main/forms.py:788
 msgid "Type of key"
@@ -189,10 +208,6 @@ msgstr "FR On"
 #: app/main/forms.py:1256 app/templates/components/table.html:135
 msgid "Off"
 msgstr "FR Off"
-
-#: app/main/forms.py:997 app/templates/views/check/ok.html:42
-msgid "Send"
-msgstr "Envoyer"
 
 #: app/main/forms.py:998 app/templates/components/message-count-label.html:19
 #: app/templates/views/features.html:15
@@ -522,12 +537,6 @@ msgstr "Sécurité"
 #: app/templates/admin_template.html:107
 msgid "research mode"
 msgstr "mode de recherche"
-
-#: app/templates/flash_messages.html:6
-#: app/templates/views/service-settings.html:294
-#: app/templates/views/user-profile.html:70
-msgid "Yes"
-msgstr "Oui"
 
 #: app/templates/main_nav.html:7
 #: app/templates/views/dashboard/dashboard.html:10
@@ -1289,8 +1298,8 @@ msgid ""
 "You’ll need to provide a bearer token, for security. We’ll add this to "
 "the authorisation header of the callback request."
 msgstr ""
-"FR You’ll need to provide a bearer token, for security. We’ll add this to "
-"the authorisation header of the callback request."
+"FR You’ll need to provide a bearer token, for security. We’ll add this to"
+" the authorisation header of the callback request."
 
 #: app/templates/views/callbacks.html:16
 msgid "The callback message is in JSON."
@@ -1306,9 +1315,9 @@ msgid ""
 "a receipt to your callback URL to tell you if we were able to deliver it "
 "or not."
 msgstr ""
-"FR When you send an email or text message through Notification, we can send "
-"a receipt to your callback URL to tell you if we were able to deliver it "
-"or not."
+"FR When you send an email or text message through Notification, we can "
+"send a receipt to your callback URL to tell you if we were able to "
+"deliver it or not."
 
 #: app/templates/views/callbacks.html:23 app/templates/views/callbacks.html:51
 #: app/templates/views/user-profile/add-security-keys.html:19
@@ -1361,8 +1370,8 @@ msgid ""
 "If your service receives text messages in Notification, we can forward "
 "them to your callback URL as soon as they arrive."
 msgstr ""
-"FR If your service receives text messages in Notification, we can forward "
-"them to your callback URL as soon as they arrive."
+"FR If your service receives text messages in Notification, we can forward"
+" them to your callback URL as soon as they arrive."
 
 #: app/templates/views/callbacks.html:50
 msgid "Callback message format"
@@ -1593,26 +1602,23 @@ msgid "Direct connection to API"
 msgstr ""
 
 #: app/templates/views/edit-email-template.html:9
+#: app/templates/views/edit-email-template.html:14
 msgid "email template"
 msgstr "modèle de courriel"
 
-#: app/templates/views/edit-email-template.html:13
-msgid "{} email template"
-msgstr ""
-
-#: app/templates/views/edit-email-template.html:23
+#: app/templates/views/edit-email-template.html:22
 #: app/templates/views/edit-sms-template.html:21
 msgid "Formatting Guide"
 msgstr "Guide de mise en forme"
 
-#: app/templates/views/edit-email-template.html:25
+#: app/templates/views/edit-email-template.html:24
 msgid "Your recipients won’t see this:"
 msgstr "Vos destinataires ne verront pas ceci :"
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:37
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:35
 #: app/templates/views/api/safelist.html:68
-#: app/templates/views/edit-email-template.html:32
+#: app/templates/views/edit-email-template.html:31
 #: app/templates/views/edit-letter-template.html:20
 #: app/templates/views/edit-sms-template.html:33
 #: app/templates/views/manage-users/edit-user-email.html:21
@@ -2569,11 +2575,6 @@ msgstr "Non (les organisations doivent être définies d'abord)"
 #: app/templates/views/service-settings.html:293
 msgid "Count in list of live services"
 msgstr "Compte dans la liste de services en fonction"
-
-#: app/templates/views/service-settings.html:295
-#: app/templates/views/user-profile.html:71
-msgid "No"
-msgstr "Non"
 
 #: app/templates/views/service-settings.html:302
 msgid "Organisation"
@@ -3567,6 +3568,12 @@ msgstr "Ne montre que les rangées avec des erreurs"
 msgid "Preview of"
 msgstr "Aperçu de"
 
+#: app/templates/views/check/ok.html:42
+#: app/templates/views/templates/_template.html:21
+#: app/templates/views/templates/_template.html:29
+msgid "Send"
+msgstr "Envoyer"
+
 #: app/templates/views/check/ok.html:44
 msgid "Download as a PDF"
 msgstr "Télécharger comme PDF"
@@ -4164,6 +4171,10 @@ msgstr "Si vous avez besoin de l’envoyer"
 msgid "or edit this template, contact your manager."
 msgstr "ou de modifier ce modèle, communiquez avec votre gestionnaire."
 
+#: app/templates/views/templates/_template.html:36
+msgid "Edit"
+msgstr "FR Edit"
+
 #: app/templates/views/templates/_template_history.html:5
 msgid "Edit made"
 msgstr "Modification réalisée"
@@ -4682,4 +4693,7 @@ msgstr "Clés d’essai"
 #~ msgstr ""
 #~ "FR Your team members can sign in with either a text message code\n"
 #~ "          or an email link."
+
+#~ msgid "New"
+#~ msgstr "FR New"
 

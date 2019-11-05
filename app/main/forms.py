@@ -659,10 +659,10 @@ class BaseTemplateForm(StripWhitespaceForm):
         ]
     )
     process_type = RadioField(
-        'Use priority queue?',
+        _l('Use priority queue?'),
         choices=[
-            ('priority', 'Yes'),
-            ('normal', 'No'),
+            ('priority', _l('Yes')),
+            ('normal', _l('No')),
         ],
         validators=[DataRequired()],
         default='normal'
@@ -676,8 +676,8 @@ class SMSTemplateForm(BaseTemplateForm):
 
 class EmailTemplateForm(BaseTemplateForm):
     subject = TextAreaField(
-        u'Subject',
-        validators=[DataRequired(message="Can’t be empty")])
+        _l(u'Subject'),
+        validators=[DataRequired(message=_l("Can’t be empty"))])
 
 
 class LetterTemplateForm(EmailTemplateForm):
