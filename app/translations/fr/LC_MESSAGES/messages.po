@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-05 12:34-0500\n"
+"POT-Creation-Date: 2019-11-05 12:01-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -209,11 +209,11 @@ msgstr "messages textes"
 msgid "letters"
 msgstr "lettres"
 
-#: app/main/forms.py:1118
+#: app/main/forms.py:1119
 msgid "Email addresses"
 msgstr "FR Email addresses"
 
-#: app/main/forms.py:1131
+#: app/main/forms.py:1132
 msgid "Mobile numbers"
 msgstr "FR Mobile numbers"
 
@@ -232,6 +232,18 @@ msgstr "Recherche par adresse courriel"
 #: app/main/forms.py:1176
 msgid "Search by phone number"
 msgstr "Recherche par numéro de téléphone"
+
+#: app/main/forms.py:1219 app/main/forms.py:1232
+msgid "Must be a valid https URL"
+msgstr ""
+
+#: app/main/forms.py:1222 app/main/forms.py:1235
+msgid "Bearer token"
+msgstr ""
+
+#: app/main/forms.py:1224 app/main/forms.py:1237
+msgid "Must be at least 10 characters"
+msgstr ""
 
 #: app/main/forms.py:1243
 msgid "Send text messages to international phone numbers"
@@ -733,10 +745,6 @@ msgstr "Soumettre"
 msgid "Services"
 msgstr "Services"
 
-#: app/templates/components/list-entry.html:31
-msgid "number"
-msgstr "nombre"
-
 #: app/templates/components/message-count-label.html:4
 msgid "message"
 msgstr "message"
@@ -767,6 +775,7 @@ msgstr "destinataires"
 
 #: app/templates/components/message-count-label.html:40
 #: app/templates/partials/check/too-many-messages.html:26
+#: app/templates/views/api/safelist.html:61
 msgid "phone number"
 msgstr "numéro de téléphone"
 
@@ -777,6 +786,7 @@ msgstr "numéros de téléphone"
 
 #: app/templates/components/message-count-label.html:46
 #: app/templates/partials/check/too-many-messages.html:24
+#: app/templates/views/api/safelist.html:55
 msgid "email address"
 msgstr "adresse courriel"
 
@@ -1095,6 +1105,7 @@ msgid "Content on page 2"
 msgstr "Contenu de la page 2"
 
 #: app/templates/partials/templates/guidance-formatting.html:1
+#: app/templates/views/callbacks.html:23 app/templates/views/callbacks.html:51
 msgid "Format"
 msgstr "Mise en forme"
 
@@ -1260,6 +1271,122 @@ msgstr "Vous pouvez changer cela plus tard."
 #: app/templates/views/add-service.html:53
 msgid "Add service"
 msgstr "Ajouter un service"
+
+#: app/templates/views/callbacks.html:5 app/templates/views/callbacks.html:13
+msgid "Callback documentation"
+msgstr "Documentation des rappels"
+
+#: app/templates/views/callbacks.html:14
+msgid ""
+"A callback lets you receive messages from Notification to a URL you "
+"choose."
+msgstr ""
+"FR A callback lets you receive messages from Notification to a URL you "
+"choose."
+
+#: app/templates/views/callbacks.html:15
+msgid ""
+"You’ll need to provide a bearer token, for security. We’ll add this to "
+"the authorisation header of the callback request."
+msgstr ""
+"FR You’ll need to provide a bearer token, for security. We’ll add this to "
+"the authorisation header of the callback request."
+
+#: app/templates/views/callbacks.html:16
+msgid "The callback message is in JSON."
+msgstr "FR The callback message is in JSON."
+
+#: app/templates/views/callbacks.html:18
+msgid "Email and text message delivery receipts"
+msgstr "FR Email and text message delivery receipts"
+
+#: app/templates/views/callbacks.html:19
+msgid ""
+"When you send an email or text message through Notification, we can send "
+"a receipt to your callback URL to tell you if we were able to deliver it "
+"or not."
+msgstr ""
+"FR When you send an email or text message through Notification, we can send "
+"a receipt to your callback URL to tell you if we were able to deliver it "
+"or not."
+
+#: app/templates/views/callbacks.html:23 app/templates/views/callbacks.html:51
+#: app/templates/views/user-profile/add-security-keys.html:19
+msgid "Key"
+msgstr "Clé"
+
+#: app/templates/views/callbacks.html:23 app/templates/views/callbacks.html:51
+#: app/templates/views/message-status.html:26
+msgid "Description"
+msgstr "Description"
+
+#: app/templates/views/callbacks.html:28
+msgid "Notification’s id for the status receipts"
+msgstr "FR Notification’s id for the status receipts"
+
+#: app/templates/views/callbacks.html:29
+msgid "The reference sent by the service"
+msgstr "FR The reference sent by the service"
+
+#: app/templates/views/callbacks.html:30
+msgid "The email address of the recipient"
+msgstr "FR The email address of the recipient"
+
+#: app/templates/views/callbacks.html:31
+msgid "The status of the notification"
+msgstr "FR The status of the notification"
+
+#: app/templates/views/callbacks.html:32
+msgid "The time the service sent the request"
+msgstr "FR The time the service sent the request"
+
+#: app/templates/views/callbacks.html:33
+msgid "The last time the status was updated"
+msgstr "FR The last time the status was updated"
+
+#: app/templates/views/callbacks.html:34
+msgid "The time the notification was sent"
+msgstr "FR The time the notification was sent"
+
+#: app/templates/views/callbacks.html:35
+msgid "The notification type"
+msgstr "FR The notification type"
+
+#: app/templates/views/callbacks.html:46
+msgid "Text messages you receive"
+msgstr "FR Text messages you receive"
+
+#: app/templates/views/callbacks.html:47
+msgid ""
+"If your service receives text messages in Notification, we can forward "
+"them to your callback URL as soon as they arrive."
+msgstr ""
+"FR If your service receives text messages in Notification, we can forward "
+"them to your callback URL as soon as they arrive."
+
+#: app/templates/views/callbacks.html:50
+msgid "Callback message format"
+msgstr "FR Callback message format"
+
+#: app/templates/views/callbacks.html:56
+msgid "Notification’s id for the received message"
+msgstr "FR Notification’s id for the received message"
+
+#: app/templates/views/callbacks.html:57
+msgid "The phone number the message was sent from"
+msgstr "FR The phone number the message was sent from"
+
+#: app/templates/views/callbacks.html:58
+msgid "The number the message was sent to (your number)"
+msgstr "FR The number the message was sent to (your number)"
+
+#: app/templates/views/callbacks.html:59
+msgid "The received message"
+msgstr "FR The received message"
+
+#: app/templates/views/callbacks.html:60
+msgid "The UTC datetime that the message was received by Notification"
+msgstr "FR The UTC datetime that the message was received by Notification"
 
 #: app/templates/views/cancelled-invitation.html:2
 msgid "Invitation has been cancelled"
@@ -1484,6 +1611,7 @@ msgstr "Vos destinataires ne verront pas ceci :"
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:37
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:35
+#: app/templates/views/api/safelist.html:68
 #: app/templates/views/edit-email-template.html:32
 #: app/templates/views/edit-letter-template.html:20
 #: app/templates/views/edit-sms-template.html:33
@@ -1917,10 +2045,6 @@ msgstr "Courriels"
 #: app/templates/views/message-status.html:24
 msgid "Message statuses – emails"
 msgstr "États des messages - courriels"
-
-#: app/templates/views/message-status.html:26
-msgid "Description"
-msgstr "Description"
 
 #: app/templates/views/message-status.html:35
 msgid "Notification has sent the message to the email provider."
@@ -3184,6 +3308,7 @@ msgstr "Clés API"
 
 #: app/templates/views/api/index.html:22
 #: app/templates/views/api/safelist.html:11
+#: app/templates/views/api/safelist.html:37
 msgid "Safelist"
 msgstr "Liste de confiance"
 
@@ -4105,10 +4230,6 @@ msgstr ""
 #: app/templates/views/templates/template.html:79
 msgid "Personalisation is hidden after sending"
 msgstr "La personnalisation est masquée après l’envoi."
-
-#: app/templates/views/user-profile/add-security-keys.html:19
-msgid "Key"
-msgstr "Clé"
 
 #: app/templates/views/user-profile/add-security-keys.html:23
 msgid "Something to remember your key by"
