@@ -1,4 +1,5 @@
 from flask import Markup, abort, current_app
+from flask_babel import _
 from notifications_utils.field import Field
 from notifications_utils.formatters import nl2br
 from notifications_utils.take import Take
@@ -281,8 +282,9 @@ class Service(JSONModel):
 
         def attach_hint(sender):
             hints = []
+            default_txt = _("default")
             if sender['is_default']:
-                hints += ["default"]
+                hints += [default_txt]
             if sender['inbound_number_id']:
                 hints += ["receives replies"]
             if hints:

@@ -925,16 +925,16 @@ class ServiceReplyToEmailForm(StripWhitespaceForm):
 
 class ServiceSmsSenderForm(StripWhitespaceForm):
     sms_sender = StringField(
-        'Text message sender',
+        _l('Text message sender'),
         validators=[
-            DataRequired(message="Can’t be empty"),
-            Length(max=11, message="Enter 11 characters or fewer"),
-            Length(min=4, message="Enter 4 characters or more"),
+            DataRequired(message=_l("Can’t be empty")),
+            Length(max=11, message=_l("Enter 11 characters or fewer")),
+            Length(min=4, message=_l("Enter 4 characters or more")),
             LettersNumbersAndFullStopsOnly(),
             DoesNotStartWithDoubleZero(),
         ]
     )
-    is_default = BooleanField("Make this text message sender the default")
+    is_default = BooleanField(_l("Make this text message sender the default"))
 
 
 class ServiceEditInboundNumberForm(StripWhitespaceForm):
@@ -1240,10 +1240,10 @@ class ServiceDeliveryStatusCallbackForm(CallbackForm):
 
 class InternationalSMSForm(StripWhitespaceForm):
     enabled = RadioField(
-        'Send text messages to international phone numbers',
+        _l('Send text messages to international phone numbers'),
         choices=[
-            ('on', 'On'),
-            ('off', 'Off'),
+            ('on', _l('On')),
+            ('off', _l('Off')),
         ],
     )
 
@@ -1252,8 +1252,8 @@ class SMSPrefixForm(StripWhitespaceForm):
     enabled = RadioField(
         '',
         choices=[
-            ('on', 'On'),
-            ('off', 'Off'),
+            ('on', _l('On')),
+            ('off', _l('Off')),
         ],
     )
 

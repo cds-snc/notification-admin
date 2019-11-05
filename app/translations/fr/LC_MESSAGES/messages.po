@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-05 10:15-0500\n"
+"POT-Creation-Date: 2019-11-05 12:34-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -71,10 +71,10 @@ msgstr "Adresse courriel"
 #: app/main/forms.py:415 app/main/forms.py:525 app/main/forms.py:533
 #: app/main/forms.py:552 app/main/forms.py:568 app/main/forms.py:597
 #: app/main/forms.py:613 app/main/forms.py:632 app/main/forms.py:652
-#: app/main/forms.py:657 app/main/forms.py:815 app/main/forms.py:1217
-#: app/main/forms.py:1222 app/main/forms.py:1230 app/main/forms.py:1235
-#: app/main/forms.py:1285 app/main/forms.py:1392 app/main/forms.py:1403
-#: app/main/forms.py:1568
+#: app/main/forms.py:657 app/main/forms.py:815 app/main/forms.py:930
+#: app/main/forms.py:1218 app/main/forms.py:1223 app/main/forms.py:1231
+#: app/main/forms.py:1236 app/main/forms.py:1286 app/main/forms.py:1393
+#: app/main/forms.py:1404 app/main/forms.py:1569
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
 
@@ -164,32 +164,48 @@ msgstr "FR Reply-to email address"
 msgid "Make this email address the default"
 msgstr ""
 
-#: app/main/forms.py:963 app/main/forms.py:980
-#: app/templates/components/table.html:134
+#: app/main/forms.py:928
+msgid "Text message sender"
+msgstr "FR Text message sender"
+
+#: app/main/forms.py:931
+msgid "Enter 11 characters or fewer"
+msgstr "FR Enter 11 characters or fewer"
+
+#: app/main/forms.py:932
+msgid "Enter 4 characters or more"
+msgstr "FR Enter 4 characters or more"
+
+#: app/main/forms.py:937
+msgid "Make this text message sender the default"
+msgstr "FR Make this text message sender the default"
+
+#: app/main/forms.py:964 app/main/forms.py:981 app/main/forms.py:1245
+#: app/main/forms.py:1255 app/templates/components/table.html:134
 msgid "On"
 msgstr "FR On"
 
-#: app/main/forms.py:964 app/main/forms.py:983
-#: app/templates/components/table.html:135
+#: app/main/forms.py:965 app/main/forms.py:984 app/main/forms.py:1246
+#: app/main/forms.py:1256 app/templates/components/table.html:135
 msgid "Off"
 msgstr "FR Off"
 
-#: app/main/forms.py:996 app/templates/views/check/ok.html:42
+#: app/main/forms.py:997 app/templates/views/check/ok.html:42
 msgid "Send"
 msgstr "Envoyer"
 
-#: app/main/forms.py:997 app/templates/components/message-count-label.html:19
+#: app/main/forms.py:998 app/templates/components/message-count-label.html:19
 #: app/templates/views/features.html:15
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "emails"
 msgstr "courriels"
 
-#: app/main/forms.py:998 app/templates/components/message-count-label.html:13
+#: app/main/forms.py:999 app/templates/components/message-count-label.html:13
 #: app/templates/views/features.html:16
 msgid "text messages"
 msgstr "messages textes"
 
-#: app/main/forms.py:999 app/templates/components/message-count-label.html:25
+#: app/main/forms.py:1000 app/templates/components/message-count-label.html:25
 msgid "letters"
 msgstr "lettres"
 
@@ -205,49 +221,53 @@ msgstr "FR Mobile numbers"
 msgid "Search by name"
 msgstr "Recherche par nom"
 
-#: app/main/forms.py:1157 app/main/forms.py:1166
+#: app/main/forms.py:1158 app/main/forms.py:1167
 msgid "Search by name or email address"
 msgstr "Recherche par nom ou par adresse courriel"
 
-#: app/main/forms.py:1174
+#: app/main/forms.py:1175
 msgid "Search by email address"
 msgstr "Recherche par adresse courriel"
 
-#: app/main/forms.py:1175
+#: app/main/forms.py:1176
 msgid "Search by phone number"
 msgstr "Recherche par numéro de téléphone"
 
-#: app/main/forms.py:1392 app/main/forms.py:1494 app/main/forms.py:1495
+#: app/main/forms.py:1243
+msgid "Send text messages to international phone numbers"
+msgstr "FR Send text messages to international phone numbers"
+
+#: app/main/forms.py:1393 app/main/forms.py:1495 app/main/forms.py:1496
 msgid "Folder name"
 msgstr "Nom du dossier"
 
-#: app/main/forms.py:1453 app/main/views/templates.py:192
+#: app/main/forms.py:1454 app/main/views/templates.py:192
 msgid "Email"
 msgstr "Courriel"
 
-#: app/main/forms.py:1454 app/main/views/templates.py:191
+#: app/main/forms.py:1455 app/main/views/templates.py:191
 msgid "Text message"
 msgstr "Message texte"
 
-#: app/main/forms.py:1455 app/main/views/templates.py:193
+#: app/main/forms.py:1456 app/main/views/templates.py:193
 #: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
 msgstr "Lettre"
 
-#: app/main/forms.py:1456 app/templates/views/templates/copy.html:7
+#: app/main/forms.py:1457 app/templates/views/templates/copy.html:7
 #: app/templates/views/templates/copy.html:13
 msgid "Copy an existing template"
 msgstr "Copier un modèle existant"
 
-#: app/main/forms.py:1488
+#: app/main/forms.py:1489
 msgid "Choose a folder"
 msgstr "Choisir un dossier"
 
-#: app/main/forms.py:1497 app/templates/main_template.html:52
+#: app/main/forms.py:1498 app/templates/main_template.html:52
 msgid "New template"
 msgstr "Nouveau modèle"
 
-#: app/main/forms.py:1500
+#: app/main/forms.py:1501
 msgid "Select the type of template you want to add"
 msgstr "Sélectionnez le type de modèle que vous voulez ajouter"
 
@@ -375,6 +395,10 @@ msgstr "FR Personalise this message"
 msgid "Change your service name"
 msgstr "FR Change your service name"
 
+#: app/main/views/service_settings.py:610
+msgid "Start all text messages with"
+msgstr "FR Start all text messages with"
+
 #: app/main/views/sign_in.py:50
 msgid "The email address or password you entered is incorrect."
 msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact."
@@ -416,6 +440,11 @@ msgstr "Gérer les paramètres et les équipes"
 #: app/models/roles_and_permissions.py:27
 msgid "Manage API integration"
 msgstr "Gérer l’intégration de l’interface de programmation d’applications (API)"
+
+#: app/models/service.py:285 app/templates/views/service-settings.html:168
+#: app/templates/views/service-settings/email_reply_to.html:31
+msgid "default"
+msgstr "Par défaut"
 
 #: app/models/template_list.py:135
 msgid "Email template"
@@ -1465,6 +1494,8 @@ msgstr "Vos destinataires ne verront pas ceci :"
 #: app/templates/views/service-settings/set-email.html:23
 #: app/templates/views/service-settings/set-international-sms.html:23
 #: app/templates/views/service-settings/set-sms.html:26
+#: app/templates/views/service-settings/sms-prefix.html:8
+#: app/templates/views/service-settings/sms-sender/edit.html:11
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -2225,6 +2256,7 @@ msgstr "Votre fichier remplira ce modèle"
 
 #: app/templates/views/service-settings.html:9
 #: app/templates/views/service-settings/email_reply_to.html:36
+#: app/templates/views/service-settings/sms-senders.html:38
 #: app/templates/views/user-profile.html:11
 msgid "Change"
 msgstr "Modifier"
@@ -2324,15 +2356,12 @@ msgid "Send text messages"
 msgstr "Envoyer des messages textes"
 
 #: app/templates/views/service-settings.html:167
+#: app/templates/views/service-settings/sms-senders.html:8
 msgid "Text message senders"
 msgstr "Expéditeurs de messages textes"
 
-#: app/templates/views/service-settings.html:168
-#: app/templates/views/service-settings/email_reply_to.html:31
-msgid "default"
-msgstr "Par défaut"
-
 #: app/templates/views/service-settings.html:189
+#: app/templates/views/service-settings/sms-prefix.html:7
 msgid "Start text messages with service name"
 msgstr "Commencer les messages textes avec le nom du service"
 
@@ -3912,6 +3941,18 @@ msgstr ""
 "messages textes gratuits par\n"
 "        exercice financier."
 
+#: app/templates/views/service-settings/sms-senders.html:23
+msgid "You haven’t added any text message senders yet"
+msgstr "FR You haven’t added any text message senders yet"
+
+#: app/templates/views/service-settings/sms-senders.html:50
+msgid "Add text message sender"
+msgstr "FR Add text message sender"
+
+#: app/templates/views/service-settings/sms-senders.html:55
+msgid "The text message sender tells your users who the message is from."
+msgstr "FR The text message sender tells your users who the message is from"
+
 #: app/templates/views/service-settings/branding/manage-email-branding.html:9
 #: app/templates/views/service-settings/branding/manage-email-branding.html:15
 msgid "Update email branding"
@@ -3927,14 +3968,6 @@ msgstr ""
 msgid "Upload logo"
 msgstr ""
 
-#: app/templates/views/service-settings/email-reply-to/edit.html:8
-msgid "Change reply-to email address"
-msgstr "FR Change reply-to email address"
-
-#: app/templates/views/service-settings/email-reply-to/edit.html:10
-msgid "Delete"
-msgstr "FR Delete"
-
 #: app/templates/views/service-settings/email-reply-to/add.html:23
 #: app/templates/views/service-settings/email-reply-to/edit.html:16
 msgid ""
@@ -3948,9 +3981,34 @@ msgstr ""
 msgid "Add"
 msgstr "FR Add"
 
+#: app/templates/views/service-settings/email-reply-to/edit.html:8
+msgid "Change reply-to email address"
+msgstr "FR Change reply-to email address"
+
+#: app/templates/views/service-settings/email-reply-to/edit.html:10
+#: app/templates/views/service-settings/sms-sender/edit.html:12
+msgid "Delete"
+msgstr "FR Delete"
+
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "This is the default reply-to address for"
 msgstr "FR This is the default reply-to address for"
+
+#: app/templates/views/service-settings/sms-sender/edit.html:10
+msgid "Change text message sender"
+msgstr "FR Change text message sender"
+
+#: app/templates/views/service-settings/sms-sender/edit.html:28
+msgid "This phone number receives replies and can’t be changed"
+msgstr "FR This phone number receives replies and can’t be changed"
+
+#: app/templates/views/service-settings/sms-sender/edit.html:34
+msgid "Up to 11 characters, letters, numbers and spaces only"
+msgstr "FR Up to 11 characters, letters, numbers and spaces only"
+
+#: app/templates/views/service-settings/sms-sender/edit.html:39
+msgid "This is the default text message sender."
+msgstr "FR This is the default text message sender."
 
 #: app/templates/views/support/ask-question-give-feedback.html:20
 msgid "Do you want a reply?"

@@ -4,21 +4,23 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/table.html" import row_group, row, text_field, edit_field, field, boolean_field, list_table with context%}
 
+
+{% set txt = _('Text message senders') %}
 {% block service_page_title %}
-  Text message senders
+  {{ txt }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Text message senders',
+    txt,
     back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
 
   <div class="user-list">
     {% if not current_service.sms_senders %}
       <div class="user-list-item">
-        <span class="hint">You haven’t added any text message senders yet</span>
+        <span class="hint">{{ _('You haven’t added any text message senders yet') }}</span>
       </div>
     {% endif %}
     {% for item in current_service.sms_senders_with_hints %}
@@ -33,7 +35,7 @@
           {% endif %}
         </h3>
         {% if current_user.has_permissions('manage_service') %}
-          <a class="user-list-edit-link" href="{{ url_for('.service_edit_sms_sender', service_id=current_service.id, sms_sender_id = item.id) }}">Change</a>
+          <a class="user-list-edit-link" href="{{ url_for('.service_edit_sms_sender', service_id=current_service.id, sms_sender_id = item.id) }}">{{ _('Change') }}</a>
         {% endif %}
         {% if current_service.count_sms_senders > 1 %}
           {{ api_key(item.id, thing="ID") }}
@@ -45,11 +47,11 @@
   {% if current_user.has_permissions('manage_service') %}
     <div class="grid-row bottom-gutter">
       <div class="column-whole">
-        <a href="{{ url_for('.service_add_sms_sender', service_id=current_service.id) }}" class="button">Add text message sender</a>
+        <a href="{{ url_for('.service_add_sms_sender', service_id=current_service.id) }}" class="button">{{ _('Add text message sender') }}</a>
       </div>
     </div>
   {% endif %}
   <p>
-    The text message sender tells your users who the message is from.
+    {{ _('The text message sender tells your users who the message is from.') }}'
   </p>
 {% endblock %}
