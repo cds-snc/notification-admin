@@ -3,9 +3,9 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/radios.html" import radios %}
-
+{% set txt = _('Send emails') %}
 {% block service_page_title %}
-  Send emails
+ {{ txt }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -13,15 +13,16 @@
   <div class="grid-row">
     <div class="column-five-sixths">
       {{ page_header(
-        'Send emails',
+        txt,
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
       <p>
         {{ _('It’s free to send emails through Notification.') }}
       </p>
       {% call form_wrapper() %}
+        {% set save_txt = _('Save') %}
         {{ radios(form.enabled) }}
-        {{ page_footer('Save') }}
+        {{ page_footer(save_txt) }}
       {% endcall %}
     </div>
   </div>
