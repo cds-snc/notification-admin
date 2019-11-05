@@ -53,6 +53,9 @@ from app.main.forms import (
     SMSPrefixForm,
     SVGFileUpload,
 )
+
+from flask_babel import lazy_gettext as _l
+
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
     DELIVERED_STATUSES,
@@ -138,7 +141,7 @@ def service_name_change_confirm(service_id):
             return redirect(url_for('.service_settings', service_id=service_id))
     return render_template(
         'views/service-settings/confirm.html',
-        heading='Change your service name',
+        heading=_('Change your service name'),
         form=form)
 
 

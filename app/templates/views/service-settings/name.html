@@ -6,31 +6,32 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Change your service name
+  {{ _('Change your service name')  }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Change your service name',
+    _('Change your service name'),
     back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
 
   <div class="form-group">
     {% if current_service.prefix_sms %}
-      <p>Users will see your service name:</p>
+      <p>{{ _('Users will see your service name:') }}</p>
       <ul class="list-bullet">
-        <li>at the start of every text message</li>
-        <li>as your email sender name</li>
+        <li>{{ _('at the start of every text message') }}</li>
+        <li>{{ _('as your email sender name') }}</li>
       </ul>
     {% else %}
-      <p>Users will see your service name as your email sender name.</p>
+      <p>{{ _('Users will see your service name as your email sender name.') }}</p>
     {% endif %}
   </div>
 
   {% call form_wrapper() %}
+    {% set save_txt = _('Save') %}
     {{ textbox(form.name) }}
-    {{ page_footer('Save') }}
+    {{ page_footer(save_txt) }}
   {% endcall %}
 
 {% endblock %}

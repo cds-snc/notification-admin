@@ -520,7 +520,7 @@ class TextNotReceivedForm(StripWhitespaceForm):
 
 class RenameServiceForm(StripWhitespaceForm):
     name = StringField(
-        u'Service name',
+        _l(u'Service name'),
         validators=[
             DataRequired(message=_l('Can’t be empty'))
         ])
