@@ -607,7 +607,7 @@ def service_set_sms_prefix(service_id):
         'on' if current_service.prefix_sms else 'off'
     ))
 
-    form.enabled.label.text = 'Start all text messages with ‘{}:’'.format(current_service.name)
+    form.enabled.label.text = '{} ‘{}:’'.format(_l("Start all text messages with"), current_service.name)
 
     if form.validate_on_submit():
         current_service.update(
