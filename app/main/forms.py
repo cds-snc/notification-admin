@@ -520,7 +520,7 @@ class TextNotReceivedForm(StripWhitespaceForm):
 
 class RenameServiceForm(StripWhitespaceForm):
     name = StringField(
-        u'Service name',
+        _l(u'Service name'),
         validators=[
             DataRequired(message=_l('Can’t be empty'))
         ])
@@ -960,8 +960,8 @@ class ServiceLetterContactBlockForm(StripWhitespaceForm):
 class OnOffField(RadioField):
     def __init__(self, label, *args, **kwargs):
         super().__init__(label, choices=[
-            (True, 'On'),
-            (False, 'Off'),
+            (True, _l('On')),
+            (False, _l('Off')),
         ], *args, **kwargs)
 
     def process_formdata(self, valuelist):
@@ -973,7 +973,15 @@ class OnOffField(RadioField):
 class ServiceOnOffSettingForm(StripWhitespaceForm):
 
     def __init__(self, name, *args, truthy='On', falsey='Off', **kwargs):
+
         super().__init__(*args, **kwargs)
+
+        if truthy == 'On':
+            truthy = _l('On')
+
+        if falsey == 'Off':
+            falsey = _l('Off')
+
         self.enabled.label.text = name
         self.enabled.choices = [
             (True, truthy),
@@ -985,10 +993,10 @@ class ServiceOnOffSettingForm(StripWhitespaceForm):
 
 class ServiceSwitchChannelForm(ServiceOnOffSettingForm):
     def __init__(self, channel, *args, **kwargs):
-        name = 'Send {}'.format({
-            'email': 'emails',
-            'sms': 'text messages',
-            'letter': 'letters',
+        name = '{} {}'.format(_l('Send'), {
+            'email': _l('emails'),
+            'sms': _l('text messages'),
+            'letter': _l('letters'),
         }.get(channel))
 
         super().__init__(name, *args, **kwargs)

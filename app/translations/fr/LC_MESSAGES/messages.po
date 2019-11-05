@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-04 13:28-0500\n"
+"POT-Creation-Date: 2019-11-05 08:26-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -103,6 +103,10 @@ msgstr "FR Full name"
 msgid "Please enter security code"
 msgstr "Veuillez entrer le code de sécurité."
 
+#: app/main/forms.py:523 app/templates/views/service-settings.html:29
+msgid "Service name"
+msgstr "Nom du service"
+
 #: app/main/forms.py:595
 msgid "What’s your service called?"
 msgstr "Quel est le nom de votre service?"
@@ -151,6 +155,34 @@ msgstr "Votre courriel"
 #: app/main/forms.py:898 app/main/views/dashboard.py:214
 msgid "Phone number"
 msgstr "Numéro de téléphone"
+
+#: app/main/forms.py:963 app/main/forms.py:979
+#: app/templates/components/table.html:134
+msgid "On"
+msgstr "FR On"
+
+#: app/main/forms.py:964 app/main/forms.py:980
+#: app/templates/components/table.html:135
+msgid "Off"
+msgstr "FR Off"
+
+#: app/main/forms.py:988 app/templates/views/check/ok.html:42
+msgid "Send"
+msgstr "Envoyer"
+
+#: app/main/forms.py:989 app/templates/components/message-count-label.html:19
+#: app/templates/views/features.html:15
+msgid "emails"
+msgstr "courriels"
+
+#: app/main/forms.py:990 app/templates/components/message-count-label.html:13
+#: app/templates/views/features.html:16
+msgid "text messages"
+msgstr "messages textes"
+
+#: app/main/forms.py:991 app/templates/components/message-count-label.html:25
+msgid "letters"
+msgstr "lettres"
 
 #: app/main/forms.py:1141
 msgid "Search by name"
@@ -209,6 +241,43 @@ msgstr "Entrez une adresse courriel valide"
 #: app/main/views/add_service.py:54 app/templates/views/add-service.html:23
 msgid "Name your service in both official languages"
 msgstr "FR Name your service in both official languages"
+
+#: app/main/views/api_keys.py:88 app/templates/views/api/keys.html:40
+msgid "Live – sends to anyone"
+msgstr "En service – envoie à quiconque"
+
+#: app/main/views/api_keys.py:89 app/templates/views/api/keys.html:42
+msgid "Team and safelist – limits who you can send to"
+msgstr ""
+"Équipe et liste de confiance — limite le nombre de personnes à qui vous "
+"pouvez faire des envois"
+
+#: app/main/views/api_keys.py:90 app/templates/views/api/keys.html:44
+msgid "Test – pretends to send messages"
+msgstr "Essai – prétend envoyer des messages"
+
+#: app/main/views/api_keys.py:96
+msgid "Not available because your service is in "
+msgstr "FR Not available because your service is in "
+
+#: app/main/views/api_keys.py:98
+#: app/templates/partials/check/not-allowed-to-send-to.html:10
+#: app/templates/partials/check/too-many-messages.html:11
+#: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
+msgid "trial mode"
+msgstr "mode d’essai,"
+
+#: app/main/views/api_keys.py:130
+msgid "Are you sure you want to revoke"
+msgstr "FR Are you sure you want to revoke"
+
+#: app/main/views/api_keys.py:131
+msgid "You will not be able to use this API key to connect to Notification."
+msgstr "FR You will not be able to use this API key to connect to Notification."
+
+#: app/main/views/api_keys.py:138
+msgid "was revoked"
+msgstr "FR was revoked"
 
 #: app/main/views/dashboard.py:216
 msgid "Received"
@@ -278,6 +347,12 @@ msgstr "à"
 #: app/main/views/send.py:765
 msgid "Personalise this message"
 msgstr "FR Personalise this message"
+
+#: app/main/views/service_settings.py:144
+#: app/templates/views/service-settings/name.html:9
+#: app/templates/views/service-settings/name.html:15
+msgid "Change your service name"
+msgstr "FR Change your service name"
 
 #: app/main/views/sign_in.py:50
 msgid "The email address or password you entered is incorrect."
@@ -385,6 +460,12 @@ msgstr "Sécurité"
 #: app/templates/admin_template.html:107
 msgid "research mode"
 msgstr "mode de recherche"
+
+#: app/templates/flash_messages.html:6
+#: app/templates/views/service-settings.html:294
+#: app/templates/views/user-profile.html:70
+msgid "Yes"
+msgstr "Oui"
 
 #: app/templates/main_nav.html:7
 #: app/templates/views/dashboard/dashboard.html:10
@@ -546,6 +627,11 @@ msgstr "Changer de service"
 msgid "Back to"
 msgstr "Retour à"
 
+#: app/templates/components/api-key.html:1
+#: app/templates/views/api/keys/show.html:24
+msgid "API key"
+msgstr "Clé de l’API"
+
 #: app/templates/components/api-key.html:4
 msgid "API data:"
 msgstr "Données de l’API :"
@@ -595,27 +681,13 @@ msgstr "messages"
 msgid "text message"
 msgstr "message texte"
 
-#: app/templates/components/message-count-label.html:13
-#: app/templates/views/features.html:16
-msgid "text messages"
-msgstr "messages textes"
-
 #: app/templates/components/message-count-label.html:17
 msgid "email"
 msgstr "courriel"
 
-#: app/templates/components/message-count-label.html:19
-#: app/templates/views/features.html:15
-msgid "emails"
-msgstr "courriels"
-
 #: app/templates/components/message-count-label.html:23
 msgid "letter"
 msgstr "lettre"
-
-#: app/templates/components/message-count-label.html:25
-msgid "letters"
-msgstr "lettres"
 
 #: app/templates/components/message-count-label.html:33
 msgid "recipient"
@@ -798,12 +870,6 @@ msgstr "Vous ne pouvez pas faire d'envoi à"
 #: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
 msgid "In"
 msgstr "En"
-
-#: app/templates/partials/check/not-allowed-to-send-to.html:10
-#: app/templates/partials/check/too-many-messages.html:11
-#: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
-msgid "trial mode"
-msgstr "mode d’essai,"
 
 #: app/templates/partials/check/not-allowed-to-send-to.html:10
 msgid ""
@@ -1095,6 +1161,7 @@ msgid "Notification displays your service name:"
 msgstr "Notification affiche le nom de votre service :"
 
 #: app/templates/views/add-service.html:29
+#: app/templates/views/service-settings/name.html:23
 msgid "at the start of every text message"
 msgstr "au début de chaque message texte"
 
@@ -1354,6 +1421,8 @@ msgstr "Vos destinataires ne verront pas ceci :"
 #: app/templates/views/edit-sms-template.html:33
 #: app/templates/views/manage-users/edit-user-email.html:21
 #: app/templates/views/organisations/add-organisation.html:31
+#: app/templates/views/service-settings/name.html:32
+#: app/templates/views/service-settings/set-email.html:23
 #: app/templates/views/service-settings/set-international-sms.html:23
 #: app/templates/views/service-settings/set-sms.html:26
 msgid "Save"
@@ -2151,19 +2220,18 @@ msgstr "Valeur"
 msgid "Action"
 msgstr "Action"
 
-#: app/templates/views/service-settings.html:29
-msgid "Service name"
-msgstr "Nom du service"
-
 #: app/templates/views/service-settings.html:41
+#: app/templates/views/service-settings/set-auth-type.html:5
 msgid "Sign-in method"
 msgstr "Méthode de connexion"
 
 #: app/templates/views/service-settings.html:43
+#: app/templates/views/service-settings/set-auth-type.html:21
 msgid "Email link or text message code"
 msgstr "Lien courriel ou code par message texte"
 
 #: app/templates/views/service-settings.html:44
+#: app/templates/views/service-settings/set-auth-type.html:31
 msgid "Text message code"
 msgstr "Code par message texte"
 
@@ -2176,6 +2244,7 @@ msgid "Email settings"
 msgstr "Paramètres du courriel"
 
 #: app/templates/views/service-settings.html:88
+#: app/templates/views/service-settings/set-email.html:6
 msgid "Send emails"
 msgstr "Envoyer des courriels"
 
@@ -2304,12 +2373,6 @@ msgstr "Non (les organisations doivent être définies d'abord)"
 #: app/templates/views/service-settings.html:293
 msgid "Count in list of live services"
 msgstr "Compte dans la liste de services en fonction"
-
-#: app/templates/flash_messages.html:6
-#: app/templates/views/service-settings.html:294
-#: app/templates/views/user-profile.html:70
-msgid "Yes"
-msgstr "Oui"
 
 #: app/templates/views/service-settings.html:295
 #: app/templates/views/user-profile.html:71
@@ -2991,6 +3054,7 @@ msgstr ""
 "financière."
 
 #: app/templates/views/agreement/service-agreement-choose.html:26
+#: app/templates/views/service-settings/set-auth-type.html:37
 msgid "Contact us"
 msgstr "Communiquez avec nous"
 
@@ -3078,44 +3142,6 @@ msgstr "Affiche seulement les 50 premiers messages."
 #: app/templates/views/api/keys.html:19
 msgid "You haven’t created any API keys yet"
 msgstr "Vous n’avez pas encore créé de clés de l’API "
-
-#: app/main/views/api_keys.py:90 app/templates/views/api/keys.html:40
-msgid "Live – sends to anyone"
-msgstr "En service – envoie à quiconque"
-
-#: app/main/views/api_keys.py:91 app/templates/views/api/keys.html:42
-msgid "Team and safelist – limits who you can send to"
-msgstr ""
-"Équipe et liste de confiance — limite le nombre de personnes à qui vous "
-"pouvez faire des envois"
-
-#: app/main/views/api_keys.py:92 app/templates/views/api/keys.html:44
-msgid "Test – pretends to send messages"
-msgstr "Essai – prétend envoyer des messages"
-
-#: app/main/views/api_keys.py:99
-msgid "Not available because your service is in "
-msgstr "FR Not available because your service is in "
-
-#: app/main/views/api_keys.py:101
-msgid "trial mode"
-msgstr "mode d'essai"
-
-#: app/main/views/api_keys.py:132
-msgid "Are you sure you want to revoke"
-msgstr "FR Are you sure you want to revoke"
-
-#: app/main/views/api_keys.py:133
-msgid "You will not be able to use this API key to connect to Notification."
-msgstr "FR You will not be able to use this API key to connect to Notification."
-
-#: app/main/views/api_keys.py:134
-msgid "revoke this API key"
-msgstr "FR revoke this API key"
-
-#: app/main/views/api_keys.py:140
-msgid "was revoked"
-msgstr "FR was revoked"
 
 #: app/templates/views/api/keys.html:51
 msgid "Revoked"
@@ -3217,10 +3243,6 @@ msgid "You won’t be able to see it again once you leave this page."
 msgstr ""
 "Vous ne serez pas en mesure de la voir à nouveau une fois que vous aurez "
 "quitté cette page."
-
-#: app/templates/views/api/keys/show.html:24
-msgid "API key"
-msgstr "Clé de l’API"
 
 #: app/templates/views/api/keys/show.html:29
 msgid "Back to API keys"
@@ -3347,10 +3369,6 @@ msgstr "Ne montre que les rangées avec des erreurs"
 #: app/templates/views/notifications/check.html:54
 msgid "Preview of"
 msgstr "Aperçu de"
-
-#: app/templates/views/check/ok.html:42
-msgid "Send"
-msgstr "Envoyer"
 
 #: app/templates/views/check/ok.html:44
 msgid "Download as a PDF"
@@ -3764,6 +3782,42 @@ msgstr ""
 #: app/templates/views/platform-admin/usage_for_all_services.html:16
 msgid "Enter start date in format YYYY-MM-DD"
 msgstr ""
+
+#: app/templates/views/service-settings/name.html:21
+msgid "Users will see your service name:"
+msgstr "FR Users will see your service name: "
+
+#: app/templates/views/service-settings/name.html:24
+msgid "as your email sender name"
+msgstr ""
+
+#: app/templates/views/service-settings/name.html:27
+msgid "Users will see your service name as your email sender name."
+msgstr ""
+
+#: app/templates/views/service-settings/set-auth-type.html:24
+msgid ""
+"Your team members can sign in with either a text message code or an email"
+" link."
+msgstr ""
+"Fr Your team members can sign in with either a text message code or an "
+"email link."
+
+#: app/templates/views/service-settings/set-auth-type.html:27
+msgid "You can"
+msgstr ""
+
+#: app/templates/views/service-settings/set-auth-type.html:27
+msgid "set the sign-in method for individual team members"
+msgstr ""
+
+#: app/templates/views/service-settings/set-auth-type.html:34
+msgid "Your team members sign in with a text message code."
+msgstr "FR Your team members sign in with a text message code"
+
+#: app/templates/views/service-settings/set-auth-type.html:37
+msgid "if signing in with a text message is a problem for your team."
+msgstr "FR if signing in with a text message is a problem for your team."
 
 #: app/templates/views/service-settings/set-international-sms.html:20
 msgid ""
@@ -4345,4 +4399,14 @@ msgstr "Clés d’essai"
 
 #~ msgid "O'Clock"
 #~ msgstr "FR O'Clock"
+
+#~ msgid "revoke this API key"
+#~ msgstr "FR revoke this API key"
+
+#~ msgid ""
+#~ "Your team members can sign in with either a text message code\n"
+#~ "          or an email link."
+#~ msgstr ""
+#~ "FR Your team members can sign in with either a text message code\n"
+#~ "          or an email link."
 

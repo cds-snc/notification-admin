@@ -130,7 +130,11 @@
 {%- endmacro %}
 
 {% macro boolean_field(value) -%}
-  {{ text_field('On' if value else 'Off') }}
+
+  {% set on_txt = _('On') %}
+  {% set off_txt = _('Off') %}
+ 
+  {{ text_field( on_txt if value else off_txt) }}
 {%- endmacro %}
 
 {% macro right_aligned_field_heading(text) %}

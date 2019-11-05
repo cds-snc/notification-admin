@@ -2,9 +2,10 @@
 {% from "components/textbox.html" import textbox %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
+{% set txt = _('Sign-in method') %}
 
 {% block service_page_title %}
-  Sign-in method
+  {{txt}}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -12,29 +13,28 @@
   <div class="grid-row">
     <div class="column-five-sixths">
       {{ page_header(
-        'Sign-in method',
+        txt,
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
       {% if 'email_auth' in current_service.permissions %}
         <p class="heading-small bottom-gutter-2-3">
-          Email link or text message code
+          {{ _('Email link or text message code') }}
         </p>
         <p>
-          Your team members can sign in with either a text message code
-          or an email link.
+          {{ _('Your team members can sign in with either a text message code or an email link.') }}
         </p>
         <p>
-          You can <a href="{{ url_for('.manage_users', service_id=current_service.id) }}">set the sign-in method for individual team members</a>.
+          {{ _('You can') }} <a href="{{ url_for('.manage_users', service_id=current_service.id) }}">{{ _('set the sign-in method for individual team members') }}</a>.
         </p>
       {% else %}
         <p class="heading-small bottom-gutter-2-3">
-          Text message code
+          {{ _('Text message code') }}
         </p>
         <p>
-          Your team members sign in with a text message code.
+          {{ _('Your team members sign in with a text message code.') }}
         </p>
         <p>
-          <a href="{{ url_for('.support') }}">Contact us</a> if signing in with a text message is a problem for your team.
+          <a href="{{ url_for('.support') }}">{{ _('Contact us') }}</a> {{ _('if signing in with a text message is a problem for your team.') }}
         </p>
       {% endif %}
     </div>

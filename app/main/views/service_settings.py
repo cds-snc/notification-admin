@@ -12,6 +12,7 @@ from flask import (
     session,
     url_for,
 )
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
@@ -138,7 +139,7 @@ def service_name_change_confirm(service_id):
             return redirect(url_for('.service_settings', service_id=service_id))
     return render_template(
         'views/service-settings/confirm.html',
-        heading='Change your service name',
+        heading=_l('Change your service name'),
         form=form)
 
 
