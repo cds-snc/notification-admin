@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-05 09:28-0500\n"
+"POT-Creation-Date: 2019-11-05 10:15-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -156,6 +156,14 @@ msgstr "Votre courriel"
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
+#: app/main/forms.py:921
+msgid "Reply-to email address"
+msgstr "FR Reply-to email address"
+
+#: app/main/forms.py:923
+msgid "Make this email address the default"
+msgstr ""
+
 #: app/main/forms.py:963 app/main/forms.py:980
 #: app/templates/components/table.html:134
 msgid "On"
@@ -172,6 +180,7 @@ msgstr "Envoyer"
 
 #: app/main/forms.py:997 app/templates/components/message-count-label.html:19
 #: app/templates/views/features.html:15
+#: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "emails"
 msgstr "courriels"
 
@@ -1421,6 +1430,7 @@ msgstr "Vos destinataires ne verront pas ceci :"
 #: app/templates/views/edit-sms-template.html:33
 #: app/templates/views/manage-users/edit-user-email.html:21
 #: app/templates/views/organisations/add-organisation.html:31
+#: app/templates/views/service-settings/email-reply-to/edit.html:9
 #: app/templates/views/service-settings/name.html:32
 #: app/templates/views/service-settings/set-email.html:23
 #: app/templates/views/service-settings/set-international-sms.html:23
@@ -2184,6 +2194,7 @@ msgid "Your file will populate this template"
 msgstr "Votre fichier remplira ce modèle"
 
 #: app/templates/views/service-settings.html:9
+#: app/templates/views/service-settings/email_reply_to.html:36
 #: app/templates/views/user-profile.html:11
 msgid "Change"
 msgstr "Modifier"
@@ -3798,8 +3809,8 @@ msgid ""
 "You need to add at least one reply-to address so recipients can reply to "
 "your messages."
 msgstr ""
-"FR You need to add at least one reply-to address so recipients can reply to "
-"your messages."
+"FR You need to add at least one reply-to address so recipients can reply "
+"to your messages."
 
 #: app/templates/views/service-settings/email_reply_to.html:57
 msgid "Emails with a reply-to address:"
@@ -3884,9 +3895,29 @@ msgstr ""
 msgid "Upload logo"
 msgstr ""
 
+#: app/templates/views/service-settings/email-reply-to/edit.html:8
+msgid "Change reply-to email address"
+msgstr "FR Change reply-to email address"
+
+#: app/templates/views/service-settings/email-reply-to/edit.html:10
+msgid "Delete"
+msgstr "FR Delete"
+
+#: app/templates/views/service-settings/email-reply-to/edit.html:16
+msgid ""
+"This should be a shared inbox managed by your team, not your own email "
+"address."
+msgstr ""
+"FR This should be a shared inbox managed by your team, not your own email"
+" address."
+
+#: app/templates/views/service-settings/email-reply-to/edit.html:30
+msgid "This is the default reply-to address for"
+msgstr "FR This is the default reply-to address for"
+
 #: app/templates/views/support/ask-question-give-feedback.html:20
 msgid "Do you want a reply?"
-msgstr ""
+msgstr "FR Do you want a reply?"
 
 #: app/templates/views/support/ask-question-give-feedback.html:21
 msgid "Leave your details below if you’d like a response."
