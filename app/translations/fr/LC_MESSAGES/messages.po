@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-06 06:03-0500\n"
+"POT-Creation-Date: 2019-11-06 07:15-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -713,6 +713,22 @@ msgstr "FR remaining"
 #: app/templates/views/user-profile/security-keys.html:40
 msgid "Remove"
 msgstr "Retirer"
+
+#: app/templates/main_template.html:83
+msgid "folder"
+msgstr "fr folder"
+
+#: app/templates/main_template.html:84
+msgid "folders"
+msgstr "fr folders"
+
+#: app/templates/main_template.html:85
+msgid "All folders"
+msgstr "FR All folders"
+
+#: app/templates/main_template.html:86
+msgid "Choose folders"
+msgstr "FR Choose folders"
 
 #: app/templates/org_template.html:16
 #: app/templates/views/organisations/add-organisation.html:16
