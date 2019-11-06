@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
 from string import ascii_uppercase
-from flask_babel import lazy_gettext as _l
 
 from dateutil.parser import parse
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
@@ -657,9 +657,9 @@ def delete_service_template(service_id, template_id):
         )
 
         last_used_date = parse(last_used_notification['created_at']).replace(tzinfo=None)
-        
+
         human_readable_delta = get_human_readable_delta(last_used_date, datetime.utcnow())
-        
+
         last_used_text = _l('more than seven days') if not last_used_notification else human_readable_delta
 
         message = '{} {} {}'.format(_l("This template was last used"), last_used_text, _l("ago."))
