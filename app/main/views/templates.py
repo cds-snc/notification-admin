@@ -655,12 +655,14 @@ def delete_service_template(service_id, template_id):
         last_used_notification = template_statistics_client.get_template_statistics_for_template(
             service_id, template['id']
         )
-        message = '{} {} {}'.format(_l("This template was last used"),
-            _l('more than seven days') if not last_used_notification else get_human_readable_delta(
-                parse(last_used_notification['created_at']).replace(tzinfo=None),
-                datetime.utcnow()
-            ), _l("ago.")
-        )
+
+        last_used_date = parse(last_used_notification['created_at']).replace(tzinfo=None)
+        
+        human_readable_delta = get_human_readable_delta(last_used_date, datetime.utcnow())
+        
+        last_used_text = _l('more than seven days') if not last_used_notification else human_readable_delta
+
+        message = '{} {} {}'.format(_l("This template was last used"), last_used_text, _l("ago."))
 
     except HTTPError as e:
         if e.status_code == 404:
@@ -668,7 +670,7 @@ def delete_service_template(service_id, template_id):
         else:
             raise e
 
-    flash(["{} ‘{}’?".format(_l("Are you sure you want to delete") ,template['name']), message], 'delete')
+    flash(["{} ‘{}’?".format(_l("Are you sure you want to delete"), template['name']), message], 'delete')
     return render_template(
         'views/templates/template.html',
         template=get_template(
