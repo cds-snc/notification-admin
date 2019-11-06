@@ -1216,12 +1216,12 @@ class ServiceReceiveMessagesCallbackForm(CallbackForm):
     url = StringField(
         "URL",
         validators=[DataRequired(message=_l('Can’t be empty')),
-                    Regexp(regex="^https.*", message='Must be a valid https URL')]
+                    Regexp(regex="^https.*", message=_l('Must be a valid https URL'))]
     )
     bearer_token = PasswordFieldShowHasContent(
-        "Bearer token",
+        _l("Bearer token"),
         validators=[DataRequired(message=_l('Can’t be empty')),
-                    Length(min=10, message='Must be at least 10 characters')]
+                    Length(min=10, message=_l('Must be at least 10 characters'))]
     )
 
 
@@ -1229,12 +1229,12 @@ class ServiceDeliveryStatusCallbackForm(CallbackForm):
     url = StringField(
         "URL",
         validators=[DataRequired(message=_l('Can’t be empty')),
-                    Regexp(regex="^https.*", message='Must be a valid https URL')]
+                    Regexp(regex="^https.*", message=_l('Must be a valid https URL'))]
     )
     bearer_token = PasswordFieldShowHasContent(
-        "Bearer token",
+        _l("Bearer token"),
         validators=[DataRequired(message=_l('Can’t be empty')),
-                    Length(min=10, message='Must be at least 10 characters')]
+                    Length(min=10, message=_l('Must be at least 10 characters'))]
     )
 
 
