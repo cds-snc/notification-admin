@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from string import ascii_uppercase
+from flask_babel import lazy_gettext as _l
 
 from dateutil.parser import parse
 from flask import abort, flash, redirect, render_template, request, url_for
@@ -654,11 +655,11 @@ def delete_service_template(service_id, template_id):
         last_used_notification = template_statistics_client.get_template_statistics_for_template(
             service_id, template['id']
         )
-        message = 'This template was last used {} ago.'.format(
-            'more than seven days' if not last_used_notification else get_human_readable_delta(
+        message = '{} {} {}'.format(_l("This template was last used"),
+            _l('more than seven days') if not last_used_notification else get_human_readable_delta(
                 parse(last_used_notification['created_at']).replace(tzinfo=None),
                 datetime.utcnow()
-            )
+            ), _l("ago.")
         )
 
     except HTTPError as e:
@@ -667,7 +668,7 @@ def delete_service_template(service_id, template_id):
         else:
             raise e
 
-    flash(["Are you sure you want to delete ‘{}’?".format(template['name']), message], 'delete')
+    flash(["{} ‘{}’?".format(_l("Are you sure you want to delete") ,template['name']), message], 'delete')
     return render_template(
         'views/templates/template.html',
         template=get_template(
