@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-06 07:15-0500\n"
+"POT-Creation-Date: 2019-11-06 07:22-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -429,6 +429,18 @@ msgstr "FR Personalise this message"
 msgid "Change your service name"
 msgstr "FR Change your service name"
 
+#: app/main/views/service_settings.py:341
+msgid "Are you sure you want to delete"
+msgstr "FR Are you sure you want to delete"
+
+#: app/main/views/service_settings.py:342
+msgid "delete"
+msgstr "FR delete"
+
+#: app/main/views/service_settings.py:342
+msgid "There’s no way to undo this."
+msgstr "FR There’s no way to undo this."
+
 #: app/main/views/service_settings.py:610
 msgid "Start all text messages with"
 msgstr "FR Start all text messages with"
@@ -439,7 +451,7 @@ msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact
 
 #: app/main/views/templates.py:190
 msgid "All"
-msgstr ""
+msgstr "FR All"
 
 #: app/main/views/two_factor.py:25
 msgid "Email resent"
