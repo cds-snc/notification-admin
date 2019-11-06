@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-06 07:37-0500\n"
+"POT-Creation-Date: 2019-11-06 08:06-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -416,7 +416,7 @@ msgstr "FR financial year"
 msgid "to"
 msgstr "à"
 
-#: app/main/views/manage_users.py:70
+#: app/main/views/manage_users.py:71
 msgid "Invite sent to"
 msgstr ""
 
@@ -738,6 +738,14 @@ msgstr "FR All folders"
 #: app/templates/main_template.html:86
 msgid "Choose folders"
 msgstr "FR Choose folders"
+
+#: app/templates/main_template.html:87
+msgid "All team members"
+msgstr ""
+
+#: app/templates/main_template.html:88
+msgid "Choose team members"
+msgstr ""
 
 #: app/templates/org_template.html:16
 #: app/templates/views/organisations/add-organisation.html:16
