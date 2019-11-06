@@ -514,7 +514,7 @@ msgstr "Administrateur de la plateforme"
 
 #: app/templates/admin_template.html:47
 msgid "Sign out"
-msgstr "Déconnexion"
+msgstr "FR Sign out"
 
 #: app/templates/admin_template.html:58 app/templates/views/signin.html:7
 #: app/templates/views/signin.html:27
