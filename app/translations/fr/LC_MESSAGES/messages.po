@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-06 07:22-0500\n"
+"POT-Creation-Date: 2019-11-06 07:37-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -140,7 +140,7 @@ msgstr "Nom du modèle"
 #: app/main/forms.py:655 app/main/forms.py:818 app/main/forms.py:826
 #: app/main/views/dashboard.py:215 app/templates/views/signedout.html:135
 msgid "Message"
-msgstr "Message"
+msgstr "FR Message"
 
 #: app/main/forms.py:788
 msgid "Type of key"
@@ -158,7 +158,7 @@ msgstr "FR A key with this name already exists"
 #: app/templates/views/support/ask-question-give-feedback.html:7
 #: app/templates/views/support/ask-question-give-feedback.html:13
 msgid "Ask a question or give feedback"
-msgstr ""
+msgstr "FR Ask a question or give feedback"
 
 #: app/main/forms.py:816 app/main/forms.py:822
 #: app/templates/views/signedout.html:129
@@ -209,6 +209,7 @@ msgid "Off"
 msgstr "FR Off"
 
 #: app/main/forms.py:997 app/templates/views/check/ok.html:42
+#: app/templates/views/support/ask-question-give-feedback.html:28
 msgid "Send"
 msgstr "Envoyer"
 
@@ -433,11 +434,7 @@ msgstr "FR Change your service name"
 msgid "Are you sure you want to delete"
 msgstr "FR Are you sure you want to delete"
 
-#: app/main/views/service_settings.py:342
-msgid "delete"
-msgstr "FR delete"
-
-#: app/main/views/service_settings.py:342
+#: app/main/views/service_settings.py:341
 msgid "There’s no way to undo this."
 msgstr "FR There’s no way to undo this."
 
@@ -4182,11 +4179,11 @@ msgstr "FR Do you want a reply?"
 
 #: app/templates/views/support/ask-question-give-feedback.html:21
 msgid "Leave your details below if you’d like a response."
-msgstr ""
+msgstr "FR Leave your details below if you’d like a response."
 
 #: app/templates/views/support/ask-question-give-feedback.html:25
 msgid "We’ll reply to"
-msgstr ""
+msgstr "FR We’ll reply to"
 
 #: app/templates/views/templates/_move_to.html:26
 #: app/templates/views/templates/_move_to.html:28
@@ -4723,4 +4720,7 @@ msgstr "Clés d’essai"
 #~ msgstr ""
 #~ "FR Your team members can sign in with either a text message code\n"
 #~ "          or an email link."
+
+#~ msgid "delete"
+#~ msgstr "FR delete"
 
