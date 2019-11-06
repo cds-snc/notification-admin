@@ -2655,7 +2655,7 @@ msgstr "Reprendre le service"
 
 #: app/templates/views/signedout.html:21
 msgid "Send service updates and messages over email and SMS"
-msgstr "Envoyer des courriels et des messages textes á vos utilistateurs"
+msgstr "Envoyer des courriels et des messages textes à vos utilisateurs"
 
 #: app/templates/views/signedout.html:24
 msgid "Try Notify if you work in the federal government."
@@ -2685,7 +2685,7 @@ msgstr ""
 
 #: app/templates/views/signedout.html:62
 msgid "Manually send personalized messages to your users"
-msgstr "Envoyer manuellement des messages personnalisés à vos utilisateur"
+msgstr "Envoyer manuellement des messages personnalisés à vos utilisateurs"
 
 #: app/templates/views/signedout.html:63
 msgid ""
@@ -2726,15 +2726,14 @@ msgstr "Découvrez comment intégrer votre API"
 
 #: app/templates/views/signedout.html:106
 msgid "Control your content"
-msgstr "Gérez votre contenu"
+msgstr "Contrôler votre contenu"
 
 #: app/templates/views/signedout.html:107
 msgid ""
 "You don’t need to be a developer to create email or SMS templates for "
 "your users."
 msgstr ""
-"Vous n'avez pas besoin d'être développeur pour créer des modèles de "
-"courrier électronique ou SMS vos utilisateurs."
+"Vous n'avez pas besoin de connaissances techniques pour créer des modèles de courriels ou des messages textes."
 
 #: app/templates/views/signedout.html:108
 msgid ""
