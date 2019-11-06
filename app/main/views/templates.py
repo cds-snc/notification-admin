@@ -4,6 +4,7 @@ from string import ascii_uppercase
 from dateutil.parser import parse
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
@@ -654,12 +655,15 @@ def delete_service_template(service_id, template_id):
         last_used_notification = template_statistics_client.get_template_statistics_for_template(
             service_id, template['id']
         )
-        message = 'This template was last used {} ago.'.format(
-            'more than seven days' if not last_used_notification else get_human_readable_delta(
-                parse(last_used_notification['created_at']).replace(tzinfo=None),
-                datetime.utcnow()
-            )
-        )
+
+        last_used_text = ""
+        if not last_used_notification:
+            last_used_text = _l('more than seven days')
+        else:
+            last_used_date = parse(last_used_notification['created_at']).replace(tzinfo=None)
+            last_used_text = get_human_readable_delta(last_used_date, datetime.utcnow())
+
+        message = '{} {} {}'.format(_l("This template was last used"), last_used_text, _l("ago."))
 
     except HTTPError as e:
         if e.status_code == 404:
@@ -667,7 +671,7 @@ def delete_service_template(service_id, template_id):
         else:
             raise e
 
-    flash(["Are you sure you want to delete ‘{}’?".format(template['name']), message], 'delete')
+    flash(["{} ‘{}’?".format(_l("Are you sure you want to delete"), template['name']), message], 'delete')
     return render_template(
         'views/templates/template.html',
         template=get_template(

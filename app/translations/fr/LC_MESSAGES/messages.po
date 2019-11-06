@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-06 08:06-0500\n"
+"POT-Creation-Date: 2019-11-06 12:56-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -272,15 +272,15 @@ msgstr "FR Send text messages to international phone numbers"
 msgid "Folder name"
 msgstr "Nom du dossier"
 
-#: app/main/forms.py:1454 app/main/views/templates.py:192
+#: app/main/forms.py:1454 app/main/views/templates.py:193
 msgid "Email"
 msgstr "Courriel"
 
-#: app/main/forms.py:1455 app/main/views/templates.py:191
+#: app/main/forms.py:1455 app/main/views/templates.py:192
 msgid "Text message"
 msgstr "Message texte"
 
-#: app/main/forms.py:1456 app/main/views/templates.py:193
+#: app/main/forms.py:1456 app/main/views/templates.py:194
 #: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
 msgstr "Lettre"
@@ -430,7 +430,7 @@ msgstr "FR Personalise this message"
 msgid "Change your service name"
 msgstr "FR Change your service name"
 
-#: app/main/views/service_settings.py:341
+#: app/main/views/service_settings.py:341 app/main/views/templates.py:671
 msgid "Are you sure you want to delete"
 msgstr "FR Are you sure you want to delete"
 
@@ -446,9 +446,21 @@ msgstr "FR Start all text messages with"
 msgid "The email address or password you entered is incorrect."
 msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact."
 
-#: app/main/views/templates.py:190
+#: app/main/views/templates.py:191
 msgid "All"
 msgstr "FR All"
+
+#: app/main/views/templates.py:658
+msgid "This template was last used"
+msgstr "FR This template was last used"
+
+#: app/main/views/templates.py:659
+msgid "more than seven days"
+msgstr "FR more than seven days"
+
+#: app/main/views/templates.py:662
+msgid "ago."
+msgstr "FR ago."
 
 #: app/main/views/two_factor.py:25
 msgid "Email resent"
@@ -2733,7 +2745,8 @@ msgid ""
 "You don’t need to be a developer to create email or SMS templates for "
 "your users."
 msgstr ""
-"Vous n'avez pas besoin de connaissances techniques pour créer des modèles de courriels ou des messages textes."
+"Vous n'avez pas besoin de connaissances techniques pour créer des modèles"
+" de courriels ou des messages textes."
 
 #: app/templates/views/signedout.html:108
 msgid ""
