@@ -710,7 +710,7 @@ msgstr "Retour à"
 #: app/templates/components/api-key.html:1
 #: app/templates/views/api/keys/show.html:24
 msgid "API key"
-msgstr "Clé de l’API"
+msgstr "Clé API"
 
 #: app/templates/components/api-key.html:4
 msgid "API data:"
@@ -1607,7 +1607,7 @@ msgstr "Guide de mise en forme"
 
 #: app/templates/views/edit-email-template.html:25
 msgid "Your recipients won’t see this:"
-msgstr "Vos destinataires ne verront pas ceci :"
+msgstr "Vos destinataires ne verront pas le nom du modèle."
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:37
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:35
@@ -2320,11 +2320,11 @@ msgstr "Facultatif"
 
 #: app/templates/views/send-test.html:42 app/templates/views/send.html:9
 msgid "Upload a list of"
-msgstr "Téléverser une liste de"
+msgstr "Téléversez une liste de"
 
 #: app/templates/views/send.html:13
 msgid "Upload a list of {}"
-msgstr "Téléverser une liste de {}"
+msgstr "Téléversez une liste de {}"
 
 #: app/templates/views/send.html:20
 msgid "Choose a file"
@@ -2332,11 +2332,11 @@ msgstr "Choisir un fichier"
 
 #: app/templates/views/send.html:27
 msgid "Your file needs to look like this example"
-msgstr "Votre fichier doit ressembler à cet exemple"
+msgstr "Votre fichier doit ressembler à cet exemple :"
 
 #: app/templates/views/send.html:29
 msgid "Save your file as a"
-msgstr "Enregistrez votre fichier sous"
+msgstr "Enregistrez votre fichier en format"
 
 #: app/templates/views/send.html:30
 msgid "Comma Separated Values"
@@ -2364,7 +2364,7 @@ msgstr "ODS"
 
 #: app/templates/views/send.html:36
 msgid "or Microsoft Excel spreadsheet"
-msgstr "ou une feuille de calcul Microsoft Excel"
+msgstr "ou en feuille de calcul Microsoft Excel"
 
 #: app/templates/views/send.html:40
 msgid "Example"
@@ -2487,7 +2487,7 @@ msgstr "Expéditeurs de messages textes"
 #: app/templates/views/service-settings.html:189
 #: app/templates/views/service-settings/sms-prefix.html:7
 msgid "Start text messages with service name"
-msgstr "Commencer les messages textes avec le nom du service"
+msgstr "Commencer les messages textes par le nom du service"
 
 #: app/templates/views/service-settings.html:202
 #: app/templates/views/service-settings/set-international-sms.html:6
@@ -3338,7 +3338,7 @@ msgstr "Affiche seulement les 50 premiers messages."
 
 #: app/templates/views/api/keys.html:19
 msgid "You haven’t created any API keys yet"
-msgstr "Vous n’avez pas encore créé de clés de l’API "
+msgstr "Vous n’avez pas encore créé de clés API."
 
 #: app/templates/views/api/keys.html:51
 msgid "Revoked"
@@ -3352,7 +3352,7 @@ msgstr "Révoquer"
 #: app/templates/views/api/keys/create.html:10
 #: app/templates/views/api/keys/create.html:14
 msgid "Create an API key"
-msgstr "Créer une clé de l’API"
+msgstr "Créer une clé API"
 
 #: app/templates/views/api/safelist.html:19
 msgid "There was a problem with your safelist"
@@ -3429,7 +3429,7 @@ msgstr "Nom pour cette clé"
 #: app/templates/views/api/keys/show.html:6
 #: app/templates/views/api/keys/show.html:13
 msgid "New API key"
-msgstr "Nouvelle clé de l’API"
+msgstr "Nouvelle clé API"
 
 #: app/templates/views/api/keys/show.html:17
 msgid "Copy your key to somewhere safe."
@@ -3443,7 +3443,7 @@ msgstr ""
 
 #: app/templates/views/api/keys/show.html:29
 msgid "Back to API keys"
-msgstr "Retour aux clés de l’API"
+msgstr "Retour aux clés API"
 
 #: app/templates/views/check/column-errors.html:9
 msgid "a column called"
