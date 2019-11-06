@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-05 12:01-0700\n"
+"POT-Creation-Date: 2019-11-06 08:06-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -95,10 +95,28 @@ msgstr "Entrez votre mot de passe"
 msgid "Full name"
 msgstr "FR Full name"
 
-# French translations for PROJECT.
-# Copyright (C) 2019 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2019
+#: app/main/forms.py:434 app/templates/components/folder-path.html:25
+#: app/templates/main_nav.html:10
+msgid "Templates"
+msgstr "Modèles"
+
+#: app/main/forms.py:437
+msgid "Folders this team member can see"
+msgstr "FR Folders this team member can see"
+
+#: app/main/forms.py:440
+msgid "Sign in using"
+msgstr "FR Sign in using"
+
+#: app/main/forms.py:442 app/templates/views/service-settings.html:44
+#: app/templates/views/service-settings/set-auth-type.html:31
+msgid "Text message code"
+msgstr "Code par message texte"
+
+#: app/main/forms.py:443
+msgid "Email link"
+msgstr "FR Email link"
+
 #: app/main/forms.py:501
 msgid "Please enter security code"
 msgstr "Veuillez entrer le code de sécurité."
@@ -122,7 +140,7 @@ msgstr "Nom du modèle"
 #: app/main/forms.py:655 app/main/forms.py:818 app/main/forms.py:826
 #: app/main/views/dashboard.py:215 app/templates/views/signedout.html:135
 msgid "Message"
-msgstr "Message"
+msgstr "FR Message"
 
 #: app/main/forms.py:788
 msgid "Type of key"
@@ -140,7 +158,7 @@ msgstr "FR A key with this name already exists"
 #: app/templates/views/support/ask-question-give-feedback.html:7
 #: app/templates/views/support/ask-question-give-feedback.html:13
 msgid "Ask a question or give feedback"
-msgstr ""
+msgstr "FR Ask a question or give feedback"
 
 #: app/main/forms.py:816 app/main/forms.py:822
 #: app/templates/views/signedout.html:129
@@ -191,6 +209,7 @@ msgid "Off"
 msgstr "FR Off"
 
 #: app/main/forms.py:997 app/templates/views/check/ok.html:42
+#: app/templates/views/support/ask-question-give-feedback.html:28
 msgid "Send"
 msgstr "Envoyer"
 
@@ -397,6 +416,10 @@ msgstr "FR financial year"
 msgid "to"
 msgstr "à"
 
+#: app/main/views/manage_users.py:71
+msgid "Invite sent to"
+msgstr ""
+
 #: app/main/views/send.py:765
 msgid "Personalise this message"
 msgstr "FR Personalise this message"
@@ -406,6 +429,14 @@ msgstr "FR Personalise this message"
 #: app/templates/views/service-settings/name.html:15
 msgid "Change your service name"
 msgstr "FR Change your service name"
+
+#: app/main/views/service_settings.py:341
+msgid "Are you sure you want to delete"
+msgstr "FR Are you sure you want to delete"
+
+#: app/main/views/service_settings.py:341
+msgid "There’s no way to undo this."
+msgstr "FR There’s no way to undo this."
 
 #: app/main/views/service_settings.py:610
 msgid "Start all text messages with"
@@ -417,7 +448,7 @@ msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact
 
 #: app/main/views/templates.py:190
 msgid "All"
-msgstr ""
+msgstr "FR All"
 
 #: app/main/views/two_factor.py:25
 msgid "Email resent"
@@ -492,7 +523,7 @@ msgstr "Administrateur de la plateforme"
 
 #: app/templates/admin_template.html:47
 msgid "Sign out"
-msgstr "Déconnexion"
+msgstr "FR Sign out"
 
 #: app/templates/admin_template.html:58 app/templates/views/signin.html:7
 #: app/templates/views/signin.html:27
@@ -534,10 +565,6 @@ msgstr "Oui"
 #: app/templates/views/dashboard/dashboard.html:17
 msgid "Dashboard"
 msgstr "Tableau de bord"
-
-#: app/templates/components/folder-path.html:25 app/templates/main_nav.html:10
-msgid "Templates"
-msgstr "Modèles"
 
 #: app/templates/main_nav.html:14
 msgid "Uploaded files"
@@ -695,6 +722,30 @@ msgstr "FR remaining"
 #: app/templates/views/user-profile/security-keys.html:40
 msgid "Remove"
 msgstr "Retirer"
+
+#: app/templates/main_template.html:83
+msgid "folder"
+msgstr "fr folder"
+
+#: app/templates/main_template.html:84
+msgid "folders"
+msgstr "fr folders"
+
+#: app/templates/main_template.html:85
+msgid "All folders"
+msgstr "FR All folders"
+
+#: app/templates/main_template.html:86
+msgid "Choose folders"
+msgstr "FR Choose folders"
+
+#: app/templates/main_template.html:87
+msgid "All team members"
+msgstr ""
+
+#: app/templates/main_template.html:88
+msgid "Choose team members"
+msgstr ""
 
 #: app/templates/org_template.html:16
 #: app/templates/views/organisations/add-organisation.html:16
@@ -1289,8 +1340,8 @@ msgid ""
 "You’ll need to provide a bearer token, for security. We’ll add this to "
 "the authorisation header of the callback request."
 msgstr ""
-"FR You’ll need to provide a bearer token, for security. We’ll add this to "
-"the authorisation header of the callback request."
+"FR You’ll need to provide a bearer token, for security. We’ll add this to"
+" the authorisation header of the callback request."
 
 #: app/templates/views/callbacks.html:16
 msgid "The callback message is in JSON."
@@ -1306,9 +1357,9 @@ msgid ""
 "a receipt to your callback URL to tell you if we were able to deliver it "
 "or not."
 msgstr ""
-"FR When you send an email or text message through Notification, we can send "
-"a receipt to your callback URL to tell you if we were able to deliver it "
-"or not."
+"FR When you send an email or text message through Notification, we can "
+"send a receipt to your callback URL to tell you if we were able to "
+"deliver it or not."
 
 #: app/templates/views/callbacks.html:23 app/templates/views/callbacks.html:51
 #: app/templates/views/user-profile/add-security-keys.html:19
@@ -1361,8 +1412,8 @@ msgid ""
 "If your service receives text messages in Notification, we can forward "
 "them to your callback URL as soon as they arrive."
 msgstr ""
-"FR If your service receives text messages in Notification, we can forward "
-"them to your callback URL as soon as they arrive."
+"FR If your service receives text messages in Notification, we can forward"
+" them to your callback URL as soon as they arrive."
 
 #: app/templates/views/callbacks.html:50
 msgid "Callback message format"
@@ -2427,11 +2478,6 @@ msgstr "Méthode de connexion"
 msgid "Email link or text message code"
 msgstr "Lien courriel ou code par message texte"
 
-#: app/templates/views/service-settings.html:44
-#: app/templates/views/service-settings/set-auth-type.html:31
-msgid "Text message code"
-msgstr "Code par message texte"
-
 #: app/templates/views/service-settings.html:60
 msgid "Contact details"
 msgstr "Coordonnées"
@@ -2609,7 +2655,7 @@ msgstr "Reprendre le service"
 
 #: app/templates/views/signedout.html:21
 msgid "Send service updates and messages over email and SMS"
-msgstr "Envoyer des courriels et des messages textes á vos utilistateurs"
+msgstr "Envoyer des courriels et des messages textes à vos utilisateurs"
 
 #: app/templates/views/signedout.html:24
 msgid "Try Notify if you work in the federal government."
@@ -2639,7 +2685,7 @@ msgstr ""
 
 #: app/templates/views/signedout.html:62
 msgid "Manually send personalized messages to your users"
-msgstr "Envoyer manuellement des messages personnalisés à vos utilisateur"
+msgstr "Envoyer manuellement des messages personnalisés à vos utilisateurs"
 
 #: app/templates/views/signedout.html:63
 msgid ""
@@ -2680,15 +2726,14 @@ msgstr "Découvrez comment intégrer votre API"
 
 #: app/templates/views/signedout.html:106
 msgid "Control your content"
-msgstr "Gérez votre contenu"
+msgstr "Contrôler votre contenu"
 
 #: app/templates/views/signedout.html:107
 msgid ""
 "You don’t need to be a developer to create email or SMS templates for "
 "your users."
 msgstr ""
-"Vous n'avez pas besoin d'être développeur pour créer des modèles de "
-"courrier électronique ou SMS vos utilisateurs."
+"Vous n'avez pas besoin de connaissances techniques pour créer des modèles de courriels ou des messages textes."
 
 #: app/templates/views/signedout.html:108
 msgid ""
@@ -4141,11 +4186,11 @@ msgstr "FR Do you want a reply?"
 
 #: app/templates/views/support/ask-question-give-feedback.html:21
 msgid "Leave your details below if you’d like a response."
-msgstr ""
+msgstr "FR Leave your details below if you’d like a response."
 
 #: app/templates/views/support/ask-question-give-feedback.html:25
 msgid "We’ll reply to"
-msgstr ""
+msgstr "FR We’ll reply to"
 
 #: app/templates/views/templates/_move_to.html:26
 #: app/templates/views/templates/_move_to.html:28
@@ -4682,4 +4727,7 @@ msgstr "Clés d’essai"
 #~ msgstr ""
 #~ "FR Your team members can sign in with either a text message code\n"
 #~ "          or an email link."
+
+#~ msgid "delete"
+#~ msgstr "FR delete"
 
