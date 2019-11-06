@@ -82,3 +82,4 @@ environment.sh
 notify.code-workspace
 
 schedule-message.html
+venv-freeze/
