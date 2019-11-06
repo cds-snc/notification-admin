@@ -656,11 +656,12 @@ def delete_service_template(service_id, template_id):
             service_id, template['id']
         )
 
-        last_used_date = parse(last_used_notification['created_at']).replace(tzinfo=None)
-
-        human_readable_delta = get_human_readable_delta(last_used_date, datetime.utcnow())
-
-        last_used_text = _l('more than seven days') if not last_used_notification else human_readable_delta
+        last_used_text = ""
+        if not last_used_notification:
+            last_used_text = _l('more than seven days')
+        else:
+            last_used_date = parse(last_used_notification['created_at']).replace(tzinfo=None)
+            last_used_text = get_human_readable_delta(last_used_date, datetime.utcnow())
 
         message = '{} {} {}'.format(_l("This template was last used"), last_used_text, _l("ago."))
 
