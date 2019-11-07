@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-07 13:58-0500\n"
+"POT-Creation-Date: 2019-11-07 14:49-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -2164,6 +2164,11 @@ msgstr "Inviter une personne à se joindre à votre équipe"
 #: app/templates/views/manage-users.html:43
 msgid "invited"
 msgstr "invité"
+
+#: app/templates/views/manage-users.html:45
+#: app/templates/views/organisations/organisation/users/index.html:35
+msgid "cancelled invite"
+msgstr "FR cancelled invite"
 
 #: app/templates/views/manage-users.html:47
 #: app/templates/views/organisations/organisation/users/index.html:37
