@@ -131,7 +131,7 @@ def choose_template(service_id, template_type='all', template_folder_id=None):
             flash(e.message)
 
     if 'templates_and_folders' in templates_and_folders_form.errors:
-        flash('Select at least one template or folder')
+        flash(_('Select at least one template or folder'))
 
     initial_state = request.args.get('initial_state')
     if request.method == 'GET' and initial_state:
@@ -188,10 +188,10 @@ def process_folder_management_form(form, current_folder_id):
 
 def get_template_nav_label(value):
     return {
-        'all': _('All'),
-        'sms': _('Text message'),
-        'email': _('Email'),
-        'letter': _('Letter'),
+        'all': _l('All'),
+        'sms': _l('Text message'),
+        'email': _l('Email'),
+        'letter': _l('Letter'),
     }[value]
 
 
@@ -381,7 +381,7 @@ def copy_template(service_id, template_id):
         'views/edit-{}-template.html'.format(template['template_type']),
         form=form,
         template=template,
-        heading_action='Add',
+        heading_action=_l('Add'),
         services=current_user.service_ids,
     )
 
@@ -459,7 +459,7 @@ def delete_template_folder(service_id, template_folder_id):
     if len(current_service.get_template_folders_and_templates(
         template_type="all", template_folder_id=template_folder_id
     )) > 0:
-        flash("You must empty this folder before you can delete it", 'info')
+        flash(_l("You must empty this folder before you can delete it"), 'info')
         return redirect(
             url_for(
                 '.choose_template', service_id=service_id, template_type="all", template_folder_id=template_folder_id
@@ -475,9 +475,9 @@ def delete_template_folder(service_id, template_folder_id):
                 url_for('.choose_template', service_id=service_id, template_folder_id=template_folder['parent_id'])
             )
         except HTTPError as e:
-            msg = "Folder is not empty"
+            msg = _l("Folder is not empty")
             if e.status_code == 400 and msg in e.message:
-                flash("You must empty this folder before you can delete it", 'info')
+                flash(_("You must empty this folder before you can delete it"), 'info')
                 return redirect(
                     url_for(
                         '.choose_template',
@@ -489,7 +489,7 @@ def delete_template_folder(service_id, template_folder_id):
             else:
                 abort(500, e)
     else:
-        flash("Are you sure you want to delete the ‘{}’ folder?".format(template_folder['name']), 'delete')
+        flash("{} ‘{}’ {}".format(_l("Are you sure you want to delete the"), template_folder['name'], _l("folder?")), 'delete')
         return manage_template_folder(service_id, template_folder_id)
 
 
@@ -634,7 +634,7 @@ def edit_service_template(service_id, template_id):
             'views/edit-{}-template.html'.format(template['template_type']),
             form=form,
             template=template,
-            heading_action='Edit',
+            heading_action=_l('Edit'),
         )
 
 
@@ -719,7 +719,7 @@ def redact_template(service_id, template_id):
     service_api_client.redact_service_template(service_id, template_id)
 
     flash(
-        'Personalised content will be hidden for messages sent with this template',
+        _('Personalised content will be hidden for messages sent with this template'),
         'default_with_tick'
     )
 
@@ -835,7 +835,7 @@ def get_template_sender_form_dict(service_id, template):
 def get_human_readable_delta(from_time, until_time):
     delta = until_time - from_time
     if delta < timedelta(seconds=60):
-        return 'under a minute'
+        return _('under a minute')
     elif delta < timedelta(hours=1):
         minutes = int(delta.seconds / 60)
         return '{} minute{}'.format(minutes, '' if minutes == 1 else 's')

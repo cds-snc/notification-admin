@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-06 12:56-0500\n"
+"POT-Creation-Date: 2019-11-07 07:21-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -430,7 +430,7 @@ msgstr "FR Personalise this message"
 msgid "Change your service name"
 msgstr "FR Change your service name"
 
-#: app/main/views/service_settings.py:341 app/main/views/templates.py:671
+#: app/main/views/service_settings.py:341 app/main/views/templates.py:674
 msgid "Are you sure you want to delete"
 msgstr "FR Are you sure you want to delete"
 
@@ -446,21 +446,60 @@ msgstr "FR Start all text messages with"
 msgid "The email address or password you entered is incorrect."
 msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact."
 
+#: app/main/views/templates.py:134
+msgid "Select at least one template or folder"
+msgstr "FR Select at least one template or folder"
+
 #: app/main/views/templates.py:191
 msgid "All"
 msgstr "FR All"
 
-#: app/main/views/templates.py:658
-msgid "This template was last used"
-msgstr "FR This template was last used"
+#: app/main/views/templates.py:384
+#: app/templates/views/service-settings/email-reply-to/add.html:31
+msgid "Add"
+msgstr "FR Add"
 
-#: app/main/views/templates.py:659
+#: app/main/views/templates.py:462 app/main/views/templates.py:480
+msgid "You must empty this folder before you can delete it"
+msgstr "FR You must empty this folder before you can delete it"
+
+#: app/main/views/templates.py:478
+msgid "Folder is not empty"
+msgstr "FR Folder is not empty"
+
+#: app/main/views/templates.py:492
+msgid "Are you sure you want to delete the"
+msgstr "FR Are you sure you want to delete the"
+
+#: app/main/views/templates.py:492
+msgid "folder?"
+msgstr "FR folder?"
+
+#: app/main/views/templates.py:637
+msgid "Edit"
+msgstr "FR Edit"
+
+#: app/main/views/templates.py:661
 msgid "more than seven days"
 msgstr "FR more than seven days"
 
-#: app/main/views/templates.py:662
+#: app/main/views/templates.py:666
+msgid "This template was last used"
+msgstr "FR This template was last used"
+
+#: app/main/views/templates.py:666
 msgid "ago."
 msgstr "FR ago."
+
+#: app/main/views/templates.py:722
+msgid "Personalised content will be hidden for messages sent with this template"
+msgstr ""
+"FR Personalised content will be hidden for messages sent with this "
+"template"
+
+#: app/main/views/templates.py:838
+msgid "under a minute"
+msgstr "FR under a minute"
 
 #: app/main/views/two_factor.py:25
 msgid "Email resent"
@@ -501,15 +540,15 @@ msgstr "Gérer l’intégration de l’interface de programmation d’applicatio
 msgid "default"
 msgstr "Par défaut"
 
-#: app/models/template_list.py:135
+#: app/models/template_list.py:134
 msgid "Email template"
 msgstr "Modèle de courriel"
 
-#: app/models/template_list.py:136
+#: app/models/template_list.py:135
 msgid "Text message template"
 msgstr "Modèle de message texte"
 
-#: app/models/template_list.py:137
+#: app/models/template_list.py:136
 msgid "Letter template"
 msgstr "Modèle de lettre"
 
@@ -1656,28 +1695,25 @@ msgid "Direct connection to API"
 msgstr ""
 
 #: app/templates/views/edit-email-template.html:9
+#: app/templates/views/edit-email-template.html:13
 msgid "email template"
 msgstr "modèle de courriel"
 
-#: app/templates/views/edit-email-template.html:13
-msgid "{} email template"
-msgstr ""
-
-#: app/templates/views/edit-email-template.html:23
-#: app/templates/views/edit-sms-template.html:21
+#: app/templates/views/edit-email-template.html:24
+#: app/templates/views/edit-sms-template.html:22
 msgid "Formatting Guide"
 msgstr "Guide de mise en forme"
 
-#: app/templates/views/edit-email-template.html:25
+#: app/templates/views/edit-email-template.html:26
 msgid "Your recipients won’t see this:"
 msgstr "Vos destinataires ne verront pas le nom du modèle."
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:37
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:35
 #: app/templates/views/api/safelist.html:68
-#: app/templates/views/edit-email-template.html:32
+#: app/templates/views/edit-email-template.html:33
 #: app/templates/views/edit-letter-template.html:20
-#: app/templates/views/edit-sms-template.html:33
+#: app/templates/views/edit-sms-template.html:34
 #: app/templates/views/manage-users/edit-user-email.html:21
 #: app/templates/views/organisations/add-organisation.html:31
 #: app/templates/views/service-settings/email-reply-to/edit.html:9
@@ -1695,14 +1731,11 @@ msgid "letter template"
 msgstr "modèle de lettre"
 
 #: app/templates/views/edit-sms-template.html:9
+#: app/templates/views/edit-sms-template.html:13
 msgid "text message template"
 msgstr "modèle de message texte"
 
-#: app/templates/views/edit-sms-template.html:13
-msgid "{} text message template"
-msgstr "{} modèle de message texte"
-
-#: app/templates/views/edit-sms-template.html:23
+#: app/templates/views/edit-sms-template.html:24
 msgid "Your recipients won’t see this"
 msgstr "Vos destinataires ne verront pas ce nom."
 
@@ -2515,6 +2548,7 @@ msgstr "Non défini"
 
 #: app/templates/views/service-settings.html:114
 #: app/templates/views/service-settings.html:178
+#: app/templates/views/templates/choose.html:61
 msgid "Manage"
 msgstr "Configurer"
 
@@ -4160,10 +4194,6 @@ msgstr ""
 "FR This should be a shared inbox managed by your team, not your own email"
 " address."
 
-#: app/templates/views/service-settings/email-reply-to/add.html:31
-msgid "Add"
-msgstr "FR Add"
-
 #: app/templates/views/service-settings/email-reply-to/edit.html:8
 msgid "Change reply-to email address"
 msgstr "FR Change reply-to email address"
@@ -4256,16 +4286,24 @@ msgid "You need to create a template to send"
 msgstr "Vous devez créer un modèle pour envoyer"
 
 #: app/templates/views/templates/choose.html:29
+#: app/templates/views/templates/choose.html:41
 msgid "emails, text messages or letters"
 msgstr "des courriels, des messages textes ou des lettres."
 
 #: app/templates/views/templates/choose.html:31
+#: app/templates/views/templates/choose.html:43
 msgid "emails or text messages"
 msgstr "des courriels ou des messages textes"
 
 #: app/templates/views/templates/choose.html:34
 msgid "You can also create folders to organize your templates."
 msgstr "Vous pouvez aussi créer des dossiers pour classer vos modèles."
+
+#: app/templates/views/templates/choose.html:39
+msgid "You need to ask your service manager to add templates before you can send"
+msgstr ""
+"FR You need to ask your service manager to add templates before you can "
+"send"
 
 #: app/templates/views/templates/template.html:51
 msgid "Last edited"
@@ -4743,4 +4781,10 @@ msgstr "Clés d’essai"
 
 #~ msgid "delete"
 #~ msgstr "FR delete"
+
+#~ msgid "{} email template"
+#~ msgstr ""
+
+#~ msgid "{} text message template"
+#~ msgstr "{} modèle de message texte"
 
