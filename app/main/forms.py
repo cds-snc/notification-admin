@@ -161,16 +161,16 @@ def international_phone_number(label=_l('Mobile number')):
 def password(label=_l('Password')):
     return PasswordField(label,
                          validators=[DataRequired(message=_l('Can’t be empty')),
-                                     Length(8, 255, message='Must be at least 8 characters'),
-                                     Blacklist(message='Choose a password that’s harder to guess')])
+                                     Length(8, 255, message=_l('Must be at least 8 characters')),
+                                     Blacklist(message=_l('Choose a password that’s harder to guess'))])
 
 
 class SMSCode(StringField):
     validators = [
         DataRequired(message=_l('Can’t be empty')),
-        Regexp(regex=r'^\d+$', message='Numbers only'),
-        Length(min=5, message='Not enough numbers'),
-        Length(max=5, message='Too many numbers'),
+        Regexp(regex=r'^\d+$', message=_l('Numbers only')),
+        Length(min=5, message=_l('Not enough numbers')),
+        Length(max=5, message=_l('Too many numbers')),
     ]
 
     def __call__(self, **kwargs):
@@ -327,7 +327,7 @@ class HiddenFieldWithNoneOption(FieldWithNoneOption, HiddenField):
 
 
 class RadioFieldWithRequiredMessage(RadioField):
-    def __init__(self, *args, required_message='Not a valid choice', **kwargs):
+    def __init__(self, *args, required_message=_l('Not a valid choice'), **kwargs):
         self.required_message = required_message
         super().__init__(*args, **kwargs)
 
@@ -394,7 +394,7 @@ class RegisterUserFromInviteForm(RegisterUserForm):
             ),
         )
 
-    mobile_number = InternationalPhoneNumber('Mobile number', validators=[])
+    mobile_number = InternationalPhoneNumber(_l('Mobile number'), validators=[])
     service = HiddenField('service')
     email_address = HiddenField('email_address')
     auth_type = HiddenField('auth_type', validators=[DataRequired()])
@@ -416,7 +416,7 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
         validators=[DataRequired(message=_l('Can’t be empty'))]
     )
 
-    mobile_number = InternationalPhoneNumber('Mobile number', validators=[DataRequired(message=_l('Can’t be empty'))])
+    mobile_number = InternationalPhoneNumber(_l('Mobile number'), validators=[DataRequired(message=_l('Can’t be empty'))])
     password = password()
     organisation = HiddenField('organisation')
     email_address = HiddenField('email_address')
@@ -478,7 +478,7 @@ class InviteUserForm(PermissionsForm):
 
     def validate_email_address(self, field):
         if field.data.lower() == self.invalid_email_address:
-            raise ValidationError("You can’t send an invitation to yourself")
+            raise ValidationError(_l("You can’t send an invitation to yourself"))
 
 
 class InviteOrgUserForm(StripWhitespaceForm):
@@ -490,7 +490,7 @@ class InviteOrgUserForm(StripWhitespaceForm):
 
     def validate_email_address(self, field):
         if field.data.lower() == self.invalid_email_address:
-            raise ValidationError("You can’t send an invitation to yourself")
+            raise ValidationError(_l("You can’t send an invitation to yourself"))
 
 
 class TwoFactorForm(StripWhitespaceForm):
@@ -590,7 +590,7 @@ class OrganisationDomainsForm(StripWhitespaceForm):
         ),
         min_entries=20,
         max_entries=20,
-        label="Domain names"
+        label=_l("Domain names")
     )
 
 
@@ -600,12 +600,12 @@ class CreateServiceForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l('Can’t be empty'))
         ])
-    organisation_type = OrganisationTypeField('Who runs this service?')
+    organisation_type = OrganisationTypeField(_l('Who runs this service?'))
 
 
 class CreateNhsServiceForm(CreateServiceForm):
     organisation_type = OrganisationTypeField(
-        'Who runs this service?',
+        _l('Who runs this service?'),
         include_only={'nhs_central', 'nhs_local', 'nhs_gp'},
     )
 
@@ -631,7 +631,7 @@ class NewOrganisationForm(
 
 class FreeSMSAllowance(StripWhitespaceForm):
     free_sms_allowance = IntegerField(
-        'Numbers of text message fragments per year',
+        _l('Numbers of text message fragments per year'),
         validators=[
             DataRequired(message=_l('Can’t be empty'))
         ]
@@ -643,11 +643,11 @@ class ConfirmPasswordForm(StripWhitespaceForm):
         self.validate_password_func = validate_password_func
         super(ConfirmPasswordForm, self).__init__(*args, **kwargs)
 
-    password = PasswordField(u'Enter password')
+    password = PasswordField(_l(u'Enter password'))
 
     def validate_password(self, field):
         if not self.validate_password_func(field.data):
-            raise ValidationError('Invalid password')
+            raise ValidationError(_l('Invalid password'))
 
 
 class BaseTemplateForm(StripWhitespaceForm):
@@ -663,10 +663,10 @@ class BaseTemplateForm(StripWhitespaceForm):
         ]
     )
     process_type = RadioField(
-        'Use priority queue?',
+        _l('Use priority queue?'),
         choices=[
-            ('priority', 'Yes'),
-            ('normal', 'No'),
+            ('priority', _l('Yes')),
+            ('normal', _l('No')),
         ],
         validators=[DataRequired()],
         default='normal'
