@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-07 07:21-0500\n"
+"POT-Creation-Date: 2019-11-07 09:57-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -336,6 +336,7 @@ msgstr "FR Not available because your service is in "
 #: app/templates/partials/check/not-allowed-to-send-to.html:10
 #: app/templates/partials/check/too-many-messages.html:11
 #: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
+#: app/templates/views/pricing/index.html:29
 msgid "trial mode"
 msgstr "mode d’essai,"
 
@@ -497,10 +498,6 @@ msgstr ""
 "FR Personalised content will be hidden for messages sent with this "
 "template"
 
-#: app/main/views/templates.py:838
-msgid "under a minute"
-msgstr "FR under a minute"
-
 #: app/main/views/two_factor.py:25
 msgid "Email resent"
 msgstr "Courriel renvoyé"
@@ -540,15 +537,15 @@ msgstr "Gérer l’intégration de l’interface de programmation d’applicatio
 msgid "default"
 msgstr "Par défaut"
 
-#: app/models/template_list.py:134
+#: app/models/template_list.py:135
 msgid "Email template"
 msgstr "Modèle de courriel"
 
-#: app/models/template_list.py:135
+#: app/models/template_list.py:136
 msgid "Text message template"
 msgstr "Modèle de message texte"
 
-#: app/models/template_list.py:136
+#: app/models/template_list.py:137
 msgid "Letter template"
 msgstr "Modèle de lettre"
 
@@ -1805,6 +1802,7 @@ msgstr ""
 #: app/templates/views/features.html:21
 #: app/templates/views/features/emails.html:13
 #: app/templates/views/features/text-messages.html:13
+#: app/templates/views/pricing/index.html:23
 #: app/templates/views/register-from-invite.html:7
 #: app/templates/views/register-from-invite.html:14
 #: app/templates/views/register-from-org-invite.html:7
@@ -2135,6 +2133,7 @@ msgstr "la documentation technique) :"
 #: app/templates/views/features/emails.html:5
 #: app/templates/views/features/emails.html:10
 #: app/templates/views/message-status.html:23
+#: app/templates/views/pricing/index.html:31
 msgid "Emails"
 msgstr "Courriels"
 
@@ -2191,6 +2190,7 @@ msgstr ""
 #: app/templates/views/features/text-messages.html:5
 #: app/templates/views/features/text-messages.html:10
 #: app/templates/views/message-status.html:65
+#: app/templates/views/pricing/index.html:34
 msgid "Text messages"
 msgstr "Messages textes"
 
@@ -3342,6 +3342,7 @@ msgstr ""
 "financière."
 
 #: app/templates/views/agreement/service-agreement-choose.html:26
+#: app/templates/views/pricing/how-to-pay.html:53
 #: app/templates/views/service-settings/set-auth-type.html:37
 msgid "Contact us"
 msgstr "Communiquez avec nous"
@@ -3836,10 +3837,13 @@ msgstr "Vous pouvez ajouter des adresses de réponse dans vos réglages de servi
 
 #: app/templates/views/features/emails.html:29
 #: app/templates/views/features/text-messages.html:26
+#: app/templates/views/pricing/index.html:8
+#: app/templates/views/pricing/index.html:13
 msgid "Pricing"
 msgstr "Tarification"
 
 #: app/templates/views/features/emails.html:30
+#: app/templates/views/pricing/index.html:32
 #: app/templates/views/service-settings/set-email.html:20
 msgid "It’s free to send emails through Notification."
 msgstr "L'envoi de courriels avec Notification est gratuit."
@@ -4070,6 +4074,160 @@ msgstr ""
 #: app/templates/views/platform-admin/usage_for_all_services.html:15
 #: app/templates/views/platform-admin/usage_for_all_services.html:16
 msgid "Enter start date in format YYYY-MM-DD"
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:5
+msgid "How to pay"
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:13
+msgid "Invoices"
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:17
+msgid "We’ll send your organisation an invoice each quarter if you:"
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:21
+msgid "exceed the"
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:21
+msgid "free text message allowance"
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:25
+msgid ""
+"If your organisation has more than one service, you'll see a breakdown of"
+" each service on your invoice."
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:29
+msgid ""
+"If the value of an invoice is less than £250 (before <abbr title=\"Value "
+"Added Tax\">VAT</abbr>), we’ll add it to the total for the next quarter "
+"to save time and effort."
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:33
+msgid "You can pay by BACS, debit card, or credit card."
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:37
+msgid "Purchase orders"
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:41
+msgid ""
+"If your organisation’s estimated spend is more than £500 per year (before"
+" <abbr title=\"Value Added Tax\">VAT</abbr>), you need to send us a "
+"purchase order (PO)."
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:45
+msgid ""
+"Your organisation should raise a single <abbr title=\"purchase "
+"order\">PO</abbr> for the estimated cost of all its services. You can "
+"update the PO anytime if your usage increases."
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:49
+msgid ""
+"You may need to set up the Cabinet Office as a supplier before you can "
+"raise a <abbr title=\"purchase order\">PO</abbr>."
+msgstr ""
+
+#: app/templates/views/pricing/how-to-pay.html:53
+msgid "if you need help raising a purchase order."
+msgstr ""
+
+#: app/templates/views/pricing/index.html:14
+msgid "To use Notification, there’s:"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:16
+msgid "no monthly charge"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:17
+msgid "no setup fee"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:18
+msgid "no procurement cost"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:23
+msgid "then set up as many different services as you need to."
+msgstr ""
+
+#: app/templates/views/pricing/index.html:25
+msgid "You can set up as many different services as you need to."
+msgstr ""
+
+#: app/templates/views/pricing/index.html:29
+msgid "When you set up a new service it will start in"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:35
+msgid ""
+"Each service you set up in Notification has a free annual allowance. The "
+"allowance is:"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:37
+msgid "250,000 free text messages for central government services"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:38
+msgid "25,000 free text messages for other public sector services"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:41
+msgid "Long text messages"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:42
+msgid ""
+"If a text message is longer than 160 characters (including spaces), it’ll"
+" be charged as more than one message:"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:45
+#: app/templates/views/pricing/index.html:66
+msgid "Text message pricing"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:63
+msgid ""
+"Long text messages containing characters (Â, â, Ê, ê, Î, î, Ô, ô, Û, û, "
+"Ŵ, ŵ, Ŷ, and ŷ) are charged differently:"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:67
+msgid "Message length"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:67
+msgid "Charge"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:85
+msgid "Sending text messages to international numbers"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:86
+msgid ""
+"It might cost more to send text messages to international numbers than UK"
+" ones, depending on the country."
+msgstr ""
+
+#: app/templates/views/pricing/index.html:88
+msgid "International text message rates"
+msgstr ""
+
+#: app/templates/views/pricing/index.html:90
+msgid "Search by country name or code"
 msgstr ""
 
 #: app/templates/views/service-settings/email_reply_to.html:23
@@ -4787,4 +4945,7 @@ msgstr "Clés d’essai"
 
 #~ msgid "{} text message template"
 #~ msgstr "{} modèle de message texte"
+
+#~ msgid "under a minute"
+#~ msgstr "FR under a minute"
 
