@@ -7,13 +7,14 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
+from jinja2 import Environment, FileSystemLoader
 
 import ago
 import dateutil
 import pyexcel
 import pyexcel_xlsx
 from dateutil import parser
-from flask import abort, current_app, redirect, request, session, url_for
+from flask import Markup, abort, current_app, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
 from notifications_utils.field import Field
 from notifications_utils.formatters import make_quotes_smart
@@ -25,6 +26,7 @@ from notifications_utils.template import (
     LetterImageTemplate,
     LetterPreviewTemplate,
     SMSPreviewTemplate,
+    get_html_email_body,
 )
 from notifications_utils.timezones import (
     convert_utc_to_est,
@@ -41,6 +43,13 @@ DELIVERED_STATUSES = ['delivered', 'sent', 'returned-letter']
 FAILURE_STATUSES = ['failed', 'temporary-failure', 'permanent-failure',
                     'technical-failure', 'virus-scan-failed', 'validation-failed']
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
+
+template_env = Environment(loader=FileSystemLoader(
+    path.join(
+        path.dirname(path.abspath(__file__)),
+        'templates',
+    )
+))
 
 with open('{}/email_domains.txt'.format(
     os.path.dirname(os.path.realpath(__file__))
@@ -349,6 +358,35 @@ def get_template(
     sms_sender=None,
 ):
     if 'email' == template['template_type']:
+        # jinja_template = template_env.get_template('views/templates/email_preview_template.html')
+        # return Markup(jinja_template.render({
+        #     'body': template["content"],
+        #     'subject': template["subject"],
+        #     'from_name': "hi",#escape_html(self.from_name),
+        #     'from_address': "hi", #self.from_address,
+        #     'reply_to': "hi",#self.reply_to,
+        #     'recipient': "hi", #Field("((email address))", self.values, with_brackets=False),
+        #     'show_recipient': show_recipient
+        # }))
+        # print("hi")
+        # print(render_template(
+        #     'views/templates/email_preview_template.html',
+        #     **template,
+        #     body=get_html_email_body(
+        #         template["content"], {}, redact_missing_personalisation=redact_missing_personalisation
+        #     ),
+        #     from_name=service.name,
+        #     show_recipient=show_recipient,
+        #     redact_missing_personalisation=redact_missing_personalisation,
+        # ))
+        # return render_template(
+        #     'views/templates/email_preview_template.html',
+        #     **template,
+        #     body=template["content"],
+        #     from_name=service.name,
+        #     show_recipient=show_recipient,
+        #     redact_missing_personalisation=redact_missing_personalisation,
+        # )
         return EmailPreviewTemplate(
             template,
             from_name=service.name,
