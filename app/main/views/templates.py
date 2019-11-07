@@ -48,19 +48,7 @@ form_objects = {
 }
 
 
-@main.route("/services/<service_id>/templates/<uuid:template_id>")
-@user_has_permissions()
-def view_template(service_id, template_id):
-    template = current_service.get_template(template_id)
-    template_folder = current_service.get_template_folder(template['folder'])
-
-    user_has_template_permission = current_user.has_template_folder_permission(template_folder)
-
-    if should_skip_template_page(template['template_type']):
-        return redirect(url_for(
-            '.send_one_off', service_id=service_id, template_id=template_id
-        ))
-
+def get_email_preview_template(template, template_id, service_id):
     email_preview_template = get_template(
         template,
         current_service,
@@ -89,11 +77,26 @@ def view_template(service_id, template_id):
 
     # this regex finds test inside []
     template_str = re.sub(r"\[[^]]*\]", translate_brackets, template_str)
+    email_preview_template.html = template_str
+    return email_preview_template
+
+
+@main.route("/services/<service_id>/templates/<uuid:template_id>")
+@user_has_permissions()
+def view_template(service_id, template_id):
+    template = current_service.get_template(template_id)
+    template_folder = current_service.get_template_folder(template['folder'])
+
+    user_has_template_permission = current_user.has_template_folder_permission(template_folder)
+
+    if should_skip_template_page(template['template_type']):
+        return redirect(url_for(
+            '.send_one_off', service_id=service_id, template_id=template_id
+        ))
 
     return render_template(
         'views/templates/template.html',
-        template=email_preview_template,
-        template_str=template_str,
+        template=get_email_preview_template(template, template_id, service_id),
         template_postage=template["postage"],
         user_has_template_permission=user_has_template_permission,
     )
@@ -694,17 +697,7 @@ def delete_service_template(service_id, template_id):
     flash(["{} ‘{}’?".format(_l("Are you sure you want to delete"), template['name']), message], 'delete')
     return render_template(
         'views/templates/template.html',
-        template=get_template(
-            template,
-            current_service,
-            letter_preview_url=url_for(
-                '.view_letter_template_preview',
-                service_id=service_id,
-                template_id=template['id'],
-                filetype='png',
-            ),
-            show_recipient=True,
-        ),
+        template=get_email_preview_template(template, template['id'], service_id),
         user_has_template_permission=True,
     )
 
@@ -716,17 +709,7 @@ def confirm_redact_template(service_id, template_id):
 
     return render_template(
         'views/templates/template.html',
-        template=get_template(
-            template,
-            current_service,
-            letter_preview_url=url_for(
-                '.view_letter_template_preview',
-                service_id=service_id,
-                template_id=template_id,
-                filetype='png',
-            ),
-            show_recipient=True,
-        ),
+        template=get_email_preview_template(template, template['id'], service_id),
         user_has_template_permission=True,
         show_redaction_message=True,
     )
