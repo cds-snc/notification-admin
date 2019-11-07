@@ -13,7 +13,8 @@ from flask import (
     session,
     url_for,
 )
-from flask_babel import _, lazy_gettext as _l
+from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils import SMS_CHAR_COUNT_LIMIT
@@ -438,16 +439,16 @@ def send_test_step(service_id, template_id, step_index):
         and not (template.template_type == 'sms' and current_user.mobile_number is None)
         and current_user.has_permissions('manage_templates', 'manage_service')
     ):
-        
+
         type = first_column_headings[template.template_type][0]
 
         if(type == "email address"):
-            type= _l("email address")
+            type = _l("email address")
         elif(type == "phone number"):
-            type= _l("phone number")
-        
+            type = _l("phone number")
+
         skip_link = (
-            '{} {}'.format(_l("Use my"),type),
+            '{} {}'.format(_l("Use my"), type),
             url_for('.send_test', service_id=service_id, template_id=template.id),
         )
     else:

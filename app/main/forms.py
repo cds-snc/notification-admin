@@ -111,13 +111,11 @@ class MultiCheckboxField(SelectMultipleField):
 
 
 def email_address(label=_l('Email address'), gov_user=True, required=True):
-
-    
     if(label == "email address"):
-       label = _l("email address")
+        label = _l("email address")
     elif (label == "phone number"):
         label = _l("phone number")
-    
+
     validators = [
         ValidEmail(),
     ]
