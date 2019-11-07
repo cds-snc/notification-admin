@@ -14,6 +14,7 @@ from flask import (
     url_for,
 )
 from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils import SMS_CHAR_COUNT_LIMIT
@@ -222,11 +223,11 @@ def set_sender(service_id, template_id):
         sender_choices=sender_context['value_and_label'],
         sender_label=sender_context['description']
     )
-    option_hints = {sender_context['default_id']: '(Default)'}
+    option_hints = {sender_context['default_id']: _l('(Default)')}
     if sender_context.get('receives_text_message', None):
-        option_hints.update({sender_context['receives_text_message']: '(Receives replies)'})
+        option_hints.update({sender_context['receives_text_message']: _l('(Receives replies)')})
     if sender_context.get('default_and_receives', None):
-        option_hints = {sender_context['default_and_receives']: '(Default and receives replies)'}
+        option_hints = {sender_context['default_and_receives']: _l('(Default and receives replies)')}
 
     if form.validate_on_submit():
         session['sender_id'] = form.sender.data
@@ -246,18 +247,18 @@ def set_sender(service_id, template_id):
 def get_sender_context(sender_details, template_type):
     context = {
         'email': {
-            'title': 'Where should replies come back to?',
-            'description': 'Where should replies come back to?',
+            'title': _l('Where should replies come back to?'),
+            'description': _l('Where should replies come back to?'),
             'field_name': 'email_address'
         },
         'letter': {
-            'title': 'Send to one recipient',
-            'description': 'What should appear in the top right of the letter?',
+            'title': _l('Send to one recipient'),
+            'description': _l('What should appear in the top right of the letter?'),
             'field_name': 'contact_block'
         },
         'sms': {
-            'title': 'Who should the message come from?',
-            'description': 'Who should the message come from?',
+            'title': _l('Who should the message come from?'),
+            'description': _l('Who should the message come from?'),
             'field_name': 'sms_sender'
         }
     }[template_type]
@@ -438,8 +439,16 @@ def send_test_step(service_id, template_id, step_index):
         and not (template.template_type == 'sms' and current_user.mobile_number is None)
         and current_user.has_permissions('manage_templates', 'manage_service')
     ):
+
+        type = first_column_headings[template.template_type][0]
+
+        if(type == "email address"):
+            type = _l("email address")
+        elif(type == "phone number"):
+            type = _l("phone number")
+
         skip_link = (
-            'Use my {}'.format(first_column_headings[template.template_type][0]),
+            '{} {}'.format(_l("Use my"), type),
             url_for('.send_test', service_id=service_id, template_id=template.id),
         )
     else:
@@ -759,9 +768,9 @@ def all_placeholders_in_session(placeholders):
 
 def get_send_test_page_title(template_type, help_argument, entering_recipient, name=None):
     if help_argument:
-        return 'Example text message'
+        return _('Example text message')
     if entering_recipient:
-        return 'Send ‘{}’'.format(name)
+        return '{} ‘{}’'.format(_l("Send"), name)
     return _('Personalise this message')
 
 

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-07 09:57-0500\n"
+"POT-Creation-Date: 2019-11-07 13:04-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -60,247 +60,286 @@ msgstr "FR Phone number doesn’t exist"
 msgid "Sent"
 msgstr "FR Sent"
 
-#: app/main/forms.py:113 app/main/forms.py:362 app/main/forms.py:830
-#: app/main/forms.py:897 app/templates/views/user-profile.html:35
+#: app/main/forms.py:113 app/main/forms.py:368 app/main/forms.py:836
+#: app/main/forms.py:903 app/templates/views/user-profile.html:35
 msgid "Email address"
 msgstr "Adresse courriel"
 
-#: app/main/forms.py:123 app/main/forms.py:147 app/main/forms.py:153
-#: app/main/forms.py:159 app/main/forms.py:166 app/main/forms.py:364
-#: app/main/forms.py:374 app/main/forms.py:400 app/main/forms.py:412
-#: app/main/forms.py:415 app/main/forms.py:525 app/main/forms.py:533
-#: app/main/forms.py:552 app/main/forms.py:568 app/main/forms.py:597
-#: app/main/forms.py:613 app/main/forms.py:632 app/main/forms.py:652
-#: app/main/forms.py:657 app/main/forms.py:815 app/main/forms.py:930
-#: app/main/forms.py:1218 app/main/forms.py:1223 app/main/forms.py:1231
-#: app/main/forms.py:1236 app/main/forms.py:1286 app/main/forms.py:1393
-#: app/main/forms.py:1404 app/main/forms.py:1569
+#: app/main/forms.py:117 app/main/views/send.py:445
+#: app/templates/components/message-count-label.html:46
+#: app/templates/partials/check/too-many-messages.html:24
+#: app/templates/views/api/safelist.html:55
+msgid "email address"
+msgstr "adresse courriel"
+
+#: app/main/forms.py:119 app/main/views/send.py:447
+#: app/templates/components/message-count-label.html:40
+#: app/templates/partials/check/too-many-messages.html:26
+#: app/templates/views/api/safelist.html:61
+msgid "phone number"
+msgstr "numéro de téléphone"
+
+#: app/main/forms.py:129 app/main/forms.py:153 app/main/forms.py:159
+#: app/main/forms.py:165 app/main/forms.py:172 app/main/forms.py:370
+#: app/main/forms.py:380 app/main/forms.py:406 app/main/forms.py:418
+#: app/main/forms.py:421 app/main/forms.py:531 app/main/forms.py:539
+#: app/main/forms.py:558 app/main/forms.py:574 app/main/forms.py:603
+#: app/main/forms.py:619 app/main/forms.py:638 app/main/forms.py:658
+#: app/main/forms.py:663 app/main/forms.py:821 app/main/forms.py:936
+#: app/main/forms.py:1224 app/main/forms.py:1229 app/main/forms.py:1237
+#: app/main/forms.py:1242 app/main/forms.py:1292 app/main/forms.py:1399
+#: app/main/forms.py:1410 app/main/forms.py:1575
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
 
-#: app/main/forms.py:150 app/templates/views/user-profile.html:46
+#: app/main/forms.py:156 app/templates/views/user-profile.html:46
 msgid "Mobile number"
 msgstr "Téléphone cellulaire"
 
-#: app/main/forms.py:157 app/main/forms.py:367
+#: app/main/forms.py:163 app/main/forms.py:373
 #: app/templates/views/user-profile.html:53
 msgid "Password"
 msgstr "Mot de passe"
 
-#: app/main/forms.py:368
+#: app/main/forms.py:374
 msgid "Enter your password"
 msgstr "Entrez votre mot de passe"
 
-#: app/main/forms.py:373
+#: app/main/forms.py:379
 msgid "Full name"
 msgstr "FR Full name"
 
-#: app/main/forms.py:434 app/templates/components/folder-path.html:25
+#: app/main/forms.py:440 app/templates/components/folder-path.html:25
 #: app/templates/main_nav.html:10
 msgid "Templates"
 msgstr "Modèles"
 
-#: app/main/forms.py:437
+#: app/main/forms.py:443
 msgid "Folders this team member can see"
 msgstr "FR Folders this team member can see"
 
-#: app/main/forms.py:440
+#: app/main/forms.py:446
 msgid "Sign in using"
 msgstr "FR Sign in using"
 
-#: app/main/forms.py:442 app/templates/views/service-settings.html:44
+#: app/main/forms.py:448 app/templates/views/service-settings.html:44
 #: app/templates/views/service-settings/set-auth-type.html:31
 msgid "Text message code"
 msgstr "Code par message texte"
 
-#: app/main/forms.py:443
+#: app/main/forms.py:449
 msgid "Email link"
 msgstr "FR Email link"
 
-#: app/main/forms.py:501
+#: app/main/forms.py:507
 msgid "Please enter security code"
 msgstr "Veuillez entrer le code de sécurité."
 
-#: app/main/forms.py:523 app/templates/views/service-settings.html:29
+#: app/main/forms.py:529 app/templates/views/service-settings.html:29
 msgid "Service name"
 msgstr "Nom du service"
 
-#: app/main/forms.py:595
+#: app/main/forms.py:601
 msgid "What’s your service called?"
 msgstr "Quel est le nom de votre service?"
 
-#: app/main/forms.py:611
+#: app/main/forms.py:617
 msgid "What’s your key called?"
 msgstr "Quel est le nom de votre clé?"
 
-#: app/main/forms.py:651
+#: app/main/forms.py:657
 msgid "Template name"
 msgstr "Nom du modèle"
 
-#: app/main/forms.py:655 app/main/forms.py:818 app/main/forms.py:826
+#: app/main/forms.py:661 app/main/forms.py:824 app/main/forms.py:832
 #: app/main/views/dashboard.py:215 app/templates/views/signedout.html:135
 msgid "Message"
 msgstr "FR Message"
 
-#: app/main/forms.py:788
+#: app/main/forms.py:754
+msgid "The email address is already in use"
+msgstr ""
+
+#: app/main/forms.py:777
+msgid "When should Notification send these messages?"
+msgstr ""
+
+#: app/main/forms.py:794
 msgid "Type of key"
 msgstr "FR Type of key"
 
-#: app/main/forms.py:795
+#: app/main/forms.py:801
 msgid "You need to give the key a name"
 msgstr "FR You need to give the key a name"
 
-#: app/main/forms.py:800
+#: app/main/forms.py:806
 msgid "A key with this name already exists"
 msgstr "FR A key with this name already exists"
 
-#: app/main/forms.py:808
+#: app/main/forms.py:814
 #: app/templates/views/support/ask-question-give-feedback.html:7
 #: app/templates/views/support/ask-question-give-feedback.html:13
 msgid "Ask a question or give feedback"
 msgstr "FR Ask a question or give feedback"
 
-#: app/main/forms.py:816 app/main/forms.py:822
+#: app/main/forms.py:822 app/main/forms.py:828
 #: app/templates/views/signedout.html:129
 msgid "Your name"
 msgstr "Votre nom"
 
-#: app/main/forms.py:817 app/main/forms.py:825
+#: app/main/forms.py:823 app/main/forms.py:831
 #: app/templates/views/signedout.html:132
 msgid "Your email"
 msgstr "Votre courriel"
 
-#: app/main/forms.py:898 app/main/views/dashboard.py:214
+#: app/main/forms.py:904 app/main/views/dashboard.py:214
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: app/main/forms.py:921
+#: app/main/forms.py:927
 msgid "Reply-to email address"
 msgstr "FR Reply-to email address"
 
-#: app/main/forms.py:923
+#: app/main/forms.py:929
 msgid "Make this email address the default"
 msgstr ""
 
-#: app/main/forms.py:928
+#: app/main/forms.py:934
 msgid "Text message sender"
 msgstr "FR Text message sender"
 
-#: app/main/forms.py:931
+#: app/main/forms.py:937
 msgid "Enter 11 characters or fewer"
 msgstr "FR Enter 11 characters or fewer"
 
-#: app/main/forms.py:932
+#: app/main/forms.py:938
 msgid "Enter 4 characters or more"
 msgstr "FR Enter 4 characters or more"
 
-#: app/main/forms.py:937
+#: app/main/forms.py:943
 msgid "Make this text message sender the default"
 msgstr "FR Make this text message sender the default"
 
-#: app/main/forms.py:964 app/main/forms.py:981 app/main/forms.py:1245
-#: app/main/forms.py:1255 app/templates/components/table.html:134
+#: app/main/forms.py:970 app/main/forms.py:987 app/main/forms.py:1251
+#: app/main/forms.py:1261 app/templates/components/table.html:134
 msgid "On"
 msgstr "FR On"
 
-#: app/main/forms.py:965 app/main/forms.py:984 app/main/forms.py:1246
-#: app/main/forms.py:1256 app/templates/components/table.html:135
+#: app/main/forms.py:971 app/main/forms.py:990 app/main/forms.py:1252
+#: app/main/forms.py:1262 app/templates/components/table.html:135
 msgid "Off"
 msgstr "FR Off"
 
-#: app/main/forms.py:997 app/templates/views/check/ok.html:42
+#: app/main/forms.py:1003 app/main/views/send.py:772
+#: app/templates/views/check/ok.html:42
 #: app/templates/views/support/ask-question-give-feedback.html:28
 msgid "Send"
 msgstr "Envoyer"
 
-#: app/main/forms.py:998 app/templates/components/message-count-label.html:19
+#: app/main/forms.py:1004 app/templates/components/message-count-label.html:19
 #: app/templates/views/features.html:15
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "emails"
 msgstr "courriels"
 
-#: app/main/forms.py:999 app/templates/components/message-count-label.html:13
+#: app/main/forms.py:1005 app/templates/components/message-count-label.html:13
 #: app/templates/views/features.html:16
 msgid "text messages"
 msgstr "messages textes"
 
-#: app/main/forms.py:1000 app/templates/components/message-count-label.html:25
+#: app/main/forms.py:1006 app/templates/components/message-count-label.html:25
 msgid "letters"
 msgstr "lettres"
 
-#: app/main/forms.py:1119
+#: app/main/forms.py:1125
 msgid "Email addresses"
 msgstr "FR Email addresses"
 
-#: app/main/forms.py:1132
+#: app/main/forms.py:1138
 msgid "Mobile numbers"
 msgstr "FR Mobile numbers"
 
-#: app/main/forms.py:1150
+#: app/main/forms.py:1156
 msgid "Search by name"
 msgstr "Recherche par nom"
 
-#: app/main/forms.py:1158 app/main/forms.py:1167
+#: app/main/forms.py:1164 app/main/forms.py:1173
 msgid "Search by name or email address"
 msgstr "Recherche par nom ou par adresse courriel"
 
-#: app/main/forms.py:1175
+#: app/main/forms.py:1166
+msgid "You need to enter full or partial email address to search by."
+msgstr ""
+
+#: app/main/forms.py:1181
 msgid "Search by email address"
 msgstr "Recherche par adresse courriel"
 
-#: app/main/forms.py:1176
+#: app/main/forms.py:1182
 msgid "Search by phone number"
 msgstr "Recherche par numéro de téléphone"
 
-#: app/main/forms.py:1219 app/main/forms.py:1232
+#: app/main/forms.py:1189
+msgid "Search by phone number or email address"
+msgstr ""
+
+#: app/main/forms.py:1225 app/main/forms.py:1238
 msgid "Must be a valid https URL"
 msgstr "FR Must be a valid https URL"
 
-#: app/main/forms.py:1222 app/main/forms.py:1235
+#: app/main/forms.py:1228 app/main/forms.py:1241
 msgid "Bearer token"
 msgstr "FR Bearer token"
 
-#: app/main/forms.py:1224 app/main/forms.py:1237
+#: app/main/forms.py:1230 app/main/forms.py:1243
 msgid "Must be at least 10 characters"
 msgstr "FR Must be at least 10 characters"
 
-#: app/main/forms.py:1243
+#: app/main/forms.py:1249
 msgid "Send text messages to international phone numbers"
 msgstr "FR Send text messages to international phone numbers"
 
-#: app/main/forms.py:1393 app/main/forms.py:1495 app/main/forms.py:1496
+#: app/main/forms.py:1399 app/main/forms.py:1501 app/main/forms.py:1502
 msgid "Folder name"
 msgstr "Nom du dossier"
 
-#: app/main/forms.py:1454 app/main/views/templates.py:193
+#: app/main/forms.py:1460 app/main/views/templates.py:193
 msgid "Email"
 msgstr "Courriel"
 
-#: app/main/forms.py:1455 app/main/views/templates.py:192
+#: app/main/forms.py:1461 app/main/views/templates.py:192
 msgid "Text message"
 msgstr "Message texte"
 
-#: app/main/forms.py:1456 app/main/views/templates.py:194
+#: app/main/forms.py:1462 app/main/views/templates.py:194
 #: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
 msgstr "Lettre"
 
-#: app/main/forms.py:1457 app/templates/views/templates/copy.html:7
+#: app/main/forms.py:1463 app/templates/views/templates/copy.html:7
 #: app/templates/views/templates/copy.html:13
 msgid "Copy an existing template"
 msgstr "Copier un modèle existant"
 
-#: app/main/forms.py:1489
+#: app/main/forms.py:1495
 msgid "Choose a folder"
 msgstr "Choisir un dossier"
 
-#: app/main/forms.py:1498 app/templates/main_template.html:52
+#: app/main/forms.py:1504 app/templates/main_template.html:52
 msgid "New template"
 msgstr "Nouveau modèle"
 
-#: app/main/forms.py:1501
+#: app/main/forms.py:1507
 msgid "Select the type of template you want to add"
 msgstr "Sélectionnez le type de modèle que vous voulez ajouter"
+
+#: app/main/forms.py:1563
+msgid "What’s their name?"
+msgstr ""
+
+#: app/main/forms.py:1567
+msgid "What’s their email address?"
+msgstr ""
 
 #: app/main/validators.py:79
 msgid "Enter a valid email address"
@@ -421,7 +460,43 @@ msgstr "à"
 msgid "Invite sent to"
 msgstr ""
 
-#: app/main/views/send.py:765
+#: app/main/views/send.py:225
+msgid "(Default)"
+msgstr ""
+
+#: app/main/views/send.py:227
+msgid "(Receives replies)"
+msgstr ""
+
+#: app/main/views/send.py:229
+msgid "(Default and receives replies)"
+msgstr ""
+
+#: app/main/views/send.py:249 app/main/views/send.py:250
+msgid "Where should replies come back to?"
+msgstr ""
+
+#: app/main/views/send.py:254
+msgid "Send to one recipient"
+msgstr ""
+
+#: app/main/views/send.py:255
+msgid "What should appear in the top right of the letter?"
+msgstr ""
+
+#: app/main/views/send.py:259 app/main/views/send.py:260
+msgid "Who should the message come from?"
+msgstr ""
+
+#: app/main/views/send.py:450
+msgid "Use my"
+msgstr ""
+
+#: app/main/views/send.py:770
+msgid "Example text message"
+msgstr ""
+
+#: app/main/views/send.py:773
 msgid "Personalise this message"
 msgstr "FR Personalise this message"
 
@@ -872,22 +947,10 @@ msgstr "destinataire"
 msgid "recipients"
 msgstr "destinataires"
 
-#: app/templates/components/message-count-label.html:40
-#: app/templates/partials/check/too-many-messages.html:26
-#: app/templates/views/api/safelist.html:61
-msgid "phone number"
-msgstr "numéro de téléphone"
-
 #: app/templates/components/message-count-label.html:42
 #: app/templates/partials/check/too-many-messages.html:34
 msgid "phone numbers"
 msgstr "numéros de téléphone"
-
-#: app/templates/components/message-count-label.html:46
-#: app/templates/partials/check/too-many-messages.html:24
-#: app/templates/views/api/safelist.html:55
-msgid "email address"
-msgstr "adresse courriel"
 
 #: app/templates/components/message-count-label.html:48
 #: app/templates/partials/check/too-many-messages.html:32
