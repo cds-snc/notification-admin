@@ -112,6 +112,12 @@ class MultiCheckboxField(SelectMultipleField):
 
 def email_address(label=_l('Email address'), gov_user=True, required=True):
 
+    
+    if(label == "email address"):
+       label = _l("email address")
+    elif (label == "phone number"):
+        label = _l("phone number")
+    
     validators = [
         ValidEmail(),
     ]
@@ -745,7 +751,7 @@ class ChangeEmailForm(StripWhitespaceForm):
     def validate_email_address(self, field):
         is_valid = self.validate_email_func(field.data)
         if is_valid:
-            raise ValidationError("The email address is already in use")
+            raise ValidationError(_l("The email address is already in use"))
 
 
 class ChangeNonGovEmailForm(ChangeEmailForm):
@@ -768,7 +774,7 @@ class ChooseTimeForm(StripWhitespaceForm):
         self.scheduled_for.categories = get_next_days_until(get_furthest_possible_scheduled_time())
 
     scheduled_for = RadioField(
-        'When should Notification send these messages?',
+        _l('When should Notification send these messages?'),
         default='',
         validators=[
             DataRequired()
@@ -1157,7 +1163,7 @@ class SearchUsersByEmailForm(StripWhitespaceForm):
     search = SearchField(
         _l('Search by name or email address'),
         validators=[
-            DataRequired("You need to enter full or partial email address to search by.")
+            DataRequired(_l("You need to enter full or partial email address to search by."))
         ],
     )
 
@@ -1180,7 +1186,7 @@ class SearchNotificationsForm(StripWhitespaceForm):
         super().__init__(*args, **kwargs)
         self.to.label.text = self.labels.get(
             message_type,
-            'Search by phone number or email address',
+            _l('Search by phone number or email address'),
         )
 
 
@@ -1554,11 +1560,11 @@ class AcceptAgreementForm(StripWhitespaceForm):
     )
 
     on_behalf_of_name = StringField(
-        'What’s their name?'
+        _l('What’s their name?')
     )
 
     on_behalf_of_email = email_address(
-        'What’s their email address?',
+        _l('What’s their email address?'),
         required=False,
         gov_user=False,
     )
