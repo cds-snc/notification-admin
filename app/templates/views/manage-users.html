@@ -42,7 +42,7 @@
             {%- if user.status == 'pending' -%}
               <span class="live-search-relevant">{{ user.email_address }}</span> ({{ _('invited') }})
             {%- elif user.status == 'cancelled' -%}
-              <span class="live-search-relevant">{{ user.email_address }}</span> (cancelled invite)
+              <span class="live-search-relevant">{{ user.email_address }}</span> ({{ _('cancelled invite') }})
             {%- elif user.id == current_user.id -%}
               <span class="live-search-relevant">({{ _('you') }})</span>
             {% else %}
