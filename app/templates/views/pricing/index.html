@@ -5,44 +5,44 @@
 {% extends "content_template.html" %}
 
 {% block per_page_title %}
-  Pricing
+  {{ _('Pricing') }}
 {% endblock %}
 
 {% block content_column_content %}
 
-  <h1 class="heading-large">Pricing</h1>
-  <p>To use Notification, there’s:</p>
+  <h1 class="heading-large">{{ _('Pricing') }}</h1>
+  <p>{{ _('To use Notification, there’s:') }}</p>
   <ul class="list list-bullet">
-    <li>no monthly charge</li>
-    <li>no setup fee</li>
-    <li>no procurement cost</li>
+    <li>{{ _('no monthly charge') }}</li>
+    <li>{{ _('no setup fee') }}</li>
+    <li>{{ _('no procurement cost') }}</li>
   </ul>
 
   <p>
     {% if not current_user.is_authenticated %}
-      <a href="{{ url_for('main.register') }}">Create an account</a> then set up as many different services as you need to.</p>
+      <a href="{{ url_for('main.register') }}">{{ _('Create an account') }}</a> {{ _('then set up as many different services as you need to.') }}</p>
     {% else %}
-      You can set up as many different services as you need to.
+      {{ _('You can set up as many different services as you need to.') }}
     {% endif %}
   </p>
 
-  <p>When you set up a new service it will start in <a href="{{ url_for('main.trial_mode_new') }}">trial mode</a>.</p>
+  <p>{{ _('When you set up a new service it will start in') }} <a href="{{ url_for('main.trial_mode_new') }}">{{ _('trial mode') }}</a>.</p>
 
-  <h2 class="heading-medium">Emails</h2>
-  <p>It’s free to send emails through Notification.</p>
+  <h2 class="heading-medium">{{ _('Emails') }}</h2>
+  <p>{{ _('It’s free to send emails through Notification.') }}</p>
 
-  <h2 class="heading-medium">Text messages</h2>
-  <p>Each service you set up in Notification has a free annual allowance. The allowance is:</p>
+  <h2 class="heading-medium">{{ _('Text messages') }}</h2>
+  <p>{{ _('Each service you set up in Notification has a free annual allowance. The allowance is:') }}</p>
   <ul class="list list-bullet">
-    <li>250,000 free text messages for central government services</li>
-    <li>25,000 free text messages for other public sector services</li>
+    <li>{{ _('250,000 free text messages for central government services') }}</li>
+    <li>{{ _('25,000 free text messages for other public sector services') }}</li>
   </ul>
 
-  <h3 class="heading-small">Long text messages</h3>
-  <p>If a text message is longer than 160 characters (including spaces), it’ll be charged as more than one message:</p>
+  <h3 class="heading-small">{{ _('Long text messages') }}</h3>
+  <p>{{ _('If a text message is longer than 160 characters (including spaces), it’ll be charged as more than one message:') }}</p>
   <div class="bottom-gutter-3-2">
     {% call mapping_table(
-      caption='Text message pricing',
+      caption=_('Text message pricing'),
       field_headings=['Message length', 'Charge'],
       field_headings_visible=True,
       caption_visible=False
@@ -60,11 +60,11 @@
       {% endfor %}
     {% endcall %}
   </div>
-  <p>Long text messages containing Welsh characters (Â, â, Ê, ê, Î, î, Ô, ô, Û, û, Ŵ, ŵ, Ŷ, and ŷ) are charged differently:</p>
+  <p>{{ _('Long text messages containing characters (Â, â, Ê, ê, Î, î, Ô, ô, Û, û, Ŵ, ŵ, Ŷ, and ŷ) are charged differently:') }}</p>
   <div class="bottom-gutter-3-2">
     {% call mapping_table(
-      caption='Text message pricing',
-      field_headings=['Message length', 'Charge'],
+      caption=_('Text message pricing'),
+      field_headings=[_('Message length'), _('Charge')],
       field_headings_visible=True,
       caption_visible=False
     ) %}
@@ -82,12 +82,12 @@
       {% endfor %}
     {% endcall %}
   </div>
-  <h3 class="heading-small">Sending text messages to international numbers</h3>
-  <p>It might cost more to send text messages to international numbers than UK ones, depending on the country.</p>
+  <h3 class="heading-small">{{ _('Sending text messages to international numbers') }}</h3>
+  <p>{{ _('It might cost more to send text messages to international numbers than UK ones, depending on the country.') }}</p>
   <details>
-    <summary>International text message rates</summary>
+    <summary>{{ _('International text message rates') }}</summary>
 
-    {{ live_search(target_selector='#international-pricing .table-row', show=True, form=search_form, label='Search by country name or code') }}
+    {{ live_search(target_selector='#international-pricing .table-row', show=True, form=search_form, label=_('Search by country name or code') ) }}
 
     <div id="international-pricing" class="bottom-gutter-3-2">
       {% call mapping_table(
@@ -112,9 +112,9 @@
 
   </details>
 
+  <div style="display:none;">
   <h2 class="heading-medium" id="letters">Letters</h2>
   <p>The cost of sending a letter depends on the postage you choose and how many sheets of paper you need.</p>
-  
   <div>
     {% call mapping_table(
       caption='Letter pricing',
@@ -147,5 +147,7 @@
      <li>C5 size envelopes with an address window</li>
      <li>first or second class postage</li>
   </ul>
+
+  </div>
 
 {% endblock %}
