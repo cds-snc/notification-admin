@@ -835,7 +835,7 @@ def get_template_sender_form_dict(service_id, template):
 def get_human_readable_delta(from_time, until_time):
     delta = until_time - from_time
     if delta < timedelta(seconds=60):
-        return _('under a minute')
+        return 'under a minute'
     elif delta < timedelta(hours=1):
         minutes = int(delta.seconds / 60)
         return '{} minute{}'.format(minutes, '' if minutes == 1 else 's')
