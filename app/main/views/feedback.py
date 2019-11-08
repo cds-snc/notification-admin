@@ -1,12 +1,12 @@
 from datetime import datetime
 
 import pytz
-from flask import abort, redirect, render_template, request, session, url_for
+from flask import redirect, render_template, request, url_for
 from flask_login import current_user
 
-from app import convert_to_boolean, current_service, service_api_client
+from app import convert_to_boolean, service_api_client, user_api_client
 from app.main import main
-from app.main.forms import Feedback, Problem, Triage
+from app.main.forms import ContactNotifyTeam
 
 QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
 PROBLEM_TICKET_TYPE = "report-problem"
@@ -33,103 +33,42 @@ def support():
 
 @main.route('/support/triage', methods=['GET', 'POST'])
 def triage():
-
     return redirect(url_for('main.support'))
-
-    form = Triage()
-    if form.validate_on_submit():
-        return redirect(url_for(
-            '.feedback',
-            ticket_type=PROBLEM_TICKET_TYPE,
-            severe=form.severe.data
-        ))
-    return render_template(
-        'views/support/triage.html',
-        form=form
-    )
 
 
 @main.route('/support/<ticket_type>', methods=['GET', 'POST'])
 def feedback(ticket_type):
-    try:
-        form = {
-            QUESTION_TICKET_TYPE: Feedback,
-            PROBLEM_TICKET_TYPE: Problem,
-        }[ticket_type]()
-    except KeyError:
-        abort(404)
-
-    if not form.feedback.data:
-        form.feedback.data = session.pop('feedback_message', '')
-
-    if request.args.get('severe') in ['yes', 'no']:
-        severe = convert_to_boolean(request.args.get('severe'))
-    else:
-        severe = None
-
-    out_of_hours_emergency = all((
-        ticket_type == PROBLEM_TICKET_TYPE,
-        not in_business_hours(),
-        severe,
-    ))
-
-    if needs_triage(ticket_type, severe):
-        session['feedback_message'] = form.feedback.data
-        return redirect(url_for('.triage'))
-
-    if needs_escalation(ticket_type, severe):
-        return redirect(url_for('.bat_phone'))
-
-    if current_user.is_authenticated:
-        form.email_address.data = current_user.email_address
-        form.name.data = current_user.name
+    form = ContactNotifyTeam()
 
     if form.validate_on_submit():
-        user_email = form.email_address.data
-        if current_service:
-            service_string = 'Service: "{name}"\n{url}\n'.format(
-                name=current_service.name,
-                url=url_for('main.service_dashboard', service_id=current_service.id, _external=True)
-            )
-        else:
-            service_string = ''
-
-        feedback_msg = '{}\n{}{}'.format(
+        msg = 'Contact Name: {}\nContact Email: {}\nMessage: {}'.format(
+            form.name.data,
+            form.email_address.data,
             form.feedback.data,
-            service_string,
-            '' if user_email else '{} (no email address supplied)'.format(form.name.data)
         )
 
         # send email here
-        current_user.send_support_email(feedback_msg)
+        user_api_client.send_contact_email(msg)
 
         return redirect(url_for(
             '.thanks',
-            out_of_hours_emergency=out_of_hours_emergency,
-            email_address_provided=(
-                current_user.is_authenticated or bool(form.email_address.data)
-            ),
         ))
 
-    if not form.feedback.data:
-        form.feedback.data = get_prefilled_message()
+    if request.method == 'POST':
+        return render_template(
+            'views/support/{}.html'.format(ticket_type),
+            form=form
+        )
 
     return render_template(
         'views/support/{}.html'.format(ticket_type),
-        form=form,
-        ticket_type=ticket_type,
+        form=form
     )
 
 
 @main.route('/support/escalate', methods=['GET', 'POST'])
 def bat_phone():
-
     return redirect(url_for('main.support'))
-
-    if current_user.is_authenticated:
-        return redirect(url_for('main.feedback', ticket_type=PROBLEM_TICKET_TYPE))
-
-    return render_template('views/support/bat-phone.html')
 
 
 @main.route('/support/thanks', methods=['GET', 'POST'])

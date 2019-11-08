@@ -2888,42 +2888,6 @@ def test_set_letter_contact_block_has_max_10_lines(
     assert error_message == 'Contains 11 lines, maximum is 10'
 
 
-@pytest.mark.parametrize('extra_args, expected_partial_url', (
-    (
-        {},
-        partial(url_for, 'main.service_settings')
-    ),
-    (
-        {'from_template': FAKE_TEMPLATE_ID},
-        partial(url_for, 'main.view_template', template_id=FAKE_TEMPLATE_ID)
-    ),
-))
-def test_request_letter_branding(
-    client_request,
-    mock_get_letter_branding_by_id,
-    extra_args,
-    expected_partial_url,
-):
-    request_page = client_request.get(
-        'main.request_letter_branding',
-        service_id=SERVICE_ONE_ID,
-        **extra_args
-    )
-    assert request_page.select_one('main p').text.strip() == 'Your letters do not have a logo.'
-    back_link_href = request_page.select('main a')[0]['href']
-    link_href = request_page.select('main a')[1]['href']
-    assert link_href == url_for(
-        'main.feedback',
-        ticket_type='ask-question-give-feedback',
-        body='letter-branding',
-    )
-    feedback_page = client_request.get_url(link_href)
-    assert feedback_page.select_one('textarea').text.strip() == (
-        'I would like my own logo on my letter templates.'
-    )
-    assert back_link_href == expected_partial_url(service_id=SERVICE_ONE_ID)
-
-
 def test_request_letter_branding_if_already_have_branding(
     client_request,
     mock_get_letter_branding_by_id,
@@ -2948,78 +2912,6 @@ def test_service_set_letter_branding_platform_admin_only(
         service_id=SERVICE_ONE_ID,
         _expected_status=403,
     )
-
-
-@pytest.mark.parametrize('letter_branding, expected_selected, expected_items', [
-    # expected order: currently selected, then default, then rest alphabetically
-    (None, '__NONE__', (
-        ('__NONE__', 'None'),
-        (str(UUID(int=2)), 'Animal and Plant Health Agency'),
-        (str(UUID(int=0)), 'HM Government'),
-        (str(UUID(int=1)), 'Land Registry'),
-    )),
-    (str(UUID(int=1)), str(UUID(int=1)), (
-        (str(UUID(int=1)), 'Land Registry'),
-        ('__NONE__', 'None'),
-        (str(UUID(int=2)), 'Animal and Plant Health Agency'),
-        (str(UUID(int=0)), 'HM Government'),
-    )),
-    (str(UUID(int=2)), str(UUID(int=2)), (
-        (str(UUID(int=2)), 'Animal and Plant Health Agency'),
-        ('__NONE__', 'None'),
-        (str(UUID(int=0)), 'HM Government'),
-        (str(UUID(int=1)), 'Land Registry'),
-    )),
-])
-@pytest.mark.parametrize('endpoint, extra_args', (
-    (
-        'main.service_set_letter_branding',
-        {'service_id': SERVICE_ONE_ID},
-    ),
-    (
-        'main.edit_organisation_letter_branding',
-        {'org_id': ORGANISATION_ID},
-    ),
-))
-def test_service_set_letter_branding_prepopulates(
-    mocker,
-    client_request,
-    platform_admin_user,
-    service_one,
-    mock_get_organisation,
-    mock_get_all_letter_branding,
-    letter_branding,
-    expected_selected,
-    expected_items,
-    endpoint,
-    extra_args,
-):
-    service_one['letter_branding'] = letter_branding
-    mocker.patch(
-        'app.organisations_client.get_organisation',
-        side_effect=lambda org_id: organisation_json(
-            org_id,
-            'Org 1',
-            letter_branding_id=letter_branding,
-        )
-    )
-
-    client_request.login(platform_admin_user)
-    page = client_request.get(
-        endpoint,
-        **extra_args,
-    )
-
-    assert len(page.select('input[checked]')) == 1
-    assert page.select('input[checked]')[0]['value'] == expected_selected
-
-    for element in {'label[for^=branding_style]', 'input[type=radio]'}:
-        assert len(page.select(element)) == len(expected_items)
-
-    for index, expected_item in enumerate(expected_items):
-        expected_value, expected_label = expected_item
-        assert normalize_spaces(page.select('label[for^=branding_style]')[index].text) == expected_label
-        assert page.select('input[type=radio]')[index]['value'] == expected_value
 
 
 @pytest.mark.parametrize('selected_letter_branding, expected_post_data', [
