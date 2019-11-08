@@ -3,7 +3,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2019-11-08 10:42-0500\n"
+=======
+"POT-Creation-Date: 2019-11-08 10:12-0500\n"
+>>>>>>> master
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -587,6 +591,18 @@ msgstr "FR Start all text messages with"
 msgid "The email address or password you entered is incorrect."
 msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact."
 
+#: app/main/views/templates.py:77
+msgid "From"
+msgstr "Fr From"
+
+#: app/main/views/templates.py:78
+msgid "To"
+msgstr "FR To"
+
+#: app/main/views/templates.py:79
+msgid "Subject"
+msgstr "FR Subject"
+
 #: app/main/views/templates.py:134
 msgid "Select at least one template or folder"
 msgstr "FR Select at least one template or folder"
@@ -928,6 +944,10 @@ msgstr ""
 #: app/templates/main_template.html:88
 msgid "Choose team members"
 msgstr ""
+
+#: app/templates/main_template.html:89
+msgid "Cancel upload"
+msgstr "FR Cancel upload"
 
 #: app/templates/org_template.html:16
 #: app/templates/views/organisations/add-organisation.html:16
