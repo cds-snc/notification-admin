@@ -1,28 +1,42 @@
-(function (global) {
+(function(global) {
   "use strict";
 
   const GOVUK = global.GOVUK;
 
-  function Summary (module) {
+  function Summary(module) {
     this.module = module;
-    this.$el = module.$formGroup.find('.selection-summary');
+    this.$el = module.$formGroup.find(".selection-summary");
     this.fieldLabel = module.fieldLabel;
+
+    this.translate = false;
+
+    if (typeof window.polyglot.t !== "undefined") {
+      this.translate = window.polyglot.t;
+    } else {
+      console.warn("polyglot not found");
+    }
+
     this.total = module.total;
     this.addContent();
     this.update(module.getSelection());
   }
   Summary.prototype.templates = {
-    all: (selection, total, field) => `All ${field}s`,
+    all: (selection, total, field) => {
+      return window.polyglot.t(`all_${field}s`);
+    },
     some: (selection, total, field) => `${selection} of ${total} ${field}s`,
-    none: (selection, total, field) => ({
-        "folder": "No folders (only templates outside a folder)",
+    none: (selection, total, field) =>
+      ({
+        folder: "No folders (only templates outside a folder)",
         "team member": "No team members (only you)"
-    }[field] || `No ${field}s`)
+      }[field] || `No ${field}s`)
   };
   Summary.prototype.addContent = function() {
     this.$text = $(`<p class="selection-summary__text" />`);
 
-    if (this.fieldLabel === 'folder') { this.$text.addClass('selection-summary__text--folders'); }
+    if (this.fieldLabel === "folder") {
+      this.$text.addClass("selection-summary__text--folders");
+    }
 
     this.$el.append(this.$text);
   };
@@ -30,46 +44,52 @@
     let template;
 
     if (selection === this.total) {
-      template = 'all';
+      template = "all";
     } else if (selection > 0) {
-      template = 'some';
+      template = "some";
     } else {
-      template = 'none';
+      template = "none";
     }
 
-    this.$text.html(this.templates[template](selection, this.total, this.fieldLabel));
+    this.$text.html(
+      this.templates[template](selection, this.total, this.fieldLabel)
+    );
   };
-  Summary.prototype.bindEvents = function () {
+  Summary.prototype.bindEvents = function() {
     // take summary out of tab order when focus moves
-    this.$el.on('blur', (e) => $(this).attr('tabindex', '-1'));
+    this.$el.on("blur", e => $(this).attr("tabindex", "-1"));
   };
 
-  function Footer (module) {
+  function Footer(module) {
     this.module = module;
     this.fieldLabel = module.fieldLabel;
-    this.fieldsetId = module.$fieldset.attr('id');
+    this.fieldsetId = module.$fieldset.attr("id");
     this.$el = this.getEl(this.module.expanded);
     this.module.$formGroup.append(this.$el);
   }
   Footer.prototype.buttonContent = {
-    change: (fieldLabel) => `Choose ${fieldLabel}s`,
-    done: (fieldLabel) => `Done<span class="visuallyhidden"> choosing ${fieldLabel}s</span>`
+    change: fieldLabel => {
+      console.log("fieldLabel", fieldLabel);
+      return window.polyglot.t(`choose_${fieldLabel}s`);
+    },
+    done: fieldLabel =>
+      `Done<span class="visuallyhidden"> choosing ${fieldLabel}s</span>`
   };
-  Footer.prototype.getEl = function (expanded) {
-    const buttonState = expanded ? 'done' : 'change';
+  Footer.prototype.getEl = function(expanded) {
+    const buttonState = expanded ? "done" : "change";
     const buttonContent = this.buttonContent[buttonState](this.fieldLabel);
-    const stickyClass = expanded ? ' js-stick-at-bottom-when-scrolling' : '';
+    const stickyClass = expanded ? " js-stick-at-bottom-when-scrolling" : "";
 
     return $(`<div class="selection-footer${stickyClass}">
               <button
                 class="button button-secondary"
-                aria-expanded="${expanded ? 'true' : 'false'}"
+                aria-expanded="${expanded ? "true" : "false"}"
                 aria-controls="${this.fieldsetId}">
               ${buttonContent}
               </button>
             </div>`);
   };
-  Footer.prototype.update = function (expanded) {
+  Footer.prototype.update = function(expanded) {
     this.$el.remove();
     this.$el = this.getEl(expanded);
 
@@ -79,19 +99,20 @@
     GOVUK.stickAtBottomWhenScrolling.recalculate();
   };
 
-  function CollapsibleCheckboxes () {}
-  CollapsibleCheckboxes.prototype._focusTextElement = ($el) => {
-    $el
-      .attr('tabindex', '-1')
-      .focus();
+  function CollapsibleCheckboxes() {}
+  CollapsibleCheckboxes.prototype._focusTextElement = $el => {
+    $el.attr("tabindex", "-1").focus();
   };
   CollapsibleCheckboxes.prototype.start = function(component) {
     this.$formGroup = $(component);
-    this.$fieldset = this.$formGroup.find('fieldset');
-    this.$checkboxes = this.$fieldset.find('input[type=checkbox]');
-    this.fieldLabel = this.$formGroup.data('fieldLabel');
+    this.$fieldset = this.$formGroup.find("fieldset");
+    this.$checkboxes = this.$fieldset.find("input[type=checkbox]");
+    this.fieldLabel = this.$formGroup.data("fieldLabel");
     this.total = this.$checkboxes.length;
-    this.legendText = this.$fieldset.find('legend').text().trim();
+    this.legendText = this.$fieldset
+      .find("legend")
+      .text()
+      .trim();
     this.expanded = false;
 
     this.addHeadingHideLegend();
@@ -103,25 +124,31 @@
     this.$fieldset.before(this.summary.$el);
 
     // add custom classes
-    this.$formGroup.addClass('selection-wrapper');
-    this.$fieldset.addClass('selection-content');
+    this.$formGroup.addClass("selection-wrapper");
+    this.$fieldset.addClass("selection-content");
 
     // hide checkboxes
     this.$fieldset.hide();
 
     this.bindEvents();
   };
-  CollapsibleCheckboxes.prototype.getSelection = function() { return this.$checkboxes.filter(':checked').length; };
+  CollapsibleCheckboxes.prototype.getSelection = function() {
+    return this.$checkboxes.filter(":checked").length;
+  };
   CollapsibleCheckboxes.prototype.addHeadingHideLegend = function() {
-    const headingLevel = this.$formGroup.data('heading-level') || '2';
+    const headingLevel = this.$formGroup.data("heading-level") || "2";
 
-    this.$heading = $(`<h${headingLevel} class="heading-small">${this.legendText}</h${headingLevel}>`);
+    this.$heading = $(
+      `<h${headingLevel} class="heading-small">${this.legendText}</h${headingLevel}>`
+    );
     this.$fieldset.before(this.$heading);
 
-    this.$fieldset.find('legend').addClass('visuallyhidden');
+    this.$fieldset.find("legend").addClass("visuallyhidden");
   };
   CollapsibleCheckboxes.prototype.expand = function(e) {
-    if (e !== undefined) { e.preventDefault(); }
+    if (e !== undefined) {
+      e.preventDefault();
+    }
 
     if (!this.expanded) {
       this.$fieldset.show();
@@ -134,7 +161,9 @@
     this._focusTextElement(this.$fieldset);
   };
   CollapsibleCheckboxes.prototype.collapse = function(e) {
-    if (e !== undefined) { e.preventDefault(); }
+    if (e !== undefined) {
+      e.preventDefault();
+    }
 
     if (this.expanded) {
       this.$fieldset.hide();
@@ -159,12 +188,11 @@
   CollapsibleCheckboxes.prototype.bindEvents = function() {
     const self = this;
 
-    this.$formGroup.on('click', '.button', this.handleClick.bind(this));
-    this.$checkboxes.on('click', this.handleSelection.bind(this));
+    this.$formGroup.on("click", ".button", this.handleClick.bind(this));
+    this.$checkboxes.on("click", this.handleSelection.bind(this));
 
     this.summary.bindEvents(this);
   };
 
   GOVUK.Modules.CollapsibleCheckboxes = CollapsibleCheckboxes;
-
-}(window));
+})(window);

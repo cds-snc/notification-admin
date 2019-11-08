@@ -1,9 +1,11 @@
+import re
 from datetime import datetime, timedelta
 from string import ascii_uppercase
 
 from dateutil.parser import parse
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
@@ -46,6 +48,39 @@ form_objects = {
 }
 
 
+def get_email_preview_template(template, template_id, service_id):
+    email_preview_template = get_template(
+        template,
+        current_service,
+        letter_preview_url=url_for(
+            '.view_letter_template_preview',
+            service_id=service_id,
+            template_id=template_id,
+            filetype='png',
+        ),
+        show_recipient=True,
+        page_count=get_page_count_for_letter(template),
+    )
+    template_str = str(email_preview_template)
+    translate = {
+        "From": _("From"),
+        "To": _("To"),
+        "Subject": _("Subject")
+    }
+
+    def translate_brackets(x):
+        g = x.group(0)
+        english = g[1:-1]  # drop brackets
+        if english not in translate:
+            return english
+        return translate[english]
+
+    # this regex finds test inside []
+    template_str = re.sub(r"\[[^]]*\]", translate_brackets, template_str)
+    email_preview_template.html = template_str
+    return email_preview_template
+
+
 @main.route("/services/<service_id>/templates/<uuid:template_id>")
 @user_has_permissions()
 def view_template(service_id, template_id):
@@ -61,18 +96,7 @@ def view_template(service_id, template_id):
 
     return render_template(
         'views/templates/template.html',
-        template=get_template(
-            template,
-            current_service,
-            letter_preview_url=url_for(
-                '.view_letter_template_preview',
-                service_id=service_id,
-                template_id=template_id,
-                filetype='png',
-            ),
-            show_recipient=True,
-            page_count=get_page_count_for_letter(template),
-        ),
+        template=get_email_preview_template(template, template_id, service_id),
         template_postage=template["postage"],
         user_has_template_permission=user_has_template_permission,
     )
@@ -130,7 +154,7 @@ def choose_template(service_id, template_type='all', template_folder_id=None):
             flash(e.message)
 
     if 'templates_and_folders' in templates_and_folders_form.errors:
-        flash('Select at least one template or folder')
+        flash(_('Select at least one template or folder'))
 
     initial_state = request.args.get('initial_state')
     if request.method == 'GET' and initial_state:
@@ -187,10 +211,10 @@ def process_folder_management_form(form, current_folder_id):
 
 def get_template_nav_label(value):
     return {
-        'all': _('All'),
-        'sms': _('Text message'),
-        'email': _('Email'),
-        'letter': _('Letter'),
+        'all': _l('All'),
+        'sms': _l('Text message'),
+        'email': _l('Email'),
+        'letter': _l('Letter'),
     }[value]
 
 
@@ -380,7 +404,7 @@ def copy_template(service_id, template_id):
         'views/edit-{}-template.html'.format(template['template_type']),
         form=form,
         template=template,
-        heading_action='Add',
+        heading_action=_l('Add'),
         services=current_user.service_ids,
     )
 
@@ -458,7 +482,7 @@ def delete_template_folder(service_id, template_folder_id):
     if len(current_service.get_template_folders_and_templates(
         template_type="all", template_folder_id=template_folder_id
     )) > 0:
-        flash("You must empty this folder before you can delete it", 'info')
+        flash(_l("You must empty this folder before you can delete it"), 'info')
         return redirect(
             url_for(
                 '.choose_template', service_id=service_id, template_type="all", template_folder_id=template_folder_id
@@ -474,9 +498,9 @@ def delete_template_folder(service_id, template_folder_id):
                 url_for('.choose_template', service_id=service_id, template_folder_id=template_folder['parent_id'])
             )
         except HTTPError as e:
-            msg = "Folder is not empty"
+            msg = _l("Folder is not empty")
             if e.status_code == 400 and msg in e.message:
-                flash("You must empty this folder before you can delete it", 'info')
+                flash(_("You must empty this folder before you can delete it"), 'info')
                 return redirect(
                     url_for(
                         '.choose_template',
@@ -488,7 +512,7 @@ def delete_template_folder(service_id, template_folder_id):
             else:
                 abort(500, e)
     else:
-        flash("Are you sure you want to delete the ‘{}’ folder?".format(template_folder['name']), 'delete')
+        flash("{} ‘{}’ {}".format(_l("Are you sure you want to delete the"), template_folder['name'], _l("folder?")), 'delete')
         return manage_template_folder(service_id, template_folder_id)
 
 
@@ -633,7 +657,7 @@ def edit_service_template(service_id, template_id):
             'views/edit-{}-template.html'.format(template['template_type']),
             form=form,
             template=template,
-            heading_action='Edit',
+            heading_action=_l('Edit'),
         )
 
 
@@ -654,12 +678,15 @@ def delete_service_template(service_id, template_id):
         last_used_notification = template_statistics_client.get_template_statistics_for_template(
             service_id, template['id']
         )
-        message = 'This template was last used {} ago.'.format(
-            'more than seven days' if not last_used_notification else get_human_readable_delta(
-                parse(last_used_notification['created_at']).replace(tzinfo=None),
-                datetime.utcnow()
-            )
-        )
+
+        last_used_text = ""
+        if not last_used_notification:
+            last_used_text = _l('more than seven days')
+        else:
+            last_used_date = parse(last_used_notification['created_at']).replace(tzinfo=None)
+            last_used_text = get_human_readable_delta(last_used_date, datetime.utcnow())
+
+        message = '{} {} {}'.format(_l("This template was last used"), last_used_text, _l("ago."))
 
     except HTTPError as e:
         if e.status_code == 404:
@@ -667,20 +694,10 @@ def delete_service_template(service_id, template_id):
         else:
             raise e
 
-    flash(["Are you sure you want to delete ‘{}’?".format(template['name']), message], 'delete')
+    flash(["{} ‘{}’?".format(_l("Are you sure you want to delete"), template['name']), message], 'delete')
     return render_template(
         'views/templates/template.html',
-        template=get_template(
-            template,
-            current_service,
-            letter_preview_url=url_for(
-                '.view_letter_template_preview',
-                service_id=service_id,
-                template_id=template['id'],
-                filetype='png',
-            ),
-            show_recipient=True,
-        ),
+        template=get_email_preview_template(template, template['id'], service_id),
         user_has_template_permission=True,
     )
 
@@ -692,17 +709,7 @@ def confirm_redact_template(service_id, template_id):
 
     return render_template(
         'views/templates/template.html',
-        template=get_template(
-            template,
-            current_service,
-            letter_preview_url=url_for(
-                '.view_letter_template_preview',
-                service_id=service_id,
-                template_id=template_id,
-                filetype='png',
-            ),
-            show_recipient=True,
-        ),
+        template=get_email_preview_template(template, template['id'], service_id),
         user_has_template_permission=True,
         show_redaction_message=True,
     )
@@ -715,7 +722,7 @@ def redact_template(service_id, template_id):
     service_api_client.redact_service_template(service_id, template_id)
 
     flash(
-        'Personalised content will be hidden for messages sent with this template',
+        _('Personalised content will be hidden for messages sent with this template'),
         'default_with_tick'
     )
 

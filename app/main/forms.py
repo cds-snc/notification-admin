@@ -111,6 +111,10 @@ class MultiCheckboxField(SelectMultipleField):
 
 
 def email_address(label=_l('Email address'), gov_user=True, required=True):
+    if(label == "email address"):
+        label = _l("email address")
+    elif (label == "phone number"):
+        label = _l("phone number")
 
     validators = [
         ValidEmail(),
@@ -157,16 +161,16 @@ def international_phone_number(label=_l('Mobile number')):
 def password(label=_l('Password')):
     return PasswordField(label,
                          validators=[DataRequired(message=_l('Can’t be empty')),
-                                     Length(8, 255, message='Must be at least 8 characters'),
-                                     Blacklist(message='Choose a password that’s harder to guess')])
+                                     Length(8, 255, message=_l('Must be at least 8 characters')),
+                                     Blacklist(message=_l('Choose a password that’s harder to guess'))])
 
 
 class SMSCode(StringField):
     validators = [
         DataRequired(message=_l('Can’t be empty')),
-        Regexp(regex=r'^\d+$', message='Numbers only'),
-        Length(min=5, message='Not enough numbers'),
-        Length(max=5, message='Too many numbers'),
+        Regexp(regex=r'^\d+$', message=_l('Numbers only')),
+        Length(min=5, message=_l('Not enough numbers')),
+        Length(max=5, message=_l('Too many numbers')),
     ]
 
     def __call__(self, **kwargs):
@@ -323,7 +327,7 @@ class HiddenFieldWithNoneOption(FieldWithNoneOption, HiddenField):
 
 
 class RadioFieldWithRequiredMessage(RadioField):
-    def __init__(self, *args, required_message='Not a valid choice', **kwargs):
+    def __init__(self, *args, required_message=_l('Not a valid choice'), **kwargs):
         self.required_message = required_message
         super().__init__(*args, **kwargs)
 
@@ -390,7 +394,7 @@ class RegisterUserFromInviteForm(RegisterUserForm):
             ),
         )
 
-    mobile_number = InternationalPhoneNumber('Mobile number', validators=[])
+    mobile_number = InternationalPhoneNumber(_l('Mobile number'), validators=[])
     service = HiddenField('service')
     email_address = HiddenField('email_address')
     auth_type = HiddenField('auth_type', validators=[DataRequired()])
@@ -412,7 +416,7 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
         validators=[DataRequired(message=_l('Can’t be empty'))]
     )
 
-    mobile_number = InternationalPhoneNumber('Mobile number', validators=[DataRequired(message=_l('Can’t be empty'))])
+    mobile_number = InternationalPhoneNumber(_l('Mobile number'), validators=[DataRequired(message=_l('Can’t be empty'))])
     password = password()
     organisation = HiddenField('organisation')
     email_address = HiddenField('email_address')
@@ -431,16 +435,16 @@ class PermissionsForm(PermissionsAbstract):
         if all_template_folders is not None:
             self.folder_permissions.all_template_folders = all_template_folders
             self.folder_permissions.choices = [
-                (item['id'], item['name']) for item in ([{'name': 'Templates', 'id': None}] + all_template_folders)
+                (item['id'], item['name']) for item in ([{'name': _l('Templates'), 'id': None}] + all_template_folders)
             ]
 
-    folder_permissions = NestedCheckboxesField('Folders this team member can see')
+    folder_permissions = NestedCheckboxesField(_l('Folders this team member can see'))
 
     login_authentication = RadioField(
-        'Sign in using',
+        _l('Sign in using'),
         choices=[
-            ('sms_auth', 'Text message code'),
-            ('email_auth', 'Email link'),
+            ('sms_auth', _l('Text message code')),
+            ('email_auth', _l('Email link')),
         ],
         validators=[DataRequired()]
     )
@@ -474,7 +478,7 @@ class InviteUserForm(PermissionsForm):
 
     def validate_email_address(self, field):
         if field.data.lower() == self.invalid_email_address:
-            raise ValidationError("You can’t send an invitation to yourself")
+            raise ValidationError(_l("You can’t send an invitation to yourself"))
 
 
 class InviteOrgUserForm(StripWhitespaceForm):
@@ -486,7 +490,7 @@ class InviteOrgUserForm(StripWhitespaceForm):
 
     def validate_email_address(self, field):
         if field.data.lower() == self.invalid_email_address:
-            raise ValidationError("You can’t send an invitation to yourself")
+            raise ValidationError(_l("You can’t send an invitation to yourself"))
 
 
 class TwoFactorForm(StripWhitespaceForm):
@@ -586,7 +590,7 @@ class OrganisationDomainsForm(StripWhitespaceForm):
         ),
         min_entries=20,
         max_entries=20,
-        label="Domain names"
+        label=_l("Domain names")
     )
 
 
@@ -596,12 +600,12 @@ class CreateServiceForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l('Can’t be empty'))
         ])
-    organisation_type = OrganisationTypeField('Who runs this service?')
+    organisation_type = OrganisationTypeField(_l('Who runs this service?'))
 
 
 class CreateNhsServiceForm(CreateServiceForm):
     organisation_type = OrganisationTypeField(
-        'Who runs this service?',
+        _l('Who runs this service?'),
         include_only={'nhs_central', 'nhs_local', 'nhs_gp'},
     )
 
@@ -627,7 +631,7 @@ class NewOrganisationForm(
 
 class FreeSMSAllowance(StripWhitespaceForm):
     free_sms_allowance = IntegerField(
-        'Numbers of text message fragments per year',
+        _l('Numbers of text message fragments per year'),
         validators=[
             DataRequired(message=_l('Can’t be empty'))
         ]
@@ -639,11 +643,11 @@ class ConfirmPasswordForm(StripWhitespaceForm):
         self.validate_password_func = validate_password_func
         super(ConfirmPasswordForm, self).__init__(*args, **kwargs)
 
-    password = PasswordField(u'Enter password')
+    password = PasswordField(_l(u'Enter password'))
 
     def validate_password(self, field):
         if not self.validate_password_func(field.data):
-            raise ValidationError('Invalid password')
+            raise ValidationError(_l('Invalid password'))
 
 
 class BaseTemplateForm(StripWhitespaceForm):
@@ -745,7 +749,7 @@ class ChangeEmailForm(StripWhitespaceForm):
     def validate_email_address(self, field):
         is_valid = self.validate_email_func(field.data)
         if is_valid:
-            raise ValidationError("The email address is already in use")
+            raise ValidationError(_l("The email address is already in use"))
 
 
 class ChangeNonGovEmailForm(ChangeEmailForm):
@@ -768,7 +772,7 @@ class ChooseTimeForm(StripWhitespaceForm):
         self.scheduled_for.categories = get_next_days_until(get_furthest_possible_scheduled_time())
 
     scheduled_for = RadioField(
-        'When should Notification send these messages?',
+        _l('When should Notification send these messages?'),
         default='',
         validators=[
             DataRequired()
@@ -1157,7 +1161,7 @@ class SearchUsersByEmailForm(StripWhitespaceForm):
     search = SearchField(
         _l('Search by name or email address'),
         validators=[
-            DataRequired("You need to enter full or partial email address to search by.")
+            DataRequired(_l("You need to enter full or partial email address to search by."))
         ],
     )
 
@@ -1180,7 +1184,7 @@ class SearchNotificationsForm(StripWhitespaceForm):
         super().__init__(*args, **kwargs)
         self.to.label.text = self.labels.get(
             message_type,
-            'Search by phone number or email address',
+            _l('Search by phone number or email address'),
         )
 
 
@@ -1554,11 +1558,11 @@ class AcceptAgreementForm(StripWhitespaceForm):
     )
 
     on_behalf_of_name = StringField(
-        'What’s their name?'
+        _l('What’s their name?')
     )
 
     on_behalf_of_email = email_address(
-        'What’s their email address?',
+        _l('What’s their email address?'),
         required=False,
         gov_user=False,
     )

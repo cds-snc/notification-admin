@@ -338,7 +338,7 @@ def archive_service(service_id):
         return redirect(url_for('.choose_account'))
     else:
         flash(
-            'Are you sure you want to delete ‘{}’? There’s no way to undo this.'.format(current_service.name),
+            '{} ‘{}’? {}'.format(_l("Are you sure you want to delete"), current_service.name, _l("There’s no way to undo this.")),
             'delete',
         )
         return service_settings(service_id)

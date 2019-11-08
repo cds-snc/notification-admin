@@ -10,9 +10,10 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-    {% set txt = _('{} text message template') %}
+    {% set txt = _('text message template') %}
+    {% set action = heading_action + " " +txt %}
     {{ page_header(
-      txt.format(heading_action),
+      action,
       back_link=url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.choose_template', service_id=current_service.id, template_folder_id=template_folder_id)
     ) }}
 

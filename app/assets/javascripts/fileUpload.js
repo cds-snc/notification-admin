@@ -5,8 +5,10 @@
 
     this.submit = () => this.$form.trigger('submit');
 
+    this.cancelText = window.polyglot.t("cancel_upload")
+
     this.showCancelButton = () => $('.file-upload-button', this.$form).replaceWith(`
-      <a href="" class='file-upload-button-cancel'>Cancel upload</a>
+      <a href="" class='file-upload-button-cancel'>${cancelText}</a>
     `);
 
     this.start = function(component) {

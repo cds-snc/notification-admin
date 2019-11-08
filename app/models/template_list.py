@@ -1,4 +1,4 @@
-from flask_babel import _
+from flask_babel import lazy_gettext as _l
 
 
 class TemplateList():
@@ -132,9 +132,9 @@ class TemplateListTemplate(TemplateListItem):
         super().__init__(template, ancestors)
         self.service_id = service_id
         self.hint = {
-            'email': _('Email template'),
-            'sms': _('Text message template'),
-            'letter': _('Letter template'),
+            'email': _l('Email template'),
+            'sms': _l('Text message template'),
+            'letter': _l('Letter template'),
         }.get(template['template_type'])
 
 
