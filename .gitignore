@@ -72,7 +72,7 @@ npm-debug.log
 environment.sh
 .env
 .envrc
-
+venv-freeze/
 
 .vscode
 
