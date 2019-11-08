@@ -17,7 +17,7 @@
       style="width: 100%;"
   >
   <h2 id="messagestatus" class="heading-medium">{{ _('Types of message status') }}</h2>
-  <p>{{ _('Notification has the following types of message status (API message status may be different and is found in') }} <a href="{{ url_for('.documentation') }}">{{ _('technical documentation):') }}</a></p>
+  <p>{{ _('Notification has the following types of message status (API message status may be different and is found in') }} <a href="{{ url_for('.documentation') }}">{{ _('technical documentation') }}</a>):</p>
   
 
   <h3 id="email-statuses" class="heading-small">{{ _('Emails') }}</h3>
@@ -49,7 +49,7 @@
       
       {% for message_length, charge in [
         (sending_heading, sending_text),
-        ('Delivered', delivered_text),
+        (_('Delivered'), delivered_text),
         (email_heading, email_text),
         (inbox_heading, inbox_text),
         (technical_heading, technical_text),
