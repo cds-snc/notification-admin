@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-08 12:46-0500\n"
+"POT-Creation-Date: 2019-11-08 13:26-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -4511,13 +4511,23 @@ msgstr "FR The text message sender tells your users who the message is from"
 msgid "Update email branding"
 msgstr ""
 
-#: app/templates/views/service-settings/branding/manage-email-branding.html:22
+#: app/templates/views/service-settings/branding/manage-email-branding.html:21
+msgid ""
+"Uploads need to be exactly 108px tall to fit correctly at the top of your"
+" emails"
+msgstr ""
+
+#: app/templates/views/service-settings/branding/manage-email-branding.html:23
+msgid "We will review your branding and implement it."
+msgstr ""
+
+#: app/templates/views/service-settings/branding/manage-email-branding.html:26
 msgid ""
 "Your logo has been uploaded, and a Branding Request has been made to "
 "Support."
 msgstr ""
 
-#: app/templates/views/service-settings/branding/manage-email-branding.html:28
+#: app/templates/views/service-settings/branding/manage-email-branding.html:32
 msgid "Upload logo"
 msgstr ""
 
