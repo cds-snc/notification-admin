@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-08 11:39-0500\n"
+"POT-Creation-Date: 2019-11-08 12:46-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -60,10 +60,6 @@ msgstr "FR Phone number doesn’t exist"
 #: app/__init__.py:412
 msgid "Sent"
 msgstr "FR Sent"
-
-#: app/utils.py:236
-msgid "Spreadsheet must be created from either rows or CSV data"
-msgstr ""
 
 #: app/main/forms.py:113 app/main/forms.py:366 app/main/forms.py:834
 #: app/main/forms.py:901 app/templates/views/user-profile.html:35
@@ -432,20 +428,20 @@ msgstr ""
 msgid "Enter a government email address."
 msgstr ""
 
-#: app/main/validators.py:70
-msgid " If you think you should have access"
+#: app/main/validators.py:71
+msgid "If you think you should have access"
 msgstr ""
 
-#: app/main/validators.py:71 app/templates/views/service-settings.html:240
+#: app/main/validators.py:72 app/templates/views/service-settings.html:240
 #: app/templates/views/terms-of-use.html:46
 msgid "contact us"
 msgstr "communiquer avec nous"
 
-#: app/main/validators.py:79
+#: app/main/validators.py:82
 msgid "Enter a valid email address"
 msgstr "Entrez une adresse courriel valide"
 
-#: app/main/validators.py:96
+#: app/main/validators.py:99
 msgid "You can’t put commas between double brackets"
 msgstr ""
 
@@ -5136,4 +5132,10 @@ msgstr "Clés d’essai"
 
 #~ msgid "technical documentation):"
 #~ msgstr "la documentation technique) :"
+
+#~ msgid "Spreadsheet must be created from either rows or CSV data"
+#~ msgstr ""
+
+#~ msgid " If you think you should have access"
+#~ msgstr ""
 
