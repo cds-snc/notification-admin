@@ -18,7 +18,7 @@
           {% if current_user.has_permissions('send_messages', restrict_admin_usage=True) %}
             <div class="column-half">
               <a href="{{ url_for(".set_sender", service_id=current_service.id, template_id=template.id) }}" class="pill-separate-item">
-                Send
+                {{ _('Send') }}
               </a>
             </div>
           {% endif %}
@@ -26,14 +26,14 @@
           {% if current_user.has_permissions('send_messages', restrict_admin_usage=True) %}
             <div class="column-half">
               <a href="{{ url_for(".set_sender", service_id=current_service.id, template_id=template.id) }}" class="pill-separate-item">
-                Send
+                {{ _('Send') }}
               </a>
             </div>
           {% endif %}
           {% if current_user.has_permissions('manage_templates') %}
             <div class="column-half">
               <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}" class="pill-separate-item">
-                Edit
+                {{ _('Edit') }}
               </a>
             </div>
           {% endif %}

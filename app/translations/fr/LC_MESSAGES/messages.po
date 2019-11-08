@@ -210,6 +210,10 @@ msgstr "FR Message"
 msgid "Use priority queue?"
 msgstr ""
 
+#: app/main/forms.py:662
+msgid "Use priority queue?"
+msgstr "FR Use priority queue?"
+
 #: app/main/forms.py:668 app/templates/flash_messages.html:6
 #: app/templates/views/service-settings.html:294
 #: app/templates/views/user-profile.html:70
@@ -221,6 +225,11 @@ msgstr "Oui"
 msgid "No"
 msgstr "Non"
 
+#: app/main/forms.py:679
+msgid "Subject"
+msgstr "FR Subject"
+
+#: app/main/forms.py:788
 #: app/main/forms.py:752
 msgid "The email address is already in use"
 msgstr ""
@@ -3799,6 +3808,12 @@ msgstr "Ne montre que les rangées avec des erreurs"
 msgid "Preview of"
 msgstr "Aperçu de"
 
+#: app/templates/views/check/ok.html:42
+#: app/templates/views/templates/_template.html:21
+#: app/templates/views/templates/_template.html:29
+msgid "Send"
+msgstr "Envoyer"
+
 #: app/templates/views/check/ok.html:44
 msgid "Download as a PDF"
 msgstr "Télécharger comme PDF"
@@ -4561,6 +4576,10 @@ msgstr "Si vous avez besoin de l’envoyer"
 msgid "or edit this template, contact your manager."
 msgstr "ou de modifier ce modèle, communiquez avec votre gestionnaire."
 
+#: app/templates/views/templates/_template.html:36
+msgid "Edit"
+msgstr "FR Edit"
+
 #: app/templates/views/templates/_template_history.html:5
 msgid "Edit made"
 msgstr "Modification réalisée"
@@ -5088,6 +5107,8 @@ msgstr "Clés d’essai"
 #~ "FR Your team members can sign in with either a text message code\n"
 #~ "          or an email link."
 
+#~ msgid "New"
+#~ msgstr "FR New"
 #~ msgid "delete"
 #~ msgstr "FR delete"
 
