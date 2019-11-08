@@ -35,6 +35,7 @@ msgstr "FR Email address doesn’t exist"
 
 #: app/__init__.py:398 app/__init__.py:401 app/__init__.py:408
 #: app/templates/views/message-status.html:37
+#: app/templates/views/message-status.html:52
 #: app/templates/views/message-status.html:81
 msgid "Delivered"
 msgstr "Livraison réussie"
@@ -2269,8 +2270,8 @@ msgstr ""
 "des messages d'API pourraient être différents et se trouvent dans"
 
 #: app/templates/views/message-status.html:20
-msgid "technical documentation):"
-msgstr "la documentation technique) :"
+msgid "technical documentation"
+msgstr ""
 
 #: app/templates/views/dashboard/monthly.html:28
 #: app/templates/views/features/emails.html:5
@@ -5098,4 +5099,7 @@ msgstr "Clés d’essai"
 
 #~ msgid "under a minute"
 #~ msgstr "FR under a minute"
+
+#~ msgid "technical documentation):"
+#~ msgstr "la documentation technique) :"
 
