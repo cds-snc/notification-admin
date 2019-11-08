@@ -586,6 +586,18 @@ msgstr "FR Start all text messages with"
 msgid "The email address or password you entered is incorrect."
 msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact."
 
+#: app/main/views/templates.py:77
+msgid "From"
+msgstr "Fr From"
+
+#: app/main/views/templates.py:78
+msgid "To"
+msgstr "FR To"
+
+#: app/main/views/templates.py:79
+msgid "Subject"
+msgstr "FR Subject"
+
 #: app/main/views/templates.py:134
 msgid "Select at least one template or folder"
 msgstr "FR Select at least one template or folder"

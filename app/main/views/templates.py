@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timedelta
 from string import ascii_uppercase
 
@@ -47,6 +48,39 @@ form_objects = {
 }
 
 
+def get_email_preview_template(template, template_id, service_id):
+    email_preview_template = get_template(
+        template,
+        current_service,
+        letter_preview_url=url_for(
+            '.view_letter_template_preview',
+            service_id=service_id,
+            template_id=template_id,
+            filetype='png',
+        ),
+        show_recipient=True,
+        page_count=get_page_count_for_letter(template),
+    )
+    template_str = str(email_preview_template)
+    translate = {
+        "From": _("From"),
+        "To": _("To"),
+        "Subject": _("Subject")
+    }
+
+    def translate_brackets(x):
+        g = x.group(0)
+        english = g[1:-1]  # drop brackets
+        if english not in translate:
+            return english
+        return translate[english]
+
+    # this regex finds test inside []
+    template_str = re.sub(r"\[[^]]*\]", translate_brackets, template_str)
+    email_preview_template.html = template_str
+    return email_preview_template
+
+
 @main.route("/services/<service_id>/templates/<uuid:template_id>")
 @user_has_permissions()
 def view_template(service_id, template_id):
@@ -62,18 +96,7 @@ def view_template(service_id, template_id):
 
     return render_template(
         'views/templates/template.html',
-        template=get_template(
-            template,
-            current_service,
-            letter_preview_url=url_for(
-                '.view_letter_template_preview',
-                service_id=service_id,
-                template_id=template_id,
-                filetype='png',
-            ),
-            show_recipient=True,
-            page_count=get_page_count_for_letter(template),
-        ),
+        template=get_email_preview_template(template, template_id, service_id),
         template_postage=template["postage"],
         user_has_template_permission=user_has_template_permission,
     )
@@ -674,17 +697,7 @@ def delete_service_template(service_id, template_id):
     flash(["{} ‘{}’?".format(_l("Are you sure you want to delete"), template['name']), message], 'delete')
     return render_template(
         'views/templates/template.html',
-        template=get_template(
-            template,
-            current_service,
-            letter_preview_url=url_for(
-                '.view_letter_template_preview',
-                service_id=service_id,
-                template_id=template['id'],
-                filetype='png',
-            ),
-            show_recipient=True,
-        ),
+        template=get_email_preview_template(template, template['id'], service_id),
         user_has_template_permission=True,
     )
 
@@ -696,17 +709,7 @@ def confirm_redact_template(service_id, template_id):
 
     return render_template(
         'views/templates/template.html',
-        template=get_template(
-            template,
-            current_service,
-            letter_preview_url=url_for(
-                '.view_letter_template_preview',
-                service_id=service_id,
-                template_id=template_id,
-                filetype='png',
-            ),
-            show_recipient=True,
-        ),
+        template=get_email_preview_template(template, template['id'], service_id),
         user_has_template_permission=True,
         show_redaction_message=True,
     )
