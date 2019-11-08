@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-07 14:49-0500\n"
+"POT-Creation-Date: 2019-11-08 10:12-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -939,6 +939,10 @@ msgstr ""
 #: app/templates/main_template.html:88
 msgid "Choose team members"
 msgstr ""
+
+#: app/templates/main_template.html:89
+msgid "Cancel upload"
+msgstr "FR Cancel upload"
 
 #: app/templates/org_template.html:16
 #: app/templates/views/organisations/add-organisation.html:16
