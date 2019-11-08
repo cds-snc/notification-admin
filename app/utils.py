@@ -7,7 +7,7 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-
+from flask_babel import _
 import ago
 import dateutil
 import pyexcel
@@ -233,7 +233,7 @@ class Spreadsheet():
         self.filename = filename
 
         if csv_data and rows:
-            raise TypeError('Spreadsheet must be created from either rows or CSV data')
+            raise TypeError(_('Spreadsheet must be created from either rows or CSV data'))
 
         self._csv_data = csv_data or ''
         self._rows = rows or []

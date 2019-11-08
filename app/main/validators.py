@@ -21,7 +21,7 @@ from app.utils import Spreadsheet, is_gov_user
 class Blacklist:
     def __init__(self, message=None):
         if not message:
-            message = 'Password is blacklisted.'
+            message = _('Password is blacklisted.')
         self.message = message
 
     def __call__(self, form, field):
@@ -49,12 +49,12 @@ class Blacklist:
 
 class CsvFileValidator:
 
-    def __init__(self, message='Not a csv file'):
+    def __init__(self, message=_('Not a csv file')):
         self.message = message
 
     def __call__(self, form, field):
         if not Spreadsheet.can_handle(field.data.filename):
-            raise ValidationError("{} isn’t a spreadsheet that Notification can read".format(field.data.filename))
+            raise ValidationError("{} {}".format(field.data.filename, _("isn’t a spreadsheet that Notification can read")))
 
 
 class ValidGovEmail:
@@ -66,9 +66,9 @@ class ValidGovEmail:
 
         from flask import url_for
         message = (
-            'Enter a government email address.'
-            ' If you think you should have access'
-            ' <a href="{}">contact us</a>').format(url_for('.feedback', ticket_type='ask-question-give-feedback'))
+            _('Enter a government email address.'),
+            _(' If you think you should have access'),
+            ' <a href="{}">{}</a>').format(url_for('.feedback', ticket_type='ask-question-give-feedback'), _("contact us"))
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
 
@@ -93,7 +93,7 @@ class ValidEmail(Email):
 
 class NoCommasInPlaceHolders:
 
-    def __init__(self, message='You can’t put commas between double brackets'):
+    def __init__(self, message=_('You can’t put commas between double brackets')):
         self.message = message
 
     def __call__(self, form, field):

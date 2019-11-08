@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-08 11:12-0500\n"
+"POT-Creation-Date: 2019-11-08 11:39-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -61,6 +61,10 @@ msgstr "FR Phone number doesn’t exist"
 msgid "Sent"
 msgstr "FR Sent"
 
+#: app/utils.py:236
+msgid "Spreadsheet must be created from either rows or CSV data"
+msgstr ""
+
 #: app/main/forms.py:113 app/main/forms.py:366 app/main/forms.py:834
 #: app/main/forms.py:901 app/templates/views/user-profile.html:35
 msgid "Email address"
@@ -86,10 +90,10 @@ msgstr "numéro de téléphone"
 #: app/main/forms.py:419 app/main/forms.py:529 app/main/forms.py:537
 #: app/main/forms.py:556 app/main/forms.py:572 app/main/forms.py:601
 #: app/main/forms.py:617 app/main/forms.py:636 app/main/forms.py:656
-#: app/main/forms.py:661 app/main/forms.py:819 app/main/forms.py:934
-#: app/main/forms.py:1222 app/main/forms.py:1227 app/main/forms.py:1235
-#: app/main/forms.py:1240 app/main/forms.py:1290 app/main/forms.py:1397
-#: app/main/forms.py:1408 app/main/forms.py:1573
+#: app/main/forms.py:661 app/main/forms.py:684 app/main/forms.py:819
+#: app/main/forms.py:934 app/main/forms.py:1222 app/main/forms.py:1227
+#: app/main/forms.py:1235 app/main/forms.py:1240 app/main/forms.py:1290
+#: app/main/forms.py:1397 app/main/forms.py:1408 app/main/forms.py:1573
 msgid "Can’t be empty"
 msgstr "Ce champ doit être rempli."
 
@@ -210,10 +214,6 @@ msgstr "FR Message"
 msgid "Use priority queue?"
 msgstr ""
 
-#: app/main/forms.py:662
-msgid "Use priority queue?"
-msgstr "FR Use priority queue?"
-
 #: app/main/forms.py:668 app/templates/flash_messages.html:6
 #: app/templates/views/service-settings.html:294
 #: app/templates/views/user-profile.html:70
@@ -225,11 +225,10 @@ msgstr "Oui"
 msgid "No"
 msgstr "Non"
 
-#: app/main/forms.py:679
+#: app/main/forms.py:683 app/main/views/templates.py:68
 msgid "Subject"
 msgstr "FR Subject"
 
-#: app/main/forms.py:788
 #: app/main/forms.py:752
 msgid "The email address is already in use"
 msgstr ""
@@ -307,6 +306,8 @@ msgstr "FR Off"
 #: app/main/forms.py:1001 app/main/views/send.py:773
 #: app/templates/views/check/ok.html:42
 #: app/templates/views/support/ask-question-give-feedback.html:28
+#: app/templates/views/templates/_template.html:21
+#: app/templates/views/templates/_template.html:29
 msgid "Send"
 msgstr "Envoyer"
 
@@ -415,9 +416,38 @@ msgstr ""
 msgid "What’s their email address?"
 msgstr ""
 
+#: app/main/validators.py:24
+msgid "Password is blacklisted."
+msgstr ""
+
+#: app/main/validators.py:52
+msgid "Not a csv file"
+msgstr ""
+
+#: app/main/validators.py:57
+msgid "isn’t a spreadsheet that Notification can read"
+msgstr ""
+
+#: app/main/validators.py:69
+msgid "Enter a government email address."
+msgstr ""
+
+#: app/main/validators.py:70
+msgid " If you think you should have access"
+msgstr ""
+
+#: app/main/validators.py:71 app/templates/views/service-settings.html:240
+#: app/templates/views/terms-of-use.html:46
+msgid "contact us"
+msgstr "communiquer avec nous"
+
 #: app/main/validators.py:79
 msgid "Enter a valid email address"
 msgstr "Entrez une adresse courriel valide"
+
+#: app/main/validators.py:96
+msgid "You can’t put commas between double brackets"
+msgstr ""
 
 #: app/main/views/add_service.py:54 app/templates/views/add-service.html:23
 msgid "Name your service in both official languages"
@@ -604,10 +634,6 @@ msgstr "Fr From"
 msgid "To"
 msgstr "FR To"
 
-#: app/main/views/templates.py:68
-msgid "Subject"
-msgstr "FR Subject"
-
 #: app/main/views/templates.py:157
 msgid "Select at least one template or folder"
 msgstr "FR Select at least one template or folder"
@@ -638,6 +664,7 @@ msgid "folder?"
 msgstr "FR folder?"
 
 #: app/main/views/templates.py:660
+#: app/templates/views/templates/_template.html:36
 msgid "Edit"
 msgstr "FR Edit"
 
@@ -1840,23 +1867,23 @@ msgid "Direct connection to API"
 msgstr ""
 
 #: app/templates/views/edit-email-template.html:9
-#: app/templates/views/edit-email-template.html:13
+#: app/templates/views/edit-email-template.html:14
 msgid "email template"
 msgstr "modèle de courriel"
 
-#: app/templates/views/edit-email-template.html:24
+#: app/templates/views/edit-email-template.html:22
 #: app/templates/views/edit-sms-template.html:22
 msgid "Formatting Guide"
 msgstr "Guide de mise en forme"
 
-#: app/templates/views/edit-email-template.html:26
+#: app/templates/views/edit-email-template.html:24
 msgid "Your recipients won’t see this:"
 msgstr "Vos destinataires ne verront pas le nom du modèle."
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:37
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:35
 #: app/templates/views/api/safelist.html:68
-#: app/templates/views/edit-email-template.html:33
+#: app/templates/views/edit-email-template.html:31
 #: app/templates/views/edit-letter-template.html:20
 #: app/templates/views/edit-sms-template.html:34
 #: app/templates/views/manage-users/edit-user-email.html:21
@@ -2765,11 +2792,6 @@ msgstr "Vous ne pouvez qu’envoyer"
 #: app/templates/views/trial-mode.html:20
 msgid "To remove these restrictions, you can"
 msgstr "Pour éliminer ces restrictions, vous pouvez"
-
-#: app/templates/views/service-settings.html:240
-#: app/templates/views/terms-of-use.html:46
-msgid "contact us"
-msgstr "communiquer avec nous"
 
 #: app/templates/views/service-settings.html:242
 msgid "Your service manager can ask to have these restrictions removed."
@@ -3808,12 +3830,6 @@ msgstr "Ne montre que les rangées avec des erreurs"
 msgid "Preview of"
 msgstr "Aperçu de"
 
-#: app/templates/views/check/ok.html:42
-#: app/templates/views/templates/_template.html:21
-#: app/templates/views/templates/_template.html:29
-msgid "Send"
-msgstr "Envoyer"
-
 #: app/templates/views/check/ok.html:44
 msgid "Download as a PDF"
 msgstr "Télécharger comme PDF"
@@ -4576,10 +4592,6 @@ msgstr "Si vous avez besoin de l’envoyer"
 msgid "or edit this template, contact your manager."
 msgstr "ou de modifier ce modèle, communiquez avec votre gestionnaire."
 
-#: app/templates/views/templates/_template.html:36
-msgid "Edit"
-msgstr "FR Edit"
-
 #: app/templates/views/templates/_template_history.html:5
 msgid "Edit made"
 msgstr "Modification réalisée"
@@ -5109,6 +5121,7 @@ msgstr "Clés d’essai"
 
 #~ msgid "New"
 #~ msgstr "FR New"
+
 #~ msgid "delete"
 #~ msgstr "FR delete"
 
