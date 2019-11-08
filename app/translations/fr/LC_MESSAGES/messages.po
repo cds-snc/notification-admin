@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-08 10:12-0500\n"
+"POT-Creation-Date: 2019-11-08 11:12-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -136,7 +136,7 @@ msgid "Full name"
 msgstr "FR Full name"
 
 #: app/main/forms.py:438 app/templates/components/folder-path.html:25
-#: app/templates/main_nav.html:10
+#: app/templates/main_nav.html:10 app/templates/views/templates/choose.html:11
 msgid "Templates"
 msgstr "Modèles"
 
@@ -368,15 +368,15 @@ msgstr "FR Send text messages to international phone numbers"
 msgid "Folder name"
 msgstr "Nom du dossier"
 
-#: app/main/forms.py:1458 app/main/views/templates.py:193
+#: app/main/forms.py:1458 app/main/views/templates.py:216
 msgid "Email"
 msgstr "Courriel"
 
-#: app/main/forms.py:1459 app/main/views/templates.py:192
+#: app/main/forms.py:1459 app/main/views/templates.py:215
 msgid "Text message"
 msgstr "Message texte"
 
-#: app/main/forms.py:1460 app/main/views/templates.py:194
+#: app/main/forms.py:1460 app/main/views/templates.py:217
 #: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
 msgstr "Lettre"
@@ -571,7 +571,7 @@ msgstr "FR Personalise this message"
 msgid "Change your service name"
 msgstr "FR Change your service name"
 
-#: app/main/views/service_settings.py:341 app/main/views/templates.py:674
+#: app/main/views/service_settings.py:341 app/main/views/templates.py:697
 msgid "Are you sure you want to delete"
 msgstr "FR Are you sure you want to delete"
 
@@ -587,64 +587,64 @@ msgstr "FR Start all text messages with"
 msgid "The email address or password you entered is incorrect."
 msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact."
 
-#: app/main/views/templates.py:77
+#: app/main/views/templates.py:66
 msgid "From"
 msgstr "Fr From"
 
-#: app/main/views/templates.py:78
+#: app/main/views/templates.py:67
 msgid "To"
 msgstr "FR To"
 
-#: app/main/views/templates.py:79
+#: app/main/views/templates.py:68
 msgid "Subject"
 msgstr "FR Subject"
 
-#: app/main/views/templates.py:134
+#: app/main/views/templates.py:157
 msgid "Select at least one template or folder"
 msgstr "FR Select at least one template or folder"
 
-#: app/main/views/templates.py:191
+#: app/main/views/templates.py:214
 msgid "All"
 msgstr "FR All"
 
-#: app/main/views/templates.py:384
+#: app/main/views/templates.py:407
 #: app/templates/views/service-settings/email-reply-to/add.html:31
 msgid "Add"
 msgstr "FR Add"
 
-#: app/main/views/templates.py:462 app/main/views/templates.py:480
+#: app/main/views/templates.py:485 app/main/views/templates.py:503
 msgid "You must empty this folder before you can delete it"
 msgstr "FR You must empty this folder before you can delete it"
 
-#: app/main/views/templates.py:478
+#: app/main/views/templates.py:501
 msgid "Folder is not empty"
 msgstr "FR Folder is not empty"
 
-#: app/main/views/templates.py:492
+#: app/main/views/templates.py:515
 msgid "Are you sure you want to delete the"
 msgstr "FR Are you sure you want to delete the"
 
-#: app/main/views/templates.py:492
+#: app/main/views/templates.py:515
 msgid "folder?"
 msgstr "FR folder?"
 
-#: app/main/views/templates.py:637
+#: app/main/views/templates.py:660
 msgid "Edit"
 msgstr "FR Edit"
 
-#: app/main/views/templates.py:661
+#: app/main/views/templates.py:684
 msgid "more than seven days"
 msgstr "FR more than seven days"
 
-#: app/main/views/templates.py:666
+#: app/main/views/templates.py:689
 msgid "This template was last used"
 msgstr "FR This template was last used"
 
-#: app/main/views/templates.py:666
+#: app/main/views/templates.py:689
 msgid "ago."
 msgstr "FR ago."
 
-#: app/main/views/templates.py:722
+#: app/main/views/templates.py:725
 msgid "Personalised content will be hidden for messages sent with this template"
 msgstr ""
 "FR Personalised content will be hidden for messages sent with this "
