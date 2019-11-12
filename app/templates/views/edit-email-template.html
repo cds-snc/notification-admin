@@ -20,9 +20,9 @@ call form_wrapper() %}
     <div>
       <select id="prefill-template">
         <option value="">Select type of content</option>
-        <option value="0b81be20-f93c-433c-9edb-cc04c33c576d">Received</option>
-        <option value="7d3518eb-ed34-4fd9-91cb-529e7a421937">Invite</option>
-        <option value="d2009d5c-db60-4c7a-83b5-3630dc2cb5c9">CDS Send</option>
+        {% for result in template_select %}
+          <option value="{{result.id}}">{{result.name}}</option>
+        {% endfor %}
       </select>
     </div>
 
