@@ -18,15 +18,15 @@ call form_wrapper() %}
     </div>
 
     <div>
-      <hr>
+      <hr />
       <select id="prefill-template">
-        <option value="">Select Template</option>
-        {% for result in template_select %}
-          <option value="{{result.id}}">{{result.name}}</option>
-        {% endfor %}
-        <option value="">No template</option>
+        <option value="">{{ _('Select Template') }}</option>
+          {% for result in template_select %}
+            <option value="{{result.id}}">{{result.name}}</option>
+          {% endfor %}
+        <option value="">{{ _('No template') }}</option>
       </select>
-      <hr>
+      <hr />
     </div>
 
     {% set hint_txt = _('Your recipients won’t see this:') %} {{
@@ -43,7 +43,9 @@ call form_wrapper() %}
   const loadContent = (serviceId, templateId) => {
     const callback = `/services/${serviceId}/templates/${templateId}/get-data`;
 
-    $("#template_content").val("loading...");
+    // $("#template_content").val("{{ _('loading...')}}");
+    const loading_text = '{{ _("loading...") }}';
+    $("#template_content").val(loading_text);
 
     $.ajax({
       url: callback,
@@ -61,38 +63,38 @@ call form_wrapper() %}
   $("#prefill-template").on("change", function() {
     const hasVal = $("#template_content").val();
 
+    const serviceId = "{{ service_id }}";
+    const templateId = $(this)
+      .children("option:selected")
+      .val();
+
     let result = true;
 
     if (hasVal !== "") {
-      result = confirm("This will clear existing content");
+      const clear_text = '{{ _("This will clear existing content") }}';
+      result = confirm(clear_text);
     }
 
     if (result) {
-      const serviceId = "{{ service_id }}";
-      const templateId = $(this)
-        .children("option:selected")
-        .val();
-
-      loadContent(serviceId, templateId);
+      if (templateId) {
+        loadContent(serviceId, templateId);
+      } else {
+        $("#template_content").val("");
+      }
     }
   });
   //template_content
 </script>
 
 <style>
-
-  select{
-    box-sizing: 'border-box';
+  select {
+    box-sizing: "border-box";
     width: 50%;
     height: 33px;
     padding: 5px 4px 4px;
     border: 2px solid #000;
-    font-size:1.5rem;
+    font-size: 1.5rem;
   }
-
-
-
-  
 </style>
 
 {% endblock %}
