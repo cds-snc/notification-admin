@@ -18,12 +18,15 @@ call form_wrapper() %}
     </div>
 
     <div>
+      <hr>
       <select id="prefill-template">
-        <option value="">Select type of content</option>
+        <option value="">Select Template</option>
         {% for result in template_select %}
           <option value="{{result.id}}">{{result.name}}</option>
         {% endfor %}
+        <option value="">No template</option>
       </select>
+      <hr>
     </div>
 
     {% set hint_txt = _('Your recipients won’t see this:') %} {{
@@ -75,5 +78,21 @@ call form_wrapper() %}
   });
   //template_content
 </script>
+
+<style>
+
+  select{
+    box-sizing: 'border-box';
+    width: 50%;
+    height: 33px;
+    padding: 5px 4px 4px;
+    border: 2px solid #000;
+    font-size:1.5rem;
+  }
+
+
+
+  
+</style>
 
 {% endblock %}
