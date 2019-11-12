@@ -15,18 +15,18 @@
     <div class="grid-row">
       <div class="column-two-thirds">
         {% call form_wrapper() %}
-            {{ textbox(form.feedback, width='1-1', hint='', rows=10) }}
-            {% if not current_user.is_authenticated %}
-              <h2 class="heading-medium">{{ _("Do you want a reply?") }}</h2>
-              <p>{{ _("Leave your details below if you’d like a response.") }}</p>
-              {{ textbox(form.name, width='1-1') }}
-              {{ textbox(form.email_address, width='1-1') }}
-            {% else %}
-              <p>{{ _("We’ll reply to") }} {{ current_user.email_address }}</p>
-            {% endif %}
-            {{ page_footer(
-              _('Send'),
-            ) }}
+          {% set name_label = _('Your name') %}
+          {{ textbox(form.name, label=name_label,  width='1-1') }}
+
+          {% set email_label = _('Your email') %}
+          {{ textbox(form.email_address, label=email_label, width='1-1') }}
+          
+          {% set message_label = _('Message') %}
+          {{ textbox(form.feedback, width='1-1', label=message_label, hint='', rows=10) }}
+        
+        {{ page_footer(
+          'Send',
+        ) }}
         {% endcall %}
       </div>
     </div>
