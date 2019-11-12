@@ -1,39 +1,79 @@
-{% extends "withnav_template.html" %}
-{% from "components/textbox.html" import textbox %}
-{% from "components/page-header.html" import page_header %}
-{% from "components/page-footer.html" import sticky_page_footer %}
-{% from "components/radios.html" import radios %}
-{% from "components/form.html" import form_wrapper %}
+{% extends "withnav_template.html" %} {% from "components/textbox.html" import
+textbox %} {% from "components/page-header.html" import page_header %} {% from
+"components/page-footer.html" import sticky_page_footer %} {% from
+"components/radios.html" import radios %} {% from "components/form.html" import
+form_wrapper %} {% block service_page_title %} {{ _(heading_action) }}
+{{_('email template') }} {% endblock %} {% block maincolumn_content %} {{
+page_header( _(heading_action) + ' ' + _('email template'),
+back_link=url_for('main.view_template', service_id=current_service.id,
+template_id=template.id) if template else url_for('main.choose_template',
+service_id=current_service.id, template_folder_id=template_folder_id) ) }} {%
+call form_wrapper() %}
+<div class="grid-row">
+  <div class="column-five-sixths">
+    <div class="form-group">
+      <a href="{{ url_for('main.features_templates') }}" target="_blank"
+        >{{ _('Formatting Guide') }}</a
+      >
+    </div>
 
-{% block service_page_title %}
-  {{ _(heading_action) }} {{_('email template') }}
-{% endblock %}
+    <div>
+      <select id="prefill-template">
+        <option value="">Select type of content</option>
+        <option value="0b81be20-f93c-433c-9edb-cc04c33c576d">Received</option>
+        <option value="7d3518eb-ed34-4fd9-91cb-529e7a421937">Invite</option>
+        <option value="d2009d5c-db60-4c7a-83b5-3630dc2cb5c9">CDS Send</option>
+      </select>
+    </div>
 
-{% block maincolumn_content %}
-    {{ page_header(
-      _(heading_action) + ' ' + _('email template'),
-      back_link=url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.choose_template', service_id=current_service.id, template_folder_id=template_folder_id)
-    ) }}
+    {% set hint_txt = _('Your recipients won’t see this:') %} {{
+    textbox(form.name, width='1-1', hint=hint_txt, rows=10) }} {{
+    textbox(form.subject, width='1-1', highlight_tags=True, rows=2) }} {{
+    textbox(form.template_content, highlight_tags=True, width='1-1', rows=8) }}
+    {% if current_user.platform_admin %} {{ radios(form.process_type) }} {%
+    endif %} {% set txt = _('Save') %} {{ sticky_page_footer( txt ) }}
+  </div>
+</div>
+{% endcall %} {% endblock %} {% block page_script %}
 
-    {% call form_wrapper() %}
-      <div class="grid-row">
-        <div class="column-five-sixths">
-          <div class="form-group">
-            <a href="{{ url_for('main.features_templates') }}" target="_blank">{{ _('Formatting Guide') }}</a>
-          </div>
-          {% set hint_txt = _('Your recipients won’t see this:') %}
-          {{ textbox(form.name, width='1-1', hint=hint_txt, rows=10) }}
-          {{ textbox(form.subject, width='1-1', highlight_tags=True, rows=2) }}
-          {{ textbox(form.template_content, highlight_tags=True, width='1-1', rows=8) }}
-          {% if current_user.platform_admin %}
-             {{ radios(form.process_type) }}
-          {% endif %}
-          {% set txt = _('Save') %}
-          {{ sticky_page_footer(
-            txt
-          ) }}
-        </div>
-      </div>
-    {% endcall %}
+<script>
+  const loadContent = (serviceId, templateId) => {
+    const callback = `/services/${serviceId}/templates/${templateId}/get-data`;
+
+    $("#template_content").val("loading...");
+
+    $.ajax({
+      url: callback,
+      type: "post",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token() }}"
+      },
+      dataType: "json",
+      success: function(data) {
+        $("#template_content").val(data.result.content);
+      }
+    });
+  };
+
+  $("#prefill-template").on("change", function() {
+    const hasVal = $("#template_content").val();
+
+    let result = true;
+
+    if (hasVal !== "") {
+      result = confirm("This will clear existing content");
+    }
+
+    if (result) {
+      const serviceId = "{{ service_id }}";
+      const templateId = $(this)
+        .children("option:selected")
+        .val();
+
+      loadContent(serviceId, templateId);
+    }
+  });
+  //template_content
+</script>
 
 {% endblock %}

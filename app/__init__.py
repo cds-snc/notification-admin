@@ -82,6 +82,11 @@ from app.notify_client.template_folder_api_client import (
 from app.notify_client.template_statistics_api_client import (
     template_statistics_client,
 )
+
+from app.notify_client.template_api_prefill_client import (
+    template_api_prefill_client,
+)
+
 from app.notify_client.user_api_client import user_api_client
 from app.utils import get_logo_cdn_domain, id_safe
 
@@ -161,6 +166,7 @@ def create_app(application):
         status_api_client,
         template_folder_api_client,
         template_statistics_client,
+        template_api_prefill_client,
         user_api_client,
 
         # External API clients

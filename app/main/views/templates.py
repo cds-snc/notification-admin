@@ -16,6 +16,7 @@ from app import (
     current_service,
     service_api_client,
     template_folder_api_client,
+    template_api_prefill_client,
     template_statistics_client,
 )
 from app.main import main
@@ -405,6 +406,7 @@ def copy_template(service_id, template_id):
         form=form,
         template=template,
         heading_action=_l('Add'),
+        service_id=service_id,
         services=current_user.service_ids,
     )
 
@@ -516,12 +518,18 @@ def delete_template_folder(service_id, template_folder_id):
         return manage_template_folder(service_id, template_folder_id)
 
 
+@main.route("/services/<service_id>/templates/<template_id>/get-data", methods=['POST'])
+@user_has_permissions()
+def get_template_data(service_id, template_id):
+    data = template_api_prefill_client.get_template(service_id, template_id)
+    return { 'result':  data }
+
 @main.route("/services/<service_id>/templates/add-<template_type>", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/templates/folders/<template_folder_id>/add-<template_type>",
             methods=['GET', 'POST'])
 @user_has_permissions('manage_templates')
 def add_service_template(service_id, template_type, template_folder_id=None):
-
+    
     if template_type not in ['sms', 'email', 'letter']:
         abort(404)
     if not current_service.has_permission('letter') and template_type == 'letter':
@@ -570,6 +578,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             form=form,
             template_type=template_type,
             template_folder_id=template_folder_id,
+            service_id=service_id,
             heading_action='New',
         )
 
