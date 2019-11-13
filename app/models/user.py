@@ -67,13 +67,13 @@ class User(JSONModel, UserMixin):
         return bool(User.from_email_address_or_none(email_address))
 
     @classmethod
-    def from_email_address_and_password_or_none(cls, email_address, password):
+    def from_email_address_and_password_or_none(cls, email_address, password, login_data={}):
         user = cls.from_email_address_or_none(email_address)
         if not user:
             return None
         if user.locked:
             return None
-        if not user_api_client.verify_password(user.id, password):
+        if not user_api_client.verify_password(user.id, password, login_data):
             return None
         return user
 
@@ -246,6 +246,10 @@ class User(JSONModel, UserMixin):
     @property
     def locked(self):
         return self.failed_login_count >= self.max_failed_login_count
+
+    @property
+    def login_events(self):
+        return user_api_client.get_login_events_for_user(self.id)
 
     @property
     def email_domain(self):

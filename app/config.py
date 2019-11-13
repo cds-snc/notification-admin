@@ -95,6 +95,8 @@ class Config(object):
 
     HIPB_ENABLED = True
 
+    IP_GEOLOCATE_SERVICE = os.environ.get('IP_GEOLOCATE_SERVICE', 'https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/')
+
 
 class Development(Config):
     DEBUG = True

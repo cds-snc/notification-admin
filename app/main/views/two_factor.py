@@ -12,6 +12,7 @@ from flask_babel import _
 from flask_login import current_user
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import check_token
+from user_agents import parse
 
 from app import user_api_client
 from app.main import main
@@ -57,6 +58,9 @@ def two_factor_email(token):
 @main.route('/two-factor', methods=['GET', 'POST'])
 @redirect_to_sign_in
 def two_factor():
+    if current_user.is_authenticated:
+        return redirect_when_logged_in(platform_admin=current_user.platform_admin)
+
     user_id = session['user_details']['id']
 
     # Check if a FIDO2 key exists, if yes, return template
@@ -99,6 +103,17 @@ def log_in_user(user_id):
         # get rid of anything in the session that we don't expect to have been set during register/sign in flow
         session.pop("user_details", None)
         session.pop("file_uploads", None)
+
+    if len(user.login_events) > 1:
+        def parse_ua(ua):
+            user_agent = parse(ua)
+            return str(user_agent)
+
+        return render_template(
+            'views/login_events.html',
+            events=user.login_events,
+            next_url=request.args.get('next'),
+            parse_ua=parse_ua)
 
     return redirect_when_logged_in(platform_admin=user.platform_admin)
 

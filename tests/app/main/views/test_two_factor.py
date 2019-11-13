@@ -14,6 +14,7 @@ def test_should_render_two_factor_page(
     api_user_active,
     mock_get_user_by_email,
     mock_get_security_keys,
+    mock_get_login_events,
     mock_get_user
 ):
     # TODO this lives here until we work out how to
@@ -42,7 +43,8 @@ def test_should_login_user_and_should_redirect_to_next_url(
     mock_get_user_by_email,
     mock_check_verify_code,
     mock_create_event,
-    mock_get_security_keys
+    mock_get_security_keys,
+    mock_get_login_events
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -66,7 +68,8 @@ def test_should_login_user_and_not_redirect_to_external_url(
     mock_check_verify_code,
     mock_get_services_with_one_service,
     mock_create_event,
-    mock_get_security_keys
+    mock_get_security_keys,
+    mock_get_login_events
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -85,7 +88,8 @@ def test_should_login_user_and_redirect_to_show_accounts(
     mock_get_user_by_email,
     mock_check_verify_code,
     mock_create_event,
-    mock_get_security_keys
+    mock_get_security_keys,
+    mock_get_login_events
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -104,7 +108,8 @@ def test_should_return_200_with_sms_code_error_when_sms_code_is_wrong(
     mock_get_user,
     mock_get_user_by_email,
     mock_check_verify_code_code_not_found,
-    mock_get_security_keys
+    mock_get_security_keys,
+    mock_get_login_events
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -124,7 +129,8 @@ def test_should_login_user_when_multiple_valid_codes_exist(
     mock_check_verify_code,
     mock_get_services_with_one_service,
     mock_create_event,
-    mock_get_security_keys
+    mock_get_security_keys,
+    mock_get_login_events
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -143,7 +149,8 @@ def test_two_factor_should_set_password_when_new_password_exists_in_session(
     mock_get_services_with_one_service,
     mock_update_user_password,
     mock_create_event,
-    mock_get_security_keys
+    mock_get_security_keys,
+    mock_get_login_events
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -165,7 +172,8 @@ def test_two_factor_returns_error_when_user_is_locked(
     mock_get_locked_user,
     mock_check_verify_code_code_not_found,
     mock_get_services_with_one_service,
-    mock_get_security_keys
+    mock_get_security_keys,
+    mock_get_login_events
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -196,7 +204,8 @@ def test_two_factor_should_activate_pending_user(
     mock_check_verify_code,
     mock_create_event,
     mock_activate_user,
-    mock_get_security_keys
+    mock_get_security_keys,
+    mock_get_login_events
 ):
     mocker.patch('app.user_api_client.get_user', return_value=api_user_pending)
     mocker.patch('app.service_api_client.get_services', return_value={'data': []})
@@ -217,7 +226,8 @@ def test_valid_two_factor_email_link_logs_in_user(
     mock_get_services_with_one_service,
     mocker,
     mock_create_event,
-    mock_get_security_keys
+    mock_get_security_keys,
+    mock_get_login_events
 ):
     mocker.patch('app.user_api_client.check_verify_code', return_value=(True, ''))
 
@@ -315,3 +325,27 @@ def test_two_factor_email_link_used_when_user_already_logged_in(
     )
     assert response.status_code == 302
     assert response.location == url_for('main.show_accounts_or_dashboard', _external=True)
+
+
+def test_should_login_user_and_should_render_login_events_page(
+    client,
+    api_user_active,
+    mock_get_user,
+    mock_get_user_by_email,
+    mock_check_verify_code,
+    mock_create_event,
+    mock_get_security_keys,
+    mock_get_login_events_with_data
+):
+    with client.session_transaction() as session:
+        session['user_details'] = {
+            'id': api_user_active['id'],
+            'email': api_user_active['email_address']}
+    response = client.post(url_for('main.two_factor'),
+                           data={'sms_code': '12345'})
+
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+    assert page.select_one('h1').text.strip() == (
+        'Activity on this account'
+    )

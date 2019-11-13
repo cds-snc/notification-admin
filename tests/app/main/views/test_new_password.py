@@ -95,7 +95,8 @@ def test_should_sign_in_when_password_reset_is_successful_for_email_auth(
     mock_login,
     mock_send_verify_code,
     mock_reset_failed_login_count,
-    mock_update_user_password
+    mock_update_user_password,
+    mock_get_login_events
 ):
     user = mock_get_user_by_email_request_password_reset.return_value
     user['auth_type'] = 'email_auth'
