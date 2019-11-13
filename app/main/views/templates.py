@@ -1,9 +1,8 @@
 import re
 from datetime import datetime, timedelta
 from string import ascii_uppercase
-
 from dateutil.parser import parse
-from flask import abort, flash, redirect, render_template, request, url_for
+from flask import jsonify, abort, flash, redirect, render_template, request, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -522,7 +521,9 @@ def delete_template_folder(service_id, template_folder_id):
 @user_has_permissions()
 def get_template_data(service_id, template_id):
     data = template_api_prefill_client.get_template(service_id, template_id)
-    return { 'result':  data }
+    return jsonify({"result": data})
+   
+
 
 @main.route("/services/<service_id>/templates/add-<template_type>", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/templates/folders/<template_folder_id>/add-<template_type>",

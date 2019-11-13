@@ -5,12 +5,14 @@ import Moment from "moment";
 import { getDays } from "./schedule/dateUtils";
 import { ScheduleMessage } from "./schedule/ScheduleMessage";
 import { DiffDOM } from "diff-dom";
+import Swal from 'sweetalert2';
 
 let el = document.getElementById("schedule-send-at");
 
 window.moment = Moment;
 window.DiffDOM = DiffDOM;
 window.polyglot = new Polyglot({ phrases: APP_PHRASES, locale: APP_LANG });
+window.Swal = Swal;
 
 let nowLabel = "Now Label";
 

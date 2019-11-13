@@ -16,18 +16,19 @@ call form_wrapper() %}
         >{{ _('Formatting Guide') }}</a
       >
     </div>
-
+    <!-- prefill-template -->
     <div>
       <hr />
-      <select id="prefill-template">
-        <option value="">{{ _('Select Template') }}</option>
-          {% for result in template_select %}
-            <option value="{{result.id}}">{{result.name}}</option>
-          {% endfor %}
-        <option value="">{{ _('No template') }}</option>
+      <label class="form-label" for="prefill-template">{{ _('Select template content') }}</label >
+      <select name="prefill-template" id="prefill-template">
+        <option value=""></option>
+        {% for result in template_select %}
+        <option value="{{result.id}}">{{result.name}}</option>
+        {% endfor %}
       </select>
       <hr />
     </div>
+    <!-- end prefill-template -->
 
     {% set hint_txt = _('Your recipients won’t see this:') %} {{
     textbox(form.name, width='1-1', hint=hint_txt, rows=10) }} {{
@@ -70,18 +71,47 @@ call form_wrapper() %}
 
     let result = true;
 
-    if (hasVal !== "") {
-      const clear_text = '{{ _("This will clear existing content") }}';
-      result = confirm(clear_text);
-    }
+    //
+    const clear_text = '{{ _("This will clear existing content") }}';
+    const confirm_text = '{{ _("Are you sure?") }}';
+    const okay_button = '{{ _("Okay") }}';
+    const cancel_button ='{{ _("Cancel") }}';
 
-    if (result) {
+    if (hasVal === "") {
       if (templateId) {
         loadContent(serviceId, templateId);
       } else {
         $("#template_content").val("");
       }
+      return;
     }
+
+    Swal.fire({
+      title: `<strong>${confirm_text}</strong>`,
+      icon: "warning",
+      html: clear_text,
+      showCloseButton: false,
+      showCancelButton: true,
+      focusConfirm: true,
+      confirmButtonText: okay_button,
+      cancelButtonText: cancel_button,
+      customClass:{
+        container: 'confirm-container-class',
+        confirmButton: "button",
+        cancelButton: "button-secondary",
+        showClass: "",
+        hideClass: "",
+      },
+      buttonsStyling: false
+    }).then(result => {
+      if (result.value) {
+        if (templateId) {
+          loadContent(serviceId, templateId);
+        } else {
+          $("#template_content").val("");
+        }
+      }
+    });
   });
   //template_content
 </script>
@@ -95,6 +125,35 @@ call form_wrapper() %}
     border: 2px solid #000;
     font-size: 1.5rem;
   }
+
+  .confirm-container-class{
+    font-size:2.0rem;
+  }
+
+  .confirm-container-class .swal2-title{
+    color:#000;
+    font-size:2.5rem;
+  }
+
+  .confirm-container-class .swal2-content{
+    color:#000;
+    font-size:1.8rem;
+  }
+
+  .confirm-container-class .swal2-actions{
+    font-size:1.8rem;
+  }
+
+  .confirm-container-class button{
+    margin:0 1.5rem 1.0rem;
+    line-height: 2rem;
+  }
+
+  .confirm-container-class .swal2-title strong{
+    font-weight:900;
+  }
+
+  
 </style>
 
 {% endblock %}
