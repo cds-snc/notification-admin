@@ -288,12 +288,7 @@ def user_profile_validate_security_keys():
     else:
         user_id = current_user.id
 
-    login_data = {
-        "user-agent": request.headers["User-Agent"],
-        "location": request.remote_addr
-    }
-
-    resp = user_api_client.validate_security_keys(user_id, payload, login_data)
+    resp = user_api_client.validate_security_keys(user_id, payload)
     user = User.from_id(user_id)
 
     # the user will have a new current_session_id set by the API - store it in the cookie for future requests
