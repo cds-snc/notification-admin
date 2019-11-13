@@ -41,8 +41,8 @@ call form_wrapper() %}
 {% endcall %} {% endblock %} {% block page_script %}
 
 <script>
-  const loadContent = (serviceId, templateId) => {
-    const callback = `/services/${serviceId}/templates/${templateId}/get-data`;
+  const loadContent = (templateId) => {
+    const callback = `/services/templates/${templateId}/get-data`;
 
     // $("#template_content").val("{{ _('loading...')}}");
     const loading_text = '{{ _("loading...") }}';
@@ -63,8 +63,6 @@ call form_wrapper() %}
 
   $("#prefill-template").on("change", function() {
     const hasVal = $("#template_content").val();
-
-    const serviceId = "{{ service_id }}";
     const templateId = $(this)
       .children("option:selected")
       .val();
@@ -106,7 +104,7 @@ call form_wrapper() %}
     }).then(result => {
       if (result.value) {
         if (templateId) {
-          loadContent(serviceId, templateId);
+          loadContent(templateId);
         } else {
           $("#template_content").val("");
         }

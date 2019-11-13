@@ -526,10 +526,10 @@ def delete_template_folder(service_id, template_folder_id):
         return manage_template_folder(service_id, template_folder_id)
 
 
-@main.route("/services/<service_id>/templates/<template_id>/get-data", methods=['POST'])
+@main.route("/services/templates/<template_id>/get-data", methods=['POST'])
 @user_has_permissions()
-def get_template_data(service_id, template_id):
-    data = template_api_prefill_client.get_template(service_id, template_id)
+def get_template_data(template_id):
+    data = template_api_prefill_client.get_template(template_id)
     return jsonify({"result": data})
 
 
@@ -585,7 +585,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
         template_select = []
 
         if(template_type == "email"):
-            templates = template_api_prefill_client.get_template_list(service_id)
+            templates = template_api_prefill_client.get_template_list()
             if(templates):
                 for template in templates:
                     template_select.append({'id': template["id"], 'name': template["name"]})
