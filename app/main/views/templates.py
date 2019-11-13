@@ -582,11 +582,13 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             template_id='0'
         ))
     else:
-        templates = template_api_prefill_client.get_template_list(service_id)
         template_select = []
 
-        for template in templates:
-            template_select.append({'id': template["id"], 'name': template["name"]})
+        if(template_type == "email"):
+            templates = template_api_prefill_client.get_template_list(service_id)
+            if(templates):
+                for template in templates:
+                    template_select.append({'id': template["id"], 'name': template["name"]})
 
         return render_template(
             'views/edit-{}-template.html'.format(template_type),
