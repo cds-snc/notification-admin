@@ -1,8 +1,17 @@
 import re
 from datetime import datetime, timedelta
 from string import ascii_uppercase
+
 from dateutil.parser import parse
-from flask import jsonify, abort, flash, redirect, render_template, request, url_for
+from flask import (
+    abort,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -14,8 +23,8 @@ from notifications_utils.recipients import first_column_headings
 from app import (
     current_service,
     service_api_client,
-    template_folder_api_client,
     template_api_prefill_client,
+    template_folder_api_client,
     template_statistics_client,
 )
 from app.main import main
@@ -522,7 +531,6 @@ def delete_template_folder(service_id, template_folder_id):
 def get_template_data(service_id, template_id):
     data = template_api_prefill_client.get_template(service_id, template_id)
     return jsonify({"result": data})
-   
 
 
 @main.route("/services/<service_id>/templates/add-<template_type>", methods=['GET', 'POST'])
@@ -530,7 +538,7 @@ def get_template_data(service_id, template_id):
             methods=['GET', 'POST'])
 @user_has_permissions('manage_templates')
 def add_service_template(service_id, template_type, template_folder_id=None):
-    
+
     if template_type not in ['sms', 'email', 'letter']:
         abort(404)
     if not current_service.has_permission('letter') and template_type == 'letter':
@@ -575,7 +583,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
         ))
     else:
         templates = template_api_prefill_client.get_template_list(service_id)
-        template_select = [] 
+        template_select = []
 
         for template in templates:
             template_select.append({'id': template["id"], 'name': template["name"]})
