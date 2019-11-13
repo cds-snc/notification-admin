@@ -89,11 +89,11 @@ class UserApiClient(NotifyAdminAPIClient):
         return user_data['data']
 
     @cache.delete('user-{user_id}')
-    def verify_password(self, user_id, password):
+    def verify_password(self, user_id, password, login_data={}):
         try:
             password = self._create_message_digest(password)
             url = "/user/{}/verify/password".format(user_id)
-            data = {"password": password}
+            data = {"password": password, "loginData": login_data}
             self.post(url, data=data)
             return True
         except HTTPError as e:
@@ -235,6 +235,10 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = '/user/{}/fido2_keys/validate'.format(user_id)
         data = {'payload': payload}
         return self.post(endpoint, data)
+
+    def get_login_events_for_user(self, user_id):
+        endpoint = '/user/{}/login_events'.format(user_id)
+        return self.get(endpoint)
 
     def _create_message_digest(self, password):
         return hashlib.sha256((password + os.getenv("DANGEROUS_SALT")).encode('utf-8')).hexdigest()

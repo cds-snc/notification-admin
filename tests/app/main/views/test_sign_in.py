@@ -116,7 +116,9 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     assert response.status_code == 302
     assert response.location == url_for('.two_factor', _external=True)
     mock_get_security_keys.assert_called_with(api_user_active['id'])
-    mock_verify_password.assert_called_with(api_user_active['id'], password)
+    mock_verify_password.assert_called_with(
+        api_user_active['id'],
+        password, {'location': '127.0.0.1', 'user-agent': 'werkzeug/0.16.0'})
     mock_get_user_by_email.assert_called_with('valid@example.canada.ca')
 
 
@@ -137,7 +139,10 @@ def test_process_email_auth_sign_in_return_2fa_template(
     assert response.status_code == 302
     assert response.location == url_for('.two_factor_email_sent', _external=True)
     mock_send_verify_code.assert_called_with(api_user_active_email_auth['id'], 'email', None, None)
-    mock_verify_password.assert_called_with(api_user_active_email_auth['id'], 'val1dPassw0rd!')
+    mock_verify_password.assert_called_with(
+        api_user_active_email_auth['id'],
+        'val1dPassw0rd!',
+        {'location': '127.0.0.1', 'user-agent': 'werkzeug/0.16.0'})
 
 
 def test_should_return_locked_out_true_when_user_is_locked(

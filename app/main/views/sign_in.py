@@ -1,5 +1,10 @@
+import json
+import urllib.error
+import urllib.request
+
 from flask import (
     abort,
+    current_app,
     flash,
     redirect,
     render_template,
@@ -25,8 +30,13 @@ def sign_in():
 
     if form.validate_on_submit():
 
+        login_data = {
+            "user-agent": request.headers["User-Agent"],
+            "location": _geolocate_ip(request.remote_addr)
+        }
+
         user = User.from_email_address_and_password_or_none(
-            form.email_address.data, form.password.data
+            form.email_address.data, form.password.data, login_data
         )
 
         if user and user.state == 'pending':
@@ -63,3 +73,17 @@ def sign_in_again():
     return redirect(
         url_for('main.sign_in', next=request.path)
     )
+
+
+def _geolocate_ip(ip):
+    url = current_app.config.get('IP_GEOLOCATE_SERVICE', None) + ip
+    request = urllib.request.Request(url=url)
+    try:
+        with urllib.request.urlopen(request) as f:
+            response = f.read()
+    except urllib.error.HTTPError as e:
+        current_app.logger.debug("Exception found: {}".format(e))
+        return ip
+    else:
+        resp = json.loads(response.decode("utf-8-sig"))
+        return resp["city"]["names"]["en"] + ", " + resp["subdivisions"][0]["iso_code"] + " (" + ip + ")"

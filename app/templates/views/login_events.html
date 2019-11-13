@@ -1,0 +1,50 @@
+{% extends "withoutnav_template.html" %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block per_page_title %}
+  {{ title }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+<div class="grid-row">
+  <div class="column-full">
+    <h1 class="heading-large">{{ _('Activity on this account') }}</h1>
+    <p>{{ _('Below is a list of the three past times your password was used to access your account. If any of there look suspicious <a href="/support/ask-question-give-feedback" target="_blank">please contact us right away.</a>') }}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>{{ _('Browser') }}</th>
+          <th>{{ _('Location') }}</th>
+          <th>{{ _('Date / Time') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in events %}
+          <tr>
+            <td>  
+              {{ parse_ua(event.data["user-agent"]) }}
+            </td>
+            <td>
+              {{ event.data["location"] }}
+            </td>
+            <td class="relative-time-past">
+              {{ event.created_at }}
+            </td>
+          </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </br>
+    <a href="/two-factor?next={{next}}" class="button">{{ _('Continue') }}</a>
+    {{ page_footer(
+      secondary_link=url_for('main.email_not_received'),
+      secondary_link_text=link_txt
+    ) }}
+  </div>
+</div>
+<script>
+  var csrf_token = "{{ csrf_token() }}";
+</script>
+
+{% endblock %}

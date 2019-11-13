@@ -379,8 +379,8 @@ class RegisterUserForm(StripWhitespaceForm):
     email_address = email_address()
     mobile_number = international_phone_number()
     password = password()
-    # always register as sms type
-    auth_type = HiddenField('auth_type', default='sms_auth')
+    # always register as email type
+    auth_type = HiddenField('auth_type', default='email_auth')
 
 
 class RegisterUserFromInviteForm(RegisterUserForm):

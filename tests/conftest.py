@@ -1536,12 +1536,38 @@ def mock_get_user(mocker, user=None):
 
 
 @pytest.fixture(scope='function')
+def mock_get_login_events(mocker, user=None):
+    if user is None:
+        user = api_user_active(sample_uuid())
+
+    return mocker.patch(
+        'app.user_api_client.get_login_events_for_user', return_value=[])
+
+
+@pytest.fixture(scope='function')
+def mock_get_login_events_with_data(mocker, user=None):
+    if user is None:
+        user = api_user_active(sample_uuid())
+
+    data = [
+        {
+            "data": {"user-agent": "foo", "location": "bar"}
+        },
+        {
+            "data": {"user-agent": "eggs", "location": "ham"}
+        }
+    ]
+    return mocker.patch(
+        'app.user_api_client.get_login_events_for_user', return_value=data)
+
+
+@pytest.fixture(scope='function')
 def mock_get_security_keys(mocker, user=None):
     if user is None:
         user = api_user_active(sample_uuid())
 
     return mocker.patch(
-        'app.user_api_client.get_security_keys_for_user', result=[])
+        'app.user_api_client.get_security_keys_for_user', return_value=[])
 
 
 @pytest.fixture(scope='function')
@@ -1672,7 +1698,7 @@ def mock_get_user_by_email_not_found(mocker, api_user_active):
 
 @pytest.fixture(scope='function')
 def mock_verify_password(mocker):
-    def _verify_password(user, password):
+    def _verify_password(user, password, login_data={}):
         return True
 
     return mocker.patch(
