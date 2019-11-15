@@ -27,7 +27,7 @@ QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
 
 @main.route('/&nbsp;', methods=['GET'])
 def badindex():
-  return redirect(url_for('main.index'), 301)
+    return redirect(url_for('main.index'), 301)
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
