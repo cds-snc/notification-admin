@@ -527,7 +527,6 @@ def delete_template_folder(service_id, template_folder_id):
 
 
 @main.route("/services/templates/<template_id>/get-data", methods=['POST'])
-#@user_has_permissions()
 def get_template_data(template_id):
     data = template_api_prefill_client.get_template(template_id)
     return jsonify({"result": data})

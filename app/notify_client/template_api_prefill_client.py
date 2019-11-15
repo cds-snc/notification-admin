@@ -1,5 +1,7 @@
 from notifications_python_client.errors import HTTPError
+
 from app.notify_client import NotifyAdminAPIClient
+
 
 class TemplateApiPrefillClient(NotifyAdminAPIClient):
     def init_app(self, app):
@@ -11,8 +13,7 @@ class TemplateApiPrefillClient(NotifyAdminAPIClient):
             endpoint = '/service/{}/template'.format(self.prefill_service_id)
             return self.get(url=endpoint)["data"]
         except HTTPError as e:
-            print(e.message)
-            return False
+            return {"error": e.message}
 
     def get_template(self, template_id):
         try:
@@ -20,7 +21,7 @@ class TemplateApiPrefillClient(NotifyAdminAPIClient):
             result = self.get(url=endpoint)
             return result["data"]
         except HTTPError as e:
-            print(e.message)
-            return False
+            return {"error": e.message}
+
 
 template_api_prefill_client = TemplateApiPrefillClient()
