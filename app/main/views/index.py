@@ -25,12 +25,8 @@ from app.utils import get_logo_cdn_domain, user_is_logged_in
 QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
 
 
-@main.route('/&nbsp;', methods=['GET'])
-def badindex():
-    return redirect(url_for('main.index'), 301)
-
-
 @main.route('/', methods=['GET', 'POST'])
+@main.route('/&nbsp;', methods=['GET'])
 def index():
 
     if current_user and current_user.is_authenticated:
