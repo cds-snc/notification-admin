@@ -31,6 +31,18 @@ def user_information(user_id):
         user=User.from_id(user_id),
     )
 
+@main.route("/users/<uuid:user_id>/lock", methods=['GET', 'POST'])
+@user_is_platform_admin
+def lock_user(user_id):
+    if request.method == 'POST':
+        user_api_client.archive_user(user_id)
+        create_archive_user_event(str(user_id), current_user.id)
+
+        return redirect(url_for('.user_information', user_id=user_id))
+    else:
+        flash('Are you sure you want to lock this user?', 'delete')
+        return user_information(user_id)
+
 
 @main.route("/users/<uuid:user_id>/archive", methods=['GET', 'POST'])
 @user_is_platform_admin
@@ -41,5 +53,5 @@ def archive_user(user_id):
 
         return redirect(url_for('.user_information', user_id=user_id))
     else:
-        flash('There\'s no way to reverse this! Are you sure you want to archive this user?', 'delete')
+        flash('There\'s no way to reverse this! Are you sure you want to archive this user?', 'lock user')
         return user_information(user_id)

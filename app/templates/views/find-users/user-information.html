@@ -66,6 +66,14 @@
             {{ _('Archive user') }}
           </a>
         </span>
+
+        <div>
+          <span class="page-footer-delete-link page-footer-delete-link-without-button">
+            <a href="{{ url_for('main.lock_user', user_id=user.id) }}">
+              {{ _('Lock user') }}
+            </a>
+          </span>
+        </div>
       {% endif %}
     </div>
   </div>
