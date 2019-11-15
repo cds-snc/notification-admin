@@ -66,13 +66,20 @@
             {{ _('Archive user') }}
           </a>
         </span>
-
         <div>
+          {% if not user.blocked %}
           <span class="page-footer-delete-link page-footer-delete-link-without-button">
-            <a href="{{ url_for('main.lock_user', user_id=user.id) }}">
-              {{ _('Lock user') }}
+            <a href="{{ url_for('main.block_user', user_id=user.id) }}">
+              {{ _('Block user') }}
             </a>
           </span>
+          {% else %}
+          <span class="page-footer-success-link page-footer-success-link-without-button">
+            <a href="{{ url_for('main.unblock_user', user_id=user.id) }}">
+              {{ _('Unblock user') }}
+            </a>
+          </span>
+          {% endif %}
         </div>
       {% endif %}
     </div>
