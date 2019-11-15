@@ -19,7 +19,9 @@ call form_wrapper() %}
     <!-- prefill-template -->
     <div>
       <hr />
-      <label class="form-label" for="prefill-template">{{ _('Select template content') }}</label >
+      <label class="form-label" for="prefill-template"
+        >{{ _('Select template content') }}</label
+      >
       <select name="prefill-template" id="prefill-template">
         <option value=""></option>
         {% for result in template_select %}
@@ -41,7 +43,7 @@ call form_wrapper() %}
 {% endcall %} {% endblock %} {% block page_script %}
 
 <script>
-  const loadContent = (templateId) => {
+  const loadContent = templateId => {
     const callback = `/services/templates/${templateId}/get-data`;
 
     // $("#template_content").val("{{ _('loading...')}}");
@@ -67,13 +69,10 @@ call form_wrapper() %}
       .children("option:selected")
       .val();
 
-    let result = true;
-
-    //
     const clear_text = '{{ _("This will clear existing content") }}';
     const confirm_text = '{{ _("Are you sure?") }}';
     const okay_button = '{{ _("Okay") }}';
-    const cancel_button ='{{ _("Cancel") }}';
+    const cancel_button = '{{ _("Cancel") }}';
 
     if (hasVal === "") {
       if (templateId) {
@@ -93,12 +92,12 @@ call form_wrapper() %}
       focusConfirm: true,
       confirmButtonText: okay_button,
       cancelButtonText: cancel_button,
-      customClass:{
-        container: 'confirm-container-class',
+      customClass: {
+        container: "confirm-container-class",
         confirmButton: "button",
         cancelButton: "button-secondary",
         showClass: "",
-        hideClass: "",
+        hideClass: ""
       },
       buttonsStyling: false
     }).then(result => {
@@ -124,34 +123,32 @@ call form_wrapper() %}
     font-size: 1.5rem;
   }
 
-  .confirm-container-class{
-    font-size:2.0rem;
+  .confirm-container-class {
+    font-size: 2rem;
   }
 
-  .confirm-container-class .swal2-title{
-    color:#000;
-    font-size:2.5rem;
+  .confirm-container-class .swal2-title {
+    color: #000;
+    font-size: 2.5rem;
   }
 
-  .confirm-container-class .swal2-content{
-    color:#000;
-    font-size:1.8rem;
+  .confirm-container-class .swal2-content {
+    color: #000;
+    font-size: 1.8rem;
   }
 
-  .confirm-container-class .swal2-actions{
-    font-size:1.8rem;
+  .confirm-container-class .swal2-actions {
+    font-size: 1.8rem;
   }
 
-  .confirm-container-class button{
-    margin:0 1.5rem 1.0rem;
+  .confirm-container-class button {
+    margin: 0 1.5rem 1rem;
     line-height: 2rem;
   }
 
-  .confirm-container-class .swal2-title strong{
-    font-weight:900;
+  .confirm-container-class .swal2-title strong {
+    font-weight: 900;
   }
-
-  
 </style>
 
 {% endblock %}
