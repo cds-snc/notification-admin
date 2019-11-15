@@ -3,7 +3,15 @@ from datetime import datetime, timedelta
 from string import ascii_uppercase
 
 from dateutil.parser import parse
-from flask import abort, flash, redirect, render_template, request, url_for
+from flask import (
+    abort,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -15,6 +23,7 @@ from notifications_utils.recipients import first_column_headings
 from app import (
     current_service,
     service_api_client,
+    template_api_prefill_client,
     template_folder_api_client,
     template_statistics_client,
 )
@@ -405,6 +414,7 @@ def copy_template(service_id, template_id):
         form=form,
         template=template,
         heading_action=_l('Add'),
+        service_id=service_id,
         services=current_user.service_ids,
     )
 
@@ -516,6 +526,12 @@ def delete_template_folder(service_id, template_folder_id):
         return manage_template_folder(service_id, template_folder_id)
 
 
+@main.route("/services/templates/<template_id>/get-data", methods=['POST'])
+def get_template_data(template_id):
+    data = template_api_prefill_client.get_template(template_id)
+    return jsonify({"result": data})
+
+
 @main.route("/services/<service_id>/templates/add-<template_type>", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/templates/folders/<template_folder_id>/add-<template_type>",
             methods=['GET', 'POST'])
@@ -565,11 +581,21 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             template_id='0'
         ))
     else:
+        template_select = []
+
+        if(template_type == "email"):
+            templates = template_api_prefill_client.get_template_list()
+            if(templates):
+                for template in templates:
+                    template_select.append({'id': template["id"], 'name': template["name"]})
+
         return render_template(
             'views/edit-{}-template.html'.format(template_type),
             form=form,
             template_type=template_type,
             template_folder_id=template_folder_id,
+            service_id=service_id,
+            template_select=template_select,
             heading_action='New',
         )
 

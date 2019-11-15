@@ -1,39 +1,154 @@
-{% extends "withnav_template.html" %}
-{% from "components/textbox.html" import textbox %}
-{% from "components/page-header.html" import page_header %}
-{% from "components/page-footer.html" import sticky_page_footer %}
-{% from "components/radios.html" import radios %}
-{% from "components/form.html" import form_wrapper %}
+{% extends "withnav_template.html" %} {% from "components/textbox.html" import
+textbox %} {% from "components/page-header.html" import page_header %} {% from
+"components/page-footer.html" import sticky_page_footer %} {% from
+"components/radios.html" import radios %} {% from "components/form.html" import
+form_wrapper %} {% block service_page_title %} {{ _(heading_action) }}
+{{_('email template') }} {% endblock %} {% block maincolumn_content %} {{
+page_header( _(heading_action) + ' ' + _('email template'),
+back_link=url_for('main.view_template', service_id=current_service.id,
+template_id=template.id) if template else url_for('main.choose_template',
+service_id=current_service.id, template_folder_id=template_folder_id) ) }} {%
+call form_wrapper() %}
+<div class="grid-row">
+  <div class="column-five-sixths">
+    <div class="form-group">
+      <a href="{{ url_for('main.features_templates') }}" target="_blank"
+        >{{ _('Formatting Guide') }}</a
+      >
+    </div>
+    <!-- prefill-template -->
+    <div>
+      <hr />
+      <label class="form-label" for="prefill-template"
+        >{{ _('Select template content') }}</label
+      >
+      <select name="prefill-template" id="prefill-template">
+        <option value=""></option>
+        {% for result in template_select %}
+        <option value="{{result.id}}">{{result.name}}</option>
+        {% endfor %}
+      </select>
+      <hr />
+    </div>
+    <!-- end prefill-template -->
 
-{% block service_page_title %}
-  {{ _(heading_action) }} {{_('email template') }}
-{% endblock %}
+    {% set hint_txt = _('Your recipients won’t see this:') %} {{
+    textbox(form.name, width='1-1', hint=hint_txt, rows=10) }} {{
+    textbox(form.subject, width='1-1', highlight_tags=True, rows=2) }} {{
+    textbox(form.template_content, highlight_tags=True, width='1-1', rows=8) }}
+    {% if current_user.platform_admin %} {{ radios(form.process_type) }} {%
+    endif %} {% set txt = _('Save') %} {{ sticky_page_footer( txt ) }}
+  </div>
+</div>
+{% endcall %} {% endblock %} {% block page_script %}
 
-{% block maincolumn_content %}
-    {{ page_header(
-      _(heading_action) + ' ' + _('email template'),
-      back_link=url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.choose_template', service_id=current_service.id, template_folder_id=template_folder_id)
-    ) }}
+<script>
+  const loadContent = templateId => {
+    const callback = `/services/templates/${templateId}/get-data`;
 
-    {% call form_wrapper() %}
-      <div class="grid-row">
-        <div class="column-five-sixths">
-          <div class="form-group">
-            <a href="{{ url_for('main.features_templates') }}" target="_blank">{{ _('Formatting Guide') }}</a>
-          </div>
-          {% set hint_txt = _('Your recipients won’t see this:') %}
-          {{ textbox(form.name, width='1-1', hint=hint_txt, rows=10) }}
-          {{ textbox(form.subject, width='1-1', highlight_tags=True, rows=2) }}
-          {{ textbox(form.template_content, highlight_tags=True, width='1-1', rows=8) }}
-          {% if current_user.platform_admin %}
-             {{ radios(form.process_type) }}
-          {% endif %}
-          {% set txt = _('Save') %}
-          {{ sticky_page_footer(
-            txt
-          ) }}
-        </div>
-      </div>
-    {% endcall %}
+    // $("#template_content").val("{{ _('loading...')}}");
+    const loading_text = '{{ _("loading...") }}';
+    $("#template_content").val(loading_text);
+
+    $.ajax({
+      url: callback,
+      type: "post",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token() }}"
+      },
+      dataType: "json",
+      success: function(data) {
+        $("#template_content").val(data.result.content);
+      }
+    });
+  };
+
+  $("#prefill-template").on("change", function() {
+    const hasVal = $("#template_content").val();
+    const templateId = $(this)
+      .children("option:selected")
+      .val();
+
+    const clear_text = '{{ _("This will clear existing content") }}';
+    const confirm_text = '{{ _("Are you sure?") }}';
+    const okay_button = '{{ _("Okay") }}';
+    const cancel_button = '{{ _("Cancel") }}';
+
+    if (hasVal === "") {
+      if (templateId) {
+        loadContent(templateId);
+      } else {
+        $("#template_content").val("");
+      }
+      return;
+    }
+
+    Swal.fire({
+      title: `<strong>${confirm_text}</strong>`,
+      icon: "warning",
+      html: clear_text,
+      showCloseButton: false,
+      showCancelButton: true,
+      focusConfirm: true,
+      confirmButtonText: okay_button,
+      cancelButtonText: cancel_button,
+      customClass: {
+        container: "confirm-container-class",
+        confirmButton: "button",
+        cancelButton: "button-secondary",
+        showClass: "",
+        hideClass: ""
+      },
+      buttonsStyling: false
+    }).then(result => {
+      if (result.value) {
+        if (templateId) {
+          loadContent(templateId);
+        } else {
+          $("#template_content").val("");
+        }
+      }
+    });
+  });
+  //template_content
+</script>
+
+<style>
+  select {
+    box-sizing: "border-box";
+    width: 50%;
+    height: 33px;
+    padding: 5px 4px 4px;
+    border: 2px solid #000;
+    font-size: 1.5rem;
+  }
+
+  .confirm-container-class {
+    font-size: 2rem;
+  }
+
+  .confirm-container-class .swal2-title {
+    color: #000;
+    font-size: 2.5rem;
+  }
+
+  .confirm-container-class .swal2-content {
+    color: #000;
+    font-size: 1.8rem;
+  }
+
+  .confirm-container-class .swal2-actions {
+    font-size: 1.8rem;
+  }
+
+  .confirm-container-class button {
+    margin: 0 1.5rem 1rem;
+    line-height: 2rem;
+  }
+
+  .confirm-container-class .swal2-title strong {
+    font-weight: 900;
+  }
+</style>
 
 {% endblock %}
