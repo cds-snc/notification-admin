@@ -27,7 +27,7 @@ QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
 
 @main.route('/', methods=['GET', 'POST'])
 @main.route('/&nbsp;', methods=['GET'])
-@main.route('/%C2%A0', methods=['GET'])
+@main.route('/\xa0', methods=['GET'])
 def index():
 
     if current_user and current_user.is_authenticated:
