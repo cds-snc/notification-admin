@@ -87,7 +87,7 @@ def user_json(
         'platform_admin': platform_admin,
         'current_session_id': current_session_id,
         'organisations': organisations,
-        'blocked': False,
+        'blocked': blocked,
         'services': list(permissions.keys()) if services is None else services
     }
 
