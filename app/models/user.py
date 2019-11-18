@@ -426,6 +426,7 @@ class InvitedUser(JSONModel):
         'created_at',
         'auth_type',
         'folder_permissions',
+        'blocked'
     }
 
     def __init__(self, _dict):
@@ -546,6 +547,7 @@ class InvitedOrgUser(JSONModel):
         'email_address',
         'status',
         'created_at',
+        'blocked'
     }
 
     def __init__(self, _dict):
@@ -580,7 +582,8 @@ class InvitedOrgUser(JSONModel):
                 'invited_by': self._invited_by,
                 'email_address': self.email_address,
                 'status': self.status,
-                'created_at': str(self.created_at)
+                'created_at': str(self.created_at),
+                'blocked': self.blocked,
                 }
         return data
 

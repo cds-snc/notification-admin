@@ -95,7 +95,7 @@ def test_user_information_page_shows_information_about_user(
 ):
     mocker.patch('app.user_api_client.get_user', side_effect=[
         platform_admin_user,
-        user_json(name="Apple Bloom", services=[1, 2])
+        user_json(name="Apple Bloom", services=[1, 2], blocked=False)
     ], autospec=True)
 
     mocker.patch(
@@ -133,7 +133,7 @@ def test_user_information_page_displays_if_there_are_failed_login_attempts(
 ):
     mocker.patch('app.user_api_client.get_user', side_effect=[
         platform_admin_user,
-        user_json(name="Apple Bloom", failed_login_count=2)
+        user_json(name="Apple Bloom", failed_login_count=2, blocked=False)
     ], autospec=True)
 
     mocker.patch(
@@ -173,7 +173,7 @@ def test_user_information_page_does_not_show_archive_link_for_inactive_users(
     platform_admin_user,
     mock_get_organisations_and_services_for_user,
 ):
-    inactive_user = user_json(state='inactive')
+    inactive_user = user_json(state='inactive', blocked=False)
     mocker.patch('app.user_api_client.get_user', side_effect=[platform_admin_user, inactive_user], autospec=True)
     client.login(platform_admin_user)
     response = client.get(

@@ -22,6 +22,7 @@ class Organisation(JSONModel):
         'id',
         'name',
         'active',
+        'blocked',
         'crown',
         'organisation_type',
         'letter_branding_id',

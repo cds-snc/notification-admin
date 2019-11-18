@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, request, session,  url_for
+from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user
 
 from app import user_api_client
@@ -26,8 +26,6 @@ def find_users_by_email():
 @main.route("/users/<user_id>", methods=['GET'])
 @user_is_platform_admin
 def user_information(user_id):
-    user = User.from_id(user_id)
-    print("here", user.blocked)
     return render_template(
         'views/find-users/user-information.html',
         user=User.from_id(user_id),

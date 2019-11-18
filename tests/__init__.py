@@ -49,6 +49,7 @@ def user_json(
     name='Test User',
     email_address='test@canada.ca',
     mobile_number='+16502532222',
+    blocked=False,
     password_changed_at=None,
     permissions={generate_uuid(): [
         'view_activity',
