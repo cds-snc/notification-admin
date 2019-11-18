@@ -355,7 +355,8 @@ class User(JSONModel, UserMixin):
             "failed_login_count": self.failed_login_count,
             "permissions": [x for x in self._permissions],
             "organisations": self.organisation_ids,
-            "current_session_id": self.current_session_id
+            "current_session_id": self.current_session_id,
+            "blocked": self.blocked,
         }
         if hasattr(self, '_password'):
             dct['password'] = self._password
@@ -526,7 +527,8 @@ class InvitedUser(JSONModel):
                 'status': self.status,
                 'created_at': str(self.created_at),
                 'auth_type': self.auth_type,
-                'folder_permissions': self.folder_permissions
+                'folder_permissions': self.folder_permissions,
+                'blocked': self.blocked
                 }
         if permissions_as_string:
             data['permissions'] = ','.join(self.permissions)
