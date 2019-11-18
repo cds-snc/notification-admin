@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request, session,  url_for
 from flask_login import current_user
 
 from app import user_api_client
@@ -26,18 +26,20 @@ def find_users_by_email():
 @main.route("/users/<user_id>", methods=['GET'])
 @user_is_platform_admin
 def user_information(user_id):
+    user = User.from_id(user_id)
+    print("here", user.blocked)
     return render_template(
         'views/find-users/user-information.html',
         user=User.from_id(user_id),
     )
 
+
 @main.route("/users/<uuid:user_id>/block", methods=['GET', 'POST'])
 @user_is_platform_admin
 def block_user(user_id):
     if request.method == 'POST':
-        user_api_client.archive_user(user_id)
-        create_archive_user_event(str(user_id), current_user.id)
-
+        user = User.from_id(user_id)
+        user.update(blocked=True, updated_by=current_user.id)
         return redirect(url_for('.user_information', user_id=user_id))
     else:
         flash(['Are you sure you want to block this user?'], 'block')
@@ -48,9 +50,8 @@ def block_user(user_id):
 @user_is_platform_admin
 def unblock_user(user_id):
     if request.method == 'POST':
-        user_api_client.archive_user(user_id)
-        create_archive_user_event(str(user_id), current_user.id)
-
+        user = User.from_id(user_id)
+        user.update(blocked=False, updated_by=current_user.id)
         return redirect(url_for('.user_information', user_id=user_id))
     else:
         flash(['Are you sure you want to unblock this user?'], 'unblock')

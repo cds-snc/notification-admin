@@ -39,6 +39,7 @@ class User(JSONModel, UserMixin):
         'permissions',
         'platform_admin',
         'state',
+        'blocked'
     }
 
     def __init__(self, _dict):

@@ -67,6 +67,7 @@
           </a>
         </span>
         <div>
+          <hr>
           {% if not user.blocked %}
           <span class="page-footer-delete-link page-footer-delete-link-without-button">
             <a href="{{ url_for('main.block_user', user_id=user.id) }}">
