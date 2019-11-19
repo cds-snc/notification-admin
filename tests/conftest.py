@@ -1094,6 +1094,7 @@ def api_user_pending(fake_uuid):
                  'password': 'somepassword',
                  'email_address': 'test@user.canada.ca',
                  'mobile_number': '6502532222',
+                 'blocked': False,
                  'state': 'pending',
                  'failed_login_count': 0,
                  'platform_admin': False,
@@ -1112,6 +1113,7 @@ def platform_admin_user(fake_uuid):
                  'password': 'somepassword',
                  'email_address': 'platform@admin.canada.ca',
                  'mobile_number': '6502532222',
+                 'blocked': False,
                  'state': 'active',
                  'failed_login_count': 0,
                  'permissions': {SERVICE_ONE_ID: ['send_texts',
@@ -1140,6 +1142,7 @@ def api_user_active(fake_uuid, email_address='test@user.canada.ca'):
                  'password': 'somepassword',
                  'email_address': email_address,
                  'mobile_number': '6502532222',
+                 'blocked': False,
                  'state': 'active',
                  'failed_login_count': 0,
                  'permissions': {},
@@ -1162,6 +1165,7 @@ def api_user_active_email_auth(fake_uuid, email_address='test@user.canada.ca'):
                  'password': 'somepassword',
                  'email_address': email_address,
                  'mobile_number': '6502532222',
+                 'blocked': False,
                  'state': 'active',
                  'failed_login_count': 0,
                  'permissions': {},
@@ -1184,6 +1188,7 @@ def api_nongov_user_active(fake_uuid):
         'password': 'somepassword',
         'email_address': 'someuser@notonwhitelist.com',
         'mobile_number': '6502532222',
+        'blocked': False,
         'state': 'active',
         'failed_login_count': 0,
         'permissions': {SERVICE_ONE_ID: [
@@ -1214,6 +1219,7 @@ def active_user_with_permissions(fake_uuid):
                  'password_changed_at': str(datetime.utcnow()),
                  'email_address': 'test@user.canada.ca',
                  'mobile_number': '6502532222',
+                 'blocked': False,
                  'state': 'active',
                  'failed_login_count': 0,
                  'permissions': {SERVICE_ONE_ID: ['send_texts',
@@ -1254,6 +1260,7 @@ def active_user_with_permission_to_two_services(fake_uuid):
         'password_changed_at': str(datetime.utcnow()),
         'email_address': 'test@user.canada.ca',
         'mobile_number': '6502532222',
+        'blocked': False,
         'state': 'active',
         'failed_login_count': 0,
         'permissions': {
@@ -1278,6 +1285,7 @@ def active_caseworking_user(fake_uuid):
         'password_changed_at': str(datetime.utcnow()),
         'email_address': 'caseworker@example.canada.ca',
         'mobile_number': '6502532222',
+        'blocked': False,
         'state': 'active',
         'failed_login_count': 0,
         'permissions': {SERVICE_ONE_ID: [
@@ -1302,6 +1310,7 @@ def active_user_no_mobile(fake_uuid):
                  'password_changed_at': str(datetime.utcnow()),
                  'email_address': 'test@user.canada.ca',
                  'mobile_number': None,
+                 'blocked': False,
                  'state': 'active',
                  'failed_login_count': 0,
                  'permissions': {SERVICE_ONE_ID: ['send_texts',
@@ -1329,6 +1338,7 @@ def active_user_view_permissions(fake_uuid):
                  'password_changed_at': str(datetime.utcnow()),
                  'email_address': 'test@user.canada.ca',
                  'mobile_number': '6502532222',
+                 'blocked': False,
                  'state': 'active',
                  'failed_login_count': 0,
                  'permissions': {SERVICE_ONE_ID: ['view_activity']},
@@ -1349,6 +1359,7 @@ def active_user_empty_permissions(fake_uuid):
                  'password_changed_at': str(datetime.utcnow()),
                  'email_address': 'test@user.canada.ca',
                  'mobile_number': '07700 900763',
+                 'blocked': False,
                  'state': 'active',
                  'failed_login_count': 0,
                  'permissions': {},
@@ -1370,6 +1381,7 @@ def active_user_manage_template_permission(fake_uuid):
         'password_changed_at': str(datetime.utcnow()),
         'email_address': 'test@user.canada.ca',
         'mobile_number': '6502532222',
+        'blocked': False,
         'state': 'active',
         'failed_login_count': 0,
         'permissions': {SERVICE_ONE_ID: [
@@ -1393,6 +1405,7 @@ def active_user_no_api_key_permission(fake_uuid):
         'password_changed_at': str(datetime.utcnow()),
         'email_address': 'test@user.canada.ca',
         'mobile_number': '6502532222',
+        'blocked': False,
         'state': 'active',
         'failed_login_count': 0,
         'permissions': {SERVICE_ONE_ID: [
@@ -1417,6 +1430,7 @@ def active_user_no_settings_permission(fake_uuid):
         'password_changed_at': str(datetime.utcnow()),
         'email_address': 'test@user.canada.ca',
         'mobile_number': '6502532222',
+        'blocked': False,
         'state': 'active',
         'failed_login_count': 0,
         'permissions': {SERVICE_ONE_ID: [
@@ -1439,6 +1453,7 @@ def api_user_locked(fake_uuid):
                  'password': 'somepassword',
                  'email_address': 'test@user.canada.ca',
                  'mobile_number': '6502532222',
+                 'blocked': False,
                  'state': 'active',
                  'failed_login_count': 5,
                  'permissions': {},
@@ -1458,6 +1473,7 @@ def api_user_request_password_reset(fake_uuid):
                  'password': 'somepassword',
                  'email_address': 'test@user.canada.ca',
                  'mobile_number': '6502532222',
+                 'blocked': False,
                  'state': 'active',
                  'failed_login_count': 5,
                  'permissions': {},
@@ -1478,6 +1494,7 @@ def api_user_changed_password(fake_uuid):
                  'password': 'somepassword',
                  'email_address': 'test@user.canada.ca',
                  'mobile_number': '6502532222',
+                 'blocked': False,
                  'state': 'active',
                  'failed_login_count': 5,
                  'permissions': {},
@@ -1504,6 +1521,7 @@ def mock_register_user(mocker, api_user_pending):
         api_user_pending['mobile_number'] = mobile_number
         api_user_pending['password'] = password
         api_user_pending['auth_type'] = auth_type
+        api_user_pending['blocked'] = False
         return api_user_pending
 
     return mocker.patch('app.user_api_client.register_user', side_effect=_register)
@@ -3330,8 +3348,9 @@ def sample_org_invite(mocker, organisation_one, status='pending'):
     email_address = 'invited_user@test.canada.ca'
     organisation = organisation_one['id']
     created_at = str(datetime.utcnow())
+    blocked = False
 
-    return org_invite_json(id_, invited_by, organisation, email_address, created_at, status)
+    return org_invite_json(id_, invited_by, organisation, email_address, created_at, status, blocked)
 
 
 @pytest.fixture(scope='function')

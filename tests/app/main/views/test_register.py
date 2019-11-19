@@ -243,6 +243,7 @@ def test_register_from_invite(
             'created_at': datetime.utcnow(),
             'auth_type': 'sms_auth',
             'folder_permissions': [],
+            'blocked': True
         }
     )
     with client.session_transaction() as session:
@@ -286,6 +287,7 @@ def test_register_from_invite_when_user_registers_in_another_browser(
             'created_at': datetime.utcnow(),
             'auth_type': 'sms_auth',
             'folder_permissions': [],
+            'blocked': False
         }
     )
     with client.session_transaction() as session:

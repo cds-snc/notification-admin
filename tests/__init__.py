@@ -49,6 +49,7 @@ def user_json(
     name='Test User',
     email_address='test@canada.ca',
     mobile_number='+16502532222',
+    blocked=False,
     password_changed_at=None,
     permissions={generate_uuid(): [
         'view_activity',
@@ -86,6 +87,7 @@ def user_json(
         'platform_admin': platform_admin,
         'current_session_id': current_session_id,
         'organisations': organisations,
+        'blocked': blocked,
         'services': list(permissions.keys()) if services is None else services
     }
 
@@ -99,7 +101,8 @@ def invited_user(
     status='pending',
     created_at=datetime.utcnow(),
     auth_type='sms_auth',
-    organisation=None
+    organisation=None,
+    blocked=False
 ):
     data = {
         'id': _id,
@@ -108,6 +111,7 @@ def invited_user(
         'status': status,
         'created_at': created_at,
         'auth_type': auth_type,
+        'blocked': blocked
     }
     if service:
         data['service'] = service
@@ -141,6 +145,7 @@ def service_json(
     prefix_sms=True,
     contact_link=None,
     organisation_id=None,
+    blocked=False
 ):
     if users is None:
         users = []
@@ -176,6 +181,7 @@ def service_json(
         'consent_to_research': True,
         'count_as_live': True,
         'organisation': organisation_id,
+        'blocked': blocked
     }
 
 
@@ -313,10 +319,11 @@ def invite_json(id_,
         'created_at': created_at,
         'auth_type': auth_type,
         'folder_permissions': folder_permissions,
+        'blocked': False
     }
 
 
-def org_invite_json(id_, invited_by, org_id, email_address, created_at, status):
+def org_invite_json(id_, invited_by, org_id, email_address, created_at, status, blocked):
     return {
         'id': id_,
         'invited_by': invited_by,
@@ -324,6 +331,7 @@ def org_invite_json(id_, invited_by, org_id, email_address, created_at, status):
         'email_address': email_address,
         'status': status,
         'created_at': created_at,
+        'blocked': blocked
     }
 
 
@@ -337,7 +345,8 @@ def create_test_api_user(state, permissions={}):
                  'email_address': TEST_USER_EMAIL,
                  'mobile_number': '+441234123412',
                  'state': state,
-                 'permissions': permissions
+                 'permissions': permissions,
+                 'blocked': False
                  }
     return user_data
 

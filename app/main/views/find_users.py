@@ -32,6 +32,30 @@ def user_information(user_id):
     )
 
 
+@main.route("/users/<uuid:user_id>/block", methods=['GET', 'POST'])
+@user_is_platform_admin
+def block_user(user_id):
+    if request.method == 'POST':
+        user = User.from_id(user_id)
+        user.update(blocked=True, updated_by=current_user.id)
+        return redirect(url_for('.user_information', user_id=user_id))
+    else:
+        flash(['Are you sure you want to block this user?'], 'block')
+        return user_information(user_id)
+
+
+@main.route("/users/<uuid:user_id>/unblock", methods=['GET', 'POST'])
+@user_is_platform_admin
+def unblock_user(user_id):
+    if request.method == 'POST':
+        user = User.from_id(user_id)
+        user.update(blocked=False, updated_by=current_user.id)
+        return redirect(url_for('.user_information', user_id=user_id))
+    else:
+        flash(['Are you sure you want to unblock this user?'], 'unblock')
+        return user_information(user_id)
+
+
 @main.route("/users/<uuid:user_id>/archive", methods=['GET', 'POST'])
 @user_is_platform_admin
 def archive_user(user_id):
@@ -41,5 +65,5 @@ def archive_user(user_id):
 
         return redirect(url_for('.user_information', user_id=user_id))
     else:
-        flash('There\'s no way to reverse this! Are you sure you want to archive this user?', 'delete')
+        flash('There\'s no way to reverse this! Are you sure you want to archive this user?', 'lock user')
         return user_information(user_id)

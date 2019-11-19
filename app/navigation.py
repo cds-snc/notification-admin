@@ -327,7 +327,9 @@ class HeaderNavigation(Navigation):
         'view_template_version_preview',
         'view_template_versions',
         'safelist',
-        'get_template_data'
+        'get_template_data',
+        'block_user',
+        'unblock_user',
     }
 
 
@@ -621,7 +623,9 @@ class MainNavigation(Navigation):
         'view_provider',
         'view_providers',
         'view_template_version_preview',
-        'get_template_data'
+        'get_template_data',
+        'block_user',
+        'unblock_user'
     }
 
 
@@ -910,7 +914,9 @@ class CaseworkNavigation(Navigation):
         'view_template_version_preview',
         'view_template_versions',
         'safelist',
-        'get_template_data'
+        'get_template_data',
+        'block_user',
+        'unblock_user',
     }
 
 
@@ -1200,5 +1206,7 @@ class OrgNavigation(Navigation):
         'view_template_version_preview',
         'view_template_versions',
         'safelist',
-        'get_template_data'
+        'get_template_data',
+        'block_user',
+        'unblock_user'
     }
