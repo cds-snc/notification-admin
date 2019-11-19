@@ -151,9 +151,8 @@ def test_user_information_page_shows_unblocked_user(
     assert response.status_code == 200
 
     document = html.fromstring(response.get_data(as_text=True))
-    assert document.xpath("//h1/text()[normalize-space()='Blocked Apple Bloom']")   
+    assert document.xpath("//h1/text()[normalize-space()='Blocked Apple Bloom']")
     assert document.xpath("//a/text()[normalize-space()='Unblock user']")
-
 
 
 def test_user_information_page_displays_if_there_are_failed_login_attempts(
