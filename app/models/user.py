@@ -46,7 +46,8 @@ class User(JSONModel, UserMixin):
         super().__init__(_dict)
         self.permissions = _dict.get('permissions', {})
         self.max_failed_login_count = current_app.config['MAX_FAILED_LOGIN_COUNT']
-        self._platform_admin = _dict['platform_admin']
+        self._platform_admin = _dict['platform_admin'],
+        self.blocked = False
 
     @classmethod
     def from_id(cls, user_id):
@@ -434,6 +435,7 @@ class InvitedUser(JSONModel):
         super().__init__(_dict)
         self.permissions = _dict.get('permissions') or []
         self._from_user = _dict['from_user']
+        self.blocked = False
 
     @classmethod
     def create(
