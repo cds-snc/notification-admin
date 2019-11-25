@@ -434,6 +434,7 @@ class InvitedUser(JSONModel):
         super().__init__(_dict)
         self.permissions = _dict.get('permissions') or []
         self._from_user = _dict['from_user']
+        self.blocked = False
 
     @classmethod
     def create(
