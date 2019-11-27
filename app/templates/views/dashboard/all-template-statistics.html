@@ -12,14 +12,6 @@
 
   <h1 class="heading-large">{{ _('Templates used') }}</h1>
 
-  <div class="bottom-gutter-3-2">
-    {{ pill(
-      items=years,
-      current_value=selected_year,
-      big_number_args={'smallest': True},
-    ) }}
-  </div>
-
   <div class="dashboard">
     {% for month in months %}
       <h2>{{ month.name }}</h2>

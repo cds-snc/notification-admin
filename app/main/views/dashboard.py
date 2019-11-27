@@ -121,7 +121,7 @@ def template_usage(service_id):
 
     return render_template(
         'views/dashboard/all-template-statistics.html',
-        months=months,
+        months=reversed(months),
         stats=stats,
         most_used_template_count=max(
             max((
@@ -401,7 +401,7 @@ def format_monthly_stats_to_list(historical_stats):
             name=get_month_name(key),
             **aggregate_status_types(value)
         ) for key, value in historical_stats.items()
-    ), key=lambda x: x['date'])
+    ), key=lambda x: x['date'], reverse=True)
 
 
 def get_month_name(string):
