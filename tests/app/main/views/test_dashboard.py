@@ -593,12 +593,6 @@ def test_stats_pages_show_last_3_years(
         service_id=SERVICE_ONE_ID,
     )
 
-    assert normalize_spaces(page.select_one('.pill').text) == (
-        '2012 to 2013 financial year '
-        '2013 to 2014 financial year '
-        '2014 to 2015 financial year'
-    )
-
 
 def test_monthly_has_equal_length_tables(
     client_request,
