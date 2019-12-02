@@ -1,21 +1,24 @@
 .product-page {
 
   &-intro {
-
-    margin: -10px 0 $gutter * 1.5 0;
+    margin: -30px 0 $gutter * 1.5 0;
     padding: 0 0 $gutter * 2 0;
     background: $govuk-blue;
     color: $white;
+
+    @include media(tablet) {
+      margin: -10px 0 $gutter * 1.5 0;
+    }
 
     &-wrapper {
 
       @extend %site-width-container;
 
-      @include media(desktop) {
+      @include media(920px) {
         background-image: file-url('product/proposition-illustration.png');
-        background-size: 320px;
+        background-size: 300px;
         background-repeat: no-repeat;
-        background-position: right -6px top 100px;
+        background-position: right -6px top 50px;
 
         @include ie-lte(8) {
           background-image: none;
@@ -25,7 +28,7 @@
 
     // swap image for fr
     &-wrapper:lang(fr) {
-      @include media(desktop) {
+      @include media(920px) {
         background-image: file-url('product/01-screen-fr.svg');
       }
     }
@@ -33,6 +36,10 @@
     h1 {
       @include bold-48;
       margin: 20px 0 $gutter 0;
+
+      @include media(mobile) {
+        padding-top:30px;
+      }
     }
 
     p {
