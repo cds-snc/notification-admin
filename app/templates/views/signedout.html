@@ -4,7 +4,14 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block meta %}
-  <meta name="description" content="Notification lets you send emails and text messages to your users.">
+  {% set description = _('Notification lets you send emails and text messages to your users') %}
+  <meta name="description" content="{{description}}">
+  <meta name="keywords" content="gc notify, notify, canada notify, canada email, email notifications, Government of Canada, federal government, Canada SMS, Canada Notification service">
+  <meta property="og:title" content="GC Notify | GC Notification">
+  <meta property="og:description" content="{{description}}">
+  <meta property="og:image" content="https://notification.alpha.canada.ca/static/images/product/proposition-illustration.png">
+  <meta property="og:url" content="https://notification.alpha.canada.ca">
+
 {% endblock %}
 
 {% block page_title %}
