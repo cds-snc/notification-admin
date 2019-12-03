@@ -36,7 +36,7 @@
         })
         .then(function(response) {
           if (response.ok) {
-            window.location = "/";
+            window.location = "/two-factor" + window.location.search;
           } else {
             alert("Bad key");
           }
