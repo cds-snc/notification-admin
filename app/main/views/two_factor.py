@@ -33,7 +33,7 @@ def two_factor_email_sent():
 @main.route('/email-auth/<token>', methods=['GET'])
 def two_factor_email(token):
     if current_user.is_authenticated:
-        return redirect_when_logged_in(platform_admin=current_user.platform_admin)
+        return redirect_when_logged_in(user=current_user, platform_admin=current_user.platform_admin)
 
     # checks url is valid, and hasn't timed out
     try:
@@ -59,7 +59,7 @@ def two_factor_email(token):
 @redirect_to_sign_in
 def two_factor():
     if current_user.is_authenticated:
-        return redirect_when_logged_in(platform_admin=current_user.platform_admin)
+        return redirect_when_logged_in(user=current_user, platform_admin=current_user.platform_admin)
 
     user_id = session['user_details']['id']
 
@@ -104,6 +104,18 @@ def log_in_user(user_id):
         session.pop("user_details", None)
         session.pop("file_uploads", None)
 
+    return redirect_when_logged_in(user=user, platform_admin=user.platform_admin)
+
+
+def redirect_when_logged_in(user, platform_admin):
+    next_url = request.args.get('next')
+    if next_url and _is_safe_redirect_url(next_url):
+        url = next_url
+    elif platform_admin:
+        url = url_for('main.platform_admin')
+    else:
+        url = url_for('main.show_accounts_or_dashboard')
+
     if len(user.login_events) > 1:
         def parse_ua(ua):
             user_agent = parse(ua)
@@ -112,17 +124,7 @@ def log_in_user(user_id):
         return render_template(
             'views/login_events.html',
             events=user.login_events,
-            next_url=request.args.get('next'),
+            next=url,
             parse_ua=parse_ua)
 
-    return redirect_when_logged_in(platform_admin=user.platform_admin)
-
-
-def redirect_when_logged_in(platform_admin):
-    next_url = request.args.get('next')
-    if next_url and _is_safe_redirect_url(next_url):
-        return redirect(next_url)
-    if platform_admin:
-        return redirect(url_for('main.platform_admin'))
-
-    return redirect(url_for('main.show_accounts_or_dashboard'))
+    return redirect(url)
