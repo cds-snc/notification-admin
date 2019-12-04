@@ -1,29 +1,18 @@
-{% from "components/form.html" import form_wrapper %}
-{% from "components/page-footer.html" import page_footer %}
-{% from "components/page-header.html" import page_header %}
-{% from "components/textbox.html" import textbox %}
-
-{% extends "org_template.html" %}
-
-{% block org_page_title %}
-  Edit request to go live notes
-{% endblock %}
-
-{% block maincolumn_content %}
-  {{ page_header(
-    "Edit request to go live notes",
-    back_link=url_for('.organisation_settings', org_id=current_org.id)
-  ) }}
-  <div class="grid-row">
-    <div class="column-five-sixths">
-      <p>
-        Text entered here will be displayed in the Zendesk ticket when a service
-        belonging to this organisation requests to go live.
-      </p>
-      {% call form_wrapper() %}
-        {{ textbox(form.request_to_go_live_notes, width='1-1', rows=3) }}
-        {{ page_footer('Save') }}
-      {% endcall %}
-    </div>
+{% from "components/form.html" import form_wrapper %} {% from
+"components/page-footer.html" import page_footer %} {% from
+"components/page-header.html" import page_header %} {% from
+"components/textbox.html" import textbox %} {% extends "org_template.html" %} {%
+block org_page_title %} Edit request to go live notes {% endblock %} {% block
+maincolumn_content %} {{ page_header( "Edit request to go live notes",
+back_link=url_for('.organisation_settings', org_id=current_org.id) ) }}
+<div class="grid-row">
+  <div class="column-five-sixths">
+    <p>
+      {{ _('When you turn a service live please log which services have been turned
+      live and why you approved the change.') }}
+    </p>
+    {% call form_wrapper() %} {{ textbox(form.request_to_go_live_notes,
+    width='1-1', rows=3) }} {{ page_footer('Save') }} {% endcall %}
   </div>
+</div>
 {% endblock %}
