@@ -20,7 +20,7 @@ def test_non_logged_in_user_can_see_homepage(
     )
 
     assert page.select_one('meta[name=description]')['content'].strip() == (
-        'Notification lets you send emails and text messages to your users.'
+        'Notify lets you send emails and text messages to your users'
     )
 
 
