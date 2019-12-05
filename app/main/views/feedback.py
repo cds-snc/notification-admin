@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import pytz
-from flask import redirect, render_template, request, url_for
+from flask import abort, redirect, render_template, request, url_for
 from flask_login import current_user
 
 from app import convert_to_boolean, service_api_client, user_api_client
@@ -53,6 +53,16 @@ def feedback(ticket_type):
         return redirect(url_for(
             '.thanks',
         ))
+
+    types = [
+        'ask-question-give-feedback',
+        'bat-phone',
+        'report-problem',
+        'thanks',
+        'triage']
+
+    if ticket_type not in types:
+        abort(404)
 
     if request.method == 'POST':
         return render_template(
