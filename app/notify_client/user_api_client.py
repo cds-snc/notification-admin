@@ -120,8 +120,8 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = '/user/{0}/email-already-registered'.format(user_id)
         self.post(endpoint, data=data)
 
-    def send_contact_email(self, message):
-        data = {'email': self.contact_email, 'message': message}
+    def send_contact_email(self, message, sender):
+        data = {'email': self.contact_email, 'message': message, 'sender': sender}
         endpoint = '/user/{0}/support-email'.format(self.notify_user_id)
         self.post(endpoint, data=data)
 
