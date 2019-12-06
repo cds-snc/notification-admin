@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-29 15:19-0500\n"
+"POT-Creation-Date: 2019-12-06 10:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -202,7 +202,7 @@ msgid "Template name"
 msgstr "Nom du modèle"
 
 #: app/main/forms.py:659 app/main/forms.py:822 app/main/forms.py:830
-#: app/main/views/dashboard.py:215 app/templates/views/signedout.html:135
+#: app/main/views/dashboard.py:215 app/templates/views/signedout.html:144
 #: app/templates/views/support/ask-question-give-feedback.html:24
 msgid "Message"
 msgstr "Message"
@@ -253,13 +253,13 @@ msgid "Ask a question or give feedback"
 msgstr "Posez une question ou laissez un commentaire"
 
 #: app/main/forms.py:820 app/main/forms.py:826
-#: app/templates/views/signedout.html:129
+#: app/templates/views/signedout.html:138
 #: app/templates/views/support/ask-question-give-feedback.html:18
 msgid "Your name"
 msgstr "Votre nom"
 
 #: app/main/forms.py:821 app/main/forms.py:829
-#: app/templates/views/signedout.html:132
+#: app/templates/views/signedout.html:141
 #: app/templates/views/support/ask-question-give-feedback.html:21
 msgid "Your email"
 msgstr "Votre courriel"
@@ -738,7 +738,7 @@ msgid "Letter template"
 msgstr "Modèle de lettre"
 
 #: app/templates/admin_template.html:24 app/templates/admin_template.html:65
-#: app/templates/views/signedout.html:11
+#: app/templates/views/signedout.html:20
 msgid "Notification"
 msgstr "Notification"
 
@@ -1019,7 +1019,7 @@ msgstr "Choisir un fichier"
 
 #: app/templates/components/file-upload.html:33
 #: app/templates/views/check/column-errors.html:78
-#: app/templates/views/signedout.html:28
+#: app/templates/views/signedout.html:37
 msgid "or"
 msgstr "ou"
 
@@ -2005,7 +2005,7 @@ msgstr ""
 #: app/templates/views/register-from-org-invite.html:7
 #: app/templates/views/register-from-org-invite.html:14
 #: app/templates/views/register.html:7 app/templates/views/register.html:14
-#: app/templates/views/signedout.html:27 app/templates/views/signedout.html:68
+#: app/templates/views/signedout.html:36 app/templates/views/signedout.html:77
 msgid "Create an account"
 msgstr "Créer un compte"
 
@@ -2241,8 +2241,8 @@ msgid ""
 msgstr ""
 "Voici la liste des trois dernières occasions où votre mot de passe a été "
 "utilisé pour accéder à votre compte. Si l’une d’elles vous paraît "
-"suspecte, <a href=\"/support/ask-question-give-feedback\" target=\"_blank\">"
-"communiquez avec nous immédiatement.</a> "
+"suspecte, <a href=\"/support/ask-question-give-feedback\" "
+"target=\"_blank\">communiquez avec nous immédiatement.</a> "
 
 #: app/templates/views/login_events.html:17
 msgid "Browser"
@@ -2411,8 +2411,8 @@ msgid ""
 "wrong. You should remove these email addresses from your database."
 msgstr ""
 "Le fournisseur n'a pas pu livrer le message puisque l’adresse courriel "
-"était erronée. Vous devriez supprimer cette adresse courriel de votre base"
-" de données."
+"était erronée. Vous devriez supprimer cette adresse courriel de votre "
+"base de données."
 
 #: app/templates/views/message-status.html:44
 msgid ""
@@ -2459,7 +2459,8 @@ msgid ""
 "some countries do not provide any more delivery information."
 msgstr ""
 "Le message a été envoyé à un numéro international. Les réseaux mobiles de"
-" certains pays ne fournissent pas d’autres renseignements sur la livraison."
+" certains pays ne fournissent pas d’autres renseignements sur la "
+"livraison."
 
 #: app/templates/views/message-status.html:84
 msgid "Phone number does not exist"
@@ -2920,27 +2921,42 @@ msgstr "Service interrompu"
 msgid "Resume service"
 msgstr "Reprendre le service"
 
-#: app/templates/views/signedout.html:21
+#: app/templates/views/signedout.html:7
+msgid "Notify lets you send emails and text messages to your users"
+msgstr ""
+
+#: app/templates/views/signedout.html:8
+msgid ""
+"gc notify, notify, canada notify, canada email, email notifications, "
+"Government of Canada, federal government, Canada SMS, Canada Notification"
+" service"
+msgstr ""
+
+#: app/templates/views/signedout.html:9
+msgid "GC Notify | GC Notification"
+msgstr ""
+
+#: app/templates/views/signedout.html:30
 msgid "Send service updates and messages over email and SMS"
 msgstr "Envoi de messages et de mises à jour de service par courriel et SMS"
 
-#: app/templates/views/signedout.html:24
+#: app/templates/views/signedout.html:33
 msgid "Try Notify if you work in the federal government."
 msgstr "Faites l’essai de Notification si vous travaillez au gouvernement fédéral."
 
-#: app/templates/views/signedout.html:28
+#: app/templates/views/signedout.html:37
 msgid "sign in"
 msgstr "connectez-vous"
 
-#: app/templates/views/signedout.html:28
+#: app/templates/views/signedout.html:37
 msgid "if you’ve used it before"
 msgstr "si vous avez déjà un compte."
 
-#: app/templates/views/signedout.html:47
+#: app/templates/views/signedout.html:56
 msgid "Measure the effectiveness and relevance of your notifications"
 msgstr "Évaluez l’efficacité et la pertinence de vos notifications"
 
-#: app/templates/views/signedout.html:48
+#: app/templates/views/signedout.html:57
 msgid ""
 "The Notify dashboard lets you track the status of all your notifications "
 "and mailings. See at a glance the number of messages that have been "
@@ -2950,11 +2966,11 @@ msgstr ""
 " vos envois. Découvrez en un seul coup d’oeil le nombre de messages qui "
 "ont été reçus et ouverts."
 
-#: app/templates/views/signedout.html:62
+#: app/templates/views/signedout.html:71
 msgid "Manually send personalized messages to your users"
 msgstr "Envoyez manuellement des messages personnalisés à vos utilisateurs"
 
-#: app/templates/views/signedout.html:63
+#: app/templates/views/signedout.html:72
 msgid ""
 "Upload a spreadsheet containing the recipients email addresses or phone "
 "numbers, and Notify will send your message to them all in a batch."
@@ -2963,7 +2979,7 @@ msgstr ""
 "numéros de téléphone des destinataires, et Notification leur enverra "
 "votre message en un seul lot."
 
-#: app/templates/views/signedout.html:65
+#: app/templates/views/signedout.html:74
 msgid ""
 "If you need help organizing your users’ information, Notify’s spreadsheet"
 " template is a great place to start."
@@ -2971,13 +2987,13 @@ msgstr ""
 "Besoin d’aide pour organiser les coordonnées de vos destinataires? Le "
 "modèle de feuille de calcul de Notification est là pour vous. "
 
-#: app/templates/views/signedout.html:89
+#: app/templates/views/signedout.html:98
 msgid "Integrate Notify into your web application or admin system"
 msgstr ""
 "Intégrez Notification à votre application Web ou à votre système "
 "administratif."
 
-#: app/templates/views/signedout.html:90
+#: app/templates/views/signedout.html:99
 msgid ""
 "The Notify API sends messages automatically. Choose a client to integrate"
 " your API with your web application or admin system."
@@ -2986,15 +3002,15 @@ msgstr ""
 "un client pour intégrer notre API à votre application Web ou à votre "
 "système administratif."
 
-#: app/templates/views/signedout.html:92
+#: app/templates/views/signedout.html:101
 msgid "Learn how to integrate with our API"
 msgstr "Découvrez comment intégrer notre API"
 
-#: app/templates/views/signedout.html:106
+#: app/templates/views/signedout.html:115
 msgid "Control your content"
 msgstr "Gérez votre contenu"
 
-#: app/templates/views/signedout.html:107
+#: app/templates/views/signedout.html:116
 msgid ""
 "You don’t need to be a developer to create email or SMS templates for "
 "your users."
@@ -3002,7 +3018,7 @@ msgstr ""
 "Vous n’avez pas besoin de connaissances techniques pour créer des modèles"
 " de courriels ou de messages texte."
 
-#: app/templates/views/signedout.html:108
+#: app/templates/views/signedout.html:117
 msgid ""
 "Notify uses standard text editing tools and a simple templating language "
 "for filling in personalized information."
@@ -3010,7 +3026,7 @@ msgstr ""
 "Notification utilise des outils d’édition de texte standards et un simple"
 " langage de mise en forme pour écrire du contenu personnalisé."
 
-#: app/templates/views/signedout.html:127
+#: app/templates/views/signedout.html:136
 msgid "Contact the Notify team"
 msgstr "Contacter l’équipe de Notification"
 
@@ -3992,7 +4008,9 @@ msgstr "Nouvelle marque distinctive"
 
 #: app/templates/views/features/emails.html:11
 msgid "Send an unlimited number of free emails with Notification."
-msgstr "Vous pouvez envoyer gratuitement un nombre illimité de courriels avec Notification."
+msgstr ""
+"Vous pouvez envoyer gratuitement un nombre illimité de courriels avec "
+"Notification."
 
 #: app/templates/views/features/emails.html:13
 msgid "and try Notification for yourself."
@@ -4048,7 +4066,8 @@ msgid ""
 "to be labelled as spam."
 msgstr ""
 "Les courriels possédant une adresse de réponse semblent plus dignes de "
-"confiance et sont moins susceptibles d’être identifiés comme du pourriel. "
+"confiance et sont moins susceptibles d’être identifiés comme du pourriel."
+" "
 
 #: app/templates/views/features/emails.html:28
 msgid "You can add reply-to addresses in your service settings."
@@ -4278,6 +4297,12 @@ msgstr "service(s) en fonction"
 #: app/templates/views/organisations/index.html:41
 msgid "archived"
 msgstr "archivé"
+
+#: app/templates/views/organisations/organisation/settings/edit-go-live-notes.html:11
+msgid ""
+"When you turn a service live please log which services have been turned\n"
+"      live and why you approved the change."
+msgstr ""
 
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:8
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:12
@@ -4569,7 +4594,9 @@ msgstr "Ajouter un expéditeur de message texte"
 
 #: app/templates/views/service-settings/sms-senders.html:55
 msgid "The text message sender tells your users who the message is from."
-msgstr "L’expéditeur de message texte fait savoir à vos utilisateurs d’où vient le message."
+msgstr ""
+"L’expéditeur de message texte fait savoir à vos utilisateurs d’où vient "
+"le message."
 
 #: app/templates/views/service-settings/branding/manage-email-branding.html:9
 #: app/templates/views/service-settings/branding/manage-email-branding.html:15
@@ -4581,8 +4608,8 @@ msgid ""
 "Uploads need to be exactly 108px tall to fit correctly at the top of your"
 " emails"
 msgstr ""
-"Les logos téléversés doivent avoir une hauteur d’exactement 108 pixels"
-"pour s’insérer correctement au haut de vos courriels."
+"Les logos téléversés doivent avoir une hauteur d’exactement 108 "
+"pixelspour s’insérer correctement au haut de vos courriels."
 
 #: app/templates/views/service-settings/branding/manage-email-branding.html:23
 msgid "We will review your branding and implement it."
@@ -4606,7 +4633,7 @@ msgid ""
 "This should be a shared inbox managed by your team, not your own email "
 "address."
 msgstr ""
-"L’adresse doit correspondre à une boîte de réception gérée par votre " 
+"L’adresse doit correspondre à une boîte de réception gérée par votre "
 "équipe, et non à votre adresse courriel personnelle."
 
 #: app/templates/views/service-settings/email-reply-to/edit.html:8
@@ -4705,8 +4732,8 @@ msgstr "Vous pouvez aussi créer des dossiers pour classer vos modèles."
 #: app/templates/views/templates/choose.html:39
 msgid "You need to ask your service manager to add templates before you can send"
 msgstr ""
-"Vous devez demander à votre gestionnaire de service d’ajouter des modèles avant "
-"de pouvoir envoyer des messages"
+"Vous devez demander à votre gestionnaire de service d’ajouter des modèles"
+" avant de pouvoir envoyer des messages"
 
 #: app/templates/views/templates/template.html:51
 msgid "Last edited"
@@ -5202,7 +5229,10 @@ msgstr "Clés d’essai"
 #~ msgstr "la documentation technique) :"
 
 #~ msgid "Spreadsheet must be created from either rows or CSV data"
-#~ msgstr "La feuille de calcul doit être créée soit à partir de rangées soit à partir d’un fichier CSV"
+#~ msgstr ""
+#~ "La feuille de calcul doit être "
+#~ "créée soit à partir de rangées "
+#~ "soit à partir d’un fichier CSV"
 
 #~ msgid " If you think you should have access"
 #~ msgstr " Si vous pensez que vous devriez avoir accès"
