@@ -433,7 +433,7 @@ def test_switch_service_to_live(
     )
     mock_update_service.assert_called_with(
         SERVICE_ONE_ID,
-        message_limit=250000,
+        message_limit=10_000,
         restricted=False,
         go_live_at="2017-04-01 11:09:00.061258"
     )
@@ -3290,7 +3290,7 @@ def test_should_show_page_to_set_sms_allowance(
 @freeze_time("2017-04-01 11:09:00.061258")
 @pytest.mark.parametrize('given_allowance, expected_api_argument', [
     ('1', 1),
-    ('250000', 250000),
+    ('10_000', 10_000),
     pytest.param('foo', 'foo', marks=pytest.mark.xfail),
 ])
 def test_should_set_sms_allowance(
