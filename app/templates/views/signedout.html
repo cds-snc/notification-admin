@@ -144,8 +144,10 @@
               {% set message_label = _('Message') %}
               {{ textbox(form.feedback, width='1-1', label=message_label, hint='', rows=10) }}
             
+
+            {% set send_text = _('Send') %}
             {{ page_footer(
-              'Send',
+              send_text,
             ) }}
             {% endcall %}
         </div>
