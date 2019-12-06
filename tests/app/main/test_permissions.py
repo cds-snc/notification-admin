@@ -327,7 +327,6 @@ def test_services_pages_that_org_users_are_allowed_to_see(
     )
 
     endpoints = (
-        'main.usage',
         'main.manage_users',
     )
 
@@ -366,7 +365,7 @@ def test_service_navigation_for_org_user(
     client_request.login(api_user_active, service=service)
 
     page = client_request.get(
-        'main.usage',
+        'main.service_dashboard',
         service_id=SERVICE_ONE_ID,
     )
     assert [
