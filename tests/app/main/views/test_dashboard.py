@@ -870,7 +870,7 @@ def test_usage_page_displays_letters_ordered_by_postage(
     assert normalize_spaces(postage_details[1].text) == '3 second class letters at 30p'
     assert normalize_spaces(postage_details[2].text) == '1 second class letter at 50p'
 
-
+@pytest.mark.skip(reason="feature not in use")
 def test_usage_page_with_year_argument(
     logged_in_client,
     mock_get_usage,
@@ -895,6 +895,7 @@ def test_usage_page_for_invalid_year(
 
 
 @freeze_time("2012-03-31 12:12:12")
+@pytest.mark.skip(reason="feature not in use")
 def test_future_usage_page(
     client_request,
     mock_get_future_usage,
