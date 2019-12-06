@@ -18,7 +18,6 @@ from flask_login import current_user
 from werkzeug.utils import redirect
 
 from app import (
-    billing_api_client,
     current_service,
     format_date_numeric,
     format_datetime_numeric,

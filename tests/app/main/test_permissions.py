@@ -339,6 +339,7 @@ def test_services_pages_that_org_users_are_allowed_to_see(
 
     assert mock_get_service.called is organisation_checked
 
+
 @pytest.mark.skip(reason="?")
 def test_service_navigation_for_org_user(
     client_request,

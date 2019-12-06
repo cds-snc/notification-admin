@@ -870,6 +870,7 @@ def test_usage_page_displays_letters_ordered_by_postage(
     assert normalize_spaces(postage_details[1].text) == '3 second class letters at 30p'
     assert normalize_spaces(postage_details[2].text) == '1 second class letter at 50p'
 
+
 @pytest.mark.skip(reason="feature not in use")
 def test_usage_page_with_year_argument(
     logged_in_client,
@@ -881,6 +882,7 @@ def test_usage_page_with_year_argument(
     mock_get_billable_units.assert_called_once_with(SERVICE_ONE_ID, 2000)
     mock_get_usage.assert_called_once_with(SERVICE_ONE_ID, 2000)
     mock_get_free_sms_fragment_limit.assert_called_with(SERVICE_ONE_ID, 2000)
+
 
 @pytest.mark.skip(reason="feature not in use")
 def test_usage_page_for_invalid_year(
