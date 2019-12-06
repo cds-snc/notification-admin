@@ -43,7 +43,7 @@ def index():
         )
 
         # send email here
-        user_api_client.send_contact_email(msg)
+        user_api_client.send_contact_email(msg, form.email_address.data)
 
         return redirect(url_for(
             '.thanks',
