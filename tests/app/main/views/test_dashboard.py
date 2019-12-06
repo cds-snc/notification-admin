@@ -757,6 +757,7 @@ def test_should_show_recent_jobs_on_dashboard(
 
 
 @freeze_time("2012-03-31 12:12:12")
+@pytest.mark.skip(reason="feature not in use")
 def test_usage_page(
     client_request,
     mock_get_usage,
@@ -841,6 +842,7 @@ def test_usage_page_with_letters(
 
 
 @freeze_time("2012-04-30 12:12:12")
+@pytest.mark.skip(reason="feature not in use")
 def test_usage_page_displays_letters_ordered_by_postage(
     mocker,
     client_request,
@@ -880,7 +882,7 @@ def test_usage_page_with_year_argument(
     mock_get_usage.assert_called_once_with(SERVICE_ONE_ID, 2000)
     mock_get_free_sms_fragment_limit.assert_called_with(SERVICE_ONE_ID, 2000)
 
-
+@pytest.mark.skip(reason="feature not in use")
 def test_usage_page_for_invalid_year(
     client_request,
 ):
