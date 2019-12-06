@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-12-06 10:08-0500\n"
+"POT-Creation-Date: 2019-12-06 11:44-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -303,7 +303,7 @@ msgid "Off"
 msgstr "Désactivé"
 
 #: app/main/forms.py:1001 app/main/views/send.py:773
-#: app/templates/views/check/ok.html:42
+#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:148
 #: app/templates/views/templates/_template.html:21
 #: app/templates/views/templates/_template.html:29
 msgid "Send"
