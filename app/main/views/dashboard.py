@@ -18,7 +18,6 @@ from flask_login import current_user
 from werkzeug.utils import redirect
 
 from app import (
-    billing_api_client,
     current_service,
     format_date_numeric,
     format_datetime_numeric,
@@ -142,31 +141,10 @@ def template_usage(service_id):
 @main.route("/services/<service_id>/usage")
 @user_has_permissions('manage_service', allow_org_user=True)
 def usage(service_id):
-    year, current_financial_year = requested_and_current_financial_year(request)
+    if current_service.has_permission('view_activity'):
+        return redirect(url_for('.service_dashboard', service_id=service_id))
 
-    free_sms_allowance = billing_api_client.get_free_sms_fragment_limit_for_year(service_id, year)
-    units = billing_api_client.get_billable_units(service_id, year)
-    yearly_usage = billing_api_client.get_service_usage(service_id, year)
-
-    usage_template = 'views/usage.html'
-    if current_service.has_permission('letter'):
-        usage_template = 'views/usage-with-letters.html'
-    return render_template(
-        usage_template,
-        months=list(get_free_paid_breakdown_for_billable_units(
-            year,
-            free_sms_allowance,
-            units
-        )),
-        selected_year=year,
-        years=get_tuples_of_financial_years(
-            partial(url_for, '.usage', service_id=service_id),
-            start=current_financial_year - 1,
-            end=current_financial_year,
-        ),
-        **calculate_usage(yearly_usage,
-                          free_sms_allowance)
-    )
+    return redirect(url_for('main.index', service_id=service_id))
 
 
 @main.route("/services/<service_id>/monthly")
