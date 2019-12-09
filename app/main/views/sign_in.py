@@ -86,4 +86,7 @@ def _geolocate_ip(ip):
         return ip
     else:
         resp = json.loads(response.decode("utf-8-sig"))
-        return resp["city"]["names"]["en"] + ", " + resp["subdivisions"][0]["iso_code"] + " (" + ip + ")"
+        if resp["city"] is not None and resp["subdivisions"] is not None:
+            return resp["city"]["names"]["en"] + ", " + resp["subdivisions"][0]["iso_code"] + " (" + ip + ")"
+        else:
+            return ip
