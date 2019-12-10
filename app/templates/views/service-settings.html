@@ -120,21 +120,6 @@
             )
           }}
         {% endcall %}
-
-        {% if current_user.platform_admin %}
-          {% call settings_row(if_has_permission='email') %}
-            {% set txt = _('Sending Domain') %}
-            {{ text_field(txt) }}
-            {% set txt = _('{}') %}
-            {{ text_field(txt.format(current_service.sending_domain)|safe if current_service.sending_domain else sending_domain) }}
-            {{ edit_field(
-              change_txt,
-              url_for('.service_sending_domain', service_id=current_service.id),
-              permissions=['manage_service'],
-              attributes=""
-            )}}
-          {% endcall %}
-        {% endif %}
         {% call settings_row(if_has_permission='email') %}
           {% set txt = _('Email branding') %}
           {{ text_field(txt) }}
@@ -344,6 +329,19 @@
             {{ text_field(txt)}}
             {{ text_field(current_service.email_branding_name) }}
             {{ edit_field(change_txt, url_for('.service_set_email_branding', service_id=current_service.id)) }}
+          {% endcall %}
+
+          {% call row() %}
+          {% set txt = _('Sending Domain') %}
+          {{ text_field(txt) }}
+          {% set txt = _('{}') %}
+          {{ text_field(txt.format(current_service.sending_domain)|safe if current_service.sending_domain else sending_domain) }}
+          {{ edit_field(
+            change_txt,
+            url_for('.service_sending_domain', service_id=current_service.id),
+            permissions=['manage_service'],
+            attributes=""
+          )}}
           {% endcall %}
           {% call row() %}
             {% set txt = _('Letter branding') %}
