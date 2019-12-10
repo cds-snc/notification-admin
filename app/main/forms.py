@@ -532,7 +532,7 @@ class RenameServiceForm(StripWhitespaceForm):
 
 class SendingDomainForm(StripWhitespaceForm):
     sending_domain = StringField(
-        _l(u'Sending Domain'),
+        _l(u'Sending domain'),
         validators=[])
 
 
