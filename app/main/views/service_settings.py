@@ -39,6 +39,7 @@ from app.main.forms import (
     PreviewBranding,
     RenameServiceForm,
     SearchByNameForm,
+    SendingDomainForm,
     ServiceContactDetailsForm,
     ServiceDataRetentionEditForm,
     ServiceDataRetentionForm,
@@ -53,7 +54,6 @@ from app.main.forms import (
     SetLetterBranding,
     SMSPrefixForm,
     SVGFileUpload,
-    SendingDomainForm
 )
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
