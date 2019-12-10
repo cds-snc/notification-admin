@@ -399,7 +399,7 @@ def service_set_reply_to_email(service_id):
 
 
 @main.route("/services/<service_id>/service-settings/sending-domain", methods=['GET', 'POST'])
-@user_has_permissions('manage_service')
+@user_is_platform_admin
 def service_sending_domain(service_id):
     form = SendingDomainForm()
 

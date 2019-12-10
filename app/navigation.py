@@ -330,6 +330,7 @@ class HeaderNavigation(Navigation):
         'get_template_data',
         'block_user',
         'unblock_user',
+        'service_sending_domain'
     }
 
 
@@ -625,7 +626,8 @@ class MainNavigation(Navigation):
         'view_template_version_preview',
         'get_template_data',
         'block_user',
-        'unblock_user'
+        'unblock_user',
+        'service_sending_domain'
     }
 
 
@@ -917,6 +919,7 @@ class CaseworkNavigation(Navigation):
         'get_template_data',
         'block_user',
         'unblock_user',
+        'service_sending_domain'
     }
 
 
@@ -1208,5 +1211,6 @@ class OrgNavigation(Navigation):
         'safelist',
         'get_template_data',
         'block_user',
-        'unblock_user'
+        'unblock_user',
+        'service_sending_domain'
     }
