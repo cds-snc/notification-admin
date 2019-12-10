@@ -1,0 +1,33 @@
+
+
+
+{% extends "withnav_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/checkbox.html" import checkbox %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Sending Page') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {{ page_header(
+    _('Sending Page'),
+    back_link=url_for('main.service_settings', service_id=current_service.id)
+  ) }}
+
+  {% call form_wrapper() %}
+    {{ textbox(
+      form.sending_domain,
+      width='1-1',
+      hint=_('Default notification.alpha.canada.ca'),
+      safe_error_message=True
+    ) }}
+  {% endcall %}
+  {% set button_txt = _('Submit') %}
+  {{ page_footer(button_txt) }}
+
+{% endblock %}

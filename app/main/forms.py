@@ -529,6 +529,13 @@ class RenameServiceForm(StripWhitespaceForm):
             DataRequired(message=_l('Can’t be empty'))
         ])
 
+class SendingDomainForm(StripWhitespaceForm):
+    sending_domain = StringField(
+        _l(u'Sending Domain'),
+        validators=[
+            DataRequired(message=_l('Can’t be empty'))
+        ])
+
 
 class RenameOrganisationForm(StripWhitespaceForm):
     name = StringField(

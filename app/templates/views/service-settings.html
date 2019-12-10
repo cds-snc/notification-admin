@@ -120,7 +120,18 @@
             )
           }}
         {% endcall %}
-
+        {% call settings_row(if_has_permission='email') %}
+          {% set txt = _('Sending Domain') %}
+          {{ text_field(txt) }}
+          {% set txt = _('{}') %}
+          {{ text_field(txt.format(current_service.sending_domain)|safe if current_service.sending_domain else sending_domain) }}
+          {{ edit_field(
+            change_txt,
+            url_for('.service_sending_domain', service_id=current_service.id),
+            permissions=['manage_service'],
+            attributes=""
+          )}}
+        {% endcall %}
         {% call settings_row(if_has_permission='email') %}
           {% set txt = _('Email branding') %}
           {{ text_field(txt) }}

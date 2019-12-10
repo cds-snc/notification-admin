@@ -53,6 +53,7 @@ from app.main.forms import (
     SetLetterBranding,
     SMSPrefixForm,
     SVGFileUpload,
+    SendingDomainForm
 )
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
@@ -79,7 +80,7 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
 def service_settings(service_id):
     return render_template(
         'views/service-settings.html',
-        service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS
+        service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS, sending_domain=current_app.config["SENDING_DOMAIN"]
     )
 
 
@@ -395,6 +396,19 @@ def service_set_contact_link(service_id):
 @user_has_permissions('manage_service')
 def service_set_reply_to_email(service_id):
     return redirect(url_for('.service_email_reply_to', service_id=service_id))
+
+@main.route("/services/<service_id>/service-settings/sending-domain", methods=['GET', 'POST'])
+@user_has_permissions('manage_service')
+def service_sending_domain(service_id):
+    form = SendingDomainForm()
+
+    if request.method == 'GET':
+        form.sending_domain.data = current_service.sending_domain
+
+    if form.validate_on_submit():
+        current_service.update(sending_domain=form.sending_domain.data)
+    
+    return render_template('views/service-settings/sending_domain.html', service_id=service_id, sending_domain=current_app.config["SENDING_DOMAIN"], form=form)
 
 
 @main.route("/services/<service_id>/service-settings/email-reply-to", methods=['GET'])
