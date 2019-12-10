@@ -15,7 +15,7 @@
 {% block maincolumn_content %}
 
   {{ page_header(
-    _('Sending Page'),
+    _('Sending Domain'),
     back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
 
@@ -26,8 +26,10 @@
       hint=_('Default notification.alpha.canada.ca'),
       safe_error_message=True
     ) }}
+
+    {% set button_txt = _('Submit') %}
+    {{ page_footer(button_txt) }}
   {% endcall %}
-  {% set button_txt = _('Submit') %}
-  {{ page_footer(button_txt) }}
+  
 
 {% endblock %}

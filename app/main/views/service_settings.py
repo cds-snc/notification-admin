@@ -407,6 +407,8 @@ def service_sending_domain(service_id):
 
     if form.validate_on_submit():
         current_service.update(sending_domain=form.sending_domain.data)
+        flash('Sending domain updated', 'default')
+        return redirect(url_for('.service_settings', service_id=service_id))
     
     return render_template('views/service-settings/sending_domain.html', service_id=service_id, sending_domain=current_app.config["SENDING_DOMAIN"], form=form)
 
