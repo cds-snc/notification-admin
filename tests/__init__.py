@@ -145,7 +145,8 @@ def service_json(
     prefix_sms=True,
     contact_link=None,
     organisation_id=None,
-    blocked=False
+    blocked=False,
+    sending_domain=None
 ):
     if users is None:
         users = []
@@ -181,7 +182,8 @@ def service_json(
         'consent_to_research': True,
         'count_as_live': True,
         'organisation': organisation_id,
-        'blocked': blocked
+        'blocked': blocked,
+        'sending_domain': sending_domain
     }
 
 

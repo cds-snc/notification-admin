@@ -25,7 +25,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "message_limit": message_limit,
             "user_id": user_id,
             "restricted": restricted,
-            "email_from": email_from,
+            "email_from": email_from
         }
         data = _attach_current_user(data)
         return self.post("/service", data)['data']['id']
@@ -98,7 +98,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             'consent_to_research',
             'count_as_live',
             'go_live_user',
-            'go_live_at'
+            'go_live_at',
+            'sending_domain'
         }
         if disallowed_attributes:
             raise TypeError('Not allowed to update service attributes: {}'.format(

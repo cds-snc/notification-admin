@@ -46,7 +46,8 @@ class Service(JSONModel):
         'count_as_live',
         'go_live_user',
         'go_live_at',
-        'blocked'
+        'blocked',
+        'sending_domain'
     }
 
     TEMPLATE_TYPES = (

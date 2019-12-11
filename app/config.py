@@ -20,6 +20,7 @@ class Config(object):
     DANGEROUS_SALT = os.environ.get('DANGEROUS_SALT')
     ZENDESK_API_KEY = os.environ.get('ZENDESK_API_KEY')
     CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'notification@cds-snc.ca')
+    SENDING_DOMAIN = os.environ.get('SENDING_DOMAIN', 'notification.alpha.canada.ca')
 
     # if we're not on cloudfoundry, we can get to this app from localhost. but on cloudfoundry its different
     ADMIN_BASE_URL = os.environ.get('ADMIN_BASE_URL', 'http://localhost:6012')

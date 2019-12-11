@@ -530,6 +530,12 @@ class RenameServiceForm(StripWhitespaceForm):
         ])
 
 
+class SendingDomainForm(StripWhitespaceForm):
+    sending_domain = StringField(
+        _l(u'Sending domain'),
+        validators=[])
+
+
 class RenameOrganisationForm(StripWhitespaceForm):
     name = StringField(
         u'Organisation name',
