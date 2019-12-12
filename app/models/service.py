@@ -47,7 +47,8 @@ class Service(JSONModel):
         'go_live_user',
         'go_live_at',
         'blocked',
-        'sending_domain'
+        'sending_domain',
+        'smtp_relay'
     }
 
     TEMPLATE_TYPES = (
@@ -569,6 +570,9 @@ class Service(JSONModel):
             self.get_templates(template_type, template_folder_id)
             + self.get_template_folders(template_type, template_folder_id)
         )
+
+    def smtp_relay(self):
+        return service_api_client.get_smtp_relay(self.id)
 
     @property
     def count_of_templates_and_folders(self):

@@ -14,8 +14,21 @@
 
   <nav class="grid-row bottom-gutter-1-2">
     <div class="column-one-third">
-      <a class="pill-separate-item" href="{{ url_for('.manage_smtp', service_id=current_service.id) }}">{{ _('Add') }}</a>
+      <a class="pill-separate-item" href="{{ url_for('.manage_smtp', service_id=current_service.id) }}">{{ _('Manage') }}</a>
     </div>
   </nav>
+
+  <ul>
+    <li class="api-notifications-item-meta api-notifications">Server Name:</li>
+    <li style="margin:10px 0">{{ data['name'] }}</li>
+    <li class="api-notifications-item-meta api-notifications">Port:</li>
+    <li style="margin:10px 0">{{ data['port'] }}</li>
+    <li class="api-notifications-item-meta api-notifications">Use Transport Layer Security (TLS):</li>
+    <li style="margin:10px 0">{{ data['tls'] }}</li>
+    <li class="api-notifications-item-meta api-notifications">User Name:</li>
+    <li style="margin:10px 0">{{ data['username'] }}</li>
+    <li class="api-notifications-item-meta api-notifications">Password:</li>
+    <li style="margin:10px 0">{{ data['password'] }}</li>
+  </ul>
 
   {% endblock %}

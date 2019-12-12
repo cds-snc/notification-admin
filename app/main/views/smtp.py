@@ -19,8 +19,10 @@ from app.utils import email_safe, user_has_permissions
 @main.route("/services/<service_id>/smtp")
 @user_has_permissions('manage_api_keys')
 def smtp_integration(service_id):
+    data = current_service.smtp_relay()
     return render_template(
-        'views/smtp/index.html'
+        'views/smtp/index.html',
+        data=data
     )
 
 @main.route("/services/<service_id>/smtp-relay/manage", methods=['GET', 'POST'])
