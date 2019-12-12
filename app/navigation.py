@@ -130,6 +130,7 @@ class HeaderNavigation(Navigation):
         'api_callbacks',
         'api_documentation',
         'api_integration',
+        'smtp_integration',
         'api_keys',
         'archive_service',
         'branding_request',
@@ -433,6 +434,9 @@ class MainNavigation(Navigation):
             'set_free_sms_allowance',
             'service_set_letter_branding',
             'submit_request_to_go_live',
+        },
+        'smtp-integration':{
+            'smtp_integration'
         },
         'api-integration': {
             'api_callbacks',
