@@ -565,6 +565,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
                 "username": "CDS",
                 "password": "cdsXXX-XXX-XXXX"
                 }
+        # email-smtp.us-east-1.amazonaws.com
         #endpoint = '/service/{}/smtp-relay'.format(service_id)
         #return self.get(endpoint)
 

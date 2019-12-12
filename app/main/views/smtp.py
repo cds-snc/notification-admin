@@ -25,7 +25,7 @@ def smtp_integration(service_id):
     return render_template(
         'views/smtp/index.html',
         data=data,
-        delete=True
+        delete=request.args.get('delete')
     )
 
 @main.route("/services/<service_id>/smtp-relay/manage", methods=['GET', 'POST'])

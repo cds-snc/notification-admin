@@ -1,4 +1,5 @@
 {% extends "withnav_template.html" %}
+{% from "components/page-footer.html" import page_footer %}
 {% from "components/table.html" import list_table, field, hidden_field_heading %}
 
 {% block service_page_title %}
@@ -6,7 +7,6 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-
   {% if delete %}
     {{ banner(
       'Are you sure you want to remove?',
@@ -20,24 +20,37 @@
     {{ _('SMTP integration') }}
   </h1>
 
-
-  <nav class="grid-row bottom-gutter-1-2">
-    <div class="column-one-third">
-      <a class="pill-separate-item" href="{{ url_for('.manage_smtp', service_id=current_service.id) }}">{{ _('Manage') }}</a>
+  {% if data['name'] %}
+    <nav class="grid-row bottom-gutter-1-2">
+      <div class="column-one-third">
+        <a class="pill-separate-item" href="{{ url_for('.manage_smtp', service_id=current_service.id) }}">{{ _('Manage') }}</a>
+      </div>
+    </nav>
+    <ul>
+      <li class="api-notifications-item-meta api-notifications">Server Name:</li>
+      <li style="margin:10px 0">{{ data['name'] }}</li>
+      <li class="api-notifications-item-meta api-notifications">Port:</li>
+      <li style="margin:10px 0">{{ data['port'] }}</li>
+      <li class="api-notifications-item-meta api-notifications">Use Transport Layer Security (TLS):</li>
+      <li style="margin:10px 0">{{ data['tls'] }}</li>
+      <li class="api-notifications-item-meta api-notifications">User Name:</li>
+      <li style="margin:10px 0">{{ data['username'] }}</li>
+      <li class="api-notifications-item-meta api-notifications">Password:</li>
+      <li style="margin:10px 0">{{ data['password'] }}</li>
+    </ul>
+    <div style="padding-top:20px;">
+    {{ page_footer(
+      '',
+      delete_link=url_for('.smtp_integration', service_id=current_service.id, delete='yes'),
+      delete_link_text='Remove STMP relay'
+    ) }}
     </div>
-  </nav>
-
-  <ul>
-    <li class="api-notifications-item-meta api-notifications">Server Name:</li>
-    <li style="margin:10px 0">{{ data['name'] }}</li>
-    <li class="api-notifications-item-meta api-notifications">Port:</li>
-    <li style="margin:10px 0">{{ data['port'] }}</li>
-    <li class="api-notifications-item-meta api-notifications">Use Transport Layer Security (TLS):</li>
-    <li style="margin:10px 0">{{ data['tls'] }}</li>
-    <li class="api-notifications-item-meta api-notifications">User Name:</li>
-    <li style="margin:10px 0">{{ data['username'] }}</li>
-    <li class="api-notifications-item-meta api-notifications">Password:</li>
-    <li style="margin:10px 0">{{ data['password'] }}</li>
-  </ul>
+  {% else %}
+    <nav class="grid-row bottom-gutter-1-2">
+        <div class="column-one-third">
+          <a class="button success" href="{{ url_for('.manage_smtp', service_id=current_service.id) }}">{{ _('Add SMTP Relay') }}</a>
+        </div>
+    </nav>
+  {% endif %}
 
   {% endblock %}
