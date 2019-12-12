@@ -435,7 +435,7 @@ class MainNavigation(Navigation):
             'service_set_letter_branding',
             'submit_request_to_go_live',
         },
-        'smtp-integration':{
+        'smtp-integration': {
             'smtp_integration'
         },
         'api-integration': {

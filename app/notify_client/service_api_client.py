@@ -559,13 +559,14 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.get("/service/{}/data-retention".format(service_id))
 
     def get_smtp_relay(self, service_id):
-        return {"name": "email-smtp.us-east-1.amazonaws.com", 
+        return {"name": "email-smtp.us-east-1.amazonaws.com",
                 "port": "465",
                 "tls": "yes",
                 "username": "CDS",
                 "password": "cdsXXX-XXX-XXXX"
                 }
-        # email-smtp.us-east-1.amazonaws.com
+
+        #email-smtp.us-east-1.amazonaws.com
         #endpoint = '/service/{}/smtp-relay'.format(service_id)
         #return self.get(endpoint)
 

@@ -15,8 +15,8 @@ from app import (
     service_api_client
 )
 from app.main import main
-from flask_login import current_user
-from app.utils import email_safe, user_has_permissions
+from app.utils import user_has_permissions
+
 
 @main.route("/services/<service_id>/smtp")
 @user_has_permissions('manage_api_keys')
@@ -28,12 +28,11 @@ def smtp_integration(service_id):
         delete=request.args.get('delete')
     )
 
+
 @main.route("/services/<service_id>/smtp-relay/manage", methods=['GET', 'POST'])
 @user_has_permissions('manage_api_keys', restrict_admin_usage=True)
 def manage_smtp(service_id):
-    
     form = SMTPForm()
-
     if request.method == 'POST':
         service_api_client.add_smtp_relay(service_id=service_id, payload="")
         flash('{}'.format("SMPT server added"), 'default_with_tick')
@@ -44,9 +43,10 @@ def manage_smtp(service_id):
         form=form
     )
 
+
 @main.route("/services/<service_id>/smtp-relay/delete", methods=['GET', 'POST'])
 @user_has_permissions('manage_api_keys', restrict_admin_usage=True)
 def delete_smtp(service_id):
-     return redirect(
+    return redirect(
         url_for('.smtp_integration', service_id=service_id)
     )
