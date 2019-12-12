@@ -1,5 +1,6 @@
 from flask import (
     redirect,
+    flash,
     render_template,
     request,
     url_for,
@@ -11,6 +12,7 @@ from app.main.forms import (
 
 from app import (
     current_service,
+    service_api_client
 )
 from app.main import main
 from flask_login import current_user
@@ -30,6 +32,11 @@ def smtp_integration(service_id):
 def manage_smtp(service_id):
     
     form = SMTPForm()
+
+    if request.method == 'POST':
+        service_api_client.add_smtp_relay(service_id=service_id, payload="")
+        flash('{}'.format("SMPT server added"), 'default_with_tick')
+        return redirect(url_for('.smtp_integration', service_id=service_id))
 
     return render_template(
         'views/smtp/manage.html',

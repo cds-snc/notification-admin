@@ -569,9 +569,10 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         #return self.get(endpoint)
 
     def add_smtp_relay(self, service_id, payload):
-        endpoint = '/service/{}/smtp-relay'.format(service_id)
-        data = {'payload': payload}
-        return self.post(endpoint, data)
+        return True
+        #endpoint = '/service/{}/smtp-relay'.format(service_id)
+        #data = {'payload': payload}
+        #return self.post(endpoint, data)
 
     def delete_smtp_relay(self, service_id):
         endpoint = '/service/{}/smtp-relay/{}'.format(service_id)
