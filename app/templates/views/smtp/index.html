@@ -7,6 +7,15 @@
 
 {% block maincolumn_content %}
 
+  {% if delete %}
+    {{ banner(
+      'Are you sure you want to remove?',
+      type='dangerous',
+      delete_button='Yes, remove',
+      action=url_for('.delete_smtp', service_id=current_service.id)
+    ) }}
+  {% endif %}
+
   <h1 class="heading-medium bottom-gutter-3-2">
     {{ _('SMTP integration') }}
   </h1>

@@ -24,7 +24,8 @@ def smtp_integration(service_id):
     data = current_service.smtp_relay()
     return render_template(
         'views/smtp/index.html',
-        data=data
+        data=data,
+        delete=True
     )
 
 @main.route("/services/<service_id>/smtp-relay/manage", methods=['GET', 'POST'])
@@ -41,4 +42,11 @@ def manage_smtp(service_id):
     return render_template(
         'views/smtp/manage.html',
         form=form
+    )
+
+@main.route("/services/<service_id>/smtp-relay/delete", methods=['GET', 'POST'])
+@user_has_permissions('manage_api_keys', restrict_admin_usage=True)
+def delete_smtp(service_id):
+     return redirect(
+        url_for('.smtp_integration', service_id=service_id)
     )
