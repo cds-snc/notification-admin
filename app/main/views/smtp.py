@@ -17,19 +17,12 @@ def smtp_integration(service_id):
     )
 
 
-@main.route("/services/<service_id>/smtp-relay/manage", methods=['GET', 'POST'])
+@main.route("/services/<service_id>/smtp-relay/manage", methods=['GET'])
 @user_has_permissions('manage_api_keys', restrict_admin_usage=True)
 def manage_smtp(service_id):
-    form = SMTPForm()
-    if request.method == 'POST':
-        service_api_client.add_smtp_relay(service_id=service_id, payload="")
-        flash('{}'.format("SMPT server added"), 'default_with_tick')
-        return redirect(url_for('.smtp_integration', service_id=service_id))
-
-    return render_template(
-        'views/smtp/manage.html',
-        form=form
-    )
+    service_api_client.add_smtp_relay(service_id=service_id, payload="")
+    flash('{}'.format("SMPT server added"), 'default_with_tick')
+    return redirect(url_for('.smtp_integration', service_id=service_id))
 
 
 @main.route("/services/<service_id>/smtp-relay/delete", methods=['GET', 'POST'])
