@@ -28,6 +28,7 @@ def manage_smtp(service_id):
 @main.route("/services/<service_id>/smtp-relay/delete", methods=['GET', 'POST'])
 @user_has_permissions('manage_api_keys', restrict_admin_usage=True)
 def delete_smtp(service_id):
+    service_api_client.delete_smtp_relay(service_id=service_id, payload="")
     return redirect(
         url_for('.smtp_integration', service_id=service_id)
     )
