@@ -568,7 +568,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.post(endpoint, data)
 
     def delete_smtp_relay(self, service_id):
-        endpoint = '/service/{}/smtp-relay/{}'.format(service_id)
+        endpoint = '/service/{}/smtp-relay'.format(service_id)
         return self.delete(endpoint)
 
 
