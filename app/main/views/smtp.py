@@ -17,18 +17,23 @@ def smtp_integration(service_id):
     )
 
 
-@main.route("/services/<service_id>/smtp-relay/manage", methods=['GET'])
+@main.route("/services/<service_id>/smtp/add", methods=['GET'])
 @user_has_permissions('manage_api_keys', restrict_admin_usage=True)
 def manage_smtp(service_id):
-    service_api_client.add_smtp_relay(service_id=service_id, payload="")
+    data = service_api_client.add_smtp_relay(service_id=service_id, payload="")
     flash('{}'.format("SMPT server added"), 'default_with_tick')
-    return redirect(url_for('.smtp_integration', service_id=service_id))
+    return render_template(
+        'views/smtp/index.html',
+        data=data,
+        delete=request.args.get('delete')
+    )
+    #return redirect(url_for('.smtp_integration', service_id=service_id))
 
 
-@main.route("/services/<service_id>/smtp-relay/delete", methods=['GET', 'POST'])
+@main.route("/services/<service_id>/smtp/delete", methods=['GET', 'POST'])
 @user_has_permissions('manage_api_keys', restrict_admin_usage=True)
 def delete_smtp(service_id):
-    service_api_client.delete_smtp_relay(service_id=service_id, payload="")
+    service_api_client.delete_smtp_relay(service_id=service_id)
     return redirect(
         url_for('.smtp_integration', service_id=service_id)
     )
