@@ -1,20 +1,8 @@
-from flask import (
-    redirect,
-    flash,
-    render_template,
-    request,
-    url_for,
-)
+from flask import flash, redirect, render_template, request, url_for
 
-from app.main.forms import (
-    SMTPForm
-)
-
-from app import (
-    current_service,
-    service_api_client
-)
+from app import current_service, service_api_client
 from app.main import main
+from app.main.forms import SMTPForm
 from app.utils import user_has_permissions
 
 
