@@ -331,7 +331,9 @@ class HeaderNavigation(Navigation):
         'get_template_data',
         'block_user',
         'unblock_user',
-        'service_sending_domain'
+        'service_sending_domain',
+        'manage_smtp',
+        'delete_smtp'
     }
 
 
@@ -631,7 +633,9 @@ class MainNavigation(Navigation):
         'get_template_data',
         'block_user',
         'unblock_user',
-        'service_sending_domain'
+        'service_sending_domain',
+        'manage_smtp',
+        'delete_smtp'
     }
 
 
@@ -923,7 +927,10 @@ class CaseworkNavigation(Navigation):
         'get_template_data',
         'block_user',
         'unblock_user',
-        'service_sending_domain'
+        'service_sending_domain',
+        'smtp_integration',
+        'manage_smtp',
+        'delete_smtp'
     }
 
 
@@ -1216,5 +1223,8 @@ class OrgNavigation(Navigation):
         'get_template_data',
         'block_user',
         'unblock_user',
-        'service_sending_domain'
+        'service_sending_domain',
+        'smtp_integration',
+        'manage_smtp',
+        'delete_smtp'
     }
