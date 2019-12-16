@@ -2,8 +2,6 @@ from flask import flash, redirect, render_template, request, url_for
 
 from app import current_service, service_api_client
 from app.main import main
-from app.main.forms import SMTPForm
-from app.utils import user_has_permissions
 from app.utils import user_is_platform_admin
 
 
