@@ -1,5 +1,8 @@
 name: Build and push to GCR
-on: push
+on:
+  push:
+    branches:    
+      - master
 jobs:
   deploy:
     runs-on: ubuntu-latest
