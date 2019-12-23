@@ -47,12 +47,12 @@ $(".relative-time-past").each(function(index) {
   );
   if (time.isValid() && window.APP_LANG) {
     let isToday = moment().isSame(time, "day");
-    let dayStr = time.format("dddd");
+    let dayStr = "";
     let timeStr = time.format("hh:mm A");
 
     if (isToday && window.APP_PHRASES) {
       dayStr = window.APP_PHRASES["today"];
-    }else{
+    } else {
       dayStr = time.format("MMMM DD");
     }
 
@@ -64,10 +64,10 @@ $(".relative-time-past").each(function(index) {
   }
 });
 
-$('.format-ua').each(function(index) {
-  let text = $(this).text()
-  text = text.replace(/[0-9]*\.?[0-9]+/g, '');
-  text = text.replace(/\s+/g,' ').trim();
+$(".format-ua").each(function(index) {
+  let text = $(this).text();
+  text = text.replace(/[0-9]*\.?[0-9]+/g, "");
+  text = text.replace(/\s+/g, " ").trim();
   $(this).text(text);
 });
 

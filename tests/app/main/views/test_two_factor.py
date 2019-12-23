@@ -347,5 +347,5 @@ def test_should_login_user_and_should_render_login_events_page(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
     assert page.select_one('h1').text.strip() == (
-        'Activity on this account'
+        'Login history'
     )
