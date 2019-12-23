@@ -121,6 +121,8 @@ def redirect_when_logged_in(user, platform_admin):
             user_agent = parse(ua)
             return str(user_agent)
 
+        print(user.login_events)
+        
         return render_template(
             'views/login_events.html',
             events=user.login_events,
