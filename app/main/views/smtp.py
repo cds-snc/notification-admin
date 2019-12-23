@@ -3,6 +3,7 @@ from app import current_service, service_api_client
 from app.main import main
 from app.utils import user_is_platform_admin
 
+
 @main.route("/services/<service_id>/smtp")
 @user_is_platform_admin
 def smtp_integration(service_id):
