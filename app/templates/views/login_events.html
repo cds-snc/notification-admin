@@ -15,8 +15,10 @@
       <tbody>
         {% for event in events %}
           <tr>
-            <td class="relative-time-past">
-              {{ event.created_at }}
+            <td>
+              <strong style="font-weight:bold">
+                <span class="relative-time-past">{{ event.created_at }}</span>
+              </strong>
             </td>
             <td class="format-ua">  
               {{ parse_ua(event.data["user-agent"]) }}
