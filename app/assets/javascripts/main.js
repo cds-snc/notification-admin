@@ -48,7 +48,7 @@ $(".relative-time-past").each(function(index) {
   if (time.isValid() && window.APP_LANG) {
     let isToday = moment().isSame(time, "day");
     let dayStr = "";
-    let timeStr = time.format("hh:mm A");
+    let timeStr = time.format("h:mm a");
 
     if (isToday && window.APP_PHRASES) {
       dayStr = window.APP_PHRASES["today"];
@@ -60,7 +60,7 @@ $(".relative-time-past").each(function(index) {
       timeStr = time.format("kk:mm");
     }
 
-    $(this).text(`${dayStr} ${timeStr}`);
+    $(this).text(`${dayStr}, ${timeStr}`);
   }
 });
 
