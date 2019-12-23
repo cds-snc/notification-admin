@@ -536,6 +536,12 @@ class SendingDomainForm(StripWhitespaceForm):
         validators=[])
 
 
+class SMTPForm(StripWhitespaceForm):
+    name = StringField(
+        _l(u'STMP name'),
+        validators=[])
+
+
 class RenameOrganisationForm(StripWhitespaceForm):
     name = StringField(
         u'Organisation name',

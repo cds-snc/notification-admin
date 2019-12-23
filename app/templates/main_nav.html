@@ -28,6 +28,11 @@
   {% if current_user.has_permissions('manage_api_keys') %}
     <li><a href="{{ url_for('.api_integration', service_id=current_service.id) }}" {{ main_navigation.is_selected('api-integration') }}>{{ _('API integration') }}</a></li>
   {% endif %}
+
+  {% if current_user.platform_admin %}
+    <li><a href="{{ url_for('.smtp_integration', service_id=current_service.id) }}" {{ main_navigation.is_selected('smtp-integration') }}>{{ _('SMTP integration') }}</a></li>
+  {% endif %}
+
   </ul>
 </nav>
 {% endif %}

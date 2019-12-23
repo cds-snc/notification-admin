@@ -130,6 +130,7 @@ class HeaderNavigation(Navigation):
         'api_callbacks',
         'api_documentation',
         'api_integration',
+        'smtp_integration',
         'api_keys',
         'archive_service',
         'branding_request',
@@ -330,7 +331,9 @@ class HeaderNavigation(Navigation):
         'get_template_data',
         'block_user',
         'unblock_user',
-        'service_sending_domain'
+        'service_sending_domain',
+        'manage_smtp',
+        'delete_smtp'
     }
 
 
@@ -433,6 +436,9 @@ class MainNavigation(Navigation):
             'set_free_sms_allowance',
             'service_set_letter_branding',
             'submit_request_to_go_live',
+        },
+        'smtp-integration': {
+            'smtp_integration'
         },
         'api-integration': {
             'api_callbacks',
@@ -627,7 +633,9 @@ class MainNavigation(Navigation):
         'get_template_data',
         'block_user',
         'unblock_user',
-        'service_sending_domain'
+        'service_sending_domain',
+        'manage_smtp',
+        'delete_smtp'
     }
 
 
@@ -919,7 +927,10 @@ class CaseworkNavigation(Navigation):
         'get_template_data',
         'block_user',
         'unblock_user',
-        'service_sending_domain'
+        'service_sending_domain',
+        'smtp_integration',
+        'manage_smtp',
+        'delete_smtp'
     }
 
 
@@ -1212,5 +1223,8 @@ class OrgNavigation(Navigation):
         'get_template_data',
         'block_user',
         'unblock_user',
-        'service_sending_domain'
+        'service_sending_domain',
+        'smtp_integration',
+        'manage_smtp',
+        'delete_smtp'
     }
