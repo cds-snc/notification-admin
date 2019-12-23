@@ -9,33 +9,27 @@
 
 <div class="grid-row">
   <div class="column-full">
-    <h1 class="heading-large">{{ _('Activity on this account') }}</h1>
-    <p>{{ _('Below is a list of the three past times your password was used to access your account. If any of there look suspicious <a href="/support/ask-question-give-feedback" target="_blank">please contact us right away.</a>') }}</p>
+    <h1 class="heading-large">{{ _('Login history') }}</h1>
+    <p>{{ _('Our records show that these are the last 3 times you logged into this account:') }}</p>
     <table>
-      <thead>
-        <tr>
-          <th>{{ _('Browser') }}</th>
-          <th>{{ _('Location') }}</th>
-          <th>{{ _('Date / Time') }}</th>
-        </tr>
-      </thead>
       <tbody>
         {% for event in events %}
           <tr>
-            <td>  
-              {{ parse_ua(event.data["user-agent"]) }}
-            </td>
-            <td>
-              {{ event.data["location"] }}
-            </td>
             <td class="relative-time-past">
               {{ event.created_at }}
+            </td>
+            <td class="format-ua">  
+              {{ parse_ua(event.data["user-agent"]) }}
             </td>
           </tr>
       {% endfor %}
       </tbody>
     </table>
-    </br>
+
+    <br />
+    <p>
+    If any of there look suspicious <a href="/support/ask-question-give-feedback" target="_blank">please contact us right away.</a>
+    </p>
     <a href="{{next}}" class="button">{{ _('Continue') }}</a>
     {{ page_footer(
       secondary_link=url_for('main.email_not_received'),
