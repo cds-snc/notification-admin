@@ -1,0 +1,81 @@
+.toggle-holder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+  border: 2px solid transparent;
+}
+
+.toggle-label {
+  padding: 0.8rem;
+  color: #000;
+}
+
+.toggle-label-active {
+  font-weight: bold;
+}
+
+.toggle-label:first-child {
+  padding-left: 0;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 8px;
+  background-color: var(--selected-color);
+  color: #a5bfaf;
+  -webkit-transition: all 0.6s;
+  transition: all 0.6s;
+  outline: none;
+  border: none;
+}
+
+.switch.off,
+.switch.on {
+  border-radius: 25px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.switch.off:before,
+.switch.off:after {
+  -webkit-transition: 0.3s;
+  transition: all 0.3s;
+}
+
+.switch.on:before,
+.switch.on:after {
+  -webkit-transition: 0.3s;
+  transition: all 0.3s;
+}
+
+.switch.off:before,
+.switch.on:before {
+  display: block;
+  position: absolute;
+  content: "";
+  height: 23px;
+  width: 23px;
+  left: 0px;
+  top: -6px;
+  background-color: #fff;
+  border: 1px solid #666666;
+  -webkit-transition: 0.6s;
+  transition: all 0.6s;
+  -webkit-transition-delay: 0.01s;
+  transition-delay: 0.01s;
+  border-radius: 50%;
+}
+
+.switch.on:before {
+  -webkit-transform: translateX(32px);
+  -ms-transform: translateX(32px);
+  transform: translateX(32px);
+}
+
+.toggle-holder-active {
+  border: 2px solid currentColor;
+}
