@@ -7,9 +7,7 @@ import {
   getFirstDay,
   getLastDay,
   getNextDay,
-  yearMonthDay,
-  atCalendarStart,
-  atCalendarEnd
+  yearMonthDay
 } from "./Calendar/index";
 
 const today = dayjs()
@@ -25,6 +23,7 @@ const initialState = {
   firstAvailableDate: firstDay,
   lastAvailableDate: dayjs(firstDay).add(1, "month"),
   date: yearMonthDay(firstDay),
+  time: "9:00",
   selected: [yearMonthDay(firstDay)],
   focusedDayNum: dayjs(firstDay).format("D"),
   updateMessage: "",
@@ -53,6 +52,9 @@ const StateProvider = ({ children }) => {
         break;
       case "CALENDAR_UPDATES":
         newState = { ...state, updateMessage: action.payload };
+        break;
+      case "SELECT_TIME":
+        newState = { ...state, time: action.payload };
         break;
       case "SELECT_DATE":
         if (isBlockedDay(dayjs(action.payload), state)) {

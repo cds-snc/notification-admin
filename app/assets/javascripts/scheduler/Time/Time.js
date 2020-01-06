@@ -3,7 +3,9 @@ import { store, populateTimes, dateIsToday } from "./index";
 import "./style.css";
 
 export const Time = ({ name }) => {
-  const { _24hr, today, selected: selectedDate } = useContext(store);
+  const { _24hr, today, selected: selectedDate, time, dispatch } = useContext(
+    store
+  );
 
   let startTime = 0;
 
@@ -13,16 +15,19 @@ export const Time = ({ name }) => {
   }
 
   const values = populateTimes(_24hr, startTime);
-  const [selected, setSelected] = useState("09:00");
   return (
     <div className="Nav--select">
       <select
         onChange={event => {
-          setSelected(event.currentTarget.value);
+          const time = event.currentTarget.value;
+          dispatch({
+            type: "SELECT_TIME",
+            payload: time
+          });
         }}
         id={name}
         aria-label={name}
-        value={selected}
+        value={time}
       >
         {values.map(item => {
           return (

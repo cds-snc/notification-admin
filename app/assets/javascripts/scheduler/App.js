@@ -4,6 +4,7 @@ import { Calendar } from "./Calendar/Calendar";
 import { Date } from "./Date/Date";
 import { Toggle } from "./Toggle/Toggle";
 import { Time } from "./Time/Time";
+import { SetDateTime } from "./SetDateTime/SetDateTime";
 import "./style.css";
 
 export const App = () => {
@@ -23,6 +24,8 @@ export const App = () => {
             </div>
           </div>
         </div>
+
+        <SetDateTime />
       </div>
     </StateProvider>
   );
