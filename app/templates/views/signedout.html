@@ -141,6 +141,12 @@
               {% set email_label = _('Your email') %}
               {{ textbox(form.email_address, label=email_label, width='1-1') }}
               
+              {# honeypot field #}
+              {% set email_label = _('Your phone') %}
+              <span class="phone">
+                {{ textbox(form.phone, label=email_label, width='1-1') }}
+              </span>
+              
               {% set message_label = _('Message') %}
               {{ textbox(form.feedback, width='1-1', label=message_label, hint='', rows=10) }}
             
