@@ -1,0 +1,12 @@
+{% macro honeypotfield(
+  field,
+  label,
+  width='1-1'
+) %}
+  <div class="form-group phone">
+    <label aria-hidden="true" class="form-label">
+      {{ label }}
+    </label>
+    <input aria-hidden="true" class="form-control form-control-1-1" id="{{ field.name }}" name="{{ field.name }}" type="text" value="" role="img" >
+  </div>
+{% endmacro %}

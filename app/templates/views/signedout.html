@@ -1,5 +1,6 @@
 {% extends "fullwidth_template.html" %}
 {% from "components/textbox.html" import textbox %}
+{% from "components/honeypot-field.html" import honeypotfield %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 
@@ -143,9 +144,7 @@
               
               {# honeypot field #}
               {% set email_label = _('Your phone') %}
-              <span class="phone">
-                {{ textbox(form.phone, label=email_label, width='1-1') }}
-              </span>
+              {{ honeypotfield(form.phone, label=email_label) }}
               
               {% set message_label = _('Message') %}
               {{ textbox(form.feedback, width='1-1', label=message_label, hint='', rows=10) }}
@@ -169,6 +168,5 @@
         el.scrollIntoView();
     </script>
   {% endif %}
-  
   
 {% endblock %}
