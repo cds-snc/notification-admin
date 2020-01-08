@@ -1995,7 +1995,7 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(
 
 def test_should_show_template_as_first_page_of_tour(
     client_request,
-    mock_get_service_template,
+    mock_get_service_email_template,
     service_one,
     fake_uuid,
 ):
@@ -2013,9 +2013,9 @@ def test_should_show_template_as_first_page_of_tour(
     )
 
     assert normalize_spaces(
-        page.select('.sms-message-wrapper')[0].text
+        page.select('.email-message-meta')[0].text
     ) == (
-        'service one: Template <em>content</em> with & entity'
+        '[From] service one [To] email address [Subject] Your ((thing)) is due soon'
     )
 
     assert page.select('a.button')[0]['href'] == url_for(
@@ -2024,10 +2024,10 @@ def test_should_show_template_as_first_page_of_tour(
 
 
 @pytest.mark.parametrize('template_mock', [
-    mock_get_service_email_template,
+    mock_get_service_template,
     mock_get_service_letter_template,
 ])
-def test_cant_see_email_template_in_tour(
+def test_cant_see_sms_template_in_tour(
     client_request,
     fake_uuid,
     mocker,

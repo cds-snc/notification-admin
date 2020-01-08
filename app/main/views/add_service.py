@@ -34,13 +34,14 @@ def _create_service(service_name, organisation_type, email_from, form):
 
 
 def _create_example_template(service_id):
-    example_sms_template = service_api_client.create_service_template(
-        'Example text message template',
-        'sms',
+    example_email_template = service_api_client.create_service_template(
+        'Example email template',
+        'email',
         'Hey ((name)), I’m trying out Notification. Today is ((day of week)) and my favourite colour is ((colour)).',
         service_id,
+        subject='Example email template'
     )
-    return example_sms_template
+    return example_email_template
 
 
 @main.route("/add-service", methods=['GET', 'POST'])
@@ -68,12 +69,12 @@ def add_service():
         if len(service_api_client.get_active_services({'user_id': session['user_id']}).get('data', [])) > 1:
             return redirect(url_for('main.service_dashboard', service_id=service_id))
 
-        example_sms_template = _create_example_template(service_id)
+        example_email_template = _create_example_template(service_id)
 
         return redirect(url_for(
             'main.start_tour',
             service_id=service_id,
-            template_id=example_sms_template['data']['id']
+            template_id=example_email_template['data']['id']
         ))
     else:
         return render_template(
