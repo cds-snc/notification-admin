@@ -40,6 +40,10 @@ def triage():
 def feedback(ticket_type):
     form = ContactNotifyTeam()
 
+    # catch with the honeypot field
+    if(form.phone.data):
+        return redirect(url_for('.thanks', auto="true"))
+
     if form.validate_on_submit():
         msg = 'Contact Name: {}\nContact Email: {}\nMessage: {}'.format(
             form.name.data,
