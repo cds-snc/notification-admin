@@ -117,7 +117,7 @@ def start_tour(service_id, template_id):
 
     template = current_service.get_template(template_id)
 
-    if template['template_type'] != 'sms':
+    if template['template_type'] != 'email':
         abort(404)
 
     return render_template(
