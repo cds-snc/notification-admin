@@ -1071,6 +1071,7 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
             ('both', 'Notication and branding'),
             ('org', 'Branding only'),
             ('org_banner', 'Branding banner'),
+            ('no_branding', 'No branding'),
         ]
     )
 
