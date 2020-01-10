@@ -1070,7 +1070,9 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
         choices=[
             ('both', 'Notication and branding'),
             ('org', 'Branding only'),
-            ('org_banner', 'Branding banner'),
+            ('org_banner', 'Branding banner'), 
+            ('no_branding', 'No branding'),
+
         ]
     )
 
