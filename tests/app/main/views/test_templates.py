@@ -282,22 +282,16 @@ def test_should_show_live_search_if_service_has_lots_of_folders(
     pytest.param([], [
         'email',
         'sms',
-        'copy-existing',
     ], [
         'Email',
         'Text message',
-        'Copy an existing template',
     ]),
     pytest.param(['letter'], [
         'email',
-        'sms',
-        'letter',
-        'copy-existing',
+        'sms'
     ], [
         'Email',
         'Text message',
-        'Letter',
-        'Copy an existing template',
     ]),
 ))
 def test_should_show_new_template_choices_if_service_has_folder_permission(
@@ -820,28 +814,6 @@ def test_letter_branding_preview_image(
 
     mocked_preview.assert_called_with(ANY, new_filename)
     assert resp.get_data(as_text=True) == 'foo'
-
-
-def test_choosing_to_copy_redirects(
-    client_request,
-    service_one,
-    mock_get_service_templates,
-    mock_get_template_folders,
-):
-    client_request.post(
-        'main.choose_template',
-        service_id=SERVICE_ONE_ID,
-        _data={
-            'operation': 'add-new-template',
-            'add_template_by_template_type': 'copy-existing'
-        },
-        _expected_status=302,
-        _expected_redirect=url_for(
-            'main.choose_template_to_copy',
-            service_id=SERVICE_ONE_ID,
-            _external=True,
-        ),
-    )
 
 
 def test_choose_a_template_to_copy(
