@@ -1469,9 +1469,7 @@ class TemplateAndFoldersSelectionForm(Form):
 
         self.add_template_by_template_type.choices = list(filter(None, [
             ('email', _l('Email')),
-            ('sms', _l('Text message')),
-            ('letter', _l('Letter')) if allow_adding_letter_template else None,
-            ('copy-existing', _l('Copy an existing template')) if allow_adding_copy_of_template else None,
+            ('sms', _l('Text message'))
         ]))
 
     def is_selected(self, template_folder_id):
