@@ -1,0 +1,125 @@
+.Calendar {
+  border: 0.125rem solid #000;
+  display: inline-block;
+  padding: 0.625rem;
+  position: relative;
+  width: 100%;
+  min-height: 24rem;
+  max-width: 35rem;
+  margin-bottom:2rem;
+}
+
+.Calendar-nav {
+  display: flex;
+  padding: 0.125rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Nav--month {
+  display: flex;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.Calendar-nav--button {
+  background-color: #fff;
+  border: 0.063rem solid currentColor;
+  cursor: pointer;
+}
+
+.Calendar-nav--button {
+  color: var(--selected-color);
+  font-size: 2.4rem;
+  font-weight: bold;
+  height: 4rem;
+  width: 4rem;
+  border: 0;
+}
+
+.Calendar-nav--button--unavailable {
+  cursor: url("img/disableddates.ico") 20 20, not-allowed;
+  color: #000;
+  opacity: 0.2;
+  pointer-events: none;
+  background-color: white;
+  outline: none;
+  border: 0;
+}
+
+.Calendar-nav--button:last-of-type {
+  margin-right: 0;
+}
+
+.Calendar-nav--button:focus,
+.Calendar-item:hover:not(.Calendar-item--day):not(.Calendar-item--unavailable):not(:empty),
+.Calendar-item:focus:not(.Calendar-item--day):not(.Calendar-item--unavailable):not(:empty) {
+  outline: black inset;
+  outline-offset: -4px;
+  outline-offset: -4px;
+}
+
+.Calendar-item.Calendar-item--day,
+.Calendar-item.Calendar-item--empty {
+  background-color: white;
+}
+
+.Calendar-row {
+  display: flex;
+  text-align: center;
+}
+
+.Calendar-item {
+  background: var(--available-color);
+  border: 0;
+  outline: none;
+  border-radius: 0;
+  box-sizing: border-box;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 200%;
+  position: relative;
+  height: 5rem;
+  width: 5rem;
+}
+
+.Calendar-item[aria-pressed] {
+  cursor: pointer;
+}
+
+.Calendar-item[aria-pressed="true"] {
+  background-color: var(--selected-color);
+  color: #fff;
+}
+
+.Calendar-days {
+  color: #666;
+}
+
+.Calendar-item--unavailable {
+  cursor: url("img/disableddates.ico") 20 20, not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+  background-color: white;
+  outline: none;
+  border: 0;
+}
+
+.Calendar-item.Calendar-item--unavailable:focus {
+  outline: dotted;
+  outline-offset: -4px;
+  outline-offset: -4px;
+}
+
+.Calendar-item:not(.Calendar-item--unavailable):hover {
+  background-color: var(--hover-color);
+}
+
+.Calendar-item.Calendar-item--empty:hover,
+.Calendar-item.Calendar-item--day:hover {
+  background-color: white;
+}
+
+.Calendar-item.Calendar-item--day {
+  height: 5rem;
+}

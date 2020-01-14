@@ -16,6 +16,11 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"]
+      },
+      { test: /\.(png|svg|jpg|gif|ico)$/, use: ["file-loader"] },
+      {
         test: /.(js|jsx)$/,
         include: [path.resolve(__dirname, "app/assets/javascripts")],
         loader: "babel-loader",

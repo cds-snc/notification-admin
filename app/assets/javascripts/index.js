@@ -3,9 +3,10 @@ import ReactDOM from "react-dom";
 import Polyglot from "node-polyglot";
 import Moment from "moment";
 import { getDays } from "./schedule/dateUtils";
-import { ScheduleMessage } from "./schedule/ScheduleMessage";
+// import { ScheduleMessage } from "./schedule/ScheduleMessage";
+import { App } from "./scheduler/App";
 import { DiffDOM } from "diff-dom";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 let el = document.getElementById("schedule-send-at");
 
@@ -21,8 +22,7 @@ if (window.polyglot.t) {
 }
 
 if (el) {
-  const days = getDays(nowLabel);
-  ReactDOM.render(<ScheduleMessage days={days} />, el);
+  ReactDOM.render(<App />, el);
 }
 
 /*
