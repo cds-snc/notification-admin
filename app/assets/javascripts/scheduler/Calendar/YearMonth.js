@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { store, firstAvailableDate, lastAvailableDate } from "./index";
+import { store, I18nContext } from "./index";
 import dayjs from "dayjs";
 
 const prevNav = (date, firstAvailableDate) => {
@@ -31,6 +31,8 @@ export const YearMonth = () => {
     store
   );
 
+  const { translate } = useContext(I18nContext);
+
   return (
     <section aria-label="Calendar Navigation" className="Calendar-nav">
       <button
@@ -40,7 +42,7 @@ export const YearMonth = () => {
           ...prevNav(date, firstAvailableDate)
         ].join(" ")}
         type="button"
-        aria-label=""
+        aria-label={translate("previous_month")}
         onClick={() => {
           dispatch({
             type: "SELECT_PREVIOUS",
@@ -58,7 +60,7 @@ export const YearMonth = () => {
           ...nextNav(date, lastAvailableDate)
         ].join(" ")}
         type="button"
-        aria-label=""
+        aria-label={translate("next_month")}
         onClick={() => {
           dispatch({
             type: "SELECT_NEXT",

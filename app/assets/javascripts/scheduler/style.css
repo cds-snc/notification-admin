@@ -120,3 +120,88 @@
 [aria-hidden="true"] {
   display: none;
 }
+
+/* radios */
+.choice__item {
+  font-size: 1.8rem;
+  line-height: 1.25;
+  display: inline-block;
+  position: relative;
+  min-height: 30px;
+  margin-bottom: 10px;
+  padding-left: 30px;
+}
+
+.choice__item > input {
+  cursor: pointer;
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  opacity: 0;
+}
+
+.choice__item > input:checked + label:after {
+  opacity: 1;
+}
+
+.choice__item > input:focus + label:before {
+  box-shadow: 0 0 0 1px #000;
+}
+
+.choice__item > input + label {
+  display: inline-block;
+  margin-bottom: 0;
+  padding: 2px 15px 5px 7px;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-weight: 400;
+}
+
+.choice__item > input + label:before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border: 2px solid;
+  background: transparent;
+}
+
+.choice__item > input + label:after {
+  content: "";
+  position: absolute;
+  opacity: 0;
+}
+
+.choice--radios {
+  margin-top: 20px;
+}
+
+.choice--radios .choice__item > input[type="radio"] {
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+}
+
+.choice--radios
+  .choice__item
+  > input[type="radio"]
+  + label:before {
+  border-radius: 50%;
+}
+
+.choice--radios
+  .choice__item
+  > input[type="radio"]
+  + label:after {
+  top: 6px;
+  left: 6px;
+  width: 0;
+  height: 0;
+  border: 9px solid;
+  border-radius: 50%;
+  background: currentColor;
+}

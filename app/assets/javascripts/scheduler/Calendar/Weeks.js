@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import { store, yearMonthDay, getDates, onKeyDown } from "./index";
+import { store, I18nContext, yearMonthDay, getDates, onKeyDown } from "./index";
 import { Days } from "./Days";
 
 export const Weeks = () => {
   const { date, dispatch } = useContext(store);
-
+  const { translate } = useContext(I18nContext);
   const weeks = getDates(date);
   return (
     <section
@@ -13,7 +13,7 @@ export const Weeks = () => {
         const key = event.key.replace("Arrow", "");
         onKeyDown({ key, dispatch });
       }}
-      aria-label="Calendar dates"
+      aria-label={translate("calendar_dates")}
       role="application"
     >
       {weeks.map(week => {

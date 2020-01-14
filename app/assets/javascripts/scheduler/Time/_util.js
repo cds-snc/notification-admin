@@ -1,8 +1,7 @@
 import dayjs from "dayjs";
 
-export const populateTimes = (_24hr = false, startTime = 0) => {
+export const populateTimes = (times = [], _24hr = false, startTime = 0) => {
   let hours, hours24, minutes, ampm;
-  let arr = [];
 
   for (let i = startTime; i <= 1380; i += 60) {
     hours = Math.floor(i / 60);
@@ -31,10 +30,10 @@ export const populateTimes = (_24hr = false, startTime = 0) => {
       label = `${hours}:${minutes}${postfix}`;
     }
 
-    arr.push({ val: `${hours24}:${minutes}`, label });
+    times.push({ val: `${hours24}:${minutes}`, label });
   }
 
-  return arr;
+  return times;
 };
 
 export const dateIsToday = (today, date) => {

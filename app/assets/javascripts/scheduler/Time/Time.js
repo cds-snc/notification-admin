@@ -1,11 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { store, populateTimes, dateIsToday } from "./index";
+import { I18nContext } from "./index";
 import "./style.css";
 
 export const Time = ({ name }) => {
   const { _24hr, today, selected: selectedDate, time, dispatch } = useContext(
     store
   );
+
+  const { translate } = useContext(I18nContext);
 
   let startTime = 0;
 
@@ -14,7 +17,9 @@ export const Time = ({ name }) => {
     startTime = Number(d.getHours() + 1) * 60;
   }
 
-  const values = populateTimes(_24hr, startTime);
+  const times = [{ val: "", label: translate("send_now") }];
+  const values = populateTimes(times, _24hr, startTime);
+
   return (
     <div className="Nav--select">
       <select

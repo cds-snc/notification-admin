@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
-import { store } from "./index";
+import { store, I18nContext } from "./index";
 
 export const Announce = () => {
   const { updateMessage } = useContext(store);
+  const { translate } = useContext(I18nContext);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export const Announce = () => {
       className="visually-hidden"
       aria-live="assertive"
     >
-      {message}
+      {translate(message)}
     </span>
   );
 };

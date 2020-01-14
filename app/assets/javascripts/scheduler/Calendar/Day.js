@@ -1,6 +1,8 @@
 import React, { useContext, useRef, useEffect } from "react";
+
 import {
   store,
+  I18nContext,
   isBlockedDay,
   formattedDay,
   yearMonthDay,
@@ -9,6 +11,7 @@ import {
 
 export const Day = ({ day }) => {
   const { today, selected, focusedDayNum, dispatch } = useContext(store);
+  const { translate } = useContext(I18nContext);
   const { $D: dayNum = 0 } = day;
   const { $D: todayDayNum = 0 } = today;
   const tabIndex = dayNum !== todayDayNum ? { tabIndex: -1 } : {};
@@ -21,8 +24,10 @@ export const Day = ({ day }) => {
     : "Calendar-item--active";
   const currentState = isCurrent ? { "aria-current": "date" } : {};
   const labelDate = formattedDay(day);
-  const label = isDisabled ? `Unavailable, ${labelDate}` : labelDate;
   const inputEl = useRef(null);
+  const label = isDisabled
+    ? `${translate("unavailable")}, ${labelDate}`
+    : labelDate;
 
   useEffect(() => {
     if (Number(dayNum) === Number(focusedDayNum)) {

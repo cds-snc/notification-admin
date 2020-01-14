@@ -6,7 +6,7 @@ const setDateAndTimeValue = val => {
 
   let value = val;
 
-  if (window.moment) {
+  if (window.moment && val) {
     value = moment(val)
       .utc()
       .format()
@@ -20,6 +20,12 @@ const setDateAndTimeValue = val => {
 
 export const SetDateTime = () => {
   const { selected: selectedDate, time } = useContext(store);
+
+  if (!time) {
+    setDateAndTimeValue("");
+    return null;
+  }
+
   setDateAndTimeValue(`${selectedDate[0]} ${time}`);
   return null;
 };

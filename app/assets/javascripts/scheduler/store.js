@@ -1,5 +1,6 @@
-import dayjs from "dayjs";
 import React, { createContext, useReducer } from "react";
+import dayjs from "dayjs";
+import "dayjs/locale/fr-ca";
 import {
   isBlockedDay,
   setSelected,
@@ -10,40 +11,72 @@ import {
   yearMonthDay
 } from "./Calendar/index";
 
-const today = dayjs()
+const LANGUAGES = ["en", "fr-ca"]; // en
+
+let params = new URL(document.location).searchParams;
+let langQuery = params.get("lang");
+let LOCALE = LANGUAGES[0];
+if (langQuery === "fr") {
+  LOCALE = LANGUAGES[1];
+}
+
+if (typeof(APP_LANG) !== "undefined" && APP_LANG === "fr") {
+  LOCALE = LANGUAGES[1];
+}
+
+if (typeof(APP_LANG) !== "undefined"  && APP_LANG === "en") {
+  LOCALE = LANGUAGES[0];
+}
+
+dayjs.locale(LOCALE); // global
+
+const defaultToday = dayjs()
   .set("hour", 0)
   .set("minute", 0)
   .set("second", 0)
   .set("millisecond", 0);
 
-const firstDay = dayjs(today);
+const defautFirstDay = dayjs(defaultToday);
+// Note: date = YYYY-MM-DD on the calendar display not the current date
+// date - updates on prev / next month click
 
-const initialState = {
-  today,
-  firstAvailableDate: firstDay,
-  lastAvailableDate: dayjs(firstDay).add(1, "month"),
-  date: yearMonthDay(firstDay),
-  time: "9:00",
-  selected: [yearMonthDay(firstDay)],
-  focusedDayNum: dayjs(firstDay).format("D"),
-  updateMessage: "",
-  _24hr: "off"
+export const setIntialState = (
+  data = {
+    today: defaultToday,
+    firstDay: defautFirstDay
+  }
+) => {
+  const { today, firstDay } = data;
+
+  return {
+    today,
+    firstAvailableDate: firstDay,
+    lastAvailableDate: dayjs(firstDay).add(1, "month"),
+    date: yearMonthDay(firstDay),
+    time: "",
+    selected: [yearMonthDay(firstDay)],
+    focusedDayNum: dayjs(firstDay).format("D"),
+    updateMessage: "",
+    _24hr: LOCALE === "en" ? "off" : "on"
+  };
 };
 
-const store = createContext(initialState);
+const initialState = setIntialState();
+
+export const store = createContext(initialState);
+
 const { Provider } = store;
 
-// @todo
-// - handle next, previous too far in the past or future
+export const StateProvider = ({ value, children }) => {
+  const mergedState = { ...initialState, ...value };
 
-const StateProvider = ({ children }) => {
   const [state, dispatch] = useReducer((state, action) => {
     let newState = {};
     switch (action.type) {
       case "AM_PM":
         newState = {
           ...state,
-          _24hr: action.payload === "off" ? "on" : "off",
+          _24hr: action.payload,
           updateMessage:
             action.payload === "off"
               ? "24 hr time selected"
@@ -117,9 +150,7 @@ const StateProvider = ({ children }) => {
     newState.lastDay = getLastDay(newState.date);
 
     return newState;
-  }, initialState);
+  }, mergedState);
 
   return <Provider value={{ ...state, dispatch }}>{children}</Provider>;
 };
-
-export { store, StateProvider };
