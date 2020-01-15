@@ -20,7 +20,7 @@ def smtp_integration(service_id):
 @user_is_platform_admin
 def manage_smtp(service_id):
     data = service_api_client.add_smtp_relay(service_id=service_id, payload="")
-    flash('{}'.format("SMPT server added"), 'default_with_tick')
+    flash('{}'.format("SMTP server added"), 'default_with_tick')
     return render_template(
         'views/smtp/index.html',
         data=data,
