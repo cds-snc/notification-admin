@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-17 08:13-0500\n"
+"POT-Creation-Date: 2020-01-21 14:46-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -755,7 +755,7 @@ msgstr "Menu"
 
 #: app/templates/admin_template.html:35 app/templates/admin_template.html:57
 #: app/templates/views/documentation.html:2
-#: app/templates/views/documentation.html:5
+#: app/templates/views/documentation.html:37
 msgid "Documentation"
 msgstr "Documentation"
 
@@ -1849,15 +1849,15 @@ msgstr ""
 msgid "1 month"
 msgstr "1 mois"
 
-#: app/templates/views/documentation.html:6
+#: app/templates/views/documentation.html:38
 msgid "Notification API to send messages automatically."
 msgstr "L’API Notification enverra les messages automatiquement."
 
-#: app/templates/views/documentation.html:7
+#: app/templates/views/documentation.html:39
 msgid "Clients"
 msgstr "Clients"
 
-#: app/templates/views/documentation.html:10
+#: app/templates/views/documentation.html:42
 msgid ""
 "Choose a client to integrate our API with your web application or back "
 "office system. Links to documentation open in a new tab."
@@ -1866,23 +1866,31 @@ msgstr ""
 "àvotre système administratif. Les liens de la documentation s’ouvrent "
 "dans un nouvel onglet."
 
-#: app/templates/views/documentation.html:20
+#: app/templates/views/documentation.html:52
 msgid "Changer votre point de connexion API"
 msgstr ""
 
-#: app/templates/views/documentation.html:27
+#: app/templates/views/documentation.html:57
+msgid "Note:"
+msgstr ""
+
+#: app/templates/views/documentation.html:57
+msgid "You need to change your endpoint before integrating the API."
+msgstr ""
+
+#: app/templates/views/documentation.html:61
 msgid "Changing your endpoint"
 msgstr ""
 
-#: app/templates/views/documentation.html:32
+#: app/templates/views/documentation.html:65
 msgid "Maintained by CDS:"
 msgstr "Maintenu par le SNC :"
 
-#: app/templates/views/documentation.html:55
+#: app/templates/views/documentation.html:88
 msgid "Maintained by GOV.UK:"
 msgstr "Maintenu par GOV.UK :"
 
-#: app/templates/views/documentation.html:74
+#: app/templates/views/documentation.html:107
 msgid "Direct connection to API"
 msgstr ""
 
