@@ -2,6 +2,38 @@
 {{ _("Documentation") }}
 {% endblock %} {% block content_column_content %}
 
+<style>
+  .border-box{
+    font-size:.9em;
+    border:1px solid #000;
+    padding: 20px;
+    margin-bottom:20px;
+  }
+
+  .border-box strong{
+    font-weight: bold;
+  }
+
+  .button-blue{
+    display:block;
+    background-color: #26374A;
+    color:#fff !important;
+    padding:10px 20px;
+    width:210px;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .button-blue:hover{
+    text-decoration: none;
+  }
+
+  .button-blue:focus{
+    background-color: #26374A;
+  }
+
+</style>
+
 <h1 class="heading-large">{{ _("Documentation") }}</h1>
 <p>{{ _("Notification API to send messages automatically.") }}</p>
 <h2 class="heading-medium">{{ _("Clients") }}</h2>
@@ -14,19 +46,23 @@
 </p>
 
 {% if current_lang == "fr" %}
-<p>
+<div class="border-box">
+  <strong>{{ _("Remarque:") }}</strong> {{ _("Vous devez modifier votre point de terminaison avant d'intégrer l'API.") }}
   <a
+    class="button-blue"
+    style="width:300px;"
     href="https://github.com/cds-snc/notification-api/wiki/Comment-changez-vous-votre-point-de-connexion-API%3F"
-    >{{ _("Changer votre point de connexion API") }}</a
-  >
-</p>
+      >{{ _("Changer votre point de connexion API") }}</a
+    >
+</div>
 {% else %}
-<p>
+  <div class="border-box">
+    <strong>{{ _("Note:") }}</strong> {{ _("You need to change your endpoint before integrating the API.") }}
   <a
+    class="button-blue"
     href="https://github.com/cds-snc/notification-api/wiki/How-to-change-your-API-endpoint%3F"
-    >{{ _("Changing your endpoint") }}</a
-  >
-</p>
+    >{{ _("Changing your endpoint") }}</a>
+</div>
 {% endif %}
 
 <h2>{{ _("Maintained by CDS:") }}</h2>
