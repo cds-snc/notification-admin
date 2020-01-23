@@ -385,6 +385,8 @@ def organisation_preview_letter_branding(org_id):
 @user_is_platform_admin
 def edit_organisation_domains(org_id):
 
+    return redirect(url_for('.organisation_settings', org_id=org_id))
+
     form = OrganisationDomainsForm()
 
     if form.validate_on_submit():
