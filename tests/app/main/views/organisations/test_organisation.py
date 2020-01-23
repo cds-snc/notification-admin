@@ -260,8 +260,7 @@ def test_organisation_settings_for_platform_admin(
         'Data sharing and financial agreement Not signed Change',
         'Request to go live notes None Change',
         'Default email branding GOV.UK Change',
-        'Default letter branding No branding Change',
-        'Known email domains None Change',
+        'Default letter branding No branding Change'
     ]
 
     client_request.login(platform_admin_user)
@@ -471,126 +470,6 @@ def test_update_organisation_sector_sends_service_id_data_to_api_client(
         organisation_one['id'],
         cached_service_ids=['12345', '67890', SERVICE_ONE_ID],
         organisation_type='central'
-    )
-
-
-@pytest.mark.parametrize('user', (
-    pytest.param(
-        platform_admin_user,
-    ),
-    pytest.param(
-        active_user_with_permissions,
-        marks=pytest.mark.xfail
-    ),
-))
-def test_view_organisation_domains(
-    mocker,
-    client_request,
-    fake_uuid,
-    user,
-):
-    client_request.login(user(fake_uuid))
-
-    mocker.patch(
-        'app.organisations_client.get_organisation',
-        side_effect=lambda org_id: organisation_json(
-            org_id,
-            'Org 1',
-            domains=['example.canada.ca', 'test.example.canada.ca'],
-        )
-    )
-
-    page = client_request.get(
-        'main.edit_organisation_domains',
-        org_id=ORGANISATION_ID,
-    )
-
-    assert [textbox['value'] for textbox in page.select('input[type=text]')] == [
-        'example.canada.ca',
-        'test.example.canada.ca',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-    ]
-
-
-@pytest.mark.parametrize('post_data, expected_persisted', (
-    (
-        {
-            'domains-0': 'example.canada.ca',
-            'domains-2': 'example.canada.ca',
-            'domains-3': 'EXAMPLE.canada.ca',
-            'domains-5': 'test.canada.ca',
-        },
-        {
-            'domains': [
-                'example.canada.ca',
-                'test.canada.ca',
-            ]
-        }
-    ),
-    (
-        {
-            'domains-0': '',
-            'domains-1': '',
-            'domains-2': '',
-        },
-        {
-            'domains': []
-        }
-    ),
-))
-@pytest.mark.parametrize('user', (
-    pytest.param(
-        platform_admin_user,
-    ),
-    pytest.param(
-        active_user_with_permissions,
-        marks=pytest.mark.xfail
-    ),
-))
-def test_update_organisation_domains(
-    client_request,
-    fake_uuid,
-    organisation_one,
-    mock_get_organisation,
-    mock_update_organisation,
-    post_data,
-    expected_persisted,
-    user,
-):
-    client_request.login(user(fake_uuid))
-
-    client_request.post(
-        'main.edit_organisation_domains',
-        org_id=ORGANISATION_ID,
-        _data=post_data,
-        _expected_status=302,
-        _expected_redirect=url_for(
-            'main.organisation_settings',
-            org_id=organisation_one['id'],
-            _external=True,
-        ),
-    )
-
-    mock_update_organisation.assert_called_once_with(
-        ORGANISATION_ID,
-        **expected_persisted,
     )
 
 
