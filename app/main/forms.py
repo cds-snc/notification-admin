@@ -830,6 +830,7 @@ class SupportType(StripWhitespaceForm):
 class ContactNotifyTeam(StripWhitespaceForm):
     not_empty = _l('Can’t be empty')
     name = StringField(_l('Your name'), validators=[DataRequired(message=not_empty)])
+    support_type = StringField(_l('Support Type'))
     email_address = email_address(label=_l('Your email'), gov_user=False)
     phone = StringField(_l('Your phone'))
     feedback = TextAreaField(_l('Message'), validators=[DataRequired(message=not_empty)])

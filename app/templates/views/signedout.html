@@ -139,6 +139,9 @@
               {% set name_label = _('Your name') %}
               {{ textbox(form.name, label=name_label,  width='1-1') }}
 
+              {% set name_label = _('Support type') %}
+              {{ textbox(form.support_type, label=name_label,  width='1-1') }}
+
               {% set email_label = _('Your email') %}
               {{ textbox(form.email_address, label=email_label, width='1-1') }}
               
