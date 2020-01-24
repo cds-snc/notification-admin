@@ -2,9 +2,17 @@ import itertools
 import re
 from collections import OrderedDict
 from datetime import datetime
-from flask import current_app
 
-from flask import jsonify, abort, flash, redirect, render_template, request, url_for
+from flask import (
+    abort,
+    current_app,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from notifications_python_client.errors import HTTPError
 from requests import RequestException
 
