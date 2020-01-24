@@ -23,7 +23,7 @@ class Config(object):
     SENDING_DOMAIN = os.environ.get('SENDING_DOMAIN', 'notification.alpha.canada.ca')
 
     if os.environ.get("HEROKU_APP_NAME", "") != "":
-        ADMIN_BASE_URL = 'https://' + os.environ.get('HEROKU_PR_NAME') + '.herokuapp.com'
+        ADMIN_BASE_URL = 'https://' + os.environ.get('HEROKU_APP_NAME', '') + '.herokuapp.com'
     else:
         ADMIN_BASE_URL = os.environ.get('ADMIN_BASE_URL', 'http://localhost:6012')
 
