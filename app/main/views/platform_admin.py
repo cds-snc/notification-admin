@@ -2,6 +2,7 @@ import itertools
 import re
 from collections import OrderedDict
 from datetime import datetime
+from flask import current_app
 
 from flask import jsonify, abort, flash, redirect, render_template, request, url_for
 from notifications_python_client.errors import HTTPError
@@ -43,6 +44,7 @@ COMPLAINT_THRESHOLD = 0.02
 FAILURE_THRESHOLD = 3
 ZERO_FAILURE_THRESHOLD = 0
 
+
 @main.route("/platform-admin/threshold")
 def threshold():
     # detect if a service is near a daily limit
@@ -50,14 +52,14 @@ def threshold():
     for service in allServices:
         stats = service_api_client.get_service_statistics(service["service_id"], True)
         count = stats["email"]["requested"]
-        if(count >1):
-           result = service_api_client.get_service(service["service_id"])["data"]
-           limit = result["message_limit"]
-           remainder = limit - count
-           if(remainder < 100):
-            # alert here
-            msg='Alert: {} => email count {} email limit {}'.format(service["service_name"], count, remainder)
-            print(msg)
+        if(count > 1):
+            result = service_api_client.get_service(service["service_id"])["data"]
+            limit = result["message_limit"]
+            remainder = limit - count
+            if(remainder < 100):
+                # alert here
+                msg = 'Alert: {} => email count {} email limit {}'.format(service["service_name"], count, remainder)
+                current_app.logger.warning(msg)
 
     return jsonify({})
 
@@ -75,7 +77,7 @@ def platform_admin():
 
     platform_stats = platform_stats_api_client.get_aggregate_platform_stats(api_args)
     number_of_complaints = complaint_api_client.get_complaint_count(api_args)
-   
+
     return render_template(
         'views/platform-admin/index.html',
         form=form,
