@@ -28,13 +28,13 @@
     "NOTIFY_ENVIRONMENT": {
       "required": true
     },
+    "REDIS_ENABLED": {
+      "required": false
+    },
     "SECRET_KEY": {
       "required": true
     },
     "WERKZEUG_DEBUG_PIN": {
-      "required": true
-    },
-    "HEROKU_APP_NAME": {
       "required": true
     }
   },
