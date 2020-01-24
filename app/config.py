@@ -24,7 +24,7 @@ class Config(object):
 
     # if we're not on cloudfoundry, we can get to this app from localhost. but on cloudfoundry its different
     if os.environ.get("HEROKU_APP_NAME", "") is not "":
-        ADMIN_BASE_URL = 'https://' + os.environ.get('HEROKU_APP_NAME','') + '-pr-' + os.environ.get('HEROKU_PR_NUMBER','') + '.herokuapp.com'
+        ADMIN_BASE_URL = 'https://' + os.environ.get('HEROKU_APP_NAME','') + '.herokuapp.com'
     else:
         ADMIN_BASE_URL = os.environ.get('ADMIN_BASE_URL', 'http://localhost:6012')
 
