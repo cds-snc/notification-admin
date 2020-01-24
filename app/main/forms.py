@@ -25,6 +25,7 @@ from wtforms import (
     RadioField,
     SelectMultipleField,
     StringField,
+    SelectField,
     TextAreaField,
     ValidationError,
     validators,
@@ -830,7 +831,17 @@ class SupportType(StripWhitespaceForm):
 class ContactNotifyTeam(StripWhitespaceForm):
     not_empty = _l('Can’t be empty')
     name = StringField(_l('Your name'), validators=[DataRequired(message=not_empty)])
-    support_type = StringField(_l('Support Type'))
+    support_type = SelectField(
+        'Support Type',
+        choices=[
+            (_l('Ask a question'), _l('Ask a question')),
+            (_l('Give feedback'), _l('Give feedback')),
+            (_l('Set up a demo'), _l('Set up a demo')),
+            (_l('Go Live'), _l('Go Live')),
+            (_l('Other'), _l('Other')),
+        ],
+        validators=[DataRequired()]
+    )
     email_address = email_address(label=_l('Your email'), gov_user=False)
     phone = StringField(_l('Your phone'))
     feedback = TextAreaField(_l('Message'), validators=[DataRequired(message=not_empty)])
