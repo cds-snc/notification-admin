@@ -36,6 +36,12 @@
     },
     "WERKZEUG_DEBUG_PIN": {
       "required": true
+    },
+    "HEROKU_APP_NAME": {
+      "required": true
+    },
+    "HEROKU_PR_NUMBER": {
+      "required": true
     }
   },
   "formation": {},
