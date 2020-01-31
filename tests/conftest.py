@@ -41,7 +41,7 @@ def a11y_test(html):
     temp = tempfile.NamedTemporaryFile(mode='w+t', suffix='.html')
     temp.writelines(html)
     temp.seek(0)
-    output = os.popen("node_modules/axe-cli/axe-cli --chromedriver-path='/workspace/node_modules/chromedriver/lib/chromedriver/chromedriver' file://" + temp.name).read()
+    output = os.popen("node_modules/axe-cli/axe-cli --chromedriver-path='/workspace/node_modules/chromedriver/lib/chromedriver/chromedriver' file://" + temp.name).read()  # noqa: E501
     temp.close()
 
     if "0 violations found!" in output:
