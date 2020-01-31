@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from flask import url_for
 
 from app.main.forms import FieldWithNoneOption
-from tests.conftest import a11y_test, normalize_spaces, sample_uuid
+from tests.conftest import normalize_spaces, sample_uuid
 
 
 def test_non_logged_in_user_can_see_homepage(
