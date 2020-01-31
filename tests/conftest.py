@@ -1,5 +1,6 @@
 import json
 import os
+import tempfile
 from contextlib import contextmanager
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock
@@ -34,6 +35,20 @@ from . import (
 
 class ElementNotFound(Exception):
     pass
+
+
+def a11y_test(html):
+    temp = tempfile.NamedTemporaryFile(mode='w+t', suffix='.html')
+    temp.writelines(html)
+    temp.seek(0)
+    output = os.popen('node_modules/axe-cli/axe-cli file://' + temp.name).read()
+    temp.close()
+
+    if "0 violations found!" in output:
+        return True
+    else:
+        print(output)  # noqa: T001
+        return False
 
 
 @pytest.fixture

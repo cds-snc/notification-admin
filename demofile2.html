@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--><html
+  lang="en"
+><!--<![endif]-->
+  <head>
+    <meta charset="utf-8" />
+    <title>
+  Notification
+</title>
+
+    <!--[if gt IE 8]><!-->
+    <link
+      rel="stylesheet"
+      media="screen"
+      href="https://static.example.com/stylesheets/notification-template.css?0.24.2"
+    />
+    <!--<![endif]-->
+    <!--[if IE 6
+      ]><link
+        rel="stylesheet"
+        media="screen"
+        href="https://static.example.com/stylesheets/notification-template-ie6.css?0.24.2"
+    /><![endif]-->
+    <!--[if IE 7
+      ]><link
+        rel="stylesheet"
+        media="screen"
+        href="https://static.example.com/stylesheets/notification-template-ie7.css?0.24.2"
+    /><![endif]-->
+    <!--[if IE 8
+      ]><link
+        rel="stylesheet"
+        media="screen"
+        href="https://static.example.com/stylesheets/notification-template-ie8.css?0.24.2"
+    /><![endif]-->
+    <!--[if lt IE 9
+      ]><script src="https://static.example.com/javascripts/ie.js?0.24.1"></script
+    ><![endif]-->
+
+    <link
+      rel="shortcut icon"
+      href="https://static.example.com/images/favicon.ico?0.24.2"
+      type="image/x-icon"
+    />
+    <meta name="theme-color" content="#0b0c0c" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      window.APP_LANG = "en";
+      window.APP_PHRASES = {
+        now: "Now",
+        done: "Done",
+        new_template_button: "New template",
+        copy_template_button: "Copy template",
+        new_folder_button: "New folder",
+        nothing_selected: "Nothing selected",
+        selection: "selection",
+        selections: "selections",
+        chosen_time_button: "Choose a different time",
+        clear_button: "Clear",
+        cancel_button: "Cancel",
+        add_to_new_folder: "Add to new folder",
+        move: "Move",
+        am: "AM",
+        pm: "PM",
+        today: "Today",
+        tomorrow: "Tomorrow",
+        monday: "Monday",
+        tuesday: "Tuesday",
+        wednesday: "Wednesday",
+        thursday: "Thursday",
+        friday: "Friday",
+        saturday: "Saturday",
+        sunday: "Sunday",
+        o_clock: "o_clock",
+        hour_to_send: "Hour to send",
+        copied_to_clipboard: "Copied to clipboard",
+        show: "Show",
+        copy: "Copy",
+        to_clipboard: "to clipboard",
+        add_another: "Add another",
+        number: "number",
+        remaining: "remaining",
+        remove: "Remove",
+        folder: "folder",
+        folders: "folders",
+        all_folders: "All folders",
+        choose_folders: "Choose folders",
+        "all_team members" : "All team members",
+        "choose_team members" : "Choose team members",
+        "cancel_upload": "Cancel upload"
+      }; 
+
+    </script>
+    
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" media="screen" href="https://static.example.com/stylesheets/main.css?4e71a7991358a4bf0123bbe404aed166" />
+  <!--<![endif]-->
+  <style>
+      #global-header-bar { background-color: #FFBF47 }
+  </style>
+  <!--[if IE 6]>
+  <link rel="stylesheet" media="screen" href="https://static.example.com/stylesheets/main-ie6.css?3803c0d5b002a7ad75db26b2cf3ca3f8" />
+  <![endif]-->
+  <!--[if IE 7]>
+  <link rel="stylesheet" media="screen" href="https://static.example.com/stylesheets/main-ie7.css?4d856c68d1b74d4934167a0d03b0248d" />
+  <![endif]-->
+  <!--[if IE 8]>
+  <link rel="stylesheet" media="screen" href="https://static.example.com/stylesheets/main-ie8.css?48370a9799fe4312e8fb21cc32718bdf" />
+  <![endif]-->
+  
+  
+  
+  
+  <meta name="description" content="Notify lets you send emails and text messages to your users">
+  <meta name="keywords" content="gc notify, notify, canada notify, canada email, email notifications, Government of Canada, federal government, Canada SMS, Canada Notification service">
+  <meta property="og:title" content="GC Notify | GC Notification">
+  <meta property="og:description" content="Notify lets you send emails and text messages to your users">
+  <meta property="og:image" content="https://notification.alpha.canada.ca/static/images/product/notify.jpg">
+  <meta property="og:url" content="https://notification.alpha.canada.ca">
+
+
+
+  </head>
+
+  <body class="">
+    <script>
+      document.body.className = document.body.className
+        ? document.body.className + " js-enabled"
+        : "js-enabled";
+    </script>
+
+    
+
+    <div id="skiplink-container">
+      <div>
+        <a
+          href="#content"
+          class="skiplink"
+          >Skip to main content</a
+        >
+      </div>
+    </div>
+
+    <header
+      role="banner"
+      id="global-header"
+      class="with-proposition"
+    >
+      <div class="header-wrapper">
+        <div class="header-global">
+          <div class="header-logo">
+            <a
+              href="/accounts-or-dashboard"
+              title="Go to the Canada.ca homepage"
+              id="logo"
+              class="content"
+            >
+              <img
+                src="https://static.example.com/images/fip/goc--header-logo.svg"
+                width="250"
+                alt="Government of Canada"
+              />
+            </a>
+          </div>
+          
+        </div>
+        <div class="app-name">
+          <span id='product-name'>Notification</span>
+          <span class="cds-tag alpha">Alpha</span>
+        </div>
+        
+  <div class="header-proposition">
+    <div class="content">
+      <a href="#proposition-links" class="js-header-toggle menu">Menu</a>
+      <nav id="proposition-menu">
+        <ul id="proposition-links">
+          
+            <li>
+              <a href="/set-lang?from=/ ">
+              
+                Français
+              
+            </a></li>
+            <li><a href="/documentation" >Documentation</a></li>
+            <li><a href="/sign-in" >Sign in</a></li>
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+      </div>
+    </header>
+
+    
+
+    <div id="global-header-bar"></div>
+
+    
+  
+  <main role="main">
+    
+  <!-- intro -->
+  <div class="product-page-intro">
+    <div class="product-page-intro-wrapper override-elements-content" id="content">
+      <div class="grid-row">
+        <div class="column-two-thirds">
+          <h1>
+            Send service updates and messages over email and SMS
+          </h1>
+          <p>
+            Try Notify if you work in the federal government.
+          </p>
+          <div class="button-container">
+            <a class="button button-start" href='/register'>Create an account</a>
+            or <a href="/sign-in">sign in</a> if you’ve used it before
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end intro -->
+
+  <!-- section 1 -->
+  <div class="product-page-section">
+    <div class="grid-row">
+      <div class="column-half">
+        
+          <img src="https://static.example.com/images/product/01-dashboard-en.png?7a6b3055847b3efa441121ae6ef27016" alt="" />
+        
+      </div>
+      <div class="column-half">
+        <h2>Measure the effectiveness and relevance of your notifications</h2>
+        <p>The Notify dashboard lets you track the status of all your notifications and mailings. See at a glance the number of messages that have been received and opened.</p>
+      </div>
+    </div>
+  </div>
+  <!-- end section 1 -->
+
+
+  <!-- background colour swap -->
+  <div class="homepage-colour-swap">
+
+  <!-- section 2 -->
+  <div class="product-page-section">
+    <div class="grid-row">
+      <div class="column-half">
+          <h2>Manually send personalized messages to your users</h2>
+          <p>Upload a spreadsheet containing the recipients email addresses or phone numbers, and Notify will send your message to them all in a batch.</p>
+          <p>
+            If you need help organizing your users’ information, Notify’s spreadsheet template is a great place to start.
+          </p>
+          <p>
+            <a class="button" style="background-color:#005ea5" href='/register'>Create an account</a>
+               
+      </div>
+      <div class="column-half">
+        
+        <img src="https://static.example.com/images/product/01-spreadsheet-en.png?2ced692272e40744183ea583bdaaed0c" alt="" />
+        
+      </div>
+    </div>
+  </div>
+  <!-- end section 2 -->
+  
+  <!-- section 3 -->
+  <div class="product-page-section">
+    <div class="grid-row">
+      <div class="column-half">
+          <img src="https://static.example.com/images/product/01-code.svg?269027cebc1f9699e158692d65aa8f12" alt="" />
+      </div>
+      <div class="column-half">
+        <h2>Integrate Notify into your web application or admin system</h2>
+        <p>The Notify API sends messages automatically. Choose a client to integrate your API with your web application or admin system.</p>
+        <p>
+          <a href="#">Learn how to integrate with our API</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- end section 3 -->
+
+  </div>
+  <!-- end background colour swap -->
+  
+  <!-- section 4 -->
+  <div class="product-page-section">
+    <div class="grid-row">
+      <div class="column-half">
+          <h2>Control your content</h2>
+          <p>You don’t need to be a developer to create email or SMS templates for your users.</p>
+          <p>Notify uses standard text editing tools and a simple templating language for filling in personalized information.</p>
+      </div>
+      <div class="column-half">
+          
+          <img src="https://static.example.com/images/product/01-templates.svg?f1f89c55b8a16fc6e5c2342d3b0492d1" alt="" />
+          
+      </div>
+    </div>
+  </div>
+  <!-- end section 4 -->
+ 
+  <!-- background colour swap -->
+  <div class="homepage-colour-swap" style="margin-bottom:0">
+    <!-- contact us -->
+    <div class="product-page-section">
+      <div id="contact-form" class="grid-row">
+        <div class="column-half">
+            <h2>Contact the Notify team</h2>
+            
+  <form
+    method="post"
+    
+    autocomplete="off"
+    
+    
+    
+    
+    novalidate
+  >
+    
+              
+              
+  <div
+    class="form-group"
+    data-module=""
+  >
+    <label class="form-label" for="name">
+      
+        Your name
+      
+      
+      
+    </label>
+    
+      
+    
+    
+    <input class="form-control form-control-1-1 " data-module="" id="name" name="name" required rows="8" type="text" value="">
+    
+    
+  </div>
+
+
+              
+              
+  <div
+    class="form-group"
+    data-module=""
+  >
+    <label class="form-label" for="email_address">
+      
+        Your email
+      
+      
+      
+    </label>
+    
+      
+    
+    
+    <input class="form-control form-control-1-1 " data-module="" id="email_address" name="email_address" required rows="8" spellcheck="false" type="email" value="">
+    
+    
+  </div>
+
+              
+              
+              
+              
+  <div class="form-group phone">
+    <label aria-hidden="true" class="form-label">
+      Your phone
+    </label>
+    <input aria-hidden="true" class="form-control form-control-1-1" id="phone" name="phone" type="text" value="" role="img" >
+  </div>
+
+              
+              
+              
+  <div
+    class="form-group"
+    data-module=""
+  >
+    <label class="form-label" for="feedback">
+      
+        Message
+      
+      
+      
+    </label>
+    
+      
+    
+    
+    <textarea class="form-control form-control-1-1 " data-module="" id="feedback" name="feedback" required rows="10"></textarea>
+    
+    
+  </div>
+
+            
+
+            
+            
+  <div class="page-footer">
+    
+      <input type="hidden" name="csrf_token" value="IjM0MzQ0YzIzMzAzMThiOGFkMzUyNDkzOWE1NzgxMzEyNGY3ZGVhMGQi.ERYHBw.Cl3kKiV2nox-FNJGf7uE6PDPrCE" />
+      <button
+        data-button-id=btn
+        type="submit"
+        class="button"
+        
+        
+      >Send</button>
+    
+    
+    
+  </div>
+
+            
+  </form>
+
+        </div>
+        <div class="column-half"></div>
+      </div>
+    </div>
+    <!-- end contact us -->
+  </div>
+
+  
+  
+
+  </main>
+
+
+
+    <footer>
+      <div class="group js-footer" id="footer">
+        <div class="footer-wrapper">
+          
+  <div class="footer-categories">
+    <div class="footer-categories-wrapper">
+      <div class="grid-row">
+        <div class="column-one-quarter">
+          <ul> 
+            <li>
+              <a href="/features/terms">Terms of Use</a>
+            </li>
+            <li>
+              <a href="/features/messages-status">Message status</a>
+            </li>
+          </ul>
+        </div>
+        <div class="column-one-quarter">
+          <ul>
+            <li>
+                <a href="/privacy">Privacy</a>
+              </li>
+              <li>
+                <a href="/features/security">Security</a>
+              </li>
+          </ul>
+        </div>
+        <div class="column-one-quarter">
+        </div>
+      </div>
+    </div>
+  </div>
+
+        </div>
+      </div>
+
+      <div id="global-app-error" class="app-error hidden"></div>
+
+      
+      <div id="global-footer-fip" class="footer-fip">
+        <div class="footer_support_links"></div>
+        <div>
+          <img
+            style="margin-top:20px;margin-bottom:20px;"
+            src="https://static.example.com/images/fip/goc--footer-logo.svg"
+            width="168"
+            alt=""
+          />
+        </div>
+      </div>
+      
+    </footer>
+
+    
+  <script src="https://static.example.com/javascripts/main.min.js"></script>
+  <script type="text/javascript" src="https://static.example.com/javascripts/all.min.js?bb7f96e24c0932b2ba888e383d5c9e24"></script>
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-102484926-14"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "UA-102484926-14", { anonymize_ip: true });
+    </script>
+    <script>
+      if (typeof window.GOVUK === "undefined")
+        document.body.className = document.body.className.replace(
+          "js-enabled",
+          ""
+        );
+    </script>
+
+    
+  </body>
+</html>
