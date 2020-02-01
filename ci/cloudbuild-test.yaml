@@ -3,6 +3,6 @@ steps:
   entrypoint: /bin/sh
   args: ["-c", "/workspace/scripts/bootstrap.sh && make test"]
   env:
-    - 'CHROMEDRIVER_PATH=/usr/lib/chromium-browser/chromedriver'
+    - 'CHROMEDRIVER_PATH=/usr/lib/chromium/chromedriver'
 options:
  machineType: 'N1_HIGHCPU_32'
