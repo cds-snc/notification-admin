@@ -38,13 +38,12 @@ class ElementNotFound(Exception):
 
 
 def a11y_test(html):
-
     chromedriver_path = os.environ.get('CHROMEDRIVER_PATH', 'node_modules/chromedriver/lib/chromedriver/chromedriver')  # noqa: E501
 
     temp = tempfile.NamedTemporaryFile(mode='w+t', suffix='.html')
     temp.writelines(html)
     temp.seek(0)
-    cmd = "node_modules/axe-cli/axe-cli --chrome-options='no-sandbox,disable-setuid-sandbox,disable-dev-shm-usage' --chromedriver-path='" + chromedriver_path + "' file://" + temp.name  # noqa: E501
+    cmd = "node_modules/axe-cli/axe-cli --disable color-contrast --chrome-options='no-sandbox,disable-setuid-sandbox,disable-dev-shm-usage' --chromedriver-path='" + chromedriver_path + "' file://" + temp.name  # noqa: E501
     output = os.popen(cmd).read()
     temp.close()
 
