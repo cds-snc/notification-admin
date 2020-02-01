@@ -44,7 +44,7 @@ def a11y_test(html):
     temp = tempfile.NamedTemporaryFile(mode='w+t', suffix='.html')
     temp.writelines(html)
     temp.seek(0)
-    output = os.popen("node_modules/axe-cli/axe-cli --chromedriver-path='" + chromedriver_path + "' file://" + temp.name).read()  # noqa: E501
+    output = os.popen("node_modules/axe-cli/axe-cli --chrome-options=no-sandbox,disable-setuid-sandbox,disable-dev-shm-usage --chromedriver-path='" + chromedriver_path + "' file://" + temp.name).read()  # noqa: E501
     temp.close()
 
     if "0 violations found!" in output:
