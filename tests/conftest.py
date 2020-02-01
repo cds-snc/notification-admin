@@ -45,7 +45,6 @@ def a11y_test(html):
     temp.writelines(html)
     temp.seek(0)
     cmd = "node_modules/axe-cli/axe-cli --chrome-options='no-sandbox,disable-setuid-sandbox,disable-dev-shm-usage' --chromedriver-path='" + chromedriver_path + "' file://" + temp.name  # noqa: E501
-    print(cmd)  # noqa: T001
     output = os.popen(cmd).read()
     temp.close()
 
