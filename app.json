@@ -28,6 +28,9 @@
     "NOTIFY_ENVIRONMENT": {
       "required": true
     },
+    "REDIS_ENABLED": {
+      "required": false
+    },
     "SECRET_KEY": {
       "required": true
     },

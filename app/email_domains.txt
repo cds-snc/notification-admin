@@ -8,3 +8,4 @@ gouv.qc.ca
 rcafinnovation.ca
 canadacouncil.ca
 elections.ca
+gov.bc.ca

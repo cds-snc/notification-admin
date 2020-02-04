@@ -88,7 +88,7 @@ source  ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 9. Decrypt our existing set of environment variables
 
-`gcloud kms decrypt --project=[PROJECT_NAME] --plaintext-file=.env --ciphertext-file=.env.enc --location=global --keyring=[KEY_RING] --key=[KEY_NAME]`
+`aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region us-east-1 | base64 --decode > .env`
 
 A sane set of defaults exists in `.env.example`
 
