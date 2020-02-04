@@ -23,9 +23,9 @@ from wtforms import (
     IntegerField,
     PasswordField,
     RadioField,
+    SelectField,
     SelectMultipleField,
     StringField,
-    SelectField,
     TextAreaField,
     ValidationError,
     validators,
@@ -837,8 +837,6 @@ class ContactNotifyTeam(StripWhitespaceForm):
             (_l('Ask a question'), _l('Ask a question')),
             (_l('Give feedback'), _l('Give feedback')),
             (_l('Set up a demo'), _l('Set up a demo')),
-            (_l('Go Live'), _l('Go Live')),
-            (_l('Other'), _l('Other')),
         ],
         validators=[DataRequired()]
     )
