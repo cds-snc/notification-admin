@@ -19,7 +19,6 @@ from app import login_manager
 from app.main import main
 from app.main.forms import LoginForm
 from app.models.user import InvitedUser, User
-
 from app.utils import report_security_finding
 
 
@@ -99,7 +98,7 @@ def _geolocate_ip(ip):
             "Suspicious log in location detected, use the IP resolver to check the IP and correlate with logs.",
             50,
             50,
-            "https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/" + ip,
+            current_app.config.get('IP_GEOLOCATE_SERVICE', None) + ip,
         )
 
     if resp["city"] is not None and resp["subdivisions"] is not None:

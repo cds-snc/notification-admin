@@ -2,7 +2,6 @@ import csv
 import os
 import re
 import unicodedata
-import boto3
 import uuid
 from datetime import datetime, time, timedelta, timezone
 from functools import wraps
@@ -11,6 +10,7 @@ from itertools import chain
 from os import path
 
 import ago
+import boto3
 import dateutil
 import pyexcel
 import pyexcel_xlsx
