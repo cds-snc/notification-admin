@@ -92,6 +92,10 @@ def _geolocate_lookup(ip):
 
 def _geolocate_ip(ip):
     resp = _geolocate_lookup(ip)
+
+    if isinstance(resp, str):
+        return ip
+
     if resp["continent"] is not None and resp["continent"]["code"] != "NA":
         report_security_finding(
             "Suspicious log in location",
