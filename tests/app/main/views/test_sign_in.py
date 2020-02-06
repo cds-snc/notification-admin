@@ -225,3 +225,28 @@ def test_email_address_is_treated_case_insensitively_when_signing_in_as_invited_
     assert mock_accept_invite.called
     assert response.status_code == 302
     assert mock_send_verify_code.called
+
+
+def test_sign_in_security_center_notification_for_non_NA_signins(
+    client,
+    api_user_active_email_auth,
+    mock_send_verify_code,
+    mock_verify_password,
+    mocker
+):
+    mocker.patch('app.user_api_client.get_user', return_value=api_user_active_email_auth)
+    mocker.patch('app.user_api_client.get_user_by_email', return_value=api_user_active_email_auth)
+
+    reporter = mocker.patch('app.main.views.sign_in.report_security_finding')
+
+    mocker.patch(
+        'app.main.views.sign_in._geolocate_lookup',
+        return_value={"continent": {"code": "EU"}, "city": None, "subdivision": None})
+
+    response = client.post(
+        url_for('main.sign_in'), data={
+            'email_address': 'valid@example.canada.ca',
+            'password': 'val1dPassw0rd!'})
+    assert response.status_code == 302
+
+    reporter.assert_called()

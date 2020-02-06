@@ -20,6 +20,8 @@ from app.main import main
 from app.main.forms import LoginForm
 from app.models.user import InvitedUser, User
 
+from app.utils import report_security_finding
+
 
 @main.route('/sign-in', methods=(['GET', 'POST']))
 def sign_in():
@@ -75,9 +77,10 @@ def sign_in_again():
     )
 
 
-def _geolocate_ip(ip):
+def _geolocate_lookup(ip):
     url = current_app.config.get('IP_GEOLOCATE_SERVICE', None) + ip
     request = urllib.request.Request(url=url)
+
     try:
         with urllib.request.urlopen(request) as f:
             response = f.read()
@@ -85,8 +88,21 @@ def _geolocate_ip(ip):
         current_app.logger.debug("Exception found: {}".format(e))
         return ip
     else:
-        resp = json.loads(response.decode("utf-8-sig"))
-        if resp["city"] is not None and resp["subdivisions"] is not None:
-            return resp["city"]["names"]["en"] + ", " + resp["subdivisions"][0]["iso_code"] + " (" + ip + ")"
-        else:
-            return ip
+        return json.loads(response.decode("utf-8-sig"))
+
+
+def _geolocate_ip(ip):
+    resp = _geolocate_lookup(ip)
+    if resp["continent"] is not None and resp["continent"]["code"] != "NA":
+        report_security_finding(
+            "Suspicious log in location",
+            "Suspicious log in location detected, use the IP resolver to check the IP and correlate with logs.",
+            50,
+            50,
+            "https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/" + ip,
+        )
+
+    if resp["city"] is not None and resp["subdivisions"] is not None:
+        return resp["city"]["names"]["en"] + ", " + resp["subdivisions"][0]["iso_code"] + " (" + ip + ")"
+    else:
+        return ip

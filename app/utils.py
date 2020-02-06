@@ -2,6 +2,8 @@ import csv
 import os
 import re
 import unicodedata
+import boto3
+import uuid
 from datetime import datetime, time, timedelta, timezone
 from functools import wraps
 from io import BytesIO, StringIO
@@ -532,6 +534,63 @@ def get_letter_printing_statement(status, created_at):
         printed_date = printed_datetime.strftime('%d %B').lstrip('0')
 
         return 'Printed on {} at 5:30pm'.format(printed_date)
+
+
+def report_security_finding(
+        title,
+        finding,
+        criticality,
+        severity,
+        url="",
+        types=["Unusual Behaviors"],
+        UserDefinedFields={"app": "NotifyAdmin"}):
+    client = boto3.client('sts')
+    response = client.get_caller_identity()
+
+    account = response["Account"]
+
+    product = f'arn:aws:securityhub:{os.getenv("AWS_REGION").lower()}:{account}:product/{account}/default'
+    client = boto3.client('securityhub')
+    client.batch_import_findings(
+        Findings=[
+            {
+                'SchemaVersion': '2018-10-08',
+                'Id': str(uuid.uuid4()),
+                'ProductArn': product,
+                'GeneratorId': 'NotifyAdminFinding',
+                'AwsAccountId': account,
+                'Types': types,
+                'CreatedAt': datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                'UpdatedAt': datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                'FirstObservedAt': datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                'Severity': {
+                    'Normalized': severity
+                },
+                'Criticality': criticality,
+                'Title': title,
+                'Description': finding,
+                'SourceUrl': url,
+                'Resources': [
+                    {
+                        'Type': 'Container',
+                        'Id': os.getenv("HOST", "localhost"),
+                        'Partition': 'aws',
+                        'Region': os.getenv("AWS_REGION").lower(),
+                        'Details': {
+                            'Container': {
+                                'Name': os.getenv("HOST", "localhost"),
+                                'ImageName': 'notify/admin',
+                            },
+                        },
+                    },
+                ],
+                'VerificationState': 'UNKNOWN',
+                'WorkflowState': 'NEW',
+                'RecordState': 'ACTIVE',
+                'UserDefinedFields': UserDefinedFields
+            },
+        ]
+    )
 
 
 class PermanentRedirect(RequestRedirect):

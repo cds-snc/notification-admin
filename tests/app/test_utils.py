@@ -17,6 +17,7 @@ from app.utils import (
     get_letter_printing_statement,
     get_logo_cdn_domain,
     printing_today_or_tomorrow,
+    report_security_finding,
 )
 from tests.conftest import fake_uuid
 
@@ -405,3 +406,14 @@ def test_get_letter_printing_statement_for_letter_that_has_been_sent(created_at,
     statement = get_letter_printing_statement('delivered', created_at)
 
     assert statement == 'Printed {} at 5:30pm'.format(print_day)
+
+
+def test_report_security_finding(mocker):
+    boto_client = mocker.patch("app.utils.boto3")
+    client = boto_client.client.return_value = mocker.Mock()
+    client.get_caller_identity.return_value = {"Account": "123456789"}
+    report_security_finding("foo", "bar", 50, 50)
+
+    boto_client.client.assert_called_with("securityhub")
+    client.get_caller_identity.assert_called()
+    client.batch_import_findings.assert_called()
