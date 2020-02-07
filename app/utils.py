@@ -549,7 +549,7 @@ def report_security_finding(
 
     account = response["Account"]
 
-    product = f'arn:aws:securityhub:{os.getenv("AWS_REGION").lower()}:{account}:product/{account}/default'
+    product = f'arn:aws:securityhub:{current_app.config["AWS_REGION"].lower()}:{account}:product/{account}/default'
     client = boto3.client('securityhub')
     client.batch_import_findings(
         Findings=[
