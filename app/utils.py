@@ -575,7 +575,7 @@ def report_security_finding(
                         'Type': 'Container',
                         'Id': os.getenv("HOST", "localhost"),
                         'Partition': 'aws',
-                        'Region': os.getenv("AWS_REGION").lower(),
+                        'Region': current_app.config["AWS_REGION"].lower(),
                         'Details': {
                             'Container': {
                                 'Name': os.getenv("HOST", "localhost"),
