@@ -1,8 +1,11 @@
+import logging
+import re
 from flask import abort, has_request_context, request
 from flask_login import current_user
 from notifications_python_client import __version__
 from notifications_python_client.base import BaseAPIClient
 
+logger = logging.getLogger(__name__)
 
 def _attach_current_user(data):
     return dict(
@@ -49,15 +52,37 @@ class NotifyAdminAPIClient(BaseAPIClient):
         if current_service and not current_service.active and not current_user.platform_admin:
             abort(403)
 
+    def log_admin_call(self, url, method):
+        if hasattr(current_user, "platform_admin") and current_user.platform_admin:
+            user = current_user.email_address + "|" + current_user.id
+            logger.warn("Admin API request {} {} {} ".format(method, url, user))
+
+    def get(self, url, params=None):
+        if re.search(r'\/user\/[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}\Z', url) is None:
+            self.log_admin_call(url, "GET")
+        return super().request("GET", url, params=params)
+
     def post(self, *args, **kwargs):
+        if "url" in kwargs:
+            self.log_admin_call(kwargs["url"], "POST")
+        if len(args) > 0:
+            self.log_admin_call(args[0], "POST")
         self.check_inactive_service()
         return super().post(*args, **kwargs)
 
     def put(self, *args, **kwargs):
+        if "url" in kwargs:
+            self.log_admin_call(kwargs["url"], "PUT")
+        if len(args) > 0:
+            self.log_admin_call(args[0], "PUT")
         self.check_inactive_service()
         return super().put(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        if "url" in kwargs:
+            self.log_admin_call(kwargs["url"], "DELETE")
+        if len(args) > 0:
+            self.log_admin_call(args[0], "DELETE")
         self.check_inactive_service()
         return super().delete(*args, **kwargs)
 
