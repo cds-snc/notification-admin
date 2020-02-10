@@ -117,3 +117,23 @@ def test_get_notification_status_by_service(mocker):
         url='service/monthly-data-by-service',
         params={'start_date': '2019-04-01', 'end_date': '2019-04-30'}
     )
+
+
+@pytest.mark.parametrize('method', [
+    'put',
+    'post',
+    'delete'
+])
+def test_logging_enabled_for_admin_users(app_, platform_admin_user, method, caplog):
+    api_client = NotifyAdminAPIClient()
+
+    with app_.test_request_context() as request_context, app_.test_client() as client:
+        client.login(platform_admin_user)
+        request_context.service = Service(service_json(active=False))
+
+        with patch.object(api_client, 'request') as request:
+            ret = getattr(api_client, method)('url', 'data')
+
+    assert request.called
+    assert len(caplog.records) == 1
+    assert ret == request.return_value
