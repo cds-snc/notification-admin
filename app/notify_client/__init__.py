@@ -7,6 +7,7 @@ from notifications_python_client.base import BaseAPIClient
 
 logger = logging.getLogger(__name__)
 
+
 def _attach_current_user(data):
     return dict(
         created_by=current_user.id,

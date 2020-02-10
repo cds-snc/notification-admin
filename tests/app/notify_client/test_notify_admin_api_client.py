@@ -4,7 +4,6 @@ from unittest.mock import patch
 
 import pytest
 import werkzeug
-import logging
 
 from app.models.service import Service
 from app.notify_client import NotifyAdminAPIClient
