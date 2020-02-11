@@ -127,11 +127,19 @@
               id="logo"
               class="content"
             >
-              <img
-                src="{{ asset_path }}images/fip/goc--header-logo.svg"
+            {% if current_lang == "fr" %}
+            <img
+                src="{{ asset_path }}images/fip/goc--header-logo-fr.svg"
                 width="250"
-                alt="Government of Canada"
+                alt="Government du Canada"
               />
+          {% else %}
+          <img
+          src="{{ asset_path }}images/fip/goc--header-logo.svg"
+          width="250"
+          alt="Government of Canada"
+        />
+          {% endif %}
             </a>
           </div>
           {% block inside_header %}{% endblock %}
