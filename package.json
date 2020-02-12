@@ -45,7 +45,7 @@
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "snyk": "^1.278.2",
-    "sweetalert2": "^9.3.16",
+    "sweetalert2": "^9.6.0",
     "textarea-caret": "3.1.0",
     "timeago": "1.6.7"
   },
