@@ -227,7 +227,7 @@ def test_should_show_api_keys_page(
     (mock_get_service_with_letters, [
         'Live – sends to anyone',
         (
-            'Team and safelist – limits who you can send to '
+            'Team and safelist – limits who you can send to'
             ''
         ),
         'Test – pretends to send messages',
