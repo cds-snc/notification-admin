@@ -471,7 +471,7 @@ msgstr "Liste de confiance mise à jour"
 
 #: app/main/views/api_keys.py:88 app/templates/views/api/keys.html:40
 msgid "Live – sends to anyone"
-msgstr "En service — envoie à n’importe qui"
+msgstr "Live — permet d’envoyer des messages à tout le monde"
 
 #: app/main/views/api_keys.py:89 app/templates/views/api/keys.html:42
 msgid "Team and safelist – limits who you can send to"
@@ -481,7 +481,7 @@ msgstr ""
 
 #: app/main/views/api_keys.py:90 app/templates/views/api/keys.html:44
 msgid "Test – pretends to send messages"
-msgstr "Essai — fait semblant d’envoyer des messages"
+msgstr "Test — simule l’envoi de messages"
 
 #: app/main/views/api_keys.py:96
 msgid "Not available because your service is in "
@@ -841,7 +841,7 @@ msgstr "Intégration de l’interface de programmation d’applications (API)"
 #: app/templates/main_nav.html:33 app/templates/views/smtp/index.html:6
 #: app/templates/views/smtp/index.html:20
 msgid "SMTP integration"
-msgstr ""
+msgstr "Intégration SMTP"
 
 #: app/templates/main_template.html:50
 msgid "Now"
@@ -1883,11 +1883,11 @@ msgid "Remarque:"
 msgstr ""
 
 #: app/templates/views/documentation.html:50
-msgid "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
+msgid "Vous devez modifier votre point de terminaison avant d’intégrer l’API."
 msgstr ""
 
 #: app/templates/views/documentation.html:55
-msgid "Changer votre point de connexion API"
+msgid "Changer le point de terminaison"
 msgstr ""
 
 #: app/templates/views/documentation.html:60
@@ -3799,7 +3799,7 @@ msgstr ""
 
 #: app/templates/views/api/keys/create.html:19
 msgid "Name for this key"
-msgstr "Nom pour cette clé"
+msgstr "Nom de la clé"
 
 #: app/templates/views/api/keys/show.html:6
 #: app/templates/views/api/keys/show.html:13
