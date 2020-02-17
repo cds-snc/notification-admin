@@ -228,7 +228,7 @@ def test_should_show_api_keys_page(
         'Live – sends to anyone',
         (
             'Team and safelist – limits who you can send to '
-            'Can’t be used to send letters'
+            ''
         ),
         'Test – pretends to send messages',
     ]),
