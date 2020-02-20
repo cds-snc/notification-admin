@@ -20,11 +20,11 @@ if (langQuery === "fr") {
   LOCALE = LANGUAGES[1];
 }
 
-if (typeof(APP_LANG) !== "undefined" && APP_LANG === "fr") {
+if (typeof APP_LANG !== "undefined" && APP_LANG === "fr") {
   LOCALE = LANGUAGES[1];
 }
 
-if (typeof(APP_LANG) !== "undefined"  && APP_LANG === "en") {
+if (typeof APP_LANG !== "undefined" && APP_LANG === "en") {
   LOCALE = LANGUAGES[0];
 }
 
@@ -96,7 +96,8 @@ export const StateProvider = ({ value, children }) => {
           newState = {
             ...state,
             selected: setSelected(state.selected, action.payload),
-            focusedDayNum: parseDay(action.payload)
+            focusedDayNum: parseDay(action.payload),
+            time: "" // reset time value
           };
         }
         break;
