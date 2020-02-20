@@ -62,7 +62,7 @@ def test_displays_org_branding(client, mock_get_email_branding):
     assert not page.find("a", attrs={"href": "https://www.gov.uk"})
     assert page.find("img", attrs={"src": re.compile("example.png")})
     assert not page.select("body > table > tr > td[bgcolor='#f00']")  # banner colour is not set
-    assert page.select("body > table:nth-of-type(1) > tr:nth-of-type(1) > td:nth-of-type(2)")[0]\
+    assert page.select("body > table:nth-of-type(1) > tr:nth-of-type(1) > td:nth-of-type(1)")[0]\
         .get_text().strip() == 'Organisation text'  # brand text is set
 
 
