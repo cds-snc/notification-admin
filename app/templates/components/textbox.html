@@ -45,6 +45,11 @@
         ' form-control-error' if field.errors else ''
       )
     %}
+
+    {% 
+      set field_class = field_class + " input focus:shadow-outline w-full lg:w-3/6"
+    %}
+
     {{ field(
       class=field_class,
       data_module='highlight-tags' if highlight_tags else '',

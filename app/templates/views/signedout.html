@@ -33,6 +33,8 @@ Notification') %}
   href="{{ asset_path }}stylesheets/notification-template.css?0.24.2"
 />
 
+
+
 {% block page_title %} {{ _('Notify') }} {% endblock %} {% block main_content %}
 <!-- CONTENT -->
 <div>
@@ -446,7 +448,7 @@ Notification') %}
           Request Type
         </label>
 
-        <select class="form-control form-control-1-1 " name="support_type">
+        <select class="input focus:shadow-outline w-full lg:w-3/6" name="support_type">
           {% for option in form.support_type %} {% set checked = "" %} {% if
           option.checked %} {% set checked = "selected" %} {% endif %}
 
