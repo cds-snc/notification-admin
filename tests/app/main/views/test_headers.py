@@ -41,7 +41,7 @@ def test_headers_non_ascii_characters_are_replaced(
         "script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
         "connect-src 'self' *.google-analytics.com;"
         "object-src 'self';"
-         "style-src 'self' *.googleapis.com;"
+        "style-src 'self' *.googleapis.com;"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
         "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk static-logos??.test.com data:;"
