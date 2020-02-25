@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Polyglot from "node-polyglot";
 import Moment from "moment";
-import { getDays } from "./schedule/dateUtils";
+// import { getDays } from "./schedule/dateUtils";
 // import { ScheduleMessage } from "./schedule/ScheduleMessage";
 import { App } from "./scheduler/App";
 import { DiffDOM } from "diff-dom";

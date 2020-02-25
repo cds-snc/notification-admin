@@ -49,7 +49,7 @@ class Config(object):
     ANTIVIRUS_API_KEY = os.environ.get('ANTIVIRUS_API_KEY')
 
     ASSETS_DEBUG = False
-    AWS_REGION = 'eu-west-1'
+    AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
     DEFAULT_SERVICE_LIMIT = 50
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
         'central': 250000,

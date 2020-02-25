@@ -19,6 +19,24 @@
           {% set name_label = _('Your name') %}
           {{ textbox(form.name, label=name_label,  width='1-1') }}
 
+          <div class="form-group">
+            <label class="form-label" for="support_type">
+              Request Type
+            </label>
+
+            <select class="form-control form-control-1-1 " name="support_type">
+              {% for option in form.support_type %}
+
+              {% set checked = "" %}
+              {% if option.checked %}
+                {% set checked = "selected" %}
+              {% endif %}
+              
+              <option {{checked}} value="{{ option.data }}">{{ option.label.text }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
           {% set email_label = _('Your email') %}
           {{ textbox(form.email_address, label=email_label, width='1-1') }}
           
