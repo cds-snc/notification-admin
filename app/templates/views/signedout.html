@@ -433,10 +433,10 @@ Notification') %}
 </div>
 
 <div class="bg-gray" role="complementary">
-  <div class="container px-10 py-10">
+  <div id="contact-form" class="container px-10 py-10">
     <!-- -->
     <div class="py-10">
-      <h2 class="leading-tight font-bold">Contact the Notify team</h2>
+      <h2 class="leading-tight font-bold">{{ _("Contact the Notify team") }}</h2>
       <!-- INSERT FORM -->
       <!-- contact us -->
 
@@ -445,7 +445,7 @@ Notification') %}
 
       <div class="form-group">
         <label class="form-label" for="support_type">
-          Request Type
+          {{ _("Request Type") }}
         </label>
 
         <select class="input focus:shadow-outline w-full lg:w-3/6" name="support_type">
