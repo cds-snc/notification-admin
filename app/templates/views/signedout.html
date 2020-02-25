@@ -54,9 +54,9 @@ Notification') %}
           </div>
           <div class="product-title flex mt-10 mb-10 lg:mt-0 lg:mb-0">
             <h1
-              class="leading-none lg:ml-4 mr-3 lg:pl-5 font-semibold inline-block top-0 text-brand pb-0"
+              class="leading-none lg:ml-4 mr-5 lg:pl-5 font-semibold inline-block top-0 text-brand pb-0"
             >
-              {{ _("Notify") }}
+              <i>{{ _("Notify") }}</i>
             </h1>
             <div class="bg-blue-lighter py-1 px-2 rounded-sm text-small">
               {{ _("Beta") }}
@@ -106,12 +106,12 @@ Notification') %}
           <a
             href="#"
             class="text-small text-blue mr-5 font-bold no-underline hover:underline"
-            >Features</a
+            >{{ _("Product features") }}</a
           >
           <a
             href="{{ url_for('main.documentation') }}"
             class="text-small text-blue mr-5 font-bold no-underline hover:underline"
-            >{{ _("Documentation") }}</a
+            >{{ _("Technical documentation") }}</a
           >
           <a
             href="#"
@@ -130,14 +130,14 @@ Notification') %}
             <a
               class="block text-small mb-5 no-underline hover:underline"
               href="#"
-              >Features</a
+              >{{ _("Product features") }}</a
             >
           </li>
           <li>
             <a
               class="block text-small mb-5 no-underline hover:underline"
               href="{{ url_for('main.documentation') }}"
-              >{{ _("Documentation") }}</a
+              >{{ _("Technical documentation") }}</a
             >
           </li>
           <li>
@@ -165,7 +165,7 @@ Notification') %}
             Send service updates easily by email and text message
           </h2>
           <p class="pt-3 text-white">
-            Try Notify if you work in the federal government.
+            Try <i>Notify</i> if you work in the federal government.
           </p>
           <div class="pt-10">
             <a href="#" class="btn-blue mr-10 hover:bg-blue-selected"
