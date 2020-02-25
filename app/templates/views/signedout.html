@@ -1,41 +1,39 @@
-{% extends "notify_template.html" %}
-{% from "components/textbox.html" import textbox %}
-{% from "components/honeypot-field.html" import honeypotfield %}
-{% from "components/page-footer.html" import page_footer %}
-{% from "components/form.html" import form_wrapper %}
-{% from "components/radios.html" import radio %}
-{% from "components/select-input.html" import select, select_list, select_nested, select_wrapper, select_input %}
+{% extends "notify_template.html" %} {% from "components/textbox.html" import
+textbox %} {% from "components/honeypot-field.html" import honeypotfield %} {%
+from "components/page-footer.html" import page_footer %} {% from
+"components/form.html" import form_wrapper %} {% from "components/radios.html"
+import radio %} {% from "components/select-input.html" import select,
+select_list, select_nested, select_wrapper, select_input %} {% block meta %} {%
+set description = _('Notify lets you send emails and text messages to your
+users') %} {% set keywords = _('gc notify, notify, canada notify, canada email,
+email notifications, Government of Canada, federal government, Canada SMS,
+Canada Notification service') %} {% set meta_title = _('GC Notify | GC
+Notification') %}
+<meta name="description" content="{{description}}" />
+<meta name="keywords" content="{{keywords}}" />
+<meta property="og:title" content="{{meta_title}}" />
+<meta property="og:description" content="{{description}}" />
+<meta
+  property="og:image"
+  content="https://notification.alpha.canada.ca/static/images/product/notify.jpg"
+/>
+<meta property="og:url" content="https://notification.alpha.canada.ca" />
 
-{% block meta %}
-  {% set description = _('Notify lets you send emails and text messages to your users') %}
-  {% set keywords = _('gc notify, notify, canada notify, canada email, email notifications, Government of Canada, federal government, Canada SMS, Canada Notification service') %}
-  {% set meta_title = _('GC Notify | GC Notification') %}
-  <meta name="description" content="{{description}}">
-  <meta name="keywords" content="{{keywords}}">
-  <meta property="og:title" content="{{meta_title}}">
-  <meta property="og:description" content="{{description}}">
-  <meta property="og:image" content="https://notification.alpha.canada.ca/static/images/product/notify.jpg">
-  <meta property="og:url" content="https://notification.alpha.canada.ca">
-
-  <link
-      rel="stylesheet"
-      media="screen"
-      href="{{ asset_path }}stylesheets/homepage.css?0.24.2"
-    />
+<link
+  rel="stylesheet"
+  media="screen"
+  href="{{ asset_path }}stylesheets/homepage.css?0.24.2"
+/>
 
 {% endblock %}
 
 <link
-      rel="stylesheet"
-      media="screen"
-      href="{{ asset_path }}stylesheets/notification-template.css?0.24.2"
-    />
+  rel="stylesheet"
+  media="screen"
+  href="{{ asset_path }}stylesheets/notification-template.css?0.24.2"
+/>
 
-{% block page_title %}
-  {{ _('Notification') }}
-{% endblock %}
-
-{% block main_content %}
+{% block page_title %} {{ _('Notify') }} {% endblock %} {% block main_content %}
 <!-- CONTENT -->
 <div>
   <!-- start header -->
@@ -57,26 +55,28 @@
             <h1
               class="leading-none lg:ml-4 mr-3 lg:pl-5 font-semibold inline-block top-0 text-brand pb-0"
             >
-              Notify
+              {{ _("Notify") }}
             </h1>
             <div class="bg-blue-lighter py-1 px-2 rounded-sm text-small">
-              Beta
+              {{ _("Beta") }}
             </div>
           </div>
         </div>
         <!-- start sub nav -->
         <nav aria-label="Language & Login" class="flex pt-4 mb-10 lg:mb-0">
           <a
-            href="#"
             class="leading-none inline-block text-blue text-small underline hover:no-underline"
-            >Français</a
+            href="{{ url_for('main.set_lang')}}?from={{request.path}}"
           >
-          
+            {% if session["userlang"] == "en" %} Français {% else %} English {%
+            endif %}
+          </a>
+
           <a
             href="{{ url_for('main.sign_in' )}}"
             class="leading-none inline-block text-blue text-small pl-5 underline hover:no-underline"
-            >Log in</a
-          >
+            >{{ _("Log in") }}
+          </a>
         </nav>
         <!-- end sub nav -->
       </div>
@@ -90,7 +90,9 @@
             href="#"
             id="menu"
             class="px-4 text-small text-blue mr-5 font-bold no-underline hover:underline"
-            >Menu
+          >
+            {{ _("Menu") }}
+
             <img
               alt=""
               class="inline-block mobile-arrow ml-5"
@@ -106,15 +108,15 @@
             >Features</a
           >
           <a
-            href="#"
+            href="{{ url_for('main.documentation') }}"
             class="text-small text-blue mr-5 font-bold no-underline hover:underline"
-            >Documentation</a
+            >{{ _("Documentation") }}</a
           >
           <a
             href="#"
             class="text-small text-blue mr-5 font-bold no-underline hover:underline"
-            >Support</a
-          >
+            >{{ _("Support") }}
+          </a>
         </div>
       </div>
     </nav>
@@ -133,8 +135,8 @@
           <li>
             <a
               class="block text-small mb-5 no-underline hover:underline"
-              href="#"
-              >Documentation</a
+              href="{{ url_for('main.documentation') }}"
+              >{{ _("Documentation") }}</a
             >
           </li>
           <li>
@@ -188,7 +190,11 @@
   <!-- end section 1 -->
 
   <!-- start section 2 -->
-  <div class="bg-white" aria-label="A platform built for government" role="complementary">
+  <div
+    class="bg-white"
+    aria-label="A platform built for government"
+    role="complementary"
+  >
     <div class="container px-10 py-10">
       <div class="flex flex-col lg:flex-row justify-between py-10">
         <div class="image-content pb-10 lg:pb-0">
@@ -206,9 +212,9 @@
             Notify is a messaging system built for the Government of Canada.
           </p>
           <p class="pt-4">
-            Send emails or text messages to keep the public informed and
-            make your services more transparent. Use templates to keep
-            communications easy, consistent, and accessible.
+            Send emails or text messages to keep the public informed and make
+            your services more transparent. Use templates to keep communications
+            easy, consistent, and accessible.
           </p>
           <p class="pt-10 text-blue">
             <a href="#">Learn more about Notify</a>
@@ -228,16 +234,16 @@
           <h2 class="leading-tight font-bold">Notify is built for you</h2>
           <ul class="list-disc ml-5">
             <li class="pt-4">
-              Administrators who have to meet departmental service standards
-              for communication
+              Administrators who have to meet departmental service standards for
+              communication
             </li>
             <li class="pt-4">
-              Staff wrestling with multiple systems to provide service
-              updates to the public
+              Staff wrestling with multiple systems to provide service updates
+              to the public
             </li>
             <li class="pt-4">
-              Developers working on improving workflow and tooling for
-              public servants
+              Developers working on improving workflow and tooling for public
+              servants
             </li>
           </ul>
         </div>
@@ -275,16 +281,15 @@
           <h2 class="leading-tight font-bold">What Notify can do</h2>
           <ul class="list-disc ml-5">
             <li class="pt-4">
-              Replace Word documents and spreadsheets with a secure database
-              of contacts and messages
+              Replace Word documents and spreadsheets with a secure database of
+              contacts and messages
             </li>
             <li class="pt-4">
               Save time and meet service standards with templates and shared
               messaging components
             </li>
             <li class="pt-4">
-              Measure the effectiveness of your service with detailed
-              analytics
+              Measure the effectiveness of your service with detailed analytics
             </li>
           </ul>
           <p class="pt-4 text-blue">
@@ -306,13 +311,12 @@
             Integrate Notify into your system
           </h2>
           <p class="pt-4">
-            The Notify API sends messages automatically. Integrate our suite
-            of secure, cloud-based tools with your web application or admin
-            system.
+            The Notify API sends messages automatically. Integrate our suite of
+            secure, cloud-based tools with your web application or admin system.
           </p>
           <p class="pt-4">
-            Notify supports roles and permissions, so only staff who need
-            access can send or edit messages.
+            Notify supports roles and permissions, so only staff who need access
+            can send or edit messages.
           </p>
           <p class="pt-10 text-blue">
             <a href="#">Learn how to integrate with our API</a>
@@ -348,17 +352,16 @@
             Notify is free for GC services
           </h2>
           <p class="pt-4">
-            Use Notify for free and replace paper letters or costly
-            3rd-party messaging services.
+            Use Notify for free and replace paper letters or costly 3rd-party
+            messaging services.
           </p>
           <ul class="list-disc ml-10">
             <li class="pt-4">
-              Send unlimited emails or text messages a month, completely
-              free
+              Send unlimited emails or text messages a month, completely free
             </li>
             <li class="pt-4">
-              The Notify service is provided and managed by CDS - no
-              external procurement.
+              The Notify service is provided and managed by CDS - no external
+              procurement.
             </li>
           </ul>
         </div>
@@ -379,23 +382,22 @@
           <!-- start column 1-->
           <div class="max-w-3xl pt-10">
             <p>
-              “Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Donec pellentesque orci sed volutpat convallis volutpat mollis
-              eros in laoreet a risus ligula.”
+              “Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+              pellentesque orci sed volutpat convallis volutpat mollis eros in
+              laoreet a risus ligula.”
             </p>
             <p class="pt-10">
-              “Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Donec pellentesque orci sed volutpat convallis volutpat mollis
-              eros in laoreet a risus ligula.”
+              “Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+              pellentesque orci sed volutpat convallis volutpat mollis eros in
+              laoreet a risus ligula.”
             </p>
           </div>
           <!-- end column 1-->
           <!-- start column 2-->
           <div class="max-w-3xl pt-10">
             <p>
-              “Fusce volutpat mollis eros in laoreet. In a risus ligula.
-              Integer pharetra turpis eget leo tincidunt, nec aliquet enim
-              iaculis.“
+              “Fusce volutpat mollis eros in laoreet. In a risus ligula. Integer
+              pharetra turpis eget leo tincidunt, nec aliquet enim iaculis.“
             </p>
           </div>
           <!-- end column 2-->
@@ -434,50 +436,35 @@
     <div class="py-10">
       <h2 class="leading-tight font-bold">Contact the Notify team</h2>
       <!-- INSERT FORM -->
-       <!-- contact us -->
-    
-            {% call form_wrapper() %}
-              {% set name_label = _('Your name') %}
-              {{ textbox(form.name, label=name_label,  width='1-1') }}
+      <!-- contact us -->
 
-              <div class="form-group">
-              <label class="form-label" for="support_type">
-                Request Type
-              </label>
+      {% call form_wrapper() %} {% set name_label = _('Your name') %} {{
+      textbox(form.name, label=name_label, width='1-1') }}
 
-              
-             
-              <select class="form-control form-control-1-1 " name="support_type">
-                {% for option in form.support_type %}
+      <div class="form-group">
+        <label class="form-label" for="support_type">
+          Request Type
+        </label>
 
-                {% set checked = "" %}
-                {% if option.checked %}
-                  {% set checked = "selected" %}
-                {% endif %}
-                
-                <option {{checked}} value="{{ option.data }}">{{ option.label.text }}</option>
-                {% endfor %}
-              </select>
-              </div>
+        <select class="form-control form-control-1-1 " name="support_type">
+          {% for option in form.support_type %} {% set checked = "" %} {% if
+          option.checked %} {% set checked = "selected" %} {% endif %}
 
-              {% set email_label = _('Your email') %}
-              {{ textbox(form.email_address, label=email_label, width='1-1') }}
-              
-              {# honeypot field #}
-              {% set email_label = _('Your phone') %}
-              {{ honeypotfield(form.phone, label=email_label) }}
-              
-              {% set message_label = _('Message') %}
-              {{ textbox(form.feedback, width='1-1', label=message_label, hint='', rows=10) }}
-            
+          <option {{checked}} value="{{ option.data }}"
+            >{{ option.label.text }}</option
+          >
+          {% endfor %}
+        </select>
+      </div>
 
-            {% set send_text = _('Send') %}
-            {{ page_footer(
-              send_text,
-            ) }}
-            {% endcall %}
-        
-    <!-- end contact us -->
+      {% set email_label = _('Your email') %} {{ textbox(form.email_address,
+      label=email_label, width='1-1') }} {# honeypot field #} {% set email_label
+      = _('Your phone') %} {{ honeypotfield(form.phone, label=email_label) }} {%
+      set message_label = _('Message') %} {{ textbox(form.feedback, width='1-1',
+      label=message_label, hint='', rows=10) }} {% set send_text = _('Send') %}
+      {{ page_footer( send_text, ) }} {% endcall %}
+
+      <!-- end contact us -->
       <!-- END INSERT FORM -->
     </div>
 
@@ -536,14 +523,11 @@
   </div>
 </div>
 
-
 <!-- END CONTENT-->
 
-  {% if scrollTo == "true"  %}
-    <script>
-        var el = document.getElementById("contact-form");
-        el.scrollIntoView();
-    </script>
-  {% endif %}
-  
-{% endblock %}
+{% if scrollTo == "true" %}
+<script>
+  var el = document.getElementById("contact-form");
+  el.scrollIntoView();
+</script>
+{% endif %} {% endblock %}
