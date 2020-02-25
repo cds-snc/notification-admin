@@ -567,7 +567,7 @@ def useful_headers_after_request(response):
         "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
         "connect-src 'self' *.google-analytics.com;"
         "object-src 'self';"
-        "style-src 'self' *.googleapis.com;"
+        "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
         "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk {logo_domain} data:;"
         "frame-src 'self' www.youtube.com;".format(
