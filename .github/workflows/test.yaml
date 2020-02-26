@@ -10,4 +10,4 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - run: /bin/bash -c "/workspace/scripts/bootstrap.sh && make test"
+    - run: /bin/bash -c "scripts/bootstrap.sh && make test"
