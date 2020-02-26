@@ -96,7 +96,7 @@ def _geolocate_ip(ip):
     if isinstance(resp, str):
         return ip
 
-    if resp["continent"] is not None and resp["continent"]["code"] != "NA":
+    if "continent" in resp and resp["continent"] is not None and resp["continent"]["code"] != "NA":
         report_security_finding(
             "Suspicious log in location",
             "Suspicious log in location detected, use the IP resolver to check the IP and correlate with logs.",
@@ -105,7 +105,7 @@ def _geolocate_ip(ip):
             current_app.config.get('IP_GEOLOCATE_SERVICE', None) + ip,
         )
 
-    if resp["city"] is not None and resp["subdivisions"] is not None:
+    if "city" in resp and resp["city"] is not None and resp["subdivisions"] is not None:
         return resp["city"]["names"]["en"] + ", " + resp["subdivisions"][0]["iso_code"] + " (" + ip + ")"
     else:
         return ip
