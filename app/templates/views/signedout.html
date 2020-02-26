@@ -274,7 +274,7 @@ Notification') %}
 
       <div class="flex flex-col lg:flex-row py-10 justify-between">
         <!-- note box -->
-        <div class="feature-box">
+        <div class="feature-box mb-20 lg:mb-0">
           <img
             alt=""
             width="300"
@@ -289,7 +289,7 @@ Notification') %}
         <!-- end note box -->
 
         <!-- note box -->
-        <div class="feature-box ml-10 mr-10">
+        <div class="feature-box mb-20 lg:mb-0 lg:ml-10 lg:mr-10">
           <img
             alt=""
             width="300"
@@ -321,7 +321,7 @@ Notification') %}
         <!-- -->
       </div>
 
-      <div class="flex justify-center">
+      <div class="flex lg:justify-center">
         <a
           class="py-10 inline-block text-blue text-base underline hover:no-underline"
           href="{{ url_for('main.features') }}"
@@ -339,6 +339,14 @@ Notification') %}
             <h2 class="leading-tight font-bold">
               {{ _("Integrate Notify into your system") }}
             </h2>
+
+            <img
+              alt=""
+              width="350"
+              class="max-w-full md:max-w-xl block align-top lg:hidden"
+              src="{{ asset_url('images/homepage/cloud-flow.svg') }}"
+            />
+           
             <p class="pt-4">
               {{ _("You can integrate Notify with your current system to take
               advantage of its secure, cloud-based messaging tools.") }}
@@ -360,7 +368,7 @@ Notification') %}
           >
             <img
               alt=""
-              class="max-w-full md:max-w-xl block align-top"
+              class="max-w-full md:max-w-xl block align-top hidden lg:block"
               src="{{ asset_url('images/homepage/cloud-flow.svg') }}"
             />
           </div>
@@ -372,7 +380,12 @@ Notification') %}
     <!-- start section 6 -->
     <div class="bg-white" role="complementary">
       <div class="container px-10 py-10">
+
+        <h2 class="leading-tight font-bold lg:hidden">
+          {{ _("Notify is free for Government of Canada services") }}
+        </h2>
         <div class="flex flex-col lg:flex-row justify-between py-10">
+          
           <div class="image-content flex lg:justify-center mr-10">
             <img
               alt=""
@@ -381,7 +394,7 @@ Notification') %}
             />
           </div>
           <div class="text-content max-w-4xl">
-            <h2 class="leading-tight font-bold">
+            <h2 class="leading-tight font-bold hidden lg:block">
               {{ _("Notify is free for Government of Canada services") }}
             </h2>
             <p class="pt-4">
