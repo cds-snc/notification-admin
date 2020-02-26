@@ -102,8 +102,7 @@ Notification') %}
           </a>
         </div>
         <div class="hidden lg:block">
-          <a
-            href="#"
+          <a href="{{ url_for('main.features') }}"
             class="text-small text-blue mr-5 font-bold no-underline hover:underline"
             >{{ _("Product features") }}</a
           >
@@ -113,7 +112,7 @@ Notification') %}
             >{{ _("Technical documentation") }}</a
           >
           <a
-            href="#"
+            href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
             class="text-small text-blue mr-5 font-bold no-underline hover:underline"
             >{{ _("Support") }}
           </a>
@@ -128,7 +127,7 @@ Notification') %}
           <li>
             <a
               class="block text-small mb-5 no-underline hover:underline"
-              href="#"
+              href="{{ url_for('main.features') }}"
               >{{ _("Product features") }}</a
             >
           </li>
@@ -142,8 +141,8 @@ Notification') %}
           <li>
             <a
               class="block text-small mb-5 no-underline hover:underline"
-              href="#"
-              >Support</a
+              href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
+              >{{ _("Support") }}</a
             >
           </li>
         </ul>
@@ -217,7 +216,7 @@ Notification') %}
             consistent, and accessible communications.") }}
           </p>
           <p class="pt-10 text-blue">
-            <a href="#">{{ _("Learn more about Notify") }}</a>
+            <a href="{{ url_for('main.features') }}">{{ _("Learn more about Notify") }}</a>
           </p>
         </div>
       </div>
@@ -320,7 +319,7 @@ Notification') %}
       <div class="flex justify-center">
         <a
           class="py-10 inline-block text-blue text-base underline hover:no-underline"
-          href="#"
+          href="{{ url_for('main.features') }}"
           >{{ _("See how Notify can improve your workflow") }}</a
         >
       </div>
@@ -346,7 +345,7 @@ Notification') %}
             <p class="pt-10 text-blue">
               <a
                 class="inline-block text-blue text-base underline hover:no-underline"
-                href="#"
+                href="{{ url_for('main.documentation') }}"
                 >{{ _("Learn how to integrate Notify") }}</a
               >
             </p>
@@ -354,14 +353,11 @@ Notification') %}
           <div
             class="image-content pt-10 lg:pt-0 flex flex-auto lg:justify-center lg:content-start"
           >
-
-          <img
-          alt=""
-          class="max-w-full md:max-w-xl block align-top"
-          src="{{ asset_url('images/homepage/cloud-flow.svg') }}"
-          />
-
-            
+            <img
+              alt=""
+              class="max-w-full md:max-w-xl block align-top"
+              src="{{ asset_url('images/homepage/cloud-flow.svg') }}"
+            />
           </div>
         </div>
       </div>
@@ -373,14 +369,11 @@ Notification') %}
       <div class="container px-10 py-10">
         <div class="flex flex-col lg:flex-row justify-between py-10">
           <div class="image-content flex lg:justify-center mr-10">
-            
             <img
               alt=""
               class="inline-block pb-10 lg:pb-0 max-w-full md:max-w-xl"
               src="{{ asset_url('images/homepage/pricing.svg') }}"
-
             />
-           
           </div>
           <div class="text-content max-w-4xl">
             <h2 class="leading-tight font-bold">
@@ -401,7 +394,13 @@ Notification') %}
               </li>
             </ul>
 
-            <div class="py-10"><a class="text-blue text-base underline hover:no-underline" href="#">Learn more about pricing</a></div>
+            <div class="py-10">
+              <a
+                class="text-blue text-base underline hover:no-underline"
+                href="{{ url_for('main.pricing') }}"
+                >{{ _("Learn more about pricing") }}</a
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -413,35 +412,45 @@ Notification') %}
       <div class="container px-10 py-10">
         <div class="py-10">
           <h2 class="leading-tight font-bold">
-            These teams are already using Notify
+            {{ _("These teams are already using Notify") }}
           </h2>
 
           <div class="flex flex-col lg:flex-row justify-between">
             <!-- start column 1-->
             <div class="max-w-3xl pt-10">
-              <p>
-                “Easy set up that only took an hour.” — Calvin Rodo, Economic
-                and Social Development Canada
-              </p>
-              <p class="pt-10">
-                “It worked with minimal frustration and configuration.“ — Ryan
-                Hyma, Treasury Board Secretariat
-              </p>
+              <div class="quote-box">
+                <div>{{ _("“Easy set up that only took an hour.”") }}</div>
+                <div>{{ _("— Calvin Rodo, Economic and Social Development Canada") }}</div>
+              </div>
+
+              <div class="quote-box">
+                <div>
+                  {{ _("“It worked with minimal frustration and configuration.“") }} 
+                </div>
+                <div>{{ _("— Ryan Hyma, Treasury Board Secretariat") }}</div>
+              </div>
             </div>
             <!-- end column 1-->
             <!-- start column 2-->
             <div class="max-w-3xl pt-10">
-              <p>
-                “It is the only solution we have found that is ready and we
-                appreciate the effort of making it simple to use for GC
-                employees.” — Catherine Dufour, Canada Revenue Agency
-              </p>
+              <div class="quote-box">
+                <div>
+                  {{ _("“It is the only solution we have found that is ready and we
+                  appreciate the effort of making it simple to use for GC
+                  employees.”") }} 
+                </div>
+                <div>{{ _("— Catherine Dufour, Canada Revenue Agency") }}</div>
+              </div>
 
-              <p>
-                “It’s governmental, trusted and we receive help from the
-                development group.” — Abdulkader Hamdo, Department of Fisheries
-                and Oceans
-              </p>
+              <div class="quote-box">
+                <div>
+                  {{ _("“It’s governmental, trusted and we receive help from the
+                  development group.”") }}
+                </div>
+                <div>
+                  {{ _("— Abdulkader Hamdo, Department of Fisheries and Oceans") }}
+                </div>
+              </div>
             </div>
             <!-- end column 2-->
           </div>
@@ -524,33 +533,21 @@ Notification') %}
     <div class="container px-10 py-10">
       <nav class="flex pt-10 pb-10" aria-label="footer links">
         <div class="block mr-20">
-          <a
-            href="#"
-            class="text-white text-small block mb-2 underline hover:no-underline"
-            >Service Status</a
-          >
-          <a
-            href="#"
-            class="text-white text-small block underline hover:no-underline"
-            >Performance</a
-          >
-        </div>
-
         <div class="block">
           <a
-            href="#"
-            class="text-white text-small block mb-2 underline hover:no-underline"
-            >Privacy</a
+          href="{{ url_for('main.privacy') }}"
+          class="text-white text-small block mb-2 underline hover:no-underline"
+          >{{ _("Privacy") }}</a
           >
           <a
-            href="#"
+          href="{{ url_for('main.security') }}"
             class="text-white text-small block mb-2 underline hover:no-underline"
-            >Security</a
+            >{{ _("Security") }}</a
           >
           <a
-            href="#"
+          href="{{ url_for('main.terms') }}"
             class="text-white text-small block underline hover:no-underline"
-            >Terms of Use</a
+            >{{ _("Terms of Use") }}</a
           >
         </div>
       </nav>
