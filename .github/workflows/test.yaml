@@ -7,8 +7,7 @@ jobs:
       image:  python:3.6-stretch
     steps:
     - uses: actions/checkout@v1     
-    - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: '10.x'
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
     - run: /bin/bash -c "pip3 install -r requirements_for_test.txt && make test"
