@@ -3012,17 +3012,17 @@ msgstr ""
 
 #: app/templates/views/signedout.html:77 app/templates/views/signedout.html:176
 msgid "Log in"
-msgstr "Connectez-vous"
+msgstr "Se connecter"
 
 #: app/templates/views/signedout.html:106
 #: app/templates/views/signedout.html:130
 msgid "Product features"
-msgstr ""
+msgstr "Caractéristiques du produit"
 
 #: app/templates/views/signedout.html:111
 #: app/templates/views/signedout.html:137
 msgid "Technical documentation"
-msgstr ""
+msgstr "Documentation technique"
 
 #: app/templates/views/agreement/service-agreement-choose.html:26
 #: app/templates/views/pricing/how-to-pay.html:53
@@ -3031,7 +3031,7 @@ msgstr ""
 #: app/templates/views/signedout.html:144
 #: app/templates/views/signedout.html:522
 msgid "Contact us"
-msgstr "Communiquez avec nous"
+msgstr "Nous joindre"
 
 #: app/templates/views/signedout.html:162
 msgid "Send service updates by email and text message"
@@ -3041,7 +3041,7 @@ msgstr "Envoyez des mises à jour de service par courriel et message texte"
 msgid ""
 "Try out <i>Notify</i>, a new messaging platform for the Government of "
 "Canada."
-msgstr ""
+msgstr "Essayez <i>Notification</i>, une nouvelle plateforme de messagerie pour le gouvernement du Canada."
 
 #: app/templates/views/signedout.html:199
 #: app/templates/views/signedout.html:223
@@ -3052,111 +3052,104 @@ msgstr "Une plateforme conçue pour le gouvernement"
 msgid ""
 "Send emails or text messages to keep the public informed and\n"
 "            make your services more transparent."
-msgstr ""
+msgstr "Envoyez des courriels ou des messages texte pour tenir le public informé et rendre vos services plus transparents."
 
 #: app/templates/views/signedout.html:230
 msgid ""
 "Use templates for easy,\n"
 "            consistent, and accessible communications."
-msgstr ""
+msgstr "Utilisez des gabarits pour communiquer de façon simple, uniforme et accessible."
 
 #: app/templates/views/signedout.html:234
 msgid "Learn more about <i>Notify</i>"
-msgstr ""
+msgstr "En savoir plus sur <i>Notification</i>"
 
 #: app/templates/views/signedout.html:249
 msgid "<i>Notify</i> is built for you"
-msgstr "Notification est conçu pour vous"
+msgstr "<i>Notification</i> est conçu pour vous"
 
 #: app/templates/views/signedout.html:253
 msgid ""
 "Staff who regularly write and send service updates wishing\n"
 "              to upgrade the tools used to communicate with the public"
-msgstr ""
-"Pour les employés écrivant et envoyant régulièrement des mises à jour de "
-"service et souhaitant bonifier leurs outils de communication avec le "
-"public"
+msgstr "Pour les employés écrivant et envoyant des mises à jour de service destinées au public"
 
 #: app/templates/views/signedout.html:257
 msgid ""
 "Developers working on improving workflow and tooling for\n"
 "              public servants"
-msgstr ""
-"Développeurs travaillant à l’amélioration des processus de travail et des"
-" outils pour les fonctionnaires"
+msgstr "Pour les développeurs travaillant à l’amélioration des processus de travail et des outils pour les fonctionnaires"
 
 #: app/templates/views/signedout.html:261
 msgid ""
 "Administrators who have to meet departmental service\n"
 "              standards for communication"
-msgstr ""
-"Administrateurs devant respecter les normes de service ministérielles "
-"pour leurs communications"
+msgstr "Pour les développeurs travaillant à l’amélioration des processus de travail et des outils pour les fonctionnaires"
 
 #: app/templates/views/signedout.html:281
 msgid "What you can do with <i>Notify</i>"
-msgstr "Ce que vous pouvez faire avec  Notification"
+msgstr "Ce que vous pouvez faire avec <i>Notification</i>"
 
 #: app/templates/views/signedout.html:295
 msgid "Upload mailing lists and send personalized messages in bulk"
-msgstr ""
+msgstr "Télécharger des listes de diffusion et envoyer des messages personnalisés"
 
 #: app/templates/views/signedout.html:309
 msgid "Create templates and save them for future messages"
-msgstr ""
+msgstr "Créer des gabarits et les enregistrer pour vos futurs messages"
 
 #: app/templates/views/signedout.html:323
 msgid "Track the status of the messages you send"
-msgstr ""
+msgstr "Suivre l'état des messages que vous envoyez"
 
 #: app/templates/views/signedout.html:335
 msgid "See how <i>Notify</i> can improve your workflow"
-msgstr ""
+msgstr "Découvrir comment <i>Notification</i> peut améliorer votre travail"
 
 #: app/templates/views/signedout.html:347
 msgid "Integrate <i>Notify</i> into your system"
-msgstr ""
+msgstr "Intégration de Notification à votre système"
 
 #: app/templates/views/signedout.html:358
 msgid ""
 "You can integrate <i>Notify</i> with your current system to take\n"
 "              advantage of its secure, cloud-based messaging tools."
-msgstr ""
+msgstr "Vous pouvez intégrer les outils d’informatique en nuage de <i>Notification</i> à votre application Web ou à votre système administratif pour envoyer des messages de façon sécuritaire."
 
 #: app/templates/views/signedout.html:362
 msgid ""
 "<i>Notify</i> supports roles and permissions, so that you can\n"
 "              adjust which staff have access to send or edit messages."
-msgstr ""
+msgstr "<i>Notification</i> prend en charge les rôles et les autorisations, afin que vous puissiez modifier quels employés ont l’accès requis pour envoyer ou modifier des messages."
 
 #: app/templates/views/signedout.html:369
 msgid "Learn how to integrate <i>Notify</i>"
-msgstr ""
+msgstr "Découvrir comment intégrer <i>Notification</i>"
 
 #: app/templates/views/signedout.html:394
 #: app/templates/views/signedout.html:409
 msgid "<i>Notify</i> is free for Government of Canada services"
-msgstr ""
+msgstr "<i>Notification</i> est gratuit pour les services du gouvernement du Canada"
 
 #: app/templates/views/signedout.html:412
 msgid ""
 "Use <i>Notify</i> for free and replace paper letters or costly\n"
 "              third-party messaging services."
-msgstr ""
+msgstr "Vous pouvez utiliser <i>Notification</i> afin de remplacer vos lettres papier ou vos services de messagerie tiers coûteux."
 
 #: app/templates/views/signedout.html:417
 msgid "Send unlimited emails or text messages, completely free."
-msgstr ""
+msgstr "Envoyer un nombre illimité de courriels ou de messages texte, tout à fait gratuitement."
 
 #: app/templates/views/signedout.html:421
 msgid ""
 "<i>Notify</i> is a service managed by the Canadian Digital\n"
 "                Service — no external procurement."
-msgstr ""
+msgstr "<i>Notification</i> est un service géré par le Service numérique canadien, sans autres achats externes."
 
 #: app/templates/views/signedout.html:430
 msgid "Learn more about pricing"
-msgstr ""
+msgstr "En savoir plus sur les coûts"
 
 #: app/templates/views/signedout.html:446
 msgid "These teams are already using <i>Notify</i>"
@@ -3202,23 +3195,23 @@ msgstr ""
 
 #: app/templates/views/signedout.html:500
 msgid "Try <i>Notify</i> now"
-msgstr ""
+msgstr "Essayer <i>Notification</i> maintenant"
 
 #: app/templates/views/signedout.html:503
 msgid ""
 "Create an account and start sending test messages right\n"
 "              away!"
-msgstr ""
+msgstr "Vous pouvez creér un compte et envoyez dès maintenant vos premiers messages!"
 
 #: app/templates/views/signedout.html:529
 msgid ""
 "Your\n"
 "        phone"
-msgstr ""
+msgstr "Votre téléphone"
 
 #: app/templates/views/signedout.html:534
 msgid "Request type"
-msgstr ""
+msgstr "Type de demande"
 
 #: app/templates/views/signedout.html:582
 #: app/templates/views/terms-of-use.html:5
