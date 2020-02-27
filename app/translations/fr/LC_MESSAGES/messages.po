@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-02-17 13:28-0500\n"
+"POT-Creation-Date: 2020-02-27 08:57-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -209,8 +209,8 @@ msgid "Template name"
 msgstr "Nom du modèle"
 
 #: app/main/forms.py:672 app/main/forms.py:845 app/main/forms.py:853
-#: app/main/views/dashboard.py:193 app/templates/views/signedout.html:171
-#: app/templates/views/support/ask-question-give-feedback.html:29
+#: app/main/views/dashboard.py:193 app/templates/views/signedout.html:537
+#: app/templates/views/support/ask-question-give-feedback.html:47
 msgid "Message"
 msgstr "Message"
 
@@ -260,7 +260,7 @@ msgid "Ask a question or give feedback"
 msgstr "Posez une question ou laissez un commentaire"
 
 #: app/main/forms.py:833 app/main/forms.py:849
-#: app/templates/views/signedout.html:141
+#: app/templates/views/signedout.html:512
 #: app/templates/views/support/ask-question-give-feedback.html:19
 msgid "Your name"
 msgstr "Votre nom"
@@ -278,13 +278,13 @@ msgid "Set up a demo"
 msgstr ""
 
 #: app/main/forms.py:843 app/main/forms.py:852
-#: app/templates/views/signedout.html:164
-#: app/templates/views/support/ask-question-give-feedback.html:22
+#: app/templates/views/signedout.html:514
+#: app/templates/views/support/ask-question-give-feedback.html:40
 msgid "Your email"
 msgstr "Votre courriel"
 
-#: app/main/forms.py:844 app/templates/views/signedout.html:168
-#: app/templates/views/support/ask-question-give-feedback.html:26
+#: app/main/forms.py:844
+#: app/templates/views/support/ask-question-give-feedback.html:44
 msgid "Your phone"
 msgstr ""
 
@@ -327,7 +327,7 @@ msgid "Off"
 msgstr "Désactivé"
 
 #: app/main/forms.py:1024 app/main/views/send.py:773
-#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:175
+#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:539
 #: app/templates/views/templates/_template.html:21
 #: app/templates/views/templates/_template.html:29
 msgid "Send"
@@ -757,17 +757,16 @@ msgid "Letter template"
 msgstr "Modèle de lettre"
 
 #: app/templates/admin_template.html:24 app/templates/admin_template.html:65
-#: app/templates/views/signedout.html:23
 msgid "Notification"
 msgstr "Notification"
 
-#: app/templates/admin_template.html:31
+#: app/templates/admin_template.html:31 app/templates/views/signedout.html:94
 msgid "Menu"
 msgstr "Menu"
 
 #: app/templates/admin_template.html:35 app/templates/admin_template.html:57
 #: app/templates/views/documentation.html:2
-#: app/templates/views/documentation.html:37
+#: app/templates/views/documentation.html:4
 msgid "Documentation"
 msgstr "Documentation"
 
@@ -785,7 +784,7 @@ msgstr "Déconnexion"
 msgid "Sign in"
 msgstr "Connexion"
 
-#: app/templates/admin_template.html:80
+#: app/templates/admin_template.html:80 app/templates/views/signedout.html:568
 msgid "Terms of Use"
 msgstr "Conditions d’utilisation"
 
@@ -797,11 +796,12 @@ msgstr "État des messages"
 
 #: app/templates/admin_template.html:90 app/templates/admin_template.html:105
 #: app/templates/views/privacy.html:10 app/templates/views/register.html:35
+#: app/templates/views/signedout.html:558
 msgid "Privacy"
 msgstr "Confidentialité"
 
 #: app/templates/admin_template.html:93 app/templates/views/features.html:52
-#: app/templates/views/security.html:9
+#: app/templates/views/security.html:9 app/templates/views/signedout.html:563
 msgid "Security"
 msgstr "Sécurité"
 
@@ -1047,7 +1047,6 @@ msgstr "Choisir un fichier"
 
 #: app/templates/components/file-upload.html:33
 #: app/templates/views/check/column-errors.html:78
-#: app/templates/views/signedout.html:40
 msgid "or"
 msgstr "ou"
 
@@ -1861,15 +1860,15 @@ msgstr ""
 msgid "1 month"
 msgstr "1 mois"
 
-#: app/templates/views/documentation.html:38
+#: app/templates/views/documentation.html:5
 msgid "Notification API to send messages automatically."
 msgstr "L’API Notification enverra les messages automatiquement."
 
-#: app/templates/views/documentation.html:39
+#: app/templates/views/documentation.html:6
 msgid "Clients"
 msgstr "Clients"
 
-#: app/templates/views/documentation.html:42
+#: app/templates/views/documentation.html:9
 msgid ""
 "Choose a client to integrate our API with your web application or back "
 "office system. Links to documentation open in a new tab."
@@ -1878,39 +1877,39 @@ msgstr ""
 "àvotre système administratif. Les liens de la documentation s’ouvrent "
 "dans un nouvel onglet."
 
-#: app/templates/views/documentation.html:50
+#: app/templates/views/documentation.html:17
 msgid "Remarque:"
 msgstr ""
 
-#: app/templates/views/documentation.html:50
-msgid "Vous devez modifier votre point de terminaison avant d’intégrer l’API."
+#: app/templates/views/documentation.html:17
+msgid "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
 msgstr ""
 
-#: app/templates/views/documentation.html:55
-msgid "Changer le point de terminaison"
+#: app/templates/views/documentation.html:22
+msgid "Changer votre point de connexion API"
 msgstr ""
 
-#: app/templates/views/documentation.html:60
+#: app/templates/views/documentation.html:27
 msgid "Note:"
 msgstr ""
 
-#: app/templates/views/documentation.html:60
+#: app/templates/views/documentation.html:27
 msgid "You need to change your endpoint before integrating the API."
 msgstr ""
 
-#: app/templates/views/documentation.html:64
+#: app/templates/views/documentation.html:31
 msgid "Changing your endpoint"
 msgstr ""
 
-#: app/templates/views/documentation.html:68
+#: app/templates/views/documentation.html:35
 msgid "Maintained by CDS:"
 msgstr "Maintenu par le SNC :"
 
-#: app/templates/views/documentation.html:91
+#: app/templates/views/documentation.html:58
 msgid "Maintained by GOV.UK:"
 msgstr "Maintenu par GOV.UK :"
 
-#: app/templates/views/documentation.html:110
+#: app/templates/views/documentation.html:77
 msgid "Direct connection to API"
 msgstr ""
 
@@ -2052,7 +2051,8 @@ msgstr ""
 #: app/templates/views/register-from-org-invite.html:7
 #: app/templates/views/register-from-org-invite.html:14
 #: app/templates/views/register.html:7 app/templates/views/register.html:14
-#: app/templates/views/signedout.html:39 app/templates/views/signedout.html:80
+#: app/templates/views/signedout.html:173
+#: app/templates/views/signedout.html:494
 msgid "Create an account"
 msgstr "Créer un compte"
 
@@ -2984,114 +2984,241 @@ msgstr "Service interrompu"
 msgid "Resume service"
 msgstr "Reprendre le service"
 
-#: app/templates/views/signedout.html:10
+#: app/templates/views/signedout.html:7
 msgid "Notify lets you send emails and text messages to your users"
 msgstr ""
 
-#: app/templates/views/signedout.html:11
+#: app/templates/views/signedout.html:8
 msgid ""
-"gc notify, notify, canada notify, canada email, email notifications, "
-"Government of Canada, federal government, Canada SMS, Canada Notification"
-" service"
+"gc notify, notify, canada notify, canada email,\n"
+"email notifications, Government of Canada, federal government, Canada "
+"SMS,\n"
+"Canada Notification service"
 msgstr ""
 
-#: app/templates/views/signedout.html:12
-msgid "GC Notify | GC Notification"
-msgstr ""
-
-#: app/templates/views/signedout.html:33
-msgid "Send service updates and messages over email and SMS"
-msgstr "Envoi de messages et de mises à jour de service par courriel et SMS"
-
-#: app/templates/views/signedout.html:36
-msgid "Try Notify if you work in the federal government."
-msgstr "Faites l’essai de Notification si vous travaillez au gouvernement fédéral."
-
-#: app/templates/views/signedout.html:40
-msgid "sign in"
-msgstr "connectez-vous"
-
-#: app/templates/views/signedout.html:40
-msgid "if you’ve used it before"
-msgstr "si vous avez déjà un compte."
-
-#: app/templates/views/signedout.html:59
-msgid "Measure the effectiveness and relevance of your notifications"
-msgstr "Évaluez l’efficacité et la pertinence de vos notifications"
-
-#: app/templates/views/signedout.html:60
+#: app/templates/views/signedout.html:10
 msgid ""
-"The Notify dashboard lets you track the status of all your notifications "
-"and mailings. See at a glance the number of messages that have been "
-"received and opened."
+"GC Notify | GC\n"
+"Notification"
 msgstr ""
-"Le tableau de bord de Notification vous permet d’assurer le suivi de tous"
-" vos envois. Découvrez en un seul coup d’oeil le nombre de messages qui "
-"ont été reçus et ouverts."
 
-#: app/templates/views/signedout.html:74
-msgid "Manually send personalized messages to your users"
-msgstr "Envoyez manuellement des messages personnalisés à vos utilisateurs"
+#: app/templates/views/signedout.html:36 app/templates/views/signedout.html:58
+msgid "Notify"
+msgstr "Notify"
 
-#: app/templates/views/signedout.html:75
+#: app/templates/views/signedout.html:61
+msgid "Alpha"
+msgstr ""
+
+#: app/templates/views/signedout.html:78 app/templates/views/signedout.html:178
+msgid "Log in"
+msgstr "Connectez-vous"
+
+#: app/templates/views/signedout.html:107
+#: app/templates/views/signedout.html:131
+msgid "Product features"
+msgstr ""
+
+#: app/templates/views/signedout.html:112
+#: app/templates/views/signedout.html:138
+msgid "Technical documentation"
+msgstr ""
+
+#: app/templates/views/agreement/service-agreement-choose.html:26
+#: app/templates/views/pricing/how-to-pay.html:53
+#: app/templates/views/service-settings/set-auth-type.html:37
+#: app/templates/views/signedout.html:117
+#: app/templates/views/signedout.html:145
+#: app/templates/views/signedout.html:508
+msgid "Contact us"
+msgstr "Communiquez avec nous"
+
+#: app/templates/views/signedout.html:163
+msgid "Send service updates by email and text message"
+msgstr "Envoyez des mises à jour de service par courriel et message texte"
+
+#: app/templates/views/signedout.html:166
 msgid ""
-"Upload a spreadsheet containing the recipients email addresses or phone "
-"numbers, and Notify will send your message to them all in a batch."
-msgstr ""
-"Téléversez une feuille de calcul contenant les adresses courriels ou les "
-"numéros de téléphone des destinataires, et Notification leur enverra "
-"votre message en un seul lot."
+"<i>Notify</i> is a new messaging platform for Government of Canada\n"
+"            services. Try it out by creating an account."
+msgstr "Notification est une nouvelle plateforme de messagerie pour le Gouvernement du Canada. Essayez-la en créant un compte."
 
-#: app/templates/views/signedout.html:77
+#: app/templates/views/signedout.html:201
+#: app/templates/views/signedout.html:212
+msgid "A platform built for government"
+msgstr "Une plateforme conçue pour le gouvernement"
+
+#: app/templates/views/signedout.html:215
 msgid ""
-"If you need help organizing your users’ information, Notify’s spreadsheet"
-" template is a great place to start."
-msgstr ""
-"Besoin d’aide pour organiser les coordonnées de vos destinataires? Le "
-"modèle de feuille de calcul de Notification est là pour vous. "
+"<i>Notify</i> is a messaging system built for the Government of\n"
+"            Canada."
+msgstr "Notification est un système de messagerie conçu pour le gouvernement du Canada."
 
-#: app/templates/views/signedout.html:101
-msgid "Integrate Notify into your web application or admin system"
-msgstr ""
-"Intégrez Notification à votre application Web ou à votre système "
-"administratif."
-
-#: app/templates/views/signedout.html:102
+#: app/templates/views/signedout.html:219
 msgid ""
-"The Notify API sends messages automatically. Choose a client to integrate"
-" your API with your web application or admin system."
+"Send emails or text messages to keep the public informed and\n"
+"            make your services more transparent. Use templates for easy,\n"
+"            consistent, and accessible communications."
+msgstr "Envoyez des courriels ou des messages texte pour tenir le public informé et rendre vos services plus transparents. Utilisez des gabarits pour communiquer de façon simple, uniforme et accessible."
+
+#: app/templates/views/signedout.html:224
+msgid "Learn more about <i>Notify</i>"
 msgstr ""
-"L’API Notification envoie les messages de façon automatique. Choisissez "
-"un client pour intégrer notre API à votre application Web ou à votre "
-"système administratif."
 
-#: app/templates/views/signedout.html:104
-msgid "Learn how to integrate with our API"
-msgstr "Découvrez comment intégrer notre API"
+#: app/templates/views/signedout.html:239
+msgid "<i>Notify</i> is built for you"
+msgstr "Notification est conçu pour vous"
 
-#: app/templates/views/signedout.html:118
-msgid "Control your content"
-msgstr "Gérez votre contenu"
-
-#: app/templates/views/signedout.html:119
+#: app/templates/views/signedout.html:243
 msgid ""
-"You don’t need to be a developer to create email or SMS templates for "
-"your users."
-msgstr ""
-"Vous n’avez pas besoin de connaissances techniques pour créer des modèles"
-" de courriels ou de messages texte."
+"Staff who regularly write and send service updates wishing\n"
+"              to upgrade the tools used to communicate with the public"
+msgstr "Pour les employés écrivant et envoyant régulièrement des mises à jour de service et souhaitant bonifier leurs outils de communication avec le public"
 
-#: app/templates/views/signedout.html:120
+#: app/templates/views/signedout.html:247
 msgid ""
-"Notify uses standard text editing tools and a simple templating language "
-"for filling in personalized information."
-msgstr ""
-"Notification utilise des outils d’édition de texte standards et un simple"
-" langage de mise en forme pour écrire du contenu personnalisé."
+"Administrators who have to meet departmental service\n"
+"              standards for communication"
+msgstr "Administrateurs devant respecter les normes de service ministérielles pour leurs communications"
 
-#: app/templates/views/signedout.html:139
-msgid "Contact the Notify team"
-msgstr "Contacter l’équipe de Notification"
+#: app/templates/views/signedout.html:251
+msgid ""
+"Developers working on improving workflow and tooling for\n"
+"              public servants"
+msgstr "Développeurs travaillant à l’amélioration des processus de travail et des outils pour les fonctionnaires"
+
+#: app/templates/views/signedout.html:271
+msgid "What you can do with <i>Notify</i>"
+msgstr "Ce que vous pouvez faire avec  Notification"
+
+#: app/templates/views/signedout.html:285
+msgid ""
+"Replace Word documents and Excel spreadsheets with a secure\n"
+"            database of contacts and messages"
+msgstr ""
+
+#: app/templates/views/signedout.html:300
+msgid ""
+"Save time and meet service standards with templates and shared\n"
+"            messaging components"
+msgstr ""
+
+#: app/templates/views/signedout.html:315
+msgid ""
+"Measure the effectiveness of your service with detailed\n"
+"            analytics"
+msgstr ""
+
+#: app/templates/views/signedout.html:328
+msgid "See how <i>Notify</i> can improve your workflow"
+msgstr ""
+
+#: app/templates/views/signedout.html:340
+msgid "Integrate <i>Notify</i> into your system"
+msgstr ""
+
+#: app/templates/views/signedout.html:351
+msgid ""
+"You can integrate <i>Notify</i> with your current system to take\n"
+"              advantage of its secure, cloud-based messaging tools."
+msgstr ""
+
+#: app/templates/views/signedout.html:355
+msgid ""
+"<i>Notify</i> supports roles and permissions, so that you can\n"
+"              adjust which staff have access to send or edit messages."
+msgstr ""
+
+#: app/templates/views/signedout.html:362
+msgid "Learn how to integrate <i>Notify</i>"
+msgstr ""
+
+#: app/templates/views/signedout.html:385
+#: app/templates/views/signedout.html:398
+msgid "<i>Notify</i> is free for Government of Canada services"
+msgstr ""
+
+#: app/templates/views/signedout.html:401
+msgid ""
+"Use <i>Notify</i> for free and replace paper letters or costly\n"
+"              third-party messaging services."
+msgstr ""
+
+#: app/templates/views/signedout.html:406
+msgid "Send unlimited emails or text messages, completely free."
+msgstr ""
+
+#: app/templates/views/signedout.html:410
+msgid ""
+"<i>Notify</i> is a service managed by the Canadian Digital\n"
+"                Service — no external procurement."
+msgstr ""
+
+#: app/templates/views/signedout.html:419
+msgid "Learn more about pricing"
+msgstr ""
+
+#: app/templates/views/signedout.html:433
+msgid "These teams are already using <i>Notify</i>"
+msgstr ""
+
+#: app/templates/views/signedout.html:440
+msgid "“Easy set up that only took an hour.”"
+msgstr ""
+
+#: app/templates/views/signedout.html:441
+msgid "— Calvin Rodo, Economic and Social Development Canada"
+msgstr ""
+
+#: app/templates/views/signedout.html:446
+msgid "“It worked with minimal frustration and configuration.“"
+msgstr ""
+
+#: app/templates/views/signedout.html:448
+msgid "— Ryan Hyma, Treasury Board Secretariat"
+msgstr ""
+
+#: app/templates/views/signedout.html:456
+msgid ""
+"“It is the only solution we have found that is ready and we\n"
+"                  appreciate the effort of making it simple to use for GC"
+"\n"
+"                  employees.”"
+msgstr ""
+
+#: app/templates/views/signedout.html:460
+msgid "— Catherine Dufour, Canada Revenue Agency"
+msgstr ""
+
+#: app/templates/views/signedout.html:465
+msgid ""
+"“It’s governmental, trusted and we receive help from the\n"
+"                  development group.”"
+msgstr ""
+
+#: app/templates/views/signedout.html:469
+msgid "— Abdulkader Hamdo, Department of Fisheries and Oceans"
+msgstr ""
+
+#: app/templates/views/signedout.html:486
+msgid "Try <i>Notify</i> now"
+msgstr ""
+
+#: app/templates/views/signedout.html:489
+msgid ""
+"Create an account and start sending test messages right\n"
+"              away!"
+msgstr ""
+
+#: app/templates/views/signedout.html:515
+msgid ""
+"Your\n"
+"        phone"
+msgstr ""
+
+#: app/templates/views/signedout.html:520
+msgid "Request type"
+msgstr ""
 
 #: app/templates/views/signin.html:16
 msgid "You need to sign in again"
@@ -3622,12 +3749,6 @@ msgstr ""
 "Avant d’entrer en service avec Notification, votre organisation doit "
 "accepter notre notre entente de partage des données et notre entente "
 "financière."
-
-#: app/templates/views/agreement/service-agreement-choose.html:26
-#: app/templates/views/pricing/how-to-pay.html:53
-#: app/templates/views/service-settings/set-auth-type.html:37
-msgid "Contact us"
-msgstr "Communiquez avec nous"
 
 #: app/templates/views/agreement/service-agreement-choose.html:26
 msgid ""
@@ -5382,4 +5503,122 @@ msgstr "Clés d’essai"
 #~ "suivre le guide du Royaume-Uni en"
 #~ " veillant à l’adapter au contexte "
 #~ "canadien."
+
+#~ msgid "Vous devez modifier votre point de terminaison avant d’intégrer l’API."
+#~ msgstr ""
+
+#~ msgid "Changer le point de terminaison"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "gc notify, notify, canada notify, canada"
+#~ " email, email notifications, Government of"
+#~ " Canada, federal government, Canada SMS,"
+#~ " Canada Notification service"
+#~ msgstr ""
+
+#~ msgid "GC Notify | GC Notification"
+#~ msgstr ""
+
+#~ msgid "Send service updates and messages over email and SMS"
+#~ msgstr "Envoi de messages et de mises à jour de service par courriel et SMS"
+
+#~ msgid "Try Notify if you work in the federal government."
+#~ msgstr ""
+#~ "Faites l’essai de Notification si vous"
+#~ " travaillez au gouvernement fédéral."
+
+#~ msgid "sign in"
+#~ msgstr "connectez-vous"
+
+#~ msgid "if you’ve used it before"
+#~ msgstr "si vous avez déjà un compte."
+
+#~ msgid "Measure the effectiveness and relevance of your notifications"
+#~ msgstr "Évaluez l’efficacité et la pertinence de vos notifications"
+
+#~ msgid ""
+#~ "The Notify dashboard lets you track "
+#~ "the status of all your notifications "
+#~ "and mailings. See at a glance the"
+#~ " number of messages that have been"
+#~ " received and opened."
+#~ msgstr ""
+#~ "Le tableau de bord de Notification "
+#~ "vous permet d’assurer le suivi de "
+#~ "tous vos envois. Découvrez en un "
+#~ "seul coup d’oeil le nombre de "
+#~ "messages qui ont été reçus et "
+#~ "ouverts."
+
+#~ msgid "Manually send personalized messages to your users"
+#~ msgstr "Envoyez manuellement des messages personnalisés à vos utilisateurs"
+
+#~ msgid ""
+#~ "Upload a spreadsheet containing the "
+#~ "recipients email addresses or phone "
+#~ "numbers, and Notify will send your "
+#~ "message to them all in a batch."
+#~ msgstr ""
+#~ "Téléversez une feuille de calcul "
+#~ "contenant les adresses courriels ou les"
+#~ " numéros de téléphone des destinataires,"
+#~ " et Notification leur enverra votre "
+#~ "message en un seul lot."
+
+#~ msgid ""
+#~ "If you need help organizing your "
+#~ "users’ information, Notify’s spreadsheet "
+#~ "template is a great place to "
+#~ "start."
+#~ msgstr ""
+#~ "Besoin d’aide pour organiser les "
+#~ "coordonnées de vos destinataires? Le "
+#~ "modèle de feuille de calcul de "
+#~ "Notification est là pour vous. "
+
+#~ msgid "Integrate Notify into your web application or admin system"
+#~ msgstr ""
+#~ "Intégrez Notification à votre application "
+#~ "Web ou à votre système administratif."
+
+#~ msgid ""
+#~ "The Notify API sends messages "
+#~ "automatically. Choose a client to "
+#~ "integrate your API with your web "
+#~ "application or admin system."
+#~ msgstr ""
+#~ "L’API Notification envoie les messages "
+#~ "de façon automatique. Choisissez un "
+#~ "client pour intégrer notre API à "
+#~ "votre application Web ou à votre "
+#~ "système administratif."
+
+#~ msgid "Learn how to integrate with our API"
+#~ msgstr "Découvrez comment intégrer notre API"
+
+#~ msgid "Control your content"
+#~ msgstr "Gérez votre contenu"
+
+#~ msgid ""
+#~ "You don’t need to be a developer"
+#~ " to create email or SMS templates "
+#~ "for your users."
+#~ msgstr ""
+#~ "Vous n’avez pas besoin de connaissances"
+#~ " techniques pour créer des modèles de"
+#~ " courriels ou de messages texte."
+
+#~ msgid ""
+#~ "Notify uses standard text editing tools"
+#~ " and a simple templating language for"
+#~ " filling in personalized information."
+#~ msgstr ""
+#~ "Notification utilise des outils d’édition "
+#~ "de texte standards et un simple "
+#~ "langage de mise en forme pour "
+#~ "écrire du contenu personnalisé."
+
+#~ msgid "Contact the Notify team"
+#~ msgstr "Contacter l’équipe de Notification"
 
