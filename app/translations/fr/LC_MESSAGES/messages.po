@@ -89,8 +89,8 @@ msgstr "numéro de téléphone"
 #: app/main/forms.py:957 app/main/forms.py:1246 app/main/forms.py:1251
 #: app/main/forms.py:1259 app/main/forms.py:1264 app/main/forms.py:1314
 #: app/main/forms.py:1421 app/main/forms.py:1432 app/main/forms.py:1595
-msgid "Can’t be empty"
-msgstr "Ce champ doit être rempli."
+msgid "Please fill in this field."
+msgstr "Veuillez remplir le champ."
 
 #: app/main/forms.py:155 app/main/forms.py:398 app/main/forms.py:420
 #: app/templates/views/user-profile.html:46
@@ -137,7 +137,7 @@ msgstr "Nom complet"
 #: app/main/forms.py:439 app/templates/components/folder-path.html:25
 #: app/templates/main_nav.html:10 app/templates/views/templates/choose.html:11
 msgid "Templates"
-msgstr "Modèles"
+msgstr "Gabarits"
 
 #: app/main/forms.py:442
 msgid "Folders this team member can see"
@@ -173,8 +173,8 @@ msgid "Sending domain"
 msgstr ""
 
 #: app/main/forms.py:542
-msgid "STMP name"
-msgstr ""
+msgid "SMTP name"
+msgstr "Nom du SMTP"
 
 #: app/main/forms.py:606
 msgid "Domain names"
@@ -267,15 +267,15 @@ msgstr "Votre nom"
 
 #: app/main/forms.py:837
 msgid "Ask a question"
-msgstr ""
+msgstr "Poser une question"
 
 #: app/main/forms.py:838 app/templates/views/service-settings.html:255
 msgid "Give feedback"
-msgstr "Donnez votre avis"
+msgstr "Donner votre avis"
 
 #: app/main/forms.py:839
 msgid "Set up a demo"
-msgstr ""
+msgstr "Organiser une démo"
 
 #: app/main/forms.py:843 app/main/forms.py:852
 #: app/templates/views/signedout.html:528
@@ -286,7 +286,7 @@ msgstr "Votre courriel"
 #: app/main/forms.py:844
 #: app/templates/views/support/ask-question-give-feedback.html:44
 msgid "Your phone"
-msgstr ""
+msgstr "Votre téléphone"
 
 #: app/main/forms.py:925 app/main/views/dashboard.py:192
 msgid "Phone number"
@@ -306,11 +306,11 @@ msgstr "Expéditeur de messages texte"
 
 #: app/main/forms.py:958
 msgid "Enter 11 characters or fewer"
-msgstr "Insérez 11 caractères ou moins"
+msgstr "Entrer 11 caractères ou moins"
 
 #: app/main/forms.py:959
 msgid "Enter 4 characters or more"
-msgstr "Insérez 4 caractères ou plus"
+msgstr "Entrer 4 caractères ou plus"
 
 #: app/main/forms.py:964
 msgid "Make this text message sender the default"
