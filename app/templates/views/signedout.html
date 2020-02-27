@@ -65,7 +65,7 @@ Notification') %}
         <!-- start sub nav -->
         <nav aria-label="Language & Login" class="flex pt-4 mb-10 lg:mb-0">
           <a
-            class="leading-none inline-block text-blue text-small underline hover:no-underline"
+            class="line-under leading-none inline-block text-blue text-small underline hover:no-underline"
             href="{{ url_for('main.set_lang')}}?from={{request.path}}"
           >
             {% if session["userlang"] == "en" %} Français {% else %} English {%
@@ -74,7 +74,7 @@ Notification') %}
 
           <a
             href="{{ url_for('main.sign_in' )}}"
-            class="leading-none inline-block text-blue text-small pl-5 underline hover:no-underline"
+            class="line-under leading-none inline-block text-blue text-small pl-5 underline hover:no-underline"
             >{{ _("Log in") }}
           </a>
         </nav>
@@ -114,7 +114,7 @@ Notification') %}
           <a
             href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
             class="text-small text-blue mr-5 font-bold no-underline hover:underline"
-            >{{ _("Support") }}
+            >{{ _("Contact us") }}
           </a>
         </div>
       </div>
@@ -142,7 +142,7 @@ Notification') %}
             <a
               class="block text-small mb-5 no-underline hover:underline"
               href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
-              >{{ _("Support") }}</a
+              >{{ _("Contact us") }}</a
             >
           </li>
         </ul>
@@ -174,7 +174,7 @@ Notification') %}
             >
             <a
               href="{{ url_for('main.sign_in' )}}"
-              class="text-white text-default underline hover:no-underline"
+              class="line-under text-white text-default underline hover:no-underline"
               >{{ _("Log in") }}</a
             >
           </div>
@@ -221,7 +221,7 @@ Notification') %}
             consistent, and accessible communications.") }}
           </p>
           <p class="pt-10 text-blue">
-            <a href="{{ url_for('main.features') }}">{{ _("Learn more about <i>Notify</i>") }}</a>
+            <a class="line-under" href="{{ url_for('main.features') }}">{{ _("Learn more about <i>Notify</i>") }}</a>
           </p>
         </div>
       </div>
@@ -323,7 +323,7 @@ Notification') %}
 
       <div class="flex lg:justify-center">
         <a
-          class="py-10 inline-block text-blue text-base underline hover:no-underline"
+          class="line-under py-10 inline-block text-blue text-base underline hover:no-underline"
           href="{{ url_for('main.features') }}"
           >{{ _("See how <i>Notify</i> can improve your workflow") }}</a
         >
@@ -357,7 +357,7 @@ Notification') %}
             </p>
             <p class="pt-10 text-blue">
               <a
-                class="inline-block text-blue text-base underline hover:no-underline"
+                class="line-under inline-block text-blue text-base underline hover:no-underline"
                 href="{{ url_for('main.documentation') }}"
                 >{{ _("Learn how to integrate <i>Notify</i>") }}</a
               >
@@ -414,7 +414,7 @@ Notification') %}
 
             <div class="py-10">
               <a
-                class="text-blue text-base underline hover:no-underline"
+                class="line-under text-blue text-base underline hover:no-underline"
                 href="{{ url_for('main.pricing') }}"
                 >{{ _("Learn more about pricing") }}</a
               >
@@ -554,17 +554,17 @@ Notification') %}
         <div class="block">
           <a
           href="{{ url_for('main.privacy') }}"
-          class="text-white text-small block mb-2 underline hover:no-underline"
+          class="line-under text-white text-small block mb-2 underline hover:no-underline"
           >{{ _("Privacy") }}</a
           >
           <a
           href="{{ url_for('main.security') }}"
-            class="text-white text-small block mb-2 underline hover:no-underline"
+            class="line-under text-white text-small block mb-2 underline hover:no-underline"
             >{{ _("Security") }}</a
           >
           <a
           href="{{ url_for('main.terms') }}"
-            class="text-white text-small block underline hover:no-underline"
+            class="line-under text-white text-small block underline hover:no-underline"
             >{{ _("Terms of Use") }}</a
           >
         </div>
