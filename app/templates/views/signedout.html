@@ -68,8 +68,7 @@ Notification') %}
             class="line-under leading-none inline-block text-blue text-small underline hover:no-underline"
             href="{{ url_for('main.set_lang')}}?from={{request.path}}"
           >
-            {% if session["userlang"] == "en" %} Français {% else %} English {%
-            endif %}
+            {% if session["userlang"] == "en" %} Français {% else %} English {% endif %}
           </a>
 
           <a
@@ -201,12 +200,24 @@ Notification') %}
             {{ _("A platform built for government") }}
           </h2>
 
-          <img
-            alt=""
-            width="370"
-            class=""
-            src="{{ asset_url('images/homepage/letter.svg') }}"
-          />
+          {% if session["userlang"] == "en" %} 
+            <img
+              alt=""
+              width="370"
+              class=""
+              src="{{ asset_url('images/homepage/letter-en-1.svg') }}"
+            />
+          {% else %}
+
+            <img
+              alt=""
+              width="370"
+              class=""
+              src="{{ asset_url('images/homepage/letter-fr-1.svg') }}"
+            />
+
+          {% endif %}
+
         </div>
         <div class="text-content lg:max-w-4xl">
           <h2 class="leading-tight font-bold hidden lg:block">
