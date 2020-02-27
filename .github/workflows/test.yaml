@@ -3,10 +3,11 @@ name: Continuous Integration Testing
 jobs:
   test:
     runs-on: ubuntu-latest
-    container:
-      image:  python:3.6-stretch
     steps:
     - uses: actions/checkout@v1     
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.6'
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
