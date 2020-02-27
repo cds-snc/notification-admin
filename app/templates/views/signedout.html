@@ -342,8 +342,8 @@ Notification') %}
 
             <img
               alt=""
-              width="350"
               class="max-w-full md:max-w-xl block align-top lg:hidden"
+              width="400"
               src="{{ asset_url('images/homepage/cloud-flow.svg') }}"
             />
            
@@ -369,6 +369,8 @@ Notification') %}
             <img
               alt=""
               class="max-w-full md:max-w-xl block align-top hidden lg:block"
+              width="350"
+              style="object-fit: contain; object-position: 0% 10%;"
               src="{{ asset_url('images/homepage/cloud-flow.svg') }}"
             />
           </div>
@@ -386,9 +388,11 @@ Notification') %}
         </h2>
         <div class="flex flex-col lg:flex-row justify-between py-10">
           
-          <div class="image-content flex lg:justify-center mr-10">
+          <div class="image-content flex flex-auto justify-start lg:justify-center">
             <img
               alt=""
+              width="250"
+              style="object-fit: contain; object-position: 0% 20%;"
               class="inline-block pb-10 lg:pb-0 max-w-full md:max-w-xl"
               src="{{ asset_url('images/homepage/pricing.svg') }}"
             />
