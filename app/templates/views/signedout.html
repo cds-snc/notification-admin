@@ -96,7 +96,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
     </div>
 
     <!-- start main nav -->
-    <nav class="bg-gray py-3">
+    <nav class="bg-gray py-5">
       <div class="container px-10">
         <div class="lg:hidden">
           <a
@@ -167,13 +167,13 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
         class="flex flex-col lg:flex-row justify-between pt-16 pb-20 lg:pb-16"
       >
         <div class="text-content max-w-4xl">
-          <h2 class="text-white leading-tight font-bold">
+          <h2 class="pb-0 text-white leading-tight font-bold">
             {{ _("Send service updates by email and text message") }}
           </h2>
-          <p class="pt-3 text-white">
+          <p class="pt-3 pb-10 text-white">
             {{ _("Try out <i>Notify</i>, a new messaging platform for the Government of Canada.") }}
           </p>
-          <div class="pt-10">
+          <div class="pt-0">
             <a
               href="{{ url_for('.register' )}}"
               class="btn-blue mr-10 hover:bg-blue-selected"
@@ -186,7 +186,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
             >
           </div>
         </div>
-        <div class="ml-10 image-content hidden lg:block">
+        <div class="pt-8 pb-8 ml-10 image-content hidden lg:block">
           <img
             loading="lazy"
             alt=""
@@ -542,14 +542,14 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
       <div class="container px-10 py-10">
         <div class="pt-20 flex justify-center">
           <div>
-            <h2 class="text-white leading-tight font-bold text-center">
+            <h2 class="pb-0 text-white leading-tight font-bold text-center">
               {{ _("Try <i>Notify</i> now") }}
             </h2>
-            <p class="pt-10 text-white text-center">
+            <p class="pt-6 pb-10 text-white text-center">
               {{ _("Create an account and start sending test messages right
               away!") }}
             </p>
-            <p class="mt-10 mb-20 text-center">
+            <p class="mt-0 mb-20 text-center">
               <a href="{{ url_for('.register' )}}" class="btn-blue text-center hover:bg-blue-selected"
                 >{{ _("Create an account") }}</a
               >
