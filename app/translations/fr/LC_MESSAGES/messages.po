@@ -279,7 +279,7 @@ msgstr "Organiser une démo"
 
 #: app/main/forms.py:840
 msgid "Other"
-msgstr ""
+msgstr "Autre"
 
 #: app/main/forms.py:844 app/main/forms.py:853
 #: app/templates/views/signedout.html:561
