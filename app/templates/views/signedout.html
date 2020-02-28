@@ -8,10 +8,8 @@
 
 {% block meta %} {%
 set description = _('Notify lets you send emails and text messages to your users') %} 
-{% set keywords = _('gc notify, notify, canada notify, canada email,
-email notifications, Government of Canada, federal government, Canada SMS,
-Canada Notification service') %} {% set meta_title = _('GC Notify | GC
-Notification') %}
+{% set keywords = _('gc notify, notify, canada notify, canada email, email notifications, Government of Canada, federal government, Canada SMS,
+Canada Notification service') %} {% set meta_title = _('GC Notify | GC notification') %}
 <meta name="description" content="{{description}}" />
 <meta name="keywords" content="{{keywords}}" />
 <meta property="og:title" content="{{meta_title}}" />
@@ -106,13 +104,11 @@ Notification') %}
         <div class="hidden lg:block">
           <a href="{{ url_for('main.features') }}"
             class="text-small text-blue mr-5 font-bold no-underline hover:underline"
-            >{{ _("Product features") }}</a
-          >
+            >{{ _("Product features") }}</a>
           <a
             href="{{ url_for('main.documentation') }}"
             class="text-small text-blue mr-5 font-bold no-underline hover:underline"
-            >{{ _("Technical documentation") }}</a
-          >
+            >{{ _("Technical documentation") }}</a>
           <a
             href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
             class="text-small text-blue mr-5 font-bold no-underline hover:underline"
@@ -130,22 +126,19 @@ Notification') %}
             <a
               class="block text-small mb-5 no-underline hover:underline"
               href="{{ url_for('main.features') }}"
-              >{{ _("Product features") }}</a
-            >
+              >{{ _("Product features") }}</a>
           </li>
           <li>
             <a
               class="block text-small mb-5 no-underline hover:underline"
               href="{{ url_for('main.documentation') }}"
-              >{{ _("Technical documentation") }}</a
-            >
+              >{{ _("Technical documentation") }}</a>
           </li>
           <li>
             <a
               class="block text-small mb-5 no-underline hover:underline"
               href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
-              >{{ _("Contact us") }}</a
-            >
+              >{{ _("Contact us") }}</a>
           </li>
         </ul>
       </div>
@@ -182,6 +175,7 @@ Notification') %}
         </div>
         <div class="ml-10 image-content hidden lg:block">
           <img
+            loading="lazy"
             alt=""
             src="{{ asset_url('images/homepage/mac-phone.svg') }}"
             width="300"
@@ -204,20 +198,20 @@ Notification') %}
 
           {% if session["userlang"] == "en" %} 
             <img
+              loading="lazy"
               alt=""
               width="370"
               class=""
-              src="{{ asset_url('images/homepage/letter-en-1.svg') }}"
+              src="{{ asset_url('images/homepage/letter-en.svg') }}"
             />
           {% else %}
-
             <img
               alt=""
+              loading="lazy"
               width="370"
               class=""
-              src="{{ asset_url('images/homepage/letter-fr-1.svg') }}"
+              src="{{ asset_url('images/homepage/letter-fr.svg') }}"
             />
-
           {% endif %}
 
         </div>
@@ -268,7 +262,7 @@ Notification') %}
         </div>
 
         <div class="image-content flex flex-auto lg:justify-center">
-          <img alt="" class="max-w-full md:max-w-xl" />
+          <img loading="lazy" alt="" class="max-w-full md:max-w-xl" />
         </div>
         <!-- -->
       </div>
@@ -288,11 +282,22 @@ Notification') %}
       <div class="flex flex-col lg:flex-row py-10 justify-between">
         <!-- note box -->
         <div class="feature-box mb-20 lg:mb-0">
-          <img
-            alt=""
-            width="300"
-            src="{{ asset_url('images/homepage/recipients.svg') }}"
-          />
+          
+          {% if session["userlang"] == "en" %} 
+            <img
+              alt=""
+              loading="lazy"
+              width="300"
+              src="{{ asset_url('images/homepage/recipients-en.svg') }}"
+            />
+          {% else %}
+            <img
+              alt=""
+              loading="lazy"
+              width="300"
+              src="{{ asset_url('images/homepage/recipients-fr.svg') }}"
+            />
+          {% endif %}
 
           <div class="text-small">
             {{ _("Upload mailing lists and send personalized messages in bulk") }}
@@ -302,11 +307,22 @@ Notification') %}
 
         <!-- note box -->
         <div class="feature-box mb-20 lg:mb-0 lg:ml-10 lg:mr-10">
-          <img
-            alt=""
-            width="300"
-            src="{{ asset_url('images/homepage/text-messages-1.svg') }}"
-          />
+          
+          {% if session["userlang"] == "en" %} 
+            <img
+              alt=""
+              loading="lazy"
+              width="300"
+              src="{{ asset_url('images/homepage/text-messages-en.svg') }}"
+            />
+          {% else %}
+            <img
+              alt=""
+              loading="lazy"
+              width="300"
+              src="{{ asset_url('images/homepage/text-messages-fr.svg') }}"
+            />
+          {% endif %}
 
           <div class="text-small">
             {{ _("Create templates and save them for future messages") }}
@@ -316,11 +332,22 @@ Notification') %}
 
         <!-- note box -->
         <div class="feature-box">
-          <img
-            alt=""
-            width="300"
-            src="{{ asset_url('images/homepage/dashboard-1.svg') }}"
-          />
+          
+          {% if session["userlang"] == "en" %} 
+            <img
+              alt=""
+              loading="lazy"
+              width="300"
+              src="{{ asset_url('images/homepage/dashboard-en.svg') }}"
+            />
+          {% else %}
+            <img
+              alt=""
+              loading="lazy"
+              width="300"
+              src="{{ asset_url('images/homepage/dashboard-fr.svg') }}"
+            />
+          {% endif %}
 
           <div class="text-small">
             {{ _("Track the status of the messages you send") }}
@@ -352,6 +379,7 @@ Notification') %}
 
             <img
               alt=""
+              loading="lazy"
               class="max-w-full md:max-w-xl block align-top lg:hidden"
               width="400"
               src="{{ asset_url('images/homepage/cloud-flow.svg') }}"
@@ -378,6 +406,7 @@ Notification') %}
           >
             <img
               alt=""
+              loading="lazy"
               class="max-w-full md:max-w-xl block align-top hidden lg:block"
               width="350"
               style="object-fit: contain; object-position: 0% 10%;"
@@ -401,6 +430,7 @@ Notification') %}
           <div class="image-content flex flex-auto justify-start lg:justify-center">
             <img
               alt=""
+              loading="lazy"
               width="250"
               style="object-fit: contain; object-position: 0% 20%;"
               class="inline-block pb-10 lg:pb-0 max-w-full md:max-w-xl"
