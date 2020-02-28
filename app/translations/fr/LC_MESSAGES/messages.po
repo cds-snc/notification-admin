@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-02-27 12:28-0500\n"
+"POT-Creation-Date: 2020-02-28 07:42-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -61,8 +61,8 @@ msgstr "Le numéro de téléphone n’existe pas"
 msgid "Sent"
 msgstr "Envoyé"
 
-#: app/main/forms.py:114 app/main/forms.py:367 app/main/forms.py:857
-#: app/main/forms.py:924 app/templates/views/user-profile.html:35
+#: app/main/forms.py:114 app/main/forms.py:367 app/main/forms.py:858
+#: app/main/forms.py:925 app/templates/views/user-profile.html:35
 msgid "Email address"
 msgstr "Adresse courriel"
 
@@ -86,11 +86,11 @@ msgstr "numéro de téléphone"
 #: app/main/forms.py:569 app/main/forms.py:585 app/main/forms.py:614
 #: app/main/forms.py:630 app/main/forms.py:649 app/main/forms.py:669
 #: app/main/forms.py:674 app/main/forms.py:697 app/main/forms.py:832
-#: app/main/forms.py:957 app/main/forms.py:1246 app/main/forms.py:1251
-#: app/main/forms.py:1259 app/main/forms.py:1264 app/main/forms.py:1314
-#: app/main/forms.py:1421 app/main/forms.py:1432 app/main/forms.py:1595
-msgid "Please fill in this field."
-msgstr "Veuillez remplir le champ."
+#: app/main/forms.py:958 app/main/forms.py:1247 app/main/forms.py:1252
+#: app/main/forms.py:1260 app/main/forms.py:1265 app/main/forms.py:1315
+#: app/main/forms.py:1422 app/main/forms.py:1433 app/main/forms.py:1596
+msgid "Can’t be empty"
+msgstr ""
 
 #: app/main/forms.py:155 app/main/forms.py:398 app/main/forms.py:420
 #: app/templates/views/user-profile.html:46
@@ -173,8 +173,8 @@ msgid "Sending domain"
 msgstr ""
 
 #: app/main/forms.py:542
-msgid "SMTP name"
-msgstr "Nom du SMTP"
+msgid "STMP name"
+msgstr ""
 
 #: app/main/forms.py:606
 msgid "Domain names"
@@ -208,8 +208,8 @@ msgstr "Mot de passe non valide"
 msgid "Template name"
 msgstr "Nom du modèle"
 
-#: app/main/forms.py:672 app/main/forms.py:845 app/main/forms.py:853
-#: app/main/views/dashboard.py:193 app/templates/views/signedout.html:551
+#: app/main/forms.py:672 app/main/forms.py:846 app/main/forms.py:854
+#: app/main/views/dashboard.py:193 app/templates/views/signedout.html:585
 #: app/templates/views/support/ask-question-give-feedback.html:47
 msgid "Message"
 msgstr "Message"
@@ -259,8 +259,8 @@ msgstr "Il existe déjà une clé ayant ce nom"
 msgid "Ask a question or give feedback"
 msgstr "Posez une question ou laissez un commentaire"
 
-#: app/main/forms.py:833 app/main/forms.py:849
-#: app/templates/views/signedout.html:526
+#: app/main/forms.py:833 app/main/forms.py:850
+#: app/templates/views/signedout.html:559
 #: app/templates/views/support/ask-question-give-feedback.html:19
 msgid "Your name"
 msgstr "Votre nom"
@@ -277,154 +277,158 @@ msgstr "Donner votre avis"
 msgid "Set up a demo"
 msgstr "Organiser une démo"
 
-#: app/main/forms.py:843 app/main/forms.py:852
-#: app/templates/views/signedout.html:528
+#: app/main/forms.py:840
+msgid "Other"
+msgstr ""
+
+#: app/main/forms.py:844 app/main/forms.py:853
+#: app/templates/views/signedout.html:561
 #: app/templates/views/support/ask-question-give-feedback.html:40
 msgid "Your email"
 msgstr "Votre courriel"
 
-#: app/main/forms.py:844
+#: app/main/forms.py:845
 #: app/templates/views/support/ask-question-give-feedback.html:44
 msgid "Your phone"
 msgstr "Votre téléphone"
 
-#: app/main/forms.py:925 app/main/views/dashboard.py:192
+#: app/main/forms.py:926 app/main/views/dashboard.py:192
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: app/main/forms.py:948
+#: app/main/forms.py:949
 msgid "Reply-to email address"
 msgstr "Adresse courriel de réponse"
 
-#: app/main/forms.py:950
+#: app/main/forms.py:951
 msgid "Make this email address the default"
 msgstr "Utiliser cette adresse courriel par défaut"
 
-#: app/main/forms.py:955
+#: app/main/forms.py:956
 msgid "Text message sender"
 msgstr "Expéditeur de messages texte"
 
-#: app/main/forms.py:958
+#: app/main/forms.py:959
 msgid "Enter 11 characters or fewer"
 msgstr "Entrer 11 caractères ou moins"
 
-#: app/main/forms.py:959
+#: app/main/forms.py:960
 msgid "Enter 4 characters or more"
 msgstr "Entrer 4 caractères ou plus"
 
-#: app/main/forms.py:964
+#: app/main/forms.py:965
 msgid "Make this text message sender the default"
 msgstr "Utiliser cet expéditeur de messages texte par défaut"
 
-#: app/main/forms.py:991 app/main/forms.py:1008 app/main/forms.py:1273
-#: app/main/forms.py:1283 app/templates/components/table.html:134
+#: app/main/forms.py:992 app/main/forms.py:1009 app/main/forms.py:1274
+#: app/main/forms.py:1284 app/templates/components/table.html:134
 msgid "On"
 msgstr "Activé"
 
-#: app/main/forms.py:992 app/main/forms.py:1011 app/main/forms.py:1274
-#: app/main/forms.py:1284 app/templates/components/table.html:135
+#: app/main/forms.py:993 app/main/forms.py:1012 app/main/forms.py:1275
+#: app/main/forms.py:1285 app/templates/components/table.html:135
 msgid "Off"
 msgstr "Désactivé"
 
-#: app/main/forms.py:1024 app/main/views/send.py:773
-#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:553
+#: app/main/forms.py:1025 app/main/views/send.py:773
+#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:587
 #: app/templates/views/templates/_template.html:21
 #: app/templates/views/templates/_template.html:29
 msgid "Send"
 msgstr "Envoyer"
 
-#: app/main/forms.py:1025 app/templates/components/message-count-label.html:19
+#: app/main/forms.py:1026 app/templates/components/message-count-label.html:19
 #: app/templates/views/features.html:15
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "emails"
 msgstr "courriels"
 
-#: app/main/forms.py:1026 app/templates/components/message-count-label.html:13
+#: app/main/forms.py:1027 app/templates/components/message-count-label.html:13
 #: app/templates/views/features.html:16
 msgid "text messages"
 msgstr "messages texte"
 
-#: app/main/forms.py:1027 app/templates/components/message-count-label.html:25
+#: app/main/forms.py:1028 app/templates/components/message-count-label.html:25
 msgid "letters"
 msgstr "lettres"
 
-#: app/main/forms.py:1147
+#: app/main/forms.py:1148
 msgid "Email addresses"
 msgstr "Adresses courriel"
 
-#: app/main/forms.py:1160
+#: app/main/forms.py:1161
 msgid "Mobile numbers"
 msgstr "Numéros de téléphone cellulaire"
 
-#: app/main/forms.py:1178
+#: app/main/forms.py:1179
 msgid "Search by name"
 msgstr "Recherche par nom"
 
-#: app/main/forms.py:1186 app/main/forms.py:1195
+#: app/main/forms.py:1187 app/main/forms.py:1196
 msgid "Search by name or email address"
 msgstr "Recherche par nom ou par adresse courriel"
 
-#: app/main/forms.py:1188
+#: app/main/forms.py:1189
 msgid "You need to enter full or partial email address to search by."
 msgstr "Vous devez écrire une adresse courriel complète ou partielle."
 
-#: app/main/forms.py:1203
+#: app/main/forms.py:1204
 msgid "Search by email address"
 msgstr "Recherche par adresse courriel"
 
-#: app/main/forms.py:1204
+#: app/main/forms.py:1205
 msgid "Search by phone number"
 msgstr "Recherche par numéro de téléphone"
 
-#: app/main/forms.py:1211
+#: app/main/forms.py:1212
 msgid "Search by phone number or email address"
 msgstr "Recherche par numéro de téléphone ou par adresse courriel"
 
-#: app/main/forms.py:1247 app/main/forms.py:1260
+#: app/main/forms.py:1248 app/main/forms.py:1261
 msgid "Must be a valid https URL"
 msgstr "L’URL https doit être valide"
 
-#: app/main/forms.py:1250 app/main/forms.py:1263
+#: app/main/forms.py:1251 app/main/forms.py:1264
 msgid "Bearer token"
 msgstr "Jeton Bearer"
 
-#: app/main/forms.py:1252 app/main/forms.py:1265
+#: app/main/forms.py:1253 app/main/forms.py:1266
 msgid "Must be at least 10 characters"
 msgstr "Doit contenir au moins 10 caractères"
 
-#: app/main/forms.py:1271
+#: app/main/forms.py:1272
 msgid "Send text messages to international phone numbers"
 msgstr "Envoyer des messages texte à des numéros de téléphone internationaux"
 
-#: app/main/forms.py:1421 app/main/forms.py:1521 app/main/forms.py:1522
+#: app/main/forms.py:1422 app/main/forms.py:1522 app/main/forms.py:1523
 msgid "Folder name"
 msgstr "Nom du dossier"
 
-#: app/main/forms.py:1482 app/main/views/templates.py:225
+#: app/main/forms.py:1483 app/main/views/templates.py:225
 msgid "Email"
 msgstr "Courriel"
 
-#: app/main/forms.py:1483 app/main/views/templates.py:224
+#: app/main/forms.py:1484 app/main/views/templates.py:224
 msgid "Text message"
 msgstr "Message texte"
 
-#: app/main/forms.py:1515
+#: app/main/forms.py:1516
 msgid "Choose a folder"
 msgstr "Choisissez un dossier"
 
-#: app/main/forms.py:1524 app/templates/main_template.html:52
+#: app/main/forms.py:1525 app/templates/main_template.html:52
 msgid "New template"
 msgstr "Nouveau modèle"
 
-#: app/main/forms.py:1527
+#: app/main/forms.py:1528
 msgid "Select the type of template you want to add"
 msgstr "Sélectionnez le type de modèle que vous voulez ajouter"
 
-#: app/main/forms.py:1583
+#: app/main/forms.py:1584
 msgid "What’s their name?"
 msgstr "Quel est son nom?"
 
-#: app/main/forms.py:1587
+#: app/main/forms.py:1588
 msgid "What’s their email address?"
 msgstr "Quelle est son adresse courriel?"
 
@@ -760,7 +764,7 @@ msgstr "Modèle de lettre"
 msgid "Notification"
 msgstr "Notification"
 
-#: app/templates/admin_template.html:31 app/templates/views/signedout.html:93
+#: app/templates/admin_template.html:31 app/templates/views/signedout.html:94
 msgid "Menu"
 msgstr "Menu"
 
@@ -796,12 +800,12 @@ msgstr "État des messages"
 
 #: app/templates/admin_template.html:90 app/templates/admin_template.html:105
 #: app/templates/views/privacy.html:10 app/templates/views/register.html:35
-#: app/templates/views/signedout.html:572
+#: app/templates/views/signedout.html:606
 msgid "Privacy"
 msgstr "Confidentialité"
 
 #: app/templates/admin_template.html:93 app/templates/views/features.html:52
-#: app/templates/views/security.html:9 app/templates/views/signedout.html:577
+#: app/templates/views/security.html:9 app/templates/views/signedout.html:611
 msgid "Security"
 msgstr "Sécurité"
 
@@ -2051,8 +2055,8 @@ msgstr ""
 #: app/templates/views/register-from-org-invite.html:7
 #: app/templates/views/register-from-org-invite.html:14
 #: app/templates/views/register.html:7 app/templates/views/register.html:14
-#: app/templates/views/signedout.html:171
-#: app/templates/views/signedout.html:508
+#: app/templates/views/signedout.html:167
+#: app/templates/views/signedout.html:541
 msgid "Create an account"
 msgstr "Créer un compte"
 
@@ -2984,194 +2988,217 @@ msgstr "Service interrompu"
 msgid "Resume service"
 msgstr "Reprendre le service"
 
-#: app/templates/views/signedout.html:7
+#: app/templates/views/signedout.html:10
 msgid "Notify lets you send emails and text messages to your users"
 msgstr ""
 
-#: app/templates/views/signedout.html:8
+#: app/templates/views/signedout.html:11
 msgid ""
-"gc notify, notify, canada notify, canada email,\n"
-"email notifications, Government of Canada, federal government, Canada "
-"SMS,\n"
+"gc notify, notify, canada notify, canada email, email notifications, "
+"Government of Canada, federal government, Canada SMS,\n"
 "Canada Notification service"
 msgstr ""
 
-#: app/templates/views/signedout.html:10
-msgid ""
-"GC Notify | GC\n"
-"Notification"
+#: app/templates/views/signedout.html:12
+msgid "GC Notify | GC notification"
 msgstr ""
 
-#: app/templates/views/signedout.html:36 app/templates/views/signedout.html:58
+#: app/templates/views/signedout.html:37 app/templates/views/signedout.html:59
 msgid "Notify"
 msgstr "Notification"
 
-#: app/templates/views/signedout.html:61
+#: app/templates/views/signedout.html:62
 msgid "Alpha"
 msgstr ""
 
-#: app/templates/views/signedout.html:77 app/templates/views/signedout.html:176
+#: app/templates/views/signedout.html:78 app/templates/views/signedout.html:172
 msgid "Log in"
 msgstr "Se connecter"
 
-#: app/templates/views/signedout.html:106
-#: app/templates/views/signedout.html:130
+#: app/templates/views/signedout.html:107
+#: app/templates/views/signedout.html:129
 msgid "Product features"
 msgstr "Caractéristiques du produit"
 
 #: app/templates/views/signedout.html:111
-#: app/templates/views/signedout.html:137
+#: app/templates/views/signedout.html:135
 msgid "Technical documentation"
 msgstr "Documentation technique"
 
 #: app/templates/views/agreement/service-agreement-choose.html:26
 #: app/templates/views/pricing/how-to-pay.html:53
 #: app/templates/views/service-settings/set-auth-type.html:37
-#: app/templates/views/signedout.html:116
-#: app/templates/views/signedout.html:144
-#: app/templates/views/signedout.html:522
+#: app/templates/views/signedout.html:115
+#: app/templates/views/signedout.html:141
+#: app/templates/views/signedout.html:555
 msgid "Contact us"
 msgstr "Nous joindre"
 
-#: app/templates/views/signedout.html:162
+#: app/templates/views/signedout.html:158
 msgid "Send service updates by email and text message"
 msgstr "Envoyez des mises à jour de service par courriel et message texte"
 
-#: app/templates/views/signedout.html:165
+#: app/templates/views/signedout.html:161
 msgid ""
 "Try out <i>Notify</i>, a new messaging platform for the Government of "
 "Canada."
-msgstr "Essayez <i>Notification</i>, une nouvelle plateforme de messagerie pour le gouvernement du Canada."
+msgstr ""
+"Essayez <i>Notification</i>, une nouvelle plateforme de messagerie pour "
+"le gouvernement du Canada."
 
-#: app/templates/views/signedout.html:199
-#: app/templates/views/signedout.html:223
+#: app/templates/views/signedout.html:196
+#: app/templates/views/signedout.html:220
 msgid "A platform built for government"
 msgstr "Une plateforme conçue pour le gouvernement"
 
-#: app/templates/views/signedout.html:226
+#: app/templates/views/signedout.html:223
 msgid ""
 "Send emails or text messages to keep the public informed and\n"
 "            make your services more transparent."
-msgstr "Envoyez des courriels ou des messages texte pour tenir le public informé et rendre vos services plus transparents."
+msgstr ""
+"Envoyez des courriels ou des messages texte pour tenir le public informé "
+"et rendre vos services plus transparents."
 
-#: app/templates/views/signedout.html:230
+#: app/templates/views/signedout.html:227
 msgid ""
 "Use templates for easy,\n"
 "            consistent, and accessible communications."
-msgstr "Utilisez des gabarits pour communiquer de façon simple, uniforme et accessible."
+msgstr ""
+"Utilisez des gabarits pour communiquer de façon simple, uniforme et "
+"accessible."
 
-#: app/templates/views/signedout.html:234
+#: app/templates/views/signedout.html:231
 msgid "Learn more about <i>Notify</i>"
 msgstr "En savoir plus sur <i>Notification</i>"
 
-#: app/templates/views/signedout.html:249
+#: app/templates/views/signedout.html:246
 msgid "<i>Notify</i> is built for you"
 msgstr "<i>Notification</i> est conçu pour vous"
 
-#: app/templates/views/signedout.html:253
+#: app/templates/views/signedout.html:250
 msgid ""
 "Staff who regularly write and send service updates wishing\n"
 "              to upgrade the tools used to communicate with the public"
-msgstr "Pour les employés écrivant et envoyant des mises à jour de service destinées au public"
+msgstr ""
+"Pour les employés écrivant et envoyant des mises à jour de service "
+"destinées au public"
 
-#: app/templates/views/signedout.html:257
+#: app/templates/views/signedout.html:254
 msgid ""
 "Developers working on improving workflow and tooling for\n"
 "              public servants"
-msgstr "Pour les développeurs travaillant à l’amélioration des processus de travail et des outils pour les fonctionnaires"
+msgstr ""
+"Pour les développeurs travaillant à l’amélioration des processus de "
+"travail et des outils pour les fonctionnaires"
 
-#: app/templates/views/signedout.html:261
+#: app/templates/views/signedout.html:258
 msgid ""
 "Administrators who have to meet departmental service\n"
 "              standards for communication"
-msgstr "Pour les développeurs travaillant à l’amélioration des processus de travail et des outils pour les fonctionnaires"
+msgstr ""
+"Pour les développeurs travaillant à l’amélioration des processus de "
+"travail et des outils pour les fonctionnaires"
 
-#: app/templates/views/signedout.html:281
+#: app/templates/views/signedout.html:278
 msgid "What you can do with <i>Notify</i>"
 msgstr "Ce que vous pouvez faire avec <i>Notification</i>"
 
-#: app/templates/views/signedout.html:295
+#: app/templates/views/signedout.html:303
 msgid "Upload mailing lists and send personalized messages in bulk"
 msgstr "Télécharger des listes de diffusion et envoyer des messages personnalisés"
 
-#: app/templates/views/signedout.html:309
+#: app/templates/views/signedout.html:328
 msgid "Create templates and save them for future messages"
 msgstr "Créer des gabarits et les enregistrer pour vos futurs messages"
 
-#: app/templates/views/signedout.html:323
+#: app/templates/views/signedout.html:353
 msgid "Track the status of the messages you send"
 msgstr "Suivre l'état des messages que vous envoyez"
 
-#: app/templates/views/signedout.html:335
+#: app/templates/views/signedout.html:365
 msgid "See how <i>Notify</i> can improve your workflow"
 msgstr "Découvrir comment <i>Notification</i> peut améliorer votre travail"
 
-#: app/templates/views/signedout.html:347
+#: app/templates/views/signedout.html:377
 msgid "Integrate <i>Notify</i> into your system"
 msgstr "Intégration de Notification à votre système"
 
-#: app/templates/views/signedout.html:358
+#: app/templates/views/signedout.html:389
 msgid ""
 "You can integrate <i>Notify</i> with your current system to take\n"
 "              advantage of its secure, cloud-based messaging tools."
-msgstr "Vous pouvez intégrer les outils d’informatique en nuage de <i>Notification</i> à votre application Web ou à votre système administratif pour envoyer des messages de façon sécuritaire."
+msgstr ""
+"Vous pouvez intégrer les outils d’informatique en nuage de "
+"<i>Notification</i> à votre application Web ou à votre système "
+"administratif pour envoyer des messages de façon sécuritaire."
 
-#: app/templates/views/signedout.html:362
+#: app/templates/views/signedout.html:393
 msgid ""
 "<i>Notify</i> supports roles and permissions, so that you can\n"
 "              adjust which staff have access to send or edit messages."
-msgstr "<i>Notification</i> prend en charge les rôles et les autorisations, afin que vous puissiez modifier quels employés ont l’accès requis pour envoyer ou modifier des messages."
+msgstr ""
+"<i>Notification</i> prend en charge les rôles et les autorisations, afin "
+"que vous puissiez modifier quels employés ont l’accès requis pour envoyer"
+" ou modifier des messages."
 
-#: app/templates/views/signedout.html:369
+#: app/templates/views/signedout.html:400
 msgid "Learn how to integrate <i>Notify</i>"
 msgstr "Découvrir comment intégrer <i>Notification</i>"
 
-#: app/templates/views/signedout.html:394
-#: app/templates/views/signedout.html:409
+#: app/templates/views/signedout.html:426
+#: app/templates/views/signedout.html:442
 msgid "<i>Notify</i> is free for Government of Canada services"
-msgstr "<i>Notification</i> est gratuit pour les services du gouvernement du Canada"
+msgstr ""
+"<i>Notification</i> est gratuit pour les services du gouvernement du "
+"Canada"
 
-#: app/templates/views/signedout.html:412
+#: app/templates/views/signedout.html:445
 msgid ""
 "Use <i>Notify</i> for free and replace paper letters or costly\n"
 "              third-party messaging services."
-msgstr "Vous pouvez utiliser <i>Notification</i> afin de remplacer vos lettres papier ou vos services de messagerie tiers coûteux."
+msgstr ""
+"Vous pouvez utiliser <i>Notification</i> afin de remplacer vos lettres "
+"papier ou vos services de messagerie tiers coûteux."
 
-#: app/templates/views/signedout.html:417
+#: app/templates/views/signedout.html:450
 msgid "Send unlimited emails or text messages, completely free."
-msgstr "Envoyer un nombre illimité de courriels ou de messages texte, tout à fait gratuitement."
+msgstr ""
+"Envoyer un nombre illimité de courriels ou de messages texte, tout à fait"
+" gratuitement."
 
-#: app/templates/views/signedout.html:421
+#: app/templates/views/signedout.html:454
 msgid ""
 "<i>Notify</i> is a service managed by the Canadian Digital\n"
 "                Service — no external procurement."
-msgstr "<i>Notification</i> est un service géré par le Service numérique canadien, sans autres achats externes."
+msgstr ""
+"<i>Notification</i> est un service géré par le Service numérique "
+"canadien, sans autres achats externes."
 
-#: app/templates/views/signedout.html:430
+#: app/templates/views/signedout.html:463
 msgid "Learn more about pricing"
 msgstr "En savoir plus sur les coûts"
 
-#: app/templates/views/signedout.html:446
+#: app/templates/views/signedout.html:479
 msgid "These teams are already using <i>Notify</i>"
 msgstr ""
 
-#: app/templates/views/signedout.html:453
+#: app/templates/views/signedout.html:486
 msgid "“Easy set up that only took an hour.”"
 msgstr ""
 
-#: app/templates/views/signedout.html:454
+#: app/templates/views/signedout.html:487
 msgid "— Calvin Rodo, Economic and Social Development Canada"
 msgstr ""
 
-#: app/templates/views/signedout.html:459
+#: app/templates/views/signedout.html:492
 msgid "“It worked with minimal frustration and configuration.“"
 msgstr ""
 
-#: app/templates/views/signedout.html:461
+#: app/templates/views/signedout.html:494
 msgid "— Ryan Hyma, Treasury Board Secretariat"
 msgstr ""
 
-#: app/templates/views/signedout.html:468
+#: app/templates/views/signedout.html:501
 msgid ""
 "“It is the only solution we have found that is ready and we\n"
 "                  appreciate the effort of making it simple to use for GC"
@@ -3179,41 +3206,43 @@ msgid ""
 "                  employees.”"
 msgstr ""
 
-#: app/templates/views/signedout.html:472
+#: app/templates/views/signedout.html:505
 msgid "— Catherine Dufour, Canada Revenue Agency"
 msgstr ""
 
-#: app/templates/views/signedout.html:477
+#: app/templates/views/signedout.html:510
 msgid ""
 "“It’s governmental, trusted and we receive help from the\n"
 "                  development group.”"
 msgstr ""
 
-#: app/templates/views/signedout.html:481
+#: app/templates/views/signedout.html:514
 msgid "— Abdulkader Hamdo, Department of Fisheries and Oceans"
 msgstr ""
 
-#: app/templates/views/signedout.html:500
+#: app/templates/views/signedout.html:533
 msgid "Try <i>Notify</i> now"
 msgstr "Essayer <i>Notification</i> maintenant"
 
-#: app/templates/views/signedout.html:503
+#: app/templates/views/signedout.html:536
 msgid ""
 "Create an account and start sending test messages right\n"
 "              away!"
-msgstr "Vous pouvez creér un compte et envoyez dès maintenant vos premiers messages!"
+msgstr ""
+"Vous pouvez creér un compte et envoyez dès maintenant vos premiers "
+"messages!"
 
-#: app/templates/views/signedout.html:529
+#: app/templates/views/signedout.html:562
 msgid ""
 "Your\n"
 "        phone"
 msgstr "Votre téléphone"
 
-#: app/templates/views/signedout.html:534
+#: app/templates/views/signedout.html:567
 msgid "Request type"
 msgstr "Type de demande"
 
-#: app/templates/views/signedout.html:582
+#: app/templates/views/signedout.html:616
 #: app/templates/views/terms-of-use.html:5
 #: app/templates/views/terms-of-use.html:10
 msgid "Terms of use"
@@ -5659,5 +5688,23 @@ msgstr "Clés d’essai"
 #~ msgid ""
 #~ "Measure the effectiveness of your service with detailed\n"
 #~ "            analytics"
+#~ msgstr ""
+
+#~ msgid "Please fill in this field."
+#~ msgstr "Veuillez remplir le champ."
+
+#~ msgid "SMTP name"
+#~ msgstr "Nom du SMTP"
+
+#~ msgid ""
+#~ "gc notify, notify, canada notify, canada email,\n"
+#~ "email notifications, Government of Canada, "
+#~ "federal government, Canada SMS,\n"
+#~ "Canada Notification service"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "GC Notify | GC\n"
+#~ "Notification"
 #~ msgstr ""
 
