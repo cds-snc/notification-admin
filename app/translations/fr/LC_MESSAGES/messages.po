@@ -1514,7 +1514,15 @@ msgstr "Utilisez toujours des URL complètes qui commencent par https://"
 
 #: app/templates/partials/templates/guidance-links.html:7
 msgid "Apply now at https://www.canada.ca/example"
-msgstr "Faites une demande maintenant sur https://www.canada.ca/example"
+msgstr "Faites votre demande maintenant sur https://www.canada.ca/example"
+
+#: app/templates/partials/templates/guidance-links.html:11
+msgid "Embedding your link"
+msgstr "Intégration de vos liens"
+
+#: app/templates/partials/templates/guidance-links.html:15
+msgid "[Apply now](https://www.canada.ca/example)"
+msgstr "[Faites votre demande maintenant](https://www.canada.ca/example)"
 
 #: app/templates/partials/templates/guidance-optional-content.html:2
 msgid "Optional content"
