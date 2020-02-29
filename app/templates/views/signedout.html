@@ -161,9 +161,9 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
   <!-- end header -->
   <!-- start section 1 -->
   <div class="bg-blue" role="main">
-    <div class="container px-10 py-0">
+    <div class="container px-10 py-24">
       <div
-        class="flex flex-col lg:flex-row justify-between py-24"
+        class="flex flex-col lg:flex-row justify-between"
       >
         <div class="text-content max-w-4xl">
           <h2 class="pb-0 text-white leading-tight font-bold">
@@ -172,7 +172,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           <p class="pt-10 pb-20 text-white">
             {{ _("Try out <i>Notify</i>, a new messaging platform for the Government of Canada.") }}
           </p>
-          <div class="pt-0 mb-10">
+          <div class="pt-0">
             <a
               href="{{ url_for('.register' )}}"
               class="btn-blue mr-10 hover:bg-blue-selected"
@@ -200,8 +200,8 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
 
   <!-- start section 2 -->
   <div class="bg-white">
-    <div class="container px-10 py-0">
-      <div class="flex flex-col lg:flex-row justify-between py-24">
+    <div class="container px-10 py-24">
+      <div class="flex flex-col lg:flex-row justify-between">
         <div class="image-content pb-10 lg:pb-0">
           
           <h2 class="leading-tight font-bold lg:hidden">
@@ -250,8 +250,8 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
 
   <!-- start section 3 -->
   <div class="bg-gray">
-    <div class="container px-10 py-0">
-      <div class="flex flex-col lg:flex-row justify-between py-24">
+    <div class="container px-10 py-24">
+      <div class="flex flex-col lg:flex-row justify-between">
         <!-- -->
         <div class="text-content max-w-4xl pb-10 lg:pb-0">
           <h2 class="leading-tight font-bold">
@@ -273,7 +273,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           </ul>
         </div>
 
-        <div class="image-content flex flex-auto lg:justify-center">
+        <div class="image-content flex">
           <img loading="lazy" alt="" 
           width="400"
           style="object-fit: contain; object-position: 0% 50%;"
@@ -386,8 +386,8 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
 
     <!-- start section 5 -->
     <div class="bg-gray">
-      <div class="container px-10 py-0">
-        <div class="flex flex-col lg:flex-row justify-between py-24">
+      <div class="container px-10 py-24">
+        <div class="flex flex-col lg:flex-row justify-between">
           <div class="text-content max-w-4xl pb-10 lg:pb-0">
             <h2 class="leading-tight font-bold">
               {{ _("Integrate <i>Notify</i> into your system") }}
@@ -418,7 +418,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
             </p>
           </div>
           <div
-            class="image-content pt-10 lg:pt-0 flex flex-auto lg:justify-center lg:content-start"
+            class="image-content pt-10 lg:pt-0 flex"
           >
             <img
               alt=""
@@ -444,14 +444,31 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
         <div class="flex flex-col lg:flex-row justify-between">
           
           <div class="image-content flex flex-auto justify-start lg:justify-center">
+           
+            {% if session["userlang"] == "en" %} 
+           
             <img
               alt=""
               loading="lazy"
               width="300"
               style="object-fit: contain; object-position: 0% 30%;"
               class="inline-block pb-10 lg:pb-0 max-w-full md:max-w-xl"
-              src="{{ asset_url('images/homepage/pricing.svg') }}"
+              src="{{ asset_url('images/homepage/pricing-en.svg') }}"
             />
+
+            {% else %}
+
+            <img
+            alt=""
+            loading="lazy"
+            width="300"
+            style="object-fit: contain; object-position: 0% 30%;"
+            class="inline-block pb-10 lg:pb-0 max-w-full md:max-w-xl"
+            src="{{ asset_url('images/homepage/pricing-fr.svg') }}"
+          />
+
+            {% endif %}
+
           </div>
           <div class="text-content max-w-4xl">
             <h2 class="leading-tight font-bold hidden lg:block">
@@ -543,7 +560,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
     <!-- start section 8 -->
     <div class="bg-blue">
       <div class="container px-10 py-24">
-        <div class="pt-20 flex justify-center">
+        <div class="flex justify-center">
           <div>
             <h2 class="pb-0 text-white leading-tight font-bold text-center">
               {{ _("Try <i>Notify</i> now") }}
@@ -552,7 +569,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
               {{ _("Create an account and start sending test messages right
               away!") }}
             </p>
-            <p class="mt-0 mb-20 text-center">
+            <p class="mt-0 text-center">
               <a href="{{ url_for('.register' )}}" class="btn-blue text-center hover:bg-blue-selected"
                 >{{ _("Create an account") }}</a
               >
