@@ -1,0 +1,14 @@
+on: push
+name: Continuous Integration Testing
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1     
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.6'
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - run: /bin/bash -c "scripts/bootstrap.sh && make test"

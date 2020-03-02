@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Bootstrap virtualenv environment and postgres databases locally.
 #

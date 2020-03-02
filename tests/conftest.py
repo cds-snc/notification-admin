@@ -38,7 +38,7 @@ class ElementNotFound(Exception):
 
 
 def a11y_test(html):
-    chromedriver_path = os.environ.get('CHROMEDRIVER_PATH', 'node_modules/chromedriver/lib/chromedriver/chromedriver')  # noqa: E501
+    chromedriver_path = os.environ.get('CHROMEDRIVER_BIN', 'node_modules/chromedriver/lib/chromedriver/chromedriver')  # noqa: E501
 
     temp = tempfile.NamedTemporaryFile(mode='w+t', suffix='.html')
     temp.writelines(html)
