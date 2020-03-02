@@ -837,6 +837,7 @@ class ContactNotifyTeam(StripWhitespaceForm):
             (_l('Ask a question'), _l('Ask a question')),
             (_l('Give feedback'), _l('Give feedback')),
             (_l('Set up a demo'), _l('Set up a demo')),
+            (_l('Other'), _l('Other')),
         ],
         validators=[DataRequired()]
     )
