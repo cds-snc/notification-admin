@@ -3121,7 +3121,7 @@ msgstr "Découvrir comment <i>Notification</i> peut améliorer votre travail"
 
 #: app/templates/views/signedout.html:393
 msgid "Integrate <i>Notify</i> into your system"
-msgstr "Intégration de Notification à votre système"
+msgstr "Intégration de <i>Notification</i> à votre système"
 
 #: app/templates/views/signedout.html:405
 msgid ""
