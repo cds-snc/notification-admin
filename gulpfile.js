@@ -141,6 +141,13 @@ const sass = () => {
     .pipe(dest(paths.dist + "stylesheets/"));
 };
 
+// copy static css
+const static_css = () => {
+  return src(paths.src + "/stylesheets/homepage.css").pipe(
+    dest(paths.dist + "stylesheets/")
+  );
+};
+
 // Copy images
 
 const images = () => {
@@ -196,6 +203,7 @@ const defaultTask = parallel(
     copy.govuk_template.js,
     images
   ),
+  series(static_css),
   series(copy.govuk_template.error_page, javascripts, sass)
 );
 

@@ -1,194 +1,687 @@
-{% extends "fullwidth_template.html" %}
-{% from "components/textbox.html" import textbox %}
-{% from "components/honeypot-field.html" import honeypotfield %}
-{% from "components/page-footer.html" import page_footer %}
-{% from "components/form.html" import form_wrapper %}
-{% from "components/radios.html" import radio %}
-{% from "components/select-input.html" import select, select_list, select_nested, select_wrapper, select_input %}
+{% extends "notify_template.html" %} 
+{% from "components/textbox.html" import textbox %} 
+{% from "components/honeypot-field.html" import honeypotfield %} 
+{% from "components/page-footer.html" import page_footer %} 
+{% from "components/form.html" import form_wrapper %} 
+{% from "components/radios.html" import radio %} 
+{% from "components/select-input.html" import select, select_list, select_nested, select_wrapper, select_input %} 
 
-{% block meta %}
-  {% set description = _('Notify lets you send emails and text messages to your users') %}
-  {% set keywords = _('gc notify, notify, canada notify, canada email, email notifications, Government of Canada, federal government, Canada SMS, Canada Notification service') %}
-  {% set meta_title = _('GC Notify | GC Notification') %}
-  <meta name="description" content="{{description}}">
-  <meta name="keywords" content="{{keywords}}">
-  <meta property="og:title" content="{{meta_title}}">
-  <meta property="og:description" content="{{description}}">
-  <meta property="og:image" content="https://notification.alpha.canada.ca/static/images/product/notify.jpg">
-  <meta property="og:url" content="https://notification.alpha.canada.ca">
+{% block meta %} {%
+set description = _('Notify lets you send emails and text messages to your users') %} 
+{% set keywords = _('gc notify, notify, canada notify, canada email, email notifications, Government of Canada, federal government, Canada SMS,
+Canada Notification service') %} {% set meta_title = _('GC Notify | GC notification') %}
+<meta name="description" content="{{description}}" />
+<meta name="keywords" content="{{keywords}}" />
+<meta property="og:title" content="{{meta_title}}" />
+<meta property="og:description" content="{{description}}" />
+<meta
+  property="og:image"
+  content="https://notification.alpha.canada.ca/static/images/product/notify.jpg"
+/>
+<meta property="og:url" content="https://notification.alpha.canada.ca" />
+
+<link
+  rel="stylesheet"
+  media="screen"
+  href="{{ asset_path }}stylesheets/homepage.css?0.24.2"
+/>
 
 {% endblock %}
 
-{% block page_title %}
-  {{ _('Notification') }}
-{% endblock %}
+<link
+  rel="stylesheet"
+  media="screen"
+  href="{{ asset_path }}stylesheets/notification-template.css?0.24.2"
+/>
 
-{% block maincolumn_content %}
-  <!-- intro -->
-  <div class="product-page-intro">
-    <div class="product-page-intro-wrapper override-elements-content" id="content">
-      <div class="grid-row">
-        <div class="column-two-thirds">
-          <h1>
-            {{ _('Send service updates and messages over email and SMS') }}
-          </h1>
-          <p>
-            {{ _('Try Notify if you work in the federal government.') }}
-          </p>
-          <div class="button-container">
-            <a class="button button-start" href='{{ url_for('.register' )}}'>{{ _('Create an account') }}</a>
-            {{ _('or') }} <a href="{{ url_for('.sign_in' )}}">{{ _('sign in') }}</a> {{ _('if you’ve used it before') }}
+{% block page_title %} {{ _('Notify') }} {% endblock %} {% block main_content %}
+<!-- CONTENT -->
+<div>
+  <!-- start header -->
+  <header>
+    <div class="container px-10">
+      <!-- start sub nav -->
+      <div
+        class="flex flex-col flex-col-reverse lg:flex-row py-5 lg:pt-16 lg:pb-10 lg:justify-between"
+      >
+        <div class="flex flex-col lg:flex-row">
+          <div class="lg:py-1">
+
+            {% if session["userlang"] == "en" %} 
+              <img
+                alt="Government of Canada / Gouvernement du Canada"
+                width="250"
+                class=""
+                src="{{ asset_url('images/homepage/gov-canada-en.svg') }}"
+              />
+            {% else %}
+              <img
+                alt="Gouvernement du Canada / Government of Canada"
+                width="250"
+                class=""
+                src="{{ asset_url('images/homepage/gov-canada-fr.svg') }}"
+              />
+            {% endif %}
+
+          </div>
+          <div class="product-title flex mt-10 mb-5 lg:mt-0 lg:mb-0">
+            <h1
+              class="leading-none lg:ml-4 mr-5 lg:pl-5 font-semibold inline-block top-0 text-brand pb-0"
+            >
+              <i>{{ _("Notify") }}</i>
+            </h1>
+            <div class="bg-blue-lighter py-1 px-2 rounded-lg text-small">
+              {{ _("Alpha") }}
+            </div>
           </div>
         </div>
+        <!-- start sub nav -->
+        <nav aria-label="Language & Login" class="flex pt-4 mb-10 lg:mb-0">
+          <a
+            class="line-under leading-none inline-block text-blue text-small underline hover:no-underline"
+            href="{{ url_for('main.set_lang')}}?from={{request.path}}"
+          >
+            {% if session["userlang"] == "en" %} Français {% else %} English {% endif %}
+          </a>
+
+          <a
+            href="{{ url_for('main.sign_in' )}}"
+            class="line-under leading-none inline-block text-blue text-small pl-5 underline hover:no-underline"
+            >{{ _("Log in") }}
+          </a>
+        </nav>
+        <!-- end sub nav -->
       </div>
     </div>
-  </div>
-  <!-- end intro -->
 
-  <!-- section 1 -->
-  <div class="product-page-section">
-    <div class="grid-row">
-      <div class="column-half">
-        {% if current_lang == "fr" %}
-          <img src="{{ asset_url('images/product/01-dashboard-fr.svg') }}" alt="" />
-        {% else %}
-          <img src="{{ asset_url('images/product/01-dashboard-en.png') }}" alt="" />
-        {% endif %}
+    <!-- start main nav -->
+    <nav class="bg-gray py-5">
+      <div class="container px-10">
+        <div class="lg:hidden">
+          <a
+            href="#"
+            id="menu"
+            class="px-2 text-small text-blue mr-5 font-bold no-underline hover:underline"
+          >
+            {{ _("Menu") }}
+
+            <img
+              alt=""
+              class="inline-block mobile-arrow ml-5"
+              src="data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3C!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E %3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E %3Csvg version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='960px' height='560px' viewBox='0 0 960 560' enable-background='new 0 0 960 560' xml:space='preserve'%3E %3Cg id='Rounded_Rectangle_33_copy_4_1_'%3E %3Cpath d='M480,344.181L268.869,131.889c-15.756-15.859-41.3-15.859-57.054,0c-15.754,15.857-15.754,41.57,0,57.431l237.632,238.937 c8.395,8.451,19.562,12.254,30.553,11.698c10.993,0.556,22.159-3.247,30.555-11.698l237.631-238.937 c15.756-15.86,15.756-41.571,0-57.431s-41.299-15.859-57.051,0L480,344.181z'/%3E %3C/g%3E %3C/svg%3E"
+              width="20"
+            />
+          </a>
+        </div>
+        <div class="hidden lg:block">
+          <a href="{{ url_for('main.features') }}"
+            class="text-small text-blue mr-10 font-bold no-underline hover:underline"
+            >{{ _("Product features") }}</a>
+          <a
+            href="{{ url_for('main.documentation') }}"
+            class="text-small text-blue mr-10 font-bold no-underline hover:underline"
+            >{{ _("Technical documentation") }}</a>
+          <a
+            href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
+            class="text-small text-blue mr-10 font-bold no-underline hover:underline"
+            >{{ _("Contact us") }}
+          </a>
+        </div>
       </div>
-      <div class="column-half">
-        <h2>{{ _('Measure the effectiveness and relevance of your notifications') }}</h2>
-        <p>{{ _('The Notify dashboard lets you track the status of all your notifications and mailings. See at a glance the number of messages that have been received and opened.') }}</p>
+    </nav>
+
+    <!--  start mobile navigation -->
+    <div class="mobile-nav container px-10 hidden lg:hidden">
+      <div class="absolute bg-white w-5/12 p-5 border-b-4">
+        <ul class="pt-2">
+          <li>
+            <a
+              class="block text-small mb-5 no-underline hover:underline"
+              href="{{ url_for('main.features') }}"
+              >{{ _("Product features") }}</a>
+          </li>
+          <li>
+            <a
+              class="block text-small mb-5 no-underline hover:underline"
+              href="{{ url_for('main.documentation') }}"
+              >{{ _("Technical documentation") }}</a>
+          </li>
+          <li>
+            <a
+              class="block text-small mb-5 no-underline hover:underline"
+              href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
+              >{{ _("Contact us") }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!--  end mobile navigation -->
+    <!-- end main nav -->
+  </header>
+  <!-- end header -->
+  <!-- start section 1 -->
+  <div class="bg-blue" role="main">
+    <div class="container px-10 py-24">
+      <div
+        class="flex flex-col lg:flex-row justify-between"
+      >
+        <div class="text-content max-w-4xl">
+          <h2 class="pb-0 text-white leading-tight font-bold">
+            {{ _("Send service updates by email and text message") }}
+          </h2>
+          <p class="pt-10 pb-20 text-white">
+            {{ _("Try out <i>Notify</i>, a new messaging platform for the Government of Canada.") }}
+          </p>
+          <div class="pt-0">
+            <a
+              href="{{ url_for('.register' )}}"
+              class="btn-blue mr-10 hover:bg-blue-selected"
+              >{{ _("Create an account") }}</a
+            >
+            <a
+              href="{{ url_for('main.sign_in' )}}"
+              class="line-under text-white text-default underline hover:no-underline"
+              >{{ _("Log in") }}</a
+            >
+          </div>
+        </div>
+        <div class="pt-6 pb-6 ml-10 image-content hidden lg:block">
+          <img
+            loading="lazy"
+            alt=""
+            src="{{ asset_url('images/homepage/mac-phone.svg') }}"
+            width="350"
+          />
+        </div>
       </div>
     </div>
   </div>
   <!-- end section 1 -->
 
+  <!-- start section 2 -->
+  <div class="bg-white">
+    <div class="container px-10 py-24">
+      <div class="flex flex-col lg:flex-row justify-between">
+        <div class="image-content pb-10 lg:pb-0">
+          
+          <h2 class="leading-tight font-bold lg:hidden">
+            {{ _("A platform built for government") }}
+          </h2>
 
-  <!-- background colour swap -->
-  <div class="homepage-colour-swap">
+          {% if session["userlang"] == "en" %} 
+            <img
+              loading="lazy"
+              alt=""
+              width="390"
+              class=""
+              src="{{ asset_url('images/homepage/letter-en.svg') }}"
+            />
+          {% else %}
+            <img
+              alt=""
+              loading="lazy"
+              width="390"
+              class=""
+              src="{{ asset_url('images/homepage/letter-fr.svg') }}"
+            />
+          {% endif %}
 
-  <!-- section 2 -->
-  <div class="product-page-section">
-    <div class="grid-row">
-      <div class="column-half">
-          <h2>{{ _('Manually send personalized messages to your users') }}</h2>
-          <p>{{ _('Upload a spreadsheet containing the recipients email addresses or phone numbers, and Notify will send your message to them all in a batch.') }}</p>
-          <p>
-            {{ _('If you need help organizing your users’ information, Notify’s spreadsheet template is a great place to start.') }}
+        </div>
+        <div class="text-content lg:max-w-4xl">
+          <h2 class="leading-tight font-bold hidden lg:block">
+            {{ _("A platform built for government") }}
+          </h2>
+          <p class="pt-4">
+            {{ _("Send emails or text messages to keep the public informed and
+            make your services more transparent.") }}
           </p>
-          <p>
-            <a class="button" style="background-color:#005ea5" href='{{ url_for('.register' )}}'>{{ _('Create an account') }}</a>
-               
-      </div>
-      <div class="column-half">
-        {% if current_lang == "fr" %}
-        <img src="{{ asset_url('images/product/01-spreadsheet-fr.svg') }}" alt="" />
-        {% else %}
-        <img src="{{ asset_url('images/product/01-spreadsheet-en.png') }}" alt="" />
-        {% endif %}
+          <p class="pt-4">
+            {{ _("Use templates for easy,
+            consistent, and accessible communications.") }}
+          </p>
+          <p class="pt-10 text-blue">
+            <a class="line-under" href="{{ url_for('main.features') }}">{{ _("Learn more about <i>Notify</i>") }}</a>
+          </p>
+        </div>
       </div>
     </div>
   </div>
   <!-- end section 2 -->
-  
-  <!-- section 3 -->
-  <div class="product-page-section">
-    <div class="grid-row">
-      <div class="column-half">
-          <img src="{{ asset_url('images/product/01-code.svg') }}" alt="" />
-      </div>
-      <div class="column-half">
-        <h2>{{ _('Integrate Notify into your web application or admin system') }}</h2>
-        <p>{{ _('The Notify API sends messages automatically. Choose a client to integrate your API with your web application or admin system.') }}</p>
-        <p>
-          <a href="#">{{ _('Learn how to integrate with our API') }}</a>
-        </p>
+
+  <!-- start section 3 -->
+  <div class="bg-gray">
+    <div class="container px-10 py-24">
+      <div class="flex flex-col lg:flex-row justify-between">
+        <!-- -->
+        <div class="text-content max-w-4xl pb-10 lg:pb-0">
+          <h2 class="leading-tight font-bold">
+            {{ _("<i>Notify</i> is built for you") }}
+          </h2>
+          <ul class="list-disc ml-5">
+            <li class="pt-4">
+              {{ _("Staff who regularly write and send service updates wishing
+              to upgrade the tools used to communicate with the public") }}
+            </li>
+            <li class="pt-4">
+              {{ _("Developers working on improving workflow and tooling for
+              public servants") }}
+            </li>
+            <li class="pt-4">
+              {{_("Administrators who have to meet departmental service
+              standards for communication")}}
+            </li>
+          </ul>
+        </div>
+
+        <div class="image-content flex">
+          <img loading="lazy" alt="" 
+          width="400"
+          style="object-fit: contain; object-position: 0% 50%;"
+          src="{{ asset_url('images/homepage/built4you.svg') }}"
+          class="max-w-full md:max-w-xl" />
+        </div>
+        <!-- -->
       </div>
     </div>
   </div>
   <!-- end section 3 -->
 
-  </div>
-  <!-- end background colour swap -->
-  
-  <!-- section 4 -->
-  <div class="product-page-section">
-    <div class="grid-row">
-      <div class="column-half">
-          <h2>{{ _('Control your content') }}</h2>
-          <p>{{ _('You don’t need to be a developer to create email or SMS templates for your users.') }}</p>
-          <p>{{ _('Notify uses standard text editing tools and a simple templating language for filling in personalized information.') }}</p>
+  <!-- start section 4 -->
+  <div class="bg-white">
+    <div class="container px-10 py-24">
+      <div class="flex justify-center">
+        <h2 class="leading-tight font-bold">
+          {{ _("What you can do with <i>Notify</i>") }}
+        </h2>
       </div>
-      <div class="column-half">
-          {% if current_lang == "fr" %}
-          <img src="{{ asset_url('images/product/01-templates-fr.svg') }}" alt="" />
+
+      <div class="flex flex-col lg:flex-row py-10 justify-between">
+        <!-- note box -->
+        <div class="feature-box mb-20 lg:mb-0">
+          
+          {% if session["userlang"] == "en" %} 
+            <img
+              alt=""
+              loading="lazy"
+              width="400"
+              src="{{ asset_url('images/homepage/recipients-en.svg') }}"
+            />
           {% else %}
-          <img src="{{ asset_url('images/product/01-templates.svg') }}" alt="" />
+            <img
+              alt=""
+              loading="lazy"
+              width="400"
+              src="{{ asset_url('images/homepage/recipients-fr.svg') }}"
+            />
           {% endif %}
+
+          <div class="text-small">
+            {{ _("Upload mailing lists and send personalized messages in bulk") }}
+          </div>
+        </div>
+        <!-- end note box -->
+
+        <!-- note box -->
+        <div class="feature-box mb-20 lg:mb-0 lg:ml-10 lg:mr-10">
+          
+          {% if session["userlang"] == "en" %} 
+            <img
+              alt=""
+              loading="lazy"
+              width="400"
+              src="{{ asset_url('images/homepage/text-messages-en.svg') }}"
+            />
+          {% else %}
+            <img
+              alt=""
+              loading="lazy"
+              width="400"
+              src="{{ asset_url('images/homepage/text-messages-fr.svg') }}"
+            />
+          {% endif %}
+
+          <div class="text-small">
+            {{ _("Create templates and save them for future messages") }}
+          </div>
+        </div>
+        <!-- end note box -->
+
+        <!-- note box -->
+        <div class="feature-box">
+          
+          {% if session["userlang"] == "en" %} 
+            <img
+              alt=""
+              loading="lazy"
+              width="400"
+              src="{{ asset_url('images/homepage/dashboard-en.svg') }}"
+            />
+          {% else %}
+            <img
+              alt=""
+              loading="lazy"
+              width="400"
+              src="{{ asset_url('images/homepage/dashboard-fr.svg') }}"
+            />
+          {% endif %}
+
+          <div class="text-small">
+            {{ _("Track the status of the messages you send") }}
+          </div>
+        </div>
+        <!-- end note box -->
+
+        <!-- -->
+      </div>
+
+      <div class="flex lg:justify-center">
+        <a
+          class="line-under pt-10 inline-block text-blue text-base underline hover:no-underline"
+          href="{{ url_for('main.features') }}"
+          >{{ _("See how <i>Notify</i> can improve your workflow") }}</a
+        >
       </div>
     </div>
-  </div>
-  <!-- end section 4 -->
- 
-  <!-- background colour swap -->
-  <div class="homepage-colour-swap" style="margin-bottom:0">
-    <!-- contact us -->
-    <div class="product-page-section">
-      <div id="contact-form" class="grid-row">
-        <div class="column-half">
-            <h2>{{ _('Contact the Notify team')}}</h2>
-            {% call form_wrapper() %}
-              {% set name_label = _('Your name') %}
-              {{ textbox(form.name, label=name_label,  width='1-1') }}
+    <!-- end section 4 -->
 
-              <div class="form-group">
-              <label class="form-label" for="support_type">
-                Request Type
-              </label>
+    <!-- start section 5 -->
+    <div class="bg-gray">
+      <div class="container px-10 py-24">
+        <div class="flex flex-col lg:flex-row justify-between">
+          <div class="text-content max-w-4xl pb-10 lg:pb-0">
+            <h2 class="leading-tight font-bold">
+              {{ _("Integrate <i>Notify</i> into your system") }}
+            </h2>
 
-              
-             
-              <select class="form-control form-control-1-1 " name="support_type">
-                {% for option in form.support_type %}
+            <img
+              alt=""
+              loading="lazy"
+              class="max-w-full md:max-w-xl block align-top lg:hidden"
+              width="390"
+              src="{{ asset_url('images/homepage/integrate.svg') }}"
+            />
+           
+            <p class="block pt-20 lg:pt-4">
+              {{ _("You can integrate <i>Notify</i> with your current system to take
+              advantage of its secure, cloud-based messaging tools.") }}
+            </p>
+            <p class="pt-4">
+              {{ _("<i>Notify</i> supports roles and permissions, so that you can
+              adjust which staff have access to send or edit messages.") }}
+            </p>
+            <p class="pt-10 text-blue">
+              <a
+                class="line-under inline-block text-blue text-base underline hover:no-underline"
+                href="{{ url_for('main.documentation') }}"
+                >{{ _("Learn how to integrate <i>Notify</i>") }}</a
+              >
+            </p>
+          </div>
+          <div
+            class="image-content pt-10 lg:pt-0 flex"
+          >
+            <img
+              alt=""
+              loading="lazy"
+              class="max-w-full md:max-w-xl block align-top hidden lg:block"
+              width="400"
+              style="object-fit: contain; object-position: 0% 50%;"
+              src="{{ asset_url('images/homepage/cloud-flow.svg') }}"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end section 5 -->
 
-                {% set checked = "" %}
-                {% if option.checked %}
-                  {% set checked = "selected" %}
-                {% endif %}
-                
-                <option {{checked}} value="{{ option.data }}">{{ option.label.text }}</option>
-                {% endfor %}
-              </select>
+    <!-- start section 6 -->
+    <div class="bg-white">
+      <div class="container px-10 py-24">
+
+        <h2 class="leading-tight font-bold lg:hidden">
+          {{ _("<i>Notify</i> is free for Government of Canada services") }}
+        </h2>
+        <div class="flex flex-col lg:flex-row justify-between">
+          
+          <div class="image-content flex flex-auto justify-start lg:justify-center">
+           
+            {% if session["userlang"] == "en" %} 
+           
+            <img
+              alt=""
+              loading="lazy"
+              width="300"
+              style="object-fit: contain; object-position: 0% 30%;"
+              class="inline-block pb-10 lg:pb-0 max-w-full md:max-w-xl"
+              src="{{ asset_url('images/homepage/pricing-en.svg') }}"
+            />
+
+            {% else %}
+
+            <img
+            alt=""
+            loading="lazy"
+            width="300"
+            style="object-fit: contain; object-position: 0% 30%;"
+            class="inline-block pb-10 lg:pb-0 max-w-full md:max-w-xl"
+            src="{{ asset_url('images/homepage/pricing-fr.svg') }}"
+          />
+
+            {% endif %}
+
+          </div>
+          <div class="text-content max-w-4xl">
+            <h2 class="leading-tight font-bold hidden lg:block">
+              {{ _("<i>Notify</i> is free for Government of Canada services") }}
+            </h2>
+            <p class="pt-4">
+              {{ _("Use <i>Notify</i> for free and replace paper letters or costly
+              third-party messaging services.") }}
+            </p>
+            <ul class="list-disc ml-10">
+              <li class="pt-4">
+                {{ _("Send unlimited emails or text messages, completely free.")
+                }}
+              </li>
+              <li class="pt-4">
+                {{ _("<i>Notify</i> is a service managed by the Canadian Digital
+                Service — no external procurement." )}}
+              </li>
+            </ul>
+
+            <div class="pt-10">
+              <a
+                class="line-under text-blue text-base underline hover:no-underline"
+                href="{{ url_for('main.pricing') }}"
+                >{{ _("Learn more about pricing") }}</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end section 6 -->
+
+    <!-- start section 7 -->
+
+    <!-- 
+    <div class="bg-gray">
+      <div class="container px-10 py-10">
+        <div class="py-10">
+          <h2 class="leading-tight font-bold">
+            {{ _("These teams are already using <i>Notify</i>") }}
+          </h2>
+
+          <div class="flex flex-col lg:flex-row justify-between">
+           
+            <div class="max-w-3xl pt-10">
+              <div class="quote-box">
+                <div>{{ _("“Easy set up that only took an hour.”") }}</div>
+                <div>{{ _("— Calvin Rodo, Economic and Social Development Canada") }}</div>
               </div>
 
-              {% set email_label = _('Your email') %}
-              {{ textbox(form.email_address, label=email_label, width='1-1') }}
-              
-              {# honeypot field #}
-              {% set email_label = _('Your phone') %}
-              {{ honeypotfield(form.phone, label=email_label) }}
-              
-              {% set message_label = _('Message') %}
-              {{ textbox(form.feedback, width='1-1', label=message_label, hint='', rows=10) }}
-            
+              <div class="quote-box">
+                <div>
+                  {{ _("“It worked with minimal frustration and configuration.“") }} 
+                </div>
+                <div>{{ _("— Ryan Hyma, Treasury Board Secretariat") }}</div>
+              </div>
+            </div>
+           
+            <div class="max-w-3xl pt-10">
+              <div class="quote-box">
+                <div>
+                  {{ _("“It is the only solution we have found that is ready and we
+                  appreciate the effort of making it simple to use for GC
+                  employees.”") }} 
+                </div>
+                <div>{{ _("— Catherine Dufour, Canada Revenue Agency") }}</div>
+              </div>
 
-            {% set send_text = _('Send') %}
-            {{ page_footer(
-              send_text,
-            ) }}
-            {% endcall %}
+              <div class="quote-box">
+                <div>
+                  {{ _("“It’s governmental, trusted and we receive help from the
+                  development group.”") }}
+                </div>
+                <div>
+                  {{ _("— Abdulkader Hamdo, Department of Fisheries and Oceans") }}
+                </div>
+              </div>
+            </div>
+           
+          </div>
         </div>
-        <div class="column-half"></div>
       </div>
     </div>
-    <!-- end contact us -->
+
+  -->
+    <!-- end section 7 -->
+
+    <!-- start section 8 -->
+    <div class="bg-blue">
+      <div class="container px-10 py-24">
+        <div class="flex justify-center">
+          <div>
+            <h2 class="pb-0 text-white leading-tight font-bold text-center">
+              {{ _("Try <i>Notify</i> now") }}
+            </h2>
+            <p class="pt-10 pb-20 text-white text-center">
+              {{ _("Create an account and start sending test messages right
+              away!") }}
+            </p>
+            <p class="mt-0 text-center">
+              <a href="{{ url_for('.register' )}}" class="btn-blue text-center hover:bg-blue-selected"
+                >{{ _("Create an account") }}</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end section 8 -->
   </div>
 
-  {% if scrollTo == "true"  %}
-    <script>
-        var el = document.getElementById("contact-form");
-        el.scrollIntoView();
-    </script>
-  {% endif %}
-  
-{% endblock %}
+  <div class="bg-gray">
+    <div id="contact-form" class="container px-10 py-10">
+      <!-- -->
+      <div class="py-10">
+        <h2 class="leading-tight font-bold">{{ _("Contact us") }}</h2>
+        <!-- INSERT FORM -->
+        <!-- contact us -->
+
+        {% call form_wrapper() %} {% set name_label = _('Your name') %} {{
+        textbox(form.name, label=name_label, width='1-1') }} {% set email_label
+        = _('Your email') %} {{ textbox(form.email_address, label=email_label,
+        width='1-1') }} {# honeypot field #} {% set email_label = _('Your
+        phone') %} {{ honeypotfield(form.phone, label=email_label) }}
+
+        <div class="form-group">
+          <label class="form-label" for="support_type">
+            {{ _("Request type") }}
+          </label>
+
+          <select
+            class="input focus:shadow-outline w-full lg:w-3/6"
+            id="support_type"
+            name="support_type"
+          >
+            {% for option in form.support_type %} {% set checked = "" %} {% if
+            option.checked %} {% set checked = "selected" %} {% endif %}
+
+            <option {{checked}} value="{{ option.data }}"
+              >{{ option.label.text }}</option
+            >
+            {% endfor %}
+          </select>
+        </div>
+
+        {% set message_label = _('Message') %} {{ textbox(form.feedback,
+        width='1-1',label=message_label, hint='', rows=10) }} {% set send_text =
+        _('Send') %} {{ page_footer( send_text, ) }} {% endcall %}
+
+        <!-- end contact us -->
+        <!-- END INSERT FORM -->
+      </div>
+
+      <!-- -->
+    </div>
+  </div>
+
+  <!-- start section 9 -->
+  <div class="bg-blue" role="navigation" aria-label="Footer">
+    <div class="container px-10 py-24">
+      <nav class="flex aria-label="footer links">
+        <div class="block mr-20">
+        <div class="block">
+          <a
+          href="{{ url_for('main.privacy') }}"
+          class="line-under text-white text-small block mb-10 underline hover:no-underline"
+          >{{ _("Privacy") }}</a
+          >
+          <a
+          href="{{ url_for('main.security') }}"
+            class="line-under text-white text-small block mb-10 underline hover:no-underline"
+            >{{ _("Security") }}</a
+          >
+          <a
+          href="{{ url_for('main.terms') }}"
+            class="line-under text-white text-small block underline hover:no-underline"
+            >{{ _("Terms of use") }}</a
+          >
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- start section 9 -->
+  <div class="bg-gray">
+    <div class="container px-10 py-12">
+      <div class="flex py-10 justify-end">
+        <img
+          alt="Symbol of the Government of Canada / Symbole du gouvernement du Canada"
+          src="{{ asset_url('images/homepage/goc--footer-logo.svg') }}"
+          width="150"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- END CONTENT-->
+
+  <script>
+    function classToggle() {
+      const nav = document.querySelector(".mobile-nav");
+      const arrow = document.querySelector(".mobile-arrow");
+      nav.classList.toggle("hidden");
+      arrow.classList.toggle("flip");
+    }
+    document.querySelector("#menu").addEventListener("click", classToggle);
+  </script>
+
+  {% if scrollTo == "true" %}
+  <script>
+    var el = document.getElementById("contact-form");
+    el.scrollIntoView();
+  </script>
+  {% endif %} {% endblock %}
+</div>

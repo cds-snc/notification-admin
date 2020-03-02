@@ -1,0 +1,26 @@
+{% block top_of_page %}{% endblock %}
+<!DOCTYPE html>
+<html lang="{{ current_lang|default('en') }}">
+  <head>
+    <meta charset="utf-8" />
+    <title>{% block page_title %}Notify{% endblock %}</title>
+    <link
+      rel="shortcut icon"
+      href="{{ asset_path }}images/favicon.ico?0.24.2"
+      type="image/x-icon"
+    />
+    <link
+     href="https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap"
+     rel="stylesheet"
+    />
+    <link
+     href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap"
+     rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% block meta %}{% endblock %}
+  </head>
+  <body>
+    {% block main_content %}{% endblock %}
+  </body>
+</html>
