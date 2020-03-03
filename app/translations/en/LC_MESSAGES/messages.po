@@ -4674,6 +4674,6 @@ msgstr ""
 #~ msgid "— Abdulkader Hamdo, Department of Fisheries and Oceans"
 #~ msgstr ""
 
-#~ msgid "Send unlimited emails or text messages, completely free."
+#~ msgid "Send unlimited emails, completely free."
 #~ msgstr ""
 
