@@ -149,6 +149,7 @@ def test_css_is_served_from_correct_path(client_request):
     ):
 
         assert link['href'].startswith([
+            'https://static.example.com/stylesheets/header.css?',
             'https://static.example.com/stylesheets/notification-template.css?',
             'https://static.example.com/stylesheets/main.css?',
         ][index])

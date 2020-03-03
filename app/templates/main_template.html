@@ -146,11 +146,11 @@
             {% endif %}
             </div>
             <div class="product-title flex mt-10 mb-5 lg:mt-0 lg:mb-0">
-              <h1
+              <div
                 class="leading-none lg:ml-4 mr-5 lg:pl-5 font-semibold inline-block top-0 text-brand pb-0"
               >
                 <i>Notify</i>
-              </h1>
+            </div>
               <div class="bg-blue-lighter py-1 px-2 rounded-lg text-small">
                 {{ _("Alpha") }}
               </div>
@@ -196,7 +196,7 @@
       </div>
 
       <!-- start main nav -->
-      <nav class="bg-gray py-5">
+      <nav class="bg-gray py-5" aria-label="main navigation">
         <div class="container px-10">
           <div class="lg:hidden">
             <a
@@ -214,7 +214,7 @@
               />
             </a>
           </div>
-          <div class="hide lg:block">
+          <div id="proposition-links" class="hide lg:block">
 
             {% if current_user.platform_admin %}
             <a href="{{ url_for('main.platform_admin') }}"
@@ -227,10 +227,10 @@
               >{{ _('Product features') }}</a>
             <a
               href="{{ url_for('main.documentation') }}"
-              class="text-small text-blue mr-10 font-bold no-underline hover:underline"
+              class="text-small text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('documentation') }}"
               >{{ _('Technical documentation') }}</a>
             <a
-              href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
+              href="{{ url_for('main.feedback', ticket_type='ask-question-give-feedback') }}"
               class="text-small text-blue mr-10 font-bold no-underline hover:underline"
               >{{ _('Contact us') }}
             </a>
@@ -266,7 +266,7 @@
             <li>
               <a
                 class="block text-small mb-5 no-underline hover:underline"
-                href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
+                href="{{ url_for('main.feedback', ticket_type='ask-question-give-feedback') }}"
                 >{{ _('Contact us') }}</a>
             </li>
           </ul>
@@ -286,43 +286,45 @@
     <div id="global-app-error" class="app-error hidden"></div>
 
     <!-- start section 9 -->
-  <div class="bg-blue" role="navigation" aria-label="Footer">
-    <div class="container px-10 py-24">
-      <nav class="flex aria-label="footer links">
-        <div class="block mr-20">
-        <div class="block">
-          <a
-          href="{{ url_for('main.privacy') }}"
-          class="line-under text-white text-small block mb-10 underline hover:no-underline"
-          >{{ _("Privacy") }}</a
-          >
-          <a
-          href="{{ url_for('main.security') }}"
-            class="line-under text-white text-small block mb-10 underline hover:no-underline"
-            >{{ _("Security") }}</a
-          >
-          <a
-          href="{{ url_for('main.terms') }}"
-            class="line-under text-white text-small block underline hover:no-underline"
-            >{{ _("Terms of use") }}</a
-          >
+    <footer aria-label="footer menu">
+      <div class="bg-blue">
+        <div class="container px-10 py-24">
+          <nav class="flex aria-label="footer links">
+            <div class="block mr-20">
+            <div class="block">
+              <a
+              href="{{ url_for('main.privacy') }}"
+              class="line-under text-white text-small block mb-10 underline hover:no-underline"
+              >{{ _("Privacy") }}</a
+              >
+              <a
+              href="{{ url_for('main.security') }}"
+                class="line-under text-white text-small block mb-10 underline hover:no-underline"
+                >{{ _("Security") }}</a
+              >
+              <a
+              href="{{ url_for('main.terms') }}"
+                class="line-under text-white text-small block underline hover:no-underline"
+                >{{ _("Terms of use") }}</a
+              >
+            </div>
+          </nav>
         </div>
-      </nav>
-    </div>
-  </div>
-
-  <!-- start section 9 -->
-  <div class="bg-gray">
-    <div class="container px-10 py-12">
-      <div class="flex py-10 justify-end">
-        <img
-          alt="Symbol of the Government of Canada / Symbole du gouvernement du Canada"
-          src="{{ asset_url('images/homepage/goc--footer-logo.svg') }}"
-          width="150"
-        />
       </div>
-    </div>
-  </div>
+
+      <!-- start section 9 -->
+      <div class="bg-gray" >
+        <div class="container px-10 py-12">
+          <div class="flex py-10 justify-end">
+            <img
+              alt="Symbol of the Government of Canada / Symbole du gouvernement du Canada"
+              src="{{ asset_url('images/homepage/goc--footer-logo.svg') }}"
+              width="150"
+            />
+          </div>
+        </div>
+      </div>  
+    </footer>
 
 
       
