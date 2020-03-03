@@ -37,7 +37,7 @@ class Navigation:
 
 class HeaderNavigation(Navigation):
 
-    selected_attribute = "class=active"
+    selected_attribute = "active"
 
     mapping = {
         'support': {
