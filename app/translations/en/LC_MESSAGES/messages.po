@@ -2985,7 +2985,7 @@ msgid ""
 msgstr ""
 
 #: app/templates/views/signedout.html:483
-msgid "Send unlimited emails or text messages, completely free."
+msgid "Send unlimited emails, completely free."
 msgstr ""
 
 #: app/templates/views/signedout.html:487
