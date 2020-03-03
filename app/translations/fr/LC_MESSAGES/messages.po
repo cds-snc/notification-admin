@@ -3163,7 +3163,7 @@ msgstr ""
 #: app/templates/views/signedout.html:483
 msgid "Send unlimited emails or text messages, completely free."
 msgstr ""
-"Envoyer un nombre illimité de courriels ou de messages texte, tout à fait"
+"Envoyer un nombre illimité de courriels, tout à fait"
 " gratuitement."
 
 #: app/templates/views/signedout.html:487
