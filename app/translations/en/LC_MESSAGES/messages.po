@@ -770,7 +770,7 @@ msgstr ""
 #: app/templates/admin_template.html:41 app/templates/admin_template.html:63
 #: app/templates/views/documentation.html:2
 #: app/templates/views/documentation.html:4
-msgid "Documentation"
+msgid "Technical documentation"
 msgstr ""
 
 #: app/templates/admin_template.html:44 app/templates/main_template.html:222
