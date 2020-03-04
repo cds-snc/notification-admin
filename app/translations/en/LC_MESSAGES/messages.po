@@ -7,7 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2020-03-04 08:38-0500\n"
+=======
+"POT-Creation-Date: 2020-03-03 15:32-0500\n"
+>>>>>>> master
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -4674,7 +4678,7 @@ msgstr ""
 #~ msgid "— Abdulkader Hamdo, Department of Fisheries and Oceans"
 #~ msgstr ""
 
-#~ msgid "Send unlimited emails or text messages, completely free."
+#~ msgid "Send unlimited emails, completely free."
 #~ msgstr ""
 
 #~ msgid "Log in using"
