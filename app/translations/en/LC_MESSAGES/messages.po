@@ -4294,7 +4294,7 @@ msgstr ""
 msgid ""
 "Each service you set up in Notification has a free annual allowance. The "
 "allowance is:"
-msgstr ""
+msgstr "Each service you set up in Notification has a free annual allowance."
 
 #: app/templates/views/pricing/index.html:37
 msgid "250,000 free text messages for central government services"
