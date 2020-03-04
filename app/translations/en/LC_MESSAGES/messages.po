@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-02 08:08-0500\n"
+"POT-Creation-Date: 2020-03-03 15:32-0500\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -213,7 +213,7 @@ msgid "Template name"
 msgstr ""
 
 #: app/main/forms.py:672 app/main/forms.py:846 app/main/forms.py:854
-#: app/main/views/dashboard.py:193 app/templates/views/signedout.html:618
+#: app/main/views/dashboard.py:193 app/templates/views/signedout.html:566
 #: app/templates/views/support/ask-question-give-feedback.html:47
 msgid "Message"
 msgstr ""
@@ -264,7 +264,7 @@ msgid "Ask a question or give feedback"
 msgstr ""
 
 #: app/main/forms.py:833 app/main/forms.py:850
-#: app/templates/views/signedout.html:592
+#: app/templates/views/signedout.html:540
 #: app/templates/views/support/ask-question-give-feedback.html:19
 msgid "Your name"
 msgstr ""
@@ -286,7 +286,7 @@ msgid "Other"
 msgstr ""
 
 #: app/main/forms.py:844 app/main/forms.py:853
-#: app/templates/views/signedout.html:594
+#: app/templates/views/signedout.html:542
 #: app/templates/views/support/ask-question-give-feedback.html:40
 msgid "Your email"
 msgstr ""
@@ -335,7 +335,7 @@ msgid "Off"
 msgstr ""
 
 #: app/main/forms.py:1025 app/main/views/send.py:773
-#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:620
+#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:568
 #: app/templates/views/templates/_template.html:21
 #: app/templates/views/templates/_template.html:29
 msgid "Send"
@@ -420,7 +420,7 @@ msgstr ""
 msgid "Choose a folder"
 msgstr ""
 
-#: app/main/forms.py:1525 app/templates/main_template.html:52
+#: app/main/forms.py:1525 app/templates/main_template.html:59
 msgid "New template"
 msgstr ""
 
@@ -758,56 +758,59 @@ msgstr ""
 msgid "Letter template"
 msgstr ""
 
-#: app/templates/admin_template.html:24 app/templates/admin_template.html:65
+#: app/templates/admin_template.html:24 app/templates/admin_template.html:72
 msgid "Notification"
 msgstr ""
 
-#: app/templates/admin_template.html:31 app/templates/views/signedout.html:106
+#: app/templates/admin_template.html:37 app/templates/main_template.html:207
+#: app/templates/views/signedout.html:106
 msgid "Menu"
 msgstr ""
 
-#: app/templates/admin_template.html:35 app/templates/admin_template.html:57
+#: app/templates/admin_template.html:41 app/templates/admin_template.html:63
 #: app/templates/views/documentation.html:2
 #: app/templates/views/documentation.html:4
 msgid "Documentation"
 msgstr ""
 
-#: app/templates/admin_template.html:38
+#: app/templates/admin_template.html:44 app/templates/main_template.html:222
+#: app/templates/main_template.html:250
 #: app/templates/views/choose-account.html:67
 msgid "Platform admin"
 msgstr ""
 
-#: app/templates/admin_template.html:47
+#: app/templates/admin_template.html:53
 msgid "Sign out"
 msgstr ""
 
-#: app/templates/admin_template.html:58 app/templates/views/signin.html:7
+#: app/templates/admin_template.html:64 app/templates/views/signin.html:7
 #: app/templates/views/signin.html:27
 msgid "Sign in"
 msgstr ""
 
-#: app/templates/admin_template.html:80
+#: app/templates/admin_template.html:87
 msgid "Terms of Use"
 msgstr ""
 
-#: app/templates/admin_template.html:83 app/templates/views/features.html:39
+#: app/templates/admin_template.html:90 app/templates/views/features.html:39
 #: app/templates/views/message-status.html:5
 #: app/templates/views/message-status.html:10
 msgid "Message status"
 msgstr ""
 
-#: app/templates/admin_template.html:90 app/templates/admin_template.html:105
-#: app/templates/views/privacy.html:10 app/templates/views/register.html:35
-#: app/templates/views/signedout.html:639
+#: app/templates/admin_template.html:97 app/templates/admin_template.html:112
+#: app/templates/main_template.html:298 app/templates/views/privacy.html:10
+#: app/templates/views/register.html:35 app/templates/views/signedout.html:587
 msgid "Privacy"
 msgstr ""
 
-#: app/templates/admin_template.html:93 app/templates/views/features.html:52
-#: app/templates/views/security.html:9 app/templates/views/signedout.html:644
+#: app/templates/admin_template.html:100 app/templates/main_template.html:303
+#: app/templates/views/features.html:52 app/templates/views/security.html:9
+#: app/templates/views/signedout.html:592
 msgid "Security"
 msgstr ""
 
-#: app/templates/admin_template.html:107
+#: app/templates/admin_template.html:114
 msgid "research mode"
 msgstr ""
 
@@ -845,171 +848,212 @@ msgstr ""
 msgid "SMTP integration"
 msgstr ""
 
-#: app/templates/main_template.html:50
+#: app/templates/main_template.html:57
 msgid "Now"
 msgstr ""
 
-#: app/templates/main_template.html:51
+#: app/templates/main_template.html:58
 msgid "Done"
 msgstr ""
 
-#: app/templates/main_template.html:53
+#: app/templates/main_template.html:60
 msgid "Copy template"
 msgstr ""
 
-#: app/templates/main_template.html:54
+#: app/templates/main_template.html:61
 msgid "New folder"
 msgstr ""
 
-#: app/templates/main_template.html:55
+#: app/templates/main_template.html:62
 #: app/templates/views/templates/_move_to.html:40
 msgid "Nothing selected"
 msgstr ""
 
-#: app/templates/main_template.html:56
+#: app/templates/main_template.html:63
 msgid "selection"
 msgstr ""
 
-#: app/templates/main_template.html:57
+#: app/templates/main_template.html:64
 msgid "selections"
 msgstr ""
 
-#: app/templates/main_template.html:58
+#: app/templates/main_template.html:65
 msgid "Choose a different time"
 msgstr ""
 
-#: app/templates/main_template.html:59
+#: app/templates/main_template.html:66
 msgid "Clear"
 msgstr ""
 
-#: app/templates/main_template.html:60
+#: app/templates/main_template.html:67
 #: app/templates/views/edit-email-template.html:75
 msgid "Cancel"
 msgstr ""
 
-#: app/templates/main_template.html:61
+#: app/templates/main_template.html:68
 #: app/templates/views/templates/_move_to.html:18
 #: app/templates/views/templates/_move_to.html:20
 msgid "Add to new folder"
 msgstr ""
 
-#: app/templates/main_template.html:62
+#: app/templates/main_template.html:69
 #: app/templates/views/templates/_move_to.html:13
 msgid "Move"
 msgstr ""
 
-#: app/templates/main_template.html:63
+#: app/templates/main_template.html:70
 msgid "AM"
 msgstr ""
 
-#: app/templates/main_template.html:64
+#: app/templates/main_template.html:71
 msgid "PM"
 msgstr ""
 
-#: app/templates/main_template.html:65
+#: app/templates/main_template.html:72
 msgid "Today"
 msgstr ""
 
-#: app/templates/main_template.html:66
+#: app/templates/main_template.html:73
 msgid "Tomorrow"
 msgstr ""
 
-#: app/templates/main_template.html:67
+#: app/templates/main_template.html:74
 msgid "Monday"
 msgstr ""
 
-#: app/templates/main_template.html:68
+#: app/templates/main_template.html:75
 msgid "Tuesday"
 msgstr ""
 
-#: app/templates/main_template.html:69
+#: app/templates/main_template.html:76
 msgid "Wednesday"
 msgstr ""
 
-#: app/templates/main_template.html:70
+#: app/templates/main_template.html:77
 msgid "Thursday"
 msgstr ""
 
-#: app/templates/main_template.html:71
+#: app/templates/main_template.html:78
 msgid "Friday"
 msgstr ""
 
-#: app/templates/main_template.html:72
+#: app/templates/main_template.html:79
 msgid "Saturday"
 msgstr ""
 
-#: app/templates/main_template.html:73
+#: app/templates/main_template.html:80
 msgid "Sunday"
 msgstr ""
 
-#: app/templates/main_template.html:74
+#: app/templates/main_template.html:81
 msgid "o_clock"
 msgstr ""
 
-#: app/templates/main_template.html:75
+#: app/templates/main_template.html:82
 msgid "Hour to send"
 msgstr ""
 
-#: app/templates/main_template.html:76
+#: app/templates/main_template.html:83
 msgid "Copied to clipboard"
 msgstr ""
 
-#: app/templates/main_template.html:77
+#: app/templates/main_template.html:84
 msgid "Show"
 msgstr ""
 
-#: app/templates/main_template.html:78
+#: app/templates/main_template.html:85
 msgid "Copy"
 msgstr ""
 
-#: app/templates/main_template.html:79
+#: app/templates/main_template.html:86
 msgid "to clipboard"
 msgstr ""
 
-#: app/templates/main_template.html:80
+#: app/templates/main_template.html:87
 msgid "Add another"
 msgstr ""
 
 #: app/templates/components/list-entry.html:31
-#: app/templates/main_template.html:81
+#: app/templates/main_template.html:88
 msgid "number"
 msgstr ""
 
-#: app/templates/main_template.html:82
+#: app/templates/main_template.html:89
 msgid "remaining"
 msgstr ""
 
-#: app/templates/main_template.html:83
+#: app/templates/main_template.html:90
 #: app/templates/views/user-profile/security-keys.html:40
 msgid "Remove"
 msgstr ""
 
-#: app/templates/main_template.html:84
+#: app/templates/main_template.html:91
 msgid "folder"
 msgstr ""
 
-#: app/templates/main_template.html:85
+#: app/templates/main_template.html:92
 msgid "folders"
 msgstr ""
 
-#: app/templates/main_template.html:86
+#: app/templates/main_template.html:93
 msgid "All folders"
 msgstr ""
 
-#: app/templates/main_template.html:87
+#: app/templates/main_template.html:94
 msgid "Choose folders"
 msgstr ""
 
-#: app/templates/main_template.html:88
+#: app/templates/main_template.html:95
 msgid "All team members"
 msgstr ""
 
-#: app/templates/main_template.html:89
+#: app/templates/main_template.html:96
 msgid "Choose team members"
 msgstr ""
 
-#: app/templates/main_template.html:90
+#: app/templates/main_template.html:97
 msgid "Cancel upload"
+msgstr ""
+
+#: app/templates/main_template.html:155 app/templates/views/signedout.html:74
+msgid "Alpha"
+msgstr ""
+
+#: app/templates/main_template.html:181
+msgid "Log out"
+msgstr ""
+
+#: app/templates/main_template.html:188 app/templates/views/signedout.html:90
+#: app/templates/views/signedout.html:184
+msgid "Log in"
+msgstr ""
+
+#: app/templates/main_template.html:227 app/templates/main_template.html:258
+#: app/templates/views/signedout.html:119
+#: app/templates/views/signedout.html:141
+msgid "Product features"
+msgstr ""
+
+#: app/templates/main_template.html:231 app/templates/main_template.html:264
+#: app/templates/views/signedout.html:123
+#: app/templates/views/signedout.html:147
+msgid "Technical documentation"
+msgstr ""
+
+#: app/templates/main_template.html:235 app/templates/main_template.html:270
+#: app/templates/views/agreement/service-agreement-choose.html:26
+#: app/templates/views/pricing/how-to-pay.html:53
+#: app/templates/views/service-settings/set-auth-type.html:37
+#: app/templates/views/signedout.html:127
+#: app/templates/views/signedout.html:153
+#: app/templates/views/signedout.html:536
+msgid "Contact us"
+msgstr ""
+
+#: app/templates/main_template.html:308 app/templates/views/signedout.html:597
+#: app/templates/views/terms-of-use.html:5
+#: app/templates/views/terms-of-use.html:10
+msgid "Terms of use"
 msgstr ""
 
 #: app/templates/org_template.html:16
@@ -1996,7 +2040,7 @@ msgstr ""
 #: app/templates/views/register-from-org-invite.html:14
 #: app/templates/views/register.html:7 app/templates/views/register.html:14
 #: app/templates/views/signedout.html:179
-#: app/templates/views/signedout.html:574
+#: app/templates/views/signedout.html:522
 msgid "Create an account"
 msgstr ""
 
@@ -2853,33 +2897,6 @@ msgstr ""
 msgid "Notify"
 msgstr ""
 
-#: app/templates/views/signedout.html:74
-msgid "Alpha"
-msgstr ""
-
-#: app/templates/views/signedout.html:90 app/templates/views/signedout.html:184
-msgid "Log in"
-msgstr ""
-
-#: app/templates/views/signedout.html:119
-#: app/templates/views/signedout.html:141
-msgid "Product features"
-msgstr ""
-
-#: app/templates/views/signedout.html:123
-#: app/templates/views/signedout.html:147
-msgid "Technical documentation"
-msgstr ""
-
-#: app/templates/views/agreement/service-agreement-choose.html:26
-#: app/templates/views/pricing/how-to-pay.html:53
-#: app/templates/views/service-settings/set-auth-type.html:37
-#: app/templates/views/signedout.html:127
-#: app/templates/views/signedout.html:153
-#: app/templates/views/signedout.html:588
-msgid "Contact us"
-msgstr ""
-
 #: app/templates/views/signedout.html:170
 msgid "Send service updates by email and text message"
 msgstr ""
@@ -2985,7 +3002,7 @@ msgid ""
 msgstr ""
 
 #: app/templates/views/signedout.html:483
-msgid "Send unlimited emails or text messages, completely free."
+msgid "Send unlimited emails, completely free."
 msgstr ""
 
 #: app/templates/views/signedout.html:487
@@ -2998,72 +3015,24 @@ msgstr ""
 msgid "Learn more about pricing"
 msgstr ""
 
-#: app/templates/views/signedout.html:512
-msgid "These teams are already using <i>Notify</i>"
-msgstr ""
-
-#: app/templates/views/signedout.html:519
-msgid "“Easy set up that only took an hour.”"
-msgstr ""
-
-#: app/templates/views/signedout.html:520
-msgid "— Calvin Rodo, Economic and Social Development Canada"
-msgstr ""
-
-#: app/templates/views/signedout.html:525
-msgid "“It worked with minimal frustration and configuration.“"
-msgstr ""
-
-#: app/templates/views/signedout.html:527
-msgid "— Ryan Hyma, Treasury Board Secretariat"
-msgstr ""
-
-#: app/templates/views/signedout.html:534
-msgid ""
-"“It is the only solution we have found that is ready and we\n"
-"                  appreciate the effort of making it simple to use for GC"
-"\n"
-"                  employees.”"
-msgstr ""
-
-#: app/templates/views/signedout.html:538
-msgid "— Catherine Dufour, Canada Revenue Agency"
-msgstr ""
-
-#: app/templates/views/signedout.html:543
-msgid ""
-"“It’s governmental, trusted and we receive help from the\n"
-"                  development group.”"
-msgstr ""
-
-#: app/templates/views/signedout.html:547
-msgid "— Abdulkader Hamdo, Department of Fisheries and Oceans"
-msgstr ""
-
-#: app/templates/views/signedout.html:566
+#: app/templates/views/signedout.html:514
 msgid "Try <i>Notify</i> now"
 msgstr ""
 
-#: app/templates/views/signedout.html:569
+#: app/templates/views/signedout.html:517
 msgid ""
 "Create an account and start sending test messages right\n"
 "              away!"
 msgstr ""
 
-#: app/templates/views/signedout.html:595
+#: app/templates/views/signedout.html:543
 msgid ""
 "Your\n"
 "        phone"
 msgstr ""
 
-#: app/templates/views/signedout.html:600
+#: app/templates/views/signedout.html:548
 msgid "Request type"
-msgstr ""
-
-#: app/templates/views/signedout.html:649
-#: app/templates/views/terms-of-use.html:5
-#: app/templates/views/terms-of-use.html:10
-msgid "Terms of use"
 msgstr ""
 
 #: app/templates/views/signin.html:16
@@ -4670,4 +4639,41 @@ msgstr ""
 #: app/templates/views/user-profile/security-keys.html:55
 msgid "Test keys"
 msgstr ""
+
+#~ msgid "These teams are already using <i>Notify</i>"
+#~ msgstr ""
+
+#~ msgid "“Easy set up that only took an hour.”"
+#~ msgstr ""
+
+#~ msgid "— Calvin Rodo, Economic and Social Development Canada"
+#~ msgstr ""
+
+#~ msgid "“It worked with minimal frustration and configuration.“"
+#~ msgstr ""
+
+#~ msgid "— Ryan Hyma, Treasury Board Secretariat"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "“It is the only solution we have found that is ready and we\n"
+#~ "                  appreciate the effort of "
+#~ "making it simple to use for GC"
+#~ "\n"
+#~ "                  employees.”"
+#~ msgstr ""
+
+#~ msgid "— Catherine Dufour, Canada Revenue Agency"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "“It’s governmental, trusted and we receive help from the\n"
+#~ "                  development group.”"
+#~ msgstr ""
+
+#~ msgid "— Abdulkader Hamdo, Department of Fisheries and Oceans"
+#~ msgstr ""
+
+#~ msgid "Send unlimited emails, completely free."
+#~ msgstr ""
 
