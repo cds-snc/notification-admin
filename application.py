@@ -4,7 +4,7 @@ import sentry_sdk
 from dotenv import load_dotenv
 from flask import Flask
 from sentry_sdk.integrations.flask import FlaskIntegration
-from werkzeug.contrib.fixers import ProxyFix
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app import create_app
 
