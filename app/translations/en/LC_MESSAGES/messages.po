@@ -148,7 +148,7 @@ msgid "Folders this team member can see"
 msgstr ""
 
 #: app/main/forms.py:445
-msgid "Sign in using"
+msgid "Log in using"
 msgstr ""
 
 #: app/main/forms.py:447 app/templates/views/service-settings.html:44
@@ -780,12 +780,12 @@ msgid "Platform admin"
 msgstr ""
 
 #: app/templates/admin_template.html:53
-msgid "Sign out"
+msgid "Log out"
 msgstr ""
 
 #: app/templates/admin_template.html:64 app/templates/views/signin.html:7
 #: app/templates/views/signin.html:27
-msgid "Sign in"
+msgid "Log in"
 msgstr ""
 
 #: app/templates/admin_template.html:87
@@ -1985,7 +1985,7 @@ msgid "The link has expired"
 msgstr ""
 
 #: app/templates/views/email-link-invalid.html:14
-msgid "Sign in again"
+msgid "Log in again"
 msgstr ""
 
 #: app/templates/views/email-link-invalid.html:14
@@ -2188,7 +2188,7 @@ msgstr ""
 #: app/templates/views/features.html:59
 msgid ""
 "Notification uses two-factor authentication (2FA) to keep your account "
-"secure. When you sign in, we'll send a unique one-time code to your phone"
+"secure. When you log in, we'll send a unique one-time code to your phone"
 " and ask you to enter it before we let you use your account."
 msgstr ""
 
@@ -3036,7 +3036,7 @@ msgid "Request type"
 msgstr ""
 
 #: app/templates/views/signin.html:16
-msgid "You need to sign in again"
+msgid "You need to log in again"
 msgstr ""
 
 #: app/templates/views/signin.html:19
@@ -3245,7 +3245,7 @@ msgid "When we receive your request we’ll get back to you within one working d
 msgstr ""
 
 #: app/templates/views/two-factor-email.html:13
-msgid "We’ve emailed you a link to sign in to Notification."
+msgid "We’ve emailed you a link to log in to Notification."
 msgstr ""
 
 #: app/templates/views/two-factor-email.html:14
@@ -4405,7 +4405,7 @@ msgstr ""
 
 #: app/templates/views/service-settings/set-auth-type.html:24
 msgid ""
-"Your team members can sign in with either a text message code or an email"
+"Your team members can log in with either a text message code or an email"
 " link."
 msgstr ""
 
@@ -4418,7 +4418,7 @@ msgid "set the sign-in method for individual team members"
 msgstr ""
 
 #: app/templates/views/service-settings/set-auth-type.html:34
-msgid "Your team members sign in with a text message code."
+msgid "Your team members log in with a text message code."
 msgstr ""
 
 #: app/templates/views/service-settings/set-auth-type.html:37
