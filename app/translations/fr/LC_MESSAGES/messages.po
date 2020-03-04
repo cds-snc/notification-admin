@@ -2070,7 +2070,7 @@ msgstr ""
 #: app/templates/views/features/emails.html:16
 #: app/templates/views/features/text-messages.html:16
 msgid "Features"
-msgstr "Fonctionnalités"
+msgstr "Caractéristiques du produit"
 
 #: app/templates/views/features.html:12
 msgid ""
