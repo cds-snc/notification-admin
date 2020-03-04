@@ -145,7 +145,7 @@ msgstr "Dossiers visibles par ce membre d’équipe"
 
 #: app/main/forms.py:445
 msgid "Sign in using"
-msgstr "Connexion avec"
+msgstr "Se connecter avec"
 
 #: app/main/forms.py:447 app/templates/views/service-settings.html:44
 #: app/templates/views/service-settings/set-auth-type.html:31
@@ -257,7 +257,7 @@ msgstr "Il existe déjà une clé ayant ce nom"
 #: app/templates/views/support/ask-question-give-feedback.html:8
 #: app/templates/views/support/ask-question-give-feedback.html:14
 msgid "Ask a question or give feedback"
-msgstr "Posez une question ou laissez un commentaire"
+msgstr "Nous joindre"
 
 #: app/main/forms.py:833 app/main/forms.py:850
 #: app/templates/views/signedout.html:540
@@ -773,7 +773,7 @@ msgstr "Menu"
 #: app/templates/views/documentation.html:2
 #: app/templates/views/documentation.html:4
 msgid "Documentation"
-msgstr "Documentation"
+msgstr "Documentation technique"
 
 #: app/templates/admin_template.html:44 app/templates/main_template.html:222
 #: app/templates/main_template.html:250
@@ -788,7 +788,7 @@ msgstr "Déconnexion"
 #: app/templates/admin_template.html:64 app/templates/views/signin.html:7
 #: app/templates/views/signin.html:27
 msgid "Sign in"
-msgstr "Connexion"
+msgstr "Se connecter"
 
 #: app/templates/admin_template.html:87
 msgid "Terms of Use"
@@ -1023,7 +1023,7 @@ msgstr ""
 
 #: app/templates/main_template.html:181
 msgid "Log out"
-msgstr ""
+msgstr "Se déconnecter"
 
 #: app/templates/main_template.html:188 app/templates/views/signedout.html:90
 #: app/templates/views/signedout.html:184
@@ -2070,7 +2070,7 @@ msgstr ""
 #: app/templates/views/features/emails.html:16
 #: app/templates/views/features/text-messages.html:16
 msgid "Features"
-msgstr "Fonctionnalités"
+msgstr "Caractéristiques du produit"
 
 #: app/templates/views/features.html:12
 msgid ""
@@ -2688,7 +2688,7 @@ msgstr "Veuillez entrer une adresse courriel du gouvernement fédéral."
 
 #: app/templates/views/register.html:37
 msgid ""
-"You're creating an account for GC Notify, so you can choose to stop using"
+"You're creating an account for Notify, so you can choose to stop using"
 " it at any time for any reason."
 msgstr ""
 
