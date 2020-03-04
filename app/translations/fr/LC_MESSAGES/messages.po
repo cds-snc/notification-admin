@@ -3179,7 +3179,7 @@ msgstr ""
 
 #: app/templates/views/signedout.html:483
 msgid "Send unlimited emails, completely free."
-msgstr ""
+msgstr "Envoyer un nombre illimité de courriels, tout à fait gratuitement."
 
 #: app/templates/views/signedout.html:487
 msgid ""
