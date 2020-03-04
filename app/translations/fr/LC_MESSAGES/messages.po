@@ -145,7 +145,7 @@ msgstr "Dossiers visibles par ce membre d’équipe"
 
 #: app/main/forms.py:445
 msgid "Sign in using"
-msgstr "Connexion avec"
+msgstr "Se connecter avec"
 
 #: app/main/forms.py:447 app/templates/views/service-settings.html:44
 #: app/templates/views/service-settings/set-auth-type.html:31
@@ -783,12 +783,12 @@ msgstr "Administrateur de la plateforme"
 
 #: app/templates/admin_template.html:53
 msgid "Sign out"
-msgstr "Déconnexion"
+msgstr "Se déconnecter"
 
 #: app/templates/admin_template.html:64 app/templates/views/signin.html:7
 #: app/templates/views/signin.html:27
 msgid "Sign in"
-msgstr "Connexion"
+msgstr "Se connecter"
 
 #: app/templates/admin_template.html:87
 msgid "Terms of Use"
@@ -5519,7 +5519,7 @@ msgstr "Clés d’essai"
 #~ " travaillez au gouvernement fédéral."
 
 #~ msgid "sign in"
-#~ msgstr "connectez-vous"
+#~ msgstr "se connecter"
 
 #~ msgid "if you’ve used it before"
 #~ msgstr "si vous avez déjà un compte."
