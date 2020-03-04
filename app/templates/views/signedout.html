@@ -188,7 +188,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
         <div class="pt-6 pb-6 ml-10 image-content hidden lg:block">
           <img
             loading="lazy"
-            alt=""
+            alt="An illustration of a laptop with a message window on the screen and a cellphone with a message and a callout blurb.") }}"
             src="{{ asset_url('images/homepage/mac-phone.svg') }}"
             width="350"
           />
@@ -211,14 +211,14 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           {% if session["userlang"] == "en" %} 
             <img
               loading="lazy"
-              alt=""
+              alt="An illustration that shows an example of an email notification. The example is a message confirming that an application was received and outlining next steps in the process."
               width="390"
               class=""
               src="{{ asset_url('images/homepage/letter-en.svg') }}"
             />
           {% else %}
             <img
-              alt=""
+              alt="Illustration montrant un exemple d'une notification par courriel. L'exemple est un accusé de réception d'une demande décrivant les prochaines étapes du processus."
               loading="lazy"
               width="390"
               class=""
@@ -272,14 +272,27 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
             </li>
           </ul>
         </div>
-
+      {% if session["userlang"] == "en" %} 
         <div class="image-content flex">
-          <img loading="lazy" alt="" 
+          <img loading="lazy" 
+          alt="An illustration with three outlines of people each with different interests. One is thinking of sending a message. The second is thinking of
+          code and the technical aspect. The third has managing a team in mind." 
           width="400"
           style="object-fit: contain; object-position: 0% 50%;"
           src="{{ asset_url('images/homepage/built4you.svg') }}"
           class="max-w-full md:max-w-xl" />
         </div>
+      {% else %}
+      <div class="image-content flex">
+        <img loading="lazy" 
+        alt="Illustration de trois silhouettes, chacune ayant un intérêt spécifique dans une bulle au-dessus de leur tête. L'une pense à envoyer un message, la deuxième au code et à l'aspect technique, et la troisième à la gestion d'une équipe." 
+        width="400"
+        style="object-fit: contain; object-position: 0% 50%;"
+        src="{{ asset_url('images/homepage/built4you.svg') }}"
+        class="max-w-full md:max-w-xl" />
+      </div>
+      {% endif %}
+
         <!-- -->
       </div>
     </div>
@@ -301,14 +314,15 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           
           {% if session["userlang"] == "en" %} 
             <img
-              alt=""
+              alt="An illustration that shows the possibility of adding 
+              recipients from a spreadsheet with a mailing list."
               loading="lazy"
               width="400"
               src="{{ asset_url('images/homepage/recipients-en.svg') }}"
             />
           {% else %}
             <img
-              alt=""
+              alt="Illustration montrant comment on peut ajouter des destinataires provenant d'une liste d'envoi dans une feuille Excel."
               loading="lazy"
               width="400"
               src="{{ asset_url('images/homepage/recipients-fr.svg') }}"
@@ -326,14 +340,14 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           
           {% if session["userlang"] == "en" %} 
             <img
-              alt=""
+              alt="An illustration that shows how a personalized message template can be created using variables such as name, day of the week and colour."
               loading="lazy"
               width="400"
               src="{{ asset_url('images/homepage/text-messages-en.svg') }}"
             />
           {% else %}
             <img
-              alt=""
+              alt="Illustration montrant comment un gabarit peut être personnalisé à l'aide de variables comme le nom, le jour et la couleur."
               loading="lazy"
               width="400"
               src="{{ asset_url('images/homepage/text-messages-fr.svg') }}"
@@ -351,14 +365,14 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           
           {% if session["userlang"] == "en" %} 
             <img
-              alt=""
+              alt="An illustration that shows a dashboard with the number of emails and text messages sent and the number that failed to send."
               loading="lazy"
               width="400"
               src="{{ asset_url('images/homepage/dashboard-en.svg') }}"
             />
           {% else %}
             <img
-              alt=""
+              alt="Illustration d'un tableau de bord montrant le nombre de courriels et de messages texte envoyés ainsi que le nombre de messages dont l'envoi a été un échec."
               loading="lazy"
               width="400"
               src="{{ asset_url('images/homepage/dashboard-fr.svg') }}"
@@ -393,14 +407,23 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
               {{ _("Integrate <i>Notify</i> into your system") }}
             </h2>
 
+          {% if session["userlang"] == "en" %} 
             <img
-              alt=""
+              alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user. "
               loading="lazy"
               class="max-w-full md:max-w-xl block align-top lg:hidden"
               width="390"
               src="{{ asset_url('images/homepage/integrate.svg') }}"
             />
-           
+         {% else %}
+           <img
+            alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
+           loading="lazy"
+          class="max-w-full md:max-w-xl block align-top lg:hidden"
+          width="390"
+           src="{{ asset_url('images/homepage/integrate.svg') }}"
+          {% endif %}
+
             <p class="block pt-20 lg:pt-4">
               {{ _("You can integrate <i>Notify</i> with your current system to take
               advantage of its secure, cloud-based messaging tools.") }}
@@ -448,7 +471,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
             {% if session["userlang"] == "en" %} 
            
             <img
-              alt=""
+              alt="An illustration of a price tag with 0$ indicated along with main features like: unlimited emails, batch send to recipients, customizable templates, and analytics dashboard."
               loading="lazy"
               width="300"
               style="object-fit: contain; object-position: 0% 30%;"
@@ -459,7 +482,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
             {% else %}
 
             <img
-            alt=""
+            alt="Illustration d'une étiquette affichant « 0 $ » et les caractéristiques principales du produit : courriels illimités, envoi de messages en lot, gabarits personnalisables et tableau de bord analytique."
             loading="lazy"
             width="300"
             style="object-fit: contain; object-position: 0% 30%;"
