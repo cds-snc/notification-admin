@@ -779,7 +779,7 @@ msgstr "Documentation technique"
 #: app/templates/main_template.html:250
 #: app/templates/views/choose-account.html:67
 msgid "Platform admin"
-msgstr "Administrateur de la plateforme"
+msgstr "Administrateur plateforme"
 
 #: app/templates/admin_template.html:53
 msgid "Sign out"
