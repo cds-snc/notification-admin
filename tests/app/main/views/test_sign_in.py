@@ -142,7 +142,7 @@ def test_process_email_auth_sign_in_return_2fa_template(
     mock_verify_password.assert_called_with(
         api_user_active_email_auth['id'],
         'val1dPassw0rd!',
-        {'location': '127.0.0.1', 'user-agent': 'werkzeug/0.16.0'})
+        {'location': '127.0.0.1', 'user-agent': 'werkzeug/1.0.0'})
 
 
 def test_should_return_locked_out_true_when_user_is_locked(
