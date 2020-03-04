@@ -257,7 +257,7 @@ msgstr "Il existe déjà une clé ayant ce nom"
 #: app/templates/views/support/ask-question-give-feedback.html:8
 #: app/templates/views/support/ask-question-give-feedback.html:14
 msgid "Ask a question or give feedback"
-msgstr "Posez une question ou laissez un commentaire"
+msgstr "Nous joindre"
 
 #: app/main/forms.py:833 app/main/forms.py:850
 #: app/templates/views/signedout.html:540

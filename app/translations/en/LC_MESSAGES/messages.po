@@ -260,7 +260,7 @@ msgstr ""
 #: app/main/forms.py:825
 #: app/templates/views/support/ask-question-give-feedback.html:8
 #: app/templates/views/support/ask-question-give-feedback.html:14
-msgid "Ask a question or give feedback"
+msgid "Contact us"
 msgstr ""
 
 #: app/main/forms.py:833 app/main/forms.py:850
@@ -770,7 +770,7 @@ msgstr ""
 #: app/templates/admin_template.html:41 app/templates/admin_template.html:63
 #: app/templates/views/documentation.html:2
 #: app/templates/views/documentation.html:4
-msgid "Documentation"
+msgid "Technical documentation"
 msgstr ""
 
 #: app/templates/admin_template.html:44 app/templates/main_template.html:222
@@ -2013,7 +2013,7 @@ msgstr ""
 #: app/templates/views/features.html:6 app/templates/views/features.html:11
 #: app/templates/views/features/emails.html:16
 #: app/templates/views/features/text-messages.html:16
-msgid "Features"
+msgid "Product features"
 msgstr ""
 
 #: app/templates/views/features.html:12
