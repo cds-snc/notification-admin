@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-04 08:16-0500\n"
+"POT-Creation-Date: 2020-03-04 08:38-0500\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -148,8 +148,8 @@ msgid "Folders this team member can see"
 msgstr ""
 
 #: app/main/forms.py:445
-msgid "Log in using"
-msgstr ""
+msgid "Sign in using"
+msgstr "Log in using"
 
 #: app/main/forms.py:447 app/templates/views/service-settings.html:44
 #: app/templates/views/service-settings/set-auth-type.html:31
@@ -260,8 +260,8 @@ msgstr ""
 #: app/main/forms.py:825
 #: app/templates/views/support/ask-question-give-feedback.html:8
 #: app/templates/views/support/ask-question-give-feedback.html:14
-msgid "Contact us"
-msgstr ""
+msgid "Ask a question or give feedback"
+msgstr "Contact us"
 
 #: app/main/forms.py:833 app/main/forms.py:850
 #: app/templates/views/signedout.html:540
@@ -770,8 +770,8 @@ msgstr ""
 #: app/templates/admin_template.html:41 app/templates/admin_template.html:63
 #: app/templates/views/documentation.html:2
 #: app/templates/views/documentation.html:4
-msgid "Technical documentation"
-msgstr ""
+msgid "Documentation"
+msgstr "Technical documentation"
 
 #: app/templates/admin_template.html:44 app/templates/main_template.html:222
 #: app/templates/main_template.html:250
@@ -780,17 +780,17 @@ msgid "Platform admin"
 msgstr ""
 
 #: app/templates/admin_template.html:53
-msgid "Log out"
-msgstr ""
+msgid "Sign out"
+msgstr "Log out"
 
 #: app/templates/admin_template.html:64 app/templates/views/signin.html:7
 #: app/templates/views/signin.html:27
-msgid "Log in"
-msgstr ""
+msgid "Sign in"
+msgstr "Log in"
 
 #: app/templates/admin_template.html:87
-msgid "Terms of use"
-msgstr ""
+msgid "Terms of Use"
+msgstr "Terms of use"
 
 #: app/templates/admin_template.html:90 app/templates/views/features.html:39
 #: app/templates/views/message-status.html:5
@@ -1985,8 +1985,8 @@ msgid "The link has expired"
 msgstr ""
 
 #: app/templates/views/email-link-invalid.html:14
-msgid "Log in again"
-msgstr ""
+msgid "Sign in again"
+msgstr "Log in again"
 
 #: app/templates/views/email-link-invalid.html:14
 msgid "to get a new link."
@@ -2013,8 +2013,8 @@ msgstr ""
 #: app/templates/views/features.html:6 app/templates/views/features.html:11
 #: app/templates/views/features/emails.html:16
 #: app/templates/views/features/text-messages.html:16
-msgid "Product features"
-msgstr ""
+msgid "Features"
+msgstr "Product features"
 
 #: app/templates/views/features.html:12
 msgid ""

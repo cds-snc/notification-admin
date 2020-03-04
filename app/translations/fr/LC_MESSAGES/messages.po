@@ -1019,11 +1019,11 @@ msgstr "Annuler le téléversement"
 
 #: app/templates/main_template.html:155 app/templates/views/signedout.html:74
 msgid "Alpha"
-msgstr ""
+msgstr "Alpha"
 
 #: app/templates/main_template.html:181
 msgid "Log out"
-msgstr ""
+msgstr "Se déconnecter"
 
 #: app/templates/main_template.html:188 app/templates/views/signedout.html:90
 #: app/templates/views/signedout.html:184
