@@ -118,7 +118,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     mock_get_security_keys.assert_called_with(api_user_active['id'])
     mock_verify_password.assert_called_with(
         api_user_active['id'],
-        password, {'location': '127.0.0.1', 'user-agent': 'werkzeug/0.16.0'})
+        password, {'location': '127.0.0.1', 'user-agent': 'werkzeug/1.0.0'})
     mock_get_user_by_email.assert_called_with('valid@example.canada.ca')
 
 
