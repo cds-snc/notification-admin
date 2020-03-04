@@ -180,7 +180,7 @@ def test_should_return_redirect_when_user_is_pending(
             'password': 'val1dPassw0rd!'}, follow_redirects=True)
 
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    assert page.h1.string == 'Sign in'
+    assert page.h1.string == 'Log in'
     assert response.status_code == 200
 
 
