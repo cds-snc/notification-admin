@@ -773,7 +773,7 @@ msgstr "Menu"
 #: app/templates/views/documentation.html:2
 #: app/templates/views/documentation.html:4
 msgid "Documentation"
-msgstr "Documentation"
+msgstr "Documentation technique"
 
 #: app/templates/admin_template.html:44 app/templates/main_template.html:222
 #: app/templates/main_template.html:250
