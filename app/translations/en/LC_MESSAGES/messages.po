@@ -2013,7 +2013,7 @@ msgstr ""
 #: app/templates/views/features.html:6 app/templates/views/features.html:11
 #: app/templates/views/features/emails.html:16
 #: app/templates/views/features/text-messages.html:16
-msgid "Features"
+msgid "Product features"
 msgstr ""
 
 #: app/templates/views/features.html:12
