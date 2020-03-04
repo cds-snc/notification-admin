@@ -148,7 +148,7 @@ msgid "Folders this team member can see"
 msgstr ""
 
 #: app/main/forms.py:445
-msgid "Sign in using"
+msgid "Log in using"
 msgstr ""
 
 #: app/main/forms.py:447 app/templates/views/service-settings.html:44
@@ -260,7 +260,7 @@ msgstr ""
 #: app/main/forms.py:825
 #: app/templates/views/support/ask-question-give-feedback.html:8
 #: app/templates/views/support/ask-question-give-feedback.html:14
-msgid "Ask a question or give feedback"
+msgid "Contact us"
 msgstr ""
 
 #: app/main/forms.py:833 app/main/forms.py:850
@@ -780,12 +780,12 @@ msgid "Platform admin"
 msgstr ""
 
 #: app/templates/admin_template.html:53
-msgid "Sign out"
+msgid "Log out"
 msgstr ""
 
 #: app/templates/admin_template.html:64 app/templates/views/signin.html:7
 #: app/templates/views/signin.html:27
-msgid "Sign in"
+msgid "Log in"
 msgstr ""
 
 #: app/templates/admin_template.html:87
@@ -1985,7 +1985,7 @@ msgid "The link has expired"
 msgstr ""
 
 #: app/templates/views/email-link-invalid.html:14
-msgid "Sign in again"
+msgid "Log in again"
 msgstr ""
 
 #: app/templates/views/email-link-invalid.html:14
