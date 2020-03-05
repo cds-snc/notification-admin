@@ -13,7 +13,7 @@ def test_render_sign_in_template_for_new_user(
 ):
     client_request.logout()
     page = client_request.get('main.sign_in')
-    assert normalize_spaces(page.select_one('h1').text) == 'Sign in'
+    assert normalize_spaces(page.select_one('h1').text) == 'Log in'
     assert normalize_spaces(page.select('label')[0].text) == 'Email address'
     assert page.select_one('#email_address')['value'] == ''
     assert page.select_one('#email_address')['autocomplete'] == 'email'
