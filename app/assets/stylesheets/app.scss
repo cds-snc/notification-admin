@@ -1,92 +1,5 @@
 // Extra CSS overlaying elements
 
-#global-header-bar {
-  background-color: $govuk-blue;
-}
-
-#global-header{
-  
-  #logo{
-    background: none;
-    margin-bottom: 10px;
-
-    img{
-      margin: 2px 1px 0 0;
-      vertical-align: bottom;
-      visibility: visible;
-    }
-  }
-}
-
-#global-footer-fip  {
-  max-width: 990px;
-  margin: 0 auto;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  display:flex;
-  justify-content: space-between;
-
-  margin: 0 30px;
-
-  .footer_support_links{
-    display:flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  @media (min-width: 1020px) {
-    margin: 0 auto;
-  }
-}
-
-
-#global-header,
-#global-header.with-proposition {
-
-  #logo {
-
-    white-space: nowrap;
-
-    #product-name {
-      font-size: 24px;
-      font-weight: 400;
-      padding-left: 50px;
-    }
-
-  }
-
-  .header-wrapper {
-    .header-global {
-      .header-logo {
-
-        @include media(desktop) {
-          width: auto;
-        }
-
-        &:after {
-          display: none;
-        }
-
-      }
-    }
-  }
-
-  .header-proposition {
-    #proposition-links {
-      li {
-        padding: 0 0 0 15px;
-      }
-    }
-  }
-
-}
-
-@include media(desktop) {
-  #proposition-menu {
-    float: right;
-  }
-}
-
 a {
   &:visited {
     color: $link-colour;
@@ -391,7 +304,7 @@ details .arrow {
 }
 
 main {
-  font-family: "Helvetica Neue", Helvetica, Arial,sans-serif;
+  font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial,sans-serif;
 }
 
 .product-page-intro h1{

@@ -1,11 +1,11 @@
 //  GOV.UK font stacks, referred to in typography.scss
 
 // New Transport Light
-$nta-light: Arial, sans-serif;
+$nta-light:  "Noto Sans", Arial, sans-serif;
 $nta-light-tabular: $nta-light;
 
 // Helvetica Regular
-$helvetica-regular: "HelveticaNeue", "Helvetica Neue", "Arial", "Helvetica", sans-serif;
+$helvetica-regular: "Noto Sans", "HelveticaNeue", "Helvetica Neue", "Arial", "Helvetica", sans-serif;
 
 // Allow font stack to be overridden
 // Not all apps using toolkit use New Transport
