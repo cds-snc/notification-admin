@@ -149,7 +149,7 @@ msgstr ""
 
 #: app/main/forms.py:445
 msgid "Sign in using"
-msgstr ""
+msgstr "Log in using"
 
 #: app/main/forms.py:447 app/templates/views/service-settings.html:44
 #: app/templates/views/service-settings/set-auth-type.html:31
@@ -261,7 +261,7 @@ msgstr ""
 #: app/templates/views/support/ask-question-give-feedback.html:8
 #: app/templates/views/support/ask-question-give-feedback.html:14
 msgid "Ask a question or give feedback"
-msgstr ""
+msgstr "Contact us"
 
 #: app/main/forms.py:833 app/main/forms.py:850
 #: app/templates/views/signedout.html:540
@@ -771,7 +771,7 @@ msgstr ""
 #: app/templates/views/documentation.html:2
 #: app/templates/views/documentation.html:4
 msgid "Documentation"
-msgstr ""
+msgstr "Technical documentation"
 
 #: app/templates/admin_template.html:44 app/templates/main_template.html:222
 #: app/templates/main_template.html:250
@@ -786,11 +786,11 @@ msgstr ""
 #: app/templates/admin_template.html:64 app/templates/views/signin.html:7
 #: app/templates/views/signin.html:27
 msgid "Sign in"
-msgstr ""
+msgstr "Log in"
 
 #: app/templates/admin_template.html:87
 msgid "Terms of Use"
-msgstr ""
+msgstr "Terms of use"
 
 #: app/templates/admin_template.html:90 app/templates/views/features.html:39
 #: app/templates/views/message-status.html:5
@@ -1986,7 +1986,7 @@ msgstr ""
 
 #: app/templates/views/email-link-invalid.html:14
 msgid "Sign in again"
-msgstr ""
+msgstr "Log in again"
 
 #: app/templates/views/email-link-invalid.html:14
 msgid "to get a new link."
@@ -2014,7 +2014,7 @@ msgstr ""
 #: app/templates/views/features/emails.html:16
 #: app/templates/views/features/text-messages.html:16
 msgid "Features"
-msgstr ""
+msgstr "Product features"
 
 #: app/templates/views/features.html:12
 msgid ""
@@ -4294,7 +4294,7 @@ msgstr ""
 msgid ""
 "Each service you set up in Notification has a free annual allowance. The "
 "allowance is:"
-msgstr ""
+msgstr "Each service you set up in Notification has a free annual allowance."
 
 #: app/templates/views/pricing/index.html:37
 msgid "250,000 free text messages for central government services"
