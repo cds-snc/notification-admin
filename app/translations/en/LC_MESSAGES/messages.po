@@ -2549,14 +2549,15 @@ msgstr ""
 msgid ""
 "You're creating an account for GC Notify, so you can choose to stop using"
 " it at any time for any reason."
-msgstr ""
+msgstr "You're creating an account for Notify, so you can choose to stop using it at any time for any reason"
 
 #: app/templates/views/register.html:41
 msgid ""
 "We (the Canadian Digital Service) will make sure your data and and "
 "correspondence are confidential, which means they will not be linked back"
 " to anyone."
-msgstr ""
+msgstr "We (the Canadian Digital Service) will make sure your data and correspondence are confidential, which means they will not be linked back to anyone.
+"
 
 #: app/templates/views/register.html:44
 msgid ""
