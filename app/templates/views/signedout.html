@@ -409,7 +409,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
 
           {% if session["userlang"] == "en" %} 
             <img
-              alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user. "
+              alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
               loading="lazy"
               class="max-w-full md:max-w-xl block align-top lg:hidden"
               width="390"
@@ -446,14 +446,26 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           <div
             class="image-content pt-10 lg:pt-0 flex"
           >
+          {% if session["userlang"] == "en" %} 
             <img
-              alt=""
+              alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
               loading="lazy"
               class="max-w-full md:max-w-xl block align-top hidden lg:block"
               width="400"
               style="object-fit: contain; object-position: 0% 50%;"
-              src="{{ asset_url('images/homepage/cloud-flow.svg') }}"
+              src="{{ asset_url('images/homepage/integrate-1.svg') }}"
             />
+            {% else %}
+            <img
+            alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
+            loading="lazy"
+            class="max-w-full md:max-w-xl block align-top hidden lg:block"
+            width="400"
+            style="object-fit: contain; object-position: 0% 50%;"
+            src="{{ asset_url('images/homepage/integrate-1.svg') }}"
+          />
+          {% endif %}
+
           </div>
         </div>
       </div>
