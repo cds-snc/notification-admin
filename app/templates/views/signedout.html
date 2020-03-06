@@ -257,8 +257,29 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           <h2 class="leading-tight font-bold">
             {{ _("<i>Notify</i> is built for you") }}
           </h2>
+          <div class="image-content flex">
+          {% if session["userlang"] == "en" %} 
+            <img
+              alt="An illustration with three outlines of people each with different interests. One is thinking of sending a message. The second is thinking of
+              code and the technical aspect. The third has managing a team in mind."
+              loading="lazy"
+              class="max-w-full md:max-w-xl block align-top lg:hidden"
+              width="390"
+              src="{{ asset_url('images/homepage/built4you.svg') }}"
+
+            />
+         {% else %}
+           <img
+            alt="Illustration de trois silhouettes, chacune ayant un intérêt spécifique dans une bulle au-dessus de leur tête. L'une pense à envoyer un message, la deuxième au code et à l'aspect technique, et la troisième à la gestion d'une équipe."
+           loading="lazy"
+          class="max-w-full md:max-w-xl block align-top lg:hidden"
+          width="390"
+           src="{{ asset_url('images/homepage/built4you.svg') }}"
+        />
+         {% endif %}
+         </div>
           <ul class="list-disc ml-5">
-            <li class="pt-4">
+            <li class="pt-10 lg:pt-0 flex">
               {{ _("Staff who regularly write and send service updates wishing
               to upgrade the tools used to communicate with the public") }}
             </li>
@@ -278,21 +299,28 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           alt="An illustration with three outlines of people each with different interests. One is thinking of sending a message. The second is thinking of
           code and the technical aspect. The third has managing a team in mind." 
           width="400"
+          class="max-w-full md:max-w-xl block align-top hidden lg:block"
           style="object-fit: contain; object-position: 0% 50%;"
           src="{{ asset_url('images/homepage/built4you.svg') }}"
-          class="max-w-full md:max-w-xl" />
+          />
         </div>
       {% else %}
       <div class="image-content flex">
         <img loading="lazy" 
         alt="Illustration de trois silhouettes, chacune ayant un intérêt spécifique dans une bulle au-dessus de leur tête. L'une pense à envoyer un message, la deuxième au code et à l'aspect technique, et la troisième à la gestion d'une équipe." 
         width="400"
+        class="max-w-full md:max-w-xl block align-top hidden lg:block"
         style="object-fit: contain; object-position: 0% 50%;"
         src="{{ asset_url('images/homepage/built4you.svg') }}"
-        class="max-w-full md:max-w-xl" />
+        />
       </div>
       {% endif %}
+      <div
+      class="image-content pt-10 lg:pt-0 flex"
+    >
+   
 
+    </div>
         <!-- -->
       </div>
     </div>
@@ -409,11 +437,12 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
 
           {% if session["userlang"] == "en" %} 
             <img
-              alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user. "
+              alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
               loading="lazy"
               class="max-w-full md:max-w-xl block align-top lg:hidden"
               width="390"
-              src="{{ asset_url('images/homepage/integrate.svg')}}"
+              src="{{ asset_url('images/homepage/integrate-1.svg') }}"
+
             />
          {% else %}
            <img
@@ -421,7 +450,7 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
            loading="lazy"
           class="max-w-full md:max-w-xl block align-top lg:hidden"
           width="390"
-           src="{{ asset_url('images/homepage/integrate.svg') }}"
+           src="{{ asset_url('images/homepage/integrate-1.svg') }}"
         />
          {% endif %}
 
@@ -445,14 +474,26 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           <div
             class="image-content pt-10 lg:pt-0 flex"
           >
+          {% if session["userlang"] == "en" %} 
             <img
-              alt=""
+              alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
               loading="lazy"
               class="max-w-full md:max-w-xl block align-top hidden lg:block"
               width="400"
               style="object-fit: contain; object-position: 0% 50%;"
-              src="{{ asset_url('images/homepage/cloud-flow.svg') }}"
+              src="{{ asset_url('images/homepage/integrate-1.svg') }}"
             />
+            {% else %}
+            <img
+            alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
+            loading="lazy"
+            class="max-w-full md:max-w-xl block align-top hidden lg:block"
+            width="400"
+            style="object-fit: contain; object-position: 0% 50%;"
+            src="{{ asset_url('images/homepage/integrate-1.svg') }}"
+          />
+          {% endif %}
+
           </div>
         </div>
       </div>
