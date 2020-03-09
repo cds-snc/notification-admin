@@ -51,12 +51,13 @@ COMPLAINT_THRESHOLD = 0.02
 FAILURE_THRESHOLD = 3
 ZERO_FAILURE_THRESHOLD = 0
 
+
 @main.route("/live-stats")
 def live_stats():
     api_args = {}
     json_data = {}
-    api_args['start_date'] = "2019-01-01";
-    api_args['end_date'] = datetime.utcnow().date() 
+    api_args['start_date'] = "2019-01-01"
+    api_args['end_date'] = datetime.utcnow().date()
     results = service_api_client.get_live_services_data()["data"]
     email_totals = 0
     service_names = []
