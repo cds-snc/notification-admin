@@ -3,7 +3,15 @@ import re
 from collections import OrderedDict
 from datetime import datetime
 
-from flask import abort, flash, redirect, render_template, request, url_for
+from flask import (
+    abort,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from notifications_python_client.errors import HTTPError
 from requests import RequestException
 
@@ -42,6 +50,26 @@ from app.utils import (
 COMPLAINT_THRESHOLD = 0.02
 FAILURE_THRESHOLD = 3
 ZERO_FAILURE_THRESHOLD = 0
+
+@main.route("/live-stats")
+def live_stats():
+    api_args = {}
+    json_data = {}
+    api_args['start_date'] = "2019-01-01";
+    api_args['end_date'] = datetime.utcnow().date() 
+    results = service_api_client.get_live_services_data()["data"]
+    email_totals = 0
+    service_names = []
+
+    for row in results:
+        if row['email_totals']:
+            email_totals += int(row['email_totals'])
+        if row['service_name']:
+            service_names.append(row['service_name'])
+
+    json_data["services_count"] = len(service_names)
+    json_data["email_totals"] = email_totals
+    return jsonify(json_data)
 
 
 @main.route("/platform-admin")
