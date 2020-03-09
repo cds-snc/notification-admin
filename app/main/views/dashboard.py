@@ -141,10 +141,11 @@ def template_usage(service_id):
 @main.route("/services/<service_id>/usage")
 @user_has_permissions('manage_service', allow_org_user=True)
 def usage(service_id):
-    if current_service.has_permission('view_activity'):
+
+    if current_service.has_permission('view_activity') or current_user.platform_admin:
         return redirect(url_for('.service_dashboard', service_id=service_id))
 
-    return redirect(url_for('main.index', service_id=service_id))
+    return redirect(url_for('.main.index', service_id=service_id))
 
 
 @main.route("/services/<service_id>/monthly")
