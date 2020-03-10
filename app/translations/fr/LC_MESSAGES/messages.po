@@ -952,7 +952,7 @@ msgstr "h"
 
 #: app/templates/main_template.html:94
 msgid "Hour to send"
-msgstr "FR Hour to send"
+msgstr "Heure d'envoi"
 
 #: app/templates/main_template.html:95
 msgid "Copied to clipboard"
@@ -972,16 +972,16 @@ msgstr "dans le presse-papiers"
 
 #: app/templates/main_template.html:99
 msgid "Add another"
-msgstr "FR Add another"
+msgstr "Ajouter un autre"
 
 #: app/templates/components/list-entry.html:31
 #: app/templates/main_template.html:100
 msgid "number"
-msgstr "FR number"
+msgstr "nombre"
 
 #: app/templates/main_template.html:101
 msgid "remaining"
-msgstr "FR remaining"
+msgstr "reste"
 
 #: app/templates/main_template.html:102
 #: app/templates/views/user-profile/security-keys.html:40
@@ -1260,11 +1260,11 @@ msgstr "Essayez de vous envoyer cet exemple"
 
 #: app/templates/partials/tour.html:11
 msgid "Every message is sent from a template"
-msgstr "Chaque message est envoyé à partir d’un modèle"
+msgstr "Chaque message est envoyé à partir d’un gabarit"
 
 #: app/templates/partials/tour.html:21
 msgid "The template pulls information from your data"
-msgstr "Le modèle extrait de l’information à partir de vos données"
+msgstr "Le gabarit extrait de l’information à partir de vos données"
 
 #: app/templates/partials/tour.html:31
 msgid "Notification delivers the message"
@@ -1418,7 +1418,7 @@ msgstr "essai"
 
 #: app/templates/partials/templates/guidance-formatting-letters.html:3
 msgid "To put a heading in your template, use a hash:"
-msgstr "Pour mettre un en-tête dans votre modèle, utilisez un croisillon :"
+msgstr "Pour mettre un en-tête dans votre gabarit, utilisez un croisillon :"
 
 #: app/templates/partials/templates/guidance-formatting-letters.html:7
 msgid "# This is a heading"
@@ -1463,7 +1463,7 @@ msgstr "Mise en forme"
 
 #: app/templates/partials/templates/guidance-formatting.html:3
 msgid "To put a title in your template, use a hash:"
-msgstr "Pour insérer un titre dans votre modèle, utilisez un croisillon :"
+msgstr "Pour insérer un titre dans votre gabarit, utilisez un croisillon :"
 
 #: app/templates/partials/templates/guidance-formatting.html:7
 msgid "# This is a title"
@@ -1515,7 +1515,7 @@ msgid ""
 "You can enter optional content in your template by uploading a "
 "spreadsheet with information about your users."
 msgstr ""
-"Vous pouvez entrer du contenu facultatif dans votre modèle en "
+"Vous pouvez entrer du contenu facultatif dans votre gabarit en "
 "téléchargeant une feuille de calcul contenant des renseignements sur vos "
 "utilisateurs."
 
@@ -1576,7 +1576,7 @@ msgid ""
 "will contain a secure link to download the document."
 msgstr ""
 "Utilisez des parenthèses doubles pour ajouter un espace réservé à votre "
-"modèle. Cet espace réservé contiendra un lien sécurisé permettant de "
+"gabarit. Cet espace réservé contiendra un lien sécurisé permettant de "
 "télécharger le document."
 
 #: app/templates/partials/templates/guidance-send-a-document.html:9
@@ -1962,7 +1962,7 @@ msgstr "Connexion directe à l'API"
 #: app/templates/views/edit-email-template.html:6
 #: app/templates/views/edit-email-template.html:7
 msgid "email template"
-msgstr "modèle de courriel"
+msgstr "gabarit de courriel"
 
 #: app/templates/views/edit-email-template.html:16
 #: app/templates/views/edit-sms-template.html:22
@@ -1971,11 +1971,11 @@ msgstr "Guide de mise en forme"
 
 #: app/templates/views/edit-email-template.html:23
 msgid "Select template content"
-msgstr "Sélectionner le contenu du modèle"
+msgstr "Sélectionner le contenu du gabarit"
 
 #: app/templates/views/edit-email-template.html:35
 msgid "Your recipients won’t see this:"
-msgstr "Vos destinataires ne verront pas le nom du modèle."
+msgstr "Vos destinataires ne verront pas le nom du gabarit."
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:37
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:35
@@ -2014,12 +2014,12 @@ msgstr "D’accord"
 
 #: app/templates/views/edit-letter-template.html:9
 msgid "letter template"
-msgstr "modèle de lettre"
+msgstr "gabarit de lettre"
 
 #: app/templates/views/edit-sms-template.html:9
 #: app/templates/views/edit-sms-template.html:13
 msgid "text message template"
-msgstr "modèle de message texte"
+msgstr "gabarit de message texte"
 
 #: app/templates/views/edit-sms-template.html:24
 msgid "Your recipients won’t see this"
@@ -2104,7 +2104,7 @@ msgstr "gratuitement et faites-en l’essai."
 
 #: app/templates/views/features.html:24
 msgid "Reusable message templates"
-msgstr "Modèles de messages réutilisables"
+msgstr "Gabarit de messages réutilisables"
 
 #: app/templates/views/features.html:25
 msgid ""
@@ -2112,14 +2112,14 @@ msgid ""
 " message template first."
 msgstr ""
 "Pour envoyer un courriel ou un message texte avec <i>Notification</i>, vous "
-"devez d'abord créer un modèle de message réutilisable."
+"devez d'abord créer un gabarit de message réutilisable."
 
 #: app/templates/views/features.html:26
 msgid ""
 "Templates let you send the same thing to lots of people, as often as you "
 "need, without writing a new message each time."
 msgstr ""
-"Les modèles vous permettent d’envoyer le même message à de nombreuses "
+"Les gabarit vous permettent d’envoyer le même message à de nombreuses "
 "personnes, aussi souvent que vous le souhaitez, sans avoir à rédiger le "
 "message de nouveau chaque fois."
 
@@ -2132,8 +2132,7 @@ msgid ""
 "Notification makes it easy to send personalized messages from a single "
 "template."
 msgstr ""
-"<i>Notification</i> facilite l’envoi de messages personnalisés à partir d’un "
-"seul modèle."
+"<i>Notification</i> facilite l’envoi de messages personnalisés à partir d’un seul gabarit."
 
 #: app/templates/views/features.html:30
 msgid ""
@@ -2354,7 +2353,7 @@ msgstr "Continuer"
 
 #: app/templates/views/manage-users.html:17
 msgid "Share templates with your team"
-msgstr "Partager des modèles avec votre équipe"
+msgstr "Partager des gabarits avec votre équipe"
 
 #: app/templates/views/manage-users.html:27
 msgid "Invite someone to join your team"
@@ -2809,7 +2808,7 @@ msgstr "Télécharger cet exemple"
 
 #: app/templates/views/send.html:57
 msgid "Your file will populate this template"
-msgstr "Votre fichier remplira ce modèle"
+msgstr "Votre fichier remplira ce gabarit"
 
 #: app/templates/views/service-settings.html:9
 #: app/templates/views/service-settings/email_reply_to.html:35
@@ -3435,7 +3434,7 @@ msgstr "envoyer des messages à vous et aux autres personnes dans votre équipe"
 
 #: app/templates/views/trial-mode.html:16
 msgid "create letter templates, but not send them"
-msgstr "créer des modèles de lettre, mais sans pouvoir les envoyer"
+msgstr "créer des gabarits de lettre, mais sans pouvoir les envoyer"
 
 #: app/templates/views/trial-mode.html:25
 msgid "send us a request to go live."
@@ -3991,8 +3990,7 @@ msgid ""
 "The columns in your file need to match the double brackets in\n"
 "          your template"
 msgstr ""
-"Les colonnes de votre fichier doivent correspondre aux parenthèses "
-"doubles compris dans votre modèle"
+"Les colonnes de votre fichier doivent correspondre aux parenthèses doubles compris dans votre gabarit"
 
 #: app/templates/views/check/column-errors.html:99
 msgid "Your file is missing"
@@ -4072,7 +4070,7 @@ msgstr "envoyé"
 #: app/templates/views/dashboard/all-template-statistics.html:13
 #: app/templates/views/dashboard/template-statistics.html:7
 msgid "Templates used"
-msgstr "Modèles utilisés"
+msgstr "Gabarits utilisés"
 
 #: app/templates/views/dashboard/all-template-statistics.html:20
 msgid "No messages sent"
@@ -4081,7 +4079,7 @@ msgstr "Aucun message envoyé"
 #: app/templates/views/dashboard/all-template-statistics.html:23
 #: app/templates/views/dashboard/template-statistics.html:8
 msgid "Template"
-msgstr "Modèle"
+msgstr "Gabarit"
 
 #: app/templates/views/dashboard/all-template-statistics.html:24
 #: app/templates/views/dashboard/monthly.html:16
@@ -4099,7 +4097,7 @@ msgstr "Voir les messages envoyés par mois"
 
 #: app/templates/views/dashboard/dashboard.html:39
 msgid "Check templates used by month"
-msgstr "Voir les modèles utilisés par mois"
+msgstr "Voir les gabarits utilisés par mois"
 
 #: app/templates/views/dashboard/dashboard.html:48
 msgid "See all uploaded files"
@@ -4166,7 +4164,7 @@ msgstr "<i>Notification</i> facilite :"
 
 #: app/templates/views/features/emails.html:19
 msgid "create reusable email templates"
-msgstr "la création de modèles de courriels réutilisables"
+msgstr "la création de gabarits de courriels réutilisables"
 
 #: app/templates/views/features/emails.html:20
 msgid "personalize the content of your emails"
@@ -4231,11 +4229,11 @@ msgstr "L’envoi de courriels avec <i>Notification</i> est gratuit."
 
 #: app/templates/views/features/templates.html:5
 msgid "Template Formatting Guide"
-msgstr "Guide de mise en forme des modèles"
+msgstr "Guide de mise en forme des gabarits"
 
 #: app/templates/views/features/templates.html:9
 msgid "Template Formatting"
-msgstr "Mise en forme des modèles"
+msgstr "Mise en forme des gabarits"
 
 #: app/templates/views/features/text-messages.html:11
 msgid ""
@@ -4251,7 +4249,7 @@ msgstr "et essayez <i>Notification</i> pour vous-mêmes."
 
 #: app/templates/views/features/text-messages.html:19
 msgid "create reusable text message templates"
-msgstr "la création de modèles de messages texte réutilisables"
+msgstr "la création de gabarits de messages texte réutilisables"
 
 #: app/templates/views/features/text-messages.html:20
 msgid "personalize the content of your texts"
@@ -4406,7 +4404,7 @@ msgstr "Tous les membres de l’équipe peuvent voir les messages envoyés."
 msgid "Platform admin users can access all template folders."
 msgstr ""
 "Les utilisateurs administrateurs de la plateforme peuvent accéder à tous "
-"les dossiers de modèles."
+"les dossiers de gabarits."
 
 #: app/templates/views/manage-users/permissions.html:25
 msgid ""
@@ -4846,7 +4844,7 @@ msgstr "Ajouter un nouveau dossier"
 
 #: app/templates/views/templates/_template.html:6
 msgid "This template was deleted"
-msgstr "Ce modèle a été supprimé"
+msgstr "Ce gabarit a été supprimé"
 
 #: app/templates/views/templates/_template.html:10
 msgid "If you need to send this"
@@ -4854,7 +4852,7 @@ msgstr "Si vous avez besoin de l’envoyer"
 
 #: app/templates/views/templates/_template.html:12
 msgid "or edit this template, contact your manager."
-msgstr "ou de modifier ce modèle, communiquez avec votre gestionnaire."
+msgstr "ou de modifier ce gabarit, communiquez avec votre gestionnaire."
 
 #: app/templates/views/templates/_template_history.html:5
 msgid "Edit made"
@@ -4875,11 +4873,11 @@ msgstr "Il n’y a pas de "
 
 #: app/templates/views/templates/_template_list.html:19
 msgid "templates in this folder"
-msgstr "modèles dans ce dossier"
+msgstr "gabarits dans ce dossier"
 
 #: app/templates/views/templates/add.html:8
 msgid "Add new template or folder"
-msgstr "Ajouter un nouveau modèle ou dossier"
+msgstr "Ajouter un nouveau gabarit ou dossier"
 
 #: app/templates/views/templates/add.html:13
 msgid "What do you want to add?"
@@ -4887,7 +4885,7 @@ msgstr "Que voulez-vous ajouter?"
 
 #: app/templates/views/templates/choose.html:26
 msgid "You need to create a template to send"
-msgstr "Vous devez créer un modèle pour envoyer"
+msgstr "Vous devez créer un gabarit pour envoyer"
 
 #: app/templates/views/templates/choose.html:29
 #: app/templates/views/templates/choose.html:39
@@ -4901,18 +4899,18 @@ msgstr "des courriels ou des messages texte"
 
 #: app/templates/views/templates/choose.html:32
 msgid "You can also create folders to organize your templates."
-msgstr "Vous pouvez aussi créer des dossiers pour classer vos modèles."
+msgstr "Vous pouvez aussi créer des dossiers pour classer vos gabarits."
 
 #: app/templates/views/templates/choose.html:37
 msgid "You need to ask your service manager to add templates before you can send"
 msgstr ""
-"Vous devez demander à votre gestionnaire de service d’ajouter des modèles"
+"Vous devez demander à votre gestionnaire de service d’ajouter des gabarits"
 " avant de pouvoir envoyer des messages"
 
 #: app/templates/views/templates/copy.html:7
 #: app/templates/views/templates/copy.html:13
 msgid "Copy an existing template"
-msgstr "Copier un modèle existant"
+msgstr "Copier un gabarit existant"
 
 #: app/templates/views/templates/template.html:51
 msgid "Last edited"
@@ -4924,7 +4922,7 @@ msgstr "Voir les versions précédentes"
 
 #: app/templates/views/templates/template.html:66
 msgid "Delete this template"
-msgstr "Supprimer ce modèle"
+msgstr "Supprimer ce gabarit"
 
 #: app/templates/views/templates/template.html:74
 msgid "Hide personal information from screen and logs after sending"
