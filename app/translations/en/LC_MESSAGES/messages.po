@@ -1876,15 +1876,15 @@ msgstr ""
 
 #: app/templates/views/documentation.html:17
 msgid "Remarque:"
-msgstr ""
+msgstr "Note:"
 
 #: app/templates/views/documentation.html:17
 msgid "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
-msgstr ""
+msgstr "You need to change your endpoint before integrating the API."
 
 #: app/templates/views/documentation.html:22
 msgid "Changer votre point de connexion API"
-msgstr ""
+msgstr "Changing your endpoint"
 
 #: app/templates/views/documentation.html:27
 msgid "Note:"

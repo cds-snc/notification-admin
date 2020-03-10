@@ -90,7 +90,7 @@ msgstr "numéro de téléphone"
 #: app/main/forms.py:1260 app/main/forms.py:1265 app/main/forms.py:1315
 #: app/main/forms.py:1422 app/main/forms.py:1433 app/main/forms.py:1596
 msgid "Can’t be empty"
-msgstr ""
+msgstr "Ne peut pas être vide"
 
 #: app/main/forms.py:155 app/main/forms.py:398 app/main/forms.py:420
 #: app/templates/views/user-profile.html:46
@@ -170,11 +170,11 @@ msgstr "Nom du service"
 
 #: app/main/forms.py:536 app/templates/views/service-settings.html:365
 msgid "Sending domain"
-msgstr ""
+msgstr "Envoi du domaine"
 
 #: app/main/forms.py:542
 msgid "STMP name"
-msgstr ""
+msgstr "Nom du SMTP"
 
 #: app/main/forms.py:606
 msgid "Domain names"
@@ -592,11 +592,11 @@ msgstr "(Reçoit les réponses)"
 
 #: app/main/views/send.py:230
 msgid "(Default and receives replies)"
-msgstr ""
+msgstr "Recevoir des réponses par défaut"
 
 #: app/main/views/send.py:250 app/main/views/send.py:251
 msgid "Where should replies come back to?"
-msgstr ""
+msgstr "À qui doivent revenir les réponses"
 
 #: app/main/views/send.py:255
 msgid "Send to one recipient"
@@ -604,11 +604,11 @@ msgstr "Envoyer à un destinataire"
 
 #: app/main/views/send.py:256
 msgid "What should appear in the top right of the letter?"
-msgstr ""
+msgstr "Qu'est-ce qui devrait apparaître en haut à droit de la lettre?"
 
 #: app/main/views/send.py:260 app/main/views/send.py:261
 msgid "Who should the message come from?"
-msgstr ""
+msgstr "De qui le message devrait-il provenir?"
 
 #: app/main/views/send.py:451
 msgid "Use my"
@@ -860,7 +860,7 @@ msgstr "Terminer"
 
 #: app/templates/main_template.html:72
 msgid "Copy template"
-msgstr ""
+msgstr "Copier le modèle"
 
 #: app/templates/main_template.html:73
 msgid "New folder"
@@ -1019,7 +1019,7 @@ msgstr "Annuler le téléversement"
 
 #: app/templates/main_template.html:173 app/templates/views/signedout.html:74
 msgid "Alpha"
-msgstr ""
+msgstr "Alpha"
 
 #: app/templates/main_template.html:202
 msgid "Log out"
@@ -1927,7 +1927,7 @@ msgstr ""
 
 #: app/templates/views/documentation.html:17
 msgid "Remarque:"
-msgstr ""
+msgstr "Remarque :"
 
 #: app/templates/views/documentation.html:17
 msgid "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
@@ -1939,15 +1939,15 @@ msgstr ""
 
 #: app/templates/views/documentation.html:27
 msgid "Note:"
-msgstr ""
+msgstr "Remarque :"
 
 #: app/templates/views/documentation.html:27
 msgid "You need to change your endpoint before integrating the API."
-msgstr ""
+msgstr "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
 
 #: app/templates/views/documentation.html:31
 msgid "Changing your endpoint"
-msgstr ""
+msgstr "Changer votre point de connexion API"
 
 #: app/templates/views/documentation.html:35
 msgid "Maintained by CDS:"
@@ -1959,7 +1959,7 @@ msgstr "Maintenu par GOV.UK :"
 
 #: app/templates/views/documentation.html:77
 msgid "Direct connection to API"
-msgstr ""
+msgstr "Connexion directe à l'API"
 
 #: app/templates/views/edit-email-template.html:6
 #: app/templates/views/edit-email-template.html:7
@@ -1973,7 +1973,7 @@ msgstr "Guide de mise en forme"
 
 #: app/templates/views/edit-email-template.html:23
 msgid "Select template content"
-msgstr ""
+msgstr "Sélectionner le contenu du modèle"
 
 #: app/templates/views/edit-email-template.html:35
 msgid "Your recipients won’t see this:"
@@ -2325,21 +2325,21 @@ msgstr "Envoyer un courriel d’invitation"
 
 #: app/templates/views/login_events.html:12
 msgid "Login history"
-msgstr ""
+msgstr "Historique de connexion"
 
 #: app/templates/views/login_events.html:13
 msgid ""
 "Our records show that these are the last 3 times you logged into this "
 "account:"
-msgstr ""
+msgstr "Nos archives montrent que ce sont les trois dernières fois que vous vous êtes connecté au site :"
 
 #: app/templates/views/login_events.html:33
 msgid "If this is not correct,"
-msgstr ""
+msgstr "Si ce n'est pas le cas, "
 
 #: app/templates/views/login_events.html:33
 msgid "contact us right away"
-msgstr ""
+msgstr "communiquez avec nous immédiatement"
 
 #: app/templates/views/agreement/_agreement.html:17
 #: app/templates/views/agreement/agreement-accept.html:35
@@ -3034,7 +3034,7 @@ msgstr "Reprendre le service"
 
 #: app/templates/views/signedout.html:10
 msgid "Notify lets you send emails and text messages to your users"
-msgstr ""
+msgstr "Notification vous permet d'envoyer des courriels et des messages texte à vos utilisateurs"
 
 #: app/templates/views/signedout.html:11
 msgid ""
@@ -4359,11 +4359,11 @@ msgstr "Archives sur l’utilisateur"
 
 #: app/templates/views/find-users/user-information.html:74
 msgid "Unblock user"
-msgstr ""
+msgstr "Débloquer l'utilisateur"
 
 #: app/templates/views/find-users/user-information.html:80
 msgid "Block user"
-msgstr ""
+msgstr "Bloquer l'utilisateur"
 
 #: app/templates/views/manage-users/confirm-edit-user-email.html:7
 msgid "Confirm change of email address"
@@ -4460,7 +4460,7 @@ msgstr "archivé"
 msgid ""
 "When you turn a service live please log which services have been turned\n"
 "      live and why you approved the change."
-msgstr ""
+msgstr "Lorsque vous activez un services, veuillez indiquer quels services ont été activés et pourquoi vous avez approuvé le changement."
 
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:8
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:12
@@ -4473,42 +4473,42 @@ msgstr "Le nom de votre organisation sera changé de"
 
 #: app/templates/views/platform-admin/reports.html:10
 msgid "Reports"
-msgstr ""
+msgstr "Rapports"
 
 #: app/templates/views/platform-admin/reports.html:14
 msgid "Download live services csv report"
-msgstr ""
+msgstr "Télécharger le rapport csv sur les services actifs"
 
 #: app/templates/views/platform-admin/reports.html:18
 msgid "Download performance platform report (.xlsx)"
-msgstr ""
+msgstr "Télécharger le rapport sur la performance de la plateforme (.xlsx)"
 
 #: app/templates/views/platform-admin/reports.html:22
 msgid "Monthly notification statuses for live services"
-msgstr ""
+msgstr "Statut mensuel de notification pour les services actifs"
 
 #: app/templates/views/platform-admin/reports.html:25
 #: app/templates/views/platform-admin/usage_for_all_services.html:5
 #: app/templates/views/platform-admin/usage_for_all_services.html:11
 msgid "Usage for all services"
-msgstr ""
+msgstr "Utilisation pour tous les services"
 
 #: app/templates/views/platform-admin/usage_for_all_services.html:15
 #: app/templates/views/platform-admin/usage_for_all_services.html:16
 msgid "Enter start date in format YYYY-MM-DD"
-msgstr ""
+msgstr "Inscriver la date de début dans le format YYYY-MM-DD"
 
 #: app/templates/views/pricing/how-to-pay.html:5
 msgid "How to pay"
-msgstr ""
+msgstr "Comment payer"
 
 #: app/templates/views/pricing/how-to-pay.html:13
 msgid "Invoices"
-msgstr ""
+msgstr "Factures"
 
 #: app/templates/views/pricing/how-to-pay.html:17
 msgid "We’ll send your organisation an invoice each quarter if you:"
-msgstr ""
+msgstr "Nous enverrons une facture à votre organisation à chaque trimestre si vous :"
 
 #: app/templates/views/pricing/how-to-pay.html:21
 msgid "exceed the"
@@ -4585,7 +4585,7 @@ msgstr "puis mettez en place le nombre de services différents nécessaires."
 
 #: app/templates/views/pricing/index.html:25
 msgid "You can set up as many different services as you need to."
-msgstr ""
+msgstr "Vous pouvez mettre en place autant de services différents que nécessaire."
 
 #: app/templates/views/pricing/index.html:29
 msgid "When you set up a new service it will start in"
@@ -4700,15 +4700,15 @@ msgstr ""
 
 #: app/templates/views/service-settings/sending_domain.html:12
 msgid "Sending Page"
-msgstr ""
+msgstr "Page d'envoi"
 
 #: app/templates/views/service-settings/sending_domain.html:18
 msgid "Sending Domain"
-msgstr ""
+msgstr "Domaine"
 
 #: app/templates/views/service-settings/sending_domain.html:26
 msgid "Default notification.alpha.canada.ca"
-msgstr ""
+msgstr "Défaut : notification.alpha.canada.ca"
 
 #: app/templates/views/service-settings/set-auth-type.html:24
 msgid ""
@@ -4720,11 +4720,11 @@ msgstr ""
 
 #: app/templates/views/service-settings/set-auth-type.html:27
 msgid "You can"
-msgstr ""
+msgstr "Vous pouvez"
 
 #: app/templates/views/service-settings/set-auth-type.html:27
 msgid "set the sign-in method for individual team members"
-msgstr ""
+msgstr "définir la méthode de connexion pour chaque membre de l'équipe"
 
 #: app/templates/views/service-settings/set-auth-type.html:34
 msgid "Your team members sign in with a text message code."
@@ -4839,20 +4839,20 @@ msgstr "Il s’agit de l’expéditeur de messages texte par défaut."
 
 #: app/templates/views/smtp/index.html:40
 msgid "Generate a new password if you forgot it."
-msgstr ""
+msgstr "Générer un nouveau mot de passe si vous l'avez oublié."
 
 #: app/templates/views/smtp/index.html:54
 msgid "Add SMTP Relay"
-msgstr ""
+msgstr "Ajouter le relais SMTP"
 
 #: app/templates/views/smtp/manage.html:12
 #: app/templates/views/smtp/manage.html:18
 msgid "Create SMTP relay"
-msgstr ""
+msgstr "Créer un relais SMTP"
 
 #: app/templates/views/smtp/manage.html:25
 msgid "enter a name"
-msgstr ""
+msgstr "entrer un nom"
 
 #: app/templates/views/templates/_move_to.html:26
 #: app/templates/views/templates/_move_to.html:28
