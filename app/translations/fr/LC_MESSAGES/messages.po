@@ -2690,7 +2690,7 @@ msgstr "Veuillez entrer une adresse courriel du gouvernement fédéral."
 msgid ""
 "You're creating an account for GC Notify, so you can choose to stop using"
 " it at any time for any reason."
-msgstr "Vous créez un compte pour Notification, vous pouvez donc choisir d'arrêter de l'utiliser à tout moment et pour n'importe quelle raison."
+msgstr "Vous créez un compte pour <i>Notification</i>, vous pouvez donc choisir d'arrêter de l'utiliser à tout moment et pour n'importe quelle raison."
 
 #: app/templates/views/register.html:41
 msgid ""
@@ -3045,7 +3045,7 @@ msgstr ""
 
 #: app/templates/views/signedout.html:12
 msgid "GC Notify | GC notification"
-msgstr ""
+msgstr "Notify | Notification"
 
 #: app/templates/views/signedout.html:37 app/templates/views/signedout.html:71
 msgid "Notify"
@@ -3355,7 +3355,7 @@ msgid ""
 "<a href=\"https://status.notifications.service.gov.uk/\">status</a> "
 "pages."
 msgstr ""
-"vous montrer comment l'API fonctionne dans les pages suivantes : <a "
+"vous montrer comment <i>Notification</i> fonctionne dans les pages suivantes : <a "
 "href=\"https://www.gov.uk/performance/govuk-notify\">Performance</a> et "
 "<a href= \"https://status.notifications.service.gov.uk/ \">État</a>. "
 
@@ -3770,7 +3770,7 @@ msgstr ""
 
 #: app/templates/views/agreement/service-agreement.html:25
 msgid "Once accepted, the agreement covers all Notify services from"
-msgstr "Une fois acceptée, l’entente couvre tous les services de Notification de"
+msgstr "Une fois acceptée, l’entente couvre tous les services de <i>Notification</i> de"
 
 #: app/templates/views/agreement/service-agreement.html:28
 msgid "Download a copy of the data sharing and financial agreement"
@@ -3813,7 +3813,7 @@ msgstr "Lorsque vous envoyez des messages par l’API, ils apparaîtront ici."
 
 #: app/templates/views/api/index.html:46 app/templates/views/api/index.html:92
 msgid "Notification deletes messages after 7 days."
-msgstr "Notification supprime les messages après 7 jours."
+msgstr "<i>Notification</i> supprime les messages après 7 jours."
 
 #: app/templates/views/api/index.html:78
 msgid "View"
@@ -3880,7 +3880,7 @@ msgid ""
 "was able to deliver it. Check the"
 msgstr ""
 "Lorsque vous envoyez un courriel ou un message texte, nous pouvons vous "
-"dire si Notification a réussi à le livrer. Vérifiez la"
+"dire si <i>Notification</i> a réussi à le livrer. Vérifiez la"
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:21
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:19
@@ -3906,7 +3906,7 @@ msgid ""
 "When you receive a text message in Notification, we can forward it to "
 "your system. Check the"
 msgstr ""
-"Lorsque vous recevez un message texte dans Notification, nous pouvons le "
+"Lorsque vous recevez un message texte dans <i>Notification</i>, nous pouvons le "
 "transférer à votre système. Vérifiez le"
 
 #: app/templates/views/api/keys/create.html:19
@@ -3957,7 +3957,7 @@ msgstr "Votre fichier a trop de rangées"
 
 #: app/templates/views/check/column-errors.html:36
 msgid "Notification can process up to"
-msgstr "Notification peut traiter jusqu’à"
+msgstr "<i>Notification</i> peut traiter jusqu’à"
 
 #: app/templates/views/check/column-errors.html:37
 msgid ""
@@ -4168,16 +4168,16 @@ msgstr "Nouvelle marque distinctive"
 msgid "Send an unlimited number of free emails with Notification."
 msgstr ""
 "Vous pouvez envoyer gratuitement un nombre illimité de courriels avec "
-"Notification."
+"<i>Notification</i>."
 
 #: app/templates/views/features/emails.html:13
 msgid "and try Notification for yourself."
-msgstr "et essayez Notification pour vous-mêmes."
+msgstr "et essayez <i>Notification</i> pour vous-mêmes."
 
 #: app/templates/views/features/emails.html:17
 #: app/templates/views/features/text-messages.html:17
 msgid "Notification makes it easy to:"
-msgstr "Notification facilite :"
+msgstr "<i>Notification</i> facilite :"
 
 #: app/templates/views/features/emails.html:19
 msgid "create reusable email templates"
@@ -4215,7 +4215,7 @@ msgid ""
 "Notification lets you choose the email address where users can send their"
 " reply."
 msgstr ""
-"Notification vous permet de sélectionner l’adresse courriel à laquelle "
+"<i>Notification</i> vous permet de sélectionner l’adresse courriel à laquelle "
 "les utilisateurs peuvent répondre."
 
 #: app/templates/views/features/emails.html:27
@@ -4258,11 +4258,11 @@ msgid ""
 "numbers with Notification."
 msgstr ""
 "Envoyez des milliers de messages texte gratuits à des numéros canadiens "
-"et internationaux à l’aide de Notification."
+"et internationaux à l’aide de <i>Notification</i>."
 
 #: app/templates/views/features/text-messages.html:13
 msgid "and try Notification for yourself"
-msgstr "et essayez Notification pour vous-mêmes."
+msgstr "et essayez <i>Notification</i> pour vous-mêmes."
 
 #: app/templates/views/features/text-messages.html:19
 msgid "create reusable text message templates"
@@ -4286,7 +4286,7 @@ msgid ""
 "name. This shows people that the message is from your service. You can "
 "change the text message sender name in your service settings."
 msgstr ""
-"Quand Notification envoie votre message texte, celui-ci affiche le nom de"
+"Quand <i>Notification</i> envoie votre message texte, celui-ci affiche le nom de"
 " votre service pour que les gens sachent la provenance du message. Vous "
 "pouvez modifier le nom de l'expéditeur des messages texte dans vos "
 "réglages de service."
@@ -4485,7 +4485,7 @@ msgstr "Télécharger le rapport sur la performance de la plateforme (.xlsx)"
 
 #: app/templates/views/platform-admin/reports.html:22
 msgid "Monthly notification statuses for live services"
-msgstr "Statut mensuel de notification pour les services actifs"
+msgstr "Statut mensuel des notifications pour les services actifs"
 
 #: app/templates/views/platform-admin/reports.html:25
 #: app/templates/views/platform-admin/usage_for_all_services.html:5
