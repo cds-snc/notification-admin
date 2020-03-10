@@ -2549,7 +2549,7 @@ msgstr ""
 msgid ""
 "You're creating an account for GC Notify, so you can choose to stop using"
 " it at any time for any reason."
-msgstr "You're creating an account for Notify, so you can choose to stop using it at any time for any reason"
+msgstr "You're creating an account for <i>Notify</i>, so you can choose to stop using it at any time for any reason"
 
 #: app/templates/views/register.html:41
 msgid ""
@@ -2881,7 +2881,7 @@ msgstr ""
 
 #: app/templates/views/signedout.html:10
 msgid "Notify lets you send emails and text messages to your users"
-msgstr ""
+msgstr "<i>Notify</i> lets you send emails and text messages to your users"
 
 #: app/templates/views/signedout.html:11
 msgid ""
@@ -3372,7 +3372,7 @@ msgstr ""
 msgid ""
 "has already accepted the Notification data sharing and financial "
 "agreement. You can"
-msgstr "has already accepted the Notify data sharing and financial agreement. You can"
+msgstr "has already accepted the <i>Notify</i> data sharing and financial agreement. You can"
 
 #: app/templates/views/agreement/_agreement-signed.html:3
 #: app/templates/views/agreement/service-agreement-signed.html:19
@@ -3395,7 +3395,7 @@ msgstr ""
 #: app/templates/views/agreement/_agreement.html:2
 #: app/templates/views/agreement/service-agreement.html:19
 msgid "must accept the Notification data sharing and financial agreement."
-msgstr "must accept the Notify data sharing and financial agreement."
+msgstr "must accept the <i>Notify</i> data sharing and financial agreement."
 
 #: app/templates/views/agreement/_agreement.html:5
 msgid ""
@@ -3500,7 +3500,7 @@ msgstr ""
 
 #: app/templates/views/agreement/service-agreement.html:25
 msgid "Once accepted, the agreement covers all Notify services from"
-msgstr ""
+msgstr "Once accepted, the agreement covers all <i>Notify</i> services from"
 
 #: app/templates/views/agreement/service-agreement.html:28
 msgid "Download a copy of the data sharing and financial agreement"
