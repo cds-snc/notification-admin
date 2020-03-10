@@ -2123,8 +2123,7 @@ msgid ""
 "Notification’s real-time dashboard lets you see the number of messages "
 "sent. You can also check the current status of any message to learn when "
 "it was delivered."
-msgstr "<i>Notify</i>’s real-time dashboard lets you see the number of messages sent. You can also check the current status of any message to learn when "
-it was delivered."
+msgstr "<i>Notify</i>’s real-time dashboard lets you see the number of messages sent. You can also check the current status of any message to learn when it was delivered."
 
 #: app/templates/views/features.html:41
 msgid "Read more about how"
@@ -2348,8 +2347,7 @@ msgstr ""
 msgid ""
 "Notification has the following types of message status (API message "
 "status may be different and is found in"
-msgstr "<i>Notify</i> has the following types of message status (API message "
-status may be different and is found in"
+msgstr "<i>Notify</i> has the following types of message status (API message status may be different and is found in"
 
 #: app/templates/views/message-status.html:20
 msgid "technical documentation"

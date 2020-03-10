@@ -92,7 +92,7 @@ def test_if_existing_user_accepts_twice_they_redirect_to_sign_in(
         page.select('main p')[0].text.strip(),
     ) == (
         'You need to sign in again',
-        'We signed you out because you haven’t used Notification for a while.',
+        'We signed you out because you haven’t used <i>Notify</i> for a while.',
     )
 
 
