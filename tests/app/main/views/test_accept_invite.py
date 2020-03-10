@@ -224,12 +224,12 @@ def test_existing_signed_out_user_accept_invite_redirects_to_sign_in(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    assert (
+tests/app/main/views/test_accept_invite.py:227:    assert (
         page.h1.string,
         page.select('main p')[0].text.strip(),
     ) == (
         'You need to sign in again',
-        'We signed you out because you haven’t used Notification for a while.',
+        'We signed you out because you haven’t used <i>Notify</i> for a while.',
     )
 
 
