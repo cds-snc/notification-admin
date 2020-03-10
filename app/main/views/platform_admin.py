@@ -42,6 +42,7 @@ from app.utils import (
     Spreadsheet,
     generate_next_dict,
     generate_previous_dict,
+    get_latest_stats,
     get_page_from_request,
     user_has_permissions,
     user_is_platform_admin,
@@ -54,23 +55,7 @@ ZERO_FAILURE_THRESHOLD = 0
 
 @main.route("/live-stats")
 def live_stats():
-    api_args = {}
-    json_data = {}
-    api_args['start_date'] = "2019-01-01"
-    api_args['end_date'] = datetime.utcnow().date()
-    results = service_api_client.get_live_services_data()["data"]
-    email_totals = 0
-    service_names = []
-
-    for row in results:
-        if row['email_totals']:
-            email_totals += int(row['email_totals'])
-        if row['service_name']:
-            service_names.append(row['service_name'])
-
-    json_data["services_count"] = len(service_names)
-    json_data["email_totals"] = email_totals
-    return jsonify(json_data)
+    return jsonify(get_latest_stats())
 
 
 @main.route("/platform-admin")
