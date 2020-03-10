@@ -2241,7 +2241,7 @@ msgstr ""
 
 #: app/templates/views/login_events.html:33
 msgid "If this is not correct,"
-msgstr ""
+msgstr "If this is not correct, "
 
 #: app/templates/views/login_events.html:33
 msgid "contact us right away"
