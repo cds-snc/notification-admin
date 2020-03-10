@@ -92,7 +92,7 @@ def test_if_existing_user_accepts_twice_they_redirect_to_sign_in(
         page.select('main p')[0].text.strip(),
     ) == (
         'You need to sign in again',
-        'We signed you out because you haven’t used <i>Notify</i> for a while.',
+        'We signed you out because you haven’t used Notify for a while.',
     )
 
 
@@ -191,7 +191,7 @@ def test_existing_user_of_service_get_redirected_to_signin(
         page.select('main p')[0].text.strip(),
     ) == (
         'You need to sign in again',
-        'We signed you out because you haven’t used Notification for a while.',
+        'We signed you out because you haven’t used Notify for a while.',
     )
     assert mock_accept_invite.call_count == 1
 
@@ -224,12 +224,12 @@ def test_existing_signed_out_user_accept_invite_redirects_to_sign_in(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-tests/app/main/views/test_accept_invite.py:227:    assert (
+    assert (
         page.h1.string,
         page.select('main p')[0].text.strip(),
     ) == (
         'You need to sign in again',
-        'We signed you out because you haven’t used <i>Notify</i> for a while.',
+        'We signed you out because you haven’t used Notify for a while.',
     )
 
 

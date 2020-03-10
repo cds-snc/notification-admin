@@ -3047,7 +3047,7 @@ msgstr "We signed you out because you logged in to <i>Notify</i> on another devi
 
 #: app/templates/views/signin.html:23
 msgid "We signed you out because you haven’t used Notification for a while."
-msgstr "We signed you out because you haven’t used <i>Notify</i> for a while."
+msgstr "We signed you out because you haven’t used Notify for a while."
 
 #: app/templates/views/signin.html:29
 msgid "If you do not have an account, you can"
@@ -3372,7 +3372,7 @@ msgstr ""
 msgid ""
 "has already accepted the Notification data sharing and financial "
 "agreement. You can"
-msgstr "has already accepted the <i>Notify</i> data sharing and financial agreement. You can"
+msgstr "has already accepted the Notify data sharing and financial agreement. You can"
 
 #: app/templates/views/agreement/_agreement-signed.html:3
 #: app/templates/views/agreement/service-agreement-signed.html:19
@@ -3395,7 +3395,7 @@ msgstr ""
 #: app/templates/views/agreement/_agreement.html:2
 #: app/templates/views/agreement/service-agreement.html:19
 msgid "must accept the Notification data sharing and financial agreement."
-msgstr "must accept the <i>Notify</i> data sharing and financial agreement."
+msgstr "must accept the Notify data sharing and financial agreement."
 
 #: app/templates/views/agreement/_agreement.html:5
 msgid ""
