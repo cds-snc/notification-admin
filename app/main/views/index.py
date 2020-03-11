@@ -1,6 +1,6 @@
 from flask import (
-    current_app,
     abort,
+    current_app,
     make_response,
     redirect,
     render_template,
@@ -13,7 +13,12 @@ from notifications_utils.international_billing_rates import (
 )
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
-from app import email_branding_client, letter_branding_client, user_api_client, get_current_locale
+from app import (
+    email_branding_client,
+    get_current_locale,
+    letter_branding_client,
+    user_api_client,
+)
 from app.main import main
 from app.main.forms import (
     ContactNotifyTeam,

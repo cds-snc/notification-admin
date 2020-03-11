@@ -74,13 +74,13 @@ def get_latest_stats(lang="en"):
 
     json_data["services_count"] = len(service_names)
     notification_totals = sms_totals + email_totals
-    
+
     if(lang == "en"):
         json_data["notification_totals"] = f'{notification_totals:,}'
     else:
         formatted = f'{notification_totals:,}'
-        json_data["notification_totals"] = formatted.replace(","," ") 
-    
+        json_data["notification_totals"] = formatted.replace(",", " ")
+
     return json_data
 
 
