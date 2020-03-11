@@ -5,11 +5,22 @@ from flask import url_for
 from app.main.forms import FieldWithNoneOption
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
 
+service = [{'service_id': 1, 'service_name': 'jessie the oak tree',
+            'organisation_name': 'Forest', 'consent_to_research': True,
+            'contact_name': 'Forest fairy', 'organisation_type': 'Ecosystem',
+            'contact_email': 'forest.fairy@digital.cabinet-office.canada.ca',
+            'contact_mobile': '+16132532223', 'live_date': 'Sat, 29 Mar 2014 00:00:00 GMT',
+            'sms_volume_intent': 100, 'email_volume_intent': 50, 'letter_volume_intent': 20,
+            'sms_totals': 300, 'email_totals': 1200, 'letter_totals': 0,
+            'free_sms_fragment_limit': 100}]
+
 
 def test_non_logged_in_user_can_see_homepage(
+    mocker,
     client,
     mock_get_service_and_organisation_counts,
 ):
+    mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
     response = client.get(url_for('main.index'))
     assert response.status_code == 200
 
