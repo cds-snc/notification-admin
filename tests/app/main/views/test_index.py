@@ -45,12 +45,14 @@ def test_documentation_a11y(
 
 
 def test_logged_in_user_redirects_to_choose_account(
+    mocker,
     client_request,
     api_user_active,
     mock_get_user,
     mock_get_user_by_email,
     mock_login,
 ):
+    mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
     client_request.get(
         'main.index',
         _expected_status=302,
