@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-11 11:12-0400\n"
+"POT-Creation-Date: 2020-03-11 12:23-0400\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -447,7 +447,7 @@ msgstr ""
 
 #: app/main/validators.py:57
 msgid "isn’t a spreadsheet that Notification can read"
-msgstr "isn’t a spreadsheet that <i>Notify</i> can read"
+msgstr "isn’t a spreadsheet that Notify can read"
 
 #: app/main/validators.py:69
 msgid "Enter a government email address."
@@ -2935,7 +2935,7 @@ msgstr ""
 
 #: app/templates/views/signedout.html:10
 msgid "Notify lets you send emails and text messages to your users"
-msgstr "<i>Notify</i> lets you send emails and text messages to your users"
+msgstr ""
 
 #: app/templates/views/signedout.html:11
 msgid ""
@@ -3096,14 +3096,12 @@ msgid "You need to sign in again"
 msgstr ""
 
 #: app/templates/views/signin.html:19
-msgid "We signed you out because you logged in to Notification on another device."
+msgid "We signed you out because you logged in to Notify on another device."
 msgstr ""
-"We signed you out because you logged in to <i>Notify</i> on another "
-"device."
 
 #: app/templates/views/signin.html:23
-msgid "We signed you out because you haven’t used Notification for a while."
-msgstr "We signed you out because you haven’t used Notify for a while."
+msgid "We signed you out because you haven’t used Notify for a while."
+msgstr ""
 
 #: app/templates/views/signin.html:29
 msgid "If you do not have an account, you can"
@@ -4771,4 +4769,16 @@ msgstr ""
 #~ "office system to send messages "
 #~ "automatically."
 #~ msgstr ""
+
+#~ msgid ""
+#~ "We signed you out because you "
+#~ "logged in to Notification on another "
+#~ "device."
+#~ msgstr ""
+#~ "We signed you out because you "
+#~ "logged in to <i>Notify</i> on another"
+#~ " device."
+
+#~ msgid "We signed you out because you haven’t used Notification for a while."
+#~ msgstr "We signed you out because you haven’t used Notify for a while."
 

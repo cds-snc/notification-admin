@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-11 11:12-0400\n"
+"POT-Creation-Date: 2020-03-11 12:23-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -443,7 +443,7 @@ msgstr "Il ne s’agit pas d’un fichier CSV"
 
 #: app/main/validators.py:57
 msgid "isn’t a spreadsheet that Notification can read"
-msgstr "n’est pas une feuille de calcul que <i>Notification</i> peut lire"
+msgstr "n’est pas une feuille de calcul que Notification peut lire"
 
 #: app/main/validators.py:69
 msgid "Enter a government email address."
@@ -3248,16 +3248,12 @@ msgid "You need to sign in again"
 msgstr "Vous devez vous reconnecter"
 
 #: app/templates/views/signin.html:19
-msgid "We signed you out because you logged in to Notification on another device."
+msgid "We signed you out because you logged in to Notify on another device."
 msgstr ""
-"Nous vous avons déconnecté puisque vous vous êtes connecté à "
-"<i>Notification</i> sur un autre appareil."
 
 #: app/templates/views/signin.html:23
-msgid "We signed you out because you haven’t used Notification for a while."
+msgid "We signed you out because you haven’t used Notify for a while."
 msgstr ""
-"Nous vous avons déconnecté puisque vous n’avez pas utilisé "
-"<i>Notification</i> depuis un certain temps."
 
 #: app/templates/views/signin.html:29
 msgid "If you do not have an account, you can"
@@ -5760,4 +5756,19 @@ msgstr "Clés d’essai"
 #~ "using it at any time for any "
 #~ "reason."
 #~ msgstr ""
+
+#~ msgid ""
+#~ "We signed you out because you "
+#~ "logged in to Notification on another "
+#~ "device."
+#~ msgstr ""
+#~ "Nous vous avons déconnecté puisque vous"
+#~ " vous êtes connecté à Notification "
+#~ "sur un autre appareil."
+
+#~ msgid "We signed you out because you haven’t used Notification for a while."
+#~ msgstr ""
+#~ "Nous vous avons déconnecté puisque vous"
+#~ " n’avez pas utilisé Notification depuis "
+#~ "un certain temps."
 
