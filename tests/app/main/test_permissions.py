@@ -19,14 +19,26 @@ from tests.conftest import (
     SERVICE_TWO_ID,
 )
 
+service = [{'service_id': 1, 'service_name': 'jessie the oak tree',
+            'organisation_name': 'Forest', 'consent_to_research': True,
+            'contact_name': 'Forest fairy', 'organisation_type': 'Ecosystem',
+            'contact_email': 'forest.fairy@digital.cabinet-office.canada.ca',
+            'contact_mobile': '+16132532223', 'live_date': 'Sat, 29 Mar 2014 00:00:00 GMT',
+            'sms_volume_intent': 100, 'email_volume_intent': 50, 'letter_volume_intent': 20,
+            'sms_totals': 300, 'email_totals': 1200, 'letter_totals': 0,
+            'free_sms_fragment_limit': 100}]
+
 
 def _test_permissions(
+    mocker,
     client,
     usr,
     permissions,
     will_succeed,
-    kwargs={}
+    kwargs={},
 ):
+    mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
+
     request.view_args.update({'service_id': 'foo'})
     if usr:
         client.login(usr)
@@ -55,6 +67,7 @@ def test_user_has_permissions_on_endpoint_fail(
     user = _user_with_permissions()
     mocker.patch('app.user_api_client.get_user', return_value=user)
     _test_permissions(
+        mocker,
         client,
         user,
         ['send_messages'],
@@ -68,6 +81,7 @@ def test_user_has_permissions_success(
     user = _user_with_permissions()
     mocker.patch('app.user_api_client.get_user', return_value=user)
     _test_permissions(
+        mocker,
         client,
         user,
         ['manage_service'],
@@ -81,6 +95,7 @@ def test_user_has_permissions_or(
     user = _user_with_permissions()
     mocker.patch('app.user_api_client.get_user', return_value=user)
     _test_permissions(
+        mocker,
         client,
         user,
         ['send_messages', 'manage_service'],
@@ -94,6 +109,7 @@ def test_user_has_permissions_multiple(
     user = _user_with_permissions()
     mocker.patch('app.user_api_client.get_user', return_value=user)
     _test_permissions(
+        mocker,
         client,
         user,
         ['manage_templates', 'manage_service'],
@@ -102,15 +118,22 @@ def test_user_has_permissions_multiple(
 
 def test_exact_permissions(
     client,
-    mocker,
+    mocker
 ):
     user = _user_with_permissions()
     mocker.patch('app.user_api_client.get_user', return_value=user)
+    mocker.patch(
+        'app.service_api_client.get_live_services_data',
+        return_value={'data': service}
+    )
+
     _test_permissions(
+        mocker,
         client,
         user,
         ['manage_service', 'manage_templates'],
-        will_succeed=True)
+        will_succeed=True,
+    )
 
 
 def test_platform_admin_user_can_access_page_that_has_no_permissions(
@@ -119,7 +142,12 @@ def test_platform_admin_user_can_access_page_that_has_no_permissions(
     mocker,
 ):
     mocker.patch('app.user_api_client.get_user', return_value=platform_admin_user)
+    mocker.patch(
+        'app.service_api_client.get_live_services_data', return_value={'data': service}
+    )
+
     _test_permissions(
+        mocker,
         client,
         platform_admin_user,
         [],
@@ -134,6 +162,7 @@ def test_platform_admin_user_can_not_access_page(
 ):
     mocker.patch('app.user_api_client.get_user', return_value=platform_admin_user)
     _test_permissions(
+        mocker,
         client,
         platform_admin_user,
         [],
@@ -142,11 +171,13 @@ def test_platform_admin_user_can_not_access_page(
 
 
 def test_no_user_returns_401_unauth(
+    mocker,
     client
 ):
     from flask_login import current_user
     assert not current_user.is_authenticated
     _test_permissions(
+        mocker,
         client,
         None,
         [],

@@ -37,6 +37,7 @@ from werkzeug.datastructures import MultiDict
 from werkzeug.routing import RequestRedirect
 
 from app.notify_client.organisations_api_client import organisations_client
+from app.notify_client.service_api_client import service_api_client
 
 SENDING_STATUSES = ['created', 'pending', 'sending', 'pending-virus-check']
 DELIVERED_STATUSES = ['delivered', 'sent', 'returned-letter']
@@ -51,6 +52,36 @@ with open('{}/email_domains.txt'.format(
 
 
 user_is_logged_in = login_required
+
+
+def get_latest_stats(lang="en"):
+    api_args = {}
+    json_data = {}
+    api_args['start_date'] = "2019-01-01"
+    api_args['end_date'] = datetime.utcnow().date()
+    results = service_api_client.get_live_services_data()["data"]
+    email_totals = 0
+    sms_totals = 0
+    service_names = []
+
+    for row in results:
+        if row['email_totals']:
+            email_totals += int(row['email_totals'])
+        if row['sms_totals']:
+            sms_totals += int(row['sms_totals'])
+        if row['service_name']:
+            service_names.append(row['service_name'])
+
+    json_data["services_count"] = len(service_names)
+    notification_totals = sms_totals + email_totals
+
+    if(lang == "en"):
+        json_data["notification_totals"] = f'{notification_totals:,}'
+    else:
+        formatted = f'{notification_totals:,}'
+        json_data["notification_totals"] = formatted.replace(",", " ")
+
+    return json_data
 
 
 def user_has_permissions(*permissions, **permission_kwargs):

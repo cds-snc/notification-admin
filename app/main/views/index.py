@@ -1,5 +1,6 @@
 from flask import (
     abort,
+    current_app,
     make_response,
     redirect,
     render_template,
@@ -12,7 +13,12 @@ from notifications_utils.international_billing_rates import (
 )
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
-from app import email_branding_client, letter_branding_client, user_api_client
+from app import (
+    email_branding_client,
+    get_current_locale,
+    letter_branding_client,
+    user_api_client,
+)
 from app.main import main
 from app.main.forms import (
     ContactNotifyTeam,
@@ -20,13 +26,16 @@ from app.main.forms import (
     SearchByNameForm,
 )
 from app.main.views.sub_navigation_dictionaries import features_nav
-from app.utils import get_logo_cdn_domain, user_is_logged_in
+from app.utils import get_latest_stats, get_logo_cdn_domain, user_is_logged_in
 
 QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
 
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
+
+    lang = get_current_locale(current_app)
+    stats = get_latest_stats(lang)
 
     if current_user and current_user.is_authenticated:
         return redirect(url_for('main.choose_account'))
@@ -55,13 +64,15 @@ def index():
         return render_template(
             'views/signedout.html',
             form=form,
-            scrollTo="true"
+            scrollTo="true",
+            stats=stats
         )
 
     return render_template(
         'views/signedout.html',
         form=form,
-        scrollTo="false"
+        scrollTo="false",
+        stats=stats
     )
 
 

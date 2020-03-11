@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-11 12:23-0400\n"
+"POT-Creation-Date: 2020-03-11 13:13-0400\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -213,7 +213,7 @@ msgid "Template name"
 msgstr ""
 
 #: app/main/forms.py:672 app/main/forms.py:846 app/main/forms.py:854
-#: app/main/views/dashboard.py:194 app/templates/views/signedout.html:632
+#: app/main/views/dashboard.py:194 app/templates/views/signedout.html:655
 #: app/templates/views/support/ask-question-give-feedback.html:47
 msgid "Message"
 msgstr ""
@@ -264,7 +264,7 @@ msgid "Ask a question or give feedback"
 msgstr "Contact us"
 
 #: app/main/forms.py:833 app/main/forms.py:850
-#: app/templates/views/signedout.html:606
+#: app/templates/views/signedout.html:629
 #: app/templates/views/support/ask-question-give-feedback.html:19
 msgid "Your name"
 msgstr ""
@@ -286,7 +286,7 @@ msgid "Other"
 msgstr ""
 
 #: app/main/forms.py:844 app/main/forms.py:853
-#: app/templates/views/signedout.html:608
+#: app/templates/views/signedout.html:631
 #: app/templates/views/support/ask-question-give-feedback.html:40
 msgid "Your email"
 msgstr ""
@@ -335,7 +335,7 @@ msgid "Off"
 msgstr ""
 
 #: app/main/forms.py:1025 app/main/views/send.py:773
-#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:634
+#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:657
 #: app/templates/views/support/ask-question-give-feedback.html:49
 #: app/templates/views/templates/_template.html:21
 #: app/templates/views/templates/_template.html:29
@@ -801,13 +801,13 @@ msgstr ""
 
 #: app/templates/admin_template.html:97 app/templates/admin_template.html:112
 #: app/templates/main_template.html:321 app/templates/views/privacy.html:10
-#: app/templates/views/register.html:35 app/templates/views/signedout.html:653
+#: app/templates/views/register.html:35 app/templates/views/signedout.html:676
 msgid "Privacy"
 msgstr ""
 
 #: app/templates/admin_template.html:100 app/templates/main_template.html:326
 #: app/templates/views/features.html:52 app/templates/views/security.html:9
-#: app/templates/views/signedout.html:658
+#: app/templates/views/signedout.html:681
 msgid "Security"
 msgstr ""
 
@@ -1051,11 +1051,11 @@ msgstr ""
 #: app/templates/views/service-settings/set-auth-type.html:37
 #: app/templates/views/signedout.html:127
 #: app/templates/views/signedout.html:153
-#: app/templates/views/signedout.html:602
+#: app/templates/views/signedout.html:625
 msgid "Contact us"
 msgstr ""
 
-#: app/templates/main_template.html:331 app/templates/views/signedout.html:663
+#: app/templates/main_template.html:331 app/templates/views/signedout.html:686
 #: app/templates/views/terms-of-use.html:5
 #: app/templates/views/terms-of-use.html:10
 msgid "Terms of use"
@@ -2054,7 +2054,7 @@ msgstr "You do not need technical knowledge to use <i>Notify</i>."
 #: app/templates/views/register-from-org-invite.html:14
 #: app/templates/views/register.html:7 app/templates/views/register.html:14
 #: app/templates/views/signedout.html:179
-#: app/templates/views/signedout.html:588
+#: app/templates/views/signedout.html:611
 msgid "Create an account"
 msgstr ""
 
@@ -3070,23 +3070,39 @@ msgstr ""
 msgid "Learn more about pricing"
 msgstr ""
 
+#: app/templates/views/signedout.html:579
+msgid "Notify by the numbers"
+msgstr ""
+
 #: app/templates/views/signedout.html:580
+msgid "Since November 2019"
+msgstr ""
+
+#: app/templates/views/signedout.html:585
+msgid "services using Notify"
+msgstr ""
+
+#: app/templates/views/signedout.html:590
+msgid "email notifications sent"
+msgstr "notifications sent"
+
+#: app/templates/views/signedout.html:603
 msgid "Try <i>Notify</i> now"
 msgstr ""
 
-#: app/templates/views/signedout.html:583
+#: app/templates/views/signedout.html:606
 msgid ""
 "Create an account and start sending test messages right\n"
 "              away!"
 msgstr ""
 
-#: app/templates/views/signedout.html:609
+#: app/templates/views/signedout.html:632
 msgid ""
 "Your\n"
 "        phone"
 msgstr ""
 
-#: app/templates/views/signedout.html:614
+#: app/templates/views/signedout.html:637
 #: app/templates/views/support/ask-question-give-feedback.html:24
 msgid "Request type"
 msgstr ""
