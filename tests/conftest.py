@@ -2995,10 +2995,6 @@ def client_request(
                     normalize_spaces(page.find(selector).text) for selector in ('title', 'h1')
                 )
                 
-                print("=================")
-                print(normalize_spaces(page.find("h1").text))
-                print("=================")
-
                 if not normalize_spaces(page_title).startswith(h1):
                     raise AssertionError('Page title ‘{}’ does not start with H1 ‘{}’'.format(page_title, h1))
             return page

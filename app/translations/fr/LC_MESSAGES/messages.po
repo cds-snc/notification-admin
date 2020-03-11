@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-06 08:46-0500\n"
+"POT-Creation-Date: 2020-03-11 11:12-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -209,7 +209,7 @@ msgid "Template name"
 msgstr "Nom du modèle"
 
 #: app/main/forms.py:672 app/main/forms.py:846 app/main/forms.py:854
-#: app/main/views/dashboard.py:193 app/templates/views/signedout.html:604
+#: app/main/views/dashboard.py:194 app/templates/views/signedout.html:632
 #: app/templates/views/support/ask-question-give-feedback.html:47
 msgid "Message"
 msgstr "Message"
@@ -260,7 +260,7 @@ msgid "Ask a question or give feedback"
 msgstr "Nous joindre"
 
 #: app/main/forms.py:833 app/main/forms.py:850
-#: app/templates/views/signedout.html:578
+#: app/templates/views/signedout.html:606
 #: app/templates/views/support/ask-question-give-feedback.html:19
 msgid "Your name"
 msgstr "Votre nom"
@@ -282,7 +282,7 @@ msgid "Other"
 msgstr "Autre"
 
 #: app/main/forms.py:844 app/main/forms.py:853
-#: app/templates/views/signedout.html:580
+#: app/templates/views/signedout.html:608
 #: app/templates/views/support/ask-question-give-feedback.html:40
 msgid "Your email"
 msgstr "Votre courriel"
@@ -292,7 +292,7 @@ msgstr "Votre courriel"
 msgid "Your phone"
 msgstr "Votre téléphone"
 
-#: app/main/forms.py:926 app/main/views/dashboard.py:192
+#: app/main/forms.py:926 app/main/views/dashboard.py:193
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
@@ -331,7 +331,8 @@ msgid "Off"
 msgstr "Désactivé"
 
 #: app/main/forms.py:1025 app/main/views/send.py:773
-#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:606
+#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:634
+#: app/templates/views/support/ask-question-give-feedback.html:49
 #: app/templates/views/templates/_template.html:21
 #: app/templates/views/templates/_template.html:29
 msgid "Send"
@@ -506,73 +507,74 @@ msgstr "Voulez-vous vraiment révoquer"
 #: app/main/views/api_keys.py:131
 msgid "You will not be able to use this API key to connect to Notification."
 msgstr ""
-"Vous ne pourrez pas utiliser cette clé API pour vous connecter à <i>Notification</i>."
+"Vous ne pourrez pas utiliser cette clé API pour vous connecter à "
+"<i>Notification</i>."
 
 #: app/main/views/api_keys.py:138
 msgid "was revoked"
 msgstr "a été révoquée"
 
-#: app/main/views/dashboard.py:194
+#: app/main/views/dashboard.py:195
 msgid "Received"
 msgstr "Reçu"
 
-#: app/main/views/dashboard.py:388
+#: app/main/views/dashboard.py:389
 msgid "January"
 msgstr "Janvier"
 
-#: app/main/views/dashboard.py:389
+#: app/main/views/dashboard.py:390
 msgid "February"
 msgstr "Février"
 
-#: app/main/views/dashboard.py:390
+#: app/main/views/dashboard.py:391
 msgid "March"
 msgstr "Mars"
 
-#: app/main/views/dashboard.py:391
+#: app/main/views/dashboard.py:392
 msgid "April"
 msgstr "Avril"
 
-#: app/main/views/dashboard.py:392
+#: app/main/views/dashboard.py:393
 msgid "May"
 msgstr "Mai"
 
-#: app/main/views/dashboard.py:393
+#: app/main/views/dashboard.py:394
 msgid "June"
 msgstr "Juin"
 
-#: app/main/views/dashboard.py:394
+#: app/main/views/dashboard.py:395
 msgid "July"
 msgstr "Juillet"
 
-#: app/main/views/dashboard.py:395
+#: app/main/views/dashboard.py:396
 msgid "August"
 msgstr "Août"
 
-#: app/main/views/dashboard.py:396
+#: app/main/views/dashboard.py:397
 msgid "September"
 msgstr "Septembre"
 
-#: app/main/views/dashboard.py:397
+#: app/main/views/dashboard.py:398
 msgid "October"
 msgstr "Octobre"
 
-#: app/main/views/dashboard.py:398
+#: app/main/views/dashboard.py:399
 msgid "November"
 msgstr "Novembre"
 
-#: app/main/views/dashboard.py:399
+#: app/main/views/dashboard.py:400
 msgid "December"
 msgstr "Décembre"
 
-#: app/main/views/dashboard.py:402
+#: app/main/views/dashboard.py:403
 msgid "Invalid month"
 msgstr "Mois non valide"
 
-#: app/main/views/dashboard.py:521
+#: app/main/views/dashboard.py:522
 msgid "financial year"
 msgstr "exercice financier"
 
-#: app/main/views/dashboard.py:524
+#: app/main/views/dashboard.py:525
 #: app/templates/views/dashboard/monthly.html:10
 msgid "to"
 msgstr "à"
@@ -763,7 +765,7 @@ msgstr "Modèle de lettre"
 msgid "Notification"
 msgstr "<i>Notification</i>"
 
-#: app/templates/admin_template.html:37 app/templates/main_template.html:228
+#: app/templates/admin_template.html:37 app/templates/main_template.html:230
 #: app/templates/views/signedout.html:106
 msgid "Menu"
 msgstr "Menu"
@@ -774,8 +776,8 @@ msgstr "Menu"
 msgid "Documentation"
 msgstr "Documentation technique"
 
-#: app/templates/admin_template.html:44 app/templates/main_template.html:243
-#: app/templates/main_template.html:271
+#: app/templates/admin_template.html:44 app/templates/main_template.html:245
+#: app/templates/main_template.html:273
 #: app/templates/views/choose-account.html:67
 msgid "Platform admin"
 msgstr "Administrateur de la plateforme"
@@ -800,14 +802,14 @@ msgid "Message status"
 msgstr "État des messages"
 
 #: app/templates/admin_template.html:97 app/templates/admin_template.html:112
-#: app/templates/main_template.html:319 app/templates/views/privacy.html:10
-#: app/templates/views/register.html:35 app/templates/views/signedout.html:625
+#: app/templates/main_template.html:321 app/templates/views/privacy.html:10
+#: app/templates/views/register.html:35 app/templates/views/signedout.html:653
 msgid "Privacy"
 msgstr "Confidentialité"
 
-#: app/templates/admin_template.html:100 app/templates/main_template.html:324
+#: app/templates/admin_template.html:100 app/templates/main_template.html:326
 #: app/templates/views/features.html:52 app/templates/views/security.html:9
-#: app/templates/views/signedout.html:630
+#: app/templates/views/signedout.html:658
 msgid "Security"
 msgstr "Sécurité"
 
@@ -1016,42 +1018,46 @@ msgstr "Choisir des membres d’équipe"
 msgid "Cancel upload"
 msgstr "Annuler le téléversement"
 
-#: app/templates/main_template.html:173 app/templates/views/signedout.html:74
+#: app/templates/main_template.html:110
+msgid "Choose arbitrary things"
+msgstr ""
+
+#: app/templates/main_template.html:175 app/templates/views/signedout.html:74
 msgid "Alpha"
 msgstr "Alpha"
 
-#: app/templates/main_template.html:202
+#: app/templates/main_template.html:204
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: app/templates/main_template.html:209 app/templates/views/signedout.html:90
+#: app/templates/main_template.html:211 app/templates/views/signedout.html:90
 #: app/templates/views/signedout.html:184
 msgid "Log in"
 msgstr "Se connecter"
 
-#: app/templates/main_template.html:248 app/templates/main_template.html:279
+#: app/templates/main_template.html:250 app/templates/main_template.html:281
 #: app/templates/views/signedout.html:119
 #: app/templates/views/signedout.html:141
 msgid "Product features"
 msgstr "Caractéristiques du produit"
 
-#: app/templates/main_template.html:252 app/templates/main_template.html:285
+#: app/templates/main_template.html:254 app/templates/main_template.html:287
 #: app/templates/views/signedout.html:123
 #: app/templates/views/signedout.html:147
 msgid "Technical documentation"
 msgstr "Documentation technique"
 
-#: app/templates/main_template.html:256 app/templates/main_template.html:291
+#: app/templates/main_template.html:258 app/templates/main_template.html:293
 #: app/templates/views/agreement/service-agreement-choose.html:26
 #: app/templates/views/pricing/how-to-pay.html:53
 #: app/templates/views/service-settings/set-auth-type.html:37
 #: app/templates/views/signedout.html:127
 #: app/templates/views/signedout.html:153
-#: app/templates/views/signedout.html:574
+#: app/templates/views/signedout.html:602
 msgid "Contact us"
 msgstr "Nous joindre"
 
-#: app/templates/main_template.html:329 app/templates/views/signedout.html:635
+#: app/templates/main_template.html:331 app/templates/views/signedout.html:663
 #: app/templates/views/terms-of-use.html:5
 #: app/templates/views/terms-of-use.html:10
 msgid "Terms of use"
@@ -1633,7 +1639,8 @@ msgid ""
 "A callback lets you receive messages from Notification to a URL you "
 "choose."
 msgstr ""
-"Une fonction de rappel vous permet de recevoir les messages de <i>Notification</i> à une URL que vous avez choisie."
+"Une fonction de rappel vous permet de recevoir les messages de "
+"<i>Notification</i> à une URL que vous avez choisie."
 
 #: app/templates/views/callbacks.html:15
 msgid ""
@@ -1657,9 +1664,9 @@ msgid ""
 "a receipt to your callback URL to tell you if we were able to deliver it "
 "or not."
 msgstr ""
-"Lorsque vous envoyez un courriel ou un message texte avec <i>Notification</i>, "
-"nous pouvons envoyer un accusé à votre URL de rappel pour vous dire si la"
-" livraison est réussie ou non."
+"Lorsque vous envoyez un courriel ou un message texte avec "
+"<i>Notification</i>, nous pouvons envoyer un accusé à votre URL de rappel"
+" pour vous dire si la livraison est réussie ou non."
 
 #: app/templates/views/callbacks.html:23 app/templates/views/callbacks.html:51
 #: app/templates/views/user-profile/add-security-keys.html:19
@@ -1712,8 +1719,8 @@ msgid ""
 "If your service receives text messages in Notification, we can forward "
 "them to your callback URL as soon as they arrive."
 msgstr ""
-"Si votre service reçoit des messages texte dans <i>Notification</i>, nous "
-"pouvons les transférer à votre URL de rappel dès qu’ils sont reçus. "
+"Si votre service reçoit des messages texte dans <i>Notification</i>, nous"
+" pouvons les transférer à votre URL de rappel dès qu’ils sont reçus. "
 
 #: app/templates/views/callbacks.html:50
 msgid "Callback message format"
@@ -1819,8 +1826,8 @@ msgstr "Témoins"
 #: app/templates/views/cookies.html:13
 msgid "Notification puts small files (known as ‘cookies’) onto your computer."
 msgstr ""
-"Notification met des petits fichiers (connu sous le nom de « "
-"témoins ») sur votre ordinateur."
+"Notification met des petits fichiers (connu sous le nom de « témoins ») "
+"sur votre ordinateur."
 
 #: app/templates/views/cookies.html:15
 msgid "These cookies are used to remember you once you’ve logged in."
@@ -2060,7 +2067,9 @@ msgid ""
 "Has your email address changed since you joined Notification? Please ask "
 "your account manager to reset it."
 msgstr ""
-"Votre adresse courriel a-t-elle changé depuis que vous utilisez l’API <i>Notification</i>? Veuillez demander à votre gestionnaire de compte de la réinitialiser."
+"Votre adresse courriel a-t-elle changé depuis que vous utilisez l’API "
+"<i>Notification</i>? Veuillez demander à votre gestionnaire de compte de "
+"la réinitialiser."
 
 #: app/templates/views/features.html:6 app/templates/views/features.html:11
 #: app/templates/views/features/emails.html:16
@@ -2073,16 +2082,20 @@ msgid ""
 "If you work for the federal government, you can use Notification to "
 "update your users."
 msgstr ""
-"Si vous travaillez pour le gouvernement fédéral, vous pouvez utiliser <i>Notification</i> pour mettre à jour vos utilisateurs."
+"Si vous travaillez pour le gouvernement fédéral, vous pouvez utiliser "
+"<i>Notification</i> pour mettre à jour vos utilisateurs."
 
 #: app/templates/views/features.html:13
 msgid "Notification makes it easy to create, customize and send:"
-msgstr "<i>Notification</i> facilite la création, la personnalisation et l’envoi de :"
+msgstr ""
+"<i>Notification</i> facilite la création, la personnalisation et l’envoi "
+"de :"
 
 #: app/templates/views/features.html:19
 msgid "You do not need technical knowledge to use Notification."
 msgstr ""
-"Vous n’avez pas besoin de connaissances techniques pour utiliser <i>Notification</i>."
+"Vous n’avez pas besoin de connaissances techniques pour utiliser "
+"<i>Notification</i>."
 
 #: app/templates/views/features.html:21
 #: app/templates/views/features/emails.html:13
@@ -2094,7 +2107,7 @@ msgstr ""
 #: app/templates/views/register-from-org-invite.html:14
 #: app/templates/views/register.html:7 app/templates/views/register.html:14
 #: app/templates/views/signedout.html:179
-#: app/templates/views/signedout.html:560
+#: app/templates/views/signedout.html:588
 msgid "Create an account"
 msgstr "Créer un compte"
 
@@ -2111,8 +2124,8 @@ msgid ""
 "To send an email or text with Notification, you need to create a reusable"
 " message template first."
 msgstr ""
-"Pour envoyer un courriel ou un message texte avec <i>Notification</i>, vous "
-"devez d'abord créer un gabarit de message réutilisable."
+"Pour envoyer un courriel ou un message texte avec <i>Notification</i>, "
+"vous devez d'abord créer un gabarit de message réutilisable."
 
 #: app/templates/views/features.html:26
 msgid ""
@@ -2132,7 +2145,8 @@ msgid ""
 "Notification makes it easy to send personalized messages from a single "
 "template."
 msgstr ""
-"<i>Notification</i> facilite l’envoi de messages personnalisés à partir d’un seul gabarit."
+"<i>Notification</i> facilite l’envoi de messages personnalisés à partir "
+"d’un seul gabarit."
 
 #: app/templates/views/features.html:30
 msgid ""
@@ -2160,8 +2174,8 @@ msgid ""
 "or text messages."
 msgstr ""
 "Pour envoyer un lot de messages en même temps, téléchargez une liste de "
-"coordonnées dans <i>Notification</i>. Vous pouvez également déterminer la date "
-"et l’heure d’envoi des courriels ou des messages texte."
+"coordonnées dans <i>Notification</i>. Vous pouvez également déterminer la"
+" date et l’heure d’envoi des courriels ou des messages texte."
 
 #: app/templates/views/features.html:35
 msgid "Application Programming Interface (API) integration"
@@ -2172,8 +2186,8 @@ msgid ""
 "You can integrate Notification’s API with your web application or back-"
 "office system to send messages automatically."
 msgstr ""
-"Vous pouvez intégrer l’API <i>Notification</i> à votre application Web ou à "
-"votre système administratif pour envoyer des messages automatiquement."
+"Vous pouvez intégrer l’API <i>Notification</i> à votre application Web ou"
+" à votre système administratif pour envoyer des messages automatiquement."
 
 #: app/templates/views/features.html:37
 msgid "Read our"
@@ -2195,9 +2209,10 @@ msgid ""
 "sent. You can also check the current status of any message to learn when "
 "it was delivered."
 msgstr ""
-"Le tableau de bord en temps réel de <i>Notification</i> vous permet de voir le "
-"nombre de messages envoyés. Vous pouvez également consulter l’état actuel"
-" de vos messages afin de connaître le moment de leur livraison."
+"Le tableau de bord en temps réel de <i>Notification</i> vous permet de "
+"voir le nombre de messages envoyés. Vous pouvez également consulter "
+"l’état actuel de vos messages afin de connaître le moment de leur "
+"livraison."
 
 #: app/templates/views/features.html:41
 msgid "Read more about how"
@@ -2247,8 +2262,8 @@ msgid ""
 "Notification protects and manages data to meet the needs of government "
 "services."
 msgstr ""
-"<i>Notification</i> protège et gère les données de façon à répondre aux besoins "
-"en matière de services gouvernementaux."
+"<i>Notification</i> protège et gère les données de façon à répondre aux "
+"besoins en matière de services gouvernementaux."
 
 #: app/templates/views/features.html:55
 msgid "Hide sensitive information"
@@ -2274,8 +2289,8 @@ msgid ""
 "secure. When you sign in, we'll send a unique one-time code to your phone"
 " and ask you to enter it before we let you use your account."
 msgstr ""
-"<i>Notification</i> utilise l’authentification à deux facteurs (A2F) pour "
-"assurer la sécurité de votre compte. Au moment de créer votre compte, "
+"<i>Notification</i> utilise l’authentification à deux facteurs (A2F) pour"
+" assurer la sécurité de votre compte. Au moment de créer votre compte, "
 "vous recevrez un code unique par message texte et devrez l’entrer avant "
 "de pouvoir utiliser votre compte."
 
@@ -2324,7 +2339,9 @@ msgstr "Historique de connexion"
 msgid ""
 "Our records show that these are the last 3 times you logged into this "
 "account:"
-msgstr "Nos archives montrent que ce sont les trois dernières fois que vous vous êtes connecté au site :"
+msgstr ""
+"Nos archives montrent que ce sont les trois dernières fois que vous vous "
+"êtes connecté au site :"
 
 #: app/templates/views/login_events.html:33
 msgid "If this is not correct,"
@@ -2406,9 +2423,9 @@ msgid ""
 "Notification’s real-time dashboard lets you check when your message was "
 "delivered. You can also check the status of your messages"
 msgstr ""
-"Le tableau de bord en temps réel de <i>Notification</i> vous permet de vérifier "
-"si votre message a été livré. Vous pouvez aussi vérifier l’état de vos "
-"messages."
+"Le tableau de bord en temps réel de <i>Notification</i> vous permet de "
+"vérifier si votre message a été livré. Vous pouvez aussi vérifier l’état "
+"de vos messages."
 
 #: app/templates/views/message-status.html:12
 msgid "For"
@@ -2431,8 +2448,8 @@ msgid ""
 "when messages fail, deleting data and trying a new method for permanent "
 "failures, and trying again or trying a new method for temporary failures"
 msgstr ""
-"Une image du flux d’envoi de messages dans <i>Notification</i>, affichant les "
-"trois états : envoi en cours, livraison réussie et échec. Affiche "
+"Une image du flux d’envoi de messages dans <i>Notification</i>, affichant"
+" les trois états : envoi en cours, livraison réussie et échec. Affiche "
 "également les prochaines étapes lorsque l'envoi des messages échoue : "
 "supprimer les données et essayer une nouvelle méthode lors d'échecs "
 "permanents, et essayer de nouveau ou essayer une nouvelle méthode lors "
@@ -2447,8 +2464,8 @@ msgid ""
 "Notification has the following types of message status (API message "
 "status may be different and is found in"
 msgstr ""
-"<i>Notification</i> comprend les types suivants d’état des messages (les états "
-"des messages d'API pourraient être différents et se trouvent dans"
+"<i>Notification</i> comprend les types suivants d’état des messages (les "
+"états des messages d'API pourraient être différents et se trouvent dans"
 
 #: app/templates/views/message-status.html:20
 msgid "technical documentation"
@@ -2476,8 +2493,8 @@ msgid ""
 "The message was successfully delivered. Notification will not tell you if"
 " a user has opened or read a message."
 msgstr ""
-"Le message a été livré avec succès. <i>Notification</i> ne vous informera pas si"
-" un utilisateur a ouvert ou lu un message."
+"Le message a été livré avec succès. <i>Notification</i> ne vous informera"
+" pas si un utilisateur a ouvert ou lu un message."
 
 #: app/templates/views/message-status.html:40
 msgid "Email address does not exist"
@@ -2508,8 +2525,9 @@ msgid ""
 "There was a connection problem between Notification and the email "
 "provider. You’ll have to try sending your messages again."
 msgstr ""
-"Il y a eu un problème de connexion entre <i>Notification</i> et le fournisseur "
-"de messagerie. Vous devrez essayer d’envoyer vos messages de nouveau."
+"Il y a eu un problème de connexion entre <i>Notification</i> et le "
+"fournisseur de messagerie. Vous devrez essayer d’envoyer vos messages de "
+"nouveau."
 
 #: app/templates/views/dashboard/monthly.html:25
 #: app/templates/views/features/text-messages.html:5
@@ -2525,7 +2543,9 @@ msgstr "États des messages – messages texte"
 
 #: app/templates/views/message-status.html:76
 msgid "Notification has sent the message to the cellular provider."
-msgstr "<i>Notification</i> a envoyé le message au fournisseur de téléphonie cellulaire."
+msgstr ""
+"<i>Notification</i> a envoyé le message au fournisseur de téléphonie "
+"cellulaire."
 
 #: app/templates/views/message-status.html:78
 msgid "Sent internationally"
@@ -2574,10 +2594,10 @@ msgid ""
 "provider. You’ll have to try sending your messages again. You will not be"
 " charged for text messages that are affected by a technical failure."
 msgstr ""
-"Il y a eu un problème de connexion entre <i>Notification</i> et le fournisseur "
-"de téléphonie cellulaire. Vous devrez essayer d’envoyer vos messages de "
-"nouveau. Les messages texte qui sont affectés par une défaillance "
-"technique ne vous seront pas facturés."
+"Il y a eu un problème de connexion entre <i>Notification</i> et le "
+"fournisseur de téléphonie cellulaire. Vous devrez essayer d’envoyer vos "
+"messages de nouveau. Les messages texte qui sont affectés par une "
+"défaillance technique ne vous seront pas facturés."
 
 #: app/templates/views/new-password.html:19
 msgid "You can now create a new password for your account."
@@ -2639,8 +2659,8 @@ msgstr "protections de la vie privée propres au Royaume-Uni (en anglais)"
 #: app/templates/views/privacy.html:13
 msgid "The Notification team is reviewing privacy requirements under the"
 msgstr ""
-"L’équipe de <i>Notification</i> examine les exigences relatives à la vie privée "
-"aux termes de la"
+"L’équipe de <i>Notification</i> examine les exigences relatives à la vie "
+"privée aux termes de la"
 
 #: app/templates/views/privacy.html:13
 msgid "https://laws-lois.justice.gc.ca/eng/acts/P-21/index.html"
@@ -2683,27 +2703,39 @@ msgstr "Veuillez entrer une adresse courriel du gouvernement fédéral."
 msgid ""
 "You're creating an account for GC Notify, so you can choose to stop using"
 " it at any time for any reason."
-msgstr "Vous créez un compte pour <i>Notification</i>, vous pouvez donc choisir d'arrêter de l'utiliser à tout moment et pour n'importe quelle raison."
+msgstr ""
+"Vous créez un compte pour <i>Notification</i>, vous pouvez donc choisir "
+"d'arrêter de l'utiliser à tout moment et pour n'importe quelle raison."
 
 #: app/templates/views/register.html:41
 msgid ""
 "We (the Canadian Digital Service) will make sure your data and and "
 "correspondence are confidential, which means they will not be linked back"
 " to anyone."
-msgstr "Nous (le Service numérique canadien) veillerons à ce que vos données et vos correspondances soient confidentielles, ce qui signifie qu'elles ne seront pas reliées à qui que ce soit"
+msgstr ""
+"Nous (le Service numérique canadien) veillerons à ce que vos données et "
+"vos correspondances soient confidentielles, ce qui signifie qu'elles ne "
+"seront pas reliées à qui que ce soit"
 
 #: app/templates/views/register.html:44
 msgid ""
 "Your participation will not impact your relationship with the Canadian "
 "Digital Service or any part of the Government of Canada."
-msgstr "Votre participation n'aura aucune incidence sur votre relation avec le Service numérique canadien ou toute autre partie du gouvernement du Canada."
+msgstr ""
+"Votre participation n'aura aucune incidence sur votre relation avec le "
+"Service numérique canadien ou toute autre partie du gouvernement du "
+"Canada."
 
 #: app/templates/views/register.html:46
 msgid ""
 "Please read our <a href='https://digital.canada.ca/legal/privacy'>Privacy"
 " Statement</a>. We handle all personal information in accordance with the"
 " Privacy Act."
-msgstr "Veuillez lire notre <a href='https://numerique.canada.ca/transparence/confidentialite/'>Déclaration de confidentialité</a>. Nous traitons tous les renseignements personnels conformément à la Loi sur la protection des renseignements personnels."
+msgstr ""
+"Veuillez lire notre <a "
+"href='https://numerique.canada.ca/transparence/confidentialite/'>Déclaration"
+" de confidentialité</a>. Nous traitons tous les renseignements personnels"
+" conformément à la Loi sur la protection des renseignements personnels."
 
 #: app/templates/views/registration-continue.html:11
 #: app/templates/views/resend-email-verification.html:13
@@ -2741,8 +2773,8 @@ msgid ""
 "needed to run the system within a Government of Canada context. If your "
 "service has specific security needs, "
 msgstr ""
-"L’équipe de <i>Notification du Canada examine les protections en matière de "
-"sécurité nécessaires au fonctionnement du système dans le contexte du "
+"L’équipe de <i>Notification du Canada examine les protections en matière "
+"de sécurité nécessaires au fonctionnement du système dans le contexte du "
 "gouvernement du Canada. Si votre service a des besoins particuliers en "
 "matière de sécurité, "
 
@@ -3027,7 +3059,9 @@ msgstr "Reprendre le service"
 
 #: app/templates/views/signedout.html:10
 msgid "Notify lets you send emails and text messages to your users"
-msgstr "<i>Notification</i> vous permet d'envoyer des courriels et des messages texte à vos utilisateurs"
+msgstr ""
+"<i>Notification</i> vous permet d'envoyer des courriels et des messages "
+"texte à vos utilisateurs"
 
 #: app/templates/views/signedout.html:11
 msgid ""
@@ -3085,7 +3119,7 @@ msgstr "En savoir plus sur <i>Notification</i>"
 msgid "<i>Notify</i> is built for you"
 msgstr "<i>Notification</i> est conçu pour vous"
 
-#: app/templates/views/signedout.html:262
+#: app/templates/views/signedout.html:283
 msgid ""
 "Staff who regularly write and send service updates wishing\n"
 "              to upgrade the tools used to communicate with the public"
@@ -3093,7 +3127,7 @@ msgstr ""
 "Pour les employés écrivant et envoyant des mises à jour de service "
 "destinées au public"
 
-#: app/templates/views/signedout.html:266
+#: app/templates/views/signedout.html:287
 msgid ""
 "Developers working on improving workflow and tooling for\n"
 "              public servants"
@@ -3101,7 +3135,7 @@ msgstr ""
 "Pour les développeurs travaillant à l’amélioration des processus de "
 "travail et des outils pour les fonctionnaires"
 
-#: app/templates/views/signedout.html:270
+#: app/templates/views/signedout.html:291
 msgid ""
 "Administrators who have to meet departmental service\n"
 "              standards for communication"
@@ -3109,31 +3143,31 @@ msgstr ""
 "Pour les développeurs travaillant à l’amélioration des processus de "
 "travail et des outils pour les fonctionnaires"
 
-#: app/templates/views/signedout.html:307
+#: app/templates/views/signedout.html:335
 msgid "What you can do with <i>Notify</i>"
 msgstr "Ce que vous pouvez faire avec <i>Notification</i>"
 
-#: app/templates/views/signedout.html:333
+#: app/templates/views/signedout.html:361
 msgid "Upload mailing lists and send personalized messages in bulk"
 msgstr "Télécharger des listes de diffusion et envoyer des messages personnalisés"
 
-#: app/templates/views/signedout.html:358
+#: app/templates/views/signedout.html:386
 msgid "Create templates and save them for future messages"
 msgstr "Créer des gabarits et les enregistrer pour vos futurs messages"
 
-#: app/templates/views/signedout.html:383
+#: app/templates/views/signedout.html:411
 msgid "Track the status of the messages you send"
 msgstr "Suivre l'état des messages que vous envoyez"
 
-#: app/templates/views/signedout.html:395
+#: app/templates/views/signedout.html:423
 msgid "See how <i>Notify</i> can improve your workflow"
 msgstr "Découvrir comment <i>Notification</i> peut améliorer votre travail"
 
-#: app/templates/views/signedout.html:407
+#: app/templates/views/signedout.html:435
 msgid "Integrate <i>Notify</i> into your system"
 msgstr "Intégration de <i>Notification</i> à votre système"
 
-#: app/templates/views/signedout.html:431
+#: app/templates/views/signedout.html:459
 msgid ""
 "You can integrate <i>Notify</i> with your current system to take\n"
 "              advantage of its secure, cloud-based messaging tools."
@@ -3142,7 +3176,7 @@ msgstr ""
 "<i>Notification</i> à votre application Web ou à votre système "
 "administratif pour envoyer des messages de façon sécuritaire."
 
-#: app/templates/views/signedout.html:435
+#: app/templates/views/signedout.html:463
 msgid ""
 "<i>Notify</i> supports roles and permissions, so that you can\n"
 "              adjust which staff have access to send or edit messages."
@@ -3151,18 +3185,18 @@ msgstr ""
 "que vous puissiez modifier quels employés ont l’accès requis pour envoyer"
 " ou modifier des messages."
 
-#: app/templates/views/signedout.html:442
+#: app/templates/views/signedout.html:470
 msgid "Learn how to integrate <i>Notify</i>"
 msgstr "Découvrir comment intégrer <i>Notification</i>"
 
-#: app/templates/views/signedout.html:480
-#: app/templates/views/signedout.html:513
+#: app/templates/views/signedout.html:508
+#: app/templates/views/signedout.html:541
 msgid "<i>Notify</i> is free for Government of Canada services"
 msgstr ""
 "<i>Notification</i> est gratuit pour les services du gouvernement du "
 "Canada"
 
-#: app/templates/views/signedout.html:516
+#: app/templates/views/signedout.html:544
 msgid ""
 "Use <i>Notify</i> for free and replace paper letters or costly\n"
 "              third-party messaging services."
@@ -3170,11 +3204,11 @@ msgstr ""
 "Vous pouvez utiliser <i>Notification</i> afin de remplacer vos lettres "
 "papier ou vos services de messagerie tiers coûteux."
 
-#: app/templates/views/signedout.html:521
+#: app/templates/views/signedout.html:549
 msgid "Send unlimited emails, completely free."
 msgstr "Envoyer un nombre illimité de courriels, tout à fait gratuitement."
 
-#: app/templates/views/signedout.html:525
+#: app/templates/views/signedout.html:553
 msgid ""
 "<i>Notify</i> is a service managed by the Canadian Digital\n"
 "                Service — no external procurement."
@@ -3182,15 +3216,15 @@ msgstr ""
 "<i>Notification</i> est un service géré par le Service numérique "
 "canadien, sans autres achats externes."
 
-#: app/templates/views/signedout.html:534
+#: app/templates/views/signedout.html:562
 msgid "Learn more about pricing"
 msgstr "En savoir plus sur les coûts"
 
-#: app/templates/views/signedout.html:552
+#: app/templates/views/signedout.html:580
 msgid "Try <i>Notify</i> now"
 msgstr "Essayer <i>Notification</i> maintenant"
 
-#: app/templates/views/signedout.html:555
+#: app/templates/views/signedout.html:583
 msgid ""
 "Create an account and start sending test messages right\n"
 "              away!"
@@ -3198,13 +3232,13 @@ msgstr ""
 "Vous pouvez creér un compte et envoyez dès maintenant vos premiers "
 "messages!"
 
-#: app/templates/views/signedout.html:581
+#: app/templates/views/signedout.html:609
 msgid ""
 "Your\n"
 "        phone"
 msgstr "Votre téléphone"
 
-#: app/templates/views/signedout.html:586
+#: app/templates/views/signedout.html:614
 #: app/templates/views/support/ask-question-give-feedback.html:24
 msgid "Request type"
 msgstr "Type de demande"
@@ -3216,13 +3250,14 @@ msgstr "Vous devez vous reconnecter"
 #: app/templates/views/signin.html:19
 msgid "We signed you out because you logged in to Notification on another device."
 msgstr ""
-"Nous vous avons déconnecté puisque vous vous êtes connecté à <i>Notification</i>"
-" sur un autre appareil."
+"Nous vous avons déconnecté puisque vous vous êtes connecté à "
+"<i>Notification</i> sur un autre appareil."
 
 #: app/templates/views/signin.html:23
 msgid "We signed you out because you haven’t used Notification for a while."
 msgstr ""
-"Nous vous avons déconnecté puisque vous n’avez pas utilisé <i>Notification</i> depuis un certain temps."
+"Nous vous avons déconnecté puisque vous n’avez pas utilisé "
+"<i>Notification</i> depuis un certain temps."
 
 #: app/templates/views/signin.html:29
 msgid "If you do not have an account, you can"
@@ -3237,8 +3272,8 @@ msgid ""
 "These terms apply to use of Notification. Your account manager must "
 "accept them."
 msgstr ""
-"Ces conditions s’appliquent à l’utilisation de <i>Notification</i>. Votre "
-"gestionnaire de compte doit les accepter."
+"Ces conditions s’appliquent à l’utilisation de <i>Notification</i>. Votre"
+" gestionnaire de compte doit les accepter."
 
 #: app/templates/views/terms-of-use.html:16
 msgid "When using Notification"
@@ -3286,9 +3321,9 @@ msgid ""
 "check that the data you add to Notification is accurate and complies with"
 " privacy legislation including the federal Privacy Act."
 msgstr ""
-"vous assurer que les données que vous ajoutez à <i>Notification</i> sont exactes"
-" et conformes aux lois sur la protection de la vie privée, notamment la "
-"<i>Loi sur la protection des renseignements personnels.</i>"
+"vous assurer que les données que vous ajoutez à <i>Notification</i> sont "
+"exactes et conformes aux lois sur la protection de la vie privée, "
+"notamment la <i>Loi sur la protection des renseignements personnels.</i>"
 
 #: app/templates/views/terms-of-use.html:26
 msgid ""
@@ -3347,9 +3382,10 @@ msgid ""
 "<a href=\"https://status.notifications.service.gov.uk/\">status</a> "
 "pages."
 msgstr ""
-"vous montrer comment <i>Notification</i> fonctionne dans les pages suivantes : <a "
-"href=\"https://www.gov.uk/performance/govuk-notify\">Performance</a> et "
-"<a href= \"https://status.notifications.service.gov.uk/ \">État</a>. "
+"vous montrer comment <i>Notification</i> fonctionne dans les pages "
+"suivantes : <a href=\"https://www.gov.uk/performance/govuk-"
+"notify\">Performance</a> et <a href= "
+"\"https://status.notifications.service.gov.uk/ \">État</a>. "
 
 #: app/templates/views/terms-of-use.html:36
 msgid "keep your data <a href=\"/features/security\">secure</a>."
@@ -3467,11 +3503,14 @@ msgstr ""
 #: app/templates/views/two-factor-email.html:13
 msgid "We’ve emailed you a link to sign in to Notification."
 msgstr ""
-"Nous vous avons envoyé un lien par courriel pour vous connecter à <i>Notification</i>."
+"Nous vous avons envoyé un lien par courriel pour vous connecter à "
+"<i>Notification</i>."
 
 #: app/templates/views/two-factor-email.html:14
 msgid "Use the link to open Notification in a new browser window."
-msgstr "Utilisez le lien pour ouvrir <i>Notification</i> dans une nouvelle fenêtre."
+msgstr ""
+"Utilisez le lien pour ouvrir <i>Notification</i> dans une nouvelle "
+"fenêtre."
 
 #: app/templates/views/two-factor-email.html:15
 msgid "Not received an email"
@@ -3573,8 +3612,8 @@ msgid ""
 "Before you can go live on Notification, your organisation needs to accept"
 " to our data sharing and financial agreement."
 msgstr ""
-"Avant d’entrer en service avec <i>Notification</i>, votre organisation doit "
-"accepter notre entente de partage des données et notre entente "
+"Avant d’entrer en service avec <i>Notification</i>, votre organisation "
+"doit accepter notre entente de partage des données et notre entente "
 "financière."
 
 #: app/templates/views/agreement/_agreement-choose.html:5
@@ -3608,7 +3647,8 @@ msgid ""
 "has already accepted the Notification data sharing and financial "
 "agreement. You can"
 msgstr ""
-"a déjà accepté l'entente de partage des données et l’entente financière de <i>Notification</i>. Vous pouvez"
+"a déjà accepté l'entente de partage des données et l’entente financière "
+"de <i>Notification</i>. Vous pouvez"
 
 #: app/templates/views/agreement/_agreement-signed.html:3
 #: app/templates/views/agreement/service-agreement-signed.html:19
@@ -3634,14 +3674,16 @@ msgstr "Pour utiliser <i>Notification</i>, votre organisation"
 #: app/templates/views/agreement/service-agreement.html:19
 msgid "must accept the Notification data sharing and financial agreement."
 msgstr ""
-"doit accepter l'entente de partage des données et l’entente financière de <i>Notification</i>."
+"doit accepter l'entente de partage des données et l’entente financière de"
+" <i>Notification</i>."
 
 #: app/templates/views/agreement/_agreement.html:5
 msgid ""
 "This agreement only needs to be accepted once and will then cover all "
 "Notification services from"
 msgstr ""
-"Cette entente ne doit être acceptée qu'une seule fois. Elle couvrira alors tous les services de <i>Notification</i> de"
+"Cette entente ne doit être acceptée qu'une seule fois. Elle couvrira "
+"alors tous les services de <i>Notification</i> de"
 
 #: app/templates/views/agreement/_agreement.html:9
 msgid ""
@@ -3669,6 +3711,7 @@ msgstr ""
 #: app/templates/views/agreement/agreement-choose.html:5
 #: app/templates/views/agreement/agreement-choose.html:17
 #: app/templates/views/agreement/agreement-confirm.html:7
+#: app/templates/views/agreement/agreement-confirm.html:16
 #: app/templates/views/agreement/agreement-signed.html:5
 #: app/templates/views/agreement/agreement-signed.html:17
 #: app/templates/views/agreement/agreement.html:5
@@ -3680,7 +3723,9 @@ msgstr ""
 #: app/templates/views/agreement/service-agreement.html:5
 #: app/templates/views/agreement/service-agreement.html:12
 msgid "Notification data sharing and financial agreement"
-msgstr "Entente de partage des données et entente financière de <i>Notification</i>"
+msgstr ""
+"Entente de partage des données et entente financière de "
+"<i>Notification</i>"
 
 #: app/templates/views/agreement/agreement-confirm.html:24
 #: app/templates/views/agreement/agreement-confirm.html:28
@@ -3688,7 +3733,8 @@ msgid ""
 "I confirm that I have the legal authority to accept the Notification data"
 " sharing and financial agreement"
 msgstr ""
-"Je confirme que j’ai le pouvoir légal d’accepter l'entente de partage des données et l’entente financière de <i>Notification</i>"
+"Je confirme que j’ai le pouvoir légal d’accepter l'entente de partage des"
+" données et l’entente financière de <i>Notification</i>"
 
 #: app/templates/views/agreement/agreement-confirm.html:24
 msgid "on behalf of"
@@ -3708,7 +3754,8 @@ msgstr "y sera assujetti."
 #: app/templates/views/agreement/agreement-public.html:14
 msgid "Download the Notification data sharing and financial agreement"
 msgstr ""
-"Télécharger l'entente de partage des données et l’entente financière de <i>Notification</i>"
+"Télécharger l'entente de partage des données et l’entente financière de "
+"<i>Notification</i>"
 
 #: app/templates/views/agreement/agreement-public.html:18
 msgid "Download the agreement"
@@ -3723,7 +3770,9 @@ msgid ""
 "Before you can go live on Notification, your organisation needs to\n"
 "      accept to our data sharing and financial agreement."
 msgstr ""
-"Avant d’entrer en service avec <i>Notification</i>, votre organisation doit accepter notre notre entente de partage des données et notre entente financière."
+"Avant d’entrer en service avec <i>Notification</i>, votre organisation "
+"doit accepter notre notre entente de partage des données et notre entente"
+" financière."
 
 #: app/templates/views/agreement/service-agreement-choose.html:26
 msgid ""
@@ -3754,7 +3803,9 @@ msgstr ""
 
 #: app/templates/views/agreement/service-agreement.html:25
 msgid "Once accepted, the agreement covers all Notify services from"
-msgstr "Une fois acceptée, l’entente couvre tous les services de <i>Notification</i> de"
+msgstr ""
+"Une fois acceptée, l’entente couvre tous les services de "
+"<i>Notification</i> de"
 
 #: app/templates/views/agreement/service-agreement.html:28
 msgid "Download a copy of the data sharing and financial agreement"
@@ -3890,8 +3941,8 @@ msgid ""
 "When you receive a text message in Notification, we can forward it to "
 "your system. Check the"
 msgstr ""
-"Lorsque vous recevez un message texte dans <i>Notification</i>, nous pouvons le "
-"transférer à votre système. Vérifiez le"
+"Lorsque vous recevez un message texte dans <i>Notification</i>, nous "
+"pouvons le transférer à votre système. Vérifiez le"
 
 #: app/templates/views/api/keys/create.html:19
 msgid "Name for this key"
@@ -3990,7 +4041,8 @@ msgid ""
 "The columns in your file need to match the double brackets in\n"
 "          your template"
 msgstr ""
-"Les colonnes de votre fichier doivent correspondre aux parenthèses doubles compris dans votre gabarit"
+"Les colonnes de votre fichier doivent correspondre aux parenthèses "
+"doubles compris dans votre gabarit"
 
 #: app/templates/views/check/column-errors.html:99
 msgid "Your file is missing"
@@ -4198,8 +4250,8 @@ msgid ""
 "Notification lets you choose the email address where users can send their"
 " reply."
 msgstr ""
-"<i>Notification</i> vous permet de sélectionner l’adresse courriel à laquelle "
-"les utilisateurs peuvent répondre."
+"<i>Notification</i> vous permet de sélectionner l’adresse courriel à "
+"laquelle les utilisateurs peuvent répondre."
 
 #: app/templates/views/features/emails.html:27
 msgid ""
@@ -4269,9 +4321,9 @@ msgid ""
 "name. This shows people that the message is from your service. You can "
 "change the text message sender name in your service settings."
 msgstr ""
-"Quand <i>Notification</i> envoie votre message texte, celui-ci affiche le nom de"
-" votre service pour que les gens sachent la provenance du message. Vous "
-"pouvez modifier le nom de l'expéditeur des messages texte dans vos "
+"Quand <i>Notification</i> envoie votre message texte, celui-ci affiche le"
+" nom de votre service pour que les gens sachent la provenance du message."
+" Vous pouvez modifier le nom de l'expéditeur des messages texte dans vos "
 "réglages de service."
 
 #: app/templates/views/features/text-messages.html:27
@@ -4443,7 +4495,9 @@ msgstr "archivé"
 msgid ""
 "When you turn a service live please log which services have been turned\n"
 "      live and why you approved the change."
-msgstr "Lorsque vous activez un services, veuillez indiquer quels services ont été activés et pourquoi vous avez approuvé le changement."
+msgstr ""
+"Lorsque vous activez un services, veuillez indiquer quels services ont "
+"été activés et pourquoi vous avez approuvé le changement."
 
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:8
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:12
@@ -4491,7 +4545,9 @@ msgstr "Factures"
 
 #: app/templates/views/pricing/how-to-pay.html:17
 msgid "We’ll send your organisation an invoice each quarter if you:"
-msgstr "Nous enverrons une facture à votre organisation à chaque trimestre si vous :"
+msgstr ""
+"Nous enverrons une facture à votre organisation à chaque trimestre si "
+"vous :"
 
 #: app/templates/views/pricing/how-to-pay.html:21
 msgid "exceed the"
@@ -4904,8 +4960,8 @@ msgstr "Vous pouvez aussi créer des dossiers pour classer vos gabarits."
 #: app/templates/views/templates/choose.html:37
 msgid "You need to ask your service manager to add templates before you can send"
 msgstr ""
-"Vous devez demander à votre gestionnaire de service d’ajouter des gabarits"
-" avant de pouvoir envoyer des messages"
+"Vous devez demander à votre gestionnaire de service d’ajouter des "
+"gabarits avant de pouvoir envoyer des messages"
 
 #: app/templates/views/templates/copy.html:7
 #: app/templates/views/templates/copy.html:13
