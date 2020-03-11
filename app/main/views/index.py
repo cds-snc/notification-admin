@@ -19,7 +19,7 @@ from app.main.forms import (
     FieldWithNoneOption,
     SearchByNameForm,
 )
-from app.main.views.sub_navigation_dictionaries import features_nav, pricing_nav
+from app.main.views.sub_navigation_dictionaries import features_nav
 from app.utils import get_logo_cdn_domain, user_is_logged_in
 
 QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
@@ -110,7 +110,6 @@ def pricing():
             for cc, country in INTERNATIONAL_BILLING_RATES.items()
         ], key=lambda x: x[0]),
         search_form=SearchByNameForm(),
-        navigation_links=pricing_nav(),
     )
 
 
@@ -119,7 +118,6 @@ def how_to_pay():
     return render_template(
         'views/pricing/how-to-pay.html',
         support_link=url_for('main.feedback', ticket_type=QUESTION_TICKET_TYPE),
-        navigation_links=pricing_nav(),
     )
 
 
