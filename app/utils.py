@@ -54,7 +54,7 @@ with open('{}/email_domains.txt'.format(
 user_is_logged_in = login_required
 
 
-def get_latest_stats():
+def get_latest_stats(lang="en"):
     api_args = {}
     json_data = {}
     api_args['start_date'] = "2019-01-01"
@@ -74,7 +74,13 @@ def get_latest_stats():
 
     json_data["services_count"] = len(service_names)
     notification_totals = sms_totals + email_totals
-    json_data["email_totals"] = f'{notification_totals:,}'
+    
+    if(lang == "en"):
+        json_data["notification_totals"] = f'{notification_totals:,}'
+    else:
+        formatted = f'{notification_totals:,}'
+        json_data["notification_totals"] = formatted.replace(","," ") 
+    
     return json_data
 
 

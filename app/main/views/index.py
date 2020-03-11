@@ -1,4 +1,5 @@
 from flask import (
+    current_app,
     abort,
     make_response,
     redirect,
@@ -12,7 +13,7 @@ from notifications_utils.international_billing_rates import (
 )
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
-from app import email_branding_client, letter_branding_client, user_api_client
+from app import email_branding_client, letter_branding_client, user_api_client, get_current_locale
 from app.main import main
 from app.main.forms import (
     ContactNotifyTeam,
@@ -28,7 +29,8 @@ QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
 @main.route('/', methods=['GET', 'POST'])
 def index():
 
-    stats = get_latest_stats()
+    lang = get_current_locale(current_app)
+    stats = get_latest_stats(lang)
 
     if current_user and current_user.is_authenticated:
         return redirect(url_for('main.choose_account'))
@@ -66,7 +68,6 @@ def index():
         form=form,
         scrollTo="false",
         stats=stats
-
     )
 
 
