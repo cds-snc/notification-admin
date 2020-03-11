@@ -388,12 +388,12 @@ def test_accept_agreement_page_persists(
 @pytest.mark.parametrize('name, email, expected_paragraph', (
     (None, None, (
         'I confirm that I have the legal authority to accept the '
-        'Notification data sharing and financial agreement (version '
+        'Notify data sharing and financial agreement (version '
         '1.2) and that Test Organisation will be bound by it.'
     )),
     ('Firstname Lastname', 'test@example.com', (
         'I confirm that I have the legal authority to accept the '
-        'Notification data sharing and financial agreement (version '
+        'Notify data sharing and financial agreement (version '
         '1.2) on behalf of Firstname Lastname (test@example.com) and '
         'that Test Organisation will be bound by it.'
     )),
