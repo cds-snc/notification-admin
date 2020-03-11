@@ -26,7 +26,7 @@ def test_email_branding_page_shows_full_branding_list(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    links = page.select('.message-name a')
+    links = page.select('.email-brand a')
     brand_names = [normalize_spaces(link.text) for link in links]
     hrefs = [link['href'] for link in links]
 
