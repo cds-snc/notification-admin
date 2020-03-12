@@ -74,14 +74,13 @@
           {{ stats_fields('sms', service['stats']) }}
         {% endcall %}
 
-        {% call row() %}
+        <tr class="table-row" style="display:none;">
 
           {% call field(border=False) %}
 
           {% endcall %}
             {{ stats_fields('letter', service['stats']) }}
-
-        {% endcall %}
+        </tr>
 
       {% endcall %}
 
