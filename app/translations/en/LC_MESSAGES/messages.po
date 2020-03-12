@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-11 13:13-0400\n"
+"POT-Creation-Date: 2020-03-11 16:36-0400\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -761,7 +761,7 @@ msgstr ""
 
 #: app/templates/admin_template.html:24 app/templates/admin_template.html:72
 msgid "Notification"
-msgstr "<i>Notify</i>"
+msgstr "Notify"
 
 #: app/templates/admin_template.html:37 app/templates/main_template.html:230
 #: app/templates/views/signedout.html:106
@@ -1018,6 +1018,10 @@ msgstr ""
 
 #: app/templates/main_template.html:110
 msgid "Choose arbitrary things"
+msgstr ""
+
+#: app/templates/main_template.html:172
+msgid "<i>Notify</i>"
 msgstr ""
 
 #: app/templates/main_template.html:175 app/templates/views/signedout.html:74
@@ -1690,6 +1694,8 @@ msgid ""
 "If your service receives text messages in Notification, we can forward "
 "them to your callback URL as soon as they arrive."
 msgstr ""
+"If your service receives text messages in <i>Notify</i>, we can forward "
+"them to your callback URL as soon as they arrive."
 
 #: app/templates/views/callbacks.html:50
 msgid "Callback message format"
@@ -1713,7 +1719,7 @@ msgstr ""
 
 #: app/templates/views/callbacks.html:60
 msgid "The UTC datetime that the message was received by Notification"
-msgstr ""
+msgstr "The UTC datetime that the message was received by <i>Notify</i>"
 
 #: app/templates/views/cancelled-invitation.html:2
 msgid "Invitation has been cancelled"
@@ -2116,9 +2122,6 @@ msgid ""
 "Notification. You can also schedule the date and time for sending emails "
 "or text messages."
 msgstr ""
-"To send a batch of messages at once, upload a list of contact details to "
-"<i>Notify</i>. You can also schedule the date and time for sending emails"
-" or text messages."
 
 #: app/templates/views/features.html:35
 msgid "Application Programming Interface (API) integration"
@@ -2129,6 +2132,8 @@ msgid ""
 "You can integrate Notification’s API with your web application or back-"
 "office system to send messages automatically."
 msgstr ""
+"You can integrate <i>Notify</i>’s API with your web application or back-"
+"office system to send messages automatically."
 
 #: app/templates/views/features.html:37
 msgid "Read our"
@@ -2198,6 +2203,8 @@ msgid ""
 "Notification protects and manages data to meet the needs of government "
 "services."
 msgstr ""
+"<i>Notify</i> protects and manages data to meet the needs of government "
+"services."
 
 #: app/templates/views/features.html:55
 msgid "Hide sensitive information"
@@ -3132,6 +3139,8 @@ msgid ""
 "These terms apply to use of Notification. Your account manager must "
 "accept them."
 msgstr ""
+"These terms apply to use of <i>Notify</i>. Your account manager must "
+"accept them."
 
 #: app/templates/views/terms-of-use.html:16
 msgid "When using Notification"
@@ -4797,4 +4806,17 @@ msgstr ""
 
 #~ msgid "We signed you out because you haven’t used Notification for a while."
 #~ msgstr "We signed you out because you haven’t used Notify for a while."
+
+#~ msgid ""
+#~ "To send a batch of messages at "
+#~ "once, upload a list of contact "
+#~ "details to <i>Notify</i>. You can also"
+#~ " schedule the date and time for "
+#~ "sending emails or text messages."
+#~ msgstr ""
+#~ "To send a batch of messages at "
+#~ "once, upload a list of contact "
+#~ "details to <i>Notify</i>. You can also"
+#~ " schedule the date and time for "
+#~ "sending emails or text messages."
 
