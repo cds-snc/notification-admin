@@ -573,21 +573,21 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
 
     <!-- COUNTER -->
     <div class="bg-gray">
-      <div class="container px-10 py-10 flex flex-col lg:flex-row justify-between">
+      <div class="container px-10 py-20 flex flex-col lg:flex-row justify-between">
           <!-- Box 1-->
           <div class="flex flex-col items-start justify-end pb-10 lg:pb-0">
-            <div class="text-base font-bold leading-tight font-sans">{{ _("Notify by the numbers") }}</div>
-            <div class="text-small">{{ _("Since November 2019") }}</div>
+            <div class="text-base font-bold extra-tight font-sans">{{ _("Notify by the numbers") }}</div>
+            <div class="text-xs py-2">{{ _("Since November 2019") }}</div>
           </div>
           <!-- Box 2-->
           <div class="pb-10 lg:pb-0">
-            <div class="text-xxl font-bold leading-tight font-sans">{{stats.services_count}}</div>
-            <div class="text-small">{{ _("services using Notify") }}</div>
+            <div class="text-xxl font-bold leading-none font-sans">{{stats.services_count}}</div>
+            <div class="text-xs py-2">{{ _("services using Notify") }}</div>
           </div>
           <!-- Box 3-->
           <div class="pb-10 lg:pb-0">
-            <div class="text-xxl font-bold leading-tight font-sans">{{stats.notification_totals}}</div>
-            <div class="text-small">{{ _("email notifications sent") }}</div>
+            <div class="text-xxl font-bold leading-none font-sans">{{stats.notification_totals}}</div>
+            <div class="text-xs py-2">{{ _("email notifications sent") }}</div>
           </div>
           <!-- end -->
         </div>
