@@ -10,7 +10,7 @@
 {% macro stats_fields(channel, data) -%}
 
   {% call field(border=False) %}
-      <span class="heading-medium">{{ channel.title() }}</span>
+      <span class="heading-medium" style="margin: 0px;">{{ channel.title() }}</span>
   {% endcall %}
 
   {% call field(align='right', border=False) %}
@@ -56,15 +56,15 @@
         {% call row() %}
           {% if not service['active'] %}
             {% call field(status='default', border=False) %}
-              <span class="heading-medium">archived</span>
+              <span class="heading-medium" style="margin: 0px;">archived</span>
             {% endcall %}
           {% elif service['research_mode'] %}
             {% call field(border=False) %}
-              <span class="research-mode">research mode</span>
+              <span class="research-mode" style="margin: 0px;">research mode</span>
             {% endcall %}
           {% elif not service['restricted'] %}
             {% call field(status='error', border=False) %}
-              <span class="heading-medium">Live</span>
+              <span class="heading-medium" style="margin: 0px;">Live</span>
             {% endcall %}
           {% else %}
             {% call field(border=False) %}
