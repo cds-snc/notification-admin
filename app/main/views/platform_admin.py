@@ -516,8 +516,10 @@ def sum_service_usage(service):
         total += service['statistics'][notification_type]['requested']
     return total
 
+
 def is_archived(service):
     return service["name"].find('_archive')
+
 
 def filter_and_sort_services(services, trial_mode_services=False):
     data = [
@@ -532,7 +534,7 @@ def filter_and_sort_services(services, trial_mode_services=False):
         )
         if service['restricted'] == trial_mode_services
     ]
-    
+
     return list(filter(is_archived, data))
 
 
