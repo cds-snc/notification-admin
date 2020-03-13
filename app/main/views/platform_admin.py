@@ -517,8 +517,11 @@ def sum_service_usage(service):
     return total
 
 
+def is_archived(service):
+    return "_archive" not in service["name"]
+
 def filter_and_sort_services(services, trial_mode_services=False):
-    return [
+    data = [
         service for service in sorted(
             services,
             key=lambda service: (
@@ -530,6 +533,8 @@ def filter_and_sort_services(services, trial_mode_services=False):
         )
         if service['restricted'] == trial_mode_services
     ]
+
+    return filter(is_archived, data)
 
 
 def create_global_stats(services):
