@@ -138,7 +138,7 @@ class Live(Config):
     SHOW_STYLEGUIDE = False
     HEADER_COLOUR = '#005EA5'  # $govuk-blue
     HTTP_PROTOCOL = 'https'
-    STATSD_ENABLED = True
+    STATSD_ENABLED = False
     MOU_BUCKET_NAME = 'notifications.service.gov.uk-mou'
     NOTIFY_ENVIRONMENT = 'live'
     CHECK_PROXY_HEADER = False
