@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-11 16:36-0400\n"
+"POT-Creation-Date: 2020-03-17 12:39-0400\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -1878,16 +1878,16 @@ msgstr ""
 
 #: app/templates/views/documentation.html:5
 msgid "Notification API to send messages automatically."
-msgstr "<i>Notify</i> API to send messages automatically."
+msgstr "Integrate the <i>Notify</i> API to send messages automatically."
 
 #: app/templates/views/documentation.html:6
-msgid "Clients"
+msgid "Set up the client"
 msgstr ""
 
 #: app/templates/views/documentation.html:9
 msgid ""
-"Choose a client to integrate our API with your web application or back "
-"office system. Links to documentation open in a new tab."
+"The API is available using the following clients developed by <a "
+"href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
 msgstr ""
 
 #: app/templates/views/documentation.html:17
@@ -1900,7 +1900,7 @@ msgstr "You need to change your endpoint before integrating the API."
 
 #: app/templates/views/documentation.html:22
 msgid "Changer votre point de connexion API"
-msgstr "Changing your endpoint"
+msgstr "Change your endpoint"
 
 #: app/templates/views/documentation.html:27
 msgid "Note:"
@@ -1912,17 +1912,13 @@ msgstr ""
 
 #: app/templates/views/documentation.html:31
 msgid "Changing your endpoint"
-msgstr ""
+msgstr "Change your endpoint"
 
 #: app/templates/views/documentation.html:35
-msgid "Maintained by CDS:"
-msgstr ""
+msgid "Choose a client to integrate the API with your system."
+msgstr "Choose a client to integrate the API with your system:"
 
-#: app/templates/views/documentation.html:58
-msgid "Maintained by GOV.UK:"
-msgstr ""
-
-#: app/templates/views/documentation.html:77
+#: app/templates/views/documentation.html:54
 msgid "Direct connection to API"
 msgstr ""
 
@@ -3982,7 +3978,7 @@ msgstr ""
 msgid "Logos should be PNG files, 108px high"
 msgstr ""
 
-#: app/templates/views/email-branding/select-branding.html:25
+#: app/templates/views/email-branding/select-branding.html:21
 msgid "New brand"
 msgstr ""
 
@@ -4819,4 +4815,33 @@ msgstr ""
 #~ "details to <i>Notify</i>. You can also"
 #~ " schedule the date and time for "
 #~ "sending emails or text messages."
+
+#~ msgid ""
+#~ "Choose a client to integrate our "
+#~ "API with your web application or "
+#~ "back office system. Links to "
+#~ "documentation open in a new tab."
+#~ msgstr ""
+
+#~ msgid "Maintained by CDS:"
+#~ msgstr ""
+
+#~ msgid "Maintained by GOV.UK:"
+#~ msgstr ""
+
+#~ msgid "Clients"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The API is available using the "
+#~ "following clients developed by GOV.UK. "
+#~ "Links to documentation open in a "
+#~ "new tab."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Choose a client to integrate our "
+#~ "API with your web application or "
+#~ "back office system."
+#~ msgstr ""
 
