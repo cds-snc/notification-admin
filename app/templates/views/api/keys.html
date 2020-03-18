@@ -35,6 +35,11 @@
       {% call field() %}
         <div class="file-list">
           {{ item.name }}
+          {% if current_user.platform_admin %}
+            <div class="hint">
+              {{ item.total_sends }} notifications sent
+            </div>
+          {% endif %}
           <div class="hint">
             {% if item.key_type == 'normal' %}
               {{ _('Live – sends to anyone') }}

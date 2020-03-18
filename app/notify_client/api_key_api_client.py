@@ -26,5 +26,9 @@ class ApiKeyApiClient(NotifyAdminAPIClient):
             url='/service/{0}/api-key/revoke/{1}'.format(service_id, key_id),
             data=data)
 
+    def get_api_key_statistics(self, key_id):
+        return self.get(
+            url='/api-key/{0}/total-sends'.format(key_id),
+        )['data']
 
 api_key_api_client = ApiKeyApiClient()

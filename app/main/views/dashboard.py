@@ -277,7 +277,6 @@ def aggregate_notifications_stats(template_statistics):
 def get_dashboard_partials(service_id):
     all_statistics = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=7)
     template_statistics = aggregate_template_usage(all_statistics)
-
     scheduled_jobs, immediate_jobs = [], []
     if job_api_client.has_jobs(service_id):
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
