@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-11 16:36-0400\n"
+"POT-Creation-Date: 2020-03-18 10:13-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -206,7 +206,7 @@ msgstr "Mot de passe non valide"
 
 #: app/main/forms.py:668
 msgid "Template name"
-msgstr "Nom du modèle"
+msgstr "Nom du gabarit"
 
 #: app/main/forms.py:672 app/main/forms.py:846 app/main/forms.py:854
 #: app/main/views/dashboard.py:194 app/templates/views/signedout.html:655
@@ -419,11 +419,11 @@ msgstr "Choisissez un dossier"
 
 #: app/main/forms.py:1525 app/templates/main_template.html:71
 msgid "New template"
-msgstr "Nouveau modèle"
+msgstr "Nouveau gabarit"
 
 #: app/main/forms.py:1528
 msgid "Select the type of template you want to add"
-msgstr "Sélectionnez le type de modèle que vous voulez ajouter"
+msgstr "Sélectionnez le type de gabarit que vous voulez ajouter"
 
 #: app/main/forms.py:1584
 msgid "What’s their name?"
@@ -655,7 +655,7 @@ msgstr "À"
 
 #: app/main/views/templates.py:166
 msgid "Select at least one template or folder"
-msgstr "Sélectionnez au moins un modèle ou un dossier"
+msgstr "Sélectionnez au moins un gabarit ou un dossier"
 
 #: app/main/views/templates.py:223
 msgid "All"
@@ -698,7 +698,7 @@ msgstr "plus de 7 jours"
 
 #: app/main/views/templates.py:715
 msgid "This template was last used"
-msgstr "Ce modèle a été utilisé il y a"
+msgstr "Ce gabarit a été utilisé il y a"
 
 #: app/main/views/templates.py:715
 msgid "ago."
@@ -708,7 +708,7 @@ msgstr "."
 msgid "Personalised content will be hidden for messages sent with this template"
 msgstr ""
 "Le contenu personnalisé sera masqué pour les messages envoyés à l'aide de"
-" ce modèle"
+" ce gabarit"
 
 #: app/main/views/two_factor.py:26
 msgid "Email resent"
@@ -734,7 +734,7 @@ msgstr "Envoyer des messages"
 
 #: app/models/roles_and_permissions.py:25
 msgid "Add and edit templates"
-msgstr "Ajouter et modifier des modèles"
+msgstr "Ajouter et modifier des gabarits"
 
 #: app/models/roles_and_permissions.py:26
 msgid "Manage settings and teams"
@@ -751,15 +751,15 @@ msgstr "Par défaut"
 
 #: app/models/template_list.py:135
 msgid "Email template"
-msgstr "Modèle de courriel"
+msgstr "Gabarit de courriel"
 
 #: app/models/template_list.py:136
 msgid "Text message template"
-msgstr "Modèle de message texte"
+msgstr "Gabarit de message texte"
 
 #: app/models/template_list.py:137
 msgid "Letter template"
-msgstr "Modèle de lettre"
+msgstr "Gabarit de lettre"
 
 #: app/templates/admin_template.html:24 app/templates/admin_template.html:72
 msgid "Notification"
@@ -861,7 +861,7 @@ msgstr "Terminer"
 
 #: app/templates/main_template.html:72
 msgid "Copy template"
-msgstr "Copier le modèle"
+msgstr "Copier le gabarit"
 
 #: app/templates/main_template.html:73
 msgid "New folder"
@@ -1919,54 +1919,55 @@ msgstr "1 mois"
 
 #: app/templates/views/documentation.html:5
 msgid "Notification API to send messages automatically."
-msgstr "L’API <i>Notification</i> enverra les messages automatiquement."
+msgstr ""
+"Vous pouvez intégrer l’API <i>Notification</i> afin d'envoyer des "
+"messages automatiquement."
 
-#: app/templates/views/documentation.html:6
-msgid "Clients"
-msgstr "Clients"
+#: app/templates/views/documentation.html:7
+msgid "Set up the client"
+msgstr "Configurer le client"
 
-#: app/templates/views/documentation.html:9
+#: app/templates/views/documentation.html:10
 msgid ""
-"Choose a client to integrate our API with your web application or back "
-"office system. Links to documentation open in a new tab."
-msgstr ""
-"Choisissez un client pour intégrer notre API à votre application Web ou "
-"àvotre système administratif. Les liens de la documentation s’ouvrent "
-"dans un nouvel onglet."
+"The API is available using clients developed by <a "
+"href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
+msgstr "L'API est disponible en utilisant des clients développés par <a "
+"href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
 
 #: app/templates/views/documentation.html:17
-msgid "Remarque:"
-msgstr "Remarque :"
+msgid "À noter : "
+msgstr ""
 
 #: app/templates/views/documentation.html:17
-msgid "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
+msgid ""
+"Avant d'intégrer l'API, vous devez modifier votre point de terminaison "
+"avant d'intégrer l'API."
 msgstr ""
 
-#: app/templates/views/documentation.html:22
-msgid "Changer votre point de connexion API"
+#: app/templates/views/documentation.html:21
+msgid "Comment changer votre point de terminaison"
 msgstr ""
 
-#: app/templates/views/documentation.html:27
-msgid "Note:"
-msgstr "Remarque :"
+#: app/templates/views/documentation.html:26
+msgid "Note: "
+msgstr ""
 
-#: app/templates/views/documentation.html:27
-msgid "You need to change your endpoint before integrating the API."
-msgstr "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
+#: app/templates/views/documentation.html:26
+msgid ""
+"Before integrating the API, using the Notify clients below, you need to "
+"change your endpoint to <a "
+"href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>."
+msgstr ""
 
-#: app/templates/views/documentation.html:31
+#: app/templates/views/documentation.html:30
 msgid "Changing your endpoint"
-msgstr "Changer votre point de connexion API"
+msgstr "Comment changer votre point de terminaison d'API"
 
-#: app/templates/views/documentation.html:35
-msgid "Maintained by CDS:"
-msgstr "Maintenu par le SNC :"
+#: app/templates/views/documentation.html:34
+msgid "Choose a client to integrate the API with your system."
+msgstr "Choisissez un client pour intégrer l'API à votre système :"
 
-#: app/templates/views/documentation.html:58
-msgid "Maintained by GOV.UK:"
-msgstr "Maintenu par GOV.UK :"
-
-#: app/templates/views/documentation.html:77
+#: app/templates/views/documentation.html:53
 msgid "Direct connection to API"
 msgstr "Connexion directe à l'API"
 
@@ -4211,7 +4212,7 @@ msgstr "Écrivez un courriel ou un message texte"
 msgid "Logos should be PNG files, 108px high"
 msgstr "Les logos doivent être en format PNG et d’une hauteur de 108 pixels"
 
-#: app/templates/views/email-branding/select-branding.html:25
+#: app/templates/views/email-branding/select-branding.html:21
 msgid "New brand"
 msgstr "Nouvelle marque distinctive"
 
@@ -5085,7 +5086,7 @@ msgstr "Clés d’essai"
 #~ msgstr ""
 #~ "Pour envoyer un courriel ou un "
 #~ "message texte au moyen de Notification,"
-#~ " vous devez d’abord créer un modèle"
+#~ " vous devez d’abord créer un gabarit"
 #~ " de message réutilisable."
 
 #~ msgid ""
@@ -5282,7 +5283,7 @@ msgstr "Clés d’essai"
 #~ msgstr "Membres de l’équipe"
 
 #~ msgid "Share templates with your team"
-#~ msgstr "Partager des modèles avec votre équipe"
+#~ msgstr "Partager des gabarits avec votre équipe"
 
 #~ msgid "invited"
 #~ msgstr "membre invité"
@@ -5368,7 +5369,7 @@ msgstr "Clés d’essai"
 #~ "adaptant au contexte canadien."
 
 #~ msgid "{} email message template"
-#~ msgstr "{} modèle de message de courriel"
+#~ msgstr "{} gabarit de message de courriel"
 
 #~ msgid "Java-API-Library-Documentation"
 #~ msgstr "API-Java-client-Documentation"
@@ -5390,8 +5391,8 @@ msgstr "Clés d’essai"
 #~ "templates."
 #~ msgstr ""
 #~ "Vous n’avez pas besoin de connaissances"
-#~ " techniques pour créer des modèles de"
-#~ " courriels ou de messages texte."
+#~ " techniques pour créer des gabarits "
+#~ "de courriels ou de messages texte."
 
 #~ msgid "Send messages manually or automatically"
 #~ msgstr "Envoyez des messages de façon manuelle ou automatique"
@@ -5466,10 +5467,10 @@ msgstr "Clés d’essai"
 #~ msgstr "supprimer"
 
 #~ msgid "{} email template"
-#~ msgstr "{} modèle de courriel"
+#~ msgstr "{} gabarit de courriel"
 
 #~ msgid "{} text message template"
-#~ msgstr "{} modèle de message texte"
+#~ msgstr "{} gabarit de message texte"
 
 #~ msgid "under a minute"
 #~ msgstr "FR under a minute"
@@ -5622,7 +5623,7 @@ msgstr "Clés d’essai"
 #~ msgstr ""
 #~ "Besoin d’aide pour organiser les "
 #~ "coordonnées de vos destinataires? Le "
-#~ "modèle de feuille de calcul de "
+#~ "gabarit de feuille de calcul de "
 #~ "Notification est là pour vous. "
 
 #~ msgid "Integrate Notify into your web application or admin system"
@@ -5654,8 +5655,8 @@ msgstr "Clés d’essai"
 #~ "for your users."
 #~ msgstr ""
 #~ "Vous n’avez pas besoin de connaissances"
-#~ " techniques pour créer des modèles de"
-#~ " courriels ou de messages texte."
+#~ " techniques pour créer des gabarits "
+#~ "de courriels ou de messages texte."
 
 #~ msgid ""
 #~ "Notify uses standard text editing tools"
@@ -5791,4 +5792,99 @@ msgstr "Clés d’essai"
 #~ "Nous vous avons déconnecté puisque vous"
 #~ " n’avez pas utilisé Notification depuis "
 #~ "un certain temps."
+
+#~ msgid ""
+#~ "Choose a client to integrate our "
+#~ "API with your web application or "
+#~ "back office system. Links to "
+#~ "documentation open in a new tab."
+#~ msgstr ""
+#~ "Choisissez un client pour intégrer l'API"
+#~ " à votre système.Choisissez un client "
+#~ "pour intégrer notre API à votre "
+#~ "application Web ou àvotre système "
+#~ "administratif. Les liens de la "
+#~ "documentation s’ouvrent dans un nouvel "
+#~ "onglet."
+
+#~ msgid "Maintained by CDS:"
+#~ msgstr "Maintenu par le SNC :"
+
+#~ msgid "Maintained by GOV.UK:"
+#~ msgstr "Maintenu par GOV.UK :"
+
+#~ msgid "Clients"
+#~ msgstr "Clients"
+
+#~ msgid ""
+#~ "The API is available using the "
+#~ "following clients developed by GOV.UK. "
+#~ "Links to documentation open in a "
+#~ "new tab."
+#~ msgstr ""
+#~ "L'API est disponible en utilisant les"
+#~ " clients suivants développés par GOV.UK."
+
+#~ msgid ""
+#~ "Choose a client to integrate our "
+#~ "API with your web application or "
+#~ "back office system."
+#~ msgstr "Choisissez un client pour intégrer l'API à votre système."
+
+#~ msgid "You need to change your endpoint before integrating the API."
+#~ msgstr "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
+
+#~ msgid ""
+#~ "The API is available using the "
+#~ "following clients developed by <a "
+#~ "href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
+#~ msgstr ""
+#~ "L'API est disponible en utilisant les"
+#~ " clients suivants développés par <a "
+#~ "href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
+
+#~ msgid "Remarque:"
+#~ msgstr "À noter :"
+
+#~ msgid ""
+#~ "Before integrating the API, you need "
+#~ "to change your endpoint to <a "
+#~ "href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>."
+#~ msgstr ""
+#~ "Avant d'intégrer l'API, vous devez "
+#~ "modifier votre point de terminaison vers"
+#~ " <a href=https://api.notification.alpha.canada.ca/ "
+#~ ">https://api.notification.alpha.canada.ca/</a>."
+
+#~ msgid "Changer votre point de connexion API"
+#~ msgstr "Changer votre point de terminaison d'API"
+
+#~ msgid ""
+#~ "The API is available using the "
+#~ "clients below developed by <a "
+#~ "href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
+#~ msgstr ""
+
+#~ msgid "À noter :"
+#~ msgstr ""
+
+#~ msgid "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
+#~ msgstr ""
+#~ "Vous devez modifier votre point de "
+#~ "terminaison vers <a "
+#~ "href=https://api.notification.alpha.canada.ca/ "
+#~ ">https://api.notification.alpha.canada.ca/</a>."
+
+#~ msgid "Comment changer votre point de terminaison d'API"
+#~ msgstr ""
+
+#~ msgid "Note:"
+#~ msgstr "À noter :"
+
+#~ msgid ""
+#~ "Before integrating the API using the "
+#~ "Notify clients below, you need to "
+#~ "change your endpoint to <a "
+#~ "href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>."
+#~ msgstr ""
 

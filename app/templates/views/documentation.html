@@ -3,61 +3,37 @@
 {% endblock %} {% block content_column_content %}
 <h1 class="heading-large">{{ _("Documentation") }}</h1>
 <p>{{ _("Notification API to send messages automatically.") }}</p>
-<h2 class="heading-medium">{{ _("Clients") }}</h2>
+
+<h2 class="heading-medium">{{ _("Set up the client") }}</h2>
 <p>
   {{
     _(
-      "Choose a client to integrate our API with your web application or back office system. Links to documentation open in a new tab."
+      "The API is available using clients developed by <a href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
     )
   }}
 </p>
-
 {% if current_lang == "fr" %}
 <div class="border-box">
-  <strong>{{ _("Remarque:") }}</strong> {{ _("Vous devez modifier votre point de terminaison avant d'intégrer l'API.") }}
-  <a
-    class="button-blue"
-    style="width:300px;"
-    href="https://github.com/cds-snc/notification-api/wiki/Comment-changer-votre-point-de-terminaison-d'API%3F"
-      >{{ _("Changer votre point de connexion API") }}</a
+  <strong>{{ _("À noter : ") }}</strong>{{ _("Avant d'intégrer l'API avec les clients de Notification ci-dessous, vous devez modifier votre point de terminaison vers <a href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>.") }}
+  <a     
+  class="button-blue"
+  href= "https://github.com/cds-snc/notification-api/wiki/Comment-changer-votre-point-de-terminaison-d'API%3F"
+      >{{ _("Comment changer votre point de terminaison") }}</a
     >
-</div>
+  </div>
 {% else %}
-  <div class="border-box">
-    <strong>{{ _("Note:") }}</strong> {{ _("You need to change your endpoint before integrating the API.") }}
-  <a
-    class="button-blue"
-    href="https://github.com/cds-snc/notification-api/wiki/How-to-change-your-API-endpoint%3F"
+<div class="border-box">
+  <strong>{{ _("Note: ") }}</strong>{{ _("Before integrating the API, using the Notify clients below, you need to change your endpoint to <a href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>.") }}
+  <a 
+  class="button-blue"
+  href="https://github.com/cds-snc/notification-api/wiki/How-to-change-your-API-endpoint%3F"
     >{{ _("Changing your endpoint") }}</a>
 </div>
 {% endif %}
 
-<h2>{{ _("Maintained by CDS:") }}</h2>
+<p>{{ _("Choose a client to integrate the API with your system.") }}</p>
 <ul class="list list-bullet">
-  {% for key, label in [ ('java', 'Java'), ] %} {% if current_lang == "fr" %}
-  <li>
-    <a
-      href="https://github.com/cds-snc/notification-api/wiki/API-Java-client-Documentation"
-      target="_blank"
-      rel="noopener"
-      >{{ label }}</a
-    >
-  </li>
-  {% else %}
-  <li>
-    <a
-      href="https://github.com/cds-snc/notification-api/wiki/Java-API-Library-Documentation"
-      target="_blank"
-      rel="noopener"
-      >{{ label }}</a
-    >
-  </li>
-  {% endif %} {% endfor %}
-</ul>
-
-<h2>{{ _("Maintained by GOV.UK:") }}</h2>
-<ul class="list list-bullet">
-  {% for key, label in [ ('net', '.NET'), ('node', 'Node JS'), ('php', 'PHP'),
+  {% for key, label in [ ('java', 'Java'), ('net', '.NET'), ('node', 'Node JS'), ('php', 'PHP'),
   ('python', 'Python'), ('ruby', 'Ruby'), ] %}
   <li>
     <a
@@ -74,7 +50,7 @@
     href="https://docs.notifications.service.gov.uk/rest-api.html"
     target="_blank"
     rel="noopener"
-    >{{ _("Direct connection to API") }}</a
+    >{{ _("Direct connection to API") }}</a>
   </li>
 </ul>
 
