@@ -327,16 +327,14 @@ def features_templates():
 @main.route('/features/security', endpoint='security')
 def security():
     return render_template(
-        'views/security.html',
-        navigation_links=features_nav()
+        'views/security.html'
     )
 
 
 @main.route('/features/terms', endpoint='terms')
 def terms():
     return render_template(
-        'views/terms-of-use.html',
-        navigation_links=features_nav(),
+        'views/terms-of-use.html'
     )
 
 
