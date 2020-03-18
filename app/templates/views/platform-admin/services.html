@@ -106,8 +106,12 @@
         {{ textbox(form.start_date, hint="Enter start date in format YYYY-MM-DD") }}
         {{ textbox(form.end_date, hint="Enter end date in format YYYY-MM-DD") }}
         {{ checkbox(form.include_from_test_key) }}
-        </br>
-        <button type="submit" class="button">Filter</button>
+        
+        <br>
+        <br>
+        <div>
+        <button type="submit" style="margin-bottom:20px" class="button">Filter</button>
+        </div>
       {% endcall %}
     </details>
 

@@ -19,8 +19,11 @@
     {% call form_wrapper(method="get") %}
       {{ textbox(form.start_date, hint="Enter start date in format YYYY-MM-DD") }}
       {{ textbox(form.end_date, hint="Enter end date in format YYYY-MM-DD") }}
-      </br>
-      <button type="submit" class="button">Filter</button>
+      <br>
+      <br>
+      <div>
+      <button style="margin-bottom:20px" type="submit" class="button">Filter</button>
+      </div>
     {% endcall %}
   </details>
 
