@@ -1,9 +1,7 @@
-from flask import redirect, session, url_for, current_app
+from flask import current_app, redirect, session, url_for
 from flask_login import logout_user
 
-from app import (
-    get_current_locale
-)
+from app import get_current_locale
 from app.main import main
 
 
