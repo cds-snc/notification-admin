@@ -32,3 +32,4 @@ class ApiKeyApiClient(NotifyAdminAPIClient):
         )['data']
 
 api_key_api_client = ApiKeyApiClient()
+
