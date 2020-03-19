@@ -31,5 +31,5 @@ class ApiKeyApiClient(NotifyAdminAPIClient):
             url='/api-key/{0}/total-sends'.format(key_id),
         )['data']
 
-api_key_api_client = ApiKeyApiClient()
 
+api_key_api_client = ApiKeyApiClient()
