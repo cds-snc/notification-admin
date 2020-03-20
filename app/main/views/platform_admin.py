@@ -204,6 +204,42 @@ def platform_admin_services():
     )
 
 
+@main.route("/platform-admin/live-api-keys", endpoint='live_api_keys')
+@user_is_platform_admin
+def platform_admin_api_keys():
+    form = DateFilterForm(request.args)
+    if all((
+        request.args.get('include_from_test_key') is None,
+        request.args.get('start_date') is None,
+        request.args.get('end_date') is None,
+    )):
+        # Default to True if the user hasn’t done any filtering,
+        # otherwise respect their choice
+        form.include_from_test_key.data = True
+    api_args = {'detailed': True,
+                'only_active': False,    # specifically DO get inactive services
+                'include_from_test_key': form.include_from_test_key.data,
+                }
+
+    if form.start_date.data:
+        api_args['start_date'] = form.start_date.data
+        api_args['end_date'] = form.end_date.data or datetime.utcnow().date()
+
+    services = filter_and_sort_services(
+        service_api_client.get_services(api_args)['data'],
+        trial_mode_services=False,
+    )
+
+    return render_template(
+        'views/platform-admin/services.html',
+        include_from_test_key=form.include_from_test_key.data,
+        form=form,
+        services=list(format_stats_by_service(services)),
+        page_title='Live API keys',
+        global_stats=create_global_stats(services),
+    )
+
+
 @main.route("/platform-admin/reports")
 @user_is_platform_admin
 def platform_admin_reports():
