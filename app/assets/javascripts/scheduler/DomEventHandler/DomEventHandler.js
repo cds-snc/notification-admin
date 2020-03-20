@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { store } from "./index";
 
 const useBuildEvent = () => {

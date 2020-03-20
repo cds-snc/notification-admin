@@ -1,9 +1,5 @@
 import dayjs from "dayjs";
 
-let options = {};
-
-options = { ...window.schedulerOptions };
-
 export const getFirstAvailableDay = (day, state) => {
   if (dayjs(day).isSame(state.firstAvailableDate, "day")) {
     return parseDay(state.firstAvailableDate);
