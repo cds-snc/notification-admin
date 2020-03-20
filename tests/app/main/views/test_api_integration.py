@@ -376,6 +376,7 @@ def test_route_permissions(
     service_one,
     mock_get_api_keys,
     route,
+    mock_get_api_key_statistics,
 ):
     with app_.test_request_context():
         validate_route_permission(
