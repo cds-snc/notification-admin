@@ -231,12 +231,12 @@ def platform_admin_api_keys():
     )
 
     return render_template(
-        'views/platform-admin/services.html',
+        'views/platform-admin/api_keys.html',
         include_from_test_key=form.include_from_test_key.data,
         form=form,
         services=list(format_stats_by_service(services)),
         page_title='Live API keys',
-        global_stats=create_global_stats(services),
+        # global_stats=create_global_stats(services),
     )
 
 
