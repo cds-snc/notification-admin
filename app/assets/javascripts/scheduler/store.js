@@ -113,7 +113,7 @@ export const StateProvider = ({ value, children }) => {
           };
 
           newState.errors = "";
-
+          /*
           if (
             JSON.stringify(newState.selected) === JSON.stringify(state.selected)
           ) {
@@ -125,7 +125,7 @@ export const StateProvider = ({ value, children }) => {
                 target: "Calendar-dates"
               }
             ];
-          }
+          }*/
         }
         break;
       case "SELECT_NEXT":
