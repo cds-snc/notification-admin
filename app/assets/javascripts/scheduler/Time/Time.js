@@ -1,25 +1,12 @@
 import React, { useContext } from "react";
-import { store, populateTimes, dateIsToday } from "./index";
-import { I18nContext } from "./index";
-import "./style.css";
+import { store, timeValuesToday, dateIsToday } from "./index";
 
 export const Time = ({ name }) => {
-  const { _24hr, today, selected: selectedDate, time, dispatch } = useContext(
-    store
-  );
+  const { time, time_values, dispatch, selected } = useContext(store);
 
-  const { translate } = useContext(I18nContext);
-
-  let startTime = 0;
-
-  if (dateIsToday(today, selectedDate[0])) {
-    const d = new Date();
-    startTime = Number(d.getHours() + 1) * 60;
-  }
-
-  const times = [{ val: "", label: translate("send_now") }];
-  const values = populateTimes(times, _24hr, startTime);
-
+  // if today, check valid time values
+  const valid_time_values = dateIsToday(selected) ? timeValuesToday(selected, time_values) : time_values;
+  
   return (
     <div className="Nav--select">
       <select
@@ -34,7 +21,7 @@ export const Time = ({ name }) => {
         aria-label={name}
         value={time}
       >
-        {values.map(item => {
+        {valid_time_values.map(item => {
           return (
             <option key={item.label} value={item.val}>
               {item.label}
@@ -43,5 +30,6 @@ export const Time = ({ name }) => {
         })}
       </select>
     </div>
+    
   );
 };

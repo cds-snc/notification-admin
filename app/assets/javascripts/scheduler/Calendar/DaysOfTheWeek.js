@@ -10,13 +10,18 @@ const weekdays = Array(7)
 
 export const DaysOfTheWeek = () => {
   return (
-    <div className="Calendar-days Calendar-row" aria-hidden="false">
+    <div
+      className="Calendar-days Calendar-row"
+      aria-disabled="true"
+      role="presentation"
+      aria-hidden="true"
+    >
       {weekdays.map(day => {
         return (
           <span
             key={day.shortname}
-            aria-label={day.fullname}
             className="Calendar-item Calendar-item--day"
+            aria-label={day.fullname}
           >
             {day.shortname}
           </span>

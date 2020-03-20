@@ -7,7 +7,7 @@ const prevNav = (date, firstAvailableDate) => {
     .subtract(1, "month")
     .format("YYYY-MM-DD");
 
-  if (dayjs(prevMonth).isBefore(firstAvailableDate)) {
+  if (dayjs(prevMonth).isBefore(firstAvailableDate, "month")) {
     return ["Calendar-nav--button--unavailable"];
   }
 

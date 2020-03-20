@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
 import { store } from "./index";
-import "./style.css";
 
 export const Toggle = () => {
-  const { _24hr, time, dispatch } = useContext(store);
+  const { _24hr, time, dispatch, selected } = useContext(store);
 
   if (time === "") {
     return <div className="choice choice--radios"></div>;

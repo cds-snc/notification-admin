@@ -1,31 +1,20 @@
 import React, { useContext } from "react";
 import { store } from "./index";
 
-const setDateAndTimeValue = val => {
-  const ref = document.getElementById("scheduled_for");
-
-  let value = val;
-
-  if (window.moment && val) {
-    value = moment(val)
-      .utc()
-      .format()
-      .replace("Z", "");
-  }
-
-  if (ref) {
-    ref.setAttribute("value", value);
+const setDateAndTimeValue = (val, hiddenValueRef=null) => {
+  if (hiddenValueRef && val) {
+    hiddenValueRef.setAttribute("value", val)
   }
 };
 
 export const SetDateTime = () => {
-  const { selected: selectedDate, time } = useContext(store);
+  const { selected: selectedDate, time, hiddenValueRef } = useContext(store);
 
   if (!time) {
-    setDateAndTimeValue("");
+    setDateAndTimeValue("", hiddenValueRef);
     return null;
   }
 
-  setDateAndTimeValue(`${selectedDate[0]} ${time}`);
+  setDateAndTimeValue(`${selectedDate[0]} ${time}`, hiddenValueRef);
   return null;
 };

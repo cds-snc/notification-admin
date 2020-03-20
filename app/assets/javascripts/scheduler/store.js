@@ -1,32 +1,19 @@
 import React, { createContext, useReducer } from "react";
+import { populateTimes } from "./Time/_util";
 import dayjs from "dayjs";
 import "dayjs/locale/fr-ca";
 import {
-  isBlockedDay,
   setSelected,
   parseDay,
   getFirstDay,
   getLastDay,
   getNextDay,
-  yearMonthDay
+  yearMonthDay,
+  getFirstAvailableDay
 } from "./Calendar/index";
 
 const LANGUAGES = ["en", "fr-ca"]; // en
-
-let params = new URL(document.location).searchParams;
-let langQuery = params.get("lang");
-let LOCALE = LANGUAGES[0];
-if (langQuery === "fr") {
-  LOCALE = LANGUAGES[1];
-}
-
-if (typeof APP_LANG !== "undefined" && APP_LANG === "fr") {
-  LOCALE = LANGUAGES[1];
-}
-
-if (typeof APP_LANG !== "undefined" && APP_LANG === "en") {
-  LOCALE = LANGUAGES[0];
-}
+const LOCALE = LANGUAGES[0];
 
 dayjs.locale(LOCALE); // global
 
@@ -40,28 +27,51 @@ const defautFirstDay = dayjs(defaultToday);
 // Note: date = YYYY-MM-DD on the calendar display not the current date
 // date - updates on prev / next month click
 
-export const setIntialState = (
+export const defaultState = (
   data = {
     today: defaultToday,
     firstDay: defautFirstDay
   }
 ) => {
-  const { today, firstDay } = data;
+  const { today, firstDay } = data.defaultState ? data.defaultState : data;
+
+  let lastAvailableDate;
+  lastAvailableDate = dayjs(firstDay).add(1, "month");
+
+  const blockedDay = day => {
+    const beforeFirstDay = firstDay ? dayjs(day).isBefore(firstDay) : false;
+    return (
+      today > day ||
+      beforeFirstDay ||
+      dayjs(day).isAfter(lastAvailableDate)
+    );
+  };
+
+  const time_values = populateTimes(false, defautFirstDay);
 
   return {
     today,
     firstAvailableDate: firstDay,
-    lastAvailableDate: dayjs(firstDay).add(1, "month"),
+    lastAvailableDate: lastAvailableDate,
     date: yearMonthDay(firstDay),
-    time: "",
     selected: [yearMonthDay(firstDay)],
     focusedDayNum: dayjs(firstDay).format("D"),
     updateMessage: "",
-    _24hr: LOCALE === "en" ? "off" : "on"
+    _24hr: LOCALE === "en" ? "off" : "on",
+    errors: "",
+    time: time_values[0].val,
+    time_values: time_values,
+    isBlockedDay: blockedDay
   };
 };
 
-const initialState = setIntialState();
+let options = {};
+
+options = { setIntialState: defaultState, ...window.schedulerOptions };
+
+const initialState = options.setIntialState();
+
+export const setIntialState = options.setIntialState;
 
 export const store = createContext(initialState);
 
@@ -69,7 +79,6 @@ const { Provider } = store;
 
 export const StateProvider = ({ value, children }) => {
   const mergedState = { ...initialState, ...value };
-
   const [state, dispatch] = useReducer((state, action) => {
     let newState = {};
     switch (action.type) {
@@ -89,28 +98,52 @@ export const StateProvider = ({ value, children }) => {
       case "SELECT_TIME":
         newState = { ...state, time: action.payload };
         break;
+      case "TIME_VALUES":
+        //time_values = populateTimes(action.payload)
+        newState = { ...state, time_values: action.payload };
+        break;
       case "SELECT_DATE":
-        if (isBlockedDay(dayjs(action.payload), state)) {
+        if (state.isBlockedDay(dayjs(action.payload))) {
           newState = { ...state };
         } else {
           newState = {
             ...state,
             selected: setSelected(state.selected, action.payload),
-            focusedDayNum: parseDay(action.payload),
-            time: "" // reset time value
+            focusedDayNum: parseDay(action.payload)
           };
+
+          newState.errors = "";
+
+          if (
+            JSON.stringify(newState.selected) === JSON.stringify(state.selected)
+          ) {
+            // show deselect error
+            newState.errors = [
+              {
+                id: "1",
+                text: "Date must be selected",
+                target: "Calendar-dates"
+              }
+            ];
+          }
         }
         break;
       case "SELECT_NEXT":
+        const nextNewDate = yearMonthDay(dayjs(state.date).add(1, "month"));
         newState = {
           ...state,
-          date: yearMonthDay(dayjs(state.date).add(1, "month"))
+          date: nextNewDate,
+          focusedDayNum: getFirstAvailableDay(nextNewDate, state)
         };
         break;
       case "SELECT_PREVIOUS":
+        const previousNewDate = yearMonthDay(
+          dayjs(state.date).subtract(1, "month")
+        );
         newState = {
           ...state,
-          date: yearMonthDay(dayjs(state.date).subtract(1, "month"))
+          date: previousNewDate,
+          focusedDayNum: getFirstAvailableDay(previousNewDate, state)
         };
         break;
       case "FOCUS_DAY":
