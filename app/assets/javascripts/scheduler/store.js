@@ -1,5 +1,5 @@
 import React, { createContext, useReducer } from "react";
-import { populateTimes } from "./Time/_util";
+import { populateTimes, dateIsToday, timeValuesToday } from "./Time/_util";
 import dayjs from "dayjs";
 import "dayjs/locale/fr-ca";
 import {
@@ -33,7 +33,7 @@ export const defaultState = (
     firstDay: defautFirstDay
   }
 ) => {
-  const { today, firstDay } = data.defaultState ? data.defaultState : data;
+  const { today, firstDay } = data.defaultState ? data.defaultState: data;
 
   let lastAvailableDate;
   lastAvailableDate = dayjs(firstDay).add(1, "month");
@@ -47,7 +47,7 @@ export const defaultState = (
     );
   };
 
-  const time_values = populateTimes(false, defautFirstDay);
+  const time_values = populateTimes(false);
 
   return {
     today,
@@ -57,9 +57,9 @@ export const defaultState = (
     selected: [yearMonthDay(firstDay)],
     focusedDayNum: dayjs(firstDay).format("D"),
     updateMessage: "",
-    _24hr: LOCALE === "en" ? "off" : "on",
+    _24hr: LOCALE === "on",
     errors: "",
-    time: time_values[0].val,
+    time: dateIsToday([yearMonthDay(firstDay)]) ? timeValuesToday([yearMonthDay(firstDay)], time_values)[0].val : time_values[0].val,
     time_values: time_values,
     isBlockedDay: blockedDay
   };
@@ -106,16 +106,18 @@ export const StateProvider = ({ value, children }) => {
         if (state.isBlockedDay(dayjs(action.payload))) {
           newState = { ...state };
         } else {
+          let newTime = dateIsToday([action.payload]) ? timeValuesToday([action.payload], state.time_values)[0].val : state.time;
           newState = {
             ...state,
             selected: setSelected(state.selected, action.payload),
-            focusedDayNum: parseDay(action.payload)
+            focusedDayNum: parseDay(action.payload),
+            time: newTime
           };
 
           newState.errors = "";
           /*
           if (
-            JSON.stringify(newState.selected) === JSON.stringify(state.selected)
+            newState.selected.length === 0
           ) {
             // show deselect error
             newState.errors = [
