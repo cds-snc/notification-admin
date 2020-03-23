@@ -28,7 +28,7 @@ class ApiKeyApiClient(NotifyAdminAPIClient):
 
     def get_api_key_statistics(self, key_id):
         return self.get(
-            url='/api-key/{0}/total-sends'.format(key_id),
+            url='/api-key/{0}/summary-statistics'.format(key_id),
         )['data']
 
 
