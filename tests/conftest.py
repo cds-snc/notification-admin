@@ -1827,8 +1827,8 @@ def mock_get_no_api_keys(mocker):
 def mock_get_api_key_statistics(mocker):
     def _get_stats(key_id):
         data = {
-            'total_sends': 20, 
-            'api_key_id': key_id, 
+            'total_sends': 20,
+            'api_key_id': key_id,
             'email_sends': 20,
             'sms_sends': 0,
             'last_send': '2020-03-16T17:32:32.883281Z'
