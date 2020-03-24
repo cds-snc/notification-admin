@@ -414,6 +414,6 @@ def test_report_security_finding(mocker):
     client.get_caller_identity.return_value = {"Account": "123456789"}
     report_security_finding("foo", "bar", 50, 50)
 
-    boto_client.client.assert_called_with('securityhub', region_name='us-east-1')
+    boto_client.client.assert_called_with('securityhub', region_name=current_app.config['AWS_REGION'])
     client.get_caller_identity.assert_called()
     client.batch_import_findings.assert_called()
