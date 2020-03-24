@@ -41,6 +41,7 @@
             </div>
           {% endif %}
           <div class="hint">
+            {{ _('Key Type:') }}
             {% if item.key_type == 'normal' %}
               {{ _('Live – sends to anyone') }}
             {% elif item.key_type == 'team' %}
