@@ -1824,6 +1824,21 @@ def mock_get_no_api_keys(mocker):
 
 
 @pytest.fixture(scope='function')
+def mock_get_api_key_statistics(mocker):
+    def _get_stats(key_id):
+        data = {
+            'total_sends': 20,
+            'api_key_id': key_id,
+            'email_sends': 20,
+            'sms_sends': 0,
+            'last_send': '2020-03-16T17:32:32.883281Z'
+        }
+        return data
+
+    return mocker.patch('app.api_key_api_client.get_api_key_statistics', side_effect=_get_stats)
+
+
+@pytest.fixture(scope='function')
 def mock_login(mocker, mock_get_user, mock_update_user_attribute, mock_events):
     def _verify_code(user_id, code, code_type):
         return True, ''
