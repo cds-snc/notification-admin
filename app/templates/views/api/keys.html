@@ -35,6 +35,11 @@
       {% call field() %}
         <div class="file-list">
           {{ item.name }}
+          {% if current_user.platform_admin %}
+            <div class="hint">
+              {{ "{:,}".format(item.total_sends) }} {{ _('total sends') }} ({{ "{:,}".format(item.email_sends) }} {{ _('email') }}, {{ "{:,}".format(item.sms_sends) }} {{ _('sms') }})
+            </div>
+          {% endif %}
           <div class="hint">
             {% if item.key_type == 'normal' %}
               {{ _('Live – sends to anyone') }}
@@ -45,9 +50,6 @@
             {% endif %}
           </div>
           {% if current_user.platform_admin %}
-            <div class="hint">
-              {{ item.total_sends }} {{ _('total sends') }} ({{ item.email_sends }} {{ _('email') }}, {{ item.sms_sends }} {{ _('sms') }})
-            </div>
             <div class="hint">
               {{ _('Created:') }} <span class="local-datetime-full">{{ item.created_at }}</span>
             </div>
