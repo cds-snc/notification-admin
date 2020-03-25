@@ -380,6 +380,9 @@ def send_test_step(service_id, template_id, step_index):
         prefill_current_user=(request.endpoint == 'main.send_test_step'),
     )
 
+    # used to set the back link in the check_notification screen
+    session['send_step'] = request.endpoint
+
     try:
         current_placeholder = placeholders[step_index]
     except IndexError:
@@ -875,7 +878,8 @@ def _check_notification(service_id, template_id, exception=None):
         page_count=get_page_count_for_letter(db_template),
     )
 
-    back_link = get_back_link(service_id, template, len(fields_to_fill_in(template)))
+    step_index = len(fields_to_fill_in(template, prefill_current_user=(session.get('send_step') == 'main.send_test_step')))
+    back_link = get_back_link(service_id, template, step_index)
 
     if (
         (
