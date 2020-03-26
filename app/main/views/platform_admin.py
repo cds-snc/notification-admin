@@ -212,7 +212,6 @@ def platform_admin_api_keys():
     api_key_list = api_key_api_client.get_api_keys_ranked_by_notifications_created(n_days_back)
     return render_template(
         'views/platform-admin/api_keys_ranked.html',
-        page_title='Live API keys',
         api_key_list=api_key_list
     )
 
