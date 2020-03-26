@@ -230,15 +230,15 @@ def platform_admin_api_keys():
         service_api_client.get_services(api_args)['data'],
         trial_mode_services=False,
     )
-    api_keys = api_key_api_client.get_api_keys_ranked_by_notifications_created(10)
-    print("api_keys", api_keys)
-    # # api_keys = 
+    api_key_list = api_key_api_client.get_api_keys_ranked_by_notifications_created(10)
+    print("api_key_list", api_key_list)
     return render_template(
         'views/platform-admin/api_keys.html',
         include_from_test_key=form.include_from_test_key.data,
         form=form,
         services=list(format_stats_by_service(services)),
         page_title='Live API keys',
+        api_key_list=api_key_list
         # global_stats=create_global_stats(services),
     )
 

@@ -7,75 +7,6 @@
 {% from "components/table.html" import mapping_table, field, stats_fields, row_group, row, right_aligned_field_heading, hidden_field_heading, text_field %}
 {% from "components/form.html" import form_wrapper %}
 
-{% macro stats_fields(channel, data) -%}
-
-  {% call field(border=False) %}
-      <span class="heading-medium" style="margin: 0px;">{{ channel.title() }}</span>
-  {% endcall %}
-
-  {% call field(align='right', border=False) %}
-    {{ big_number(data[channel]['sending'], smaller=True) }}
-  {% endcall %}
-
-  {% call field(align='right', border=False) %}
-    {{ big_number(data[channel]['delivered'], smaller=True) }}
-  {% endcall %}
-
-  {% call field(align='right', status='error' if data[channel]['failed'], border=False) %}
-    {{ big_number(data[channel]['failed'], smaller=True) }}
-  {% endcall %}
-
-{%- endmacro %}
-
-{% macro services_table(services, caption) %}
-  {% call(item, row_number) mapping_table(
-    caption=caption,
-    caption_visible=False,
-    field_headings=[
-    'API key',
-    hidden_field_heading('Type'),
-    right_aligned_field_heading('Sending'),
-    right_aligned_field_heading('Delivered'),
-    right_aligned_field_heading('Failed')
-    ],
-    field_headings_visible=True
-  ) %}
-
-    {% for service in services %}
-
-      {% call row_group() %}
-
-        {% call row() %}
-          {% call field(border=False) %}
-            <a href="{{ url_for('main.service_dashboard', service_id=service['id']) }}" class="browse-list-link">{{ service['name'] }}</a>
-          {% endcall %}
-
-          {{ stats_fields('email', service['stats']) }}
-        {% endcall %}
-
-        {% call row() %}
-            {% call field(status='default', border=False) %}
-              <span></span>
-            {% endcall %}
-
-          {{ stats_fields('sms', service['stats']) }}
-        {% endcall %}
-
-        <tr class="table-row" style="display:none;">
-
-          {% call field(border=False) %}
-
-          {% endcall %}
-            {{ stats_fields('letter', service['stats']) }}
-        </tr>
-
-      {% endcall %}
-
-    {% endfor %}
-
-  {% endcall %}
-{% endmacro %}
-
 
 {% block per_page_title %}
   {{ page_title|capitalize }}
@@ -87,22 +18,46 @@
     {{ page_title|capitalize }}
   </h1>
 
-    <details>
-      <summary>Apply filters</summary>
-      {% call form_wrapper(method="get") %}
-        {{ textbox(form.start_date, hint="Enter start date in format YYYY-MM-DD") }}
-        {{ textbox(form.end_date, hint="Enter end date in format YYYY-MM-DD") }}
-        {{ checkbox(form.include_from_test_key) }}
-        
-        <br>
-        <br>
-        <div>
-        <button type="submit" style="margin-bottom:20px" class="button">Filter</button>
-        </div>
+  {% call(item, row_number) mapping_table(
+    caption=page_title|capitalize,
+    caption_visible=False,
+    field_headings=[
+    'API Key',
+    'Service',
+    right_aligned_field_heading('Total Notifications'),
+    right_aligned_field_heading('Email'),
+    right_aligned_field_heading('SMS')
+    ],
+    field_headings_visible=True
+  ) %}
+
+    {% for x in api_key_list %}
+
+      {% call row_group() %}
+
+        {% call row() %}
+          {% call field(border=False) %}
+            <a href="{{ url_for('.api_keys', service_id=x['service_id']) }}" class="browse-list-link">{{ x['api_key_name'] }}</a>
+          {% endcall %}
+          {% call field(border=False) %}
+            <a href="{{ url_for('main.service_dashboard', service_id=x['service_id']) }}" class="browse-list-link">{{ x['service_name'] }}</a>
+          {% endcall %}
+          {% call field(align='right', border=False) %}
+            {{ big_number(x['total_notifications'], smallest=True) }}
+          {% endcall %}
+          {% call field(align='right', border=False) %}
+            {{ big_number(x['email_notifications'], smallest=True) }}
+          {% endcall %}
+          {% call field(align='right', border=False) %}
+            {{ big_number(x['sms_notifications'], smallest=True) }}
+          {% endcall %}
+
+        {% endcall %}
+
       {% endcall %}
-    </details>
 
+    {% endfor %}
 
-  {{ services_table(services, page_title|capitalize) }}
+  {% endcall %}
 
 {% endblock %}
