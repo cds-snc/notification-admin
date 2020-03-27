@@ -47,7 +47,7 @@ export const defaultState = (
     );
   };
 
-  const time_values = populateTimes(false);
+  const time_values = populateTimes(LOCALE === "en" ? "off" : "on");
 
   return {
     today,
@@ -57,7 +57,7 @@ export const defaultState = (
     selected: [yearMonthDay(firstDay)],
     focusedDayNum: dayjs(firstDay).format("D"),
     updateMessage: "",
-    _24hr: LOCALE === "on",
+    _24hr: LOCALE === "en" ? "off" : "on",
     errors: "",
     time: dateIsToday([yearMonthDay(firstDay)]) ? timeValuesToday([yearMonthDay(firstDay)], time_values)[0].val : time_values[0].val,
     time_values: time_values,
@@ -86,6 +86,7 @@ export const StateProvider = ({ value, children }) => {
         newState = {
           ...state,
           _24hr: action.payload,
+          time_values: populateTimes(action.payload),
           updateMessage:
             action.payload === "off"
               ? "24 hr time selected"

@@ -19,23 +19,33 @@ const setDateAndTimeValue = val => {
 };
 
 export const SetDateTime = () => {
-  const { selected: selectedDate, time } = useContext(store);
+  const { selected, time } = useContext(store);
+
+  // allow radio buttons to control visibility of calendar / 'send now' value
+  // and logic to display whether Schedule button should be disabled or not
+  document.getElementById("send_now_later").onchange = (e) => {
+    if(e.target.value === "1") {
+      document.getElementById("schedule-send-at").classList.add("hidden");
+      document.getElementById("submit-button").classList.remove("disabled");
+    } else {
+      document.getElementById("schedule-send-at").classList.remove("hidden");
+      if(!time || selected.length === 0)
+        document.getElementById("submit-button").classList.add("disabled");
+    }
+  }
+
+  if (!document.getElementById("schedule-send-at").classList.contains("hidden")) {
+    if(!time || selected.length === 0)
+      document.getElementById("submit-button").classList.add("disabled");
+    else
+      document.getElementById("submit-button").classList.remove("disabled");
+  }
 
   if (!time || document.getElementById("schedule-send-at").classList.contains("hidden")) {
     setDateAndTimeValue("");
     return null;
   }
 
-  // allow radio buttons to control visibility of calendar / 'send now' value
-  document.getElementById("send_now_later").onchange = (e) => {
-    if(e.target.value === "1") {
-      setDateAndTimeValue("");
-      document.getElementById("schedule-send-at").classList.add("hidden");
-    } else {
-      document.getElementById("schedule-send-at").classList.remove("hidden");
-    }
-  }
-
-  setDateAndTimeValue(`${selectedDate[0]} ${time}`);
+  setDateAndTimeValue(`${selected[0]} ${time}`);
   return null;
 };
