@@ -13,5 +13,6 @@ export const FR = {
   date_prefix: "le ",
   date_format: "dddd D MMMM 2020",
   time_format: "H [h] mm",
-  cancel: "Vous pourrez annuler cet envoi avant l’heure prévue."
+  cancel: "Vous pourrez annuler cet envoi avant l’heure prévue.",
+  select_date: "Sélectionnez une date et une heure pour programmer l’envoi."
 };

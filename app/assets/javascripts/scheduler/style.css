@@ -432,12 +432,14 @@
   background: currentColor;
 }
 
-.confirmationWrapper {
-  font-size: 2rem;
+.messageTextStyle {
+  font-size: 20px;
   line-height: 1.25;
   color: #0B0C0C;
-  max-width: 70rem;
-  margin-bottom: 1rem;
+  max-width: 706px;
+}
+.confirmationWrapper {
+  margin-bottom: 20px;
 }
 
 .confirmation {

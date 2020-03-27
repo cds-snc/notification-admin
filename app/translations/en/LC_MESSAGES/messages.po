@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-18 10:13-0400\n"
+"POT-Creation-Date: 2020-03-27 13:10-0600\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -335,7 +335,7 @@ msgid "Off"
 msgstr ""
 
 #: app/main/forms.py:1025 app/main/views/send.py:773
-#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:657
+#: app/templates/views/signedout.html:657
 #: app/templates/views/support/ask-question-give-feedback.html:49
 #: app/templates/views/templates/_template.html:21
 #: app/templates/views/templates/_template.html:29
@@ -849,7 +849,7 @@ msgstr ""
 msgid "SMTP integration"
 msgstr ""
 
-#: app/templates/main_template.html:69
+#: app/templates/main_template.html:69 app/templates/views/check/ok.html:82
 msgid "Now"
 msgstr ""
 
@@ -1896,8 +1896,9 @@ msgstr ""
 
 #: app/templates/views/documentation.html:17
 msgid ""
-"Avant d'intégrer l'API, vous devez modifier votre point de terminaison "
-"avant d'intégrer l'API."
+"Avant d'intégrer l'API avec les clients de Notification ci-dessous, vous "
+"devez modifier votre point de terminaison vers <a "
+"href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>."
 msgstr ""
 
 #: app/templates/views/documentation.html:21
@@ -3848,7 +3849,7 @@ msgstr ""
 #: app/templates/views/check/column-errors.html:209
 #: app/templates/views/check/column-errors.html:214
 #: app/templates/views/check/column-errors.html:216
-#: app/templates/views/check/ok.html:90
+#: app/templates/views/check/ok.html:103
 #: app/templates/views/check/row-errors.html:99
 #: app/templates/views/check/row-errors.html:101
 msgid "Only showing the first"
@@ -3856,7 +3857,7 @@ msgstr ""
 
 #: app/templates/views/check/column-errors.html:209
 #: app/templates/views/check/column-errors.html:216
-#: app/templates/views/check/ok.html:90
+#: app/templates/views/check/ok.html:103
 #: app/templates/views/check/row-errors.html:101
 msgid "rows"
 msgstr ""
@@ -3877,7 +3878,31 @@ msgstr ""
 msgid "Preview of"
 msgstr ""
 
-#: app/templates/views/check/ok.html:44
+#: app/templates/views/check/ok.html:33
+msgid "Recipients"
+msgstr ""
+
+#: app/templates/views/check/ok.html:77
+msgid "Schedule notifications"
+msgstr ""
+
+#: app/templates/views/check/ok.html:79
+msgid "When would you like to send"
+msgstr ""
+
+#: app/templates/views/check/ok.html:86
+msgid "Later"
+msgstr ""
+
+#: app/templates/views/check/ok.html:93
+msgid "Send Now"
+msgstr ""
+
+#: app/templates/views/check/ok.html:94
+msgid "Schedule"
+msgstr ""
+
+#: app/templates/views/check/ok.html:96
 msgid "Download as a PDF"
 msgstr ""
 
@@ -4751,161 +4776,4 @@ msgstr ""
 #: app/templates/views/user-profile/security-keys.html:55
 msgid "Test keys"
 msgstr ""
-
-#~ msgid "These teams are already using <i>Notify</i>"
-#~ msgstr ""
-
-#~ msgid "“Easy set up that only took an hour.”"
-#~ msgstr ""
-
-#~ msgid "— Calvin Rodo, Economic and Social Development Canada"
-#~ msgstr ""
-
-#~ msgid "“It worked with minimal frustration and configuration.“"
-#~ msgstr ""
-
-#~ msgid "— Ryan Hyma, Treasury Board Secretariat"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "“It is the only solution we have found that is ready and we\n"
-#~ "                  appreciate the effort of "
-#~ "making it simple to use for GC"
-#~ "\n"
-#~ "                  employees.”"
-#~ msgstr ""
-
-#~ msgid "— Catherine Dufour, Canada Revenue Agency"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "“It’s governmental, trusted and we receive help from the\n"
-#~ "                  development group.”"
-#~ msgstr ""
-
-#~ msgid "— Abdulkader Hamdo, Department of Fisheries and Oceans"
-#~ msgstr ""
-
-#~ msgid "Send unlimited emails, completely free."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "You can integrate <i>Notify</i>’s API "
-#~ "with your web application or back-"
-#~ "office system to send messages "
-#~ "automatically."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "We signed you out because you "
-#~ "logged in to Notification on another "
-#~ "device."
-#~ msgstr ""
-#~ "We signed you out because you "
-#~ "logged in to <i>Notify</i> on another"
-#~ " device."
-
-#~ msgid "We signed you out because you haven’t used Notification for a while."
-#~ msgstr "We signed you out because you haven’t used Notify for a while."
-
-#~ msgid ""
-#~ "To send a batch of messages at "
-#~ "once, upload a list of contact "
-#~ "details to <i>Notify</i>. You can also"
-#~ " schedule the date and time for "
-#~ "sending emails or text messages."
-#~ msgstr ""
-#~ "To send a batch of messages at "
-#~ "once, upload a list of contact "
-#~ "details to <i>Notify</i>. You can also"
-#~ " schedule the date and time for "
-#~ "sending emails or text messages."
-
-#~ msgid ""
-#~ "Choose a client to integrate our "
-#~ "API with your web application or "
-#~ "back office system. Links to "
-#~ "documentation open in a new tab."
-#~ msgstr ""
-
-#~ msgid "Maintained by CDS:"
-#~ msgstr ""
-
-#~ msgid "Maintained by GOV.UK:"
-#~ msgstr ""
-
-#~ msgid "Clients"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The API is available using the "
-#~ "following clients developed by GOV.UK. "
-#~ "Links to documentation open in a "
-#~ "new tab."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Choose a client to integrate our "
-#~ "API with your web application or "
-#~ "back office system."
-#~ msgstr ""
-
-#~ msgid "You need to change your endpoint before integrating the API."
-#~ msgstr ""
-
-#~ msgid "Remarque:"
-#~ msgstr "Note:"
-
-#~ msgid ""
-#~ "Before integrating the API with your "
-#~ "system, you need to change your "
-#~ "endpoint to <a "
-#~ "href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>."
-#~ msgstr ""
-
-#~ msgid "Note:"
-#~ msgstr ""
-
-#~ msgid "Avant de commencer"
-#~ msgstr ""
-
-#~ msgid "Before you start"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Before integrating the API, you need "
-#~ "to change your endpoint to <a "
-#~ "href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The API is available using the "
-#~ "following clients developed by <a "
-#~ "href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
-#~ msgstr ""
-
-#~ msgid "Changer votre point de connexion API"
-#~ msgstr "Change your endpoint"
-
-#~ msgid ""
-#~ "The API is available using the "
-#~ "clients below developed by <a "
-#~ "href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
-#~ msgstr ""
-
-#~ msgid "À noter :"
-#~ msgstr ""
-
-#~ msgid "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
-#~ msgstr "You need to change your endpoint before integrating the API."
-
-#~ msgid "Comment changer votre point de terminaison d'API"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Before integrating the API using the "
-#~ "Notify clients below, you need to "
-#~ "change your endpoint to <a "
-#~ "href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>."
-#~ msgstr ""
 
