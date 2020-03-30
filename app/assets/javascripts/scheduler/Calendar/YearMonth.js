@@ -17,6 +17,7 @@ const prevNav = (date, firstAvailableDate) => {
 const nextNav = (date, lastAvailableDate) => {
   const nextMonth = dayjs(date)
     .add(1, "month")
+    .date(1)
     .format("YYYY-MM-DD");
 
   if (dayjs(nextMonth).isAfter(lastAvailableDate)) {

@@ -48,11 +48,24 @@ export const dateIsToday = (date) => {
   return today.isSame(dayjs(date[0]), 'day');
 };
 
+export const dateIsLastAvailable = (date, lastAvailableDate) => {
+  return dayjs(date[0]).isSame(dayjs(lastAvailableDate), 'day');
+}
+
 export const timeValuesToday = (selected, time_values) => {
   const today = dayjs()
   
   return time_values.filter(time => {
     const t = dayjs(selected + "T" + time.val);
     return t.isAfter(today)
+  })
+}
+
+export const timeValuesLastDay = (day, time_values) => {
+  const lastTime = dayjs().add(96, 'hour');
+
+  return time_values.filter(time => {
+    const t = dayjs(day + "T" + time.val);
+    return t.isBefore(lastTime)
   })
 }

@@ -36,7 +36,7 @@ export const defaultState = (
   const { today, firstDay } = data.defaultState ? data.defaultState: data;
 
   let lastAvailableDate;
-  lastAvailableDate = dayjs(firstDay).add(1, "month");
+  lastAvailableDate = dayjs(firstDay).add(96, "hour");
 
   const blockedDay = day => {
     const beforeFirstDay = firstDay ? dayjs(day).isBefore(firstDay) : false;
