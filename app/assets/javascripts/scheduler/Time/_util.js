@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 
-export const populateTimes = (times = [], _24hr = false, startTime = 0) => {
+export const populateTimes = (_24hr = false, date) => {
+  const startTime = 0;
+  let times = [];
   let hours, hours24, minutes, ampm;
 
   for (let i = startTime; i <= 1380; i += 60) {
@@ -36,6 +38,34 @@ export const populateTimes = (times = [], _24hr = false, startTime = 0) => {
   return times;
 };
 
-export const dateIsToday = (today, date) => {
-  return dayjs(today).isSame(dayjs(date));
+export const dateIsToday = (date) => {
+  const today = dayjs()
+    .set("hour", 0)
+    .set("minute", 0)
+    .set("second", 0)
+    .set("millisecond", 0);
+
+  return today.isSame(dayjs(date[0]), 'day');
 };
+
+export const dateIsLastAvailable = (date, lastAvailableDate) => {
+  return dayjs(date[0]).isSame(dayjs(lastAvailableDate), 'day');
+}
+
+export const timeValuesToday = (selected, time_values) => {
+  const today = dayjs()
+  
+  return time_values.filter(time => {
+    const t = dayjs(selected + "T" + time.val);
+    return t.isAfter(today)
+  })
+}
+
+export const timeValuesLastDay = (day, time_values) => {
+  const lastTime = dayjs().add(96, 'hour');
+
+  return time_values.filter(time => {
+    const t = dayjs(day + "T" + time.val);
+    return t.isBefore(lastTime)
+  })
+}

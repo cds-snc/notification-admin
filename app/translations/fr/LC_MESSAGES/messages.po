@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-18 10:13-0400\n"
+"POT-Creation-Date: 2020-03-27 13:10-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -331,7 +331,7 @@ msgid "Off"
 msgstr "Désactivé"
 
 #: app/main/forms.py:1025 app/main/views/send.py:773
-#: app/templates/views/check/ok.html:42 app/templates/views/signedout.html:657
+#: app/templates/views/signedout.html:657
 #: app/templates/views/support/ask-question-give-feedback.html:49
 #: app/templates/views/templates/_template.html:21
 #: app/templates/views/templates/_template.html:29
@@ -851,7 +851,7 @@ msgstr "Intégration de l’interface de programmation d’applications (API)"
 msgid "SMTP integration"
 msgstr "Intégration SMTP"
 
-#: app/templates/main_template.html:69
+#: app/templates/main_template.html:69 app/templates/views/check/ok.html:82
 msgid "Now"
 msgstr "Maintenant"
 
@@ -1931,7 +1931,8 @@ msgstr "Configurer le client"
 msgid ""
 "The API is available using clients developed by <a "
 "href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
-msgstr "L'API est disponible en utilisant des clients développés par <a "
+msgstr ""
+"L'API est disponible en utilisant des clients développés par <a "
 "href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
 
 #: app/templates/views/documentation.html:17
@@ -1940,8 +1941,9 @@ msgstr ""
 
 #: app/templates/views/documentation.html:17
 msgid ""
-"Avant d'intégrer l'API, vous devez modifier votre point de terminaison "
-"avant d'intégrer l'API."
+"Avant d'intégrer l'API avec les clients de Notification ci-dessous, vous "
+"devez modifier votre point de terminaison vers <a "
+"href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>."
 msgstr ""
 
 #: app/templates/views/documentation.html:21
@@ -4077,7 +4079,7 @@ msgstr "Retour au haut de la page"
 #: app/templates/views/check/column-errors.html:209
 #: app/templates/views/check/column-errors.html:214
 #: app/templates/views/check/column-errors.html:216
-#: app/templates/views/check/ok.html:90
+#: app/templates/views/check/ok.html:103
 #: app/templates/views/check/row-errors.html:99
 #: app/templates/views/check/row-errors.html:101
 msgid "Only showing the first"
@@ -4085,7 +4087,7 @@ msgstr "Ne montre que la première"
 
 #: app/templates/views/check/column-errors.html:209
 #: app/templates/views/check/column-errors.html:216
-#: app/templates/views/check/ok.html:90
+#: app/templates/views/check/ok.html:103
 #: app/templates/views/check/row-errors.html:101
 msgid "rows"
 msgstr "rangées"
@@ -4106,9 +4108,33 @@ msgstr "Ne montre que les rangées avec des erreurs"
 msgid "Preview of"
 msgstr "Aperçu de"
 
-#: app/templates/views/check/ok.html:44
+#: app/templates/views/check/ok.html:33
+msgid "Recipients"
+msgstr ""
+
+#: app/templates/views/check/ok.html:77
+msgid "Schedule notifications"
+msgstr "Programmer les notifications"
+
+#: app/templates/views/check/ok.html:79
+msgid "When would you like to send"
+msgstr "Quand souhaitez-vous envoyer"
+
+#: app/templates/views/check/ok.html:86
+msgid "Later"
+msgstr "Plus tard"
+
+#: app/templates/views/check/ok.html:93
+msgid "Send Now"
+msgstr "Envoyer maintenant"
+
+#: app/templates/views/check/ok.html:94
+msgid "Schedule"
+msgstr "Programmer"
+
+#: app/templates/views/check/ok.html:96
 msgid "Download as a PDF"
-msgstr "Télécharger comme PDF"
+msgstr ""
 
 #: app/templates/views/check/row-errors.html:28
 msgid "There is a problem with"
@@ -5022,869 +5048,4 @@ msgstr "Nouvelle clé de sécurité"
 #: app/templates/views/user-profile/security-keys.html:55
 msgid "Test keys"
 msgstr "Clés d’essai"
-
-#~ msgid ""
-#~ "A picture of the sending flow of"
-#~ " messages in Notification, showing the "
-#~ "three states of Sending, Delivered and"
-#~ " Failed. Also shows the next\n"
-#~ "           steps when messages fail, "
-#~ "deleting data and trying a new "
-#~ "method for permanent failures, and "
-#~ "trying again or trying a new "
-#~ "method for\n"
-#~ "           temporary failures"
-#~ msgstr ""
-#~ "Une image du flux d'envoi des "
-#~ "messages dans Notification, affichant les "
-#~ "trois états : envoi en cours, "
-#~ "livraison réussie et échec. Affiche "
-#~ "également les prochaines étapes lorsque "
-#~ "l'envoi des messages échoue : supprimer"
-#~ " les données et essayer une nouvelle"
-#~ " méthode lors d'échecs permanents, et "
-#~ "essayer de nouveau ou essayer une "
-#~ "nouvelle méthode lors d'échecs temporaires."
-
-#~ msgid ""
-#~ "To emphasize text, use a caret. "
-#~ "There will be a grey bar beside"
-#~ " the text you want to emphasize"
-#~ msgstr ""
-#~ "Pour mettre du texte en évidence, "
-#~ "insérez un caret (accent circonflexe). "
-#~ "Une barre grise s’affichera à côté "
-#~ "du texte que vous voulez mettre en"
-#~ " évidence."
-
-#~ msgid ""
-#~ "For each recipient on your spreadsheet,"
-#~ " you must indicate ‘yes’ to show "
-#~ "or ‘no’ to hide this content"
-#~ msgstr ""
-#~ "Pour chaque destinataire figurant sur "
-#~ "votre feuille de calcul, vous devez "
-#~ "indiquer 'yes' pour afficher le contenu"
-#~ " ou 'no' pour masquer le contenu."
-
-#~ msgid "This is a title"
-#~ msgstr "Ceci est un titre."
-
-#~ msgid "point 1"
-#~ msgstr "puce 1"
-
-#~ msgid "point 2"
-#~ msgstr "puce 2"
-
-#~ msgid "point 3"
-#~ msgstr "puce 3"
-
-#~ msgid ""
-#~ "To send an email or text with "
-#~ "Notification, you need to create a "
-#~ "reusablemessage template first."
-#~ msgstr ""
-#~ "Pour envoyer un courriel ou un "
-#~ "message texte au moyen de Notification,"
-#~ " vous devez d’abord créer un gabarit"
-#~ " de message réutilisable."
-
-#~ msgid ""
-#~ "\"Notification’s real-time dashboard lets "
-#~ "you see the number of messages "
-#~ "sent. You can also check the "
-#~ "current status of any message to "
-#~ "learn when it was delivered."
-#~ msgstr ""
-#~ "Le tableau de bord en temps réel"
-#~ " de Notification vous permet de voir"
-#~ " le nombre de messages envoyés. Vous"
-#~ " pouvez également vérifier l’état actuel"
-#~ " de vos messages afin de connaître"
-#~ " le moment de leur livraison."
-
-#~ msgid ""
-#~ "Notification is built for the needs "
-#~ "of government services. It is set "
-#~ "up to:"
-#~ msgstr ""
-#~ "Notification est construit pour les "
-#~ "besoins des services gouvernementaux. Le "
-#~ "système est configuré pour :"
-
-#~ msgid "protect user data"
-#~ msgstr "protéger les données des utilisateurs"
-
-#~ msgid "keep systems secure"
-#~ msgstr "garder les systèmes sécurisés"
-
-#~ msgid "manage risks around information"
-#~ msgstr "gérer les risques à l’égard de l’information"
-
-#~ msgid "Data"
-#~ msgstr "Données"
-
-#~ msgid "On Notification, data is encrypted:"
-#~ msgstr "Dans Notification, les données sont chiffrées :"
-
-#~ msgid "when it passes through the service"
-#~ msgstr "lorsqu’elles passent dans le service"
-
-#~ msgid "when it’s stored on the service"
-#~ msgstr "lorsqu’elles sont entreposées dans le service"
-
-#~ msgid "Any user data you upload is only held for 7 days."
-#~ msgstr ""
-#~ "Toute donnée utilisateur que vous "
-#~ "téléversez n'est retenue que pendant "
-#~ "sept jours."
-
-#~ msgid "Technical security"
-#~ msgstr "Sécurité technique"
-
-#~ msgid "Other technical security controls on Notification include:"
-#~ msgstr ""
-#~ "D’autres contrôles de sécurité techniques "
-#~ "dans Notification comprennent :"
-
-#~ msgid ""
-#~ "protective monitoring to record activity, "
-#~ "and raise alerts about any suspicious"
-#~ " activity."
-#~ msgstr ""
-#~ "une surveillance de protection destinée "
-#~ "à enregistrer les activités et "
-#~ "déclencher des alertes en cas d'activité"
-#~ " suspecte."
-
-#~ msgid ""
-#~ "using codes called JSON Web Tokens "
-#~ "when your service talks to Notification."
-#~ " Unlike codes for API keys, JSON "
-#~ "Web Tokens have encryption and expiry"
-#~ " settings."
-#~ msgstr ""
-#~ "une utilisation de codes appelés jetons"
-#~ " Web JSON lorsque votre service "
-#~ "communique avec Notification. Contrairement "
-#~ "aux codes pour les clés API, les"
-#~ " jetons Web JSON possèdent des "
-#~ "réglages de chiffrement et d’expiration."
-
-#~ msgid "Protect sensitive information"
-#~ msgstr "Protection des renseignements de nature délicate"
-
-#~ msgid ""
-#~ "Some messages include sensitive information"
-#~ " like security codes or password "
-#~ "reset links."
-#~ msgstr ""
-#~ "Certains messages comprennent des "
-#~ "renseignements de nature délicate comme "
-#~ "des codes de sécurité ou des liens"
-#~ " de réinitialisation de mot de passe."
-
-#~ msgid ""
-#~ "If you’re sending a message with "
-#~ "sensitive information, you can hide "
-#~ "those details on the dashboard once "
-#~ "the message has been sent. Only "
-#~ "the message recipient will be able "
-#~ "to see their information."
-#~ msgstr ""
-#~ "Si vous envoyez un message comprenant"
-#~ " des renseignements de nature délicate, "
-#~ "vous pouvez masquer ces détails sur "
-#~ "le tableau de bord après avoir "
-#~ "envoyé le message. Il n'y a que"
-#~ " le destinataire du message qui sera"
-#~ " en mesure de voir ces "
-#~ "renseignements."
-
-#~ msgid "User permissions and signing in"
-#~ msgstr "Permissions d’utilisateurs et ouverture de session"
-
-#~ msgid ""
-#~ "You can set different user permissions"
-#~ " in Notification. This lets you "
-#~ "control which team members have access"
-#~ " to certain parts of Notification."
-#~ msgstr ""
-#~ "Vous pouvez définir différentes permissions"
-#~ " d’utilisateurs dans Notification. Cela "
-#~ "vous permet de contrôler quels membres"
-#~ " de l’équipe ont accès à certaines"
-#~ " parties de Notification."
-
-#~ msgid "To sign in to Notification you’ll need to enter:"
-#~ msgstr "Pour vous connecter à Notification, vous devrez saisir :"
-
-#~ msgid "your email address and password"
-#~ msgstr "votre adresse électronique et votre mot de passe"
-
-#~ msgid "a text message code that Notification sends to your phone"
-#~ msgstr ""
-#~ "un code par message texte que "
-#~ "Notification envoie à votre téléphone "
-#~ "cellulaire."
-
-#~ msgid "Please"
-#~ msgstr "Veuillez"
-
-#~ msgid "if your team needs email links instead of text message codes."
-#~ msgstr ""
-#~ "si votre équipe a besoin de liens"
-#~ " courriels au lieu de codes par "
-#~ "message texte."
-
-#~ msgid "Users can send messages to your service or reply to your texts."
-#~ msgstr ""
-#~ "Les utilisateurs peuvent envoyer des "
-#~ "messages à votre service ou répondre "
-#~ "à vos messages texte."
-
-#~ msgid ""
-#~ "You can see and reply to the "
-#~ "messages you receive, or set up "
-#~ "your own automated processes to manage"
-#~ " replies."
-#~ msgstr ""
-#~ "Vous pouvez lire et répondre aux "
-#~ "messages que vous recevez ou établir "
-#~ "vos propres processus automatisés de "
-#~ "gestion des réponses."
-
-#~ msgid "to request a unique number for text message replies."
-#~ msgstr "pour demander un numéro unique pour les réponses aux messages texte."
-
-#~ msgid "Show the sender of your texts"
-#~ msgstr "Afficher l’expéditeur de vos messages texte"
-
-#~ msgid ""
-#~ "When you send a text message with"
-#~ " Notification, the sender name tells "
-#~ "people who it's from."
-#~ msgstr ""
-#~ "Lorsque vous envoyez un message texte"
-#~ " avec Notification, le nom de "
-#~ "l’expéditeur indique qui envoie le "
-#~ "message."
-
-#~ msgid "You can change the text message sender name in your service settings."
-#~ msgstr ""
-#~ "Vous pouvez modifier le nom de "
-#~ "l’expéditeur des messages texte dans vos"
-#~ " réglages de service."
-
-#~ msgid "About your service"
-#~ msgstr "À propos de votre service"
-
-#~ msgid "Team members"
-#~ msgstr "Membres de l’équipe"
-
-#~ msgid "Share templates with your team"
-#~ msgstr "Partager des gabarits avec votre équipe"
-
-#~ msgid "invited"
-#~ msgstr "membre invité"
-
-#~ msgid "you"
-#~ msgstr "vous"
-
-#~ msgid "Cannot see any folders"
-#~ msgstr "Ne peut voir aucun dossier"
-
-#~ msgid "Can see all folders"
-#~ msgstr "Peut voir tous les dossiers"
-
-#~ msgid "Signs in with a text message code"
-#~ msgstr "Se connecte à l’aide d’un code envoyé par message texte"
-
-#~ msgid "Signs in with an email link"
-#~ msgstr "Se connecte à l’aide d’un lien envoyé par courriel"
-
-#~ msgid "Cancel invitation"
-#~ msgstr "Annuler l’invitation"
-
-#~ msgid "Change details"
-#~ msgstr "Modifier les renseignements"
-
-#~ msgid "Invite someone to join your team"
-#~ msgstr "Inviter une personne à se joindre à votre équipe"
-
-#~ msgid ""
-#~ "GOV.UK developed the original <a "
-#~ "href=\"https://github.com/topics/govuk-notify\" "
-#~ "target=\"new\">notification system</a> and its "
-#~ "UK <a "
-#~ "href=\"https://www.notifications.service.gov.uk/privacy\" "
-#~ "target=\"new\">privacy protections</a>."
-#~ msgstr ""
-#~ "GOV.UK a développé le <a "
-#~ "href=\"https://github.com/topics/govuk-notify\" "
-#~ "target=\"new\">système de notification</a> original"
-#~ " et les <a "
-#~ "href=\"https://www.notifications.service.gov.uk/privacy\" "
-#~ "target=\"new\">protections en matière de vie"
-#~ " privée</a> propres au Royaume-Uni."
-
-#~ msgid ""
-#~ "The Canadian notification team is "
-#~ "reviewing privacy requirements under the "
-#~ "<a href=\"https://laws-"
-#~ "lois.justice.gc.ca/eng/acts/P-21/index.html\" "
-#~ "target=\"new\">Privacy Act</a>. If your "
-#~ "service has specific privacy needs, "
-#~ msgstr ""
-#~ "L'équipe de Notification du Canada "
-#~ "examine les exigences relatives à la "
-#~ "vie privée aux termes de la <a "
-#~ "href=\"https://laws-"
-#~ "lois.justice.gc.ca/fra/lois/P-21/index.html\" target=\"new\">Loi"
-#~ " sur la protection des renseignements "
-#~ "personnels</a>. Si votre service a des"
-#~ " besoins particuliers en matière de "
-#~ "protection de la vie privée, "
-
-#~ msgid ""
-#~ "GOV.UK’s Service Manual provides useful "
-#~ "standards for <a href=\"https://www.gov.uk"
-#~ "/service-manual/design/sending-emails-and-"
-#~ "text-messages\">writing text messages and "
-#~ "emails</a>. Notification recommends that you"
-#~ " consider these standards as guidance, "
-#~ "while adjusting for the Canadian "
-#~ "context."
-#~ msgstr ""
-#~ "Le manuel sur les normes relatives "
-#~ "aux services publics du Royaume-Uni "
-#~ "(GOV.UK Service Manual; en anglais "
-#~ "seulement) contient des normes utiles "
-#~ "pour <a href=\"https://www.gov.uk/service-"
-#~ "manual/design/sending-emails-and-text-"
-#~ "messages\">la rédaction de messages texte "
-#~ "et de courriels</a>. Nous vous "
-#~ "recommandons d’utiliser ces normes comme "
-#~ "des lignes directrices, tout en les "
-#~ "adaptant au contexte canadien."
-
-#~ msgid "{} email message template"
-#~ msgstr "{} gabarit de message de courriel"
-
-#~ msgid "Java-API-Library-Documentation"
-#~ msgstr "API-Java-client-Documentation"
-
-#~ msgid "java-api-documentation"
-#~ msgstr ""
-
-#~ msgid "Send emails and text messages to your users"
-#~ msgstr "Envoyez des courriels et des messages texte à vos utilisateurs"
-
-#~ msgid "Try Notification if you work in the federal government."
-#~ msgstr ""
-#~ "Faites l’essai de Notification si vous"
-#~ " travaillez au gouvernement fédéral."
-
-#~ msgid ""
-#~ "You don’t need any technical knowledge"
-#~ " to create email or text message "
-#~ "templates."
-#~ msgstr ""
-#~ "Vous n’avez pas besoin de connaissances"
-#~ " techniques pour créer des gabarits "
-#~ "de courriels ou de messages texte."
-
-#~ msgid "Send messages manually or automatically"
-#~ msgstr "Envoyez des messages de façon manuelle ou automatique"
-
-#~ msgid ""
-#~ "Upload a spreadsheet of email addresses"
-#~ " or phone numbers and Notification "
-#~ "sends the messages."
-#~ msgstr ""
-#~ "Téléchargez une feuille de calcul "
-#~ "contenant les adresses courriel ou les"
-#~ " numéros de téléphone des destinataires,"
-#~ " et Notification enverra les messages."
-
-#~ msgid ""
-#~ "A screenshot of a spreadsheet with "
-#~ "columns for email address, name and "
-#~ "colour"
-#~ msgstr ""
-#~ "Une capture d'écran d’une feuille de "
-#~ "calcul avec des colonnes pour l’adresse"
-#~ " courriel, le nom et la couleur"
-
-#~ msgid "Integrate Notification with your web application or back office system."
-#~ msgstr ""
-#~ "Intégrez Notification à votre application "
-#~ "Web ou à votre système administratif."
-
-#~ msgid "A screenshot of some computer code with a notify.send_email function"
-#~ msgstr ""
-#~ "Une capture d'écran d’une partie du "
-#~ "code informatique avec une fonction "
-#~ "notification.envoyer_courriel"
-
-#~ msgid "if you have a question or want to give feedback."
-#~ msgstr "pour toute question ou commentaire."
-
-#~ msgid ""
-#~ "If you need help organizeing your "
-#~ "users’ information, Notify’s spreadsheet "
-#~ "template is a great place to "
-#~ "start."
-#~ msgstr ""
-
-#~ msgid "Contact the notify team"
-#~ msgstr "Contacter l'équipe"
-
-#~ msgid "Your message"
-#~ msgstr ""
-
-#~ msgid "selected"
-#~ msgstr "sélectionné"
-
-#~ msgid "O'Clock"
-#~ msgstr "FR O'Clock"
-
-#~ msgid "revoke this API key"
-#~ msgstr "je veux révoquer cette clé API"
-
-#~ msgid ""
-#~ "Your team members can sign in with either a text message code\n"
-#~ "          or an email link."
-#~ msgstr ""
-#~ "Les membres de votre équipe peuvent se connecter soit au moyen\n"
-#~ "          d’un code envoyé par message texte, soit au moyen d’un\n"
-#~ "          lien envoyé par courriel."
-
-#~ msgid "New"
-#~ msgstr "Nouveau"
-
-#~ msgid "delete"
-#~ msgstr "supprimer"
-
-#~ msgid "{} email template"
-#~ msgstr "{} gabarit de courriel"
-
-#~ msgid "{} text message template"
-#~ msgstr "{} gabarit de message texte"
-
-#~ msgid "under a minute"
-#~ msgstr "FR under a minute"
-
-#~ msgid "technical documentation):"
-#~ msgstr "la documentation technique) :"
-
-#~ msgid "Spreadsheet must be created from either rows or CSV data"
-#~ msgstr ""
-#~ "La feuille de calcul doit être "
-#~ "créée soit à partir de rangées "
-#~ "soit à partir d’un fichier CSV"
-
-#~ msgid " If you think you should have access"
-#~ msgstr " Si vous pensez que vous devriez avoir accès"
-
-#~ msgid "Do you want a reply?"
-#~ msgstr "Souhaitez-vous recevoir une réponse?"
-
-#~ msgid "Leave your details below if you’d like a response."
-#~ msgstr "FR Leave your details below if you’d like a response."
-
-#~ msgid "We’ll reply to"
-#~ msgstr "FR We’ll reply to"
-
-#~ msgid "Activity on this account"
-#~ msgstr "Activité du compte"
-
-#~ msgid ""
-#~ "Below is a list of the three "
-#~ "past times your password was used "
-#~ "to access your account. If any of"
-#~ " there look suspicious <a href=\"/support"
-#~ "/ask-question-give-feedback\" "
-#~ "target=\"_blank\">please contact us right "
-#~ "away.</a>"
-#~ msgstr ""
-#~ "Voici la liste des trois dernières "
-#~ "occasions où votre mot de passe a"
-#~ " été utilisé pour accéder à votre "
-#~ "compte. Si l’une d’elles vous paraît "
-#~ "suspecte, <a href=\"/support/ask-question-"
-#~ "give-feedback\" target=\"_blank\">communiquez avec "
-#~ "nous immédiatement.</a> "
-
-#~ msgid "Browser"
-#~ msgstr "Navigateur"
-
-#~ msgid "Location"
-#~ msgstr "Lieu"
-
-#~ msgid "Date / Time"
-#~ msgstr "Date / Heure"
-
-#~ msgid "Consider when to"
-#~ msgstr "Prenez en considération le moment convenable pour"
-
-#~ msgid ""
-#~ "send emails or text messages and "
-#~ "how to write them</a>. You can "
-#~ "read more about this in the GOV.UK"
-#~ " Service Manual."
-#~ msgstr ""
-#~ "envoyer des courriels ou des messages"
-#~ " texte et la façon de les "
-#~ "rédiger (en anglais)</a>. Pour plus "
-#~ "d’information à ce sujet, consultez le"
-#~ " manuel de service de GOV.UK."
-
-#~ msgid ""
-#~ "GOV.UK developed the original notification "
-#~ "system. Canada’s Notification team recommends"
-#~ " following the UK guide, while "
-#~ "adjusting for the Canadian context."
-#~ msgstr ""
-#~ "GOV.UK a mis au point le système"
-#~ " de notification original. L’équipe de "
-#~ "Notification du Canada recommande de "
-#~ "suivre le guide du Royaume-Uni en"
-#~ " veillant à l’adapter au contexte "
-#~ "canadien."
-
-#~ msgid "Vous devez modifier votre point de terminaison avant d’intégrer l’API."
-#~ msgstr ""
-
-#~ msgid "Changer le point de terminaison"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "gc notify, notify, canada notify, canada"
-#~ " email, email notifications, Government of"
-#~ " Canada, federal government, Canada SMS,"
-#~ " Canada Notification service"
-#~ msgstr ""
-
-#~ msgid "GC Notify | GC Notification"
-#~ msgstr ""
-
-#~ msgid "Send service updates and messages over email and SMS"
-#~ msgstr "Envoi de messages et de mises à jour de service par courriel et SMS"
-
-#~ msgid "Try Notify if you work in the federal government."
-#~ msgstr ""
-#~ "Faites l’essai de Notification si vous"
-#~ " travaillez au gouvernement fédéral."
-
-#~ msgid "sign in"
-#~ msgstr "connectez-vous"
-
-#~ msgid "if you’ve used it before"
-#~ msgstr "si vous avez déjà un compte."
-
-#~ msgid "Measure the effectiveness and relevance of your notifications"
-#~ msgstr "Évaluez l’efficacité et la pertinence de vos notifications"
-
-#~ msgid ""
-#~ "The Notify dashboard lets you track "
-#~ "the status of all your notifications "
-#~ "and mailings. See at a glance the"
-#~ " number of messages that have been"
-#~ " received and opened."
-#~ msgstr ""
-#~ "Le tableau de bord de Notification "
-#~ "vous permet d’assurer le suivi de "
-#~ "tous vos envois. Découvrez en un "
-#~ "seul coup d’oeil le nombre de "
-#~ "messages qui ont été reçus et "
-#~ "ouverts."
-
-#~ msgid "Manually send personalized messages to your users"
-#~ msgstr "Envoyez manuellement des messages personnalisés à vos utilisateurs"
-
-#~ msgid ""
-#~ "Upload a spreadsheet containing the "
-#~ "recipients email addresses or phone "
-#~ "numbers, and Notify will send your "
-#~ "message to them all in a batch."
-#~ msgstr ""
-#~ "Téléversez une feuille de calcul "
-#~ "contenant les adresses courriels ou les"
-#~ " numéros de téléphone des destinataires,"
-#~ " et Notification leur enverra votre "
-#~ "message en un seul lot."
-
-#~ msgid ""
-#~ "If you need help organizing your "
-#~ "users’ information, Notify’s spreadsheet "
-#~ "template is a great place to "
-#~ "start."
-#~ msgstr ""
-#~ "Besoin d’aide pour organiser les "
-#~ "coordonnées de vos destinataires? Le "
-#~ "gabarit de feuille de calcul de "
-#~ "Notification est là pour vous. "
-
-#~ msgid "Integrate Notify into your web application or admin system"
-#~ msgstr ""
-#~ "Intégrez Notification à votre application "
-#~ "Web ou à votre système administratif."
-
-#~ msgid ""
-#~ "The Notify API sends messages "
-#~ "automatically. Choose a client to "
-#~ "integrate your API with your web "
-#~ "application or admin system."
-#~ msgstr ""
-#~ "L’API Notification envoie les messages "
-#~ "de façon automatique. Choisissez un "
-#~ "client pour intégrer notre API à "
-#~ "votre application Web ou à votre "
-#~ "système administratif."
-
-#~ msgid "Learn how to integrate with our API"
-#~ msgstr "Découvrez comment intégrer notre API"
-
-#~ msgid "Control your content"
-#~ msgstr "Gérez votre contenu"
-
-#~ msgid ""
-#~ "You don’t need to be a developer"
-#~ " to create email or SMS templates "
-#~ "for your users."
-#~ msgstr ""
-#~ "Vous n’avez pas besoin de connaissances"
-#~ " techniques pour créer des gabarits "
-#~ "de courriels ou de messages texte."
-
-#~ msgid ""
-#~ "Notify uses standard text editing tools"
-#~ " and a simple templating language for"
-#~ " filling in personalized information."
-#~ msgstr ""
-#~ "Notification utilise des outils d’édition "
-#~ "de texte standards et un simple "
-#~ "langage de mise en forme pour "
-#~ "écrire du contenu personnalisé."
-
-#~ msgid "Contact the Notify team"
-#~ msgstr "Contacter l’équipe de Notification"
-
-#~ msgid ""
-#~ "<i>Notify</i> is a new messaging platform for Government of Canada\n"
-#~ "            services. Try it out by creating an account."
-#~ msgstr ""
-#~ "Notification est une nouvelle plateforme "
-#~ "de messagerie pour le Gouvernement du"
-#~ " Canada. Essayez-la en créant un "
-#~ "compte."
-
-#~ msgid ""
-#~ "<i>Notify</i> is a messaging system built for the Government of\n"
-#~ "            Canada."
-#~ msgstr ""
-#~ "Notification est un système de "
-#~ "messagerie conçu pour le gouvernement du"
-#~ " Canada."
-
-#~ msgid ""
-#~ "Send emails or text messages to keep the public informed and\n"
-#~ "            make your services more "
-#~ "transparent. Use templates for easy,\n"
-#~ "            consistent, and accessible communications."
-#~ msgstr ""
-#~ "Envoyez des courriels ou des messages"
-#~ " texte pour tenir le public informé"
-#~ " et rendre vos services plus "
-#~ "transparents. Utilisez des gabarits pour "
-#~ "communiquer de façon simple, uniforme et"
-#~ " accessible."
-
-#~ msgid ""
-#~ "Replace Word documents and Excel spreadsheets with a secure\n"
-#~ "            database of contacts and messages"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Save time and meet service standards with templates and shared\n"
-#~ "            messaging components"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Measure the effectiveness of your service with detailed\n"
-#~ "            analytics"
-#~ msgstr ""
-
-#~ msgid "Please fill in this field."
-#~ msgstr "Veuillez remplir le champ."
-
-#~ msgid "SMTP name"
-#~ msgstr "Nom du SMTP"
-
-#~ msgid ""
-#~ "gc notify, notify, canada notify, canada email,\n"
-#~ "email notifications, Government of Canada, "
-#~ "federal government, Canada SMS,\n"
-#~ "Canada Notification service"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "GC Notify | GC\n"
-#~ "Notification"
-#~ msgstr ""
-
-#~ msgid "These teams are already using <i>Notify</i>"
-#~ msgstr ""
-
-#~ msgid "“Easy set up that only took an hour.”"
-#~ msgstr ""
-
-#~ msgid "— Calvin Rodo, Economic and Social Development Canada"
-#~ msgstr ""
-
-#~ msgid "“It worked with minimal frustration and configuration.“"
-#~ msgstr ""
-
-#~ msgid "— Ryan Hyma, Treasury Board Secretariat"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "“It is the only solution we have found that is ready and we\n"
-#~ "                  appreciate the effort of "
-#~ "making it simple to use for GC"
-#~ "\n"
-#~ "                  employees.”"
-#~ msgstr ""
-
-#~ msgid "— Catherine Dufour, Canada Revenue Agency"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "“It’s governmental, trusted and we receive help from the\n"
-#~ "                  development group.”"
-#~ msgstr ""
-
-#~ msgid "— Abdulkader Hamdo, Department of Fisheries and Oceans"
-#~ msgstr ""
-
-#~ msgid "Send unlimited emails, completely free."
-#~ msgstr "Envoyer un nombre illimité de courriels, tout à fait gratuitement."
-
-#~ msgid ""
-#~ "You're creating an account for Notify,"
-#~ " so you can choose to stop "
-#~ "using it at any time for any "
-#~ "reason."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "We signed you out because you "
-#~ "logged in to Notification on another "
-#~ "device."
-#~ msgstr ""
-#~ "Nous vous avons déconnecté puisque vous"
-#~ " vous êtes connecté à Notification "
-#~ "sur un autre appareil."
-
-#~ msgid "We signed you out because you haven’t used Notification for a while."
-#~ msgstr ""
-#~ "Nous vous avons déconnecté puisque vous"
-#~ " n’avez pas utilisé Notification depuis "
-#~ "un certain temps."
-
-#~ msgid ""
-#~ "Choose a client to integrate our "
-#~ "API with your web application or "
-#~ "back office system. Links to "
-#~ "documentation open in a new tab."
-#~ msgstr ""
-#~ "Choisissez un client pour intégrer l'API"
-#~ " à votre système.Choisissez un client "
-#~ "pour intégrer notre API à votre "
-#~ "application Web ou àvotre système "
-#~ "administratif. Les liens de la "
-#~ "documentation s’ouvrent dans un nouvel "
-#~ "onglet."
-
-#~ msgid "Maintained by CDS:"
-#~ msgstr "Maintenu par le SNC :"
-
-#~ msgid "Maintained by GOV.UK:"
-#~ msgstr "Maintenu par GOV.UK :"
-
-#~ msgid "Clients"
-#~ msgstr "Clients"
-
-#~ msgid ""
-#~ "The API is available using the "
-#~ "following clients developed by GOV.UK. "
-#~ "Links to documentation open in a "
-#~ "new tab."
-#~ msgstr ""
-#~ "L'API est disponible en utilisant les"
-#~ " clients suivants développés par GOV.UK."
-
-#~ msgid ""
-#~ "Choose a client to integrate our "
-#~ "API with your web application or "
-#~ "back office system."
-#~ msgstr "Choisissez un client pour intégrer l'API à votre système."
-
-#~ msgid "You need to change your endpoint before integrating the API."
-#~ msgstr "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
-
-#~ msgid ""
-#~ "The API is available using the "
-#~ "following clients developed by <a "
-#~ "href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
-#~ msgstr ""
-#~ "L'API est disponible en utilisant les"
-#~ " clients suivants développés par <a "
-#~ "href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
-
-#~ msgid "Remarque:"
-#~ msgstr "À noter :"
-
-#~ msgid ""
-#~ "Before integrating the API, you need "
-#~ "to change your endpoint to <a "
-#~ "href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>."
-#~ msgstr ""
-#~ "Avant d'intégrer l'API, vous devez "
-#~ "modifier votre point de terminaison vers"
-#~ " <a href=https://api.notification.alpha.canada.ca/ "
-#~ ">https://api.notification.alpha.canada.ca/</a>."
-
-#~ msgid "Changer votre point de connexion API"
-#~ msgstr "Changer votre point de terminaison d'API"
-
-#~ msgid ""
-#~ "The API is available using the "
-#~ "clients below developed by <a "
-#~ "href=https://www.notifications.service.gov.uk/ >GOV.UK</a>."
-#~ msgstr ""
-
-#~ msgid "À noter :"
-#~ msgstr ""
-
-#~ msgid "Vous devez modifier votre point de terminaison avant d'intégrer l'API."
-#~ msgstr ""
-#~ "Vous devez modifier votre point de "
-#~ "terminaison vers <a "
-#~ "href=https://api.notification.alpha.canada.ca/ "
-#~ ">https://api.notification.alpha.canada.ca/</a>."
-
-#~ msgid "Comment changer votre point de terminaison d'API"
-#~ msgstr ""
-
-#~ msgid "Note:"
-#~ msgstr "À noter :"
-
-#~ msgid ""
-#~ "Before integrating the API using the "
-#~ "Notify clients below, you need to "
-#~ "change your endpoint to <a "
-#~ "href=https://api.notification.alpha.canada.ca>https://api.notification.alpha.canada.ca</a>."
-#~ msgstr ""
 

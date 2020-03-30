@@ -4,7 +4,6 @@ import { DaysOfTheWeek } from "./DaysOfTheWeek";
 import { Weeks } from "./Weeks";
 import { Announce } from "./Announce";
 import { I18nContext } from "./index";
-import "./style.css";
 
 // Note:
 // Inspired by "A New Day: Making a Better Calendar"

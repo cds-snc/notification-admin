@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { store } from "./index";
-import "./style.css";
 
 export const Toggle = () => {
   const { _24hr, time, dispatch } = useContext(store);

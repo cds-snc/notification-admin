@@ -1,7 +1,7 @@
 import React, { useReducer } from "react";
 
-import EN from "./locales/en.json";
-import FR from "./locales/fr.json";
+import { EN } from "./locales/en";
+import { FR } from "./locales/fr";
 
 const translations = {
   en: EN,
@@ -9,22 +9,7 @@ const translations = {
 };
 
 const LANGUAGES = ["en", "fr"]; // en
-
-let params = new URL(document.location).searchParams;
-let langQuery = params.get("lang");
-
-let LOCALE = LANGUAGES[0];
-
-if (langQuery === "fr") {
-  LOCALE = LANGUAGES[1];
-}
-if (typeof APP_LANG !== "undefined" && APP_LANG === "fr") {
-  LOCALE = LANGUAGES[1];
-}
-
-if (typeof APP_LANG !== "undefined" && APP_LANG === "en") {
-  LOCALE = LANGUAGES[0];
-}
+const LOCALE = LANGUAGES[0];
 
 export const getTranslate = langCode => key =>
   translations[langCode][key] || key;
