@@ -2156,7 +2156,7 @@ def test_letter_can_only_be_sent_now(
     assert normalize_spaces(
         page.select_one('[type=submit]').text
     ) == (
-        'Send 1 letter'
+        'Send Now'
     )
 
 
