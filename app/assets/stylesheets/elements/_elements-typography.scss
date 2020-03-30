@@ -138,6 +138,15 @@ main {
 
 }
 
+.file-name {
+  @include bold-16();
+  border: 1px solid #C0C1C3;
+  background-color: #eee;
+  padding: 9px 15px;
+  display: inline-block;
+  border-radius: 5px
+}
+
 // Text
 p,
 .body-text {
