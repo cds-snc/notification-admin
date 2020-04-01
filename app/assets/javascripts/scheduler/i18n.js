@@ -9,7 +9,7 @@ const translations = {
 };
 
 const LANGUAGES = ["en", "fr"]; // en
-const LOCALE = LANGUAGES[0];
+const LOCALE = window.APP_LANG === "en" ? LANGUAGES[0] : LANGUAGES[1];
 
 export const getTranslate = langCode => key =>
   translations[langCode][key] || key;

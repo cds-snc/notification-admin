@@ -26,7 +26,7 @@ export const App = () => {
       <StateProvider value={providerState}>
         <DomEventHandler />
         <ErrorMessage />
-        <p class="messageTextStyle">{translate('select_date')}</p>
+        <p className="messageTextStyle">{translate("select_date")}</p>
         <div className="schedule">
           <div>
             <Calendar />
