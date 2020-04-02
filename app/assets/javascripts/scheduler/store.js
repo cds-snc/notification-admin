@@ -13,7 +13,7 @@ import {
 } from "./Calendar/index";
 
 const LANGUAGES = ["en", "fr-ca"]; // en
-const LOCALE = LANGUAGES[0];
+const LOCALE = window.APP_LANG === "en" ? LANGUAGES[0] : LANGUAGES[1];
 
 dayjs.locale(LOCALE); // global
 
