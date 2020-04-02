@@ -28,9 +28,6 @@ class NotifyAdminAPIClient(BaseAPIClient):
         self.route_secret = app.config['ROUTE_SECRET_KEY_1']
 
     def generate_headers(self, api_token):
-
-        print(api_token)
-
         headers = {
             "Content-type": "application/json",
             "Authorization": "Bearer {}".format(api_token),
@@ -65,18 +62,9 @@ class NotifyAdminAPIClient(BaseAPIClient):
     def get(self, url, params=None):
         if re.search(r'\/user\/[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}\Z', url) is None:
             self.log_admin_call(url, "GET")
-
-        print("get it")
-        print(params)
         return super().request("GET", url, params=params)
 
     def post(self, *args, **kwargs):
-
-        print("=====================")
-        print(self.api_key)
-        print(self.service_id)
-        print("=====================")
-
         if "url" in kwargs:
             self.log_admin_call(kwargs["url"], "POST")
         if len(args) > 0:
