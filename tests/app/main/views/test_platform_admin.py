@@ -26,6 +26,7 @@ from tests.conftest import SERVICE_ONE_ID, SERVICE_TWO_ID, normalize_spaces
     'main.platform_admin',
     'main.live_services',
     'main.trial_services',
+    'main.live_api_keys',
 ])
 def test_should_redirect_if_not_logged_in(
     client,
@@ -40,6 +41,7 @@ def test_should_redirect_if_not_logged_in(
     'main.platform_admin',
     'main.live_services',
     'main.trial_services',
+    'main.live_api_keys',
 ])
 def test_should_403_if_not_platform_admin(
     client_request,

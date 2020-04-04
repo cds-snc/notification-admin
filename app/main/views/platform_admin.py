@@ -208,8 +208,9 @@ def platform_admin_services():
 @main.route("/platform-admin/live-api-keys", endpoint='live_api_keys')
 @user_is_platform_admin
 def platform_admin_api_keys():
-    n_days_back = 10
+    n_days_back = 7
     api_key_list = api_key_api_client.get_api_keys_ranked_by_notifications_created(n_days_back)
+    print("api_key_list", api_key_list)
     return render_template(
         'views/platform-admin/api_keys_ranked.html',
         api_key_list=api_key_list
