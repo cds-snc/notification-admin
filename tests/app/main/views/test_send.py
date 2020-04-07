@@ -1603,18 +1603,18 @@ def test_send_test_email_message_without_placeholders_redirects_to_check_page(
 @pytest.mark.parametrize('permissions, expected_back_link_endpoint, extra_args', (
     (
         {'send_messages', 'manage_templates'},
-        'main.view_template',
-        {'template_id': unchanging_fake_uuid}
+        'main.send_one_off_step',
+        {'template_id': unchanging_fake_uuid, 'step_index': 0},
     ),
     (
         {'send_messages'},
-        'main.choose_template',
-        {},
+        'main.send_one_off_step',
+        {'template_id': unchanging_fake_uuid, 'step_index': 0},
     ),
     (
         {'send_messages', 'view_activity'},
-        'main.choose_template',
-        {},
+        'main.send_one_off_step',
+        {'template_id': unchanging_fake_uuid, 'step_index': 0},
     ),
 ))
 def test_send_test_sms_message_with_placeholders_shows_first_field(

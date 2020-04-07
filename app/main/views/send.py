@@ -787,20 +787,28 @@ def is_current_user_the_recipient():
 
 def get_back_link(service_id, template, step_index):
     if get_help_argument():
-        if step_index == 0:
+        if request.endpoint == 'main.check_notification':
             return url_for(
-                'main.start_tour',
+                'main.send_test',
                 service_id=service_id,
                 template_id=template.id,
+                help=get_help_argument()
             )
-        elif step_index > 0:
-            return url_for(
-                'main.send_test_step',
-                service_id=service_id,
-                template_id=template.id,
-                step_index=step_index - 1,
-                help=2,
-            )
+        else:
+            if step_index == 0:
+                return url_for(
+                    'main.start_tour',
+                    service_id=service_id,
+                    template_id=template.id,
+                )
+            elif step_index > 0:
+                return url_for(
+                    'main.send_test_step',
+                    service_id=service_id,
+                    template_id=template.id,
+                    step_index=step_index - 1,
+                    help=2,
+                )
     elif is_current_user_the_recipient() and step_index > 0:
         return url_for(
             'main.send_test_step',
