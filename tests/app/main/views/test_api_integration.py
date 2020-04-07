@@ -199,6 +199,7 @@ def test_should_show_empty_api_keys_page(
 def test_should_show_api_keys_page(
     client_request,
     mock_get_api_keys,
+    mock_get_api_key_statistics,
 ):
     page = client_request.get('main.api_keys', service_id=SERVICE_ONE_ID)
     rows = [normalize_spaces(row.text) for row in page.select('main tr')]
@@ -375,6 +376,7 @@ def test_route_permissions(
     service_one,
     mock_get_api_keys,
     route,
+    mock_get_api_key_statistics,
 ):
     with app_.test_request_context():
         validate_route_permission(

@@ -31,5 +31,10 @@ class ApiKeyApiClient(NotifyAdminAPIClient):
             url='/api-key/ranked-by-notifications-created/{}'.format(n_days_back),
         )['data']
 
+    def get_api_key_statistics(self, key_id):
+        return self.get(
+            url='/api-key/{0}/summary-statistics'.format(key_id),
+        )['data']
+
 
 api_key_api_client = ApiKeyApiClient()

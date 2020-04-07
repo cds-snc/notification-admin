@@ -75,6 +75,12 @@ def safelist(service_id):
 @main.route("/services/<service_id>/api/keys")
 @user_has_permissions('manage_api_keys')
 def api_keys(service_id):
+    for item in current_service.api_keys:
+        results = api_key_api_client.get_api_key_statistics(key_id=item["id"])
+        item["email_sends"] = results["email_sends"]
+        item["sms_sends"] = results["sms_sends"]
+        item["total_sends"] = results["total_sends"]
+        item["last_send"] = results["last_send"]
     return render_template(
         'views/api/keys.html',
     )

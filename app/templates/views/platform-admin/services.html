@@ -14,15 +14,15 @@
   {% endcall %}
 
   {% call field(align='right', border=False) %}
-    {{ big_number(data[channel]['sending'], smaller=True) }}
+    {{ big_number(data[channel]['sending'], smallest=True) }}
   {% endcall %}
 
   {% call field(align='right', border=False) %}
-    {{ big_number(data[channel]['delivered'], smaller=True) }}
+    {{ big_number(data[channel]['delivered'], smallest=True) }}
   {% endcall %}
 
   {% call field(align='right', status='error' if data[channel]['failed'], border=False) %}
-    {{ big_number(data[channel]['failed'], smaller=True) }}
+    {{ big_number(data[channel]['failed'], smallest=True) }}
   {% endcall %}
 
 {%- endmacro %}

@@ -1,3 +1,239 @@
+.error-list {
+  font-size: 1.4rem;
+  padding: 15px;
+  background: #f3e9e8;
+  border-left: 4px solid #af3c43;
+  margin-top: 15px;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+.error-list a {
+  font-size: 1.5rem;
+}
+
+.error-list__header {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.error-list ol,
+.error-list ul {
+  padding-left: 40px;
+}
+
+.error-list li:not(:last-of-type) {
+  padding-bottom: 0;
+}
+
+.Calendar {
+  border: 0.125rem solid #000;
+  display: inline-block;
+  padding: 0.625rem;
+  position: relative;
+  width: 100%;
+  min-height: 24rem;
+  max-width: 35rem;
+  margin-bottom: 2rem;
+}
+
+.Calendar-nav {
+  display: flex;
+  padding: 0.125rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Nav--month {
+  display: flex;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.Calendar-nav--button {
+  background-color: #fff;
+  border: 0.063rem solid currentColor;
+  cursor: pointer;
+}
+
+.Calendar-nav--button {
+  color: var(--selected-color);
+  font-size: 2.4rem;
+  font-weight: bold;
+  height: 4rem;
+  width: 4rem;
+  border: 0;
+}
+
+.Calendar-nav--button--unavailable {
+  /* cursor: url("img/disableddates.ico") 20 20, not-allowed;*/
+  color: #000;
+  opacity: 0.2;
+  pointer-events: none;
+  background-color: white;
+  outline: none;
+  border: 0;
+}
+
+.Calendar-nav--button:last-of-type {
+  margin-right: 0;
+}
+
+.Calendar-nav--button:focus,
+.Calendar-item:hover:not(.Calendar-item--day):not(.Calendar-item--unavailable):not(:empty),
+.Calendar-item:focus:not(.Calendar-item--day):not(.Calendar-item--unavailable):not(:empty) {
+  outline: black inset;
+  outline-offset: -4px;
+  outline-offset: -4px;
+}
+
+.Calendar-item.Calendar-item--day,
+.Calendar-item.Calendar-item--empty {
+  background-color: white;
+}
+
+.Calendar-row {
+  display: flex;
+  text-align: center;
+}
+
+.Calendar-item {
+  background: var(--available-color);
+  border: 0;
+  outline: none;
+  border-radius: 0;
+  box-sizing: border-box;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 200%;
+  position: relative;
+  height: 5rem;
+  width: 5rem;
+}
+
+.Calendar-item[aria-pressed] {
+  cursor: pointer;
+}
+
+.Calendar-item[aria-pressed="true"] {
+  background-color: var(--selected-color);
+  color: #fff;
+}
+
+.Calendar-days {
+  color: #666;
+}
+
+.Calendar-item--unavailable {
+  /* cursor: url("img/disableddates.ico") 20 20, not-allowed;*/
+  opacity: 0.5;
+  pointer-events: none;
+  background-color: white;
+  outline: none;
+  border: 0;
+}
+
+.Calendar-item.Calendar-item--unavailable:focus {
+  outline: dotted;
+  outline-offset: -4px;
+  outline-offset: -4px;
+}
+
+.Calendar-item:not(.Calendar-item--unavailable):hover {
+  background-color: var(--hover-color);
+}
+
+.Calendar-item.Calendar-item--empty:hover,
+.Calendar-item.Calendar-item--day:hover {
+  background-color: white;
+}
+
+.Calendar-item.Calendar-item--day {
+  height: 5rem;
+}
+
+.toggle-holder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+  border: 2px solid transparent;
+}
+
+.toggle-label {
+  padding: 0.8rem;
+  color: #000;
+}
+
+.toggle-label-active {
+  font-weight: bold;
+}
+
+.toggle-label:first-child {
+  padding-left: 0;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 8px;
+  background-color: var(--selected-color);
+  color: #a5bfaf;
+  -webkit-transition: all 0.6s;
+  transition: all 0.6s;
+  outline: none;
+  border: none;
+}
+
+.switch.off,
+.switch.on {
+  border-radius: 25px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.switch.off:before,
+.switch.off:after {
+  -webkit-transition: 0.3s;
+  transition: all 0.3s;
+}
+
+.switch.on:before,
+.switch.on:after {
+  -webkit-transition: 0.3s;
+  transition: all 0.3s;
+}
+
+.switch.off:before,
+.switch.on:before {
+  display: block;
+  position: absolute;
+  content: "";
+  height: 23px;
+  width: 23px;
+  left: 0px;
+  top: -6px;
+  background-color: #fff;
+  border: 1px solid #666666;
+  -webkit-transition: 0.6s;
+  transition: all 0.6s;
+  -webkit-transition-delay: 0.01s;
+  transition-delay: 0.01s;
+  border-radius: 50%;
+}
+
+.switch.on:before {
+  -webkit-transform: translateX(32px);
+  -ms-transform: translateX(32px);
+  transform: translateX(32px);
+}
+
+.toggle-holder-active {
+  border: 2px solid currentColor;
+}
+
 :root {
   --selected-color: #005da5;
   --hover-color: rgba(43, 139, 196, 0.5);
@@ -117,10 +353,6 @@
   width: 0.5px;
 }
 
-[aria-hidden="true"] {
-  display: none;
-}
-
 /* radios */
 .choice__item {
   font-size: 1.8rem;
@@ -186,17 +418,11 @@
   height: 30px;
 }
 
-.choice--radios
-  .choice__item
-  > input[type="radio"]
-  + label:before {
+.choice--radios .choice__item > input[type="radio"] + label:before {
   border-radius: 50%;
 }
 
-.choice--radios
-  .choice__item
-  > input[type="radio"]
-  + label:after {
+.choice--radios .choice__item > input[type="radio"] + label:after {
   top: 6px;
   left: 6px;
   width: 0;
@@ -204,4 +430,29 @@
   border: 9px solid;
   border-radius: 50%;
   background: currentColor;
+}
+
+.messageTextStyle {
+  font-size: 20px;
+  line-height: 1.25;
+  color: #0B0C0C;
+  max-width: 706px;
+}
+.confirmationWrapper {
+  margin-bottom: 20px;
+}
+
+.confirmation {
+  padding: 0.75rem 1rem;
+}
+.confirmation > p {
+  margin-top: 0
+}
+.confirmation.set {
+  background: rgba(255, 221, 0, 0.25);
+  border-left: 5px solid #FFDD00;
+}
+.confirmation.unset {
+  background: rgba(235, 87, 87, 0.35);
+  border-left: 5px solid #EB5757;
 }

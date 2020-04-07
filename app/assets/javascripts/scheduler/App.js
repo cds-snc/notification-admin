@@ -1,33 +1,41 @@
-import React from "react";
-import { StateProvider, setIntialState } from "./store";
-import { I18nProvider } from "./i18n";
+import React, { useContext } from "react";
+import { StateProvider, setIntialState, defaultState } from "./store";
+import { I18nProvider,I18nContext } from "./i18n";
+import { ErrorMessage } from "./ErrorMessage/ErrorMessage";
 import { Calendar } from "./Calendar/Calendar";
-import { Date } from "./Date/Date";
-import { Toggle } from "./Toggle/Toggle";
-import { Time } from "./Time/Time";
+import { DateTime } from "./DateTime/DateTime";
 import { SetDateTime } from "./SetDateTime/SetDateTime";
-import "./style.css";
+import { Confirmation } from "./Confirmation/Confirmation";
+import { DomEventHandler } from "./DomEventHandler/DomEventHandler";
+import dayjs from "dayjs";
+import './style.css';
 
 export const App = () => {
-  const providerState = setIntialState();
+  let options = {};
+  const { translate } = useContext(I18nContext);
+
+  options = { init: setIntialState, ...window.schedulerOptions };
+
+  const providerState = options.init({
+    dayjs,
+    defaultState: defaultState()
+  });
+
   return (
     <I18nProvider>
       <StateProvider value={providerState}>
+        <DomEventHandler />
+        <ErrorMessage />
+        <p className="messageTextStyle">{translate("select_date")}</p>
         <div className="schedule">
           <div>
             <Calendar />
           </div>
-          <div className="column">
-            <div className="selected-date-time-box">
-              <div className="triangle"></div>
-              <div className="date-time-box">
-                <Date />
-                <Time name="time" />
-                <Toggle />
-              </div>
-            </div>
-          </div>
+          <DateTime />
           <SetDateTime />
+        </div>
+        <div className="confirmationWrapper messageTextStyle">
+          <Confirmation />
         </div>
       </StateProvider>
     </I18nProvider>
