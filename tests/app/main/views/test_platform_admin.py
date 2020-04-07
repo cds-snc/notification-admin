@@ -102,6 +102,19 @@ def test_should_render_platform_admin_page(
                                                         'only_active': False})
 
 
+def test_should_render_live_api_key_page(
+    platform_admin_client,
+    mock_get_ranked_api_keys
+):
+    expected_services_shown = 2
+    n_days_back = 2
+    response = platform_admin_client.get(url_for("main.live_api_keys"))
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+    assert len(page.select('tbody tr')) == expected_services_shown  # one per service
+    mock_get_ranked_api_keys.assert_called_once_with(n_days_back)
+
+
 @pytest.mark.parametrize('endpoint', [
     'main.live_services',
     'main.trial_services',

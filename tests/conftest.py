@@ -1824,8 +1824,8 @@ def mock_get_no_api_keys(mocker):
 
 
 @pytest.fixture(scope='function')
-def mock_get_ranked_api_keys(mocker, n_days_back):
-    def _get_keys(n_days_back, key_id=None):
+def mock_get_ranked_api_keys(mocker):
+    def _get_stats(n_days_back):
         data = [
             {
                 'api_key_id': "a123456",
@@ -1852,7 +1852,7 @@ def mock_get_ranked_api_keys(mocker, n_days_back):
         ]
         return data
 
-    return mocker.patch('app.api_key_api_client.get_api_keys_ranked_by_notifications_created', side_effect=_get_keys)
+    return mocker.patch('app.api_key_api_client.get_api_keys_ranked_by_notifications_created', side_effect=_get_stats)
 
 
 @pytest.fixture(scope='function')
