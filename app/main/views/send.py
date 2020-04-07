@@ -787,29 +787,34 @@ def is_current_user_the_recipient():
 
 def get_back_link(service_id, template, step_index):
     if get_help_argument():
-        # if we're on the check page, redirect back to the beginning. anywhere else, don't return the back link
-        if request.endpoint == 'main.check_notification':
+        if step_index == 0:
             return url_for(
-                'main.send_test',
+                'main.start_tour',
                 service_id=service_id,
                 template_id=template.id,
-                help=get_help_argument()
             )
-        else:
-            if step_index == 0:
-                return url_for(
-                    'main.start_tour',
-                    service_id=service_id,
-                    template_id=template.id,
-                )
-            elif step_index > 0:
-                return url_for(
-                    'main.send_test_step',
-                    service_id=service_id,
-                    template_id=template.id,
-                    step_index=step_index - 1,
-                    help=2,
-                )
+        elif step_index > 0:
+            return url_for(
+                'main.send_test_step',
+                service_id=service_id,
+                template_id=template.id,
+                step_index=step_index - 1,
+                help=2,
+            )
+    elif is_current_user_the_recipient() and step_index > 0:
+        return url_for(
+            'main.send_test_step',
+            service_id=service_id,
+            template_id=template.id,
+            step_index=step_index - 1,
+        )
+    elif is_current_user_the_recipient() and step_index == 0:
+        return url_for(
+            'main.send_one_off_step',
+            service_id=service_id,
+            template_id=template.id,
+            step_index=0,
+        )
     elif step_index == 0:
         if should_skip_template_page(template.template_type):
             return url_for(
@@ -822,21 +827,6 @@ def get_back_link(service_id, template, step_index):
                 service_id=service_id,
                 template_id=template.id,
             )
-    elif is_current_user_the_recipient() and step_index > 1:
-        return url_for(
-            'main.send_test_step',
-            service_id=service_id,
-            template_id=template.id,
-            step_index=step_index - 1,
-        )
-    elif is_current_user_the_recipient() and step_index == 1:
-        return url_for(
-            'main.send_one_off_step',
-            service_id=service_id,
-            template_id=template.id,
-            step_index=0,
-        )
-
     else:
         return url_for(
             'main.send_one_off_step',
