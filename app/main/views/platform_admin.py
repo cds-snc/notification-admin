@@ -210,7 +210,6 @@ def platform_admin_services():
 def platform_admin_api_keys():
     n_days_back = 7
     api_key_list = api_key_api_client.get_api_keys_ranked_by_notifications_created(n_days_back)
-    print("api_key_list", api_key_list)
     return render_template(
         'views/platform-admin/api_keys_ranked.html',
         api_key_list=api_key_list

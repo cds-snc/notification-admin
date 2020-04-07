@@ -1828,25 +1828,25 @@ def mock_get_ranked_api_keys(mocker, n_days_back):
     def _get_keys(n_days_back, key_id=None):
         data = [
             {
-                'api_key_id': "a123456", 
-                'api_key_name': 'live key 1', 
-                'api_key_type': 'normal', 
-                'email_notifications': 10, 
-                'last_notification_created': '2020-04-04T04:53:26.474093Z', 
-                'service_id': "1234567", 
-                'service_name': 'test service 1', 
-                'sms_notifications': 0, 
+                'api_key_id': "a123456",
+                'api_key_name': 'live key 1',
+                'api_key_type': 'normal',
+                'email_notifications': 10,
+                'last_notification_created': '2020-04-04T04:53:26.474093Z',
+                'service_id': "1234567",
+                'service_name': 'test service 1',
+                'sms_notifications': 0,
                 'total_notifications': 10
-            }, 
+            },
             {
-                'api_key_id': "0123456", 
-                'api_key_name': 'live key 2', 
-                'api_key_type': 'normal', 
-                'email_notifications': 3, 
-                'last_notification_created': '2020-04-04T04:50:14.303293Z', 
-                'service_id': '234567', 
-                'service_name': 'test service 1', 
-                'sms_notifications': 0, 
+                'api_key_id': "0123456",
+                'api_key_name': 'live key 2',
+                'api_key_type': 'normal',
+                'email_notifications': 3,
+                'last_notification_created': '2020-04-04T04:50:14.303293Z',
+                'service_id': '234567',
+                'service_name': 'test service 1',
+                'sms_notifications': 0,
                 'total_notifications': 3
             }
         ]
