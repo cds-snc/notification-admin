@@ -14,6 +14,7 @@
           {% for link_text, url in [
           ('Live services', url_for('main.live_services')),
           ('Trial mode services', url_for('main.trial_services')),
+          (_('Live API keys'), url_for('main.live_api_keys')),
           ('Email branding', url_for('main.email_branding')),
           ('Find services by name', url_for('main.find_services_by_name')),
           ('Find users by email', url_for('main.find_users_by_email')),

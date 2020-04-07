@@ -1824,6 +1824,38 @@ def mock_get_no_api_keys(mocker):
 
 
 @pytest.fixture(scope='function')
+def mock_get_ranked_api_keys(mocker):
+    def _get_stats(n_days_back):
+        data = [
+            {
+                'api_key_id': "a123456",
+                'api_key_name': 'live key 1',
+                'api_key_type': 'normal',
+                'email_notifications': 10,
+                'last_notification_created': '2020-04-04T04:53:26.474093Z',
+                'service_id': "1234567",
+                'service_name': 'test service 1',
+                'sms_notifications': 0,
+                'total_notifications': 10
+            },
+            {
+                'api_key_id': "0123456",
+                'api_key_name': 'live key 2',
+                'api_key_type': 'normal',
+                'email_notifications': 3,
+                'last_notification_created': '2020-04-04T04:50:14.303293Z',
+                'service_id': '234567',
+                'service_name': 'test service 1',
+                'sms_notifications': 0,
+                'total_notifications': 3
+            }
+        ]
+        return data
+
+    return mocker.patch('app.api_key_api_client.get_api_keys_ranked_by_notifications_created', side_effect=_get_stats)
+
+
+@pytest.fixture(scope='function')
 def mock_get_api_key_statistics(mocker):
     def _get_stats(key_id):
         data = {

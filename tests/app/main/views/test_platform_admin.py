@@ -26,6 +26,7 @@ from tests.conftest import SERVICE_ONE_ID, SERVICE_TWO_ID, normalize_spaces
     'main.platform_admin',
     'main.live_services',
     'main.trial_services',
+    'main.live_api_keys',
 ])
 def test_should_redirect_if_not_logged_in(
     client,
@@ -40,6 +41,7 @@ def test_should_redirect_if_not_logged_in(
     'main.platform_admin',
     'main.live_services',
     'main.trial_services',
+    'main.live_api_keys',
 ])
 def test_should_403_if_not_platform_admin(
     client_request,
@@ -98,6 +100,19 @@ def test_should_render_platform_admin_page(
     mock_get_detailed_services.assert_called_once_with({'detailed': True,
                                                         'include_from_test_key': True,
                                                         'only_active': False})
+
+
+def test_should_render_live_api_key_page(
+    platform_admin_client,
+    mock_get_ranked_api_keys
+):
+    expected_services_shown = 2
+    n_days_back = 2
+    response = platform_admin_client.get(url_for("main.live_api_keys"))
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+    assert len(page.select('tbody tr')) == expected_services_shown  # one per service
+    mock_get_ranked_api_keys.assert_called_once_with(n_days_back)
 
 
 @pytest.mark.parametrize('endpoint', [

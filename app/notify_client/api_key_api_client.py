@@ -26,6 +26,11 @@ class ApiKeyApiClient(NotifyAdminAPIClient):
             url='/service/{0}/api-key/revoke/{1}'.format(service_id, key_id),
             data=data)
 
+    def get_api_keys_ranked_by_notifications_created(self, n_days_back):
+        return self.get(
+            url='/api-key/ranked-by-notifications-created/{}'.format(n_days_back),
+        )['data']
+
     def get_api_key_statistics(self, key_id):
         return self.get(
             url='/api-key/{0}/summary-statistics'.format(key_id),

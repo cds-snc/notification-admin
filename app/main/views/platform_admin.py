@@ -33,6 +33,7 @@ from app.main.forms import (
     RequiredDateFilterForm,
     ReturnedLettersForm,
 )
+from app.notify_client.api_key_api_client import api_key_api_client
 from app.statistics_utils import (
     get_formatted_percentage,
     get_formatted_percentage_two_dp,
@@ -201,6 +202,17 @@ def platform_admin_services():
             'Trial mode' if request.endpoint == 'main.trial_services' else 'Live'
         ),
         global_stats=create_global_stats(services),
+    )
+
+
+@main.route("/platform-admin/live-api-keys", endpoint='live_api_keys')
+@user_is_platform_admin
+def platform_admin_api_keys():
+    n_days_back = 2
+    api_key_list = api_key_api_client.get_api_keys_ranked_by_notifications_created(n_days_back)
+    return render_template(
+        'views/platform-admin/api_keys_ranked.html',
+        api_key_list=api_key_list
     )
 
 
