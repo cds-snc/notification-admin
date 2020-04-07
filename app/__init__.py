@@ -114,7 +114,12 @@ def get_current_locale(application):
     requestLang = request.accept_languages.best_match(application.config['LANGUAGES'])
     if requestLang is None:
         requestLang = "en"
-    lang = request.args.get('lang') or session.get("userlang", requestLang)
+
+    if request.args.get('lang') and request.args.get('lang') in ["en", "fr"]:
+        lang = request.args.get('lang')
+    else:
+        lang = session.get("userlang", requestLang)
+
     session["userlang"] = lang
     return lang
 
