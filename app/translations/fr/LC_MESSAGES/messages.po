@@ -363,11 +363,11 @@ msgstr "Numéros de téléphone cellulaire"
 
 #: app/main/forms.py:1179
 msgid "Search by name"
-msgstr "Recherche par nom"
+msgstr "Chercher par nom"
 
 #: app/main/forms.py:1187 app/main/forms.py:1196
 msgid "Search by name or email address"
-msgstr "Recherche par nom ou par adresse courriel"
+msgstr "Chercher par nom ou par adresse courriel"
 
 #: app/main/forms.py:1189
 msgid "You need to enter full or partial email address to search by."
@@ -375,15 +375,15 @@ msgstr "Vous devez écrire une adresse courriel complète ou partielle."
 
 #: app/main/forms.py:1204
 msgid "Search by email address"
-msgstr "Recherche par adresse courriel"
+msgstr "Chercher par adresse courriel"
 
 #: app/main/forms.py:1205
 msgid "Search by phone number"
-msgstr "Recherche par numéro de téléphone"
+msgstr "Chercher par numéro de téléphone"
 
 #: app/main/forms.py:1212
 msgid "Search by phone number or email address"
-msgstr "Recherche par numéro de téléphone ou par adresse courriel"
+msgstr "Chercher par numéro de téléphone ou par adresse courriel"
 
 #: app/main/forms.py:1248 app/main/forms.py:1261
 msgid "Must be a valid https URL"
@@ -1981,7 +1981,7 @@ msgstr "gabarit de courriel"
 #: app/templates/views/edit-email-template.html:16
 #: app/templates/views/edit-sms-template.html:22
 msgid "Formatting Guide"
-msgstr "Guide de mise en forme"
+msgstr "Comment mettre en forme votre notification"
 
 #: app/templates/views/edit-email-template.html:23
 msgid "Select template content"
@@ -2037,7 +2037,7 @@ msgstr "gabarit de message texte"
 
 #: app/templates/views/edit-sms-template.html:24
 msgid "Your recipients won’t see this"
-msgstr "Vos destinataires ne verront pas ce nom."
+msgstr "Vos destinataires ne verront pas le nom du gabarit."
 
 #: app/templates/views/email-link-invalid.html:5
 msgid "Invalid email link"
@@ -4184,7 +4184,7 @@ msgstr "Messages envoyés"
 
 #: app/templates/views/dashboard/dashboard.html:25
 msgid "In the last 7 days"
-msgstr "Dans les 7 derniers jours"
+msgstr "Notifications envoyées dans les 7 derniers jours"
 
 #: app/templates/views/dashboard/dashboard.html:31
 msgid "Check messages sent per month"
@@ -4734,7 +4734,7 @@ msgstr ""
 
 #: app/templates/views/pricing/index.html:91
 msgid "Search by country name or code"
-msgstr "Recherche par nom ou code de pays"
+msgstr "Chercher par nom ou code de pays"
 
 #: app/templates/views/service-settings/email_reply_to.html:23
 msgid "You haven’t added any reply-to email addresses yet"
