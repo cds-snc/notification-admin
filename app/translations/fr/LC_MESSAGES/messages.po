@@ -844,12 +844,12 @@ msgstr "Paramètres"
 
 #: app/templates/main_nav.html:29
 msgid "API integration"
-msgstr "Intégration de l’interface de programmation d’applications (API)"
+msgstr "Intégrer l'API"
 
 #: app/templates/main_nav.html:33 app/templates/views/smtp/index.html:6
 #: app/templates/views/smtp/index.html:20
 msgid "SMTP integration"
-msgstr "Intégration SMTP"
+msgstr "Intégrer SMTP"
 
 #: app/templates/main_template.html:69 app/templates/views/check/ok.html:82
 msgid "Now"
