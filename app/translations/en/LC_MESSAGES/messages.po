@@ -832,7 +832,7 @@ msgstr ""
 #: app/templates/main_nav.html:21 app/templates/views/manage-users.html:9
 #: app/templates/views/manage-users.html:15
 msgid "Team members"
-msgstr ""
+msgstr "Your team"
 
 #: app/templates/main_nav.html:26 app/templates/views/service-settings.html:6
 #: app/templates/views/service-settings.html:13
