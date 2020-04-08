@@ -234,3 +234,31 @@ def test_letter_template_preview_headers(
     )
 
     assert response.headers.get('X-Frame-Options') == 'SAMEORIGIN'
+
+
+@pytest.mark.parametrize('query_key, query_value, heading', [
+    ('lang', 'en', 'Notify'),  # 'Notify' = english heading
+    ('lang', 'fr', 'Notification'),  # 'Notification' = french heading
+    ('lang', 'sa?SDFa?DFa,/', 'Notify'),
+    ('xyz', 'xyz', 'Notify'),
+    ('sa?SDFa?DFa,/', 'sa?SDFa?DFa,/', 'Notify')
+])
+def test_query_params(
+    mocker,
+    client,
+    mock_get_service_and_organisation_counts,
+    query_key,
+    query_value,
+    heading
+):
+    mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
+
+    response = client.get(url_for('main.index', **{query_key: query_value}))
+
+    assert response.status_code == 200
+
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+
+    assert page.h1.text.strip() == (
+        heading
+    )
