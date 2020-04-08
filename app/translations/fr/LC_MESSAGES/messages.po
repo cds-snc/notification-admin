@@ -849,7 +849,7 @@ msgstr "Intégrer l'API"
 #: app/templates/main_nav.html:33 app/templates/views/smtp/index.html:6
 #: app/templates/views/smtp/index.html:20
 msgid "SMTP integration"
-msgstr "Intégrer SMTP"
+msgstr "Intégrer via SMTP"
 
 #: app/templates/main_template.html:69 app/templates/views/check/ok.html:82
 msgid "Now"
