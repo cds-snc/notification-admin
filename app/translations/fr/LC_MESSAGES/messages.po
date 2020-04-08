@@ -4184,7 +4184,7 @@ msgstr "Messages envoyés"
 
 #: app/templates/views/dashboard/dashboard.html:25
 msgid "In the last 7 days"
-msgstr "Notifications envoyées dans les 7 derniers jours"
+msgstr "Dans les 7 derniers jours"
 
 #: app/templates/views/dashboard/dashboard.html:31
 msgid "Check messages sent per month"

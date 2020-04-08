@@ -832,7 +832,7 @@ msgstr ""
 #: app/templates/main_nav.html:21 app/templates/views/manage-users.html:9
 #: app/templates/views/manage-users.html:15
 msgid "Team members"
-msgstr "Your team"
+msgstr ""
 
 #: app/templates/main_nav.html:26 app/templates/views/service-settings.html:6
 #: app/templates/views/service-settings.html:13
@@ -3954,7 +3954,7 @@ msgstr ""
 
 #: app/templates/views/dashboard/dashboard.html:25
 msgid "In the last 7 days"
-msgstr "Notifications sent in the last 7 days"
+msgstr ""
 
 #: app/templates/views/dashboard/dashboard.html:31
 msgid "Check messages sent per month"
