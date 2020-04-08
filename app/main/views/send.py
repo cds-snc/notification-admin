@@ -380,6 +380,9 @@ def send_test_step(service_id, template_id, step_index):
         prefill_current_user=(request.endpoint == 'main.send_test_step'),
     )
 
+    # used to set the back link in the check_notification screen
+    session['send_step'] = request.endpoint
+
     try:
         current_placeholder = placeholders[step_index]
     except IndexError:
@@ -784,7 +787,6 @@ def is_current_user_the_recipient():
 
 def get_back_link(service_id, template, step_index):
     if get_help_argument():
-        # if we're on the check page, redirect back to the beginning. anywhere else, don't return the back link
         if request.endpoint == 'main.check_notification':
             return url_for(
                 'main.send_test',
@@ -807,6 +809,20 @@ def get_back_link(service_id, template, step_index):
                     step_index=step_index - 1,
                     help=2,
                 )
+    elif is_current_user_the_recipient() and step_index > 0:
+        return url_for(
+            'main.send_test_step',
+            service_id=service_id,
+            template_id=template.id,
+            step_index=step_index - 1,
+        )
+    elif is_current_user_the_recipient() and step_index == 0:
+        return url_for(
+            'main.send_one_off_step',
+            service_id=service_id,
+            template_id=template.id,
+            step_index=0,
+        )
     elif step_index == 0:
         if should_skip_template_page(template.template_type):
             return url_for(
@@ -819,21 +835,6 @@ def get_back_link(service_id, template, step_index):
                 service_id=service_id,
                 template_id=template.id,
             )
-    elif is_current_user_the_recipient() and step_index > 1:
-        return url_for(
-            'main.send_test_step',
-            service_id=service_id,
-            template_id=template.id,
-            step_index=step_index - 1,
-        )
-    elif is_current_user_the_recipient() and step_index == 1:
-        return url_for(
-            'main.send_one_off_step',
-            service_id=service_id,
-            template_id=template.id,
-            step_index=0,
-        )
-
     else:
         return url_for(
             'main.send_one_off_step',
@@ -875,7 +876,8 @@ def _check_notification(service_id, template_id, exception=None):
         page_count=get_page_count_for_letter(db_template),
     )
 
-    back_link = get_back_link(service_id, template, len(fields_to_fill_in(template)))
+    step_index = len(fields_to_fill_in(template, prefill_current_user=(session.get('send_step') == 'main.send_test_step')))
+    back_link = get_back_link(service_id, template, step_index)
 
     if (
         (
