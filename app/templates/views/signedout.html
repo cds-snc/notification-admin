@@ -715,14 +715,6 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
     document.querySelector("#menu").addEventListener("click", classToggle);
   </script>
 
-  {% if scrollTo == "true" %}
-  <script>
-    var el = document.getElementById("contact-form");
-    el.scrollIntoView();
-  </script>
-  {% endif %} {% endblock %}
-
-
   <script>
     /* Sample function that returns boolean in case the browser is Internet Explorer*/
     function isIE() {
@@ -739,4 +731,11 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
       alert("It is NOT InternetExplorer "+ navigator.userAgent);
     }
   </script>
+
+  {% if scrollTo == "true" %}
+  <script>
+    var el = document.getElementById("contact-form");
+    el.scrollIntoView();
+  </script>
+  {% endif %} {% endblock %}
 </div>
