@@ -734,10 +734,9 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
     }
     /* Create an alert to show if the browser is IE or not */
     if (isIE()) {
-      alert("It is InternetExplorer");
+      alert("It is InternetExplorer " + navigator.userAgent);
     } else {
-      alert("It is NOT InternetExplorer");
+      alert("It is NOT InternetExplorer "+ navigator.userAgent);
     }
-  </script>
   </script>
 </div>
