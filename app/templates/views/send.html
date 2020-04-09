@@ -57,6 +57,10 @@ template_id=template.id) ) }}
   }
 
   /* Alert if browser is IE */
+  /* 
+  note this is in sent-test.html + send.html 
+  the target el to replace is different
+  */
   if (isIE()) {
     var text =
       "We do not support Internet Explorer. Please try again using a different web browser, such as Google Chrome, Mozilla Firefox, or Microsoft Edge.";
@@ -67,8 +71,8 @@ template_id=template.id) ) }}
     }
 
     var element = document.getElementById("file-upload-button");
-
     var newEl = document.createElement("p");
+    
     newEl.innerHTML = '<span style="color:red;">'+text+'</span>';
     
     element.parentNode.replaceChild(newEl, element);
