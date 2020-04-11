@@ -44,7 +44,7 @@
     "query-command-supported": "1.0.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
-    "snyk": "^1.299.0",
+    "snyk": "^1.300.0",
     "sweetalert2": "^9.10.2",
     "textarea-caret": "3.1.0",
     "timeago": "1.6.7"
