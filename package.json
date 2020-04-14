@@ -37,7 +37,7 @@
     "gulp-sass": "4.0.2",
     "gulp-uglify": "3.0.2",
     "hogan": "1.0.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-migrate": "^3.1.0",
     "moment": "^2.24.0",
     "node-polyglot": "^2.4.0",
