@@ -24,3 +24,14 @@ def on_exit(server):
 
 def worker_int(worker):
     worker.log.info("worker: received SIGINT {}".format(worker.pid))
+
+
+def post_worker_init(worker):
+    import beeline
+    worker.log.info(f'beeline initialization in process pid {os.getpid()}')
+    beeline.init(
+        writekey=os.environ.get('HONEYCOMB_API_KEY', ''),
+        dataset="notification", 
+        service_name='my-app',
+        debug=True
+    )
