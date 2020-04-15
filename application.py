@@ -10,12 +10,6 @@ from app import create_app
 
 load_dotenv()
 
-sentry_sdk.init(
-    dsn=os.environ.get('SENTRY_URL', ''),
-    integrations=[FlaskIntegration()]
-)
-
-
 application = Flask('app')
 application.wsgi_app = ProxyFix(application.wsgi_app)
 create_app(application)

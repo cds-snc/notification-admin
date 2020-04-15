@@ -1,8 +1,6 @@
 import itertools
 import os
 
-from beeline.middleware.flask import HoneyMiddleware
-
 import urllib
 from datetime import datetime, timedelta, timezone
 from functools import partial
@@ -205,9 +203,6 @@ def create_app(application):
     register_errorhandlers(application)
 
     setup_event_handlers()
-
-    HoneyMiddleware(application)
-
 
 
 def init_app(application):
