@@ -1,7 +1,6 @@
 import itertools
 import os
 
-import beeline
 from beeline.middleware.flask import HoneyMiddleware
 
 import urllib
@@ -206,12 +205,6 @@ def create_app(application):
     register_errorhandlers(application)
 
     setup_event_handlers()
-
-    beeline.init(
-        writekey=os.environ.get('HONEYCOMB_API_KEY', ''),
-        dataset='notification',
-        service_name='notification-admin'
-    )
 
     HoneyMiddleware(application)
 
