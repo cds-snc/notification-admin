@@ -7,6 +7,7 @@ from numbers import Number
 from time import monotonic
 
 import ago
+from beeline.middleware.flask import HoneyMiddleware
 from flask import (
     current_app,
     flash,
@@ -202,6 +203,8 @@ def create_app(application):
     register_errorhandlers(application)
 
     setup_event_handlers()
+
+    HoneyMiddleware(application)
 
 
 def init_app(application):
