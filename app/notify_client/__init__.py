@@ -62,9 +62,8 @@ class NotifyAdminAPIClient(BaseAPIClient):
 
     def get(self, url, params=None):
         span = beeline.start_span(context={
-            "name": "Notify API call",
-            "type": "GET",
-            "url": url,
+            "name": url,
+            "request.method": "GET"
         })
         if re.search(r'\/user\/[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}\Z', url) is None:
             self.log_admin_call(url, "GET")
@@ -79,9 +78,8 @@ class NotifyAdminAPIClient(BaseAPIClient):
             self.log_admin_call(args[0], "POST")
         self.check_inactive_service()
         span = beeline.start_span(context={
-            "name": "Notify API call",
-            "type": "POST",
-            "url": kwargs["url"],
+            "name": kwargs["url"],
+            "request.method": "POST"
         })
         result = super().post(*args, **kwargs)
         beeline.finish_span(span)
@@ -94,9 +92,8 @@ class NotifyAdminAPIClient(BaseAPIClient):
             self.log_admin_call(args[0], "PUT")
         self.check_inactive_service()
         span = beeline.start_span(context={
-            "name": "Notify API call",
-            "type": "PUT",
-            "url": kwargs["url"],
+            "name": kwargs["url"],
+            "request.method": "PUT"
         })
         result = super().put(*args, **kwargs)
         beeline.finish_span(span)
@@ -109,9 +106,8 @@ class NotifyAdminAPIClient(BaseAPIClient):
             self.log_admin_call(args[0], "DELETE")
         self.check_inactive_service()
         span = beeline.start_span(context={
-            "name": "Notify API call",
-            "type": "DELETE",
-            "url": kwargs["url"],
+            "name": kwargs["url"],
+            "request.method": "DELETE"
         })
         result = super().delete(*args, **kwargs)
         beeline.finish_span(span)
