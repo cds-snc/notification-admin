@@ -61,8 +61,8 @@ class NotifyAdminAPIClient(BaseAPIClient):
             logger.warn("Admin API request {} {} {} ".format(method, url, user))
 
     def get(self, url, params=None):
-        trace = beeline.start_trace()
         span = beeline.start_span(context={
+            "name": "Notify API call",
             "type": "GET",
             "url": url,
         })
@@ -70,7 +70,6 @@ class NotifyAdminAPIClient(BaseAPIClient):
             self.log_admin_call(url, "GET")
         result = super().request("GET", url, params=params)
         beeline.finish_span(span)
-        beeline.finish_trace(trace)
         return result
 
     def post(self, *args, **kwargs):
@@ -79,14 +78,13 @@ class NotifyAdminAPIClient(BaseAPIClient):
         if len(args) > 0:
             self.log_admin_call(args[0], "POST")
         self.check_inactive_service()
-        trace = beeline.start_trace()
         span = beeline.start_span(context={
+            "name": "Notify API call",
             "type": "POST",
             "url": kwargs["url"],
         })
         result = super().post(*args, **kwargs)
         beeline.finish_span(span)
-        beeline.finish_trace(trace)
         return result
 
     def put(self, *args, **kwargs):
@@ -95,14 +93,13 @@ class NotifyAdminAPIClient(BaseAPIClient):
         if len(args) > 0:
             self.log_admin_call(args[0], "PUT")
         self.check_inactive_service()
-        trace = beeline.start_trace()
         span = beeline.start_span(context={
+            "name": "Notify API call",
             "type": "PUT",
             "url": kwargs["url"],
         })
         result = super().put(*args, **kwargs)
         beeline.finish_span(span)
-        beeline.finish_trace(trace)
         return result
 
     def delete(self, *args, **kwargs):
@@ -111,14 +108,13 @@ class NotifyAdminAPIClient(BaseAPIClient):
         if len(args) > 0:
             self.log_admin_call(args[0], "DELETE")
         self.check_inactive_service()
-        trace = beeline.start_trace()
         span = beeline.start_span(context={
+            "name": "Notify API call",
             "type": "DELETE",
             "url": kwargs["url"],
         })
         result = super().delete(*args, **kwargs)
         beeline.finish_span(span)
-        beeline.finish_trace(trace)
         return result
 
 
