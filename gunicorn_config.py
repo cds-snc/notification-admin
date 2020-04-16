@@ -32,5 +32,5 @@ def post_worker_init(worker):
     beeline.init(
         writekey=os.environ.get('HONEYCOMB_API_KEY', ''),
         dataset="notification", 
-        service_name='my-app'
+        service_name='notification-admin'
     )
