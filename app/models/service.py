@@ -528,7 +528,7 @@ class Service(JSONModel):
         if folder_id is None:
             return {
                 'id': None,
-                'name': 'Templates',
+                'name': _('Templates'),
                 'parent_id': None,
             }
         return self._get_by_id(self.all_template_folders, folder_id)

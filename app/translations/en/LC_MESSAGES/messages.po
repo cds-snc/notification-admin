@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-27 13:10-0600\n"
+"POT-Creation-Date: 2020-04-16 11:33-0600\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,34 +18,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: app/__init__.py:398 app/__init__.py:408
+#: app/__init__.py:403 app/__init__.py:413
 #: app/templates/views/conversations/messages.html:27
 msgid "Failed"
 msgstr ""
 
-#: app/__init__.py:399 app/__init__.py:409
+#: app/__init__.py:404 app/__init__.py:414
 #: app/templates/views/message-status.html:46
 #: app/templates/views/message-status.html:90
 msgid "Technical failure"
 msgstr ""
 
-#: app/__init__.py:400 app/templates/views/message-status.html:43
+#: app/__init__.py:405 app/templates/views/message-status.html:43
 msgid "Inbox not accepting messages right now"
 msgstr ""
 
-#: app/__init__.py:401
+#: app/__init__.py:406
 msgid "Email address doesn’t exist"
 msgstr ""
 
-#: app/__init__.py:402 app/__init__.py:405 app/__init__.py:412
+#: app/__init__.py:407 app/__init__.py:410 app/__init__.py:417
 #: app/templates/views/message-status.html:37
 #: app/templates/views/message-status.html:52
 #: app/templates/views/message-status.html:81
 msgid "Delivered"
 msgstr ""
 
-#: app/__init__.py:403 app/__init__.py:404 app/__init__.py:413
-#: app/__init__.py:414 app/__init__.py:415
+#: app/__init__.py:408 app/__init__.py:409 app/__init__.py:418
+#: app/__init__.py:419 app/__init__.py:420
 #: app/templates/partials/jobs/notifications.html:13
 #: app/templates/views/dashboard/_upcoming.html:28
 #: app/templates/views/message-status.html:34
@@ -53,15 +53,15 @@ msgstr ""
 msgid "Sending"
 msgstr ""
 
-#: app/__init__.py:410 app/templates/views/message-status.html:87
+#: app/__init__.py:415 app/templates/views/message-status.html:87
 msgid "Phone not accepting messages right now"
 msgstr ""
 
-#: app/__init__.py:411
+#: app/__init__.py:416
 msgid "Phone number doesn’t exist"
 msgstr ""
 
-#: app/__init__.py:416
+#: app/__init__.py:421
 msgid "Sent"
 msgstr ""
 
@@ -70,13 +70,13 @@ msgstr ""
 msgid "Email address"
 msgstr ""
 
-#: app/main/forms.py:116 app/main/views/send.py:446
+#: app/main/forms.py:116 app/main/views/send.py:449
 #: app/templates/components/message-count-label.html:29
 #: app/templates/partials/check/too-many-messages.html:22
 msgid "email address"
 msgstr ""
 
-#: app/main/forms.py:118 app/main/views/send.py:448
+#: app/main/forms.py:118 app/main/views/send.py:451
 #: app/templates/components/message-count-label.html:25
 #: app/templates/partials/check/too-many-messages.html:23
 #: app/templates/views/api/safelist.html:61
@@ -138,10 +138,11 @@ msgstr ""
 msgid "Full name"
 msgstr ""
 
-#: app/main/forms.py:439 app/templates/components/folder-path.html:25
-#: app/templates/main_nav.html:10 app/templates/views/templates/choose.html:11
+#: app/main/forms.py:439 app/models/service.py:531
+#: app/templates/components/folder-path.html:25 app/templates/main_nav.html:10
+#: app/templates/views/templates/choose.html:11
 msgid "Templates"
-msgstr ""
+msgstr "Message Templates"
 
 #: app/main/forms.py:442
 msgid "Folders this team member can see"
@@ -334,7 +335,7 @@ msgstr ""
 msgid "Off"
 msgstr ""
 
-#: app/main/forms.py:1025 app/main/views/send.py:773
+#: app/main/forms.py:1025 app/main/views/send.py:776
 #: app/templates/views/signedout.html:657
 #: app/templates/views/support/ask-question-give-feedback.html:49
 #: app/templates/views/templates/_template.html:21
@@ -410,6 +411,7 @@ msgid "Folder name"
 msgstr ""
 
 #: app/main/forms.py:1483 app/main/views/templates.py:225
+#: app/templates/views/platform-admin/api_keys_ranked.html:24
 msgid "Email"
 msgstr ""
 
@@ -478,23 +480,23 @@ msgstr ""
 msgid "Safelist updated"
 msgstr ""
 
-#: app/main/views/api_keys.py:88 app/templates/views/api/keys.html:40
+#: app/main/views/api_keys.py:94 app/templates/views/api/keys.html:48
 msgid "Live – sends to anyone"
 msgstr ""
 
-#: app/main/views/api_keys.py:89 app/templates/views/api/keys.html:42
+#: app/main/views/api_keys.py:95 app/templates/views/api/keys.html:50
 msgid "Team and safelist – limits who you can send to"
 msgstr ""
 
-#: app/main/views/api_keys.py:90 app/templates/views/api/keys.html:44
+#: app/main/views/api_keys.py:96 app/templates/views/api/keys.html:52
 msgid "Test – pretends to send messages"
 msgstr ""
 
-#: app/main/views/api_keys.py:96
+#: app/main/views/api_keys.py:102
 msgid "Not available because your service is in "
 msgstr ""
 
-#: app/main/views/api_keys.py:98
+#: app/main/views/api_keys.py:104
 #: app/templates/partials/check/not-allowed-to-send-to.html:8
 #: app/templates/partials/check/too-many-messages.html:10
 #: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
@@ -502,15 +504,15 @@ msgstr ""
 msgid "trial mode"
 msgstr ""
 
-#: app/main/views/api_keys.py:130
+#: app/main/views/api_keys.py:136
 msgid "Are you sure you want to revoke"
 msgstr ""
 
-#: app/main/views/api_keys.py:131
+#: app/main/views/api_keys.py:137
 msgid "You will not be able to use this API key to connect to Notification."
 msgstr "You will not be able to use this API key to connect to <i>Notify</i>"
 
-#: app/main/views/api_keys.py:138
+#: app/main/views/api_keys.py:144
 msgid "was revoked"
 msgstr ""
 
@@ -611,15 +613,15 @@ msgstr ""
 msgid "Who should the message come from?"
 msgstr ""
 
-#: app/main/views/send.py:451
+#: app/main/views/send.py:454
 msgid "Use my"
 msgstr ""
 
-#: app/main/views/send.py:771
+#: app/main/views/send.py:774
 msgid "Example text message"
 msgstr ""
 
-#: app/main/views/send.py:774
+#: app/main/views/send.py:777
 msgid "Personalise this message"
 msgstr ""
 
@@ -763,7 +765,7 @@ msgstr ""
 msgid "Notification"
 msgstr "Notify"
 
-#: app/templates/admin_template.html:37 app/templates/main_template.html:230
+#: app/templates/admin_template.html:37 app/templates/main_template.html:232
 #: app/templates/views/signedout.html:106
 msgid "Menu"
 msgstr ""
@@ -774,8 +776,8 @@ msgstr ""
 msgid "Documentation"
 msgstr "Technical documentation"
 
-#: app/templates/admin_template.html:44 app/templates/main_template.html:245
-#: app/templates/main_template.html:273
+#: app/templates/admin_template.html:44 app/templates/main_template.html:247
+#: app/templates/main_template.html:275
 #: app/templates/views/choose-account.html:67
 msgid "Platform admin"
 msgstr ""
@@ -800,12 +802,12 @@ msgid "Message status"
 msgstr ""
 
 #: app/templates/admin_template.html:97 app/templates/admin_template.html:112
-#: app/templates/main_template.html:321 app/templates/views/privacy.html:10
+#: app/templates/main_template.html:323 app/templates/views/privacy.html:10
 #: app/templates/views/register.html:35 app/templates/views/signedout.html:676
 msgid "Privacy"
 msgstr ""
 
-#: app/templates/admin_template.html:100 app/templates/main_template.html:326
+#: app/templates/admin_template.html:100 app/templates/main_template.html:328
 #: app/templates/views/features.html:52 app/templates/views/security.html:9
 #: app/templates/views/signedout.html:681
 msgid "Security"
@@ -1020,36 +1022,44 @@ msgstr ""
 msgid "Choose arbitrary things"
 msgstr ""
 
-#: app/templates/main_template.html:172
+#: app/templates/main_template.html:111 app/templates/views/check/ok.html:93
+msgid "Send Now"
+msgstr ""
+
+#: app/templates/main_template.html:112
+msgid "Schedule"
+msgstr ""
+
+#: app/templates/main_template.html:174
 msgid "<i>Notify</i>"
 msgstr ""
 
-#: app/templates/main_template.html:175 app/templates/views/signedout.html:74
+#: app/templates/main_template.html:177 app/templates/views/signedout.html:74
 msgid "Alpha"
 msgstr ""
 
-#: app/templates/main_template.html:204
+#: app/templates/main_template.html:206
 msgid "Log out"
 msgstr ""
 
-#: app/templates/main_template.html:211 app/templates/views/signedout.html:90
+#: app/templates/main_template.html:213 app/templates/views/signedout.html:90
 #: app/templates/views/signedout.html:184
 msgid "Log in"
 msgstr ""
 
-#: app/templates/main_template.html:250 app/templates/main_template.html:281
+#: app/templates/main_template.html:252 app/templates/main_template.html:283
 #: app/templates/views/signedout.html:119
 #: app/templates/views/signedout.html:141
 msgid "Product features"
 msgstr ""
 
-#: app/templates/main_template.html:254 app/templates/main_template.html:287
+#: app/templates/main_template.html:256 app/templates/main_template.html:289
 #: app/templates/views/signedout.html:123
 #: app/templates/views/signedout.html:147
 msgid "Technical documentation"
 msgstr ""
 
-#: app/templates/main_template.html:258 app/templates/main_template.html:293
+#: app/templates/main_template.html:260 app/templates/main_template.html:295
 #: app/templates/views/agreement/service-agreement-choose.html:26
 #: app/templates/views/pricing/how-to-pay.html:53
 #: app/templates/views/service-settings/set-auth-type.html:37
@@ -1059,7 +1069,7 @@ msgstr ""
 msgid "Contact us"
 msgstr ""
 
-#: app/templates/main_template.html:331 app/templates/views/signedout.html:686
+#: app/templates/main_template.html:333 app/templates/views/signedout.html:686
 #: app/templates/views/terms-of-use.html:5
 #: app/templates/views/terms-of-use.html:10
 msgid "Terms of use"
@@ -1078,6 +1088,7 @@ msgstr ""
 
 #: app/templates/components/api-key.html:1
 #: app/templates/views/api/keys/show.html:24
+#: app/templates/views/platform-admin/api_keys_ranked.html:21
 msgid "API key"
 msgstr ""
 
@@ -1128,6 +1139,7 @@ msgid "text message"
 msgstr ""
 
 #: app/templates/components/message-count-label.html:11
+#: app/templates/views/api/keys.html:40
 #: app/templates/views/api/safelist.html:55
 msgid "email"
 msgstr ""
@@ -1834,7 +1846,8 @@ msgstr ""
 msgid "Purpose"
 msgstr ""
 
-#: app/templates/views/cookies.html:30 app/templates/views/cookies.html:59
+#: app/templates/views/api/keys.html:60 app/templates/views/cookies.html:30
+#: app/templates/views/cookies.html:59
 msgid "Expires"
 msgstr ""
 
@@ -2299,7 +2312,7 @@ msgstr ""
 #: app/templates/views/new-password.html:22
 #: app/templates/views/register-from-invite.html:29
 #: app/templates/views/register-from-org-invite.html:24
-#: app/templates/views/register.html:27 app/templates/views/send-test.html:46
+#: app/templates/views/register.html:27 app/templates/views/send-test.html:34
 #: app/templates/views/signin.html:34
 #: app/templates/views/templates/_move_to.html:36
 #: app/templates/views/templates/add.html:12
@@ -2667,67 +2680,71 @@ msgid ""
 "service has specific security needs, "
 msgstr ""
 
-#: app/templates/views/send-test.html:26
+#: app/templates/views/send-test.html:15
 msgid "Optional"
 msgstr ""
 
-#: app/templates/views/send-test.html:42 app/templates/views/send.html:9
+#: app/templates/views/send-test.html:30 app/templates/views/send.html:6
 msgid "Upload a list of"
 msgstr ""
 
-#: app/templates/views/send.html:13
+#: app/templates/views/send.html:8
 msgid "Upload a list of {}"
 msgstr ""
 
-#: app/templates/views/send.html:20
+#: app/templates/views/send.html:14
 msgid "Choose a file"
 msgstr ""
 
-#: app/templates/views/send.html:27
+#: app/templates/views/send.html:19
 msgid "Your file needs to look like this example"
 msgstr ""
 
-#: app/templates/views/send.html:29
+#: app/templates/views/send.html:22
 msgid "Save your file as a"
 msgstr ""
 
-#: app/templates/views/send.html:30
+#: app/templates/views/send.html:22
 msgid "Comma Separated Values"
 msgstr ""
 
-#: app/templates/views/send.html:31
+#: app/templates/views/send.html:23
 msgid "Tab Separated Values"
 msgstr ""
 
-#: app/templates/views/send.html:32
-msgid "Open Document Spreadsheet"
+#: app/templates/views/send.html:23
+msgid ""
+"Open Document\n"
+"  Spreadsheet"
 msgstr ""
 
-#: app/templates/views/send.html:33
+#: app/templates/views/send.html:25
 msgid "CSV"
 msgstr ""
 
-#: app/templates/views/send.html:34
+#: app/templates/views/send.html:26
 msgid "TSV"
 msgstr ""
 
-#: app/templates/views/send.html:35
+#: app/templates/views/send.html:27
 msgid "ODS"
 msgstr ""
 
-#: app/templates/views/send.html:36
-msgid "or Microsoft Excel spreadsheet"
+#: app/templates/views/send.html:27
+msgid ""
+"or Microsoft Excel\n"
+"  spreadsheet"
 msgstr ""
 
-#: app/templates/views/send.html:40
+#: app/templates/views/send.html:32
 msgid "Example"
 msgstr ""
 
-#: app/templates/views/send.html:54
+#: app/templates/views/send.html:41
 msgid "Download this example"
 msgstr ""
 
-#: app/templates/views/send.html:57
+#: app/templates/views/send.html:46
 msgid "Your file will populate this template"
 msgstr ""
 
@@ -2948,8 +2965,9 @@ msgstr ""
 
 #: app/templates/views/signedout.html:11
 msgid ""
-"gc notify, notify, canada notify, canada email, email notifications, "
-"Government of Canada, federal government, Canada SMS,\n"
+"e-notify, e notify, Enotify, gc notify, notify, canada notify, canada "
+"email, email notifications, Government of Canada, federal government, "
+"Canada SMS,\n"
 "Canada Notification service"
 msgstr ""
 
@@ -3655,15 +3673,35 @@ msgstr ""
 msgid "You haven’t created any API keys yet"
 msgstr ""
 
-#: app/templates/views/api/keys.html:51
+#: app/templates/views/api/keys.html:40
+msgid "total sends"
+msgstr ""
+
+#: app/templates/views/api/keys.html:40
+msgid "sms"
+msgstr ""
+
+#: app/templates/views/api/keys.html:45
+msgid "Key Type:"
+msgstr ""
+
+#: app/templates/views/api/keys.html:57
+msgid "Created:"
+msgstr ""
+
+#: app/templates/views/api/keys.html:63
+msgid "Last used"
+msgstr ""
+
+#: app/templates/views/api/keys.html:70
 msgid "Revoked"
 msgstr ""
 
-#: app/templates/views/api/keys.html:55
+#: app/templates/views/api/keys.html:74
 msgid "Revoke"
 msgstr ""
 
-#: app/templates/views/api/keys.html:62
+#: app/templates/views/api/keys.html:81
 #: app/templates/views/api/keys/create.html:10
 #: app/templates/views/api/keys/create.html:14
 msgid "Create an API key"
@@ -3849,7 +3887,7 @@ msgstr ""
 #: app/templates/views/check/column-errors.html:209
 #: app/templates/views/check/column-errors.html:214
 #: app/templates/views/check/column-errors.html:216
-#: app/templates/views/check/ok.html:103
+#: app/templates/views/check/ok.html:102
 #: app/templates/views/check/row-errors.html:99
 #: app/templates/views/check/row-errors.html:101
 msgid "Only showing the first"
@@ -3857,7 +3895,7 @@ msgstr ""
 
 #: app/templates/views/check/column-errors.html:209
 #: app/templates/views/check/column-errors.html:216
-#: app/templates/views/check/ok.html:103
+#: app/templates/views/check/ok.html:102
 #: app/templates/views/check/row-errors.html:101
 msgid "rows"
 msgstr ""
@@ -3894,15 +3932,7 @@ msgstr ""
 msgid "Later"
 msgstr ""
 
-#: app/templates/views/check/ok.html:93
-msgid "Send Now"
-msgstr ""
-
-#: app/templates/views/check/ok.html:94
-msgid "Schedule"
-msgstr ""
-
-#: app/templates/views/check/ok.html:96
+#: app/templates/views/check/ok.html:95
 msgid "Download as a PDF"
 msgstr ""
 
@@ -4305,6 +4335,23 @@ msgstr ""
 
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:23
 msgid "Your organisation name will be changed from"
+msgstr ""
+
+#: app/templates/views/platform-admin/_base_template.html:17
+#: app/templates/views/platform-admin/api_keys_ranked.html:5
+msgid "Live API keys"
+msgstr ""
+
+#: app/templates/views/platform-admin/api_keys_ranked.html:22
+msgid "Service"
+msgstr ""
+
+#: app/templates/views/platform-admin/api_keys_ranked.html:23
+msgid "Total notifications"
+msgstr ""
+
+#: app/templates/views/platform-admin/api_keys_ranked.html:25
+msgid "SMS"
 msgstr ""
 
 #: app/templates/views/platform-admin/reports.html:10
@@ -4776,4 +4823,18 @@ msgstr ""
 #: app/templates/views/user-profile/security-keys.html:55
 msgid "Test keys"
 msgstr ""
+
+#~ msgid "Open Document Spreadsheet"
+#~ msgstr ""
+
+#~ msgid "or Microsoft Excel spreadsheet"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "gc notify, notify, canada notify, canada"
+#~ " email, email notifications, Government of"
+#~ " Canada, federal government, Canada SMS,"
+#~ "\n"
+#~ "Canada Notification service"
+#~ msgstr ""
 
