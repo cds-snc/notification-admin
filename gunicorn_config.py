@@ -1,3 +1,6 @@
+import newrelic.agent
+newrelic.agent.initialize()
+
 import os
 import sys
 import traceback
