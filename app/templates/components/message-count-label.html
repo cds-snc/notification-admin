@@ -55,3 +55,7 @@
     {%- endif -%}
   {%- endif %}
 {%- endmacro %}
+
+{% macro template_label(template_type) -%}
+  {{ template_type }} {{ _("Template") }}
+{%- endmacro %}
