@@ -1936,7 +1936,7 @@ msgstr ""
 #: app/templates/views/edit-email-template.html:16
 #: app/templates/views/edit-sms-template.html:22
 msgid "Formatting Guide"
-msgstr ""
+msgstr "How to format your notification"
 
 #: app/templates/views/edit-email-template.html:23
 msgid "Select template content"
@@ -1944,7 +1944,7 @@ msgstr ""
 
 #: app/templates/views/edit-email-template.html:35
 msgid "Your recipients won’t see this:"
-msgstr ""
+msgstr "Your recipients will not see this template name."
 
 #: app/templates/views/api/callbacks/delivery-status-callback.html:37
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:35
@@ -1992,7 +1992,7 @@ msgstr ""
 
 #: app/templates/views/edit-sms-template.html:24
 msgid "Your recipients won’t see this"
-msgstr ""
+msgstr "Your recipients will not see this template name."
 
 #: app/templates/views/email-link-invalid.html:5
 msgid "Invalid email link"

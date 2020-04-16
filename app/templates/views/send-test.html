@@ -1,52 +1,69 @@
-{% extends "withnav_template.html" %}
-{% from "components/page-header.html" import page_header %}
-{% from "components/page-footer.html" import page_footer %}
-{% from "components/message-count-label.html" import recipient_count_label %}
-{% from "components/textbox.html" import textbox %}
-{% from "components/form.html" import form_wrapper %}
+{% extends "withnav_template.html" %} {% from "components/page-header.html"
+import page_header %} {% from "components/page-footer.html" import page_footer
+%} {% from "components/message-count-label.html" import recipient_count_label %}
+{% from "components/textbox.html" import textbox %} {% from
+"components/form.html" import form_wrapper %} {% block service_page_title %} {{
+page_title }} {% endblock %} {% block maincolumn_content %} {{ page_header(
+page_title, back_link=back_link ) }} {% call form_wrapper(
+class='js-stick-at-top-when-scrolling send-one-off-form' if
+template.template_type != 'sms' else 'send-one-off-form', module="autofocus",
+data_kwargs={'force-focus': True} ) %}
+<div class="grid-row">
+  <div
+    class="column-two-thirds {% if form.placeholder_value.label.text == 'phone number' %}extra-tracking{% endif %}"
+  >
+    {% set hint_txt = _('Optional') %} {{ textbox( form.placeholder_value,
+    hint=hint_txt if optional_placeholder else None, width='1-1', ) }}
+  </div>
+  {% if skip_link %}
+  <div class="column-one-third">
+    <a href="{{ skip_link[1] }}" class="top-gutter-4-3">{{ skip_link[0] }}</a>
+  </div>
+  {% endif %}
+</div>
+{% if link_to_upload %}
+<p>
+  <a
+    id="list-uploader"
+    href="{{ url_for('.send_messages', service_id=current_service.id, template_id=template.id) }}"
+  >
+    {{ _('Upload a list of') }} {{ recipient_count_label(999,
+    template.template_type) }}
+  </a>
+</p>
+{% endif %} {% set txt = _('Continue') %} {{ page_footer(txt) }} {% endcall %}
+{{ template|string }}
 
-{% block service_page_title %}
-  {{ page_title }}
-{% endblock %}
+<script>
+  function isIE() {
+    ua = navigator.userAgent;
+    /* MSIE used to detect old browsers and Trident used to newer ones*/
+    var is_ie = ua.indexOf("MSIE ") > -1 || ua.indexOf("Trident/") > -1;
 
-{% block maincolumn_content %}
+    return is_ie;
+  }
 
-  {{ page_header(
-    page_title,
-    back_link=back_link
-  ) }}
+  /* Alert if browser is IE */
+  /* 
+  note this is in sent-test.html + send.html 
+  the target el to replace is different
+  */
+  if (isIE()) {
+    var text =
+      "We do not support Internet Explorer. Please try again using a different web browser, such as Google Chrome, Mozilla Firefox, or Microsoft Edge.";
 
-  {% call form_wrapper(
-    class='js-stick-at-top-when-scrolling send-one-off-form' if template.template_type != 'sms' else 'send-one-off-form',
-    module="autofocus",
-    data_kwargs={'force-focus': True}
-  ) %}
-    <div class="grid-row">
-      <div class="column-two-thirds {% if form.placeholder_value.label.text == 'phone number' %}extra-tracking{% endif %}">
-        {% set hint_txt = _('Optional') %}
-        {{ textbox(
-          form.placeholder_value,
-          hint=hint_txt if optional_placeholder else None,
-          width='1-1',
-        ) }}
-      </div>
-      {% if skip_link %}
-        <div class="column-one-third">
-          <a href="{{ skip_link[1] }}" class="top-gutter-4-3">{{ skip_link[0] }}</a>
-        </div>
-      {% endif %}
-    </div>
-    {% if link_to_upload %}
-      <p>
-        <a href="{{ url_for('.send_messages', service_id=current_service.id, template_id=template.id) }}">
-          {{ _('Upload a list of') }} {{ recipient_count_label(999, template.template_type) }}
-        </a>
-      </p>
-    {% endif %}
-    {% set txt = _('Continue') %}
-    {{ page_footer(txt) }}
-  {% endcall %}
+    if (window.APP_LANG == "fr") {
+      text =
+        "Nous ne supportons pas Internet Explorer. Veuillez réessayer en utilisant un autre navigateur Web, tel que Google Chrome, Mozilla Firefox ou Microsoft Edge.";
+    }
 
-  {{ template|string }}
+    var element = document.getElementById("list-uploader");
+    var newEl = document.createElement("p");
+    
+    newEl.innerHTML = '<span style="color:red;">' + text + "</span>";
+
+    element.parentNode.replaceChild(newEl, element);
+  }
+</script>
 
 {% endblock %}
