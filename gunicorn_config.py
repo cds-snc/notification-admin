@@ -1,9 +1,8 @@
-import newrelic.agent
+import newrelic.agent  # See https://bit.ly/2xBVKBH
 newrelic.agent.initialize()
-
-import os
-import sys
-import traceback
+import os  # noqa: E402
+import sys  # noqa: E402
+import traceback  # noqa: E402
 
 workers = 5
 worker_class = "eventlet"
