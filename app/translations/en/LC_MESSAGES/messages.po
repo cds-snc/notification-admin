@@ -142,7 +142,7 @@ msgstr ""
 #: app/templates/components/folder-path.html:25 app/templates/main_nav.html:10
 #: app/templates/views/templates/choose.html:11
 msgid "Templates"
-msgstr "Message Templates"
+msgstr "Templates"
 
 #: app/main/forms.py:442
 msgid "Folders this team member can see"
