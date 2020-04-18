@@ -57,5 +57,17 @@
 {%- endmacro %}
 
 {% macro template_label(template_type) -%}
-  {{ template_type }} {{ _("Template") }}
+  {%- if session["userlang"] == "fr" -%} 
+    {{ _("Template") }} {{" "}}
+  {%- endif %}
+  {%- if template_type == 'sms' -%}
+    {{ _('text message') }}
+  {%- elif template_type == 'email' -%}
+      {{ _('email') }}
+  {%- elif template_type == 'letter' -%}
+    {{ _('letter') }}
+  {%- endif %}
+  {%- if session["userlang"] == "en" -%} 
+    {{" "}} {{ _("Template") }}
+  {%- endif %}
 {%- endmacro %}
