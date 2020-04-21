@@ -35,6 +35,7 @@ def test_non_logged_in_user_can_see_homepage(
     )
 
 
+@pytest.mark.skip(reason="@todo the chromedriver needs to be updated")
 def test_documentation_a11y(
     client,
     mock_get_service_and_organisation_counts,

@@ -1,5 +1,6 @@
 from flask import Markup, abort, current_app
 from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from notifications_utils.field import Field
 from notifications_utils.formatters import nl2br
 from notifications_utils.take import Take
@@ -528,7 +529,7 @@ class Service(JSONModel):
         if folder_id is None:
             return {
                 'id': None,
-                'name': 'Templates',
+                'name': _l('Templates'),
                 'parent_id': None,
             }
         return self._get_by_id(self.all_template_folders, folder_id)

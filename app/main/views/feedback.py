@@ -45,14 +45,8 @@ def feedback(ticket_type):
         return redirect(url_for('.thanks', auto="true"))
 
     if form.validate_on_submit():
-        msg = 'Contact Name: {}\nContact Email: {}\nMessage: {}'.format(
-            form.name.data,
-            form.email_address.data,
-            form.feedback.data,
-        )
-
         # send email here
-        user_api_client.send_contact_email(msg, form.email_address.data, form.support_type.data)
+        user_api_client.send_contact_email(form.name.data, form.email_address.data, form.feedback.data, form.support_type.data)
 
         return redirect(url_for(
             '.thanks',
