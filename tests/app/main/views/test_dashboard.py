@@ -513,14 +513,16 @@ def test_should_show_redirect_from_template_history(
 
 
 @freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
-@pytest.mark.parametrize('extra_args', [
-    {},
-    {'year': '2016'},
+@pytest.mark.parametrize('extra_args, template_label', [
+    ({}, 'Text message template '),
+    ({'year': '2016'}, 'Text message template '),
+    ({'lang': 'fr'}, 'Gabarit message texte '),
 ])
 def test_should_show_monthly_breakdown_of_template_usage(
     client_request,
     mock_get_monthly_template_usage,
     extra_args,
+    template_label,
 ):
     page = client_request.get(
         'main.template_usage',
@@ -533,9 +535,7 @@ def test_should_show_monthly_breakdown_of_template_usage(
     table_rows = page.select('tbody tr')
 
     assert ' '.join(table_rows[0].text.split()) == (
-        'My first template '
-        'Text message template '
-        '2'
+        'My first template ' + template_label + '2'
     )
 
     assert len(table_rows) == len(['April'])
