@@ -381,12 +381,13 @@ def get_template(
     email_reply_to=None,
     sms_sender=None,
 ):
-     # Local Jinja support - add USE_LOCAL_JINJA_TEMPLATES=True to .env
-     # Add a folder to the project root called 'jinja_templates' with copies from notification-utls repo of:
-     # 'email_preview_template.jinja2'
-     # 'sms_preview_template.jinja2'
-    debug_template_path = path.dirname(path.abspath(__file__)) if os.environ.get('USE_LOCAL_JINJA_TEMPLATES') is not None else None
-    print(debug_template_path)
+    # Local Jinja support - add USE_LOCAL_JINJA_TEMPLATES=True to .env
+    # Add a folder to the project root called 'jinja_templates' with copies from notification-utls repo of:
+    # 'email_preview_template.jinja2'
+    # 'sms_preview_template.jinja2'
+    debug_template_path = (path.dirname(path.abspath(__file__))
+                           if os.environ.get('USE_LOCAL_JINJA_TEMPLATES') is not None else None)
+
     if 'email' == template['template_type']:
         return EmailPreviewTemplate(
             template,
