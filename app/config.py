@@ -84,7 +84,7 @@ class Config(object):
     NOTIFY_ENVIRONMENT = 'development'
     LOGO_UPLOAD_BUCKET_NAME = os.getenv('ASSET_UPLOAD_BUCKET_NAME', 'notification-alpha-canada-ca-asset-upload')
     ASSET_DOMAIN = os.getenv('ASSET_DOMAIN', 's3.amazonaws.com')
-    MOU_BUCKET_NAME = 'local-mou'
+    MOU_BUCKET_NAME = os.getenv('MOU_BUCKET_NAME', '')
     ROUTE_SECRET_KEY_1 = os.environ.get('ROUTE_SECRET_KEY_1', '')
     ROUTE_SECRET_KEY_2 = os.environ.get('ROUTE_SECRET_KEY_2', '')
     CHECK_PROXY_HEADER = False
@@ -136,7 +136,6 @@ class Live(Config):
     SHOW_STYLEGUIDE = False
     HEADER_COLOUR = '#005EA5'  # $govuk-blue
     HTTP_PROTOCOL = 'https'
-    MOU_BUCKET_NAME = 'notifications.service.gov.uk-mou'
     NOTIFY_ENVIRONMENT = 'live'
     CHECK_PROXY_HEADER = False
 
