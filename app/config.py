@@ -34,8 +34,8 @@ class Config(object):
     NOTIFY_TEMPLATE_PREFILL_SERVICE_ID = '93305b36-b0a0-4a34-9ab2-c1b7bb5ca489'
 
     # Hosted graphite statsd prefix
-    STATSD_ENABLED = False
     STATSD_HOST = os.getenv('STATSD_HOST')
+    STATSD_ENABLED = bool(STATSD_HOST)
     STATSD_PORT = 8125
     STATSD_PREFIX = os.getenv('STATSD_PREFIX')
 
@@ -104,7 +104,6 @@ class Development(Config):
     DEBUG = True
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
-    STATSD_ENABLED = False
     MOU_BUCKET_NAME = 'notify.tools-mou'
     ADMIN_CLIENT_SECRET = os.environ.get('ADMIN_CLIENT_SECRET', 'dev-notify-secret-key')
     API_HOST_NAME = os.environ.get('API_HOST_NAME', 'http://localhost:6011')
@@ -118,7 +117,6 @@ class Development(Config):
 class Test(Development):
     DEBUG = True
     TESTING = True
-    STATSD_ENABLED = False
     WTF_CSRF_ENABLED = False
     MOU_BUCKET_NAME = 'test-mou'
     NOTIFY_ENVIRONMENT = 'test'
@@ -138,7 +136,6 @@ class Live(Config):
     SHOW_STYLEGUIDE = False
     HEADER_COLOUR = '#005EA5'  # $govuk-blue
     HTTP_PROTOCOL = 'https'
-    STATSD_ENABLED = False
     MOU_BUCKET_NAME = 'notifications.service.gov.uk-mou'
     NOTIFY_ENVIRONMENT = 'live'
     CHECK_PROXY_HEADER = False
