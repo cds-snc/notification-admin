@@ -95,11 +95,7 @@ def get_email_preview_template(template, template_id, service_id):
 def view_template(service_id, template_id):
     template = current_service.get_template(template_id)
     template_folder = current_service.get_template_folder(template['folder'])
-    try:
-        versions = template_api_prefill_client.get_template_versions(template_id)
-        print("versions", versions)
-    except(e):
-        raise Exception(e)
+
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
     if should_skip_template_page(template['template_type']):

@@ -23,13 +23,5 @@ class TemplateApiPrefillClient(NotifyAdminAPIClient):
         except HTTPError as e:
             return {"error": e.message}
 
-    def get_template_versions(self, template_id):
-        try:
-            endpoint = '/service/{}/template/{}/versions'.format(self.prefill_service_id, template_id)
-            result = self.get(url=endpoint)
-            return result["data"]
-        except HTTPError as e:
-            return {"error": e.message}
-
 
 template_api_prefill_client = TemplateApiPrefillClient()
