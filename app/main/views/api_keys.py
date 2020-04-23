@@ -131,6 +131,12 @@ def create_api_key(service_id):
 @user_has_permissions('manage_api_keys')
 def revoke_api_key(service_id, key_id):
     key_name = current_service.get_api_key(key_id)['name']
+    for item in current_service.api_keys:
+        results = api_key_api_client.get_api_key_statistics(key_id=item["id"])
+        item["email_sends"] = results["email_sends"]
+        item["sms_sends"] = results["sms_sends"]
+        item["total_sends"] = results["total_sends"]
+        item["last_send"] = results["last_send"]
     if request.method == 'GET':
         flash([
             "{} ‘{}’?".format(_l('Are you sure you want to revoke'), key_name),
