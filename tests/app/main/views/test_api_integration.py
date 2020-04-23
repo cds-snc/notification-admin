@@ -4,8 +4,8 @@ from unittest.mock import call
 from uuid import uuid4
 
 import pytest
-from flask import url_for
 from bs4 import BeautifulSoup
+from flask import url_for
 
 from tests import sample_uuid, validate_route_permission
 from tests.conftest import (
@@ -328,6 +328,7 @@ def test_should_show_confirm_revoke_api_key(
         ),
     ]
 
+
 def test_should_show_confirm_revoke_api_key_for_platform_admin(
     platform_admin_client,
     mock_get_api_keys,
@@ -336,7 +337,7 @@ def test_should_show_confirm_revoke_api_key_for_platform_admin(
     url = url_for(
         'main.revoke_api_key', service_id=SERVICE_ONE_ID, key_id=fake_uuid,
         _test_page_title=False,
-        )
+    )
     response = platform_admin_client.get(url)
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
     assert normalize_spaces(page.select('.banner-dangerous')[0].text) == (
