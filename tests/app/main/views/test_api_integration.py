@@ -4,6 +4,7 @@ from unittest.mock import call
 from uuid import uuid4
 
 import pytest
+from bs4 import BeautifulSoup
 from flask import url_for
 
 from tests import sample_uuid, validate_route_permission
@@ -316,6 +317,29 @@ def test_should_show_confirm_revoke_api_key(
         'main.revoke_api_key', service_id=SERVICE_ONE_ID, key_id=fake_uuid,
         _test_page_title=False,
     )
+    assert normalize_spaces(page.select('.banner-dangerous')[0].text) == (
+        'Are you sure you want to revoke ‘some key name’? '
+        'You will not be able to use this API key to connect to Notify '
+        'Yes, revoke this API key'
+    )
+    assert mock_get_api_keys.call_args_list == [
+        call(
+            '596364a0-858e-42c8-9062-a8fe822260eb'
+        ),
+    ]
+
+
+def test_should_show_confirm_revoke_api_key_for_platform_admin(
+    platform_admin_client,
+    mock_get_api_keys,
+    fake_uuid,
+):
+    url = url_for(
+        'main.revoke_api_key', service_id=SERVICE_ONE_ID, key_id=fake_uuid,
+        _test_page_title=False,
+    )
+    response = platform_admin_client.get(url)
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
     assert normalize_spaces(page.select('.banner-dangerous')[0].text) == (
         'Are you sure you want to revoke ‘some key name’? '
         'You will not be able to use this API key to connect to Notify '
