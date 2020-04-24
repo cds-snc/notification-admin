@@ -386,7 +386,7 @@ def get_template(
     # 'email_preview_template.jinja2'
     # 'sms_preview_template.jinja2'
     debug_template_path = (path.dirname(path.abspath(__file__))
-                           if os.environ.get('USE_LOCAL_JINJA_TEMPLATES') is 'True' else None)
+                           if os.environ.get('USE_LOCAL_JINJA_TEMPLATES') == 'True' else None)
 
     if 'email' == template['template_type']:
         return EmailPreviewTemplate(
