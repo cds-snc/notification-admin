@@ -1,6 +1,10 @@
 import os
 
 import sentry_sdk
+from sentry_sdk.integrations.flask import (
+    FlaskIntegration,
+    RedisIntegration
+)
 from dotenv import load_dotenv
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -11,6 +15,10 @@ load_dotenv()
 
 sentry_sdk.init(
     dsn=os.environ.get('SENTRY_URL', ''),
+    integrations=[
+        FlaskIntegration(),
+        RedisIntegration(),
+    ],
     release="notify-admin@" + os.environ.get('GIT_SHA', '')
 )
 
