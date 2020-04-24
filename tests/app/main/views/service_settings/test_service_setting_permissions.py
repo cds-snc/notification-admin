@@ -71,6 +71,7 @@ def test_service_set_permission(
     ({'restricted': False}, '.service_switch_live', {}, 'Live On Change'),
     ({'permissions': ['upload_document']}, '.service_switch_can_upload_document', {}, 'Send files by email On Change'),
     ({'permissions': []}, '.service_switch_can_upload_document', {}, 'Send files by email Off Change'),
+    ({'permissions': ['sms']}, '.service_set_inbound_number', {}, 'Receive inbound SMS Off Change'),
     ({'permissions': ['letter']}, '.service_set_permission', {'permission': 'upload_letters'}, 'Uploading letters Off Change'),
 ])
 def test_service_setting_toggles_show(get_service_settings_page, service_one, service_fields, endpoint, kwargs, text):
@@ -106,7 +107,7 @@ def test_service_setting_button_toggles(
 
 
 @pytest.mark.parametrize('permissions,permissions_text,visible', [
-    # ('sms', 'inbound SMS', True),
+    ('sms', 'inbound SMS', True),
     ('inbound_sms', 'inbound SMS', False),                 # no sms parent permission
     # also test no permissions set
     ('', 'inbound SMS', False),
