@@ -214,3 +214,5 @@ HTML and SMS Preview templates (`sms_preview_template.jinja2, email_preview_temp
 5. When finished, copy any changed jinja files back to notification-utils, and push up the PR for your changes in that repo.
 
 6. Remove `USE_LOCAL_JINJA_TEMPLATES=True` from your .env file, and delete any jinja in `jinja_templates`. Deleting the folder and jinja files is not required, but recommended. Make sure you're pulling up-to-date jinja from notification-utils the next time you need to make changes.
+
+Note: Tests will break if `USE_LOCAL_JINJA_TEMPLATES` is set to `True` in your .env
