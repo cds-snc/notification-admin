@@ -1,5 +1,5 @@
 {% from "components/big-number.html" import big_number %}
-{% from "components/message-count-label.html" import message_count_label %}
+{% from "components/message-count-label.html" import template_label %}
 {% from "components/big-number.html" import big_number %}
 {% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading, spark_bar_field %}
 
@@ -30,7 +30,7 @@
       {% else %}
       <a class="file-list-filename" href="{{ url_for('.view_template', service_id=current_service.id, template_id=item.template_id) }}">{{ item.template_name }}</a>
       <span class="file-list-hint">
-        {{ message_count_label(1, item.template_type, suffix='template')|capitalize }}
+        {{ template_label(item.template_type)|capitalize }}
       </span>
       {% endif %}
     {% endcall %}

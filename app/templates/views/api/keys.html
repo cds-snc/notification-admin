@@ -35,7 +35,10 @@
       {% call field() %}
         <div class="file-list">
           {{ item.name }}
-          {% if current_user.platform_admin %}
+          {% if (current_user.platform_admin and 
+              'total_sends' in item and
+              'email_sends' in item and
+              'sms_sends' in item )  %}
             <div class="hint">
               {{ "{:,}".format(item.total_sends) }} {{ _('total sends') }} ({{ "{:,}".format(item.email_sends) }} {{ _('email') }}, {{ "{:,}".format(item.sms_sends) }} {{ _('sms') }})
             </div>

@@ -83,6 +83,9 @@
     {% endif %}
   </div>
 
+  {% if current_user.platform_admin %}
+    <p>{{ _('Template version') }}: {{template._template.version}}</p>
+  {% endif %}
   <div class="bottom-gutter-1-2">
     {{ api_key(template.id, name="Template ID", thing='template ID') }}
   </div>
