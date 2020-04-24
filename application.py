@@ -24,6 +24,7 @@ if os.environ.get('USE_LOCAL_JINJA_TEMPLATES') == 'True':
     print('========================================================')  # noqa: T001
     print('')  # noqa: T001
     print('WARNING: USING LOCAL JINJA from /jinja_templates FOLDER!')  # noqa: T001
+    print('.env USE_LOCAL_JINJA_TEMPLATES=True')  # noqa: T001
     print('')  # noqa: T001
     print('========================================================')  # noqa: T001
     print('')  # noqa: T001
