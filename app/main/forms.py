@@ -817,6 +817,20 @@ class CreateKeyForm(StripWhitespaceForm):
             raise ValidationError(_l('A key with this name already exists'))
 
 
+class CreateInboundSmsForm(StripWhitespaceForm):
+    def __init__(self, existing_numbers, *args, **kwargs):
+        self.existing_numbers = [n for n in existing_numbers]
+        super().__init__(*args, **kwargs)
+
+    inbound_number = StringField(_l('Inbound SMS number'), validators=[
+        DataRequired(message=_l('You need to provide a number'))
+    ])
+
+    def validate_number(self, number):
+        if number in self.existing_numbers:
+            raise ValidationError(_l('This number already exists'))
+
+
 class SupportType(StripWhitespaceForm):
     support_type = RadioField(
         'How can we help you?',
