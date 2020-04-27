@@ -36,6 +36,7 @@ from orderedset._orderedset import OrderedSet
 from werkzeug.datastructures import MultiDict
 from werkzeug.routing import RequestRedirect
 
+from app import cache
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
 
@@ -54,15 +55,14 @@ with open('{}/email_domains.txt'.format(
 user_is_logged_in = login_required
 
 
+@cache.cached(timeout=300, key_prefix='latest_stats')
 def get_latest_stats(lang="en"):
-    api_args = {}
     json_data = {}
-    api_args['start_date'] = "2019-01-01"
-    api_args['end_date'] = datetime.utcnow().date()
-    results = service_api_client.get_live_services_data()["data"]
     email_totals = 0
     sms_totals = 0
     service_names = []
+
+    results = service_api_client.get_live_services_data()["data"]
 
     for row in results:
         if row['email_totals']:

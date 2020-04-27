@@ -3,15 +3,7 @@ import re
 from collections import OrderedDict
 from datetime import datetime
 
-from flask import (
-    abort,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import abort, flash, redirect, render_template, request, url_for
 from notifications_python_client.errors import HTTPError
 from requests import RequestException
 
@@ -43,7 +35,6 @@ from app.utils import (
     Spreadsheet,
     generate_next_dict,
     generate_previous_dict,
-    get_latest_stats,
     get_page_from_request,
     user_has_permissions,
     user_is_platform_admin,
@@ -52,11 +43,6 @@ from app.utils import (
 COMPLAINT_THRESHOLD = 0.02
 FAILURE_THRESHOLD = 3
 ZERO_FAILURE_THRESHOLD = 0
-
-
-@main.route("/live-stats")
-def live_stats():
-    return jsonify(get_latest_stats())
 
 
 @main.route("/platform-admin")
