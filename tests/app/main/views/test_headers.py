@@ -29,7 +29,7 @@ def test_owasp_useful_headers_set(
         "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
-        "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk static-logos.test.com notification-alpha-canada-ca-cdn.s3.amazonaws.com data:;"
+        "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk static-logos.test.com notification-alpha-canada-ca-cdn.s3.amazonaws.com data:;"  # noqa: E501
         "frame-src 'self' www.youtube.com;"
     )
 
