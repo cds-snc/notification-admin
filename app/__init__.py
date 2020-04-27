@@ -44,10 +44,10 @@ from app.commands import setup_commands
 from app.config import configs
 from app.extensions import (
     antivirus_client,
+    cache,
     redis_client,
     statsd_client,
     zendesk_client,
-    cache
 )
 from app.models.organisation import Organisation
 from app.models.service import Service
@@ -92,6 +92,7 @@ from app.utils import get_logo_cdn_domain, id_safe
 login_manager = LoginManager()
 csrf = CSRFProtect()
 
+
 # The current service attached to the request stack.
 def _get_current_service():
     return _lookup_req_object('service')
@@ -134,7 +135,7 @@ def create_app(application):
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
     babel = Babel(application)
-    
+
     @babel.localeselector
     def get_locale():
         return get_current_locale(application)
