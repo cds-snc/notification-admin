@@ -198,3 +198,11 @@ pybabel update -i messages.pot -d app/translations
 ```bash
 pybabel compile -d app/translations
 ```
+
+## Using Local Jinja for testing template changes
+
+See the [notification-api](https://github.com/cds-snc/notification-api) README for detailed instructions.
+
+Template files used in this repo: `sms_preview_template.jinja2, email_preview_template.jinja2`
+
+Note: Tests may break if `USE_LOCAL_JINJA_TEMPLATES` is set to `True` in your .env

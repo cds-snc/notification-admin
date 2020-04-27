@@ -35,13 +35,13 @@ awscli-cwlogs>=1.4,<1.5
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous==0.24  # pyup: <1.0.0
 
-git+https://github.com/cds-snc/notifier-utils.git@40.0.2#egg=notifications-utils==40.0.2
+git+https://github.com/cds-snc/notifier-utils.git@41.0.0#egg=notifications-utils==41.0.0
 
 ## The following requirements were added by pip freeze:
-awscli==1.18.39
+awscli==1.18.45
 bleach==3.1.4
 boto3==1.12.13
-botocore==1.15.39
+botocore==1.15.45
 certifi==2020.4.5.1
 chardet==3.0.4
 click==7.1.1
@@ -79,7 +79,7 @@ six==1.14.0
 smartypants==2.0.1
 statsd==3.3.0
 texttable==1.6.2
-urllib3==1.25.8
+urllib3==1.25.9
 webencodings==0.5.1
 Werkzeug==1.0.1
 WTForms==2.2.1

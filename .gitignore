@@ -82,3 +82,5 @@ venv-freeze/
 notify.code-workspace
 
 schedule-message.html
+
+jinja_templates/
