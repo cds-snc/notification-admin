@@ -35,7 +35,6 @@ QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
 def index():
 
     lang = get_current_locale(current_app)
-    stats = get_latest_stats(lang)
 
     if current_user and current_user.is_authenticated:
         return redirect(url_for('main.choose_account'))
@@ -53,6 +52,8 @@ def index():
         return redirect(url_for(
             '.thanks',
         ))
+
+    stats = get_latest_stats(lang)
 
     if request.method == 'POST':
         return render_template(
