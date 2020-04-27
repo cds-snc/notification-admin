@@ -34,6 +34,14 @@ class AssetFingerprinter(object):
             )
         return self._cache[asset_path]
 
+    def get_s3_url(self, asset_path):
+        if asset_path not in self._cache:
+            self._cache[asset_path] = (
+                "https://notification-alpha-canada-ca-cdn.s3.amazonaws.com/" +
+                asset_path
+            )
+        return self._cache[asset_path]
+
     def get_asset_fingerprint(self, asset_file_path):
         return hashlib.md5(
             self.get_asset_file_contents(asset_file_path)
