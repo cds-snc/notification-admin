@@ -248,6 +248,7 @@ def init_app(application):
             'asset_path': application.config['ASSET_PATH'],
             'header_colour': application.config['HEADER_COLOUR'],
             'asset_url': asset_fingerprinter.get_url,
+            'asset_s3_url': asset_fingerprinter.get_s3_url,
             'current_lang': get_current_locale(application)
         }
 
@@ -574,7 +575,7 @@ def useful_headers_after_request(response):
         "object-src 'self';"
         "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-        "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk {logo_domain} data:;"
+        "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk {logo_domain} notification-alpha-canada-ca-cdn.s3.amazonaws.com data:;"  # noqa: E501
         "frame-src 'self' www.youtube.com;".format(
             asset_domain=current_app.config['ASSET_DOMAIN'],
             logo_domain=get_logo_cdn_domain(),
