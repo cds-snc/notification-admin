@@ -575,7 +575,7 @@ def useful_headers_after_request(response):
         "object-src 'self';"
         "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-        "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk {logo_domain} notification-alpha-canada-ca-cdn.s3.amazonaws.com data:;"
+        "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk {logo_domain} notification-alpha-canada-ca-cdn.s3.amazonaws.com data:;"  # noqa: E501
         "frame-src 'self' www.youtube.com;".format(
             asset_domain=current_app.config['ASSET_DOMAIN'],
             logo_domain=get_logo_cdn_domain(),
