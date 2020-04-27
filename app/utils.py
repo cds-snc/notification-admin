@@ -39,6 +39,8 @@ from werkzeug.routing import RequestRedirect
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
 
+from app import cache
+
 SENDING_STATUSES = ['created', 'pending', 'sending', 'pending-virus-check']
 DELIVERED_STATUSES = ['delivered', 'sent', 'returned-letter']
 FAILURE_STATUSES = ['failed', 'temporary-failure', 'permanent-failure',
@@ -53,7 +55,7 @@ with open('{}/email_domains.txt'.format(
 
 user_is_logged_in = login_required
 
-
+@cache.cached(timeout=300, key_prefix='latest_stats')
 def get_latest_stats(lang="en"):
     api_args = {}
     json_data = {}
