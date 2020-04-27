@@ -334,8 +334,7 @@ class HeaderNavigation(Navigation):
         'unblock_user',
         'service_sending_domain',
         'manage_smtp',
-        'delete_smtp',
-        'live_stats'
+        'delete_smtp'
     }
 
 
@@ -638,8 +637,7 @@ class MainNavigation(Navigation):
         'unblock_user',
         'service_sending_domain',
         'manage_smtp',
-        'delete_smtp',
-        'live_stats'
+        'delete_smtp'
     }
 
 
@@ -935,8 +933,7 @@ class CaseworkNavigation(Navigation):
         'service_sending_domain',
         'smtp_integration',
         'manage_smtp',
-        'delete_smtp',
-        'live_stats'
+        'delete_smtp'
     }
 
 
@@ -1233,6 +1230,5 @@ class OrgNavigation(Navigation):
         'service_sending_domain',
         'smtp_integration',
         'manage_smtp',
-        'delete_smtp',
-        'live_stats'
+        'delete_smtp'
     }
