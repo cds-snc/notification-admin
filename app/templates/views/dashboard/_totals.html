@@ -1,11 +1,11 @@
 {% from "components/big-number.html" import big_number_with_status %}
 {% from "components/message-count-label.html" import message_count_label %}
 
-{% set sent = _('sent') %}
+{% set sent = _('sent-dashboard') %}
 
 <div class="ajax-block-container">
   <div class="grid-row">
-    <div id="total-email" class="{{column_width}}">
+    <div id="total-email" class="column-half">
       {{ big_number_with_status(
         statistics['email']['requested'],
         message_count_label(statistics['email']['requested'], 'email', suffix=sent),
@@ -17,7 +17,7 @@
         smaller=smaller_font_size
       ) }}
     </div>
-    <div id="total-sms" class="{{column_width}}">
+    <div id="total-sms" class="column-half">
       {{ big_number_with_status(
         statistics['sms']['requested'],
         message_count_label(statistics['sms']['requested'], 'sms', suffix=sent),
@@ -30,7 +30,7 @@
       ) }}
     </div>
     {% if current_service.has_permission('letter') %}
-      <div id="total-letters" class="{{column_width}}">
+      <div style="display:none;" id="total-letters" class="{{column_width}}">
         {{ big_number_with_status(
           statistics['letter']['requested'],
           message_count_label(statistics['letter']['requested'], 'letter', suffix='sent'),

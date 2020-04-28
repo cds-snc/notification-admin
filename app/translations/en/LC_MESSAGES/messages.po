@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-04-28 09:39-0400\n"
+"POT-Creation-Date: 2020-04-28 13:15-0400\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -3971,9 +3971,12 @@ msgid "Send a text message to this phone number"
 msgstr ""
 
 #: app/templates/views/conversations/messages.html:27
-#: app/templates/views/dashboard/_totals.html:4
 msgid "sent"
 msgstr ""
+
+#: app/templates/views/dashboard/_totals.html:4
+msgid "sent-dashboard"
+msgstr "sent"
 
 #: app/templates/views/dashboard/all-template-statistics.html:8
 #: app/templates/views/dashboard/all-template-statistics.html:13
