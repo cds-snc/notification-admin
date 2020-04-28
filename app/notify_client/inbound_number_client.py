@@ -19,4 +19,5 @@ class InboundNumberClient(NotifyAdminAPIClient):
         response = self.post(url='/inbound-number/add', data=data)
         return response['data']
 
+
 inbound_number_client = InboundNumberClient()
