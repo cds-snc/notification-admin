@@ -596,7 +596,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             template_folder_id=template_folder_id,
             service_id=service_id,
             template_select=template_select,
-            heading_action='New',
+            heading_action=_l('New'),
         )
 
 

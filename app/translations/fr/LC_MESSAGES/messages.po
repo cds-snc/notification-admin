@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-04-16 11:33-0600\n"
+"POT-Creation-Date: 2020-04-28 09:39-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -14,34 +14,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: app/__init__.py:403 app/__init__.py:413
+#: app/__init__.py:406 app/__init__.py:416
 #: app/templates/views/conversations/messages.html:27
 msgid "Failed"
 msgstr "Échec"
 
-#: app/__init__.py:404 app/__init__.py:414
+#: app/__init__.py:407 app/__init__.py:417
 #: app/templates/views/message-status.html:46
 #: app/templates/views/message-status.html:90
 msgid "Technical failure"
 msgstr "Échec technique"
 
-#: app/__init__.py:405 app/templates/views/message-status.html:43
+#: app/__init__.py:408 app/templates/views/message-status.html:43
 msgid "Inbox not accepting messages right now"
 msgstr "La boîte de réception n’accepte pas de messages à l’heure actuelle"
 
-#: app/__init__.py:406
+#: app/__init__.py:409
 msgid "Email address doesn’t exist"
 msgstr "L’adresse courriel n’existe pas"
 
-#: app/__init__.py:407 app/__init__.py:410 app/__init__.py:417
+#: app/__init__.py:410 app/__init__.py:413 app/__init__.py:420
 #: app/templates/views/message-status.html:37
 #: app/templates/views/message-status.html:52
 #: app/templates/views/message-status.html:81
 msgid "Delivered"
 msgstr "Livraison réussie"
 
-#: app/__init__.py:408 app/__init__.py:409 app/__init__.py:418
-#: app/__init__.py:419 app/__init__.py:420
+#: app/__init__.py:411 app/__init__.py:412 app/__init__.py:421
+#: app/__init__.py:422 app/__init__.py:423
 #: app/templates/partials/jobs/notifications.html:13
 #: app/templates/views/dashboard/_upcoming.html:28
 #: app/templates/views/message-status.html:34
@@ -49,15 +49,15 @@ msgstr "Livraison réussie"
 msgid "Sending"
 msgstr "Envoi en cours"
 
-#: app/__init__.py:415 app/templates/views/message-status.html:87
+#: app/__init__.py:418 app/templates/views/message-status.html:87
 msgid "Phone not accepting messages right now"
 msgstr "Le téléphone n’accepte pas de messages à l’heure actuelle"
 
-#: app/__init__.py:416
+#: app/__init__.py:419
 msgid "Phone number doesn’t exist"
 msgstr "Le numéro de téléphone n’existe pas"
 
-#: app/__init__.py:421
+#: app/__init__.py:424
 msgid "Sent"
 msgstr "Envoyé"
 
@@ -67,14 +67,14 @@ msgid "Email address"
 msgstr "Adresse courriel"
 
 #: app/main/forms.py:116 app/main/views/send.py:449
-#: app/templates/components/message-count-label.html:29
-#: app/templates/partials/check/too-many-messages.html:22
+#: app/templates/components/message-count-label.html:46
+#: app/templates/partials/check/too-many-messages.html:24
 msgid "email address"
 msgstr "adresse courriel"
 
 #: app/main/forms.py:118 app/main/views/send.py:451
-#: app/templates/components/message-count-label.html:25
-#: app/templates/partials/check/too-many-messages.html:23
+#: app/templates/components/message-count-label.html:40
+#: app/templates/partials/check/too-many-messages.html:26
 #: app/templates/views/api/safelist.html:61
 msgid "phone number"
 msgstr "numéro de téléphone"
@@ -134,7 +134,7 @@ msgstr "Entrez votre mot de passe"
 msgid "Full name"
 msgstr "Nom complet"
 
-#: app/main/forms.py:439 app/models/service.py:531
+#: app/main/forms.py:439 app/models/service.py:532
 #: app/templates/components/folder-path.html:25 app/templates/main_nav.html:10
 #: app/templates/views/templates/choose.html:11
 msgid "Templates"
@@ -169,7 +169,7 @@ msgstr "Veuillez entrer le code de sécurité."
 msgid "Service name"
 msgstr "Nom du service"
 
-#: app/main/forms.py:536 app/templates/views/service-settings.html:365
+#: app/main/forms.py:536 app/templates/views/service-settings.html:359
 msgid "Sending domain"
 msgstr "Envoi du domaine"
 
@@ -220,12 +220,12 @@ msgid "Use priority queue?"
 msgstr "Utiliser une file de priorité?"
 
 #: app/main/forms.py:681 app/templates/flash_messages.html:6
-#: app/templates/views/service-settings.html:293
+#: app/templates/views/service-settings.html:291
 #: app/templates/views/user-profile.html:70
 msgid "Yes"
 msgstr "Oui"
 
-#: app/main/forms.py:682 app/templates/views/service-settings.html:294
+#: app/main/forms.py:682 app/templates/views/service-settings.html:292
 #: app/templates/views/user-profile.html:71
 msgid "No"
 msgstr "Non"
@@ -270,7 +270,7 @@ msgstr "Votre nom"
 msgid "Ask a question"
 msgstr "Poser une question"
 
-#: app/main/forms.py:838 app/templates/views/service-settings.html:255
+#: app/main/forms.py:838 app/templates/views/service-settings.html:253
 msgid "Give feedback"
 msgstr "Donner votre avis"
 
@@ -322,12 +322,12 @@ msgid "Make this text message sender the default"
 msgstr "Utiliser cet expéditeur de messages texte par défaut"
 
 #: app/main/forms.py:992 app/main/forms.py:1009 app/main/forms.py:1274
-#: app/main/forms.py:1284 app/templates/components/table.html:120
+#: app/main/forms.py:1284 app/templates/components/table.html:134
 msgid "On"
 msgstr "Activé"
 
 #: app/main/forms.py:993 app/main/forms.py:1012 app/main/forms.py:1275
-#: app/main/forms.py:1285 app/templates/components/table.html:121
+#: app/main/forms.py:1285 app/templates/components/table.html:135
 msgid "Off"
 msgstr "Désactivé"
 
@@ -339,18 +339,18 @@ msgstr "Désactivé"
 msgid "Send"
 msgstr "Envoyer"
 
-#: app/main/forms.py:1026 app/templates/components/message-count-label.html:12
+#: app/main/forms.py:1026 app/templates/components/message-count-label.html:19
 #: app/templates/views/features.html:15
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "emails"
 msgstr "courriels"
 
-#: app/main/forms.py:1027 app/templates/components/message-count-label.html:8
+#: app/main/forms.py:1027 app/templates/components/message-count-label.html:13
 #: app/templates/views/features.html:16
 msgid "text messages"
 msgstr "messages texte"
 
-#: app/main/forms.py:1028 app/templates/components/message-count-label.html:16
+#: app/main/forms.py:1028 app/templates/components/message-count-label.html:25
 msgid "letters"
 msgstr "lettres"
 
@@ -455,7 +455,7 @@ msgstr "Entrez une adresse courriel du gouvernement."
 msgid "If you think you should have access"
 msgstr "Si vous pensez que vous devriez avoir accès"
 
-#: app/main/validators.py:72 app/templates/views/service-settings.html:239
+#: app/main/validators.py:72 app/templates/views/service-settings.html:237
 #: app/templates/views/terms-of-use.html:41
 msgid "contact us"
 msgstr "communiquer avec nous"
@@ -476,17 +476,17 @@ msgstr "Nommez votre service dans les deux langues officielles"
 msgid "Safelist updated"
 msgstr "Liste de confiance mise à jour"
 
-#: app/main/views/api_keys.py:94 app/templates/views/api/keys.html:48
+#: app/main/views/api_keys.py:94 app/templates/views/api/keys.html:51
 msgid "Live – sends to anyone"
 msgstr "Live — permet d’envoyer des messages à tout le monde"
 
-#: app/main/views/api_keys.py:95 app/templates/views/api/keys.html:50
+#: app/main/views/api_keys.py:95 app/templates/views/api/keys.html:53
 msgid "Team and safelist – limits who you can send to"
 msgstr ""
 "Équipe et liste de confiance — limite le nombre de personnes à qui vous "
 "pouvez faire des envois"
 
-#: app/main/views/api_keys.py:96 app/templates/views/api/keys.html:52
+#: app/main/views/api_keys.py:96 app/templates/views/api/keys.html:55
 msgid "Test – pretends to send messages"
 msgstr "Test — simule l’envoi de messages"
 
@@ -495,8 +495,8 @@ msgid "Not available because your service is in "
 msgstr "Non disponible parce que votre service est en "
 
 #: app/main/views/api_keys.py:104
-#: app/templates/partials/check/not-allowed-to-send-to.html:8
-#: app/templates/partials/check/too-many-messages.html:10
+#: app/templates/partials/check/not-allowed-to-send-to.html:10
+#: app/templates/partials/check/too-many-messages.html:11
 #: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
 #: app/templates/views/pricing/index.html:29
 msgid "trial mode"
@@ -689,6 +689,10 @@ msgstr "Voulez-vous vraiment supprimer le dossier"
 msgid "folder?"
 msgstr "?"
 
+#: app/main/views/templates.py:599
+msgid "New"
+msgstr "Nouveau"
+
 #: app/main/views/templates.py:686
 #: app/templates/views/templates/_template.html:36
 msgid "Edit"
@@ -746,8 +750,8 @@ msgstr "Gérer les paramètres et les équipes"
 msgid "Manage API integration"
 msgstr "Gérer l’intégration de l’interface de programmation d’applications (API)"
 
-#: app/models/service.py:288 app/templates/views/service-settings.html:167
-#: app/templates/views/service-settings/email_reply_to.html:30
+#: app/models/service.py:289 app/templates/views/service-settings.html:167
+#: app/templates/views/service-settings/email_reply_to.html:31
 msgid "default"
 msgstr "Par défaut"
 
@@ -840,7 +844,7 @@ msgstr "Votre équipe"
 
 #: app/templates/main_nav.html:26 app/templates/views/service-settings.html:6
 #: app/templates/views/service-settings.html:13
-#: app/templates/views/service-settings.html:266
+#: app/templates/views/service-settings.html:264
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -1128,55 +1132,65 @@ msgstr "Soumettre"
 msgid "Services"
 msgstr "Services"
 
-#: app/templates/components/message-count-label.html:3
+#: app/templates/components/message-count-label.html:4
 msgid "message"
 msgstr "message"
 
-#: app/templates/components/message-count-label.html:4
+#: app/templates/components/message-count-label.html:6
 msgid "messages"
 msgstr "messages"
 
-#: app/templates/components/message-count-label.html:7
+#: app/templates/components/message-count-label.html:11
+#: app/templates/components/message-count-label.html:64
 msgid "text message"
 msgstr "message texte"
 
-#: app/templates/components/message-count-label.html:11
-#: app/templates/views/api/keys.html:40
+#: app/templates/components/message-count-label.html:17
+#: app/templates/components/message-count-label.html:66
+#: app/templates/views/api/keys.html:43
 #: app/templates/views/api/safelist.html:55
 msgid "email"
 msgstr "courriel"
 
-#: app/templates/components/message-count-label.html:15
+#: app/templates/components/message-count-label.html:23
+#: app/templates/components/message-count-label.html:68
 msgid "letter"
 msgstr "lettre"
 
-#: app/templates/components/message-count-label.html:21
+#: app/templates/components/message-count-label.html:33
 msgid "recipient"
 msgstr "destinataire"
 
-#: app/templates/components/message-count-label.html:22
+#: app/templates/components/message-count-label.html:35
 msgid "recipients"
 msgstr "destinataires"
 
-#: app/templates/components/message-count-label.html:26
-#: app/templates/partials/check/too-many-messages.html:28
+#: app/templates/components/message-count-label.html:42
+#: app/templates/partials/check/too-many-messages.html:34
 msgid "phone numbers"
 msgstr "numéros de téléphone"
 
-#: app/templates/components/message-count-label.html:30
-#: app/templates/partials/check/too-many-messages.html:27
+#: app/templates/components/message-count-label.html:48
+#: app/templates/partials/check/too-many-messages.html:32
 msgid "email addresses"
 msgstr "adresses courriel"
 
-#: app/templates/components/message-count-label.html:33
-#: app/templates/partials/check/too-many-messages.html:24
+#: app/templates/components/message-count-label.html:52
+#: app/templates/partials/check/too-many-messages.html:28
 msgid "address"
 msgstr "adresse"
 
-#: app/templates/components/message-count-label.html:34
-#: app/templates/partials/check/too-many-messages.html:29
+#: app/templates/components/message-count-label.html:54
+#: app/templates/partials/check/too-many-messages.html:36
 msgid "addresses"
 msgstr "adresses"
+
+#: app/templates/components/message-count-label.html:61
+#: app/templates/components/message-count-label.html:71
+#: app/templates/views/dashboard/all-template-statistics.html:23
+#: app/templates/views/dashboard/template-statistics.html:8
+msgid "Template"
+msgstr "Gabarit"
 
 #: app/templates/components/page-header.html:17
 msgid "Back"
@@ -1317,12 +1331,12 @@ msgstr "Votre message est"
 msgid "You can’t send to"
 msgstr "Vous ne pouvez pas faire d'envoi à"
 
-#: app/templates/partials/check/not-allowed-to-send-to.html:8
+#: app/templates/partials/check/not-allowed-to-send-to.html:10
 #: app/templates/partials/check/trying-to-send-letters-in-trial-mode.html:6
 msgid "In"
 msgstr "En"
 
-#: app/templates/partials/check/not-allowed-to-send-to.html:8
+#: app/templates/partials/check/not-allowed-to-send-to.html:10
 msgid ""
 "you can only\n"
 "  send to yourself and members of your team"
@@ -1351,23 +1365,23 @@ msgid "You can only send"
 msgstr "Vous ne pouvez envoyer que"
 
 #: app/templates/partials/check/too-many-messages.html:9
-#: app/templates/views/service-settings.html:234
+#: app/templates/views/service-settings.html:232
 msgid "messages per day"
 msgstr "messages par jour"
 
-#: app/templates/partials/check/too-many-messages.html:10
+#: app/templates/partials/check/too-many-messages.html:11
 msgid "in"
 msgstr "en"
 
-#: app/templates/partials/check/too-many-messages.html:16
+#: app/templates/partials/check/too-many-messages.html:18
 msgid "You can still send"
 msgstr "Vous pouvez encore envoyer"
 
-#: app/templates/partials/check/too-many-messages.html:16
+#: app/templates/partials/check/too-many-messages.html:18
 msgid "messages today, but"
 msgstr "messages aujourd’hui, mais"
 
-#: app/templates/partials/check/too-many-messages.html:18
+#: app/templates/partials/check/too-many-messages.html:20
 msgid "contains"
 msgstr "contient"
 
@@ -1881,7 +1895,7 @@ msgstr "Nom"
 msgid "Purpose"
 msgstr "But"
 
-#: app/templates/views/api/keys.html:60 app/templates/views/cookies.html:30
+#: app/templates/views/api/keys.html:63 app/templates/views/cookies.html:30
 #: app/templates/views/cookies.html:59
 msgid "Expires"
 msgstr "Expire"
@@ -2396,45 +2410,45 @@ msgstr "Partager des gabarits avec votre équipe"
 msgid "Invite someone to join your team"
 msgstr "Inviter une personne à se joindre à votre équipe"
 
-#: app/templates/views/manage-users.html:40
+#: app/templates/views/manage-users.html:43
 msgid "invited"
 msgstr "invité"
 
-#: app/templates/views/manage-users.html:41
-#: app/templates/views/organisations/organisation/users/index.html:31
+#: app/templates/views/manage-users.html:45
+#: app/templates/views/organisations/organisation/users/index.html:35
 msgid "cancelled invite"
 msgstr "invitation annulée"
 
-#: app/templates/views/manage-users.html:42
-#: app/templates/views/organisations/organisation/users/index.html:32
+#: app/templates/views/manage-users.html:47
+#: app/templates/views/organisations/organisation/users/index.html:37
 msgid "you"
 msgstr "vous"
 
-#: app/templates/views/manage-users.html:62
+#: app/templates/views/manage-users.html:67
 msgid "Cannot see any folders"
 msgstr "Ne peut voir aucun dossier"
 
-#: app/templates/views/manage-users.html:66
+#: app/templates/views/manage-users.html:71
 msgid "Can see all folders"
 msgstr "Peut voir tous les dossiers"
 
-#: app/templates/views/manage-users.html:73
+#: app/templates/views/manage-users.html:78
 msgid "Signs in with a Fido2 key"
 msgstr "Se connecte avec une clé Fido2"
 
-#: app/templates/views/manage-users.html:75
+#: app/templates/views/manage-users.html:80
 msgid "Signs in with a text message code"
 msgstr "Se connecte à l’aide d’un code envoyé par message texte"
 
-#: app/templates/views/manage-users.html:77
+#: app/templates/views/manage-users.html:82
 msgid "Signs in with an email link"
 msgstr "Se connecte à l'aide d’un lien envoyé par courriel"
 
-#: app/templates/views/manage-users.html:85
+#: app/templates/views/manage-users.html:90
 msgid "Cancel invitation"
 msgstr "Annuler l’invitation"
 
-#: app/templates/views/manage-users.html:87
+#: app/templates/views/manage-users.html:92
 msgid "Change details"
 msgstr "Modifier les renseignements"
 
@@ -2867,7 +2881,7 @@ msgid "Your file will populate this template"
 msgstr "Votre fichier remplira ce gabarit"
 
 #: app/templates/views/service-settings.html:9
-#: app/templates/views/service-settings/email_reply_to.html:35
+#: app/templates/views/service-settings/email_reply_to.html:36
 #: app/templates/views/service-settings/sms-senders.html:38
 #: app/templates/views/user-profile.html:11
 msgid "Change"
@@ -2880,7 +2894,7 @@ msgstr "Général"
 #: app/templates/views/service-settings.html:17
 #: app/templates/views/service-settings.html:76
 #: app/templates/views/service-settings.html:139
-#: app/templates/views/service-settings.html:267
+#: app/templates/views/service-settings.html:265
 #: app/templates/views/user-profile.html:17
 #: app/templates/views/user-profile/security-keys.html:26
 msgid "Label"
@@ -2889,7 +2903,7 @@ msgstr "Étiquette"
 #: app/templates/views/service-settings.html:18
 #: app/templates/views/service-settings.html:77
 #: app/templates/views/service-settings.html:140
-#: app/templates/views/service-settings.html:268
+#: app/templates/views/service-settings.html:266
 #: app/templates/views/user-profile.html:18
 #: app/templates/views/user-profile/security-keys.html:27
 msgid "Value"
@@ -2899,7 +2913,7 @@ msgstr "Valeur"
 #: app/templates/views/service-settings.html:19
 #: app/templates/views/service-settings.html:78
 #: app/templates/views/service-settings.html:141
-#: app/templates/views/service-settings.html:269
+#: app/templates/views/service-settings.html:267
 #: app/templates/views/user-profile.html:19
 #: app/templates/views/user-profile/security-keys.html:28
 msgid "Action"
@@ -2934,19 +2948,19 @@ msgid "Reply-to email addresses"
 msgstr "Adresses courriel de réponse"
 
 #: app/templates/views/service-settings.html:104
-#: app/templates/views/service-settings.html:309
+#: app/templates/views/service-settings.html:307
 msgid "Not set"
 msgstr "Non défini"
 
 #: app/templates/views/service-settings.html:114
 #: app/templates/views/service-settings.html:177
-#: app/templates/views/templates/choose.html:57
+#: app/templates/views/templates/choose.html:61
 msgid "Manage"
 msgstr "Configurer"
 
 #: app/templates/views/email-branding/select-branding.html:6
 #: app/templates/views/service-settings.html:124
-#: app/templates/views/service-settings.html:328
+#: app/templates/views/service-settings.html:326
 msgid "Email branding"
 msgstr "Marque distinctive du courriel"
 
@@ -2978,106 +2992,106 @@ msgstr "Commencer les messages texte par le nom du service"
 msgid "Send international text messages"
 msgstr "Envoyer des messages texte internationaux"
 
-#: app/templates/views/service-settings.html:214
+#: app/templates/views/service-settings.html:213
 msgid "Receive text messages"
 msgstr "Recevoir des messages texte"
 
-#: app/templates/views/service-settings.html:229
+#: app/templates/views/service-settings.html:227
 msgid "Your service is in trial mode"
 msgstr "Votre service est en mode d’essai"
 
-#: app/templates/views/service-settings.html:232
+#: app/templates/views/service-settings.html:230
 msgid "you can only send messages to yourself"
 msgstr "Vous ne pouvez envoyer des messages qu’à vous-même"
 
-#: app/templates/views/service-settings.html:233
+#: app/templates/views/service-settings.html:231
 msgid "you can add people to your team, then you can send messages to them too"
 msgstr ""
 "Vous pouvez ajouter des personnes à votre équipe, puis aussi leur envoyer"
 " des messages"
 
-#: app/templates/views/service-settings.html:234
+#: app/templates/views/service-settings.html:232
 msgid "you can only send"
 msgstr "Vous ne pouvez envoyer que"
 
-#: app/templates/views/service-settings.html:239
+#: app/templates/views/service-settings.html:237
 #: app/templates/views/trial-mode.html:20
 msgid "To remove these restrictions, you can"
 msgstr "Pour éliminer ces restrictions, vous pouvez"
 
-#: app/templates/views/service-settings.html:241
+#: app/templates/views/service-settings.html:239
 msgid "Your service manager can ask to have these restrictions removed."
 msgstr ""
 "Votre gestionnaire de service peut faire une demande de retrait de ces "
 "restrictions."
 
-#: app/templates/views/service-settings.html:246
+#: app/templates/views/service-settings.html:244
 msgid "Your service is live"
 msgstr "Votre service est en fonction"
 
-#: app/templates/views/service-settings.html:249
+#: app/templates/views/service-settings.html:247
 msgid "You can send up to"
 msgstr "Vous pouvez envoyer jusqu’à"
 
-#: app/templates/views/service-settings.html:250
+#: app/templates/views/service-settings.html:248
 msgid ""
 "messages\n"
 "        per day."
 msgstr "messages par jour."
 
-#: app/templates/views/service-settings.html:254
+#: app/templates/views/service-settings.html:252
 msgid "Problems or comments?"
 msgstr "Problèmes ou commentaires?"
 
-#: app/templates/views/service-settings.html:264
+#: app/templates/views/service-settings.html:262
 msgid "Platform admin settings"
 msgstr "Paramètres de l’administrateur de la plateforme"
 
-#: app/templates/views/service-settings.html:279
+#: app/templates/views/service-settings.html:277
 msgid "Live"
 msgstr "En service"
 
-#: app/templates/views/service-settings.html:282
+#: app/templates/views/service-settings.html:280
 msgid "No (organisation must be set first)"
 msgstr "Non (les organisations doivent être définies d’abord)"
 
-#: app/templates/views/service-settings.html:292
+#: app/templates/views/service-settings.html:290
 msgid "Count in list of live services"
 msgstr "Compte dans la liste de services en fonction"
 
-#: app/templates/views/service-settings.html:301
+#: app/templates/views/service-settings.html:299
 msgid "Organisation"
 msgstr "Organisation"
 
-#: app/templates/views/service-settings.html:322
+#: app/templates/views/service-settings.html:320
 msgid "Free text message allowance"
 msgstr "Nombre de messages texte gratuits"
 
-#: app/templates/views/service-settings.html:336
+#: app/templates/views/service-settings.html:334
 msgid "Letter branding"
 msgstr "Marque distinctive de la lettre"
 
-#: app/templates/views/service-settings.html:342
+#: app/templates/views/service-settings.html:340
 msgid "Data retention"
 msgstr "Rétention des données"
 
-#: app/templates/views/service-settings.html:367
+#: app/templates/views/service-settings.html:361
 msgid "{}"
 msgstr ""
 
-#: app/templates/views/service-settings.html:387
+#: app/templates/views/service-settings.html:381
 msgid "Delete this service"
 msgstr "Supprimer le service"
 
-#: app/templates/views/service-settings.html:393
+#: app/templates/views/service-settings.html:387
 msgid "Suspend service"
 msgstr "Interrompre le service"
 
-#: app/templates/views/service-settings.html:402
+#: app/templates/views/service-settings.html:396
 msgid "Service suspended"
 msgstr "Service interrompu"
 
-#: app/templates/views/service-settings.html:406
+#: app/templates/views/service-settings.html:400
 msgid "Resume service"
 msgstr "Reprendre le service"
 
@@ -3321,6 +3335,8 @@ msgid ""
 "Follow Canadian law with regard to the privacy act when using this "
 "software."
 msgstr ""
+"Respectez la loi canadienne (notamment la Loi sur la protection des "
+"renseignements personnels) lorsque vous utilisez ce logiciel."
 
 #: app/templates/views/terms-of-use.html:19
 msgid "You must:"
@@ -3899,35 +3915,35 @@ msgstr "Affiche seulement les 50 premiers messages."
 msgid "You haven’t created any API keys yet"
 msgstr "Vous n’avez pas encore créé de clés API."
 
-#: app/templates/views/api/keys.html:40
+#: app/templates/views/api/keys.html:43
 msgid "total sends"
 msgstr ""
 
-#: app/templates/views/api/keys.html:40
+#: app/templates/views/api/keys.html:43
 msgid "sms"
 msgstr ""
 
-#: app/templates/views/api/keys.html:45
+#: app/templates/views/api/keys.html:48
 msgid "Key Type:"
 msgstr ""
 
-#: app/templates/views/api/keys.html:57
+#: app/templates/views/api/keys.html:60
 msgid "Created:"
 msgstr ""
 
-#: app/templates/views/api/keys.html:63
+#: app/templates/views/api/keys.html:66
 msgid "Last used"
 msgstr ""
 
-#: app/templates/views/api/keys.html:70
+#: app/templates/views/api/keys.html:73
 msgid "Revoked"
 msgstr "Révoqué"
 
-#: app/templates/views/api/keys.html:74
+#: app/templates/views/api/keys.html:77
 msgid "Revoke"
 msgstr "Révoquer"
 
-#: app/templates/views/api/keys.html:81
+#: app/templates/views/api/keys.html:84
 #: app/templates/views/api/keys/create.html:10
 #: app/templates/views/api/keys/create.html:14
 msgid "Create an API key"
@@ -4200,11 +4216,6 @@ msgstr "Gabarits utilisés"
 #: app/templates/views/dashboard/all-template-statistics.html:20
 msgid "No messages sent"
 msgstr "Aucun message envoyé"
-
-#: app/templates/views/dashboard/all-template-statistics.html:23
-#: app/templates/views/dashboard/template-statistics.html:8
-msgid "Template"
-msgstr "Gabarit"
 
 #: app/templates/views/dashboard/all-template-statistics.html:24
 #: app/templates/views/dashboard/monthly.html:16
@@ -4789,11 +4800,11 @@ msgstr "Vous n’avez pas encore ajouté d’adresse courriel de réponse"
 
 #: app/templates/views/service-settings/email-reply-to/add.html:9
 #: app/templates/views/service-settings/email-reply-to/add.html:15
-#: app/templates/views/service-settings/email_reply_to.html:47
+#: app/templates/views/service-settings/email_reply_to.html:48
 msgid "Add reply-to email address"
 msgstr "Ajouter une adresse courriel de réponse"
 
-#: app/templates/views/service-settings/email_reply_to.html:53
+#: app/templates/views/service-settings/email_reply_to.html:54
 msgid ""
 "You need to add at least one reply-to address so recipients can reply to "
 "your messages."
@@ -4801,15 +4812,15 @@ msgstr ""
 "Vous devez ajouter au moins une adresse de réponse pour que les "
 "destinataires puissent répondre à vos messages."
 
-#: app/templates/views/service-settings/email_reply_to.html:56
+#: app/templates/views/service-settings/email_reply_to.html:57
 msgid "Emails with a reply-to address:"
 msgstr "Les courriels ayant une adresse de réponse :"
 
-#: app/templates/views/service-settings/email_reply_to.html:59
+#: app/templates/views/service-settings/email_reply_to.html:60
 msgid "are less likely to be labelled as spam"
 msgstr "ont moins de chances d’être classés comme pourriel"
 
-#: app/templates/views/service-settings/email_reply_to.html:60
+#: app/templates/views/service-settings/email_reply_to.html:61
 msgid "appear more trustworthy"
 msgstr "semblent plus dignes de confiance"
 
@@ -5008,16 +5019,16 @@ msgstr "Modification réalisée"
 msgid "Created"
 msgstr "Créé"
 
-#: app/templates/views/templates/_template_list.html:17
+#: app/templates/views/templates/_template_list.html:18
 #: app/templates/views/templates/copy.html:18
 msgid "This folder is empty"
 msgstr "Ce dossier est vide "
 
-#: app/templates/views/templates/_template_list.html:19
+#: app/templates/views/templates/_template_list.html:20
 msgid "There are no"
 msgstr "Il n’y a pas de "
 
-#: app/templates/views/templates/_template_list.html:19
+#: app/templates/views/templates/_template_list.html:20
 msgid "templates in this folder"
 msgstr "gabarits dans ce dossier"
 
@@ -5034,20 +5045,20 @@ msgid "You need to create a template to send"
 msgstr "Vous devez créer un gabarit pour envoyer"
 
 #: app/templates/views/templates/choose.html:29
-#: app/templates/views/templates/choose.html:39
+#: app/templates/views/templates/choose.html:41
 msgid "emails, text messages or letters"
 msgstr "des courriels, des messages texte ou des lettres."
 
-#: app/templates/views/templates/choose.html:30
-#: app/templates/views/templates/choose.html:40
+#: app/templates/views/templates/choose.html:31
+#: app/templates/views/templates/choose.html:43
 msgid "emails or text messages"
 msgstr "des courriels ou des messages texte"
 
-#: app/templates/views/templates/choose.html:32
+#: app/templates/views/templates/choose.html:34
 msgid "You can also create folders to organize your templates."
 msgstr "Vous pouvez aussi créer des dossiers pour classer vos gabarits."
 
-#: app/templates/views/templates/choose.html:37
+#: app/templates/views/templates/choose.html:39
 msgid "You need to ask your service manager to add templates before you can send"
 msgstr ""
 "Vous devez demander à votre gestionnaire de service d’ajouter des "
@@ -5079,6 +5090,10 @@ msgstr ""
 #: app/templates/views/templates/template.html:79
 msgid "Personalisation is hidden after sending"
 msgstr "La personnalisation est masquée après l’envoi."
+
+#: app/templates/views/templates/template.html:87
+msgid "Template version"
+msgstr ""
 
 #: app/templates/views/user-profile/add-security-keys.html:23
 msgid "Something to remember your key by"
