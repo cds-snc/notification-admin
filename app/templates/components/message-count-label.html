@@ -1,4 +1,5 @@
-{% macro message_count_label(count, template_type, suffix='sent', suffix_plural='') -%}
+{# suffix_plural was added for fr strings https://github.com/cds-snc/notification-admin/pull/480 #}
+{% macro message_count_label(count, template_type, suffix='sent', suffix_plural='sent') -%}
   {% if template_type == None %}
     {%- if count == 1 -%}
       {{ _('message') }}
