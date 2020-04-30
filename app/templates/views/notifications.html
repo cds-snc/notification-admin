@@ -13,7 +13,7 @@
 {% set page_title = (
   (title_status + message_count_label(99, message_type, suffix='')) | capitalize
   if current_user.has_permissions('view_activity')
-  else 'Sent messages'
+  else _('Sent messages')
 ) %}
 
 {% block service_page_title %}
