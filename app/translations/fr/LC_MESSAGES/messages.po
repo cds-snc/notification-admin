@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-04-28 13:15-0400\n"
+"POT-Creation-Date: 2020-04-30 07:28-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -4207,7 +4207,11 @@ msgid "sent"
 msgstr "envoyé"
 
 #: app/templates/views/dashboard/_totals.html:4
-msgid "sent-dashboard"
+msgid "sent-dashboard-single"
+msgstr "envoyé"
+
+#: app/templates/views/dashboard/_totals.html:5
+msgid "sent-dashboard-plural"
 msgstr "envoyés"
 
 #: app/templates/views/dashboard/all-template-statistics.html:8
@@ -5127,4 +5131,13 @@ msgstr "Clés d’essai"
 #~ "\n"
 #~ "Canada Notification service"
 #~ msgstr ""
+
+#~ msgid "sent-dashboard"
+#~ msgstr "envoyés"
+
+#~ msgid "sent-dashboard_single"
+#~ msgstr "envoyé"
+
+#~ msgid "sent-dashboard_plural"
+#~ msgstr "envoyés"
 

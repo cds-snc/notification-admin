@@ -1,4 +1,4 @@
-{% macro message_count_label(count, template_type, suffix='sent') -%}
+{% macro message_count_label(count, template_type, suffix='sent', suffix_plural='') -%}
   {% if template_type == None %}
     {%- if count == 1 -%}
       {{ _('message') }}
@@ -24,7 +24,14 @@
     {%- else -%}
     {{ _('letters') }}
     {%- endif -%}
-  {%- endif %} {{ suffix }}
+  {%- endif %} 
+  
+  {%- if (count == 0 or count == 1) -%}
+  {{" "}} {{  suffix }}
+  {%- else -%}
+    {{" "}} {{ suffix_plural }}
+  {%- endif %} 
+
 {%- endmacro %}
 
 {% macro recipient_count_label(count, template_type) -%}
