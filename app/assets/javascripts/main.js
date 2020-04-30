@@ -40,11 +40,9 @@ $(".relative-time-future").each(function(index) {
 });
 
 $(".relative-time-past").each(function(index) {
-  let time = moment(
-    $(this)
-      .text()
-      .trim()
-  );
+  let timeRaw = new Date($(this).text().trim());
+  let time = moment(timeRaw);
+
   if (time.isValid() && window.APP_LANG) {
     let isToday = moment().isSame(time, "day");
     let dayStr = "";
@@ -52,12 +50,13 @@ $(".relative-time-past").each(function(index) {
 
     if (isToday && window.APP_PHRASES) {
       dayStr = window.APP_PHRASES["today"];
+    } else if (window.APP_LANG === "fr") {
+      dayStr = timeRaw.toLocaleDateString("fr-CA", {dateStyle: 'long'});
     } else {
       dayStr = time.format("MMMM DD");
     }
-
     if (window.APP_LANG === "fr") {
-      timeStr = time.format("kk:mm");
+      timeStr = timeRaw.toLocaleTimeString("fr-CA", {timeStyle: 'short'});
     }
 
     $(this).text(`${dayStr}, ${timeStr}`);
