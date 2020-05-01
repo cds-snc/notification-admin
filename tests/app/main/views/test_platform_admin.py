@@ -227,6 +227,62 @@ def test_should_show_total_on_live_trial_services_pages(
     ) == expected_big_numbers
 
 
+@pytest.mark.parametrize('endpoint, expected_big_numbers_single_plural', [
+    (
+        'main.live_services', (
+            '0 emails sent No failures',
+            '0 text messages sent No failures'
+        ),
+    ),
+    (
+        'main.live_services', (
+            '1 email sent No failures',
+            '1 text message sent No failures'
+        ),
+    ),
+])
+def test_should_single_and_plural(
+    platform_admin_client,
+    mock_get_detailed_services,
+    endpoint,
+    fake_uuid,
+    expected_big_numbers_single_plural,
+):
+    services = [
+        service_json(fake_uuid, 'My Service 1', [], restricted=False),
+        service_json(fake_uuid, 'My Service 2', [], restricted=False),
+    ]
+    
+    services[0]['statistics'] = create_stats(
+        emails_delivered=0,
+        emails_failed=0,
+        sms_delivered=0,
+        sms_failed=0
+    )
+
+    services[1]['statistics'] = create_stats(
+        emails_delivered=1,
+        emails_failed=0,
+        sms_delivered=1,
+        sms_failed=0
+    )
+
+    mock_get_detailed_services.return_value = {'data': services}
+    response = platform_admin_client.get(url_for(endpoint))
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+
+    print("*******************************************")
+    print(normalize_spaces(page.select('.big-number-with-status')[0].text))
+    print(normalize_spaces(page.select('.big-number-with-status')[1].text))
+    print("*******************************************")
+
+    assert (
+        normalize_spaces(page.select('.big-number-with-status')[0].text),
+        normalize_spaces(page.select('.big-number-with-status')[1].text),
+    ) == expected_big_numbers_single_plural
+
+
 def test_create_global_stats_sets_failure_rates(fake_uuid):
     services = [
         service_json(fake_uuid, 'a', []),
