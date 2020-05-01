@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-04-30 15:48-0600\n"
+"POT-Creation-Date: 2020-05-01 15:49-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -67,13 +67,13 @@ msgid "Email address"
 msgstr "Adresse courriel"
 
 #: app/main/forms.py:116 app/main/views/send.py:449
-#: app/templates/components/message-count-label.html:46
+#: app/templates/components/message-count-label.html:70
 #: app/templates/partials/check/too-many-messages.html:24
 msgid "email address"
 msgstr "adresse courriel"
 
 #: app/main/forms.py:118 app/main/views/send.py:451
-#: app/templates/components/message-count-label.html:40
+#: app/templates/components/message-count-label.html:64
 #: app/templates/partials/check/too-many-messages.html:26
 #: app/templates/views/api/safelist.html:61
 msgid "phone number"
@@ -339,18 +339,18 @@ msgstr "Désactivé"
 msgid "Send"
 msgstr "Envoyer"
 
-#: app/main/forms.py:1026 app/templates/components/message-count-label.html:19
+#: app/main/forms.py:1026 app/templates/components/message-count-label.html:27
+#: app/templates/components/message-count-label.html:32
 #: app/templates/views/features.html:15
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "emails"
 msgstr "courriels"
 
-#: app/main/forms.py:1027 app/templates/components/message-count-label.html:13
-#: app/templates/views/features.html:16
+#: app/main/forms.py:1027 app/templates/views/features.html:16
 msgid "text messages"
 msgstr "messages texte"
 
-#: app/main/forms.py:1028 app/templates/components/message-count-label.html:25
+#: app/main/forms.py:1028 app/templates/components/message-count-label.html:38
 msgid "letters"
 msgstr "lettres"
 
@@ -1136,61 +1136,68 @@ msgstr "Soumettre"
 msgid "Services"
 msgstr "Services"
 
-#: app/templates/components/message-count-label.html:4
+#: app/templates/components/message-count-label.html:5
 msgid "message"
 msgstr "message"
 
-#: app/templates/components/message-count-label.html:6
+#: app/templates/components/message-count-label.html:7
 msgid "messages"
 msgstr "messages"
 
-#: app/templates/components/message-count-label.html:11
-#: app/templates/components/message-count-label.html:64
+#: app/templates/components/message-count-label.html:13
+#: app/templates/components/message-count-label.html:18
+#: app/templates/components/message-count-label.html:88
 msgid "text message"
 msgstr "message texte"
 
-#: app/templates/components/message-count-label.html:17
-#: app/templates/components/message-count-label.html:66
+#: app/templates/components/message-count-label.html:15
+#: app/templates/components/message-count-label.html:20
+msgid "text-messages"
+msgstr "messages textes"
+
+#: app/templates/components/message-count-label.html:25
+#: app/templates/components/message-count-label.html:30
+#: app/templates/components/message-count-label.html:90
 #: app/templates/views/api/keys.html:43
 #: app/templates/views/api/safelist.html:55
 msgid "email"
 msgstr "courriel"
 
-#: app/templates/components/message-count-label.html:23
-#: app/templates/components/message-count-label.html:68
+#: app/templates/components/message-count-label.html:36
+#: app/templates/components/message-count-label.html:92
 msgid "letter"
 msgstr "lettre"
 
-#: app/templates/components/message-count-label.html:33
+#: app/templates/components/message-count-label.html:57
 msgid "recipient"
 msgstr "destinataire"
 
-#: app/templates/components/message-count-label.html:35
+#: app/templates/components/message-count-label.html:59
 msgid "recipients"
 msgstr "destinataires"
 
-#: app/templates/components/message-count-label.html:42
+#: app/templates/components/message-count-label.html:66
 #: app/templates/partials/check/too-many-messages.html:34
 msgid "phone numbers"
 msgstr "numéros de téléphone"
 
-#: app/templates/components/message-count-label.html:48
+#: app/templates/components/message-count-label.html:72
 #: app/templates/partials/check/too-many-messages.html:32
 msgid "email addresses"
 msgstr "adresses courriel"
 
-#: app/templates/components/message-count-label.html:52
+#: app/templates/components/message-count-label.html:76
 #: app/templates/partials/check/too-many-messages.html:28
 msgid "address"
 msgstr "adresse"
 
-#: app/templates/components/message-count-label.html:54
+#: app/templates/components/message-count-label.html:78
 #: app/templates/partials/check/too-many-messages.html:36
 msgid "addresses"
 msgstr "adresses"
 
-#: app/templates/components/message-count-label.html:61
-#: app/templates/components/message-count-label.html:71
+#: app/templates/components/message-count-label.html:85
+#: app/templates/components/message-count-label.html:95
 #: app/templates/views/dashboard/all-template-statistics.html:23
 #: app/templates/views/dashboard/template-statistics.html:8
 msgid "Template"
@@ -4207,9 +4214,18 @@ msgid "Send a text message to this phone number"
 msgstr "Envoyer un message texte avec ce numéro de téléphone"
 
 #: app/templates/views/conversations/messages.html:27
-#: app/templates/views/dashboard/_totals.html:4
 msgid "sent"
 msgstr "envoyé"
+
+#: app/templates/views/dashboard/_totals.html:4
+#: app/templates/views/platform-admin/_global_stats.html:4
+msgid "sent-dashboard-single"
+msgstr "envoyé"
+
+#: app/templates/views/dashboard/_totals.html:5
+#: app/templates/views/platform-admin/_global_stats.html:5
+msgid "sent-dashboard-plural"
+msgstr "envoyés"
 
 #: app/templates/views/dashboard/all-template-statistics.html:8
 #: app/templates/views/dashboard/all-template-statistics.html:13
