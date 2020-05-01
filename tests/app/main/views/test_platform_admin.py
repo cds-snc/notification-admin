@@ -238,13 +238,13 @@ def test_should_show_total_on_live_trial_services_pages(
         'main.live_services', (
             '1 email sent No failures',
             '1 text message sent No failures'
-        ), 1, 1,  "en"
+        ), 1, 1, "en"
     ),
     (
         'main.live_services', (
             '2 emails sent No failures',
             '2 text messages sent No failures'
-        ), 2, 2,  "en"
+        ), 2, 2, "en"
     ),
     (
         'main.live_services', (
@@ -264,7 +264,6 @@ def test_should_show_total_on_live_trial_services_pages(
             '2 messages textes envoyé Aucun échec'
         ), 2, 2, "fr"
     ),
-   
 ])
 def test_should_single_and_plural(
     platform_admin_client,
@@ -276,7 +275,7 @@ def test_should_single_and_plural(
     s_lang
 ):
     service = service_json(str(uuid.uuid4()), 'My Service 1', [], restricted=False)
-    
+
     service['statistics'] = create_stats(
         emails_delivered=n_emails_sent,
         emails_failed=0,
@@ -288,11 +287,6 @@ def test_should_single_and_plural(
     response = platform_admin_client.get(url_for(endpoint, **{"lang": s_lang}))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-
-    print("*******************************************")
-    print(normalize_spaces(page.select('.big-number-with-status')[0].text))
-    print(normalize_spaces(page.select('.big-number-with-status')[1].text))
-    print("*******************************************")
 
     assert (
         normalize_spaces(page.select('.big-number-with-status')[0].text),

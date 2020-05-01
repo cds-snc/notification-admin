@@ -97,6 +97,7 @@ stub_template_stats = [
     },
 ]
 
+
 def create_stats(
     emails_requested=0,
     emails_delivered=0,
@@ -747,7 +748,6 @@ def test_correct_font_size_for_big_numbers(
         page.select('.big-number-with-status {}'.format(big_number_class))
     )
 
-#
 
 @pytest.mark.parametrize('permissions, totals, expected_big_numbers_single_plural, lang', [
     (
