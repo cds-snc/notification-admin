@@ -5,9 +5,11 @@ $(() => GOVUK.stickAtBottomWhenScrolling.init());
 
 $(".local-datetime-short").each(function(index) {
   let datetime = new Date($(this).text());
+  let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
+
   if (datetime instanceof Date && !isNaN(datetime)) {
     $(this).text(
-      datetime.toLocaleString("en-US", {
+      datetime.toLocaleString(locale, {
         month: "short",
         day: "numeric",
         hour: "numeric",
