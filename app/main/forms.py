@@ -1079,9 +1079,9 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
     brand_type = RadioField(
         "Brand type",
         choices=[
-            ('both', 'Notication and branding'),
-            ('org', 'Branding only'),
-            ('org_banner', 'Branding banner'),
+            ('both', 'FIP and custom logo'),
+            ('custom_logo', 'Custom Logo'),
+            ('custom_logo_with_background_colour', 'Custom Logo on a background colour'),
             ('no_branding', 'No branding'),
         ]
     )
@@ -1357,10 +1357,10 @@ class LinkOrganisationsForm(StripWhitespaceForm):
 
 
 branding_options = (
-    ('govuk', 'GOV.UK only'),
+    ('fip_english', 'GOV.UK only'),
     ('both', 'GOV.UK and logo'),
-    ('org', 'Your logo'),
-    ('org_banner', 'Your logo on a colour'),
+    ('custom_logo', 'Your logo'),
+    ('custom_logo_with_background_colour', 'Your logo on a colour'),
 )
 branding_options_dict = dict(branding_options)
 

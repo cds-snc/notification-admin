@@ -99,7 +99,7 @@ def test_create_new_email_branding_without_logo(
         'colour': '#ff0000',
         'text': 'new text',
         'name': 'new name',
-        'brand_type': 'org'
+        'brand_type': 'custom_logo'
     }
 
     mock_persist = mocker.patch('app.main.views.email_branding.persist_logo')
@@ -136,7 +136,7 @@ def test_create_email_branding_requires_a_name_when_submitting_logo_details(
         'colour': '#ff0000',
         'text': 'new text',
         'name': '',
-        'brand_type': 'org',
+        'brand_type': 'custom_logo',
     }
     client_request.login(platform_admin_user(fake_uuid))
     page = client_request.post(
@@ -161,7 +161,7 @@ def test_create_email_branding_does_not_require_a_name_when_uploading_a_file(
         'colour': '',
         'text': '',
         'name': '',
-        'brand_type': 'org',
+        'brand_type': 'custom_logo',
     }
     client_request.login(platform_admin_user(fake_uuid))
     page = client_request.post(
@@ -188,7 +188,7 @@ def test_create_new_email_branding_when_branding_saved(
         'colour': '#ff0000',
         'text': 'new text',
         'name': 'new name',
-        'brand_type': 'org_banner'
+        'brand_type': 'custom_logo_with_background_colour'
     }
 
     temp_filename = EMAIL_LOGO_LOCATION_STRUCTURE.format(
@@ -423,7 +423,7 @@ def test_colour_regex_validation(
         'colour': colour_hex,
         'text': 'new text',
         'name': 'new name',
-        'brand_type': 'org'
+        'brand_type': 'custom_logo'
     }
 
     mocker.patch('app.main.views.email_branding.delete_email_temp_files_created_by')

@@ -3146,7 +3146,7 @@ def test_should_send_branding_and_organisations_to_preview(
     client_request.post(
         endpoint,
         data={
-            'branding_type': 'org',
+            'branding_type': 'custom_logo',
             'branding_style': '1'
         },
         _expected_status=302,
@@ -3182,7 +3182,7 @@ def test_should_preview_email_branding(
     client_request.login(platform_admin_user)
     page = client_request.get(
         endpoint,
-        branding_type='org',
+        branding_type='custom_logo',
         branding_style='1',
         **extra_args
     )
@@ -4202,10 +4202,10 @@ def test_show_email_branding_request_page_when_no_email_branding_is_set(
     radios = page.select('input[type=radio]')
 
     for index, option in enumerate((
-        'govuk',
+        'fip_english',
         'both',
-        'org',
-        'org_banner',
+        'custom_logo',
+        'custom_logo_with_background_colour',
     )):
         assert radios[index]['name'] == 'options'
         assert radios[index]['value'] == option
@@ -4230,22 +4230,22 @@ def test_show_email_branding_request_page_when_email_branding_is_set(
     radios = page.select('input[type=radio]')
 
     for index, option in enumerate((
-        'govuk',
+        'fip_english',
         'both',
-        'org',
-        'org_banner',
+        'custom_logo',
+        'custom_logo_with_background_colour',
     )):
         assert radios[index]['name'] == 'options'
         assert radios[index]['value'] == option
-        if option == 'org':
+        if option == 'custom_logo':
             assert 'checked' in radios[index].attrs
 
 
 @pytest.mark.parametrize('choice, requested_branding', (
-    ('govuk', 'GOV.UK only'),
+    ('fip_english', 'GOV.UK only'),
     ('both', 'GOV.UK and logo'),
-    ('org', 'Your logo'),
-    ('org_banner', 'Your logo on a colour'),
+    ('custom_logo', 'Your logo'),
+    ('custom_logo_with_background_colour', 'Your logo on a colour'),
     pytest.param('foo', 'Nope', marks=pytest.mark.xfail(raises=AssertionError)),
 ))
 @pytest.mark.parametrize('org_name, expected_organisation', (
