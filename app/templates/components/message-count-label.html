@@ -1,5 +1,5 @@
 {# suffix_plural was added for fr strings https://github.com/cds-snc/notification-admin/pull/480 #}
-{% macro message_count_label(count, template_type, suffix='sent', suffix_plural='sent') -%}
+{% macro message_count_label(count, template_type, suffix='sent1', suffix_plural='sent') -%}
   {% if template_type == None %}
     {%- if count == 1 -%}
       {{ _('message') }}
@@ -8,13 +8,25 @@
     {%- endif -%}
   {% endif %}
   {%- if template_type == 'sms' -%}
-    {%- if count == 1 -%}
-    {{ _('text message') }}
+    {%- if count == 0 -%}
+      {%- if session["userlang"] == "fr" -%}
+        {{ _('text message') }}
+      {%- else -%}
+        {{ _('text-messages') }}
+      {%- endif -%}
+    {%- elif count == 1  -%}
+      {{ _('text message') }}
     {%- else -%}
-    {{ _('text messages') }}
+      {{ _('text-messages') }}
     {%- endif -%}
   {%- elif template_type == 'email' -%}
-    {%- if count == 1 -%}
+    {%- if count == 0 -%}
+      {%- if session["userlang"] == "fr" -%}
+        {{ _('email') }}
+      {%- else -%}
+        {{ _('emails') }}
+      {%- endif -%}
+    {%- elif count == 1  -%}
       {{ _('email') }}
     {%- else -%}
     {{ _('emails') }}
@@ -28,9 +40,13 @@
   {%- endif %} 
   
   {%- if (count == 0 or count == 1) -%}
-  {{" "}} {{  suffix }}
+  {{" "}} {{ suffix }}
   {%- else -%}
-    {{" "}} {{ suffix_plural }}
+    {%- if template_type == 'sms' -%}
+        {{" "}} {{ suffix }}
+    {%- else -%}
+        {{" "}} {{ suffix_plural }}
+    {%- endif -%}
   {%- endif %} 
 
 {%- endmacro %}

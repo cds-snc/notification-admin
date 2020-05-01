@@ -227,19 +227,44 @@ def test_should_show_total_on_live_trial_services_pages(
     ) == expected_big_numbers
 
 
-@pytest.mark.parametrize('endpoint, expected_big_numbers_single_plural, n_emails_sent, n_texts_sent', [
+@pytest.mark.parametrize('endpoint, expected_big_numbers_single_plural, n_emails_sent, n_texts_sent, s_lang ', [
     (
         'main.live_services', (
             '0 emails sent No failures',
             '0 text messages sent No failures'
-        ), 0, 0
+        ), 0, 0, "en"
     ),
     (
         'main.live_services', (
             '1 email sent No failures',
             '1 text message sent No failures'
-        ), 1, 1
+        ), 1, 1,  "en"
     ),
+    (
+        'main.live_services', (
+            '2 emails sent No failures',
+            '2 text messages sent No failures'
+        ), 2, 2,  "en"
+    ),
+    (
+        'main.live_services', (
+            '0 courriel envoyé Aucun échec',
+            '0 message texte envoyé Aucun échec'
+        ), 0, 0, "fr"
+    ),
+    (
+        'main.live_services', (
+            '1 courriel envoyé Aucun échec',
+            '1 message texte envoyé Aucun échec'
+        ), 1, 1, "fr"
+    ),
+    (
+        'main.live_services', (
+            '2 courriels envoyés Aucun échec',
+            '2 messages textes envoyé Aucun échec'
+        ), 2, 2, "fr"
+    ),
+   
 ])
 def test_should_single_and_plural(
     platform_admin_client,
@@ -248,6 +273,7 @@ def test_should_single_and_plural(
     expected_big_numbers_single_plural,
     n_emails_sent,
     n_texts_sent,
+    s_lang
 ):
     service = service_json(str(uuid.uuid4()), 'My Service 1', [], restricted=False)
     
@@ -259,7 +285,7 @@ def test_should_single_and_plural(
     )
 
     mock_get_detailed_services.return_value = {'data': [service]}
-    response = platform_admin_client.get(url_for(endpoint, **{"lang": "fr"}))
+    response = platform_admin_client.get(url_for(endpoint, **{"lang": s_lang}))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
