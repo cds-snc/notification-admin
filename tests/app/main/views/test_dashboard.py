@@ -97,6 +97,35 @@ stub_template_stats = [
     },
 ]
 
+def create_stats(
+    emails_requested=0,
+    emails_delivered=0,
+    emails_failed=0,
+    sms_requested=0,
+    sms_delivered=0,
+    sms_failed=0,
+    letters_requested=0,
+    letters_delivered=0,
+    letters_failed=0
+):
+    return {
+        'sms': {
+            'requested': sms_requested,
+            'delivered': sms_delivered,
+            'failed': sms_failed,
+        },
+        'email': {
+            'requested': emails_requested,
+            'delivered': emails_delivered,
+            'failed': emails_failed,
+        },
+        'letter': {
+            'requested': letters_requested,
+            'delivered': letters_delivered,
+            'failed': letters_failed,
+        },
+    }
+
 
 @pytest.mark.parametrize('user', (
     active_user_view_permissions,
@@ -717,6 +746,116 @@ def test_correct_font_size_for_big_numbers(
     assert expected_column_count == len(
         page.select('.big-number-with-status {}'.format(big_number_class))
     )
+
+#
+
+@pytest.mark.parametrize('permissions, totals, expected_big_numbers_single_plural, lang', [
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 0, 'delivered': 0, 'failed': 0},
+            'sms': {'requested': 0, 'delivered': 0, 'failed': 0}
+        },
+        (
+            '0 emails sent No failures',
+            '0 text messages sent No failures'
+        ),
+        "en"
+    ),
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 0, 'delivered': 0, 'failed': 0},
+            'sms': {'requested': 0, 'delivered': 0, 'failed': 0}
+        },
+        (
+            '0 courriel envoyé Aucun échec',
+            '0 message texte envoyé Aucun échec'
+        ),
+        "fr"
+    ),
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 1, 'delivered': 1, 'failed': 0},
+            'sms': {'requested': 1, 'delivered': 1, 'failed': 0}
+        },
+        (
+            '1 email sent No failures',
+            '1 text message sent No failures'
+        ),
+        "en"
+    ),
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 1, 'delivered': 1, 'failed': 0},
+            'sms': {'requested': 1, 'delivered': 1, 'failed': 0}
+        },
+        (
+            '1 courriel envoyé Aucun échec',
+            '1 message texte envoyé Aucun échec'
+        ),
+        "fr"
+    ),
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 2, 'delivered': 2, 'failed': 0},
+            'sms': {'requested': 2, 'delivered': 2, 'failed': 0}
+        },
+        (
+            '2 emails sent No failures',
+            '2 text messages sent No failures'
+        ),
+        "en"
+    ),
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 2, 'delivered': 2, 'failed': 0},
+            'sms': {'requested': 2, 'delivered': 2, 'failed': 0}
+        },
+        (
+            '2 courriels envoyés Aucun échec',
+            '2 messages textes envoyé Aucun échec'
+        ),
+        "fr"
+    ),
+])
+def test_dashboard_single_and_plural(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    permissions,
+    totals,
+    expected_big_numbers_single_plural,
+    lang
+):
+
+    service_one['permissions'] = permissions
+
+    mocker.patch(
+        'app.main.views.dashboard.get_dashboard_totals',
+        return_value=totals
+    )
+
+    page = client_request.get(
+        'main.service_dashboard',
+        service_id=service_one['id'],
+        lang=lang
+    )
+
+    assert (
+        normalize_spaces(page.select('.big-number-with-status')[0].text),
+        normalize_spaces(page.select('.big-number-with-status')[1].text),
+    ) == expected_big_numbers_single_plural
+
+##
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
