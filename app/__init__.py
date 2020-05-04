@@ -6,7 +6,6 @@ from functools import partial
 from numbers import Number
 from time import monotonic
 
-import ago
 from flask import (
     current_app,
     flash,
@@ -358,24 +357,6 @@ def _format_datetime_short(datetime):
     return datetime.strftime('%d %B').lstrip('0')
 
 
-def format_delta(date):
-    delta = (
-        datetime.now(timezone.utc)
-    ) - (
-        utc_string_to_aware_gmt_datetime(date)
-    )
-    if delta < timedelta(seconds=30):
-        return "just now"
-    if delta < timedelta(seconds=60):
-        return "in the last minute"
-    return ago.human(
-        delta,
-        future_tense='{} from now',  # No-one should ever see this
-        past_tense='{} ago',
-        precision=1
-    )
-
-
 def format_thousands(value):
     if isinstance(value, Number):
         return '{:,.0f}'.format(value)
@@ -719,7 +700,6 @@ def add_template_filters(application):
         format_date_normal,
         format_date_short,
         format_datetime_relative,
-        format_delta,
         format_notification_status,
         format_notification_type,
         format_notification_status_as_time,

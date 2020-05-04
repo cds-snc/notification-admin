@@ -51,7 +51,7 @@
       {% else %}
       <p>{{ _('Last logged in') }}
         <time class="timeago" datetime="{{ user.logged_in_at }}">
-          {{ user.logged_in_at|format_delta }}
+          {{ user.logged_in_at }}
         </time>
       </p>
       {% endif %}

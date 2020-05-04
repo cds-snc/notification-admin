@@ -30,7 +30,9 @@
     {% endcall %}
     {% call field(align='right') %}
       <span class="align-with-message-body">
-        {{ item.created_at | format_delta }}
+        <time class="timeago" datetime="{{ item.created_at }}">
+          {{ item.created_at }}
+        </time>
       </span>
     {% endcall %}
   {% endcall %}

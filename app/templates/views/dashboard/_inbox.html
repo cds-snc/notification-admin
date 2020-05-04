@@ -13,7 +13,10 @@
       }}
       <div class="big-number-meta">
         {% if inbound_sms_summary.most_recent %}
-          latest message {{ inbound_sms_summary.most_recent | format_delta }}
+          {{ _("latest message") }} 
+          <time class="timeago" datetime="{{ inbound_sms_summary.most_recent }}">
+            {{ inbound_sms_summary.most_recent }}
+          </time>
         {% endif %}
       </div>
     </div>
