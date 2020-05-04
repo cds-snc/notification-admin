@@ -32,3 +32,25 @@ def test_inbound_sms_admin(platform_admin_client, mocker):
 
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
     assert page.h1.string.strip() == "Inbound SMS"
+
+
+def test_add_inbound_sms_admin(platform_admin_client, mocker):
+    new_inbound_number = '12345678901'
+    mocker.patch("app.inbound_number_client.get_all_inbound_sms_number_service", return_value=sample_inbound_sms)
+    mocker.patch(
+        "app.inbound_number_client.add_inbound_sms_number",
+        return_value={'data': {'inbound_number': new_inbound_number}}
+    )
+    response = platform_admin_client.get(url_for("main.add_inbound_sms_admin"))
+    assert response.status_code == 200
+
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+    assert page.h1.string.strip() == "Add an inbound SMS number"
+
+    response = platform_admin_client.post(
+        url_for("main.add_inbound_sms_admin"),
+        data={'inbound_number': new_inbound_number}
+    )
+
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+    assert page.h1.string.strip() == "Inbound SMS number added successfully"
