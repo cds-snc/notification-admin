@@ -1,7 +1,7 @@
 import itertools
 import os
 import urllib
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from functools import partial
 from numbers import Number
 from time import monotonic
