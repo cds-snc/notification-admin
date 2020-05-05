@@ -3,11 +3,12 @@
   {% if messages %}
     {% for category, message in messages %}
       {% if category in ['cancel', 'delete', 'suspend', 'resume', 'remove', 'revoke this API key', 'block', 'archive'] %}
-        {% set delete_button_text = "{}, {}".format(_('Yes'), _(category)) %}
+        {% set category_translations = {'cancel': _('cancel'), 'delete': _('delete'), 'suspend': _('suspend'), 'resume': _('resume'), 'remove': _('remove'), 'revoke this API key': _('revoke this API key'), 'block': _('block'), 'archive': _('archive')} %}
+        {% set delete_button_text = "{}, {}".format(_('Yes'), category_translations[category]) %}
       {% elif category == 'try again' %}
-        {% set delete_button_text = category|capitalize %}
+        {% set delete_button_text = _('Try again') %}
       {% elif category == 'unblock' %}
-        {% set delete_button_text = category|capitalize %}
+        {% set delete_button_text = _('Unblock') %}
         {% set category = 'default_with_tick' %}
       {% else %}
         {% set delete_button_text = None %}
