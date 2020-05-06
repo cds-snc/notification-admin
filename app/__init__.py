@@ -6,7 +6,6 @@ from functools import partial
 from numbers import Number
 from time import monotonic
 
-# import ago
 import timeago
 from flask import (
     current_app,
