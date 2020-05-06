@@ -29,19 +29,7 @@
           if (response.stop === 1) {
             poll = function() {};
           }
-          $(".local-datetime-short").each(function(index) {
-            let datetime = new Date($(this).text());
-            if (datetime instanceof Date && !isNaN(datetime)) {
-              $(this).text(
-                datetime.toLocaleString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "2-digit"
-                })
-              );
-            }
-          });
+          window.formatAllDates()
         })
         .fail(() => (poll = function() {}));
 
