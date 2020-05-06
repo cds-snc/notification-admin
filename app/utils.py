@@ -8,7 +8,6 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-from flask_babel import _
 
 import ago
 import boto3
@@ -17,6 +16,7 @@ import pyexcel
 import pyexcel_xlsx
 from dateutil import parser
 from flask import abort, current_app, redirect, request, session, url_for
+from flask_babel import _
 from flask_login import current_user, login_required
 from notifications_utils.field import Field
 from notifications_utils.formatters import make_quotes_smart
@@ -443,7 +443,6 @@ def get_template(
 
     # this regex finds test inside []
     template_str = re.sub(r"\[[^]]*\]", translate_brackets, template_str)
-
     preview_template.html = template_str
 
     return preview_template

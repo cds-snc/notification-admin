@@ -53,7 +53,7 @@
         {% set txt = _('Password') %}
         {% set last_change_txt = _('Last changed ') %}
         {{ text_field(txt) }}
-        {{ text_field(last_change_txt + current_user.password_changed_at|format_delta) }}
+        {{ text_field(last_change_txt + " " + current_user.password_changed_at|format_delta ) }}
         {{ edit_field(change, url_for('.user_profile_password')) }}
       {% endcall %}
 

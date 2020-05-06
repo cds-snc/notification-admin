@@ -264,16 +264,17 @@ def test_inbound_messages_shows_count_of_messages(
     )
 
 
-@pytest.mark.parametrize('index, expected_row', enumerate([
-    '+1 650-253-2220 message-1 1 hour ago',
-    '+1 650-253-2220 message-2 1 hour ago',
-    '+1 650-253-2220 message-3 1 hour ago',
-    '+1 650-253-2222 message-4 3 hours ago',
-    '+1 650-253-2224 message-5 5 hours ago',
-    '+1 650-253-2226 message-6 7 hours ago',
-    '+1 650-253-2228 message-7 9 hours ago',
-    '+1 650-253-2228 message-8 9 hours ago',
-]))
+@pytest.mark.parametrize('row_number, expected_row, lang', [
+    (0, '+1 650-253-2220 message-1 1 hour ago', 'en'),
+    (1, '+1 650-253-2220 message-2 1 hour ago', 'en'),
+    (2, '+1 650-253-2220 message-3 1 hour ago', 'en'),
+    (3, '+1 650-253-2222 message-4 3 hours ago', 'en'),
+    (4, '+1 650-253-2224 message-5 5 hours ago', 'en'),
+    (5, '+1 650-253-2226 message-6 7 hours ago', 'en'),
+    (6, '+1 650-253-2228 message-7 9 hours ago', 'en'),
+    (7, '+1 650-253-2228 message-8 9 hours ago', 'en'),
+    (7, '+1 650-253-2228 message-8 il y a 9 heures', 'fr')
+])
 def test_inbox_showing_inbound_messages(
     client_request,
     service_one,
@@ -283,8 +284,9 @@ def test_inbox_showing_inbound_messages(
     mock_get_template_statistics,
     mock_get_usage,
     mock_get_most_recent_inbound_sms,
-    index,
+    row_number,
     expected_row,
+    lang
 ):
 
     service_one['permissions'] = ['inbound_sms']
@@ -292,11 +294,12 @@ def test_inbox_showing_inbound_messages(
     page = client_request.get(
         'main.inbox',
         service_id=SERVICE_ONE_ID,
+        lang=lang,
     )
 
     rows = page.select('tbody tr')
     assert len(rows) == 8
-    assert normalize_spaces(rows[index].text) == expected_row
+    assert normalize_spaces(rows[row_number].text) == expected_row
     assert page.select_one('a[download]')['href'] == url_for(
         'main.inbox_download',
         service_id=SERVICE_ONE_ID,

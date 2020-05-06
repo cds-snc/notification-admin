@@ -5177,7 +5177,7 @@ msgstr "Copier un gabarit existant"
 
 #: app/templates/views/templates/template.html:51
 msgid "Last edited"
-msgstr "Date de la dernière modification : "
+msgstr "Dernière modification : "
 
 #: app/templates/views/templates/template.html:59
 msgid "See previous versions"

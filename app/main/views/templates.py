@@ -1,4 +1,3 @@
-import re
 from datetime import datetime, timedelta
 from string import ascii_uppercase
 
