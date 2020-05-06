@@ -48,8 +48,6 @@ window.formatAllDates = function () {
     }
   });
 
-  $(() => $("time.timeago").timeago());
-
 }
 
 

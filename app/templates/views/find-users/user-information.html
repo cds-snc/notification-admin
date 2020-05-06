@@ -50,9 +50,7 @@
       <p class="hint">{{ _('This person has never logged in') }}</p>
       {% else %}
       <p>{{ _('Last logged in') }}
-        <time class="timeago" datetime="{{ user.logged_in_at }}">
-          {{ user.logged_in_at|format_delta }}
-        </time>
+        {{ user.logged_in_at|format_delta }}
       </p>
       {% endif %}
       {% if user.failed_login_count > 0 %}
