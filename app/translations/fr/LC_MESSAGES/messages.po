@@ -865,7 +865,7 @@ msgstr "bloquer"
 
 #: app/templates/flash_messages.html:6
 msgid "archive"
-msgstr "archives"
+msgstr "archiver"
 
 #: app/templates/flash_messages.html:9
 msgid "Try again"
