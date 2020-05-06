@@ -3272,8 +3272,7 @@ msgid ""
 "Administrators who have to meet departmental service\n"
 "              standards for communication"
 msgstr ""
-"Pour les développeurs travaillant à l’amélioration des processus de "
-"travail et des outils pour les fonctionnaires"
+"Pour les administrateurs devant respecter les normes de service ministérielles de leurs communications"
 
 #: app/templates/views/signedout.html:335
 msgid "What you can do with <i>Notify</i>"
