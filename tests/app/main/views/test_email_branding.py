@@ -286,7 +286,7 @@ def test_update_existing_branding(
         'colour': '#0000ff',
         'text': 'new text',
         'name': 'new name',
-        'brand_type': 'both'
+        'brand_type': 'both_english'
     }
 
     temp_filename = EMAIL_LOGO_LOCATION_STRUCTURE.format(

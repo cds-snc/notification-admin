@@ -963,6 +963,9 @@ def service_preview_email_branding(service_id):
 
     form = PreviewBranding(branding_style=branding_style)
 
+    print("What is being sent to the server:")
+    print(form.branding_style.data)
+
     if form.validate_on_submit():
         current_service.update(
             email_branding=form.branding_style.data

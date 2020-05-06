@@ -2797,7 +2797,7 @@ def mock_get_email_branding_with_govuk_brand_type(mocker, fake_uuid):
 @pytest.fixture(scope='function')
 def mock_get_email_branding_with_both_brand_type(mocker, fake_uuid):
     def _get_email_branding(id):
-        return create_email_branding(fake_uuid, {'brand_type': 'both'})
+        return create_email_branding(fake_uuid, {'brand_type': 'both_english'})
 
     return mocker.patch(
         'app.email_branding_client.get_email_branding', side_effect=_get_email_branding
