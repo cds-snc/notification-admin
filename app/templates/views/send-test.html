@@ -32,7 +32,7 @@ data_kwargs={'force-focus': True} ) %}
   </a>
 </p>
 {% endif %} {% set txt = _('Continue') %} {{ page_footer(txt) }} {% endcall %}
-{{ template|string }}
+{{ template.html|safe }}
 
 <script>
   function isIE() {

@@ -8,6 +8,7 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
+from flask_babel import _
 
 import ago
 import boto3
@@ -387,9 +388,8 @@ def get_template(
     # 'sms_preview_template.jinja2'
     debug_template_path = (path.dirname(path.abspath(__file__))
                            if os.environ.get('USE_LOCAL_JINJA_TEMPLATES') == 'True' else None)
-
     if 'email' == template['template_type']:
-        return EmailPreviewTemplate(
+        preview_template = EmailPreviewTemplate(
             template,
             from_name=service.name,
             from_address='{}@notifications.service.gov.uk'.format(service.email_from),
@@ -399,7 +399,7 @@ def get_template(
             jinja_path=debug_template_path
         )
     if 'sms' == template['template_type']:
-        return SMSPreviewTemplate(
+        preview_template = SMSPreviewTemplate(
             template,
             prefix=service.name,
             show_prefix=service.prefix_sms,
@@ -411,7 +411,7 @@ def get_template(
         )
     if 'letter' == template['template_type']:
         if letter_preview_url:
-            return LetterImageTemplate(
+            preview_template = LetterImageTemplate(
                 template,
                 image_url=letter_preview_url,
                 page_count=int(page_count),
@@ -419,12 +419,34 @@ def get_template(
                 postage=template['postage'],
             )
         else:
-            return LetterPreviewTemplate(
+            preview_template = LetterPreviewTemplate(
                 template,
                 contact_block=template['reply_to_text'],
                 admin_base_url=current_app.config['ADMIN_BASE_URL'],
                 redact_missing_personalisation=redact_missing_personalisation,
             )
+
+    template_str = str(preview_template)
+    translate = {
+        "From": _("From"),
+        "To": _("To"),
+        "Subject": _("Subject"),
+        "Reply to": _("Reply to")
+    }
+
+    def translate_brackets(x):
+        g = x.group(0)
+        english = g[1:-1]  # drop brackets
+        if english not in translate:
+            return english
+        return translate[english]
+
+    # this regex finds test inside []
+    template_str = re.sub(r"\[[^]]*\]", translate_brackets, template_str)
+
+    preview_template.html = template_str
+
+    return preview_template
 
 
 def get_current_financial_year():

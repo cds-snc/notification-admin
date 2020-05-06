@@ -75,7 +75,7 @@
     {% endif %}
 
     <div class="{{ 'letter-sent' if template.template_type == 'letter' else '' }}">
-      {{ template|string }}
+      {{ template.html|safe }}
     </div>
 
     {% if template.template_type == 'letter' %}
