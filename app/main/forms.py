@@ -1371,8 +1371,8 @@ class LinkOrganisationsForm(StripWhitespaceForm):
 
 
 branding_options = (
-    ('fip_english', 'GOV.UK only'),
-    ('both', 'GOV.UK and logo'),
+    ('fip_english', 'Federal Identity Program (FIP) English only'),
+    ('both', 'Federal Identity Program (FIP) English and your logo'),
     ('custom_logo', 'Your logo'),
     ('custom_logo_with_background_colour', 'Your logo on a colour'),
 )
