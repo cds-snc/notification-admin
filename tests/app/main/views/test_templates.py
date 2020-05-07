@@ -1987,7 +1987,38 @@ def test_should_show_template_as_first_page_of_tour(
     assert normalize_spaces(
         page.select('.email-message-meta')[0].text
     ) == (
-        '[From] service one [To] email address [Subject] Your ((thing)) is due soon'
+        'From service one To email address Subject Your ((thing)) is due soon'
+    )
+
+    assert page.select('a.button')[0]['href'] == url_for(
+        '.send_test', service_id=SERVICE_ONE_ID, template_id=fake_uuid, help=2
+    )
+
+
+def test_should_show_template_as_first_page_of_tour_fr(
+    client_request,
+    mock_get_service_email_template,
+    service_one,
+    fake_uuid,
+):
+
+    page = client_request.get(
+        'main.start_tour',
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        lang="fr"
+    )
+
+    assert normalize_spaces(
+        page.select('.banner-tour .heading-medium')[0].text
+    ) == (
+        'Essayez de vous envoyer cet exemple'
+    )
+
+    assert normalize_spaces(
+        page.select('.email-message-meta')[0].text
+    ) == (
+        'De service one À email address Objet Your ((thing)) is due soon'
     )
 
     assert page.select('a.button')[0]['href'] == url_for(
