@@ -4250,13 +4250,8 @@ def test_show_email_branding_request_page_when_email_branding_is_set(
 
 
 @pytest.mark.parametrize('choice, requested_branding', (
-<<<<<<< HEAD
     ('fip_english', 'Federal Identity Program (FIP) English first'),
     ('both_english', 'Federal Identity Program (FIP) English and your logo'),
-=======
-    ('fip_english', 'Federal Identity Program (FIP) English only'),
-    ('both', 'Federal Identity Program (FIP) English and your logo'),
->>>>>>> master
     ('custom_logo', 'Your logo'),
     ('custom_logo_with_background_colour', 'Your logo on a colour'),
     pytest.param('foo', 'Nope', marks=pytest.mark.xfail(raises=AssertionError)),
