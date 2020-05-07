@@ -50,9 +50,7 @@
       <h2 class="heading-small bottom-gutter-2-3 heading-inline">
         {% set last_edited = _('Last edited') %}
         {{ last_edited }}
-        <time class="timeago" datetime="{{ template._template.updated_at }}">
-          {{ template._template.updated_at|format_delta }}
-        </time>
+        {{ template._template.updated_at|format_delta }}
       </h2>
 
       &emsp;

@@ -119,7 +119,6 @@ const javascripts = () => {
         paths.npm + "jquery-migrate/dist/jquery-migrate.min.js",
         paths.npm + "query-command-supported/dist/queryCommandSupported.min.js",
         //paths.npm + "diff-dom/diffDOM.js",
-        paths.npm + "timeago/jquery.timeago.js",
         paths.npm + "textarea-caret/index.js"
       ])
     )

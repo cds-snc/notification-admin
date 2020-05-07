@@ -825,6 +825,20 @@ class CreateKeyForm(StripWhitespaceForm):
             raise ValidationError(_l('A key with this name already exists'))
 
 
+class CreateInboundSmsForm(StripWhitespaceForm):
+    def __init__(self, existing_numbers, *args, **kwargs):
+        self.existing_numbers = [n for n in existing_numbers]
+        super().__init__(*args, **kwargs)
+
+    inbound_number = StringField(_l('Inbound SMS number'), validators=[
+        DataRequired(message=_l('You need to provide a number'))
+    ])
+
+    def validate_number(self, number):
+        if number in self.existing_numbers:
+            raise ValidationError(_l('This number already exists'))
+
+
 class SupportType(StripWhitespaceForm):
     support_type = RadioField(
         'How can we help you?',
@@ -1368,10 +1382,10 @@ class LinkOrganisationsForm(StripWhitespaceForm):
 
 
 branding_options = (
-    ('fip_english', 'English FIP only'),
-    ('fip_french', 'French FIP only'),
-    ('both_english', 'English FIP and logo'),
-    ('both_french', 'French FIP and logo'),
+    ('fip_english', 'Federal Identity Program (FIP) English only'),
+    ('fip_french', 'Federal Identity Program (FIP) French only'),
+    ('both_english', 'English Federal Identity Program (FIP) and logo'),
+    ('both_french', 'French Federal Identity Program (FIP) and logo'),
     ('custom_logo', 'Your logo'),
     ('custom_logo_with_background_colour', 'Your logo on a colour'),
 )

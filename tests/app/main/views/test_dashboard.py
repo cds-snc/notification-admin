@@ -98,6 +98,36 @@ stub_template_stats = [
 ]
 
 
+def create_stats(
+    emails_requested=0,
+    emails_delivered=0,
+    emails_failed=0,
+    sms_requested=0,
+    sms_delivered=0,
+    sms_failed=0,
+    letters_requested=0,
+    letters_delivered=0,
+    letters_failed=0
+):
+    return {
+        'sms': {
+            'requested': sms_requested,
+            'delivered': sms_delivered,
+            'failed': sms_failed,
+        },
+        'email': {
+            'requested': emails_requested,
+            'delivered': emails_delivered,
+            'failed': emails_failed,
+        },
+        'letter': {
+            'requested': letters_requested,
+            'delivered': letters_delivered,
+            'failed': letters_failed,
+        },
+    }
+
+
 @pytest.mark.parametrize('user', (
     active_user_view_permissions,
     active_caseworking_user,
@@ -234,16 +264,17 @@ def test_inbound_messages_shows_count_of_messages(
     )
 
 
-@pytest.mark.parametrize('index, expected_row', enumerate([
-    '+1 650-253-2220 message-1 1 hour ago',
-    '+1 650-253-2220 message-2 1 hour ago',
-    '+1 650-253-2220 message-3 1 hour ago',
-    '+1 650-253-2222 message-4 3 hours ago',
-    '+1 650-253-2224 message-5 5 hours ago',
-    '+1 650-253-2226 message-6 7 hours ago',
-    '+1 650-253-2228 message-7 9 hours ago',
-    '+1 650-253-2228 message-8 9 hours ago',
-]))
+@pytest.mark.parametrize('row_number, expected_row, lang', [
+    (0, '+1 650-253-2220 message-1 1 hour ago', 'en'),
+    (1, '+1 650-253-2220 message-2 1 hour ago', 'en'),
+    (2, '+1 650-253-2220 message-3 1 hour ago', 'en'),
+    (3, '+1 650-253-2222 message-4 3 hours ago', 'en'),
+    (4, '+1 650-253-2224 message-5 5 hours ago', 'en'),
+    (5, '+1 650-253-2226 message-6 7 hours ago', 'en'),
+    (6, '+1 650-253-2228 message-7 9 hours ago', 'en'),
+    (7, '+1 650-253-2228 message-8 9 hours ago', 'en'),
+    (7, '+1 650-253-2228 message-8 il y a 9 heures', 'fr')
+])
 def test_inbox_showing_inbound_messages(
     client_request,
     service_one,
@@ -253,8 +284,9 @@ def test_inbox_showing_inbound_messages(
     mock_get_template_statistics,
     mock_get_usage,
     mock_get_most_recent_inbound_sms,
-    index,
+    row_number,
     expected_row,
+    lang
 ):
 
     service_one['permissions'] = ['inbound_sms']
@@ -262,11 +294,12 @@ def test_inbox_showing_inbound_messages(
     page = client_request.get(
         'main.inbox',
         service_id=SERVICE_ONE_ID,
+        lang=lang,
     )
 
     rows = page.select('tbody tr')
     assert len(rows) == 8
-    assert normalize_spaces(rows[index].text) == expected_row
+    assert normalize_spaces(rows[row_number].text) == expected_row
     assert page.select_one('a[download]')['href'] == url_for(
         'main.inbox_download',
         service_id=SERVICE_ONE_ID,
@@ -624,7 +657,7 @@ def test_should_show_upcoming_jobs_on_dashboard(
 @pytest.mark.parametrize('permissions, column_name, expected_column_count', [
     (['email', 'sms'], '.column-half', 2),
     (['email', 'letter'], '.column-third', 3),
-    (['email', 'sms', 'letter'], '.column-third', 3)
+    (['email', 'sms'], '.column-half', 2)
 ])
 def test_correct_columns_display_on_dashboard(
     client_request,
@@ -717,6 +750,115 @@ def test_correct_font_size_for_big_numbers(
     assert expected_column_count == len(
         page.select('.big-number-with-status {}'.format(big_number_class))
     )
+
+
+@pytest.mark.parametrize('permissions, totals, expected_big_numbers_single_plural, lang', [
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 0, 'delivered': 0, 'failed': 0},
+            'sms': {'requested': 0, 'delivered': 0, 'failed': 0}
+        },
+        (
+            '0 emails sent No failures',
+            '0 text messages sent No failures'
+        ),
+        "en"
+    ),
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 0, 'delivered': 0, 'failed': 0},
+            'sms': {'requested': 0, 'delivered': 0, 'failed': 0}
+        },
+        (
+            '0 courriel envoyé Aucun échec',
+            '0 message texte envoyé Aucun échec'
+        ),
+        "fr"
+    ),
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 1, 'delivered': 1, 'failed': 0},
+            'sms': {'requested': 1, 'delivered': 1, 'failed': 0}
+        },
+        (
+            '1 email sent No failures',
+            '1 text message sent No failures'
+        ),
+        "en"
+    ),
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 1, 'delivered': 1, 'failed': 0},
+            'sms': {'requested': 1, 'delivered': 1, 'failed': 0}
+        },
+        (
+            '1 courriel envoyé Aucun échec',
+            '1 message texte envoyé Aucun échec'
+        ),
+        "fr"
+    ),
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 2, 'delivered': 2, 'failed': 0},
+            'sms': {'requested': 2, 'delivered': 2, 'failed': 0}
+        },
+        (
+            '2 emails sent No failures',
+            '2 text messages sent No failures'
+        ),
+        "en"
+    ),
+    (
+        ['email', 'sms'],
+        {
+            'email': {'requested': 2, 'delivered': 2, 'failed': 0},
+            'sms': {'requested': 2, 'delivered': 2, 'failed': 0}
+        },
+        (
+            '2 courriels envoyés Aucun échec',
+            '2 messages textes envoyé Aucun échec'
+        ),
+        "fr"
+    ),
+])
+def test_dashboard_single_and_plural(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    permissions,
+    totals,
+    expected_big_numbers_single_plural,
+    lang
+):
+
+    service_one['permissions'] = permissions
+
+    mocker.patch(
+        'app.main.views.dashboard.get_dashboard_totals',
+        return_value=totals
+    )
+
+    page = client_request.get(
+        'main.service_dashboard',
+        service_id=service_one['id'],
+        lang=lang
+    )
+
+    assert (
+        normalize_spaces(page.select('.big-number-with-status')[0].text),
+        normalize_spaces(page.select('.big-number-with-status')[1].text),
+    ) == expected_big_numbers_single_plural
+
+##
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
