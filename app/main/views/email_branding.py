@@ -86,7 +86,7 @@ def update_email_branding(branding_id, logo=None):
 @main.route("/email-branding/create/<logo>", methods=['GET', 'POST'])
 @user_is_platform_admin
 def create_email_branding(logo=None):
-    form = ServiceUpdateEmailBranding(brand_type='org')
+    form = ServiceUpdateEmailBranding(brand_type='custom_logo')
 
     if form.validate_on_submit():
         if form.file.data:

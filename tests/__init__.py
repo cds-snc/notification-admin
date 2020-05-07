@@ -135,7 +135,7 @@ def service_json(
     sms_sender='GOVUK',
     research_mode=False,
     email_branding=None,
-    branding='govuk',
+    branding='fip_english',
     created_at=None,
     letter_contact_block=None,
     inbound_api=None,

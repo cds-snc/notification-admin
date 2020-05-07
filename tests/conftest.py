@@ -2679,7 +2679,7 @@ def create_email_brandings(number_of_brandings, non_standard_values={}, shuffle=
             'text': 'org {}'.format(idx),
             'colour': None,
             'logo': 'logo{}.png'.format(idx),
-            'brand_type': 'org',
+            'brand_type': 'custom_logo',
         } for idx in range(1, number_of_brandings + 1)]
 
     for idx, row in enumerate(non_standard_values):
@@ -2765,7 +2765,7 @@ def create_email_branding(id, non_standard_values={}):
         'text': 'Organisation text',
         'id': id,
         'colour': '#f00',
-        'brand_type': 'org',
+        'brand_type': 'custom_logo',
     }
 
     if bool(non_standard_values):
@@ -2787,7 +2787,7 @@ def mock_get_email_branding(mocker, fake_uuid):
 @pytest.fixture(scope='function')
 def mock_get_email_branding_with_govuk_brand_type(mocker, fake_uuid):
     def _get_email_branding(id):
-        return create_email_branding(fake_uuid, {'brand_type': 'govuk'})
+        return create_email_branding(fake_uuid, {'brand_type': 'fip_english'})
 
     return mocker.patch(
         'app.email_branding_client.get_email_branding', side_effect=_get_email_branding
@@ -2805,9 +2805,9 @@ def mock_get_email_branding_with_both_brand_type(mocker, fake_uuid):
 
 
 @pytest.fixture(scope='function')
-def mock_get_email_branding_with_org_banner_brand_type(mocker, fake_uuid):
+def mock_get_email_branding_with_custom_logo_with_background_colour_brand_type(mocker, fake_uuid):
     def _get_email_branding(id):
-        return create_email_branding(fake_uuid, {'brand_type': 'org_banner'})
+        return create_email_branding(fake_uuid, {'brand_type': 'custom_logo_with_background_colour'})
 
     return mocker.patch(
         'app.email_branding_client.get_email_branding', side_effect=_get_email_branding
@@ -2817,7 +2817,7 @@ def mock_get_email_branding_with_org_banner_brand_type(mocker, fake_uuid):
 @pytest.fixture(scope='function')
 def mock_get_email_branding_without_brand_text(mocker, fake_uuid):
     def _get_email_branding_without_brand_text(id):
-        return create_email_branding(fake_uuid, {'text': '', 'brand_type': 'org_banner'})
+        return create_email_branding(fake_uuid, {'text': '', 'brand_type': 'custom_logo_with_background_colour'})
 
     return mocker.patch(
         'app.email_branding_client.get_email_branding',
