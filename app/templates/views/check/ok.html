@@ -27,7 +27,7 @@
 
   {{ skip_to_file_contents() }}
 
-  {{ template|string }}
+  {{ template|string|translate_preview_template }}
 
   {% if not request.args.from_test %}
   <h2 class="heading-medium">{{ _('Recipients') }}</h2>

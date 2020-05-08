@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-05 12:25-0400\n"
+"POT-Creation-Date: 2020-05-06 14:52-0600\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -63,6 +63,22 @@ msgstr ""
 
 #: app/__init__.py:424
 msgid "Sent"
+msgstr ""
+
+#: app/utils.py:431
+msgid "From"
+msgstr ""
+
+#: app/utils.py:432
+msgid "To"
+msgstr ""
+
+#: app/main/forms.py:696 app/utils.py:433
+msgid "Subject"
+msgstr ""
+
+#: app/utils.py:434
+msgid "Reply to"
 msgstr ""
 
 #: app/main/forms.py:114 app/main/forms.py:367 app/main/forms.py:872
@@ -232,10 +248,6 @@ msgstr ""
 #: app/main/forms.py:682 app/templates/views/service-settings.html:292
 #: app/templates/views/user-profile.html:71
 msgid "No"
-msgstr ""
-
-#: app/main/forms.py:696 app/main/views/templates.py:77
-msgid "Subject"
 msgstr ""
 
 #: app/main/forms.py:765
@@ -657,14 +669,6 @@ msgstr ""
 
 #: app/main/views/sign_in.py:61
 msgid "The email address or password you entered is incorrect."
-msgstr ""
-
-#: app/main/views/templates.py:75
-msgid "From"
-msgstr ""
-
-#: app/main/views/templates.py:76
-msgid "To"
 msgstr ""
 
 #: app/main/views/templates.py:166

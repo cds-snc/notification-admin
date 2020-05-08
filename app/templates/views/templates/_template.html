@@ -55,5 +55,5 @@
       <a href="{{ url_for(".service_add_letter_contact", service_id=current_service.id, from_template=template.id) }}" class="edit-template-link-letter-contact">Edit</a>
     {% endif %}
   {% endif %}
-  {{ template.html|safe }}
+  {{ template|string|translate_preview_template }}
 </div>

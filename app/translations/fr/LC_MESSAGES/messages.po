@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-05 12:25-0400\n"
+"POT-Creation-Date: 2020-05-06 14:52-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -60,6 +60,22 @@ msgstr "Le numéro de téléphone n’existe pas"
 #: app/__init__.py:424
 msgid "Sent"
 msgstr "Envoyé"
+
+#: app/utils.py:431
+msgid "From"
+msgstr "De"
+
+#: app/utils.py:432
+msgid "To"
+msgstr "À"
+
+#: app/main/forms.py:696 app/utils.py:433
+msgid "Subject"
+msgstr "Objet"
+
+#: app/utils.py:434
+msgid "Reply to"
+msgstr "Répondre à"
 
 #: app/main/forms.py:114 app/main/forms.py:367 app/main/forms.py:872
 #: app/main/forms.py:939 app/templates/views/user-profile.html:35
@@ -229,10 +245,6 @@ msgstr "Oui"
 #: app/templates/views/user-profile.html:71
 msgid "No"
 msgstr "Non"
-
-#: app/main/forms.py:696 app/main/views/templates.py:77
-msgid "Subject"
-msgstr "Objet"
 
 #: app/main/forms.py:765
 msgid "The email address is already in use"
@@ -658,14 +670,6 @@ msgstr "Commencer tous les messages texte par"
 #: app/main/views/sign_in.py:61
 msgid "The email address or password you entered is incorrect."
 msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact."
-
-#: app/main/views/templates.py:75
-msgid "From"
-msgstr "De"
-
-#: app/main/views/templates.py:76
-msgid "To"
-msgstr "À"
 
 #: app/main/views/templates.py:166
 msgid "Select at least one template or folder"
@@ -3272,7 +3276,7 @@ msgid ""
 "Administrators who have to meet departmental service\n"
 "              standards for communication"
 msgstr ""
-"Pour les administrateurs devant respecter les normes de service ministérielles de leurs communications"
+"Pour les administrateurs devant respecter les normes de service ministérielles de leurs communications"	
 
 #: app/templates/views/signedout.html:335
 msgid "What you can do with <i>Notify</i>"

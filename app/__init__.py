@@ -1,5 +1,6 @@
 import itertools
 import os
+import re
 import urllib
 from datetime import datetime, timedelta, timezone
 from functools import partial
@@ -8,6 +9,7 @@ from time import monotonic
 
 import timeago
 from flask import (
+    Markup,
     current_app,
     flash,
     g,
@@ -365,6 +367,26 @@ def format_delta(_date):
     return timeago.format(date, now, lang)
 
 
+def translate_preview_template(_template_str):
+    translate = {
+        "From": _("From"),
+        "To": _("To"),
+        "Subject": _("Subject"),
+        "Reply to": _("Reply to")
+    }
+
+    def translate_brackets(x):
+        g = x.group(0)
+        english = g[1:-1]  # drop brackets
+        if english not in translate:
+            return english
+        return translate[english]
+
+    # this regex finds test inside []
+    template_str = re.sub(r"\[[^]]*\]", translate_brackets, _template_str)
+    return Markup(template_str)
+
+
 def format_thousands(value):
     if isinstance(value, Number):
         return '{:,.0f}'.format(value)
@@ -709,6 +731,7 @@ def add_template_filters(application):
         format_date_short,
         format_datetime_relative,
         format_delta,
+        translate_preview_template,
         format_notification_status,
         format_notification_type,
         format_notification_status_as_time,

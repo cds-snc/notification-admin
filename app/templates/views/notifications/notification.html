@@ -75,7 +75,7 @@
     {% endif %}
 
     <div class="{{ 'letter-sent' if template.template_type == 'letter' else '' }}">
-      {{ template|string }}
+      {{ template|string|translate_preview_template }}
     </div>
 
     {% if template.template_type == 'letter' %}
