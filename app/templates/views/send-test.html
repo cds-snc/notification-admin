@@ -9,11 +9,18 @@ class='js-stick-at-top-when-scrolling send-one-off-form' if
 template.template_type != 'sms' else 'send-one-off-form', module="autofocus",
 data_kwargs={'force-focus': True} ) %}
 <div class="grid-row">
+  {% set form_label = form.placeholder_value.label.text %}
   <div
-    class="column-two-thirds {% if form.placeholder_value.label.text == 'phone number' %}extra-tracking{% endif %}"
+    class="column-two-thirds {% if form_label == 'phone number' %}extra-tracking{% endif %}"
   >
-    {% set hint_txt = _('Optional') %} {{ textbox( form.placeholder_value,
-    hint=hint_txt if optional_placeholder else None, width='1-1', ) }}
+    {% set hint_txt = _('Optional') %}
+    {% if form_label == 'phone number' %}
+      {{ textbox( form.placeholder_value,
+    label=_(form.placeholder_value.label.text)|capitalize, hint=hint_txt if optional_placeholder else None, width='1-1', ) }}
+    {% else %}
+      {{ textbox( form.placeholder_value,
+      label=form.placeholder_value.label.text|capitalize, hint=hint_txt if optional_placeholder else None, width='1-1', ) }}
+  {% endif %}
   </div>
   {% if skip_link %}
   <div class="column-one-third">
