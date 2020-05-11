@@ -36,7 +36,7 @@
 
       {% call form_wrapper() %}
         {{ page_footer(
-          'Yes, delete ‘{}’'.format(current_service.name),
+          _('Yes, delete ') + '‘{}’'.format(current_service.name),
           destructive=True,
           back_link=url_for('.service_settings', service_id=current_service.id)
         ) }}

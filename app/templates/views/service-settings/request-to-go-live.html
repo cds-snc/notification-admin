@@ -72,7 +72,7 @@
           By requesting to go live you’re agreeing to our <a href="{{ url_for('.terms') }}">terms of use</a>.
         </p>
         {% call form_wrapper() %}
-          {{ page_footer('Request to go live') }}
+          {{ page_footer(_('Request to go live')) }}
         {% endcall %}
       {% endif %}
     </div>

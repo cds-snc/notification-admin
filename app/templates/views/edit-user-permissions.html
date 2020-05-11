@@ -38,7 +38,7 @@
       {% include 'views/manage-users/permissions.html' %}
 
         {{ page_footer(
-          'Save',
+          _('Save'),
           delete_link=url_for('.delete_smtp', service_id=current_service.id, user_id=user.id, delete='yes'),
           delete_link_text='Remove this team member'
         ) }}
