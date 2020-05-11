@@ -15,13 +15,13 @@
 {% endmacro %}
 
 {% block service_page_title %}
-  {{ "Preview of {}".format(template.name) }}
+  {{ _("Preview of") + " " + template.name }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Preview of {}'.format(template.name),
+    _('Preview of') + " " + template.name,
     back_link=back_link
   ) }}
 
