@@ -34,34 +34,42 @@ msgstr ""
 msgid "Reply to"
 msgstr ""
 
-#: app/__init__.py:417 app/__init__.py:427
+#: app/__init__.py:376
+msgid "From:"
+msgstr ""
+
+#: app/__init__.py:377
+msgid "To:"
+msgstr ""
+
+#: app/__init__.py:419 app/__init__.py:429
 #: app/templates/views/conversations/messages.html:27
 msgid "Failed"
 msgstr ""
 
-#: app/__init__.py:418 app/__init__.py:428
+#: app/__init__.py:420 app/__init__.py:430
 #: app/templates/views/message-status.html:46
 #: app/templates/views/message-status.html:90
 msgid "Technical failure"
 msgstr ""
 
-#: app/__init__.py:419 app/templates/views/message-status.html:43
+#: app/__init__.py:421 app/templates/views/message-status.html:43
 msgid "Inbox not accepting messages right now"
 msgstr ""
 
-#: app/__init__.py:420
+#: app/__init__.py:422
 msgid "Email address doesn’t exist"
 msgstr ""
 
-#: app/__init__.py:421 app/__init__.py:424 app/__init__.py:431
+#: app/__init__.py:423 app/__init__.py:426 app/__init__.py:433
 #: app/templates/views/message-status.html:37
 #: app/templates/views/message-status.html:52
 #: app/templates/views/message-status.html:81
 msgid "Delivered"
 msgstr ""
 
-#: app/__init__.py:422 app/__init__.py:423 app/__init__.py:432
-#: app/__init__.py:433 app/__init__.py:434
+#: app/__init__.py:424 app/__init__.py:425 app/__init__.py:434
+#: app/__init__.py:435 app/__init__.py:436
 #: app/templates/partials/jobs/notifications.html:13
 #: app/templates/views/dashboard/_upcoming.html:28
 #: app/templates/views/message-status.html:34
@@ -69,15 +77,15 @@ msgstr ""
 msgid "Sending"
 msgstr ""
 
-#: app/__init__.py:429 app/templates/views/message-status.html:87
+#: app/__init__.py:431 app/templates/views/message-status.html:87
 msgid "Phone not accepting messages right now"
 msgstr ""
 
-#: app/__init__.py:430
+#: app/__init__.py:432
 msgid "Phone number doesn’t exist"
 msgstr ""
 
-#: app/__init__.py:435
+#: app/__init__.py:437
 msgid "Sent"
 msgstr ""
 
@@ -360,6 +368,7 @@ msgid "Off"
 msgstr ""
 
 #: app/main/forms.py:1039 app/main/views/send.py:776
+#: app/templates/views/notifications/check.html:70
 #: app/templates/views/signedout.html:657
 #: app/templates/views/support/ask-question-give-feedback.html:49
 #: app/templates/views/templates/_template.html:21
@@ -695,6 +704,11 @@ msgstr ""
 #: app/main/views/templates.py:209
 #: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
+msgstr ""
+
+#: app/main/views/templates.py:399
+#: app/templates/views/service-settings/email-reply-to/add.html:31
+msgid "Add"
 msgstr ""
 
 #: app/main/views/templates.py:478 app/main/views/templates.py:496

@@ -67,7 +67,7 @@
       )}}" class='page-footer'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       {% if not error %}
-        <button type="submit" class="button">Send 1 {{ message_count_label(1, template.template_type, suffix='') }}</button>
+        <button type="submit" class="button">{{ _("Send") }} 1 {{ message_count_label(1, template.template_type, suffix='') }}</button>
       {% endif %}
       {% if template.template_type == 'letter' %}
         <a href="{{ url_for('main.check_notification_preview', service_id=current_service.id, template_id=template.id, filetype='pdf') }}" download class="page-footer-right-aligned-link">Download as a PDF</a>
