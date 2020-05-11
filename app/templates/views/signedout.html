@@ -122,6 +122,10 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
             class="text-small text-blue mr-10 font-bold no-underline hover:underline"
             >{{ _("Technical documentation") }}</a>
           <a
+            href="{{ _('url.freshdesk.home') }}"
+            class="text-small text-blue mr-10 font-bold no-underline hover:underline"
+            >{{ _("FAQs & Assistance") }}</a>
+          <a
             href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
             class="text-small text-blue mr-10 font-bold no-underline hover:underline"
             >{{ _("Contact us") }}
