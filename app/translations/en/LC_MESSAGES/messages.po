@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-06 14:52-0600\n"
+"POT-Creation-Date: 2020-05-11 10:59-0400\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,34 +18,50 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: app/__init__.py:406 app/__init__.py:416
+#: app/__init__.py:372
+msgid "From"
+msgstr ""
+
+#: app/__init__.py:373
+msgid "To"
+msgstr ""
+
+#: app/__init__.py:374 app/main/forms.py:696
+msgid "Subject"
+msgstr ""
+
+#: app/__init__.py:375
+msgid "Reply to"
+msgstr ""
+
+#: app/__init__.py:417 app/__init__.py:427
 #: app/templates/views/conversations/messages.html:27
 msgid "Failed"
 msgstr ""
 
-#: app/__init__.py:407 app/__init__.py:417
+#: app/__init__.py:418 app/__init__.py:428
 #: app/templates/views/message-status.html:46
 #: app/templates/views/message-status.html:90
 msgid "Technical failure"
 msgstr ""
 
-#: app/__init__.py:408 app/templates/views/message-status.html:43
+#: app/__init__.py:419 app/templates/views/message-status.html:43
 msgid "Inbox not accepting messages right now"
 msgstr ""
 
-#: app/__init__.py:409
+#: app/__init__.py:420
 msgid "Email address doesn’t exist"
 msgstr ""
 
-#: app/__init__.py:410 app/__init__.py:413 app/__init__.py:420
+#: app/__init__.py:421 app/__init__.py:424 app/__init__.py:431
 #: app/templates/views/message-status.html:37
 #: app/templates/views/message-status.html:52
 #: app/templates/views/message-status.html:81
 msgid "Delivered"
 msgstr ""
 
-#: app/__init__.py:411 app/__init__.py:412 app/__init__.py:421
-#: app/__init__.py:422 app/__init__.py:423
+#: app/__init__.py:422 app/__init__.py:423 app/__init__.py:432
+#: app/__init__.py:433 app/__init__.py:434
 #: app/templates/partials/jobs/notifications.html:13
 #: app/templates/views/dashboard/_upcoming.html:28
 #: app/templates/views/message-status.html:34
@@ -53,32 +69,16 @@ msgstr ""
 msgid "Sending"
 msgstr ""
 
-#: app/__init__.py:418 app/templates/views/message-status.html:87
+#: app/__init__.py:429 app/templates/views/message-status.html:87
 msgid "Phone not accepting messages right now"
 msgstr ""
 
-#: app/__init__.py:419
+#: app/__init__.py:430
 msgid "Phone number doesn’t exist"
 msgstr ""
 
-#: app/__init__.py:424
+#: app/__init__.py:435
 msgid "Sent"
-msgstr ""
-
-#: app/utils.py:431
-msgid "From"
-msgstr ""
-
-#: app/utils.py:432
-msgid "To"
-msgstr ""
-
-#: app/main/forms.py:696 app/utils.py:433
-msgid "Subject"
-msgstr ""
-
-#: app/utils.py:434
-msgid "Reply to"
 msgstr ""
 
 #: app/main/forms.py:114 app/main/forms.py:367 app/main/forms.py:872
@@ -434,12 +434,12 @@ msgstr ""
 msgid "Folder name"
 msgstr ""
 
-#: app/main/forms.py:1497 app/main/views/templates.py:225
+#: app/main/forms.py:1497 app/main/views/templates.py:208
 #: app/templates/views/platform-admin/api_keys_ranked.html:24
 msgid "Email"
 msgstr ""
 
-#: app/main/forms.py:1498 app/main/views/templates.py:224
+#: app/main/forms.py:1498 app/main/views/templates.py:207
 msgid "Text message"
 msgstr ""
 
@@ -655,12 +655,16 @@ msgstr ""
 msgid "Change your service name"
 msgstr ""
 
-#: app/main/views/service_settings.py:342 app/main/views/templates.py:723
+#: app/main/views/service_settings.py:342 app/main/views/templates.py:706
 msgid "Are you sure you want to delete"
 msgstr ""
 
 #: app/main/views/service_settings.py:342
 msgid "There’s no way to undo this."
+msgstr ""
+
+#: app/main/views/service_settings.py:574
+msgid "Are you sure you want to delete this reply-to email address?"
 msgstr ""
 
 #: app/main/views/service_settings.py:629
@@ -671,62 +675,62 @@ msgstr ""
 msgid "The email address or password you entered is incorrect."
 msgstr ""
 
-#: app/main/views/templates.py:166
+#: app/main/views/templates.py:149
 msgid "Select at least one template or folder"
 msgstr ""
 
-#: app/main/views/templates.py:223
+#: app/main/views/templates.py:206
 msgid "All"
 msgstr ""
 
-#: app/main/views/templates.py:226
+#: app/main/views/templates.py:209
 #: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
 msgstr ""
 
-#: app/main/views/templates.py:416
+#: app/main/views/templates.py:399
 #: app/templates/views/service-settings/email-reply-to/add.html:31
 msgid "Add"
 msgstr ""
 
-#: app/main/views/templates.py:495 app/main/views/templates.py:513
+#: app/main/views/templates.py:478 app/main/views/templates.py:496
 msgid "You must empty this folder before you can delete it"
 msgstr ""
 
-#: app/main/views/templates.py:511
+#: app/main/views/templates.py:494
 msgid "Folder is not empty"
 msgstr ""
 
-#: app/main/views/templates.py:525
+#: app/main/views/templates.py:508
 msgid "Are you sure you want to delete the"
 msgstr ""
 
-#: app/main/views/templates.py:525
+#: app/main/views/templates.py:508
 msgid "folder?"
 msgstr ""
 
-#: app/main/views/templates.py:599
+#: app/main/views/templates.py:582
 msgid "New"
 msgstr ""
 
-#: app/main/views/templates.py:686
+#: app/main/views/templates.py:669
 #: app/templates/views/templates/_template.html:36
 msgid "Edit"
 msgstr ""
 
-#: app/main/views/templates.py:710
+#: app/main/views/templates.py:693
 msgid "more than seven days"
 msgstr ""
 
-#: app/main/views/templates.py:715
+#: app/main/views/templates.py:698
 msgid "This template was last used"
 msgstr ""
 
-#: app/main/views/templates.py:715
+#: app/main/views/templates.py:698
 msgid "ago."
 msgstr ""
 
-#: app/main/views/templates.py:751
+#: app/main/views/templates.py:734
 msgid "Personalised content will be hidden for messages sent with this template"
 msgstr ""
 
@@ -1690,6 +1694,7 @@ msgstr ""
 #: app/templates/views/signin.html:34
 #: app/templates/views/templates/_move_to.html:36
 #: app/templates/views/templates/add.html:12
+#: app/templates/views/templates/start-tour.html:18
 #: app/templates/views/two-factor.html:16
 #: app/templates/views/verify-mobile.html:22
 msgid "Continue"
@@ -3768,15 +3773,15 @@ msgstr ""
 msgid "When you send messages via the API they’ll appear here."
 msgstr ""
 
-#: app/templates/views/api/index.html:46 app/templates/views/api/index.html:92
+#: app/templates/views/api/index.html:46 app/templates/views/api/index.html:90
 msgid "Notification deletes messages after 7 days."
 msgstr "<i>Notify</i> deletes messages after 7 days."
 
-#: app/templates/views/api/index.html:78
+#: app/templates/views/api/index.html:76
 msgid "View"
 msgstr ""
 
-#: app/templates/views/api/index.html:88
+#: app/templates/views/api/index.html:86
 msgid "Only showing the first 50 messages."
 msgstr ""
 
@@ -4022,6 +4027,7 @@ msgid "Only showing rows with errors"
 msgstr ""
 
 #: app/templates/views/check/column-errors.html:225
+#: app/templates/views/check/ok.html:18 app/templates/views/check/ok.html:24
 #: app/templates/views/notifications/check.html:7
 #: app/templates/views/notifications/check.html:54
 msgid "Preview of"
@@ -4334,19 +4340,19 @@ msgstr ""
 msgid "Last logged in"
 msgstr ""
 
-#: app/templates/views/find-users/user-information.html:60
+#: app/templates/views/find-users/user-information.html:58
 msgid "failed login attempts"
 msgstr ""
 
-#: app/templates/views/find-users/user-information.html:66
+#: app/templates/views/find-users/user-information.html:64
 msgid "Archive user"
 msgstr ""
 
-#: app/templates/views/find-users/user-information.html:74
+#: app/templates/views/find-users/user-information.html:72
 msgid "Unblock user"
 msgstr ""
 
-#: app/templates/views/find-users/user-information.html:80
+#: app/templates/views/find-users/user-information.html:78
 msgid "Block user"
 msgstr ""
 
@@ -4907,23 +4913,23 @@ msgstr ""
 msgid "Last edited"
 msgstr ""
 
-#: app/templates/views/templates/template.html:59
+#: app/templates/views/templates/template.html:57
 msgid "See previous versions"
 msgstr ""
 
-#: app/templates/views/templates/template.html:66
+#: app/templates/views/templates/template.html:64
 msgid "Delete this template"
 msgstr ""
 
-#: app/templates/views/templates/template.html:74
+#: app/templates/views/templates/template.html:72
 msgid "Hide personal information from screen and logs after sending"
 msgstr ""
 
-#: app/templates/views/templates/template.html:79
+#: app/templates/views/templates/template.html:77
 msgid "Personalisation is hidden after sending"
 msgstr ""
 
-#: app/templates/views/templates/template.html:87
+#: app/templates/views/templates/template.html:85
 msgid "Template version"
 msgstr ""
 

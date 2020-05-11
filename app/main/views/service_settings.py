@@ -12,6 +12,7 @@ from flask import (
     session,
     url_for,
 )
+from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
@@ -571,7 +572,7 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
         ))
 
     if (request.endpoint == "main.service_confirm_delete_email_reply_to"):
-        flash("Are you sure you want to delete this reply-to email address?", 'delete')
+        flash(_('Are you sure you want to delete this reply-to email address?'), 'delete')
     return render_template(
         'views/service-settings/email-reply-to/edit.html',
         form=form,
