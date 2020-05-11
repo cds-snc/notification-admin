@@ -287,12 +287,10 @@ class FieldWithNoneOption():
             self.data = None
 
 class FieldWithLanguageOptions():
-    ENGLISH_OPTION_VALUE = '533076c9-c9ae-4831-b9b2-ff5886d10301'
-    FRENCH_OPTION_VALUE = '90f88238-5eca-4fa2-a7c4-b1aea62366c6'
+    ENGLISH_OPTION_VALUE = '__FIP-EN__'
+    FRENCH_OPTION_VALUE = '__FIP-FR__'
 
     def process_data(self, value):
-        print("VALUE")
-        print(value)
         self.data = self.ENGLISH_OPTION_VALUE if value is None else value
 
 class RadioFieldWithNoneOption(FieldWithNoneOption, RadioField):
@@ -1063,7 +1061,7 @@ class SetEmailBranding(StripWhitespaceForm):
     )
 
     DEFAULT_EN = (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, 'English Federal Identity Program (FIP)')
-    DEFAULT_FR = (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, 'French Federal Identity Program (FIP)')
+    DEFAULT_FR = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, 'French Federal Identity Program (FIP)')
 
     def __init__(self, all_branding_options, current_branding):
 

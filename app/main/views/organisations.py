@@ -294,7 +294,6 @@ def edit_organisation_agreement(org_id):
 def edit_organisation_email_branding(org_id):
 
     email_branding = email_branding_client.get_all_email_branding()
-    print(email_branding)
 
     form = SetEmailBranding(
         all_branding_options=get_branding_as_value_and_label(email_branding),

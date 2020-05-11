@@ -34,6 +34,7 @@ from app.main.forms import (
     ConfirmPasswordForm,
     EstimateUsageForm,
     FreeSMSAllowance,
+    FieldWithLanguageOptions,
     InternationalSMSForm,
     LinkOrganisationsForm,
     PreviewBranding,
@@ -937,9 +938,16 @@ def set_free_sms_allowance(service_id):
 def service_set_email_branding(service_id):
     email_branding = email_branding_client.get_all_email_branding()
 
+    current_branding = current_service.email_branding_id
+
+    if current_branding == None:
+        current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
+            current_service.default_branding_is_french == True else
+            FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+
     form = SetEmailBranding(
         all_branding_options=get_branding_as_value_and_label(email_branding),
-        current_branding=current_service.email_branding_id,
+        current_branding=current_branding,
     )
 
     if form.validate_on_submit():
@@ -963,13 +971,23 @@ def service_preview_email_branding(service_id):
 
     form = PreviewBranding(branding_style=branding_style)
 
-    print("What is being sent to the server:")
-    print(form.branding_style.data)
+    default_branding_is_french = None
+
+    if form.branding_style.data == FieldWithLanguageOptions.ENGLISH_OPTION_VALUE:
+        default_branding_is_french = False
+    elif form.branding_style.data == FieldWithLanguageOptions.FRENCH_OPTION_VALUE:
+        default_branding_is_french = True
 
     if form.validate_on_submit():
-        current_service.update(
-            email_branding=form.branding_style.data
-        )
+        if default_branding_is_french is not None:
+            current_service.update(
+                email_branding=None,
+                default_branding_is_french=default_branding_is_french
+            )
+        else:
+            current_service.update(
+                email_branding=form.branding_style.data
+            )
         return redirect(url_for('.service_settings', service_id=service_id))
 
     return render_template(

@@ -143,18 +143,12 @@ def email_template():
     branding_type = 'fip_english'
     branding_style = request.args.get('branding_style', None)
 
-    print(branding_style)
-    print(FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
-
     if branding_style == FieldWithLanguageOptions.ENGLISH_OPTION_VALUE or branding_style == FieldWithLanguageOptions.FRENCH_OPTION_VALUE:
-        print("FIP STYLE")
         if branding_style == FieldWithLanguageOptions.FRENCH_OPTION_VALUE:
             branding_type = 'fip_french'
         branding_style = None
 
-    print(branding_style)
     if branding_style is not None:
-        print("shouldn't see this")
         email_branding = email_branding_client.get_email_branding(branding_style)['email_branding']
         branding_type = email_branding['brand_type']
 
