@@ -1136,31 +1136,31 @@ def test_send_one_off_or_test_has_correct_page_titles(
         'main.send_test_step',
         0,
         {'phone number': '6502532222'},
-        'one',
+        'One',
     ),
     (
         'main.send_test_step',
         1,
         {'phone number': '6502532222', 'one': 'one'},
-        'two',
+        'Two',
     ),
     (
         'main.send_one_off_step',
         0,
         {},
-        'phone number',
+        'Phone number',
     ),
     (
         'main.send_one_off_step',
         1,
         {'phone number': '6502532222'},
-        'one',
+        'One',
     ),
     (
         'main.send_one_off_step',
         2,
         {'phone number': '6502532222', 'one': 'one'},
-        'two',
+        'Two',
     ),
 ])
 def test_send_one_off_or_test_shows_placeholders_in_correct_order(
@@ -1394,7 +1394,7 @@ def test_link_to_upload_not_offered_when_entering_personalisation(
 
     # We’re entering personalisation
     assert page.select_one('input[type=text]')['name'] == 'placeholder_value'
-    assert page.select_one('label[for=placeholder_value]').text.strip() == 'name'
+    assert page.select_one('label[for=placeholder_value]').text.strip() == 'Name'
     # …but first link on the page is ‘Back’, so not preceeded by ‘Upload’
     assert page.select_one('main a').text == 'Back'
     assert 'Upload' not in page.select_one('main').text
@@ -1641,7 +1641,7 @@ def test_send_test_sms_message_with_placeholders_shows_first_field(
         _follow_redirects=True,
     )
 
-    assert page.select('label')[0].text.strip() == 'name'
+    assert page.select('label')[0].text.strip() == 'Name'
     assert page.select('input')[0]['name'] == 'placeholder_value'
     assert page.select('.govuk-back-link')[0]['href'] == url_for(
         expected_back_link_endpoint,
@@ -1854,7 +1854,7 @@ def test_send_test_indicates_optional_address_columns(
     )
 
     assert normalize_spaces(page.select('label')[0].text) == (
-        'address line 4 '
+        'Address line 4 '
         'Optional'
     )
     assert page.select('.govuk-back-link')[0]['href'] == url_for(
