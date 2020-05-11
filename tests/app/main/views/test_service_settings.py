@@ -4203,13 +4203,9 @@ def test_show_email_branding_request_page_when_no_email_branding_is_set(
 
     for index, option in enumerate((
         'fip_english',
-<<<<<<< HEAD
         'fip_french',
         'both_english',
         'both_french',
-=======
-        'both',
->>>>>>> master
         'custom_logo',
         'custom_logo_with_background_colour',
     )):

@@ -33,8 +33,8 @@ from app.main import main
 from app.main.forms import (
     ConfirmPasswordForm,
     EstimateUsageForm,
-    FreeSMSAllowance,
     FieldWithLanguageOptions,
+    FreeSMSAllowance,
     InternationalSMSForm,
     LinkOrganisationsForm,
     PreviewBranding,
@@ -940,10 +940,10 @@ def service_set_email_branding(service_id):
 
     current_branding = current_service.email_branding_id
 
-    if current_branding == None:
+    if current_branding is None:
         current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
-            current_service.default_branding_is_french == True else
-            FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+                            current_service.default_branding_is_french is True else
+                            FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
 
     form = SetEmailBranding(
         all_branding_options=get_branding_as_value_and_label(email_branding),

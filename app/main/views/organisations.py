@@ -319,7 +319,6 @@ def edit_organisation_email_branding(org_id):
 def organisation_preview_email_branding(org_id):
 
     branding_style = request.args.get('branding_style', None)
-    
     form = PreviewBranding(branding_style=branding_style)
 
     if form.validate_on_submit():

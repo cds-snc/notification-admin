@@ -103,7 +103,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             'go_live_at',
             'sending_domain'
         }
-        print(disallowed_attributes)
+
         if disallowed_attributes:
             raise TypeError('Not allowed to update service attributes: {}'.format(
                 ", ".join(disallowed_attributes)

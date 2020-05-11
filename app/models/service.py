@@ -22,6 +22,7 @@ from app.notify_client.template_folder_api_client import (
 )
 from app.utils import get_default_sms_sender
 
+
 class Service(JSONModel):
 
     ALLOWED_PROPERTIES = {
@@ -409,7 +410,7 @@ class Service(JSONModel):
     @property
     def email_branding_id(self):
         return self._dict['email_branding']
-    
+
     @property
     def default_branding_is_french(self):
         return self._dict['default_branding_is_french']
@@ -423,8 +424,8 @@ class Service(JSONModel):
     @cached_property
     def email_branding_name(self):
         if self.email_branding is None:
-            return ('French Federal Identity Program (FIP)' if self.default_branding_is_french == True
-                else 'English Federal Identity Program (FIP)')
+            return ('French Federal Identity Program (FIP)' if self.default_branding_is_french is True
+                    else 'English Federal Identity Program (FIP)')
         return self.email_branding['name']
 
     @property

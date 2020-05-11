@@ -286,12 +286,14 @@ class FieldWithNoneOption():
         if self.data == self.NONE_OPTION_VALUE and not validation_stopped:
             self.data = None
 
+
 class FieldWithLanguageOptions():
     ENGLISH_OPTION_VALUE = '__FIP-EN__'
     FRENCH_OPTION_VALUE = '__FIP-FR__'
 
     def process_data(self, value):
         self.data = self.ENGLISH_OPTION_VALUE if value is None else value
+
 
 class RadioFieldWithNoneOption(FieldWithNoneOption, RadioField):
     pass

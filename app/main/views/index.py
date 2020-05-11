@@ -22,8 +22,8 @@ from app import (
 from app.main import main
 from app.main.forms import (
     ContactNotifyTeam,
-    FieldWithNoneOption,
     FieldWithLanguageOptions,
+    FieldWithNoneOption,
     SearchByNameForm,
 )
 from app.main.views.sub_navigation_dictionaries import features_nav
@@ -143,7 +143,8 @@ def email_template():
     branding_type = 'fip_english'
     branding_style = request.args.get('branding_style', None)
 
-    if branding_style == FieldWithLanguageOptions.ENGLISH_OPTION_VALUE or branding_style == FieldWithLanguageOptions.FRENCH_OPTION_VALUE:
+    if (branding_style == FieldWithLanguageOptions.ENGLISH_OPTION_VALUE
+       or branding_style == FieldWithLanguageOptions.FRENCH_OPTION_VALUE):
         if branding_style == FieldWithLanguageOptions.FRENCH_OPTION_VALUE:
             branding_type = 'fip_french'
         branding_style = None
