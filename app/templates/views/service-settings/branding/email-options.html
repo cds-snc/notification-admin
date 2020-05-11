@@ -6,24 +6,24 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Change email branding
+  {{ _('Change email branding') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Change email branding',
+    _('Change email branding'),
     back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
 
   {% call form_wrapper() %}
     <fieldset class="form-group {% if form.options.errors %}form-group-error{% endif %} top-gutter">
       <legend class="bottom-gutter-2-3">
-        Choose the branding you’d like on your emails.
+        {{ _('Choose the branding you’d like on your emails.') }}
       </legend>
       {% if form.options.errors %}
         <span class="error-message" data-module="track-error" data-error-type="Can’t be empty" data-error-label="{{ form.options.name }}">
-          You need to choose an option
+          {{ _('You need to choose an option') }}
         </span>
       {% endif %}
       <div class="grid-row">
@@ -38,8 +38,8 @@
       </div>
     </fieldset>
     <p class="form-group">
-      We’ll email you once your branding’s ready to use, or if we need any
-      more information.
+      {{ _('We’ll email you once your branding’s ready to use, or if we need any
+      more information.') }}
     </p>
     {{ page_footer('Request new branding') }}
   {% endcall %}

@@ -8,7 +8,7 @@
 
 {% block platform_admin_content %}
 
-  {{ page_header('Email branding') }}
+  {{ page_header(_('Email branding')) }}
   {{ live_search(target_selector='.email-brand', show=True, form=search_form) }}
   {% for brand in email_brandings %}
     <p class="email-brand">

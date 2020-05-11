@@ -5,13 +5,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  Change your {{ thing }}
+  {{ _('Change your ') + thing }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Change your {}'.format(thing),
+    _('Change your ') + thing,
     back_link=back_link
   ) }}
 

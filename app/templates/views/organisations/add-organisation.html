@@ -22,7 +22,7 @@
           &nbsp;
         </div>
         <div class="column-three-quarters">
-          {{ page_header('New organisation') }}
+          {{ page_header(_('New organisation')) }}
           {% call form_wrapper() %}
             {{textbox(form.name)}}
             {{radios(form.organisation_type)}}
