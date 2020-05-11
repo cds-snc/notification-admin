@@ -12,7 +12,6 @@ from flask import (
     session,
     url_for,
 )
-from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
@@ -132,7 +131,7 @@ def service_name_change_confirm(service_id):
             error_msg = "Duplicate service name '{}'".format(session['service_name_change'])
             if e.status_code == 400 and error_msg in e.message['name']:
                 # Redirect the user back to the change service name screen
-                flash('This service name is already in use', 'error')
+                flash(_l('This service name is already in use'), 'error')
                 return redirect(url_for('main.service_name_change', service_id=service_id))
             else:
                 raise e
@@ -234,7 +233,7 @@ def submit_request_to_go_live(service_id):
 
     current_service.update(go_live_user=current_user.id)
 
-    flash('Thanks for your request to go live. We’ll get back to you within one working day.', 'default')
+    flash(_l('Thanks for your request to go live. We’ll get back to you within one working day.'), 'default')
     return redirect(url_for('.service_settings', service_id=service_id))
 
 
@@ -353,7 +352,7 @@ def suspend_service(service_id):
         service_api_client.suspend_service(service_id)
         return redirect(url_for('.service_settings', service_id=service_id))
     else:
-        flash("This will suspend the service and revoke all api keys. Are you sure you want to suspend this service?",
+        flash(_l("This will suspend the service and revoke all api keys. Are you sure you want to suspend this service?"),
               'suspend')
         return service_settings(service_id)
 
@@ -365,7 +364,7 @@ def resume_service(service_id):
         service_api_client.resume_service(service_id)
         return redirect(url_for('.service_settings', service_id=service_id))
     else:
-        flash("This will resume the service. New api key are required for this service to use the API.", 'resume')
+        flash(_l("This will resume the service. New api key are required for this service to use the API."), 'resume')
         return service_settings(service_id)
 
 
@@ -409,7 +408,7 @@ def service_sending_domain(service_id):
 
     if form.validate_on_submit():
         current_service.update(sending_domain=form.sending_domain.data)
-        flash('Sending domain updated', 'default')
+        flash(_l('Sending domain updated'), 'default')
         return redirect(url_for('.service_settings', service_id=service_id))
 
     default_sending = current_app.config["SENDING_DOMAIN"]
@@ -572,7 +571,7 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
         ))
 
     if (request.endpoint == "main.service_confirm_delete_email_reply_to"):
-        flash(_('Are you sure you want to delete this reply-to email address?'), 'delete')
+        flash(_l('Are you sure you want to delete this reply-to email address?'), 'delete')
     return render_template(
         'views/service-settings/email-reply-to/edit.html',
         form=form,
@@ -787,7 +786,7 @@ def service_edit_letter_contact(service_id, letter_contact_id):
         return redirect(url_for('.service_letter_contact_details', service_id=service_id))
 
     if (request.endpoint == "main.service_confirm_delete_letter_contact"):
-        flash("Are you sure you want to delete this contact block?", 'delete')
+        flash(_l("Are you sure you want to delete this contact block?"), 'delete')
     return render_template(
         'views/service-settings/letter-contact/edit.html',
         form=form,
@@ -870,7 +869,7 @@ def service_edit_sms_sender(service_id, sms_sender_id):
 
     form.is_default.data = sms_sender['is_default']
     if (request.endpoint == "main.service_confirm_delete_sms_sender"):
-        flash("Are you sure you want to delete this text message sender?", 'delete')
+        flash(_l("Are you sure you want to delete this text message sender?"), 'delete')
     return render_template(
         'views/service-settings/sms-sender/edit.html',
         form=form,
