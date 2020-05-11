@@ -153,6 +153,12 @@ Canada Notification service') %} {% set meta_title = _('GC Notify | GC notificat
           <li>
             <a
               class="block text-small mb-5 no-underline hover:underline"
+              href="{{ _('https://notification.assistance.cds-snc.ca/en/support/home') }}"
+              >{{ _("FAQs & Assistance") }}</a>
+          </li>
+          <li>
+            <a
+              class="block text-small mb-5 no-underline hover:underline"
               href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}"
               >{{ _("Contact us") }}</a>
           </li>
