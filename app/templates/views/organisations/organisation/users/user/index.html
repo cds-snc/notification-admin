@@ -23,7 +23,7 @@
       {{ page_footer(
         _('Save'),
         delete_link=url_for('.remove_user_from_organisation', org_id=current_org.id, user_id=user.id) if user or None,
-        delete_link_text='Remove user from organisation'
+        delete_link_text=_('Remove user from organisation')
       ) }}
   {% endcall %}
 

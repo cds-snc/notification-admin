@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-11 15:34-0600\n"
+"POT-Creation-Date: 2020-05-11 16:29-0600\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -1272,6 +1272,13 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
+#: app/templates/components/page-footer.html:9
+#: app/templates/views/service-settings/email-reply-to/edit.html:10
+#: app/templates/views/service-settings/letter-contact/edit.html:42
+#: app/templates/views/service-settings/sms-sender/edit.html:12
+msgid "Delete"
+msgstr ""
+
 #: app/templates/components/page-header.html:17
 msgid "Back"
 msgstr ""
@@ -2180,6 +2187,10 @@ msgstr ""
 #: app/templates/views/edit-sms-template.html:24
 msgid "Your recipients won’t see this"
 msgstr "Your recipients will not see this template name."
+
+#: app/templates/views/edit-user-permissions.html:43
+msgid "Remove this team member"
+msgstr ""
 
 #: app/templates/views/email-link-invalid.html:5
 msgid "Invalid email link"
@@ -4514,6 +4525,10 @@ msgstr ""
 msgid "Your organisation name will be changed from"
 msgstr ""
 
+#: app/templates/views/organisations/organisation/users/user/index.html:26
+msgid "Remove user from organisation"
+msgstr ""
+
 #: app/templates/views/platform-admin/_base_template.html:17
 #: app/templates/views/platform-admin/api_keys_ranked.html:5
 msgid "Live API keys"
@@ -4867,11 +4882,6 @@ msgstr ""
 msgid "Change reply-to email address"
 msgstr ""
 
-#: app/templates/views/service-settings/email-reply-to/edit.html:10
-#: app/templates/views/service-settings/sms-sender/edit.html:12
-msgid "Delete"
-msgstr ""
-
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "This is the default reply-to address for"
 msgstr ""
@@ -4894,6 +4904,10 @@ msgstr ""
 
 #: app/templates/views/smtp/index.html:40
 msgid "Generate a new password if you forgot it."
+msgstr ""
+
+#: app/templates/views/smtp/index.html:48
+msgid "Remove SMTP relay"
 msgstr ""
 
 #: app/templates/views/smtp/index.html:54
@@ -5016,6 +5030,10 @@ msgstr ""
 
 #: app/templates/views/templates/template.html:85
 msgid "Template version"
+msgstr ""
+
+#: app/templates/views/templates/template_history.html:22
+msgid "See all versions of this template"
 msgstr ""
 
 #: app/templates/views/user-profile/add-security-keys.html:23

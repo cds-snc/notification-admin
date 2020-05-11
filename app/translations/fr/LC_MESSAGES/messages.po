@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-11 15:34-0600\n"
+"POT-Creation-Date: 2020-05-11 16:29-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -1274,6 +1274,13 @@ msgstr "adresses"
 msgid "Template"
 msgstr "Gabarit"
 
+#: app/templates/components/page-footer.html:9
+#: app/templates/views/service-settings/email-reply-to/edit.html:10
+#: app/templates/views/service-settings/letter-contact/edit.html:42
+#: app/templates/views/service-settings/sms-sender/edit.html:12
+msgid "Delete"
+msgstr "Supprimer"
+
 #: app/templates/components/page-header.html:17
 msgid "Back"
 msgstr "Retour"
@@ -2225,6 +2232,10 @@ msgstr "gabarit de message texte"
 #: app/templates/views/edit-sms-template.html:24
 msgid "Your recipients won’t see this"
 msgstr "Vos destinataires ne verront pas le nom du gabarit."
+
+#: app/templates/views/edit-user-permissions.html:43
+msgid "Remove this team member"
+msgstr ""
 
 #: app/templates/views/email-link-invalid.html:5
 msgid "Invalid email link"
@@ -4749,7 +4760,7 @@ msgstr ""
 #: app/templates/views/organisations/organisation/settings/set-letter-branding.html:30
 #: app/templates/views/service-settings/set-letter-branding.html:30
 msgid "Preview"
-msgstr ""
+msgstr "Voir un aperçu"
 
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:8
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:12
@@ -4759,6 +4770,10 @@ msgstr "Confirmer le changement du nom d’une organisation"
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:23
 msgid "Your organisation name will be changed from"
 msgstr "Le nom de votre organisation sera changé de"
+
+#: app/templates/views/organisations/organisation/users/user/index.html:26
+msgid "Remove user from organisation"
+msgstr ""
 
 #: app/templates/views/platform-admin/_base_template.html:17
 #: app/templates/views/platform-admin/api_keys_ranked.html:5
@@ -4780,7 +4795,7 @@ msgstr ""
 #: app/templates/views/platform-admin/notifications_by_service.html:17
 #: app/templates/views/platform-admin/usage_for_all_services.html:17
 msgid "Download report"
-msgstr ""
+msgstr "Télécharger le rapport"
 
 #: app/templates/views/platform-admin/reports.html:10
 msgid "Reports"
@@ -4969,7 +4984,7 @@ msgstr "Chercher par nom ou code de pays"
 
 #: app/templates/views/service-settings/delete.html:39
 msgid "Yes, delete "
-msgstr ""
+msgstr "Oui, supprimer "
 
 #: app/templates/views/service-settings/email_reply_to.html:23
 msgid "You haven’t added any reply-to email addresses yet"
@@ -5017,7 +5032,7 @@ msgstr ""
 
 #: app/templates/views/service-settings/request-to-go-live.html:75
 msgid "Request to go live"
-msgstr ""
+msgstr "Demander d'activer votre service"
 
 #: app/templates/views/service-settings/sending_domain.html:12
 msgid "Sending Page"
@@ -5093,7 +5108,7 @@ msgstr ""
 
 #: app/templates/views/service-settings/branding/email-options.html:44
 msgid "Request new branding"
-msgstr ""
+msgstr "Demander une nouvelle image de marque"
 
 #: app/templates/views/service-settings/branding/manage-email-branding.html:9
 #: app/templates/views/service-settings/branding/manage-email-branding.html:15
@@ -5137,11 +5152,6 @@ msgstr ""
 msgid "Change reply-to email address"
 msgstr "Modifier l’adresse courriel de réponse"
 
-#: app/templates/views/service-settings/email-reply-to/edit.html:10
-#: app/templates/views/service-settings/sms-sender/edit.html:12
-msgid "Delete"
-msgstr "Supprimer"
-
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "This is the default reply-to address for"
 msgstr "Il s’agit de l’adresse de réponse par défaut pour"
@@ -5166,6 +5176,10 @@ msgstr "Il s’agit de l’expéditeur de messages texte par défaut."
 msgid "Generate a new password if you forgot it."
 msgstr "Générer un nouveau mot de passe si vous l'avez oublié."
 
+#: app/templates/views/smtp/index.html:48
+msgid "Remove SMTP relay"
+msgstr ""
+
 #: app/templates/views/smtp/index.html:54
 msgid "Add SMTP Relay"
 msgstr "Ajouter le relais SMTP"
@@ -5181,7 +5195,7 @@ msgstr "entrer un nom"
 
 #: app/templates/views/support/report-problem.html:35
 msgid "Back to support"
-msgstr ""
+msgstr "Retourner au support"
 
 #: app/templates/views/templates/_move_to.html:26
 #: app/templates/views/templates/_move_to.html:28
@@ -5231,7 +5245,7 @@ msgstr "Que voulez-vous ajouter?"
 
 #: app/templates/views/templates/breaking-change.html:40
 msgid "Save changes to template"
-msgstr ""
+msgstr "Enregistrer les modifications apportées au gabarit"
 
 #: app/templates/views/templates/choose.html:26
 msgid "You need to create a template to send"
@@ -5264,7 +5278,7 @@ msgstr "Copier un gabarit existant"
 
 #: app/templates/views/templates/manage-template-folder.html:39
 msgid "Delete this folder"
-msgstr ""
+msgstr "Supprimer ce dossier"
 
 #: app/templates/views/templates/template.html:51
 msgid "Last edited"
@@ -5290,6 +5304,10 @@ msgstr "La personnalisation est masquée après l’envoi."
 
 #: app/templates/views/templates/template.html:85
 msgid "Template version"
+msgstr ""
+
+#: app/templates/views/templates/template_history.html:22
+msgid "See all versions of this template"
 msgstr ""
 
 #: app/templates/views/user-profile/add-security-keys.html:23
