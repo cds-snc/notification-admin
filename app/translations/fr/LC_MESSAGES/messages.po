@@ -4260,7 +4260,7 @@ msgstr "Aperçu de"
 
 #: app/templates/views/check/ok.html:33
 msgid "Recipients"
-msgstr ""
+msgstr "Destinataires"
 
 #: app/templates/views/check/ok.html:77
 msgid "Schedule notifications"
