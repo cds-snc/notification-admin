@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-11 15:09-0400\n"
+"POT-Creation-Date: 2020-05-12 09:38-0400\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -680,13 +680,13 @@ msgstr ""
 
 #: app/main/views/service_settings.py:355
 msgid ""
-"This will suspend the service and revoke all api keys. Are you sure you "
+"This will suspend the service and revoke all API keys. Are you sure you "
 "want to suspend this service?"
 msgstr ""
 
 #: app/main/views/service_settings.py:367
 msgid ""
-"This will resume the service. New api key are required for this service "
+"This will resume the service. New API key are required for this service "
 "to use the API."
 msgstr ""
 
@@ -5000,14 +5000,5 @@ msgstr ""
 #~ " Canada, federal government, Canada SMS,"
 #~ "\n"
 #~ "Canada Notification service"
-#~ msgstr ""
-
-#~ msgid "‘%(service_name)’ was deleted"
-#~ msgstr ""
-
-#~ msgid "'%(service_name)' was deleted"
-#~ msgstr ""
-
-#~ msgid "%(service_name) was deleted"
 #~ msgstr ""
 
