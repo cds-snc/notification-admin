@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-11 16:29-0600\n"
+"POT-Creation-Date: 2020-05-12 14:39-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -469,36 +469,36 @@ msgstr "Quel est son nom?"
 msgid "What’s their email address?"
 msgstr "Quelle est son adresse courriel?"
 
-#: app/main/validators.py:24
+#: app/main/validators.py:25
 msgid "Password is blacklisted."
 msgstr "Le mot de passe est sur une liste noire."
 
-#: app/main/validators.py:52
+#: app/main/validators.py:53
 msgid "Not a csv file"
 msgstr "Il ne s’agit pas d’un fichier CSV"
 
-#: app/main/validators.py:57
+#: app/main/validators.py:58
 msgid "isn’t a spreadsheet that Notification can read"
 msgstr "n’est pas une feuille de calcul que Notification peut lire"
 
-#: app/main/validators.py:69
+#: app/main/validators.py:70
 msgid "Enter a government email address."
 msgstr "Entrez une adresse courriel du gouvernement."
 
-#: app/main/validators.py:71
+#: app/main/validators.py:72
 msgid "If you think you should have access"
 msgstr "Si vous pensez que vous devriez avoir accès"
 
-#: app/main/validators.py:72 app/templates/views/service-settings.html:237
+#: app/main/validators.py:73 app/templates/views/service-settings.html:237
 #: app/templates/views/terms-of-use.html:41
 msgid "contact us"
 msgstr "communiquer avec nous"
 
-#: app/main/validators.py:82
+#: app/main/validators.py:83
 msgid "Enter a valid email address"
 msgstr "Entrez une adresse courriel valide"
 
-#: app/main/validators.py:99
+#: app/main/validators.py:100
 msgid "You can’t put commas between double brackets"
 msgstr "Vous ne pouvez pas insérer de virgules entre les parenthèses doubles"
 
@@ -682,7 +682,9 @@ msgid "Change"
 msgstr "Modifier"
 
 #: app/main/views/service_settings.py:466 app/main/views/templates.py:399
+#: app/templates/views/service-settings/data-retention/add.html:22
 #: app/templates/views/service-settings/email-reply-to/add.html:31
+#: app/templates/views/service-settings/letter-contact/add.html:34
 msgid "Add"
 msgstr "Ajouter"
 
@@ -706,13 +708,6 @@ msgstr "Tout"
 #: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
 msgstr "Lettre"
-
-#: app/main/views/templates.py:399
-#: app/templates/views/service-settings/data-retention/add.html:22
-#: app/templates/views/service-settings/email-reply-to/add.html:31
-#: app/templates/views/service-settings/letter-contact/add.html:34
-msgid "Add"
-msgstr "Ajouter"
 
 #: app/main/views/templates.py:478 app/main/views/templates.py:496
 msgid "You must empty this folder before you can delete it"
@@ -1747,6 +1742,7 @@ msgstr ""
 #: app/templates/views/register-from-invite.html:29
 #: app/templates/views/register-from-org-invite.html:24
 #: app/templates/views/register.html:27 app/templates/views/send-test.html:41
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:27
 #: app/templates/views/service-settings/estimate-usage.html:35
 #: app/templates/views/signin.html:34
 #: app/templates/views/support/triage.html:19
