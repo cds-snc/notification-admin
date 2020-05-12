@@ -2235,7 +2235,7 @@ msgstr "Vos destinataires ne verront pas le nom du gabarit."
 
 #: app/templates/views/edit-user-permissions.html:43
 msgid "Remove this team member"
-msgstr ""
+msgstr "Enlever ce membre de l'équipe"
 
 #: app/templates/views/email-link-invalid.html:5
 msgid "Invalid email link"
@@ -4773,7 +4773,7 @@ msgstr "Le nom de votre organisation sera changé de"
 
 #: app/templates/views/organisations/organisation/users/user/index.html:26
 msgid "Remove user from organisation"
-msgstr ""
+msgstr "Enlever l'utilisateur de l'organisation"
 
 #: app/templates/views/platform-admin/_base_template.html:17
 #: app/templates/views/platform-admin/api_keys_ranked.html:5
@@ -5178,7 +5178,7 @@ msgstr "Générer un nouveau mot de passe si vous l'avez oublié."
 
 #: app/templates/views/smtp/index.html:48
 msgid "Remove SMTP relay"
-msgstr ""
+msgstr "Enlever le relais SMTP"
 
 #: app/templates/views/smtp/index.html:54
 msgid "Add SMTP Relay"
