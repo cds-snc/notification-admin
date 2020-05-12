@@ -15,19 +15,19 @@
 {% endmacro %}
 
 {% block service_page_title %}
-  {{ "Preview of {}".format(template.name) }}
+  {{ _("Preview of") + " " + template.name }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Preview of {}'.format(template.name),
+    _('Preview of') + " " + template.name,
     back_link=back_link
   ) }}
 
   {{ skip_to_file_contents() }}
 
-  {{ template|string }}
+  {{ template|string|translate_preview_template }}
 
   {% if not request.args.from_test %}
   <h2 class="heading-medium">{{ _('Recipients') }}</h2>

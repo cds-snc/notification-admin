@@ -8,31 +8,39 @@
 <div class="ajax-block-container">
   {% if verification_status == "pending" %}
     <p>
-      We’re checking that ‘{{ reply_to_email_address }}’ is a real email address.
+      {{ 
+        _('We’re checking that ') + 
+        "‘{}’ ".format(reply_to_email_address) + 
+        _('is a real email address.') 
+      }}
     </p>
     <p>
-  <span class='loading-indicator'>This can take a minute</span>
+  <span class='loading-indicator'>{{ _('This can take a minute') }}</span>
     </p>
 
     <p class="js-hidden">
       <a href="{{ url_for('main.service_verify_reply_to_address', service_id=service_id, notification_id=notification_id, is_default=is_default, replace=replace) }}">Refresh</a>
     </p>
   {% elif verification_status == "success" %}
-    {{ banner("‘{}’ is ready to use".format(reply_to_email_address), type='default', with_tick=True) }}
+    {{ banner("‘{}’ ".format(reply_to_email_address) + _('is ready to use'), type='default', with_tick=True) }}
     <div class="js-stick-at-bottom-when-scrolling">
-      <a href="{{ url_for('.service_email_reply_to', service_id=service_id) }}" class="button">Continue</a>
+      <a href="{{ url_for('.service_email_reply_to', service_id=service_id) }}" class="button">{{ _('Continue') }}</a>
     </div>
   {% elif verification_status == "failure" %}
     <div class="bottom-gutter">
       {% call banner_wrapper(type='dangerous') %}
         <h2 class='banner-title' data-module="track-error" data-error-type="reply-to-email-not-working" data-error-label="{{ upload_id }}">
-          There’s a problem with your reply-to address
+          {{ _('There’s a problem with your reply-to address') }}
         </h2>
         <p>
-          We sent an email to ‘{{ reply_to_email_address }}’ but it wasn’t delivered.
+          {{ 
+            _('We sent an email to ') + 
+            "‘{}’ ".format(reply_to_email_address) + 
+            _('but it wasn’t delivered.') 
+          }}
         </p>
         <p>
-          You can try again, or use a different address.
+          {{ _('You can try again, or use a different address.') }}
         </p>
       {% endcall %}
     </div>
@@ -55,7 +63,7 @@
           {{ checkbox(form.is_default) }}
         </div>
       {% endif %}
-      {{ page_footer('Try again') }}
+      {{ page_footer(_('Try again')) }}
     {% endcall %}
   {% endif %}
 </div>

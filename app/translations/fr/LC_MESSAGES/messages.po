@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-05 12:25-0400\n"
+"POT-Creation-Date: 2020-05-11 10:49-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -14,34 +14,58 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: app/__init__.py:406 app/__init__.py:416
+#: app/__init__.py:372
+msgid "From"
+msgstr "De"
+
+#: app/__init__.py:373
+msgid "To"
+msgstr "À"
+
+#: app/__init__.py:374 app/main/forms.py:696
+msgid "Subject"
+msgstr "Objet"
+
+#: app/__init__.py:375
+msgid "Reply to"
+msgstr "Répondre à"
+
+#: app/__init__.py:376
+msgid "From:"
+msgstr "De :"
+
+#: app/__init__.py:377
+msgid "To:"
+msgstr "À :"
+
+#: app/__init__.py:419 app/__init__.py:429
 #: app/templates/views/conversations/messages.html:27
 msgid "Failed"
 msgstr "Échec"
 
-#: app/__init__.py:407 app/__init__.py:417
+#: app/__init__.py:420 app/__init__.py:430
 #: app/templates/views/message-status.html:46
 #: app/templates/views/message-status.html:90
 msgid "Technical failure"
 msgstr "Échec technique"
 
-#: app/__init__.py:408 app/templates/views/message-status.html:43
+#: app/__init__.py:421 app/templates/views/message-status.html:43
 msgid "Inbox not accepting messages right now"
 msgstr "La boîte de réception n’accepte pas de messages à l’heure actuelle"
 
-#: app/__init__.py:409
+#: app/__init__.py:422
 msgid "Email address doesn’t exist"
 msgstr "L’adresse courriel n’existe pas"
 
-#: app/__init__.py:410 app/__init__.py:413 app/__init__.py:420
+#: app/__init__.py:423 app/__init__.py:426 app/__init__.py:433
 #: app/templates/views/message-status.html:37
 #: app/templates/views/message-status.html:52
 #: app/templates/views/message-status.html:81
 msgid "Delivered"
 msgstr "Livraison réussie"
 
-#: app/__init__.py:411 app/__init__.py:412 app/__init__.py:421
-#: app/__init__.py:422 app/__init__.py:423
+#: app/__init__.py:424 app/__init__.py:425 app/__init__.py:434
+#: app/__init__.py:435 app/__init__.py:436
 #: app/templates/partials/jobs/notifications.html:13
 #: app/templates/views/dashboard/_upcoming.html:28
 #: app/templates/views/message-status.html:34
@@ -49,15 +73,15 @@ msgstr "Livraison réussie"
 msgid "Sending"
 msgstr "Envoi en cours"
 
-#: app/__init__.py:418 app/templates/views/message-status.html:87
+#: app/__init__.py:431 app/templates/views/message-status.html:87
 msgid "Phone not accepting messages right now"
 msgstr "Le téléphone n’accepte pas de messages à l’heure actuelle"
 
-#: app/__init__.py:419
+#: app/__init__.py:432
 msgid "Phone number doesn’t exist"
 msgstr "Le numéro de téléphone n’existe pas"
 
-#: app/__init__.py:424
+#: app/__init__.py:437
 msgid "Sent"
 msgstr "Envoyé"
 
@@ -230,10 +254,6 @@ msgstr "Oui"
 msgid "No"
 msgstr "Non"
 
-#: app/main/forms.py:696 app/main/views/templates.py:77
-msgid "Subject"
-msgstr "Objet"
-
 #: app/main/forms.py:765
 msgid "The email address is already in use"
 msgstr "L’adresse courriel est déjà prise"
@@ -344,6 +364,7 @@ msgid "Off"
 msgstr "Désactivé"
 
 #: app/main/forms.py:1039 app/main/views/send.py:776
+#: app/templates/views/notifications/check.html:70
 #: app/templates/views/signedout.html:657
 #: app/templates/views/support/ask-question-give-feedback.html:49
 #: app/templates/views/templates/_template.html:21
@@ -418,12 +439,12 @@ msgstr "Envoyer des messages texte à des numéros de téléphone internationaux
 msgid "Folder name"
 msgstr "Nom du dossier"
 
-#: app/main/forms.py:1497 app/main/views/templates.py:225
+#: app/main/forms.py:1497 app/main/views/templates.py:208
 #: app/templates/views/platform-admin/api_keys_ranked.html:24
 msgid "Email"
 msgstr "Courriel"
 
-#: app/main/forms.py:1498 app/main/views/templates.py:224
+#: app/main/forms.py:1498 app/main/views/templates.py:207
 msgid "Text message"
 msgstr "Message texte"
 
@@ -643,13 +664,26 @@ msgstr "Personnaliser le message"
 msgid "Change your service name"
 msgstr "Modifier le nom du service"
 
-#: app/main/views/service_settings.py:342 app/main/views/templates.py:723
+#: app/main/views/service_settings.py:342 app/main/views/templates.py:706
 msgid "Are you sure you want to delete"
 msgstr "Voulez-vous vraiment supprimer"
 
 #: app/main/views/service_settings.py:342
 msgid "There’s no way to undo this."
 msgstr "Cette action est irréversible."
+
+#: app/main/views/service_settings.py:466
+#: app/templates/views/service-settings.html:9
+#: app/templates/views/service-settings/email_reply_to.html:36
+#: app/templates/views/service-settings/sms-senders.html:38
+#: app/templates/views/user-profile.html:11
+msgid "Change"
+msgstr "Modifier"
+
+#: app/main/views/service_settings.py:466 app/main/views/templates.py:399
+#: app/templates/views/service-settings/email-reply-to/add.html:31
+msgid "Add"
+msgstr "Ajouter"
 
 #: app/main/views/service_settings.py:629
 msgid "Start all text messages with"
@@ -659,70 +693,62 @@ msgstr "Commencer tous les messages texte par"
 msgid "The email address or password you entered is incorrect."
 msgstr "L’adresse courriel ou le mot de passe que vous avez entré est inexact."
 
-#: app/main/views/templates.py:75
-msgid "From"
-msgstr "De"
-
-#: app/main/views/templates.py:76
-msgid "To"
-msgstr "À"
-
-#: app/main/views/templates.py:166
+#: app/main/views/templates.py:149
 msgid "Select at least one template or folder"
 msgstr "Sélectionnez au moins un gabarit ou un dossier"
 
-#: app/main/views/templates.py:223
+#: app/main/views/templates.py:206
 msgid "All"
 msgstr "Tout"
 
-#: app/main/views/templates.py:226
+#: app/main/views/templates.py:209
 #: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
 msgstr "Lettre"
 
-#: app/main/views/templates.py:416
+#: app/main/views/templates.py:399
 #: app/templates/views/service-settings/email-reply-to/add.html:31
 msgid "Add"
 msgstr "Ajouter"
 
-#: app/main/views/templates.py:495 app/main/views/templates.py:513
+#: app/main/views/templates.py:478 app/main/views/templates.py:496
 msgid "You must empty this folder before you can delete it"
 msgstr "Vous devez vider le dossier avant de le supprimer"
 
-#: app/main/views/templates.py:511
+#: app/main/views/templates.py:494
 msgid "Folder is not empty"
 msgstr "Le dossier n’est pas vide"
 
-#: app/main/views/templates.py:525
+#: app/main/views/templates.py:508
 msgid "Are you sure you want to delete the"
 msgstr "Voulez-vous vraiment supprimer le dossier"
 
-#: app/main/views/templates.py:525
+#: app/main/views/templates.py:508
 msgid "folder?"
 msgstr "?"
 
-#: app/main/views/templates.py:599
+#: app/main/views/templates.py:582
 msgid "New"
 msgstr "Nouveau"
 
-#: app/main/views/templates.py:686
+#: app/main/views/templates.py:669
 #: app/templates/views/templates/_template.html:36
 msgid "Edit"
 msgstr "Modifier"
 
-#: app/main/views/templates.py:710
+#: app/main/views/templates.py:693
 msgid "more than seven days"
 msgstr "plus de 7 jours"
 
-#: app/main/views/templates.py:715
+#: app/main/views/templates.py:698
 msgid "This template was last used"
 msgstr "Ce gabarit a été utilisé il y a"
 
-#: app/main/views/templates.py:715
+#: app/main/views/templates.py:698
 msgid "ago."
 msgstr "."
 
-#: app/main/views/templates.py:751
+#: app/main/views/templates.py:734
 msgid "Personalised content will be hidden for messages sent with this template"
 msgstr ""
 "Le contenu personnalisé sera masqué pour les messages envoyés à l'aide de"
@@ -868,6 +894,7 @@ msgid "archive"
 msgstr "archiver"
 
 #: app/templates/flash_messages.html:9
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:66
 msgid "Try again"
 msgstr "Réessayer"
 
@@ -1708,9 +1735,11 @@ msgstr ""
 #: app/templates/views/register-from-invite.html:29
 #: app/templates/views/register-from-org-invite.html:24
 #: app/templates/views/register.html:27 app/templates/views/send-test.html:34
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:27
 #: app/templates/views/signin.html:34
 #: app/templates/views/templates/_move_to.html:36
 #: app/templates/views/templates/add.html:12
+#: app/templates/views/templates/start-tour.html:18
 #: app/templates/views/two-factor.html:16
 #: app/templates/views/verify-mobile.html:22
 msgid "Continue"
@@ -2973,13 +3002,6 @@ msgstr "Télécharger cet exemple"
 msgid "Your file will populate this template"
 msgstr "Votre fichier remplira ce gabarit"
 
-#: app/templates/views/service-settings.html:9
-#: app/templates/views/service-settings/email_reply_to.html:36
-#: app/templates/views/service-settings/sms-senders.html:38
-#: app/templates/views/user-profile.html:11
-msgid "Change"
-msgstr "Modifier"
-
 #: app/templates/views/service-settings.html:16
 msgid "General"
 msgstr "Général"
@@ -3272,7 +3294,8 @@ msgid ""
 "Administrators who have to meet departmental service\n"
 "              standards for communication"
 msgstr ""
-"Pour les administrateurs devant respecter les normes de service ministérielles de leurs communications"
+"Pour les administrateurs devant respecter les normes de service "
+"ministérielles de leurs communications"
 
 #: app/templates/views/signedout.html:335
 msgid "What you can do with <i>Notify</i>"
@@ -3991,15 +4014,15 @@ msgstr "Actualiser"
 msgid "When you send messages via the API they’ll appear here."
 msgstr "Lorsque vous envoyez des messages par l’API, ils apparaîtront ici."
 
-#: app/templates/views/api/index.html:46 app/templates/views/api/index.html:92
+#: app/templates/views/api/index.html:46 app/templates/views/api/index.html:90
 msgid "Notification deletes messages after 7 days."
 msgstr "<i>Notification</i> supprime les messages après 7 jours."
 
-#: app/templates/views/api/index.html:78
+#: app/templates/views/api/index.html:76
 msgid "View"
 msgstr "Afficher"
 
-#: app/templates/views/api/index.html:88
+#: app/templates/views/api/index.html:86
 msgid "Only showing the first 50 messages."
 msgstr "Affiche seulement les 50 premiers messages."
 
@@ -4249,6 +4272,7 @@ msgid "Only showing rows with errors"
 msgstr "Ne montre que les rangées avec des erreurs"
 
 #: app/templates/views/check/column-errors.html:225
+#: app/templates/views/check/ok.html:18 app/templates/views/check/ok.html:24
 #: app/templates/views/notifications/check.html:7
 #: app/templates/views/notifications/check.html:54
 msgid "Preview of"
@@ -4256,7 +4280,7 @@ msgstr "Aperçu de"
 
 #: app/templates/views/check/ok.html:33
 msgid "Recipients"
-msgstr ""
+msgstr "Destinataires"
 
 #: app/templates/views/check/ok.html:77
 msgid "Schedule notifications"
@@ -4569,19 +4593,19 @@ msgstr "Cette personne ne s’est jamais connectée"
 msgid "Last logged in"
 msgstr "Dernière connexion"
 
-#: app/templates/views/find-users/user-information.html:60
+#: app/templates/views/find-users/user-information.html:58
 msgid "failed login attempts"
 msgstr "tentative de connexion échouée"
 
-#: app/templates/views/find-users/user-information.html:66
+#: app/templates/views/find-users/user-information.html:64
 msgid "Archive user"
 msgstr "Archives sur l’utilisateur"
 
-#: app/templates/views/find-users/user-information.html:74
+#: app/templates/views/find-users/user-information.html:72
 msgid "Unblock user"
 msgstr "Débloquer l'utilisateur"
 
-#: app/templates/views/find-users/user-information.html:80
+#: app/templates/views/find-users/user-information.html:78
 msgid "Block user"
 msgstr "Bloquer l'utilisateur"
 
@@ -5040,6 +5064,38 @@ msgstr ""
 msgid "Upload logo"
 msgstr "Téléverser un logo"
 
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:12
+msgid "We’re checking that "
+msgstr "Nous vérifions que l'adresse "
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:14
+msgid "is a real email address."
+msgstr "est valide."
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:18
+msgid "This can take a minute"
+msgstr "Cela peut prendre une minute"
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:25
+msgid "is ready to use"
+msgstr "est prête à être utilisé"
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:33
+msgid "There’s a problem with your reply-to address"
+msgstr "Il y a un problème avec votre adresse courriel de réponse"
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:37
+msgid "We sent an email to "
+msgstr "Nous avons envoyé un courriel à "
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:39
+msgid "but it wasn’t delivered."
+msgstr "mais le message ne s’est pas rendu."
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:43
+msgid "You can try again, or use a different address."
+msgstr "Vous pouvez réessayer, ou utiliser une autre adresse courriel."
+
 #: app/templates/views/service-settings/email-reply-to/add.html:23
 #: app/templates/views/service-settings/email-reply-to/edit.html:16
 msgid ""
@@ -5061,6 +5117,11 @@ msgstr "Supprimer"
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "This is the default reply-to address for"
 msgstr "Il s’agit de l’adresse de réponse par défaut pour"
+
+#: app/templates/views/service-settings/email-reply-to/verify.html:10
+#: app/templates/views/service-settings/email-reply-to/verify.html:20
+msgid "email reply-to address"
+msgstr "une adresse courriel de réponse"
 
 #: app/templates/views/service-settings/sms-sender/edit.html:10
 msgid "Change text message sender"
@@ -5174,25 +5235,25 @@ msgstr "Copier un gabarit existant"
 msgid "Last edited"
 msgstr "Dernière modification : "
 
-#: app/templates/views/templates/template.html:59
+#: app/templates/views/templates/template.html:57
 msgid "See previous versions"
 msgstr "Voir les versions précédentes"
 
-#: app/templates/views/templates/template.html:66
+#: app/templates/views/templates/template.html:64
 msgid "Delete this template"
 msgstr "Supprimer ce gabarit"
 
-#: app/templates/views/templates/template.html:74
+#: app/templates/views/templates/template.html:72
 msgid "Hide personal information from screen and logs after sending"
 msgstr ""
 "Masquer les renseignements personnels de l’écran et des journaux de bord "
 "après l’envoi"
 
-#: app/templates/views/templates/template.html:79
+#: app/templates/views/templates/template.html:77
 msgid "Personalisation is hidden after sending"
 msgstr "La personnalisation est masquée après l’envoi."
 
-#: app/templates/views/templates/template.html:87
+#: app/templates/views/templates/template.html:85
 msgid "Template version"
 msgstr ""
 
