@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-11 08:52-0600\n"
+"POT-Creation-Date: 2020-05-11 10:49-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -672,6 +672,19 @@ msgstr "Voulez-vous vraiment supprimer"
 msgid "There’s no way to undo this."
 msgstr "Cette action est irréversible."
 
+#: app/main/views/service_settings.py:466
+#: app/templates/views/service-settings.html:9
+#: app/templates/views/service-settings/email_reply_to.html:36
+#: app/templates/views/service-settings/sms-senders.html:38
+#: app/templates/views/user-profile.html:11
+msgid "Change"
+msgstr "Modifier"
+
+#: app/main/views/service_settings.py:466 app/main/views/templates.py:399
+#: app/templates/views/service-settings/email-reply-to/add.html:31
+msgid "Add"
+msgstr "Ajouter"
+
 #: app/main/views/service_settings.py:629
 msgid "Start all text messages with"
 msgstr "Commencer tous les messages texte par"
@@ -881,6 +894,7 @@ msgid "archive"
 msgstr "archiver"
 
 #: app/templates/flash_messages.html:9
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:66
 msgid "Try again"
 msgstr "Réessayer"
 
@@ -1721,9 +1735,11 @@ msgstr ""
 #: app/templates/views/register-from-invite.html:29
 #: app/templates/views/register-from-org-invite.html:24
 #: app/templates/views/register.html:27 app/templates/views/send-test.html:34
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:27
 #: app/templates/views/signin.html:34
 #: app/templates/views/templates/_move_to.html:36
 #: app/templates/views/templates/add.html:12
+#: app/templates/views/templates/start-tour.html:18
 #: app/templates/views/two-factor.html:16
 #: app/templates/views/verify-mobile.html:22
 msgid "Continue"
@@ -2985,13 +3001,6 @@ msgstr "Télécharger cet exemple"
 #: app/templates/views/send.html:46
 msgid "Your file will populate this template"
 msgstr "Votre fichier remplira ce gabarit"
-
-#: app/templates/views/service-settings.html:9
-#: app/templates/views/service-settings/email_reply_to.html:36
-#: app/templates/views/service-settings/sms-senders.html:38
-#: app/templates/views/user-profile.html:11
-msgid "Change"
-msgstr "Modifier"
 
 #: app/templates/views/service-settings.html:16
 msgid "General"
@@ -4263,6 +4272,7 @@ msgid "Only showing rows with errors"
 msgstr "Ne montre que les rangées avec des erreurs"
 
 #: app/templates/views/check/column-errors.html:225
+#: app/templates/views/check/ok.html:18 app/templates/views/check/ok.html:24
 #: app/templates/views/notifications/check.html:7
 #: app/templates/views/notifications/check.html:54
 msgid "Preview of"
@@ -5054,6 +5064,38 @@ msgstr ""
 msgid "Upload logo"
 msgstr "Téléverser un logo"
 
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:12
+msgid "We’re checking that "
+msgstr "Nous vérifions que l'adresse "
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:14
+msgid "is a real email address."
+msgstr "est valide."
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:18
+msgid "This can take a minute"
+msgstr "Cela peut prendre une minute"
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:25
+msgid "is ready to use"
+msgstr "est prête à être utilisé"
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:33
+msgid "There’s a problem with your reply-to address"
+msgstr "Il y a un problème avec votre adresse courriel de réponse"
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:37
+msgid "We sent an email to "
+msgstr "Nous avons envoyé un courriel à "
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:39
+msgid "but it wasn’t delivered."
+msgstr "mais le message ne s’est pas rendu."
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:43
+msgid "You can try again, or use a different address."
+msgstr "Vous pouvez réessayer, ou utiliser une autre adresse courriel."
+
 #: app/templates/views/service-settings/email-reply-to/add.html:23
 #: app/templates/views/service-settings/email-reply-to/edit.html:16
 msgid ""
@@ -5075,6 +5117,11 @@ msgstr "Supprimer"
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "This is the default reply-to address for"
 msgstr "Il s’agit de l’adresse de réponse par défaut pour"
+
+#: app/templates/views/service-settings/email-reply-to/verify.html:10
+#: app/templates/views/service-settings/email-reply-to/verify.html:20
+msgid "email reply-to address"
+msgstr "une adresse courriel de réponse"
 
 #: app/templates/views/service-settings/sms-sender/edit.html:10
 msgid "Change text message sender"
