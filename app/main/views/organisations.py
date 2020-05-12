@@ -16,6 +16,7 @@ from app import (
 from app.main import main
 from app.main.forms import (
     ConfirmPasswordForm,
+    FieldWithLanguageOptions,
     GoLiveNotesForm,
     InviteOrgUserForm,
     NewOrganisationForm,
@@ -295,9 +296,15 @@ def edit_organisation_email_branding(org_id):
 
     email_branding = email_branding_client.get_all_email_branding()
 
+    current_branding = current_organisation.email_branding_id
+
+    # organizations don't support multi language yet / we aren't using organizations
+    if current_branding is None:
+        current_branding = FieldWithLanguageOptions.ENGLISH_OPTION_VALUE
+
     form = SetEmailBranding(
         all_branding_options=get_branding_as_value_and_label(email_branding),
-        current_branding=current_organisation.email_branding_id,
+        current_branding=current_branding,
     )
 
     if form.validate_on_submit():

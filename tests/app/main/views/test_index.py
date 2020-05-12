@@ -2,7 +2,7 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
-from app.main.forms import FieldWithNoneOption
+from app.main.forms import FieldWithLanguageOptions
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
 
 service = [{'service_id': 1, 'service_name': 'jessie the oak tree',
@@ -177,7 +177,11 @@ def test_css_is_served_from_correct_path(client_request):
         False,
     ),
     (
-        {'branding_style': '__NONE__'},
+        {'branding_style': '__FIP-EN__'},
+        False,
+    ),
+    (
+        {'branding_style': '__FIP-FR__'},
         False,
     ),
     (
@@ -199,10 +203,11 @@ def test_email_branding_preview(
     assert mock_get_email_branding.called is email_branding_retrieved
 
 
+@pytest.mark.skip(reason="feature not in use")
 @pytest.mark.parametrize('branding_style, filename', [
     ('hm-government', 'hm-government'),
     (None, 'no-branding'),
-    (FieldWithNoneOption.NONE_OPTION_VALUE, 'no-branding')
+    (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, 'no-branding')
 ])
 def test_letter_template_preview_links_to_the_correct_image(
     client_request,
