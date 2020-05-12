@@ -673,6 +673,19 @@ msgstr ""
 msgid "There’s no way to undo this."
 msgstr ""
 
+#: app/main/views/service_settings.py:466
+#: app/templates/views/service-settings.html:9
+#: app/templates/views/service-settings/email_reply_to.html:36
+#: app/templates/views/service-settings/sms-senders.html:38
+#: app/templates/views/user-profile.html:11
+msgid "Change"
+msgstr ""
+
+#: app/main/views/service_settings.py:466 app/main/views/templates.py:399
+#: app/templates/views/service-settings/email-reply-to/add.html:31
+msgid "Add"
+msgstr ""
+
 #: app/main/views/service_settings.py:629
 msgid "Start all text messages with"
 msgstr ""
@@ -2921,13 +2934,6 @@ msgstr ""
 msgid "Your file will populate this template"
 msgstr ""
 
-#: app/templates/views/service-settings.html:9
-#: app/templates/views/service-settings/email_reply_to.html:36
-#: app/templates/views/service-settings/sms-senders.html:38
-#: app/templates/views/user-profile.html:11
-msgid "Change"
-msgstr ""
-
 #: app/templates/views/service-settings.html:16
 msgid "General"
 msgstr ""
@@ -4871,6 +4877,38 @@ msgstr ""
 msgid "Upload logo"
 msgstr ""
 
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:12
+msgid "We’re checking that "
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:14
+msgid "is a real email address."
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:18
+msgid "This can take a minute"
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:25
+msgid "is ready to use"
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:33
+msgid "There’s a problem with your reply-to address"
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:37
+msgid "We sent an email to "
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:39
+msgid "but it wasn’t delivered."
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:43
+msgid "You can try again, or use a different address."
+msgstr ""
+
 #: app/templates/views/service-settings/email-reply-to/add.html:23
 #: app/templates/views/service-settings/email-reply-to/edit.html:16
 msgid ""
@@ -4884,6 +4922,11 @@ msgstr ""
 
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "This is the default reply-to address for"
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/verify.html:10
+#: app/templates/views/service-settings/email-reply-to/verify.html:20
+msgid "email reply-to address"
 msgstr ""
 
 #: app/templates/views/service-settings/sms-sender/edit.html:10
