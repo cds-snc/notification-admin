@@ -651,7 +651,7 @@ msgstr "Personnaliser le message"
 
 #: app/main/views/service_settings.py:134
 msgid "This service name is already in use"
-msgstr ""
+msgstr "Ce nom de service a dèjà été utilisé."
 
 #: app/main/views/service_settings.py:143
 #: app/templates/views/service-settings/name.html:9
@@ -663,12 +663,12 @@ msgstr "Modifier le nom du service"
 msgid ""
 "Thanks for your request to go live. We’ll get back to you within one "
 "working day."
-msgstr ""
+msgstr "Merci pour votre demande d'activation du service. Nous communiquerons avec vous dans un délai d'un jour ouvrable."
 
 #: app/main/views/service_settings.py:336
 #, python-format
 msgid "‘%(service_name)s’ was deleted"
-msgstr ""
+msgstr "‘%(service_name)s’ a été supprimé"
 
 #: app/main/views/service_settings.py:342 app/main/views/templates.py:706
 msgid "Are you sure you want to delete"
@@ -680,19 +680,19 @@ msgstr "Cette action est irréversible."
 
 #: app/main/views/service_settings.py:355
 msgid ""
-"This will suspend the service and revoke all api keys. Are you sure you "
+"This will suspend the service and revoke all API keys. Are you sure you "
 "want to suspend this service?"
-msgstr ""
-
+msgstr "Ceci suspendra le service et révoquera toutes les clés API associées. Êtes-vous certain de vouloir suspendre ce service?"
+ 
 #: app/main/views/service_settings.py:367
 msgid ""
-"This will resume the service. New api key are required for this service "
+"This will resume the service. New API key are required for this service "
 "to use the API."
-msgstr ""
+msgstr "Ceci vous permettra de reprendre le service. Vous devrez créer de nouvelles clés API pour que ce service puisse utiliser l'API."
 
 #: app/main/views/service_settings.py:411
 msgid "Sending domain updated"
-msgstr ""
+msgstr "Domaine d'envoi mis à jour"
 
 #: app/main/views/service_settings.py:574
 msgid "Are you sure you want to delete this reply-to email address?"
@@ -704,11 +704,11 @@ msgstr "Commencer tous les messages texte par"
 
 #: app/main/views/service_settings.py:789
 msgid "Are you sure you want to delete this contact block?"
-msgstr ""
+msgstr "Êtes-vous certain de vouloir supprimer ce bloc de contacts?"
 
 #: app/main/views/service_settings.py:872
 msgid "Are you sure you want to delete this text message sender?"
-msgstr ""
+msgstr "Êtes-vous certain de vouloir supprimer l'expéditeur de ce message texte?"
 
 #: app/main/views/sign_in.py:61
 msgid "The email address or password you entered is incorrect."

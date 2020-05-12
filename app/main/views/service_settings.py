@@ -352,7 +352,7 @@ def suspend_service(service_id):
         service_api_client.suspend_service(service_id)
         return redirect(url_for('.service_settings', service_id=service_id))
     else:
-        flash(_l("This will suspend the service and revoke all api keys. Are you sure you want to suspend this service?"),
+        flash(_l("This will suspend the service and revoke all API keys. Are you sure you want to suspend this service?"),
               'suspend')
         return service_settings(service_id)
 
@@ -364,7 +364,7 @@ def resume_service(service_id):
         service_api_client.resume_service(service_id)
         return redirect(url_for('.service_settings', service_id=service_id))
     else:
-        flash(_l("This will resume the service. New api key are required for this service to use the API."), 'resume')
+        flash(_l("This will resume the service. New API key are required for this service to use the API."), 'resume')
         return service_settings(service_id)
 
 
