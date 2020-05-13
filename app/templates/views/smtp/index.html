@@ -45,7 +45,7 @@
     {{ page_footer(
       '',
       delete_link=url_for('.smtp_integration', service_id=current_service.id, delete='yes'),
-      delete_link_text='Remove SMTP relay'
+      delete_link_text=_('Remove SMTP relay')
     ) }}
     </div>
   {% else %}

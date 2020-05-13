@@ -12,7 +12,7 @@ back_link=url_for('.organisation_settings', org_id=current_org.id) ) }}
       live and why you approved the change.') }}
     </p>
     {% call form_wrapper() %} {{ textbox(form.request_to_go_live_notes,
-    width='1-1', rows=3) }} {{ page_footer('Save') }} {% endcall %}
+    width='1-1', rows=3) }} {{ page_footer(_('Save')) }} {% endcall %}
   </div>
 </div>
 {% endblock %}

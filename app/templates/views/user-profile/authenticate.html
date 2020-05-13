@@ -20,7 +20,7 @@
 
     {% call form_wrapper(autocomplete=True) %}
       {{ textbox(form.password, autocomplete='current-password') }}
-      {{ page_footer('Confirm') }}
+      {{ page_footer(_('Confirm')) }}
     {% endcall %}
     </div>
   </div>

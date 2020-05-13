@@ -22,7 +22,7 @@
           option_hints=option_hints,
           hide_legend=True
         ) }}
-        {{ page_footer('Continue') }}
+        {{ page_footer(_('Continue')) }}
         <a href="{{ url_for('.service_add_letter_contact', service_id=current_service.id, from_template=template_id) }}">Add new sender</a>
       {% endcall %}
     </div>

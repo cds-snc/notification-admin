@@ -47,7 +47,7 @@
         {{ page_footer(save_txt) }}
       {% else %}
         {{ page_footer(
-          'Save',
+          _('Save'),
           delete_link=url_for('.service_confirm_delete_sms_sender', service_id=current_service.id, sms_sender_id=sms_sender_id),
           delete_link_text=delete_txt 
         ) }}

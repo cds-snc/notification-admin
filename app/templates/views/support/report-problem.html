@@ -30,9 +30,9 @@
               <p>We’ll reply to {{ current_user.email_address }}</p>
             {% endif %}
             {{ page_footer(
-              'Send',
+              _('Send'),
               secondary_link=url_for('.support'),
-              secondary_link_text='Back to support',
+              secondary_link_text=_('Back to support'),
             ) }}
         {% endcall %}
       </div>
