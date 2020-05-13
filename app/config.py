@@ -75,7 +75,7 @@ class Config(object):
     SESSION_COOKIE_NAME = 'notify_admin_session'
     SESSION_COOKIE_SECURE = True
     SESSION_REFRESH_EACH_REQUEST = True
-    SHOW_STYLEGUIDE = True
+    SHOW_STYLEGUIDE = os.getenv('SHOW_STYLEGUIDE', 'False')
     WTF_CSRF_ENABLED = True
     WTF_CSRF_TIME_LIMIT = None
     CSV_UPLOAD_BUCKET_NAME = os.getenv('CSV_UPLOAD_BUCKET_NAME', 'notification-alpha-canada-ca-csv-upload')
@@ -133,7 +133,6 @@ class Test(Development):
 
 
 class Live(Config):
-    SHOW_STYLEGUIDE = False
     HEADER_COLOUR = '#005EA5'  # $govuk-blue
     HTTP_PROTOCOL = 'https'
     NOTIFY_ENVIRONMENT = 'live'
