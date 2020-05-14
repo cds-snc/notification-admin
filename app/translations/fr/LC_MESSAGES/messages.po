@@ -4716,7 +4716,7 @@ msgstr "Changer le numéro de téléphone cellulaire d’un membre de l’équip
 
 #: app/templates/views/manage-users/edit-user-mobile.html:18
 msgid "This will change the mobile number for "
-msgstr ""
+msgstr "Ceci changer le numéro de téléphone cellulair de : "
 
 #: app/templates/views/manage-users/permissions.html:9
 msgid "All team members can see sent messages."
@@ -4788,7 +4788,7 @@ msgstr "Le nom de votre organisation sera changé de"
 #: app/templates/views/organisations/organisation/settings/edit-name/index.html:8
 #: app/templates/views/organisations/organisation/settings/edit-name/index.html:14
 msgid "Change organisation name"
-msgstr ""
+msgstr "Changer le nom de l'organisation"
 
 #: app/templates/views/organisations/organisation/users/user/index.html:26
 msgid "Remove user from organisation"
@@ -5039,11 +5039,11 @@ msgstr "semblent plus dignes de confiance"
 #: app/templates/views/service-settings/link-service-to-organisation.html:9
 #: app/templates/views/service-settings/link-service-to-organisation.html:15
 msgid "Link service to organisation"
-msgstr ""
+msgstr "Lier le service à l'organisation"
 
 #: app/templates/views/service-settings/link-service-to-organisation.html:24
 msgid "No organisations"
-msgstr ""
+msgstr "Aucune organisation"
 
 #: app/templates/views/service-settings/name.html:21
 msgid "Users will see your service name:"
@@ -5104,7 +5104,7 @@ msgstr "si la connexion par message texte est problématique pour votre équipe.
 #: app/templates/views/service-settings/set-email-branding.html:9
 #: app/templates/views/service-settings/set-email-branding.html:15
 msgid "Set email branding"
-msgstr ""
+msgstr "Définir l'image de marque du courriel"
 
 #: app/templates/views/service-settings/set-international-sms.html:20
 msgid ""
@@ -5145,21 +5145,23 @@ msgstr ""
 #: app/templates/views/service-settings/branding/email-options.html:9
 #: app/templates/views/service-settings/branding/email-options.html:15
 msgid "Change email branding"
-msgstr ""
+msgstr "Changer l'image de marque du courriel"
 
 #: app/templates/views/service-settings/branding/email-options.html:22
 msgid "Choose the branding you’d like on your emails."
-msgstr ""
+msgstr "Choisir la marque que vous souhaitez pour vos courriels."
 
 #: app/templates/views/service-settings/branding/email-options.html:26
 msgid "You need to choose an option"
-msgstr ""
+msgstr "Vous devez sélectionner une option"
 
 #: app/templates/views/service-settings/branding/email-options.html:41
 msgid ""
 "We’ll email you once your branding’s ready to use, or if we need any\n"
 "      more information."
 msgstr ""
+"Nous vous enverrons un courriel dès que votre marque sera prête à être\n"
+"      utilisé, ou bien si nous avons besoin plus d'informations."
 
 #: app/templates/views/service-settings/branding/email-options.html:44
 msgid "Request new branding"
@@ -5422,16 +5424,16 @@ msgstr "Ajouter une clé"
 #: app/templates/views/user-profile/confirm.html:8
 #: app/templates/views/user-profile/confirm.html:14
 msgid "Change your "
-msgstr "Changez votre "
+msgstr "Changer votre "
 
 #: app/templates/views/user-profile/change-password.html:8
 #: app/templates/views/user-profile/change-password.html:14
 msgid "Change your password"
-msgstr "Changez votre mot de passe"
+msgstr "Changer votre mot de passe"
 
 #: app/templates/views/user-profile/confirm.html:21
 msgid "We’ve sent a security code to your new "
-msgstr ""
+msgstr "Nous avons envoyé un code de sécurité à votre "
 
 #: app/templates/views/user-profile/security-keys.html:54
 msgid "New security key"
