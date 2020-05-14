@@ -16,7 +16,7 @@
       back_link=url_for('.service_settings', service_id=current_service.id)
     ) }}
     {{ textbox(form.free_sms_allowance) }}
-    {{ page_footer('Save') }}
+    {{ page_footer(_('Save')) }}
   {% endcall %}
 
 {% endblock %}

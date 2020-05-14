@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-12 09:38-0400\n"
+"POT-Creation-Date: 2020-05-12 14:39-0600\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -34,34 +34,42 @@ msgstr ""
 msgid "Reply to"
 msgstr ""
 
-#: app/__init__.py:417 app/__init__.py:427
+#: app/__init__.py:376
+msgid "From:"
+msgstr ""
+
+#: app/__init__.py:377
+msgid "To:"
+msgstr ""
+
+#: app/__init__.py:419 app/__init__.py:429
 #: app/templates/views/conversations/messages.html:27
 msgid "Failed"
 msgstr ""
 
-#: app/__init__.py:418 app/__init__.py:428
+#: app/__init__.py:420 app/__init__.py:430
 #: app/templates/views/message-status.html:46
 #: app/templates/views/message-status.html:90
 msgid "Technical failure"
 msgstr ""
 
-#: app/__init__.py:419 app/templates/views/message-status.html:43
+#: app/__init__.py:421 app/templates/views/message-status.html:43
 msgid "Inbox not accepting messages right now"
 msgstr ""
 
-#: app/__init__.py:420
+#: app/__init__.py:422
 msgid "Email address doesn’t exist"
 msgstr ""
 
-#: app/__init__.py:421 app/__init__.py:424 app/__init__.py:431
+#: app/__init__.py:423 app/__init__.py:426 app/__init__.py:433
 #: app/templates/views/message-status.html:37
 #: app/templates/views/message-status.html:52
 #: app/templates/views/message-status.html:81
 msgid "Delivered"
 msgstr ""
 
-#: app/__init__.py:422 app/__init__.py:423 app/__init__.py:432
-#: app/__init__.py:433 app/__init__.py:434
+#: app/__init__.py:424 app/__init__.py:425 app/__init__.py:434
+#: app/__init__.py:435 app/__init__.py:436
 #: app/templates/partials/jobs/notifications.html:13
 #: app/templates/views/dashboard/_upcoming.html:28
 #: app/templates/views/message-status.html:34
@@ -69,15 +77,15 @@ msgstr ""
 msgid "Sending"
 msgstr ""
 
-#: app/__init__.py:429 app/templates/views/message-status.html:87
+#: app/__init__.py:431 app/templates/views/message-status.html:87
 msgid "Phone not accepting messages right now"
 msgstr ""
 
-#: app/__init__.py:430
+#: app/__init__.py:432
 msgid "Phone number doesn’t exist"
 msgstr ""
 
-#: app/__init__.py:435
+#: app/__init__.py:437
 msgid "Sent"
 msgstr ""
 
@@ -360,8 +368,10 @@ msgid "Off"
 msgstr ""
 
 #: app/main/forms.py:1039 app/main/views/send.py:776
+#: app/templates/views/notifications/check.html:70
 #: app/templates/views/signedout.html:657
 #: app/templates/views/support/ask-question-give-feedback.html:49
+#: app/templates/views/support/report-problem.html:33
 #: app/templates/views/templates/_template.html:21
 #: app/templates/views/templates/_template.html:29
 msgid "Send"
@@ -463,36 +473,36 @@ msgstr ""
 msgid "What’s their email address?"
 msgstr ""
 
-#: app/main/validators.py:24
+#: app/main/validators.py:25
 msgid "Password is blacklisted."
 msgstr ""
 
-#: app/main/validators.py:52
+#: app/main/validators.py:53
 msgid "Not a csv file"
 msgstr ""
 
-#: app/main/validators.py:57
+#: app/main/validators.py:58
 msgid "isn’t a spreadsheet that Notification can read"
 msgstr "isn’t a spreadsheet that Notify can read"
 
-#: app/main/validators.py:69
+#: app/main/validators.py:70
 msgid "Enter a government email address."
 msgstr ""
 
-#: app/main/validators.py:71
+#: app/main/validators.py:72
 msgid "If you think you should have access"
 msgstr ""
 
-#: app/main/validators.py:72 app/templates/views/service-settings.html:237
+#: app/main/validators.py:73 app/templates/views/service-settings.html:237
 #: app/templates/views/terms-of-use.html:41
 msgid "contact us"
 msgstr ""
 
-#: app/main/validators.py:82
+#: app/main/validators.py:83
 msgid "Enter a valid email address"
 msgstr ""
 
-#: app/main/validators.py:99
+#: app/main/validators.py:100
 msgid "You can’t put commas between double brackets"
 msgstr ""
 
@@ -659,17 +669,6 @@ msgstr ""
 msgid "Change your service name"
 msgstr ""
 
-#: app/main/views/service_settings.py:236
-msgid ""
-"Thanks for your request to go live. We’ll get back to you within one "
-"working day."
-msgstr ""
-
-#: app/main/views/service_settings.py:336
-#, python-format
-msgid "‘%(service_name)s’ was deleted"
-msgstr ""
-
 #: app/main/views/service_settings.py:342 app/main/views/templates.py:706
 msgid "Are you sure you want to delete"
 msgstr ""
@@ -678,24 +677,19 @@ msgstr ""
 msgid "There’s no way to undo this."
 msgstr ""
 
-#: app/main/views/service_settings.py:355
-msgid ""
-"This will suspend the service and revoke all API keys. Are you sure you "
-"want to suspend this service?"
+#: app/main/views/service_settings.py:466
+#: app/templates/views/service-settings.html:9
+#: app/templates/views/service-settings/email_reply_to.html:36
+#: app/templates/views/service-settings/sms-senders.html:38
+#: app/templates/views/user-profile.html:11
+msgid "Change"
 msgstr ""
 
-#: app/main/views/service_settings.py:367
-msgid ""
-"This will resume the service. New API key are required for this service "
-"to use the API."
-msgstr ""
-
-#: app/main/views/service_settings.py:411
-msgid "Sending domain updated"
-msgstr ""
-
-#: app/main/views/service_settings.py:574
-msgid "Are you sure you want to delete this reply-to email address?"
+#: app/main/views/service_settings.py:466 app/main/views/templates.py:399
+#: app/templates/views/service-settings/data-retention/add.html:22
+#: app/templates/views/service-settings/email-reply-to/add.html:31
+#: app/templates/views/service-settings/letter-contact/add.html:34
+msgid "Add"
 msgstr ""
 
 #: app/main/views/service_settings.py:629
@@ -725,11 +719,6 @@ msgstr ""
 #: app/main/views/templates.py:209
 #: app/templates/views/dashboard/template-statistics.html:28
 msgid "Letter"
-msgstr ""
-
-#: app/main/views/templates.py:399
-#: app/templates/views/service-settings/email-reply-to/add.html:31
-msgid "Add"
 msgstr ""
 
 #: app/main/views/templates.py:478 app/main/views/templates.py:496
@@ -913,6 +902,7 @@ msgid "archive"
 msgstr ""
 
 #: app/templates/flash_messages.html:9
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:66
 msgid "Try again"
 msgstr ""
 
@@ -992,6 +982,7 @@ msgid "Choose a different time"
 msgstr ""
 
 #: app/templates/main_template.html:78
+#: app/templates/views/platform-admin/clear-cache.html:18
 msgid "Clear"
 msgstr ""
 
@@ -1224,6 +1215,7 @@ msgid "or"
 msgstr ""
 
 #: app/templates/components/file-upload.html:38
+#: app/templates/views/platform-admin/returned-letters.html:17
 #: app/templates/views/service-settings/sending_domain.html:30
 #: app/templates/views/smtp/manage.html:29
 msgid "Submit"
@@ -1298,6 +1290,13 @@ msgstr ""
 #: app/templates/views/dashboard/all-template-statistics.html:23
 #: app/templates/views/dashboard/template-statistics.html:8
 msgid "Template"
+msgstr ""
+
+#: app/templates/components/page-footer.html:9
+#: app/templates/views/service-settings/email-reply-to/edit.html:10
+#: app/templates/views/service-settings/letter-contact/edit.html:42
+#: app/templates/views/service-settings/sms-sender/edit.html:12
+msgid "Delete"
 msgstr ""
 
 #: app/templates/components/page-header.html:17
@@ -1729,10 +1728,15 @@ msgstr ""
 #: app/templates/views/new-password.html:22
 #: app/templates/views/register-from-invite.html:29
 #: app/templates/views/register-from-org-invite.html:24
-#: app/templates/views/register.html:27 app/templates/views/send-test.html:34
+#: app/templates/views/register.html:27 app/templates/views/send-test.html:41
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:27
+#: app/templates/views/service-settings/estimate-usage.html:35
 #: app/templates/views/signin.html:34
+#: app/templates/views/support/triage.html:19
 #: app/templates/views/templates/_move_to.html:36
 #: app/templates/views/templates/add.html:12
+#: app/templates/views/templates/set-sender.html:26
+#: app/templates/views/templates/set-template-sender.html:25
 #: app/templates/views/templates/start-tour.html:18
 #: app/templates/views/two-factor.html:16
 #: app/templates/views/verify-mobile.html:22
@@ -2133,15 +2137,45 @@ msgstr "Your recipients will not see this template name."
 #: app/templates/views/edit-email-template.html:40
 #: app/templates/views/edit-letter-template.html:20
 #: app/templates/views/edit-sms-template.html:34
+#: app/templates/views/edit-user-permissions.html:41
+#: app/templates/views/email-branding/manage-branding.html:37
+#: app/templates/views/letter-branding/manage-letter-branding.html:33
 #: app/templates/views/manage-users/edit-user-email.html:21
+#: app/templates/views/manage-users/edit-user-mobile.html:23
 #: app/templates/views/organisations/add-organisation.html:31
+#: app/templates/views/organisations/organisation/settings/edit-agreement.html:28
+#: app/templates/views/organisations/organisation/settings/edit-crown-status.html:21
+#: app/templates/views/organisations/organisation/settings/edit-domains.html:31
+#: app/templates/views/organisations/organisation/settings/edit-go-live-notes.html:15
+#: app/templates/views/organisations/organisation/settings/edit-name/index.html:20
+#: app/templates/views/organisations/organisation/settings/edit-type.html:19
+#: app/templates/views/organisations/organisation/settings/preview-letter-branding.html:17
+#: app/templates/views/organisations/organisation/users/user/index.html:24
+#: app/templates/views/providers/edit-provider.html:29
+#: app/templates/views/service-settings/contact_link.html:38
+#: app/templates/views/service-settings/data-retention/edit.html:21
 #: app/templates/views/service-settings/email-reply-to/edit.html:9
+#: app/templates/views/service-settings/letter-contact/edit.html:40
 #: app/templates/views/service-settings/name.html:32
 #: app/templates/views/service-settings/set-email.html:23
+#: app/templates/views/service-settings/set-free-sms-allowance.html:19
+#: app/templates/views/service-settings/set-inbound-number.html:24
 #: app/templates/views/service-settings/set-international-sms.html:23
+#: app/templates/views/service-settings/set-letter-contact-block.html:27
+#: app/templates/views/service-settings/set-letter.html:28
+#: app/templates/views/service-settings/set-reply-to-email.html:39
+#: app/templates/views/service-settings/set-service-setting.html:21
 #: app/templates/views/service-settings/set-sms.html:26
 #: app/templates/views/service-settings/sms-prefix.html:8
+#: app/templates/views/service-settings/sms-sender/add.html:30
 #: app/templates/views/service-settings/sms-sender/edit.html:11
+#: app/templates/views/service-settings/sms-sender/edit.html:50
+#: app/templates/views/templates/add-template-folder.html:17
+#: app/templates/views/templates/edit-template-postage.html:21
+#: app/templates/views/templates/manage-template-folder.html:33
+#: app/templates/views/user-profile/change-password.html:23
+#: app/templates/views/user-profile/change.html:22
+#: app/templates/views/user-profile/disable-platform-admin-view.html:22
 msgid "Save"
 msgstr ""
 
@@ -2174,6 +2208,10 @@ msgstr ""
 #: app/templates/views/edit-sms-template.html:24
 msgid "Your recipients won’t see this"
 msgstr "Your recipients will not see this template name."
+
+#: app/templates/views/edit-user-permissions.html:43
+msgid "Remove this team member"
+msgstr ""
 
 #: app/templates/views/email-link-invalid.html:5
 msgid "Invalid email link"
@@ -2455,6 +2493,7 @@ msgid "Invite a team member"
 msgstr ""
 
 #: app/templates/views/invite-user.html:15
+#: app/templates/views/organisations/organisation/users/invite-org-user.html:31
 msgid "Send invitation email"
 msgstr ""
 
@@ -2835,11 +2874,11 @@ msgid ""
 "service has specific security needs, "
 msgstr ""
 
-#: app/templates/views/send-test.html:15
+#: app/templates/views/send-test.html:16
 msgid "Optional"
 msgstr ""
 
-#: app/templates/views/send-test.html:30 app/templates/views/send.html:6
+#: app/templates/views/send-test.html:37 app/templates/views/send.html:6
 msgid "Upload a list of"
 msgstr ""
 
@@ -2901,13 +2940,6 @@ msgstr ""
 
 #: app/templates/views/send.html:46
 msgid "Your file will populate this template"
-msgstr ""
-
-#: app/templates/views/service-settings.html:9
-#: app/templates/views/service-settings/email_reply_to.html:36
-#: app/templates/views/service-settings/sms-senders.html:38
-#: app/templates/views/user-profile.html:11
-msgid "Change"
 msgstr ""
 
 #: app/templates/views/service-settings.html:16
@@ -4414,6 +4446,10 @@ msgstr ""
 
 #: app/templates/views/manage-users/confirm-edit-user-email.html:25
 #: app/templates/views/manage-users/confirm-edit-user-mobile-number.html:25
+#: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:24
+#: app/templates/views/service-settings/confirm.html:24
+#: app/templates/views/user-profile/authenticate.html:23
+#: app/templates/views/user-profile/confirm.html:29
 msgid "Confirm"
 msgstr ""
 
@@ -4488,6 +4524,12 @@ msgid ""
 "      live and why you approved the change."
 msgstr ""
 
+#: app/templates/views/organisations/organisation/settings/set-email-branding.html:30
+#: app/templates/views/organisations/organisation/settings/set-letter-branding.html:30
+#: app/templates/views/service-settings/set-letter-branding.html:30
+msgid "Preview"
+msgstr ""
+
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:8
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:12
 msgid "Confirm organisation name change"
@@ -4495,6 +4537,10 @@ msgstr ""
 
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:23
 msgid "Your organisation name will be changed from"
+msgstr ""
+
+#: app/templates/views/organisations/organisation/users/user/index.html:26
+msgid "Remove user from organisation"
 msgstr ""
 
 #: app/templates/views/platform-admin/_base_template.html:17
@@ -4512,6 +4558,11 @@ msgstr ""
 
 #: app/templates/views/platform-admin/api_keys_ranked.html:25
 msgid "SMS"
+msgstr ""
+
+#: app/templates/views/platform-admin/notifications_by_service.html:17
+#: app/templates/views/platform-admin/usage_for_all_services.html:17
+msgid "Download report"
 msgstr ""
 
 #: app/templates/views/platform-admin/reports.html:10
@@ -4695,6 +4746,10 @@ msgstr ""
 msgid "Search by country name or code"
 msgstr ""
 
+#: app/templates/views/service-settings/delete.html:39
+msgid "Yes, delete "
+msgstr ""
+
 #: app/templates/views/service-settings/email_reply_to.html:23
 msgid "You haven’t added any reply-to email addresses yet"
 msgstr ""
@@ -4733,6 +4788,10 @@ msgstr ""
 
 #: app/templates/views/service-settings/name.html:27
 msgid "Users will see your service name as your email sender name."
+msgstr ""
+
+#: app/templates/views/service-settings/request-to-go-live.html:75
+msgid "Request to go live"
 msgstr ""
 
 #: app/templates/views/service-settings/sending_domain.html:12
@@ -4797,6 +4856,10 @@ msgstr ""
 msgid "The text message sender tells your users who the message is from."
 msgstr ""
 
+#: app/templates/views/service-settings/branding/email-options.html:44
+msgid "Request new branding"
+msgstr ""
+
 #: app/templates/views/service-settings/branding/manage-email-branding.html:9
 #: app/templates/views/service-settings/branding/manage-email-branding.html:15
 msgid "Update email branding"
@@ -4822,6 +4885,38 @@ msgstr ""
 msgid "Upload logo"
 msgstr ""
 
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:12
+msgid "We’re checking that "
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:14
+msgid "is a real email address."
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:18
+msgid "This can take a minute"
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:25
+msgid "is ready to use"
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:33
+msgid "There’s a problem with your reply-to address"
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:37
+msgid "We sent an email to "
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:39
+msgid "but it wasn’t delivered."
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/_verify-updates.html:43
+msgid "You can try again, or use a different address."
+msgstr ""
+
 #: app/templates/views/service-settings/email-reply-to/add.html:23
 #: app/templates/views/service-settings/email-reply-to/edit.html:16
 msgid ""
@@ -4833,13 +4928,13 @@ msgstr ""
 msgid "Change reply-to email address"
 msgstr ""
 
-#: app/templates/views/service-settings/email-reply-to/edit.html:10
-#: app/templates/views/service-settings/sms-sender/edit.html:12
-msgid "Delete"
-msgstr ""
-
 #: app/templates/views/service-settings/email-reply-to/edit.html:30
 msgid "This is the default reply-to address for"
+msgstr ""
+
+#: app/templates/views/service-settings/email-reply-to/verify.html:10
+#: app/templates/views/service-settings/email-reply-to/verify.html:20
+msgid "email reply-to address"
 msgstr ""
 
 #: app/templates/views/service-settings/sms-sender/edit.html:10
@@ -4862,6 +4957,10 @@ msgstr ""
 msgid "Generate a new password if you forgot it."
 msgstr ""
 
+#: app/templates/views/smtp/index.html:48
+msgid "Remove SMTP relay"
+msgstr ""
+
 #: app/templates/views/smtp/index.html:54
 msgid "Add SMTP Relay"
 msgstr ""
@@ -4873,6 +4972,10 @@ msgstr ""
 
 #: app/templates/views/smtp/manage.html:25
 msgid "enter a name"
+msgstr ""
+
+#: app/templates/views/support/report-problem.html:35
+msgid "Back to support"
 msgstr ""
 
 #: app/templates/views/templates/_move_to.html:26
@@ -4921,6 +5024,10 @@ msgstr ""
 msgid "What do you want to add?"
 msgstr ""
 
+#: app/templates/views/templates/breaking-change.html:40
+msgid "Save changes to template"
+msgstr ""
+
 #: app/templates/views/templates/choose.html:26
 msgid "You need to create a template to send"
 msgstr ""
@@ -4948,6 +5055,10 @@ msgstr ""
 msgid "Copy an existing template"
 msgstr ""
 
+#: app/templates/views/templates/manage-template-folder.html:39
+msgid "Delete this folder"
+msgstr ""
+
 #: app/templates/views/templates/template.html:51
 msgid "Last edited"
 msgstr ""
@@ -4970,6 +5081,10 @@ msgstr ""
 
 #: app/templates/views/templates/template.html:85
 msgid "Template version"
+msgstr ""
+
+#: app/templates/views/templates/template_history.html:22
+msgid "See all versions of this template"
 msgstr ""
 
 #: app/templates/views/user-profile/add-security-keys.html:23
