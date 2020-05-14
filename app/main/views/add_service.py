@@ -27,7 +27,7 @@ def _create_service(service_name, organisation_type, email_from, form):
         return service_id, None
     except HTTPError as e:
         if e.status_code == 400 and e.message['name']:
-            form.name.errors.append("This service name is already in use")
+            form.name.errors.append(_("This service name is already in use"))
             return None, e
         else:
             raise e
