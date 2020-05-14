@@ -463,7 +463,7 @@ def service_verify_reply_to_address(service_id, notification_id):
         service_id=service_id,
         notification_id=notification_id,
         partials=get_service_verify_reply_to_address_partials(service_id, notification_id),
-        verb=(_l("Change") if replace else _l("Add")),
+        verb=(_("Change") if replace else _("Add")),
         replace=replace,
         is_default=is_default
     )
