@@ -21,6 +21,12 @@ generate-version-file: ## Generates the app version file
 test:
 	./scripts/run_tests.sh
 
+.PHONY: babel
+babel: 
+	pybabel extract -F babel.cfg -k _l -o messages.pot .
+	pybabel update -i messages.pot -d app/translations
+	pybabel compile -d app/translations
+
 .PHONY: freeze-requirements
 freeze-requirements:
 	rm -rf venv-freeze
