@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-12 14:39-0600\n"
+"POT-Creation-Date: 2020-05-13 14:28-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -330,6 +330,8 @@ msgid "Phone number"
 msgstr "Numéro de téléphone"
 
 #: app/main/forms.py:963
+#: app/templates/views/service-settings/set-reply-to-email.html:8
+#: app/templates/views/service-settings/set-reply-to-email.html:14
 msgid "Reply-to email address"
 msgstr "Adresse courriel de réponse"
 
@@ -3120,6 +3122,7 @@ msgid "Manage"
 msgstr "Configurer"
 
 #: app/templates/views/email-branding/select-branding.html:6
+#: app/templates/views/email-branding/select-branding.html:11
 #: app/templates/views/service-settings.html:124
 #: app/templates/views/service-settings.html:326
 msgid "Email branding"
@@ -4028,6 +4031,7 @@ msgstr ""
 " financière"
 
 #: app/templates/views/api/callbacks.html:9
+#: app/templates/views/api/callbacks.html:14
 #: app/templates/views/api/index.html:25
 msgid "Callbacks"
 msgstr "Rappels"
@@ -4167,6 +4171,7 @@ msgid "At least 10 characters"
 msgstr "Au moins 10 caractères"
 
 #: app/templates/views/api/callbacks/received-text-messages-callback.html:8
+#: app/templates/views/api/callbacks/received-text-messages-callback.html:13
 msgid "Callbacks for received text messages"
 msgstr "Rappels pour les messages texte reçus"
 
@@ -4656,6 +4661,7 @@ msgid "Block user"
 msgstr "Bloquer l'utilisateur"
 
 #: app/templates/views/manage-users/confirm-edit-user-email.html:7
+#: app/templates/views/manage-users/confirm-edit-user-email.html:13
 msgid "Confirm change of email address"
 msgstr "Confirmer le changement de l’adresse courriel"
 
@@ -4704,8 +4710,13 @@ msgid "This will change the email address for"
 msgstr "Cela changera l’adresse courriel pour "
 
 #: app/templates/views/manage-users/edit-user-mobile.html:8
+#: app/templates/views/manage-users/edit-user-mobile.html:14
 msgid "Change team member’s mobile number"
 msgstr "Changer le numéro de téléphone cellulaire d’un membre de l’équipe"
+
+#: app/templates/views/manage-users/edit-user-mobile.html:18
+msgid "This will change the mobile number for "
+msgstr ""
 
 #: app/templates/views/manage-users/permissions.html:9
 msgid "All team members can see sent messages."
@@ -4738,6 +4749,7 @@ msgid "See all text messages sent to this phone number"
 msgstr "Voir tous les messages texte envoyés à ce numéro"
 
 #: app/templates/views/organisations/add-organisation.html:9
+#: app/templates/views/organisations/add-organisation.html:25
 #: app/templates/views/organisations/index.html:56
 msgid "New organisation"
 msgstr "Nouvelle organisation"
@@ -4772,6 +4784,11 @@ msgstr "Confirmer le changement du nom d’une organisation"
 #: app/templates/views/organisations/organisation/settings/edit-name/confirm.html:23
 msgid "Your organisation name will be changed from"
 msgstr "Le nom de votre organisation sera changé de"
+
+#: app/templates/views/organisations/organisation/settings/edit-name/index.html:8
+#: app/templates/views/organisations/organisation/settings/edit-name/index.html:14
+msgid "Change organisation name"
+msgstr ""
 
 #: app/templates/views/organisations/organisation/users/user/index.html:26
 msgid "Remove user from organisation"
@@ -4827,6 +4844,7 @@ msgid "Enter start date in format YYYY-MM-DD"
 msgstr "Inscriver la date de début dans le format YYYY-MM-DD"
 
 #: app/templates/views/pricing/how-to-pay.html:5
+#: app/templates/views/pricing/how-to-pay.html:10
 msgid "How to pay"
 msgstr "Comment payer"
 
@@ -5018,6 +5036,15 @@ msgstr "ont moins de chances d’être classés comme pourriel"
 msgid "appear more trustworthy"
 msgstr "semblent plus dignes de confiance"
 
+#: app/templates/views/service-settings/link-service-to-organisation.html:9
+#: app/templates/views/service-settings/link-service-to-organisation.html:15
+msgid "Link service to organisation"
+msgstr ""
+
+#: app/templates/views/service-settings/link-service-to-organisation.html:24
+msgid "No organisations"
+msgstr ""
+
 #: app/templates/views/service-settings/name.html:21
 msgid "Users will see your service name:"
 msgstr "Le nom de votre service apparaîtra : "
@@ -5074,6 +5101,11 @@ msgstr ""
 msgid "if signing in with a text message is a problem for your team."
 msgstr "si la connexion par message texte est problématique pour votre équipe."
 
+#: app/templates/views/service-settings/set-email-branding.html:9
+#: app/templates/views/service-settings/set-email-branding.html:15
+msgid "Set email branding"
+msgstr ""
+
 #: app/templates/views/service-settings/set-international-sms.html:20
 msgid ""
 "Charges may apply for messages sent to international phone numbers – so "
@@ -5098,6 +5130,8 @@ msgstr ""
 msgid "You haven’t added any text message senders yet"
 msgstr "Vous n’avez ajouté aucun expéditeur de message texte à ce jour"
 
+#: app/templates/views/service-settings/sms-sender/add.html:9
+#: app/templates/views/service-settings/sms-sender/add.html:15
 #: app/templates/views/service-settings/sms-senders.html:50
 msgid "Add text message sender"
 msgstr "Ajouter un expéditeur de message texte"
@@ -5107,6 +5141,25 @@ msgid "The text message sender tells your users who the message is from."
 msgstr ""
 "L’expéditeur de message texte fait savoir à vos utilisateurs d’où vient "
 "le message."
+
+#: app/templates/views/service-settings/branding/email-options.html:9
+#: app/templates/views/service-settings/branding/email-options.html:15
+msgid "Change email branding"
+msgstr ""
+
+#: app/templates/views/service-settings/branding/email-options.html:22
+msgid "Choose the branding you’d like on your emails."
+msgstr ""
+
+#: app/templates/views/service-settings/branding/email-options.html:26
+msgid "You need to choose an option"
+msgstr ""
+
+#: app/templates/views/service-settings/branding/email-options.html:41
+msgid ""
+"We’ll email you once your branding’s ready to use, or if we need any\n"
+"      more information."
+msgstr ""
 
 #: app/templates/views/service-settings/branding/email-options.html:44
 msgid "Request new branding"
@@ -5282,6 +5335,11 @@ msgstr "Ajouter un nouveau gabarit ou dossier"
 msgid "What do you want to add?"
 msgstr "Que voulez-vous ajouter?"
 
+#: app/templates/views/templates/breaking-change.html:10
+#: app/templates/views/templates/breaking-change.html:16
+msgid "Confirm changes"
+msgstr "Confirmer les modifications"
+
 #: app/templates/views/templates/breaking-change.html:40
 msgid "Save changes to template"
 msgstr "Enregistrer les modifications apportées au gabarit"
@@ -5356,6 +5414,24 @@ msgstr "Un indice pour vous aider à vous rappeler du nom de votre clé"
 #: app/templates/views/user-profile/add-security-keys.html:25
 msgid "Add key"
 msgstr "Ajouter une clé"
+
+#: app/templates/views/user-profile/authenticate.html:8
+#: app/templates/views/user-profile/authenticate.html:14
+#: app/templates/views/user-profile/change.html:8
+#: app/templates/views/user-profile/change.html:14
+#: app/templates/views/user-profile/confirm.html:8
+#: app/templates/views/user-profile/confirm.html:14
+msgid "Change your "
+msgstr "Changez votre "
+
+#: app/templates/views/user-profile/change-password.html:8
+#: app/templates/views/user-profile/change-password.html:14
+msgid "Change your password"
+msgstr "Changez votre mot de passe"
+
+#: app/templates/views/user-profile/confirm.html:21
+msgid "We’ve sent a security code to your new "
+msgstr ""
 
 #: app/templates/views/user-profile/security-keys.html:54
 msgid "New security key"
