@@ -287,6 +287,14 @@ class FieldWithNoneOption():
             self.data = None
 
 
+class FieldWithLanguageOptions():
+    ENGLISH_OPTION_VALUE = '__FIP-EN__'
+    FRENCH_OPTION_VALUE = '__FIP-FR__'
+
+    def process_data(self, value):
+        self.data = self.ENGLISH_OPTION_VALUE if value is None else value
+
+
 class RadioFieldWithNoneOption(FieldWithNoneOption, RadioField):
     pass
 
@@ -323,7 +331,7 @@ class NestedCheckboxesField(SelectMultipleField, NestedFieldMixin):
     NONE_OPTION_VALUE = None
 
 
-class HiddenFieldWithNoneOption(FieldWithNoneOption, HiddenField):
+class HiddenFieldWithLanguageOptions(FieldWithLanguageOptions, HiddenField):
     pass
 
 
@@ -1054,17 +1062,19 @@ class SetEmailBranding(StripWhitespaceForm):
         ]
     )
 
-    DEFAULT = (FieldWithNoneOption.NONE_OPTION_VALUE, 'GOV.UK')
+    DEFAULT_EN = (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, 'English Federal Identity Program (FIP)')
+    DEFAULT_FR = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, 'French Federal Identity Program (FIP)')
 
     def __init__(self, all_branding_options, current_branding):
 
         super().__init__(branding_style=current_branding)
 
         self.branding_style.choices = sorted(
-            all_branding_options + [self.DEFAULT],
+            all_branding_options + [self.DEFAULT_EN] + [self.DEFAULT_FR],
             key=lambda branding: (
                 branding[0] != current_branding,
-                branding[0] is not self.DEFAULT[0],
+                branding[0] is not self.DEFAULT_EN[0],
+                branding[0] is not self.DEFAULT_FR[0],
                 branding[1].lower(),
             ),
         )
@@ -1077,7 +1087,7 @@ class SetLetterBranding(SetEmailBranding):
 
 class PreviewBranding(StripWhitespaceForm):
 
-    branding_style = HiddenFieldWithNoneOption('branding_style')
+    branding_style = HiddenFieldWithLanguageOptions('branding_style')
 
 
 class ServiceUpdateEmailBranding(StripWhitespaceForm):
@@ -1093,7 +1103,8 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
     brand_type = RadioField(
         "Brand type",
         choices=[
-            ('both', 'FIP and custom logo'),
+            ('both_english', 'English Federal Identity Program (FIP) branding and custom logo'),
+            ('both_french', 'French Federal Identity Program (FIP) branding and custom logo'),
             ('custom_logo', 'Custom Logo'),
             ('custom_logo_with_background_colour', 'Custom Logo on a background colour'),
             ('no_branding', 'No branding'),
@@ -1372,7 +1383,9 @@ class LinkOrganisationsForm(StripWhitespaceForm):
 
 branding_options = (
     ('fip_english', 'Federal Identity Program (FIP) English only'),
-    ('both', 'Federal Identity Program (FIP) English and your logo'),
+    ('fip_french', 'Federal Identity Program (FIP) French only'),
+    ('both_english', 'English Federal Identity Program (FIP) and logo'),
+    ('both_french', 'French Federal Identity Program (FIP) and logo'),
     ('custom_logo', 'Your logo'),
     ('custom_logo_with_background_colour', 'Your logo on a colour'),
 )

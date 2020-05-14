@@ -75,6 +75,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         data = _attach_current_user(kwargs)
         disallowed_attributes = set(data.keys()) - {
+            # this list is the ALLOWED attributes - anything not in this list will be disallowed
             'name',
             'message_limit',
             'active',
@@ -86,6 +87,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             'created_by',
             'letter_branding',
             'email_branding',
+            'default_branding_is_french',
             'letter_contact_block',
             'permissions',
             'organisation_type',
@@ -101,6 +103,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             'go_live_at',
             'sending_domain'
         }
+
         if disallowed_attributes:
             raise TypeError('Not allowed to update service attributes: {}'.format(
                 ", ".join(disallowed_attributes)
