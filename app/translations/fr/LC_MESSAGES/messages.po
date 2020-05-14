@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-12 14:39-0600\n"
+"POT-Creation-Date: 2020-05-14 12:29-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -669,6 +669,19 @@ msgstr "Ce nom de service a dèjà été utilisé."
 msgid "Change your service name"
 msgstr "Modifier le nom du service"
 
+#: app/main/views/service_settings.py:236
+msgid ""
+"Thanks for your request to go live. We’ll get back to you within one "
+"working day."
+msgstr ""
+"Merci pour votre demande d'activation du service. Nous communiquerons "
+"avec vous dans un délai d'un jour ouvrable."
+
+#: app/main/views/service_settings.py:336
+#, python-format
+msgid "‘%(service_name)s’ was deleted"
+msgstr "‘%(service_name)s’ a été supprimé"
+
 #: app/main/views/service_settings.py:342 app/main/views/templates.py:706
 msgid "Are you sure you want to delete"
 msgstr "Voulez-vous vraiment supprimer"
@@ -676,6 +689,26 @@ msgstr "Voulez-vous vraiment supprimer"
 #: app/main/views/service_settings.py:342
 msgid "There’s no way to undo this."
 msgstr "Cette action est irréversible."
+
+#: app/main/views/service_settings.py:355
+msgid ""
+"This will suspend the service and revoke all API keys. Are you sure you "
+"want to suspend this service?"
+msgstr ""
+"Ceci suspendra le service et révoquera toutes les clés API associées. "
+"Êtes-vous certain de vouloir suspendre ce service?"
+
+#: app/main/views/service_settings.py:367
+msgid ""
+"This will resume the service. New API key are required for this service "
+"to use the API."
+msgstr ""
+"Ceci vous permettra de reprendre le service. Vous devrez créer de "
+"nouvelles clés API pour que ce service puisse utiliser l'API."
+
+#: app/main/views/service_settings.py:411
+msgid "Sending domain updated"
+msgstr "Domaine d'envoi mis à jour"
 
 #: app/main/views/service_settings.py:466
 #: app/templates/views/service-settings.html:9
@@ -691,6 +724,10 @@ msgstr "Modifier"
 #: app/templates/views/service-settings/letter-contact/add.html:34
 msgid "Add"
 msgstr "Ajouter"
+
+#: app/main/views/service_settings.py:574
+msgid "Are you sure you want to delete this reply-to email address?"
+msgstr "Êtes-vous certain de vouloir supprimer cette adresse courriel de réponse?"
 
 #: app/main/views/service_settings.py:629
 msgid "Start all text messages with"

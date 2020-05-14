@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-12 14:39-0600\n"
+"POT-Creation-Date: 2020-05-14 12:29-0400\n"
 "PO-Revision-Date: 2020-03-02 11:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -669,12 +669,39 @@ msgstr ""
 msgid "Change your service name"
 msgstr ""
 
+#: app/main/views/service_settings.py:236
+msgid ""
+"Thanks for your request to go live. We’ll get back to you within one "
+"working day."
+msgstr ""
+
+#: app/main/views/service_settings.py:336
+#, python-format
+msgid "‘%(service_name)s’ was deleted"
+msgstr ""
+
 #: app/main/views/service_settings.py:342 app/main/views/templates.py:706
 msgid "Are you sure you want to delete"
 msgstr ""
 
 #: app/main/views/service_settings.py:342
 msgid "There’s no way to undo this."
+msgstr ""
+
+#: app/main/views/service_settings.py:355
+msgid ""
+"This will suspend the service and revoke all API keys. Are you sure you "
+"want to suspend this service?"
+msgstr ""
+
+#: app/main/views/service_settings.py:367
+msgid ""
+"This will resume the service. New API key are required for this service "
+"to use the API."
+msgstr ""
+
+#: app/main/views/service_settings.py:411
+msgid "Sending domain updated"
 msgstr ""
 
 #: app/main/views/service_settings.py:466
@@ -690,6 +717,10 @@ msgstr ""
 #: app/templates/views/service-settings/email-reply-to/add.html:31
 #: app/templates/views/service-settings/letter-contact/add.html:34
 msgid "Add"
+msgstr ""
+
+#: app/main/views/service_settings.py:574
+msgid "Are you sure you want to delete this reply-to email address?"
 msgstr ""
 
 #: app/main/views/service_settings.py:629
