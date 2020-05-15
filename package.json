@@ -34,7 +34,7 @@
     "gulp-base64-inline": "1.0.6",
     "gulp-concat": "2.6.1",
     "gulp-include": "2.4.1",
-    "gulp-sass": "4.0.2",
+    "gulp-sass": "4.1.0",
     "gulp-uglify": "3.0.2",
     "hogan": "1.0.2",
     "jquery": "^3.5.0",
