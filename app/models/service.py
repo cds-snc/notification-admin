@@ -49,7 +49,8 @@ class Service(JSONModel):
         'go_live_at',
         'blocked',
         'sending_domain',
-        'smtp_relay'
+        'smtp_relay',
+        'default_branding_is_french'
     }
 
     TEMPLATE_TYPES = (
