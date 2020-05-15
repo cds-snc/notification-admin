@@ -6,13 +6,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Link service to organisation
+  {{ _('Link service to organisation') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Link service to organisation',
+    _('Link service to organisation'),
     back_link=url_for('.service_settings', service_id=current_service.id)
   ) }}
   {{ live_search(target_selector='.multiple-choice', show=True, form=search_form, label='Search by name') }}
@@ -21,7 +21,7 @@
       {{ radios(form.organisations) }}
       {{ sticky_page_footer('Save') }}
     {% else %}
-      <p class="hint"> No organisations </p>
+      <p class="hint"> {{ _('No organisations') }} </p>
     {% endif %}
   {% endcall %}
 {% endblock %}

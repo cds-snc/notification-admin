@@ -5,13 +5,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Reply-to email address
+  {{ _('Reply-to email address') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Reply-to email address',
+    _('Reply-to email address'),
     back_link=url_for('.service_settings', service_id=current_service.id)
   ) }}
 

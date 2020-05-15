@@ -11,11 +11,11 @@
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Change team member’s mobile number',
+    _('Change team member’s mobile number'),
     back_link=url_for('main.edit_user_permissions', service_id=current_service.id, user_id=user.id)
   ) }}
 
-  <p id="user_name">This will change the mobile number for {{ user.name }}.</p>
+  <p id="user_name">{{ _('This will change the mobile number for ') + user.name }}.</p>
   <div class="grid-row">
     <div class="column-three-quarters">
       {% call form_wrapper(class="extra-tracking") %}

@@ -6,13 +6,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Add text message sender
+  {{ _('Add text message sender') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Add text message sender',
+    _('Add text message sender'),
     back_link=url_for('main.service_sms_senders', service_id=current_service.id)
   ) }}
 

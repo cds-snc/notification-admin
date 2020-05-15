@@ -5,13 +5,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block org_page_title %}
-  Change organisation name
+  {{ _('Change organisation name') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    'Change organisation name',
+    _('Change organisation name'),
     back_link=url_for('.organisation_settings', org_id=current_org.id)
   ) }}
 
