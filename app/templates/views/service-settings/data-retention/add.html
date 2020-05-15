@@ -19,7 +19,7 @@
     {% call form_wrapper() %}
       {{ radios(form.notification_type) }}
       {{ textbox(form.days_of_retention) }}
-      {{ page_footer('Add') }}
+      {{ page_footer(_('Add')) }}
     {% endcall %}
 
 {% endblock %}

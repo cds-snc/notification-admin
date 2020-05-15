@@ -3704,7 +3704,7 @@ def test_suspend_service_prompts_user(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    assert 'This will suspend the service and revoke all api keys. Are you sure you want to suspend this service?' in \
+    assert 'This will suspend the service and revoke all API keys. Are you sure you want to suspend this service?' in \
            page.find('div', class_='banner-dangerous').text
     assert mocked_fn.called is False
 
@@ -3763,7 +3763,7 @@ def test_resume_service_prompts_user(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    assert 'This will resume the service. New api key are required for this service to use the API.' in \
+    assert 'This will resume the service. New API key are required for this service to use the API.' in \
            page.find('div', class_='banner-dangerous').text
     assert mocked_fn.called is False
 
