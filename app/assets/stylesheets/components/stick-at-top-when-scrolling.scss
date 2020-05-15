@@ -32,7 +32,13 @@ $sticky-padding: $gutter * 2 / 3;
     }
 
   }
-
+  .template-list-selected-counter {
+    position: relative;
+    top: 0px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    right: 0px;
+  }
 }
 
 .js-stick-at-top-when-scrolling {
