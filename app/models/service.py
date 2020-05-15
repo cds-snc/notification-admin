@@ -411,6 +411,10 @@ class Service(JSONModel):
     def email_branding_id(self):
         return self._dict['email_branding']
 
+    @property
+    def default_branding_is_french(self):
+        return self._dict['default_branding_is_french']
+
     @cached_property
     def email_branding(self):
         if self.email_branding_id:
@@ -420,7 +424,8 @@ class Service(JSONModel):
     @cached_property
     def email_branding_name(self):
         if self.email_branding is None:
-            return 'default'
+            return ('French Federal Identity Program (FIP)' if self.default_branding_is_french is True
+                    else 'English Federal Identity Program (FIP)')
         return self.email_branding['name']
 
     @property

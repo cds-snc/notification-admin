@@ -66,7 +66,7 @@ def mock_get_service_settings_page_common(
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
-        'Email branding default Change',
+        'Email branding English Federal Identity Program (FIP) Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -85,7 +85,7 @@ def mock_get_service_settings_page_common(
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
-        'Email branding default Change',
+        'Email branding English Federal Identity Program (FIP) Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -99,7 +99,7 @@ def mock_get_service_settings_page_common(
         'Count in list of live services Yes Change',
         'Organisation Test Organisation Central government Change',
         'Free text message allowance 250,000 Change',
-        'Email branding default Change',
+        'Email branding English Federal Identity Program (FIP) Change',
         'Letter branding Not set Change',
         'Data retention email Change',
         'Receive inbound SMS Off Change',
@@ -2916,6 +2916,7 @@ def test_service_set_letter_branding_platform_admin_only(
     )
 
 
+@pytest.mark.skip(reason="feature not in use")
 @pytest.mark.parametrize('selected_letter_branding, expected_post_data', [
     (str(UUID(int=1)), str(UUID(int=1))),
     ('__NONE__', None),
@@ -2932,6 +2933,7 @@ def test_service_set_letter_branding_platform_admin_only(
         'main.organisation_preview_letter_branding',
     ),
 ))
+@pytest.mark.skip(reason="feature not in use")
 def test_service_set_letter_branding_redirects_to_preview_page_when_form_submitted(
     client_request,
     platform_admin_user,
@@ -2958,6 +2960,7 @@ def test_service_set_letter_branding_redirects_to_preview_page_when_form_submitt
     )
 
 
+@pytest.mark.skip(reason="feature not in use")
 @pytest.mark.parametrize('endpoint, extra_args', (
     (
         'main.service_preview_letter_branding',
@@ -2987,6 +2990,7 @@ def test_service_preview_letter_branding_shows_preview_letter(
     assert page.find('iframe')['src'] == url_for('main.letter_template', branding_style='hm-government')
 
 
+@pytest.mark.skip(reason="feature not in use")
 @pytest.mark.parametrize('selected_letter_branding, expected_post_data', [
     (str(UUID(int=1)), str(UUID(int=1))),
     ('__NONE__', None),
@@ -3048,15 +3052,17 @@ def test_service_preview_letter_branding_saves(
 
 
 @pytest.mark.parametrize('current_branding, expected_values, expected_labels', [
-    (None, [
-        '__NONE__', '1', '2', '3', '4', '5',
+    ('__FIP-EN__', [
+        '__FIP-EN__', '__FIP-FR__', '1', '2', '3', '4', '5',
     ], [
-        'GOV.UK', 'org 1', 'org 2', 'org 3', 'org 4', 'org 5'
+        'English Federal Identity Program (FIP)', 'French Federal Identity Program (FIP)',
+        'org 1', 'org 2', 'org 3', 'org 4', 'org 5'
     ]),
     ('5', [
-        '5', '__NONE__', '1', '2', '3', '4',
+        '5', '__FIP-EN__', '__FIP-FR__', '1', '2', '3', '4',
     ], [
-        'org 5', 'GOV.UK', 'org 1', 'org 2', 'org 3', 'org 4',
+        'org 5', 'English Federal Identity Program (FIP)', 'French Federal Identity Program (FIP)',
+        'org 1', 'org 2', 'org 3', 'org 4',
     ]),
 ])
 @pytest.mark.parametrize('endpoint, extra_args', (
@@ -3100,7 +3106,7 @@ def test_should_show_branding_styles(
         page.find('label', attrs={"for": branding_style_choices[idx]['id']}).get_text().strip()
         for idx, element in enumerate(branding_style_choices)]
 
-    assert len(branding_style_choices) == 6
+    assert len(branding_style_choices) == 7
 
     for index, expected_value in enumerate(expected_values):
         assert branding_style_choices[index]['value'] == expected_value
@@ -3114,6 +3120,7 @@ def test_should_show_branding_styles(
     assert 'checked' not in branding_style_choices[3].attrs
     assert 'checked' not in branding_style_choices[4].attrs
     assert 'checked' not in branding_style_choices[5].attrs
+    assert 'checked' not in branding_style_choices[6].attrs
 
     app.email_branding_client.get_all_email_branding.assert_called_once_with()
     app.service_api_client.get_service.assert_called_once_with(service_one['id'])
@@ -3183,7 +3190,7 @@ def test_should_preview_email_branding(
     page = client_request.get(
         endpoint,
         branding_type='custom_logo',
-        branding_style='1',
+        branding_style='2',
         **extra_args
     )
 
@@ -3191,14 +3198,14 @@ def test_should_preview_email_branding(
     iframeURLComponents = urlparse(iframe['src'])
     iframeQString = parse_qs(iframeURLComponents.query)
 
-    assert page.find('input', attrs={"id": "branding_style"})['value'] == '1'
+    assert page.find('input', attrs={"id": "branding_style"})['value'] == '2'
     assert iframeURLComponents.path == '/_email'
-    assert iframeQString['branding_style'] == ['1']
+    assert iframeQString['branding_style'] == ['2']
 
 
 @pytest.mark.parametrize('posted_value, submitted_value', (
-    ('1', '1'),
-    ('__NONE__', None),
+    ('2', '2'),
+    (None, '__FIP-EN__'),
     pytest.param('None', None, marks=pytest.mark.xfail(raises=AssertionError)),
 ))
 @pytest.mark.parametrize('endpoint, extra_args, expected_redirect', (
@@ -3242,10 +3249,17 @@ def test_should_set_branding_and_organisations(
     )
 
     if endpoint == 'main.service_preview_email_branding':
-        mock_update_service.assert_called_once_with(
-            SERVICE_ONE_ID,
-            email_branding=submitted_value,
-        )
+        if submitted_value == '__FIP-EN__':
+            mock_update_service.assert_called_once_with(
+                SERVICE_ONE_ID,
+                default_branding_is_french=False,
+                email_branding=None
+            )
+        else:
+            mock_update_service.assert_called_once_with(
+                SERVICE_ONE_ID,
+                email_branding=submitted_value
+            )
         assert mock_update_organisation.called is False
     elif endpoint == 'main.organisation_preview_email_branding':
         mock_update_organisation.assert_called_once_with(
@@ -3690,7 +3704,7 @@ def test_suspend_service_prompts_user(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    assert 'This will suspend the service and revoke all api keys. Are you sure you want to suspend this service?' in \
+    assert 'This will suspend the service and revoke all API keys. Are you sure you want to suspend this service?' in \
            page.find('div', class_='banner-dangerous').text
     assert mocked_fn.called is False
 
@@ -3749,7 +3763,7 @@ def test_resume_service_prompts_user(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    assert 'This will resume the service. New api key are required for this service to use the API.' in \
+    assert 'This will resume the service. New API key are required for this service to use the API.' in \
            page.find('div', class_='banner-dangerous').text
     assert mocked_fn.called is False
 
@@ -4203,7 +4217,9 @@ def test_show_email_branding_request_page_when_no_email_branding_is_set(
 
     for index, option in enumerate((
         'fip_english',
-        'both',
+        'fip_french',
+        'both_english',
+        'both_french',
         'custom_logo',
         'custom_logo_with_background_colour',
     )):
@@ -4231,7 +4247,9 @@ def test_show_email_branding_request_page_when_email_branding_is_set(
 
     for index, option in enumerate((
         'fip_english',
-        'both',
+        'fip_french',
+        'both_english',
+        'both_french',
         'custom_logo',
         'custom_logo_with_background_colour',
     )):
@@ -4242,8 +4260,8 @@ def test_show_email_branding_request_page_when_email_branding_is_set(
 
 
 @pytest.mark.parametrize('choice, requested_branding', (
-    ('fip_english', 'Federal Identity Program (FIP) English only'),
-    ('both', 'Federal Identity Program (FIP) English and your logo'),
+    ('fip_english', 'Federal Identity Program (FIP) English first'),
+    ('both_english', 'Federal Identity Program (FIP) English and your logo'),
     ('custom_logo', 'Your logo'),
     ('custom_logo_with_background_colour', 'Your logo on a colour'),
     pytest.param('foo', 'Nope', marks=pytest.mark.xfail(raises=AssertionError)),

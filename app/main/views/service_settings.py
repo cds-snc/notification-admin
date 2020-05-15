@@ -12,7 +12,7 @@ from flask import (
     session,
     url_for,
 )
-from flask_babel import lazy_gettext as _l
+from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
@@ -33,6 +33,7 @@ from app.main import main
 from app.main.forms import (
     ConfirmPasswordForm,
     EstimateUsageForm,
+    FieldWithLanguageOptions,
     FreeSMSAllowance,
     InternationalSMSForm,
     LinkOrganisationsForm,
@@ -100,7 +101,7 @@ def service_name_change(service_id):
         unique_name = service_api_client.is_service_name_unique(service_id, form.name.data, email_safe(form.name.data))
 
         if not unique_name:
-            form.name.errors.append("This service name is already in use")
+            form.name.errors.append(_("This service name is already in use"))
             return render_template('views/service-settings/name.html', form=form)
 
         session['service_name_change'] = form.name.data
@@ -131,7 +132,7 @@ def service_name_change_confirm(service_id):
             error_msg = "Duplicate service name '{}'".format(session['service_name_change'])
             if e.status_code == 400 and error_msg in e.message['name']:
                 # Redirect the user back to the change service name screen
-                flash('This service name is already in use', 'error')
+                flash(_('This service name is already in use'), 'error')
                 return redirect(url_for('main.service_name_change', service_id=service_id))
             else:
                 raise e
@@ -140,7 +141,7 @@ def service_name_change_confirm(service_id):
             return redirect(url_for('.service_settings', service_id=service_id))
     return render_template(
         'views/service-settings/confirm.html',
-        heading=_l('Change your service name'),
+        heading=_('Change your service name'),
         form=form)
 
 
@@ -233,7 +234,7 @@ def submit_request_to_go_live(service_id):
 
     current_service.update(go_live_user=current_user.id)
 
-    flash('Thanks for your request to go live. We’ll get back to you within one working day.', 'default')
+    flash(_('Thanks for your request to go live. We’ll get back to you within one working day.'), 'default')
     return redirect(url_for('.service_settings', service_id=service_id))
 
 
@@ -333,13 +334,13 @@ def archive_service(service_id):
         service_api_client.archive_service(service_id)
         session.pop('service_id', None)
         flash(
-            '‘{}’ was deleted'.format(current_service.name),
+            _("‘%(service_name)s’ was deleted", service_name=current_service.name),
             'default_with_tick',
         )
         return redirect(url_for('.choose_account'))
     else:
         flash(
-            '{} ‘{}’? {}'.format(_l("Are you sure you want to delete"), current_service.name, _l("There’s no way to undo this.")),
+            '{} ‘{}’? {}'.format(_("Are you sure you want to delete"), current_service.name, _("There’s no way to undo this.")),
             'delete',
         )
         return service_settings(service_id)
@@ -352,7 +353,7 @@ def suspend_service(service_id):
         service_api_client.suspend_service(service_id)
         return redirect(url_for('.service_settings', service_id=service_id))
     else:
-        flash("This will suspend the service and revoke all api keys. Are you sure you want to suspend this service?",
+        flash(_("This will suspend the service and revoke all API keys. Are you sure you want to suspend this service?"),
               'suspend')
         return service_settings(service_id)
 
@@ -364,7 +365,7 @@ def resume_service(service_id):
         service_api_client.resume_service(service_id)
         return redirect(url_for('.service_settings', service_id=service_id))
     else:
-        flash("This will resume the service. New api key are required for this service to use the API.", 'resume')
+        flash(_("This will resume the service. New API key are required for this service to use the API."), 'resume')
         return service_settings(service_id)
 
 
@@ -408,7 +409,7 @@ def service_sending_domain(service_id):
 
     if form.validate_on_submit():
         current_service.update(sending_domain=form.sending_domain.data)
-        flash('Sending domain updated', 'default')
+        flash(_('Sending domain updated'), 'default')
         return redirect(url_for('.service_settings', service_id=service_id))
 
     default_sending = current_app.config["SENDING_DOMAIN"]
@@ -463,7 +464,7 @@ def service_verify_reply_to_address(service_id, notification_id):
         service_id=service_id,
         notification_id=notification_id,
         partials=get_service_verify_reply_to_address_partials(service_id, notification_id),
-        verb=(_l("Change") if replace else _l("Add")),
+        verb=(_("Change") if replace else _("Add")),
         replace=replace,
         is_default=is_default
     )
@@ -571,7 +572,7 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
         ))
 
     if (request.endpoint == "main.service_confirm_delete_email_reply_to"):
-        flash("Are you sure you want to delete this reply-to email address?", 'delete')
+        flash(_('Are you sure you want to delete this reply-to email address?'), 'delete')
     return render_template(
         'views/service-settings/email-reply-to/edit.html',
         form=form,
@@ -626,7 +627,7 @@ def service_set_sms_prefix(service_id):
         'on' if current_service.prefix_sms else 'off'
     ))
 
-    form.enabled.label.text = '{} ‘{}:’'.format(_l("Start all text messages with"), current_service.name)
+    form.enabled.label.text = '{} ‘{}:’'.format(_("Start all text messages with"), current_service.name)
 
     if form.validate_on_submit():
         current_service.update(
@@ -786,7 +787,7 @@ def service_edit_letter_contact(service_id, letter_contact_id):
         return redirect(url_for('.service_letter_contact_details', service_id=service_id))
 
     if (request.endpoint == "main.service_confirm_delete_letter_contact"):
-        flash("Are you sure you want to delete this contact block?", 'delete')
+        flash(_("Are you sure you want to delete this contact block?"), 'delete')
     return render_template(
         'views/service-settings/letter-contact/edit.html',
         form=form,
@@ -869,7 +870,7 @@ def service_edit_sms_sender(service_id, sms_sender_id):
 
     form.is_default.data = sms_sender['is_default']
     if (request.endpoint == "main.service_confirm_delete_sms_sender"):
-        flash("Are you sure you want to delete this text message sender?", 'delete')
+        flash(_("Are you sure you want to delete this text message sender?"), 'delete')
     return render_template(
         'views/service-settings/sms-sender/edit.html',
         form=form,
@@ -937,9 +938,16 @@ def set_free_sms_allowance(service_id):
 def service_set_email_branding(service_id):
     email_branding = email_branding_client.get_all_email_branding()
 
+    current_branding = current_service.email_branding_id
+
+    if current_branding is None:
+        current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
+                            current_service.default_branding_is_french is True else
+                            FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+
     form = SetEmailBranding(
         all_branding_options=get_branding_as_value_and_label(email_branding),
-        current_branding=current_service.email_branding_id,
+        current_branding=current_branding,
     )
 
     if form.validate_on_submit():
@@ -963,10 +971,23 @@ def service_preview_email_branding(service_id):
 
     form = PreviewBranding(branding_style=branding_style)
 
+    default_branding_is_french = None
+
+    if form.branding_style.data == FieldWithLanguageOptions.ENGLISH_OPTION_VALUE:
+        default_branding_is_french = False
+    elif form.branding_style.data == FieldWithLanguageOptions.FRENCH_OPTION_VALUE:
+        default_branding_is_french = True
+
     if form.validate_on_submit():
-        current_service.update(
-            email_branding=form.branding_style.data
-        )
+        if default_branding_is_french is not None:
+            current_service.update(
+                email_branding=None,
+                default_branding_is_french=default_branding_is_french
+            )
+        else:
+            current_service.update(
+                email_branding=form.branding_style.data
+            )
         return redirect(url_for('.service_settings', service_id=service_id))
 
     return render_template(
