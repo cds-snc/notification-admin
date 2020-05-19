@@ -165,7 +165,7 @@ def cancel_invited_org_user(org_id, invited_user_id):
 @user_is_platform_admin
 def organisation_settings(org_id):
 
-    email_branding = ('French Federal Identity Program (FIP)' if 
+    email_branding = ('French Federal Identity Program (FIP)' if
                       current_organisation.default_branding_is_french is True
                       else 'English Federal Identity Program (FIP)')
 
@@ -338,6 +338,11 @@ def organisation_preview_email_branding(org_id):
         default_branding_is_french = False
     elif form.branding_style.data == FieldWithLanguageOptions.FRENCH_OPTION_VALUE:
         default_branding_is_french = True
+
+    print("Default branding from function")
+    print(default_branding_is_french)
+    print("form data")
+    print(form.branding_style.data)
 
     if form.validate_on_submit():
         if default_branding_is_french is not None:

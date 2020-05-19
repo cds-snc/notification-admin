@@ -114,7 +114,7 @@ class Organisation(JSONModel):
     @property
     def organisation_type_label(self):
         return dict(self.TYPES).get(self.organisation_type)
-    
+
     @property
     def default_branding_is_french(self):
         return self._dict['default_branding_is_french']
