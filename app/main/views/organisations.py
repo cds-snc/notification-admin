@@ -165,7 +165,9 @@ def cancel_invited_org_user(org_id, invited_user_id):
 @user_is_platform_admin
 def organisation_settings(org_id):
 
-    email_branding = 'English Federal Identity Program (FIP)'
+    email_branding = ('French Federal Identity Program (FIP)' if 
+                      current_organisation.default_branding_is_french is True
+                      else 'English Federal Identity Program (FIP)')
 
     if current_organisation.email_branding_id:
         email_branding = email_branding_client.get_email_branding(
@@ -300,7 +302,9 @@ def edit_organisation_email_branding(org_id):
 
     # organizations don't support multi language yet / we aren't using organizations
     if current_branding is None:
-        current_branding = FieldWithLanguageOptions.ENGLISH_OPTION_VALUE
+        current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
+                            current_organisation.default_branding_is_french is True else
+                            FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
 
     form = SetEmailBranding(
         all_branding_options=get_branding_as_value_and_label(email_branding),
@@ -328,11 +332,25 @@ def organisation_preview_email_branding(org_id):
     branding_style = request.args.get('branding_style', None)
     form = PreviewBranding(branding_style=branding_style)
 
+    default_branding_is_french = None
+
+    if form.branding_style.data == FieldWithLanguageOptions.ENGLISH_OPTION_VALUE:
+        default_branding_is_french = False
+    elif form.branding_style.data == FieldWithLanguageOptions.FRENCH_OPTION_VALUE:
+        default_branding_is_french = True
+
     if form.validate_on_submit():
-        organisations_client.update_organisation(
-            org_id,
-            email_branding_id=form.branding_style.data
-        )
+        if default_branding_is_french is not None:
+            organisations_client.update_organisation(
+                org_id,
+                email_branding_id=None,
+                default_branding_is_french=default_branding_is_french
+            )
+        else:
+            organisations_client.update_organisation(
+                org_id,
+                email_branding_id=form.branding_style.data
+            )
         return redirect(url_for('.organisation_settings', org_id=org_id))
 
     return render_template(

@@ -24,6 +24,7 @@ class Organisation(JSONModel):
         'active',
         'blocked',
         'crown',
+        'default_branding_is_french',
         'organisation_type',
         'letter_branding_id',
         'email_branding_id',
@@ -113,6 +114,10 @@ class Organisation(JSONModel):
     @property
     def organisation_type_label(self):
         return dict(self.TYPES).get(self.organisation_type)
+    
+    @property
+    def default_branding_is_french(self):
+        return self._dict['default_branding_is_french']
 
     @property
     def crown_status_or_404(self):
