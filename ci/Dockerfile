@@ -15,6 +15,7 @@ WORKDIR /app
 COPY . /app
 
 RUN set -ex && pip3 install -r requirements.txt
+RUN make babel
 
 RUN npm install
 RUN npm run build
