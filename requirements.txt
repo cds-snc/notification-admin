@@ -28,6 +28,7 @@ newrelic==5.12.1.141
 python-dotenv==0.13.0
 pwnedpasswords==2.0.0
 pyyaml==5.3.1
+translate-toolkit==2.5.1
 ua-parser==0.10.0
 user-agents==2.1
 WTForms==2.2.1
@@ -41,10 +42,10 @@ itsdangerous==0.24  # pyup: <1.0.0
 git+https://github.com/cds-snc/notifier-utils.git@42.1.1#egg=notifications-utils==42.1.1
 
 ## The following requirements were added by pip freeze:
-awscli==1.18.60
+awscli==1.18.62
 bleach==3.1.4
 boto3==1.12.13
-botocore==1.16.10
+botocore==1.16.12
 certifi==2020.4.5.1
 chardet==3.0.4
 click==7.1.2
@@ -61,7 +62,7 @@ jdcal==1.4.1
 Jinja2==2.11.2
 jmespath==0.10.0
 lml==0.0.9
-lxml==4.5.0
+lxml==4.5.1
 MarkupSafe==1.1.1
 mistune==0.8.4
 monotonic==1.5
