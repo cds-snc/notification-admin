@@ -1,0 +1,9 @@
+on: push
+name: PR BOT TEST
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: cds-snc/notification-pr-bot@master
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
