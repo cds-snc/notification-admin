@@ -36,3 +36,6 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       with:
         args: set image deployment.apps/admin admin=gcr.io/cdssnc/notify/admin:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=/github/home/.kube/config
+    - uses: cds-snc/notification-pr-bot@master
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
