@@ -339,11 +339,6 @@ def organisation_preview_email_branding(org_id):
     elif form.branding_style.data == FieldWithLanguageOptions.FRENCH_OPTION_VALUE:
         default_branding_is_french = True
 
-    print("Default branding from function")
-    print(default_branding_is_french)
-    print("form data")
-    print(form.branding_style.data)
-
     if form.validate_on_submit():
         if default_branding_is_french is not None:
             organisations_client.update_organisation(
