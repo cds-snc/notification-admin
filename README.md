@@ -188,15 +188,12 @@ let now_txt = window.polyglot.t("now");
 
 - Extract
 
-```bash
-pybabel extract -F babel.cfg -k _l -o messages.pot .
-pybabel update -i messages.pot -d app/translations
-```
+Currently this is a manual step. Add a row to en.csv and fr.csv in app/translations/csv/ for each new string you have wrapped. The format is: `"wrapped string","translation"`.
 
 - Compile 
 
 ```bash
-pybabel compile -d app/translations
+make babel
 ```
 
 ## Using Local Jinja for testing template changes

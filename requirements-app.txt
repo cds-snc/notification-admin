@@ -26,6 +26,7 @@ newrelic==5.12.1.141
 python-dotenv==0.13.0
 pwnedpasswords==2.0.0
 pyyaml==5.3.1
+translate-toolkit==2.5.1
 ua-parser==0.10.0
 user-agents==2.1
 WTForms==2.2.1

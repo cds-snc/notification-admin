@@ -11,4 +11,7 @@ make generate-version-file
 # Install Python development dependencies
 pip3 install -r requirements_for_test.txt
 
+# compile translations
+make babel
+
 npm install && npm run build

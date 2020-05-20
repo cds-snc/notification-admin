@@ -23,8 +23,8 @@ test:
 
 .PHONY: babel
 babel: 
-	pybabel extract -F babel.cfg -k _l -o messages.pot .
-	pybabel update -i messages.pot -d app/translations
+	csv2po app/translations/csv/en.csv app/translations/en/LC_MESSAGES/messages.po
+	csv2po app/translations/csv/fr.csv app/translations/fr/LC_MESSAGES/messages.po
 	pybabel compile -d app/translations
 
 .PHONY: freeze-requirements
