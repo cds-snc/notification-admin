@@ -1,1 +1,1 @@
-web: gunicorn -c gunicorn_config.py application
+web: make babel && gunicorn -c gunicorn_config.py application
