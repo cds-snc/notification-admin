@@ -23,6 +23,8 @@ function display_result {
 make test-requirements
 display_result $? 1 "Requirements check"
 
+make babel
+
 flake8 .
 display_result $? 1 "Code style check"
 
