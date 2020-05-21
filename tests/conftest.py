@@ -3283,6 +3283,7 @@ def mock_get_organisations_with_unusual_domains(mocker):
 def mock_get_organisation(
     mocker,
     email_branding_id=None,
+    default_branding_is_french=False,
     letter_branding_id=None,
 ):
     def _get_organisation(org_id):
@@ -3294,6 +3295,7 @@ def mock_get_organisation(
                 'o3': 'Org 3',
             }.get(org_id, 'Org 1'),
             email_branding_id=email_branding_id,
+            default_branding_is_french=default_branding_is_french,
             letter_branding_id=letter_branding_id,
         )
 

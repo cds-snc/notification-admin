@@ -3205,7 +3205,8 @@ def test_should_preview_email_branding(
 
 @pytest.mark.parametrize('posted_value, submitted_value', (
     ('2', '2'),
-    (None, '__FIP-EN__'),
+    ('__FIP-EN__', '__FIP-EN__'),
+    ('__FIP-FR__', '__FIP-FR__'),
     pytest.param('None', None, marks=pytest.mark.xfail(raises=AssertionError)),
 ))
 @pytest.mark.parametrize('endpoint, extra_args, expected_redirect', (
@@ -3247,12 +3248,12 @@ def test_should_set_branding_and_organisations(
         ),
         **extra_args
     )
-
+    expected_french_val = False if submitted_value == '__FIP-EN__' else True
     if endpoint == 'main.service_preview_email_branding':
-        if submitted_value == '__FIP-EN__':
+        if submitted_value == '__FIP-EN__' or submitted_value == "__FIP-FR__":
             mock_update_service.assert_called_once_with(
                 SERVICE_ONE_ID,
-                default_branding_is_french=False,
+                default_branding_is_french=expected_french_val,
                 email_branding=None
             )
         else:
@@ -3262,10 +3263,17 @@ def test_should_set_branding_and_organisations(
             )
         assert mock_update_organisation.called is False
     elif endpoint == 'main.organisation_preview_email_branding':
-        mock_update_organisation.assert_called_once_with(
-            ORGANISATION_ID,
-            email_branding_id=submitted_value
-        )
+        if submitted_value == '__FIP-EN__' or submitted_value == "__FIP-FR__":
+            mock_update_organisation.assert_called_once_with(
+                ORGANISATION_ID,
+                default_branding_is_french=expected_french_val,
+                email_branding_id=None,
+            )
+        else:
+            mock_update_organisation.assert_called_once_with(
+                ORGANISATION_ID,
+                email_branding_id=submitted_value,
+            )
         assert mock_update_service.called is False
     else:
         raise Exception
