@@ -37,9 +37,9 @@ from app.utils import (
     generate_next_dict,
     generate_notifications_csv,
     generate_previous_dict,
+    get_available_until_date,
     get_letter_printing_statement,
     get_page_from_request,
-    get_time_left,
     parse_filter_args,
     printing_today_or_tomorrow,
     set_status_filters,
@@ -465,7 +465,10 @@ def get_job_partials(job, template):
                 job_id=job['id'],
                 status=request.args.get('status')
             ),
-            time_left=get_time_left(job['created_at'], service_data_retention_days=service_data_retention_days),
+            available_until_date=get_available_until_date(
+                job['created_at'],
+                service_data_retention_days=service_data_retention_days
+            ),
             job=job,
             template=template,
             template_version=job['template_version'],

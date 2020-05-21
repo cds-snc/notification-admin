@@ -5,7 +5,7 @@ import pytest
 from flask import url_for
 from freezegun import freeze_time
 
-from app.main.views.jobs import get_time_left
+from app.main.views.jobs import get_available_until_date
 from tests import job_json, notification_json, sample_uuid
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -220,7 +220,7 @@ def test_should_show_page_for_one_job(
         status=status_argument
     )
     assert csv_link.text == 'Download this report'
-    assert page.find('span', {'id': 'time-left'}).text == 'Data available for 7 days'
+    assert page.find('span', {'id': 'time-left'}).text.split(" ")[0] == '2016-01-09'
 
     assert normalize_spaces(page.select_one('tbody tr').text) == normalize_spaces(
         '6502532222 '
@@ -261,7 +261,7 @@ def test_should_show_page_for_one_job_with_flexible_data_retention(
         status='delivered'
     )
 
-    assert page.find('span', {'id': 'time-left'}).text == 'Data available for 10 days'
+    assert page.find('span', {'id': 'time-left'}).text.split(" ")[0] == '2016-01-12'
     assert "Cancel sending these letters" not in page
 
 
@@ -675,16 +675,18 @@ def test_should_show_updates_for_one_job_as_json(
 
 
 @pytest.mark.parametrize(
-    "job_created_at, expected_message", [
-        ("2016-01-10 11:09:00.000000+00:00", "Data available for 7 days"),
-        ("2016-01-04 11:09:00.000000+00:00", "Data available for 1 day"),
-        ("2016-01-03 11:09:00.000000+00:00", "Data available for 12 hours"),
-        ("2016-01-02 23:59:59.000000+00:00", "Data no longer available")
+    "job_created_at, expected_date", [
+        ("2016-01-10 11:09:00.000000+00:00", "2016-01-18"),
+        ("2016-01-04 11:09:00.000000+00:00", "2016-01-12"),
+        ("2016-01-03 11:09:00.000000+00:00", "2016-01-11"),
+        ("2016-01-02 23:59:59.000000+00:00", "2016-01-10")
     ]
 )
 @freeze_time("2016-01-10 12:00:00.000000")
-def test_time_left(job_created_at, expected_message):
-    assert get_time_left(job_created_at) == expected_message
+def test_available_until_datetime(job_created_at, expected_date):
+    available_until_datetime = get_available_until_date(job_created_at)
+    available_until_date = str(available_until_datetime).split(" ")[0]
+    assert available_until_date == expected_date
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
