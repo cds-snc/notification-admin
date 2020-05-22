@@ -3299,13 +3299,46 @@ def test_organisation_type_pages_are_platform_admin_only(
 
 def test_should_show_page_to_set_message_limit(
     platform_admin_client,
-    mock_get_free_sms_fragment_limit
 ):
-    assert False
+    response = platform_admin_client.get(url_for(
+        'main.set_message_limit',
+        service_id=SERVICE_ONE_ID
+    ))
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+
+    assert normalize_spaces(page.select_one('label').text) == 'Message limit'
 
 
-def test_should_set_message_limit():
-    assert False
+@freeze_time("2017-04-01 11:09:00.061258")
+@pytest.mark.parametrize('given_limit, expected_limit', [
+    ('1', 1),
+    ('10_000', 10_000),
+    pytest.param('foo', 'foo', marks=pytest.mark.xfail),
+])
+def test_should_set_message_limit(
+    platform_admin_client,
+    given_limit,
+    expected_limit,
+    mock_update_message_limit,
+):
+
+    response = platform_admin_client.post(
+        url_for(
+            'main.set_message_limit',
+            service_id=SERVICE_ONE_ID,
+        ),
+        data={
+            'message_limit': given_limit,
+        },
+    )
+    assert response.status_code == 302
+    assert response.location == url_for('main.service_settings', service_id=SERVICE_ONE_ID, _external=True)
+
+    mock_update_message_limit.assert_called_with(
+        SERVICE_ONE_ID,
+        expected_limit
+    )
 
 
 def test_should_show_page_to_set_sms_allowance(
