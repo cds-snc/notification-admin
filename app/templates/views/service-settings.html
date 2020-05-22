@@ -317,7 +317,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Message limit') %}
+            {% set txt = _('Daily message limit') %}
             {{ text_field(txt)}}
             {{ text_field('{:,}'.format(current_service.message_limit)) }}
             {{ edit_field(change_txt, url_for('.set_message_limit', service_id=current_service.id)) }}

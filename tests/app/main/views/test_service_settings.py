@@ -3307,7 +3307,7 @@ def test_should_show_page_to_set_message_limit(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
-    assert normalize_spaces(page.select_one('label').text) == 'Message limit'
+    assert normalize_spaces(page.select_one('label').text) == 'Daily message limit'
 
 
 @freeze_time("2017-04-01 11:09:00.061258")

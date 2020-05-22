@@ -12,7 +12,7 @@
 
   {% call form_wrapper() %}
     {{ page_header(
-      'Message limit',
+      _('Daily message limit'),
       back_link=url_for('.service_settings', service_id=current_service.id)
     ) }}
     {{ textbox(form.message_limit) }}
