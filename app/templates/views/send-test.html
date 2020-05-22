@@ -38,6 +38,15 @@ data_kwargs={'force-focus': True} ) %}
     template.template_type) }}
   </a>
 </p>
+{% endif %}{% if True %}
+<p>
+  <a
+    id="s3-send"
+    href="{{ url_for('.s3_send', service_id=current_service.id, template_id=template.id) }}"
+  >
+    {{ _('Use a list of email addresses from Amazon S3') }}
+  </a>
+</p>
 {% endif %} {% set txt = _('Continue') %} {{ page_footer(txt) }} {% endcall %}
 {{ template|string|translate_preview_template }}
 

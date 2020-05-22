@@ -55,3 +55,6 @@ def set_metadata_on_csv_upload(service_id, upload_id, **kwargs):
         },
         MetadataDirective='REPLACE',
     )
+
+def list_bulk_send_uploads():
+    return [("abc", "abc"), ("xyz", "xyz")]

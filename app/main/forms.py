@@ -967,6 +967,15 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
         return super().validate()
 
 
+class SelectCsvFromS3Form(StripWhitespaceForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.s3_files.choices = kwargs['choices']
+        self.s3_files.label.text = kwargs['label']
+
+    s3_files = RadioField()
+
+
 class ServiceReplyToEmailForm(StripWhitespaceForm):
     label_text = _l('Reply-to email address')
     email_address = email_address(label=_l(label_text), gov_user=False)

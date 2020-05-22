@@ -39,6 +39,7 @@ from app.main import main
 from app.main.forms import (
     ChooseTimeForm,
     CsvUploadForm,
+    SelectCsvFromS3Form,
     SetSenderForm,
     get_placeholder_form_instance,
 )
@@ -47,6 +48,7 @@ from app.s3_client.s3_csv_client import (
     s3download,
     s3upload,
     set_metadata_on_csv_upload,
+    list_bulk_send_uploads,
 )
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
@@ -177,6 +179,94 @@ def send_messages(service_id, template_id):
 
     return render_template(
         'views/send.html',
+        template=template,
+        column_headings=list(ascii_uppercase[:len(column_headings)]),
+        example=[column_headings, get_example_csv_rows(template)],
+        form=form
+    )
+
+
+@main.route("/services/<service_id>/send/<template_id>/s3-send", methods=['GET', 'POST'])
+@user_has_permissions('send_messages', restrict_admin_usage=True)
+def s3_send(service_id, template_id):
+    # if there's lots of data in the session, lets log it for debugging purposes
+    # TODO: Remove this once we're confident we have session size under control
+    if len(session.get('file_uploads', {}).keys()) > 2:
+        current_app.logger.info('session contains large file_uploads - json_len {}, keys: {}'.format(
+            len(json.dumps(session['file_uploads'])),
+            session['file_uploads'].keys())
+        )
+
+    db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+
+    email_reply_to = None
+    sms_sender = None
+
+    if db_template['template_type'] == 'email':
+        email_reply_to = get_email_reply_to_address_from_session()
+    elif db_template['template_type'] == 'sms':
+        sms_sender = get_sms_sender_from_session()
+
+    if email_or_sms_not_enabled(db_template['template_type'], current_service.permissions):
+        return redirect(url_for(
+            '.action_blocked',
+            service_id=service_id,
+            notification_type=db_template['template_type'],
+            return_to='view_template',
+            template_id=template_id
+        ))
+
+    template = get_template(
+        db_template,
+        current_service,
+        show_recipient=True,
+        letter_preview_url=url_for(
+            '.view_letter_template_preview',
+            service_id=service_id,
+            template_id=template_id,
+            filetype='png',
+            page_count=get_page_count_for_letter(db_template),
+        ),
+        email_reply_to=email_reply_to,
+        sms_sender=sms_sender,
+    )
+
+    choices = list_bulk_send_uploads()
+    form = SelectCsvFromS3Form(
+        choices=choices, # (value, label)
+        label="Hi"
+    )
+
+    if form.validate_on_submit():
+        try:
+            upload_id = s3upload(
+                service_id,
+                Spreadsheet.from_file(form.file.data, filename=form.file.data.filename).as_dict,
+                current_app.config['AWS_REGION']
+            )
+            return redirect(url_for(
+                '.check_messages',
+                service_id=service_id,
+                upload_id=upload_id,
+                template_id=template.id,
+                original_file_name=form.file.data.filename,
+            ))
+        except (UnicodeDecodeError, BadZipFile, XLRDError):
+            flash('Couldn’t read {}. Try using a different file format.'.format(
+                form.file.data.filename
+            ))
+        except (XLDateError):
+            flash((
+                '{} contains numbers or dates that Notification can’t understand. '
+                'Try formatting all columns as ‘text’ or export your file as CSV.'
+            ).format(
+                form.file.data.filename
+            ))
+
+    column_headings = get_spreadsheet_column_headings_from_template(template)
+
+    return render_template(
+        'views/s3-send.html',
         template=template,
         column_headings=list(ascii_uppercase[:len(column_headings)]),
         example=[column_headings, get_example_csv_rows(template)],
