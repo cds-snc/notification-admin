@@ -3,13 +3,12 @@ import os
 import re
 import unicodedata
 import uuid
-from datetime import datetime, time, timedelta, timezone
+from datetime import datetime, time, timedelta
 from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
 
-import ago
 import boto3
 import dateutil
 import pyexcel
@@ -434,19 +433,9 @@ def get_current_financial_year():
     return current_year if current_month > 3 else current_year - 1
 
 
-def get_time_left(created_at, service_data_retention_days=7):
-    return ago.human(
-        (
-            datetime.now(timezone.utc)
-        ) - (
-            dateutil.parser.parse(created_at).replace(hour=0, minute=0, second=0) + timedelta(
-                days=service_data_retention_days + 1
-            )
-        ),
-        future_tense='Data available for {}',
-        past_tense='Data no longer available',  # No-one should ever see this
-        precision=1
-    )
+def get_available_until_date(created_at, service_data_retention_days=7):
+    created_at_date = dateutil.parser.parse(created_at).replace(hour=0, minute=0, second=0)
+    return created_at_date + timedelta(days=service_data_retention_days + 1)
 
 
 def email_or_sms_not_enabled(template_type, permissions):
