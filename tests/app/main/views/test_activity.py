@@ -455,6 +455,10 @@ def test_should_show_notifications_for_a_service_with_next_previous(
 )
 @freeze_time("2016-01-10 12:00:00.000000")
 def test_available_until_datetime(job_created_at, expected_date):
+    '''We are putting a raw datetime string in the span, which later gets 
+    formatted by js on the client. That formatting doesn't exist in the 
+    python tests so this test checks the date part of the datetime string
+    and checking is correct.'''
     available_until_datetime = get_available_until_date(job_created_at)
     available_until_date = str(available_until_datetime).split(" ")[0]
     assert available_until_date == expected_date
