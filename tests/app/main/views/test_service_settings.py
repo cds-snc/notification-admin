@@ -98,6 +98,7 @@ def mock_get_service_settings_page_common(
         'Live Off Change',
         'Count in list of live services Yes Change',
         'Organisation Test Organisation Central government Change',
+        'Message limit 1,000 Change',
         'Free text message allowance 250,000 Change',
         'Email branding English Federal Identity Program (FIP) Change',
         'Letter branding Not set Change',
@@ -3294,6 +3295,17 @@ def test_organisation_type_pages_are_platform_admin_only(
         _expected_status=403,
         _test_page_title=False,
     )
+
+
+def test_should_show_page_to_set_message_limit(
+    platform_admin_client,
+    mock_get_free_sms_fragment_limit
+):
+    assert False
+
+
+def test_should_set_message_limit():
+    assert False
 
 
 def test_should_show_page_to_set_sms_allowance(
