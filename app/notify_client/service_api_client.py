@@ -129,6 +129,13 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         )
 
     # This method is not cached because it calls through to one which is
+    def update_message_limit(self, service_id, message_limit):
+        return self.update_service(
+            service_id,
+            message_limit=message_limit,
+        )
+
+    # This method is not cached because it calls through to one which is
     def update_service_with_properties(self, service_id, properties):
         return self.update_service(service_id, **properties)
 

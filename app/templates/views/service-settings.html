@@ -317,6 +317,12 @@
           {% endcall %}
 
           {% call row() %}
+            {% set txt = _('Message limit') %}
+            {{ text_field(txt)}}
+            {{ text_field('{:,}'.format(current_service.message_limit)) }}
+            {{ edit_field(change_txt, url_for('.set_message_limit', service_id=current_service.id)) }}
+          {% endcall %}
+          {% call row() %}
             {% set txt = _('Free text message allowance') %}
             {{ text_field(txt)}}
             {{ text_field('{:,}'.format(current_service.free_sms_fragment_limit)) }}
@@ -328,8 +334,6 @@
             {{ text_field(current_service.email_branding_name) }}
             {{ edit_field(change_txt, url_for('.service_set_email_branding', service_id=current_service.id)) }}
           {% endcall %}
-
-          
           {% call row() %}
             {% set txt = _('Letter branding') %}
             {{ text_field(txt)}}
