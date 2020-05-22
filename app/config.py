@@ -99,6 +99,12 @@ class Config(object):
 
     IP_GEOLOCATE_SERVICE = os.environ.get('IP_GEOLOCATE_SERVICE', 'https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/')
 
+    BULK_SEND_AWS_ACCESS_KEY = os.getenv('BULK_SEND_AWS_ACCESS_KEY')
+    BULK_SEND_AWS_SECRET_KEY = os.getenv('BULK_SEND_AWS_SECRET_KEY')
+    BULK_SEND_AWS_BUCKET = os.getenv('BULK_SEND_AWS_BUCKET')
+    BULK_SEND_AWS_REGION = os.getenv('BULK_SEND_AWS_REGION')
+
+
 
 class Development(Config):
     DEBUG = True

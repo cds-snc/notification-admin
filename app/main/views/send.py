@@ -231,9 +231,9 @@ def s3_send(service_id, template_id):
         sms_sender=sms_sender,
     )
 
-    choices = list_bulk_send_uploads()
+    s3_objects = list_bulk_send_uploads()
     form = SelectCsvFromS3Form(
-        choices=choices, # (value, label)
+        choices=[(x.key, x.key) for x in s3_objects], # (value, label)
         label="Hi"
     )
 

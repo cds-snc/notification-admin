@@ -1,6 +1,7 @@
 import uuid
 
 import botocore
+import boto3
 from flask import current_app
 from notifications_utils.s3 import s3upload as utils_s3upload
 
@@ -57,4 +58,16 @@ def set_metadata_on_csv_upload(service_id, upload_id, **kwargs):
     )
 
 def list_bulk_send_uploads():
-    return [("abc", "abc"), ("xyz", "xyz")]
+    session = boto3.Session(
+        aws_access_key_id=current_app.config['BULK_SEND_AWS_ACCESS_KEY'],
+        aws_secret_access_key=current_app.config['BULK_SEND_AWS_SECRET_KEY'],
+        region_name=current_app.config['BULK_SEND_AWS_REGION'],
+    )
+
+    s3 = session.resource('s3')
+    my_bucket = s3.Bucket(current_app.config['BULK_SEND_AWS_BUCKET'])
+
+    files = []
+    for my_bucket_object in my_bucket.objects.all():
+        files.append(my_bucket_object)
+    return files # [("abc", "abc"), ("xyz", "xyz")]
