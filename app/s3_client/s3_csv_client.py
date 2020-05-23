@@ -57,7 +57,8 @@ def set_metadata_on_csv_upload(service_id, upload_id, **kwargs):
         MetadataDirective='REPLACE',
     )
 
-def list_bulk_send_uploads():
+
+def get_bulk_send_s3_resource():
     session = boto3.Session(
         aws_access_key_id=current_app.config['BULK_SEND_AWS_ACCESS_KEY'],
         aws_secret_access_key=current_app.config['BULK_SEND_AWS_SECRET_KEY'],
@@ -65,9 +66,22 @@ def list_bulk_send_uploads():
     )
 
     s3 = session.resource('s3')
-    my_bucket = s3.Bucket(current_app.config['BULK_SEND_AWS_BUCKET'])
+    return s3
+
+
+def list_bulk_send_uploads():
+    s3 = get_bulk_send_s3_resource()
+    bulk_send_bucket = s3.Bucket(current_app.config['BULK_SEND_AWS_BUCKET'])
 
     files = []
-    for my_bucket_object in my_bucket.objects.all():
-        files.append(my_bucket_object)
-    return files # [("abc", "abc"), ("xyz", "xyz")]
+    for f in bulk_send_bucket.objects.all():
+        files.append(f)
+    return files
+
+
+def copy_bulk_send_file_to_uploads(service_id, filekey):
+    s3 = get_bulk_send_s3_resource()
+    obj = s3.Object(current_app.config['BULK_SEND_AWS_BUCKET'], filekey)
+    body = obj.get()['Body'].read()
+    upload_id = s3upload(service_id, {'data': body}, current_app.config['AWS_REGION'])
+    return upload_id

@@ -49,6 +49,7 @@ from app.s3_client.s3_csv_client import (
     s3upload,
     set_metadata_on_csv_upload,
     list_bulk_send_uploads,
+    copy_bulk_send_file_to_uploads,
 )
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
@@ -238,29 +239,30 @@ def s3_send(service_id, template_id):
     )
 
     if form.validate_on_submit():
+        print("form.s3_files.data", form.s3_files.data)
+
         try:
-            upload_id = s3upload(
+            upload_id = copy_bulk_send_file_to_uploads(
                 service_id,
-                Spreadsheet.from_file(form.file.data, filename=form.file.data.filename).as_dict,
-                current_app.config['AWS_REGION']
+                form.s3_files.data,
             )
             return redirect(url_for(
                 '.check_messages',
                 service_id=service_id,
                 upload_id=upload_id,
                 template_id=template.id,
-                original_file_name=form.file.data.filename,
+                original_file_name=form.s3_files.data,
             ))
         except (UnicodeDecodeError, BadZipFile, XLRDError):
             flash('Couldn’t read {}. Try using a different file format.'.format(
-                form.file.data.filename
+                form.s3_files.data
             ))
         except (XLDateError):
             flash((
                 '{} contains numbers or dates that Notification can’t understand. '
                 'Try formatting all columns as ‘text’ or export your file as CSV.'
             ).format(
-                form.file.data.filename
+                form.s3_files.data
             ))
 
     column_headings = get_spreadsheet_column_headings_from_template(template)
