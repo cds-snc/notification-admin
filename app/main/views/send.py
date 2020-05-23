@@ -59,6 +59,7 @@ from app.utils import (
     get_errors_for_csv,
     get_help_argument,
     get_template,
+    service_can_bulk_send,
     should_skip_template_page,
     unicode_truncate,
     user_has_permissions,
@@ -208,7 +209,7 @@ def s3_send(service_id, template_id):
     elif db_template['template_type'] == 'sms':
         sms_sender = get_sms_sender_from_session()
 
-    if email_or_sms_not_enabled(db_template['template_type'], current_service.permissions):
+    if email_or_sms_not_enabled(db_template['template_type'], current_service.permissions) or not service_can_bulk_send(service_id):
         return redirect(url_for(
             '.action_blocked',
             service_id=service_id,
@@ -235,12 +236,10 @@ def s3_send(service_id, template_id):
     s3_objects = list_bulk_send_uploads()
     form = SelectCsvFromS3Form(
         choices=[(x.key, x.key) for x in s3_objects], # (value, label)
-        label="Hi"
+        label="Select a file from Amazon S3"
     )
 
     if form.validate_on_submit():
-        print("form.s3_files.data", form.s3_files.data)
-
         try:
             upload_id = copy_bulk_send_file_to_uploads(
                 service_id,
@@ -566,6 +565,7 @@ def send_test_step(service_id, template_id, step_index):
             request.endpoint == 'main.send_one_off_step'
             and step_index == 0
         ),
+        service_can_bulk_send=service_can_bulk_send(service_id)
     )
 
 
@@ -704,9 +704,13 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 def check_messages(service_id, template_id, upload_id, row_index=2):
 
     data = _check_messages(service_id, template_id, upload_id, row_index)
+    too_many_rows = data['recipients'].too_many_rows
+    if service_can_bulk_send(service_id):
+        # disable the sending limit for services allowed to bulk send
+        too_many_rows = False
 
     if (
-        data['recipients'].too_many_rows or
+        too_many_rows or
         not data['count_of_recipients'] or
         not data['recipients'].has_recipient_columns or
         data['recipients'].duplicate_recipient_column_headers or

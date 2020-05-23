@@ -471,6 +471,14 @@ def parse_filter_args(filter_dict):
     )
 
 
+def service_can_bulk_send(service_id):
+    bulk_sending_services = [
+      current_app.config['HC_EN_SERVICE_ID'],
+      current_app.config['HC_FR_SERVICE_ID'],
+    ]
+    return service_id in bulk_sending_services
+
+
 def set_status_filters(filter_args):
     status_filters = filter_args.get('status', [])
     return list(OrderedSet(chain(

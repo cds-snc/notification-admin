@@ -103,7 +103,8 @@ class Config(object):
     BULK_SEND_AWS_SECRET_KEY = os.getenv('BULK_SEND_AWS_SECRET_KEY')
     BULK_SEND_AWS_BUCKET = os.getenv('BULK_SEND_AWS_BUCKET')
     BULK_SEND_AWS_REGION = os.getenv('BULK_SEND_AWS_REGION')
-
+    HC_EN_SERVICE_ID = os.getenv('HC_EN_SERVICE_ID')
+    HC_FR_SERVICE_ID = os.getenv('HC_FR_SERVICE_ID')
 
 
 class Development(Config):
