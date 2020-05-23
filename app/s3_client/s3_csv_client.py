@@ -1,7 +1,7 @@
 import uuid
 
-import botocore
 import boto3
+import botocore
 from flask import current_app
 from notifications_utils.s3 import s3upload as utils_s3upload
 

@@ -45,11 +45,11 @@ from app.main.forms import (
 )
 from app.models.user import Users
 from app.s3_client.s3_csv_client import (
+    copy_bulk_send_file_to_uploads,
+    list_bulk_send_uploads,
     s3download,
     s3upload,
     set_metadata_on_csv_upload,
-    list_bulk_send_uploads,
-    copy_bulk_send_file_to_uploads,
 )
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
@@ -209,7 +209,8 @@ def s3_send(service_id, template_id):
     elif db_template['template_type'] == 'sms':
         sms_sender = get_sms_sender_from_session()
 
-    if email_or_sms_not_enabled(db_template['template_type'], current_service.permissions) or not service_can_bulk_send(service_id):
+    is_email_or_sms_not_enabled = email_or_sms_not_enabled(db_template['template_type'], current_service.permissions)
+    if is_email_or_sms_not_enabled or not service_can_bulk_send(service_id):
         return redirect(url_for(
             '.action_blocked',
             service_id=service_id,
@@ -235,7 +236,7 @@ def s3_send(service_id, template_id):
 
     s3_objects = list_bulk_send_uploads()
     form = SelectCsvFromS3Form(
-        choices=[(x.key, x.key) for x in s3_objects], # (value, label)
+        choices=[(x.key, x.key) for x in s3_objects],  # (value, label)
         label="Select a file from Amazon S3"
     )
 
