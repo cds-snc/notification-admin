@@ -26,4 +26,36 @@
 
   {% include "partials/csv-send.html" %}
 
+<script>
+  function isIE() {
+    var ua = navigator.userAgent;
+    /* MSIE used to detect old browsers and Trident used to newer ones*/
+    var is_ie = ua.indexOf("MSIE ") > -1 || ua.indexOf("Trident/") > -1;
+
+    return is_ie;
+  }
+
+  /* Alert if browser is IE */
+  /* 
+  note this is in sent-test.html + send.html 
+  the target el to replace is different
+  */
+  if (isIE()) {
+    var text =
+      "We do not support Internet Explorer. Please try again using a different web browser, such as Google Chrome, Mozilla Firefox, or Microsoft Edge.";
+
+    if (window.APP_LANG == "fr") {
+      text =
+        "Nous ne supportons pas Internet Explorer. Veuillez réessayer en utilisant un autre navigateur Web, tel que Google Chrome, Mozilla Firefox ou Microsoft Edge.";
+    }
+
+    var element = document.getElementById("file-upload-button");
+    var newEl = document.createElement("p");
+    
+    newEl.innerHTML = '<span style="color:red;">'+text+'</span>';
+    
+    element.parentNode.replaceChild(newEl, element);
+  }
+</script>
+
 {% endblock %}
