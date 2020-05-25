@@ -98,7 +98,7 @@ def mock_get_service_settings_page_common(
         'Live Off Change',
         'Count in list of live services Yes Change',
         'Organisation Test Organisation Central government Change',
-        'Message limit 1,000 Change',
+        'Daily message limit 1,000 Change',
         'Free text message allowance 250,000 Change',
         'Email branding English Federal Identity Program (FIP) Change',
         'Letter branding Not set Change',
@@ -3307,7 +3307,7 @@ def test_should_show_page_to_set_message_limit(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
-    assert normalize_spaces(page.select_one('label').text) == 'Daily message limit'
+    assert normalize_spaces(page.select_one('label').text) == 'Message limit'
 
 
 @freeze_time("2017-04-01 11:09:00.061258")
