@@ -917,7 +917,7 @@ def service_set_letter_contact_block(service_id):
     )
 
 
-@main.route("/services/<service_id>/service-settings/set_message_limit", methods=['GET', 'POST'])
+@main.route("/services/<service_id>/service-settings/set-message-limit", methods=['GET', 'POST'])
 @user_is_platform_admin
 def set_message_limit(service_id):
 
