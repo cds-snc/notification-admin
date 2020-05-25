@@ -1,11 +1,11 @@
 {% extends "withnav_template.html" %}
 
 {% block service_page_title %}
-  Previous versions
+  {{ _('Previous versions') }}
 {% endblock %}
 
 {% block maincolumn_content %}
-  <h1 class="heading-large">Previous versions</h1>
+  <h1 class="heading-large">{{ _('Previous versions') }}</h1>
   <div class="grid-row">
     {% for template in versions %}
       {% with show_title=True %}
@@ -14,6 +14,6 @@
     {% endfor %}
   </div>
   <p>
-    <a href="{{ url_for(".choose_template", service_id=current_service.id) }}">Back to current templates</a>
+    <a href="{{ url_for(".choose_template", service_id=current_service.id) }}">{{ _('Back to current templates') }}</a>
   </p>
 {% endblock %}

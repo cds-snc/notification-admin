@@ -7,7 +7,7 @@
       {{ _('Created') }}
       {% if template.get_raw('created_at', None) %}<span class="local-datetime-full">{{ template.get_raw('created_at') }}</span>{% endif %}
     {% endif %}
-    by {{ template.get_raw('created_by').name }}
+    {{ _('by') }} {{ template.get_raw('created_by').name }}
   </p>
 </div>
 
