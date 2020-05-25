@@ -98,6 +98,7 @@ def mock_get_service_settings_page_common(
         'Live Off Change',
         'Count in list of live services Yes Change',
         'Organisation Test Organisation Central government Change',
+        'Daily message limit 1,000 Change',
         'Free text message allowance 250,000 Change',
         'Email branding English Federal Identity Program (FIP) Change',
         'Letter branding Not set Change',
@@ -3293,6 +3294,50 @@ def test_organisation_type_pages_are_platform_admin_only(
         service_id=SERVICE_ONE_ID,
         _expected_status=403,
         _test_page_title=False,
+    )
+
+
+def test_should_show_page_to_set_message_limit(
+    platform_admin_client,
+):
+    response = platform_admin_client.get(url_for(
+        'main.set_message_limit',
+        service_id=SERVICE_ONE_ID
+    ))
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+
+    assert normalize_spaces(page.select_one('label').text) == 'Daily message limit'
+
+
+@freeze_time("2017-04-01 11:09:00.061258")
+@pytest.mark.parametrize('given_limit, expected_limit', [
+    ('1', 1),
+    ('10_000', 10_000),
+    pytest.param('foo', 'foo', marks=pytest.mark.xfail),
+])
+def test_should_set_message_limit(
+    platform_admin_client,
+    given_limit,
+    expected_limit,
+    mock_update_message_limit,
+):
+
+    response = platform_admin_client.post(
+        url_for(
+            'main.set_message_limit',
+            service_id=SERVICE_ONE_ID,
+        ),
+        data={
+            'message_limit': given_limit,
+        },
+    )
+    assert response.status_code == 302
+    assert response.location == url_for('main.service_settings', service_id=SERVICE_ONE_ID, _external=True)
+
+    mock_update_message_limit.assert_called_with(
+        SERVICE_ONE_ID,
+        expected_limit
     )
 
 
