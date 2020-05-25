@@ -1,0 +1,66 @@
+{% from "components/textbox.html" import textbox %}
+{% from "components/table.html" import list_table, text_field, index_field, index_field_heading %}
+
+<h2 class="heading-medium">
+  {{ _('Your file needs to look like this example') }}
+</h2>
+<p class="hint">
+  {{ _('Save your file as a') }} {% set type_1 = _('Comma Separated Values') %}
+  {% set type_2 = _('Tab Separated Values') %} {% set type_3 = _('Open Document
+  Spreadsheet') %}
+  <acronym title="type_1">{{ _('CSV') }}</acronym>,
+  <acronym title="type_2">{{ _('TSV') }}</acronym>,
+  <acronym title="type_3">{{ _('ODS') }}</acronym>, {{ _('or Microsoft Excel
+  spreadsheet') }}
+</p>
+
+<div class="spreadsheet" data-module="fullscreen-table">
+  {% set hint= _('Example') %} {% call(item, row_number) list_table( example,
+  caption=hint, caption_visible=False, field_headings=[''] + column_headings )
+  %} {{ index_field(row_number - 1) }} {% for column in item %} {{
+  text_field(column) }} {% endfor %} {% endcall %}
+</div>
+<p class="table-show-more-link">
+  <a
+    href="{{ url_for('.get_example_csv', service_id=current_service.id, template_id=template.id) }}"
+    download
+    >{{ _('Download this example') }}</a
+  >
+</p>
+
+<h2 class="heading-medium">
+  {{ _('Your file will populate this template')}} ({{ template.name }})
+</h2>
+{{ template|string|translate_preview_template }}
+
+<script>
+  function isIE() {
+    var ua = navigator.userAgent;
+    /* MSIE used to detect old browsers and Trident used to newer ones*/
+    var is_ie = ua.indexOf("MSIE ") > -1 || ua.indexOf("Trident/") > -1;
+
+    return is_ie;
+  }
+
+  /* Alert if browser is IE */
+  /* 
+  note this is in sent-test.html + send.html 
+  the target el to replace is different
+  */
+  if (isIE()) {
+    var text =
+      "We do not support Internet Explorer. Please try again using a different web browser, such as Google Chrome, Mozilla Firefox, or Microsoft Edge.";
+
+    if (window.APP_LANG == "fr") {
+      text =
+        "Nous ne supportons pas Internet Explorer. Veuillez réessayer en utilisant un autre navigateur Web, tel que Google Chrome, Mozilla Firefox ou Microsoft Edge.";
+    }
+
+    var element = document.getElementById("file-upload-button");
+    var newEl = document.createElement("p");
+    
+    newEl.innerHTML = '<span style="color:red;">'+text+'</span>';
+    
+    element.parentNode.replaceChild(newEl, element);
+  }
+</script>
