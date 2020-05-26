@@ -39,7 +39,7 @@
     "hogan": "1.0.2",
     "jquery": "^3.5.0",
     "jquery-migrate": "^3.2.0",
-    "moment": "^2.25.0",
+    "moment": "^2.25.3",
     "node-polyglot": "^2.4.0",
     "query-command-supported": "1.0.0",
     "react": "^16.13.1",
