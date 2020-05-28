@@ -533,6 +533,8 @@
 "Add number",""
 "Invite a team member","Inviter un membre de l’équipe"
 "Send invitation email","Envoyer un courriel d’invitation"
+"invitation expired","FR invitation expired"
+"bad invitation link","FR bad link"
 "Login history","Historique de connexion"
 "Our records show that these are the last 3 times you logged into this account:","Nos archives montrent que ce sont les trois dernières fois que vous vous êtes connecté au site :"
 "If this is not correct,","Si ce n'est pas le cas, "

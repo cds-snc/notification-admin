@@ -533,6 +533,8 @@
 "Add number",""
 "Invite a team member",""
 "Send invitation email",""
+"invitation expired","Your invitation to Notify has expired. Please ask the person that invited you to send you another one."
+"bad invitation link","Something’s wrong with this link. Make sure you’ve copied the whole thing."
 "Login history",""
 "Our records show that these are the last 3 times you logged into this account:",""
 "If this is not correct,","If this is not correct, "

@@ -1,4 +1,5 @@
 from flask import abort, flash, redirect, render_template, session, url_for
+from flask_babel import _
 from flask_login import current_user
 from markupsafe import Markup
 
@@ -20,7 +21,7 @@ def accept_invite(token):
     try:
         invited_user = InvitedUser.from_token(token)
     except InviteTokenError as exception:
-        flash(str(exception))
+        flash(_(str(exception)))
         return redirect(url_for('main.sign_in'))
 
     if not current_user.is_anonymous and current_user.email_address.lower() != invited_user.email_address.lower():
