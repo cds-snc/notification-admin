@@ -1,3 +1,4 @@
+from flask_babel import _
 from flask_babel import lazy_gettext as _l
 
 
@@ -164,7 +165,7 @@ class TemplateListFolder(TemplateListItem):
         if self.number_of_templates == 1:
             yield '1 template'
         elif self.number_of_templates > 1:
-            yield '{} templates'.format(self.number_of_templates)
+            yield '{} '.format(self.number_of_templates) + _('templates')
 
         if self.number_of_folders == 1:
             yield '1 folder'
