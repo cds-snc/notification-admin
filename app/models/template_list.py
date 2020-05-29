@@ -160,11 +160,12 @@ class TemplateListFolder(TemplateListItem):
     def _hint_parts(self):
 
         if self.number_of_folders == self.number_of_templates == 0:
-            yield 'Empty'
+            yield 'Empty'  # These strings are wrapped later on in the html
 
         if self.number_of_templates == 1:
             yield '1 template'
         elif self.number_of_templates > 1:
+            # this one still needs wrapping because we do not have unique keys for each x in "x templates"
             yield '{} '.format(self.number_of_templates) + _('templates')
 
         if self.number_of_folders == 1:
