@@ -417,7 +417,7 @@ def test_signed_in_existing_user_cannot_use_anothers_invite(
     flash_banners = page.find_all('div', class_='banner-dangerous')
     assert len(flash_banners) == 1
     banner_contents = flash_banners[0].text.strip()
-    assert "You’re signed in as test@user.canada.ca." in banner_contents
+    assert "You’re logged in as test@user.canada.ca." in banner_contents
     assert "This invite is for another email address." in banner_contents
     assert "Sign out and click the link again to accept this invite." in banner_contents
     assert mock_accept_invite.call_count == 0
