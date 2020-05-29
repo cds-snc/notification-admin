@@ -25,14 +25,9 @@ def accept_invite(token):
         return redirect(url_for('main.sign_in'))
 
     if not current_user.is_anonymous and current_user.email_address.lower() != invited_user.email_address.lower():
-        message = Markup("""
-            You’re signed in as {}.
-            This invite is for another email address.
-            <a href={}>Sign out</a> and click the link again to accept this invite.
-            """.format(
-            current_user.email_address,
-            url_for("main.sign_out", _external=True)))
-
+        message = Markup(_('You’re signed in as %(email)s. This invite is for another email address. '
+                           '<a href=%(href)s>Sign out</a> and click the link again to accept this invite.',
+                           email=current_user.email_address, href=url_for("main.sign_out", _external=True)))
         flash(message=message)
 
         abort(403)
@@ -80,14 +75,9 @@ def accept_invite(token):
 def accept_org_invite(token):
     invited_org_user = InvitedOrgUser.from_token(token)
     if not current_user.is_anonymous and current_user.email_address.lower() != invited_org_user.email_address.lower():
-        message = Markup("""
-            You’re signed in as {}.
-            This invite is for another email address.
-            <a href={}>Sign out</a> and click the link again to accept this invite.
-            """.format(
-            current_user.email_address,
-            url_for("main.sign_out", _external=True)))
-
+        message = Markup(_('You’re signed in as %(email)s. This invite is for another email address. '
+                           '<a href=%(href)s>Sign out</a> and click the link again to accept this invite.',
+                           email=current_user.email_address, href=url_for("main.sign_out", _external=True)))
         flash(message=message)
 
         abort(403)
