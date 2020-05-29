@@ -16,21 +16,6 @@ call form_wrapper() %}
         >{{ _('Formatting Guide') }}</a
       >
     </div>
-    <!-- prefill-template -->
-    <div>
-      <hr />
-      <label class="form-label" for="prefill-template"
-        >{{ _('Select template content') }}</label
-      >
-      <select name="prefill-template" id="prefill-template">
-        <option value=""></option>
-        {% for result in template_select %}
-        <option value="{{result.id}}">{{result.name}}</option>
-        {% endfor %}
-      </select>
-      <hr />
-    </div>
-    <!-- end prefill-template -->
 
     {% set hint_txt = _('Your recipients won’t see this:') %} {{
     textbox(form.name, width='1-1', hint=hint_txt, rows=10) }} {{
@@ -62,55 +47,6 @@ call form_wrapper() %}
       }
     });
   };
-
-  $("#prefill-template").on("change", function() {
-    const hasVal = $("#template_content").val();
-    const templateId = $(this)
-      .children("option:selected")
-      .val();
-
-    const clear_text = '{{ _("This will clear existing content") }}';
-    const confirm_text = '{{ _("Are you sure?") }}';
-    const okay_button = '{{ _("Okay") }}';
-    const cancel_button = '{{ _("Cancel") }}';
-
-    if (hasVal === "") {
-      if (templateId) {
-        loadContent(templateId);
-      } else {
-        $("#template_content").val("");
-      }
-      return;
-    }
-
-    Swal.fire({
-      title: `<strong>${confirm_text}</strong>`,
-      icon: "warning",
-      html: clear_text,
-      showCloseButton: false,
-      showCancelButton: true,
-      focusConfirm: true,
-      confirmButtonText: okay_button,
-      cancelButtonText: cancel_button,
-      customClass: {
-        container: "confirm-container-class",
-        confirmButton: "button",
-        cancelButton: "button-secondary",
-        showClass: "",
-        hideClass: ""
-      },
-      buttonsStyling: false
-    }).then(result => {
-      if (result.value) {
-        if (templateId) {
-          loadContent(templateId);
-        } else {
-          $("#template_content").val("");
-        }
-      }
-    });
-  });
-  //template_content
 </script>
 
 <style>
