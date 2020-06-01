@@ -108,6 +108,7 @@ class Config(object):
     CSV_MAX_ROWS = os.getenv('CSV_MAX_ROWS', 50000)
     CSV_MAX_ROWS_BULK_SEND = os.getenv('CSV_MAX_ROWS_BULK_SEND', 100000)
 
+
 class Development(Config):
     DEBUG = True
     SESSION_COOKIE_SECURE = False
