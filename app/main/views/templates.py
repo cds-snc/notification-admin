@@ -335,6 +335,9 @@ def _add_template_by_type(template_type, template_folder_id):
 
 
 @main.route("/services/<service_id>/templates/copy")
+@main.route("/services/<service_id>/templates/all/copy")
+@main.route("/services/<service_id>/templates/email/copy")
+@main.route("/services/<service_id>/templates/sms/copy")
 @main.route("/services/<service_id>/templates/copy/from-folder/<uuid:from_folder>")
 @main.route("/services/<service_id>/templates/copy/from-service/<uuid:from_service>")
 @main.route("/services/<service_id>/templates/copy/from-service/<uuid:from_service>/from-folder/<uuid:from_folder>")
@@ -390,7 +393,7 @@ def copy_template(service_id, template_id):
         abort(403)
 
     if request.method == 'POST':
-        return add_service_template(service_id, template['template_type'])
+        return add_service_template(service_id, template['template_type'], template_folder_id=template_folder.get("id"))
 
     template['template_content'] = template['content']
     template['name'] = _get_template_copy_name(template, current_service.all_templates)
