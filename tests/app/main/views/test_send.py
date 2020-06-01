@@ -3592,26 +3592,22 @@ def test_redirects_to_template_if_job_exists_already(
 #     )
 #     assert page.select('a') == "Upload a list of phone numbers from Amazon S3"
 
-@pytest.mark.parametrize('template_mock, partial_url, expected_h1', [
-    (
-        mock_get_service_email_template,
-        partial(url_for, 'main.send_one_off'),
-        'Hi',
-    ),
+@pytest.mark.parametrize('bulk_send_allowed, number_of_s3_upload_links', [
+    (True, 1),
+    (False, 0),
 
 ])
-def test_s3_send_shows_available_files(
+def test_s3_send_link_is_shown(
     logged_in_client,
     mock_has_no_jobs,
     fake_uuid,
     mocker,
-    template_mock,
-    partial_url,
-    expected_h1,
+    bulk_send_allowed,
+    number_of_s3_upload_links,
 ):
-    mocker.patch("app.utils.service_can_bulk_send", return_value=False)
-    mocker.patch('app.user_api_client.get_user', return_value=active_user_with_permissions(fake_uuid))
-    template_mock(mocker)
+    mocker.patch('app.main.views.send.service_can_bulk_send', return_value=bulk_send_allowed)
+    mock_get_service_email_template(mocker)
+    partial_url = partial(url_for, 'main.send_one_off')
     response = logged_in_client.get(
         partial_url(service_id=SERVICE_ONE_ID, template_id=fake_uuid, step_index=0),
         follow_redirects=True,
@@ -3619,6 +3615,4 @@ def test_s3_send_shows_available_files(
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
     assert response.status_code == 200
-    # assert page.h1.text.strip() == expected_h1
-    # print(page)
-    assert page.find(id='s3-send').text == "Use a list of email addresses from Amazon S3"
+    assert len(page.find_all(id='s3-send')) == number_of_s3_upload_links

@@ -56,15 +56,28 @@ from app.utils import (
     PermanentRedirect,
     Spreadsheet,
     email_or_sms_not_enabled,
-    get_csv_max_rows,
     get_errors_for_csv,
     get_help_argument,
     get_template,
-    service_can_bulk_send,
     should_skip_template_page,
     unicode_truncate,
     user_has_permissions,
 )
+
+
+def service_can_bulk_send(service_id):
+    bulk_sending_services = [
+        current_app.config['HC_EN_SERVICE_ID'],
+        current_app.config['HC_FR_SERVICE_ID'],
+    ]
+    print("hi!!!!!!!")
+    return str(service_id) in bulk_sending_services
+
+
+def get_csv_max_rows(service_id):
+    if service_can_bulk_send(service_id):
+        return int(current_app.config['CSV_MAX_ROWS_BULK_SEND'])
+    return int(current_app.config['CSV_MAX_ROWS'])
 
 
 def get_example_csv_fields(column_headers, use_example_as_example, submitted_fields):
@@ -465,7 +478,8 @@ def send_test_step(service_id, template_id, step_index):
         ),
         page_count=session['send_test_letter_page_count'],
         email_reply_to=email_reply_to,
-        sms_sender=sms_sender
+        sms_sender=sms_sender,
+
     )
 
     placeholders = fields_to_fill_in(
@@ -567,7 +581,7 @@ def send_test_step(service_id, template_id, step_index):
             request.endpoint == 'main.send_one_off_step'
             and step_index == 0
         ),
-        service_can_bulk_send=service_can_bulk_send(service_id)
+        bulk_send_allowed=service_can_bulk_send(service_id)
     )
 
 
