@@ -56,6 +56,7 @@ from app.utils import (
     PermanentRedirect,
     Spreadsheet,
     email_or_sms_not_enabled,
+    get_csv_max_rows,
     get_errors_for_csv,
     get_help_argument,
     get_template,
@@ -655,6 +656,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         ) if current_service.trial_mode else None,
         remaining_messages=remaining_messages,
         international_sms=current_service.has_permission('international_sms'),
+        max_rows=get_csv_max_rows(service_id),
     )
 
     if request.args.get('from_test'):
@@ -705,13 +707,9 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 def check_messages(service_id, template_id, upload_id, row_index=2):
 
     data = _check_messages(service_id, template_id, upload_id, row_index)
-    too_many_rows = data['recipients'].too_many_rows
-    if service_can_bulk_send(service_id):
-        # disable the sending limit for services allowed to bulk send
-        too_many_rows = False
 
     if (
-        too_many_rows or
+        data['recipients'].too_many_rows or
         not data['count_of_recipients'] or
         not data['recipients'].has_recipient_columns or
         data['recipients'].duplicate_recipient_column_headers or

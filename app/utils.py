@@ -476,7 +476,13 @@ def service_can_bulk_send(service_id):
         current_app.config['HC_EN_SERVICE_ID'],
         current_app.config['HC_FR_SERVICE_ID'],
     ]
-    return service_id in bulk_sending_services
+    return str(service_id) in bulk_sending_services
+
+
+def get_csv_max_rows(service_id):
+    if service_can_bulk_send(service_id):
+        return int(current_app.config['CSV_MAX_ROWS_BULK_SEND'])
+    return int(current_app.config['CSV_MAX_ROWS'])
 
 
 def set_status_filters(filter_args):

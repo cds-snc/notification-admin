@@ -105,7 +105,8 @@ class Config(object):
     BULK_SEND_AWS_REGION = os.getenv('BULK_SEND_AWS_REGION')
     HC_EN_SERVICE_ID = os.getenv('HC_EN_SERVICE_ID')
     HC_FR_SERVICE_ID = os.getenv('HC_FR_SERVICE_ID')
-
+    CSV_MAX_ROWS = os.getenv('CSV_MAX_ROWS', 50000)
+    CSV_MAX_ROWS_BULK_SEND = os.getenv('CSV_MAX_ROWS_BULK_SEND', 100000)
 
 class Development(Config):
     DEBUG = True
