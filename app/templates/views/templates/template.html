@@ -13,18 +13,19 @@
 
   {% if show_redaction_message %}
     <div class="bottom-gutter">
-      {% call banner_wrapper(type='dangerous', subhead='Are you sure you want to hide personalisation after sending?') %}
+      {% set question_txt = _('Are you sure you want to hide personalisation after sending?') %}
+      {% call banner_wrapper(type='dangerous', subhead=question_txt) %}
         <ul class="list list-bullet">
           <li>
-            You won’t be able to see personalised content in Notification for this template
+            {{ _('You won’t be able to see personalised content in Notify for this template') }}
           </li>
           <li>
-            You can’t undo this
+            {{ _('You can’t undo this') }}
           </li>
         </ul>
         <form method='post'>
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-          <button type="submit" class="button" name="delete">Confirm</button>
+          <button type="submit" class="button" name="delete">{{ _('Confirm') }}</button>
         </form>
       {% endcall %}
     </div>
