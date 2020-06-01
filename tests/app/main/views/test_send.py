@@ -32,7 +32,6 @@ from tests import (
 )
 from tests.conftest import (
     SERVICE_ONE_ID,
-    SERVICE_TWO_ID,
     active_caseworking_user,
     active_user_with_permissions,
     fake_uuid,
@@ -3623,6 +3622,3 @@ def test_s3_send_shows_available_files(
     # assert page.h1.text.strip() == expected_h1
     # print(page)
     assert page.find(id='s3-send').text == "Use a list of email addresses from Amazon S3"
-
-    
-  
