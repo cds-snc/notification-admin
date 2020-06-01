@@ -70,7 +70,6 @@ def service_can_bulk_send(service_id):
         current_app.config['HC_EN_SERVICE_ID'],
         current_app.config['HC_FR_SERVICE_ID'],
     ]
-    print("hi!!!!!!!")
     return str(service_id) in bulk_sending_services
 
 

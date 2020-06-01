@@ -3582,24 +3582,12 @@ def test_redirects_to_template_if_job_exists_already(
     )
 
 
-# def test_s3_send_shows_available_files(client_request, mock_get_service_template):
-#     page = client_request.get(
-#         'main.send_one_off_step',#'.send_test_step',
-#         service_id=SERVICE_ONE_ID,
-#         template_id=unchanging_fake_uuid,
-#         step_index=0,
-#         follow_redirects=True
-#     )
-#     assert page.select('a') == "Upload a list of phone numbers from Amazon S3"
-
 @pytest.mark.parametrize('bulk_send_allowed, number_of_s3_upload_links', [
     (True, 1),
     (False, 0),
-
 ])
 def test_s3_send_link_is_shown(
     logged_in_client,
-    mock_has_no_jobs,
     fake_uuid,
     mocker,
     bulk_send_allowed,
@@ -3616,3 +3604,36 @@ def test_s3_send_link_is_shown(
 
     assert response.status_code == 200
     assert len(page.find_all(id='s3-send')) == number_of_s3_upload_links
+
+
+def test_s3_send_shows_available_files(
+    logged_in_client,
+    fake_uuid,
+    mocker,
+):
+    class Object(object):
+        pass
+
+    expected_filenames = ["file0.csv", "file1.csv"]
+    s3_file_objects = []
+    for filename in expected_filenames:
+        x = Object()
+        x.key = filename
+        s3_file_objects.append(x)
+
+    mocker.patch('app.main.views.send.service_can_bulk_send', return_value=True)
+    mocker.patch('app.main.views.send.list_bulk_send_uploads', return_value=s3_file_objects)
+    mock_get_service_email_template(mocker)
+    partial_url = partial(url_for, 'main.s3_send')
+    response = logged_in_client.get(
+        partial_url(service_id=SERVICE_ONE_ID, template_id=fake_uuid),
+        follow_redirects=True,
+    )
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+
+    assert response.status_code == 200
+    assert page.select('h1')[0].text.strip() == "Upload a list of email addresses from Amazon S3"
+    options = page.select('.multiple-choice label')
+    multiple_choise_options = [x.text.strip() for x in options]
+
+    assert multiple_choise_options == expected_filenames
