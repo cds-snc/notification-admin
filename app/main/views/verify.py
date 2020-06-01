@@ -9,6 +9,8 @@ from flask import (
     session,
     url_for,
 )
+from flask_babel import _
+
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import check_token
 
@@ -48,7 +50,7 @@ def verify_email(token):
             current_app.config['EMAIL_EXPIRY_SECONDS']
         )
     except SignatureExpired:
-        flash("The link in the email we sent you has expired. We've sent you a new one.")
+        flash(_("The link in the email we sent you has expired. We've sent you a new one."))
         return redirect(url_for('main.resend_email_verification'))
 
     # token contains json blob of format: {'user_id': '...', 'secret_code': '...'} (secret_code is unused)
@@ -58,7 +60,7 @@ def verify_email(token):
         abort(404)
 
     if user.is_active:
-        flash("That verification link has expired.")
+        flash(_("That verification link has expired."))
         return redirect(url_for('main.sign_in'))
 
     session['user_details'] = {"email": user.email_address, "id": user.id}
