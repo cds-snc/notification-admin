@@ -28,8 +28,9 @@ make babel
 flake8 .
 display_result $? 1 "Code style check"
 
-isort --check-only -rc ./app ./tests
-display_result $? 2 "Import order check"
+# disable isort for now
+# isort --check-only -rc ./app ./tests
+# display_result $? 2 "Import order check"
 
 npm test
 display_result $? 3 "Front end code style check"
