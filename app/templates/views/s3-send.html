@@ -1,0 +1,41 @@
+{% extends "withnav_template.html" %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/file-upload.html" import file_upload %}
+{% from "components/radios.html" import radios %}
+{% from "components/select-input.html" import select_wrapper %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/message-count-label.html" import recipient_count_label %}
+{% set txt = _('Upload a list of') + " " + recipient_count_label(999, template.template_type) + " from Amazon S3" %}
+
+{% block service_page_title %}
+  {{ txt }}
+{% endblock %}
+{% block maincolumn_content %} 
+  {{
+    page_header(
+      txt,
+      back_link=url_for(
+        'main.send_one_off', 
+        service_id=current_service.id,
+        template_id=template.id
+      )
+    ) 
+  }}
+
+  <div class="grid-row">
+    <div class="column-three-quarters">
+      {% call form_wrapper() %}
+        {{ radios(
+          form.s3_files,
+          hide_legend=True
+        ) }}
+        {{ page_footer(_('Continue')) }}
+      {% endcall %}
+    </div>
+  </div>
+
+
+  {% include "partials/csv-send.html" %}
+
+{% endblock %}
