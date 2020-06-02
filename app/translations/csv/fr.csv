@@ -612,7 +612,7 @@
 "Upload a list of {}","Téléversez une liste de {}"
 "Choose a file","Choisir un fichier"
 "Your file needs to look like this example","Votre fichier doit ressembler à cet exemple :"
-"Save your file as a","Enregistrez votre fichier en format"
+"Save your file as a","Enregistrez votre fichier comme tableur, en format"
 "Comma Separated Values","Valeurs séparées par des virgules"
 "Tab Separated Values","Valeurs séparées par des onglets"
 "Open Document
@@ -620,8 +620,6 @@
 "CSV","CSV"
 "TSV","TSV"
 "ODS","ODS"
-"or Microsoft Excel
-  spreadsheet",""
 "Example","Exemple"
 "Download this example","Télécharger cet exemple"
 "Your file will populate this template","Votre fichier remplira ce gabarit"
@@ -1128,7 +1126,7 @@ Canada Notification service",""
 "New security key","Nouvelle clé de sécurité"
 "Test keys","Clés d’essai"
 "Open Document Spreadsheet","Feuille de calcul Open Document"
-"or Microsoft Excel spreadsheet","ou en feuille de calcul Microsoft Excel"
+"or Microsoft Excel spreadsheet"," ou Excel"
 "gc notify, notify, canada notify, canada email, email notifications, Government of Canada, federal government, Canada SMS,
 Canada Notification service",""
 "since","depuis"
