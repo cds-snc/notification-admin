@@ -1,10 +1,9 @@
 <h1 class='banner-title' data-module="track-error" data-error-type="Trial mode: bad recipients" data-error-label="{{ upload_id }}">
-  {{ _('You can’t send to') }}
-  {{ _('this') if count_of_recipients == 1 else _('these') }}
+  {{ _('You can’t send to') + ' ' }}
   {%- if count_of_recipients == 1 -%}
-    {{ ' ' + _(template_type_label) }}
+    {{ _('this email address') if template_type_label == 'email address' else _('this phone number') }}
   {% else %}
-    {{ _('email addresses') if 'email address' == template_type_label else _('phone numbers') }}
+    {{ _('these email addresses') if template_type_label == 'email address' else _('these phone numbers') }}
   {%- endif %}
 </h1>
 <p>
