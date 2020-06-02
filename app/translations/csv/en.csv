@@ -620,8 +620,6 @@
 "CSV",""
 "TSV",""
 "ODS",""
-"or Microsoft Excel
-  spreadsheet",""
 "Example",""
 "Download this example",""
 "Your file will populate this template",""
@@ -1126,7 +1124,7 @@ Canada Notification service",""
 "New security key",""
 "Test keys",""
 "Open Document Spreadsheet",""
-"or Microsoft Excel spreadsheet",""
+"or Microsoft Excel spreadsheet",", or Microsoft Excel spreadsheet"
 "gc notify, notify, canada notify, canada email, email notifications, Government of Canada, federal government, Canada SMS,
 Canada Notification service",""
 "since",""
