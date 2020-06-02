@@ -3606,6 +3606,30 @@ def test_s3_send_link_is_shown(
     assert len(page.find_all(id='s3-send')) == number_of_s3_upload_links
 
 
+@pytest.mark.parametrize('bulk_send_allowed, expected_title', [
+    (True, 'Upload a list of email addresses from Amazon S3'),
+    (False, 'Emails are disabled'),
+])
+def test_s3_send_page_only_visible_to_hc(
+    logged_in_client,
+    fake_uuid,
+    mocker,
+    bulk_send_allowed,
+    expected_title
+):
+    mocker.patch('app.main.views.send.service_can_bulk_send', return_value=bulk_send_allowed)
+    mock_get_service_email_template(mocker)
+    partial_url = partial(url_for, 'main.s3_send')
+    response = logged_in_client.get(
+        partial_url(service_id=SERVICE_ONE_ID, template_id=fake_uuid),
+        follow_redirects=True,
+    )
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+
+    assert response.status_code == 200
+    assert page.select('h1')[0].text.strip() == expected_title
+
+
 def test_s3_send_shows_available_files(
     logged_in_client,
     fake_uuid,
@@ -3632,7 +3656,7 @@ def test_s3_send_shows_available_files(
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
     assert response.status_code == 200
-    assert page.select('h1')[0].text.strip() == "Upload a list of email addresses from Amazon S3"
+
     options = page.select('.multiple-choice label')
     multiple_choise_options = [x.text.strip() for x in options]
 
