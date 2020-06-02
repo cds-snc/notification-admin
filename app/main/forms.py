@@ -650,6 +650,15 @@ class NewOrganisationForm(
         self.crown_status.choices = self.crown_status.choices[:-1]
 
 
+class MessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l('Daily message limit'),
+        validators=[
+            DataRequired(message=_l('Can’t be empty'))
+        ]
+    )
+
+
 class FreeSMSAllowance(StripWhitespaceForm):
     free_sms_allowance = IntegerField(
         _l('Numbers of text message fragments per year'),

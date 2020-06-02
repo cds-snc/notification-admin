@@ -20,12 +20,12 @@
   <div class="bottom-gutter">
     {% if template_change.placeholders_removed %}
       <p>
-        You removed {{ list_of_placeholders(template_change.placeholders_removed) }}
+        {{ _('You removed') + list_of_placeholders(template_change.placeholders_removed) }}
       </p>
     {% endif %}
     {% if template_change.placeholders_added %}
       <p>
-        You added {{ list_of_placeholders(template_change.placeholders_added) }}
+        {{ _('You added') + list_of_placeholders(template_change.placeholders_added) }}
       </p>
     {% endif %}
   </div>
@@ -41,9 +41,9 @@
   {% endcall %}
 
   <p>
-    When you send messages using this template you’ll need
+    {{ _('When you send messages using this template you’ll need') }}
     {{ column_headings|length }}
-    column{{ 's' if column_headings|length > 1 else '' }} of data:
+    {{ _('columns of data:') if column_headings|length > 1 else _('column of data:') }}
   </p>
 
   <div class="spreadsheet fullscreen-content" data-module="fullscreen-table"">
@@ -64,6 +64,6 @@
     {% endcall %}
   </div>
 
-  <p class="top-gutter">Developers, you’ll need to update your API calls</p>
+  <p class="top-gutter">{{ _('Developers, you’ll need to update your API calls') }}</p>
 
 {% endblock %}

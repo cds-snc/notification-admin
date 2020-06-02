@@ -37,6 +37,7 @@ from app.main.forms import (
     FreeSMSAllowance,
     InternationalSMSForm,
     LinkOrganisationsForm,
+    MessageLimit,
     PreviewBranding,
     RenameServiceForm,
     SearchByNameForm,
@@ -913,6 +914,22 @@ def service_set_letter_contact_block(service_id):
     return render_template(
         'views/service-settings/set-letter-contact-block.html',
         form=form
+    )
+
+
+@main.route("/services/<service_id>/service-settings/set-message-limit", methods=['GET', 'POST'])
+@user_is_platform_admin
+def set_message_limit(service_id):
+
+    form = MessageLimit(message_limit=current_service.message_limit)
+
+    if form.validate_on_submit():
+        service_api_client.update_message_limit(service_id, form.message_limit.data)
+        return redirect(url_for('.service_settings', service_id=service_id))
+
+    return render_template(
+        'views/service-settings/set-message-limit.html',
+        form=form,
     )
 
 

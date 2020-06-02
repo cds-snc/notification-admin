@@ -335,15 +335,22 @@ def _add_template_by_type(template_type, template_folder_id):
 
 
 @main.route("/services/<service_id>/templates/copy")
+@main.route("/services/<service_id>/templates/all/copy")
+@main.route("/services/<service_id>/templates/email/copy")
+@main.route("/services/<service_id>/templates/sms/copy")
 @main.route("/services/<service_id>/templates/copy/from-folder/<uuid:from_folder>")
 @main.route("/services/<service_id>/templates/copy/from-service/<uuid:from_service>")
 @main.route("/services/<service_id>/templates/copy/from-service/<uuid:from_service>/from-folder/<uuid:from_folder>")
+@main.route("/services/<service_id>/templates/all/folders/<uuid:from_folder>/copy")
 @user_has_permissions('manage_templates')
 def choose_template_to_copy(
     service_id,
     from_service=None,
     from_folder=None,
 ):
+
+    if from_folder and from_service is None:
+        from_service = service_id
 
     if from_service:
 
@@ -386,7 +393,7 @@ def copy_template(service_id, template_id):
         abort(403)
 
     if request.method == 'POST':
-        return add_service_template(service_id, template['template_type'])
+        return add_service_template(service_id, template['template_type'], template_folder_id=template_folder.get("id"))
 
     template['template_content'] = template['content']
     template['name'] = _get_template_copy_name(template, current_service.all_templates)
@@ -564,21 +571,12 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             template_id='0'
         ))
     else:
-        template_select = []
-
-        if(template_type == "email"):
-            templates = template_api_prefill_client.get_template_list()
-            if(templates):
-                for template in templates:
-                    template_select.append({'id': template["id"], 'name': template["name"]})
-
         return render_template(
             'views/edit-{}-template.html'.format(template_type),
             form=form,
             template_type=template_type,
             template_folder_id=template_folder_id,
             service_id=service_id,
-            template_select=template_select,
             heading_action=_l('New'),
         )
 
