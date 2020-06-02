@@ -3617,7 +3617,18 @@ def test_s3_send_page_only_visible_to_hc(
     bulk_send_allowed,
     expected_title
 ):
+    class Object(object):
+        pass
+
+    expected_filenames = ["file0.csv", "file1.csv"]
+    s3_file_objects = []
+    for filename in expected_filenames:
+        x = Object()
+        x.key = filename
+        s3_file_objects.append(x)
+
     mocker.patch('app.main.views.send.service_can_bulk_send', return_value=bulk_send_allowed)
+    mocker.patch('app.main.views.send.list_bulk_send_uploads', return_value=s3_file_objects)
     mock_get_service_email_template(mocker)
     partial_url = partial(url_for, 'main.s3_send')
     response = logged_in_client.get(
