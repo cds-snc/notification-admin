@@ -934,7 +934,7 @@
 "This will change the mobile number for ",""
 "All team members can see sent messages.",""
 "Platform admin users can access all template folders.",""
-"Not available because this team member hasn’t added a phone&nbsp;number to their profile",""
+"Not available because this team member hasn’t added a phone&nbsp;number to their profile","Not available because this team member has not added a phone&nbsp;number to their profile"
 "was sent",""
 "by",""
 "See all text messages sent to this phone number",""
