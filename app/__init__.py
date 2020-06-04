@@ -662,7 +662,7 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
     @application.errorhandler(BadSignature)
     def handle_bad_token(error):
         # if someone has a malformed token
-        flash('There’s something wrong with the link you’ve used.')
+        flash(_('There’s something wrong with the link you’ve used.'))
         return _error_response(404)
 
     @application.errorhandler(CSRFError)

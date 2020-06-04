@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from flask import flash, redirect, render_template, request, session, url_for
+from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from werkzeug.exceptions import abort
@@ -105,8 +106,7 @@ def invite_org_user(org_id):
             org_id,
             email_address
         )
-
-        flash('Invite sent to {}'.format(invited_org_user.email_address), 'default_with_tick')
+        flash('{} {}'.format(_('Invite sent to'), invited_org_user.email_address), 'default_with_tick')
         return redirect(url_for('.manage_org_users', org_id=org_id))
 
     return render_template(
@@ -146,7 +146,7 @@ def remove_user_from_organisation(org_id, user_id):
             org_id=org_id
         ))
 
-    flash('Are you sure you want to remove {}?'.format(user.name), 'remove')
+    flash('{} {}?'.format(_('Are you sure you want to remove'), user.name), 'remove')
     return render_template(
         'views/organisations/organisation/users/user/index.html',
         user=user,
@@ -450,7 +450,7 @@ def confirm_edit_organisation_name(org_id):
             error_msg = "Organisation name already exists"
             if e.status_code == 400 and error_msg in e.message:
                 # Redirect the user back to the change service name screen
-                flash('This organisation name is already in use', 'error')
+                flash(_('This organisation name is already in use'), 'error')
                 return redirect(url_for('main.edit_organisation_name', org_id=org_id))
             else:
                 raise e
