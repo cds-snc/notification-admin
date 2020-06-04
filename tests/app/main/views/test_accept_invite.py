@@ -495,7 +495,7 @@ def test_new_invited_user_verifies_and_added_to_service(
     assert response.location == url_for('main.verify', _external=True)
 
     # that sends user on to verify
-    response = client.post(url_for('main.verify'), data={'sms_code': '12345'}, follow_redirects=True)
+    response = client.post(url_for('main.verify'), data={'two_factor_code': '12345'}, follow_redirects=True)
     assert response.status_code == 200
 
     # when they post codes back to admin user should be added to

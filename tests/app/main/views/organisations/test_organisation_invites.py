@@ -359,7 +359,7 @@ def test_verified_org_user_redirects_to_dashboard(
         session['organisation_id'] = invited_org_user['organisation']
         session['blocked'] = invited_org_user['blocked']
 
-    response = client.post(url_for('main.verify'), data={'sms_code': '12345'})
+    response = client.post(url_for('main.verify'), data={'two_factor_code': '12345'})
 
     assert response.status_code == 302
     assert response.location == url_for(

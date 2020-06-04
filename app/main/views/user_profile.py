@@ -185,7 +185,7 @@ def user_profile_mobile_number_confirm():
 
     return render_template(
         'views/user-profile/confirm.html',
-        form_field=form.sms_code,
+        form_field=form.two_factor_code,
         thing='mobile number'
     )
 

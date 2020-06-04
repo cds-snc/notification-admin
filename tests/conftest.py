@@ -1572,6 +1572,19 @@ def mock_get_user(mocker, user=None):
 
 
 @pytest.fixture(scope='function')
+def mock_get_user_email_auth(mocker, user=None):
+    if user is None:
+        user = api_user_active_email_auth(sample_uuid())
+
+    def _get_user(id_):
+        user['id'] = id_
+        return user
+
+    return mocker.patch(
+        'app.user_api_client.get_user', side_effect=_get_user)
+
+
+@pytest.fixture(scope='function')
 def mock_get_login_events(mocker, user=None):
     if user is None:
         user = api_user_active(sample_uuid())

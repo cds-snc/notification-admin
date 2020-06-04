@@ -53,7 +53,7 @@ def sign_in():
                 invited_user.accept_invite()
         if user and user.sign_in():
             if user.sms_auth:
-                return redirect(url_for('.two_factor', next=request.args.get('next')))
+                return redirect(url_for('.two_factor_sms_sent', next=request.args.get('next')))
             if user.email_auth:
                 return redirect(url_for('.two_factor_email_sent'))
 

@@ -14,8 +14,8 @@ def _check_code(code):
 
 
 @pytest.mark.parametrize('post_data', [
-    {'sms_code': '12345'},
-    {'sms_code': ' 12345 '},
+    {'two_factor_code': '12345'},
+    {'two_factor_code': ' 12345 '},
 ])
 def test_form_is_valid_returns_no_errors(
     app_,
@@ -31,12 +31,12 @@ def test_form_is_valid_returns_no_errors(
 @pytest.mark.parametrize('mock, post_data, expected_error', (
     (
         mock_check_verify_code,
-        {'sms_code': '1234'},
+        {'two_factor_code': '1234'},
         'Not enough numbers',
     ),
     (
         mock_check_verify_code,
-        {'sms_code': '123456'},
+        {'two_factor_code': '123456'},
         'Too many numbers',
     ),
     (
@@ -46,17 +46,17 @@ def test_form_is_valid_returns_no_errors(
     ),
     (
         mock_check_verify_code,
-        {'sms_code': '12E45'},
+        {'two_factor_code': '12E45'},
         'Numbers only',
     ),
     (
         mock_check_verify_code_code_expired,
-        {'sms_code': '99999'},
+        {'two_factor_code': '99999'},
         'Code has expired',
     ),
     (
         mock_check_verify_code_code_not_found,
-        {'sms_code': '99999'},
+        {'two_factor_code': '99999'},
         'Code not found',
     ),
 ))
@@ -71,4 +71,4 @@ def test_returns_errors_when_code_is_too_short(
     with app_.test_request_context(method='POST', data=post_data):
         form = TwoFactorForm(_check_code)
         assert form.validate() is False
-        assert form.errors == {'sms_code': [expected_error]}
+        assert form.errors == {'two_factor_code': [expected_error]}
