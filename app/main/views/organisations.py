@@ -450,7 +450,7 @@ def confirm_edit_organisation_name(org_id):
             error_msg = "Organisation name already exists"
             if e.status_code == 400 and error_msg in e.message:
                 # Redirect the user back to the change service name screen
-                flash(_('This organisation name is already in use'), 'error')
+                flash('This organisation name is already in use', 'error')
                 return redirect(url_for('main.edit_organisation_name', org_id=org_id))
             else:
                 raise e
