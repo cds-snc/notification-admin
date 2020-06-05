@@ -3,14 +3,14 @@
 {% from "components/sub-navigation.html" import sub_navigation %}
 
 {% block per_page_title %}
-  {{ _('Features') }}
+  {{ _('Product features') }}
 {% endblock %}
 
 {% block content_column_content %}
 
-<h1 class="heading-large">{{ _('Features') }}</h1>
-<p>{{ _('If you work for the federal government, you can use Notification to update your users.') }}</p>
-<p>{{ _('Notification makes it easy to create, customize and send:') }}</p>
+<h1 class="heading-large">{{ _('Product features') }}</h1>
+<p>{{ _('If you work for the federal government, you can use <i>Notify</i> to update your users.') }}</p>
+<p>{{ _('<i>Notify</i> makes it easy to create, customize and send:') }}</p>
 <ul class="list list-bullet">
   <li><a href="{{ url_for('main.features_email') }}">{{ _('emails') }}</a></li>
   <li><a href="{{ url_for('main.features_sms') }}">{{ _('text messages') }}</a></li>
@@ -22,12 +22,12 @@
 {% endif %}
 
 <h2 class="heading-medium">{{ _('Reusable message templates') }}</h2>
-<p>{{ _('To send an email or text with Notification, you need to create a reusable message template first.') }}</p>
+<p>{{ _('To send an email or text with <i>Notify</i>, you need to create a message template first.') }}</p>
 <p>{{ _('Templates let you send the same thing to lots of people, as often as you need, without writing a new message each time.') }}</p>
 
-<h2 class="heading-medium">{{ _('Personalized content') }}</h2>
-<p>{{ _('Notification makes it easy to send personalized messages from a single template.') }}</p>
-<p>{{ _('If you want to include personalized content in your message, you can add a placeholder.  Each time you send a message, you can fill the placeholder with details such as a name or reference number. You can do this manually or upload a list of personal details and let Notification do it for you.') }}</p>
+<h2 class="heading-medium">{{ _('Personalised content') }}</h2>
+<p>{{ _('<i>Notify</i> makes it easy to send personalised messages from a single template.') }}</p>
+<p>{{ _('If you want to include personalised content in your message, you can add a placeholder. Each time you send a message, you can fill the placeholder with details such as a name or reference number. You can do this manually or upload a list of personal details and let <i>Notify</i> do it for you.') }}</p>
 
 <h2 class="heading-medium">{{ _('Bulk sending') }}</h2>
 <p>{{ _('To send a batch of messages at once, upload a list of contact details to Notification. You can also schedule the date and time for sending emails or text messages.') }}</p>

@@ -2,7 +2,7 @@
 {{ _("Documentation") }}
 {% endblock %} {% block content_column_content %}
 <h1 class="heading-large">{{ _("Documentation") }}</h1>
-<p>{{ _("Notification API to send messages automatically.") }}</p>
+<p>{{ _("Integrate the <i>Notify</i> API to send messages automatically.") }}</p>
 
 <h2 class="heading-medium">{{ _("Set up the client") }}</h2>
 <p>
@@ -31,7 +31,7 @@
 </div>
 {% endif %}
 
-<p>{{ _("Choose a client to integrate the API with your system.") }}</p>
+<p>{{ _("Choose a client to integrate the API with your system:") }}</p>
 <ul class="list list-bullet">
   {% for key, label in [ ('java', 'Java'), ('net', '.NET'), ('node', 'Node JS'), ('php', 'PHP'),
   ('python', 'Python'), ('ruby', 'Ruby'), ] %}

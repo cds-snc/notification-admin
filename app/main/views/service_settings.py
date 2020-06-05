@@ -235,7 +235,7 @@ def submit_request_to_go_live(service_id):
 
     current_service.update(go_live_user=current_user.id)
 
-    flash(_('Thanks for your request to go live. We’ll get back to you within one working day.'), 'default')
+    flash(_('Thank you for your request to go live. We’ll get back to you within one working day.'), 'default')
     return redirect(url_for('.service_settings', service_id=service_id))
 
 
@@ -366,7 +366,7 @@ def resume_service(service_id):
         service_api_client.resume_service(service_id)
         return redirect(url_for('.service_settings', service_id=service_id))
     else:
-        flash(_("This will resume the service. New API key are required for this service to use the API."), 'resume')
+        flash(_("This will resume the service. New API keys are required for this service to use the API"), 'resume')
         return service_settings(service_id)
 
 

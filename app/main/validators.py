@@ -55,7 +55,7 @@ class CsvFileValidator:
 
     def __call__(self, form, field):
         if not Spreadsheet.can_handle(field.data.filename):
-            raise ValidationError("{} {}".format(field.data.filename, _("isn’t a spreadsheet that Notification can read")))
+            raise ValidationError("{} {}".format(field.data.filename, _("is not a spreadsheet that Notify can read")))
 
 
 class ValidGovEmail:
@@ -97,7 +97,7 @@ class ValidEmail(Email):
 
 class NoCommasInPlaceHolders:
 
-    def __init__(self, message=_('You can’t put commas between double brackets')):
+    def __init__(self, message=_('You cannot put commas between double brackets')):
         self.message = message
 
     def __call__(self, form, field):

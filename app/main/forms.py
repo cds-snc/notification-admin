@@ -487,7 +487,7 @@ class InviteUserForm(PermissionsForm):
 
     def validate_email_address(self, field):
         if field.data.lower() == self.invalid_email_address:
-            raise ValidationError(_l("You can’t send an invitation to yourself"))
+            raise ValidationError(_l("You cannot send an invitation to yourself"))
 
 
 class InviteOrgUserForm(StripWhitespaceForm):
@@ -499,7 +499,7 @@ class InviteOrgUserForm(StripWhitespaceForm):
 
     def validate_email_address(self, field):
         if field.data.lower() == self.invalid_email_address:
-            raise ValidationError(_l("You can’t send an invitation to yourself"))
+            raise ValidationError(_l("You cannot send an invitation to yourself"))
 
 
 class TwoFactorForm(StripWhitespaceForm):
@@ -802,7 +802,7 @@ class ChooseTimeForm(StripWhitespaceForm):
         self.scheduled_for.categories = get_next_days_until(get_furthest_possible_scheduled_time())
 
     scheduled_for = RadioField(
-        _l('When should Notification send these messages?'),
+        _l('When should <i>Notify</i> send these messages?'),
         default='',
         validators=[
             DataRequired()

@@ -3374,7 +3374,7 @@ SERVICE_DAILY_LIMIT_MSG = 'Exceeded send limits (1000) for today'
     (
         TOO_LONG_MSG,
         'Message too long',
-        'Text messages can’t be longer than 612 characters. Your message is 654 characters.'
+        'Text messages cannot be longer than 612 characters. Your message is 654 characters.'
     ),
     (
         SERVICE_DAILY_LIMIT_MSG,
