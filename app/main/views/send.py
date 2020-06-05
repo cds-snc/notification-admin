@@ -268,7 +268,7 @@ def s3_send(service_id, template_id):
                 original_file_name=form.s3_files.data,
             ))
         except (UnicodeDecodeError, BadZipFile, XLRDError):
-            flash(_('Couldn’t read {}. Try using a different file format.').format(
+            flash(_('Could not read {}. Try using a different file format.').format(
                 form.s3_files.data
             ))
         except (XLDateError):
