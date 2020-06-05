@@ -336,19 +336,19 @@ def test_upload_files_in_different_formats(
         'Couldn’t read example.xlsx. Try using a different file format.'
     )),
     (XLDateError, (
-        'example.xlsx contains numbers or dates that Notification can’t understand. '
+        'example.xlsx contains numbers or dates that Notify can’t understand. '
         'Try formatting all columns as ‘text’ or export your file as CSV.'
     )),
     (XLDateNegative, (
-        'example.xlsx contains numbers or dates that Notification can’t understand. '
+        'example.xlsx contains numbers or dates that Notify can’t understand. '
         'Try formatting all columns as ‘text’ or export your file as CSV.'
     )),
     (XLDateAmbiguous, (
-        'example.xlsx contains numbers or dates that Notification can’t understand. '
+        'example.xlsx contains numbers or dates that Notify can’t understand. '
         'Try formatting all columns as ‘text’ or export your file as CSV.'
     )),
     (XLDateTooLarge, (
-        'example.xlsx contains numbers or dates that Notification can’t understand. '
+        'example.xlsx contains numbers or dates that Notify can’t understand. '
         'Try formatting all columns as ‘text’ or export your file as CSV.'
     )),
 ])
