@@ -2,27 +2,27 @@
 {% from "components/page-header.html" import page_header %}
 
 {% block service_page_title %}
-{{ _('Notification data sharing and financial agreement') }} 
+{{ _('<i>Notify</i> data sharing and financial agreement') }} 
 {% endblock %}
 
 {% block maincolumn_content %}
 
 <div class="grid-row">
   <div class="column-five-sixths">
-    {% set txt = _('Notification data sharing and financial agreement') %}
+    {% set txt = _('<i>Notify</i> data sharing and financial agreement') %}
     {{ page_header(
       txt,
       back_link=url_for('main.request_to_go_live', service_id=current_service.id)
     )}}
 
     <p>
-      {{ _('To use Notification your organisation') }} ({{ current_service.organisation.name }}) {{ _('must accept the Notification data sharing and financial agreement.') }}
+      {{ _('To use <i>Notify</i> your organisation') }} ({{ current_service.organisation.name }}) {{ _('must accept the <i>Notify</i> data sharing and financial agreement.') }}
     </p>
     <p>
       {{ _('This must be done by, or on behalf of, someone with the authority to sign contracts for') }} {{ current_service.organisation.name }}.
     </p>
     <p>
-      {{ _('Once accepted, the agreement covers all Notify services from') }} {{ current_service.organisation.name }}.
+      {{ _('Once accepted, the agreement covers all <i>Notify</i> services from') }} {{ current_service.organisation.name }}.
     </p>
     <p>
       <a href="{{ url_for('main.service_download_agreement', service_id=current_service.id) }}">{{ _('Download a copy of the data sharing and financial agreement') }}</a>.
