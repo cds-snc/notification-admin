@@ -9,6 +9,7 @@ from flask import (
     session,
     url_for,
 )
+from flask_babel import _
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import check_token
 
@@ -24,14 +25,14 @@ def new_password(token):
         token_data = check_token(token, current_app.config['SECRET_KEY'], current_app.config['DANGEROUS_SALT'],
                                  current_app.config['EMAIL_EXPIRY_SECONDS'])
     except SignatureExpired:
-        flash('The link in the email we sent you has expired. Enter your email address to resend.')
+        flash(_('The link in the email we sent you has expired. Enter your email address to resend.'))
         return redirect(url_for('.forgot_password'))
 
     email_address = json.loads(token_data)['email']
     user = User.from_email_address(email_address)
     if user.password_changed_at and datetime.strptime(user.password_changed_at, '%Y-%m-%d %H:%M:%S.%f') > \
             datetime.strptime(json.loads(token_data)['created_at'], '%Y-%m-%d %H:%M:%S.%f'):
-        flash('The link in the email has already been used')
+        flash(_('The link in the email has already been used'))
         return redirect(url_for('main.index'))
 
     form = NewPasswordForm()
