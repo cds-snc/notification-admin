@@ -821,7 +821,7 @@ def test_correct_font_size_for_big_numbers(
         },
         (
             '2 courriels envoyés Aucun échec',
-            '2 messages textes envoyé Aucun échec'
+            '2 messages texte envoyé Aucun échec'
         ),
         "fr"
     ),

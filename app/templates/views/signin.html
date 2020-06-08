@@ -13,14 +13,14 @@
   <div class="column-two-thirds">
 
     {% if again %}
-      <h1 class="heading-large">{{ _('You need to sign in again') }}</h1>
+      <h1 class="heading-large">{{ _('You need to log in again') }}</h1>
       {% if other_device %}
         <p>
-          {{ _('We signed you out because you logged in to Notify on another device.') }}
+          {{ _('We logged you out because you logged in to Notify on another device.') }}
         </p>
       {% else %}
         <p>
-          {{ _('We signed you out because you haven’t used Notify for a while.') }}
+          {{ _('We logged you out because you haven’t used Notify for a while.') }}
         </p>
       {% endif %}
     {% else %}

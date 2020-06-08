@@ -35,10 +35,10 @@ from tests.conftest import (
         (
             'ZZZZZZZZ zzzzzzz@example.canada.ca '
             'Can See dashboard '
-            'Can’t Send messages '
-            'Can’t Add and edit templates '
-            'Can’t Manage settings and teams '
-            'Can’t Manage API integration '
+            'Cannot Send messages '
+            'Cannot Add and edit templates '
+            'Cannot Manage settings and teams '
+            'Cannot Manage API integration '
             'Change details'
         )
     ),
@@ -46,19 +46,19 @@ from tests.conftest import (
         active_user_empty_permissions,
         (
             'Test User With Empty Permissions (you) '
-            'Can’t See dashboard '
-            'Can’t Send messages '
-            'Can’t Add and edit templates '
-            'Can’t Manage settings and teams '
-            'Can’t Manage API integration'
+            'Cannot See dashboard '
+            'Cannot Send messages '
+            'Cannot Add and edit templates '
+            'Cannot Manage settings and teams '
+            'Cannot Manage API integration'
         ),
         (
             'ZZZZZZZZ zzzzzzz@example.canada.ca '
             'Can See dashboard '
-            'Can’t Send messages '
-            'Can’t Add and edit templates '
-            'Can’t Manage settings and teams '
-            'Can’t Manage API integration'
+            'Cannot Send messages '
+            'Cannot Add and edit templates '
+            'Cannot Manage settings and teams '
+            'Cannot Manage API integration'
         ),
     ),
     (
@@ -66,18 +66,18 @@ from tests.conftest import (
         (
             'Test User With Permissions (you) '
             'Can See dashboard '
-            'Can’t Send messages '
-            'Can’t Add and edit templates '
-            'Can’t Manage settings and teams '
-            'Can’t Manage API integration'
+            'Cannot Send messages '
+            'Cannot Add and edit templates '
+            'Cannot Manage settings and teams '
+            'Cannot Manage API integration'
         ),
         (
             'ZZZZZZZZ zzzzzzz@example.canada.ca '
             'Can See dashboard '
-            'Can’t Send messages '
-            'Can’t Add and edit templates '
-            'Can’t Manage settings and teams '
-            'Can’t Manage API integration'
+            'Cannot Send messages '
+            'Cannot Add and edit templates '
+            'Cannot Manage settings and teams '
+            'Cannot Manage API integration'
         )
     ),
     (
@@ -85,18 +85,18 @@ from tests.conftest import (
         (
             'Test User With Permissions (you) '
             'Can See dashboard '
-            'Can’t Send messages '
+            'Cannot Send messages '
             'Can Add and edit templates '
-            'Can’t Manage settings and teams '
-            'Can’t Manage API integration'
+            'Cannot Manage settings and teams '
+            'Cannot Manage API integration'
         ),
         (
             'ZZZZZZZZ zzzzzzz@example.canada.ca '
             'Can See dashboard '
-            'Can’t Send messages '
-            'Can’t Add and edit templates '
-            'Can’t Manage settings and teams '
-            'Can’t Manage API integration'
+            'Cannot Send messages '
+            'Cannot Add and edit templates '
+            'Cannot Manage settings and teams '
+            'Cannot Manage API integration'
         )
     ),
     (
@@ -104,18 +104,18 @@ from tests.conftest import (
         (
             'Test User With Permissions (you) '
             'Can See dashboard '
-            'Can’t Send messages '
+            'Cannot Send messages '
             'Can Add and edit templates '
-            'Can’t Manage settings and teams '
-            'Can’t Manage API integration'
+            'Cannot Manage settings and teams '
+            'Cannot Manage API integration'
         ),
         (
             'ZZZZZZZZ zzzzzzz@example.canada.ca '
             'Can See dashboard '
-            'Can’t Send messages '
-            'Can’t Add and edit templates '
-            'Can’t Manage settings and teams '
-            'Can’t Manage API integration'
+            'Cannot Send messages '
+            'Cannot Add and edit templates '
+            'Cannot Manage settings and teams '
+            'Cannot Manage API integration'
         )
     ),
 ])
@@ -178,19 +178,19 @@ def test_should_show_caseworker_on_overview_page(
     assert normalize_spaces(page.select('.user-list-item')[0].text) == (
         'Test User With Permissions (you) '
         'Can See dashboard '
-        'Can’t Send messages '
-        'Can’t Add and edit templates '
-        'Can’t Manage settings and teams '
-        'Can’t Manage API integration'
+        'Cannot Send messages '
+        'Cannot Add and edit templates '
+        'Cannot Manage settings and teams '
+        'Cannot Manage API integration'
     )
     # [1:5] are invited users
     assert normalize_spaces(page.select('.user-list-item')[6].text) == (
         'Test User zzzzzzz@example.canada.ca '
-        'Can’t See dashboard '
+        'Cannot See dashboard '
         'Can Send messages '
-        'Can’t Add and edit templates '
-        'Can’t Manage settings and teams '
-        'Can’t Manage API integration'
+        'Cannot Add and edit templates '
+        'Cannot Manage settings and teams '
+        'Cannot Manage API integration'
     )
 
 
@@ -293,7 +293,7 @@ def test_manage_users_page_shows_member_auth_type_if_service_has_email_auth_acti
         True,
         """
             Text message code
-            Not available because this team member hasn’t added a
+            Not available because this team member has not added a
             phone number to their profile
         """,
     ),
@@ -837,7 +837,7 @@ def test_cancel_invited_user_doesnt_work_if_user_not_invited_to_this_service(
         'invited_user@test.canada.ca (invited) '
         'Can See dashboard '
         'Can Send messages '
-        'Can’t Add and edit templates '
+        'Cannot Add and edit templates '
         'Can Manage settings and teams '
         'Can Manage API integration '
         'Cancel invitation'
@@ -845,11 +845,11 @@ def test_cancel_invited_user_doesnt_work_if_user_not_invited_to_this_service(
     ('cancelled', (
         'invited_user@test.canada.ca (cancelled invite) '
         # all permissions are greyed out
-        'Can’t See dashboard '
-        'Can’t Send messages '
-        'Can’t Add and edit templates '
-        'Can’t Manage settings and teams '
-        'Can’t Manage API integration'
+        'Cannot See dashboard '
+        'Cannot Send messages '
+        'Cannot Add and edit templates '
+        'Cannot Manage settings and teams '
+        'Cannot Manage API integration'
     )),
 ])
 def test_manage_users_shows_invited_user(

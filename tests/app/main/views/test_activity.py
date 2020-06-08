@@ -604,7 +604,7 @@ def test_big_numbers_and_search_dont_show_for_letters(
         ('email', 'created', 'Sending since 2017-09-27T16:30:00+00:00', True),
         ('email', 'sending', 'Sending since 2017-09-27T16:30:00+00:00', True),
         ('email', 'temporary-failure', 'Inbox not accepting messages right now 16:31:00', False),
-        ('email', 'permanent-failure', 'Email address doesn’t exist 16:31:00', False),
+        ('email', 'permanent-failure', 'Email address does not exist 16:31:00', False),
         ('email', 'delivered', 'Delivered 16:31:00', True),
         ('sms', 'created', 'Sending since 2017-09-27T16:30:00+00:00', True),
         ('sms', 'sending', 'Sending since 2017-09-27T16:30:00+00:00', True),

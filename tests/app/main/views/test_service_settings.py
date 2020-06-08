@@ -61,7 +61,7 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
-        'Sign-in method Text message code Change',
+        'Login method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -80,7 +80,7 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
-        'Sign-in method Text message code Change',
+        'Login method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -191,7 +191,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'inbound_sms', 'international_sms'], [
 
         'Service name service one Change',
-        'Sign-in method Text message code Change',
+        'Login method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -209,7 +209,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'email_auth'], [
 
         'Service name service one Change',
-        'Sign-in method Email link or text message code Change',
+        'Login method Email link or text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -1940,7 +1940,7 @@ def test_remove_default_from_default_letter_contact_block(
     (
         'main.service_email_reply_to',
         no_reply_to_email_addresses,
-        'You haven’t added any reply-to email addresses yet'
+        'You have not added any reply-to email addresses yet'
     ),
     (
         'main.service_letter_contact_details',
@@ -1950,7 +1950,7 @@ def test_remove_default_from_default_letter_contact_block(
     (
         'main.service_sms_senders',
         no_sms_senders,
-        'You haven’t added any text message senders yet'
+        'You have not added any text message senders yet'
     ),
 ])
 def test_no_senders_message_shows(
@@ -1974,7 +1974,7 @@ def test_no_senders_message_shows(
 
 
 @pytest.mark.parametrize('reply_to_input, expected_error', [
-    ('', 'Can’t be empty'),
+    ('', 'This cannot be empty'),
     ('testtest', 'Enter a valid email address'),
 ])
 def test_incorrect_reply_to_email_address_input(
@@ -1994,7 +1994,7 @@ def test_incorrect_reply_to_email_address_input(
 
 
 @pytest.mark.parametrize('contact_block_input, expected_error', [
-    ('', 'Can’t be empty'),
+    ('', 'This cannot be empty'),
     ('1 \n 2 \n 3 \n 4 \n 5 \n 6 \n 7 \n 8 \n 9 \n 0 \n a', 'Contains 11 lines, maximum is 10')
 ])
 def test_incorrect_letter_contact_block_input(
@@ -2016,7 +2016,7 @@ def test_incorrect_letter_contact_block_input(
 @pytest.mark.parametrize('sms_sender_input, expected_error', [
     ('elevenchars', None),
     ('11 chars', None),
-    ('', 'Can’t be empty'),
+    ('', 'This cannot be empty'),
     ('abcdefghijkhgkg', 'Enter 11 characters or fewer'),
     (r' ¯\_(ツ)_/¯ ', 'Use letters and numbers only'),
     ('blood.co.uk', None),
@@ -4135,7 +4135,7 @@ def test_empty_letter_contact_block_returns_error(
         _expected_status=200,
     )
     error_message = page.find('span', class_='error-message').text.strip()
-    assert error_message == 'Can’t be empty'
+    assert error_message == 'This cannot be empty'
 
 
 def test_show_sms_prefixing_setting_page(

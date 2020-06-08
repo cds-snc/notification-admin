@@ -159,7 +159,7 @@ def test_sms_sender_form_validation(
 
     form.sms_sender.data = ''
     form.validate()
-    assert "Can’t be empty" == form.errors['sms_sender'][0]
+    assert "This cannot be empty" == form.errors['sms_sender'][0]
 
     form.sms_sender.data = 'morethanelevenchars'
     form.validate()
