@@ -510,6 +510,7 @@ def format_notification_status_as_url(status, notification_type):
 
 
 def get_and_n_more_text(number_of_addresses):
+    "number_of_addresses could be email addresses or sms sending numbers"
     number_of_hidden_addresses = number_of_addresses - 1
     if number_of_hidden_addresses < 1:
         # This should never happen - this function is not 
