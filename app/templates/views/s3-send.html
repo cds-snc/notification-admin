@@ -6,15 +6,15 @@
 {% from "components/select-input.html" import select_wrapper %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/message-count-label.html" import recipient_count_label %}
-{% set txt = _('Upload a list of') + " " + recipient_count_label(999, template.template_type) + " from Amazon S3" %}
+{% set txt = template.template_type|get_csv_upload_text %}
 
 {% block service_page_title %}
-  {{ txt }}
+  {{ txt + " from Amazon S3" }}
 {% endblock %}
 {% block maincolumn_content %} 
   {{
     page_header(
-      txt,
+      txt + " from Amazon S3",
       back_link=url_for(
         'main.send_one_off', 
         service_id=current_service.id,

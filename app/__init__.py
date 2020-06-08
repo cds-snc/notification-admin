@@ -509,6 +509,16 @@ def format_notification_status_as_url(status, notification_type):
     }.get(notification_type)
 
 
+def get_csv_upload_text(template_type):
+    if template_type == "email":
+        return _('Upload a list of email addresses')
+    elif template_type == "sms":
+        return _('Upload a list of phone numbers')
+    else:
+        # no one should ever see this
+        return _('Upload a list of recipients')
+
+
 def nl2br(value):
     return formatters.nl2br(value) if value else ''
 
@@ -740,6 +750,7 @@ def add_template_filters(application):
         format_notification_status_as_field_status,
         format_notification_status_as_url,
         formatted_list,
+        get_csv_upload_text,
         nl2br,
         format_phone_number_human_readable,
         format_thousands,

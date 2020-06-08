@@ -2,7 +2,7 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/file-upload.html" import file_upload %}
 {% from "components/message-count-label.html" import recipient_count_label %}
-{% set txt = _('Upload a list of') + " " + recipient_count_label(999, template.template_type) %}
+{% set txt = template.template_type|get_csv_upload_text %}
 
 {% block service_page_title %}
   {{ txt }}
