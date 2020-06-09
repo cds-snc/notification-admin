@@ -43,7 +43,7 @@ data_kwargs={'force-focus': True} ) %}
     id="s3-send"
     href="{{ url_for('.s3_send', service_id=current_service.id, template_id=template.id) }}"
   >
-    {{ template.template_type|get_csv_upload_text + ' from Amazon S3' }}
+    {{ _('Use a list of email addresses from Amazon S3') }}
   </a>
 </p>
 {% endif %} {% set txt = _('Continue') %} {{ page_footer(txt) }} {% endcall %}

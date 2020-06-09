@@ -6,15 +6,15 @@
 {% from "components/select-input.html" import select_wrapper %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/message-count-label.html" import recipient_count_label %}
-{% set txt = template.template_type|get_csv_upload_text %}
+{% set txt = _('Choose a list of email addresses from Amazon S3') %}
 
 {% block service_page_title %}
-  {{ txt + " from Amazon S3" }}
+  {{ txt }}
 {% endblock %}
 {% block maincolumn_content %} 
   {{
     page_header(
-      txt + " from Amazon S3",
+      txt,
       back_link=url_for(
         'main.send_one_off', 
         service_id=current_service.id,
