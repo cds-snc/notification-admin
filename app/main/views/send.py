@@ -69,6 +69,7 @@ def service_can_bulk_send(service_id):
     bulk_sending_services = [
         current_app.config['HC_EN_SERVICE_ID'],
         current_app.config['HC_FR_SERVICE_ID'],
+        current_app.config['BULK_SEND_TEST_SERVICE_ID'],
     ]
     return str(service_id) in bulk_sending_services
 
@@ -179,12 +180,12 @@ def send_messages(service_id, template_id):
                 original_file_name=form.file.data.filename,
             ))
         except (UnicodeDecodeError, BadZipFile, XLRDError):
-            flash('Couldn’t read {}. Try using a different file format.'.format(
+            flash(_('Could not read {}. Try using a different file format.').format(
                 form.file.data.filename
             ))
         except (XLDateError):
-            flash((
-                '{} contains numbers or dates that Notification can’t understand. '
+            flash(_(
+                '{} contains numbers or dates that Notify can’t understand. '
                 'Try formatting all columns as ‘text’ or export your file as CSV.'
             ).format(
                 form.file.data.filename
@@ -267,12 +268,12 @@ def s3_send(service_id, template_id):
                 original_file_name=form.s3_files.data,
             ))
         except (UnicodeDecodeError, BadZipFile, XLRDError):
-            flash('Couldn’t read {}. Try using a different file format.'.format(
+            flash(_('Could not read {}. Try using a different file format.').format(
                 form.s3_files.data
             ))
         except (XLDateError):
             flash((
-                '{} contains numbers or dates that Notification can’t understand. '
+                '{} contains numbers or dates that Notify can’t understand. '
                 'Try formatting all columns as ‘text’ or export your file as CSV.'
             ).format(
                 form.s3_files.data

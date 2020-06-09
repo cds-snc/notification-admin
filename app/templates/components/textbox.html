@@ -29,7 +29,7 @@
       {% endif %}
       {% if field.errors %}
         <span class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
-          {% if not safe_error_message %}{{ field.errors[0] }}{% else %}{{ field.errors[0]|safe }}{% endif %}
+          {% if not safe_error_message %}{{ _(field.errors[0]) }}{% else %}{{ field.errors[0]|safe }}{% endif %}
         </span>
       {% endif %}
     </label>

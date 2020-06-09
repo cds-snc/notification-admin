@@ -11,6 +11,7 @@ from flask import (
     session,
     url_for,
 )
+from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import check_token
@@ -236,7 +237,7 @@ def user_profile_security_keys_confirm_delete(keyid):
             else:
                 abort(500, e)
 
-    flash('Are you sure you want to remove security key {}?'.format(keyid), 'remove')
+    flash(_('Are you sure you want to remove security key {}?').format(keyid), 'remove')
     return render_template(
         'views/user-profile/security-keys.html'
     )
