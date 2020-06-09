@@ -522,6 +522,16 @@ def get_and_n_more_text(number_of_addresses):
         return _('…and {} more').format(number_of_hidden_addresses)
 
 
+def get_csv_upload_text(template_type):
+    if template_type == "email":
+        return _('Upload a list of email addresses')
+    elif template_type == "sms":
+        return _('Upload a list of phone numbers')
+    else:
+        # no one should ever see this
+        return _('Upload a list of recipients')
+
+
 def nl2br(value):
     return formatters.nl2br(value) if value else ''
 
@@ -754,6 +764,7 @@ def add_template_filters(application):
         format_notification_status_as_url,
         formatted_list,
         get_and_n_more_text,
+        get_csv_upload_text,
         nl2br,
         format_phone_number_human_readable,
         format_thousands,
