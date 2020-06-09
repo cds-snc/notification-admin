@@ -450,7 +450,7 @@ class PermissionsForm(PermissionsAbstract):
     folder_permissions = NestedCheckboxesField(_l('Folders this team member can see'))
 
     login_authentication = RadioField(
-        _l('Sign in using'),
+        _l('Log in using'),
         choices=[
             ('sms_auth', _l('Text message code')),
             ('email_auth', _l('Email link')),

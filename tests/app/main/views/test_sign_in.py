@@ -24,7 +24,7 @@ def test_render_sign_in_template_for_new_user(
     assert page.select('main a')[0]['href'] == url_for('main.register')
     assert page.select('main a')[1].text == 'Forgot your password?'
     assert page.select('main a')[1]['href'] == url_for('main.forgot_password')
-    assert 'Sign in again' not in normalize_spaces(page.text)
+    assert 'Log in again' not in normalize_spaces(page.text)
 
 
 def test_sign_in_explains_session_timeout(client):
