@@ -8,25 +8,25 @@
 {% block content_column_content %}
 
   <h1 class="heading heading-large">{{ _('Emails') }}</h1>
-  <p>{{ _('Send an unlimited number of free emails with Notification.') }}</p>
+  <p>{{ _('Send an unlimited number of free emails with <i>Notify</i>.') }}</p>
   {% if not current_user.is_authenticated %}
-    <p><a href="{{ url_for('main.register') }}">{{ _('Create an account') }}</a> {{ _('and try Notification for yourself.') }}</p>
+    <p><a href="{{ url_for('main.register') }}">{{ _('Create an account') }}</a> {{ _('and try <i>Notify</i> for yourself.') }}</p>
   {% endif %}
 
   <h2 class="heading heading-medium">{{ _('Product features') }}</h2>
-  <p>{{ _('Notification makes it easy to:') }}</p>
+  <p>{{ _('<i>Notify</i> makes it easy to:') }}</p>
   <ul class="list list-bullet">
     <li>{{ _('create reusable email templates') }}</li>
-    <li>{{ _('personalize the content of your emails') }}</li>
+    <li>{{ _('personalise the content of your emails') }}</li>
     <li>{{ _('send and schedule bulk messages') }}</li>
   </ul>
   <p>{{ _('Your developers can also') }} <a href="{{ url_for('.documentation') }}">{{ _('integrate with our API') }}</a> {{ _('to send emails automatically.') }}</p>
 
   <h3 class="heading heading-small">{{ _('Add a reply-to address') }}</h3>
-  <p>{{ _('Notification lets you choose the email address where users can send their reply.') }}</p>
+  <p>{{ _('<i>Notify</i> lets you choose the email address where users can send their reply.') }}</p>
   <p>{{ _('Emails with a reply-to address seem more trustworthy and are less likely to be labelled as spam.') }}</p>
   <p>{{ _('You can add reply-to addresses in your service settings.') }}</p>
   <h2 class="heading heading-medium">{{ _('Pricing') }}<h2>
-  <p>{{ _('It’s free to send emails through Notification.') }}</p>
+  <p>{{ _('It’s free to send emails through <i>Notify</i>.') }}</p>
 
 {% endblock %}

@@ -3,7 +3,7 @@
 <nav>
   <a class="pill-separate-item" href="{{ url_for('.choose_template', service_id=current_service.id) }}">
     {% if 'letter' in current_service.permissions %}
-      {{ _('Write an email, text message or letter') }}
+      {{ _('Write an email, text message, or letter') }}
     {% else %}
       {{ _('Write an email or text message') }}
     {% endif %}
