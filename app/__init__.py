@@ -509,6 +509,19 @@ def format_notification_status_as_url(status, notification_type):
     }.get(notification_type)
 
 
+def get_and_n_more_text(number_of_addresses):
+    "number_of_addresses could be email addresses or sms sending numbers"
+    number_of_hidden_addresses = number_of_addresses - 1
+    if number_of_hidden_addresses < 1:
+        # This should never happen - this function is not
+        # called in this case.
+        return _('…and 0 more')
+    if number_of_hidden_addresses == 1:
+        return _('…and 1 more')
+    if number_of_hidden_addresses > 1:
+        return _('…and {} more').format(number_of_hidden_addresses)
+
+
 def nl2br(value):
     return formatters.nl2br(value) if value else ''
 
@@ -740,6 +753,7 @@ def add_template_filters(application):
         format_notification_status_as_field_status,
         format_notification_status_as_url,
         formatted_list,
+        get_and_n_more_text,
         nl2br,
         format_phone_number_human_readable,
         format_thousands,

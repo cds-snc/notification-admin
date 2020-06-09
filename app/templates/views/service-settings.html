@@ -107,7 +107,7 @@
             {{ current_service.default_email_reply_to_address or not_set }}
             {% if current_service.count_email_reply_to_addresses > 1 %}
               <div class="hint">
-                {{ '…and %d more' | format(current_service.count_email_reply_to_addresses - 1) }}
+                {{ current_service.count_email_reply_to_addresses|get_and_n_more_text }}
               </div>
             {% endif %}
           {% endcall %}
@@ -170,7 +170,7 @@
             {{ current_service.default_sms_sender | string | nl2br | safe if current_service.default_sms_sender else 'None'}}
             {% if current_service.count_sms_senders > 1 %}
               <div class="hint">
-                {{ '…and %d more' | format(current_service.count_sms_senders - 1) }}
+                {{ current_service.count_sms_senders|get_and_n_more_text }}
               </div>
             {% endif %}
           {% endcall %}
