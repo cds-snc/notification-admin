@@ -3607,7 +3607,7 @@ def test_s3_send_link_is_shown(
 
 
 @pytest.mark.parametrize('bulk_send_allowed, expected_title', [
-    (True, 'Upload a list of email addresses from Amazon S3'),
+    (True, 'Choose a list of email addresses from Amazon S3'),
     (False, 'Emails are disabled'),
 ])
 def test_s3_send_page_only_visible_to_hc(
