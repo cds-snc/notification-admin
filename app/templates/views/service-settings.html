@@ -38,7 +38,7 @@
         {% endcall %}
 
         {% call row() %}
-          {% set txt = _('Sign-in method') %}
+          {% set txt = _('Login method') %}
           {{ text_field(txt) }}
           {% set txt = _('Email link or text message code') %}
           {% set else_txt = _('Text message code') %}
@@ -107,7 +107,7 @@
             {{ current_service.default_email_reply_to_address or not_set }}
             {% if current_service.count_email_reply_to_addresses > 1 %}
               <div class="hint">
-                {{ '…and %d more' | format(current_service.count_email_reply_to_addresses - 1) }}
+                {{ current_service.count_email_reply_to_addresses|get_and_n_more_text }}
               </div>
             {% endif %}
           {% endcall %}
@@ -170,7 +170,7 @@
             {{ current_service.default_sms_sender | string | nl2br | safe if current_service.default_sms_sender else 'None'}}
             {% if current_service.count_sms_senders > 1 %}
               <div class="hint">
-                {{ '…and %d more' | format(current_service.count_sms_senders - 1) }}
+                {{ current_service.count_sms_senders|get_and_n_more_text }}
               </div>
             {% endif %}
           {% endcall %}
