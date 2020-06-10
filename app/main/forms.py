@@ -1080,8 +1080,8 @@ class SetEmailBranding(StripWhitespaceForm):
         ]
     )
 
-    DEFAULT_EN = (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, 'English Federal Identity Program (FIP)')
-    DEFAULT_FR = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, 'French Federal Identity Program (FIP)')
+    DEFAULT_EN = (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, 'English Government of Canada signature')
+    DEFAULT_FR = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, 'French Government of Canada signature')
 
     def __init__(self, all_branding_options, current_branding):
 
@@ -1121,8 +1121,8 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
     brand_type = RadioField(
         "Brand type",
         choices=[
-            ('both_english', 'English Federal Identity Program (FIP) branding and custom logo'),
-            ('both_french', 'French Federal Identity Program (FIP) branding and custom logo'),
+            ('both_english', 'English Government of Canada signature and custom logo'),
+            ('both_french', 'French Government of Canada signature and custom logo'),
             ('custom_logo', 'Custom Logo'),
             ('custom_logo_with_background_colour', 'Custom Logo on a background colour'),
             ('no_branding', 'No branding'),
@@ -1400,10 +1400,10 @@ class LinkOrganisationsForm(StripWhitespaceForm):
 
 
 branding_options = (
-    ('fip_english', 'Federal Identity Program (FIP) English only'),
-    ('fip_french', 'Federal Identity Program (FIP) French only'),
-    ('both_english', 'English Federal Identity Program (FIP) and logo'),
-    ('both_french', 'French Federal Identity Program (FIP) and logo'),
+    ('fip_english', 'English Government of Canada signature'),
+    ('fip_french', 'French Government of Canada signature'),
+    ('both_english', 'English Government of Canada signature and custom logo'),
+    ('both_french', 'French Government of Canada signature and custom logo'),
     ('custom_logo', 'Your logo'),
     ('custom_logo_with_background_colour', 'Your logo on a colour'),
 )

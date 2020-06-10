@@ -424,8 +424,8 @@ class Service(JSONModel):
     @cached_property
     def email_branding_name(self):
         if self.email_branding is None:
-            return ('French Federal Identity Program (FIP)' if self.default_branding_is_french is True
-                    else 'English Federal Identity Program (FIP)')
+            return ('French Government of Canada signature' if self.default_branding_is_french is True
+                    else 'English Government of Canada signature')
         return self.email_branding['name']
 
     @property
