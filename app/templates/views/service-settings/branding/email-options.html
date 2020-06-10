@@ -22,7 +22,7 @@
         {{ _('Choose the branding you’d like on your emails.') }}
       </legend>
       {% if form.options.errors %}
-        <span class="error-message" data-module="track-error" data-error-type="Can’t be empty" data-error-label="{{ form.options.name }}">
+        <span class="error-message" data-module="track-error" data-error-type="This cannot be empty" data-error-label="{{ form.options.name }}">
           {{ _('You need to choose an option') }}
         </span>
       {% endif %}

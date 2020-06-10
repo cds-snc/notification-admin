@@ -115,7 +115,7 @@ def test_for_commas_in_placeholders(
 ):
     with pytest.raises(ValidationError) as error:
         NoCommasInPlaceHolders()(None, _gen_mock_field('Hello ((name,date))'))
-    assert str(error.value) == 'You can’t put commas between double brackets'
+    assert str(error.value) == 'You cannot put commas between double brackets'
     NoCommasInPlaceHolders()(None, _gen_mock_field('Hello ((name))'))
 
 
@@ -159,7 +159,7 @@ def test_sms_sender_form_validation(
 
     form.sms_sender.data = ''
     form.validate()
-    assert "Can’t be empty" == form.errors['sms_sender'][0]
+    assert "This cannot be empty" == form.errors['sms_sender'][0]
 
     form.sms_sender.data = 'morethanelevenchars'
     form.validate()

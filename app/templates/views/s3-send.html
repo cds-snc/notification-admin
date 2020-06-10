@@ -6,7 +6,7 @@
 {% from "components/select-input.html" import select_wrapper %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/message-count-label.html" import recipient_count_label %}
-{% set txt = _('Upload a list of') + " " + recipient_count_label(999, template.template_type) + " from Amazon S3" %}
+{% set txt = _('Choose a list of email addresses from Amazon S3') %}
 
 {% block service_page_title %}
   {{ txt }}

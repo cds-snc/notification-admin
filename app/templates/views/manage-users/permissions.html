@@ -22,7 +22,7 @@
 {% endif %}
 
 {% if service_has_email_auth %}
-{% set hint_txt = _('Not available because this team member hasn’t added a phone&nbsp;number to their profile') %}
+{% set hint_txt = _('Not available because this team member has not added a phone&nbsp;number to their profile') %}
   {% if not mobile_number %}
     {{ radios(
       form.login_authentication,
