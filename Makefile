@@ -21,6 +21,10 @@ generate-version-file: ## Generates the app version file
 test:
 	./scripts/run_tests.sh
 
+.PHONY: babel-test
+babel-test:
+	python scripts/babel_tests.py
+
 .PHONY: babel
 babel: 
 	csv2po app/translations/csv/en.csv app/translations/en/LC_MESSAGES/messages.po
