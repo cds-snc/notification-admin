@@ -19,9 +19,9 @@
 
     {% call form_wrapper() %}
       <div class="form-group">
-        <a href="{{ url_for('main.features_templates') }}" target="_blank">{{ _('Formatting Guide') }}</a>
+        <a href="{{ url_for('main.features_templates') }}" target="_blank">{{ _('How to format your message') }}</a>
       </div>
-      {% set txt = _('Your recipients won’t see this') %}
+      {% set txt = _('Your recipients will not see this template name.') %}
       <div class="grid-row">
         <div class="column-two-thirds">
           {{ textbox(form.name, width='1-1', hint=txt) }}

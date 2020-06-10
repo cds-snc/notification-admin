@@ -1,8 +1,8 @@
 {% extends "content_template.html" %} {% block per_page_title %}
-{{ _("Documentation") }}
+{{ _("Technical documentation") }}
 {% endblock %} {% block content_column_content %}
-<h1 class="heading-large">{{ _("Documentation") }}</h1>
-<p>{{ _("Notification API to send messages automatically.") }}</p>
+<h1 class="heading-large">{{ _("Technical documentation") }}</h1>
+<p>{{ _("Integrate the <i>Notify</i> API to send messages automatically.") }}</p>
 
 <h2 class="heading-medium">{{ _("Set up the client") }}</h2>
 <p>
@@ -27,11 +27,11 @@
   <a 
   class="button-blue"
   href="https://github.com/cds-snc/notification-api/wiki/How-to-change-your-API-endpoint%3F"
-    >{{ _("Changing your endpoint") }}</a>
+    >{{ _("How to change your endpoint") }}</a>
 </div>
 {% endif %}
 
-<p>{{ _("Choose a client to integrate the API with your system.") }}</p>
+<p>{{ _("Choose a client to integrate the API with your system:") }}</p>
 <ul class="list list-bullet">
   {% for key, label in [ ('java', 'Java'), ('net', '.NET'), ('node', 'Node JS'), ('php', 'PHP'),
   ('python', 'Python'), ('ruby', 'Ruby'), ] %}
