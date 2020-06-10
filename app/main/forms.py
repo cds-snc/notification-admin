@@ -752,12 +752,12 @@ class ChangePasswordForm(StripWhitespaceForm):
         self.validate_password_func = validate_password_func
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
 
-    old_password = password('Current password')
-    new_password = password('New password')
+    old_password = password(_l('Current password'))
+    new_password = password(_l('New password'))
 
     def validate_old_password(self, field):
         if not self.validate_password_func(field.data):
-            raise ValidationError('Invalid password')
+            raise ValidationError(_l('Invalid password'))
 
 
 class CsvUploadForm(StripWhitespaceForm):
@@ -766,7 +766,7 @@ class CsvUploadForm(StripWhitespaceForm):
 
 
 class ChangeNameForm(StripWhitespaceForm):
-    new_name = StringField(u'Your name')
+    new_name = StringField(_l('Your name'))
 
 
 class ChangeEmailForm(StripWhitespaceForm):
