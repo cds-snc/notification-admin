@@ -1,8 +1,14 @@
 import csv
 import os
 import subprocess
+import sys
 from pprint import pprint
 
+extra_keys_in_app = {
+    'Empty',  # template_list.py
+    '1 template', # template_list.py
+
+}
 
 def csv_to_dict(filename):
     d = {}
@@ -13,12 +19,7 @@ def csv_to_dict(filename):
     return d
 
 
-subprocess.run(['pybabel', 'extract', '-F', 'babel.cfg', '-k', '_l', '-o', '/tmp/messages.po', '.'])
-subprocess.run(['po2csv', '/tmp/messages.po', '/tmp/messages.csv'])
-os.remove('/tmp/messages.po')
-
-extract = csv_to_dict('/tmp/messages.csv')
-os.remove('/tmp/messages.csv')
+extract = csv_to_dict(sys.argv[1])
 existing_en = csv_to_dict('app/translations/csv/en.csv')
 existing_fr = csv_to_dict('app/translations/csv/fr.csv')
 
