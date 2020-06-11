@@ -16,7 +16,7 @@
   <li><a href="{{ url_for('main.features_sms') }}">{{ _('text messages') }}</a></li>
   <!-- <li><a href="{{ url_for('main.features_letters') }}">letters</a></li> -->
 </ul>
-<p>{{ _('You do not need technical knowledge to use Notification.') }}</p>
+<p>{{ _('You do not need technical knowledge to use GC Notify.') }}</p>
 {% if not current_user.is_authenticated %}
   <p><a href="{{ url_for('main.register') }}">{{ _('Create an account') }}</a> {{ _('for free and try it yourself.') }}</p>
 {% endif %}
@@ -42,7 +42,7 @@
 
 <h2 class="heading-medium">{{ _('Permissions') }}</h2>
 <p>{{ _('Control which members of your team can see, create, edit, and send messages.') }}</p>
-<p>{{ _('Notification lets you:') }}</p>
+<p>{{ _('GC Notify lets you:') }}</p>
 <ul class="list list-bullet">
   <li>{{ _('set different permission levels for each team member') }}</li>
   <li>{{ _('invite team members who don’t have a government email address') }}</li>
