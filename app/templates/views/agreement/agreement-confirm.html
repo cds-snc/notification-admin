@@ -21,11 +21,11 @@
 
       {% if current_service.organisation.agreement_signed_on_behalf_of_name and current_service.organisation.agreement_signed_on_behalf_of_email_address %}
         <p>
-          {{ _('I confirm that I have the legal authority to accept the <i>Notify</i> data sharing and financial agreement') }} (version {{ current_service.organisation.agreement_signed_version }}) {{ _('on behalf of') }} {{ current_service.organisation.agreement_signed_on_behalf_of_name }} ({{ current_service.organisation.agreement_signed_on_behalf_of_email_address }}) {{ _('and that') }} {{ current_service.organisation.name }} {{ _('will be bound by it.') }}
+          {{ _('I confirm that I have the legal authority to accept the data sharing and financial agreement') }} (version {{ current_service.organisation.agreement_signed_version }}) {{ _('on behalf of') }} {{ current_service.organisation.agreement_signed_on_behalf_of_name }} ({{ current_service.organisation.agreement_signed_on_behalf_of_email_address }}) {{ _('and that') }} {{ current_service.organisation.name }} {{ _('will be bound by it.') }}
         </p>
       {% else %}
         <p>
-          {{ _('I confirm that I have the legal authority to accept the <i>Notify</i> data sharing and financial agreement') }} (version {{ current_service.organisation.agreement_signed_version }}) {{ _('and that') }} {{ current_service.organisation.name }} {{ _('will be bound by it.') }}
+          {{ _('I confirm that I have the legal authority to accept the data sharing and financial agreement') }} (version {{ current_service.organisation.agreement_signed_version }}) {{ _('and that') }} {{ current_service.organisation.name }} {{ _('will be bound by it.') }}
         </p>
       {% endif %}
       {% set button_txt = _('We’ll send you a security code by text message') %}

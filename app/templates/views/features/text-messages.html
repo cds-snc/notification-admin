@@ -8,13 +8,13 @@
 {% block content_column_content %}
 
   <h1 class="heading heading-large">{{ _('Text messages') }}</h1>
-  <p>{{ _('Send thousands of free text messages to Canadian and international numbers with <i>Notify</i>.') }}</p>
+  <p>{{ _('Send thousands of free text messages to Canadian and international numbers.') }}</p>
   {% if not current_user.is_authenticated %}
   <p><a href="{{ url_for('main.register') }}">{{ _('Create an account') }}</a> {{ _('and try <i>Notify</i> for yourself')}}. </p>
   {% endif %}
 
   <h2 class="heading heading-medium">{{ _('Product features') }}</h2>
-  <p>{{ _('<i>Notify</i> makes it easy to:') }}</p>
+  <p>{{ _('GC Notify makes it easy to:') }}</p>
   <ul class="list list-bullet">
     <li>{{ _('create reusable text message templates') }}</li>
     <li>{{ _('personalise the content of your texts') }}</li>
