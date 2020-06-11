@@ -261,7 +261,7 @@ def test_should_show_total_on_live_trial_services_pages(
     (
         'main.live_services', (
             '2 courriels envoyés Aucun échec',
-            '2 messages textes envoyé Aucun échec'
+            '2 messages texte envoyé Aucun échec'
         ), 2, 2, "fr"
     ),
 ])
@@ -788,7 +788,7 @@ def test_platform_admin_submit_empty_returned_letters(mocker, platform_admin_cli
     assert not mock_client.called
 
     assert response.status_code == 200
-    assert "Can’t be empty" in response.get_data(as_text=True)
+    assert "This cannot be empty" in response.get_data(as_text=True)
 
 
 def test_service_letter_validation_preview_renders_correctly(

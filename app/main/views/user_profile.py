@@ -59,7 +59,7 @@ def user_profile_name():
 
     return render_template(
         'views/user-profile/change.html',
-        thing='name',
+        thing=_('name'),
         form_field=form.new_name
     )
 
@@ -77,7 +77,7 @@ def user_profile_email():
         return redirect(url_for('.user_profile_email_authenticate'))
     return render_template(
         'views/user-profile/change.html',
-        thing='email address',
+        thing=_('email address'),
         form_field=form.email_address
     )
 
@@ -100,7 +100,7 @@ def user_profile_email_authenticate():
 
     return render_template(
         'views/user-profile/authenticate.html',
-        thing='email address',
+        thing=_('email address'),
         form=form,
         back_link=url_for('.user_profile_email')
     )
@@ -133,7 +133,7 @@ def user_profile_mobile_number():
 
     return render_template(
         'views/user-profile/change.html',
-        thing='mobile number',
+        thing=_('mobile number'),
         form_field=form.mobile_number
     )
 
@@ -157,7 +157,7 @@ def user_profile_mobile_number_authenticate():
 
     return render_template(
         'views/user-profile/authenticate.html',
-        thing='mobile number',
+        thing=_('mobile number'),
         form=form,
         back_link=url_for('.user_profile_mobile_number_confirm')
     )
@@ -187,7 +187,7 @@ def user_profile_mobile_number_confirm():
     return render_template(
         'views/user-profile/confirm.html',
         form_field=form.sms_code,
-        thing='mobile number'
+        thing=_('mobile number')
     )
 
 

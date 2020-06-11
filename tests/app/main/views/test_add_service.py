@@ -247,7 +247,7 @@ def test_should_return_form_errors_when_service_name_is_empty(
         data={},
         _expected_status=200,
     )
-    assert 'Can’t be empty' in page.text
+    assert 'This cannot be empty' in page.text
 
 
 def test_should_return_form_errors_with_duplicate_service_name_regardless_of_case(
