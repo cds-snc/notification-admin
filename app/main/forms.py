@@ -802,7 +802,7 @@ class ChooseTimeForm(StripWhitespaceForm):
         self.scheduled_for.categories = get_next_days_until(get_furthest_possible_scheduled_time())
 
     scheduled_for = RadioField(
-        _l('When should <i>Notify</i> send these messages?'),
+        _l('When should we send these messages?'),
         default='',
         validators=[
             DataRequired()
