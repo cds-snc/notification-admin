@@ -50,7 +50,7 @@
                 English
               {% endif %}
             </a></li>
-            <li><a href="{{ url_for('main.sign_out')}}">{{ _('Log out') }}</a></li>
+            <li><a href="{{ url_for('main.sign_out')}}">{{ _('Sign out') }}</a></li>
           {% else %}
             <li>
               <a href="{{ url_for('main.set_lang')}}?from={{request.path}}">
