@@ -7,7 +7,9 @@ from pprint import pprint
 extra_keys_in_app = {
     'Empty',  # template_list.py
     '1 template', # template_list.py
-
+    'Not a valid international number', # coming from a validation liberary
+    'bad invitation link',  # coming from api
+    'invitation expired'  # coming from api
 }
 
 def csv_to_dict(filename):
@@ -23,7 +25,7 @@ extract = csv_to_dict(sys.argv[1])
 existing_en = csv_to_dict('app/translations/csv/en.csv')
 existing_fr = csv_to_dict('app/translations/csv/fr.csv')
 
-extract_keys = set(extract.keys())
+extract_keys = set(extract.keys()).union(extra_keys_in_app)
 existing_en_keys = set(existing_en.keys())
 existing_fr_keys = set(existing_fr.keys())
 
