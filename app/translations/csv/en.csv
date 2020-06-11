@@ -1130,6 +1130,8 @@
 "{} contains numbers or dates that Notify can’t understand. Try formatting all columns as ‘text’ or export your file as CSV.",""
 "Are you sure you want to remove security key {}?",""
 "You can't accept an invite for another person.",""
+"English Government of Canada signature",""
+"French Government of Canada signature",""
 "mobile number",""
 "password",""
 "name",""
