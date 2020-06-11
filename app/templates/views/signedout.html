@@ -34,6 +34,15 @@ set description = _('Notify lets you send emails and text messages to your users
 />
 
 {% block page_title %} {{ _('Notify') }} {% endblock %} {% block main_content %}
+<div id="skiplink-container">
+  <div>
+    <a
+      href="#content"
+      class="skiplink"
+      >{{ skip_link_message|default('Skip to main content') }}</a
+    >
+  </div>
+</div>
 <!-- CONTENT -->
 <div>
   <!-- start header -->
@@ -158,6 +167,7 @@ set description = _('Notify lets you send emails and text messages to your users
     <!-- end main nav -->
   </header>
   <!-- end header -->
+  <div id="content">
   <!-- start section 1 -->
   <div class="bg-blue" role="main">
     <div class="container px-10 py-24">
@@ -652,7 +662,7 @@ set description = _('Notify lets you send emails and text messages to your users
       <!-- -->
     </div>
   </div>
-
+  </div>
   <!-- start section 9 -->
   <div class="bg-blue" role="navigation" aria-label="Footer">
     <div class="container px-10 py-24">
