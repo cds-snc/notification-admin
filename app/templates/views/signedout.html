@@ -67,7 +67,7 @@ set description = _('Notify lets you send emails and text messages to your users
             <h1
               class="leading-none lg:ml-4 mr-5 lg:pl-5 font-semibold inline-block top-0 text-brand pb-0"
             >
-              <i>{{ _("Notify") }}</i>
+              {{ _("Notify") }}
             </h1>
             <div class="bg-blue-lighter py-1 px-2 rounded-lg text-small">
               {{ _("Alpha") }}
@@ -169,7 +169,7 @@ set description = _('Notify lets you send emails and text messages to your users
             {{ _("Send service updates by email and text message") }}
           </h2>
           <p class="pt-10 pb-20 text-white">
-            {{ _("Try out <i>Notify</i>, a new messaging platform for the Government of Canada.") }}
+            {{ _("Try out GC Notify, a new messaging platform for the Government of Canada.") }}
           </p>
           <div class="pt-0">
             <a
@@ -237,7 +237,7 @@ set description = _('Notify lets you send emails and text messages to your users
             {{ _("Use templates for easy, consistent, and accessible communications.") }}
           </p>
           <p class="pt-10 text-blue">
-            <a class="line-under" href="{{ url_for('main.features') }}">{{ _("Learn more about <i>Notify</i>") }}</a>
+            <a class="line-under" href="{{ url_for('main.features') }}">{{ _("Learn more about GC Notify") }}</a>
           </p>
         </div>
       </div>
@@ -252,7 +252,7 @@ set description = _('Notify lets you send emails and text messages to your users
         <!-- -->
         <div class="text-content max-w-4xl pb-10 lg:pb-0">
           <h2 class="leading-tight font-bold">
-            {{ _("<i>Notify</i> is built for you") }}
+            {{ _("A product built for you") }}
           </h2>
           <div class="image-content flex">
           {% if session["userlang"] == "en" %} 
@@ -326,7 +326,7 @@ set description = _('Notify lets you send emails and text messages to your users
     <div class="container px-10 py-24">
       <div class="flex justify-center">
         <h2 class="leading-tight font-bold">
-          {{ _("What you can do with <i>Notify</i>") }}
+          {{ _("What you can do with GC Notify") }}
         </h2>
       </div>
 
@@ -414,7 +414,7 @@ set description = _('Notify lets you send emails and text messages to your users
         <a
           class="line-under pt-10 inline-block text-blue text-base underline hover:no-underline"
           href="{{ url_for('main.features') }}"
-          >{{ _("See how <i>Notify</i> can improve your workflow") }}</a
+          >{{ _("See how GC Notify can improve your workflow") }}</a
         >
       </div>
     </div>
@@ -426,7 +426,7 @@ set description = _('Notify lets you send emails and text messages to your users
         <div class="flex flex-col lg:flex-row justify-between">
           <div class="text-content max-w-4xl pb-10 lg:pb-0">
             <h2 class="leading-tight font-bold">
-              {{ _("Integrate <i>Notify</i> into your system") }}
+              {{ _("Integrate GC Notify into your system") }}
             </h2>
 
           {% if session["userlang"] == "en" %} 
