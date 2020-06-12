@@ -3,14 +3,14 @@
 {% from "components/sub-navigation.html" import sub_navigation %}
 
 {% block per_page_title %}
-  {{ _('Features') }}
+  {{ _('Product features') }}
 {% endblock %}
 
 {% block content_column_content %}
 
-<h1 class="heading-large">{{ _('Features') }}</h1>
-<p>{{ _('If you work for the federal government, you can use Notification to update your users.') }}</p>
-<p>{{ _('Notification makes it easy to create, customize and send:') }}</p>
+<h1 class="heading-large">{{ _('Product features') }}</h1>
+<p>{{ _('If you work for the federal government, you can use <i>Notify</i> to update your users.') }}</p>
+<p>{{ _('<i>Notify</i> makes it easy to create, customize and send:') }}</p>
 <ul class="list list-bullet">
   <li><a href="{{ url_for('main.features_email') }}">{{ _('emails') }}</a></li>
   <li><a href="{{ url_for('main.features_sms') }}">{{ _('text messages') }}</a></li>
@@ -22,26 +22,26 @@
 {% endif %}
 
 <h2 class="heading-medium">{{ _('Reusable message templates') }}</h2>
-<p>{{ _('To send an email or text with Notification, you need to create a reusable message template first.') }}</p>
+<p>{{ _('To send an email or text with <i>Notify</i>, you need to create a message template first.') }}</p>
 <p>{{ _('Templates let you send the same thing to lots of people, as often as you need, without writing a new message each time.') }}</p>
 
-<h2 class="heading-medium">{{ _('Personalized content') }}</h2>
-<p>{{ _('Notification makes it easy to send personalized messages from a single template.') }}</p>
-<p>{{ _('If you want to include personalized content in your message, you can add a placeholder.  Each time you send a message, you can fill the placeholder with details such as a name or reference number. You can do this manually or upload a list of personal details and let Notification do it for you.') }}</p>
+<h2 class="heading-medium">{{ _('Personalised content') }}</h2>
+<p>{{ _('<i>Notify</i> makes it easy to send personalised messages from a single template.') }}</p>
+<p>{{ _('If you want to include personalised content in your message, you can add a placeholder. Each time you send a message, you can fill the placeholder with details such as a name or reference number. You can do this manually or upload a list of personal details and let <i>Notify</i> do it for you.') }}</p>
 
 <h2 class="heading-medium">{{ _('Bulk sending') }}</h2>
-<p>{{ _('To send a batch of messages at once, upload a list of contact details to Notification. You can also schedule the date and time for sending emails or text messages.') }}</p>
+<p>{{ _('To send a batch of messages at once, upload a list of contact details to <i>Notify</i>. You can also schedule the date and time for sending emails or text messages.') }}</p>
 
 <h2 class="heading-medium">{{ _('Application Programming Interface (API) integration') }}</h2>
-<p>{{ _('You can integrate Notification’s API with your web application or back-office system to send messages automatically.') }}</p>
+<p>{{ _('You can integrate <i>Notify</i>’s API with your web application or back-office system to send messages automatically.') }}</p>
 <p>{{ _('Read our') }} <a href="{{ url_for('.documentation') }}">{{ _('API documentation') }}</a> {{ _('for more information.') }}</p>
 
 <h2 class="heading-medium">{{ _('Message status') }}</h2>
-<p>{{ _('Notification’s real-time dashboard lets you see the number of messages sent. You can also check the current status of any message to learn when it was delivered.') }}</p>
+<p>{{ _('<i>Notify</i>’s real-time dashboard lets you see the number of messages sent. You can also check the current status of any message to learn when it was delivered.') }}</p>
 <p>{{ _('Read more about how') }} <a href="{{ url_for('main.message_status') }}">{{ _('message status') }}</a> {{ _('works.') }}</p>
 
 <h2 class="heading-medium">{{ _('Permissions') }}</h2>
-<p>{{ _('Control which members of your team can see, create, edit and send messages.') }}</p>
+<p>{{ _('Control which members of your team can see, create, edit, and send messages.') }}</p>
 <p>{{ _('Notification lets you:') }}</p>
 <ul class="list list-bullet">
   <li>{{ _('set different permission levels for each team member') }}</li>
@@ -50,13 +50,13 @@
 </ul>
 
 <h2 class="heading-medium">{{ _('Security') }}</h2>
-<p>{{ _('Notification protects and manages data to meet the needs of government services.') }}</p>
+<p>{{ _('<i>Notify</i> protects and manages data to meet the needs of government services.') }}</p>
 
 <h3 class="heading-small">{{ _('Hide sensitive information') }}</h3>
-<p>{{ _('Notification lets you redact personal information from your messages after they’ve been sent. Only the recipient can see their personal information.') }}</p>
+<p>{{ _('<i>Notify</i> lets you redact personal information from your messages after they’ve been sent. Only the recipient can see their personal information.') }}</p>
 
 <h3 class="heading-small">{{ _('Two-factor authentication') }}</h3>
-<p>{{ _("Notification uses two-factor authentication (2FA) to keep your account secure. When you sign in, we'll send a unique one-time code to your phone and ask you to enter it before we let you use your account.") }}</p>
+<p>{{ _("<i>Notify</i> uses two-factor authentication (2FA) to keep your account secure. When you log in, we'll send a unique one-time code to your phone and ask you to enter it before we let you use your account.") }}</p>
 <p>{{ _('Read more about') }} <a href="{{ url_for('main.security') }}">{{ _('security') }}</a>.
 
 {% endblock %}

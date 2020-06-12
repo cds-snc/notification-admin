@@ -61,12 +61,12 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
-        'Sign-in method Text message code Change',
+        'Login method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
-        'Email branding English Federal Identity Program (FIP) Change',
+        'Email branding English Government of Canada signature Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -80,12 +80,12 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
-        'Sign-in method Text message code Change',
+        'Login method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
-        'Email branding English Federal Identity Program (FIP) Change',
+        'Email branding English Government of Canada signature Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -100,7 +100,7 @@ def mock_get_service_settings_page_common(
         'Organisation Test Organisation Central government Change',
         'Daily message limit 1,000 Change',
         'Free text message allowance 250,000 Change',
-        'Email branding English Federal Identity Program (FIP) Change',
+        'Email branding English Government of Canada signature Change',
         'Letter branding Not set Change',
         'Data retention email Change',
         'Receive inbound SMS Off Change',
@@ -191,7 +191,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'inbound_sms', 'international_sms'], [
 
         'Service name service one Change',
-        'Sign-in method Text message code Change',
+        'Login method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -209,7 +209,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'email_auth'], [
 
         'Service name service one Change',
-        'Sign-in method Email link or text message code Change',
+        'Login method Email link or text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -1403,7 +1403,7 @@ def test_should_redirect_after_request_to_go_live(
     )
 
     assert normalize_spaces(page.select_one('.banner-default').text) == (
-        'Thanks for your request to go live. We’ll get back to you within one working day.'
+        'Thank you for your request to go live. We’ll get back to you within one working day.'
     )
     assert normalize_spaces(page.select_one('h1').text) == (
         'Settings'
@@ -1940,7 +1940,7 @@ def test_remove_default_from_default_letter_contact_block(
     (
         'main.service_email_reply_to',
         no_reply_to_email_addresses,
-        'You haven’t added any reply-to email addresses yet'
+        'You have not added any reply-to email addresses yet'
     ),
     (
         'main.service_letter_contact_details',
@@ -1950,7 +1950,7 @@ def test_remove_default_from_default_letter_contact_block(
     (
         'main.service_sms_senders',
         no_sms_senders,
-        'You haven’t added any text message senders yet'
+        'You have not added any text message senders yet'
     ),
 ])
 def test_no_senders_message_shows(
@@ -1974,7 +1974,7 @@ def test_no_senders_message_shows(
 
 
 @pytest.mark.parametrize('reply_to_input, expected_error', [
-    ('', 'Can’t be empty'),
+    ('', 'This cannot be empty'),
     ('testtest', 'Enter a valid email address'),
 ])
 def test_incorrect_reply_to_email_address_input(
@@ -1994,7 +1994,7 @@ def test_incorrect_reply_to_email_address_input(
 
 
 @pytest.mark.parametrize('contact_block_input, expected_error', [
-    ('', 'Can’t be empty'),
+    ('', 'This cannot be empty'),
     ('1 \n 2 \n 3 \n 4 \n 5 \n 6 \n 7 \n 8 \n 9 \n 0 \n a', 'Contains 11 lines, maximum is 10')
 ])
 def test_incorrect_letter_contact_block_input(
@@ -2016,7 +2016,7 @@ def test_incorrect_letter_contact_block_input(
 @pytest.mark.parametrize('sms_sender_input, expected_error', [
     ('elevenchars', None),
     ('11 chars', None),
-    ('', 'Can’t be empty'),
+    ('', 'This cannot be empty'),
     ('abcdefghijkhgkg', 'Enter 11 characters or fewer'),
     (r' ¯\_(ツ)_/¯ ', 'Use letters and numbers only'),
     ('blood.co.uk', None),
@@ -3056,13 +3056,13 @@ def test_service_preview_letter_branding_saves(
     ('__FIP-EN__', [
         '__FIP-EN__', '__FIP-FR__', '1', '2', '3', '4', '5',
     ], [
-        'English Federal Identity Program (FIP)', 'French Federal Identity Program (FIP)',
+        'English Government of Canada signature', 'French Government of Canada signature',
         'org 1', 'org 2', 'org 3', 'org 4', 'org 5'
     ]),
     ('5', [
         '5', '__FIP-EN__', '__FIP-FR__', '1', '2', '3', '4',
     ], [
-        'org 5', 'English Federal Identity Program (FIP)', 'French Federal Identity Program (FIP)',
+        'org 5', 'English Government of Canada signature', 'French Government of Canada signature',
         'org 1', 'org 2', 'org 3', 'org 4',
     ]),
 ])
@@ -3816,7 +3816,7 @@ def test_resume_service_prompts_user(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    assert 'This will resume the service. New API key are required for this service to use the API.' in \
+    assert 'This will resume the service. New API keys are required for this service to use the API' in \
            page.find('div', class_='banner-dangerous').text
     assert mocked_fn.called is False
 
@@ -4135,7 +4135,7 @@ def test_empty_letter_contact_block_returns_error(
         _expected_status=200,
     )
     error_message = page.find('span', class_='error-message').text.strip()
-    assert error_message == 'Can’t be empty'
+    assert error_message == 'This cannot be empty'
 
 
 def test_show_sms_prefixing_setting_page(

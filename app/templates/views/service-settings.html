@@ -38,7 +38,7 @@
         {% endcall %}
 
         {% call row() %}
-          {% set txt = _('Sign-in method') %}
+          {% set txt = _('Login method') %}
           {{ text_field(txt) }}
           {% set txt = _('Email link or text message code') %}
           {% set else_txt = _('Text message code') %}
@@ -107,7 +107,7 @@
             {{ current_service.default_email_reply_to_address or not_set }}
             {% if current_service.count_email_reply_to_addresses > 1 %}
               <div class="hint">
-                {{ '…and %d more' | format(current_service.count_email_reply_to_addresses - 1) }}
+                {{ current_service.count_email_reply_to_addresses|get_and_n_more_text }}
               </div>
             {% endif %}
           {% endcall %}
@@ -124,7 +124,7 @@
           {% set txt = _('Email branding') %}
           {{ text_field(txt) }}
           {% set txt = _('Your branding<br> ({})') %}
-          {{ text_field(txt.format(current_service.email_branding_name)|safe if current_service.email_branding else current_service.email_branding_name) }}
+          {{ text_field(txt.format(current_service.email_branding_name)|safe if current_service.email_branding else _(current_service.email_branding_name)) }}
           {{ edit_field(
             change_txt,
             url_for('.branding_request', service_id=current_service.id),
@@ -170,7 +170,7 @@
             {{ current_service.default_sms_sender | string | nl2br | safe if current_service.default_sms_sender else 'None'}}
             {% if current_service.count_sms_senders > 1 %}
               <div class="hint">
-                {{ '…and %d more' | format(current_service.count_sms_senders - 1) }}
+                {{ current_service.count_sms_senders|get_and_n_more_text }}
               </div>
             {% endif %}
           {% endcall %}
@@ -331,7 +331,7 @@
           {% call row() %}
             {% set txt = _('Email branding') %}
             {{ text_field(txt)}}
-            {{ text_field(current_service.email_branding_name) }}
+            {{ text_field(_(current_service.email_branding_name)) }}
             {{ edit_field(change_txt, url_for('.service_set_email_branding', service_id=current_service.id)) }}
           {% endcall %}
           {% call row() %}

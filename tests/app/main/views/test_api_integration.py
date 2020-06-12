@@ -513,7 +513,7 @@ def test_should_validate_safelist_items(
     ('main.received_text_messages_callback'),
 ])
 @pytest.mark.parametrize('url, bearer_token, expected_errors', [
-    ("https://example.com", "", "Can’t be empty"),
+    ("https://example.com", "", "This cannot be empty"),
     ("http://not_https.com", "1234567890", "Must be a valid https URL"),
     ("https://test.com", "123456789", "Must be at least 10 characters"),
 ])

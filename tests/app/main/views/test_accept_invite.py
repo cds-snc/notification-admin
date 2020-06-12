@@ -91,8 +91,8 @@ def test_if_existing_user_accepts_twice_they_redirect_to_sign_in(
         page.h1.string,
         page.select('main p')[0].text.strip(),
     ) == (
-        'You need to sign in again',
-        'We signed you out because you haven’t used Notify for a while.',
+        'You need to log in again',
+        'We logged you out because you haven’t used Notify for a while.',
     )
 
 
@@ -190,8 +190,8 @@ def test_existing_user_of_service_get_redirected_to_signin(
         page.h1.string,
         page.select('main p')[0].text.strip(),
     ) == (
-        'You need to sign in again',
-        'We signed you out because you haven’t used Notify for a while.',
+        'You need to log in again',
+        'We logged you out because you haven’t used Notify for a while.',
     )
     assert mock_accept_invite.call_count == 1
 
@@ -228,8 +228,8 @@ def test_existing_signed_out_user_accept_invite_redirects_to_sign_in(
         page.h1.string,
         page.select('main p')[0].text.strip(),
     ) == (
-        'You need to sign in again',
-        'We signed you out because you haven’t used Notify for a while.',
+        'You need to log in again',
+        'We logged you out because you haven’t used Notify for a while.',
     )
 
 
@@ -419,7 +419,7 @@ def test_signed_in_existing_user_cannot_use_anothers_invite(
     banner_contents = flash_banners[0].text.strip()
     assert "You’re logged in as test@user.canada.ca." in banner_contents
     assert "This invite is for another email address." in banner_contents
-    assert "Sign out and click the link again to accept this invite." in banner_contents
+    assert "Log out and click the link again to accept this invite." in banner_contents
     assert mock_accept_invite.call_count == 0
 
 

@@ -321,34 +321,34 @@ def test_upload_files_in_different_formats(
     else:
         assert not mock_s3_upload.called
         assert normalize_spaces(page.select_one('.banner-dangerous').text) == (
-            'Couldn’t read {}. Try using a different file format.'.format(filename)
+            'Could not read {}. Try using a different file format.'.format(filename)
         )
 
 
 @pytest.mark.parametrize('exception, expected_error_message', [
     (partial(UnicodeDecodeError, 'codec', b'', 1, 2, 'reason'), (
-        'Couldn’t read example.xlsx. Try using a different file format.'
+        'Could not read example.xlsx. Try using a different file format.'
     )),
     (BadZipFile, (
-        'Couldn’t read example.xlsx. Try using a different file format.'
+        'Could not read example.xlsx. Try using a different file format.'
     )),
     (XLRDError, (
-        'Couldn’t read example.xlsx. Try using a different file format.'
+        'Could not read example.xlsx. Try using a different file format.'
     )),
     (XLDateError, (
-        'example.xlsx contains numbers or dates that Notification can’t understand. '
+        'example.xlsx contains numbers or dates that Notify can’t understand. '
         'Try formatting all columns as ‘text’ or export your file as CSV.'
     )),
     (XLDateNegative, (
-        'example.xlsx contains numbers or dates that Notification can’t understand. '
+        'example.xlsx contains numbers or dates that Notify can’t understand. '
         'Try formatting all columns as ‘text’ or export your file as CSV.'
     )),
     (XLDateAmbiguous, (
-        'example.xlsx contains numbers or dates that Notification can’t understand. '
+        'example.xlsx contains numbers or dates that Notify can’t understand. '
         'Try formatting all columns as ‘text’ or export your file as CSV.'
     )),
     (XLDateTooLarge, (
-        'example.xlsx contains numbers or dates that Notification can’t understand. '
+        'example.xlsx contains numbers or dates that Notify can’t understand. '
         'Try formatting all columns as ‘text’ or export your file as CSV.'
     )),
 ])
@@ -552,7 +552,7 @@ def test_upload_csv_invalid_extension(
     )
 
     assert resp.status_code == 200
-    assert "invalid.txt isn’t a spreadsheet that Notify can read" in resp.get_data(as_text=True)
+    assert "invalid.txt is not a spreadsheet that Notify can read" in resp.get_data(as_text=True)
 
 
 def test_upload_valid_csv_redirects_to_check_page(
@@ -2156,7 +2156,7 @@ def test_letter_can_only_be_sent_now(
     assert normalize_spaces(
         page.select_one('[type=submit]').text
     ) == (
-        'Send Now'
+        'Send now'
     )
 
 
@@ -2658,7 +2658,7 @@ def test_check_messages_shows_trial_mode_error(
     assert ' '.join(
         page.find('div', class_='banner-dangerous').text.split()
     ) == (
-        'You can’t send to this phone number '
+        'You cannot send to this phone number '
         'In trial mode you can only send to yourself and members of your team '
         'Skip to file contents'
     )
@@ -2669,9 +2669,9 @@ def test_check_messages_shows_trial_mode_error(
     (mock_get_live_service, False),
 ])
 @pytest.mark.parametrize('number_of_rows, expected_error_message', [
-    (1, 'You can’t send this letter'),
-    (11, 'You can’t send these letters'),  # Less than trial mode limit
-    (111, 'You can’t send these letters'),  # More than trial mode limit
+    (1, 'You cannot send this letter'),
+    (11, 'You cannot send these letters'),  # Less than trial mode limit
+    (111, 'You cannot send these letters'),  # More than trial mode limit
 ])
 def test_check_messages_shows_trial_mode_error_for_letters(
     client_request,
@@ -2960,7 +2960,7 @@ def test_letters_from_csv_files_dont_have_download_link(
     assert normalize_spaces(
         page.select_one('.banner-dangerous').text
     ) == normalize_spaces(
-        'You can’t send this letter '
+        'You cannot send this letter '
         'In trial mode you can only preview how your letters will look '
         'Skip to file contents'
     )
@@ -3052,7 +3052,7 @@ def test_send_one_off_letter_errors_in_trial_mode(
     )
 
     assert normalize_spaces(page.select('.banner-dangerous')) == normalize_spaces(
-        'You can’t send this letter '
+        'You cannot send this letter '
         'In trial mode you can only preview how your letters will look'
     )
 
@@ -3368,13 +3368,13 @@ SERVICE_DAILY_LIMIT_MSG = 'Exceeded send limits (1000) for today'
 @pytest.mark.parametrize('exception_msg, expected_h1, expected_err_details', [
     (
         TRIAL_MODE_MSG,
-        'You can’t send to this phone number',
+        'You cannot send to this phone number',
         'In trial mode you can only send to yourself and members of your team'
     ),
     (
         TOO_LONG_MSG,
         'Message too long',
-        'Text messages can’t be longer than 612 characters. Your message is 654 characters.'
+        'Text messages cannot be longer than 612 characters. Your message is 654 characters.'
     ),
     (
         SERVICE_DAILY_LIMIT_MSG,
@@ -3442,7 +3442,7 @@ def test_send_notification_shows_email_error_in_trial_mode(
     )
 
     assert normalize_spaces(page.select('.banner-dangerous h1')[0].text) == (
-        'You can’t send to this email address'
+        'You cannot send to this email address'
     )
     assert normalize_spaces(page.select('.banner-dangerous p')[0].text) == (
         'In trial mode you can only send to yourself and members of your team'
@@ -3580,3 +3580,95 @@ def test_redirects_to_template_if_job_exists_already(
             _external=True,
         )
     )
+
+
+@pytest.mark.parametrize('bulk_send_allowed, number_of_s3_upload_links', [
+    (True, 1),
+    (False, 0),
+])
+def test_s3_send_link_is_shown(
+    logged_in_client,
+    fake_uuid,
+    mocker,
+    bulk_send_allowed,
+    number_of_s3_upload_links,
+):
+    mocker.patch('app.main.views.send.service_can_bulk_send', return_value=bulk_send_allowed)
+    mock_get_service_email_template(mocker)
+    partial_url = partial(url_for, 'main.send_one_off')
+    response = logged_in_client.get(
+        partial_url(service_id=SERVICE_ONE_ID, template_id=fake_uuid, step_index=0),
+        follow_redirects=True,
+    )
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+
+    assert response.status_code == 200
+    assert len(page.find_all(id='s3-send')) == number_of_s3_upload_links
+
+
+@pytest.mark.parametrize('bulk_send_allowed, expected_title', [
+    (True, 'Choose a list of email addresses from Amazon S3'),
+    (False, 'Emails are disabled'),
+])
+def test_s3_send_page_only_visible_to_hc(
+    logged_in_client,
+    fake_uuid,
+    mocker,
+    bulk_send_allowed,
+    expected_title
+):
+    class Object(object):
+        pass
+
+    expected_filenames = ["file0.csv", "file1.csv"]
+    s3_file_objects = []
+    for filename in expected_filenames:
+        x = Object()
+        x.key = filename
+        s3_file_objects.append(x)
+
+    mocker.patch('app.main.views.send.service_can_bulk_send', return_value=bulk_send_allowed)
+    mocker.patch('app.main.views.send.list_bulk_send_uploads', return_value=s3_file_objects)
+    mock_get_service_email_template(mocker)
+    partial_url = partial(url_for, 'main.s3_send')
+    response = logged_in_client.get(
+        partial_url(service_id=SERVICE_ONE_ID, template_id=fake_uuid),
+        follow_redirects=True,
+    )
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+
+    assert response.status_code == 200
+    assert page.select('h1')[0].text.strip() == expected_title
+
+
+def test_s3_send_shows_available_files(
+    logged_in_client,
+    fake_uuid,
+    mocker,
+):
+    class Object(object):
+        pass
+
+    expected_filenames = ["file0.csv", "file1.csv"]
+    s3_file_objects = []
+    for filename in expected_filenames:
+        x = Object()
+        x.key = filename
+        s3_file_objects.append(x)
+
+    mocker.patch('app.main.views.send.service_can_bulk_send', return_value=True)
+    mocker.patch('app.main.views.send.list_bulk_send_uploads', return_value=s3_file_objects)
+    mock_get_service_email_template(mocker)
+    partial_url = partial(url_for, 'main.s3_send')
+    response = logged_in_client.get(
+        partial_url(service_id=SERVICE_ONE_ID, template_id=fake_uuid),
+        follow_redirects=True,
+    )
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+
+    assert response.status_code == 200
+
+    options = page.select('.multiple-choice label')
+    multiple_choise_options = [x.text.strip() for x in options]
+
+    assert multiple_choise_options == expected_filenames

@@ -34,8 +34,16 @@ data_kwargs={'force-focus': True} ) %}
     id="list-uploader"
     href="{{ url_for('.send_messages', service_id=current_service.id, template_id=template.id) }}"
   >
-    {{ _('Upload a list of') }} {{ recipient_count_label(999,
-    template.template_type) }}
+    {{ template.template_type|get_csv_upload_text }}
+  </a>
+</p>
+{% endif %}{% if bulk_send_allowed %}
+<p>
+  <a
+    id="s3-send"
+    href="{{ url_for('.s3_send', service_id=current_service.id, template_id=template.id) }}"
+  >
+    {{ _('Use a list of email addresses from Amazon S3') }}
   </a>
 </p>
 {% endif %} {% set txt = _('Continue') %} {{ page_footer(txt) }} {% endcall %}

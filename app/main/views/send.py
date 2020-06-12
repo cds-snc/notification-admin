@@ -39,11 +39,14 @@ from app.main import main
 from app.main.forms import (
     ChooseTimeForm,
     CsvUploadForm,
+    SelectCsvFromS3Form,
     SetSenderForm,
     get_placeholder_form_instance,
 )
 from app.models.user import Users
 from app.s3_client.s3_csv_client import (
+    copy_bulk_send_file_to_uploads,
+    list_bulk_send_uploads,
     s3download,
     s3upload,
     set_metadata_on_csv_upload,
@@ -60,6 +63,21 @@ from app.utils import (
     unicode_truncate,
     user_has_permissions,
 )
+
+
+def service_can_bulk_send(service_id):
+    bulk_sending_services = [
+        current_app.config['HC_EN_SERVICE_ID'],
+        current_app.config['HC_FR_SERVICE_ID'],
+        current_app.config['BULK_SEND_TEST_SERVICE_ID'],
+    ]
+    return str(service_id) in bulk_sending_services
+
+
+def get_csv_max_rows(service_id):
+    if service_can_bulk_send(service_id):
+        return int(current_app.config['CSV_MAX_ROWS_BULK_SEND'])
+    return int(current_app.config['CSV_MAX_ROWS'])
 
 
 def get_example_csv_fields(column_headers, use_example_as_example, submitted_fields):
@@ -162,12 +180,12 @@ def send_messages(service_id, template_id):
                 original_file_name=form.file.data.filename,
             ))
         except (UnicodeDecodeError, BadZipFile, XLRDError):
-            flash('Couldn’t read {}. Try using a different file format.'.format(
+            flash(_('Could not read {}. Try using a different file format.').format(
                 form.file.data.filename
             ))
         except (XLDateError):
-            flash((
-                '{} contains numbers or dates that Notification can’t understand. '
+            flash(_(
+                '{} contains numbers or dates that Notify can’t understand. '
                 'Try formatting all columns as ‘text’ or export your file as CSV.'
             ).format(
                 form.file.data.filename
@@ -177,6 +195,94 @@ def send_messages(service_id, template_id):
 
     return render_template(
         'views/send.html',
+        template=template,
+        column_headings=list(ascii_uppercase[:len(column_headings)]),
+        example=[column_headings, get_example_csv_rows(template)],
+        form=form
+    )
+
+
+@main.route("/services/<service_id>/send/<template_id>/s3-send", methods=['GET', 'POST'])
+@user_has_permissions('send_messages', restrict_admin_usage=True)
+def s3_send(service_id, template_id):
+    # if there's lots of data in the session, lets log it for debugging purposes
+    # TODO: Remove this once we're confident we have session size under control
+    if len(session.get('file_uploads', {}).keys()) > 2:
+        current_app.logger.info('session contains large file_uploads - json_len {}, keys: {}'.format(
+            len(json.dumps(session['file_uploads'])),
+            session['file_uploads'].keys())
+        )
+
+    db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+
+    email_reply_to = None
+    sms_sender = None
+
+    if db_template['template_type'] == 'email':
+        email_reply_to = get_email_reply_to_address_from_session()
+    elif db_template['template_type'] == 'sms':
+        sms_sender = get_sms_sender_from_session()
+
+    is_email_or_sms_not_enabled = email_or_sms_not_enabled(db_template['template_type'], current_service.permissions)
+    if is_email_or_sms_not_enabled or not service_can_bulk_send(service_id):
+        return redirect(url_for(
+            '.action_blocked',
+            service_id=service_id,
+            notification_type=db_template['template_type'],
+            return_to='view_template',
+            template_id=template_id
+        ))
+
+    template = get_template(
+        db_template,
+        current_service,
+        show_recipient=True,
+        letter_preview_url=url_for(
+            '.view_letter_template_preview',
+            service_id=service_id,
+            template_id=template_id,
+            filetype='png',
+            page_count=get_page_count_for_letter(db_template),
+        ),
+        email_reply_to=email_reply_to,
+        sms_sender=sms_sender,
+    )
+
+    s3_objects = list_bulk_send_uploads()
+    form = SelectCsvFromS3Form(
+        choices=[(x.key, x.key) for x in s3_objects],  # (value, label)
+        label="Select a file from Amazon S3"
+    )
+
+    if form.validate_on_submit():
+        try:
+            upload_id = copy_bulk_send_file_to_uploads(
+                service_id,
+                form.s3_files.data,
+            )
+            return redirect(url_for(
+                '.check_messages',
+                service_id=service_id,
+                upload_id=upload_id,
+                template_id=template.id,
+                original_file_name=form.s3_files.data,
+            ))
+        except (UnicodeDecodeError, BadZipFile, XLRDError):
+            flash(_('Could not read {}. Try using a different file format.').format(
+                form.s3_files.data
+            ))
+        except (XLDateError):
+            flash((
+                '{} contains numbers or dates that Notify can’t understand. '
+                'Try formatting all columns as ‘text’ or export your file as CSV.'
+            ).format(
+                form.s3_files.data
+            ))
+
+    column_headings = get_spreadsheet_column_headings_from_template(template)
+
+    return render_template(
+        'views/s3-send.html',
         template=template,
         column_headings=list(ascii_uppercase[:len(column_headings)]),
         example=[column_headings, get_example_csv_rows(template)],
@@ -372,7 +478,8 @@ def send_test_step(service_id, template_id, step_index):
         ),
         page_count=session['send_test_letter_page_count'],
         email_reply_to=email_reply_to,
-        sms_sender=sms_sender
+        sms_sender=sms_sender,
+
     )
 
     placeholders = fields_to_fill_in(
@@ -474,6 +581,7 @@ def send_test_step(service_id, template_id, step_index):
             request.endpoint == 'main.send_one_off_step'
             and step_index == 0
         ),
+        bulk_send_allowed=service_can_bulk_send(service_id)
     )
 
 
@@ -562,6 +670,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         ) if current_service.trial_mode else None,
         remaining_messages=remaining_messages,
         international_sms=current_service.has_permission('international_sms'),
+        max_rows=get_csv_max_rows(service_id),
     )
 
     if request.args.get('from_test'):

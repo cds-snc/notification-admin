@@ -99,6 +99,16 @@ class Config(object):
 
     IP_GEOLOCATE_SERVICE = os.environ.get('IP_GEOLOCATE_SERVICE', 'https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/')
 
+    BULK_SEND_AWS_ACCESS_KEY = os.getenv('BULK_SEND_AWS_ACCESS_KEY')
+    BULK_SEND_AWS_SECRET_KEY = os.getenv('BULK_SEND_AWS_SECRET_KEY')
+    BULK_SEND_AWS_BUCKET = os.getenv('BULK_SEND_AWS_BUCKET')
+    BULK_SEND_AWS_REGION = os.getenv('BULK_SEND_AWS_REGION')
+    HC_EN_SERVICE_ID = os.getenv('HC_EN_SERVICE_ID')
+    HC_FR_SERVICE_ID = os.getenv('HC_FR_SERVICE_ID')
+    BULK_SEND_TEST_SERVICE_ID = os.getenv('BULK_SEND_TEST_SERVICE_ID')
+    CSV_MAX_ROWS = os.getenv('CSV_MAX_ROWS', 50000)
+    CSV_MAX_ROWS_BULK_SEND = os.getenv('CSV_MAX_ROWS_BULK_SEND', 100000)
+
 
 class Development(Config):
     DEBUG = True

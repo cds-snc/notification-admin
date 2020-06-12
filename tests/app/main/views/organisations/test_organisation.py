@@ -154,7 +154,7 @@ def test_create_new_organisation_validates(
         (error['data-error-label'], normalize_spaces(error.text))
         for error in page.select('.error-message')
     ] == [
-        ('name', 'Can’t be empty'),
+        ('name', 'This cannot be empty'),
         ('organisation_type', 'Not a valid choice'),
         ('crown_status', 'Not a valid choice'),
     ]
@@ -259,7 +259,7 @@ def test_organisation_settings_for_platform_admin(
         'Crown organisation Yes Change',
         'Data sharing and financial agreement Not signed Change',
         'Request to go live notes None Change',
-        'Default email branding English Federal Identity Program (FIP) Change',
+        'Default email branding English Government of Canada signature Change',
         'Default letter branding No branding Change'
     ]
 
@@ -508,7 +508,7 @@ def test_update_organisation_with_incorrect_input(
 
     assert normalize_spaces(
         page.select_one('.error-message').text
-    ) == "Can’t be empty"
+    ) == "This cannot be empty"
 
 
 def test_update_organisation_with_non_unique_name(

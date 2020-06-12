@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from flask import flash, redirect, render_template, request, session, url_for
+from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from werkzeug.exceptions import abort
@@ -105,8 +106,7 @@ def invite_org_user(org_id):
             org_id,
             email_address
         )
-
-        flash('Invite sent to {}'.format(invited_org_user.email_address), 'default_with_tick')
+        flash('{} {}'.format(_('Invite sent to'), invited_org_user.email_address), 'default_with_tick')
         return redirect(url_for('.manage_org_users', org_id=org_id))
 
     return render_template(
@@ -146,7 +146,7 @@ def remove_user_from_organisation(org_id, user_id):
             org_id=org_id
         ))
 
-    flash('Are you sure you want to remove {}?'.format(user.name), 'remove')
+    flash('{} {}?'.format(_('Are you sure you want to remove'), user.name), 'remove')
     return render_template(
         'views/organisations/organisation/users/user/index.html',
         user=user,
@@ -165,9 +165,9 @@ def cancel_invited_org_user(org_id, invited_user_id):
 @user_is_platform_admin
 def organisation_settings(org_id):
 
-    email_branding = ('French Federal Identity Program (FIP)' if
+    email_branding = ('French Government of Canada signature' if
                       current_organisation.default_branding_is_french is True
-                      else 'English Federal Identity Program (FIP)')
+                      else 'English Government of Canada signature')
 
     if current_organisation.email_branding_id:
         email_branding = email_branding_client.get_email_branding(
