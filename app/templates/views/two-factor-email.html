@@ -15,8 +15,8 @@
     <h1 class="heading-large">{{ _(title) }}</h1>
     {% set continue = _('Continue') %}
     {% set link_txt = _('Not received an email') %}
-    <p>{{ _('We’ve emailed you a link to sign in to Notification.') }}</p>
-    <p>{{ _('Use the link to open Notification in a new browser window.') }}</p>
+    <p>{{ _('We've sent you an email with a security code to sign in to Notify.') }}</p>
+    <p>{{ _('Please enter the security code.') }}</p>
     {% call form_wrapper(class="extra-tracking") %}
       {{ textbox(
         form.two_factor_code,
