@@ -52,7 +52,7 @@ def test_form_is_valid_returns_no_errors(
     (
         mock_check_verify_code_code_expired,
         {'two_factor_code': '99999'},
-        'Code has expired',
+        'That security code has expired',
     ),
     (
         mock_check_verify_code_code_not_found,

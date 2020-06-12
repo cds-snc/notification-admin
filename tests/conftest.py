@@ -1936,7 +1936,7 @@ def mock_check_verify_code_code_not_found(mocker):
 @pytest.fixture(scope='function')
 def mock_check_verify_code_code_expired(mocker):
     def _verify(user_id, code, code_type):
-        return False, 'Code has expired'
+        return False, 'That security code has expired'
 
     return mocker.patch(
         'app.user_api_client.check_verify_code',

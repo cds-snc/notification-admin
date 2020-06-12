@@ -40,33 +40,6 @@ def two_factor_email_sent():
     )
 
 
-"""
-@main.route('/email-auth/<token>', methods=['GET'])
-def two_factor_email(token):
-    if current_user.is_authenticated:
-        return redirect_when_logged_in(user=current_user, platform_admin=current_user.platform_admin)
-
-    # checks url is valid, and hasn't timed out
-    try:
-        token_data = json.loads(check_token(
-            token,
-            current_app.config['SECRET_KEY'],
-            current_app.config['DANGEROUS_SALT'],
-            current_app.config['EMAIL_2FA_EXPIRY_SECONDS']
-        ))
-    except SignatureExpired:
-        return render_template('views/email-link-invalid.html')
-
-    user_id = token_data['user_id']
-    # checks if code was already used
-    logged_in, msg = user_api_client.check_verify_code(user_id, token_data['secret_code'], "email")
-
-    if not logged_in:
-        return render_template('views/email-link-invalid.html')
-    return log_in_user(user_id)
-"""
-
-
 @main.route('/two-factor-sms-sent', methods=['GET', 'POST'])
 @redirect_to_sign_in
 def two_factor_sms_sent():

@@ -511,17 +511,16 @@ class TwoFactorForm(StripWhitespaceForm):
         self.validate_code_func = validate_code_func
         super(TwoFactorForm, self).__init__(*args, **kwargs)
 
-    two_factor_code = SMSCode(_l('Please enter security code'))
+    two_factor_code = SMSCode(_l('Please enter the security code.'))
 
     def validate(self):
-
         if not self.two_factor_code.validate(self):
             return False
 
         is_valid, reason = self.validate_code_func(self.two_factor_code.data)
 
         if not is_valid:
-            self.two_factor_code.errors.append(reason)
+            self.two_factor_code.errors.append(_l(reason))
             return False
 
         return True

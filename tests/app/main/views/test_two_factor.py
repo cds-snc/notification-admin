@@ -49,7 +49,7 @@ def test_should_render_email_two_factor_page(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
     assert page.select_one('main p').text.strip() == (
-        'We’ve emailed you a link to sign in to Notify.'
+        'We’ve sent you an email with a security code to sign in to Notify.'
     )
     assert page.select_one('label').text.strip(
         'Text message code'
@@ -431,7 +431,7 @@ def test_two_factor_email_link_has_expired(
 
     assert response.status_code == 200
 
-    assert 'Code has expired' in response.get_data(as_text=True)
+    assert 'That security code has expired' in response.get_data(as_text=True)
 
 
 def test_should_login_user_and_should_render_login_events_page(
