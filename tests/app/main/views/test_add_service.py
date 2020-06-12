@@ -124,7 +124,7 @@ def test_should_add_service_and_redirect_to_tour_when_no_services(
         'Example text message template',
         'sms',
         (
-            'Hey ((name)), I’m trying out Notify. Today is '
+            'Hey ((name)), I’m trying out GC Notify. Today is '
             '((day of week)) and my favourite colour is ((colour)).'
         ),
         101,

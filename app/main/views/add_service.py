@@ -37,7 +37,7 @@ def _create_example_template(service_id):
     example_email_template = service_api_client.create_service_template(
         'Example email template',
         'email',
-        'Hey ((name)), I’m trying out Notify. Today is ((day of week)) and my favourite colour is ((colour)).',
+        'Hey ((name)), I’m trying out GC Notify. Today is ((day of week)) and my favourite colour is ((colour)).',
         service_id,
         subject='Example email template'
     )

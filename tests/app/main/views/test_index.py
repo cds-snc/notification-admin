@@ -150,7 +150,7 @@ def test_old_integration_testing_page(
 def test_terms_page_has_correct_content(client_request):
     terms_page = client_request.get('main.terms')
     assert normalize_spaces(terms_page.select('main p')[0].text) == (
-        'These terms apply to use of Notify. Your account manager must accept them.'
+        'These terms apply to use of GC Notify. Your account manager must accept them.'
     )
 
 
