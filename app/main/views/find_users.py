@@ -1,4 +1,5 @@
 from flask import flash, redirect, render_template, request, url_for
+from flask_babel import _
 from flask_login import current_user
 
 from app import user_api_client
@@ -65,5 +66,5 @@ def archive_user(user_id):
 
         return redirect(url_for('.user_information', user_id=user_id))
     else:
-        flash('There\'s no way to reverse this! Are you sure you want to archive this user?', "archive")
+        flash(_("There's no way to reverse this! Are you sure you want to archive this user?"), "archive")
         return user_information(user_id)
