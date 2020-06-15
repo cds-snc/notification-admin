@@ -69,12 +69,6 @@ def add_service():
 
         return redirect(url_for('main.service_dashboard', service_id=service_id))
 
-        # example_email_template = _create_example_template(service_id)
-        # return redirect(url_for(
-        #     'main.start_tour',
-        #     service_id=service_id,
-        #     template_id=example_email_template['data']['id']
-        # ))
     else:
         return render_template(
             'views/add-service.html',
