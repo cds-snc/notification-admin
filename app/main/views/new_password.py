@@ -10,7 +10,6 @@ from flask import (
     url_for,
 )
 from flask_babel import _
-
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import check_token
 
