@@ -66,16 +66,15 @@ def add_service():
         )
         if error:
             return render_template('views/add-service.html', form=form, heading=heading)
-        if len(service_api_client.get_active_services({'user_id': session['user_id']}).get('data', [])) > 1:
-            return redirect(url_for('main.service_dashboard', service_id=service_id))
 
-        example_email_template = _create_example_template(service_id)
+        return redirect(url_for('main.service_dashboard', service_id=service_id))
 
-        return redirect(url_for(
-            'main.start_tour',
-            service_id=service_id,
-            template_id=example_email_template['data']['id']
-        ))
+        # example_email_template = _create_example_template(service_id)
+        # return redirect(url_for(
+        #     'main.start_tour',
+        #     service_id=service_id,
+        #     template_id=example_email_template['data']['id']
+        # ))
     else:
         return render_template(
             'views/add-service.html',
