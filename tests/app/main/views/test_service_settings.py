@@ -209,7 +209,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'email_auth'], [
 
         'Service name service one Change',
-        'Login method Email link or text message code Change',
+        'Login method Email code or text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -4023,7 +4023,7 @@ def test_contact_link_is_not_displayed_without_the_upload_document_permission(
         'main.service_set_auth_type',
         ['email_auth'],
         (
-            'Email link or text message code'
+            'Email code or text message code'
         )
     ),
 ])

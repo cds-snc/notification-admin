@@ -47,13 +47,6 @@ def check_and_resend_verification_code():
 @main.route('/email-not-received', methods=['GET', 'POST'])
 @redirect_to_sign_in
 def email_not_received():
-    # user = User.from_email_address(session['user_details']['email'])
-
-    """
-    if user.state == 'active':
-        # this is a verified user and therefore redirect to page to request resend without edit mobile
-        return render_template('views/verification-not-received.html')
-    """
 
     return render_template('views/email-not-received.html')
 

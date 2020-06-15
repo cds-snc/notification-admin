@@ -453,7 +453,7 @@ class PermissionsForm(PermissionsAbstract):
         _l('Log in using'),
         choices=[
             ('sms_auth', _l('Text message code')),
-            ('email_auth', _l('Email link')),
+            ('email_auth', _l('Email code')),
         ],
         validators=[DataRequired()]
     )
