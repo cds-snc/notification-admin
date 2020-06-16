@@ -1118,6 +1118,8 @@
 "templates",""
 "That verification link has expired.",""
 "Are you sure you want to hide personalisation after sending?",""
+"Are you sure you want to block this user?",""
+"Are you sure you want to unblock this user?",""
 "There's no way to reverse this! Are you sure you want to archive this user?",""
 "You won’t be able to see personalised content in <i>Notify</i> for this template",""
 "You cannot undo this",""

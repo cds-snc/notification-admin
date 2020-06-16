@@ -41,7 +41,7 @@ def block_user(user_id):
         user.update(blocked=True, updated_by=current_user.id)
         return redirect(url_for('.user_information', user_id=user_id))
     else:
-        flash(['Are you sure you want to block this user?'], 'block')
+        flash([_('Are you sure you want to block this user?')], 'block')
         return user_information(user_id)
 
 
@@ -53,7 +53,7 @@ def unblock_user(user_id):
         user.update(blocked=False, updated_by=current_user.id)
         return redirect(url_for('.user_information', user_id=user_id))
     else:
-        flash(['Are you sure you want to unblock this user?'], 'unblock')
+        flash([_('Are you sure you want to unblock this user?')], 'unblock')
         return user_information(user_id)
 
 
