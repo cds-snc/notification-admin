@@ -111,11 +111,11 @@ def test_show_agreement_page(
 @pytest.mark.parametrize('crown, expected_status, expected_file_fetched, expected_file_served', (
     (
         True, 200, 'crown.pdf',
-        'GC Notify data sharing and financial agreement.pdf',
+        'Data sharing and financial agreement.pdf',
     ),
     (
         False, 200, 'non-crown.pdf',
-        'GC Notify data sharing and financial agreement (non-crown).pdf',
+        'Data sharing and financial agreement (non-crown).pdf',
     ),
     (
         None, 404, None,
