@@ -7,7 +7,7 @@ from app.s3_client.s3_logo_client import get_s3_object
 def get_mou(organisation_is_crown):
     bucket = current_app.config['MOU_BUCKET_NAME']
     filename = 'crown.pdf' if organisation_is_crown else 'non-crown.pdf'
-    attachment_filename = 'GC Notify data sharing and financial agreement{}.pdf'.format(
+    attachment_filename = 'Data sharing and financial agreement{}.pdf'.format(
         '' if organisation_is_crown else ' (non-crown)'
     )
     try:
