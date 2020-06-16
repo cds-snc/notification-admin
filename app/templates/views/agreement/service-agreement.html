@@ -2,7 +2,7 @@
 {% from "components/page-header.html" import page_header %}
 
 {% block service_page_title %}
-{{ _('GC Notify</i> data sharing and financial agreement') }} 
+{{ _('GC Notify data sharing and financial agreement') }} 
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -16,7 +16,7 @@
     )}}
 
     <p>
-      {{ _('To use GC Notify, your organisation') }} ({{ current_service.organisation.name }}) {{ _('must accept the data sharing and financial agreement.') }}
+      {{ _('To use GC Notify, your organisation') }} ({{ current_service.organisation.name }}) {{ _('must accept the GC Notify data sharing and financial agreement.') }}
     </p>
     <p>
       {{ _('This must be done by, or on behalf of, someone with the authority to sign contracts for') }} {{ current_service.organisation.name }}.
@@ -25,7 +25,7 @@
       {{ _('Once accepted, the agreement covers all GC Notify services from') }} {{ current_service.organisation.name }}.
     </p>
     <p>
-      <a href="{{ url_for('main.service_download_agreement', service_id=current_service.id) }}">{{ _('Download a copy of the data sharing and financial agreement') }}</a>.
+      <a href="{{ url_for('main.service_download_agreement', service_id=current_service.id) }}">{{ _('Download a copy of the GC Notify data sharing and financial agreement') }}</a>.
     </p>
     <p>
       {{ _('The agreement is confidential and should not be shared outside your organisation.') }}
