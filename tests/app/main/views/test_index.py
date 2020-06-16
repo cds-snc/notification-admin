@@ -27,7 +27,7 @@ def test_non_logged_in_user_can_see_homepage(
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
     assert page.h1.text.strip() == (
-        'GC Notify'
+        'Notify'
     )
 
     assert page.select_one('meta[name=description]')['content'].strip() == (
