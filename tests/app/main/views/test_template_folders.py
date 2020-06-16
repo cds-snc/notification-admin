@@ -48,7 +48,7 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
     ),
     [
         (
-            'Templates – service one - Notification',
+            'Templates – service one – Notification',
             'Templates',
             [],
             {},
@@ -96,7 +96,7 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            'Templates – service one - Notification',
+            'Templates – service one – Notification',
             'Templates',
             [],
             {'template_type': 'sms'},
