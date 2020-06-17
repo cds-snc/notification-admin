@@ -550,6 +550,9 @@ def test_get_manage_folder_viewing_permissions_for_users_not_visible_for_service
         template_folder_id=folder_id,
         _test_page_title=False,
     )
+
+# SJA
+
     assert normalize_spaces(page.select_one('title').text) == (
         'folder_two – Templates – service one – Notify'
     )
