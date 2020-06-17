@@ -50,6 +50,13 @@ with open('{}/email_domains.txt'.format(
 )) as email_domains:
     GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains]
 
+# --- Delete after penetration testing ---
+is_dev = os.environ.get('NOTIFY_ENVIRONMENT', None) == 'development'
+is_heroku = 'staging' in os.environ.get('API_HOST_NAME', '')
+is_staging = 'staging' in os.environ.get('ADMIN_BASE_URL', '')
+if is_dev or is_heroku or is_staging:
+    GOVERNMENT_EMAIL_DOMAIN_NAMES.extend(['gmail.com', 'strivesec.com'])
+# --- Delete after penetration testing ---
 
 user_is_logged_in = login_required
 

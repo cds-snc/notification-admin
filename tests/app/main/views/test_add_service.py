@@ -203,7 +203,6 @@ def test_should_add_service_and_redirect_to_dashboard_when_existing_service(
     client_request,
     mock_create_service,
     mock_create_service_template,
-    mock_get_services,
     mock_get_organisation_by_domain,
     api_user_active,
     organisation_type,
@@ -224,7 +223,6 @@ def test_should_add_service_and_redirect_to_dashboard_when_existing_service(
             _external=True,
         )
     )
-    assert mock_get_services.called
     mock_create_service.assert_called_once_with(
         service_name='testing the post',
         organisation_type=organisation_type,

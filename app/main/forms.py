@@ -166,7 +166,7 @@ def password(label=_l('Password')):
                                      Blacklist(message=_l('Choose a password that’s harder to guess'))])
 
 
-class SMSCode(StringField):
+class TwoFactorCode(StringField):
     validators = [
         DataRequired(message=_l('This cannot be empty')),
         Regexp(regex=r'^\d+$', message=_l('Numbers only')),
@@ -453,7 +453,7 @@ class PermissionsForm(PermissionsAbstract):
         _l('Sign in using'),
         choices=[
             ('sms_auth', _l('Text message code')),
-            ('email_auth', _l('Email link')),
+            ('email_auth', _l('Email code')),
         ],
         validators=[DataRequired()]
     )
@@ -511,17 +511,16 @@ class TwoFactorForm(StripWhitespaceForm):
         self.validate_code_func = validate_code_func
         super(TwoFactorForm, self).__init__(*args, **kwargs)
 
-    sms_code = SMSCode(_l('Please enter security code'))
+    two_factor_code = TwoFactorCode(_l('Please enter the security code.'))
 
     def validate(self):
-
-        if not self.sms_code.validate(self):
+        if not self.two_factor_code.validate(self):
             return False
 
-        is_valid, reason = self.validate_code_func(self.sms_code.data)
+        is_valid, reason = self.validate_code_func(self.two_factor_code.data)
 
         if not is_valid:
-            self.sms_code.errors.append(reason)
+            self.two_factor_code.errors.append(_l(reason))
             return False
 
         return True
