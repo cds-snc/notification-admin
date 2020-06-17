@@ -33,17 +33,6 @@ def _create_service(service_name, organisation_type, email_from, form):
             raise e
 
 
-def _create_example_template(service_id):
-    example_email_template = service_api_client.create_service_template(
-        'Example email template',
-        'email',
-        'Hey ((name)), I’m trying out Notify. Today is ((day of week)) and my favourite colour is ((colour)).',
-        service_id,
-        subject='Example email template'
-    )
-    return example_email_template
-
-
 @main.route("/add-service", methods=['GET', 'POST'])
 @user_is_logged_in
 @user_is_gov_user
