@@ -41,12 +41,13 @@ def check_and_resend_verification_code():
     if user.state == 'pending':
         return redirect(url_for('main.verify'))
     else:
-        return redirect(url_for('main.two_factor'))
+        return redirect(url_for('main.two_factor_sms_sent'))
 
 
 @main.route('/email-not-received', methods=['GET'])
 @redirect_to_sign_in
 def email_not_received():
+
     return render_template('views/email-not-received.html')
 
 
@@ -54,5 +55,4 @@ def email_not_received():
 @redirect_to_sign_in
 def resend_email_link():
     user_api_client.send_verify_code(session['user_details']['id'], 'email', None)
-    session.pop('user_details')
     return redirect(url_for('main.two_factor_email_sent', email_resent=True))

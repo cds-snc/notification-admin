@@ -222,7 +222,7 @@ def test_should_redirect_after_mobile_number_confirm(
 
     client_request.post(
         'main.user_profile_mobile_number_confirm',
-        _data={'sms_code': '12345'},
+        _data={'two_factor_code': '12345'},
         _expected_status=302,
         _expected_redirect=url_for(
             'main.user_profile',
