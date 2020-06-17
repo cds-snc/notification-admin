@@ -243,11 +243,11 @@ def test_letter_template_preview_headers(
 
 
 @pytest.mark.parametrize('query_key, query_value, heading', [
-    ('lang', 'en', 'GC Notify'),  # 'Notify' = english heading
-    ('lang', 'fr', 'GC Notification'),  # 'Notification' = french heading
-    ('lang', 'sa?SDFa?DFa,/', 'GC Notify'),
-    ('xyz', 'xyz', 'GC Notify'),
-    ('sa?SDFa?DFa,/', 'sa?SDFa?DFa,/', 'GC Notify')
+    ('lang', 'en', 'Notify'),  # 'Notify' = english heading
+    ('lang', 'fr', 'Notification'),  # 'Notification' = french heading
+    ('lang', 'sa?SDFa?DFa,/', 'Notify'),
+    ('xyz', 'xyz', 'Notify'),
+    ('sa?SDFa?DFa,/', 'sa?SDFa?DFa,/', 'Notify')
 ])
 def test_query_params(
     mocker,
