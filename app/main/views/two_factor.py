@@ -1,17 +1,6 @@
-import json
-
-from flask import (
-    current_app,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import redirect, render_template, request, session, url_for
 from flask_babel import _
 from flask_login import current_user
-from itsdangerous import SignatureExpired
-from notifications_utils.url_safe_token import check_token
 from user_agents import parse
 
 from app import user_api_client
@@ -21,43 +10,39 @@ from app.models.user import User
 from app.utils import redirect_to_sign_in
 
 
-@main.route('/two-factor-email-sent', methods=['GET'])
+@main.route('/two-factor-email-sent', methods=['GET', 'POST'])
+@redirect_to_sign_in
 def two_factor_email_sent():
-    title = _('Email resent') if request.args.get('email_resent') else _('Check your email')
-    return render_template(
-        'views/two-factor-email.html',
-        title=title
-    )
-
-
-@main.route('/email-auth/<token>', methods=['GET'])
-def two_factor_email(token):
     if current_user.is_authenticated:
         return redirect_when_logged_in(user=current_user, platform_admin=current_user.platform_admin)
 
-    # checks url is valid, and hasn't timed out
-    try:
-        token_data = json.loads(check_token(
-            token,
-            current_app.config['SECRET_KEY'],
-            current_app.config['DANGEROUS_SALT'],
-            current_app.config['EMAIL_2FA_EXPIRY_SECONDS']
-        ))
-    except SignatureExpired:
-        return render_template('views/email-link-invalid.html')
+    user_id = session['user_details']['id']
 
-    user_id = token_data['user_id']
-    # checks if code was already used
-    logged_in, msg = user_api_client.check_verify_code(user_id, token_data['secret_code'], "email")
+    # Check if a FIDO2 key exists, if yes, return template
+    user = User.from_id(user_id)
 
-    if not logged_in:
-        return render_template('views/email-link-invalid.html')
-    return log_in_user(user_id)
+    if len(user.security_keys):
+        return render_template('views/two-factor-fido.html')
+
+    def _check_code(code):
+        return user_api_client.check_verify_code(user_id, code, "email")
+
+    form = TwoFactorForm(_check_code)
+
+    if form.validate_on_submit():
+        return log_in_user(user_id)
+
+    title = _('Email resent') if request.args.get('email_resent') else _('Check your email')
+    return render_template(
+        'views/two-factor-email.html',
+        title=title,
+        form=form
+    )
 
 
-@main.route('/two-factor', methods=['GET', 'POST'])
+@main.route('/two-factor-sms-sent', methods=['GET', 'POST'])
 @redirect_to_sign_in
-def two_factor():
+def two_factor_sms_sent():
     if current_user.is_authenticated:
         return redirect_when_logged_in(user=current_user, platform_admin=current_user.platform_admin)
 
@@ -77,7 +62,7 @@ def two_factor():
     if form.validate_on_submit():
         return log_in_user(user_id)
 
-    return render_template('views/two-factor.html', form=form)
+    return render_template('views/two-factor-sms.html', form=form)
 
 
 # see http://flask.pocoo.org/snippets/62/

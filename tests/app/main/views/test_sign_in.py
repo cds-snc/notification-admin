@@ -114,7 +114,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
             'email_address': email_address,
             'password': password})
     assert response.status_code == 302
-    assert response.location == url_for('.two_factor', _external=True)
+    assert response.location == url_for('.two_factor_sms_sent', _external=True)
     mock_get_security_keys.assert_called_with(api_user_active['id'])
     mock_verify_password.assert_called_with(
         api_user_active['id'],

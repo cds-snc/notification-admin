@@ -50,7 +50,7 @@ def test_should_redirect_to_two_factor_when_password_reset_is_successful(
     response = client.post(url_for_endpoint_with_token('.new_password', token=token),
                            data={'new_password': 'a-new_password'})
     assert response.status_code == 302
-    assert response.location == url_for('.two_factor', _external=True)
+    assert response.location == url_for('.two_factor_sms_sent', _external=True)
     mock_get_user_by_email_request_password_reset.assert_called_once_with(user['email_address'])
 
 

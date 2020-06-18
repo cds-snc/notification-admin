@@ -26,7 +26,7 @@ def test_should_return_verify_template(
     assert message == "We’ve sent you a text message with a security code."
 
 
-def test_should_redirect_to_add_service_when_sms_code_is_correct(
+def test_should_redirect_to_add_service_when_two_factor_code_is_correct(
     client,
     api_user_active,
     mocker,
@@ -44,7 +44,7 @@ def test_should_redirect_to_add_service_when_sms_code_is_correct(
         session.pop('current_session_id', None)
 
     response = client.post(url_for('main.verify'),
-                           data={'sms_code': '12345'})
+                           data={'two_factor_code': '12345'})
     assert response.status_code == 302
     assert response.location == url_for('main.add_service', first='first', _external=True)
 
@@ -71,11 +71,11 @@ def test_should_activate_user_after_verify(
             'id': api_user_pending['id']
         }
     client.post(url_for('main.verify'),
-                data={'sms_code': '12345'})
+                data={'two_factor_code': '12345'})
     assert mock_activate_user.called
 
 
-def test_should_return_200_when_sms_code_is_wrong(
+def test_should_return_200_when_two_factor_code_is_wrong(
     client_request,
     api_user_active,
     mock_check_verify_code_code_not_found,
@@ -88,7 +88,7 @@ def test_should_return_200_when_sms_code_is_wrong(
 
     page = client_request.post(
         'main.verify',
-        _data={'sms_code': '12345'},
+        _data={'two_factor_code': '12345'},
         _expected_status=200,
     )
 
