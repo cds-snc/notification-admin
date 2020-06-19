@@ -12,7 +12,7 @@
 {% block maincolumn_content %}
   {% if delete %}
     {{ banner(
-      'Are you sure you want to remove {}?'.format(user.name),
+      '{} {}?'.format(_('Are you sure you want to remove'), user.name),
       type='dangerous',
       delete_button='Yes, remove',
       action=url_for('.remove_user_from_service', service_id=current_service.id, user_id=user.id)

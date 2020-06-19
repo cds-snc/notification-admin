@@ -642,10 +642,13 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
         ))
         error_code = error.status_code
         if error_code == 400:
+            # all incoming 400 errors from the API are wrapped for translation
+            # Need to make sure all of them have translations in the csv files
             if isinstance(error.message, str):
-                msg = [error.message]
+                msg = [_(error.message)]
             else:
-                msg = list(itertools.chain(*[error.message[x] for x in error.message.keys()]))
+                msg = list(itertools.chain(_(error.message[x]) for x in error.message.keys()))
+
             resp = make_response(render_template("error/400.html", message=msg))
             return useful_headers_after_request(resp)
         elif error_code not in [401, 404, 403, 410]:
