@@ -84,7 +84,7 @@ set description = _('Notify lets you send emails and text messages to your users
           </div>
         </div>
         <!-- start sub nav -->
-        <nav aria-label="Language & Login" class="flex pt-4 mb-10 lg:mb-0">
+        <nav aria-label="{{ _('language and login') }}" class="flex pt-4 mb-10 lg:mb-0">
           <a
             class="line-under leading-none inline-block text-blue text-small underline hover:no-underline"
             href="{{ url_for('main.set_lang')}}?from={{request.path}}"
