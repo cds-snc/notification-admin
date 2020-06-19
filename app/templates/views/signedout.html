@@ -33,6 +33,17 @@ set description = _('GC Notify lets you send emails and text messages to your us
   href="{{ asset_path }}stylesheets/notification-template.css?0.24.2"
 />
 
+{% block page_title %} {{ _('Notify') }} {% endblock %} {% block main_content %}
+<div id="skiplink-container">
+  <div>
+    <a
+      href="#content"
+      class="skiplink"
+      >{{ skip_link_message|default('Skip to main content') }}</a
+    >
+  </div>
+</div>
+
 {% block page_title %} {{ _('GC Notify') }} {% endblock %} {% block main_content %}
 <!-- CONTENT -->
 <div>
@@ -158,6 +169,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
     <!-- end main nav -->
   </header>
   <!-- end header -->
+  <div id="content">
   <!-- start section 1 -->
   <div class="bg-blue" role="main">
     <div class="container px-10 py-24">
@@ -652,7 +664,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
       <!-- -->
     </div>
   </div>
-
+  </div>
   <!-- start section 9 -->
   <div class="bg-blue" role="navigation" aria-label="Footer">
     <div class="container px-10 py-24">
