@@ -732,7 +732,10 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
         # We want the Flask in browser stacktrace
         if current_app.config.get('DEBUG', None):
             raise error
-        return _error_response(500)
+        if "Detected newline in header value" in str(error):
+            return _error_response(400)
+        else:
+            return _error_response(500)
 
 
 def setup_event_handlers():
