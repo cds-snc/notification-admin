@@ -1,16 +1,15 @@
 import csv
-import os
-import subprocess
 import sys
 from pprint import pprint
 
 extra_keys_in_app = {
     'Empty',  # template_list.py
-    '1 template', # template_list.py
-    'Not a valid international number', # coming from a validation liberary
-    'bad invitation link',  # coming from api
-    'invitation expired'  # coming from api
+    '1 template',  # template_list.py
+    'Not a valid international number',  # a validation liberary
+    'bad invitation link',  # api
+    'invitation expired'  # api
 }
+
 
 def csv_to_dict(filename):
     d = {}
