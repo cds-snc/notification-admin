@@ -134,7 +134,7 @@ def remove_user_from_organisation(org_id, user_id):
         except HTTPError as e:
             msg = "You cannot remove the only user for a service"
             if e.status_code == 400 and msg in e.message:
-                flash(msg, 'info')
+                flash(_(msg), 'info')
                 return redirect(url_for(
                     '.manage_org_users',
                     org_id=org_id))

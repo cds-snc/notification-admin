@@ -19,3 +19,12 @@ def features_nav():
             ]
         }
     ]
+
+
+def pricing_nav():
+    return [
+        {
+            "name": "Pricing",
+            "link": "main.pricing",
+        },
+    ]

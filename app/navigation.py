@@ -61,6 +61,9 @@ class HeaderNavigation(Navigation):
             'trial_mode_new',
             'using_notify',
         },
+        'pricing': {
+            'pricing',
+        },
         'documentation': {
             'documentation',
             'integration_testing',
