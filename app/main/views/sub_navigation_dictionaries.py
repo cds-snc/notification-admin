@@ -19,16 +19,3 @@ def features_nav():
             ]
         }
     ]
-
-
-def pricing_nav():
-    return [
-        {
-            "name": "Pricing",
-            "link": "main.pricing",
-        },
-        {
-            "name": "How to pay",
-            "link": "main.how_to_pay",
-        },
-    ]
