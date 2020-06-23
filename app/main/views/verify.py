@@ -36,7 +36,7 @@ def verify():
         finally:
             session.pop('user_details', None)
 
-    return render_template('views/two-factor.html', form=form)
+    return render_template('views/two-factor-sms.html', form=form)
 
 
 @main.route('/verify-email/<token>')
@@ -49,7 +49,7 @@ def verify_email(token):
             current_app.config['EMAIL_EXPIRY_SECONDS']
         )
     except SignatureExpired:
-        flash(_("The link in the email we sent you has expired. We’ve sent you a new one."))
+        flash(_("The security code in the email we sent you has expired. We've sent you a new one."))
         return redirect(url_for('main.resend_email_verification'))
 
     # token contains json blob of format: {'user_id': '...', 'secret_code': '...'} (secret_code is unused)

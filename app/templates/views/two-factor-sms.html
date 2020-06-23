@@ -18,7 +18,7 @@
     <p>{{ _('We’ve sent you a text message with a security code.') }}</p>
     {% call form_wrapper(class="extra-tracking") %}
       {{ textbox(
-        form.sms_code,
+        form.two_factor_code,
         width='5em',
         autofocus=True
       ) }}

@@ -34,6 +34,15 @@ set description = _('Notify lets you send emails and text messages to your users
 />
 
 {% block page_title %} {{ _('Notify') }} {% endblock %} {% block main_content %}
+<div id="skiplink-container">
+  <div>
+    <a
+      href="#content"
+      class="skiplink"
+      >{{ skip_link_message|default('Skip to main content') }}</a
+    >
+  </div>
+</div>
 <!-- CONTENT -->
 <div>
   <!-- start header -->
@@ -75,7 +84,7 @@ set description = _('Notify lets you send emails and text messages to your users
           </div>
         </div>
         <!-- start sub nav -->
-        <nav aria-label="Language & Login" class="flex pt-4 mb-10 lg:mb-0">
+        <nav aria-label="{{ _('language and login') }}" class="flex pt-4 mb-10 lg:mb-0">
           <a
             class="line-under leading-none inline-block text-blue text-small underline hover:no-underline"
             href="{{ url_for('main.set_lang')}}?from={{request.path}}"
@@ -158,6 +167,7 @@ set description = _('Notify lets you send emails and text messages to your users
     <!-- end main nav -->
   </header>
   <!-- end header -->
+  <div id="content">
   <!-- start section 1 -->
   <div class="bg-blue" role="main">
     <div class="container px-10 py-24">
@@ -276,7 +286,7 @@ set description = _('Notify lets you send emails and text messages to your users
          {% endif %}
          </div>
           <ul class="list-disc ml-5">
-            <li class="pt-10 lg:pt-0 flex">
+            <li class="pt-4">
               {{ _("Staff who regularly write and send service updates wishing to upgrade the tools used to communicate with the public") }}
             </li>
             <li class="pt-4">
@@ -544,14 +554,6 @@ set description = _('Notify lets you send emails and text messages to your users
                 {{ _("<i>Notify</i> is a service managed by the Canadian Digital Service — no external procurement." )}}
               </li>
             </ul>
-
-            <div class="pt-10">
-              <a
-                class="line-under text-blue text-base underline hover:no-underline"
-                href="{{ url_for('main.pricing') }}"
-                >{{ _("Learn more about pricing") }}</a
-              >
-            </div>
           </div>
         </div>
       </div>
@@ -651,7 +653,7 @@ set description = _('Notify lets you send emails and text messages to your users
       <!-- -->
     </div>
   </div>
-
+  </div>
   <!-- start section 9 -->
   <div class="bg-blue" role="navigation" aria-label="Footer">
     <div class="container px-10 py-24">

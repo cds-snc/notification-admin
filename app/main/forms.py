@@ -166,7 +166,7 @@ def password(label=_l('Password')):
                                      Blacklist(message=_l('Choose a password that’s harder to guess'))])
 
 
-class SMSCode(StringField):
+class TwoFactorCode(StringField):
     validators = [
         DataRequired(message=_l('This cannot be empty')),
         Regexp(regex=r'^\d+$', message=_l('Numbers only')),
@@ -453,7 +453,7 @@ class PermissionsForm(PermissionsAbstract):
         _l('Log in using'),
         choices=[
             ('sms_auth', _l('Text message code')),
-            ('email_auth', _l('Email link')),
+            ('email_auth', _l('Email code')),
         ],
         validators=[DataRequired()]
     )
@@ -511,17 +511,16 @@ class TwoFactorForm(StripWhitespaceForm):
         self.validate_code_func = validate_code_func
         super(TwoFactorForm, self).__init__(*args, **kwargs)
 
-    sms_code = SMSCode(_l('Please enter security code'))
+    two_factor_code = TwoFactorCode(_l('Please enter the security code.'))
 
     def validate(self):
-
-        if not self.sms_code.validate(self):
+        if not self.two_factor_code.validate(self):
             return False
 
-        is_valid, reason = self.validate_code_func(self.sms_code.data)
+        is_valid, reason = self.validate_code_func(self.two_factor_code.data)
 
         if not is_valid:
-            self.sms_code.errors.append(reason)
+            self.two_factor_code.errors.append(_l(reason))
             return False
 
         return True
@@ -1080,8 +1079,8 @@ class SetEmailBranding(StripWhitespaceForm):
         ]
     )
 
-    DEFAULT_EN = (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, 'English Federal Identity Program (FIP)')
-    DEFAULT_FR = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, 'French Federal Identity Program (FIP)')
+    DEFAULT_EN = (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, 'English Government of Canada signature')
+    DEFAULT_FR = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, 'French Government of Canada signature')
 
     def __init__(self, all_branding_options, current_branding):
 
@@ -1121,8 +1120,8 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
     brand_type = RadioField(
         "Brand type",
         choices=[
-            ('both_english', 'English Federal Identity Program (FIP) branding and custom logo'),
-            ('both_french', 'French Federal Identity Program (FIP) branding and custom logo'),
+            ('both_english', 'English Government of Canada signature and custom logo'),
+            ('both_french', 'French Government of Canada signature and custom logo'),
             ('custom_logo', 'Custom Logo'),
             ('custom_logo_with_background_colour', 'Custom Logo on a background colour'),
             ('no_branding', 'No branding'),
@@ -1400,10 +1399,10 @@ class LinkOrganisationsForm(StripWhitespaceForm):
 
 
 branding_options = (
-    ('fip_english', 'Federal Identity Program (FIP) English only'),
-    ('fip_french', 'Federal Identity Program (FIP) French only'),
-    ('both_english', 'English Federal Identity Program (FIP) and logo'),
-    ('both_french', 'French Federal Identity Program (FIP) and logo'),
+    ('fip_english', 'English Government of Canada signature'),
+    ('fip_french', 'French Government of Canada signature'),
+    ('both_english', 'English Government of Canada signature and custom logo'),
+    ('both_french', 'French Government of Canada signature and custom logo'),
     ('custom_logo', 'Your logo'),
     ('custom_logo_with_background_colour', 'Your logo on a colour'),
 )

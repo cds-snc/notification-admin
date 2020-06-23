@@ -40,7 +40,7 @@
         {% call row() %}
           {% set txt = _('Login method') %}
           {{ text_field(txt) }}
-          {% set txt = _('Email link or text message code') %}
+          {% set txt = _('Email code or text message code') %}
           {% set else_txt = _('Text message code') %}
           {{ text_field(
             txt
@@ -124,7 +124,7 @@
           {% set txt = _('Email branding') %}
           {{ text_field(txt) }}
           {% set txt = _('Your branding<br> ({})') %}
-          {{ text_field(txt.format(current_service.email_branding_name)|safe if current_service.email_branding else current_service.email_branding_name) }}
+          {{ text_field(txt.format(current_service.email_branding_name)|safe if current_service.email_branding else _(current_service.email_branding_name)) }}
           {{ edit_field(
             change_txt,
             url_for('.branding_request', service_id=current_service.id),
@@ -330,7 +330,7 @@
           {% call row() %}
             {% set txt = _('Email branding') %}
             {{ text_field(txt)}}
-            {{ text_field(current_service.email_branding_name) }}
+            {{ text_field(_(current_service.email_branding_name)) }}
             {{ edit_field(change_txt, url_for('.service_set_email_branding', service_id=current_service.id)) }}
           {% endcall %}
           {% call row() %}

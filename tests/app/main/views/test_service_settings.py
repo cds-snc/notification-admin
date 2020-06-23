@@ -66,7 +66,7 @@ def mock_get_service_settings_page_common(
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
-        'Email branding English Federal Identity Program (FIP) Change',
+        'Email branding English Government of Canada signature Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -85,7 +85,7 @@ def mock_get_service_settings_page_common(
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
-        'Email branding English Federal Identity Program (FIP) Change',
+        'Email branding English Government of Canada signature Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -100,7 +100,7 @@ def mock_get_service_settings_page_common(
         'Organisation Test Organisation Central government Change',
         'Daily message limit 1,000 Change',
         'Free text message allowance 250,000 Change',
-        'Email branding English Federal Identity Program (FIP) Change',
+        'Email branding English Government of Canada signature Change',
         'Letter branding Not set Change',
         'Data retention email Change',
         'Receive inbound SMS Off Change',
@@ -209,7 +209,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'email_auth'], [
 
         'Service name service one Change',
-        'Login method Email link or text message code Change',
+        'Login method Email code or text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -3056,13 +3056,13 @@ def test_service_preview_letter_branding_saves(
     ('__FIP-EN__', [
         '__FIP-EN__', '__FIP-FR__', '1', '2', '3', '4', '5',
     ], [
-        'English Federal Identity Program (FIP)', 'French Federal Identity Program (FIP)',
+        'English Government of Canada signature', 'French Government of Canada signature',
         'org 1', 'org 2', 'org 3', 'org 4', 'org 5'
     ]),
     ('5', [
         '5', '__FIP-EN__', '__FIP-FR__', '1', '2', '3', '4',
     ], [
-        'org 5', 'English Federal Identity Program (FIP)', 'French Federal Identity Program (FIP)',
+        'org 5', 'English Government of Canada signature', 'French Government of Canada signature',
         'org 1', 'org 2', 'org 3', 'org 4',
     ]),
 ])
@@ -4023,7 +4023,7 @@ def test_contact_link_is_not_displayed_without_the_upload_document_permission(
         'main.service_set_auth_type',
         ['email_auth'],
         (
-            'Email link or text message code'
+            'Email code or text message code'
         )
     ),
 ])
