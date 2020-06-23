@@ -15,7 +15,7 @@ def search_single_file(filename):
             for keyword in keywords:
                 # lower case everything to make matches easier to find
                 if keyword in row['source'].lower() or keyword in row['target'].lower():
-                    # append the translated string
+                    # append the translated string if it exists
                     d.append({"keyword": keyword, "found_string": row['source'] if row['target'] == '' else row['target']})
                     continue
     return d
