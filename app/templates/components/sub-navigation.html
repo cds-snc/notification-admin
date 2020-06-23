@@ -13,7 +13,7 @@
 {% macro sub_navigation(
   item_set
 ) %}
-  <nav aria-label="sub-navigation" id="sub-navigation" class="sub-navigation">
+  <nav aria-label="{{ _('sub-navigation') }}" id="sub-navigation" class="sub-navigation">
     <ol itemscope itemtype="http://schema.org/ItemList">
       {% for item in item_set %}
         {{ sub_navigation_item(item) }}

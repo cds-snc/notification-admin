@@ -127,6 +127,7 @@ def test_process_email_auth_sign_in_return_2fa_template(
     api_user_active_email_auth,
     mock_send_verify_code,
     mock_verify_password,
+    mock_get_security_keys,
     mocker
 ):
     mocker.patch('app.user_api_client.get_user', return_value=api_user_active_email_auth)
@@ -232,6 +233,7 @@ def test_sign_in_security_center_notification_for_non_NA_signins(
     api_user_active_email_auth,
     mock_send_verify_code,
     mock_verify_password,
+    mock_get_security_keys,
     mocker
 ):
     mocker.patch('app.user_api_client.get_user', return_value=api_user_active_email_auth)

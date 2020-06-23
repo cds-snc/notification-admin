@@ -36,7 +36,7 @@
         })
         .then(function(response) {
           if (response.ok) {
-            window.location = "/two-factor-sms" + window.location.search;
+            window.location = "/two-factor-sms-sent" + window.location.search;
           } else {
             alert("Bad key");
           }

@@ -182,7 +182,7 @@
           </a>
           </div>
           <!-- start sub nav -->
-          <nav aria-label="Language & Login" class="flex pt-4 mb-10 lg:mb-0">
+          <nav aria-label="{{ _('language and login') }}" class="flex pt-4 mb-10 lg:mb-0">
             <a
               class="mr-10 line-under leading-none inline-block text-blue text-small underline hover:no-underline"
               href="{{ url_for('main.set_lang')}}?from={{request.path}}"
@@ -221,7 +221,7 @@
       </div>
 
       <!-- start main nav -->
-      <nav class="bg-gray py-5" aria-label="main navigation">
+      <nav class="bg-gray py-5" aria-label="{{ _('main navigation') }}">
         <div class="container px-10">
           <div class="lg:hidden">
             <a
@@ -311,7 +311,7 @@
     <div id="global-app-error" class="app-error hidden"></div>
 
     <!-- start section 9 -->
-    <footer aria-label="footer menu">
+    <footer aria-label="{{ _('footer menu') }}">
       <div class="bg-blue">
         <div class="container px-10 py-24">
           <nav class="flex aria-label="footer links">
