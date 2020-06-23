@@ -7,7 +7,8 @@ extra_keys_in_app = set([
     '1 template',  # template_list.py
     'Not a valid international number',  # a validation liberary
     'bad invitation link',  # api
-    'invitation expired'  # api
+    'invitation expired',  # api
+    'password',  # api
 ])
 
 
