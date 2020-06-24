@@ -272,7 +272,7 @@ def s3_send(service_id, template_id):
                 form.s3_files.data
             ))
         except (XLDateError):
-            flash((
+            flash(_(
                 '{} contains numbers or dates that GC Notify can’t understand. '
                 'Try formatting all columns as ‘text’ or export your file as CSV.'
             ).format(
