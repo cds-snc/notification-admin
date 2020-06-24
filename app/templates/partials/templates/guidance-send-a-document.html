@@ -1,12 +1,18 @@
 <h2 class="heading-medium">
-  {{ _('Send a document by email') }}
+  {{ _('Documents') }}
 </h2>
 <p>
-  {{ _('Use double brackets to add a placeholder field to your template. This will contain a secure link to download the document.') }}
+  {{ _('To add a link to a downloadable document, you will need to use the API to upload the document and use double brackets to link to it in the message. For example:') }}
 </p>
-<div class="panel panel-border-wide">
-  <p>
-    {{ _('Download your document at: ((link_to_document))') }}
-  </p>
+<div class="panel-container">
+  <div class="panel-input bottom-gutter">
+    <p>
+      {{ _('Download your document at:') }} ((<span class="placeholder-no-brackets">{{ _('link_to_document') }}</span>))
+    </p>
+  </div>
+  <div class="panel-preview panel-border-wide bottom-gutter">
+    <p>
+      {{ _('Download your document at:') }} <a href="">{{ _('Annual-report-2019.pdf') }}</a>
+    </p>
+  </div>
 </div>
-  {{ _('Next, use the API to upload your document.') }}

@@ -1,17 +1,31 @@
 <h2 class="heading-medium">
-  {{ _('Optional content') }}
+  {{ _('Conditional text') }}
 </h2>
-<p>{{ _('You can enter optional content in your template by uploading a spreadsheet with information about your users.') }}</p>
-
-<p>{{ _('For example, your spreadsheet may include the age of each user. You want users who are under 18 to receive optional content. Use double brackets and ‘??’ to include the optional content.') }}</p>
-
-<div class="panel panel-border-wide">
-  <p>
-    {{ _('((under18??Please get your application signed by a parent or guardian.))') }}
-  </p>
+<p>{{ _('To add optional conditional text, in double brakets, use two question marks after your condition variable and before the text that appears if the condition is met. For example:') }}</p>
+<div class="panel-container">
+  <div class="panel-input bottom-gutter">
+    <p>
+      {{ _('Hello') }},
+    </p>
+    <p>
+      {{ _('We’re happy to announce that you can now enroll in the program.') }}
+    </p>
+    <p>
+      ((<span class="placeholder-no-brackets">{{ _('under18')}}</span>??)){{_('Please get your application signed by a parent or guardian.')}}))
+    </p>
+  </div>
+  <div class="panel-preview panel-border-wide bottom-gutter">
+    <p>
+      {{ _('Hello') }},
+    </p>
+    <p>
+      {{ _('We’re happy to announce that you can now enroll in the program.') }}
+    </p>
+    <p>
+      {{ _('Please get your application signed by a parent or guardian.') }}
+    </p>
+  </div>
 </div>
 <p>
-    {{ _('For each recipient on your spreadsheet, you must indicate:') }}<br/>
-    {{ _('‘yes’ to show optional content') }}<br/>
-    {{ _('‘no’ to hide optional content') }}
+  {{ _('When you send your message, you’ll need to indicate ‘yes’ for whether a recipient meets the condition, to show the conditional text. You can do this manually or upload a list of contacts with a column that indicates the condition. ') }}
 </p>
