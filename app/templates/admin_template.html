@@ -69,8 +69,8 @@
   </div>
   -->
 {% endblock %}
-{% set notification_txt = _('Notification') %}
-{% set global_header_text = "<span id='product-name'>Notification</span>"|safe %}
+{% set notification_txt = _('GC Notify') %}
+{% set global_header_text = "<span id='product-name'>" + _('GC Notify') + "</span>"|safe %}
 {% set homepage_url = url_for('main.show_accounts_or_dashboard') %}
 
 {% block content %}
