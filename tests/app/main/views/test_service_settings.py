@@ -66,7 +66,7 @@ def mock_get_service_settings_page_common(
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
-        'Email branding English Federal Identity Program (FIP) Change',
+        'Email branding English Government of Canada signature Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -85,7 +85,7 @@ def mock_get_service_settings_page_common(
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
-        'Email branding English Federal Identity Program (FIP) Change',
+        'Email branding English Government of Canada signature Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -100,7 +100,7 @@ def mock_get_service_settings_page_common(
         'Organisation Test Organisation Central government Change',
         'Daily message limit 1,000 Change',
         'Free text message allowance 250,000 Change',
-        'Email branding English Federal Identity Program (FIP) Change',
+        'Email branding English Government of Canada signature Change',
         'Letter branding Not set Change',
         'Data retention email Change',
         'Receive inbound SMS Off Change',
@@ -3056,13 +3056,13 @@ def test_service_preview_letter_branding_saves(
     ('__FIP-EN__', [
         '__FIP-EN__', '__FIP-FR__', '1', '2', '3', '4', '5',
     ], [
-        'English Federal Identity Program (FIP)', 'French Federal Identity Program (FIP)',
+        'English Government of Canada signature', 'French Government of Canada signature',
         'org 1', 'org 2', 'org 3', 'org 4', 'org 5'
     ]),
     ('5', [
         '5', '__FIP-EN__', '__FIP-FR__', '1', '2', '3', '4',
     ], [
-        'org 5', 'English Federal Identity Program (FIP)', 'French Federal Identity Program (FIP)',
+        'org 5', 'English Government of Canada signature', 'French Government of Canada signature',
         'org 1', 'org 2', 'org 3', 'org 4',
     ]),
 ])
@@ -4313,10 +4313,10 @@ def test_show_email_branding_request_page_when_email_branding_is_set(
 
 
 @pytest.mark.parametrize('choice, requested_branding', (
-    ('fip_english', 'Federal Identity Program (FIP) English first'),
-    ('fip_french', 'Federal Identity Program (FIP) French first'),
-    ('both_english', 'Federal Identity Program (FIP) English and your logo'),
-    ('both_french', 'Federal Identity Program (FIP) French and your logo'),
+    ('fip_english', 'Government of Canada signature English first'),
+    ('fip_french', 'Government of Canada signature French first'),
+    ('both_english', 'Government of Canada signature English and your logo'),
+    ('both_french', 'Government of Canada signature French and your logo'),
     ('custom_logo', 'Your logo'),
     ('custom_logo_with_background_colour', 'Your logo on a colour'),
     pytest.param('foo', 'Nope', marks=pytest.mark.xfail(raises=AssertionError)),

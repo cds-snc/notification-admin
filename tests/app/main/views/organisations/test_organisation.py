@@ -259,7 +259,7 @@ def test_organisation_settings_for_platform_admin(
         'Crown organisation Yes Change',
         'GC Notify data sharing and financial agreement Not signed Change',
         'Request to go live notes None Change',
-        'Default email branding English Federal Identity Program (FIP) Change',
+        'Default email branding English Government of Canada signature Change',
         'Default letter branding No branding Change'
     ]
 
