@@ -165,9 +165,9 @@ def cancel_invited_org_user(org_id, invited_user_id):
 @user_is_platform_admin
 def organisation_settings(org_id):
 
-    email_branding = ('French Federal Identity Program (FIP)' if
+    email_branding = ('French Government of Canada signature' if
                       current_organisation.default_branding_is_french is True
-                      else 'English Federal Identity Program (FIP)')
+                      else 'English Government of Canada signature')
 
     if current_organisation.email_branding_id:
         email_branding = email_branding_client.get_email_branding(
