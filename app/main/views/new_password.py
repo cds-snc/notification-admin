@@ -25,7 +25,7 @@ def new_password(token):
         token_data = check_token(token, current_app.config['SECRET_KEY'], current_app.config['DANGEROUS_SALT'],
                                  current_app.config['EMAIL_EXPIRY_SECONDS'])
     except SignatureExpired:
-        flash(_('The security code in the email we sent you has expired. Enter your email address to resend.'))
+        flash(_('The security code in the email we sent you has expired. Enter your email address to re-send.'))
         return redirect(url_for('.forgot_password'))
 
     email_address = json.loads(token_data)['email']
