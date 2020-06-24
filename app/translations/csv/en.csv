@@ -734,7 +734,7 @@
 "When we receive your request we’ll get back to you within one working day.",""
 "We’ve sent you an email with a security code to sign in to Notify.","We’ve sent you an email with a security code to sign in to <i>Notify</i>."
 "Please enter the security code",""
-"Not received an email",""
+"Not received an email?",""
 "We have found a Fido2 key associated with your account.",""
 "Follow the browser window instructions to authenticate.",""
 "Text verification",""
