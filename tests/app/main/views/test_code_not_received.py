@@ -40,7 +40,7 @@ def test_should_render_correct_resend_template_for_active_user(
     assert response.status_code == 200
 
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    assert page.h1.string == 'Resend security code'
+    assert page.h1.string == 'Re-send security code'
     # there shouldn't be a form for updating mobile number
     assert page.find('form') is None
 
