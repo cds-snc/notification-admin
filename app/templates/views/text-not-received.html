@@ -13,8 +13,8 @@
   <div class="column-two-thirds">
     <h1 class="heading-large">{{ _('Check your mobile number') }}</h1>
 
-    <p class="phone-confirm">{{ _('Check your mobile phone number is correct and then resend the security code.') }}</p>
-    {% set txt = _('Resend security code') %}
+    <p class="phone-confirm">{{ _('Check your mobile phone number is correct and then re-send the security code.') }}</p>
+    {% set txt = _('Re-send security code') %}
       {% call form_wrapper() %}
         {{ textbox(form.mobile_number) }}
         {{ page_footer(txt) }}

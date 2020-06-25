@@ -2817,7 +2817,7 @@ def test_warns_if_file_sent_already(
         page.select_one('.banner-dangerous').text
     ) == (
         'These messages have already been sent today '
-        'If you need to resend them, rename the file and upload it again. '
+        'If you need to re-send them, rename the file and upload it again. '
         'Skip to file contents'
     )
 

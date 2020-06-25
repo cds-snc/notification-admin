@@ -32,7 +32,7 @@ def two_factor_email_sent():
     if form.validate_on_submit():
         return log_in_user(user_id)
 
-    title = _('Email resent') if request.args.get('email_resent') else _('Check your email')
+    title = _('Email re-sent') if request.args.get('email_resent') else _('Check your email')
     return render_template(
         'views/two-factor-email.html',
         title=title,
