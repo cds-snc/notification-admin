@@ -8,6 +8,8 @@ extra_keys_in_app = set([
     'bad invitation link',  # api
     'invitation expired',  # api
     'password',  # api
+    'English Government of Canada signature',  # constant
+    'French Government of Canada signature',  # constant
 ])
 
 
@@ -21,10 +23,9 @@ def csv_to_dict(filename):
 
 
 def printMissingKeys(name, keys):
-    print('\n' + name)  # noqa: T001
+    print('\n----- ' + name)  # noqa: T001
     for k in keys:
         print(k)  # noqa: T001
-
 
 extract = csv_to_dict(sys.argv[1])
 existing_en = csv_to_dict('app/translations/csv/en.csv')
@@ -34,13 +35,17 @@ extract_keys = set(extract.keys()).union(extra_keys_in_app)
 existing_en_keys = set(existing_en.keys())
 existing_fr_keys = set(existing_fr.keys())
 
+in_one_csv_not_both = existing_en_keys.symmetric_difference(existing_fr)
+
 in_app_not_in_en_csv = extract_keys.difference(existing_en_keys)
 in_app_not_in_fr_csv = extract_keys.difference(existing_fr_keys)
+missing_from_csvs = in_app_not_in_en_csv.union(in_app_not_in_fr_csv)
 
 in_en_csv_not_in_app = existing_en_keys.difference(extract_keys)
 in_fr_csv_not_in_app = existing_fr_keys.difference(extract_keys)
 unused_translations = in_en_csv_not_in_app.union(in_fr_csv_not_in_app)
 
-printMissingKeys('not in en.csv', in_app_not_in_en_csv)
-printMissingKeys('not in fr.csv', in_app_not_in_fr_csv)
+printMissingKeys('missing from csvs', missing_from_csvs)
+printMissingKeys('in one csv but not both', in_one_csv_not_both)
 printMissingKeys('unused translations', unused_translations)
+print(' ')  # noqa: T001
