@@ -1,22 +1,22 @@
 {% extends "withoutnav_template.html" %}
 
 {% block per_page_title %}
-  {{ _('Resend verification code') }}
+  {{ _('Re-send verification code') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
 <div class="grid-row">
   <div class="column-two-thirds">
-    <h1 class="heading-large">{{ _('Resend security code') }}</h1>
+    <h1 class="heading-large">{{ _('Re-send security code') }}</h1>
 
-    <p>{{ _('Text messages sometimes take a few minutes to arrive. If you do not receive the text message, you can resend it.') }}</p>
+    <p>{{ _('Text messages sometimes take a few minutes to arrive. If you do not receive the text message, you can re-send it.') }}</p>
 
     <p>{{ _('If you no longer have access to the phone with the number you registered for this service, speak to your service manager to reset the number.') }}</p>
 
 
       <p>
-      <a class="button" href="{{url_for('main.check_and_resend_verification_code')}}" role="button">{{ _('Resend security code') }}</a>
+      <a class="button" href="{{url_for('main.check_and_resend_verification_code')}}" role="button">{{ _('Re-send security code') }}</a>
       </p>
   </div>
 </div>
