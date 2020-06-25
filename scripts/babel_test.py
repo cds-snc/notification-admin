@@ -21,7 +21,7 @@ def csv_to_dict(filename):
 
 
 def printMissingKeys(name, keys):
-    print('\n' + name)
+    print('\n' + name)  # noqa: T001
     for k in keys:
         print(k)  # noqa: T001
 

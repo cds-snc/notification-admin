@@ -22,13 +22,12 @@ test:
 	./scripts/run_tests.sh
 
 .PHONY: babel-test
-babel-test:
-	make babel
+babel-test: babel
 	pybabel extract -F babel.cfg -k _l -o /tmp/messages.po . && po2csv /tmp/messages.po /tmp/messages.csv
 	rm /tmp/messages.po
 	python scripts/babel_test.py /tmp/messages.csv
 	rm /tmp/messages.csv
-	
+
 .PHONY: babel
 babel: 
 	csv2po app/translations/csv/en.csv app/translations/en/LC_MESSAGES/messages.po
