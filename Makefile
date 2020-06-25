@@ -26,7 +26,7 @@ babel-test:
 	make babel
 	pybabel extract -F babel.cfg -k _l -o /tmp/messages.po . && po2csv /tmp/messages.po /tmp/messages.csv
 	rm /tmp/messages.po
-	python scripts/babel_tests.py /tmp/messages.csv
+	python scripts/babel_test.py /tmp/messages.csv
 	rm /tmp/messages.csv
 	
 .PHONY: babel
