@@ -325,7 +325,7 @@ def test_notification_page_shows_page_for_letter_sent_with_test_key(
     ),
     (
         'technical-failure',
-        'Technical failure – GC Notify will re-send once the team have fixed the problem',
+        'Technical failure – GC Notify will re-send once the team has fixed the problem',
     ),
 ))
 @freeze_time("2016-01-01 01:01")

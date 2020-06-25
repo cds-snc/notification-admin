@@ -1161,3 +1161,4 @@
 "Cannot send to international mobile numbers",""
 "You cannot remove the only user for a service",""
 "User cannot be removed from service. Check that all services have another team member who can manage settings",""
+"Technical failure – GC Notify will re-send once the team has fixed the problem",""
