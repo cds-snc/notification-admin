@@ -84,3 +84,4 @@ notify.code-workspace
 schedule-message.html
 
 jinja_templates/
+scripts/searchresults.csv
