@@ -3,12 +3,12 @@
   {{ _('To include a link, add the full URL (starting with https://) and it will become a clickable hyperlink. For example:') }}
 </p>
 <div class="panel-container">
-  <div class="panel-input bottom-gutter wrap-text">
+  <div class="panel-input bottom-gutter wrap-text" aria-label="{{ _('An example of the input for a fully typed out URL such as https://www.canada.ca.') }}'">
     <p>
       {{ _('Apply now at') }} https://www.canada.ca/
     </p>
   </div>
-  <div class="panel-preview panel-border-wide bottom-gutter wrap-text">
+  <div class="panel-preview panel-border-wide bottom-gutter wrap-text" aria-label="{{ _('A preview shows the clickable link for ‘canada.ca’ underlined and in blue.') }}">
     <p>
       {{ _('Apply now at') }}
       <a href="https://www.canada.ca">https://www.canada.ca/</a>
@@ -19,12 +19,12 @@
   {{ _('To embed a link in your message, use square brackets around descriptive text, followed by round brackets around the URL. Make sure links make sense out of context (avoid “click here”). For example:') }}
 </p>
 <div class="panel-container">
-  <div class="panel-input bottom-gutter">
+  <div class="panel-input bottom-gutter" aria-label="{{ _('An example of the input for an embedded link. Sign in is surrounded by square brackets [Sign in], immediately followed by the URL surrounded by parentheses (https://www.canada.ca/sign-in).') }}">
     <p class="wrap-text">
       {{ _('[Sign in](https://www.canada.ca/sign-in)') }}
     </p>
   </div>
-  <div class="panel-preview panel-border-wide bottom-gutter">
+  <div class="panel-preview panel-border-wide bottom-gutter" aria-label="{{ _('A preview shows the text ‘Sign in’ as a clickable link, underlined and in blue.') }}">
     <p>
       <a href="https://www.canada.ca">{{ _('Sign in') }}</a>
     </p>
