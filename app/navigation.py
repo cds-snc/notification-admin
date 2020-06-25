@@ -63,7 +63,6 @@ class HeaderNavigation(Navigation):
         },
         'pricing': {
             'pricing',
-            'how_to_pay',
         },
         'documentation': {
             'documentation',
@@ -520,7 +519,6 @@ class MainNavigation(Navigation):
         'get_example_csv',
         'get_notifications_as_json',
         'go_to_dashboard_after_tour',
-        'how_to_pay',
         'inbound_sms_admin',
         'inbox_download',
         'inbox_updates',
@@ -755,7 +753,6 @@ class CaseworkNavigation(Navigation):
         'get_example_csv',
         'get_notifications_as_json',
         'go_to_dashboard_after_tour',
-        'how_to_pay',
         'inbound_sms_admin',
         'inbox_download',
         'inbox_updates',
@@ -1054,7 +1051,6 @@ class OrgNavigation(Navigation):
         'get_example_csv',
         'get_notifications_as_json',
         'go_to_dashboard_after_tour',
-        'how_to_pay',
         'inbound_sms_admin',
         'inbox',
         'inbox_download',
