@@ -456,7 +456,7 @@
 "seen_cookie_message",""
 "Saves a message to let us know that you have seen our cookie message",""
 "1 month",""
-"Integrate the API to send messages automatically.",""
+"Integrate the GC Notify API to send messages automatically.",""
 "Set up the client",""
 "The API is available using clients developed by <a href=https://www.notifications.service.gov.uk/ >GOV.UK</a>.",""
 "À noter : ",""
