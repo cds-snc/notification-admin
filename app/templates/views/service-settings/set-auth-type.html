@@ -21,7 +21,7 @@
           {{ _('Email code or text message code') }}
         </p>
         <p>
-          {{ _('Your team members can log in with either a text message code or an email code.') }}
+          {{ _('Your team members can sign in with either a text message code or an email code.') }}
         </p>
         <p>
           {{ _('You can') }} <a href="{{ url_for('.manage_users', service_id=current_service.id) }}">{{ _('set the sign-in method for individual team members') }}</a>.
@@ -31,7 +31,7 @@
           {{ _('Text message code') }}
         </p>
         <p>
-          {{ _('Your team members log in with a text message code.') }}
+          {{ _('Your team members sign in with a text message code.') }}
         </p>
         <p>
           <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('Contact us') }}</a> {{ _('if logging in with a text message is a problem for your team.') }}

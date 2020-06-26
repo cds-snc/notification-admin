@@ -212,7 +212,7 @@ def test_choose_account_should_not_show_back_to_service_link_if_not_signed_in(
     response = client.get(url_for('main.sign_in'))
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
-    assert page.select_one('h1').text == 'Log in'  # We’re not signed in
+    assert page.select_one('h1').text == 'Sign in'  # We’re not signed in
     assert page.select_one('.navigation-service a') is None
 
 

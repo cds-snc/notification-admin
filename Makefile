@@ -34,6 +34,10 @@ babel:
 	csv2po app/translations/csv/fr.csv app/translations/fr/LC_MESSAGES/messages.po
 	pybabel compile -d app/translations
 
+.PHONY: search-csv
+search-csv:
+	python scripts/search_csv.py
+
 .PHONY: freeze-requirements
 freeze-requirements:
 	rm -rf venv-freeze

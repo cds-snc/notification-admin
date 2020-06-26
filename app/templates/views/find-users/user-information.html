@@ -47,7 +47,7 @@
       </nav>
       <h2 class="heading-medium">{{ _('Last login') }}</h2>
       {% if not user.logged_in_at %}
-      <p class="hint">{{ _('This person has never logged in') }}</p>
+      <p class="hint">{{ _('This person has never signed in') }}</p>
       {% else %}
       <p>{{ _('Last logged in') }}
         {{ user.logged_in_at|format_delta }}

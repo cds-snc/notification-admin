@@ -33,8 +33,8 @@
           {{ _('Your file has too many rows') }}
         </h1>
         <p>
-          {{ _('<i>Notify</i> can process up to') }}
-          {{ "{:,}".format(recipients.max_rows) }} {{ _('rows at once. Your file has')}} 
+          {{ _('GC Notify can process up to') }}
+          {{ "{:,}".format(recipients.max_rows) }} {{ _('rows at once. Your file has')}}
           {{ "{:,}".format(recipients|length) }} {{ _('rows.') }}
         </p>
 

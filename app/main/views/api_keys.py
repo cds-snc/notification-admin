@@ -134,7 +134,7 @@ def revoke_api_key(service_id, key_id):
     if request.method == 'GET':
         flash([
             "{} ‘{}’?".format(_l('Are you sure you want to revoke'), key_name),
-            _l("You will not be able to use this API key to connect to <i>Notify</i>")
+            _l("You will not be able to use this API key to connect to GC Notify")
         ], 'revoke this API key')
         return render_template(
             'views/api/keys.html',

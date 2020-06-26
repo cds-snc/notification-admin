@@ -2,21 +2,21 @@
 {% from "components/page-header.html" import page_header %}
 
 {% block service_page_title %}
- {{ _('<i>Notify</i> data sharing and financial agreement') }}
+ {{ _('GC Notify data sharing and financial agreement') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
 <div class="grid-row">
   <div class="column-five-sixths">
-    {% set txt = _('<i>Notify</i> data sharing and financial agreement') %}
+    {% set txt = _('GC Notify data sharing and financial agreement') %}
     {{ page_header(
       txt,
       back_link=url_for('main.request_to_go_live', service_id=current_service.id)
     )}}
 
     <p>
-      {{ _('Before you can go live on <i>Notify</i>, your organisation needs to accept our data sharing and financial agreement.') }}
+      {{ _('Before you can go live on GC Notify, your organisation needs to accept to our data sharing and financial agreement.') }}
     </p>
     <p>
       {{ _('There are different agreements for crown and non-crown organisations.') }}

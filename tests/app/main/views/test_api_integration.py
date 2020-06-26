@@ -55,7 +55,7 @@ def test_should_show_api_page_with_lots_of_notifications(
     )
     rows = page.find_all('div', {'class': 'api-notifications-item'})
     assert ' '.join(rows[len(rows) - 1].text.split()) == (
-        'Only showing the first 50 messages. Notify deletes messages after 7 days.'
+        'Only showing the first 50 messages. GC Notify deletes messages after 7 days.'
     )
 
 
@@ -319,7 +319,7 @@ def test_should_show_confirm_revoke_api_key(
     )
     assert normalize_spaces(page.select('.banner-dangerous')[0].text) == (
         'Are you sure you want to revoke ‘some key name’? '
-        'You will not be able to use this API key to connect to Notify '
+        'You will not be able to use this API key to connect to GC Notify '
         'Yes, revoke this API key'
     )
     assert mock_get_api_keys.call_args_list == [
@@ -342,7 +342,7 @@ def test_should_show_confirm_revoke_api_key_for_platform_admin(
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
     assert normalize_spaces(page.select('.banner-dangerous')[0].text) == (
         'Are you sure you want to revoke ‘some key name’? '
-        'You will not be able to use this API key to connect to Notify '
+        'You will not be able to use this API key to connect to GC Notify '
         'Yes, revoke this API key'
     )
     assert mock_get_api_keys.call_args_list == [
