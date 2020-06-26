@@ -59,5 +59,5 @@ unused_translations = in_en_csv_not_in_app.union(in_fr_csv_not_in_app)
 
 printMissingKeys('missing from csvs', missing_from_csvs)
 printMissingKeys('in one csv but not both', in_one_csv_not_both)
-printMissingKeys('unused translations', unused_translations)
+printMissingKeys('unused translations (check api before deleting!)', unused_translations)
 print(' ')  # noqa: T001
