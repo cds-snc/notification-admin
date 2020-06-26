@@ -27,8 +27,4 @@ def pricing_nav():
             "name": "Pricing",
             "link": "main.pricing",
         },
-        {
-            "name": "How to pay",
-            "link": "main.how_to_pay",
-        },
     ]
