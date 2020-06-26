@@ -620,8 +620,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
         {% call form_wrapper() %} {% set name_label = _('Your name') %} {{
         textbox(form.name, label=name_label, width='1-1') }} {% set email_label
         = _('Your email') %} {{ textbox(form.email_address, label=email_label,
-        width='1-1') }} {# honeypot field #} {% set email_label = _('Your
-        phone') %} {{ honeypotfield(form.phone, label=email_label) }}
+        width='1-1') }} {# honeypot field #} {% set email_label = _('Your phone') %} {{ honeypotfield(form.phone, label=email_label) }}
 
         <div class="form-group">
           <label class="form-label" for="support_type">

@@ -34,8 +34,8 @@
         </h1>
         <p>
           {{ _('GC Notify can process up to') }}
-          {{ "{:,}".format(recipients.max_rows) }} {{ _('rows at once. Your
-          file has')}} {{ "{:,}".format(recipients|length) }} {{ _('rows.') }}
+          {{ "{:,}".format(recipients.max_rows) }} {{ _('rows at once. Your file has')}}
+          {{ "{:,}".format(recipients|length) }} {{ _('rows.') }}
         </p>
 
       {% elif not count_of_recipients %}
@@ -92,8 +92,7 @@
       {% elif recipients.missing_column_headers %}
         {% set and_txt = _('and') %}
         <h1 class='banner-title' data-module="track-error" data-error-type="Missing placeholder columns" data-error-label="{{ upload_id }}">
-          {{ _('The columns in your file need to match the double brackets in
-          your template') }}
+          {{ _('The columns in your file need to match the double brackets in your template') }}
         </h1>
         <p>
           {{ _('Your file is missing') }} {{ recipients.missing_column_headers | formatted_list(

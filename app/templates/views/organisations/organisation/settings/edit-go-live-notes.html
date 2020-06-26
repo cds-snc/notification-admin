@@ -8,8 +8,7 @@ back_link=url_for('.organisation_settings', org_id=current_org.id) ) }}
 <div class="grid-row">
   <div class="column-five-sixths">
     <p>
-      {{ _('When you turn a service live please log which services have been turned
-      live and why you approved the change.') }}
+      {{ _('When you turn a service live please log which services have been turned live and why you approved the change.') }}
     </p>
     {% call form_wrapper() %} {{ textbox(form.request_to_go_live_notes,
     width='1-1', rows=3) }} {{ page_footer(_('Save')) }} {% endcall %}
