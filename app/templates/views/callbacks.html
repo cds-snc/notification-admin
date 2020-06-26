@@ -11,12 +11,12 @@
   <div class="column-two-thirds">
 
     <h1 class="heading-large">{{ _('Callback documentation') }}</h1>
-    <p>{{ _('A callback lets you receive messages from <i>Notify</i> to a URL you choose.') }}</p>
+    <p>{{ _('A callback lets you receive messages from GC Notify to a URL you choose.') }}</p>
     <p>{{ _('You’ll need to provide a bearer token, for security. We’ll add this to the authorisation header of the callback request.') }}</p>
     <p>{{ _('The callback message is in JSON.') }}</p>
 
     <h2 class="heading-medium">{{ _('Email and text message delivery receipts') }}</h2>
-    <p>{{ _('When you send an email or text message through <i>Notify</i>, we can send a receipt to your callback URL to tell you if we were able to deliver it or not.') }}</p>
+    <p>{{ _('When you send an email or text message through GC Notify, we can send a receipt to your callback URL to tell you if we were able to deliver it or not.') }}</p>
     <div class="bottom-gutter-3-2">
       {% call mapping_table(
         caption='Callback message format',
@@ -25,7 +25,7 @@
         caption_visible=False
       ) %}
         {% for key, description, format in [
-          ('id', _('<i>Notify</i>’s id for the status receipts'), 'UUID'),
+          ('id', _('GC Notify’s id for the status receipts'), 'UUID'),
           ('reference', _('The reference sent by the service'), '12345678'),
           ('to', _('The email address of the recipient'), 'hello@gov.uk'),
           ('status', _('The status of the notification'), 'delivered | permanent-failure | temporary-failure | technical-failure'),
@@ -44,7 +44,7 @@
     </div>
 
     <h2 class="heading-medium">{{ _('Text messages you receive') }}</h2>
-    <p>{{ _('If your service receives text messages in <i>Notify</i>, we can forward them to your callback URL as soon as they arrive.') }}</p>
+    <p>{{ _('If your service receives text messages in GC Notify, we can forward them to your callback URL as soon as they arrive.') }}</p>
     <div class="bottom-gutter-3-2">
       {% call mapping_table(
         caption=_('Callback message format'),
@@ -53,11 +53,11 @@
         caption_visible=False
       ) %}
         {% for key, description, format in [
-          ('id', _('<i>Notify</i>’s id for the received message'), 'UUID'),
+          ('id', _('GC Notify’s id for the received message'), 'UUID'),
           ('source_number', _('The phone number the message was sent from'), '447700912345'),
           ('destination_number', _('The number the message was sent to (your number)'), '07700987654'),
           ('message', _('The received message'), 'Hello Notification!'),
-          ('date_received', _('The UTC datetime that the message was received by <i>Notify</i>'), '2017-05-14T12:15:30.000000Z')
+          ('date_received', _('The UTC datetime that the message was received by GC Notify'), '2017-05-14T12:15:30.000000Z')
         ] %}
           {% call row() %}
             {% call row_heading() %} {{ key }} {% endcall %}
