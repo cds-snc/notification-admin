@@ -22,7 +22,7 @@
   "license": "MIT",
   "homepage": "https://github.com/alphagov/notifications-admin#readme",
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
     "@cdssnc/cds_template_jinja": "0.0.7",
     "dayjs": "^1.8.27",
     "diff-dom": "4.1.6",
