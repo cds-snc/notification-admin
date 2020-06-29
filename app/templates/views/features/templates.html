@@ -2,15 +2,17 @@
 {% from "components/table.html" import mapping_table, row, text_field, edit_field, field with context %}
 
 {% block per_page_title %}
-  {{ _('How to format your message') }}
+  {{ _('Template formatting guide') }}
 {% endblock %}
 
 {% block content_column_content %}
-  <h1 class="heading heading-large">{{ _('Template Formatting') }}</h1>
+  <h1 class="heading heading-large">{{ _('Template formatting guide') }}</h1>
+  <p>{{ _('Use this guide to write email message templates. Make sure to send yourself a message before sending to recipients to ensure formatting looks good.') }}</p>
+
   {% include "partials/templates/guidance-formatting.html" %}
-  {% include "partials/templates/guidance-personalisation.html" %}
-  {% include "partials/templates/guidance-optional-content.html" %}
   {% include "partials/templates/guidance-links.html" %}
+  {% include "partials/templates/guidance-personalisation.html" %}
+  {% include "partials/templates/guidance-conditional-text.html" %}
   {% if current_service and current_service.has_permission('upload_document') %}
     {% include "partials/templates/guidance-send-a-document.html" %}
   {% endif %}

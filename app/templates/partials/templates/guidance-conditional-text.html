@@ -1,0 +1,31 @@
+<h2 class="heading-medium">
+  {{ _('Conditional text') }}
+</h2>
+<p>{{ _('To add optional conditional text, in double brackets, use two question marks after your condition variable and before the text that appears if the condition is met. For example:') }}</p>
+<div class="panel-container">
+  <div class="panel-input bottom-gutter" aria-label="{{ _('An example of the input for conditional text. Double brackets surround conditional text which is preceded by a variable with question marks ((under18??conditional text)).') }}">
+    <p>
+      {{ _('Hello') }},
+    </p>
+    <p>
+      {{ _('We’re happy to announce that you can now enroll in the program.') }}
+    </p>
+    <p>
+      ((<span class="placeholder-no-brackets">{{ _('under18')}}</span>??{{_('Please get your application signed by a parent or guardian.')}}))
+    </p>
+  </div>
+  <div class="panel-preview panel-border-wide bottom-gutter" aria-label="{{ _('A preview shows the conditional text for recipients under 18 years of age appearing in the message.') }}">
+    <p>
+      {{ _('Hello') }},
+    </p>
+    <p>
+      {{ _('We’re happy to announce that you can now enroll in the program.') }}
+    </p>
+    <p>
+      {{ _('Please get your application signed by a parent or guardian.') }}
+    </p>
+  </div>
+</div>
+<p>
+  {{ _('When you send your message, you’ll need to indicate ‘yes’ for whether a recipient meets the condition, to show the conditional text. You can do this manually or upload a list of contacts with a column that indicates the condition. ') }}
+</p>

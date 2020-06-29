@@ -60,3 +60,45 @@
   margin-bottom: 0;
 }
 
+// Template Formatting Guide styles
+.panel-container {
+  width: 100%;
+  display: flex;
+
+  @media only screen and (max-width: 600px) {
+    flex-direction: column;
+  }
+
+  > * {
+    display:inline-block;
+    min-width: 200px;
+    width: 50%;
+    border: thin solid #C0C1C3;
+    padding: 1em;
+    vertical-align: top;
+    margin-bottom: 30px;
+
+    @media only screen and (max-width: 600px) {
+      width: 100%;
+    }
+  }
+  > .panel-input {
+    border-left-color: $border-colour;
+    border-left-width: 24px;
+    margin-right: 1em;
+
+    @media only screen and (max-width: 600px) {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  }
+
+  .wrap-text {
+    word-break: break-word;
+  }
+
+  // special styles for other elements
+  h3 {
+    margin-top: 0;
+  }
+}
