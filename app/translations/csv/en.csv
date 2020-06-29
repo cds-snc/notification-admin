@@ -1147,7 +1147,6 @@
 "Apply now at",""
 "To embed a link in your message, use square brackets around descriptive text, followed by round brackets around the URL. Make sure links make sense out of context (avoid “click here”). For example:",""
 "[Sign in](https://www.canada.ca/sign-in)",""
-"Sign in",""
 "Variables",""
 "To add personalised information about the message recipients, use double brackets around the variable name. Recipients are more likely to trust information that’s relevant and clearly meant for them. For example:",""
 "Hello",""

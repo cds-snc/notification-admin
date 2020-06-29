@@ -1147,7 +1147,6 @@
 "Apply now at","Postulez maintenant au :"
 "To embed a link in your message, use square brackets around descriptive text, followed by round brackets around the URL. Make sure links make sense out of context (avoid “click here”). For example:","Pour intégrer un lien dans votre message, mettez votre texte entre crochets puis faites-le suivre de l’URL entre parenthèses. Un bon lien devrait pouvoir être compris hors contexte (évitez « cliquez ici »). Par exemple :"
 "[Sign in](https://www.canada.ca/sign-in)","[Se connecter](https://www.canada.ca/connexion)"
-"Sign in","Se connecter"
 "Variables","Variables"
 "To add personalised information about the message recipients, use double brackets around the variable name. Recipients are more likely to trust information that’s relevant and clearly meant for them. For example:","Pour ajouter des renseignements personnalisés aux destinataires du message, utilisez des parenthèses doubles autour du nom de la variable. Les destinataires font plus souvent confiance aux renseignements qui leur sont clairement destinés. Par exemple :"
 "Hello","Bonjour"
