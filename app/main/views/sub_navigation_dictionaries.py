@@ -13,7 +13,7 @@ def features_nav():
                     "link": "main.features_sms",
                 },
                 {
-                    "name": "Template Formatting",
+                    "name": "Template formatting guide",
                     "link": "main.features_templates",
                 },
             ]
