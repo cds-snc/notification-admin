@@ -257,7 +257,7 @@ def test_organisation_settings_for_platform_admin(
         'Name Org 1 Change',
         'Sector Not set Change',
         'Crown organisation Yes Change',
-        'Data sharing and financial agreement Not signed Change',
+        'GC Notify data sharing and financial agreement Not signed Change',
         'Request to go live notes None Change',
         'Default email branding English Government of Canada signature Change',
         'Default letter branding No branding Change'

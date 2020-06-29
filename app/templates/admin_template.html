@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block page_title %}
-   {% block per_page_title %}{% endblock %} – {{ _('Notification') }}
+   {% block per_page_title %}{% endblock %} – {{ _('Notify') }}
 {% endblock %}
 
 {% block header_class %}with-proposition{% endblock %}
@@ -50,7 +50,7 @@
                 English
               {% endif %}
             </a></li>
-            <li><a href="{{ url_for('main.sign_out')}}">{{ _('Log out') }}</a></li>
+            <li><a href="{{ url_for('main.sign_out')}}">{{ _('Sign out') }}</a></li>
           {% else %}
             <li>
               <a href="{{ url_for('main.set_lang')}}?from={{request.path}}">
@@ -61,7 +61,7 @@
               {% endif %}
             </a></li>
             <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>{{ _('Technical documentation') }}</a></li>
-            <li><a href="{{ url_for('main.sign_in' )}}" {{ header_navigation.is_selected('sign-in') }}>{{ _('Log in') }}</a></li>
+            <li><a href="{{ url_for('main.sign_in' )}}" {{ header_navigation.is_selected('sign-in') }}>{{ _('Sign in') }}</a></li>
           {% endif %}
         </ul>
       </nav>
@@ -69,8 +69,8 @@
   </div>
   -->
 {% endblock %}
-{% set notification_txt = _('Notification') %}
-{% set global_header_text = "<span id='product-name'>Notification</span>"|safe %}
+{% set notification_txt = _('GC Notify') %}
+{% set global_header_text = "<span id='product-name'>" + _('GC Notify') + "</span>"|safe %}
 {% set homepage_url = url_for('main.show_accounts_or_dashboard') %}
 
 {% block content %}
