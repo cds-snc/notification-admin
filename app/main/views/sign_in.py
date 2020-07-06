@@ -39,13 +39,16 @@ def sign_in():
         user = User.from_email_address_and_password_or_none(
             form.email_address.data, form.password.data, login_data
         )
+
         if user and user.locked:
             flash(_("Your account has been locked after {} sign-in attempts. Please email us at assistance@cds-snc.ca")
                   .format(user.max_failed_login_count))
-        elif user and user.state == 'pending':
+            abort(400)
+
+        if user and user.state == 'pending':
             return redirect(url_for('main.resend_email_verification'))
 
-        elif user and session.get('invited_user'):
+        if user and session.get('invited_user'):
             invited_user = InvitedUser.from_session()
             if user.email_address.lower() != invited_user.email_address.lower():
                 flash(_("You can't accept an invite for another person."))
@@ -53,15 +56,14 @@ def sign_in():
                 abort(403)
             else:
                 invited_user.accept_invite()
-        elif user and user.sign_in():
+        if user and user.sign_in():
             if user.sms_auth:
                 return redirect(url_for('.two_factor_sms_sent', next=request.args.get('next')))
             if user.email_auth:
                 return redirect(url_for('.two_factor_email_sent'))
 
-        else:
-            # Vague error message for login in case of user not known, locked, inactive or password not verified
-            flash(_("The email address or password you entered is incorrect."))
+        # Vague error message for login in case of user not known, inactive or password not verified
+        flash(_("The email address or password you entered is incorrect."))
 
     other_device = current_user.logged_in_elsewhere()
     return render_template(
