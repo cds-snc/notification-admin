@@ -40,8 +40,8 @@ def sign_in():
             form.email_address.data, form.password.data, login_data
         )
         if user and user.locked:
-            flash(_("Your account has been locked after {} sign-in attempts. Please email us at assistance@cds-snc.ca").format(user.max_failed_login_count))
-            user = None
+            flash(_("Your account has been locked after {} sign-in attempts. Please email us at assistance@cds-snc.ca")
+                  .format(user.max_failed_login_count))
         elif user and user.state == 'pending':
             return redirect(url_for('main.resend_email_verification'))
 
