@@ -14,7 +14,7 @@ def forgot_password():
         try:
             user_api_client.send_reset_password_url(form.email_address.data)
         except HTTPError as e:
-            if e.status_code == 400:
+            if e.status_code == 400 and 'user blocked' in str(e.response.content):
                 flash(_("You cannot reset your password as your account has been blocked. Please email us at assistance@cds-snc.ca"))
                 abort(400)
             elif e.status_code == 404:
