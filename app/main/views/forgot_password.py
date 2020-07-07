@@ -1,4 +1,4 @@
-from flask import abort, flash, render_template, flash
+from flask import abort, flash, render_template
 from flask_babel import _
 from notifications_python_client.errors import HTTPError
 
@@ -15,7 +15,8 @@ def forgot_password():
             user_api_client.send_reset_password_url(form.email_address.data)
         except HTTPError as e:
             if e.status_code == 400 and 'user blocked' in str(e.response.content):
-                flash(_("You cannot reset your password as your account has been blocked. Please email us at assistance@cds-snc.ca"))
+                flash(_('You cannot reset your password as your account has been blocked. '
+                        + 'Please email us at assistance@cds-snc.ca'))
                 abort(400)
             elif e.status_code == 404:
                 return render_template('views/password-reset-sent.html')
