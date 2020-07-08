@@ -40,12 +40,13 @@ itsdangerous==0.24  # pyup: <1.0.0
 
 git+https://github.com/cds-snc/notifier-utils.git@42.1.5#egg=notifications-utils==42.1.5
 
+rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
 ## The following requirements were added by pip freeze:
-awscli==1.18.66
+awscli==1.18.95
 bleach==3.1.4
 boto3==1.12.13
-botocore==1.16.16
-certifi==2020.4.5.1
+botocore==1.17.18
+certifi==2020.6.20
 chardet==3.0.4
 click==7.1.2
 colorama==0.4.3
@@ -55,8 +56,8 @@ docutils==0.15.2
 et-xmlfile==1.0.1
 flask-redis==0.4.0
 future==0.18.2
-greenlet==0.4.15
-idna==2.9
+greenlet==0.4.16
+idna==2.10
 jdcal==1.4.1
 Jinja2==2.11.2
 jmespath==0.10.0
@@ -65,7 +66,7 @@ lxml==4.5.1
 MarkupSafe==1.1.1
 mistune==0.8.4
 monotonic==1.5
-openpyxl==3.0.3
+openpyxl==3.0.4
 orderedset==2.0.1
 phonenumbers==8.10.13
 pyasn1==0.4.8
@@ -75,8 +76,7 @@ PyPDF2==1.26.0
 python-dateutil==2.8.1
 python-json-logger==0.1.11
 redis==3.5.3
-requests==2.23.0
-rsa==4.1
+requests==2.24.0
 s3transfer==0.3.3
 six==1.15.0
 smartypants==2.0.1
