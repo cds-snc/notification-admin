@@ -40,6 +40,11 @@ def sign_in():
             form.email_address.data, form.password.data, login_data
         )
 
+        if user and user.locked:
+            flash(_("Your account has been locked after {} sign-in attempts. Please email us at assistance@cds-snc.ca")
+                  .format(user.max_failed_login_count))
+            abort(400)
+
         if user and user.state == 'pending':
             return redirect(url_for('main.resend_email_verification'))
 
@@ -57,7 +62,7 @@ def sign_in():
             if user.email_auth:
                 return redirect(url_for('.two_factor_email_sent'))
 
-        # Vague error message for login in case of user not known, locked, inactive or password not verified
+        # Vague error message for login in case of user not known, inactive or password not verified
         flash(_("The email address or password you entered is incorrect."))
 
     other_device = current_user.logged_in_elsewhere()
