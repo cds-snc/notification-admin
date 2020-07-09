@@ -73,7 +73,9 @@ class User(JSONModel, UserMixin):
         if not user:
             return None
         if user.locked:
-            return None
+            if not user.blocked:
+                user.update(blocked=True)
+            return user
         if not user_api_client.verify_password(user.id, password, login_data):
             return None
         return user
