@@ -10,35 +10,34 @@
   <h1 class="heading-large">{{ _('Terms of use') }}</h1>
 
   <p>
-    {{ _('These terms apply to use of GC Notify. Your account manager must accept them.') }}
+    {{ _('The following terms apply to use of GC Notify, a product operated by the Canadian Digital Service (CDS). GC Notify is available for use by Canadian federal and provincial departments and agencies to send service transaction updates.') }}
+  </p>
+  <p>
+    {{ _('As a service owner, you must accept these terms prior to being able to use GC Notify to communicate with the public.') }}
+  </p>
+ 
+  <p>{{ _('To use the GC Notify service, you and your service team must:') }}</p>
+  <ul class="list list-bullet">
+    <li>{{ _('Get individuals’ consent to send messages and to use data they provide for this purpose.') }}</li>
+    <li>{{ _("Ensure that your use of GC Notify complies with your organisation’s privacy requirements (including the <a href='https://laws-lois.justice.gc.ca/ENG/ACTS/P-21/index.html'>Privacy Act</a> and any relevant departmental legislation or policies).") }}</li>
+    <li>{{ _('Ensure that the data you add to GC Notify are accurate, and comply with applicable information management and data retention requirements.') }}</li>
+    <li>{{ _('Complete all applicable privacy and security steps required by your organisation.') }}</li>
+    <li>{{ _('Not send messages containing information above the classification level assessed for GC Notify (currently Protected A).') }}</li>
+    <li>{{ _('Tell CDS immediately if you have any security breaches, and comply with applicable privacy requirements.') }}</li>
+    <li>{{ _('Keep your API (application programming interface) keys secure.') }}</li>
+    <li>{{ _('Pay for any SMS text message usage above the free allowance (currently 25,000 text messages per year).') }}</li>
+  </ul>
+
+  <p>{{ _("Using GC Notify also includes accepting the applicable <a href='https://aws.amazon.com/service-terms/'>terms of use of Amazon Web Services</a>, the underlying infrastructure provider.") }}</p>
+
+  <p>{{ _('Departments and agencies using SMS text messages will pay for all text messages sent through GC Notify at the cost-rate charged by the provider to CDS, unless these messages are part of the free allocation. Each organisation can send 25,000 free text messages per year from each service created.') }}</p>
+
+  <p>
+    {{ _('Service teams can leave GC Notify at any time by emailing assistance@cds-snc.ca.') }} <strong>{{ _('CDS reserves the right to stop sending notifications on behalf of departments and agencies if they do not follow the terms listed above') }}</strong>{{ _(', in order to protect GC Notify’s technical infrastructure and other users of the service.') }}
   </p>
 
-  <h2 class="heading-medium">{{ _('When using GC Notify') }}</h2>
- 
-  <p>{{ _('Follow Canadian law with regard to the Privacy Act when using this software.') }}</p>
-  <p>{{ _('You must:') }}</p>
-  <ul class="list list-bullet">
-    <li>{{ _('complete all security steps required by your organisation.') }}</li>
-    <li>{{ _('tell us immediately if you have any security breaches.') }}</li>
-    <li>{{ _('keep your API (Application Programming Interface) codes secure. API technology allows different software applications to communicate with each other.') }}</li>
-    <li>{{ _('get consent to send messages and to use data. This consent must meet standards set by privacy legislation including the federal Privacy Act.') }}</li>
-    <li>{{ _('check that the data you add to GC Notify is accurate and complies with privacy legislation including the federal Privacy Act.') }}</li>
-    <li>{{ _('not send messages containing any personally or commercially sensitive information.') }}</li>
-      <li>{{ _('not send unsolicited messages. Messages must be about transactions or subscriptions. Please follow the <a href="https://www.gov.uk/service-manual/design/sending-emails-and-text-messages#transactional-messages">transaction</a> and <a href="https://www.gov.uk/service-manual/design/sending-emails-and-text-messages#subscription-messages">subscription</a> criteria in the GOV.UK Service Manual. Please remember that other parts of the GOV.UK Manual may not apply in the Canadian context.') }}</li>
-
-  </ul>
-  <p>{{ _('If you don’t follow these terms, we may need to stop sending your messages.') }}</p>
-
-  <p>{{ _('GC Notify will:') }}</p>
-  <ul class="list list-bullet">
-    <li>{{ _('send the messages you write, as long as these messages comply with our terms of use.') }}</li>
-    <li>{{ _('show how it is working through our <a href="https://www.gov.uk/performance/govuk-notify">performance</a> and <a href="https://status.notifications.service.gov.uk/">status</a> pages.') }}</li>
-    <li>{{ _('keep your data <a href="/features/security">secure</a>.') }}</li>
-    <li>{{ _('give you one month’s notice by email if we change our terms of use or delivery providers.') }}</li>
-  </ul>
-
-  <h2 class="heading-medium">{{ _('Leaving GC Notify') }}</h2>
-  <p>{{ _('You can leave at any time. Just') }} <a href="{{url_for('.feedback', ticket_type='ask-question-give-feedback')}}">{{ _('contact us') }}</a> {{ _('and we’ll close your account.') }}</p>
-  <p>{{ _('We’ll delete all your data when we close your account.')}} </p>
+  <p>
+    {{ _("For questions related to these terms of use, or to report an issue, <a href='https://notification.alpha.canada.ca/support/ask-question-give-feedback'>contact us.</a>") }}
+  </p>
 
 {% endblock %}
