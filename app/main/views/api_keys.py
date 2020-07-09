@@ -100,8 +100,7 @@ def create_api_key(service_id):
         disabled_options = [KEY_TYPE_NORMAL]
         option_hints[KEY_TYPE_NORMAL] = Markup(
             _l('Not available because your service is in ') +
-            '<a href="/features/trial-mode">' +
-            _l('trial mode') + '</a>'
+            _l('trial mode')
         )
     if current_service.has_permission('letter'):
         option_hints[KEY_TYPE_TEAM] = ''

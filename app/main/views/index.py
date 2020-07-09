@@ -356,19 +356,6 @@ def message_status():
     )
 
 
-@main.route('/trial-mode')
-def trial_mode():
-    return redirect(url_for('.trial_mode_new'), 301)
-
-
-@main.route('/features/trial-mode')
-def trial_mode_new():
-    return render_template(
-        'views/trial-mode.html',
-        navigation_links=features_nav()
-    )
-
-
 # --- Redirects --- #
 
 @main.route('/roadmap', endpoint='old_roadmap')
