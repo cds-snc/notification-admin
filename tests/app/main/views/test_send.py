@@ -2617,7 +2617,6 @@ def test_check_messages_shows_too_many_messages_errors(
     )
 
     assert page.find('h1').text.strip() == 'Too many recipients'
-    assert page.find('div', class_='banner-dangerous').find('a').text.strip() == 'trial mode'
 
     # remove excess whitespace from element
     details = page.find('div', class_='banner-dangerous').findAll('p')[1]
