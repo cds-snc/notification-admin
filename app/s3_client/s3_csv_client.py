@@ -76,6 +76,8 @@ def list_bulk_send_uploads():
     files = []
     for f in bulk_send_bucket.objects.all():
         files.append(f)
+    # sort so most recent files are at the top of the page
+    files.sort(key=lambda f: f.last_modified, reverse=True)
     return files
 
 
