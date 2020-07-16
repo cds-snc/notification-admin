@@ -2617,7 +2617,6 @@ def test_check_messages_shows_too_many_messages_errors(
     )
 
     assert page.find('h1').text.strip() == 'Too many recipients'
-    assert page.find('div', class_='banner-dangerous').find('a').text.strip() == 'trial mode'
 
     # remove excess whitespace from element
     details = page.find('div', class_='banner-dangerous').findAll('p')[1]
@@ -3358,8 +3357,7 @@ def test_send_notification_redirects_to_view_page(
 
 
 TRIAL_MODE_MSG = (
-    'Can’t send to this recipient when service is in trial mode – '
-    'see https://www.notifications.service.canada.ca/trial-mode'
+    'Can’t send to this recipient when service is in trial mode'
 )
 TOO_LONG_MSG = 'Content for template has a character count greater than the limit of 612'
 SERVICE_DAILY_LIMIT_MSG = 'Exceeded send limits (1000) for today'
