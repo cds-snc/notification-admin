@@ -9,7 +9,6 @@
 }
 
 .dashboard-table {
-
   .heading-medium {
     margin-bottom: 5px;
   }
@@ -48,36 +47,29 @@
       }
     }
   }
-
 }
 
 .settings-table {
-
   table {
     table-layout: fixed;
     margin-bottom: $gutter / 6;
   }
 
   th {
-
     &:first-child {
-      width: 35%;  // 33.33% + fudge
+      width: 35%; // 33.33% + fudge
     }
 
     &:last-child {
-      width: 17.5%  // 16.67% + fudge
+      width: 17.5%; // 16.67% + fudge
     }
-
   }
 
   td.table-field-left-aligned {
-
     &:first-child {
-
       div {
         white-space: normal;
       }
-
     }
 
     div {
@@ -89,18 +81,15 @@
     ul li {
       margin-bottom: 5px;
     }
-
   }
 
   .table-heading {
     margin-bottom: 20px;
   }
-
 }
 
 %table-field,
 .table-field {
-
   vertical-align: top;
 
   &:last-child {
@@ -108,7 +97,6 @@
   }
 
   &-error {
-
     border-left: 5px solid $error-colour;
     padding-left: 7px;
     display: block;
@@ -118,7 +106,6 @@
       color: $error-colour;
       font-weight: bold;
     }
-
   }
 
   &-invisible-error {
@@ -128,23 +115,19 @@
   }
 
   &-status {
-
     &-default {
       color: $secondary-text-colour;
     }
 
     &-error {
-
       color: $error-colour;
       font-weight: bold;
 
       a {
-
         &:link,
         &:visited {
           color: $error-colour;
         }
-
       }
 
       .status-hint {
@@ -153,7 +136,6 @@
         color: $red;
         margin-top: 5px;
       }
-
     }
 
     &-yes,
@@ -166,9 +148,8 @@
     }
 
     &-yes {
-      background-image: file-url('tick.png');
+      background-image: file-url("tick.png");
     }
-
   }
 
   &-noborder {
@@ -176,14 +157,12 @@
   }
 
   &-index {
-
     @include bold-16;
     width: 15px;
 
     a {
-
       &:before {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
         left: 0;
@@ -192,49 +171,40 @@
       }
 
       &:focus {
-
         &:before {
           background: $yellow;
           z-index: -1;
         }
-
       }
-
     }
   }
 
   p {
     margin: 0 0 5px 0;
   }
-
 }
 
-.table-font-xsmall td.table-field-index {  // overrides GOV.UK Elements
+.table-font-xsmall td.table-field-index {
+  // overrides GOV.UK Elements
   @include bold-16;
 }
 
-
 .table-field-headings {
-
   th {
     padding: 1px; /* needs some height for the grey border to show */
   }
-
 }
 
 .table-field-headings-visible {
-
   height: auto;
 
   th {
-    padding: .75em 1.25em .5625em 0;
+    padding: 0.75em 1.25em 0.5625em 0;
   }
-
 }
 
 .table-field-headings,
 .table-field-headings-visible {
-
   th {
     @include bold-19;
   }
@@ -242,11 +212,9 @@
   .dashboard-table &-first {
     width: 52.5%;
   }
-
 }
 
 .table-field-heading {
-
   &:last-child {
     padding-right: 0;
   }
@@ -255,16 +223,13 @@
     display: block;
     text-align: right;
   }
-
 }
 
 .table-field-right-aligned {
-
   @extend %table-field;
   text-align: right;
 
   a {
-
     display: block;
     position: relative;
 
@@ -288,7 +253,6 @@
 
     &:active,
     &:focus {
-
       color: $black;
 
       &:before {
@@ -297,13 +261,9 @@
         border-width: 15px 3px 15px 15px;
         right: -3px;
       }
-
     }
-
   }
-
 }
-
 
 .table-row-group {
   border-top: 1px solid $border-colour;
@@ -318,7 +278,6 @@
 }
 
 .table-show-more-link {
-
   @include core-16;
   color: $secondary-text-colour;
   margin-bottom: $gutter * 1.3333;
@@ -329,7 +288,6 @@
   .table + & {
     margin-top: -$gutter;
   }
-
 }
 
 a.table-show-more-link {
@@ -358,4 +316,8 @@ a.table-show-more-link {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.do-not-truncate-text {
+  white-space: normal !important;
 }

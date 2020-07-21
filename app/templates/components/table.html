@@ -101,7 +101,7 @@
       {% if truncate %}
         <div class="truncate-text" title="{{ text }}">{{text}}</div>
       {% else %}
-        {{ text + '- asdfkj;jas ;dfjas ;dfhas; dfjas;d fjasd;k fas;df has;d fasd;h end' }}
+        <div class="do-not-truncate-text" title="{{ text }}">{{text}}</div>
       {% endif %}
     {% endif %}
   {% endcall %}
