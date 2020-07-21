@@ -1,0 +1,54 @@
+<p>
+  When you send a message it moves through different states in GC Notify.
+</p>
+<p>
+  You can check the outcome to see whether the message was successfully delivered or failed and track the number of messages sent and their status after sending in the real-time dashboard.
+</p>
+<p>For example:</p>
+
+<img />
+
+<p>
+  For security reasons, this information is only available for 7 days after a message has been sent. You can download a report, including a list of sent messages, for your own records.
+</p>
+
+<h2 class="heading-medium">Types of message status</h2>
+<p>
+  GC Notify has the following types of message delivery status:
+</p>
+
+<h3 class="heading-small">Sending</h3>
+<p>
+  This means that GC Notify has sent the message to the email or cellular provider. If a text message was sent internationally, some countries do not provide any additional delivery information.
+</p>
+
+<h3 class="heading-small">Delivered</h3>
+<p>
+  This means the message was successfully delivered to a user’s inbox or phone. GC Notify will not tell you if a user has opened or read a message.
+</p>
+
+<h3 class="heading-small">Failed</h3>
+<p>
+  If a message fails to be delivered, you can retry after 72 hours or try a different channel. A message may fail to be delivered for several reasons: 
+</p>
+
+<ul class="list-bullet">
+  <li class="pt-4">
+    <p class="font-bold" style="margin-bottom: 0">The email address or phone number does not exist</p>
+    <p>
+      This means the provider could not deliver the message because the email address or phone number was wrong. You should remove these contacts from your database. You might still be charged for text messages to numbers that do not exist.
+    </p>
+  </li>
+  <li class="pt-4">
+    <p class="font-bold" style="margin-bottom: 0">The recipient is not accepting messages right now</p>
+    <p>
+      This means the provider could not deliver the message after trying for 72 hours. This can happen when a recipient’s inbox is full or when their phone is off. You can try to send the message again. You might still  be charged for text messages to numbers that do not exist.
+    </p>
+  </li>
+  <li class="pt-4">
+    <p class="font-bold" style="margin-bottom: 0">Technical failure</p>
+    <p>
+      This means there was a connection problem between Notify and the email or cellular provider. You’ll have to try sending your messages again. You will not becharged for text messages that are affected by a technical failure.
+    </p>
+  </li>
+</ul>
