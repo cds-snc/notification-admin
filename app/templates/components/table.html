@@ -101,7 +101,7 @@
       {% if truncate %}
         <div class="truncate-text" title="{{ text }}">{{text}}</div>
       {% else %}
-        {{ text }}
+        <div class="do-not-truncate-text" title="{{ text }}">{{text}}</div>
       {% endif %}
     {% endif %}
   {% endcall %}
