@@ -1158,15 +1158,15 @@ class PDFUploadForm(StripWhitespaceForm):
     )
 
 
-class EmailFieldInWhitelist(EmailField, StripWhitespaceStringField):
+class EmailFieldInSafelist(EmailField, StripWhitespaceStringField):
     pass
 
 
-class InternationalPhoneNumberInWhitelist(InternationalPhoneNumber, StripWhitespaceStringField):
+class InternationalPhoneNumberInSafelist(InternationalPhoneNumber, StripWhitespaceStringField):
     pass
 
 
-class Whitelist(StripWhitespaceForm):
+class Safelist(StripWhitespaceForm):
 
     def populate(self, email_addresses, phone_numbers):
         for form_field, existing_whitelist in (
@@ -1177,7 +1177,7 @@ class Whitelist(StripWhitespaceForm):
                 form_field[index].data = value
 
     email_addresses = FieldList(
-        EmailFieldInWhitelist(
+        EmailFieldInSafelist(
             '',
             validators=[
                 Optional(),
@@ -1191,7 +1191,7 @@ class Whitelist(StripWhitespaceForm):
     )
 
     phone_numbers = FieldList(
-        InternationalPhoneNumberInWhitelist(
+        InternationalPhoneNumberInSafelist(
             '',
             validators=[
                 Optional()
