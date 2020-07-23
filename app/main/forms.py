@@ -37,7 +37,7 @@ from wtforms.widgets import CheckboxInput, ListWidget
 
 from app import format_thousands
 from app.main.validators import (
-    Blacklist,
+    Blocklist,
     CsvFileValidator,
     DoesNotStartWithDoubleZero,
     LettersNumbersAndFullStopsOnly,
@@ -163,7 +163,7 @@ def password(label=_l('Password')):
     return PasswordField(label,
                          validators=[DataRequired(message=_l('This cannot be empty')),
                                      Length(8, 255, message=_l('Must be at least 8 characters')),
-                                     Blacklist(message=_l('Choose a password that’s harder to guess'))])
+                                     Blocklist(message=_l('Choose a password that’s harder to guess'))])
 
 
 class TwoFactorCode(StringField):
