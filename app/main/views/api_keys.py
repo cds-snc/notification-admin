@@ -19,9 +19,9 @@ from app import (
 from app.main import main
 from app.main.forms import (
     CreateKeyForm,
+    Safelist,
     ServiceDeliveryStatusCallbackForm,
     ServiceReceiveMessagesCallbackForm,
-    Safelist,
 )
 from app.notify_client.api_key_api_client import (
     KEY_TYPE_NORMAL,

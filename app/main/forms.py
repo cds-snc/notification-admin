@@ -1169,11 +1169,11 @@ class InternationalPhoneNumberInSafelist(InternationalPhoneNumber, StripWhitespa
 class Safelist(StripWhitespaceForm):
 
     def populate(self, email_addresses, phone_numbers):
-        for form_field, existing_whitelist in (
+        for form_field, existing_safelist in (
             (self.email_addresses, email_addresses),
             (self.phone_numbers, phone_numbers)
         ):
-            for index, value in enumerate(existing_whitelist):
+            for index, value in enumerate(existing_safelist):
                 form_field[index].data = value
 
     email_addresses = FieldList(
