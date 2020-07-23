@@ -29,8 +29,8 @@
       {% endif %}
       {% if job and job.original_file_name != 'Report' %}
         {% set destination =
-          {'letter': 'an address', 'email': 'an email address', 'sms': 'a phone number'} %}
-        to {{ destination[template.template_type] }} from
+          {'letter': _('an address'), 'email': _('an email address'), 'sms': _('a phone number')} %}
+        {{ _('to') }} {{ destination[template.template_type] }} {{ _('from') }}
         <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id) }}">{{ job.original_file_name }}</a>
       {% elif created_by %}
         {{ _('by') }} {{ created_by.name }}
