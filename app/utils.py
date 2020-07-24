@@ -15,6 +15,7 @@ import pyexcel
 import pyexcel_xlsx
 from dateutil import parser
 from flask import abort, current_app, redirect, request, session, url_for
+from flask_babel import _
 from flask_login import current_user, login_required
 from notifications_utils.field import Field
 from notifications_utils.formatters import make_quotes_smart
@@ -136,26 +137,26 @@ def get_errors_for_csv(recipients, template_type):
         number_of_bad_recipients = len(list(recipients.rows_with_bad_recipients))
         if 'sms' == template_type:
             if 1 == number_of_bad_recipients:
-                errors.append("fix 1 phone number")
+                errors.append(_("fix") + " 1 " + _("phone number"))
             else:
-                errors.append("fix {} phone numbers".format(number_of_bad_recipients))
+                errors.append(_("fix") + " {} ".format(number_of_bad_recipients) + _("phone numbers"))
         elif 'email' == template_type:
             if 1 == number_of_bad_recipients:
-                errors.append("fix 1 email address")
+                errors.append(_("fix") + " 1 " + _("email address"))
             else:
-                errors.append("fix {} email addresses".format(number_of_bad_recipients))
+                errors.append(_("fix") + " {} ".format(number_of_bad_recipients) + _("email addresses"))
         elif 'letter' == template_type:
             if 1 == number_of_bad_recipients:
-                errors.append("fix 1 address")
+                errors.append(_("fix") + " 1 " + _("address"))
             else:
-                errors.append("fix {} addresses".format(number_of_bad_recipients))
+                errors.append(_("fix") + " {} ".format(number_of_bad_recipients) + _("addresses"))
 
     if any(recipients.rows_with_missing_data):
         number_of_rows_with_missing_data = len(list(recipients.rows_with_missing_data))
         if 1 == number_of_rows_with_missing_data:
-            errors.append("enter missing data in 1 row")
+            errors.append(_("enter missing data in 1 row"))
         else:
-            errors.append("enter missing data in {} rows".format(number_of_rows_with_missing_data))
+            errors.append(_("enter missing data in {} rows").format(number_of_rows_with_missing_data))
 
     return errors
 

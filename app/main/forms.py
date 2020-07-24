@@ -135,7 +135,7 @@ class UKMobileNumber(TelField):
         try:
             validate_phone_number(self.data)
         except InvalidPhoneError as e:
-            raise ValidationError(str(e))
+            raise ValidationError(_l(str(e)))
 
 
 class InternationalPhoneNumber(TelField):
@@ -144,7 +144,7 @@ class InternationalPhoneNumber(TelField):
             if self.data:
                 validate_phone_number(self.data, international=True)
         except InvalidPhoneError as e:
-            raise ValidationError(str(e))
+            raise ValidationError(_l(str(e)))
 
 
 def uk_mobile_number(label='Mobile number'):
@@ -969,7 +969,7 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
                     validate_phone_number(num.data)
                     return True
                 except InvalidPhoneError:
-                    raise ValidationError('Must be a valid phone number')
+                    raise ValidationError(_l('Must be a valid phone number'))
             self.phone_number.validators = [DataRequired(), Length(min=5, max=20), valid_phone_number]
 
         return super().validate()
