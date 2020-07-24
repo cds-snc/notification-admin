@@ -32,14 +32,14 @@ def test_form_class_not_mutated(app_):
     (False, 'phone number', 'sms', '6502532222', None),
     (False, 'phone number', 'sms', '+16502532222', None),
 
-    (True, 'phone number', 'sms', '+123', 'Not a valid international number'),
+    (True, 'phone number', 'sms', '+123', 'Enter a valid phone number'),
     (True, 'phone number', 'sms', '+16502532222', None),
     (True, 'phone number', 'sms', '+4966921809', None),
 
     (False, 'anything else', 'sms', '', 'This cannot be empty'),
     (False, 'anything else', 'email', '', 'This cannot be empty'),
 
-    (True, 'phone number', 'sms', 'invalid', 'Not a valid international number'),
+    (True, 'phone number', 'sms', 'invalid', 'Enter a valid phone number'),
     (True, 'phone number', 'email', 'invalid', None),
     (True, 'phone number', 'letter', 'invalid', None),
     (True, 'email address', 'sms', 'invalid', None),
