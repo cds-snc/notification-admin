@@ -143,12 +143,12 @@ def test_should_add_user_details_to_session(
     assert session['user_details']['email'] == email_address
 
 
-def test_blacklist1_can_contact_hibp_api(app_):
+def test_blocklist1_can_contact_hibp_api(app_):
     response = pwnedpasswords.check("testing 123")
     assert response == 1       # "testing 123" respondes with 1
 
 
-def test_should_return_200_if_password_is_blacklisted(
+def test_should_return_200_if_password_is_blocked(
     client,
     mock_get_user_by_email,
     mock_login,

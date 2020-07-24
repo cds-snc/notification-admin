@@ -1,4 +1,4 @@
-blacklisted_passwords = [
+blocked_passwords = [
     'Notification',
     'notification',
     'cds',
