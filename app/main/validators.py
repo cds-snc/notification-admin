@@ -22,7 +22,7 @@ from app.utils import Spreadsheet, is_gov_user
 class Blocklist:
     def __init__(self, message=None):
         if not message:
-            message = _('Password is blacklisted.')
+            message = _('This password is not allowed. Try a different password.')
         self.message = message
 
     def __call__(self, form, field):

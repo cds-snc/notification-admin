@@ -101,7 +101,7 @@
 "Select the type of template you want to add","Sélectionnez le type de gabarit que vous voulez ajouter"
 "What’s their name?","Quel est son nom?"
 "What’s their email address?","Quelle est son adresse courriel?"
-"Password is blacklisted.","Le mot de passe est sur une liste noire."
+"This password is not allowed. Try a different password.","Ce mot de passe n'est pas autorisé. Essayez un autre mot de passe."
 "Not a csv file","Il ne s’agit pas d’un fichier CSV"
 "is not a spreadsheet that GC Notify can read","n’est pas une feuille de calcul que GC Notification peut lire"
 "Enter a government email address.","Entrez une adresse courriel du gouvernement."

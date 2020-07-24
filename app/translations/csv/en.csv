@@ -100,7 +100,7 @@
 "Select the type of template you want to add",""
 "What’s their name?",""
 "What’s their email address?",""
-"Password is blacklisted.",""
+"This password is not allowed. Try a different password.",""
 "Not a csv file",""
 "is not a spreadsheet that GC Notify can read",""
 "Enter a government email address.",""
