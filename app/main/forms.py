@@ -37,7 +37,7 @@ from wtforms.widgets import CheckboxInput, ListWidget
 
 from app import format_thousands
 from app.main.validators import (
-    Blacklist,
+    Blocklist,
     CsvFileValidator,
     DoesNotStartWithDoubleZero,
     LettersNumbersAndFullStopsOnly,
@@ -163,7 +163,7 @@ def password(label=_l('Password')):
     return PasswordField(label,
                          validators=[DataRequired(message=_l('This cannot be empty')),
                                      Length(8, 255, message=_l('Must be at least 8 characters')),
-                                     Blacklist(message=_l('Choose a password that’s harder to guess'))])
+                                     Blocklist(message=_l('Choose a password that’s harder to guess'))])
 
 
 class TwoFactorCode(StringField):
@@ -1158,26 +1158,26 @@ class PDFUploadForm(StripWhitespaceForm):
     )
 
 
-class EmailFieldInWhitelist(EmailField, StripWhitespaceStringField):
+class EmailFieldInSafelist(EmailField, StripWhitespaceStringField):
     pass
 
 
-class InternationalPhoneNumberInWhitelist(InternationalPhoneNumber, StripWhitespaceStringField):
+class InternationalPhoneNumberInSafelist(InternationalPhoneNumber, StripWhitespaceStringField):
     pass
 
 
-class Whitelist(StripWhitespaceForm):
+class Safelist(StripWhitespaceForm):
 
     def populate(self, email_addresses, phone_numbers):
-        for form_field, existing_whitelist in (
+        for form_field, existing_safelist in (
             (self.email_addresses, email_addresses),
             (self.phone_numbers, phone_numbers)
         ):
-            for index, value in enumerate(existing_whitelist):
+            for index, value in enumerate(existing_safelist):
                 form_field[index].data = value
 
     email_addresses = FieldList(
-        EmailFieldInWhitelist(
+        EmailFieldInSafelist(
             '',
             validators=[
                 Optional(),
@@ -1191,7 +1191,7 @@ class Whitelist(StripWhitespaceForm):
     )
 
     phone_numbers = FieldList(
-        InternationalPhoneNumberInWhitelist(
+        InternationalPhoneNumberInSafelist(
             '',
             validators=[
                 Optional()

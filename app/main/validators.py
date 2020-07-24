@@ -15,14 +15,14 @@ from wtforms import ValidationError
 from wtforms.validators import Email
 
 from app import formatted_list
-from app.main._blacklisted_passwords import blacklisted_passwords
+from app.main._blocked_passwords import blocked_passwords
 from app.utils import Spreadsheet, is_gov_user
 
 
-class Blacklist:
+class Blocklist:
     def __init__(self, message=None):
         if not message:
-            message = _('Password is blacklisted.')
+            message = _('This password is not allowed. Try a different password.')
         self.message = message
 
     def __call__(self, form, field):
@@ -44,7 +44,7 @@ class Blacklist:
             if hibp_bad_password_found:
                 raise ValidationError(self.message)
 
-        if field.data in blacklisted_passwords:
+        if field.data in blocked_passwords:
             raise ValidationError(self.message)
 
 
