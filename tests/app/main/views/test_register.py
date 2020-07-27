@@ -94,7 +94,7 @@ def test_process_register_returns_200_when_mobile_number_is_invalid(
                                  'password': 'rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02'})
 
     assert response.status_code == 200
-    assert 'Not a valid international number' in response.get_data(as_text=True)
+    assert 'Enter a valid phone number' in response.get_data(as_text=True)
 
 
 def test_should_return_200_when_email_is_not_gov_uk(

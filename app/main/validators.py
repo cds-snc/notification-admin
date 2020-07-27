@@ -90,7 +90,7 @@ class ValidEmail(Email):
         try:
             validate_email_address(field.data)
         except InvalidEmailError:
-            raise ValidationError(self.message)
+            raise ValidationError(_l(self.message))
 
         return super().__call__(form, field)
 

@@ -218,7 +218,7 @@ def test_registration_from_org_invite_404s_if_user_not_in_session(
         'name': 'Bad Mobile',
         'mobile_number': 'not good',
         'password': 'validPassword!'
-    }, 'Not a valid international number'],
+    }, 'Enter a valid phone number'],
     [{
         'name': 'Bad Password',
         'mobile_number': '+4966921809',

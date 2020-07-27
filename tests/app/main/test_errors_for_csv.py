@@ -60,11 +60,13 @@ MockRecipients = namedtuple(
     ]
 )
 def test_get_errors_for_csv(
+    app_,
     rows_with_bad_recipients, rows_with_missing_data,
     template_type,
     expected_errors
 ):
-    assert get_errors_for_csv(
-        MockRecipients(rows_with_bad_recipients, rows_with_missing_data),
-        template_type
-    ) == expected_errors
+    with app_.test_request_context():
+        assert get_errors_for_csv(
+            MockRecipients(rows_with_bad_recipients, rows_with_missing_data),
+            template_type
+        ) == expected_errors
