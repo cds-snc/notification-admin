@@ -11,26 +11,5 @@
     <h1 class="heading-large">
       {{ _('Thanks for contacting us') }}
     </h1>
-    <p style="display:none;">
-      {% if out_of_hours_emergency %}
-        We’ll reply in the next 30 minutes.
-      {% else %}
-        {% if email_address_provided %}
-          {% if out_of_hours %}
-            We’ll reply within one working day.
-          {% else %}
-            We’ll read your message in the next 30 minutes and reply within one
-            working day.
-          {% endif %}
-        {% else %}
-          {% if out_of_hours %}
-            We’ll read your message when we’re back in the office.
-          {% else %}
-            We’ll read your message in the next 30 minutes.
-          {% endif %}
-        {% endif %}
-      {% endif %}
-    </p>
-
 
 {% endblock %}

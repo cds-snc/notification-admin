@@ -80,7 +80,7 @@ class _MockS3Object():
             ),
             (
                 [],
-                partial(url_for, 'main.support'),
+                partial(url_for, 'main.feedback', ticket_type="ask-question-give-feedback"),
             ),
         ]
     ),
