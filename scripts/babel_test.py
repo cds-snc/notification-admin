@@ -6,7 +6,7 @@ extra_keys_in_app = set([
     'French Government of Canada signature',  # constant
     'Empty',  # template_list.py
     '1 template',  # template_list.py
-    'Enter a valid phone number',  # a validation liberary
+    'Not a valid phone number',  # a validation liberary
     'bad invitation link',  # api
     'invitation expired',  # api
     'password',  # api

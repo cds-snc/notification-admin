@@ -77,7 +77,7 @@
         {% if item[column].error and not recipients.missing_column_headers %}
           {% call field() %}
             <span>
-              <span class="table-field-error-label">{{ item[column].error }}</span>
+              <span class="table-field-error-label">{{ _(item[column].error) }}</span>
               {{ item[column].data if item[column].data != None }}
             </span>
           {% endcall %}
