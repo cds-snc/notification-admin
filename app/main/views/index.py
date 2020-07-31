@@ -271,7 +271,9 @@ def integration_testing():
     return render_template('views/integration-testing.html'), 410
 
 
+# Only linked from authenticated pages. See #1025
 @main.route('/callbacks')
+@user_is_logged_in
 def callbacks():
     return render_template('views/callbacks.html')
 
