@@ -876,6 +876,19 @@ class ContactNotifyTeam(StripWhitespaceForm):
     feedback = TextAreaField(_l('Message'), validators=[DataRequired(message=not_empty)])
 
 
+class SelectLogoForm(StripWhitespaceForm):
+    file = FileField_wtf('Upload a PNG logo', validators=[FileAllowed(['png'], 'PNG Images only!')])
+    branding_type = SelectField(
+        'Type of logo',
+        choices=[
+            ('__FIP-EN__', _l('English GC logo')),
+            ('__FIP-FR__', _l('French GC logo')),
+            ('custom', _l('Custom logo')),
+        ],
+        validators=[DataRequired()]
+    )
+
+
 class Feedback(StripWhitespaceForm):
     name = StringField(_l('Your name'), validators=[
         DataRequired(message="This cannot be empty"),

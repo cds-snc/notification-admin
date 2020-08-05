@@ -41,6 +41,7 @@ from app.main.forms import (
     PreviewBranding,
     RenameServiceForm,
     SearchByNameForm,
+    SelectLogoForm,
     SendingDomainForm,
     ServiceContactDetailsForm,
     ServiceDataRetentionEditForm,
@@ -1117,11 +1118,38 @@ def branding_request(service_id, logo=None):
         )
         current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
 
-    return render_template(
-        'views/service-settings/branding/manage-email-branding.html',
-        file_upload_form=file_upload_form,
+    current_branding = current_service.email_branding_id
+    
+    if current_branding is None:
+        
+        current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
+                            current_service.default_branding_is_french is True else
+                            FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+        branding_type = current_branding
+    else:
+        branding_type = 'custom'
+
+    form = SelectLogoForm(branding_type=branding_type)
+
+    if form.validate_on_submit():
+        default_branding_is_french = None
+        branding_choice = form.branding_type.data
+        if branding_choice == 'custom':
+            default_branding_is_french = None
+        if branding_choice != 'custom':
+            default_branding_is_french = (branding_choice == FieldWithLanguageOptions.FRENCH_OPTION_VALUE)
+        
+        if default_branding_is_french is not None:
+            current_service.update(
+                email_branding=None,
+                default_branding_is_french=default_branding_is_french
+            )
+        return redirect(url_for('.service_settings', service_id=service_id))
+
+    return render_template( 
+        'views/service-settings/branding/user-manage-branding.html',
+        form=form,
         cdn_url=get_logo_cdn_domain(),
-        upload_filename=upload_filename,
         logo=logo
     )
 
