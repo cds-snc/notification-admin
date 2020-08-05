@@ -877,7 +877,6 @@ class ContactNotifyTeam(StripWhitespaceForm):
 
 
 class SelectLogoForm(StripWhitespaceForm):
-    file = FileField_wtf('Upload a PNG logo', validators=[FileAllowed(['png'], 'PNG Images only!')])
     branding_type = SelectField(
         'Type of logo',
         choices=[
@@ -887,6 +886,8 @@ class SelectLogoForm(StripWhitespaceForm):
         ],
         validators=[DataRequired()]
     )
+    file = FileField_wtf('Upload a PNG logo', validators=[FileAllowed(['png'], 'PNG Images only!')])
+
 
 
 class Feedback(StripWhitespaceForm):

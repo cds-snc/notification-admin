@@ -18,15 +18,6 @@
   ) }}
   <div class="grid-row">
     <div class="column-three-quarters">
-      {% if logo %}
-        <div id="logo-img">
-          <img src="https://{{ cdn_url }}/{{ logo }}"/>
-        </div>
-      {% endif %}
-      <p>
-        {{ _('Logos should be PNG files, 108px high') }}
-      </p>
-      {{ file_upload(form.file, button_text='Update logo') }}
       {% call form_wrapper() %}
         <div class="form-group">
            {{ radios(form.branding_type) }}
@@ -37,6 +28,16 @@
           ) }}
         </div>
       {% endcall %}
+
+      {% if logo %}
+        <div id="logo-img">
+          <img src="https://{{ cdn_url }}/{{ logo }}"/>
+        </div>
+      {% endif %}
+      <p>
+        {{ _('Logos should be PNG files, 108px high') }}
+      </p>
+      {{ file_upload(form.file, button_text='Update logo') }}
     </div>
 
 {% endblock %}

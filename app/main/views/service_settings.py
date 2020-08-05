@@ -1098,25 +1098,27 @@ def link_service_to_organisation(service_id):
     )
 
 
+# SJA HERE
+
 @main.route("/services/<service_id>/branding-request/email", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/branding-request/email/<path:logo>", methods=['GET', 'POST'])
 @user_has_permissions('manage_service')
 def branding_request(service_id, logo=None):
-    file_upload_form = SVGFileUpload()
-    file_upload_form_submitted = file_upload_form.file.data
+    # file_upload_form = SVGFileUpload()
+    # file_upload_form_submitted = file_upload_form.file.data
 
-    logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
+    # logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
 
-    upload_filename = None
+    # upload_filename = None
 
-    if file_upload_form_submitted:
-        upload_filename = upload_email_logo(
-            file_upload_form.file.data.filename,
-            file_upload_form.file.data,
-            current_app.config['AWS_REGION'],
-            user_id=session["user_id"]
-        )
-        current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
+    # if file_upload_form_submitted:
+    #     upload_filename = upload_email_logo(
+    #         file_upload_form.file.data.filename,
+    #         file_upload_form.file.data,
+    #         current_app.config['AWS_REGION'],
+    #         user_id=session["user_id"]
+    #     )
+    #     current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
 
     current_branding = current_service.email_branding_id
     
@@ -1132,11 +1134,29 @@ def branding_request(service_id, logo=None):
     form = SelectLogoForm(branding_type=branding_type)
 
     if form.validate_on_submit():
+
+        print("-------------")
+        file_submitted = form.file.data
+        if file_submitted:
+            print("file submitted:", file_submitted.filename)
+            upload_filename = upload_email_logo(
+                file_submitted.filename,
+                file_submitted,
+                current_app.config['AWS_REGION'],
+                user_id=session["user_id"]
+            )
+            print("upload_filename:", upload_filename)
+
+            # current_service.update(
+            #     email_branding=upload_filename,
+            #     default_branding_is_french=None
+            # )
+
         default_branding_is_french = None
         branding_choice = form.branding_type.data
-        if branding_choice == 'custom':
-            default_branding_is_french = None
-        if branding_choice != 'custom':
+        if branding_choice == 'custom' or file_submitted:
+            default_branding_is_french = None            
+        else:
             default_branding_is_french = (branding_choice == FieldWithLanguageOptions.FRENCH_OPTION_VALUE)
         
         if default_branding_is_french is not None:
@@ -1144,7 +1164,7 @@ def branding_request(service_id, logo=None):
                 email_branding=None,
                 default_branding_is_french=default_branding_is_french
             )
-        return redirect(url_for('.service_settings', service_id=service_id))
+        # return redirect(url_for('.service_settings', service_id=service_id))
 
     return render_template( 
         'views/service-settings/branding/user-manage-branding.html',
