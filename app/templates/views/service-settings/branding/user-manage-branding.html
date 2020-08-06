@@ -11,16 +11,24 @@
 {% endblock %}
 
 {% block platform_admin_content %}
-
   {{ page_header(
-    'Update email branding',
-    back_link=url_for('.email_branding')
+    _('Choose a logo for your service'),
+    back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
+
   <div class="grid-row">
     <div class="column-three-quarters">
+      <p>{{ _('Consistent branding helps to instill trust in the email messages you send to  people.') }}</p>
+
+      <h2 class="heading-medium">{{ _('Use the federal government signature') }}</h2>
+      <p>{{ _('To help build trust in government, use the Government of Canada signature for more consistent communications.') }}</p>
+      
       {% call form_wrapper() %}
         <div class="form-group">
-           {{ radios(form.branding_type) }}
+          {{ radios(form.branding_type) }}
+          {% if using_custom_branding %}
+            <p> {{ _('If you switch from your custom logo you will have to upload it again.') }}</p>
+          {% endif %}
           {{ page_footer(
             _('Save'),
             button_name='operation',
@@ -29,15 +37,19 @@
         </div>
       {% endcall %}
 
+      {% if using_custom_branding %}
+        <h2 class="heading-medium">{{ _('Replace custom logo') }}</h2>
+      {% else %}
+        <h2 class="heading-medium">{{ _('Upload new custom logo') }}</h2>
+      {% endif %}
+      <p>{{ _('Make sure your logo is a PNG file and exactly 108 pixels tall to fit correctly in email messages.') }}</p>
+
       {% if logo %}
         <div id="logo-img">
           <img src="https://{{ cdn_url }}/{{ logo }}"/>
         </div>
       {% endif %}
-      <p>
-        {{ _('Logos should be PNG files, 108px high') }}
-      </p>
-      <p>{{ _('We will review your branding and implement it.') }}</p>
+
       {% if upload_filename %}
         <div>
           <p>{{ _('Your logo has been uploaded, and a branding request has been made to our support team.') }}</p>
@@ -47,7 +59,9 @@
         </div>
       {% endif %}
 
-      {{ file_upload(form.file, button_text='Update logo') }}
+      {{ file_upload(form.file, button_text='Upload logo') }}
+      <br/>
+      <p>{{ _('We will review and implement your new logo.') }}</p>
     </div>
 
 {% endblock %}

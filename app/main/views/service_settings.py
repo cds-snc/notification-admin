@@ -1099,7 +1099,8 @@ def link_service_to_organisation(service_id):
     )
 
 
-# SJA HERE
+# SJA Do we want to put logo (or the current logo) somewhere?
+# Where does the /logo url get used?
 
 @main.route("/services/<service_id>/branding-request/email", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/branding-request/email/<path:logo>", methods=['GET', 'POST'])
@@ -1151,6 +1152,8 @@ def branding_request(service_id, logo=None):
     return render_template( 
         'views/service-settings/branding/user-manage-branding.html',
         form=form,
+        logo=logo,
+        using_custom_branding=current_service.email_branding_id != None,
         cdn_url=get_logo_cdn_domain(),
         upload_filename=upload_filename,
     )
