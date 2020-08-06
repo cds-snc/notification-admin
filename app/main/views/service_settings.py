@@ -1109,17 +1109,6 @@ def branding_request(service_id, logo=None):
 
     # logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
 
-    # upload_filename = None
-
-    # if file_upload_form_submitted:
-    #     upload_filename = upload_email_logo(
-    #         file_upload_form.file.data.filename,
-    #         file_upload_form.file.data,
-    #         current_app.config['AWS_REGION'],
-    #         user_id=session["user_id"]
-    #     )
-    #     current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
-
     current_branding = current_service.email_branding_id
     
     if current_branding is None:
@@ -1134,23 +1123,15 @@ def branding_request(service_id, logo=None):
     form = SelectLogoForm(branding_type=branding_type)
 
     if form.validate_on_submit():
-
-        print("-------------")
         file_submitted = form.file.data
         if file_submitted:
-            print("file submitted:", file_submitted.filename)
             upload_filename = upload_email_logo(
                 file_submitted.filename,
                 file_submitted,
                 current_app.config['AWS_REGION'],
                 user_id=session["user_id"]
             )
-            print("upload_filename:", upload_filename)
-
-            # current_service.update(
-            #     email_branding=upload_filename,
-            #     default_branding_is_french=None
-            # )
+            current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
 
         default_branding_is_french = None
         branding_choice = form.branding_type.data
