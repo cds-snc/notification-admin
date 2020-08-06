@@ -1151,7 +1151,7 @@ def branding_request(service_id, logo=None):
         'views/service-settings/branding/user-manage-branding.html',
         form=form,
         cdn_url=get_logo_cdn_domain(),
-        logo=logo
+        upload_filename=upload_filename,
     )
 
 

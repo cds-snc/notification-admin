@@ -37,6 +37,16 @@
       <p>
         {{ _('Logos should be PNG files, 108px high') }}
       </p>
+      <p>{{ _('We will review your branding and implement it.') }}</p>
+      {% if upload_filename %}
+        <div>
+          <p>{{ _('Your logo has been uploaded, and a branding request has been made to our support team.') }}</p>
+        </div>
+        <div id="logo-img">
+          <img src="https://{{ cdn_url }}/{{ upload_filename }}"/>
+        </div>
+      {% endif %}
+
       {{ file_upload(form.file, button_text='Update logo') }}
     </div>
 
