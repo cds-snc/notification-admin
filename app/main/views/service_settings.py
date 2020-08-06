@@ -41,7 +41,8 @@ from app.main.forms import (
     PreviewBranding,
     RenameServiceForm,
     SearchByNameForm,
-    SelectLogoForm,
+    SelectLogoFormWithoutCustom,
+    SelectLogoFormWithCustom,
     SendingDomainForm,
     ServiceContactDetailsForm,
     ServiceDataRetentionEditForm,
@@ -1112,16 +1113,16 @@ def branding_request(service_id, logo=None):
     current_branding = current_service.email_branding_id
     
     if current_branding is None:
-        
         current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
                             current_service.default_branding_is_french is True else
                             FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
         branding_type = current_branding
+        form = SelectLogoFormWithoutCustom(branding_type=branding_type)
     else:
         branding_type = 'custom'
+        form = SelectLogoFormWithCustom(branding_type=branding_type)
 
-    form = SelectLogoForm(branding_type=branding_type)
-
+    upload_filename = None
     if form.validate_on_submit():
         file_submitted = form.file.data
         if file_submitted:
@@ -1145,7 +1146,7 @@ def branding_request(service_id, logo=None):
                 email_branding=None,
                 default_branding_is_french=default_branding_is_french
             )
-        # return redirect(url_for('.service_settings', service_id=service_id))
+            return redirect(url_for('.service_settings', service_id=service_id))
 
     return render_template( 
         'views/service-settings/branding/user-manage-branding.html',

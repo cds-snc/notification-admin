@@ -876,7 +876,19 @@ class ContactNotifyTeam(StripWhitespaceForm):
     feedback = TextAreaField(_l('Message'), validators=[DataRequired(message=not_empty)])
 
 
-class SelectLogoForm(StripWhitespaceForm):
+class SelectLogoFormWithoutCustom(StripWhitespaceForm):
+    branding_type = SelectField(
+        'Type of logo',
+        choices=[
+            ('__FIP-EN__', _l('English GC logo')),
+            ('__FIP-FR__', _l('French GC logo')),
+        ],
+        validators=[DataRequired()]
+    )
+    file = FileField_wtf('Upload a PNG logo', validators=[FileAllowed(['png'], 'PNG Images only!')])
+
+
+class SelectLogoFormWithCustom(StripWhitespaceForm):
     branding_type = SelectField(
         'Type of logo',
         choices=[
@@ -887,7 +899,6 @@ class SelectLogoForm(StripWhitespaceForm):
         validators=[DataRequired()]
     )
     file = FileField_wtf('Upload a PNG logo', validators=[FileAllowed(['png'], 'PNG Images only!')])
-
 
 
 class Feedback(StripWhitespaceForm):
