@@ -41,8 +41,7 @@ from app.main.forms import (
     PreviewBranding,
     RenameServiceForm,
     SearchByNameForm,
-    SelectLogoFormWithoutCustom,
-    SelectLogoFormWithCustom,
+    SelectLogoForm,
     SendingDomainForm,
     ServiceContactDetailsForm,
     ServiceDataRetentionEditForm,
@@ -1112,16 +1111,22 @@ def branding_request(service_id, logo=None):
     # logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
 
     current_branding = current_service.email_branding_id
-    
+    choices = [ ('__FIP-EN__', _('English GC logo')), ('__FIP-FR__', _('French GC logo'))]
+
     if current_branding is None:
         current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
                             current_service.default_branding_is_french is True else
                             FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
-        branding_type = current_branding
-        form = SelectLogoFormWithoutCustom(branding_type=branding_type)
+        branding_style = current_branding
     else:
-        branding_type = 'custom'
-        form = SelectLogoFormWithCustom(branding_type=branding_type)
+        branding_style = 'custom'
+        choices.append(('custom', _('Custom logo')))
+
+    form = SelectLogoForm(
+        label = _('Type of logo'),
+        choices=choices,
+        branding_style=branding_style,
+    )
 
     upload_filename = None
     if form.validate_on_submit():
@@ -1136,7 +1141,7 @@ def branding_request(service_id, logo=None):
             current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
 
         default_branding_is_french = None
-        branding_choice = form.branding_type.data
+        branding_choice = form.branding_style.data
         if branding_choice == 'custom' or file_submitted:
             default_branding_is_french = None            
         else:

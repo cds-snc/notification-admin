@@ -22,9 +22,15 @@
       <h2 class="heading-medium">{{ _('Use the federal government signature') }}</h2>
       <p>{{ _('To help build trust in government, use the Government of Canada signature for more consistent communications.') }}</p>
       
+      {# {% call form_wrapper(data_kwargs={'preview-type': 'email'}) %}
+        <div class="grid-row">
+          <div class="column-full preview-pane">
+          </div>
+        </div> #}
+
       {% call form_wrapper() %}
         <div class="form-group">
-          {{ radios(form.branding_type) }}
+          {{ radios(form.branding_style) }}
           {% if using_custom_branding %}
             <p> {{ _('If you switch from your custom logo you will have to upload it again.') }}</p>
           {% endif %}
