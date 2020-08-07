@@ -878,7 +878,7 @@ class ContactNotifyTeam(StripWhitespaceForm):
 
 class SelectLogoFormWithoutCustom(StripWhitespaceForm):
     branding_type = SelectField(
-        'Type of logo',
+        _l('Type of logo'),
         choices=[
             ('__FIP-EN__', _l('English GC logo')),
             ('__FIP-FR__', _l('French GC logo')),
@@ -890,7 +890,7 @@ class SelectLogoFormWithoutCustom(StripWhitespaceForm):
 
 class SelectLogoFormWithCustom(StripWhitespaceForm):
     branding_type = SelectField(
-        'Type of logo',
+        _l('Type of logo'),
         choices=[
             ('__FIP-EN__', _l('English GC logo')),
             ('__FIP-FR__', _l('French GC logo')),
