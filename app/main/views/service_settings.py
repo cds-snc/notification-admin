@@ -1120,7 +1120,7 @@ def branding_request(service_id, logo=None):
         branding_style = current_branding
     else:
         branding_style = 'custom'
-        choices.append(('custom', _('Custom logo')))
+        choices.append(('custom', _('Custom {} logo').format(current_service.name)))
 
     form = SelectLogoForm(
         label = _('Type of logo'),

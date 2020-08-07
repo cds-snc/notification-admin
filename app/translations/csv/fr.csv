@@ -919,7 +919,7 @@
 "Type of logo","Type de logo"
 "English GC logo","Logo du GC en anglais"
 "French GC logo","Logo du GC en français"
-"Custom logo","Logo personnalisé de Nom du service"
+"Custom {} logo","Logo personnalisé de {}"
 "We’re checking that ","Nous vérifions que l'adresse "
 "is a real email address.","est valide."
 "This can take a minute","Cela peut prendre une minute"
