@@ -56,7 +56,6 @@ from app.main.forms import (
     SetEmailBranding,
     SetLetterBranding,
     SMSPrefixForm,
-    SVGFileUpload,
 )
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
@@ -1111,7 +1110,7 @@ def branding_request(service_id, logo=None):
     # logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
 
     current_branding = current_service.email_branding_id
-    choices = [ ('__FIP-EN__', _('English GC logo')), ('__FIP-FR__', _('French GC logo'))]
+    choices = [('__FIP-EN__', _('English GC logo')), ('__FIP-FR__', _('French GC logo'))]
 
     if current_branding is None:
         current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
@@ -1123,7 +1122,7 @@ def branding_request(service_id, logo=None):
         choices.append(('custom', _('Custom {} logo').format(current_service.name)))
 
     form = SelectLogoForm(
-        label = _('Type of logo'),
+        label=_('Type of logo'),
         choices=choices,
         branding_style=branding_style,
     )
@@ -1143,10 +1142,10 @@ def branding_request(service_id, logo=None):
         default_branding_is_french = None
         branding_choice = form.branding_style.data
         if branding_choice == 'custom' or file_submitted:
-            default_branding_is_french = None            
+            default_branding_is_french = None
         else:
             default_branding_is_french = (branding_choice == FieldWithLanguageOptions.FRENCH_OPTION_VALUE)
-        
+
         if default_branding_is_french is not None:
             current_service.update(
                 email_branding=None,
@@ -1154,11 +1153,11 @@ def branding_request(service_id, logo=None):
             )
             return redirect(url_for('.service_settings', service_id=service_id))
 
-    return render_template( 
+    return render_template(
         'views/service-settings/branding/user-manage-branding.html',
         form=form,
         logo=logo,
-        using_custom_branding=current_service.email_branding_id != None,
+        using_custom_branding=current_service.email_branding_id is not None,
         cdn_url=get_logo_cdn_domain(),
         upload_filename=upload_filename,
     )

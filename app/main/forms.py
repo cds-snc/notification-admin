@@ -876,13 +876,12 @@ class ContactNotifyTeam(StripWhitespaceForm):
     feedback = TextAreaField(_l('Message'), validators=[DataRequired(message=not_empty)])
 
 
-
 class SelectLogoForm(StripWhitespaceForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.branding_style.choices = kwargs['choices']
         self.branding_style.label.text = kwargs['label']
-        self.branding_style.validators=[DataRequired()]
+        self.branding_style.validators = [DataRequired()]
 
     branding_style = SelectField()
     file = FileField_wtf('Upload a PNG logo', validators=[FileAllowed(['png'], 'PNG Images only!')])
