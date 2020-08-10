@@ -78,7 +78,12 @@
       {% endif %}
     >
     <label class="block-label" for="{{ option.id }}">
-      {{ option.label.text }}
+      {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
+      {% if '||' in option.label.text %}
+        <div id="logo-img">
+          <img src={{option.label.text.split("||")[1] }}>
+        </div>
+      {% endif %}
       {% if option_hints[option.data] %}
         <div class="block-label-hint">
           {{ option_hints[option.data] }}

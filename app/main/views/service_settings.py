@@ -1110,7 +1110,11 @@ def branding_request(service_id, logo=None):
     # logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
 
     current_branding = current_service.email_branding_id
-    choices = [('__FIP-EN__', _('English GC logo')), ('__FIP-FR__', _('French GC logo'))]
+    default_en_filename = "https://notification-alpha-canada-ca-cdn.s3.amazonaws.com/gov-canada-en.svg"
+    default_fr_filename = "https://notification-alpha-canada-ca-cdn.s3.amazonaws.com/gov-canada-fr.svg"
+    choices = [
+        ('__FIP-EN__', _('English GC logo') + '||' + default_en_filename),
+        ('__FIP-FR__', _('French GC logo') + '||' + default_fr_filename)]
 
     if current_branding is None:
         current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
@@ -1126,7 +1130,6 @@ def branding_request(service_id, logo=None):
         choices=choices,
         branding_style=branding_style,
     )
-
     upload_filename = None
     if form.validate_on_submit():
         file_submitted = form.file.data
