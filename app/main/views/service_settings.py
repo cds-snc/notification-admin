@@ -1110,20 +1110,22 @@ def branding_request(service_id, logo=None):
     # logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
 
     current_branding = current_service.email_branding_id
-    default_en_filename = "https://notification-alpha-canada-ca-cdn.s3.amazonaws.com/gov-canada-en.svg"
-    default_fr_filename = "https://notification-alpha-canada-ca-cdn.s3.amazonaws.com/gov-canada-fr.svg"
+    cdn_url = "https://" + get_logo_cdn_domain()
+    default_en_filename = cdn_url + "/gov-canada-en.svg"
+    default_fr_filename = cdn_url + "/gov-canada-fr.svg"
     choices = [
         ('__FIP-EN__', _('English GC logo') + '||' + default_en_filename),
-        ('__FIP-FR__', _('French GC logo') + '||' + default_fr_filename)]
-
+        ('__FIP-FR__', _('French GC logo') + '||' + default_fr_filename),
+    ]
     if current_branding is None:
         current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
                             current_service.default_branding_is_french is True else
                             FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
         branding_style = current_branding
     else:
+        current_branding_filename = cdn_url + '/' + current_service.email_branding['logo']
         branding_style = 'custom'
-        choices.append(('custom', _('Custom {} logo').format(current_service.name)))
+        choices.append(('custom', _('Custom {} logo').format(current_service.name) + '||' + current_branding_filename))
 
     form = SelectLogoForm(
         label=_('Type of logo'),
