@@ -1150,7 +1150,7 @@ def branding_request(service_id):
             return redirect(url_for('.service_settings', service_id=service_id))
 
     return render_template(
-        'views/service-settings/branding/user-manage-branding.html',
+        'views/service-settings/branding/manage-email-branding.html',
         form=form,
         using_custom_branding=current_service.email_branding_id is not None,
         cdn_url=cdn_url,
