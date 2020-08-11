@@ -1097,22 +1097,13 @@ def link_service_to_organisation(service_id):
     )
 
 
-# SJA Do we want to put logo (or the current logo) somewhere?
-# Where does the /logo url get used?
-
 @main.route("/services/<service_id>/branding-request/email", methods=['GET', 'POST'])
-@main.route("/services/<service_id>/branding-request/email/<path:logo>", methods=['GET', 'POST'])
 @user_has_permissions('manage_service')
-def branding_request(service_id, logo=None):
-    # file_upload_form = SVGFileUpload()
-    # file_upload_form_submitted = file_upload_form.file.data
-
-    # logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
-
+def branding_request(service_id):
     current_branding = current_service.email_branding_id
-    cdn_url = "https://" + get_logo_cdn_domain()
-    default_en_filename = cdn_url + "/gov-canada-en.svg"
-    default_fr_filename = cdn_url + "/gov-canada-fr.svg"
+    cdn_url = get_logo_cdn_domain()
+    default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
+    default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
     choices = [
         ('__FIP-EN__', _('English GC logo') + '||' + default_en_filename),
         ('__FIP-FR__', _('French GC logo') + '||' + default_fr_filename),
@@ -1123,7 +1114,7 @@ def branding_request(service_id, logo=None):
                             FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
         branding_style = current_branding
     else:
-        current_branding_filename = cdn_url + '/' + current_service.email_branding['logo']
+        current_branding_filename = "https://{}/{}".format(cdn_url, current_service.email_branding['logo'])
         branding_style = 'custom'
         choices.append(('custom', _('Custom {} logo').format(current_service.name) + '||' + current_branding_filename))
 
@@ -1161,9 +1152,8 @@ def branding_request(service_id, logo=None):
     return render_template(
         'views/service-settings/branding/user-manage-branding.html',
         form=form,
-        logo=logo,
         using_custom_branding=current_service.email_branding_id is not None,
-        cdn_url=get_logo_cdn_domain(),
+        cdn_url=cdn_url,
         upload_filename=upload_filename,
     )
 

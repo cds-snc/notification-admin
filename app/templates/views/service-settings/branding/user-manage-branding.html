@@ -22,12 +22,6 @@
       <h2 class="heading-medium">{{ _('Use the federal government signature') }}</h2>
       <p>{{ _('To help build trust in government, use the Government of Canada signature for more consistent communications.') }}</p>
       
-      {# {% call form_wrapper(data_kwargs={'preview-type': 'email'}) %}
-        <div class="grid-row">
-          <div class="column-full preview-pane">
-          </div>
-        </div> #}
-
       {% call form_wrapper() %}
         <div class="form-group">
           {{ radios(form.branding_style) }}
@@ -48,12 +42,6 @@
         <h2 class="heading-medium">{{ _('Upload new custom logo') }}</h2>
       {% endif %}
       <p>{{ _('Make sure your logo is a PNG file and exactly 108 pixels tall to fit correctly in email messages.') }}</p>
-
-      {% if logo %}
-        <div id="logo-img">
-          <img src="https://{{ cdn_url }}/{{ logo }}"/>
-        </div>
-      {% endif %}
 
       {% if upload_filename %}
         <div>
