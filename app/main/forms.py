@@ -884,7 +884,7 @@ class SelectLogoForm(StripWhitespaceForm):
         self.branding_style.validators = [DataRequired()]
 
     branding_style = SelectField()
-    file = FileField_wtf('Upload a PNG logo', validators=[FileAllowed(['png'], 'PNG Images only!')])
+    file = FileField_wtf(_l('Upload logo'), validators=[FileAllowed(['png'], _l('Your logo must be an image in PNG format'))])
 
 
 class Feedback(StripWhitespaceForm):
