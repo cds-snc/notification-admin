@@ -11,9 +11,12 @@ class EmailBrandingClient(NotifyAdminAPIClient):
     def get_all_email_branding(self, sort_key=None):
         brandings = self.get(url='/email-branding')['email_branding']
 
-        if sort_key and sort_key in brandings[0]:
-            brandings.sort(key=lambda branding: branding[sort_key].lower())
-        return brandings
+        if len(brandings) > 0:
+            if sort_key and sort_key in brandings[0]:
+                brandings.sort(key=lambda branding: branding[sort_key].lower())
+            return brandings
+        else:
+            return []
 
     @cache.delete('email_branding')
     def create_email_branding(self, logo, name, text, colour, brand_type):
