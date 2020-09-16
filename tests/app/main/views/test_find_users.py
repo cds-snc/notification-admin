@@ -228,6 +228,23 @@ def test_archive_user_prompts_for_confirmation(
     assert 'Are you sure you want to archive this user?' in page.find('div', class_='banner-dangerous').text
 
 
+def test_unblock_user_resets_failed_login_count(
+    platform_admin_client,
+    api_user_active,
+    mocker,
+):
+    mock_user_client = mocker.patch('app.user_api_client.post')
+
+    response = platform_admin_client.post(
+        url_for('main.unblock_user', user_id=api_user_active['id'])
+    )
+    assert response.status_code == 302
+    assert response.location == url_for('main.user_information', user_id=api_user_active['id'], _external=True)
+    mock_user_client.assert_called_once_with(
+        '/user/{}/reset-failed-login-count'.format(api_user_active['id']), data={}
+    )
+
+
 def test_archive_user_posts_to_user_client(
     platform_admin_client,
     api_user_active,
