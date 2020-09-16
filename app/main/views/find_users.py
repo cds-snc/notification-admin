@@ -51,6 +51,7 @@ def unblock_user(user_id):
     if request.method == 'POST':
         user = User.from_id(user_id)
         user.update(blocked=False, updated_by=current_user.id)
+        user.reset_failed_login_count()
         return redirect(url_for('.user_information', user_id=user_id))
     else:
         flash([_('Are you sure you want to unblock this user?')], 'unblock')
