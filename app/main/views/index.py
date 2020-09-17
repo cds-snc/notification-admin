@@ -41,14 +41,14 @@ def index():
     form = ContactNotifyTeam()
 
     # catch with the honeypot field
-    if(form.phone.data):
-        return redirect(url_for('.feedback', ticket_type='thanks'))
+    if (form.phone.data):
+        abort(403)
 
     if form.validate_on_submit():
         # send email here
         user_api_client.send_contact_email(form.name.data, form.email_address.data, form.feedback.data, form.support_type.data)
 
-        return redirect(url_for('.feedback', ticket_type='thanks'))
+        return render_template('views/contact/thanks.html')
 
     stats = get_latest_stats(lang)
 
