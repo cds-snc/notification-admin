@@ -847,17 +847,6 @@ class CreateInboundSmsForm(StripWhitespaceForm):
             raise ValidationError(_l('This number already exists'))
 
 
-class SupportType(StripWhitespaceForm):
-    support_type = RadioField(
-        'How can we help you?',
-        choices=[
-            ('report-problem', 'Report a problem'),
-            ('ask-question-give-feedback', _l('Ask a question or give feedback')),
-        ],
-        validators=[DataRequired()]
-    )
-
-
 class ContactNotifyTeam(StripWhitespaceForm):
     not_empty = _l('This cannot be empty')
     name = StringField(_l('Your name'), validators=[DataRequired(message=not_empty)])

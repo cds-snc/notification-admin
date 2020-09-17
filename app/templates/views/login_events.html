@@ -20,7 +20,7 @@
                 <span class="relative-time-past">{{ event.created_at }}</span>
               </strong>
             </td>
-            <td class="format-ua">  
+            <td class="format-ua">
               {{ parse_ua(event.data["user-agent"]) }}
             </td>
           </tr>
@@ -30,7 +30,7 @@
 
     <br />
     <p>
-    {{ _('If this is not correct, ') }}<a href="/support/ask-question-give-feedback" target="_blank">{{ _('contact us right away') }}</a>.
+    {{ _('If this is not correct, ') }}<a href="{{ url_for('main.contact') }}" target="_blank">{{ _('contact us right away') }}</a>.
     </p>
     <a href="{{next}}" class="button">{{ _('Continue') }}</a>
     {{ page_footer(

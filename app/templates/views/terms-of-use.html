@@ -15,7 +15,7 @@
   <p>
     {{ _('As a service owner, you must accept these terms prior to being able to use GC Notify to communicate with the public.') }}
   </p>
- 
+
   <p>{{ _('To use the GC Notify service, you and your service team must:') }}</p>
   <ul class="list list-bullet">
     <li>{{ _('Get individuals’ consent to send messages and to use data they provide for this purpose.') }}</li>
@@ -37,7 +37,7 @@
   </p>
 
   <p>
-    {{ _("For questions related to these terms of use, or to report an issue, <a href='/support/ask-question-give-feedback'>contact us.</a>") }}
+    {{ _("For questions related to these terms of use, or to report an issue, <a href='{}'>contact us.</a>").format(url_for('main.contact')) }}
   </p>
 
 {% endblock %}

@@ -29,8 +29,6 @@ from app.main.forms import (
 from app.main.views.sub_navigation_dictionaries import features_nav
 from app.utils import get_latest_stats, get_logo_cdn_domain, user_is_logged_in
 
-QUESTION_TICKET_TYPE = 'ask-question-give-feedback'
-
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -75,8 +73,7 @@ def robots():
     return (
         'User-agent: *\n'
         'Disallow: /sign-in\n'
-        'Disallow: /support\n'
-        'Disallow: /support/\n'
+        'Disallow: /contact\n'
         'Disallow: /register\n'
     ), 200, {'Content-Type': 'text/plain'}
 
@@ -116,11 +113,6 @@ def pricing():
         ], key=lambda x: x[0]),
         search_form=SearchByNameForm(),
     )
-
-
-@main.route('/delivery-and-failure')
-def delivery_and_failure():
-    return redirect(url_for('.message_status'), 301)
 
 
 @main.route('/design-patterns-content-guidance')
@@ -264,11 +256,6 @@ def documentation():
     return render_template('views/documentation.html')
 
 
-@main.route('/integration-testing')
-def integration_testing():
-    return render_template('views/integration-testing.html'), 410
-
-
 # Only linked from authenticated pages. See #1025
 @main.route('/callbacks')
 @user_is_logged_in
@@ -278,7 +265,7 @@ def callbacks():
 
 # --- Features page set --- #
 
-@main.route('/features')
+@main.route('/features', endpoint='features')
 def features():
     return render_template(
         'views/features.html',
@@ -286,7 +273,7 @@ def features():
     )
 
 
-@main.route('/features/roadmap', endpoint='roadmap')
+@main.route('/roadmap', endpoint='roadmap')
 def roadmap():
     return render_template(
         'views/roadmap.html',
@@ -294,61 +281,53 @@ def roadmap():
     )
 
 
-@main.route('/features/email')
+@main.route('/email', endpoint='email')
 def features_email():
     return render_template(
-        'views/features/emails.html',
+        'views/emails.html',
         navigation_links=features_nav()
     )
 
 
-@main.route('/features/sms')
+@main.route('/sms', endpoint='sms')
 def features_sms():
     return render_template(
-        'views/features/text-messages.html',
+        'views/text-messages.html',
         navigation_links=features_nav()
     )
 
 
-@main.route('/features/letters')
+@main.route('/letters', endpoint='letters')
 def features_letters():
     return render_template(
-        'views/features/letters.html',
+        'views/letters.html',
         navigation_links=features_nav()
     )
 
 
-@main.route('/features/templates')
+@main.route('/templates', endpoint='templates')
 def features_templates():
     return render_template(
-        'views/features/templates.html',
+        'views/templates.html',
         navigation_links=features_nav()
     )
 
 
-@main.route('/features/security', endpoint='security')
+@main.route('/security', endpoint='security')
 def security():
     return render_template(
         'views/security.html'
     )
 
 
-@main.route('/features/terms', endpoint='terms')
+@main.route('/terms', endpoint='terms')
 def terms():
     return render_template(
         'views/terms-of-use.html'
     )
 
 
-@main.route('/features/using-notify')
-def using_notify():
-    return render_template(
-        'views/using-notify.html',
-        navigation_links=features_nav()
-    ), 410
-
-
-@main.route('/features/messages-status')
+@main.route('/message-status', endpoint='message_status')
 def message_status():
     return render_template(
         'views/message-status.html',
@@ -358,19 +337,13 @@ def message_status():
 
 # --- Redirects --- #
 
-@main.route('/roadmap', endpoint='old_roadmap')
-@main.route('/terms', endpoint='old_terms')
-@main.route('/information-security', endpoint='information_security')
-@main.route('/using_notify', endpoint='old_using_notify')
-@main.route('/information-risk-management', endpoint='information_risk_management')
-@main.route('/integration_testing', endpoint='old_integration_testing')
+@main.route('/features/roadmap', endpoint='redirect_roadmap')
+@main.route('/features/email', endpoint='redirect_email')
+@main.route('/features/sms', endpoint='redirect_sms')
+@main.route('/features/letters', endpoint='redirect_letters')
+@main.route('/features/templates', endpoint='redirect_templates')
+@main.route('/features/security', endpoint='redirect_security')
+@main.route('/features/terms', endpoint='redirect_terms')
+@main.route('/features/messages-status', endpoint='redirect_message_status')
 def old_page_redirects():
-    redirects = {
-        'main.old_roadmap': 'main.roadmap',
-        'main.old_terms': 'main.terms',
-        'main.information_security': 'main.using_notify',
-        'main.old_using_notify': 'main.using_notify',
-        'main.information_risk_management': 'main.security',
-        'main.old_integration_testing': 'main.integration_testing',
-    }
-    return redirect(url_for(redirects[request.endpoint]), code=301)
+    return redirect(url_for(request.endpoint.replace('redirect_', '')), code=301)

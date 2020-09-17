@@ -68,11 +68,11 @@ class ValidGovEmail:
         from flask import url_for
 
         gov_email = _("Enter a government email address.")
-        feedback_url = url_for('.feedback', ticket_type='ask-question-give-feedback')
+        contact_url = url_for('.contact')
         access_text = _("If you think you should have access")
         contact_text = _('contact us')
 
-        message = ('{} {} <a href="{}">{}</a>').format(gov_email, access_text, feedback_url, contact_text)
+        message = ('{} {} <a href="{}">{}</a>').format(gov_email, access_text, contact_url, contact_text)
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
 

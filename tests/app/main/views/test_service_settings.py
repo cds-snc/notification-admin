@@ -410,7 +410,7 @@ def test_show_restricted_service(
 
     if expected_link:
         assert request_to_live_link.text.strip() == 'contact us'
-        assert request_to_live_link['href'] == url_for('.feedback', ticket_type='ask-question-give-feedback')
+        assert request_to_live_link['href'] == url_for('.contact')
     else:
         assert not request_to_live_link
 

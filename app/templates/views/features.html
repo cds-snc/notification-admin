@@ -12,9 +12,8 @@
 <p>{{ _('If you work for the federal government, you can use GC Notify to update your users.') }}</p>
 <p>{{ _('GC Notify makes it easy to create, customize and send:') }}</p>
 <ul class="list list-bullet">
-  <li><a href="{{ url_for('main.features_email') }}">{{ _('emails') }}</a></li>
-  <li><a href="{{ url_for('main.features_sms') }}">{{ _('text messages') }}</a></li>
-  <!-- <li><a href="{{ url_for('main.features_letters') }}">letters</a></li> -->
+  <li><a href="{{ url_for('main.email') }}">{{ _('emails') }}</a></li>
+  <li><a href="{{ url_for('main.sms') }}">{{ _('text messages') }}</a></li>
 </ul>
 <p>{{ _('You do not need technical knowledge to use GC Notify.') }}</p>
 {% if not current_user.is_authenticated %}

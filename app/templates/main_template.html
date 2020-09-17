@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <title>{% block page_title %}Notification{% endblock %}</title>
-  
+
     <link
       rel="stylesheet"
       media="screen"
@@ -111,7 +111,7 @@
         send_now: "{{ _('Send now') }}",
         send_later: "{{ _('Schedule') }}"
 
-      }; 
+      };
 
     </script>
     {% block head %}{% endblock %}
@@ -144,9 +144,9 @@
           class="flex flex-col flex-col-reverse lg:flex-row py-5 lg:pt-16 lg:pb-10 lg:justify-between"
         >
           <div class="flex flex-col lg:flex-row">
-           
+
             <div class="lg:py-1">
-            {% if session["userlang"] == "en" %} 
+            {% if session["userlang"] == "en" %}
               <a href="/">
                 <img
                   alt="Government of Canada / Gouvernement du Canada"
@@ -176,7 +176,7 @@
                 <div class="bg-blue-lighter py-1 px-2 rounded-lg text-small">
                   {{ _("Alpha") }}
                 </div>
-             
+
             </div>
             </a>
           </a>
@@ -255,7 +255,7 @@
               class="text-small text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('documentation') }}"
               >{{ _('Technical documentation') }}</a>
             <a
-              href="{{ url_for('main.feedback', ticket_type='ask-question-give-feedback') }}"
+              href="{{ url_for('main.contact') }}"
               class="text-small text-blue mr-10 font-bold no-underline hover:underline"
               >{{ _('Contact us') }}
             </a>
@@ -275,7 +275,7 @@
               >{{ _('Platform admin') }}</a>
             </li>
             {% endif %}
-            
+
             <li>
               <a
                 class="text-blue font-bold block text-small mb-5 no-underline hover:underline"
@@ -291,7 +291,7 @@
             <li>
               <a
                 class="text-blue font-bold block text-small mb-5 no-underline hover:underline"
-                href="{{ url_for('main.feedback', ticket_type='ask-question-give-feedback') }}"
+                href="{{ url_for('main.contact') }}"
                 >{{ _('Contact us') }}</a>
             </li>
           </ul>
@@ -305,7 +305,7 @@
 
     {% block after_header %}{% endblock %}
 
-    
+
 
     {% block content %}{% endblock %}
     <div id="global-app-error" class="app-error hidden"></div>
@@ -348,11 +348,11 @@
             />
           </div>
         </div>
-      </div>  
+      </div>
     </footer>
 
 
-      
+
 
     {% block body_end %}{% endblock %}
 
