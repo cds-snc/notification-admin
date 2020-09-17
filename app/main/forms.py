@@ -876,18 +876,6 @@ class SelectLogoForm(StripWhitespaceForm):
     file = FileField_wtf(_l('Upload logo'), validators=[FileAllowed(['png'], _l('Your logo must be an image in PNG format'))])
 
 
-class Feedback(StripWhitespaceForm):
-    name = StringField(_l('Your name'), validators=[
-        DataRequired(message="This cannot be empty"),
-    ])
-    email_address = email_address(label=_l('Your email'), gov_user=False, required=True)
-    feedback = TextAreaField(_l('Message'), validators=[DataRequired(message="This cannot be empty")])
-
-
-class Problem(Feedback):
-    email_address = email_address(label=_l('Email address'), gov_user=False)
-
-
 class Triage(StripWhitespaceForm):
     severe = RadioField(
         'Is it an emergency?',
