@@ -86,11 +86,7 @@ source  ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 `workon notifications-admin`
 
-9. Decrypt our existing set of environment variables
-
-`aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region us-east-1 | base64 --decode > .env`
-
-A sane set of defaults exists in `.env.example`
+9. Find the appropriate env variables and copy them into the .env file. A sane set of defaults exists in `.env.example` in the root folder or you can use the ones in the LastPass folder. If using from lastPass and running the API locally, change API_HOST_NAME to point to your local machine
 
 10. Install all dependencies
 
