@@ -100,11 +100,15 @@ source  ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 `make babel`
 
-13.  Run the service
+13. Install npm and build the assets 
+
+`npm install` followed by `npm run build`
+
+14.  Run the service
 
 `flask run -p 6012 --host=0.0.0.0`
 
-14. To test
+15. To test
 
 `pip3 install -r requirements_for_test.txt`
 
