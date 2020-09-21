@@ -92,8 +92,6 @@ class ValidEmail(Email):
         except InvalidEmailError:
             raise ValidationError(_l(self.message))
 
-        return super().__call__(form, field)
-
 
 class NoCommasInPlaceHolders:
 
