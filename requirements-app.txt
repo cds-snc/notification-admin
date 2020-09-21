@@ -27,7 +27,7 @@ pwnedpasswords==2.0.0
 pyyaml==5.3.1
 translate-toolkit==3.1.0
 ua-parser==0.10.0
-user-agents==2.1
+user-agents==2.2.0
 WTForms==2.2.1
 
 # PaaS
