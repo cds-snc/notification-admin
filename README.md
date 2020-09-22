@@ -239,7 +239,7 @@ Brew est un gestionnaire de paquets pour OSX. La commande suivante permet d'inst
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
-Langues nécessaires
+Langages nécessaires
 - Python 3.X
 - [Node](https://nodejs.org/) 10.15.3 ou supérieur
 - [npm](https://www.npmjs.com/) 6.4.1 ou plus
