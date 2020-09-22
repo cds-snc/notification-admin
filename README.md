@@ -314,7 +314,7 @@ source ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 `npm install` suivi de `npm run build`.
 
-14.  Démarer le service
+14.  Démarrer le service
 
 `flask run -p 6012 --host=0.0.0.0``.
 
