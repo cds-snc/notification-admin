@@ -413,6 +413,6 @@ make babel
 
 Voir le dépôt [notification-api](https://github.com/cds-snc/notification-api) README pour des instructions détaillées.
 
-Fichiers de modèles utilisés dans cette repo : `sms_preview_template.jinja2, email_preview_template.jinja2`
+Fichiers de modèles utilisés dans ce dépôt : `sms_preview_template.jinja2, email_preview_template.jinja2`
 
 Note : Les tests peuvent échouer si `USE_LOCAL_JINJA_TEMPLATES` est réglé sur `True` dans votre .env
