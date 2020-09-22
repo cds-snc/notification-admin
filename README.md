@@ -328,8 +328,7 @@ source ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 Si vous souhaitez que les fichier JS et CSS soient recompilés en fonction des changements, laissez tourner cette fonction dans un terminal séparé de l'application
 ```shell
-    npm run watch
-```
+npm run watch
 
 
 ## Mise à jour des dépendances des applications
