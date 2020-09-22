@@ -339,7 +339,7 @@ Le fichier `requirements.txt` est généré à partir du fichier `requirements-a
 make freeze-requirements
 ```
 
-Le fichier `requirements.txt` doit être commiter en même temps que les modifications du fichier `requirements-app.txt`.
+Le fichier `requirements.txt` doit être ajouté en même temps que les modifications du fichier `requirements-app.txt`.
 
 
 ## Travailler avec des fichier statiques
