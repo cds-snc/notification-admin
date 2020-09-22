@@ -326,7 +326,7 @@ source ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 ## Reconstruire les fichiers CSS et JS du frontend
 
-Si vous souhaitez que les fichier JS et CSS soient recompilés en fonction des changements, laissez rouler cette fonction dans un terminal séparé de l'application
+Si vous souhaitez que les fichier JS et CSS soient recompilés en fonction des changements, laissez tourner cette fonction dans un terminal séparé de l'application
 ```shell
     npm run watch
 ```
