@@ -122,8 +122,8 @@ def test_user_information_page_shows_information_about_user(
     assert document.xpath("//h2/text()[normalize-space()='Trial mode services']")
     assert document.xpath("//a/text()[normalize-space()='Fresh Orchard Juice']")
 
-    assert document.xpath("//h2/text()[normalize-space()='Last login']")
-    assert not document.xpath("//p/text()[normalize-space()='0 failed login attempts']")
+    assert document.xpath("//h2/text()[normalize-space()='Last sign-in']")
+    assert not document.xpath("//p/text()[normalize-space()='0 failed sign-in attempts']")
 
     assert document.xpath("//a/text()[normalize-space()='Block user']")
 
@@ -178,7 +178,7 @@ def test_user_information_page_displays_if_there_are_failed_login_attempts(
     assert response.status_code == 200
 
     document = html.fromstring(response.get_data(as_text=True))
-    assert document.xpath("//p/text()[normalize-space()='2 failed login attempts']")
+    assert document.xpath("//p/text()[normalize-space()='2 failed sign-in attempts']")
 
 
 def test_user_information_page_shows_archive_link_for_active_users(
