@@ -296,7 +296,7 @@ source ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 `workon notifications-admin`
 
-9. Trouvez les variables env appropriées et copiez-les dans le fichier .env. Un ensemble de valeurs par défaut existe dans le fichier `.env.example` à la racine ou vous pouvez utiliser celles du dossier LastPass. Si vous utilisez celles de LastPass et que vous exécutez l'API localement, modifiez API_HOST_NAME pour qu'elle pointe vers votre machine locale
+9. Trouvez les variables env appropriées et copiez-les dans le fichier .env. Un ensemble de valeurs par défaut existe dans le fichier `.env.example` à la racine ou vous pouvez utiliser celles du dossier LastPass. Si vous utilisez celles de LastPass et que vous exécutez l'API localement, modifiez `API_HOST_NAME` pour qu'elle pointe vers votre machine locale
 
 10. Installer toutes les dépendances
 
