@@ -310,7 +310,7 @@ source ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 `make babel`
 
-13. Installer le npm et construire les actifs 
+13. Installer les dépendances npm et construire les actifs 
 
 `npm install` suivi de `npm run build`.
 
