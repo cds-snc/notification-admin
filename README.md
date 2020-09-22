@@ -415,4 +415,4 @@ Voir le dépôt [notification-api](https://github.com/cds-snc/notification-api) 
 
 Fichiers de modèles utilisés dans ce dépôt : `sms_preview_template.jinja2, email_preview_template.jinja2`
 
-Note : Les tests peuvent échouer si `USE_LOCAL_JINJA_TEMPLATES` est réglé sur `True` dans votre .env
+Note : les tests peuvent échouer si `USE_LOCAL_JINJA_TEMPLATES` est réglé sur `True` dans votre `.env`
