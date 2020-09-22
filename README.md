@@ -355,7 +355,7 @@ Lorsque en production ou sur staging, c'est un peu plus compliqué:
 
 - Le texte dans le code est en anglais
 - Enveloppez votre texte avec `{{ }}`
-- Les traductions sont dans app/translations/csv/fr.csv
+- Les traductions sont dans `app/translations/csv/fr.csv`
 
 ```
 <h1>{{ _('Hello') }}</h1>
