@@ -161,7 +161,7 @@ Set a variable
 ```
  <div class="extra-tracking">
   {% set hint_txt = _('We’ll send you a security code by text message') %}
-  {{ textbox(form.mobile_number, width='3-4', hint=hint_txt) }}
+  {{textbox(form.mobile_number, width='3-4', hint=hint_txt) }}
  </div>
 ```
 
