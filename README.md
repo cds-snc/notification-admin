@@ -256,7 +256,7 @@ npm rebuild node-sass
 
 ### Instruction d'installation locale 
 
-Sur OS X :
+Sur macOS :
 
 1. Installer PyEnv avec Homebrew. Cela vous permettra de préserver votre santé mentale. 
 
