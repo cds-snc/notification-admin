@@ -215,7 +215,7 @@ Note: Tests may break if `USE_LOCAL_JINJA_TEMPLATES` is set to `True` in your .e
 
 Application d'administration des notifications.
 
-## Branche amont (Upsteam)
+## Branche amont (_upstream_)
 
 Ce dépôt Git est une version modifiée de :
 https://github.com/alphagov/notifications-admin
