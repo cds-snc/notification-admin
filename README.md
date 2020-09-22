@@ -249,11 +249,10 @@ brew install node
 [NPM](npmjs.org) est l'outil de gestion des paquets de Node. `n` est un outil de gestion des
 différentes versions de Node. Ce qui suit installe `n` et utilise le support à long terme (LTS)
 version de Node.
-"shell
-    npm install -g n
-    n lts
-    npm rebuild node-sass
-```
+```shell
+npm install -g n
+n lts
+npm rebuild node-sass
 
 ### Instruction d'installation locale 
 
