@@ -28,7 +28,7 @@ pyyaml==5.3.1
 translate-toolkit==3.1.0
 ua-parser==0.10.0
 user-agents==2.2.0
-WTForms==2.2.1
+WTForms==2.3.3
 
 # PaaS
 awscli-cwlogs>=1.4,<1.5
