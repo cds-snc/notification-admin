@@ -242,9 +242,8 @@ Langages nécessaires
 - Python 3.X
 - [Node](https://nodejs.org/) 10.15.3 ou supérieur
 - [npm](https://www.npmjs.com/) 6.4.1 ou plus
-"shell
-    brew install node
-```
+```shell
+brew install node
 
 
 [NPM](npmjs.org) est l'outil de gestion des paquets de Node. `n` est un outil de gestion des
