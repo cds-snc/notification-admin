@@ -344,7 +344,7 @@ Le fichier `requirements.txt` doit être ajouté en même temps que les modifica
 
 ## Travailler avec des fichier statiques
 
-Lorsque utilier locallement, les fichier statiques sont desservis par Flask à http://localhost:6012/static/...
+Lorsque utilisé localement, les fichiers statiques sont servis par Flask à http://localhost:6012/static/...
 
 Lorsque en production ou sur staging, c'est un peu plus compliqué:
 
