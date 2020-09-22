@@ -324,7 +324,7 @@ source ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 `make test`
 
-## Reconstruire les ficher CSS et JS du frontend
+## Reconstruire les fichiers CSS et JS du frontend
 
 Si vous souhaitez que les fichier JS et CSS soient recompilés en fonction des changements, laissez rouler cette fonction dans un terminal séparé de l'application
 ```shell
