@@ -222,10 +222,10 @@ https://github.com/alphagov/notifications-admin
 
 ## Caractéristiques de cette application
 
- - Enregistrer et gérer les utilisateurs
- - Créer et gérer des services
- - Envoyer des courriels et des SMS par lots en téléchargeant un CSV
- - Afficher l'historique des notifications
+- Enregistrer et gérer les utilisateurs
+- Créer et gérer des services
+- Envoyer des courriels et des SMS par lots en téléversant un CSV
+- Afficher l'historique des notifications
 
 ## Contraintes fonctionnelles
 
