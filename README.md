@@ -411,7 +411,7 @@ make babel
 
 ## Utiliser Jinja localement pour tester les changements de modèles
 
-Voir le [notification-api](https://github.com/cds-snc/notification-api) README pour des instructions détaillées.
+Voir le dépôt [notification-api](https://github.com/cds-snc/notification-api) README pour des instructions détaillées.
 
 Fichiers de modèles utilisés dans cette repo : `sms_preview_template.jinja2, email_preview_template.jinja2`
 
