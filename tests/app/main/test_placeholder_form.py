@@ -24,6 +24,11 @@ def test_form_class_not_mutated(app_):
     (False, 'email address', 'email', '', 'This cannot be empty'),
     (False, 'email address', 'email', '12345', 'Enter a valid email address'),
     (False, 'email address', 'email', '“bad”@email-address.com', 'Enter a valid email address'),
+    (False, 'email address', 'email', "test+'éüî@example.com", None),
+    (False, 'email address', 'email', "Tom!the#taglover?@mailinator.com", None),
+    (False, 'email address', 'email', "Jean-o'briån@mailinator.com", None),
+    (False, 'email address', 'email', "Tom!the#taglover?@mailinator.com", None),
+    (False, 'email address', 'email', "2+2={5*4/5}@mailinator.com", None),
     (False, 'email address', 'email', 'test@example.com', None),
     (False, 'email address', 'email', 'test@tbs-sct.gc.ca', None),
 
