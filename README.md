@@ -249,15 +249,14 @@ brew install node
 [NPM](npmjs.org) est l'outil de gestion des paquets de Node. `n` est un outil de gestion des
 différentes versions de Node. Ce qui suit installe `n` et utilise le support à long terme (LTS)
 version de Node.
-"shell
-    npm install -g n
-    n lts
-    npm rebuild node-sass
-```
+```shell
+npm install -g n
+n lts
+npm rebuild node-sass
 
 ### Instruction d'installation locale 
 
-Sur OS X :
+Sur macOS :
 
 1. Installer PyEnv avec Homebrew. Cela vous permettra de préserver votre santé mentale. 
 
@@ -297,7 +296,7 @@ source ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 `workon notifications-admin`
 
-9. Trouvez les variables env appropriées et copiez-les dans le fichier .env. Un ensemble de valeurs par défaut existe dans le fichier `.env.example` à la racine ou vous pouvez utiliser celles du dossier LastPass. Si vous utilisez celles de LastPass et que vous exécutez l'API localement, modifiez API_HOST_NAME pour qu'elle pointe vers votre machine locale
+9. Trouvez les variables env appropriées et copiez-les dans le fichier .env. Un ensemble de valeurs par défaut existe dans le fichier `.env.example` à la racine ou vous pouvez utiliser celles du dossier LastPass. Si vous utilisez celles de LastPass et que vous exécutez l'API localement, modifiez `API_HOST_NAME` pour qu'elle pointe vers votre machine locale
 
 10. Installer toutes les dépendances
 
@@ -311,11 +310,11 @@ source ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 `make babel`
 
-13. Installer le npm et construire les actifs 
+13. Installer les dépendances npm et construire les actifs 
 
 `npm install` suivi de `npm run build`.
 
-14.  Démarer le service
+14.  Démarrer le service
 
 `flask run -p 6012 --host=0.0.0.0``.
 
@@ -325,28 +324,27 @@ source ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 
 `make test`
 
-## Reconstruire les ficher CSS et JS du frontend
+## Reconstruire les fichiers CSS et JS du frontend
 
-Si vous souhaitez que les fichier JS et CSS soient recompilés en fonction des changements, laissez rouler cette fonction dans un terminal séparé de l'application
+Si vous souhaitez que les fichier JS et CSS soient recompilés en fonction des changements, laissez tourner cette fonction dans un terminal séparé de l'application
 ```shell
-    npm run watch
-```
+npm run watch
 
 
 ## Mise à jour des dépendances des applications
 
-Le fichier `requirements.txt` est généré à partir du fichier `requirements-app.txt` afin d'épingler des versions de toutes les dépendances imbriquées. Si `requirements-app.txt` a été modifié (ou nous voulons mettre à jour les dépendances imbriquées non épinglées) requirements.txt` devrait être régénérée avec
+Le fichier `requirements.txt` est généré à partir du fichier `requirements-app.txt` afin d'épingler des versions de toutes les dépendances imbriquées. Si `requirements-app.txt` a été modifié (ou nous voulons mettre à jour les dépendances imbriquées non épinglées) `requirements.txt` devrait être régénérée avec
 
 ```
 make freeze-requirements
 ```
 
-Le fichier `requirements.txt` doit être commiter en même temps que les modifications du fichier `requirements-app.txt`.
+Le fichier `requirements.txt` doit être ajouté en même temps que les modifications du fichier `requirements-app.txt`.
 
 
 ## Travailler avec des fichier statiques
 
-Lorsque utilier locallement, les fichier statiques sont desservis par Flask à http://localhost:6012/static/...
+Lorsque utilisé localement, les fichiers statiques sont servis par Flask à http://localhost:6012/static/...
 
 Lorsque en production ou sur staging, c'est un peu plus compliqué:
 
@@ -357,7 +355,7 @@ Lorsque en production ou sur staging, c'est un peu plus compliqué:
 
 - Le texte dans le code est en anglais
 - Enveloppez votre texte avec `{{ }}`
-- Les traductions sont dans app/translations/csv/fr.csv
+- Les traductions sont dans `app/translations/csv/fr.csv`
 
 ```
 <h1>{{ _('Hello') }}</h1>
