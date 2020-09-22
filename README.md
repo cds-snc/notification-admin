@@ -333,7 +333,7 @@ npm run watch
 
 ## Mise à jour des dépendances des applications
 
-Le fichier `requirements.txt` est généré à partir du fichier `requirements-app.txt` afin d'épingler des versions de toutes les dépendances imbriquées. Si `requirements-app.txt` a été modifié (ou nous voulons mettre à jour les dépendances imbriquées non épinglées) requirements.txt` devrait être régénérée avec
+Le fichier `requirements.txt` est généré à partir du fichier `requirements-app.txt` afin d'épingler des versions de toutes les dépendances imbriquées. Si `requirements-app.txt` a été modifié (ou nous voulons mettre à jour les dépendances imbriquées non épinglées) `requirements.txt` devrait être régénérée avec
 
 ```
 make freeze-requirements
