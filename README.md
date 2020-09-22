@@ -401,7 +401,7 @@ let now_txt = window.polyglot.t("now") ;
 
 - Extrait
 
-Actuellement, il s'agit d'une étape manuelle. Ajoutez une ligne à en.csv et fr.csv dans app/translations/csv/ pour chaque nouvelle  de charactère que vous avez enveloppée. Le format est le suivant : "Texte Anglais", "traduction". Assurez-vous que la chaîne enveloppée que vous ajoutez est unique.
+Actuellement, il s'agit d'une étape manuelle. Ajoutez une ligne à `en.csv` et `fr.csv` dans `app/translations/csv/` pour chaque nouvelle  de charactère que vous avez enveloppée. Le format est le suivant : `"Texte Anglais", "traduction"`. Assurez-vous que la chaîne enveloppée que vous ajoutez est unique.
 
 - Compiler 
 
