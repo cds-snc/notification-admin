@@ -235,9 +235,8 @@ https://github.com/alphagov/notifications-admin
 ## Première mise en place
 
 Brew est un gestionnaire de paquets pour OSX. La commande suivante permet d'installer brew :
-``shell
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
+```shell
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 Langages nécessaires
 - Python 3.X
