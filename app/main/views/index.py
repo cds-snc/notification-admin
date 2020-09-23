@@ -91,12 +91,6 @@ def verify_mobile():
     return render_template('views/verify-mobile.html')
 
 
-@main.route('/cookies')
-def cookies():
-    abort(404)
-    return render_template('views/cookies.html')
-
-
 @main.route('/privacy')
 def privacy():
     return render_template('views/privacy.html')
