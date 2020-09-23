@@ -81,7 +81,7 @@ def test_robots(client):
 @pytest.mark.parametrize('view', [
     'privacy', 'pricing', 'terms', 'roadmap',
     'features', 'callbacks', 'documentation', 'security',
-    'message_status', 'email', 'sms',
+    'messages_status', 'email', 'sms',
     'letters',
 ])
 def test_static_pages(
@@ -101,7 +101,7 @@ def test_static_pages(
     ('redirect_templates', 'templates'),
     ('redirect_security', 'security'),
     ('redirect_terms', 'terms'),
-    ('redirect_message_status', 'message_status'),
+    ('redirect_messages_status', 'messages_status'),
     ('redirect_contact', 'contact'),
 ])
 def test_old_static_pages_redirect(

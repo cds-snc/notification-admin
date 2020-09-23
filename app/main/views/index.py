@@ -327,10 +327,10 @@ def terms():
     )
 
 
-@main.route('/message-status', endpoint='message_status')
-def message_status():
+@main.route('/messages-status', endpoint='messages_status')
+def messages_status():
     return render_template(
-        'views/message-status.html',
+        'views/messages-status.html',
         navigation_links=features_nav()
     )
 
@@ -344,6 +344,6 @@ def message_status():
 @main.route('/features/templates', endpoint='redirect_templates')
 @main.route('/features/security', endpoint='redirect_security')
 @main.route('/features/terms', endpoint='redirect_terms')
-@main.route('/features/messages-status', endpoint='redirect_message_status')
+@main.route('/features/messages-status', endpoint='redirect_messages_status')
 def old_page_redirects():
     return redirect(url_for(request.endpoint.replace('redirect_', '')), code=301)
