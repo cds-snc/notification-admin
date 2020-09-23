@@ -1,4 +1,4 @@
-from flask import abort, redirect, render_template, url_for
+from flask import redirect, render_template, url_for
 
 from app import user_api_client
 from app.main import main
@@ -11,7 +11,7 @@ def contact():
 
     # catch with the honeypot field
     if (form.phone.data):
-        abort(403)
+        return render_template('views/contact/thanks.html')
 
     if form.validate_on_submit():
         # send email here

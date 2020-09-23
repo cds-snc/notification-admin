@@ -42,7 +42,7 @@ def index():
 
     # catch with the honeypot field
     if (form.phone.data):
-        abort(403)
+        return render_template('views/contact/thanks.html')
 
     if form.validate_on_submit():
         # send email here

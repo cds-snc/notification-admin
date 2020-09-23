@@ -79,7 +79,7 @@ def test_submit_contact_form_with_honeypot(
 
     client_request.post(
         '.contact',
-        _expected_status=403,
+        _expected_status=200,
         _data={
             'name': 'John',
             'support_type': 'Ask a question',
