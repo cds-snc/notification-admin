@@ -21,7 +21,7 @@ sentry-sdk[flask]==0.17.7
 
 Babel==2.8.0
 Flask-Babel==2.0.0
-newrelic==5.12.1.141
+newrelic==5.20.0.149
 python-dotenv==0.13.0
 pwnedpasswords==2.0.0
 pyyaml==5.3.1
