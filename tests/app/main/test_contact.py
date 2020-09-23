@@ -7,6 +7,9 @@ from tests.conftest import normalize_spaces
 @pytest.mark.parametrize('name, support_type, email_address, feedback, error_fields', [
     ('John', 'Ask a question', 'john@example.com', '', ['feedback']),
     ('John', 'Ask a question', 'john@example.com', 'Hello!', []),
+    ('John', 'Set up a demo', 'john@example.com', 'Demo plz!', []),
+    ('John', 'Give feedback', 'john@example.com', 'Yo, feedback', []),
+    ('John', 'Other', 'john@example.com', 'Stuff, you know', []),
     ('', '', '', '', ['name', 'support_type', 'email_address', 'feedback']),
 ])
 def test_form_fails_validation_without_required_fields(
