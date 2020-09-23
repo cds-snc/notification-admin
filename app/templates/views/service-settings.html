@@ -38,7 +38,7 @@
         {% endcall %}
 
         {% call row() %}
-          {% set txt = _('Login method') %}
+          {% set txt = _('Sign-in method') %}
           {{ text_field(txt) }}
           {% set txt = _('Email code or text message code') %}
           {% set else_txt = _('Text message code') %}
@@ -222,7 +222,7 @@
           }}
         {% endcall %}
       {% endcall %}
-     
+
     {% if current_service.trial_mode %}
       <h2 class="heading-medium top-gutter-0">{{ _('Your service is in trial mode') }}</h2>
 

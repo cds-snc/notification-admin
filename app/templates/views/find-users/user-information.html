@@ -45,7 +45,7 @@
           </p>
         {% endif %}
       </nav>
-      <h2 class="heading-medium">{{ _('Last login') }}</h2>
+      <h2 class="heading-medium">{{ _('Last sign-in') }}</h2>
       {% if not user.logged_in_at %}
       <p class="hint">{{ _('This person has never signed in') }}</p>
       {% else %}
@@ -55,7 +55,7 @@
       {% endif %}
       {% if user.failed_login_count > 0 %}
       <p style="color:#b10e1e;">
-        {{ user.failed_login_count }} {{ _('failed login attempts') }}
+        {{ user.failed_login_count }} {{ _('failed sign-in attempts') }}
       </p>
       {% endif %}
       {% if user.state == 'active' %}
@@ -78,7 +78,7 @@
                 {{ _('Block user') }}
               </a>
             </span>
-          
+
           {% endif %}
         </div>
       {% endif %}

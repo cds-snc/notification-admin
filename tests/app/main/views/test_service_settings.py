@@ -61,7 +61,7 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
-        'Login method Text message code Change',
+        'Sign-in method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -80,7 +80,7 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
-        'Login method Text message code Change',
+        'Sign-in method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -191,7 +191,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'inbound_sms', 'international_sms'], [
 
         'Service name service one Change',
-        'Login method Text message code Change',
+        'Sign-in method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -209,7 +209,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'email_auth'], [
 
         'Service name service one Change',
-        'Login method Email code or text message code Change',
+        'Sign-in method Email code or text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
