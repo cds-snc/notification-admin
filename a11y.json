@@ -5,12 +5,12 @@
     "sign-in",
     "documentation",
     "privacy",
-    "support/ask-question-give-feedback",
-    "features/terms",
-    "features/messages-status", 
-    "features/security",
-    "features/email",
-    "features/sms",
-    "features/templates"
+    "contact",
+    "terms",
+    "messages-status",
+    "security",
+    "email",
+    "sms",
+    "templates"
   ]
 }

@@ -496,7 +496,7 @@ def format_notification_status_as_field_status(status, notification_type):
 
 
 def format_notification_status_as_url(status, notification_type):
-    url = partial(url_for, "main.message_status")
+    url = partial(url_for, "main.messages_status")
 
     if status not in {
         'technical-failure', 'temporary-failure', 'permanent-failure',
