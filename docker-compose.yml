@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  web:
+    restart: on-failure
+    image: notification-admin
+    build:
+      context: ./
+      dockerfile: ci/Dockerfile
+    command: >
+      bash -c "
+        make babel &&
+        npm install &&
+        npm run build &&
+        make generate-version-file &&
+        flask run -p 6012 --host=0.0.0.0"
+    volumes:
+      - .:/app
+    ports:
+        - "6012:6012"
