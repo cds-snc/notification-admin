@@ -73,8 +73,7 @@ def test_robots(client):
     assert response.get_data(as_text=True) == (
         'User-agent: *\n'
         'Disallow: /sign-in\n'
-        'Disallow: /support\n'
-        'Disallow: /support/\n'
+        'Disallow: /contact\n'
         'Disallow: /register\n'
     )
 
@@ -82,8 +81,8 @@ def test_robots(client):
 @pytest.mark.parametrize('view', [
     'privacy', 'pricing', 'terms', 'roadmap',
     'features', 'callbacks', 'documentation', 'security',
-    'message_status', 'features_email', 'features_sms',
-    'features_letters',
+    'messages_status', 'email', 'sms',
+    'letters',
 ])
 def test_static_pages(
     client_request,
@@ -95,14 +94,15 @@ def test_static_pages(
 
 
 @pytest.mark.parametrize('view, expected_view', [
-    ('information_risk_management', 'security'),
-    ('old_integration_testing', 'integration_testing'),
-    ('old_roadmap', 'roadmap'),
-    ('information_risk_management', 'security'),
-    ('old_terms', 'terms'),
-    ('information_security', 'using_notify'),
-    ('old_using_notify', 'using_notify'),
-    ('delivery_and_failure', 'message_status'),
+    ('redirect_roadmap', 'roadmap'),
+    ('redirect_email', 'email'),
+    ('redirect_sms', 'sms'),
+    ('redirect_letters', 'letters'),
+    ('redirect_templates', 'templates'),
+    ('redirect_security', 'security'),
+    ('redirect_terms', 'terms'),
+    ('redirect_messages_status', 'messages_status'),
+    ('redirect_contact', 'contact'),
 ])
 def test_old_static_pages_redirect(
     client,
@@ -114,27 +114,6 @@ def test_old_static_pages_redirect(
     assert response.location == url_for(
         'main.{}'.format(expected_view),
         _external=True
-    )
-
-
-def test_old_using_notify_page(client_request):
-    client_request.get('main.using_notify', _expected_status=410)
-
-
-def test_old_integration_testing_page(
-    client_request,
-):
-    page = client_request.get(
-        'main.integration_testing',
-        _expected_status=410,
-    )
-    assert normalize_spaces(page.select_one('.grid-row').text) == (
-        'Integration testing '
-        'This information has moved. '
-        'Refer to the documentation for the client library you are using.'
-    )
-    assert page.select_one('.grid-row a')['href'] == url_for(
-        'main.documentation'
     )
 
 

@@ -61,7 +61,7 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
-        'Login method Text message code Change',
+        'Sign-in method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -80,7 +80,7 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
-        'Login method Text message code Change',
+        'Sign-in method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -191,7 +191,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'inbound_sms', 'international_sms'], [
 
         'Service name service one Change',
-        'Login method Text message code Change',
+        'Sign-in method Text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -209,7 +209,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'email_auth'], [
 
         'Service name service one Change',
-        'Login method Email code or text message code Change',
+        'Sign-in method Email code or text message code Change',
 
         'Label Value Action',
         'Send emails On Change',
@@ -410,7 +410,7 @@ def test_show_restricted_service(
 
     if expected_link:
         assert request_to_live_link.text.strip() == 'contact us'
-        assert request_to_live_link['href'] == url_for('.feedback', ticket_type='ask-question-give-feedback')
+        assert request_to_live_link['href'] == url_for('.contact')
     else:
         assert not request_to_live_link
 

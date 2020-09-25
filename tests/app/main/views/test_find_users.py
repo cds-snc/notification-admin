@@ -122,8 +122,8 @@ def test_user_information_page_shows_information_about_user(
     assert document.xpath("//h2/text()[normalize-space()='Trial mode services']")
     assert document.xpath("//a/text()[normalize-space()='Fresh Orchard Juice']")
 
-    assert document.xpath("//h2/text()[normalize-space()='Last login']")
-    assert not document.xpath("//p/text()[normalize-space()='0 failed login attempts']")
+    assert document.xpath("//h2/text()[normalize-space()='Last sign-in']")
+    assert not document.xpath("//p/text()[normalize-space()='0 failed sign-in attempts']")
 
     assert document.xpath("//a/text()[normalize-space()='Block user']")
 
@@ -178,7 +178,7 @@ def test_user_information_page_displays_if_there_are_failed_login_attempts(
     assert response.status_code == 200
 
     document = html.fromstring(response.get_data(as_text=True))
-    assert document.xpath("//p/text()[normalize-space()='2 failed login attempts']")
+    assert document.xpath("//p/text()[normalize-space()='2 failed sign-in attempts']")
 
 
 def test_user_information_page_shows_archive_link_for_active_users(
@@ -226,6 +226,23 @@ def test_archive_user_prompts_for_confirmation(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
     assert 'Are you sure you want to archive this user?' in page.find('div', class_='banner-dangerous').text
+
+
+def test_unblock_user_resets_failed_login_count(
+    platform_admin_client,
+    api_user_active,
+    mocker,
+):
+    mock_user_client = mocker.patch('app.user_api_client.post')
+
+    response = platform_admin_client.post(
+        url_for('main.unblock_user', user_id=api_user_active['id'])
+    )
+    assert response.status_code == 302
+    assert response.location == url_for('main.user_information', user_id=api_user_active['id'], _external=True)
+    mock_user_client.assert_called_once_with(
+        '/user/{}/reset-failed-login-count'.format(api_user_active['id']), data={}
+    )
 
 
 def test_archive_user_posts_to_user_client(

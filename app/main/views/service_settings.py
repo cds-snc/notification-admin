@@ -41,6 +41,7 @@ from app.main.forms import (
     PreviewBranding,
     RenameServiceForm,
     SearchByNameForm,
+    SelectLogoForm,
     SendingDomainForm,
     ServiceContactDetailsForm,
     ServiceDataRetentionEditForm,
@@ -55,7 +56,6 @@ from app.main.forms import (
     SetEmailBranding,
     SetLetterBranding,
     SMSPrefixForm,
-    SVGFileUpload,
 )
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
@@ -1098,31 +1098,63 @@ def link_service_to_organisation(service_id):
 
 
 @main.route("/services/<service_id>/branding-request/email", methods=['GET', 'POST'])
-@main.route("/services/<service_id>/branding-request/email/<path:logo>", methods=['GET', 'POST'])
 @user_has_permissions('manage_service')
-def branding_request(service_id, logo=None):
-    file_upload_form = SVGFileUpload()
-    file_upload_form_submitted = file_upload_form.file.data
+def branding_request(service_id):
+    current_branding = current_service.email_branding_id
+    cdn_url = get_logo_cdn_domain()
+    default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
+    default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
+    choices = [
+        ('__FIP-EN__', _('English GC logo') + '||' + default_en_filename),
+        ('__FIP-FR__', _('French GC logo') + '||' + default_fr_filename),
+    ]
+    if current_branding is None:
+        current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
+                            current_service.default_branding_is_french is True else
+                            FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+        branding_style = current_branding
+    else:
+        current_branding_filename = "https://{}/{}".format(cdn_url, current_service.email_branding['logo'])
+        branding_style = 'custom'
+        choices.append(('custom', _('Custom {} logo').format(current_service.name) + '||' + current_branding_filename))
 
-    logo = logo if logo else "d512ab4f-3060-44e5-816f-59b5c54c67db-cds-logo-en-fr-5.png"
-
+    form = SelectLogoForm(
+        label=_('Type of logo'),
+        choices=choices,
+        branding_style=branding_style,
+    )
     upload_filename = None
+    if form.validate_on_submit():
+        file_submitted = form.file.data
+        if file_submitted:
+            upload_filename = upload_email_logo(
+                file_submitted.filename,
+                file_submitted,
+                current_app.config['AWS_REGION'],
+                user_id=session["user_id"]
+            )
+            current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
 
-    if file_upload_form_submitted:
-        upload_filename = upload_email_logo(
-            file_upload_form.file.data.filename,
-            file_upload_form.file.data,
-            current_app.config['AWS_REGION'],
-            user_id=session["user_id"]
-        )
-        current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
+        default_branding_is_french = None
+        branding_choice = form.branding_style.data
+        if branding_choice == 'custom' or file_submitted:
+            default_branding_is_french = None
+        else:
+            default_branding_is_french = (branding_choice == FieldWithLanguageOptions.FRENCH_OPTION_VALUE)
+
+        if default_branding_is_french is not None:
+            current_service.update(
+                email_branding=None,
+                default_branding_is_french=default_branding_is_french
+            )
+            return redirect(url_for('.service_settings', service_id=service_id))
 
     return render_template(
         'views/service-settings/branding/manage-email-branding.html',
-        file_upload_form=file_upload_form,
-        cdn_url=get_logo_cdn_domain(),
+        form=form,
+        using_custom_branding=current_service.email_branding_id is not None,
+        cdn_url=cdn_url,
         upload_filename=upload_filename,
-        logo=logo
     )
 
 

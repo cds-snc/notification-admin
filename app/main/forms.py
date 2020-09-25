@@ -847,17 +847,6 @@ class CreateInboundSmsForm(StripWhitespaceForm):
             raise ValidationError(_l('This number already exists'))
 
 
-class SupportType(StripWhitespaceForm):
-    support_type = RadioField(
-        'How can we help you?',
-        choices=[
-            ('report-problem', 'Report a problem'),
-            ('ask-question-give-feedback', _l('Ask a question or give feedback')),
-        ],
-        validators=[DataRequired()]
-    )
-
-
 class ContactNotifyTeam(StripWhitespaceForm):
     not_empty = _l('This cannot be empty')
     name = StringField(_l('Your name'), validators=[DataRequired(message=not_empty)])
@@ -876,16 +865,15 @@ class ContactNotifyTeam(StripWhitespaceForm):
     feedback = TextAreaField(_l('Message'), validators=[DataRequired(message=not_empty)])
 
 
-class Feedback(StripWhitespaceForm):
-    name = StringField(_l('Your name'), validators=[
-        DataRequired(message="This cannot be empty"),
-    ])
-    email_address = email_address(label=_l('Your email'), gov_user=False, required=True)
-    feedback = TextAreaField(_l('Message'), validators=[DataRequired(message="This cannot be empty")])
+class SelectLogoForm(StripWhitespaceForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.branding_style.choices = kwargs['choices']
+        self.branding_style.label.text = kwargs['label']
+        self.branding_style.validators = [DataRequired()]
 
-
-class Problem(Feedback):
-    email_address = email_address(label=_l('Email address'), gov_user=False)
+    branding_style = SelectField()
+    file = FileField_wtf(_l('Upload logo'), validators=[FileAllowed(['png'], _l('Your logo must be an image in PNG format'))])
 
 
 class Triage(StripWhitespaceForm):

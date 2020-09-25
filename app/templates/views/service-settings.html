@@ -38,7 +38,7 @@
         {% endcall %}
 
         {% call row() %}
-          {% set txt = _('Login method') %}
+          {% set txt = _('Sign-in method') %}
           {{ text_field(txt) }}
           {% set txt = _('Email code or text message code') %}
           {% set else_txt = _('Text message code') %}
@@ -222,7 +222,7 @@
           }}
         {% endcall %}
       {% endcall %}
-     
+
     {% if current_service.trial_mode %}
       <h2 class="heading-medium top-gutter-0">{{ _('Your service is in trial mode') }}</h2>
 
@@ -234,7 +234,7 @@
 
       <p>
         {% if current_user.has_permissions('manage_service') %}
-          {{ _('To remove these restrictions, you can')}} <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('contact us') }}</a>.
+          {{ _('To remove these restrictions, you can')}} <a href="{{ url_for('.contact') }}">{{ _('contact us') }}</a>.
         {% else %}
           {{ _('Your service manager can ask to have these restrictions removed.') }}
         {% endif %}
@@ -249,7 +249,7 @@
       </p>
       <p>
         {{ _('Problems or comments?') }}
-        <a href="{{ url_for('.feedback', ticket_type='ask-question-give-feedback') }}">{{ _('Give feedback') }}</a>.
+        <a href="{{ url_for('.contact') }}">{{ _('Give feedback') }}</a>.
       </p>
 
     {% endif %}
