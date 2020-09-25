@@ -4,7 +4,7 @@
 {% from "components/page-footer.html" import page_footer %}
 
 {% block service_page_title %}
-_('Receive text messages')
+ {{ _('Receive text messages') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -17,38 +17,37 @@ _('Receive text messages')
       ) }}
       {% if 'inbound_sms' in current_service.permissions %}
         <p>
-          _('Your service can receive text messages sent to {{ current_service.inbound_number') }}.')'
+          {{ _('Your service can receive text messages sent to {}.').format( current_service.inbound_number) }}
         </p>
         <p>
-          _('You can still send text messages from a sender name if you need to, but users will not be able to reply to those messages.')
+          {{ _('You can still send text messages from a sender name if you need to, but users will not be able to reply to those messages.') }}
         </p>
         <p>
-          <a href="{{ url_for('main.contact') }}">Contact us</a> if you want to switch this feature off.
+          {{ _("<a href='{}'>Contact us</a> if you want to switch this feature off.").format(url_for('.contact')) }}
         </p>
         {% if current_user.has_permissions('manage_api_keys') %}
           <p>
-            _('You can set up callbacks for received text messages on the')
-            <a href="{{ url_for('.api_callbacks', service_id=current_service.id) }}">_('API integration page')</a>.
+            {{ _("You can set up callbacks for received text messages on the <a href='{}'>API integration page</a>.").format(url_for('.api_callbacks', service_id=current_service.id)) }}
           </p>
         {% endif %}
       {% else %}
         <p>
-          <a href="{{ url_for('.contact') }}">Contact us</a> if you want to be able to receive text messages from your users.
+          {{ _("<a href='{}'>Contact us</a> if you want to be able to receive text messages from your users.").format(url_for('.contact')) }}
         </p>
         <p>
-          _('We’ll create a unique phone number for your service that they can reply to.')
+          {{ _('We’ll create a unique phone number for your service that they can reply to.') }}
         </p>
         <p>
-          _('Text messages you send will come from this phone number instead of your sender name') (currently {{ current_service.default_sms_sender }}).
+          {{ _('Text messages you send will come from this phone number instead of your sender name (currently {}).').format(current_service.default_sms_sender) }}
         </p>
         <p>
-          _('You can still send text messages from a sender name if you need to, but users will not be able to reply to those messages.')
+          {{ _('You can still send text messages from a sender name if you need to, but users will not be able to reply to those messages.') }}
         </p>
         <p>
-          _('You can see and reply to the messages you receive when you sign in to GC Notify, or get them using the API.')
+          {{ _('You can see and reply to the messages you receive when you sign in to GC Notify, or get them using the API.') }}
         </p>
         <p>
-          _('It does not cost you anything to receive text messages. Users will pay their standard text message rate.')
+          {{ _('It does not cost you anything to receive text messages. Users will pay their standard text message rate.') }}
         </p>
       {% endif %}
     </div>
