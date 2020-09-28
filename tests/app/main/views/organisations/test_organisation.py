@@ -278,7 +278,7 @@ def test_organisation_settings_for_platform_admin(
     (
         '.edit_organisation_type',
         (
-            ('central', 'Central government'),
+            ('central', 'Government of Canada'),
             ('local', 'Local government'),
             ('nhs_central', 'NHS – central government agency or public body'),
             ('nhs_local', 'NHS Trust or Clinical Commissioning Group'),

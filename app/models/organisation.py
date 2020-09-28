@@ -1,4 +1,5 @@
 from flask import abort
+from flask_babel import _
 from werkzeug.utils import cached_property
 
 from app.models import JSONModel, ModelList
@@ -8,7 +9,7 @@ from app.notify_client.organisations_api_client import organisations_client
 class Organisation(JSONModel):
 
     TYPES = (
-        ('central', 'Central government'),
+        ('central', _('Government of Canada')),  # CDS note: central key name comes from GDS
         ('local', 'Local government'),
         ('nhs_central', 'NHS – central government agency or public body'),
         ('nhs_local', 'NHS Trust or Clinical Commissioning Group'),

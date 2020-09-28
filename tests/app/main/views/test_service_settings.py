@@ -97,7 +97,7 @@ def mock_get_service_settings_page_common(
         'Label Value Action',
         'Live Off Change',
         'Count in list of live services Yes Change',
-        'Organisation Test Organisation Central government Change',
+        'Organisation Test Organisation Government of Canada Change',
         'Daily message limit 1,000 Change',
         'Free text message allowance 250,000 Change',
         'Email branding English Government of Canada signature Change',
@@ -158,7 +158,7 @@ def test_no_go_live_link_for_service_without_organisation(
         'Live No (organisation must be set first)'
     )
     assert normalize_spaces(page.select('tr')[16].text) == (
-        'Organisation Not set Central government Change'
+        'Organisation Not set Government of Canada Change'
     )
 
 
