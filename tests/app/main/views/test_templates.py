@@ -2018,7 +2018,7 @@ def test_should_show_template_as_first_page_of_tour_fr(
     assert normalize_spaces(
         page.select('.email-message-meta')[0].text
     ) == (
-        'De service one À email address Objet Your ((thing)) is due soon'
+        'De service one À adresse courriel Objet Your ((thing)) is due soon'
     )
 
     assert page.select('a.button')[0]['href'] == url_for(

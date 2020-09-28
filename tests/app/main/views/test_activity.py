@@ -564,7 +564,7 @@ def test_redacts_templates_that_should_be_redacted(
     )
 
     assert normalize_spaces(page.select('tbody tr th')[0].text) == (
-        '6502532222 hello hidden'
+        '6502532222 hello [hidden]'
     )
 
 
