@@ -209,6 +209,23 @@ Template files used in this repo: `sms_preview_template.jinja2, email_preview_te
 Note: Tests may break if `USE_LOCAL_JINJA_TEMPLATES` is set to `True` in your .env
 
 
+## Using Docker-compose
+
+A `docker-compose.yml` is provided to anyone that wants to leverage docker as for their setup. You can look at the [full documentation here](https://docs.docker.com/compose/).
+To run this project with docker-compose, you will also need to run [notification-api](https://github.com/cds-snc/notification-api) with docker-compose, as it relies on the postgres database set there.
+
+To start the project :
+
+```bash
+aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region us-east-1 | base64 --decode > .env
+docker-compose up
+```
+
+That's it.
+
+Your site is now available on [http://localhost:6012](http://localhost:6012).
+
+=======
 
 
 # Notifications-admin
@@ -414,3 +431,20 @@ Voir le dépôt [notification-api](https://github.com/cds-snc/notification-api) 
 Fichiers de modèles utilisés dans ce dépôt : `sms_preview_template.jinja2, email_preview_template.jinja2`
 
 Note : les tests peuvent échouer si `USE_LOCAL_JINJA_TEMPLATES` est réglé sur `True` dans votre `.env`
+
+
+## Docker-compose
+
+Un fichier `docker-compose.yml` est disponible à la racine du projet, pour ceux qui veulent utiliser docker. La documentation complète est dispinible [ici](https://docs.docker.com/compose/).
+Pour faire fonctionner ce projet avec docker-compose, vous allez aussi avoir besoin du projet notification-api avec docker-compose. Le projet [notification-api](https://github.com/cds-snc/notification-api) a besoin de la base de données postgres qui est fournie par le projet notification-api.
+
+Pour démarrer le projet:
+
+```bash
+aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region us-east-1 | base64 --decode > .env
+docker-compose up
+```
+
+C'est tout.
+
+Le site est maintenant disponible à l'adresse [http://localhost:6012](http://localhost:6012).
