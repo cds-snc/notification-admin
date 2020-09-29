@@ -2,7 +2,7 @@
 {% from "components/table.html" import mapping_table, row, text_field, edit_field, field with context %}
 
 {% block per_page_title %}
-  Security
+  {{ _('Security') }}
 {% endblock %}
 
 {% block content_column_content %}
@@ -50,7 +50,7 @@
       <li>{{ _('protective monitoring to record activity, and raise alerts about any suspicious activity') }}</li>
       <li>{{ _('using JSON Web Tokens, to avoid sending API keys when your service talks to GC Notify') }}</li>
     </ul>
-    
+
     <h3 class="heading-small">{{ _('Protect sensitive information') }}</h3>
     <p>{{ _('Some messages include sensitive information like security codes or password reset links.') }}</p>
     <p>{{ _('If you’re sending a message with sensitive information, you can choose to hide those details on the GC Notify dashboard once the message has been sent. This means that only the message recipient will be able to see that information.') }}</p>
@@ -69,7 +69,7 @@
     <p>{{ _('Once you have signed in the first time, you can add a hardware-based security key to further increase the security of your account.') }}</p>
     <p>{{ _('If you are having issues creating or accessing your account, email our support team at ') }} <a href="mailto:assistance@cds-snc.ca">assistance@cds-snc.ca</a>.</p>
   </section>
-    
+
   <section>
     <h2 class="heading-medium">{{ _('Information risk management') }}</h2>
     <p>

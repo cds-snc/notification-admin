@@ -54,7 +54,7 @@ def temp_service_history(service_id):
 
 @main.route("/services/<service_id>/dashboard")
 @user_has_permissions('view_activity', 'send_messages')
-def old_service_dashboard(service_id):
+def redirect_service_dashboard(service_id):
     return redirect(url_for('.service_dashboard', service_id=service_id))
 
 

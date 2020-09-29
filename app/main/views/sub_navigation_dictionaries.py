@@ -6,15 +6,15 @@ def features_nav():
             "sub_navigation_items": [
                 {
                     "name": "Emails",
-                    "link": "main.features_email",
+                    "link": "main.email",
                 },
                 {
                     "name": "Text messages",
-                    "link": "main.features_sms",
+                    "link": "main.sms",
                 },
                 {
                     "name": "Template formatting guide",
-                    "link": "main.features_templates",
+                    "link": "main.templates",
                 },
             ]
         }
