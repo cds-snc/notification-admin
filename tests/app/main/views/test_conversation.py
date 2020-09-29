@@ -69,7 +69,7 @@ def test_get_user_phone_number_raises_if_both_api_requests_fail(mocker):
 
 
 @pytest.mark.parametrize('outbound_redacted, expected_outbound_content', [
-    (True, 'Hello hidden'),
+    (True, 'Hello [hidden]'),
     (False, 'Hello Jo'),
 ])
 @freeze_time("2012-01-01 00:00:00")

@@ -374,7 +374,10 @@ def translate_preview_template(_template_str):
         "Subject": _("Subject"),
         "Reply to": _("Reply to"),
         "From:": _("From:"),
-        "To:": _("To:")
+        "To:": _("To:"),
+        "phone number": _("phone number"),
+        "email address": _("email address"),
+        "hidden": _("hidden"),
     }
 
     def translate_brackets(x):
