@@ -12,7 +12,6 @@ services:
         make babel &&
         npm install &&
         npm run build &&
-        make generate-version-file &&
         flask run -p 6012 --host=0.0.0.0"
     volumes:
       - .:/app
