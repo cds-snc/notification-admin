@@ -243,14 +243,19 @@ def generate_previous_next_dict(view, service_id, page, title, url_args):
 
 
 def email_safe(string, whitespace='.'):
-    # strips accents, diacritics etc
+    original = string
+    # Strips accents, diacritics etc
     string = ''.join(c for c in unicodedata.normalize('NFD', string) if unicodedata.category(c) != 'Mn')
     string = ''.join(
         word.lower() if word.isalnum() or word == whitespace else ''
         for word in re.sub(r'\s+', whitespace, string.strip())
     )
     string = re.sub(r'\.{2,}', '.', string)
-    return string.strip('.')
+    string = string.strip('.')
+    # Limit to 64 bytes before the @ symbol
+    if len(string) > 64 and '|' in original:
+        return email_safe(original.split('|')[0])
+    return string[:64]
 
 
 def id_safe(string):

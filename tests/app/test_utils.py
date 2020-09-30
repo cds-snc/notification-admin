@@ -99,6 +99,8 @@ def _get_notifications_csv_mock(
     ('.leading', 'leading'),
     ('trailing.', 'trailing'),
     ('üńïçödë wördś', 'unicode.words'),
+    ('Health Promotion And Chronic Diseases Prevention Branch HPCDP | Direction générale de la promotion de la santé et de la prévention des maladies chroniques PSPMC', 'health.promotion.and.chronic.diseases.prevention.branch.hpcdp'),
+    ('Health Promotion And Chronic Diseases Prevention Branch HPCDP ~ Direction générale de la promotion de la santé et de la prévention des maladies chroniques PSPMC', 'health.promotion.and.chronic.diseases.prevention.branch.hpcdp.di'),
 ])
 def test_email_safe_return_dot_separated_email_domain(service_name, safe_email):
     assert email_safe(service_name) == safe_email
