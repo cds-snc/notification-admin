@@ -13,3 +13,5 @@ flake8-print==3.1.0
 requests-mock==1.6.0
 # used for creating manifest file locally
 jinja2-cli[yaml]==0.6.0
+
+urllib3>=1.25.9 # not directly required, pinned by Snyk to avoid a vulnerability
