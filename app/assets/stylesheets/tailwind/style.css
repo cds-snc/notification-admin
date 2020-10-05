@@ -1,0 +1,154 @@
+@tailwind base;
+
+html {
+  font-size: 62.5%;
+}
+
+h1 {
+  @apply text-xl font-sans pb-10;
+}
+
+h2 {
+  @apply text-lg font-sans pb-6;
+}
+
+a {
+  @apply underline text-base;
+}
+
+p {
+  @apply text-base leading-tight;
+}
+
+li {
+  @apply text-base leading-tight;
+}
+
+.btn-blue {
+  background-color: theme("colors.blue.lighter");
+  @apply py-4 px-5 font-bold no-underline border-b-2;
+}
+
+.btn-light {
+  color: theme("colors.green.default");
+  border-color: theme("colors.green.default");
+  background-color: theme("colors.white.default");
+  @apply py-4 px-6 font-bold no-underline border-2;
+  border-bottom: 4px solid theme("colors.green.dark");
+}
+
+@tailwind components;
+
+@tailwind utilities;
+
+.input {
+  border-color: #000;
+  @apply border-solid border-2 py-3 px-2 text-smaller;
+}
+
+.flip {
+  transform: rotate(-180deg);
+  transition: all 0.5s ease;
+  padding-top: 2px;
+}
+
+label {
+  @apply block text-smaller pb-2;
+}
+
+@variants focus {
+  .input {
+    @apply outline-none;
+  }
+}
+
+button:focus{
+  outline: none;
+}
+
+.line-under {
+  text-underline-position: under;
+}
+
+.feature-box {
+  @apply w-3/4;
+}
+
+@screen lg {
+  .feature-box {
+    @apply w-1/3;
+  }
+}
+
+.quote-box {
+  @apply text-small mb-10;
+}
+
+.quote-box div:first-child {
+  @apply font-bold italic mb-2;
+}
+
+/* form(s) */
+.form-group {
+  @apply mb-4;
+}
+
+.form-group-error {
+  @apply mr-4 pl-4 border-l-4 border-red;
+}
+
+.form-control-error {
+  @apply border-4 border-red;
+}
+
+.error-message {
+  @apply block text-red text-base;
+}
+
+/* honeypot field*/
+.phone {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap; /* added line */
+}
+
+.skiplink:focus {
+  background-color: #ffbf47;
+  outline: 3px solid #ffbf47;
+}
+
+.skiplink {
+  position: absolute;
+  left: -9999em;
+}
+
+.skiplink:focus,
+.skiplink:visited {
+  color: #0b0c0c;
+}
+
+.skiplink:focus {
+  left: 0;
+  z-index: 1;
+}
+
+#skiplink-container {
+  text-align: center;
+  background: #0b0c0c;
+}
+
+#skiplink-container div {
+  text-align: left;
+  margin: 0 auto;
+  max-width: 1020px;
+}
+
+#skiplink-container .skiplink {
+  display: -moz-inline-stack;
+  display: inline-block;
+  margin: 0.75em 0 0 30px;
+}

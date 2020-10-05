@@ -1,14 +1,15 @@
 const path = require("path");
 const webpack = require("webpack");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   //mode: "development", //development
   mode: "production",
-  entry: "./app/assets/javascripts/index.js",
+  entry: ["./app/assets/javascripts/index.js", "./app/assets/stylesheets/tailwind/style.css"],
   watch: true,
   output: {
-    filename: "[name].min.js",
-    path: path.resolve(__dirname, "app/assets/javascripts")
+    filename: "javascripts/[name].min.js",
+    path: path.resolve(__dirname, "app/assets")
   },
 
   plugins: [new webpack.ProgressPlugin()],
@@ -17,7 +18,24 @@ module.exports = {
     rules: [
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader"]
+        include: [
+          path.resolve(__dirname, "app/assets/javascripts")
+        ],
+        use: [
+          "css-loader",
+          "postcss-loader"
+        ]
+      },
+      {
+        test: /\.css$/i,
+        include: [
+          path.resolve(__dirname, "app/assets/stylesheets/tailwind")
+        ],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "postcss-loader"
+        ]
       },
       { test: /\.(png|svg|jpg|gif|ico)$/, use: ["file-loader"] },
       {
@@ -39,5 +57,11 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'stylesheets/homepage.css',
+      path: path.resolve(__dirname, "app/assets/stylesheets")
+    }),
+  ],
 };
