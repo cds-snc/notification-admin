@@ -3,7 +3,7 @@ const cssnano = require("cssnano");
 console.log("=== POST CSS  ===");
 
 const purgecss = require("@fullhuman/postcss-purgecss")({
-  content: ["./src/**/*.html"],
+  content: ["./app/**/*.html"],
   whitelist: [
     "line-under",
     "flip",
