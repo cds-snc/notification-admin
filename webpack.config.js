@@ -12,7 +12,13 @@ module.exports = {
     path: path.resolve(__dirname, "app/assets")
   },
 
-  plugins: [new webpack.ProgressPlugin()],
+  plugins: [
+    new webpack.ProgressPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'stylesheets/homepage.css',
+      path: path.resolve(__dirname, "app/assets/stylesheets")
+    }),
+  ],
 
   module: {
     rules: [
@@ -58,10 +64,4 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'stylesheets/homepage.css',
-      path: path.resolve(__dirname, "app/assets/stylesheets")
-    }),
-  ],
 };
