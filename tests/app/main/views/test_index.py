@@ -135,7 +135,7 @@ def test_css_is_served_from_correct_path(client_request):
     ):
 
         assert link['href'].startswith([
-            'https://static.example.com/stylesheets/header.css?',
+            'https://static.example.com/stylesheets/homepage.css',
             'https://static.example.com/stylesheets/notification-template.css?',
             'https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap',
             'https://fonts.googleapis.com/css?',

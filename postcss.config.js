@@ -4,13 +4,13 @@ console.log("=== POST CSS  ===");
 
 const purgecss = require("@fullhuman/postcss-purgecss")({
   content: ["./app/**/*.html"],
-  whitelist: [
+  safelist: [
     "line-under",
     "flip",
     "phone",
     "error-message",
     "form-group-error",
-    "form-control-error"
+    "form-control-error",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });

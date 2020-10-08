@@ -147,13 +147,6 @@ const static_css = () => {
   );
 };
 
-// copy header css
-const header_css = () => {
-  return src(paths.src + "/stylesheets/header.css").pipe(
-    dest(paths.dist + "stylesheets/")
-  );
-};
-
 // Copy images
 
 const images = () => {
@@ -210,7 +203,6 @@ const defaultTask = parallel(
     images
   ),
   series(static_css),
-  series(header_css),
   series(copy.govuk_template.error_page, javascripts, sass)
 );
 
