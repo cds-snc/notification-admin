@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from flask import url_for
 
-from tests.conftest import SERVICE_ONE_ID
+from tests.conftest import SERVICE_ONE_ID, captured_templates
 
 
 def test_should_render_sms_two_factor_page(
@@ -31,6 +31,28 @@ def test_should_render_sms_two_factor_page(
     assert page.select_one('input')['pattern'] == '[0-9]*'
 
 
+def test_should_render_security_key_on_sms_two_factor_page(
+    app_,
+    client,
+    api_user_active,
+    mock_get_security_keys_with_key,
+    mock_get_user
+):
+    with client.session_transaction() as session:
+        session['user_details'] = {
+            'id': api_user_active['id'],
+            'email': api_user_active['email_address']
+        }
+
+    with captured_templates(app_) as templates:
+        response = client.get(url_for('main.two_factor_sms_sent'))
+        assert response.status_code == 200
+        assert "<div id='two-factor-fido'" in response.data.decode('utf-8')  # JS relies on this
+
+        template, context = templates[0]
+        assert template.name == 'views/two-factor-fido.html'
+
+
 def test_should_render_email_two_factor_page(
     client,
     api_user_active_email_auth,
@@ -56,6 +78,28 @@ def test_should_render_email_two_factor_page(
     )
     assert page.select_one('input')['type'] == 'tel'
     assert page.select_one('input')['pattern'] == '[0-9]*'
+
+
+def test_should_render_security_key_on_email_two_factor_page(
+    app_,
+    client,
+    api_user_active,
+    mock_get_security_keys_with_key,
+    mock_get_user
+):
+    with client.session_transaction() as session:
+        session['user_details'] = {
+            'id': api_user_active['id'],
+            'email': api_user_active['email_address']
+        }
+
+    with captured_templates(app_) as templates:
+        response = client.get(url_for('main.two_factor_email_sent'))
+        assert response.status_code == 200
+        assert "<div id='two-factor-fido'" in response.data.decode('utf-8')  # JS relies on this
+
+        template, context = templates[0]
+        assert template.name == 'views/two-factor-fido.html'
 
 
 def test_sms_should_login_user_and_should_redirect_to_next_url(
