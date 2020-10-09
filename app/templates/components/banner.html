@@ -20,7 +20,7 @@
     {% if delete_button %}
       {% call form_wrapper(action=action) %}
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-        <button type="submit" class="button" name="delete">{{ delete_button }}</button>
+        <button type="submit" class="button button-red" name="delete">{{ delete_button }}</button>
       {% endcall %}
     {% endif %}
   </div>

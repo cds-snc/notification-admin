@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "./tailwind.css";
+@import "./buttons.css";
 
 html {
   font-size: 62.5%;
@@ -26,35 +25,8 @@ li {
   @apply text-base leading-tight;
 }
 
-.btn {
-  padding: .526315em .789473em .263157em;
-  @apply no-underline inline-block text-white text-smaller leading-tight;
-}
-
-.btn-blue {
-  background-color: theme("colors.blue.lighter");
-  @apply px-5 py-4 border-b-2 border-black font-bold text-black text-base;
-}
-
-.btn-green {
-  background-color: theme("colors.green.default");
-  box-shadow: 0 2px 0 theme("colors.green.border");
-}
-.btn-green:hover {
-  background-color: theme("colors.green.hover");
-}
-
-/* Homepage Button */
-#contact-form .btn {
-  color: theme("colors.green.darker");
-  border-color: theme("colors.green.darker");
-  background-color: theme("colors.white.default");
-  @apply px-6 py-4 border-b-4 font-bold border-2;
-  border-bottom: 4px solid;
-  box-shadow: none;
-}
-#contact-form .btn:hover {
-  @apply bg-gray-selected;
+button:focus{
+  outline: none;
 }
 
 .input {
@@ -76,10 +48,6 @@ label {
   .input {
     @apply outline-none;
   }
-}
-
-button:focus{
-  outline: none;
 }
 
 .line-under {

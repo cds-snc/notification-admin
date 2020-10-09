@@ -32,7 +32,9 @@ module.exports = {
     },
     colors: {
       red: {
-        default: "#b10e1e"
+        default: "#b10e1e",
+        hover: "#990c1a",
+        border: "#6a0812"
       },
       white: {
         default: "#FFF"
@@ -44,7 +46,10 @@ module.exports = {
       },
       gray: {
         default: "#EEE",
-        selected: "#e1e4e7"
+        selected: "#e1e4e7",
+        button: "#dee0e2",
+        hover: "#d0d3d6",
+        border: "#b5babe"
       },
       yellow: {
         default: "#ffbf47"

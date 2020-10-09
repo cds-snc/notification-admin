@@ -63,25 +63,6 @@
     @include box-shadow(0 0 0 $colour);
   }
 
-  // Disabled button styles
-  &.disabled,
-  &[disabled="disabled"],
-  &[disabled] {
-    @include opacity(0.5);
-    &:hover {
-      cursor: default;
-      background-color: $colour;
-    }
-
-    &:active {
-      top: 0;
-      @include box-shadow(0 2px 0 darken($colour, 15%));
-      @include ie-lte(8) {
-        border-bottom: 2px solid darken($colour, 15%);
-      }
-    }
-  }
-
   // Set text colour depending on background colour
   @if lightness($colour) < 50% {
     color: $white;
