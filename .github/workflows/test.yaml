@@ -4,11 +4,23 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1     
+    - uses: actions/checkout@v1
     - uses: actions/setup-python@v1
       with:
         python-version: '3.6'
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements_for_test.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
     - run: /bin/bash -c "scripts/bootstrap.sh && make test"
