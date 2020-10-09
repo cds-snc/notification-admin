@@ -11,8 +11,9 @@
     <link
       rel="stylesheet"
       media="screen"
-      href="{{ asset_path }}stylesheets/header.css?0.24.2"
+      href="{{ asset_path }}stylesheets/homepage.css"
     />
+
 
     <!--[if gt IE 8]><!-->
     <link
@@ -166,7 +167,7 @@
               </a>
             {% endif %}
             </div>
-            <a href="/" class="no-underline text-black">
+            <a href="/" class="no-underline text-black visited:text-black">
             <div class="product-title flex mt-10 mb-5 lg:mt-0 lg:mb-0">
                 <div
                   class="leading-none lg:ml-4 mr-5 lg:pl-5 font-semibold inline-block top-0 text-brand pb-0"
@@ -184,7 +185,7 @@
           <!-- start sub nav -->
           <nav aria-label="{{ _('language and sign-in') }}" class="flex pt-4 mb-10 lg:mb-0">
             <a
-              class="mr-10 line-under leading-none inline-block text-blue text-small underline hover:no-underline"
+              class="mr-10 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
               href="{{ url_for('main.set_lang')}}?from={{request.path}}"
             >
             {% if session["userlang"] == "en" %}
@@ -195,13 +196,13 @@
             </a>
 
             {% if current_user.is_authenticated %}
-              <a href="{{ url_for('main.user_profile') }}" class="mr-10 line-under leading-none inline-block text-blue text-small pl-5 underline hover:no-underline">{{ current_user.name }}</a>
+              <a href="{{ url_for('main.user_profile') }}" class="mr-10 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small pl-5 underline hover:no-underline">{{ current_user.name }}</a>
             {% endif %}
 
             {% if current_user.is_authenticated %}
             <a
               href="{{ url_for('main.sign_out')}}"
-              class="line-under leading-none inline-block text-blue text-small pl-5 underline hover:no-underline"
+              class="line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small pl-5 underline hover:no-underline"
               >
               {{ _('Sign out') }}
             </a>
@@ -209,7 +210,7 @@
             {% else %}
             <a
             href="{{ url_for('main.sign_in' )}}"
-            class="line-under leading-none inline-block text-blue text-small pl-5 underline hover:no-underline"
+            class="line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small pl-5 underline hover:no-underline"
             >{{ _('Sign in') }}
             </a>
 
@@ -227,7 +228,7 @@
             <a
               href="#"
               id="menu"
-              class="px-2 text-small text-blue mr-5 font-bold no-underline hover:underline"
+              class="px-2 text-small text-blue visited:text-blue link:text-blue mr-5 font-bold no-underline hover:underline"
             >
               {{ _('Menu') }}
 
@@ -243,20 +244,20 @@
 
             {% if current_user.platform_admin %}
             <a href="{{ url_for('main.live_services') }}"
-            class="text-small text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('platform-admin') }}"
+            class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('platform-admin') }}"
             >{{ _('Platform admin') }}</a>
             {% endif %}
 
             <a href="{{ url_for('main.features') }}"
-              class="text-small text-blue mr-10 font-bold no-underline hover:underline"
+              class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
               >{{ _('Product features') }}</a>
             <a
               href="{{ url_for('main.documentation') }}"
-              class="text-small text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('documentation') }}"
+              class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('documentation') }}"
               >{{ _('Technical documentation') }}</a>
             <a
               href="{{ url_for('main.contact') }}"
-              class="text-small text-blue mr-10 font-bold no-underline hover:underline"
+              class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
               >{{ _('Contact us') }}
             </a>
           </div>
@@ -271,26 +272,26 @@
             {% if current_user.platform_admin %}
             <li>
               <a href="{{ url_for('main.live_services') }}"
-              class="text-blue font-bold block text-small mb-5 no-underline hover:underline"
+              class="text-blue visited:text-blue link:text-blue font-bold block text-small mb-5 no-underline hover:underline"
               >{{ _('Platform admin') }}</a>
             </li>
             {% endif %}
 
             <li>
               <a
-                class="text-blue font-bold block text-small mb-5 no-underline hover:underline"
+                class="text-blue visited:text-blue link:text-blue font-bold block text-small mb-5 no-underline hover:underline"
                 href="{{ url_for('main.features') }}"
                 >{{ _('Product features') }}</a>
             </li>
             <li>
               <a
-                class="text-blue font-bold block text-small mb-5 no-underline hover:underline"
+                class="text-blue visited:text-blue link:text-blue font-bold block text-small mb-5 no-underline hover:underline"
                 href="{{ url_for('main.documentation') }}"
                 >{{ _('Technical documentation') }}</a>
             </li>
             <li>
               <a
-                class="text-blue font-bold block text-small mb-5 no-underline hover:underline"
+                class="text-blue visited:text-blue link:text-blue font-bold block text-small mb-5 no-underline hover:underline"
                 href="{{ url_for('main.contact') }}"
                 >{{ _('Contact us') }}</a>
             </li>
@@ -319,17 +320,17 @@
             <div class="block">
               <a
               href="{{ url_for('main.privacy') }}"
-              class="line-under text-white text-small block mb-10 underline hover:no-underline"
+              class="line-under text-white visited:text-white link:text-white text-small block mb-10 underline hover:no-underline"
               >{{ _("Privacy") }}</a
               >
               <a
               href="{{ url_for('main.security') }}"
-                class="line-under text-white text-small block mb-10 underline hover:no-underline"
+                class="line-under text-white visited:text-white link:text-white text-small block mb-10 underline hover:no-underline"
                 >{{ _("Security") }}</a
               >
               <a
               href="{{ url_for('main.terms') }}"
-                class="line-under text-white text-small block underline hover:no-underline"
+                class="line-under text-white visited:text-white link:text-white text-small block underline hover:no-underline"
                 >{{ _("Terms of use") }}</a
               >
             </div>
@@ -339,7 +340,7 @@
 
       <!-- start section 9 -->
       <div class="bg-gray" >
-        <div class="container px-10 py-12">
+        <div class="container px-10">
           <div class="flex py-10 justify-end">
             <img
               alt="Symbol of the Government of Canada / Symbole du gouvernement du Canada"

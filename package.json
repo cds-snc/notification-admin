@@ -52,7 +52,7 @@
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
-    "@fullhuman/postcss-purgecss": "^2.0.6",
+    "@fullhuman/postcss-purgecss": "^3.0.0",
     "autoprefixer": "^9.7.4",
     "axe-cli": "git+https://git@github.com/dequelabs/axe-cli.git",
     "babel-loader": "^8.1.0",

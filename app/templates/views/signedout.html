@@ -178,18 +178,18 @@ set description = _('GC Notify lets you send emails and text messages to your us
           <h2 class="pb-0 text-white leading-tight font-bold">
             {{ _("Send service updates by email and text message") }}
           </h2>
-          <p class="pt-10 pb-20 text-white">
+          <p class="pt-10 pb-16 text-white">
             {{ _("Try out GC Notify, a new messaging platform for the Government of Canada.") }}
           </p>
           <div class="pt-0">
             <a
               href="{{ url_for('.register' )}}"
-              class="btn-blue mr-10 hover:bg-blue-selected"
+              class="btn btn-blue mr-10 hover:bg-blue-selected"
               >{{ _("Create an account") }}</a
             >
             <a
               href="{{ url_for('main.sign_in' )}}"
-              class="line-under text-white text-default underline hover:no-underline"
+              class="line-under text-white text-default underline hover:no-underline text-base"
               >{{ _("Sign in") }}</a
             >
           </div>
@@ -247,7 +247,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
             {{ _("Use templates for easy, consistent, and accessible communications.") }}
           </p>
           <p class="pt-10 text-blue">
-            <a class="line-under" href="{{ url_for('main.features') }}">{{ _("Learn more about GC Notify") }}</a>
+            <a class="line-under text-base" href="{{ url_for('main.features') }}">{{ _("Learn more about GC Notify") }}</a>
           </p>
         </div>
       </div>
@@ -594,11 +594,11 @@ set description = _('GC Notify lets you send emails and text messages to your us
             <h2 class="pb-0 text-white leading-tight font-bold text-center">
               {{ _("Try it now") }}
             </h2>
-            <p class="pt-10 pb-20 text-white text-center">
+            <p class="pt-10 pb-16 text-white text-center">
               {{ _("Create an account and start sending test messages right away!") }}
             </p>
             <p class="mt-0 text-center">
-              <a href="{{ url_for('.register' )}}" class="btn-blue text-center hover:bg-blue-selected"
+              <a href="{{ url_for('.register' )}}" class="btn btn-blue text-center hover:bg-blue-selected"
                 >{{ _("Create an account") }}</a
               >
             </p>
@@ -682,7 +682,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
 
   <!-- start section 9 -->
   <div class="bg-gray">
-    <div class="container px-10 py-12">
+    <div class="container px-10">
       <div class="flex py-10 justify-end">
         <img
           alt="Symbol of the Government of Canada / Symbole du gouvernement du Canada"

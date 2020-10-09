@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin')
+
 module.exports = {
   theme: {
     container: {
@@ -48,8 +50,13 @@ module.exports = {
         default: "#ffbf47"
       },
       green: {
-        default: "#00703C",
-        darker: "#002D18"
+        default: "#00823b",
+        darker: "#00703C",
+        hover: "#00692f",
+        border: "#003618"
+      },
+      black: {
+        default: "#000"
       }
     }
   },
@@ -58,5 +65,16 @@ module.exports = {
       'extra-tight': '0.9',
     }
   },
-  plugins: []
+  plugins: [
+    plugin(function({ addVariant, e }) {
+      addVariant('link', ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `.${e(`link${separator}${className}`)}:link`
+        })
+      })
+    })
+  ],
+  variants: {
+    textColor: ['visited', 'link']
+  },
 };
