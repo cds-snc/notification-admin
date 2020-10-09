@@ -26,7 +26,7 @@ module.exports = {
       body: ["Noto Sans"]
     },
     screens: {
-      sm: "640rem",
+      sm: "640px",
       md: "768px",
       lg: "1024px"
     },

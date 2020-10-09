@@ -1,13 +1,15 @@
 @layer components {
 
-  .button {
+  /* Note: Buttons are <a> sometimes, which is why :link and : visted styles exist */
+
+  .button, .button:link, .button:visited {
     padding: .526315em .789473em .263157em;
     background-color: theme("colors.green.default");
     box-shadow: 0 2px 0 theme("colors.green.border");
-    @apply no-underline inline-block text-white text-smaller leading-tight;
+    @apply no-underline inline-block text-white text-smaller leading-tight align-top;
   }
   
-  .btn-blue {
+  .btn-blue, .btn-blue:link, .btn-blue:visited {
     background-color: theme("colors.blue.lighter");
     @apply px-5 py-4 border-b-2 border-black font-bold text-black text-base;
   }
@@ -28,9 +30,10 @@
     background-color: theme("colors.red.hover");
   }
 
-  .button-secondary {
+  .button-secondary, .button-secondary:visited, .button-secondary:link {
     background-color: theme("colors.gray.button");
     box-shadow: 0 2px 0 theme("colors.gray.border");
+    font-size: 1em;
     @apply text-black;
   }
 
