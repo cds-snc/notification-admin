@@ -264,7 +264,6 @@ def test_registration_from_org_invite_has_different_email_or_organisation(
         'password': 'validPassword!',
         'email_address': session['invited_org_user']['email_address'],
         'organisation': session['invited_org_user']['organisation'],
-        'blocked': False
     })
 
     assert response.status_code == 400
@@ -289,7 +288,6 @@ def test_org_user_registers_with_email_already_in_use(
         'password': 'validPassword!',
         'email_address': session['invited_org_user']['email_address'],
         'organisation': session['invited_org_user']['organisation'],
-        'blocked': False
     })
 
     assert response.status_code == 302
@@ -323,7 +321,6 @@ def test_org_user_registration(
         'mobile_number': '+16502532222',
         'password': 'validPassword!',
         'organisation': session['invited_org_user']['organisation'],
-        'blocked': False
     })
 
     assert response.status_code == 302
@@ -357,7 +354,6 @@ def test_verified_org_user_redirects_to_dashboard(
         session['expiry_date'] = str(datetime.utcnow() + timedelta(hours=1))
         session['user_details'] = {"email": invited_org_user['email_address'], "id": invited_org_user['id']}
         session['organisation_id'] = invited_org_user['organisation']
-        session['blocked'] = invited_org_user['blocked']
 
     response = client.post(url_for('main.verify'), data={'two_factor_code': '12345'})
 

@@ -429,14 +429,12 @@ class InvitedUser(JSONModel):
         'created_at',
         'auth_type',
         'folder_permissions',
-        'blocked'
     }
 
     def __init__(self, _dict):
         super().__init__(_dict)
         self.permissions = _dict.get('permissions') or []
         self._from_user = _dict['from_user']
-        self.blocked = False
 
     @classmethod
     def create(
@@ -523,16 +521,16 @@ class InvitedUser(JSONModel):
                 other.status))
 
     def serialize(self, permissions_as_string=False):
-        data = {'id': self.id,
-                'service': self.service,
-                'from_user': self._from_user,
-                'email_address': self.email_address,
-                'status': self.status,
-                'created_at': str(self.created_at),
-                'auth_type': self.auth_type,
-                'folder_permissions': self.folder_permissions,
-                'blocked': self.blocked
-                }
+        data = {
+            'id': self.id,
+            'service': self.service,
+            'from_user': self._from_user,
+            'email_address': self.email_address,
+            'status': self.status,
+            'created_at': str(self.created_at),
+            'auth_type': self.auth_type,
+            'folder_permissions': self.folder_permissions,
+        }
         if permissions_as_string:
             data['permissions'] = ','.join(self.permissions)
         else:
@@ -552,7 +550,6 @@ class InvitedOrgUser(JSONModel):
         'email_address',
         'status',
         'created_at',
-        'blocked'
     }
 
     def __init__(self, _dict):
@@ -582,15 +579,14 @@ class InvitedOrgUser(JSONModel):
         return cls(invited_org_user) if invited_org_user else None
 
     def serialize(self, permissions_as_string=False):
-        data = {'id': self.id,
-                'organisation': self.organisation,
-                'invited_by': self._invited_by,
-                'email_address': self.email_address,
-                'status': self.status,
-                'created_at': str(self.created_at),
-                'blocked': self.blocked,
-                }
-        return data
+        return {
+            'id': self.id,
+            'organisation': self.organisation,
+            'invited_by': self._invited_by,
+            'email_address': self.email_address,
+            'status': self.status,
+            'created_at': str(self.created_at),
+        }
 
     @property
     def invited_by(self):
