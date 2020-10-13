@@ -502,7 +502,7 @@ class InvitedUser(JSONModel):
     def has_permissions(self, *permissions):
         if self.status == 'cancelled':
             return False
-        return set(self.permissions) > set(permissions)
+        return set(self.permissions) >= set(permissions)
 
     def has_permission_for_service(self, service_id, permission):
         if self.status == 'cancelled':

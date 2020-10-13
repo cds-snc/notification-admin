@@ -115,7 +115,7 @@ def invite_org_user(org_id):
     )
 
 
-@main.route("/organisations/<org_id>/users/<user_id>", methods=['GET', 'POST'])
+@main.route("/organisations/<org_id>/users/<user_id>", methods=['GET'])
 @user_has_permissions()
 def edit_user_org_permissions(org_id, user_id):
     return render_template(

@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from flask import url_for
 
 from app.models.user import InvitedOrgUser
-from tests.conftest import ORGANISATION_ID, normalize_spaces
+from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces
 
 
 def test_view_team_members(
@@ -30,6 +30,22 @@ def test_view_team_members(
     assert normalize_spaces(
         page.select('.tick-cross-list-edit-link')[0].text
     ) == 'Cancel invitation'
+
+
+def test_view_edit_user_org_permissions(
+    client_request,
+    mock_get_organisation,
+    api_user_active,
+    app_,
+):
+    with captured_templates(app_) as templates:
+        client_request.get(
+            ".edit_user_org_permissions",
+            org_id=ORGANISATION_ID,
+            user_id=api_user_active['id'],
+        )
+        template, _ = templates[0]
+        assert template.name == "views/organisations/organisation/users/user/index.html"
 
 
 def test_invite_org_user(
