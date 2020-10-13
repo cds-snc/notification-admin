@@ -1,12 +1,15 @@
+import base64
 import json
 import uuid
+from unittest.mock import Mock
 
 import pytest
 from flask import url_for
+from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 
 from tests.conftest import api_user_active as create_user
-from tests.conftest import url_for_endpoint_with_token
+from tests.conftest import captured_templates, url_for_endpoint_with_token
 
 
 def test_should_show_overview_page(
@@ -260,6 +263,165 @@ def test_should_redirect_after_password_change(
             _external=True,
         ),
     )
+
+
+def test_should_list_security_keys(
+    app_,
+    client_request,
+    api_nongov_user_active,
+    mock_get_security_keys_with_key
+):
+    with captured_templates(app_) as templates:
+        page = client_request.get(('main.user_profile_security_keys'))
+        template, context = templates[0]
+        assert template.name == 'views/user-profile/security-keys.html'
+        assert page.select('tr')[-1].text.split() == ['Name', 'Key', 'Remove']
+
+
+def test_deleting_security_key(
+    app_,
+    client_request,
+    api_nongov_user_active,
+    mock_get_security_keys_with_key,
+    mocker
+):
+    delete_mock = mocker.patch('app.user_api_client.delete_security_key_user')
+    key_id = 'security_key_id'
+
+    # Listing keys
+    with captured_templates(app_) as templates:
+        client_request.get(('main.user_profile_security_keys_confirm_delete'), keyid=key_id)
+        template, context = templates[0]
+        assert template.name == 'views/user-profile/security-keys.html'
+
+    # Clicking on the button
+    client_request.post(
+        ('main.user_profile_security_keys_confirm_delete'),
+        keyid=key_id,
+        _expected_status=302,
+        _expected_redirect=url_for(
+            'main.user_profile_security_keys',
+            _external=True,
+        ),
+    )
+
+    delete_mock.assert_called_once_with(
+        api_nongov_user_active['id'],
+        key=key_id
+    )
+
+
+def test_adding_security_key(
+    app_,
+    client_request,
+    api_nongov_user_active,
+    mocker
+):
+    register_mock = mocker.patch(
+        'app.user_api_client.register_security_key',
+        return_value={'data': 'blob'}
+    )
+
+    # Listing keys
+    with captured_templates(app_) as templates:
+        page = client_request.get(('main.user_profile_add_security_keys'))
+        assert 'data-button-id="register-key"' in str(page)  # Used by JS
+        template, context = templates[0]
+        assert template.name == 'views/user-profile/add-security-keys.html'
+
+    # Register key
+    client_request.post(
+        ('main.user_profile_add_security_keys'),
+        _expected_status=200,
+    )
+    register_mock.assert_called_once_with(api_nongov_user_active['id'])
+
+
+def test_complete_adding_security_key(
+    client_request,
+    api_nongov_user_active,
+    mocker
+):
+    mock = mocker.patch(
+        'app.user_api_client.add_security_key_user',
+        return_value={'id': 'fake'}
+    )
+    client_request.post(
+        ('main.user_profile_complete_security_keys'),
+        _data='fake',
+        _expected_status=200
+    )
+    mock.assert_called_once_with(
+        api_nongov_user_active['id'],
+        base64.b64encode('fake'.encode('utf-8')).decode('utf-8')
+    )
+
+
+def test_authenticate_security_key(
+    client_request,
+    api_nongov_user_active,
+    mocker
+):
+    mock = mocker.patch(
+        'app.user_api_client.authenticate_security_keys',
+        return_value={'data': base64.b64encode('fake'.encode('utf-8'))}
+    )
+    response = client_request.post(
+        ('main.user_profile_authenticate_security_keys'),
+        _expected_status=200
+    )
+    assert response.text == 'fake'
+    mock.assert_called_once_with(api_nongov_user_active['id'])
+
+
+def test_validate_security_key_api_error(
+    client_request,
+    api_nongov_user_active,
+    mocker
+):
+    mock_login = mocker.patch('app.models.user.User.login')
+    mock_validate = mocker.patch(
+        'app.user_api_client.validate_security_keys',
+        side_effect=HTTPError(response=Mock(status_code=500))
+    )
+
+    client_request.post(
+        ('main.user_profile_validate_security_keys'),
+        _data='fake',
+        _expected_status=500
+    )
+
+    assert mock_validate.called
+    assert mock_login.called is False
+
+
+def test_validate_security_key(
+    client_request,
+    api_nongov_user_active,
+    mocker,
+    fake_uuid
+):
+    mock_login = mocker.patch('app.models.user.User.login')
+    mock_validate = mocker.patch(
+        'app.user_api_client.validate_security_keys',
+        return_value={'status': 'OK'}
+    )
+    new_user = dict(api_nongov_user_active)
+    new_user['current_session_id'] = fake_uuid
+    mocker.patch('app.user_api_client.get_user', return_value=new_user)
+
+    client_request.post(
+        ('main.user_profile_validate_security_keys'),
+        _data='fake',
+        _expected_status=200
+    )
+
+    with client_request.session_transaction() as session:
+        assert api_nongov_user_active['current_session_id'] is None
+        assert session['current_session_id'] == new_user['current_session_id']
+
+    assert mock_validate.called
+    assert mock_login.called
 
 
 def test_non_gov_user_cannot_see_change_email_link(

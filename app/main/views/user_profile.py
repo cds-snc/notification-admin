@@ -213,11 +213,7 @@ def user_profile_password():
 @main.route("/user-profile/security_keys", methods=['GET', 'POST'])
 @user_is_logged_in
 def user_profile_security_keys():
-    num_keys = len(current_user.security_keys)
-    return render_template(
-        'views/user-profile/security-keys.html',
-        num_keys=num_keys
-    )
+    return render_template('views/user-profile/security-keys.html')
 
 
 @main.route("/user-profile/security_keys/<keyid>", methods=['GET', 'POST'])
@@ -226,7 +222,7 @@ def user_profile_security_keys_confirm_delete(keyid):
     if request.method == 'POST':
         try:
             user_api_client.delete_security_key_user(current_user.id, key=keyid)
-            msg = "Key deleted"
+            msg = _("Key deleted")
             flash(msg, 'default_with_tick')
             return redirect(url_for('.user_profile_security_keys'))
         except HTTPError as e:

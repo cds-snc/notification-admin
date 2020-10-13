@@ -8,7 +8,7 @@ from uuid import UUID, uuid4
 
 import pytest
 from bs4 import BeautifulSoup
-from flask import Flask, url_for
+from flask import Flask, template_rendered, url_for
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 
@@ -1611,12 +1611,28 @@ def mock_get_login_events_with_data(mocker, user=None):
 
 
 @pytest.fixture(scope='function')
-def mock_get_security_keys(mocker, user=None):
+def mock_get_security_keys(mocker, user=None, keys=[]):
     if user is None:
         user = api_user_active(sample_uuid())
 
     return mocker.patch(
-        'app.user_api_client.get_security_keys_for_user', return_value=[])
+        'app.user_api_client.get_security_keys_for_user', return_value=keys)
+
+
+@pytest.fixture(scope='function')
+def mock_get_security_keys_with_key(mocker, user=None):
+    if user is None:
+        user = api_user_active(sample_uuid())
+
+    key = {
+        'id': sample_uuid(),
+        'user_id': user['id'],
+        'name': 'Key',
+        'created_at': (datetime.utcnow() - timedelta(hours=60)).isoformat(),
+        'updated_at': (datetime.utcnow() - timedelta(hours=5)).isoformat(),
+    }
+
+    return mock_get_security_keys(mocker, user, [key])
 
 
 @pytest.fixture(scope='function')
@@ -3132,6 +3148,19 @@ def mock_create_or_update_free_sms_fragment_limit(mocker):
     sample_limit = 250000
     return mocker.patch('app.billing_api_client.create_or_update_free_sms_fragment_limit',
                         return_value=sample_limit)
+
+
+@contextmanager
+def captured_templates(app):
+    recorded = []
+
+    def record(sender, template, context, **extra):
+        recorded.append((template, context))
+    template_rendered.connect(record, app)
+    try:
+        yield recorded
+    finally:
+        template_rendered.disconnect(record, app)
 
 
 @contextmanager
