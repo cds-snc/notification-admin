@@ -5,7 +5,7 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  {{ _('Key') }}
+  {{ _('Add a security key') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -16,8 +16,7 @@
 
 <div class="grid-row">
   <div class="column-two-thirds">
-    {% set header_txt = _('Key') %}
-    {{ page_header(header_txt) }}
+    {{ page_header(_('Add a security key')) }}
 
     {% call form_wrapper() %}
       {% set hint_txt = _('Something to remember your key by') %}
