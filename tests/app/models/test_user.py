@@ -1,6 +1,6 @@
 import pytest
 
-from app.models.user import AnonymousUser, InvitedUser, User
+from app.models.user import AnonymousUser, User
 
 
 def test_anonymous_user(app_):
@@ -70,18 +70,3 @@ def test_platform_admin_flag_set_in_session(client, mocker, is_platform_admin, v
     mocker.patch.dict('app.models.user.session', values=session_dict, clear=True)
 
     assert User({'platform_admin': is_platform_admin}).platform_admin == expected_result
-
-
-@pytest.mark.parametrize('status,original_permissions,permissions,expected_result', [
-    ('pending', ['manage_service'], ['manage_service'], True),
-    ('cancelled', ['manage_service'], ['manage_service'], False),
-    ('pending', ['manage_service', 'manage_templates'], ['manage_service'], True),
-    ('pending', ['manage_templates'], ['manage_service'], False),
-])
-def test_permissions_invited_user(status, original_permissions, permissions, expected_result):
-    user = InvitedUser({
-        'status': status,
-        'permissions': original_permissions,
-        'from_user': 'fake',
-    })
-    assert user.has_permissions(*permissions) == expected_result
