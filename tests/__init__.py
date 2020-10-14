@@ -111,7 +111,6 @@ def invited_user(
         'status': status,
         'created_at': created_at,
         'auth_type': auth_type,
-        'blocked': blocked
     }
     if service:
         data['service'] = service
@@ -146,7 +145,6 @@ def service_json(
     prefix_sms=True,
     contact_link=None,
     organisation_id=None,
-    blocked=False,
     sending_domain=None
 ):
     if users is None:
@@ -184,7 +182,6 @@ def service_json(
         'consent_to_research': True,
         'count_as_live': True,
         'organisation': organisation_id,
-        'blocked': blocked,
         'sending_domain': sending_domain
     }
 
@@ -325,19 +322,17 @@ def invite_json(id_,
         'created_at': created_at,
         'auth_type': auth_type,
         'folder_permissions': folder_permissions,
-        'blocked': False
     }
 
 
-def org_invite_json(id_, invited_by, org_id, email_address, created_at, status, blocked):
+def org_invite_json(id_, invited_by, org_id, email_address, created_at, status):
     return {
         'id': id_,
         'invited_by': invited_by,
         'organisation': org_id,
         'email_address': email_address,
         'status': status,
-        'created_at': created_at,
-        'blocked': blocked
+        'created_at': created_at
     }
 
 

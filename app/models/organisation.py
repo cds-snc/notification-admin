@@ -23,7 +23,6 @@ class Organisation(JSONModel):
         'id',
         'name',
         'active',
-        'blocked',
         'crown',
         'default_branding_is_french',
         'organisation_type',

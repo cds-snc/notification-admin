@@ -3465,9 +3465,8 @@ def sample_org_invite(mocker, organisation_one, status='pending'):
     email_address = 'invited_user@test.canada.ca'
     organisation = organisation_one['id']
     created_at = str(datetime.utcnow())
-    blocked = False
 
-    return org_invite_json(id_, invited_by, organisation, email_address, created_at, status, blocked)
+    return org_invite_json(id_, invited_by, organisation, email_address, created_at, status)
 
 
 @pytest.fixture(scope='function')

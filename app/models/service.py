@@ -47,7 +47,6 @@ class Service(JSONModel):
         'count_as_live',
         'go_live_user',
         'go_live_at',
-        'blocked',
         'sending_domain',
         'smtp_relay'
     }
