@@ -43,14 +43,8 @@
     top: 10px;  // align baseline with buttons
   }
 
-  .button,
-  .button-destructive {
+  .button {
     margin-right: 10px;
-  }
-
-  .button-destructive {
-    @include button($error-colour);
-    padding: 0.52632em 0.78947em 0.26316em 0.78947em;
   }
 
   .js-cancel {

@@ -22,7 +22,7 @@
       position: absolute;
       z-index: -1;
 
-      &:focus + .file-upload-button {
+      &:focus + #file-upload-button {
         outline: 3px solid $yellow;
       }
 

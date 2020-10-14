@@ -25,10 +25,6 @@ li {
   @apply text-base leading-tight;
 }
 
-button:focus{
-  outline: none;
-}
-
 .input {
   border-color: #000;
   @apply border-solid border-2 py-3 px-2 text-smaller;
