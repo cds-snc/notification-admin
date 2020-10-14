@@ -77,12 +77,6 @@ class Service(JSONModel):
     def update_status(self, live):
         return service_api_client.update_status(self.id, live=live)
 
-    def switch_permission(self, permission):
-        return self.force_permission(
-            permission,
-            on=not self.has_permission(permission),
-        )
-
     def force_permission(self, permission, on=False):
 
         permissions, permission = set(self.permissions), {permission}
