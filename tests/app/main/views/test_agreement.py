@@ -252,7 +252,7 @@ def test_accept_agreement_page_populates(
             'on_behalf_of_email': '',
         },
         [
-            'This field is required.',
+            'You need to choose an option',
             'Must be a number',
         ],
     ),

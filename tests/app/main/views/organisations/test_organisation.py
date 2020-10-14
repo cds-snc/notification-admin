@@ -155,8 +155,8 @@ def test_create_new_organisation_validates(
         for error in page.select('.error-message')
     ] == [
         ('name', 'This cannot be empty'),
-        ('organisation_type', 'Not a valid choice'),
-        ('crown_status', 'Not a valid choice'),
+        ('organisation_type', 'You need to choose an option'),
+        ('crown_status', 'You need to choose an option'),
     ]
     assert mock_create_organisation.called is False
 

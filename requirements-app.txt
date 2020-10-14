@@ -28,7 +28,7 @@ PyYAML==5.3.1
 translate-toolkit==3.1.1
 ua-parser==0.10.0
 user-agents==2.2.0
-WTForms==2.2.1  # Pinned because of breaking change in 2.3.0
+WTForms==2.3.3
 email-validator==1.1.1
 
 # PaaS

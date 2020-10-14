@@ -1224,7 +1224,7 @@ def test_should_show_persist_estimated_volumes(
             'consent_to_research': '',
         },
         '[data-error-label="consent_to_research"]',
-        'This field is required.'
+        'You need to choose an option'
     ),
 ))
 def test_should_error_if_bad_estimations_given(
@@ -3931,7 +3931,7 @@ def test_service_set_contact_link_displays_error_message_when_no_radio_button_se
         },
         _follow_redirects=True
     )
-    assert normalize_spaces(page.find('span', class_='error-message').text) == 'Not a valid choice'
+    assert normalize_spaces(page.find('span', class_='error-message').text) == 'You need to choose an option'
     assert normalize_spaces(page.h1.text) == "Add contact details for ‘Download your document’ page"
 
 

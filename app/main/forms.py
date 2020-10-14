@@ -22,7 +22,9 @@ from wtforms import (
     HiddenField,
     IntegerField,
     PasswordField,
-    RadioField,
+)
+from wtforms import RadioField as WTFormsRadioField
+from wtforms import (
     SelectField,
     SelectMultipleField,
     StringField,
@@ -104,6 +106,21 @@ def get_next_days_until(until):
         )
         for i in range(0, days + 1)
     ]
+
+
+class RadioField(WTFormsRadioField):
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self.validate_choice = False
+
+    def pre_validate(self, form):
+        super().pre_validate(form)
+        if self.data not in dict(self.choices).keys():
+            raise ValidationError(_l('You need to choose an option'))
 
 
 class MultiCheckboxField(SelectMultipleField):
@@ -262,7 +279,7 @@ class OrganisationTypeField(RadioField):
                 (value, label) for value, label in Organisation.TYPES
                 if not include_only or value in include_only
             ],
-            validators=[DataRequired()] + (validators or []),
+            validators=validators or [],
             **kwargs
         )
 
@@ -455,7 +472,6 @@ class PermissionsForm(PermissionsAbstract):
             ('sms_auth', _l('Text message code')),
             ('email_auth', _l('Email code')),
         ],
-        validators=[DataRequired()]
     )
 
     @property
@@ -572,9 +588,6 @@ class OrganisationCrownStatusForm(StripWhitespaceForm):
             ('non-crown', 'No'),
             ('unknown', 'Not sure'),
         ],
-        validators=[
-            DataRequired(message=_l('This cannot be empty'))
-        ],
     )
 
 
@@ -587,9 +600,6 @@ class OrganisationAgreementSignedForm(StripWhitespaceForm):
             ('yes', 'Yes'),
             ('no', 'No'),
             ('unknown', 'No (but we have some service-specific agreements in place)'),
-        ],
-        validators=[
-            DataRequired(message=_l('This cannot be empty'))
         ],
     )
 
@@ -697,7 +707,6 @@ class BaseTemplateForm(StripWhitespaceForm):
             ('priority', _l('Yes')),
             ('normal', _l('No')),
         ],
-        validators=[DataRequired()],
         default='normal'
     )
 
@@ -734,7 +743,6 @@ class LetterTemplatePostageForm(StripWhitespaceForm):
             ('first', 'First class'),
             ('second', 'Second class'),
         ],
-        validators=[DataRequired()]
     )
 
 
@@ -803,9 +811,6 @@ class ChooseTimeForm(StripWhitespaceForm):
     scheduled_for = RadioField(
         _l('When should we send these messages?'),
         default='',
-        validators=[
-            DataRequired()
-        ]
     )
 
 
@@ -819,9 +824,6 @@ class CreateKeyForm(StripWhitespaceForm):
 
     key_type = RadioField(
         _l('Type of key'),
-        validators=[
-            DataRequired()
-        ]
     )
 
     key_name = StringField(u'Description of key', validators=[
@@ -858,7 +860,6 @@ class ContactNotifyTeam(StripWhitespaceForm):
             (_l('Set up a demo'), _l('Set up a demo')),
             (_l('Other'), _l('Other')),
         ],
-        validators=[DataRequired()]
     )
     email_address = email_address(label=_l('Your email'), gov_user=False)
     phone = StringField(_l('Your phone'))
@@ -883,7 +884,6 @@ class Triage(StripWhitespaceForm):
             ('yes', 'Yes'),
             ('no', 'No'),
         ],
-        validators=[DataRequired()]
     )
 
 
@@ -910,7 +910,6 @@ class EstimateUsageForm(StripWhitespaceForm):
             ('yes', 'Yes'),
             ('no', 'No'),
         ],
-        validators=[DataRequired()]
     )
 
     at_least_one_volume_filled = True
@@ -936,7 +935,6 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
             ('email_address', 'Email address'),
             ('phone_number', 'Phone number'),
         ],
-        validators=[DataRequired()]
     )
 
     url = StringField("URL")
@@ -1062,9 +1060,6 @@ class SetEmailBranding(StripWhitespaceForm):
 
     branding_style = RadioFieldWithNoneOption(
         'Branding style',
-        validators=[
-            DataRequired()
-        ]
     )
 
     DEFAULT_EN = (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, 'English Government of Canada signature')
@@ -1259,9 +1254,6 @@ class ServiceInboundNumberForm(StripWhitespaceForm):
 
     inbound_number = RadioField(
         "Select your inbound number",
-        validators=[
-            DataRequired("Option must be selected")
-        ]
     )
 
 
@@ -1378,12 +1370,7 @@ class LinkOrganisationsForm(StripWhitespaceForm):
         super().__init__(*args, **kwargs)
         self.organisations.choices = kwargs['choices']
 
-    organisations = RadioField(
-        'Select an organisation',
-        validators=[
-            DataRequired()
-        ]
-    )
+    organisations = RadioField('Select an organisation')
 
 
 branding_options = (
@@ -1402,9 +1389,6 @@ class BrandingOptionsEmail(StripWhitespaceForm):
     options = RadioField(
         'Branding options',
         choices=branding_options,
-        validators=[
-            DataRequired()
-        ],
     )
 
 
@@ -1417,7 +1401,6 @@ class ServiceDataRetentionForm(StripWhitespaceForm):
             ('sms', 'SMS'),
             ('letter', 'Letter'),
         ],
-        validators=[DataRequired()],
     )
     days_of_retention = IntegerField(label="Days of retention",
                                      validators=[validators.NumberRange(min=3, max=90,
@@ -1563,7 +1546,6 @@ class TemplateAndFoldersSelectionForm(Form):
 class ClearCacheForm(StripWhitespaceForm):
     model_type = RadioField(
         'What do you want to clear today',
-        validators=[DataRequired()]
     )
 
 
@@ -1609,7 +1591,6 @@ class AcceptAgreementForm(StripWhitespaceForm):
                 'Someone else',
             ),
         ),
-        validators=[DataRequired()],
     )
 
     on_behalf_of_name = StringField(
