@@ -45,9 +45,8 @@ module.exports = {
         selected: "#75b9e0"
       },
       gray: {
-        default: "#EEE",
+        default: "#dee0e2",
         selected: "#e1e4e7",
-        button: "#dee0e2",
         hover: "#d0d3d6",
         border: "#b5babe"
       },
