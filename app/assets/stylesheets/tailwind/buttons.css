@@ -4,18 +4,16 @@
 
   .button, .button:link, .button:visited {
     padding: .526315em .789473em .263157em;
-    background-color: theme("colors.green.default");
     box-shadow: 0 2px 0 theme("colors.green.border");
-    @apply no-underline inline-block text-white text-smaller leading-tight align-top;
+    @apply no-underline inline-block text-white text-smaller leading-tight align-top bg-green;
   }
   
   .button-blue, .button-blue:link, .button-blue:visited {
-    background-color: theme("colors.blue.lighter");
-    @apply px-5 py-4 border-b-2 border-black font-bold text-black text-base;
+    @apply px-5 py-4 border-b-2 border-black font-bold text-black text-base bg-blue-lighter;
   }
   
   .button:hover {
-    background-color: theme("colors.green.hover");
+    @apply bg-green-hover;
   }
 
   .button:focus {
@@ -23,31 +21,26 @@
   }
 
   .button-red {
-    background-color: theme("colors.red.default");
+    @apply bg-red;
     box-shadow: 0 2px 0 theme("colors.red.border");
   }
   .button-red:hover {
-    background-color: theme("colors.red.hover");
+    @apply bg-red-hover;
   }
 
   .button-secondary, .button-secondary:visited, .button-secondary:link {
-    background-color: theme("colors.gray.default");
     box-shadow: 0 2px 0 theme("colors.gray.border");
     font-size: 1em;
-    @apply text-black;
+    @apply text-black bg-gray-button;
   }
 
   .button-secondary:hover {
-    background-color: theme("colors.gray.hover");
+    @apply bg-gray-hover;
   }
 
   /* Homepage Button */
   #contact-form .button {
-    color: theme("colors.green.darker");
-    border-color: theme("colors.green.darker");
-    background-color: theme("colors.white.default");
-    @apply px-6 py-4 border-b-4 font-bold border-2;
-    border-bottom: 4px solid;
+    @apply px-6 py-4 border-b-4 font-bold border-2 bg-white text-green-darker border-green-darker border-b-4;
     box-shadow: none;
   }
   #contact-form .button:hover {
