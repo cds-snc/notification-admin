@@ -156,7 +156,7 @@ def test_add_service_has_to_choose_org_type(
         _expected_status=200,
     )
     assert normalize_spaces(page.select_one('.error-message').text) == (
-        'Not a valid choice'
+        'You need to choose an option'
     )
     assert mock_create_service.called is False
     assert mock_create_service_template.called is False
