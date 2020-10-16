@@ -5,6 +5,7 @@ from flask import abort, has_request_context, request
 from flask_login import current_user
 from notifications_python_client import __version__
 from notifications_python_client.base import BaseAPIClient
+from notifications_python_client.errors import HTTP503Error
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +88,18 @@ class NotifyAdminAPIClient(BaseAPIClient):
             self.log_admin_call(args[0], "DELETE")
         self.check_inactive_service()
         return super().delete(*args, **kwargs)
+
+    def _perform_request(self, method, url, kwargs):
+        # Retry requests to the Notify API up to 3 times
+        # if they fail with a 503 status, thrown when
+        # the admin can't connect to the API.
+        for i in [1, 2, 3]:
+            try:
+                return super()._perform_request(method, url, kwargs)
+            except HTTP503Error as e:
+                logger.warn("Retrying API request after failure {} {}".format(method, url))
+                if i == 3:
+                    raise e
 
 
 class InviteTokenError(Exception):
