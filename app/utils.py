@@ -55,7 +55,7 @@ with open('{}/email_domains.txt'.format(
 user_is_logged_in = login_required
 
 
-@cache.cached(timeout=300, key_prefix='latest_stats')
+@cache.memoize(timeout=300)
 def get_latest_stats(lang="en"):
     json_data = {}
     email_totals = 0
