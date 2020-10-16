@@ -240,7 +240,7 @@
               />
             </a>
           </div>
-          <div id="proposition-links" class="hide lg:block">
+          <div id="proposition-links" class="lg:block xs:hidden sm:hidden md:hidden">
 
             {% if current_user.platform_admin %}
             <a href="{{ url_for('main.live_services') }}"
@@ -266,8 +266,7 @@
 
       <!--  start mobile navigation -->
       <div class="mobile-nav container px-10 hidden lg:hidden">
-        <div class="absolute mobile-nav-wrap bg-gray w-
-         p-5 border-b-8">
+        <div class="absolute z-50 bg-gray p-5 border-b-8">
           <ul class="pt-2">
             {% if current_user.platform_admin %}
             <li>
