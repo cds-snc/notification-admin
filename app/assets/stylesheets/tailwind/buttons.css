@@ -1,0 +1,54 @@
+@layer components {
+
+  /* Note: Buttons are <a> sometimes, which is why :link and : visited styles exist */
+
+  .button, .button:link, .button:visited {
+    padding: .526315em .789473em .263157em;
+    box-shadow: 0 2px 0 theme("colors.green.border");
+    @apply no-underline inline-block text-white text-smaller leading-tight align-top bg-green;
+  }
+  
+  .button-blue, .button-blue:link, .button-blue:visited {
+    @apply px-5 py-4 border-b-2 border-black font-bold text-black text-base bg-blue-lighter;
+  }
+  
+  .button:hover {
+    @apply bg-green-hover;
+  }
+
+  .button:focus {
+    outline: 3px solid theme("colors.yellow.default");
+  }
+
+  .button-red {
+    @apply bg-red;
+    box-shadow: 0 2px 0 theme("colors.red.border");
+  }
+  .button-red:hover {
+    @apply bg-red-hover;
+  }
+
+  .button-secondary, .button-secondary:visited, .button-secondary:link {
+    box-shadow: 0 2px 0 theme("colors.gray.border");
+    font-size: 1em;
+    @apply text-black bg-gray-button;
+  }
+
+  .button-secondary:hover {
+    @apply bg-gray-hover;
+  }
+
+  /* Homepage Button */
+  #contact-form .button {
+    @apply px-6 py-4 border-b-4 font-bold border-2 bg-white text-green-darker border-green-darker border-b-4;
+    box-shadow: none;
+  }
+  #contact-form .button:hover {
+    @apply bg-gray-selected;
+  }
+
+  .button.disabled {
+    @apply opacity-50 cursor-default;
+  }
+
+}

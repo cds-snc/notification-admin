@@ -300,13 +300,13 @@
     this.nothingSelectedButtons = $(`
       <div id="nothing_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button-secondary" value="add-new-template">${window.polyglot.t(
+          <button class="button button-secondary" value="add-new-template">${window.polyglot.t(
             "new_template_button"
           )}</button>
-          <button class="button-secondary copy-template" value="copy-template">${window.polyglot.t(
+          <button class="button button-secondary copy-template" value="copy-template">${window.polyglot.t(
             "copy_template_button"
           )}</button>
-          <button class="button-secondary" value="add-new-folder">${window.polyglot.t(
+          <button class="button button-secondary" value="add-new-folder">${window.polyglot.t(
             "new_folder_button"
           )}</button>
           <div class="template-list-selected-counter">
@@ -321,10 +321,10 @@
     this.itemsSelectedButtons = $(`
       <div id="items_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button-secondary" value="move-to-existing-folder">${window.polyglot.t(
+          <button class="button button-secondary" value="move-to-existing-folder">${window.polyglot.t(
             "move"
           )}</button>
-          <button class="button-secondary" value="move-to-new-folder">${window.polyglot.t(
+          <button class="button button-secondary" value="move-to-new-folder">${window.polyglot.t(
             "add_to_new_folder"
           )}</button>
           <div class="template-list-selected-counter" aria-hidden="true">

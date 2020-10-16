@@ -59,7 +59,6 @@
   }
 
   .button {
-    @include button($error-colour);
     margin-top: 10px;
   }
 

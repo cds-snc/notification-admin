@@ -19,7 +19,6 @@
   &-button-show,
   &-button-copy {
 
-    @include button($grey-3);
     position: absolute;
     bottom: 2px;
 

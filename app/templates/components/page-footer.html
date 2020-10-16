@@ -15,7 +15,7 @@
       <button
         data-button-id={{button_id}}
         type="submit"
-        class="btn btn-green text-base outline-none focus:shadow-outline {% if destructive %}-destructive{% endif %}"
+        class="button text-base outline-none focus:shadow-outline {% if destructive %}button-red{% endif %}"
         {% if button_name %}name="{{ button_name }}"{% endif %}
         {% if button_value %}value="{{ button_value }}"{% endif %}
       >

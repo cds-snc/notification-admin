@@ -26,13 +26,15 @@ module.exports = {
       body: ["Noto Sans"]
     },
     screens: {
-      sm: "640rem",
+      sm: "640px",
       md: "768px",
       lg: "1024px"
     },
     colors: {
       red: {
-        default: "#b10e1e"
+        default: "#b10e1e",
+        hover: "#990c1a",
+        border: "#6a0812"
       },
       white: {
         default: "#FFF"
@@ -43,8 +45,11 @@ module.exports = {
         selected: "#75b9e0"
       },
       gray: {
-        default: "#EEE",
-        selected: "#e1e4e7"
+        default: "#eee",
+        button: "#dee0e2",
+        selected: "#e1e4e7",
+        hover: "#d0d3d6",
+        border: "#b5babe"
       },
       yellow: {
         default: "#ffbf47"

@@ -22,20 +22,18 @@
       position: absolute;
       z-index: -1;
 
-      &:focus + .file-upload-button {
+      &:focus + #file-upload-button {
         outline: 3px solid $yellow;
       }
 
     }
 
     &-button {
-      @include button($button-colour);
       display: inline-block;
       margin-right: 5px;
     }
 
     &-button-cancel {
-      @include button($error-colour);
       display: inline-block;
       margin-right: 5px;
     }

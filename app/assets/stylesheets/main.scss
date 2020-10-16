@@ -13,7 +13,6 @@ $path: '/static/images/';
 @import 'toolkit/typography';
 @import 'toolkit/grid_layout';
 @import 'toolkit/helpers';
-@import 'toolkit/design-patterns/buttons';
 
 // Dependencies from GOVU.UK Frontend Toolkit, rewritten for this application
 
@@ -44,7 +43,6 @@ $path: false !default;
 // CDS => copied into this repo to avoid npm dependencies
 @import 'elements/helpers';
 @import 'elements/reset';
-@import 'elements/buttons';
 @import 'elements/details';
 @import 'elements/elements-typography';
 @import 'elements/forms';

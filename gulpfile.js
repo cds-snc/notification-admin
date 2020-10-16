@@ -142,7 +142,7 @@ const sass = () => {
 
 // copy static css
 const static_css = () => {
-  return src(paths.src + "/stylesheets/homepage.css").pipe(
+  return src(paths.src + "/stylesheets/index.css").pipe(
     dest(paths.dist + "stylesheets/")
   );
 };

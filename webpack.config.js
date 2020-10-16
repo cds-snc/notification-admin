@@ -15,7 +15,7 @@ module.exports = {
   plugins: [
     new webpack.ProgressPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'stylesheets/homepage.css',
+      filename: 'stylesheets/index.css',
       path: path.resolve(__dirname, "app/assets/stylesheets")
     }),
   ],
