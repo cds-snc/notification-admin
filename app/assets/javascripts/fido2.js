@@ -125,12 +125,12 @@
       .then(function(response) {
         if (response.ok) {
           var html = '<div class="bottom-gutter">'
-              html+='<div class="banner-default-with-tick">Key(s) worked</div>';
+              html+='<div class="banner banner-with-tick">Key(s) worked</div>';
               html+='</div>';
           $('.test-key-message').html(html)
         } else {
           var html = '<div class="bottom-gutter">'
-              html+='<div class="banner-dangerous" role="group" tabindex="-1">Key(s) failed</div>';
+              html+='<div class="banner banner-dangerous" role="group" tabindex="-1">Key(s) failed</div>';
               html+='</div>';
 
           $('.test-key-message').html(html)

@@ -1,2 +1,32 @@
 @layer components {
+  
+  .banner {
+    @apply block relative p-gutterHalf mx-0 mt-gutter mb-gutterHalf clear-both text-left font-bold text-smaller border-4 border-solid leading-tight;
+  }
+
+  .banner:focus {
+    @apply outline-yellow;
+  }
+
+  .banner-dangerous {
+    @apply border-red text-red mt-gutterHalf;
+  }
+
+  .banner-title {
+    @apply text-title border-none pl-0 font-bold;
+  }
+
+  .banner-with-tick {
+    background-image: url('/static/images/tick.png');
+    background-size: 19px;
+    background-repeat: no-repeat;
+    background-position: 15px 15px;
+
+    @apply py-gutterHalf px-gutterAndAHalf;
+  }
+
+  .banner-list-bullet {
+    @apply mb-0 font-normal;
+  }
+
 }

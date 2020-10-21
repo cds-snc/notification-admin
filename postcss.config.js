@@ -11,6 +11,10 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "error-message",
     "form-group-error",
     "form-control-error",
+    "banner",
+    "banner-dangerous",
+    "banner-with-tick",
+    "banner-list-bullet",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });
