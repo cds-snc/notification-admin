@@ -17,12 +17,7 @@
   }
 
   .banner-with-tick {
-    background-image: url('/static/images/tick.png');
-    background-size: 19px;
-    background-repeat: no-repeat;
-    background-position: 15px 15px;
-
-    @apply py-gutterHalf px-gutterAndAHalf;
+    @apply bg-tick bg-no-repeat bg-19 bg-tickPos py-gutterHalf px-gutterAndAHalf;
   }
 
   .banner-list-bullet {

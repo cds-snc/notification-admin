@@ -5,6 +5,9 @@ module.exports = {
     container: {
       center: true
     },
+    backgroundImage: {
+      tick: "url('/static/images/tick.png')",
+    },
     boxShadow: {
       outline: "0 0 0 3px rgba(255, 191, 71, 1)"
     },
@@ -67,6 +70,12 @@ module.exports = {
       }
     },
     extend: {
+      backgroundSize: {
+        '19': '19px',
+      },
+      backgroundPosition: {
+        tickPos: "15px 15px",
+      },
       lineHeight: {
         'extra-tight': '0.9',
       },
