@@ -192,3 +192,25 @@ def test_update_organisation_when_updating_org_type_but_org_has_no_services(mock
         call('organisations'),
         call('domains'),
     ]
+
+
+def test_update_service_organisation(mocker, fake_uuid):
+    org_id, service_id = fake_uuid, fake_uuid
+
+    mock_redis_delete = mocker.patch('app.extensions.RedisClient.delete')
+    mock_post = mocker.patch('app.notify_client.organisations_api_client.OrganisationsClient.post')
+
+    organisations_client.update_service_organisation(
+        service_id,
+        org_id,
+    )
+
+    mock_post.assert_called_with(
+        url='/organisations/{}/service'.format(org_id),
+        data={'service_id': service_id}
+    )
+    assert mock_redis_delete.call_args_list == [
+        call('organisations'),
+        call('live-service-and-organisation-counts'),
+        call('service-{}'.format(service_id)),
+    ]
