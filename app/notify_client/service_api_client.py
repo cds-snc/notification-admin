@@ -113,6 +113,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.post(endpoint, data)
 
     @cache.delete('live-service-and-organisation-counts')
+    @cache.delete('organisations')
     def update_status(self, service_id, live):
         return self.update_service(
             service_id,
@@ -122,6 +123,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         )
 
     @cache.delete('live-service-and-organisation-counts')
+    @cache.delete('organisations')
     def update_count_as_live(self, service_id, count_as_live):
         return self.update_service(
             service_id,
