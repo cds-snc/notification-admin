@@ -25,10 +25,6 @@ module.exports = {
       xxl: "6.5rem",
       brand: "2.6rem"
     },
-    fontFamily: {
-      sans: ["lato"],
-      body: ["Noto Sans"]
-    },
     screens: {
       xs: {'max': "639px"},
       sm: "640px",
@@ -72,6 +68,13 @@ module.exports = {
     extend: {
       backgroundSize: {
         '19': '19px',
+      },
+      fontFamily: {
+        sans: ["lato"],
+        body: ["Noto Sans"]
+      },
+      inset: {
+        '2': '2px',
       },
       lineHeight: {
         'extra-tight': '0.9',

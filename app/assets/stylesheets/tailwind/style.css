@@ -1,6 +1,7 @@
 @import "./tailwind.css";
 @import "./layout.css";
 @import "./buttons.css";
+@import "./api-key.css";
 
 html {
   font-size: 62.5%;
