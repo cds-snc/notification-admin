@@ -258,7 +258,10 @@ def id_safe(string):
 
 
 def get_remote_addr(request):
-    return request.access_route[0]
+    try:
+        return request.access_route[0]
+    except IndexError:
+        return None
 
 
 class Spreadsheet():
