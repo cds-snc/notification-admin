@@ -9,7 +9,11 @@
   }
   
   .button-blue, .button-blue:link, .button-blue:visited {
-    @apply px-5 py-4 border-b-2 border-black font-bold text-black text-base bg-blue-lighter;
+    @apply bg-blue text-white text-smaller;
+  }
+
+  .button-blue-lighter, .button-blue-lighter:link, .button-blue-lighter:visited {
+    @apply bg-blue-lighter border-b-2 border-black font-bold text-base text-black px-5 py-4;
   }
   
   .button:hover {

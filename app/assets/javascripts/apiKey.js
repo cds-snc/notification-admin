@@ -8,11 +8,11 @@
     const states = {
       'keyVisible': (key, thing) => `
         <span class="api-key-key">${key}</span>
-        <input type='button' class='api-key-button-copy button-secondary' value='${window.polyglot.t('copy')} ${thing} ${window.polyglot.t('to_clipboard')}' />
+        <input type='button' class='api-key-button-copy button button-secondary' value='${window.polyglot.t('copy')} ${thing} ${window.polyglot.t('to_clipboard')}' />
       `,
       'keyCopied': thing => `
         <span class="api-key-key">${window.polyglot.t('copied_to_clipboard')}</span>
-        <input type='button' class='api-key-button-show button-secondary' value='${window.polyglot.t('show')} ${thing}' />
+        <input type='button' class='api-key-button-show button button-secondary' value='${window.polyglot.t('show')} ${thing}' />
       `
     };
 

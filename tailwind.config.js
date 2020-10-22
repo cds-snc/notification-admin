@@ -5,6 +5,9 @@ module.exports = {
     container: {
       center: true
     },
+    backgroundImage: {
+      tick: "url('/static/images/tick.png')",
+    },
     boxShadow: {
       outline: "0 0 0 3px rgba(255, 191, 71, 1)"
     },
@@ -16,6 +19,7 @@ module.exports = {
       small: "1.6rem",
       smaller: "1.9rem",
       base: "2.0rem",
+      title: "2.4rem",
       lg: "3.6rem",
       xl: "3.8rem",
       xxl: "6.5rem",
@@ -64,12 +68,23 @@ module.exports = {
       black: {
         default: "#000"
       }
-    }
-  },
-  extend: {
-    lineHeight: {
-      'extra-tight': '0.9',
-    }
+    },
+    extend: {
+      backgroundSize: {
+        '19': '19px',
+      },
+      lineHeight: {
+        'extra-tight': '0.9',
+      },
+      outline: {
+        yellow: '3px solid #ffbf47'
+      },
+      spacing: {
+        gutter: '30px',
+        gutterHalf: '15px',
+        gutterAndAHalf: '45px',
+      }
+    },
   },
   plugins: [
     plugin(function({ addVariant, e }) {
@@ -81,6 +96,6 @@ module.exports = {
     })
   ],
   variants: {
-    textColor: ['visited', 'link']
+    textColor: ['visited', 'link'],
   },
 };

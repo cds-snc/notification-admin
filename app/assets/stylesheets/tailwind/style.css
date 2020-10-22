@@ -1,4 +1,5 @@
 @import "./tailwind.css";
+@import "./layout.css";
 @import "./buttons.css";
 
 html {

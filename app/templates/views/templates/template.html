@@ -15,7 +15,7 @@
     <div class="bottom-gutter">
       {% set question_txt = _('Are you sure you want to hide personalisation after sending?') %}
       {% call banner_wrapper(type='dangerous', subhead=question_txt) %}
-        <ul class="list list-bullet">
+        <ul class="list list-bullet banner-list-bullet">
           <li>
             {{ _('You will not be able to see personalised content in GC Notify for this template') }}
           </li>
@@ -25,7 +25,7 @@
         </ul>
         <form method='post'>
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-          <button type="submit" class="button-red" name="delete">{{ _('Confirm') }}</button>
+          <button type="submit" class="button button-red" name="delete">{{ _('Confirm') }}</button>
         </form>
       {% endcall %}
     </div>
