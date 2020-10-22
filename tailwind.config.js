@@ -73,9 +73,6 @@ module.exports = {
       backgroundSize: {
         '19': '19px',
       },
-      backgroundPosition: {
-        tickPos: "15px 15px",
-      },
       lineHeight: {
         'extra-tight': '0.9',
       },

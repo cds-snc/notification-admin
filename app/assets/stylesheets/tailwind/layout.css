@@ -17,7 +17,8 @@
   }
 
   .banner-with-tick {
-    @apply bg-tick bg-no-repeat bg-19 bg-tickPos py-gutterHalf px-gutterAndAHalf;
+    background-position: "15px 15px";
+    @apply bg-tick bg-no-repeat bg-19 py-gutterHalf px-gutterAndAHalf;
   }
 
   .banner-list-bullet {
