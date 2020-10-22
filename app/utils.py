@@ -257,6 +257,10 @@ def id_safe(string):
     return email_safe(string, whitespace='-')
 
 
+def get_remote_addr(request):
+    return request.access_route[0]
+
+
 class Spreadsheet():
 
     allowed_file_extensions = ['csv', 'xlsx', 'xls', 'ods', 'xlsm', 'tsv']

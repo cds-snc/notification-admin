@@ -19,7 +19,7 @@ from app import login_manager
 from app.main import main
 from app.main.forms import LoginForm
 from app.models.user import InvitedUser, User
-from app.utils import report_security_finding
+from app.utils import get_remote_addr, report_security_finding
 
 
 @main.route('/sign-in', methods=(['GET', 'POST']))
@@ -33,7 +33,7 @@ def sign_in():
 
         login_data = {
             "user-agent": request.headers["User-Agent"],
-            "location": _geolocate_ip(request.remote_addr)
+            "location": _geolocate_ip(get_remote_addr(request))
         }
 
         user = User.from_email_address_and_password_or_none(

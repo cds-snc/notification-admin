@@ -4,7 +4,7 @@ from io import StringIO
 from pathlib import Path
 
 import pytest
-from flask import current_app
+from flask import current_app, request
 from freezegun import freeze_time
 
 from app import format_datetime_relative
@@ -16,6 +16,7 @@ from app.utils import (
     generate_previous_dict,
     get_letter_printing_statement,
     get_logo_cdn_domain,
+    get_remote_addr,
     printing_today_or_tomorrow,
     report_security_finding,
 )
@@ -417,3 +418,17 @@ def test_report_security_finding(mocker):
     boto_client.client.assert_called_with('securityhub', region_name=current_app.config['AWS_REGION'])
     client.get_caller_identity.assert_called()
     client.batch_import_findings.assert_called()
+
+
+@pytest.mark.parametrize('forwarded_for, remote_addr, expected', [
+    ('1.2.3.4, 192.168.1.30', None, '1.2.3.4'),
+    ('1.2.3.4', None, '1.2.3.4'),
+    (None, '1.2.3.4', '1.2.3.4'),
+])
+def test_get_remote_addr(app_, forwarded_for, remote_addr, expected):
+    headers = {}
+    if forwarded_for:
+        headers['X-Forwarded-For'] = forwarded_for
+    environ = {'REMOTE_ADDR': remote_addr}
+    with app_.test_request_context(headers=headers, environ_base=environ):
+        assert get_remote_addr(request) == expected
