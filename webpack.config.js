@@ -32,7 +32,7 @@ module.exports = {
       {
         test: /\.css$/i,
         include: [
-          path.resolve(__dirname, "app/assets/stylesheets")
+          path.resolve(__dirname, "app/assets/stylesheets/tailwind")
         ],
         use: [
           MiniCssExtractPlugin.loader,
