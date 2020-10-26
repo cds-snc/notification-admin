@@ -27,10 +27,7 @@ module.exports = {
         include: [
           path.resolve(__dirname, "app/assets/javascripts")
         ],
-        use: [
-          "css-loader",
-          "postcss-loader"
-        ]
+        use: ["style-loader", "css-loader"]
       },
       {
         test: /\.css$/i,
