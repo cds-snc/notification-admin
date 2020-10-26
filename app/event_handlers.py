@@ -1,6 +1,7 @@
 from flask import request
 
 from app import events_api_client
+from app.utils import get_remote_addr
 
 
 def on_user_logged_in(_sender, user):
@@ -40,16 +41,8 @@ def _send_event(event_type, **kwargs):
 
 
 def _construct_event_data(request):
-    return {'ip_address': _get_remote_addr(request),
+    return {'ip_address': get_remote_addr(request),
             'browser_fingerprint': _get_browser_fingerprint(request)}
-
-
-# This might not be totally correct depending on proxy setup
-def _get_remote_addr(request):
-    if request.headers.getlist("X-Forwarded-For"):
-        return request.headers.getlist("X-Forwarded-For")[0]
-    else:
-        return request.remote_addr
 
 
 def _get_browser_fingerprint(request):
