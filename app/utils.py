@@ -260,6 +260,8 @@ def id_safe(string):
 def get_remote_addr(request):
     try:
         return request.access_route[0]
+    # This except block is here to prevent to fail when the env `REMOTE_ADDR`
+    # is not set. This only happens when running tests
     except IndexError:
         return None
 
