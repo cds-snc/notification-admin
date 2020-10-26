@@ -1,0 +1,43 @@
+@layer components {
+  .big-number {
+    @apply block;
+  }
+
+  .big-number-number {
+    @apply block text-48 font-bold leading-none;
+  }
+
+  .big-number-dark {
+    @apply relative p-gutterHalf text-white bg-black;
+  }
+
+  .big-number-label {
+    @apply text-smaller inline-block pb-4;
+  }
+
+  .big-number-with-status {
+    @apply relative mb-8;
+  }
+
+  .big-number-link {
+    @apply no-underline mb-2 text-white block bg-blue-govukblue border-2 border-blue-govukblue border-solid;
+  }
+  .big-number-link:hover, .big-number-link:hover .big-number {
+    @apply text-blue-lightblue25;
+  }
+  .big-number-link:active, .big-number-link:focus {
+    @apply outline-yellow bg-blue-govukblue;
+  }
+
+  .big-number-status {
+    @apply text-smaller p-6 block text-white bg-green-green;
+  }
+
+  .big-number-status-link:link, .big-number-status-link:visited, .big-number-status-link:active, .big-number-status-link:hover {
+    @apply text-white no-underline;
+  }
+
+  .big-number-status-link:active, .big-number-status-link:focus {
+    @apply text-black border-black border-solid border-1;
+  }
+}

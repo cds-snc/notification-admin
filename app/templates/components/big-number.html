@@ -1,9 +1,9 @@
-{% macro big_number(number, label, link=None, currency='', smaller=False, smallest=False) %}
+{% macro big_number(number, label, link=None, status=None, currency='', smaller=False, smallest=False) %}
   {% if link %}
     <a class="big-number-link" href="{{ link }}">
   {% endif %}
-  <div class="big-number{% if smaller %}-smaller{% endif %}{% if smallest %}-smallest{% endif %}">
-    <div class="big-number-number">
+  <div class="big-number{% if status %} big-number-dark{% endif %}{% if status and link %} bg-transparent{% endif %}">
+    <div class="big-number-number{% if smaller %} text-lg{% endif %}{% if smallest %} text-title{% endif %}">
       {% if number is number %}
         {% if currency %}
           {{ "{}{:,.2f}".format(currency, number) }}
@@ -15,7 +15,7 @@
       {% endif %}
     </div>
     {% if label %}
-      <span class="big-number-label">{{ label }}</span>
+      <span class="big-number-label{% if status %} pb-0 link:text-blue-govukblue visited:text-blue-govukblue{% endif %}{% if link %} underline{% endif %}">{{ label }}</span>
     {% endif %}
   </div>
   {% if link %}
@@ -37,12 +37,12 @@
   smallest=False
 ) %}
   <div class="big-number-with-status">
-    {{ big_number(number, label, link=link, smaller=smaller, smallest=smallest) }}
+    {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
     {% if show_failures %}
-      <div class="big-number-status{% if danger_zone %}-failing{% endif %}">
+      <div class="big-number-status{% if danger_zone %} bg-red-default{% endif %}">
         {% if failures %}
           {% if failure_link %}
-            <a href="{{ failure_link }}">
+            <a class="big-number-status-link" href="{{ failure_link }}">
               {{ "{:,}".format(failures) }}
               {{ _('failed') }} – {{ failure_percentage }}%
             </a>
@@ -61,7 +61,7 @@
 
 {% macro big_number_simple(number, label) %}
   <div class="big-number-dark bottom-gutter-2-3">
-    <div class="big-number-number">
+    <div class="big-number-number text-lg">
       {% if number is number %}
         {{ "{:,}".format(number) }}
       {% else %}

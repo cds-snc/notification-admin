@@ -2,6 +2,8 @@
 @import "./layout.css";
 @import "./buttons.css";
 @import "./api-key.css";
+@import "./big-number.css";
+
 
 html {
   font-size: 62.5%;

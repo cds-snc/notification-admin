@@ -22,6 +22,7 @@ module.exports = {
       title: "2.4rem",
       lg: "3.6rem",
       xl: "3.8rem",
+      '48': "4.8rem",
       xxl: "6.5rem",
       brand: "2.6rem"
     },
@@ -43,7 +44,9 @@ module.exports = {
       blue: {
         lighter: "#B2E3FF",
         default: "#26374A",
-        selected: "#75b9e0"
+        selected: "#75b9e0",
+        govukblue: "#005ea5",
+        lightblue25: "#d5e8f3",
       },
       gray: {
         default: "#eee",
@@ -59,15 +62,22 @@ module.exports = {
         default: "#00823b",
         darker: "#00703C",
         hover: "#00692f",
-        border: "#003618"
+        border: "#003618",
+        green: "#006435",
       },
       black: {
         default: "#000"
+      },
+      transparent: {
+        default: "transparent"
       }
     },
     extend: {
       backgroundSize: {
         '19': '19px',
+      },
+      borderWidth: {
+        '1':'1px',
       },
       fontFamily: {
         sans: ["lato"],
@@ -75,6 +85,8 @@ module.exports = {
       },
       inset: {
         '2': '2px',
+        '5': '5px',
+        '7': '7px',
       },
       lineHeight: {
         'extra-tight': '0.9',
