@@ -8,11 +8,11 @@
     const states = {
       'keyVisible': (key, thing) => `
         <span class="api-key-key">${key}</span>
-        <input type='button' class='api-key-button-copy button button-secondary' value='${window.polyglot.t('copy')} ${thing} ${window.polyglot.t('to_clipboard')}' />
+        <input type='button' class='js-api-key-button-copy absolute bottom-2 active:top-auto button button-secondary' value='${window.polyglot.t('copy')} ${thing} ${window.polyglot.t('to_clipboard')}' />
       `,
       'keyCopied': thing => `
         <span class="api-key-key">${window.polyglot.t('copied_to_clipboard')}</span>
-        <input type='button' class='api-key-button-show button button-secondary' value='${window.polyglot.t('show')} ${thing}' />
+        <input type='button' class='js-api-key-button-show absolute bottom-2 active:top-auto button button-secondary' value='${window.polyglot.t('show')} ${thing}' />
       `
     };
 
@@ -39,14 +39,14 @@
         .html(states.keyVisible(key, thing))
         .attr('aria-live', 'polite')
         .on(
-          'click', '.api-key-button-copy', () =>
+          'click', '.js-api-key-button-copy', () =>
             this.copyKey(
               $('.api-key-key', component)[0], () =>
                 $component.html(states.keyCopied(thing))
             )
         )
         .on(
-          'click', '.api-key-button-show', () =>
+          'click', '.js-api-key-button-show', () =>
             $component.html(states.keyVisible(key, thing))
         );
 

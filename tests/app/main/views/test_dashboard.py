@@ -697,7 +697,7 @@ def test_correct_columns_display_on_dashboard(
             'email': {'requested': 1000000000, 'delivered': 0, 'failed': 0},
             'sms': {'requested': 1000000, 'delivered': 0, 'failed': 0}
         },
-        '.big-number-smaller',
+        '.big-number-dark',
         2,
     ),
     (
@@ -717,7 +717,7 @@ def test_correct_columns_display_on_dashboard(
             'sms': {'requested': 0, 'delivered': 0, 'failed': 0},
             'letter': {'requested': 100000, 'delivered': 0, 'failed': 0},
         },
-        '.big-number-smaller',
+        '.big-number-dark',
         3,
     ),
 ])
