@@ -77,44 +77,6 @@
   {% block fullwidth_content %}{% endblock %}
 {% endblock %}
 
-{% block footer_top %}
-  <div class="footer-categories">
-    <div class="footer-categories-wrapper">
-      <div class="grid-row">
-        <div class="column-one-quarter">
-          <ul>
-            <li>
-              <a href="{{ url_for("main.terms") }}">{{ _('Terms of Use') }}</a>
-            </li>
-            <li>
-              <a href="{{ url_for("main.messages_status") }}">{{ _('Message delivery status') }}</a>
-            </li>
-          </ul>
-        </div>
-        <div class="column-one-quarter">
-          <ul>
-            <li>
-                <a href="{{ url_for("main.privacy") }}">{{ _('Privacy') }}</a>
-              </li>
-              <li>
-                <a href="{{ url_for("main.security") }}">{{ _('Security') }}</a>
-              </li>
-          </ul>
-        </div>
-        <div class="column-one-quarter">
-        </div>
-      </div>
-    </div>
-  </div>
-{% endblock %}
-{% block footer_support_links %}
-  <nav class="footer-nav">
-    <a href="{{ url_for("main.privacy") }}">{{ _('Privacy') }}</a>
-    {% if current_service and current_service.research_mode %}
-    <span id="research-mode" class="research-mode">{{ _('research mode') }}</span>
-    {% endif %}
-  </nav>
-{% endblock %}
 {% block body_end %}
   <script src="{{ asset_path }}javascripts/main.min.js"></script>
   <script type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>

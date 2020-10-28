@@ -232,12 +232,6 @@ details .arrow {
   margin-top: $gutter-half;
 }
 
-#footer{
-  .footer-categories-wrapper{
-    border-bottom:none;
-  }
-}
-
 .app-name{
   display:block;
   float:left;
@@ -291,16 +285,6 @@ details .arrow {
 .homepage-colour-swap{
   background-color: #cddae6;
   padding:2rem 0;
-}
-
-@media (min-width: 641px){
-  #footer .footer-wrapper {
-      padding-top: 20px;
-  }
-
-  #footer .footer-categories-wrapper{
-    padding-bottom: 0;
-  }
 }
 
 main {
