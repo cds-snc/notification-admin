@@ -197,7 +197,8 @@ const defaultTask = parallel(
     copy.govuk_template.js,
     images
   ),
-  series(static_css)
+  series(static_css),
+  series(javascripts, sass)
 );
 
 // Watch for changes and re-run tasks
