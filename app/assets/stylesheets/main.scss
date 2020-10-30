@@ -58,7 +58,6 @@ $path: false !default;
 
 // Specific to this application
 @import 'grids';
-@import 'components/site-footer';
 @import 'components/placeholder';
 @import 'components/sms-message';
 @import 'components/page-footer';
@@ -74,20 +73,16 @@ $path: false !default;
 @import 'components/pill';
 @import 'components/show-more';
 @import 'components/message';
-@import 'components/research-mode';
 @import 'components/tick-cross';
-@import 'components/list-entry';
 @import 'components/letter';
 @import 'components/live-search';
 @import 'components/stick-at-top-when-scrolling';
 @import 'components/fullscreen-table';
 @import 'components/conditional-radios';
-@import 'components/vendor/responsive-embed';
 @import 'components/preview-pane';
 @import 'components/task-list';
 @import 'components/vendor/govuk-back-link';
 @import 'components/loading-indicator';
-@import 'components/schedule-send';
 
 @import 'views/dashboard';
 @import 'views/users';

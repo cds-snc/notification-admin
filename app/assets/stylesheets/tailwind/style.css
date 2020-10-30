@@ -3,6 +3,7 @@
 @import "./buttons.css";
 @import "./api-key.css";
 @import "./big-number.css";
+@import "./list-entry.css";
 
 
 html {
@@ -135,4 +136,10 @@ label {
   display: -moz-inline-stack;
   display: inline-block;
   margin: 0.75em 0 0 30px;
+}
+
+@layer components {
+  .research-mode {
+    @apply font-bold inline-block bg-blue-govukblue text-white py-2 px-4 rounded;
+  }
 }

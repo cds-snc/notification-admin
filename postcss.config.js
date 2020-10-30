@@ -15,7 +15,8 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "banner-dangerous",
     "banner-with-tick",
     "banner-list-bullet",
-    "bottom-2"
+    "bottom-2",
+    "list-entry-remove",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });

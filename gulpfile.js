@@ -73,11 +73,6 @@ const copy = {
       return src(paths.template + "assets/stylesheets/fonts/**/*").pipe(
         dest(paths.dist + "fonts/")
       );
-    },
-    error_page: () => {
-      return src(paths.src + "error_pages/**/*").pipe(
-        dest(paths.dist + "error_pages/")
-      );
     }
   }
 };
@@ -203,7 +198,7 @@ const defaultTask = parallel(
     images
   ),
   series(static_css),
-  series(copy.govuk_template.error_page, javascripts, sass)
+  series(javascripts, sass)
 );
 
 // Watch for changes and re-run tasks
