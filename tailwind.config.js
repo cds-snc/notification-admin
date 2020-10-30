@@ -53,7 +53,8 @@ module.exports = {
         button: "#dee0e2",
         selected: "#e1e4e7",
         hover: "#d0d3d6",
-        border: "#b5babe"
+        border: "#b5babe",
+        grey1: "#6f777b",
       },
       yellow: {
         default: "#ffbf47"
