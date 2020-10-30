@@ -39,7 +39,7 @@
   <div class="big-number-with-status">
     {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
     {% if show_failures %}
-      <div class="big-number-status{% if danger_zone %} bg-red-default{% endif %}">
+      <div class="big-number-status{% if danger_zone %} bg-red{% endif %}">
         {% if failures %}
           {% if failure_link %}
             <a class="big-number-status-link" href="{{ failure_link }}">
