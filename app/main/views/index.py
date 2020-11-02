@@ -314,6 +314,11 @@ def security():
     )
 
 
+@main.route('/stats', endpoint='stats')
+def stats():
+    return render_template('views/stats.html')
+
+
 @main.route('/terms', endpoint='terms')
 def terms():
     return render_template(
