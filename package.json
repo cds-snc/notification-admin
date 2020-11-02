@@ -12,7 +12,8 @@
     "watch": "gulp watch",
     "heroku-postbuild": "gulp && make generate-version-file && export ADMIN_BASE_URL=${HEROKU_APP_NAME}.herokuapp.com",
     "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "prepare": "npm run snyk-protect",
+    "tailwind": "webpack --config webpack.config.js && gulp"
   },
   "repository": {
     "type": "git",

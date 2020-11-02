@@ -6,7 +6,7 @@ module.exports = {
   //mode: "development", //development
   mode: "production",
   entry: ["./app/assets/javascripts/index.js", "./app/assets/stylesheets/tailwind/style.css"],
-  watch: true,
+  watch: false,
   output: {
     filename: "javascripts/[name].min.js",
     path: path.resolve(__dirname, "app/assets")
