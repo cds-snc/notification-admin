@@ -3,6 +3,7 @@ import os
 import re
 import unicodedata
 import uuid
+from collections import defaultdict
 from datetime import datetime, time, timedelta
 from functools import wraps
 from io import BytesIO, StringIO
@@ -16,6 +17,7 @@ import pyexcel_xlsx
 from dateutil import parser
 from flask import abort, current_app, redirect, request, session, url_for
 from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_required
 from notifications_utils.field import Field
 from notifications_utils.formatters import make_quotes_smart
@@ -56,32 +58,35 @@ user_is_logged_in = login_required
 
 
 @cache.memoize(timeout=300)
-def get_latest_stats(lang="en"):
-    json_data = {}
-    email_totals = 0
-    sms_totals = 0
-    service_names = []
+def get_latest_stats(lang):
+    results = service_api_client.get_stats_by_month()["data"]
 
-    results = service_api_client.get_live_services_data()["data"]
+    monthly_stats = {}
+    emails_total = 0
+    sms_total = 0
+    for line in results:
+        date, notification_type, count = line
+        year = date[:4]
+        month = f'{get_month_name(date)} {year}'
+        if month not in monthly_stats:
+            monthly_stats[month] = defaultdict(int)
+        monthly_stats[month][notification_type] = count
+        monthly_stats[month]['total'] += count
 
-    for row in results:
-        if row['email_totals']:
-            email_totals += int(row['email_totals'])
-        if row['sms_totals']:
-            sms_totals += int(row['sms_totals'])
-        if row['service_name']:
-            service_names.append(row['service_name'])
+        if notification_type == 'sms':
+            sms_total += count
+        elif notification_type == 'email':
+            emails_total += count
 
-    json_data["services_count"] = len(service_names)
-    notification_totals = sms_totals + email_totals
+    live_services = len(service_api_client.get_live_services_data()["data"])
 
-    if(lang == "en"):
-        json_data["notification_totals"] = f'{notification_totals:,}'
-    else:
-        formatted = f'{notification_totals:,}'
-        json_data["notification_totals"] = formatted.replace(",", " ")
-
-    return json_data
+    return {
+        'monthly_stats': monthly_stats,
+        'emails_total': emails_total,
+        'sms_total': sms_total,
+        'notifications_total': sms_total + emails_total,
+        'live_services': live_services,
+    }
 
 
 def user_has_permissions(*permissions, **permission_kwargs):
@@ -630,6 +635,30 @@ def report_security_finding(
             },
         ]
     )
+
+
+def get_month_name(string):
+    monthNumber = yyyy_mm_to_datetime(string).strftime('%-m')
+    translatedMonth = {
+        1: _l("January"),
+        2: _l("February"),
+        3: _l("March"),
+        4: _l("April"),
+        5: _l("May"),
+        6: _l("June"),
+        7: _l("July"),
+        8: _l("August"),
+        9: _l("September"),
+        10: _l("October"),
+        11: _l("November"),
+        12: _l("December"),
+    }
+
+    return translatedMonth.get(int(monthNumber), _l("Invalid month"))
+
+
+def yyyy_mm_to_datetime(string):
+    return datetime(int(string[0:4]), int(string[5:7]), 1)
 
 
 class PermanentRedirect(RequestRedirect):

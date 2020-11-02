@@ -22,7 +22,9 @@ from app.utils import (
     FAILURE_STATUSES,
     REQUESTED_STATUSES,
     get_current_financial_year,
+    get_month_name,
     user_has_permissions,
+    yyyy_mm_to_datetime,
 )
 
 
@@ -291,30 +293,6 @@ def format_monthly_stats_to_list(historical_stats):
             **aggregate_status_types(value)
         ) for key, value in historical_stats.items()
     ), key=lambda x: x['date'], reverse=True)
-
-
-def get_month_name(string):
-    monthNumber = yyyy_mm_to_datetime(string).strftime('%-m')
-    translatedMonth = {
-        1: _l("January"),
-        2: _l("February"),
-        3: _l("March"),
-        4: _l("April"),
-        5: _l("May"),
-        6: _l("June"),
-        7: _l("July"),
-        8: _l("August"),
-        9: _l("September"),
-        10: _l("October"),
-        11: _l("November"),
-        12: _l("December"),
-    }
-
-    return translatedMonth.get(int(monthNumber), _l("Invalid month"))
-
-
-def yyyy_mm_to_datetime(string):
-    return datetime(int(string[0:4]), int(string[5:7]), 1)
 
 
 def aggregate_status_types(counts_dict):

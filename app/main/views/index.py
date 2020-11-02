@@ -32,9 +32,6 @@ from app.utils import get_latest_stats, get_logo_cdn_domain, user_is_logged_in
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-
-    lang = get_current_locale(current_app)
-
     if current_user and current_user.is_authenticated:
         return redirect(url_for('main.choose_account'))
 
@@ -50,21 +47,17 @@ def index():
 
         return render_template('views/contact/thanks.html')
 
-    stats = get_latest_stats(lang)
-
     if request.method == 'POST':
         return render_template(
             'views/signedout.html',
             form=form,
-            scrollTo="true",
-            stats=stats
+            scrollTo="true"
         )
 
     return render_template(
         'views/signedout.html',
         form=form,
-        scrollTo="false",
-        stats=stats
+        scrollTo="false"
     )
 
 
@@ -316,7 +309,10 @@ def security():
 
 @main.route('/stats', endpoint='stats')
 def stats():
-    return render_template('views/stats.html')
+    return render_template(
+        'views/stats.html',
+        **get_latest_stats(get_current_locale(current_app))
+    )
 
 
 @main.route('/terms', endpoint='terms')
