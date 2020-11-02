@@ -23,7 +23,6 @@
   "homepage": "https://github.com/cds-snc/notification-admin#readme",
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@cdssnc/cds_template_jinja": "0.0.7",
     "dayjs": "^1.9.1",
     "diff-dom": "4.2.1",
     "govuk-elements-sass": "3.1.3",

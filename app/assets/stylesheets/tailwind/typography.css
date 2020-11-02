@@ -1,4 +1,21 @@
+a {
+  @apply underline text-smaller;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.3);
+}
+
+a:link, a:visited {
+  @apply text-blue-govukblue;
+}
+
+a:focus {
+  background-color: #ffbf47;
+  outline: 3px solid #ffbf47;
+}
+
+a:link:focus {
+  color: #005798;
+}
+
 @layer components {
   /* links */
-  
 }
