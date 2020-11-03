@@ -18,6 +18,8 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "bottom-2",
     "bg-red",
     "list-entry-remove",
+    "shim",
+    "content-fixed"
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });

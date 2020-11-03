@@ -1,13 +1,93 @@
 @import "./tailwind.css";
+@import "./typography.css";
 @import "./layout.css";
 @import "./buttons.css";
 @import "./api-key.css";
 @import "./big-number.css";
 @import "./list-entry.css";
 
+@-ms-viewport {
+  width: device-width;
+}
 
 html {
   font-size: 62.5%;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  background-color: #dee0e2;
+  -ms-overflow-style: scrollbar;
+}
+
+body {
+  @apply leading-normal font-normal;
+  font-size: 160%;
+  background: white;
+  color: #0b0c0c;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+button,
+input,
+table,
+td,
+th {
+  @apply font-body;
+}
+
+html,
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+article,
+aside,
+footer,
+header,
+hgroup,
+nav,
+section {
+  @apply m-0 p-0 align-baseline;
+}
+
+main {
+  @apply block;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button;
+  margin-right: 2px;
+}
+
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+.hidden,
+.js-enabled .js-hidden {
+  @apply hidden invisible;
+}
+
+.visually-hidden,
+.visuallyhidden {
+  @apply absolute overflow-hidden top-auto;
+  left: -9999em;
+  width: 1px;
+  height: 1px;
+}
+
+.visually-hidden.focusable:active,
+.visually-hidden.focusable:focus,
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+  @apply h-auto m-0 overflow-visible static w-auto;
+  clip: auto;
 }
 
 h1 {
@@ -16,10 +96,6 @@ h1 {
 
 h2 {
   @apply text-lg font-sans pb-6;
-}
-
-a {
-  @apply underline text-smaller;
 }
 
 p {
@@ -43,6 +119,28 @@ li {
 
 label {
   @apply block text-smaller pb-2;
+}
+
+.group:before,
+.group:after {
+  content: "\0020";
+  @apply block h-0 overflow-hidden;
+}
+
+.group:after {
+  @apply clear-both;
+}
+
+.group {
+  zoom: 1;
+}
+
+.content-fixed {
+  @apply fixed top-0;
+}
+
+.shim {
+  display: block;
 }
 
 @variants focus {
@@ -102,12 +200,11 @@ label {
 }
 
 .skiplink:focus {
-  background-color: #ffbf47;
-  outline: 3px solid #ffbf47;
+  @apply outline-yellow bg-yellow;
 }
 
 .skiplink {
-  position: absolute;
+  @apply absolute;
   left: -9999em;
 }
 

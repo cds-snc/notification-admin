@@ -27,12 +27,6 @@ set description = _('GC Notify lets you send emails and text messages to your us
 
 {% endblock %}
 
-<link
-  rel="stylesheet"
-  media="screen"
-  href="{{ asset_path }}stylesheets/notification-template.css?0.24.2"
-/>
-
 {% block page_title %} {{ _('GC Notify') }} {% endblock %} {% block main_content %}
 <div id="skiplink-container">
   <div>
@@ -86,7 +80,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
         <!-- start sub nav -->
         <nav aria-label="{{ _('language and sign-in') }}" class="flex pt-4 mb-10 lg:mb-0">
           <a
-            class="line-under leading-none inline-block text-blue text-small underline hover:no-underline"
+            class="line-under leading-none inline-block text-blue link:text-blue visited:text-blue text-small underline hover:no-underline"
             href="{{ url_for('main.set_lang')}}?from={{request.path}}"
           >
             {% if session["userlang"] == "en" %} Français {% else %} English {% endif %}
@@ -94,7 +88,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
 
           <a
             href="{{ url_for('main.sign_in' )}}"
-            class="line-under leading-none inline-block text-blue text-small pl-5 underline hover:no-underline"
+            class="line-under leading-none inline-block text-blue link:text-blue visited:text-blue text-small pl-5 underline hover:no-underline"
             >{{ _("Sign in") }}
           </a>
         </nav>
@@ -109,7 +103,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
           <a
             href="#"
             id="menu"
-            class="px-2 text-small text-blue mr-5 font-bold no-underline hover:underline"
+            class="px-2 text-small text-blue link:text-blue visited:text-blue mr-5 font-bold no-underline hover:underline"
           >
             {{ _("Menu") }}
 
@@ -121,17 +115,17 @@ set description = _('GC Notify lets you send emails and text messages to your us
             />
           </a>
         </div>
-        <div class="hidden lg:block">
+        <div class="hidden lg:block lg:visible">
           <a href="{{ url_for('main.features') }}"
-            class="text-small text-blue mr-10 font-bold no-underline hover:underline"
+            class="text-small text-blue link:text-blue visited:text-blue mr-10 font-bold no-underline hover:underline"
             >{{ _("Product features") }}</a>
           <a
             href="{{ url_for('main.documentation') }}"
-            class="text-small text-blue mr-10 font-bold no-underline hover:underline"
+            class="text-small text-blue link:text-blue visited:text-blue mr-10 font-bold no-underline hover:underline"
             >{{ _("Technical documentation") }}</a>
           <a
             href="{{ url_for('.contact') }}"
-            class="text-small text-blue mr-10 font-bold no-underline hover:underline"
+            class="text-small text-blue link:text-blue visited:text-blue mr-10 font-bold no-underline hover:underline"
             >{{ _("Contact us") }}
           </a>
         </div>
@@ -189,12 +183,12 @@ set description = _('GC Notify lets you send emails and text messages to your us
             >
             <a
               href="{{ url_for('main.sign_in' )}}"
-              class="line-under text-white text-default underline hover:no-underline text-base"
+              class="line-under text-white link:text-white visited:text-white text-default underline hover:no-underline text-base"
               >{{ _("Sign in") }}</a
             >
           </div>
         </div>
-        <div class="pt-6 pb-6 ml-10 image-content hidden lg:block">
+        <div class="pt-6 pb-6 ml-10 image-content hidden lg:block lg:visible">
           <img
             loading="lazy"
             alt="An illustration of a laptop with a message window on the screen and a cellphone with a message and a callout blurb.") }}"
@@ -237,7 +231,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
 
         </div>
         <div class="text-content lg:max-w-4xl">
-          <h2 class="leading-tight font-bold hidden lg:block">
+          <h2 class="leading-tight font-bold hidden lg:block lg:visible">
             {{ _("A platform built for government") }}
           </h2>
           <p class="pt-4">
@@ -247,7 +241,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
             {{ _("Use templates for easy, consistent, and accessible communications.") }}
           </p>
           <p class="pt-10 text-blue">
-            <a class="line-under text-base" href="{{ url_for('main.features') }}">{{ _("Learn more about GC Notify") }}</a>
+            <a class="line-under text-base link:text-blue visited:text-blue" href="{{ url_for('main.features') }}">{{ _("Learn more about GC Notify") }}</a>
           </p>
         </div>
       </div>
@@ -303,7 +297,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
           alt="An illustration with three outlines of people each with different interests. One is thinking of sending a message. The second is thinking of
           code and the technical aspect. The third has managing a team in mind."
           width="400"
-          class="max-w-full md:max-w-xl block align-top hidden lg:block"
+          class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
           style="object-fit: contain; object-position: 0% 50%;"
           src="{{ asset_s3_url('built4you.svg') }}"
           />
@@ -313,7 +307,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
         <img loading="lazy"
         alt="Illustration de trois silhouettes, chacune ayant un intérêt spécifique dans une bulle au-dessus de leur tête. L'une pense à envoyer un message, la deuxième au code et à l'aspect technique, et la troisième à la gestion d'une équipe."
         width="400"
-        class="max-w-full md:max-w-xl block align-top hidden lg:block"
+        class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
         style="object-fit: contain; object-position: 0% 50%;"
         src="{{ asset_s3_url('built4you.svg') }}"
         />
@@ -422,7 +416,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
 
       <div class="flex lg:justify-center">
         <a
-          class="line-under pt-10 inline-block text-blue text-base underline hover:no-underline"
+          class="line-under pt-10 inline-block text-blue link:text-blue visited:text-blue text-base underline hover:no-underline"
           href="{{ url_for('main.features') }}"
           >{{ _("See how GC Notify can improve your workflow") }}</a
         >
@@ -467,7 +461,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
             </p>
             <p class="pt-10 text-blue">
               <a
-                class="line-under inline-block text-blue text-base underline hover:no-underline"
+                class="line-under inline-block text-blue link:text-blue visited:text-blue text-base underline hover:no-underline"
                 href="{{ url_for('main.documentation') }}"
                 >{{ _("Learn how to integrate GC Notify") }}</a
               >
@@ -480,7 +474,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
             <img
               alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
               loading="lazy"
-              class="max-w-full md:max-w-xl block align-top hidden lg:block"
+              class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
               width="400"
               style="object-fit: contain; object-position: 0% 50%;"
               src="{{ asset_s3_url('integrate-1.svg') }}"
@@ -489,7 +483,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
             <img
             alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
             loading="lazy"
-            class="max-w-full md:max-w-xl block align-top hidden lg:block"
+            class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
             width="400"
             style="object-fit: contain; object-position: 0% 50%;"
             src="{{ asset_s3_url('integrate-1.svg') }}"
@@ -539,7 +533,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
 
           </div>
           <div class="text-content max-w-4xl">
-            <h2 class="leading-tight font-bold hidden lg:block">
+            <h2 class="leading-tight font-bold hidden lg:block lg:visible">
               {{ _("Free for Government of Canada services") }}
             </h2>
             <p class="pt-4">
@@ -662,17 +656,17 @@ set description = _('GC Notify lets you send emails and text messages to your us
         <div class="block">
           <a
           href="{{ url_for('main.privacy') }}"
-          class="line-under text-white text-small block mb-10 underline hover:no-underline"
+          class="line-under text-white link:text-white visited:text-white text-small block mb-10 underline hover:no-underline"
           >{{ _("Privacy") }}</a
           >
           <a
           href="{{ url_for('main.security') }}"
-            class="line-under text-white text-small block mb-10 underline hover:no-underline"
+            class="line-under text-white link:text-white visited:text-white text-small block mb-10 underline hover:no-underline"
             >{{ _("Security") }}</a
           >
           <a
           href="{{ url_for('main.terms') }}"
-            class="line-under text-white text-small block underline hover:no-underline"
+            class="line-under text-white link:text-white visited:text-white text-small block underline hover:no-underline"
             >{{ _("Terms of use") }}</a
           >
         </div>

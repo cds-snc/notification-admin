@@ -27,7 +27,6 @@ const paths = {
   dist: "app/static/",
   templates: "app/templates/",
   npm: "node_modules/",
-  template: "node_modules/@cdssnc/cds_template_jinja/",
   toolkit: "node_modules/govuk_frontend_toolkit/"
 };
 
@@ -35,47 +34,6 @@ const paths = {
 // - - - - - - - - - - - - - - -
 
 // Move GOV.UK template resources
-
-const copy = {
-  govuk_template: {
-    template: () => {
-      return src(
-        paths.template + "views/layouts/notification_template.html"
-      ).pipe(dest(paths.templates));
-    },
-    css: () => {
-      return src(paths.template + "assets/stylesheets/**/*.css")
-        .pipe(
-          plugins.sass({
-            outputStyle: "compressed"
-          })
-        )
-        .on("error", plugins.sass.logError)
-        .pipe(
-          plugins.cssUrlAdjuster({
-            prependRelative:
-              process.env.NOTIFY_ENVIRONMENT == "development" ? "/static/" : "/"
-          })
-        )
-        .pipe(dest(paths.dist + "stylesheets/"));
-    },
-    js: () => {
-      return src(paths.template + "assets/javascripts/**/*.js")
-        .pipe(plugins.uglify())
-        .pipe(dest(paths.dist + "javascripts/"));
-    },
-    images: () => {
-      return src(paths.template + "assets/stylesheets/images/**/*").pipe(
-        dest(paths.dist + "images/")
-      );
-    },
-    fonts: () => {
-      return src(paths.template + "assets/stylesheets/fonts/**/*").pipe(
-        dest(paths.dist + "fonts/")
-      );
-    }
-  }
-};
 
 const javascripts = () => {
   return src([
@@ -190,11 +148,6 @@ const lint = {
 // Default: compile everything
 const defaultTask = parallel(
   series(
-    copy.govuk_template.template,
-    copy.govuk_template.images,
-    copy.govuk_template.fonts,
-    copy.govuk_template.css,
-    copy.govuk_template.js,
     images
   ),
   series(static_css),
