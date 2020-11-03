@@ -28,7 +28,7 @@ make babel
 flake8 .
 display_result $? 1 "Code style check"
 
-isort --check-only -rc ./app ./tests
+isort --check-only ./app ./tests
 display_result $? 2 "Import order check"
 
 npm test
