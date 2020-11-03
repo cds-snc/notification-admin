@@ -15,12 +15,7 @@ service = [{'service_id': 1, 'service_name': 'jessie the oak tree',
             'free_sms_fragment_limit': 100}]
 
 
-def test_non_logged_in_user_can_see_homepage(
-    mocker,
-    client,
-    mock_get_service_and_organisation_counts,
-):
-    mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
+def test_non_logged_in_user_can_see_homepage(client):
     response = client.get(url_for('main.index'))
     assert response.status_code == 200
 
@@ -46,14 +41,12 @@ def test_documentation_a11y(
 
 
 def test_logged_in_user_redirects_to_choose_account(
-    mocker,
     client_request,
     api_user_active,
     mock_get_user,
     mock_get_user_by_email,
     mock_login,
 ):
-    mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
     client_request.get(
         'main.index',
         _expected_status=302,
@@ -91,6 +84,20 @@ def test_static_pages(
 ):
     page = client_request.get('main.{}'.format(view))
     assert not page.select_one('meta[name=description]')
+
+
+def test_stats_page(mocker, client):
+    mocker.patch(
+        'app.service_api_client.get_live_services_data',
+        return_value={'data': service}
+    )
+    mocker.patch(
+        'app.service_api_client.get_stats_by_month',
+        return_value={'data': [('2020-11-01', 'email', 20)]}
+    )
+
+    response = client.get(url_for('main.stats'))
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize('view, expected_view', [
@@ -221,15 +228,11 @@ def test_letter_template_preview_headers(
     ('sa?SDFa?DFa,/', 'sa?SDFa?DFa,/', 'Notify')
 ])
 def test_query_params(
-    mocker,
     client,
-    mock_get_service_and_organisation_counts,
     query_key,
     query_value,
     heading
 ):
-    mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
-
     response = client.get(url_for('main.index', **{query_key: query_value}))
 
     assert response.status_code == 200

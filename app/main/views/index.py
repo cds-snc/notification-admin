@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import (
     abort,
     current_app,
@@ -27,7 +29,12 @@ from app.main.forms import (
     SearchByNameForm,
 )
 from app.main.views.sub_navigation_dictionaries import features_nav
-from app.utils import get_latest_stats, get_logo_cdn_domain, user_is_logged_in
+from app.utils import (
+    Spreadsheet,
+    get_latest_stats,
+    get_logo_cdn_domain,
+    user_is_logged_in,
+)
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -313,6 +320,24 @@ def stats():
         'views/stats.html',
         **get_latest_stats(get_current_locale(current_app))
     )
+
+
+@main.route('/stats/download', endpoint='stats_download')
+def stats_download():
+    stats = get_latest_stats(get_current_locale(current_app))['monthly_stats']
+
+    csv_data = [['date', 'sms_count', 'email_count', 'total']]
+    for _, row in stats.items():
+        csv_data.append(
+            [row['year_month'], row['sms'], row['email'], row['total']]
+        )
+
+    return Spreadsheet.from_rows(csv_data).as_csv_data, 200, {
+        'Content-Type': 'text/csv; charset=utf-8',
+        'Content-Disposition': 'inline; filename="{} stats.csv"'.format(
+            datetime.utcnow().strftime("%Y-%m-%d"),
+        )
+    }
 
 
 @main.route('/terms', endpoint='terms')

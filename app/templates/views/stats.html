@@ -42,18 +42,23 @@
 
   <h2 class="heading-medium">{{ _('Notifications sent over time') }}</h2>
 
-  <div class="">
-    {% call mapping_table(
-      field_headings=[
-        _('Month'),
-        _('Total notifications sent'),
-        _('Emails sent'),
-        _('Text messages sent'),
-      ],
-      field_headings_visible=True,
-      equal_length=True,
-      caption_visible=False
-    ) %}
+  <div class="text-right">
+    <a href="{{ url_for('main.stats_download') }}" class="text-small">
+      {{ _('Download data as CSV') }}
+    </a>
+  </div>
+
+  {% call mapping_table(
+    field_headings=[
+      _('Month'),
+      _('Total notifications sent'),
+      _('Emails sent'),
+      _('Text messages sent'),
+    ],
+    field_headings_visible=True,
+    equal_length=True,
+    caption_visible=False
+  ) %}
 
     {% for month, data in monthly_stats.items() %}
       {% call row() %}
@@ -63,7 +68,10 @@
         {{ text_field(data['sms'] | format_number) }}
       {% endcall %}
     {% endfor %}
+  {% endcall %}
 
-    {% endcall %}
+  <div class="text-small text-gray-grey1">
+    {{ _('Updated daily') }}
+  </div>
 
 {% endblock %}

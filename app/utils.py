@@ -57,7 +57,7 @@ with open('{}/email_domains.txt'.format(
 user_is_logged_in = login_required
 
 
-@cache.memoize(timeout=300)
+@cache.memoize(timeout=3600)
 def get_latest_stats(lang):
     results = service_api_client.get_stats_by_month()["data"]
 
@@ -67,11 +67,13 @@ def get_latest_stats(lang):
     for line in results:
         date, notification_type, count = line
         year = date[:4]
+        year_month = date[:7]
         month = f'{get_month_name(date)} {year}'
         if month not in monthly_stats:
             monthly_stats[month] = defaultdict(int)
         monthly_stats[month][notification_type] = count
         monthly_stats[month]['total'] += count
+        monthly_stats[month]['year_month'] = year_month
 
         if notification_type == 'sms':
             sms_total += count
