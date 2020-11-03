@@ -17,11 +17,11 @@ pytz==2020.1
 gunicorn==20.0.4
 eventlet==0.28.0
 notifications-python-client==5.5.1
-sentry-sdk[flask]==0.18.0
+sentry-sdk[flask]==0.19.2
 
 Babel==2.8.0
 Flask-Babel==1.0.0
-newrelic==5.20.0.149
+newrelic==5.22.1.152
 python-dotenv==0.14.0
 pwnedpasswords==2.0.0
 PyYAML==5.3.1
