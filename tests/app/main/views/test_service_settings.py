@@ -1398,7 +1398,6 @@ def test_should_redirect_after_request_to_go_live(
         'Request sent by test@user.canada.ca\n'
     ).format(
         service_id=SERVICE_ONE_ID,
-        displayed_volumes=displayed_volumes,
         formatted_displayed_volumes=formatted_displayed_volumes,
     )
 

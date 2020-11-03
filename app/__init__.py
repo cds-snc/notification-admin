@@ -746,6 +746,7 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
 
 def setup_event_handlers():
     from flask_login import user_logged_in
+
     from app.event_handlers import on_user_logged_in
 
     user_logged_in.connect(on_user_logged_in)

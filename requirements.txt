@@ -19,11 +19,11 @@ pytz==2020.1
 gunicorn==20.0.4
 eventlet==0.28.0
 notifications-python-client==5.5.1
-sentry-sdk[flask]==0.18.0
+sentry-sdk[flask]==0.19.2
 
 Babel==2.8.0
 Flask-Babel==1.0.0
-newrelic==5.20.0.149
+newrelic==5.22.1.152
 python-dotenv==0.14.0
 pwnedpasswords==2.0.0
 PyYAML==5.3.1
@@ -39,15 +39,16 @@ awscli-cwlogs>=1.4,<1.5
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous==0.24  # pyup: <1.0.0
 
-git+https://github.com/cds-snc/notifier-utils.git@43.1.1#egg=notifications-utils
+git+https://github.com/cds-snc/notifier-utils.git@43.1.2#egg=notifications-utils
 
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
 
 ## The following requirements were added by pip freeze:
-awscli==1.18.152
-bleach==3.1.4
-boto3==1.12.13
-botocore==1.18.11
+awscli==1.18.170
+bleach==3.2.1
+boto3==1.15.13
+botocore==1.19.10
+cachetools==4.1.0
 certifi==2020.6.20
 chardet==3.0.4
 click==7.1.2
@@ -63,20 +64,22 @@ idna==2.10
 jdcal==1.4.1
 Jinja2==2.11.2
 jmespath==0.10.0
-lml==0.0.9
-lxml==4.5.2
+lml==0.1.0
+lxml==4.6.1
 MarkupSafe==1.1.1
 mistune==0.8.4
 monotonic==1.5
 openpyxl==3.0.5
-orderedset==2.0.1
-phonenumbers==8.10.13
+orderedset==2.0.3
+packaging==20.4
+phonenumbers==8.12.10
 pyasn1==0.4.8
 pyexcel-ezodf==0.3.4
 PyJWT==1.7.1
+pyparsing==2.4.7
 PyPDF2==1.26.0
 python-dateutil==2.8.1
-python-json-logger==0.1.11
+python-json-logger==2.0.0
 redis==3.5.3
 requests==2.24.0
 s3transfer==0.3.3
@@ -84,7 +87,7 @@ six==1.15.0
 smartypants==2.0.1
 statsd==3.3.0
 texttable==1.6.3
-urllib3==1.25.10
+urllib3==1.25.11
 webencodings==0.5.1
 Werkzeug==1.0.1
 xlrd==1.2.0
