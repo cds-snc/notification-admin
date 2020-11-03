@@ -314,16 +314,16 @@ def security():
     )
 
 
-@main.route('/stats', endpoint='stats')
-def stats():
+@main.route('/activity', endpoint='activity')
+def activity():
     return render_template(
-        'views/stats.html',
+        'views/activity.html',
         **get_latest_stats(get_current_locale(current_app))
     )
 
 
-@main.route('/stats/download', endpoint='stats_download')
-def stats_download():
+@main.route('/activity/download', endpoint='activity_download')
+def activity_download():
     stats = get_latest_stats(get_current_locale(current_app))['monthly_stats']
 
     csv_data = [['date', 'sms_count', 'email_count', 'total']]
@@ -334,7 +334,7 @@ def stats_download():
 
     return Spreadsheet.from_rows(csv_data).as_csv_data, 200, {
         'Content-Type': 'text/csv; charset=utf-8',
-        'Content-Disposition': 'inline; filename="{} stats.csv"'.format(
+        'Content-Disposition': 'inline; filename="{} activity.csv"'.format(
             datetime.utcnow().strftime("%Y-%m-%d"),
         )
     }
