@@ -60,13 +60,6 @@ main {
   @apply block;
 }
 
-input[type="search"] {
-  -webkit-appearance: textfield;
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box;
-  box-sizing: content-box;
-}
-
 input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: searchfield-cancel-button;
   margin-right: 2px;
@@ -207,12 +200,11 @@ label {
 }
 
 .skiplink:focus {
-  background-color: #ffbf47;
-  outline: 3px solid #ffbf47;
+  @apply outline-yellow bg-yellow;
 }
 
 .skiplink {
-  position: absolute;
+  @apply absolute;
   left: -9999em;
 }
 

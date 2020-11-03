@@ -8,8 +8,7 @@ a:link, a:visited {
 }
 
 a:focus {
-  background-color: #ffbf47;
-  outline: 3px solid #ffbf47;
+  @apply outline-yellow bg-yellow;
 }
 
 a:link:focus {
