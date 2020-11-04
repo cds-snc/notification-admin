@@ -3,14 +3,7 @@ from datetime import datetime
 from functools import partial
 from itertools import groupby
 
-from flask import (
-    abort,
-    jsonify,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import abort, jsonify, render_template, request, session, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
