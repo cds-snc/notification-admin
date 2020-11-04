@@ -25,8 +25,6 @@
       {{ _('In the last 7 days') }}
     </h2>
 
-    {{ ajax_block(partials, updates_url, 'inbox', interval=5) }}
-
     {{ ajax_block(partials, updates_url, 'totals', interval=5) }}
     {% set msg_txt = _('Check messages sent per month') %}
     {{ show_more(
