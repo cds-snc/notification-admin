@@ -1,0 +1,18 @@
+@layer components {
+  .sms-message-wrapper {
+    max-width: 464px;
+    word-wrap: break-word;
+    @apply relative w-full box-border p-gutterHalf rounded-lg whitespace-normal m-0 mb-gutter clear-both bg-gray-button border-gray-button border-solid border;
+  }
+
+  .sms-message-wrapper:after {
+    content: "";
+    bottom: -5px;
+    right: -20px;
+    border-width: 10px;
+    border-left-width: 13px;
+    border-right-width: 13px;
+    transform: rotate(20deg);
+    @apply block absolute border-solid border-transparent border-b-gray-button border-l-gray-button;
+  }
+}

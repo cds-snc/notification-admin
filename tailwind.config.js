@@ -109,7 +109,19 @@ module.exports = {
           return `.${e(`link${separator}${className}`)}:link`
         })
       })
-    })
+    }),
+    plugin(function({ addUtilities, theme }) {
+      const individualBorderColors = {
+        '.border-b-gray-button': {
+          borderBottomColor: theme('colors').gray.button
+        },
+        '.border-l-gray-button': {
+          borderLeftColor: theme('colors').gray.button
+        },
+      };
+
+      addUtilities(individualBorderColors);
+    }),
   ],
   variants: {
     textColor: ['visited', 'link'],
