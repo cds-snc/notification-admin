@@ -23,7 +23,7 @@
   "license": "MIT",
   "homepage": "https://github.com/cds-snc/notification-admin#readme",
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
     "dayjs": "^1.9.1",
     "diff-dom": "4.2.1",
     "govuk-elements-sass": "3.1.3",
