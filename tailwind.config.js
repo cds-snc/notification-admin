@@ -55,6 +55,7 @@ module.exports = {
         hover: "#d0d3d6",
         border: "#b5babe",
         grey1: "#6f777b",
+        grey2: "#bfc1c3",
       },
       yellow: {
         default: "#ffbf47"
@@ -99,6 +100,7 @@ module.exports = {
         gutter: '30px',
         gutterHalf: '15px',
         gutterAndAHalf: '45px',
+        doubleGutter: '60px',
       }
     },
   },
@@ -118,6 +120,9 @@ module.exports = {
         '.border-l-gray-button': {
           borderLeftColor: theme('colors').gray.button
         },
+        '.border-b-gray-grey2': {
+          borderBottomColor: theme('colors').gray.grey2
+        }
       };
 
       addUtilities(individualBorderColors);

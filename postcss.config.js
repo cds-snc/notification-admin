@@ -23,6 +23,14 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "text-gray-grey1",
     "sms-message-wrapper",
     "sms-message-sender",
+    "border-gray-grey2",
+    "pl-doubleGutter",
+    "px-doubleGutter",
+    "pt-gutterHalf",
+    "email-message-body",
+    "email-message-table",
+    "email-message-meta",
+    "mb-12",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });

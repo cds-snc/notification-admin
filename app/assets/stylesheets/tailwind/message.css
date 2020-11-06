@@ -22,4 +22,29 @@
     
     @apply text-smaller leading-tight font-normal text-gray-grey1 m-0 pb-2;
   }
+
+  .email-message-table {
+    @apply text-smaller leading-tight font-normal align-top border-0 border-b border-solid border-b-gray-grey2;
+  }
+
+  .email-message-meta td {
+    width: 99%;
+    @apply pr-doubleGutter break-words;
+  }
+
+  /*
+    These classes style html which is shared with the API and
+    final email sends. We can't safely change that file without
+    affecting email formats.
+
+    We overwrite a few styles here for the purposes of preview.
+  */
+  .email-message-body table td {
+    font-family: inherit !important;
+    @apply border-0 p-0;
+  }
+
+  .email-message-body li:first-child {
+    margin-top: 0 !important;
+  }
 }
