@@ -278,6 +278,28 @@ def performance_platform_xlsx():
     }
 
 
+@main.route("/platform-admin/reports/trial-report.csv")
+@user_is_platform_admin
+def trial_report_csv():
+    data = platform_stats_api_client.usage_for_trial_services()
+    headers = [
+        'service_id',
+        'service_name',
+        'creation_date',
+        'user_name',
+        'user_email',
+        'notification_type',
+        'notification_sum',
+    ]
+
+    return Spreadsheet.from_rows([headers] + data).as_csv_data, 200, {
+        'Content-Type': 'text/csv; charset=utf-8',
+        'Content-Disposition': 'inline; filename="{} trial report.csv"'.format(
+            format_date_numeric(datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")),
+        )
+    }
+
+
 @main.route("/platform-admin/reports/notifications-sent-by-service", methods=['GET', 'POST'])
 @user_is_platform_admin
 def notifications_sent_by_service():
