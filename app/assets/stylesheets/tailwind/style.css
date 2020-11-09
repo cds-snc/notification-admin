@@ -5,6 +5,7 @@
 @import "./api-key.css";
 @import "./big-number.css";
 @import "./list-entry.css";
+@import "./message.css";
 
 @-ms-viewport {
   width: device-width;

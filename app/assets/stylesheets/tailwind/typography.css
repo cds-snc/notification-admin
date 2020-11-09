@@ -16,5 +16,7 @@ a:link:focus {
 }
 
 @layer components {
-  /* links */
+  .heading-medium {
+    @apply text-base leading-tight block font-bold;
+  }
 }
