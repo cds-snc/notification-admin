@@ -1,40 +1,4 @@
-.selection-summary {
-
-  .selection-summary__text {
-    @include core-19($tabular-numbers: true);
-    padding: 5px 0 0 0;
-    margin-bottom: $gutter / 2;
-
-    &:focus {
-      outline: none;
-    }
-  }
-
-  .selection-summary__text--folders {
-    padding: 10px 15px 5px 51px;
-    background-image: file-url('folder-black.svg');
-    background-repeat: no-repeat;
-    background-size: 39px auto;
-    background-position: 0px 4px;
-
-    @include ie-lte(8) {
-      background-image: file-url('folder-black.png');
-    }
-  }
-
-  // revert full-width button for smaller screens
-  .button {
-    display: inline-block;
-    width: auto;
-    position: relative;
-    top: 1px;
-  }
-
-}
-
 .checkboxes-nested {
-
-  margin-bottom: 10px;
 
   .multiple-choice {
 

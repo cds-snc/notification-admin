@@ -7,6 +7,7 @@ module.exports = {
     },
     backgroundImage: {
       tick: "url('/static/images/tick.png')",
+      folder: "url('/static/images/folder-black.svg')",
     },
     boxShadow: {
       outline: "0 0 0 3px rgba(255, 191, 71, 1)"

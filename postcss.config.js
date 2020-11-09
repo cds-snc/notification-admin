@@ -31,6 +31,7 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "email-message-table",
     "email-message-meta",
     "mb-12",
+    "selection-summary__text--folders",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });

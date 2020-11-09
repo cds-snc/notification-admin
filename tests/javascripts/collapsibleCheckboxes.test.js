@@ -46,7 +46,7 @@ describe('Collapsible fieldset', () => {
           <legend class="form-label heading-small">
             Folders this team member can see
           </legend>
-          <div class="checkboxes-nested">
+          <div class="mb-0">
             <ul>
               ${_checkboxes(1, 10)}
             </ul>

@@ -1,0 +1,10 @@
+@layer components {
+  .selection-summary__text--folders {
+    background-size: 39px auto;
+    background-position: 0px 4px;
+    @apply bg-folder bg-no-repeat text-smaller font-normal mb-gutterHalf normal-case pt-4 pr-6 pb-2 pl-20;
+  }
+  .selection-summary__text--folders:focus {
+    @apply outline-none;
+  }
+}
