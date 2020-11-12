@@ -46,7 +46,7 @@ describe('Collapsible fieldset', () => {
           <legend class="form-label heading-small">
             Folders this team member can see
           </legend>
-          <div class="mb-0">
+          <div class="checkboxes-nested">
             <ul>
               ${_checkboxes(1, 10)}
             </ul>
@@ -55,9 +55,7 @@ describe('Collapsible fieldset', () => {
       </div>`;
 
       formGroup = document.querySelector('.form-group');
-      console.log(formGroup)
       fieldset = formGroup.querySelector('fieldset');
-      console.log(fieldset)
       checkboxesContainer = fieldset.querySelector('.checkboxes-nested');
       checkboxes = checkboxesContainer.querySelectorAll('input[type=checkbox]');
 
