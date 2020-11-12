@@ -1075,7 +1075,7 @@ def test_get_trial_report_csv(platform_admin_client, mocker):
     assert response.headers['Content-Disposition'].startswith('inline; filename=')
 
     assert response.get_data(as_text=True) == (
-        'service_id,service_name,creation_date,user_name,user_email,notification_type,notification_sum\r\n' +
+        'service_id,service_name,creation_date,created_by_name,created_by_email,notification_type,notification_sum\r\n' +
         'Fake Service ID,My service,2020-11-01,Bob,foo@example.com,email,5\r\n'
     )
 

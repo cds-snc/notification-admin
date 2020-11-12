@@ -286,8 +286,8 @@ def trial_report_csv():
         'service_id',
         'service_name',
         'creation_date',
-        'user_name',
-        'user_email',
+        'created_by_name',
+        'created_by_email',
         'notification_type',
         'notification_sum',
     ]
