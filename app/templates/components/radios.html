@@ -20,42 +20,6 @@
 {% endmacro %}
 
 
-{% macro radio_select(
- field,
- hint=None,
- wrapping_class='form-group'
-) %}
- <div class="{{ wrapping_class }} {% if field.errors %} form-group-error{% endif %}">
-   <fieldset>
-     <legend class="form-label">
-       {{ field.label.text }}
-       {% if field.errors %}
-         <span class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
-           {{ field.errors[0] }}
-         </span>
-       {% endif %}
-     </legend>
-     <div class="radio-select" data-module="radio-select" data-categories="{{ field.categories|join(',') }}">
-       <div class="radio-select-column">
-       {% for option in field %}
-         <div class="multiple-choice">
-           {{ option }}
-           <label for="{{ option.id }}">
-             {{ option.label.text }}
-           </label>
-         </div>
-         {% if loop.first %}
-       </div>
-       <div class="radio-select-column">
-         {% endif %}
-       {% endfor %}
-       </div>
-     </div>
-   </fieldset>
- </div>
-{% endmacro %}
-
-
 {% macro conditional_radio_panel(id) %}
   <div class="conditional-radios-panel" id="panel-{{ id }}">
     {{ caller() }}

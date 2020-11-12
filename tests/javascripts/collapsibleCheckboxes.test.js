@@ -55,7 +55,9 @@ describe('Collapsible fieldset', () => {
       </div>`;
 
       formGroup = document.querySelector('.form-group');
+      console.log(formGroup)
       fieldset = formGroup.querySelector('fieldset');
+      console.log(fieldset)
       checkboxesContainer = fieldset.querySelector('.checkboxes-nested');
       checkboxes = checkboxesContainer.querySelectorAll('input[type=checkbox]');
 

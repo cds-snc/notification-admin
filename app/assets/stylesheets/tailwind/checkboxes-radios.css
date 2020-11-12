@@ -1,0 +1,59 @@
+@layer components {
+  .selection-summary__text--folders {
+    background-size: 39px auto;
+    background-position: 0px 4px;
+    @apply bg-folder bg-no-repeat text-smaller font-normal mb-gutterHalf normal-case pt-4 pr-6 pb-2 pl-20;
+  }
+  .selection-summary__text--folders:focus {
+    @apply outline-none;
+  }
+
+  .selection-content .checkboxes-nested {
+    @apply mb-0;
+  }
+
+  .select-nested .multiple-choice {
+    @apply relative float-none border-gray-grey2;
+  }
+  .select-nested .multiple-choice:before {
+    content: "";
+    width: 4px;
+    left: 17px;
+    @apply bg-gray-grey2 bottom-0 absolute h-full;
+  }
+
+  .select-nested .multiple-choice label {
+    @apply float-none;
+  }
+
+  .radios-nested {
+    @apply mb-4;
+  }
+
+  .radios-nested .block-label-hint:after {
+    content: "";
+    top: 45px;
+    left: 16px;
+    width: 4px;
+    height: 25px;
+    @apply absolute bg-gray-grey2;
+  }
+
+ .select-nested .multiple-choice ul {
+    margin-bottom: -5px;
+    padding-left: 12px;
+    @apply mt-2;
+  }
+
+  .select-nested .multiple-choice [type=checkbox]+label::before, .select-nested .multiple-choice [type=radio]+label::before {
+    @apply bg-white;
+  }
+
+  .conditional-radio-panel {
+    @apply border-0 border-gray-grey2;
+    border-left: 4px solid;
+    margin: -20px 0 0 17px;
+    padding: 10px 0 0 28px;
+  }
+  
+}
