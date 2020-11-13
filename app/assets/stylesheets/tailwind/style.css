@@ -1,6 +1,8 @@
 @import "./tailwind.css";
 @import "./typography.css";
 @import "./layout.css";
+@import "./page-footer.css";
+@import "./preview-pane.css";
 @import "./buttons.css";
 @import "./checkboxes-radios.css";
 @import "./api-key.css";

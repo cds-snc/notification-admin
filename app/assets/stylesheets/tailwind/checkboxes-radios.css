@@ -50,10 +50,17 @@
   }
 
   .conditional-radio-panel {
-    @apply border-0 border-gray-grey2;
-    border-left: 4px solid;
+    @apply border-0 border-l-4 border-solid border-gray-grey2;
     margin: -20px 0 0 17px;
     padding: 10px 0 0 28px;
+  }
+
+  .multiple-choice {
+    z-index: 10;
+  }
+
+  .multiple-choice .block-label:before {
+    box-shadow: 0 5px 00 #fff;
   }
   
 }

@@ -1,0 +1,49 @@
+@layer components {
+  .page-footer {
+    @apply relative mb-12;
+  }
+
+  .page-footer-delete-link {
+    line-height: 40px;
+    padding-top: 1px;
+    @apply p-0 pl-6;
+  }
+
+  .page-footer-delete-link a:visited, .page-footer-delete-link a:link {
+    vertical-align: center;
+    @apply inline-block text-red;
+  }
+  .page-footer-delete-link a:hover, .page-footer-delete-link a:active {
+    @apply text-red-mellow;
+  }
+
+  .page-footer-delete-link-without-button {
+    @apply p-0 inline-block leading-tight text-smaller;
+  }
+
+  .page-footer-secondary-link {
+    @apply block mt-gutter;
+  }
+
+  .page-footer-right-aligned-link {
+    top: 10px;
+    @apply absolute right-0;
+  }
+
+  .page-footer .button {
+    @apply mr-4;
+  }
+  .page-footer .js-cancel {
+    @apply m-0;
+  }
+
+  @screen md {
+    .align-button-with-textbox .button {
+      top: 32px;
+      left: -30px;
+      margin-right: -30px;
+      padding-top: 8px;
+      @apply relative w-full box-content;
+    }
+  }
+}
