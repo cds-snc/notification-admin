@@ -88,6 +88,9 @@ class HeaderNavigation(Navigation):
             'notifications_sent_by_service',
             'performance_platform_xlsx',
             'send_method_stats_by_service',
+
+            'trial_report_csv',
+
             'usage_for_all_services',
             'platform_admin',
             'platform_admin_letter_validation_preview',
@@ -529,6 +532,7 @@ class MainNavigation(Navigation):
         'organisations',
         'performance_platform_xlsx',
         'send_method_stats_by_service',
+        'trial_report_csv',
         'platform_admin',
         'platform_admin_letter_validation_preview',
         'platform_admin_list_complaints',
@@ -756,6 +760,7 @@ class CaseworkNavigation(Navigation):
         'organisations',
         'performance_platform_xlsx',
         'send_method_stats_by_service',
+        'trial_report_csv',
         'platform_admin_letter_validation_preview',
         'platform_admin_list_complaints',
         'platform_admin_reports',
@@ -1034,6 +1039,7 @@ class OrgNavigation(Navigation):
         'organisations',
         'performance_platform_xlsx',
         'send_method_stats_by_service',
+        'trial_report_csv',
         'platform_admin',
         'platform_admin_letter_validation_preview',
         'platform_admin_list_complaints',

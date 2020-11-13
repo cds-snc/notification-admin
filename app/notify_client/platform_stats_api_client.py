@@ -15,5 +15,8 @@ class PlatformStatsAPIClient(NotifyAdminAPIClient):
             }
         )
 
+    def usage_for_trial_services(self):
+        return self.get(url='/platform-stats/usage-for-trial-services')
 
+      
 platform_stats_api_client = PlatformStatsAPIClient()
