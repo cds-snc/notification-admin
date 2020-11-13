@@ -80,9 +80,9 @@
     const buttonContent = this.buttonContent[buttonState](this.fieldLabel);
     const stickyClass = expanded ? " js-stick-at-bottom-when-scrolling" : "";
 
-    return $(`<div class="selection-footer${stickyClass}">
+    return $(`<div class="clear-both selection-footer${stickyClass}">
               <button
-                class="button button-secondary"
+                class="button button-secondary inline-block w-auto"
                 aria-expanded="${expanded ? "true" : "false"}"
                 aria-controls="${this.fieldsetId}">
               ${buttonContent}
@@ -125,7 +125,7 @@
 
     // add custom classes
     this.$formGroup.addClass("selection-wrapper");
-    this.$fieldset.addClass("selection-content");
+    this.$fieldset.addClass("selection-content mb-8 focus:outline-none");
 
     // hide checkboxes
     this.$fieldset.hide();
