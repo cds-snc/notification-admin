@@ -2,13 +2,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  Send methods report for live services
+  {{ _('Sending method: services sending via API vs. User Interface') }}
 {% endblock %}
 
 {% block platform_admin_content %}
 
   <h1 class="heading-large">
-    Send methods report for live services
+    {{ _('Sending method: services sending via API vs. User Interface') }}
   </h1>
 
   {% call form_wrapper() %}
