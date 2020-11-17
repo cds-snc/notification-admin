@@ -555,6 +555,33 @@ set description = _('GC Notify lets you send emails and text messages to your us
     <!-- start section 7 -->
     <!-- end section 7 -->
 
+    <!-- COUNTER -->
+    <div class="bg-gray">
+      <div class="container py-20 flex flex-col lg:flex-row justify-between">
+          <!-- Box 1-->
+          <div class="flex flex-col items-start justify-end pb-10 lg:pb-0">
+            <div class="text-brand font-bold extra-tight font-sans">{{ _("GC Notify by the numbers") }}</div>
+            <div class="text-base py-2">
+              <a href="{{ url_for('.activity' )}}">
+                {{ _("Learn more in the Activity Dashboard") }}
+              </a>
+            </div>
+          </div>
+          <!-- Box 2-->
+          <div class="pb-10 lg:pb-0">
+            <div class="text-xxl font-bold leading-none font-sans">{{ stats.live_services | format_number }}</div>
+            <div class="text-base py-2">{{ _("services using GC Notify") }}</div>
+          </div>
+          <!-- Box 3-->
+          <div class="pb-10 lg:pb-0">
+            <div class="text-xxl font-bold leading-none font-sans">{{ stats.notifications_total | format_number }}</div>
+            <div class="text-base py-2">{{ _("messages sent") }}</div>
+          </div>
+          <!-- end -->
+        </div>
+    </div>
+    <!-- END COUNTER -->
+
     <!-- start section 8 -->
     <div class="bg-blue">
       <div class="container px-10 py-24">

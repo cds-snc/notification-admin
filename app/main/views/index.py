@@ -58,13 +58,15 @@ def index():
         return render_template(
             'views/signedout.html',
             form=form,
-            scrollTo="true"
+            scrollTo="true",
+            stats=get_latest_stats(get_current_locale(current_app)),
         )
 
     return render_template(
         'views/signedout.html',
         form=form,
-        scrollTo="false"
+        scrollTo="false",
+        stats=get_latest_stats(get_current_locale(current_app)),
     )
 
 

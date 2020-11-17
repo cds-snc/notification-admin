@@ -15,7 +15,16 @@ service = [{'service_id': 1, 'service_name': 'jessie the oak tree',
             'free_sms_fragment_limit': 100}]
 
 
-def test_non_logged_in_user_can_see_homepage(client):
+def test_non_logged_in_user_can_see_homepage(mocker, client):
+    mocker.patch(
+        'app.service_api_client.get_live_services_data',
+        return_value={'data': service}
+    )
+    mocker.patch(
+        'app.service_api_client.get_stats_by_month',
+        return_value={'data': [('2020-11-01', 'email', 20)]}
+    )
+
     response = client.get(url_for('main.index'))
     assert response.status_code == 200
 
@@ -231,8 +240,17 @@ def test_query_params(
     client,
     query_key,
     query_value,
-    heading
+    heading,
+    mocker,
 ):
+    mocker.patch(
+        'app.service_api_client.get_live_services_data',
+        return_value={'data': service}
+    )
+    mocker.patch(
+        'app.service_api_client.get_stats_by_month',
+        return_value={'data': [('2020-11-01', 'email', 20)]}
+    )
     response = client.get(url_for('main.index', **{query_key: query_value}))
 
     assert response.status_code == 200
