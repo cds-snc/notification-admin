@@ -86,7 +86,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["lato"],
-        body: ["Noto Sans"]
+        body: ["Noto Sans", "Arial", "sans-serif"],
       },
       inset: {
         '2': '2px',
