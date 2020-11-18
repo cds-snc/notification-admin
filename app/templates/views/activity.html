@@ -1,0 +1,77 @@
+{% from "components/table.html" import mapping_table, row, text_field, index_field %}
+{% extends "content_template.html" %}
+
+
+{% block per_page_title %}
+  {{ _('Activity dashboard') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+  <h1 class="heading-large">{{ _('Activity dashboard') }}</h1>
+
+  <p class="my-10">
+    {{ _('GC Notify is helping a growing number of government teams keep their clients informed. The following dashboard highlights its activity since November 2019.') }}
+  </p>
+
+  <div class="flex flex-col lg:flex-row mb-20">
+    <div class="w-full lg:w-1/2 bg-gray py-10 px-6 mb-6 lg:mb-0 lg:mr-3">
+      <div class="font-bold text-title extra-tight font-sans h-20">{{ _('Total notifications sent') }}</div>
+      <div class="font-sans text-xxl lg:text-3xl font-bold mb-4">{{ notifications_total | format_number }}</div>
+      <div class="w-56 h-1 bg-gray-border mb-6"></div>
+      <div class="font-sans">{{ _('This includes status updates, appointment reminders, and password resets sent by email and text message.') }}</div>
+    </div>
+
+    <div class="w-full lg:w-1/2 bg-gray py-10 px-6 lg:ml-3">
+      <div class="font-bold text-title extra-tight font-sans h-20">{{ _('Programs and services using GC Notify') }}</div>
+      <div class="font-sans text-xxl lg:text-3xl font-bold mb-4">{{ live_services | format_number }}</div>
+      <div class="w-56 h-1 bg-gray-border mb-6"></div>
+      <div class="font-sans">{{ _('This includes services offered by federal departments, and provinces and territories.') }}</div>
+    </div>
+  </div>
+
+  <div class="flex flex-col lg:flex-row border-solid border-0 border-b-2 border-gray-border pb-8 lg:px-8 mb-20">
+    <div class="w-full lg:w-1/3 mb-6 lg:mb-0">
+      <div class="text-title extra-tight font-sans mb-4">{{ _('Emails') }}</div>
+      <div class="font-sans text-xl font-bold">{{ emails_total | format_number }}</div>
+    </div>
+    <div class="w-full lg:w-1/3">
+      <div class="text-title extra-tight font-sans mb-4">{{ _('Text messages') }}</div>
+      <div class="font-sans text-xl font-bold">{{ sms_total | format_number }}</div>
+    </div>
+  </div>
+
+  <h2 class="heading-medium">{{ _('Notifications sent over time') }}</h2>
+
+  <div class="text-right">
+    <a href="{{ url_for('main.activity_download') }}" class="text-small">
+      {{ _('Download data as CSV') }}
+    </a>
+  </div>
+
+  {% call mapping_table(
+    field_headings=[
+      _('Month'),
+      _('Total'),
+      _('Emails'),
+      _('Text messages'),
+    ],
+    field_headings_visible=True,
+    equal_length=True,
+    caption_visible=False
+  ) %}
+
+    {% for month, data in monthly_stats.items() %}
+      {% call row() %}
+        {{ index_field(month) }}
+        {{ text_field(data['total'] | format_number) }}
+        {{ text_field(data['email'] | format_number) }}
+        {{ text_field(data['sms'] | format_number) }}
+      {% endcall %}
+    {% endfor %}
+  {% endcall %}
+
+  <div class="text-small text-gray-grey1">
+    {{ _('Updated daily') }}
+  </div>
+
+{% endblock %}

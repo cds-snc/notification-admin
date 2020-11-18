@@ -25,6 +25,7 @@ module.exports = {
       xl: "3.8rem",
       '48': "4.8rem",
       xxl: "6.5rem",
+      '3xl': "9rem",
       brand: "2.6rem"
     },
     screens: {

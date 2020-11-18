@@ -271,6 +271,15 @@ def linkable_name(value):
     return urllib.parse.quote_plus(value)
 
 
+def format_number(number):
+    lang = get_current_locale(current_app)
+
+    if lang == 'fr':
+        # Spaces as separators
+        return '{:,}'.format(number).replace(',', ' ')
+    return "{:,}".format(number)  # Commas as separators
+
+
 def format_datetime(date):
     return '{} at {}'.format(
         format_date(date),
@@ -754,6 +763,7 @@ def setup_event_handlers():
 
 def add_template_filters(application):
     for fn in [
+        format_number,
         format_datetime,
         format_datetime_24h,
         format_datetime_normal,

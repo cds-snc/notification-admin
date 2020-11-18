@@ -14,7 +14,14 @@ def test_owasp_useful_headers_set(
     mock_get_service_and_organisation_counts,
 ):
     mocker.patch('app.get_logo_cdn_domain', return_value='static-logos.test.com')
-    mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
+    mocker.patch(
+        'app.service_api_client.get_live_services_data',
+        return_value={'data': service}
+    )
+    mocker.patch(
+        'app.service_api_client.get_stats_by_month',
+        return_value={'data': [('2020-11-01', 'email', 20)]}
+    )
     response = client.get('/')
 
     assert response.status_code == 200
@@ -41,6 +48,10 @@ def test_headers_non_ascii_characters_are_replaced(
 ):
     mocker.patch('app.get_logo_cdn_domain', return_value='static-logos€æ.test.com')
     mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
+    mocker.patch(
+        'app.service_api_client.get_stats_by_month',
+        return_value={'data': [('2020-11-01', 'email', 20)]}
+    )
     response = client.get('/')
 
     assert response.status_code == 200
