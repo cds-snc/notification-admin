@@ -89,7 +89,7 @@ from app.notify_client.template_statistics_api_client import (
     template_statistics_client,
 )
 from app.notify_client.user_api_client import user_api_client
-from app.utils import get_logo_cdn_domain, id_safe
+from app.utils import id_safe
 
 login_manager = LoginManager()
 csrf = CSRFProtect()
