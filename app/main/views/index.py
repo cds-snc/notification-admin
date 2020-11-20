@@ -59,6 +59,7 @@ def index():
             'views/signedout.html',
             form=form,
             scrollTo="true",
+            admin_base_url=current_app.config['ADMIN_BASE_URL'],
             stats=get_latest_stats(get_current_locale(current_app)),
         )
 
@@ -66,6 +67,7 @@ def index():
         'views/signedout.html',
         form=form,
         scrollTo="false",
+        admin_base_url=current_app.config['ADMIN_BASE_URL'],
         stats=get_latest_stats(get_current_locale(current_app)),
     )
 
