@@ -301,7 +301,7 @@ def test_generate_notifications_csv_calls_twice_if_next_link(
 def test_get_cdn_domain_on_localhost(client, mocker):
     mocker.patch.dict('app.current_app.config', values={'ADMIN_BASE_URL': 'http://localhost:6012'})
     domain = get_logo_cdn_domain()
-    assert domain == "{}.{}".format(current_app.config['LOGO_UPLOAD_BUCKET_NAME'], current_app.config['ASSET_DOMAIN'])
+    assert domain == current_app.config['ASSET_DOMAIN']
 
 
 @pytest.mark.parametrize('time, human_readable_datetime', [
