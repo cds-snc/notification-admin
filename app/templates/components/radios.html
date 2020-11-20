@@ -18,10 +18,3 @@
 {% macro radio(option, disable=[], option_hints={}, data_target=None, as_list_item=False) %}
   {{ select_input(option, disable, option_hints, data_target, as_list_item, input="radio") }}
 {% endmacro %}
-
-
-{% macro conditional_radio_panel(id) %}
-  <div class="conditional-radios-panel" id="panel-{{ id }}">
-    {{ caller() }}
-  </div>
-{% endmacro %}

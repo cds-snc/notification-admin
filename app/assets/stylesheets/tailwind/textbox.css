@@ -1,0 +1,36 @@
+@layer components {
+  .textbox-highlight-textbox {
+    @apply resize-none z-20 bg-transparent;
+  }
+
+  .textbox-highlight-textbox,
+  .textbox-highlight-background,
+  .textbox-highlight-foreground,
+  .textbox-highlight-mask {
+    padding: 4px;
+    @apply text-smaller block box-border relative m-0 overflow-hidden leading-relaxed;
+  }
+
+  .textbox-highlight-background {
+    @apply absolute top-0 left-0 pointer-events-none text-transparent break-words whitespace-pre-wrap z-10 pb-gutterHalf border-2 border-solid border-transparent;
+  }
+  .textbox-highlight-background .placeholder {
+    @apply text-transparent;
+  }
+
+  .extra-tracking .form-control {
+    letter-spacing: 0.04em;
+    @apply pl-2 text-smaller leading-tight font-body;
+  }
+
+  @media (min-width: theme('screens.md')) {
+    .textbox-colour-preview {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      transition: background 0.3s ease-out;
+      box-shadow: inset 0 0 0 1px rgba(#0b0c0c, 0.2);
+      @apply ml-2 inline-block align-top;
+    }
+  }
+}

@@ -36,6 +36,9 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "checkboxes-nested",
     "clear-both",
     "w-auto",
+    "textbox-highlight-textbox",
+    "textbox-highlight-background",
+    "text-right",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });

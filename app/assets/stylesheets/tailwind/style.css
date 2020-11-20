@@ -1,12 +1,14 @@
 @import "./tailwind.css";
 @import "./typography.css";
 @import "./layout.css";
+@import "./page-footer.css";
 @import "./buttons.css";
 @import "./checkboxes-radios.css";
 @import "./api-key.css";
 @import "./big-number.css";
 @import "./list-entry.css";
 @import "./message.css";
+@import "./textbox.css";
 
 @-ms-viewport {
   width: device-width;
@@ -240,5 +242,13 @@ label {
 @layer components {
   .research-mode {
     @apply font-bold inline-block bg-blue-govukblue text-white py-2 px-4 rounded;
+  }
+
+  .js-enabled .live-search {
+    @apply block;
+  }
+
+  .live-search .form-group {
+    margin-bottom: 20px;
   }
 }

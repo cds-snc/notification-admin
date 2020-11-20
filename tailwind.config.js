@@ -38,7 +38,8 @@ module.exports = {
       red: {
         default: "#b10e1e",
         hover: "#990c1a",
-        border: "#6a0812"
+        border: "#6a0812",
+        mellow: "#df3034"
       },
       white: {
         default: "#FFF"
@@ -58,6 +59,7 @@ module.exports = {
         border: "#b5babe",
         grey1: "#6f777b",
         grey2: "#bfc1c3",
+        grey4: "#f8f8f8",
       },
       yellow: {
         default: "#ffbf47"
@@ -85,7 +87,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["lato"],
-        body: ["Noto Sans"]
+        body: ["Noto Sans", "Arial", "sans-serif"],
       },
       inset: {
         '2': '2px',
