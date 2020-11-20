@@ -89,6 +89,11 @@ class TestAssetFingerprint(object):
             'app/static/application.css'
         )
 
+    def test_s3_url(self):
+        fingerprinter = AssetFingerprinter(cdn_domain='assets.example.com')
+
+        assert fingerprinter.get_s3_url('foo.png') == 'https://assets.example.com/static/foo.png'
+
 
 class TestAssetFingerprintWithUnicode(object):
     def test_can_read_self(self):

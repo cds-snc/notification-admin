@@ -19,8 +19,9 @@ class AssetFingerprinter(object):
         * 'app/static' is assumed to be the root for all asset files
     """
 
-    def __init__(self, asset_root='/static/', filesystem_path='app/static/'):
+    def __init__(self, asset_root='/static/', filesystem_path='app/static/', cdn_domain=None):
         self._cache = {}
+        self._cdn_domain = cdn_domain
         self._asset_root = asset_root
         self._filesystem_path = filesystem_path
 
@@ -37,8 +38,7 @@ class AssetFingerprinter(object):
     def get_s3_url(self, asset_path):
         if asset_path not in self._cache:
             self._cache[asset_path] = (
-                "https://notification-alpha-canada-ca-cdn.s3.amazonaws.com/" +
-                asset_path
+                f"https://{self._cdn_domain}/static/{asset_path}"
             )
         return self._cache[asset_path]
 
