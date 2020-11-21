@@ -34,7 +34,7 @@ from wtforms import (
     widgets,
 )
 from wtforms.fields.html5 import EmailField, SearchField, TelField
-from wtforms.validators import URL, DataRequired, Length, Optional, Regexp
+from wtforms.validators import AnyOf, URL, DataRequired, Length, Optional, Regexp
 from wtforms.widgets import CheckboxInput, ListWidget
 
 from app import format_thousands
@@ -624,21 +624,51 @@ class OrganisationDomainsForm(StripWhitespaceForm):
     )
 
 
-class CreateServiceForm(StripWhitespaceForm):
+class CreateServiceStep1Form(StripWhitespaceForm):
     name = StringField(
-        _l('What’s your service called?'),
+        None,
         validators=[
             DataRequired(message=_l('This cannot be empty'))
         ])
     organisation_type = OrganisationTypeField(_l('Who runs this service?'))
+    default_branding_is_french = HiddenField(default = 'false',
+        validators = [
+            DataRequired(message=_l('This cannot be empty'))
+        ])
+    current_step = HiddenField(
+        None, 
+        default = 'choose_service_name',
+        validators = [AnyOf("choose_service_name")])
+    next_step = HiddenField(
+        None, 
+        default = 'choose_logo',
+        validators = [AnyOf("choose_logo")])
 
 
-class CreateNhsServiceForm(CreateServiceForm):
-    organisation_type = OrganisationTypeField(
-        _l('Who runs this service?'),
-        include_only={'nhs_central', 'nhs_local', 'nhs_gp'},
+class CreateServiceStep2Form(StripWhitespaceForm):
+    name = HiddenField(
+        None,
+        validators=[
+            DataRequired(message=_l('This cannot be empty'))
+        ])
+    organisation_type = HiddenField(None)
+    default_branding_is_french = RadioField(
+        None,
+        choices = [
+            ('false', _l('English GC Logo')),
+            ('true', _l('French GC Logo')),
+        ],
+        default = 'false',
+        validators = [DataRequired(message=_l('This cannot be empty'))]
     )
-
+    current_step = HiddenField(
+        None,
+        default = 'choose_logo',
+        validators = [AnyOf("choose_logo")])
+    next_step = HiddenField(
+        None,
+        default = 'create_service',
+        validators = [AnyOf("create_service")])
 
 class SecurityKeyForm(StripWhitespaceForm):
     keyname = StringField(

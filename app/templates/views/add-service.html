@@ -20,41 +20,75 @@
 
 <div class="grid-row">
   <div class="column-two-thirds">
-    {% set header_txt = _('Name your service in both official languages') %}
-    {{ page_header(header_txt) }}
+    
+    {% if current_step == "choose_service_name" %}
+    
+      {% set header_txt = _('Name your service in both official languages') %}
+      {{ page_header(header_txt) }}
 
-    <p>{{ _('GC Notify displays your service name:') }}</p>
-    <p>
+      <p>{{ _('GC Notify displays your service name:') }}</p>
+      <p>
+        <ul class="list-bullet">
+            <li>{{ _('at the start of every text message') }}</li>
+            <li>{{ _('as the ‘from’ address on emails you send') }}</li>
+        </ul>
+      </p>
+
+      <p>{{ _('Your service name must include both English and French. It cannot be longer than 255 characters.') }}</p>
+
+      <p>{{ _('For example:') }}<br>
+
       <ul class="list-bullet">
-          <li>{{ _('at the start of every text message') }}</li>
-          <li>{{ _('as the ‘from’ address on emails you send') }}</li>
+        <li>{{ _('Canadian Digital Service (CDS) | Service numérique canadien (SNC)') }}</li>
+        <li>cds-snc.ca</li>
       </ul>
+
     </p>
 
-    <p>{{ _('Your service name must include both English and French. It cannot be longer than 255 characters.') }}</p>
+      <div class="form-wrap">
+      {% call form_wrapper() %}
+        {% set hint_txt = _('You can change this later') %}
+        
+        {{ textbox(form.name, hint=hint_txt) }}
+        {% if not default_organisation_type %}
+          {{ radios(form.organisation_type) }}
+        {% endif %}
+        {% set button_txt = _('Continue') %}
+        {{ page_footer(button_txt) }}
 
-    <p>{{ _('For example:') }}<br>
+        {{ form.default_branding_is_french }}
+        {{ form.current_step }}
+        {{ form.next_step }}
 
-    <ul class="list-bullet">
-      <li>{{ _('Canadian Digital Service (CDS) | Service numérique canadien (SNC)') }}</li>
-      <li>cds-snc.ca</li>
-    </ul>
+      {% endcall %}
+      </div>
+    
+    {% elif current_step == "choose_logo" %}
 
-  </p>
+      {% set header_txt = _('Choose a logo for your service') %}
+      {{ page_header(header_txt) }}
 
-    <div class="form-wrap">
-    {% call form_wrapper() %}
-      {% set hint_txt = _('You can change this later') %}
-      {{ textbox(form.name, hint=hint_txt) }}
+      <p>{{ _('Choose a logo for your service') }}</p>
 
-      {% if not default_organisation_type %}
-        {{ radios(form.organisation_type) }}
-      {% endif %}
-      {% set button_txt = _('Add service') %}
-      {{ page_footer(button_txt) }}
+      <p>{{ _('The default logo use in email messages is the English Government of Canada signature.') }}</p>
 
-    {% endcall %}
-    </div>
+      <p>{{ _('You can also upload a new custom logo later in Settings.') }}</p>
+
+      <div class="form-wrap">
+      {% call form_wrapper() %}
+        {{ radios(form.default_branding_is_french) }}
+
+        {{ form.organization_type }}
+        {{ form.name }}
+        {{ form.current_step }}
+        {{ form.next_step }}
+
+        {% set button_txt = _('Add service') %}
+        {{ page_footer(button_txt) }}
+      {% endcall %}
+      </div>
+
+    {% endif %}
 
   </div>
 </div>

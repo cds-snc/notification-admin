@@ -1,10 +1,11 @@
-from flask import current_app, redirect, render_template, session, url_for
-from flask_babel import _
+from flask import current_app, redirect, render_template, request, session, url_for
+from flask_babel import _, lazy_gettext as _l
 from notifications_python_client.errors import HTTPError
+from werkzeug.datastructures import ImmutableMultiDict
 
 from app import billing_api_client, service_api_client
 from app.main import main
-from app.main.forms import CreateServiceForm
+from app.main.forms import CreateServiceStep1Form, CreateServiceStep2Form
 from app.utils import email_safe, user_is_gov_user, user_is_logged_in
 
 
@@ -38,30 +39,77 @@ def _create_service(service_name, organisation_type, email_from, form):
 @user_is_gov_user
 def add_service():
     default_organisation_type = "central"
-    form = CreateServiceForm(
-        organisation_type=default_organisation_type
-    )
-    heading = _('Name your service in both official languages')
-
-    if form.validate_on_submit():
-        email_from = email_safe(form.name.data)
-        service_name = form.name.data
-
-        service_id, error = _create_service(
-            service_name,
-            default_organisation_type,
-            email_from,
-            form,
+    
+    # Step 1 - Choose the service name
+    if "current_step" not in request.form:
+        form = CreateServiceStep1Form(organisation_type=default_organisation_type)
+        heading = _('Name your service in both official languages')
+        return render_template(
+            'views/add-service.html', 
+            form=form, 
+            heading=heading, 
+            current_step="choose_service_name",
+            next_step="choose_logo"
         )
-        if error:
-            return render_template('views/add-service.html', form=form, heading=heading)
 
-        return redirect(url_for('main.service_dashboard', service_id=service_id))
+    # Step 2 - Choose default bilingual logo
+    elif request.form["next_step"] == "choose_logo":
+        heading = _('Choose a logo for your service')
+        form = CreateServiceStep2Form(
+            formdata = prune_steps(request.form)
+        )
 
-    else:
+        # TODO: Validate the form for service name
+        # if form.validate_on_submit():
+ 
         return render_template(
             'views/add-service.html',
             form=form,
             heading=heading,
             default_organisation_type=default_organisation_type,
+            current_step="choose_logo",
+            next_step="create_service"
         )
+
+    # Step 3 - Final step which creates the service
+    elif request.form["next_step"] == "create_service":
+        form = CreateServiceStep2Form(formdata = prune_steps(request.form))
+
+        if form.validate_on_submit():
+            email_from = email_safe(form.name.data)
+            service_name = form.name.data
+
+            # REVIEW: Should we create the service only once the bilingual logo has been 
+            #         selected? Beth: Create it at the same time through the service.
+            service_id, error = _create_service(
+                service_name,
+                default_organisation_type,
+                email_from,
+                form,
+            )
+            if error:
+                heading = _('Choose a logo for your service')
+                return render_template(
+                    'views/add-service.html', 
+                    form=form, 
+                    heading=heading, 
+                    current_step="choose_logo",
+                    next_step="create_service"
+                )
+            else:
+                return redirect(url_for('main.service_dashboard', service_id=service_id))
+        else:
+            heading = _('Choose a logo for your service')
+            return render_template(
+                'views/add-service.html', 
+                form=form, 
+                heading=heading, 
+                current_step="choose_logo",
+                next_step="create_service"
+            )
+
+def prune_steps(form):
+    pruned = form.to_dict()
+    del pruned['current_step']
+    del pruned['next_step']
+    return ImmutableMultiDict(pruned)
