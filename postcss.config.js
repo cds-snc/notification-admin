@@ -39,7 +39,11 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "textbox-highlight-textbox",
     "textbox-highlight-background",
     "text-right",
+    "table-field-headings-first",
     "table-field-headings-visible",
+    "table-field-status-error",
+    "table-field-status-default",
+    "table-field-status-yes",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });

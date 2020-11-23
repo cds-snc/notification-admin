@@ -62,16 +62,13 @@
   .dashboard-table .table-field-headings-visible th {
     @apply pb-2;
   }
-  .dashboard-table .table-field-heading-first {
-    width: 52.5%;
-  }
   
   .dashboard-table .table-row th {
     width: 52.5%;
     @apply font-normal table-cell;
   }
-  .dashboard-table .table-row th .hint, .dashboard-table .table-row th p {
-    @apply overflow-hidden overflow-ellipsis whitespace-nowrap;
+  .dashboard-table .table-row th .hint, .dashboard-table .table-row th p, .settings-table td.table-field-left-aligned div {
+    @apply truncate;
   }
 
   .settings-table table {
@@ -83,9 +80,34 @@
   .settings-table th:last-child {
     width: 17.5%;
   }
+  .settings-table td.table-field-left-aligned:first-child div {
+    white-space: normal;
+  }
+  .settings-table td.table-field-left-aligned ul li {
+    @apply mb-2;
+  }
+  .settings-table .table-heading {
+    @apply mb-8;
+  }
 
-  .table-field, {
+
+  .table-field {
     @apply align-top;
+  }
+  .table-field-index {
+    width: 15px;
+    @apply text-smaller leading-tight font-bold;
+  }
+  .table-field-index a:before {
+    content: "";
+    @apply absolute inset-0;
+  }
+  .table-field-index a:focus:before {
+    z-index: -1;
+    @apply bg-yellow;
+  }
+  .table-field p {
+    @apply m-0 mb-2;
   }
   .table-field-error {
     border-width: 5px;
@@ -97,10 +119,29 @@
     @apply border-0;
   }
 
+  .table-field-headings th {
+    padding: 1px; /* needs some height for the grey border to show */
+  }
+  .table-field-headings-visible {
+    @apply h-auto;
+  }
+  .table-field-headings-visible th {
+    padding: 0.75em 1.25em 0.5625em 0;
+  }
   .table-field-headings th,
   .table-field-headings-visible th {
     @apply text-smaller leading-tight font-bold;
   }
+  .dashboard-table .table-field-heading-first,
+  .dashboard-table .table-field-headings-first,
+  .dashboard-table .table-field-headings-visible-first {
+    width: 52.5%;
+  }
+
+  .table + .table-show-more-link {
+    margin-top: -30px;
+  }
+
   .table-field-error-label {
     @apply block font-bold text-red;
   }
@@ -164,7 +205,7 @@
   .table-empty-message, .table-no-data {
     padding-top: 0.75em;
     padding-bottom: 0.5625em;
-    @apply text-small leading-tight text-gray-grey1 border-solid border-gray-grey2 border-0 border-top-1 border-b-1 px-0;
+    @apply text-small leading-tight text-gray-grey1 border-solid border-gray-grey2 border-0 border-t-1 border-b-1 px-0;
   }
 
   .table-no-data {
@@ -181,12 +222,12 @@
 
   .wide-left-hand-column {
     max-width: 560px;
-    @apply block overflow-ellipsis overflow-hidden whitespace-nowrap
+    @apply block truncate;
   }
 
 
   .truncate-text {
-    @apply overflow-ellipsis overflow-hidden whitespace-nowrap;
+    @apply truncate;
   }
 
   .do-not-truncate-text {
