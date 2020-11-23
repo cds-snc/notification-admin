@@ -38,6 +38,7 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "w-auto",
     "textbox-highlight-textbox",
     "textbox-highlight-background",
+    "textbox-highlight-wrapper",
     "text-right",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
