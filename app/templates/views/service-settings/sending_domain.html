@@ -23,13 +23,13 @@
     {{ textbox(
       form.sending_domain,
       width='1-1',
-      hint=_('Default notification.alpha.canada.ca'),
+      hint=_('Default {}').format(sending_domain),
       safe_error_message=True
     ) }}
 
     {% set button_txt = _('Submit') %}
     {{ page_footer(button_txt) }}
   {% endcall %}
-  
+
 
 {% endblock %}
