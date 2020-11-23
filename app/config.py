@@ -83,7 +83,7 @@ class Config(object):
     TEST_MESSAGE_FILENAME = 'Report'
     NOTIFY_ENVIRONMENT = 'development'
     LOGO_UPLOAD_BUCKET_NAME = os.getenv('ASSET_UPLOAD_BUCKET_NAME', 'notification-alpha-canada-ca-asset-upload')
-    ASSET_DOMAIN = os.getenv('ASSET_DOMAIN', 's3.amazonaws.com')
+    ASSET_DOMAIN = os.getenv('ASSET_DOMAIN', 'assets.notification.canada.ca')
     MOU_BUCKET_NAME = os.getenv('MOU_BUCKET_NAME', '')
     ROUTE_SECRET_KEY_1 = os.environ.get('ROUTE_SECRET_KEY_1', '')
     ROUTE_SECRET_KEY_2 = os.environ.get('ROUTE_SECRET_KEY_2', '')
