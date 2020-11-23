@@ -50,6 +50,7 @@ module.exports = {
         selected: "#75b9e0",
         govukblue: "#005ea5",
         lightblue25: "#d5e8f3",
+        lightblue: "#2b8cc4",
       },
       gray: {
         default: "#eee",

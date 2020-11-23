@@ -1,70 +1,6 @@
-.table {
-  margin-bottom: $gutter;
-  width: 100%;
-}
 
-.table-heading {
-  text-align: left;
-  margin: $gutter-half 0 $gutter-half 0;
-}
-
-.dashboard-table {
-  .heading-medium {
-    margin-bottom: 5px;
-  }
-
-  .table {
-    table-layout: fixed;
-  }
-
-  .table-field-headings {
-    th {
-      font-size: 1px;
-    }
-  }
-
-  .table-field-headings-visible {
-    th {
-      padding-bottom: 5px;
-    }
-  }
-
-  .table-field-heading-first {
-    width: 52.5%;
-  }
-
-  .table-row {
-    th {
-      display: table-cell;
-      width: 52.5%;
-      font-weight: normal;
-
-      .hint,
-      p {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-  }
-}
 
 .settings-table {
-  table {
-    table-layout: fixed;
-    margin-bottom: $gutter / 6;
-  }
-
-  th {
-    &:first-child {
-      width: 35%; // 33.33% + fudge
-    }
-
-    &:last-child {
-      width: 17.5%; // 16.67% + fudge
-    }
-  }
-
   td.table-field-left-aligned {
     &:first-child {
       div {
@@ -90,71 +26,6 @@
 
 %table-field,
 .table-field {
-  vertical-align: top;
-
-  &:last-child {
-    padding-right: 0;
-  }
-
-  &-error {
-    border-left: 5px solid $error-colour;
-    padding-left: 7px;
-    display: block;
-
-    &-label {
-      display: block;
-      color: $error-colour;
-      font-weight: bold;
-    }
-  }
-
-  &-invisible-error {
-    border-left: 5px solid transparent;
-    padding-left: 7px;
-    display: block;
-  }
-
-  &-status {
-    &-default {
-      color: $secondary-text-colour;
-    }
-
-    &-error {
-      color: $error-colour;
-      font-weight: bold;
-
-      a {
-        &:link,
-        &:visited {
-          color: $error-colour;
-        }
-      }
-
-      .status-hint {
-        display: block;
-        font-weight: normal;
-        color: $red;
-        margin-top: 5px;
-      }
-    }
-
-    &-yes,
-    &-no {
-      display: block;
-      text-indent: -999em;
-      background-size: 19px 19px;
-      background-repeat: no-repeat;
-      background-position: 50% 50%;
-    }
-
-    &-yes {
-      background-image: file-url("tick.png");
-    }
-  }
-
-  &-noborder {
-    border: 0px;
-  }
 
   &-index {
     @include bold-16;
@@ -184,11 +55,6 @@
   }
 }
 
-.table-font-xsmall td.table-field-index {
-  // overrides GOV.UK Elements
-  @include bold-16;
-}
-
 .table-field-headings {
   th {
     padding: 1px; /* needs some height for the grey border to show */
@@ -205,119 +71,15 @@
 
 .table-field-headings,
 .table-field-headings-visible {
-  th {
-    @include bold-19;
-  }
 
   .dashboard-table &-first {
     width: 52.5%;
   }
 }
 
-.table-field-heading {
-  &:last-child {
-    padding-right: 0;
-  }
-
-  &-right-aligned {
-    display: block;
-    text-align: right;
-  }
-}
-
-.table-field-right-aligned {
-  @extend %table-field;
-  text-align: right;
-
-  a {
-    display: block;
-    position: relative;
-
-    &:before {
-      content: "";
-      display: block;
-
-      position: absolute;
-
-      top: -$gutter-half;
-      right: 0;
-      bottom: -$gutter-half + 4px;
-      left: -$gutter-half;
-
-      background: transparent;
-    }
-
-    &:hover {
-      color: $link-hover-colour;
-    }
-
-    &:active,
-    &:focus {
-      color: $black;
-
-      &:before {
-        border-color: $yellow;
-        border-style: solid;
-        border-width: 15px 3px 15px 15px;
-        right: -3px;
-      }
-    }
-  }
-}
-
-.table-row-group {
-  border-top: 1px solid $border-colour;
-  border-bottom: 1px solid $border-colour;
-}
-
-.table-empty-message {
-  @include core-16;
-  color: $secondary-text-colour;
-  border-bottom: 1px solid $border-colour;
-  padding: 0.75em 0 0.5625em 0;
-}
-
 .table-show-more-link {
-  @include core-16;
-  color: $secondary-text-colour;
-  margin-bottom: $gutter * 1.3333;
-  border-bottom: 1px solid $border-colour;
-  padding: 10px 0 10px 0;
-  text-align: center;
 
   .table + & {
     margin-top: -$gutter;
   }
-}
-
-a.table-show-more-link {
-  color: $link-colour;
-}
-
-.table-no-data {
-  @include core-16;
-  color: $secondary-text-colour;
-  margin-top: 10px;
-  margin-bottom: $gutter * 1.3333;
-  border-top: 1px solid $border-colour;
-  border-bottom: 1px solid $border-colour;
-  padding: 0.75em 0 0.5625em 0;
-}
-
-.wide-left-hand-column {
-  display: block;
-  max-width: 560px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.truncate-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.do-not-truncate-text {
-  white-space: normal !important;
 }
