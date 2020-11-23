@@ -460,7 +460,7 @@ def email_or_sms_not_enabled(template_type, permissions):
 
 
 def get_logo_cdn_domain():
-    return "{}.{}".format(current_app.config['LOGO_UPLOAD_BUCKET_NAME'], current_app.config['ASSET_DOMAIN'])
+    return current_app.config['ASSET_DOMAIN']
 
 
 def parse_filter_args(filter_dict):
