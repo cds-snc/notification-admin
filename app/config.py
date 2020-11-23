@@ -27,6 +27,7 @@ class Config(object):
     else:
         ADMIN_BASE_URL = os.environ.get('ADMIN_BASE_URL', 'http://localhost:6012')
 
+    ADMIN_BASE_DOMAIN = ADMIN_BASE_URL.replace('http://', '').replace('https://', '')
     TEMPLATE_PREVIEW_API_HOST = os.environ.get('TEMPLATE_PREVIEW_API_HOST', 'http://localhost:6013')
     TEMPLATE_PREVIEW_API_KEY = os.environ.get('TEMPLATE_PREVIEW_API_KEY', 'my-secret-key')
     NOTIFY_SERVICE_ID = 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553'
@@ -83,7 +84,7 @@ class Config(object):
     TEST_MESSAGE_FILENAME = 'Report'
     NOTIFY_ENVIRONMENT = 'development'
     LOGO_UPLOAD_BUCKET_NAME = os.getenv('ASSET_UPLOAD_BUCKET_NAME', 'notification-alpha-canada-ca-asset-upload')
-    ASSET_DOMAIN = os.getenv('ASSET_DOMAIN', 's3.amazonaws.com')
+    ASSET_DOMAIN = os.getenv('ASSET_DOMAIN', 'assets.notification.canada.ca')
     MOU_BUCKET_NAME = os.getenv('MOU_BUCKET_NAME', '')
     ROUTE_SECRET_KEY_1 = os.environ.get('ROUTE_SECRET_KEY_1', '')
     ROUTE_SECRET_KEY_2 = os.environ.get('ROUTE_SECRET_KEY_2', '')

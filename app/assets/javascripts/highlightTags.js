@@ -13,7 +13,7 @@
 
       this.$textbox = $(textarea)
         .wrap(`
-          <div class='textbox-highlight-wrapper' />
+          <div class='textbox-highlight-wrapper relative' />
         `)
         .after(this.$background = $(`
           <div class="textbox-highlight-background" aria-hidden="true" />

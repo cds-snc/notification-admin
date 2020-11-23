@@ -13,8 +13,14 @@ def test_owasp_useful_headers_set(
     mocker,
     mock_get_service_and_organisation_counts,
 ):
-    mocker.patch('app.get_logo_cdn_domain', return_value='static-logos.test.com')
-    mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
+    mocker.patch(
+        'app.service_api_client.get_live_services_data',
+        return_value={'data': service}
+    )
+    mocker.patch(
+        'app.service_api_client.get_stats_by_month',
+        return_value={'data': [('2020-11-01', 'email', 20)]}
+    )
     response = client.get('/')
 
     assert response.status_code == 200
@@ -29,7 +35,7 @@ def test_owasp_useful_headers_set(
         "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
-        "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk static-logos.test.com notification-alpha-canada-ca-cdn.s3.amazonaws.com data:;"  # noqa: E501
+        "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
         "frame-src 'self' www.youtube.com;"
     )
 
@@ -39,8 +45,11 @@ def test_headers_non_ascii_characters_are_replaced(
     mocker,
     mock_get_service_and_organisation_counts,
 ):
-    mocker.patch('app.get_logo_cdn_domain', return_value='static-logos€æ.test.com')
     mocker.patch('app.service_api_client.get_live_services_data', return_value={'data': service})
+    mocker.patch(
+        'app.service_api_client.get_stats_by_month',
+        return_value={'data': [('2020-11-01', 'email', 20)]}
+    )
     response = client.get('/')
 
     assert response.status_code == 200
@@ -52,6 +61,6 @@ def test_headers_non_ascii_characters_are_replaced(
         "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
-        "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk static-logos??.test.com notification-alpha-canada-ca-cdn.s3.amazonaws.com data:;"  # noqa: E501
+        "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
         "frame-src 'self' www.youtube.com;"
     )

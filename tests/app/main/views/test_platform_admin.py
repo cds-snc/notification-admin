@@ -27,6 +27,8 @@ from tests.conftest import SERVICE_ONE_ID, SERVICE_TWO_ID, normalize_spaces
     'main.live_services',
     'main.trial_services',
     'main.live_api_keys',
+    'main.send_method_stats_by_service',
+    'main.trial_report_csv',
 ])
 def test_should_redirect_if_not_logged_in(
     client,
@@ -42,6 +44,8 @@ def test_should_redirect_if_not_logged_in(
     'main.live_services',
     'main.trial_services',
     'main.live_api_keys',
+    'main.send_method_stats_by_service',
+    'main.trial_report_csv',
 ])
 def test_should_403_if_not_platform_admin(
     client_request,
@@ -981,6 +985,10 @@ def test_reports_page(
     ).attrs['href'] == '/platform-admin/reports/live-services.csv'
 
     assert page.find(
+        'a', text="Download trial services csv report"
+    ).attrs['href'] == '/platform-admin/reports/trial-report.csv'
+
+    assert page.find(
         'a', text="Download performance platform report (.xlsx)"
     ).attrs['href'] == '/platform-admin/reports/performance-platform.xlsx'
 
@@ -1050,6 +1058,28 @@ def test_get_performance_platform_report(platform_admin_client, mocker):
         ['abc123', 'Forest', 'jessie the oak tree', '2014-03-29T00:00:00Z', 'notification', 1],
         ['def456', 'Forest', 'james the pine tree', '', 'notification', 1],
     ]
+
+
+def test_get_trial_report_csv(platform_admin_client, mocker):
+    mocker.patch('app.platform_stats_api_client.usage_for_trial_services', return_value=[[
+        'Fake Service ID',
+        'My service',
+        '2020-11-01',
+        'Bob',
+        'foo@example.com',
+        'email',
+        '5',
+    ]])
+    response = platform_admin_client.get(url_for('main.trial_report_csv'))
+
+    assert response.status_code == 200
+    assert response.content_type == 'text/csv; charset=utf-8'
+    assert response.headers['Content-Disposition'].startswith('inline; filename=')
+
+    assert response.get_data(as_text=True) == (
+        'service_id,service_name,creation_date,created_by_name,created_by_email,notification_type,notification_sum\r\n' +
+        'Fake Service ID,My service,2020-11-01,Bob,foo@example.com,email,5\r\n'
+    )
 
 
 def test_get_notifications_sent_by_service_shows_date_form(client_request, platform_admin_user):
@@ -1174,3 +1204,32 @@ def test_get_notifications_sent_by_service_calls_api_and_downloads_data(
         '2019-01-01,596364a0-858e-42c8-9062-a8fe822260eb,service one,sms,42,0,0,8,0,0\r\n'
         '2019-01-01,147ad62a-2951-4fa1-9ca0-093cd1a52c52,service two,email,3,1,0,2,0,0\r\n'
     )
+
+
+def test_send_method_stats_by_service(platform_admin_client, mocker):
+    mock = mocker.patch('app.platform_stats_api_client.get_send_method_stats_by_service', return_value=[[
+        'Fake Service ID',
+        'My service',
+        'Org name',
+        'email',
+        'admin',
+        '5',
+    ]])
+
+    response = platform_admin_client.post(
+        url_for('main.send_method_stats_by_service'),
+        data={
+            'start_date': '2020-11-01',
+            'end_date': '2020-12-01',
+        }
+    )
+
+    assert response.status_code == 200
+    assert response.content_type == 'text/csv; charset=utf-8'
+    assert response.headers['Content-Disposition'].startswith('attachment; filename=')
+
+    assert response.get_data(as_text=True) == (
+        'service_id,service_name,org_name,notification_type,send_method,count\r\n' +
+        'Fake Service ID,My service,Org name,email,admin,5\r\n'
+    )
+    mock.assert_called_once_with(datetime.date(2020, 11, 1), datetime.date(2020, 12, 1))

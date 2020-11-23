@@ -89,7 +89,7 @@ from app.notify_client.template_statistics_api_client import (
     template_statistics_client,
 )
 from app.notify_client.user_api_client import user_api_client
-from app.utils import get_logo_cdn_domain, id_safe
+from app.utils import id_safe
 
 login_manager = LoginManager()
 csrf = CSRFProtect()
@@ -133,6 +133,7 @@ def create_app(application):
     notify_environment = os.environ['NOTIFY_ENVIRONMENT']
 
     application.config.from_object(configs[notify_environment])
+    asset_fingerprinter._cdn_domain = application.config['ASSET_DOMAIN']
     asset_fingerprinter._asset_root = application.config['ASSET_PATH']
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
@@ -253,7 +254,9 @@ def init_app(application):
             'header_colour': application.config['HEADER_COLOUR'],
             'asset_url': asset_fingerprinter.get_url,
             'asset_s3_url': asset_fingerprinter.get_s3_url,
-            'current_lang': get_current_locale(application)
+            'current_lang': get_current_locale(application),
+            'admin_base_url': application.config['ADMIN_BASE_URL'],
+            'admin_base_domain': application.config['ADMIN_BASE_DOMAIN'],
         }
 
 
@@ -269,6 +272,15 @@ def convert_to_boolean(value):
 
 def linkable_name(value):
     return urllib.parse.quote_plus(value)
+
+
+def format_number(number):
+    lang = get_current_locale(current_app)
+
+    if lang == 'fr':
+        # Spaces as separators
+        return '{:,}'.format(number).replace(',', ' ')
+    return "{:,}".format(number)  # Commas as separators
 
 
 def format_datetime(date):
@@ -616,10 +628,9 @@ def useful_headers_after_request(response):
         "object-src 'self';"
         "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-        "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk {logo_domain} notification-alpha-canada-ca-cdn.s3.amazonaws.com data:;"  # noqa: E501
+        "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
         "frame-src 'self' www.youtube.com;".format(
             asset_domain=current_app.config['ASSET_DOMAIN'],
-            logo_domain=get_logo_cdn_domain(),
         )
     ))
     if 'Cache-Control' in response.headers:
@@ -754,6 +765,7 @@ def setup_event_handlers():
 
 def add_template_filters(application):
     for fn in [
+        format_number,
         format_datetime,
         format_datetime_24h,
         format_datetime_normal,

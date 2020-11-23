@@ -7,6 +7,7 @@ module.exports = {
     },
     backgroundImage: {
       tick: "url('/static/images/tick.png')",
+      folder: "url('/static/images/folder-black.svg')",
     },
     boxShadow: {
       outline: "0 0 0 3px rgba(255, 191, 71, 1)"
@@ -24,6 +25,7 @@ module.exports = {
       xl: "3.8rem",
       '48': "4.8rem",
       xxl: "6.5rem",
+      '3xl': "9rem",
       brand: "2.6rem"
     },
     screens: {
@@ -36,7 +38,8 @@ module.exports = {
       red: {
         default: "#b10e1e",
         hover: "#990c1a",
-        border: "#6a0812"
+        border: "#6a0812",
+        mellow: "#df3034"
       },
       white: {
         default: "#FFF"
@@ -55,6 +58,8 @@ module.exports = {
         hover: "#d0d3d6",
         border: "#b5babe",
         grey1: "#6f777b",
+        grey2: "#bfc1c3",
+        grey4: "#f8f8f8",
       },
       yellow: {
         default: "#ffbf47"
@@ -82,7 +87,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["lato"],
-        body: ["Noto Sans"]
+        body: ["Noto Sans", "Arial", "sans-serif"],
       },
       inset: {
         '2': '2px',
@@ -99,6 +104,7 @@ module.exports = {
         gutter: '30px',
         gutterHalf: '15px',
         gutterAndAHalf: '45px',
+        doubleGutter: '60px',
       }
     },
   },
@@ -109,7 +115,22 @@ module.exports = {
           return `.${e(`link${separator}${className}`)}:link`
         })
       })
-    })
+    }),
+    plugin(function({ addUtilities, theme }) {
+      const individualBorderColors = {
+        '.border-b-gray-button': {
+          borderBottomColor: theme('colors').gray.button
+        },
+        '.border-l-gray-button': {
+          borderLeftColor: theme('colors').gray.button
+        },
+        '.border-b-gray-grey2': {
+          borderBottomColor: theme('colors').gray.grey2
+        }
+      };
+
+      addUtilities(individualBorderColors);
+    }),
   ],
   variants: {
     textColor: ['visited', 'link'],

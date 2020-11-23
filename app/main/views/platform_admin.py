@@ -278,6 +278,28 @@ def performance_platform_xlsx():
     }
 
 
+@main.route("/platform-admin/reports/trial-report.csv")
+@user_is_platform_admin
+def trial_report_csv():
+    data = platform_stats_api_client.usage_for_trial_services()
+    headers = [
+        'service_id',
+        'service_name',
+        'creation_date',
+        'created_by_name',
+        'created_by_email',
+        'notification_type',
+        'notification_sum',
+    ]
+
+    return Spreadsheet.from_rows([headers] + data).as_csv_data, 200, {
+        'Content-Type': 'text/csv; charset=utf-8',
+        'Content-Disposition': 'inline; filename="{} trial report.csv"'.format(
+            format_date_numeric(datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")),
+        )
+    }
+
+
 @main.route("/platform-admin/reports/notifications-sent-by-service", methods=['GET', 'POST'])
 @user_is_platform_admin
 def notifications_sent_by_service():
@@ -303,6 +325,30 @@ def notifications_sent_by_service():
         }
 
     return render_template('views/platform-admin/notifications_by_service.html', form=form)
+
+
+@main.route("/platform-admin/reports/send-method-stats-by-service", methods=['GET', 'POST'])
+@user_is_platform_admin
+def send_method_stats_by_service():
+    form = RequiredDateFilterForm()
+
+    if form.validate_on_submit():
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+
+        headers = [
+            'service_id', 'service_name', 'org_name', 'notification_type',
+            'send_method', 'count'
+        ]
+        result = platform_stats_api_client.get_send_method_stats_by_service(start_date, end_date)
+
+        return Spreadsheet.from_rows([headers] + result).as_csv_data, 200, {
+            'Content-Type': 'text/csv; charset=utf-8',
+            'Content-Disposition': 'attachment; filename="{} to {} send method per service report.csv"'.format(
+                start_date, end_date)
+        }
+
+    return render_template('views/platform-admin/send_method_stats_by_service.html', form=form)
 
 
 @main.route("/platform-admin/reports/usage-for-all-services", methods=['GET', 'POST'])

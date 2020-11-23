@@ -48,6 +48,12 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         return self.get('/service', params=params_dict)
 
+    def get_stats_by_month(self):
+        """
+        Retrieve notifications stats by month.
+        """
+        return self.get('/service/delivered-notifications-stats-by-month-data')
+
     def find_services_by_name(self, service_name):
         return self.get('/service/find-services-by-name', params={"service_name": service_name})
 

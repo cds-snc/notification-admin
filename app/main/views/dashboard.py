@@ -3,15 +3,7 @@ from datetime import datetime
 from functools import partial
 from itertools import groupby
 
-from flask import (
-    Response,
-    abort,
-    jsonify,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import abort, jsonify, render_template, request, session, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -19,8 +11,6 @@ from werkzeug.utils import redirect
 
 from app import (
     current_service,
-    format_date_numeric,
-    format_datetime_numeric,
     job_api_client,
     service_api_client,
     template_statistics_client,
@@ -31,11 +21,10 @@ from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
     REQUESTED_STATUSES,
-    Spreadsheet,
-    generate_next_dict,
-    generate_previous_dict,
     get_current_financial_year,
+    get_month_name,
     user_has_permissions,
+    yyyy_mm_to_datetime,
 )
 
 
@@ -166,76 +155,6 @@ def monthly(service_id):
     )
 
 
-@main.route("/services/<service_id>/inbox")
-@user_has_permissions('view_activity')
-def inbox(service_id):
-
-    return render_template(
-        'views/dashboard/inbox.html',
-        partials=get_inbox_partials(service_id),
-        updates_url=url_for('.inbox_updates', service_id=service_id, page=request.args.get('page')),
-    )
-
-
-@main.route("/services/<service_id>/inbox.json")
-@user_has_permissions('view_activity')
-def inbox_updates(service_id):
-
-    return jsonify(get_inbox_partials(service_id))
-
-
-@main.route("/services/<service_id>/inbox.csv")
-@user_has_permissions('view_activity')
-def inbox_download(service_id):
-    return Response(
-        Spreadsheet.from_rows(
-            [[
-                _l('Phone number'),
-                _l('Message'),
-                _l('Received'),
-            ]] + [[
-                message['user_number'],
-                message['content'].lstrip(('=+-@')),
-                format_datetime_numeric(message['created_at']),
-            ] for message in service_api_client.get_inbound_sms(service_id)['data']]
-        ).as_csv_data,
-        mimetype='text/csv',
-        headers={
-            'Content-Disposition': 'inline; filename="Received text messages {}.csv"'.format(
-                format_date_numeric(datetime.utcnow().isoformat())
-            )
-        }
-    )
-
-
-def get_inbox_partials(service_id):
-    page = int(request.args.get('page', 1))
-    if not current_service.has_permission('inbound_sms'):
-        abort(403)
-
-    inbound_messages_data = service_api_client.get_most_recent_inbound_sms(service_id, page=page)
-    inbound_messages = inbound_messages_data['data']
-    if not inbound_messages:
-        inbound_number = current_service.inbound_number
-    else:
-        inbound_number = None
-
-    prev_page = None
-    if page > 1:
-        prev_page = generate_previous_dict('main.inbox', service_id, page)
-    next_page = None
-    if inbound_messages_data['has_next']:
-        next_page = generate_next_dict('main.inbox', service_id, page)
-
-    return {'messages': render_template(
-        'views/dashboard/_inbox_messages.html',
-        messages=inbound_messages,
-        inbound_number=inbound_number,
-        prev_page=prev_page,
-        next_page=next_page
-    )}
-
-
 def filter_out_cancelled_stats(template_statistics):
     return [s for s in template_statistics if s["status"] != "cancelled"]
 
@@ -304,13 +223,6 @@ def get_dashboard_partials(service_id):
         'upcoming': render_template(
             'views/dashboard/_upcoming.html',
             scheduled_jobs=scheduled_jobs
-        ),
-        'inbox': render_template(
-            'views/dashboard/_inbox.html',
-            inbound_sms_summary=(
-                service_api_client.get_inbound_sms_summary(service_id)
-                if current_service.has_permission('inbound_sms') else None
-            ),
         ),
         'totals': render_template(
             'views/dashboard/_totals.html',
@@ -381,30 +293,6 @@ def format_monthly_stats_to_list(historical_stats):
             **aggregate_status_types(value)
         ) for key, value in historical_stats.items()
     ), key=lambda x: x['date'], reverse=True)
-
-
-def get_month_name(string):
-    monthNumber = yyyy_mm_to_datetime(string).strftime('%-m')
-    translatedMonth = {
-        1: _l("January"),
-        2: _l("February"),
-        3: _l("March"),
-        4: _l("April"),
-        5: _l("May"),
-        6: _l("June"),
-        7: _l("July"),
-        8: _l("August"),
-        9: _l("September"),
-        10: _l("October"),
-        11: _l("November"),
-        12: _l("December"),
-    }
-
-    return translatedMonth.get(int(monthNumber), _l("Invalid month"))
-
-
-def yyyy_mm_to_datetime(string):
-    return datetime(int(string[0:4]), int(string[5:7]), 1)
 
 
 def aggregate_status_types(counts_dict):

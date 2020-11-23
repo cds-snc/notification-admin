@@ -3,8 +3,6 @@
 {% from "components/honeypot-field.html" import honeypotfield %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
-{% from "components/radios.html" import radio %}
-{% from "components/select-input.html" import select, select_list, select_nested, select_wrapper, select_input %}
 
 {% block meta %} {%
 set description = _('GC Notify lets you send emails and text messages to your users') %}
@@ -15,9 +13,9 @@ set description = _('GC Notify lets you send emails and text messages to your us
 <meta property="og:description" content="{{description}}" />
 <meta
   property="og:image"
-  content="https://notification.alpha.canada.ca/static/images/product/notify-main.jpg"
+  content="{{ admin_base_url }}/static/images/product/notify-main.jpg"
 />
-<meta property="og:url" content="https://notification.alpha.canada.ca" />
+<meta property="og:url" content="{{ admin_base_url }}" />
 
 <link
   rel="stylesheet"
@@ -559,21 +557,25 @@ set description = _('GC Notify lets you send emails and text messages to your us
 
     <!-- COUNTER -->
     <div class="bg-gray">
-      <div class="container px-10 py-20 flex flex-col lg:flex-row justify-between">
+      <div class="container px-10 lg:px-0 py-20 flex flex-col lg:flex-row justify-between">
           <!-- Box 1-->
           <div class="flex flex-col items-start justify-end pb-10 lg:pb-0">
-            <div class="text-base font-bold extra-tight font-sans">{{ _("GC Notify by the numbers") }}</div>
-            <div class="text-xs py-2">{{ _("Since November 2019") }}</div>
+            <div class="text-brand font-bold extra-tight font-sans">{{ _("GC Notify by the numbers") }}</div>
+            <div class="text-base py-2">
+              <a href="{{ url_for('.activity' )}}" class="text-blue link:text-blue visited:text-blue">
+                {{ _("Learn more in the Activity Dashboard") }}
+              </a>
+            </div>
           </div>
           <!-- Box 2-->
           <div class="pb-10 lg:pb-0">
-            <div class="text-xxl font-bold leading-none font-sans">{{stats.services_count}}</div>
-            <div class="text-xs py-2">{{ _("services using GC Notify") }}</div>
+            <div class="text-xxl font-bold leading-none font-sans">{{ stats.live_services | format_number }}</div>
+            <div class="text-base py-2">{{ _("services using GC Notify") }}</div>
           </div>
           <!-- Box 3-->
           <div class="pb-10 lg:pb-0">
-            <div class="text-xxl font-bold leading-none font-sans">{{stats.notification_totals}}</div>
-            <div class="text-xs py-2">{{ _("messages sent") }}</div>
+            <div class="text-xxl font-bold leading-none font-sans">{{ stats.notifications_total | format_number }}</div>
+            <div class="text-base py-2">{{ _("messages sent") }}</div>
           </div>
           <!-- end -->
         </div>
@@ -666,8 +668,13 @@ set description = _('GC Notify lets you send emails and text messages to your us
           >
           <a
           href="{{ url_for('main.terms') }}"
-            class="line-under text-white link:text-white visited:text-white text-small block underline hover:no-underline"
+            class="line-under text-white link:text-white visited:text-white text-small block mb-10 underline hover:no-underline"
             >{{ _("Terms of use") }}</a
+          >
+          <a
+              href="{{ url_for('main.activity') }}"
+                class="line-under text-white link:text-white visited:text-white text-small block underline hover:no-underline"
+                >{{ _("Activity dashboard") }}</a
           >
         </div>
       </nav>

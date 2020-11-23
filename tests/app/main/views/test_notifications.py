@@ -598,52 +598,6 @@ def test_should_404_for_unknown_extension(
     )
 
 
-@pytest.mark.parametrize('service_permissions, template_type, link_expected', [
-    ([], '', False),
-    (['inbound_sms'], 'email', False),
-    (['inbound_sms'], 'letter', False),
-    (['inbound_sms'], 'sms', True),
-])
-def test_notification_page_has_link_to_send_another_for_sms(
-    client_request,
-    mocker,
-    fake_uuid,
-    service_one,
-    service_permissions,
-    template_type,
-    link_expected,
-):
-
-    service_one['permissions'] = service_permissions
-    mock_get_notification(mocker, fake_uuid, template_type=template_type)
-    mocker.patch(
-        'app.main.views.notifications.get_page_count_for_letter',
-        return_value=1
-    )
-
-    page = client_request.get(
-        'main.view_notification',
-        service_id=SERVICE_ONE_ID,
-        notification_id=fake_uuid,
-    )
-
-    last_paragraph = page.select('main p')[-1]
-    conversation_link = url_for(
-        '.conversation',
-        service_id=SERVICE_ONE_ID,
-        notification_id=fake_uuid,
-        _anchor='n{}'.format(fake_uuid),
-    )
-
-    if link_expected:
-        assert normalize_spaces(last_paragraph.text) == (
-            'See all text messages sent to this phone number'
-        )
-        assert last_paragraph.select_one('a')['href'] == conversation_link
-    else:
-        assert conversation_link not in str(page.select_one('main'))
-
-
 @pytest.mark.parametrize('template_type, expected_link', [
     ('email', lambda notification_id: None),
     ('sms', lambda notification_id: None),

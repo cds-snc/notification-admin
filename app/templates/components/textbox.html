@@ -38,7 +38,7 @@
     %}
       {% set field_class = 'form-control-{} textbox-highlight-textbox'.format(width) %}
     {% else %}
-      {% set field_class = 'form-control-{} {}'.format(width, 'textbox-right-aligned' if suffix else '') %}
+      {% set field_class = 'form-control-{} {}'.format(width, 'text-right' if suffix else '') %}
     {% endif %}
     {%
       set field_class = 'form-control ' + field_class + (
@@ -60,7 +60,7 @@
       <span>{{ suffix }}</span>
     {% endif %}
     {% if help_link and help_link_text %}
-      <p class="textbox-help-link">
+      <p class="textbox-help-link m-0 mt-4">
         <a href='{{ help_link }}'>{{ help_link_text }}</a>
       </p>
     {% endif %}

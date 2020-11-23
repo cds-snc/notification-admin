@@ -28,7 +28,7 @@
   {% call select_wrapper(
     field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style
   ) %}
-  <div class="{{ "radios" if input == "radio" else "checkboxes" }}-nested">
+  <div class="select-nested {{ "radios" if input == "radio" else "checkboxes" }}-nested">
       {{ select_list(child_map[None], child_map, disable, option_hints, input=input) }}
     </div>
   {% endcall %}

@@ -14,6 +14,7 @@ from app.utils import (
     generate_next_dict,
     generate_notifications_csv,
     generate_previous_dict,
+    get_latest_stats,
     get_letter_printing_statement,
     get_logo_cdn_domain,
     get_remote_addr,
@@ -300,7 +301,7 @@ def test_generate_notifications_csv_calls_twice_if_next_link(
 def test_get_cdn_domain_on_localhost(client, mocker):
     mocker.patch.dict('app.current_app.config', values={'ADMIN_BASE_URL': 'http://localhost:6012'})
     domain = get_logo_cdn_domain()
-    assert domain == "{}.{}".format(current_app.config['LOGO_UPLOAD_BUCKET_NAME'], current_app.config['ASSET_DOMAIN'])
+    assert domain == current_app.config['ASSET_DOMAIN']
 
 
 @pytest.mark.parametrize('time, human_readable_datetime', [
@@ -432,3 +433,30 @@ def test_get_remote_addr(app_, forwarded_for, remote_addr, expected):
     environ = {'REMOTE_ADDR': remote_addr}
     with app_.test_request_context(headers=headers, environ_base=environ):
         assert get_remote_addr(request) == expected
+
+
+def test_get_latest_stats(mocker, app_):
+    mocker.patch(
+        'app.service_api_client.get_stats_by_month',
+        return_value={'data': [
+            ('2020-10-01', 'sms', 5),
+            ('2020-10-01', 'email', 10),
+            ('2020-09-01', 'sms', 3),
+        ]}
+    )
+    mocker.patch(
+        'app.service_api_client.get_live_services_data',
+        return_value={'data': ['service']}
+    )
+
+    with app_.test_request_context():
+        assert get_latest_stats('en') == {
+            'notifications_total': 18,
+            'emails_total': 10,
+            'sms_total': 8,
+            'live_services': 1,
+            'monthly_stats': {
+                'October 2020': {'email': 10, 'sms': 5, 'total': 15, 'year_month': '2020-10'},
+                'September 2020': {'sms': 3, 'total': 3, 'year_month': '2020-09'}
+            },
+        }
