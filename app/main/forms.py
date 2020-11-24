@@ -626,7 +626,7 @@ class OrganisationDomainsForm(StripWhitespaceForm):
 
 class CreateServiceStep1Form(StripWhitespaceForm):
     name = StringField(
-        None,
+        _l('What’s your service called?'),
         validators=[
             DataRequired(message=_l('This cannot be empty'))
         ])
@@ -646,17 +646,22 @@ class CreateServiceStep1Form(StripWhitespaceForm):
 
 
 class CreateServiceStep2Form(StripWhitespaceForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'choices' in kwargs:
+            self.default_branding.choices = kwargs['choices']
+
     name = HiddenField(
         None,
         validators=[
             DataRequired(message=_l('This cannot be empty'))
         ])
     organisation_type = HiddenField(None)
-    default_branding_is_french = RadioField(
+    default_branding = RadioField(
         None,
-        choices = [
-            ('false', _l('English GC Logo')),
-            ('true', _l('French GC Logo')),
+        choices = [ # Choices by default, override to get more refined options.
+            (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l('English GC Logo')),
+            (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l('French GC Logo')),
         ],
         default = 'false',
         validators = [DataRequired(message=_l('This cannot be empty'))]
@@ -669,6 +674,7 @@ class CreateServiceStep2Form(StripWhitespaceForm):
         None,
         default = 'create_service',
         validators = [AnyOf("create_service")])
+
 
 class SecurityKeyForm(StripWhitespaceForm):
     keyname = StringField(

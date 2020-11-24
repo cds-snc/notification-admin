@@ -56,7 +56,7 @@
         {% set button_txt = _('Continue') %}
         {{ page_footer(button_txt) }}
 
-        {{ form.default_branding_is_french }}
+        {{ form.default_branding }}
         {{ form.current_step }}
         {{ form.next_step }}
 
@@ -76,7 +76,7 @@
 
       <div class="form-wrap">
       {% call form_wrapper() %}
-        {{ radios(form.default_branding_is_french) }}
+        {{ radios(form.default_branding) }}
 
         {{ form.organization_type }}
         {{ form.name }}
