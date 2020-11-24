@@ -234,8 +234,11 @@ def test_sign_in_security_center_notification_for_non_NA_signins(
     mock_send_verify_code,
     mock_verify_password,
     mock_get_security_keys,
-    mocker
+    mocker,
+    monkeypatch,
 ):
+    monkeypatch.setitem(current_app.config, 'IP_GEOLOCATE_SERVICE', 'https://example.com/')
+
     mocker.patch('app.user_api_client.get_user', return_value=api_user_active_email_auth)
     mocker.patch('app.user_api_client.get_user_by_email', return_value=api_user_active_email_auth)
 
