@@ -26,6 +26,7 @@ def _create_service(service_name: str, organisation_type: str, email_from: str,
             restricted=True,
             user_id=session['user_id'],
             email_from=email_from,
+            default_branding_is_french = default_branding_is_french,
         )
         session['service_id'] = service_id
 
