@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 from bs4 import BeautifulSoup
-from flask import url_for
+from flask import current_app, url_for
 
 from app.models.user import User
 from tests.conftest import normalize_spaces
@@ -118,7 +118,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     mock_get_security_keys.assert_called_with(api_user_active['id'])
     mock_verify_password.assert_called_with(
         api_user_active['id'],
-        password, {'location': '127.0.0.1', 'user-agent': 'werkzeug/1.0.1'})
+        password, {'location': None, 'user-agent': 'werkzeug/1.0.1'})
     mock_get_user_by_email.assert_called_with('valid@example.canada.ca')
 
 
@@ -143,7 +143,7 @@ def test_process_email_auth_sign_in_return_2fa_template(
     mock_verify_password.assert_called_with(
         api_user_active_email_auth['id'],
         'val1dPassw0rd!',
-        {'location': '127.0.0.1', 'user-agent': 'werkzeug/1.0.1'})
+        {'location': None, 'user-agent': 'werkzeug/1.0.1'})
 
 
 def test_should_return_locked_out_true_when_user_is_locked(
@@ -252,3 +252,30 @@ def test_sign_in_security_center_notification_for_non_NA_signins(
     assert response.status_code == 302
 
     reporter.assert_called()
+
+
+def test_sign_in_geolookup_disabled_in_dev(
+    client,
+    api_user_active_email_auth,
+    mock_send_verify_code,
+    mock_verify_password,
+    mock_get_security_keys,
+    mocker
+):
+    assert current_app.config.get('IP_GEOLOCATE_SERVICE') is None
+
+    mocker.patch('app.user_api_client.get_user', return_value=api_user_active_email_auth)
+    mocker.patch('app.user_api_client.get_user_by_email', return_value=api_user_active_email_auth)
+
+    geolookup_mock = mocker.patch('app.main.views.sign_in._geolocate_lookup')
+
+    response = client.post(
+        url_for('main.sign_in'),
+        data={
+            'email_address': 'valid@example.canada.ca',
+            'password': 'val1dPassw0rd!',
+        }
+    )
+    assert response.status_code == 302
+
+    assert not geolookup_mock.called

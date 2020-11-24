@@ -98,7 +98,7 @@ class Config(object):
 
     HIPB_ENABLED = True
 
-    IP_GEOLOCATE_SERVICE = os.environ.get('IP_GEOLOCATE_SERVICE', 'https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/')
+    IP_GEOLOCATE_SERVICE = os.environ.get('IP_GEOLOCATE_SERVICE', None)
 
     BULK_SEND_AWS_ACCESS_KEY = os.getenv('BULK_SEND_AWS_ACCESS_KEY')
     BULK_SEND_AWS_SECRET_KEY = os.getenv('BULK_SEND_AWS_SECRET_KEY')
