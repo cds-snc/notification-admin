@@ -31,7 +31,7 @@
               {% if option.checked %}
                 {% set checked = "selected" %}
               {% endif %}
-              
+
               <option {{checked}} value="{{ option.data }}">{{ option.label.text }}</option>
               {% endfor %}
             </select>
@@ -39,11 +39,7 @@
 
           {% set email_label = _('Your email') %}
           {{ textbox(form.email_address, label=email_label, width='1-1') }}
-          
-          {# honeypot field #}
-          {% set email_label = _('Your phone') %}
-          {{ honeypotfield(form.phone, label=email_label) }}
-          
+
           {% set message_label = _('Message') %}
           {{ textbox(form.feedback, width='1-1', label=message_label, hint='', rows=10) }}
           {% set send_text = _('Send') %}
