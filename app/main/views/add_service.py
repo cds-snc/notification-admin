@@ -1,18 +1,36 @@
 from typing import Any
-from flask import current_app, redirect, render_template, request, session, url_for
+
+from flask import (
+    current_app,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_babel import _
 from notifications_python_client.errors import HTTPError
 from werkzeug.datastructures import ImmutableMultiDict
 
 from app import billing_api_client, service_api_client
 from app.main import main
-from app.main.forms import CreateServiceStep1Form, CreateServiceStep2Form, FieldWithLanguageOptions
-from app.utils import email_safe, get_logo_cdn_domain, user_is_gov_user, user_is_logged_in
+from app.main.forms import (
+    CreateServiceStep1Form,
+    CreateServiceStep2Form,
+    FieldWithLanguageOptions,
+)
+from app.utils import (
+    email_safe,
+    get_logo_cdn_domain,
+    user_is_gov_user,
+    user_is_logged_in,
+)
 
 DEFAULT_ORGANISATION_TYPE: str = "central"
 
 HEADER_STEP1: str = "Name your service in both official languages"
 HEADER_STEP2: str = "Choose a logo for your service"
+
 
 def _create_service(service_name: str, organisation_type: str, email_from: str,
                     default_branding_is_french: bool, form: CreateServiceStep2Form):
@@ -26,7 +44,7 @@ def _create_service(service_name: str, organisation_type: str, email_from: str,
             restricted=True,
             user_id=session['user_id'],
             email_from=email_from,
-            default_branding_is_french = default_branding_is_french,
+            default_branding_is_french=default_branding_is_french,
         )
         session['service_id'] = service_id
 
@@ -70,7 +88,7 @@ def _renderTemplateStep1(heading: str, form: CreateServiceStep1Form) -> Any:
 
 
 def _renderTemplateStep2(heading: str, form: CreateServiceStep2Form,
-                        default_organisation_type: str = DEFAULT_ORGANISATION_TYPE) -> Any:
+                         default_organisation_type: str = DEFAULT_ORGANISATION_TYPE) -> Any:
     return render_template(
         'views/add-service.html',
         form=form,
@@ -87,7 +105,7 @@ def _renderTemplateStep2(heading: str, form: CreateServiceStep2Form,
 def add_service():
     # Step 1 - Choose the service name
     if "current_step" not in request.form:
-        form = CreateServiceStep1Form(organisation_type = DEFAULT_ORGANISATION_TYPE)
+        form = CreateServiceStep1Form(organisation_type=DEFAULT_ORGANISATION_TYPE)
         return _renderTemplateStep1(_(HEADER_STEP1), form)
 
     # Step 2 - Choose default bilingual logo
@@ -97,8 +115,8 @@ def add_service():
             return _renderTemplateStep1(_(HEADER_STEP1), formStep1)
 
         formStep2 = CreateServiceStep2Form(
-            choices = _getSelectBilingualChoices(),
-            formdata = _prune_steps(request.form)
+            choices=_getSelectBilingualChoices(),
+            formdata=_prune_steps(request.form)
         )
         return _renderTemplateStep2(_(HEADER_STEP2), formStep2)
 
@@ -108,7 +126,7 @@ def add_service():
         if not formStep2.validate_on_submit():
             return _renderTemplateStep2(_(HEADER_STEP2), formStep2)
 
-        form = CreateServiceStep2Form(formdata = _prune_steps(request.form))
+        form = CreateServiceStep2Form(formdata=_prune_steps(request.form))
         email_from = email_safe(form.name.data)
         service_name = form.name.data
         default_branding_is_french = form.default_branding.data == FieldWithLanguageOptions.FRENCH_OPTION_VALUE

@@ -27,7 +27,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "user_id": user_id,
             "restricted": restricted,
             "email_from": email_from,
-            "default_branding_is_french":default_branding_is_french,
+            "default_branding_is_french": default_branding_is_french,
         }
         data = _attach_current_user(data)
         return self.post("/service", data)['data']['id']

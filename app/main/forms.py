@@ -34,7 +34,14 @@ from wtforms import (
     widgets,
 )
 from wtforms.fields.html5 import EmailField, SearchField, TelField
-from wtforms.validators import AnyOf, URL, DataRequired, Length, Optional, Regexp
+from wtforms.validators import (
+    URL,
+    AnyOf,
+    DataRequired,
+    Length,
+    Optional,
+    Regexp,
+)
 from wtforms.widgets import CheckboxInput, ListWidget
 
 from app import format_thousands
@@ -631,18 +638,19 @@ class CreateServiceStep1Form(StripWhitespaceForm):
             DataRequired(message=_l('This cannot be empty'))
         ])
     organisation_type = OrganisationTypeField(_l('Who runs this service?'))
-    default_branding_is_french = HiddenField(default = 'false',
-        validators = [
+    default_branding_is_french = HiddenField(
+        default='false',
+        validators=[
             DataRequired(message=_l('This cannot be empty'))
         ])
     current_step = HiddenField(
-        None, 
-        default = 'choose_service_name',
-        validators = [AnyOf("choose_service_name")])
+        None,
+        default='choose_service_name',
+        validators=[AnyOf("choose_service_name")])
     next_step = HiddenField(
-        None, 
-        default = 'choose_logo',
-        validators = [AnyOf("choose_logo")])
+        None,
+        default='choose_logo',
+        validators=[AnyOf("choose_logo")])
 
 
 class CreateServiceStep2Form(StripWhitespaceForm):
@@ -659,21 +667,21 @@ class CreateServiceStep2Form(StripWhitespaceForm):
     organisation_type = HiddenField(None)
     default_branding = RadioField(
         None,
-        choices = [ # Choices by default, override to get more refined options.
+        choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l('English GC Logo')),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l('French GC Logo')),
         ],
-        default = 'false',
-        validators = [DataRequired(message=_l('This cannot be empty'))]
+        default='false',
+        validators=[DataRequired(message=_l('This cannot be empty'))]
     )
     current_step = HiddenField(
         None,
-        default = 'choose_logo',
-        validators = [AnyOf("choose_logo")])
+        default='choose_logo',
+        validators=[AnyOf("choose_logo")])
     next_step = HiddenField(
         None,
-        default = 'create_service',
-        validators = [AnyOf("create_service")])
+        default='create_service',
+        validators=[AnyOf("create_service")])
 
 
 class SecurityKeyForm(StripWhitespaceForm):
