@@ -72,11 +72,32 @@ def test_robots(client):
     response = client.get(url_for('main.robots'))
     assert response.headers['Content-Type'] == 'text/plain'
     assert response.status_code == 200
+    robot_rules = [
+        'User-agent: *',
+        'Disallow: /sign-in',
+        'Disallow: /contact',
+        'Disallow: /register'
+    ]
     assert response.get_data(as_text=True) == (
-        'User-agent: *\n'
-        'Disallow: /sign-in\n'
-        'Disallow: /contact\n'
-        'Disallow: /register\n'
+        '\n'.join(robot_rules)
+    )
+
+
+def test_security_txt(client):
+    assert url_for('main.security_txt') == '/.well-known/security.txt'
+    response = client.get(url_for('main.security_txt'))
+    assert response.headers['Content-Type'] == 'text/plain'
+    assert response.status_code == 200
+    security_info = [
+        'Contact: mailto:security@cds-snc.ca',
+        'Contact: mailto:securite@cds-snc.ca',
+        'Preferred-Languages: en, fr',
+        'Policy: https://notification.alpha.canada.ca/security',
+        'Hiring: https://digital.canada.ca/join-our-team/',
+        'Hiring: https://numerique.canada.ca/rejoindre-notre-equipe/'
+    ]
+    assert response.get_data(as_text=True) == (
+        '\n'.join(security_info)
     )
 
 
