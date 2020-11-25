@@ -77,11 +77,13 @@ def _prune_steps(form: ImmutableMultiDict) -> ImmutableMultiDict:
     return ImmutableMultiDict(pruned)
 
 
-def _renderTemplateStep1(heading: str, form: CreateServiceStep1Form) -> Any:
+def _renderTemplateStep1(heading: str, form: CreateServiceStep1Form,
+                         default_organisation_type: str = DEFAULT_ORGANISATION_TYPE) -> Any:
     return render_template(
         'views/add-service.html',
         form=form,
         heading=heading,
+        default_organisation_type=default_organisation_type,
         current_step="choose_service_name",
         next_step="choose_logo"
     )

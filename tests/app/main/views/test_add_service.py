@@ -36,9 +36,10 @@ def test_get_should_render_add_service_template(
     page = client_request.get('main.add_service')
     assert page.select_one('h1').text.strip() == 'Name your service in both official languages'
     assert page.select_one('input[name=name]')['value'] == ''
-    assert [
+    multiple_choices = [
         label.text.strip() for label in page.select('.multiple-choice label')
-    ] == []
+    ]
+    assert multiple_choices == []
     assert [
         radio['value'] for radio in page.select('.multiple-choice input')
     ] == []
