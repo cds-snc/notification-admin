@@ -30,6 +30,11 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "email-message-body",
     "email-message-table",
     "email-message-meta",
+    "fullscreen-fixed-table",
+    "fullscreen-right-shadow",
+    "fullscreen-scrollable-table",
+    "fullscreen-scrolled-table",
+    "fullscreen-shim",
     "mb-12",
     "selection-summary__text--folders",
     "radios-nested",
@@ -44,6 +49,7 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "table-field-status-error",
     "table-field-status-default",
     "table-field-status-yes",
+    "table-field-heading-first"
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });
