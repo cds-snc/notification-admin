@@ -1,4 +1,8 @@
 @layer components {
+  .textbox-highlight-wrapper {
+    @apply relative;
+  }
+
   .textbox-highlight-textbox {
     @apply resize-none z-20 bg-transparent;
   }
@@ -8,7 +12,7 @@
   .textbox-highlight-foreground,
   .textbox-highlight-mask {
     padding: 4px;
-    @apply text-smaller block box-border relative m-0 overflow-hidden leading-relaxed;
+    @apply text-smaller block box-border relative m-0 overflow-hidden leading-normal;
   }
 
   .textbox-highlight-background {

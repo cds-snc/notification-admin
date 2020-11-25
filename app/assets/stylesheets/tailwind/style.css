@@ -247,7 +247,7 @@ label {
   }
 
   .js-enabled .live-search {
-    @apply block;
+    @apply block visible;
   }
 
   .live-search .form-group {

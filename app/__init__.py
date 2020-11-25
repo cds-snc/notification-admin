@@ -254,7 +254,9 @@ def init_app(application):
             'header_colour': application.config['HEADER_COLOUR'],
             'asset_url': asset_fingerprinter.get_url,
             'asset_s3_url': asset_fingerprinter.get_s3_url,
-            'current_lang': get_current_locale(application)
+            'current_lang': get_current_locale(application),
+            'admin_base_url': application.config['ADMIN_BASE_URL'],
+            'admin_base_domain': application.config['ADMIN_BASE_DOMAIN'],
         }
 
 

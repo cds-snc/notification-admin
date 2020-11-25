@@ -43,6 +43,7 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "w-auto",
     "textbox-highlight-textbox",
     "textbox-highlight-background",
+    "textbox-highlight-wrapper",
     "text-right",
     "table-field-headings-first",
     "table-field-headings-visible",

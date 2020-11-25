@@ -72,29 +72,6 @@ def test_form_validation_fails_with_invalid_support_type_field(app_):
         assert form.errors['support_type'] == ['Not a valid choice']
 
 
-def test_submit_contact_form_with_honeypot(
-    client_request,
-    mocker,
-):
-    mock_send_contact_email = mocker.patch(
-        'app.user_api_client.send_contact_email'
-    )
-
-    client_request.post(
-        '.contact',
-        _expected_status=200,
-        _data={
-            'name': 'John',
-            'support_type': 'Ask a question',
-            'email_address': 'john@example.com',
-            'feedback': 'Awesome',
-            'phone': 'should not fill'
-        }
-    )
-
-    assert not mock_send_contact_email.called
-
-
 def test_submit_contact_form_validates(
     client_request,
     mocker,
