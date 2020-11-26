@@ -9,10 +9,6 @@ from app.main.forms import ContactNotifyTeam
 def contact():
     form = ContactNotifyTeam()
 
-    # catch with the honeypot field
-    if (form.phone.data):
-        return render_template('views/contact/thanks.html')
-
     if form.validate_on_submit():
         # send email here
         user_api_client.send_contact_email(form.name.data, form.email_address.data, form.feedback.data, form.support_type.data)
