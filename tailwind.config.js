@@ -8,6 +8,12 @@ module.exports = {
     backgroundImage: {
       tick: "url('/static/images/tick.png')",
       folder: "url('/static/images/folder-black.svg')",
+      folderBlack: "url('/static/images/folder-black-bold.svg')",
+      folderBlackPng: "url('/static/images/folder-black-bold.png')",
+      folderBlue: "url('/static/images/folder-blue-bold.svg')",
+      folderBluePng: "url('/static/images/folder-blue-bold.png')",
+      folderBlueHover: "url('/static/images/folder-blue-bold-hover.svg')",
+      folderBlueHoverPng: "url('/static/images/folder-blue-bold-hover.png')",
     },
     boxShadow: {
       outline: "0 0 0 3px rgba(255, 191, 71, 1)"
@@ -50,6 +56,7 @@ module.exports = {
         selected: "#75b9e0",
         govukblue: "#005ea5",
         lightblue25: "#d5e8f3",
+        lightblue: "#2b8cc4",
       },
       gray: {
         default: "#eee",

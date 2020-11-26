@@ -1,50 +1,118 @@
 @layer components {
-  .sms-message-wrapper {
-    max-width: 464px;
+  .message-name {
+    @apply m-0 leading-tight font-bold text-title;
+  }
+  .message-name a {
+    margin-bottom: -30px;
+    @apply pb-12;
+  }
+  .message-name a:hover {
+    @apply text-blue-lightblue;
+  }
+  .message-name a:hover .message-name-separator:before {
+    @apply border-blue-lightblue;
+  }
+
+  .message-name a:focus {
+    @apply outline-yellow;
+  }
+  .message-name a .message-name-separator {
+    margin-right: -2px;
+    margin-left: -2px;
+  }
+  .message-name a .message-name-separator:before {
+    @apply border-blue-govukblue;
+  }
+
+  .message-type {
+    @apply m-0 mb-8 pointer-events-none text-gray-grey1;
+  }
+
+  #template-list: {
+    @apply mt-12;
+  }
+  #template-list.top-gutter-5px {
+    @apply mt-2;
+  }
+
+  .template-list-item-with-checkbox {
+    @apply relative pl-24;
+  }
+  .template-list-item-with-checkbox .multiple-choice {
+    @apply absolute left-0;
+  }
+  .template-list-item-hidden-by-default {
+    @apply hidden;
+  }
+  .template-list-item-without-ancestors .message-name a,
+  .template-list-item-without-ancestors .message-name a:first-child {
+    @apply block;
+  }
+  .template-list-item-without-ancestors .message-name a.template-list-folder:first-child {
+    background-position: 0 2px;
+    text-indent: 40px;
+    @apply pl-0;
+  }
+
+  .template-list-folder {
+    background-size: auto 20px;
+    background-position: 0px 4px;
+    @apply inline pl-16 bg-no-repeat bg-folderBluePng bg-folderBlue; /* Overwrite for browsers that support SVG */
+  }
+  .template-list-folder:hover {
+    @apply bg-folderBlueHoverPng bg-folderBlueHover;
+  }
+  .template-list-template a {
+    @apply inline;
+  }
+  .template-list-empty {
+    @apply px-0 pt-gutterHalf pb-4 text-gray-grey1;
+  }
+  .template-list-selected-counter {
+    @apply text-gray-grey1 mx-0 my-gutterHalf;
+  }
+  @screen lg {
+    .template-list-selected-counter {
+      top: 29px;
+      @apply absolute right-0 m-0;
+    }
+  }
+  .content-fixed .template-list-selected-counter {
+    right: 15px;
+  }
+
+  .grid-row .folder-heading {
     word-wrap: break-word;
-    @apply relative w-full box-border p-gutterHalf rounded-lg whitespace-normal m-0 mb-gutter clear-both bg-gray-button border-gray-button border-solid border;
+    @apply mx-0 mt-gutterHalf mb-8;
+  }
+  .folder-heading a,
+  .folder-heading-folder,
+  .folder-heading-subfolder {
+    background-size: auto 20px;
+    background-position: 0px 4px;
+    min-height: 30px;
+    @apply inline bg-no-repeat align-top;
+  }
+  .folder-heading-folder {
+    @apply p-0 pl-16 bg-folderBlackPng bg-folderBlack;
+  }
+  .folder-heading-folder-truncated {
+    @apply w-0 p-0 pl-12 whitespace-no-wrap overflow-hidden;
+  }
+  .folder-heading-folder-root-truncated {
+    max-width: 1.4em;
+    @apply truncate;
   }
 
-  .sms-message-wrapper:after {
-    content: "";
-    bottom: -5px;
-    right: -20px;
-    border-width: 10px;
-    border-left-width: 13px;
-    border-right-width: 13px;
-    transform: rotate(20deg);
-    @apply block absolute border-solid border-transparent border-b-gray-button border-l-gray-button;
+  .folder-heading a {
+    @apply inline-block align-top;
   }
-
-  .sms-message-sender, .sms-message-recipient {
-    padding-top: 2px;
-    padding-bottom: 8px;
-    
-    @apply text-smaller leading-tight font-normal text-gray-grey1 m-0 pb-2;
+  .folder-heading a.folder-heading-folder {
+    text-overflow: ellipsis;
+    background-position: 0px 4px;
+    @apply inline overflow-hidden bg-folderBluePng bg-folderBlue;
   }
-
-  .email-message-table {
-    @apply text-smaller leading-tight font-normal align-top border-0 border-b border-solid border-b-gray-grey2;
-  }
-
-  .email-message-meta td {
-    width: 99%;
-    @apply pr-doubleGutter break-words;
-  }
-
-  /*
-    These classes style html which is shared with the API and
-    final email sends. We can't safely change that file without
-    affecting email formats.
-
-    We overwrite a few styles here for the purposes of preview.
-  */
-  .email-message-body table td {
-    font-family: inherit !important;
-    @apply border-0 p-0;
-  }
-
-  .email-message-body li:first-child {
-    margin-top: 0 !important;
+  .folder-heading a.folder-heading-folder:hover {
+    @apply bg-folderBlueHoverPng bg-folderBlueHover;
   }
 }
