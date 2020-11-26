@@ -1,6 +1,6 @@
 import pytest
 from bs4 import BeautifulSoup
-from flask import url_for
+from flask import current_app, url_for
 
 from app.main.forms import FieldWithLanguageOptions
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
@@ -89,8 +89,7 @@ def test_security_txt(client):
     assert response.headers['Content-Type'] == 'text/plain'
     assert response.status_code == 200
     security_info = [
-        'Contact: mailto:security@cds-snc.ca',
-        'Contact: mailto:securite@cds-snc.ca',
+        'Contact: mailto:' + current_app.config["SECURITY_EMAIL"],
         'Preferred-Languages: en, fr',
         'Policy: https://notification.alpha.canada.ca/security',
         'Hiring: https://digital.canada.ca/join-our-team/',

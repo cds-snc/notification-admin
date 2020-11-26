@@ -86,8 +86,7 @@ def robots():
 @main.route('/.well-known/security.txt')
 def security_txt():
     security_info = [
-        'Contact: mailto:security@cds-snc.ca',
-        'Contact: mailto:securite@cds-snc.ca',
+        'Contact: mailto:' + current_app.config["SECURITY_EMAIL"],
         'Preferred-Languages: en, fr',
         'Policy: https://notification.alpha.canada.ca/security',
         'Hiring: https://digital.canada.ca/join-our-team/',
