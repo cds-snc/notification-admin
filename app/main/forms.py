@@ -638,7 +638,7 @@ class CreateServiceStep1Form(StripWhitespaceForm):
             DataRequired(message=_l('This cannot be empty'))
         ])
     organisation_type = OrganisationTypeField(_l('Who runs this service?'))
-    default_branding_is_french = HiddenField(
+    default_branding = HiddenField(
         default='false',
         validators=[
             DataRequired(message=_l('This cannot be empty'))

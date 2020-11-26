@@ -243,7 +243,10 @@ def test_should_return_form_errors_when_service_name_is_empty(
 ):
     page = client_request.post(
         'main.add_service',
-        data={},
+        _data={
+            'current_step': 'choose_service_name',
+            'next_step': 'choose_logo'
+        },
         _expected_status=200,
     )
     assert 'This cannot be empty' in page.text
@@ -257,7 +260,10 @@ def test_should_return_form_errors_with_duplicate_service_name_regardless_of_cas
     page = client_request.post(
         'main.add_service',
         _data={
+            'current_step': 'choose_logo',
+            'next_step': 'create_service',
             'name': 'SERVICE ONE',
+            'default_branding': '__FIP-FR__',
             'organisation_type': 'central',
         },
         _expected_status=200,

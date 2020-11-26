@@ -52,6 +52,8 @@
         {{ textbox(form.name, hint=hint_txt) }}
         {% if not default_organisation_type %}
           {{ radios(form.organisation_type) }}
+        {% else %}
+          {{ form.organisation_type }}
         {% endif %}
         {% set button_txt = _('Continue') %}
         {{ page_footer(button_txt) }}
@@ -78,7 +80,9 @@
       {% call form_wrapper() %}
         {{ radios(form.default_branding) }}
 
-        {{ form.organization_type }}
+        {% if not default_organisation_type %}
+          {{ form.organisation_type }}
+        {% endif %}
         {{ form.name }}
         {{ form.current_step }}
         {{ form.next_step }}

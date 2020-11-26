@@ -15,7 +15,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         user_id,
         email_from,
         default_branding_is_french,
-    ):
+    ) -> str:
         """
         Create a service and return the json.
         """
