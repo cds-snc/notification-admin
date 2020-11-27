@@ -639,7 +639,7 @@ class CreateServiceStep1Form(StripWhitespaceForm):
         ])
     organisation_type = OrganisationTypeField(_l('Who runs this service?'))
     default_branding = HiddenField(
-        default='false',
+        default='__FIP-EN__',
         validators=[
             DataRequired(message=_l('This cannot be empty'))
         ])
@@ -671,8 +671,14 @@ class CreateServiceStep2Form(StripWhitespaceForm):
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l('English GC Logo')),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l('French GC Logo')),
         ],
-        default='false',
-        validators=[DataRequired(message=_l('This cannot be empty'))]
+        default='__FIP-EN__',
+        validators=[
+            DataRequired(message=_l('This cannot be empty')),
+            AnyOf(
+                FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
+                FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
+            )
+        ]
     )
     current_step = HiddenField(
         None,

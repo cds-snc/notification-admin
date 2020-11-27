@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import List, Text, Union
+from typing import List, Text
 
 from flask import (
     current_app,
@@ -28,9 +28,18 @@ from app.utils import (
 )
 
 # Constants
+
 DEFAULT_ORGANISATION_TYPE: str = "central"
-HEADER_STEP1: str = "Name your service in both official languages"
-HEADER_STEP2: str = "Choose a logo for your service"
+
+STEP1: str = "choose_service_name"
+STEP2: str = "choose_logo"
+STEP3: str = "create_service"
+
+STEP1_HEADER: str = "Name your service in both official languages"
+STEP2_HEADER: str = "Choose a logo for your service"
+
+NEXT_STEP: str = "next_step"
+CURR_STEP: str = "current_step"
 
 
 # Utility classes
@@ -57,7 +66,7 @@ class SuccessResult(ServiceResult):
 # Utility functions
 
 def _create_service(service_name: str, organisation_type: str, email_from: str,
-                    default_branding_is_french: bool, form: CreateServiceStep2Form) -> ServiceResult:
+                    default_branding_is_french: bool) -> ServiceResult:
     free_sms_fragment_limit = current_app.config['DEFAULT_FREE_SMS_FRAGMENT_LIMITS'].get(organisation_type)
 
     try:
@@ -96,8 +105,8 @@ def _getSelectBilingualChoices() -> dict:
 
 def _prune_steps(form: ImmutableMultiDict) -> ImmutableMultiDict:
     pruned = form.to_dict()
-    del pruned['current_step']
-    del pruned['next_step']
+    del pruned[CURR_STEP]
+    del pruned[NEXT_STEP]
     return ImmutableMultiDict(pruned)
 
 
@@ -106,10 +115,10 @@ def _renderTemplateStep1(form: CreateServiceStep1Form,
     return render_template(
         'views/add-service.html',
         form=form,
-        heading=_(HEADER_STEP1),
+        heading=_(STEP1_HEADER),
         default_organisation_type=default_organisation_type,
-        current_step="choose_service_name",
-        next_step="choose_logo"
+        current_step=STEP1,
+        next_step=STEP2
     )
 
 
@@ -118,10 +127,10 @@ def _renderTemplateStep2(form: CreateServiceStep2Form,
     return render_template(
         'views/add-service.html',
         form=form,
-        heading=_(HEADER_STEP2),
+        heading=_(STEP2_HEADER),
         default_organisation_type=default_organisation_type,
-        current_step="choose_logo",
-        next_step="create_service"
+        current_step=STEP2,
+        next_step=STEP3
     )
 
 
@@ -130,12 +139,12 @@ def _renderTemplateStep2(form: CreateServiceStep2Form,
 @user_is_gov_user
 def add_service():
     # Step 1 - Choose the service name
-    if "current_step" not in request.form:
+    if CURR_STEP not in request.form:
         formStep1 = CreateServiceStep1Form(organisation_type=DEFAULT_ORGANISATION_TYPE)
         return _renderTemplateStep1(formStep1)
 
     # Step 2 - Choose default bilingual logo
-    elif request.form["next_step"] == "choose_logo":
+    elif request.form.get(NEXT_STEP) == STEP2:
         formStep1 = CreateServiceStep1Form(request.form)
         if not formStep1.validate_on_submit():
             return _renderTemplateStep1(formStep1)
@@ -147,23 +156,21 @@ def add_service():
         return _renderTemplateStep2(formStep2)
 
     # Step 3 - Final step which creates the service
-    elif request.form["next_step"] == "create_service":
+    elif request.form.get(NEXT_STEP) == STEP3:
         formStep2 = CreateServiceStep2Form(request.form)
         if not formStep2.validate_on_submit():
-            return _renderTemplateStep2(_(HEADER_STEP2), formStep2)
+            return _renderTemplateStep2(formStep2)
 
-        # form = CreateServiceStep2Form(formdata=_prune_steps(request.form))
-        # form.validate()
         email_from = email_safe(formStep2.name.data)
         service_name = formStep2.name.data
-        default_branding_is_french = formStep2.default_branding.data == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
+        default_branding_is_french = \
+            formStep2.default_branding.data == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
 
         serviceResult: ServiceResult = _create_service(
             service_name,
             DEFAULT_ORGANISATION_TYPE,
             email_from,
             default_branding_is_french,
-            formStep2,
         )
 
         if (serviceResult.is_success()):
@@ -175,3 +182,7 @@ def add_service():
             return _renderTemplateStep1(formStep1)
         else:
             return _renderTemplateStep2(formStep2)
+    else:
+        # Ultimate fallback if steps recognition failed -- get back to step 1.
+        formStep1 = CreateServiceStep1Form(organisation_type=DEFAULT_ORGANISATION_TYPE)
+        return _renderTemplateStep1(formStep1)

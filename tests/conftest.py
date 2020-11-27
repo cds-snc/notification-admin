@@ -649,9 +649,12 @@ def mock_create_service(mocker):
         restricted,
         user_id,
         email_from,
+        default_branding_is_french,
     ):
         service = service_json(
-            101, service_name, [user_id], message_limit=message_limit, restricted=restricted, email_from=email_from)
+            101, service_name, [user_id],
+            message_limit=message_limit, restricted=restricted, email_from=email_from,
+            default_branding_is_french=default_branding_is_french)
         return service['id']
 
     return mocker.patch(
