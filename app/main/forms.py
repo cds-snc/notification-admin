@@ -34,7 +34,14 @@ from wtforms import (
     widgets,
 )
 from wtforms.fields.html5 import EmailField, SearchField, TelField
-from wtforms.validators import URL, DataRequired, Length, Optional, Regexp
+from wtforms.validators import (
+    URL,
+    AnyOf,
+    DataRequired,
+    Length,
+    Optional,
+    Regexp,
+)
 from wtforms.widgets import CheckboxInput, ListWidget
 
 from app import format_thousands
@@ -624,20 +631,63 @@ class OrganisationDomainsForm(StripWhitespaceForm):
     )
 
 
-class CreateServiceForm(StripWhitespaceForm):
+class CreateServiceStep1Form(StripWhitespaceForm):
     name = StringField(
         _l('What’s your service called?'),
         validators=[
             DataRequired(message=_l('This cannot be empty'))
         ])
     organisation_type = OrganisationTypeField(_l('Who runs this service?'))
+    default_branding = HiddenField(
+        default='__FIP-EN__',
+        validators=[
+            DataRequired(message=_l('This cannot be empty'))
+        ])
+    current_step = HiddenField(
+        None,
+        default='choose_service_name',
+        validators=[AnyOf("choose_service_name")])
+    next_step = HiddenField(
+        None,
+        default='choose_logo',
+        validators=[AnyOf("choose_logo")])
 
 
-class CreateNhsServiceForm(CreateServiceForm):
-    organisation_type = OrganisationTypeField(
-        _l('Who runs this service?'),
-        include_only={'nhs_central', 'nhs_local', 'nhs_gp'},
+class CreateServiceStep2Form(StripWhitespaceForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'choices' in kwargs:
+            self.default_branding.choices = kwargs['choices']
+
+    name = HiddenField(
+        None,
+        validators=[
+            DataRequired(message=_l('This cannot be empty'))
+        ])
+    organisation_type = HiddenField(None)
+    default_branding = RadioField(
+        '',
+        choices=[  # Choices by default, override to get more refined options.
+            (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l('English GC Logo')),
+            (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l('French GC Logo')),
+        ],
+        default='__FIP-EN__',
+        validators=[
+            DataRequired(message=_l('This cannot be empty')),
+            AnyOf([
+                FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
+                FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
+            ])
+        ]
     )
+    current_step = HiddenField(
+        None,
+        default='choose_logo',
+        validators=[AnyOf("choose_logo")])
+    next_step = HiddenField(
+        None,
+        default='create_service',
+        validators=[AnyOf("create_service")])
 
 
 class SecurityKeyForm(StripWhitespaceForm):

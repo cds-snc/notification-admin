@@ -14,7 +14,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         restricted,
         user_id,
         email_from,
-    ):
+        default_branding_is_french,
+    ) -> str:
         """
         Create a service and return the json.
         """
@@ -25,7 +26,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "message_limit": message_limit,
             "user_id": user_id,
             "restricted": restricted,
-            "email_from": email_from
+            "email_from": email_from,
+            "default_branding_is_french": default_branding_is_french,
         }
         data = _attach_current_user(data)
         return self.post("/service", data)['data']['id']

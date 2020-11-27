@@ -74,7 +74,11 @@ environment.sh
 .envrc
 venv-freeze/
 
+# IDEs
 .vscode
+
+# asdf
+.tool-versions
 
 # CloudFoundry
 .cf

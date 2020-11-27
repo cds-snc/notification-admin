@@ -73,8 +73,6 @@ if it did not, take a look here: https://github.com/pyenv/pyenv/issues/660
 6. Add the following to your shell rc file. ex: `.bashrc` or `.zshrc`
 
 ```
-export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/Devel
 source  ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
 ```
 
