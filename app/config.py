@@ -143,15 +143,15 @@ class Test(Development):
     ASSET_PATH = 'https://static.example.com/'
 
 
-class Live(Config):
+class Production(Config):
     HEADER_COLOUR = '#005EA5'  # $govuk-blue
     HTTP_PROTOCOL = 'https'
-    NOTIFY_ENVIRONMENT = 'live'
+    NOTIFY_ENVIRONMENT = 'production'
     CHECK_PROXY_HEADER = False
 
 
 configs = {
     'development': Development,
-    'production': Live,
+    'production': Production,
     'test': Test
 }
