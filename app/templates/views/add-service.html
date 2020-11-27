@@ -20,80 +20,11 @@
 
 <div class="grid-row">
   <div class="column-two-thirds">
-    
     {% if current_step == "choose_service_name" %}
-    
-      {% set header_txt = _('Name your service in both official languages') %}
-      {{ page_header(header_txt) }}
-
-      <p>{{ _('GC Notify displays your service name:') }}</p>
-      <p>
-        <ul class="list-bullet">
-            <li>{{ _('at the start of every text message') }}</li>
-            <li>{{ _('as the ‘from’ address on emails you send') }}</li>
-        </ul>
-      </p>
-
-      <p>{{ _('Your service name must include both English and French. It cannot be longer than 255 characters.') }}</p>
-
-      <p>{{ _('For example:') }}<br>
-
-      <ul class="list-bullet">
-        <li>{{ _('Canadian Digital Service (CDS) | Service numérique canadien (SNC)') }}</li>
-        <li>cds-snc.ca</li>
-      </ul>
-
-    </p>
-
-      <div class="form-wrap">
-      {% call form_wrapper() %}
-        {% set hint_txt = _('You can change this later') %}
-        
-        {{ textbox(form.name, hint=hint_txt) }}
-        {% if not default_organisation_type %}
-          {{ radios(form.organisation_type) }}
-        {% else %}
-          {{ form.organisation_type }}
-        {% endif %}
-        {% set button_txt = _('Continue') %}
-        {{ page_footer(button_txt) }}
-
-        {{ form.default_branding }}
-        {{ form.current_step }}
-        {{ form.next_step }}
-
-      {% endcall %}
-      </div>
-    
+      {% include "partials/add-service/step1-create-service.html" %}
     {% elif current_step == "choose_logo" %}
-
-      {% set header_txt = _('Choose a logo for your service') %}
-      {{ page_header(header_txt) }}
-
-      <p>{{ _('Choose a logo for your service') }}</p>
-
-      <p>{{ _('The default logo use in email messages is the English Government of Canada signature.') }}</p>
-
-      <p>{{ _('You can also upload a new custom logo later in Settings.') }}</p>
-
-      <div class="form-wrap">
-      {% call form_wrapper() %}
-        {{ radios(form.default_branding) }}
-
-        {% if not default_organisation_type %}
-          {{ form.organisation_type }}
-        {% endif %}
-        {{ form.name }}
-        {{ form.current_step }}
-        {{ form.next_step }}
-
-        {% set button_txt = _('Add service') %}
-        {{ page_footer(button_txt) }}
-      {% endcall %}
-      </div>
-
+      {% include "partials/add-service/step2-choose-logo.html" %}
     {% endif %}
-
   </div>
 </div>
 
