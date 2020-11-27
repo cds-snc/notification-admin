@@ -1,0 +1,237 @@
+@layer components {
+  /* GOV UK Base styles */
+  table, .table {
+    border-spacing: 0;
+    @apply w-full mb-gutter border-collapse;
+  }
+  table th, table td {
+    padding: .632em 1.05em .4743em 0;
+    @apply leading-tight text-smaller text-left border-solid border-0 border-b-1 border-gray-grey2;
+  }
+  thead th {
+    @apply font-bold;
+  }
+  td:last-child, th:last-child, .table-field-heading:last-child {
+    padding-right: 0 !important;
+  }
+  table .numeric {
+    /* Right align table header cells and table cells with a numeric class */
+    @apply text-right;
+  }
+  td.numeric {
+    @apply font-body;
+  }
+  table caption {
+    @apply text-left;
+  }
+
+  .table-font-xsmall th, .table-font-xsmall td.table-field-index {
+    @apply font-bold;
+  }
+  .table-font-xsmall td {
+    @apply font-normal;
+  }
+  .table-font-xsmall th, .table-font-xsmall td {
+    padding: 0.75em 1.25em .5625em 0;
+    @apply text-small leading-tight;
+  }
+
+  /* NOTIFY TABLE STYLES */
+  /*! purgecss start ignore */
+  .table-heading {
+
+    @apply my-gutterHalf mx-0 text-left;
+  }
+
+  .table-row-group {
+    @apply border-0 border-t-1 border-b-1 border-solid border-gray-grey2;
+  }
+
+
+  .dashboard-table .heading-medium {
+    @apply mb-2;
+  }
+
+  .dashboard-table .table {
+    @apply table-fixed;
+  }
+
+  .dashboard-table .table-field-headings th {
+    font-size: 1px;
+  }
+  .dashboard-table .table-field-headings-visible th {
+    @apply pb-2;
+  }
+  
+  .dashboard-table .table-row th {
+    width: 52.5%;
+    @apply font-normal table-cell;
+  }
+  .dashboard-table .table-row th .hint, .dashboard-table .table-row th p, .settings-table td.table-field-left-aligned div {
+    @apply truncate;
+  }
+
+  .settings-table table {
+    @apply mb-2 table-fixed;
+  }
+  .settings-table th:first-child {
+    width: 35%;
+  }
+  .settings-table th:last-child {
+    width: 17.5%;
+  }
+  .settings-table td.table-field-left-aligned:first-child div {
+    white-space: normal;
+  }
+  .settings-table td.table-field-left-aligned ul li {
+    @apply mb-2;
+  }
+  .settings-table .table-heading {
+    @apply mb-8;
+  }
+
+
+  .table-field {
+    @apply align-top;
+  }
+  .table-field-index {
+    width: 15px;
+    @apply text-smaller leading-tight font-bold;
+  }
+  .table-field-index a:before {
+    content: "";
+    @apply absolute inset-0;
+  }
+  .table-field-index a:focus:before {
+    z-index: -1;
+    @apply bg-yellow;
+  }
+  .table-field p {
+    @apply m-0 mb-2;
+  }
+  .table-field-error {
+    border-width: 5px;
+    padding-left: 7px;
+    @apply block border-solid border-red
+  }
+
+  .table-field-noborder {
+    @apply border-0;
+  }
+
+  .table-field-headings th {
+    padding: 1px; /* needs some height for the grey border to show */
+  }
+  .table-field-headings-visible {
+    @apply h-auto;
+  }
+  .table-field-headings-visible th {
+    padding: 0.75em 1.25em 0.5625em 0;
+  }
+  .table-field-headings th,
+  .table-field-headings-visible th {
+    @apply text-smaller leading-tight font-bold;
+  }
+  .dashboard-table .table-field-heading-first,
+  .dashboard-table .table-field-headings-first,
+  .dashboard-table .table-field-headings-visible-first {
+    width: 52.5%;
+  }
+
+  .table + .table-show-more-link {
+    margin-top: -30px;
+  }
+
+  .table-field-error-label {
+    @apply block font-bold text-red;
+  }
+  .table-field-invisible-error {
+    border-left-width: 5px;
+    padding-left: 7px;
+    @apply block border-0 border-solid border-transparent;
+  }
+  .table-field-status-default {
+    @apply text-gray-grey1;
+  }
+  .table-field-status-error {
+    @apply font-bold text-red;
+  }
+  .table-field-status-error a:link, .table-field-status-error a:visited {
+    @apply text-red
+  }
+  .table-field-status-error .status-hint {
+    @apply block font-normal text-red mt-2;
+  }
+  .table-field-status-yes, .table-field-status-no {
+    text-indent: -999em;
+    background-position: 50% 50%;
+    @apply block bg-no-repeat bg-19;
+  }
+  .table-field-status-yes {
+    @apply bg-tick;
+  }
+
+  .table-field-right-aligned {
+    @apply text-right;
+  }
+  .table-field-heading-right-aligned {
+    @apply block text-right;
+  }
+  .table-field-right-aligned a {
+    @apply block relative;
+  }
+  .table-field-right-aligned a:before {
+    content: "";
+    top: -15px;
+    bottom: -11px;
+    left: -15px;
+    @apply block absolute right-0 bg-transparent;
+  }
+  .table-field-right-aligned a:hover {
+    @apply text-blue-lightblue;
+  }
+  .table-field-right-aligned a:active,
+  .table-field-right-aligned a:focus {
+    @apply text-black;
+  }
+  .table-field-right-aligned a:active:before,
+  .table-field-right-aligned a:focus:before {
+    right: -3px;
+    border-width: 15px 3px 15px 15px;
+    @apply border-solid border-yellow;
+  }
+
+
+  .table-empty-message, .table-no-data {
+    padding-top: 0.75em;
+    padding-bottom: 0.5625em;
+    @apply text-small leading-tight text-gray-grey1 border-solid border-gray-grey2 border-0 border-t-1 border-b-1 px-0;
+  }
+
+  .table-no-data {
+    @apply mt-4 mb-16 ;
+  }
+
+
+  .table-show-more-link {
+    @apply text-small leading-tight font-normal text-gray-grey1 py-4 px-0 text-center border-0 border-b-1 border-solid border-gray-grey2 mb-16;
+  }
+  a.table-show-more-link {
+    @apply text-blue-govukblue;
+  }
+
+  .wide-left-hand-column {
+    max-width: 560px;
+    @apply block truncate;
+  }
+
+
+  .truncate-text {
+    @apply truncate;
+  }
+
+  .do-not-truncate-text {
+    white-space: normal !important;
+  }
+  /*! purgecss end ignore */
+}
