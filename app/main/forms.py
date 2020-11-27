@@ -1432,7 +1432,7 @@ class TemplateFolderForm(StripWhitespaceForm):
                 (item.id, item.name) for item in all_service_users
             ]
 
-    users_with_permission = MultiCheckboxField('Team members who can see this folder')
+    users_with_permission = MultiCheckboxField(_l('Team members who can see this folder'))
     name = StringField(_l('Folder name'), validators=[DataRequired(message=_l('This cannot be empty'))])
 
 
