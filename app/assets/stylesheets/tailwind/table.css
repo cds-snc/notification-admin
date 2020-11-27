@@ -1,6 +1,6 @@
 @layer components {
   /* GOV UK Base styles */
-  table {
+  table, .table {
     border-spacing: 0;
     @apply w-full mb-gutter border-collapse;
   }
