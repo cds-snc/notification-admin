@@ -89,7 +89,7 @@ def test_security_txt(client):
     assert response.headers['Content-Type'] == 'text/plain'
     assert response.status_code == 200
     security_info = [
-        'Contact: mailto:' + current_app.config["SECURITY_EMAIL"],
+        f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
         'Preferred-Languages: en, fr',
         'Policy: https://notification.alpha.canada.ca/security',
         'Hiring: https://digital.canada.ca/join-our-team/',
