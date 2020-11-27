@@ -1,0 +1,92 @@
+@layer components {
+  /*! purgecss start ignore */
+  .fullscreen-content {
+    @apply p-0 m-0 mb-12 bg-white z-10 overflow-hidden box-border border-0 border-solid border-gray-grey2 border-b-1;
+  }
+  .fullscreen-content .table {
+    @apply mb-0;
+  }
+  .fullscreen-content tr:last-child td {
+    @apply border-b-0;
+  }
+  .fullscreen-content th,
+  .fullscreen-content .table-field-error-label,
+  .fullscreen-content .table-field-left-aligned {
+    @apply whitespace-no-wrap;
+  }
+
+  .fullscreen-right-shadow {
+    width: 4px;
+    z-index: 200;
+    @apply absolute top-0 right-0 h-full;
+  }
+  .fullscreen-right-shadow.visible.with-transition {
+    transition: box-shadow 0.6s ease-out;
+  }
+  .fullscreen-right-shadow.visible {
+    @apply shadow-inset1 shadow-inset3;
+  }
+
+  .fullscreen-scrollable-table {
+    @apply overflow-y-hidden overflow-x-auto;
+  }
+  .fullscreen-scrollable-table .table-field-heading-first,
+  .fullscreen-scrollable-table .table-field-index {
+    @apply hidden;
+  }
+  .fullscreen-scrollable-table .table-field-left-aligned {
+    z-index: 150;
+    @apply relative bg-white;
+  }
+  .fullscreen-scrollable-table::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+  .fullscreen-scrollable-table::-webkit-scrollbar:horizontal {
+    height: 11px;
+    @apply bg-white;
+  }
+  .fullscreen-scrollable-table::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, .5);
+    @apply border-solid border-white border-2;
+  }
+  .fullscreen-scrollable-table::-webkit-scrollbar-track {
+    border-radius: 8px;
+    @apply bg-white;
+  }
+
+  .fullscreen-fixed-table {
+    @apply absolute top-0 overflow-hidden;
+  }
+  .fullscreen-fixed-table .table-field-heading {
+    @apply invisible;
+  }
+  .fullscreen-fixed-table .table-field-left-aligned {
+    z-index: 100;
+    @apply w-0 relative invisible;
+  }
+  .fullscreen-fixed-table .table-field-heading-first,
+  .fullscreen-fixed-table .table-field-index {
+    transition: none;
+    z-index: 200;
+    @apply relative bg-white;
+  }
+
+  .fullscreen-scrolled-table {
+    @apply pb-8;
+  }
+  .fullscreen-scrolled-table .table-field-heading-first,
+  .fullscreen-scrolled-table .table-field-index {
+    transition: box-shadow 0.3s ease-in-out;
+    @apply shadow-outset1 shadow-outset3;
+  }
+
+  .fullscreen-shim {
+    z-index: 9;
+    @apply w-full relative mb-12 pointer-events-none;
+  }
+  .fullscreen-shim + .table-show-more-link {
+    margin-top: -28px;
+  }
+  /*! purgecss end ignore */
+}

@@ -10,7 +10,11 @@ module.exports = {
       folder: "url('/static/images/folder-black.svg')",
     },
     boxShadow: {
-      outline: "0 0 0 3px rgba(255, 191, 71, 1)"
+      outline: "0 0 0 3px rgba(255, 191, 71, 1)",
+      inset1: "inset -1px 0 0 0 rgb(191, 193, 195)", // theme gray.grey2
+      inset3: "inset -3px 0 0 0 rgba(191, 193, 195, 0.2)",
+      outset1: "1px 0 0 0 rgb(191, 193, 195)",
+      outset3: "3px 0 0 0 rgba(191, 193, 195, 0.2)",
     },
     maxWidth: {
       "4xl": "53rem"
@@ -50,6 +54,7 @@ module.exports = {
         selected: "#75b9e0",
         govukblue: "#005ea5",
         lightblue25: "#d5e8f3",
+        lightblue: "#2b8cc4",
       },
       gray: {
         default: "#eee",

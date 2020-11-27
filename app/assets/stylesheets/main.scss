@@ -51,7 +51,6 @@ $path: false !default;
 @import 'elements/layout';
 @import 'elements/lists';
 @import 'elements/panels';
-@import 'elements/tables';
 
 // ====================================================
 
@@ -59,7 +58,6 @@ $path: false !default;
 // Specific to this application
 @import 'grids';
 @import 'components/placeholder';
-@import 'components/table';
 @import 'components/navigation';
 @import 'components/file-upload';
 @import 'components/browse-list';
@@ -70,7 +68,6 @@ $path: false !default;
 @import 'components/tick-cross';
 @import 'components/letter';
 @import 'components/stick-at-top-when-scrolling';
-@import 'components/fullscreen-table';
 @import 'components/task-list';
 @import 'components/vendor/govuk-back-link';
 @import 'components/loading-indicator';
