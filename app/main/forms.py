@@ -666,7 +666,7 @@ class CreateServiceStep2Form(StripWhitespaceForm):
         ])
     organisation_type = HiddenField(None)
     default_branding = RadioField(
-        None,
+        '',
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l('English GC Logo')),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l('French GC Logo')),
