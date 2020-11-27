@@ -145,19 +145,20 @@ def add_service():
 
     # Step 2 - Choose default bilingual logo
     elif request.form.get(NEXT_STEP) == STEP2:
-        formStep1 = CreateServiceStep1Form(request.form)
+        formStep1 = CreateServiceStep1Form(request.form, organisation_type=DEFAULT_ORGANISATION_TYPE)
         if not formStep1.validate_on_submit():
             return _renderTemplateStep1(formStep1)
 
         formStep2 = CreateServiceStep2Form(
             choices=_getSelectBilingualChoices(),
-            formdata=_prune_steps(request.form)
+            formdata=_prune_steps(request.form),
+            organisation_type=DEFAULT_ORGANISATION_TYPE
         )
         return _renderTemplateStep2(formStep2)
 
     # Step 3 - Final step which creates the service
     elif request.form.get(NEXT_STEP) == STEP3:
-        formStep2 = CreateServiceStep2Form(request.form)
+        formStep2 = CreateServiceStep2Form(_prune_steps(request.form), organisation_type=DEFAULT_ORGANISATION_TYPE)
         if not formStep2.validate_on_submit():
             return _renderTemplateStep2(formStep2)
 
@@ -176,7 +177,7 @@ def add_service():
         if (serviceResult.is_success()):
             return redirect(url_for('main.service_dashboard', service_id=serviceResult.service_id))
         elif isinstance(serviceResult, DuplicateNameResult):
-            formStep1 = CreateServiceStep1Form(request.form)
+            formStep1 = CreateServiceStep1Form(_prune_steps(request.form), organisation_type=DEFAULT_ORGANISATION_TYPE)
             formStep1.validate()  # Necessary to make the `errors` field mutable!
             formStep1.name.errors.append(_("This service name is already in use"))
             return _renderTemplateStep1(formStep1)

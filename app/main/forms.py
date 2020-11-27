@@ -674,10 +674,10 @@ class CreateServiceStep2Form(StripWhitespaceForm):
         default='__FIP-EN__',
         validators=[
             DataRequired(message=_l('This cannot be empty')),
-            AnyOf(
+            AnyOf([
                 FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
                 FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
-            )
+            ])
         ]
     )
     current_step = HiddenField(
