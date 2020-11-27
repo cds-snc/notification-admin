@@ -88,10 +88,11 @@ def test_security_txt(client):
     response = client.get(url_for('main.security_txt'))
     assert response.headers['Content-Type'] == 'text/plain'
     assert response.status_code == 200
+    security_policy = url_for('main.security', _external=True)
     security_info = [
         f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
         'Preferred-Languages: en, fr',
-        'Policy: https://notification.alpha.canada.ca/security',
+        f'Policy: {security_policy}',
         'Hiring: https://digital.canada.ca/join-our-team/',
         'Hiring: https://numerique.canada.ca/rejoindre-notre-equipe/'
     ]

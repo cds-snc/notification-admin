@@ -85,10 +85,11 @@ def robots():
 
 @main.route('/.well-known/security.txt')
 def security_txt():
+    security_policy = url_for('main.security', _external=True)
     security_info = [
         f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
         'Preferred-Languages: en, fr',
-        'Policy: https://notification.alpha.canada.ca/security',
+        f'Policy: {security_policy}',
         'Hiring: https://digital.canada.ca/join-our-team/',
         'Hiring: https://numerique.canada.ca/rejoindre-notre-equipe/'
     ]
