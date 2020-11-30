@@ -20,6 +20,7 @@ class Config(object):
     DANGEROUS_SALT = os.environ.get('DANGEROUS_SALT')
     ZENDESK_API_KEY = os.environ.get('ZENDESK_API_KEY')
     CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'assistance+notification@cds-snc.ca')
+    SECURITY_EMAIL = os.environ.get('SECURITY_EMAIL', 'security-securite@cds-snc.ca')
     SENDING_DOMAIN = os.environ.get('SENDING_DOMAIN', 'notification.alpha.canada.ca')
 
     if os.environ.get("HEROKU_APP_NAME", "") != "":
