@@ -96,6 +96,8 @@ def _geolocate_lookup(ip):
 
 
 def _geolocate_ip(ip):
+    if current_app.config.get('IP_GEOLOCATE_SERVICE') is None:
+        return
     resp = _geolocate_lookup(ip)
 
     if isinstance(resp, str):
