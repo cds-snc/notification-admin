@@ -20,6 +20,7 @@ class Config(object):
     DANGEROUS_SALT = os.environ.get('DANGEROUS_SALT')
     ZENDESK_API_KEY = os.environ.get('ZENDESK_API_KEY')
     CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'assistance+notification@cds-snc.ca')
+    SECURITY_EMAIL = os.environ.get('SECURITY_EMAIL', 'security-securite@cds-snc.ca')
     SENDING_DOMAIN = os.environ.get('SENDING_DOMAIN', 'notification.alpha.canada.ca')
 
     if os.environ.get("HEROKU_APP_NAME", "") != "":
@@ -98,12 +99,9 @@ class Config(object):
 
     HIPB_ENABLED = True
 
-    IP_GEOLOCATE_SERVICE = os.environ.get('IP_GEOLOCATE_SERVICE', 'https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/')
+    IP_GEOLOCATE_SERVICE = os.environ.get('IP_GEOLOCATE_SERVICE', None)
 
-    BULK_SEND_AWS_ACCESS_KEY = os.getenv('BULK_SEND_AWS_ACCESS_KEY')
-    BULK_SEND_AWS_SECRET_KEY = os.getenv('BULK_SEND_AWS_SECRET_KEY')
     BULK_SEND_AWS_BUCKET = os.getenv('BULK_SEND_AWS_BUCKET')
-    BULK_SEND_AWS_REGION = os.getenv('BULK_SEND_AWS_REGION')
     HC_EN_SERVICE_ID = os.getenv('HC_EN_SERVICE_ID')
     HC_FR_SERVICE_ID = os.getenv('HC_FR_SERVICE_ID')
     BULK_SEND_TEST_SERVICE_ID = os.getenv('BULK_SEND_TEST_SERVICE_ID')

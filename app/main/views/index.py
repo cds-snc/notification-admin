@@ -70,11 +70,29 @@ def index():
 
 @main.route('/robots.txt')
 def robots():
+    robot_rules = [
+        'User-agent: *',
+        'Disallow: /sign-in',
+        'Disallow: /contact',
+        'Disallow: /register'
+    ]
     return (
-        'User-agent: *\n'
-        'Disallow: /sign-in\n'
-        'Disallow: /contact\n'
-        'Disallow: /register\n'
+        '\n'.join(robot_rules)
+    ), 200, {'Content-Type': 'text/plain'}
+
+
+@main.route('/.well-known/security.txt')
+def security_txt():
+    security_policy = url_for('main.security', _external=True)
+    security_info = [
+        f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
+        'Preferred-Languages: en, fr',
+        f'Policy: {security_policy}',
+        'Hiring: https://digital.canada.ca/join-our-team/',
+        'Hiring: https://numerique.canada.ca/rejoindre-notre-equipe/'
+    ]
+    return (
+        '\n'.join(security_info)
     ), 200, {'Content-Type': 'text/plain'}
 
 
@@ -310,7 +328,8 @@ def features_templates():
 @main.route('/security', endpoint='security')
 def security():
     return render_template(
-        'views/security.html'
+        'views/security.html',
+        security_email=current_app.config["SECURITY_EMAIL"]
     )
 
 

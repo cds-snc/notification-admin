@@ -1,4 +1,5 @@
 @layer components {
+  /*! purgecss start ignore */
   .textbox-highlight-wrapper {
     @apply relative;
   }
@@ -12,7 +13,8 @@
   .textbox-highlight-foreground,
   .textbox-highlight-mask {
     padding: 4px;
-    @apply text-smaller block box-border relative m-0 overflow-hidden leading-normal;
+    line-height: 1.31579; /* to match code that hasn't been ported yet */
+    @apply text-smaller block box-border relative m-0 overflow-hidden;
   }
 
   .textbox-highlight-background {
@@ -37,4 +39,5 @@
       @apply ml-2 inline-block align-top;
     }
   }
+  /*! purgecss end ignore */
 }
