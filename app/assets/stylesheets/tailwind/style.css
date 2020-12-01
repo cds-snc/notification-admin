@@ -19,6 +19,7 @@
 @import "./views/users.css";
 @import "./views/api.css";
 @import "./views/template.css";
+@import "./views/notification.css";
 
 @-ms-viewport {
   width: device-width;
