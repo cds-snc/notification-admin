@@ -18,6 +18,7 @@
 @import "./views/dashboard.css";
 @import "./views/users.css";
 @import "./views/api.css";
+@import "./views/template.css";
 
 @-ms-viewport {
   width: device-width;
