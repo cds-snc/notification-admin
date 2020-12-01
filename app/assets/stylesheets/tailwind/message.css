@@ -100,7 +100,7 @@
     @apply w-0 p-0 pl-12 whitespace-no-wrap overflow-hidden;
   }
   .folder-heading-folder-root-truncated {
-    max-width: 1.4em;
+    max-width: 5em;
     @apply truncate;
   }
 
