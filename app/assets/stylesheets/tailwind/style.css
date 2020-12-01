@@ -21,6 +21,8 @@
 @import "./views/template.css";
 @import "./views/notification.css";
 
+/*! purgecss start ignore */
+
 @-ms-viewport {
   width: device-width;
 }
@@ -262,4 +264,10 @@ label {
   .live-search .form-group {
     margin-bottom: 20px;
   }
+
+  .send-one-off-form .form-group {
+    @apply mb-8;
+  }
 }
+
+/*! purgecss end ignore */

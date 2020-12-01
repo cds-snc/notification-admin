@@ -70,7 +70,5 @@ $path: false !default;
 @import 'components/vendor/govuk-back-link';
 @import 'components/loading-indicator';
 
-@import 'views/send';
-
 // TODO: break this up
 @import 'app';
