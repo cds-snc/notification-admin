@@ -8,6 +8,12 @@ module.exports = {
     backgroundImage: {
       tick: "url('/static/images/tick.png')",
       folder: "url('/static/images/folder-black.svg')",
+      folderBlack: "url('/static/images/folder-black-bold.svg')",
+      folderBlackPng: "url('/static/images/folder-black-bold.png')",
+      folderBlue: "url('/static/images/folder-blue-bold.svg')",
+      folderBluePng: "url('/static/images/folder-blue-bold.png')",
+      folderBlueHover: "url('/static/images/folder-blue-bold-hover.svg')",
+      folderBlueHoverPng: "url('/static/images/folder-blue-bold-hover.png')",
     },
     boxShadow: {
       outline: "0 0 0 3px rgba(255, 191, 71, 1)",
