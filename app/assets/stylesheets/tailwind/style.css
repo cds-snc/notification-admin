@@ -14,7 +14,8 @@
 @import "./textbox.css";
 
 /* views */
-@import "./dashboard.css";
+@import "./views/dashboard.css";
+@import "./views/users.css";
 
 @-ms-viewport {
   width: device-width;
