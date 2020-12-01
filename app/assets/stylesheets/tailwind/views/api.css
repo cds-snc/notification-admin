@@ -1,7 +1,7 @@
 @layer components {
   /*! purgecss start ignore */
   .api-notifications {
-    @apply font-mono border-0 border-b-1 border-solid border-gray-grey2;
+    @apply font-monospace border-0 border-b-1 border-solid border-gray-grey2;
   }
 
   .api-notifications-item {
@@ -20,7 +20,7 @@
     @apply text-right;
   }
   .api-notifications-item-key {
-    padding-left: 46px;
+    padding-left: 46px!important;
     @apply inline-block;
   }
   .api-notifications-item-data {

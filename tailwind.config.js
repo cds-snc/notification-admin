@@ -99,6 +99,7 @@ module.exports = {
       fontFamily: {
         sans: ["lato"],
         body: ["Noto Sans", "Arial", "sans-serif"],
+        monospace: ["monospace"]
       },
       inset: {
         '2': '2px',
