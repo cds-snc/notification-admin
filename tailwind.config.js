@@ -64,7 +64,7 @@ module.exports = {
       },
       gray: {
         default: "#eee",
-        button: "#dee0e2",
+        button: "#dee0e2", /* grey3 */
         selected: "#e1e4e7",
         hover: "#d0d3d6",
         border: "#b5babe",

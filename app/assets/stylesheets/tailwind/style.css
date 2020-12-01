@@ -13,6 +13,9 @@
 @import "./message.css";
 @import "./textbox.css";
 
+/* views */
+@import "./dashboard.css";
+
 @-ms-viewport {
   width: device-width;
 }

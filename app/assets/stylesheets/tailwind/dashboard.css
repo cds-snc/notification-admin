@@ -1,0 +1,55 @@
+@layer components {
+  /*! purgecss start ignore */
+  .dashboard table th {
+    @apply text-smaller leading-tight font-normal border-b-0;
+  }
+  .dashboard table td {
+    @apply text-smaller leading-tight font-normal border-0;
+  }
+  .dashboard > .heading-medium:first-of-type {
+    @apply mt-gutterHalf;
+  }
+
+  .keyline-block {
+    @apply pt-gutterHalf border-solid border-1 border-gray-grey2;
+  }
+
+  .spark-bar {
+    @apply text-small leading-tight font-normal w-full block box-border h-6 text-black text-left;
+  }
+  .spark-bar span {
+    @apply box-border inline-block overflow-visible text-black p-2 mx-0 bg-gray-button;
+    transition: width 0.6s ease-in-out;
+    padding-bottom: 2px;
+    margin-top: 3px;
+    margin-bottom: 5px;
+    text-indent: -2px;
+  }
+
+  .file-list-filename {
+    @apply text-smaller leading-tight font-bold block truncate pt-4 pb-12;
+    margin-bottom: -30px;
+    margin-top: -10px;
+  }
+  .file-list-hint {
+    max-width: 580px;
+    @apply text-small leading-tight font-normal block truncate pointer-events-none text-gray-grey1;
+  }
+
+  .failure-highlight {
+    @apply text-smaller leading-tight font-bold text-red;
+  }
+
+  .template-usage-table {
+    @apply mt-4 border-0 border-solid border-gray-grey2 border-t-1 border-b-1 mb-16;
+  }
+  .template-usage-table .table {
+    @apply mb-2;
+  }
+
+  .align-with-message-body {
+    margin-top: 36px; /* gutter*5/6 */
+    @apply block;
+  }
+  /*! purgecss end ignore */
+}
