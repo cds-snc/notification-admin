@@ -1,6 +1,7 @@
 /* components */
 @import "./tailwind.css";
 @import "./typography.css";
+@import "./placeholder.css";
 @import "./layout.css";
 @import "./page-footer.css";
 @import "./table.css";
