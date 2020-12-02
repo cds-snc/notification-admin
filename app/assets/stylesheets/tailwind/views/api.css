@@ -1,0 +1,35 @@
+@layer components {
+  /*! purgecss start ignore */
+  .api-notifications {
+    @apply font-monospace border-0 border-b-1 border-solid border-gray-grey2;
+  }
+
+  .api-notifications-item {
+    @apply border-t-1 border-solid border-gray-grey2 p-0 pt-4;
+  }
+  .api-notifications-item-title {
+    @apply block no-underline text-blue-govukblue;
+  }
+  .api-notifications-item-recipient {
+    @apply inline;
+  }
+  .api-notifications-item-meta {
+    @apply block text-gray-grey1;
+  }
+  .api-notifications-item-time {
+    @apply text-right;
+  }
+  .api-notifications-item-key {
+    padding-left: 46px!important;
+    @apply inline-block;
+  }
+  .api-notifications-item-data {
+    padding-left: 31px;
+    @apply text-gray-grey1;
+  }
+  .api-notifications-item-data-item {
+    @apply pb-6 text-black;
+  }
+
+  /*! purgecss end ignore */
+}

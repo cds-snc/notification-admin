@@ -70,13 +70,5 @@ $path: false !default;
 @import 'components/vendor/govuk-back-link';
 @import 'components/loading-indicator';
 
-@import 'views/dashboard';
-@import 'views/users';
-@import 'views/api';
-@import 'views/product-page';
-@import 'views/template';
-@import 'views/notification';
-@import 'views/send';
-
 // TODO: break this up
 @import 'app';

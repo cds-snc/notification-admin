@@ -1,0 +1,20 @@
+@layer components {
+  /*! purgecss start ignore */
+  .template-container {
+    @apply relative;
+  }
+
+  .edit-template-link {
+    z-index: 10000;
+    @apply text-smaller leading-tight font-normal absolute text-white py-4 px-gutterHalf bg-blue-govukblue;
+  }
+  .edit-template-link:link,
+  .edit-template-link:visited {
+    @apply text-white;
+  }
+  .edit-template-link:hover {
+    @apply text-blue-lightblue25;
+  }
+
+  /*! purgecss end ignore */
+}

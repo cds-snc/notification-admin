@@ -1,3 +1,4 @@
+/* components */
 @import "./tailwind.css";
 @import "./typography.css";
 @import "./layout.css";
@@ -12,6 +13,15 @@
 @import "./email_sms_message.css";
 @import "./message.css";
 @import "./textbox.css";
+
+/* views */
+@import "./views/dashboard.css";
+@import "./views/users.css";
+@import "./views/api.css";
+@import "./views/template.css";
+@import "./views/notification.css";
+
+/*! purgecss start ignore */
 
 @-ms-viewport {
   width: device-width;
@@ -254,4 +264,10 @@ label {
   .live-search .form-group {
     margin-bottom: 20px;
   }
+
+  .send-one-off-form .form-group {
+    @apply mb-8;
+  }
 }
+
+/*! purgecss end ignore */
