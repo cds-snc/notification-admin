@@ -7,29 +7,7 @@
 
   &-service {
 
-    border-bottom: 1px solid $border-colour;
-    margin: 0 0 10px;
-    position: relative;
-    font-size: 0;
-
-    &-name {
-      @include bold-19;
-      padding: $padding-top 0 $padding-bottom 0;
-      display: inline-block;
-      max-width: 50%;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
     &-switch {
-
-      @include core-19;
-      text-align: right;
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: $padding-top 0 $padding-bottom $gutter-half;
 
       &:hover {
         color: $link-hover-colour;

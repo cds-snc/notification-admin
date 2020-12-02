@@ -1,0 +1,27 @@
+@layer components {
+  /*! purgecss start ignore */
+  .navigation {
+    @apply p-0 pr-gutter;
+  }
+  
+  .navigation-service: {
+    font-size: 0;
+    @apply border-0 border-b-1 border-solid border-gray-grey2 relative m-0 mb-4;
+  }
+
+  .navigation-service-name {
+    padding-top: 14px;
+    padding-bottom: 11px;
+    max-width: 50%;
+    @apply text-smaller leading-tight font-bold px-0 inline-block truncate
+  }
+
+  .navigation-service-switch {
+    padding-top: 14px;
+    padding-bottom: 11px;
+    @apply text-smaller leading-tight font-normal text-right absolute top-0 right-0 pr-0 pl-gutterHalf
+  }
+  .navigation-
+
+  /*! purgecss end ignore */
+}
