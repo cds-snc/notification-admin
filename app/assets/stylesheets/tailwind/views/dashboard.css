@@ -11,7 +11,7 @@
   }
 
   .keyline-block {
-    @apply pt-gutterHalf border-solid border-1 border-gray-grey2;
+    @apply pt-gutterHalf border-solid border-0 border-t-1 border-gray-grey2;
   }
 
   .spark-bar {
