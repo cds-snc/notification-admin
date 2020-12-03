@@ -1,3 +1,4 @@
+import datetime
 import hashlib
 import os
 
@@ -118,6 +119,13 @@ class UserApiClient(NotifyAdminAPIClient):
     def send_already_registered_email(self, user_id, to):
         data = {'email': to}
         endpoint = '/user/{0}/email-already-registered'.format(user_id)
+        self.post(endpoint, data=data)
+
+    def send_new_registration_data_email(self, name, email):
+        now = datetime.datetime.now()
+        date = now.strftime('%Y-%m-%d %H:%M:%S')
+        data = {'id': self.notify_user_id, 'name': name, 'email': email, 'date': date}
+        endpoint = '/user/{0}/new-registration-data-email'.format(self.notify_user_id)
         self.post(endpoint, data=data)
 
     def send_contact_email(self, name, email, message, support_type):
