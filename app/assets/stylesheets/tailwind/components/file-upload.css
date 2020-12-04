@@ -1,5 +1,41 @@
 @layer components {
   /*! purgecss start ignore */
+  .js-enabled .file-upload-label {
+    @apply text-smaller leading-tight font-bold block m-0 mb-4;
+  }
+  .js-enabled .file-upload-label .error-message {
+    @apply p-0;
+  }
+
+  .js-enabled .file-upload-field {
+    width: 0.1px;
+    height: 0.1px;
+    z-index: -1;
+    @apply absolute overflow-hidden opacity-0;
+  }
+  .js-enabled .file-upload-field:focus + #file-upload-button {
+    @apply outline-yellow;
+  }
+
+  .js-enabled .file-upload-button,
+  .js-enabled .file-upload-button-cancel {
+    @apply inline-block mr-2;
+  }
+
+  .js-enabled .file-upload-filename {
+    @apply text-smaller leading-tight font-bold inline-block pl-gutterHalf;
+  }
+
+  .js-enabled .file-upload-submit {
+    @apply hidden;
+  }
+
+  .js-enabled .file-upload-alternate-link {
+    @apply inline-block leading-loose;
+  }
+  .js-enabled .file-upload-alternate-link a {
+    @apply text-smaller leading-tight font-bold;
+  }
 
   /*! purgecss end ignore */
 }
