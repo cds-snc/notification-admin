@@ -57,7 +57,7 @@
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
-    @apply block absolute mx-0 my-auto border-solid border-t-1 border-r-1 border-gray-grey1
+    @apply block absolute mx-0 my-auto border-0 border-solid border-t-1 border-r-1 border-gray-grey1
   }
   .navigation-organisation-link:hover {
     @apply underline text-blue-lightblue;
