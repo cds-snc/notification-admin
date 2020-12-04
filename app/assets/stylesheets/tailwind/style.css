@@ -9,12 +9,13 @@
 @import "./components/big-number.css";
 @import "./components/textbox.css";
 @import "./components/file-upload.css";
+@import "./components/browse-list.css";
+@import "./components/email_sms_message.css";
 @import "./components/buttons.css";
 @import "./components/checkboxes-radios.css";
 @import "./components/pill.css";
 @import "./components/api-key.css";
 @import "./components/list-entry.css";
-@import "./components/email_sms_message.css";
 @import "./components/message.css";
 @import "./components/fullscreen-table.css";
 
