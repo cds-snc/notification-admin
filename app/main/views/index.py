@@ -92,7 +92,6 @@ def security_txt():
         'Hiring: https://numerique.canada.ca/rejoindre-notre-equipe/'
     ]
     return (
-
         '\n'.join(security_info)
     ), 200, {'Content-Type': 'text/plain'}
 
