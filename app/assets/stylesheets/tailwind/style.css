@@ -13,7 +13,7 @@
 @import "./email_sms_message.css";
 @import "./message.css";
 @import "./textbox.css";
-@import "./components/stick-at-top-when-scrolling";
+@import "./components/stick-at-top-when-scrolling.css";
 
 /* views */
 @import "./views/dashboard.css";

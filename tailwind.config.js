@@ -20,6 +20,8 @@ module.exports = {
       inset1: "inset -1px 0 0 0 rgb(191, 193, 195)", // theme gray.grey2
       inset3: "inset -3px 0 0 0 rgba(191, 193, 195, 0.2)",
       outset1: "1px 0 0 0 rgb(191, 193, 195)",
+      outset2: "0 2px 0 0 rgba(191, 193, 195, 0.2)",
+      outset2neg: "0 -2px 0 0 rgba(191, 193, 195, 0.2)",
       outset3: "3px 0 0 0 rgba(191, 193, 195, 0.2)",
     },
     maxWidth: {
@@ -125,7 +127,16 @@ module.exports = {
         gutterHalf: '15px',
         gutterAndAHalf: '45px',
         doubleGutter: '60px',
-      }
+      },
+      transitionDuration: {
+        '600': '600ms',
+      },
+      transitionProperty: {
+        'background': 'background',
+      },
+      zIndex: {
+        '100': 100,
+      },
     },
   },
   plugins: [
