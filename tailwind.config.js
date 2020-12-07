@@ -23,6 +23,7 @@ module.exports = {
       outset2: "0 2px 0 0 rgba(191, 193, 195, 0.2)",
       outset2neg: "0 -2px 0 0 rgba(191, 193, 195, 0.2)",
       outset3: "3px 0 0 0 rgba(191, 193, 195, 0.2)",
+      yellow3: "-3px 0 0 0 rgba(255, 191, 71, 1), 3px 0 0 0 rgba(255, 191, 71, 1)",
     },
     maxWidth: {
       "4xl": "53rem"
