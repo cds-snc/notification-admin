@@ -13,6 +13,7 @@
 @import "./email_sms_message.css";
 @import "./message.css";
 @import "./textbox.css";
+@import "./components/stick-at-top-when-scrolling";
 
 /* views */
 @import "./views/dashboard.css";
@@ -267,6 +268,11 @@ label {
 
   .send-one-off-form .form-group {
     @apply mb-8;
+  }
+
+  .loading-indicator:after {
+    content: "\2026"; /* ellipsis */
+    @apply overflow-hidden inline-block align-bottom animate-ellipsis w-0;
   }
 }
 

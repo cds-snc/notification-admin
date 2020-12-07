@@ -90,6 +90,9 @@ module.exports = {
       }
     },
     extend: {
+      animation: {
+        'ellipsis': 'ellipsis steps(4,end) 1.5s infinite',
+      }, 
       backgroundSize: {
         '19': '19px',
       },
@@ -105,6 +108,11 @@ module.exports = {
         '2': '2px',
         '5': '5px',
         '7': '7px',
+      },
+      keyframes: {
+        'ellipsis': {
+          '100%': { width: '1.25em' }
+        }
       },
       lineHeight: {
         'extra-tight': '0.9',
