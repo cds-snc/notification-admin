@@ -1,4 +1,5 @@
 @layer components {
+  
   .task-list {
     @apply border-t-1 border-solid border-gray-grey2 my-gutter mx-0;
   }
@@ -41,4 +42,5 @@
   .task-list-indicator-not-completed {
     @apply bg-white text-black;
   }
+  
 }

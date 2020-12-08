@@ -1,3 +1,5 @@
+/*! purgecss start ignore */
+
 /* components */
 @import "./tailwind.css";
 @import "./typography.css";
@@ -13,6 +15,7 @@
 @import "./email_sms_message.css";
 @import "./message.css";
 @import "./textbox.css";
+@import "./components/tick-cross.css";
 @import "./components/stick-at-top-when-scrolling.css";
 @import "./components/task-list.css";
 
@@ -23,7 +26,7 @@
 @import "./views/template.css";
 @import "./views/notification.css";
 
-/*! purgecss start ignore */
+
 
 @-ms-viewport {
   width: device-width;
