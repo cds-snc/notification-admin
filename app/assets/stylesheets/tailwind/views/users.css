@@ -1,11 +1,11 @@
 @layer components {
-  /*! purgecss start ignore */
+  
   .user-list {
     @apply text-smaller leading-tight font-normal my-12;
   }
   .user-list-item {
     padding-right: 150px;
-    @apply relative pt-gutterHalf pb-gutterHalf pl-0 border-1 border-solid border-gray-grey2;
+    @apply relative pt-gutterHalf pb-gutterHalf pl-0 border-t-1 border-solid border-gray-grey2;
   }
   .user-list-item h3 {
     @apply truncate pr-gutterHalf text-gray-grey1;
@@ -14,7 +14,7 @@
     @apply text-black;
   }
   .user-list-item:last-child {
-    @apply border-0 border-b-1 border-solid border-gray-grey2;
+    @apply border-b-1;
   }
 
   .user-list-edit-link {
@@ -22,5 +22,5 @@
     @apply absolute text-right right-0;
   }
 
-  /*! purgecss end ignore */
+  
 }

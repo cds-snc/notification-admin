@@ -150,7 +150,7 @@ def test_notification_status_shows_expected_back_link(
         notification_id=fake_uuid,
         **extra_args
     )
-    back_link = page.select_one('.govuk-back-link')
+    back_link = page.select_one('.back-link')
 
     if expected_back_link:
         assert back_link['href'] == expected_back_link(service_id=SERVICE_ONE_ID)

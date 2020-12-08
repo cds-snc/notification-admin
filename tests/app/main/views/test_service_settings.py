@@ -2209,7 +2209,7 @@ def test_add_letter_contact_when_coming_from_template(
         from_template=fake_uuid,
     )
 
-    assert page.select_one('.govuk-back-link')['href'] == url_for(
+    assert page.select_one('.back-link')['href'] == url_for(
         'main.view_template',
         service_id=SERVICE_ONE_ID,
         template_id=fake_uuid,
@@ -2383,8 +2383,8 @@ def test_shows_delete_link_for_email_reply_to_address(
         reply_to_email_id=sample_uuid(),
     )
 
-    assert page.select_one('.govuk-back-link').text.strip() == 'Back'
-    assert page.select_one('.govuk-back-link')['href'] == url_for(
+    assert page.select_one('.back-link').text.strip() == 'Back'
+    assert page.select_one('.back-link')['href'] == url_for(
         '.service_email_reply_to',
         service_id=SERVICE_ONE_ID,
     )
@@ -2650,7 +2650,7 @@ def test_shows_delete_link_for_sms_sender(
     )
 
     link = page.select_one('.page-footer a')
-    back_link = page.select_one('.govuk-back-link')
+    back_link = page.select_one('.back-link')
 
     assert back_link.text.strip() == 'Back'
     assert back_link['href'] == url_for(
@@ -2707,7 +2707,7 @@ def test_inbound_sms_sender_is_not_deleteable(
         sms_sender_id='1234',
     )
 
-    back_link = page.select_one('.govuk-back-link')
+    back_link = page.select_one('.back-link')
     footer_link = page.select_one('.page-footer a')
     assert normalize_spaces(back_link.text) == 'Back'
 

@@ -1,9 +1,12 @@
 @import "./components/tailwind.css";
 
+
+/*! purgecss start ignore */
 @import "./toolkit/shims.css";
 
+
 /* components */
-@import ".components/grid.css";
+@import "./components/grid.css";
 @import "./components/typography.css";
 @import "./components/placeholder.css";
 @import "./components/layout.css";
@@ -23,6 +26,11 @@
 @import "./components/list-entry.css";
 @import "./components/message.css";
 @import "./components/fullscreen-table.css";
+@import "./components/tick-cross.css";
+@import "./components/stick-at-top-when-scrolling.css";
+@import "./components/task-list.css";
+@import "./components/back-link.css";
+
 
 /* views */
 @import "./views/dashboard.css";
@@ -31,7 +39,7 @@
 @import "./views/template.css";
 @import "./views/notification.css";
 
-/*! purgecss start ignore */
+
 
 @-ms-viewport {
   width: device-width;
@@ -277,6 +285,11 @@ label {
 
   .send-one-off-form .form-group {
     @apply mb-8;
+  }
+
+  .loading-indicator:after {
+    content: "\2026"; /* ellipsis */
+    @apply overflow-hidden inline-block align-bottom animate-ellipsis w-0;
   }
 }
 

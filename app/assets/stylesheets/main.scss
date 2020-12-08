@@ -58,10 +58,6 @@ $path: false !default;
 // Specific to this application
 @import 'components/vendor/previous-next-navigation';
 @import 'components/tick-cross';
-@import 'components/stick-at-top-when-scrolling';
-@import 'components/task-list';
-@import 'components/vendor/govuk-back-link';
-@import 'components/loading-indicator';
 
 // TODO: break this up
 @import 'app';

@@ -1,0 +1,115 @@
+/* CSS adapted from
+   https://github.com/alphagov/govuk_frontend_toolkit/blob/d9489a987086471fe30b4b925a81c12cd198c91d/docs/javascript.md#stick-at-top-when-scrolling
+*/
+@layer components {
+  
+
+  .js-stick-at-top-when-scrolling,
+  .js-stick-at-bottom-when-scrolling {
+    margin-left: -15px;
+    @apply overflow-hidden p-0 pt-4 pl-gutterHalf relative;
+  }
+  .js-stick-at-top-when-scrolling .form-group,
+  .js-stick-at-bottom-when-scrolling .form-group {
+    @apply mb-8;
+  }
+  .js-stick-at-top-when-scrolling .form-group legend,
+  .js-stick-at-bottom-when-scrolling .form-group legend {
+    @apply outline-none;
+  }
+  .js-stick-at-top-when-scrolling .back-top-top-link,
+  .js-stick-at-bottom-when-scrolling .back-top-top-link {
+    top: 30px;
+    right: 15px;
+    @apply absolute opacity-0 transition-opacity ease-in-out duration-100;
+  }
+  .js-stick-at-top-when-scrolling .template-list-selected-counter,
+  .js-stick-at-bottom-when-scrolling .template-list-selected-counter {
+    @apply relative top-0 mt-gutterHalf mb-gutterHalf right-0;
+  }
+
+  .js-stick-at-top-when-scrolling {
+    top: 5px;
+    transition: top 0.1s ease-out, box-shadow 1s ease-in-out;
+    margin-top: -10px;
+    @apply mb-2;
+  }
+
+  .js-stick-at-bottom-when-scrolling {
+    margin-top: -20px;
+    transition: bottom 0.1s ease-out, box-shadow 1s ease-in-out;
+    @apply pr-0 pl-gutterHalf py-8;
+  }
+  .js-stick-at-bottom-when-scrolling + .js-stick-at-bottom-when-scrolling {
+    margin-top: -40px;
+  }
+  .js-stick-at-bottom-when-scrolling .page-footer {
+    @apply mb-0;
+    min-height: 50px;
+  }
+  .js-stick-at-bottom-when-scrolling .page-footer-delete-link-without-button {
+    @apply mt-4;
+  }
+  .page-footer-delete-link-without-button .notification-status {
+    @apply m-0;
+  }
+  .page-footer-delete-link-without-button .button-secondary {
+    @apply mr-gutterHalf;
+  }
+
+  .content-fixed,
+  .content-fixed-onload {
+    @apply fixed bg-white mt-0 pr-gutterHalf z-100;
+  }
+  .content-fixed .back-to-top-link,
+  .content-fixed-onload .back-to-top-link {
+    @apply opacity-100 transition-opacity ease-in-out duration-600;
+  }
+
+  .js-stick-at-top-when-scrolling.content-fixed,
+  .js-stick-at-top-when-scrolling.content-fixed-onload {
+    @apply top-0 mt-0;
+  }
+
+  .js-stick-at-top-when-scrolling.content-fixed__top {
+    @apply border-0 border-b-1 border-solid border-gray-grey2 shadow-outset2;
+  }
+
+  .js-stick-at-top-when-scrolling.content-fixed {
+    transition: background 0.6s ease-in-out, margin-top 0.4s ease-out;
+  }
+  .js-stick-at-bottom-when-scrolling.content-fixed,
+  .js-stick-at-bottom-when-scrolling.content-fixed-onload {
+    /* cancel `top: 0;` inherited from govuk-template */
+    @apply top-auto bottom-0;
+  }
+
+  .js-stick-at-bottom-when-scrolling.content-fixed__bottom {
+    @apply border-0 border-t-1 border-solid border-gray-grey2 shadow-outset2neg;
+  }
+
+  .js-stick-at-bottom-when-scrolling.content-fixed {
+    @apply transition-background duration-600 ease-in-out;
+  }
+  .js-stick-at-bottom-when-scrolling-loaded.content-fixed-onload {
+    @apply transition-none;
+  }
+
+  .shim {
+    @apply block mb-2;
+  }
+
+  .js-cancel {
+    margin-top: -10px;
+    margin-right: -10px;
+    @apply inline-block p-4 pb-2 underline text-blue-govukblue cursor-pointer;
+  }
+  .js-cancel:hover {
+    @apply text-blue-lightblue;
+  }
+  .js-cancel:focus,
+  .js-cancel:active {
+    @apply bg-yellow outline-none text-blue-govukblue;
+  }
+  
+}
