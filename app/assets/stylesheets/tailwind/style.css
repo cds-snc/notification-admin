@@ -24,6 +24,7 @@
 @import "./components/tick-cross.css";
 @import "./components/stick-at-top-when-scrolling.css";
 @import "./components/task-list.css";
+@import "./components/back-link.css";
 
 /* views */
 @import "./views/dashboard.css";
