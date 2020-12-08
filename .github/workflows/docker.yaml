@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: AWS auth with ECR
-      uses: docker://gcr.io/cdssnc/aws:latest
+      uses: docker://amazon/aws-cli:latest
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ECR_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ECR_SECRET_ACCESS_KEY }}
@@ -26,7 +26,7 @@ jobs:
       run: |
         docker push $DOCKER_SLUG:latest && docker push $DOCKER_SLUG:${GITHUB_SHA::7}
     - name: EKS
-      uses: docker://gcr.io/cdssnc/aws:latest
+      uses: docker://amazon/aws-cli:latest
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
