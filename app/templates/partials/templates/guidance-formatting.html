@@ -1,9 +1,9 @@
 <h2 class="heading-medium">{{ _('Titles') }}</h2>
-<p class="bottom-gutter-1-3">
+<p class="bottom-gutter-1-3 contain-floats">
   {{ _('To add a title to your message, use the number sign (#) followed by a space. Try to make your title an answer rather than a question. For example:') }}
 </p>
 <div class="panel-container">
-  <div class="panel-input bottom-gutter" aria-label="{{ _('An example of the input for a title. The text ‘This is a title’ is preceded by a number sign (#) and a space. The text on the next line simply says this is plain paragraph text.') }}">
+  <div class="panel-input bottom-gutter contain-floats" aria-label="{{ _('An example of the input for a title. The text ‘This is a title’ is preceded by a number sign (#) and a space. The text on the next line simply says this is plain paragraph text.') }}">
     <p>
       # {{ _('This is a title') }}
     </p>
@@ -11,7 +11,7 @@
       {{ _('This is plain paragraph text') }}
     </p>
   </div>
-  <div class="panel-preview panel-border-wide bottom-gutter" aria-label="{{ _('A preview shows the text ‘This is a title’ as a large, bold heading.') }}">
+  <div class="panel-preview panel-border-wide bottom-gutter contain-floats" aria-label="{{ _('A preview shows the text ‘This is a title’ as a large, bold heading.') }}">
     <!-- This might need an aria label so it's not confused with page landmarks -->
     <h3 class="heading-medium">
       {{ _('This is a title') }}
@@ -23,11 +23,11 @@
 </div>
 
 <h2 class="heading-medium">{{ _('Sections') }}</h2>
-<p class="bottom-gutter-1-3">
+<p class="bottom-gutter-1-3 contain-floats">
   {{ _('To separate the message into sections, use three underscores') }} <span style="letter-spacing: 0.1em;">(___)</span> {{ _('to create a horizontal line. This can help recipients take in information at a glance. For example:') }}
 </p>
 <div class="panel-container">
-  <div class="panel-input bottom-gutter" aria-label="{{ _('An example of the input for a line between sections. Three underscores in a row on a separate line separate sections 1 and 2.') }}">
+  <div class="panel-input bottom-gutter contain-floats" aria-label="{{ _('An example of the input for a line between sections. Three underscores in a row on a separate line separate sections 1 and 2.') }}">
     <p>
       {{ _('Section 1') }}
     </p>
@@ -38,7 +38,7 @@
       {{ _('Section 2') }}
     </p>
   </div>
-  <div class="panel-preview panel-border-wide bottom-gutter" aria-label="{{ _('A preview shows a grey horizontal line between sections.') }}">
+  <div class="panel-preview panel-border-wide bottom-gutter contain-floats" aria-label="{{ _('A preview shows a grey horizontal line between sections.') }}">
     <p>
       {{ _('Section 1') }}
     </p>
@@ -50,18 +50,18 @@
 </div>
 
 <h2 class="heading-medium">{{ _('Bulleted lists') }}</h2>
-<p class="bottom-gutter-1-3">
+<p class="bottom-gutter-1-3 contain-floats">
   {{ _('To add bullet points, use asterisks (*) followed by a space. Bullet points help recipients identify important information quickly. For example:') }}
 </p>
 <div class="panel-container">
-  <div class="panel-input bottom-gutter" aria-label="{{ _('An example of the input for a bulleted list. Each list item is preceded by an asterisk (*) and a space.') }}">
+  <div class="panel-input bottom-gutter contain-floats" aria-label="{{ _('An example of the input for a bulleted list. Each list item is preceded by an asterisk (*) and a space.') }}">
     <p>
       * {{ _('point 1') }}<br/>
       * {{ _('point 2') }}<br/>
       * {{ _('point 3') }}<br/>
     </p>
   </div>
-  <div class="panel-preview panel-border-wide bottom-gutter" aria-label="{{ _('A preview shows a list with circular bullets for each list item.') }}">
+  <div class="panel-preview panel-border-wide bottom-gutter contain-floats" aria-label="{{ _('A preview shows a list with circular bullets for each list item.') }}">
     <ul class="list list-bullet">
       <li>{{ _('point 1') }}</li>
       <li>{{ _('point 2') }}</li>
@@ -71,16 +71,16 @@
 </div>
 
 <h2 class="heading-medium">{{ _('Emphasis') }}</h2>
-<p class="bottom-gutter-1-3">
+<p class="bottom-gutter-1-3 contain-floats">
   {{ _('To emphasize part of your message like a block quote, use a caret (^) followed by a space in front of the text to add a vertical grey bar beside the text. For example:To emphasize text, use a caret. There will be a grey bar beside the text you want to emphasize:') }}
 </p>
 <div class="panel-container">
-  <div class="panel-input bottom-gutter" aria-label="{{ _('An example of the input for additional emphasis. The text to emphasize is preceded by a caret symbol (^).') }}">
+  <div class="panel-input bottom-gutter contain-floats" aria-label="{{ _('An example of the input for additional emphasis. The text to emphasize is preceded by a caret symbol (^).') }}">
     <p>
       ^ {{ _('Text to emphasize') }}
     </p>
   </div>
-  <div class="panel-preview panel-border-wide bottom-gutter" aria-label="{{ _('A preview shows a vertical grey bar to the left of the ‘Text to emphasize’ which is indented.') }}">
+  <div class="panel-preview panel-border-wide bottom-gutter contain-floats" aria-label="{{ _('A preview shows a vertical grey bar to the left of the ‘Text to emphasize’ which is indented.') }}">
     <p class="panel panel-border-wide">
       {{ _('Text to emphasize') }}
     </p>

@@ -45,7 +45,7 @@
   </div>
 
   {% if current_user.has_permissions('manage_service') %}
-    <div class="grid-row bottom-gutter">
+    <div class="grid-row bottom-gutter contain-floats">
       <div class="column-whole">
         <a href="{{ url_for('.service_add_sms_sender', service_id=current_service.id) }}" class="button">{{ _('Add text message sender') }}</a>
       </div>

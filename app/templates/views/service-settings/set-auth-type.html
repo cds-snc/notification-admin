@@ -17,7 +17,7 @@
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
       {% if 'email_auth' in current_service.permissions %}
-        <p class="heading-small bottom-gutter-2-3">
+        <p class="heading-small bottom-gutter-2-3 contain-floats">
           {{ _('Email code or text message code') }}
         </p>
         <p>
@@ -27,7 +27,7 @@
           {{ _('You can') }} <a href="{{ url_for('.manage_users', service_id=current_service.id) }}">{{ _('set the sign-in method for individual team members') }}</a>.
         </p>
       {% else %}
-        <p class="heading-small bottom-gutter-2-3">
+        <p class="heading-small bottom-gutter-2-3 contain-floats">
           {{ _('Text message code') }}
         </p>
         <p>

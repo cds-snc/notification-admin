@@ -2,7 +2,7 @@
 {% from "components/page-footer.html" import page_footer %}
 
 <div class="ajax-block-container" aria-labelledby='pill-selected-item'>
-  <div class="dashboard-table bottom-gutter-3-2">
+  <div class="dashboard-table bottom-gutter-3-2 contain-floats">
   {% set heading_1 = _('Recipient') %}
   {% set heading_2 = _('Status') %}
   {% call(item, row_number) list_table(

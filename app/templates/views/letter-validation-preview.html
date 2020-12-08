@@ -21,7 +21,7 @@
     {% endif %}
 
       <h1 class="heading-large">Letter validation preview</h1>
-    <div class="bottom-gutter">
+    <div class="bottom-gutter contain-floats">
      {{ file_upload(
           form.file,
           action = url_for('main.service_letter_validation_preview', service_id=current_service.id),

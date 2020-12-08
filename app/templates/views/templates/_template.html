@@ -6,13 +6,13 @@
       {{ _('This template was deleted') }} <span class="relative-time-past">{{ template._template.updated_at }}</span>.
     </p>
   {% elif not current_user.has_permissions('send_messages', 'manage_api_keys', 'manage_templates', 'manage_service') or not user_has_template_permission %}
-    <p class="top-gutter-1-3 {% if template.template_type != 'sms' %}bottom-gutter{% endif %}">
+    <p class="top-gutter-1-3 contain-floats {% if template.template_type != 'sms' %}bottom-gutter contain-floats{% endif %}">
       {{ _('If you need to send this') }}
       {{ message_count_label(1, template.template_type, suffix='') }}
       {{ _('or edit this template, contact your manager.') }}
     </p>
   {% else %}
-    <div class="bottom-gutter-2-3">
+    <div class="bottom-gutter-2-3 contain-floats">
       <div class="grid-row">
         {% if template.template_type == 'letter' %}
           {% if current_user.has_permissions('send_messages', restrict_admin_usage=True) %}

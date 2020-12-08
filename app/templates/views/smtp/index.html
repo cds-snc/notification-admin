@@ -16,7 +16,7 @@
     ) }}
   {% endif %}
 
-  <h1 class="heading-medium bottom-gutter-3-2">
+  <h1 class="heading-medium bottom-gutter-3-2 contain-floats">
     {{ _('SMTP integration') }}
   </h1>
 
@@ -49,7 +49,7 @@
     ) }}
     </div>
   {% else %}
-    <nav class="grid-row bottom-gutter-1-2">
+    <nav class="grid-row bottom-gutter-1-2 contain-floats">
         <div class="column-one-third">
           <a class="button success" href="{{ url_for('.manage_smtp', service_id=current_service.id) }}">{{ _('Add SMTP Relay') }}</a>
         </div>

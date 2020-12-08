@@ -22,7 +22,7 @@
       {{ page_title }}
     </h1>
     {% if current_user.has_permissions('manage_templates') %}
-       <p class="bottom-gutter top-gutter">
+       <p class="bottom-gutter top-gutter contain-floats">
         {% set need_txt = _('You need to create a template to send') %}
         {{ need_txt }}
         {% if 'letter' in current_service.permissions %}
@@ -35,7 +35,7 @@
         {{ folder_txt }}
        </p>
     {% else %}
-      <p class="top-gutter">
+      <p class="top-gutter contain-floats">
         {{ _('You need to ask your service manager to add templates before you can send') }}
         {% if 'letter' in current_service.permissions %}
           {{ _('emails, text messages or letters') }}
@@ -64,7 +64,7 @@
     </div>
   {% endif %}
     {% if show_template_nav %}
-      <div class="bottom-gutter-2-3">
+      <div class="bottom-gutter-2-3 contain-floats">
         {{ pill(template_nav_items, current_value=template_type, show_count=False) }}
       </div>
     {% endif %}

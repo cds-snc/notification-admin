@@ -20,7 +20,7 @@
       {{ _('You won’t be able to see it again once you leave this page.') }}
     </p>
 
-    <div class="bottom-gutter-2">
+    <div class="bottom-gutter-2 contain-floats">
       {% set txt = _('API key') %}
       {{ api_key(
         '{}-{}-{}'.format(key_name, service_id, secret),

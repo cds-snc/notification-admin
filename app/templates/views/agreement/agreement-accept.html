@@ -20,7 +20,7 @@
       back_link=url_for('main.service_agreement', service_id=current_service.id)
     ) }}
 
-    {% call form_wrapper(class='top-gutter') %}
+    {% call form_wrapper(class='top-gutter contain-floats') %}
 
       {% call select_wrapper(form.who) %}
         {% for option in form.who %}

@@ -11,7 +11,7 @@
   {% if template.template_type == 'letter' and current_service.trial_mode %}
     {{ govuk_back_link(back_link) }}
     {% set error = 'trial-mode-letters' %}
-    <div class="bottom-gutter">
+    <div class="bottom-gutter contain-floats">
       {% call banner_wrapper(type='dangerous') %}
         {% with
           count_of_recipients=1
@@ -22,7 +22,7 @@
     </div>
   {% elif error == 'not-allowed-to-send-to' %}
     {{ govuk_back_link(back_link) }}
-    <div class="bottom-gutter">
+    <div class="bottom-gutter contain-floats">
       {% call banner_wrapper(type='dangerous') %}
         {% with
           count_of_recipients=1,
@@ -36,7 +36,7 @@
     </div>
   {% elif error == 'too-many-messages' %}
     {{ govuk_back_link(back_link) }}
-    <div class="bottom-gutter">
+    <div class="bottom-gutter contain-floats">
       {% call banner_wrapper(type='dangerous') %}
         {% include "partials/check/too-many-messages.html" %}
       {% endcall %}
@@ -44,7 +44,7 @@
   {% elif error == 'message-too-long' %}
     {# the only row_errors we can get when sending one off messages is that the message is too long #}
     {{ govuk_back_link(back_link) }}
-    <div class="bottom-gutter">
+    <div class="bottom-gutter contain-floats">
       {% call banner_wrapper(type='dangerous') %}
         {% include "partials/check/message-too-long.html" %}
       {% endcall %}

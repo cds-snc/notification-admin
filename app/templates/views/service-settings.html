@@ -11,7 +11,7 @@
 
     <h1 class="heading-medium">{{ _('Settings') }}</h1>
 
-    <div class="bottom-gutter-3-2 settings-table body-copy-table">
+    <div class="bottom-gutter-3-2 contain-floats settings-table body-copy-table">
       {% set caption = _('General') %}
       {% set heading_1 = _('Label') %}
       {% set heading_2 = _('Value') %}
@@ -223,7 +223,7 @@
       {% endcall %}
 
     {% if current_service.trial_mode %}
-      <h2 class="heading-medium top-gutter-0">{{ _('Your service is in trial mode') }}</h2>
+      <h2 class="heading-medium top-gutter-0 contain-floats">{{ _('Your service is in trial mode') }}</h2>
 
       <ul class='list list-bullet'>
         <li>{{ _('you can only send messages to yourself') }}</li>
@@ -240,7 +240,7 @@
         </p>
 
     {% else %}
-      <h2 class="heading-medium top-gutter-0">{{ _('Your service is live') }}</h2>
+      <h2 class="heading-medium top-gutter-0 contain-floats">{{ _('Your service is live') }}</h2>
 
       <p>
         {{ _('You can send up to') }}
@@ -255,7 +255,7 @@
 
     {% if current_user.platform_admin %}
 
-      <div class="settings-table body-copy-table top-gutter-4-3">
+      <div class="settings-table body-copy-table top-gutter-4-3 contain-floats">
 
         <h2 class="heading-medium">{{ _('Platform admin settings') }}</h2>
 
@@ -377,7 +377,7 @@
     {% endif %}
 
     {% if current_service.active and (current_service.trial_mode or current_user.platform_admin) %}
-      <p class="top-gutter-1-2">
+      <p class="top-gutter-1-2 contain-floats">
         <span class="page-footer-delete-link page-footer-delete-link-without-button">
           <a href="{{ url_for('.archive_service', service_id=current_service.id) }}">
             {{ _('Delete this service') }}
@@ -394,7 +394,7 @@
     {% endif %}
     {% if (not current_service.active) and current_user.platform_admin %}
       <p>
-        <div class="hint bottom-gutter-1-2">
+        <div class="hint bottom-gutter-1-2 contain-floats">
           {{ _('Service suspended') }}
         </div>
         <span class="page-footer-delete-link page-footer-delete-link-without-button">

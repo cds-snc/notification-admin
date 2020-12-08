@@ -1,5 +1,5 @@
 <div class="ajax-block-container">
-  <p class='bottom-gutter'>
+  <p class='bottom-gutter contain-floats'>
     {% if job.scheduled_for %}
       {% if job.processing_started %}
         {{ _('Sent by') }} {{ job.created_by.name }} {{ _('on') }} <span class="local-datetime-short">{{ job.processing_started}}</span>

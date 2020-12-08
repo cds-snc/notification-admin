@@ -58,7 +58,7 @@
     {{ _('Choose service') }}
   </h1>
 
-  <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}top-gutter-2-3{% endif %}">
+  <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}top-gutter-2-3 contain-floats{% endif %}">
 
     {% if current_user.platform_admin %}
       <div class="grid-row">

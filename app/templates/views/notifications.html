@@ -60,7 +60,7 @@
   {% endif %}
 
   {% if current_user.has_permissions('view_activity') %}
-    <p class="bottom-gutter">
+    <p class="bottom-gutter contain-floats">
       <a href="{{ download_link }}" download="download" class="heading-small">{{ _('Download this report') }}</a>
       &emsp;
       {{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}

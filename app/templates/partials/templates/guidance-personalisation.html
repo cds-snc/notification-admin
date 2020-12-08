@@ -5,7 +5,7 @@
  {{ _('To add personalised information about the message recipients, use double brackets around the variable name. Recipients are more likely to trust information that’s relevant and clearly meant for them. For example:') }}
 </p>
 <div class="panel-container">
-  <div class="panel-input bottom-gutter" aria-label="{{ _('An example of the input for variables. Double brackets surround placeholder text such as ((given name)) or ((appointment date)) to be replaced with recipient information.') }}">
+  <div class="panel-input bottom-gutter contain-floats" aria-label="{{ _('An example of the input for variables. Double brackets surround placeholder text such as ((given name)) or ((appointment date)) to be replaced with recipient information.') }}">
     <p>
       {{ _('Hello') }} ((<span class="placeholder-no-brackets">{{ _('given name')}}</span>)),
     </p>
@@ -13,7 +13,7 @@
       {{ _('This is a confirmation message for your appointment on') }} ((<span class="placeholder-no-brackets">{{_('appointment date')}}</span>))
     </p>
   </div>
-  <div class="panel-preview panel-border-wide bottom-gutter" aria-label="{{ _('A preview shows the variables filled in with given name placeholder replaced by Anna and the appointment date placeholder replaced by December 11, 2020.') }}">
+  <div class="panel-preview panel-border-wide bottom-gutter contain-floats" aria-label="{{ _('A preview shows the variables filled in with given name placeholder replaced by Anna and the appointment date placeholder replaced by December 11, 2020.') }}">
     <p>
       {{ _('Hello Anna') }},
     </p>

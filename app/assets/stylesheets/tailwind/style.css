@@ -1,5 +1,9 @@
-/* components */
 @import "./components/tailwind.css";
+
+@import "./toolkit/shims.css";
+
+/* components */
+@import ".components/grid.css";
 @import "./components/typography.css";
 @import "./components/placeholder.css";
 @import "./components/layout.css";

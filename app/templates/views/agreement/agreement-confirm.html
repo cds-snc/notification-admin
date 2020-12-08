@@ -17,7 +17,7 @@
       back_link=url_for('main.service_accept_agreement', service_id=current_service.id)
     ) }}
 
-    {% call form_wrapper(class='top-gutter') %}
+    {% call form_wrapper(class='top-gutter contain-floats') %}
 
       {% if current_service.organisation.agreement_signed_on_behalf_of_name and current_service.organisation.agreement_signed_on_behalf_of_email_address %}
         <p>

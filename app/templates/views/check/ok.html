@@ -67,7 +67,7 @@
   {% endif %}
 
 
-  <div class="bottom-gutter-3-2">
+  <div class="bottom-gutter-3-2 contain-floats">
     <form method="post" enctype="multipart/form-data" action="{{url_for('main.start_job', service_id=current_service.id, upload_id=upload_id, original_file_name=original_file_name)}}" class='page-footer'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <input type="hidden" id="scheduled_for" name="scheduled_for" value=""/>
