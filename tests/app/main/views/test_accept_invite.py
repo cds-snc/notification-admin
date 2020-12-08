@@ -458,6 +458,7 @@ def test_new_invited_user_verifies_and_added_to_service(
     mock_email_is_not_already_in_use,
     mock_register_user,
     mock_send_verify_code,
+    mock_send_new_registration_data_email,
     mock_check_verify_code,
     mock_get_user,
     mock_update_user_attribute,
