@@ -12,16 +12,19 @@ jobs:
     name: Build and push
     steps:
     - uses: actions/checkout@master
+    - name: Install AWS CLI
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
     - name: AWS auth with ECR
-      uses: docker://amazon/aws-cli:latest
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ECR_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ECR_SECRET_ACCESS_KEY }}
-      with:
-        args: ecr-public get-login-password --region $AWS_REGION > /tmp/aws-password
+      run: |
+        aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $DOCKER_ORG
     - name: Build
       run: |
-        cat /tmp/aws-password | docker login --username AWS --password-stdin $DOCKER_ORG
         docker build --build-arg GIT_SHA=${GITHUB_SHA::7} -t $DOCKER_SLUG:${GITHUB_SHA::7} -t $DOCKER_SLUG:latest -f ci/Dockerfile .
     - name: Publish
       run: |
