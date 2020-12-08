@@ -3509,6 +3509,18 @@ def mock_accept_org_invite(mocker, sample_org_invite):
 
 
 @pytest.fixture(scope='function')
+def mock_send_new_registration_data_email(mocker, client_request):
+    def _send_new_registration_data_email():
+        data = {
+            'priority': 1,
+            'status': 2
+        }
+        return data
+
+    return mocker.patch('app.user_api_client.send_new_registration_data_email', side_effect=_send_new_registration_data_email)
+
+
+@pytest.fixture(scope='function')
 def mock_add_user_to_organisation(mocker, organisation_one, api_user_active):
     def _add_user(organisation_id, user_id):
         return api_user_active
