@@ -12,7 +12,7 @@
     {{ _('API integration for developers') }}
   </h1>
 
-  <nav class="grid-row bottom-gutter-1-2 contain-floats">
+  <nav class="grid-row contain-floats bottom-gutter-1-2 contain-floats">
     <div class="column-one-third">
       <a class="pill-separate-item" href="{{ url_for('.api_keys', service_id=current_service.id) }}">{{ _('API keys') }}</a>
     </div>
@@ -24,7 +24,7 @@
     </div>
   </nav>
 
-  <div class="grid-row">
+  <div class="grid-row contain-floats">
     <div class="column-half">
       <h2 class="heading-small">
         {{ _('Message log') }}
@@ -51,7 +51,7 @@
           <h3 class="api-notifications-item-recipient">
             {{ notification.to }}
           </h3>
-          <span class="grid-row api-notifications-item-meta">
+          <span class="grid-row contain-floats api-notifications-item-meta">
             <span class="column-half api-notifications-item-key">
               {{notification.key_name}}
             </span>

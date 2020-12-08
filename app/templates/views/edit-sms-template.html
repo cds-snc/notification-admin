@@ -22,7 +22,7 @@
         <a href="{{ url_for('main.templates') }}" target="_blank">{{ _('How to format your message') }}</a>
       </div>
       {% set txt = _('Your recipients will not see this template name.') %}
-      <div class="grid-row">
+      <div class="grid-row contain-floats">
         <div class="column-two-thirds">
           {{ textbox(form.name, width='1-1', hint=txt) }}
         </div>

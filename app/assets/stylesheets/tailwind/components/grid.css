@@ -1,8 +1,12 @@
 @layout components {
 
   @screen md {
-    .column-whole,
+    .column-full,
+    .column-one-quarter,
     .column-three-quarters,
+    .column-half,
+    .column-one-third,
+    .column-two-thirds
     .column-one-sixth,
     .column-five-sixths,
     .column-one-eighth,
@@ -11,11 +15,23 @@
       @apply float-left;
     }
 
-    .column-whole {
+    .column-full {
       width: 100%;
+    }
+    .column-one-quarter {
+      width: 25%;
     }
     .column-three-quarters {
       width: 75%;
+    }
+    .column-half {
+      width: 50%;
+    }
+    .column-one-third {
+      width: 33.333%
+    }
+    .column-two-thirds {
+      width: 66.667%;
     }
     .column-one-sixth {
       width: 16.667%;
@@ -34,15 +50,21 @@
     }
   }
 
-    .column-whole,
-    .column-three-quarters,
-    .column-one-sixth,
-    .column-five-sixths,
-    .column-one-eighth,
-    .column-five-eighths,
-    .column-seven-eights {
-      @apply py-0 px-gutterHalf box-border;
-    }
+  .grid-row {
+    margin-left: -15px;
+    margin-right: -15px;
+    @apply my-0;
+  }
+
+  .column-full,
+  .column-three-quarters,
+  .column-one-sixth,
+  .column-five-sixths,
+  .column-one-eighth,
+  .column-five-eighths,
+  .column-seven-eights {
+    @apply py-0 px-gutterHalf box-border;
+  }
 
   .top-gutter,
   .top-gutter-4-3,

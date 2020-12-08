@@ -49,7 +49,7 @@
     var csrf_token = "{{ csrf_token() }}";
    </script>
   <div class="js-stick-at-bottom-when-scrolling">
-    <div class="grid-row">
+    <div class="grid-row contain-floats">
       <div class="column-three-quarters">
         <a href="{{ url_for('main.user_profile_add_security_keys') }}" class="button button-secondary">{{ _('New security key') }}</a>
         <a id="test-fido2-keys" href="#" class="button button-secondary">{{ _('Test keys') }}</a>

@@ -11,7 +11,6 @@ $path: '/static/images/';
 @import 'toolkit/css3';
 @import 'toolkit/colours';
 @import 'toolkit/typography';
-@import 'toolkit/grid_layout';
 @import 'toolkit/helpers';
 
 // Dependencies from GOVU.UK Frontend Toolkit, rewritten for this application
@@ -57,7 +56,6 @@ $path: false !default;
 
 // Specific to this application
 @import 'components/vendor/previous-next-navigation';
-@import 'components/tick-cross';
 
 // TODO: break this up
 @import 'app';

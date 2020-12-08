@@ -7,7 +7,7 @@
   services=[]
 ) %}
   {% if show_heading %}
-    <div class="grid-row">
+    <div class="grid-row contain-floats">
       <div class="column-one-quarter">
         <h2>
           {{ heading }}
@@ -61,7 +61,7 @@
   <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}top-gutter-2-3 contain-floats{% endif %}">
 
     {% if current_user.platform_admin %}
-      <div class="grid-row">
+      <div class="grid-row contain-floats">
         <div class="column-one-quarter">
           <h2>
             {{ _('Platform admin') }}
@@ -107,7 +107,7 @@
   {% if can_add_service %}
     <div class="js-stick-at-bottom-when-scrolling">
       {% if current_user.has_access_to_live_and_trial_mode_services %}
-        <div class="grid-row">
+        <div class="grid-row contain-floats">
           <div class="column-one-quarter">
             &nbsp;
           </div>

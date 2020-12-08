@@ -47,8 +47,8 @@
 
   {% else %}
 
-    <div class="grid-row">
-      <div class="{% if current_user.has_permissions('manage_templates') %} column-five-sixths {% else %} column-whole {% endif %}">
+    <div class="grid-row contain-floats">
+      <div class="{% if current_user.has_permissions('manage_templates') %} column-five-sixths {% else %} column-full {% endif %}">
         {{ folder_path(
           folders=template_folder_path,
           service_id=current_service.id,

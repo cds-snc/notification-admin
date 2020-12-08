@@ -5,7 +5,7 @@
 block org_page_title %} Edit request to go live notes {% endblock %} {% block
 maincolumn_content %} {{ page_header( "Edit request to go live notes",
 back_link=url_for('.organisation_settings', org_id=current_org.id) ) }}
-<div class="grid-row">
+<div class="grid-row contain-floats">
   <div class="column-five-sixths">
     <p>
       {{ _('When you turn a service live please log which services have been turned live and why you approved the change.') }}

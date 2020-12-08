@@ -15,7 +15,7 @@
 
   {% call form_wrapper(
       action=url_for('.find_services_by_name'),
-      class='grid-row'
+      class='grid-row contain-floats'
   ) %}
     {% set hint_txt = _('Find services by name, or by partial name') %}
     <div class="column-three-quarters">

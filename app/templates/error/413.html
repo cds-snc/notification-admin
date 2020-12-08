@@ -1,12 +1,12 @@
 {% extends "withoutnav_template.html" %}
 {% block per_page_title %}{{ _('File too big') }}{% endblock %}
 {% block maincolumn_content %}
-    <div class="grid-row">
+    <div class="grid-row contain-floats">
       <div class="column-two-thirds">
         <h1 class="heading-large">
           {{ _('The file you uploaded was too big') }}
         </h1>
-        <div class="grid-row">
+        <div class="grid-row contain-floats">
           <div class="column-two-thirds">
             <p>
               {{ _('Files must be smaller than 5 MB.') }}

@@ -35,7 +35,7 @@
 
     {% call form_wrapper(
       action=url_for('.view_notifications', service_id=current_service.id, message_type=message_type),
-      class="grid-row"
+      class="grid-row contain-floats"
     ) %}
       <div class="column-three-quarters {% if message_type == 'sms' %}extra-tracking{% endif %}">
         {{ textbox(

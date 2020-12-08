@@ -18,7 +18,7 @@
 
     {% call form_wrapper() %}
       {% set txt = _('Save') %}
-      <div class="grid-row">
+      <div class="grid-row contain-floats">
         <div class="column-five-sixths">
           {{ textbox(form.name, width='1-1', hint='Your recipients will not see this template name.', rows=10) }}
           {{ textbox(form.subject, width='1-1', highlight_tags=True, rows=2) }}

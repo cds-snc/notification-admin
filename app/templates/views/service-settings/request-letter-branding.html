@@ -14,7 +14,7 @@
     back_link=url_for('.view_template', service_id=current_service.id, template_id=from_template) if from_template else url_for('.service_settings', service_id=current_service.id)
   ) }}
 
-  <div class="grid-row">
+  <div class="grid-row contain-floats">
     <div class="column-three-quarters">
       {% if current_service.letter_branding_id %}
         <p>

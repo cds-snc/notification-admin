@@ -10,8 +10,8 @@
 
 {% block platform_admin_content %}
 
-<div class="grid-row">
-  <div class="column-whole">
+<div class="grid-row contain-floats">
+  <div class="column-full">
     <h1 class="heading-large">Letter Validation Preview</h1>
 
     {{ file_upload(
@@ -20,7 +20,7 @@
         button_text='Upload a PDF document',
     )}}
   </div>
-  <div class="column-whole template-container">
+  <div class="column-full template-container">
     {% if result %}
       {{ banner(message, with_tick=True) }}
     {% elif message %}

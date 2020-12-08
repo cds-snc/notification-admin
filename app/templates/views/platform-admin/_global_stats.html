@@ -4,7 +4,7 @@
 {% set sent_single = _('sent-dashboard-single') %}
 {% set sent_plural = _('sent-dashboard-plural') %}
 
-<div class="grid-row bottom-gutter contain-floats">
+<div class="grid-row contain-floats bottom-gutter contain-floats">
   <div class="column-half">
     {{ big_number_with_status(
       global_stats.email.delivered + global_stats.email.failed,

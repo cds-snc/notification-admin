@@ -41,8 +41,8 @@
       </div>
     {% endfor %}
   </div>
-  <div class="grid-row">
-    <div class="column-whole">
+  <div class="grid-row contain-floats">
+    <div class="column-full">
       {% if current_user.has_permissions('manage_service') %}
         <div class="js-stick-at-bottom-when-scrolling">
           <a href="{{ url_for('.service_add_email_reply_to', service_id=current_service.id) }}" class="button">{{ _('Add reply-to email address') }}</a>

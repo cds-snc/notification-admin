@@ -30,8 +30,8 @@
       {% endcall %}
     </div>
   {% else %}
-    <div class="grid-row">
-      <div class="column-whole">
+    <div class="grid-row contain-floats">
+      <div class="column-full">
         {{ folder_path(
           folders=current_service.get_template_path(template._template),
           service_id=current_service.id,
@@ -42,7 +42,7 @@
     </div>
   {% endif %}
 
-  <div class="grid-row">
+  <div class="grid-row contain-floats">
     {% include 'views/templates/_template.html' %}
   </div>
 
