@@ -261,8 +261,8 @@ def test_should_not_allow_files_to_be_uploaded_without_the_correct_permission(
     )
 
     assert page.select('main p')[0].text.strip() == "Sending text messages has been disabled for your service."
-    assert page.select(".govuk-back-link")[0].text == "Back"
-    assert page.select(".govuk-back-link")[0]['href'] == url_for(
+    assert page.select(".back-link")[0].text == "Back"
+    assert page.select(".back-link")[0]['href'] == url_for(
         '.view_template',
         service_id=service_one['id'],
         template_id=template_id,
@@ -1041,8 +1041,8 @@ def test_send_one_off_does_not_send_without_the_correct_permissions(
     )
 
     assert page.select('main p')[0].text.strip() == "Sending text messages has been disabled for your service."
-    assert page.select(".govuk-back-link")[0].text == "Back"
-    assert page.select(".govuk-back-link")[0]['href'] == url_for(
+    assert page.select(".back-link")[0].text == "Back"
+    assert page.select(".back-link")[0]['href'] == url_for(
         '.view_template',
         service_id=service_one['id'],
         template_id=template_id,
@@ -1643,7 +1643,7 @@ def test_send_test_sms_message_with_placeholders_shows_first_field(
 
     assert page.select('label')[0].text.strip() == 'Name'
     assert page.select('input')[0]['name'] == 'placeholder_value'
-    assert page.select('.govuk-back-link')[0]['href'] == url_for(
+    assert page.select('.back-link')[0]['href'] == url_for(
         expected_back_link_endpoint,
         service_id=SERVICE_ONE_ID,
         **extra_args
@@ -1669,7 +1669,7 @@ def test_send_test_sms_message_back_link_with_multiple_placeholders(
         step_index=2,
     )
 
-    assert page.select_one('.govuk-back-link')['href'] == url_for(
+    assert page.select_one('.back-link')['href'] == url_for(
         'main.send_test_step',
         service_id=SERVICE_ONE_ID,
         template_id=unchanging_fake_uuid,
@@ -1715,7 +1715,7 @@ def test_send_test_sms_message_back_link_in_tour(
         help=2,
     )
 
-    assert page.select_one('.govuk-back-link')['href'] == expected_back_link(
+    assert page.select_one('.back-link')['href'] == expected_back_link(
         service_id=SERVICE_ONE_ID,
         template_id=unchanging_fake_uuid,
     )
@@ -1857,7 +1857,7 @@ def test_send_test_indicates_optional_address_columns(
         'Address line 4 '
         'Optional'
     )
-    assert page.select('.govuk-back-link')[0]['href'] == url_for(
+    assert page.select('.back-link')[0]['href'] == url_for(
         'main.send_one_off_step',
         service_id=SERVICE_ONE_ID,
         template_id=fake_uuid,
@@ -2529,7 +2529,7 @@ def test_check_messages_back_link(
     )
 
     assert (
-        page.findAll('a', {'class': 'govuk-back-link'})[0]['href']
+        page.findAll('a', {'class': 'back-link'})[0]['href']
     ) == expected_url(service_id=SERVICE_ONE_ID, template_id=fake_uuid)
 
 
@@ -3058,7 +3058,7 @@ def test_send_one_off_letter_errors_in_trial_mode(
     assert len(page.select('.letter img')) == 5
 
     assert not page.select('[type=submit]')
-    assert page.select_one('.govuk-back-link').text == 'Back'
+    assert page.select_one('.back-link').text == 'Back'
     assert page.select_one('a[download]').text == 'Download as a PDF'
 
 
@@ -3183,7 +3183,7 @@ def test_check_notification_shows_preview(
 
     assert page.h1.text.strip() == 'Preview of ‘Two week reminder’'
     assert (
-        page.findAll('a', {'class': 'govuk-back-link'})[0]['href']
+        page.findAll('a', {'class': 'back-link'})[0]['href']
     ) == url_for(
         'main.send_one_off_step',
         service_id=service_one['id'],
@@ -3224,7 +3224,7 @@ def test_check_notification_shows_help(
         template_id=fake_uuid,
         help='3'
     )
-    assert page.select_one('.govuk-back-link')['href'] == url_for(
+    assert page.select_one('.back-link')['href'] == url_for(
         'main.send_test',
         service_id=service_one['id'],
         template_id=fake_uuid,
