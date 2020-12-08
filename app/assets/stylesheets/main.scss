@@ -57,13 +57,7 @@ $path: false !default;
 
 // Specific to this application
 @import 'grids';
-@import 'components/placeholder';
-@import 'components/navigation';
-@import 'components/file-upload';
-@import 'components/browse-list';
 @import 'components/vendor/previous-next-navigation';
-@import 'components/pill';
-@import 'components/show-more';
 @import 'components/tick-cross';
 @import 'components/stick-at-top-when-scrolling';
 @import 'components/task-list';

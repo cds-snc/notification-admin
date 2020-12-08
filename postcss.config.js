@@ -37,6 +37,7 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "clear-both",
     "w-auto",
     "text-right",
+    "pill",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });

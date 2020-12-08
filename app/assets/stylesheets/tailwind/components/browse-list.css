@@ -1,0 +1,38 @@
+@layer components {
+  /*! purgecss start ignore */
+  .browse-list {
+    @apply mb-gutterHalf;
+  }
+
+  .browse-list .browse-sub-list {
+    @apply mt-gutterHalf ml-gutter;
+  }
+  @screen md {
+    .browse-list .browse-sub-list {
+      margin-left: 60px;
+    }
+  }
+
+  .browse-list-item,
+  .browse-list-sub-item {
+    @apply text-title leading-tight font-bold mb-gutterHalf list-none;
+  }
+
+  .browse-list-link {
+    @apply text-title leading-tight font-bold;
+  }
+  .browse-list-link-destructive,
+  .browse-list-link-destructive:visited,
+  .browse-list-link-destructive:link {
+    @apply text-title leading-tight font-bold text-red;
+  }
+  .browse-list-link-destructive:hover {
+    @apply text-red-mellow;
+  }
+
+  .browse-list-hint {
+    @apply text-smaller leading-tight font-normal mt-2 mb-4 mx-0 text-gray-grey1;
+  }
+
+  /*! purgecss end ignore */
+}

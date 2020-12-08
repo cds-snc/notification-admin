@@ -110,7 +110,8 @@ module.exports = {
         'extra-tight': '0.9',
       },
       outline: {
-        yellow: '3px solid #ffbf47'
+        yellow: '3px solid #ffbf47',
+        white: '1px solid rgba(255, 255, 255, 0.1)',
       },
       spacing: {
         gutter: '30px',
