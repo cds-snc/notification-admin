@@ -1,7 +1,7 @@
+@import "./components/tailwind.css";
 /*! purgecss start ignore */
 
 /* components */
-@import "./components/tailwind.css";
 @import "./components/typography.css";
 @import "./components/placeholder.css";
 @import "./components/layout.css";

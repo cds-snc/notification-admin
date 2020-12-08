@@ -7,6 +7,7 @@ module.exports = {
     },
     backgroundImage: {
       tick: "url('/static/images/tick.png')",
+      crossGrey: "url('/static/images/cross-grey.png')",
       folder: "url('/static/images/folder-black.svg')",
       folderBlack: "url('/static/images/folder-black-bold.svg')",
       folderBlackPng: "url('/static/images/folder-black-bold.png')",
