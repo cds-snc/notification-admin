@@ -22,6 +22,7 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "clear-both",
     "w-auto",
     "text-right",
+    "template-list-selected-counter",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });

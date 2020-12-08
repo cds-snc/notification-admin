@@ -3,7 +3,6 @@
 */
 @layer components {
   
-
   .js-stick-at-top-when-scrolling,
   .js-stick-at-bottom-when-scrolling {
     margin-left: -15px;
@@ -25,7 +24,7 @@
   }
   .js-stick-at-top-when-scrolling .template-list-selected-counter,
   .js-stick-at-bottom-when-scrolling .template-list-selected-counter {
-    @apply relative top-0 mt-gutterHalf mb-gutterHalf right-0;
+    @apply relative top-0 my-gutterHalf right-0;
   }
 
   .js-stick-at-top-when-scrolling {

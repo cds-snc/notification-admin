@@ -1,4 +1,4 @@
-@layout components {
+@layer components {
 
   @screen md {
     .column-full,
@@ -6,7 +6,7 @@
     .column-three-quarters,
     .column-half,
     .column-one-third,
-    .column-two-thirds
+    .column-two-thirds,
     .column-one-sixth,
     .column-five-sixths,
     .column-one-eighth,
@@ -37,7 +37,7 @@
       width: 16.667%;
     }
     .column-five-sixths {
-      width: 83.333;
+      width: 83.333%;
     }
     .column-one-eighth {
       width: 12.5%;
@@ -57,7 +57,11 @@
   }
 
   .column-full,
+  .column-one-quarter,
   .column-three-quarters,
+  .column-half,
+  .column-one-third,
+  .column-two-thirds,
   .column-one-sixth,
   .column-five-sixths,
   .column-one-eighth,
