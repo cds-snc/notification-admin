@@ -42,13 +42,11 @@ $path: false !default;
 
 // CDS => copied into this repo to avoid npm dependencies
 @import 'elements/helpers';
-@import 'elements/reset';
 @import 'elements/elements-typography';
 @import 'elements/forms';
 @import 'elements/forms/form-multiple-choice';
 @import 'elements/forms/form-validation';
 @import 'elements/layout';
-@import 'elements/lists';
 @import 'elements/panels';
 
 // ====================================================

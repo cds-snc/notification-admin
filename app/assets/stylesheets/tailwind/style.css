@@ -3,6 +3,7 @@
 
 
 /* elements */
+@import "./elements/reset.css";
 @import "./elements/details.css";
 @import "./elements/forms.css";
 @import "./elements/lists.css";
@@ -281,6 +282,15 @@ label {
 }
 
 @layer components {
+  /* Hide, but not for screenreaders */
+  .visually-hidden,
+  .visuallyhidden {
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    @apply absolute overflow-hidden border-0 p-0;
+  }
   .research-mode {
     @apply font-bold inline-block bg-blue-govukblue text-white py-2 px-4 rounded;
   }
