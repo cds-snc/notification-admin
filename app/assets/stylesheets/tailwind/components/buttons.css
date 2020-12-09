@@ -8,10 +8,13 @@
     @apply no-underline inline-block text-white text-smaller leading-tight align-top bg-green;
   }
   
+  .button-blue {
+    width:210px;
+    @apply block mt-8 text-center py-4 px-8;
+  }
   .button-blue, .button-blue:link, .button-blue:visited {
     @apply bg-blue text-white text-smaller;
   }
-
   .button-blue-lighter, .button-blue-lighter:link, .button-blue-lighter:visited {
     @apply bg-blue-lighter border-b-2 border-black font-bold text-base text-black px-5 py-4;
   }

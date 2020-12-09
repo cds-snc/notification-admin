@@ -25,4 +25,13 @@
     @apply mb-0 font-normal;
   }
 
+  .column-main .heading-large,
+  .column-main > .heading-medium {
+    @apply mx-0 mb-8 mt-gutterHalf break-words;
+  }
+  .column-main .heading-large.top-gutter-0,
+  .column-main > .heading-medium.top-gutter-0 {
+    @apply mt-0;
+  }
+
 }

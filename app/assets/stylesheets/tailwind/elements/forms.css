@@ -1,0 +1,23 @@
+@layer components {
+  .form-control-1-1 {
+    @apply w-full;
+  }
+
+  .form-control-5em {
+    @apply w-full;
+  }
+  @screen md {
+    width: 5em;
+  }
+
+  .form-label {
+    @apply mb-2;
+  }
+  .form-label.heading-small {
+    @apply text-smaller leading-tight font-bold;
+  }
+  .form-label .hint {
+    margin-top: -5px;
+    @apply block mb-2;
+  }
+}

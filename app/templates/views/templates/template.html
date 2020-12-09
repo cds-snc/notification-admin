@@ -48,7 +48,7 @@
 
   <div class="bottom-gutter-1-2">
     {% if template._template.updated_at %}
-      <h2 class="heading-small bottom-gutter-2-3 heading-inline">
+      <h2 class="heading-small bottom-gutter-2-3 inline-block">
         {% set last_edited = _('Last edited') %}
         {{ last_edited }}
         {{ template._template.updated_at|format_delta }}

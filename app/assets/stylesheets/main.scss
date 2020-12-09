@@ -43,7 +43,6 @@ $path: false !default;
 // CDS => copied into this repo to avoid npm dependencies
 @import 'elements/helpers';
 @import 'elements/reset';
-@import 'elements/details';
 @import 'elements/elements-typography';
 @import 'elements/forms';
 @import 'elements/forms/form-multiple-choice';
@@ -59,6 +58,3 @@ $path: false !default;
 @import 'grids';
 @import 'components/vendor/previous-next-navigation';
 @import 'components/tick-cross';
-
-// TODO: break this up
-@import 'app';

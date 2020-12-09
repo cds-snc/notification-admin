@@ -1,0 +1,44 @@
+@layer components {
+  details {
+    @apply block clear-both;
+  }
+
+  details summary {
+    padding-left: 25px;
+    @apply mb-gutterHalf underline inline-block text-blue-govukblue cursor-pointer relative;
+  }
+  details summary:before {
+    content: "";
+    @apply absolute top-0 bottom-0 left-0 m-auto block w-0 h-0 border-solid border-transparent;
+    -webkit-clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+    clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+    border-width: 7px 0 7px 12.124px;
+    border-left-color: inherit;
+  }
+  details summary:hover {
+    @apply text-blue-lightblue;
+  }
+  details summary:focus {
+    @apply outline-yellow;
+  }
+
+  summary::-moz-details-marker,
+  summary::-ms-details-marker,
+  summary::-o-details-marker,
+  summary::details-marker,
+  summary::-webkit-details-marker {
+    @apply hidden;
+  }
+
+  details[open]>summary:before {
+    @apply block w-0 h-0 border-solid border-transparent;
+    -webkit-clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
+    clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
+    border-width: 12.124px 7px 0 7px;
+    border-top-color: inherit;
+  }
+
+  details .arrow {
+    @apply text-small hidden;
+  }
+}

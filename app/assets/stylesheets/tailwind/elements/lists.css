@@ -1,0 +1,5 @@
+@layer components {
+  .list-bullet .list-bullet {
+    list-style: circle;
+  }
+}

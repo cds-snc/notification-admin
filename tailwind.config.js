@@ -26,9 +26,6 @@ module.exports = {
       outset3: "3px 0 0 0 rgba(191, 193, 195, 0.2)",
       yellow3: "-3px 0 0 0 rgba(255, 191, 71, 1), 3px 0 0 0 rgba(255, 191, 71, 1)",
     },
-    maxWidth: {
-      "4xl": "53rem"
-    },
     fontSize: {
       xs: "1.3rem",
       small: "1.6rem",
@@ -44,6 +41,7 @@ module.exports = {
     },
     screens: {
       xs: {'max': "639px"},
+      smaller: {'max': '768px'},
       sm: "640px",
       md: "768px",
       lg: "1024px"
@@ -120,6 +118,9 @@ module.exports = {
       },
       lineHeight: {
         'extra-tight': '0.9',
+      },
+      maxWidth: {
+        "4xl": "53rem"
       },
       outline: {
         yellow: '3px solid #ffbf47',

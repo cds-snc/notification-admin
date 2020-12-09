@@ -1,6 +1,13 @@
 @import "./components/tailwind.css";
 /*! purgecss start ignore */
 
+
+/* elements */
+@import "./elements/details.css";
+@import "./elements/forms.css";
+@import "./elements/lists.css";
+
+
 /* components */
 @import "./components/typography.css";
 @import "./components/placeholder.css";
@@ -228,6 +235,15 @@ label {
   white-space: nowrap; /* added line */
 }
 
+.border-box {
+  font-size:.9em;
+  border:1px solid #000;
+  @apply p-8 mb-8;
+}
+.border-box strong {
+  @apply font-bold;
+}
+
 .skiplink:focus {
   @apply outline-yellow bg-yellow;
 }
@@ -284,6 +300,43 @@ label {
   .loading-indicator:after {
     content: "\2026"; /* ellipsis */
     @apply overflow-hidden inline-block align-bottom animate-ellipsis w-0;
+  }
+
+  .homepage-colour-swap {
+    background-color: #cddae6;
+    padding:2rem 0;
+  }
+
+  .highlight {
+    @apply font-monospace overflow-x-scroll p-4 pr-0;
+  }
+  @screen md {
+    .inline.block-label {
+      @apply inline-block float-none;
+    }
+  }
+
+  .hint {
+    @apply text-gray-grey1;
+  }
+
+  .block-label-hint {
+    @apply text-smaller leading-tight font-normal mt-2;
+  }
+
+  .bordered-text-box {
+    outline: 2px solid #000;
+    @apply p-2 max-w-full;
+  }
+  @screen smaller {
+    #global-header .header-proposition #proposition-links li{
+      width:95%;
+    }
+    
+    #global-header .header-proposition #proposition-links a {
+      @apply text-smaller;
+      line-height: 1.4;
+    }
   }
 }
 
