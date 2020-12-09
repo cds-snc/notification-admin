@@ -42,5 +42,10 @@
       @apply mx-auto;
     }
   }
+  /* Home page was built with different CSS - override */
+  #content.home-page-content {
+    max-width: none;
+    @apply mx-0;
+  }
 
 }

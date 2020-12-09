@@ -377,7 +377,7 @@ def test_should_show_upcoming_jobs_on_dashboard(
 
 @pytest.mark.parametrize('permissions, column_name, expected_column_count', [
     (['email', 'sms'], '.column-half', 2),
-    (['email', 'letter'], '.column-third', 3),
+    (['email', 'letter'], '.column-one-third', 3),
     (['email', 'sms'], '.column-half', 2)
 ])
 def test_correct_columns_display_on_dashboard(
