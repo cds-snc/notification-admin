@@ -5,25 +5,32 @@ env:
   AWS_REGION: ca-central-1
   DOCKER_ORG: public.ecr.aws/v6b8u5o6
   DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-admin
+  KUBECTL_VERSION: '1.18.0'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Build and push
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
     - name: Install AWS CLI
       run: |
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
+        unzip -q awscliv2.zip
         sudo ./aws/install
         aws --version
+    - name: Install kubectl
+      run: |
+        curl -LO https://storage.googleapis.com/kubernetes-release/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
+        chmod +x ./kubectl
+        sudo mv ./kubectl /usr/local/bin/kubectl
+        kubectl version --client
     - name: AWS auth with ECR
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ECR_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ECR_SECRET_ACCESS_KEY }}
       run: |
-        aws ecr-public get-login-password --region us-east-1 > /tmp/aws
+        aws ecr-public get-login-password --region $AWS_REGION > /tmp/aws
         cat /tmp/aws | docker login --username AWS --password-stdin $DOCKER_ORG
         rm /tmp/aws
     - name: Build
@@ -32,20 +39,18 @@ jobs:
     - name: Publish
       run: |
         docker push $DOCKER_SLUG:latest && docker push $DOCKER_SLUG:${GITHUB_SHA::7}
-    - name: EKS
-      uses: docker://amazon/aws-cli:latest
+    - name: Get Kubernetes configuration
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      with:
-        args: eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-staging-eks-cluster
-    # - name: Apply
-    #   uses: docker://gcr.io/cdssnc/aws-kubectl:latest
-    #   env:
-    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #   with:
-    #     args: set image deployment.apps/admin admin=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=/github/home/.kube/config
+      run: |
+        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-staging-eks-cluster
+    - name: Update image in staging
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        kubectl set image deployment.apps/admin admin=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=/github/home/.kube/config
     - uses: cds-snc/notification-pr-bot@master
       env:
         TOKEN: ${{ secrets.TOKEN }}
