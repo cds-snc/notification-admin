@@ -45,13 +45,13 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
-        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-staging-eks-cluster
+        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-staging-eks-cluster --kubeconfig $HOME/.kube/config
     - name: Update image in staging
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
-        kubectl set image deployment.apps/admin admin=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=/github/home/.kube/config
+        kubectl set image deployment.apps/admin admin=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
     - uses: cds-snc/notification-pr-bot@master
       env:
         TOKEN: ${{ secrets.TOKEN }}
