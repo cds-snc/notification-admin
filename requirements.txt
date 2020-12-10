@@ -15,13 +15,14 @@ pyexcel-io==0.5.20
 pyexcel-xls==0.5.9
 pyexcel-xlsx==0.5.8
 pyexcel-ods3==0.5.3
-pytz==2020.1
+pytz==2020.4
 gunicorn==20.0.4
 eventlet==0.28.0
 notifications-python-client==5.5.1
 sentry-sdk[flask]==0.19.2
 
 Babel==2.8.0
+boto3==1.16.28
 Flask-Babel==1.0.0
 newrelic==5.22.1.152
 python-dotenv==0.14.0
@@ -34,7 +35,7 @@ WTForms==2.3.3
 email-validator==1.1.1
 
 # PaaS
-awscli-cwlogs>=1.4,<1.5
+awscli-cwlogs>=1.4.6,<1.5
 
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous==0.24  # pyup: <1.0.0
@@ -44,10 +45,9 @@ git+https://github.com/cds-snc/notifier-utils.git@43.3.0#egg=notifications-utils
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
 
 ## The following requirements were added by pip freeze:
-awscli==1.18.193
+awscli==1.18.188
 bleach==3.2.1
-boto3==1.16.28
-botocore==1.19.33
+botocore==1.19.28
 cachetools==4.1.1
 certifi==2020.12.5
 chardet==3.0.4
