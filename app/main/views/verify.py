@@ -75,7 +75,7 @@ def activate_user(user_id):
     activated_user = user.activate()
     activated_user.login()
 
-    user_api_client.send_new_registration_data_email(user.name, user.email_address)
+    user_api_client.send_new_registration_data(user.name, user.email_address)
 
     invited_user = session.get('invited_user')
     if invited_user:

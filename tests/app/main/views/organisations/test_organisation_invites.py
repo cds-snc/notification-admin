@@ -200,6 +200,7 @@ def test_existing_user_invite_not_a_member_of_organisation(
     mock_accept_org_invite.assert_called_once_with(ORGANISATION_ID, ANY)
     mock_get_user_by_email.assert_called_once_with('invited_user@test.canada.ca')
     mock_get_users_for_organisation.assert_called_once_with(ORGANISATION_ID)
+    # Copy this when testing if the FreshDesk API is Called
     mock_add_user_to_organisation.assert_called_once_with(
         ORGANISATION_ID,
         api_user_active['id'],
@@ -364,6 +365,7 @@ def test_verified_org_user_redirects_to_dashboard(
     mock_get_user,
     mock_activate_user,
     mock_login,
+    mocker,
 ):
     invited_org_user = InvitedOrgUser(sample_org_invite).serialize()
     with client.session_transaction() as session:
@@ -371,6 +373,7 @@ def test_verified_org_user_redirects_to_dashboard(
         session['user_details'] = {"email": invited_org_user['email_address'], "id": invited_org_user['id']}
         session['organisation_id'] = invited_org_user['organisation']
 
+    mocker.patch('app.user_api_client.send_new_registration_data')
     response = client.post(url_for('main.verify'), data={'two_factor_code': '12345'})
 
     assert response.status_code == 302

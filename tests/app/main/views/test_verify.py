@@ -43,6 +43,7 @@ def test_should_redirect_to_add_service_when_two_factor_code_is_correct(
         # user's only just created their account so no session in the cookie
         session.pop('current_session_id', None)
 
+    mocker.patch('app.user_api_client.send_new_registration_data')
     response = client.post(url_for('main.verify'),
                            data={'two_factor_code': '12345'})
     assert response.status_code == 302
@@ -63,7 +64,7 @@ def test_should_activate_user_after_verify(
     mock_check_verify_code,
     mock_create_event,
     mock_activate_user,
-    mock_send_new_registration_data_email,
+    mock_send_new_registration_data,
 ):
     mocker.patch('app.user_api_client.get_user', return_value=api_user_pending)
     with client.session_transaction() as session:

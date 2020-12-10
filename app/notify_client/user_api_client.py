@@ -121,7 +121,7 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = '/user/{0}/email-already-registered'.format(user_id)
         self.post(endpoint, data=data)
 
-    def send_new_registration_data_email(self, name, email):
+    def send_new_registration_data(self, name, email):
         now = datetime.datetime.now()
         date = now.strftime('%Y-%m-%d %H:%M:%S')
         data = {'id': self.notify_user_id, 'name': name, 'email': email, 'date': date}

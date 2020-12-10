@@ -458,7 +458,6 @@ def test_new_invited_user_verifies_and_added_to_service(
     mock_email_is_not_already_in_use,
     mock_register_user,
     mock_send_verify_code,
-    mock_send_new_registration_data_email,
     mock_check_verify_code,
     mock_get_user,
     mock_update_user_attribute,
@@ -495,6 +494,7 @@ def test_new_invited_user_verifies_and_added_to_service(
     assert response.location == url_for('main.verify', _external=True)
 
     # that sends user on to verify
+    mocker.patch('app.user_api_client.send_new_registration_data')
     response = client.post(url_for('main.verify'), data={'two_factor_code': '12345'}, follow_redirects=True)
     assert response.status_code == 200
 

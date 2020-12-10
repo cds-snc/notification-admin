@@ -320,6 +320,7 @@ def test_register_from_email_auth_invite(
     mock_create_event,
     mock_add_user_to_service,
     invite_email_address,
+    mocker,
 ):
     sample_invite['auth_type'] = 'email_auth'
     sample_invite['email_address'] = invite_email_address
@@ -336,6 +337,7 @@ def test_register_from_email_auth_invite(
         'auth_type': 'email_auth',
     }
 
+    mocker.patch('app.user_api_client.send_new_registration_data')
     resp = client.post(url_for('main.register_from_invite'), data=data)
     assert resp.status_code == 302
     assert resp.location == url_for('main.service_dashboard', service_id=sample_invite['service'], _external=True)
@@ -372,6 +374,7 @@ def test_can_register_email_auth_without_phone_number(
     mock_accept_invite,
     mock_create_event,
     mock_add_user_to_service,
+    mocker,
 ):
     sample_invite['auth_type'] = 'email_auth'
     with client.session_transaction() as session:
@@ -386,6 +389,7 @@ def test_can_register_email_auth_without_phone_number(
         'auth_type': 'email_auth'
     }
 
+    mocker.patch('app.user_api_client.send_new_registration_data')
     resp = client.post(url_for('main.register_from_invite'), data=data)
     assert resp.status_code == 302
     assert resp.location == url_for('main.service_dashboard', service_id=sample_invite['service'], _external=True)
