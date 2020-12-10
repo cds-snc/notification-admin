@@ -24,7 +24,7 @@
     @apply mb-0 font-normal;
   }
 
-  /* This was previously the %site-width-container mixin*/
+  /* This was previously the %site-width-container mixin */
   #content,
   .global-cookie-message p {
     max-width: 960px;

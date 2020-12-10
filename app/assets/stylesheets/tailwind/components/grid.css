@@ -23,23 +23,4 @@
     margin-bottom: 19px;
     @apply text-right block mx-0;
   }
-
-  .align-with-big-number-hint {
-    martin-top: 18px;
-  }
-
-  .footer-nav {
-    padding-top: 8px;
-    padding-bottom: 7px;
-    @apply text-small leading-tight font-normal mb-8;
-  }
-  @screen md {
-    .footer-nav {
-      padding-top: 5px;
-      padding-bottom: 5px;
-    }
-  }
-  .footer-nav a {
-    @apply inline-block mr-gutterHalf;
-  }
 }
