@@ -10,58 +10,8 @@ main {
 }
 
 // Core font sizes
-.font-xxlarge {
-  @include core-80;
-}
-
-.font-xlarge {
-  @include core-48;
-}
-
-.font-large {
-  @include core-36;
-}
-
-.font-medium {
-  @include core-24;
-}
-
-.font-small {
-  @include core-19;
-}
-
 .font-xsmall {
   @include core-16;
-}
-
-// Bold font sizes
-.bold-xxlarge {
-  @include bold-80();
-}
-
-.bold-xlarge {
-  @include bold-48();
-}
-
-.bold-large {
-  @include bold-36();
-}
-
-.bold-medium {
-  @include bold-24();
-}
-
-.bold-small {
-  @include bold-19();
-}
-
-.bold-xsmall {
-  @include bold-16();
-}
-
-// Bold, without needing a font size
-.bold {
-  font-weight: 700;
 }
 
 // Common heading sizes
@@ -69,27 +19,6 @@ main {
 // Spacing is set in em, using the px to em function in the elements _helpers.scss file
 
 // Headings
-.heading-xlarge {
-  @include bold-48();
-
-  display: block;
-  margin-top: em(15, 32);
-  margin-bottom: em(30, 32);
-
-  @include media(tablet) {
-    margin-top: em(30, 48);
-    margin-bottom: em(60, 48);
-  }
-
-  .heading-secondary {
-    @include heading-27();
-
-    display: block;
-    color: $secondary-text-colour;
-  }
-
-}
-
 .heading-large {
   @include bold-36();
 
