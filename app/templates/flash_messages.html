@@ -13,7 +13,7 @@
       {% else %}
         {% set delete_button_text = None %}
       {% endif %}
-      <div class="bottom-gutter contain-floats">
+      <div class="mb-12 clear-both contain-floats">
         {{ banner(
           message if message is string else message[0],
           'default' if ((category == 'default') or (category == 'default_with_tick')) else 'dangerous',

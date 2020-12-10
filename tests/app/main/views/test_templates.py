@@ -2183,7 +2183,7 @@ def test_add_sender_link_only_appears_on_services_with_no_senders(
         template_id=fake_uuid,
     )
 
-    assert page.select_one('.column-three-quarters form > a')['href'] == url_for(
+    assert page.select_one('.w-3/4 form > a')['href'] == url_for(
         'main.service_add_letter_contact',
         service_id=SERVICE_ONE_ID,
         from_template=fake_uuid,

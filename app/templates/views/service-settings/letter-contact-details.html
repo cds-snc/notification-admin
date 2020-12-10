@@ -10,7 +10,7 @@
 
 {% block maincolumn_content %}
 
-  <div class="bottom-gutter contain-floats">
+  <div class="mb-12 clear-both contain-floats">
     {{ page_header(
       'Sender addresses',
       back_link=url_for('main.service_settings', service_id=current_service.id)
@@ -50,7 +50,7 @@
   </div>
   {% if current_user.has_permissions('manage_service') %}
     <div class="grid-row contain-floats">
-      <div class="column-full">
+      <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
         <div class="js-stick-at-bottom-when-scrolling">
           <a href="{{ url_for('.service_add_letter_contact', service_id=current_service.id) }}" class="button">Add a new address</a>
         </div>

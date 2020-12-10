@@ -15,10 +15,10 @@
 ) }}
 
 <div class="grid-row contain-floats">
-  <div class="column-full">
+  <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
   {% call form_wrapper() %}
     <p>{{ _('New mobile number:') }}</p>
-    <div class="panel panel-border-wide bottom-gutter contain-floats">
+    <div class="panel panel-border-wide mb-12 clear-both contain-floats">
       <p>{{ new_mobile_number }}</p>
     </div>
     <p>{{ _('We will send') }} {{ user.name }} {{ _('a text message to tell them about the change.') }}</p>

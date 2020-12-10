@@ -8,12 +8,12 @@
 ) %}
   {% if show_heading %}
     <div class="grid-row contain-floats">
-      <div class="column-one-quarter">
+      <div class="w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
         <h2>
           {{ heading }}
         </h2>
       </div>
-      <div class="column-three-quarters">
+      <div class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
         <ul>
   {% else %}
     <ul>
@@ -58,16 +58,16 @@
     {{ _('Choose service') }}
   </h1>
 
-  <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}top-gutter-2-3 contain-floats{% endif %}">
+  <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}mt-8 block clear-both contain-floats{% endif %}">
 
     {% if current_user.platform_admin %}
       <div class="grid-row contain-floats">
-        <div class="column-one-quarter">
+        <div class="w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
           <h2>
             {{ _('Platform admin') }}
           </h2>
         </div>
-        <ul class="column-three-quarters">
+        <ul class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
           <li class="browse-list-item">
             <a href="{{ url_for('.organisations') }}" class="browse-list-link">{{ _('All organisations') }}</a>
             <p class="browse-list-hint">
@@ -108,10 +108,10 @@
     <div class="js-stick-at-bottom-when-scrolling">
       {% if current_user.has_access_to_live_and_trial_mode_services %}
         <div class="grid-row contain-floats">
-          <div class="column-one-quarter">
+          <div class="w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
             &nbsp;
           </div>
-          <div class="column-three-quarters">
+          <div class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       {% endif %}
       <a href="{{ url_for('.add_service') }}" class="button button-secondary">{{ _('Add a new service') }}</a>
       {% if current_user.has_access_to_live_and_trial_mode_services %}

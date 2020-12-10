@@ -27,7 +27,7 @@
       <a href="{{ url_for('.service_email_reply_to', service_id=service_id) }}" class="button">{{ _('Continue') }}</a>
     </div>
   {% elif verification_status == "failure" %}
-    <div class="bottom-gutter contain-floats">
+    <div class="mb-12 clear-both contain-floats">
       {% call banner_wrapper(type='dangerous') %}
         <h2 class='banner-title' data-module="track-error" data-error-type="reply-to-email-not-working" data-error-label="{{ upload_id }}">
           {{ _('There’s a problem with your reply-to address') }}

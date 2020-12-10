@@ -1,4 +1,4 @@
-<div class="column-full">
+<div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
   <h2 class="message-name">{{ template.name }}</h2>
   <p class="hint">
     {% if template.get_raw('version', 1) > 1 %}
@@ -11,6 +11,6 @@
   </p>
 </div>
 
-<div class="column-full">
+<div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
   {{ template|string|translate_preview_template }}
 </div>

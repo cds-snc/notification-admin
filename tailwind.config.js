@@ -137,6 +137,9 @@ module.exports = {
       transitionProperty: {
         'background': 'background',
       },
+      width: {
+        '5/8': '62.5%'
+      },
       zIndex: {
         '100': 100,
       },

@@ -13,14 +13,14 @@
 {% block maincolumn_content %}
 
 <div class="grid-row contain-floats">
-  <div class="column-five-sixths">
+  <div class="w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
     {% set txt = _('Accept the GC Notify data sharing and financial agreement') %}
     {{ page_header(
       txt,
       back_link=url_for('main.service_agreement', service_id=current_service.id)
     ) }}
 
-    {% call form_wrapper(class='top-gutter contain-floats') %}
+    {% call form_wrapper(class='mt-12 block clear-both contain-floats') %}
 
       {% call select_wrapper(form.who) %}
         {% for option in form.who %}

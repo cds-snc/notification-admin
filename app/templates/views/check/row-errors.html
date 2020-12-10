@@ -20,7 +20,7 @@
 
   {{ govuk_back_link(back_link) }}
 
-  <div class="bottom-gutter-1-2 contain-floats">
+  <div class="mb-12 clear-both-1-2 contain-floats">
     {% call banner_wrapper(type='dangerous') %}
       {% if row_errors|length == 1 %}
         <h1 class='banner-title' data-module="track-error" data-error-type="Bad rows" data-error-label="{{ upload_id }}">

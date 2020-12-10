@@ -8,7 +8,7 @@
 {% block maincolumn_content %}
 
 <div class="grid-row contain-floats">
-  <div class="column-two-thirds">
+  <div class="w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
 
     <h1 class="heading-large">{{ _('Callback documentation') }}</h1>
     <p>{{ _('A callback lets you receive messages from GC Notify to a URL you choose.') }}</p>
@@ -17,7 +17,7 @@
 
     <h2 class="heading-medium">{{ _('Email and text message delivery receipts') }}</h2>
     <p>{{ _('When you send an email or text message through GC Notify, we can send a receipt to your callback URL to tell you if we were able to deliver it or not.') }}</p>
-    <div class="bottom-gutter-3-2 contain-floats">
+    <div class="mb-12 clear-both-3-2 contain-floats">
       {% call mapping_table(
         caption='Callback message format',
         field_headings=[_('Key'), _('Description'), _('Format')],
@@ -45,7 +45,7 @@
 
     <h2 class="heading-medium">{{ _('Text messages you receive') }}</h2>
     <p>{{ _('If your service receives text messages in GC Notify, we can forward them to your callback URL as soon as they arrive.') }}</p>
-    <div class="bottom-gutter-3-2 contain-floats">
+    <div class="mb-12 clear-both-3-2 contain-floats">
       {% call mapping_table(
         caption=_('Callback message format'),
         field_headings=[_('Key'), _('Description'), _('Format')],

@@ -124,12 +124,12 @@
       })
       .then(function(response) {
         if (response.ok) {
-          var html = '<div class="bottom-gutter">'
+          var html = '<div class="mb-12 clear-both">'
               html+='<div class="banner banner-with-tick">Key(s) worked</div>';
               html+='</div>';
           $('.test-key-message').html(html)
         } else {
-          var html = '<div class="bottom-gutter">'
+          var html = '<div class="mb-12 clear-both">'
               html+='<div class="banner banner-dangerous" role="group" tabindex="-1">Key(s) failed</div>';
               html+='</div>';
 

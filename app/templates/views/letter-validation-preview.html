@@ -13,7 +13,7 @@
 {% block maincolumn_content %}
 
 <div class="grid-row contain-floats">
-  <div class="column-full">
+  <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
     {% if result %}
       {{ banner(message, with_tick=True) }}
     {% elif message %}
@@ -21,7 +21,7 @@
     {% endif %}
 
       <h1 class="heading-large">Letter validation preview</h1>
-    <div class="bottom-gutter contain-floats">
+    <div class="mb-12 clear-both contain-floats">
      {{ file_upload(
           form.file,
           action = url_for('main.service_letter_validation_preview', service_id=current_service.id),
@@ -43,7 +43,7 @@
         </div>
     {% endif%}
   </div>
-  <div class="column-full template-container" >
+  <div class="w-full float-left py-0 px-0 px-gutterHalf box-border template-container" >
 
     {% for page in pages %}
     <div class="letter">
