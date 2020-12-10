@@ -28,7 +28,7 @@
     @apply m-0 mb-8 pointer-events-none text-gray-grey1;
   }
 
-  #template-list: {
+  #template-list {
     @apply mt-12;
   }
   #template-list.top-gutter-5px {

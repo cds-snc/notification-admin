@@ -1,6 +1,6 @@
 @layer components {
 
-  /* Note: Buttons are <a> sometimes, which is why :link and : visited styles exist */
+  /* Note: Buttons are <a> sometimes, which is why :link and :visited styles exist */
 
   .button, .button:link, .button:visited {
     padding: .526315em .789473em .263157em;

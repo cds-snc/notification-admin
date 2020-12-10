@@ -1,5 +1,5 @@
 @layer components {
-  /*! purgecss start ignore */
+
   .js-enabled .file-upload-label {
     @apply text-smaller leading-tight font-bold block m-0 mb-4;
   }
@@ -37,5 +37,4 @@
     @apply text-smaller leading-tight font-bold;
   }
 
-  /*! purgecss end ignore */
 }

@@ -1,5 +1,5 @@
 @layer components {
-  
+
   .fullscreen-content {
     @apply p-0 m-0 mb-12 bg-white z-10 overflow-hidden box-border border-0 border-solid border-gray-grey2 border-b-1;
   }

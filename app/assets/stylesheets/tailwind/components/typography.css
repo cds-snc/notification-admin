@@ -1,22 +1,23 @@
-a {
-  @apply underline text-smaller;
-  -webkit-tap-highlight-color: rgba(0,0,0,0.3);
-}
-
-a:link, a:visited {
-  @apply text-blue-govukblue;
-}
-
-a:focus {
-  @apply outline-yellow bg-yellow;
-}
-
-a:link:focus {
-  color: #005798;
-}
-
 @layer components {
+  a {
+    @apply underline text-smaller;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.3);
+  }
+  
+  a:link, a:visited {
+    @apply text-blue-govukblue;
+  }
+  
+  a:focus {
+    @apply outline-yellow bg-yellow;
+  }
+  
+  a:link:focus {
+    color: #005798;
+  }
+  
   .heading-medium {
     @apply text-base leading-tight block font-bold;
   }
+  
 }

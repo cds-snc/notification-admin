@@ -1,5 +1,5 @@
 @layer components {
-  /*! purgecss start ignore */
+
   .navigation {
     @apply p-0 pr-gutter;
   }
@@ -126,6 +126,5 @@
   .sub-navigation__item--active a:visited {
     @apply text-black;
   }
-
-  /*! purgecss end ignore */
+  
 }
