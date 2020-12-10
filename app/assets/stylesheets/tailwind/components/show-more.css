@@ -1,5 +1,5 @@
 @layer components {
-  
+  /*! purgecss start ignore */
   .show-more,
   .show-more-empty {
     @apply text-small leading-tight font-normal block p-0 mx-0 mt-gutterHalf mb-gutter text-center border-t-1 border-solid border-gray-grey2;
@@ -24,5 +24,5 @@
   .show-more-empty {
     margin-top: -10px;
   }
-
+  /*! purgecss end ignore */
 }

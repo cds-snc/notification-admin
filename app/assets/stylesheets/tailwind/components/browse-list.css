@@ -1,4 +1,5 @@
 @layer components {
+  /*! purgecss start ignore */
   .browse-list {
     @apply mb-gutterHalf;
   }
@@ -32,4 +33,5 @@
   .browse-list-hint {
     @apply text-smaller leading-tight font-normal mt-2 mb-4 mx-0 text-gray-grey1;
   }
+  /*! purgecss end ignore */
 }

@@ -1,5 +1,5 @@
 @layer components {
-  
+  /*! purgecss start ignore */
   .placeholder,
   .placeholder-no-brackets,
   .placeholder-conditional {
@@ -50,5 +50,5 @@
     /* theme yellow */
     box-shadow: inset 0 -0.35em 0 0 #ffbf47;
   }
-
+  /*! purgecss end ignore */
 }

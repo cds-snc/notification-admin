@@ -1,7 +1,6 @@
 @import "./components/tailwind.css";
 
 
-/*! purgecss start ignore */
 @import "./toolkit/shims.css";
 
 
@@ -40,7 +39,7 @@
 @import "./views/notification.css";
 
 
-
+/*! purgecss start ignore */
 @-ms-viewport {
   width: device-width;
 }

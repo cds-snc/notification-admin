@@ -1,4 +1,5 @@
 @layer components {
+  /*! purgecss start ignore */
   .banner {
     @apply block relative p-gutterHalf mx-0 mt-gutter mb-gutterHalf clear-both text-left font-bold text-smaller border-4 border-solid leading-tight;
   }
@@ -47,5 +48,5 @@
     max-width: none;
     @apply mx-0;
   }
-
+  /*! purgecss end ignore */
 }

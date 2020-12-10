@@ -1,4 +1,5 @@
 @layer components {
+  /*! purgecss start ignore */
   .message-name {
     @apply m-0 leading-tight font-bold text-title;
   }
@@ -143,4 +144,5 @@
     -ms-transform: rotate(45deg);
     @apply block absolute my-auto mx-0 border-solid border-t-2 border-r-2 border-b-0 border-l-0 border-gray-grey1 transform rotate-45;
   }
+  /*! purgecss end ignore */
 }

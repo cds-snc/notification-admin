@@ -2,7 +2,7 @@
    https://github.com/alphagov/govuk_frontend_toolkit/blob/d9489a987086471fe30b4b925a81c12cd198c91d/docs/javascript.md#stick-at-top-when-scrolling
 */
 @layer components {
-  
+  /*! purgecss start ignore */
   .js-stick-at-top-when-scrolling,
   .js-stick-at-bottom-when-scrolling {
     margin-left: -15px;
@@ -110,5 +110,5 @@
   .js-cancel:active {
     @apply bg-yellow outline-none text-blue-govukblue;
   }
-  
+  /*! purgecss end ignore */
 }
