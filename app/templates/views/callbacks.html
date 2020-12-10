@@ -17,7 +17,7 @@
 
     <h2 class="heading-medium">{{ _('Email and text message delivery receipts') }}</h2>
     <p>{{ _('When you send an email or text message through GC Notify, we can send a receipt to your callback URL to tell you if we were able to deliver it or not.') }}</p>
-    <div class="mb-12 clear-both-3-2 contain-floats">
+    <div class="mb-12 clear-both contain-floats">
       {% call mapping_table(
         caption='Callback message format',
         field_headings=[_('Key'), _('Description'), _('Format')],
@@ -45,7 +45,7 @@
 
     <h2 class="heading-medium">{{ _('Text messages you receive') }}</h2>
     <p>{{ _('If your service receives text messages in GC Notify, we can forward them to your callback URL as soon as they arrive.') }}</p>
-    <div class="mb-12 clear-both-3-2 contain-floats">
+    <div class="mb-12 clear-both contain-floats">
       {% call mapping_table(
         caption=_('Callback message format'),
         field_headings=[_('Key'), _('Description'), _('Format')],

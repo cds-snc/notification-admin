@@ -60,7 +60,7 @@
 
 
 {% macro big_number_simple(number, label) %}
-  <div class="big-number-dark mb-12 clear-both-2-3 contain-floats">
+  <div class="big-number-dark mb-12 clear-both contain-floats">
     <div class="big-number-number text-lg">
       {% if number is number %}
         {{ "{:,}".format(number) }}

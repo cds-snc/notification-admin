@@ -27,11 +27,11 @@
   {% else %}
 
     {% if notifications %}
-      <div class="dashboard-table mb-12 clear-both-3-2 contain-floats">
+      <div class="dashboard-table mb-12 clear-both contain-floats">
     {% endif %}
 
       {% if template.template_type == 'letter' %}
-        <div class="keyline-block mb-12 clear-both-1-2 contain-floats">
+        <div class="keyline-block mb-12 clear-both contain-floats">
       {% endif %}
         {% if percentage_complete < 100 %}
           <p class="{% if template.template_type != 'letter' %}mb-12 clear-both contain-floats{% endif %} hint">

@@ -12,7 +12,7 @@
       {{ _('or edit this template, contact your manager.') }}
     </p>
   {% else %}
-    <div class="mb-12 clear-both-2-3 contain-floats">
+    <div class="mb-12 clear-both contain-floats">
       <div class="grid-row contain-floats">
         {% if template.template_type == 'letter' %}
           {% if current_user.has_permissions('send_messages', restrict_admin_usage=True) %}

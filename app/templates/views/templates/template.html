@@ -46,9 +46,9 @@
     {% include 'views/templates/_template.html' %}
   </div>
 
-  <div class="mb-12 clear-both-1-2 contain-floats">
+  <div class="mb-12 clear-both contain-floats">
     {% if template._template.updated_at %}
-      <h2 class="heading-small mb-12 clear-both-2-3 contain-floats heading-inline">
+      <h2 class="heading-small mb-12 clear-both contain-floats heading-inline">
         {% set last_edited = _('Last edited') %}
         {{ last_edited }}
         {{ template._template.updated_at|format_delta }}
@@ -63,7 +63,7 @@
     {% if current_user.has_permissions('manage_templates') and user_has_template_permission %}
       {% if not template._template.archived %}
         {% set delete_txt = _('Delete this template') %}
-        <span class="page-footer-delete-link page-footer-delete-link-without-button mb-12 clear-both-2-3 contain-floats">
+        <span class="page-footer-delete-link page-footer-delete-link-without-button mb-12 clear-both contain-floats">
           <a href="{{ url_for('.delete_service_template', service_id=current_service.id, template_id=template.id) }}">{{ delete_txt }}</a>
         </span>
         &emsp;
@@ -85,7 +85,7 @@
   {% if current_user.platform_admin %}
     <p>{{ _('Template version') }}: {{template._template.version}}</p>
   {% endif %}
-  <div class="mb-12 clear-both-1-2 contain-floats">
+  <div class="mb-12 clear-both contain-floats">
     {{ api_key(template.id, name="Template ID", thing='template ID') }}
   </div>
 
