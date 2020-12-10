@@ -39,17 +39,17 @@ awscli-cwlogs>=1.4,<1.5
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous==0.24  # pyup: <1.0.0
 
-git+https://github.com/cds-snc/notifier-utils.git@43.2.0#egg=notifications-utils
+git+https://github.com/cds-snc/notifier-utils.git@43.3.0#egg=notifications-utils
 
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
 
 ## The following requirements were added by pip freeze:
-awscli==1.18.170
+awscli==1.18.193
 bleach==3.2.1
-boto3==1.15.13
-botocore==1.19.10
-cachetools==4.1.0
-certifi==2020.6.20
+boto3==1.16.28
+botocore==1.19.33
+cachetools==4.1.1
+certifi==2020.12.5
 chardet==3.0.4
 click==7.1.2
 colorama==0.4.3
@@ -65,14 +65,14 @@ jdcal==1.4.1
 Jinja2==2.11.2
 jmespath==0.10.0
 lml==0.1.0
-lxml==4.6.1
+lxml==4.6.2
 MarkupSafe==1.1.1
 mistune==0.8.4
 monotonic==1.5
 openpyxl==3.0.5
 orderedset==2.0.3
-packaging==20.4
-phonenumbers==8.12.10
+packaging==20.7
+phonenumbers==8.12.12
 pyasn1==0.4.8
 pyexcel-ezodf==0.3.4
 PyJWT==1.7.1
@@ -81,13 +81,13 @@ PyPDF2==1.26.0
 python-dateutil==2.8.1
 python-json-logger==2.0.0
 redis==3.5.3
-requests==2.24.0
+requests==2.25.0
 s3transfer==0.3.3
 six==1.15.0
 smartypants==2.0.1
 statsd==3.3.0
 texttable==1.6.3
-urllib3==1.25.11
+urllib3==1.26.2
 webencodings==0.5.1
 Werkzeug==1.0.1
 xlrd==1.2.0
