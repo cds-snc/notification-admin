@@ -17,8 +17,49 @@
     color: #005798;
   }
   
+  .heading-small {
+    margin-top: 10/16em;
+    margin-bottom: 5/16em;
+    @apply text-smaller leading-tight font-bold block;
+  }
+  @screen md {
+    .heading-small {
+      margin-top: 20/19em;
+    }
+  }
+  
   .heading-medium {
-    @apply text-base leading-tight block font-bold mt-gutter;
+    margin-top: 25/20em;
+    margin-bottom: 10/20em;
+    @apply text-base leading-tight block font-bold mt-gutter block;
+  }
+  @screen md {
+    .heading-medium {
+      margin-top: 45/24em;
+      margin-bottom: 20/24em;
+    }
+  }
+
+  .heading-large {
+    line-height: 1.111;
+    margin-top: 25/24em;
+    margin-bottom: 10/24em;
+    @apply text-lg font-bold block;
+  }
+  .heading-large .heading-secnodary {
+    padding-top: 9px;
+    padding-bottom: 6px;
+    @apply block text-gray-grey1 text-title leading-tight;
+  }
+  @screen md {
+    .heading-large {
+      margin-top: 45/36em;
+      margin-bottom: 20/36em;
+    }
+    .heading-large .heading-secnodary {
+      padding-top: 6px;
+      padding-bottom: 4px;
+    }
   }
 
   .heading-xlarge {
