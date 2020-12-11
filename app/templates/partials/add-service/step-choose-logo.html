@@ -1,4 +1,4 @@
-{% set header_txt = _('Choose a logo for your service') %}
+{% set header_txt = heading %}
 {{ page_header(header_txt) }}
 
 <p>{{ _('Choose a logo for your service') }}</p>
@@ -10,14 +10,9 @@
 <div class="form-wrap">
     {% call form_wrapper() %}
     {{ radios(form.default_branding) }}
-
-    {% if not default_organisation_type %}
-        {{ form.organisation_type }}
-    {% endif %}
     {{ form.name }}
+    {{ form.email_from }}
     {{ form.current_step }}
-    {{ form.next_step }}
-
     {% set button_txt = _('Add service') %}
     {{ page_footer(button_txt) }}
     {% endcall %}

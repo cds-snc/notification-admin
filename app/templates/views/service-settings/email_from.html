@@ -1,0 +1,29 @@
+
+{% extends "withnav_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Change your email prefix')  }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {{ page_header(
+    _('Change your email prefix'),
+    back_link=url_for('main.service_settings', service_id=current_service.id)
+  ) }}
+
+  <div class="form-group">
+    <p>{{ _('Users will see your email prefix as your email local prefix.') }}</p>
+  </div>
+
+  {% call form_wrapper() %}
+    {% set save_txt = _('Save') %}
+    {{ textbox(form.email_from) }}
+    {{ page_footer(save_txt) }}
+  {% endcall %}
+
+{% endblock %}

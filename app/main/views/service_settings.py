@@ -55,7 +55,7 @@ from app.main.forms import (
     ServiceSwitchChannelForm,
     SetEmailBranding,
     SetLetterBranding,
-    SMSPrefixForm,
+    SMSPrefixForm, ChangeEmailFromServiceForm,
 )
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
@@ -127,7 +127,6 @@ def service_name_change_confirm(service_id):
         try:
             current_service.update(
                 name=session['service_name_change'],
-                email_from=email_safe(session['service_name_change'])
             )
         except HTTPError as e:
             error_msg = "Duplicate service name '{}'".format(session['service_name_change'])
@@ -143,6 +142,68 @@ def service_name_change_confirm(service_id):
     return render_template(
         'views/service-settings/confirm.html',
         heading=_('Change your service name'),
+        form=form)
+
+
+@main.route("/services/<service_id>/service-settings/email_from", methods=['GET', 'POST'])
+@user_has_permissions('manage_service')
+def service_email_from_change(service_id):
+    form = ChangeEmailFromServiceForm()
+
+    if request.method == 'GET':
+        form.email_from.data = current_service.email_from
+
+    if form.validate_on_submit():
+
+        if form.email_from.data == current_service.email_from:
+            return redirect(url_for('.service_settings', service_id=service_id))
+
+        # TODO DP uncomment this fixed
+        # unique_name = service_api_client.is_service_name_unique(service_id, form.name.data, email_safe(form.name.data))
+
+        # if not unique_name:
+        #     form.name.errors.append(_("This service name is already in use"))
+        #     return render_template('views/service-settings/name.html', form=form)
+
+        session['service_email_from_change'] = form.email_from.data
+        return redirect(url_for('.service_email_from_change_confirm', service_id=service_id))  # TODO DP add this
+
+    return render_template(
+        'views/service-settings/email_from.html',
+        form=form,
+    )
+
+
+@main.route("/services/<service_id>/service-settings/email_from/confirm", methods=['GET', 'POST'])
+@user_has_permissions('manage_service')
+def service_email_from_change_confirm(service_id):
+    # Validate password for form
+    def _check_password(pwd):
+        return user_api_client.verify_password(current_user.id, pwd)
+
+    form = ConfirmPasswordForm(_check_password)
+
+    if form.validate_on_submit():
+        try:
+            current_service.update(
+                email_from=email_safe(session['service_email_from_change'])
+            )
+        except HTTPError as e:
+            print('{}'.format(e))  # noqa:
+            pass
+            # error_msg = "Duplicate service name '{}'".format(session['service_name_change'])
+            # if e.status_code == 400 and error_msg in e.message['name']:
+            #     # Redirect the user back to the change service name screen
+            #     flash(_('This service name is already in use'), 'error')
+            #     return redirect(url_for('main.service_name_change', service_id=service_id))
+            # else:
+            #     raise e  # TODO DP, add handler here with appropriate backend handling
+        else:
+            session.pop('service_email_from_change')
+            return redirect(url_for('.service_settings', service_id=service_id))
+    return render_template(
+        'views/service-settings/confirm.html',
+        heading=_('Change your email prefix'),
         form=form)
 
 

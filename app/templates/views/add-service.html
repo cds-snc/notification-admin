@@ -21,9 +21,11 @@
 <div class="grid-row">
   <div class="column-two-thirds">
     {% if current_step == "choose_service_name" %}
-      {% include "partials/add-service/step1-create-service.html" %}
+      {% include "partials/add-service/step-create-service.html" %}
+    {% elif current_step == "choose_email_from" %}
+      {% include "partials/add-service/step-choose-email.html" %}
     {% elif current_step == "choose_logo" %}
-      {% include "partials/add-service/step2-choose-logo.html" %}
+      {% include "partials/add-service/step-choose-logo.html" %}
     {% endif %}
   </div>
 </div>

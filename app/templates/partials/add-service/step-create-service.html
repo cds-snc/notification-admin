@@ -1,0 +1,31 @@
+{% set header_txt = heading %}
+{{ page_header(header_txt) }}
+
+<p>{{ _('GC Notify displays your service name:') }}</p>
+<p>
+<ul class="list-bullet">
+  <li>{{ _('at the start of every text message') }}</li>
+  <li>{{ _('as the ‘from’ address on emails you send') }}</li>
+</ul>
+</p>
+
+<p>{{ _('Your service name must include both English and French. It cannot be longer than 255 characters.') }}</p>
+
+<p>{{ _('For example:') }}<br>
+<ul class="list-bullet">
+  <li>{{ _('Canadian Digital Service (CDS) | Service numérique canadien (SNC)') }}</li>
+  <li>cds-snc.ca</li>
+</ul>
+</p>
+
+<div class="form-wrap">
+  {% call form_wrapper() %}
+    {% set hint_txt = _('You can change this later') %}
+
+    {{ textbox(form.name, hint=hint_txt) }}
+    {% set button_txt = _('Continue') %}
+    {{ page_footer(button_txt) }}
+    {{ form.current_step }}
+
+  {% endcall %}
+</div>

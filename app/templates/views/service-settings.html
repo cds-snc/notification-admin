@@ -37,6 +37,18 @@
         {% endcall %}
 
         {% call row() %}
+          {% set txt = _('Service email prefix') %}
+          {{ text_field(txt) }}
+          {{ text_field(current_service.email_from) }}
+          {{ edit_field(
+              change_txt,
+              url_for('.service_email_from_change', service_id=current_service.id),
+              permissions=['manage_service']
+            )
+          }}
+        {% endcall %}
+
+        {% call row() %}
           {% set txt = _('Sign-in method') %}
           {{ text_field(txt) }}
           {% set txt = _('Email code or text message code') %}
