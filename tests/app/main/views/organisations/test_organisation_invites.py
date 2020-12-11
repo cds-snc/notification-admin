@@ -200,7 +200,6 @@ def test_existing_user_invite_not_a_member_of_organisation(
     mock_accept_org_invite.assert_called_once_with(ORGANISATION_ID, ANY)
     mock_get_user_by_email.assert_called_once_with('invited_user@test.canada.ca')
     mock_get_users_for_organisation.assert_called_once_with(ORGANISATION_ID)
-    # Copy this when testing if the FreshDesk API is Called
     mock_add_user_to_organisation.assert_called_once_with(
         ORGANISATION_ID,
         api_user_active['id'],
