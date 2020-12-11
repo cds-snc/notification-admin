@@ -64,7 +64,6 @@ def test_should_activate_user_after_verify(
     mock_check_verify_code,
     mock_create_event,
     mock_activate_user,
-    mock_send_new_registration_data,
 ):
     mocker.patch('app.user_api_client.get_user', return_value=api_user_pending)
     with client.session_transaction() as session:
