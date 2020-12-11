@@ -106,7 +106,7 @@ module.exports = {
       fontFamily: {
         sans: ["lato"],
         body: ["Noto Sans", "Arial", "sans-serif"],
-        monospace: ["monospace"]
+        monospace: ["monospace"],
       },
       inset: {
         '2': '2px',
@@ -136,6 +136,9 @@ module.exports = {
       },
       transitionProperty: {
         'background': 'background',
+      },
+      width: {
+        '5/8': '62.5%'
       },
       zIndex: {
         '100': 100,

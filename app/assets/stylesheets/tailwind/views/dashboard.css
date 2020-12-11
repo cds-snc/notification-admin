@@ -1,5 +1,5 @@
 @layer components {
-  
+  /*! purgecss start ignore */
   .dashboard table th {
     @apply text-smaller leading-tight font-normal border-b-0;
   }
@@ -51,5 +51,5 @@
     margin-top: 36px; /* gutter*5/6 */
     @apply block;
   }
-  
+  /*! purgecss end ignore */
 }

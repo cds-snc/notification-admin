@@ -1,5 +1,5 @@
 @layer components {
-  
+  /*! purgecss start ignore */
   .notification-status {
     margin-top: -15px;
     @apply text-small leading-tight font-normal text-gray-grey1;
@@ -14,6 +14,5 @@
   .notification-status-cancelled {
     @apply text-smaller leading-tight font-bold text-red;
   }
-
-  
+  /*! purgecss end ignore */ 
 }

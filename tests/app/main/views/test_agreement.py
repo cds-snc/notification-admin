@@ -100,7 +100,7 @@ def test_show_agreement_page(
         agreement_signed=agreement_signed,
     )
     page = client_request.get('main.service_agreement', service_id=SERVICE_ONE_ID)
-    links = page.select('main .column-five-sixths a')
+    links = page.select('main .w-5\\/6 a')
     assert len(links) == len(expected_links)
     for index, link in enumerate(links):
         classes, url = expected_links[index]

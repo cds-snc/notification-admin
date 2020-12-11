@@ -1,4 +1,5 @@
 @layer components {
+  /*! purgecss start ignore */
   .sms-message-wrapper {
     max-width: 464px;
     word-wrap: break-word;
@@ -47,4 +48,5 @@
   .email-message-body li:first-child {
     margin-top: 0 !important;
   }
+  /*! purgecss end ignore */
 }

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block fullwidth_content %}
-  <div id="content">
+  <div id="content" class="contain-floats">
     <div class="navigation-service">
       {% if current_user.platform_admin %}
         <a href="{{ url_for('.organisations') }}" class="navigation-organisation-link">All organisations</a>
@@ -15,11 +15,11 @@
       </div>
       <a href="{{ url_for('main.choose_account') }}" class="navigation-service-switch">{{ _('Switch service') }}</a>
     </div>
-    <div class="grid-row">
-      <div class="column-one-quarter">
+    <div class="grid-row contain-floats">
+      <div class="w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
         {% include "org_nav.html" %}
       </div>
-      <main role="main" class="column-three-quarters column-main">
+      <main role="main" class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border column-main">
         {% include 'flash_messages.html' %}
         {% block maincolumn_content %}{% endblock %}
       </main>

@@ -32,8 +32,8 @@
       {{ mobile_number }}&emsp;<a href="{{ url_for('.edit_user_mobile_number', service_id=current_service.id, user_id=user.id)}}">Change</a>
     </p>
   {% endif %}
-  <div class="grid-row">
-    {% call form_wrapper(class="column-three-quarters") %}
+  <div class="grid-row contain-floats">
+    {% call form_wrapper(class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border") %}
 
       {% include 'views/manage-users/permissions.html' %}
 

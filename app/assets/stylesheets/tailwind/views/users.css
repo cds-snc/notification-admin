@@ -1,5 +1,5 @@
 @layer components {
-  
+  /*! purgecss start ignore */
   .user-list {
     @apply text-smaller leading-tight font-normal my-12;
   }
@@ -21,6 +21,5 @@
     top: 15px;
     @apply absolute text-right right-0;
   }
-
-  
+  /*! purgecss end ignore */
 }
