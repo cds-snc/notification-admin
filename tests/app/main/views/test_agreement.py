@@ -28,7 +28,7 @@ class _MockS3Object():
         True, True,
         [
             (
-                ['govuk-back-link'],
+                ['back-link'],
                 partial(url_for, 'main.request_to_go_live', service_id=SERVICE_ONE_ID),
             ),
             (
@@ -41,7 +41,7 @@ class _MockS3Object():
         False, False,
         [
             (
-                ['govuk-back-link'],
+                ['back-link'],
                 partial(url_for, 'main.request_to_go_live', service_id=SERVICE_ONE_ID),
             ),
             (
@@ -58,7 +58,7 @@ class _MockS3Object():
         False, True,
         [
             (
-                ['govuk-back-link'],
+                ['back-link'],
                 partial(url_for, 'main.request_to_go_live', service_id=SERVICE_ONE_ID),
             ),
             (
@@ -75,7 +75,7 @@ class _MockS3Object():
         None, None,
         [
             (
-                ['govuk-back-link'],
+                ['back-link'],
                 partial(url_for, 'main.request_to_go_live', service_id=SERVICE_ONE_ID),
             ),
             (

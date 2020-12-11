@@ -1,5 +1,5 @@
 @layer components {
-  /*! purgecss start ignore */
+  
   .textbox-highlight-wrapper {
     @apply relative;
   }
@@ -39,5 +39,5 @@
       @apply ml-2 inline-block align-top;
     }
   }
-  /*! purgecss end ignore */
+  
 }
