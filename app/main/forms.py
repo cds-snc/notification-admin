@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from itertools import chain
 
 import pytz
-from flask import request
+from flask import request, current_app
 from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
@@ -44,7 +44,7 @@ from wtforms.validators import (
 )
 from wtforms.widgets import CheckboxInput, ListWidget
 
-from app import format_thousands
+from app import format_thousands, service_api_client
 from app.main.validators import (
     Blocklist,
     CsvFileValidator,
@@ -652,7 +652,13 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
     def validate_name(self, field):
         if len(field.data) > 255:
             raise ValidationError(_l('This cannot exceed 255 characters in length'))
-
+        unique_name = service_api_client.is_service_name_unique(
+            current_app.config['NOTIFY_BAD_FILLER_UUID'],
+            field.data,
+            current_app.config['NOTIFY_BAD_FILLER_UUID'],
+        )
+        if not unique_name:
+            raise ValidationError(_l("This service name is already in use"))
 
 
 class CreateServiceStepLogoForm(StripWhitespaceForm):
@@ -716,6 +722,17 @@ class CreateServiceStepEmailFromForm(StripWhitespaceForm):
         None,
         default='choose_email_from',
         validators=[AnyOf("choose_email_from")])
+
+    def validate_email_from(self, field):
+        if len(field.data) > 64:
+            raise ValidationError(_l('This cannot exceed 64 characters in length'))
+        unique_name = service_api_client.is_service_name_unique(
+            current_app.config['NOTIFY_BAD_FILLER_UUID'],
+            field.data,
+            current_app.config['NOTIFY_BAD_FILLER_UUID'],
+        )
+        if not unique_name:
+            raise ValidationError(_l("This service name is already in use"))
 
 
 class SecurityKeyForm(StripWhitespaceForm):
