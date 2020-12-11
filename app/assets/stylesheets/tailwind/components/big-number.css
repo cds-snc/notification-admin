@@ -1,4 +1,5 @@
 @layer components {
+  /*! purgecss start ignore */
   .big-number {
     @apply block;
   }
@@ -40,4 +41,5 @@
   .big-number-status-link:active, .big-number-status-link:focus {
     @apply text-black border-black border-solid border-1;
   }
+  /*! purgecss end ignore */
 }

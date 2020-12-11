@@ -14,11 +14,11 @@
   url_for('.edit_user_email', service_id=service_id, user_id=user.id)
 ) }}
 
-<div class="grid-row">
-  <div class="column-whole">
+<div class="grid-row contain-floats">
+  <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
   {% call form_wrapper() %}
     <p>{{ _('New email address:') }}</p>
-    <div class="panel panel-border-wide bottom-gutter">
+    <div class="panel panel-border-wide mb-12 clear-both contain-floats">
       <p>{{ new_email }}</p>
     </div>
     <p>{{ _('We will send') }} {{ user.name }} {{ _('an email to tell them about the change.') }}</p>

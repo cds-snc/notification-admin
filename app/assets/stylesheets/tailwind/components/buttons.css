@@ -1,7 +1,7 @@
 @layer components {
 
-  /* Note: Buttons are <a> sometimes, which is why :link and : visited styles exist */
-
+  /* Note: Buttons are <a> sometimes, which is why :link and :visited styles exist */
+  /*! purgecss start ignore */
   .button, .button:link, .button:visited {
     padding: .526315em .789473em .263157em;
     box-shadow: 0 2px 0 theme("colors.green.border");
@@ -57,5 +57,5 @@
   .button.disabled {
     @apply opacity-50 cursor-default;
   }
-
+  /*! purgecss end ignore */
 }

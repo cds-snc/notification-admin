@@ -1,26 +1,28 @@
-a {
-  @apply underline text-smaller;
-  -webkit-tap-highlight-color: rgba(0,0,0,0.3);
-}
-
-a:link, a:visited {
-  @apply text-blue-govukblue;
-}
-
-a:focus {
-  @apply outline-yellow bg-yellow;
-}
-
-a:link:focus {
-  color: #005798;
-}
-
 @layer components {
-  .heading-xlarge {
-    @apply mb-8;
+  /*! purgecss start ignore */
+  a {
+    @apply underline text-smaller;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.3);
   }
+  
+  a:link, a:visited {
+    @apply text-blue-govukblue;
+  }
+  
+  a:focus {
+    @apply outline-yellow bg-yellow;
+  }
+  
+  a:link:focus {
+    color: #005798;
+  }
+  
   .heading-medium {
     @apply text-base leading-tight block font-bold mt-gutter;
+  }
+
+  .heading-xlarge {
+    @apply mb-8;
   }
 
   .heading-upcoming-jobs {
@@ -33,4 +35,5 @@ a:link:focus {
   .product-page-intro h1{
     font-family: "Helvetica Neue", Helvetica, Arial,sans-serif;
   }
+  /*! purgecss end ignore */
 }

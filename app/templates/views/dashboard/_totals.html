@@ -5,7 +5,7 @@
 {% set sent_plural = _('sent-dashboard-plural') %}
 
 <div class="ajax-block-container">
-  <div class="grid-row">
+  <div class="grid-row contain-floats">
     <div id="total-email" class="{{column_width}}">
       {{ big_number_with_status(
         statistics['email']['requested'],

@@ -1,5 +1,5 @@
 @layer components {
-  
+  /*! purgecss start ignore */
   .banner {
     @apply block relative p-gutterHalf mx-0 mt-gutter mb-gutterHalf clear-both text-left font-bold text-smaller border-4 border-solid leading-tight;
   }
@@ -34,4 +34,28 @@
     @apply mt-0;
   }
 
+  /* This was previously the %site-width-container mixin */
+  #content,
+  .global-cookie-message p {
+    max-width: 960px;
+    @apply my-0 mx-gutterHalf
+  }
+  @screen md {
+    #content,
+    .global-cookie-message p {
+      @apply mx-gutter;
+    }
+  }
+  @screen lg {
+    #content,
+    .global-cookie-message p {
+      @apply mx-auto;
+    }
+  }
+  /* Home page was built with different CSS - override */
+  #content.home-page-content {
+    max-width: none;
+    @apply mx-0;
+  }
+  /*! purgecss end ignore */
 }

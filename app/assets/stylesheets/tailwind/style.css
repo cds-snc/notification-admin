@@ -1,5 +1,8 @@
 @import "./components/tailwind.css";
-/*! purgecss start ignore */
+
+
+@import "./toolkit/shims.css";
+
 
 
 /* elements */
@@ -11,6 +14,7 @@
 
 
 /* components */
+@import "./components/grid.css";
 @import "./components/typography.css";
 @import "./components/placeholder.css";
 @import "./components/layout.css";
@@ -35,6 +39,7 @@
 @import "./components/task-list.css";
 @import "./components/back-link.css";
 
+
 /* views */
 @import "./views/dashboard.css";
 @import "./views/users.css";
@@ -43,7 +48,7 @@
 @import "./views/notification.css";
 
 
-
+/*! purgecss start ignore */
 @-ms-viewport {
   width: device-width;
 }
@@ -73,6 +78,14 @@ table,
 td,
 th {
   @apply font-body;
+}
+
+h1 {
+  @apply text-xl font-body pb-10;
+}
+
+h2 {
+  @apply text-lg font-body pb-6;
 }
 
 html,
@@ -126,14 +139,6 @@ input[type="search"]::-webkit-search-decoration {
 .visuallyhidden.focusable:focus {
   @apply h-auto m-0 overflow-visible static w-auto;
   clip: auto;
-}
-
-h1 {
-  @apply text-xl font-sans pb-10;
-}
-
-h2 {
-  @apply text-lg font-sans pb-6;
 }
 
 p {

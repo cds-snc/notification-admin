@@ -22,11 +22,11 @@
         <a href="{{ url_for('main.templates') }}" target="_blank">{{ _('How to format your message') }}</a>
       </div>
       {% set txt = _('Your recipients will not see this template name.') %}
-      <div class="grid-row">
-        <div class="column-two-thirds">
+      <div class="grid-row contain-floats">
+        <div class="w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
           {{ textbox(form.name, width='1-1', hint=txt) }}
         </div>
-        <div class="column-two-thirds">
+        <div class="w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
           {{ textbox(form.template_content, highlight_tags=True, width='1-1', rows=5) }}
           {% if current_user.platform_admin %}
             {{ radios(form.process_type) }}

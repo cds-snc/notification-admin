@@ -13,8 +13,8 @@
     <h1 class="heading-large">
       {{ _("Ask a question or give feedback") }}
     </h1>
-    <div class="grid-row">
-      <div id="contact-form" class="column-two-thirds">
+    <div class="grid-row contain-floats">
+      <div id="contact-form" class="w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
         {% call form_wrapper() %}
           {% set name_label = _('Your name') %}
           {{ textbox(form.name, label=name_label,  width='1-1') }}
@@ -24,7 +24,7 @@
               {{ _('Request type') }}
             </label>
 
-            <select class="form-control form-control-1-1 " name="support_type">
+            <select class="form-control w-full " name="support_type">
               {% for option in form.support_type %}
 
               {% set checked = "" %}

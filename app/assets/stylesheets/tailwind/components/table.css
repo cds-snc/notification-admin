@@ -37,6 +37,7 @@
   }
 
   /* NOTIFY TABLE STYLES */
+  /*! purgecss start ignore */
 
   td {
     @apply align-top;
@@ -281,4 +282,5 @@
     @apply text-smaller leading-tight font-bold;
   }
   
+  /*! purgecss end ignore */
 }

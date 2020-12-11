@@ -1,4 +1,5 @@
 @layer components {
+  /*! purgecss start ignore */
   .page-footer {
     @apply relative mb-12;
   }
@@ -46,4 +47,5 @@
       @apply relative w-full box-content;
     }
   }
+  /*! purgecss end ignore */
 }
