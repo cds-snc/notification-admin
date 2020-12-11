@@ -15,7 +15,7 @@
     back_link=url_for('.view_template', service_id=current_service.id, template_id=template_id)
   ) }}
   <div class="grid-row contain-floats">
-    <div class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
+    <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       {% call form_wrapper() %}
         {{ radios(
           form.sender,

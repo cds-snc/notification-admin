@@ -14,7 +14,7 @@
       {{ _("Ask a question or give feedback") }}
     </h1>
     <div class="grid-row contain-floats">
-      <div id="contact-form" class="w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
+      <div id="contact-form" class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
         {% call form_wrapper() %}
           {% set name_label = _('Your name') %}
           {{ textbox(form.name, label=name_label,  width='1-1') }}

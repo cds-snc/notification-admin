@@ -37,13 +37,13 @@
       action=url_for('.view_notifications', service_id=current_service.id, message_type=message_type),
       class="grid-row contain-floats"
     ) %}
-      <div class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border {% if message_type == 'sms' %}extra-tracking{% endif %}">
+      <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border {% if message_type == 'sms' %}extra-tracking{% endif %}">
         {{ textbox(
           search_form.to,
           width='1-1',
         ) }}
       </div>
-      <div class="w-1/4 float-left py-0 px-0 px-gutterHalf box-border align-button-with-textbox">
+      <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border align-button-with-textbox">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit" class="button">{{ _('Search') }}</button>
       </div>

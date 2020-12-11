@@ -1,5 +1,17 @@
 @layer components {
-  /* TODO panel after merge */
+  .panel {
+    padding: 15/19em;
+    margin-bottom: 15/19em;
+    border-left: solid;
+    @apply box-border clear-both border-gray-grey2;
+  }
+  .panel:first-child {
+    @apply mt-0;
+  }
+  .panel:only-child,
+  .panel:last-child {
+    @apply mb-0;
+  }
 
   .panel-border-wide {
     border-left-width: 10px;
