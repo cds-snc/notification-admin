@@ -1,7 +1,11 @@
 @import "./components/tailwind.css";
-/*! purgecss start ignore */
+
+
+@import "./toolkit/shims.css";
+
 
 /* components */
+@import "./components/grid.css";
 @import "./components/typography.css";
 @import "./components/placeholder.css";
 @import "./components/layout.css";
@@ -26,6 +30,7 @@
 @import "./components/task-list.css";
 @import "./components/back-link.css";
 
+
 /* views */
 @import "./views/dashboard.css";
 @import "./views/users.css";
@@ -34,7 +39,7 @@
 @import "./views/notification.css";
 
 
-
+/*! purgecss start ignore */
 @-ms-viewport {
   width: device-width;
 }

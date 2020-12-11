@@ -1,4 +1,5 @@
 @layer components {
+  /*! purgecss start ignore */
   .selection-summary__text--folders {
     background-size: 39px auto;
     background-position: 0px 4px;
@@ -62,5 +63,5 @@
   .multiple-choice .block-label:before {
     box-shadow: 0 5px 00 #fff;
   }
-  
+  /*! purgecss end ignore */
 }

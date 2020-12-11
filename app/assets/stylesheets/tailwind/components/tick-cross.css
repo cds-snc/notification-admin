@@ -1,4 +1,5 @@
 @layer components {
+  /*! purgecss start ignore */
   .tick-cross-tick,
   .tick-cross-cross {
     background-position: 0 6px;
@@ -53,4 +54,5 @@
   .tick-cross-list-hint {
     @apply text-gray-grey1 pt-2;
   }
+  /*! purgecss end ignore */
 }

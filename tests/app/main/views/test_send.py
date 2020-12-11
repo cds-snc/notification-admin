@@ -1236,7 +1236,7 @@ def test_send_one_off_has_skip_link(
         _follow_redirects=True,
     )
 
-    skip_links = page.select('a.top-gutter-4-3')
+    skip_links = page.select('a.mt-16.block.clear-both')
 
     if expected_link_text and expected_link_url:
         assert skip_links[0].text.strip() == expected_link_text
@@ -1298,7 +1298,7 @@ def test_skip_link_will_not_show_on_sms_one_off_if_service_has_no_mobile_number(
         step_index=0,
         _follow_redirects=True,
     )
-    skip_links = page.select('a.top-gutter-4-3')
+    skip_links = page.select('a.mt-16.block.clear-both')
     assert not skip_links
 
 

@@ -15,12 +15,12 @@
       back_link=url_for('.view_template', service_id=service_id, template_id=template_id)
     ) }}
     {% call form_wrapper() %}
-      <div class="grid-row">
-        <div class="column-five-sixths">
+      <div class="grid-row contain-floats">
+        <div class="w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
           {{ radios(form.postage) }}
           {{ page_footer(_('Save')) }}
         </div>
-        <aside class="column-three-quarters">
+        <aside class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
           {% include "partials/templates/guidance-postage.html" %}
         </aside>
       </div>

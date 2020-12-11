@@ -36,6 +36,5 @@
   .js-enabled .file-upload-alternate-link a {
     @apply text-smaller leading-tight font-bold;
   }
-
   /*! purgecss end ignore */
 }

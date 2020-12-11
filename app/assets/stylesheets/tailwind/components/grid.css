@@ -1,0 +1,27 @@
+@layer components {
+  /*! purgecss start ignore */
+  .grid-row {
+    margin-left: -15px;
+    margin-right: -15px;
+    @apply my-0;
+  }
+
+  .align-with-heading {
+    margin-top: 13px;
+    padding-left: 2px;
+    padding-right: 2px;
+    @apply block text-center;
+  }
+  
+  .align-with-heading-copy {
+    margin-top: 25px;
+    @apply block;
+  }
+
+  .align-with-heading-copy-right {
+    margin-top: 21px;
+    margin-bottom: 19px;
+    @apply text-right block mx-0;
+  }
+  /*! purgecss end ignore */
+}
