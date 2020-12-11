@@ -1,5 +1,5 @@
 @layer components {
-  
+  /*! purgecss start ignore */
   .template-container {
     @apply relative;
   }
@@ -15,6 +15,5 @@
   .edit-template-link:hover {
     @apply text-blue-lightblue25;
   }
-
-  
+  /*! purgecss end ignore */
 }
