@@ -34,6 +34,14 @@
     @apply mt-0;
   }
 
+  #content {
+    @apply pb-gutter outline-none;
+  }
+  @screen md {
+    #content {
+      padding-bottom: 90px;
+    }
+  }
   /* This was previously the %site-width-container mixin */
   #content,
   .global-cookie-message p {

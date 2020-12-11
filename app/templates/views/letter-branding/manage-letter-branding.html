@@ -27,7 +27,7 @@
       </p>
       {{ file_upload(file_upload_form.file, button_text='{} logo'.format('Update' if is_update else 'Upload')) }}
       {% call form_wrapper() %}
-        <div class="form-group">
+        <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
           <div style='margin-top:15px;'>{{textbox(letter_branding_details_form.name)}}</div>
           {{ page_footer(
             _('Save'),

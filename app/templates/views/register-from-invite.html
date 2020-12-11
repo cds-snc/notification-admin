@@ -17,15 +17,15 @@
       <span class="whitespace-no-wrap">{{invited_user.email_address}}</span>
     </p>
     {% call form_wrapper() %}
-      {{ textbox(form.name, width='3-4') }}
+      {{ textbox(form.name, width='w-full md:w-3/4') }}
       {% if invited_user.auth_type == 'sms_auth' %}
         {% set txt = _('We’ll send you a security code by text message') %}
         <div class="extra-tracking">
-          {{ textbox(form.mobile_number, width='3-4', hint=txt) }}
+          {{ textbox(form.mobile_number, width='w-full md:w-3/4', hint=txt) }}
         </div>
       {% endif %}
       {% set txt = _('At least 8 characters') %}
-      {{ textbox(form.password, hint=txt, width='3-4', autocomplete='new-password') }}
+      {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
       {% set txt = _('Continue') %}
       {{ page_footer(txt) }}
       {{form.service}}

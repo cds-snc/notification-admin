@@ -9,6 +9,7 @@
 @import "./elements/reset.css";
 @import "./elements/details.css";
 @import "./elements/forms.css";
+@import "./elements/form-validation.css";
 @import "./elements/lists.css";
 @import "./elements/panels.css";
 
@@ -207,23 +208,6 @@ label {
 
 .quote-box div:first-child {
   @apply font-bold italic mb-2;
-}
-
-/* form(s) */
-.form-group {
-  @apply mb-4;
-}
-
-.form-group-error {
-  @apply mr-4 pl-4 border-l-4 border-red;
-}
-
-.form-control-error {
-  @apply border-4 border-red;
-}
-
-.error-message {
-  @apply block text-red text-base;
 }
 
 /* honeypot field*/

@@ -60,7 +60,7 @@ describe("List entry", () => {
     };
 
     document.body.innerHTML =
-      `<fieldset class="form-group" id="domains">
+      `<fieldset class="form-group contain-floats box-border" id="domains">
         <legend>
           <span class="form-label">
             Domain names

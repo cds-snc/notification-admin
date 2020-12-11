@@ -130,5 +130,5 @@ acronym[title] {
 */
 
 legend {
-  @apply box-border max-w-full table;
+  @apply box-border max-w-full table overflow-hidden;
 }

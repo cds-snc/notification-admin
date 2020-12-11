@@ -7,13 +7,13 @@
   colour_preview=False,
   help_link=None,
   help_link_text=None,
-  width='2-3',
+  width='w-full md:w-2/3',
   suffix=None,
   safe_error_message=False,
   rows=8
 ) %}
   <div
-    class="form-group{% if field.errors %} form-group-error{% endif %}"
+    class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
     data-module="{% if autofocus %}autofocus{% elif colour_preview %}colour-preview{% endif %}"
   >
     <label class="form-label" for="{{ field.name }}">
@@ -36,9 +36,9 @@
     {%
       if highlight_tags
     %}
-      {% set field_class = 'form-control-{} textbox-highlight-textbox'.format(width) %}
+      {% set field_class = 'form-control {} textbox-highlight-textbox'.format(width) %}
     {% else %}
-      {% set field_class = 'form-control-{} {}'.format(width, 'text-right' if suffix else '') %}
+      {% set field_class = 'form-control {} {}'.format(width, 'text-right' if suffix else '') %}
     {% endif %}
     {%
       set field_class = 'form-control ' + field_class + (
