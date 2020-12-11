@@ -4,6 +4,7 @@
   }
 
   details summary {
+    padding-left: 25px;
     @apply mb-gutterHalf underline inline-block text-blue-govukblue cursor-pointer relative;
   }
   details summary:before {
@@ -26,6 +27,10 @@
   summary::-o-details-marker,
   summary::details-marker,
   summary::-webkit-details-marker {
+    @apply hidden;
+  }
+
+  details summary::-webkit-details-marker {
     @apply hidden;
   }
 
