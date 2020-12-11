@@ -1,0 +1,131 @@
+@layer components {
+  /*! purgecss start ignore */
+  .navigation {
+    @apply p-0 pr-gutter;
+  }
+  
+  .navigation-service: {
+    font-size: 0;
+    @apply border-0 border-b-1 border-solid border-gray-grey2 relative m-0 mb-4;
+  }
+
+  .navigation-service-name {
+    padding-top: 14px;
+    padding-bottom: 11px;
+    max-width: 50%;
+    @apply text-smaller leading-tight font-bold px-0 inline-block truncate
+  }
+
+  .navigation-service-switch {
+    padding-top: 14px;
+    padding-bottom: 11px;
+    @apply text-smaller leading-tight font-normal text-right absolute top-0 right-0 pr-0 pl-gutterHalf
+  }
+  .navigation-service-switch:hover {
+    @apply underline text-blue-lightblue;
+  }
+  .navigation-service-switch:focus {
+    @apply outline-none border-b-1 border-solid border-yellow text-black;
+    border-left-width: 10px;
+    border-right-width: 3px;
+    right: -3px;
+  }
+
+  .navigation-service-back-to {
+    padding-top: 14px;
+    padding-bottom: 11px;
+    @apply text-smaller leading-tight font-normal pr-gutterHalf pl-0 inline-block no-underline;
+  }
+  .navigation-service-back-to:hover {
+    @apply underline text-blue-lightblue;
+  }
+
+  .navigation-organisation-link {
+    padding-top: 14px;
+    padding-bottom: 11px;
+    max-width: 25%;
+    margin-right: 7px;
+    @apply text-smaller leading-tight font-normal inline-block truncate no-underline box-border relative pr-8 pl-0;
+  }
+  .navigation-organisation-link:before {
+    content: "";
+    top: -1px;
+    bottom: 1px;
+    right: 6px;
+    width: 7px;
+    height: 7px;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    @apply block absolute mx-0 my-auto border-0 border-solid border-t-1 border-r-1 border-gray-grey1
+  }
+  .navigation-organisation-link:hover {
+    @apply underline text-blue-lightblue;
+  }
+  .navigation-organisation-link:focus {
+    @apply text-black outline-none;
+    /* theme yellow */
+    box-shadow: 0 1px 0 0 #ffbf47, -3px 0 0 0 #ffbf47, -3px 1px 0 0 #ffbf47;
+  }
+
+  .navigation li {
+    @apply text-smaller leading-tight font-normal m-0 list-none;
+  }
+  .navigation a {
+    top: 5px;
+    @apply block px-0 py-2 relative;
+  }
+  .navigation a:link,
+  .navigation a:visited {
+    @apply no-underline;
+  }
+  .navigation a:hover {
+    @apply underline text-blue-lightblue;
+  }
+  .navigation a:focus {
+    @apply text-black;
+  }
+  .navigation a.selected {
+    /*  These two lines stop the width of the item jumping so much
+        between selected and unselected states */
+    left: -0.5px;
+    letter-spacing: -0.01em;
+    @apply text-smaller leading-tight font-bold relative;
+  }
+
+  /* https://github.com/alphagov/product-page-example/blob/master/source/stylesheets/modules/_sub-navigation.scss */
+  @screen md {
+    .sub-navigation {
+      margin-top: 45px;
+    }
+  }
+
+  .sub-navigation ol,
+  .sub-navigation ul {
+    @apply list-none p-0 m-0;
+  }
+
+  .sub-navigation__item {
+    @apply text-small leading-tight font-normal border-b-1 border-solid border-gray-button block px-0 py-4;
+  }
+  .sub-navigation__item a:link {
+    @apply no-underline;
+  }
+  .sub-navigation__item a:hover,
+  .sub-navigation__item a:active {
+    @apply underline;
+  }
+  ol ol .sub-navigation__item {
+    @apply pl-gutter;
+  }
+
+  .sub-navigation__item--active {
+    @apply text-small leading-tight font-bold;
+  }
+  .sub-navigation__item--active a:link,
+  .sub-navigation__item--active a:visited {
+    @apply text-black;
+  }
+
+  /*! purgecss end ignore */
+}

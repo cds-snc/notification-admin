@@ -7,6 +7,7 @@ module.exports = {
     },
     backgroundImage: {
       tick: "url('/static/images/tick.png')",
+      crossGrey: "url('/static/images/cross-grey.png')",
       folder: "url('/static/images/folder-black.svg')",
       folderBlack: "url('/static/images/folder-black-bold.svg')",
       folderBlackPng: "url('/static/images/folder-black-bold.png')",
@@ -20,7 +21,10 @@ module.exports = {
       inset1: "inset -1px 0 0 0 rgb(191, 193, 195)", // theme gray.grey2
       inset3: "inset -3px 0 0 0 rgba(191, 193, 195, 0.2)",
       outset1: "1px 0 0 0 rgb(191, 193, 195)",
+      outset2: "0 2px 0 0 rgba(191, 193, 195, 0.2)",
+      outset2neg: "0 -2px 0 0 rgba(191, 193, 195, 0.2)",
       outset3: "3px 0 0 0 rgba(191, 193, 195, 0.2)",
+      yellow3: "-3px 0 0 0 rgba(255, 191, 71, 1), 3px 0 0 0 rgba(255, 191, 71, 1)",
     },
     maxWidth: {
       "4xl": "53rem"
@@ -90,6 +94,9 @@ module.exports = {
       }
     },
     extend: {
+      animation: {
+        'ellipsis': 'ellipsis steps(4,end) 1.5s infinite',
+      }, 
       backgroundSize: {
         '19': '19px',
       },
@@ -106,18 +113,33 @@ module.exports = {
         '5': '5px',
         '7': '7px',
       },
+      keyframes: {
+        'ellipsis': {
+          '100%': { width: '1.25em' }
+        }
+      },
       lineHeight: {
         'extra-tight': '0.9',
       },
       outline: {
-        yellow: '3px solid #ffbf47'
+        yellow: '3px solid #ffbf47',
+        white: '1px solid rgba(255, 255, 255, 0.1)',
       },
       spacing: {
         gutter: '30px',
         gutterHalf: '15px',
         gutterAndAHalf: '45px',
         doubleGutter: '60px',
-      }
+      },
+      transitionDuration: {
+        '600': '600ms',
+      },
+      transitionProperty: {
+        'background': 'background',
+      },
+      zIndex: {
+        '100': 100,
+      },
     },
   },
   plugins: [
