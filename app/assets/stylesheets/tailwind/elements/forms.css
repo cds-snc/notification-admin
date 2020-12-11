@@ -1,10 +1,31 @@
 @layer components {
+  .input {
+    border-color: #000;
+    @apply border-solid border-2 py-3 px-2 text-smaller;
+  }
+  /* By default, form controls are 50% width for desktop,
+     and 100% width for mobile
+  */
+  .form-control {
+    padding: 5px 4px 4px;
+    @apply box-border text-smaller leading-tight font-normal w-full border-2 border-solid border-black;
+  }
+  @screen md {
+    .form-control {
+      @apply w-1/2;
+    }
+    .form-control.form-control-1-1 {
+      @apply w-full;
+    }
+  }
 
   .form-control-5em {
     @apply w-full;
   }
   @screen md {
-    width: 5em;
+    .form-control-5em {
+      width: 5em;
+    }
   }
 
   .form-label {

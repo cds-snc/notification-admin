@@ -149,11 +149,6 @@ li {
   @apply text-base leading-tight;
 }
 
-.input {
-  border-color: #000;
-  @apply border-solid border-2 py-3 px-2 text-smaller;
-}
-
 .flip {
   transform: rotate(-180deg);
   transition: all 0.5s ease;
