@@ -103,6 +103,9 @@ def _create_service(service_name: str, organisation_type: str, email_from: str,
         if e.status_code == 400 and e.message['name']:
             errors = [_("This service name is already in use")]
             return DuplicateNameResult(errors)
+        if e.status_code == 400 and e.message['email_from']:
+            errors = [_("This email address is already in use")]
+            return DuplicateNameResult(errors)
         else:
             raise e
 

@@ -53,11 +53,11 @@ from app.main.validators import (
     NoCommasInPlaceHolders,
     OnlySMSCharacters,
     ValidEmail,
-    ValidGovEmail,
+    ValidGovEmail, validate_email_from, validate_name,
 )
 from app.models.organisation import Organisation
 from app.models.roles_and_permissions import permissions, roles
-from app.utils import guess_name_from_email_address, get_logo_cdn_domain
+from app.utils import guess_name_from_email_address, get_logo_cdn_domain, email_safe
 
 
 def get_time_value_and_label(future_time):
@@ -556,7 +556,8 @@ class RenameServiceForm(StripWhitespaceForm):
     name = StringField(
         _l(u'Service name'),
         validators=[
-            DataRequired(message=_l('This cannot be empty'))  # TODO DP, add validators
+            DataRequired(message=_l('This cannot be empty')),
+            validate_name
         ])
 
 
@@ -564,7 +565,8 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
     email_from = StringField(
         _l(u'Service email prefix'),
         validators=[
-            DataRequired(message=_l('This cannot be empty'))  # TODO DP, add validators
+            DataRequired(message=_l('This cannot be empty')),
+            validate_email_from
         ])
 
 
@@ -642,23 +644,13 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
     name = StringField(
         _l('What’s your service called?'),
         validators=[
-            DataRequired(message=_l('This cannot be empty'))  # TODO DP add validators
+            DataRequired(message=_l('This cannot be empty')),
+            validate_name
         ])
     current_step = HiddenField(
         None,
         default='choose_service_name',
         validators=[AnyOf("choose_service_name")])
-
-    def validate_name(self, field):
-        if len(field.data) > 255:
-            raise ValidationError(_l('This cannot exceed 255 characters in length'))
-        unique_name = service_api_client.is_service_name_unique(
-            current_app.config['NOTIFY_BAD_FILLER_UUID'],
-            field.data,
-            current_app.config['NOTIFY_BAD_FILLER_UUID'],
-        )
-        if not unique_name:
-            raise ValidationError(_l("This service name is already in use"))
 
 
 class CreateServiceStepLogoForm(StripWhitespaceForm):
@@ -680,12 +672,12 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
     name = HiddenField(
         None,
         validators=[
-            DataRequired(message=_l('This cannot be empty'))  # TODO DP add validators
+            DataRequired(message=_l('This cannot be empty'))
         ])
     email_from = HiddenField(
         None,
         validators=[
-            DataRequired(message=_l('This cannot be empty'))  # TODO DP add validators
+            DataRequired(message=_l('This cannot be empty'))
         ])
     default_branding = RadioField(
         '',
@@ -711,28 +703,18 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
 class CreateServiceStepEmailFromForm(StripWhitespaceForm):
     email_from = StringField(
         _l('What email prefix will your emails be from?'),
-        validators=[DataRequired(message=_l('This cannot be empty'))]  # TODO DP add validators
+        validators=[DataRequired(message=_l('This cannot be empty')),
+                    validate_email_from]
     )
     name = HiddenField(
         None,
         validators=[
-            DataRequired(message=_l('This cannot be empty'))  # TODO DP add validators
+            DataRequired(message=_l('This cannot be empty'))
         ])
     current_step = HiddenField(
         None,
         default='choose_email_from',
         validators=[AnyOf("choose_email_from")])
-
-    def validate_email_from(self, field):
-        if len(field.data) > 64:
-            raise ValidationError(_l('This cannot exceed 64 characters in length'))
-        unique_name = service_api_client.is_service_name_unique(
-            current_app.config['NOTIFY_BAD_FILLER_UUID'],
-            field.data,
-            current_app.config['NOTIFY_BAD_FILLER_UUID'],
-        )
-        if not unique_name:
-            raise ValidationError(_l("This service name is already in use"))
 
 
 class SecurityKeyForm(StripWhitespaceForm):
@@ -1702,3 +1684,4 @@ class AcceptAgreementForm(StripWhitespaceForm):
             float(field.data)
         except (TypeError, ValueError):
             raise ValidationError("Must be a number")
+

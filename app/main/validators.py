@@ -14,9 +14,9 @@ from notifications_utils.sanitise_text import SanitiseSMS
 from wtforms import ValidationError
 from wtforms.validators import Email
 
-from app import formatted_list
+from app import formatted_list, service_api_client
 from app.main._blocked_passwords import blocked_passwords
-from app.utils import Spreadsheet, is_gov_user
+from app.utils import Spreadsheet, is_gov_user, email_safe
 
 
 class Blocklist:
@@ -135,3 +135,26 @@ class DoesNotStartWithDoubleZero:
     def __call__(self, form, field):
         if field.data and field.data.startswith("00"):
             raise ValidationError(self.message)
+
+
+def validate_email_from(form, field):
+    if email_safe(field.data) != field.data.lower():
+        raise ValidationError(_l('This entry must contain valid characters for an email address.'))
+    if len(field.data) > 64:
+        raise ValidationError(_l('This cannot exceed 64 characters in length'))
+    unique_name = service_api_client.is_service_email_from_unique(
+        current_app.config['NOTIFY_BAD_FILLER_UUID'],
+        field.data
+    )
+    if not unique_name:
+        raise ValidationError(_l("This email address is already in use"))
+
+
+def validate_name(form, field):
+    if len(field.data) > 255:
+        raise ValidationError(_l('This cannot exceed 255 characters in length'))
+    unique_name = service_api_client.is_service_name_unique(
+        field.data,
+    )
+    if not unique_name:
+        raise ValidationError(_l("This service name is already in use"))

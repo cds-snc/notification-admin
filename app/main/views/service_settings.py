@@ -99,7 +99,7 @@ def service_name_change(service_id):
         if form.name.data == current_service.name:
             return redirect(url_for('.service_settings', service_id=service_id))
 
-        unique_name = service_api_client.is_service_name_unique(service_id, form.name.data, email_safe(form.name.data))
+        unique_name = service_api_client.is_service_name_unique(form.name.data)
 
         if not unique_name:
             form.name.errors.append(_("This service name is already in use"))
@@ -158,15 +158,14 @@ def service_email_from_change(service_id):
         if form.email_from.data == current_service.email_from:
             return redirect(url_for('.service_settings', service_id=service_id))
 
-        # TODO DP uncomment this fixed
-        # unique_name = service_api_client.is_service_name_unique(service_id, form.name.data, email_safe(form.name.data))
+        unique_email_from = service_api_client.is_service_email_from_unique(service_id, email_safe(form.email_from.data))
 
-        # if not unique_name:
-        #     form.name.errors.append(_("This service name is already in use"))
-        #     return render_template('views/service-settings/name.html', form=form)
+        if not unique_email_from:
+            form.name.errors.append(_("This email address is already in use"))
+            return render_template('views/service-settings/email_from.html', form=form)
 
         session['service_email_from_change'] = form.email_from.data
-        return redirect(url_for('.service_email_from_change_confirm', service_id=service_id))  # TODO DP add this
+        return redirect(url_for('.service_email_from_change_confirm', service_id=service_id))
 
     return render_template(
         'views/service-settings/email_from.html',
@@ -189,15 +188,13 @@ def service_email_from_change_confirm(service_id):
                 email_from=email_safe(session['service_email_from_change'])
             )
         except HTTPError as e:
-            print('{}'.format(e))  # noqa:
-            pass
-            # error_msg = "Duplicate service name '{}'".format(session['service_name_change'])
-            # if e.status_code == 400 and error_msg in e.message['name']:
-            #     # Redirect the user back to the change service name screen
-            #     flash(_('This service name is already in use'), 'error')
-            #     return redirect(url_for('main.service_name_change', service_id=service_id))
-            # else:
-            #     raise e  # TODO DP, add handler here with appropriate backend handling
+            error_msg = "Duplicate email address '{}'".format(session['service_email_from_change'])
+            if e.status_code == 400 and error_msg in e.message['email_from']:
+                # Redirect the user back to the change service email_from screen
+                flash(_('This email address is already in use'), 'error')
+                return redirect(url_for('main.service_email_from_change', service_id=service_id))
+            else:
+                raise e
         else:
             session.pop('service_email_from_change')
             return redirect(url_for('.service_settings', service_id=service_id))

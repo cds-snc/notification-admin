@@ -559,9 +559,7 @@ def test_should_not_allow_duplicate_names(
 
     assert 'This service name is already in use' in page.text
     app.service_api_client.is_service_name_unique.assert_called_once_with(
-        SERVICE_ONE_ID,
         'SErvICE TWO',
-        'service.two',
     )
 
 
