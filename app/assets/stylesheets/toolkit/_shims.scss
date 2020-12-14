@@ -40,7 +40,8 @@
 // .this-has-floated-children {
 //  @extend %contain-floats;
 // }
-
+// Tailwind ports: add .contain-floats class
+// TODO: remove once all ported
 
 %contain-floats {
   &:after {

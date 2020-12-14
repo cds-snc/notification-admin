@@ -12,7 +12,7 @@ Service and API key history
     {{ "Service and API key history" }}
   </h1>
 
-  <div class="grid-row">
+  <div class="grid-row contain-floats">
     {% call(item, row_number) list_table(
         services,
         caption="Service history",
@@ -48,7 +48,7 @@ Service and API key history
   </div>
 
 
-  <div class="grid-row">
+  <div class="grid-row contain-floats">
     {% call(item, row_number) list_table(
         api_keys,
         caption="API key history",
@@ -80,7 +80,7 @@ Service and API key history
 
   </div
 
-  <div class="grid-row">
+  <div class="grid-row contain-floats">
 
      {% call(item, row_number) list_table(
         events,

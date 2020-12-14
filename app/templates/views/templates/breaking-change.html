@@ -16,7 +16,7 @@
     back_link=url_for(".edit_service_template", service_id=current_service.id, template_id=new_template.id)
   ) }}
 
-  <div class="bottom-gutter">
+  <div class="mb-12 clear-both contain-floats">
     {% if template_change.placeholders_removed %}
       <p>
         {{ _('You removed') + list_of_placeholders(template_change.placeholders_removed) }}
@@ -63,6 +63,6 @@
     {% endcall %}
   </div>
 
-  <p class="top-gutter">{{ _('Developers, you’ll need to update your API calls') }}</p>
+  <p class="mt-12 block clear-both contain-floats">{{ _('Developers, you’ll need to update your API calls') }}</p>
 
 {% endblock %}

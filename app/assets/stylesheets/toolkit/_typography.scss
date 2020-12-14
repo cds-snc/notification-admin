@@ -224,18 +224,6 @@ $is-print: false !default;
   }
 }
 
-@mixin copy-16($tabular-numbers: false) {
-  @include core-16($tabular-numbers: $tabular-numbers);
-
-  padding-top: 8px;
-  padding-bottom: 7px;
-
-  @include media(tablet) {
-    padding-top: 5px;
-    padding-bottom: 5px;
-  }
-}
-
 @mixin copy-14($tabular-numbers: false) {
   @include core-14($tabular-numbers: $tabular-numbers);
 
