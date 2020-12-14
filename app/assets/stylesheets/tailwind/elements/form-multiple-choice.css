@@ -1,0 +1,13 @@
+@layer components {
+  .multiple-choice {
+    @apply block float-none clear-left relative p-o mb-4;
+    padding-left: 38px;
+  }
+  @screen sm {
+    .multiple-choice {
+      @apply float-left;
+    }
+  }
+
+  .multiple-choice
+}

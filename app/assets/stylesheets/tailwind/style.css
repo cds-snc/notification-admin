@@ -3,6 +3,7 @@
 
 @import "./toolkit/shims.css";
 
+@import "./elements/form-multiple-choice.css"
 
 /* components */
 @import "./components/grid.css";
@@ -22,6 +23,7 @@
 @import "./components/pill.css";
 @import "./components/show-more.css";
 @import "./components/api-key.css";
+@import "./components/previous-next-navigation.css";
 @import "./components/list-entry.css";
 @import "./components/message.css";
 @import "./components/fullscreen-table.css";

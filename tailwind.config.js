@@ -35,6 +35,7 @@ module.exports = {
       smaller: "1.9rem",
       base: "2.0rem",
       title: "2.4rem",
+      titlelarge: "2.7rem",
       lg: "3.6rem",
       xl: "3.8rem",
       '48': "4.8rem",
