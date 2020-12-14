@@ -377,7 +377,7 @@ def test_should_show_upcoming_jobs_on_dashboard(
 
 @pytest.mark.parametrize('permissions, column_name, expected_column_count', [
     (['email', 'sms'], '.w-1\\/2', 2),
-    (['email', 'letter'], '.w-1\\/3', 3),
+    (['email', 'letter'], '.md\\:w-1\\/3', 3),
     (['email', 'sms'], '.w-1\\/2', 2)
 ])
 def test_correct_columns_display_on_dashboard(
@@ -678,7 +678,7 @@ def test_usage_page_with_letters(
     mock_get_usage.assert_called_once_with(SERVICE_ONE_ID, 2011)
     mock_get_free_sms_fragment_limit.assert_called_with(SERVICE_ONE_ID, 2011)
 
-    cols = page.find_all('div', {'class': 'w-1\\/3'})
+    cols = page.find_all('div', {'class': 'md\\:w-1\\/3'})
     nav = page.find('ul', {'class': 'pill', 'role': 'tablist'})
     nav_links = nav.find_all('a')
 

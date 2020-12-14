@@ -19,7 +19,7 @@ describe('Autofocus', () => {
         <label class="form-label" for="search">
           Search by name
         </label>
-        <input autocomplete="off" class="form-control form-control-1-1" id="search" name="search" type="search" value="">
+        <input autocomplete="off" class="form-control w-full" id="search" name="search" type="search" value="">
       </div>`;
 
     focusHandler = jest.fn();

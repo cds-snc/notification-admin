@@ -614,11 +614,11 @@ set description = _('GC Notify lets you send emails and text messages to your us
         <!-- contact us -->
 
         {% call form_wrapper() %} {% set name_label = _('Your name') %} {{
-        textbox(form.name, label=name_label, width='1-1') }} {% set email_label
+        textbox(form.name, label=name_label, width='w-full') }} {% set email_label
         = _('Your email') %} {{ textbox(form.email_address, label=email_label,
-        width='1-1') }}
+        width='w-full') }}
 
-        <div class="form-group">
+        <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
           <label class="form-label" for="support_type">
             {{ _("Request type") }}
           </label>
@@ -639,7 +639,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
         </div>
 
         {% set message_label = _('Message') %} {{ textbox(form.feedback,
-        width='1-1',label=message_label, hint='', rows=10) }} {% set send_text =
+        width='w-full',label=message_label, hint='', rows=10) }} {% set send_text =
         _('Send') %} {{ page_footer( send_text, ) }} {% endcall %}
 
         <!-- end contact us -->

@@ -5,17 +5,6 @@ module.exports = {
     container: {
       center: true
     },
-    backgroundImage: {
-      tick: "url('/static/images/tick.png')",
-      crossGrey: "url('/static/images/cross-grey.png')",
-      folder: "url('/static/images/folder-black.svg')",
-      folderBlack: "url('/static/images/folder-black-bold.svg')",
-      folderBlackPng: "url('/static/images/folder-black-bold.png')",
-      folderBlue: "url('/static/images/folder-blue-bold.svg')",
-      folderBluePng: "url('/static/images/folder-blue-bold.png')",
-      folderBlueHover: "url('/static/images/folder-blue-bold-hover.svg')",
-      folderBlueHoverPng: "url('/static/images/folder-blue-bold-hover.png')",
-    },
     boxShadow: {
       outline: "0 0 0 3px rgba(255, 191, 71, 1)",
       inset1: "inset -1px 0 0 0 rgb(191, 193, 195)", // theme gray.grey2
@@ -25,9 +14,6 @@ module.exports = {
       outset2neg: "0 -2px 0 0 rgba(191, 193, 195, 0.2)",
       outset3: "3px 0 0 0 rgba(191, 193, 195, 0.2)",
       yellow3: "-3px 0 0 0 rgba(255, 191, 71, 1), 3px 0 0 0 rgba(255, 191, 71, 1)",
-    },
-    maxWidth: {
-      "4xl": "53rem"
     },
     fontSize: {
       xs: "1.3rem",
@@ -45,6 +31,7 @@ module.exports = {
     },
     screens: {
       xs: {'max': "639px"},
+      smaller: {'max': '768px'},
       sm: "640px",
       md: "768px",
       lg: "1024px"
@@ -97,7 +84,18 @@ module.exports = {
     extend: {
       animation: {
         'ellipsis': 'ellipsis steps(4,end) 1.5s infinite',
-      }, 
+      },
+      backgroundImage: {
+        tick: "url('/static/images/tick.png')",
+        crossGrey: "url('/static/images/cross-grey.png')",
+        folder: "url('/static/images/folder-black.svg')",
+        folderBlack: "url('/static/images/folder-black-bold.svg')",
+        folderBlackPng: "url('/static/images/folder-black-bold.png')",
+        folderBlue: "url('/static/images/folder-blue-bold.svg')",
+        folderBluePng: "url('/static/images/folder-blue-bold.png')",
+        folderBlueHover: "url('/static/images/folder-blue-bold-hover.svg')",
+        folderBlueHoverPng: "url('/static/images/folder-blue-bold-hover.png')",
+      },
       backgroundSize: {
         '19': '19px',
       },
@@ -121,6 +119,9 @@ module.exports = {
       },
       lineHeight: {
         'extra-tight': '0.9',
+      },
+      maxWidth: {
+        "4xl": "53rem"
       },
       outline: {
         yellow: '3px solid #ffbf47',

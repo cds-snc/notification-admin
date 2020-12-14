@@ -15,7 +15,7 @@
     back_link=url_for('.organisation_settings', org_id=current_org.id)
   ) }}
   <div class="grid-row contain-floats">
-    <div class="w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
+    <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
       {% call form_wrapper() %}
         {{ radios(form.crown_status) }}
         {{ page_footer(_('Save')) }}

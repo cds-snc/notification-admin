@@ -11,12 +11,12 @@
   <div class="grid-row contain-floats">
 
     {% if navigation_links %}
-      <div class="w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
+      <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
         {{ sub_navigation(navigation_links) }}
       </div>
-      <div class="w-5/8 float-left py-0 px-0 px-gutterHalf box-border">
+      <div class="md:w-5/8 float-left py-0 px-0 px-gutterHalf box-border">
     {% else %}
-      <div class="w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
+      <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
     {% endif %}
 
     {% block content_column_content %}

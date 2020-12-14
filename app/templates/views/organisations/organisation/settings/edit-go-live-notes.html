@@ -6,12 +6,12 @@ block org_page_title %} Edit request to go live notes {% endblock %} {% block
 maincolumn_content %} {{ page_header( "Edit request to go live notes",
 back_link=url_for('.organisation_settings', org_id=current_org.id) ) }}
 <div class="grid-row contain-floats">
-  <div class="w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
+  <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
     <p>
       {{ _('When you turn a service live please log which services have been turned live and why you approved the change.') }}
     </p>
     {% call form_wrapper() %} {{ textbox(form.request_to_go_live_notes,
-    width='1-1', rows=3) }} {{ page_footer(_('Save')) }} {% endcall %}
+    width='w-full', rows=3) }} {{ page_footer(_('Save')) }} {% endcall %}
   </div>
 </div>
 {% endblock %}

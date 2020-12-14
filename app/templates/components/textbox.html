@@ -7,13 +7,13 @@
   colour_preview=False,
   help_link=None,
   help_link_text=None,
-  width='2-3',
+  width='w-full lg:w-3/6',
   suffix=None,
   safe_error_message=False,
   rows=8
 ) %}
   <div
-    class="form-group{% if field.errors %} form-group-error{% endif %}"
+    class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
     data-module="{% if autofocus %}autofocus{% elif colour_preview %}colour-preview{% endif %}"
   >
     <label class="form-label" for="{{ field.name }}">
@@ -36,10 +36,11 @@
     {%
       if highlight_tags
     %}
-      {% set field_class = 'form-control-{} textbox-highlight-textbox'.format(width) %}
+      {% set field_class = '{} textbox-highlight-textbox'.format(width) %}
     {% else %}
-      {% set field_class = 'form-control-{} {}'.format(width, 'text-right' if suffix else '') %}
+      {% set field_class = '{} {}'.format(width, 'text-right' if suffix else '') %}
     {% endif %}
+    <span></span>
     {%
       set field_class = 'form-control ' + field_class + (
         ' form-control-error' if field.errors else ''
@@ -47,7 +48,7 @@
     %}
 
     {% 
-      set field_class = field_class + " input focus:shadow-outline w-full lg:w-3/6"
+      set field_class = field_class + " input focus:shadow-outline"
     %}
 
     {{ field(

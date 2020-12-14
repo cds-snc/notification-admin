@@ -1,0 +1,28 @@
+@layer components {
+  ul,
+  ol {
+    @apply list-none;
+  }
+
+  .list {
+    @apply p-0 mt-2 mb-8;
+  }
+  
+  .list li {
+    @apply mb-2;
+  }
+
+  /* Bulleted lists */
+  .list-bullet {
+    @apply pl-8 list-disc;
+  }
+
+  .list-bullet .list-bullet {
+    list-style: circle;
+  }
+
+  /* Numbered lists */
+  .list-number {
+    @apply list-decimal pl-8;
+  }
+}

@@ -63,5 +63,10 @@
   .multiple-choice .block-label:before {
     box-shadow: 0 5px 00 #fff;
   }
+
+  .multiple-choice input:disabled+label {
+    @apply opacity-100 text-gray-grey1 cursor-default;
+  }
+  
   /*! purgecss end ignore */
 }
