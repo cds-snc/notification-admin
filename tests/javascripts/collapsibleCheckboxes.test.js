@@ -40,7 +40,7 @@ describe('Collapsible fieldset', () => {
 
     // set up DOM
     document.body.innerHTML =
-      `<div class="form-group" data-module="collapsible-checkboxes" data-field-label="folder">
+      `<div class="form-group contain-floats box-border" data-module="collapsible-checkboxes" data-field-label="folder">
         <div class="selection-summary"></div>
         <fieldset id="folder_permissions">
           <legend class="form-label heading-small">

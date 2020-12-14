@@ -3,7 +3,7 @@
 {% macro checkbox(
   field,
   hint=False,
-  width='2-3'
+  width='w-full md:w-2/3'
 ) %}
   <div class="multiple-choice">
     {{ checkbox_input(field.id, field.name, field.data) }}

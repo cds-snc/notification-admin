@@ -16,7 +16,7 @@
     back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
 
-  <div class="form-group">
+  <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
     {% if current_service.prefix_sms %}
       <p>{{ _('Users will see your service name:') }}</p>
       <ul class="list-bullet">

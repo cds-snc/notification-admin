@@ -8,7 +8,7 @@
   {% if error %}
     <div class="validation-wrapper">
   {% endif %}
-    <fieldset class="form-group{% if field.errors %} form-group-error{% endif %}" id="{{ field.name }}">
+    <fieldset class="form-group contain-floats w-full box-border{% if field.errors %} form-group-error{% endif %}" id="{{ field.name }}">
       <legend>
         <span class="form-label">
           {{ field.label.text }}
@@ -34,7 +34,7 @@
               type="text"
               name="{{ field.name }}-{{ index }}"
               id="input-{{ field.name }}-{{ index }}"
-              class="form-control lg:inline-block list-form-control form-control-1-1"
+              class="form-control lg:inline-block list-form-control w-full"
               value="{{ field.data[index] }}"
               {% if not autocomplete %}autocomplete="off"{% endif %}
             />

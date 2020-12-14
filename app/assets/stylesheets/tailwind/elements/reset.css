@@ -1,8 +1,9 @@
-// Reset
+/* Reset
 // ==========================================================================
 // flatten all browser defaults and styles inherited from gov.uk template
 
 // Borrowed from http://meyerweb.com/eric/tools/css/reset/
+*/
 div,
 span,
 h1,
@@ -77,8 +78,7 @@ section,
 summary,
 time,
 mark {
-  margin: 0;
-  padding: 0;
+  @apply m-0 p-0;
 }
 
 h1,
@@ -119,17 +119,16 @@ td {
 
 abbr[title],
 acronym[title] {
-  text-decoration: none;
+  @apply no-underline;
 }
 
-// Legend --------------------------------
+/* Legend --------------------------------
 // Fix legend text wrapping in Edge and IE
 // ---------------------------------------
 // 1. IE9-11 & Edge 12-13
 // 2. IE8-11
+*/
 
 legend {
-  box-sizing: border-box; // [1]
-  max-width: 100%;        // [1]
-  display: table;         // [2]
+  @apply box-border max-w-full table overflow-hidden;
 }
