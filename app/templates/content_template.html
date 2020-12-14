@@ -8,15 +8,15 @@
 
 {% block maincolumn_content %}
 
-  <div class="grid-row">
+  <div class="grid-row contain-floats">
 
     {% if navigation_links %}
-      <div class="column-one-quarter">
+      <div class="w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
         {{ sub_navigation(navigation_links) }}
       </div>
-      <div class="column-five-eighths">
+      <div class="w-5/8 float-left py-0 px-0 px-gutterHalf box-border">
     {% else %}
-      <div class="column-two-thirds">
+      <div class="w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
     {% endif %}
 
     {% block content_column_content %}

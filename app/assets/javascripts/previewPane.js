@@ -11,7 +11,7 @@
 
   branding_style = branding_style.val();
 
-  const $paneWrapper = $('<div class="column-full"></div>');
+  const $paneWrapper = $('<div class="w-full float-left py-0 px-0 px-gutterHalf box-border"></div>');
   const $form = $('form');
   const previewType = $form.data('previewType');
   const $previewPane = $(`<iframe src="/_${previewType}?${buildQueryString(['branding_style', branding_style])}" class="branding-preview"></iframe>`);

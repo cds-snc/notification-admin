@@ -14,8 +14,8 @@
     'Letter contact details',
     back_link=None if request.args.get('from_template') else url_for('.service_settings', service_id=current_service.id)
   ) }}
-  <div class="grid-row">
-    {% call form_wrapper(class="column-half") %}
+  <div class="grid-row contain-floats">
+    {% call form_wrapper(class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border") %}
       {{ textbox(
         form.letter_contact_block,
         label='How should users contact your service?<br>This applies to all the letters you send.'|safe,

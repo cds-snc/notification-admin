@@ -62,14 +62,16 @@
     @apply invisible;
   }
   .fullscreen-fixed-table .table-field-left-aligned {
-    z-index: 100;
-    @apply w-0 relative invisible;
+    @apply w-0 absolute invisible z-100;
   }
   .fullscreen-fixed-table .table-field-heading-first,
   .fullscreen-fixed-table .table-field-index {
     transition: none;
     z-index: 200;
     @apply relative bg-white;
+  }
+  .fullscreen-fixed-table .table-field-index a {
+    @apply text-small;
   }
 
   .fullscreen-scrolled-table {

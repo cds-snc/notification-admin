@@ -40,7 +40,7 @@
             {% endif %}
           </span>
         </h3>
-        <ul class="tick-cross-list">
+        <ul class="tick-cross-list grid-row contain-floats relative">
           <li class="tick-cross-list-edit-link">
             {% if user.status == 'pending' %}
               <a href="{{ url_for('.cancel_invited_org_user', org_id=current_org.id, invited_user_id=user.id)}}">Cancel invitation</a>

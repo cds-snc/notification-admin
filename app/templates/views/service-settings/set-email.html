@@ -10,8 +10,8 @@
 
 {% block maincolumn_content %}
 
-  <div class="grid-row">
-    <div class="column-five-sixths">
+  <div class="grid-row contain-floats">
+    <div class="w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
       {{ page_header(
         txt,
         back_link=url_for('main.service_settings', service_id=current_service.id)

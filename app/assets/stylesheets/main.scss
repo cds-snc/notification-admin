@@ -11,7 +11,6 @@ $path: '/static/images/';
 @import 'toolkit/css3';
 @import 'toolkit/colours';
 @import 'toolkit/typography';
-@import 'toolkit/grid_layout';
 @import 'toolkit/helpers';
 
 // Dependencies from GOVU.UK Frontend Toolkit, rewritten for this application
@@ -56,19 +55,7 @@ $path: false !default;
 
 
 // Specific to this application
-@import 'grids';
-@import 'components/placeholder';
-@import 'components/navigation';
-@import 'components/file-upload';
-@import 'components/browse-list';
 @import 'components/vendor/previous-next-navigation';
-@import 'components/pill';
-@import 'components/show-more';
-@import 'components/tick-cross';
-@import 'components/stick-at-top-when-scrolling';
-@import 'components/task-list';
-@import 'components/vendor/govuk-back-link';
-@import 'components/loading-indicator';
 
 // TODO: break this up
 @import 'app';

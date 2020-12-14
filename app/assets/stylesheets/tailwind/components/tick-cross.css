@@ -1,0 +1,58 @@
+@layer components {
+  /*! purgecss start ignore */
+  .tick-cross-tick,
+  .tick-cross-cross {
+    background-position: 0 6px;
+    padding: 6px 0 5px 25px;
+    background-size: 19px 19px;
+    @apply text-smaller leading-tight font-normal inline-block bg-no-repeat;
+  }
+
+  .tick-cross-tick {
+    @apply bg-tick;
+  }
+
+  .tick-cross-cross {
+    box-shadow: inset 20px 0 0 0 rgba(255, 255, 255, 0.6);
+    @apply text-gray-grey1 bg-crossGrey
+  }
+
+  .tick-cross-list-permissions {
+    @apply mt-2;
+  }
+  .tick-cross-list-permissions li {
+    margin-right: 0.53m;
+    @apply block;
+  }
+
+  .tick-cross-list-edit-link {
+    top: -25px;
+    right: -135px;
+    @apply text-right absolute;
+  }
+  .tick-cross-list-edit-link a:before {
+    content: "";
+    top: -16px;
+    bottom: -15px;
+    left: -15px;
+    @apply block absolute right-0 bg-transparent;
+  }
+  .tick-cross-list-edit-link a:hover {
+    @apply text-blue-lightblue;
+  }
+  .tick-cross-list-edit-link a:active,
+  .tick-cross-list-edit-link a:focus {
+    @apply text-black;
+  }
+  .tick-cross-list-edit-link a:active:before,
+  .tick-cross-list-edit-link a:focus:before {
+    border-width: 15px 3px 15px 15px;
+    right: -3px;
+    @apply border-yellow border-solid;
+  }
+
+  .tick-cross-list-hint {
+    @apply text-gray-grey1 pt-2;
+  }
+  /*! purgecss end ignore */
+}

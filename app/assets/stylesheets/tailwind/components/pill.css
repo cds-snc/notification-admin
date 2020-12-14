@@ -1,0 +1,62 @@
+@layer components {
+  /*! purgecss start ignore */
+  .pill li {
+    @apply flex-grow text-left w-1/4;
+    /*
+      For browsers that don’t support flexbox, use float instead.
+      Float does not create floating of flex item, and do not take it
+      out-of-flow. So this is ignored by browsers that support flexbox.
+      See: https://www.w3.org/TR/css-flexbox-1/#flex-containers
+    */
+    float: left;
+  }
+
+  .pill a,
+  .pill-selected-item {
+    @apply block float-left box-border w-full p-4;
+  }
+
+  .pill a {
+    @apply bg-blue-govukblue border-2 border-solid border-blue-govukblue text-white relative no-underline cursor-pointer;
+  }
+  .pill a .pill-label {
+    @apply underline;
+  }
+  .pill a:link,
+  .pill a:visited {
+    @apply text-white;
+  }
+  .pill a:hover {
+    @apply text-blue-lightblue25;
+  }
+  .pill a:active,
+  .pill a:focus {
+    @apply z-10;
+  }
+
+  .pill-selected-item {
+    @apply border-2 border-solid border-black relative z-10 text-black outline-white;
+  }
+  .pill-selected-item:focus {
+    z-index: 1000;
+    @apply outline-yellow;
+  }
+
+  .pill-centered-item {
+    @apply text-center;
+  }
+
+  .pill-separate-item {
+    @apply block py-4 px-gutterHalf text-center;
+  }
+  .pill-separate-item:link,
+  .pill-separate-item:visited {
+    @apply bg-blue-govukblue text-white underline;
+  }
+  .pill-separate-item:hover,
+  .pill-separate-item:focus,
+  .pill-separate-item:link:focus {
+    @apply text-blue-lightblue25;
+  }
+  /*! purgecss end ignore */
+}

@@ -1,0 +1,54 @@
+@layer components {
+  /*! purgecss start ignore */
+  .placeholder,
+  .placeholder-no-brackets,
+  .placeholder-conditional {
+    word-wrap: break-word;
+    border-radius: 20px;
+    box-shadow: inset 0.47em 0 0 0 #fff, inset -0.47em 0 0 0 #fff, inset 0 -0.15em 0 0 #fff, inset 0 0.15em 0 0 #fff;
+    @apply inline bg-yellow text-black break-words;
+  }
+  .sms-message-wrapper .placeholder,
+  .sms-message-wrapper .placeholder-no-brackets {
+    /* theme gray.button */
+    box-shadow: inset 0.47em 0 0 0 #dee0e2, inset -0.47em 0 0 0 #dee0e2, inset 0 -0.18em 0 0 #dee0e2, inset 0 0.18em 0 0 #dee0e2;
+  }
+
+  .placeholder-no-brackets {
+    padding-left: 3px;
+    padding-right: 3px;
+    border-radius: 1px;
+    box-shadow: inset 0 -0.1em 0 0 #fff, inset 0 0.1em 0 0 #fff;
+  }
+
+  .placeholder-conditional {
+    @apply rounded-none;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: inset 0.47em 0 0 0 #fff, inset -0.89em 0 0 0 #fff, inset 0 -0.16em 0 0 #fff, inset 0 0.16em 0 0 #fff;
+  }
+  .sms-message-wrapper .placeholder-conditional {
+    box-shadow: inset 0.47em 0 0 0 #dee0e2, inset -0.89em 0 0 0 #dee0e2, inset 0 -0.18em 0 0 #dee0e2, inset 0 0.18em 0 0 #dee0e2;
+  }
+
+  .placeholder-redacted {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    opacity: 0.8;
+    top: 0.1em;
+    background-color: currentColor;
+    box-shadow: inset 0 -0.35em 0 0 #fff;
+    @apply py-0 relative;
+  }
+  .sms-message-wrapper .placeholder-redacted {
+    box-shadow: inset 0 -0.35em 0 0 #dee0e2;
+  }
+
+  *:focus + p .sms-message-wrapper .placeholder-redacted {
+    /* theme yellow */
+    box-shadow: inset 0 -0.35em 0 0 #ffbf47;
+  }
+  /*! purgecss end ignore */
+}

@@ -322,7 +322,7 @@ def test_should_show_letter_job(
         job_id=fake_uuid,
     )
     assert normalize_spaces(page.h1.text) == 'thisisatest.csv'
-    assert normalize_spaces(page.select('p.bottom-gutter')[0].text) == (
+    assert normalize_spaces(page.select('p.mb-12.clear-both')[0].text) == (
         'Sent by Test User on 2016-01-01 11:09:00.061258 Printing starts today at 5:30pm'
     )
     assert page.select('.banner-default-with-tick') == []
@@ -377,7 +377,7 @@ def test_should_show_letter_job_with_banner_after_sending_before_1730(
         just_sent='yes',
     )
 
-    assert page.select('p.bottom-gutter') == []
+    assert page.select('p.mb-12 clear-both') == []
     assert normalize_spaces(page.select('.banner-default-with-tick')[0].text) == (
         'Your letter has been sent. Printing starts today at 5:30pm.'
     )
@@ -401,7 +401,7 @@ def test_should_show_letter_job_with_banner_when_there_are_multiple_CSV_rows(
         just_sent='yes',
     )
 
-    assert page.select('p.bottom-gutter') == []
+    assert page.select('p.mb-12 clear-both') == []
     assert normalize_spaces(page.select('.banner-default-with-tick')[0].text) == (
         'Your letters have been sent. Printing starts today at 5:30pm.'
     )
@@ -425,7 +425,7 @@ def test_should_show_letter_job_with_banner_after_sending_after_1730(
         just_sent='yes',
     )
 
-    assert page.select('p.bottom-gutter') == []
+    assert page.select('p.mb-12 clear-both') == []
     assert normalize_spaces(page.select('.banner-default-with-tick')[0].text) == (
         'Your letter has been sent. Printing starts tomorrow at 5:30pm.'
     )

@@ -10,14 +10,14 @@
 
 {% block maincolumn_content %}
 
-  <div class="grid-row">
-    <div class="column-five-sixths">
+  <div class="grid-row contain-floats">
+    <div class="w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
       {{ page_header(
         txt,
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
       {% if 'email_auth' in current_service.permissions %}
-        <p class="heading-small bottom-gutter-2-3">
+        <p class="heading-small mb-12 clear-both contain-floats">
           {{ _('Email code or text message code') }}
         </p>
         <p>
@@ -27,7 +27,7 @@
           {{ _('You can') }} <a href="{{ url_for('.manage_users', service_id=current_service.id) }}">{{ _('set the sign-in method for individual team members') }}</a>.
         </p>
       {% else %}
-        <p class="heading-small bottom-gutter-2-3">
+        <p class="heading-small mb-12 clear-both contain-floats">
           {{ _('Text message code') }}
         </p>
         <p>

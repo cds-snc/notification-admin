@@ -1,0 +1,46 @@
+@layer components {
+  /*! purgecss start ignore */
+  .task-list {
+    @apply border-t-1 border-solid border-gray-grey2 my-gutter mx-0;
+  }
+  .task-list-item {
+    @apply relative;
+  }
+  .task-list-item a {
+    padding-right: 20%;
+    @apply border-b-1 border-solid border-gray-grey2 block py-gutterHalf px-0 relative;
+  }
+  .task-list-item a:hover {
+    @apply text-blue-lightblue;
+  }
+  .task-list-item a:focus {
+    top: -1px;
+    margin-bottom: -2px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    @apply outline-none text-black border-transparent shadow-yellow3;
+  }
+
+  .task-list-indicator-completed,
+  .task-list-indicator-not-completed {
+    z-index: 2;
+    min-width: 20%;
+    margin-top: -15px;
+    padding: 3px 8px 1px 8px;
+    top: 28px; /* gutter - 2px */
+    @apply text-small leading-tight font-bold inline-block absolute right-0 border-2 border-solid border-black pointer-events-none text-center;
+  }
+
+  .task-list-indicator-completed {
+    /* Just a pinch of letter spacing to make reversed-out text a bit
+       easier to read
+    */
+    letter-spacing: 0.02em;
+    @apply bg-black text-gray-grey4;
+  }
+
+  .task-list-indicator-not-completed {
+    @apply bg-white text-black;
+  }
+  /*! purgecss end ignore */
+}

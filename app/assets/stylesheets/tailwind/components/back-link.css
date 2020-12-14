@@ -1,0 +1,35 @@
+@layer components {
+  /*! purgecss start ignore */
+  .back-link {
+    padding-left: 14px;
+    @apply text-small leading-tight font-normal text-black inline-block relative mt-gutterHalf mb-4 no-underline border-b-1 border-solid border-black
+  }
+  .back-link:link,
+  .back-link:visited {
+    @apply text-black;
+  }
+  .back-link:before, .back-link:after {
+    content: "";
+    @apply absolute border-solid border-transparent;
+  }
+  .back-link:before {
+    -webkit-clip-path: polygon(0% 50%, 100% 100%, 100% 0%);
+    clip-path: polygon(0% 50%, 100% 100%, 100% 0%);
+    border-width: 5px 6px 5px 0;
+    border-right-color: inherit;
+    top: -1px;
+    bottom: 1px;
+    @apply block w-0 h-0 left-0 m-auto;
+  }
+  .back-link:after {
+    content: "";
+    top: -15px;
+    left: -3px;
+    border-width: 15px 30px 15px 3px;
+    @apply w-full h-full;
+  }
+  .back-link:focus:after {
+    @apply border-yellow;
+  }
+  /*! purgecss end ignore */
+}
