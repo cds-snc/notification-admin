@@ -18,8 +18,8 @@
   }
   
   .heading-small {
-    margin-top: 10/16em;
-    margin-bottom: 5/16em;
+    margin-top: .625em;
+    margin-bottom: 1.0526em;
     @apply text-smaller leading-tight font-bold block;
   }
   @screen md {
@@ -29,21 +29,21 @@
   }
   
   .heading-medium {
-    margin-top: 25/20em;
-    margin-bottom: 10/20em;
+    margin-top: 1.25em;
+    margin-bottom: 0.5em;
     @apply text-base leading-tight block font-bold mt-gutter block;
   }
   @screen md {
     .heading-medium {
-      margin-top: 45/24em;
-      margin-bottom: 20/24em;
+      margin-top: 1.875em;
+      margin-bottom: .8333em;
     }
   }
 
   .heading-large {
     line-height: 1.111;
-    margin-top: 25/24em;
-    margin-bottom: 10/24em;
+    margin-top: 1.0412em;
+    margin-bottom: .4167em;
     @apply text-lg font-bold block;
   }
   .heading-large .heading-secnodary {
@@ -53,8 +53,8 @@
   }
   @screen md {
     .heading-large {
-      margin-top: 45/36em;
-      margin-bottom: 20/36em;
+      margin-top: 1.25em;
+      margin-bottom: .5556em;
     }
     .heading-large .heading-secnodary {
       padding-top: 6px;
