@@ -28,8 +28,8 @@
         {% endfor %}
       {% endcall %}
       <div class="conditional-radio-panel contain-floats js-hidden" id="on-behalf-of">
-        {{ textbox(form.on_behalf_of_name, width='1-1') }}
-        {{ textbox(form.on_behalf_of_email, width='1-1') }}
+        {{ textbox(form.on_behalf_of_name, width='w-full') }}
+        {{ textbox(form.on_behalf_of_email, width='w-full') }}
       </div>
       {% set hint = _('The version number is on the front page, for example ‘3.6’') %}
       {% set button_txt = _('Continue') %}

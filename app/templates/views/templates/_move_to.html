@@ -16,7 +16,7 @@
     <div id="move_to_new_folder_form">
       <fieldset class="js-will-stick-at-bottom-when-scrolling contain-floats w-full">
         <legend class="visuallyhidden">{{ _('Add to new folder') }}</legend>
-        {{ textbox(templates_and_folders_form.move_to_new_folder_name, width='1-1') }}
+        {{ textbox(templates_and_folders_form.move_to_new_folder_name, width='w-full') }}
         {{ page_footer(_('Add to new folder'), button_name='operation', button_value='move-to-new-folder') }}
       </fieldset>
     </div>
@@ -24,7 +24,7 @@
   <div id="add_new_folder_form">
     <fieldset class="js-will-stick-at-bottom-when-scrolling contain-floats w-full">
       <legend class="visuallyhidden">{{ _('Add new folder') }}</legend>
-      {{ textbox(templates_and_folders_form.add_new_folder_name, width='1-1') }}
+      {{ textbox(templates_and_folders_form.add_new_folder_name, width='w-full') }}
       {{ page_footer(_('Add new folder'), button_name='operation', button_value='add-new-folder') }}
     </fieldset>
   </div>

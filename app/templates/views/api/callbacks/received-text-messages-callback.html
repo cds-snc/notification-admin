@@ -22,13 +22,13 @@
       {% call form_wrapper() %}
         {{ textbox(
           form.url,
-          width='1-1',
+          width='w-full',
           hint=hint_txt
         ) }}
         {% set hint_txt = _('At least 10 characters') %}
         {{ textbox(
           form.bearer_token,
-          width='1-1',
+          width='w-full',
           hint=hint_txt,
           autocomplete='new-password'
         ) }}

@@ -16,10 +16,10 @@ data_kwargs={'force-focus': True} ) %}
     {% set hint_txt = _('Optional') %}
     {% if form_label == 'phone number' %}
       {{ textbox( form.placeholder_value,
-    label=_(form.placeholder_value.label.text)|capitalize, hint=hint_txt if optional_placeholder else None, width='1-1', ) }}
+    label=_(form.placeholder_value.label.text)|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', ) }}
     {% else %}
       {{ textbox( form.placeholder_value,
-      label=form.placeholder_value.label.text|capitalize, hint=hint_txt if optional_placeholder else None, width='1-1', ) }}
+      label=form.placeholder_value.label.text|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', ) }}
   {% endif %}
   </div>
   {% if skip_link %}

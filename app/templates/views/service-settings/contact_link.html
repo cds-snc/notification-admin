@@ -30,7 +30,7 @@
 
             {{ radio(option, data_target=data_target) }}
             <div class="panel contain-floats panel-border-narrow js-hidden" id={{data_target}}>
-              {{ textbox(form|attr(option.data), label=' ', width='1-1') }}
+              {{ textbox(form|attr(option.data), label=' ', width='w-full') }}
             </div>
           {% endfor %}
         {% endcall %}

@@ -17,7 +17,7 @@
       <div id="contact-form" class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
         {% call form_wrapper() %}
           {% set name_label = _('Your name') %}
-          {{ textbox(form.name, label=name_label,  width='1-1') }}
+          {{ textbox(form.name, label=name_label,  width='w-full') }}
 
           <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
             <label class="form-label" for="support_type">
@@ -38,10 +38,10 @@
           </div>
 
           {% set email_label = _('Your email') %}
-          {{ textbox(form.email_address, label=email_label, width='1-1') }}
+          {{ textbox(form.email_address, label=email_label, width='w-full') }}
 
           {% set message_label = _('Message') %}
-          {{ textbox(form.feedback, width='1-1', label=message_label, hint='', rows=10) }}
+          {{ textbox(form.feedback, width='w-full', label=message_label, hint='', rows=10) }}
           {% set send_text = _('Send') %}
         {{ page_footer(send_text) }}
         {% endcall %}
