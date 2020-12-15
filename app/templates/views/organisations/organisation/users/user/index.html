@@ -19,7 +19,7 @@
     {{ user.email_address }}
   </p>
 
-  {% call form_wrapper(class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border") %}
+  {% call form_wrapper(class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border") %}
       {{ page_footer(
         _('Save'),
         delete_link=url_for('.remove_user_from_organisation', org_id=current_org.id, user_id=user.id) if user or None,

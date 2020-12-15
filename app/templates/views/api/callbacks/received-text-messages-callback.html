@@ -14,7 +14,7 @@
     back_link=url_for('.api_callbacks', service_id=current_service.id)
   ) }}
   <div class="grid-row contain-floats">
-    <div class="w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
+    <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
       <p>
         {{ _('When you receive a text message in GC Notify, we can forward it to your system. Check the') }} <a href="{{ url_for('.callbacks') }}"> {{ _('callback documentation') }} </a> {{ _('for more information.') }}
       </p>
@@ -22,13 +22,13 @@
       {% call form_wrapper() %}
         {{ textbox(
           form.url,
-          width='1-1',
+          width='w-full',
           hint=hint_txt
         ) }}
         {% set hint_txt = _('At least 10 characters') %}
         {{ textbox(
           form.bearer_token,
-          width='1-1',
+          width='w-full',
           hint=hint_txt,
           autocomplete='new-password'
         ) }}

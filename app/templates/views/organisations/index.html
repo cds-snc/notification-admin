@@ -19,12 +19,12 @@
 
     <main role="main">
       <div class="grid-row contain-floats mt-8 block clear-both contain-floats">
-        <div class="w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
+        <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
           <h1>
             {{ _('All organisations') }}
           </h1>
         </div>
-        <div class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
+        <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
 
           {{ live_search(target_selector='.browse-list-item', show=True, form=search_form, label='Search by name') }}
 
@@ -49,10 +49,10 @@
       </div>
       <div class="js-stick-at-bottom-when-scrolling">
         <div class="grid-row contain-floats">
-          <div class="w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
+          <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
             &nbsp;
           </div>
-          <div class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
+          <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
             <a href="{{ url_for('main.add_organisation') }}" class="button button-secondary">{{ _('New organisation') }}</a>
           </div>
         </div>

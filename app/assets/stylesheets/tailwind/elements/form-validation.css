@@ -1,0 +1,32 @@
+@layer components {
+  /*! purgecss start ignore */
+  /* form(s) */
+  .form-group {
+    @apply mb-4;
+  }
+
+  .form-group-error {
+    @apply mr-4 pl-4 border-l-4 border-red;
+  }
+  @screen md {
+    .form-group-error {
+      border-left-width: 5px;
+      @apply pl-gutterHalf;
+    }
+  }
+
+  .form-control-error {
+    @apply border-4 border-red;
+  }
+
+  .error-message {
+    padding: 2px 0;
+    @apply text-smaller font-bold leading-tight block text-red text-base clear-both m-0;
+  }
+  .form-label .error-message,
+  .form-label-bold .error-message {
+    padding-top: 4px;
+    padding-bottom: 0;
+  }
+  /*! purgecss end ignore */
+}
