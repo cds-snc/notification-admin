@@ -111,15 +111,6 @@ const watchFiles = {
   }
 };
 
-const lint = {
-  js: cb => {
-    return src(paths.src + "javascripts/**/*.js")
-      .pipe(plugins.jshint())
-      .pipe(plugins.jshint.reporter(stylish))
-      .pipe(plugins.jshint.reporter("fail"));
-  }
-};
-
 // Default: compile everything
 const defaultTask = parallel(
   series(
