@@ -82,13 +82,6 @@ th {
   @apply font-body;
 }
 
-h1 {
-  @apply text-xl font-body pb-10;
-}
-
-h2 {
-  @apply text-lg font-body pb-6;
-}
 
 html,
 body,

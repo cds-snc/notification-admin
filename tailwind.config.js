@@ -64,6 +64,7 @@ module.exports = {
         grey1: "#6f777b",
         grey2: "#bfc1c3",
         grey4: "#f8f8f8",
+        lightgrey: "#C0C1C3",
       },
       yellow: {
         default: "#ffbf47"
