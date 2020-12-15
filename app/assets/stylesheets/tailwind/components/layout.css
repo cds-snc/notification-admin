@@ -1,10 +1,14 @@
 @layer components {
   /*! purgecss start ignore */
-  .banner {
-    @apply block relative p-gutterHalf mx-0 mt-gutter mb-gutterHalf clear-both text-left font-bold text-smaller border-4 border-solid leading-tight;
+  .banner,
+  .banner-default,
+  .banner-with-tick,
+  .banner-default-with-tick {
+    @apply block relative p-gutterHalf mx-0 mt-gutter mb-gutterHalf clear-both text-left font-bold text-smaller border-4 border-solid border-green leading-tight text-green;
   }
 
-  .banner:focus {
+  .banner:focus,
+  .banner-default-with-tick:focus {
     @apply outline-yellow;
   }
 
@@ -16,7 +20,8 @@
     @apply text-title border-none pl-0 font-bold;
   }
 
-  .banner-with-tick {
+  .banner-with-tick,
+  .banner-default-with-tick {
     background-position: 15px 15px;
     @apply bg-tick bg-no-repeat bg-19 py-gutterHalf px-gutterAndAHalf;
   }

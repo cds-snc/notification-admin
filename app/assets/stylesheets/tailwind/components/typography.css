@@ -1,7 +1,7 @@
 @layer components {
   /*! purgecss start ignore */
   main {
-    @apply text-smaller leading-tight font-normal font-body antialiased;
+    @apply text-smaller leading-snug font-normal font-body antialiased;
   }
 
   p {
@@ -45,7 +45,7 @@
   }
   @screen md {
     .heading-small {
-      margin-top: 20/19em;
+      margin-top: 1.0526em;
     }
   }
   
