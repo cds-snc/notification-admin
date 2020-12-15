@@ -36,7 +36,7 @@
     @apply inline-block underline;
   }
   .previous-and-next-navigation .pagination-label:empty {
-    @apply hidden.
+    @apply hidden;
   }
 
   @screen xs {
