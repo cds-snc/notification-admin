@@ -1,4 +1,5 @@
 @layer components {
+  /*! purgecss start ignore */
   .multiple-choice {
     @apply block float-none clear-left relative p-0 mb-4;
     padding-left: 38px;
@@ -10,7 +11,7 @@
   }
 
   .multiple-choice input {
-    @apply absolute cursor-pointer left-0 top-0;
+    @apply absolute cursor-pointer left-0 top-0 outline-none opacity-0;
     width: 38px;
     height: 38px;
     z-index: 1;
@@ -32,14 +33,14 @@
     }
   }
 
-  .multiple-choice[type=radio] + label::before {
+  .multiple-choice [type=radio] + label:before {
     content: "";
-    @apply border-transparent border-2 border-solid absolute top-0 left-0;
+    @apply bg-transparent border-2 border-solid border-black absolute top-0 left-0;
     border-radius: 50%;
     width: 34px;
     height: 34px;
   }
-  .multiple-choice[type=radio] + label::after {
+  .multiple-choice [type=radio] + label:after {
     content: "";
     @apply border-10 border-solid w-0 h-0 absolute opacity-0;
     top: 9px;
@@ -47,13 +48,13 @@
     border-radius: 50%;
   }
 
-  .multiple-choice[type=checkbox] + label::before {
+  .multiple-choice [type=checkbox] + label:before {
     content: "";
     width: 34px;
     height: 34px;
-    @apply bg-transparent absolute top-0 left-0 border-2 border-solid;
+    @apply bg-transparent absolute top-0 left-0 border-2 border-solid border-black;
   }
-  .multiple-choice[type=checkbox] + label::after {
+  .multiple-choice [type=checkbox] + label:after {
     content: "";
     border-width: 0 0 5px 5px;
     width: 17px;
@@ -61,19 +62,19 @@
     top: 10px;
     left: 8px;
     border-top-color: transparent;
-    @apply border-solid bg-transparent absolute opacity-0 -rotate-45
+    @apply border-solid bg-transparent absolute opacity-0 transform -rotate-45;
   }
 
   /* Focus state */
-  .multiple-chioce[type=radio]:focus + label::before {
+  .multiple-choice [type=radio]:focus + label:before {
     @apply shadow-outline4;
   }
-  .multiple-chioce[type=checkbox]:focus + label::before {
+  .multiple-choice [type=checkbox]:focus + label:before {
     @apply shadow-outline;
   }
 
   /* Selected state */
-  .multiple-choice input:checked + label::after {
+  .multiple-choice input:checked + label:after {
     @apply opacity-100;
   }
 
@@ -98,4 +99,5 @@
       @apply mb-0 mr-gutter;
     }
   }
+  /*! purgecss end ignore */
 }
