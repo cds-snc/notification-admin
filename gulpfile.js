@@ -16,8 +16,6 @@ plugins.concat = require("gulp-concat");
 plugins.cssUrlAdjuster = require("gulp-css-url-adjuster");
 plugins.jshint = require("gulp-jshint");
 plugins.prettyerror = require("gulp-prettyerror");
-plugins.sass = require("gulp-sass");
-plugins.sassLint = require("gulp-sass-lint");
 plugins.uglify = require("gulp-uglify");
 
 // 2. CONFIGURATION
@@ -81,18 +79,6 @@ const javascripts = () => {
     .pipe(dest(paths.dist + "javascripts/"));
 };
 
-const sass = () => {
-  return src(paths.src + "/stylesheets/main*.scss")
-    .pipe(plugins.prettyerror())
-    .pipe(
-      plugins.sass({
-        outputStyle: "compressed"
-      })
-    )
-    .pipe(plugins.base64("../.."))
-    .pipe(dest(paths.dist + "stylesheets/"));
-};
-
 // copy static css
 const static_css = () => {
   return src(paths.src + "/stylesheets/index.css").pipe(
@@ -115,10 +101,6 @@ const watchFiles = {
     watch([paths.src + "javascripts/**/*"], javascripts);
     cb();
   },
-  sass: cb => {
-    watch([paths.src + "stylesheets/**/*"], sass);
-    cb();
-  },
   images: cb => {
     watch([paths.src + "images/**/*"], images);
     cb();
@@ -130,13 +112,6 @@ const watchFiles = {
 };
 
 const lint = {
-  sass: () => {
-    return src([
-      paths.src + "stylesheets/*.scss",
-      paths.src + "stylesheets/components/*.scss",
-      paths.src + "stylesheets/views/*.scss"
-    ]);
-  },
   js: cb => {
     return src(paths.src + "javascripts/**/*.js")
       .pipe(plugins.jshint())
@@ -151,20 +126,17 @@ const defaultTask = parallel(
     images
   ),
   series(static_css),
-  series(javascripts, sass)
+  series(javascripts)
 );
 
 // Watch for changes and re-run tasks
 const watchForChanges = parallel(
   watchFiles.javascripts,
-  watchFiles.sass,
   watchFiles.images,
   watchFiles.self
 );
 
 exports.default = defaultTask;
-
-exports.lint = series(lint.sass);
 
 // Optional: recompile on changes
 exports.watch = series(defaultTask, watchForChanges);
