@@ -6,7 +6,6 @@
 // 1. LIBRARIES
 // - - - - - - - - - - - - - - -
 const { src, pipe, dest, series, parallel, watch } = require("gulp");
-const stylish = require("jshint-stylish");
 
 const plugins = {};
 plugins.addSrc = require("gulp-add-src");
