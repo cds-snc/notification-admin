@@ -167,10 +167,10 @@ set description = _('GC Notify lets you send emails and text messages to your us
         class="flex flex-col lg:flex-row justify-between"
       >
         <div class="text-content max-w-4xl">
-          <h2 class="pb-0 text-white leading-tight font-bold">
+          <h2 class="pb-0 font-sans text-white leading-tight font-bold text-lg">
             {{ _("Send service updates by email and text message") }}
           </h2>
-          <p class="pt-10 pb-16 text-white">
+          <p class="pt-10 pb-16 text-white text-base">
             {{ _("Try out GC Notify, a new messaging platform for the Government of Canada.") }}
           </p>
           <div class="pt-0">
@@ -205,7 +205,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
       <div class="flex flex-col lg:flex-row justify-between">
         <div class="image-content pb-10 lg:pb-0">
 
-          <h2 class="leading-tight font-bold lg:hidden">
+          <h2 class="leading-tight font-sans font-bold text-lg lg:hidden">
             {{ _("A platform built for government") }}
           </h2>
 
@@ -229,17 +229,17 @@ set description = _('GC Notify lets you send emails and text messages to your us
 
         </div>
         <div class="text-content lg:max-w-4xl">
-          <h2 class="leading-tight font-bold hidden lg:block lg:visible">
+          <h2 class="leading-tight font-bold font-sans hidden text-lg lg:block lg:visible">
             {{ _("A platform built for government") }}
           </h2>
-          <p class="pt-4">
+          <p class="pt-4 text-base mb-0">
             {{ _("Send emails or text messages to keep the public informed and make your services more transparent.") }}
           </p>
-          <p class="pt-4">
+          <p class="pt-4 text-base mb-0">
             {{ _("Use templates for easy, consistent, and accessible communications.") }}
           </p>
-          <p class="pt-10 text-blue">
-            <a class="line-under text-base link:text-blue visited:text-blue" href="{{ url_for('main.features') }}">{{ _("Learn more about GC Notify") }}</a>
+          <p class="pt-10 text-blue text-base">
+            <a class="line-under text-base my-0 link:text-blue visited:text-blue" href="{{ url_for('main.features') }}">{{ _("Learn more about GC Notify") }}</a>
           </p>
         </div>
       </div>
@@ -253,7 +253,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
       <div class="flex flex-col lg:flex-row justify-between">
         <!-- -->
         <div class="text-content max-w-4xl pb-10 lg:pb-0">
-          <h2 class="leading-tight font-bold">
+          <h2 class="leading-tight font-bold font-sans text-lg pb-6">
             {{ _("A product built for you") }}
           </h2>
           <div class="image-content flex">
@@ -278,13 +278,13 @@ set description = _('GC Notify lets you send emails and text messages to your us
          {% endif %}
          </div>
           <ul class="list-disc ml-5">
-            <li class="pt-4">
+            <li class="pt-4 text-base leading-tight">
               {{ _("Staff who regularly write and send service updates wishing to upgrade the tools used to communicate with the public") }}
             </li>
-            <li class="pt-4">
+            <li class="pt-4 text-base leading-tight">
               {{ _("Developers working on improving workflow and tooling for public servants") }}
             </li>
-            <li class="pt-4">
+            <li class="pt-4 text-base leading-tight">
               {{_("Administrators who have to meet departmental service standards for communication")}}
             </li>
           </ul>
@@ -327,7 +327,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
   <div class="bg-white">
     <div class="container px-10 py-24">
       <div class="flex justify-center">
-        <h2 class="leading-tight font-bold">
+        <h2 class="leading-tight font-bold font-sans text-lg pb-6">
           {{ _("What you can do") }}
         </h2>
       </div>
@@ -427,7 +427,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
       <div class="container px-10 py-24">
         <div class="flex flex-col lg:flex-row justify-between">
           <div class="text-content max-w-4xl pb-10 lg:pb-0">
-            <h2 class="leading-tight font-bold">
+            <h2 class="leading-tight font-bold font-sans text-lg pb-6">
               {{ _("Integrate it into your system") }}
             </h2>
 
@@ -451,13 +451,13 @@ set description = _('GC Notify lets you send emails and text messages to your us
          {% endif %}
 
 
-            <p class="block pt-20 lg:pt-4">
+            <p class="block text-base mb-0 pt-20 lg:pt-4">
               {{ _("Take advantage of secure, cloud-based messaging tools by integrating GC Notify with your current system.") }}
             </p>
-            <p class="pt-4">
+            <p class="pt-4 text-base mb-0">
               {{ _("GC Notify supports roles and permissions, so that you can adjust which staff have access to send or edit messages.") }}
             </p>
-            <p class="pt-10 text-blue">
+            <p class="pt-10 text-base mb-0 text-blue">
               <a
                 class="line-under inline-block text-blue link:text-blue visited:text-blue text-base underline hover:no-underline"
                 href="{{ url_for('main.documentation') }}"
@@ -498,7 +498,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
     <div class="bg-white">
       <div class="container px-10 py-24">
 
-        <h2 class="leading-tight font-bold lg:hidden">
+        <h2 class="leading-tight font-bold lg:hidden font-sans text-lg pb-6">
           {{ _("Free for Government of Canada services") }}
         </h2>
         <div class="flex flex-col lg:flex-row justify-between">
@@ -531,18 +531,18 @@ set description = _('GC Notify lets you send emails and text messages to your us
 
           </div>
           <div class="text-content max-w-4xl">
-            <h2 class="leading-tight font-bold hidden lg:block lg:visible">
+            <h2 class="leading-tight font-bold hidden lg:block lg:visible font-sans text-lg">
               {{ _("Free for Government of Canada services") }}
             </h2>
-            <p class="pt-4">
+            <p class="pt-4 text-base mb-0">
               {{ _("Replace paper letters or costly third-party messaging services.") }}
             </p>
             <ul class="list-disc ml-10">
-              <li class="pt-4">
+              <li class="pt-4 text-base mb-0">
                 {{ _("Send unlimited emails, completely free.")
                 }}
               </li>
-              <li class="pt-4">
+              <li class="pt-4 text-base mb-0">
                 {{ _("GC Notify is a service managed by the Canadian Digital Service — no external procurement." )}}
               </li>
             </ul>
@@ -587,10 +587,10 @@ set description = _('GC Notify lets you send emails and text messages to your us
       <div class="container px-10 py-24">
         <div class="flex justify-center">
           <div>
-            <h2 class="pb-0 text-white leading-tight text-center">
+            <h2 class="pb-0 text-white leading-tight text-center font-sans text-lg">
               {{ _("Try it now") }}
             </h2>
-            <p class="pt-10 pb-16 text-white text-center">
+            <p class="pt-10 pb-16 text-white text-center text-base mb-0">
               {{ _("Create an account and start sending test messages right away!") }}
             </p>
             <p class="mt-0 text-center">
@@ -609,14 +609,14 @@ set description = _('GC Notify lets you send emails and text messages to your us
     <div id="contact-form" class="container px-10 py-10">
       <!-- -->
       <div class="py-10">
-        <h2 class="leading-tight font-bold">{{ _("Contact us") }}</h2>
+        <h2 class="leading-tight font-bold font-sans text-lg pb-6">{{ _("Contact us") }}</h2>
         <!-- INSERT FORM -->
         <!-- contact us -->
 
         {% call form_wrapper() %} {% set name_label = _('Your name') %} {{
-        textbox(form.name, label=name_label, width='w-full') }} {% set email_label
+        textbox(form.name, label=name_label, width='w-full lg:w-3/6') }} {% set email_label
         = _('Your email') %} {{ textbox(form.email_address, label=email_label,
-        width='w-full') }}
+        width='w-full lg:w-3/6') }}
 
         <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
           <label class="form-label" for="support_type">
@@ -624,7 +624,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
           </label>
 
           <select
-            class="input focus:shadow-outline w-full md:w-3/6"
+            class="input focus:shadow-outline w-full lg:w-3/6"
             id="support_type"
             name="support_type"
           >
@@ -639,7 +639,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
         </div>
 
         {% set message_label = _('Message') %} {{ textbox(form.feedback,
-        width='w-full',label=message_label, hint='', rows=10) }} {% set send_text =
+        width='w-full lg:w-3/6',label=message_label, hint='', rows=10) }} {% set send_text =
         _('Send') %} {{ page_footer( send_text, ) }} {% endcall %}
 
         <!-- end contact us -->

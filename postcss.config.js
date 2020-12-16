@@ -26,6 +26,7 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "w-2/3",
     "mb-8",
     "focus:outline-none",
+    "w-3/6",
   ],
   defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });

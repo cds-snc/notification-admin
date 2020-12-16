@@ -68,7 +68,7 @@
   /* Home page was built with different CSS - override */
   #content.home-page-content {
     max-width: none;
-    @apply mx-0;
+    @apply mx-0 pb-0;
   }
   /*! purgecss end ignore */
 }
