@@ -899,20 +899,61 @@ class CreateInboundSmsForm(StripWhitespaceForm):
             raise ValidationError(_l('This number already exists'))
 
 
-class ContactNotifyTeam(StripWhitespaceForm):
+class ContactNotify(StripWhitespaceForm):
     not_empty = _l('This cannot be empty')
     name = StringField(_l('Your name'), validators=[DataRequired(message=not_empty)])
-    support_type = SelectField(
-        'Support Type',
+    support_type = RadioField(
+        _l('How can we help?'),
         choices=[
-            (_l('Ask a question'), _l('Ask a question')),
-            (_l('Give feedback'), _l('Give feedback')),
-            (_l('Set up a demo'), _l('Set up a demo')),
-            (_l('Other'), _l('Other')),
+            ('ask_question', _l('Ask a question')),
+            ('technical_support', _l('Get technical support')),
+            ('give_feedback', _l('Give feedback')),
+            ('demo', _l('Set up a demo to learn more about GC Notify')),
+            ('other', _l('Other')),
         ],
     )
     email_address = email_address(label=_l('Your email'), gov_user=False)
-    feedback = TextAreaField(_l('Message'), validators=[DataRequired(message=not_empty)])
+
+
+class ContactMessageStep(ContactNotify):
+    message = TextAreaField(_l('Message'), validators=[DataRequired()])
+
+
+class SetUpDemoOrgDetails(ContactNotify):
+    department_org_name = StringField(
+        _l('Name of department or organisation'),
+        validators=[DataRequired()]
+    )
+    program_service_name = StringField(
+        _l('Name of program or service'),
+        validators=[DataRequired()]
+    )
+    intended_recipients = RadioField(
+        _l('Who are the intented recipients of notifications?'),
+        choices=[
+            ('internal', _l('Colleagues within your department (internal)')),
+            ('external', _l('Partners from other organisations (external)')),
+            ('public', _l('Public')),
+        ],
+        validators=[DataRequired()],
+    )
+
+
+class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):
+    main_use_case = RadioField(
+        _l('Describe the primary purpose of the first messages you intend to send'),
+        choices=[
+            ('status_updates', _l('Information specific for each recipient (e.g. status update)')),
+            ('transactional_messages', _l('Action required by each recipient (e.g. password reset)')),
+            ('newsletters', _l('News or information sent in bulk to many recipients (e.g. newsletter)')),
+            ('other', _l('Other')),
+        ],
+        validators=[DataRequired()],
+    )
+    main_use_case_details = TextAreaField(
+        _l('Details about your main use case'),
+        validators=[DataRequired()]
+    )
 
 
 class SelectLogoForm(StripWhitespaceForm):

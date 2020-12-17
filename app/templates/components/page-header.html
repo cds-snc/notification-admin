@@ -1,10 +1,16 @@
 {% macro page_header(
   h1,
-  back_link=None
+  back_link=None,
+  sub_text=None
 ) %}
 
   {% if back_link %}
     {{ govuk_back_link(back_link) }}
+  {% endif %}
+  {% if sub_text %}
+  <div class="text-gray-grey1 mt-5 mb-5">
+    <p>{{ sub_text }}</p>
+  </div>
   {% endif %}
 
   <h1 class="heading-large">{{ h1 }}</h1>
