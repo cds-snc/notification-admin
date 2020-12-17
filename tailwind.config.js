@@ -6,7 +6,8 @@ module.exports = {
       center: true
     },
     boxShadow: {
-      outline: "0 0 0 3px rgba(255, 191, 71, 1)",
+      outline: "0 0 0 3px rgba(255, 191, 71, 1)", /* yellow */
+      outline4: "0 0 0 4px rgba(255, 191, 71, 1)",
       inset1: "inset -1px 0 0 0 rgb(191, 193, 195)", // theme gray.grey2
       inset3: "inset -3px 0 0 0 rgba(191, 193, 195, 0.2)",
       outset1: "1px 0 0 0 rgb(191, 193, 195)",
@@ -21,6 +22,7 @@ module.exports = {
       smaller: "1.9rem",
       base: "2.0rem",
       title: "2.4rem",
+      titlelarge: "2.7rem",
       lg: "3.6rem",
       xl: "3.8rem",
       '48': "4.8rem",
@@ -62,6 +64,7 @@ module.exports = {
         grey1: "#6f777b",
         grey2: "#bfc1c3",
         grey4: "#f8f8f8",
+        lightgrey: "#C0C1C3",
       },
       yellow: {
         default: "#ffbf47"
@@ -100,6 +103,7 @@ module.exports = {
       },
       borderWidth: {
         '1':'1px',
+        '10':'10px',
       },
       fontFamily: {
         sans: ["lato"],
