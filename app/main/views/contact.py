@@ -1,7 +1,7 @@
 from flask import redirect, render_template, request, session, url_for
 from flask_login import current_user
 
-from app import user_api_client
+# from app import user_api_client
 from app.main import main
 from app.main.forms import (
     ContactMessageStep,
@@ -106,7 +106,7 @@ def send_form_to_freshdesk(form):
         user_profile = url_for('.user_information', user_id=current_user.id, _external=True)
         message += f"<br><br>---<br><br> {user_profile}"
 
-    friendly_support_type = str(dict(form.support_type.choices)[form.support_type.data])
+    # friendly_support_type = str(dict(form.support_type.choices)[form.support_type.data])
 
     # user_api_client.send_contact_email(
     #     form.name.data,
