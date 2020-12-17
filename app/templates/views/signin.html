@@ -33,8 +33,8 @@
     {% set forgot = _('Forgot your password?') %}
     {% set btn = _('Continue') %}
     {% call form_wrapper(autocomplete=True) %}
-      {{ textbox(form.email_address, autocomplete='email') }}
-      {{ textbox(form.password, autocomplete='current-password') }}
+      {{ textbox(form.email_address, width='w-2/3', autocomplete='email') }}
+      {{ textbox(form.password, width='w-2/3', autocomplete='current-password') }}
       {{ page_footer(btn, secondary_link=url_for('.forgot_password'), secondary_link_text=forgot) }}
     {% endcall %}
   </div>
