@@ -17,8 +17,8 @@
   <details {% if form.errors %}open{% endif %}>
     <summary>Apply filters</summary>
     {% call form_wrapper(method="get") %}
-      {{ textbox(form.start_date, hint="Enter start date in format YYYY-MM-DD") }}
-      {{ textbox(form.end_date, hint="Enter end date in format YYYY-MM-DD") }}
+      {{ textbox(form.start_date, width='w-2/3', hint="Enter start date in format YYYY-MM-DD") }}
+      {{ textbox(form.end_date, width='w-2/3', hint="Enter end date in format YYYY-MM-DD") }}
       <br>
       <br>
       <div>

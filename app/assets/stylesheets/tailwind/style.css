@@ -4,11 +4,11 @@
 @import "./toolkit/shims.css";
 
 
-
 /* elements */
 @import "./elements/reset.css";
 @import "./elements/details.css";
 @import "./elements/forms.css";
+@import "./elements/form-multiple-choice.css";
 @import "./elements/form-validation.css";
 @import "./elements/lists.css";
 @import "./elements/panels.css";
@@ -32,6 +32,7 @@
 @import "./components/pill.css";
 @import "./components/show-more.css";
 @import "./components/api-key.css";
+@import "./components/previous-next-navigation.css";
 @import "./components/list-entry.css";
 @import "./components/message.css";
 @import "./components/fullscreen-table.css";
@@ -81,13 +82,6 @@ th {
   @apply font-body;
 }
 
-h1 {
-  @apply text-xl font-body pb-10;
-}
-
-h2 {
-  @apply text-lg font-body pb-6;
-}
 
 html,
 body,
@@ -324,6 +318,17 @@ label {
       @apply text-smaller;
       line-height: 1.4;
     }
+  }
+
+  #add_template_by_template_type{	
+    legend{	
+      font-weight:bold;	
+      font-size:1.2em;	
+    }	
+  }
+
+  #organisation_type{	
+    display:none;	
   }
 }
 
