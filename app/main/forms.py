@@ -941,7 +941,7 @@ class SetUpDemoOrgDetails(ContactNotify):
 
 class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):
     main_use_case = RadioField(
-        _l('Describe the primary purpose of the first messages you intend to send'),
+        _l('Describe the primary purpose of the first messages you intend to send.'),
         choices=[
             ('status_updates', _l('Information specific for each recipient (e.g. status update)')),
             ('transactional_messages', _l('Action required by each recipient (e.g. password reset)')),
