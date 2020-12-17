@@ -57,25 +57,27 @@
             {{ textbox(form.name, width='md:w-2/3') }}
             {{ textbox(form.email_address, width='md:w-2/3') }}
             {{ radios(form.support_type) }}
-            {{ page_footer(_('Continue')) }}
           {% endif %}
 
           {% if current_step == "message" %}
             {{ textbox(form.message, width='md:w-2/3',label=message_label, hint='', rows=10) }}
-            {{ page_footer(_('Send')) }}
           {% endif %}
 
           {% if current_step == "set_up_demo.org_details" %}
             {{ textbox(form.department_org_name, width='md:w-2/3') }}
             {{ textbox(form.program_service_name, width='md:w-2/3') }}
             {{ radios(form.intended_recipients) }}
-            {{ page_footer(_('Continue')) }}
           {% endif %}
 
           {% if current_step == "set_up_demo.primary_purpose" %}
             {{ radios(form.main_use_case) }}
             {{ textbox(form.main_use_case_details, width='md:w-2/3', rows=5) }}
+          {% endif %}
+
+          {% if next_step != None %}
             {{ page_footer(_('Continue')) }}
+          {% else %}
+            {{ page_footer(_('Send')) }}
           {% endif %}
 
         {% endcall %}
