@@ -1,9 +1,9 @@
 from flask import redirect, render_template, request, session, url_for
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 
 from app import user_api_client
 from app.main import main
-from flask_babel import lazy_gettext as _l
 from app.main.forms import (
     ContactMessageStep,
     ContactNotify,
