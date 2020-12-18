@@ -10,35 +10,6 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-  {% set back_link = url_for('.contact', current_step=previous_step) %}
-
-  {% if current_step == "message" and form.support_type.data == "other" %}
-    {% set page_title = _("Tell us more") %}
-    {% set message_label = _("Your message") %}
-
-  {% elif current_step == "message" and form.support_type.data == "give_feedback" %}
-    {% set page_title = _("Give feedback") %}
-    {% set message_label = _("How can we do better?") %}
-
-  {% elif current_step == "message" and form.support_type.data == "technical_support" %}
-    {% set page_title = _("Get technical support") %}
-    {% set message_label = _("Describe the problem.") %}
-
-  {% elif current_step == "message" and form.support_type.data == "ask_question" %}
-    {% set page_title = _("Ask a question") %}
-    {% set message_label = _("Your question") %}
-
-  {% elif current_step == "message" and form.support_type.data == "decide_notify_appropriate" %}
-    {% set page_title = _("Tell us more") %}
-
-  {% elif current_step in ["set_up_demo.org_details", "set_up_demo.primary_purpose"] %}
-    {% set page_title = _("Set up a demo") %}
-
-  {% else %}
-    {% set page_title = _("Contact us") %}
-    {% set back_link = None %}
-  {% endif %}
-
   {% set sub_text = None %}
   {% if step_hint %}
     {% set sub_text = _("Step {} out of {}").format(step_hint, total_steps_hint) %}

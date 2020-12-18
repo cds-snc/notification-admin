@@ -3,6 +3,7 @@ from flask_login import current_user
 
 from app import user_api_client
 from app.main import main
+from flask_babel import lazy_gettext as _l
 from app.main.forms import (
     ContactMessageStep,
     ContactNotify,
@@ -86,7 +87,40 @@ def contact():
         previous_step=form_obj["previous_step"],
         step_hint=form_obj.get("step"),
         total_steps_hint=form_obj.get("total_steps"),
+        **_labels(form_obj["previous_step"], form_obj["current_step"], form.support_type.data),
     )
+
+
+def _labels(previous_step, current_step, support_type):
+    back_link = url_for('.contact', current_step=previous_step)
+    message_label = None
+
+    if current_step == "message":
+        if support_type == "other":
+            page_title = _l("Tell us more")
+            message_label = _l("Your message")
+        elif support_type == "give_feedback":
+            page_title = _l("Give feedback")
+            message_label = _l("How can we do better?")
+        elif support_type == "technical_support":
+            page_title = _l("Get technical support")
+            message_label = _l("Describe the problem.")
+        elif support_type == "ask_question":
+            page_title = _l("Ask a question")
+            message_label = _l("Your question")
+        else:
+            raise NotImplementedError
+    elif current_step in ["set_up_demo.org_details", "set_up_demo.primary_purpose"]:
+        page_title = _l("Set up a demo")
+    else:
+        page_title = _l("Contact us")
+        back_link = None
+
+    return {
+        "page_title": page_title,
+        "back_link": back_link,
+        "message_label": message_label,
+    }
 
 
 def send_form_to_freshdesk(form):
