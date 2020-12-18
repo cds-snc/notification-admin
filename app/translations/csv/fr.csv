@@ -1205,3 +1205,7 @@
 "Phone number does not exist","Le numéro de téléphone n’existe pas"
 "Phone not accepting messages right now","Le téléphone n’accepte pas de messages à l’heure actuelle"
 "Please","Veuillez"
+<<<<<<< HEAD
+=======
+"contact us","nous joindre"
+>>>>>>> correction french string in fr.csv
