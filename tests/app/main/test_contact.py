@@ -24,6 +24,8 @@ def test_identity_step_validates(client_request):
         ('support_type', 'You need to choose an option'),
     ]
 
+    assert len(page.select('.back-link')) == 0
+
 
 @pytest.mark.parametrize('support_type', [
     'ask_question', 'technical_support', 'give_feedback', 'other'
@@ -114,9 +116,24 @@ def test_saves_form_to_session(client_request, mocker):
         _data={'message': 'My message'}
     )
 
+    assert len(page.select('.back-link')) == 0
     assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
 
     mock_send_contact_email.assert_called_once()
+
+    # Going back
+    page = client_request.get('.contact', _test_page_title=False)
+
+    # Fields are blank
+    assert page.select_one('input[checked]') is None
+    assert [
+        (input['name'], input['value'])
+        for input in page.select('input')
+        if input['name'] in ['name', 'email_address']
+    ] == [
+        ('name', ''),
+        ('email_address', '')
+    ]
 
 
 @pytest.mark.parametrize('support_type, expected_heading, friendly_support_type', [
@@ -145,6 +162,7 @@ def test_all_reasons_message_step_success(
         }
     )
 
+    assert len(page.select('.back-link')) == 1
     assert normalize_spaces(page.find('h1').text) == expected_heading
 
     message = 'This is my message'
@@ -154,6 +172,7 @@ def test_all_reasons_message_step_success(
         _data={'message': message}
     )
 
+    assert len(page.select('.back-link')) == 0
     assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
 
     profile = url_for('.user_information', user_id=current_user.id, _external=True)
