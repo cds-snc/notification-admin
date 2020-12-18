@@ -22,11 +22,11 @@
   ) }}
   <div class="grid-row contain-floats">
     <div id="contact-form" class="float-left w-full py-0 px-0 px-gutterHalf box-border">
-      {% call form_wrapper(action=url_for('.contact', current_step=current_step)) %}
+      {% call form_wrapper(action=url_for('.contact', current_step=current_step), autocomplete=True) %}
 
         {% if current_step == "identity" %}
-          {{ textbox(form.name, width='md:w-2/3') }}
-          {{ textbox(form.email_address, width='md:w-2/3') }}
+          {{ textbox(form.name, width='md:w-2/3', autocomplete='email') }}
+          {{ textbox(form.email_address, width='md:w-2/3', autocomplete='name') }}
           {{ radios(form.support_type) }}
         {% endif %}
 
