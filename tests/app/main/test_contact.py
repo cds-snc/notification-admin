@@ -184,3 +184,76 @@ def test_all_reasons_message_step_success(
         expected_message,
         friendly_support_type
     )
+
+
+def test_demo_steps_success(client_request, mocker):
+    mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
+
+    data = {
+        'name': 'John',
+        'email_address': 'john@example.com',
+        'support_type': 'demo',
+        'department_org_name': 'My department',
+        'program_service_name': 'My service',
+        'intended_recipients': 'public',
+        'main_use_case': 'status_updates',
+        'main_use_case_details': 'Password resets for our app',
+    }
+
+    def submit_form(keys):
+        return client_request.post(
+            '.contact',
+            _expected_status=200,
+            _data={k: v for k, v in data.items() if k in keys}
+        )
+
+    # Identity step
+    page = submit_form(['name', 'email_address', 'support_type'])
+
+    # Department step
+    assert len(page.select('.back-link')) == 1
+    assert normalize_spaces(page.find('h1').text) == 'Set up a demo'
+    assert 'Step 1 out of 2' in page.text
+    page = submit_form(['department_org_name', 'program_service_name', 'intended_recipients'])
+
+    # Main use case step
+    assert len(page.select('.back-link')) == 1
+    assert normalize_spaces(page.find('h1').text) == 'Set up a demo'
+    assert 'Step 2 out of 2' in page.text
+    page = submit_form(['main_use_case', 'main_use_case_details'])
+
+    # Thank you page
+    assert len(page.select('.back-link')) == 0
+    assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
+
+    expected_message = '<br><br>'.join([
+        f'- user: {data["name"]} {data["email_address"]}',
+        f'- department/org: {data["department_org_name"]}',
+        f'- program/service: {data["program_service_name"]}',
+        f'- intended_recipients: {data["intended_recipients"]}',
+        f'- main use case: {data["main_use_case"]}',
+        f'- main use case details: {data["main_use_case_details"]}',
+        '---',
+        f" {url_for('.user_information', user_id=current_user.id, _external=True)}"
+    ])
+
+    mock_send_contact_email.assert_called_once_with(
+        data['name'],
+        data['email_address'],
+        expected_message,
+        'Set up a demo to learn more about GC Notify'
+    )
+
+    # Going back
+    page = client_request.get('.contact', _test_page_title=False)
+
+    # Fields are blank
+    assert page.select_one('input[checked]') is None
+    assert [
+        (input['name'], input['value'])
+        for input in page.select('input')
+        if input['name'] in ['name', 'email_address']
+    ] == [
+        ('name', ''),
+        ('email_address', '')
+    ]
