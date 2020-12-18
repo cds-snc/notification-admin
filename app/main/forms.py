@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from itertools import chain
 
 import pytz
-from flask import request, current_app
+from flask import request
 from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
@@ -44,7 +44,7 @@ from wtforms.validators import (
 )
 from wtforms.widgets import CheckboxInput, ListWidget
 
-from app import format_thousands, service_api_client
+from app import format_thousands
 from app.main.validators import (
     Blocklist,
     CsvFileValidator,
@@ -57,7 +57,7 @@ from app.main.validators import (
 )
 from app.models.organisation import Organisation
 from app.models.roles_and_permissions import permissions, roles
-from app.utils import guess_name_from_email_address, get_logo_cdn_domain, email_safe
+from app.utils import guess_name_from_email_address, get_logo_cdn_domain
 
 
 def get_time_value_and_label(future_time):
@@ -1684,4 +1684,3 @@ class AcceptAgreementForm(StripWhitespaceForm):
             float(field.data)
         except (TypeError, ValueError):
             raise ValidationError("Must be a number")
-
