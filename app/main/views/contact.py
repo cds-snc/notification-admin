@@ -49,7 +49,7 @@ steps = [
 def contact():
     current_step = request.args.get('current_step', session.get("contact_form_step", DEFAULT_STEP))
     try:
-        form_obj = [e for e in steps if e["current_step"] == current_step][0]
+        form_obj = [f for f in steps if f["current_step"] == current_step][0]
     except IndexError:
         return redirect(url_for('.contact', current_step=DEFAULT_STEP))
     form = form_obj["form"](data=session.get("contact_form", {}))
@@ -63,13 +63,13 @@ def contact():
 
     # Going on to the next step in the form
     if form.validate_on_submit():
-        candidates = [e for e in steps if e["previous_step"] == current_step]
+        possibilities = [f for f in steps if f["previous_step"] == current_step]
         try:
-            if len(candidates) == 1:
-                form_obj = candidates[0]
+            if len(possibilities) == 1:
+                form_obj = possibilities[0]
             else:
                 form_obj = [
-                    e for e in candidates if form.support_type.data in e["support_types"]
+                    e for e in possibilities if form.support_type.data in e["support_types"]
                 ][0]
         except IndexError:
             return redirect(url_for('.contact', current_step=DEFAULT_STEP))
@@ -84,8 +84,8 @@ def contact():
         next_step=form_obj["next_step"],
         current_step=form_obj["current_step"],
         previous_step=form_obj["previous_step"],
-        step=form_obj.get("step"),
-        total_steps=form_obj.get("total_steps"),
+        step_hint=form_obj.get("step"),
+        total_steps_hint=form_obj.get("total_steps"),
     )
 
 
