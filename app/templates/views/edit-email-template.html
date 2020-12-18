@@ -9,18 +9,18 @@ back_link=url_for('main.view_template', service_id=current_service.id,
 template_id=template.id) if template else url_for('main.choose_template',
 service_id=current_service.id, template_folder_id=template_folder_id) ) }} {%
 call form_wrapper() %}
-<div class="grid-row">
-  <div class="column-five-sixths">
-    <div class="form-group">
+<div class="grid-row contain-floats">
+  <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
+    <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
       <a href="{{ url_for('main.templates') }}" target="_blank"
         >{{ _('How to format your message') }}</a
       >
     </div>
 
     {% set hint_txt = _('Your recipients will not see this template name.') %} {{
-    textbox(form.name, width='1-1', hint=hint_txt, rows=10) }} {{
-    textbox(form.subject, width='1-1', highlight_tags=True, rows=2) }} {{
-    textbox(form.template_content, highlight_tags=True, width='1-1', rows=8) }}
+    textbox(form.name, width='w-full', hint=hint_txt, rows=10) }} {{
+    textbox(form.subject, width='w-full', highlight_tags=True, rows=2) }} {{
+    textbox(form.template_content, highlight_tags=True, width='w-full', rows=8) }}
     {% if current_user.platform_admin %} {{ radios(form.process_type) }} {%
     endif %} {% set txt = _('Save') %} {{ sticky_page_footer( txt ) }}
   </div>

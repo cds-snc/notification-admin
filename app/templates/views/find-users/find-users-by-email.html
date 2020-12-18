@@ -15,17 +15,17 @@
 
   {% call form_wrapper(
       action=url_for('.find_users_by_email'),
-      class='grid-row'
+      class='grid-row contain-floats'
   ) %}
     {% set label_txt = _('Find users by email, or by partial email') %}
-    <div class="column-three-quarters">
+    <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       {{ textbox(
         form.search,
-        width='1-1',
+        width='w-full',
         label=label_txt
       ) }}
     </div>
-    <div class="column-one-quarter align-button-with-textbox">
+    <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border align-button-with-textbox">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <button type="submit" class="button">{{ _('Search') }}</button>
     </div>

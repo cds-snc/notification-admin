@@ -1,12 +1,12 @@
 {% from "components/big-number.html" import big_number %}
 
-<div class='grid-row ajax-block-container'>
-  <div class='column-half'>
+<div class='grid-row contain-floats ajax-block-container'>
+  <div class='w-1/2 float-left py-0 px-0 px-gutterHalf box-border'>
     <div class="keyline-block">
       {{ big_number("Unlimited", 'free email allowance', smaller=True) }}
     </div>
   </div>
-  <div class='column-half'>
+  <div class='w-1/2 float-left py-0 px-0 px-gutterHalf box-border'>
     <div class="keyline-block">
       {% if sms_chargeable %}
         {{ big_number(

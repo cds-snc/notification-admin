@@ -23,7 +23,7 @@
 
   {{ govuk_back_link(back_link) }}
 
-  <div class="bottom-gutter-1-2">
+  <div class="mb-12 clear-both contain-floats">
     {% call banner_wrapper(type='dangerous') %}
 
       {% if recipients.too_many_rows %}
@@ -116,7 +116,7 @@
 
       {% elif trying_to_send_letters_in_trial_mode %}
 
-        <div class="bottom-gutter">
+        <div class="mb-12 clear-both contain-floats">
           {% with
             count_of_recipients=count_of_recipients
           %}
@@ -137,7 +137,7 @@
 
 
   <div class="js-stick-at-top-when-scrolling">
-    <div class="form-group">
+    <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
       {% set button_txt = _('Re-upload your file') %}
       {% if not request.args.from_test %}
         {{ file_upload(

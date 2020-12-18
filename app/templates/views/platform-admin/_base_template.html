@@ -5,8 +5,8 @@
 
 {% block maincolumn_content %}
 
-  <div class="grid-row">
-    <div class="column-one-quarter">
+  <div class="grid-row contain-floats">
+    <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
       <p class="heading-medium">
         Platform admin
       </p>
@@ -18,7 +18,7 @@
           ('Email branding', url_for('main.email_branding')),
           ('Find services by name', url_for('main.find_services_by_name')),
           ('Find users by email', url_for('main.find_users_by_email')),
-          ('Email Complaints', url_for('main.platform_admin_list_complaints')),
+          ('Email complaints', url_for('main.platform_admin_list_complaints')),
           ('Reports', url_for('main.platform_admin_reports')),
           ('Inbound SMS numbers', url_for('main.inbound_sms_admin')),
           ('Providers', url_for('main.view_providers')),
@@ -32,7 +32,7 @@
         {% endfor %}
       </nav>
     </div>
-    <div class="column-three-quarters">
+    <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       {% block platform_admin_content %}{% endblock %}
     </div>
   </div>

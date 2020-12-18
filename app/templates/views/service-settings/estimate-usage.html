@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-  <div class="grid-row">
-    <div class="column-whole">
+  <div class="grid-row contain-floats">
+    <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
       {% if not form.at_least_one_volume_filled %}
         {% call banner_wrapper(type='dangerous') %}
           <h1 class='banner-title'>
@@ -26,10 +26,10 @@
         ) }}
       {% endif %}
       {% call form_wrapper() %}
-        <div class="form-group">
-          {{ textbox(form.volume_email, width='1-2', hint='For example, 50,000') }}
-          {{ textbox(form.volume_sms, width='1-2', hint='For example, 50,000') }}
-          {{ textbox(form.volume_letter, width='1-2', hint='For example, 50,000') }}
+        <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
+          {{ textbox(form.volume_email, width='w-full md:w-1/2', hint='For example, 50,000') }}
+          {{ textbox(form.volume_sms, width='w-full md:w-1/2', hint='For example, 50,000') }}
+          {{ textbox(form.volume_letter, width='w-full md:w-1/2', hint='For example, 50,000') }}
         </div>
         {{ radios(form.consent_to_research, hint='You don’t have to take part and you can unsubscribe at any time') }}
         {{ page_footer(_('Continue')) }}

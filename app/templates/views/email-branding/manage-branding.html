@@ -16,8 +16,8 @@
     '{} email branding'.format('Update' if email_branding else 'Add'),
     back_link=url_for('.email_branding')
   ) }}
-  <div class="grid-row">
-    <div class="column-three-quarters">
+  <div class="grid-row contain-floats">
+    <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       {% if logo %}
         <div id="logo-img">
           <img src="https://{{ cdn_url }}/{{ logo }}"/>
@@ -28,10 +28,10 @@
       </p>
       {{ file_upload(form.file, button_text='{} logo'.format('Update' if email_branding else 'Upload')) }}
       {% call form_wrapper() %}
-        <div class="form-group">
+        <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
           <div style='margin-top:15px;'>{{textbox(form.name)}}</div>
           <div style='margin-top:15px;'>{{textbox(form.text)}}</div>
-          {{ textbox(form.colour, width='1-4', colour_preview=True) }}
+          {{ textbox(form.colour, width='w-full md:w-1/4', colour_preview=True) }}
            {{ radios(form.brand_type) }}
           {{ page_footer(
             _('Save'),

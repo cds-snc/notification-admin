@@ -14,8 +14,8 @@
  var csrf_token = "{{ csrf_token() }}";
 </script>
 
-<div class="grid-row">
-  <div class="column-two-thirds">
+<div class="grid-row contain-floats">
+  <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
     {{ page_header(_('Add a security key')) }}
 
     {% call form_wrapper() %}

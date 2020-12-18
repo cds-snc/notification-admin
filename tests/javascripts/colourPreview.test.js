@@ -18,11 +18,11 @@ describe('Colour preview', () => {
 
     // set up DOM
     document.body.innerHTML = `
-      <div class="form-group" data-module="colour-preview">
+      <div class="form-group contain-floats box-border" data-module="colour-preview">
         <label class="form-label" for="colour">
           Colour
         </label>
-        <input class="form-control form-control-1-4" id="colour" name="colour" rows="8" type="text" value="">
+        <input class="form-control form-control w-full md:w-1/4" id="colour" name="colour" rows="8" type="text" value="">
       </div>`;
 
     field = document.querySelector('.form-group');

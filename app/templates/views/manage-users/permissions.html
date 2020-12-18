@@ -1,7 +1,7 @@
 {% from "components/checkbox.html" import checkbox, checkboxes_nested %}
 {% from "components/radios.html" import radio, radios %}
 
-<fieldset class="form-group">
+<fieldset class="form-group contain-floats w-full">
   <legend class="form-label heading-small">
     {{ _('Permissions') }} 
   </legend>
@@ -16,7 +16,7 @@
 {% if form.folder_permissions.all_template_folders %}
   {{ checkboxes_nested(form.folder_permissions, form.folder_permissions.children(), hide_legend=True, collapsible_opts={ 'field': 'folder' }) }}
 {% elif user and user.platform_admin %}
-  <p class="bottom-gutter">
+  <p class="mb-12 clear-both contain-floats">
     {{ _('Platform admin users can access all template folders.') }}
   </p>
 {% endif %}

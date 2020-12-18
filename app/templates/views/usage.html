@@ -13,19 +13,19 @@
 
     <h1 class='heading-medium'>Usage</h1>
 
-    <div class="bottom-gutter">
+    <div class="mb-12 clear-both contain-floats">
       {{ pill(years, selected_year, big_number_args={'smallest': True}) }}
     </div>
     <div id='pill-selected-item'>
-      <div class='grid-row'>
-        <div class='column-half'>
+      <div class='grid-row contain-floats'>
+        <div class='w-1/2 float-left py-0 px-0 px-gutterHalf box-border'>
           <h2 class='heading-small'>Emails</h2>
           <div class="keyline-block">
             {{ big_number(emails_sent, 'sent', smaller=True) }}
             {{ big_number("Unlimited", 'free allowance', smaller=True) }}
           </div>
         </div>
-        <div class='column-half'>
+        <div class='w-1/2 float-left py-0 px-0 px-gutterHalf box-border'>
           <h2 class='heading-small'>Text messages</h2>
           <div class="keyline-block">
             {{ big_number(sms_sent, 'sent', smaller=True) }}
@@ -42,13 +42,13 @@
         </div>
       </div>
 
-      <div class='grid-row'>
-        <div class='column-half'>
+      <div class='grid-row contain-floats'>
+        <div class='w-1/2 float-left py-0 px-0 px-gutterHalf box-border'>
           <div class="keyline-block">
             &nbsp;
           </div>
         </div>
-        <div class='column-half'>
+        <div class='w-1/2 float-left py-0 px-0 px-gutterHalf box-border'>
           <div class="keyline-block">
             {{ big_number(
               (sms_chargeable * sms_rate),
@@ -100,13 +100,13 @@
       {% endif %}
     </div>
 
-    <div class="grid-row">
-      <div class="column-half">
+    <div class="grid-row contain-floats">
+      <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
         <p class="align-with-heading-copy">
           Financial year ends 31 March.
         </p>
       </div>
-      <div class="column-half">
+      <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
         <p class="align-with-heading-copy">
           What counts as 1 text message?<br />
           See <a href="{{ url_for('.pricing') }}">pricing</a>.

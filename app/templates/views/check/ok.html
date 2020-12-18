@@ -67,13 +67,13 @@
   {% endif %}
 
 
-  <div class="bottom-gutter-3-2">
+  <div class="mb-12 clear-both contain-floats">
     <form method="post" enctype="multipart/form-data" action="{{url_for('main.start_job', service_id=current_service.id, upload_id=upload_id, original_file_name=original_file_name)}}" class='page-footer'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <input type="hidden" id="scheduled_for" name="scheduled_for" value=""/>
       <div class="form-group ">
         <h2 class="heading-medium">{{ _('Schedule notifications') }}</h2>
-        <fieldset id="send_now_later">
+        <fieldset id="send_now_later" class="contain-floats w-full">
           <legend class="form-label">{{ _('When would you like to send') }} {{"{}?".format(template.name)}}</legend>
           <div class="multiple-choice">
             <input id="send_now_later-0" name="send_now_later" type="radio" value="1" checked="">

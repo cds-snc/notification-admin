@@ -10,18 +10,18 @@
 {% endblock %}
 
 {% block fullwidth_content %}
-  <div id="content">
+  <div id="content" class="contain-floats">
     <div class="navigation-service">
       <a href="{{ url_for('.organisations') }}" class="navigation-service-back-to">{{ _('All organisations') }}</a>
       <a href="{{ url_for('main.choose_account') }}" class="navigation-service-switch">{{ _('Switch service') }}</a>
     </div>
 
     <main role="main">
-      <div class="grid-row">
-        <div class="column-one-quarter">
+      <div class="grid-row contain-floats">
+        <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
           &nbsp;
         </div>
-        <div class="column-three-quarters">
+        <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
           {{ page_header(_('New organisation')) }}
           {% call form_wrapper() %}
             {{textbox(form.name)}}

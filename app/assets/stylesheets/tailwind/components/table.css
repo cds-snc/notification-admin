@@ -37,6 +37,11 @@
   }
 
   /* NOTIFY TABLE STYLES */
+  /*! purgecss start ignore */
+
+  td {
+    @apply align-top;
+  }
   
   .table-heading {
 
@@ -233,5 +238,49 @@
   .do-not-truncate-text {
     white-space: normal !important;
   }
+
+  .spreadsheet {
+    margin-bottom: -30px;
+  }
+  .spreadsheet .table {
+    @apply mb-0;
+  }
+
+  .spreadsheet th,
+  .spreadsheet .table-field-index {
+    @apply font-bold text-center bg-gray-grey4;
+  }
   
+  .spreadsheet th,
+  .spreadsheet td {
+    @apply px-4 border-1 border-solid border-gray-grey2;
+  }
+
+  .spreadsheet td {
+    /* 194 is the width of the table * 1/3.5, so the overflow cuts off
+    // at 3.5 columns wide.
+    // 11 accounts for the padding of the table cell
+    */
+    min-width: 194px - 11px;
+    @apply border-t-0
+  }
+  .spreadsheet td:first-child {
+    min-width: auto;
+  }
+  .spreadsheet .fullscreen-fixed-table {
+    z-index: 1000;
+  }
+  .spreadsheet .fullscreen-fixed-table .table-field-heading-first {
+    @apply bg-gray-grey4;
+  }
+
+  .body-copy-table table th,
+  .body-copy-table table td {
+    @apply text-smaller leading-tight font-normal break-words;
+  }
+  .body-copy-table table thead th {
+    @apply text-smaller leading-tight font-bold;
+  }
+  
+  /*! purgecss end ignore */
 }

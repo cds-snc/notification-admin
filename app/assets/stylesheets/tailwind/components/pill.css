@@ -58,6 +58,5 @@
   .pill-separate-item:link:focus {
     @apply text-blue-lightblue25;
   }
-
   /*! purgecss end ignore */
 }

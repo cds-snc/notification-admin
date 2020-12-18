@@ -9,8 +9,8 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-  <div class="grid-row">
-    <div class="column-five-sixths">
+  <div class="grid-row contain-floats">
+    <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
       {% set header_txt = _('Callbacks for delivery receipts') %}
       {{ page_header(
         header_txt,
@@ -24,13 +24,13 @@
       {% call form_wrapper() %}
         {{ textbox(
           form.url,
-          width='1-1',
+          width='w-full',
           hint=hint_txt
         ) }}
         {% set hint_txt = _('At least 10 characters') %}
         {{ textbox(
           form.bearer_token,
-          width='1-1',
+          width='w-full',
           hint=hint_txt,
           autocomplete='new-password'
         ) }}

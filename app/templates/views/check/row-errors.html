@@ -20,7 +20,7 @@
 
   {{ govuk_back_link(back_link) }}
 
-  <div class="bottom-gutter-1-2">
+  <div class="mb-12 clear-both contain-floats">
     {% call banner_wrapper(type='dangerous') %}
       {% if row_errors|length == 1 %}
         <h1 class='banner-title' data-module="track-error" data-error-type="Bad rows" data-error-label="{{ upload_id }}">
@@ -47,7 +47,7 @@
   </div>
 
   <div class="js-stick-at-top-when-scrolling">
-    <div class="form-group">
+    <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
       {% set button_txt = _('Re-upload your file') %}
       {{ file_upload(
         form.file,

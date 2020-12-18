@@ -4,7 +4,7 @@
     @apply p-0 pr-gutter;
   }
   
-  .navigation-service: {
+  .navigation-service {
     font-size: 0;
     @apply border-0 border-b-1 border-solid border-gray-grey2 relative m-0 mb-4;
   }
@@ -126,6 +126,5 @@
   .sub-navigation__item--active a:visited {
     @apply text-black;
   }
-
   /*! purgecss end ignore */
 }

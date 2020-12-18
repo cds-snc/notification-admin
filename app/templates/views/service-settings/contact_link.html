@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-  <div class="grid-row">
-    <div class="column-five-sixths">
+  <div class="grid-row contain-floats">
+    <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
       {{ page_header(
         '{} contact details for ‘Download your document’ page'.format('Change' if 'upload_document' in current_service.permissions else 'Add'),
         back_link=url_for('main.service_settings', service_id=current_service.id)
@@ -29,8 +29,8 @@
             {% set data_target = option.data.replace('_', '-') ~ "-type" %}
 
             {{ radio(option, data_target=data_target) }}
-            <div class="panel panel-border-narrow js-hidden" id={{data_target}}>
-              {{ textbox(form|attr(option.data), label=' ', width='1-1') }}
+            <div class="panel contain-floats panel-border-narrow js-hidden" id={{data_target}}>
+              {{ textbox(form|attr(option.data), label=' ', width='w-full') }}
             </div>
           {% endfor %}
         {% endcall %}

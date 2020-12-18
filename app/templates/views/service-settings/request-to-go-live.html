@@ -9,8 +9,8 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-  <div class="grid-row">
-    <div class="column-whole">
+  <div class="grid-row contain-floats">
+    <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
       {{ page_header(
         'Before you request to go live',
         back_link=url_for('main.service_settings', service_id=current_service.id)
@@ -68,7 +68,7 @@
         <p>
           When we receive your request we’ll get back to you within one working day.
         </p>
-        <p class="bottom-gutter">
+        <p class="mb-12 clear-both contain-floats">
           By requesting to go live you’re agreeing to our <a href="{{ url_for('.terms') }}">terms of use</a>.
         </p>
         {% call form_wrapper() %}

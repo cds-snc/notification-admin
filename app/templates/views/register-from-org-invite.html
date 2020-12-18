@@ -9,18 +9,18 @@
 
 {% block maincolumn_content %}
 
-<div class="grid-row">
-  <div class="column-two-thirds">
+<div class="grid-row contain-floats">
+  <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
     <h1 class="heading-large">{{ _('Create an account') }}</h1>
     <p>{{ _('Your account will be created with this email:') }}{{invited_org_user.email_address}}</p>
     {% call form_wrapper() %}
-      {{ textbox(form.name, width='3-4') }}
+      {{ textbox(form.name, width='w-full md:w-3/4') }}
       <div class="extra-tracking">
         {% set txt = _('We’ll send you a security code by text message') %}
-        {{ textbox(form.mobile_number, width='3-4', hint=txt) }}
+        {{ textbox(form.mobile_number, width='w-full md:w-3/4', hint=txt) }}
       </div>
       {% set txt = _('At least 8 characters') %}
-      {{ textbox(form.password, hint=txt, width='3-4', autocomplete='new-password') }}
+      {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
       {% set txt = _('Continue') %}
       {{ page_footer(txt) }}
       {{form.organisation}}

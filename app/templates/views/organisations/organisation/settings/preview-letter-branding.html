@@ -8,11 +8,11 @@
 {% block maincolumn_content %}
 
   <h1 class="heading-large">Preview letter branding</h1>
-  <div class="grid-row">
-    <div class="column-full">
+  <div class="grid-row contain-floats">
+    <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
       <iframe src="{{ url_for('main.letter_template', branding_style=form.branding_style.data) }}" class="branding-preview"></iframe>
       {% call form_wrapper(action=action) %}
-        <div class="form-group">
+        <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
           {{ form.hidden_tag() }}
           {{ page_footer(_('Save')) }}
         </div>

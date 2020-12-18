@@ -1,5 +1,5 @@
 @layer components {
-  
+  /*! purgecss start ignore */
   .fullscreen-content {
     @apply p-0 m-0 mb-12 bg-white z-10 overflow-hidden box-border border-0 border-solid border-gray-grey2 border-b-1;
   }
@@ -62,13 +62,16 @@
     @apply invisible;
   }
   .fullscreen-fixed-table .table-field-left-aligned {
-    @apply w-0 relative invisible z-100;
+    @apply w-0 absolute invisible z-100;
   }
   .fullscreen-fixed-table .table-field-heading-first,
   .fullscreen-fixed-table .table-field-index {
     transition: none;
     z-index: 200;
     @apply relative bg-white;
+  }
+  .fullscreen-fixed-table .table-field-index a {
+    @apply text-small;
   }
 
   .fullscreen-scrolled-table {
@@ -87,5 +90,5 @@
   .fullscreen-shim + .table-show-more-link {
     margin-top: -28px;
   }
-  
+  /*! purgecss end ignore */
 }

@@ -20,17 +20,17 @@
   {% call form_wrapper() %}
     {{ textbox(
       form.email_address,
-      width='1-1',
+      width='w-full',
       safe_error_message=True,
       hint=hint_txt
     ) }}
     {% if form.is_default.data %}
-      <p class="form-group">
+      <p class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
         {{ _('This is the default reply-to address for')}} {{ current_service.name }} {{ _('emails') }}
       </p>
       {{ page_footer(save_txt) }}
     {% else %}
-      <div class="form-group">
+      <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
         {{ checkbox(form.is_default) }}
       </div>
       {{ page_footer(

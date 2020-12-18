@@ -22,7 +22,7 @@
       {{ page_title }}
     </h1>
     {% if current_user.has_permissions('manage_templates') %}
-       <p class="bottom-gutter top-gutter">
+       <p class="mb-12 clear-both mt-12 block clear-both contain-floats">
         {% set need_txt = _('You need to create a template to send') %}
         {{ need_txt }}
         {% if 'letter' in current_service.permissions %}
@@ -35,7 +35,7 @@
         {{ folder_txt }}
        </p>
     {% else %}
-      <p class="top-gutter">
+      <p class="mt-12 block clear-both contain-floats">
         {{ _('You need to ask your service manager to add templates before you can send') }}
         {% if 'letter' in current_service.permissions %}
           {{ _('emails, text messages or letters') }}
@@ -47,8 +47,8 @@
 
   {% else %}
 
-    <div class="grid-row">
-      <div class="{% if current_user.has_permissions('manage_templates') %} column-five-sixths {% else %} column-whole {% endif %}">
+    <div class="grid-row contain-floats">
+      <div class="{% if current_user.has_permissions('manage_templates') %} md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border {% else %} w-full float-left py-0 px-0 px-gutterHalf box-border {% endif %}">
         {{ folder_path(
           folders=template_folder_path,
           service_id=current_service.id,
@@ -57,14 +57,14 @@
         ) }}
       </div>
       {% if current_user.has_permissions('manage_templates') and current_template_folder_id and user_has_template_folder_permission %}
-        <div class="column-one-sixth">
+        <div class="md:w-1/6 float-left py-0 px-0 px-gutterHalf box-border">
           <a href="{{ url_for('.manage_template_folder', service_id=current_service.id, template_folder_id=current_template_folder_id) }}" class="folder-heading-manage-link">{{ _('Manage') }}</a>
         </div>
       {% endif %}
     </div>
   {% endif %}
     {% if show_template_nav %}
-      <div class="bottom-gutter-2-3">
+      <div class="mb-12 clear-both contain-floats">
         {{ pill(template_nav_items, current_value=template_type, show_count=False) }}
       </div>
     {% endif %}

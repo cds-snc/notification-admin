@@ -14,14 +14,14 @@
 
 {% block maincolumn_content %}
 
-  <h1 class="heading-medium bottom-gutter-3-2">
+  <h1 class="heading-medium mb-12 clear-both contain-floats">
     {{ _('Create SMTP relay') }}
   </h1>
 
   {% call form_wrapper() %}
     {{ textbox(
       form.name,
-      width='1-1',
+      width='w-full',
       hint=_('enter a name'),
       safe_error_message=True
     ) }}

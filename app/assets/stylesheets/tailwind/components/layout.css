@@ -1,10 +1,14 @@
 @layer components {
-  
-  .banner {
-    @apply block relative p-gutterHalf mx-0 mt-gutter mb-gutterHalf clear-both text-left font-bold text-smaller border-4 border-solid leading-tight;
+  /*! purgecss start ignore */
+  .banner,
+  .banner-default,
+  .banner-with-tick,
+  .banner-default-with-tick {
+    @apply block relative p-gutterHalf mx-0 mt-gutter mb-gutterHalf clear-both text-left font-bold text-smaller border-4 border-solid border-green leading-tight text-green;
   }
 
-  .banner:focus {
+  .banner:focus,
+  .banner-default-with-tick:focus {
     @apply outline-yellow;
   }
 
@@ -16,7 +20,8 @@
     @apply text-title border-none pl-0 font-bold;
   }
 
-  .banner-with-tick {
+  .banner-with-tick,
+  .banner-default-with-tick {
     background-position: 15px 15px;
     @apply bg-tick bg-no-repeat bg-19 py-gutterHalf px-gutterAndAHalf;
   }
@@ -25,4 +30,45 @@
     @apply mb-0 font-normal;
   }
 
+  .column-main .heading-large,
+  .column-main > .heading-medium {
+    @apply mx-0 mb-8 mt-gutterHalf break-words;
+  }
+  .column-main .heading-large.top-gutter-0,
+  .column-main > .heading-medium.top-gutter-0 {
+    @apply mt-0;
+  }
+
+  #content {
+    @apply pb-gutter outline-none;
+  }
+  @screen md {
+    #content {
+      padding-bottom: 90px;
+    }
+  }
+  /* This was previously the %site-width-container mixin */
+  #content,
+  .global-cookie-message p {
+    max-width: 960px;
+    @apply my-0 mx-gutterHalf
+  }
+  @screen md {
+    #content,
+    .global-cookie-message p {
+      @apply mx-gutter;
+    }
+  }
+  @screen lg {
+    #content,
+    .global-cookie-message p {
+      @apply mx-auto;
+    }
+  }
+  /* Home page was built with different CSS - override */
+  #content.home-page-content {
+    max-width: none;
+    @apply mx-0 pb-0;
+  }
+  /*! purgecss end ignore */
 }

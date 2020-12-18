@@ -18,8 +18,8 @@
     }
 </style>
 
-<div class="grid-row">
-  <div class="column-two-thirds">
+<div class="grid-row contain-floats">
+  <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
     {% if current_step == "choose_service_name" %}
       {% include "partials/add-service/step-create-service.html" %}
     {% elif current_step == "choose_email_from" %}

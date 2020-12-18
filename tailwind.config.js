@@ -5,19 +5,9 @@ module.exports = {
     container: {
       center: true
     },
-    backgroundImage: {
-      tick: "url('/static/images/tick.png')",
-      crossGrey: "url('/static/images/cross-grey.png')",
-      folder: "url('/static/images/folder-black.svg')",
-      folderBlack: "url('/static/images/folder-black-bold.svg')",
-      folderBlackPng: "url('/static/images/folder-black-bold.png')",
-      folderBlue: "url('/static/images/folder-blue-bold.svg')",
-      folderBluePng: "url('/static/images/folder-blue-bold.png')",
-      folderBlueHover: "url('/static/images/folder-blue-bold-hover.svg')",
-      folderBlueHoverPng: "url('/static/images/folder-blue-bold-hover.png')",
-    },
     boxShadow: {
-      outline: "0 0 0 3px rgba(255, 191, 71, 1)",
+      outline: "0 0 0 3px rgba(255, 191, 71, 1)", /* yellow */
+      outline4: "0 0 0 4px rgba(255, 191, 71, 1)",
       inset1: "inset -1px 0 0 0 rgb(191, 193, 195)", // theme gray.grey2
       inset3: "inset -3px 0 0 0 rgba(191, 193, 195, 0.2)",
       outset1: "1px 0 0 0 rgb(191, 193, 195)",
@@ -26,15 +16,13 @@ module.exports = {
       outset3: "3px 0 0 0 rgba(191, 193, 195, 0.2)",
       yellow3: "-3px 0 0 0 rgba(255, 191, 71, 1), 3px 0 0 0 rgba(255, 191, 71, 1)",
     },
-    maxWidth: {
-      "4xl": "53rem"
-    },
     fontSize: {
       xs: "1.3rem",
       small: "1.6rem",
       smaller: "1.9rem",
       base: "2.0rem",
       title: "2.4rem",
+      titlelarge: "2.7rem",
       lg: "3.6rem",
       xl: "3.8rem",
       '48': "4.8rem",
@@ -44,6 +32,7 @@ module.exports = {
     },
     screens: {
       xs: {'max': "639px"},
+      smaller: {'max': '768px'},
       sm: "640px",
       md: "768px",
       lg: "1024px"
@@ -75,6 +64,7 @@ module.exports = {
         grey1: "#6f777b",
         grey2: "#bfc1c3",
         grey4: "#f8f8f8",
+        lightgrey: "#C0C1C3",
       },
       yellow: {
         default: "#ffbf47"
@@ -96,17 +86,29 @@ module.exports = {
     extend: {
       animation: {
         'ellipsis': 'ellipsis steps(4,end) 1.5s infinite',
-      }, 
+      },
+      backgroundImage: {
+        tick: "url('/static/images/tick.png')",
+        crossGrey: "url('/static/images/cross-grey.png')",
+        folder: "url('/static/images/folder-black.svg')",
+        folderBlack: "url('/static/images/folder-black-bold.svg')",
+        folderBlackPng: "url('/static/images/folder-black-bold.png')",
+        folderBlue: "url('/static/images/folder-blue-bold.svg')",
+        folderBluePng: "url('/static/images/folder-blue-bold.png')",
+        folderBlueHover: "url('/static/images/folder-blue-bold-hover.svg')",
+        folderBlueHoverPng: "url('/static/images/folder-blue-bold-hover.png')",
+      },
       backgroundSize: {
         '19': '19px',
       },
       borderWidth: {
         '1':'1px',
+        '10':'10px',
       },
       fontFamily: {
         sans: ["lato"],
         body: ["Noto Sans", "Arial", "sans-serif"],
-        monospace: ["monospace"]
+        monospace: ["monospace"],
       },
       inset: {
         '2': '2px',
@@ -120,6 +122,9 @@ module.exports = {
       },
       lineHeight: {
         'extra-tight': '0.9',
+      },
+      maxWidth: {
+        "4xl": "53rem"
       },
       outline: {
         yellow: '3px solid #ffbf47',
@@ -136,6 +141,9 @@ module.exports = {
       },
       transitionProperty: {
         'background': 'background',
+      },
+      width: {
+        '5/8': '62.5%'
       },
       zIndex: {
         '100': 100,

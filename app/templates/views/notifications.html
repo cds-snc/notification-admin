@@ -35,15 +35,15 @@
 
     {% call form_wrapper(
       action=url_for('.view_notifications', service_id=current_service.id, message_type=message_type),
-      class="grid-row"
+      class="grid-row contain-floats"
     ) %}
-      <div class="column-three-quarters {% if message_type == 'sms' %}extra-tracking{% endif %}">
+      <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border {% if message_type == 'sms' %}extra-tracking{% endif %}">
         {{ textbox(
           search_form.to,
-          width='1-1',
+          width='w-full',
         ) }}
       </div>
-      <div class="column-one-quarter align-button-with-textbox">
+      <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border align-button-with-textbox">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit" class="button">{{ _('Search') }}</button>
       </div>
@@ -60,7 +60,7 @@
   {% endif %}
 
   {% if current_user.has_permissions('view_activity') %}
-    <p class="bottom-gutter">
+    <p class="mb-12 clear-both contain-floats">
       <a href="{{ download_link }}" download="download" class="heading-small">{{ _('Download this report') }}</a>
       &emsp;
       {{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}
