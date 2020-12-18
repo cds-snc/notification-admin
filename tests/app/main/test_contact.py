@@ -5,6 +5,14 @@ from flask_login import current_user
 from tests.conftest import normalize_spaces
 
 
+def assert_no_back_link(page):
+    assert len(page.select('.back-link')) == 0
+
+
+def assert_has_back_link(page):
+    assert len(page.select('.back-link')) == 1
+
+
 def test_identity_step_validates(client_request):
     page = client_request.post(
         '.contact',
@@ -15,6 +23,7 @@ def test_identity_step_validates(client_request):
             'support_type': ''
         }
     )
+
     assert [
         (error['data-error-label'], normalize_spaces(error.text))
         for error in page.select('.error-message')
@@ -23,8 +32,52 @@ def test_identity_step_validates(client_request):
         ('email_address', 'Enter a valid email address'),
         ('support_type', 'You need to choose an option'),
     ]
+    assert_no_back_link(page)
 
-    assert len(page.select('.back-link')) == 0
+
+def test_back_link_goes_to_previous_step(client_request):
+    page = client_request.post(
+        '.contact',
+        _expected_status=200,
+        _data={
+            'name': 'John',
+            'email_address': 'john@example.com',
+            'support_type': 'other'
+        }
+    )
+
+    assert page.select_one('.back-link')['href'] == url_for('.contact', current_step='identity')
+
+    page = client_request.get_url(page.select_one('.back-link')['href'], _test_page_title=False)
+
+    # Fields have been saved and are filled
+    assert page.select_one('input[checked]')['value'] == 'other'
+    assert [
+        (input['name'], input['value'])
+        for input in page.select('input')
+        if input['name'] in ['name', 'email_address']
+    ] == [
+        ('name', 'John'),
+        ('email_address', 'john@example.com')
+    ]
+
+
+def test_invalid_step_name_redirects(client_request):
+    client_request.post(
+        '.contact',
+        _expected_status=200,
+        _data={
+            'name': 'John',
+            'email_address': 'john@example.com',
+            'support_type': 'other'
+        }
+    )
+
+    client_request.get_url(
+        url_for('.contact', current_step='nope'),
+        _expected_status=302,
+        _expected_redirect=url_for('.contact', current_step='identity', _external=True)
+    )
 
 
 @pytest.mark.parametrize('support_type', [
@@ -49,7 +102,7 @@ def test_message_step_valides(client_request, support_type, mocker):
         _data={'message': ''}
     )
 
-    assert len(page.select('.back-link')) == 1
+    assert_has_back_link(page)
 
     assert [
         (error['data-error-label'], normalize_spaces(error.text))
@@ -116,7 +169,7 @@ def test_saves_form_to_session(client_request, mocker):
         _data={'message': 'My message'}
     )
 
-    assert len(page.select('.back-link')) == 0
+    assert_no_back_link(page)
     assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
 
     mock_send_contact_email.assert_called_once()
@@ -162,7 +215,7 @@ def test_all_reasons_message_step_success(
         }
     )
 
-    assert len(page.select('.back-link')) == 1
+    assert_has_back_link(page)
     assert normalize_spaces(page.find('h1').text) == expected_heading
 
     message = 'This is my message'
@@ -172,7 +225,7 @@ def test_all_reasons_message_step_success(
         _data={'message': message}
     )
 
-    assert len(page.select('.back-link')) == 0
+    assert_no_back_link(page)
     assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
 
     profile = url_for('.user_information', user_id=current_user.id, _external=True)
@@ -211,7 +264,8 @@ def test_demo_steps_success(client_request, mocker):
     page = submit_form(['name', 'email_address', 'support_type'])
 
     # Department step
-    assert len(page.select('.back-link')) == 1
+
+    assert_has_back_link(page)
     assert normalize_spaces(page.find('h1').text) == 'Set up a demo'
     assert 'Step 1 out of 2' in page.text
     page = submit_form(['department_org_name', 'program_service_name', 'intended_recipients'])
@@ -223,7 +277,7 @@ def test_demo_steps_success(client_request, mocker):
     page = submit_form(['main_use_case', 'main_use_case_details'])
 
     # Thank you page
-    assert len(page.select('.back-link')) == 0
+    assert_no_back_link(page)
     assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
 
     expected_message = '<br><br>'.join([
