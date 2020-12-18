@@ -53,11 +53,13 @@ from app.main.validators import (
     NoCommasInPlaceHolders,
     OnlySMSCharacters,
     ValidEmail,
-    ValidGovEmail, validate_email_from, validate_name,
+    ValidGovEmail,
+    validate_email_from,
+    validate_name,
 )
 from app.models.organisation import Organisation
 from app.models.roles_and_permissions import permissions, roles
-from app.utils import guess_name_from_email_address, get_logo_cdn_domain
+from app.utils import get_logo_cdn_domain, guess_name_from_email_address
 
 
 def get_time_value_and_label(future_time):

@@ -16,15 +16,12 @@ from werkzeug.datastructures import ImmutableMultiDict
 from app import billing_api_client, service_api_client
 from app.main import main
 from app.main.forms import (
-    CreateServiceStepNameForm,
+    CreateServiceStepEmailFromForm,
     CreateServiceStepLogoForm,
-    FieldWithLanguageOptions, CreateServiceStepEmailFromForm,
+    CreateServiceStepNameForm,
+    FieldWithLanguageOptions,
 )
-from app.utils import (
-    email_safe,
-    user_is_gov_user,
-    user_is_logged_in,
-)
+from app.utils import email_safe, user_is_gov_user, user_is_logged_in
 
 # Constants
 

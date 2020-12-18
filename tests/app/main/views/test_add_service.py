@@ -56,34 +56,19 @@ def test_get_should_not_render_radios_if_org_type_known(
     assert not page.select('.multiple-choice')
 
 
-def test_get_should_not_render_branding_choices_on_service_name_step(
-    client_request,
-    mocker,
-):
-    mock_get_organisation_by_domain(mocker, organisation_type='central')
-    page = client_request.get('main.add_service')
-    default_branding = page.select_one('input[name=default_branding]')
-    assert default_branding['value'] == FieldWithLanguageOptions.ENGLISH_OPTION_VALUE
-    assert default_branding['type'] == 'hidden'
-
-
-def test_visible_branding_choices_on_service_name_step(
+def test_visible_branding_choices_on_service_email_from_step(
     client_request,
 ):
     page = client_request.post(
         'main.add_service',
         _data={
             'name': 'testing the post',
-            'organisation_type': "central",
-            'current_step': 'choose_service_name',
-            'next_step': 'choose_logo',
-            'default_branding': FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
+            'current_step': 'choose_email_from',
         },
         _expected_status=200,
     )
-    default_branding = page.select_one('input[name=default_branding]')
-    assert default_branding['value'] == FieldWithLanguageOptions.ENGLISH_OPTION_VALUE
-    assert default_branding['type'] == 'radio'
+    default_branding = page.select_one('input[name=email_from]')
+    assert default_branding['type'] == 'text'
 
     service_name = page.select_one('input[name=name]')
     assert service_name['value'] == 'testing the post'

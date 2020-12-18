@@ -31,6 +31,7 @@ from app import (
 from app.extensions import zendesk_client
 from app.main import main
 from app.main.forms import (
+    ChangeEmailFromServiceForm,
     ConfirmPasswordForm,
     EstimateUsageForm,
     FieldWithLanguageOptions,
@@ -55,7 +56,7 @@ from app.main.forms import (
     ServiceSwitchChannelForm,
     SetEmailBranding,
     SetLetterBranding,
-    SMSPrefixForm, ChangeEmailFromServiceForm,
+    SMSPrefixForm,
 )
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
