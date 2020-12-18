@@ -311,3 +311,68 @@ def test_demo_steps_success(client_request, mocker):
         ('name', ''),
         ('email_address', '')
     ]
+
+
+@pytest.mark.parametrize('input_name, input_value, has_error', [
+    ('name', '', True),
+    ('email_address', 'invalid', True),
+    ('support_type', 'invalid', True),
+    ('department_org_name', '', True),
+    ('program_service_name', '', True),
+    ('intended_recipients', 'invalid', True),
+    ('main_use_case', 'invalid', True),
+    ('main_use_case_details', '', True),
+    ('main_use_case_details', 'awesome', False),
+])
+def test_demo_steps_validation(
+    client_request,
+    mocker,
+    input_name,
+    input_value,
+    has_error,
+):
+    mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
+
+    valid_data = {
+        'name': 'John',
+        'email_address': 'john@example.com',
+        'support_type': 'demo',
+        'department_org_name': 'My department',
+        'program_service_name': 'My service',
+        'intended_recipients': 'public',
+        'main_use_case': 'status_updates',
+        'main_use_case_details': 'Password resets for our app',
+    }
+
+    def submit_form(keys):
+        keys_to_use = [k for k in keys if k != input_name]
+        default_data = {k: v for k, v in valid_data.items() if k in keys_to_use}
+        return client_request.post(
+            '.contact',
+            _expected_status=200,
+            _data={**default_data, **{input_name: input_value}}
+        )
+
+    fields_by_step = [
+        ['name', 'email_address', 'support_type'],
+        ['department_org_name', 'program_service_name', 'intended_recipients'],
+        ['main_use_case', 'main_use_case_details'],
+    ]
+
+    for fields_group in fields_by_step:
+        # Submit as many steps as we can until we encounter an error
+        # caused by a custom input value
+        page = submit_form(fields_group)
+
+        # Making sure that the error is flagged
+        if input_name in fields_group and has_error:
+            assert [
+                error['data-error-label'] for error in page.select('.error-message')
+            ] == [input_name]
+            mock_send_contact_email.assert_not_called()
+            return
+        # Submitted only valid data, no errors
+        else:
+            assert page.select('.error-message') == []
+
+    mock_send_contact_email.assert_called_once()
