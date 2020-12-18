@@ -101,9 +101,8 @@ def test_form_with_invalid_branding_should_request_another_valid_value(
         'main.add_service',
         _data={
             'name': 'Show me the branding Jerry',
-            'organisation_type': "central",
+            'email_from': 'jerry',
             'current_step': 'choose_logo',
-            'next_step': 'create_service',
             'default_branding': '__portuguese__',
         },
         _expected_status=200,
@@ -133,7 +132,6 @@ def test_wizard_flow_with_step_1_should_display_service_name_form(
         'main.add_service',
         _data={
             'name': '',
-            'organisation_type': "central",
             'next_step': 'choose_service_name',
         },
         _expected_status=200,
@@ -141,16 +139,29 @@ def test_wizard_flow_with_step_1_should_display_service_name_form(
     assert page.select_one('h1').text.strip() == 'Name your service in both official languages'
 
 
-def test_wizard_flow_with_step_2_should_display_branding_form(
+def test_wizard_flow_with_step_2_should_display_email_from(
     client_request,
 ):
     page = client_request.post(
         'main.add_service',
         _data={
             'name': 'Show me the branding Jerry',
-            'organisation_type': "central",
             'current_step': 'choose_service_name',
-            'next_step': 'choose_logo',
+        },
+        _expected_status=200,
+    )
+    assert page.select_one('h1').text.strip() == 'Sending email address'
+
+
+def test_wizard_flow_with_step_3_should_display_branding_form(
+    client_request,
+):
+    page = client_request.post(
+        'main.add_service',
+        _data={
+            'name': 'Show me the branding Jerry',
+            'email_from': 'jerry',
+            'current_step': 'choose_email_from',
             'default_branding': FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
         },
         _expected_status=200,
@@ -165,9 +176,7 @@ def test_wizard_flow_with_non_matching_steps_info_should_fallback_to_step1(
         'main.add_service',
         _data={
             'name': 'Show me the service Jerry',
-            'organisation_type': "central",
             'current_step': '',
-            'default_branding': FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
         },
         _expected_status=200,
     )
@@ -350,9 +359,8 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
         'main.add_service',
         _data={
             'name': 'testing the post',
-            'organisation_type': organisation_type,
+            'email_from': 'noreply',
             'current_step': 'choose_logo',
-            'next_step': 'create_service',
             'default_branding': FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
         },
         _expected_status=302,
@@ -400,10 +408,9 @@ def test_should_return_form_errors_with_duplicate_service_name_regardless_of_cas
         'main.add_service',
         _data={
             'current_step': 'choose_logo',
-            'next_step': 'create_service',
+            'email_from': 'servicE1',
             'name': 'SERVICE ONE',
             'default_branding': FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
-            'organisation_type': 'central',
         },
         _expected_status=200,
     )
