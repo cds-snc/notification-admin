@@ -951,7 +951,7 @@ class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):
         validators=[DataRequired()],
     )
     main_use_case_details = TextAreaField(
-        _l('Details about your main use case'),
+        _l('What will messages be about?'),
         validators=[DataRequired(), Length(max=2000)]
     )
 
