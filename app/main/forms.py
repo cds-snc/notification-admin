@@ -901,7 +901,7 @@ class CreateInboundSmsForm(StripWhitespaceForm):
 
 class ContactNotify(StripWhitespaceForm):
     not_empty = _l('This cannot be empty')
-    name = StringField(_l('Your name'), validators=[DataRequired(message=not_empty)])
+    name = StringField(_l('Your name'), validators=[DataRequired(message=not_empty), Length(max=255)])
     support_type = RadioField(
         _l('How can we help?'),
         choices=[
@@ -916,17 +916,17 @@ class ContactNotify(StripWhitespaceForm):
 
 
 class ContactMessageStep(ContactNotify):
-    message = TextAreaField(_l('Message'), validators=[DataRequired()])
+    message = TextAreaField(_l('Message'), validators=[DataRequired(), Length(max=2000)])
 
 
 class SetUpDemoOrgDetails(ContactNotify):
     department_org_name = StringField(
         _l('Name of department or organisation'),
-        validators=[DataRequired()]
+        validators=[DataRequired(), Length(max=500)]
     )
     program_service_name = StringField(
         _l('Name of program or service'),
-        validators=[DataRequired()]
+        validators=[DataRequired(), Length(max=500)]
     )
     intended_recipients = RadioField(
         _l('Who are the intented recipients of notifications?'),
@@ -952,7 +952,7 @@ class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):
     )
     main_use_case_details = TextAreaField(
         _l('Details about your main use case'),
-        validators=[DataRequired()]
+        validators=[DataRequired(), Length(max=2000)]
     )
 
 
