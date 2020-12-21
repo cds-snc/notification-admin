@@ -12,7 +12,7 @@
 {% block maincolumn_content %}
   {% set sub_text = None %}
   {% if step_hint %}
-    {% set sub_text = _("Step {} out of {}").format(step_hint, total_steps_hint) %}
+    {% set sub_text = _("Step {} of {}").format(step_hint, total_steps_hint) %}
   {% endif %}
 
   {{ page_header(

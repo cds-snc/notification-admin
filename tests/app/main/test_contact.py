@@ -272,13 +272,13 @@ def test_demo_steps_success(client_request, mocker):
 
     assert_has_back_link(page)
     assert normalize_spaces(page.find('h1').text) == 'Set up a demo'
-    assert 'Step 1 out of 2' in page.text
+    assert 'Step 1 of 2' in page.text
     page = submit_form(['department_org_name', 'program_service_name', 'intended_recipients'])
 
     # Main use case step
     assert len(page.select('.back-link')) == 1
     assert normalize_spaces(page.find('h1').text) == 'Set up a demo'
-    assert 'Step 2 out of 2' in page.text
+    assert 'Step 2 of 2' in page.text
     page = submit_form(['main_use_case', 'main_use_case_details'])
 
     # Thank you page
