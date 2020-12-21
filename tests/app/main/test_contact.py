@@ -13,6 +13,11 @@ def assert_has_back_link(page):
     assert len(page.select('.back-link')) == 1
 
 
+def test_contact_page_does_not_require_login(client_request):
+    client_request.logout()
+    client_request.get('.contact')
+
+
 def test_identity_step_validates(client_request):
     page = client_request.post(
         '.contact',
