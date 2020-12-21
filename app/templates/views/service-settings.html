@@ -321,6 +321,12 @@
             {{ edit_field(change_txt, url_for('.set_message_limit', service_id=current_service.id)) }}
           {% endcall %}
           {% call row() %}
+            {% set txt = _('API rate limit per minute') %}
+            {{ text_field(txt)}}
+            {{ text_field('{:,}'.format(current_service.rate_limit)) }}
+            {{ text_field('')}}
+          {% endcall %}
+          {% call row() %}
             {% set txt = _('Free text message allowance') %}
             {{ text_field(txt)}}
             {{ text_field('{:,}'.format(current_service.free_sms_fragment_limit)) }}
