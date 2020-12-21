@@ -12,24 +12,26 @@ from app.main.forms import (
 )
 
 DEFAULT_STEP = "identity"
+SESSION_FORM_KEY = "contact_form"
+SESSION_FORM_STEP_KEY = "contact_form_step"
 steps = [
     {
         "form": ContactNotify,
-        "current_step": "identity",
+        "current_step": DEFAULT_STEP,
         "previous_step": None,
         "next_step": "message",
     },
     {
         "form": ContactMessageStep,
         "current_step": "message",
-        "previous_step": "identity",
+        "previous_step": DEFAULT_STEP,
         "next_step": None,
         "support_types": ['ask_question', 'technical_support', 'give_feedback', 'other'],
     },
     {
         "form": SetUpDemoOrgDetails,
         "current_step": "set_up_demo.org_details",
-        "previous_step": "identity",
+        "previous_step": DEFAULT_STEP,
         "next_step": "set_up_demo.primary_purpose",
         "support_types": ["demo"],
         "step": 1,
@@ -48,17 +50,17 @@ steps = [
 
 @main.route('/contact', methods=['GET', 'POST'])
 def contact():
-    current_step = request.args.get('current_step', session.get("contact_form_step", DEFAULT_STEP))
+    current_step = request.args.get('current_step', session.get(SESSION_FORM_STEP_KEY, DEFAULT_STEP))
     try:
         form_obj = [f for f in steps if f["current_step"] == current_step][0]
     except IndexError:
         return redirect(url_for('.contact', current_step=DEFAULT_STEP))
-    form = form_obj["form"](data=session.get("contact_form", {}))
+    form = form_obj["form"](data=session.get(SESSION_FORM_KEY, {}))
 
     # Validating the final form
     if form_obj["next_step"] is None and form.validate_on_submit():
-        session.pop("contact_form", None)
-        session.pop("contact_form_step", None)
+        session.pop(SESSION_FORM_KEY, None)
+        session.pop(SESSION_FORM_STEP_KEY, None)
         send_form_to_freshdesk(form)
         return render_template('views/contact/thanks.html')
 
@@ -74,10 +76,10 @@ def contact():
                 ][0]
         except IndexError:
             return redirect(url_for('.contact', current_step=DEFAULT_STEP))
-        form = form_obj["form"](data=session.get("contact_form", {}))
+        form = form_obj["form"](data=session.get(SESSION_FORM_KEY, {}))
 
-    session["contact_form"] = form.data
-    session["contact_form_step"] = form_obj["current_step"]
+    session[SESSION_FORM_KEY] = form.data
+    session[SESSION_FORM_STEP_KEY] = form_obj["current_step"]
 
     return render_template(
         'views/contact/form.html',
@@ -151,5 +153,5 @@ def send_form_to_freshdesk(form):
 
 
 @main.route('/support/ask-question-give-feedback', endpoint='redirect_contact')
-def redirect_contect():
+def redirect_contact():
     return redirect(url_for('main.contact'), code=301)
