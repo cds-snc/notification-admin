@@ -257,7 +257,7 @@ def get_notifications(service_id, message_type, status_override=None):
         abort(404)
     filter_args = parse_filter_args(request.args)
     filter_args['status'] = set_status_filters(filter_args)
-    service_data_retention_days = current_app.config.get('ACTIVITY_STATS_LIMIT_DAYS', 0)
+    service_data_retention_days = current_app.config.get('ACTIVITY_STATS_LIMIT_DAYS', None)
 
     if message_type is not None:
         service_data_retention_days = current_service.get_days_of_retention(message_type)
