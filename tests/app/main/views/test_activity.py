@@ -39,7 +39,7 @@ from tests.conftest import (
             active_caseworking_user,
             {},
             '.json',
-            None,
+            7,
             'Sent messages',
         ),
     ]
