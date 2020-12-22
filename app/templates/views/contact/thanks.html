@@ -7,9 +7,26 @@
 {% endblock %}
 
 {% block maincolumn_content %}
+  <h1 class="heading-large">
+    {{ _('Thanks for contacting us') }}
+  </h1>
 
-    <h1 class="heading-large">
-      {{ _('Thanks for contacting us') }}
-    </h1>
+  <p class="mb-10">
+    {{ _("We'll be in touch within 2 business days.") }}
+  </p>
 
+  <p>
+    {{ _('Learn more about GC Notify:') }}
+  </p>
+
+  <ul class="list-disc ml-8">
+    <li class="mb-5">
+      <a href="{{ url_for('.features') }}">{{ _('Features') }}</a><br>
+      <p>{{ _("What you can do with GC Notify") }}</p>
+    </li>
+    <li class="mb-5">
+      <a href="{{ url_for('.documentation') }}">{{ _('Documentation') }}</a><br>
+      <p>{{ _("How to connect your system to GC Notify") }}</p>
+    </li>
+  </ul>
 {% endblock %}
