@@ -11,7 +11,7 @@
     {{ banner(
       'Are you sure you want to remove?',
       type='dangerous',
-      delete_button='Yes, remove',
+      delete_button=_('Yes, remove'),
       action=url_for('.delete_smtp', service_id=current_service.id)
     ) }}
   {% endif %}

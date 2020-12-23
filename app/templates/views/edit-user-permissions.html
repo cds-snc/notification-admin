@@ -14,7 +14,7 @@
     {{ banner(
       '{} {}?'.format(_('Are you sure you want to remove'), user.name),
       type='dangerous',
-      delete_button='Yes, remove',
+      delete_button=_('Yes, remove'),
       action=url_for('.remove_user_from_service', service_id=current_service.id, user_id=user.id)
     ) }}
   {% endif %}
