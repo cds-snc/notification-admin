@@ -547,25 +547,6 @@ def test_should_not_allow_duplicate_names(
     )
 
 
-def test_should_not_allow_duplicate_email_from(
-    client_request,
-    mock_service_name_is_not_unique,
-    service_one,
-):
-    page = client_request.post(
-        'main.service_email_from_change',
-        service_id=SERVICE_ONE_ID,
-        _data={'email_from': "test.service"},
-        _expected_status=200,
-    )
-
-    assert 'This email address is already in use' in page.text
-    app.service_api_client.is_service_email_from_unique.assert_called_once_with(
-        SERVICE_ONE_ID,
-        'SErvICE.TWO',
-    )
-
-
 def test_should_show_service_name_confirmation(
     client_request,
 ):
