@@ -222,7 +222,7 @@ def user_profile_security_keys_confirm_delete(keyid):
     if request.method == 'POST':
         try:
             user_api_client.delete_security_key_user(current_user.id, key=keyid)
-            msg = _("Key deleted")
+            msg = _("Key removed")
             flash(msg, 'default_with_tick')
             return redirect(url_for('.user_profile_security_keys'))
         except HTTPError as e:
