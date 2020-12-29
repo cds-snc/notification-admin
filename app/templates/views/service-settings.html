@@ -37,7 +37,7 @@
         {% endcall %}
 
         {% call row() %}
-          {% set txt = _('Service email prefix') %}
+          {% set txt = _('Sending email address') %}
           {{ text_field(txt) }}
           {{ text_field(current_service.email_from) }}
           {{ edit_field(

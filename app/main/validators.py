@@ -142,8 +142,9 @@ def validate_email_from(form, field):
         raise ValidationError(_l('This entry must contain valid characters for an email address.'))
     if len(field.data) > 64:
         raise ValidationError(_l('This cannot exceed 64 characters in length'))
+    service_id = getattr(form, 'service_id', current_app.config['NOTIFY_BAD_FILLER_UUID'])
     unique_name = service_api_client.is_service_email_from_unique(
-        current_app.config['NOTIFY_BAD_FILLER_UUID'],
+        service_id,
         field.data
     )
     if not unique_name:

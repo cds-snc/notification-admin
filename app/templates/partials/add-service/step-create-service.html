@@ -4,23 +4,23 @@
 <p>{{ _('GC Notify displays your service name:') }}</p>
 <p>
 <ul class="list-bullet">
-  <li>{{ _('at the start of every text message') }}</li>
   <li>{{ _('as the ‘from’ address on emails you send') }}</li>
+  <li>{{ _('at the start of every text message') }}</li>
 </ul>
 </p>
 
-<p>{{ _('Your service name must include both English and French. It cannot be longer than 255 characters.') }}</p>
+<p>{{ _('In the Government of Canada, your service name must include both English and French.') }}</p>
 
-<p>{{ _('For example:') }}<br>
-<ul class="list-bullet">
-  <li>{{ _('Canadian Digital Service (CDS) | Service numérique canadien (SNC)') }}</li>
-  <li>cds-snc.ca</li>
-</ul>
+<p>{{ _('For example:') }} {{ _('Renew your passport | Renouveler votre passeport') }}</p>
+
+<h2 class="heading-medium">{{ _('What’s your service called?') }}</h2>
+<p>
+  {{ _('A good service name is trustworthy. It uses words people who use the service recognize.') }}
 </p>
 
 <div class="form-wrap">
   {% call form_wrapper() %}
-    {% set hint_txt = _('You can change this later') %}
+    {% set hint_txt = _('Up to 255 characters') %}
 
     {{ textbox(form.name, hint=hint_txt) }}
     {% set button_txt = _('Continue') %}

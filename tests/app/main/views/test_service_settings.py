@@ -61,6 +61,7 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
+        'Sending email address test.service Change',
         'Sign-in method Text message code Change',
 
         'Label Value Action',
@@ -80,6 +81,7 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
+        'Sending email address test.service Change',
         'Sign-in method Text message code Change',
 
         'Label Value Action',
@@ -154,10 +156,10 @@ def test_no_go_live_link_for_service_without_organisation(
     page = client_request.get('main.service_settings', service_id=SERVICE_ONE_ID)
 
     assert page.find('h1').text == 'Settings'
-    assert normalize_spaces(page.select('tr')[14].text) == (
+    assert normalize_spaces(page.select('tr')[15].text) == (
         'Live No (organisation must be set first)'
     )
-    assert normalize_spaces(page.select('tr')[16].text) == (
+    assert normalize_spaces(page.select('tr')[17].text) == (
         'Organisation Not set Government of Canada Change'
     )
 
@@ -182,7 +184,7 @@ def test_organisation_name_links_to_org_dashboard(
         'main.service_settings', service_id=SERVICE_ONE_ID
     )
 
-    org_row = response.select('tr')[16]
+    org_row = response.select('tr')[17]
     assert org_row.find('a')['href'] == url_for('main.organisation_dashboard', org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find('a').text) == 'Test Organisation'
 
@@ -191,6 +193,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'inbound_sms', 'international_sms'], [
 
         'Service name service one Change',
+        'Sending email address test.service Change',
         'Sign-in method Text message code Change',
 
         'Label Value Action',
@@ -209,6 +212,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'email_auth'], [
 
         'Service name service one Change',
+        'Sending email address test.service Change',
         'Sign-in method Email code or text message code Change',
 
         'Label Value Action',
@@ -348,26 +352,6 @@ def test_should_redirect_after_change_service_name(
     )
 
     assert mock_service_name_is_unique.called is True
-
-
-def test_should_not_hit_api_if_service_name_hasnt_changed(
-    client_request,
-    mock_update_service,
-    mock_service_name_is_unique,
-):
-    client_request.post(
-        'main.service_name_change',
-        service_id=SERVICE_ONE_ID,
-        _data={'name': 'service one'},
-        _expected_status=302,
-        _expected_redirect=url_for(
-            'main.service_settings',
-            service_id=SERVICE_ONE_ID,
-            _external=True,
-        ),
-    )
-    assert not mock_service_name_is_unique.called
-    assert not mock_update_service.called
 
 
 @pytest.mark.parametrize('user, expected_text, expected_link', [
@@ -563,6 +547,25 @@ def test_should_not_allow_duplicate_names(
     )
 
 
+def test_should_not_allow_duplicate_email_from(
+    client_request,
+    mock_service_name_is_not_unique,
+    service_one,
+):
+    page = client_request.post(
+        'main.service_email_from_change',
+        service_id=SERVICE_ONE_ID,
+        _data={'email_from': "test.service"},
+        _expected_status=200,
+    )
+
+    assert 'This email address is already in use' in page.text
+    app.service_api_client.is_service_email_from_unique.assert_called_once_with(
+        SERVICE_ONE_ID,
+        'SErvICE.TWO',
+    )
+
+
 def test_should_show_service_name_confirmation(
     client_request,
 ):
@@ -571,6 +574,17 @@ def test_should_show_service_name_confirmation(
         service_id=SERVICE_ONE_ID,
     )
     assert 'Change your service name' in page.text
+    app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
+
+
+def test_should_show_service_email_from_confirmation(
+    client_request,
+):
+    page = client_request.get(
+        'main.service_email_from_change_confirm',
+        service_id=SERVICE_ONE_ID,
+    )
+    assert 'Change your sending email address' in page.text
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
 
@@ -597,7 +611,33 @@ def test_should_redirect_after_service_name_confirmation(
     mock_update_service.assert_called_once_with(
         SERVICE_ONE_ID,
         name=service_new_name,
-        email_from=email_safe(service_new_name)
+    )
+    assert mock_verify_password.called is True
+
+
+def test_should_redirect_after_service_email_from_confirmation(
+    client_request,
+    mock_update_service,
+    mock_verify_password,
+    mock_get_inbound_number_for_service,
+):
+    service_new_email_from = 'new.email'
+    with client_request.session_transaction() as session:
+        session['service_email_from_change'] = service_new_email_from
+    client_request.post(
+        'main.service_email_from_change_confirm',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=302,
+        _expected_redirect=url_for(
+            'main.service_settings',
+            service_id=SERVICE_ONE_ID,
+            _external=True,
+        ),
+    )
+
+    mock_update_service.assert_called_once_with(
+        SERVICE_ONE_ID,
+        email_from=email_safe(service_new_email_from)
     )
     assert mock_verify_password.called is True
 
@@ -1704,6 +1744,8 @@ def test_ready_to_go_live(
     'main.service_settings',
     'main.service_name_change',
     'main.service_name_change_confirm',
+    'main.service_email_from_change',
+    'main.service_email_from_change_confirm',
     'main.request_to_go_live',
     'main.submit_request_to_go_live',
     'main.archive_service'
@@ -1738,6 +1780,8 @@ def test_route_permissions(
     'main.service_settings',
     'main.service_name_change',
     'main.service_name_change_confirm',
+    'main.service_email_from_change',
+    'main.service_email_from_change_confirm',
     'main.request_to_go_live',
     'main.submit_request_to_go_live',
     'main.service_switch_live',
@@ -1768,6 +1812,8 @@ def test_route_invalid_permissions(
     'main.service_settings',
     'main.service_name_change',
     'main.service_name_change_confirm',
+    'main.service_email_from_change',
+    'main.service_email_from_change_confirm',
     'main.request_to_go_live',
     'main.submit_request_to_go_live',
 ])
@@ -1817,8 +1863,8 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
             page.select('tbody tr')[index].text
         )
 
-    assert get_row(page, 3) == "Reply-to email addresses test@example.com …and 2 more Manage"
-    assert get_row(page, 6) == "Text message senders Example …and 2 more Manage"
+    assert get_row(page, 4) == "Reply-to email addresses test@example.com …and 2 more Manage"
+    assert get_row(page, 7) == "Text message senders Example …and 2 more Manage"
 
 
 @pytest.mark.parametrize('sender_list_page, index, expected_output', [

@@ -6,18 +6,19 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  {{ _('Change your email prefix')  }}
+  {{ _('Change your sending email address')  }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    _('Change your email prefix'),
+    _('Change your sending email address'),
     back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
 
   <div class="form-group">
-    <p>{{ _('Users will see your email prefix as your email local prefix.') }}</p>
+    <p>{{ _('Users will see your service email address in the "From" field of the emails you send.') }}</p>
+    <p>{{ _('Your sending email address helps to build trust with recipients. A good email address is bilingual, recognizable, and as concise as possible.') }}</p>
   </div>
 
   {% call form_wrapper() %}

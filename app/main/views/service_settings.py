@@ -100,12 +100,6 @@ def service_name_change(service_id):
         if form.name.data == current_service.name:
             return redirect(url_for('.service_settings', service_id=service_id))
 
-        unique_name = service_api_client.is_service_name_unique(form.name.data)
-
-        if not unique_name:
-            form.name.errors.append(_("This service name is already in use"))
-            return render_template('views/service-settings/name.html', form=form)
-
         session['service_name_change'] = form.name.data
         return redirect(url_for('.service_name_change_confirm', service_id=service_id))
 
@@ -149,7 +143,7 @@ def service_name_change_confirm(service_id):
 @main.route("/services/<service_id>/service-settings/email_from", methods=['GET', 'POST'])
 @user_has_permissions('manage_service')
 def service_email_from_change(service_id):
-    form = ChangeEmailFromServiceForm()
+    form = ChangeEmailFromServiceForm(service_id=service_id)
 
     if request.method == 'GET':
         form.email_from.data = current_service.email_from
@@ -158,12 +152,6 @@ def service_email_from_change(service_id):
 
         if form.email_from.data == current_service.email_from:
             return redirect(url_for('.service_settings', service_id=service_id))
-
-        unique_email_from = service_api_client.is_service_email_from_unique(service_id, email_safe(form.email_from.data))
-
-        if not unique_email_from:
-            form.name.errors.append(_("This email address is already in use"))
-            return render_template('views/service-settings/email_from.html', form=form)
 
         session['service_email_from_change'] = form.email_from.data
         return redirect(url_for('.service_email_from_change_confirm', service_id=service_id))
@@ -201,7 +189,7 @@ def service_email_from_change_confirm(service_id):
             return redirect(url_for('.service_settings', service_id=service_id))
     return render_template(
         'views/service-settings/confirm.html',
-        heading=_('Change your email prefix'),
+        heading=_('Change your sending email address'),
         form=form)
 
 

@@ -31,9 +31,9 @@ STEP_NAME: str = "choose_service_name"
 STEP_EMAIL: str = "choose_email_from"
 STEP_LOGO: str = "choose_logo"
 
-STEP_NAME_HEADER: str = _("Name your service in both official languages")
+STEP_NAME_HEADER: str = _("Name your service")
 STEP_LOGO_HEADER: str = _("Choose a logo for your service")
-STEP_EMAIL_HEADER: str = _("Sending email address")
+STEP_EMAIL_HEADER: str = _("Create sending email address")
 
 # wizard list init here for current_app context usage
 WIZARD_LIST = [

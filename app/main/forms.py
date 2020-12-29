@@ -556,7 +556,7 @@ class TextNotReceivedForm(StripWhitespaceForm):
 
 class RenameServiceForm(StripWhitespaceForm):
     name = StringField(
-        _l(u'Service name'),
+        _l('Bilingual service name'),
         validators=[
             DataRequired(message=_l('This cannot be empty')),
             validate_name
@@ -564,8 +564,14 @@ class RenameServiceForm(StripWhitespaceForm):
 
 
 class ChangeEmailFromServiceForm(StripWhitespaceForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        service_id = kwargs.get('service_id', None)
+        if service_id:
+            self.service_id = service_id
+
     email_from = StringField(
-        _l(u'Service email prefix'),
+        _l(u'Sending email address'),
         validators=[
             DataRequired(message=_l('This cannot be empty')),
             validate_email_from
@@ -644,7 +650,7 @@ class OrganisationDomainsForm(StripWhitespaceForm):
 
 class CreateServiceStepNameForm(StripWhitespaceForm):
     name = StringField(
-        _l('What’s your service called?'),
+        _l('Bilingual service name'),
         validators=[
             DataRequired(message=_l('This cannot be empty')),
             validate_name
@@ -704,7 +710,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
 
 class CreateServiceStepEmailFromForm(StripWhitespaceForm):
     email_from = StringField(
-        _l('What email prefix will your emails be from?'),
+        _l('Sending email address'),
         validators=[DataRequired(message=_l('This cannot be empty')),
                     validate_email_from]
     )
