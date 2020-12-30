@@ -211,7 +211,6 @@ set description = _('GC Notify lets you send emails and text messages to your us
               loading="lazy"
               alt="An illustration that shows an example of an email notification. The example is a message confirming that an application was received and outlining next steps in the process."
               width="390"
-              class=""
               src="{{ asset_s3_url('letter-en.svg') }}"
             />
           {% else %}
@@ -219,7 +218,6 @@ set description = _('GC Notify lets you send emails and text messages to your us
               alt="Illustration montrant un exemple d'une notification par courriel. L'exemple est un accusé de réception d'une demande décrivant les prochaines étapes du processus."
               loading="lazy"
               width="390"
-              class=""
               src="{{ asset_s3_url('letter-fr.svg') }}"
             />
           {% endif %}
@@ -230,13 +228,13 @@ set description = _('GC Notify lets you send emails and text messages to your us
             {{ _("Built for the Government of Canada") }}
           </h2>
           <ul class="list-disc ml-10">
-          <li class="pt-4 text-base mb-0">
+          <li class="pt-4 text-base leading-tight">
             {{ _("Send consistent and accessible email messages from a trusted domain.") }}
           </p>
-          <li class="pt-4 text-base mb-0">
+          <li class="pt-4 text-base leading-tight">
             {{ _("Personalise your messages, while protecting personal information.") }}
           </p>
-          <li class="pt-4 text-base mb-0">
+          <li class="pt-4 text-base leading-tight">
             {{ _("Reduce the time, effort, and cost of correspondence.") }}
           </p>
           <p class="pt-10 text-blue text-base">
@@ -254,7 +252,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
       <div class="flex flex-col lg:flex-row justify-between">
         <!-- -->
         <div class="text-content max-w-4xl pb-10 lg:pb-0">
-          <h2 class="leading-tight font-bold font-sans text-lg pb-6">
+          <h2 class="leading-tight font-bold font-sans text-lg pb-6">     
             {{ _("Work more efficiently") }}
           </h2>
           <div class="image-content flex">
@@ -278,7 +276,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
         />
          {% endif %}
          </div>
-          <ul class="list-disc ml-5">
+          <ul class="list-disc ml-10">
             <li class="pt-4 text-base leading-tight">
               {{ _("Improve your development tools with a secure cloud-based messaging platform.") }}
             </li>
