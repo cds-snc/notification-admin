@@ -11,7 +11,7 @@
 <h1 class="heading-large">{{ _('Features') }}</h1>
 <p>{{ _('Keep users of your service informed by sending email and text message updates through GC Notify.') }}</p>
 {% if not current_user.is_authenticated %}
-  <p><a href="{{ url_for('main.register') }}">{{ _('Create an account') }}</a> {{ _('for free and try it yourself.') }}</p>
+  <p><a href="{{ url_for('main.register') }}">{{ _('Create an account and try it for yourself') }}</a></p>
 {% endif %}
 
 <h2 class="heading-medium">{{ _('Create reusable templates') }}</h2>
@@ -42,6 +42,6 @@
 
 <h3 class="heading-small">{{ _('Two-factor authentication') }}</h3>
 <p>{{ _("GC Notify uses two-factor authentication (2FA) to keep your account secure. When you sign in, we'll send a unique one-time code to your phone and ask you to enter it before we let you use your account.") }}</p>
-<p><a href="{{ url_for('main.security') }}">{{ _('Learn more about security') }}</a>.
+<p><a href="{{ url_for('main.security') }}">{{ _('Learn more about security') }}</a>
 
 {% endblock %}
