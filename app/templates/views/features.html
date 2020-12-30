@@ -16,14 +16,14 @@
 
 <h2 class="heading-medium">{{ _('Create reusable templates') }}</h2>
 <p>{{ _('Write and send emails and text messages to many people from one single template. In GC Notify, you’ll create a message template that you can edit and reuse as often as you need. This way you won’t need to write a new message each time.') }}</p>
-<p><a href="{{ url_for('main.templates') }}"></a>{{ _('Learn more about template formatting') }}</a></p>
+<p><a href="{{ url_for('.templates') }}"></a>{{ _('Learn more about template formatting') }}</a></p>
 
 <h2 class="heading-medium">{{ _('Personalise messages') }}</h2>
 <p>{{ _('Tailor your messages with relevant information to each recipient based on a single template using variables. Variables add placeholders, such as a recipient’s name and reference number, that can be filled each time you send a message.') }}</p>
 
 <h2 class="heading-medium">{{ _('Send in bulk or automatically') }}</h2>
 <p>{{ _('Send up to 50,000 messages at once or automate sending when an action is triggered. To send in bulk, upload an Excel spreadsheet with a list of contacts and schedule the date and time up to 72 hours in advance. To automate sending, integrate the API with your web application or back office system.') }}</p>
-<p><a href="{{ url_for('main.documentation') }}"></a>{{ _('Learn more about API integration') }}</a></p>
+<p><a href="{{ url_for('.documentation') }}"></a>{{ _('Learn more about API integration') }}</a></p>
 
 <h2 class="heading-medium">{{ _('Track bounceback messages') }}</h2>
 <p>{{ _('See how many of your messages get delivered. Track the current status of any message to learn when it’s delivered, when it’s not, and why it failed. Check these stats in a real-time dashboard for up to 7 days after sending, and download reports for your records.') }}</p>
@@ -42,6 +42,6 @@
 
 <h3 class="heading-small">{{ _('Two-factor authentication') }}</h3>
 <p>{{ _("GC Notify uses two-factor authentication (2FA) to keep your account secure. When you sign in, we'll send a unique one-time code to your phone and ask you to enter it before we let you use your account.") }}</p>
-<p>{{ _('Read more about') }} <a href="{{ url_for('main.security') }}">{{ _('security') }}</a>.
+<p><a href="{{ url_for('main.security') }}">{{ _('Learn more about security') }}</a>.
 
 {% endblock %}
