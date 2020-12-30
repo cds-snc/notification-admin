@@ -466,6 +466,7 @@
 "To send an email or text with GC Notify, you need to create a message template first.",""
 "Templates let you send the same thing to lots of people, as often as you need, without writing a new message each time.",""
 "Personalise messages",""
+"Tailor your messages with relevant information to each recipient based on a single template using variables. Variables add placeholders, such as a recipient’s name and reference number, that can be filled each time you send a message.",""
 "GC Notify makes it easy to send personalised messages from a single template.",""
 "If you want to include personalised content in your message, you can add a placeholder. Each time you send a message, you can fill the placeholder with details such as a name or reference number. You can do this manually or upload a list of personal details and let GC Notify do it for you.",""
 "Send in bulk or automatically",""
