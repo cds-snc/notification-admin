@@ -203,7 +203,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
         <div class="image-content pb-10 lg:pb-0">
 
           <h2 class="leading-tight font-sans font-bold text-lg lg:hidden">
-            {{ _("A platform built for government") }}
+            {{ _("Built for the Government of Canada") }}
           </h2>
 
           {% if session["userlang"] == "en" %}
@@ -230,10 +230,13 @@ set description = _('GC Notify lets you send emails and text messages to your us
             {{ _("A platform built for government") }}
           </h2>
           <p class="pt-4 text-base mb-0">
-            {{ _("Send emails or text messages to keep the public informed and make your services more transparent.") }}
+            {{ _("Send consistent and accessible email messages from a trusted domain.") }}
           </p>
           <p class="pt-4 text-base mb-0">
-            {{ _("Use templates for easy, consistent, and accessible communications.") }}
+            {{ _("Personalise your messages, while protecting personal information.") }}
+          </p>
+          <p class="pt-4 text-base mb-0">
+            {{ _("Reduce the time, effort, and cost of correspondence.") }}
           </p>
           <p class="pt-10 text-blue text-base">
             <a class="line-under text-base my-0 link:text-blue visited:text-blue" href="{{ url_for('main.features') }}">{{ _("Learn more about GC Notify") }}</a>
@@ -251,7 +254,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
         <!-- -->
         <div class="text-content max-w-4xl pb-10 lg:pb-0">
           <h2 class="leading-tight font-bold font-sans text-lg pb-6">
-            {{ _("A product built for you") }}
+            {{ _("Work more efficiently") }}
           </h2>
           <div class="image-content flex">
           {% if session["userlang"] == "en" %}
@@ -276,13 +279,13 @@ set description = _('GC Notify lets you send emails and text messages to your us
          </div>
           <ul class="list-disc ml-5">
             <li class="pt-4 text-base leading-tight">
-              {{ _("Staff who regularly write and send service updates wishing to upgrade the tools used to communicate with the public") }}
+              {{ _("Improve your development tools with a secure cloud-based messaging platform.") }}
             </li>
             <li class="pt-4 text-base leading-tight">
-              {{ _("Developers working on improving workflow and tooling for public servants") }}
+              {{ _("Automate sending so that whenever there is a status change, the public receives an update.") }}
             </li>
             <li class="pt-4 text-base leading-tight">
-              {{_("Administrators who have to meet departmental service standards for communication")}}
+              {{_("Set permission access for which people on your team can edit or send messages.")}}
             </li>
           </ul>
         </div>
