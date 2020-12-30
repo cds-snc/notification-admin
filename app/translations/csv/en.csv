@@ -615,7 +615,7 @@
 "Track the message delivery status in your dashboard.",""
 "Learn more about features",""
 "Two ways to send:",""
-"Connect GC Notify to your program or service",""
+"Connect your service to GC Notify",""
 "Manually, by uploading a list of contacts as an Excel spreadsheet in GC Notify.",""
 "Automatically, using the API integrated with your web application or back-office system.",""
 "How to integrate GC Notify with your system",""

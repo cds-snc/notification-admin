@@ -613,7 +613,7 @@
 "Write personalised emails and text messages using variables.","Rédiger des courriels et des messages texte personnalisés en utilisant des variables"
 "Track the message delivery status in your dashboard.","Suivre l'état de livraison des messages dans votre tableau de bord."
 "Learn more about feature","En savoir plus sur les fonctionnalités"
-"Connect GC Notify to your program or service","Connectez GC Notification à votre programme ou votre service"
+"Connect your service to GC Notify","Connectez votre service à GC Notification"
 "Two ways to send:","Deux modes d'envoi :"
 "Manually, by uploading a list of contacts as an Excel spreadsheet in GC Notify.","Manuel : téléversez une liste de contacts sous forme de tableau Excel dans GC Notification."
 "Automatically, using the API integrated with your web application or back-office system.","Automatique : utilisez l'API intégrée à votre application Web ou à votre système administratif."
