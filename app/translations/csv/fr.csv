@@ -492,7 +492,7 @@
 "Protect and manage data","Protéger et gérer les données"
 "GC Notify protects and manages data to meet the needs of government services.","GC Notification protège et gère les données de façon à répondre aux besoins en matière de services gouvernementaux."
 "Hide sensitive information","Masquer les renseignements de nature délicate"
-"GC Notify lets you redact personal information from your messages after they’ve been sent. Only the recipient can see their personal information.","GC Notification vous permet de masquer les renseignements personnels contenus dans vos messages après qu’ils ont été envoyés. Seul le destinataire peut voir ses renseignements personnels."
+"Redact personal information from your messages after they’ve been sent by hiding variable content from screen logs. Only the recipient can see their personal information.","Masquez les renseignements personnels contenus dans vos messages après qu’ils ont été envoyés en cachant le contenu variable des journaux de bord. Seul le destinataire peut voir ses renseignements personnels."
 "GC Notify uses two-factor authentication (2FA) to keep your account secure. When you sign in, we'll send a unique one-time code to your phone and ask you to enter it before we let you use your account.","GC Notification utilise l’authentification à deux facteurs (A2F) pour assurer la sécurité de votre compte. Au moment de créer votre compte, vous recevrez un code unique par message texte et devrez l’entrer avant de pouvoir utiliser votre compte."
 "Read more about","En savoir plus au sujet de la "
 "security","sécurité"

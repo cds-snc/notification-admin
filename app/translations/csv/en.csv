@@ -495,7 +495,7 @@
 "Protect and manage data",""
 "GC Notify protects and manages data to meet the needs of government services.",""
 "Hide sensitive information",""
-"GC Notify lets you redact personal information from your messages after they’ve been sent. Only the recipient can see their personal information.",""
+"Redact personal information from your messages after they’ve been sent by hiding variable content from screen logs. Only the recipient can see their personal information.",""
 "GC Notify uses two-factor authentication (2FA) to keep your account secure. When you sign in, we'll send a unique one-time code to your phone and ask you to enter it before we let you use your account.",""
 "Read more about",""
 "security",""
