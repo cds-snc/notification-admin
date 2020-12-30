@@ -3,43 +3,33 @@
 {% from "components/sub-navigation.html" import sub_navigation %}
 
 {% block per_page_title %}
-  {{ _('Product features') }}
+  {{ _('Features') }}
 {% endblock %}
 
 {% block content_column_content %}
 
-<h1 class="heading-large">{{ _('Product features') }}</h1>
-<p>{{ _('If you work for the federal government, you can use GC Notify to update your users.') }}</p>
-<p>{{ _('GC Notify makes it easy to create, customize and send:') }}</p>
-<ul class="list list-bullet">
-  <li><a href="{{ url_for('main.email') }}">{{ _('emails') }}</a></li>
-  <li><a href="{{ url_for('main.sms') }}">{{ _('text messages') }}</a></li>
-</ul>
-<p>{{ _('You do not need technical knowledge to use GC Notify.') }}</p>
+<h1 class="heading-large">{{ _('Features') }}</h1>
+<p>{{ _('Keep users of your service informed by sending email and text message updates through GC Notify.') }}</p>
 {% if not current_user.is_authenticated %}
   <p><a href="{{ url_for('main.register') }}">{{ _('Create an account') }}</a> {{ _('for free and try it yourself.') }}</p>
 {% endif %}
 
-<h2 class="heading-medium">{{ _('Reusable message templates') }}</h2>
-<p>{{ _('To send an email or text with GC Notify, you need to create a message template first.') }}</p>
-<p>{{ _('Templates let you send the same thing to lots of people, as often as you need, without writing a new message each time.') }}</p>
+<h2 class="heading-medium">{{ _('Create reusable templates') }}</h2>
+<p>{{ _('Write and send emails and text messages to many people from one single template. In GC Notify, you’ll create a message template that you can edit and reuse as often as you need. This way you won’t need to write a new message each time.') }}</p>
+<p><a href="{{ url_for('main.templates') }}"></a>{{ _('Learn more about template formatting') }}</a></p>
 
-<h2 class="heading-medium">{{ _('Personalised content') }}</h2>
+<h2 class="heading-medium">{{ _('Personalise messages') }}</h2>
 <p>{{ _('GC Notify makes it easy to send personalised messages from a single template.') }}</p>
 <p>{{ _('If you want to include personalised content in your message, you can add a placeholder. Each time you send a message, you can fill the placeholder with details such as a name or reference number. You can do this manually or upload a list of personal details and let GC Notify do it for you.') }}</p>
 
-<h2 class="heading-medium">{{ _('Bulk sending') }}</h2>
+<h2 class="heading-medium">{{ _('Send in bulk or automatically') }}</h2>
 <p>{{ _('To send a batch of messages at once, upload a list of contact details. You can also schedule the date and time for sending emails or text messages.') }}</p>
 
-<h2 class="heading-medium">{{ _('Application Programming Interface (API) integration') }}</h2>
-<p>{{ _('You can integrate GC Notify’s API with your web application or back-office system to send messages automatically.') }}</p>
-<p>{{ _('Read our') }} <a href="{{ url_for('.documentation') }}">{{ _('API documentation') }}</a> {{ _('for more information.') }}</p>
-
-<h2 class="heading-medium">{{ _('Message delivery status') }}</h2>
+<h2 class="heading-medium">{{ _('Track bounceback messages') }}</h2>
 <p>{{ _('The real-time dashboard lets you see the number of messages sent. You can also check the current status of any message to learn when it was delivered.') }}</p>
 <p>{{ _('Read more about how') }} <a href="{{ url_for('main.messages_status') }}">{{ _('message status') }}</a> {{ _('works.') }}</p>
 
-<h2 class="heading-medium">{{ _('Permissions') }}</h2>
+<h2 class="heading-medium">{{ _('Assign team roles') }}</h2>
 <p>{{ _('Control which members of your team can see, create, edit, and send messages.') }}</p>
 <p>{{ _('GC Notify lets you:') }}</p>
 <ul class="list list-bullet">
@@ -48,7 +38,7 @@
   <li>{{ _('choose who else can manage team members') }}</li>
 </ul>
 
-<h2 class="heading-medium">{{ _('Security') }}</h2>
+<h2 class="heading-medium">{{ _('Customise your name and branding') }}</h2>
 <p>{{ _('GC Notify protects and manages data to meet the needs of government services.') }}</p>
 
 <h3 class="heading-small">{{ _('Hide sensitive information') }}</h3>
