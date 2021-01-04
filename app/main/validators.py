@@ -16,7 +16,7 @@ from wtforms.validators import Email
 
 from app import formatted_list, service_api_client
 from app.main._blocked_passwords import blocked_passwords
-from app.utils import Spreadsheet, email_safe, is_gov_user
+from app.utils import Spreadsheet, email_safe, is_gov_user, email_safe_name
 
 
 class Blocklist:
@@ -142,6 +142,7 @@ def validate_email_from(form, field):
         raise ValidationError(_l('This entry must contain valid characters for an email address.'))
     if len(field.data) > 64:
         raise ValidationError(_l('This cannot exceed 64 characters in length'))
+    # this filler is used because service id is not available when validating a new service to be created
     service_id = getattr(form, 'service_id', current_app.config['NOTIFY_BAD_FILLER_UUID'])
     unique_name = service_api_client.is_service_email_from_unique(
         service_id,
@@ -154,6 +155,8 @@ def validate_email_from(form, field):
 def validate_name(form, field):
     if len(field.data) > 255:
         raise ValidationError(_l('This cannot exceed 255 characters in length'))
+    if field.data != email_safe_name(field.data):
+        raise ValidationError(_l('This entry must contain valid characters for an email address.'))
     unique_name = service_api_client.is_service_name_unique(
         field.data,
     )
