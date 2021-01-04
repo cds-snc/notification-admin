@@ -101,6 +101,7 @@ def mock_get_service_settings_page_common(
         'Count in list of live services Yes Change',
         'Organisation Test Organisation Government of Canada Change',
         'Daily message limit 1,000 Change',
+        'API rate limit per minute 100',
         'Free text message allowance 250,000 Change',
         'Email branding English Government of Canada signature Change',
         'Letter branding Not set Change',

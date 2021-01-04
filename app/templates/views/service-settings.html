@@ -329,13 +329,19 @@
           {% call row() %}
             {% set txt = _('Daily message limit') %}
             {{ text_field(txt)}}
-            {{ text_field('{:,}'.format(current_service.message_limit)) }}
+            {{ text_field(current_service.message_limit | format_number) }}
             {{ edit_field(change_txt, url_for('.set_message_limit', service_id=current_service.id)) }}
+          {% endcall %}
+          {% call row() %}
+            {% set txt = _('API rate limit per minute') %}
+            {{ text_field(txt)}}
+            {{ text_field(current_service.rate_limit | format_number) }}
+            {{ text_field('')}}
           {% endcall %}
           {% call row() %}
             {% set txt = _('Free text message allowance') %}
             {{ text_field(txt)}}
-            {{ text_field('{:,}'.format(current_service.free_sms_fragment_limit)) }}
+            {{ text_field(current_service.free_sms_fragment_limit | format_number) }}
             {{ edit_field(change_txt, url_for('.set_free_sms_allowance', service_id=current_service.id)) }}
           {% endcall %}
           {% call row() %}
