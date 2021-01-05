@@ -13,6 +13,7 @@ from flask import (
     url_for,
 )
 from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
@@ -70,10 +71,10 @@ from app.utils import (
 )
 
 PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
-    ('inbound_sms', {'title': 'Receive inbound SMS', 'requires': 'sms', 'endpoint': '.service_set_inbound_number'}),
-    ('email_auth', {'title': 'Email authentication'}),
-    ('upload_document', {'title': 'Send files by email', 'endpoint': '.service_switch_can_upload_document'}),
-    ('upload_letters', {'title': 'Uploading letters', 'requires': 'letter'}),
+    ('inbound_sms', {'title': _l('Receive inbound SMS'), 'requires': 'sms', 'endpoint': '.service_set_inbound_number'}),
+    ('email_auth', {'title': _l('Email authentication')}),
+    ('upload_document', {'title': _l('Send files by email'), 'endpoint': '.service_switch_can_upload_document'}),
+    ('upload_letters', {'title': _l('Uploading letters'), 'requires': 'letter'}),
 ])
 
 
