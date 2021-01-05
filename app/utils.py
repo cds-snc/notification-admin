@@ -261,7 +261,7 @@ def email_safe(string, whitespace='.'):
 
 
 def email_safe_name(string):
-    return string.replace('"','').strip()
+    return string.replace('"', '').strip()
 
 
 def id_safe(string):

@@ -16,7 +16,7 @@ from wtforms.validators import Email
 
 from app import formatted_list, service_api_client
 from app.main._blocked_passwords import blocked_passwords
-from app.utils import Spreadsheet, email_safe, is_gov_user, email_safe_name
+from app.utils import Spreadsheet, email_safe, email_safe_name, is_gov_user
 
 
 class Blocklist:
