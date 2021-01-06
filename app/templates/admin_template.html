@@ -26,7 +26,7 @@
       <nav id="proposition-menu">
         <ul id="proposition-links">
           {% if current_user.is_authenticated %}
-            <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>{{ _('Technical documentation') }}</a></li>
+            <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>{{ _('Documentation') }}</a></li>
             <li><a href="{{ url_for('main.user_profile') }}" {{ header_navigation.is_selected('user-profile') }}>{{ current_user.name }}</a></li>
             {% if current_user.platform_admin %}
               <li><a href="{{ url_for('main.platform_admin') }}" {{ header_navigation.is_selected('platform-admin') }}>{{ _('Platform admin') }}</a></li>
@@ -48,7 +48,7 @@
                 English
               {% endif %}
             </a></li>
-            <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>{{ _('Technical documentation') }}</a></li>
+            <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>{{ _('Documentation') }}</a></li>
             <li><a href="{{ url_for('main.sign_in' )}}" {{ header_navigation.is_selected('sign-in') }}>{{ _('Sign in') }}</a></li>
           {% endif %}
         </ul>
