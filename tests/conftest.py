@@ -616,6 +616,16 @@ def mock_service_name_is_unique(mocker):
 
 
 @pytest.fixture(scope='function')
+def mock_service_email_from_is_not_unique(mocker):
+    return mocker.patch('app.service_api_client.is_service_email_from_unique', return_value=False)
+
+
+@pytest.fixture(scope='function')
+def mock_service_email_from_is_unique(mocker):
+    return mocker.patch('app.service_api_client.is_service_email_from_unique', return_value=True)
+
+
+@pytest.fixture(scope='function')
 def mock_get_live_service(mocker, api_user_active):
     def _get(service_id):
         service = service_json(

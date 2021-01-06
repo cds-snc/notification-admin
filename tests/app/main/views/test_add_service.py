@@ -57,7 +57,7 @@ def test_get_should_not_render_radios_if_org_type_known(
 
 
 def test_visible_branding_choices_on_service_email_from_step(
-    client_request,
+    client_request
 ):
     page = client_request.post(
         'main.add_service',
@@ -141,6 +141,7 @@ def test_wizard_flow_with_step_1_should_display_service_name_form(
 
 def test_wizard_flow_with_step_2_should_display_email_from(
     client_request,
+    mock_service_name_is_unique,
 ):
     page = client_request.post(
         'main.add_service',
@@ -151,10 +152,12 @@ def test_wizard_flow_with_step_2_should_display_email_from(
         _expected_status=200,
     )
     assert page.select_one('h1').text.strip() == 'Create sending email address'
+    assert mock_service_name_is_unique.called is True
 
 
 def test_wizard_flow_with_step_3_should_display_branding_form(
     client_request,
+    mock_service_email_from_is_unique
 ):
     page = client_request.post(
         'main.add_service',
@@ -167,6 +170,7 @@ def test_wizard_flow_with_step_3_should_display_branding_form(
         _expected_status=200,
     )
     assert page.select_one('h1').text.strip() == 'Choose a logo for your service'
+    assert mock_service_email_from_is_unique.called is True
 
 
 def test_wizard_flow_with_non_matching_steps_info_should_fallback_to_step1(
@@ -184,6 +188,7 @@ def test_wizard_flow_with_non_matching_steps_info_should_fallback_to_step1(
 
 def test_wizard_flow_with_junk_step_info_should_fallback_to_step1(
     client_request,
+    mock_service_name_is_unique
 ):
     page = client_request.post(
         'main.add_service',
@@ -197,6 +202,7 @@ def test_wizard_flow_with_junk_step_info_should_fallback_to_step1(
         _expected_status=200,
     )
     assert page.select_one('h1').text.strip() == 'Name your service'
+    assert mock_service_name_is_unique.called is True
 
 
 @pytest.mark.parametrize('email_address', (
@@ -417,6 +423,7 @@ def test_should_return_form_errors_with_duplicate_service_name_regardless_of_cas
     client_request,
     mock_create_duplicate_service,
     mock_get_organisation_by_domain,
+    mock_service_name_is_not_unique
 ):
     page = client_request.post(
         'main.add_service',
@@ -432,6 +439,7 @@ def test_should_return_form_errors_with_duplicate_service_name_regardless_of_cas
     assert page.select_one('.error-message').text.strip() == (
         'This service name is already in use'
     )
+    assert mock_service_name_is_not_unique.called is True
 
 
 def test_non_safelist_user_cannot_access_create_service_page(

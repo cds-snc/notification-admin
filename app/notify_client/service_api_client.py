@@ -328,7 +328,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         Check that the service name or email from are unique across all services.
         """
-        endpoint = "/service/email-from/unique"
+        endpoint = '/service/email-from/unique'
         params = {"service_id": service_id, "email_from": email_from}
         return self.get(url=endpoint, params=params)["result"]
 
