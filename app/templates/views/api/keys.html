@@ -14,7 +14,7 @@
     heading_1,
     back_link=url_for('main.api_integration', service_id=current_service.id)
   ) }}
-  
+
   {% set empty_txt = _('You haven’t created any API keys yet') %}
   {% set keys_txt = _('API keys') %}
   {% set heading_1 = _('API keys') %}
@@ -34,7 +34,7 @@
       {% call field() %}
         <div class="file-list">
           {{ item.name }}
-          {% if (current_user.platform_admin and 
+          {% if (current_user.platform_admin and
               'total_sends' in item and
               'email_sends' in item and
               'sms_sends' in item )  %}
@@ -59,10 +59,10 @@
               {{ _('Created:') }} <span class="local-datetime-full">{{ item.created_at }}</span>
             </div>
             <div class="hint">
-              {{ _('Expires') }}: <span class="local-datetime-full">{{ item.expiry_date }}</span>
+              {{ _('Expires:') }} <span class="local-datetime-full">{{ item.expiry_date }}</span>
             </div>
             <div class="hint">
-              {{ _('Last used') }}: <span class="local-datetime-full">{{ item.last_send }}</span>
+              {{ _('Last used:') }} <span class="local-datetime-full">{{ item.last_send }}</span>
             </div>
           {% endif %}
         </div>
