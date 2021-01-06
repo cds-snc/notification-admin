@@ -102,7 +102,7 @@ def test_security_txt(client):
 
 
 @pytest.mark.parametrize('view', [
-    'privacy', 'pricing', 'terms', 'roadmap',
+    'privacy', 'pricing', 'terms', 'roadmap', 'why-notify',
     'features', 'callbacks', 'documentation', 'security',
     'messages_status', 'email', 'sms',
     'letters',
