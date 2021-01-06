@@ -265,6 +265,11 @@ def features():
     )
 
 
+@main.route('/why-notify', endpoint='why-notify')
+def why_notify():
+    return render_template('views/why-notify.html')
+
+
 @main.route('/roadmap', endpoint='roadmap')
 def roadmap():
     return render_template(

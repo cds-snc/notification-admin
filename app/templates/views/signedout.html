@@ -108,6 +108,9 @@ set description = _('GC Notify lets you send emails and text messages to your us
           </a>
         </div>
         <div class="hidden lg:block lg:visible">
+          <a href="{{ url_for('main.why-notify') }}"
+            class="text-small text-blue link:text-blue visited:text-blue mr-10 font-bold no-underline hover:underline"
+              >{{ _('Why GC Notify') }}</a>
           <a href="{{ url_for('main.features') }}"
             class="text-small text-blue link:text-blue visited:text-blue mr-10 font-bold no-underline hover:underline"
             >{{ _("Product features") }}</a>
@@ -128,6 +131,12 @@ set description = _('GC Notify lets you send emails and text messages to your us
     <div class="mobile-nav container px-10 hidden lg:hidden">
       <div class="absolute bg-gray w-5/12 p-5 border-b-8">
         <ul class="pt-2">
+          <li>
+            <a
+              class="block text-small font-bold text-blue link:text-blue visited:text-blue mb-5 no-underline hover:underline"
+              href="{{ url_for('main.why-notify') }}"
+              >{{ _("Why GC Notify") }}</a>
+          </li>
           <li>
             <a
               class="block text-small font-bold text-blue link:text-blue visited:text-blue mb-5 no-underline hover:underline"
@@ -183,7 +192,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
         <div class="pt-6 pb-6 ml-10 image-content hidden lg:block lg:visible">
           <img
             loading="lazy"
-            alt="An illustration of a laptop with a message window on the screen and a cellphone with a message and a callout blurb.") }}"
+            alt="An illustration of a laptop with a message window on the screen and a cellphone with a message and a callout blurb."
             src="{{ asset_s3_url('mac-phone.svg') }}"
             width="350"
           />

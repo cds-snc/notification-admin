@@ -216,6 +216,9 @@
             >{{ _('Platform admin') }}</a>
             {% endif %}
 
+            <a href="{{ url_for('main.why-notify') }}"
+              class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
+              >{{ _('Why GC Notify') }}</a>
             <a href="{{ url_for('main.features') }}"
               class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
               >{{ _('Product features') }}</a>
@@ -244,6 +247,12 @@
             </li>
             {% endif %}
 
+            <li>
+              <a
+                class="text-blue visited:text-blue link:text-blue font-bold block text-small mb-5 no-underline hover:underline"
+                href="{{ url_for('main.why-notify') }}"
+                >{{ _('Why GC Notify') }}</a>
+            </li>
             <li>
               <a
                 class="text-blue visited:text-blue link:text-blue font-bold block text-small mb-5 no-underline hover:underline"
