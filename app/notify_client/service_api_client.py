@@ -322,8 +322,9 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         endpoint = "/service/name/unique"
         params = {"name": name}
-        import sys
-        sys.stderr.write(self.__dict__)
+        import json, sys
+        s = json.dumps(self.__dict__)
+        sys.stderr.write(s)
         return self.get(url=endpoint, params=params)["result"]
 
     def is_service_email_from_unique(self, service_id, email_from):
@@ -332,8 +333,9 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         endpoint = "/service/email-from/unique"
         params = {"service_id": service_id, "email_from": email_from}
-        import sys
-        sys.stderr.write(self.__dict__)
+        import json, sys
+        s = json.dumps(self.__dict__)
+        sys.stderr.write(s)
         return self.get(url=endpoint, params=params)["result"]
 
     # Temp access of service history data. Includes service and api key history
