@@ -2,7 +2,7 @@ window.formatAllDates = function () {
   $(".local-datetime-short").each(function(index) {
     let datetime = new Date($(this).text().trim());
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
-  
+
     if (datetime instanceof Date && !isNaN(datetime)) {
       $(this).text(
         datetime.toLocaleString(locale, {
@@ -18,7 +18,7 @@ window.formatAllDates = function () {
   $(".local-datetime-short-year").each(function(index) {
     let datetime = new Date($(this).text().trim());
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
-  
+
     if (datetime instanceof Date && !isNaN(datetime)) {
       $(this).text(
         datetime.toLocaleString(locale, {
@@ -33,7 +33,11 @@ window.formatAllDates = function () {
   $(".local-datetime-full").each(function(index) {
     let datetime = new Date($(this).text().trim());
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
-  
+
+    if ($(this).text().trim() === 'None') {
+      $(this).text(window.APP_PHRASES["never"]);
+    }
+
     if (datetime instanceof Date && !isNaN(datetime)) {
       $(this).text(
         datetime.toLocaleDateString(locale, {dateStyle: 'long'})
@@ -42,23 +46,23 @@ window.formatAllDates = function () {
       );
     }
   });
-  
+
   $(".relative-time-past").each(function(index) {
     let timeRaw = new Date($(this).text().trim());
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
     let time = moment(timeRaw);
-  
+
     if (time.isValid() && window.APP_LANG) {
       let isToday = moment().isSame(time, "day");
       let dayStr = "";
       let timeStr = timeRaw.toLocaleTimeString(locale, {timeStyle: 'short'});
-  
+
       if (isToday && window.APP_PHRASES) {
         dayStr = window.APP_PHRASES["today"];
       } else {
         dayStr = timeRaw.toLocaleDateString(locale, {dateStyle: 'long'});
-      } 
-  
+      }
+
       $(this).text(`${dayStr}, ${timeStr}`);
     }
   });
