@@ -1,3 +1,4 @@
+import os
 from functools import partial
 from unittest.mock import ANY, PropertyMock, call
 from urllib.parse import parse_qs, urlparse
@@ -61,7 +62,7 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
-        'Sending email address test.service Change',
+        'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
 
         'Label Value Action',
@@ -81,7 +82,7 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Service name Test Service Change',
-        'Sending email address test.service Change',
+        'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
 
         'Label Value Action',
@@ -139,7 +140,10 @@ def test_should_show_overview(
     assert page.find('h1').text == 'Settings'
     rows = page.select('tr')
     for index, row in enumerate(expected_rows):
-        assert row == " ".join(rows[index].text.split())
+        formatted_row = row.format(sending_domain=os.environ.get(
+            'SENDING_DOMAIN', 'notification.alpha.canada.ca'
+        ))
+        assert formatted_row == " ".join(rows[index].text.split())
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
 
@@ -194,7 +198,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'inbound_sms', 'international_sms'], [
 
         'Service name service one Change',
-        'Sending email address test.service Change',
+        'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
 
         'Label Value Action',
@@ -213,7 +217,7 @@ def test_organisation_name_links_to_org_dashboard(
     (['email', 'sms', 'email_auth'], [
 
         'Service name service one Change',
-        'Sending email address test.service Change',
+        'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Email code or text message code Change',
 
         'Label Value Action',
@@ -252,7 +256,10 @@ def test_should_show_overview_for_service_with_more_things_set(
     ))
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
     for index, row in enumerate(expected_rows):
-        assert row == " ".join(page.find_all('tr')[index + 1].text.split())
+        formatted_row = row.format(sending_domain=os.environ.get(
+            'SENDING_DOMAIN', 'notification.alpha.canada.ca'
+        ))
+        assert formatted_row == " ".join(page.find_all('tr')[index + 1].text.split())
 
 
 def test_if_cant_send_letters_then_cant_see_letter_contact_block(
@@ -544,6 +551,7 @@ def test_should_not_allow_duplicate_names(
 
     assert 'This service name is already in use' in page.text
     app.service_api_client.is_service_name_unique.assert_called_once_with(
+        SERVICE_ONE_ID,
         'SErvICE TWO',
     )
 
