@@ -45,6 +45,7 @@ class HeaderNavigation(Navigation):
             'contact',
         },
         'features': {
+            'why-notify',
             'features',
             'email',
             'letters',
