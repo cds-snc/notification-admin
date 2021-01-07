@@ -157,7 +157,9 @@ def validate_name(form, field):
         raise ValidationError(_l('This cannot exceed 255 characters in length'))
     if field.data != email_safe_name(field.data):
         raise ValidationError(_l('This entry must contain valid characters for an email address.'))
+    service_id = getattr(form, 'service_id', current_app.config['NOTIFY_BAD_FILLER_UUID'])
     unique_name = service_api_client.is_service_name_unique(
+        service_id,
         field.data,
     )
     if not unique_name:

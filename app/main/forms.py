@@ -555,6 +555,12 @@ class TextNotReceivedForm(StripWhitespaceForm):
 
 
 class RenameServiceForm(StripWhitespaceForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        service_id = kwargs.get('service_id', None)
+        if service_id:
+            self.service_id = service_id
+
     name = StringField(
         _l('Bilingual service name'),
         validators=[

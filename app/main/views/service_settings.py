@@ -91,7 +91,7 @@ def service_settings(service_id):
 @main.route("/services/<service_id>/service-settings/name", methods=['GET', 'POST'])
 @user_has_permissions('manage_service')
 def service_name_change(service_id):
-    form = RenameServiceForm()
+    form = RenameServiceForm(service_id=service_id)
 
     if request.method == 'GET':
         form.name.data = current_service.name
