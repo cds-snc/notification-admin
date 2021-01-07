@@ -12,12 +12,16 @@ RUN set -ex && mkdir /app
 
 WORKDIR /app
 
+COPY requirements.txt /app
+RUN set -ex && pip3 install -r requirements.txt
+
+COPY package.json package-lock.json /app/
+RUN npm ci
+
 COPY . /app
 
-RUN set -ex && pip3 install -r requirements.txt
 RUN make babel
 
-RUN npm install
 RUN npm run build
 
 RUN make generate-version-file
