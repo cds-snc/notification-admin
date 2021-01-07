@@ -174,15 +174,6 @@ label {
   }
 }
 
-.checkmark {
-  display: inline-block;
-  transform: rotate(45deg);
-  height: 28px;
-  width: 17px;
-  border-bottom: 7px solid #00823B;
-  border-right: 7px solid #00823B;
-}
-
 .line-under {
   text-underline-position: under;
 }
