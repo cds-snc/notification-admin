@@ -504,7 +504,7 @@
 "GC Notify keeps your account secure with two-factor authentication. This means you’ll need to enter a code that gets sent to your phone or email when you sign in. GC Notify is authorized for Protected A information. Data is encrypted whenever it passes through GC Notify and when it is stored in the system.",""
 "Learn more about security",""
 "Skip the procurement process",""
-"GC Notify is a government-run service, using it does not require any external procurement. You can send up to 10 million emails and 10,000 text messages per year for free for each of your Government of Canada services. No set up fee and no cost to use.",""
+"GC Notify is a government-run service, using it does not require any external procurement. You can send up to 10 million emails and {} text messages per year for free for each of your Government of Canada services. No set up fee and no cost to use.",""
 "Experiment safely with trial mode",""
 "Try out GC Notify before committing. When you create an account you will start in trial mode allowing you to experiment by sending messages to yourself and other people on your team. Once you’ve updated your settings and added examples of messages you want to send, you can request go live with your service to send to more recipients.",""
 "Create a new password",""

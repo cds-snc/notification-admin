@@ -47,7 +47,8 @@
   <h2 class="heading-medium">{{ _('Skip the procurement process') }}</h2>
 </div>
 <div class="pl-24">
-  <p>{{ _('GC Notify is a government-run service, using it does not require any external procurement. You can send up to 10 million emails and 10,000 text messages per year for free for each of your Government of Canada services. No set up fee and no cost to use.') }}</p>
+  {% set process = _('GC Notify is a government-run service, using it does not require any external procurement. You can send up to 10 million emails and {} text messages per year for free for each of your Government of Canada services. No set up fee and no cost to use.').format(rate_sms | format_number) %}
+  <p>{{ process }}</p>
 </div>
 <div class="pl-24">
   <img aria-hidden="true" src="{{ asset_url('images/why-notify/experiment.svg') }}" class="float-left -ml-20" />
