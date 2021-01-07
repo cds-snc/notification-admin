@@ -23,7 +23,9 @@
 
   {% call form_wrapper() %}
     {% set save_txt = _('Save') %}
-    {{ textbox(form.email_from) }}
+    {% set hint_txt = _('Up to 64 characters') %}
+    {% set suffix_txt = '@' + sending_domain %}
+    {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt) }}
     {{ page_footer(save_txt) }}
   {% endcall %}
 

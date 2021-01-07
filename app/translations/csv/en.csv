@@ -1234,7 +1234,7 @@
 "Change your sending email address",""
 "Users will see your service email address in the 'From' field of the emails you send.",""
 "Your sending email address helps to build trust with recipients. A good email address is bilingual, recognizable, and as concise as possible.",""
-"For example: renew.passport.renouveler.passeport@notification.canada.ca",""
+"For example: renew.passport.renouveler.passeport",""
 "Create sending email address",""
 "Up to 64 characters",""
 "This cannot exceed 255 characters in length",""
