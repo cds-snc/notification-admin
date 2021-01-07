@@ -1,6 +1,4 @@
 {% extends "content_template.html" %}
-{% from "components/table.html" import mapping_table, row, text_field, edit_field, field with context %}
-{% from "components/sub-navigation.html" import sub_navigation %}
 
 {% block per_page_title %}
   {{ _('Why use GC Notify') }}
@@ -15,21 +13,21 @@
   <p>{{ _('GC Notify is designed in a way that meets the needs of government services.') }}</p>
 </div>
 <div class="pl-24">
-  <img src="/static/images/tick.png" class="float-left" style="width: 4rem; height: 4rem; margin-left:-5rem;"/>
+  <img aria-hidden="true" src="{{ asset_url('images/why-notify/cloud.svg') }}" class="float-left -ml-20" />
   <h2 class="heading-medium">{{ _('Build modern, cloud-first services') }}</h2>
 </div>
 <div class="pl-24">
   <p>{{ _('GC Notify is a scalable cloud platform with a robust API that allows you to connect to other services. For example, connect to electronic mailing list software like Listserv or other applications to send password resets, email confirmations, or responses to forms.') }}</p>
 </div>
 <div class="pl-24">
-  <img src="/static/images/tick.png" class="float-left" style="width: 4rem; height: 4rem; margin-left:-5rem;"/>
+  <img aria-hidden="true" src="{{ asset_url('images/why-notify/sms.svg') }}" class="float-left -ml-20" />
   <h2 class="heading-medium">{{ _('Comply with communications requirements') }}</h2>
 </div>
 <div class="pl-24">
   <p>{{ _('GC Notify provides a bilingual interface and bilingual options for Government of Canada signature branding in email messages by default to ensure you are compliant with the Federal Identity Program.') }}</p>
 </div>
 <div class="pl-24">
-  <img src="/static/images/tick.png" class="float-left" style="width: 4rem; height: 4rem; margin-left:-5rem;"/>
+  <img aria-hidden="true" src="{{ asset_url('images/why-notify/privacy.svg') }}" class="float-left -ml-20" />
   <h2 class="heading-medium">{{ _('Protect personal information') }}</h2>
 </div>
 <div class="pl-24">
@@ -37,22 +35,22 @@
   <p><a href="{{ url_for('main.privacy') }}">{{ _('Learn more about privacy protection') }}</a></p>
 </div>
 <div class="pl-24">
-  <img src="/static/images/tick.png" class="float-left" style="width: 4rem; height: 4rem; margin-left:-5rem;"/>
+  <img aria-hidden="true" src="{{ asset_url('images/why-notify/secure.svg') }}" class="float-left -ml-20" />
   <h2 class="heading-medium">{{ _('Keep data secure') }}</h2>
 </div>
 <div class="pl-24">
   <p>{{ _('GC Notify keeps your account secure with two-factor authentication. This means you’ll need to enter a code that gets sent to your phone or email when you sign in. GC Notify is authorized for Protected A information. Data is encrypted whenever it passes through GC Notify and when it is stored in the system.') }}</p>
-  <p><a href="{{ url_for('main.security') }}">{{ _('Learn more about security') }}</a>
+  <p><a href="{{ url_for('main.security') }}">{{ _('Learn more about security') }}</a>.
 </div>
 <div class="pl-24">
-  <img src="/static/images/tick.png" class="float-left" style="width: 4rem; height: 4rem; margin-left:-5rem;"/>
+  <img aria-hidden="true" src="{{ asset_url('images/why-notify/check.svg') }}" class="float-left -ml-20" />
   <h2 class="heading-medium">{{ _('Skip the procurement process') }}</h2>
 </div>
 <div class="pl-24">
   <p>{{ _('GC Notify is a government-run service, using it does not require any external procurement. You can send up to 10 million emails and 10,000 text messages per year for free for each of your Government of Canada services. No set up fee and no cost to use.') }}</p>
 </div>
 <div class="pl-24">
-  <img src="/static/images/tick.png" class="float-left" style="width: 4rem; height: 4rem; margin-left:-5rem;"/>
+  <img aria-hidden="true" src="{{ asset_url('images/why-notify/experiment.svg') }}" class="float-left -ml-20" />
   <h2 class="heading-medium">{{ _('Experiment safely with trial mode') }}</h2>
 </div>
 <div class="pl-24">
