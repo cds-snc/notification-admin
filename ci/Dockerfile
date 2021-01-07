@@ -16,7 +16,7 @@ COPY requirements.txt /app
 RUN set -ex && pip3 install -r requirements.txt
 
 COPY package.json package-lock.json /app/
-RUN npm install
+RUN npm ci
 
 COPY . /app
 
