@@ -11,7 +11,6 @@ from flask import (
 )
 from flask_babel import _
 from notifications_python_client.errors import HTTPError
-from werkzeug.datastructures import ImmutableMultiDict
 
 from app import billing_api_client, service_api_client
 from app.main import main
@@ -63,6 +62,7 @@ WIZARD_DICT = {
         "tmpl": "partials/add-service/step-choose-logo.html"
     }
 }
+
 
 # Utility classes
 class ServiceResult(ABC):
@@ -120,7 +120,7 @@ def _renderTemplateStep(form, current_step) -> Text:
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
     if step_num > 1:
-        back_link = url_for('.add_service', current_step=WIZARD_ORDER[step_num-2])
+        back_link = url_for('.add_service', current_step=WIZARD_ORDER[step_num - 2])
     return render_template(
         'views/add-service.html',
         form=form,
@@ -137,8 +137,9 @@ def _renderTemplateStep(form, current_step) -> Text:
 @user_is_gov_user
 def add_service():
     current_step = request.args.get('current_step', None)
-    if not current_step:
+    if not current_step or current_step not in WIZARD_ORDER:
         current_step = DEFAULT_STEP
+    if SESSION_FORM_KEY not in session:
         session[SESSION_FORM_KEY] = {}
     form_cls = WIZARD_DICT[current_step]['form_cls']
     if request.method == "GET":

@@ -63,16 +63,12 @@ def test_visible_branding_choices_on_service_email_from_step(
         'main.add_service',
         _data={
             'name': 'testing the post',
-            'current_step': 'choose_email_from',
         },
+        current_step='choose_email_from',
         _expected_status=200,
     )
     default_branding = page.select_one('input[name=email_from]')
     assert default_branding['type'] == 'text'
-
-    service_name = page.select_one('input[name=name]')
-    assert service_name['value'] == 'testing the post'
-    assert service_name['type'] == 'hidden'
 
 
 def test_form_with_no_branding_should_warn_this_cant_be_empty(
@@ -81,12 +77,9 @@ def test_form_with_no_branding_should_warn_this_cant_be_empty(
     page = client_request.post(
         'main.add_service',
         _data={
-            'name': 'Show me the branding Jerry',
-            'organisation_type': "central",
-            'current_step': 'choose_logo',
-            'next_step': 'create_service',
             'default_branding': '',
         },
+        current_step='choose_logo',
         _expected_status=200,
     )
     assert normalize_spaces(page.select_one('.error-message').text) == (
@@ -101,10 +94,9 @@ def test_form_with_invalid_branding_should_request_another_valid_value(
         'main.add_service',
         _data={
             'name': 'Show me the branding Jerry',
-            'email_from': 'jerry',
-            'current_step': 'choose_logo',
             'default_branding': '__portuguese__',
         },
+        current_step='choose_logo',
         _expected_status=200,
     )
     assert normalize_spaces(page.select_one('.error-message').text) == (
@@ -139,38 +131,61 @@ def test_wizard_flow_with_step_1_should_display_service_name_form(
     assert page.select_one('h1').text.strip() == 'Name your service'
 
 
-def test_wizard_flow_with_step_2_should_display_email_from(
+def test_wizard_flow_with_step_1_should_call_service_name_is_unique(
     client_request,
     mock_service_name_is_unique,
+):
+    client_request.post(
+        'main.add_service',
+        _data={
+            'name': 'Service One'
+        },
+        current_step='choose_service_name',
+        _expected_status=302,
+    )
+    assert mock_service_name_is_unique.called is True
+
+
+def test_wizard_flow_with_step_2_should_display_email_from(
+    client_request,
 ):
     page = client_request.post(
         'main.add_service',
         _data={
-            'name': 'Show me the branding Jerry',
-            'current_step': 'choose_service_name',
         },
+        current_step='choose_email_from',
         _expected_status=200,
     )
     assert page.select_one('h1').text.strip() == 'Create sending email address'
-    assert mock_service_name_is_unique.called is True
+
+
+def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
+    client_request,
+    mock_service_email_from_is_unique,
+):
+    client_request.post(
+        'main.add_service',
+        _data={
+            'email_from': 'email.from.here'
+        },
+        current_step='choose_email_from',
+        _expected_status=302,
+    )
+    assert mock_service_email_from_is_unique.called is True
 
 
 def test_wizard_flow_with_step_3_should_display_branding_form(
     client_request,
     mock_service_email_from_is_unique
 ):
-    page = client_request.post(
+    page = client_request.get(
         'main.add_service',
         _data={
-            'name': 'Show me the branding Jerry',
-            'email_from': 'jerry',
-            'current_step': 'choose_email_from',
-            'default_branding': FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
         },
+        current_step='choose_logo',
         _expected_status=200,
     )
     assert page.select_one('h1').text.strip() == 'Choose a logo for your service'
-    assert mock_service_email_from_is_unique.called is True
 
 
 def test_wizard_flow_with_non_matching_steps_info_should_fallback_to_step1(
@@ -193,16 +208,16 @@ def test_wizard_flow_with_junk_step_info_should_fallback_to_step1(
     page = client_request.post(
         'main.add_service',
         _data={
-            'name': 'Show me the service Jerry',
-            'organisation_type': "central",
-            'current_step': 'test_the_form',
-            'next_step': 'fallback_to_step1',
+            'name': '',
+            'email_from': 'junk_from',
             'default_branding': FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
         },
+        _follow_redirects=True,
+        current_step='junk_step',
         _expected_status=200,
     )
     assert page.select_one('h1').text.strip() == 'Name your service'
-    assert mock_service_name_is_unique.called is True
+    assert mock_service_name_is_unique.called is False
 
 
 @pytest.mark.parametrize('email_address', (
@@ -359,16 +374,37 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
     free_allowance,
     mock_create_or_update_free_sms_fragment_limit,
     mock_get_all_email_branding,
+    mock_service_name_is_unique,
+    mock_service_email_from_is_unique
 ):
+
     client_request.post(
         'main.add_service',
         _data={
             'name': 'testing the post',
-            'email_from': 'testing.the.post',
-            'current_step': 'choose_logo',
-            'default_branding': FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
-            'organisation_type': organisation_type
         },
+        _expected_status=200,
+        _follow_redirects=True,
+    )
+    assert mock_service_name_is_unique.called is True
+
+    client_request.post(
+        'main.add_service',
+        _data={
+            'email_from': 'testing.the.post',
+        },
+        current_step='choose_email_from',
+        _expected_status=200,
+        _follow_redirects=True,
+    )
+    assert mock_service_email_from_is_unique.called is True
+
+    client_request.post(
+        'main.add_service',
+        _data={
+            'default_branding': FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
+        },
+        current_step='choose_logo',
         _expected_status=302,
         _expected_redirect=url_for(
             'main.service_dashboard',
@@ -411,9 +447,9 @@ def test_should_return_form_errors_when_service_email_from_is_empty(
     page = client_request.post(
         'main.add_service',
         _data={
-            'name': 'SERVICE THREE',
-            'current_step': 'choose_email_from',
+            'email_from': ''
         },
+        current_step='choose_email_from',
         _expected_status=200,
     )
     assert 'This cannot be empty' in page.text
