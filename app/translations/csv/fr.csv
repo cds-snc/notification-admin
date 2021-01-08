@@ -733,6 +733,7 @@
 "rows at once. Your file has","rangées à la fois. Votre fichier a"
 "rows.","rangées."
 "Your file is missing some rows","Il manque des rangées à votre fichier"
+"Missing","Manque"
 "It needs at least one row of data, and","Il doit y avoir au moins une rangée de données et"
 "It needs at least one row of data.","Il doit y avoir au moins une rangée de données."
 "Your file needs","Votre fichier doit avoir"
