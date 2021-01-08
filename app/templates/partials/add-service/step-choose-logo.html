@@ -1,19 +1,13 @@
-{% set header_txt = heading %}
-{{ page_header(header_txt) }}
-
-<p>{{ _('Choose a logo for your service') }}</p>
-
 <p>{{ _('The default logo use in email messages is the English Government of Canada signature.') }}</p>
-
-<p>{{ _('You can also upload a new custom logo later in Settings.') }}</p>
 
 <div class="form-wrap">
     {% call form_wrapper() %}
     {{ radios(form.default_branding) }}
     {{ form.name }}
     {{ form.email_from }}
-    {{ form.current_step }}
-    {% set button_txt = _('Add service') %}
+    {% set button_txt = _('Create service') %}
     {{ page_footer(button_txt) }}
     {% endcall %}
 </div>
+
+<p>{{ _('You can also upload a new custom logo later in Settings.') }}</p>

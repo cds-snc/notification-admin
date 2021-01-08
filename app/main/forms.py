@@ -661,10 +661,6 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
             DataRequired(message=_l('This cannot be empty')),
             validate_name
         ])
-    current_step = HiddenField(
-        None,
-        default='choose_service_name',
-        validators=[AnyOf("choose_service_name")])
 
 
 class CreateServiceStepLogoForm(StripWhitespaceForm):
@@ -683,16 +679,6 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         super().__init__(*args, **kwargs)
         self.default_branding.choices = self._getSelectBilingualChoices()
 
-    name = HiddenField(
-        None,
-        validators=[
-            DataRequired(message=_l('This cannot be empty'))
-        ])
-    email_from = HiddenField(
-        None,
-        validators=[
-            DataRequired(message=_l('This cannot be empty'))
-        ])
     default_branding = RadioField(
         '',
         choices=[  # Choices by default, override to get more refined options.
@@ -708,10 +694,6 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
             ])
         ]
     )
-    current_step = HiddenField(
-        None,
-        default='choose_logo',
-        validators=[AnyOf("choose_logo")])
 
 
 class CreateServiceStepEmailFromForm(StripWhitespaceForm):
@@ -720,15 +702,6 @@ class CreateServiceStepEmailFromForm(StripWhitespaceForm):
         validators=[DataRequired(message=_l('This cannot be empty')),
                     validate_email_from]
     )
-    name = HiddenField(
-        None,
-        validators=[
-            DataRequired(message=_l('This cannot be empty'))
-        ])
-    current_step = HiddenField(
-        None,
-        default='choose_email_from',
-        validators=[AnyOf("choose_email_from")])
 
 
 class SecurityKeyForm(StripWhitespaceForm):

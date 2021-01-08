@@ -25,35 +25,44 @@ from app.utils import email_safe, user_is_gov_user, user_is_logged_in
 
 # Constants
 
+SESSION_FORM_KEY = 'add_service_form'
+
 DEFAULT_ORGANISATION_TYPE: str = "central"
 
 STEP_NAME: str = "choose_service_name"
 STEP_EMAIL: str = "choose_email_from"
 STEP_LOGO: str = "choose_logo"
 
+DEFAULT_STEP = STEP_NAME
+
 STEP_NAME_HEADER: str = _("Name your service")
 STEP_LOGO_HEADER: str = _("Choose a logo for your service")
 STEP_EMAIL_HEADER: str = _("Create sending email address")
 
-# wizard list init here for current_app context usage
-WIZARD_LIST = [
-    {
-        "form_cls": CreateServiceStepNameForm,
-        "header": STEP_NAME_HEADER,
-        "step": STEP_NAME,
-    },
-    {
-        "form_cls": CreateServiceStepEmailFromForm,
-        "header": STEP_EMAIL_HEADER,
-        "step": STEP_EMAIL,
-    },
-    {
-        "form_cls": CreateServiceStepLogoForm,
-        "header": STEP_LOGO_HEADER,
-        "step": STEP_LOGO,
-    }
+WIZARD_ORDER = [
+    DEFAULT_STEP,
+    STEP_EMAIL,
+    STEP_LOGO
 ]
 
+# wizard list init here for current_app context usage
+WIZARD_DICT = {
+    DEFAULT_STEP: {
+        "form_cls": CreateServiceStepNameForm,
+        "header": STEP_NAME_HEADER,
+        "tmpl": "partials/add-service/step-create-service.html"
+    },
+    STEP_EMAIL: {
+        "form_cls": CreateServiceStepEmailFromForm,
+        "header": STEP_EMAIL_HEADER,
+        "tmpl": "partials/add-service/step-choose-email.html"
+    },
+    STEP_LOGO: {
+        "form_cls": CreateServiceStepLogoForm,
+        "header": STEP_LOGO_HEADER,
+        "tmpl": "partials/add-service/step-choose-logo.html"
+    }
+}
 
 # Utility classes
 class ServiceResult(ABC):
@@ -107,14 +116,19 @@ def _create_service(service_name: str, organisation_type: str, email_from: str,
             raise e
 
 
-def _renderTemplateStep(form, curr_idx) -> Text:
+def _renderTemplateStep(form, current_step) -> Text:
+    back_link = None
+    step_num = WIZARD_ORDER.index(current_step) + 1
+    if step_num > 1:
+        back_link = url_for('.add_service', current_step=WIZARD_ORDER[step_num-2])
     return render_template(
         'views/add-service.html',
         form=form,
-        heading=_(WIZARD_LIST[curr_idx]['header']),
-        current_step=WIZARD_LIST[curr_idx]['step'],
-        step_num=curr_idx + 1,
-        step_max=len(WIZARD_LIST)
+        heading=_(WIZARD_DICT[current_step]['header']),
+        step_num=step_num,
+        step_max=len(WIZARD_ORDER),
+        tmpl=WIZARD_DICT[current_step]['tmpl'],
+        back_link=back_link
     )
 
 
@@ -122,39 +136,37 @@ def _renderTemplateStep(form, curr_idx) -> Text:
 @user_is_logged_in
 @user_is_gov_user
 def add_service():
-    # Start at 0
-    curr_idx = 0
-    step_max = len(WIZARD_LIST)
-    # if current_step exists in form, validate and move on
-    if request.form:
-        if request.form.get('current_step', None):
-            while curr_idx < step_max:
-                if WIZARD_LIST[curr_idx]['step'] == request.form.get('current_step', None):
-                    break
-                curr_idx += 1
-            if curr_idx >= step_max:
-                # not found idx, reset to start
-                curr_idx = 0
-
-    # initialize form specifics
-    form_cls = WIZARD_LIST[curr_idx]['form_cls']
+    current_step = request.args.get('current_step', None)
+    if not current_step:
+        current_step = DEFAULT_STEP
+        session[SESSION_FORM_KEY] = {}
+    form_cls = WIZARD_DICT[current_step]['form_cls']
+    if request.method == "GET":
+        return _renderTemplateStep(form_cls(data=session[SESSION_FORM_KEY]), current_step)
     form = form_cls(request.form)
     if not form.validate_on_submit():
-        # return same form
-        return _renderTemplateStep(form, curr_idx)
-    curr_idx += 1
-    if curr_idx < step_max:
-        # more steps, ready next form
-        form_cls = WIZARD_LIST[curr_idx]['form_cls']
-        dict_form = request.form.to_dict()
-        dict_form['current_step'] = WIZARD_LIST[curr_idx]['step']  # moving forward form state to next form
-        return _renderTemplateStep(form_cls(ImmutableMultiDict(dict_form)), curr_idx)
+        return _renderTemplateStep(form, current_step)
+    # valid, save data and move on or finalize
+    idx = WIZARD_ORDER.index(current_step)
+    if idx < len(WIZARD_ORDER) - 1:
+        # more steps, save data and redirct to next form
+        current_step = WIZARD_ORDER[idx + 1]
+        session[SESSION_FORM_KEY].update(form.data)
+        return redirect(url_for('.add_service', current_step=current_step))
+    # no more steps, validate session
+    data = session[SESSION_FORM_KEY]
+    data.update(form.data)
+    for step in WIZARD_ORDER:
+        temp_form_cls = WIZARD_DICT[step]['form_cls']
+        temp_form = temp_form_cls(data=data)
+        if not temp_form.validate():
+            return redirect(url_for('.add_service', current_step=step))
 
-    # no more forms
-    email_from = email_safe(form.email_from.data)
-    service_name = form.name.data
+    # all forms valid from session data
+    email_from = email_safe(data['email_from'])
+    service_name = data['name']
     default_branding_is_french = \
-        form.default_branding.data == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
+        data['default_branding'] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
 
     service_result: ServiceResult = _create_service(
         service_name,
@@ -163,14 +175,14 @@ def add_service():
         default_branding_is_french,
     )
 
+    session.pop(SESSION_FORM_KEY, None)
+
     if (service_result.is_success()):
         return redirect(url_for('main.service_dashboard', service_id=service_result.service_id))
-
-    # fall back to start catch-all
-    curr_idx = 0
-    form_cls = WIZARD_LIST[curr_idx]['form_cls']
+    form_cls = WIZARD_DICT[current_step]['form_cls']
     form = form_cls(request.form)
+    session[SESSION_FORM_KEY] = form.data
     if isinstance(service_result, DuplicateNameResult):
         form.validate()  # Necessary to make the `errors` field mutable!
         form.name.errors.append(_("This service name is already in use"))
-    return _renderTemplateStep(form, curr_idx)
+    return _renderTemplateStep(form, current_step)

@@ -1,6 +1,3 @@
-{% set header_txt = heading %}
-{{ page_header(header_txt) }}
-
 <p>{{ _('GC Notify displays your service name:') }}</p>
 <p>
 <ul class="list-bullet">
@@ -9,9 +6,10 @@
 </ul>
 </p>
 
-<p>{{ _('In the Government of Canada, your service name must include both English and French.') }}</p>
-
-<p>{{ _('For example:') }} {{ _('Renew your passport | Renouveler votre passeport') }}</p>
+<p>{{ _('In the Government of Canada, your service name must include both English and French.') }}
+<br/>
+  {{ _('For example:') }} {{ _('Renew your passport | Renouveler votre passeport') }}
+</p>
 
 <h2 class="heading-medium">{{ _('What’s your service called?') }}</h2>
 <p>
@@ -25,7 +23,6 @@
     {{ textbox(form.name, hint=hint_txt) }}
     {% set button_txt = _('Continue') %}
     {{ page_footer(button_txt) }}
-    {{ form.current_step }}
 
   {% endcall %}
 </div>

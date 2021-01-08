@@ -10,6 +10,13 @@
 {% endblock %}
 
 {% block maincolumn_content %}
+  {% set sub_text = _("Step {} of {}").format(step_num, step_max) %}
+
+  {{ page_header(
+    heading,
+    back_link=back_link,
+    sub_text=sub_text
+  ) }}
 
 <style>
     /* inline this as the */
@@ -20,16 +27,7 @@
 
 <div class="grid-row contain-floats">
   <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
-  <span class="form-hint">
-    Step {{ step_num }} of {{ step_max }}
-  </span>
-    {% if current_step == "choose_service_name" %}
-      {% include "partials/add-service/step-create-service.html" %}
-    {% elif current_step == "choose_email_from" %}
-      {% include "partials/add-service/step-choose-email.html" %}
-    {% elif current_step == "choose_logo" %}
-      {% include "partials/add-service/step-choose-logo.html" %}
-    {% endif %}
+    {% include tmpl %}
   </div>
 </div>
 
