@@ -265,6 +265,15 @@ def features():
     )
 
 
+@main.route('/why-notify', endpoint='why-notify')
+def why_notify():
+    rate_sms = current_app.config.get('DEFAULT_FREE_SMS_FRAGMENT_LIMITS', {}).get('central', 10000)
+    return render_template(
+        'views/why-notify.html',
+        rate_sms=rate_sms
+    )
+
+
 @main.route('/roadmap', endpoint='roadmap')
 def roadmap():
     return render_template(
