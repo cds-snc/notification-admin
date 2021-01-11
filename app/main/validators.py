@@ -152,7 +152,7 @@ def validate_email_from(form, field):
         raise ValidationError(_l("This email address is already in use"))
 
 
-def validate_name(form, field):
+def validate_service_name(form, field):
     if len(field.data) > 255:
         raise ValidationError(_l('This cannot exceed 255 characters in length'))
     if field.data != email_safe_name(field.data):

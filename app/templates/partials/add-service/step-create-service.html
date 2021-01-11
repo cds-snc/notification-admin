@@ -7,7 +7,7 @@
 </p>
 
 <p>{{ _('In the Government of Canada, your service name must include both English and French.') }}
-<br/>
+<br/><br/>
   {{ _('For example:') }} {{ _('Renew your passport | Renouveler votre passeport') }}
 </p>
 
@@ -20,7 +20,7 @@
   {% call form_wrapper() %}
     {% set hint_txt = _('Up to 255 characters') %}
 
-    {{ textbox(form.name, hint=hint_txt) }}
+    {{ textbox(form.name, hint=hint_txt, maxlength=255) }}
     {% set button_txt = _('Continue') %}
     {{ page_footer(button_txt) }}
 

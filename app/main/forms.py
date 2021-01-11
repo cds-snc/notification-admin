@@ -55,7 +55,7 @@ from app.main.validators import (
     ValidEmail,
     ValidGovEmail,
     validate_email_from,
-    validate_name,
+    validate_service_name,
 )
 from app.models.organisation import Organisation
 from app.models.roles_and_permissions import permissions, roles
@@ -565,7 +565,7 @@ class RenameServiceForm(StripWhitespaceForm):
         _l('Bilingual service name'),
         validators=[
             DataRequired(message=_l('This cannot be empty')),
-            validate_name
+            validate_service_name
         ])
 
 
@@ -659,7 +659,7 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
         _l('Bilingual service name'),
         validators=[
             DataRequired(message=_l('This cannot be empty')),
-            validate_name
+            validate_service_name
         ])
 
 

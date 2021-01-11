@@ -137,33 +137,41 @@ def _renderTemplateStep(form, current_step) -> Text:
 @user_is_gov_user
 def add_service():
     current_step = request.args.get('current_step', None)
+    # if nothing supplied or bad data in the querystring, default
     if not current_step or current_step not in WIZARD_ORDER:
         current_step = DEFAULT_STEP
+    # init session
     if SESSION_FORM_KEY not in session:
         session[SESSION_FORM_KEY] = {}
+    # get the right form class
     form_cls = WIZARD_DICT[current_step]['form_cls']
+    # as the form always does a 302 after success, GET is a fresh form with possible re-use of session data i.e. Back
     if request.method == "GET":
         return _renderTemplateStep(form_cls(data=session[SESSION_FORM_KEY]), current_step)
+    # must be a POST, continue to validate
     form = form_cls(request.form)
     if not form.validate_on_submit():
+        # invalid form, re-render with validation response
         return _renderTemplateStep(form, current_step)
-    # valid, save data and move on or finalize
+    # valid form, save data and move on or finalize
+    # get the current place in the wizard based on ordering
     idx = WIZARD_ORDER.index(current_step)
     if idx < len(WIZARD_ORDER) - 1:
-        # more steps, save data and redirct to next form
+        # more steps to go, save valid submitted data to session and redirct to next form
         current_step = WIZARD_ORDER[idx + 1]
         session[SESSION_FORM_KEY].update(form.data)
         return redirect(url_for('.add_service', current_step=current_step))
-    # no more steps, validate session
+    # no more steps left, re-validate validate session in case of stale session data
     data = session[SESSION_FORM_KEY]
-    data.update(form.data)
+    data.update(form.data) # add newly submitted data from POST
+    # iterate through all forms and validate
     for step in WIZARD_ORDER:
         temp_form_cls = WIZARD_DICT[step]['form_cls']
         temp_form = temp_form_cls(data=data)
-        if not temp_form.validate():
+        if not temp_form.validate(): # something isn't right, jump to the form with bad / missing data
             return redirect(url_for('.add_service', current_step=step))
 
-    # all forms valid from session data
+    # all forms valid from session data, time to transact
     email_from = email_safe(data['email_from'])
     service_name = data['name']
     default_branding_is_french = \
@@ -176,6 +184,7 @@ def add_service():
         default_branding_is_french,
     )
 
+    # clear session after API POST
     session.pop(SESSION_FORM_KEY, None)
 
     if (service_result.is_success()):
