@@ -54,7 +54,7 @@ class Config(object):
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
     DEFAULT_SERVICE_LIMIT = 50
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
-        'central': 250000,
+        'central': 25000,
         'local': 25000,
         'nhs_central': 250000,
         'nhs_local': 25000,
