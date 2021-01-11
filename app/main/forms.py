@@ -54,10 +54,12 @@ from app.main.validators import (
     OnlySMSCharacters,
     ValidEmail,
     ValidGovEmail,
+    validate_email_from,
+    validate_service_name,
 )
 from app.models.organisation import Organisation
 from app.models.roles_and_permissions import permissions, roles
-from app.utils import guess_name_from_email_address
+from app.utils import get_logo_cdn_domain, guess_name_from_email_address
 
 
 def get_time_value_and_label(future_time):
@@ -136,7 +138,7 @@ class MultiCheckboxField(SelectMultipleField):
 
 
 def email_address(label=_l('Email address'), gov_user=True, required=True):
-    if(label == "email address"):
+    if (label == "email address"):
         label = _l("email address")
     elif (label == "phone number"):
         label = _l("phone number")
@@ -203,7 +205,6 @@ class TwoFactorCode(StringField):
 
 
 class ForgivingIntegerField(StringField):
-
     #  Actual value is 2147483647 but this is a scary looking arbitrary number
     POSTGRES_MAX_INT = 2000000000
 
@@ -292,7 +293,6 @@ class OrganisationTypeField(RadioField):
 
 
 class FieldWithNoneOption():
-
     # This is a special value that is specific to our forms. This is
     # more expicit than casting `None` to a string `'None'` which can
     # have unexpected edge cases
@@ -449,7 +449,8 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
         validators=[DataRequired(message=_l('This cannot be empty'))]
     )
 
-    mobile_number = InternationalPhoneNumber(_l('Mobile number'), validators=[DataRequired(message=_l('This cannot be empty'))])
+    mobile_number = InternationalPhoneNumber(_l('Mobile number'),
+                                             validators=[DataRequired(message=_l('This cannot be empty'))])
     password = password()
     organisation = HiddenField('organisation')
     email_address = HiddenField('email_address')
@@ -554,10 +555,32 @@ class TextNotReceivedForm(StripWhitespaceForm):
 
 
 class RenameServiceForm(StripWhitespaceForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        service_id = kwargs.get('service_id', None)
+        if service_id:
+            self.service_id = service_id
+
     name = StringField(
-        _l(u'Service name'),
+        _l('Bilingual service name'),
         validators=[
-            DataRequired(message=_l('This cannot be empty'))
+            DataRequired(message=_l('This cannot be empty')),
+            validate_service_name
+        ])
+
+
+class ChangeEmailFromServiceForm(StripWhitespaceForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        service_id = kwargs.get('service_id', None)
+        if service_id:
+            self.service_id = service_id
+
+    email_from = StringField(
+        _l(u'Sending email address'),
+        validators=[
+            DataRequired(message=_l('This cannot be empty')),
+            validate_email_from
         ])
 
 
@@ -631,40 +654,31 @@ class OrganisationDomainsForm(StripWhitespaceForm):
     )
 
 
-class CreateServiceStep1Form(StripWhitespaceForm):
+class CreateServiceStepNameForm(StripWhitespaceForm):
     name = StringField(
-        _l('What’s your service called?'),
+        _l('Bilingual service name'),
         validators=[
-            DataRequired(message=_l('This cannot be empty'))
+            DataRequired(message=_l('This cannot be empty')),
+            validate_service_name
         ])
-    organisation_type = OrganisationTypeField(_l('Who runs this service?'))
-    default_branding = HiddenField(
-        default='__FIP-EN__',
-        validators=[
-            DataRequired(message=_l('This cannot be empty'))
-        ])
-    current_step = HiddenField(
-        None,
-        default='choose_service_name',
-        validators=[AnyOf("choose_service_name")])
-    next_step = HiddenField(
-        None,
-        default='choose_logo',
-        validators=[AnyOf("choose_logo")])
 
 
-class CreateServiceStep2Form(StripWhitespaceForm):
+class CreateServiceStepLogoForm(StripWhitespaceForm):
+
+    def _getSelectBilingualChoices(self) -> dict:
+        cdn_url = get_logo_cdn_domain()
+        default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
+        default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
+        choices = [
+            (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l('English GC logo') + '||' + default_en_filename),
+            (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l('French GC logo') + '||' + default_fr_filename),
+        ]
+        return choices
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'choices' in kwargs:
-            self.default_branding.choices = kwargs['choices']
+        self.default_branding.choices = self._getSelectBilingualChoices()
 
-    name = HiddenField(
-        None,
-        validators=[
-            DataRequired(message=_l('This cannot be empty'))
-        ])
-    organisation_type = HiddenField(None)
     default_branding = RadioField(
         '',
         choices=[  # Choices by default, override to get more refined options.
@@ -680,14 +694,14 @@ class CreateServiceStep2Form(StripWhitespaceForm):
             ])
         ]
     )
-    current_step = HiddenField(
-        None,
-        default='choose_logo',
-        validators=[AnyOf("choose_logo")])
-    next_step = HiddenField(
-        None,
-        default='create_service',
-        validators=[AnyOf("create_service")])
+
+
+class CreateServiceStepEmailFromForm(StripWhitespaceForm):
+    email_from = StringField(
+        _l('Sending email address'),
+        validators=[DataRequired(message=_l('This cannot be empty')),
+                    validate_email_from]
+    )
 
 
 class SecurityKeyForm(StripWhitespaceForm):
@@ -964,7 +978,8 @@ class SelectLogoForm(StripWhitespaceForm):
         self.branding_style.validators = [DataRequired()]
 
     branding_style = SelectField()
-    file = FileField_wtf(_l('Upload logo'), validators=[FileAllowed(['png'], _l('Your logo must be an image in PNG format'))])
+    file = FileField_wtf(_l('Upload logo'),
+                         validators=[FileAllowed(['png'], _l('Your logo must be an image in PNG format'))])
 
 
 class Triage(StripWhitespaceForm):
@@ -978,7 +993,6 @@ class Triage(StripWhitespaceForm):
 
 
 class EstimateUsageForm(StripWhitespaceForm):
-
     volume_email = ForgivingIntegerField(
         'How many emails do you expect to send in the next year?',
         things='emails',
@@ -1005,7 +1019,6 @@ class EstimateUsageForm(StripWhitespaceForm):
     at_least_one_volume_filled = True
 
     def validate(self, *args, **kwargs):
-
         if self.volume_email.data == self.volume_sms.data == self.volume_letter.data == 0:
             self.at_least_one_volume_filled = False
             return False
@@ -1046,6 +1059,7 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
                     return True
                 except InvalidPhoneError:
                     raise ValidationError(_l('Must be a valid phone number'))
+
             self.phone_number.validators = [DataRequired(), Length(min=5, max=20), valid_phone_number]
 
         return super().validate()
@@ -1147,7 +1161,6 @@ class ServiceSwitchChannelForm(ServiceOnOffSettingForm):
 
 
 class SetEmailBranding(StripWhitespaceForm):
-
     branding_style = RadioFieldWithNoneOption(
         'Branding style',
     )
@@ -1156,7 +1169,6 @@ class SetEmailBranding(StripWhitespaceForm):
     DEFAULT_FR = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, 'French Government of Canada signature')
 
     def __init__(self, all_branding_options, current_branding):
-
         super().__init__(branding_style=current_branding)
 
         self.branding_style.choices = sorted(
@@ -1176,7 +1188,6 @@ class SetLetterBranding(SetEmailBranding):
 
 
 class PreviewBranding(StripWhitespaceForm):
-
     branding_style = HiddenFieldWithLanguageOptions('branding_style')
 
 
@@ -1289,7 +1300,6 @@ class RequiredDateFilterForm(StripWhitespaceForm):
 
 
 class SearchByNameForm(StripWhitespaceForm):
-
     search = SearchField(
         _l('Search by name'),
         validators=[DataRequired("You need to enter full or partial name to search by.")],
@@ -1297,7 +1307,6 @@ class SearchByNameForm(StripWhitespaceForm):
 
 
 class SearchUsersByEmailForm(StripWhitespaceForm):
-
     search = SearchField(
         _l('Search by name or email address'),
         validators=[
@@ -1307,12 +1316,10 @@ class SearchUsersByEmailForm(StripWhitespaceForm):
 
 
 class SearchUsersForm(StripWhitespaceForm):
-
     search = SearchField(_l('Search by name or email address'))
 
 
 class SearchNotificationsForm(StripWhitespaceForm):
-
     to = SearchField()
 
     labels = {
@@ -1329,7 +1336,6 @@ class SearchNotificationsForm(StripWhitespaceForm):
 
 
 class PlaceholderForm(StripWhitespaceForm):
-
     pass
 
 
@@ -1406,7 +1412,6 @@ def get_placeholder_form_instance(
     optional_placeholder=False,
     allow_international_phone_numbers=False,
 ):
-
     if (
         Columns.make_key(placeholder_name) == 'emailaddress' and
         template_type == 'email'
@@ -1475,7 +1480,6 @@ branding_options_dict = dict(branding_options)
 
 
 class BrandingOptionsEmail(StripWhitespaceForm):
-
     options = RadioField(
         'Branding options',
         choices=branding_options,
@@ -1483,7 +1487,6 @@ class BrandingOptionsEmail(StripWhitespaceForm):
 
 
 class ServiceDataRetentionForm(StripWhitespaceForm):
-
     notification_type = RadioField(
         'What notification type?',
         choices=[
@@ -1536,6 +1539,7 @@ def required_for_ops(*operations):
             raise validators.StopValidation('Must be empty')
         if form.op in operations and not any(field.raw_data):
             raise validators.StopValidation(_l('This cannot be empty'))
+
     return validate
 
 

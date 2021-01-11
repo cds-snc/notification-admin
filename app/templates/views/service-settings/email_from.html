@@ -1,0 +1,32 @@
+
+{% extends "withnav_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Change your sending email address')  }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {{ page_header(
+    _('Change your sending email address'),
+    back_link=url_for('main.service_settings', service_id=current_service.id)
+  ) }}
+
+  <div class="form-group">
+    <p>{{ _('Users will see your service email address in the \'From\' field of the emails you send.') }}</p>
+    <p>{{ _('Your sending email address helps to build trust with recipients. A good email address is bilingual, recognizable, and as concise as possible.') }}</p>
+  </div>
+
+  {% call form_wrapper() %}
+    {% set save_txt = _('Save') %}
+    {% set hint_txt = _('Up to 64 characters') %}
+    {% set suffix_txt = '@' + sending_domain %}
+    {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt) }}
+    {{ page_footer(save_txt) }}
+  {% endcall %}
+
+{% endblock %}

@@ -134,7 +134,7 @@ def service_json(
     rate_limit=100,
     active=True,
     restricted=True,
-    email_from=None,
+    email_from='test.service',
     reply_to_email_address=None,
     sms_sender='GOVUK',
     research_mode=False,
