@@ -163,12 +163,12 @@ def add_service():
         return redirect(url_for('.add_service', current_step=current_step))
     # no more steps left, re-validate validate session in case of stale session data
     data = session[SESSION_FORM_KEY]
-    data.update(form.data) # add newly submitted data from POST
+    data.update(form.data)  # add newly submitted data from POST
     # iterate through all forms and validate
     for step in WIZARD_ORDER:
         temp_form_cls = WIZARD_DICT[step]['form_cls']
         temp_form = temp_form_cls(data=data)
-        if not temp_form.validate(): # something isn't right, jump to the form with bad / missing data
+        if not temp_form.validate():  # something isn't right, jump to the form with bad / missing data
             return redirect(url_for('.add_service', current_step=step))
 
     # all forms valid from session data, time to transact
