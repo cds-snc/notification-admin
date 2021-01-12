@@ -19,7 +19,6 @@
   <div class="flex flex-col lg:flex-row mb-20 lg:mb-0">
     <div class="lg:w-3/4">
       <p>{{ _('Write and send emails and text messages to many people from one single template. In GC Notify, you’ll create a message template that you can edit and reuse as often as you need. This way you won’t need to write a new message each time.') }}</p>
-      <p><a href="{{ url_for('.templates') }}">{{ _('Learn more about template formatting') }}</a></p>
     </div>
     <div class="lg:-mt-20 lg:pl-12">
       {% if session["userlang"] == "en" %}
@@ -44,6 +43,7 @@
   <div class="flex flex-col lg:flex-row mb-20 lg:mb-0">
     <div class="lg:w-3/4">
       <p>{{ _('Tailor your messages with relevant information to each recipient based on a single template using variables. Variables add placeholders, such as a recipient’s name and reference number, that can be filled each time you send a message.') }}</p>
+      <p><a href="{{ url_for('.templates') }}">{{ _('Learn more about template formatting') }}</a></p>
     </div>
     <div class="lg:-mt-20 lg:pl-12">
       {% if session["userlang"] == "en" %}
