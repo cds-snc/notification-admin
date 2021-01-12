@@ -260,6 +260,10 @@ def email_safe(string, whitespace='.'):
     return string.strip('.')
 
 
+def email_safe_name(string):
+    return string.replace('"', '').strip()
+
+
 def id_safe(string):
     return email_safe(string, whitespace='-')
 

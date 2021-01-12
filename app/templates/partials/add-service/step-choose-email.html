@@ -1,0 +1,17 @@
+<p>{{ _('Your sending email address helps to build trust with recipients. A good email address is bilingual, recognizable, and as concise as possible.') }}</p>
+
+{% set suffix_txt = '@' + sending_domain %}
+
+<p>{{ _('For example: renew.passport.renouveler.passeport') }}{{ suffix_txt }}</p>
+
+<div class="form-wrap">
+  {% call form_wrapper() %}
+    {% set hint_txt = _('Up to 64 characters') %}
+
+    {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt, width='1-2', maxlength=64) }}
+    {{ form.name }}
+
+    {% set button_txt = _('Continue') %}
+    {{ page_footer(button_txt) }}
+  {% endcall %}
+</div>

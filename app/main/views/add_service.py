@@ -11,39 +11,60 @@ from flask import (
 )
 from flask_babel import _
 from notifications_python_client.errors import HTTPError
-from werkzeug.datastructures import ImmutableMultiDict
 
 from app import billing_api_client, service_api_client
 from app.main import main
 from app.main.forms import (
-    CreateServiceStep1Form,
-    CreateServiceStep2Form,
+    CreateServiceStepEmailFromForm,
+    CreateServiceStepLogoForm,
+    CreateServiceStepNameForm,
     FieldWithLanguageOptions,
 )
-from app.utils import (
-    email_safe,
-    get_logo_cdn_domain,
-    user_is_gov_user,
-    user_is_logged_in,
-)
+from app.utils import email_safe, user_is_gov_user, user_is_logged_in
 
 # Constants
 
+SESSION_FORM_KEY = 'add_service_form'
+
 DEFAULT_ORGANISATION_TYPE: str = "central"
 
-STEP1: str = "choose_service_name"
-STEP2: str = "choose_logo"
-STEP3: str = "create_service"
+STEP_NAME: str = "choose_service_name"
+STEP_EMAIL: str = "choose_email_from"
+STEP_LOGO: str = "choose_logo"
 
-STEP1_HEADER: str = "Name your service in both official languages"
-STEP2_HEADER: str = "Choose a logo for your service"
+DEFAULT_STEP = STEP_NAME
 
-NEXT_STEP: str = "next_step"
-CURR_STEP: str = "current_step"
+STEP_NAME_HEADER: str = _("Name your service")
+STEP_LOGO_HEADER: str = _("Choose a logo for your service")
+STEP_EMAIL_HEADER: str = _("Create sending email address")
+
+WIZARD_ORDER = [
+    DEFAULT_STEP,
+    STEP_EMAIL,
+    STEP_LOGO
+]
+
+# wizard list init here for current_app context usage
+WIZARD_DICT = {
+    DEFAULT_STEP: {
+        "form_cls": CreateServiceStepNameForm,
+        "header": STEP_NAME_HEADER,
+        "tmpl": "partials/add-service/step-create-service.html"
+    },
+    STEP_EMAIL: {
+        "form_cls": CreateServiceStepEmailFromForm,
+        "header": STEP_EMAIL_HEADER,
+        "tmpl": "partials/add-service/step-choose-email.html"
+    },
+    STEP_LOGO: {
+        "form_cls": CreateServiceStepLogoForm,
+        "header": STEP_LOGO_HEADER,
+        "tmpl": "partials/add-service/step-choose-logo.html"
+    }
+}
 
 
 # Utility classes
-
 class ServiceResult(ABC):
     def __init__(self, errors: List[str] = []):
         self.errors = errors
@@ -88,49 +109,26 @@ def _create_service(service_name: str, organisation_type: str, email_from: str,
         if e.status_code == 400 and e.message['name']:
             errors = [_("This service name is already in use")]
             return DuplicateNameResult(errors)
+        if e.status_code == 400 and e.message['email_from']:
+            errors = [_("This email address is already in use")]
+            return DuplicateNameResult(errors)
         else:
             raise e
 
 
-def _getSelectBilingualChoices() -> dict:
-    cdn_url = get_logo_cdn_domain()
-    default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
-    default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
-    choices = [
-        (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _('English GC logo') + '||' + default_en_filename),
-        (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _('French GC logo') + '||' + default_fr_filename),
-    ]
-    return choices
-
-
-def _prune_steps(form: ImmutableMultiDict) -> ImmutableMultiDict:
-    pruned = form.to_dict()
-    del pruned[CURR_STEP]
-    del pruned[NEXT_STEP]
-    return ImmutableMultiDict(pruned)
-
-
-def _renderTemplateStep1(form: CreateServiceStep1Form,
-                         default_organisation_type: str = DEFAULT_ORGANISATION_TYPE) -> Text:
+def _renderTemplateStep(form, current_step) -> Text:
+    back_link = None
+    step_num = WIZARD_ORDER.index(current_step) + 1
+    if step_num > 1:
+        back_link = url_for('.add_service', current_step=WIZARD_ORDER[step_num - 2])
     return render_template(
         'views/add-service.html',
         form=form,
-        heading=_(STEP1_HEADER),
-        default_organisation_type=default_organisation_type,
-        current_step=STEP1,
-        next_step=STEP2
-    )
-
-
-def _renderTemplateStep2(form: CreateServiceStep2Form,
-                         default_organisation_type: str = DEFAULT_ORGANISATION_TYPE) -> Text:
-    return render_template(
-        'views/add-service.html',
-        form=form,
-        heading=_(STEP2_HEADER),
-        default_organisation_type=default_organisation_type,
-        current_step=STEP2,
-        next_step=STEP3
+        heading=_(WIZARD_DICT[current_step]['header']),
+        step_num=step_num,
+        step_max=len(WIZARD_ORDER),
+        tmpl=WIZARD_DICT[current_step]['tmpl'],
+        back_link=back_link
     )
 
 
@@ -138,52 +136,63 @@ def _renderTemplateStep2(form: CreateServiceStep2Form,
 @user_is_logged_in
 @user_is_gov_user
 def add_service():
-    # Step 1 - Choose the service name
-    if CURR_STEP not in request.form:
-        formStep1 = CreateServiceStep1Form(organisation_type=DEFAULT_ORGANISATION_TYPE)
-        return _renderTemplateStep1(formStep1)
+    current_step = request.args.get('current_step', None)
+    # if nothing supplied or bad data in the querystring, default
+    if not current_step or current_step not in WIZARD_ORDER:
+        current_step = DEFAULT_STEP
+    # init session
+    if SESSION_FORM_KEY not in session:
+        session[SESSION_FORM_KEY] = {}
+    # get the right form class
+    form_cls = WIZARD_DICT[current_step]['form_cls']
+    # as the form always does a 302 after success, GET is a fresh form with possible re-use of session data i.e. Back
+    if request.method == "GET":
+        return _renderTemplateStep(form_cls(data=session[SESSION_FORM_KEY]), current_step)
+    # must be a POST, continue to validate
+    form = form_cls(request.form)
+    if not form.validate_on_submit():
+        # invalid form, re-render with validation response
+        return _renderTemplateStep(form, current_step)
+    # valid form, save data and move on or finalize
+    # get the current place in the wizard based on ordering
+    idx = WIZARD_ORDER.index(current_step)
+    if idx < len(WIZARD_ORDER) - 1:
+        # more steps to go, save valid submitted data to session and redirct to next form
+        current_step = WIZARD_ORDER[idx + 1]
+        session[SESSION_FORM_KEY].update(form.data)
+        return redirect(url_for('.add_service', current_step=current_step))
+    # no more steps left, re-validate validate session in case of stale session data
+    data = session[SESSION_FORM_KEY]
+    data.update(form.data)  # add newly submitted data from POST
+    # iterate through all forms and validate
+    for step in WIZARD_ORDER:
+        temp_form_cls = WIZARD_DICT[step]['form_cls']
+        temp_form = temp_form_cls(data=data)
+        if not temp_form.validate():  # something isn't right, jump to the form with bad / missing data
+            return redirect(url_for('.add_service', current_step=step))
 
-    # Step 2 - Choose default bilingual logo
-    elif request.form.get(NEXT_STEP) == STEP2:
-        formStep1 = CreateServiceStep1Form(request.form, organisation_type=DEFAULT_ORGANISATION_TYPE)
-        if not formStep1.validate_on_submit():
-            return _renderTemplateStep1(formStep1)
+    # all forms valid from session data, time to transact
+    email_from = email_safe(data['email_from'])
+    service_name = data['name']
+    default_branding_is_french = \
+        data['default_branding'] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
 
-        formStep2 = CreateServiceStep2Form(
-            choices=_getSelectBilingualChoices(),
-            formdata=_prune_steps(request.form),
-            organisation_type=DEFAULT_ORGANISATION_TYPE
-        )
-        return _renderTemplateStep2(formStep2)
+    service_result: ServiceResult = _create_service(
+        service_name,
+        DEFAULT_ORGANISATION_TYPE,
+        email_from,
+        default_branding_is_french,
+    )
 
-    # Step 3 - Final step which creates the service
-    elif request.form.get(NEXT_STEP) == STEP3:
-        formStep2 = CreateServiceStep2Form(_prune_steps(request.form), organisation_type=DEFAULT_ORGANISATION_TYPE)
-        if not formStep2.validate_on_submit():
-            return _renderTemplateStep2(formStep2)
+    # clear session after API POST
+    session.pop(SESSION_FORM_KEY, None)
 
-        email_from = email_safe(formStep2.name.data)
-        service_name = formStep2.name.data
-        default_branding_is_french = \
-            formStep2.default_branding.data == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
-
-        serviceResult: ServiceResult = _create_service(
-            service_name,
-            DEFAULT_ORGANISATION_TYPE,
-            email_from,
-            default_branding_is_french,
-        )
-
-        if (serviceResult.is_success()):
-            return redirect(url_for('main.service_dashboard', service_id=serviceResult.service_id))
-        elif isinstance(serviceResult, DuplicateNameResult):
-            formStep1 = CreateServiceStep1Form(_prune_steps(request.form), organisation_type=DEFAULT_ORGANISATION_TYPE)
-            formStep1.validate()  # Necessary to make the `errors` field mutable!
-            formStep1.name.errors.append(_("This service name is already in use"))
-            return _renderTemplateStep1(formStep1)
-        else:
-            return _renderTemplateStep2(formStep2)
-    else:
-        # Ultimate fallback if steps recognition failed -- get back to step 1.
-        formStep1 = CreateServiceStep1Form(organisation_type=DEFAULT_ORGANISATION_TYPE)
-        return _renderTemplateStep1(formStep1)
+    if (service_result.is_success()):
+        return redirect(url_for('main.service_dashboard', service_id=service_result.service_id))
+    form_cls = WIZARD_DICT[current_step]['form_cls']
+    form = form_cls(request.form)
+    session[SESSION_FORM_KEY] = form.data
+    if isinstance(service_result, DuplicateNameResult):
+        form.validate()  # Necessary to make the `errors` field mutable!
+        form.name.errors.append(_("This service name is already in use"))
+    return _renderTemplateStep(form, current_step)
