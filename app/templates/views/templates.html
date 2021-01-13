@@ -1,11 +1,12 @@
-{% extends "content_template.html" %}
-{% from "components/table.html" import mapping_table, row, text_field, edit_field, field with context %}
+{% from "components/table.html" import mapping_table, row, text_field, edit_field, field, row_heading with context %}
+{% extends "withoutnav_template.html" %}
 
 {% block per_page_title %}
   {{ _('Template formatting guide') }}
 {% endblock %}
-
-{% block content_column_content %}
+{% block maincolumn_content %}
+<div class="grid-row contain-floats">
+  <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
   <h1 class="heading heading-large">{{ _('Template formatting guide') }}</h1>
   <p>{{ _('Use this guide to write email message templates. Make sure to send yourself a message before sending to recipients to ensure formatting looks good.') }}</p>
 
@@ -16,5 +17,5 @@
   {% if current_service and current_service.has_permission('upload_document') %}
     {% include "partials/templates/guidance-send-a-document.html" %}
   {% endif %}
-
+</div>
 {% endblock %}
