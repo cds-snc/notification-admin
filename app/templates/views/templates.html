@@ -4,18 +4,20 @@
 {% block per_page_title %}
   {{ _('Template formatting guide') }}
 {% endblock %}
+
 {% block maincolumn_content %}
 <div class="grid-row contain-floats">
   <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
-  <h1 class="heading heading-large">{{ _('Template formatting guide') }}</h1>
-  <p>{{ _('Use this guide to write email message templates. Make sure to send yourself a message before sending to recipients to ensure formatting looks good.') }}</p>
+    <h1 class="heading heading-large">{{ _('Template formatting guide') }}</h1>
+    <p>{{ _('Use this guide to write email message templates. Make sure to send yourself a message before sending to recipients to ensure formatting looks good.') }}</p>
 
-  {% include "partials/templates/guidance-formatting.html" %}
-  {% include "partials/templates/guidance-links.html" %}
-  {% include "partials/templates/guidance-personalisation.html" %}
-  {% include "partials/templates/guidance-conditional-text.html" %}
-  {% if current_service and current_service.has_permission('upload_document') %}
-    {% include "partials/templates/guidance-send-a-document.html" %}
-  {% endif %}
+    {% include "partials/templates/guidance-formatting.html" %}
+    {% include "partials/templates/guidance-links.html" %}
+    {% include "partials/templates/guidance-personalisation.html" %}
+    {% include "partials/templates/guidance-conditional-text.html" %}
+    {% if current_service and current_service.has_permission('upload_document') %}
+      {% include "partials/templates/guidance-send-a-document.html" %}
+   {% endif %}
+  </div>
 </div>
 {% endblock %}
