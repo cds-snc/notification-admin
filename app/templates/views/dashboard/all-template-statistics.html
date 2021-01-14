@@ -14,7 +14,7 @@
 
   <div class="dashboard">
     {% for month in months %}
-      <h2>{{ month.name }}</h2>
+      <h2>{{ _(month.name) }}</h2>
       {% if not month.templates_used %}
         <p class="table-no-data">
           {{ _('No messages sent') }}
