@@ -52,7 +52,7 @@ describe("List entry", () => {
               <label for="input-domains-${idx}" class="text-box-number-label">
                 <span class="visuallyhidden">domain number </span>${idx + 1}.
               </label>
-              <input type="text" name="domains-${idx}" id="input-domains-${idx}" class="form-control list-form-control lg:inline-block form-control-1-1" value="" autocomplete="off">
+              <input type="text" name="domains-${idx}" id="input-domains-${idx}" class="form-control list-form-control lg:inline-block w-full" value="" autocomplete="off">
             </div>`;
       }
 
@@ -60,7 +60,7 @@ describe("List entry", () => {
     };
 
     document.body.innerHTML =
-      `<fieldset class="form-group" id="domains">
+      `<fieldset class="form-group contain-floats box-border" id="domains">
         <legend>
           <span class="form-label">
             Domain names

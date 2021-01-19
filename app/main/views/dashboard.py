@@ -419,5 +419,5 @@ def get_tuples_of_financial_years(
 def get_column_properties(number_of_columns):
     return {
         2: ('w-1/2 float-left py-0 px-0 px-gutterHalf box-border', 999999999),
-        3: ('w-1/3 float-left py-0 px-0 px-gutterHalf box-border', 99999),
+        3: ('md:w-1/3 float-left py-0 px-0 px-gutterHalf box-border', 99999),
     }.get(number_of_columns)

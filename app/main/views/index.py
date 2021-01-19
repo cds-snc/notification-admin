@@ -19,11 +19,9 @@ from app import (
     email_branding_client,
     get_current_locale,
     letter_branding_client,
-    user_api_client,
 )
 from app.main import main
 from app.main.forms import (
-    ContactNotifyTeam,
     FieldWithLanguageOptions,
     FieldWithNoneOption,
     SearchByNameForm,
@@ -37,31 +35,13 @@ from app.utils import (
 )
 
 
-@main.route('/', methods=['GET', 'POST'])
+@main.route('/')
 def index():
     if current_user and current_user.is_authenticated:
         return redirect(url_for('main.choose_account'))
 
-    form = ContactNotifyTeam()
-
-    if form.validate_on_submit():
-        # send email here
-        user_api_client.send_contact_email(form.name.data, form.email_address.data, form.feedback.data, form.support_type.data)
-
-        return render_template('views/contact/thanks.html')
-
-    if request.method == 'POST':
-        return render_template(
-            'views/signedout.html',
-            form=form,
-            scrollTo="true",
-            admin_base_url=current_app.config['ADMIN_BASE_URL'],
-            stats=get_latest_stats(get_current_locale(current_app)),
-        )
-
     return render_template(
         'views/signedout.html',
-        form=form,
         scrollTo="false",
         admin_base_url=current_app.config['ADMIN_BASE_URL'],
         stats=get_latest_stats(get_current_locale(current_app)),
@@ -282,6 +262,15 @@ def features():
     return render_template(
         'views/features.html',
         navigation_links=features_nav()
+    )
+
+
+@main.route('/why-notify', endpoint='why-notify')
+def why_notify():
+    rate_sms = current_app.config.get('DEFAULT_FREE_SMS_FRAGMENT_LIMITS', {}).get('central', 10000)
+    return render_template(
+        'views/why-notify.html',
+        rate_sms=rate_sms
     )
 
 

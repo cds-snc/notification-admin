@@ -13,7 +13,7 @@
 {% block maincolumn_content %}
 
 <div class="grid-row contain-floats">
-  <div class="w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
+  <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
     {% set txt = _('Accept the GC Notify data sharing and financial agreement') %}
     {{ page_header(
       txt,
@@ -27,13 +27,13 @@
           {{ radio(option, data_target='on-behalf-of' if option.data == 'someone-else' else None) }}
         {% endfor %}
       {% endcall %}
-      <div class="conditional-radio-panel js-hidden" id="on-behalf-of">
-        {{ textbox(form.on_behalf_of_name, width='1-1') }}
-        {{ textbox(form.on_behalf_of_email, width='1-1') }}
+      <div class="conditional-radio-panel contain-floats js-hidden" id="on-behalf-of">
+        {{ textbox(form.on_behalf_of_name, width='w-full') }}
+        {{ textbox(form.on_behalf_of_email, width='w-full') }}
       </div>
       {% set hint = _('The version number is on the front page, for example ‘3.6’') %}
       {% set button_txt = _('Continue') %}
-      {{ textbox(form.version, width='1-3', hint=hint) }}
+      {{ textbox(form.version, width='w-full md:w-1/3', hint=hint) }}
       {{ page_footer(button_txt) }}
 
     {% endcall %}

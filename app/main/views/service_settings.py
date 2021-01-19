@@ -13,6 +13,7 @@ from flask import (
     url_for,
 )
 from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
@@ -31,6 +32,7 @@ from app import (
 from app.extensions import zendesk_client
 from app.main import main
 from app.main.forms import (
+    ChangeEmailFromServiceForm,
     ConfirmPasswordForm,
     EstimateUsageForm,
     FieldWithLanguageOptions,
@@ -70,10 +72,10 @@ from app.utils import (
 )
 
 PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
-    ('inbound_sms', {'title': 'Receive inbound SMS', 'requires': 'sms', 'endpoint': '.service_set_inbound_number'}),
-    ('email_auth', {'title': 'Email authentication'}),
-    ('upload_document', {'title': 'Send files by email', 'endpoint': '.service_switch_can_upload_document'}),
-    ('upload_letters', {'title': 'Uploading letters', 'requires': 'letter'}),
+    ('inbound_sms', {'title': _l('Receive inbound SMS'), 'requires': 'sms', 'endpoint': '.service_set_inbound_number'}),
+    ('email_auth', {'title': _l('Email authentication')}),
+    ('upload_document', {'title': _l('Send files by email'), 'endpoint': '.service_switch_can_upload_document'}),
+    ('upload_letters', {'title': _l('Uploading letters'), 'requires': 'letter'}),
 ])
 
 
@@ -89,7 +91,7 @@ def service_settings(service_id):
 @main.route("/services/<service_id>/service-settings/name", methods=['GET', 'POST'])
 @user_has_permissions('manage_service')
 def service_name_change(service_id):
-    form = RenameServiceForm()
+    form = RenameServiceForm(service_id=service_id)
 
     if request.method == 'GET':
         form.name.data = current_service.name
@@ -98,12 +100,6 @@ def service_name_change(service_id):
 
         if form.name.data == current_service.name:
             return redirect(url_for('.service_settings', service_id=service_id))
-
-        unique_name = service_api_client.is_service_name_unique(service_id, form.name.data, email_safe(form.name.data))
-
-        if not unique_name:
-            form.name.errors.append(_("This service name is already in use"))
-            return render_template('views/service-settings/name.html', form=form)
 
         session['service_name_change'] = form.name.data
         return redirect(url_for('.service_name_change_confirm', service_id=service_id))
@@ -127,7 +123,6 @@ def service_name_change_confirm(service_id):
         try:
             current_service.update(
                 name=session['service_name_change'],
-                email_from=email_safe(session['service_name_change'])
             )
         except HTTPError as e:
             error_msg = "Duplicate service name '{}'".format(session['service_name_change'])
@@ -143,6 +138,59 @@ def service_name_change_confirm(service_id):
     return render_template(
         'views/service-settings/confirm.html',
         heading=_('Change your service name'),
+        form=form)
+
+
+@main.route("/services/<service_id>/service-settings/email_from", methods=['GET', 'POST'])
+@user_has_permissions('manage_service')
+def service_email_from_change(service_id):
+    form = ChangeEmailFromServiceForm(service_id=service_id)
+
+    if request.method == 'GET':
+        form.email_from.data = current_service.email_from
+
+    if form.validate_on_submit():
+
+        if form.email_from.data == current_service.email_from:
+            return redirect(url_for('.service_settings', service_id=service_id))
+
+        session['service_email_from_change'] = form.email_from.data
+        return redirect(url_for('.service_email_from_change_confirm', service_id=service_id))
+
+    return render_template(
+        'views/service-settings/email_from.html',
+        form=form,
+    )
+
+
+@main.route("/services/<service_id>/service-settings/email_from/confirm", methods=['GET', 'POST'])
+@user_has_permissions('manage_service')
+def service_email_from_change_confirm(service_id):
+    # Validate password for form
+    def _check_password(pwd):
+        return user_api_client.verify_password(current_user.id, pwd)
+
+    form = ConfirmPasswordForm(_check_password)
+
+    if form.validate_on_submit():
+        try:
+            current_service.update(
+                email_from=email_safe(session['service_email_from_change'])
+            )
+        except HTTPError as e:
+            error_msg = "Duplicate email address '{}'".format(session['service_email_from_change'])
+            if e.status_code == 400 and error_msg in e.message['email_from']:
+                # Redirect the user back to the change service email_from screen
+                flash(_('This email address is already in use'), 'error')
+                return redirect(url_for('main.service_email_from_change', service_id=service_id))
+            else:
+                raise e
+        else:
+            session.pop('service_email_from_change')
+            return redirect(url_for('.service_settings', service_id=service_id))
+    return render_template(
+        'views/service-settings/confirm.html',
+        heading=_('Change your sending email address'),
         form=form)
 
 

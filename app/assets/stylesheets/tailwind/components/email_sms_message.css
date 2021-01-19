@@ -33,6 +33,10 @@
     @apply pr-doubleGutter break-words;
   }
 
+  .email-message-body a {
+    word-break: break-all;
+  }
+
   /*
     These classes style html which is shared with the API and
     final email sends. We can't safely change that file without

@@ -7,15 +7,15 @@
 {% block maincolumn_content %}
 
 <div class="grid-row contain-floats">
-  <div class="w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
+  <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
     <h1 class="heading-large">{{ _('Confirm your mobile number') }}</h1>
 
       <p>{{ _('We’ve sent you a security code by text message.') }}</p>
 
       <p>
       <label class="form-label" for="email">{{ _('Enter security code') }}<br>
-      <input class="form-control-1-4" id="email" type="text"><br>
-      <span class="font-xsmall"><a href="{{ url_for('.text-not-received-2') }}">{{ _('I haven’t received a text') }}</a></span>
+      <input class="form-control w-full md:w-1/4" id="email" type="text"><br>
+      <span class="text-small leading-tight font-normal"><a href="{{ url_for('.text-not-received-2') }}">{{ _('I haven’t received a text') }}</a></span>
       </p>
 
       <p>

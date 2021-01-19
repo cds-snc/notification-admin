@@ -22,12 +22,12 @@
             form.letter_contact_block,
             label='This will appear as the sender address on your letters.'|safe,
             hint='10 lines maximum',
-            width='1-2',
+            width='w-full md:w-1/2',
             rows=10,
             highlight_tags=True
           ) }}
         {% if not first_contact_block %}
-          <div class="form-group">
+          <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
             {{ checkbox(form.is_default) }}
           </div>
         {% endif %}

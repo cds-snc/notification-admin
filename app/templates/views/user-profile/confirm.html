@@ -16,14 +16,14 @@
   ) }}
 
   <div class="grid-row contain-floats">
-    <div class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
+    <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       <p>
         {{ _('We’ve sent a security code to your ') + thing }}.
       </p>
       {% call form_wrapper() %}
         {{ textbox(
           form_field,
-          width='5em',
+          width='form-control-5em',
           autofocus=True
         ) }}
         {{ page_footer(_('Confirm')) }}

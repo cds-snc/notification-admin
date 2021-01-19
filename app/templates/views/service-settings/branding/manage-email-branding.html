@@ -29,14 +29,14 @@
     ) }}
 
     <div class="grid-row contain-floats">
-      <div class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
+      <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
         <p>{{ _('Consistent branding helps to instill trust in the email messages you send to  people.') }}</p>
 
         <h2 class="heading-medium">{{ _('Use the federal government signature') }}</h2>
         <p>{{ _('To help build trust in government, use the Government of Canada signature for more consistent communications.') }}</p>
 
         {% call form_wrapper() %}
-          <div class="form-group">
+          <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
             {{ radios(form.branding_style, hide_legend=True) }}
             {% if using_custom_branding %}
               <p> {{ _('If you switch to one of the default GC logos you will have to re-upload your custom logo to return to it later.') }}</p>

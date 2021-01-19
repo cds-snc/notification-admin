@@ -1,61 +1,168 @@
 {% extends "content_template.html" %}
-{% from "components/table.html" import mapping_table, row, text_field, edit_field, field with context %}
-{% from "components/sub-navigation.html" import sub_navigation %}
+
 
 {% block per_page_title %}
-  {{ _('Product features') }}
+  {{ _('Features') }}
 {% endblock %}
 
-{% block content_column_content %}
+{% block maincolumn_content %}
+  <h1 class="heading-large">{{ _('Features') }}</h1>
 
-<h1 class="heading-large">{{ _('Product features') }}</h1>
-<p>{{ _('If you work for the federal government, you can use GC Notify to update your users.') }}</p>
-<p>{{ _('GC Notify makes it easy to create, customize and send:') }}</p>
-<ul class="list list-bullet">
-  <li><a href="{{ url_for('main.email') }}">{{ _('emails') }}</a></li>
-  <li><a href="{{ url_for('main.sms') }}">{{ _('text messages') }}</a></li>
-</ul>
-<p>{{ _('You do not need technical knowledge to use GC Notify.') }}</p>
-{% if not current_user.is_authenticated %}
-  <p><a href="{{ url_for('main.register') }}">{{ _('Create an account') }}</a> {{ _('for free and try it yourself.') }}</p>
-{% endif %}
+  <p>
+    {{ _('Keep users of your service informed by sending email and text message updates through GC Notify.') }}
+  </p>
+  {% if not current_user.is_authenticated %}
+    <p><a href="{{ url_for('main.register') }}">{{ _('Create an account and try it for yourself') }}</a></p>
+  {% endif %}
 
-<h2 class="heading-medium">{{ _('Reusable message templates') }}</h2>
-<p>{{ _('To send an email or text with GC Notify, you need to create a message template first.') }}</p>
-<p>{{ _('Templates let you send the same thing to lots of people, as often as you need, without writing a new message each time.') }}</p>
+  <h2 class="heading-medium">{{ _('Create reusable templates') }}</h2>
+  <div class="flex flex-col lg:flex-row mb-20 lg:mb-0">
+    <div class="lg:w-3/4">
+      <p>{{ _('Write and send emails and text messages to many people from one single template. In GC Notify, you’ll create a message template that you can edit and reuse as often as you need. This way you won’t need to write a new message each time.') }}</p>
+    </div>
+    <div class="lg:-mt-20 lg:pl-12">
+      {% if session["userlang"] == "en" %}
+        <img
+          alt="An illustration that shows how a message template can be created."
+          loading="lazy"
+          width="400"
+          src="{{ asset_s3_url('text-messages-no-variables-en.svg') }}"
+        />
+      {% else %}
+        <img
+          alt="Illustration montrant comment un gabarit de message peut être créé."
+          loading="lazy"
+          width="400"
+          src="{{ asset_s3_url('text-messages-no-variables-fr.svg') }}"
+        />
+      {% endif %}
+    </div>
+  </div>
 
-<h2 class="heading-medium">{{ _('Personalised content') }}</h2>
-<p>{{ _('GC Notify makes it easy to send personalised messages from a single template.') }}</p>
-<p>{{ _('If you want to include personalised content in your message, you can add a placeholder. Each time you send a message, you can fill the placeholder with details such as a name or reference number. You can do this manually or upload a list of personal details and let GC Notify do it for you.') }}</p>
+  <h2 class="heading-medium">{{ _('Personalise messages') }}</h2>
+  <div class="flex flex-col lg:flex-row mb-20 lg:mb-0">
+    <div class="lg:w-3/4">
+      <p>{{ _('Tailor your messages with relevant information to each recipient based on a single template using variables. Variables add placeholders, such as a recipient’s name and reference number, that can be filled each time you send a message.') }}</p>
+      <p><a href="{{ url_for('.templates') }}">{{ _('Learn more about template formatting') }}</a></p>
+    </div>
+    <div class="lg:-mt-20 lg:pl-12">
+      {% if session["userlang"] == "en" %}
+        <img
+          alt="An illustration that shows how a reminder message can be personalised using variables such as first name, date and time of appointment."
+          loading="lazy"
+          width="400"
+          src="{{ asset_s3_url('personalise-en.svg') }}"
+        />
+      {% else %}
+        <img
+          alt="Illustration montrant comment un message de rappel peut peut être personalisé à l'aide de variables comme le prénom, la date et l'heure du rendez-vous."
+          loading="lazy"
+          width="400"
+          src="{{ asset_s3_url('personalise-fr.svg') }}"
+        />
+      {% endif %}
+    </div>
+  </div>
 
-<h2 class="heading-medium">{{ _('Bulk sending') }}</h2>
-<p>{{ _('To send a batch of messages at once, upload a list of contact details. You can also schedule the date and time for sending emails or text messages.') }}</p>
+  <h2 class="heading-medium">{{ _('Send in bulk or automatically') }}</h2>
+  <div class="flex flex-col lg:flex-row mb-20 lg:mb-0">
+    <div class="lg:w-3/4">
+      <p>{{ _('Send up to 50,000 messages at once or automate sending when an action is triggered. To send in bulk, upload an Excel spreadsheet with a list of contacts and schedule the date and time up to 72 hours in advance. To automate sending, integrate the API with your web application or back office system.') }}</p>
+      <p><a href="{{ url_for('.documentation') }}">{{ _('Learn more about API integration') }}</a></p>
+    </div>
+    <div class="lg:-mt-20 lg:pl-12">
+      {% if session["userlang"] == "en" %}
+        <img
+          alt="An illustration that shows an example of code with an automated notification being sent by email when a reminder is due."
+          loading="lazy"
+          width="400"
+          src="{{ asset_s3_url('send-en.svg') }}"
+        />
+      {% else %}
+        <img
+          alt="Illustration montrant un exemple de code avec une notification automatisée envoyée en guise de rappel."
+          loading="lazy"
+          width="400"
+          src="{{ asset_s3_url('send-fr.svg') }}"
+        />
+      {% endif %}
+    </div>
+  </div>
 
-<h2 class="heading-medium">{{ _('Application Programming Interface (API) integration') }}</h2>
-<p>{{ _('You can integrate GC Notify’s API with your web application or back-office system to send messages automatically.') }}</p>
-<p>{{ _('Read our') }} <a href="{{ url_for('.documentation') }}">{{ _('API documentation') }}</a> {{ _('for more information.') }}</p>
+  <h2 class="heading-medium">{{ _('Track bounceback messages') }}</h2>
+  <div class="flex flex-col lg:flex-row mb-20 lg:mb-0">
+    <div class="lg:w-3/4">
+      <p>{{ _('See how many of your messages get delivered. Track the current status of any message to learn when it’s delivered, when it’s not, and why it failed. Check these stats in a real-time dashboard for up to 7 days after sending, and download reports for your records.') }}</p>
+      <p><a href="{{ url_for('main.messages_status') }}">{{ _('Learn more about message delivery status') }}</a></p>
+    </div>
+    <div class="lg:-mt-20 lg:pl-12">
+      {% if session["userlang"] == "en" %}
+        <img
+          alt="An illustration that shows a dashboard with the number of emails and text messages sent and the number that failed to send."
+          loading="lazy"
+          width="400"
+          src="{{ asset_s3_url('dashboard-en.svg') }}"
+        />
+      {% else %}
+        <img
+          alt="Illustration d'un tableau de bord montrant le nombre de courriels et de messages texte envoyés ainsi que le nombre de messages dont l'envoi a été un échec."
+          loading="lazy"
+          width="400"
+          src="{{ asset_s3_url('dashboard-fr.svg') }}"
+        />
+      {% endif %}
+    </div>
+  </div>
 
-<h2 class="heading-medium">{{ _('Message delivery status') }}</h2>
-<p>{{ _('The real-time dashboard lets you see the number of messages sent. You can also check the current status of any message to learn when it was delivered.') }}</p>
-<p>{{ _('Read more about how') }} <a href="{{ url_for('main.messages_status') }}">{{ _('message status') }}</a> {{ _('works.') }}</p>
+  <h2 class="heading-medium">{{ _('Assign team roles') }}</h2>
+  <div class="flex flex-col lg:flex-row mb-20 lg:mb-0">
+    <div class="lg:w-3/4">
+      <p>{{ _('Set different permission access for different team members to control which members of your team can see, create, edit, and send messages. GC Notify also lets you invite new users, including people without a government email address.') }}</p>
+    </div>
+    <div class="lg:-mt-20 lg:pl-12">
+      {% if session["userlang"] == "en" %}
+        <img
+          loading="lazy"
+          alt="An illustration that shows possible team member permissions including seeing the dashboard, sending messages, editing templates, managing settings and integrating the API."
+          width="400"
+          class=""
+          src="{{ asset_s3_url('assign-en.svg') }}"
+        />
+      {% else %}
+        <img
+          alt="Illustration montrant les autorisations possibles pour les membres de l'équipe, notamment pour voir le tableau de bord, envoyer des messages, modifier les gabarits, gérer les paramètres et intégrer l'API."
+          loading="lazy"
+          width="400"
+          class=""
+          src="{{ asset_s3_url('assign-fr.svg') }}"
+        />
+      {% endif %}
+    </div>
+  </div>
 
-<h2 class="heading-medium">{{ _('Permissions') }}</h2>
-<p>{{ _('Control which members of your team can see, create, edit, and send messages.') }}</p>
-<p>{{ _('GC Notify lets you:') }}</p>
-<ul class="list list-bullet">
-  <li>{{ _('set different permission levels for each team member') }}</li>
-  <li>{{ _('invite team members who don’t have a government email address') }}</li>
-  <li>{{ _('choose who else can manage team members') }}</li>
-</ul>
-
-<h2 class="heading-medium">{{ _('Security') }}</h2>
-<p>{{ _('GC Notify protects and manages data to meet the needs of government services.') }}</p>
-
-<h3 class="heading-small">{{ _('Hide sensitive information') }}</h3>
-<p>{{ _('GC Notify lets you redact personal information from your messages after they’ve been sent. Only the recipient can see their personal information.') }}</p>
-
-<h3 class="heading-small">{{ _('Two-factor authentication') }}</h3>
-<p>{{ _("GC Notify uses two-factor authentication (2FA) to keep your account secure. When you sign in, we'll send a unique one-time code to your phone and ask you to enter it before we let you use your account.") }}</p>
-<p>{{ _('Read more about') }} <a href="{{ url_for('main.security') }}">{{ _('security') }}</a>.
-
+  <h2 class="heading-medium">{{ _('Customise your name and branding') }}</h2>
+  <div class="flex flex-col lg:flex-row mb-20 lg:mb-0">
+    <div class="lg:w-3/4">
+      <p>{{ _('Use the default Government of Canada look and feel provided by default, or customise your branding for your department or organisation. You can choose the name that messages come from and the email address that users reply to.') }}</p>
+    </div>
+    <div class="lg:-mt-20 lg:pl-12">
+      {% if session["userlang"] == "en" %}
+        <img
+          loading="lazy"
+          alt="An illustration that shows an example of an email notification. The example is a message confirming that an application was received and outlining next steps in the process."
+          width="390"
+          class=""
+          src="{{ asset_s3_url('custom-branding-en.svg') }}"
+        />
+      {% else %}
+        <img
+          alt="Illustration montrant un exemple d'une notification par courriel. L'exemple est un accusé de réception d'une demande décrivant les prochaines étapes du processus."
+          loading="lazy"
+          width="390"
+          class=""
+          src="{{ asset_s3_url('custom-branding-fr.svg') }}"
+        />
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}

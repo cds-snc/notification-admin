@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% set change_txt = _('Change') %}
+{% set display_email_from = current_service.email_from +'@' + sending_domain %}
 
 {% block maincolumn_content %}
 
@@ -31,6 +32,18 @@
           {{ edit_field(
               change_txt,
               url_for('.service_name_change', service_id=current_service.id),
+              permissions=['manage_service']
+            )
+          }}
+        {% endcall %}
+
+        {% call row() %}
+          {% set txt = _('Sending email address') %}
+          {{ text_field(txt) }}
+          {{ text_field(display_email_from) }}
+          {{ edit_field(
+              change_txt,
+              url_for('.service_email_from_change', service_id=current_service.id),
               permissions=['manage_service']
             )
           }}
@@ -223,7 +236,7 @@
       {% endcall %}
 
     {% if current_service.trial_mode %}
-      <h2 class="heading-medium mt-0 contain-floats">{{ _('Your service is in trial mode') }}</h2>
+      <h2 class="heading-medium mt-10 contain-floats">{{ _('Your service is in trial mode') }}</h2>
 
       <ul class='list list-bullet'>
         <li>{{ _('you can only send messages to yourself') }}</li>
@@ -240,7 +253,7 @@
         </p>
 
     {% else %}
-      <h2 class="heading-medium mt-0 contain-floats">{{ _('Your service is live') }}</h2>
+      <h2 class="heading-medium mt-10 contain-floats">{{ _('Your service is live') }}</h2>
 
       <p>
         {{ _('You can send up to') }}
@@ -248,7 +261,7 @@
       </p>
       <p>
         {{ _('Problems or comments?') }}
-        <a href="{{ url_for('.contact') }}">{{ _('Give feedback') }}</a>.
+        <a href="{{ url_for('.contact') }}">{{ _('Contact us') }}</a>.
       </p>
 
     {% endif %}
@@ -317,13 +330,19 @@
           {% call row() %}
             {% set txt = _('Daily message limit') %}
             {{ text_field(txt)}}
-            {{ text_field('{:,}'.format(current_service.message_limit)) }}
+            {{ text_field(current_service.message_limit | format_number) }}
             {{ edit_field(change_txt, url_for('.set_message_limit', service_id=current_service.id)) }}
+          {% endcall %}
+          {% call row() %}
+            {% set txt = _('API rate limit per minute') %}
+            {{ text_field(txt)}}
+            {{ text_field(current_service.rate_limit | format_number) }}
+            {{ text_field('')}}
           {% endcall %}
           {% call row() %}
             {% set txt = _('Free text message allowance') %}
             {{ text_field(txt)}}
-            {{ text_field('{:,}'.format(current_service.free_sms_fragment_limit)) }}
+            {{ text_field(current_service.free_sms_fragment_limit | format_number) }}
             {{ edit_field(change_txt, url_for('.set_free_sms_allowance', service_id=current_service.id)) }}
           {% endcall %}
           {% call row() %}

@@ -21,7 +21,7 @@
 
   {% call form_wrapper() %}
 
-    {{ textbox(form.email_address, width='1-1', safe_error_message=True) }}
+    {{ textbox(form.email_address, width='w-full', safe_error_message=True) }}
 
     {% include 'views/manage-users/permissions.html' %}
 

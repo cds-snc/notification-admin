@@ -1,5 +1,26 @@
 @layer components {
   /*! purgecss start ignore */
+  main {
+    @apply text-smaller leading-snug font-normal font-body antialiased;
+  }
+
+  p {
+    margin-top: .3125em;
+    margin-bottom: 1.25em;
+  }
+  @screen sm {
+    p {
+      margin-top: .0658em;
+      margin-bottom: 1.0526em;
+    }
+  }
+
+  .file-name {
+    background-color: #eee;
+    padding: 9px 15px;
+    @apply text-smaller leading-tight font-bold border-1 border-solid border-gray-lightgrey inline-block rounded-lg;
+  }
+
   a {
     @apply underline text-smaller;
     -webkit-tap-highlight-color: rgba(0,0,0,0.3);
@@ -17,8 +38,71 @@
     color: #005798;
   }
   
-  .heading-medium {
-    @apply text-base leading-tight block font-bold;
+  .heading-small {
+    margin-top: .625em;
+    margin-bottom: 1.0526em;
+    @apply text-smaller leading-tight font-bold block;
   }
+  @screen md {
+    .heading-small {
+      margin-top: 1.0526em;
+    }
+  }
+  
+  .heading-medium {
+    margin-top: 1.25em;
+    margin-bottom: 0.5em;
+    @apply text-base leading-tight block font-bold mt-gutter block;
+  }
+  @screen sm {
+    .heading-medium {
+      margin-top: 1.875em;
+      margin-bottom: .8333em;
+      @apply text-title;
+    }
+  }
+
+  .heading-large {
+    line-height: 1.111;
+    margin-top: 1.0412em;
+    margin-bottom: .4167em;
+    @apply text-lg font-bold block;
+  }
+  .heading-large .heading-secondary {
+    padding-top: 9px;
+    padding-bottom: 6px;
+    @apply block text-gray-grey1 text-title leading-tight;
+  }
+  @screen md {
+    .heading-large {
+      margin-top: 1.25em;
+      margin-bottom: .5556em;
+    }
+    .heading-large .heading-secondary {
+      padding-top: 6px;
+      padding-bottom: 4px;
+    }
+  }
+
+  .heading-xlarge {
+    @apply mb-8;
+  }
+
+  .heading-upcoming-jobs {
+    @apply mt-gutterHalf;
+  }
+
+  main {
+    font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial,sans-serif;
+  }
+  .product-page-intro h1{
+    font-family: "Helvetica Neue", Helvetica, Arial,sans-serif;
+  }
+
+  hr {
+    height: 1px;
+    @apply block bg-gray-grey2 border-0 my-gutter p-0;
+  }
+
   /*! purgecss end ignore */
 }

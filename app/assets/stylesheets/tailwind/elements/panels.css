@@ -1,0 +1,89 @@
+@layer components {
+  .panel {
+    padding: .7895em;
+    margin-bottom: .7895em;
+    border-left: solid;
+    @apply box-border clear-both border-gray-grey2;
+  }
+  .panel:first-child {
+    @apply mt-0;
+  }
+  .panel:only-child,
+  .panel:last-child {
+    @apply mb-0;
+  }
+
+  .panel-border-wide {
+    border-left-width: 10px;
+  }
+  /* Used to show the left edge of "toggled" content */
+  .panel-border-narrow {
+    border-left-width: 5px;
+  }
+
+  /* Panels within form groups
+     By default, panels have 15px bottom margin
+    - Remove the bottom padding as .form-group sets a bottom margin
+    - Don't remove the bottom margin for all panels, assume they are often within stacked groups
+  */
+  .form-group .panel-border-narrow {
+    @apply float-left w-full pb-0;
+  }
+  /* Note: This is incredibly fragile, and needs rebuilding. */
+  
+  /* The first panel in a group */
+  .form-group .panel-border-narrow:first-child {
+    @apply mt-4;
+  }
+
+  /* The last panel in a group */
+  .form-group .panel-border-narrow:last-child {
+    @apply my-0;
+  }
+
+  /* For inline panels */
+  .inline .panel-border-narrow,
+  .inline .panel-border-narrow:last-child {
+    @apply mt-4 mb-0;
+  }
+
+  /* Template Formatting Guide styles */
+  .panel-container {
+    @apply flex w-full;
+  }
+  @screen xs {
+    .panel-container {
+      @apply flex-col;
+    }
+  }
+
+  .panel-container > * {
+    min-width: 200px;
+    padding: 1em;
+    @apply inline-block w-6/12 border-1 border-solid border-gray-lightgrey mb-12 align-top
+  }
+  @screen xs {
+    .panel-container > * {
+      @apply w-full;
+    }
+  }
+
+  .panel-container > .panel-input {
+    border-left-width: 24px;
+    margin-right: 1em;
+    @apply border-gray-grey2;
+  }
+  @screen xs {
+    .panel-container > .panel-input {
+      @apply mr-0 mb-4;
+    }
+  }
+
+  .panel-container .wrap-text {
+    word-break: break-word;
+  }
+
+  .panel-container h3 {
+    @apply mt-0;
+  }
+}

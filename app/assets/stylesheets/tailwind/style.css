@@ -4,6 +4,16 @@
 @import "./toolkit/shims.css";
 
 
+/* elements */
+@import "./elements/reset.css";
+@import "./elements/details.css";
+@import "./elements/forms.css";
+@import "./elements/form-multiple-choice.css";
+@import "./elements/form-validation.css";
+@import "./elements/lists.css";
+@import "./elements/panels.css";
+
+
 /* components */
 @import "./components/grid.css";
 @import "./components/typography.css";
@@ -22,6 +32,7 @@
 @import "./components/pill.css";
 @import "./components/show-more.css";
 @import "./components/api-key.css";
+@import "./components/previous-next-navigation.css";
 @import "./components/list-entry.css";
 @import "./components/message.css";
 @import "./components/fullscreen-table.css";
@@ -70,6 +81,7 @@ td,
 th {
   @apply font-body;
 }
+
 
 html,
 body,
@@ -122,27 +134,6 @@ input[type="search"]::-webkit-search-decoration {
 .visuallyhidden.focusable:focus {
   @apply h-auto m-0 overflow-visible static w-auto;
   clip: auto;
-}
-
-h1 {
-  @apply text-xl font-sans pb-10;
-}
-
-h2 {
-  @apply text-lg font-sans pb-6;
-}
-
-p {
-  @apply text-base leading-tight;
-}
-
-li {
-  @apply text-base leading-tight;
-}
-
-.input {
-  border-color: #000;
-  @apply border-solid border-2 py-3 px-2 text-smaller;
 }
 
 .flip {
@@ -205,23 +196,6 @@ label {
   @apply font-bold italic mb-2;
 }
 
-/* form(s) */
-.form-group {
-  @apply mb-4;
-}
-
-.form-group-error {
-  @apply mr-4 pl-4 border-l-4 border-red;
-}
-
-.form-control-error {
-  @apply border-4 border-red;
-}
-
-.error-message {
-  @apply block text-red text-base;
-}
-
 /* honeypot field*/
 .phone {
   position: absolute !important;
@@ -231,6 +205,15 @@ label {
   clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
   clip: rect(1px, 1px, 1px, 1px);
   white-space: nowrap; /* added line */
+}
+
+.border-box {
+  font-size:.9em;
+  border:1px solid #000;
+  @apply p-8 mb-8;
+}
+.border-box strong {
+  @apply font-bold;
 }
 
 .skiplink:focus {
@@ -270,6 +253,15 @@ label {
 }
 
 @layer components {
+  /* Hide, but not for screenreaders */
+  .visually-hidden,
+  .visuallyhidden {
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    @apply absolute overflow-hidden border-0 p-0;
+  }
   .research-mode {
     @apply font-bold inline-block bg-blue-govukblue text-white py-2 px-4 rounded;
   }
@@ -289,6 +281,54 @@ label {
   .loading-indicator:after {
     content: "\2026"; /* ellipsis */
     @apply overflow-hidden inline-block align-bottom animate-ellipsis w-0;
+  }
+
+  .homepage-colour-swap {
+    background-color: #cddae6;
+    padding:2rem 0;
+  }
+
+  .highlight {
+    @apply font-monospace overflow-x-scroll p-4 pr-0;
+  }
+  @screen md {
+    .inline.block-label {
+      @apply inline-block float-none;
+    }
+  }
+
+  .hint {
+    @apply text-gray-grey1;
+  }
+
+  .block-label-hint {
+    @apply text-smaller leading-tight font-normal mt-2;
+  }
+
+  .bordered-text-box {
+    outline: 2px solid #000;
+    @apply p-2 max-w-full;
+  }
+  @screen smaller {
+    #global-header .header-proposition #proposition-links li{
+      width:95%;
+    }
+    
+    #global-header .header-proposition #proposition-links a {
+      @apply text-smaller;
+      line-height: 1.4;
+    }
+  }
+
+  #add_template_by_template_type{	
+    legend{	
+      font-weight:bold;	
+      font-size:1.2em;	
+    }	
+  }
+
+  #organisation_type{	
+    display:none;	
   }
 }
 

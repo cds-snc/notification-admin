@@ -11,7 +11,7 @@
 {% block maincolumn_content %}
 
   <div class="grid-row contain-floats">
-    <div class="w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
+    <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
       {{ page_header(
         txt,
         back_link=url_for('main.service_settings', service_id=current_service.id)
@@ -34,7 +34,7 @@
           {{ _('Your team members sign in with a text message code.') }}
         </p>
         <p>
-          <a href="{{ url_for('.contact') }}">{{ _('Contact us') }}</a> {{ _('if logging in with a text message is a problem for your team.') }}
+          {{ _("Please <a href='{}'>{}</a> if logging in with a text message is a problem for your team.").format(url_for('.contact'), _('contact us')) }}
         </p>
       {% endif %}
     </div>

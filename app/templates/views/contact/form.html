@@ -1,51 +1,57 @@
 {% extends "withoutnav_template.html" %}
-{% from "components/textbox.html" import textbox %}
-{% from "components/honeypot-field.html" import honeypotfield %}
-{% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/radios.html" import radios %}
+{% from "components/textbox.html" import textbox %}
 
 {% block per_page_title %}
-  {{ _("Ask a question or give feedback") }}
+  {{ _("Contact us") }}
 {% endblock %}
 
 {% block maincolumn_content %}
+  {% set sub_text = None %}
+  {% if step_hint %}
+    {% set sub_text = _("Step {} of {}").format(step_hint, total_steps_hint) %}
+  {% endif %}
 
-    <h1 class="heading-large">
-      {{ _("Ask a question or give feedback") }}
-    </h1>
-    <div class="grid-row contain-floats">
-      <div id="contact-form" class="w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
-        {% call form_wrapper() %}
-          {% set name_label = _('Your name') %}
-          {{ textbox(form.name, label=name_label,  width='1-1') }}
+  {{ page_header(
+    page_title,
+    back_link=back_link,
+    sub_text=sub_text
+  ) }}
+  <div class="grid-row contain-floats">
+    <div class="float-left w-full py-0 px-0 px-gutterHalf box-border">
+      {% call form_wrapper(action=url_for('.contact', current_step=current_step), autocomplete=True) %}
 
-          <div class="form-group">
-            <label class="form-label" for="support_type">
-              {{ _('Request type') }}
-            </label>
+        {% if current_step == "identity" %}
+          {{ textbox(form.name, width='md:w-2/3', autocomplete='name') }}
+          {{ textbox(form.email_address, width='md:w-2/3', autocomplete='email') }}
+          {{ radios(form.support_type) }}
+        {% endif %}
 
-            <select class="form-control form-control-1-1 " name="support_type">
-              {% for option in form.support_type %}
+        {% if current_step == "message" %}
+          {{ textbox(form.message, width='md:w-2/3',label=message_label, hint='', rows=10) }}
+        {% endif %}
 
-              {% set checked = "" %}
-              {% if option.checked %}
-                {% set checked = "selected" %}
-              {% endif %}
+        {% if current_step == "set_up_demo.org_details" %}
+          {{ textbox(form.department_org_name, width='md:w-2/3') }}
+          {{ textbox(form.program_service_name, width='md:w-2/3') }}
+          {{ radios(form.intended_recipients) }}
+        {% endif %}
 
-              <option {{checked}} value="{{ option.data }}">{{ option.label.text }}</option>
-              {% endfor %}
-            </select>
-          </div>
+        {% if current_step == "set_up_demo.primary_purpose" %}
+          {{ radios(form.main_use_case) }}
+          {{ textbox(form.main_use_case_details, width='md:w-2/3', rows=5) }}
+        {% endif %}
 
-          {% set email_label = _('Your email') %}
-          {{ textbox(form.email_address, label=email_label, width='1-1') }}
+        {% if next_step != None %}
+          {{ page_footer(_('Continue')) }}
+        {% else %}
+          {{ page_footer(_('Send')) }}
+        {% endif %}
 
-          {% set message_label = _('Message') %}
-          {{ textbox(form.feedback, width='1-1', label=message_label, hint='', rows=10) }}
-          {% set send_text = _('Send') %}
-        {{ page_footer(send_text) }}
-        {% endcall %}
-      </div>
+      {% endcall %}
     </div>
-
+  </div>
 {% endblock %}

@@ -16,11 +16,11 @@
     ) }}
     {% call form_wrapper() %}
       <div class="grid-row contain-floats">
-        <div class="w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
+        <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
           {{ radios(form.postage) }}
           {{ page_footer(_('Save')) }}
         </div>
-        <aside class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
+        <aside class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
           {% include "partials/templates/guidance-postage.html" %}
         </aside>
       </div>
