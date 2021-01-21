@@ -23,6 +23,7 @@ from notifications_utils.field import Field
 from notifications_utils.formatters import make_quotes_smart
 from notifications_utils.letter_timings import letter_can_be_cancelled
 from notifications_utils.recipients import RecipientCSV
+from notifications_utils.strftime_codes import no_pad_month
 from notifications_utils.take import Take
 from notifications_utils.template import (
     EmailPreviewTemplate,
@@ -449,7 +450,7 @@ def get_template(
 
 def get_current_financial_year():
     now = datetime.utcnow()
-    current_month = int(now.strftime('%-m'))
+    current_month = int(now.strftime(no_pad_month()))
     current_year = int(now.strftime('%Y'))
     return current_year if current_month > 3 else current_year - 1
 
@@ -644,7 +645,7 @@ def report_security_finding(
 
 
 def get_month_name(string):
-    monthNumber = yyyy_mm_to_datetime(string).strftime('%-m')
+    monthNumber = yyyy_mm_to_datetime(string).strftime(no_pad_month())
     translatedMonth = {
         1: _l("January"),
         2: _l("February"),

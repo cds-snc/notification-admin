@@ -2,6 +2,8 @@ import weakref
 from datetime import datetime, timedelta
 from itertools import chain
 
+from notifications_utils.strftime_codes import no_pad_hour12, no_pad_hour24
+
 import pytz
 from flask import request
 from flask_babel import lazy_gettext as _l
@@ -77,8 +79,8 @@ def get_human_time(time):
         '0': 'midnight',
         '12': 'midday'
     }.get(
-        time.strftime('%-H'),
-        time.strftime('%-I%p').lower()
+        time.strftime(no_pad_hour24()),
+        time.strftime('{}%p'.format(no_pad_hour12())).lower()
     )
 
 
