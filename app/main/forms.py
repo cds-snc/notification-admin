@@ -80,7 +80,7 @@ def get_human_time(time):
         '12': 'midday'
     }.get(
         time.strftime(no_pad_hour24()),
-        time.strftime('{}%p'.format(no_pad_hour12())).lower()
+        time.strftime('{no_pad_hour12()}%p').lower()
     )
 
 
