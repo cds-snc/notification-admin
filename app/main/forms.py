@@ -2,8 +2,6 @@ import weakref
 from datetime import datetime, timedelta
 from itertools import chain
 
-from notifications_utils.strftime_codes import no_pad_hour12, no_pad_hour24
-
 import pytz
 from flask import request
 from flask_babel import lazy_gettext as _l
@@ -16,6 +14,7 @@ from notifications_utils.recipients import (
     InvalidPhoneError,
     validate_phone_number,
 )
+from notifications_utils.strftime_codes import no_pad_hour12, no_pad_hour24
 from wtforms import (
     BooleanField,
     DateField,
