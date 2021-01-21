@@ -13,5 +13,3 @@ flake8-print==3.1.4
 requests-mock==1.8.0
 # used for creating manifest file locally
 jinja2-cli[yaml]==0.7.0
-
-file:///D:/Projects/cds/notification-utils#egg=notifications-utils==43.3.1
