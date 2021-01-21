@@ -14,6 +14,7 @@ from notifications_utils.recipients import (
     InvalidPhoneError,
     validate_phone_number,
 )
+from notifications_utils.strftime_codes import no_pad_hour12, no_pad_hour24
 from wtforms import (
     BooleanField,
     DateField,
@@ -77,8 +78,8 @@ def get_human_time(time):
         '0': 'midnight',
         '12': 'midday'
     }.get(
-        time.strftime('%-H'),
-        time.strftime('%-I%p').lower()
+        time.strftime(no_pad_hour24()),
+        time.strftime(f'{no_pad_hour12()}%p').lower()
     )
 
 
