@@ -52,13 +52,13 @@ On OS X:
 
 `brew install pyenv`
 
-2. Install Python 3.6.9 or whatever is the latest
+2. Install Python 3.9.1 or whatever is the latest
 
-`pyenv install 3.6.9`
+`pyenv install 3.9.1`
 
-3. If you expect no conflicts, set `3.6.9` as you default
+3. If you expect no conflicts, set `3.9.1` as you default
 
-`pyenv global 3.6.9`
+`pyenv global 3.9.1`
 
 4. Ensure it installed by running
 
@@ -73,12 +73,12 @@ if it did not, take a look here: https://github.com/pyenv/pyenv/issues/660
 6. Add the following to your shell rc file. ex: `.bashrc` or `.zshrc`
 
 ```
-source  ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
+source  ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
 ```
 
 7. Restart your terminal and make your virtual environtment:
 
-`mkvirtualenv -p ~/.pyenv/versions/3.6.9/bin/python notifications-admin`
+`mkvirtualenv -p ~/.pyenv/versions/3.9.1/bin/python notifications-admin`
 
 8. You can now return to your environment any time by entering
 
@@ -277,13 +277,13 @@ Sur macOS :
 
 `brew install pyenv`
 
-2. Installez Python 3.6.9 ou la dernière version
+2. Installez Python 3.9.1 ou la dernière version
 
-`pyenv install 3.6.9`
+`pyenv install 3.9.1`
 
-3. Si vous n'attendez aucun conflit, mettez `3.6.9` comme valeur par défaut
+3. Si vous n'attendez aucun conflit, mettez `3.9.1` comme valeur par défaut
 
-`pyenv global 3.6.9`
+`pyenv global 3.9.1`
 
 4. Assurez-vous qu'il est installé en exécutant
 
@@ -300,12 +300,12 @@ si ce n'est pas le cas, jetez un coup d'œil ici : https://github.com/pyenv/pyen
 ```
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/Devel
-source ~/.pyenv/versions/3.6.9/bin/virtualenvwrapper.sh
+source ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
 ```
 
 7. Redémarrez votre terminal et créez votre environnement virtuel :
 
-`mkvirtualenv -p ~/.pyenv/versions/3.6.9/bin/python notifications-admin`
+`mkvirtualenv -p ~/.pyenv/versions/3.9.1/bin/python notifications-admin`
 
 8. Vous pouvez maintenant retourner dans votre environnement à tout moment en entrant
 
