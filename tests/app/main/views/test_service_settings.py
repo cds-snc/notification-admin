@@ -72,11 +72,8 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Send text messages On Change',
-        'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
-        'Receive text messages Off Change',
-
     ]),
     (platform_admin_user, [
 
@@ -92,10 +89,8 @@ def mock_get_service_settings_page_common(
 
         'Label Value Action',
         'Send text messages On Change',
-        'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
-        'Receive text messages Off Change',
 
         'Label Value Action',
         'Live Off Change',
@@ -103,6 +98,8 @@ def mock_get_service_settings_page_common(
         'Organisation Test Organisation Government of Canada Change',
         'Daily message limit 1,000 Change',
         'API rate limit per minute 100',
+        'Text message senders GOVUK Manage',
+        'Receive text messages Off Change',
         'Free text message allowance 250,000 Change',
         'Email branding English Government of Canada signature Change',
         'Letter branding Not set Change',
@@ -161,10 +158,10 @@ def test_no_go_live_link_for_service_without_organisation(
     page = client_request.get('main.service_settings', service_id=SERVICE_ONE_ID)
 
     assert page.find('h1').text == 'Settings'
-    assert normalize_spaces(page.select('tr')[15].text) == (
+    assert normalize_spaces(page.select('tr')[13].text) == (
         'Live No (organisation must be set first)'
     )
-    assert normalize_spaces(page.select('tr')[17].text) == (
+    assert normalize_spaces(page.select('tr')[15].text) == (
         'Organisation Not set Government of Canada Change'
     )
 
@@ -189,7 +186,7 @@ def test_organisation_name_links_to_org_dashboard(
         'main.service_settings', service_id=SERVICE_ONE_ID
     )
 
-    org_row = response.select('tr')[17]
+    org_row = response.select('tr')[15]
     assert org_row.find('a')['href'] == url_for('main.organisation_dashboard', org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find('a').text) == 'Test Organisation'
 
@@ -208,11 +205,8 @@ def test_organisation_name_links_to_org_dashboard(
 
         'Label Value Action',
         'Send text messages On Change',
-        'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages On Change',
-        'Receive text messages On Change',
-
     ]),
     (['email', 'sms', 'email_auth'], [
 
@@ -227,11 +221,8 @@ def test_organisation_name_links_to_org_dashboard(
 
         'Label Value Action',
         'Send text messages On Change',
-        'Text message senders GOVUK Manage',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
-        'Receive text messages Off Change',
-
     ]),
 ])
 def test_should_show_overview_for_service_with_more_things_set(
@@ -1854,13 +1845,11 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
         )
 
     assert get_row(page, 4) == "Reply-to email addresses test@example.com …and 2 more Manage"
-    assert get_row(page, 7) == "Text message senders Example …and 2 more Manage"
 
 
 @pytest.mark.parametrize('sender_list_page, index, expected_output', [
     ('main.service_email_reply_to', 0, 'test@example.com (default) Change'),
     ('main.service_letter_contact_details', 1, '1 Example Street (default) Change'),
-    ('main.service_sms_senders', 0, 'GOVUK (default) Change')
 ])
 def test_api_ids_dont_show_on_option_pages_with_a_single_sender(
     client_request,
@@ -1888,6 +1877,7 @@ def test_api_ids_dont_show_on_option_pages_with_a_single_sender(
         'sender_list_page,'
         'sample_data,'
         'expected_items,'
+        'is_platform_admin,'
     ),
     [(
         'main.service_email_reply_to',
@@ -1897,6 +1887,7 @@ def test_api_ids_dont_show_on_option_pages_with_a_single_sender(
             'test2@example.com Change 5678',
             'test3@example.com Change 9457',
         ],
+        False,
     ), (
         'main.service_letter_contact_details',
         multiple_letter_contact_blocks,
@@ -1906,6 +1897,7 @@ def test_api_ids_dont_show_on_option_pages_with_a_single_sender(
             '2 Example Street Change 5678',
             '3 Example Street Change 9457',
         ],
+        False,
     ), (
         'main.service_sms_senders',
         multiple_sms_senders,
@@ -1914,17 +1906,23 @@ def test_api_ids_dont_show_on_option_pages_with_a_single_sender(
             'Example 2 Change 5678',
             'Example 3 Change 9457',
         ],
+        True,
     ),
     ]
 )
 def test_default_option_shows_for_default_sender(
     client_request,
+    platform_admin_user,
     mocker,
     sender_list_page,
     sample_data,
     expected_items,
+    is_platform_admin,
 ):
     sample_data(mocker)
+
+    if is_platform_admin:
+        client_request.login(platform_admin_user)
 
     rows = client_request.get(
         sender_list_page,
@@ -1969,31 +1967,39 @@ def test_remove_default_from_default_letter_contact_block(
     )
 
 
-@pytest.mark.parametrize('sender_list_page, sample_data, expected_output', [
+@pytest.mark.parametrize('sender_list_page, sample_data, expected_output, is_platform_admin', [
     (
         'main.service_email_reply_to',
         no_reply_to_email_addresses,
-        'You have not added any reply-to email addresses yet'
+        'You have not added any reply-to email addresses yet',
+        False
     ),
     (
         'main.service_letter_contact_details',
         no_letter_contact_blocks,
-        'Blank (default)'
+        'Blank (default)',
+        False,
     ),
     (
         'main.service_sms_senders',
         no_sms_senders,
-        'You have not added any text message senders yet'
+        'You have not added any text message senders yet',
+        True,
     ),
 ])
 def test_no_senders_message_shows(
     client_request,
+    platform_admin_user,
     sender_list_page,
     expected_output,
     sample_data,
+    is_platform_admin,
     mocker
 ):
     sample_data(mocker)
+
+    if is_platform_admin:
+        client_request.login(platform_admin_user)
 
     rows = client_request.get(
         sender_list_page,
@@ -2061,7 +2067,10 @@ def test_incorrect_sms_sender_input(
     client_request,
     no_sms_senders,
     mock_add_sms_sender,
+    platform_admin_user,
 ):
+    client_request.login(platform_admin_user)
+
     page = client_request.post(
         'main.service_add_sms_sender',
         service_id=SERVICE_ONE_ID,
@@ -2287,8 +2296,11 @@ def test_add_sms_sender(
     api_default_args,
     mocker,
     client_request,
-    mock_add_sms_sender
+    mock_add_sms_sender,
+    platform_admin_user,
 ):
+    client_request.login(platform_admin_user)
+
     fixture(mocker)
     data['sms_sender'] = "Example"
     client_request.post(
@@ -2563,8 +2575,11 @@ def test_edit_sms_sender(
     mocker,
     fake_uuid,
     client_request,
-    mock_update_sms_sender
+    mock_update_sms_sender,
+    platform_admin_user,
 ):
+    client_request.login(platform_admin_user)
+
     fixture(mocker)
     client_request.post(
         'main.service_edit_sms_sender',
@@ -2581,48 +2596,54 @@ def test_edit_sms_sender(
     )
 
 
-@pytest.mark.parametrize('sender_page, fixture, default_message, params, checkbox_present', [
+@pytest.mark.parametrize('sender_page, fixture, default_message, params, checkbox_present, is_platform_admin', [
     (
         'main.service_edit_email_reply_to',
         get_default_reply_to_email_address,
         'This is the default reply-to address for service one emails',
         'reply_to_email_id',
-        False
+        False,
+        False,
     ),
     (
         'main.service_edit_email_reply_to',
         get_non_default_reply_to_email_address,
         'This is the default reply-to address for service one emails',
         'reply_to_email_id',
-        True
+        True,
+        False,
     ),
     (
         'main.service_edit_letter_contact',
         get_default_letter_contact_block,
         'This is currently your default address for service one.',
         'letter_contact_id',
-        False
+        False,
+        False,
     ),
     (
         'main.service_edit_letter_contact',
         get_non_default_letter_contact_block,
         'THIS TEXT WONT BE TESTED',
         'letter_contact_id',
-        True
+        True,
+        False,
     ),
     (
         'main.service_edit_sms_sender',
         get_default_sms_sender,
         'This is the default text message sender.',
         'sms_sender_id',
-        False
+        False,
+        True,
     ),
     (
         'main.service_edit_sms_sender',
         get_non_default_sms_sender,
         'This is the default text message sender.',
         'sms_sender_id',
-        True
+        True,
+        True,
     )
 ])
 def test_default_box_shows_on_non_default_sender_details_while_editing(
@@ -2631,8 +2652,10 @@ def test_default_box_shows_on_non_default_sender_details_while_editing(
     mocker,
     sender_page,
     client_request,
+    platform_admin_user,
     default_message,
     checkbox_present,
+    is_platform_admin,
     params
 ):
     page_arguments = {
@@ -2641,6 +2664,10 @@ def test_default_box_shows_on_non_default_sender_details_while_editing(
     page_arguments[params] = fake_uuid
 
     fixture(mocker)
+
+    if is_platform_admin:
+        client_request.login(platform_admin_user)
+
     page = client_request.get(
         sender_page,
         **page_arguments
@@ -2673,9 +2700,12 @@ def test_shows_delete_link_for_sms_sender(
     partial_href,
     fake_uuid,
     client_request,
+    platform_admin_user,
 ):
 
     fixture(mocker)
+
+    client_request.login(platform_admin_user)
 
     page = client_request.get(
         'main.service_edit_sms_sender',
@@ -2702,8 +2732,11 @@ def test_shows_delete_link_for_sms_sender(
 def test_confirm_delete_sms_sender(
     fake_uuid,
     client_request,
+    platform_admin_user,
     get_non_default_sms_sender,
 ):
+
+    client_request.login(platform_admin_user)
 
     page = client_request.get(
         'main.service_confirm_delete_sms_sender',
@@ -2727,6 +2760,7 @@ def test_confirm_delete_sms_sender(
 ])
 def test_inbound_sms_sender_is_not_deleteable(
     client_request,
+    platform_admin_user,
     service_one,
     fake_uuid,
     fixture,
@@ -2735,6 +2769,7 @@ def test_inbound_sms_sender_is_not_deleteable(
 ):
     fixture(mocker)
 
+    client_request.login(platform_admin_user)
     page = client_request.get(
         '.service_edit_sms_sender',
         service_id=SERVICE_ONE_ID,
@@ -2778,6 +2813,7 @@ def test_delete_sms_sender(
 ])
 def test_inbound_sms_sender_is_not_editable(
     client_request,
+    platform_admin_user,
     service_one,
     fake_uuid,
     fixture,
@@ -2787,6 +2823,7 @@ def test_inbound_sms_sender_is_not_editable(
 ):
     fixture(mocker)
 
+    client_request.login(platform_admin_user)
     page = client_request.get(
         '.service_edit_sms_sender',
         service_id=SERVICE_ONE_ID,
@@ -2938,6 +2975,21 @@ def test_request_letter_branding_if_already_have_branding(
 
     mock_get_letter_branding_by_id.assert_called_once_with(service_one['letter_branding'])
     assert request_page.select_one('main p').text.strip() == 'Your letters have the HM Government logo.'
+
+
+@pytest.mark.parametrize('endpoint', (
+    ('main.service_sms_senders'),
+    ('main.service_add_sms_sender'),
+))
+def test_service_sms_sender_platform_admin_only(
+    client_request,
+    endpoint,
+):
+    client_request.get(
+        endpoint,
+        service_id=SERVICE_ONE_ID,
+        _expected_status=403,
+    )
 
 
 def test_service_set_letter_branding_platform_admin_only(
