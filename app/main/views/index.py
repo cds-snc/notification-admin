@@ -45,6 +45,8 @@ def index():
         scrollTo="false",
         admin_base_url=current_app.config['ADMIN_BASE_URL'],
         stats=get_latest_stats(get_current_locale(current_app)),
+        csv_max_rows=current_app.config['CSV_MAX_ROWS'],
+        default_free_sms_fragment_limits_central=current_app.config.get('DEFAULT_FREE_SMS_FRAGMENT_LIMITS', {}).get('central', 10000),
     )
 
 
