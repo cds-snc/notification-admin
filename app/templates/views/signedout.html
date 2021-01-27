@@ -240,14 +240,14 @@ set description = _('GC Notify lets you send emails and text messages to your us
               {{ _("Send consistent and accessible email messages from a trusted domain.") }}
             </li>
             <li class="pt-4 text-base leading-tight">
-              {{ _("Personalise your messages, while protecting  personal information.") }}
+              {{ _("Personalise your messages, while protecting personal information.") }}
             </li>
             <li class="pt-4 text-base leading-tight">
               {{_("Reduce the time, effort, and cost of correspondence.")}}
             </li>
           </ul>
           <p class="pt-10 text-blue text-base">
-            <a class="line-under text-base my-0 link:text-blue visited:text-blue" href="{{ url_for('main.features') }}">{{ _("How GC Notify meets government needs") }}</a>
+            <a class="line-under text-base my-0 link:text-blue visited:text-blue" href="{{ url_for('main.why-notify') }}">{{ _("How GC Notify meets government needs") }}</a>
           </p>
         </div>
       </div>
@@ -273,14 +273,14 @@ set description = _('GC Notify lets you send emails and text messages to your us
               alt="An illustration that shows how a personalized message template can be created using variables such as name, day of the week and colour."
               loading="lazy"
               width="400"
-              src="{{ asset_s3_url('text-messages-en.svg') }}"
+              src="{{ asset_s3_url('text-messages-en-v2.svg') }}"
             />
           {% else %}
             <img
               alt="Illustration montrant comment un gabarit peut être personnalisé à l'aide de variables comme le nom, le jour et la couleur."
               loading="lazy"
               width="400"
-              src="{{ asset_s3_url('text-messages-fr.svg') }}"
+              src="{{ asset_s3_url('text-messages-fr-v2.svg') }}"
             />
           {% endif %}
 
@@ -310,7 +310,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
           {% endif %}
 
           <div class="text-small">
-            {{ _("Schedule and send up to 50,000 messages to a list of recipients") }}
+            {{ _("Schedule and send up to {} messages to a list of recipients").format(csv_max_rows | format_number) }}
           </div>
         </div>
         <!-- end note box 2 -->
@@ -339,8 +339,6 @@ set description = _('GC Notify lets you send emails and text messages to your us
           </div>
         </div>
         <!-- end note box 3 -->
-
-        <!-- -->
       </div>
 
       <div class="flex lg:justify-center">
@@ -434,8 +432,6 @@ set description = _('GC Notify lets you send emails and text messages to your us
   <div class="bg-gray">
     <div class="container px-10 py-24">
       <div class="flex flex-col lg:flex-row justify-between">
-        <!-- -->
-
       {% if session["userlang"] == "en" %}
         <div class="image-content flex">
           <img loading="lazy"
@@ -461,7 +457,6 @@ set description = _('GC Notify lets you send emails and text messages to your us
       <div
       class="image-content pt-10 lg:pt-0 flex"
     >
-
 
     </div>
     <div class="text-content max-w-4xl pb-10 lg:pb-0">
@@ -504,9 +499,6 @@ set description = _('GC Notify lets you send emails and text messages to your us
       </div>
     </div>
   </div>
-
-
-  
   <!-- end section 5 -->
 
   <!-- start section 6 -->
@@ -522,7 +514,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
             {{ _("Skip the procurement process") }}
           </h2>
           <p class="pt-4 text-base mb-0">
-            {{ _("GC Notify is managed by the Canadian Digital Service  with no costs for departments that use the service.") }}
+            {{ _("GC Notify is managed by the Canadian Digital Service with no costs for departments that use the service.") }}
           </p>
           <ul class="list-disc ml-10">
             <li class="pt-4 text-base mb-0">
@@ -530,7 +522,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
               }}
             </li>
             <li class="pt-4 text-base mb-0">
-              {{ _("Send up to 10 million emails per year and up to 25,000 text messages per year, completely free.")}}
+              {{ _("Send up to 10 million emails per year and up to {} text messages per year, completely free.").format(default_free_sms_fragment_limits_central | format_number) }}
             </li>
           </ul>
         </div>
@@ -566,9 +558,6 @@ set description = _('GC Notify lets you send emails and text messages to your us
   </div>
   <!-- end section 6 -->
 
-  <!-- start section 7 -->
-  <!-- end section 7 -->
-
   <!-- COUNTER -->
   <div class="bg-gray">
     <div class="container px-10 lg:px-0 py-20 flex flex-col lg:flex-row justify-between">
@@ -596,7 +585,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
   </div>
   <!-- END COUNTER -->
 
-  <!-- start section 8 -->
+  <!-- start section 7 -->
   <div class="bg-blue">
     <div class="container px-10 py-24">
       <div class="flex justify-center">
@@ -616,11 +605,11 @@ set description = _('GC Notify lets you send emails and text messages to your us
       </div>
     </div>
   </div>
-  <!-- end section 8 -->
+  <!-- end section 7 -->
   </div>
   </div>
   </div>
-  <!-- start section 9 -->
+  <!-- start section 8 -->
   <div class="bg-gray" role="navigation" aria-label="Footer">
     <div class="container px-10 py-24">
       <nav class="flex" aria-label="footer links">
@@ -628,22 +617,22 @@ set description = _('GC Notify lets you send emails and text messages to your us
         <div class="block">
           <a
           href="{{ url_for('main.privacy') }}"
-          class="line-under text-white link:text-white visited:text-white text-small block mb-10 underline hover:no-underline"
+          class="line-under text-blue link:text-blue visited:text-blue text-small block mb-10 underline hover:no-underline"
           >{{ _("Privacy") }}</a
           >
           <a
           href="{{ url_for('main.security') }}"
-            class="line-under text-white link:text-white visited:text-white text-small block mb-10 underline hover:no-underline"
+            class="line-under text-blue link:text-blue visited:text-blue text-small block mb-10 underline hover:no-underline"
             >{{ _("Security") }}</a
           >
           <a
           href="{{ url_for('main.terms') }}"
-            class="line-under text-white link:text-white visited:text-white text-small block mb-10 underline hover:no-underline"
+            class="line-under text-blue link:text-blue visited:text-blue text-small block mb-10 underline hover:no-underline"
             >{{ _("Terms of use") }}</a
           >
           <a
               href="{{ url_for('main.activity') }}"
-                class="line-under text-white link:text-white visited:text-white text-small block underline hover:no-underline"
+                class="line-under text-blue link:text-blue visited:text-blue text-small block underline hover:no-underline"
                 >{{ _("Activity dashboard") }}</a
           >
         </div>
@@ -651,7 +640,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
     </div>
   </div>
 
-  <!-- start section 9 -->
+  <!-- start section 8 -->
   <div class="bg-gray">
     <div class="container px-10">
       <div class="flex py-10 justify-end">
