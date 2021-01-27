@@ -54,7 +54,6 @@ module.exports = {
         govukblue: "#005ea5",
         lightblue25: "#d5e8f3",
         lightblue: "#2b8cc4",
-        backgr: "#284162",
       },
       gray: {
         default: "#eee",
