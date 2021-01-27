@@ -55,7 +55,7 @@ def contact():
         form_obj = [f for f in steps if f["current_step"] == current_step][0]
     except IndexError:
         return redirect(url_for('.contact', current_step=DEFAULT_STEP))
-    form = form_obj["form"](data=session.get(SESSION_FORM_KEY, {}))
+    form = form_obj["form"](data=_form_data())
 
     # Validating the final form
     if form_obj["next_step"] is None and form.validate_on_submit():
@@ -76,7 +76,7 @@ def contact():
                 ][0]
         except IndexError:
             return redirect(url_for('.contact', current_step=DEFAULT_STEP))
-        form = form_obj["form"](data=session.get(SESSION_FORM_KEY, {}))
+        form = form_obj["form"](data=_form_data())
 
     session[SESSION_FORM_KEY] = form.data
     session[SESSION_FORM_STEP_KEY] = form_obj["current_step"]
@@ -91,6 +91,16 @@ def contact():
         total_steps_hint=form_obj.get("total_steps"),
         **_labels(form_obj["previous_step"], form_obj["current_step"], form.support_type.data),
     )
+
+
+def _form_data():
+    fallback = {}
+    if current_user.is_authenticated:
+        fallback = {
+            'name': current_user.name,
+            'email_address': current_user.email_address,
+        }
+    return session.get(SESSION_FORM_KEY, fallback)
 
 
 def _labels(previous_step, current_step, support_type):
