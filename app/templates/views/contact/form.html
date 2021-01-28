@@ -25,8 +25,10 @@
       {% call form_wrapper(action=url_for('.contact', current_step=current_step), autocomplete=True) %}
 
         {% if current_step == "identity" %}
-          {{ textbox(form.name, width='md:w-2/3', autocomplete='name') }}
-          {{ textbox(form.email_address, width='md:w-2/3', autocomplete='email') }}
+          {% if not current_user.is_authenticated %}
+            {{ textbox(form.name, width='md:w-2/3', autocomplete='name') }}
+            {{ textbox(form.email_address, width='md:w-2/3', autocomplete='email') }}
+          {% endif %}
           {{ radios(form.support_type) }}
         {% endif %}
 
