@@ -175,28 +175,6 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {% set txt = _('Text message senders') %}
-          {% set default = _('default') %}
-          {{ text_field(txt) }}
-          {% call field(status=default if current_service.default_sms_sender == "None" else '') %}
-            {{ current_service.default_sms_sender | string | nl2br | safe if current_service.default_sms_sender else 'None'}}
-            {% if current_service.count_sms_senders > 1 %}
-              <div class="hint">
-                {{ current_service.count_sms_senders|get_and_n_more_text }}
-              </div>
-            {% endif %}
-          {% endcall %}
-          {% set txt = _('Manage') %}
-          {{ edit_field(
-              txt,
-              url_for('.service_sms_senders',
-              service_id=current_service.id),
-              permissions=['manage_service','manage_api_keys']
-          )
-          }}
-        {% endcall %}
-
-        {% call settings_row(if_has_permission='sms') %}
           {% set txt = _('Start text messages with service name') %}
           {{ text_field(txt) }}
           {{ boolean_field(current_service.prefix_sms) }}
@@ -216,18 +194,6 @@
           {{ edit_field(
               change_txt,
               url_for('.service_set_international_sms',
-              service_id=current_service.id),
-              permissions=['manage_service']
-          )
-          }}
-        {% endcall %}
-        {% call settings_row(if_has_permission='sms') %}
-          {% set txt = _('Receive text messages') %}
-          {{ text_field(txt) }}
-          {{ boolean_field('inbound_sms' in current_service.permissions) }}
-          {{ edit_field(
-              change_txt,
-              url_for('.service_set_inbound_sms',
               service_id=current_service.id),
               permissions=['manage_service']
           )
@@ -339,6 +305,42 @@
             {{ text_field(current_service.rate_limit | format_number) }}
             {{ text_field('')}}
           {% endcall %}
+
+          {% call row() %}
+            {% set txt = _('Text message senders') %}
+            {% set default = _('default') %}
+            {{ text_field(txt) }}
+            {% call field(status=default if current_service.default_sms_sender == "None" else '') %}
+              {{ current_service.default_sms_sender | string | nl2br | safe if current_service.default_sms_sender else 'None'}}
+              {% if current_service.count_sms_senders > 1 %}
+                <div class="hint">
+                  {{ current_service.count_sms_senders|get_and_n_more_text }}
+                </div>
+              {% endif %}
+            {% endcall %}
+            {% set txt = _('Manage') %}
+            {{ edit_field(
+                txt,
+                url_for('.service_sms_senders',
+                service_id=current_service.id),
+                permissions=['manage_service','manage_api_keys']
+            )
+            }}
+          {% endcall %}
+
+          {% call row() %}
+            {% set txt = _('Receive text messages') %}
+            {{ text_field(txt) }}
+            {{ boolean_field('inbound_sms' in current_service.permissions) }}
+            {{ edit_field(
+                change_txt,
+                url_for('.service_set_inbound_sms',
+                service_id=current_service.id),
+                permissions=['manage_service']
+            )
+            }}
+          {% endcall %}
+
           {% call row() %}
             {% set txt = _('Free text message allowance') %}
             {{ text_field(txt)}}
