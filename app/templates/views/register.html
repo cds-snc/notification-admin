@@ -21,7 +21,7 @@
         {{ textbox(form.mobile_number, width='w-full md:w-3/4', hint=hint_txt) }}
       </div>
       <input class="visually-hidden" aria-hidden="true" tabindex="-1" id="defeat-chrome-autocomplete">
-      {% set txt = _('At least 8 characters') %}
+      {% set txt = _('Must be at least 8 characters and hard to guess') %}
       {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
       {{form.auth_type}}
       {% set txt = _('Continue') %}

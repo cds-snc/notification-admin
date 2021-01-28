@@ -864,7 +864,7 @@ def service_delete_letter_contact(service_id, letter_contact_id):
 
 
 @main.route("/services/<service_id>/service-settings/sms-sender", methods=['GET'])
-@user_has_permissions('manage_service', 'manage_api_keys')
+@user_is_platform_admin
 def service_sms_senders(service_id):
     return render_template(
         'views/service-settings/sms-senders.html',
@@ -872,7 +872,7 @@ def service_sms_senders(service_id):
 
 
 @main.route("/services/<service_id>/service-settings/sms-sender/add", methods=['GET', 'POST'])
-@user_has_permissions('manage_service')
+@user_is_platform_admin
 def service_add_sms_sender(service_id):
     form = ServiceSmsSenderForm()
     first_sms_sender = current_service.count_sms_senders == 0
@@ -899,7 +899,7 @@ def service_add_sms_sender(service_id):
     methods=['GET'],
     endpoint="service_confirm_delete_sms_sender"
 )
-@user_has_permissions('manage_service')
+@user_is_platform_admin
 def service_edit_sms_sender(service_id, sms_sender_id):
     sms_sender = current_service.get_sms_sender(sms_sender_id)
     is_inbound_number = sms_sender['inbound_number_id']

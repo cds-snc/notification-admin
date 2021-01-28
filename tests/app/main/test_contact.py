@@ -18,7 +18,49 @@ def test_contact_page_does_not_require_login(client_request):
     client_request.get('.contact')
 
 
+def test_identity_step_logged_in(client_request, mocker):
+    mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
+
+    # No name or email address fields are present
+    page = client_request.get(
+        '.contact',
+        _expected_status=200,
+    )
+
+    assert set(
+        input['name'] for input in page.select('input')
+    ) == set(['support_type', 'csrf_token'])
+
+    # Select a contact reason and submit the form
+    page = client_request.post(
+        '.contact',
+        _expected_status=200,
+        _data={
+            'support_type': 'other'
+        }
+    )
+
+    # On step 2, to type a message
+    assert_has_back_link(page)
+    assert page.select_one('.back-link')['href'] == url_for('.contact', current_step='identity')
+    assert normalize_spaces(page.find('h1').text) == 'Tell us more'
+
+    # Message step
+    page = client_request.post(
+        '.contact',
+        _expected_status=200,
+        _data={'message': 'My message'}
+    )
+
+    # Contact email has been sent
+    assert_no_back_link(page)
+    assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
+    mock_send_contact_email.assert_called_once()
+
+
 def test_identity_step_validates(client_request):
+    client_request.logout()
+
     page = client_request.post(
         '.contact',
         _expected_status=200,
@@ -41,6 +83,8 @@ def test_identity_step_validates(client_request):
 
 
 def test_back_link_goes_to_previous_step(client_request):
+    client_request.logout()
+
     page = client_request.post(
         '.contact',
         _expected_status=200,
@@ -88,7 +132,7 @@ def test_invalid_step_name_redirects(client_request):
 @pytest.mark.parametrize('support_type', [
     'ask_question', 'technical_support', 'give_feedback', 'other'
 ])
-def test_message_step_valides(client_request, support_type, mocker):
+def test_message_step_validates(client_request, support_type, mocker):
     mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
 
     page = client_request.post(
@@ -121,6 +165,8 @@ def test_message_step_valides(client_request, support_type, mocker):
 
 def test_saves_form_to_session(client_request, mocker):
     mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
+
+    client_request.logout()
 
     client_request.post(
         '.contact',
@@ -308,14 +354,6 @@ def test_demo_steps_success(client_request, mocker):
 
     # Fields are blank
     assert page.select_one('input[checked]') is None
-    assert [
-        (input['name'], input['value'])
-        for input in page.select('input')
-        if input['name'] in ['name', 'email_address']
-    ] == [
-        ('name', ''),
-        ('email_address', '')
-    ]
 
 
 @pytest.mark.parametrize('input_name, input_value, has_error', [
@@ -357,6 +395,8 @@ def test_demo_steps_validation(
             _expected_status=200,
             _data={**default_data, **{input_name: input_value}}
         )
+
+    client_request.logout()
 
     fields_by_step = [
         ['name', 'email_address', 'support_type'],

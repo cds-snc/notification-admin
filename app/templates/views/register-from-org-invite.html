@@ -19,7 +19,7 @@
         {% set txt = _('We’ll send you a security code by text message') %}
         {{ textbox(form.mobile_number, width='w-full md:w-3/4', hint=txt) }}
       </div>
-      {% set txt = _('At least 8 characters') %}
+      {% set txt = _('Must be at least 8 characters and hard to guess') %}
       {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
       {% set txt = _('Continue') %}
       {{ page_footer(txt) }}
