@@ -164,23 +164,23 @@ set description = _('GC Notify lets you send emails and text messages to your us
   <!-- end header -->
   <div id="content" class="home-page-content contain-floats">
   <!-- start section 1 -->
-  <div class="bg-blue-backgr" role="main">
+  <div class="bg-blue" role="main">
     <div class="container px-10 py-24">
       <div
         class="flex flex-col lg:flex-row justify-between"
       >
         <div class="text-content max-w-4xl">
           <h2 class="pb-0 font-sans text-white leading-tight font-bold text-lg">
-            {{ _("Send service updates by email and text message") }}
+            {{ _("Keep the public informed every step of the way") }}
           </h2>
           <p class="pt-10 pb-16 text-white text-base">
-            {{ _("Try out GC Notify, a new messaging platform for the Government of Canada.") }}
+            {{ _("Try GC Notify, a better way to send service updates to your clients.") }}
           </p>
           <div class="pt-0">
             <a
               href="{{ url_for('.register' )}}"
               class="button button-blue-lighter mr-10 hover:bg-blue-selected"
-              >{{ _("Create an account") }}</a
+              >{{ _("Try it now") }}</a
             >
             <a
               href="{{ url_for('main.sign_in' )}}"
@@ -209,7 +209,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
         <div class="image-content pb-10 lg:pb-0">
 
           <h2 class="leading-tight font-sans font-bold text-lg lg:hidden">
-            {{ _("A platform built for government") }}
+            {{ _("Built for the Government of Canada") }}
           </h2>
 
           {% if session["userlang"] == "en" %}
@@ -218,7 +218,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
               alt="An illustration that shows an example of an email notification. The example is a message confirming that an application was received and outlining next steps in the process."
               width="390"
               class=""
-              src="{{ asset_s3_url('letter-en.svg') }}"
+              src="{{ asset_s3_url('letter-en-v2.svg') }}"
             />
           {% else %}
             <img
@@ -226,23 +226,28 @@ set description = _('GC Notify lets you send emails and text messages to your us
               loading="lazy"
               width="390"
               class=""
-              src="{{ asset_s3_url('letter-fr.svg') }}"
+              src="{{ asset_s3_url('letter-fr-v2.svg') }}"
             />
           {% endif %}
 
         </div>
         <div class="text-content lg:max-w-4xl">
           <h2 class="leading-tight font-bold font-sans hidden text-lg lg:block lg:visible">
-            {{ _("A platform built for government") }}
+            {{ _("Built for the Government of Canada") }}
           </h2>
-          <p class="pt-4 text-base mb-0">
-            {{ _("Send emails or text messages to keep the public informed and make your services more transparent.") }}
-          </p>
-          <p class="pt-4 text-base mb-0">
-            {{ _("Use templates for easy, consistent, and accessible communications.") }}
-          </p>
+          <ul class="list-disc ml-5">
+            <li class="pt-4 text-base leading-tight">
+              {{ _("Send consistent and accessible email messages from a trusted domain.") }}
+            </li>
+            <li class="pt-4 text-base leading-tight">
+              {{ _("Personalise your messages, while protecting personal information.") }}
+            </li>
+            <li class="pt-4 text-base leading-tight">
+              {{_("Reduce the time, effort, and cost of correspondence.")}}
+            </li>
+          </ul>
           <p class="pt-10 text-blue text-base">
-            <a class="line-under text-base my-0 link:text-blue visited:text-blue" href="{{ url_for('main.features') }}">{{ _("Learn more about GC Notify") }}</a>
+            <a class="line-under text-base my-0 link:text-blue visited:text-blue" href="{{ url_for('main.why-notify') }}">{{ _("How GC Notify meets government needs") }}</a>
           </p>
         </div>
       </div>
@@ -253,141 +258,64 @@ set description = _('GC Notify lets you send emails and text messages to your us
   <!-- start section 3 -->
   <div class="bg-gray">
     <div class="container px-10 py-24">
-      <div class="flex flex-col lg:flex-row justify-between">
-        <!-- -->
-        <div class="text-content max-w-4xl pb-10 lg:pb-0">
-          <h2 class="leading-tight font-bold font-sans text-lg pb-6">
-            {{ _("A product built for you") }}
-          </h2>
-          <div class="image-content flex">
-          {% if session["userlang"] == "en" %}
-            <img
-              alt="An illustration with three outlines of people each with different interests. One is thinking of sending a message. The second is thinking of
-              code and the technical aspect. The third has managing a team in mind."
-              loading="lazy"
-              class="max-w-full md:max-w-xl block align-top lg:hidden"
-              width="390"
-              src="{{ asset_s3_url('built4you.svg') }}"
-
-            />
-         {% else %}
-           <img
-            alt="Illustration de trois silhouettes, chacune ayant un intérêt spécifique dans une bulle au-dessus de leur tête. L'une pense à envoyer un message, la deuxième au code et à l'aspect technique, et la troisième à la gestion d'une équipe."
-           loading="lazy"
-          class="max-w-full md:max-w-xl block align-top lg:hidden"
-          width="390"
-           src="{{ asset_s3_url('built4you.svg') }}"
-        />
-         {% endif %}
-         </div>
-          <ul class="list-disc ml-5">
-            <li class="pt-4 text-base leading-tight">
-              {{ _("Staff who regularly write and send service updates wishing to upgrade the tools used to communicate with the public") }}
-            </li>
-            <li class="pt-4 text-base leading-tight">
-              {{ _("Developers working on improving workflow and tooling for public servants") }}
-            </li>
-            <li class="pt-4 text-base leading-tight">
-              {{_("Administrators who have to meet departmental service standards for communication")}}
-            </li>
-          </ul>
-        </div>
-      {% if session["userlang"] == "en" %}
-        <div class="image-content flex">
-          <img loading="lazy"
-          alt="An illustration with three outlines of people each with different interests. One is thinking of sending a message. The second is thinking of
-          code and the technical aspect. The third has managing a team in mind."
-          width="400"
-          class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
-          style="object-fit: contain; object-position: 0% 50%;"
-          src="{{ asset_s3_url('built4you.svg') }}"
-          />
-        </div>
-      {% else %}
-      <div class="image-content flex">
-        <img loading="lazy"
-        alt="Illustration de trois silhouettes, chacune ayant un intérêt spécifique dans une bulle au-dessus de leur tête. L'une pense à envoyer un message, la deuxième au code et à l'aspect technique, et la troisième à la gestion d'une équipe."
-        width="400"
-        class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
-        style="object-fit: contain; object-position: 0% 50%;"
-        src="{{ asset_s3_url('built4you.svg') }}"
-        />
-      </div>
-      {% endif %}
-      <div
-      class="image-content pt-10 lg:pt-0 flex"
-    >
-
-
-    </div>
-        <!-- -->
-      </div>
-    </div>
-  </div>
-  <!-- end section 3 -->
-
-  <!-- start section 4 -->
-  <div class="bg-white">
-    <div class="container px-10 py-24">
       <div class="flex justify-center">
         <h2 class="leading-tight font-bold font-sans text-lg pb-6">
-          {{ _("What you can do") }}
+          {{ _("What you can do with GC Notify") }}
         </h2>
       </div>
 
       <div class="flex flex-col lg:flex-row py-10 justify-between">
-        <!-- note box -->
+        <!-- note box 1 -->
         <div class="feature-box mb-20 lg:mb-0">
-
-          {% if session["userlang"] == "en" %}
-            <img
-              alt="An illustration that shows the possibility of adding
-              recipients from a spreadsheet with a mailing list."
-              loading="lazy"
-              width="400"
-              src="{{ asset_s3_url('recipients-en.svg') }}"
-            />
-          {% else %}
-            <img
-              alt="Illustration montrant comment on peut ajouter des destinataires provenant d'une liste d'envoi dans une feuille Excel."
-              loading="lazy"
-              width="400"
-              src="{{ asset_s3_url('recipients-fr.svg') }}"
-            />
-          {% endif %}
-
-          <div class="text-small">
-            {{ _("Upload lists of recipients and send personalised messages in bulk") }}
-          </div>
-        </div>
-        <!-- end note box -->
-
-        <!-- note box -->
-        <div class="feature-box mb-20 lg:mb-0 lg:ml-10 lg:mr-10">
 
           {% if session["userlang"] == "en" %}
             <img
               alt="An illustration that shows how a personalized message template can be created using variables such as name, day of the week and colour."
               loading="lazy"
               width="400"
-              src="{{ asset_s3_url('text-messages-en.svg') }}"
+              src="{{ asset_s3_url('text-messages-en-v2.svg') }}"
             />
           {% else %}
             <img
               alt="Illustration montrant comment un gabarit peut être personnalisé à l'aide de variables comme le nom, le jour et la couleur."
               loading="lazy"
               width="400"
-              src="{{ asset_s3_url('text-messages-fr.svg') }}"
+              src="{{ asset_s3_url('text-messages-fr-v2.svg') }}"
             />
           {% endif %}
 
           <div class="text-small">
-            {{ _("Create templates and save them for future messages") }}
+            {{ _("Write personalised email or text messages using variables.") }}
           </div>
         </div>
-        <!-- end note box -->
+        <!-- end note box 1 -->
+        
+        <!-- note box 2 -->
+        <div class="feature-box mb-20 lg:mb-0 lg:ml-10 lg:mr-10">
 
-        <!-- note box -->
+          {% if session["userlang"] == "en" %}
+            <img
+              alt="An illustration that shows a calendar to schedule notifications"
+              loading="lazy"
+              width="400"
+              src="{{ asset_s3_url('schedule-email-en.svg') }}"
+            />
+          {% else %}
+            <img
+              alt="Une illustration qui montre un calendrier pour programmer les notifications."
+              loading="lazy"
+              width="400"
+              src="{{ asset_s3_url('schedule-email-fr.svg') }}"
+            />
+          {% endif %}
+
+          <div class="text-small">
+            {{ _("Schedule and send up to {} messages to a list of recipients").format(csv_max_rows | format_number) }}
+          </div>
+        </div>
+        <!-- end note box 2 -->
+
+        <!-- note box 3 -->
         <div class="feature-box">
 
           {% if session["userlang"] == "en" %}
@@ -407,232 +335,304 @@ set description = _('GC Notify lets you send emails and text messages to your us
           {% endif %}
 
           <div class="text-small">
-            {{ _("Track the status of the messages you send") }}
+            {{ _("Track message delivery status in your dashboard") }}
           </div>
         </div>
-        <!-- end note box -->
-
-        <!-- -->
+        <!-- end note box 3 -->
       </div>
 
       <div class="flex lg:justify-center">
         <a
           class="line-under pt-10 inline-block text-blue link:text-blue visited:text-blue text-base underline hover:no-underline"
           href="{{ url_for('main.features') }}"
-          >{{ _("See how GC Notify can improve your workflow") }}</a
+          >{{ _("Learn more about features") }}</a
         >
       </div>
     </div>
-    <!-- end section 4 -->
+  <!-- end section 3 -->
 
-    <!-- start section 5 -->
-    <div class="bg-gray">
-      <div class="container px-10 py-24">
-        <div class="flex flex-col lg:flex-row justify-between">
-          <div class="text-content max-w-4xl pb-10 lg:pb-0">
-            <h2 class="leading-tight font-bold font-sans text-lg pb-6">
-              {{ _("Integrate it into your system") }}
-            </h2>
+  <!-- start section 4 -->
+  <div class="bg-white">
+    <div class="container px-10 py-24">
+      <div class="flex flex-col lg:flex-row justify-between">
+        <div class="text-content max-w-4xl pb-10 lg:pb-0">
+          <h2 class="leading-tight font-bold font-sans text-lg pb-6">
+            {{ _("Connect your program or service") }}
+          </h2>
 
-          {% if session["userlang"] == "en" %}
-            <img
-              alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
-              loading="lazy"
-              class="max-w-full md:max-w-xl block align-top lg:hidden"
-              width="390"
-              src="{{ asset_s3_url('integrate-1.svg') }}"
+        {% if session["userlang"] == "en" %}
+          <img
+            alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
+            loading="lazy"
+            class="max-w-full md:max-w-xl block align-top lg:hidden"
+            width="390"
+            src="{{ asset_s3_url('integrate-1.svg') }}"
 
-            />
-         {% else %}
-           <img
-            alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
-           loading="lazy"
-          class="max-w-full md:max-w-xl block align-top lg:hidden"
-          width="390"
-           src="{{ asset_s3_url('integrate-1.svg') }}"
-        />
-         {% endif %}
+          />
+        {% else %}
+          <img
+          alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
+          loading="lazy"
+        class="max-w-full md:max-w-xl block align-top lg:hidden"
+        width="390"
+          src="{{ asset_s3_url('integrate-1.svg') }}"
+      />
+        {% endif %}
 
 
-            <p class="block text-base mb-0 pt-20 lg:pt-4">
-              {{ _("Take advantage of secure, cloud-based messaging tools by integrating GC Notify with your current system.") }}
-            </p>
-            <p class="pt-4 text-base mb-0">
-              {{ _("GC Notify supports roles and permissions, so that you can adjust which staff have access to send or edit messages.") }}
-            </p>
-            <p class="pt-10 text-base mb-0 text-blue">
-              <a
-                class="line-under inline-block text-blue link:text-blue visited:text-blue text-base underline hover:no-underline"
-                href="{{ url_for('main.documentation') }}"
-                >{{ _("Learn how to integrate GC Notify") }}</a
-              >
-            </p>
-          </div>
-          <div
-            class="image-content pt-10 lg:pt-0 flex"
-          >
-          {% if session["userlang"] == "en" %}
-            <img
-              alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
-              loading="lazy"
-              class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
-              width="400"
-              style="object-fit: contain; object-position: 0% 50%;"
-              src="{{ asset_s3_url('integrate-1.svg') }}"
-            />
-            {% else %}
-            <img
-            alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
+          <p class="block text-base mb-0 pt-20 lg:pt-4">
+            {{ _("Two ways to send:") }}
+          </p>
+          <ul class="list-disc ml-5">
+            <li class="pt-4 text-base leading-tight">
+              {{ _("Automatically, using the API integrated with your web application or back-office system.") }}
+            </li>
+            <li class="pt-4 text-base leading-tight">
+              {{ _("Manually, by uploading a list of contacts as an Excel spreadsheet in GC Notify.") }}
+            </li>
+          </ul>
+          <p class="pt-10 text-base mb-0 text-blue">
+            <a
+              class="line-under inline-block text-blue link:text-blue visited:text-blue text-base underline hover:no-underline"
+              href="{{ url_for('main.documentation') }}"
+              >{{ _("How to integrate GC Notify with your system") }}</a
+            >
+          </p>
+        </div>
+        <div
+          class="image-content pt-10 lg:pt-0 flex"
+        >
+        {% if session["userlang"] == "en" %}
+          <img
+            alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
             loading="lazy"
             class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
             width="400"
             style="object-fit: contain; object-position: 0% 50%;"
             src="{{ asset_s3_url('integrate-1.svg') }}"
           />
-          {% endif %}
+          {% else %}
+          <img
+          alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
+          loading="lazy"
+          class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
+          width="400"
+          style="object-fit: contain; object-position: 0% 50%;"
+          src="{{ asset_s3_url('integrate-1.svg') }}"
+        />
+        {% endif %}
 
-          </div>
         </div>
       </div>
     </div>
-    <!-- end section 5 -->
+  </div>
+  <!-- end section 4 -->
 
-    <!-- start section 6 -->
-    <div class="bg-white">
-      <div class="container px-10 py-24">
+  <!-- start section 5 -->
+  <div class="bg-gray">
+    <div class="container px-10 py-24">
+      <div class="flex flex-col lg:flex-row justify-between">
+      {% if session["userlang"] == "en" %}
+        <div class="image-content flex">
+          <img loading="lazy"
+          alt="An illustration with three outlines of people each with different interests. One is thinking of sending a message. The second is thinking of
+          code and the technical aspect. The third has managing a team in mind."
+          width="400"
+          class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
+          style="object-fit: contain; object-position: 0% 50%;"
+          src="{{ asset_s3_url('built4you-v2.svg') }}"
+          />
+        </div>
+      {% else %}
+      <div class="image-content flex">
+        <img loading="lazy"
+        alt="Illustration de trois silhouettes, chacune ayant un intérêt spécifique dans une bulle au-dessus de leur tête. L'une pense à envoyer un message, la deuxième au code et à l'aspect technique, et la troisième à la gestion d'une équipe."
+        width="400"
+        class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
+        style="object-fit: contain; object-position: 0% 50%;"
+        src="{{ asset_s3_url('built4you-v2.svg') }}"
+        />
+      </div>
+      {% endif %}
+      <div
+      class="image-content pt-10 lg:pt-0 flex"
+    >
 
-        <h2 class="leading-tight font-bold lg:hidden font-sans text-lg pb-6">
-          {{ _("Free for Government of Canada services") }}
-        </h2>
-        <div class="flex flex-col lg:flex-row justify-between">
+    </div>
+    <div class="text-content max-w-4xl pb-10 lg:pb-0">
+      <h2 class="leading-tight font-bold font-sans text-lg pb-6">
+        {{ _("Work more efficiently") }}
+      </h2>
+      <ul class="list-disc ml-5">
+        <li class="pt-4 text-base leading-tight">
+          {{ _("Automate sending so that whenever there is a status change, the public receives an update.") }}
+        </li>
+        <li class="pt-4 text-base leading-tight">
+          {{ _("Improve your development tools with a secure, cloud-based messaging platform.") }}
+        </li>
+        <li class="pt-4 text-base leading-tight">
+          {{_("Set permission access for which people on your team can edit or send messages.")}}
+        </li>
+      </ul>
+      <div class="image-content flex">
+        {% if session["userlang"] == "en" %}
+          <img
+            alt="An illustration with three outlines of people each with different interests. One is thinking of sending a message. The second is thinking of
+            code and the technical aspect. The third has managing a team in mind."
+            loading="lazy"
+            class="max-w-full md:max-w-xl block align-top lg:hidden"
+            width="390"
+            src="{{ asset_s3_url('built4you-v2.svg') }}"
 
-          <div class="image-content flex flex-auto justify-start lg:justify-center">
+          />
+        {% else %}
+          <img
+            alt="Illustration de trois silhouettes, chacune ayant un intérêt spécifique dans une bulle au-dessus de leur tête. L'une pense à envoyer un message, la deuxième au code et à l'aspect technique, et la troisième à la gestion d'une équipe."
+          loading="lazy"
+          class="max-w-full md:max-w-xl block align-top lg:hidden"
+          width="390"
+          src="{{ asset_s3_url('built4you-v2.svg') }}"
+          />
+        {% endif %}
+      </div>
+    </div>
+      </div>
+    </div>
+  </div>
+  <!-- end section 5 -->
 
-            {% if session["userlang"] == "en" %}
+  <!-- start section 6 -->
+  <div class="bg-white">
+    <div class="container px-10 py-24">
 
-            <img
-              alt="An illustration of a price tag with 0$ indicated along with main features like: unlimited emails, batch send to recipients, customizable templates, and analytics dashboard."
-              loading="lazy"
-              width="300"
-              style="object-fit: contain; object-position: 0% 30%;"
-              class="inline-block pb-10 lg:pb-0 max-w-full md:max-w-xl"
-              src="{{ asset_s3_url('pricing-en.svg') }}"
-            />
+      <h2 class="leading-tight font-bold lg:hidden font-sans text-lg pb-6">
+        {{ _("Skip the procurement process") }}
+      </h2>
+      <div class="flex flex-col lg:flex-row justify-between">
+        <div class="text-content max-w-4xl">
+          <h2 class="leading-tight font-bold hidden lg:block lg:visible font-sans text-lg">
+            {{ _("Skip the procurement process") }}
+          </h2>
+          <p class="pt-4 text-base mb-0">
+            {{ _("GC Notify is managed by the Canadian Digital Service with no costs for departments that use the service.") }}
+          </p>
+          <ul class="list-disc ml-10">
+            <li class="pt-4 text-base mb-0">
+              {{ _("Replace paper letters or costly third-party messaging services.")
+              }}
+            </li>
+            <li class="pt-4 text-base mb-0">
+              {{ _("Send up to 10 million emails per year and up to {} text messages per year, completely free.").format(default_free_sms_fragment_limits_central | format_number) }}
+            </li>
+          </ul>
+        </div>
+        <div class="image-content flex flex-auto justify-start lg:justify-center">
 
-            {% else %}
+          {% if session["userlang"] == "en" %}
 
-            <img
-            alt="Illustration d'une étiquette affichant « 0 $ » et les caractéristiques principales du produit : courriels illimités, envoi de messages en lot, gabarits personnalisables et tableau de bord analytique."
+          <img
+            alt="An illustration of a price tag with 0$ indicated along with main features like: unlimited emails, batch send to recipients, customizable templates, and analytics dashboard."
             loading="lazy"
             width="300"
             style="object-fit: contain; object-position: 0% 30%;"
             class="inline-block pb-10 lg:pb-0 max-w-full md:max-w-xl"
-            src="{{ asset_s3_url('pricing-fr.svg') }}"
+            src="{{ asset_s3_url('pricing-en-v2.svg') }}"
           />
 
-            {% endif %}
+          {% else %}
 
-          </div>
-          <div class="text-content max-w-4xl">
-            <h2 class="leading-tight font-bold hidden lg:block lg:visible font-sans text-lg">
-              {{ _("Free for Government of Canada services") }}
-            </h2>
-            <p class="pt-4 text-base mb-0">
-              {{ _("Replace paper letters or costly third-party messaging services.") }}
-            </p>
-            <ul class="list-disc ml-10">
-              <li class="pt-4 text-base mb-0">
-                {{ _("Send unlimited emails, completely free.")
-                }}
-              </li>
-              <li class="pt-4 text-base mb-0">
-                {{ _("GC Notify is a service managed by the Canadian Digital Service — no external procurement." )}}
-              </li>
-            </ul>
-          </div>
+          <img
+          alt="Illustration d'une étiquette affichant « 0 $ » et les caractéristiques principales du produit : courriels illimités, envoi de messages en lot, gabarits personnalisables et tableau de bord analytique."
+          loading="lazy"
+          width="300"
+          style="object-fit: contain; object-position: 0% 30%;"
+          class="inline-block pb-10 lg:pb-0 max-w-full md:max-w-xl"
+          src="{{ asset_s3_url('pricing-fr-v2.svg') }}"
+        />
+
+          {% endif %}
+
         </div>
       </div>
     </div>
-    <!-- end section 6 -->
+  </div>
+  <!-- end section 6 -->
 
-    <!-- start section 7 -->
-    <!-- end section 7 -->
-
-    <!-- COUNTER -->
-    <div class="bg-gray">
-      <div class="container px-10 lg:px-0 py-20 flex flex-col lg:flex-row justify-between">
-          <!-- Box 1-->
-          <div class="flex flex-col items-start justify-end pb-10 lg:pb-0">
-            <div class="text-brand font-bold extra-tight font-sans">{{ _("GC Notify by the numbers") }}</div>
-            <div class="text-base py-2">
-              <a href="{{ url_for('.activity' )}}" class="text-blue link:text-blue visited:text-blue">
-                {{ _("Learn more in the Activity Dashboard") }}
-              </a>
-            </div>
+  <!-- COUNTER -->
+  <div class="bg-gray">
+    <div class="container px-10 lg:px-0 py-20 flex flex-col lg:flex-row justify-between">
+        <!-- Box 1-->
+        <div class="flex flex-col items-start justify-end pb-10 lg:pb-0">
+          <div class="text-brand font-bold extra-tight font-sans">{{ _("GC Notify by the numbers") }}</div>
+          <div class="text-base py-2">
+            <a href="{{ url_for('.activity' )}}" class="text-blue link:text-blue visited:text-blue">
+              {{ _("Learn more in the Activity Dashboard") }}
+            </a>
           </div>
-          <!-- Box 2-->
-          <div class="pb-10 lg:pb-0">
-            <div class="text-xxl font-bold leading-none font-sans">{{ stats.live_services | format_number }}</div>
-            <div class="text-base py-2">{{ _("services using GC Notify") }}</div>
-          </div>
-          <!-- Box 3-->
-          <div class="pb-10 lg:pb-0">
-            <div class="text-xxl font-bold leading-none font-sans">{{ stats.notifications_total | format_number }}</div>
-            <div class="text-base py-2">{{ _("messages sent") }}</div>
-          </div>
-          <!-- end -->
         </div>
-    </div>
-    <!-- END COUNTER -->
+        <!-- Box 2-->
+        <div class="pb-10 lg:pb-0">
+          <div class="text-xxl font-bold leading-none font-sans">{{ stats.live_services | format_number }}</div>
+          <div class="text-base py-2">{{ _("services using GC Notify") }}</div>
+        </div>
+        <!-- Box 3-->
+        <div class="pb-10 lg:pb-0">
+          <div class="text-xxl font-bold leading-none font-sans">{{ stats.notifications_total | format_number }}</div>
+          <div class="text-base py-2">{{ _("messages sent") }}</div>
+        </div>
+        <!-- end -->
+      </div>
+  </div>
+  <!-- END COUNTER -->
 
-    <!-- start section 8 -->
-    <div class="bg-blue-backgr">
-      <div class="container px-10 py-24">
-        <div class="flex justify-center">
-          <div>
-            <h2 class="pb-0 text-white leading-tight text-center font-sans text-lg">
-              {{ _("Start sending test messages right away!") }}
-            </h2>
-            <p class="p-16 text-center">
-              <a href="{{ url_for('.register' )}}" class="button button-blue-lighter text-center hover:bg-blue-selected"
-                >{{ _("Create an account") }}</a
-              >
-            </p>
-            <p class="text-base text-white text-center mb-0">
-              {{ _("Want to know more? <a href='{}' class='{}'>Get in touch</a>").format(url_for('.contact'), 'link:text-white visited:text-white') }}
-            </p>
-          </div>
+  <!-- start section 7 -->
+  <div class="bg-blue">
+    <div class="container px-10 py-24">
+      <div class="flex justify-center">
+        <div>
+          <h2 class="pb-0 text-white leading-tight text-center font-sans text-lg">
+            {{ _("Start sending test messages right away!") }}
+          </h2>
+          <p class="p-16 text-center">
+            <a href="{{ url_for('.register' )}}" class="button button-blue-lighter text-center hover:bg-blue-selected"
+              >{{ _("Create an account") }}</a
+            >
+          </p>
+          <p class="text-base text-white text-center mb-0">
+            {{ _("Want to know more? <a href='{}' class='{}'>Get in touch</a>").format(url_for('.contact'), 'link:text-white visited:text-white') }}
+          </p>
         </div>
       </div>
     </div>
-    <!-- end section 8 -->
+  </div>
+  <!-- end section 7 -->
   </div>
   </div>
   </div>
-  <!-- start section 9 -->
-  <div class="bg-blue" role="navigation" aria-label="Footer">
+  <!-- start section 8 -->
+  <div class="bg-gray" role="navigation" aria-label="Footer">
     <div class="container px-10 py-24">
       <nav class="flex" aria-label="footer links">
         <div class="block mr-20">
         <div class="block">
           <a
           href="{{ url_for('main.privacy') }}"
-          class="line-under text-white link:text-white visited:text-white text-small block mb-10 underline hover:no-underline"
+          class="line-under text-blue link:text-blue visited:text-blue text-small block mb-10 underline hover:no-underline"
           >{{ _("Privacy") }}</a
           >
           <a
           href="{{ url_for('main.security') }}"
-            class="line-under text-white link:text-white visited:text-white text-small block mb-10 underline hover:no-underline"
+            class="line-under text-blue link:text-blue visited:text-blue text-small block mb-10 underline hover:no-underline"
             >{{ _("Security") }}</a
           >
           <a
           href="{{ url_for('main.terms') }}"
-            class="line-under text-white link:text-white visited:text-white text-small block mb-10 underline hover:no-underline"
+            class="line-under text-blue link:text-blue visited:text-blue text-small block mb-10 underline hover:no-underline"
             >{{ _("Terms of use") }}</a
           >
           <a
               href="{{ url_for('main.activity') }}"
-                class="line-under text-white link:text-white visited:text-white text-small block underline hover:no-underline"
+                class="line-under text-blue link:text-blue visited:text-blue text-small block underline hover:no-underline"
                 >{{ _("Activity dashboard") }}</a
           >
         </div>
@@ -640,7 +640,7 @@ set description = _('GC Notify lets you send emails and text messages to your us
     </div>
   </div>
 
-  <!-- start section 9 -->
+  <!-- start section 8 -->
   <div class="bg-gray">
     <div class="container px-10">
       <div class="flex py-10 justify-end">
