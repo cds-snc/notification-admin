@@ -293,7 +293,7 @@
   <div class="bg-blue">
     <nav class="" aria-label="footer links">
       <div class="px-10 py-24 grid lg:grid-cols-3 md:grid-cols-2 smaller:grid-cols-1 gap-4">
-        <div class="flex-1 grid grid-cols-1 mb-4">
+        <div class="flex-1 grid grid-cols-1 grid-rows-4 mb-4">
           <div>
             <span class="text-white text-base font-bold mb-10">About</span>
           </div>
@@ -316,7 +316,7 @@
             >{{ _("Activity dashboard") }}</a>
           </div>
         </div>
-        <div class="flex-1 grid grid-cols-1 mb-4">
+        <div class="flex-1 grid grid-cols-1 md:grid-rows-4 mb-4">
           <div>
             <span class="text-white text-base font-bold mb-10">Using GC Notify</span>
           </div>
@@ -326,18 +326,18 @@
               class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
             >{{ _("Documentation") }}</a>
           </div>
-          <div>
+          <div class="md:row-span-2">
             <a
               href="{{ url_for('main.design_content') }}"
               class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
             >{{ _("Guidance") }}</a>
           </div>
         </div>
-        <div class="flex-1 grid grid-cols-1 mb-4">
+        <div class="flex-1 grid grid-cols-1 lg:grid-rows-4 mb-4">
           <div>
             <span class="text-white text-base font-bold mb-10">Support</span>
           </div>
-          <div>
+          <div class="lg:row-span-3">
             <a
               href="{{ url_for('main.contact') }}"
               class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
