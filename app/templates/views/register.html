@@ -23,30 +23,13 @@
       <input class="visually-hidden" aria-hidden="true" tabindex="-1" id="defeat-chrome-autocomplete">
       {% set txt = _('Must be at least 8 characters and hard to guess') %}
       {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
+      <p>
+        {{ _("By creating an account, you agree to the <a href='{}'>terms of use</a>.").format(url_for('main.terms')) }}
+      </p>
       {{form.auth_type}}
       {% set txt = _('Continue') %}
       {{ page_footer(txt) }}
     {% endcall %}
-
-    <div style="display:inline-block;margin-top:20px;"></div>
-
-    <hr />
-    
-    <h3 class="heading-small">{{_('Privacy') }}</h3>
-    <p>
-    {{ _("You're creating an account for GC Notify, so you can choose to stop using it at any time for any reason") }}
-    </p>
-
-    <p>
-      {{ _("We (the Canadian Digital Service) will make sure your data and correspondence are confidential, which means they will not be linked back to anyone") }}
-    </p>
-
-    <p>{{ _("Your participation will not impact your relationship with the Canadian Digital Service or any part of the Government of Canada.") }}</p>
-
-    <p>{{ _("Please read our <a href='https://digital.canada.ca/legal/privacy'>Privacy Statement</a>. We handle all personal information in accordance with the Privacy Act.") }}</p>
-
-    
-  </div>
 </div>
 
 {% endblock %}
