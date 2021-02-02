@@ -49,13 +49,13 @@
 {% endmacro %}
 
 {% block per_page_title %}
-  {{ _('Choose service') }}
+  {{ _('All services') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <h1 class="heading-large {% if current_user.has_access_to_live_and_trial_mode_services %}visually-hidden{% endif %}">
-    {{ _('Choose service') }}
+    {{ _('All services') }}
   </h1>
 
   <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}mt-8 block clear-both contain-floats{% endif %}">
