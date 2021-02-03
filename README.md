@@ -252,6 +252,7 @@ https://github.com/alphagov/notifications-admin
 Brew est un gestionnaire de paquets pour OSX. La commande suivante permet d'installer brew :
 ```shell
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
 
 Langages nécessaires
 - Python 3.X
@@ -259,7 +260,7 @@ Langages nécessaires
 - [npm](https://www.npmjs.com/) 6.4.1 ou plus
 ```shell
 brew install node
-
+```
 
 [NPM](npmjs.org) est l'outil de gestion des paquets de Node. `n` est un outil de gestion des
 différentes versions de Node. Ce qui suit installe `n` et utilise le support à long terme (LTS)
@@ -268,6 +269,7 @@ version de Node.
 npm install -g n
 n lts
 npm rebuild node-sass
+```
 
 ### Instruction d'installation locale 
 
@@ -331,7 +333,7 @@ source ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
 
 14.  Démarrer le service
 
-`flask run -p 6012 --host=0.0.0.0``.
+`flask run -p 6012 --host=0.0.0.0`.
 
 15. Pour tester
 
@@ -344,7 +346,7 @@ source ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
 Si vous souhaitez que les fichier JS et CSS soient recompilés en fonction des changements, laissez tourner cette fonction dans un terminal séparé de l'application
 ```shell
 npm run watch
-
+```
 
 ## Mise à jour des dépendances des applications
 
@@ -390,7 +392,7 @@ Crée une variable
 Pour les formulaires
 
 ```
-de flask_babel import _
+from flask_babel import _
 ```
 
 Enveloppez votre texte
