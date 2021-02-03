@@ -74,7 +74,7 @@
                 >
               </div>
             </div>
-            <div class="pt-6 pb-6 ml-10 image-content hidden lg:block lg:visible">
+            <div class="pt-6 pb-6 ml-10 image-content">
               <img
                 loading="lazy"
                 alt="An illustration of a laptop with a message window on the screen and a cellphone with a message and a callout blurb."
@@ -541,17 +541,6 @@
   </div>
 
   <!-- END CONTENT-->
-
-  <script>
-    function classToggle() {
-      const nav = document.querySelector(".mobile-nav")
-      const arrow = document.querySelector(".mobile-arrow")
-      nav.classList.toggle("invisible")
-      arrow.classList.toggle("flip")
-    }
-
-    document.querySelector("#menu").addEventListener("click", classToggle)
-  </script>
 
   {% if scrollTo == "true" %}
     <script>

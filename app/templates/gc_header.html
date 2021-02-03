@@ -50,24 +50,34 @@
     <!-- end sub nav -->
   </div>
   <div>
-    <a href="/" class="no-underline text-black visited:text-black">
+    <a href="/" class="no-underline">
       <div class="">
-        <div
-          class="text-title font-bold"
+        <span
+          class="text-title text-black visited:text-black"
         >
           {{ _("GC Notify") }}
-        </div>
+        </span>
       </div>
 
     </a>
   </div>
-  {% if current_service.name %}
+  {% if current_user.is_authenticated %}
     <div class="flex flex-wrap space-x-4 items-stretch">
-      <div class="text-lg">
-        {{ current_service.name }}
+      <div class="text-lg font-bold">
+        {% if current_service.name %}
+          <a href="{{ url_for('main.show_accounts_or_dashboard') }}"
+             class="text-lg font-bold no-underline visited:text-black"
+             ><span class="text-black">{{ current_service.name }}</span></a>
+        {% else %}
+          {% if current_user.platform_admin %}
+            {{ _('Admin panel') }}
+          {% else %}
+            {{ _('Your services') }}
+          {% endif %}
+        {% endif %}
       </div>
       <div class="text-base self-center">
-        - <a href="{{ url_for('.choose_account') }}">Switch Services</a>
+          - <a href="{{ url_for('.choose_account') }}">Switch Services</a>
       </div>
     </div>
   {% endif %}

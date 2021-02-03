@@ -111,7 +111,7 @@
 
 <!-- start header -->
 <header>
-{%  include 'gc_header.html' %}
+{% include 'gc_header.html' %}
 
 {% include 'gc_header_nav.html' %}
 
@@ -153,17 +153,6 @@
       "js-enabled",
       ""
     )
-</script>
-
-<script>
-  function classToggle() {
-    const nav = document.querySelector(".mobile-nav")
-    const arrow = document.querySelector(".mobile-arrow")
-    nav.classList.toggle("hidden")
-    arrow.classList.toggle("flip")
-  }
-
-  document.querySelector("#menu").addEventListener("click", classToggle)
 </script>
 
 {% block page_script %}{% endblock %}
