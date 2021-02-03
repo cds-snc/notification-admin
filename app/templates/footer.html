@@ -1,0 +1,72 @@
+<footer aria-label="{{ _('footer menu') }}">
+  <div class="bg-blue">
+    <nav class="" aria-label="footer links">
+      <div class="px-10 py-24 grid lg:grid-cols-3 md:grid-cols-2 smaller:grid-cols-1 gap-4">
+        <div class="flex-1 grid grid-cols-1 grid-rows-4 mb-4">
+          <div>
+            <span class="text-white text-base font-bold mb-10">About</span>
+          </div>
+          <div>
+            <a
+              href="{{ url_for('main.why-notify') }}"
+              class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
+            >{{ _("Why GC Notify") }}</a>
+          </div>
+          <div>
+            <a
+              href="{{ url_for('main.features') }}"
+              class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
+            >{{ _("Features") }}</a>
+          </div>
+          <div>
+            <a
+              href="{{ url_for('main.activity') }}"
+              class="line-under text-white visited:text-white link:text-white text-small  underline hover:no-underline "
+            >{{ _("Activity dashboard") }}</a>
+          </div>
+        </div>
+        <div class="flex-1 grid grid-cols-1 md:grid-rows-4 mb-4">
+          <div>
+            <span class="text-white text-base font-bold mb-10">Using GC Notify</span>
+          </div>
+          <div>
+            <a
+              href="{{ url_for('main.documentation') }}"
+              class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
+            >{{ _("Documentation") }}</a>
+          </div>
+          <div class="md:row-span-2">
+            <a
+              href="{{ url_for('main.design_content') }}"
+              class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
+            >{{ _("Guidance") }}</a>
+          </div>
+        </div>
+        <div class="flex-1 grid grid-cols-1 lg:grid-rows-4 mb-4">
+          <div>
+            <span class="text-white text-base font-bold mb-10">Support</span>
+          </div>
+          <div class="lg:row-span-3">
+            <a
+              href="{{ url_for('main.contact') }}"
+              class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
+            >{{ _("Contact us") }}</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- start section 9 -->
+  <div class="bg-gray">
+    <div class="container px-10">
+      <div class="flex py-10 justify-end">
+        <img
+          alt="Symbol of the Government of Canada / Symbole du gouvernement du Canada"
+          src="{{ asset_s3_url('goc--footer-logo.svg') }}"
+          width="150"
+        />
+      </div>
+    </div>
+  </div>
+</footer>

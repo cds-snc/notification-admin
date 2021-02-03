@@ -1,0 +1,38 @@
+<div class="mobile-nav container hidden">
+  <div class="absolute z-50 bg-gray p-5 border-b-8">
+    <ul class="pt-2">
+      {% if current_user.platform_admin %}
+        <li>
+          <a href="{{ url_for('main.live_services') }}"
+             class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+          >{{ _('Platform admin') }}</a>
+        </li>
+      {% endif %}
+
+      <li>
+        <a
+          class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+          href="{{ url_for('main.why-notify') }}"
+        >{{ _('Why GC Notify') }}</a>
+      </li>
+      <li>
+        <a
+          class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+          href="{{ url_for('main.features') }}"
+        >{{ _('Features') }}</a>
+      </li>
+      <li>
+        <a
+          class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+          href="{{ url_for('main.documentation') }}"
+        >{{ _('Documentation') }}</a>
+      </li>
+      <li>
+        <a
+          class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+          href="{{ url_for('main.contact') }}"
+        >{{ _('Contact us') }}</a>
+      </li>
+    </ul>
+  </div>
+</div>

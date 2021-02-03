@@ -1,0 +1,19 @@
+<!-- mobile menu dropdown -->
+<div class="md:hidden">
+  Icon
+</div>
+<!-- mobile menu dropdown END -->
+<!-- md-lg menu dropdown -->
+<div class="xs:hidden sm:hidden smaller:hidden md:flex">
+  <a href="{{ url_for('main.user_profile') }}"
+     class="mr-10 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
+    {{ current_user.name }}
+  </a>
+  <a
+    href="{{ url_for('main.sign_out') }}"
+    class="line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
+  >
+    {{ _('Sign out') }}
+  </a>
+</div>
+<!-- md-lg menu dropdown END -->
