@@ -25,7 +25,7 @@ Flask-Babel==2.0.0
 newrelic==6.0.1.155
 python-dotenv==0.15.0
 pwnedpasswords==2.0.0
-PyYAML==5.4.1
+PyYAML==5.3.1
 translate-toolkit==3.3.1
 ua-parser==0.10.0
 user-agents==2.2.0
@@ -38,6 +38,6 @@ awscli-cwlogs>=1.4.6,<1.5
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous==0.24  # pyup: <1.0.0
 
-git+https://github.com/cds-snc/notifier-utils.git@43.3.1#egg=notifications-utils
+git+https://github.com/cds-snc/notifier-utils.git@43.4.0#egg=notifications-utils
 
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
