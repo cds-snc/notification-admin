@@ -62,11 +62,19 @@
 
 <script>
   function classToggle() {
-    const nav = document.querySelector(".mobile-nav")
-    const arrow = document.querySelector(".mobile-arrow")
-    nav.classList.toggle("hidden")
-    arrow.classList.toggle("flip")
+    const nav = document.querySelector(".mobile-nav");
+    const arrow = document.querySelector(".mobile-arrow");
+    nav.classList.toggle("hidden");
+    arrow.classList.toggle("flip");
   }
 
-  document.querySelector("#menu").addEventListener("click", classToggle)
+  document.querySelector("#menu").addEventListener("click", classToggle);
+
+  // REVIEW: Revisit this code and make it more reusable. --jlr
+  function accountToggle() {
+    const accountMenu = document.querySelector("#account-menu");
+    accountMenu.classList.toggle("hidden");
+  }
+
+  document.querySelector("#account-icon").addEventListener("click", accountToggle);
 </script>
