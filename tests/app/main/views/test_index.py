@@ -155,7 +155,7 @@ def test_old_static_pages_redirect(
     )
 
 
-def test_old_callbacks_page_redirect(client):
+def test_old_callbacks_page_redirects(client):
     response = client.get(url_for('main.callbacks'))
     assert response.status_code == 301
     assert response.location == documentation_url('callbacks')
