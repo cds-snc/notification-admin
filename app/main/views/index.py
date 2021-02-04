@@ -248,7 +248,7 @@ def letter_template():
 
 @main.route('/documentation')
 def documentation():
-    return render_template('views/documentation.html')
+    return redirect(documentation_url(), code=301)
 
 
 @main.route('/callbacks')

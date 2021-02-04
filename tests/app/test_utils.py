@@ -470,6 +470,8 @@ def test_get_latest_stats(mocker, app_):
     ("callbacks", "fr", "https://documentation.localhost:6012/fr/rappel.html"),
     ("architecture", "en", "https://documentation.localhost:6012/en/architecture.html"),
     ("architecture", "fr", "https://documentation.localhost:6012/fr/architecture.html"),
+    (None, "en", "https://documentation.localhost:6012/en/"),
+    (None, "fr", "https://documentation.localhost:6012/fr/"),
 ])
 def test_documentation_url(mocker, app_, feature, lang, expected):
     with app_.test_request_context():

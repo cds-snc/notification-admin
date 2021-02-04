@@ -668,7 +668,7 @@ def yyyy_mm_to_datetime(string):
     return datetime(int(string[0:4]), int(string[5:7]), 1)
 
 
-def documentation_url(feature):
+def documentation_url(feature=None):
     from app import get_current_locale
 
     mapping = {
@@ -684,8 +684,12 @@ def documentation_url(feature):
     }
 
     lang = get_current_locale(current_app)
-    page = mapping[feature][lang]
     base_domain = current_app.config["ADMIN_BASE_DOMAIN"]
+
+    if feature is None:
+        return f"https://documentation.{base_domain}/{lang}/"
+
+    page = mapping[feature][lang]
 
     return f"https://documentation.{base_domain}/{lang}/{page}.html"
 
