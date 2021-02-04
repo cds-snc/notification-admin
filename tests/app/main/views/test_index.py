@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
 from app.main.forms import FieldWithLanguageOptions
+from app.utils import documentation_url
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
 
 service = [{'service_id': 1, 'service_name': 'jessie the oak tree',
@@ -103,7 +104,7 @@ def test_security_txt(client):
 
 @pytest.mark.parametrize('view', [
     'privacy', 'pricing', 'terms', 'roadmap', 'why-notify',
-    'features', 'callbacks', 'documentation', 'security',
+    'features', 'documentation', 'security',
     'messages_status', 'email', 'sms',
     'letters',
 ])
@@ -152,6 +153,12 @@ def test_old_static_pages_redirect(
         'main.{}'.format(expected_view),
         _external=True
     )
+
+
+def test_old_callbacks_page_redirect(client):
+    response = client.get(url_for('main.callbacks'))
+    assert response.status_code == 301
+    assert response.location == documentation_url('callbacks')
 
 
 def test_terms_page_has_correct_content(client_request):

@@ -10,6 +10,7 @@ from freezegun import freeze_time
 from app import format_datetime_relative
 from app.utils import (
     Spreadsheet,
+    documentation_url,
     email_safe,
     generate_next_dict,
     generate_notifications_csv,
@@ -460,3 +461,17 @@ def test_get_latest_stats(mocker, app_):
                 'September 2020': {'sms': 3, 'total': 3, 'year_month': '2020-09'}
             },
         }
+
+
+@pytest.mark.parametrize('feature, lang, expected', [
+    ("send", "en", "https://documentation.localhost:6012/en/send.html"),
+    ("send", "fr", "https://documentation.localhost:6012/fr/envoyer.html"),
+    ("callbacks", "en", "https://documentation.localhost:6012/en/callbacks.html"),
+    ("callbacks", "fr", "https://documentation.localhost:6012/fr/rappel.html"),
+    ("architecture", "en", "https://documentation.localhost:6012/en/architecture.html"),
+    ("architecture", "fr", "https://documentation.localhost:6012/fr/architecture.html"),
+])
+def test_documentation_url(mocker, app_, feature, lang, expected):
+    with app_.test_request_context():
+        mocker.patch('app.get_current_locale', return_value=lang)
+        assert documentation_url(feature) == expected

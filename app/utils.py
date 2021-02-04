@@ -668,6 +668,28 @@ def yyyy_mm_to_datetime(string):
     return datetime(int(string[0:4]), int(string[5:7]), 1)
 
 
+def documentation_url(feature):
+    from app import get_current_locale
+
+    mapping = {
+        "start": {"en": "start", "fr": "commencer"},
+        "send": {"en": "send", "fr": "envoyer"},
+        "status": {"en": "status", "fr": "etat"},
+        "testing": {"en": "testing", "fr": "essai"},
+        "keys": {"en": "keys", "fr": "cles"},
+        "limits": {"en": "limits", "fr": "limites"},
+        "callbacks": {"en": "callbacks", "fr": "rappel"},
+        "architecture": {"en": "architecture", "fr": "architecture"},
+        "clients": {"en": "clients", "fr": "clients"},
+    }
+
+    lang = get_current_locale(current_app)
+    page = mapping[feature][lang]
+    base_domain = current_app.config["ADMIN_BASE_DOMAIN"]
+
+    return f"https://documentation.{base_domain}/{lang}/{page}.html"
+
+
 class PermanentRedirect(RequestRedirect):
     """
     In Werkzeug 0.15.0 the status code for RequestRedirect changed from 301 to 308.
