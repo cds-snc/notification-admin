@@ -684,14 +684,14 @@ def documentation_url(feature=None):
     }
 
     lang = get_current_locale(current_app)
-    base_domain = current_app.config["ADMIN_BASE_DOMAIN"]
+    base_domain = current_app.config["DOCUMENTATION_DOMAIN"]
 
     if feature is None:
-        return f"https://documentation.{base_domain}/{lang}/"
+        return f"https://{base_domain}/{lang}/"
 
     page = mapping[feature][lang]
 
-    return f"https://documentation.{base_domain}/{lang}/{page}.html"
+    return f"https://{base_domain}/{lang}/{page}.html"
 
 
 class PermanentRedirect(RequestRedirect):
