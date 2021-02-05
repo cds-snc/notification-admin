@@ -19,11 +19,11 @@
     <li>{{ _('create reusable text message templates') }}</li>
     <li>{{ _('personalise the content of your texts') }}</li>
     <li>{{ _('send and schedule bulk messages') }}</li></ul>
-  <p>{{ _('Your developers can also') }} <a href="{{ url_for('.documentation') }}">{{ _('integrate with our API') }}</a> {{ _('to send text messages automatically') }}.<p>
+  <p>{{ _('Your developers can also') }} <a href="{{ documentation_url() }}">{{ _('integrate with our API') }}</a> {{ _('to send text messages automatically') }}.<p>
     <h2 class="heading heading-medium">{{ _('Display your sender name') }}</h2>
     <p>{{ _('When GC Notify sends your message, the text displays your service name. This shows people that the message is from your service. You can change the text message sender name in your service settings.') }}</p>
-    
+
     <h2 class="heading heading-medium">{{ _('Pricing') }}</h2>
     <p>{{ _('You can send 25,000 free text messages per year from each service you create.') }}</p>
-  
+
 {% endblock %}

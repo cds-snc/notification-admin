@@ -28,7 +28,7 @@ from app.notify_client.api_key_api_client import (
     KEY_TYPE_TEAM,
     KEY_TYPE_TEST,
 )
-from app.utils import email_safe, user_has_permissions
+from app.utils import documentation_url, email_safe, user_has_permissions
 
 dummy_bearer_token = 'bearer_token_set'
 
@@ -50,7 +50,7 @@ def api_integration(service_id):
 @main.route("/services/<service_id>/api/documentation")
 @user_has_permissions('manage_api_keys')
 def api_documentation(service_id):
-    return redirect(url_for('.documentation'), code=301)
+    return redirect(documentation_url(), code=301)
 
 
 @main.route("/services/<service_id>/api/safelist", methods=['GET', 'POST'])

@@ -115,20 +115,6 @@ def test_a_page_should_nave_selected_navigation_item(
 
 
 @pytest.mark.parametrize('endpoint, selected_nav_item', [
-    ('main.documentation', 'Documentation'),
-])
-def test_a_page_should_nave_selected_header_navigation_item(
-    client_request,
-    endpoint,
-    selected_nav_item,
-):
-    page = client_request.get(endpoint, service_id=SERVICE_ONE_ID)
-    selected_nav_items = page.select('#proposition-links a.active')
-    assert len(selected_nav_items) == 1
-    assert selected_nav_items[0].text.strip() == selected_nav_item
-
-
-@pytest.mark.parametrize('endpoint, selected_nav_item', [
     ('main.organisation_dashboard', 'Usage'),
     ('main.manage_org_users', 'Team members'),
 ])

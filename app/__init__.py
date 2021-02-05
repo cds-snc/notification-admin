@@ -89,7 +89,7 @@ from app.notify_client.template_statistics_api_client import (
     template_statistics_client,
 )
 from app.notify_client.user_api_client import user_api_client
-from app.utils import id_safe
+from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
 csrf = CSRFProtect()
@@ -257,7 +257,8 @@ def init_app(application):
             'current_lang': get_current_locale(application),
             'admin_base_url': application.config['ADMIN_BASE_URL'],
             'admin_base_domain': application.config['ADMIN_BASE_DOMAIN'],
-            'sending_domain': application.config['SENDING_DOMAIN']
+            'sending_domain': application.config['SENDING_DOMAIN'],
+            'documentation_url': documentation_url,
         }
 
 
