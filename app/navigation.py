@@ -216,7 +216,15 @@ class HeaderNavigation(Navigation):
             'set_free_sms_allowance',
             'service_set_letter_branding',
             'submit_request_to_go_live',
-        }
+        },
+        'sent-messages': {
+            'view_notifications',
+            'view_notification',
+        },
+        'uploaded-files': {
+            'view_jobs',
+            'view_job',
+        },
     }
 
     exclude = {

@@ -100,6 +100,23 @@
                    class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
                 >{{ _('Templates') }}</a>
               </div>
+              {% if not current_user.has_permissions('view_activity') %}
+                <div
+                  class="flex-shrink-0 self-center text-center p-5 header--{{ header_navigation.is_selected('sent-messages') }}">
+                  <a
+                    href="{{ url_for('.view_notifications', service_id=current_service.id, status='sending,delivered,failed') }}"
+                    class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
+                  >{{ _('Sent messages') }}</a>
+                </div>
+                {% if current_service.has_jobs %}
+                  <div
+                    class="flex-shrink-0 self-center text-center p-5 header--{{ header_navigation.is_selected('uploaded-files') }}">
+                  <a
+                    href="{{ url_for('.view_jobs', service_id=current_service.id) }}"
+                    class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
+                  >{{ _('Uploaded files') }}</a>
+                {% endif %}
+              {% endif %}
             {% endif %}
             {% if current_user.has_permissions('manage_api_keys') %}
               <div
@@ -125,9 +142,9 @@
             {% endif %}
           {% endif %}
         {% endif %}
+        </div>
+        <!-- MD-LG menu and nav bar END -->
       </div>
-      <!-- MD-LG menu and nav bar END -->
-    </div>
   </nav>
 {% else %}
   <hr class="m-0 xs:hidden smaller:hidden sm:hidden md:flex"/>
