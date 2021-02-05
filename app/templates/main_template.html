@@ -108,17 +108,15 @@
     >
   </div>
 </div>
-
-<!-- start header -->
+{% block gc_header %}
 <header>
 {% include 'gc_header.html' %}
 
 {% include 'gc_header_nav.html' %}
 
 {% include 'gc_header_nav_mobile.html' %}
-
 </header>
-<!-- end header -->
+{% endblock %}
 
 
 {% block after_header %}{% endblock %}

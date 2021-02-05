@@ -1,65 +1,13 @@
 {% extends "main_template.html" %}
 {% from "components/banner.html" import banner %}
 {% block head %}
-  <style>
-      #global-header-bar { background-color: {{header_colour}} }
-  </style>
   {% block meta %}
   {% endblock %}
 {% endblock %}
 
 {% block page_title %}
-   {% block per_page_title %}{% endblock %} – {{ _('Notify') }}
+  {% block per_page_title %}{% endblock %} – {{ _('Notify') }}
 {% endblock %}
-
-{% block header_class %}with-proposition{% endblock %}
-
-<!-- -->
-{% block proposition_header %}
-<!-- -->
-<!--
-
-
-  <div class="header-proposition">
-    <div class="content">
-      <a href="#proposition-links" class="js-header-toggle menu">{{ _('Menu') }}</a>
-      <nav id="proposition-menu">
-        <ul id="proposition-links">
-          {% if current_user.is_authenticated %}
-            <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>{{ _('Documentation') }}</a></li>
-            <li><a href="{{ url_for('main.user_profile') }}" {{ header_navigation.is_selected('user-profile') }}>{{ current_user.name }}</a></li>
-            {% if current_user.platform_admin %}
-              <li><a href="{{ url_for('main.platform_admin') }}" {{ header_navigation.is_selected('platform-admin') }}>{{ _('Platform admin') }}</a></li>
-            {% endif %}
-            <li><a href="{{ url_for('main.set_lang')}}?from={{request.path}}">
-              {% if session["userlang"] == "en" %}
-                Français
-              {% else %}
-                English
-              {% endif %}
-            </a></li>
-            <li><a href="{{ url_for('main.sign_out')}}">{{ _('Sign out') }}</a></li>
-          {% else %}
-            <li>
-              <a href="{{ url_for('main.set_lang')}}?from={{request.path}}">
-              {% if session["userlang"] == "en" %}
-                Français
-              {% else %}
-                English
-              {% endif %}
-            </a></li>
-            <li><a href="{{ url_for('main.documentation') }}" {{ header_navigation.is_selected('documentation') }}>{{ _('Documentation') }}</a></li>
-            <li><a href="{{ url_for('main.sign_in' )}}" {{ header_navigation.is_selected('sign-in') }}>{{ _('Sign in') }}</a></li>
-          {% endif %}
-        </ul>
-      </nav>
-    </div>
-  </div>
-  -->
-{% endblock %}
-{% set notification_txt = _('GC Notify') %}
-{% set global_header_text = "<span id='product-name'>" + _('GC Notify') + "</span>"|safe %}
-{% set homepage_url = url_for('main.show_accounts_or_dashboard') %}
 
 {% block content %}
   {% block fullwidth_content %}{% endblock %}

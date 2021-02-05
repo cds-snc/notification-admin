@@ -4,7 +4,6 @@ from flask import request
 
 
 class Navigation:
-
     mapping = {}
     exclude = {}
     selected_attribute = "class=selected"
@@ -36,10 +35,18 @@ class Navigation:
 
 
 class HeaderNavigation(Navigation):
-
     selected_attribute = "active"
 
     mapping = {
+        'dashboard': {
+            'monthly',
+            'service_dashboard',
+            'template_usage',
+            'view_job',
+            'view_jobs',
+            'view_notification',
+            'view_notifications',
+        },
         'support': {
             'set_lang',
             'contact',
@@ -116,6 +123,100 @@ class HeaderNavigation(Navigation):
             'verify_email',
             'verify_mobile',
         },
+        'team-members': {
+            'confirm_edit_user_email',
+            'confirm_edit_user_mobile_number',
+            'edit_user_email',
+            'edit_user_mobile_number',
+            'edit_user_permissions',
+            'invite_user',
+            'manage_users',
+            'remove_user_from_service',
+        },
+        'templates': {
+            'action_blocked',
+            'add_service_template',
+            'check_messages',
+            'check_notification',
+            'choose_template',
+            'choose_template_to_copy',
+            'confirm_redact_template',
+            'copy_template',
+            'delete_service_template',
+            'edit_service_template',
+            'edit_template_postage',
+            'manage_template_folder',
+            's3_send',
+            'send_messages',
+            'send_one_off',
+            'send_one_off_step',
+            'send_test',
+            'send_test_preview',
+            'send_test_step',
+            'set_sender',
+            'set_template_sender',
+            'view_template',
+            'view_template_version',
+            'view_template_versions',
+        },
+        'api-integration': {
+            'api_callbacks',
+            'api_documentation',
+            'api_integration',
+            'api_keys',
+            'create_api_key',
+            'delivery_status_callback',
+            'received_text_messages_callback',
+            'revoke_api_key',
+            'safelist',
+        },
+        'settings': {
+            'branding_request',
+            'estimate_usage',
+            'link_service_to_organisation',
+            'request_letter_branding',
+            'request_to_go_live',
+            'service_add_email_reply_to',
+            'service_add_letter_contact',
+            'service_add_sms_sender',
+            'service_agreement',
+            'service_accept_agreement',
+            'service_confirm_agreement',
+            'service_confirm_delete_email_reply_to',
+            'service_confirm_delete_letter_contact',
+            'service_confirm_delete_sms_sender',
+            'service_edit_email_reply_to',
+            'service_edit_letter_contact',
+            'service_edit_sms_sender',
+            'service_email_reply_to',
+            'service_letter_contact_details',
+            'service_make_blank_default_letter_contact',
+            'service_name_change',
+            'service_name_change_confirm',
+            'service_email_from_change',
+            'service_email_from_change_confirm',
+            'service_preview_email_branding',
+            'service_preview_letter_branding',
+            'service_set_auth_type',
+            'service_set_channel',
+            'service_set_contact_link',
+            'service_set_email_branding',
+            'service_set_inbound_number',
+            'service_set_inbound_sms',
+            'service_set_international_sms',
+            'service_set_letter_contact_block',
+            'service_set_letters',
+            'service_set_reply_to_email',
+            'service_set_sms_prefix',
+            'service_verify_reply_to_address',
+            'service_verify_reply_to_address_updates',
+            'service_settings',
+            'service_sms_senders',
+            'set_message_limit',
+            'set_free_sms_allowance',
+            'service_set_letter_branding',
+            'submit_request_to_go_live',
+        }
     }
 
     exclude = {
@@ -336,7 +437,6 @@ class HeaderNavigation(Navigation):
 
 
 class MainNavigation(Navigation):
-
     mapping = {
         'dashboard': {
             'monthly',
@@ -634,7 +734,6 @@ class MainNavigation(Navigation):
 
 
 class CaseworkNavigation(Navigation):
-
     mapping = {
         'send-one-off': {
             'choose_template',
@@ -925,7 +1024,6 @@ class CaseworkNavigation(Navigation):
 
 
 class OrgNavigation(Navigation):
-
     mapping = {
         'dashboard': {
             'organisation_dashboard',

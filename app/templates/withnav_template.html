@@ -1,4 +1,5 @@
 {% extends "admin_template.html" %}
+{% set withnav = True %}
 {% if current_service.name %}
   {% block per_page_title %}
     {% block service_page_title %}{% endblock %} – {{ current_service.name }}
