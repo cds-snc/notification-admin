@@ -70,7 +70,7 @@
           >{{ current_service.name }}</a>
         {% else %}
           {% if current_user.platform_admin %}
-            <a href="{{ url_for('main.show_accounts_or_dashboard') }}"
+            <a href="{{ url_for('main.live_services') }}"
                class="text-lg font-bold no-underline visited:text-black text-black"
             >
               {{ _('Admin panel') }}
