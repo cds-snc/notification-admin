@@ -18,7 +18,7 @@
       ) }}
 
       <p>
-        {{ _('When you send an email or text message, we can tell you if GC Notify was able to deliver it. Check the') }} <a href="{{ url_for('.callbacks') }}">{{ _('callback documentation') }}</a> {{ _('for more information.') }}
+        {{ _('When you send an email or text message, we can tell you if GC Notify was able to deliver it. Check the') }} <a href="{{ documentation_url('callbacks') }}">{{ _('callback documentation') }}</a> {{ _('for more information.') }}
       </p>
       {% set hint_txt = _('Must start with https://') %}
       {% call form_wrapper() %}
