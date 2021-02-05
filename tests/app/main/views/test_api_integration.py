@@ -7,6 +7,7 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
+from app.utils import documentation_url
 from tests import sample_uuid, validate_route_permission
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -172,10 +173,7 @@ def test_api_documentation_page_should_redirect(
         'main.api_documentation',
         service_id=SERVICE_ONE_ID,
         _expected_status=301,
-        _expected_redirect=url_for(
-            'main.documentation',
-            _external=True,
-        ),
+        _expected_redirect=documentation_url(),
     )
 
 

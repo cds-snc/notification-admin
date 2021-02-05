@@ -68,7 +68,7 @@
   <div class="flex flex-col lg:flex-row mb-20 lg:mb-0">
     <div class="lg:w-3/4">
       <p>{{ _('Send up to 50,000 messages at once or automate sending when an action is triggered. To send in bulk, upload an Excel spreadsheet with a list of contacts and schedule the date and time up to 72 hours in advance. To automate sending, integrate the API with your web application or back office system.') }}</p>
-      <p><a href="{{ url_for('.documentation') }}">{{ _('Learn more about API integration') }}</a></p>
+      <p><a href="{{ documentation_url() }}">{{ _('Learn more about API integration') }}</a></p>
     </div>
     <div class="lg:-mt-20 lg:pl-12">
       {% if session["userlang"] == "en" %}

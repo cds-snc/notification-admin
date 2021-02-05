@@ -29,6 +29,7 @@ from app.main.forms import (
 from app.main.views.sub_navigation_dictionaries import features_nav
 from app.utils import (
     Spreadsheet,
+    documentation_url,
     get_latest_stats,
     get_logo_cdn_domain,
     user_is_logged_in,
@@ -247,14 +248,12 @@ def letter_template():
 
 @main.route('/documentation')
 def documentation():
-    return render_template('views/documentation.html')
+    return redirect(documentation_url(), code=301)
 
 
-# Only linked from authenticated pages. See #1025
 @main.route('/callbacks')
-@user_is_logged_in
 def callbacks():
-    return render_template('views/callbacks.html')
+    return redirect(documentation_url('callbacks'), code=301)
 
 
 # --- Features page set --- #
