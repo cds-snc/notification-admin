@@ -116,6 +116,16 @@ class HeaderNavigation(Navigation):
             'verify_email',
             'verify_mobile',
         },
+        'team-members': {
+            'confirm_edit_user_email',
+            'confirm_edit_user_mobile_number',
+            'edit_user_email',
+            'edit_user_mobile_number',
+            'edit_user_permissions',
+            'invite_user',
+            'manage_users',
+            'remove_user_from_service',
+        }
     }
 
     exclude = {

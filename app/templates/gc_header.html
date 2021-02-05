@@ -63,21 +63,29 @@
   </div>
   {% if current_user.is_authenticated %}
     <div class="flex flex-wrap space-x-4 items-stretch">
-      <div class="text-lg font-bold">
-        {% if current_service.name %}
+      <div class="font-bold">
+        {% if current_service.name and withnav %}
           <a href="{{ url_for('main.show_accounts_or_dashboard') }}"
-             class="text-lg font-bold no-underline visited:text-black"
-             ><span class="text-black">{{ current_service.name }}</span></a>
+             class="text-lg font-bold no-underline visited:text-black text-black"
+          >{{ current_service.name }}</a>
         {% else %}
           {% if current_user.platform_admin %}
-            {{ _('Admin panel') }}
+            <a href="{{ url_for('main.show_accounts_or_dashboard') }}"
+               class="text-lg font-bold no-underline visited:text-black text-black"
+            >
+              {{ _('Admin panel') }}
+            </a>
           {% else %}
-            {{ _('Your services') }}
+            <a class="text-black no-underline visited:text-black text-lg"
+               href="{{ url_for('.choose_account') }}">{{ _('Your services') }}</a>
           {% endif %}
         {% endif %}
       </div>
       <div class="text-base self-center">
-          - <a href="{{ url_for('.choose_account') }}">Switch Services</a>
+        {% if current_service.name and withnav %}
+          <img aria-hidden="true" src="{{ asset_url('images/swap.svg') }}" class="inline"/>
+          <a href="{{ url_for('.choose_account') }}">Switch Services</a>
+        {% endif %}
       </div>
     </div>
   {% endif %}

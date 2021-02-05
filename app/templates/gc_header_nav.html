@@ -1,7 +1,7 @@
-<nav class="bg-gray py-5" aria-label="{{ _('main navigation') }}">
+<nav class="py-5 md:hidden" aria-label="{{ _('main navigation') }}">
   <div class="container px-10">
     <!-- Mobile menu and nav bar -->
-    <div class="md:hidden grid grid-cols-2">
+    <div class="grid grid-cols-2">
       <div>
         <a href="#" id="menu"
            class="px-2 text-small text-blue visited:text-blue link:text-blue mr-5 font-bold no-underline hover:underline"
@@ -33,28 +33,88 @@
       <!-- Mobile menu and nav bar END -->
       <!-- MD-LG menu and nav bar -->
     </div>
-    <div id="proposition-links" class="xs:hidden smaller:hidden sm:hidden md:flex">
-      {% if current_user.platform_admin %}
-        <a href="{{ url_for('main.live_services') }}"
-           class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('platform-admin') }}"
-        >{{ _('Platform admin') }}</a>
-      {% endif %}
+  </div>
+</nav>
+<nav class="py-5 bg-gray xs:hidden smaller:hidden sm:hidden md:flex" aria-label="{{ _('main navigation') }}">
+  <div class="container px-10">
+    <div id="proposition-links" class="">
 
-      <a href="{{ url_for('main.why-notify') }}"
-         class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
-      >{{ _('Why GC Notify') }}</a>
-      <a href="{{ url_for('main.features') }}"
-         class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
-      >{{ _('Features') }}</a>
-      <a
-        href="{{ url_for('main.documentation') }}"
-        class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('documentation') }}"
-      >{{ _('Documentation') }}</a>
-      <a
-        href="{{ url_for('main.contact') }}"
-        class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
-      >{{ _('Contact us') }}
-      </a>
+      {% if not current_user.is_authenticated %}
+        <div>
+          <a href="/"
+             class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
+          >{{ _('Home') }}</a>
+        </div>
+        <div>
+          <a href="{{ url_for('main.why-notify') }}"
+             class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
+          >{{ _('Why GC Notify') }}</a>
+        </div>
+        <div>
+          <a href="{{ url_for('main.features') }}"
+             class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
+          >{{ _('Features') }}</a>
+        </div>
+        <div>
+          <a
+            href="{{ url_for('main.documentation') }}"
+            class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('documentation') }}"
+          >{{ _('Documentation') }}</a>
+        </div>
+        <div>
+          <a
+            href="{{ url_for('main.contact') }}"
+            class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
+          >{{ _('Contact us') }}
+          </a>
+        </div>
+
+      {% endif %}
+      {% if current_user.is_authenticated %}
+        {% if current_user.platform_admin %}
+          <div>
+            <a href="{{ url_for('main.live_services') }}"
+               class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('platform-admin') }}"
+            >{{ _('Platform admin') }}</a>
+          </div>
+        {% endif %}
+        {% if current_service.name %}
+          {% if current_user.has_permissions('view_activity') %}
+            <div>
+              <a href="{{ url_for('.service_dashboard', service_id=current_service.id) }}"
+                 class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('dashboard') }}"
+              >{{ _('Dashboard') }}</a>
+            </div>
+          {% endif %}
+
+          {% if current_user.has_permissions() %}
+            <div>
+              <a href="{{ url_for('.choose_template', service_id=current_service.id) }}"
+                 class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
+              >{{ _('Templates') }}</a>
+            </div>
+          {% endif %}
+          {% if current_user.has_permissions('manage_api_keys') %}
+            <div>
+              <a href="{{ url_for('.api_integration', service_id=current_service.id) }}"
+                 class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
+              >{{ _('API integration') }}</a>
+            </div>
+          {% endif %}
+          <div>
+            <a href="{{ url_for('.manage_users', service_id=current_service.id) }}"
+               class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline {{ header_navigation.is_selected('team-members') }}"
+            >{{ _('Team members') }}</a>
+          </div>
+          {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
+            <div>
+              <a href="{{ url_for('.service_settings', service_id=current_service.id) }}"
+                 class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
+              >{{ _('Settings') }}</a>
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endif %}
     </div>
     <!-- MD-LG menu and nav bar END -->
   </div>
