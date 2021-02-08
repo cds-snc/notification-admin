@@ -3,11 +3,6 @@
   .modal {
     transition: opacity 0.25s ease;
   }
-  
-  .modal-active {
-    overflow-x: hidden;
-    overflow-y: visible !important;
-  }
 </style>
 
 <div class="md:hidden">
@@ -17,29 +12,36 @@
       src="{{ asset_url('images/account-icon.svg') }}" 
       class="float-right w-12 h-12" />
   </div>
-  <!-- class="opacity-0" -->
+
   <div id="account-menu"
-      class="modal z-50 opacity-0 pointer-events-none fixed flex w-full h-full top-0 left-0 items-center justify-center">
+      class="modal fixed w-full h-full top-0 left-0 z-50 opacity-0 pointer-events-none">
     <div class="modal-overlay absolute w-full h-full bg-white opacity-95"></div>
 
-    <div class="modal-container fixed w-full h-full z-50 overflow-y-auto p-5">
-
-      <div id="account-close"
-        class="modal-close absolute top-0 right-0 cursor-pointer block items-center mt-4 mr-4 text-black text-sm z-50">
-        <img
-          aria-hidden="false" 
-          src="{{ asset_url('images/close.svg') }}" 
-          class="float-right w-12 h-12" />
-        {{ _('close') }}
-      </div>
-
-      <div class="modal-content block container mx-auto h-auto text-left p-4">
-        <div class="block">
+    <div class="modal-container grid grid-flow-row auto-rows-min grid-cols-1 fixed w-full h-full overflow-y-auto z-50 p-10">
+      <div>
+        <div class="float-left">
           <img
             aria-hidden="false" 
             src="{{ asset_url('images/account-icon.svg') }}" 
-            class="float-right w-12 h-12" />
+            class="float-left w-12 h-12" />
         </div>
+        <div id="account-close"
+          class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-sm z-50">
+          <div class="justify-self-center">
+            <div>
+              <img
+                aria-hidden="false" 
+                src="{{ asset_url('images/close.svg') }}" 
+                class="float-right w-12 h-12" />
+            </div>
+            <div>
+              {{ _('close') }}
+            </div>
+          </div>
+        </div>
+      </div
+
+      <div class="modal-content container mx-auto h-auto text-left p-4">
         <div class="block">
           <ul>
             <li>{{ _('Admin panel') }}</li>
@@ -50,7 +52,7 @@
       </div>
 
     </div>
-    
+
   </div>
 </div>
 <!-- mobile menu dropdown END -->
