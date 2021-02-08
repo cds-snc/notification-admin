@@ -26,27 +26,23 @@
             class="float-left w-12 h-12" />
         </div>
         <div id="account-close"
-          class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-sm z-50">
+          class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-xs z-50">
           <div class="justify-self-center">
-            <div>
-              <img
-                aria-hidden="false" 
-                src="{{ asset_url('images/close.svg') }}" 
-                class="float-right w-12 h-12" />
-            </div>
-            <div>
-              {{ _('close') }}
-            </div>
+            <img
+              aria-hidden="false" 
+              src="{{ asset_url('images/close.svg') }}" 
+              class="object-none object-center w-8 h-8 m-auto" />
+            {{ _('close') }}
           </div>
         </div>
       </div
 
-      <div class="modal-content container mx-auto h-auto text-left p-4">
-        <div class="block">
+      <div class="modal-content container mx-auto h-auto text-left p-4 mb-4">
+        <div class="mt-8">
           <ul>
-            <li>{{ _('Admin panel') }}</li>
-            <li>{{ _('Account Settings') }}</li>
-            <li>{{ _('Sign out') }}</li>
+            <li class="mb-4">{{ _('Admin panel') }}</li>
+            <li class="mb-4">{{ _('Account Settings') }}</li>
+            <li class="mb-4">{{ _('Sign out') }}</li>
           </ul>
         </div>
       </div>
