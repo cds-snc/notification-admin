@@ -1,22 +1,3 @@
-<!-- mobile menu dropdown -->
-<div class="md:hidden">
-  <div id="account-icon">
-    <img
-      aria-hidden="false" 
-      src="{{ asset_url('images/account-icon.svg') }}" 
-      class="float-right w-12 h-12" />
-  </div>
-  <div id="account-menu" class="container hidden">
-    <ul>
-      <li>{{ _('Admin panel') }}</li>
-      <li>{{ _('Account Settings') }}</li>
-      <li>{{ _('Sign out') }}</li>
-    </ul>
-  </div>
-</div>
-
-<!-- mobile menu dropdown END -->
-
 <!-- Large screen menu dropdown -->
 <div class="xs:hidden sm:hidden smaller:hidden md:flex">
   <a href="{{ url_for('main.user_profile') }}"

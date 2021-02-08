@@ -15,7 +15,7 @@
       </div>
       <div aria-label="{{ _('language and sign-in') }}" class="flex justify-end">
         {% if current_user.is_authenticated %}
-          {% include 'account_menu.html' %}
+          {% include 'account_menu_mobile.html' %}
         {% else %}
           <a
             href="{{ url_for('main.sign_in' ) }}"
@@ -145,8 +145,11 @@
   // REVIEW: Revisit this code and make it more reusable. --jlr
   function accountToggle() {
     const accountMenu = document.querySelector("#account-menu");
-    accountMenu.classList.toggle("hidden");
+    // accountMenu.classList.toggle("hidden");
+    accountMenu.classList.toggle("opacity-0");
+    accountMenu.classList.toggle("pointer-events-none");
   }
 
   document.querySelector("#account-icon").addEventListener("click", accountToggle);
+  document.querySelector("#account-close").addEventListener("click", accountToggle);
 </script>
