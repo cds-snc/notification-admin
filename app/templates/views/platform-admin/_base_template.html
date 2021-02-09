@@ -5,34 +5,31 @@
 
 {% block maincolumn_content %}
 
-  <div class="grid-row contain-floats">
-    <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
-      <p class="heading-medium">
-        Platform admin
-      </p>
-      <nav class="navigation">
-          {% for link_text, url in [
-          ('Live services', url_for('main.live_services')),
-          ('Trial mode services', url_for('main.trial_services')),
-          (_('Live API keys'), url_for('main.live_api_keys')),
-          ('Email branding', url_for('main.email_branding')),
-          ('Find services by name', url_for('main.find_services_by_name')),
-          ('Find users by email', url_for('main.find_users_by_email')),
-          ('Email complaints', url_for('main.platform_admin_list_complaints')),
-          ('Reports', url_for('main.platform_admin_reports')),
-          ('Inbound SMS numbers', url_for('main.inbound_sms_admin')),
-          ('Providers', url_for('main.view_providers')),
-          ('Clear cache', url_for('main.clear_cache')),
+  <div class="xs:hidden smaller:hidden sm:hidden md:flex flex-row">
+    <div class="flex-col">
+          {% for link_text, view in [
+          ('Live services', 'live_services'),
+          ('Trial mode services', 'trial_services'),
+          (_('Live API keys'), 'live_api_keys'),
+          ('Email branding', 'email_branding'),
+          ('Find services by name', 'find_services_by_name'),
+          ('Find users by email', 'find_users_by_email'),
+          ('Email complaints', 'platform_admin_list_complaints'),
+          ('Reports', 'platform_admin_reports'),
+          ('Inbound SMS numbers', 'inbound_sms_admin'),
+          ('Providers', 'view_providers'),
+          ('Clear cache', 'clear_cache'),
         ] %}
-          <li>
-            <a href="{{ url }}">
+          <div class="pl-10 pr-5 py-2 adminnav--{{ admin_navigation.is_selected(view) }} ">
+            <a href="{{ url_for('main.'+view) }}"
+               class="no-underline text-blue visited:text-blue link:text-blue text-smaller"
+            >
               {{ link_text }}
             </a>
-          </li>
+          </div>
         {% endfor %}
-      </nav>
     </div>
-    <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
+    <div class="border-l-1 p-5 w-full">
       {% block platform_admin_content %}{% endblock %}
     </div>
   </div>

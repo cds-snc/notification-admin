@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="{{ current_lang|default('en') }}"><![endif]-->
 <!--[if gt IE 8]><!-->
-<html
+<html class="bg-white"
   lang="{{ current_lang|default('en') }}"
 ><!--<![endif]-->
 <head>
@@ -90,7 +90,7 @@
   {% block head %}{% endblock %}
 </head>
 
-<body class="{% block body_classes %}{% endblock %}">
+<body class="{% block body_classes %}{% endblock %} flex flex-col min-h-screen">
 <script>
   document.body.className = document.body.className
     ? document.body.className + " js-enabled"
@@ -104,8 +104,7 @@
     <a
       href="#content"
       class="skiplink"
-    >{{ _('Skip to main content') }}</a
-    >
+    >{{ _('Skip to main content') }}</a>
   </div>
 </div>
 {% block gc_header %}
