@@ -40,34 +40,6 @@
     @apply underline text-blue-lightblue;
   }
 
-  .navigation-organisation-link {
-    padding-top: 14px;
-    padding-bottom: 11px;
-    max-width: 25%;
-    margin-right: 7px;
-    @apply text-smaller leading-tight font-normal inline-block truncate no-underline box-border relative pr-8 pl-0;
-  }
-  .navigation-organisation-link:before {
-    content: "";
-    top: -1px;
-    bottom: 1px;
-    right: 6px;
-    width: 7px;
-    height: 7px;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-    @apply block absolute mx-0 my-auto border-0 border-solid border-t-1 border-r-1 border-gray-grey1
-  }
-  .navigation-organisation-link:hover {
-    @apply underline text-blue-lightblue;
-  }
-  .navigation-organisation-link:focus {
-    @apply text-black outline-none;
-    /* theme yellow */
-    box-shadow: 0 1px 0 0 #ffbf47, -3px 0 0 0 #ffbf47, -3px 1px 0 0 #ffbf47;
-  }
-
   .navigation li {
     @apply text-smaller leading-tight font-normal m-0 list-none;
   }

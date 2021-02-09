@@ -13,10 +13,27 @@
     </div>
     <div class="grid-row contain-floats">
       <div class="w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
-        {% include "org_nav.html" %}
+        <nav class="navigation">
+          <ul>
+            <li><a
+              href="{{ url_for('.organisation_dashboard', org_id=current_org.id) }}" {{ org_navigation.is_selected('dashboard') }}>Usage</a>
+            </li>
+            <li><a
+              href="{{ url_for('.manage_org_users', org_id=current_org.id) }}" {{ org_navigation.is_selected('team-members') }}>Team
+              members</a></li>
+            {% if current_user.platform_admin %}
+              <li><a
+                href="{{ url_for('.organisation_settings', org_id=current_org.id) }}" {{ org_navigation.is_selected('settings') }}>Settings</a>
+              </li>
+              <li><a
+                href="{{ url_for('.organisation_trial_mode_services', org_id=current_org.id) }}" {{ org_navigation.is_selected('trial-services') }}>Trial
+                mode services</a></li>
+            {% endif %}
+          </ul>
+        </nav>
       </div>
       <main role="main" class="w-3/4 float-left py-0 px-0 px-gutterHalf box-border column-main">
-        {% include 'flash_messages.html' %}
+        {% include 'partials/flash_messages.html' %}
         {% block org_content %}{% endblock %}
       </main>
     </div>

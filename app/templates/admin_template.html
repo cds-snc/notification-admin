@@ -5,12 +5,22 @@
   {% endblock %}
 {% endblock %}
 
+{% set withnav = True %}
+{% set extra_title = ' - ' + current_service.name if current_service.name and current_user.has_permissions() else ''  %}
+
 {% block page_title %}
-  {% block per_page_title %}{% endblock %} – {{ _('Notify') }}
+   {% block per_page_title %}{% endblock %} {% block service_page_title %}{% endblock %} {{ extra_title }} – {{ _('Notify') }}
 {% endblock %}
 
 {% block content %}
-  {% block fullwidth_content %}{% endblock %}
+  <div class="container contain-floats flex-grow">
+    <div class="grid-row contain-floats">
+      <main role="main" class="w-full float-left py-0 px-10 px-gutterHalf box-border column-main">
+        {% include 'partials/flash_messages.html' %}
+        {% block maincolumn_content %}{% endblock %}
+      </main>
+    </div>
+  </div>
 {% endblock %}
 
 {% block body_end %}

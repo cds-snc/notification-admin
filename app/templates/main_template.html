@@ -109,11 +109,11 @@
 </div>
 {% block gc_header %}
 <header>
-{% include 'gc_header.html' %}
+{% include 'partials/nav/gc_header.html' %}
 
-{% include 'gc_header_nav.html' %}
+{% include 'partials/nav/gc_header_nav.html' %}
 
-{% include 'gc_header_nav_mobile.html' %}
+{% include 'partials/nav/gc_header_nav_mobile.html' %}
 </header>
 {% endblock %}
 
@@ -125,7 +125,7 @@
 <div id="global-app-error" class="app-error hidden"></div>
 
 <!-- start section 9 -->
-{% include 'footer.html' %}
+{% include 'partials/nav/footer.html' %}
 
 {% block body_end %}{% endblock %}
 
