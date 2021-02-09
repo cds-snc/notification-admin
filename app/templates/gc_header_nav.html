@@ -41,7 +41,8 @@
     <div class="container">
       <div id="proposition-links" class="flex flex-no-wrap">
         {% if not current_user.is_authenticated %}
-          <div class="flex-shrink-0 self-center text-center p-5 bg-gray">
+          <div
+            class="flex-shrink-0 self-center text-center p-5 bg-gray header--{{ header_navigation.is_selected('home') }}">
             <a href="/"
                class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
             >{{ _('Home') }}</a>
@@ -62,10 +63,11 @@
             class="flex-shrink-0 self-center text-center p-5 bg-gray header--{{ header_navigation.is_selected('documentation') }}">
             <a
               href="{{ url_for('main.documentation') }}"
-              class="text-small text-blue visited:text-blue link:text-blue mr-10 font-bold no-underline hover:underline"
+              class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
             >{{ _('Documentation') }}</a>
           </div>
-          <div class="flex-shrink-0 self-center text-center p-5 bg-gray header--{{ header_navigation.is_selected('contact') }}">
+          <div
+            class="flex-shrink-0 self-center text-center p-5 bg-gray header--{{ header_navigation.is_selected('contact') }}">
             <a
               href="{{ url_for('main.contact') }}"
               class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
@@ -74,8 +76,8 @@
           </div>
 
         {% endif %}
-        {% if current_user.is_authenticated %}
-          {% if current_user.platform_admin %}
+        {% if current_user.is_authenticated and not current_org %}
+          {% if current_user.platform_admin and current_user.has_permissions() %}
             <div
               class="flex-shrink-0 self-center text-center p-5 bg-gray header--{{ header_navigation.is_selected('platform-admin') }}">
               <a href="{{ url_for('main.live_services') }}"
@@ -126,12 +128,14 @@
                 >{{ _('API integration') }}</a>
               </div>
             {% endif %}
-            <div
-              class="flex-shrink-0 self-center text-center p-5 bg-gray header--{{ header_navigation.is_selected('team-members') }}">
-              <a href="{{ url_for('.manage_users', service_id=current_service.id) }}"
-                 class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-              >{{ _('Team members') }}</a>
-            </div>
+            {% if current_user.has_permissions() %}
+              <div
+                class="flex-shrink-0 self-center text-center p-5 bg-gray header--{{ header_navigation.is_selected('team-members') }}">
+                <a href="{{ url_for('.manage_users', service_id=current_service.id) }}"
+                   class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
+                >{{ _('Team members') }}</a>
+              </div>
+            {% endif %}
             {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
               <div
                 class="flex-shrink-0 self-center text-center p-5 bg-gray header--{{ header_navigation.is_selected('settings') }}">
@@ -140,13 +144,21 @@
                 >{{ _('Settings') }}</a>
               </div>
             {% endif %}
+            {% if current_user.platform_admin and current_user.has_permissions() %}
+              <div
+                class="flex-shrink-0 self-center text-center p-5 bg-gray header--{{ header_navigation.is_selected('smtp-integration') }}">
+                <a href="{{ url_for('main.smtp_integration', service_id=current_service.id) }}"
+                   class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
+                >{{ _('SMTP') }}</a>
+              </div>
+            {% endif %}
+
           {% endif %}
         {% endif %}
         </div>
         <!-- MD-LG menu and nav bar END -->
       </div>
   </nav>
-{% else %}
   <hr class="m-0 xs:hidden smaller:hidden sm:hidden md:flex"/>
 {% endif %}
 <script>

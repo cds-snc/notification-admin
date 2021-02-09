@@ -1,4 +1,5 @@
 {% extends "notify_template.html" %}
+{% set withnav = True %}
 {% from "components/page-footer.html" import page_footer %}
 
 {% block meta %} {% set description = _('GC Notify lets you send emails and text messages to your users') %}
@@ -49,7 +50,7 @@
     <!-- end header -->
     <div id="content" class="home-page-content contain-floats">
       <!-- start section 1 -->
-      <div class="bg-blue" role="main">
+      <div class="bg-blue-slightlight" role="main">
         <div class="container px-10 py-24">
           <div
             class="flex flex-col lg:flex-row justify-between"
@@ -472,7 +473,7 @@
         <!-- END COUNTER -->
 
         <!-- start section 7 -->
-        <div class="bg-blue">
+        <div class="bg-blue-slightlight">
           <div class="container px-10 py-24">
             <div class="flex justify-center">
               <div>
@@ -497,48 +498,9 @@
     </div>
   </div>
   <!-- start section 8 -->
-  <div class="bg-gray" role="navigation" aria-label="Footer">
-    <div class="container px-10 py-24">
-      <nav class="flex" aria-label="footer links">
-        <div class="block mr-20">
-          <div class="block">
-            <a
-              href="{{ url_for('main.privacy') }}"
-              class="line-under text-blue link:text-blue visited:text-blue text-small block mb-10 underline hover:no-underline"
-            >{{ _("Privacy") }}</a
-            >
-            <a
-              href="{{ url_for('main.security') }}"
-              class="line-under text-blue link:text-blue visited:text-blue text-small block mb-10 underline hover:no-underline"
-            >{{ _("Security") }}</a
-            >
-            <a
-              href="{{ url_for('main.terms') }}"
-              class="line-under text-blue link:text-blue visited:text-blue text-small block mb-10 underline hover:no-underline"
-            >{{ _("Terms of use") }}</a
-            >
-            <a
-              href="{{ url_for('main.activity') }}"
-              class="line-under text-blue link:text-blue visited:text-blue text-small block underline hover:no-underline"
-            >{{ _("Activity dashboard") }}</a
-            >
-          </div>
-      </nav>
-    </div>
-  </div>
+{% include 'footer.html' %}
 
-  <!-- start section 8 -->
-  <div class="bg-gray">
-    <div class="container px-10">
-      <div class="flex py-10 justify-end">
-        <img
-          alt="Symbol of the Government of Canada / Symbole du gouvernement du Canada"
-          src="{{ asset_s3_url('goc--footer-logo.svg') }}"
-          width="150"
-        />
-      </div>
-    </div>
-  </div>
+
 
   <!-- END CONTENT-->
 
