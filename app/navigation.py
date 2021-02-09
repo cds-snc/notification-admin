@@ -34,6 +34,46 @@ class Navigation:
         return ''
 
 
+class AdminNavigation(Navigation):
+    selected_attribute = "active"
+
+    mapping = {
+        'live_services': {
+            'live_services',
+        },
+        'trial_services': {
+            'trial_services',
+        },
+        'live_api_keys': {
+            'live_api_keys',
+        },
+        'email_branding': {
+            'email_branding',
+        },
+        'find_services_by_name': {
+            'find_services_by_name',
+        },
+        'find_users_by_email': {
+            'find_users_by_email',
+        },
+        'platform_admin_list_complaints': {
+            'platform_admin_list_complaints',
+        },
+        'platform_admin_reports': {
+            'platform_admin_reports',
+        },
+        'inbound_sms_admin': {
+            'inbound_sms_admin',
+        },
+        'view_providers': {
+            'view_providers',
+        },
+        'clear_cache': {
+            'clear_cache',
+        },
+    }
+
+
 class HeaderNavigation(Navigation):
     selected_attribute = "active"
 

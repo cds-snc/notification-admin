@@ -55,6 +55,7 @@ from app.models.organisation import Organisation
 from app.models.service import Service
 from app.models.user import AnonymousUser, User
 from app.navigation import (
+    AdminNavigation,
     CaseworkNavigation,
     HeaderNavigation,
     MainNavigation,
@@ -109,6 +110,7 @@ navigation = {
     'casework_navigation': CaseworkNavigation(),
     'main_navigation': MainNavigation(),
     'header_navigation': HeaderNavigation(),
+    'admin_navigation': AdminNavigation(),
     'org_navigation': OrgNavigation(),
 }
 
@@ -335,7 +337,6 @@ def format_time_24h(date):
 
 
 def get_human_day(time):
-
     #  Add 1 minute to transform 00:00 into ‘midnight today’ instead of ‘midnight tomorrow’
     date = (utc_string_to_aware_gmt_datetime(time) - timedelta(minutes=1)).date()
     if date == (datetime.utcnow() + timedelta(days=1)).date():
@@ -474,7 +475,8 @@ def format_notification_status(status, template_type):
 
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(
-        {'created', 'pending', 'sending'}, ' ' + _('since') + ' <span class="local-datetime-short">{}</span>'.format(created)
+        {'created', 'pending', 'sending'},
+        ' ' + _('since') + ' <span class="local-datetime-short">{}</span>'.format(created)
     ).get(status, '<span class="local-datetime-short">{}</span>'.format(updated))
 
 

@@ -1,9 +1,9 @@
 @layer components {
   /*! purgecss start ignore */
   .navigation {
-    @apply p-0 pr-gutter;
+    @apply p-0;
   }
-  
+
   .navigation-service {
     font-size: 0;
     @apply border-0 border-b-1 border-solid border-gray-grey2 relative m-0 mb-4;
@@ -130,6 +130,13 @@
   .header--active {
     @apply border-b-4;
     @apply border-blue;
+  }
+
+  .adminnav--active {
+    @apply bg-gray;
+    @apply border-l-4;
+    @apply border-blue;
+    @apply font-extrabold;
   }
   /*! purgecss end ignore */
 }
