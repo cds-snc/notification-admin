@@ -1,9 +1,0 @@
-{% if current_user.platform_admin %}
-  <nav class="navigation">
-    <ul>
-      <li><a
-        href="{{ url_for('.service_dashboard', service_id=current_service.id) }}" {{ main_navigation.is_selected('dashboard') }}>{{ _('Dashboard') }}</a>
-      </li>
-    </ul>
-  </nav>
-{% endif %}

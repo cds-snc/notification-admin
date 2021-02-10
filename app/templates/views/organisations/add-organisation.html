@@ -1,4 +1,4 @@
-{% extends "withoutnav_template.html" %}
+{% extends  "admin_template.html" %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/textbox.html" import textbox %}
@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block fullwidth_content %}
-  <div id="content" class="contain-floats">
+  <div class="container contain-floats">
     <div class="navigation-service">
       <a href="{{ url_for('.organisations') }}" class="navigation-service-back-to">{{ _('All organisations') }}</a>
       <a href="{{ url_for('main.choose_account') }}" class="navigation-service-switch">{{ _('Switch service') }}</a>

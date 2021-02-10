@@ -44,6 +44,9 @@ class AdminNavigation(Navigation):
         'trial_services': {
             'trial_services',
         },
+        'organisations': {
+            'organisations',
+        },
         'live_api_keys': {
             'live_api_keys',
         },
@@ -92,7 +95,6 @@ class HeaderNavigation(Navigation):
             'contact',
         },
         'features': {
-            'why-notify',
             'features',
             'email',
             'letters',
@@ -105,11 +107,23 @@ class HeaderNavigation(Navigation):
             'activity',
             'activity_download',
         },
+        'home': {
+            'index',
+        },
+        'why-notify': {
+            'why-notify',
+        },
+        'contact': {
+            'contact',
+        },
         'pricing': {
             'pricing',
         },
         'documentation': {
             'documentation',
+        },
+        'smtp-integration': {
+            'smtp_integration',
         },
         'user-profile': {
             'user_profile',
@@ -336,7 +350,6 @@ class HeaderNavigation(Navigation):
         'get_notifications_as_json',
         'go_to_dashboard_after_tour',
         'inbound_sms_admin',
-        'index',
         'invite_org_user',
         'invite_user',
         'letter_branding_preview_image',

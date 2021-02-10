@@ -1,4 +1,4 @@
-{% extends "withoutnav_template.html" %}
+{% extends  "admin_template.html" %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/checkbox.html" import checkbox %}
 {% from "components/page-footer.html" import page_footer %}
@@ -19,6 +19,7 @@
           ('Inbound SMS numbers', 'inbound_sms_admin'),
           ('Providers', 'view_providers'),
           ('Clear cache', 'clear_cache'),
+          ('Organizations', 'organisations'),
         ] %}
           <div class="pl-10 pr-5 py-2 adminnav--{{ admin_navigation.is_selected(view) }} ">
             <a href="{{ url_for('main.'+view) }}"
