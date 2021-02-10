@@ -56,6 +56,10 @@
 </div>
 <div class="pl-24">
   <p>{{ _('Try out GC Notify before committing. When you create an account you will start in trial mode allowing you to experiment by sending messages to yourself and other people on your team. Once you’ve updated your settings and added examples of messages you want to send, you can request to go live with your service to send to more recipients.') }}</p>
+
+  {% if not current_user.is_authenticated %}
+    <p><a href="{{ url_for('main.register') }}">{{ _('Create an account and try it for yourself') }}</a></p>
+  {% endif %}
 </div>
 
 {% endblock %}

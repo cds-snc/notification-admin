@@ -222,8 +222,7 @@
       <h2 class="heading-medium mt-10 contain-floats">{{ _('Your service is live') }}</h2>
 
       <p>
-        {{ _('You can send up to') }}
-        {{ "{:,}".format(current_service.message_limit) }} {{ _('messages per day.') }}
+        {{ _('You can send up to {} messages per day.').format(current_service.message_limit | format_number) }}
       </p>
       <p>
         {{ _('Problems or comments?') }}
