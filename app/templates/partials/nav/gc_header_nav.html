@@ -180,8 +180,9 @@
 
   function accountMenuToggle() {
     const accountMenu = document.querySelector("#account-menu-options");
+    const arrow = document.querySelector(".account-menu-arrow");
     accountMenu.classList.toggle("hidden");
-    // accountMenu.classList.toggle("pointer-events-none");
+    arrow.classList.toggle("flip");
   }
 
   document.querySelector("#account-icon-mobile").addEventListener("click", accountMobileToggle);
