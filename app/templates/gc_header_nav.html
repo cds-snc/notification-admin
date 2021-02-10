@@ -160,13 +160,19 @@
   document.querySelector("#menu").addEventListener("click", classToggle);
 
   // REVIEW: Revisit this code and make it more reusable. --jlr
-  function accountToggle() {
-    const accountMenu = document.querySelector("#account-menu");
-    // accountMenu.classList.toggle("hidden");
+  function accountMobileToggle() {
+    const accountMenu = document.querySelector("#account-menu-mobile");
     accountMenu.classList.toggle("opacity-0");
     accountMenu.classList.toggle("pointer-events-none");
   }
 
-  document.querySelector("#account-icon").addEventListener("click", accountToggle);
-  document.querySelector("#account-close").addEventListener("click", accountToggle);
+  function accountMenuToggle() {
+    const accountMenu = document.querySelector("#account-menu-options");
+    accountMenu.classList.toggle("hidden");
+    // accountMenu.classList.toggle("pointer-events-none");
+  }
+
+  document.querySelector("#account-icon-mobile").addEventListener("click", accountMobileToggle);
+  document.querySelector("#account-close-mobile").addEventListener("click", accountMobileToggle);
+  document.querySelector("#account-menu").addEventListener("click", accountMenuToggle);
 </script>
