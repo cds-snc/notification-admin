@@ -62,7 +62,8 @@
           <div
             class="flex-shrink-0 self-center text-center p-5 bg-gray header--{{ header_navigation.is_selected('documentation') }}">
             <a
-              href="{{ url_for('main.documentation') }}"
+              href="{{ documentation_url() }}"
+              target="_blank"
               class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
             >{{ _('Documentation') }}</a>
           </div>
