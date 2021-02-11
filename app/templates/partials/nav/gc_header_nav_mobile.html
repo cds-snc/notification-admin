@@ -1,39 +1,115 @@
 <div class="mobile-nav container hidden">
-  <div class="absolute bg-gray p-5 border-b-8">
-    <ul class="pt-2">
+  <div class="absolute bg-white w-full px-8 pb-8 z-40">
+    <ul class="pt-8">
       {% if current_user.platform_admin %}
+        <!-- service menu dropdown / signed in / admin / mobile -->
         <li>
           <a href="{{ url_for('main.live_services') }}"
-             class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
-          >{{ _('Platform admin') }}</a>
+             class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline">
+            {{ _('Platform admin') }}
+          </a>
         </li>
+        <!-- service menu dropdown / signed in / admin / mobile / END -->
       {% endif %}
 
-      <li>
-        <a
-          class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
-          href="{{ url_for('main.why-notify') }}"
-        >{{ _('Why GC Notify') }}</a>
-      </li>
-      <li>
-        <a
-          class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
-          href="{{ url_for('main.features') }}"
-        >{{ _('Features') }}</a>
-      </li>
-      <li>
-        <a
-          class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
-          href="{{ documentation_url() }}"
-          target="_blank"
-        >{{ _('Documentation') }}</a>
-      </li>
-      <li>
-        <a
-          class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
-          href="{{ url_for('main.contact') }}"
-        >{{ _('Contact us') }}</a>
-      </li>
+      {% if current_user.is_authenticated and not current_org %}
+        <!-- service menu dropdown / signed in / mobile -->
+        {% if current_user.platform_admin and current_user.has_permissions() %}
+          <li class="pb-6">
+            <a
+              class="text-blue visited:text-blue link:text-blue smb-5 no-underline hover:underline"
+              href="{{ url_for('main.live_services') }}">
+              {{ _('Platform admin') }}
+            </a>
+          </li>
+        {% endif %}
+        {% if current_service.name %}
+          {% if current_user.has_permissions('view_activity') %}
+            <li class="pb-6">
+              <a
+                class="text-blue visited:text-blue link:text-blue smb-5 no-underline hover:underline"
+                href="{{ url_for('.service_dashboard', service_id=current_service.id) }}">
+                {{ _('Dashboard') }}
+              </a>
+            </li>
+          {% endif %}
+          <li class="pb-6">
+            <a
+              class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
+              href="{{ url_for('.choose_template', service_id=current_service.id) }}">
+            {{ _('templates') | capitalize }}
+            </a>
+          </li>
+          {% if current_user.has_permissions('manage_api_keys') %}
+            <li class="pb-6">
+              <a
+                class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
+                href="{{ url_for('.api_integration', service_id=current_service.id) }}">
+                {{ _('API integration') }}
+              </a>
+            </li>
+          {% endif %}
+          {% if current_user.has_permissions() %}
+            <li class="pb-6">
+              <a
+                class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
+                href="{{ url_for('.manage_users', service_id=current_service.id) }}">
+                {{ _('Team members') }}
+              </a>
+            </li>
+          {% endif %}
+          {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
+            <li class="pb-6">
+              <a
+                class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
+                href="{{ url_for('.service_settings', service_id=current_service.id) }}">
+                {{ _('Settings') }}
+              </a>
+            </li>
+          {% endif %}
+          <li class="pb-6">
+            <a
+              class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
+              href="{{ url_for('main.contact') }}">
+              {{ _('Support') }}
+            </a>
+          </li>
+          <!-- service menu dropdown / signed in/ mobile / END -->
+        {% endif %}
+      {% endif %}
+      {% if not current_user.is_authenticated %}
+        <!-- service menu dropdown / signed out / mobile -->
+        <li>
+          <a
+            class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+            href="{{ url_for('main.why-notify') }}"
+          >{{ _('Why GC Notify') }}</a>
+        </li>
+        <li>
+          <a
+            class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+            href="{{ url_for('main.features') }}">
+            {{ _('Features') }}
+          </a>
+        </li>
+        <li>
+          <a
+            class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+            href="{{ documentation_url() }}"
+            target="_blank">
+            {{ _('Documentation') }}
+          </a>
+        </li>
+        <li>
+          <a
+            class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+            href="{{ url_for('main.contact') }}">
+            {{ _('Contact us') }}
+          </a>
+        </li>
+        <!-- service menu dropdown / signed out / mobile / END -->
+      {% endif %}
+
     </ul>
   </div>
 </div>
