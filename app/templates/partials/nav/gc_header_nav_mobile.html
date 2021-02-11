@@ -1,9 +1,9 @@
 <div class="mobile-nav container hidden">
-  <div class="absolute bg-white w-full px-8 pb-8 z-40">
-    <ul class="pt-8">
+  <div class="absolute bg-white w-full pb-8 z-40">
+    <ul>
       {% if current_user.platform_admin %}
         <!-- service menu dropdown / signed in / admin / mobile -->
-        <li>
+        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('platform-admin') }}">
           <a href="{{ url_for('main.live_services') }}"
              class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline">
             {{ _('Platform admin') }}
@@ -15,7 +15,7 @@
       {% if current_user.is_authenticated and not current_org %}
         <!-- service menu dropdown / signed in / mobile -->
         {% if current_user.platform_admin and current_user.has_permissions() %}
-          <li class="pb-6">
+          <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('platform-admin') }}">
             <a
               class="text-blue visited:text-blue link:text-blue smb-5 no-underline hover:underline"
               href="{{ url_for('main.live_services') }}">
@@ -25,7 +25,7 @@
         {% endif %}
         {% if current_service.name %}
           {% if current_user.has_permissions('view_activity') %}
-            <li class="pb-6">
+            <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('dashboard') }}">
               <a
                 class="text-blue visited:text-blue link:text-blue smb-5 no-underline hover:underline"
                 href="{{ url_for('.service_dashboard', service_id=current_service.id) }}">
@@ -33,7 +33,7 @@
               </a>
             </li>
           {% endif %}
-          <li class="pb-6">
+          <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('templates') }}">
             <a
               class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
               href="{{ url_for('.choose_template', service_id=current_service.id) }}">
@@ -41,7 +41,7 @@
             </a>
           </li>
           {% if current_user.has_permissions('manage_api_keys') %}
-            <li class="pb-6">
+            <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('api-integration') }}">
               <a
                 class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
                 href="{{ url_for('.api_integration', service_id=current_service.id) }}">
@@ -50,7 +50,7 @@
             </li>
           {% endif %}
           {% if current_user.has_permissions() %}
-            <li class="pb-6">
+            <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('team-members') }}">
               <a
                 class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
                 href="{{ url_for('.manage_users', service_id=current_service.id) }}">
@@ -59,7 +59,7 @@
             </li>
           {% endif %}
           {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
-            <li class="pb-6">
+            <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('settings') }}">
               <a
                 class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
                 href="{{ url_for('.service_settings', service_id=current_service.id) }}">
@@ -67,7 +67,7 @@
               </a>
             </li>
           {% endif %}
-          <li class="pb-6">
+          <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
             <a
               class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
               href="{{ url_for('main.contact') }}">
@@ -79,20 +79,20 @@
       {% endif %}
       {% if not current_user.is_authenticated %}
         <!-- service menu dropdown / signed out / mobile -->
-        <li>
+        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('why-notify') }}">
           <a
             class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
             href="{{ url_for('main.why-notify') }}"
           >{{ _('Why GC Notify') }}</a>
         </li>
-        <li>
+        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('features') }}">
           <a
             class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
             href="{{ url_for('main.features') }}">
             {{ _('Features') }}
           </a>
         </li>
-        <li>
+        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('documentation') }}">
           <a
             class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
             href="{{ documentation_url() }}"
@@ -100,7 +100,7 @@
             {{ _('Documentation') }}
           </a>
         </li>
-        <li>
+        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
           <a
             class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
             href="{{ url_for('main.contact') }}">
