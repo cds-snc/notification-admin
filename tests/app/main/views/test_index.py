@@ -31,8 +31,8 @@ def test_non_logged_in_user_can_see_homepage(mocker, client):
 
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
-    assert page.h1.text.strip() == (
-        'Notify'
+    assert page.select_one('#gc-title').text.strip() == (
+        'GC Notify'
     )
 
     assert page.select_one('meta[name=description]')['content'].strip() == (
@@ -264,11 +264,11 @@ def test_letter_template_preview_headers(
 
 
 @pytest.mark.parametrize('query_key, query_value, heading', [
-    ('lang', 'en', 'Notify'),  # 'Notify' = english heading
-    ('lang', 'fr', 'Notification'),  # 'Notification' = french heading
-    ('lang', 'sa?SDFa?DFa,/', 'Notify'),
-    ('xyz', 'xyz', 'Notify'),
-    ('sa?SDFa?DFa,/', 'sa?SDFa?DFa,/', 'Notify')
+    ('lang', 'en', 'GC Notify'),  # 'Notify' = english heading
+    ('lang', 'fr', 'GC Notification'),  # 'Notification' = french heading
+    ('lang', 'sa?SDFa?DFa,/', 'GC Notify'),
+    ('xyz', 'xyz', 'GC Notify'),
+    ('sa?SDFa?DFa,/', 'sa?SDFa?DFa,/', 'GC Notify')
 ])
 def test_query_params(
     client,
