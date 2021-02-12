@@ -12,7 +12,7 @@ def test_bad_url_returns_page_not_found(client):
     assert page.h1.string.strip() == 'Page could not be found'
 
 
-def test_load_service_before_request_handles_404(client_request, mocker):
+def test_load_service_before_request_handles_404(client_request, app_, mocker):
     exc = HTTPError(Response(status=404), 'Not found')
     get_service = mocker.patch('app.service_api_client.get_service', side_effect=exc)
 
