@@ -220,24 +220,6 @@ def test_platform_admin_can_see_orgs_they_dont_have(
     index()
 
 
-def test_cant_use_decorator_without_view_args(
-    client,
-    platform_admin_user,
-    mocker,
-):
-    mocker.patch('app.user_api_client.get_user', return_value=platform_admin_user)
-    client.login(platform_admin_user)
-
-    request.view_args = {}
-
-    @user_has_permissions()
-    def index():
-        pass
-
-    with pytest.raises(NotImplementedError):
-        index()
-
-
 def test_user_doesnt_have_permissions_for_organisation(
     client,
     mocker,

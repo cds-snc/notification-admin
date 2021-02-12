@@ -1,3 +1,9 @@
+{% set long_lang = 'English' %}
+
+{% if session["userlang"] != "en" %}
+  {% set long_lang = 'Français' %}
+{% endif %}
+
 <div class="container">
   <!-- start sub nav -->
   <div class="pt-5 lg:justify-between grid md:grid-cols-2">
@@ -38,20 +44,15 @@
       <a
         class="mr-10 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small pl-5 underline hover:no-underline"
         href="{{ url_for('main.set_lang') }}?from={{ request.path }}"
-      >
-        {% if session["userlang"] == "en" %}
-          Français
-        {% else %}
-          English
-        {% endif %}
-      </a>
+        lang="{{ session["userlang"] }}"
+      >{{ long_lang }}</a>
     </nav>
     <!-- end sub nav -->
   </div>
   <div>
     <a href="/" class="no-underline">
       <div class="">
-        <span
+        <span id="gc-title"
           class="text-title text-black visited:text-black"
         >
           {{ _("GC Notify") }}
@@ -83,7 +84,7 @@
       <div class="text-base self-center">
         {% if withnav %}
           <img aria-hidden="true" src="{{ asset_url('images/swap.svg') }}" class="inline"/>
-          <a href="{{ url_for('.choose_account') }}">Switch Services</a>
+          <a href="{{ url_for('.choose_account') }}">Switch services</a>
         {% endif %}
       </div>
     </div>

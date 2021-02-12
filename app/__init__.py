@@ -54,13 +54,7 @@ from app.extensions import (
 from app.models.organisation import Organisation
 from app.models.service import Service
 from app.models.user import AnonymousUser, User
-from app.navigation import (
-    AdminNavigation,
-    CaseworkNavigation,
-    HeaderNavigation,
-    MainNavigation,
-    OrgNavigation,
-)
+from app.navigation import AdminNavigation, HeaderNavigation, OrgNavigation
 from app.notify_client.api_key_api_client import api_key_api_client
 from app.notify_client.billing_api_client import billing_api_client
 from app.notify_client.complaint_api_client import complaint_api_client
@@ -107,8 +101,6 @@ current_service = LocalProxy(_get_current_service)
 current_organisation = LocalProxy(partial(_lookup_req_object, 'organisation'))
 
 navigation = {
-    'casework_navigation': CaseworkNavigation(),
-    'main_navigation': MainNavigation(),
     'header_navigation': HeaderNavigation(),
     'admin_navigation': AdminNavigation(),
     'org_navigation': OrgNavigation(),
@@ -234,7 +226,7 @@ def init_app(application):
 
     @application.context_processor
     def _attach_current_organisation():
-        return {'current_org': current_organisation}
+        return {'current_org': current_organisation if current_organisation else None}
 
     @application.context_processor
     def _attach_current_user():
