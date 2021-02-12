@@ -3,23 +3,56 @@
     <ul>
       {% if current_user.platform_admin %}
         <!-- service menu dropdown / signed in / admin / mobile -->
-        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('platform-admin') }}">
-          <a href="{{ url_for('main.live_services') }}"
-             class="text-blue visited:text-blue link:text-blue no-underline hover:underline">
-            {{ _('Platform admin') }}
-          </a>
-        </li>
+        {% for link_text, view in [
+          ('Live services', 'live_services'),
+          ('Trial mode services', 'trial_services'),
+          (_('Live API keys'), 'live_api_keys'),
+          ('Email branding', 'email_branding'),
+          ('Find services by name', 'find_services_by_name'),
+          ('Find users by email', 'find_users_by_email'),
+          ('Email complaints', 'platform_admin_list_complaints'),
+          ('Reports', 'platform_admin_reports'),
+          ('Inbound SMS numbers', 'inbound_sms_admin'),
+          ('Providers', 'view_providers'),
+          ('Clear cache', 'clear_cache'),
+          ('Organizations', 'organisations'),
+        ] %}
+          <li class="py-4 pl-8 menu--{{ admin_navigation.is_selected(view) }}">
+            <a
+              class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
+              href="{{ url_for('main.'+view) }}">
+              {{ link_text }}
+            </a>
+          </li>
+        {% endfor %}
+
         <!-- service menu dropdown / signed in / admin / mobile / END -->
       {% endif %}
 
       {% if current_user.is_authenticated and not current_org %}
         <!-- service menu dropdown / signed in / mobile -->
         {% if current_user.platform_admin and current_user.has_permissions() %}
-          <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('platform-admin') }}">
+          <li class="py-4 pl-8">
             <a
               class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
               href="{{ url_for('main.live_services') }}">
               {{ _('Platform admin') }}
+            </a>
+          </li>
+        {% endif %}
+        {% if not current_service.name %}
+          <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('choose_account') }}">
+            <a
+              class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
+              href="{{ url_for('.choose_account') }}">
+              {{ _('Your services') }}
+            </a>
+          </li>
+          <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
+            <a
+              class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
+              href="{{ url_for('main.contact') }}">
+              {{ _('Contact us') }}
             </a>
           </li>
         {% endif %}
@@ -33,6 +66,7 @@
               </a>
             </li>
           {% endif %}
+          <!-- REVIEW: this menu appear in the admin page somehow -->
           <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('templates') }}">
             <a
               class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
@@ -67,6 +101,7 @@
               </a>
             </li>
           {% endif %}
+          <!-- REVIEW: this menu appear in the admin page somehow -->
           <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
             <a
               class="text-blue visited:text-blue link:text-blue no-underline hover:underline"

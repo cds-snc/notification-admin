@@ -148,6 +148,9 @@ class HeaderNavigation(Navigation):
             'verify_email',
             'verify_mobile',
         },
+        'choose_account': {
+            'choose_account',
+        },
         'team-members': {
             'confirm_edit_user_email',
             'confirm_edit_user_mobile_number',
