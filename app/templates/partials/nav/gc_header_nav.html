@@ -163,6 +163,20 @@
   <hr class="m-0 xs:hidden smaller:hidden sm:hidden md:flex"/>
 {% endif %}
 <script>
+  function safeAddEventListener(selector, event, fn) {
+    if (document.querySelector(selector))
+      document.querySelector(selector).addEventListener(event, fn);
+  }
+
+  function registerMenuEscape(selector, toggleFn) {
+    document.addEventListener("keydown", function(e) {
+      if (e.key == 'Escape') {
+        var opened = document.querySelector(selector + ':not(.hidden)');
+        if (opened) toggleFn();
+      }
+    });
+  }
+
   function classToggle() {
     const nav = document.querySelector(".mobile-nav");
     const arrow = document.querySelector(".mobile-arrow");
@@ -170,13 +184,16 @@
     arrow.classList.toggle("flip");
   }
 
-  document.querySelector("#menu").addEventListener("click", classToggle);
-
-  // REVIEW: Revisit this code and make it more reusable. --jlr
   function accountMobileToggle() {
     const accountMenu = document.querySelector("#account-menu-mobile");
-    accountMenu.classList.toggle("opacity-0");
-    accountMenu.classList.toggle("pointer-events-none");
+    accountMenu.classList.toggle("hidden");
+    // In order to have the opacity transition effect working properly,
+    // we need to separate the hidden and opacity toggling in two separate 
+    // actions in the HTML rendering, hence the delay of opacity by 1 ms.
+    window.setTimeout ( function() { 
+      accountMenu.classList.toggle("opacity-0");
+      accountMenu.classList.toggle("pointer-events-none");
+    }, 1);
   }
 
   function accountMenuToggle() {
@@ -186,7 +203,14 @@
     arrow.classList.toggle("flip");
   }
 
-  document.querySelector("#account-icon-mobile").addEventListener("click", accountMobileToggle);
-  document.querySelector("#account-close-mobile").addEventListener("click", accountMobileToggle);
-  document.querySelector("#account-menu").addEventListener("click", accountMenuToggle);
+  safeAddEventListener("#menu", "click", classToggle);
+  registerMenuEscape(".mobile-nav", classToggle);
+
+  safeAddEventListener("#account-icon-mobile", "click", accountMobileToggle);
+  safeAddEventListener("#account-close-mobile", "click", accountMobileToggle);
+  registerMenuEscape("#account-menu-mobile", accountMobileToggle);
+
+  safeAddEventListener("#account-menu", "click", accountMenuToggle);
+  registerMenuEscape("#account-menu-options", accountMenuToggle);
+
 </script>

@@ -122,6 +122,9 @@ class HeaderNavigation(Navigation):
         'documentation': {
             'documentation',
         },
+        'design_content': {
+            'design_content',
+        },
         'smtp-integration': {
             'smtp_integration',
         },
@@ -323,7 +326,6 @@ class HeaderNavigation(Navigation):
         'delete_service_template',
         'delete_template_folder',
         'delivery_status_callback',
-        'design_content',
         'download_notifications_csv',
         'edit_data_retention',
         'edit_organisation_agreement',

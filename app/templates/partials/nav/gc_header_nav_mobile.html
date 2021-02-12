@@ -1,11 +1,11 @@
 <div class="mobile-nav container hidden">
-  <div class="absolute bg-white w-full pb-8 z-40">
+  <div class="absolute bg-white w-full z-40">
     <ul>
       {% if current_user.platform_admin %}
         <!-- service menu dropdown / signed in / admin / mobile -->
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('platform-admin') }}">
           <a href="{{ url_for('main.live_services') }}"
-             class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline">
+             class="text-blue visited:text-blue link:text-blue no-underline hover:underline">
             {{ _('Platform admin') }}
           </a>
         </li>
@@ -17,7 +17,7 @@
         {% if current_user.platform_admin and current_user.has_permissions() %}
           <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('platform-admin') }}">
             <a
-              class="text-blue visited:text-blue link:text-blue smb-5 no-underline hover:underline"
+              class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
               href="{{ url_for('main.live_services') }}">
               {{ _('Platform admin') }}
             </a>
@@ -27,7 +27,7 @@
           {% if current_user.has_permissions('view_activity') %}
             <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('dashboard') }}">
               <a
-                class="text-blue visited:text-blue link:text-blue smb-5 no-underline hover:underline"
+                class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
                 href="{{ url_for('.service_dashboard', service_id=current_service.id) }}">
                 {{ _('Dashboard') }}
               </a>
@@ -35,7 +35,7 @@
           {% endif %}
           <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('templates') }}">
             <a
-              class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
+              class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
               href="{{ url_for('.choose_template', service_id=current_service.id) }}">
             {{ _('templates') | capitalize }}
             </a>
@@ -43,7 +43,7 @@
           {% if current_user.has_permissions('manage_api_keys') %}
             <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('api-integration') }}">
               <a
-                class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
+                class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
                 href="{{ url_for('.api_integration', service_id=current_service.id) }}">
                 {{ _('API integration') }}
               </a>
@@ -52,7 +52,7 @@
           {% if current_user.has_permissions() %}
             <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('team-members') }}">
               <a
-                class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
+                class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
                 href="{{ url_for('.manage_users', service_id=current_service.id) }}">
                 {{ _('Team members') }}
               </a>
@@ -61,7 +61,7 @@
           {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
             <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('settings') }}">
               <a
-                class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
+                class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
                 href="{{ url_for('.service_settings', service_id=current_service.id) }}">
                 {{ _('Settings') }}
               </a>
@@ -69,7 +69,7 @@
           {% endif %}
           <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
             <a
-              class="text-blue visited:text-blue link:text-blue mb-5 no-underline hover:underline"
+              class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
               href="{{ url_for('main.contact') }}">
               {{ _('Support') }}
             </a>
@@ -81,28 +81,41 @@
         <!-- service menu dropdown / signed out / mobile -->
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('why-notify') }}">
           <a
-            class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+            class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
             href="{{ url_for('main.why-notify') }}"
           >{{ _('Why GC Notify') }}</a>
         </li>
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('features') }}">
           <a
-            class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+            class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
             href="{{ url_for('main.features') }}">
             {{ _('Features') }}
           </a>
         </li>
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('documentation') }}">
           <a
-            class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+            class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
             href="{{ documentation_url() }}"
             target="_blank">
             {{ _('Documentation') }}
           </a>
+          <img
+            aria-hidden="false" 
+            aria-label="{{ _('Documentation') }}"
+            src="{{ asset_url('images/external.svg') }}" 
+            alt="Documentation external link icon"
+            class="inline w-8 h-8 pb-2" />
+        </li>
+        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('design_content') }}">
+          <a
+            class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
+            href="{{ url_for('main.design_content') }}">
+            {{ _("Guidance") }}
+          </a>
         </li>
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
           <a
-            class="text-blue visited:text-blue link:text-blue font-bold text-small mb-5 no-underline hover:underline"
+            class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
             href="{{ url_for('main.contact') }}">
             {{ _('Contact us') }}
           </a>
