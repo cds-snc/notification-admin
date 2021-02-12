@@ -23,12 +23,14 @@
           >{{ _('Sign in') }}
           </a>
         {% endif %}
-        <div>
-          <a
-            class="line-under leading-none inline text-blue visited:text-blue link:text-blue text-small pl-5 underline hover:no-underline"
-            href="{{ url_for('main.set_lang') }}?from={{ request.path }}">
-            {% if session["userlang"] == "en" %}FR{% else %}EN{% endif %}
-          </a>
+        <div class="px-5">
+          <div class="h-14 p-1 border-2 border-solid border-gray rounded-lg">
+            <a
+              class="p-0 line-under leading-none inline text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
+              href="{{ url_for('main.set_lang') }}?from={{ request.path }}">
+              {% if session["userlang"] == "en" %}FR{% else %}EN{% endif %}
+            </a>
+          </div>
         </div>
       </div>
       <!-- Mobile menu and nav bar END -->
