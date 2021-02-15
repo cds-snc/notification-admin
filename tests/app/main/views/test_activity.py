@@ -246,8 +246,8 @@ def test_link_to_download_notifications(
     )
     download_link = page.select_one('a[download=download]')
     assert (
-               download_link['href'] if download_link else None
-           ) == expected_download_link(service_id=SERVICE_ONE_ID)
+        download_link['href'] if download_link else None
+    ) == expected_download_link(service_id=SERVICE_ONE_ID)
 
 
 def test_download_not_available_to_users_without_dashboard(

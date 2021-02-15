@@ -1,7 +1,6 @@
 import copy
 
 import pytest
-from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
 
@@ -14,12 +13,10 @@ from app.main.views.dashboard import (
     get_free_paid_breakdown_for_billable_units,
 )
 from tests import (
-    service_json,
     validate_route_permission,
     validate_route_permission_with_client,
 )
 from tests.conftest import (
-    ORGANISATION_ID,
     SERVICE_ONE_ID,
     active_caseworking_user,
     active_user_view_permissions,

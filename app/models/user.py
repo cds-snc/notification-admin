@@ -612,6 +612,9 @@ class AnonymousUser(AnonymousUserMixin):
     def default_organisation(self):
         return Organisation(None)
 
+    def has_permissions(self):
+        return False
+
 
 class Users(ModelList):
 
