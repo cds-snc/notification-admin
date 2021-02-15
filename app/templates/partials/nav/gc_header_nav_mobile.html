@@ -6,7 +6,7 @@
         {% for link_text, view in [
           ('Live services', 'live_services'),
           ('Trial mode services', 'trial_services'),
-          (_('Live API keys'), 'live_api_keys'),
+          ('Live API keys', 'live_api_keys'),
           ('Email branding', 'email_branding'),
           ('Find services by name', 'find_services_by_name'),
           ('Find users by email', 'find_users_by_email'),
@@ -19,9 +19,10 @@
         ] %}
           <li class="py-4 pl-8 menu--{{ admin_navigation.is_selected(view) }}">
             <a
+              aria-label="{{ _(link_text) }}"
               class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
               href="{{ url_for('main.'+view) }}">
-              {{ link_text }}
+              {{ _(link_text) }}
             </a>
           </li>
         {% endfor %}
