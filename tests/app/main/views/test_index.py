@@ -291,6 +291,7 @@ def test_query_params(
 
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
-    assert page.h1.text.strip() == (
+    assert page.select_one('#gc-title').text.strip() == (
         heading
     )
+

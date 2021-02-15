@@ -88,7 +88,7 @@ def test_choose_account_should_show_choose_accounts_page(
     mock_get_organisation,
 ):
     resp = client_request.get('main.choose_account')
-    page = resp.find('div', {'id': 'content'}).main
+    page = resp.find('div', {'id': 'main_content'}).main
 
     assert normalize_spaces(page.h1.text) == 'All services'
     outer_list_items = page.select('nav ul')[0].select('li')
@@ -144,7 +144,7 @@ def test_choose_account_should_show_choose_accounts_page_if_no_services(
         'services': []
     }
     resp = client_request.get('main.choose_account')
-    page = resp.find('div', {'id': 'content'}).main
+    page = resp.find('div', {'id': 'main_content'}).main
 
     links = page.findAll('a')
     assert len(links) == 1
@@ -174,7 +174,7 @@ def test_choose_account_should_should_organisations_link_for_platform_admin(
     assert normalize_spaces(first_hint.text) == '3 organisations, 9,999 live services'
 
 
-def test_choose_account_should_show_back_to_service_link(
+def test_choose_account_should_show_switch_services_link(
     client_request,
     mock_get_orgs_and_services,
     mock_get_organisation,
@@ -182,11 +182,10 @@ def test_choose_account_should_show_back_to_service_link(
 ):
     resp = client_request.get('main.choose_account')
 
-    page = resp.find('div', {'id': 'content'})
-    back_to_service_link = page.find('div', {'class': 'navigation-service'}).a
+    back_to_service_link = resp.find('a', {'id': 'choose_account'})
 
-    assert back_to_service_link['href'] == url_for('main.show_accounts_or_dashboard')
-    assert back_to_service_link.text == 'Back to service one'
+    assert back_to_service_link['href'] == url_for('main.choose_account')
+    assert back_to_service_link.text == 'Switch services'
 
 
 def test_choose_account_should_not_show_back_to_service_link_if_no_service_in_session(
@@ -214,66 +213,3 @@ def test_choose_account_should_not_show_back_to_service_link_if_not_signed_in(
 
     assert page.select_one('h1').text == 'Sign in'  # We’re not signed in
     assert page.select_one('.navigation-service a') is None
-
-
-@pytest.mark.parametrize('active', (
-    False,
-    pytest.param(True, marks=pytest.mark.xfail(raises=AssertionError)),
-))
-def test_choose_account_should_not_show_back_to_service_link_if_service_archived(
-    client_request,
-    service_one,
-    mock_get_orgs_and_services,
-    mock_get_organisation,
-    mock_get_organisation_services,
-    active,
-):
-    service_one['active'] = active
-    with client_request.session_transaction() as session:
-        session['service_id'] = service_one['id']
-    page = client_request.get('main.choose_account')
-
-    assert normalize_spaces(page.select_one('h1').text) == 'All services'
-    assert page.select_one('.navigation-service a') is None
-
-
-@pytest.mark.parametrize('service, expected_status, page_text', (
-    (service_one, 200, (
-        'Test Service   Switch service '
-        ''
-        'Dashboard '
-        'Templates '
-        'Team members'
-    )),
-    (service_two, 403, (
-        # Page has no ‘back to’ link
-        '403 '
-        'You do not have permission to view this page.'
-    )),
-))
-def test_should_not_show_back_to_service_if_user_doesnt_belong_to_service(
-    client_request,
-    api_user_active,
-    fake_uuid,
-    mock_get_service,
-    mock_get_service_template,
-    mock_get_template_folders,
-    service,
-    expected_status,
-    page_text,
-):
-    mock_get_service.return_value = service(api_user_active)
-
-    page = client_request.get(
-        'main.view_template',
-        service_id=mock_get_service.return_value['id'],
-        template_id=fake_uuid,
-        _expected_status=expected_status,
-        _test_page_title=False,
-    )
-
-    assert normalize_spaces(
-        page.select_one('#content').text
-    ).startswith(
-        normalize_spaces(page_text)
-    )

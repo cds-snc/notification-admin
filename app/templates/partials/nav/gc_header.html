@@ -84,7 +84,7 @@
       <div class="text-base self-center">
         {% if withnav %}
           <img aria-hidden="true" src="{{ asset_url('images/swap.svg') }}" class="inline"/>
-          <a href="{{ url_for('.choose_account') }}">Switch services</a>
+          <a id="choose_account" href="{{ url_for('.choose_account') }}">Switch services</a>
         {% endif %}
       </div>
     </div>
