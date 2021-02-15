@@ -1,7 +1,7 @@
 <div class="mobile-nav container hidden">
   <div class="absolute bg-white w-full z-40">
     <ul>
-      {% if current_user.platform_admin %}
+      {% if current_user.platform_admin and not current_service.name %}
         <!-- service menu dropdown / signed in / admin / mobile -->
         {% for link_text, view in [
           ('Live services', 'live_services'),
