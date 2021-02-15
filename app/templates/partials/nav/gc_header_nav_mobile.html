@@ -25,11 +25,8 @@
             </a>
           </li>
         {% endfor %}
-
         <!-- service menu dropdown / signed in / admin / mobile / END -->
-      {% endif %}
-
-      {% if current_user.is_authenticated and not current_org %}
+      {% elif current_user.is_authenticated and not current_org %}
         <!-- service menu dropdown / signed in / mobile -->
         {% if current_user.platform_admin and current_user.has_permissions() %}
           <li class="py-4 pl-8">
@@ -111,8 +108,7 @@
           </li>
           <!-- service menu dropdown / signed in/ mobile / END -->
         {% endif %}
-      {% endif %}
-      {% if not current_user.is_authenticated %}
+      {% elif not current_user.is_authenticated %}
         <!-- service menu dropdown / signed out / mobile -->
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('why-notify') }}">
           <a
