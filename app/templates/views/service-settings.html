@@ -12,6 +12,24 @@
 
     <h1 class="heading-medium">{{ _('Settings') }}</h1>
 
+    {% if current_service.trial_mode %}
+    <div class="bg-gray px-5 py-2 mb-10">
+      <h2 class="heading-small mt-5">{{ _('Your service is in TRIAL mode') }}</h2>
+      {% if current_user.has_permissions('manage_service') %}
+      <p>
+        {{ _('To send notifications to more people, request to go live.') }}
+      </p>
+      <p class="text-right">
+        <a href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}" class="button" role="button">{{ _('Go Live') }}</a>
+      </p>
+      {% else %}
+      <p>
+        {{ _('Your service manager can ask to have these restrictions removed.') }}
+      </p>
+      {% endif %}
+    </div>
+    {% endif %}
+
     <div class="mb-12 clear-both contain-floats settings-table body-copy-table">
       {% set caption = _('General') %}
       {% set heading_1 = _('Label') %}
@@ -66,6 +84,13 @@
               permissions=['manage_service']
             )
           }}
+        {% endcall %}
+
+        {% call row() %}
+          {% set txt = _('Daily message limit') %}
+          {{ text_field(txt)}}
+          {{ text_field(current_service.message_limit | format_number) }}
+          {{ text_field('') }}
         {% endcall %}
 
         {% call settings_row(if_has_permission='upload_document') %}
@@ -201,35 +226,10 @@
         {% endcall %}
       {% endcall %}
 
-    {% if current_service.trial_mode %}
-      <h2 class="heading-medium mt-10 contain-floats">{{ _('Your service is in trial mode') }}</h2>
 
-      <ul class='list list-bullet'>
-        <li>{{ _('you can only send messages to yourself') }}</li>
-        <li>{{ _('you can add people to your team, then you can send messages to them too') }}</li>
-        <li>{{ _('you can only send') }} {{ current_service.message_limit }} {{ _('messages per day') }}</li>
-      </ul>
-
-      <p>
-        {% if current_user.has_permissions('manage_service') %}
-          {{ _('To remove these restrictions, you can')}} <a href="{{ url_for('.contact') }}">{{ _('contact us') }}</a>.
-        {% else %}
-          {{ _('Your service manager can ask to have these restrictions removed.') }}
-        {% endif %}
-        </p>
-
-    {% else %}
-      <h2 class="heading-medium mt-10 contain-floats">{{ _('Your service is live') }}</h2>
-
-      <p>
-        {{ _('You can send up to {} messages per day.').format(current_service.message_limit | format_number) }}
+      <p class="mt-12">
+        {{ _("Problems, questions, or comments? <a href='{}'>Contact us</a>.").format(url_for('.contact')) }}
       </p>
-      <p>
-        {{ _('Problems or comments?') }}
-        <a href="{{ url_for('.contact') }}">{{ _('Contact us') }}</a>.
-      </p>
-
-    {% endif %}
 
     {% if current_user.platform_admin %}
 
