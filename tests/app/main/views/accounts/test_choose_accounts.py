@@ -5,13 +5,7 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
-from tests.conftest import (
-    SERVICE_ONE_ID,
-    SERVICE_TWO_ID,
-    normalize_spaces,
-    service_one,
-    service_two,
-)
+from tests.conftest import SERVICE_ONE_ID, SERVICE_TWO_ID, normalize_spaces
 
 OS1, OS2, OS3, S1, S2, S3 = repeat(uuid.uuid4(), 6)
 

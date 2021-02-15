@@ -555,11 +555,11 @@ def load_user(user_id):
 def load_service_before_request():
     if '/static/' in request.url:
         _request_ctx_stack.top.service = None
-        _request_ctx_stack.top.organisation = None # added to init None to ensure request context has None or something
+        _request_ctx_stack.top.organisation = None  # added to init None to ensure request context has None or something
         return
     if _request_ctx_stack.top is not None:
         _request_ctx_stack.top.service = None
-        _request_ctx_stack.top.organisation = None # added to init None to ensure request context has None or something
+        _request_ctx_stack.top.organisation = None  # added to init None to ensure request context has None or something
 
         if request.view_args:
             service_id = request.view_args.get('service_id', session.get('service_id'))

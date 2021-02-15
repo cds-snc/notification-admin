@@ -294,4 +294,3 @@ def test_query_params(
     assert page.select_one('#gc-title').text.strip() == (
         heading
     )
-
