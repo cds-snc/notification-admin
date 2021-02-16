@@ -15,6 +15,15 @@
     back_link=url_for('main.api_integration', service_id=current_service.id)
   ) }}
 
+  <p>
+    {{ _('Create an API key to integrate the API and connect your web application or back-office system with GC Notify.') }}
+  </p>
+  
+  <p>
+    {{ _('Learn more in the') }} <a href="{{ documentation_url('keys') }}">{{ _('API key documentation') }}</a>.
+  </p>
+  
+
   {% set empty_txt = _('You haven’t created any API keys yet') %}
   {% set keys_txt = _('API keys') %}
   {% set heading_1 = _('API keys') %}
