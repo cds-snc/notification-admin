@@ -2,7 +2,10 @@
   <li class="task-list-item">
     <span aria-describedby="{{ label|id_safe }}"><a href="{{ link }}">{{ label }}</a></span>
     {% if completed %}
-      <strong class="task-list-indicator-completed" id="{{ label|id_safe }}">{{ _('Completed') }}</strong>
+      <strong class="task-list-indicator-completed" id="{{ label|id_safe }}">
+        <img aria-hidden="true" src="{{ asset_url('images/tick.png') }}" class="w-6 h-6 inline-block mr-2 -mt-1">
+        {{ _('Completed') }}
+      </strong>
     {% else %}
       <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}">{{ _('Not completed') }}</strong>
     {% endif %}

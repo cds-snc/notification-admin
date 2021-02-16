@@ -160,10 +160,10 @@ def test_no_go_live_link_for_service_without_organisation(
     page = client_request.get('main.service_settings', service_id=SERVICE_ONE_ID)
 
     assert page.find('h1').text == 'Settings'
-    assert normalize_spaces(page.select('tr')[13].text) == (
+    assert normalize_spaces(page.select('tr')[14].text) == (
         'Live No (organisation must be set first)'
     )
-    assert normalize_spaces(page.select('tr')[15].text) == (
+    assert normalize_spaces(page.select('tr')[16].text) == (
         'Organisation Not set Government of Canada Change'
     )
 
@@ -188,7 +188,7 @@ def test_organisation_name_links_to_org_dashboard(
         'main.service_settings', service_id=SERVICE_ONE_ID
     )
 
-    org_row = response.select('tr')[15]
+    org_row = response.select('tr')[16]
     assert org_row.find('a')['href'] == url_for('main.organisation_dashboard', org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find('a').text) == 'Test Organisation'
 
@@ -360,7 +360,7 @@ def test_should_redirect_after_change_service_name(
 @pytest.mark.parametrize('user, expected_text, expected_link', [
     (
         active_user_with_permissions,
-        'To remove these restrictions, you can contact us.',
+        'To send notifications to more people, request to go live.',
         True,
     ),
     (
@@ -388,18 +388,16 @@ def test_show_restricted_service(
     )
 
     assert page.find('h1').text == 'Settings'
-    assert page.find_all('h2')[0].text == 'Your service is in trial mode'
+    assert page.find_all('h2')[0].text == 'Your service is in TRIAL mode'
 
-    request_to_live = page.select_one('main p')
-    request_to_live_link = request_to_live.select_one('a')
-
-    assert normalize_spaces(request_to_live.text) == expected_text
+    assert expected_text in [normalize_spaces(p.text) for p in page.select('main p')]
 
     if expected_link:
-        assert request_to_live_link.text.strip() == 'contact us'
-        assert request_to_live_link['href'] == url_for('.contact')
+        request_to_live_link = page.select('main p')[1].select_one('a')
+        assert request_to_live_link.text.strip() == 'Go Live'
+        assert request_to_live_link['href'] == url_for('.request_to_go_live', service_id=SERVICE_ONE_ID)
     else:
-        assert not request_to_live_link
+        assert url_for('.request_to_go_live', service_id=SERVICE_ONE_ID) not in page
 
 
 @freeze_time("2017-04-01 11:09:00.061258")
@@ -443,7 +441,8 @@ def test_show_live_service(
         service_id=SERVICE_ONE_ID,
     )
     assert page.find('h1').text.strip() == 'Settings'
-    assert 'Your service is in trial mode' not in page.text
+    assert 'Your service is in TRIAL mode' not in page.text
+    assert url_for('.request_to_go_live', service_id=SERVICE_ONE_ID) not in page
 
 
 def test_switch_service_to_restricted(
@@ -1848,7 +1847,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
             page.select('tbody tr')[index].text
         )
 
-    assert get_row(page, 4) == "Reply-to email addresses test@example.com …and 2 more Manage"
+    assert get_row(page, 5) == "Reply-to email addresses test@example.com …and 2 more Manage"
 
 
 @pytest.mark.parametrize('sender_list_page, index, expected_output', [

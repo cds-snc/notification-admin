@@ -228,6 +228,7 @@ def estimate_usage(service_id):
 
 @main.route("/services/<service_id>/service-settings/request-to-go-live", methods=['GET'])
 @user_has_permissions('manage_service')
+@user_is_gov_user
 def request_to_go_live(service_id):
 
     agreement_signed = current_service.organisation.agreement_signed

@@ -2,10 +2,10 @@
 {% from "components/form.html" import form_wrapper %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
-{% from "components/task-list.html" import task_list_wrapper, task_list_item %}
+{% from "components/task-list.html" import task_list_wrapper, task_list_item with context %}
 
 {% block service_page_title %}
-  Before you request to go live
+ {{ _("Request to go live") }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -13,7 +13,7 @@
 
     <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
       {{ page_header(
-        'Before you request to go live',
+        _('Request to go live'),
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
       <p>
@@ -64,13 +64,12 @@
           ) }}
         {% endif %}
       {% endcall %}
-      {% if not current_user.is_gov_user %}
-        <p>
-          Only team members with a government email address can request to go live.
+      {% if (not current_service.go_live_checklist_completed) or (show_agreement and not agreement_signed) %}
+        <p class="font-bold">
+          {{ _("Ready to go live?") }}
         </p>
-      {% elif (not current_service.go_live_checklist_completed) or (show_agreement and not agreement_signed) %}
         <p>
-          You must complete these steps before you can request to go live.
+          {{ _("Once you have completed all the steps, submit your request to the GC Notify team.") }}
         </p>
       {% else %}
         <p>
