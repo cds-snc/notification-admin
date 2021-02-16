@@ -225,11 +225,10 @@ def test_should_show_total_on_live_trial_services_pages(
     response = platform_admin_client.get(url_for(endpoint))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
-    assert (
-               normalize_spaces(page.select('.big-number-with-status')[0].text),
-               normalize_spaces(page.select('.big-number-with-status')[1].text),
-               normalize_spaces(page.select('.big-number-with-status')[2].text),
-           ) == expected_big_numbers
+    assert (normalize_spaces(page.select('.big-number-with-status')[0].text),
+            normalize_spaces(page.select('.big-number-with-status')[1].text),
+            normalize_spaces(page.select('.big-number-with-status')[2].text),
+            ) == expected_big_numbers
 
 
 @pytest.mark.parametrize('endpoint, expected_big_numbers_single_plural, n_emails_sent, n_texts_sent, s_lang ', [
@@ -293,10 +292,9 @@ def test_should_single_and_plural(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
-    assert (
-               normalize_spaces(page.select('.big-number-with-status')[0].text),
-               normalize_spaces(page.select('.big-number-with-status')[1].text),
-           ) == expected_big_numbers_single_plural
+    assert (normalize_spaces(page.select('.big-number-with-status')[0].text),
+            normalize_spaces(page.select('.big-number-with-status')[1].text),
+            ) == expected_big_numbers_single_plural
 
 
 def test_create_global_stats_sets_failure_rates(fake_uuid):
@@ -728,16 +726,16 @@ def test_platform_admin_displays_stats_in_right_boxes_and_with_correct_styling(
     platform_admin_client,
 ):
     platform_stats = {
-        'email': {'failures':
-                      {'permanent-failure': 3, 'technical-failure': 0, 'temporary-failure': 0, 'virus-scan-failed': 0},
+        'email': {'failures': {'permanent-failure': 3, 'technical-failure': 0, 'temporary-failure': 0,
+                               'virus-scan-failed': 0},
                   'test-key': 0,
                   'total': 145},
-        'sms': {'failures':
-                    {'permanent-failure': 0, 'technical-failure': 1, 'temporary-failure': 0, 'virus-scan-failed': 0},
+        'sms': {'failures': {'permanent-failure': 0, 'technical-failure': 1, 'temporary-failure': 0,
+                             'virus-scan-failed': 0},
                 'test-key': 5,
                 'total': 168},
-        'letter': {'failures':
-                       {'permanent-failure': 0, 'technical-failure': 0, 'temporary-failure': 1, 'virus-scan-failed': 1},
+        'letter': {'failures': {'permanent-failure': 0, 'technical-failure': 0, 'temporary-failure': 1,
+                                'virus-scan-failed': 1},
                    'test-key': 0,
                    'total': 500}
     }
@@ -999,8 +997,10 @@ def test_get_live_services_report(platform_admin_client, mocker):
         return_value={'data': [
             {'service_id': 1, 'service_name': 'jessie the oak tree', 'organisation_name': 'Forest',
              'consent_to_research': True, 'contact_name': 'Forest fairy', 'organisation_type': 'Ecosystem',
-             'contact_email': 'forest.fairy@digital.cabinet-office.canada.ca', 'contact_mobile': '+16132532223',
-             'live_date': 'Sat, 29 Mar 2014 00:00:00 GMT', 'sms_volume_intent': 100, 'email_volume_intent': 50,
+             'contact_email': 'forest.fairy@digital.cabinet-office.canada.ca',
+             'contact_mobile': '+16132532223',
+             'live_date': 'Sat, 29 Mar 2014 00:00:00 GMT', 'sms_volume_intent': 100,
+             'email_volume_intent': 50,
              'letter_volume_intent': 20, 'sms_totals': 300, 'email_totals': 1200, 'letter_totals': 0,
              'free_sms_fragment_limit': 100},
             {'service_id': 2, 'service_name': 'james the pine tree', 'organisation_name': 'Forest',
@@ -1033,7 +1033,8 @@ def test_get_performance_platform_report(platform_admin_client, mocker):
             {'service_id': 'abc123', 'service_name': 'jessie the oak tree', 'organisation_name': 'Forest',
              'consent_to_research': True, 'contact_name': 'Forest fairy', 'organisation_type': 'Ecosystem',
              'contact_email': 'forest.fairy@digital.cabinet-office.canada.ca', 'contact_mobile': '+16132532223',
-             'live_date': 'Sat, 29 Mar 2014 00:00:00 GMT', 'sms_volume_intent': 100, 'email_volume_intent': 50,
+             'live_date': 'Sat, 29 Mar 2014 00:00:00 GMT', 'sms_volume_intent': 100,
+             'email_volume_intent': 50,
              'letter_volume_intent': 20, 'sms_totals': 300, 'email_totals': 1200, 'letter_totals': 0},
             {'service_id': 'def456', 'service_name': 'james the pine tree', 'organisation_name': 'Forest',
              'consent_to_research': None, 'contact_name': None, 'organisation_type': 'Ecosystem',
@@ -1047,11 +1048,10 @@ def test_get_performance_platform_report(platform_admin_client, mocker):
     assert pyexcel.get_array(
         file_type='xlsx',
         file_stream=response.get_data(),
-    ) == [
-               ['service_id', 'agency', 'service_name', '_timestamp', 'service', 'count'],
-               ['abc123', 'Forest', 'jessie the oak tree', '2014-03-29T00:00:00Z', 'notification', 1],
-               ['def456', 'Forest', 'james the pine tree', '', 'notification', 1],
-           ]
+    ) == [['service_id', 'agency', 'service_name', '_timestamp', 'service', 'count'],
+          ['abc123', 'Forest', 'jessie the oak tree', '2014-03-29T00:00:00Z', 'notification', 1],
+          ['def456', 'Forest', 'james the pine tree', '', 'notification', 1],
+          ]
 
 
 def test_get_trial_report_csv(platform_admin_client, mocker):
@@ -1071,7 +1071,8 @@ def test_get_trial_report_csv(platform_admin_client, mocker):
     assert response.headers['Content-Disposition'].startswith('inline; filename=')
 
     assert response.get_data(as_text=True) == (
-        'service_id,service_name,creation_date,created_by_name,created_by_email,notification_type,notification_sum\r\n' +
+        'service_id,service_name,creation_date,created_by_name,created_by_email,notification_type,'
+        'notification_sum\r\n' +
         'Fake Service ID,My service,2020-11-01,Bob,foo@example.com,email,5\r\n'
     )
 
@@ -1080,14 +1081,12 @@ def test_get_notifications_sent_by_service_shows_date_form(client_request, platf
     client_request.login(platform_admin_user)
     page = client_request.get('main.notifications_sent_by_service')
 
-    assert [
-               (input['type'], input['name'], input['value'])
-               for input in page.select('input')
-           ] == [
-               ('text', 'start_date', ''),
-               ('text', 'end_date', ''),
-               ('hidden', 'csrf_token', ANY)
-           ]
+    assert [(input['type'], input['name'], input['value'])
+            for input in page.select('input')
+            ] == [('text', 'start_date', ''),
+                  ('text', 'end_date', ''),
+                  ('hidden', 'csrf_token', ANY)
+                  ]
 
 
 def test_get_notifications_sent_by_service_validates_form(mocker, client_request, platform_admin_user):
