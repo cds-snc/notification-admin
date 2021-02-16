@@ -64,6 +64,7 @@ def mock_get_service_settings_page_common(
         'Service name Test Service Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
+        'Daily message limit 1,000',
 
         'Label Value Action',
         'Send emails On Change',
@@ -81,6 +82,7 @@ def mock_get_service_settings_page_common(
         'Service name Test Service Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
+        'Daily message limit 1,000',
 
         'Label Value Action',
         'Send emails On Change',
@@ -197,6 +199,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Service name service one Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
+        'Daily message limit 1,000',
 
         'Label Value Action',
         'Send emails On Change',
@@ -213,6 +216,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Service name service one Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Email code or text message code Change',
+        'Daily message limit 1,000',
 
         'Label Value Action',
         'Send emails On Change',
