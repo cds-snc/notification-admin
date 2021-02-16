@@ -776,7 +776,7 @@ def test_delete_template_folder_should_request_confirmation(
     assert page.select_one('input[name=name]')['value'] == 'sacrifice'
 
     assert len(page.select('form')) == 2
-    assert len(page.select('button')) == 4
+    assert len(page.select('button')) == 5
 
     assert 'action' not in page.select('form')[0]
     assert page.select('form button')[0].text == 'Yes, delete'
