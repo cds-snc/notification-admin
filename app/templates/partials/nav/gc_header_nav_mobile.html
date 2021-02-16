@@ -32,6 +32,7 @@
         {% if current_user.platform_admin and current_user.has_permissions() %}
           <li class="py-4 pl-8">
             <a
+              aria-label="{{ _('Platform admin') }}"
               class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
               href="{{ url_for('main.live_services') }}">
               {{ _('Platform admin') }}
@@ -41,6 +42,7 @@
         {% if not current_service.name %}
           <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('choose_account') }}">
             <a
+              aria-label="{{ _('Your services') }}"
               class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
               href="{{ url_for('.choose_account') }}">
               {{ _('Your services') }}
@@ -48,6 +50,7 @@
           </li>
           <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
             <a
+              aria-label="{{ _('Contact us') }}"
               class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
               href="{{ url_for('main.contact') }}">
               {{ _('Contact us') }}
@@ -58,6 +61,7 @@
           {% if current_user.has_permissions('view_activity') %}
             <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('dashboard') }}">
               <a
+                aria-label="{{ _('Dashboard') }}"
                 class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
                 href="{{ url_for('.service_dashboard', service_id=current_service.id) }}">
                 {{ _('Dashboard') }}
@@ -67,6 +71,7 @@
           <!-- REVIEW: this menu appear in the admin page somehow -->
           <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('templates') }}">
             <a
+              aria-label="{{ _('templates') | capitalize }}"
               class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
               href="{{ url_for('.choose_template', service_id=current_service.id) }}">
             {{ _('templates') | capitalize }}
@@ -75,6 +80,7 @@
           {% if current_user.has_permissions('manage_api_keys') %}
             <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('api-integration') }}">
               <a
+                aria-label="{{ _('API integration') }}"
                 class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
                 href="{{ url_for('.api_integration', service_id=current_service.id) }}">
                 {{ _('API integration') }}
@@ -84,6 +90,7 @@
           {% if current_user.has_permissions() %}
             <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('team-members') }}">
               <a
+                aria-label="{{ _('Team members') }}"
                 class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
                 href="{{ url_for('.manage_users', service_id=current_service.id) }}">
                 {{ _('Team members') }}
@@ -93,6 +100,7 @@
           {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
             <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('settings') }}">
               <a
+                aria-label="{{ _('Settings') }}"
                 class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
                 href="{{ url_for('.service_settings', service_id=current_service.id) }}">
                 {{ _('Settings') }}
@@ -102,6 +110,7 @@
           <!-- REVIEW: this menu appear in the admin page somehow -->
           <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
             <a
+              aria-label="{{ _('Support') }}"
               class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
               href="{{ url_for('main.contact') }}">
               {{ _('Support') }}
@@ -113,12 +122,14 @@
         <!-- service menu dropdown / signed out / mobile -->
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('why-notify') }}">
           <a
+            aria-label="{{ _('Why GC Notify') }}"
             class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
             href="{{ url_for('main.why-notify') }}"
           >{{ _('Why GC Notify') }}</a>
         </li>
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('features') }}">
           <a
+            aria-label="{{ _('Features') }}"
             class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
             href="{{ url_for('main.features') }}">
             {{ _('Features') }}
@@ -126,6 +137,7 @@
         </li>
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('documentation') }}">
           <a
+            aria-label="{{ _('Documentation') }}"
             class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
             href="{{ documentation_url() }}"
             target="_blank">
@@ -140,6 +152,7 @@
         </li>
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('design_content') }}">
           <a
+            aria-label="{{ _('Guidance') }}"
             class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
             href="{{ url_for('main.design_content') }}">
             {{ _("Guidance") }}
@@ -147,6 +160,7 @@
         </li>
         <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
           <a
+            aria-label="{{ _('Contact us') }}"
             class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
             href="{{ url_for('main.contact') }}">
             {{ _('Contact us') }}
