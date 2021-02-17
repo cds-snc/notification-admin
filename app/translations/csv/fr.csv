@@ -719,7 +719,7 @@
 "Callbacks for delivery receipts","Rappels pour les accusés de réception"
 "When you send an email or text message, find out if GC Notify was able to deliver it with callbacks. Learn more in the ","Lorsque vous envoyez un courriel ou un message texte, vérifiez si GC Notification a réussi à le livrer avec des fonctions de rappel. Pour en savoir plus, consultez la "
 "callbacks documentation","documentation sur les fonctions de rappel"
-"Add an endpoint where GC Notify should send POST requests","Ajouter un point de terminaison où la GC Notification peut envoyer les demandes ‘POST’"
+"Add an endpoint where GC Notify should send POST requests","Ajouter un point de terminaison où GC Notification peut envoyer les requêtes ‘POST’"
 "Must start with https://","Doit commencer par https://"
 "Add a secret value for authentication","Ajouter une valeur secrète pour l’authentification"
 "At least 10 characters","Au moins 10 caractères"
