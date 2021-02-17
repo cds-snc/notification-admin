@@ -15,6 +15,9 @@
     header_txt,
     back_link=url_for('main.api_keys', service_id=current_service.id)
   ) }}
+  <p>
+    {{ _('Learn about the types of keys you can create and when to use them in the ') }} <a href="{{ documentation_url('keys') }}">{{ _('API key documentation') }}</a>.
+  </p>
   {% set label_txt = _('Name for this key') %}
   {% set button_txt = _('Continue') %}
   {% call form_wrapper() %}

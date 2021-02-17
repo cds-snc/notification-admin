@@ -20,13 +20,13 @@
   </p>
 
   <p>
-    {{ _('Learn more in the') }} <a href="{{ documentation_url('keys') }}">{{ _('API key documentation') }}</a>.
+    {{ _('Learn more in the ') }} <a href="{{ documentation_url('keys') }}">{{ _('API key documentation') }}</a>.
   </p>
 
   <div class="js-stick-at-bottom-when-scrolling">
     <a href="{{ url_for('.create_api_key', service_id=current_service.id) }}" class="button button-secondary">{{ _('Create an API key') }}</a>
   </div>
-  
+
   <h2 class="heading-small">     
      {{ _('Existing API keys') }}
   </h2>
