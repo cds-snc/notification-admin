@@ -247,16 +247,18 @@
     firstFocusableElement.focus();
   }
 
-  function classToggle() {
+  function menuMobileToggle() {
     const nav = document.querySelector(".mobile-nav")
     const arrow = document.querySelector(".mobile-arrow")
     nav.classList.toggle("hidden")
     arrow.classList.toggle("flip")
+    nav.querySelector('a').focus()
   }
 
   function accountMobileToggle() {
     const accountMenu = document.querySelector("#account-menu-mobile")
     accountMenu.classList.toggle("hidden")
+    accountMenu.querySelector('a').focus()
     // In order to have the opacity transition effect working properly,
     // we need to separate the hidden and opacity toggling in two separate 
     // actions in the HTML rendering, hence the delay of opacity by 1 ms.
@@ -271,10 +273,11 @@
     const arrow = document.querySelector(".account-menu-arrow")
     accountMenu.classList.toggle("hidden")
     arrow.classList.toggle("flip")
+    accountMenu.querySelector('a').focus()
   }
 
-  safeAddEventListener("#menu", "click", classToggle)
-  registerMenuEscape(".mobile-nav", classToggle)
+  safeAddEventListener("#menu", "click", menuMobileToggle)
+  registerMenuEscape(".mobile-nav", menuMobileToggle)
 
   safeAddEventListener("#account-icon-mobile", "click", accountMobileToggle)
   safeAddEventListener("#account-close-mobile", "click", accountMobileToggle)
