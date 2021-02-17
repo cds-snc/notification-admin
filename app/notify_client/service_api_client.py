@@ -1,5 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from flask import current_app
+from flask_login import current_user
+
+from app.extensions import redis_client
 from app.notify_client import NotifyAdminAPIClient, _attach_current_user, cache
 
 
@@ -598,6 +602,24 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     def delete_smtp_relay(self, service_id):
         endpoint = '/service/{}/smtp'.format(service_id)
         return self.delete(endpoint)
+
+    def has_accepted_tos(self, service_id):
+        return redis_client.get(self._tos_key_name(service_id)) is not None
+
+    def accept_tos(self, service_id):
+        if not current_app.config["REDIS_ENABLED"]:
+            raise NotImplementedError("Cannot accept ToS without using Redis")
+
+        current_app.logger.info(f"Terms of use accepted by user {current_user.id} for service {service_id}")
+
+        redis_client.set(
+            self._tos_key_name(service_id),
+            datetime.utcnow().isoformat(),
+            ex=int(timedelta(days=30).total_seconds())
+        )
+
+    def _tos_key_name(self, service_id):
+        return f"tos-accepted-{service_id}"
 
 
 service_api_client = ServiceAPIClient()

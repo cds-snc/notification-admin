@@ -230,14 +230,21 @@ def estimate_usage(service_id):
 @user_has_permissions('manage_service')
 @user_is_gov_user
 def request_to_go_live(service_id):
+    return render_template('views/service-settings/request-to-go-live.html')
 
-    agreement_signed = current_service.organisation.agreement_signed
 
-    return render_template(
-        'views/service-settings/request-to-go-live.html',
-        show_agreement=agreement_signed is not None,
-        agreement_signed=agreement_signed,
-    )
+@main.route(
+    "/services/<service_id>/service-settings/request-to-go-live/terms-of-use",
+    methods=['GET', 'POST']
+)
+@user_has_permissions('manage_service')
+@user_is_gov_user
+def terms_of_use(service_id):
+    if request.method == 'POST':
+        service_api_client.accept_tos(service_id)
+        return redirect(url_for('.request_to_go_live', service_id=service_id))
+
+    return render_template('views/service-settings/terms-of-use.html')
 
 
 @main.route("/services/<service_id>/service-settings/request-to-go-live", methods=['POST'])

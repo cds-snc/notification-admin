@@ -26,45 +26,27 @@
       {% call task_list_wrapper() %}
         {{ task_list_item(
           current_service.has_estimated_usage,
-          'Tell us how many messages you expect to send',
+          _('Tell us about how you intend to use GC Notify'),
           url_for('main.estimate_usage', service_id=current_service.id),
         ) }}
         {{ task_list_item(
           current_service.has_team_members,
-          'Add a team member who can manage settings and teams',
+          _('Add a team member who can manage settings'),
           url_for('main.manage_users', service_id=current_service.id),
         ) }}
         {{ task_list_item(
           current_service.has_templates,
-          'Add templates with examples of the content you plan to send',
+          _('Add templates with content you plan on sending'),
           url_for('main.choose_template', service_id=current_service.id),
         ) }}
-        {% if current_service.intending_to_send_email %}
-          {{ task_list_item(
-            current_service.has_email_reply_to_address,
-            'Add a reply-to email address',
-            url_for('main.service_email_reply_to', service_id=current_service.id),
-          ) }}
-        {% endif %}
-        {% if (
-          current_service.intending_to_send_sms
-          and current_service.shouldnt_use_govuk_as_sms_sender
-        ) %}
-          {{ task_list_item(
-            not current_service.sms_sender_is_govuk,
-            'Change your text message sender name',
-            url_for('main.service_sms_senders', service_id=current_service.id),
-          ) }}
-        {% endif %}
-        {% if show_agreement %}
-          {{ task_list_item(
-            agreement_signed,
-            'Accept our data sharing and financial agreement',
-            url_for('main.service_agreement', service_id=current_service.id),
-          ) }}
-        {% endif %}
+        {{ task_list_item(
+          current_service.has_accepted_tos,
+          _('Accept the terms of use'),
+          url_for('main.terms_of_use', service_id=current_service.id),
+        ) }}
       {% endcall %}
-      {% if (not current_service.go_live_checklist_completed) or (show_agreement and not agreement_signed) %}
+
+      {% if not current_service.go_live_checklist_completed %}
         <p class="font-bold">
           {{ _("Ready to go live?") }}
         </p>

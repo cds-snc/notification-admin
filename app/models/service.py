@@ -197,6 +197,10 @@ class Service(JSONModel):
         return list(filter(self.has_permission, self.TEMPLATE_TYPES))
 
     @property
+    def has_accepted_tos(self):
+        return service_api_client.has_accepted_tos(self.id)
+
+    @property
     def has_templates(self):
         return bool(self.all_templates)
 
@@ -227,18 +231,6 @@ class Service(JSONModel):
     def has_sms_templates(self):
         return len(self.get_templates('sms')) > 0
 
-    @property
-    def intending_to_send_email(self):
-        if self.volume_email is None:
-            return self.has_email_templates
-        return self.volume_email > 0
-
-    @property
-    def intending_to_send_sms(self):
-        if self.volume_sms is None:
-            return self.has_sms_templates
-        return self.volume_sms > 0
-
     @cached_property
     def email_reply_to_addresses(self):
         return service_api_client.get_reply_to_email_addresses(self.id)
@@ -262,14 +254,6 @@ class Service(JSONModel):
 
     def get_email_reply_to_address(self, id):
         return service_api_client.get_reply_to_email_address(self.id, id)
-
-    @property
-    def needs_to_add_email_reply_to_address(self):
-        return self.intending_to_send_email and not self.has_email_reply_to_address
-
-    @property
-    def shouldnt_use_govuk_as_sms_sender(self):
-        return self.organisation_type != 'central'
 
     @cached_property
     def sms_senders(self):
@@ -305,14 +289,6 @@ class Service(JSONModel):
 
     def get_sms_sender(self, id):
         return service_api_client.get_sms_sender(self.id, id)
-
-    @property
-    def needs_to_change_sms_sender(self):
-        return all((
-            self.intending_to_send_sms,
-            self.shouldnt_use_govuk_as_sms_sender,
-            self.sms_sender_is_govuk,
-        ))
 
     @cached_property
     def letter_contact_details(self):
@@ -373,8 +349,6 @@ class Service(JSONModel):
             bool(self.volumes),
             self.has_team_members,
             self.has_templates,
-            not self.needs_to_add_email_reply_to_address,
-            not self.needs_to_change_sms_sender,
         ))
 
     @property
@@ -618,10 +592,8 @@ class Service(JSONModel):
             (not self.volumes, '_volumes'),
             (not self.go_live_checklist_completed, '_checklist'),
             (not self.organisation.agreement_signed, '_mou'),
-            (self.needs_to_add_email_reply_to_address, '_email_reply_to'),
             (not self.has_team_members, '_team_member'),
             (not self.has_templates, '_template_content'),
-            (self.needs_to_change_sms_sender, '_sms_sender'),
         ):
             if test:
                 yield BASE + '_incomplete' + tag

@@ -1435,58 +1435,6 @@ def test_should_redirect_after_request_to_go_live(
     )
 
 
-def test_request_to_go_live_displays_go_live_notes_in_zendesk_ticket(
-    client_request,
-    mocker,
-    active_user_with_permissions,
-    single_reply_to_email_address,
-    single_letter_contact_block,
-    mock_get_organisations_and_services_for_user,
-    single_sms_sender,
-    mock_get_service_settings_page_common,
-    mock_get_service_templates,
-    mock_get_users_by_service,
-    mock_update_service,
-    mock_get_invites_without_manage_permission,
-):
-    go_live_note = 'This service is not allowed to go live'
-
-    mocker.patch(
-        'app.organisations_client.get_service_organisation',
-        side_effect=lambda org_id: organisation_json(
-            ORGANISATION_ID,
-            'Org 1',
-            request_to_go_live_notes=go_live_note,
-        )
-    )
-    mock_post = mocker.patch('app.main.views.service_settings.zendesk_client.create_ticket', autospec=True)
-    client_request.post(
-        'main.request_to_go_live',
-        service_id=SERVICE_ONE_ID,
-        _follow_redirects=True
-    )
-
-    assert mock_post.call_args[1]['message'] == (
-        'Service: service one\n'
-        'http://localhost/services/{service_id}\n'
-        '\n'
-        '---\n'
-        'Organisation type: Central\n'
-        'Agreement signed: No (organisation is Org 1, a crown body). {go_live_note}\n'
-        'Emails in next year: 111,111\n'
-        'Text messages in next year: 222,222\n'
-        'Letters in next year: 333,333\n'
-        'Consent to research: Yes\n'
-        'Other live services: No\n'
-        '\n'
-        '---\n'
-        'Request sent by test@user.canada.ca\n'
-    ).format(
-        service_id=SERVICE_ONE_ID,
-        go_live_note=go_live_note
-    )
-
-
 def test_should_be_able_to_request_to_go_live_with_no_organisation(
     client_request,
     mocker,
