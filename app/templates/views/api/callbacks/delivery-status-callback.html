@@ -18,8 +18,11 @@
       ) }}
 
       <p>
-        {{ _('When you send an email or text message, we can tell you if GC Notify was able to deliver it. Check the') }} <a href="{{ documentation_url('callbacks') }}">{{ _('callback documentation') }}</a> {{ _('for more information.') }}
+        {{ _('When you send an email or text message, find out if GC Notify was able to deliver it with callbacks. Learn more in the ') }} <a href="{{ documentation_url('callbacks') }}">{{ _('callbacks documentation') }}</a>.
       </p>
+      <h2 class="heading-small">     
+        {{ _('Add an endpoint where GC Notify should send POST requests') }}
+     </h2>
       {% set hint_txt = _('Must start with https://') %}
       {% call form_wrapper() %}
         {{ textbox(
@@ -27,6 +30,9 @@
           width='w-full',
           hint=hint_txt
         ) }}
+        <h2 class="heading-small">     
+          {{ _('Add a secret value for authentication') }}
+       </h2>
         {% set hint_txt = _('At least 10 characters') %}
         {{ textbox(
           form.bearer_token,
