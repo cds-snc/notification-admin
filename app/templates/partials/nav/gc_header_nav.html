@@ -1,5 +1,11 @@
 {% from "components/nav_menu_item.html" import nav_menu_item %}
 
+{% set lang_switch = 'EN' %}
+
+{% if session["userlang"] == "en" %}
+  {% set lang_switch = 'FR' %}
+{% endif %}
+
 <hr class="m-0 md:hidden bg-blue" style="height: 4px"/>
 <nav class="md:hidden" aria-label="{{ _('main navigation') }}">
   <div class="container">
@@ -54,9 +60,10 @@
         <div class="px-5">
           <div class="h-14 p-1 border-2 border-solid border-gray rounded-lg">
             <a
+              aria-label="{{ lang_switch }}"
               class="p-0 line-under leading-none inline text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
               href="{{ url_for('main.set_lang') }}?from={{ request.path }}">
-              {% if session["userlang"] == "en" %}FR{% else %}EN{% endif %}
+              {{ lang_switch }}
             </a>
           </div>
         </div>
