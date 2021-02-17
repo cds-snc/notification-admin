@@ -10,7 +10,7 @@
           {% for link_text, view in [
           ('Live services', 'live_services'),
           ('Trial mode services', 'trial_services'),
-          (_('Live API keys'), 'live_api_keys'),
+          ('Live API keys', 'live_api_keys'),
           ('Email branding', 'email_branding'),
           ('Find services by name', 'find_services_by_name'),
           ('Find users by email', 'find_users_by_email'),
@@ -23,9 +23,8 @@
         ] %}
           <div class="pl-10 pr-5 py-2 adminnav--{{ admin_navigation.is_selected(view) }} ">
             <a href="{{ url_for('main.'+view) }}"
-               class="no-underline text-blue visited:text-blue link:text-blue text-smaller"
-            >
-              {{ link_text }}
+               class="no-underline text-blue visited:text-blue link:text-blue text-smaller">
+              {{ _(link_text) }}
             </a>
           </div>
         {% endfor %}
