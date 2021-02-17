@@ -1,0 +1,10 @@
+{% macro nav_menu_item(url=None, localised_txt=None, css_classes=None) %}
+  {% if url and localised_txt %}
+    <div
+      class="flex-shrink-0 text-center p-5 bg-gray {{ css_classes }}">
+      <a href="{{ url }}"
+         class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
+      >{{ localised_txt }}</a>
+    </div>
+  {% endif %}
+{% endmacro %}
