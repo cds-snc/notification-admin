@@ -92,10 +92,10 @@
           {% if not current_service.name %}
             <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('choose_account') }}">
               <a
-                aria-label="{{ _('Your services') }}"
+                aria-label="{{ _('Your service(s)') }}"
                 class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
                 href="{{ url_for('.choose_account') }}">
-                {{ _('Your services') }}
+                {{ _('Your service(s)') }}
               </a>
             </li>
             <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
