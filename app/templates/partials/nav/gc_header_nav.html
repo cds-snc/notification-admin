@@ -1,3 +1,5 @@
+{% from "components/nav_menu_item.html" import nav_menu_item %}
+
 <hr class="m-0 md:hidden bg-blue" style="height: 4px"/>
 <nav class="md:hidden" aria-label="{{ _('main navigation') }}">
   <div class="container">
@@ -6,14 +8,14 @@
       {% if not current_user.is_authenticated or platform_admin_view_ind %}
         <div class="py-2">
           <a href="#" id="menu"
-            class="mr-5 p-4 bg-blue text-white visited:text-white link:text-white no-underline focus:bg-blue focus:outline-none">
-          {{ _('Menu') }}
-          <img
-            alt="Menu expansion arrow"
-            aria-hidden="true"
-            class="mobile-arrow ml-2 inline"
-            src="{{ asset_url('images/arrow-white.svg') }}"
-            width="20"/>
+             class="mr-5 p-4 bg-blue text-white visited:text-white link:text-white no-underline focus:bg-blue focus:outline-none">
+            {{ _('Menu') }}
+            <img
+              alt="Menu expansion arrow"
+              aria-hidden="true"
+              class="mobile-arrow ml-2 inline"
+              src="{{ asset_url('images/arrow-white.svg') }}"
+              width="20"/>
           </a>
         </div>
       {% else %}
@@ -21,14 +23,14 @@
           {% if current_service.name and current_user.has_permissions() %}
             <div class="py-2">
               <a href="#" id="menu"
-                class="mr-5 p-4 bg-blue text-white visited:text-white link:text-white no-underline focus:bg-blue focus:outline-none">
-              {{ _('Menu') }}
-              <img
-                alt="Menu expansion arrow"
-                aria-hidden="true"
-                class="mobile-arrow ml-2 inline"
-                src="{{ asset_url('images/arrow-white.svg') }}"
-                width="20"/>
+                 class="mr-5 p-4 bg-blue text-white visited:text-white link:text-white no-underline focus:bg-blue focus:outline-none">
+                {{ _('Menu') }}
+                <img
+                  alt="Menu expansion arrow"
+                  aria-hidden="true"
+                  class="mobile-arrow ml-2 inline"
+                  src="{{ asset_url('images/arrow-white.svg') }}"
+                  width="20"/>
               </a>
             </div>
           {% else %}
@@ -69,124 +71,54 @@
     <div class="container">
       <div id="proposition-links" class="flex flex-no-wrap">
         {% if not current_user.is_authenticated %}
-          <div
-            class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('home') }}">
-            <a href="/"
-               class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-            >{{ _('Home') }}</a>
-          </div>
-          <div
-            class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('why-notify') }}">
-            <a href="{{ url_for('main.why-notify') }}"
-               class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-            >{{ _('Why GC Notify') }}</a>
-          </div>
-          <div
-            class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('features') }}">
-            <a href="{{ url_for('main.features') }}"
-               class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-            >{{ _('Features') }}</a>
-          </div>
-          <div
-            class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('documentation') }}">
-            <a
-              href="{{ documentation_url() }}"
-              target="_blank"
-              class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-            >{{ _('Documentation') }}</a>
-          </div>
-          <div
-            class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('contact') }}">
-            <a
-              href="{{ url_for('main.contact') }}"
-              class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-            >{{ _('Contact us') }}
-            </a>
-          </div>
-
-        {% endif %}
-        {% if current_user.is_authenticated and not current_org %}
-          {% if current_user.platform_admin and current_user.has_permissions() %}
-            <div
-              class="flex-shrink-0 text-center p-5 bg-gray">
-              <a href="{{ url_for('main.live_services') }}"
-                 class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-              >{{ _('Platform admin') }}</a>
-            </div>
-          {% endif %}
-          {% if current_service.name %}
-            {% if current_user.has_permissions('view_activity') %}
-              <div
-                class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('dashboard') }}">
-                <a href="{{ url_for('.service_dashboard', service_id=current_service.id) }}"
-                   class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-                >{{ _('Dashboard') }}</a>
-              </div>
-            {% endif %}
-
+          {{ nav_menu_item('/',_('Home'),'header--'+header_navigation.is_selected('home')) }}
+          {{ nav_menu_item(url_for('main.why-notify'),_('Why GC Notify'),'header--'+header_navigation.is_selected('why-notify')) }}
+          {{ nav_menu_item(url_for('main.features'),_('Features'),'header--'+header_navigation.is_selected('features')) }}
+          {{ nav_menu_item(documentation_url(),_('Documentation'),'header--'+header_navigation.is_selected('documentation')) }}
+          {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
+        {% else %}
+          {% if not current_user.platform_admin %}
             {% if current_user.has_permissions() %}
-              <div
-                class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('templates') }}">
-                <a href="{{ url_for('.choose_template', service_id=current_service.id) }}"
-                   class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-                >{{ _('Templates') }}</a>
-              </div>
+              {% if current_user.has_permissions('view_activity') %}
+                {{ nav_menu_item(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'header--'+header_navigation.is_selected('dashboard')) }}
+              {% endif %}
+              {{ nav_menu_item( url_for('.choose_template', service_id=current_service.id),_('Templates'),'header--'+header_navigation.is_selected('templates')) }}
               {% if not current_user.has_permissions('view_activity') %}
-                <div
-                  class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('sent-messages') }}">
-                  <a
-                    href="{{ url_for('.view_notifications', service_id=current_service.id, status='sending,delivered,failed') }}"
-                    class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-                  >{{ _('Sent messages') }}</a>
-                </div>
+                {{ nav_menu_item(url_for('.view_notifications', service_id=current_service.id, status='sending,delivered,failed'),_('Sent messages'),'header--'+header_navigation.is_selected('sent-messages')) }}
                 {% if current_service.has_jobs %}
-                  <div
-                    class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('uploaded-files') }}">
-                  <a
-                    href="{{ url_for('.view_jobs', service_id=current_service.id) }}"
-                    class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-                  >{{ _('Uploaded files') }}</a>
+                  {{ nav_menu_item(url_for('.view_jobs', service_id=current_service.id),_('Uploaded files'),'header--'+header_navigation.is_selected('uploaded-files')) }}
                 {% endif %}
               {% endif %}
+              {% if current_user.has_permissions('manage_api_keys') %}
+                {{ nav_menu_item(url_for('.api_integration', service_id=current_service.id),_('API integration'),'header--'+header_navigation.is_selected('api-integration')) }}
+              {% endif %}
+              {{ nav_menu_item(url_for('.manage_users', service_id=current_service.id),_('Team members'),'header--'+header_navigation.is_selected('team-members')) }}
+              {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
+                {{ nav_menu_item(url_for('.service_settings', service_id=current_service.id),_('Settings'),'header--'+header_navigation.is_selected('settings')) }}
+              {% endif %}
+            {% else %}
+              {{ nav_menu_item(url_for('.choose_account', service_id=current_service.id),_('Your service(s)'),'header--'+header_navigation.is_selected('choose_account')) }}
+              {{ nav_menu_item(url_for('main.contact', service_id=current_service.id),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
             {% endif %}
-            {% if current_user.has_permissions('manage_api_keys') %}
-              <div
-                class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('api-integration') }}">
-                <a href="{{ url_for('.api_integration', service_id=current_service.id) }}"
-                   class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-                >{{ _('API integration') }}</a>
-              </div>
+          {% else %}
+            {% if not platform_admin_view_ind %}
+              {% if current_user.has_permissions() %}
+                {{ nav_menu_item(url_for('.live_services', service_id=current_service.id),_('Platform admin')) }}
+                {{ nav_menu_item(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'header--'+header_navigation.is_selected('dashboard')) }}
+                {{ nav_menu_item( url_for('.choose_template', service_id=current_service.id),_('Templates'),'header--'+header_navigation.is_selected('templates')) }}
+                {{ nav_menu_item(url_for('.api_integration', service_id=current_service.id),_('API integration'),'header--'+header_navigation.is_selected('api-integration')) }}
+                {{ nav_menu_item(url_for('.manage_users', service_id=current_service.id),_('Team members'),'header--'+header_navigation.is_selected('team-members')) }}
+                {{ nav_menu_item(url_for('.service_settings', service_id=current_service.id),_('Settings'),'header--'+header_navigation.is_selected('settings')) }}
+                {{ nav_menu_item(url_for('main.smtp_integration', service_id=current_service.id),_('SMTP'),'header--'+header_navigation.is_selected('smtp-integration')) }}
+              {% else %}
+                {{ nav_menu_item(url_for('.live_services', service_id=current_service.id),_('Platform admin')) }}
+              {% endif %}
             {% endif %}
-            {% if current_user.has_permissions() %}
-              <div
-                class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('team-members') }}">
-                <a href="{{ url_for('.manage_users', service_id=current_service.id) }}"
-                   class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-                >{{ _('Team members') }}</a>
-              </div>
-            {% endif %}
-            {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
-              <div
-                class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('settings') }}">
-                <a href="{{ url_for('.service_settings', service_id=current_service.id) }}"
-                   class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-                >{{ _('Settings') }}</a>
-              </div>
-            {% endif %}
-            {% if current_user.platform_admin and current_user.has_permissions() %}
-              <div
-                class="flex-shrink-0 text-center p-5 bg-gray header--{{ header_navigation.is_selected('smtp-integration') }}">
-                <a href="{{ url_for('main.smtp_integration', service_id=current_service.id) }}"
-                   class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-                >{{ _('SMTP') }}</a>
-              </div>
-            {% endif %}
-
           {% endif %}
         {% endif %}
-        </div>
-        <!-- MD-LG menu and nav bar END -->
       </div>
+      <!-- MD-LG menu and nav bar END -->
+    </div>
   </nav>
   <hr class="m-0 xs:hidden smaller:hidden sm:hidden md:flex"/>
 {% endif %}

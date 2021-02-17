@@ -30,7 +30,7 @@
     </div>
     <!-- start sub nav -->
     <nav aria-label="{{ _('language and sign-in') }}"
-         class="pt-4 xs:hidden smaller:hidden sm:hidden md:flex justify-end">
+         class="xs:hidden smaller:hidden sm:hidden md:flex justify-end">
       {% if current_user.is_authenticated %}
         {% include 'account_menu.html' %}
       {% else %}
@@ -53,39 +53,43 @@
   <div>
     <a href="/" class="no-underline">
       <div class="">
-        <span id="gc-title"
-          class="text-title text-black visited:text-black"
-        >
+        {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
+        and not platform_admin_view_ind %}
+          <span id="gc-title"
+                class="text-titlelarge text-black visited:text-black"
+          >
           {{ _("GC Notify") }}
         </span>
+        {% else %}
+          <span id="gc-title"
+                class="text-base text-black visited:text-black"
+          >
+          {{ _("GC Notify") }}
+        </span>
+        {% endif %}
       </div>
 
     </a>
   </div>
-  {% if current_user.is_authenticated %}
+
+  {% set url_href = url_for('main.show_accounts_or_dashboard') %}
+  {% set url_text = current_service.name %}
+  {% if platform_admin_view_ind %}
+    {% set url_href = url_for('main.live_services') %}
+    {% set url_text = _('Admin panel') %}
+  {% endif %}
+
+  {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
     <div class="flex flex-wrap space-x-4 items-stretch">
       <div class="font-bold">
-        {% if current_service.name and withnav and current_user.has_permissions() and not current_org %}
-          <a href="{{ url_for('main.show_accounts_or_dashboard') }}"
-             class="text-lg font-bold no-underline visited:text-black text-black"
-          >{{ current_service.name }}</a>
-        {% else %}
-          {% if current_user.platform_admin %}
-            <a href="{{ url_for('main.live_services') }}"
-               class="text-lg font-bold no-underline visited:text-black text-black"
-            >
-              {{ _('Admin panel') }}
-            </a>
-          {% else %}
-            <a class="text-black no-underline visited:text-black text-lg"
-               href="{{ url_for('.choose_account') }}">{{ _('Your services') }}</a>
-          {% endif %}
-        {% endif %}
+        <a href="{{ url_href }}"
+           class="text-lg font-bold no-underline visited:text-black text-black"
+        >{{ url_text }}</a>
       </div>
       <div class="text-base self-center">
-        {% if withnav %}
+        {% if current_user.has_permissions() and not platform_admin_view_ind %}
           <img aria-hidden="true" src="{{ asset_url('images/swap.svg') }}" class="inline"/>
-          <a id="choose_account" href="{{ url_for('.choose_account') }}">Switch services</a>
+          <a id="choose_account" href="{{ url_for('.choose_account') }}">{{ _('Switch services') }}</a>
         {% endif %}
       </div>
     </div>
