@@ -22,8 +22,10 @@
           ('Organizations', 'organisations'),
         ] %}
           <div class="pl-10 pr-5 py-2 adminnav--{{ admin_navigation.is_selected(view) }} ">
-            <a href="{{ url_for('main.'+view) }}"
-               class="no-underline text-blue visited:text-blue link:text-blue text-smaller">
+            <a
+              aria-label="{{ _(link_text) }}" 
+              href="{{ url_for('main.'+view) }}"
+              class="no-underline text-blue visited:text-blue link:text-blue text-smaller">
               {{ _(link_text) }}
             </a>
           </div>

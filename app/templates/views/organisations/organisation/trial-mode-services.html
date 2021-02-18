@@ -2,13 +2,13 @@
 {% from "components/live-search.html" import live_search %}
 
 {% block org_page_title %}
-  Services
+  {{ _('Services') }}
 {% endblock %}
 
 {% block org_content %}
 
   <h1 class="heading-medium">
-    Trial mode services
+    {{ _('Trial mode services') }}
   </h1>
   {{ live_search(target_selector='.browse-list-item', show=True, form=search_form, label=_('Search by name')) }}
   <ul>

@@ -2,9 +2,12 @@
   {% if url and localised_txt %}
     <div
       class="flex-shrink-0 text-center p-5 bg-gray {{ css_classes }}">
-      <a href="{{ url }}"
-         class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
-      >{{ localised_txt }}</a>
+      <a
+        aria-label="{{ localised_txt }}"
+        href="{{ url }}"
+        class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline">
+        {{ localised_txt }}
+      </a>
     </div>
   {% endif %}
 {% endmacro %}
