@@ -265,7 +265,7 @@ def test_sign_in_geolookup_disabled_in_dev(
     mock_get_security_keys,
     mocker
 ):
-    assert current_app.config.get('IP_GEOLOCATE_SERVICE') is None
+    assert current_app.config['IP_GEOLOCATE_SERVICE'] == ""
 
     mocker.patch('app.user_api_client.get_user', return_value=api_user_active_email_auth)
     mocker.patch('app.user_api_client.get_user_by_email', return_value=api_user_active_email_auth)

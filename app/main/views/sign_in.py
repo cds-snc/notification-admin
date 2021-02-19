@@ -82,8 +82,9 @@ def sign_in_again():
 
 
 def _geolocate_lookup(ip):
-    url = current_app.config.get('IP_GEOLOCATE_SERVICE', None) + ip
-    request = urllib.request.Request(url=url)
+    request = urllib.request.Request(
+        url=f"{current_app.config['IP_GEOLOCATE_SERVICE']}/{ip}"
+    )
 
     try:
         with urllib.request.urlopen(request) as f:
@@ -96,7 +97,7 @@ def _geolocate_lookup(ip):
 
 
 def _geolocate_ip(ip):
-    if current_app.config.get('IP_GEOLOCATE_SERVICE') is None:
+    if not current_app.config['IP_GEOLOCATE_SERVICE'].startswith('http'):
         return
     resp = _geolocate_lookup(ip)
 
