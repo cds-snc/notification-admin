@@ -168,7 +168,7 @@ def test_choose_account_should_should_organisations_link_for_platform_admin(
     assert normalize_spaces(first_hint.text) == '3 organisations, 9,999 live services'
 
 
-def test_choose_account_should_show_switch_services_link(
+def test_choose_account_should_show_your_services_link(
     client_request,
     mock_get_orgs_and_services,
     mock_get_organisation,
@@ -179,7 +179,7 @@ def test_choose_account_should_show_switch_services_link(
     back_to_service_link = resp.find('a', {'id': 'choose_account'})
 
     assert back_to_service_link['href'] == url_for('main.choose_account')
-    assert back_to_service_link.text == 'Switch services'
+    assert back_to_service_link.text == 'Your service(s)'
 
 
 def test_choose_account_should_not_show_back_to_service_link_if_no_service_in_session(

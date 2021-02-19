@@ -11,7 +11,6 @@
   <div class="container">
     <!-- Mobile menu and nav bar -->
     <div class="grid grid-cols-2">
-      {% if not current_user.is_authenticated or platform_admin_view_ind %}
         <div class="py-2">
           <a href="#" id="menu"
              class="mr-5 p-4 bg-blue text-white visited:text-white link:text-white no-underline focus:bg-blue focus:outline-none">
@@ -24,27 +23,6 @@
               width="20"/>
           </a>
         </div>
-      {% else %}
-        {% if not current_org %}
-          {% if current_service.name and current_user.has_permissions() %}
-            <div class="py-2">
-              <a href="#" id="menu"
-                 class="mr-5 p-4 bg-blue text-white visited:text-white link:text-white no-underline focus:bg-blue focus:outline-none">
-                {{ _('Menu') }}
-                <img
-                  alt="Menu expansion arrow"
-                  aria-hidden="true"
-                  class="mobile-arrow ml-2 inline"
-                  src="{{ asset_url('images/arrow-white.svg') }}"
-                  width="20"/>
-              </a>
-            </div>
-          {% else %}
-            <div></div>
-          {% endif %}
-        {% endif %}
-      {% endif %}
-
       <div aria-label="{{ _('language and sign-in') }}" class="flex justify-end self-center">
         {% if current_user.is_authenticated %}
           {% include 'account_menu_mobile.html' %}
@@ -104,7 +82,7 @@
                 {{ nav_menu_item(url_for('.service_settings', service_id=current_service.id),_('Settings'),'header--'+header_navigation.is_selected('settings')) }}
               {% endif %}
             {% else %}
-              {{ nav_menu_item(url_for('.choose_account', service_id=current_service.id),_('Your service(s)'),'header--'+header_navigation.is_selected('choose_account')) }}
+              {{ nav_menu_item(url_for('.choose_account'),_('Your service(s)'),'header--'+header_navigation.is_selected('choose_account'),id_key='choose_account') }}
               {{ nav_menu_item(url_for('main.contact', service_id=current_service.id),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
             {% endif %}
           {% else %}
@@ -146,44 +124,44 @@
   }
 
   const focusableElements =
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
   /**
    * Registers a scope around the given menu selector.
    *
    * The given menu selector will get the TAB navigation entrapped within its
    * container's focusable elements, hence creating a navigation scope around
-   * it. This will only apply to the container itself and will not hinder 
+   * it. This will only apply to the container itself and will not hinder
    * other elements of the page as long as the container is not reached. This
    * works well within a modal popup that took focus away from the main window.
    */
   function registerTabNavigationScope(menuSelector) {
-    const modal = document.querySelector(menuSelector);
-    const firstFocusableElement = modal.querySelectorAll(focusableElements)[0];
-    const focusableContent = modal.querySelectorAll(focusableElements);
-    const lastFocusableElement = focusableContent[focusableContent.length - 1];
+    const modal = document.querySelector(menuSelector)
+    const firstFocusableElement = modal.querySelectorAll(focusableElements)[0]
+    const focusableContent = modal.querySelectorAll(focusableElements)
+    const lastFocusableElement = focusableContent[focusableContent.length - 1]
 
-    document.addEventListener('keydown', function(e) {
-      let isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+    document.addEventListener('keydown', function (e) {
+      let isTabPressed = e.key === 'Tab' || e.keyCode === 9
 
       if (!isTabPressed) {
-        return;
+        return
       }
 
       if (e.shiftKey) { // if shift key pressed for shift + tab combination
         if (document.activeElement === firstFocusableElement) {
-          lastFocusableElement.focus(); // add focus for the last focusable element
-          e.preventDefault();
+          lastFocusableElement.focus() // add focus for the last focusable element
+          e.preventDefault()
         }
       } else { // if tab key is pressed
         if (document.activeElement === lastFocusableElement) { // if focused has reached to last focusable element then focus first focusable element after pressing tab
-          firstFocusableElement.focus(); // add focus for the first focusable element
-          e.preventDefault();
+          firstFocusableElement.focus() // add focus for the first focusable element
+          e.preventDefault()
         }
       }
-    });
+    })
 
-    firstFocusableElement.focus();
+    firstFocusableElement.focus()
   }
 
   function menuMobileToggle() {
@@ -224,6 +202,6 @@
 
   safeAddEventListener("#account-menu", "click", accountMenuToggle)
   registerMenuEscape("#account-menu-options", accountMenuToggle)
-  registerTabNavigationScope('#account-menu-mobile');
+  registerTabNavigationScope('#account-menu-mobile')
 
 </script>

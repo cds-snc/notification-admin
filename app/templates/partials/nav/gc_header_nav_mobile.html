@@ -1,27 +1,16 @@
+{% from "components/nav_menu_item_mobile.html" import nav_menu_item_mobile %}
+
 <div class="mobile-nav container hidden">
   <div class="absolute bg-white w-full z-40">
     <ul>
       {% if not current_user.is_authenticated %}
         <!-- service menu dropdown / signed out / mobile -->
-        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('why-notify') }}">
-          <a
-            aria-label="{{ _('Why GC Notify') }}"
-            class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
-            href="{{ url_for('main.why-notify') }}"
-          >{{ _('Why GC Notify') }}</a>
-        </li>
-        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('features') }}">
-          <a
-            aria-label="{{ _('Features') }}"
-            class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
-            href="{{ url_for('main.features') }}">
-            {{ _('Features') }}
-          </a>
-        </li>
-        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('documentation') }}">
+        {{ nav_menu_item_mobile(url_for('main.why-notify'),_('Why GC Notify'),'font-bold menu--'+header_navigation.is_selected('why-notify')) }}
+        {{ nav_menu_item_mobile(url_for('main.features'),_('Features'),'font-bold menu--'+header_navigation.is_selected('features')) }}
+        <li class="py-4 pl-8 font-bold">
           <a
             aria-label="{{ _('Documentation') }}"
-            class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
+            class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
             href="{{ documentation_url() }}"
             target="_blank">
             {{ _('Documentation') }}
@@ -33,27 +22,38 @@
             alt="Documentation external link icon"
             class="inline w-8 h-8 pb-2"/>
         </li>
-        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('design_content') }}">
-          <a
-            aria-label="{{ _('Guidance') }}"
-            class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
-            href="{{ url_for('main.design_content') }}">
-            {{ _("Guidance") }}
-          </a>
-        </li>
-        <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
-          <a
-            aria-label="{{ _('Contact us') }}"
-            class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
-            href="{{ url_for('main.contact') }}">
-            {{ _('Contact us') }}
-          </a>
-        </li>
+        {{ nav_menu_item_mobile(url_for('main.contact'),_('Contact us'),'font-bold menu--'+header_navigation.is_selected('support')) }}
         <!-- service menu dropdown / signed out / mobile / END -->
       {% else %} {# current_user.is_authenticated #}
-        {% if platform_admin_view_ind %}
+        {% if not current_user.platform_admin %}
+          <!-- service menu dropdown / signed in / mobile -->
+          {% if current_user.has_permissions() %}
+            {% if current_user.has_permissions('view_activity') %}
+              {{ nav_menu_item_mobile(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'menu--'+header_navigation.is_selected('dashboard')) }}
+            {% endif %}
+            {{ nav_menu_item_mobile( url_for('.choose_template', service_id=current_service.id),_('Templates'),'menu--'+header_navigation.is_selected('templates')) }}
+            {% if not current_user.has_permissions('view_activity') %}
+              {{ nav_menu_item_mobile(url_for('.view_notifications', service_id=current_service.id, status='sending,delivered,failed'),_('Sent messages'),'menu--'+header_navigation.is_selected('sent-messages')) }}
+              {% if current_service.has_jobs %}
+                {{ nav_menu_item_mobile(url_for('.view_jobs', service_id=current_service.id),_('Uploaded files'),'menu--'+header_navigation.is_selected('uploaded-files')) }}
+              {% endif %}
+            {% endif %}
+            {% if current_user.has_permissions('manage_api_keys') %}
+              {{ nav_menu_item_mobile(url_for('.api_integration', service_id=current_service.id),_('API integration'),'menu--'+header_navigation.is_selected('api-integration')) }}
+            {% endif %}
+            {{ nav_menu_item_mobile(url_for('.manage_users', service_id=current_service.id),_('Team members'),'menu--'+header_navigation.is_selected('team-members')) }}
+            {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
+              {{ nav_menu_item_mobile(url_for('.service_settings', service_id=current_service.id),_('Settings'),'menu--'+header_navigation.is_selected('settings')) }}
+            {% endif %}
+          {% else %}
+            {{ nav_menu_item_mobile(url_for('.choose_account', service_id=current_service.id),_('Your service(s)'),'menu--'+header_navigation.is_selected('choose_account')) }}
+            {{ nav_menu_item_mobile(url_for('main.contact', service_id=current_service.id),_('Contact us'),'menu--'+header_navigation.is_selected('contact')) }}
+          {% endif %}
+          <!-- service menu dropdown / signed in/ mobile / END -->
+        {% else %}
           <!-- service menu dropdown / signed in / admin / mobile -->
-          {% for link_text, view in [
+          {% if platform_admin_view_ind %}
+            {% for link_text, view in [
             ('Live services', 'live_services'),
             ('Trial mode services', 'trial_services'),
             ('Live API keys', 'live_api_keys'),
@@ -67,137 +67,22 @@
             ('Clear cache', 'clear_cache'),
             ('Organizations', 'organisations'),
           ] %}
-            <li class="py-4 pl-8 menu--{{ admin_navigation.is_selected(view) }}">
-              <a
-                aria-label="{{ _(link_text) }}"
-                class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                href="{{ url_for('main.'+view) }}">
-                {{ _(link_text) }}
-              </a>
-            </li>
-          {% endfor %}
-          <!-- service menu dropdown / signed in / admin / mobile / END -->
-        {% elif not current_org %}
-          <!-- service menu dropdown / signed in / mobile -->
-          {% if current_user.platform_admin and current_user.has_permissions() %}
-            <li class="py-4 pl-8">
-              <a
-                aria-label="{{ _('Platform admin') }}"
-                class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                href="{{ url_for('main.live_services') }}">
-                {{ _('Platform admin') }}
-              </a>
-            </li>
-          {% endif %}
-          {% if not current_service.name %}
-            <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('choose_account') }}">
-              <a
-                aria-label="{{ _('Your service(s)') }}"
-                class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                href="{{ url_for('.choose_account') }}">
-                {{ _('Your service(s)') }}
-              </a>
-            </li>
-            <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
-              <a
-                aria-label="{{ _('Contact us') }}"
-                class="text-blue visited:text-blue link:text-blue font-bold text-small no-underline hover:underline"
-                href="{{ url_for('main.contact') }}">
-                {{ _('Contact us') }}
-              </a>
-            </li>
-          {% else %} {# Service name is present #}
-            {% if current_user.has_permissions('view_activity') %}
-              <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('dashboard') }}">
-                <a
-                  aria-label="{{ _('Dashboard') }}"
-                  class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                  href="{{ url_for('.service_dashboard', service_id=current_service.id) }}">
-                  {{ _('Dashboard') }}
-                </a>
-              </li>
-            {% endif %}
-          
+              {{ nav_menu_item_mobile(url_for('main.'+view),_(link_text),'menu--'+admin_navigation.is_selected(view)) }}
+            {% endfor %}
+          {% else %}
             {% if current_user.has_permissions() %}
-              <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('templates') }}">
-                <a
-                  aria-label="{{ _('templates') | capitalize }}"
-                  class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                  href="{{ url_for('.choose_template', service_id=current_service.id) }}">
-                {{ _('templates') | capitalize }}
-                </a>
-              </li>
-              {% if not current_user.has_permissions('view_activity') %}
-                <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('sent-messages') }}">
-                  <a
-                    aria-label="{{ _('Sent messages') | capitalize }}"
-                    class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                    href="{{ url_for('.view_notifications', service_id=current_service.id) }}">
-                    {{ _('Sent messages') | capitalize }}
-                  </a>
-                </li>
-                {% if current_service.has_jobs %}
-                  <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('uploaded-files') }}">
-                    <a
-                      aria-label="{{ _('Uploaded files') | capitalize }}"
-                      class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                      href="{{ url_for('.view_jobs', service_id=current_service.id) }}">
-                      {{ _('Uploaded files') | capitalize }}
-                    </a>
-                  </li>
-                {% endif %}
-              {% endif %}
+              {{ nav_menu_item_mobile(url_for('.live_services', service_id=current_service.id),_('Platform admin')) }}
+              {{ nav_menu_item_mobile(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'menu--'+header_navigation.is_selected('dashboard')) }}
+              {{ nav_menu_item_mobile( url_for('.choose_template', service_id=current_service.id),_('Templates'),'menu--'+header_navigation.is_selected('templates')) }}
+              {{ nav_menu_item_mobile(url_for('.api_integration', service_id=current_service.id),_('API integration'),'menu--'+header_navigation.is_selected('api-integration')) }}
+              {{ nav_menu_item_mobile(url_for('.manage_users', service_id=current_service.id),_('Team members'),'menu--'+header_navigation.is_selected('team-members')) }}
+              {{ nav_menu_item_mobile(url_for('.service_settings', service_id=current_service.id),_('Settings'),'menu--'+header_navigation.is_selected('settings')) }}
+              {{ nav_menu_item_mobile(url_for('main.smtp_integration', service_id=current_service.id),_('SMTP'),'menu--'+header_navigation.is_selected('smtp-integration')) }}
+            {% else %}
+              {{ nav_menu_item_mobile(url_for('.live_services', service_id=current_service.id),_('Platform admin')) }}
             {% endif %}
-            {% if current_user.has_permissions('manage_api_keys') %}
-              <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('api-integration') }}">
-                <a
-                  aria-label="{{ _('API integration') }}"
-                  class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                  href="{{ url_for('.api_integration', service_id=current_service.id) }}">
-                  {{ _('API integration') }}
-                </a>
-              </li>
-            {% endif %}
-            {% if current_user.has_permissions() %}
-              <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('team-members') }}">
-                <a
-                  aria-label="{{ _('Team members') }}"
-                  class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                  href="{{ url_for('.manage_users', service_id=current_service.id) }}">
-                  {{ _('Team members') }}
-                </a>
-              </li>
-            {% endif %}
-            {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
-              <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('settings') }}">
-                <a
-                  aria-label="{{ _('Settings') }}"
-                  class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                  href="{{ url_for('.service_settings', service_id=current_service.id) }}">
-                  {{ _('Settings') }}
-                </a>
-              </li>
-            {% endif %}
-            {% if current_user.platform_admin and current_user.has_permissions() %}
-              <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('smtp-integration') }}">
-                <a
-                  aria-label="{{ _('SMTP') }}"
-                  class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                  href="{{ url_for('main.smtp_integration', service_id=current_service.id) }}">
-                  {{ _('SMTP') }}
-                </a>
-              </li>
-            {% endif %}
-            <li class="py-4 pl-8 menu--{{ header_navigation.is_selected('support') }}">
-              <a
-                aria-label="{{ _('Support') }}"
-                class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
-                href="{{ url_for('main.contact') }}">
-                {{ _('Support') }}
-              </a>
-            </li>
-            <!-- service menu dropdown / signed in/ mobile / END -->
           {% endif %}
+          <!-- service menu dropdown / signed in / admin / mobile / END-->
         {% endif %}
       {% endif %}
     </ul>
