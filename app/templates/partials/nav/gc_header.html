@@ -32,7 +32,7 @@
     <nav aria-label="{{ _('language and sign-in') }}"
          class="xs:hidden smaller:hidden sm:hidden md:flex justify-end">
       {% if current_user.is_authenticated %}
-        {% include 'account_menu.html' %}
+        {% include 'partials/nav/account_menu.html' %}
       {% else %}
         <a
           href="{{ url_for('main.sign_in' ) }}"

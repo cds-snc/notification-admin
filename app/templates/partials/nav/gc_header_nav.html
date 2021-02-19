@@ -25,7 +25,7 @@
         </div>
       <div aria-label="{{ _('language and sign-in') }}" class="flex justify-end self-center">
         {% if current_user.is_authenticated %}
-          {% include 'account_menu_mobile.html' %}
+          {% include 'partials/nav/account_menu_mobile.html' %}
         {% else %}
           <div class="self-center">
             <a
