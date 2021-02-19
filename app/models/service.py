@@ -221,6 +221,10 @@ class Service(JSONModel):
         return service_api_client.has_accepted_tos(self.id)
 
     @property
+    def has_submitted_go_live(self):
+        return service_api_client.has_submitted_go_live(self.id)
+
+    @property
     def has_templates(self):
         return bool(self.all_templates)
 

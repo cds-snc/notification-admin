@@ -13,19 +13,26 @@
     <h1 class="heading-medium">{{ _('Settings') }}</h1>
 
     {% if current_service.trial_mode %}
-    <div class="bg-gray px-5 py-2 mb-10">
-      <h2 class="heading-small mt-5">{{ _('Your service is in TRIAL mode') }}</h2>
-      {% if current_user.has_permissions('manage_service') %}
-      <p>
-        {{ _('To send notifications to more people, request to go live.') }}
-      </p>
-      <p class="text-right">
-        <a href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}" class="button" role="button">{{ _('Go Live') }}</a>
-      </p>
+    <div class="bg-gray px-5 py-2 mb-20 lg:w-3/4">
+      {% if current_service.has_submitted_go_live %}
+        <h2 class="heading-small mt-5">{{ _('Your request to go live is being reviewed') }}</h2>
+        <p>
+          {{ _("We’ll be in touch within 2 business days.") }}
+        </p>
       {% else %}
-      <p>
-        {{ _('Your service manager can ask to have these restrictions removed.') }}
-      </p>
+        <h2 class="heading-small mt-5">{{ _('Your service is in TRIAL mode') }}</h2>
+        {% if current_user.has_permissions('manage_service') %}
+        <p>
+          {{ _('To send notifications to more people, request to go live.') }}
+        </p>
+        <p class="text-right">
+          <a href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}" class="button" role="button">{{ _('Go Live') }}</a>
+        </p>
+        {% else %}
+        <p>
+          {{ _('Your service manager can ask to have these restrictions removed.') }}
+        </p>
+        {% endif %}
       {% endif %}
     </div>
     {% endif %}

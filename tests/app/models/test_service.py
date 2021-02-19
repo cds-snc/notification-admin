@@ -227,3 +227,11 @@ def test_has_accepted_tos(mocker, service_one):
     assert Service(service_one).has_accepted_tos is True
 
     mocked.assert_called_once_with(service_one['id'])
+
+
+def test_has_submitted_go_live(mocker, service_one):
+    mocked = mocker.patch('app.service_api_client.has_submitted_go_live', return_value=True)
+
+    assert Service(service_one).has_submitted_go_live is True
+
+    mocked.assert_called_once_with(service_one['id'])

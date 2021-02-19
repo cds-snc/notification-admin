@@ -30,14 +30,14 @@
           url_for('main.estimate_usage', service_id=current_service.id),
         ) }}
         {{ task_list_item(
-          current_service.has_team_members_status,
-          _('Add a team member who can manage settings'),
-          url_for('main.manage_users', service_id=current_service.id),
-        ) }}
-        {{ task_list_item(
           current_service.has_templates,
           _('Add templates with content you plan on sending'),
           url_for('main.choose_template', service_id=current_service.id),
+        ) }}
+        {{ task_list_item(
+          current_service.has_team_members_status,
+          _('Add a team member who can manage settings'),
+          url_for('main.manage_users', service_id=current_service.id),
         ) }}
         {{ task_list_item(
           current_service.has_accepted_tos,

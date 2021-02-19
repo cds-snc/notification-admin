@@ -618,8 +618,21 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             ex=int(timedelta(days=30).total_seconds())
         )
 
+    def has_submitted_go_live(self, service_id):
+        return redis_client.get(self._submitted_go_live_key_name(service_id)) is not None
+
+    def register_submit_go_live(self, service_id):
+        redis_client.set(
+            self._submitted_go_live_key_name(service_id),
+            datetime.utcnow().isoformat(),
+            ex=int(timedelta(days=30).total_seconds())
+        )
+
     def _tos_key_name(self, service_id):
         return f"tos-accepted-{service_id}"
+
+    def _submitted_go_live_key_name(self, service_id):
+        return f"go-live-submitted-{service_id}"
 
 
 service_api_client = ServiceAPIClient()
