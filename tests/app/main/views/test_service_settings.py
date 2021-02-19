@@ -702,29 +702,18 @@ def test_should_check_if_estimated_volumes_provided(
     'count_of_invites_with_manage_service,'
     'expected_user_checklist_item'
 ), [
-    (1, 0, 'Add a team member who can manage settings and teams Not completed'),
-    (2, 0, 'Add a team member who can manage settings and teams Completed'),
-    (1, 1, 'Add a team member who can manage settings and teams Completed'),
+    (1, 0, 'Add a team member who can manage settings Not completed'),
+    (2, 0, 'Add a team member who can manage settings Completed'),
+    (1, 1, 'Add a team member who can manage settings In progress'),
 ])
 @pytest.mark.parametrize('count_of_templates, expected_templates_checklist_item', [
-    (0, 'Add templates with examples of the content you plan to send Not completed'),
-    (1, 'Add templates with examples of the content you plan to send Completed'),
-    (2, 'Add templates with examples of the content you plan to send Completed'),
+    (0, 'Add templates with content you plan on sending Not completed'),
+    (1, 'Add templates with content you plan on sending Completed'),
+    (2, 'Add templates with content you plan on sending Completed'),
 ])
-@pytest.mark.parametrize((
-    'volume_email,'
-    'count_of_email_templates,'
-    'reply_to_email_addresses,'
-    'expected_reply_to_checklist_item'
-), [
-    pytest.param(None, 0, [], '', marks=pytest.mark.xfail(raises=IndexError)),
-    pytest.param(0, 0, [], '', marks=pytest.mark.xfail(raises=IndexError)),
-    (None, 1, [], 'Add a reply-to email address Not completed'),
-    (None, 1, [{}], 'Add a reply-to email address Completed'),
-    (1, 1, [], 'Add a reply-to email address Not completed'),
-    (1, 1, [{}], 'Add a reply-to email address Completed'),
-    (1, 0, [], 'Add a reply-to email address Not completed'),
-    (1, 0, [{}], 'Add a reply-to email address Completed'),
+@pytest.mark.parametrize('accepted_tos, expected_tos_checklist_item', [
+    (False, "Accept the terms of use Not completed"),
+    (True, "Accept the terms of use Completed"),
 ])
 def test_should_check_for_sending_things_right(
     client_request,
@@ -738,10 +727,8 @@ def test_should_check_for_sending_things_right(
     expected_user_checklist_item,
     count_of_templates,
     expected_templates_checklist_item,
-    volume_email,
-    count_of_email_templates,
-    reply_to_email_addresses,
-    expected_reply_to_checklist_item,
+    accepted_tos,
+    expected_tos_checklist_item,
 ):
     def _templates_by_type(template_type):
         return {
@@ -775,18 +762,10 @@ def test_should_check_for_sending_things_right(
         side_effect=_templates_by_type,
     )
 
-    mock_get_reply_to_email_addresses = mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_reply_to_email_addresses',
-        return_value=reply_to_email_addresses
+    mocker.patch(
+        'app.models.service.service_api_client.has_accepted_tos',
+        return_value=accepted_tos,
     )
-
-    for channel, volume in (('email', volume_email), ('sms', 0), ('letter', 1)):
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=volume,
-        )
 
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
@@ -795,16 +774,14 @@ def test_should_check_for_sending_things_right(
 
     checklist_items = page.select('.task-list .task-list-item')
 
-    assert normalize_spaces(checklist_items[1].text) == expected_user_checklist_item
-    assert normalize_spaces(checklist_items[2].text) == expected_templates_checklist_item
-    assert normalize_spaces(checklist_items[3].text) == expected_reply_to_checklist_item
+    assert normalize_spaces(checklist_items[1].text) == expected_templates_checklist_item
+    assert normalize_spaces(checklist_items[2].text) == expected_user_checklist_item
+    assert normalize_spaces(checklist_items[3].text) == expected_tos_checklist_item
 
     mock_get_users.assert_called_once_with(SERVICE_ONE_ID)
-    mock_get_invites.assert_called_once_with(SERVICE_ONE_ID)
+    if count_of_users_with_manage_service < 2:
+        mock_get_invites.assert_called_once_with(SERVICE_ONE_ID)
     assert mock_templates.called is True
-
-    if count_of_email_templates:
-        mock_get_reply_to_email_addresses.assert_called_once_with(SERVICE_ONE_ID)
 
 
 @pytest.mark.parametrize('checklist_completed, agreement_signed, expected_button', (
