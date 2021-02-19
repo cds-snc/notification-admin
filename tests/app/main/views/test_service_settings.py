@@ -650,11 +650,11 @@ def test_should_raise_duplicate_name_handled(
 
 
 @pytest.mark.parametrize('volumes, consent_to_research, expected_estimated_volumes_item', [
-    ((0, 0, 0), None, 'Tell us how many messages you expect to send Not completed'),
-    ((1, 0, 0), None, 'Tell us how many messages you expect to send Not completed'),
-    ((1, 0, 0), False, 'Tell us how many messages you expect to send Completed'),
-    ((1, 0, 0), True, 'Tell us how many messages you expect to send Completed'),
-    ((9, 99, 999), True, 'Tell us how many messages you expect to send Completed'),
+    ((0, 0, 0), None, 'Tell us about how you intend to use GC Notify Not completed'),
+    ((1, 0, 0), None, 'Tell us about how you intend to use GC Notify Not completed'),
+    ((1, 0, 0), False, 'Tell us about how you intend to use GC Notify Completed'),
+    ((1, 0, 0), True, 'Tell us about how you intend to use GC Notify Completed'),
+    ((9, 99, 999), True, 'Tell us about how you intend to use GC Notify Completed'),
 ])
 def test_should_check_if_estimated_volumes_provided(
     client_request,
@@ -688,7 +688,7 @@ def test_should_check_if_estimated_volumes_provided(
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
     )
-    assert page.h1.text == 'Before you request to go live'
+    assert page.h1.text == 'Request to go live'
 
     assert normalize_spaces(
         page.select_one('.task-list .task-list-item').text
@@ -791,7 +791,7 @@ def test_should_check_for_sending_things_right(
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
     )
-    assert page.h1.text == 'Before you request to go live'
+    assert page.h1.text == 'Request to go live'
 
     checklist_items = page.select('.task-list .task-list-item')
 
@@ -849,7 +849,7 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
     )
-    assert page.h1.text == 'Before you request to go live'
+    assert page.h1.text == 'Request to go live'
 
     if expected_button:
         assert page.select_one('form')['method'] == 'post'
@@ -1010,7 +1010,7 @@ def test_should_check_for_sms_sender_on_go_live(
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
     )
-    assert page.h1.text == 'Before you request to go live'
+    assert page.h1.text == 'Request to go live'
 
     checklist_items = page.select('.task-list .task-list-item')
     assert normalize_spaces(checklist_items[3].text) == expected_sms_sender_checklist_item
@@ -1076,7 +1076,7 @@ def test_should_check_for_mou_on_request_to_go_live(
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
     )
-    assert page.h1.text == 'Before you request to go live'
+    assert page.h1.text == 'Request to go live'
 
     checklist_items = page.select('.task-list .task-list-item')
     assert normalize_spaces(checklist_items[3].text) == expected_item
@@ -1116,206 +1116,6 @@ def test_non_gov_user_is_told_they_cant_go_live(
     )
     assert page.select('form') == []
     assert page.select('button') == []
-
-
-@pytest.mark.parametrize('consent_to_research, displayed_consent', (
-    (None, None),
-    (True, 'yes'),
-    (False, 'no'),
-))
-@pytest.mark.parametrize('volumes, displayed_volumes', (
-    (
-        (('email', None), ('sms', None), ('letter', None)),
-        ('', '', ''),
-    ),
-    (
-        (('email', 1234), ('sms', 0), ('letter', 999)),
-        ('1,234', '0', '999'),
-    ),
-))
-def test_should_show_estimate_volumes(
-    mocker,
-    client_request,
-    volumes,
-    displayed_volumes,
-    consent_to_research,
-    displayed_consent,
-):
-    for channel, volume in volumes:
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=volume,
-        )
-    mocker.patch(
-        'app.models.service.Service.consent_to_research',
-        create=True,
-        new_callable=PropertyMock,
-        return_value=consent_to_research,
-    )
-    page = client_request.get(
-        'main.estimate_usage', service_id=SERVICE_ONE_ID
-    )
-    assert page.h1.text == 'Tell us how many messages you expect to send'
-    for channel, label, value in (
-        (
-            'email',
-            'How many emails do you expect to send in the next year? For example, 50,000',
-            displayed_volumes[0],
-        ),
-        (
-            'sms',
-            'How many text messages do you expect to send in the next year? For example, 50,000',
-            displayed_volumes[1],
-        ),
-        (
-            'letter',
-            'How many letters do you expect to send in the next year? For example, 50,000',
-            displayed_volumes[2],
-        ),
-    ):
-        assert normalize_spaces(
-            page.select_one('label[for=volume_{}]'.format(channel)).text
-        ) == label
-        assert page.select_one('#volume_{}'.format(channel))['value'] == value
-
-    assert len(page.select('input[type=radio]')) == 2
-
-    if displayed_consent is None:
-        assert len(page.select('input[checked]')) == 0
-    else:
-        assert len(page.select('input[checked]')) == 1
-        assert page.select_one('input[checked]')['value'] == displayed_consent
-
-
-@pytest.mark.parametrize('consent_to_research, expected_persisted_consent_to_research', (
-    ('yes', True),
-    ('no', False),
-))
-def test_should_show_persist_estimated_volumes(
-    client_request,
-    mock_update_service,
-    consent_to_research,
-    expected_persisted_consent_to_research,
-):
-    client_request.post(
-        'main.estimate_usage',
-        service_id=SERVICE_ONE_ID,
-        _data={
-            'volume_email': '1,234,567',
-            'volume_sms': '',
-            'volume_letter': '098',
-            'consent_to_research': consent_to_research,
-        },
-        _expected_status=302,
-        _expected_redirect=url_for(
-            'main.request_to_go_live',
-            service_id=SERVICE_ONE_ID,
-            _external=True,
-        )
-    )
-    mock_update_service.assert_called_once_with(
-        SERVICE_ONE_ID,
-        volume_email=1234567,
-        volume_sms=0,
-        volume_letter=98,
-        consent_to_research=expected_persisted_consent_to_research,
-    )
-
-
-@pytest.mark.parametrize('data, error_selector, expected_error_message', (
-    (
-        {
-            'volume_email': '1234',
-            'volume_sms': '2000000001',
-            'volume_letter': '9876',
-            'consent_to_research': 'yes',
-        },
-        'label[for=volume_sms]',
-        (
-            'How many text messages do you expect to send in the next year? For example, 50,000 '
-            'Number of text messages must be 2,000,000,000 or less'
-        )
-    ),
-    (
-        {
-            'volume_email': '1 234',
-            'volume_sms': '0',
-            'volume_letter': '9876',
-            'consent_to_research': '',
-        },
-        '[data-error-label="consent_to_research"]',
-        'You need to choose an option'
-    ),
-))
-def test_should_error_if_bad_estimations_given(
-    client_request,
-    mock_update_service,
-    data,
-    error_selector,
-    expected_error_message,
-):
-    page = client_request.post(
-        'main.estimate_usage',
-        service_id=SERVICE_ONE_ID,
-        _data=data,
-        _expected_status=200,
-    )
-    assert normalize_spaces(page.select_one(error_selector).text) == expected_error_message
-    assert mock_update_service.called is False
-
-
-def test_should_error_if_all_volumes_zero(
-    client_request,
-    mock_update_service,
-):
-    page = client_request.post(
-        'main.estimate_usage',
-        service_id=SERVICE_ONE_ID,
-        _data={
-            'volume_email': '',
-            'volume_sms': '0',
-            'volume_letter': '0,00 0',
-            'consent_to_research': 'yes',
-        },
-        _expected_status=200,
-    )
-    assert page.select('input[type=text]')[0]['value'] == ''
-    assert page.select('input[type=text]')[1]['value'] == '0'
-    assert page.select('input[type=text]')[2]['value'] == '0,00 0'
-    assert normalize_spaces(page.select_one('.banner-dangerous').text) == (
-        'Enter the number of messages you expect to send in the next year'
-    )
-    assert mock_update_service.called is False
-
-
-def test_should_not_default_to_zero_if_some_fields_dont_validate(
-    client_request,
-    mock_update_service,
-):
-    page = client_request.post(
-        'main.estimate_usage',
-        service_id=SERVICE_ONE_ID,
-        _data={
-            'volume_email': '1234',
-            'volume_sms': '',
-            'volume_letter': 'aaaaaaaaaaaaa',
-            'consent_to_research': 'yes',
-        },
-        _expected_status=200,
-    )
-    assert page.select('input[type=text]')[0]['value'] == '1234'
-    assert page.select('input[type=text]')[1]['value'] == ''
-    assert page.select('input[type=text]')[2]['value'] == 'aaaaaaaaaaaaa'
-    assert normalize_spaces(
-        page.select_one('label[for=volume_letter]').text
-    ) == (
-        'How many letters do you expect to send in the next year? '
-        'For example, 50,000 '
-        'Enter the number of letters you expect to send'
-    )
-    assert mock_update_service.called is False
 
 
 def test_non_gov_users_cant_request_to_go_live(

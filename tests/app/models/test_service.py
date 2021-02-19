@@ -193,7 +193,11 @@ def test_organisation_type_when_service_and_its_org_both_have_an_org_type(mocker
     assert service.organisation_type == 'local'
 
 
-def test_has_team_members_status_no_invited_users(service_one, mock_get_invites_without_manage_permission, mock_get_users_by_service):
+def test_has_team_members_status_no_invited_users(
+    service_one,
+    mock_get_invites_without_manage_permission,
+    mock_get_users_by_service
+):
     # 1 active with "manage_service", 1 invited without "manage_service"
     service = Service(service_one)
 

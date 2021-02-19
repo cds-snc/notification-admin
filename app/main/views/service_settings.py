@@ -34,7 +34,6 @@ from app.main import main
 from app.main.forms import (
     ChangeEmailFromServiceForm,
     ConfirmPasswordForm,
-    EstimateUsageForm,
     FieldWithLanguageOptions,
     FreeSMSAllowance,
     InternationalSMSForm,
@@ -192,38 +191,6 @@ def service_email_from_change_confirm(service_id):
         'views/service-settings/confirm.html',
         heading=_('Change your sending email address'),
         form=form)
-
-
-@main.route("/services/<service_id>/service-settings/request-to-go-live/estimate-usage", methods=['GET', 'POST'])
-@user_has_permissions('manage_service')
-def estimate_usage(service_id):
-
-    form = EstimateUsageForm(
-        volume_email=current_service.volume_email,
-        volume_sms=current_service.volume_sms,
-        volume_letter=current_service.volume_letter,
-        consent_to_research={
-            True: 'yes',
-            False: 'no',
-        }.get(current_service.consent_to_research),
-    )
-
-    if form.validate_on_submit():
-        current_service.update(
-            volume_email=form.volume_email.data,
-            volume_sms=form.volume_sms.data,
-            volume_letter=form.volume_letter.data,
-            consent_to_research=(form.consent_to_research.data == 'yes'),
-        )
-        return redirect(url_for(
-            'main.request_to_go_live',
-            service_id=service_id,
-        ))
-
-    return render_template(
-        'views/service-settings/estimate-usage.html',
-        form=form,
-    )
 
 
 @main.route("/services/<service_id>/service-settings/request-to-go-live", methods=['GET'])

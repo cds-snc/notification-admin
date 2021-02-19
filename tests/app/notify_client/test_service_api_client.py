@@ -2,11 +2,11 @@ from unittest.mock import call
 from uuid import uuid4
 
 import pytest
+from freezegun import freeze_time
 
 from app import invite_api_client, service_api_client, user_api_client
 from app.notify_client.service_api_client import ServiceAPIClient
 from tests.conftest import SERVICE_ONE_ID
-from freezegun import freeze_time
 
 FAKE_TEMPLATE_ID = uuid4()
 
@@ -457,7 +457,7 @@ def test_accept_tos(app_, mocker, monkeypatch, logged_in_client):
     mock_redis_set.assert_called_once_with(
         f"tos-accepted-{SERVICE_ONE_ID}",
         '2016-01-01T11:09:00.061258',
-        ex=30*60*60*24  # 30 days in seconds
+        ex=30 * 60 * 60 * 24  # 30 days in seconds
     )
 
 
@@ -482,5 +482,5 @@ def test_register_submit_go_live(mocker):
     mock_redis_set.assert_called_once_with(
         f"go-live-submitted-{SERVICE_ONE_ID}",
         '2016-01-01T11:09:00.061258',
-        ex=30*60*60*24  # 30 days in seconds
+        ex=30 * 60 * 60 * 24  # 30 days in seconds
     )
