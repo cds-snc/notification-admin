@@ -191,3 +191,39 @@ def test_organisation_type_when_service_and_its_org_both_have_an_org_type(mocker
     mocker.patch('app.organisations_client.get_service_organisation', return_value=org)
 
     assert service.organisation_type == 'local'
+
+
+def test_has_team_members_status_no_invited_users(service_one, mock_get_invites_without_manage_permission, mock_get_users_by_service):
+    # 1 active with "manage_service", 1 invited without "manage_service"
+    service = Service(service_one)
+
+    assert len(service.team_members) == 2
+    assert len(service.invited_users) == 1
+
+    assert service.has_team_members_status is False
+
+
+def test_has_team_members_status_in_progress(service_one, mock_get_invites_for_service, mock_get_users_by_service):
+    # 1 active user with "manage_service", 1 invited with "manage_service"
+    assert Service(service_one).has_team_members_status == "in-progress"
+
+
+def test_has_team_members_status_multiple_active_users(mocker, service_one, active_user_with_permissions):
+    # 2 active users with "manage_service" permission
+    mocker.patch('app.models.user.Users.client', return_value=[
+        active_user_with_permissions,
+        active_user_with_permissions,
+    ])
+    service = Service(service_one)
+
+    assert len(service.active_users) == 2
+
+    assert service.has_team_members_status is True
+
+
+def test_has_accepted_tos(mocker, service_one):
+    mocked = mocker.patch('app.service_api_client.has_accepted_tos', return_value=True)
+
+    assert Service(service_one).has_accepted_tos is True
+
+    mocked.assert_called_once_with(service_one['id'])
