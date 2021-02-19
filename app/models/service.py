@@ -124,9 +124,29 @@ class Service(JSONModel):
     @cached_property
     def has_team_members(self):
         return len([
-            user for user in self.team_members
+            user for user in self.active_users
             if user.has_permission_for_service(self.id, 'manage_service')
         ]) > 1
+
+    @cached_property
+    def has_team_members_status(self):
+        """
+        `has_team_members` only checks for active users, this property looks
+        for invited users as well.
+
+        Returns True, "in-progress" or False
+        """
+        if self.has_team_members:
+            return True
+
+        active_and_invited_members = [
+            user for user in self.team_members
+            if user.has_permission_for_service(self.id, 'manage_service')
+        ]
+        if len(active_and_invited_members) > 1:
+            return "in-progress"
+
+        return False
 
     def cancel_invite(self, invited_user_id):
         if str(invited_user_id) not in {user.id for user in self.invited_users}:
