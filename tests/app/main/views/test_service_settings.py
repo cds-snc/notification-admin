@@ -730,11 +730,6 @@ def test_should_check_for_sending_things_right(
     accepted_tos,
     expected_tos_checklist_item,
 ):
-    def _templates_by_type(template_type):
-        return {
-            'email': list(range(0, count_of_email_templates)),
-            'sms': [],
-        }.get(template_type)
     active_user_with_permissions,
     mock_get_users = mocker.patch(
         'app.models.user.Users.client',
@@ -755,11 +750,6 @@ def test_should_check_for_sending_things_right(
         'app.models.service.Service.all_templates',
         new_callable=PropertyMock,
         return_value=list(range(0, count_of_templates)),
-    )
-
-    mocker.patch(
-        'app.models.service.Service.get_templates',
-        side_effect=_templates_by_type,
     )
 
     mocker.patch(
@@ -784,12 +774,9 @@ def test_should_check_for_sending_things_right(
     assert mock_templates.called is True
 
 
-@pytest.mark.parametrize('checklist_completed, agreement_signed, expected_button', (
-    (True, True, True),
-    (True, None, True),
-    (True, False, False),
-    (False, True, False),
-    (False, None, False),
+@pytest.mark.parametrize('checklist_completed, expected_button', (
+    (False, False),
+    (True, True),
 ))
 def test_should_not_show_go_live_button_if_checklist_not_complete(
     client_request,
@@ -800,19 +787,12 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
     mock_get_invites_for_service,
     single_sms_sender,
     checklist_completed,
-    agreement_signed,
     expected_button,
 ):
     mocker.patch(
         'app.models.service.Service.go_live_checklist_completed',
         new_callable=PropertyMock,
         return_value=checklist_completed,
-    )
-    mocker.patch(
-        'app.models.organisation.Organisation.agreement_signed',
-        new_callable=PropertyMock,
-        return_value=agreement_signed,
-        create=True,
     )
 
     for channel in ('email', 'sms', 'letter'):
@@ -831,20 +811,16 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
     if expected_button:
         assert page.select_one('form')['method'] == 'post'
         assert 'action' not in page.select_one('form')
-        assert normalize_spaces(page.select('main p')[0].text) == (
-            'When we receive your request we’ll get back to you within one working day.'
-        )
-        assert normalize_spaces(page.select('main p')[1].text) == (
-            'By requesting to go live you’re agreeing to our terms of use.'
-        )
+        paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
+        assert 'When we receive your request we’ll get back to you within one working day.' in paragraphs
+        assert 'By requesting to go live you’re agreeing to our terms of use.' in paragraphs
         page.select_one('[type=submit]').text.strip() == ('Request to go live')
     else:
         assert not page.select('form')
         assert not page.select('[type=submit]')
-        assert len(page.select('main p')) == 1
-        assert normalize_spaces(page.select_one('main p').text) == (
-            'You must complete these steps before you can request to go live.'
-        )
+        paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
+        assert "Ready to go live?" in paragraphs
+        assert "Once you have completed all the steps, submit your request to the GC Notify team." in paragraphs
 
 
 @pytest.mark.parametrize((
@@ -995,104 +971,6 @@ def test_should_check_for_sms_sender_on_go_live(
     assert mock_templates.called is True
 
     mock_get_sms_senders.assert_called_once_with(SERVICE_ONE_ID)
-
-
-@pytest.mark.parametrize('agreement_signed, expected_item', (
-    pytest.param(
-        None,
-        '',
-        marks=pytest.mark.xfail(raises=IndexError)
-    ),
-    (
-        True,
-        'Accept our data sharing and financial agreement Completed',
-    ),
-    (
-        False,
-        'Accept our data sharing and financial agreement Not completed',
-    ),
-))
-def test_should_check_for_mou_on_request_to_go_live(
-    client_request,
-    service_one,
-    mocker,
-    agreement_signed,
-    mock_get_invites_for_service,
-    expected_item,
-):
-    mocker.patch(
-        'app.models.service.Service.has_team_members',
-        return_value=False,
-    )
-    mocker.patch(
-        'app.models.service.Service.all_templates',
-        new_callable=PropertyMock,
-        return_value=[],
-    )
-    mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_sms_senders',
-        return_value=[],
-    )
-    mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_reply_to_email_addresses',
-        return_value=[],
-    )
-    for channel in {'email', 'sms', 'letter'}:
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=None,
-        )
-
-    mock_get_service_organisation(
-        mocker,
-        agreement_signed=agreement_signed,
-    )
-
-    page = client_request.get(
-        'main.request_to_go_live', service_id=SERVICE_ONE_ID
-    )
-    assert page.h1.text == 'Request to go live'
-
-    checklist_items = page.select('.task-list .task-list-item')
-    assert normalize_spaces(checklist_items[3].text) == expected_item
-
-
-def test_non_gov_user_is_told_they_cant_go_live(
-    client_request,
-    api_nongov_user_active,
-    mock_get_invites_for_service,
-    mocker,
-    mock_get_organisations,
-    mock_get_service_organisation,
-):
-    mocker.patch(
-        'app.models.service.Service.has_team_members',
-        return_value=False,
-    )
-    mocker.patch(
-        'app.models.service.Service.all_templates',
-        new_callable=PropertyMock,
-        return_value=[],
-    )
-    mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_sms_senders',
-        return_value=[],
-    )
-    mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_reply_to_email_addresses',
-        return_value=[],
-    )
-    client_request.login(api_nongov_user_active)
-    page = client_request.get(
-        'main.request_to_go_live', service_id=SERVICE_ONE_ID
-    )
-    assert normalize_spaces(page.select_one('main p').text) == (
-        'Only team members with a government email address can request to go live.'
-    )
-    assert page.select('form') == []
-    assert page.select('button') == []
 
 
 def test_non_gov_users_cant_request_to_go_live(
