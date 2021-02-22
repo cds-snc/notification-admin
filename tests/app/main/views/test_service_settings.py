@@ -820,7 +820,7 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
         assert not page.select('[type=submit]')
         paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
         assert "Ready to go live?" in paragraphs
-        assert "Once you have completed all the steps, submit your request to the GC Notify team." in paragraphs
+        assert "Once you complete all the steps, you'll be able to submit your request." in paragraphs
 
 
 @pytest.mark.parametrize((
