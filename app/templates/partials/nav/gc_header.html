@@ -1,6 +1,8 @@
+{% set lang_switch = 'EN' %}
 {% set long_lang_switch = 'English' %}
 
 {% if session["userlang"] == "en" %}
+  {% set lang_switch = 'FR' %}
   {% set long_lang_switch = 'Français' %}
 {% endif %}
 
@@ -45,7 +47,7 @@
         aria-label="{{ long_lang_switch }}"
         class="mr-10 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small pl-5 underline hover:no-underline"
         href="{{ url_for('main.set_lang') }}?from={{ request.path }}"
-        lang="{{ session["userlang"] }}"
+        lang="{{ lang_switch }}"
       >{{ long_lang_switch }}</a>
     </nav>
     <!-- end sub nav -->
