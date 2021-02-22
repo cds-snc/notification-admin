@@ -1713,3 +1713,45 @@ class AcceptAgreementForm(StripWhitespaceForm):
             float(field.data)
         except (TypeError, ValueError):
             raise ValidationError("Must be a number")
+
+
+class GoLiveAboutServiceForm(StripWhitespaceForm):
+    department_org_name = StringField(
+        _l('Name of department or organisation'),
+        validators=[DataRequired(), Length(max=500)]
+    )
+    purpose = TextAreaField(
+        _l('For what purpose are you using GC Notify?'),
+        validators=[DataRequired(), Length(max=2000)]
+    )
+    intended_recipients = MultiCheckboxField(
+        _l('Who are the intented recipients of notifications?'),
+        default='',
+        choices=[
+            ('internal', _l('Colleagues within your department (internal)')),
+            ('external', _l('Partners from other organisations (external)')),
+            ('public', _l('Public')),
+        ],
+        validators=[DataRequired()],
+    )
+
+
+class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
+    notification_types = MultiCheckboxField(
+        _l('Specify the type of notifications you plan on sending.'),
+        choices=[
+            ('email', _l('Email')),
+            ('sms', _l('Text message')),
+        ],
+        validators=[DataRequired()],
+    )
+    expected_volume = RadioField(
+        _l('How many notifications do you plan on sending per month?'),
+        choices=[
+            ('1-1k', _l('1 to 1,000 notifications')),
+            ('1k-10k', _l('1,000 to 10,000 notifications')),
+            ('10k-100k', _l('10,000 to 100,000 notifications')),
+            ('100k+', _l('More than 100,000 notifications')),
+        ],
+        validators=[DataRequired()]
+    )

@@ -36,6 +36,8 @@ from app.main.forms import (
     ConfirmPasswordForm,
     FieldWithLanguageOptions,
     FreeSMSAllowance,
+    GoLiveAboutNotificationsForm,
+    GoLiveAboutServiceForm,
     InternationalSMSForm,
     LinkOrganisationsForm,
     MessageLimit,
@@ -212,6 +214,79 @@ def terms_of_use(service_id):
         return redirect(url_for('.request_to_go_live', service_id=service_id))
 
     return render_template('views/service-settings/terms-of-use.html')
+
+
+@main.route(
+    "/services/<service_id>/service-settings/request-to-go-live/use-case",
+    methods=['GET', 'POST']
+)
+@user_has_permissions('manage_service')
+@user_is_gov_user
+def use_case(service_id):
+    DEFAULT_STEP = "about-service"
+    SESSION_FORM_KEY = "go-live-about"
+    SESSION_FORM_STEP_KEY = "go-live-about-step"
+
+    steps = [
+        {
+            "form": GoLiveAboutServiceForm,
+            "current_step": DEFAULT_STEP,
+            "previous_step": None,
+            "next_step": "about-notifications",
+            "page_title": _("About your service"),
+            "step": 1,
+            "total_steps": 2,
+            "back_link": url_for('main.request_to_go_live', service_id=current_service.id),
+        },
+        {
+            "form": GoLiveAboutNotificationsForm,
+            "current_step": "about-notifications",
+            "previous_step": DEFAULT_STEP,
+            "next_step": None,
+            "page_title": _("About your notifications"),
+            "step": 2,
+            "total_steps": 2,
+            "back_link": url_for('main.use_case', service_id=current_service.id, current_step=DEFAULT_STEP),
+        },
+    ]
+
+    current_step = request.args.get('current_step', session.get(SESSION_FORM_STEP_KEY, DEFAULT_STEP))
+    try:
+        form_obj = [f for f in steps if f["current_step"] == current_step][0]
+    except IndexError:
+        return redirect(url_for('.request_to_go_live', service_id=service_id))
+    form = form_obj["form"](data=session.get(SESSION_FORM_KEY, {}))
+
+    # Validating the final form
+    if form_obj["next_step"] is None and form.validate_on_submit():
+        session.pop(SESSION_FORM_KEY, None)
+        session.pop(SESSION_FORM_STEP_KEY, None)
+        # send_form_to_freshdesk(form)
+        return redirect(url_for('.request_to_go_live', service_id=service_id))
+
+    # Going on to the next step in the form
+    if form.validate_on_submit():
+        possibilities = [f for f in steps if f["previous_step"] == current_step]
+        try:
+            form_obj = possibilities[0]
+        except IndexError:
+            return redirect(url_for('.request_to_go_live', service_id=service_id))
+        form = form_obj["form"](data=session.get(SESSION_FORM_KEY, {}))
+
+    session[SESSION_FORM_KEY] = form.data
+    session[SESSION_FORM_STEP_KEY] = form_obj["current_step"]
+
+    return render_template(
+        'views/service-settings/use-case.html',
+        form=form,
+        page_title=form_obj["page_title"],
+        next_step=form_obj["next_step"],
+        current_step=form_obj["current_step"],
+        previous_step=form_obj["previous_step"],
+        step_hint=form_obj["step"],
+        total_steps_hint=form_obj["total_steps"],
+        back_link=form_obj["back_link"],
+    )
 
 
 @main.route("/services/<service_id>/service-settings/request-to-go-live", methods=['POST'])

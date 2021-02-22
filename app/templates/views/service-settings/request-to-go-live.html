@@ -27,7 +27,7 @@
         {{ task_list_item(
           current_service.has_estimated_usage,
           _('Tell us about how you intend to use GC Notify'),
-          url_for('main.choose_template', service_id=current_service.id),
+          url_for('main.use_case', service_id=current_service.id),
         ) }}
         {{ task_list_item(
           current_service.has_templates,
