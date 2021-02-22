@@ -101,7 +101,7 @@ class Config(object):
 
     HIPB_ENABLED = True
 
-    IP_GEOLOCATE_SERVICE = os.environ.get('IP_GEOLOCATE_SERVICE', None)
+    IP_GEOLOCATE_SERVICE = os.environ.get('IP_GEOLOCATE_SERVICE', "").rstrip("/")
 
     BULK_SEND_AWS_BUCKET = os.getenv('BULK_SEND_AWS_BUCKET')
     HC_EN_SERVICE_ID = os.getenv('HC_EN_SERVICE_ID')
