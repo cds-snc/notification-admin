@@ -59,7 +59,7 @@
           {{ nav_menu_item('/',_('Home'),'header--'+header_navigation.is_selected('home')) }}
           {{ nav_menu_item(url_for('main.why-notify'),_('Why GC Notify'),'header--'+header_navigation.is_selected('why-notify')) }}
           {{ nav_menu_item(url_for('main.features'),_('Features'),'header--'+header_navigation.is_selected('features')) }}
-          {{ nav_menu_item(documentation_url(),_('Documentation'),'header--'+header_navigation.is_selected('documentation')) }}
+          {{ nav_menu_item(documentation_url(),_('Documentation'),'header--'+header_navigation.is_selected('documentation'), external_link_img=asset_url('images/external.svg')) }}
           {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
         {% else %}
           {% if not current_user.platform_admin %}
