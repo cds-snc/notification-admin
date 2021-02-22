@@ -8,7 +8,7 @@
 
 <hr class="m-0 md:hidden bg-blue" style="height: 4px"/>
 <nav class="md:hidden" aria-label="{{ _('main navigation') }}">
-  <div class="container">
+  <div class="container px-10">
     <!-- Mobile menu and nav bar -->
     <div class="grid grid-cols-2">
         <div class="py-2">
@@ -53,7 +53,7 @@
 </nav>
 {% if withnav %}
   <nav class="bg-gray xs:hidden smaller:hidden sm:hidden md:flex" aria-label="{{ _('main navigation') }}">
-    <div class="container">
+    <div class="container px-10">
       <div id="proposition-links" class="flex flex-no-wrap">
         {% if not current_user.is_authenticated %}
           {{ nav_menu_item('/',_('Home'),'header--'+header_navigation.is_selected('home')) }}
