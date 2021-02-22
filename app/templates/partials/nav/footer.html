@@ -33,13 +33,13 @@
             <a
               href="{{ documentation_url() }}"
               target="_blank"
-              class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
-            >{{ _("Documentation") }}
-              <img
-                class="inline"
-                alt=""
-                src="{{ asset_url('images/external_link.png') }}"
-              />
+              class="line-under text-white visited:text-white link:text-white text-small mb-10 underline hover:no-underline "
+            >{{ _("Documentation") }}<img
+                aria-hidden="false"
+                aria-label="{{ _('Documentation') }}"
+                src="{{ asset_url('images/external-white.svg') }}"
+                alt="Documentation external link icon"
+                class="inline ml-3 w-6 h-6"/>
             </a>
           </div>
         </div>
