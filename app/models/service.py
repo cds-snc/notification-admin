@@ -258,16 +258,6 @@ class Service(JSONModel):
         }) > 1
 
     @property
-    def has_estimated_usage(self):
-        return (
-            self.consent_to_research is not None and any((
-                self.volume_email,
-                self.volume_sms,
-                self.volume_letter,
-            ))
-        )
-
-    @property
     def has_email_templates(self):
         return len(self.get_templates('email')) > 0
 
@@ -380,20 +370,13 @@ class Service(JSONModel):
         return service_api_client.get_letter_contact(self.id, id)
 
     @property
-    def volumes(self):
-        return sum(filter(None, (
-            self.volume_email,
-            self.volume_sms,
-            self.volume_letter,
-        )))
-
-    @property
     def go_live_checklist_completed(self):
-        return all((
-            bool(self.volumes),
-            self.has_team_members,
+        return all([
+            self.has_submitted_use_case,
             self.has_templates,
-        ))
+            self.has_team_members,
+            self.has_accepted_tos,
+        ])
 
     @cached_property
     def free_sms_fragment_limit(self):
@@ -612,28 +595,3 @@ class Service(JSONModel):
 
     def get_api_key(self, id):
         return self._get_by_id(self.api_keys, id)
-
-    @property
-    def request_to_go_live_tags(self):
-        return list(self._get_request_to_go_live_tags())
-
-    def _get_request_to_go_live_tags(self):
-
-        BASE = 'notify_request_to_go_live'
-
-        yield BASE
-
-        if self.go_live_checklist_completed and self.organisation.agreement_signed:
-            yield BASE + '_complete'
-            return
-
-        for test, tag in (
-            (True, ''),
-            (not self.volumes, '_volumes'),
-            (not self.go_live_checklist_completed, '_checklist'),
-            (not self.organisation.agreement_signed, '_mou'),
-            (not self.has_team_members, '_team_member'),
-            (not self.has_templates, '_template_content'),
-        ):
-            if test:
-                yield BASE + '_incomplete' + tag

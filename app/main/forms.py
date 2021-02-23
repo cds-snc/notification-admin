@@ -993,40 +993,6 @@ class Triage(StripWhitespaceForm):
     )
 
 
-class EstimateUsageForm(StripWhitespaceForm):
-    volume_email = ForgivingIntegerField(
-        'How many emails do you expect to send in the next year?',
-        things='emails',
-        format_error_suffix='you expect to send',
-    )
-    volume_sms = ForgivingIntegerField(
-        'How many text messages do you expect to send in the next year?',
-        things='text messages',
-        format_error_suffix='you expect to send',
-    )
-    volume_letter = ForgivingIntegerField(
-        'How many letters do you expect to send in the next year?',
-        things='letters',
-        format_error_suffix='you expect to send',
-    )
-    consent_to_research = RadioField(
-        'Can we contact you when we’re doing user research?',
-        choices=[
-            ('yes', 'Yes'),
-            ('no', 'No'),
-        ],
-    )
-
-    at_least_one_volume_filled = True
-
-    def validate(self, *args, **kwargs):
-        if self.volume_email.data == self.volume_sms.data == self.volume_letter.data == 0:
-            self.at_least_one_volume_filled = False
-            return False
-
-        return super().validate(*args, **kwargs)
-
-
 class ProviderForm(StripWhitespaceForm):
     priority = IntegerField('Priority', [validators.NumberRange(min=1, max=100, message="Must be between 1 and 100")])
 
