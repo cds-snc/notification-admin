@@ -1,4 +1,5 @@
 import uuid
+from unittest.mock import PropertyMock
 
 import pytest
 
@@ -277,3 +278,36 @@ def test_store_use_case_data(mocker, service_one):
     Service(service_one).store_use_case_data("step", "form data")
 
     mocked.assert_called_once_with(service_one['id'], {"step": "step", "form_data": "form data"})
+
+
+@pytest.mark.parametrize(
+    'has_submitted_use_case, has_templates, has_team_members, has_accepted_tos, expected_readyness', [
+        (True, True, True, True, True),
+        (False, True, True, True, False),
+        (True, False, True, True, False),
+        (True, True, False, True, False),
+        (True, True, True, False, False),
+    ]
+)
+def test_go_live_checklist_completed(
+    mocker,
+    service_one,
+    has_submitted_use_case,
+    has_templates,
+    has_team_members,
+    has_accepted_tos,
+    expected_readyness,
+):
+    for prop in [
+        'has_submitted_use_case',
+        'has_templates',
+        'has_team_members',
+        'has_accepted_tos',
+    ]:
+        mocker.patch(
+            f'app.models.service.Service.{prop}',
+            new_callable=PropertyMock,
+            return_value=locals()[prop]
+        )
+
+    assert Service(service_one).go_live_checklist_completed == expected_readyness
