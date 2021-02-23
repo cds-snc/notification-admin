@@ -18,3 +18,4 @@ gov.nl.ca
 gov.yk.ca
 gov.nt.ca
 gov.nu.ca
+nshealth.ca
