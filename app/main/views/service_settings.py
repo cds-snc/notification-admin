@@ -21,7 +21,6 @@ from app import (
     billing_api_client,
     current_service,
     email_branding_client,
-    format_thousands,
     inbound_number_client,
     letter_branding_client,
     notification_api_client,
@@ -29,7 +28,6 @@ from app import (
     service_api_client,
     user_api_client,
 )
-from app.extensions import zendesk_client
 from app.main import main
 from app.main.forms import (
     ChangeEmailFromServiceForm,
@@ -229,8 +227,6 @@ def terms_of_use(service_id):
 @user_is_gov_user
 def use_case(service_id):
     DEFAULT_STEP = "about-service"
-    SESSION_FORM_KEY = "go-live-about"
-    SESSION_FORM_STEP_KEY = "go-live-about-step"
 
     steps = [
         {

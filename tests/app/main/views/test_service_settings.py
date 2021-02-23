@@ -1,6 +1,6 @@
 import os
 from functools import partial
-from unittest.mock import ANY, PropertyMock, call
+from unittest.mock import PropertyMock, call
 from urllib.parse import parse_qs, urlparse
 from uuid import UUID, uuid4
 
@@ -8,7 +8,6 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
-from notifications_utils.clients.zendesk.zendesk_client import ZendeskClient
 
 import app
 from app.utils import email_safe
@@ -667,6 +666,10 @@ def test_should_raise_duplicate_name_handled(
     (False, "Accept the terms of use Not completed"),
     (True, "Accept the terms of use Completed"),
 ])
+@pytest.mark.parametrize('submitted_use_case, expected_use_case_checklist_item', [
+    (False, "Tell us about how you intend to use GC Notify Not completed"),
+    (True, "Tell us about how you intend to use GC Notify Completed"),
+])
 def test_should_check_for_sending_things_right(
     client_request,
     mocker,
@@ -681,6 +684,8 @@ def test_should_check_for_sending_things_right(
     expected_templates_checklist_item,
     accepted_tos,
     expected_tos_checklist_item,
+    submitted_use_case,
+    expected_use_case_checklist_item,
 ):
     active_user_with_permissions,
     mock_get_users = mocker.patch(
@@ -709,6 +714,11 @@ def test_should_check_for_sending_things_right(
         return_value=accepted_tos,
     )
 
+    mocker.patch(
+        'app.models.service.service_api_client.has_submitted_use_case',
+        return_value=submitted_use_case,
+    )
+
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
     )
@@ -716,6 +726,7 @@ def test_should_check_for_sending_things_right(
 
     checklist_items = page.select('.task-list .task-list-item')
 
+    assert normalize_spaces(checklist_items[0].text) == expected_use_case_checklist_item
     assert normalize_spaces(checklist_items[1].text) == expected_templates_checklist_item
     assert normalize_spaces(checklist_items[2].text) == expected_user_checklist_item
     assert normalize_spaces(checklist_items[3].text) == expected_tos_checklist_item
@@ -841,43 +852,10 @@ def test_should_redirect_after_request_to_go_live(
             new_callable=PropertyMock,
             return_value=volume,
         )
-    mock_post = mocker.patch('app.main.views.service_settings.zendesk_client.create_ticket', autospec=True)
     page = client_request.post(
         'main.request_to_go_live',
         service_id=SERVICE_ONE_ID,
         _follow_redirects=True
-    )
-    mock_post.assert_called_with(
-        subject='Request to go live - service one',
-        message=ANY,
-        ticket_type=ZendeskClient.TYPE_QUESTION,
-        user_name=active_user_with_permissions['name'],
-        user_email=active_user_with_permissions['email_address'],
-        tags=[
-            'notify_request_to_go_live',
-            'notify_request_to_go_live_incomplete',
-        ] + extra_tags + [
-            'notify_request_to_go_live_incomplete_checklist',
-            'notify_request_to_go_live_incomplete_mou',
-            'notify_request_to_go_live_incomplete_team_member',
-        ],
-    )
-    assert mock_post.call_args[1]['message'] == (
-        'Service: service one\n'
-        'http://localhost/services/{service_id}\n'
-        '\n'
-        '---\n'
-        'Organisation type: Central\n'
-        'Agreement signed: Can’t tell (domain is user.canada.ca).\n'
-        '{formatted_displayed_volumes}'
-        'Consent to research: Yes\n'
-        'Other live services: No\n'
-        '\n'
-        '---\n'
-        'Request sent by test@user.canada.ca\n'
-    ).format(
-        service_id=SERVICE_ONE_ID,
-        formatted_displayed_volumes=formatted_displayed_volumes,
     )
 
     assert normalize_spaces(page.select_one('.banner-default').text) == (
@@ -890,42 +868,6 @@ def test_should_redirect_after_request_to_go_live(
         SERVICE_ONE_ID,
         go_live_user=active_user_with_permissions['id']
     )
-
-
-def test_should_be_able_to_request_to_go_live_with_no_organisation(
-    client_request,
-    mocker,
-    single_reply_to_email_address,
-    single_letter_contact_block,
-    mock_get_organisations_and_services_for_user,
-    single_sms_sender,
-    mock_get_service_settings_page_common,
-    mock_get_service_templates,
-    mock_get_users_by_service,
-    mock_update_service,
-    mock_get_invites_without_manage_permission,
-):
-    get_service_organisation = mocker.patch(
-        'app.organisations_client.get_service_organisation',
-        return_value=None,
-    )
-    for channel in {'email', 'sms', 'letter'}:
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=1,
-        )
-    mock_post = mocker.patch('app.main.views.service_settings.zendesk_client.create_ticket', autospec=True)
-
-    client_request.post(
-        'main.request_to_go_live',
-        service_id=SERVICE_ONE_ID,
-        _follow_redirects=True
-    )
-
-    assert mock_post.called is True
-    get_service_organisation.assert_called_once_with(SERVICE_ONE_ID)
 
 
 @pytest.mark.parametrize('route', [

@@ -151,5 +151,7 @@ def test_normal_user_doesnt_see_any_toggle_buttons(
     mock_get_service_data_retention
 ):
     page = client_request.get('main.service_settings', service_id=service_one['id'])
-    toggles = page.find('a', {'class': 'button'})
-    assert toggles is None
+
+    toggles = [a for a in page.find_all('a', {'class': 'button'}) if a.text != 'Go Live']
+
+    assert toggles == []
