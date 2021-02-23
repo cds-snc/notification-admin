@@ -670,13 +670,11 @@ def test_should_raise_duplicate_name_handled(
     (False, "Tell us about how you intend to use GC Notify Not completed"),
     (True, "Tell us about how you intend to use GC Notify Completed"),
 ])
-def test_should_check_for_sending_things_right(
+def test_request_to_go_live_page(
     client_request,
     mocker,
     service_one,
     fake_uuid,
-    mock_get_service_organisation,
-    single_sms_sender,
     count_of_users_with_manage_service,
     count_of_invites_with_manage_service,
     expected_user_checklist_item,
@@ -724,12 +722,23 @@ def test_should_check_for_sending_things_right(
     )
     assert page.h1.text == 'Request to go live'
 
-    checklist_items = page.select('.task-list .task-list-item')
+    tasks_links = [a['href'] for a in page.select('.task-list .task-list-item a')]
 
-    assert normalize_spaces(checklist_items[0].text) == expected_use_case_checklist_item
-    assert normalize_spaces(checklist_items[1].text) == expected_templates_checklist_item
-    assert normalize_spaces(checklist_items[2].text) == expected_user_checklist_item
-    assert normalize_spaces(checklist_items[3].text) == expected_tos_checklist_item
+    assert tasks_links == [
+        url_for('main.use_case', service_id=SERVICE_ONE_ID),
+        url_for('main.choose_template', service_id=SERVICE_ONE_ID),
+        url_for('main.manage_users', service_id=SERVICE_ONE_ID),
+        url_for('main.terms_of_use', service_id=SERVICE_ONE_ID),
+    ]
+
+    checklist_items = [normalize_spaces(i.text) for i in page.select('.task-list .task-list-item')]
+
+    assert checklist_items == [
+        expected_use_case_checklist_item,
+        expected_templates_checklist_item,
+        expected_user_checklist_item,
+        expected_tos_checklist_item,
+    ]
 
     mock_get_users.assert_called_once_with(SERVICE_ONE_ID)
     if count_of_users_with_manage_service < 2:
@@ -746,9 +755,7 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
     mocker,
     mock_get_service_templates,
     mock_get_users_by_service,
-    mock_get_service_organisation,
     mock_get_invites_for_service,
-    single_sms_sender,
     checklist_completed,
     expected_button,
 ):
@@ -757,14 +764,6 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
         new_callable=PropertyMock,
         return_value=checklist_completed,
     )
-
-    for channel in ('email', 'sms', 'letter'):
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=0,
-        )
 
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
