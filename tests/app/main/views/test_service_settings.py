@@ -649,54 +649,6 @@ def test_should_raise_duplicate_name_handled(
     assert mock_verify_password.called
 
 
-@pytest.mark.parametrize('volumes, consent_to_research, expected_estimated_volumes_item', [
-    ((0, 0, 0), None, 'Tell us about how you intend to use GC Notify Not completed'),
-    ((1, 0, 0), None, 'Tell us about how you intend to use GC Notify Not completed'),
-    ((1, 0, 0), False, 'Tell us about how you intend to use GC Notify Completed'),
-    ((1, 0, 0), True, 'Tell us about how you intend to use GC Notify Completed'),
-    ((9, 99, 999), True, 'Tell us about how you intend to use GC Notify Completed'),
-])
-def test_should_check_if_estimated_volumes_provided(
-    client_request,
-    mocker,
-    single_sms_sender,
-    single_reply_to_email_address,
-    mock_get_service_templates,
-    mock_get_users_by_service,
-    mock_get_service_organisation,
-    mock_get_invites_for_service,
-    volumes,
-    consent_to_research,
-    expected_estimated_volumes_item,
-):
-
-    for volume, channel in zip(volumes, ('sms', 'email', 'letter')):
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=volume,
-        )
-
-    mocker.patch(
-        'app.models.service.Service.consent_to_research',
-        create=True,
-        new_callable=PropertyMock,
-        return_value=consent_to_research,
-    )
-
-    page = client_request.get(
-        'main.request_to_go_live', service_id=SERVICE_ONE_ID
-    )
-    assert page.h1.text == 'Request to go live'
-
-    assert normalize_spaces(
-        page.select_one('.task-list .task-list-item').text
-    ) == (
-        expected_estimated_volumes_item
-    )
-
-
 @pytest.mark.parametrize((
     'count_of_users_with_manage_service,'
     'count_of_invites_with_manage_service,'

@@ -237,6 +237,13 @@ class Service(JSONModel):
     def has_submitted_go_live(self):
         return service_api_client.has_submitted_go_live(self.id)
 
+    def register_submit_use_case(self):
+        return service_api_client.register_submit_use_case(self.id)
+
+    @property
+    def has_submitted_use_case(self):
+        return service_api_client.has_submitted_use_case(self.id)
+
     @property
     def has_templates(self):
         return bool(self.all_templates)

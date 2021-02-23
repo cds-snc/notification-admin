@@ -199,7 +199,12 @@ def service_email_from_change_confirm(service_id):
 @user_has_permissions('manage_service')
 @user_is_gov_user
 def request_to_go_live(service_id):
-    return render_template('views/service-settings/request-to-go-live.html')
+    step, _ = current_service.use_case_data
+
+    return render_template(
+        'views/service-settings/request-to-go-live.html',
+        use_case_step=step
+    )
 
 
 @main.route(
@@ -261,9 +266,8 @@ def use_case(service_id):
 
     # Validating the final form
     if form_obj["next_step"] is None and form.validate_on_submit():
-        session.pop(SESSION_FORM_KEY, None)
-        session.pop(SESSION_FORM_STEP_KEY, None)
-        # send_form_to_freshdesk(form)
+        current_service.store_use_case_data(form_obj["current_step"], form.data)
+        current_service.register_submit_use_case()
         return redirect(url_for('.request_to_go_live', service_id=service_id))
 
     # Going on to the next step in the form

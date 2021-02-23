@@ -243,6 +243,22 @@ def test_has_submitted_go_live(mocker, service_one):
     mocked.assert_called_once_with(service_one['id'])
 
 
+def test_has_submitted_use_case(mocker, service_one):
+    mocked = mocker.patch('app.service_api_client.has_submitted_use_case', return_value=True)
+
+    assert Service(service_one).has_submitted_use_case is True
+
+    mocked.assert_called_once_with(service_one['id'])
+
+
+def test_register_submit_use_case(mocker, service_one):
+    mocked = mocker.patch('app.service_api_client.register_submit_use_case')
+
+    Service(service_one).register_submit_use_case()
+
+    mocked.assert_called_once_with(service_one['id'])
+
+
 @pytest.mark.parametrize('service_return, expected_step, expected_form', [
     (None, None, {}),
     ({"step": "step", "form_data": 42}, "step", 42),

@@ -25,9 +25,9 @@
       </p>
       {% call task_list_wrapper() %}
         {{ task_list_item(
-          current_service.has_estimated_usage,
+          current_service.has_submitted_use_case,
           _('Tell us about how you intend to use GC Notify'),
-          url_for('main.use_case', service_id=current_service.id),
+          url_for('main.use_case', service_id=current_service.id, current_step=use_case_step),
         ) }}
         {{ task_list_item(
           current_service.has_templates,

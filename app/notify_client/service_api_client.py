@@ -629,6 +629,16 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             ex=int(timedelta(days=30).total_seconds())
         )
 
+    def has_submitted_use_case(self, service_id):
+        return redis_client.get(self._submitted_use_case_key_name(service_id)) is not None
+
+    def register_submit_use_case(self, service_id):
+        redis_client.set(
+            self._submitted_use_case_key_name(service_id),
+            datetime.utcnow().isoformat(),
+            ex=int(timedelta(days=30).total_seconds())
+        )
+
     def get_use_case_data(self, service_id):
         result = redis_client.get(self._use_case_data_name(service_id))
         if result is None:
@@ -641,6 +651,9 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             json.dumps(data),
             ex=int(timedelta(days=60).total_seconds())
         )
+
+    def _submitted_use_case_key_name(self, service_id):
+        return f"use-case-submitted-{service_id}"
 
     def _use_case_data_name(self, service_id):
         return f"use-case-data-{service_id}"
