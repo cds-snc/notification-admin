@@ -525,6 +525,7 @@ def test_get_use_case_data(mocker, redis_return, expected):
 
 def test_store_use_case_data(mocker):
     mock_redis_set = mocker.patch('app.extensions.RedisClient.set')
+    mock_redis_delete = mocker.patch('app.extensions.RedisClient.delete')
 
     service_api_client.store_use_case_data(SERVICE_ONE_ID, {"foo": 42})
 
@@ -533,3 +534,4 @@ def test_store_use_case_data(mocker):
         '{"foo": 42}',
         ex=60 * 60 * 60 * 24  # 60 days in seconds
     )
+    mock_redis_delete.assert_called_once_with(f"use-case-submitted-{SERVICE_ONE_ID}")

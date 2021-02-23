@@ -275,7 +275,8 @@ def use_case(service_id):
             return redirect(url_for('.request_to_go_live', service_id=service_id))
         form = form_obj["form"](data=form_data)
 
-    current_service.store_use_case_data(form_obj["current_step"], form.data)
+    if request.method == 'POST':
+        current_service.store_use_case_data(form_obj["current_step"], form.data)
 
     return render_template(
         'views/service-settings/use-case.html',

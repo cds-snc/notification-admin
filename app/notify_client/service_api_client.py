@@ -651,6 +651,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             json.dumps(data),
             ex=int(timedelta(days=60).total_seconds())
         )
+        redis_client.delete(self._submitted_use_case_key_name(service_id))
 
     def _submitted_use_case_key_name(self, service_id):
         return f"use-case-submitted-{service_id}"
