@@ -250,12 +250,14 @@ def use_case(service_id):
         },
     ]
 
-    current_step = request.args.get('current_step', session.get(SESSION_FORM_STEP_KEY, DEFAULT_STEP))
+    step, form_data = current_service.use_case_data
+
+    current_step = request.args.get('current_step', step or DEFAULT_STEP)
     try:
         form_obj = [f for f in steps if f["current_step"] == current_step][0]
     except IndexError:
         return redirect(url_for('.request_to_go_live', service_id=service_id))
-    form = form_obj["form"](data=session.get(SESSION_FORM_KEY, {}))
+    form = form_obj["form"](data=form_data)
 
     # Validating the final form
     if form_obj["next_step"] is None and form.validate_on_submit():
@@ -271,10 +273,9 @@ def use_case(service_id):
             form_obj = possibilities[0]
         except IndexError:
             return redirect(url_for('.request_to_go_live', service_id=service_id))
-        form = form_obj["form"](data=session.get(SESSION_FORM_KEY, {}))
+        form = form_obj["form"](data=form_data)
 
-    session[SESSION_FORM_KEY] = form.data
-    session[SESSION_FORM_STEP_KEY] = form_obj["current_step"]
+    current_service.store_use_case_data(form_obj["current_step"], form.data)
 
     return render_template(
         'views/service-settings/use-case.html',

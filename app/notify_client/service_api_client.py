@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta
 
 from flask import current_app
@@ -627,6 +628,22 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             datetime.utcnow().isoformat(),
             ex=int(timedelta(days=30).total_seconds())
         )
+
+    def get_use_case_data(self, service_id):
+        result = redis_client.get(self._use_case_data_name(service_id))
+        if result is None:
+            return result
+        return json.loads(result)
+
+    def store_use_case_data(self, service_id, data):
+        redis_client.set(
+            self._use_case_data_name(service_id),
+            json.dumps(data),
+            ex=int(timedelta(days=60).total_seconds())
+        )
+
+    def _use_case_data_name(self, service_id):
+        return f"use-case-data-{service_id}"
 
     def _tos_key_name(self, service_id):
         return f"tos-accepted-{service_id}"

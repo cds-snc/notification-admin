@@ -484,3 +484,27 @@ def test_register_submit_go_live(mocker):
         '2016-01-01T11:09:00.061258',
         ex=30 * 60 * 60 * 24  # 30 days in seconds
     )
+
+
+@pytest.mark.parametrize('redis_return, expected', [
+    (None, None),
+    ('{"foo": 42}', {"foo": 42}),
+])
+def test_get_use_case_data(mocker, redis_return, expected):
+    mock_redis_get = mocker.patch('app.extensions.RedisClient.get', return_value=redis_return)
+
+    assert service_api_client.get_use_case_data(SERVICE_ONE_ID) == expected
+
+    mock_redis_get.assert_called_once_with(f"use-case-data-{SERVICE_ONE_ID}")
+
+
+def test_store_use_case_data(mocker):
+    mock_redis_set = mocker.patch('app.extensions.RedisClient.set')
+
+    service_api_client.store_use_case_data(SERVICE_ONE_ID, {"foo": 42})
+
+    mock_redis_set.assert_called_once_with(
+        f"use-case-data-{SERVICE_ONE_ID}",
+        '{"foo": 42}',
+        ex=60 * 60 * 60 * 24  # 60 days in seconds
+    )

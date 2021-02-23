@@ -1,5 +1,7 @@
 import uuid
 
+import pytest
+
 from app.models.service import Service
 from app.models.user import User
 from tests import organisation_json
@@ -239,3 +241,23 @@ def test_has_submitted_go_live(mocker, service_one):
     assert Service(service_one).has_submitted_go_live is True
 
     mocked.assert_called_once_with(service_one['id'])
+
+
+@pytest.mark.parametrize('service_return, expected_step, expected_form', [
+    (None, None, {}),
+    ({"step": "step", "form_data": 42}, "step", 42),
+])
+def test_use_case_data(mocker, service_one, service_return, expected_step, expected_form):
+    mocked = mocker.patch('app.service_api_client.get_use_case_data', return_value=service_return)
+
+    assert Service(service_one).use_case_data == (expected_step, expected_form)
+
+    mocked.assert_called_once_with(service_one['id'])
+
+
+def test_store_use_case_data(mocker, service_one):
+    mocked = mocker.patch('app.service_api_client.store_use_case_data')
+
+    Service(service_one).store_use_case_data("step", "form data")
+
+    mocked.assert_called_once_with(service_one['id'], {"step": "step", "form_data": "form data"})

@@ -217,6 +217,19 @@ class Service(JSONModel):
         return list(filter(self.has_permission, self.TEMPLATE_TYPES))
 
     @property
+    def use_case_data(self):
+        result = service_api_client.get_use_case_data(self.id)
+        if result is None:
+            return None, {}
+        return result["step"], result["form_data"]
+
+    def store_use_case_data(self, step, form_data):
+        return service_api_client.store_use_case_data(self.id, {
+            "step": step,
+            "form_data": form_data,
+        })
+
+    @property
     def has_accepted_tos(self):
         return service_api_client.has_accepted_tos(self.id)
 
