@@ -60,14 +60,90 @@
 
   <!-- start section 9 -->
   <div class="bg-gray">
-    <div class="container">
-      <div class="flex py-10 justify-end">
+    <nav
+      class="container grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 gap-16 md:gap-4 py-24"
+      aria-label="footer secondary links">
+
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center md:col-span-2 px-10">
+        <div class="flex-shrink mr-5">
+          <img
+            aria-hidden="true"
+            alt="Bullet separator"
+            class="self-center lg:hidden inline mr-3"
+            src="{{ asset_url('images/bullet.svg') }}"
+          />
+          <a
+            href="{{ url_for('main.privacy') }}"
+            class="line-under text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
+            {{ _("Privacy") }}
+          </a>
+        </div>
+        <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
+          <img
+            aria-hidden="true"
+            alt="Bullet separator"
+            class="self-center"
+            src="{{ asset_url('images/bullet.svg') }}"
+          />
+        </div>
+        <div class="flex-shrink lg:mx-5">
+          <img
+            aria-hidden="true"
+            alt="Bullet separator"
+            class="self-center lg:hidden inline mr-3"
+            src="{{ asset_url('images/bullet.svg') }}"
+          />
+          <a
+            href="{{ url_for('main.security') }}"
+            class="line-under text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
+            {{ _("Security") }}
+          </a>
+        </div>
+        <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
+          <img
+            aria-hidden="true"
+            alt="Bullet separator"
+            class="self-center"
+            src="{{ asset_url('images/bullet.svg') }}"
+          />
+        </div>
+        <div class="flex-shrink lg:mx-5">
+          <img
+            aria-hidden="true"
+            alt="Bullet separator"
+            class="self-center lg:hidden inline mr-3"
+            src="{{ asset_url('images/bullet.svg') }}"
+          />
+          <a
+            href="{{ url_for('main.terms') }}"
+            class="line-under text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
+            {{ _("Terms of use") }}
+          </a>
+        </div>
+        <div class="lg:hidden bg-white p-5 mt-10 w-64">
+          <a 
+            class="text-blue visited:text-blue link:text-blue text-small no-underline"
+            href="#top">
+            <div class="inline">{{ _('Top of page') }}</div>
+            <img
+              alt="Top of page arrow"
+              aria-hidden="true"
+              class="inline ml-2 transform rotate-180"
+              src="{{ asset_url('images/arrow-licorice.svg') }}"
+              width="20"
+            />
+          </a>
+        </div>
+      </div>
+
+      <div class="sm:self-start md:self-end lg:self-center col-span-1 px-10">
         <img
           alt="Symbol of the Government of Canada / Symbole du gouvernement du Canada"
+          class="float-left md:float-right"
           src="{{ asset_s3_url('goc--footer-logo.svg') }}"
           width="150"
         />
       </div>
-    </div>
+    </nav>
   </div>
 </footer>
