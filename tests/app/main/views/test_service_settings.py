@@ -788,6 +788,154 @@ def test_request_to_go_live_terms_of_use_page_without_permission(
     )
 
 
+def test_request_to_go_live_use_case_page(
+    client_request,
+    mocker,
+):
+    store_mock = mocker.patch('app.service_api_client.store_use_case_data')
+    submit_use_case_mock = mocker.patch('app.service_api_client.register_submit_use_case')
+    use_case_data_mock = mocker.patch('app.service_api_client.get_use_case_data')
+    use_case_data_mock.return_value = None
+    page = client_request.get('.use_case', service_id=SERVICE_ONE_ID)
+    assert page.h1.text == 'About your service'
+
+    assert page.select_one('.back-link')["href"] == url_for(
+        '.request_to_go_live',
+        service_id=SERVICE_ONE_ID
+    )
+
+    # Form posts to the same endpoint
+    assert page.select_one('form')['method'] == 'post'
+    assert 'action' not in page.select_one('form')
+
+    # Posting first step without posting anything
+    page = client_request.post(
+        '.use_case',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=200,
+        _data={
+            'department_org_name': '',
+            'purpose': '',
+        }
+    )
+
+    assert submit_use_case_mock.call_count == 0
+    assert store_mock.call_count == 1
+    assert [
+        (error['data-error-label'], normalize_spaces(error.text))
+        for error in page.select('.error-message')
+    ] == [
+        ('department_org_name', 'This field is required.'),
+        ('purpose', 'This field is required.'),
+        ('intended_recipients', 'This field is required.'),
+    ]
+
+    page = client_request.post(
+        '.use_case',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=200,
+        _data={
+            'department_org_name': 'Org name',
+            'purpose': 'Purpose',
+            'intended_recipients': ['public']
+        }
+    )
+    assert page.h1.text == 'About your notifications'
+
+    assert submit_use_case_mock.call_count == 0
+    assert store_mock.call_count == 2
+    expected_use_case_data = {
+        'form_data': {
+            'department_org_name': 'Org name',
+            'intended_recipients': ['public'],
+            'purpose': 'Purpose',
+            'notification_types': [],
+            'expected_volume': None,
+        },
+        'step': 'about-notifications'
+    }
+    store_mock.assert_called_with(SERVICE_ONE_ID, expected_use_case_data)
+
+    use_case_data_mock.reset_mock()
+    use_case_data_mock.return_value = expected_use_case_data
+
+    page = client_request.post(
+        '.use_case',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=302,
+        _expected_redirect=url_for('main.request_to_go_live', service_id=SERVICE_ONE_ID, _external=True),
+        _data={
+            'notification_types': ['sms'],
+            'expected_volume': '1k-10k',
+            # Need to submit intended_recipients again because otherwise
+            # the form thinks we removed this value (it's checkboxes).
+            # On the real form, this field is hidden on the second step
+            'intended_recipients': expected_use_case_data['form_data']['intended_recipients'],
+        }
+    )
+    use_case_data_mock.assert_called_once_with(SERVICE_ONE_ID)
+
+    submit_use_case_mock.assert_called_once_with(SERVICE_ONE_ID)
+    assert store_mock.call_count == 3
+    store_mock.assert_called_with(
+        SERVICE_ONE_ID,
+        {
+            'form_data': {
+                'department_org_name': 'Org name',
+                'intended_recipients': ['public'],
+                'purpose': 'Purpose',
+                'notification_types': ['sms'],
+                'expected_volume': '1k-10k',
+            },
+            'step': 'about-notifications'
+        }
+    )
+
+
+def test_request_to_go_live_can_resume_use_case_page(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_users_by_service,
+    mock_get_invites_for_service,
+):
+    mocker.patch(
+        'app.service_api_client.get_use_case_data',
+        return_value={
+            'form_data': {
+                'department_org_name': 'Org name',
+                'intended_recipients': ['public'],
+                'purpose': 'Purpose',
+            },
+            'step': 'about-notifications'
+        }
+    )
+
+    # Can go back to use case form form request to go live page
+    page = client_request.get('.request_to_go_live', service_id=SERVICE_ONE_ID)
+
+    assert (
+        url_for('.use_case', service_id=SERVICE_ONE_ID, current_step="about-notifications")
+        in [a['href'] for a in page.select('.task-list .task-list-item a')]
+    )
+
+    # Going back to the use case page goes directly to step 2
+    page = client_request.get('.use_case', service_id=SERVICE_ONE_ID)
+    assert page.h1.text == 'About your notifications'
+
+
+def test_request_to_go_live_use_case_page_without_permission(
+    client_request,
+    active_user_no_settings_permission,
+):
+    client_request.login(active_user_no_settings_permission)
+    client_request.get(
+        'main.use_case',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=403,
+    )
+
+
 @pytest.mark.parametrize('checklist_completed, expected_button', (
     (False, False),
     (True, True),
