@@ -27,7 +27,7 @@
         {{ task_list_item(
           current_service.has_submitted_use_case,
           _('Tell us about how you intend to use GC Notify'),
-          url_for('main.use_case', service_id=current_service.id, current_step=use_case_step),
+          url_for('main.use_case', service_id=current_service.id),
         ) }}
         {{ task_list_item(
           current_service.has_templates,
@@ -55,13 +55,10 @@
         </p>
       {% else %}
         <p>
-          When we receive your request we’ll get back to you within one working day.
-        </p>
-        <p class="mb-12 clear-both contain-floats">
-          By requesting to go live you’re agreeing to our <a href="{{ url_for('.terms') }}">terms of use</a>.
+          {{ _("Once you have completed all the steps, submit your request to the GC Notify team. We’ll be in touch within 2 business days.") }}
         </p>
         {% call form_wrapper() %}
-          {{ page_footer(_('Request to go live')) }}
+          {{ page_footer(_('Submit')) }}
         {% endcall %}
       {% endif %}
     </div>

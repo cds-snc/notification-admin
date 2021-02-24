@@ -236,12 +236,9 @@ def test_has_accepted_tos(mocker, service_one):
     mocked.assert_called_once_with(service_one['id'])
 
 
-def test_has_submitted_go_live(mocker, service_one):
-    mocked = mocker.patch('app.service_api_client.has_submitted_go_live', return_value=True)
-
-    assert Service(service_one).has_submitted_go_live is True
-
-    mocked.assert_called_once_with(service_one['id'])
+def test_has_submitted_go_live(mocker, service_one, fake_uuid):
+    assert not Service(service_one).has_submitted_go_live
+    assert Service(service_one | {'go_live_user': fake_uuid}).has_submitted_go_live
 
 
 def test_has_submitted_use_case(mocker, service_one):

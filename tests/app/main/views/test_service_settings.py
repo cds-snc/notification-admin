@@ -856,9 +856,25 @@ def test_request_to_go_live_use_case_page(
     }
     store_mock.assert_called_with(SERVICE_ONE_ID, expected_use_case_data)
 
+    # Fake that the form data and step have been stored and
+    # map the return value as expected
     use_case_data_mock.reset_mock()
     use_case_data_mock.return_value = expected_use_case_data
 
+    # On second step, can go back to step 1
+    page = client_request.get('.use_case', service_id=SERVICE_ONE_ID)
+    assert page.h1.text == 'About your notifications'
+
+    assert page.select_one('form')['method'] == 'post'
+    assert 'action' not in page.select_one('form')
+
+    assert page.select_one('.back-link')["href"] == url_for(
+        '.use_case',
+        service_id=SERVICE_ONE_ID,
+        current_step="about-service"
+    )
+
+    # Submitting second and final step
     page = client_request.post(
         '.use_case',
         service_id=SERVICE_ONE_ID,
@@ -873,7 +889,7 @@ def test_request_to_go_live_use_case_page(
             'intended_recipients': expected_use_case_data['form_data']['intended_recipients'],
         }
     )
-    use_case_data_mock.assert_called_once_with(SERVICE_ONE_ID)
+    use_case_data_mock.assert_has_calls([call(SERVICE_ONE_ID), call(SERVICE_ONE_ID)])
 
     submit_use_case_mock.assert_called_once_with(SERVICE_ONE_ID)
     assert store_mock.call_count == 3
@@ -915,7 +931,7 @@ def test_request_to_go_live_can_resume_use_case_page(
     page = client_request.get('.request_to_go_live', service_id=SERVICE_ONE_ID)
 
     assert (
-        url_for('.use_case', service_id=SERVICE_ONE_ID, current_step="about-notifications")
+        url_for('.use_case', service_id=SERVICE_ONE_ID)
         in [a['href'] for a in page.select('.task-list .task-list-item a')]
     )
 
@@ -964,8 +980,10 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
         assert page.select_one('form')['method'] == 'post'
         assert 'action' not in page.select_one('form')
         paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
-        assert 'When we receive your request we’ll get back to you within one working day.' in paragraphs
-        assert 'By requesting to go live you’re agreeing to our terms of use.' in paragraphs
+        assert (
+            'Once you have completed all the steps, submit your request to the GC Notify team. '
+            'We’ll be in touch within 2 business days.'
+        ) in paragraphs
         page.select_one('[type=submit]').text.strip() == ('Request to go live')
     else:
         assert not page.select('form')
@@ -988,74 +1006,66 @@ def test_non_gov_users_cant_request_to_go_live(
     )
 
 
-@pytest.mark.parametrize('volumes, displayed_volumes, formatted_displayed_volumes, extra_tags', (
-    (
-        (('email', None), ('sms', None), ('letter', None)),
-        ', , ',
-        (
-            'Emails in next year: \n'
-            'Text messages in next year: \n'
-            'Letters in next year: \n'
-        ),
-        ['notify_request_to_go_live_incomplete_volumes']
-    ),
-    (
-        (('email', 1234), ('sms', 0), ('letter', 999)),
-        '0, 1234, 999',  # This is a different order to match the spreadsheet
-        (
-            'Emails in next year: 1,234\n'
-            'Text messages in next year: 0\n'
-            'Letters in next year: 999\n'
-        ),
-        [],
-    ),
-))
-@freeze_time("2012-12-21 13:12:12.12354")
-def test_should_redirect_after_request_to_go_live(
+def test_submit_go_live_request(
     client_request,
     mocker,
     active_user_with_permissions,
     single_reply_to_email_address,
-    single_letter_contact_block,
-    mock_get_organisations_and_services_for_user,
-    single_sms_sender,
-    mock_get_service_settings_page_common,
-    mock_get_service_templates,
-    mock_get_users_by_service,
     mock_update_service,
-    mock_get_invites_without_manage_permission,
-    volumes,
-    displayed_volumes,
-    formatted_displayed_volumes,
-    extra_tags,
+    service_one,
 ):
-    mock_get_service_organisation(
-        mocker,
-        name=None,
-        agreement_signed=None,
+    mocker.patch(
+        'app.models.service.Service.go_live_checklist_completed',
+        new_callable=PropertyMock,
+        return_value=True,
     )
-    for channel, volume in volumes:
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=volume,
-        )
+    mocker.patch(
+        'app.service_api_client.get_use_case_data',
+        return_value={
+            'form_data': {
+                'department_org_name': 'Org name',
+                'intended_recipients': ['public'],
+                'purpose': 'Purpose',
+                'expected_volume': '1-10k',
+                'notification_types': ['email']
+            },
+            'step': 'about-notifications'
+        }
+    )
+    mock_contact = mocker.patch('app.user_api_client.send_contact_email')
+
     page = client_request.post(
         'main.request_to_go_live',
         service_id=SERVICE_ONE_ID,
-        _follow_redirects=True
+        _follow_redirects=True,
     )
 
+    assert page.h1.text == 'Settings'
     assert normalize_spaces(page.select_one('.banner-default').text) == (
-        'Thank you for your request to go live. We’ll get back to you within one working day.'
+        'Your request to go live is being reviewed. We’ll be in touch within 2 business days.'
     )
-    assert normalize_spaces(page.select_one('h1').text) == (
-        'Settings'
-    )
+
     mock_update_service.assert_called_once_with(
         SERVICE_ONE_ID,
         go_live_user=active_user_with_permissions['id']
+    )
+    expected_message = '<br>'.join([
+        f"{service_one['name']} just requested to go live.",
+        "",
+        "- Department/org: Org name",
+        "- Intended recipients: public",
+        "- Purpose: Purpose",
+        "- Notification types: email",
+        "- Expected monthly volume: 1-10k",
+        "---",
+        url_for('.service_dashboard', service_id=SERVICE_ONE_ID, _external=True),
+    ])
+
+    mock_contact.assert_called_once_with(
+        active_user_with_permissions['name'],
+        active_user_with_permissions['email_address'],
+        expected_message,
+        f"Go Live request for {service_one['name']}"
     )
 
 
@@ -1066,8 +1076,10 @@ def test_should_redirect_after_request_to_go_live(
     'main.service_email_from_change',
     'main.service_email_from_change_confirm',
     'main.request_to_go_live',
+    'main.use_case',
+    'main.terms_of_use',
     'main.submit_request_to_go_live',
-    'main.archive_service'
+    'main.archive_service',
 ])
 def test_route_permissions(
         mocker,
@@ -1102,6 +1114,8 @@ def test_route_permissions(
     'main.service_email_from_change',
     'main.service_email_from_change_confirm',
     'main.request_to_go_live',
+    'main.use_case',
+    'main.terms_of_use',
     'main.submit_request_to_go_live',
     'main.service_switch_live',
     'main.archive_service',
@@ -1134,6 +1148,8 @@ def test_route_invalid_permissions(
     'main.service_email_from_change',
     'main.service_email_from_change_confirm',
     'main.request_to_go_live',
+    'main.use_case',
+    'main.terms_of_use',
     'main.submit_request_to_go_live',
 ])
 def test_route_for_platform_admin(

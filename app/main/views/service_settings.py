@@ -197,12 +197,7 @@ def service_email_from_change_confirm(service_id):
 @user_has_permissions('manage_service')
 @user_is_gov_user
 def request_to_go_live(service_id):
-    step, _ = current_service.use_case_data
-
-    return render_template(
-        'views/service-settings/request-to-go-live.html',
-        use_case_step=step
-    )
+    return render_template('views/service-settings/request-to-go-live.html')
 
 
 @main.route(
@@ -236,7 +231,6 @@ def use_case(service_id):
             "next_step": "about-notifications",
             "page_title": _("About your service"),
             "step": 1,
-            "total_steps": 2,
             "back_link": url_for('main.request_to_go_live', service_id=current_service.id),
         },
         {
@@ -246,7 +240,6 @@ def use_case(service_id):
             "next_step": None,
             "page_title": _("About your notifications"),
             "step": 2,
-            "total_steps": 2,
             "back_link": url_for('main.use_case', service_id=current_service.id, current_step=DEFAULT_STEP),
         },
     ]
@@ -286,7 +279,7 @@ def use_case(service_id):
         current_step=form_obj["current_step"],
         previous_step=form_obj["previous_step"],
         step_hint=form_obj["step"],
-        total_steps_hint=form_obj["total_steps"],
+        total_steps_hint=len(steps),
         back_link=form_obj["back_link"],
     )
 
@@ -295,9 +288,36 @@ def use_case(service_id):
 @user_has_permissions('manage_service')
 @user_is_gov_user
 def submit_request_to_go_live(service_id):
+    if not current_service.go_live_checklist_completed:
+        abort(403)
+
+    use_case_data = current_service.use_case_data[1]
     current_service.update(go_live_user=current_user.id)
 
-    flash(_('Thank you for your request to go live. We’ll get back to you within one working day.'), 'default')
+    flash(
+        _('Your request to go live is being reviewed. We’ll be in touch within 2 business days.'),
+        'default'
+    )
+
+    message = '<br>'.join([
+        f'{current_service.name} just requested to go live.',
+        '',
+        f"- Department/org: {use_case_data['department_org_name']}",
+        f"- Intended recipients: {', '.join(use_case_data['intended_recipients'])}",
+        f"- Purpose: {use_case_data['purpose']}",
+        f"- Notification types: {', '.join(use_case_data['notification_types'])}",
+        f"- Expected monthly volume: {use_case_data['expected_volume']}",
+        "---",
+        url_for('.service_dashboard', service_id=current_service.id, _external=True)
+    ])
+
+    user_api_client.send_contact_email(
+        current_user.name,
+        current_user.email_address,
+        message,
+        _("Go Live request for {}").format(current_service.name)
+    )
+
     return redirect(url_for('.service_settings', service_id=service_id))
 
 

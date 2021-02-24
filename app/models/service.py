@@ -235,7 +235,7 @@ class Service(JSONModel):
 
     @property
     def has_submitted_go_live(self):
-        return service_api_client.has_submitted_go_live(self.id)
+        return self.go_live_user is not None
 
     def register_submit_use_case(self):
         return service_api_client.register_submit_use_case(self.id)
