@@ -74,19 +74,15 @@
     </a>
   </div>
 
-  {% set url_href = url_for('main.show_accounts_or_dashboard') %}
   {% set url_text = current_service.name %}
   {% if platform_admin_view_ind %}
-    {% set url_href = url_for('main.live_services') %}
     {% set url_text = _('Admin panel') %}
   {% endif %}
 
   {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
     <div class="flex flex-wrap space-x-4 items-stretch">
-      <div class="font-bold">
-        <a href="{{ url_href }}"
-           class="text-lg font-bold no-underline visited:text-black text-black"
-        >{{ url_text }}</a>
+      <div class="font-bold text-lg text-black">
+        {{ url_text }}
       </div>
       <div class="text-base self-center">
         {% if current_user.has_permissions() and not platform_admin_view_ind %}
