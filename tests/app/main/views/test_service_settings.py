@@ -746,6 +746,48 @@ def test_request_to_go_live_page(
     assert mock_templates.called is True
 
 
+def test_request_to_go_live_terms_of_use_page(
+    client_request,
+    mocker,
+):
+
+    page = client_request.get('main.terms_of_use', service_id=SERVICE_ONE_ID)
+    assert page.h1.text == 'Accepting the terms of use'
+
+    assert page.select_one('.back-link')["href"] == url_for(
+        'main.request_to_go_live',
+        service_id=SERVICE_ONE_ID
+    )
+
+    # Form posts to the same endpoint
+    assert page.select_one('form')['method'] == 'post'
+    assert 'action' not in page.select_one('form')
+
+    # Accepting the terms of use
+    mock_accept_tos = mocker.patch('app.service_api_client.accept_tos')
+
+    page = client_request.post(
+        'main.terms_of_use',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=302,
+        _expected_redirect=url_for('main.request_to_go_live', service_id=SERVICE_ONE_ID, _external=True),
+    )
+
+    mock_accept_tos.assert_called_once_with(SERVICE_ONE_ID)
+
+
+def test_request_to_go_live_terms_of_use_page_without_permission(
+    client_request,
+    active_user_no_settings_permission,
+):
+    client_request.login(active_user_no_settings_permission)
+    client_request.get(
+        'main.terms_of_use',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=403,
+    )
+
+
 @pytest.mark.parametrize('checklist_completed, expected_button', (
     (False, False),
     (True, True),
