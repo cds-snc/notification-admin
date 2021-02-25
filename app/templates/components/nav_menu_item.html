@@ -7,6 +7,9 @@
         aria-label="{{ localised_txt }}"
         href="{{ url }}"
         class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline"
+        {% if external_link_img %}
+          target="_blank"
+        {% endif %}
       >{{ localised_txt }}</a>
       {% if external_link_img %}
         <img
