@@ -46,13 +46,13 @@
               {{ nav_menu_item_mobile(url_for('.service_settings', service_id=current_service.id),_('Settings'),'menu--'+header_navigation.is_selected('settings')) }}
             {% endif %}
           {% else %}
-            {{ nav_menu_item_mobile(url_for('.choose_account', service_id=current_service.id),_('Your service(s)'),'menu--'+header_navigation.is_selected('choose_account')) }}
+            {{ nav_menu_item_mobile(url_for('.choose_account', service_id=current_service.id),_('Your services'),'menu--'+header_navigation.is_selected('choose_account')) }}
             {{ nav_menu_item_mobile(url_for('main.contact', service_id=current_service.id),_('Contact us'),'menu--'+header_navigation.is_selected('contact')) }}
           {% endif %}
           <!-- service menu dropdown / signed in/ mobile / END -->
         {% else %}
           <!-- service menu dropdown / signed in / admin / mobile -->
-          {{ nav_menu_item_mobile(url_for('.choose_account', service_id=current_service.id),_('Your service(s)'),'menu--'+header_navigation.is_selected('choose_account')) }}
+          {{ nav_menu_item_mobile(url_for('.choose_account', service_id=current_service.id),_('Your services'),'menu--'+header_navigation.is_selected('choose_account')) }}
           {% if platform_admin_view_ind %}
             {% for link_text, view in [
             ('Live services', 'live_services'),

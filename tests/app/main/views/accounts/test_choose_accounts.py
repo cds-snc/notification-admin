@@ -179,7 +179,7 @@ def test_choose_account_should_show_your_services_link(
     back_to_service_link = resp.find('a', {'id': 'choose_account'})
 
     assert back_to_service_link['href'] == url_for('main.choose_account')
-    assert back_to_service_link.text == 'Your service(s)'
+    assert back_to_service_link.text == 'Your services'
 
 
 def test_choose_account_should_not_show_back_to_service_link_if_no_service_in_session(
