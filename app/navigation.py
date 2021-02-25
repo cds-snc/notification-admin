@@ -38,6 +38,9 @@ class AdminNavigation(Navigation):
     selected_attribute = "active"
 
     mapping = {
+        'choose_account': {
+            'choose_account',
+        },
         'live_services': {
             'live_services',
         },

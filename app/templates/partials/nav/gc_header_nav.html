@@ -81,12 +81,13 @@
               {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
                 {{ nav_menu_item(url_for('.service_settings', service_id=current_service.id),_('Settings'),'header--'+header_navigation.is_selected('settings')) }}
               {% endif %}
-            {% else %}
+            {% else %} {# not current_user.has_permissions, i.e. services not in context #}
               {{ nav_menu_item(url_for('.choose_account'),_('Your service(s)'),'header--'+header_navigation.is_selected('choose_account'),id_key='choose_account') }}
               {{ nav_menu_item(url_for('main.contact', service_id=current_service.id),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
             {% endif %}
-          {% else %}
+          {% else %} {# current_user.platform_admin #}
             {% if not platform_admin_view_ind %}
+              {{ nav_menu_item(url_for('.choose_account'),_('Your service(s)'),'header--'+header_navigation.is_selected('choose_account'),id_key='choose_account') }}
               {% if current_user.has_permissions() %}
                 {{ nav_menu_item(url_for('.live_services', service_id=current_service.id),_('Platform admin')) }}
                 {{ nav_menu_item(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'header--'+header_navigation.is_selected('dashboard')) }}
@@ -95,7 +96,7 @@
                 {{ nav_menu_item(url_for('.manage_users', service_id=current_service.id),_('Team members'),'header--'+header_navigation.is_selected('team-members')) }}
                 {{ nav_menu_item(url_for('.service_settings', service_id=current_service.id),_('Settings'),'header--'+header_navigation.is_selected('settings')) }}
                 {{ nav_menu_item(url_for('main.smtp_integration', service_id=current_service.id),_('SMTP'),'header--'+header_navigation.is_selected('smtp-integration')) }}
-              {% else %}
+              {% else %} {# not current_user.has_permissions, i.e. services not in context #}
                 {{ nav_menu_item(url_for('.live_services', service_id=current_service.id),_('Platform admin')) }}
               {% endif %}
             {% endif %}
