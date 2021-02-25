@@ -1,5 +1,11 @@
 @layer components {
   /*! purgecss start ignore */
+  header a:link,
+  header a:visited {
+    @apply no-underline;
+    @apply text-blue;
+  }
+
   .navigation {
     @apply p-0;
   }
