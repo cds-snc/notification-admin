@@ -56,7 +56,7 @@
     <div class="container px-10">
       <div id="proposition-links" class="flex flex-no-wrap">
         {% if not current_user.is_authenticated %}
-          {{ nav_menu_item('/',_('Home'),'header--'+header_navigation.is_selected('home')) }}
+          {{ nav_menu_item('/',_('Home'),'pl-0 header--'+header_navigation.is_selected('home')) }}
           {{ nav_menu_item(url_for('main.why-notify'),_('Why GC Notify'),'header--'+header_navigation.is_selected('why-notify')) }}
           {{ nav_menu_item(url_for('main.features'),_('Features'),'header--'+header_navigation.is_selected('features')) }}
           {{ nav_menu_item(documentation_url(),_('Documentation'),'header--'+header_navigation.is_selected('documentation'), external_link_img=asset_url('images/external.svg')) }}
@@ -65,7 +65,7 @@
           {% if not current_user.platform_admin %}
             {% if current_user.has_permissions() %}
               {% if current_user.has_permissions('view_activity') %}
-                {{ nav_menu_item(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'header--'+header_navigation.is_selected('dashboard')) }}
+                {{ nav_menu_item(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'pl-0 header--'+header_navigation.is_selected('dashboard')) }}
               {% endif %}
               {{ nav_menu_item( url_for('.choose_template', service_id=current_service.id),_('Templates'),'header--'+header_navigation.is_selected('templates')) }}
               {% if not current_user.has_permissions('view_activity') %}
@@ -87,7 +87,7 @@
             {% endif %}
           {% else %} {# current_user.platform_admin #}
             {% if not platform_admin_view_ind %}
-              {{ nav_menu_item(url_for('.choose_account'),_('Your services'),'header--'+header_navigation.is_selected('choose_account'),id_key='choose_account') }}
+              {{ nav_menu_item(url_for('.choose_account'),_('Your services'),'pl-0 header--'+header_navigation.is_selected('choose_account'),id_key='choose_account') }}
               {% if current_user.has_permissions() %}
                 {{ nav_menu_item(url_for('.live_services', service_id=current_service.id),_('Platform admin')) }}
                 {{ nav_menu_item(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'header--'+header_navigation.is_selected('dashboard')) }}
@@ -177,7 +177,7 @@
     accountMenu.classList.toggle("hidden")
     accountMenu.querySelector('a').focus()
     // In order to have the opacity transition effect working properly,
-    // we need to separate the hidden and opacity toggling in two separate 
+    // we need to separate the hidden and opacity toggling in two separate
     // actions in the HTML rendering, hence the delay of opacity by 1 ms.
     window.setTimeout(function () {
       accountMenu.classList.toggle("opacity-0")
