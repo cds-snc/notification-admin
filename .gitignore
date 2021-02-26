@@ -48,6 +48,7 @@ test_results.xml
 # Translations
 #*.mo
 *.pot
+app/translations/csv/en.csv
 
 # Django stuff:
 *.log
