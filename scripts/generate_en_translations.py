@@ -15,5 +15,3 @@ with open(fr_file) as fr, open(en_file, "w") as en:
 
     for row in reader:
         writer.writerow({"source": row["source"], "target": ""})
-
-    print(f"Generated {en_file} from {fr_file}")
