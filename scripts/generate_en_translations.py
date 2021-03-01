@@ -14,7 +14,14 @@ with open(fr_file) as fr, open(en_base_file) as en_base, open(en_file, "w") as e
     fr_reader = csv.DictReader(fr, fieldnames=headers)
     base_en_reader = csv.DictReader(en_base, fieldnames=headers)
 
-    # Write a few English overrides
+    # Write the few English overrides we have.
+    #
+    # Rows in `en_base.csv` are what an ideal translation system
+    # should be: they map keys to values, changing what's displayed
+    # in English when used in HTML templates.
+    #
+    # Other translations strings coming from `fr.csv` work only because we use
+    # values (English sentences) as keys.
     en_writer = csv.DictWriter(en, fieldnames=headers, quoting=csv.QUOTE_ALL)
     translated = set()
     for row in base_en_reader:
