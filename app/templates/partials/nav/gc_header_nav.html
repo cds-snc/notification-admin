@@ -88,7 +88,7 @@
           {% else %} {# current_user.platform_admin #}
             {% if not platform_admin_view_ind %}
               {% if current_user.has_permissions() %}
-                {{ nav_menu_item(url_for('.live_services', service_id=current_service.id),_('Platform admin')) }}
+                {{ nav_menu_item(url_for('.live_services', service_id=current_service.id), _('Platform admin', 'pl-0')) }}
                 {{ nav_menu_item(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'header--'+header_navigation.is_selected('dashboard')) }}
                 {{ nav_menu_item( url_for('.choose_template', service_id=current_service.id),_('Templates'),'header--'+header_navigation.is_selected('templates')) }}
                 {{ nav_menu_item(url_for('.api_integration', service_id=current_service.id),_('API integration'),'header--'+header_navigation.is_selected('api-integration')) }}
