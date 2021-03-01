@@ -26,7 +26,7 @@
               {{ _('To send notifications to more people, request to go live.') }}
             </p>
             <p class="text-right">
-              <a href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}" class="button" role="button">{{ _('Go Live') }}</a>
+              <a href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}" class="button" role="button">{{ _('Request to go live') }}</a>
             </p>
           {% else %}
             <p>

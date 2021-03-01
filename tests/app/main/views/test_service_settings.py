@@ -393,7 +393,7 @@ def test_show_restricted_service(
 
     if expected_link:
         request_to_live_link = page.select('main p')[1].select_one('a')
-        assert request_to_live_link.text.strip() == 'Go Live'
+        assert request_to_live_link.text.strip() == 'Request to go live'
         assert request_to_live_link['href'] == url_for('.request_to_go_live', service_id=SERVICE_ONE_ID)
     else:
         assert url_for('.request_to_go_live', service_id=SERVICE_ONE_ID) not in page
@@ -989,7 +989,6 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
         assert not page.select('form')
         assert not page.select('[type=submit]')
         paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
-        assert "Ready to go live?" in paragraphs
         assert "Once you complete all the steps, you'll be able to submit your request." in paragraphs
 
 
@@ -1042,7 +1041,7 @@ def test_submit_go_live_request(
 
     assert page.h1.text == 'Settings'
     assert normalize_spaces(page.select_one('.banner-default').text) == (
-        'Your request to go live is being reviewed. We’ll be in touch within 2 business days.'
+        'Your request was submitted.'
     )
 
     mock_update_service.assert_called_once_with(

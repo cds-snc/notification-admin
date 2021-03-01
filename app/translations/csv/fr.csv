@@ -1226,7 +1226,6 @@
 "Complete the following steps to go live and send notifications to more people.","Complétez les étapes suivantes pour activer votre service et envoyer des messages à d’autres personnes."
 "Request to go live","Activez votre service"
 "Once you complete all the steps, you'll be able to submit your request.","Une fois que vous aurez complété toutes les étapes, vous pourrez soumettre votre demande."
-"Ready to go live?","Prêt à activer votre service?"
 "Add templates with content you plan on sending","Ajouter des gabarits avec du contenu à envoyer"
 "Add a team member who can manage settings","Ajouter un membre d’équipe qui peut gérer les paramètres"
 "Tell us about how you intend to use GC Notify","Expliquer comment vous prévoyez utiliser GC Notification"
@@ -1260,3 +1259,4 @@
 "Once you have completed all the steps, submit your request to the GC Notify team. We’ll be in touch within 2 business days.","Après avoir complété toutes les étapes, soumettez votre demande à l’équipe GC Notification. Nous communiquerons avec vous dans un délai de 2 jours ouvrables."
 "Your request to go live is being reviewed. We’ll be in touch within 2 business days.","Votre demande d’activation est en cours. Nous communiquerons avec vous dans un délai de 2 jours ouvrables."
 "Go Live request for {}","Demande d’activation pour {}"
+"Your request was submitted.","Votre demande a été soumise."

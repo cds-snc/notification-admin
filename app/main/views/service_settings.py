@@ -295,7 +295,7 @@ def submit_request_to_go_live(service_id):
     current_service.update(go_live_user=current_user.id)
 
     flash(
-        _('Your request to go live is being reviewed. We’ll be in touch within 2 business days.'),
+        _('Your request was submitted.'),
         'default'
     )
 
