@@ -22,6 +22,5 @@ with open(fr_file) as fr, open(en_base_file) as en_base, open(en_file, "w") as e
         translated.add(row["source"])
 
     # Fill up the en.csv file with empty strings based on the fr.csv file
-    for row in reader:
-        if row["source"] not in translated:
-            en_writer.writerow({"source": row["source"], "target": ""})
+    for row in [row for row in reader if row["source"] not in translated]:
+        en_writer.writerow({"source": row["source"], "target": ""})
