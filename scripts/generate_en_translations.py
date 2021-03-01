@@ -11,7 +11,7 @@ en_file = root_folder / translation_folder / "en.csv"
 headers = ["source", "target"]
 
 with open(fr_file) as fr, open(en_base_file) as en_base, open(en_file, "w") as en:
-    reader = csv.DictReader(fr, fieldnames=headers)
+    fr_reader = csv.DictReader(fr, fieldnames=headers)
     base_en_reader = csv.DictReader(en_base, fieldnames=headers)
 
     # Write a few English overrides
@@ -22,5 +22,5 @@ with open(fr_file) as fr, open(en_base_file) as en_base, open(en_file, "w") as e
         translated.add(row["source"])
 
     # Fill up the en.csv file with empty strings based on the fr.csv file
-    for row in [row for row in reader if row["source"] not in translated]:
+    for row in [row for row in fr_reader if row["source"] not in translated]:
         en_writer.writerow({"source": row["source"], "target": ""})
