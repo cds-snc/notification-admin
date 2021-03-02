@@ -12,12 +12,12 @@
     {{ _('API integration') }}
   </h1>
 
-  <div class="mb-12 clear-both contain-floats">
+  <div class="mb-12">
     <p>
       {{ _('Integrating the GC Notify application programming interface (API) into your system allows you to automate notifications and send emails with attachments.') }}
     </p>
     <p>
-      {{ _('Find out more about how to integrate the API in the') }} <a href="{{ documentation_url() }}">{{ _('documentation for developers') }}</a>.
+      {{ _("Find out more about how to integrate the API in the <a href='{}'> documentation for developers</a>.").format(url_for('main.documentation')) }}
     </p>
   </div>
 
@@ -48,12 +48,12 @@
     </div>
   </nav>
 
-  <div class="mb-12 clear-both contain-floats bg-gray px-10 py-2">
+  <div class="mb-12 bg-gray px-10 py-2">
     <h2 class="heading-small">
       {{ _('Your API rate limit is {} calls per minute').format(current_service.rate_limit | format_number) }}
     </h2>
     <p>
-      {{ _('To request an API rate increase,') }} <a href="{{ url_for('.contact') }}">{{ _('contact us') }}</a>.
+      {{ _("To request an API rate increase, <a href='{}'>contact us</a>.").format(url_for('.contact')) }}
     </p>
   </div>
 
