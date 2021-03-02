@@ -21,7 +21,6 @@ from app import (
     billing_api_client,
     current_service,
     email_branding_client,
-    format_thousands,
     inbound_number_client,
     letter_branding_client,
     notification_api_client,
@@ -29,14 +28,14 @@ from app import (
     service_api_client,
     user_api_client,
 )
-from app.extensions import zendesk_client
 from app.main import main
 from app.main.forms import (
     ChangeEmailFromServiceForm,
     ConfirmPasswordForm,
-    EstimateUsageForm,
     FieldWithLanguageOptions,
     FreeSMSAllowance,
+    GoLiveAboutNotificationsForm,
+    GoLiveAboutServiceForm,
     InternationalSMSForm,
     LinkOrganisationsForm,
     MessageLimit,
@@ -194,48 +193,94 @@ def service_email_from_change_confirm(service_id):
         form=form)
 
 
-@main.route("/services/<service_id>/service-settings/request-to-go-live/estimate-usage", methods=['GET', 'POST'])
-@user_has_permissions('manage_service')
-def estimate_usage(service_id):
-
-    form = EstimateUsageForm(
-        volume_email=current_service.volume_email,
-        volume_sms=current_service.volume_sms,
-        volume_letter=current_service.volume_letter,
-        consent_to_research={
-            True: 'yes',
-            False: 'no',
-        }.get(current_service.consent_to_research),
-    )
-
-    if form.validate_on_submit():
-        current_service.update(
-            volume_email=form.volume_email.data,
-            volume_sms=form.volume_sms.data,
-            volume_letter=form.volume_letter.data,
-            consent_to_research=(form.consent_to_research.data == 'yes'),
-        )
-        return redirect(url_for(
-            'main.request_to_go_live',
-            service_id=service_id,
-        ))
-
-    return render_template(
-        'views/service-settings/estimate-usage.html',
-        form=form,
-    )
-
-
 @main.route("/services/<service_id>/service-settings/request-to-go-live", methods=['GET'])
 @user_has_permissions('manage_service')
+@user_is_gov_user
 def request_to_go_live(service_id):
+    return render_template('views/service-settings/request-to-go-live.html')
 
-    agreement_signed = current_service.organisation.agreement_signed
+
+@main.route(
+    "/services/<service_id>/service-settings/request-to-go-live/terms-of-use",
+    methods=['GET', 'POST']
+)
+@user_has_permissions('manage_service')
+@user_is_gov_user
+def terms_of_use(service_id):
+    if request.method == 'POST':
+        service_api_client.accept_tos(service_id)
+        return redirect(url_for('.request_to_go_live', service_id=service_id))
+
+    return render_template('views/service-settings/terms-of-use.html')
+
+
+@main.route(
+    "/services/<service_id>/service-settings/request-to-go-live/use-case",
+    methods=['GET', 'POST']
+)
+@user_has_permissions('manage_service')
+@user_is_gov_user
+def use_case(service_id):
+    DEFAULT_STEP = "about-service"
+
+    steps = [
+        {
+            "form": GoLiveAboutServiceForm,
+            "current_step": DEFAULT_STEP,
+            "previous_step": None,
+            "next_step": "about-notifications",
+            "page_title": _("About your service"),
+            "step": 1,
+            "back_link": url_for('main.request_to_go_live', service_id=current_service.id),
+        },
+        {
+            "form": GoLiveAboutNotificationsForm,
+            "current_step": "about-notifications",
+            "previous_step": DEFAULT_STEP,
+            "next_step": None,
+            "page_title": _("About your notifications"),
+            "step": 2,
+            "back_link": url_for('main.use_case', service_id=current_service.id, current_step=DEFAULT_STEP),
+        },
+    ]
+
+    step, form_data = current_service.use_case_data
+
+    current_step = request.args.get('current_step', step or DEFAULT_STEP)
+    try:
+        form_details = [f for f in steps if f["current_step"] == current_step][0]
+    except IndexError:
+        return redirect(url_for('.request_to_go_live', service_id=service_id))
+    form = form_details["form"](data=form_data)
+
+    # Validating the final form
+    if form_details["next_step"] is None and form.validate_on_submit():
+        current_service.store_use_case_data(form_details["current_step"], form.data)
+        current_service.register_submit_use_case()
+        return redirect(url_for('.request_to_go_live', service_id=service_id))
+
+    # Going on to the next step in the form
+    if form.validate_on_submit():
+        possibilities = [f for f in steps if f["previous_step"] == current_step]
+        try:
+            form_details = possibilities[0]
+        except IndexError:
+            return redirect(url_for('.request_to_go_live', service_id=service_id))
+        form = form_details["form"](data=form_data)
+
+    if request.method == 'POST':
+        current_service.store_use_case_data(form_details["current_step"], form.data)
 
     return render_template(
-        'views/service-settings/request-to-go-live.html',
-        show_agreement=agreement_signed is not None,
-        agreement_signed=agreement_signed,
+        'views/service-settings/use-case.html',
+        form=form,
+        page_title=form_details["page_title"],
+        next_step=form_details["next_step"],
+        current_step=form_details["current_step"],
+        previous_step=form_details["previous_step"],
+        step_hint=form_details["step"],
+        total_steps_hint=len(steps),
+        back_link=form_details["back_link"],
     )
 
 
@@ -243,47 +288,36 @@ def request_to_go_live(service_id):
 @user_has_permissions('manage_service')
 @user_is_gov_user
 def submit_request_to_go_live(service_id):
+    if not current_service.go_live_checklist_completed:
+        abort(403)
 
-    zendesk_client.create_ticket(
-        subject='Request to go live - {}'.format(current_service.name),
-        message=(
-            'Service: {service_name}\n'
-            '{service_dashboard}\n'
-            '\n---'
-            '\nOrganisation type: {organisation_type}'
-            '\nAgreement signed: {agreement}'
-            '\nEmails in next year: {volume_email_formatted}'
-            '\nText messages in next year: {volume_sms_formatted}'
-            '\nLetters in next year: {volume_letter_formatted}'
-            '\nConsent to research: {research_consent}'
-            '\nOther live services: {existing_live}'
-            '\n'
-            '\n---'
-            '\nRequest sent by {email_address}'
-            '\n'
-        ).format(
-            service_name=current_service.name,
-            service_dashboard=url_for('main.service_dashboard', service_id=current_service.id, _external=True),
-            organisation_type=str(current_service.organisation_type).title(),
-            agreement=current_service.organisation.as_agreement_statement_for_go_live_request(
-                current_user.email_domain
-            ),
-            volume_email_formatted=format_thousands(current_service.volume_email),
-            volume_sms_formatted=format_thousands(current_service.volume_sms),
-            volume_letter_formatted=format_thousands(current_service.volume_letter),
-            research_consent='Yes' if current_service.consent_to_research else 'No',
-            existing_live='Yes' if current_user.live_services else 'No',
-            email_address=current_user.email_address,
-        ),
-        ticket_type=zendesk_client.TYPE_QUESTION,
-        user_email=current_user.email_address,
-        user_name=current_user.name,
-        tags=current_service.request_to_go_live_tags,
-    )
-
+    use_case_data = current_service.use_case_data[1]
     current_service.update(go_live_user=current_user.id)
 
-    flash(_('Thank you for your request to go live. We’ll get back to you within one working day.'), 'default')
+    flash(
+        _('Your request was submitted.'),
+        'default'
+    )
+
+    message = '<br>'.join([
+        f'{current_service.name} just requested to go live.',
+        '',
+        f"- Department/org: {use_case_data['department_org_name']}",
+        f"- Intended recipients: {', '.join(use_case_data['intended_recipients'])}",
+        f"- Purpose: {use_case_data['purpose']}",
+        f"- Notification types: {', '.join(use_case_data['notification_types'])}",
+        f"- Expected monthly volume: {use_case_data['expected_volume']}",
+        "---",
+        url_for('.service_dashboard', service_id=current_service.id, _external=True)
+    ])
+
+    user_api_client.send_contact_email(
+        current_user.name,
+        current_user.email_address,
+        message,
+        _("Go Live request for {}").format(current_service.name)
+    )
+
     return redirect(url_for('.service_settings', service_id=service_id))
 
 

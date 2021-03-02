@@ -2,6 +2,7 @@ from unittest.mock import call
 from uuid import uuid4
 
 import pytest
+from freezegun import freeze_time
 
 from app import invite_api_client, service_api_client, user_api_client
 from app.notify_client.service_api_client import ServiceAPIClient
@@ -431,3 +432,81 @@ def test_deletes_caches_when_modifying_templates(
 
     assert mock_redis_delete.call_args_list == list(map(call, expected_cache_deletes))
     assert len(mock_request.call_args_list) == 1
+
+
+@pytest.mark.parametrize('redis_return, expected', [
+    (None, False),
+    ("sample", True),
+])
+def test_has_accepted_tos(mocker, redis_return, expected):
+    mock_redis_get = mocker.patch('app.extensions.RedisClient.get', return_value=redis_return)
+
+    assert service_api_client.has_accepted_tos(SERVICE_ONE_ID) == expected
+
+    mock_redis_get.assert_called_once_with(f"tos-accepted-{SERVICE_ONE_ID}")
+
+
+@freeze_time("2016-01-01 11:09:00.061258")
+def test_accept_tos(app_, mocker, monkeypatch, logged_in_client):
+    monkeypatch.setitem(app_.config, 'REDIS_ENABLED', True)
+
+    mock_redis_set = mocker.patch('app.extensions.RedisClient.set')
+
+    service_api_client.accept_tos(SERVICE_ONE_ID)
+
+    mock_redis_set.assert_called_once_with(
+        f"tos-accepted-{SERVICE_ONE_ID}",
+        '2016-01-01T11:09:00.061258',
+        ex=30 * 60 * 60 * 24  # 30 days in seconds
+    )
+
+
+@pytest.mark.parametrize('redis_return, expected', [
+    (None, False),
+    ("sample", True),
+])
+def test_has_submitted_use_case(mocker, redis_return, expected):
+    mock_redis_get = mocker.patch('app.extensions.RedisClient.get', return_value=redis_return)
+
+    assert service_api_client.has_submitted_use_case(SERVICE_ONE_ID) == expected
+
+    mock_redis_get.assert_called_once_with(f"use-case-submitted-{SERVICE_ONE_ID}")
+
+
+@freeze_time("2016-01-01 11:09:00.061258")
+def test_register_submit_use_case(mocker):
+    mock_redis_set = mocker.patch('app.extensions.RedisClient.set')
+
+    service_api_client.register_submit_use_case(SERVICE_ONE_ID)
+
+    mock_redis_set.assert_called_once_with(
+        f"use-case-submitted-{SERVICE_ONE_ID}",
+        '2016-01-01T11:09:00.061258',
+        ex=30 * 60 * 60 * 24  # 30 days in seconds
+    )
+
+
+@pytest.mark.parametrize('redis_return, expected', [
+    (None, None),
+    ('{"foo": 42}', {"foo": 42}),
+])
+def test_get_use_case_data(mocker, redis_return, expected):
+    mock_redis_get = mocker.patch('app.extensions.RedisClient.get', return_value=redis_return)
+
+    assert service_api_client.get_use_case_data(SERVICE_ONE_ID) == expected
+
+    mock_redis_get.assert_called_once_with(f"use-case-data-{SERVICE_ONE_ID}")
+
+
+def test_store_use_case_data(mocker):
+    mock_redis_set = mocker.patch('app.extensions.RedisClient.set')
+    mock_redis_delete = mocker.patch('app.extensions.RedisClient.delete')
+
+    service_api_client.store_use_case_data(SERVICE_ONE_ID, {"foo": 42})
+
+    mock_redis_set.assert_called_once_with(
+        f"use-case-data-{SERVICE_ONE_ID}",
+        '{"foo": 42}',
+        ex=60 * 60 * 60 * 24  # 60 days in seconds
+    )
+    mock_redis_delete.assert_called_once_with(f"use-case-submitted-{SERVICE_ONE_ID}")
