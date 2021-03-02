@@ -28,7 +28,7 @@
     margin-top: -15px;
     padding: 3px 8px 1px 8px;
     top: 28px; /* gutter - 2px */
-    @apply text-small leading-tight font-bold inline-block absolute right-0 border-2 border-solid border-black pointer-events-none text-center;
+    @apply text-small leading-tight font-bold inline-block absolute right-0 pointer-events-none text-right;
   }
 
   .task-list-indicator-completed {
@@ -36,7 +36,7 @@
        easier to read
     */
     letter-spacing: 0.02em;
-    @apply bg-black text-gray-grey4;
+    @apply text-green;
   }
 
   .task-list-indicator-not-completed {

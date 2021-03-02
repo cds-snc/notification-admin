@@ -15,6 +15,10 @@
     {{ _('Team members') }}
   </h1>
 
+  <p>
+    {{ _("You should have at least two team members who can manage settings and teams.") }}
+  </p>
+
   {% if show_search_box %}
     <div data-module="autofocus">
       {{ live_search(target_selector='.user-list-item', show=True, form=form) }}
@@ -29,10 +33,10 @@
 
   <div class="user-list">
 
-     
+
     {% for user in users %}
       <div class="user-list-item">
-          
+
         <h3 title="{{ user.email_address }}">
           {%- if user.name -%}
             <span class="heading-small live-search-relevant">{{ user.name }}</span>&ensp;
