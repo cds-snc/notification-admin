@@ -35,7 +35,7 @@ def test_should_show_api_page(
         'main.api_integration',
         service_id=SERVICE_ONE_ID,
     )
-    assert page.h1.string.strip() == 'API integration for developers'
+    assert page.h1.string.strip() == 'API integration'
     rows = page.find_all('details')
     assert len(rows) == 5
     for index, row in enumerate(rows):
@@ -630,7 +630,7 @@ def test_callbacks_button_links_straight_to_delivery_status_if_service_has_no_in
         service_id=service_one['id'],
     )
 
-    assert page.select('.pill-separate-item')[2]['href'] == url_for(
+    assert page.select('.api-header-links')[2]['href'] == url_for(
         expected_link, service_id=service_one['id']
     )
 
