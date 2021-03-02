@@ -248,14 +248,14 @@ def use_case(service_id):
 
     current_step = request.args.get('current_step', step or DEFAULT_STEP)
     try:
-        form_obj = [f for f in steps if f["current_step"] == current_step][0]
+        form_details = [f for f in steps if f["current_step"] == current_step][0]
     except IndexError:
         return redirect(url_for('.request_to_go_live', service_id=service_id))
-    form = form_obj["form"](data=form_data)
+    form = form_details["form"](data=form_data)
 
     # Validating the final form
-    if form_obj["next_step"] is None and form.validate_on_submit():
-        current_service.store_use_case_data(form_obj["current_step"], form.data)
+    if form_details["next_step"] is None and form.validate_on_submit():
+        current_service.store_use_case_data(form_details["current_step"], form.data)
         current_service.register_submit_use_case()
         return redirect(url_for('.request_to_go_live', service_id=service_id))
 
@@ -263,24 +263,24 @@ def use_case(service_id):
     if form.validate_on_submit():
         possibilities = [f for f in steps if f["previous_step"] == current_step]
         try:
-            form_obj = possibilities[0]
+            form_details = possibilities[0]
         except IndexError:
             return redirect(url_for('.request_to_go_live', service_id=service_id))
-        form = form_obj["form"](data=form_data)
+        form = form_details["form"](data=form_data)
 
     if request.method == 'POST':
-        current_service.store_use_case_data(form_obj["current_step"], form.data)
+        current_service.store_use_case_data(form_details["current_step"], form.data)
 
     return render_template(
         'views/service-settings/use-case.html',
         form=form,
-        page_title=form_obj["page_title"],
-        next_step=form_obj["next_step"],
-        current_step=form_obj["current_step"],
-        previous_step=form_obj["previous_step"],
-        step_hint=form_obj["step"],
+        page_title=form_details["page_title"],
+        next_step=form_details["next_step"],
+        current_step=form_details["current_step"],
+        previous_step=form_details["previous_step"],
+        step_hint=form_details["step"],
         total_steps_hint=len(steps),
-        back_link=form_obj["back_link"],
+        back_link=form_details["back_link"],
     )
 
 
