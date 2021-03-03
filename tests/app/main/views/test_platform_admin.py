@@ -1048,10 +1048,11 @@ def test_get_performance_platform_report(platform_admin_client, mocker):
     assert pyexcel.get_array(
         file_type='xlsx',
         file_stream=response.get_data(),
-    ) == [['service_id', 'agency', 'service_name', '_timestamp', 'service', 'count'],
-          ['abc123', 'Forest', 'jessie the oak tree', '2014-03-29T00:00:00Z', 'notification', 1],
-          ['def456', 'Forest', 'james the pine tree', '', 'notification', 1],
-          ]
+    ) == [
+        ['service_id', 'agency', 'service_name', '_timestamp', 'service', 'count'],
+        ['abc123', 'Forest', 'jessie the oak tree', '2014-03-29T00:00:00Z', 'notification', 1],
+        ['def456', 'Forest', 'james the pine tree', '', 'notification', 1],
+    ]
 
 
 def test_get_trial_report_csv(platform_admin_client, mocker):
@@ -1081,12 +1082,14 @@ def test_get_notifications_sent_by_service_shows_date_form(client_request, platf
     client_request.login(platform_admin_user)
     page = client_request.get('main.notifications_sent_by_service')
 
-    assert [(input['type'], input['name'], input['value'])
-            for input in page.select('input')
-            ] == [('text', 'start_date', ''),
-                  ('text', 'end_date', ''),
-                  ('hidden', 'csrf_token', ANY)
-                  ]
+    assert [
+        (input['type'], input['name'], input['value'])
+        for input in page.select('input')
+    ] == [
+        ('text', 'start_date', ''),
+        ('text', 'end_date', ''),
+        ('hidden', 'csrf_token', ANY)
+    ]
 
 
 def test_get_notifications_sent_by_service_validates_form(mocker, client_request, platform_admin_user):
