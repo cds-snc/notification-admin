@@ -1,0 +1,207 @@
+{% from "components/nav_menu_item.html" import nav_menu_item %}
+
+{% set lang_switch = 'EN' %}
+
+{% if session["userlang"] == "en" %}
+  {% set lang_switch = 'FR' %}
+{% endif %}
+
+<hr class="m-0 md:hidden bg-blue" style="height: 4px"/>
+<nav class="md:hidden" aria-label="{{ _('main navigation') }}">
+  <div class="container px-10">
+    <!-- Mobile menu and nav bar -->
+    <div class="grid grid-cols-2">
+        <div class="py-2">
+          <a href="#" id="menu"
+             class="mr-5 p-4 bg-blue text-white visited:text-white link:text-white no-underline focus:outline-none">
+            {{ _('Menu') }}
+            <img
+              alt="Menu expansion arrow"
+              aria-hidden="true"
+              class="mobile-arrow ml-2 inline"
+              src="{{ asset_url('images/arrow-white.svg') }}"
+              width="20"/>
+          </a>
+        </div>
+      <div aria-label="{{ _('language and sign-in') }}" class="flex justify-end self-center">
+        {% if current_user.is_authenticated %}
+          {% include 'partials/nav/account_menu_mobile.html' %}
+        {% else %}
+          <div class="self-center">
+            <a
+              href="{{ url_for('main.sign_in' ) }}"
+              class="px-5 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
+              {{ _('Sign in') }}
+            </a>
+          </div>
+        {% endif %}
+        <div class="pl-5">
+          <div class="h-14 p-1 border-2 border-solid border-gray rounded-lg">
+            <a
+              aria-label="{{ lang_switch }}"
+              class="px-1 line-under leading-none inline text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
+              href="{{ url_for('main.set_lang') }}?from={{ request.path }}">
+              {{ lang_switch }}
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile menu and nav bar END -->
+      <!-- MD-LG menu and nav bar -->
+    </div>
+  </div>
+</nav>
+{% if withnav %}
+  <nav class="bg-gray xs:hidden smaller:hidden sm:hidden md:flex" aria-label="{{ _('main navigation') }}">
+    <div class="container px-10">
+      <div id="proposition-links" class="flex flex-no-wrap">
+        {% if not current_user.is_authenticated %}
+          {{ nav_menu_item('/',_('Home'),'pl-0 header--'+header_navigation.is_selected('home')) }}
+          {{ nav_menu_item(url_for('main.why-notify'),_('Why GC Notify'),'header--'+header_navigation.is_selected('why-notify')) }}
+          {{ nav_menu_item(url_for('main.features'),_('Features'),'header--'+header_navigation.is_selected('features')) }}
+          {{ nav_menu_item(documentation_url(),_('Documentation'),'header--'+header_navigation.is_selected('documentation'), external_link_img=asset_url('images/external.svg')) }}
+          {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
+        {% else %}
+          {% if not current_user.platform_admin %}
+            {% if current_user.has_permissions() %}
+              {% if current_user.has_permissions('view_activity') %}
+                {{ nav_menu_item(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'pl-0 header--'+header_navigation.is_selected('dashboard')) }}
+              {% endif %}
+              {{ nav_menu_item( url_for('.choose_template', service_id=current_service.id),_('Templates'),'header--'+header_navigation.is_selected('templates')) }}
+              {% if not current_user.has_permissions('view_activity') %}
+                {{ nav_menu_item(url_for('.view_notifications', service_id=current_service.id, status='sending,delivered,failed'),_('Sent messages'),'header--'+header_navigation.is_selected('sent-messages')) }}
+                {% if current_service.has_jobs %}
+                  {{ nav_menu_item(url_for('.view_jobs', service_id=current_service.id),_('Uploaded files'),'header--'+header_navigation.is_selected('uploaded-files')) }}
+                {% endif %}
+              {% endif %}
+              {% if current_user.has_permissions('manage_api_keys') %}
+                {{ nav_menu_item(url_for('.api_integration', service_id=current_service.id),_('API integration'),'header--'+header_navigation.is_selected('api-integration')) }}
+              {% endif %}
+              {{ nav_menu_item(url_for('.manage_users', service_id=current_service.id),_('Team members'),'header--'+header_navigation.is_selected('team-members')) }}
+              {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
+                {{ nav_menu_item(url_for('.service_settings', service_id=current_service.id),_('Settings'),'header--'+header_navigation.is_selected('settings')) }}
+              {% endif %}
+            {% else %} {# not current_user.has_permissions, i.e. services not in context #}
+              {{ nav_menu_item(url_for('.choose_account'),_('Your services'),'header--'+header_navigation.is_selected('choose_account'),id_key='choose_account') }}
+              {{ nav_menu_item(url_for('main.contact', service_id=current_service.id),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
+            {% endif %}
+          {% else %} {# current_user.platform_admin #}
+            {% if not platform_admin_view_ind %}
+              {% if current_user.has_permissions() %}
+                {{ nav_menu_item(url_for('.live_services', service_id=current_service.id), _('Platform admin'), 'pl-0') }}
+                {{ nav_menu_item(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'header--'+header_navigation.is_selected('dashboard')) }}
+                {{ nav_menu_item( url_for('.choose_template', service_id=current_service.id),_('Templates'),'header--'+header_navigation.is_selected('templates')) }}
+                {{ nav_menu_item(url_for('.api_integration', service_id=current_service.id),_('API integration'),'header--'+header_navigation.is_selected('api-integration')) }}
+                {{ nav_menu_item(url_for('.manage_users', service_id=current_service.id),_('Team members'),'header--'+header_navigation.is_selected('team-members')) }}
+                {{ nav_menu_item(url_for('.service_settings', service_id=current_service.id),_('Settings'),'header--'+header_navigation.is_selected('settings')) }}
+                {{ nav_menu_item(url_for('main.smtp_integration', service_id=current_service.id),_('SMTP'),'header--'+header_navigation.is_selected('smtp-integration')) }}
+              {% else %} {# not current_user.has_permissions, i.e. services not in context #}
+                {{ nav_menu_item(url_for('.choose_account'),_('Your services'),'pl-0 header--'+header_navigation.is_selected('choose_account'),id_key='choose_account') }}
+                {{ nav_menu_item(url_for('.live_services', service_id=current_service.id),_('Platform admin')) }}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      </div>
+      <!-- MD-LG menu and nav bar END -->
+    </div>
+  </nav>
+{% endif %}
+<script>
+
+  function safeAddEventListener(selector, event, fn) {
+    if (document.querySelector(selector))
+      document.querySelector(selector).addEventListener(event, fn)
+  }
+
+  function registerMenuEscape(selector, toggleFn) {
+    document.addEventListener("keydown", function (e) {
+      if (e.key == 'Escape') {
+        var opened = document.querySelector(selector + ':not(.hidden)')
+        if (opened) toggleFn()
+      }
+    })
+  }
+
+  const focusableElements =
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+
+  /**
+   * Registers a scope around the given menu selector.
+   *
+   * The given menu selector will get the TAB navigation entrapped within its
+   * container's focusable elements, hence creating a navigation scope around
+   * it. This will only apply to the container itself and will not hinder
+   * other elements of the page as long as the container is not reached. This
+   * works well within a modal popup that took focus away from the main window.
+   */
+  function registerTabNavigationScope(menuSelector) {
+    const modal = document.querySelector(menuSelector)
+    const firstFocusableElement = modal.querySelectorAll(focusableElements)[0]
+    const focusableContent = modal.querySelectorAll(focusableElements)
+    const lastFocusableElement = focusableContent[focusableContent.length - 1]
+
+    document.addEventListener('keydown', function (e) {
+      let isTabPressed = e.key === 'Tab' || e.keyCode === 9
+
+      if (!isTabPressed) {
+        return
+      }
+
+      if (e.shiftKey) { // if shift key pressed for shift + tab combination
+        if (document.activeElement === firstFocusableElement) {
+          lastFocusableElement.focus() // add focus for the last focusable element
+          e.preventDefault()
+        }
+      } else { // if tab key is pressed
+        if (document.activeElement === lastFocusableElement) { // if focused has reached to last focusable element then focus first focusable element after pressing tab
+          firstFocusableElement.focus() // add focus for the first focusable element
+          e.preventDefault()
+        }
+      }
+    })
+
+    firstFocusableElement.focus()
+  }
+
+  function menuMobileToggle() {
+    const nav = document.querySelector(".mobile-nav")
+    const arrow = document.querySelector(".mobile-arrow")
+    nav.classList.toggle("hidden")
+    arrow.classList.toggle("flip")
+    nav.querySelector('a').focus()
+  }
+
+  function accountMobileToggle() {
+    const accountMenu = document.querySelector("#account-menu-mobile")
+    accountMenu.classList.toggle("hidden")
+    accountMenu.querySelector('a').focus()
+    // In order to have the opacity transition effect working properly,
+    // we need to separate the hidden and opacity toggling in two separate
+    // actions in the HTML rendering, hence the delay of opacity by 1 ms.
+    window.setTimeout(function () {
+      accountMenu.classList.toggle("opacity-0")
+      accountMenu.classList.toggle("pointer-events-none")
+    }, 1)
+  }
+
+  function accountMenuToggle() {
+    const accountMenu = document.querySelector("#account-menu-options")
+    const arrow = document.querySelector(".account-menu-arrow")
+    accountMenu.classList.toggle("hidden")
+    arrow.classList.toggle("flip")
+    accountMenu.querySelector('a').focus()
+  }
+
+  safeAddEventListener("#menu", "click", menuMobileToggle)
+  registerMenuEscape(".mobile-nav", menuMobileToggle)
+
+  safeAddEventListener("#account-icon-mobile", "click", accountMobileToggle)
+  safeAddEventListener("#account-close-mobile", "click", accountMobileToggle)
+  registerMenuEscape("#account-menu-mobile", accountMobileToggle)
+
+  safeAddEventListener("#account-menu", "click", accountMenuToggle)
+  registerMenuEscape("#account-menu-options", accountMenuToggle)
+  registerTabNavigationScope('#account-menu-mobile')
+
+</script>

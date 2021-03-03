@@ -54,12 +54,7 @@ from app.extensions import (
 from app.models.organisation import Organisation
 from app.models.service import Service
 from app.models.user import AnonymousUser, User
-from app.navigation import (
-    CaseworkNavigation,
-    HeaderNavigation,
-    MainNavigation,
-    OrgNavigation,
-)
+from app.navigation import AdminNavigation, HeaderNavigation, OrgNavigation
 from app.notify_client.api_key_api_client import api_key_api_client
 from app.notify_client.billing_api_client import billing_api_client
 from app.notify_client.complaint_api_client import complaint_api_client
@@ -106,9 +101,8 @@ current_service = LocalProxy(_get_current_service)
 current_organisation = LocalProxy(partial(_lookup_req_object, 'organisation'))
 
 navigation = {
-    'casework_navigation': CaseworkNavigation(),
-    'main_navigation': MainNavigation(),
     'header_navigation': HeaderNavigation(),
+    'admin_navigation': AdminNavigation(),
     'org_navigation': OrgNavigation(),
 }
 
@@ -343,7 +337,6 @@ def format_time_24h(date):
 
 
 def get_human_day(time):
-
     #  Add 1 minute to transform 00:00 into ‘midnight today’ instead of ‘midnight tomorrow’
     date = (utc_string_to_aware_gmt_datetime(time) - timedelta(minutes=1)).date()
     if date == (datetime.utcnow() + timedelta(days=1)).date():
@@ -482,7 +475,8 @@ def format_notification_status(status, template_type):
 
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(
-        {'created', 'pending', 'sending'}, ' ' + _('since') + ' <span class="local-datetime-short">{}</span>'.format(created)
+        {'created', 'pending', 'sending'},
+        ' ' + _('since') + ' <span class="local-datetime-short">{}</span>'.format(created)
     ).get(status, '<span class="local-datetime-short">{}</span>'.format(updated))
 
 
@@ -568,9 +562,11 @@ def load_user(user_id):
 def load_service_before_request():
     if '/static/' in request.url:
         _request_ctx_stack.top.service = None
+        _request_ctx_stack.top.organisation = None  # added to init None to ensure request context has None or something
         return
     if _request_ctx_stack.top is not None:
         _request_ctx_stack.top.service = None
+        _request_ctx_stack.top.organisation = None  # added to init None to ensure request context has None or something
 
         if request.view_args:
             service_id = request.view_args.get('service_id', session.get('service_id'))

@@ -9,7 +9,7 @@
   Default letter branding
 {% endblock %}
 
-{% block maincolumn_content %}
+{% block org_content %}
 
   {{ page_header(
     "Default letter branding",
@@ -22,7 +22,7 @@
     </div>
     <div class="grid-row contain-floats">
       <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
-        {{ live_search(target_selector='.multiple-choice', show=True, form=search_form, label='Search by name') }}
+        {{ live_search(target_selector='.multiple-choice', show=True, form=search_form, label=_('Search by name')) }}
         {{ radios(form.branding_style, hide_legend=True) }}
       </div>
     </div>

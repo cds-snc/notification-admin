@@ -1,0 +1,12 @@
+{% macro nav_menu_item_mobile(url=None, localised_txt=None, css_classes=None) %}
+  {% if url and localised_txt %}
+    <li class="py-4 pl-8 {{ css_classes }}">
+      <a
+        aria-label="{{ localised_txt }}"
+        class="text-blue visited:text-blue link:text-blue no-underline hover:underline"
+        href="{{ url }}">
+        {{ localised_txt }}
+      </a>
+    </li>
+  {% endif %}
+{% endmacro %}

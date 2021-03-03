@@ -1,4 +1,4 @@
-{% extends "withnav_template.html" %}
+{% extends "admin_template.html" %}
 {% from "components/table.html" import list_table, row, field, hidden_field_heading %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/tick-cross.html" import tick_cross %}
@@ -37,30 +37,32 @@
     {% for user in users %}
       <div class="user-list-item">
 
-        <h3 title="{{ user.email_address }}">
+        <h2 title="{{ user.email_address }}">
           {%- if user.name -%}
-            <span class="heading-small live-search-relevant">{{ user.name }}</span>&ensp;
+            <span class="heading-small inline">{{ user.name }}</span>&ensp;
           {%- endif -%}
           <span class="hint">
             {%- if user.status == 'pending' -%}
-              <span class="live-search-relevant">{{ user.email_address }}</span> ({{ _('invited') }})
+              <span class="inline">{{ user.email_address }}</span> ({{ _('invited') }})
             {%- elif user.status == 'cancelled' -%}
-              <span class="live-search-relevant">{{ user.email_address }}</span> ({{ _('cancelled invite') }})
+              <span class="inline">{{ user.email_address }}</span> ({{ _('cancelled invite') }})
             {%- elif user.id == current_user.id -%}
-              <span class="live-search-relevant">({{ _('you') }})</span>
+              <span class="inline">({{ _('you') }})</span>
             {% else %}
-              <span class="live-search-relevant">{{ user.email_address }}</span>
+              <span class="inline">{{ user.email_address }}</span>
             {% endif %}
           </span>
-        </h3>
-        <ul class="tick-cross-list grid-row contain-floats relative">
+        </h2>
+        <div class="tick-cross-list grid-row contain-floats relative">
           <div class="tick-cross-list-permissions md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
-            {% for permission, label in permissions %}
-              {{ tick_cross(
-                user.has_permission_for_service(current_service.id, permission),
-                label
-              ) }}
-            {% endfor %}
+            <ul>
+              {% for permission, label in permissions %}
+                {{ tick_cross(
+                  user.has_permission_for_service(current_service.id, permission),
+                  label
+                ) }}
+              {% endfor %}
+            </ul>
             {# only show if the service has folders #}
             {% if current_service.all_template_folders %}
               <div class="tick-cross-list-hint">
@@ -88,15 +90,17 @@
             {% endif %}
           </div>
           {% if current_user.has_permissions('manage_service') %}
-            <li class="tick-cross-list-edit-link">
-              {% if user.status == 'pending' %}
-                <a href="{{ url_for('.cancel_invited_user', service_id=current_service.id, invited_user_id=user.id)}}">{{ _('Cancel invitation') }}</a>
-              {% elif user.state == 'active' and current_user.id != user.id %}
-                <a href="{{ url_for('.edit_user_permissions', service_id=current_service.id, user_id=user.id)}}">{{ _('Change details') }}</a>
-              {% endif %}
-            </li>
+            <ul>
+              <li class="tick-cross-list-edit-link">
+                {% if user.status == 'pending' %}
+                  <a href="{{ url_for('.cancel_invited_user', service_id=current_service.id, invited_user_id=user.id)}}">{{ _('Cancel invitation') }}</a>
+                {% elif user.state == 'active' and current_user.id != user.id %}
+                  <a href="{{ url_for('.edit_user_permissions', service_id=current_service.id, user_id=user.id)}}">{{ _('Change details') }}</a>
+                {% endif %}
+              </li>
+            </ul>
           {% endif %}
-        </ul>
+        </div>
       </div>
     {% endfor %}
   </div>

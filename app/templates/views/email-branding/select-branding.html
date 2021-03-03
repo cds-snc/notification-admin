@@ -8,7 +8,7 @@
 
 {% block platform_admin_content %}
 
-  {{ page_header(_('Email branding')) }}
+  {{ page_header(_('Email branding'), id_text='email_branding') }}
   {{ live_search(target_selector='.email-brand', show=True, form=search_form) }}
   {% for brand in email_brandings %}
     <p class="email-brand">
@@ -18,7 +18,7 @@
     </p>
   {% endfor %}
   <div class="js-stick-at-bottom-when-scrolling">
-    <a href="{{ url_for('.create_email_branding') }}" class="button button-secondary">{{ _('New branding') }}</a>
+    <a id="create_email_branding" href="{{ url_for('.create_email_branding') }}" class="button button-secondary">{{ _('New brand') }}</a>
   </div>
 
 {% endblock %}
