@@ -9,13 +9,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  {{ _('Sending Page') }}
+  {{ _('Sending page') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    _('Sending Domain'),
+    _('Sending domain'),
     back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
 

@@ -182,6 +182,13 @@ def create_app(application):
 
     logging.init_app(application, statsd_client)
 
+    # Log a warning message if Redis is not enabled
+    if not application.config['REDIS_ENABLED']:
+        application.logger.warning(
+            'Redis is not enabled. Some features may not be supported. '
+            'If you want to enable Redis, look at REDIS_* config variables.'
+        )
+
     login_manager.login_view = 'main.sign_in'
     login_manager.login_message_category = 'default'
     login_manager.session_protection = None

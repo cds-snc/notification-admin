@@ -2,77 +2,60 @@
 {% from "components/form.html" import form_wrapper %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
-{% from "components/task-list.html" import task_list_wrapper, task_list_item %}
+{% from "components/task-list.html" import task_list_wrapper, task_list_item with context %}
 
 {% block service_page_title %}
-  Before you request to go live
+ {{ _("Request to go live") }}
 {% endblock %}
 
 {% block maincolumn_content %}
   <div class="grid-row contain-floats">
+
     <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
       {{ page_header(
-        'Before you request to go live',
+        _('Request to go live'),
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
+      <p>
+        {{ _("Your service is in trial mode. Trial mode limits your service to sending notifications to yourself and to your team members within GC Notify.") }}
+      </p>
+
+      <p class="font-bold">
+        {{ _("Complete the following steps to go live and send notifications to more people.") }}
+      </p>
       {% call task_list_wrapper() %}
         {{ task_list_item(
-          current_service.has_estimated_usage,
-          'Tell us how many messages you expect to send',
-          url_for('main.estimate_usage', service_id=current_service.id),
-        ) }}
-        {{ task_list_item(
-          current_service.has_team_members,
-          'Add a team member who can manage settings and teams',
-          url_for('main.manage_users', service_id=current_service.id),
+          current_service.has_submitted_use_case,
+          _('Tell us about how you intend to use GC Notify'),
+          url_for('main.use_case', service_id=current_service.id),
         ) }}
         {{ task_list_item(
           current_service.has_templates,
-          'Add templates with examples of the content you plan to send',
+          _('Add templates with content you plan on sending'),
           url_for('main.choose_template', service_id=current_service.id),
         ) }}
-        {% if current_service.intending_to_send_email %}
-          {{ task_list_item(
-            current_service.has_email_reply_to_address,
-            'Add a reply-to email address',
-            url_for('main.service_email_reply_to', service_id=current_service.id),
-          ) }}
-        {% endif %}
-        {% if (
-          current_service.intending_to_send_sms
-          and current_service.shouldnt_use_govuk_as_sms_sender
-        ) %}
-          {{ task_list_item(
-            not current_service.sms_sender_is_govuk,
-            'Change your text message sender name',
-            url_for('main.service_sms_senders', service_id=current_service.id),
-          ) }}
-        {% endif %}
-        {% if show_agreement %}
-          {{ task_list_item(
-            agreement_signed,
-            'Accept our data sharing and financial agreement',
-            url_for('main.service_agreement', service_id=current_service.id),
-          ) }}
-        {% endif %}
+        {{ task_list_item(
+          current_service.has_team_members_status,
+          _('Add a team member who can manage settings'),
+          url_for('main.manage_users', service_id=current_service.id),
+        ) }}
+        {{ task_list_item(
+          current_service.has_accepted_tos,
+          _('Accept the terms of use'),
+          url_for('main.terms_of_use', service_id=current_service.id),
+        ) }}
       {% endcall %}
-      {% if not current_user.is_gov_user %}
+
+      {% if not current_service.go_live_checklist_completed %}
         <p>
-          Only team members with a government email address can request to go live.
-        </p>
-      {% elif (not current_service.go_live_checklist_completed) or (show_agreement and not agreement_signed) %}
-        <p>
-          You must complete these steps before you can request to go live.
+          {{ _("Once you complete all the steps, you'll be able to submit your request.") }}
         </p>
       {% else %}
         <p>
-          When we receive your request we’ll get back to you within one working day.
-        </p>
-        <p class="mb-12 clear-both contain-floats">
-          By requesting to go live you’re agreeing to our <a href="{{ url_for('.terms') }}">terms of use</a>.
+          {{ _("Once you have completed all the steps, submit your request to the GC Notify team. We’ll be in touch within 2 business days.") }}
         </p>
         {% call form_wrapper() %}
-          {{ page_footer(_('Request to go live')) }}
+          {{ page_footer(_('Submit')) }}
         {% endcall %}
       {% endif %}
     </div>

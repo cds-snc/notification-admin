@@ -150,7 +150,8 @@ def service_json(
     prefix_sms=True,
     contact_link=None,
     organisation_id=None,
-    sending_domain=None
+    sending_domain=None,
+    go_live_user=None,
 ):
     if users is None:
         users = []
@@ -188,7 +189,8 @@ def service_json(
         'consent_to_research': True,
         'count_as_live': True,
         'organisation': organisation_id,
-        'sending_domain': sending_domain
+        'sending_domain': sending_domain,
+        'go_live_user': go_live_user,
     }
 
 

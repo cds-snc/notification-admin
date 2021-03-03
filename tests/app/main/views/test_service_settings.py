@@ -1,6 +1,6 @@
 import os
 from functools import partial
-from unittest.mock import ANY, PropertyMock, call
+from unittest.mock import PropertyMock, call
 from urllib.parse import parse_qs, urlparse
 from uuid import UUID, uuid4
 
@@ -8,7 +8,6 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
-from notifications_utils.clients.zendesk.zendesk_client import ZendeskClient
 
 import app
 from app.utils import email_safe
@@ -64,6 +63,7 @@ def mock_get_service_settings_page_common(
         'Service name Test Service Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
+        'Daily message limit 1,000',
 
         'Label Value Action',
         'Send emails On Change',
@@ -81,6 +81,7 @@ def mock_get_service_settings_page_common(
         'Service name Test Service Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
+        'Daily message limit 1,000',
 
         'Label Value Action',
         'Send emails On Change',
@@ -158,10 +159,10 @@ def test_no_go_live_link_for_service_without_organisation(
     page = client_request.get('main.service_settings', service_id=SERVICE_ONE_ID)
 
     assert page.find('h1').text == 'Settings'
-    assert normalize_spaces(page.select('tr')[13].text) == (
+    assert normalize_spaces(page.select('tr')[14].text) == (
         'Live No (organisation must be set first)'
     )
-    assert normalize_spaces(page.select('tr')[15].text) == (
+    assert normalize_spaces(page.select('tr')[16].text) == (
         'Organisation Not set Government of Canada Change'
     )
 
@@ -186,7 +187,7 @@ def test_organisation_name_links_to_org_dashboard(
         'main.service_settings', service_id=SERVICE_ONE_ID
     )
 
-    org_row = response.select('tr')[15]
+    org_row = response.select('tr')[16]
     assert org_row.find('a')['href'] == url_for('main.organisation_dashboard', org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find('a').text) == 'Test Organisation'
 
@@ -197,6 +198,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Service name service one Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
+        'Daily message limit 1,000',
 
         'Label Value Action',
         'Send emails On Change',
@@ -213,6 +215,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Service name service one Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Email code or text message code Change',
+        'Daily message limit 1,000',
 
         'Label Value Action',
         'Send emails On Change',
@@ -356,7 +359,7 @@ def test_should_redirect_after_change_service_name(
 @pytest.mark.parametrize('user, expected_text, expected_link', [
     (
         active_user_with_permissions,
-        'To remove these restrictions, you can contact us.',
+        'To send notifications to more people, request to go live.',
         True,
     ),
     (
@@ -384,18 +387,16 @@ def test_show_restricted_service(
     )
 
     assert page.find('h1').text == 'Settings'
-    assert page.find_all('h2')[0].text == 'Your service is in trial mode'
+    assert page.find_all('h2')[0].text == 'Your service is in TRIAL mode'
 
-    request_to_live = page.select_one('main p')
-    request_to_live_link = request_to_live.select_one('a')
-
-    assert normalize_spaces(request_to_live.text) == expected_text
+    assert expected_text in [normalize_spaces(p.text) for p in page.select('main p')]
 
     if expected_link:
-        assert request_to_live_link.text.strip() == 'contact us'
-        assert request_to_live_link['href'] == url_for('.contact')
+        request_to_live_link = page.select('main p')[1].select_one('a')
+        assert request_to_live_link.text.strip() == 'Request to go live'
+        assert request_to_live_link['href'] == url_for('.request_to_go_live', service_id=SERVICE_ONE_ID)
     else:
-        assert not request_to_live_link
+        assert url_for('.request_to_go_live', service_id=SERVICE_ONE_ID) not in page
 
 
 @freeze_time("2017-04-01 11:09:00.061258")
@@ -439,7 +440,8 @@ def test_show_live_service(
         service_id=SERVICE_ONE_ID,
     )
     assert page.find('h1').text.strip() == 'Settings'
-    assert 'Your service is in trial mode' not in page.text
+    assert 'Your service is in TRIAL mode' not in page.text
+    assert url_for('.request_to_go_live', service_id=SERVICE_ONE_ID) not in page
 
 
 def test_switch_service_to_restricted(
@@ -646,105 +648,43 @@ def test_should_raise_duplicate_name_handled(
     assert mock_verify_password.called
 
 
-@pytest.mark.parametrize('volumes, consent_to_research, expected_estimated_volumes_item', [
-    ((0, 0, 0), None, 'Tell us how many messages you expect to send Not completed'),
-    ((1, 0, 0), None, 'Tell us how many messages you expect to send Not completed'),
-    ((1, 0, 0), False, 'Tell us how many messages you expect to send Completed'),
-    ((1, 0, 0), True, 'Tell us how many messages you expect to send Completed'),
-    ((9, 99, 999), True, 'Tell us how many messages you expect to send Completed'),
-])
-def test_should_check_if_estimated_volumes_provided(
-    client_request,
-    mocker,
-    single_sms_sender,
-    single_reply_to_email_address,
-    mock_get_service_templates,
-    mock_get_users_by_service,
-    mock_get_service_organisation,
-    mock_get_invites_for_service,
-    volumes,
-    consent_to_research,
-    expected_estimated_volumes_item,
-):
-
-    for volume, channel in zip(volumes, ('sms', 'email', 'letter')):
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=volume,
-        )
-
-    mocker.patch(
-        'app.models.service.Service.consent_to_research',
-        create=True,
-        new_callable=PropertyMock,
-        return_value=consent_to_research,
-    )
-
-    page = client_request.get(
-        'main.request_to_go_live', service_id=SERVICE_ONE_ID
-    )
-    assert page.h1.text == 'Before you request to go live'
-
-    assert normalize_spaces(
-        page.select_one('.task-list .task-list-item').text
-    ) == (
-        expected_estimated_volumes_item
-    )
-
-
 @pytest.mark.parametrize((
     'count_of_users_with_manage_service,'
     'count_of_invites_with_manage_service,'
     'expected_user_checklist_item'
 ), [
-    (1, 0, 'Add a team member who can manage settings and teams Not completed'),
-    (2, 0, 'Add a team member who can manage settings and teams Completed'),
-    (1, 1, 'Add a team member who can manage settings and teams Completed'),
+    (1, 0, 'Add a team member who can manage settings Not completed'),
+    (2, 0, 'Add a team member who can manage settings Completed'),
+    (1, 1, 'Add a team member who can manage settings In progress'),
 ])
 @pytest.mark.parametrize('count_of_templates, expected_templates_checklist_item', [
-    (0, 'Add templates with examples of the content you plan to send Not completed'),
-    (1, 'Add templates with examples of the content you plan to send Completed'),
-    (2, 'Add templates with examples of the content you plan to send Completed'),
+    (0, 'Add templates with content you plan on sending Not completed'),
+    (1, 'Add templates with content you plan on sending Completed'),
+    (2, 'Add templates with content you plan on sending Completed'),
 ])
-@pytest.mark.parametrize((
-    'volume_email,'
-    'count_of_email_templates,'
-    'reply_to_email_addresses,'
-    'expected_reply_to_checklist_item'
-), [
-    pytest.param(None, 0, [], '', marks=pytest.mark.xfail(raises=IndexError)),
-    pytest.param(0, 0, [], '', marks=pytest.mark.xfail(raises=IndexError)),
-    (None, 1, [], 'Add a reply-to email address Not completed'),
-    (None, 1, [{}], 'Add a reply-to email address Completed'),
-    (1, 1, [], 'Add a reply-to email address Not completed'),
-    (1, 1, [{}], 'Add a reply-to email address Completed'),
-    (1, 0, [], 'Add a reply-to email address Not completed'),
-    (1, 0, [{}], 'Add a reply-to email address Completed'),
+@pytest.mark.parametrize('accepted_tos, expected_tos_checklist_item', [
+    (False, "Accept the terms of use Not completed"),
+    (True, "Accept the terms of use Completed"),
 ])
-def test_should_check_for_sending_things_right(
+@pytest.mark.parametrize('submitted_use_case, expected_use_case_checklist_item', [
+    (False, "Tell us about how you intend to use GC Notify Not completed"),
+    (True, "Tell us about how you intend to use GC Notify Completed"),
+])
+def test_request_to_go_live_page(
     client_request,
     mocker,
     service_one,
     fake_uuid,
-    mock_get_service_organisation,
-    single_sms_sender,
     count_of_users_with_manage_service,
     count_of_invites_with_manage_service,
     expected_user_checklist_item,
     count_of_templates,
     expected_templates_checklist_item,
-    volume_email,
-    count_of_email_templates,
-    reply_to_email_addresses,
-    expected_reply_to_checklist_item,
+    accepted_tos,
+    expected_tos_checklist_item,
+    submitted_use_case,
+    expected_use_case_checklist_item,
 ):
-    def _templates_by_type(template_type):
-        return {
-            'email': list(range(0, count_of_email_templates)),
-            'sms': [],
-        }.get(template_type)
     active_user_with_permissions,
     mock_get_users = mocker.patch(
         'app.models.user.Users.client',
@@ -768,59 +708,261 @@ def test_should_check_for_sending_things_right(
     )
 
     mocker.patch(
-        'app.models.service.Service.get_templates',
-        side_effect=_templates_by_type,
+        'app.models.service.service_api_client.has_accepted_tos',
+        return_value=accepted_tos,
     )
 
-    mock_get_reply_to_email_addresses = mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_reply_to_email_addresses',
-        return_value=reply_to_email_addresses
+    mocker.patch(
+        'app.models.service.service_api_client.has_submitted_use_case',
+        return_value=submitted_use_case,
     )
-
-    for channel, volume in (('email', volume_email), ('sms', 0), ('letter', 1)):
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=volume,
-        )
 
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
     )
-    assert page.h1.text == 'Before you request to go live'
+    assert page.h1.text == 'Request to go live'
 
-    checklist_items = page.select('.task-list .task-list-item')
+    tasks_links = [a['href'] for a in page.select('.task-list .task-list-item a')]
 
-    assert normalize_spaces(checklist_items[1].text) == expected_user_checklist_item
-    assert normalize_spaces(checklist_items[2].text) == expected_templates_checklist_item
-    assert normalize_spaces(checklist_items[3].text) == expected_reply_to_checklist_item
+    assert tasks_links == [
+        url_for('main.use_case', service_id=SERVICE_ONE_ID),
+        url_for('main.choose_template', service_id=SERVICE_ONE_ID),
+        url_for('main.manage_users', service_id=SERVICE_ONE_ID),
+        url_for('main.terms_of_use', service_id=SERVICE_ONE_ID),
+    ]
+
+    checklist_items = [normalize_spaces(i.text) for i in page.select('.task-list .task-list-item')]
+
+    assert checklist_items == [
+        expected_use_case_checklist_item,
+        expected_templates_checklist_item,
+        expected_user_checklist_item,
+        expected_tos_checklist_item,
+    ]
 
     mock_get_users.assert_called_once_with(SERVICE_ONE_ID)
-    mock_get_invites.assert_called_once_with(SERVICE_ONE_ID)
+    if count_of_users_with_manage_service < 2:
+        mock_get_invites.assert_called_once_with(SERVICE_ONE_ID)
     assert mock_templates.called is True
 
-    if count_of_email_templates:
-        mock_get_reply_to_email_addresses.assert_called_once_with(SERVICE_ONE_ID)
+
+def test_request_to_go_live_terms_of_use_page(
+    client_request,
+    mocker,
+):
+
+    page = client_request.get('main.terms_of_use', service_id=SERVICE_ONE_ID)
+    assert page.h1.text == 'Accepting the terms of use'
+
+    assert page.select_one('.back-link')["href"] == url_for(
+        'main.request_to_go_live',
+        service_id=SERVICE_ONE_ID
+    )
+
+    # Form posts to the same endpoint
+    assert page.select_one('form')['method'] == 'post'
+    assert 'action' not in page.select_one('form')
+
+    # Accepting the terms of use
+    mock_accept_tos = mocker.patch('app.service_api_client.accept_tos')
+
+    page = client_request.post(
+        'main.terms_of_use',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=302,
+        _expected_redirect=url_for('main.request_to_go_live', service_id=SERVICE_ONE_ID, _external=True),
+    )
+
+    mock_accept_tos.assert_called_once_with(SERVICE_ONE_ID)
 
 
-@pytest.mark.parametrize('checklist_completed, agreement_signed, expected_button', (
-    (True, True, True),
-    (True, None, True),
-    (True, False, False),
-    (False, True, False),
-    (False, None, False),
+def test_request_to_go_live_terms_of_use_page_without_permission(
+    client_request,
+    active_user_no_settings_permission,
+):
+    client_request.login(active_user_no_settings_permission)
+    client_request.get(
+        'main.terms_of_use',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=403,
+    )
+
+
+def test_request_to_go_live_use_case_page(
+    client_request,
+    mocker,
+):
+    store_mock = mocker.patch('app.service_api_client.store_use_case_data')
+    submit_use_case_mock = mocker.patch('app.service_api_client.register_submit_use_case')
+    use_case_data_mock = mocker.patch('app.service_api_client.get_use_case_data')
+    use_case_data_mock.return_value = None
+    page = client_request.get('.use_case', service_id=SERVICE_ONE_ID)
+    assert page.h1.text == 'About your service'
+
+    assert page.select_one('.back-link')["href"] == url_for(
+        '.request_to_go_live',
+        service_id=SERVICE_ONE_ID
+    )
+
+    # Form posts to the same endpoint
+    assert page.select_one('form')['method'] == 'post'
+    assert 'action' not in page.select_one('form')
+
+    # Posting first step without posting anything
+    page = client_request.post(
+        '.use_case',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=200,
+        _data={
+            'department_org_name': '',
+            'purpose': '',
+        }
+    )
+
+    assert submit_use_case_mock.call_count == 0
+    assert store_mock.call_count == 1
+    assert [
+        (error['data-error-label'], normalize_spaces(error.text))
+        for error in page.select('.error-message')
+    ] == [
+        ('department_org_name', 'This field is required.'),
+        ('purpose', 'This field is required.'),
+        ('intended_recipients', 'This field is required.'),
+    ]
+
+    page = client_request.post(
+        '.use_case',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=200,
+        _data={
+            'department_org_name': 'Org name',
+            'purpose': 'Purpose',
+            'intended_recipients': ['public']
+        }
+    )
+    assert page.h1.text == 'About your notifications'
+
+    assert submit_use_case_mock.call_count == 0
+    assert store_mock.call_count == 2
+    expected_use_case_data = {
+        'form_data': {
+            'department_org_name': 'Org name',
+            'intended_recipients': ['public'],
+            'purpose': 'Purpose',
+            'notification_types': [],
+            'expected_volume': None,
+        },
+        'step': 'about-notifications'
+    }
+    store_mock.assert_called_with(SERVICE_ONE_ID, expected_use_case_data)
+
+    # Fake that the form data and step have been stored and
+    # map the return value as expected
+    use_case_data_mock.reset_mock()
+    use_case_data_mock.return_value = expected_use_case_data
+
+    # On second step, can go back to step 1
+    page = client_request.get('.use_case', service_id=SERVICE_ONE_ID)
+    assert page.h1.text == 'About your notifications'
+
+    assert page.select_one('form')['method'] == 'post'
+    assert 'action' not in page.select_one('form')
+
+    assert page.select_one('.back-link')["href"] == url_for(
+        '.use_case',
+        service_id=SERVICE_ONE_ID,
+        current_step="about-service"
+    )
+
+    # Submitting second and final step
+    page = client_request.post(
+        '.use_case',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=302,
+        _expected_redirect=url_for('main.request_to_go_live', service_id=SERVICE_ONE_ID, _external=True),
+        _data={
+            'notification_types': ['sms'],
+            'expected_volume': '1k-10k',
+            # Need to submit intended_recipients again because otherwise
+            # the form thinks we removed this value (it's checkboxes).
+            # On the real form, this field is hidden on the second step
+            'intended_recipients': expected_use_case_data['form_data']['intended_recipients'],
+        }
+    )
+    use_case_data_mock.assert_has_calls([call(SERVICE_ONE_ID), call(SERVICE_ONE_ID)])
+
+    submit_use_case_mock.assert_called_once_with(SERVICE_ONE_ID)
+    assert store_mock.call_count == 3
+    store_mock.assert_called_with(
+        SERVICE_ONE_ID,
+        {
+            'form_data': {
+                'department_org_name': 'Org name',
+                'intended_recipients': ['public'],
+                'purpose': 'Purpose',
+                'notification_types': ['sms'],
+                'expected_volume': '1k-10k',
+            },
+            'step': 'about-notifications'
+        }
+    )
+
+
+def test_request_to_go_live_can_resume_use_case_page(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_users_by_service,
+    mock_get_invites_for_service,
+):
+    mocker.patch(
+        'app.service_api_client.get_use_case_data',
+        return_value={
+            'form_data': {
+                'department_org_name': 'Org name',
+                'intended_recipients': ['public'],
+                'purpose': 'Purpose',
+            },
+            'step': 'about-notifications'
+        }
+    )
+
+    # Can go back to use case form form request to go live page
+    page = client_request.get('.request_to_go_live', service_id=SERVICE_ONE_ID)
+
+    assert (
+        url_for('.use_case', service_id=SERVICE_ONE_ID)
+        in [a['href'] for a in page.select('.task-list .task-list-item a')]
+    )
+
+    # Going back to the use case page goes directly to step 2
+    page = client_request.get('.use_case', service_id=SERVICE_ONE_ID)
+    assert page.h1.text == 'About your notifications'
+
+
+def test_request_to_go_live_use_case_page_without_permission(
+    client_request,
+    active_user_no_settings_permission,
+):
+    client_request.login(active_user_no_settings_permission)
+    client_request.get(
+        'main.use_case',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=403,
+    )
+
+
+@pytest.mark.parametrize('checklist_completed, expected_button', (
+    (False, False),
+    (True, True),
 ))
 def test_should_not_show_go_live_button_if_checklist_not_complete(
     client_request,
     mocker,
     mock_get_service_templates,
     mock_get_users_by_service,
-    mock_get_service_organisation,
     mock_get_invites_for_service,
-    single_sms_sender,
     checklist_completed,
-    agreement_signed,
     expected_button,
 ):
     mocker.patch(
@@ -828,490 +970,26 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
         new_callable=PropertyMock,
         return_value=checklist_completed,
     )
-    mocker.patch(
-        'app.models.organisation.Organisation.agreement_signed',
-        new_callable=PropertyMock,
-        return_value=agreement_signed,
-        create=True,
-    )
-
-    for channel in ('email', 'sms', 'letter'):
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=0,
-        )
 
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
     )
-    assert page.h1.text == 'Before you request to go live'
+    assert page.h1.text == 'Request to go live'
 
     if expected_button:
         assert page.select_one('form')['method'] == 'post'
         assert 'action' not in page.select_one('form')
-        assert normalize_spaces(page.select('main p')[0].text) == (
-            'When we receive your request we’ll get back to you within one working day.'
-        )
-        assert normalize_spaces(page.select('main p')[1].text) == (
-            'By requesting to go live you’re agreeing to our terms of use.'
-        )
+        paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
+        assert (
+            'Once you have completed all the steps, submit your request to the GC Notify team. '
+            'We’ll be in touch within 2 business days.'
+        ) in paragraphs
         page.select_one('[type=submit]').text.strip() == ('Request to go live')
     else:
         assert not page.select('form')
         assert not page.select('[type=submit]')
-        assert len(page.select('main p')) == 1
-        assert normalize_spaces(page.select_one('main p').text) == (
-            'You must complete these steps before you can request to go live.'
-        )
-
-
-@pytest.mark.parametrize((
-    'estimated_sms_volume,'
-    'organisation_type,'
-    'count_of_sms_templates,'
-    'sms_senders,'
-    'expected_sms_sender_checklist_item'
-), [
-    pytest.param(
-        0,
-        'local',
-        0,
-        [],
-        '',
-        marks=pytest.mark.xfail(raises=IndexError)
-    ),
-    pytest.param(
-        None,
-        'local',
-        0,
-        [{'is_default': True, 'sms_sender': 'GOVUK'}],
-        '',
-        marks=pytest.mark.xfail(raises=IndexError)
-    ),
-    pytest.param(
-        1,
-        'central',
-        99,
-        [{'is_default': True, 'sms_sender': 'GOVUK'}],
-        '',
-        marks=pytest.mark.xfail(raises=IndexError)
-    ),
-    pytest.param(
-        None,
-        'central',
-        99,
-        [{'is_default': True, 'sms_sender': 'GOVUK'}],
-        '',
-        marks=pytest.mark.xfail(raises=IndexError)
-    ),
-    pytest.param(
-        1,
-        'central',
-        99,
-        [{'is_default': True, 'sms_sender': 'GOVUK'}],
-        '',
-        marks=pytest.mark.xfail(raises=IndexError)
-    ),
-    (
-        None,
-        'local',
-        1,
-        [],
-        'Change your text message sender name Not completed',
-    ),
-    (
-        1,
-        'nhs_local',
-        0,
-        [],
-        'Change your text message sender name Not completed',
-    ),
-    (
-        None,
-        'school_or_college',
-        1,
-        [{'is_default': True, 'sms_sender': 'GOVUK'}],
-        'Change your text message sender name Not completed',
-    ),
-    (
-        None,
-        'local',
-        1,
-        [
-            {'is_default': False, 'sms_sender': 'GOVUK'},
-            {'is_default': True, 'sms_sender': 'KUVOG'},
-        ],
-        'Change your text message sender name Completed',
-    ),
-    (
-        None,
-        'nhs_local',
-        1,
-        [{'is_default': True, 'sms_sender': 'KUVOG'}],
-        'Change your text message sender name Completed',
-    ),
-])
-def test_should_check_for_sms_sender_on_go_live(
-    client_request,
-    service_one,
-    mocker,
-    mock_get_service_organisation,
-    mock_get_invites_for_service,
-    organisation_type,
-    count_of_sms_templates,
-    sms_senders,
-    expected_sms_sender_checklist_item,
-    estimated_sms_volume,
-):
-    service_one['organisation_type'] = organisation_type
-
-    def _templates_by_type(template_type):
-        return list(range(0, {
-            'email': 0,
-            'sms': count_of_sms_templates,
-        }.get(template_type, count_of_sms_templates)))
-
-    mocker.patch(
-        'app.models.service.Service.has_team_members',
-        return_value=True,
-    )
-    mock_templates = mocker.patch(
-        'app.models.service.Service.all_templates',
-        new_callable=PropertyMock,
-        side_effect=partial(_templates_by_type, 'all'),
-    )
-    mocker.patch(
-        'app.models.service.Service.get_templates',
-        side_effect=_templates_by_type,
-    )
-
-    mock_get_sms_senders = mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_sms_senders',
-        return_value=sms_senders,
-    )
-    mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_reply_to_email_addresses',
-        return_value=[],
-    )
-
-    for channel, volume in (('email', 0), ('sms', estimated_sms_volume)):
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=volume,
-        )
-
-    page = client_request.get(
-        'main.request_to_go_live', service_id=SERVICE_ONE_ID
-    )
-    assert page.h1.text == 'Before you request to go live'
-
-    checklist_items = page.select('.task-list .task-list-item')
-    assert normalize_spaces(checklist_items[3].text) == expected_sms_sender_checklist_item
-
-    assert mock_templates.called is True
-
-    mock_get_sms_senders.assert_called_once_with(SERVICE_ONE_ID)
-
-
-@pytest.mark.parametrize('agreement_signed, expected_item', (
-    pytest.param(
-        None,
-        '',
-        marks=pytest.mark.xfail(raises=IndexError)
-    ),
-    (
-        True,
-        'Accept our data sharing and financial agreement Completed',
-    ),
-    (
-        False,
-        'Accept our data sharing and financial agreement Not completed',
-    ),
-))
-def test_should_check_for_mou_on_request_to_go_live(
-    client_request,
-    service_one,
-    mocker,
-    agreement_signed,
-    mock_get_invites_for_service,
-    expected_item,
-):
-    mocker.patch(
-        'app.models.service.Service.has_team_members',
-        return_value=False,
-    )
-    mocker.patch(
-        'app.models.service.Service.all_templates',
-        new_callable=PropertyMock,
-        return_value=[],
-    )
-    mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_sms_senders',
-        return_value=[],
-    )
-    mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_reply_to_email_addresses',
-        return_value=[],
-    )
-    for channel in {'email', 'sms', 'letter'}:
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=None,
-        )
-
-    mock_get_service_organisation(
-        mocker,
-        agreement_signed=agreement_signed,
-    )
-
-    page = client_request.get(
-        'main.request_to_go_live', service_id=SERVICE_ONE_ID
-    )
-    assert page.h1.text == 'Before you request to go live'
-
-    checklist_items = page.select('.task-list .task-list-item')
-    assert normalize_spaces(checklist_items[3].text) == expected_item
-
-
-def test_non_gov_user_is_told_they_cant_go_live(
-    client_request,
-    api_nongov_user_active,
-    mock_get_invites_for_service,
-    mocker,
-    mock_get_organisations,
-    mock_get_service_organisation,
-):
-    mocker.patch(
-        'app.models.service.Service.has_team_members',
-        return_value=False,
-    )
-    mocker.patch(
-        'app.models.service.Service.all_templates',
-        new_callable=PropertyMock,
-        return_value=[],
-    )
-    mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_sms_senders',
-        return_value=[],
-    )
-    mocker.patch(
-        'app.main.views.service_settings.service_api_client.get_reply_to_email_addresses',
-        return_value=[],
-    )
-    client_request.login(api_nongov_user_active)
-    page = client_request.get(
-        'main.request_to_go_live', service_id=SERVICE_ONE_ID
-    )
-    assert normalize_spaces(page.select_one('main p').text) == (
-        'Only team members with a government email address can request to go live.'
-    )
-    assert page.select('form') == []
-
-
-@pytest.mark.parametrize('consent_to_research, displayed_consent', (
-    (None, None),
-    (True, 'yes'),
-    (False, 'no'),
-))
-@pytest.mark.parametrize('volumes, displayed_volumes', (
-    (
-        (('email', None), ('sms', None), ('letter', None)),
-        ('', '', ''),
-    ),
-    (
-        (('email', 1234), ('sms', 0), ('letter', 999)),
-        ('1,234', '0', '999'),
-    ),
-))
-def test_should_show_estimate_volumes(
-    mocker,
-    client_request,
-    volumes,
-    displayed_volumes,
-    consent_to_research,
-    displayed_consent,
-):
-    for channel, volume in volumes:
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=volume,
-        )
-    mocker.patch(
-        'app.models.service.Service.consent_to_research',
-        create=True,
-        new_callable=PropertyMock,
-        return_value=consent_to_research,
-    )
-    page = client_request.get(
-        'main.estimate_usage', service_id=SERVICE_ONE_ID
-    )
-    assert page.h1.text == 'Tell us how many messages you expect to send'
-    for channel, label, value in (
-        (
-            'email',
-            'How many emails do you expect to send in the next year? For example, 50,000',
-            displayed_volumes[0],
-        ),
-        (
-            'sms',
-            'How many text messages do you expect to send in the next year? For example, 50,000',
-            displayed_volumes[1],
-        ),
-        (
-            'letter',
-            'How many letters do you expect to send in the next year? For example, 50,000',
-            displayed_volumes[2],
-        ),
-    ):
-        assert normalize_spaces(
-            page.select_one('label[for=volume_{}]'.format(channel)).text
-        ) == label
-        assert page.select_one('#volume_{}'.format(channel))['value'] == value
-
-    assert len(page.select('input[type=radio]')) == 2
-
-    if displayed_consent is None:
-        assert len(page.select('input[checked]')) == 0
-    else:
-        assert len(page.select('input[checked]')) == 1
-        assert page.select_one('input[checked]')['value'] == displayed_consent
-
-
-@pytest.mark.parametrize('consent_to_research, expected_persisted_consent_to_research', (
-    ('yes', True),
-    ('no', False),
-))
-def test_should_show_persist_estimated_volumes(
-    client_request,
-    mock_update_service,
-    consent_to_research,
-    expected_persisted_consent_to_research,
-):
-    client_request.post(
-        'main.estimate_usage',
-        service_id=SERVICE_ONE_ID,
-        _data={
-            'volume_email': '1,234,567',
-            'volume_sms': '',
-            'volume_letter': '098',
-            'consent_to_research': consent_to_research,
-        },
-        _expected_status=302,
-        _expected_redirect=url_for(
-            'main.request_to_go_live',
-            service_id=SERVICE_ONE_ID,
-            _external=True,
-        )
-    )
-    mock_update_service.assert_called_once_with(
-        SERVICE_ONE_ID,
-        volume_email=1234567,
-        volume_sms=0,
-        volume_letter=98,
-        consent_to_research=expected_persisted_consent_to_research,
-    )
-
-
-@pytest.mark.parametrize('data, error_selector, expected_error_message', (
-    (
-        {
-            'volume_email': '1234',
-            'volume_sms': '2000000001',
-            'volume_letter': '9876',
-            'consent_to_research': 'yes',
-        },
-        'label[for=volume_sms]',
-        (
-            'How many text messages do you expect to send in the next year? For example, 50,000 '
-            'Number of text messages must be 2,000,000,000 or less'
-        )
-    ),
-    (
-        {
-            'volume_email': '1 234',
-            'volume_sms': '0',
-            'volume_letter': '9876',
-            'consent_to_research': '',
-        },
-        '[data-error-label="consent_to_research"]',
-        'You need to choose an option'
-    ),
-))
-def test_should_error_if_bad_estimations_given(
-    client_request,
-    mock_update_service,
-    data,
-    error_selector,
-    expected_error_message,
-):
-    page = client_request.post(
-        'main.estimate_usage',
-        service_id=SERVICE_ONE_ID,
-        _data=data,
-        _expected_status=200,
-    )
-    assert normalize_spaces(page.select_one(error_selector).text) == expected_error_message
-    assert mock_update_service.called is False
-
-
-def test_should_error_if_all_volumes_zero(
-    client_request,
-    mock_update_service,
-):
-    page = client_request.post(
-        'main.estimate_usage',
-        service_id=SERVICE_ONE_ID,
-        _data={
-            'volume_email': '',
-            'volume_sms': '0',
-            'volume_letter': '0,00 0',
-            'consent_to_research': 'yes',
-        },
-        _expected_status=200,
-    )
-    assert page.select('input[type=text]')[0]['value'] == ''
-    assert page.select('input[type=text]')[1]['value'] == '0'
-    assert page.select('input[type=text]')[2]['value'] == '0,00 0'
-    assert normalize_spaces(page.select_one('.banner-dangerous').text) == (
-        'Enter the number of messages you expect to send in the next year'
-    )
-    assert mock_update_service.called is False
-
-
-def test_should_not_default_to_zero_if_some_fields_dont_validate(
-    client_request,
-    mock_update_service,
-):
-    page = client_request.post(
-        'main.estimate_usage',
-        service_id=SERVICE_ONE_ID,
-        _data={
-            'volume_email': '1234',
-            'volume_sms': '',
-            'volume_letter': 'aaaaaaaaaaaaa',
-            'consent_to_research': 'yes',
-        },
-        _expected_status=200,
-    )
-    assert page.select('input[type=text]')[0]['value'] == '1234'
-    assert page.select('input[type=text]')[1]['value'] == ''
-    assert page.select('input[type=text]')[2]['value'] == 'aaaaaaaaaaaaa'
-    assert normalize_spaces(
-        page.select_one('label[for=volume_letter]').text
-    ) == (
-        'How many letters do you expect to send in the next year? '
-        'For example, 50,000 '
-        'Enter the number of letters you expect to send'
-    )
-    assert mock_update_service.called is False
+        paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
+        assert "Once you complete all the steps, you'll be able to submit your request." in paragraphs
 
 
 def test_non_gov_users_cant_request_to_go_live(
@@ -1327,397 +1005,67 @@ def test_non_gov_users_cant_request_to_go_live(
     )
 
 
-@pytest.mark.parametrize('volumes, displayed_volumes, formatted_displayed_volumes, extra_tags', (
-    (
-        (('email', None), ('sms', None), ('letter', None)),
-        ', , ',
-        (
-            'Emails in next year: \n'
-            'Text messages in next year: \n'
-            'Letters in next year: \n'
-        ),
-        ['notify_request_to_go_live_incomplete_volumes']
-    ),
-    (
-        (('email', 1234), ('sms', 0), ('letter', 999)),
-        '0, 1234, 999',  # This is a different order to match the spreadsheet
-        (
-            'Emails in next year: 1,234\n'
-            'Text messages in next year: 0\n'
-            'Letters in next year: 999\n'
-        ),
-        [],
-    ),
-))
-@freeze_time("2012-12-21 13:12:12.12354")
-def test_should_redirect_after_request_to_go_live(
+def test_submit_go_live_request(
     client_request,
     mocker,
     active_user_with_permissions,
     single_reply_to_email_address,
-    single_letter_contact_block,
-    mock_get_organisations_and_services_for_user,
-    single_sms_sender,
-    mock_get_service_settings_page_common,
-    mock_get_service_templates,
-    mock_get_users_by_service,
     mock_update_service,
-    mock_get_invites_without_manage_permission,
-    volumes,
-    displayed_volumes,
-    formatted_displayed_volumes,
-    extra_tags,
+    service_one,
 ):
-    mock_get_service_organisation(
-        mocker,
-        name=None,
-        agreement_signed=None,
+    mocker.patch(
+        'app.models.service.Service.go_live_checklist_completed',
+        new_callable=PropertyMock,
+        return_value=True,
     )
-    for channel, volume in volumes:
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=volume,
-        )
-    mock_post = mocker.patch('app.main.views.service_settings.zendesk_client.create_ticket', autospec=True)
+    mocker.patch(
+        'app.service_api_client.get_use_case_data',
+        return_value={
+            'form_data': {
+                'department_org_name': 'Org name',
+                'intended_recipients': ['public'],
+                'purpose': 'Purpose',
+                'expected_volume': '1-10k',
+                'notification_types': ['email']
+            },
+            'step': 'about-notifications'
+        }
+    )
+    mock_contact = mocker.patch('app.user_api_client.send_contact_email')
+
     page = client_request.post(
         'main.request_to_go_live',
         service_id=SERVICE_ONE_ID,
-        _follow_redirects=True
-    )
-    mock_post.assert_called_with(
-        subject='Request to go live - service one',
-        message=ANY,
-        ticket_type=ZendeskClient.TYPE_QUESTION,
-        user_name=active_user_with_permissions['name'],
-        user_email=active_user_with_permissions['email_address'],
-        tags=[
-            'notify_request_to_go_live',
-            'notify_request_to_go_live_incomplete',
-        ] + extra_tags + [
-            'notify_request_to_go_live_incomplete_checklist',
-            'notify_request_to_go_live_incomplete_mou',
-            'notify_request_to_go_live_incomplete_team_member',
-        ],
-    )
-    assert mock_post.call_args[1]['message'] == (
-        'Service: service one\n'
-        'http://localhost/services/{service_id}\n'
-        '\n'
-        '---\n'
-        'Organisation type: Central\n'
-        'Agreement signed: Can’t tell (domain is user.canada.ca).\n'
-        '{formatted_displayed_volumes}'
-        'Consent to research: Yes\n'
-        'Other live services: No\n'
-        '\n'
-        '---\n'
-        'Request sent by test@user.canada.ca\n'
-    ).format(
-        service_id=SERVICE_ONE_ID,
-        formatted_displayed_volumes=formatted_displayed_volumes,
+        _follow_redirects=True,
     )
 
+    assert page.h1.text == 'Settings'
     assert normalize_spaces(page.select_one('.banner-default').text) == (
-        'Thank you for your request to go live. We’ll get back to you within one working day.'
+        'Your request was submitted.'
     )
-    assert normalize_spaces(page.select_one('h1').text) == (
-        'Settings'
-    )
+
     mock_update_service.assert_called_once_with(
         SERVICE_ONE_ID,
         go_live_user=active_user_with_permissions['id']
     )
+    expected_message = '<br>'.join([
+        f"{service_one['name']} just requested to go live.",
+        "",
+        "- Department/org: Org name",
+        "- Intended recipients: public",
+        "- Purpose: Purpose",
+        "- Notification types: email",
+        "- Expected monthly volume: 1-10k",
+        "---",
+        url_for('.service_dashboard', service_id=SERVICE_ONE_ID, _external=True),
+    ])
 
-
-def test_request_to_go_live_displays_go_live_notes_in_zendesk_ticket(
-    client_request,
-    mocker,
-    active_user_with_permissions,
-    single_reply_to_email_address,
-    single_letter_contact_block,
-    mock_get_organisations_and_services_for_user,
-    single_sms_sender,
-    mock_get_service_settings_page_common,
-    mock_get_service_templates,
-    mock_get_users_by_service,
-    mock_update_service,
-    mock_get_invites_without_manage_permission,
-):
-    go_live_note = 'This service is not allowed to go live'
-
-    mocker.patch(
-        'app.organisations_client.get_service_organisation',
-        side_effect=lambda org_id: organisation_json(
-            ORGANISATION_ID,
-            'Org 1',
-            request_to_go_live_notes=go_live_note,
-        )
+    mock_contact.assert_called_once_with(
+        active_user_with_permissions['name'],
+        active_user_with_permissions['email_address'],
+        expected_message,
+        f"Go Live request for {service_one['name']}"
     )
-    mock_post = mocker.patch('app.main.views.service_settings.zendesk_client.create_ticket', autospec=True)
-    client_request.post(
-        'main.request_to_go_live',
-        service_id=SERVICE_ONE_ID,
-        _follow_redirects=True
-    )
-
-    assert mock_post.call_args[1]['message'] == (
-        'Service: service one\n'
-        'http://localhost/services/{service_id}\n'
-        '\n'
-        '---\n'
-        'Organisation type: Central\n'
-        'Agreement signed: No (organisation is Org 1, a crown body). {go_live_note}\n'
-        'Emails in next year: 111,111\n'
-        'Text messages in next year: 222,222\n'
-        'Letters in next year: 333,333\n'
-        'Consent to research: Yes\n'
-        'Other live services: No\n'
-        '\n'
-        '---\n'
-        'Request sent by test@user.canada.ca\n'
-    ).format(
-        service_id=SERVICE_ONE_ID,
-        go_live_note=go_live_note
-    )
-
-
-def test_should_be_able_to_request_to_go_live_with_no_organisation(
-    client_request,
-    mocker,
-    single_reply_to_email_address,
-    single_letter_contact_block,
-    mock_get_organisations_and_services_for_user,
-    single_sms_sender,
-    mock_get_service_settings_page_common,
-    mock_get_service_templates,
-    mock_get_users_by_service,
-    mock_update_service,
-    mock_get_invites_without_manage_permission,
-):
-    get_service_organisation = mocker.patch(
-        'app.organisations_client.get_service_organisation',
-        return_value=None,
-    )
-    for channel in {'email', 'sms', 'letter'}:
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=1,
-        )
-    mock_post = mocker.patch('app.main.views.service_settings.zendesk_client.create_ticket', autospec=True)
-
-    client_request.post(
-        'main.request_to_go_live',
-        service_id=SERVICE_ONE_ID,
-        _follow_redirects=True
-    )
-
-    assert mock_post.called is True
-    get_service_organisation.assert_called_once_with(SERVICE_ONE_ID)
-
-
-@pytest.mark.parametrize(
-    (
-        'has_team_members,'
-        'has_templates,'
-        'has_email_templates,'
-        'has_sms_templates,'
-        'has_email_reply_to_address,'
-        'shouldnt_use_govuk_as_sms_sender,'
-        'sms_sender_is_govuk,'
-        'volume_email,'
-        'volume_sms,'
-        'volume_letter,'
-        'expected_readyness,'
-        'agreement_signed,'
-        'expected_tags,'
-    ),
-    (
-        (  # Just sending email
-            True,
-            True,
-            True,
-            False,
-            True,
-            True,
-            True,
-            1, 0, 0,
-            'Yes',
-            True,
-            [
-                'notify_request_to_go_live',
-                'notify_request_to_go_live_complete',
-            ],
-        ),
-        (  # Needs to set reply to address
-            True,
-            True,
-            True,
-            False,
-            False,
-            True,
-            True,
-            1, 0, 1,
-            'No',
-            True,
-            [
-                'notify_request_to_go_live',
-                'notify_request_to_go_live_incomplete',
-                'notify_request_to_go_live_incomplete_checklist',
-                'notify_request_to_go_live_incomplete_email_reply_to',
-            ],
-        ),
-        (  # Just sending SMS
-            True,
-            True,
-            False,
-            True,
-            True,
-            True,
-            False,
-            0, 1, 0,
-            'Yes',
-            True,
-            [
-                'notify_request_to_go_live',
-                'notify_request_to_go_live_complete',
-            ],
-        ),
-        (  # Needs to change SMS sender
-            True,
-            True,
-            False,
-            True,
-            True,
-            True,
-            True,
-            0, 1, 0,
-            'No',
-            True,
-            [
-                'notify_request_to_go_live',
-                'notify_request_to_go_live_incomplete',
-                'notify_request_to_go_live_incomplete_checklist',
-                'notify_request_to_go_live_incomplete_sms_sender',
-            ],
-        ),
-        (  # Needs team members
-            False,
-            True,
-            False,
-            True,
-            True,
-            True,
-            False,
-            1, 0, 0,
-            'No',
-            True,
-            [
-                'notify_request_to_go_live',
-                'notify_request_to_go_live_incomplete',
-                'notify_request_to_go_live_incomplete_checklist',
-                'notify_request_to_go_live_incomplete_team_member',
-            ],
-        ),
-        (  # Needs templates
-            True,
-            False,
-            False,
-            True,
-            True,
-            True,
-            False,
-            0, 1, 0,
-            'No',
-            True,
-            [
-                'notify_request_to_go_live',
-                'notify_request_to_go_live_incomplete',
-                'notify_request_to_go_live_incomplete_checklist',
-                'notify_request_to_go_live_incomplete_template_content',
-            ],
-        ),
-        (  # Not done anything yet
-            False,
-            False,
-            False,
-            False,
-            False,
-            False,
-            True,
-            None, None, None,
-            'No',
-            False,
-            [
-                'notify_request_to_go_live',
-                'notify_request_to_go_live_incomplete',
-                'notify_request_to_go_live_incomplete_volumes',
-                'notify_request_to_go_live_incomplete_checklist',
-                'notify_request_to_go_live_incomplete_mou',
-                'notify_request_to_go_live_incomplete_team_member',
-                'notify_request_to_go_live_incomplete_template_content',
-            ],
-        ),
-    ),
-)
-def test_ready_to_go_live(
-    client_request,
-    mocker,
-    has_team_members,
-    has_templates,
-    has_email_templates,
-    has_sms_templates,
-    has_email_reply_to_address,
-    shouldnt_use_govuk_as_sms_sender,
-    sms_sender_is_govuk,
-    volume_email,
-    volume_sms,
-    volume_letter,
-    expected_readyness,
-    agreement_signed,
-    expected_tags,
-):
-    mock_get_service_organisation(
-        mocker,
-        agreement_signed=agreement_signed,
-    )
-
-    for prop in {
-        'has_team_members',
-        'has_templates',
-        'has_email_templates',
-        'has_sms_templates',
-        'has_email_reply_to_address',
-        'shouldnt_use_govuk_as_sms_sender',
-        'sms_sender_is_govuk',
-    }:
-        mocker.patch(
-            'app.models.service.Service.{}'.format(prop),
-            new_callable=PropertyMock
-        ).return_value = locals()[prop]
-
-    for channel, volume in (
-        ('sms', volume_sms),
-        ('email', volume_email),
-        ('letter', volume_letter),
-    ):
-        mocker.patch(
-            'app.models.service.Service.volume_{}'.format(channel),
-            create=True,
-            new_callable=PropertyMock,
-            return_value=volume,
-        )
-
-    assert app.models.service.Service({
-        'id': SERVICE_ONE_ID
-    }).go_live_checklist_completed_as_yes_no == expected_readyness
-
-    assert app.models.service.Service(
-        {'id': SERVICE_ONE_ID}
-    ).request_to_go_live_tags == expected_tags
 
 
 @pytest.mark.parametrize('route', [
@@ -1727,8 +1075,10 @@ def test_ready_to_go_live(
     'main.service_email_from_change',
     'main.service_email_from_change_confirm',
     'main.request_to_go_live',
+    'main.use_case',
+    'main.terms_of_use',
     'main.submit_request_to_go_live',
-    'main.archive_service'
+    'main.archive_service',
 ])
 def test_route_permissions(
         mocker,
@@ -1763,6 +1113,8 @@ def test_route_permissions(
     'main.service_email_from_change',
     'main.service_email_from_change_confirm',
     'main.request_to_go_live',
+    'main.use_case',
+    'main.terms_of_use',
     'main.submit_request_to_go_live',
     'main.service_switch_live',
     'main.archive_service',
@@ -1795,6 +1147,8 @@ def test_route_invalid_permissions(
     'main.service_email_from_change',
     'main.service_email_from_change_confirm',
     'main.request_to_go_live',
+    'main.use_case',
+    'main.terms_of_use',
     'main.submit_request_to_go_live',
 ])
 def test_route_for_platform_admin(
@@ -1843,7 +1197,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
             page.select('tbody tr')[index].text
         )
 
-    assert get_row(page, 4) == "Reply-to email addresses test@example.com …and 2 more Manage"
+    assert get_row(page, 5) == "Reply-to email addresses test@example.com …and 2 more Manage"
 
 
 @pytest.mark.parametrize('sender_list_page, index, expected_output', [
