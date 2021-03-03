@@ -64,6 +64,7 @@ def mock_get_service_settings_page_common(
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
         'Daily message limit 1,000',
+        'API rate limit per minute 100 calls',
 
         'Label Value Action',
         'Send emails On Change',
@@ -82,6 +83,7 @@ def mock_get_service_settings_page_common(
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
         'Daily message limit 1,000',
+        'API rate limit per minute 100 calls',
 
         'Label Value Action',
         'Send emails On Change',
@@ -159,10 +161,10 @@ def test_no_go_live_link_for_service_without_organisation(
     page = client_request.get('main.service_settings', service_id=SERVICE_ONE_ID)
 
     assert page.find('h1').text == 'Settings'
-    assert normalize_spaces(page.select('tr')[14].text) == (
+    assert normalize_spaces(page.select('tr')[15].text) == (
         'Live No (organisation must be set first)'
     )
-    assert normalize_spaces(page.select('tr')[16].text) == (
+    assert normalize_spaces(page.select('tr')[17].text) == (
         'Organisation Not set Government of Canada Change'
     )
 
@@ -187,7 +189,7 @@ def test_organisation_name_links_to_org_dashboard(
         'main.service_settings', service_id=SERVICE_ONE_ID
     )
 
-    org_row = response.select('tr')[16]
+    org_row = response.select('tr')[17]
     assert org_row.find('a')['href'] == url_for('main.organisation_dashboard', org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find('a').text) == 'Test Organisation'
 
@@ -199,6 +201,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
         'Daily message limit 1,000',
+        'API rate limit per minute 100 calls',
 
         'Label Value Action',
         'Send emails On Change',
@@ -216,6 +219,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Email code or text message code Change',
         'Daily message limit 1,000',
+        'API rate limit per minute 100 calls',
 
         'Label Value Action',
         'Send emails On Change',
@@ -1197,7 +1201,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
             page.select('tbody tr')[index].text
         )
 
-    assert get_row(page, 5) == "Reply-to email addresses test@example.com …and 2 more Manage"
+    assert get_row(page, 6) == "Reply-to email addresses test@example.com …and 2 more Manage"
 
 
 @pytest.mark.parametrize('sender_list_page, index, expected_output', [
