@@ -253,7 +253,7 @@ def test_link_to_download_notifications(
 def test_download_not_available_to_users_without_dashboard(
     client_request,
     active_caseworking_user,
-    # mock_has_jobs,
+    mock_has_jobs,
 ):
     client_request.login(active_caseworking_user)
     client_request.get(
