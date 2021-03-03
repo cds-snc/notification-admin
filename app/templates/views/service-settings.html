@@ -100,6 +100,14 @@
           {{ text_field('') }}
         {% endcall %}
 
+        {% call row() %}
+          {% set txt = _('API rate limit per minute') %}
+          {{ text_field(txt) }}
+          {% set minute_limit = _('{} calls').format(current_service.rate_limit | format_number) %}
+          {{ text_field(minute_limit) }}
+          {{ text_field('')}}
+        {% endcall %}
+
         {% call settings_row(if_has_permission='upload_document') %}
           {% set txt = _('Contact details') %}
           {{ text_field(txt) }}
