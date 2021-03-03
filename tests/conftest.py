@@ -3689,4 +3689,4 @@ def mock_get_service_and_organisation_counts(mocker):
     })
 
 
-# next(app_(None))  # used to init for other tests
+next(app_(None))  # used to init for other tests
