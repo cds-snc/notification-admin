@@ -1263,7 +1263,7 @@
 "Find out more about how to integrate the API in the <a href='{}'> documentation for developers</a>.","Pour en savoir plus au sujet de l’intégration API, consultez la  <a href='{}'>documentation pour les développeurs</a>."
 "An API key lets you connect your application or system with GC Notify.","Une clé API vous permet de connecter votre application ou votre système à GC Notification."
 "A safelist lets you send test notifications to specific people.","Une liste de confiance vous permet d’envoyer des notifications de test à des personnes spécifiques."
-"Callbacks let you know whether GC Notify was able to deliver notifications.","Les fonctions de rappel vous permette de savoir si GC Notification a réussi à livrer vos notifications."
+"Callbacks let you know whether GC Notify was able to deliver notifications.","Les fonctions de rappel vous permettent de savoir si GC Notification a réussi à livrer vos notifications."
 "Your API rate limit is {} calls per minute","Votre limite d’appels à l’API est de {} appels par minute"
 "To request an API rate increase, <a href='{}'>contact us</a>.","Pour demander une augmentation de cette limite, <a href='{}'>communiquez avec nous</a>."
 "Daily sending limit","Limite d’envoi quotidienne"
