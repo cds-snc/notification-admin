@@ -121,7 +121,7 @@ class Development(Config):
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-notify-secret-key')
     ANTIVIRUS_API_HOST = 'http://localhost:6016'
     ANTIVIRUS_API_KEY = 'test-key'
-    REDIS_URL = 'redis://localhost:6379/0'
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
 
 class Test(Development):

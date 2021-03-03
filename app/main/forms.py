@@ -993,40 +993,6 @@ class Triage(StripWhitespaceForm):
     )
 
 
-class EstimateUsageForm(StripWhitespaceForm):
-    volume_email = ForgivingIntegerField(
-        'How many emails do you expect to send in the next year?',
-        things='emails',
-        format_error_suffix='you expect to send',
-    )
-    volume_sms = ForgivingIntegerField(
-        'How many text messages do you expect to send in the next year?',
-        things='text messages',
-        format_error_suffix='you expect to send',
-    )
-    volume_letter = ForgivingIntegerField(
-        'How many letters do you expect to send in the next year?',
-        things='letters',
-        format_error_suffix='you expect to send',
-    )
-    consent_to_research = RadioField(
-        'Can we contact you when we’re doing user research?',
-        choices=[
-            ('yes', 'Yes'),
-            ('no', 'No'),
-        ],
-    )
-
-    at_least_one_volume_filled = True
-
-    def validate(self, *args, **kwargs):
-        if self.volume_email.data == self.volume_sms.data == self.volume_letter.data == 0:
-            self.at_least_one_volume_filled = False
-            return False
-
-        return super().validate(*args, **kwargs)
-
-
 class ProviderForm(StripWhitespaceForm):
     priority = IntegerField('Priority', [validators.NumberRange(min=1, max=100, message="Must be between 1 and 100")])
 
@@ -1713,3 +1679,45 @@ class AcceptAgreementForm(StripWhitespaceForm):
             float(field.data)
         except (TypeError, ValueError):
             raise ValidationError("Must be a number")
+
+
+class GoLiveAboutServiceForm(StripWhitespaceForm):
+    department_org_name = StringField(
+        _l('Name of department or organisation'),
+        validators=[DataRequired(), Length(max=500)]
+    )
+    purpose = TextAreaField(
+        _l('For what purpose are you using GC Notify?'),
+        validators=[DataRequired(), Length(max=2000)]
+    )
+    intended_recipients = MultiCheckboxField(
+        _l('Who are the intented recipients of notifications?'),
+        default='',
+        choices=[
+            ('internal', _l('Colleagues within your department (internal)')),
+            ('external', _l('Partners from other organisations (external)')),
+            ('public', _l('Public')),
+        ],
+        validators=[DataRequired()],
+    )
+
+
+class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
+    notification_types = MultiCheckboxField(
+        _l('Specify the type of notifications you plan on sending.'),
+        choices=[
+            ('email', _l('Email')),
+            ('sms', _l('Text message')),
+        ],
+        validators=[DataRequired()],
+    )
+    expected_volume = RadioField(
+        _l('How many notifications do you plan on sending per month?'),
+        choices=[
+            ('1-1k', _l('1 to 1,000 notifications')),
+            ('1k-10k', _l('1,000 to 10,000 notifications')),
+            ('10k-100k', _l('10,000 to 100,000 notifications')),
+            ('100k+', _l('More than 100,000 notifications')),
+        ],
+        validators=[DataRequired()]
+    )

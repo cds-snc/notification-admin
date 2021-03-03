@@ -124,9 +124,29 @@ class Service(JSONModel):
     @cached_property
     def has_team_members(self):
         return len([
-            user for user in self.team_members
+            user for user in self.active_users
             if user.has_permission_for_service(self.id, 'manage_service')
         ]) > 1
+
+    @cached_property
+    def has_team_members_status(self):
+        """
+        `has_team_members` only checks for active users, this property looks
+        for invited users as well.
+
+        Returns True, "in-progress" or False
+        """
+        if self.has_team_members:
+            return True
+
+        active_and_invited_members = [
+            user for user in self.team_members
+            if user.has_permission_for_service(self.id, 'manage_service')
+        ]
+        if len(active_and_invited_members) > 1:
+            return "in-progress"
+
+        return False
 
     def cancel_invite(self, invited_user_id):
         if str(invited_user_id) not in {user.id for user in self.invited_users}:
@@ -197,6 +217,34 @@ class Service(JSONModel):
         return list(filter(self.has_permission, self.TEMPLATE_TYPES))
 
     @property
+    def use_case_data(self):
+        result = service_api_client.get_use_case_data(self.id)
+        if result is None:
+            return None, {}
+        return result["step"], result["form_data"]
+
+    def store_use_case_data(self, step, form_data):
+        return service_api_client.store_use_case_data(self.id, {
+            "step": step,
+            "form_data": form_data,
+        })
+
+    @property
+    def has_accepted_tos(self):
+        return service_api_client.has_accepted_tos(self.id)
+
+    @property
+    def has_submitted_go_live(self):
+        return self.go_live_user is not None
+
+    def register_submit_use_case(self):
+        return service_api_client.register_submit_use_case(self.id)
+
+    @property
+    def has_submitted_use_case(self):
+        return service_api_client.has_submitted_use_case(self.id)
+
+    @property
     def has_templates(self):
         return bool(self.all_templates)
 
@@ -210,34 +258,12 @@ class Service(JSONModel):
         }) > 1
 
     @property
-    def has_estimated_usage(self):
-        return (
-            self.consent_to_research is not None and any((
-                self.volume_email,
-                self.volume_sms,
-                self.volume_letter,
-            ))
-        )
-
-    @property
     def has_email_templates(self):
         return len(self.get_templates('email')) > 0
 
     @property
     def has_sms_templates(self):
         return len(self.get_templates('sms')) > 0
-
-    @property
-    def intending_to_send_email(self):
-        if self.volume_email is None:
-            return self.has_email_templates
-        return self.volume_email > 0
-
-    @property
-    def intending_to_send_sms(self):
-        if self.volume_sms is None:
-            return self.has_sms_templates
-        return self.volume_sms > 0
 
     @cached_property
     def email_reply_to_addresses(self):
@@ -262,14 +288,6 @@ class Service(JSONModel):
 
     def get_email_reply_to_address(self, id):
         return service_api_client.get_reply_to_email_address(self.id, id)
-
-    @property
-    def needs_to_add_email_reply_to_address(self):
-        return self.intending_to_send_email and not self.has_email_reply_to_address
-
-    @property
-    def shouldnt_use_govuk_as_sms_sender(self):
-        return self.organisation_type != 'central'
 
     @cached_property
     def sms_senders(self):
@@ -305,14 +323,6 @@ class Service(JSONModel):
 
     def get_sms_sender(self, id):
         return service_api_client.get_sms_sender(self.id, id)
-
-    @property
-    def needs_to_change_sms_sender(self):
-        return all((
-            self.intending_to_send_sms,
-            self.shouldnt_use_govuk_as_sms_sender,
-            self.sms_sender_is_govuk,
-        ))
 
     @cached_property
     def letter_contact_details(self):
@@ -360,26 +370,13 @@ class Service(JSONModel):
         return service_api_client.get_letter_contact(self.id, id)
 
     @property
-    def volumes(self):
-        return sum(filter(None, (
-            self.volume_email,
-            self.volume_sms,
-            self.volume_letter,
-        )))
-
-    @property
     def go_live_checklist_completed(self):
-        return all((
-            bool(self.volumes),
-            self.has_team_members,
+        return all([
+            self.has_submitted_use_case,
             self.has_templates,
-            not self.needs_to_add_email_reply_to_address,
-            not self.needs_to_change_sms_sender,
-        ))
-
-    @property
-    def go_live_checklist_completed_as_yes_no(self):
-        return 'Yes' if self.go_live_checklist_completed else 'No'
+            self.has_team_members,
+            self.has_accepted_tos,
+        ])
 
     @cached_property
     def free_sms_fragment_limit(self):
@@ -598,30 +595,3 @@ class Service(JSONModel):
 
     def get_api_key(self, id):
         return self._get_by_id(self.api_keys, id)
-
-    @property
-    def request_to_go_live_tags(self):
-        return list(self._get_request_to_go_live_tags())
-
-    def _get_request_to_go_live_tags(self):
-
-        BASE = 'notify_request_to_go_live'
-
-        yield BASE
-
-        if self.go_live_checklist_completed and self.organisation.agreement_signed:
-            yield BASE + '_complete'
-            return
-
-        for test, tag in (
-            (True, ''),
-            (not self.volumes, '_volumes'),
-            (not self.go_live_checklist_completed, '_checklist'),
-            (not self.organisation.agreement_signed, '_mou'),
-            (self.needs_to_add_email_reply_to_address, '_email_reply_to'),
-            (not self.has_team_members, '_team_member'),
-            (not self.has_templates, '_template_content'),
-            (self.needs_to_change_sms_sender, '_sms_sender'),
-        ):
-            if test:
-                yield BASE + '_incomplete' + tag
