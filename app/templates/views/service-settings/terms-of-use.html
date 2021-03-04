@@ -1,0 +1,41 @@
+{% extends "admin_template.html" %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block service_page_title %}
+ {{ _("Accepting the terms of use") }}
+{% endblock %}
+
+{% block maincolumn_content %}
+  <div class="grid-row contain-floats">
+    <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
+    {{ page_header(
+      _('Accepting the terms of use'),
+      back_link=url_for('main.request_to_go_live', service_id=current_service.id)
+    ) }}
+
+    <p>
+      {{ _("Before going live, you must agree to follow the GC Notify terms of use.") }}
+    </p>
+
+    <p class="font-bold">
+      {{ _("What you need to know:") }}
+    </p>
+
+    <ul class="list list-bullet">
+      <li>{{ _("Get consent from people before sending them notifications") }}</li>
+      <li>{{ _("Follow your organisation’s privacy and security requirements") }}</li>
+      <li>{{ _("Send information that is either unclassified or Protected A only") }}</li>
+    </ul>
+
+    <p>
+      {{ _("Learn more about <a href='{}'>terms of use</a>.").format(url_for('.terms')) }}
+    </p>
+
+    {% call form_wrapper() %}
+      {{ page_footer(_('Agree')) }}
+    {% endcall %}
+
+  </div>
+{% endblock %}

@@ -1,7 +1,8 @@
 {% macro page_header(
   h1,
   back_link=None,
-  sub_text=None
+  sub_text=None,
+  id_text=None
 ) %}
 
   {% if back_link %}
@@ -13,7 +14,7 @@
   </div>
   {% endif %}
 
-  <h1 class="heading-large">{{ h1 }}</h1>
+  <h1 id="{{ id_text }}" class="heading-large">{{ h1 }}</h1>
 
 {% endmacro %}
 

@@ -1,0 +1,100 @@
+{% set lang_switch = 'EN' %}
+{% set long_lang_switch = 'English' %}
+
+{% if session["userlang"] == "en" %}
+  {% set lang_switch = 'FR' %}
+  {% set long_lang_switch = 'Français' %}
+{% endif %}
+
+<div class="container px-10">
+  <!-- start sub nav -->
+  <div class="pt-5 lg:justify-between grid md:grid-cols-2">
+    <div>
+      {% if session["userlang"] == "en" %}
+        <a href="/">
+          <img
+            alt="Government of Canada / Gouvernement du Canada"
+            width="250"
+            class=""
+            src="{{ asset_s3_url('gov-canada-en.svg') }}"
+          />
+        </a>
+      {% else %}
+        <a href="/">
+          <img
+            alt="Gouvernement du Canada / Government of Canada"
+            width="250"
+            class=""
+            src="{{ asset_s3_url('gov-canada-fr.svg') }}"
+          />
+        </a>
+      {% endif %}
+    </div>
+    <!-- start sub nav -->
+    <nav aria-label="{{ _('language and sign-in') }}"
+         class="xs:hidden smaller:hidden sm:hidden md:flex justify-end">
+      {% if current_user.is_authenticated %}
+        {% include 'partials/nav/account_menu.html' %}
+      {% else %}
+        <a
+          href="{{ url_for('main.sign_in' ) }}"
+          class="line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
+        >{{ _('Sign in') }}
+        </a>
+      {% endif %}
+
+      <a
+        aria-label="{{ long_lang_switch }}"
+        class="mr-10 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small pl-5 underline hover:no-underline"
+        href="{{ url_for('main.set_lang') }}?from={{ request.path }}"
+        lang="{{ lang_switch }}"
+      >{{ long_lang_switch }}</a>
+    </nav>
+    <!-- end sub nav -->
+  </div>
+  <div>
+    <a href="/" class="no-underline">
+      <div class="">
+        {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
+        and not platform_admin_view_ind %}
+          <span id="gc-title"
+                class="text-titlelarge text-black visited:text-black"
+          >
+          {{ _("GC Notify") }}
+        </span>
+        {% else %}
+          <span id="gc-title"
+                class="text-base text-black visited:text-black"
+          >
+          {{ _("GC Notify") }}
+        </span>
+        {% endif %}
+      </div>
+
+    </a>
+  </div>
+
+  {% set url_text = current_service.name %}
+  {% if platform_admin_view_ind %}
+    {% set url_text = _('Admin panel') %}
+  {% endif %}
+
+  {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
+    <div class="flex flex-wrap items-center space-x-4 space-y-0 items-stretch">
+      <div class="font-bold text-lg text-black inline">{{ url_text }}</div>
+      <div class="inline-block text-base self-center">
+        {% if current_user.has_permissions() and not platform_admin_view_ind %}
+          <img aria-hidden="true" src="{{ asset_url('images/swap.svg') }}" class="inline"/>
+          <a
+            aria-label="{{ _('Switch services') }}"
+            class="inline"
+            id="choose_account"
+            href="{{ url_for('.choose_account') }}"
+            role="button">
+            {{ _('Switch services') }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>

@@ -6,16 +6,16 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  Platform admin
+  {{ _('Platform admin') }}
 {% endblock %}
 
 {% block platform_admin_content %}
 
   <h1 class="heading-large">
-    Summary
+    {{ _('Summary') }}
   </h1>
   <details {% if form.errors %}open{% endif %}>
-    <summary>Apply filters</summary>
+    <summary>{{ _('Apply filters') }}</summary>
     {% call form_wrapper(method="get") %}
       {{ textbox(form.start_date, width='w-2/3', hint="Enter start date in format YYYY-MM-DD") }}
       {{ textbox(form.end_date, width='w-2/3', hint="Enter end date in format YYYY-MM-DD") }}

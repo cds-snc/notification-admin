@@ -1,5 +1,10 @@
-from datetime import datetime
+import json
+from datetime import datetime, timedelta
 
+from flask import current_app
+from flask_login import current_user
+
+from app.extensions import redis_client
 from app.notify_client import NotifyAdminAPIClient, _attach_current_user, cache
 
 
@@ -598,6 +603,54 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     def delete_smtp_relay(self, service_id):
         endpoint = '/service/{}/smtp'.format(service_id)
         return self.delete(endpoint)
+
+    def has_accepted_tos(self, service_id):
+        return redis_client.get(self._tos_key_name(service_id)) is not None
+
+    def accept_tos(self, service_id):
+        if not current_app.config["REDIS_ENABLED"]:
+            raise NotImplementedError("Cannot accept ToS without using Redis")
+
+        current_app.logger.info(f"Terms of use accepted by user {current_user.id} for service {service_id}")
+
+        redis_client.set(
+            self._tos_key_name(service_id),
+            datetime.utcnow().isoformat(),
+            ex=int(timedelta(days=30).total_seconds())
+        )
+
+    def has_submitted_use_case(self, service_id):
+        return redis_client.get(self._submitted_use_case_key_name(service_id)) is not None
+
+    def register_submit_use_case(self, service_id):
+        redis_client.set(
+            self._submitted_use_case_key_name(service_id),
+            datetime.utcnow().isoformat(),
+            ex=int(timedelta(days=30).total_seconds())
+        )
+
+    def get_use_case_data(self, service_id):
+        result = redis_client.get(self._use_case_data_name(service_id))
+        if result is None:
+            return result
+        return json.loads(result)
+
+    def store_use_case_data(self, service_id, data):
+        redis_client.set(
+            self._use_case_data_name(service_id),
+            json.dumps(data),
+            ex=int(timedelta(days=60).total_seconds())
+        )
+        redis_client.delete(self._submitted_use_case_key_name(service_id))
+
+    def _submitted_use_case_key_name(self, service_id):
+        return f"use-case-submitted-{service_id}"
+
+    def _use_case_data_name(self, service_id):
+        return f"use-case-data-{service_id}"
+
+    def _tos_key_name(self, service_id):
+        return f"tos-accepted-{service_id}"
 
 
 service_api_client = ServiceAPIClient()

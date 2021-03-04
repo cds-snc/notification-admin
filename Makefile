@@ -29,7 +29,8 @@ babel-test: babel
 	rm /tmp/messages.csv
 
 .PHONY: babel
-babel: 
+babel:
+	python scripts/generate_en_translations.py
 	csv2po app/translations/csv/en.csv app/translations/en/LC_MESSAGES/messages.po
 	csv2po app/translations/csv/fr.csv app/translations/fr/LC_MESSAGES/messages.po
 	pybabel compile -d app/translations

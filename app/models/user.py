@@ -17,10 +17,14 @@ from app.utils import is_gov_user
 
 
 def _get_service_id_from_view_args():
+    if not request.view_args:
+        return None
     return str(request.view_args.get('service_id', '')) or None
 
 
 def _get_org_id_from_view_args():
+    if not request.view_args:
+        return None
     return str(request.view_args.get('org_id', '')) or None
 
 
@@ -190,7 +194,7 @@ class User(JSONModel, UserMixin):
         if not service_id and not org_id:
             # we shouldn't have any pages that require permissions, but don't specify a service or organisation.
             # use @user_is_platform_admin for platform admin only pages
-            raise NotImplementedError
+            return False
 
         # platform admins should be able to do most things (except eg send messages, or create api keys)
         if self.platform_admin and not restrict_admin_usage:
@@ -611,6 +615,9 @@ class AnonymousUser(AnonymousUserMixin):
     @property
     def default_organisation(self):
         return Organisation(None)
+
+    def has_permissions(self):
+        return False
 
 
 class Users(ModelList):

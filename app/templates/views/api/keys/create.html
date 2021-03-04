@@ -1,4 +1,4 @@
-{% extends "withnav_template.html" %}
+{% extends "admin_template.html" %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/textbox.html" import textbox %}
@@ -15,8 +15,11 @@
     header_txt,
     back_link=url_for('main.api_keys', service_id=current_service.id)
   ) }}
+  <p>
+    {{ _("Learn about types of API keys and when to use them in the <a href='{}'>API key documentation</a>.").format(documentation_url('keys')) }}
+  </p>
   {% set label_txt = _('Name for this key') %}
-  {% set button_txt = _('Continue') %}
+  {% set button_txt = _('Create') %}
   {% call form_wrapper() %}
     {{ textbox(form.key_name, label=label_txt) }}
     {{ radios(form.key_type, disable=disabled_options, option_hints=option_hints) }}
