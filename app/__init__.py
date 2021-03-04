@@ -257,7 +257,6 @@ def init_app(application):
             'asset_s3_url': asset_fingerprinter.get_s3_url,
             'current_lang': get_current_locale(application),
             'admin_base_url': application.config['ADMIN_BASE_URL'],
-            'admin_base_domain': application.config['ADMIN_BASE_DOMAIN'],
             'sending_domain': application.config['SENDING_DOMAIN'],
             'documentation_url': documentation_url,
         }
