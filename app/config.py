@@ -28,8 +28,7 @@ class Config(object):
     else:
         ADMIN_BASE_URL = os.environ.get('ADMIN_BASE_URL', 'http://localhost:6012')
 
-    ADMIN_BASE_DOMAIN = ADMIN_BASE_URL.replace('http://', '').replace('https://', '')
-    DOCUMENTATION_DOMAIN = os.getenv('DOCUMENTATION_DOMAIN', f"documentation.{ADMIN_BASE_DOMAIN}")
+    DOCUMENTATION_DOMAIN = os.getenv('DOCUMENTATION_DOMAIN', "documentation.notification.canada.ca")
     TEMPLATE_PREVIEW_API_HOST = os.environ.get('TEMPLATE_PREVIEW_API_HOST', 'http://localhost:6013')
     TEMPLATE_PREVIEW_API_KEY = os.environ.get('TEMPLATE_PREVIEW_API_KEY', 'my-secret-key')
     NOTIFY_SERVICE_ID = 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553'

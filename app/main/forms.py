@@ -888,7 +888,7 @@ class CreateKeyForm(StripWhitespaceForm):
         super().__init__(*args, **kwargs)
 
     key_type = RadioField(
-        _l('Type of key'),
+        _l('Type of API key'),
     )
 
     key_name = StringField(u'Description of key', validators=[
