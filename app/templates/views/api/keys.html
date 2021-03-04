@@ -15,7 +15,22 @@
     back_link=url_for('main.api_integration', service_id=current_service.id)
   ) }}
 
-  {% set empty_txt = _('You haven’t created any API keys yet') %}
+  <p>
+    {{ _('Create an API key to integrate the API and connect your web application or back-office system with GC Notify.') }}
+  </p>
+
+  <p>
+    {{ _("Learn more in the <a href='{}'>API key documentation</a>.").format(documentation_url('keys')) }}
+  </p>
+
+  <div class="js-stick-at-bottom-when-scrolling">
+    <a href="{{ url_for('.create_api_key', service_id=current_service.id) }}" class="button button-secondary">{{ _('Create an API key') }}</a>
+  </div>
+
+  <h2 class="heading-small">
+     {{ _('Existing API keys') }}
+  </h2>
+  {% set empty_txt = _('You have not created any API keys yet') %}
   {% set keys_txt = _('API keys') %}
   {% set heading_1 = _('API keys') %}
   {% set heading_2 = _('Action') %}
@@ -77,10 +92,6 @@
         {% endcall %}
       {% endif %}
     {% endcall %}
-  </div>
-
-  <div class="js-stick-at-bottom-when-scrolling">
-    <a href="{{ url_for('.create_api_key', service_id=current_service.id) }}" class="button button-secondary">{{ _('Create an API key') }}</a>
   </div>
 
 {% endblock %}
