@@ -253,6 +253,7 @@ def test_link_to_download_notifications(
 def test_download_not_available_to_users_without_dashboard(
     client_request,
     active_caseworking_user,
+    mock_has_jobs,
 ):
     client_request.login(active_caseworking_user)
     client_request.get(
@@ -321,7 +322,6 @@ def test_shows_message_when_no_notifications(
     mock_get_service_data_retention,
     mock_get_notifications_with_no_notifications,
 ):
-
     page = client_request.get(
         'main.view_notifications',
         service_id=SERVICE_ONE_ID,
@@ -407,7 +407,7 @@ def test_search_recipient_form(
     assert page.select_one('label[for=to]').text.strip() == expected_search_box_label
 
     recipient_inputs = page.select("input[name=to]")
-    assert(len(recipient_inputs) == 2)
+    assert (len(recipient_inputs) == 2)
 
     for field in recipient_inputs:
         assert field['value'] == expected_search_box_contents

@@ -36,10 +36,6 @@ def test_organisation_page_shows_all_organisations(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
-    assert normalize_spaces(
-        page.select_one('h1').text
-    ) == "All organisations"
-
     expected_hints = ('0 live service(s)', '1 live service(s)', '2 live service(s)')
 
     for index, org in enumerate(orgs):
@@ -81,7 +77,7 @@ def test_page_to_create_new_organisation(
     mocker,
 ):
     client_request.login(platform_admin_user)
-    page = client_request.get('.add_organisation')
+    page = client_request.get('.add_organisation', _test_page_title=False)
 
     assert [
         (input['type'], input['name'], input['value'])

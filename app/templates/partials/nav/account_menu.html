@@ -1,0 +1,61 @@
+<!-- Large screen menu dropdown -->
+<div class="xs:hidden sm:hidden smaller:hidden md:flex relative justify-end inline-block text-left w-full mr-10">
+  <button aria-haspopup="true"
+          aria-expanded="true"
+          class="inline-flex shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+          id="account-menu"
+          role="button"
+          type="button">
+    <p
+      class="leading-none inline-block text-blue visited:text-blue link:text-blue no-underline text-small">
+      {{ _('Your account') }}
+      <img
+        alt="Account menu expansion arrow"
+        aria-hidden="true"
+        class="account-menu-arrow ml-2 inline"
+        src="{{ asset_url('images/arrow-licorice.svg') }}"
+        width="20"
+      />
+    </p>
+  </button>
+
+  <div id="account-menu-options"
+    class="absolute right-0 mt-10 w-auto px-8 py-4 text-right rounded bg-white shadow hidden"
+    role="menu"
+    aria-orientation="vertical">
+    {% if current_user.platform_admin %}
+    <div class="py-4">
+      <a
+        aria-label="{{ _('Admin panel') }}"
+        id="account-menu-link" 
+        href="{{ url_for('main.live_services') }}"
+        class="block py-2 leading-none text-blue visited:text-blue link:text-blue no-underline text-small"
+        role="menuitem">
+        {{ _('Admin panel') }}
+      </a>
+    </div>
+    <div class="float-right account-menu-divider"></div>
+    {% endif %}
+    <div class="py-4">
+      <a
+        aria-label="{{ _('Account settings') }}"
+        href="{{ url_for('main.user_profile') }}"
+        class="block leading-none text-blue visited:text-blue link:text-blue no-underline text-small"
+        role="menuitem">
+        {{ _('Account settings') }}
+      </a>
+    </div>
+    <div class="float-right account-menu-divider"></div>
+    <div class="py-4">
+      <a
+        aria-label="{{ _('Sign out') }}"
+        href="{{ url_for('main.sign_out') }}"
+        class="block leading-none text-blue visited:text-blue link:text-blue no-underline text-small"
+        role="menuitem">
+        {{ _('Sign out') }}
+      </a>
+    </div>
+  </div>
+
+</div>
+<!-- Large screen dropdown END -->

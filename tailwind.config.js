@@ -31,8 +31,8 @@ module.exports = {
       brand: "2.6rem"
     },
     screens: {
-      xs: {'max': "639px"},
-      smaller: {'max': '768px'},
+      xs: "320px",
+      smaller: "375px",
       sm: "640px",
       md: "768px",
       lg: "1024px"
@@ -54,6 +54,7 @@ module.exports = {
         govukblue: "#005ea5",
         lightblue25: "#d5e8f3",
         lightblue: "#2b8cc4",
+        slightlight: "#284162"
       },
       gray: {
         default: "#eee",

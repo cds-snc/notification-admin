@@ -1,9 +1,15 @@
 @layer components {
   /*! purgecss start ignore */
-  .navigation {
-    @apply p-0 pr-gutter;
+  header a:link,
+  header a:visited {
+    @apply no-underline;
+    @apply text-blue;
   }
-  
+
+  .navigation {
+    @apply p-0;
+  }
+
   .navigation-service {
     font-size: 0;
     @apply border-0 border-b-1 border-solid border-gray-grey2 relative m-0 mb-4;
@@ -38,34 +44,6 @@
   }
   .navigation-service-back-to:hover {
     @apply underline text-blue-lightblue;
-  }
-
-  .navigation-organisation-link {
-    padding-top: 14px;
-    padding-bottom: 11px;
-    max-width: 25%;
-    margin-right: 7px;
-    @apply text-smaller leading-tight font-normal inline-block truncate no-underline box-border relative pr-8 pl-0;
-  }
-  .navigation-organisation-link:before {
-    content: "";
-    top: -1px;
-    bottom: 1px;
-    right: 6px;
-    width: 7px;
-    height: 7px;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-    @apply block absolute mx-0 my-auto border-0 border-solid border-t-1 border-r-1 border-gray-grey1
-  }
-  .navigation-organisation-link:hover {
-    @apply underline text-blue-lightblue;
-  }
-  .navigation-organisation-link:focus {
-    @apply text-black outline-none;
-    /* theme yellow */
-    box-shadow: 0 1px 0 0 #ffbf47, -3px 0 0 0 #ffbf47, -3px 1px 0 0 #ffbf47;
   }
 
   .navigation li {
@@ -125,6 +103,38 @@
   .sub-navigation__item--active a:link,
   .sub-navigation__item--active a:visited {
     @apply text-black;
+  }
+
+  .header--active {
+    @apply border-b-4;
+    @apply border-blue;
+  }
+
+  .menu--active {
+    border-color: #26374A;
+    @apply pl-6 !important;
+    @apply font-bold;
+    @apply border-l-4;
+    @apply border-solid;
+    @apply bg-gray;
+  }
+
+  .adminnav--active {
+    @apply bg-gray;
+    @apply border-l-4;
+    @apply border-blue;
+    @apply font-extrabold;
+  }
+
+  .account-menu-divider {
+    width: 102px;
+    height: 1px;
+    left: 124px;
+    background: #C6C6C6;
+  }
+  
+  .shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
   /*! purgecss end ignore */
 }

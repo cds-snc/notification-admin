@@ -1128,8 +1128,6 @@ def test_send_one_off_or_test_has_correct_page_titles(
     assert response.status_code == 200
     assert page.h1.text.strip() == expected_h1
 
-    assert (len(page.select('.banner-tour')) == 1) == tour_shown
-
 
 @pytest.mark.parametrize('endpoint, step_index, prefilled, expected_field_label', [
     (
@@ -1334,32 +1332,6 @@ def test_send_one_off_offers_link_to_upload(
         service_id=SERVICE_ONE_ID,
         template_id=fake_uuid,
     )
-
-
-@pytest.mark.parametrize('user', (
-    active_user_with_permissions,
-    active_caseworking_user,
-))
-def test_link_to_upload_not_offered_in_tour(
-    client_request,
-    fake_uuid,
-    mock_get_service_template,
-    user,
-):
-    client_request.login(user(fake_uuid))
-
-    page = client_request.get(
-        'main.send_test',
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        help=1,
-        _follow_redirects=True,
-    )
-
-    # We’re in the tour…
-    assert page.select('.banner-tour')
-    # …but first link on the page is ‘Back’, so not preceeded by ‘Upload’
-    assert page.select_one('main a').text == 'Back'
 
 
 @pytest.mark.parametrize('user', (
@@ -2533,46 +2505,6 @@ def test_check_messages_back_link(
     ) == expected_url(service_id=SERVICE_ONE_ID, template_id=fake_uuid)
 
 
-def test_shows_link_to_end_tour(
-    client_request,
-    mock_get_notification,
-    fake_uuid,
-):
-
-    page = client_request.get(
-        'main.view_notification',
-        service_id=SERVICE_ONE_ID,
-        notification_id=fake_uuid,
-        help=3,
-    )
-
-    assert page.select(".banner-tour a")[0]['href'] == url_for(
-        'main.go_to_dashboard_after_tour',
-        service_id=SERVICE_ONE_ID,
-        example_template_id='5407f4db-51c7-4150-8758-35412d42186a',
-    )
-
-
-def test_go_to_dashboard_after_tour_link(
-    logged_in_client,
-    mocker,
-    api_user_active,
-    mock_login,
-    mock_get_service,
-    mock_has_permissions,
-    mock_delete_service_template,
-    fake_uuid
-):
-
-    resp = logged_in_client.get(
-        url_for('main.go_to_dashboard_after_tour', service_id=fake_uuid, example_template_id=fake_uuid)
-    )
-
-    assert resp.status_code == 302
-    assert resp.location == url_for("main.service_dashboard", service_id=fake_uuid, _external=True)
-    mock_delete_service_template.assert_called_once_with(fake_uuid, fake_uuid)
-
-
 @pytest.mark.parametrize('num_requested,expected_msg', [
     (0, '‘valid.csv’ contains 100 phone numbers.'),
     (1, 'You can still send 49 messages today, but ‘valid.csv’ contains 100 phone numbers.')
@@ -3198,37 +3130,6 @@ def test_check_notification_shows_preview(
         service_id=service_one['id'],
         template_id=fake_uuid,
         help='0'
-    )
-
-
-def test_check_notification_shows_help(
-    client_request,
-    service_one,
-    fake_uuid,
-    mock_get_service_template
-):
-    with client_request.session_transaction() as session:
-        session['recipient'] = '6502532223'
-        session['placeholders'] = {}
-
-    page = client_request.get(
-        'main.check_notification',
-        service_id=service_one['id'],
-        template_id=fake_uuid,
-        help='2'
-    )
-    assert page.select_one('.banner-tour')
-    assert page.form.attrs['action'] == url_for(
-        'main.send_notification',
-        service_id=service_one['id'],
-        template_id=fake_uuid,
-        help='3'
-    )
-    assert page.select_one('.back-link')['href'] == url_for(
-        'main.send_test',
-        service_id=service_one['id'],
-        template_id=fake_uuid,
-        help='2'
     )
 
 

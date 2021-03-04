@@ -64,7 +64,7 @@
 
   .heading-large {
     line-height: 1.111;
-    margin-top: 1.0412em;
+    margin-top: .2em;
     margin-bottom: .4167em;
     @apply text-lg font-bold block;
   }
@@ -75,7 +75,7 @@
   }
   @screen md {
     .heading-large {
-      margin-top: 1.25em;
+      margin-top: .25em;
       margin-bottom: .5556em;
     }
     .heading-large .heading-secondary {
