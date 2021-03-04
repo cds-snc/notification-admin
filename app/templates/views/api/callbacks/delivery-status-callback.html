@@ -18,9 +18,9 @@
       ) }}
 
       <p>
-        {{ _('When you send an email or text message, find out if GC Notify was able to deliver it with callbacks. Learn more in the ') }} <a href="{{ documentation_url('callbacks') }}">{{ _('callbacks documentation') }}</a>.
+        {{ _("When you send an email or text message, find out if GC Notify was able to deliver it with callbacks. Learn more in the <a href='{}'>callbacks documentation</a>.").format(documentation_url('callbacks')) }}
       </p>
-      <h2 class="heading-small">     
+      <h2 class="heading-small">
         {{ _('Add an endpoint where GC Notify should send POST requests') }}
      </h2>
       {% set hint_txt = _('Must start with https://') %}
@@ -30,7 +30,7 @@
           width='w-full',
           hint=hint_txt
         ) }}
-        <h2 class="heading-small">     
+        <h2 class="heading-small">
           {{ _('Add a secret value for authentication') }}
        </h2>
         {% set hint_txt = _('At least 10 characters') %}
