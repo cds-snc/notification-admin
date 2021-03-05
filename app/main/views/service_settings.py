@@ -80,10 +80,19 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
 
 @main.route("/services/<service_id>/service-settings")
 @user_has_permissions('manage_service', 'manage_api_keys')
-def service_settings(service_id):
+def service_settings(service_id: str):
+
+    # FIXME: the formatting for annual email limits and translation within service-settings.html can be improved
+    limits = {
+        'annual_email': current_app.config["ANNUAL_EMAIL_LIMIT"],
+        'annual_sms': current_app.config["ANNUAL_SMS_LIMIT"]
+    }
+
     return render_template(
         'views/service-settings.html',
-        service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS, sending_domain=current_app.config["SENDING_DOMAIN"]
+        service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS,
+        sending_domain=current_app.config["SENDING_DOMAIN"],
+        limits=limits
     )
 
 
