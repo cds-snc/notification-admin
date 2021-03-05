@@ -1,24 +1,26 @@
 {% macro nav_menu_item(url=None, localised_txt=None, css_classes=None, id_key=None, external_link_img=None) %}
   {% if url and localised_txt %}
-    <div
-      class="flex-shrink-0 text-center p-5 bg-gray {{ css_classes }}">
-      <a
-        {% if id_key %}id="{{ id_key }}"{% endif %}
-        aria-label="{{ localised_txt }}"
-        href="{{ url }}"
-        class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline line-under"
-        {% if external_link_img %}
-          target="_blank"
-        {% endif %}
-      >{{ localised_txt }}</a>
-      {% if external_link_img %}
-        <img
-          aria-hidden="false"
+    <div class="px-5">
+      <div
+        class="flex-shrink-0 py-5 text-center bg-gray {{ css_classes }}">
+        <a
+          {% if id_key %}id="{{ id_key }}"{% endif %}
           aria-label="{{ localised_txt }}"
-          src="{{ external_link_img }}"
-          alt="External link icon"
-          class="inline w-8 h-8 pb-2"/>
-      {% endif %}
+          href="{{ url }}"
+          class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline line-under"
+          {% if external_link_img %}
+          target="_blank"
+          {% endif %}
+        >{{ localised_txt }}</a>
+        {% if external_link_img %}
+          <img
+            aria-hidden="false"
+            aria-label="{{ localised_txt }}"
+            src="{{ external_link_img }}"
+            alt="External link icon"
+            class="inline w-8 h-8 pb-2"/>
+        {% endif %}
+      </div>
     </div>
   {% endif %}
 {% endmacro %}
