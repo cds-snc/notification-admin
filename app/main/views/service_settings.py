@@ -86,7 +86,7 @@ def service_settings(service_id: str):
         'free_yearly_email': current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
         'free_yearly_sms': current_app.config["FREE_YEARLY_SMS_LIMIT"]
     }
-    assert limits['free_yearly_email'] >= 2_000_000, 'The user-interface does not support french translations of < 2M'
+    assert limits['free_yearly_email'] >= 2_000_000, 'The user-interface does not support French translations of < 2M'
 
     return render_template(
         'views/service-settings.html',
