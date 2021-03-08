@@ -84,7 +84,7 @@ def test_choose_account_should_show_choose_accounts_page(
     resp = client_request.get('main.choose_account')
     page = resp.find('div', {'id': 'main_content'}).main
 
-    assert normalize_spaces(page.h1.text) == 'All services'
+    assert normalize_spaces(page.h1.text) == 'Your services'
     outer_list_items = page.select('nav ul')[0].select('li')
 
     assert len(outer_list_items) == 7
@@ -143,7 +143,7 @@ def test_choose_account_should_show_choose_accounts_page_if_no_services(
     links = page.findAll('a')
     assert len(links) == 1
     add_service_link = links[0]
-    assert normalize_spaces(page.h1.text) == 'All services'
+    assert normalize_spaces(page.h1.text) == 'Your services'
     assert normalize_spaces(add_service_link.text) == 'Add a new service'
     assert add_service_link['href'] == url_for('main.add_service')
 

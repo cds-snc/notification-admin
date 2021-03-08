@@ -56,9 +56,9 @@
   </tbody>
 {%- endmacro %}
 
-{% macro settings_row(if_has_permission='') -%}
+{% macro settings_row(if_has_permission='', alt_cond=True) -%}
   {% set parent_caller = caller %}
-  {% if if_has_permission in current_service.permissions %}
+  {% if if_has_permission in current_service.permissions and alt_cond %}
     {% call row() %}
       {{ parent_caller() }}
     {% endcall %}

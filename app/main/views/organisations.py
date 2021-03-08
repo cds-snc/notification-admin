@@ -300,7 +300,7 @@ def edit_organisation_email_branding(org_id):
 
     current_branding = current_organisation.email_branding_id
 
-    # organizations don't support multi language yet / we aren't using organizations
+    # organisations don't support multi language yet / we aren't using organisations
     if current_branding is None:
         current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
                             current_organisation.default_branding_is_french is True else
