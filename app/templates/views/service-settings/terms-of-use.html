@@ -16,7 +16,7 @@
     ) }}
 
     <p>
-      {{ _("Before going live, review the GC Notify terms of use.") }}
+      {{ _("Before going live, review the GC Notify <a href='{}'>terms of use</a>.").format(url_for('.terms')) }}
     </p>
 
     <p class="font-bold">
@@ -28,10 +28,6 @@
       <li>{{ _("Follow your organisation’s privacy and security requirements") }}</li>
       <li>{{ _("Send information that is either unclassified or Protected A only") }}</li>
     </ul>
-
-    <p>
-      {{ _("Learn more about <a href='{}'>terms of use</a>.").format(url_for('.terms')) }}
-    </p>
 
     {% call form_wrapper() %}
       {{ page_footer(_('Agree')) }}
