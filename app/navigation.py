@@ -99,16 +99,6 @@ class HeaderNavigation(Navigation):
         },
         'features': {
             'features',
-            'email',
-            'letters',
-            'templates',
-            'sms',
-            'messages_status',
-            'roadmap',
-            'security',
-            'terms',
-            'activity',
-            'activity_download',
         },
         'home': {
             'index',
