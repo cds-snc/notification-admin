@@ -80,10 +80,19 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
 
 @main.route("/services/<service_id>/service-settings")
 @user_has_permissions('manage_service', 'manage_api_keys')
-def service_settings(service_id):
+def service_settings(service_id: str):
+
+    limits = {
+        'free_yearly_email': current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
+        'free_yearly_sms': current_app.config["FREE_YEARLY_SMS_LIMIT"]
+    }
+    assert limits['free_yearly_email'] >= 2_000_000, 'The user-interface does not support French translations of < 2M'
+
     return render_template(
         'views/service-settings.html',
-        service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS, sending_domain=current_app.config["SENDING_DOMAIN"]
+        service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS,
+        sending_domain=current_app.config["SENDING_DOMAIN"],
+        limits=limits
     )
 
 

@@ -49,13 +49,13 @@
 {% endmacro %}
 
 {% block per_page_title %}
-  {{ _('All services') }}
+  {{ _('Your services') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <h1 class="heading-large {% if current_user.has_access_to_live_and_trial_mode_services %}visually-hidden{% endif %}">
-    {{ _('All services') }}
+    {{ _('Your services') }}
   </h1>
 
   <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}mt-8 block clear-both contain-floats{% endif %}">
@@ -64,7 +64,7 @@
       <div class="grid-row contain-floats">
         <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
           <h2>
-            {{ _('Platform admin') }}
+            {{ _('Admin panel') }}
           </h2>
         </div>
         <ul class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
