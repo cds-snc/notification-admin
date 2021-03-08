@@ -12,7 +12,7 @@
     <!-- Mobile menu and nav bar -->
     <div class="grid grid-cols-2">
         <div class="py-2">
-          <a href="#" id="menu"
+          <a href="#" id="menu" data-module="nav-menu"
              class="mr-5 p-4 bg-blue text-white visited:text-white link:text-white no-underline focus:outline-none">
             {{ _('Menu') }}
             <img
@@ -102,106 +102,27 @@
             {% endif %}
           {% endif %}
         {% endif %}
+        <div id="more-menu" class="flex flex-shrink-0 text-center p-5 bg-gray hidden">
+          <a 
+            href="#"
+            aria-hidden="true" 
+            class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline focus:outline-none">
+            {{ _('More') }}
+            <img
+              alt="Account menu expansion arrow"
+              aria-hidden="true"
+              class="account-menu-arrow ml-2 inline arrow"
+              src="{{ asset_url('images/arrow-licorice.svg') }}"
+              width="20"
+            />
+          </a>
+        </div>
       </div>
       <!-- MD-LG menu and nav bar END -->
     </div>
   </nav>
+  <div id="more-menu-container" class="container hidden">
+    <div id="more-menu-items" class="flex flex-col flex-shrink-0 text-right bg-gray float-right -mr-8">
+    </div>
+  </div>
 {% endif %}
-<script>
-
-  function safeAddEventListener(selector, event, fn) {
-    if (document.querySelector(selector))
-      document.querySelector(selector).addEventListener(event, fn)
-  }
-
-  function registerMenuEscape(selector, toggleFn) {
-    document.addEventListener("keydown", function (e) {
-      if (e.key == 'Escape') {
-        var opened = document.querySelector(selector + ':not(.hidden)')
-        if (opened) toggleFn()
-      }
-    })
-  }
-
-  const focusableElements =
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-
-  /**
-   * Registers a scope around the given menu selector.
-   *
-   * The given menu selector will get the TAB navigation entrapped within its
-   * container's focusable elements, hence creating a navigation scope around
-   * it. This will only apply to the container itself and will not hinder
-   * other elements of the page as long as the container is not reached. This
-   * works well within a modal popup that took focus away from the main window.
-   */
-  function registerTabNavigationScope(menuSelector) {
-    const modal = document.querySelector(menuSelector)
-    const firstFocusableElement = modal.querySelectorAll(focusableElements)[0]
-    const focusableContent = modal.querySelectorAll(focusableElements)
-    const lastFocusableElement = focusableContent[focusableContent.length - 1]
-
-    document.addEventListener('keydown', function (e) {
-      let isTabPressed = e.key === 'Tab' || e.keyCode === 9
-
-      if (!isTabPressed) {
-        return
-      }
-
-      if (e.shiftKey) { // if shift key pressed for shift + tab combination
-        if (document.activeElement === firstFocusableElement) {
-          lastFocusableElement.focus() // add focus for the last focusable element
-          e.preventDefault()
-        }
-      } else { // if tab key is pressed
-        if (document.activeElement === lastFocusableElement) { // if focused has reached to last focusable element then focus first focusable element after pressing tab
-          firstFocusableElement.focus() // add focus for the first focusable element
-          e.preventDefault()
-        }
-      }
-    })
-
-    firstFocusableElement.focus()
-  }
-
-  function menuMobileToggle() {
-    const nav = document.querySelector(".mobile-nav")
-    const arrow = document.querySelector(".mobile-arrow")
-    nav.classList.toggle("hidden")
-    arrow.classList.toggle("flip")
-    nav.querySelector('a').focus()
-  }
-
-  function accountMobileToggle() {
-    const accountMenu = document.querySelector("#account-menu-mobile")
-    accountMenu.classList.toggle("hidden")
-    accountMenu.querySelector('a').focus()
-    // In order to have the opacity transition effect working properly,
-    // we need to separate the hidden and opacity toggling in two separate
-    // actions in the HTML rendering, hence the delay of opacity by 1 ms.
-    window.setTimeout(function () {
-      accountMenu.classList.toggle("opacity-0")
-      accountMenu.classList.toggle("pointer-events-none")
-    }, 1)
-  }
-
-  function accountMenuToggle() {
-    const accountMenu = document.querySelector("#account-menu-options")
-    const arrow = document.querySelector(".account-menu-arrow")
-    accountMenu.classList.toggle("hidden")
-    arrow.classList.toggle("flip")
-    accountMenu.querySelector('a').focus()
-  }
-
-  safeAddEventListener("#menu", "click", menuMobileToggle)
-  registerMenuEscape(".mobile-nav", menuMobileToggle)
-
-  safeAddEventListener("#account-icon-mobile", "click", accountMobileToggle)
-  safeAddEventListener("#account-close-mobile", "click", accountMobileToggle)
-  registerMenuEscape("#account-menu-mobile", accountMobileToggle)
-
-  safeAddEventListener("#account-menu", "click", accountMenuToggle)
-  registerMenuEscape("#account-menu-options", accountMenuToggle)
-  registerTabNavigationScope('#account-menu-mobile')
-
-</script>
