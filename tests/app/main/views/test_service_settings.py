@@ -3107,7 +3107,7 @@ def test_archive_service_after_confirm(
     )
 
     mocked_fn.assert_called_once_with('/service/{}/archive'.format(SERVICE_ONE_ID), data=None)
-    assert normalize_spaces(page.select_one('h1').text) == 'All services'
+    assert normalize_spaces(page.select_one('h1').text) == 'Your services'
     assert normalize_spaces(page.select_one('.banner-default-with-tick').text) == (
         '‘service one’ was deleted'
     )
