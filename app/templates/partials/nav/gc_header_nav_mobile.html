@@ -73,12 +73,12 @@
             {% endfor %}
           {% else %} {# not platform_admin_view_ind #}
             {% if current_user.has_permissions() %} {# Service in context #}
-              {{ nav_menu_item_mobile(url_for('.live_services', service_id=current_service.id),_('Admin panel')) }}
-              {{ nav_menu_item_mobile(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'menu--'+header_navigation.is_selected('dashboard')) }}
-              {{ nav_menu_item_mobile( url_for('.choose_template', service_id=current_service.id),_('Templates'),'menu--'+header_navigation.is_selected('templates')) }}
-              {{ nav_menu_item_mobile(url_for('.api_integration', service_id=current_service.id),_('API integration'),'menu--'+header_navigation.is_selected('api-integration')) }}
-              {{ nav_menu_item_mobile(url_for('.manage_users', service_id=current_service.id),_('Team members'),'menu--'+header_navigation.is_selected('team-members')) }}
-              {{ nav_menu_item_mobile(url_for('.service_settings', service_id=current_service.id),_('Settings'),'menu--'+header_navigation.is_selected('settings')) }}
+              {{ nav_menu_item_mobile(url_for('main.live_services', service_id=current_service.id),_('Admin panel')) }}
+              {{ nav_menu_item_mobile(url_for('main.service_dashboard', service_id=current_service.id),_('Dashboard'),'menu--'+header_navigation.is_selected('dashboard')) }}
+              {{ nav_menu_item_mobile( url_for('main.choose_template', service_id=current_service.id),_('Templates'),'menu--'+header_navigation.is_selected('templates')) }}
+              {{ nav_menu_item_mobile(url_for('main.api_integration', service_id=current_service.id),_('API integration'),'menu--'+header_navigation.is_selected('api-integration')) }}
+              {{ nav_menu_item_mobile(url_for('main.manage_users', service_id=current_service.id),_('Team members'),'menu--'+header_navigation.is_selected('team-members')) }}
+              {{ nav_menu_item_mobile(url_for('main.service_settings', service_id=current_service.id),_('Settings'),'menu--'+header_navigation.is_selected('settings')) }}
               {{ nav_menu_item_mobile(url_for('main.smtp_integration', service_id=current_service.id),_('SMTP'),'menu--'+header_navigation.is_selected('smtp-integration')) }}
             {% else %} {# current_user.has_permissions() #}
               {{ nav_menu_item_mobile(url_for('main.choose_account', service_id=current_service.id),_('Your services'),'menu--'+header_navigation.is_selected('choose_account')) }}
