@@ -1,6 +1,6 @@
 {% macro nav_menu_item(url=None, localised_txt=None, css_classes=None, id_key=None, external_link_img=None) %}
   {% if url and localised_txt %}
-    <div class="px-5">
+    <div class="px-5 flex-shrink-0">
       <div
         class="flex-shrink-0 py-5 text-center bg-gray {{ css_classes }}">
         <a

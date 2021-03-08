@@ -1,38 +1,39 @@
 <!-- account menu dropdown / mobile -->
 <div class="md:hidden">
-  <button id="account-icon-mobile" class="p-1 h-14 border-2 border-solid border-gray rounded-lg"">
+  <button id="account-icon-mobile" class="p-1 h-14 border-2 border-solid border-gray rounded-lg">
     <img
-      aria-hidden="false" 
+      aria-hidden="false"
       aria-label="{{ _('Account menu') }}"
       aria-haspopup="true"
-      src="{{ asset_url('images/account-icon.svg') }}" 
+      src="{{ asset_url('images/account-icon.svg') }}"
       alt="Account icon"
-      class="w-10 h-10" />
+      class="w-10 h-10"/>
   </button>
 
   <div id="account-menu-mobile"
-      class="modal fixed w-full h-full top-0 left-0 z-50 pointer-events-none transition duration-150 ease-in-out transition-opacity opacity-0 hidden">
+       class="modal fixed w-full h-full top-0 left-0 z-50 pointer-events-none transition duration-150 ease-in-out transition-opacity opacity-0 hidden">
 
     <div class="modal-overlay absolute w-full h-full bg-white opacity-95"></div>
 
-    <div class="modal-container grid grid-flow-row auto-rows-min grid-cols-1 fixed w-full h-full overflow-y-auto z-50 p-10">
+    <div
+      class="modal-container grid grid-flow-row auto-rows-min grid-cols-1 fixed w-full h-full overflow-y-auto z-50 p-10">
       <div>
         <div class="float-left">
           <img
             aria-hidden="true"
-            src="{{ asset_url('images/account-icon.svg') }}"  
+            src="{{ asset_url('images/account-icon.svg') }}"
             alt="Account icon"
-            class="float-left w-12 h-12" />
+            class="float-left w-12 h-12"/>
         </div>
         <div id="account-close-mobile"
-          class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-xs z-50">
+             class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-xs z-50">
           <button class="justify-self-center">
             <img
               alt="Close button"
-              aria-hidden="false" 
+              aria-hidden="false"
               aria-labelledby="account.menu.close"
-              src="{{ asset_url('images/close.svg') }}" 
-              class="object-none object-center w-8 h-8 m-auto" />
+              src="{{ asset_url('images/close.svg') }}"
+              class="object-none object-center w-8 h-8 m-auto"/>
             <p id="account.menu.close">{{ _('close') }}</p>
           </button>
         </div>
@@ -42,20 +43,20 @@
 
         <ul>
           {% if current_user.platform_admin %}
-          <li class="mb-4">
-            <a 
-              aria-label="{{ _('Admin panel') }}"
-              href="{{ url_for('main.live_services') }}"
-              class="no-underline visited:text-black text-black line-under">
-              {{ _('Admin panel') }}
-            </a>
-          </li>
+            <li class="mb-4">
+              <a
+                aria-label="{{ _('Admin panel') }}"
+                href="{{ url_for('main.live_services') }}"
+                class="no-underline visited:text-black text-black line-under">
+                {{ _('Admin panel') }}
+              </a>
+            </li>
           {% endif %}
           <li class="mb-4">
             <a
               aria-label="{{ _('Your profile') }}"
               href="{{ url_for('main.user_profile') }}"
-              class="no-underline visited:text-black text-black  line-under">
+              class="no-underline visited:text-black text-black line-under">
               {{ _('Your profile') }}
             </a>
           </li>
