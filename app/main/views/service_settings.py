@@ -82,11 +82,11 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
 @user_has_permissions('manage_service', 'manage_api_keys')
 def service_settings(service_id: str):
 
-    # FIXME: the formatting for annual email limits and translation within service-settings.html can be improved
     limits = {
-        'annual_email': current_app.config["ANNUAL_EMAIL_LIMIT"],
-        'annual_sms': current_app.config["ANNUAL_SMS_LIMIT"]
+        'free_yearly_email': int(current_app.config["FREE_YEARLY_EMAIL_LIMIT"]),
+        'free_yearly_sms': int(current_app.config["FREE_YEARLY_SMS_LIMIT"])
     }
+    assert limits['free_yearly_email'] >= 2_000_000, 'The user-interface does not support french translations of < 2M'
 
     return render_template(
         'views/service-settings.html',

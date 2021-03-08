@@ -39,7 +39,7 @@ class Config(object):
     # Hosted graphite statsd prefix
     STATSD_HOST = os.getenv('STATSD_HOST')
     STATSD_ENABLED = bool(STATSD_HOST)
-    STATSD_PORT = 8125
+    STATSD_PORT = 8_125
     STATSD_PREFIX = os.getenv('STATSD_PREFIX')
 
     # Logging
@@ -55,18 +55,18 @@ class Config(object):
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
     DEFAULT_SERVICE_LIMIT = 50
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
-        'central': 25000,
-        'local': 25000,
-        'nhs_central': 250000,
-        'nhs_local': 25000,
-        'nhs_gp': 25000,
-        'emergency_service': 25000,
-        'school_or_college': 25000,
-        'other': 25000,
+        'central': 25_000,
+        'local': 25_000,
+        'nhs_central': 250_000,
+        'nhs_local': 25_000,
+        'nhs_gp': 25_000,
+        'emergency_service': 25_000,
+        'school_or_college': 25_000,
+        'other': 25_000,
     }
     EMAIL_EXPIRY_SECONDS = 3600  # 1 hour
-    INVITATION_EXPIRY_SECONDS = 3600 * 24 * 2  # 2 days - also set on api
-    EMAIL_2FA_EXPIRY_SECONDS = 1800  # 30 Minutes
+    INVITATION_EXPIRY_SECONDS = 3_600 * 24 * 2  # 2 days - also set on api
+    EMAIL_2FA_EXPIRY_SECONDS = 1_800  # 30 Minutes
     HEADER_COLOUR = '#FFBF47'  # $yellow
     HTTP_PROTOCOL = 'http'
     MAX_FAILED_LOGIN_COUNT = 10
@@ -106,11 +106,11 @@ class Config(object):
     HC_EN_SERVICE_ID = os.getenv('HC_EN_SERVICE_ID')
     HC_FR_SERVICE_ID = os.getenv('HC_FR_SERVICE_ID')
     BULK_SEND_TEST_SERVICE_ID = os.getenv('BULK_SEND_TEST_SERVICE_ID')
-    CSV_MAX_ROWS = os.getenv('CSV_MAX_ROWS', 50000)
-    CSV_MAX_ROWS_BULK_SEND = os.getenv('CSV_MAX_ROWS_BULK_SEND', 100000)
+    CSV_MAX_ROWS = os.getenv('CSV_MAX_ROWS', 50_000)
+    CSV_MAX_ROWS_BULK_SEND = os.getenv('CSV_MAX_ROWS_BULK_SEND', 100_000)
 
-    ANNUAL_SMS_LIMIT = os.getenv('ANNUAL_SMS_LIMIT', 25000)
-    ANNUAL_EMAIL_LIMIT = os.getenv('ANNUAL_EMAIL_LIMIT', 10000000)
+    FREE_YEARLY_SMS_LIMIT = os.getenv('FREE_YEARLY_SMS_LIMIT', 25_000)
+    FREE_YEARLY_EMAIL_LIMIT = os.getenv('FREE_YEARLY_EMAIL_LIMIT', 10_000_000)
 
 
 class Development(Config):

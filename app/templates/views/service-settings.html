@@ -188,7 +188,7 @@
         {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
           {% set txt = _('Yearly free maximum') %}
           {{ text_field(txt) }}
-          {% set annual_limit = _('{} million emails').format((limits.annual_email//1000000) | format_number) %}
+          {% set annual_limit = _('{} million emails').format((limits.free_yearly_email//1000000) | format_number) %}
           {{ text_field(annual_limit) }}
           {{ text_field('')}}
         {% endcall %}
@@ -250,7 +250,7 @@
         {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
           {% set txt = _('Yearly free maximum') %}
           {{ text_field(txt) }}
-          {% set txt_msg_limit = _('{} text messages').format(limits.annual_sms | format_number) %}
+          {% set txt_msg_limit = _('{} text messages').format(limits.free_yearly_sms | format_number) %}
           {{ text_field(txt_msg_limit) }}
           {{ text_field('')}}
         {% endcall %}
