@@ -109,8 +109,8 @@ class Config(object):
     CSV_MAX_ROWS = os.getenv('CSV_MAX_ROWS', 50_000)
     CSV_MAX_ROWS_BULK_SEND = os.getenv('CSV_MAX_ROWS_BULK_SEND', 100_000)
 
-    FREE_YEARLY_SMS_LIMIT = os.getenv('FREE_YEARLY_SMS_LIMIT', 25_000)
-    FREE_YEARLY_EMAIL_LIMIT = os.getenv('FREE_YEARLY_EMAIL_LIMIT', 10_000_000)
+    FREE_YEARLY_SMS_LIMIT = int(os.getenv('FREE_YEARLY_SMS_LIMIT', 25_000))
+    FREE_YEARLY_EMAIL_LIMIT = int(os.getenv('FREE_YEARLY_EMAIL_LIMIT', 10_000_000))
 
 
 class Development(Config):

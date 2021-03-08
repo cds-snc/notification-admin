@@ -83,8 +83,8 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
 def service_settings(service_id: str):
 
     limits = {
-        'free_yearly_email': int(current_app.config["FREE_YEARLY_EMAIL_LIMIT"]),
-        'free_yearly_sms': int(current_app.config["FREE_YEARLY_SMS_LIMIT"])
+        'free_yearly_email': current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
+        'free_yearly_sms': current_app.config["FREE_YEARLY_SMS_LIMIT"]
     }
     assert limits['free_yearly_email'] >= 2_000_000, 'The user-interface does not support french translations of < 2M'
 
