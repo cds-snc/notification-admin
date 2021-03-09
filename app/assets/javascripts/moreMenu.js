@@ -3,7 +3,7 @@
 
   var elemWidth = 0,
     fitCount = 0,
-    varWidth = 0,
+    varWidth = 1,
     ctr = 0,
     $moreMenu = null,
     $menuContainer = null,
@@ -31,6 +31,8 @@
     $menuItems.children().each(function () {
       varWidth += $(this).outerWidth();
     });
+    // Making sure varWidth is never 0
+    varWidth = varWidth || 1;
 
     resizeMenu();
     $(window).resize(function () {
