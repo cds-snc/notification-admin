@@ -153,7 +153,7 @@
 </script>
 
 {% block page_script %}
-<script src="{{ asset_path }}javascripts/main.min.js"></script>
+<script type="text/javascript" src="{{ asset_url('javascripts/main.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>
 {% endblock %}
 </body>
