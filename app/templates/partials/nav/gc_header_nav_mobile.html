@@ -58,16 +58,16 @@
             {% for link_text, view in [
             ('Live services', 'live_services'),
             ('Trial mode services', 'trial_services'),
+            ('Organisations', 'organisations'),
             ('Live API keys', 'live_api_keys'),
             ('Email branding', 'email_branding'),
-            ('Find services by name', 'find_services_by_name'),
-            ('Find users by email', 'find_users_by_email'),
+            ('Search for service', 'find_services_by_name'),
+            ('Search for user', 'find_users_by_email'),
             ('Email complaints', 'platform_admin_list_complaints'),
             ('Reports', 'platform_admin_reports'),
             ('Inbound SMS numbers', 'inbound_sms_admin'),
             ('Providers', 'view_providers'),
             ('Clear cache', 'clear_cache'),
-            ('Organisations', 'organisations'),
           ] %}
               {{ nav_menu_item_mobile(url_for('main.'+view),_(link_text),'menu--'+admin_navigation.is_selected(view)) }}
             {% endfor %}
