@@ -1,11 +1,6 @@
 (function (Modules) {
   "use strict";
 
-  function safeAddEventListener(selector, event, fn) {
-    if (document.querySelector(selector))
-      document.querySelector(selector).addEventListener(event, fn);
-  }
-
   const focusableElements =
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 

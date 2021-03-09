@@ -36,6 +36,7 @@ const javascripts = () => {
   return src([
     paths.toolkit + "javascripts/govuk/modules.js",
     paths.toolkit + "javascripts/govuk/show-hide-content.js",
+    paths.src + "javascripts/utils.js",
     paths.src + "javascripts/stick-to-window-when-scrolling.js",
     paths.src + "javascripts/detailsPolyfill.js",
     paths.src + "javascripts/apiKey.js",

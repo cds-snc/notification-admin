@@ -1,14 +1,7 @@
 (function (Modules) {
   "use strict";
 
-  function registerMenuEscape($selector, toggleFn) {
-    $selector.keydown(function (e) {
-      if (e.key == "Escape") {
-        const displayed = !!$selector.not(":hidden");
-        if (displayed) toggleFn();
-      }
-    });
-  }
+  const registerKeyDownEscape = window.utils.registerKeyDownEscape;
 
   function toggleMenu($content) {
     // We need to revert the hidden and opacity operations when showing and
@@ -52,7 +45,7 @@
     const fn = () => toggleMenu($content);
     $menuButton.click(fn);
     $closeButton.click(fn);
-    registerMenuEscape($content, fn);
+    registerKeyDownEscape($content, fn);
   }
 
   Modules.MobileMenuAccount = function () {
