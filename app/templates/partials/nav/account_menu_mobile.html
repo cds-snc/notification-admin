@@ -62,6 +62,14 @@
           </li>
           <li class="mb-4">
             <a
+              aria-label="{{ _('Your services') }}"
+              href="{{ url_for('main.choose_account') }}"
+              class="no-underline visited:text-black text-black line-under">
+              {{ _('Your services') }}
+            </a>
+          </li>
+          <li class="mb-4">
+            <a
               aria-label="{{ _('Sign out') }}"
               href="{{ url_for('main.sign_out') }}"
               class="no-underline visited:text-black text-black line-under">
