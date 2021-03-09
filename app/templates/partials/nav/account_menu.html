@@ -1,9 +1,11 @@
 <!-- Large screen menu dropdown -->
-<div class="xs:hidden sm:hidden smaller:hidden md:flex relative justify-end inline-block text-left w-full mr-10">
+<div class="xs:hidden sm:hidden smaller:hidden md:flex justify-end inline-block text-left w-full mr-10">
   <button aria-haspopup="true"
           aria-expanded="true"
           class="inline-flex shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
           id="account-menu"
+          data-module="menu"
+          data-menu-items="account-menu-options"
           role="button"
           type="button">
     <p
@@ -12,7 +14,7 @@
       <img
         alt="Account menu expansion arrow"
         aria-hidden="true"
-        class="account-menu-arrow ml-2 inline"
+        class="account-menu-arrow ml-2 inline arrow"
         src="{{ asset_url('images/arrow-licorice.svg') }}"
         width="20"
       />
