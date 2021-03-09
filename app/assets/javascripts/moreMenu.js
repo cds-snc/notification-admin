@@ -46,7 +46,7 @@
 
     // Calculate how many items fit on the total width.
     // Substract 1 as CSS :gt property is 0-based index.
-    fitCount = Math.floor((elemWidth / varWidth) * ctr) - 1;
+    fitCount = Math.floor((elemWidth / varWidth) * ctr) - 2;
 
     // Reset display and width on all menu items.
     $menuItems.children().css({ display: "block", width: "auto" });
@@ -81,14 +81,14 @@
       // Make sure we are displaying the More menu when it contains items.
       $moreMenu.css({ display: moreMenuDisplay, width: moreMenuWidth });
       // Need to adjust re-alignment..
-      $moreMenuItems.children().removeClass("text-center");
-      $moreMenuItems.children().addClass("text-right");
+      $moreMenuItems.children().removeClass();
+      $moreMenuItems.children().addClass("text-right px-5");
       $moreMenuItems.find(".header--active")
-        .addClass("menu--active")
-        .removeClass("header--active");
+        .removeClass("header--active")  
+        .parent().addClass("menu--active");
 
       const divider = $("<div/>")
-        .addClass("w-full pr-5")
+        .addClass("w-full px-5")
         .append($("<div/>").addClass("float-right menu-divider"));
       let $currentItem = $moreMenuItems.children().first();
       const dividerCount = $moreMenuItems.children().length - 1;
