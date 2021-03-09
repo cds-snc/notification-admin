@@ -46,7 +46,7 @@
 
     // Calculate how many items fit on the total width.
     // Substract 1 as CSS :gt property is 0-based index.
-    fitCount = Math.floor((elemWidth / varWidth) * ctr) - 2;
+    fitCount = Math.floor((elemWidth / varWidth) * ctr) - 1;
 
     // Reset display and width on all menu items.
     $menuItems.children().css({ display: "block", width: "auto" });
