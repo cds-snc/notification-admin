@@ -96,7 +96,8 @@
         {% call row() %}
           {% set txt = _('Daily message limit') %}
           {{ text_field(txt)}}
-          {{ text_field(current_service.message_limit | format_number) }}
+          {% set message_limit = _('{} notifications').format(current_service.message_limit | format_number) %}
+          {{ text_field(message_limit) }}
           {{ text_field('') }}
         {% endcall %}
 
@@ -184,7 +185,13 @@
             attributes=""
           )}}
         {% endcall %}
-
+        {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
+          {% set txt = _('Yearly free maximum') %}
+          {{ text_field(txt) }}
+          {% set annual_limit = _('{} million emails').format((limits.free_yearly_email//1000000) | format_number) %}
+          {{ text_field(annual_limit) }}
+          {{ text_field('')}}
+        {% endcall %}
       {% endcall %}
 
       {% set caption = _('Text message settings') %}
@@ -238,6 +245,14 @@
               permissions=['manage_service']
           )
           }}
+        {% endcall %}
+
+        {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
+          {% set txt = _('Yearly free maximum') %}
+          {{ text_field(txt) }}
+          {% set txt_msg_limit = _('{} text messages').format(limits.free_yearly_sms | format_number) %}
+          {{ text_field(txt_msg_limit) }}
+          {{ text_field('')}}
         {% endcall %}
       {% endcall %}
 
