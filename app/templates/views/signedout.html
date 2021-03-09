@@ -62,35 +62,39 @@
               <p class="pt-10 pb-16 text-white text-base">
                 {{ _("Try GC Notify, a better way to send service updates to your clients.") }}
               </p>
-              <div class="pt-0">
-                <a
-                  href="{{ url_for('.register' ) }}"
-                  class="button button-blue-lighter mr-10 hover:bg-blue-selected"
-                >{{ _("Create an account") }}</a
-                >
-                <a
-                  href="{{ url_for('main.sign_in' ) }}"
-                  class="line-under text-white link:text-white visited:text-white text-default underline hover:no-underline text-base"
-                >{{ _("Sign in") }}</a
-                >
+              <div class="pt-0 flex flex-wrap">
+                <div class="flex-shrink-0">
+                  <a
+                    href="{{ url_for('.register' ) }}"
+                    class="button button-blue-lighter mr-10 hover:bg-blue-selected"
+                  >{{ _("Create an account") }}</a
+                  >
+                </div>
+                <div class="flex-shrink-0">
+                  <a
+                    href="{{ url_for('main.sign_in' ) }}"
+                    class="line-under text-white link:text-white visited:text-white text-default underline hover:no-underline text-base"
+                  >{{ _("Sign in") }}</a
+                  >
+                </div>
               </div>
             </div>
             <div class="pt-6 pb-6 ml-10 image-content hidden lg:block lg:visible">
               {% if session["userlang"] == "en" %}
-              <img
-                loading="lazy"
-                alt="An illustration of a laptop with a message window on the screen and a cellphone with a message and a callout blurb."
-                src="{{ asset_s3_url('mac-phone.svg') }}"
-                width="350"
-              />
+                <img
+                  loading="lazy"
+                  alt="An illustration of a laptop with a message window on the screen and a cellphone with a message and a callout blurb."
+                  src="{{ asset_s3_url('mac-phone.svg') }}"
+                  width="350"
+                />
               {% else %}
-              <img
-                loading="lazy"
-                alt="Illustration d'un ordinateur portable dont l'écran affiche une fenêtre avec un message et d'un téléphone cellulaire affichant un message et une bulle de texte."
-                src="{{ asset_s3_url('mac-phone.svg') }}"
-                width="350"
-              />
-            {% endif %}
+                <img
+                  loading="lazy"
+                  alt="Illustration d'un ordinateur portable dont l'écran affiche une fenêtre avec un message et d'un téléphone cellulaire affichant un message et une bulle de texte."
+                  src="{{ asset_s3_url('mac-phone.svg') }}"
+                  width="350"
+                />
+              {% endif %}
             </div>
           </div>
         </div>
@@ -508,7 +512,7 @@
     </div>
   </div>
   <!-- start section 8 -->
-{% include 'partials/nav/footer.html' %}
+  {% include 'partials/nav/footer.html' %}
 
 
 

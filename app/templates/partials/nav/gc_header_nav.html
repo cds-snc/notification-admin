@@ -27,7 +27,7 @@
         {% if current_user.is_authenticated %}
           {% include 'partials/nav/account_menu_mobile.html' %}
         {% else %}
-          <div class="self-center">
+          <div class="self-center flex-shrink-0">
             <a
               href="{{ url_for('main.sign_in' ) }}"
               class="px-5 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
