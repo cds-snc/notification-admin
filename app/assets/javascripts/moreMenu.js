@@ -10,11 +10,6 @@
     $menuItems = null,
     collectedSet = [];
 
-  function safeAddEventListener(selector, event, fn) {
-    if (document.querySelector(selector))
-      document.querySelector(selector).addEventListener(event, fn);
-  }
-
   function menuToggle($menuContainer, $arrow) {
     $menuContainer.toggleClass("hidden");
     if ($arrow) $arrow.toggleClass("flip");
