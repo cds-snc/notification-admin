@@ -20,7 +20,7 @@
     $moreMenu = $menu;
     const menuItemsId = "#" + $moreMenu.attr("data-module-menu-items");
     const menuContainerId = "#" + $moreMenu.attr("data-module-menu-container");
-    
+
     $menuItems = $(menuItemsId);
     $menuContainer = $(menuContainerId);
     $moreMenu.click(() => menuToggle($menuContainer, $moreMenu.find(".arrow")));
@@ -59,9 +59,11 @@
 
     // Empty the more menu and add the out of space menu items in
     // a special set.
-    var $moreMenuItems = $('<div/>')
-        .attr("id", "more-menu-items")
-        .addClass("flex flex-col flex-shrink-0 text-right bg-gray float-right -mr-8");
+    var $moreMenuItems = $("<div/>")
+      .attr("id", "more-menu-items")
+      .addClass(
+        "absolute right-0 flex flex-col flex-shrink-0 text-right bg-gray mr-24"
+      );
     $menuContainer.html($moreMenuItems);
 
     // Remember the display and width of the More menu.
@@ -73,7 +75,7 @@
     $moreMenu.removeClass("hidden");
 
     if (collectedSet.length > 0) {
-      // Hide items in the collection, because these sub-menus are not visible 
+      // Hide items in the collection, because these sub-menus are not visible
       // in the menu anymore.
       collectedSet.css({ display: "none", width: "0" });
       // Make sure we are displaying the More menu when it contains items.
@@ -81,6 +83,20 @@
       // Need to adjust re-alignment..
       $moreMenuItems.children().removeClass("text-center");
       $moreMenuItems.children().addClass("text-right");
+      $moreMenuItems.find(".header--active")
+        .addClass("menu--active")
+        .removeClass("header--active");
+
+      const divider = $("<div/>")
+        .addClass("w-full pr-5")
+        .append($("<div/>").addClass("float-right menu-divider"));
+      let $currentItem = $moreMenuItems.children().first();
+      const dividerCount = $moreMenuItems.children().length - 1;
+      for (var idx = 0; idx < dividerCount; idx++) {
+        const $nextItem = $currentItem.next();
+        divider.clone().insertAfter($currentItem);
+        $currentItem = $nextItem;
+      }
     } else {
       // Hide the More menu when it does not contain item(s).
       $moreMenu.addClass("hidden");
