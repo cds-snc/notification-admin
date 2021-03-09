@@ -339,7 +339,15 @@ def service_switch_live(service_id):
     )
 
     if form.validate_on_submit():
-        current_service.update_status(live=form.enabled.data)
+        live = form.enabled.data
+        message_limit = current_app.config["DEFAULT_SERVICE_LIMIT"]
+        if live:
+            if current_service.message_limit != current_app.config["DEFAULT_SERVICE_LIMIT"]:
+                message_limit = current_service.message_limit
+            else:
+                message_limit = current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"]
+
+        current_service.update_status(live=live, message_limit=message_limit)
         return redirect(url_for('.service_settings', service_id=service_id))
 
     return render_template(
