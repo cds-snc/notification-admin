@@ -63,18 +63,20 @@ def mock_get_service_settings_page_common(
         'Service name Test Service Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
-        'Daily message limit 1,000',
+        'Daily message limit 1,000 notifications',
         'API rate limit per minute 100 calls',
 
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
         'Email branding English Government of Canada signature Change',
+        'Yearly free maximum 10 million emails',
 
         'Label Value Action',
         'Send text messages On Change',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
+        'Yearly free maximum 25,000 text messages',
     ]),
     (platform_admin_user, [
 
@@ -82,21 +84,23 @@ def mock_get_service_settings_page_common(
         'Service name Test Service Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
-        'Daily message limit 1,000',
+        'Daily message limit 1,000 notifications',
         'API rate limit per minute 100 calls',
 
         'Label Value Action',
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
         'Email branding English Government of Canada signature Change',
+        'Yearly free maximum 10 million emails',
 
         'Label Value Action',
         'Send text messages On Change',
         'Start text messages with service name On Change',
         'Send international text messages Off Change',
+        'Yearly free maximum 25,000 text messages',
 
         'Label Value Action',
-        'Live Off Change',
+        'Live On Change',
         'Count in list of live services Yes Change',
         'Organisation Test Organisation Government of Canada Change',
         'Daily message limit 1,000 Change',
@@ -128,7 +132,8 @@ def test_should_show_overview(
     service_one = service_json(SERVICE_ONE_ID,
                                users=[api_user_active['id']],
                                permissions=['sms', 'email'],
-                               organisation_id=ORGANISATION_ID)
+                               organisation_id=ORGANISATION_ID,
+                               restricted=False)
     mocker.patch('app.service_api_client.get_service', return_value={'data': service_one})
 
     client.login(user(fake_uuid), mocker, service_one)
@@ -200,7 +205,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Service name service one Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Text message code Change',
-        'Daily message limit 1,000',
+        'Daily message limit 1,000 notifications',
         'API rate limit per minute 100 calls',
 
         'Label Value Action',
@@ -218,7 +223,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Service name service one Change',
         'Sending email address test.service@{sending_domain} Change',
         'Sign-in method Email code or text message code Change',
-        'Daily message limit 1,000',
+        'Daily message limit 1,000 notifications',
         'API rate limit per minute 100 calls',
 
         'Label Value Action',
@@ -3102,7 +3107,7 @@ def test_archive_service_after_confirm(
     )
 
     mocked_fn.assert_called_once_with('/service/{}/archive'.format(SERVICE_ONE_ID), data=None)
-    assert normalize_spaces(page.select_one('h1').text) == 'All services'
+    assert normalize_spaces(page.select_one('h1').text) == 'Your services'
     assert normalize_spaces(page.select_one('.banner-default-with-tick').text) == (
         '‘service one’ was deleted'
     )

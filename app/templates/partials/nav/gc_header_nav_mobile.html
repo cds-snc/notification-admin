@@ -30,21 +30,21 @@
           <!-- service menu dropdown / signed in / mobile -->
           {% if current_user.has_permissions() %} {# service in the context #}
             {% if current_user.has_permissions('view_activity') %}
-              {{ nav_menu_item_mobile(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'menu--'+header_navigation.is_selected('dashboard')) }}
+              {{ nav_menu_item_mobile(url_for('main.service_dashboard', service_id=current_service.id),_('Dashboard'),'menu--'+header_navigation.is_selected('dashboard')) }}
             {% endif %}
-            {{ nav_menu_item_mobile( url_for('.choose_template', service_id=current_service.id),_('Templates'),'menu--'+header_navigation.is_selected('templates')) }}
+            {{ nav_menu_item_mobile( url_for('main.choose_template', service_id=current_service.id),_('Templates'),'menu--'+header_navigation.is_selected('templates')) }}
             {% if not current_user.has_permissions('view_activity') %}
-              {{ nav_menu_item_mobile(url_for('.view_notifications', service_id=current_service.id, status='sending,delivered,failed'),_('Sent messages'),'menu--'+header_navigation.is_selected('sent-messages')) }}
+              {{ nav_menu_item_mobile(url_for('main.view_notifications', service_id=current_service.id, status='sending,delivered,failed'),_('Sent messages'),'menu--'+header_navigation.is_selected('sent-messages')) }}
               {% if current_service.has_jobs %}
-                {{ nav_menu_item_mobile(url_for('.view_jobs', service_id=current_service.id),_('Uploaded files'),'menu--'+header_navigation.is_selected('uploaded-files')) }}
+                {{ nav_menu_item_mobile(url_for('main.view_jobs', service_id=current_service.id),_('Uploaded files'),'menu--'+header_navigation.is_selected('uploaded-files')) }}
               {% endif %}
             {% endif %}
             {% if current_user.has_permissions('manage_api_keys') %}
-              {{ nav_menu_item_mobile(url_for('.api_integration', service_id=current_service.id),_('API integration'),'menu--'+header_navigation.is_selected('api-integration')) }}
+              {{ nav_menu_item_mobile(url_for('main.api_integration', service_id=current_service.id),_('API integration'),'menu--'+header_navigation.is_selected('api-integration')) }}
             {% endif %}
-            {{ nav_menu_item_mobile(url_for('.manage_users', service_id=current_service.id),_('Team members'),'menu--'+header_navigation.is_selected('team-members')) }}
+            {{ nav_menu_item_mobile(url_for('main.manage_users', service_id=current_service.id),_('Team members'),'menu--'+header_navigation.is_selected('team-members')) }}
             {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
-              {{ nav_menu_item_mobile(url_for('.service_settings', service_id=current_service.id),_('Settings'),'menu--'+header_navigation.is_selected('settings')) }}
+              {{ nav_menu_item_mobile(url_for('main.service_settings', service_id=current_service.id),_('Settings'),'menu--'+header_navigation.is_selected('settings')) }}
             {% endif %}
           {% else %} {# not current_user.has_permissions() / no service in context #}
             {{ nav_menu_item_mobile(url_for('main.choose_account', service_id=current_service.id),_('Your services'),'menu--'+header_navigation.is_selected('choose_account')) }}
@@ -54,35 +54,35 @@
         {% else %} {# current_user.platform_admin #}
           <!-- service menu dropdown / signed in / admin / mobile -->
           {% if platform_admin_view_ind %}
-            {{ nav_menu_item_mobile(url_for('.choose_account', service_id=current_service.id),_('Your services'),'menu--'+header_navigation.is_selected('choose_account')) }}
+            {{ nav_menu_item_mobile(url_for('main.choose_account', service_id=current_service.id),_('Your services'),'menu--'+header_navigation.is_selected('choose_account')) }}
             {% for link_text, view in [
             ('Live services', 'live_services'),
             ('Trial mode services', 'trial_services'),
+            ('Organisations', 'organisations'),
             ('Live API keys', 'live_api_keys'),
             ('Email branding', 'email_branding'),
-            ('Find services by name', 'find_services_by_name'),
-            ('Find users by email', 'find_users_by_email'),
+            ('Search for service', 'find_services_by_name'),
+            ('Search for user', 'find_users_by_email'),
             ('Email complaints', 'platform_admin_list_complaints'),
             ('Reports', 'platform_admin_reports'),
             ('Inbound SMS numbers', 'inbound_sms_admin'),
             ('Providers', 'view_providers'),
             ('Clear cache', 'clear_cache'),
-            ('Organizations', 'organisations'),
           ] %}
               {{ nav_menu_item_mobile(url_for('main.'+view),_(link_text),'menu--'+admin_navigation.is_selected(view)) }}
             {% endfor %}
           {% else %} {# not platform_admin_view_ind #}
             {% if current_user.has_permissions() %} {# Service in context #}
-              {{ nav_menu_item_mobile(url_for('.live_services', service_id=current_service.id),_('Platform admin')) }}
-              {{ nav_menu_item_mobile(url_for('.service_dashboard', service_id=current_service.id),_('Dashboard'),'menu--'+header_navigation.is_selected('dashboard')) }}
-              {{ nav_menu_item_mobile( url_for('.choose_template', service_id=current_service.id),_('Templates'),'menu--'+header_navigation.is_selected('templates')) }}
-              {{ nav_menu_item_mobile(url_for('.api_integration', service_id=current_service.id),_('API integration'),'menu--'+header_navigation.is_selected('api-integration')) }}
-              {{ nav_menu_item_mobile(url_for('.manage_users', service_id=current_service.id),_('Team members'),'menu--'+header_navigation.is_selected('team-members')) }}
-              {{ nav_menu_item_mobile(url_for('.service_settings', service_id=current_service.id),_('Settings'),'menu--'+header_navigation.is_selected('settings')) }}
+              {{ nav_menu_item_mobile(url_for('main.live_services', service_id=current_service.id),_('Admin panel')) }}
+              {{ nav_menu_item_mobile(url_for('main.service_dashboard', service_id=current_service.id),_('Dashboard'),'menu--'+header_navigation.is_selected('dashboard')) }}
+              {{ nav_menu_item_mobile( url_for('main.choose_template', service_id=current_service.id),_('Templates'),'menu--'+header_navigation.is_selected('templates')) }}
+              {{ nav_menu_item_mobile(url_for('main.api_integration', service_id=current_service.id),_('API integration'),'menu--'+header_navigation.is_selected('api-integration')) }}
+              {{ nav_menu_item_mobile(url_for('main.manage_users', service_id=current_service.id),_('Team members'),'menu--'+header_navigation.is_selected('team-members')) }}
+              {{ nav_menu_item_mobile(url_for('main.service_settings', service_id=current_service.id),_('Settings'),'menu--'+header_navigation.is_selected('settings')) }}
               {{ nav_menu_item_mobile(url_for('main.smtp_integration', service_id=current_service.id),_('SMTP'),'menu--'+header_navigation.is_selected('smtp-integration')) }}
             {% else %} {# current_user.has_permissions() #}
               {{ nav_menu_item_mobile(url_for('main.choose_account', service_id=current_service.id),_('Your services'),'menu--'+header_navigation.is_selected('choose_account')) }}
-              {{ nav_menu_item_mobile(url_for('main.live_services', service_id=current_service.id),_('Platform admin')) }}
+              {{ nav_menu_item_mobile(url_for('main.live_services', service_id=current_service.id),_('Admin panel')) }}
             {% endif %}
           {% endif %}
           <!-- service menu dropdown / signed in / admin / mobile / END-->

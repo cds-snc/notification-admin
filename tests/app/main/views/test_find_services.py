@@ -5,7 +5,7 @@ def test_find_services_by_name_page_loads_correctly(client_request, platform_adm
     client_request.login(platform_admin_user)
     document = client_request.get('main.find_services_by_name')
 
-    assert document.h1.text.strip() == 'Find services by name'
+    assert document.h1.text.strip() == 'Search for service'
     assert len(document.find_all('input', {'type': 'search'})) > 0
 
 
