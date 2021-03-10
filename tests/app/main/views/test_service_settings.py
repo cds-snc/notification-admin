@@ -409,13 +409,22 @@ def test_show_restricted_service(
 
 
 @freeze_time("2017-04-01 11:09:00.061258")
+@pytest.mark.parametrize('current_limit, expected_limit', [
+    (42, 42),
+    # Maps to DEFAULT_SERVICE_LIMIT and DEFAULT_LIVE_SERVICE_LIMIT in config
+    (50, 10_000),
+    (50_000, 50_000),
+])
 def test_switch_service_to_live(
     client_request,
     platform_admin_user,
     mock_update_service,
-    mock_get_inbound_number_for_service
+    service_one,
+    current_limit,
+    expected_limit,
 ):
-    client_request.login(platform_admin_user)
+    service_one['message_limit'] = current_limit
+    client_request.login(platform_admin_user, service_one)
     client_request.post(
         'main.service_switch_live',
         service_id=SERVICE_ONE_ID,
@@ -429,7 +438,7 @@ def test_switch_service_to_live(
     )
     mock_update_service.assert_called_with(
         SERVICE_ONE_ID,
-        message_limit=10_000,
+        message_limit=expected_limit,
         restricted=False,
         go_live_at="2017-04-01 11:09:00.061258"
     )
@@ -453,14 +462,22 @@ def test_show_live_service(
     assert url_for('.request_to_go_live', service_id=SERVICE_ONE_ID) not in page
 
 
+@pytest.mark.parametrize('current_limit, expected_limit', [
+    (42, 50),
+    (50, 50),
+    (50_000, 50),
+])
 def test_switch_service_to_restricted(
     client_request,
     platform_admin_user,
     mock_get_live_service,
     mock_update_service,
-    mock_get_inbound_number_for_service,
+    current_limit,
+    expected_limit,
+    service_one,
 ):
-    client_request.login(platform_admin_user)
+    service_one['message_limit'] = current_limit
+    client_request.login(platform_admin_user, service_one)
     client_request.post(
         'main.service_switch_live',
         service_id=SERVICE_ONE_ID,
@@ -474,7 +491,7 @@ def test_switch_service_to_restricted(
     )
     mock_update_service.assert_called_with(
         SERVICE_ONE_ID,
-        message_limit=50,
+        message_limit=expected_limit,
         restricted=True,
         go_live_at=None
     )

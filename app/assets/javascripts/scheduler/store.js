@@ -59,6 +59,7 @@ export const defaultState = (
     updateMessage: "",
     _24hr: LOCALE === "en" ? "off" : "on",
     errors: "",
+    // REVIEW: Raises error past 23h00m in a day, not great when debugging late.
     time: dateIsToday([yearMonthDay(firstDay)]) ? timeValuesToday([yearMonthDay(firstDay)], time_values)[0].val : time_values[0].val,
     time_values: time_values,
     isBlockedDay: blockedDay
