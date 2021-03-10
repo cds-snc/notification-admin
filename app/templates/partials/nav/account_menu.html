@@ -50,6 +50,16 @@
     <div class="float-right menu-divider"></div>
     <div class="py-4">
       <a
+        aria-label="{{ _('Your services') }}"
+        href="{{ url_for('main.choose_account') }}"
+        class="block leading-none text-blue visited:text-blue link:text-blue no-underline text-small"
+        role="menuitem">
+        {{ _('Your services') }}
+      </a>
+    </div>
+    <div class="float-right account-menu-divider"></div>
+    <div class="py-4">
+      <a
         aria-label="{{ _('Sign out') }}"
         href="{{ url_for('main.sign_out') }}"
         class="block leading-none text-blue visited:text-blue link:text-blue no-underline text-small"
