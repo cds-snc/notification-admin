@@ -74,8 +74,8 @@ class Service(JSONModel):
     def update_count_as_live(self, count_as_live):
         return service_api_client.update_count_as_live(self.id, count_as_live=count_as_live)
 
-    def update_status(self, live):
-        return service_api_client.update_status(self.id, live=live)
+    def update_status(self, live, message_limit):
+        return service_api_client.update_status(self.id, live=live, message_limit=message_limit)
 
     def force_permission(self, permission, on=False):
 
