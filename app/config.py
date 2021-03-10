@@ -53,8 +53,8 @@ class Config(object):
 
     ASSETS_DEBUG = False
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
-    DEFAULT_LIVE_SERVICE_LIMIT = 10_000
-    DEFAULT_SERVICE_LIMIT = 50
+    DEFAULT_LIVE_SERVICE_LIMIT = int(os.environ.get("DEFAULT_LIVE_SERVICE_LIMIT", 10_000))
+    DEFAULT_SERVICE_LIMIT = int(os.environ.get("DEFAULT_SERVICE_LIMIT", 50))
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
         'central': 25_000,
         'local': 25_000,
