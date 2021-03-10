@@ -25,7 +25,7 @@ Flask-Babel==2.0.0
 newrelic==6.0.1.155
 python-dotenv==0.15.0
 pwnedpasswords==2.0.0
-PyYAML==5.3.1
+PyYAML==5.4
 translate-toolkit==3.3.1
 ua-parser==0.10.0
 user-agents==2.2.0
