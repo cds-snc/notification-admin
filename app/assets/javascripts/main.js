@@ -69,8 +69,6 @@ window.formatAllDates = function () {
 
 }
 
-
-
 $(() => GOVUK.stickAtTopWhenScrolling.init());
 $(() => GOVUK.stickAtBottomWhenScrolling.init());
 
@@ -106,7 +104,7 @@ $(() =>
 
 (function() {
   "use strict";
-  var root = this;
+  var root = this || window;
   if (typeof root.GOVUK === "undefined") {
     root.GOVUK = {};
   }
@@ -169,7 +167,7 @@ $(() =>
 }.call(this));
 (function() {
   "use strict";
-  var root = this;
+  var root = this || window;
   if (typeof root.GOVUK === "undefined") {
     root.GOVUK = {};
   }

@@ -4,6 +4,8 @@
           aria-expanded="true"
           class="inline-flex shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
           id="account-menu"
+          data-module="menu"
+          data-menu-items="account-menu-options"
           role="button"
           type="button">
     <p
@@ -12,7 +14,7 @@
       <img
         alt="Account menu expansion arrow"
         aria-hidden="true"
-        class="account-menu-arrow ml-2 inline"
+        class="account-menu-arrow ml-2 inline arrow"
         src="{{ asset_url('images/arrow-licorice.svg') }}"
         width="20"
       />
@@ -34,7 +36,7 @@
         {{ _('Admin panel') }}
       </a>
     </div>
-    <div class="float-right account-menu-divider"></div>
+    <div class="float-right menu-divider"></div>
     {% endif %}
     <div class="py-4">
       <a
@@ -45,7 +47,7 @@
         {{ _('Your profile') }}
       </a>
     </div>
-    <div class="float-right account-menu-divider"></div>
+    <div class="float-right menu-divider"></div>
     <div class="py-4">
       <a
         aria-label="{{ _('Your services') }}"
@@ -55,7 +57,7 @@
         {{ _('Your services') }}
       </a>
     </div>
-    <div class="float-right account-menu-divider"></div>
+    <div class="float-right menu-divider"></div>
     <div class="py-4">
       <a
         aria-label="{{ _('Sign out') }}"
