@@ -133,7 +133,7 @@ def test_sms_should_login_user_and_should_redirect_to_next_url(
 
 
 @pytest.mark.parametrize('method', ['email', 'sms'])
-def test_should_login_platform_admin_user_and_should_redirect_to_next_url(
+def test_should_login_platform_admin_user_and_redirect_to_your_services(
     client,
     platform_admin_user,
     mocker,
