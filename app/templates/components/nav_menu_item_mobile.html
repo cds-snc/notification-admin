@@ -1,11 +1,24 @@
-{% macro nav_menu_item_mobile(url=None, localised_txt=None, css_classes=None) %}
+{% macro nav_menu_item_mobile(url=None, localised_txt=None, 
+                              is_selected=False, is_external_link=False, css_classes=None) %}
   {% if url and localised_txt %}
-    <li class="py-4 pl-8 {{ css_classes }}">
+    <li class="mb-4">
       <a
         aria-label="{{ localised_txt }}"
-        class="text-blue visited:text-blue link:text-blue no-underline hover:underline line-under"
-        href="{{ url }}">
+        href="{{ url }}"
+        class="no-underline visited:text-black text-black line-under {% if is_selected %} menu--active {% endif %} {{ css_classes }}"
+        {% if is_external_link %}
+        target="_blank"
+        {% endif %}
+      >
         {{ localised_txt }}
+        {% if is_external_link %}
+        <img
+          aria-hidden="false"
+          aria-label="{{ localised_txt }}"
+          src="{{ asset_url('images/external.svg') }}"
+          alt="Open link in new window"
+          class="inline w-8 h-8 pb-2"/>
+        {% endif %}
       </a>
     </li>
   {% endif %}
