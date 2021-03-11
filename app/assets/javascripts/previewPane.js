@@ -2,8 +2,8 @@
 
   'use strict';
 
-  const root = this,
-      $ = this.jQuery;
+  const root = this || window;
+  const $ = root.jQuery;
 
   let branding_style = $('.multiple-choice input[name="branding_style"]:checked');
 

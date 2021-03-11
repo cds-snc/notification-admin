@@ -1,6 +1,11 @@
 <!-- account menu dropdown / mobile -->
 <div class="md:hidden">
-  <button id="account-icon-mobile" class="p-1 h-14 border-2 border-solid border-gray rounded-lg">
+  <button 
+    id="account-icon-mobile" 
+    class="p-1 h-14 border-2 border-solid border-gray rounded-lg" 
+    data-module="mobile-menu-account" 
+    data-mobile-menu-content="account-menu-mobile" 
+    data-mobile-menu-account-close="account-close-mobile">
     <img
       aria-hidden="false"
       aria-label="{{ _('Account menu') }}"
@@ -10,8 +15,10 @@
       class="w-10 h-10"/>
   </button>
 
-  <div id="account-menu-mobile"
-       class="modal fixed w-full h-full top-0 left-0 z-50 pointer-events-none transition duration-150 ease-in-out transition-opacity opacity-0 hidden">
+  <div 
+    id="account-menu-mobile"
+    data-module="scope-tab-navigation"
+    class="modal fixed w-full h-full top-0 left-0 z-50 pointer-events-auto transition duration-150 ease-in-out transition-opacity opacity-0 hidden">
 
     <div class="modal-overlay absolute w-full h-full bg-white opacity-95"></div>
 
@@ -25,9 +32,10 @@
             alt="Account icon"
             class="float-left w-12 h-12"/>
         </div>
-        <div id="account-close-mobile"
-             class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-xs z-50">
-          <button class="justify-self-center">
+        <div class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-xs z-50">
+          <button 
+            id="account-close-mobile"
+            class="justify-self-center">
             <img
               alt="Close button"
               aria-hidden="false"
@@ -58,6 +66,14 @@
               href="{{ url_for('main.user_profile') }}"
               class="no-underline visited:text-black text-black line-under">
               {{ _('Your profile') }}
+            </a>
+          </li>
+          <li class="mb-4">
+            <a
+              aria-label="{{ _('Your services') }}"
+              href="{{ url_for('main.choose_account') }}"
+              class="no-underline visited:text-black text-black line-under">
+              {{ _('Your services') }}
             </a>
           </li>
           <li class="mb-4">

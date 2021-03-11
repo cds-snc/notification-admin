@@ -36,6 +36,7 @@ const javascripts = () => {
   return src([
     paths.toolkit + "javascripts/govuk/modules.js",
     paths.toolkit + "javascripts/govuk/show-hide-content.js",
+    paths.src + "javascripts/utils.js",
     paths.src + "javascripts/stick-to-window-when-scrolling.js",
     paths.src + "javascripts/detailsPolyfill.js",
     paths.src + "javascripts/apiKey.js",
@@ -53,6 +54,10 @@ const javascripts = () => {
     paths.src + "javascripts/colourPreview.js",
     paths.src + "javascripts/templateFolderForm.js",
     paths.src + "javascripts/collapsibleCheckboxes.js",
+    paths.src + "javascripts/moreMenu.js",
+    paths.src + "javascripts/menu.js",
+    paths.src + "javascripts/mobileMenuAccount.js",
+    paths.src + "javascripts/scopeTabNavigation.js",
     paths.src + "javascripts/main.js"
   ])
     .pipe(plugins.prettyerror())

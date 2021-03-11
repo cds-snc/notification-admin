@@ -81,7 +81,6 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
 @main.route("/services/<service_id>/service-settings")
 @user_has_permissions('manage_service', 'manage_api_keys')
 def service_settings(service_id: str):
-
     limits = {
         'free_yearly_email': current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
         'free_yearly_sms': current_app.config["FREE_YEARLY_SMS_LIMIT"]
@@ -91,7 +90,7 @@ def service_settings(service_id: str):
     return render_template(
         'views/service-settings.html',
         service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS,
-        sending_domain=current_app.config["SENDING_DOMAIN"],
+        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],
         limits=limits
     )
 
@@ -339,7 +338,15 @@ def service_switch_live(service_id):
     )
 
     if form.validate_on_submit():
-        current_service.update_status(live=form.enabled.data)
+        live = form.enabled.data
+        message_limit = current_app.config["DEFAULT_SERVICE_LIMIT"]
+        if live:
+            if current_service.message_limit != current_app.config["DEFAULT_SERVICE_LIMIT"]:
+                message_limit = current_service.message_limit
+            else:
+                message_limit = current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"]
+
+        current_service.update_status(live=live, message_limit=message_limit)
         return redirect(url_for('.service_settings', service_id=service_id))
 
     return render_template(
