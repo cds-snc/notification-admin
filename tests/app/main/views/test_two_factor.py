@@ -1,7 +1,13 @@
+import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
-from tests.conftest import SERVICE_ONE_ID, captured_templates
+from tests.conftest import (
+    SERVICE_ONE_ID,
+    captured_templates,
+    mock_get_user,
+    mock_get_user_by_email,
+)
 
 
 def test_should_render_sms_two_factor_page(
@@ -124,6 +130,34 @@ def test_sms_should_login_user_and_should_redirect_to_next_url(
         service_id=SERVICE_ONE_ID,
         _external=True
     )
+
+
+@pytest.mark.parametrize('method', ['email', 'sms'])
+def test_should_login_platform_admin_user_and_should_redirect_to_next_url(
+    client,
+    platform_admin_user,
+    mocker,
+    mock_check_verify_code,
+    mock_create_event,
+    mock_get_security_keys,
+    mock_get_login_events,
+    method
+):
+    mock_get_user(mocker, platform_admin_user)
+    mock_get_user_by_email(mocker, platform_admin_user)
+
+    with client.session_transaction() as session:
+        session['user_details'] = {
+            'id': platform_admin_user['id'],
+            'email': platform_admin_user['email_address']
+        }
+    response = client.post(
+        url_for(f'main.two_factor_{method}_sent'),
+        data={'two_factor_code': '12345'}
+    )
+
+    assert response.status_code == 302
+    assert response.location == url_for('main.choose_account', _external=True)
 
 
 def test_email_should_login_user_and_should_redirect_to_next_url(
