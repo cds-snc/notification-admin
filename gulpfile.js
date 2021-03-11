@@ -56,7 +56,7 @@ const javascripts = () => {
     paths.src + "javascripts/collapsibleCheckboxes.js",
     paths.src + "javascripts/moreMenu.js",
     paths.src + "javascripts/menu.js",
-    paths.src + "javascripts/mobileMenuAccount.js",
+    paths.src + "javascripts/menuOverlay.js",
     paths.src + "javascripts/scopeTabNavigation.js",
     paths.src + "javascripts/main.js"
   ])
