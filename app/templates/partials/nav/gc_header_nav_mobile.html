@@ -1,6 +1,6 @@
 {% from "components/nav_menu_item_mobile.html" import nav_menu_item_mobile %}
 
-<div class="mobile-nav container hidden">
+<div id="mobile-menu-items" class="mobile-nav container hidden">
   <div class="absolute bg-white w-full z-40">
     <ul>
       {% if not current_user.is_authenticated %}

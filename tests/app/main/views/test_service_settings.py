@@ -56,8 +56,8 @@ def mock_get_service_settings_page_common(
     return
 
 
-@pytest.mark.parametrize('user, expected_rows', [
-    (active_user_with_permissions, [
+@pytest.mark.parametrize('user, sending_domain, expected_rows', [
+    (active_user_with_permissions, None, [
 
         'Label Value Action',
         'Service name Test Service Change',
@@ -78,7 +78,7 @@ def mock_get_service_settings_page_common(
         'Send international text messages Off Change',
         'Yearly free maximum 25,000 text messages',
     ]),
-    (platform_admin_user, [
+    (platform_admin_user, 'test.example.com', [
 
         'Label Value Action',
         'Service name Test Service Change',
@@ -117,23 +117,28 @@ def mock_get_service_settings_page_common(
     ]),
 ])
 def test_should_show_overview(
-        client,
-        mocker,
-        api_user_active,
-        fake_uuid,
-        no_reply_to_email_addresses,
-        no_letter_contact_blocks,
-        mock_get_service_organisation,
-        single_sms_sender,
-        user,
-        expected_rows,
-        mock_get_service_settings_page_common,
+    client,
+    mocker,
+    api_user_active,
+    fake_uuid,
+    no_reply_to_email_addresses,
+    no_letter_contact_blocks,
+    mock_get_service_organisation,
+    single_sms_sender,
+    user,
+    sending_domain,
+    expected_rows,
+    mock_get_service_settings_page_common,
+    app_,
 ):
-    service_one = service_json(SERVICE_ONE_ID,
-                               users=[api_user_active['id']],
-                               permissions=['sms', 'email'],
-                               organisation_id=ORGANISATION_ID,
-                               restricted=False)
+    service_one = service_json(
+        SERVICE_ONE_ID,
+        users=[api_user_active['id']],
+        permissions=['sms', 'email'],
+        organisation_id=ORGANISATION_ID,
+        restricted=False,
+        sending_domain=sending_domain,
+    )
     mocker.patch('app.service_api_client.get_service', return_value={'data': service_one})
 
     client.login(user(fake_uuid), mocker, service_one)
@@ -145,9 +150,9 @@ def test_should_show_overview(
     assert page.find('h1').text == 'Settings'
     rows = page.select('tr')
     for index, row in enumerate(expected_rows):
-        formatted_row = row.format(sending_domain=os.environ.get(
-            'SENDING_DOMAIN', 'notification.alpha.canada.ca'
-        ))
+        formatted_row = row.format(
+            sending_domain=sending_domain or app_.config['SENDING_DOMAIN']
+        )
         assert formatted_row == " ".join(rows[index].text.split())
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
@@ -409,13 +414,22 @@ def test_show_restricted_service(
 
 
 @freeze_time("2017-04-01 11:09:00.061258")
+@pytest.mark.parametrize('current_limit, expected_limit', [
+    (42, 42),
+    # Maps to DEFAULT_SERVICE_LIMIT and DEFAULT_LIVE_SERVICE_LIMIT in config
+    (50, 10_000),
+    (50_000, 50_000),
+])
 def test_switch_service_to_live(
     client_request,
     platform_admin_user,
     mock_update_service,
-    mock_get_inbound_number_for_service
+    service_one,
+    current_limit,
+    expected_limit,
 ):
-    client_request.login(platform_admin_user)
+    service_one['message_limit'] = current_limit
+    client_request.login(platform_admin_user, service_one)
     client_request.post(
         'main.service_switch_live',
         service_id=SERVICE_ONE_ID,
@@ -429,7 +443,7 @@ def test_switch_service_to_live(
     )
     mock_update_service.assert_called_with(
         SERVICE_ONE_ID,
-        message_limit=10_000,
+        message_limit=expected_limit,
         restricted=False,
         go_live_at="2017-04-01 11:09:00.061258"
     )
@@ -453,14 +467,22 @@ def test_show_live_service(
     assert url_for('.request_to_go_live', service_id=SERVICE_ONE_ID) not in page
 
 
+@pytest.mark.parametrize('current_limit, expected_limit', [
+    (42, 50),
+    (50, 50),
+    (50_000, 50),
+])
 def test_switch_service_to_restricted(
     client_request,
     platform_admin_user,
     mock_get_live_service,
     mock_update_service,
-    mock_get_inbound_number_for_service,
+    current_limit,
+    expected_limit,
+    service_one,
 ):
-    client_request.login(platform_admin_user)
+    service_one['message_limit'] = current_limit
+    client_request.login(platform_admin_user, service_one)
     client_request.post(
         'main.service_switch_live',
         service_id=SERVICE_ONE_ID,
@@ -474,7 +496,7 @@ def test_switch_service_to_restricted(
     )
     mock_update_service.assert_called_with(
         SERVICE_ONE_ID,
-        message_limit=50,
+        message_limit=expected_limit,
         restricted=True,
         go_live_at=None
     )
