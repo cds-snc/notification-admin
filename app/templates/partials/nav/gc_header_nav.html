@@ -11,14 +11,15 @@
   <div class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4">
     <!-- Mobile menu and nav bar -->
     <div class="grid grid-cols-2">
-        <div class="py-2">
+      <div class="flex">
+        <div class="mr-5 p-4 bg-blue flex-shrink">
           <a
             href="#"
             id="menu"
             data-module="menu-overlay"
             data-menu-overlay-content="mobile-menu-content"
             data-menu-overlay-close="mobile-menu-close"
-            class="mr-5 p-4 bg-blue text-white visited:text-white link:text-white no-underline focus:outline-none">
+            class="text-white visited:text-white link:text-white no-underline focus:outline-none">
             {{ _('Menu') }}
             <img
               alt="Menu expansion arrow"
@@ -28,6 +29,7 @@
               width="20"/>
           </a>
         </div>
+      </div>
       <div aria-label="{{ _('language and sign-in') }}" class="flex justify-end self-center">
         {% if current_user.is_authenticated %}
           {% include 'partials/nav/account_menu_mobile.html' %}
@@ -109,8 +111,8 @@
         {% endif %}
         <div
           id="more-menu"
-          data-module="more-menu" 
-          data-module-menu-items="proposition-links" 
+          data-module="more-menu"
+          data-module-menu-items="proposition-links"
           data-module-menu-container="more-menu-container"
           class="flex flex-shrink-0 text-center p-5 bg-gray">
           <a
