@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% set change_txt = _('Change') %}
-{% set display_email_from = current_service.email_from +'@' + sending_domain %}
+{% set display_email_from = current_service.email_from + '@' + sending_domain %}
 
 {% block maincolumn_content %}
 
@@ -410,8 +410,7 @@
           {% call row() %}
           {% set txt = _('Sending domain') %}
           {{ text_field(txt) }}
-          {% set txt = _('{}') %}
-          {{ text_field(txt.format(current_service.sending_domain)|safe if current_service.sending_domain else sending_domain) }}
+          {{ text_field(sending_domain) }}
           {{ edit_field(
             change_txt,
             url_for('.service_sending_domain', service_id=current_service.id),
