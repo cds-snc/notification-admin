@@ -10,6 +10,7 @@ from app.main.forms import (
     SetUpDemoOrgDetails,
     SetUpDemoPrimaryPurpose,
 )
+from app.utils import deprecated
 
 DEFAULT_STEP = "identity"
 SESSION_FORM_KEY = "contact_form"
@@ -61,7 +62,7 @@ def contact():
     if form_obj["next_step"] is None and form.validate_on_submit():
         session.pop(SESSION_FORM_KEY, None)
         session.pop(SESSION_FORM_STEP_KEY, None)
-        send_form_to_freshdesk(form)
+        send_contact_request(form)
         return render_template('views/contact/thanks.html')
 
     # Going on to the next step in the form
@@ -135,6 +136,19 @@ def _labels(previous_step, current_step, support_type):
     }
 
 
+def send_contact_request(form: SetUpDemoPrimaryPurpose):
+    of_interest = {
+        'name', 'support_type', 'email_address', 'department_org_name',
+        'program_service_name', 'intended_recipients', 'main_use_case', 'main_use_case_details', 'message'}
+    data = {key: form.data[key] for key in of_interest if key in form.data}
+    if current_user and current_user.is_authenticated:
+        data['user_profile'] = url_for('.user_information', user_id=current_user.id, _external=True)
+
+    data['friendly_support_type'] = str(dict(form.support_type.choices)[form.support_type.data])
+    user_api_client.send_contact_request(data)
+
+
+@deprecated
 def send_form_to_freshdesk(form):
     if form.support_type.data == "demo":
         message = '<br><br>'.join([

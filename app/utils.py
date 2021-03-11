@@ -3,12 +3,14 @@ import os
 import re
 import unicodedata
 import uuid
+import warnings
 from collections import defaultdict
 from datetime import datetime, time, timedelta
 from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
+from typing import Any
 
 import boto3
 import dateutil
@@ -701,3 +703,14 @@ class PermanentRedirect(RequestRedirect):
     and Windows 8.1, so this class keeps the original status code of 301.
     """
     code = 301
+
+
+# TODO: In the future consider using pypi/Deprecated if deprecation marking becomes popular within the code base
+def deprecated(func_call: Any):
+    @wraps(func_call)
+    def wrap_func(*args, **kwargs):
+        warnings.simplefilter('always', DeprecationWarning)
+        warnings.warn(f'{func_call.__name__} is marked as deprecated', category=DeprecationWarning, stacklevel=2)
+        warnings.simplefilter('default', DeprecationWarning)
+        return func_call(*args, **kwargs)
+    return wrap_func
