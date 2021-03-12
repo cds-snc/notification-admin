@@ -1234,7 +1234,7 @@
 "Users will see your service email address in the 'From' field of the emails you send.","L’adresse courriel d’envoi apparaîtra dans le champ « De » des courriels que vous envoyez."
 "Your sending email address helps to build trust with recipients. A good email address is bilingual, recognizable, and as concise as possible.","Votre adresse courriel d’envoi aide les destinataires à faire confiance à votre service. Une bonne adresse courriel est bilingue, reconnaissable et aussi concise que possible."
 "For example: renew.passport.renouveler.passeport","Par exemple : renew.passport.renouveler.passeport"
-"Create sending email address","Créez votre adresse courriel d’envoi"
+"Create a sending email address for your service","Créez une adresse courriel d’envoi pour votre service"
 "Up to 64 characters","Jusqu’à 64 caractères"
 "This cannot exceed 255 characters in length","Ne doit pas dépasser 255 caractères"
 "This cannot exceed 64 characters in length","Ne doit pas dépasser 64 caractères"
