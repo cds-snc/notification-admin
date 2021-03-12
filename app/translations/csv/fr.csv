@@ -1241,7 +1241,7 @@
 "This entry must contain valid characters for an email address.","Cette entrée doit contenir des caractères valables pour une adresse électronique."
 "This email address is already in use","Cette adresse courriel a déjà été utilisée"
 "What’s your service called?","Quel est le nom de votre service?"
-"A good service name is trustworthy. It uses words people who use the service recognize.","Un bon nom de service est digne de confiance. Idéalement, il contient des mots facilement reconnaissables par les personnes qui utilisent le service."
+"A good service name uses words your service users will recognize.","Un bon nom de service est facilement reconnaissables par les utilisateurs de votre service."
 "Bilingual service name","Nom bilingue du service"
 "API rate limit per minute","Limite d'appels à l’API par minute"
 "Yes, remove","Oui, retirer"
