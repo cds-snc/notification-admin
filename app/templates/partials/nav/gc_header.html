@@ -6,7 +6,7 @@
   {% set long_lang_switch = 'Français' %}
 {% endif %}
 
-<div class="container px-10">
+<div class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4 ">
   <!-- start sub nav -->
   <div class="pt-5 lg:justify-between grid md:grid-cols-2">
     <div>
@@ -84,13 +84,13 @@
       <div class="font-bold text-lg text-black inline">{{ url_text }}</div>
       <div class="inline-block text-base self-center">
         {% if current_user.has_permissions() and not platform_admin_view_ind %}
-          <img aria-hidden="true" src="{{ asset_url('images/swap.svg') }}" class="inline"/>
           <a
             aria-label="{{ _('Switch services') }}"
             class="inline"
             id="choose_account"
             href="{{ url_for('main.choose_account') }}"
             role="button">
+            <img aria-hidden="true" src="{{ asset_url('images/swap.svg') }}" class="inline"/>
             {{ _('Switch services') }}
           </a>
         {% endif %}
