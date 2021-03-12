@@ -112,7 +112,6 @@
 
   .menu--active {
     @apply font-bold;
-    @apply underline !important;
   }
 
   .adminnav--active {

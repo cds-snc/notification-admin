@@ -9,7 +9,7 @@
       <a
         aria-label="{{ localised_txt }}"
         href="{{ url }}"
-        class="no-underline visited:text-black text-black line-under {% if is_selected %} menu--active {% endif %} {{ css_classes }}"
+        class="no-underline hover:underline {% if is_selected %} menu--active {% endif %} {{ css_classes }}"
         {% if is_external_link %}
         target="_blank"
         {% endif %}
