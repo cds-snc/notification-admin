@@ -1,5 +1,9 @@
-{% macro nav_menu_item_mobile(url=None, localised_txt=None, 
-                              is_selected=False, is_external_link=False, css_classes=None) %}
+{% macro nav_menu_item_mobile(
+  url=None, localised_txt=None, 
+  is_selected=False, 
+  is_external_link=False, 
+  css_classes=None
+) %}
   {% if url and localised_txt %}
     <li class="mb-4">
       <a
