@@ -54,7 +54,12 @@ from app.extensions import (
 from app.models.organisation import Organisation
 from app.models.service import Service
 from app.models.user import AnonymousUser, User
-from app.navigation import AdminNavigation, HeaderNavigation, MainNavigation, OrgNavigation
+from app.navigation import (
+    AdminNavigation,
+    HeaderNavigation,
+    MainNavigation,
+    OrgNavigation,
+)
 from app.notify_client.api_key_api_client import api_key_api_client
 from app.notify_client.billing_api_client import billing_api_client
 from app.notify_client.complaint_api_client import complaint_api_client
