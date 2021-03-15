@@ -81,7 +81,6 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
 @main.route("/services/<service_id>/service-settings")
 @user_has_permissions('manage_service', 'manage_api_keys')
 def service_settings(service_id: str):
-
     limits = {
         'free_yearly_email': current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
         'free_yearly_sms': current_app.config["FREE_YEARLY_SMS_LIMIT"]
@@ -91,7 +90,7 @@ def service_settings(service_id: str):
     return render_template(
         'views/service-settings.html',
         service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS,
-        sending_domain=current_app.config["SENDING_DOMAIN"],
+        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],
         limits=limits
     )
 

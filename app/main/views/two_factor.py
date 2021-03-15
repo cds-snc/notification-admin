@@ -97,7 +97,7 @@ def redirect_when_logged_in(user, platform_admin):
     if next_url and _is_safe_redirect_url(next_url):
         url = next_url
     elif platform_admin:
-        url = url_for('main.platform_admin')
+        url = url_for('main.choose_account')
     else:
         url = url_for('main.show_accounts_or_dashboard')
 

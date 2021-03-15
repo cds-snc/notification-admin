@@ -156,7 +156,7 @@ def test_wizard_flow_with_step_2_should_display_email_from(
         current_step='choose_email_from',
         _expected_status=200,
     )
-    assert page.select_one('h1').text.strip() == 'Create sending email address'
+    assert page.select_one('h1').text.strip() == 'Create a sending email address for your service'
 
 
 def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
