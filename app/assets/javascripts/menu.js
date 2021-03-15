@@ -11,11 +11,13 @@
     const show = $items.hasClass("hidden");
     if (show) {
       $items.toggleClass("hidden", false);
+      $menu.attr("aria-expanded", true);
     }
     // Hide the menu..
     else {
       $items.removeClass("opacity-100");
       $items.addClass("opacity-0");
+      $menu.attr("aria-expanded", false);
     }
 
     const $arrow = $menu.find(".arrow");

@@ -1,6 +1,8 @@
 <!-- account menu dropdown / mobile -->
 <div class="md:hidden">
   <button
+    aria-expanded="false"
+    aria-haspopup="true"
     id="account-icon-mobile"
     class="p-1 h-14 border-2 border-solid border-gray rounded-lg"
     data-module="menu-overlay"
@@ -9,7 +11,6 @@
     <img
       aria-hidden="false"
       aria-label="{{ _('Account menu') }}"
-      aria-haspopup="true"
       src="{{ asset_url('images/account-icon.svg') }}"
       alt="Account icon"
       class="w-10 h-10"/>

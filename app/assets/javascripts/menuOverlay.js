@@ -3,7 +3,7 @@
 
   const registerKeyDownEscape = window.utils.registerKeyDownEscape;
 
-  function toggleMenu($content) {
+  function toggleMenu($menuButton, $content) {
     // We need to revert the hidden and opacity operations when showing and
     // hiding the menu.
 
@@ -11,11 +11,13 @@
     const show = $content.hasClass("hidden");
     if (show) {
       $content.toggleClass("hidden", false);
+      $menuButton.attr("aria-expanded", true);
     }
     // Hide the menu..
     else {
       $content.removeClass("opacity-100");
       $content.addClass("opacity-0");
+      $menuButton.attr("aria-expanded", false);
     }
 
     // In order to have the opacity transition effect working properly,
@@ -40,7 +42,7 @@
     const closeId = "#" + $menuButton.attr("data-menu-overlay-close");
     const $closeButton = $content.find(closeId);
 
-    const fn = () => toggleMenu($content);
+    const fn = () => toggleMenu($menuButton, $content);
     $menuButton.click(fn);
     $closeButton.click(fn);
     registerKeyDownEscape($content, fn);
