@@ -34,10 +34,10 @@
   }
 
   function init($menuButton) {
-    const contentId = "#" + $menuButton.attr("data-mobile-menu-content");
+    const contentId = "#" + $menuButton.attr("data-menu-overlay-content");
     const $content = $(contentId);
     
-    const closeId = "#" + $menuButton.attr("data-mobile-menu-account-close");
+    const closeId = "#" + $menuButton.attr("data-menu-overlay-close");
     const $closeButton = $content.find(closeId);
 
     const fn = () => toggleMenu($content);
@@ -46,7 +46,7 @@
     registerKeyDownEscape($content, fn);
   }
 
-  Modules.MobileMenuAccount = function () {
+  Modules.MenuOverlay = function () {
     this.start = function (component) {
       let $component = $(component);
       init($component);

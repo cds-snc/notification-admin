@@ -492,6 +492,18 @@ class MainNavigation(Navigation):
             'revoke_api_key',
             'safelist',
         },
+        'choose_account': {
+            'choose_account',
+        },
+        'live_services': {
+            'live_services',
+        },
+        'user_profile': {
+            'user_profile',
+        },
+        'sign_out': {
+            'sign_out'
+        }
     }
 
     exclude = {
