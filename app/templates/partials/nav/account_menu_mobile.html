@@ -12,7 +12,7 @@
       aria-hidden="false"
       aria-label="{{ _('Account menu') }}"
       src="{{ asset_url('images/account-icon.svg') }}"
-      alt="Account icon"
+      alt="{{ _('Account menu') }}"
       class="w-10 h-10"/>
   </button>
 
@@ -30,7 +30,7 @@
           <img
             aria-hidden="true"
             src="{{ asset_url('images/account-icon.svg') }}"
-            alt="Account icon"
+            alt="{{ _('Account menu') }}"
             class="float-left w-12 h-12"/>
         </div>
         <div class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-xs z-50">
@@ -38,7 +38,6 @@
             id="account-close-mobile"
             class="justify-self-center">
             <img
-              alt="Close button"
               aria-hidden="false"
               aria-labelledby="account.menu.close"
               src="{{ asset_url('images/close.svg') }}"
