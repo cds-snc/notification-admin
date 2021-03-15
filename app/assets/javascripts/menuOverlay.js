@@ -9,15 +9,14 @@
 
     // Show the menu..
     const show = $content.hasClass("hidden");
+    $menuButton.attr("aria-expanded", show);
     if (show) {
       $content.toggleClass("hidden", false);
-      $menuButton.attr("aria-expanded", true);
     }
     // Hide the menu..
     else {
       $content.removeClass("opacity-100");
       $content.addClass("opacity-0");
-      $menuButton.attr("aria-expanded", false);
     }
 
     // In order to have the opacity transition effect working properly,

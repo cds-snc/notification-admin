@@ -12,8 +12,7 @@
 
   function menuToggle($moreMenu, $menuContainer, $arrow) {
     const show = $menuContainer.hasClass("hidden");
-    if (show) $moreMenu.attr("aria-expanded", true);
-    else $moreMenu.attr("aria-expanded", false);
+    $moreMenu.attr("aria-expanded", show);
 
     $menuContainer.toggleClass("hidden");
     if ($arrow) $arrow.toggleClass("flip");
