@@ -23,8 +23,6 @@
       $arrow.toggleClass("flip", show);
     }
 
-    $items.find("a")[0].focus();
-
     // In order to have the opacity transition effect working properly,
     // we need to separate the hidden and opacity toggling in two separate
     // actions in the HTML rendering, hence the delay of opacity by 1 ms.
