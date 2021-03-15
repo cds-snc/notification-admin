@@ -24,6 +24,11 @@
           </a>
         </div>
       </div>
+      {# This include of mobile popup overlay needs to be here for the HTML natural ordering #}
+      {# to be determined properly for tab navigating and accessibility purposes. #}
+      <!--  start mobile navigation -->
+      {% include 'partials/nav/gc_header_nav_mobile.html' %}
+      <!--  end mobile navigation -->
       <div aria-label="{{ _('language and sign-in') }}" class="flex justify-end self-center">
         {% if current_user.is_authenticated %}
           {% include 'partials/nav/account_menu_mobile.html' %}
