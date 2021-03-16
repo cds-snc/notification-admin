@@ -55,6 +55,7 @@ from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     PermanentRedirect,
     Spreadsheet,
+    convert_to_utf8,
     email_or_sms_not_enabled,
     get_errors_for_csv,
     get_help_argument,
@@ -167,9 +168,10 @@ def send_messages(service_id, template_id):
     form = CsvUploadForm()
     if form.validate_on_submit():
         try:
+            utf8_file_data = convert_to_utf8(form.file.data.read())
             upload_id = s3upload(
                 service_id,
-                Spreadsheet.from_file(form.file.data, filename=form.file.data.filename).as_dict,
+                Spreadsheet.from_file(utf8_file_data, filename=form.file.data.filename).as_dict,
                 current_app.config['AWS_REGION']
             )
             return redirect(url_for(
