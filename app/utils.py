@@ -1,3 +1,4 @@
+import chardet
 import csv
 import os
 import re
@@ -319,7 +320,7 @@ class Spreadsheet():
 
     @staticmethod
     def normalise_newlines(file_content):
-        return '\r\n'.join(file_content.read().decode('utf-8').splitlines())
+        return '\r\n'.join(file_content.decode('utf-8').splitlines())
 
     @classmethod
     def from_rows(cls, rows, filename=''):
@@ -368,6 +369,38 @@ class Spreadsheet():
         io = BytesIO()
         pyexcel_xlsx.save_data(io, {'Sheet 1': self.as_rows})
         return io.getvalue()
+
+
+def convert_to_utf8(file_data):
+    # Detect File Encoding
+    encoding_result = chardet.detect(file_data)
+    
+    # If file encoding cannot be determined
+    if encoding_result['encoding'] == None:
+        raise UnicodeDecodeError(
+            'Unknown encoding',
+            file_data,
+            0,
+            len(file_data),
+            'File encoding could not be determined'
+        )
+    
+    encoding = encoding_result['encoding'].lower()
+    if encoding_result['confidence'] >= 0.7:
+        if encoding != 'utf-8':
+            # Encode data to utf-8
+            return file_data.decode(encoding).encode('utf-8')
+        else:
+            return file_data
+    else:
+        # Encoding confidence too low
+        raise UnicodeDecodeError(
+            'Unknown encoding',
+            file_data,
+            0,
+            len(file_data),
+            'File encoding could not be determined'
+        )
 
 
 def get_help_argument():
