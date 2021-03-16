@@ -302,10 +302,10 @@ def user_profile_disable_platform_admin_view():
         abort(403)
 
     form = ServiceOnOffSettingForm(
-        name="Signing in again clears this setting",
+        name=_('Signing in again clears this setting'),
         enabled=not session.get('disable_platform_admin_view'),
-        truthy='Yes',
-        falsey='No',
+        truthy=_('Yes'),
+        falsey=_('No'),
     )
 
     if form.validate_on_submit():
