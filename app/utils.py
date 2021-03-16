@@ -1,4 +1,3 @@
-import chardet
 import csv
 import os
 import re
@@ -12,6 +11,7 @@ from itertools import chain
 from os import path
 
 import boto3
+import chardet
 import dateutil
 import pyexcel
 import pyexcel_xlsx
@@ -374,9 +374,9 @@ class Spreadsheet():
 def convert_to_utf8(file_data):
     # Detect File Encoding
     encoding_result = chardet.detect(file_data)
-    
+
     # If file encoding cannot be determined
-    if encoding_result['encoding'] == None:
+    if encoding_result['encoding'] is None:
         raise UnicodeDecodeError(
             'Unknown encoding',
             file_data,
@@ -384,7 +384,7 @@ def convert_to_utf8(file_data):
             len(file_data),
             'File encoding could not be determined'
         )
-    
+
     encoding = encoding_result['encoding'].lower()
     if encoding_result['confidence'] >= 0.7:
         if encoding != 'utf-8':
