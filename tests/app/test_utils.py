@@ -10,6 +10,7 @@ from freezegun import freeze_time
 from app import format_datetime_relative
 from app.utils import (
     Spreadsheet,
+    convert_to_utf8,
     documentation_url,
     email_safe,
     generate_next_dict,
@@ -160,6 +161,23 @@ def test_spreadsheet_checks_for_bad_arguments(args, kwargs):
     with pytest.raises(TypeError) as exception:
         Spreadsheet(*args, **kwargs)
     assert str(exception.value) == 'Spreadsheet must be created from either rows or CSV data'
+
+
+def test_convert_to_utf8():
+    file_content = b'\xe9, \xe0'
+    assert convert_to_utf8(file_content) == b'\xc3\xa9, \xc3\xa0'
+
+
+def test_convert_to_utf8_no_conversion():
+    file_content = b'\xc3\xa9, \xc3\xa0'
+    assert convert_to_utf8(file_content) == b'\xc3\xa9, \xc3\xa0'
+
+
+def test_convert_to_utf8_no_confidence():
+    with pytest.raises(UnicodeDecodeError) as exception:
+        file_content = b''
+        convert_to_utf8(file_content)
+    assert str(exception.value) == "'Unknown encoding' codec can't decode bytes in position 0--1: File encoding could not be determined"
 
 
 @pytest.mark.parametrize('created_by_name, expected_content', [
