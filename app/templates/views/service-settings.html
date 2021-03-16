@@ -20,7 +20,7 @@
             {{ _("We’ll be in touch within 2 business days.") }}
           </p>
         {% else %}
-          <h2 class="heading-small mt-5">{{ _('Your service is in TRIAL mode') }}</h2>
+          <h2 class="heading-small mt-5">{{ _('Your service is in trial mode') }}</h2>
           {% if current_user.has_permissions('manage_service') %}
             <p>
               {{ _('To send notifications to more people, request to go live.') }}
