@@ -41,10 +41,6 @@
 
       <!-- start main nav -->
       {% include 'partials/nav/gc_header_nav.html' %}
-
-      <!--  start mobile navigation -->
-      {% include 'partials/nav/gc_header_nav_mobile.html' %}
-      <!--  end mobile navigation -->
       <!-- end main nav -->
     </header>
     <!-- end header -->
@@ -257,7 +253,7 @@
             <div class="flex flex-col lg:flex-row justify-between">
               <div class="text-content max-w-4xl pb-10 lg:pb-0">
                 <h2 class="leading-tight font-bold font-sans text-lg pb-6">
-                  {{ _("Connect your program or service") }}
+                  {{ _("Integrate email and text message notifications into your service") }}
                 </h2>
 
                 {% if session["userlang"] == "en" %}

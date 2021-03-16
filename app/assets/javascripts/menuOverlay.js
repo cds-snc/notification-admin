@@ -18,8 +18,6 @@
       $content.addClass("opacity-0");
     }
 
-    $content.find("a")[0].focus();
-
     // In order to have the opacity transition effect working properly,
     // we need to separate the hidden and opacity toggling in two separate
     // actions in the HTML rendering, hence the delay of opacity by 1 ms.
@@ -36,10 +34,10 @@
   }
 
   function init($menuButton) {
-    const contentId = "#" + $menuButton.attr("data-mobile-menu-content");
+    const contentId = "#" + $menuButton.attr("data-menu-overlay-content");
     const $content = $(contentId);
     
-    const closeId = "#" + $menuButton.attr("data-mobile-menu-account-close");
+    const closeId = "#" + $menuButton.attr("data-menu-overlay-close");
     const $closeButton = $content.find(closeId);
 
     const fn = () => toggleMenu($content);
@@ -48,7 +46,7 @@
     registerKeyDownEscape($content, fn);
   }
 
-  Modules.MobileMenuAccount = function () {
+  Modules.MenuOverlay = function () {
     this.start = function (component) {
       let $component = $(component);
       init($component);

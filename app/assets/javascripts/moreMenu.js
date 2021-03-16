@@ -13,7 +13,6 @@
   function menuToggle($menuContainer, $arrow) {
     $menuContainer.toggleClass("hidden");
     if ($arrow) $arrow.toggleClass("flip");
-    $menuContainer.find("a")[0].focus();
   }
 
   function init($menu) {
