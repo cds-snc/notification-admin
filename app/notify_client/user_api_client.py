@@ -130,11 +130,6 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = f'/user/{self.notify_user_id}/contact-request'
         self.post(endpoint, data=data)
 
-    def send_support_email(self, user_id, message):
-        data = {'email': self.contact_email, 'message': message}
-        endpoint = '/user/{0}/support-email'.format(user_id)
-        self.post(endpoint, data=data)
-
     def send_branding_request(self, user_id, serviceID, service_name, filename):
         data = {'email': self.contact_email, 'serviceID': serviceID, 'service_name': service_name, 'filename': filename}
         endpoint = '/user/{0}/branding-request'.format(user_id)

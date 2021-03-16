@@ -10,7 +10,6 @@ from app.main.forms import (
     SetUpDemoOrgDetails,
     SetUpDemoPrimaryPurpose,
 )
-from app.utils import deprecated
 
 DEFAULT_STEP = "identity"
 SESSION_FORM_KEY = "contact_form"
@@ -146,34 +145,6 @@ def send_contact_request(form: SetUpDemoPrimaryPurpose):
 
     data['friendly_support_type'] = str(dict(form.support_type.choices)[form.support_type.data])
     user_api_client.send_contact_request(data)
-
-
-@deprecated
-def send_form_to_freshdesk(form):
-    if form.support_type.data == "demo":
-        message = '<br><br>'.join([
-            f'- user: {form.name.data} {form.email_address.data}',
-            f'- department/org: {form.department_org_name.data}',
-            f'- program/service: {form.program_service_name.data}',
-            f'- intended_recipients: {form.intended_recipients.data}',
-            f'- main use case: {form.main_use_case.data}',
-            f'- main use case details: {form.main_use_case_details.data}',
-        ])
-    else:
-        message = form.message.data
-
-    if current_user and current_user.is_authenticated:
-        user_profile = url_for('.user_information', user_id=current_user.id, _external=True)
-        message += f"<br><br>---<br><br> {user_profile}"
-
-    friendly_support_type = str(dict(form.support_type.choices)[form.support_type.data])
-
-    user_api_client.send_contact_email(
-        form.name.data,
-        form.email_address.data,
-        message,
-        friendly_support_type
-    )
 
 
 @main.route('/support/ask-question-give-feedback', endpoint='redirect_contact')
