@@ -1,0 +1,36 @@
+{% set is_cds_domain = admin_base_url.endswith('.canada.ca') or admin_base_url.endswith('.cdssandbox.xyz') %}
+{% set is_review_app = admin_base_url.endswith('.herokuapp.com') %}
+
+{% if is_cds_domain or is_review_app or True %}
+<!--
+DACANADACANADACANADACANADACANADACANADACANADACANADACANADACANADACANAD
+ACANADACANADACAN                                   NADACANADACANADA
+CANADACANADACANA                 A                 ADACANADACANADAC
+ANADACANADACANAD                ADA                DACANADACANADACA
+NADACANADACANADA           AC  ADACA  DA           ACANADACANADACAN
+ADACANADACANADAC            ANADACANADA            CANADACANADACANA
+DACANADACANADACA        DA   ADACANADA  NA         ANADACANADACANAD
+ACANADACANADACAN    ANADACAN  ACANADA  NADACANA    NADACANADACANADA
+CANADACANADACANA     ADACANADACANADACANADACANA     ADACANADACANADAC
+ANADACANADACANAD   NADACANADACANADACANADACANADAC   DACANADACANADACA
+NADACANADACANADA      CANADACANADACANADACANAD      ACANADACANADACAN
+ADACANADACANADAC         DACANADACANADACAN         CANADACANADACANA
+DACANADACANADACA           ANADACANADACA           ANADACANADACANAD
+ACANADACANADACAN         CANADACANADACANAD         NADACANADACANADA
+CANADACANADACANA                 A                 ADACANADACANADAC
+ANADACANADACANAD                 D                 DACANADACANADACA
+NADACANADACANADA                 A                 ACANADACANADACAN
+ADACANADACANADAC                                   CANADACANADACANA
+DACANADACANADACANADACANADACANADACANADACANADACANADACANADACANADACANAD
+
+Hello! We are the Canadian Digital Service.
+Bonjour! Nous sommes le Service numérique canadien.
+
+- Join our team: https://digital.canada.ca/join-our-team/
+- Rejoignez notre équipe : https://numerique.canada.ca/rejoindre-notre-equipe/
+
+To report a security vulnerability:
+Pour partager une vulnérabilité de sécurité :
+🔐 {{ url_for('.security_txt', _external=True) }}
+-->
+{% endif %}
