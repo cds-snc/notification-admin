@@ -84,13 +84,13 @@
       <div class="font-bold text-lg text-black inline">{{ url_text }}</div>
       <div class="inline-block text-base self-center">
         {% if current_user.has_permissions() and not platform_admin_view_ind %}
-          <img aria-hidden="true" src="{{ asset_url('images/swap.svg') }}" class="inline"/>
           <a
             aria-label="{{ _('Switch services') }}"
             class="inline"
             id="choose_account"
             href="{{ url_for('main.choose_account') }}"
             role="button">
+            <img aria-hidden="true" src="{{ asset_url('images/swap.svg') }}" class="inline"/>
             {{ _('Switch services') }}
           </a>
         {% endif %}

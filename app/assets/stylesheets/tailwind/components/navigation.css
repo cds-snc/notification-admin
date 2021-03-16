@@ -111,12 +111,7 @@
   }
 
   .menu--active {
-    border-color: #26374A;
-    @apply pl-6 !important;
     @apply font-bold;
-    @apply border-l-4;
-    @apply border-solid;
-    @apply bg-gray;
   }
 
   .adminnav--active {
