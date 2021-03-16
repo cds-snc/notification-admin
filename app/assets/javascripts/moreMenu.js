@@ -10,7 +10,10 @@
     $menuItems = null,
     collectedSet = [];
 
-  function menuToggle($menuContainer, $arrow) {
+  function menuToggle($moreMenu, $menuContainer, $arrow) {
+    const show = $menuContainer.hasClass("hidden");
+    $moreMenu.attr("aria-expanded", show);
+
     $menuContainer.toggleClass("hidden");
     if ($arrow) $arrow.toggleClass("flip");
   }
@@ -22,7 +25,7 @@
 
     $menuItems = $(menuItemsId);
     $menuContainer = $(menuContainerId);
-    $moreMenu.click(() => menuToggle($menuContainer, $moreMenu.find(".arrow")));
+    $moreMenu.click(() => menuToggle($moreMenu, $menuContainer, $moreMenu.find(".arrow")));
 
     // Take the number of menu items and calculate individual outer width
     // of each one.
