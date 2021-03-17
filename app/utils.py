@@ -320,7 +320,8 @@ class Spreadsheet():
 
     @staticmethod
     def normalise_newlines(file_content):
-        return '\r\n'.join(file_content.decode('utf-8').splitlines())
+        file_content.stream.seek(0)
+        return '\r\n'.join(file_content.read().decode('utf-8').splitlines())
 
     @classmethod
     def from_rows(cls, rows, filename=''):
@@ -340,6 +341,9 @@ class Spreadsheet():
         extension = cls.get_extension(filename)
 
         if extension == 'csv':
+            utf8_format = convert_to_utf8(file_content.read())
+            file_content.stream.seek(0)
+            file_content.stream.write(utf8_format)
             return cls(csv_data=Spreadsheet.normalise_newlines(file_content), filename=filename)
 
         if extension == 'tsv':
@@ -374,6 +378,9 @@ class Spreadsheet():
 def convert_to_utf8(file_data):
     # Detect File Encoding
     encoding_result = chardet.detect(file_data)
+
+    if file_data == b'':
+        return file_data
 
     # If file encoding cannot be determined
     if encoding_result['encoding'] is None:
