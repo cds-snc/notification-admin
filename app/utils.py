@@ -382,18 +382,8 @@ def convert_to_utf8(file_data):
     if file_data == b'':
         return file_data
 
-    # If file encoding cannot be determined
-    if encoding_result['encoding'] is None:
-        raise UnicodeDecodeError(
-            'Unknown encoding',
-            file_data,
-            0,
-            len(file_data),
-            'File encoding could not be determined'
-        )
-
-    encoding = encoding_result['encoding'].lower()
-    if encoding_result['confidence'] >= 0.7:
+    if encoding_result['confidence'] >= 0.7 and encoding_result['encoding'] is not None:
+        encoding = encoding_result['encoding'].lower()
         if encoding != 'utf-8':
             # Encode data to utf-8
             return file_data.decode(encoding).encode('utf-8')
