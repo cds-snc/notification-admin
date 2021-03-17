@@ -174,9 +174,9 @@ def test_convert_to_utf8_no_conversion():
 
 
 def test_convert_to_utf8_no_confidence():
-    expected_resp = "'Unknown encoding' codec can't decode bytes in position 0--1: File encoding could not be determined"
+    expected_resp = "'Unknown encoding' codec can't decode bytes in position 0-5: File encoding could not be determined"
     with pytest.raises(UnicodeDecodeError) as exception:
-        file_content = b''
+        file_content = b'\xe9C7C10'  # file_content = 'éツ'
         convert_to_utf8(file_content)
     assert str(exception.value) == expected_resp
 
