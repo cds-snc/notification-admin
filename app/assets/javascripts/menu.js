@@ -9,6 +9,7 @@
 
     // Show the menu..
     const show = $items.hasClass("hidden");
+    $menu.attr("aria-expanded", show);
     if (show) {
       $items.toggleClass("hidden", false);
     }

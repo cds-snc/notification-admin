@@ -2590,7 +2590,7 @@ def test_check_messages_shows_trial_mode_error(
         page.find('div', class_='banner-dangerous').text.split()
     ) == (
         'You cannot send to this phone number '
-        'In trial mode you can only send to yourself and members of your team '
+        'In trial mode, you can only send to yourself and members of your team '
         'Skip to file contents'
     )
 
@@ -2652,7 +2652,7 @@ def test_check_messages_shows_trial_mode_error_for_letters(
     if error_should_be_shown:
         assert normalize_spaces(error[0].text) == (
             '{} '
-            'In trial mode you can only preview how your letters will look '
+            'In trial mode, you can only preview how your letters will look '
             'Skip to file contents'
         ).format(expected_error_message)
     else:
@@ -2892,7 +2892,7 @@ def test_letters_from_csv_files_dont_have_download_link(
         page.select_one('.banner-dangerous').text
     ) == normalize_spaces(
         'You cannot send this letter '
-        'In trial mode you can only preview how your letters will look '
+        'In trial mode, you can only preview how your letters will look '
         'Skip to file contents'
     )
 
@@ -2984,7 +2984,7 @@ def test_send_one_off_letter_errors_in_trial_mode(
 
     assert normalize_spaces(page.select('.banner-dangerous')) == normalize_spaces(
         'You cannot send this letter '
-        'In trial mode you can only preview how your letters will look'
+        'In trial mode, you can only preview how your letters will look'
     )
 
     assert len(page.select('.letter img')) == 5
@@ -3268,7 +3268,7 @@ SERVICE_DAILY_LIMIT_MSG = 'Exceeded send limits (1000) for today'
     (
         TRIAL_MODE_MSG,
         'You cannot send to this phone number',
-        'In trial mode you can only send to yourself and members of your team'
+        'In trial mode, you can only send to yourself and members of your team'
     ),
     (
         TOO_LONG_MSG,
@@ -3344,7 +3344,7 @@ def test_send_notification_shows_email_error_in_trial_mode(
         'You cannot send to this email address'
     )
     assert normalize_spaces(page.select('.banner-dangerous p')[0].text) == (
-        'In trial mode you can only send to yourself and members of your team'
+        'In trial mode, you can only send to yourself and members of your team'
     )
 
 
