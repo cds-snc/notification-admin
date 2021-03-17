@@ -163,16 +163,18 @@ def test_spreadsheet_checks_for_bad_arguments(args, kwargs):
     assert str(exception.value) == 'Spreadsheet must be created from either rows or CSV data'
 
 
+# Converting ISO-8559-1 to UTF-8
 def test_convert_to_utf8():
-    file_content = b'\xe9, \xe0'
+    file_content = b'\xe9, \xe0'  # 'é, à'
     assert convert_to_utf8(file_content) == b'\xc3\xa9, \xc3\xa0'
 
 
+# Attempting to convert UTF-8 to UTF-8
 def test_convert_to_utf8_no_conversion():
     file_content = b'\xc3\xa9, \xc3\xa0'
     assert convert_to_utf8(file_content) == b'\xc3\xa9, \xc3\xa0'
 
-
+# Attempting to convert string with different encoding values
 def test_convert_to_utf8_no_confidence():
     expected_resp = "'Unknown encoding' codec can't decode bytes in position 0-5: File encoding could not be determined"
     with pytest.raises(UnicodeDecodeError) as exception:
