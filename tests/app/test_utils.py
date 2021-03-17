@@ -174,6 +174,7 @@ def test_convert_to_utf8_no_conversion():
     file_content = b'\xc3\xa9, \xc3\xa0'
     assert convert_to_utf8(file_content) == b'\xc3\xa9, \xc3\xa0'
 
+
 # Attempting to convert string with different encoding values
 def test_convert_to_utf8_no_confidence():
     expected_resp = "'Unknown encoding' codec can't decode bytes in position 0-5: File encoding could not be determined"
