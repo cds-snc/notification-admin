@@ -14,6 +14,8 @@
       <div class="flex">
         <div class="mr-5 p-4 bg-blue flex-shrink">
           <a
+            aria-expanded="false"
+            aria-haspopup="true"
             href="#"
             id="menu"
             data-module="menu-overlay"
@@ -109,6 +111,8 @@
           {% endif %}
         {% endif %}
         <div
+          aria-expanded="false"
+          aria-haspopup="true"
           id="more-menu"
           data-module="more-menu"
           data-module-menu-items="proposition-links"
@@ -116,11 +120,11 @@
           class="flex flex-shrink-0 text-center p-5 bg-gray">
           <a
             href="#"
-            aria-hidden="true"
+            aria-hidden="false"
             class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline focus:outline-none">
             {{ _('More') }}
             <img
-              alt="Account menu expansion arrow"
+              alt="{{ _('More options') }}"
               aria-hidden="true"
               class="account-menu-arrow ml-2 inline arrow"
               src="{{ asset_url('images/arrow-licorice.svg') }}"

@@ -13,7 +13,7 @@
       {% if session["userlang"] == "en" %}
         <a href="/">
           <img
-            alt="Government of Canada / Gouvernement du Canada"
+            alt="{{ _('Government of Canada') }}"
             width="250"
             class=""
             src="{{ asset_s3_url('gov-canada-en.svg') }}"
@@ -22,7 +22,7 @@
       {% else %}
         <a href="/">
           <img
-            alt="Gouvernement du Canada / Government of Canada"
+            alt="{{ _('Government of Canada') }}"
             width="250"
             class=""
             src="{{ asset_s3_url('gov-canada-fr.svg') }}"
