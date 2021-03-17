@@ -61,7 +61,7 @@ def contact():
     if form_obj["next_step"] is None and form.validate_on_submit():
         session.pop(SESSION_FORM_KEY, None)
         session.pop(SESSION_FORM_STEP_KEY, None)
-        send_form_to_freshdesk(form)
+        send_contact_request(form)
         return render_template('views/contact/thanks.html')
 
     # Going on to the next step in the form
@@ -135,31 +135,16 @@ def _labels(previous_step, current_step, support_type):
     }
 
 
-def send_form_to_freshdesk(form):
-    if form.support_type.data == "demo":
-        message = '<br><br>'.join([
-            f'- user: {form.name.data} {form.email_address.data}',
-            f'- department/org: {form.department_org_name.data}',
-            f'- program/service: {form.program_service_name.data}',
-            f'- intended_recipients: {form.intended_recipients.data}',
-            f'- main use case: {form.main_use_case.data}',
-            f'- main use case details: {form.main_use_case_details.data}',
-        ])
-    else:
-        message = form.message.data
-
+def send_contact_request(form: SetUpDemoPrimaryPurpose):
+    of_interest = {
+        'name', 'support_type', 'email_address', 'department_org_name',
+        'program_service_name', 'intended_recipients', 'main_use_case', 'main_use_case_details', 'message'}
+    data = {key: form.data[key] for key in of_interest if key in form.data}
     if current_user and current_user.is_authenticated:
-        user_profile = url_for('.user_information', user_id=current_user.id, _external=True)
-        message += f"<br><br>---<br><br> {user_profile}"
+        data['user_profile'] = url_for('.user_information', user_id=current_user.id, _external=True)
 
-    friendly_support_type = str(dict(form.support_type.choices)[form.support_type.data])
-
-    user_api_client.send_contact_email(
-        form.name.data,
-        form.email_address.data,
-        message,
-        friendly_support_type
-    )
+    data['friendly_support_type'] = str(dict(form.support_type.choices)[form.support_type.data])
+    user_api_client.send_contact_request(data)
 
 
 @main.route('/support/ask-question-give-feedback', endpoint='redirect_contact')
