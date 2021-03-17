@@ -171,7 +171,7 @@ def test_convert_to_utf8():
 
 # Attempting to convert UTF-8 to UTF-8
 def test_convert_to_utf8_no_conversion():
-    file_content = b'\xc3\xa9, \xc3\xa0'  ## 'é, à'
+    file_content = b'\xc3\xa9, \xc3\xa0'  # 'é, à'
     assert convert_to_utf8(file_content) == b'\xc3\xa9, \xc3\xa0'
 
 
