@@ -1,10 +1,6 @@
-import React from "react";
-import ReactDOM from "react-dom";
 import Polyglot from "node-polyglot";
+//REVIEW: The app already has dayjs dep which is supposed to be a lightweight momentjs replacement. --jlr
 import Moment from "moment";
-// import { getDays } from "./schedule/dateUtils";
-// import { ScheduleMessage } from "./schedule/ScheduleMessage";
-import { App } from "./scheduler/App";
 import { DiffDOM } from "diff-dom";
 import Swal from "sweetalert2";
 
@@ -17,8 +13,6 @@ if (!window.APP_PHRASES || typeof APP_PHRASES === "undefined") {
 if (!window.APP_LANG || typeof APP_LANG === "undefined") {
   window.APP_LANG = "en";
 }
-
-let el = document.getElementById("schedule-send-at");
 
 window.moment = Moment;
 window.DiffDOM = DiffDOM;
@@ -40,8 +34,4 @@ window.swapSendButtonText = function() {
   } else {
     document.getElementById("submit-button").innerHTML = window.polyglot.t("send_now");
   }
-}
-
-if (el) {
-  ReactDOM.render(<App />, el);
 }
