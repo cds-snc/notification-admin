@@ -19,7 +19,7 @@ def test_contact_page_does_not_require_login(client_request):
 
 
 def test_identity_step_logged_in(client_request, mocker):
-    mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
+    mock_send_contact_request = mocker.patch('app.user_api_client.send_contact_request')
 
     # No name or email address fields are present
     page = client_request.get(
@@ -55,7 +55,7 @@ def test_identity_step_logged_in(client_request, mocker):
     # Contact email has been sent
     assert_no_back_link(page)
     assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
-    mock_send_contact_email.assert_called_once()
+    mock_send_contact_request.assert_called_once()
 
 
 def test_identity_step_validates(client_request):
@@ -164,7 +164,7 @@ def test_message_step_validates(client_request, support_type, mocker):
 
 
 def test_saves_form_to_session(client_request, mocker):
-    mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
+    mock_send_contact_request = mocker.patch('app.user_api_client.send_contact_request')
 
     client_request.logout()
 
@@ -223,7 +223,7 @@ def test_saves_form_to_session(client_request, mocker):
     assert_no_back_link(page)
     assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
 
-    mock_send_contact_email.assert_called_once()
+    mock_send_contact_request.assert_called_once()
 
     # Going back
     page = client_request.get('.contact', _test_page_title=False)
@@ -254,7 +254,7 @@ def test_all_reasons_message_step_success(
     friendly_support_type,
 ):
 
-    mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
+    mock_send_contact_request = mocker.patch('app.user_api_client.send_contact_request')
 
     page = client_request.post(
         '.contact',
@@ -280,18 +280,20 @@ def test_all_reasons_message_step_success(
     assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
 
     profile = url_for('.user_information', user_id=current_user.id, _external=True)
-    expected_message = f'{message}<br><br>---<br><br> {profile}'
 
-    mock_send_contact_email.assert_called_once_with(
-        'John',
-        'john@example.com',
-        expected_message,
-        friendly_support_type
-    )
+    mock_send_contact_request.assert_called_once_with(
+        {
+            'message': message,
+            'name': 'John',
+            'support_type': support_type,
+            'email_address': 'john@example.com',
+            'user_profile': profile,
+            'friendly_support_type': friendly_support_type
+        })
 
 
 def test_demo_steps_success(client_request, mocker):
-    mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
+    mock_send_contact_request = mocker.patch('app.user_api_client.send_contact_request')
 
     data = {
         'name': 'John',
@@ -315,7 +317,6 @@ def test_demo_steps_success(client_request, mocker):
     page = submit_form(['name', 'email_address', 'support_type'])
 
     # Department step
-
     assert_has_back_link(page)
     assert normalize_spaces(page.find('h1').text) == 'Set up a demo'
     assert 'Step 1 of 2' in page.text
@@ -331,22 +332,19 @@ def test_demo_steps_success(client_request, mocker):
     assert_no_back_link(page)
     assert normalize_spaces(page.find('h1').text) == 'Thanks for contacting us'
 
-    expected_message = '<br><br>'.join([
-        f'- user: {data["name"]} {data["email_address"]}',
-        f'- department/org: {data["department_org_name"]}',
-        f'- program/service: {data["program_service_name"]}',
-        f'- intended_recipients: {data["intended_recipients"]}',
-        f'- main use case: {data["main_use_case"]}',
-        f'- main use case details: {data["main_use_case_details"]}',
-        '---',
-        f" {url_for('.user_information', user_id=current_user.id, _external=True)}"
-    ])
-
-    mock_send_contact_email.assert_called_once_with(
-        data['name'],
-        data['email_address'],
-        expected_message,
-        'Set up a demo to learn more about GC Notify'
+    mock_send_contact_request.assert_called_once_with(
+        {
+            'intended_recipients': data['intended_recipients'],
+            'support_type': data['support_type'],
+            'email_address': data['email_address'],
+            'name': data['name'],
+            'main_use_case': data['main_use_case'],
+            'main_use_case_details': data['main_use_case_details'],
+            'program_service_name': data['program_service_name'],
+            'department_org_name': data['department_org_name'],
+            'user_profile': url_for('.user_information', user_id=current_user.id, _external=True),
+            'friendly_support_type': 'Set up a demo to learn more about GC Notify'
+        }
     )
 
     # Going back
@@ -374,7 +372,7 @@ def test_demo_steps_validation(
     input_value,
     has_error,
 ):
-    mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
+    mock_send_contact_request = mocker.patch('app.user_api_client.send_contact_request')
 
     valid_data = {
         'name': 'John',
@@ -414,10 +412,10 @@ def test_demo_steps_validation(
             assert [
                 error['data-error-label'] for error in page.select('.error-message')
             ] == [input_name]
-            mock_send_contact_email.assert_not_called()
+            mock_send_contact_request.assert_not_called()
             return
         # Submitted only valid data, no errors
         else:
             assert page.select('.error-message') == []
 
-    mock_send_contact_email.assert_called_once()
+    mock_send_contact_request.assert_called_once()
