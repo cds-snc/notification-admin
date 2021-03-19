@@ -1241,6 +1241,7 @@
 "This cannot exceed 64 characters in length","Ne doit pas dépasser 64 caractères"
 "This entry must contain valid characters for an email address.","Cette entrée doit contenir des caractères valables pour une adresse électronique."
 "This email address is already in use","Cette adresse courriel a déjà été utilisée"
+"You can change your service email address later in Settings.","Vous pourrez changer l'adresse d'envoi de votre service plus tard dans la section Paramètres."
 "What’s your service called?","Quel est le nom de votre service?"
 "A good service name uses words your service users will recognize.","Un bon nom de service est facilement reconnaissables par les utilisateurs de votre service."
 "Bilingual service name","Nom bilingue du service"
