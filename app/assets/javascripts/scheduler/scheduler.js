@@ -6,6 +6,6 @@ import { App } from "./App";
  * Call the module function `render` by passing the element upon which to
  * render the scheduler.
  */
-export const render = function (element) {
+export const load = function (element) {
   ReactDOM.render(<App />, element);
 };
