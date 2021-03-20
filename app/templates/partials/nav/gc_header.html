@@ -82,16 +82,14 @@
   {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
     <div class="flex flex-wrap items-center space-x-4 space-y-0 items-stretch">
       <div class="font-bold text-lg text-black inline">{{ url_text }}</div>
-      <div class="inline-block text-base self-center">
-        {% if current_user.has_permissions() and not platform_admin_view_ind %}
+      <div class="inline-block text-base self-end pb-4">
+        {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
           <a
-            aria-label="{{ _('Switch services') }}"
-            class="inline"
-            id="choose_account"
-            href="{{ url_for('main.choose_account') }}"
+            aria-label="{{ _('Trial') }}"
+            class="button button-blue-lighter-nb hover:bg-blue-selected"
+            href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
             role="button">
-            <img aria-hidden="true" src="{{ asset_url('images/swap.svg') }}" class="inline"/>
-            {{ _('Switch services') }}
+            {{ _('Trial') }}
           </a>
         {% endif %}
       </div>
