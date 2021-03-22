@@ -818,7 +818,8 @@ def test_menu_send_messages(
         ) in page
         assert url_for('main.manage_users', service_id=service_one['id']) in page
 
-        assert url_for('main.service_settings', service_id=service_one['id']) not in page
+        url_service_settings = url_for('main.service_settings', service_id=service_one['id'])
+        assert f"\"{url_service_settings}\"" not in page
         assert url_for('main.api_keys', service_id=service_one['id']) not in page
         assert url_for('main.view_providers') not in page
 
