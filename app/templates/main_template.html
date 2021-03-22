@@ -128,28 +128,7 @@
 
 {% block body_end %}{% endblock %}
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script
-  async
-  src="https://www.googletagmanager.com/gtag/js?id=UA-102484926-14"
-></script>
-<script>
-  window.dataLayer = window.dataLayer || []
-
-  function gtag() {
-    dataLayer.push(arguments)
-  }
-
-  gtag("js", new Date())
-  gtag("config", "UA-102484926-14", {anonymize_ip: true})
-</script>
-<script>
-  if (typeof window.GOVUK === "undefined")
-    document.body.className = document.body.className.replace(
-      "js-enabled",
-      ""
-    )
-</script>
+{% include 'partials/analytics.html' %}
 
 {% block page_script %}
 <script type="text/javascript" src="{{ asset_url('javascripts/main.min.js') }}"></script>
