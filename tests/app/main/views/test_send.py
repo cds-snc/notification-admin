@@ -2590,7 +2590,7 @@ def test_check_messages_shows_trial_mode_error(
         page.find('div', class_='banner-dangerous').text.split()
     ) == (
         'You cannot send to this phone number '
-        'In trial mode, you can only send to yourself and members of your team. To send to more recipients, request to go live.'
+        'In trial mode, you can only send to yourself and members of your team. To send to more recipients, request to go live. '
         'Skip to file contents'
     )
 
