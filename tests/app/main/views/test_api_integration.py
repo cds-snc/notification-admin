@@ -214,7 +214,7 @@ def test_should_show_api_keys_page(
     (mock_get_service, [
         (
             'Live – sends to anyone '
-            'Not available because your service is in trial mode'
+            'Not available because your service is in trial mode.'
         ),
         'Team and safelist – limits who you can send to',
         'Test – pretends to send messages',
