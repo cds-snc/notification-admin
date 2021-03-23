@@ -48,6 +48,18 @@ export const defaultState = (
   };
 
   const time_values = populateTimes(LOCALE === "en" ? "off" : "on");
+  const timeValuesTodayLeft = timeValuesToday([yearMonthDay(firstDay)], time_values);
+  let selectedTimeValue = null;
+  if (timeValuesTodayLeft && timeValuesTodayLeft.length > 0) {
+    selectedTimeValue = timeValuesTodayLeft[0].val;
+  } 
+  else {
+    // REVIEW: Raises error past 23h00m in a day, not great when debugging late.  
+    // TODO:This is not the proper fix and could lead to bugs.
+    //      This is a partial fix as this crashes the whole page past 11pm.
+    selectedTimeValue = time_values[0].val;
+  }
+  const firstTimeValue = time_values[0].val;
 
   return {
     today,
@@ -60,7 +72,7 @@ export const defaultState = (
     _24hr: LOCALE === "en" ? "off" : "on",
     errors: "",
     // REVIEW: Raises error past 23h00m in a day, not great when debugging late.
-    time: dateIsToday([yearMonthDay(firstDay)]) ? timeValuesToday([yearMonthDay(firstDay)], time_values)[0].val : time_values[0].val,
+    time: dateIsToday([yearMonthDay(firstDay)]) ? selectedTimeValue : firstTimeValue,
     time_values: time_values,
     isBlockedDay: blockedDay
   };
@@ -101,7 +113,6 @@ export const StateProvider = ({ value, children }) => {
         newState = { ...state, time: action.payload };
         break;
       case "TIME_VALUES":
-        //time_values = populateTimes(action.payload)
         newState = { ...state, time_values: action.payload };
         break;
       case "SELECT_DATE":
