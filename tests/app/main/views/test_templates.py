@@ -579,7 +579,7 @@ def test_edit_letter_templates_postage_updates_postage(
     (
         ['view_activity'],
         [],
-        'If you need to send this text message or edit this template, contact your manager.'
+        'If you need to send this text message or edit this template, contact your service manager.'
     ),
     (
         ['manage_api_keys'],

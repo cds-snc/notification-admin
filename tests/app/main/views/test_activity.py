@@ -342,7 +342,7 @@ def test_shows_message_when_no_notifications(
     (
         {},
         {},
-        'Search by phone number or email address',
+        'Search by email address or phone number',
         '',
     ),
     (
