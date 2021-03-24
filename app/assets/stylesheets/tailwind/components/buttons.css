@@ -9,7 +9,7 @@
   }
 
   .button-blue {
-    width:210px;
+    min-width:210px;
     @apply block mt-8 text-center py-4 px-8;
   }
   .button-blue, .button-blue:link, .button-blue:visited {
