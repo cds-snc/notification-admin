@@ -85,7 +85,12 @@
           </div>
         </fieldset>
       </div>
-      <div id="schedule-send-at" class="hidden"></div>
+      <div 
+        id="schedule-send-at" 
+        class="hidden"
+        data-module="webpack-loader"
+        data-webpack-loader="Scheduler">
+      </div>
 
       {% if template.template_type != 'letter' or not request.args.from_test %}
       <button type="submit" class="button" id="submit-button">{{ _('Send now') }}</button>
@@ -100,5 +105,7 @@
       {{ _('Only showing the first')}} {{ count_of_displayed_recipients }} {{ _('rows') }}
     </p>
   {% endif %}
+
+  <script type="text/javascript" src="{{ asset_url('javascripts/scheduler.min.js') }}"></script>
 
 {% endblock %}
