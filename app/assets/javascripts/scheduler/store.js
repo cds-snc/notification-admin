@@ -43,9 +43,6 @@ export const defaultState = (
   const time_values = populateTimes(LOCALE === "en" ? "off" : "on");
   let timeValuesTodayLeft = timeValuesToday([yearMonthDay(firstDay)], time_values);
 
-  let lastAvailableDate;
-  lastAvailableDate = dayjs(firstDay).add(96, "hour");
-
   let selectedTimeValue = null;
   // Select first available time slot only if there are some left for the 
   // current day, i.e. hour is less than 23h00.
@@ -60,6 +57,9 @@ export const defaultState = (
     selectedTimeValue = time_values[0].val;
     timeValuesTodayLeft = time_values;
   }
+
+  let lastAvailableDate;
+  lastAvailableDate = dayjs(firstDay).add(96, "hour");
 
   return {
     today,
