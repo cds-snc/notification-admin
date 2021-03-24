@@ -323,6 +323,13 @@ def security():
     )
 
 
+@main.route('/welcome', endpoint='welcome')
+def welcome():
+    return render_template(
+        'views/welcome.html'
+    )
+
+
 @main.route('/activity', endpoint='activity')
 def activity():
     return render_template(
