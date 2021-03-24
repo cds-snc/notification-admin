@@ -3,9 +3,19 @@ const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  //mode: "development", //development
+  target: "web",
+  // mode: "development", //development
   mode: "production",
-  entry: ["./app/assets/javascripts/index.js", "./app/assets/stylesheets/tailwind/style.css"],
+  entry: {
+    main: ["./app/assets/javascripts/index.js", "./app/assets/stylesheets/tailwind/style.css"],
+    scheduler: {
+      import: './app/assets/javascripts/scheduler/scheduler.js',
+      library: {
+        name: 'Scheduler',
+        type: 'window',
+      },
+    },
+  },
   watch: false,
   output: {
     filename: "javascripts/[name].min.js",
@@ -45,7 +55,6 @@ module.exports = {
         test: /.(js|jsx)$/,
         include: [path.resolve(__dirname, "app/assets/javascripts")],
         loader: "babel-loader",
-
         options: {
           plugins: ["syntax-dynamic-import"],
 
@@ -58,7 +67,7 @@ module.exports = {
             ]
           ]
         }
-      }
+      },
     ]
   },
 };

@@ -462,7 +462,7 @@
               <div class="text-brand font-bold extra-tight font-sans">{{ _("GC Notify by the numbers") }}</div>
               <div class="text-base py-2">
                 <a href="{{ url_for('.activity' ) }}" class="text-blue link:text-blue visited:text-blue">
-                  {{ _("Learn more in the Activity Dashboard") }}
+                  {{ _("Learn more about activity on the platform") }}
                 </a>
               </div>
             </div>
@@ -510,6 +510,7 @@
   <!-- start section 8 -->
   {% include 'partials/nav/footer.html' %}
 
+{% include 'partials/analytics.html' %}
 
 
   <!-- END CONTENT-->
