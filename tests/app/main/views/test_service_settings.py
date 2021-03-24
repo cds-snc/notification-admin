@@ -401,7 +401,7 @@ def test_show_restricted_service(
     )
 
     assert page.find('h1').text == 'Settings'
-    assert page.find_all('h2')[0].text == 'Your service is in TRIAL mode'
+    assert page.find_all('h2')[0].text == 'Your service is in trial mode'
 
     assert expected_text in [normalize_spaces(p.text) for p in page.select('main p')]
 
@@ -463,7 +463,7 @@ def test_show_live_service(
         service_id=SERVICE_ONE_ID,
     )
     assert page.find('h1').text.strip() == 'Settings'
-    assert 'Your service is in TRIAL mode' not in page.text
+    assert 'Your service is in trial mode' not in page.text
     assert url_for('.request_to_go_live', service_id=SERVICE_ONE_ID) not in page
 
 

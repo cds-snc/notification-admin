@@ -147,7 +147,7 @@ def test_live_trial_services_toggle_including_from_test_key(
 
 @pytest.mark.parametrize('endpoint, assertion_text', [
     ('main.live_services', 'Live services'),
-    ('main.trial_services', 'Trial mode services')
+    ('main.trial_services', 'Trial services')
 ])
 def test_live_trial_services_with_date_filter(
     platform_admin_client,

@@ -1,5 +1,6 @@
 import hashlib
 import os
+from typing import Dict
 
 from notifications_python_client.errors import HTTPError
 
@@ -125,9 +126,8 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = '/user/{0}/support-email'.format(self.notify_user_id)
         self.post(endpoint, data=data)
 
-    def send_support_email(self, user_id, message):
-        data = {'email': self.contact_email, 'message': message}
-        endpoint = '/user/{0}/support-email'.format(user_id)
+    def send_contact_request(self, data: Dict[str, str]):
+        endpoint = f'/user/{self.notify_user_id}/contact-request'
         self.post(endpoint, data=data)
 
     def send_branding_request(self, user_id, serviceID, service_name, filename):

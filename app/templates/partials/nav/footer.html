@@ -22,7 +22,7 @@
             <a
               href="{{ url_for('main.activity') }}"
               class="line-under text-white visited:text-white link:text-white text-small  underline hover:no-underline "
-            >{{ _("Activity dashboard") }}</a>
+            >{{ _("Activity on GC Notify") }}</a>
           </div>
         </div>
         <div class="flex-1 grid grid-cols-1 md:grid-rows-4 mb-4">
@@ -34,11 +34,11 @@
               href="{{ documentation_url() }}"
               target="_blank"
               class="line-under text-white visited:text-white link:text-white text-small mb-10 underline hover:no-underline "
-            >{{ _("Documentation") }}<img
+            >{{ _("API documentation") }}<img
                 aria-hidden="false"
-                aria-label="{{ _('Documentation') }}"
+                aria-label="{{ _('API documentation') }}"
                 src="{{ asset_url('images/external-white.svg') }}"
-                alt="Documentation external link icon"
+                alt="{{ _('External link') }}"
                 class="inline ml-3 w-6 h-6"/>
             </a>
           </div>
@@ -69,7 +69,7 @@
         <div class="flex-shrink mr-5">
           <img
             aria-hidden="true"
-            alt="Bullet separator"
+            alt="{{ _('Separator') }}"
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
@@ -82,7 +82,7 @@
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img
             aria-hidden="true"
-            alt="Bullet separator"
+            alt="{{ _('Separator') }}"
             class="self-center"
             src="{{ asset_url('images/bullet.svg') }}"
           />
@@ -90,7 +90,7 @@
         <div class="flex-shrink lg:mx-5">
           <img
             aria-hidden="true"
-            alt="Bullet separator"
+            alt="{{ _('Separator') }}"
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
@@ -103,7 +103,7 @@
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img
             aria-hidden="true"
-            alt="Bullet separator"
+            alt="{{ _('Separator') }}"
             class="self-center"
             src="{{ asset_url('images/bullet.svg') }}"
           />
@@ -111,7 +111,7 @@
         <div class="flex-shrink lg:mx-5">
           <img
             aria-hidden="true"
-            alt="Bullet separator"
+            alt="{{ _('Separator') }}"
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
@@ -127,7 +127,7 @@
             href="#top">
             <div class="inline">{{ _('Top of page') }}</div>
             <img
-              alt="Top of page arrow"
+              alt="{{ _('Top of page') }}"
               aria-hidden="true"
               class="inline ml-2 transform rotate-180"
               src="{{ asset_url('images/arrow-licorice.svg') }}"
@@ -139,7 +139,7 @@
 
       <div class="sm:self-start md:self-end lg:self-center col-span-1">
         <img
-          alt="Symbol of the Government of Canada / Symbole du gouvernement du Canada"
+          alt="{{ _('Government of Canada') }}"
           class="float-left md:float-right"
           src="{{ asset_s3_url('goc--footer-logo.svg') }}"
           width="150"
