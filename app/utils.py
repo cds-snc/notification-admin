@@ -11,6 +11,7 @@ from itertools import chain
 from os import path
 
 import boto3
+import chardet
 import dateutil
 import pyexcel
 import pyexcel_xlsx
@@ -319,6 +320,7 @@ class Spreadsheet():
 
     @staticmethod
     def normalise_newlines(file_content):
+        file_content.stream.seek(0)
         return '\r\n'.join(file_content.read().decode('utf-8').splitlines())
 
     @classmethod
@@ -339,6 +341,9 @@ class Spreadsheet():
         extension = cls.get_extension(filename)
 
         if extension == 'csv':
+            utf8_format = convert_to_utf8(file_content.read())
+            file_content.stream.seek(0)
+            file_content.stream.write(utf8_format)
             return cls(csv_data=Spreadsheet.normalise_newlines(file_content), filename=filename)
 
         if extension == 'tsv':
@@ -368,6 +373,31 @@ class Spreadsheet():
         io = BytesIO()
         pyexcel_xlsx.save_data(io, {'Sheet 1': self.as_rows})
         return io.getvalue()
+
+
+def convert_to_utf8(file_data):
+    # Detect File Encoding
+    encoding_result = chardet.detect(file_data)
+
+    if file_data == b'':
+        return file_data
+
+    if encoding_result['confidence'] >= 0.7 and encoding_result['encoding'] is not None:
+        encoding = encoding_result['encoding'].lower()
+        if encoding != 'utf-8':
+            # Encode data to utf-8
+            return file_data.decode(encoding).encode('utf-8')
+        else:
+            return file_data
+    else:
+        # Encoding confidence too low
+        raise UnicodeDecodeError(
+            'Unknown encoding',
+            file_data,
+            0,
+            len(file_data),
+            'File encoding could not be determined'
+        )
 
 
 def get_help_argument():

@@ -21,6 +21,7 @@
     {% block meta %}{% endblock %}
   </head>
   <body>
+    {% include 'partials/cds_ascii_art.html' %}
     {% block main_content %}{% endblock %}
     <script type="text/javascript" src="{{ asset_url('javascripts/main.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>

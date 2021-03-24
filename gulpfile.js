@@ -37,6 +37,7 @@ const javascripts = () => {
     paths.toolkit + "javascripts/govuk/modules.js",
     paths.toolkit + "javascripts/govuk/show-hide-content.js",
     paths.src + "javascripts/utils.js",
+    paths.src + "javascripts/webpackLoader.js",
     paths.src + "javascripts/stick-to-window-when-scrolling.js",
     paths.src + "javascripts/detailsPolyfill.js",
     paths.src + "javascripts/apiKey.js",
@@ -79,7 +80,10 @@ const javascripts = () => {
     )
     .pipe(plugins.uglify())
     .pipe(plugins.concat("all.min.js"))
-    .pipe(plugins.addSrc.prepend([paths.src + "javascripts/main.min.js"]))
+    .pipe(plugins.addSrc.prepend([
+      paths.src + "javascripts/main.min.js",
+      paths.src + "javascripts/scheduler.min.js",
+    ]))
     .pipe(dest(paths.dist + "javascripts/"));
 };
 

@@ -1299,7 +1299,7 @@ class SearchNotificationsForm(StripWhitespaceForm):
         super().__init__(*args, **kwargs)
         self.to.label.text = self.labels.get(
             message_type,
-            _l('Search by phone number or email address'),
+            _l('Search by email address or phone number'),
         )
 
 
