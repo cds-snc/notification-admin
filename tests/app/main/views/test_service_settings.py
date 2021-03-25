@@ -777,7 +777,7 @@ def test_request_to_go_live_page(
     assert mock_templates.called is True
 
 
-def test_request_to_go_live_page_without_permission(
+def test_request_to_go_live_page_without_manage_service_permission(
     client_request,
     active_user_no_settings_permission,
 ):
