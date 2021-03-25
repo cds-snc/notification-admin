@@ -104,5 +104,9 @@
     @apply block bg-gray-grey2 border-0 my-gutter p-0;
   }
 
+  b {
+    font-weight: bolder;
+  }
+
   /*! purgecss end ignore */
 }
