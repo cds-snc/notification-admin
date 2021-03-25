@@ -8,14 +8,14 @@
 
     <div class="pb-16">
         <h1 class="heading-large">{{ _('Welcome to GC Notify') }}</h1>
-        <p class="pt-4 text-base">{{ _('To get started, you’ll need to create a service. A service is a shared space where you and your team can write messages and track sending. Your service will start out in <b>trial mode</b>.')}}</p>
-        <p class="pt-4 text-base mb-4">{{ _('In <b>trial mode</b>, you can:') }}</p>
+        <p class="pt-4">{{ _('To get started, you’ll need to create a service. A service is a shared space where you and your team can write messages and track sending. Your service will start out in <b>trial mode</b>.')}}</p>
+        <p class="pt-4 mb-4 textbox">{{ _('In <b>trial mode</b>, you can:') }}</p>
         <ul class="list-disc ml-10">
-            <li class="pt-4 text-base leading-tight">{{ _('Send messages to yourself and members of your team') }}</li>
-            <li class="pt-4 text-base leading-tight">{{ _('Send up to 50 messages per day') }}</li>
+            <li class="pt-4 leading-tight textbox">{{ _('Send messages to yourself and members of your team') }}</li>
+            <li class="pt-4 leading-tight">{{ _('Send up to {} messages per day').format(default_limit | format_number) }}</li>
         </ul>
-        
-        <a href="{{ url_for('main.add_service', first='first') }}" class="mt-16 button button-blue hover:bg-blue-selected">{{ _('Create your first service') }}</a>
+        <p class="pt-10">{{ _("Once you've set up your team and tried out sending, you can request to go live in settings") }}</p>
+        <a href="{{ url_for('main.add_service', first='first') }}" class="mt-4 button">{{ _('Create your first service') }}</a>
     </div>
 
 {% endblock %}
