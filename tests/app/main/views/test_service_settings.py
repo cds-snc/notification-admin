@@ -777,6 +777,25 @@ def test_request_to_go_live_page(
     assert mock_templates.called is True
 
 
+def test_request_to_go_live_page_without_permission(
+    client_request,
+    active_user_no_settings_permission,
+):
+    client_request.login(active_user_no_settings_permission)
+    page = client_request.get(
+        'main.request_to_go_live', service_id=SERVICE_ONE_ID,
+        _expected_status=200,
+    )
+
+    assert page.h1.text == 'Request to go live'
+
+    tasks_links = [a['href'] for a in page.select('.task-list .task-list-item a')]
+    assert tasks_links == []
+
+    checklist_items = [normalize_spaces(i.text) for i in page.select('.task-list .task-list-item')]
+    assert checklist_items == []
+
+
 def test_request_to_go_live_terms_of_use_page(
     client_request,
     mocker,
