@@ -107,6 +107,7 @@ def test_security_txt(client):
     'features', 'security',
     'messages_status', 'email', 'sms',
     'letters',
+    'welcome',
 ])
 def test_static_pages(
     client_request,
