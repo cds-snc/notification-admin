@@ -296,6 +296,7 @@ def test_query_params(
         heading
     )
 
+
 def test_should_render_welcome(client):
     response = client.get(url_for('main.welcome'))
     assert response.status_code == 200
