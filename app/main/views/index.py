@@ -326,7 +326,8 @@ def security():
 @main.route('/welcome', endpoint='welcome')
 def welcome():
     return render_template(
-        'views/welcome.html'
+        'views/welcome.html',
+        default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"]
     )
 
 
