@@ -1305,3 +1305,10 @@
 "Separator","Séparateur"
 "In trial mode, you can only send to yourself and members of your team. To send to more recipients, <a href='{}'>request to go live</a>.","En mode d’essai, les envois sont limités à vous et aux membres de votre équipe. Pour envoyer des messages à d’autres destinataires, <a href='{}'>activez votre service</a>."
 "Please contact your service manager.","Veuillez communiquez avec votre gestionnaire de service.
+"Welcome to GC Notify","Bienvenue dans GC Notification"
+"To get started, you’ll need to create a service. A service is a shared space where you and your team can write messages and track sending. Your service will start out in <b>trial mode</b>.","Pour commencer, vous devrez créer un service. Un service est un espace partagé où votre équipe peut rédiger des messages  et suivre les envois. Votre service commencera en <b>mode d'essai</b>."
+"In <b>trial mode</b>, you can:","En <b>mode d’essai</b>, vous pourrez:"
+"Send messages to yourself and members of your team","Envoyer des messages à vous-même et aux membres de votre équipe"
+"Send up to {} messages per day","Envoyer jusqu'à {} messages par jour"
+"Create your first service","Créer votre premier service"
+"Once you've set up your team and tried out sending, you can request to go live in settings","Une fois que vous aurez mis en place votre équipe et essayé d'envoyer des messages, vous pourrez demander d'activer votre service dans les paramètres"

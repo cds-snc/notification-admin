@@ -372,7 +372,8 @@ class HeaderNavigation(Navigation):
         'unblock_user',
         'service_sending_domain',
         'manage_smtp',
-        'delete_smtp'
+        'delete_smtp',
+        'welcome'
     }
 
 
@@ -413,6 +414,7 @@ class MainNavigation(Navigation):
             'view_template',
             'view_template_version',
             'view_template_versions',
+            'welcome',
         },
         'uploads': {
             'uploads',
@@ -541,7 +543,8 @@ class MainNavigation(Navigation):
         'update_letter_branding',
         'user_information',
         'view_provider',
-        'view_providers'
+        'view_providers',
+        'welcome'
     }
 
 
@@ -832,5 +835,6 @@ class OrgNavigation(Navigation):
         'service_sending_domain',
         'smtp_integration',
         'manage_smtp',
-        'delete_smtp'
+        'delete_smtp',
+        'welcome'
     }
