@@ -49,13 +49,12 @@ export const defaultState = (
   if (timeValuesTodayLeft && timeValuesTodayLeft.length > 0) {
     selectedTimeValue = timeValuesTodayLeft[0].val;
   }
-  // If there is no time slots remaining in the current day, we are past
+  // If there are no time slots remaining in the current day, we are past
   // 23h00 and we need to shift forward the first available day for scheduling. 
   else {
     const tomorrow = dayjs().add(1, 'day').startOf("date");
     firstDay = tomorrow;
     selectedTimeValue = time_values[0].val;
-    timeValuesTodayLeft = time_values;
   }
 
   let lastAvailableDate;
