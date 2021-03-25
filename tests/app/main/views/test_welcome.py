@@ -2,13 +2,7 @@ from bs4 import BeautifulSoup
 from flask import url_for
 
 
-def test_should_render_welcome(
-    client,
-    mocker,
-    api_user_active,
-    mock_get_user_by_email,
-    mock_send_verify_email,
-):
+def test_should_render_welcome(client):
     response = client.get(url_for('main.welcome'))
     assert response.status_code == 200
 
