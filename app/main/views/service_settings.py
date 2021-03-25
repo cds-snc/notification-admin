@@ -202,10 +202,12 @@ def service_email_from_change_confirm(service_id):
 
 
 @main.route("/services/<service_id>/service-settings/request-to-go-live", methods=['GET'])
-@user_has_permissions('manage_service')
 @user_is_gov_user
 def request_to_go_live(service_id):
-    return render_template('views/service-settings/request-to-go-live.html')
+    if not current_user.has_permissions('manage_service'):
+        return render_template('views/service-settings/request-to-go-live-no-admin.html')
+    else:
+        return render_template('views/service-settings/request-to-go-live.html')
 
 
 @main.route(

@@ -1303,4 +1303,5 @@
 "Yearly free maximum","Maximum gratuit annuel"
 "External link","Lien externe"
 "Separator","Séparateur"
-"In trial mode, you can only send to yourself and members of your team. To send to more recipients, request to go live.","En mode d’essai, les envois sont limités à vous et aux membres de votre équipe. Pour envoyer des messages à d’autres destinataires, activez votre service."
+"In trial mode, you can only send to yourself and members of your team. To send to more recipients, <a href='{}'>request to go live</a>.","En mode d’essai, les envois sont limités à vous et aux membres de votre équipe. Pour envoyer des messages à d’autres destinataires, <a href='{}'>activez votre service</a>."
+"Please contact your service manager.","Veuillez communiquez avec votre gestionnaire de service.
