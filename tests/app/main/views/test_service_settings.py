@@ -781,6 +781,12 @@ def test_request_to_go_live_page_without_permission(
     client_request,
     active_user_no_settings_permission,
 ):
+    active_user_no_settings_permission['permissions'] = {SERVICE_ONE_ID: [
+        'manage_templates',
+        'manage_api_keys',
+        'view_activity',
+        'send_messages',
+    ]}
     client_request.login(active_user_no_settings_permission)
     page = client_request.get(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID,
