@@ -17,13 +17,9 @@ const LOCALE = window.APP_LANG === "en" ? LANGUAGES[0] : LANGUAGES[1];
 
 dayjs.locale(LOCALE); // global
 
-const defaultToday = dayjs()
-  .set("hour", 0)
-  .set("minute", 0)
-  .set("second", 0)
-  .set("millisecond", 0);
-
+const defaultToday = dayjs().startOf("date");
 const defautFirstDay = dayjs(defaultToday);
+
 // Note: date = YYYY-MM-DD on the calendar display not the current date
 // date - updates on prev / next month click
 
@@ -33,10 +29,7 @@ export const defaultState = (
     firstDay: defautFirstDay
   }
 ) => {
-  const { today, firstDay } = data.defaultState ? data.defaultState: data;
-
-  let lastAvailableDate;
-  lastAvailableDate = dayjs(firstDay).add(96, "hour");
+  let { today, firstDay } = data.defaultState ? data.defaultState: data;
 
   const blockedDay = day => {
     const beforeFirstDay = firstDay ? dayjs(day).isBefore(firstDay) : false;
@@ -48,18 +41,24 @@ export const defaultState = (
   };
 
   const time_values = populateTimes(LOCALE === "en" ? "off" : "on");
-  const timeValuesTodayLeft = timeValuesToday([yearMonthDay(firstDay)], time_values);
+  let timeValuesTodayLeft = timeValuesToday([yearMonthDay(firstDay)], time_values);
+
   let selectedTimeValue = null;
+  // Select first available time slot only if there are some left for the 
+  // current day, i.e. hour is less than 23h00.
   if (timeValuesTodayLeft && timeValuesTodayLeft.length > 0) {
     selectedTimeValue = timeValuesTodayLeft[0].val;
-  } 
+  }
+  // If there are no time slots remaining in the current day, we are past
+  // 23h00 and we need to shift forward the first available day for scheduling. 
   else {
-    // REVIEW: Raises error past 23h00m in a day, not great when debugging late.  
-    // TODO:This is not the proper fix and could lead to bugs.
-    //      This is a partial fix as this crashes the whole page past 11pm.
+    const tomorrow = dayjs().add(1, 'day').startOf("date");
+    firstDay = tomorrow;
     selectedTimeValue = time_values[0].val;
   }
-  const firstTimeValue = time_values[0].val;
+
+  let lastAvailableDate;
+  lastAvailableDate = dayjs(firstDay).add(96, "hour");
 
   return {
     today,
@@ -71,8 +70,7 @@ export const defaultState = (
     updateMessage: "",
     _24hr: LOCALE === "en" ? "off" : "on",
     errors: "",
-    // REVIEW: Raises error past 23h00m in a day, not great when debugging late.
-    time: dateIsToday([yearMonthDay(firstDay)]) ? selectedTimeValue : firstTimeValue,
+    time: selectedTimeValue,
     time_values: time_values,
     isBlockedDay: blockedDay
   };
