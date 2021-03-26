@@ -7,5 +7,9 @@
   {%- endif %}
 </h1>
 <p>
-  {{ _("In trial mode, you can only send to yourself and members of your team. To send to more recipients, <a href='{}'>request to go live</a>.").format(url_for('main.request_to_go_live', service_id=current_service.id)) }}
+  {{ _("In trial mode, you can only send to yourself and <a href='{}'>members of your team</a>. To send to more recipients, <a href='{}'>request to go live</a>.")
+    .format(
+      url_for('main.manage_users', service_id=current_service.id),
+      url_for('main.request_to_go_live', service_id=current_service.id)
+  ) }}
 </p>
