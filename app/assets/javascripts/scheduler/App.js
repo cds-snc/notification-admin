@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { StateProvider, setIntialState, defaultState } from "./store";
-import { I18nProvider,I18nContext } from "./i18n";
+import { I18nProvider, I18nContext } from "./i18n";
 import { ErrorMessage } from "./ErrorMessage/ErrorMessage";
 import { Calendar } from "./Calendar/Calendar";
 import { DateTime } from "./DateTime/DateTime";

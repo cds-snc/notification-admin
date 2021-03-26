@@ -26,7 +26,7 @@ def test_should_return_verify_template(
     assert message == "We’ve sent you a text message with a security code."
 
 
-def test_should_redirect_to_add_service_when_two_factor_code_is_correct(
+def test_should_redirect_to_welcome_screen_when_two_factor_code_is_correct(
     client,
     api_user_active,
     mocker,
@@ -46,7 +46,7 @@ def test_should_redirect_to_add_service_when_two_factor_code_is_correct(
     response = client.post(url_for('main.verify'),
                            data={'two_factor_code': '12345'})
     assert response.status_code == 302
-    assert response.location == url_for('main.add_service', first='first', _external=True)
+    assert response.location == url_for('main.welcome', _external=True)
 
     # make sure the current_session_id has changed to what the API returned
     with client.session_transaction() as session:

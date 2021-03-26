@@ -25,8 +25,10 @@ call form_wrapper() %}
     endif %} {% set txt = _('Save') %} {{ sticky_page_footer( txt ) }}
   </div>
 </div>
-{% endcall %} {% endblock %} {% block page_script %}
+{% endcall %} {% endblock %}
 
+{% block page_script %}
+{{ super() }}
 <script>
   const loadContent = templateId => {
     const callback = `/services/templates/${templateId}/get-data`;
