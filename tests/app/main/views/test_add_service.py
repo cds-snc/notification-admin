@@ -185,7 +185,7 @@ def test_wizard_flow_with_step_3_should_display_branding_form(
         current_step='choose_logo',
         _expected_status=200,
     )
-    assert page.select_one('h1').text.strip() == 'Choose a logo for your service'
+    assert page.select_one('h1').text.strip() == 'Choose the default language of your service'
 
 
 def test_wizard_flow_with_non_matching_steps_info_should_fallback_to_step1(
