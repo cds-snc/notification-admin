@@ -82,17 +82,23 @@
   {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
     <div class="flex flex-wrap items-center space-x-4 space-y-0 items-stretch">
       <div class="font-bold text-lg text-black inline">{{ url_text }}</div>
-      <div class="inline-block text-base self-end pb-4">
-        {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
-          <a
-            aria-label="{{ _('Trial') }}"
-            class="button button-blue-lighter-nb hover:bg-blue-selected"
-            href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
-            role="button">
-            {{ _('Trial') }}
-          </a>
-        {% endif %}
-      </div>
+      <a
+        class="self-end pb-4"
+        href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
+        role="button">
+        <div class="flex flex-initial flex-row text-base">
+          {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
+            <div
+              aria-label="{{ _('Trial') }}"
+              class="button button-blue-lighter-nb hover:bg-blue-selected inline-block mr-4">
+              {{ _('Trial') }}
+            </div>
+            <div class="inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
+              {{ _('Request to go live') }}
+            </div>
+          {% endif %}
+        </div>
+      </a>
     </div>
   {% endif %}
 </div>
