@@ -6,7 +6,7 @@
   {% endif %}
 </h1>
 <p>
-  {{ _('You can only send') }} {{ current_service.message_limit }} {{ _('messages per day') }}
+  {{ _('You can only send') }} {{ current_service.message_limit | format_number }} {{ _('messages per day') }}
   {%- if current_service.trial_mode %}
     {{ _("in trial mode. To send more messages, <a href='{}'>request to go live</a>").format(url_for('main.request_to_go_live', service_id=current_service.id)) }}
   {%- endif -%}
