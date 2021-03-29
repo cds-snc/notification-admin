@@ -333,7 +333,7 @@
 "these email addresses","ces adresses courriel"
 "these phone numbers","ces numéros de téléphone"
 "In trial mode, you can only send to yourself and members of your team","En mode d’essai, les envois sont limités à vous et aux membres de votre équipe."
-"in trial mode. To send more messages, request to go live","en mode d’essai. Pour envoyer plus de messages, activez votre service"
+"in trial mode. To send more messages, <a href='{}'>request to go live</a>","en mode d’essai. Pour envoyer plus de messages, <a href='{}'>activez votre service</a>"
 "These messages have already been sent today","Ces messages ont déjà été envoyés aujourd’hui"
 "If you need to re-send them, rename the file and upload it again.","Si vous avez besoin de les renvoyer, renommez le fichier et téléversez-le à nouveau."
 "Too many recipients","Trop de destinataires"
