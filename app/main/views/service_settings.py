@@ -202,10 +202,13 @@ def service_email_from_change_confirm(service_id):
 
 
 @main.route("/services/<service_id>/service-settings/request-to-go-live", methods=['GET'])
-@user_has_permissions('manage_service')
+@user_has_permissions('manage_service', 'send_messages')
 @user_is_gov_user
 def request_to_go_live(service_id):
-    return render_template('views/service-settings/request-to-go-live.html')
+    if not current_user.has_permissions('manage_service'):
+        return render_template('views/service-settings/request-to-go-live-no-admin.html')
+    else:
+        return render_template('views/service-settings/request-to-go-live.html')
 
 
 @main.route(
@@ -1203,8 +1206,8 @@ def branding_request(service_id):
     default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
     default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
     choices = [
-        ('__FIP-EN__', _('English GC logo') + '||' + default_en_filename),
-        ('__FIP-FR__', _('French GC logo') + '||' + default_fr_filename),
+        ('__FIP-EN__', _('English-first') + '||' + default_en_filename),
+        ('__FIP-FR__', _('French-first') + '||' + default_fr_filename),
     ]
     if current_branding is None:
         current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if

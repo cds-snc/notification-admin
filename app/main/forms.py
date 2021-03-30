@@ -671,8 +671,8 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
         default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
         choices = [
-            (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l('English GC logo') + '||' + default_en_filename),
-            (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l('French GC logo') + '||' + default_fr_filename),
+            (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l('English-first') + '||' + default_en_filename),
+            (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l('French-first') + '||' + default_fr_filename),
         ]
         return choices
 
@@ -683,8 +683,8 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
     default_branding = RadioField(
         '',
         choices=[  # Choices by default, override to get more refined options.
-            (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l('English GC Logo')),
-            (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l('French GC Logo')),
+            (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l('English-first')),
+            (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l('French-first')),
         ],
         default='__FIP-EN__',
         validators=[
