@@ -3278,7 +3278,7 @@ SERVICE_DAILY_LIMIT_MSG = 'Exceeded send limits (1000) for today'
     (
         SERVICE_DAILY_LIMIT_MSG,
         'Daily limit reached',
-        'You can only send 1000 messages per day in trial mode. To send more messages, request to go live.'
+        'You can only send 1,000 messages per day in trial mode. To send more messages, request to go live.'
     ),
 ])
 def test_send_notification_shows_error_if_400(
