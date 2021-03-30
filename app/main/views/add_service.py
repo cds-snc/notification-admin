@@ -35,7 +35,7 @@ STEP_LOGO: str = "choose_logo"
 DEFAULT_STEP = STEP_NAME
 
 STEP_NAME_HEADER: str = _("Name your service")
-STEP_LOGO_HEADER: str = _("Choose a logo for your service")
+STEP_LOGO_HEADER: str = _("Choose the default language of your service")
 STEP_EMAIL_HEADER: str = _("Create a sending email address for your service")
 
 WIZARD_ORDER = [

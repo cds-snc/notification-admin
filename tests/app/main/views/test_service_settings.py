@@ -777,6 +777,31 @@ def test_request_to_go_live_page(
     assert mock_templates.called is True
 
 
+def test_request_to_go_live_page_without_manage_service_permission(
+    client_request,
+    active_user_no_settings_permission,
+):
+    active_user_no_settings_permission['permissions'] = {SERVICE_ONE_ID: [
+        'manage_templates',
+        'manage_api_keys',
+        'view_activity',
+        'send_messages',
+    ]}
+    client_request.login(active_user_no_settings_permission)
+    page = client_request.get(
+        'main.request_to_go_live', service_id=SERVICE_ONE_ID,
+        _expected_status=200,
+    )
+
+    assert page.h1.text == 'Request to go live'
+
+    tasks_links = [a['href'] for a in page.select('.task-list .task-list-item a')]
+    assert tasks_links == []
+
+    checklist_items = [normalize_spaces(i.text) for i in page.select('.task-list .task-list-item')]
+    assert checklist_items == []
+
+
 def test_request_to_go_live_terms_of_use_page(
     client_request,
     mocker,
@@ -1099,17 +1124,18 @@ def test_submit_go_live_request(
     )
 
 
-@pytest.mark.parametrize('route', [
-    'main.service_settings',
-    'main.service_name_change',
-    'main.service_name_change_confirm',
-    'main.service_email_from_change',
-    'main.service_email_from_change_confirm',
-    'main.request_to_go_live',
-    'main.use_case',
-    'main.terms_of_use',
-    'main.submit_request_to_go_live',
-    'main.archive_service',
+@pytest.mark.parametrize('route, permissions', [
+    ('main.service_settings', ['manage_service']),
+    ('main.service_name_change', ['manage_service']),
+    ('main.service_name_change_confirm', ['manage_service']),
+    ('main.service_email_from_change', ['manage_service']),
+    ('main.service_email_from_change_confirm', ['manage_service']),
+    ('main.request_to_go_live', ['manage_service']),
+    ('main.request_to_go_live', ['send_messages']),
+    ('main.use_case', ['manage_service']),
+    ('main.terms_of_use', ['manage_service']),
+    ('main.submit_request_to_go_live', ['manage_service']),
+    ('main.archive_service', ['manage_service'])
 ])
 def test_route_permissions(
         mocker,
@@ -1123,6 +1149,7 @@ def test_route_permissions(
         mock_get_invites_for_service,
         single_sms_sender,
         route,
+        permissions,
         mock_get_service_settings_page_common,
         mock_get_service_templates,
 ):
@@ -1132,7 +1159,7 @@ def test_route_permissions(
         "GET",
         200,
         url_for(route, service_id=service_one['id']),
-        ['manage_service'],
+        permissions,
         api_user_active,
         service_one)
 

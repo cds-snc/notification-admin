@@ -99,7 +99,7 @@ def create_api_key(service_id):
     if current_service.trial_mode:
         disabled_options = [KEY_TYPE_NORMAL]
         option_hints[KEY_TYPE_NORMAL] = Markup(
-            _l('Not available because your service is in trial mode')
+            _l('Not available because your service is in trial mode.')
         )
     if current_service.has_permission('letter'):
         option_hints[KEY_TYPE_TEAM] = ''
