@@ -53,7 +53,7 @@
               ) }}
               {% if counts.failed == 1 %}
               <span class="{{ 'failure-highlight' if counts.show_warning else '' }}">
-                {{ "{}".format(counts.failed | format_number) }} {{ _('failure') }}
+                {{ counts.failed | format_number }} {{ _('failure') }}
               </span>
               {% elif counts.failed > 1 %}
               <span class="{{ 'failure-highlight' if counts.show_warning else '' }}">
