@@ -61,12 +61,12 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         kubectl set image deployment.apps/admin admin=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
+    - uses: cds-snc/notification-pr-bot@master
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
     - name: Run a11y tracker
         run: |
           curl -s https://api.a11y.cdssandbox.xyz/v1/reports\?recent\=true > /dev/null
           sleep 60
           json='{"product": "cds-snc/notification", "revision": "${{github.sha}}", "urls":["https://staging.notification.cdssandbox.xyz"], "spider": 1}'
           curl -X POST -H 'X-API-KEY: ${{ secrets.A11Y_TRACKER_KEY }}' --data "$json" https://api.a11y.cdssandbox.xyz/v1
-    - uses: cds-snc/notification-pr-bot@master
-      env:
-        TOKEN: ${{ secrets.TOKEN }}
