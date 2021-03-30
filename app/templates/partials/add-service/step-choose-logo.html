@@ -1,3 +1,5 @@
+<p>{{ _('This determines the Government of Canada branding that will be used by default in the email messages you send.') }}</p>
+
 <div class="form-wrap">
     {% call form_wrapper() %}
     {{ radios(form.default_branding) }}
@@ -8,4 +10,4 @@
     {% endcall %}
 </div>
 
-<p>{{ _('You can also upload a new custom logo later in Settings.') }}</p>
+<p>{{ _('You can change the email branding later in Settings.') }}</p>

@@ -1206,8 +1206,8 @@ def branding_request(service_id):
     default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
     default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
     choices = [
-        ('__FIP-EN__', _('English GC logo') + '||' + default_en_filename),
-        ('__FIP-FR__', _('French GC logo') + '||' + default_fr_filename),
+        ('__FIP-EN__', _('English-first') + '||' + default_en_filename),
+        ('__FIP-FR__', _('French-first') + '||' + default_fr_filename),
     ]
     if current_branding is None:
         current_branding = (FieldWithLanguageOptions.FRENCH_OPTION_VALUE if
