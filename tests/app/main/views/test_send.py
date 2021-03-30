@@ -2590,7 +2590,7 @@ def test_check_messages_shows_trial_mode_error(
         page.find('div', class_='banner-dangerous').text.split()
     ) == (
         'You cannot send to this phone number '
-        'In trial mode, you can only send to yourself and members of your team '
+        'In trial mode, you can only send to yourself and members of your team. To send to more recipients, request to go live. '
         'Skip to file contents'
     )
 
@@ -3268,7 +3268,7 @@ SERVICE_DAILY_LIMIT_MSG = 'Exceeded send limits (1000) for today'
     (
         TRIAL_MODE_MSG,
         'You cannot send to this phone number',
-        'In trial mode, you can only send to yourself and members of your team'
+        'In trial mode, you can only send to yourself and members of your team. To send to more recipients, request to go live.'
     ),
     (
         TOO_LONG_MSG,
@@ -3278,7 +3278,7 @@ SERVICE_DAILY_LIMIT_MSG = 'Exceeded send limits (1000) for today'
     (
         SERVICE_DAILY_LIMIT_MSG,
         'Daily limit reached',
-        'You can only send 1000 messages per day in trial mode.'
+        'You can only send 1,000 messages per day in trial mode. To send more messages, request to go live.'
     ),
 ])
 def test_send_notification_shows_error_if_400(
@@ -3344,7 +3344,7 @@ def test_send_notification_shows_email_error_in_trial_mode(
         'You cannot send to this email address'
     )
     assert normalize_spaces(page.select('.banner-dangerous p')[0].text) == (
-        'In trial mode, you can only send to yourself and members of your team'
+        'In trial mode, you can only send to yourself and members of your team. To send to more recipients, request to go live.'
     )
 
 
