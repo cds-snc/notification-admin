@@ -51,10 +51,14 @@
                 message_count_label(counts.requested, template_type, suffix=''),
                 smallest=True,
               ) }}
-              {% if counts.requested %}
-                <span class="{{ 'failure-highlight' if counts.show_warning else '' }}">
-                  {{ "{:,}".format(counts.failed) }} {{ _('failed') }}
-                </span>
+              {% if counts.failed == 1 %}
+              <span class="{{ 'failure-highlight' if counts.show_warning else '' }}">
+                {{ counts.failed | format_number }} {{ _('failure') }}
+              </span>
+              {% elif counts.failed > 1 %}
+              <span class="{{ 'failure-highlight' if counts.show_warning else '' }}">
+                {{ counts.failed | format_number }} {{ _('failures') }}
+              </span>
               {% else %}
                 –
               {% endif %}
