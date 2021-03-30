@@ -467,6 +467,32 @@ def test_show_live_service(
     assert url_for('.request_to_go_live', service_id=SERVICE_ONE_ID) not in page
 
 
+def test_show_live_banner(
+    client_request,
+    mock_get_live_service,
+    single_reply_to_email_address,
+    single_letter_contact_block,
+    mock_get_service_organisation,
+    single_sms_sender,
+    mock_get_service_settings_page_common,
+    platform_admin_user,
+    service_one,
+):
+    service_one['restricted'] = True
+    client_request.login(platform_admin_user, service_one)
+
+    page = client_request.get(
+        'main.service_settings',
+        service_id=SERVICE_ONE_ID,
+    )
+
+    request_link = page.select_one('a[href*="request-to-go-live"]')
+    assert "Trial" in request_link.text.strip()
+
+    live_banner = page.find('div', attrs={"aria-label": "Trial"})
+    assert live_banner.text.strip() == 'Trial'
+
+
 @pytest.mark.parametrize('current_limit, expected_limit', [
     (42, 50),
     (50, 50),
