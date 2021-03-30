@@ -1310,3 +1310,5 @@
 "Send up to {} messages per day","Envoyer jusqu'à {} messages par jour"
 "Create your first service","Créer votre premier service"
 "Once you've set up your team and tried out sending, you can request to go live in settings","Une fois que vous aurez mis en place votre équipe et essayé d'envoyer des messages, vous pourrez demander d'activer votre service dans les paramètres"
+"failure","échec"
+"failures","échecs"
