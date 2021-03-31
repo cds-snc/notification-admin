@@ -152,6 +152,6 @@ def test_normal_user_doesnt_see_any_toggle_buttons(
 ):
     page = client_request.get('main.service_settings', service_id=service_one['id'])
 
-    toggles = [a for a in page.find_all('a', {'class': 'button'}) if a.text != 'Request to go live']
+    toggles = [a for a in page.find_all('a', {'class': 'button'}) if a.text != 'Request to go live' and 'Trial' not in a.text]
 
     assert toggles == []

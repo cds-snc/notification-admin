@@ -192,7 +192,6 @@
 "Admin panel","Section admin"
 "Guidance","Guides"
 "close","fermer"
-"Switch services","Changer de service"
 "Account menu","Menu du compte"
 "Sign out","Se déconnecter"
 "Sign in","Se connecter"
@@ -1305,6 +1304,7 @@
 "Yearly free maximum","Maximum gratuit annuel"
 "External link","Lien externe"
 "Separator","Séparateur"
+"Trial","Mode d'essai"
 "In trial mode, you can only send to yourself and <a href='{}'>members of your team</a>. To send to more recipients, <a href='{}'>request to go live</a>.","En mode d’essai, les envois sont limités à vous et aux <a href='{}'>membres de votre équipe</a>. Pour envoyer des messages à d’autres destinataires, <a href='{}'>activez votre service</a>."
 "Please contact your service manager.","Veuillez communiquez avec votre gestionnaire de service.
 "Welcome to GC Notify","Bienvenue dans GC Notification"
