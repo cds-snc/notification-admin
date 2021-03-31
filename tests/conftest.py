@@ -3,7 +3,7 @@ import os
 from contextlib import contextmanager
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock
-from urllib import request, parse
+from urllib import parse, request
 from uuid import UUID, uuid4
 
 import pytest
