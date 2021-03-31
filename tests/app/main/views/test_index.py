@@ -52,7 +52,7 @@ def test_home_page_a11y(mocker, client):
 
     response = client.get(url_for('main.index'))
     assert response.status_code == 200
-    assert a11y_test(response.data.decode('utf-8'))
+    a11y_test(url_for('main.index', _external=True), response.data.decode('utf-8'))
 
 
 def test_logged_in_user_redirects_to_choose_account(

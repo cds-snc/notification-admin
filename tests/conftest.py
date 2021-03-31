@@ -37,7 +37,7 @@ class ElementNotFound(Exception):
     pass
 
 
-def a11y_test(html):
+def a11y_test(slug, html):
     # See https://github.com/cds-snc/a11y-tools
     if "GITHUB_SHA" in os.environ and "A11Y_TRACKER_KEY" in os.environ:
         requests.post(
@@ -46,7 +46,7 @@ def a11y_test(html):
                 "product": "cds-snc/notification",
                 "revision": os.environ["GITHUB_SHA"],
                 "ci": True,
-                "html": [html]
+                "html": [{slug: html}]
             },
             headers={'X-API-KEY': os.environ["A11Y_TRACKER_KEY"]}
         ).raise_for_status()
