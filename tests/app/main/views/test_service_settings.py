@@ -489,7 +489,7 @@ def test_show_live_banner(
     request_link = page.select_one('a[href*="request-to-go-live"]')
     assert "Trial" in request_link.text.strip()
 
-    live_banner = page.find('div', attrs={"aria-label": "Trial"})
+    live_banner = page.find('div', attrs={"id": "live-banner"})
     assert live_banner.text.strip() == 'Trial'
 
 
