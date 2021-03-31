@@ -51,7 +51,6 @@ def test_home_page_a11y(mocker, client):
     )
 
     response = client.get(url_for('main.index'))
-    response = client.get(url_for('main.index'))
     assert response.status_code == 200
     assert a11y_test(response.data.decode('utf-8'))
 

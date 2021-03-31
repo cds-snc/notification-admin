@@ -39,7 +39,7 @@ class ElementNotFound(Exception):
 
 def a11y_test(html):
 
-    if os.environ("GITHUB_SHA") and os.environ("A11Y_TRACKER_KEY"):
+    if os.environ["GITHUB_SHA"] and os.environ["A11Y_TRACKER_KEY"]:
         payload = {
             "product": "cds-snc/notification",
             "revision": os.environ("GITHUB_SHA"),
@@ -50,7 +50,7 @@ def a11y_test(html):
         data = parse.urlencode(json.dumps(payload)).encode()
         req = request.Request("https://api.a11y.cdssandbox.xyz/v1", data=data)
         req.add_header('Content-Type', 'application/json')
-        req.add_header('X-API-KEY', os.environ("A11Y_TRACKER_KEY"))
+        req.add_header('X-API-KEY', os.environ["A11Y_TRACKER_KEY"])
         request.urlopen(req)
 
     return True
