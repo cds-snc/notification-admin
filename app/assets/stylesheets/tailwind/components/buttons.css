@@ -18,6 +18,10 @@
   .button-blue-lighter, .button-blue-lighter:link, .button-blue-lighter:visited {
     @apply bg-blue-lighter border-b-2 border-black font-bold text-base text-black px-5 py-4;
   }
+  .button-blue-lighter-nb, .button-blue-lighter-nb:link, .button-blue-lighter-nb:visited {
+    box-shadow: none;
+    @apply bg-blue-lighter border-none font-semibold text-small text-black px-6 py-1;
+  }
 
   .button:hover {
     @apply bg-green-hover;
