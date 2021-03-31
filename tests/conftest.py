@@ -3,8 +3,8 @@ import os
 from contextlib import contextmanager
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock
-from uuid import UUID, uuid4
 from urllib import request, parse
+from uuid import UUID, uuid4
 
 import pytest
 from bs4 import BeautifulSoup
