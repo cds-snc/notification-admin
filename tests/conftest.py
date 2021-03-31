@@ -1,6 +1,5 @@
 import json
 import os
-import tempfile
 from contextlib import contextmanager
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock
