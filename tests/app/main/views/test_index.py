@@ -40,11 +40,11 @@ def test_non_logged_in_user_can_see_homepage(mocker, client):
     )
 
 
-def test_documentation_a11y(
+def test_home_page_a11y(
     client,
     mock_get_service_and_organisation_counts,
 ):
-    response = client.get(url_for('main.documentation'))
+    response = client.get(url_for('main.index'))
     assert response.status_code == 200
     assert a11y_test(response.data.decode('utf-8'))
 

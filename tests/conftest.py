@@ -42,7 +42,7 @@ def a11y_test(html):
 
     if os.environ("GITHUB_SHA") and os.environ("A11Y_TRACKER_KEY"):
         payload = {
-            "product": "cds-snc/notification"
+            "product": "cds-snc/notification",
             "revision": os.environ("GITHUB_SHA"),
             "ci": True,
             "html": [html]
@@ -55,6 +55,7 @@ def a11y_test(html):
         request.urlopen(req)
 
     return True
+
 
 @pytest.fixture
 def app_(request):
