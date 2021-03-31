@@ -401,7 +401,7 @@ def test_show_restricted_service(
     )
 
     assert page.find('h1').text == 'Settings'
-    assert page.find_all('h2')[0].text == 'Your service is in trial mode'
+    assert page.find_all('h2')[1].text == 'Your service is in trial mode'
 
     assert expected_text in [normalize_spaces(p.text) for p in page.select('main p')]
 
