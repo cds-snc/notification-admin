@@ -81,11 +81,11 @@
 
   {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
     <div>
-      <h1 class="font-bold text-lg text-black inline">
+      <h2 class="font-bold text-lg text-black inline">
         {{ url_text }}
-      </h1>
+      </h2>
       <a
-        class="self-end pb-4 inline-block"
+        class="self-end pb-4 inline-block align-middle"
         href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
         role="button">
         <div class="flex flex-initial flex-row text-base">
