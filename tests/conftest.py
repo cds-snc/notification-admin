@@ -3,7 +3,7 @@ import os
 from contextlib import contextmanager
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock
-from urllib import parse, request
+from urllib import request
 from uuid import UUID, uuid4
 
 import pytest
@@ -47,7 +47,7 @@ def a11y_test(html):
             "html": [html]
         }
 
-        data = parse.urlencode(json.dumps(payload)).encode()
+        data = json.dumps(payload)
         req = request.Request("https://api.a11y.cdssandbox.xyz/v1", data=data)
         req.add_header('Content-Type', 'application/json')
         req.add_header('X-API-KEY', os.environ["A11Y_TRACKER_KEY"])
