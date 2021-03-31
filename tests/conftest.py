@@ -3,10 +3,10 @@ import os
 from contextlib import contextmanager
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock
-from urllib import request
 from uuid import UUID, uuid4
 
 import pytest
+import requests
 from bs4 import BeautifulSoup
 from flask import Flask, template_rendered, url_for
 from notifications_python_client.errors import HTTPError
@@ -38,20 +38,18 @@ class ElementNotFound(Exception):
 
 
 def a11y_test(html):
-
+    # See https://github.com/cds-snc/a11y-tools
     if "GITHUB_SHA" in os.environ and "A11Y_TRACKER_KEY" in os.environ:
-        payload = {
-            "product": "cds-snc/notification",
-            "revision": os.environ["GITHUB_SHA"],
-            "ci": True,
-            "html": [html]
-        }
-
-        data = json.dumps(payload)
-        req = request.Request("https://api.a11y.cdssandbox.xyz/v1", data=data)
-        req.add_header('Content-Type', 'application/json')
-        req.add_header('X-API-KEY', os.environ["A11Y_TRACKER_KEY"])
-        request.urlopen(req)
+        requests.post(
+            "https://api.a11y.cdssandbox.xyz/v1",
+            json={
+                "product": "cds-snc/notification",
+                "revision": os.environ["GITHUB_SHA"],
+                "ci": True,
+                "html": [html]
+            },
+            headers={'X-API-KEY': os.environ["A11Y_TRACKER_KEY"]}
+        ).raise_for_status()
 
     return True
 
