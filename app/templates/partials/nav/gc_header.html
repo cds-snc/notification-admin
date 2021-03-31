@@ -89,7 +89,6 @@
         <div class="flex flex-initial flex-row text-base">
           {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
             <div
-              aria-label="{{ _('Trial') }}"
               class="button button-blue-lighter-nb hover:bg-blue-selected inline-block mr-4">
               {{ _('Trial') }}
             </div>
