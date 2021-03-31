@@ -39,7 +39,7 @@ class ElementNotFound(Exception):
 
 def a11y_test(html):
 
-    if os.environ["GITHUB_SHA"] and os.environ["A11Y_TRACKER_KEY"]:
+    if "GITHUB_SHA" in os.environ and "A11Y_TRACKER_KEY" in os.environ:
         payload = {
             "product": "cds-snc/notification",
             "revision": os.environ("GITHUB_SHA"),
