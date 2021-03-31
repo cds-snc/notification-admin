@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock
 from uuid import UUID, uuid4
+from urllib import request, parse
 
 import pytest
 from bs4 import BeautifulSoup
@@ -38,21 +39,22 @@ class ElementNotFound(Exception):
 
 
 def a11y_test(html):
-    chromedriver_path = os.environ.get('CHROMEDRIVER_BIN', 'node_modules/chromedriver/lib/chromedriver/chromedriver')  # noqa: E501
 
-    temp = tempfile.NamedTemporaryFile(mode='w+t', suffix='.html')
-    temp.writelines(html)
-    temp.seek(0)
-    cmd = "node_modules/axe-cli/axe-cli --disable color-contrast --chrome-options='no-sandbox,disable-setuid-sandbox,disable-dev-shm-usage' --chromedriver-path='" + chromedriver_path + "' file://" + temp.name  # noqa: E501
-    output = os.popen(cmd).read()
-    temp.close()
+    if os.environ("GITHUB_SHA") and os.environ("A11Y_TRACKER_KEY"):
+        payload = {
+            "product": "cds-snc/notification"
+            "revision": os.environ("GITHUB_SHA"),
+            "ci": True,
+            "html": [html]
+        }
 
-    if "0 violations found!" in output:
-        return True
-    else:
-        print(output)  # noqa: T001
-        return False
+        data = parse.urlencode(json.dumps(payload)).encode()
+        req = request.Request("https://api.a11y.cdssandbox.xyz/v1", data=data)
+        req.add_header('Content-Type', 'application/json')
+        req.add_header('X-API-KEY', os.environ("A11Y_TRACKER_KEY"))
+        request.urlopen(req)
 
+    return True
 
 @pytest.fixture
 def app_(request):
