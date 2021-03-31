@@ -42,7 +42,7 @@ def a11y_test(html):
     if "GITHUB_SHA" in os.environ and "A11Y_TRACKER_KEY" in os.environ:
         payload = {
             "product": "cds-snc/notification",
-            "revision": os.environ("GITHUB_SHA"),
+            "revision": os.environ["GITHUB_SHA"],
             "ci": True,
             "html": [html]
         }
