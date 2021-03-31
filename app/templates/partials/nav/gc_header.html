@@ -94,7 +94,11 @@
               {{ _('Trial') }}
             </div>
             <div class="inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
-              {{ _('Request to go live') }}
+              {% if current_service.pending_live %}
+                {{ _('Request being reviewed') }}
+              {% else %}
+                {{ _('Request to go live') }}
+              {% endif %}
             </div>
           {% endif %}
         </div>

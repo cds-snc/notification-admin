@@ -237,6 +237,10 @@ class Service(JSONModel):
     def has_submitted_go_live(self):
         return self.go_live_user is not None
 
+    @property
+    def pending_live(self):
+        return self.trial_mode and self.has_submitted_go_live
+
     def register_submit_use_case(self):
         return service_api_client.register_submit_use_case(self.id)
 
