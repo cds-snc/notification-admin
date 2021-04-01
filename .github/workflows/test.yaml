@@ -27,8 +27,6 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-    - name: Run tests
+    - run: /bin/bash -c "scripts/bootstrap.sh && make test"
       env:
         A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
-      run: |
-        echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }'
