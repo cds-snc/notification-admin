@@ -46,7 +46,7 @@ def a11y_test(slug, html):
                 "product": "cds-snc/notification",
                 "revision": os.environ["GITHUB_SHA"],
                 "ci": True,
-                "callback": "https://github.com/cds-snc/notification-admin/pull/" + os.environ["GITHUB_ISSUE_NUMBER"],
+                "callback": "https://github.com/cds-snc/notification-admin",
                 "html": [{slug: html}]
             },
             headers={'X-API-KEY': os.environ["A11Y_TRACKER_KEY"]}

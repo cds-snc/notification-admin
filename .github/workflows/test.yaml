@@ -30,4 +30,3 @@ jobs:
     - run: /bin/bash -c "scripts/bootstrap.sh && make test"
       env:
         A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
-        GITHUB_ISSUE_NUMBER: ${{github.event.number}}
