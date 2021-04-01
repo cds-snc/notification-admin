@@ -31,4 +31,4 @@ jobs:
       env:
         A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
       run: |
-        GITHUB_ISSUE_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }') /bin/bash -c "scripts/bootstrap.sh && make test"
+        echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }'
