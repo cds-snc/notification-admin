@@ -401,7 +401,7 @@ def test_show_restricted_service(
     )
 
     assert page.find('h1').text == 'Settings'
-    assert page.find_all('h2')[0].text == 'Your service is in trial mode'
+    assert page.find_all('h2')[1].text == 'Your service is in trial mode'
 
     assert expected_text in [normalize_spaces(p.text) for p in page.select('main p')]
 
@@ -467,18 +467,25 @@ def test_show_live_service(
     assert url_for('.request_to_go_live', service_id=SERVICE_ONE_ID) not in page
 
 
+@pytest.mark.parametrize('restricted, go_live_user, expected_label', [
+    (True, None, 'Request to go live'),
+    (True, 'Service Manager User', 'Request being reviewed'),
+])
 def test_show_live_banner(
     client_request,
     mock_get_live_service,
     single_reply_to_email_address,
-    single_letter_contact_block,
     mock_get_service_organisation,
     single_sms_sender,
     mock_get_service_settings_page_common,
     platform_admin_user,
     service_one,
+    restricted,
+    go_live_user,
+    expected_label,
 ):
-    service_one['restricted'] = True
+    service_one['restricted'] = restricted
+    service_one['go_live_user'] = go_live_user
     client_request.login(platform_admin_user, service_one)
 
     page = client_request.get(
@@ -487,7 +494,7 @@ def test_show_live_banner(
     )
 
     request_link = page.select_one('a[href*="request-to-go-live"]')
-    assert "Trial" in request_link.text.strip()
+    assert expected_label in request_link.text.strip()
 
     live_banner = page.find('div', attrs={"id": "live-banner"})
     assert live_banner.text.strip() == 'Trial'
