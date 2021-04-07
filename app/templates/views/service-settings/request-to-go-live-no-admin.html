@@ -2,7 +2,7 @@
 {% from "components/page-header.html" import page_header %}
 
 {% block service_page_title %}
- {{ _("Request to go live") }}
+  {{ _("Request to go live") }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -10,10 +10,15 @@
 
     <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
       {{ page_header(_('Request to go live')) }}
-      <p>
-        {{ _("Please contact your service manager.") }}
-      </p>
-
+      <div class="bg-gray px-5 py-2 lg:w-3/4">
+        <p class="m-0">
+          {% if current_service.pending_live %}
+            {{ _("The request to go live is being reviewed.") }}
+          {% else %}
+            {{ _("Please contact your service manager.") }}
+          {% endif %}
+        </p>
+      </div>
     </div>
   </div>
 {% endblock %}
