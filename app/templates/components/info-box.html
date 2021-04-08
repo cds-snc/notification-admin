@@ -1,0 +1,12 @@
+{% macro info_box(msg, header=None, style=None) %}
+<div class="w-full py-0 px-0 box-border {% if style %} {{ style }} {% endif %}">
+  <div class="bg-gray px-5 py-2 lg:w-3/4">
+    {% if header %}
+      <h2 class="heading-small mt-5">{{ header }}</h2>
+    {% endif %}
+    <p class="m-0">
+      {{ msg }}
+    </p>
+  </div>
+</div>
+{% endmacro %}

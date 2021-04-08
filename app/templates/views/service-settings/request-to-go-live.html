@@ -1,5 +1,6 @@
 {% extends "admin_template.html" %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/info-box.html" import info_box %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/task-list.html" import task_list_wrapper, task_list_item with context %}
@@ -18,12 +19,11 @@
       ) }}
 
       {% if current_service.pending_live %}
-        <div class="bg-gray px-5 py-2 lg:w-3/4">
-          <h2 class="heading-small mt-5">{{ _('Your request to go live is being reviewed') }}</h2>
-          <p>
-            {{ _("We’ll be in touch within 2 business days.") }}
-          </p>
-        </div>
+        {{ info_box(
+            msg=_("We’ll be in touch within 2 business days."),
+            header=_('Your request to go live is being reviewed'),
+            style='mb-2'
+        ) }}
       {% else %}
         <p>
           {{ _("Your service is in trial mode. Trial mode limits your service to sending notifications to yourself and to your team members within GC Notify.") }}
