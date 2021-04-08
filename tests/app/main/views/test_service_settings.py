@@ -1238,7 +1238,6 @@ def test_route_permissions(
     'main.service_name_change_confirm',
     'main.service_email_from_change',
     'main.service_email_from_change_confirm',
-    'main.request_to_go_live',
     'main.use_case',
     'main.terms_of_use',
     'main.submit_request_to_go_live',
@@ -1275,7 +1274,6 @@ def test_route_invalid_permissions(
     'main.request_to_go_live',
     'main.use_case',
     'main.terms_of_use',
-    'main.submit_request_to_go_live',
 ])
 def test_route_for_platform_admin(
         mocker,
