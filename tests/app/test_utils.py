@@ -103,6 +103,8 @@ def _get_notifications_csv_mock(
     ('.leading', 'leading'),
     ('trailing.', 'trailing'),
     ('üńïçödë wördś', 'unicode.words'),
+    ('foo--bar', 'foo-bar'),
+    ('a-_-_-_-b', 'a-b'),
 ])
 def test_email_safe_return_dot_separated_email_domain(service_name, safe_email):
     assert email_safe(service_name) == safe_email

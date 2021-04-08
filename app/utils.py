@@ -260,6 +260,8 @@ def email_safe(string, whitespace='.'):
     string = re.sub(r'\.{2,}', '.', string)
     # Replace a sequence like ".-." or "._." to "-""
     string = re.sub(r'(\.)(-|_)(\.)', r"\g<2>", string)
+    # Disallow to repeat - _ or .
+    string = re.sub(r'(\.|-|_){2,}', r'\g<1>', string)
     return string.strip('.')
 
 
