@@ -95,13 +95,16 @@ def _get_notifications_csv_mock(
     ('name with spaces', 'name.with.spaces'),
     ('singleword', 'singleword'),
     ('UPPER CASE', 'upper.case'),
-    ('Service - with dash', 'service.with.dash'),
+    ('Service - with dash', 'service-with.dash'),
     ('lots      of spaces', 'lots.of.spaces'),
     ('name.with.dots', 'name.with.dots'),
-    ('name-with-other-delimiters', 'namewithotherdelimiters'),
+    ('name-with-other-delimiters', 'name-with-other-delimiters'),
+    ('name_with_other_delimiters', 'name_with_other_delimiters'),
     ('.leading', 'leading'),
     ('trailing.', 'trailing'),
     ('üńïçödë wördś', 'unicode.words'),
+    ('foo--bar', 'foo-bar'),
+    ('a-_-_-_-b', 'a-b'),
 ])
 def test_email_safe_return_dot_separated_email_domain(service_name, safe_email):
     assert email_safe(service_name) == safe_email
