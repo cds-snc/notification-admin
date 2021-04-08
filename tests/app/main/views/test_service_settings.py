@@ -835,6 +835,41 @@ def test_request_to_go_live_page_without_manage_service_permission(
     assert checklist_items == []
 
 
+def test_request_to_go_live_page_without_manage_service_permission_and_request_pending(
+    client_request,
+    active_user_no_settings_permission,
+    api_user_active,
+):
+    active_user_no_settings_permission['permissions'] = {SERVICE_ONE_ID: [
+        'manage_templates',
+        'manage_api_keys',
+        'view_activity',
+        'send_messages',
+    ]}
+    service = service_json(
+        SERVICE_ONE_ID,
+        'service one',
+        [api_user_active['id']],
+        restricted=True,
+        go_live_user=api_user_active['id'])
+    client_request.login(active_user_no_settings_permission, service)
+    page = client_request.get(
+        'main.request_to_go_live', service_id=SERVICE_ONE_ID,
+        _expected_status=200,
+    )
+
+    assert page.h1.text == 'Request to go live'
+
+    match = page.find(text=lambda t: 'The request to go live is being reviewed.' in t)
+    'The request to go live is being reviewed.' in match
+
+    tasks_links = [a['href'] for a in page.select('.task-list .task-list-item a')]
+    assert tasks_links == []
+
+    checklist_items = [normalize_spaces(i.text) for i in page.select('.task-list .task-list-item')]
+    assert checklist_items == []
+
+
 def test_request_to_go_live_terms_of_use_page(
     client_request,
     mocker,
