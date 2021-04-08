@@ -1240,7 +1240,6 @@ def test_route_permissions(
     'main.service_email_from_change_confirm',
     'main.use_case',
     'main.terms_of_use',
-    'main.submit_request_to_go_live',
     'main.service_switch_live',
     'main.archive_service',
 ])
