@@ -202,7 +202,7 @@ def service_email_from_change_confirm(service_id):
 
 
 @main.route("/services/<service_id>/service-settings/request-to-go-live", methods=['GET'])
-@user_has_permissions('manage_service', 'send_messages')
+@user_has_permissions()
 @user_is_gov_user
 def request_to_go_live(service_id):
     if current_user.has_permissions('manage_service'):
