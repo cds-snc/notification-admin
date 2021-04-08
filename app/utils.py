@@ -254,10 +254,12 @@ def email_safe(string, whitespace='.'):
     # strips accents, diacritics etc
     string = ''.join(c for c in unicodedata.normalize('NFD', string) if unicodedata.category(c) != 'Mn')
     string = ''.join(
-        word.lower() if word.isalnum() or word == whitespace else ''
+        word.lower() if word.isalnum() or word in [whitespace, '-', '_'] else ''
         for word in re.sub(r'\s+', whitespace, string.strip())
     )
     string = re.sub(r'\.{2,}', '.', string)
+    # Replace a sequence like ".-." or "._." to "-""
+    string = re.sub(r'(\.)(-|_)(\.)', r"\g<2>", string)
     return string.strip('.')
 
 
