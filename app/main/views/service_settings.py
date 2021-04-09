@@ -167,6 +167,7 @@ def service_email_from_change(service_id):
     return render_template(
         'views/service-settings/email_from.html',
         form=form,
+        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],
     )
 
 

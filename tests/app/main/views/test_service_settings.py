@@ -41,6 +41,7 @@ from tests.conftest import (
     normalize_spaces,
     platform_admin_user,
     sample_invite,
+    service_one,
 )
 
 FAKE_TEMPLATE_ID = uuid4()
@@ -660,6 +661,28 @@ def test_should_redirect_after_service_name_confirmation(
         name=service_new_name,
     )
     assert mock_verify_password.called is True
+
+
+@pytest.mark.parametrize('sending_domain', [None, 'test.example.com'])
+def test_service_email_from_change(
+    client_request,
+    app_,
+    sending_domain,
+    active_user_with_permissions,
+):
+    sending_domain = sending_domain or app_.config['SENDING_DOMAIN']
+    service = service_one(active_user_with_permissions) | {'sending_domain': sending_domain}
+    client_request.login(active_user_with_permissions, service)
+
+    page = client_request.get(
+        'main.service_email_from_change',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=200,
+    )
+
+    assert page.h1.text == 'Change your sending email address'
+    assert service['email_from'] in page.select_one('input')['value']
+    assert f"@{sending_domain}" in page.text
 
 
 def test_should_redirect_after_service_email_from_confirmation(
