@@ -41,6 +41,7 @@ from tests.conftest import (
     normalize_spaces,
     platform_admin_user,
     sample_invite,
+    service_one,
 )
 
 FAKE_TEMPLATE_ID = uuid4()
@@ -810,35 +811,22 @@ def test_request_to_go_live_page(
     assert mock_templates.called is True
 
 
+@pytest.mark.parametrize('service_params, expected_sentence', [
+    (
+        {'restricted': True, 'go_live_user': uuid4()},
+        'The request to go live is being reviewed.'
+    ),
+    (
+        {'restricted': True, 'go_live_user': None},
+        'Please contact your service manager.',
+    ),
+], ids=['service pending live', 'trial service'])
 def test_request_to_go_live_page_without_manage_service_permission(
     client_request,
     active_user_no_settings_permission,
-):
-    active_user_no_settings_permission['permissions'] = {SERVICE_ONE_ID: [
-        'manage_templates',
-        'manage_api_keys',
-        'view_activity',
-        'send_messages',
-    ]}
-    client_request.login(active_user_no_settings_permission)
-    page = client_request.get(
-        'main.request_to_go_live', service_id=SERVICE_ONE_ID,
-        _expected_status=200,
-    )
-
-    assert page.h1.text == 'Request to go live'
-
-    tasks_links = [a['href'] for a in page.select('.task-list .task-list-item a')]
-    assert tasks_links == []
-
-    checklist_items = [normalize_spaces(i.text) for i in page.select('.task-list .task-list-item')]
-    assert checklist_items == []
-
-
-def test_request_to_go_live_page_without_manage_service_permission_and_request_pending(
-    client_request,
-    active_user_no_settings_permission,
     api_user_active,
+    service_params,
+    expected_sentence
 ):
     active_user_no_settings_permission['permissions'] = {SERVICE_ONE_ID: [
         'manage_templates',
@@ -846,22 +834,18 @@ def test_request_to_go_live_page_without_manage_service_permission_and_request_p
         'view_activity',
         'send_messages',
     ]}
-    service = service_json(
-        SERVICE_ONE_ID,
-        'service one',
-        [api_user_active['id']],
-        restricted=True,
-        go_live_user=api_user_active['id'])
+    service = service_one(api_user_active) | service_params
     client_request.login(active_user_no_settings_permission, service)
     page = client_request.get(
-        'main.request_to_go_live', service_id=SERVICE_ONE_ID,
+        'main.request_to_go_live',
+        service_id=SERVICE_ONE_ID,
         _expected_status=200,
     )
 
     assert page.h1.text == 'Request to go live'
 
-    match = page.find(text=lambda t: 'The request to go live is being reviewed.' in t)
-    'The request to go live is being reviewed.' in match
+    paragraph = page.select_one('#main_content p').text.strip()
+    assert paragraph == expected_sentence
 
     tasks_links = [a['href'] for a in page.select('.task-list .task-list-item a')]
     assert tasks_links == []
