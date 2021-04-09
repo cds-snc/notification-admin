@@ -824,18 +824,14 @@ def test_request_to_go_live_page(
 def test_request_to_go_live_page_without_manage_service_permission(
     client_request,
     active_user_no_settings_permission,
-    api_user_active,
     service_params,
     expected_sentence
 ):
-    active_user_no_settings_permission['permissions'] = {SERVICE_ONE_ID: [
-        'manage_templates',
-        'manage_api_keys',
-        'view_activity',
-        'send_messages',
-    ]}
-    service = service_one(api_user_active) | service_params
+    assert 'manage_service' not in active_user_no_settings_permission['permissions']
+
+    service = service_one(active_user_no_settings_permission) | service_params
     client_request.login(active_user_no_settings_permission, service)
+
     page = client_request.get(
         'main.request_to_go_live',
         service_id=SERVICE_ONE_ID,
@@ -843,9 +839,7 @@ def test_request_to_go_live_page_without_manage_service_permission(
     )
 
     assert page.h1.text == 'Request to go live'
-
-    paragraph = page.select_one('#main_content p').text.strip()
-    assert paragraph == expected_sentence
+    assert page.select_one('#main_content p').text.strip() == expected_sentence
 
     tasks_links = [a['href'] for a in page.select('.task-list .task-list-item a')]
     assert tasks_links == []
