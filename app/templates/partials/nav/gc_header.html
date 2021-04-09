@@ -80,10 +80,12 @@
   {% endif %}
 
   {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
-    <div class="flex flex-wrap items-center gap-x-4 space-y-0 items-stretch">
-      <div class="font-bold text-lg text-black inline">{{ url_text }}</div>
+    <div>
+      <h2 class="font-bold text-lg text-black inline">
+        {{ url_text }}
+      </h2>
       <a
-        class="self-end pb-4"
+        class="self-end pb-4 inline-block align-middle"
         href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
         role="button">
         <div class="flex flex-initial flex-row text-base">
@@ -93,8 +95,12 @@
               class="button button-blue-lighter-nb hover:bg-blue-selected inline-block mr-4">
               {{ _('Trial') }}
             </div>
-            <div class="inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
-              {{ _('Request to go live') }}
+            <div class="inline-block text-blue visited:text-blue link:text-blue text-small underline">
+              {% if current_service.pending_live %}
+                {{ _('Request being reviewed') }}
+              {% else %}
+                {{ _('Request to go live') }}
+              {% endif %}
             </div>
           {% endif %}
         </div>
