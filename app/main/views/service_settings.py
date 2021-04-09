@@ -368,7 +368,7 @@ def service_switch_upload_document(service_id):
     )
     help = _(
         "This feature is only available when sending through the API.<br>"
-        "Learn more in <a href='{}'>the API documentation</a>."
+        "Learn more in the <a href='{}'>API documentation</a>."
     ).format(documentation_url('send', section='sending-a-file-by-email'))
 
     if form.validate_on_submit():

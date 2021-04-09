@@ -1317,6 +1317,6 @@
 "Once you've set up your team and tried out sending, you can request to go live in settings","Une fois que vous aurez mis en place votre équipe et essayé d'envoyer des messages, vous pourrez demander d'activer votre service dans les paramètres"
 "failure","échec"
 "failures","échecs"
-"This feature is only available when sending through the API.<br>Learn more in <a href='{}'>the API documentation</a>.","Cette fonctionnalité n’est disponible que pour les envois programmés par le biais de l’API.<br>Pour en savoir plus, <a href='{}'>consultez la documentation API</a>."
+"This feature is only available when sending through the API.<br>Learn more in the <a href='{}'>API documentation</a>.","Cette fonctionnalité n’est disponible que pour les envois programmés par le biais de l’API.<br>Pour en savoir plus, consultez la <a href='{}'>documentation API</a>."
 "(API-only)","(API seulement)"
 "Setting updated","Paramètre mis à jour"
