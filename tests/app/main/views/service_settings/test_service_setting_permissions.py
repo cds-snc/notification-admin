@@ -69,8 +69,6 @@ def test_service_set_permission(
 @pytest.mark.parametrize('service_fields, endpoint, kwargs, text', [
     ({'restricted': True}, '.service_switch_live', {}, 'Live Off Change'),
     ({'restricted': False}, '.service_switch_live', {}, 'Live On Change'),
-    ({'permissions': ['upload_document']}, '.service_switch_can_upload_document', {}, 'Send files by email On Change'),
-    ({'permissions': []}, '.service_switch_can_upload_document', {}, 'Send files by email Off Change'),
     ({'permissions': ['sms']}, '.service_set_inbound_number', {}, 'Receive inbound SMS Off Change'),
     ({'permissions': ['letter']}, '.service_set_permission', {'permission': 'upload_letters'}, 'Uploading letters Off Change'),
 ])
