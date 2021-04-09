@@ -373,7 +373,7 @@ def service_switch_upload_document(service_id):
 
     if form.validate_on_submit():
         current_service.force_permission('upload_document', on=form.enabled.data)
-        flash(_('Setting updated'), 'default')
+        flash(_('Setting updated'), 'default_with_tick')
         return redirect(url_for(".service_settings", service_id=service_id))
 
     return render_template(
