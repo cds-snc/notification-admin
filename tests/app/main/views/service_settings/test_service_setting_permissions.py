@@ -38,8 +38,6 @@ def test_service_set_permission_requires_platform_admin(
 
 
 @pytest.mark.parametrize('permission, form_data, on', [
-    ('upload_document', 'True', True),
-    ('upload_document', 'False', False),
     ('inbound_sms', 'True', True),
     ('inbound_sms', 'False', False),
     ('email_auth', 'True', True),
