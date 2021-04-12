@@ -44,7 +44,6 @@ from app.main.forms import (
     SearchByNameForm,
     SelectLogoForm,
     SendingDomainForm,
-    ServiceContactDetailsForm,
     ServiceDataRetentionEditForm,
     ServiceDataRetentionForm,
     ServiceEditInboundNumberForm,
@@ -63,6 +62,7 @@ from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
     SENDING_STATUSES,
+    documentation_url,
     email_safe,
     get_logo_cdn_domain,
     user_has_permissions,
@@ -73,7 +73,6 @@ from app.utils import (
 PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict([
     ('inbound_sms', {'title': _l('Receive inbound SMS'), 'requires': 'sms', 'endpoint': '.service_set_inbound_number'}),
     ('email_auth', {'title': _l('Email authentication')}),
-    ('upload_document', {'title': _l('Send files by email'), 'endpoint': '.service_switch_can_upload_document'}),
     ('upload_letters', {'title': _l('Uploading letters'), 'requires': 'letter'}),
 ])
 
@@ -360,6 +359,32 @@ def service_switch_live(service_id):
     )
 
 
+@main.route("/services/<service_id>/service-settings/switch-upload-document", methods=["GET", "POST"])
+@user_has_permissions('manage_service')
+def service_switch_upload_document(service_id):
+    title = _("Send files by email")
+    form = ServiceOnOffSettingForm(
+        name=title,
+        enabled=current_service.has_permission('upload_document')
+    )
+    help = _(
+        "This feature is only available when sending through the API.<br>"
+        "Learn more in the <a href='{}'>API documentation</a>."
+    ).format(documentation_url('send', section='sending-a-file-by-email'))
+
+    if form.validate_on_submit():
+        current_service.force_permission('upload_document', on=form.enabled.data)
+        flash(_('Setting updated'), 'default_with_tick')
+        return redirect(url_for(".service_settings", service_id=service_id))
+
+    return render_template(
+        'views/service-settings/set-service-setting.html',
+        title=title,
+        form=form,
+        help=help,
+    )
+
+
 @main.route("/services/<service_id>/service-settings/switch-count-as-live", methods=["GET", "POST"])
 @user_is_platform_admin
 def service_switch_count_as_live(service_id):
@@ -406,26 +431,6 @@ def service_set_permission(service_id, permission):
     )
 
 
-@main.route("/services/<service_id>/service-settings/can-upload-document", methods=['GET', 'POST'])
-@user_is_platform_admin
-def service_switch_can_upload_document(service_id):
-    if current_service.contact_link:
-        return redirect(url_for('.service_set_permission', service_id=service_id, permission='upload_document'))
-
-    form = ServiceContactDetailsForm()
-
-    if form.validate_on_submit():
-        contact_type = form.contact_details_type.data
-
-        current_service.update(
-            contact_link=form.data[contact_type]
-        )
-
-        return redirect(url_for('.service_set_permission', service_id=service_id, permission='upload_document'))
-
-    return render_template('views/service-settings/contact_link.html', form=form)
-
-
 @main.route("/services/<service_id>/service-settings/archive", methods=['GET', 'POST'])
 @user_has_permissions('manage_service')
 def archive_service(service_id):
@@ -470,30 +475,6 @@ def resume_service(service_id):
     else:
         flash(_("This will resume the service. New API keys are required for this service to use the API"), 'resume')
         return service_settings(service_id)
-
-
-@main.route("/services/<service_id>/service-settings/contact-link", methods=['GET', 'POST'])
-@user_has_permissions('manage_service')
-def service_set_contact_link(service_id):
-    form = ServiceContactDetailsForm()
-
-    if request.method == 'GET':
-        contact_details = current_service.contact_link
-        contact_type = check_contact_details_type(contact_details)
-        field_to_update = getattr(form, contact_type)
-
-        form.contact_details_type.data = contact_type
-        field_to_update.data = contact_details
-
-    if form.validate_on_submit():
-        contact_type = form.contact_details_type.data
-
-        current_service.update(
-            contact_link=form.data[contact_type]
-        )
-        return redirect(url_for('.service_settings', service_id=current_service.id))
-
-    return render_template('views/service-settings/contact_link.html', form=form)
 
 
 @main.route("/services/<service_id>/service-settings/set-reply-to-email", methods=['GET'])
