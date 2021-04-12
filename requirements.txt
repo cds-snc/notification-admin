@@ -27,7 +27,7 @@ Flask-Babel==2.0.0
 newrelic==6.0.1.155
 python-dotenv==0.15.0
 pwnedpasswords==2.0.0
-PyYAML==5.3.1
+PyYAML==5.4
 translate-toolkit==3.3.1
 ua-parser==0.10.0
 user-agents==2.2.0
@@ -65,7 +65,7 @@ jdcal==1.4.1
 Jinja2==2.11.3
 jmespath==0.10.0
 lml==0.1.0
-lxml==4.6.2
+lxml==4.6.3
 MarkupSafe==1.1.1
 mistune==0.8.4
 monotonic==1.5
@@ -87,7 +87,7 @@ six==1.15.0
 smartypants==2.0.1
 statsd==3.3.0
 texttable==1.6.3
-urllib3==1.26.3
+urllib3==1.26.4
 webencodings==0.5.1
 Werkzeug==1.0.1
 xlrd==1.2.0
