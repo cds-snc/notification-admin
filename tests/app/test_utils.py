@@ -10,7 +10,6 @@ from freezegun import freeze_time
 from app import format_datetime_relative
 from app.utils import (
     Spreadsheet,
-    convert_to_utf8,
     documentation_url,
     email_safe,
     generate_next_dict,
@@ -96,13 +95,16 @@ def _get_notifications_csv_mock(
     ('name with spaces', 'name.with.spaces'),
     ('singleword', 'singleword'),
     ('UPPER CASE', 'upper.case'),
-    ('Service - with dash', 'service.with.dash'),
+    ('Service - with dash', 'service-with.dash'),
     ('lots      of spaces', 'lots.of.spaces'),
     ('name.with.dots', 'name.with.dots'),
-    ('name-with-other-delimiters', 'namewithotherdelimiters'),
+    ('name-with-other-delimiters', 'name-with-other-delimiters'),
+    ('name_with_other_delimiters', 'name_with_other_delimiters'),
     ('.leading', 'leading'),
     ('trailing.', 'trailing'),
     ('üńïçödë wördś', 'unicode.words'),
+    ('foo--bar', 'foo-bar'),
+    ('a-_-_-_-b', 'a-b'),
 ])
 def test_email_safe_return_dot_separated_email_domain(service_name, safe_email):
     assert email_safe(service_name) == safe_email
@@ -161,27 +163,6 @@ def test_spreadsheet_checks_for_bad_arguments(args, kwargs):
     with pytest.raises(TypeError) as exception:
         Spreadsheet(*args, **kwargs)
     assert str(exception.value) == 'Spreadsheet must be created from either rows or CSV data'
-
-
-# Converting ISO-8559-1 to UTF-8
-def test_convert_to_utf8():
-    file_content = b'\xe9, \xe0'  # 'é, à'
-    assert convert_to_utf8(file_content) == b'\xc3\xa9, \xc3\xa0'
-
-
-# Attempting to convert UTF-8 to UTF-8
-def test_convert_to_utf8_no_conversion():
-    file_content = b'\xc3\xa9, \xc3\xa0'  # 'é, à'
-    assert convert_to_utf8(file_content) == b'\xc3\xa9, \xc3\xa0'
-
-
-# Attempting to convert string with different encoding values
-def test_convert_to_utf8_no_confidence():
-    expected_resp = "'Unknown encoding' codec can't decode bytes in position 0-5: File encoding could not be determined"
-    with pytest.raises(UnicodeDecodeError) as exception:
-        file_content = b'\xe9C7C10'  # file_content = 'éツ'
-        convert_to_utf8(file_content)
-    assert str(exception.value) == expected_resp
 
 
 @pytest.mark.parametrize('created_by_name, expected_content', [
@@ -485,17 +466,18 @@ def test_get_latest_stats(mocker, app_):
         }
 
 
-@pytest.mark.parametrize('feature, lang, expected', [
-    ("send", "en", "https://documentation.localhost:6012/en/send.html"),
-    ("send", "fr", "https://documentation.localhost:6012/fr/envoyer.html"),
-    ("callbacks", "en", "https://documentation.localhost:6012/en/callbacks.html"),
-    ("callbacks", "fr", "https://documentation.localhost:6012/fr/rappel.html"),
-    ("architecture", "en", "https://documentation.localhost:6012/en/architecture.html"),
-    ("architecture", "fr", "https://documentation.localhost:6012/fr/architecture.html"),
-    (None, "en", "https://documentation.localhost:6012/en/"),
-    (None, "fr", "https://documentation.localhost:6012/fr/"),
+@pytest.mark.parametrize('feature, lang, section, expected', [
+    ("send", "en", None, "https://documentation.localhost:6012/en/send.html"),
+    ("send", "en", "sending-a-file-by-email", "https://documentation.localhost:6012/en/send.html#sending-a-file-by-email"),
+    ("send", "fr", None, "https://documentation.localhost:6012/fr/envoyer.html"),
+    ("callbacks", "en", None, "https://documentation.localhost:6012/en/callbacks.html"),
+    ("callbacks", "fr", None, "https://documentation.localhost:6012/fr/rappel.html"),
+    ("architecture", "en", None, "https://documentation.localhost:6012/en/architecture.html"),
+    ("architecture", "fr", None, "https://documentation.localhost:6012/fr/architecture.html"),
+    (None, "en", None, "https://documentation.localhost:6012/en/"),
+    (None, "fr", None, "https://documentation.localhost:6012/fr/"),
 ])
-def test_documentation_url(mocker, app_, feature, lang, expected):
+def test_documentation_url(mocker, app_, feature, lang, section, expected):
     with app_.test_request_context():
         mocker.patch('app.get_current_locale', return_value=lang)
-        assert documentation_url(feature) == expected
+        assert documentation_url(feature, section) == expected

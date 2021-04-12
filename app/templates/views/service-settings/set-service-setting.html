@@ -16,6 +16,11 @@
         title,
         back_link=url_for('.service_settings', service_id=current_service.id)
       ) }}
+
+      {% if help %}
+        <p>{{ help | safe }}</p>
+      {% endif %}
+
       {% call form_wrapper() %}
         {{ radios(form.enabled, hide_legend=True) }}
         {{ page_footer(_('Save')) }}
