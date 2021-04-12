@@ -22,11 +22,11 @@
         </span>
       {% endif %}
     </label>
-    <label id="file-upload-button" class="button" for="{{ field.name }}">
+    <button id="file-upload-button" class="button" for="{{ field.name }}">
       {{ button_text }}
-    </label>
+    </button>
     {{ field(**{
-      'class': 'file-upload-field visually-hidden'
+      'class': 'file-upload-field hidden'
     }) }}
     {% if alternate_link and alternate_link_text %}
       <span class="file-upload-alternate-link">
