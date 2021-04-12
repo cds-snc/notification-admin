@@ -41,6 +41,7 @@ from tests.conftest import (
     normalize_spaces,
     platform_admin_user,
     sample_invite,
+    service_one,
 )
 
 FAKE_TEMPLATE_ID = uuid4()
@@ -813,23 +814,35 @@ def test_request_to_go_live_page(
     assert mock_templates.called is True
 
 
+@pytest.mark.parametrize('service_params, expected_sentence', [
+    (
+        {'restricted': True, 'go_live_user': uuid4()},
+        'The request to go live is being reviewed.'
+    ),
+    (
+        {'restricted': True, 'go_live_user': None},
+        'Please contact your service manager.',
+    ),
+], ids=['service pending live', 'trial service'])
 def test_request_to_go_live_page_without_manage_service_permission(
     client_request,
     active_user_no_settings_permission,
+    service_params,
+    expected_sentence
 ):
-    active_user_no_settings_permission['permissions'] = {SERVICE_ONE_ID: [
-        'manage_templates',
-        'manage_api_keys',
-        'view_activity',
-        'send_messages',
-    ]}
-    client_request.login(active_user_no_settings_permission)
+    assert 'manage_service' not in active_user_no_settings_permission['permissions']
+
+    service = service_one(active_user_no_settings_permission) | service_params
+    client_request.login(active_user_no_settings_permission, service)
+
     page = client_request.get(
-        'main.request_to_go_live', service_id=SERVICE_ONE_ID,
+        'main.request_to_go_live',
+        service_id=SERVICE_ONE_ID,
         _expected_status=200,
     )
 
     assert page.h1.text == 'Request to go live'
+    assert page.select_one('#main_content p').text.strip() == expected_sentence
 
     tasks_links = [a['href'] for a in page.select('.task-list .task-list-item a')]
     assert tasks_links == []
@@ -1207,10 +1220,8 @@ def test_route_permissions(
     'main.service_name_change_confirm',
     'main.service_email_from_change',
     'main.service_email_from_change_confirm',
-    'main.request_to_go_live',
     'main.use_case',
     'main.terms_of_use',
-    'main.submit_request_to_go_live',
     'main.service_switch_live',
     'main.archive_service',
     'main.service_switch_upload_document',
@@ -1245,7 +1256,6 @@ def test_route_invalid_permissions(
     'main.request_to_go_live',
     'main.use_case',
     'main.terms_of_use',
-    'main.submit_request_to_go_live',
 ])
 def test_route_for_platform_admin(
         mocker,
