@@ -23,9 +23,9 @@
       {% endif %}
     </label>
     {{ field(**{
-      'class': 'file-upload-field hidden'
+      'class': 'file-upload-field'
     }) }}
-    <label id="file-upload-button" class="button" for="{{ field.name }}" role="button" tabindex="0">
+    <label id="file-upload-button" class="button" for="{{ field.name }}">
       {{ button_text }}
     </label>
     {% if alternate_link and alternate_link_text %}
@@ -35,5 +35,6 @@
     {% endif %}
     <label class="file-upload-filename" for="{{ field.name }}"></label>
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <button type="submit" class="file-upload-submit">{{ _('Submit') }}</button>
   </form>
 {% endmacro %}
