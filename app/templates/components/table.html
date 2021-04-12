@@ -129,12 +129,12 @@
   {% endcall %}
 {%- endmacro %}
 
-{% macro boolean_field(value) -%}
+{% macro boolean_field(value, suffix='') -%}
 
   {% set on_txt = _('On') %}
   {% set off_txt = _('Off') %}
 
-  {{ text_field( on_txt if value else off_txt) }}
+  {{ text_field((on_txt if value else off_txt) + (' ' + suffix if suffix else '')) }}
 {%- endmacro %}
 
 {% macro right_aligned_field_heading(text) %}

@@ -11,7 +11,6 @@ from itertools import chain
 from os import path
 
 import boto3
-import chardet
 import dateutil
 import pyexcel
 import pyexcel_xlsx
@@ -255,10 +254,14 @@ def email_safe(string, whitespace='.'):
     # strips accents, diacritics etc
     string = ''.join(c for c in unicodedata.normalize('NFD', string) if unicodedata.category(c) != 'Mn')
     string = ''.join(
-        word.lower() if word.isalnum() or word == whitespace else ''
+        word.lower() if word.isalnum() or word in [whitespace, '-', '_'] else ''
         for word in re.sub(r'\s+', whitespace, string.strip())
     )
     string = re.sub(r'\.{2,}', '.', string)
+    # Replace a sequence like ".-." or "._." to "-""
+    string = re.sub(r'(\.)(-|_)(\.)', r"\g<2>", string)
+    # Disallow to repeat - _ or .
+    string = re.sub(r'(\.|-|_){2,}', r'\g<1>', string)
     return string.strip('.')
 
 
@@ -320,7 +323,6 @@ class Spreadsheet():
 
     @staticmethod
     def normalise_newlines(file_content):
-        file_content.stream.seek(0)
         return '\r\n'.join(file_content.read().decode('utf-8').splitlines())
 
     @classmethod
@@ -341,9 +343,6 @@ class Spreadsheet():
         extension = cls.get_extension(filename)
 
         if extension == 'csv':
-            utf8_format = convert_to_utf8(file_content.read())
-            file_content.stream.seek(0)
-            file_content.stream.write(utf8_format)
             return cls(csv_data=Spreadsheet.normalise_newlines(file_content), filename=filename)
 
         if extension == 'tsv':
@@ -373,31 +372,6 @@ class Spreadsheet():
         io = BytesIO()
         pyexcel_xlsx.save_data(io, {'Sheet 1': self.as_rows})
         return io.getvalue()
-
-
-def convert_to_utf8(file_data):
-    # Detect File Encoding
-    encoding_result = chardet.detect(file_data)
-
-    if file_data == b'':
-        return file_data
-
-    if encoding_result['confidence'] >= 0.7 and encoding_result['encoding'] is not None:
-        encoding = encoding_result['encoding'].lower()
-        if encoding != 'utf-8':
-            # Encode data to utf-8
-            return file_data.decode(encoding).encode('utf-8')
-        else:
-            return file_data
-    else:
-        # Encoding confidence too low
-        raise UnicodeDecodeError(
-            'Unknown encoding',
-            file_data,
-            0,
-            len(file_data),
-            'File encoding could not be determined'
-        )
 
 
 def get_help_argument():
@@ -698,7 +672,7 @@ def yyyy_mm_to_datetime(string):
     return datetime(int(string[0:4]), int(string[5:7]), 1)
 
 
-def documentation_url(feature=None):
+def documentation_url(feature=None, section=None):
     from app import get_current_locale
 
     mapping = {
@@ -713,6 +687,15 @@ def documentation_url(feature=None):
         "clients": {"en": "clients", "fr": "clients"},
     }
 
+    sections = {
+        "send": {
+            "sending-a-file-by-email": {
+                "en": "sending-a-file-by-email",
+                "fr": "envoyer-un-fichier-par-courriel"
+            }
+        }
+    }
+
     lang = get_current_locale(current_app)
     base_domain = current_app.config["DOCUMENTATION_DOMAIN"]
 
@@ -720,8 +703,10 @@ def documentation_url(feature=None):
         return f"https://{base_domain}/{lang}/"
 
     page = mapping[feature][lang]
-
-    return f"https://{base_domain}/{lang}/{page}.html"
+    query_hash = ""
+    if section:
+        query_hash = f"#{sections[feature][section][lang]}"
+    return f"https://{base_domain}/{lang}/{page}.html{query_hash}"
 
 
 class PermanentRedirect(RequestRedirect):
