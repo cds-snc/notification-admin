@@ -466,17 +466,18 @@ def test_get_latest_stats(mocker, app_):
         }
 
 
-@pytest.mark.parametrize('feature, lang, expected', [
-    ("send", "en", "https://documentation.localhost:6012/en/send.html"),
-    ("send", "fr", "https://documentation.localhost:6012/fr/envoyer.html"),
-    ("callbacks", "en", "https://documentation.localhost:6012/en/callbacks.html"),
-    ("callbacks", "fr", "https://documentation.localhost:6012/fr/rappel.html"),
-    ("architecture", "en", "https://documentation.localhost:6012/en/architecture.html"),
-    ("architecture", "fr", "https://documentation.localhost:6012/fr/architecture.html"),
-    (None, "en", "https://documentation.localhost:6012/en/"),
-    (None, "fr", "https://documentation.localhost:6012/fr/"),
+@pytest.mark.parametrize('feature, lang, section, expected', [
+    ("send", "en", None, "https://documentation.localhost:6012/en/send.html"),
+    ("send", "en", "sending-a-file-by-email", "https://documentation.localhost:6012/en/send.html#sending-a-file-by-email"),
+    ("send", "fr", None, "https://documentation.localhost:6012/fr/envoyer.html"),
+    ("callbacks", "en", None, "https://documentation.localhost:6012/en/callbacks.html"),
+    ("callbacks", "fr", None, "https://documentation.localhost:6012/fr/rappel.html"),
+    ("architecture", "en", None, "https://documentation.localhost:6012/en/architecture.html"),
+    ("architecture", "fr", None, "https://documentation.localhost:6012/fr/architecture.html"),
+    (None, "en", None, "https://documentation.localhost:6012/en/"),
+    (None, "fr", None, "https://documentation.localhost:6012/fr/"),
 ])
-def test_documentation_url(mocker, app_, feature, lang, expected):
+def test_documentation_url(mocker, app_, feature, lang, section, expected):
     with app_.test_request_context():
         mocker.patch('app.get_current_locale', return_value=lang)
-        assert documentation_url(feature) == expected
+        assert documentation_url(feature, section) == expected

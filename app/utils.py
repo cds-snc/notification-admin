@@ -672,7 +672,7 @@ def yyyy_mm_to_datetime(string):
     return datetime(int(string[0:4]), int(string[5:7]), 1)
 
 
-def documentation_url(feature=None):
+def documentation_url(feature=None, section=None):
     from app import get_current_locale
 
     mapping = {
@@ -687,6 +687,15 @@ def documentation_url(feature=None):
         "clients": {"en": "clients", "fr": "clients"},
     }
 
+    sections = {
+        "send": {
+            "sending-a-file-by-email": {
+                "en": "sending-a-file-by-email",
+                "fr": "envoyer-un-fichier-par-courriel"
+            }
+        }
+    }
+
     lang = get_current_locale(current_app)
     base_domain = current_app.config["DOCUMENTATION_DOMAIN"]
 
@@ -694,8 +703,10 @@ def documentation_url(feature=None):
         return f"https://{base_domain}/{lang}/"
 
     page = mapping[feature][lang]
-
-    return f"https://{base_domain}/{lang}/{page}.html"
+    query_hash = ""
+    if section:
+        query_hash = f"#{sections[feature][section][lang]}"
+    return f"https://{base_domain}/{lang}/{page}.html{query_hash}"
 
 
 class PermanentRedirect(RequestRedirect):

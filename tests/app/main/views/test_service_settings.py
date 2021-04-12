@@ -71,6 +71,7 @@ def mock_get_service_settings_page_common(
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
         'Email branding English Government of Canada signature Change',
+        'Send files by email Off (API-only) Change',
         'Yearly free maximum 10 million emails',
 
         'Label Value Action',
@@ -92,6 +93,7 @@ def mock_get_service_settings_page_common(
         'Send emails On Change',
         'Reply-to email addresses Not set Manage',
         'Email branding English Government of Canada signature Change',
+        'Send files by email Off (API-only) Change',
         'Yearly free maximum 10 million emails',
 
         'Label Value Action',
@@ -114,7 +116,6 @@ def mock_get_service_settings_page_common(
         'Data retention email Change',
         'Receive inbound SMS Off Change',
         'Email authentication Off Change',
-        'Send files by email Off Change',
     ]),
 ])
 def test_should_show_overview(
@@ -172,10 +173,10 @@ def test_no_go_live_link_for_service_without_organisation(
     page = client_request.get('main.service_settings', service_id=SERVICE_ONE_ID)
 
     assert page.find('h1').text == 'Settings'
-    assert normalize_spaces(page.select('tr')[15].text) == (
+    assert normalize_spaces(page.select('tr')[16].text) == (
         'Live No (organisation must be set first)'
     )
-    assert normalize_spaces(page.select('tr')[17].text) == (
+    assert normalize_spaces(page.select('tr')[18].text) == (
         'Organisation Not set Government of Canada Change'
     )
 
@@ -200,7 +201,7 @@ def test_organisation_name_links_to_org_dashboard(
         'main.service_settings', service_id=SERVICE_ONE_ID
     )
 
-    org_row = response.select('tr')[17]
+    org_row = response.select('tr')[18]
     assert org_row.find('a')['href'] == url_for('main.organisation_dashboard', org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find('a').text) == 'Test Organisation'
 
@@ -218,6 +219,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Send emails On Change',
         'Reply-to email addresses test@example.com Manage',
         'Email branding Your branding (Organisation name) Change',
+        'Send files by email Off (API-only) Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -236,6 +238,7 @@ def test_organisation_name_links_to_org_dashboard(
         'Send emails On Change',
         'Reply-to email addresses test@example.com Manage',
         'Email branding Your branding (Organisation name) Change',
+        'Send files by email Off (API-only) Change',
 
         'Label Value Action',
         'Send text messages On Change',
@@ -1181,7 +1184,8 @@ def test_submit_go_live_request(
     ('main.use_case', ['manage_service']),
     ('main.terms_of_use', ['manage_service']),
     ('main.submit_request_to_go_live', ['manage_service']),
-    ('main.archive_service', ['manage_service'])
+    ('main.archive_service', ['manage_service']),
+    ('main.service_switch_upload_document', ['manage_service']),
 ])
 def test_route_permissions(
         mocker,
@@ -1220,6 +1224,7 @@ def test_route_permissions(
     'main.terms_of_use',
     'main.service_switch_live',
     'main.archive_service',
+    'main.service_switch_upload_document',
 ])
 def test_route_invalid_permissions(
         mocker,
@@ -3047,6 +3052,62 @@ def test_switch_service_enable_letters(
     assert mocked_fn.call_args[0][0] == service_one['id']
 
 
+@pytest.mark.parametrize((
+    'initial_permissions,'
+    'expected_initial_value,'
+    'posted_value,'
+    'expected_updated_permissions'
+), [
+    (
+        ['email', 'sms'],
+        'False', 'True',
+        ['email', 'sms', 'upload_document'],
+    ),
+    (
+        ['email', 'sms', 'upload_document'],
+        'True', 'False',
+        ['email', 'sms'],
+    ),
+])
+def test_service_switch_upload_document(
+    client_request,
+    service_one,
+    mocker,
+    initial_permissions,
+    expected_initial_value,
+    posted_value,
+    expected_updated_permissions,
+):
+    mocked_fn = mocker.patch('app.service_api_client.update_service', return_value=service_one)
+    service_one['permissions'] = initial_permissions
+
+    page = client_request.get(
+        'main.service_switch_upload_document',
+        service_id=service_one['id'],
+    )
+
+    assert page.h1.text == 'Send files by email'
+
+    paragraph = page.select_one('#main_content p').text.strip()
+    assert 'This feature is only available when sending through the API' in paragraph
+
+    assert page.select_one('input[checked]')['value'] == expected_initial_value
+    assert len(page.select('input[checked]')) == 1
+
+    client_request.post(
+        'main.service_switch_upload_document',
+        service_id=service_one['id'],
+        _data={'enabled': posted_value},
+        _expected_redirect=url_for(
+            'main.service_settings',
+            service_id=service_one['id'],
+            _external=True
+        )
+    )
+    assert set(mocked_fn.call_args[1]['permissions']) == set(expected_updated_permissions)
+    assert mocked_fn.call_args[0][0] == service_one['id']
+
+
 @pytest.mark.parametrize('permissions, expected_checked', [
     (['international_sms'], 'on'),
     ([''], 'off'),
@@ -3104,6 +3165,7 @@ def test_switch_service_enable_international_sms(
     (['upload_document'], 'http://example.com/', []),
     ([], '6502532222', ['upload_document']),
 ])
+@pytest.mark.skip(reason="Contact details not in use")
 def test_service_switch_can_upload_document_shows_permission_page_if_service_contact_details_exist(
     platform_admin_client,
     service_one,
@@ -3128,6 +3190,7 @@ def test_service_switch_can_upload_document_shows_permission_page_if_service_con
     assert normalize_spaces(page.h1.text) == 'Send files by email'
 
 
+@pytest.mark.skip(reason="Contact details not in use")
 def test_service_switch_can_upload_document_turning_permission_on_with_no_contact_details_shows_form(
     platform_admin_client,
     service_one,
@@ -3152,6 +3215,7 @@ def test_service_switch_can_upload_document_turning_permission_on_with_no_contac
     ('email_address', 'old@example.com'),
     ('phone_number', '6502532222'),
 ])
+@pytest.mark.skip(reason="Contact details not in use")
 def test_service_switch_can_upload_document_lets_contact_details_be_added_and_shows_permission_page(
     platform_admin_client,
     service_one,
@@ -3381,6 +3445,7 @@ def test_cant_resume_active_service(
     ('email_address', 'me@example.com'),
     ('phone_number', '6502532222'),
 ])
+@pytest.mark.skip(reason='Contact details not in use')
 def test_service_set_contact_link_prefills_the_form_with_the_existing_contact_details(
     client_request,
     service_one,
@@ -3401,6 +3466,7 @@ def test_service_set_contact_link_prefills_the_form_with_the_existing_contact_de
     ('email_address', 'old@example.com', 'new@example.com'),
     ('phone_number', '6502532222', '6502532223'),
 ])
+@pytest.mark.skip(reason='Contact details not in use')
 def test_service_set_contact_link_updates_contact_details_and_redirects_to_settings_page(
     client_request,
     service_one,
@@ -3429,6 +3495,7 @@ def test_service_set_contact_link_updates_contact_details_and_redirects_to_setti
     mock_update_service.assert_called_once_with(SERVICE_ONE_ID, contact_link=new_value)
 
 
+@pytest.mark.skip(reason='Contact details not in use')
 def test_service_set_contact_link_updates_contact_details_for_the_selected_field_when_multiple_textboxes_contain_data(
     client_request,
     service_one,
@@ -3456,6 +3523,7 @@ def test_service_set_contact_link_updates_contact_details_for_the_selected_field
     mock_update_service.assert_called_once_with(SERVICE_ONE_ID, contact_link='http://www.new-url.com')
 
 
+@pytest.mark.skip(reason='Contact details not in use')
 def test_service_set_contact_link_displays_error_message_when_no_radio_button_selected(
     client_request,
     service_one
@@ -3479,6 +3547,7 @@ def test_service_set_contact_link_displays_error_message_when_no_radio_button_se
     ('email_address', 'me@co', 'Enter a valid email address'),
     ('phone_number', 'abcde', 'Must be a valid phone number'),
 ])
+@pytest.mark.skip(reason='Contact details not in use')
 def test_service_set_contact_link_does_not_update_invalid_contact_details(
     mocker,
     client_request,
@@ -3503,6 +3572,7 @@ def test_service_set_contact_link_does_not_update_invalid_contact_details(
     assert normalize_spaces(page.h1.text) == "Change contact details for ‘Download your document’ page"
 
 
+@pytest.mark.skip(reason='Contact details not in use')
 def test_contact_link_is_displayed_with_upload_document_permission(
     client_request,
     service_one,
@@ -3520,6 +3590,7 @@ def test_contact_link_is_displayed_with_upload_document_permission(
     assert 'Contact details' in page.text
 
 
+@pytest.mark.skip(reason='Contact details not in use')
 def test_contact_link_is_not_displayed_without_the_upload_document_permission(
     client_request,
     service_one,
