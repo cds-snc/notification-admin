@@ -3008,7 +3008,7 @@ def test_unknown_channel_404s(
     ),
     (
         'sms',
-        'You have a free allowance of 250,000 text messages each financial year.',
+        'You have a free allowance of 25,000 text messages each financial year.',
         'Send text messages',
         [],
         'False', 'True',
