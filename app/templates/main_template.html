@@ -94,7 +94,7 @@
 <script>
   document.body.className = document.body.className
     ? document.body.className + " js-enabled"
-    : "js-enabled"
+    : "js-enabled";
 </script>
 
 {% block body_start %}{% endblock %}
@@ -127,6 +127,8 @@
 {% include 'partials/nav/footer.html' %}
 
 {% block body_end %}{% endblock %}
+
+{% include 'partials/analytics.html' %}
 
 {% include 'partials/analytics.html' %}
 
