@@ -768,10 +768,11 @@ class BaseTemplateForm(StripWhitespaceForm):
         ]
     )
     process_type = RadioField(
-        _l('Use priority queue?'),
+        _l('Choose a priority queue'),
         choices=[
-            ('priority', _l('Yes')),
-            ('normal', _l('No')),
+            ('normal', _l('Normal')),
+            ('bulk', _l('Bulk')),
+            ('priority', _l('Priority')),
         ],
         default='normal'
     )

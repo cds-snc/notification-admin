@@ -31,6 +31,7 @@ from tests.conftest import (
     mock_get_service_email_template,
     mock_get_service_letter_template,
     mock_get_service_template,
+    mock_get_service_template_with_process_type,
     no_letter_contact_blocks,
     normalize_spaces,
 )
@@ -734,7 +735,7 @@ def test_should_show_page_template_with_priority_select_if_platform_admin(
     assert response.status_code == 200
     assert "Two week reminder" in response.get_data(as_text=True)
     assert "Template &lt;em&gt;content&lt;/em&gt; with &amp; entity" in response.get_data(as_text=True)
-    assert "Use priority queue?" in response.get_data(as_text=True)
+    assert "Choose a priority queue" in response.get_data(as_text=True)
     mock_get_service_template.assert_called_with(service_one['id'], template_id, None)
 
 
@@ -1304,12 +1305,15 @@ def test_should_redirect_when_saving_a_template(
     )
 
 
-def test_should_edit_content_when_process_type_is_priority_not_platform_admin(
+@pytest.mark.parametrize('process_type', ['bulk', 'priority'])
+def test_should_edit_content_when_process_type_is_set_not_platform_admin(
     client_request,
-    mock_get_service_template_with_priority,
+    mocker,
     mock_update_service_template,
     fake_uuid,
+    process_type,
 ):
+    mock_get_service_template_with_process_type(mocker, process_type)
     client_request.post(
         '.edit_service_template',
         service_id=SERVICE_ONE_ID,
@@ -1320,7 +1324,7 @@ def test_should_edit_content_when_process_type_is_priority_not_platform_admin(
             'template_content': "new template <em>content</em> with & entity",
             'template_type': 'sms',
             'service': SERVICE_ONE_ID,
-            'process_type': 'priority',
+            'process_type': process_type,
         },
         _expected_status=302,
         _expected_redirect=url_for(
@@ -1337,7 +1341,7 @@ def test_should_edit_content_when_process_type_is_priority_not_platform_admin(
         "new template <em>content</em> with & entity",
         SERVICE_ONE_ID,
         None,
-        'priority'
+        process_type
     )
 
 
@@ -1365,13 +1369,15 @@ def test_should_not_allow_template_edits_without_correct_permission(
     )
 
 
-def test_should_403_when_edit_template_with_process_type_of_priority_for_non_platform_admin(
+@pytest.mark.parametrize('process_type', ['bulk', 'priority'])
+def test_should_403_when_edit_template_with_non_default_process_type_for_non_platform_admin(
     client,
     active_user_with_permissions,
     mocker,
     mock_get_service_template,
     mock_update_service_template,
     fake_uuid,
+    process_type,
 ):
     service = create_sample_service(active_user_with_permissions)
     client.login(active_user_with_permissions, mocker, service)
@@ -1383,7 +1389,7 @@ def test_should_403_when_edit_template_with_process_type_of_priority_for_non_pla
         'template_content': "template <em>content</em> with & entity",
         'template_type': 'sms',
         'service': service['id'],
-        'process_type': 'priority'
+        'process_type': process_type
     }
     response = client.post(url_for(
         '.edit_service_template',
@@ -1393,13 +1399,15 @@ def test_should_403_when_edit_template_with_process_type_of_priority_for_non_pla
     mock_update_service_template.called == 0
 
 
-def test_should_403_when_create_template_with_process_type_of_priority_for_non_platform_admin(
+@pytest.mark.parametrize('process_type', ['bulk', 'priority'])
+def test_should_403_when_create_template_with_non_default_process_type_for_non_platform_admin(
     client,
     active_user_with_permissions,
     mocker,
     mock_get_service_template,
     mock_update_service_template,
     fake_uuid,
+    process_type,
 ):
     service = create_sample_service(active_user_with_permissions)
     client.login(active_user_with_permissions, mocker, service)
@@ -1411,7 +1419,7 @@ def test_should_403_when_create_template_with_process_type_of_priority_for_non_p
         'template_content': "template <em>content</em> with & entity",
         'template_type': 'sms',
         'service': service['id'],
-        'process_type': 'priority'
+        'process_type': process_type
     }
     response = client.post(url_for(
         '.add_service_template',
