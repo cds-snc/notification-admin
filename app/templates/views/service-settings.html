@@ -109,19 +109,6 @@
           {{ text_field('')}}
         {% endcall %}
 
-        {% call settings_row(if_has_permission='upload_document') %}
-          {% set txt = _('Contact details') %}
-          {{ text_field(txt) }}
-          {{ text_field(current_service.contact_link, truncate=true) }}
-          {{ edit_field(
-              change_txt,
-              url_for('.service_set_contact_link',
-              service_id=current_service.id),
-              permissions=['manage_service']
-            )
-          }}
-        {% endcall %}
-
       {% endcall %}
 
 
@@ -183,6 +170,16 @@
             url_for('.branding_request', service_id=current_service.id),
             permissions=['manage_service'],
             attributes=""
+          )}}
+        {% endcall %}
+        {% call settings_row(if_has_permission='email') %}
+          {% set txt = _('Send files by email') %}
+          {{ text_field(txt) }}
+          {{ boolean_field('upload_document' in current_service.permissions, suffix=_('(API-only)')) }}
+          {{ edit_field(
+            change_txt,
+            url_for('.service_switch_upload_document', service_id=current_service.id),
+            permissions=['manage_service'],
           )}}
         {% endcall %}
         {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
