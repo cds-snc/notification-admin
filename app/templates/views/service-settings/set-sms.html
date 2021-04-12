@@ -18,7 +18,7 @@
       ) }}
       <p>
         {{ _('You have a free allowance of') }}
-        {{ '{:,}'.format(current_service.free_sms_fragment_limit) }} {{ _('text messages each financial year.') }}
+        {{ limits.free_yearly_sms | format_number }} {{ _('text messages each financial year.') }}
       </p>
       {% call form_wrapper() %}
         {{ radios(form.enabled) }}
