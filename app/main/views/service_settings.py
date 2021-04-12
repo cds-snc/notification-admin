@@ -790,6 +790,10 @@ def service_set_channel(service_id, channel):
     return render_template(
         'views/service-settings/set-{}.html'.format(channel),
         form=form,
+        limits={
+            'free_yearly_email': current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
+            'free_yearly_sms': current_app.config["FREE_YEARLY_SMS_LIMIT"],
+        }
     )
 
 
