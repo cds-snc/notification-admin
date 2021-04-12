@@ -1119,11 +1119,11 @@ class ServiceOnOffSettingForm(StripWhitespaceForm):
 
 class ServiceSwitchChannelForm(ServiceOnOffSettingForm):
     def __init__(self, channel, *args, **kwargs):
-        name = '{} {}'.format(_l('Send'), {
-            'email': _l('emails'),
-            'sms': _l('text messages'),
-            'letter': _l('letters'),
-        }.get(channel))
+        name = _l('Send {}'.format({
+            'email': 'emails',
+            'sms': 'text messages',
+            'letter': 'letters',
+        }.get(channel)))
 
         super().__init__(name, *args, **kwargs)
 
