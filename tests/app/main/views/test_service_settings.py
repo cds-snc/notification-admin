@@ -3016,7 +3016,7 @@ def test_unknown_channel_404s(
     ),
     (
         'email',
-        'It’s free to send emails through GC Notify.',
+        'You can send up to 10 million emails per year for free.',
         'Send emails',
         [],
         'False', 'True',
@@ -3024,7 +3024,7 @@ def test_unknown_channel_404s(
     ),
     (
         'email',
-        'It’s free to send emails through GC Notify.',
+        'You can send up to 10 million emails per year for free.',
         'Send emails',
         ['email', 'sms', 'letter'],
         'True', 'True',
