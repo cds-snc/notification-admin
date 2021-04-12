@@ -52,9 +52,9 @@
             class="flex flex-col lg:flex-row justify-between"
           >
             <div class="text-content max-w-4xl">
-              <h2 class="pb-0 font-sans text-white leading-tight font-bold text-lg">
+              <h1 class="pb-0 font-sans text-white leading-tight font-bold text-lg">
                 {{ _("Keep the public informed every step of the way") }}
-              </h2>
+              </h1>
               <p class="pt-10 pb-16 text-white text-base">
                 {{ _("Try GC Notify, a better way to send service updates to your clients.") }}
               </p>
@@ -98,7 +98,7 @@
       <!-- end section 1 -->
 
       <!-- start section 2 -->
-      <div class="bg-white">
+      <div class="bg-white" role="region" aria-label="{{ _('Target audience') }}">
         <div class="container px-10 py-24">
           <div class="flex flex-col lg:flex-row justify-between">
             <div class="image-content pb-10 lg:pb-0">
@@ -151,9 +151,9 @@
       </div>
       <!-- end section 2 -->
 
-      <!-- start section 3 -->
       <div class="bg-gray">
-        <div class="container px-10 py-24">
+        <!-- start section 3 -->
+        <div class="container px-10 py-24" role="region" aria-label="{{ _('Features list') }}">
           <div class="flex justify-center">
             <h2 class="leading-tight font-bold font-sans text-lg pb-6">
               {{ _("What you can do with GC Notify") }}
@@ -248,7 +248,7 @@
         <!-- end section 3 -->
 
         <!-- start section 4 -->
-        <div class="bg-white">
+        <div class="bg-white" role="region" aria-label="{{ _('API integration') }}">
           <div class="container px-10 py-24">
             <div class="flex flex-col lg:flex-row justify-between">
               <div class="text-content max-w-4xl pb-10 lg:pb-0">
@@ -326,7 +326,7 @@
         <!-- end section 4 -->
 
         <!-- start section 5 -->
-        <div class="bg-gray">
+        <div class="bg-gray" role="region" aria-label="{{ _('Advantages of Notify') }}">
           <div class="container px-10 py-24">
             <div class="flex flex-col lg:flex-row justify-between">
               {% if session["userlang"] == "en" %}
@@ -399,7 +399,7 @@
         <!-- end section 5 -->
 
         <!-- start section 6 -->
-        <div class="bg-white">
+        <div class="bg-white" role="region" aria-label="{{ _('Ease of use') }}">
           <div class="container px-10 py-24">
 
             <h2 class="leading-tight font-bold lg:hidden font-sans text-lg pb-6">
@@ -455,7 +455,7 @@
         <!-- end section 6 -->
 
         <!-- COUNTER -->
-        <div class="bg-gray">
+        <div class="bg-gray" role="region" aria-label="{{ _('Counter') }}">
           <div class="container px-10 py-20 flex flex-col lg:flex-row justify-between">
             <!-- Box 1-->
             <div class="flex flex-col items-start justify-end pb-10 lg:pb-0">
@@ -483,7 +483,7 @@
         <!-- END COUNTER -->
 
         <!-- start section 7 -->
-        <div class="bg-blue-slightlight">
+        <div class="bg-blue-slightlight" role="region" aria-label="{{ _('Trial') }}">
           <div class="container px-10 py-24">
             <div class="flex justify-center">
               <div>
