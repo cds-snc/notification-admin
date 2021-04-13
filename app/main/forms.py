@@ -770,7 +770,7 @@ class BaseTemplateForm(StripWhitespaceForm):
     process_type = RadioField(
         _l('Choose a priority queue'),
         choices=[
-            ('bulk', _l('Bulk - Not time-sensitive')),
+            ('bulk', _l('Bulk — Not time-sensitive')),
             ('normal', _l('Normal')),
             ('priority', _l('Priority — Time-sensitive')),
         ],

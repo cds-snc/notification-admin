@@ -1,12 +1,12 @@
 import json
 import os
-import tempfile
 from contextlib import contextmanager
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock
 from uuid import UUID, uuid4
 
 import pytest
+import requests
 from bs4 import BeautifulSoup
 from flask import Flask, template_rendered, url_for
 from notifications_python_client.errors import HTTPError
@@ -37,21 +37,22 @@ class ElementNotFound(Exception):
     pass
 
 
-def a11y_test(html):
-    chromedriver_path = os.environ.get('CHROMEDRIVER_BIN', 'node_modules/chromedriver/lib/chromedriver/chromedriver')  # noqa: E501
+def a11y_test(slug, html):
+    # See https://github.com/cds-snc/a11y-tools
+    if "GITHUB_SHA" in os.environ and "A11Y_TRACKER_KEY" in os.environ:
+        requests.post(
+            "https://api.a11y.cdssandbox.xyz/v1",
+            json={
+                "product": "cds-snc/notification",
+                "revision": os.environ["GITHUB_SHA"],
+                "ci": True,
+                "callback": "https://github.com/cds-snc/notification-admin",
+                "html": [{slug: html}]
+            },
+            headers={'X-API-KEY': os.environ["A11Y_TRACKER_KEY"]}
+        ).raise_for_status()
 
-    temp = tempfile.NamedTemporaryFile(mode='w+t', suffix='.html')
-    temp.writelines(html)
-    temp.seek(0)
-    cmd = "node_modules/axe-cli/axe-cli --disable color-contrast --chrome-options='no-sandbox,disable-setuid-sandbox,disable-dev-shm-usage' --chromedriver-path='" + chromedriver_path + "' file://" + temp.name  # noqa: E501
-    output = os.popen(cmd).read()
-    temp.close()
-
-    if "0 violations found!" in output:
-        return True
-    else:
-        print(output)  # noqa: T001
-        return False
+    return True
 
 
 @pytest.fixture
