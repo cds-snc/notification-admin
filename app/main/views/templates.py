@@ -535,7 +535,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
 
     form = form_objects[template_type]()
     if form.validate_on_submit():
-        if form.process_type.data == 'priority':
+        if form.process_type.data != 'normal':
             abort_403_if_not_admin_user()
         try:
             new_template = service_api_client.create_service_template(

@@ -17,7 +17,7 @@
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
       <p>
-        {{ _('It’s free to send emails through GC Notify.') }}
+        {{ _("You can send up to {} million emails per year for free.").format((limits.free_yearly_email//1000000) | format_number) }}
       </p>
       {% call form_wrapper() %}
         {% set save_txt = _('Save') %}
