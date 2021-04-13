@@ -40,14 +40,19 @@ def test_non_logged_in_user_can_see_homepage(mocker, client):
     )
 
 
-@pytest.mark.skip(reason="@todo the chromedriver needs to be updated")
-def test_documentation_a11y(
-    client,
-    mock_get_service_and_organisation_counts,
-):
-    response = client.get(url_for('main.documentation'))
+def test_home_page_a11y(mocker, client):
+    mocker.patch(
+        'app.service_api_client.get_live_services_data',
+        return_value={'data': service}
+    )
+    mocker.patch(
+        'app.service_api_client.get_stats_by_month',
+        return_value={'data': [('2020-11-01', 'email', 20)]}
+    )
+
+    response = client.get(url_for('main.index'))
     assert response.status_code == 200
-    assert a11y_test(response.data.decode('utf-8'))
+    a11y_test(url_for('main.index', _external=True), response.data.decode('utf-8'))
 
 
 def test_logged_in_user_redirects_to_choose_account(
