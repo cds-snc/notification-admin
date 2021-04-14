@@ -26,7 +26,7 @@ from tests.conftest import (
     (None, 'temporary-failure', None, 'Phone number not accepting messages right now'),
     (None, 'permanent-failure', None, 'Phone number does not exist'),
     (None, 'technical-failure', None, 'Technical failure'),
-    (None, 'technical-failure', 'Blocked as spam by phone carrier', 'Technical failure — Blocked as spam by phone carrier'),
+    (None, 'technical-failure', 'Blocked as spam by phone carrier', 'Blocked as spam by phone carrier'),
     ('team', 'delivered', None, 'Delivered'),
     ('live', 'delivered', None, 'Delivered'),
     ('test', 'sending', None, 'Sending (test)'),

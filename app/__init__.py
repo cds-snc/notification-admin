@@ -436,7 +436,10 @@ def format_notification_type(notification_type):
 
 
 def format_notification_status(status, template_type, provider_response=None):
-    base = {
+    if provider_response:
+        return _(provider_response)
+
+    return {
         'email': {
             'failed': _('Failed'),
             'technical-failure': _('Technical failure'),
@@ -476,10 +479,6 @@ def format_notification_status(status, template_type, provider_response=None):
             'validation-failed': 'Validation failed',
         }
     }[template_type].get(status, status)
-
-    if provider_response:
-        return f"{base} — {_(provider_response)}"
-    return base
 
 
 def format_notification_status_as_time(status, created, updated):
