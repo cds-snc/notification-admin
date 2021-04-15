@@ -287,8 +287,8 @@ def format_number(number):
 
     if lang == 'fr':
         # Spaces as separators
-        return '{:,}'.format(number).replace(',', ' ')
-    return "{:,}".format(number)  # Commas as separators
+        return '{:,}'.format(number).replace(',', '\xa0')  # \xa0: nbsp
+    return '{:,}'.format(number)  # Commas as separators
 
 
 def format_datetime(date):
