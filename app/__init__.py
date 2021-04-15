@@ -284,11 +284,16 @@ def linkable_name(value):
 
 def format_number(number):
     lang = get_current_locale(current_app)
+    num_string = '{:,}'.format(number)
+
+    if number > 100000000:
+        size = len(num_string)
+        num_string = num_string[:size-8] + '\xa0M'
 
     if lang == 'fr':
         # Spaces as separators
-        return '{:,}'.format(number).replace(',', ' ')
-    return "{:,}".format(number)  # Commas as separators
+        return num_string.replace(',', '\xa0')
+    return num_string  # Commas as separators
 
 
 def format_datetime(date):
