@@ -288,7 +288,7 @@ def format_number(number):
 
     if number > 100000000:
         size = len(num_string)
-        num_string = num_string[:size-8] + '\xa0M'
+        num_string = num_string[:size - 8] + '\xa0M'
 
     if lang == 'fr':
         # Spaces as separators
