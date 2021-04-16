@@ -20,6 +20,7 @@ from tests.conftest import (
     SERVICE_ONE_ID,
     active_caseworking_user,
     active_user_view_permissions,
+    a11y_test,
     normalize_spaces,
 )
 
@@ -1152,3 +1153,23 @@ def test_get_free_paid_breakdown_for_billable_units(now, expected_number_of_mont
             {'free': 0, 'name': 'February', 'paid': 2000, 'letter_total': 0, 'letters': [], 'letter_cumulative': 0},
             {'free': 0, 'name': 'March', 'paid': 0, 'letter_total': 0, 'letters': [], 'letter_cumulative': 0}
         ][:expected_number_of_months]
+
+
+def test_dashboard_page_a11y(
+    logged_in_client,
+    mocker,
+    mock_get_service_templates_when_no_templates_exist,
+    mock_get_jobs,
+    mock_get_service_statistics,
+    mock_get_usage,
+):
+    mocker.patch(
+        'app.template_statistics_client.get_template_statistics_for_service',
+        return_value=copy.deepcopy(stub_template_stats)
+    )
+
+    url = url_for('main.service_dashboard', service_id=SERVICE_ONE_ID)
+    response = logged_in_client.get(url)
+
+    assert response.status_code == 200
+    a11y_test(url, response.data.decode('utf-8'))
