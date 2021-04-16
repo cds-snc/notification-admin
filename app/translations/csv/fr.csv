@@ -1172,7 +1172,7 @@
 "<a href='{}'>Contact us</a> if you want to switch this feature off.","<a href='{}'>Communiquez avec nous</a> si vous souhaitez désactiver cette fonctionnalité."
 "It does not cost you anything to receive text messages. Users will pay their standard text message rate.","La réception de messages texte ne vous coûte rien. Les utilisateurs paieront les frais de messagerie standards."
 "Government of Canada","Gouvernement du Canada"
-"Receive inbound SMS","Recevoir des SMS entrants
+"Receive inbound SMS","Recevoir des SMS entrants"
 "Email authentication","Authentification par courriel"
 "Send files by email","Envoyer des fichiers par courriel"
 "Uploading letters","Téléverser des lettres"
@@ -1321,7 +1321,6 @@
 "Setting updated","Paramètre mis à jour"
 "Target audience","Public cible"
 "Features list","Liste de fonctionnalités"
-"API integration","Intégration de l'API"
 "Benefits of GC Notify","Avantages de GC Notify"
 "Ease of use","Facilité d'utilisation"
 "Counter","Compteur"
