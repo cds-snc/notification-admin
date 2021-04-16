@@ -18,9 +18,9 @@ from tests import (
 )
 from tests.conftest import (
     SERVICE_ONE_ID,
+    a11y_test,
     active_caseworking_user,
     active_user_view_permissions,
-    a11y_test,
     normalize_spaces,
 )
 
