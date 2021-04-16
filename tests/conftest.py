@@ -2918,6 +2918,7 @@ def mock_get_notification(
     mocker,
     notification_id=fake_uuid,
     notification_status='delivered',
+    notification_provider_response=None,
     redact_personalisation=False,
     template_type=None,
     template_name='sample template',
@@ -2934,6 +2935,7 @@ def mock_get_notification(
             service_id,
             rows=1,
             status=notification_status,
+            provider_response=notification_provider_response,
             template_type=template_type,
             postage=postage
         )['notifications'][0]
