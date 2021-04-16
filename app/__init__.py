@@ -435,7 +435,10 @@ def format_notification_type(notification_type):
     }[notification_type]
 
 
-def format_notification_status(status, template_type):
+def format_notification_status(status, template_type, provider_response=None):
+    if provider_response:
+        return _(provider_response)
+
     return {
         'email': {
             'failed': _('Failed'),

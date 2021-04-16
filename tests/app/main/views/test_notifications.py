@@ -18,19 +18,20 @@ from tests.conftest import (
 )
 
 
-@pytest.mark.parametrize('key_type, notification_status, expected_status', [
-    (None, 'created', 'Sending'),
-    (None, 'sending', 'Sending'),
-    (None, 'delivered', 'Delivered'),
-    (None, 'failed', 'Failed'),
-    (None, 'temporary-failure', 'Phone number not accepting messages right now'),
-    (None, 'permanent-failure', 'Phone number does not exist'),
-    (None, 'technical-failure', 'Technical failure'),
-    ('team', 'delivered', 'Delivered'),
-    ('live', 'delivered', 'Delivered'),
-    ('test', 'sending', 'Sending (test)'),
-    ('test', 'delivered', 'Delivered (test)'),
-    ('test', 'permanent-failure', 'Phone number does not exist (test)'),
+@pytest.mark.parametrize('key_type, notification_status, provider_response, expected_status', [
+    (None, 'created', None, 'Sending'),
+    (None, 'sending', None, 'Sending'),
+    (None, 'delivered', None, 'Delivered'),
+    (None, 'failed', None, 'Failed'),
+    (None, 'temporary-failure', None, 'Phone number not accepting messages right now'),
+    (None, 'permanent-failure', None, 'Phone number does not exist'),
+    (None, 'technical-failure', None, 'Technical failure'),
+    (None, 'technical-failure', 'Blocked as spam by phone carrier', 'Blocked as spam by phone carrier'),
+    ('team', 'delivered', None, 'Delivered'),
+    ('live', 'delivered', None, 'Delivered'),
+    ('test', 'sending', None, 'Sending (test)'),
+    ('test', 'delivered', None, 'Delivered (test)'),
+    ('test', 'permanent-failure', None, 'Phone number does not exist (test)'),
 ])
 @pytest.mark.parametrize('user', [
     active_user_with_permissions,
@@ -46,6 +47,7 @@ def test_notification_status_page_shows_details(
     user,
     key_type,
     notification_status,
+    provider_response,
     expected_status,
 ):
 
@@ -55,6 +57,7 @@ def test_notification_status_page_shows_details(
         mocker,
         fake_uuid,
         notification_status=notification_status,
+        notification_provider_response=provider_response,
         key_type=key_type,
     )
 
