@@ -178,7 +178,7 @@ def test_terms_page_has_correct_content(client_request):
     assert normalize_spaces(terms_page.select('main p')[0].text) == (
         'The following terms apply to use of GC Notify, a product operated by the '
         'Canadian Digital Service (CDS). GC Notify is available for use by Canadian federal '
-        'and provincial departments and agencies to send service transaction updates.'
+        'departments and agencies to send service transaction updates.'
     )
 
 
