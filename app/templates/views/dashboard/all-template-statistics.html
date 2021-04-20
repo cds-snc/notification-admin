@@ -12,6 +12,14 @@
 
   <h1 class="heading-large">{{ _('Templates used') }}</h1>
 
+  <div class="mb-6">
+    {{ pill(
+      items=years,
+      current_value=selected_year,
+      big_number_args={'smallest': True},
+    ) }}
+  </div>
+
   <div class="dashboard">
     {% for month in months %}
       <h2>{{ _(month.name) }}</h2>
@@ -30,7 +38,7 @@
             empty_message='',
             field_headings=[
                 template_txt,
-                messages_txt 
+                messages_txt
             ],
             field_headings_visible=False
           ) %}

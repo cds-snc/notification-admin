@@ -15,14 +15,20 @@
   <h1 class="heading-large">
     {{ _('Messages sent') }}
   </h1>
-  
-  <!-- @todo -> in 2020 add monthly?year=2020 + /monthly?year=2019 -->
-  
+
+  <div class="mb-6">
+    {{ pill(
+      items=years,
+      current_value=selected_year,
+      big_number_args={'smallest': True},
+    ) }}
+  </div>
+
   {% if months %}
-   {% set spend_txt = _('Total spend') %} 
-   {% set heading_1 = _('Month') %} 
-   {% set heading_2 = _('Emails') %} 
-   {% set heading_3 = _('Text messages') %} 
+   {% set spend_txt = _('Total spend') %}
+   {% set heading_1 = _('Month') %}
+   {% set heading_2 = _('Emails') %}
+   {% set heading_3 = _('Text messages') %}
     <div class="body-copy-table" id='pill-selected-item'>
       {% call(month, row_index) list_table(
         months,
@@ -69,11 +75,9 @@
     </div>
   {% endif %}
 
-  
-<!--
+
   <p class="align-with-heading-copy">
     {{ _('Fiscal year ends 31 March.') }}
   </p>
-  -->
 
 {% endblock %}
