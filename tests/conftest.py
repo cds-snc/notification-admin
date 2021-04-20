@@ -38,7 +38,7 @@ class ElementNotFound(Exception):
 
 
 def a11y_test(slug: str, html):
-    if not slug.startswith("http:"):
+    if not slug.startswith("http"):
         raise AssertionError(f"Found URL {slug}, expected: http(s)://(domain)/{slug}")
 
     # See https://github.com/cds-snc/a11y-tools
