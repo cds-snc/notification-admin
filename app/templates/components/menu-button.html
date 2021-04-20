@@ -1,0 +1,15 @@
+{% macro menu_button(
+  href,
+  label,
+  aria_label=None,
+  lang=None,
+  style=None
+) %}
+    <a
+        {% if aria_label %} aria-label="{{ aria_label }}" {% endif %}
+        class="inline-block focus:border-b-2 focus:border-blue line-under leading-none text-blue visited:text-blue link:text-blue text-small underline hover:no-underline {% if style %} {{ style }} {% endif %}"
+        href="{{ href }}"
+        {% if lang %} lang="{{ lang }}" {% endif %}>
+        {{ label }}
+    </a>
+{% endmacro %}
