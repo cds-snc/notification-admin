@@ -37,7 +37,10 @@ class ElementNotFound(Exception):
     pass
 
 
-def a11y_test(slug, html):
+def a11y_test(slug: str, html):
+    if not slug.startswith("http"):
+        raise AssertionError(f"Found URL {slug}, expected: http(s)://(domain)/{slug}")
+
     # See https://github.com/cds-snc/a11y-tools
     if "GITHUB_SHA" in os.environ and "A11Y_TRACKER_KEY" in os.environ:
         requests.post(
