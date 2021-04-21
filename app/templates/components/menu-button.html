@@ -7,7 +7,7 @@
 ) %}
     <a
         {% if aria_label %} aria-label="{{ aria_label }}" {% endif %}
-        class="inline-block focus:border-b-2 focus:border-blue line-under leading-none text-blue visited:text-blue link:text-blue text-small underline hover:no-underline {% if style %} {{ style }} {% endif %}"
+        class="inline-block self-center py-1 px-4 line-under text-blue text-small focus:outline-none focus:bg-yellow focus:border-b-2 focus:border-blue link:text-blue visited:text-blue {% if style %} {{ style }} {% endif %}"
         href="{{ href }}"
         {% if lang %} lang="{{ lang }}" {% endif %}>
         {{ label }}

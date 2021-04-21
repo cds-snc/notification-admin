@@ -13,20 +13,18 @@
   <div class="pt-5 lg:justify-between grid md:grid-cols-2">
     <div>
       {% if session["userlang"] == "en" %}
-        <a href="/">
-          <img
-            alt="{{ _('Government of Canada') }}"
-            width="250"
-            class=""
-            src="{{ asset_s3_url('gov-canada-en.svg') }}"
-          />
-        </a>
+        <img
+          alt="{{ _('Government of Canada') }}"
+          width="250"
+          class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2"
+          src="{{ asset_s3_url('gov-canada-en.svg') }}"
+        />
       {% else %}
         <a href="/">
           <img
             alt="{{ _('Government of Canada') }}"
             width="250"
-            class=""
+            class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2"
             src="{{ asset_s3_url('gov-canada-fr.svg') }}"
           />
         </a>
@@ -54,8 +52,8 @@
     <!-- end sub nav -->
   </div>
   <div>
-    <a href="/" class="no-underline">
-      <div class="">
+    <div class="">
+      <a href="/" class="no-underline">
         {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
         and not platform_admin_view_ind %}
           <span id="gc-title"
@@ -70,9 +68,8 @@
           {{ _("GC Notify") }}
         </span>
         {% endif %}
-      </div>
-
-    </a>
+      </a>
+    </div>
   </div>
 
   {% set url_text = current_service.name %}
