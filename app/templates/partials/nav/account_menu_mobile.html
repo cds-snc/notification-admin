@@ -36,13 +36,15 @@
         <div class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-xs z-50">
           <button 
             id="account-close-mobile"
-            class="justify-self-center">
+            class="justify-self-center focus:outline-none focus:bg-yellow focus:border-b-2 focus:border-blue">
             <img
               aria-hidden="false"
               aria-labelledby="account.menu.close"
               src="{{ asset_url('images/close.svg') }}"
               class="object-none object-center w-8 h-8 m-auto"/>
-            <p id="account.menu.close">{{ _('close') }}</p>
+            <div id="account.menu.close">
+              {{ _('close') }}
+            </div>
           </button>
         </div>
       </div>
@@ -55,7 +57,7 @@
               <a
                 aria-label="{{ _('Admin panel') }}"
                 href="{{ url_for('main.live_services') }}"
-                class="no-underline hover:underline {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}">
+                class="p-2 no-underline focus:border-b-2 focus:border-blue {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}">
                 {{ _('Admin panel') }}
               </a>
             </li>
@@ -64,7 +66,7 @@
             <a
               aria-label="{{ _('Your services') }}"
               href="{{ url_for('main.choose_account') }}"
-              class="no-underline hover:underline {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}">
+              class="p-2 no-underline focus:border-b-2 focus:border-blue {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}">
               {{ _('Your services') }}
             </a>
           </li>
@@ -72,7 +74,7 @@
             <a
               aria-label="{{ _('Your profile') }}"
               href="{{ url_for('main.user_profile') }}"
-              class="no-underline hover:underline {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}">
+              class="p-2 no-underline focus:border-b-2 focus:border-blue {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}">
               {{ _('Your profile') }}
             </a>
           </li>
@@ -80,7 +82,7 @@
             <a
               aria-label="{{ _('Sign out') }}"
               href="{{ url_for('main.sign_out') }}"
-              class="no-underline hover:underline {% if main_navigation.is_selected('sign_out') %} menu--active {% endif %}">
+              class="p-2 no-underline focus:border-b-2 focus:border-blue {% if main_navigation.is_selected('sign_out') %} menu--active {% endif %}">
               {{ _('Sign out') }}
             </a>
           </li>

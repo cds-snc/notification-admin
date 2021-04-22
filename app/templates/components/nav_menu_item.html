@@ -2,12 +2,12 @@
   {% if url and localised_txt %}
     <div class="pr-10 flex-shrink-0">
       <div
-        class="flex-shrink-0 py-5 bg-gray {{ css_classes }}">
+        class="flex flex-shrink-0 bg-gray">
         <a
           {% if id_key %}id="{{ id_key }}"{% endif %}
           aria-label="{{ localised_txt }}"
           href="{{ url }}"
-          class="text-smaller text-blue visited:text-blue link:text-blue font-bold no-underline hover:underline line-under"
+          class="text-smaller text-blue bg-gray py-10 font-bold no-underline self-center hover:underline line-under visited:text-blue link:text-blue focus:bg-yellow focus:border-b-4 focus:border-blue focus:outline-none {{ css_classes }}"
           {% if external_link_img %}
           target="_blank"
           {% endif %}
