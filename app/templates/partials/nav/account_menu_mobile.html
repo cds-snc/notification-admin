@@ -57,7 +57,7 @@
               <a
                 aria-label="{{ _('Admin panel') }}"
                 href="{{ url_for('main.live_services') }}"
-                class="{% p-2 no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:bg-yellow if main_navigation.is_selected('live_services') %} menu--active {% endif %}">
+                class="p-2 no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:bg-yellow {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}">
                 {{ _('Admin panel') }}
               </a>
             </li>
