@@ -1,5 +1,5 @@
 <p>
-  Lorsque vous envoyez un message, celui-ci passe par différents états dans GC Notification. 
+  Lorsque vous envoyez un message, celui-ci passe par différents états dans GC Notification.
 </p>
 <p>
   Vous pouvez consulter le résultat de livraison d’un message pour savoir si son envoi est un succès ou un échec, et vous pouvez faire le suivi en temps réel du nombre de messages envoyés et de leur état dans le tableau de bord.
@@ -19,7 +19,7 @@
 
 <h2 class="heading-medium">Types d’états des messages</h2>
 <p>
-  GC Notification montre les types d’états de livraison des messages suivants : 
+  GC Notification montre les types d’états de livraison des messages suivants :
 </p>
 
 <h3 class="heading-small">Envoi en cours</h3>
@@ -48,6 +48,12 @@
     <p class="font-bold" style="margin-bottom: 0">Le destinataire n’accepte pas de messages à l’heure actuelle</p>
     <p>
       Dans un tel cas, le fournisseur n’a pas réussi à livrer le message après avoir essayé pendant 72 heures. Cela peut se produire si la boîte de réception du destinatiare est pleine ou si le téléphone du destinataire est éteint. Vous pouvez essayer d’envoyer le message de nouveau. Les messages texte qui ont été envoyés aux numéros qui n’acceptent pas de messages pourraient tout de même être facturés.
+    </p>
+  </li>
+  <li class="pt-4">
+    <p class="font-bold" style="margin-bottom: 0">{{ _("The email address is on the GC Notify suppression list") }}</p>
+    <p>
+      Dans un tel cas, GC Notification n’a pas pu envoyer un courriel car nous avons eu des erreurs ou une plainte dans le passé. Si vous pensez que cette adresse courielle devrait recevoir des messages maintenant, <a href="{{ url_for('.contact') }}">contactez-nous</a>.
     </p>
   </li>
   <li class="pt-4">
