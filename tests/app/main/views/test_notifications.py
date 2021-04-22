@@ -28,8 +28,8 @@ from tests.conftest import (
     (None, 'technical-failure', None, 'Technical failure'),
     (None, 'technical-failure', 'Blocked as spam by phone carrier', 'Blocked as spam by phone carrier'),
     (
-        None, 'permanent-failure', 'Email address is on the GC Notify suppression list',
-        'Email address is on the GC Notify suppression list'
+        None, 'permanent-failure', 'The email address is on the GC Notify suppression list',
+        'The email address is on the GC Notify suppression list'
     ),
     (
         None, 'permanent-failure', 'Email address is on our email provider suppression list',
