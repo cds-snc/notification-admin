@@ -84,13 +84,13 @@
       </h2>
       {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
       <a
-        class="self-end mb-2 py-2 px-1 inline-block align-middle focus:outline-none focus:border-b-2 focus:border-blue "
+        class="self-end mb-4 py-2 px-1 inline-block align-middle focus:outline-none border-b-2 border-transparent focus:border-blue "
         href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
         role="button">
         <div class="flex flex-initial flex-row text-base">
           <div
             id="live-banner"
-            class="button px-6 py-1 bg-blue text-white text-small font-bold hover:bg-blue-selected inline-block mr-4">
+            class="button px-6 py-1 bg-blue-lighter text-black text-small font-bold inline-block mr-4">
             {{ _('Trial') }}
           </div>
           <div class="inline-block text-small underline visited:text-blue link:text-blue">

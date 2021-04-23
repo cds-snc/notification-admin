@@ -177,6 +177,6 @@ module.exports = {
   ],
   variants: {
     borderWidth: ['responsive', 'focus'],
-    textColor: ['visited', 'link'],
+    textColor: ['visited', 'link', 'hover', 'focus'],
   },
 };

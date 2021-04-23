@@ -1,9 +1,18 @@
 @layer components {
   /*! purgecss start ignore */
   header a:link,
-  header a:visited {
-    @apply no-underline;
-    @apply text-blue;
+  header a:visited,
+  header a:focus:visited {
+    @apply no-underline border-transparent text-blue;
+  }
+
+  header a:hover {
+    @apply underline;
+  }
+
+  a:focus #live-banner,
+  a:hover #live-banner {
+    @apply bg-blue text-white;
   }
 
   .navigation {

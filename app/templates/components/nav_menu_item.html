@@ -11,15 +11,17 @@
           {% if external_link_img %}
           target="_blank"
           {% endif %}
-        >{{ localised_txt }}</a>
-        {% if external_link_img %}
-          <img
-            aria-hidden="false"
-            aria-label="{{ localised_txt }}"
-            src="{{ external_link_img }}"
-            alt="{{ _('External link') }}"
-            class="inline w-8 h-8 ml-2 self-center"/>
-        {% endif %}
+        >
+          {{ localised_txt }}
+          {% if external_link_img %}
+            <img
+              aria-hidden="false"
+              aria-label="{{ localised_txt }}"
+              src="{{ external_link_img }}"
+              alt="{{ _('External link') }}"
+              class="inline w-8 h-8 ml-2 self-center"/>
+          {% endif %}
+        </a>
       </div>
     </div>
   {% endif %}

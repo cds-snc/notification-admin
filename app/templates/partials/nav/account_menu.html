@@ -2,7 +2,7 @@
 <div class="xs:hidden sm:hidden smaller:hidden md:flex relative justify-end inline-block text-left w-full text-blue visited:text-blue link:text-blue no-underline text-small">
   <button aria-haspopup="true"
           aria-expanded="false"
-          class="inline-flex shadow-sm text-sm font-medium text-gray-700 px-4 py-1 focus:outline-none focus:bg-yellow focus:border-b-2 focus:border-blue hover:bg-gray-50"
+          class="inline-flex shadow-sm text-sm font-medium text-gray-700 px-4 py-1 border-b-2 border-transparent focus:outline-none focus:bg-yellow focus:border-blue hover:bg-gray-50 hover:underline"
           id="account-menu"
           data-module="menu"
           data-menu-items="account-menu-options"
@@ -28,7 +28,7 @@
         aria-label="{{ _('Admin panel') }}"
         id="account-menu-link" 
         href="{{ url_for('main.live_services') }}"
-        class="block px-8 py-4 leading-none text-blue no-underline text-small visited:text-blue link:text-blue focus:outline-none focus:border-b-2 focus:border-blue {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}"
+        class="block px-8 py-4 leading-none no-underline text-small focus:outline-none focus:border-b-2 focus:border-blue {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}"
         role="menuitem">
         {{ _('Admin panel') }}
       </a>
@@ -39,7 +39,7 @@
       <a
         aria-label="{{ _('Your services') }}"
         href="{{ url_for('main.choose_account') }}"
-        class="block px-8 py-4 leading-none text-blue no-underline text-small visited:text-blue link:text-blue focus:outline-none focus:border-b-2 focus:border-blue {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}"
+        class="block px-8 py-4 leading-none no-underline text-small focus:outline-none focus:border-b-2 focus:border-blue {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}"
         role="menuitem">
         {{ _('Your services') }}
       </a>
@@ -49,7 +49,7 @@
       <a
         aria-label="{{ _('Your profile') }}"
         href="{{ url_for('main.user_profile') }}"
-        class="block px-8 py-4 leading-none text-blue no-underline text-small visited:text-blue link:text-blue focus:outline-none focus:border-b-2 focus:border-blue {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}"
+        class="block px-8 py-4 leading-none no-underline text-small focus:outline-none focus:border-b-2 focus:border-blue {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}"
         role="menuitem">
         {{ _('Your profile') }}
       </a>
