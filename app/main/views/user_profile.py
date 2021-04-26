@@ -280,13 +280,16 @@ def user_profile_validate_security_keys():
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8")
 
-    if(session.get('user_details')):
+    if session.get('user_details'):
         user_id = session['user_details']['id']
     else:
         user_id = current_user.id
 
     resp = user_api_client.validate_security_keys(user_id, payload)
     user = User.from_id(user_id)
+
+    if 'password' in session.get('user_details', {}):
+        user.update_password(session['user_details']['password'])
 
     # the user will have a new current_session_id set by the API - store it in the cookie for future requests
     session['current_session_id'] = user.current_session_id

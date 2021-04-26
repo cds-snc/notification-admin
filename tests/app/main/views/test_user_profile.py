@@ -395,20 +395,30 @@ def test_validate_security_key_api_error(
     assert mock_login.called is False
 
 
+@pytest.mark.parametrize('password_changed', [True, False])
 def test_validate_security_key(
     client_request,
     api_nongov_user_active,
     mocker,
-    fake_uuid
+    fake_uuid,
+    password_changed,
 ):
     mock_login = mocker.patch('app.models.user.User.login')
     mock_validate = mocker.patch(
         'app.user_api_client.validate_security_keys',
         return_value={'status': 'OK'}
     )
+    mock_change_password = mocker.patch('app.models.user.User.update_password')
     new_user = dict(api_nongov_user_active)
     new_user['current_session_id'] = fake_uuid
     mocker.patch('app.user_api_client.get_user', return_value=new_user)
+
+    if password_changed:
+        with client_request.session_transaction() as session:
+            session['user_details'] = {
+                'id': new_user['id'],
+                'password': 'somepassword',
+            }
 
     client_request.post(
         ('main.user_profile_validate_security_keys'),
@@ -422,6 +432,10 @@ def test_validate_security_key(
 
     assert mock_validate.called
     assert mock_login.called
+    if password_changed:
+        mock_change_password.assert_called_once_with('somepassword')
+    else:
+        mock_change_password.assert_not_called()
 
 
 def test_non_gov_user_cannot_see_change_email_link(
