@@ -52,5 +52,8 @@ class AssetFingerprinter(object):
             contents = asset_file.read()
         return contents
 
+    def is_static_asset(self, url):
+        return url and url.startswith(self._asset_root)
+
 
 asset_fingerprinter = AssetFingerprinter()

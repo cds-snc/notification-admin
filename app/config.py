@@ -143,7 +143,6 @@ class Test(Development):
     ANTIVIRUS_API_HOST = 'https://test-antivirus'
     ANTIVIRUS_API_KEY = 'test-antivirus-secret'
     ASSET_DOMAIN = 'static.example.com'
-    ASSET_PATH = 'https://static.example.com/'
 
 
 class Production(Config):
