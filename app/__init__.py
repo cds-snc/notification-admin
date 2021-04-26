@@ -651,7 +651,7 @@ def useful_headers_after_request(response):
     # Cache static assets (CSS, JS, images) for a long time
     # as they have unique hashes thanks to the asset
     # fingerprinter
-    if request.url.startswith(asset_fingerprinter._asset_root):
+    if asset_fingerprinter.is_static_asset(request.url):
         response.headers.add('Cache-Control', 'public, max-age=31536000, immutable')
     else:
         response.headers.add('Cache-Control', 'no-store, no-cache, private, must-revalidate')
