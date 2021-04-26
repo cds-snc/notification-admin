@@ -14,7 +14,7 @@
         Menu
       </div>
       <div class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-xs z-50">
-        <button 
+        <button
           id="mobile-menu-close"
           class="justify-self-center">
           <img
@@ -91,7 +91,6 @@
                 {{ nav_menu_item_mobile(url_for('main.api_integration', service_id=current_service.id),_('API integration'),header_navigation.is_selected('api-integration')) }}
                 {{ nav_menu_item_mobile(url_for('main.manage_users', service_id=current_service.id),_('Team members'),header_navigation.is_selected('team-members')) }}
                 {{ nav_menu_item_mobile(url_for('main.service_settings', service_id=current_service.id),_('Settings'),header_navigation.is_selected('settings')) }}
-                {{ nav_menu_item_mobile(url_for('main.smtp_integration', service_id=current_service.id),_('SMTP'),header_navigation.is_selected('smtp-integration')) }}
               {% else %} {# current_user.has_permissions() #}
                 {{ nav_menu_item_mobile(url_for('main.choose_account', service_id=current_service.id),_('Your services'),header_navigation.is_selected('choose_account')) }}
                 {{ nav_menu_item_mobile(url_for('main.live_services', service_id=current_service.id),_('Admin panel')) }}
