@@ -94,6 +94,16 @@ class TestAssetFingerprint(object):
 
         assert fingerprinter.get_s3_url('foo.png') == 'https://assets.example.com/static/foo.png'
 
+    def test_is_static_asset(self):
+        fingerprinter = AssetFingerprinter(
+            asset_root='https://example.com/static/',
+            cdn_domain='assets.example.com',
+        )
+
+        assert fingerprinter.is_static_asset('https://example.com/static/image.png')
+        assert not fingerprinter.is_static_asset('https://assets.example.com/image.png')
+        assert not fingerprinter.is_static_asset('https://example.com/robots.txt')
+
 
 class TestAssetFingerprintWithUnicode(object):
     def test_can_read_self(self):

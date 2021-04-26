@@ -1,3 +1,7 @@
+import pytest
+
+from app.asset_fingerprinter import asset_fingerprinter
+
 service = [{'service_id': 1, 'service_name': 'jessie the oak tree',
             'organisation_name': 'Forest', 'consent_to_research': True,
             'contact_name': 'Forest fairy', 'organisation_type': 'Ecosystem',
@@ -38,6 +42,19 @@ def test_owasp_useful_headers_set(
         "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
         "frame-src 'self' www.youtube.com;"
     )
+
+
+@pytest.mark.parametrize('url, cache_headers', [
+    (asset_fingerprinter.get_url('stylesheets/index.css'), 'public, max-age=31536000, immutable'),
+    (asset_fingerprinter.get_url('images/favicon.ico'), 'public, max-age=31536000, immutable'),
+    (asset_fingerprinter.get_url('javascripts/main.min.js'), 'public, max-age=31536000, immutable'),
+    ('/robots.txt', 'no-store, no-cache, private, must-revalidate'),
+], ids=["CSS file", "image", "JS file", "static page"])
+def test_headers_cache_static_assets(client, url, cache_headers):
+    response = client.get(url)
+
+    assert response.status_code == 200
+    assert response.headers['Cache-Control'] == cache_headers
 
 
 def test_headers_non_ascii_characters_are_replaced(
