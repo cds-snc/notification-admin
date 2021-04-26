@@ -1,13 +1,15 @@
 @layer components {
   /*! purgecss start ignore */
-  header a:link,
-  header a:visited,
-  header a:focus:visited {
-    @apply no-underline border-transparent text-blue;
-  }
 
   header a:hover {
-    @apply underline;
+    @apply underline !important;
+  }
+
+  header a:link,
+  header a:visited,
+  header a:link:focus,
+  header a:focus:visited {
+    @apply no-underline text-blue;
   }
 
   a:focus #live-banner,
