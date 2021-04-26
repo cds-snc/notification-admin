@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from functools import partial
 from numbers import Number
 from time import monotonic
+from urllib.parse import urljoin
 
 import timeago
 from flask import (
@@ -134,7 +135,7 @@ def create_app(application):
 
     application.config.from_object(configs[notify_environment])
     asset_fingerprinter._cdn_domain = application.config['ASSET_DOMAIN']
-    asset_fingerprinter._asset_root = application.config['ASSET_PATH']
+    asset_fingerprinter._asset_root = urljoin(application.config['ADMIN_BASE_URL'], application.config['ASSET_PATH'])
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
     babel = Babel(application)
@@ -257,7 +258,6 @@ def init_app(application):
     @application.context_processor
     def inject_global_template_variables():
         return {
-            'asset_path': application.config['ASSET_PATH'],
             'header_colour': application.config['HEADER_COLOUR'],
             'asset_url': asset_fingerprinter.get_url,
             'asset_s3_url': asset_fingerprinter.get_s3_url,
@@ -648,8 +648,13 @@ def useful_headers_after_request(response):
     ))
     if 'Cache-Control' in response.headers:
         del response.headers['Cache-Control']
-    response.headers.add(
-        'Cache-Control', 'no-store, no-cache, private, must-revalidate')
+    # Cache static assets (CSS, JS, images) for a long time
+    # as they have unique hashes thanks to the asset
+    # fingerprinter
+    if request.url.startswith(asset_fingerprinter._asset_root):
+        response.headers.add('Cache-Control', 'public, max-age=31536000, immutable')
+    else:
+        response.headers.add('Cache-Control', 'no-store, no-cache, private, must-revalidate')
     for key, value in response.headers:
         response.headers[key] = SanitiseASCII.encode(value)
     return response
