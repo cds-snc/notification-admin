@@ -11,14 +11,14 @@
   <meta property="og:description" content="{{ description }}"/>
   <meta
     property="og:image"
-    content="{{ admin_base_url }}/static/images/product/notify-main.jpg"
+    content="{{ asset_url('images/product/notify-main.jpg') }}"
   />
   <meta property="og:url" content="{{ admin_base_url }}"/>
 
   <link
     rel="stylesheet"
     media="screen"
-    href="{{ asset_path }}stylesheets/index.css"
+    href="{{ asset_url('stylesheets/index.css') }}"
   />
 
 {% endblock %}
