@@ -5,23 +5,22 @@
         class="flex flex-shrink-0 bg-gray">
         <a
           {% if id_key %}id="{{ id_key }}"{% endif %}
-          aria-label="{{ localised_txt }}"
           href="{{ url }}"
           class="text-smaller text-blue bg-gray py-5 font-bold no-underline self-center hover:underline line-under visited:text-blue link:text-blue focus:bg-yellow focus:border-b-4 focus:border-blue focus:outline-none {{ css_classes }}"
           {% if external_link_img %}
           target="_blank"
+          aria-label="{{ localised_txt }} ({{ _('Opens in a new tab') }})"
+          {% else %}
+          aria-label="{{ localised_txt }}"
           {% endif %}
-        >
-          {{ localised_txt }}
-          {% if external_link_img %}
-            <img
-              aria-hidden="false"
-              aria-label="{{ localised_txt }}"
-              src="{{ external_link_img }}"
-              alt="{{ _('External link') }}"
-              class="inline w-8 h-8 ml-2 self-center"/>
-          {% endif %}
-        </a>
+        >{{ localised_txt }}</a>
+        {% if external_link_img %}
+          <img
+            aria-hidden="true"
+            src="{{ external_link_img }}"
+            alt="{{ _('External link') }}"
+            class="inline w-8 h-8 ml-2 self-center"/>
+        {% endif %}
       </div>
     </div>
   {% endif %}
