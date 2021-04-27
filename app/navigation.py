@@ -118,9 +118,6 @@ class HeaderNavigation(Navigation):
         'design_content': {
             'design_content',
         },
-        'smtp-integration': {
-            'smtp_integration',
-        },
         'user-profile': {
             'user_profile',
             'user_profile_email',
@@ -371,8 +368,6 @@ class HeaderNavigation(Navigation):
         'block_user',
         'unblock_user',
         'service_sending_domain',
-        'manage_smtp',
-        'delete_smtp',
         'welcome'
     }
 
@@ -479,9 +474,6 @@ class MainNavigation(Navigation):
             'set_free_sms_allowance',
             'service_set_letter_branding',
             'submit_request_to_go_live',
-        },
-        'smtp-integration': {
-            'smtp_integration'
         },
         'api-integration': {
             'api_callbacks',
@@ -833,8 +825,5 @@ class OrgNavigation(Navigation):
         'block_user',
         'unblock_user',
         'service_sending_domain',
-        'smtp_integration',
-        'manage_smtp',
-        'delete_smtp',
         'welcome'
     }
