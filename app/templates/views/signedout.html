@@ -1,5 +1,6 @@
 {% extends "notify_template.html" %}
 {% set withnav = True %}
+{% from "components/buttons.html" import primary_button_blue_lighter, secondary_button_transparent_white %}
 {% from "components/page-footer.html" import page_footer %}
 
 {% block meta %} {% set description = _('GC Notify lets you send emails and text messages to your users') %}
@@ -59,19 +60,11 @@
                 {{ _("Try GC Notify, a better way to send service updates to your clients.") }}
               </p>
               <div class="pt-0 flex flex-wrap">
-                <div class="flex-shrink-0">
-                  <a
-                    href="{{ url_for('.register' ) }}"
-                    class="button button-blue-lighter mr-10 hover:bg-blue-selected"
-                  >{{ _("Create an account") }}</a
-                  >
+                <div class="flex-shrink-0 place-self-center">
+                  {{ primary_button_blue_lighter(label=_("Create an account"), href=url_for('.register' )) }}
                 </div>
                 <div class="flex-shrink-0 py-4">
-                  <a
-                    href="{{ url_for('main.sign_in' ) }}"
-                    class="line-under text-white link:text-white visited:text-white text-default underline hover:no-underline text-base"
-                  >{{ _("Sign in") }}</a
-                  >
+                  {{ secondary_button_transparent_white(label=_('Sign in'), href=url_for('main.sign_in' )) }}
                 </div>
               </div>
             </div>

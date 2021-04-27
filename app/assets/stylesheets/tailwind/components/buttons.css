@@ -16,7 +16,7 @@
     @apply bg-blue text-white text-smaller;
   }
   .button-blue-lighter, .button-blue-lighter:link, .button-blue-lighter:visited {
-    @apply bg-blue-lighter border-b-2 border-black font-bold text-base text-black px-5 py-4;
+    @apply bg-blue-lighter border-b-2 border-white font-bold text-base text-black px-5 py-4;
   }
   .button-blue-lighter-nb, .button-blue-lighter-nb:link, .button-blue-lighter-nb:visited {
     box-shadow: none;
