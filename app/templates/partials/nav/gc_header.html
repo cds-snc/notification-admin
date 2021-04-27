@@ -1,3 +1,5 @@
+{% from "components/menu-button.html" import menu_button %}
+
 {% set lang_switch = 'EN' %}
 {% set long_lang_switch = 'English' %}
 
@@ -11,20 +13,18 @@
   <div class="pt-5 lg:justify-between grid md:grid-cols-2">
     <div>
       {% if session["userlang"] == "en" %}
-        <a href="/">
-          <img
-            alt="{{ _('Government of Canada') }}"
-            width="250"
-            class=""
-            src="{{ asset_s3_url('gov-canada-en.svg') }}"
-          />
-        </a>
+        <img
+          alt="{{ _('Government of Canada') }}"
+          width="250"
+          class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2"
+          src="{{ asset_s3_url('gov-canada-en.svg') }}"
+        />
       {% else %}
         <a href="/">
           <img
             alt="{{ _('Government of Canada') }}"
             width="250"
-            class=""
+            class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2"
             src="{{ asset_s3_url('gov-canada-fr.svg') }}"
           />
         </a>
@@ -36,25 +36,24 @@
       {% if current_user.is_authenticated %}
         {% include 'partials/nav/account_menu.html' %}
       {% else %}
-        <a
-          href="{{ url_for('main.sign_in' ) }}"
-          class="line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
-        >{{ _('Sign in') }}
-        </a>
+        {{ menu_button(
+          href=url_for('main.sign_in'),
+          label=_('Sign in')
+        ) }}
       {% endif %}
-
-      <a
-        aria-label="{{ long_lang_switch }}"
-        class="mr-10 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small pl-5 underline hover:no-underline"
-        href="{{ url_for('main.set_lang') }}?from={{ request.path }}"
-        lang="{{ lang_switch }}"
-      >{{ long_lang_switch }}</a>
+      {{ menu_button(
+        href=url_for('main.set_lang') + "?from=" + request.path,
+        label=long_lang_switch,
+        aria_label=long_lang_switch,
+        lang=lang_switch,
+        style="mr-10 ml-5"
+      ) }}
     </nav>
     <!-- end sub nav -->
   </div>
   <div>
-    <a href="/" class="no-underline">
-      <div class="">
+    <div class="">
+      <a href="/" class="py-1 no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:text-blue">
         {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
         and not platform_admin_view_ind %}
           <span id="gc-title"
@@ -69,9 +68,8 @@
           {{ _("GC Notify") }}
         </span>
         {% endif %}
-      </div>
-
-    </a>
+      </a>
+    </div>
   </div>
 
   {% set url_text = current_service.name %}
@@ -84,27 +82,27 @@
       <h2 class="font-bold text-lg text-black inline">
         {{ url_text }}
       </h2>
+      {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
       <a
-        class="self-end pb-4 inline-block align-middle"
+        class="self-end mb-4 py-2 px-1 inline-block align-middle focus:outline-none border-b-2 border-transparent focus:border-blue "
         href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
         role="button">
         <div class="flex flex-initial flex-row text-base">
-          {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
-            <div
-              id="live-banner"
-              class="button button-blue-lighter-nb hover:bg-blue-selected inline-block mr-4">
-              {{ _('Trial') }}
-            </div>
-            <div class="inline-block text-blue visited:text-blue link:text-blue text-small underline">
-              {% if current_service.pending_live %}
-                {{ _('Request being reviewed') }}
-              {% else %}
-                {{ _('Request to go live') }}
-              {% endif %}
-            </div>
-          {% endif %}
+          <div
+            id="live-banner"
+            class="button px-6 py-1 bg-blue-lighter text-black text-small font-bold inline-block mr-4">
+            {{ _('Trial') }}
+          </div>
+          <div class="inline-block text-small underline visited:text-blue link:text-blue">
+            {% if current_service.pending_live %}
+              {{ _('Request being reviewed') }}
+            {% else %}
+              {{ _('Request to go live') }}
+            {% endif %}
+          </div>
         </div>
       </a>
+      {% endif %}
     </div>
   {% endif %}
 </div>

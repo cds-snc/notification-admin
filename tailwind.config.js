@@ -176,6 +176,7 @@ module.exports = {
     }),
   ],
   variants: {
-    textColor: ['visited', 'link'],
+    borderWidth: ['responsive', 'focus'],
+    textColor: ['visited', 'link', 'hover', 'focus'],
   },
 };
