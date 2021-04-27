@@ -591,19 +591,6 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     def get_service_data_retention(self, service_id):
         return self.get("/service/{}/data-retention".format(service_id))
 
-    def get_smtp_relay(self, service_id):
-        endpoint = '/service/{}/smtp'.format(service_id)
-        return self.get(endpoint)
-
-    def add_smtp_relay(self, service_id, payload):
-        endpoint = '/service/{}/smtp'.format(service_id)
-        data = {'payload': payload}
-        return self.post(endpoint, data)
-
-    def delete_smtp_relay(self, service_id):
-        endpoint = '/service/{}/smtp'.format(service_id)
-        return self.delete(endpoint)
-
     def has_accepted_tos(self, service_id):
         return redis_client.get(self._tos_key_name(service_id)) is not None
 
