@@ -13,14 +13,15 @@
           {% else %}
           aria-label="{{ localised_txt }}"
           {% endif %}
-        >{{ localised_txt }}</a>
-        {% if external_link_img %}
-          <img
-            aria-hidden="true"
-            src="{{ external_link_img }}"
-            alt="{{ _('External link') }}"
-            class="inline w-8 h-8 ml-2 self-center"/>
-        {% endif %}
+        >{{ localised_txt }}
+          {% if external_link_img %}
+            <img
+              aria-hidden="true"
+              src="{{ external_link_img }}"
+              alt="{{ _('External link') }}"
+              class="inline w-8 h-8 ml-2 self-center"/>
+          {% endif %}
+        </a>
       </div>
     </div>
   {% endif %}
