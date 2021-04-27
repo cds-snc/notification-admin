@@ -1,68 +1,65 @@
 <!-- Large screen menu dropdown -->
-<div class="xs:hidden sm:hidden smaller:hidden md:flex relative justify-end inline-block text-left w-full mr-10">
+<div class="xs:hidden sm:hidden smaller:hidden md:flex relative justify-end inline-block text-left w-full text-blue visited:text-blue link:text-blue no-underline text-small">
   <button aria-haspopup="true"
           aria-expanded="false"
-          class="inline-flex shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+          class="inline-flex shadow-sm text-sm font-medium text-gray-700 px-4 py-1 border-b-2 border-transparent focus:outline-none focus:bg-yellow focus:border-blue hover:bg-gray-50 hover:underline"
           id="account-menu"
           data-module="menu"
           data-menu-items="account-menu-options"
           role="button"
           type="button">
-    <p
-      class="leading-none inline-block text-blue visited:text-blue link:text-blue no-underline text-small">
       {{ _('Your account') }}
       <img
         alt="{{ _('Your account') }}"
         aria-hidden="true"
-        class="account-menu-arrow ml-2 inline arrow"
+        class="account-menu-arrow ml-2 inline arrow self-center"
         src="{{ asset_url('images/arrow-licorice.svg') }}"
-        width="20"
+        width="15"
       />
-    </p>
   </button>
 
   <div id="account-menu-options"
-    class="absolute right-0 mt-10 w-auto px-8 py-4 text-right rounded bg-white shadow hidden"
+    class="absolute right-0 mt-10 w-auto py-4 text-right rounded bg-white shadow hidden"
     role="menu"
     aria-orientation="vertical">
     {% if current_user.platform_admin %}
-    <div class="py-4">
+    <div>
       <a
         aria-label="{{ _('Admin panel') }}"
         id="account-menu-link" 
         href="{{ url_for('main.live_services') }}"
-        class="block py-2 leading-none text-blue visited:text-blue link:text-blue no-underline text-small"
+        class="block px-8 py-4 leading-none no-underline text-small border-b-2 border-transparent focus:outline-none focus:border-blue {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}"
         role="menuitem">
         {{ _('Admin panel') }}
       </a>
     </div>
-    <div class="float-right menu-divider"></div>
+    <div class="mr-8 float-right menu-divider"></div>
     {% endif %}
-    <div class="py-4">
+    <div>
       <a
         aria-label="{{ _('Your services') }}"
         href="{{ url_for('main.choose_account') }}"
-        class="block leading-none text-blue visited:text-blue link:text-blue no-underline text-small"
+        class="block px-8 py-4 leading-none no-underline text-small border-b-2 border-transparent focus:outline-none focus:border-blue {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}"
         role="menuitem">
         {{ _('Your services') }}
       </a>
     </div>
-    <div class="float-right menu-divider"></div>
-    <div class="py-4">
+    <div class="mr-8 float-right menu-divider"></div>
+    <div>
       <a
         aria-label="{{ _('Your profile') }}"
         href="{{ url_for('main.user_profile') }}"
-        class="block leading-none text-blue visited:text-blue link:text-blue no-underline text-small"
+        class="block px-8 py-4 leading-none no-underline text-small border-b-2 border-transparent focus:outline-none focus:border-blue {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}"
         role="menuitem">
         {{ _('Your profile') }}
       </a>
     </div>
-    <div class="float-right menu-divider"></div>
-    <div class="py-4">
+    <div class="mr-8 float-right menu-divider"></div>
+    <div>
       <a
         aria-label="{{ _('Sign out') }}"
         href="{{ url_for('main.sign_out') }}"
-        class="block leading-none text-blue visited:text-blue link:text-blue no-underline text-small"
+        class="block px-8 py-4 leading-none text-blue no-underline text-small border-b-2 border-transparent visited:text-blue link:text-blue focus:outline-none focus:border-blue {% if main_navigation.is_selected('sign_out') %} menu--active {% endif %}"
         role="menuitem">
         {{ _('Sign out') }}
       </a>

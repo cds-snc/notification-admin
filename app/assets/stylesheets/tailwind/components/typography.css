@@ -27,15 +27,15 @@
   }
   
   a:link, a:visited {
-    @apply text-blue-govukblue;
+    @apply text-blue;
   }
   
   a:focus {
-    @apply outline-yellow bg-yellow;
+    @apply bg-yellow;
   }
   
   a:link:focus {
-    color: #005798;
+    @apply text-blue;
   }
   
   .heading-small {
