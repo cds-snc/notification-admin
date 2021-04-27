@@ -217,7 +217,9 @@ label {
 }
 
 .skiplink:focus {
-  @apply outline-yellow bg-yellow;
+  @apply px-2 py-2 outline-none bg-yellow border-b-2 border-blue no-underline;
+  left: 0;
+  z-index: 1;
 }
 
 .skiplink {
@@ -228,11 +230,6 @@ label {
 .skiplink:focus,
 .skiplink:visited {
   color: #0b0c0c;
-}
-
-.skiplink:focus {
-  left: 0;
-  z-index: 1;
 }
 
 #skiplink-container {
