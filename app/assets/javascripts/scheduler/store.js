@@ -1,5 +1,11 @@
 import React, { createContext, useReducer } from "react";
-import { populateTimes, dateIsToday, timeValuesToday } from "./Time/_util";
+import {
+  dateIsLastAvailable,
+  dateIsToday,
+  populateTimes,
+  timeValuesLastDay,
+  timeValuesToday,
+} from "./Time/_util";
 import dayjs from "dayjs";
 import "dayjs/locale/fr-ca";
 import {
@@ -44,13 +50,13 @@ export const defaultState = (
   let timeValuesTodayLeft = timeValuesToday([yearMonthDay(firstDay)], time_values);
 
   let selectedTimeValue = null;
-  // Select first available time slot only if there are some left for the 
+  // Select first available time slot only if there are some left for the
   // current day, i.e. hour is less than 23h00.
   if (timeValuesTodayLeft && timeValuesTodayLeft.length > 0) {
     selectedTimeValue = timeValuesTodayLeft[0].val;
   }
   // If there are no time slots remaining in the current day, we are past
-  // 23h00 and we need to shift forward the first available day for scheduling. 
+  // 23h00 and we need to shift forward the first available day for scheduling.
   else {
     const tomorrow = dayjs().add(1, 'day').startOf("date");
     firstDay = tomorrow;
@@ -118,6 +124,15 @@ export const StateProvider = ({ value, children }) => {
           newState = { ...state };
         } else {
           let newTime = dateIsToday([action.payload]) ? timeValuesToday([action.payload], state.time_values)[0].val : state.time;
+          const isLastDay = dateIsLastAvailable([action.payload], state.lastAvailableDate);
+          // If selecting the last day, make sure we don't select a
+          // time after the latest valid datetime
+          if (isLastDay) {
+            const timeValuesForLastDay = timeValuesLastDay(action.payload, state.time_values);
+            const validTime = timeValuesForLastDay.map(t => t.val).includes(newTime);
+            newTime = !validTime ? timeValuesForLastDay[timeValuesForLastDay.length - 1].val : newTime;
+          }
+
           newState = {
             ...state,
             selected: setSelected(state.selected, action.payload),
