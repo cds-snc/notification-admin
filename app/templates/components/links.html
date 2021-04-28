@@ -1,0 +1,21 @@
+{% macro link_light(label="TODO: LABEL THIS LINK", href="/", class=None, external_link_img=None) %}
+<a 
+    class="my-0 p-2 line-under text-base border-b-2 border-transparent link:text-blue visited:text-blue focus:bg-yellow focus:border-blue focus:no-underline focus:outline-none hover:no-underline {% if class %} {{ class }} {% endif %}"
+    href="{{ href }}"
+    {% if external_link_img %}
+        target="_blank"
+        aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
+    {% else %}
+        aria-label="{{ label }}"
+    {% endif %}
+    >
+    {{ label }}
+    {% if external_link_img %}
+        <img
+            aria-hidden="true"
+            src="{{ external_link_img }}"
+            alt="{{ _('External link') }}"
+            class="inline w-8 h-8 ml-2 self-center"/>
+    {% endif %}
+</a>
+{% endmacro %}
