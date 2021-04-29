@@ -5,34 +5,34 @@
   <div class="bg-blue">
     <nav id="footer-primary" class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4" aria-label="footer links">
       <div class="py-24 grid lg:grid-cols-3 md:grid-cols-2 smaller:grid-cols-1 gap-4">
-        <div class="flex-1 grid grid-cols-1 grid-rows-4 mb-4">
+        <div class="flex-1 grid grid-cols-1 gap-y-1 grid-rows-4">
           <div>
-            <span class="text-white text-base font-bold mb-10">{{ _("About") }}</span>
+            <span class="text-white text-base font-bold">{{ _("About") }}</span>
           </div>
           <div>
-            {{ nav_link_dark(label=_("Why GC Notify"), href=url_for('main.why-notify'), class="mb-10 -ml-2") }}
+            {{ nav_link_dark(label=_("Why GC Notify"), href=url_for('main.why-notify'), class="-ml-2") }}
           </div>
           <div>
-            {{ nav_link_dark(label=_("Features"), href=url_for('main.features'), class="mb-10 -ml-2") }}
+            {{ nav_link_dark(label=_("Features"), href=url_for('main.features'), class="-ml-2") }}
           </div>
           <div>
-            {{ nav_link_dark(label=_("Activity on GC Notify"), href=url_for('main.activity'), class="mb-10 -ml-2") }}
-          </div>
-        </div>
-        <div class="flex-1 grid grid-cols-1 md:grid-rows-4 mb-4">
-          <div>
-            <span class="text-white text-base font-bold mb-10">{{ _("Using GC Notify") }}</span>
-          </div>
-          <div>
-            {{ nav_link_dark(label=_("API documentation"), href=documentation_url(), external_link_img=asset_url('images/external-white.svg'), class="mb-10 -ml-2") }}
+            {{ nav_link_dark(label=_("Activity on GC Notify"), href=url_for('main.activity'), class="-ml-2") }}
           </div>
         </div>
-        <div class="flex-1 grid grid-cols-1 lg:grid-rows-4 mb-4">
+        <div class="flex-1 grid grid-cols-1 gap-y-1 md:grid-rows-4">
           <div>
-            <span class="text-white text-base font-bold mb-10">{{ _("Support") }}</span>
+            <span class="text-white text-base font-bold">{{ _("Using GC Notify") }}</span>
+          </div>
+          <div>
+            {{ nav_link_dark(label=_("API documentation"), href=documentation_url(), external_link_img=asset_url('images/external-white.svg'), class="-ml-2") }}
+          </div>
+        </div>
+        <div class="flex-1 grid grid-cols-1 gap-y-1 lg:grid-rows-4">
+          <div>
+            <span class="text-white text-base font-bold">{{ _("Support") }}</span>
           </div>
           <div class="lg:row-span-3">
-            {{ nav_link_dark(label=_("Contact us"), href=url_for('main.contact'), class="mb-10 -ml-2") }}
+            {{ nav_link_dark(label=_("Contact us"), href=url_for('main.contact'), class="-ml-2") }}
           </div>
         </div>
       </div>
