@@ -26,11 +26,7 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0.3);
   }
   
-  a:visited {
-    @apply text-gray-visitedlight;
-  }
-
-  a:link {
+  a:visited, a:link {
     @apply text-blue;
   }
 
