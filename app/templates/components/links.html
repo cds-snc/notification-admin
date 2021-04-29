@@ -23,7 +23,7 @@
 {% macro nav_link_dark(label="TODO: LABEL THIS LINK", href="/", class=None, external_link_img=None) %}
 <a
     href="{{ href }}"
-    class="p-2 text-white text-small no-underline border-b-2 border-transparent visited:text-white link:text-white focus:border-white focus:outline-none focus:text-blue {% if class %} {{ class }} {% endif %}"
+    class="p-2 text-white text-small no-underline line-under border-b-2 border-transparent visited:text-white link:text-white hover:underline focus:border-white focus:outline-none focus:text-blue {% if class %} {{ class }} {% endif %}"
     {% if external_link_img %}
         target="_blank"
         aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
@@ -45,7 +45,7 @@
 {% macro nav_link_light(label="TODO: LABEL THIS LINK", href="/", class=None, external_link_img=None) %}
 <a
     href="{{ href }}"
-    class="p-2 text-blue text-small no-underline border-b-2 border-transparent visited:text-blue link:text-blue hover:no-underline focus:border-blue focus:outline-none focus:text-blue {% if class %} {{ class }} {% endif %}"
+    class="p-2 text-blue text-small no-underline line-under border-b-2 border-transparent visited:text-blue link:text-blue hover:underline focus:border-blue focus:outline-none focus:text-blue {% if class %} {{ class }} {% endif %}"
     {% if external_link_img %}
         target="_blank"
         aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
