@@ -296,16 +296,15 @@ def use_case(service_id):
 
 
 def send_go_live_request(service, user, go_live_data) -> None:
-    go_live_data = go_live_data | \
-                   {
-                       'service_name': service.name,
-                       'service_id': str(service.id),
-                       'service_url': url_for('.service_dashboard', service_id=service.id, _external=True),
-                       'support_type': 'go_live_request',
-                       'main_use_case': go_live_data['purpose'],
-                       'name': user.name,
-                       'email_address': user.email_address
-                   }
+    go_live_data = go_live_data | {
+        'service_name': service.name,
+        'service_id': str(service.id),
+        'service_url': url_for('.service_dashboard', service_id=service.id, _external=True),
+        'support_type': 'go_live_request',
+        'main_use_case': go_live_data['purpose'],
+        'name': user.name,
+        'email_address': user.email_address
+    }
     of_interest = {
         'service_name', 'service_id', 'service_url', 'name', 'email_address', 'department_org_name',
         'intended_recipients', 'main_use_case', 'notification_types', 'expected_volume', 'support_type'}
