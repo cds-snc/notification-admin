@@ -1,28 +1,22 @@
+{% from "components/buttons.html" import nav_button, secondary_button_transparent_white %}
+{% from "components/links.html" import nav_link_dark, nav_link_light %}
+
 <footer aria-label="{{ _('footer menu') }}">
   <div class="bg-blue">
-    <nav class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4" aria-label="footer links">
+    <nav id="footer-primary" class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4" aria-label="footer links">
       <div class="py-24 grid lg:grid-cols-3 md:grid-cols-2 smaller:grid-cols-1 gap-4">
         <div class="flex-1 grid grid-cols-1 grid-rows-4 mb-4">
           <div>
             <span class="text-white text-base font-bold mb-10">{{ _("About") }}</span>
           </div>
           <div>
-            <a
-              href="{{ url_for('main.why-notify') }}"
-              class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
-            >{{ _("Why GC Notify") }}</a>
+            {{ nav_link_dark(label=_("Why GC Notify"), href=url_for('main.why-notify'), class="mb-10 -ml-2") }}
           </div>
           <div>
-            <a
-              href="{{ url_for('main.features') }}"
-              class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
-            >{{ _("Features") }}</a>
+            {{ nav_link_dark(label=_("Features"), href=url_for('main.features'), class="mb-10 -ml-2") }}
           </div>
           <div>
-            <a
-              href="{{ url_for('main.activity') }}"
-              class="line-under text-white visited:text-white link:text-white text-small  underline hover:no-underline "
-            >{{ _("Activity on GC Notify") }}</a>
+            {{ nav_link_dark(label=_("Activity on GC Notify"), href=url_for('main.activity'), class="mb-10 -ml-2") }}
           </div>
         </div>
         <div class="flex-1 grid grid-cols-1 md:grid-rows-4 mb-4">
@@ -30,16 +24,7 @@
             <span class="text-white text-base font-bold mb-10">{{ _("Using GC Notify") }}</span>
           </div>
           <div>
-            <a
-              href="{{ documentation_url() }}"
-              target="_blank"
-              class="line-under text-white visited:text-white link:text-white text-small mb-10 underline hover:no-underline "
-            >{{ _("API documentation") }}<img
-                aria-hidden="false"
-                src="{{ asset_url('images/external-white.svg') }}"
-                alt="{{ _('External link') }}"
-                class="inline ml-3 w-6 h-6"/>
-            </a>
+            {{ nav_link_dark(label=_("API documentation"), href=documentation_url(), external_link_img=asset_url('images/external-white.svg'), class="mb-10 -ml-2") }}
           </div>
         </div>
         <div class="flex-1 grid grid-cols-1 lg:grid-rows-4 mb-4">
@@ -47,10 +32,7 @@
             <span class="text-white text-base font-bold mb-10">{{ _("Support") }}</span>
           </div>
           <div class="lg:row-span-3">
-            <a
-              href="{{ url_for('main.contact') }}"
-              class="line-under text-white visited:text-white link:text-white text-small  mb-10 underline hover:no-underline "
-            >{{ _("Contact us") }}</a>
+            {{ nav_link_dark(label=_("Contact us"), href=url_for('main.contact'), class="mb-10 -ml-2") }}
           </div>
         </div>
       </div>
@@ -60,6 +42,7 @@
   <!-- start section 9 -->
   <div class="bg-gray">
     <nav
+      id="footer-secondary"
       class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4
        grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 gap-16 md:gap-4 py-24"
       aria-label="footer secondary links">
@@ -72,11 +55,7 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          <a
-            href="{{ url_for('main.privacy') }}"
-            class="line-under text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
-            {{ _("Privacy") }}
-          </a>
+          {{ nav_link_light(label=_("Privacy"), href=url_for('main.privacy')) }}
         </div>
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img
@@ -93,11 +72,7 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          <a
-            href="{{ url_for('main.security') }}"
-            class="line-under text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
-            {{ _("Security") }}
-          </a>
+          {{ nav_link_light(label=_("Security"), href=url_for('main.security')) }}
         </div>
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img
@@ -114,25 +89,19 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          <a
-            href="{{ url_for('main.terms') }}"
-            class="line-under text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
-            {{ _("Terms of use") }}
-          </a>
+          {{ nav_link_light(label=_("Terms of use"), href=url_for('main.terms')) }}
         </div>
-        <div class="lg:hidden bg-white p-5 mt-10" style="width: 15rem;">
-          <a
-            class="text-blue visited:text-blue link:text-blue text-small no-underline"
-            href="#top">
-            <div class="inline">{{ _('Top of page') }}</div>
-            <img
-              alt="{{ _('Top of page') }}"
-              aria-hidden="true"
-              class="inline ml-2 transform rotate-180"
-              src="{{ asset_url('images/arrow-licorice.svg') }}"
-              width="14"
-            />
-          </a>
+        <div class="lg:hidden p-5 mt-10">
+          <div class="inline-block">
+            {{ nav_button(
+              href="#top",
+              label=_('Top of page'),
+              aria_label=_('Top of page'),
+              link_img=asset_url('images/arrow-licorice.svg'),
+              class="text-blue bg-white",
+              link_img_class="transform rotate-180"
+            ) }}
+          </div>
         </div>
       </div>
 

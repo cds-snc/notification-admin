@@ -1,5 +1,29 @@
 @layer components {
   /*! purgecss start ignore */
+  footer #footer-primary a:link,
+  footer #footer-primary a:visited {
+    @apply text-white no-underline;
+  }
+
+  footer #footer-primary a:focus {
+    @apply text-blue;
+  }
+
+  footer #footer-secondary a:link,
+  footer #footer-secondary a:visited {
+    @apply text-blue no-underline;
+  }
+
+  footer #footer-primary a img {
+    @apply text-blue;
+    content:url("/static/images/external-white.svg");
+  }
+
+  footer #footer-primary a:focus img {
+    @apply text-blue;
+    content:url("/static/images/external.svg");
+  }
+
   .page-footer {
     @apply relative mb-12;
   }

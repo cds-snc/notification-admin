@@ -26,10 +26,14 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0.3);
   }
   
-  a:link, a:visited {
+  a:visited {
+    @apply text-gray-visitedlight;
+  }
+
+  a:link {
     @apply text-blue;
   }
-  
+
   a:focus {
     @apply bg-yellow;
   }
