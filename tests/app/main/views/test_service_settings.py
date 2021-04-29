@@ -1158,7 +1158,7 @@ def test_submit_go_live_request(
             'step': 'about-notifications'
         }
     )
-    mock_contact = mocker.patch('app.user_api_client.send_contact_email')
+    mock_contact = mocker.patch('app.user_api_client.send_contact_request')
 
     page = client_request.post(
         'main.request_to_go_live',
@@ -1175,24 +1175,22 @@ def test_submit_go_live_request(
         SERVICE_ONE_ID,
         go_live_user=active_user_with_permissions['id']
     )
-    expected_message = '<br>'.join([
-        f"{service_one['name']} just requested to go live.",
-        "",
-        "- Department/org: Org name",
-        "- Intended recipients: public",
-        "- Purpose: Purpose",
-        "- Notification types: email",
-        "- Expected monthly volume: 1-10k",
-        "---",
-        url_for('.service_dashboard', service_id=SERVICE_ONE_ID, _external=True),
-    ])
 
-    mock_contact.assert_called_once_with(
-        active_user_with_permissions['name'],
-        active_user_with_permissions['email_address'],
-        expected_message,
-        f"Go Live request for {service_one['name']}"
-    )
+    expected_date = {
+        'name': 'Test User',
+        'expected_volume': '1-10k',
+        'department_org_name': 'Org name',
+        'service_url': f'http://localhost/services/{SERVICE_ONE_ID}',
+        'support_type': 'go_live_request',
+        'service_id': SERVICE_ONE_ID,
+        'service_name': 'service one',
+        'intended_recipients': 'public',
+        'main_use_case': 'Purpose',
+        'email_address': 'test@user.canada.ca',
+        'notification_types': 'email'
+    }
+
+    mock_contact.assert_called_once_with(expected_date)
 
 
 @pytest.mark.parametrize('route, permissions', [
