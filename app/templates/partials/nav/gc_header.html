@@ -1,4 +1,4 @@
-{% from "components/menu-button.html" import menu_button %}
+{% from "components/buttons.html" import nav_button %}
 
 {% set lang_switch = 'EN' %}
 {% set long_lang_switch = 'English' %}
@@ -36,23 +36,23 @@
       {% if current_user.is_authenticated %}
         {% include 'partials/nav/account_menu.html' %}
       {% else %}
-        {{ menu_button(
+        {{ nav_button(
           href=url_for('main.sign_in'),
           label=_('Sign in')
         ) }}
       {% endif %}
-      {{ menu_button(
+      {{ nav_button(
         href=url_for('main.set_lang') + "?from=" + request.path,
         label=long_lang_switch,
         aria_label=long_lang_switch,
         lang=lang_switch,
-        style="mr-10 ml-5"
+        class="mr-10 ml-5"
       ) }}
     </nav>
     <!-- end sub nav -->
   </div>
   <div>
-    <div class="">
+    <div>
       <a href="/" class="py-1 no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:text-blue">
         {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
         and not platform_admin_view_ind %}
