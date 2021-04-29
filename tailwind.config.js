@@ -66,6 +66,8 @@ module.exports = {
         grey2: "#bfc1c3",
         grey4: "#f8f8f8",
         lightgrey: "#C0C1C3",
+        visitedlight: "#929AA4",
+        visiteddark: "#C8CDD1",
       },
       yellow: {
         default: "#ffbf47"
