@@ -634,6 +634,7 @@ def useful_headers_after_request(response):
     response.headers.add('X-Frame-Options', 'deny')
     response.headers.add('X-Content-Type-Options', 'nosniff')
     response.headers.add('X-XSS-Protection', '1; mode=block')
+    response.headers.add('Permissions-Policy', 'interest-cohort=()')
     response.headers.add('Content-Security-Policy', (
         "default-src 'self' {asset_domain} 'unsafe-inline';"
         "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"

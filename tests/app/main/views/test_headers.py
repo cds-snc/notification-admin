@@ -31,6 +31,7 @@ def test_owasp_useful_headers_set(
     assert response.headers['X-Frame-Options'] == 'deny'
     assert response.headers['X-Content-Type-Options'] == 'nosniff'
     assert response.headers['X-XSS-Protection'] == '1; mode=block'
+    assert response.headers['Permissions-Policy'] == 'interest-cohort=()'
     assert response.headers['Content-Security-Policy'] == (
         "default-src 'self' static.example.com 'unsafe-inline';"
         "script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
