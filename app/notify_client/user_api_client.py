@@ -121,11 +121,6 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = '/user/{0}/email-already-registered'.format(user_id)
         self.post(endpoint, data=data)
 
-    def send_contact_email(self, name, email, message, support_type):
-        data = {'name': name, 'email': email, 'message': message, 'support_type': support_type}
-        endpoint = '/user/{0}/support-email'.format(self.notify_user_id)
-        self.post(endpoint, data=data)
-
     def send_contact_request(self, data: Dict[str, str]):
         endpoint = f'/user/{self.notify_user_id}/contact-request'
         self.post(endpoint, data=data)
