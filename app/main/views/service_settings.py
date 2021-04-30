@@ -295,6 +295,25 @@ def use_case(service_id):
     )
 
 
+def send_go_live_request(service, user, go_live_data) -> None:
+    go_live_data = go_live_data | {
+        'service_name': service.name,
+        'service_id': str(service.id),
+        'service_url': url_for('.service_dashboard', service_id=service.id, _external=True),
+        'support_type': 'go_live_request',
+        'main_use_case': go_live_data['purpose'],
+        'name': user.name,
+        'email_address': user.email_address
+    }
+    of_interest = {
+        'service_name', 'service_id', 'service_url', 'name', 'email_address', 'department_org_name',
+        'intended_recipients', 'main_use_case', 'notification_types', 'expected_volume', 'support_type'}
+    data = {key: go_live_data[key] for key in of_interest if key in go_live_data}
+    data['intended_recipients'] = ', '.join(data['intended_recipients'])
+    data['notification_types'] = ', '.join(data['notification_types'])
+    user_api_client.send_contact_request(data)
+
+
 @main.route("/services/<service_id>/service-settings/request-to-go-live", methods=['POST'])
 @user_has_permissions('manage_service')
 @user_is_gov_user
@@ -302,7 +321,7 @@ def submit_request_to_go_live(service_id):
     if not current_service.go_live_checklist_completed:
         abort(403)
 
-    use_case_data = current_service.use_case_data[1]
+    go_live_data = current_service.use_case_data[1]
     current_service.update(go_live_user=current_user.id)
 
     flash(
@@ -310,24 +329,7 @@ def submit_request_to_go_live(service_id):
         'default'
     )
 
-    message = '<br>'.join([
-        f'{current_service.name} just requested to go live.',
-        '',
-        f"- Department/org: {use_case_data['department_org_name']}",
-        f"- Intended recipients: {', '.join(use_case_data['intended_recipients'])}",
-        f"- Purpose: {use_case_data['purpose']}",
-        f"- Notification types: {', '.join(use_case_data['notification_types'])}",
-        f"- Expected monthly volume: {use_case_data['expected_volume']}",
-        "---",
-        url_for('.service_dashboard', service_id=current_service.id, _external=True)
-    ])
-
-    user_api_client.send_contact_email(
-        current_user.name,
-        current_user.email_address,
-        message,
-        _("Go Live request for {}").format(current_service.name)
-    )
+    send_go_live_request(current_service, current_user, go_live_data)
 
     return redirect(url_for('.service_settings', service_id=service_id))
 

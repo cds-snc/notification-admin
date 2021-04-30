@@ -133,7 +133,7 @@ def test_invalid_step_name_redirects(client_request):
     'ask_question', 'technical_support', 'give_feedback', 'other'
 ])
 def test_message_step_validates(client_request, support_type, mocker):
-    mock_send_contact_email = mocker.patch('app.user_api_client.send_contact_email')
+    mock_send_contact_request = mocker.patch('app.user_api_client.send_contact_request')
 
     page = client_request.post(
         '.contact',
@@ -160,7 +160,7 @@ def test_message_step_validates(client_request, support_type, mocker):
         ('message', 'This field is required.')
     ]
 
-    mock_send_contact_email.assert_not_called()
+    mock_send_contact_request.assert_not_called()
 
 
 def test_saves_form_to_session(client_request, mocker):
