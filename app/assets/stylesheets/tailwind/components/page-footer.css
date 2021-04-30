@@ -2,7 +2,7 @@
   /*! purgecss start ignore */
   footer #footer-primary a:link,
   footer #footer-primary a:visited {
-    @apply text-white no-underline;
+    @apply text-white;
   }
 
   footer #footer-primary a:focus {
@@ -11,7 +11,7 @@
 
   footer #footer-secondary a:link,
   footer #footer-secondary a:visited {
-    @apply text-blue no-underline;
+    @apply text-blue;
   }
 
   footer #footer-primary a img {
