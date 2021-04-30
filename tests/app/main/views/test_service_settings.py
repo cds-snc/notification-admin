@@ -1176,7 +1176,7 @@ def test_submit_go_live_request(
         go_live_user=active_user_with_permissions['id']
     )
 
-    expected_date = {
+    expected_data = {
         'name': 'Test User',
         'expected_volume': '1-10k',
         'department_org_name': 'Org name',
@@ -1190,7 +1190,7 @@ def test_submit_go_live_request(
         'notification_types': 'email'
     }
 
-    mock_contact.assert_called_once_with(expected_date)
+    mock_contact.assert_called_once_with(expected_data)
 
 
 @pytest.mark.parametrize('route, permissions', [
