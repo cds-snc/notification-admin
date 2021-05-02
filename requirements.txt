@@ -21,7 +21,7 @@ eventlet==0.30.1
 notifications-python-client==6.0.2
 sentry-sdk[flask]==0.19.5
 
-Babel==2.9.0
+Babel==2.9.1
 boto3==1.17.0
 Flask-Babel==2.0.0
 newrelic==6.0.1.155
