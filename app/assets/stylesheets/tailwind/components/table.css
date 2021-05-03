@@ -42,7 +42,7 @@
   td {
     @apply align-top;
   }
-  
+
   .table-heading {
 
     @apply my-gutterHalf mx-0 text-left;
@@ -67,7 +67,7 @@
   .dashboard-table .table-field-headings-visible th {
     @apply pb-2;
   }
-  
+
   .dashboard-table .table-row th {
     width: 52.5%;
     @apply font-normal table-cell;
@@ -115,9 +115,8 @@
     @apply m-0 mb-2;
   }
   .table-field-error {
-    border-width: 5px;
     padding-left: 7px;
-    @apply block border-solid border-red
+    @apply border-0 border-l-4 border-solid border-red;
   }
 
   .table-field-noborder {
@@ -151,9 +150,8 @@
     @apply block font-bold text-red;
   }
   .table-field-invisible-error {
-    border-left-width: 5px;
     padding-left: 7px;
-    @apply block border-0 border-solid border-transparent;
+    @apply block border-0 border-l-4 border-solid border-transparent;
   }
   .table-field-status-default {
     @apply text-gray-grey1;
@@ -250,7 +248,7 @@
   .spreadsheet .table-field-index {
     @apply font-bold text-center bg-gray-grey4;
   }
-  
+
   .spreadsheet th,
   .spreadsheet td {
     @apply px-4 border-1 border-solid border-gray-grey2;
@@ -281,6 +279,6 @@
   .body-copy-table table thead th {
     @apply text-smaller leading-tight font-bold;
   }
-  
+
   /*! purgecss end ignore */
 }
