@@ -161,7 +161,7 @@ class User(JSONModel, UserMixin):
 
     @property
     def email_auth(self):
-        return self.auth_type == 'email_auth' or not self.has_recent_email_login()
+        return self.auth_type == 'email_auth' or self.requires_email_login
 
     @property
     def requires_email_login(self):
