@@ -2,18 +2,12 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
-from tests.conftest import (
-    SERVICE_ONE_ID,
-    captured_templates,
-    mock_get_user,
-    mock_get_user_by_email,
-)
+from tests.conftest import SERVICE_ONE_ID, captured_templates, mock_get_user
 
 
 def test_should_render_sms_two_factor_page(
     client,
     api_user_active,
-    mock_get_user_by_email,
     mock_get_security_keys,
     mock_get_login_events,
     mock_get_user
@@ -62,11 +56,11 @@ def test_should_render_security_key_on_sms_two_factor_page(
 def test_should_render_email_two_factor_page(
     client,
     api_user_active_email_auth,
-    mock_get_user_by_email,
     mock_get_security_keys,
     mock_get_login_events,
-    mock_get_user
+    mocker,
 ):
+    mock_get_user(mocker, api_user_active_email_auth)
     # TODO this lives here until we work out how to
     # reassign the session after it is lost mid register process
     with client.session_transaction() as session:
@@ -84,6 +78,26 @@ def test_should_render_email_two_factor_page(
     )
     assert page.select_one('input')['type'] == 'tel'
     assert page.select_one('input')['pattern'] == '[0-9]*'
+
+
+def test_should_render_email_two_factor_page_for_sms_user_forced_to_login_with_email(
+    client,
+    api_user_active,
+    mock_get_security_keys,
+    mock_get_login_events,
+    mock_get_user,
+):
+    with client.session_transaction() as session:
+        session['user_details'] = {
+            'id': api_user_active['id'],
+            'email': api_user_active['email_address']}
+    response = client.get(url_for('main.two_factor_email_sent'))
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
+    assert page.select_one('main p').text.strip() == (
+        "For added security, GC Notify has sent you an email message "
+        "with a security code to confirm you still control a valid Government email address."
+    )
 
 
 def test_should_render_security_key_on_email_two_factor_page(
@@ -112,7 +126,6 @@ def test_sms_should_login_user_and_should_redirect_to_next_url(
     client,
     api_user_active,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code,
     mock_create_event,
     mock_get_security_keys,
@@ -144,7 +157,6 @@ def test_should_login_platform_admin_user_and_redirect_to_your_services(
     method
 ):
     mock_get_user(mocker, platform_admin_user)
-    mock_get_user_by_email(mocker, platform_admin_user)
 
     with client.session_transaction() as session:
         session['user_details'] = {
@@ -164,7 +176,6 @@ def test_email_should_login_user_and_should_redirect_to_next_url(
     client,
     api_user_active_email_auth,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code,
     mock_create_event,
     mock_get_security_keys,
@@ -188,7 +199,6 @@ def test_sms_should_login_user_and_not_redirect_to_external_url(
     client,
     api_user_active,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code,
     mock_get_services_with_one_service,
     mock_create_event,
@@ -209,7 +219,6 @@ def test_email_should_login_user_and_not_redirect_to_external_url(
     client,
     api_user_active,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code,
     mock_get_services_with_one_service,
     mock_create_event,
@@ -230,7 +239,6 @@ def test_sms_two_factor_code_should_login_user_and_redirect_to_show_accounts(
     client,
     api_user_active,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code,
     mock_create_event,
     mock_get_security_keys,
@@ -252,7 +260,6 @@ def test_email_two_factor_code_should_login_user_and_redirect_to_show_accounts(
     client,
     api_user_active,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code,
     mock_create_event,
     mock_get_security_keys,
@@ -274,7 +281,6 @@ def test_should_return_200_with_sms_two_factor_code_error_when_two_factor_code_i
     client,
     api_user_active,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code_code_not_found,
     mock_get_security_keys,
     mock_get_login_events
@@ -293,7 +299,6 @@ def test_should_return_200_with_email_two_factor_code_error_when_two_factor_code
     client,
     api_user_active,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code_code_not_found,
     mock_get_security_keys,
     mock_get_login_events
@@ -312,7 +317,6 @@ def test_should_login_user_when_multiple_valid_sms_codes_exist(
     client,
     api_user_active,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code,
     mock_get_services_with_one_service,
     mock_create_event,
@@ -332,7 +336,6 @@ def test_should_login_user_when_multiple_valid_email_codes_exist(
     client,
     api_user_active,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code,
     mock_get_services_with_one_service,
     mock_create_event,
@@ -495,7 +498,6 @@ def test_two_factor_email_link_has_expired(
     client,
     api_user_active_email_auth,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code_code_expired,
     mock_get_security_keys,
     mock_get_login_events
@@ -516,7 +518,6 @@ def test_should_login_user_and_should_render_login_events_page(
     client,
     api_user_active,
     mock_get_user,
-    mock_get_user_by_email,
     mock_check_verify_code,
     mock_create_event,
     mock_get_security_keys,

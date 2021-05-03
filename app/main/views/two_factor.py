@@ -36,7 +36,8 @@ def two_factor_email_sent():
     return render_template(
         'views/two-factor-email.html',
         title=title,
-        form=form
+        form=form,
+        requires_email_login=user.requires_email_login,
     )
 
 

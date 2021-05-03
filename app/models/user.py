@@ -163,6 +163,10 @@ class User(JSONModel, UserMixin):
     def email_auth(self):
         return self.auth_type == 'email_auth' or not self.has_recent_email_login()
 
+    @property
+    def requires_email_login(self):
+        return self.auth_type == 'sms_auth' and not self.has_recent_email_login()
+
     def has_recent_email_login(self):
         date = user_api_client.get_last_email_login_datetime(self.id)
         return date and date >= (datetime.utcnow() - timedelta(days=30))
