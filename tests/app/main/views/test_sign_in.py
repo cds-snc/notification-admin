@@ -148,7 +148,15 @@ def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login(
     mock_register_email_login,
     last_email_login,
 ):
-    mocker.patch('app.user_api_client.get_last_email_login_datetime', return_value=last_email_login)
+    mock_last_email_login = mocker.patch(
+        'app.user_api_client.get_last_email_login_datetime',
+        side_effect=[
+            last_email_login,
+            last_email_login,
+            datetime.utcnow() - timedelta(seconds=10),
+            datetime.utcnow() - timedelta(seconds=10),
+        ]
+    )
 
     assert api_user_active['auth_type'] == 'sms_auth'
 
@@ -160,16 +168,17 @@ def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login(
         }
     )
     assert response.status_code == 302
-    assert response.location == url_for('.two_factor_email_sent', _external=True)
+    assert response.location == url_for('.two_factor_email_sent', requires_email_login=True, _external=True)
 
     mock_get_security_keys.assert_called_with(api_user_active['id'])
-    mock_send_verify_code.assert_called_with(api_user_active['id'], 'email', None, None)
+    mock_send_verify_code.assert_called_once_with(api_user_active['id'], 'email', None, None)
     mock_verify_password.assert_called_with(
         api_user_active['id'],
         'val1dPassw0rd!', {'location': None, 'user-agent': 'werkzeug/1.0.1'}
     )
     mock_register_email_login.assert_called_with(api_user_active['id'])
     mock_get_user_by_email.assert_called_with('valid@example.canada.ca')
+    assert mock_last_email_login.call_count == 4
 
 
 def test_process_email_auth_sign_in_return_2fa_template(

@@ -37,7 +37,7 @@ def two_factor_email_sent():
         'views/two-factor-email.html',
         title=title,
         form=form,
-        requires_email_login=user.requires_email_login,
+        requires_email_login=request.args.get('requires_email_login', False),
     )
 
 
