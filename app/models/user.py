@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from flask import abort, current_app, request, session
 from flask_login import AnonymousUserMixin, UserMixin, login_user
 from notifications_python_client.errors import HTTPError
@@ -147,6 +149,7 @@ class User(JSONModel, UserMixin):
 
         if self.email_auth and len(self.security_keys) == 0:
             user_api_client.send_verify_code(self.id, 'email', None, request.args.get('next'))
+            user_api_client.register_last_email_login_datetime(self.id)
         if self.sms_auth and len(self.security_keys) == 0:
             user_api_client.send_verify_code(self.id, 'sms', self.mobile_number)
 
@@ -154,11 +157,19 @@ class User(JSONModel, UserMixin):
 
     @property
     def sms_auth(self):
-        return self.auth_type == 'sms_auth'
+        return self.auth_type == 'sms_auth' and self.has_recent_email_login()
 
     @property
     def email_auth(self):
-        return self.auth_type == 'email_auth'
+        return self.auth_type == 'email_auth' or self.requires_email_login
+
+    @property
+    def requires_email_login(self):
+        return self.auth_type == 'sms_auth' and not self.has_recent_email_login()
+
+    def has_recent_email_login(self):
+        date = user_api_client.get_last_email_login_datetime(self.id)
+        return date and date >= (datetime.utcnow() - timedelta(days=30))
 
     def reset_failed_login_count(self):
         user_api_client.reset_failed_login_count(self.id)
