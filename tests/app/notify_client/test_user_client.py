@@ -261,6 +261,7 @@ def test_register_last_email_login_datetime(mocker):
 @pytest.mark.parametrize('value, expected_return', [
     [None, None],
     ['2016-01-01T11:09:00.061258', datetime.fromisoformat('2016-01-01T11:09:00.061258')],
+    [b'2016-01-01T11:09:00.061258', datetime.fromisoformat('2016-01-01T11:09:00.061258')],
 ])
 def test_get_last_email_login_datetime(mocker, value, expected_return):
     mock_redis_get = mocker.patch('app.extensions.RedisClient.get', return_value=value)
