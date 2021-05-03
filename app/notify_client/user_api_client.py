@@ -250,6 +250,8 @@ class UserApiClient(NotifyAdminAPIClient):
         value = redis_client.get(self._last_email_login_key_name(user_id))
         if value is None:
             return None
+        if type(value) == bytes:
+            value = value.decode('utf-8')
         return datetime.fromisoformat(value)
 
     def _last_email_login_key_name(self, user_id):
