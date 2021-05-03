@@ -1,9 +1,11 @@
 import hashlib
 import os
+from datetime import datetime, timedelta
 from typing import Dict
 
 from notifications_python_client.errors import HTTPError
 
+from app.extensions import redis_client
 from app.models.roles_and_permissions import (
     translate_permissions_from_admin_roles_to_db,
 )
@@ -108,6 +110,7 @@ class UserApiClient(NotifyAdminAPIClient):
             data['next'] = next_string
         if code_type == 'email':
             data['email_auth_link_host'] = self.admin_url
+            self.register_last_email_login_datetime(user_id)
         endpoint = '/user/{0}/{1}-code'.format(user_id, code_type)
         self.post(endpoint, data=data)
 
@@ -235,6 +238,22 @@ class UserApiClient(NotifyAdminAPIClient):
     def get_login_events_for_user(self, user_id):
         endpoint = '/user/{}/login_events'.format(user_id)
         return self.get(endpoint)
+
+    def register_last_email_login_datetime(self, user_id):
+        redis_client.set(
+            self._last_email_login_key_name(user_id),
+            datetime.utcnow().isoformat(),
+            ex=int(timedelta(days=30).total_seconds())
+        )
+
+    def get_last_email_login_datetime(self, user_id):
+        value = redis_client.get(self._last_email_login_key_name(user_id))
+        if value is None:
+            return None
+        return datetime.fromisoformat(value)
+
+    def _last_email_login_key_name(self, user_id):
+        return f"user-{user_id}-last-email-login"
 
     def _create_message_digest(self, password):
         return hashlib.sha256((password + os.getenv("DANGEROUS_SALT")).encode('utf-8')).hexdigest()

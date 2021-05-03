@@ -1937,6 +1937,11 @@ def mock_login(mocker, mock_get_user, mock_update_user_attribute, mock_events):
 
 
 @pytest.fixture(scope='function')
+def mock_register_email_login(mocker):
+    return mocker.patch('app.user_api_client.register_last_email_login_datetime')
+
+
+@pytest.fixture(scope='function')
 def mock_send_verify_code(mocker):
     return mocker.patch('app.user_api_client.send_verify_code')
 

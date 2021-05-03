@@ -1,7 +1,9 @@
 import uuid
+from datetime import datetime, timedelta
 from unittest.mock import call
 
 import pytest
+from freezegun import freeze_time
 
 from app import invite_api_client, service_api_client, user_api_client
 from tests import sample_uuid
@@ -240,3 +242,29 @@ def test_add_user_to_service_calls_correct_endpoint_and_deletes_keys_from_cache(
         call('service-{service_id}-template-folders'.format(service_id=service_id)),
         call('service-{service_id}'.format(service_id=service_id)),
     ]
+
+
+@freeze_time("2016-01-01 11:09:00.061258")
+def test_register_last_email_login_datetime(mocker):
+    mock_redis_set = mocker.patch('app.extensions.RedisClient.set')
+    user_id = uuid.uuid4()
+
+    user_api_client.register_last_email_login_datetime(user_id)
+
+    mock_redis_set.assert_called_once_with(
+        f"user-{user_id}-last-email-login",
+        '2016-01-01T11:09:00.061258',
+        ex=int(timedelta(days=30).total_seconds())
+    )
+
+
+@pytest.mark.parametrize('value, expected_return', [
+    [None, None],
+    ['2016-01-01T11:09:00.061258', datetime.fromisoformat('2016-01-01T11:09:00.061258')],
+])
+def test_get_last_email_login_datetime(mocker, value, expected_return):
+    mock_redis_get = mocker.patch('app.extensions.RedisClient.get', return_value=value)
+    user_id = uuid.uuid4()
+
+    assert user_api_client.get_last_email_login_datetime(user_id) == expected_return
+    mock_redis_get.assert_called_once_with(f"user-{user_id}-last-email-login")
