@@ -29,25 +29,27 @@
   }
 
   .page-footer-delete-link {
-    line-height: 40px;
-    padding-top: 1px;
-    @apply p-0 pl-6;
+    @apply ml-6;
   }
 
   .page-footer-delete-link a:visited, .page-footer-delete-link a:link {
     vertical-align: center;
-    @apply inline-block text-red;
+    @apply p-1 border-2 border-transparent inline-block text-red;
   }
   .page-footer-delete-link a:hover, .page-footer-delete-link a:active {
     @apply text-red-mellow;
   }
 
+  .page-footer-delete-link a:focus {
+    @apply border-2 border-red-mellow text-blue;
+  }
+
   .page-footer-delete-link-without-button {
-    @apply p-0 inline-block leading-tight text-smaller;
+    @apply ml-0 inline-block leading-tight text-smaller;
   }
 
   .page-footer-secondary-link {
-    @apply block mt-gutter;
+    @apply block mt-gutter w-max-content;
   }
 
   .page-footer-right-aligned-link {

@@ -2,7 +2,7 @@
   /*! purgecss start ignore */
   .back-link {
     padding-left: 14px;
-    @apply text-small leading-tight font-normal text-black inline-block relative mt-gutterHalf mb-4 no-underline border-b-1 border-solid border-black
+    @apply text-small leading-tight font-normal text-black inline-block relative mt-gutterHalf mb-4 no-underline border-b-2 border-solid border-black
   }
   .back-link:link,
   .back-link:visited {
@@ -28,8 +28,8 @@
     border-width: 15px 30px 15px 3px;
     @apply w-full h-full;
   }
-  .back-link:focus:after {
-    @apply border-yellow;
+  .back-link:focus {
+    @apply mb-4;
   }
   /*! purgecss end ignore */
 }

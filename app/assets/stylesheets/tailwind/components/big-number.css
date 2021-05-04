@@ -27,7 +27,7 @@
     @apply text-blue-lightblue25;
   }
   .big-number-link:active, .big-number-link:focus {
-    @apply outline-yellow bg-blue-govukblue;
+    @apply outline-yellow bg-blue-govukblue mb-2;
   }
 
   .big-number-status {

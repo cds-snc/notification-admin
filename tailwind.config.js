@@ -180,5 +180,6 @@ module.exports = {
   variants: {
     borderWidth: ['responsive', 'focus'],
     textColor: ['visited', 'link', 'hover', 'focus'],
+    margin: ['focus'],
   },
 };
