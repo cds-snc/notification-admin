@@ -25,7 +25,7 @@
     @apply underline text-smaller;
     -webkit-tap-highlight-color: rgba(0,0,0,0.3);
   }
-  
+
   a:visited, a:link {
     @apply text-blue;
   }
@@ -33,11 +33,11 @@
   a:focus {
     @apply bg-yellow;
   }
-  
+
   a:link:focus {
     @apply text-blue;
   }
-  
+
   .heading-small {
     margin-top: .625em;
     margin-bottom: 1.0526em;
@@ -48,7 +48,7 @@
       margin-top: 1.0526em;
     }
   }
-  
+
   .heading-medium {
     margin-top: 1.25em;
     margin-bottom: 0.5em;
@@ -104,7 +104,7 @@
     @apply block bg-gray-grey2 border-0 my-gutter p-0;
   }
 
-  b {
+  b, strong {
     font-weight: bold;
   }
 

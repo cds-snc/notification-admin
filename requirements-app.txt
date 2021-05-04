@@ -5,7 +5,7 @@ timeago==1.0.15
 Flask==1.1.2
 Flask-WTF==0.14.3
 Flask-Login==0.5.0
-Flask-Caching==1.9.0
+Flask-Caching==1.10.1
 
 blinker==1.4
 pyexcel==0.6.6
@@ -14,19 +14,19 @@ pyexcel-xls==0.6.2
 pyexcel-xlsx==0.6.0
 pyexcel-ods3==0.6.0
 pytz==2021.1
-gunicorn==20.0.4
-eventlet==0.30.1
+gunicorn==20.1.0
+eventlet==0.30.2
 notifications-python-client==6.0.2
-sentry-sdk[flask]==0.19.5
+sentry-sdk[flask]==1.0.0
 
-Babel==2.9.0
-boto3==1.17.0
+Babel==2.9.1
+boto3==1.17.58
 Flask-Babel==2.0.0
-newrelic==6.0.1.155
-python-dotenv==0.15.0
+newrelic==6.2.0.156
+python-dotenv==0.17.1
 pwnedpasswords==2.0.0
-PyYAML==5.3.1
-translate-toolkit==3.3.1
+PyYAML==5.4.1
+translate-toolkit==3.3.6
 ua-parser==0.10.0
 user-agents==2.2.0
 WTForms==2.3.3
@@ -38,6 +38,6 @@ awscli-cwlogs>=1.4.6,<1.5
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous==0.24  # pyup: <1.0.0
 
-git+https://github.com/cds-snc/notifier-utils.git@43.4.0#egg=notifications-utils
+git+https://github.com/cds-snc/notifier-utils.git@43.9.0#egg=notifications-utils
 
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
