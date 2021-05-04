@@ -56,11 +56,13 @@ def sign_in():
                 abort(403)
             else:
                 invited_user.accept_invite()
+        requires_email_login = user and user.requires_email_login
         if user and user.sign_in():
-            if user.sms_auth:
+            if user.sms_auth and not requires_email_login:
                 return redirect(url_for('.two_factor_sms_sent', next=request.args.get('next')))
-            if user.email_auth:
-                return redirect(url_for('.two_factor_email_sent'))
+            if user.email_auth or requires_email_login:
+                args = {'requires_email_login': True} if requires_email_login else {}
+                return redirect(url_for('.two_factor_email_sent', **args))
 
         # Vague error message for login in case of user not known, inactive or password not verified
         flash(_("The email address or password you entered is incorrect."))

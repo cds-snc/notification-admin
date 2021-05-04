@@ -150,6 +150,7 @@ class User(JSONModel, UserMixin):
         if self.email_auth and len(self.security_keys) == 0:
             user_api_client.send_verify_code(self.id, 'email', None, request.args.get('next'))
             user_api_client.register_last_email_login_datetime(self.id)
+            return True
         if self.sms_auth and len(self.security_keys) == 0:
             user_api_client.send_verify_code(self.id, 'sms', self.mobile_number)
 

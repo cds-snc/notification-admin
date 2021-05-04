@@ -91,7 +91,7 @@ def test_should_render_email_two_factor_page_for_sms_user_forced_to_login_with_e
         session['user_details'] = {
             'id': api_user_active['id'],
             'email': api_user_active['email_address']}
-    response = client.get(url_for('main.two_factor_email_sent'))
+    response = client.get(url_for('main.two_factor_email_sent', requires_email_login=True))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
     assert page.select_one('main p').text.strip() == (
