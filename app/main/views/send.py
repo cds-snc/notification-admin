@@ -956,6 +956,8 @@ def get_back_link(service_id, template, step_index):
 @main.route("/services/<service_id>/template/<template_id>/notification/check", methods=['GET'])
 @user_has_permissions('send_messages', restrict_admin_usage=True)
 def check_notification(service_id, template_id):
+    if 'send_step' in session and not 'placeholders' in session:
+        session.pop('send_step')
     return render_template(
         'views/notifications/check.html',
         **_check_notification(service_id, template_id),
@@ -1060,6 +1062,7 @@ def send_notification(service_id, template_id):
     session.pop('placeholders')
     session.pop('recipient')
     session.pop('sender_id', None)
+    session.pop('send_step', None)
 
     return redirect(url_for(
         '.view_notification',
