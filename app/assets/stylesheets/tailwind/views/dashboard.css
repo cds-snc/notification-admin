@@ -27,7 +27,7 @@
   }
 
   .file-list-filename {
-    @apply text-smaller leading-tight font-bold block truncate pt-4 pb-12;
+    @apply text-smaller leading-tight font-bold block truncate pt-4 pb-12 border-b-2 border-transparent;
     margin-bottom: -30px;
     margin-top: -10px;
   }
