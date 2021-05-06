@@ -387,27 +387,22 @@ def format_delta(_date):
 
 
 def translate_preview_template(_template_str):
-    translate = {
-        "From": _("From"),
-        "To": _("To"),
-        "Subject": _("Subject"),
-        "Reply to": _("Reply to"),
-        "From:": _("From:"),
-        "To:": _("To:"),
-        "phone number": _("phone number"),
-        "email address": _("email address"),
-        "hidden": _("hidden"),
-    }
-
     def translate_brackets(x):
-        g = x.group(0)
-        english = g[1:-1]  # drop brackets
-        if english not in translate:
-            return english
-        return translate[english]
+        match, word = x.group(0), x.group(1)
+        return {
+            "From": _("From"),
+            "To": _("To"),
+            "Subject": _("Subject"),
+            "Reply to": _("Reply to"),
+            "From:": _("From:"),
+            "To:": _("To:"),
+            "phone number": _("phone number"),
+            "email address": _("email address"),
+            "hidden": _("hidden"),
+        }.get(word, match)
 
-    # this regex finds test inside []
-    template_str = re.sub(r"\[[^]]*\]", translate_brackets, _template_str)
+    # This regex finds words inside []
+    template_str = re.sub(r"\[([^]]*)\]", translate_brackets, _template_str)
     return Markup(template_str)
 
 
