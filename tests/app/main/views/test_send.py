@@ -3403,6 +3403,37 @@ def test_reply_to_is_previewed_if_chosen(
         assert 'test@example.com' not in email_meta
 
 
+@pytest.mark.parametrize('lang, expected_content', [
+    ('fr', 'De service one Répondre à test@example.com À adresse courriel Objet [Action] Please do something'),
+    ('en', 'From service one Reply to test@example.com To email address Subject [Action] Please do something'),
+])
+def test_preview_is_translated(
+    client_request,
+    mocker,
+    get_default_reply_to_email_address,
+    fake_uuid,
+    lang,
+    expected_content,
+):
+    mock_get_service_email_template(mocker, content=None, subject='[Action] Please do something')
+    mocker.patch('app.get_current_locale', return_value=lang)
+
+    with client_request.session_transaction() as session:
+        session['recipient'] = 'notify@digital.cabinet-office.canada.ca'
+        session['placeholders'] = {}
+        session['sender_id'] = uuid4()
+
+    page = client_request.get(
+        'main.send_one_off_step',
+        service_id=SERVICE_ONE_ID,
+        template_id=uuid4(),
+        step_index=0,
+    )
+
+    email_meta = normalize_spaces(page.select_one('.email-message-meta').text)
+    assert expected_content == email_meta
+
+
 @pytest.mark.parametrize('endpoint, extra_args', [
     ('main.check_messages', {'template_id': uuid4(), 'upload_id': uuid4()}),
     ('main.send_one_off_step', {'template_id': uuid4(), 'step_index': 0}),
