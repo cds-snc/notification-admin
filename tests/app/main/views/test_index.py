@@ -111,7 +111,7 @@ def test_security_txt(client):
     'privacy', 'pricing', 'terms', 'roadmap', 'why-notify',
     'features', 'security', 'messages_status',
     'email', 'sms', 'letters', 'welcome',
-    'features_templates',
+    'features',
 ])
 def test_static_pages(
     client_request,
