@@ -3039,8 +3039,7 @@ def test_check_messages_shows_over_max_row_error(
 @pytest.mark.parametrize('existing_session_items', [
     {},
     {'recipient': '6502532223'},
-    {'name': 'Jo'},
-    {'send_step': 'main.send_test_step'},
+    {'name': 'Jo'}
 ])
 def test_check_notification_redirects_if_session_not_populated(
     client_request,
