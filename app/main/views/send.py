@@ -1060,6 +1060,7 @@ def send_notification(service_id, template_id):
     session.pop('placeholders')
     session.pop('recipient')
     session.pop('sender_id', None)
+    session.pop('send_step', None)
 
     return redirect(url_for(
         '.view_notification',

@@ -3192,6 +3192,7 @@ def test_send_notification_clears_session(
     with client_request.session_transaction() as session:
         session['recipient'] = '6502532223'
         session['placeholders'] = {'a': 'b'}
+        session['send_step'] = 'main.send_test_step'
 
     client_request.post(
         'main.send_notification',
@@ -3202,6 +3203,7 @@ def test_send_notification_clears_session(
     with client_request.session_transaction() as session:
         assert 'recipient' not in session
         assert 'placeholders' not in session
+        assert 'send_step' not in session
 
 
 def test_send_notification_redirects_if_missing_data(
