@@ -34,32 +34,28 @@
 
 <h3 class="heading-small">Échec</h3>
 <p>
-  Si un message n’arrive pas à être livré, vous pouvez réessayer après 72 heures ou bien essayer de joindre l’utilisateur par un autre moyen. Un message peut échouer pour plusieurs raisons :
+  Si un message n’arrive pas à être livré, vous pouvez réessayer après 72 heures ou bien essayer de joindre l’utilisateur par un autre moyen.
+</p>
+<p>
+  Un message peut échouer pour plusieurs raisons, nottament :
 </p>
 
-<ul class="list-bullet">
+<ul style="list-style-type: disc; margin-left: 2em; margin-bottom: 20px;">
   <li class="pt-4">
-    <p class="font-bold" style="margin-bottom: 0">L’adresse courriel ou le numéro de téléphone n’existe pas</p>
-    <p>
-      Dans un tel cas, le fournisseur n’a pas pu livrer le message puisque l’adresse courriel ou le numéro de téléphone était erroné. Vous devriez supprimer ce destinataire de votre base de données. Les messages texte envoyés aux numéros qui n’existent pas pourraient tout de même être facturés.
-    </p>
+    L’adresse courriel ou le numéro de téléphone n’existent pas.
   </li>
   <li class="pt-4">
-    <p class="font-bold" style="margin-bottom: 0">Le destinataire n’accepte pas de messages à l’heure actuelle</p>
-    <p>
-      Dans un tel cas, le fournisseur n’a pas réussi à livrer le message après avoir essayé pendant 72 heures. Cela peut se produire si la boîte de réception du destinatiare est pleine ou si le téléphone du destinataire est éteint. Vous pouvez essayer d’envoyer le message de nouveau. Les messages texte qui ont été envoyés aux numéros qui n’acceptent pas de messages pourraient tout de même être facturés.
-    </p>
+    Le destinataire n’accepte pas de messages à l’heure actuelle.
   </li>
   <li class="pt-4">
-    <p class="font-bold" style="margin-bottom: 0">{{ _("The email address is on the GC Notify suppression list") }}</p>
-    <p>
-      Dans un tel cas, GC Notification n’a pas pu envoyer un courriel car nous avons eu des erreurs ou une plainte dans le passé. Si vous pensez que cette adresse courielle devrait recevoir des messages maintenant, <a href="{{ url_for('.contact') }}">contactez-nous</a>.
-    </p>
+    Le message est bloqué par le fournisseur de messagerie ou de téléphonie mobile.
   </li>
   <li class="pt-4">
-    <p class="font-bold" style="margin-bottom: 0">Échec technique</p>
-    <p>
-      Dans un tel cas, un problème de connexion a eu lieu entre GC Notification et le fournisseur de messagerie ou de téléphonie cellulaire. Vous devrez essayer d’envoyer vos messages de nouveau. Les messages texte qui sont affectés par une telle défaillance technique ne vous seront pas facturés.
-    </p>
+    Le contenu du message n’est pas valide ou est bloqué en tant que spam.
   </li>
+  <li class="pt-4">
+    Le destinataire figure sur une liste bloquée
+  </li>
+  <li class="pt-4">
+    Le destinataire a choisi de ne plus recevoir de messages.  </li>
 </ul>
