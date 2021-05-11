@@ -28,7 +28,7 @@
         aria-label="{{ _('Admin panel') }}"
         id="account-menu-link"
         href="{{ url_for('main.live_services') }}"
-        class="block px-8 py-4 leading-none no-underline text-small border-b-2 border-transparent focus:mb-0 focus:outline-none focus:border-blue {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}"
+        class="block px-8 py-4 leading-none no-underline text-small border-b-2 border-transparent focus:outline-none focus:border-blue {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}"
         role="menuitem">
         {{ _('Admin panel') }}
       </a>
@@ -39,7 +39,7 @@
       <a
         aria-label="{{ _('Your services') }}"
         href="{{ url_for('main.choose_account') }}"
-        class="block px-8 py-4 leading-none no-underline text-small border-b-2 border-transparent focus:mb-0 focus:outline-none focus:border-blue {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}"
+        class="block px-8 py-4 leading-none no-underline text-small border-b-2 border-transparent focus:outline-none focus:border-blue {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}"
         role="menuitem">
         {{ _('Your services') }}
       </a>
@@ -49,7 +49,7 @@
       <a
         aria-label="{{ _('Your profile') }}"
         href="{{ url_for('main.user_profile') }}"
-        class="block px-8 py-4 leading-none no-underline text-small border-b-2 border-transparent focus:mb-0 focus:outline-none focus:border-blue {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}"
+        class="block px-8 py-4 leading-none no-underline text-small border-b-2 border-transparent focus:outline-none focus:border-blue {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}"
         role="menuitem">
         {{ _('Your profile') }}
       </a>

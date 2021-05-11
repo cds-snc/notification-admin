@@ -36,7 +36,7 @@
 {% macro secondary_button_transparent_white(label="TODO: LABEL THIS BUTTON", href="/", class=None, external_link_img=None) %}
 <a
     href="{{ href }}"
-    class="p-4 line-under text-base text-default underline text-white border-b-2 border-transparent link:text-white visited:text-white hover:no-underline focus:text-blue focus:outline-none focus:border-b-2 focus:border-white focus:no-underline focus:mb-0 {% if class %} {{ class }} {% endif %}"
+    class="p-4 line-under text-base text-default underline text-white border-b-2 border-transparent link:text-white visited:text-white hover:no-underline focus:text-blue focus:outline-none focus:border-b-2 focus:border-white focus:no-underline {% if class %} {{ class }} {% endif %}"
     {% if external_link_img %}
         target="_blank"
         aria-label="{{ label }} ({{ _('Opens in a new tab') }})"

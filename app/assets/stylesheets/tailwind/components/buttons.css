@@ -29,7 +29,7 @@
 
   .button:focus {
     outline: 3px solid theme("colors.yellow.default");
-    @apply border-b-0 mb-0;
+    @apply border-transparent;
   }
 
   .button-red {

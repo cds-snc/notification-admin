@@ -31,9 +31,6 @@
     margin-bottom: -30px;
     margin-top: -10px;
   }
-  .file-list-filename:focus {
-    margin-bottom: -30px;
-  }
   .file-list-hint {
     max-width: 580px;
     @apply text-small leading-tight font-normal block truncate pointer-events-none text-gray-grey1;

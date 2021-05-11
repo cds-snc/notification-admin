@@ -22,7 +22,7 @@
   }
 
   a {
-    @apply underline text-smaller;
+    @apply underline text-smaller border-b-2 border-transparent;
     -webkit-tap-highlight-color: rgba(0,0,0,0.3);
   }
 
@@ -31,7 +31,6 @@
   }
 
   a:focus {
-    margin-bottom: -2px;
     @apply bg-yellow border-b-2 border-blue outline-none no-underline;
   }
 

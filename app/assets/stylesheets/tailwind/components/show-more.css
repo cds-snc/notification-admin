@@ -2,7 +2,7 @@
   /*! purgecss start ignore */
   .show-more,
   .show-more-empty {
-    @apply text-small leading-tight font-normal block p-0 mx-0 mt-gutterHalf mb-gutter text-center border-t-1 border-solid border-gray-grey2;
+    @apply text-small leading-tight font-normal block p-0 mx-0 mt-gutterHalf mb-gutter text-center border-t-1 border-solid border-gray-grey2 border-b-0;
   }
   .show-more:focus,
   .show-more-empty:focus {
