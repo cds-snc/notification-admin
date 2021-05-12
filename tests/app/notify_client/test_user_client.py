@@ -194,6 +194,7 @@ def test_returns_value_from_cache(
     (user_api_client, 'update_password', [user_id, 'hunter2'], {}),
     (user_api_client, 'verify_password', [user_id, 'hunter2'], {}),
     (user_api_client, 'check_verify_code', [user_id, '', ''], {}),
+    (user_api_client, 'validate_security_keys', [user_id, {}], {}),
     (user_api_client, 'add_user_to_service', [SERVICE_ONE_ID, user_id, [], []], {}),
     (user_api_client, 'add_user_to_organisation', [sample_uuid(), user_id], {}),
     (user_api_client, 'set_user_permissions', [user_id, SERVICE_ONE_ID, []], {}),
