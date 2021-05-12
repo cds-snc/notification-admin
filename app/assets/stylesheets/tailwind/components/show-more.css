@@ -2,17 +2,15 @@
   /*! purgecss start ignore */
   .show-more,
   .show-more-empty {
-    @apply text-small leading-tight font-normal block p-0 mx-0 mt-gutterHalf mb-gutter text-center border-t-1 border-solid border-gray-grey2;
+    @apply text-small leading-tight font-normal block p-0 mx-0 mt-gutterHalf mb-gutter text-center border-t-1 border-solid border-gray-grey2 border-b-0;
   }
   .show-more:focus,
   .show-more-empty:focus {
-    @apply outline-none border-yellow text-black;
-    /* theme yellow */
-    box-shadow: 0 -10px 0 0 #ffbf47;
+    @apply outline-none bg-transparent mb-gutter border-gray-grey2 border-b-0;
   }
   .show-more:focus span,
   .show-more-empty:focus span {
-    @apply bg-yellow outline-none border-black
+    @apply bg-yellow outline-none border-b-1 border-blue;
   }
   .show-more span,
   .show-more-empty span {

@@ -84,7 +84,7 @@
       </h2>
       {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
       <a
-        class="self-end mb-4 py-2 px-1 inline-block align-middle focus:outline-none border-b-2 border-transparent focus:border-blue "
+        class="self-end mb-4 py-2 px-1 inline-block align-middle focus:outline-none border-b-2 border-transparent focus:border-blue"
         href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
         role="button">
         <div class="flex flex-initial flex-row text-base">

@@ -4,6 +4,9 @@
     padding-left: 14px;
     @apply text-small leading-tight font-normal text-black inline-block relative mt-gutterHalf mb-4 no-underline border-b-1 border-solid border-black
   }
+  .back-link:focus {
+    @apply border-b-1;
+  }
   .back-link:link,
   .back-link:visited {
     @apply text-black;
@@ -27,9 +30,6 @@
     left: -3px;
     border-width: 15px 30px 15px 3px;
     @apply w-full h-full;
-  }
-  .back-link:focus:after {
-    @apply border-yellow;
   }
   /*! purgecss end ignore */
 }

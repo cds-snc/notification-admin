@@ -6,7 +6,7 @@
         <a
           {% if id_key %}id="{{ id_key }}"{% endif %}
           href="{{ url }}"
-          class="text-smaller text-blue bg-gray py-5 font-bold no-underline self-center hover:underline line-under visited:text-blue link:text-blue focus:bg-yellow focus:border-b-4 focus:border-blue focus:outline-none {{ css_classes }}"
+          class="text-smaller text-blue bg-gray py-5 font-bold no-underline self-center hover:underline line-under border-b-4 border-transparent visited:text-blue link:text-blue focus:border-b-4 focus:bg-yellow focus:border-blue focus:outline-none {{ css_classes }}"
           {% if external_link_img %}
           target="_blank"
           aria-label="{{ localised_txt }} ({{ _('Opens in a new tab') }})"
