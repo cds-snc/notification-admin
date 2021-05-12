@@ -300,7 +300,7 @@
     this.nothingSelectedButtons = $(`
       <div id="nothing_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button button-secondary" value="add-new-template">${window.polyglot.t(
+          <button class="button" value="add-new-template">${window.polyglot.t(
             "new_template_button"
           )}</button>
           <button class="button button-secondary copy-template" value="copy-template">${window.polyglot.t(
