@@ -4,6 +4,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/api-key.html" import api_key %}
+{% from "components/page-header.html" import page_header %}
 
 {% block service_page_title %}
   {{ page_title_folder_path(current_service.get_template_path(template._template)) }}
@@ -12,10 +13,10 @@
 {% block maincolumn_content %}
 
   {% if show_redaction_message %}
-    <div class="mb-12 clear-both contain-floats">
+    <div class="mb-12">
       {% set question_txt = _('Are you sure you want to hide personalisation after sending?') %}
       {% call banner_wrapper(type='dangerous', subhead=question_txt) %}
-        <ul class="list list-bullet banner-list-bullet">
+        <div class="list list-bullet banner-list-bullet">
           <li>
             {{ _('You will not be able to see personalised content in GC Notify for this template') }}
           </li>
@@ -29,64 +30,69 @@
         </form>
       {% endcall %}
     </div>
-  {% else %}
-    <div class="grid-row contain-floats">
-      <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
-        {{ folder_path(
-          folders=current_service.get_template_path(template._template),
-          service_id=current_service.id,
-          template_type='all',
-          current_user=current_user
-        ) }}
-      </div>
-    </div>
   {% endif %}
 
-  <div class="grid-row contain-floats">
-    {% include 'views/templates/_template.html' %}
+  <div>
+    {{ folder_path(
+      folders=current_service.get_template_path(template._template),
+      service_id=current_service.id,
+      template_type='all',
+      current_user=current_user,
+      root_element='h2',
+    ) }}
+    {{ page_header(template._template.name) }}
+
+    <h2 class="heading-medium">{{ _('Ready to send?') }}</h2>
   </div>
 
-  <div class="mb-12 clear-both contain-floats">
+  {% include 'views/templates/_template.html' %}
+
+  <div class="flex mb-16 -mt-8">
+      <div class="w-1/2">
+        {% if current_user.has_permissions('manage_templates') and not template._template.archived %}
+          <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}">
+            {{ _('Edit this template') }}
+          </a>
+        {% endif %}
+      </div>
     {% if template._template.updated_at %}
-      <h2 class="heading-small mb-12 clear-both contain-floats inline-block">
+    <div class="w-1/2 text-right">
+      <span>
         {% set last_edited = _('Last edited') %}
         {{ last_edited }}
         {{ template._template.updated_at|format_delta }}
-      </h2>
+      </span>
 
       &emsp;
       {% set version_txt = _('See previous versions') %}
       <a href="{{ url_for('.view_template_versions', service_id=current_service.id, template_id=template.id) }}">{{ version_txt }}</a>
-      &emsp;
-      <br/>
-    {% endif %}
-    {% if current_user.has_permissions('manage_templates') and user_has_template_permission %}
-      {% if not template._template.archived %}
-        {% set delete_txt = _('Delete this template') %}
-        <span class="page-footer-delete-link page-footer-delete-link-without-button mb-12 clear-both contain-floats">
-          <a href="{{ url_for('.delete_service_template', service_id=current_service.id, template_id=template.id) }}">{{ delete_txt }}</a>
-        </span>
-        &emsp;
-      {% endif %}
-      {% if template.template_type != 'letter' %}
-        {% if not template._template.redact_personalisation %}
-          {% set personalization = _('Hide personal information from screen and logs after sending') %}
-          <span class="page-footer-delete-link page-footer-delete-link-without-button">
-            <a href="{{ url_for('.confirm_redact_template', service_id=current_service.id, template_id=template.id) }}">{{ personalization }}</a>
-          </span>
-        {% else %}
-          {% set personalization_hidden = _('Personalisation is hidden after sending') %}
-          <p class="hint">{{ personalization_hidden }}</p>
-        {% endif %}
-      {% endif %}
+    </div>
     {% endif %}
   </div>
 
-  {% if current_user.platform_admin %}
-    <p>{{ _('Template version') }}: {{template._template.version}}</p>
-  {% endif %}
-  <div class="mb-12 clear-both contain-floats">
+  <div class="mb-16">
     {{ api_key(template.id, name="Template ID", thing='template ID') }}
   </div>
+
+  {% if current_user.has_permissions('manage_templates') and user_has_template_permission %}
+    {% if template.template_type != 'letter' %}
+      {% if not template._template.redact_personalisation %}
+        {% set personalization = _('Redact personalised variable content after sending') %}
+        <div class="page-footer-delete-link block page-footer-delete-link-without-button mb-6">
+          <a href="{{ url_for('.confirm_redact_template', service_id=current_service.id, template_id=template.id) }}">{{ personalization }}</a>
+        </div>
+      {% else %}
+        {% set personalization_hidden = _('Personalisation is hidden after sending') %}
+        <p class="hint">{{ personalization_hidden }}</p>
+      {% endif %}
+    {% endif %}
+    {% if not template._template.archived %}
+      {% set delete_txt = _('Delete this template') %}
+      <div class="page-footer-delete-link block page-footer-delete-link-without-button">
+        <a href="{{ url_for('.delete_service_template', service_id=current_service.id, template_id=template.id) }}">{{ delete_txt }}</a>
+      </div>
+      &emsp;
+    {% endif %}
+  {% endif %}
 
 {% endblock %}
