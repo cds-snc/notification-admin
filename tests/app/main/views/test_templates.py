@@ -315,7 +315,7 @@ def test_should_show_new_template_choices_if_service_has_folder_permission(
         raise ElementNotFound()
 
     assert normalize_spaces(page.select_one('#add_new_template_form fieldset legend').text) == (
-        'New template'
+        'Create template'
     )
     assert [
         choice['value'] for choice in page.select('#add_new_template_form input[type=radio]')
