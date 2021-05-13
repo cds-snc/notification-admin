@@ -230,6 +230,7 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = '/user/{}/fido2_keys/authenticate'.format(user_id)
         return self.post(endpoint, {})
 
+    @cache.delete('user-{user_id}')
     def validate_security_keys(self, user_id, payload):
         endpoint = '/user/{}/fido2_keys/validate'.format(user_id)
         data = {'payload': payload}
