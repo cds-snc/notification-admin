@@ -1234,17 +1234,15 @@ def test_skip_link_will_not_show_on_sms_one_off_if_service_has_no_mobile_number(
     assert not skip_links
 
 
-@pytest.mark.parametrize('user, link_index', (
-    (active_user_with_permissions, 2),
-    (active_caseworking_user, 2),
-))
+@pytest.mark.parametrize('user', [
+    active_user_with_permissions, active_caseworking_user
+])
 def test_send_one_off_offers_link_to_upload(
     client_request,
     fake_uuid,
     mock_get_service_template,
     mock_has_jobs,
     user,
-    link_index,
 ):
     client_request.login(user(fake_uuid))
 
@@ -1256,7 +1254,7 @@ def test_send_one_off_offers_link_to_upload(
     )
 
     back_link = page.select('main a')[0]
-    link = page.select('main a')[link_index]
+    link = page.select('main a')[2]
 
     assert back_link.text.strip() == 'Back'
 
@@ -1295,13 +1293,13 @@ def test_send_one_off_offers_link_to_request_to_go_live(
     links = page.select('main a')
 
     if has_go_live_link:
-        assert 'request to go live' in [l.text.strip() for l in links]
+        assert 'request to go live' in [link.text.strip() for link in links]
         assert url_for(
             'main.request_to_go_live',
             service_id=SERVICE_ONE_ID,
-        ) in [l['href'] for l in links]
+        ) in [link['href'] for link in links]
     else:
-        assert 'request to go live' not in [l.text.strip() for l in links]
+        assert 'request to go live' not in [link.text.strip() for link in links]
 
 
 @pytest.mark.parametrize('user', (
