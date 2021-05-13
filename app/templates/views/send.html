@@ -2,27 +2,38 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/file-upload.html" import file_upload %}
 {% from "components/message-count-label.html" import recipient_count_label %}
-{% set txt = template.template_type|get_csv_upload_text %}
+{% set page_title = _('Upload a list of recipients') %}
 
 {% block service_page_title %}
-  {{ txt }}
+  {{ page_title }}
 {% endblock %}
-{% block maincolumn_content %} 
-  {{ 
-    page_header( 
-      txt,
+{% block maincolumn_content %}
+  {{
+    page_header(
+      page_title,
       back_link=url_for(
-        'main.send_one_off', 
+        'main.send_one_off',
         service_id=current_service.id,
         template_id=template.id
       )
-    ) 
+    )
   }}
 
+  <p class="mb-0">
+    {{ _('Save your file as a') }} {% set csv_acronym = _('Comma Separated Values') %}
+    {% set tsv_acr = _('Tab Separated Values') %} {% set ods_acronym = _('Open Document Spreadsheet') %}
+    <acronym title="{{ csv_acronym }}">{{ _('CSV') }}</acronym>,
+    <acronym title="{{ tsv_acronym }}">{{ _('TSV') }}</acronym>,
+    <acronym title="{{ ods_acronym }}">{{ _('ODS') }}</acronym> {{ _('or Microsoft Excel spreadsheet') }}
+  </p>
+
   <div class="page-footer mb-12 clear-both contain-floats">
-    {% set txt = _('Choose a file') %} {{file_upload( form.file, button_text=txt
-    )}}
+    {{ file_upload( form.file, button_text=_('Choose a file')) }}
   </div>
+
+  <p class="mb-20">
+    {{ _("Your file must include columns with recipients and variables from your personalised message.") }}
+  </p>
 
   {% include "partials/csv-send.html" %}
 
@@ -36,8 +47,8 @@
   }
 
   /* Alert if browser is IE */
-  /* 
-  note this is in sent-test.html + send.html 
+  /*
+  note this is in sent-test.html + send.html
   the target el to replace is different
   */
   if (isIE()) {
@@ -51,9 +62,9 @@
 
     var element = document.getElementById("file-upload-button");
     var newEl = document.createElement("p");
-    
+
     newEl.innerHTML = '<span style="color:red;">'+text+'</span>';
-    
+
     element.parentNode.replaceChild(newEl, element);
   }
 </script>

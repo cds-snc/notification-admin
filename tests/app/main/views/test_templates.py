@@ -1280,7 +1280,7 @@ def test_should_redirect_when_saving_a_template(
 ):
     name = "new name"
     content = "template <em>content</em> with & entity"
-    client_request.post(
+    page = client_request.post(
         '.edit_service_template',
         service_id=SERVICE_ONE_ID,
         template_id=fake_uuid,
@@ -1292,14 +1292,12 @@ def test_should_redirect_when_saving_a_template(
             'service': SERVICE_ONE_ID,
             'process_type': 'normal',
         },
-        _expected_status=302,
-        _expected_redirect=url_for(
-            '.view_template',
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            _external=True,
-        ),
+        _follow_redirects=True,
     )
+
+    flash_banner = page.select_one('.banner-default-with-tick').string.strip()
+    assert flash_banner == f"'{name}' template saved"
+
     mock_update_service_template.assert_called_with(
         fake_uuid, name, 'sms', content, SERVICE_ONE_ID, None, 'normal',
     )

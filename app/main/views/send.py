@@ -197,7 +197,12 @@ def send_messages(service_id, template_id):
         'views/send.html',
         template=template,
         column_headings=list(ascii_uppercase[:len(column_headings)]),
-        example=[column_headings, get_example_csv_rows(template)],
+        example=[
+            column_headings,
+            get_example_csv_rows(template),
+            get_example_csv_rows(template),
+            get_example_csv_rows(template),
+        ],
         form=form
     )
 
@@ -557,23 +562,15 @@ def send_test_step(service_id, template_id, step_index):
         elif(type == "phone number"):
             type = _l("phone number")
 
-        skip_link = (
-            '{} {}'.format(_l("Use my"), type),
-            url_for('.send_test', service_id=service_id, template_id=template.id),
-        )
-    else:
-        skip_link = None
     return render_template(
         'views/send-test.html',
         page_title=get_send_test_page_title(
             template.template_type,
             get_help_argument(),
             entering_recipient=not session['recipient'],
-            name=template.name,
         ),
         template=template,
         form=form,
-        skip_link=skip_link,
         optional_placeholder=optional_placeholder,
         back_link=back_link,
         help=get_help_argument(),
@@ -878,11 +875,11 @@ def all_placeholders_in_session(placeholders):
     )
 
 
-def get_send_test_page_title(template_type, help_argument, entering_recipient, name=None):
+def get_send_test_page_title(template_type, help_argument, entering_recipient):
     if help_argument:
         return _('Example text message')
     if entering_recipient:
-        return '{} ‘{}’'.format(_l("Send"), name)
+        return _('Add recipients')
     return _('Personalise this message')
 
 

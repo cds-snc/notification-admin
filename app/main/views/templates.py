@@ -645,6 +645,11 @@ def edit_service_template(service_id, template_id):
             else:
                 raise e
         else:
+            flash(
+                _("'{}' template saved").format(form.name.data),
+                'default_with_tick'
+            )
+
             return redirect(url_for(
                 '.view_template',
                 service_id=service_id,
