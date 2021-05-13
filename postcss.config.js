@@ -39,6 +39,6 @@ module.exports = {
       preset: "default"
     }),
     require("autoprefixer"),
-    // purgecss
+    purgecss
   ]
 };

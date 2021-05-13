@@ -1396,3 +1396,7 @@
 "Send test message to yourself","Envoyer un message test à soi-même"
 "'{}' template saved","Gabarit '{}' enregistré"
 "Your file must include columns with recipients and variables from your personalised message.","Votre fichier doit inclure des colonnes de destinataires et les variables comprises dans votre message personnalisé."
+"Message preview","Aperçu du message"
+"The example below previews row {} from {}.","L’exemple ci-dessous ne montre que la ligne {} de {}."
+"{} recipients from {}.","{} destinataires provenant de {}."
+"'{}' was uploaded.","'{}' a été téléversé."
