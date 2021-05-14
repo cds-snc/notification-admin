@@ -1896,7 +1896,7 @@ def test_can_create_email_template_with_emoji(
     assert mock_create_service_template.called is True
 
     flash_banner = page.select_one('.banner-default-with-tick').string.strip()
-    assert flash_banner == f"'new name' template saved"
+    assert flash_banner == "'new name' template saved"
 
 
 def test_should_not_create_sms_template_with_emoji(

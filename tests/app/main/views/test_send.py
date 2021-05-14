@@ -3218,6 +3218,7 @@ def test_send_notification_redirects_to_view_page(
             service_id=SERVICE_ONE_ID,
             notification_id=fake_uuid,
             _external=True,
+            just_sent=True,
             **extra_redirect_args
         ),
         **extra_args

@@ -689,7 +689,7 @@ def test_notification_page_has_expected_template_link_for_letter(
         notification_id=fake_uuid,
     )
 
-    link = page.select_one('main > p:nth-of-type(1) > a')
+    link = page.select_one('main > div > p:nth-of-type(1) > a')
 
     if has_template_link:
         assert link

@@ -1048,7 +1048,8 @@ def send_notification(service_id, template_id):
         '.view_notification',
         service_id=service_id,
         notification_id=noti['id'],
-        help=request.args.get('help')
+        help=request.args.get('help'),
+        just_sent=True,
     ))
 
 

@@ -1401,3 +1401,5 @@
 "The example below previews row {} from {}.","L’exemple ci-dessous ne montre que la ligne {} de {}."
 "{} recipients from {}.","{} destinataires provenant de {}."
 "'{}' was uploaded.","'{}' a été téléversé."
+"Email sent","Courriel envoyé"
+"Text message sent","Message texte envoyé"
