@@ -557,6 +557,8 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             else:
                 raise e
         else:
+            flash(_("'{}' template saved").format(form.name.data), 'default_with_tick')
+
             return redirect(
                 url_for('.view_template', service_id=service_id, template_id=new_template['data']['id'])
             )
@@ -645,10 +647,7 @@ def edit_service_template(service_id, template_id):
             else:
                 raise e
         else:
-            flash(
-                _("'{}' template saved").format(form.name.data),
-                'default_with_tick'
-            )
+            flash(_("'{}' template saved").format(form.name.data), 'default_with_tick')
 
             return redirect(url_for(
                 '.view_template',

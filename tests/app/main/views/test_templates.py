@@ -1875,9 +1875,11 @@ def test_get_human_readable_delta(from_time, until_time, message):
 
 def test_can_create_email_template_with_emoji(
     client_request,
-    mock_create_service_template
+    mock_create_service_template,
+    mock_get_template_folders,
+    mock_get_service_templates_when_no_templates_exist,
 ):
-    client_request.post(
+    page = client_request.post(
         '.add_service_template',
         service_id=SERVICE_ONE_ID,
         template_type='email',
@@ -1889,9 +1891,12 @@ def test_can_create_email_template_with_emoji(
             'service': SERVICE_ONE_ID,
             'process_type': 'normal'
         },
-        _expected_status=302,
+        _follow_redirects=True,
     )
     assert mock_create_service_template.called is True
+
+    flash_banner = page.select_one('.banner-default-with-tick').string.strip()
+    assert flash_banner == f"'new name' template saved"
 
 
 def test_should_not_create_sms_template_with_emoji(
