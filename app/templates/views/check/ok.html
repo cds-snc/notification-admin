@@ -80,32 +80,19 @@
     <form method="post" enctype="multipart/form-data" action="{{url_for('main.start_job', service_id=current_service.id, upload_id=upload_id, original_file_name=original_file_name)}}" class='page-footer'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <input type="hidden" id="scheduled_for" name="scheduled_for" value=""/>
-      <div class="form-group ">
-        <h2 class="heading-medium">{{ _('Schedule notifications') }}</h2>
-        <fieldset id="send_now_later" class="contain-floats w-full">
-          <legend class="form-label">{{ _('When would you like to send') }} {{"{}?".format(template.name)}}</legend>
-          <div class="multiple-choice">
-            <input id="send_now_later-0" name="send_now_later" type="radio" value="1" checked="">
-            <label class="block-label" for="send_now_later-0">{{ _('Now') }}</label>
-          </div>
-          <div class="multiple-choice">
-            <input id="send_now_later-1" name="send_now_later" type="radio" value="2">
-            <label class="block-label" for="send_now_later-1">{{ _('Later') }}</label>
-          </div>
-        </fieldset>
-      </div>
+      <button type="submit" class="button" id="js-send-now-button">{{ _('Send now') }}</button>
+      <button type="submit" class="button button-secondary" id="js-send-later-button">
+        {{ _('Schedule for later') }}
+      </button>
       <div
-        id="schedule-send-at"
-        class="hidden"
+        id="js-schedule-send-at"
+        class="hidden mt-12"
         data-module="webpack-loader"
         data-webpack-loader="Scheduler">
       </div>
-
-      {% if template.template_type != 'letter' or not request.args.from_test %}
-      <button type="submit" class="button" id="submit-button">{{ _('Send now') }}</button>
-      {% else %}
-        <a href="{{ url_for('main.check_messages_preview', service_id=current_service.id, template_id=template.id, upload_id=upload_id, filetype='pdf') }}" download class="button">{{ _('Download as a PDF') }}</a>
-      {% endif %}
+      <button type="submit" class="button hidden" id="js-schedule-button">
+        {{ _('Schedule') }}
+      </button>
     </form>
   </div>
 

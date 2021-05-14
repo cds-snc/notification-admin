@@ -25,13 +25,3 @@ let nowLabel = "Now Label";
 if (window.polyglot.t) {
   nowLabel = window.polyglot.t("now");
 }
-
-window.swapSendButtonText = function() {
-  // swap between 'Send Now' and 'Schedule' text on calendar page based on whether
-  // schedule feature is being used or not
-  if (document.getElementById("submit-button").innerHTML === window.polyglot.t("send_now")) {
-    document.getElementById("submit-button").innerHTML = window.polyglot.t("send_later");
-  } else {
-    document.getElementById("submit-button").innerHTML = window.polyglot.t("send_now");
-  }
-}
