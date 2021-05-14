@@ -547,21 +547,6 @@ def send_test_step(service_id, template_id, step_index):
     template.values = get_recipient_and_placeholders_from_session(template.template_type)
     template.values[current_placeholder] = None
 
-    if (
-        request.endpoint == 'main.send_one_off_step'
-        and step_index == 0
-        and template.template_type != 'letter'
-        and not (template.template_type == 'sms' and current_user.mobile_number is None)
-        and current_user.has_permissions('manage_templates', 'manage_service')
-    ):
-
-        type = first_column_headings[template.template_type][0]
-
-        if(type == "email address"):
-            type = _l("email address")
-        elif(type == "phone number"):
-            type = _l("phone number")
-
     return render_template(
         'views/send-test.html',
         page_title=get_send_test_page_title(
