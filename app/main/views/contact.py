@@ -121,7 +121,7 @@ def _labels(previous_step, current_step, support_type):
             page_title = _l("Ask a question")
             message_label = _l("Your question")
         else:
-            raise NotImplementedError
+            raise NotImplementedError(f"Unsupported support_type: {str(support_type)}")
     elif current_step in ["set_up_demo.org_details", "set_up_demo.primary_purpose"]:
         page_title = _l("Set up a demo")
     else:
