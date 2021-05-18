@@ -350,6 +350,7 @@ def service_switch_live(service_id):
                 message_limit = current_service.message_limit
             else:
                 message_limit = current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"]
+            flash(_("An email has been sent to service users"), "default_with_tick")
 
         current_service.update_status(live=live, message_limit=message_limit)
         return redirect(url_for('.service_settings', service_id=service_id))
@@ -1014,6 +1015,8 @@ def set_message_limit(service_id):
 
     if form.validate_on_submit():
         service_api_client.update_message_limit(service_id, form.message_limit.data)
+        if current_service.live:
+            flash(_("An email has been sent to service users"), "default_with_tick")
         return redirect(url_for('.service_settings', service_id=service_id))
 
     return render_template(
