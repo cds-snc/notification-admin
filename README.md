@@ -212,10 +212,9 @@ Note: Tests may break if `USE_LOCAL_JINJA_TEMPLATES` is set to `True` in your .e
 A `docker-compose.yml` is provided to anyone that wants to leverage docker as for their setup. You can look at the [full documentation here](https://docs.docker.com/compose/).
 To run this project with docker-compose, you will also need to run [notification-api](https://github.com/cds-snc/notification-api) with docker-compose, as it relies on the postgres database set there.
 
-To start the project :
+To start the project:
 
 ```bash
-aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region us-east-1 | base64 --decode > .env
 docker-compose up
 ```
 
@@ -441,7 +440,6 @@ Pour faire fonctionner ce projet avec docker-compose, vous allez aussi avoir bes
 Pour démarrer le projet:
 
 ```bash
-aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region us-east-1 | base64 --decode > .env
 docker-compose up
 ```
 
