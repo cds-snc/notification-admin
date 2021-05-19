@@ -1991,7 +1991,7 @@ def test_should_show_message_before_redacting_template(
     )
 
     assert (
-        'Are you sure you want to hide personalisation after sending?'
+        'Are you sure you want to redact personalised variable content?'
     ) in page.select('.banner-dangerous')[0].text
 
     form = page.select('.banner-dangerous form')[0]
@@ -2041,7 +2041,7 @@ def test_should_show_hint_once_template_redacted(
         _test_page_title=False,
     )
 
-    assert page.select('.hint')[0].text == 'Personalisation is hidden after sending'
+    assert page.select('.hint')[0].text.strip() == 'Personalised variable content redacted after sending'
 
 
 def test_should_not_show_redaction_stuff_for_letters(

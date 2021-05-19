@@ -14,14 +14,14 @@
 
   {% if show_redaction_message %}
     <div class="mb-12">
-      {% set question_txt = _('Are you sure you want to hide personalisation after sending?') %}
+      {% set question_txt = _('Are you sure you want to redact personalised variable content?') %}
       {% call banner_wrapper(type='dangerous', subhead=question_txt) %}
         <ul class="list list-bullet banner-list-bullet">
           <li>
-            {{ _('You will not be able to see personalised content in GC Notify for this template') }}
+            {{ _('This protects recipient’s information by hiding it in the dashboard and logs.') }}
           </li>
           <li>
-            {{ _('You cannot undo this') }}
+            {{ _('You cannot undo this action.') }}
           </li>
         </ul>
         <form method='post'>
@@ -77,13 +77,13 @@
   {% if current_user.has_permissions('manage_templates') and user_has_template_permission %}
     {% if template.template_type != 'letter' %}
       {% if not template._template.redact_personalisation %}
-        {% set personalization = _('Redact personalised variable content after sending') %}
         <div class="page-footer-delete-link block page-footer-delete-link-without-button mb-6">
-          <a href="{{ url_for('.confirm_redact_template', service_id=current_service.id, template_id=template.id) }}">{{ personalization }}</a>
+          <a href="{{ url_for('.confirm_redact_template', service_id=current_service.id, template_id=template.id) }}">{{ _('Redact personalised variable content after sending') }}</a>
         </div>
       {% else %}
-        {% set personalization_hidden = _('Personalisation is hidden after sending') %}
-        <p class="hint">{{ personalization_hidden }}</p>
+        <p class="hint">
+          {{ _('Personalised variable content redacted after sending') }}
+        </p>
       {% endif %}
     {% endif %}
     {% if not template._template.archived %}
