@@ -936,7 +936,7 @@ def test_send_test_doesnt_show_file_contents(
         _follow_redirects=True,
     )
 
-    assert page.select('h1')[0].text.strip() == 'Preview of ‘Two week reminder’'
+    assert page.select('h1')[0].text.strip() == 'Review before sending'
     assert len(page.select('table')) == 0
     assert len(page.select('.banner-dangerous')) == 0
     assert page.select_one('button[type=submit]').text.strip() == 'Send 1 text message'
@@ -1537,24 +1537,24 @@ def test_send_test_email_message_without_placeholders_redirects_to_check_page(
         _follow_redirects=True,
     )
 
-    assert page.select('h1')[0].text.strip() == 'Preview of ‘Two week reminder’'
+    assert page.select('h1')[0].text.strip() == 'Review before sending'
 
 
 @pytest.mark.parametrize('permissions, expected_back_link_endpoint, extra_args', (
     (
         {'send_messages', 'manage_templates'},
-        'main.send_one_off_step',
-        {'template_id': unchanging_fake_uuid, 'step_index': 0},
+        'main.view_template',
+        {'template_id': unchanging_fake_uuid},
     ),
     (
         {'send_messages'},
-        'main.send_one_off_step',
-        {'template_id': unchanging_fake_uuid, 'step_index': 0},
+        'main.view_template',
+        {'template_id': unchanging_fake_uuid},
     ),
     (
         {'send_messages', 'view_activity'},
-        'main.send_one_off_step',
-        {'template_id': unchanging_fake_uuid, 'step_index': 0},
+        'main.view_template',
+        {'template_id': unchanging_fake_uuid},
     ),
 ))
 def test_send_test_sms_message_with_placeholders_shows_first_field(
@@ -3078,7 +3078,7 @@ def test_check_notification_shows_preview(
         template_id=fake_uuid
     )
 
-    assert page.h1.text.strip() == 'Preview of ‘Two week reminder’'
+    assert page.h1.text.strip() == 'Review before sending'
     assert (
         page.findAll('a', {'class': 'back-link'})[0]['href']
     ) == url_for(

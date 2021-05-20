@@ -2041,7 +2041,7 @@ def test_should_show_hint_once_template_redacted(
         _test_page_title=False,
     )
 
-    assert page.select('.hint')[0].text.strip() == 'Personalised variable content redacted after sending'
+    assert page.select('.hint')[0].text.strip() == "Recipients' information will be redacted from system"
 
 
 def test_should_not_show_redaction_stuff_for_letters(

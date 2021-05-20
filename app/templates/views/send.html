@@ -19,7 +19,11 @@
     )
   }}
 
-  <p class="mb-0">
+  <div class="page-footer mb-12 clear-both contain-floats">
+    {{ file_upload( form.file, button_text=_('Choose a file')) }}
+  </div>
+
+  <p>
     {{ _('Save your file as a') }} {% set csv_acronym = _('Comma Separated Values') %}
     {% set tsv_acr = _('Tab Separated Values') %} {% set ods_acronym = _('Open Document Spreadsheet') %}
     <acronym title="{{ csv_acronym }}">{{ _('CSV') }}</acronym>,
@@ -27,11 +31,7 @@
     <acronym title="{{ ods_acronym }}">{{ _('ODS') }}</acronym> {{ _('or Microsoft Excel spreadsheet') }}
   </p>
 
-  <div class="page-footer mb-12 clear-both contain-floats">
-    {{ file_upload( form.file, button_text=_('Choose a file')) }}
-  </div>
-
-  <p class="mb-20">
+  <p>
     {{ _("Your file must include columns with recipients and variables from your personalised message.") }}
   </p>
 

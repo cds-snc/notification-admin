@@ -17,7 +17,7 @@
 
   {{
     banner(
-      ("'{}' was uploaded.").format(original_file_name),
+      _("'{}' was uploaded.").format(original_file_name),
       'default',
       with_tick=True
     )
@@ -26,7 +26,11 @@
   {% if not request.args.from_test %}
   <h2 class="heading-medium">{{ _('Recipients') }}</h2>
   <p>
-    {{ _("{} recipients from {}.").format(count_of_recipients, original_file_name) }}
+    {% if count_of_recipients > 1 %}
+      {{ _("{} recipients from {}.").format(count_of_recipients, original_file_name) }}
+    {% else %}
+      {{ _("1 recipient from {}.").format(original_file_name) }}
+    {% endif %}
   </p>
 
   <div class="fullscreen-content" data-module="fullscreen-table">
@@ -59,7 +63,7 @@
   </div>
 
   {% if count_of_displayed_recipients < count_of_recipients %}
-    <p class="table-show-more-link">
+    <p>
       {{ _('Only showing the first')}} {{ count_of_displayed_recipients }} {{ _('rows') }}
     </p>
   {% endif %}
@@ -70,7 +74,7 @@
   <h2 class="heading-medium">{{ _('Message preview') }}</h2>
 
   <p>
-    {{ _("The example below previews row {} from {}.").format(preview_row, original_file_name) }}
+    {{ _("The example below previews one recipient (row {} from {}).").format(preview_row, original_file_name) }}
   </p>
 
   {{ template|string|translate_preview_template }}

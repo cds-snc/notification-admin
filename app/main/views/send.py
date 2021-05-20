@@ -909,10 +909,9 @@ def get_back_link(service_id, template, step_index):
         )
     elif is_current_user_the_recipient() and step_index == 0:
         return url_for(
-            'main.send_one_off_step',
+            'main.view_template',
             service_id=service_id,
             template_id=template.id,
-            step_index=0,
         )
     elif step_index == 0:
         if should_skip_template_page(template.template_type):
