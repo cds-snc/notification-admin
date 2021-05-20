@@ -940,7 +940,7 @@ class SetUpDemoOrgDetails(ContactNotify):
         validators=[DataRequired(), Length(max=500)]
     )
     intended_recipients = RadioField(
-        _l('Who are the intented recipients of notifications?'),
+        _l('Who are the intended recipients of notifications?'),
         choices=[
             ('internal', _l('Colleagues within your department (internal)')),
             ('external', _l('Partners from other organisations (external)')),
@@ -1687,7 +1687,7 @@ class GoLiveAboutServiceForm(StripWhitespaceForm):
         validators=[DataRequired(), Length(max=2000)]
     )
     intended_recipients = MultiCheckboxField(
-        _l('Who are the intented recipients of notifications?'),
+        _l('Who are the intended recipients of notifications?'),
         default='',
         choices=[
             ('internal', _l('Colleagues within your department (internal)')),
