@@ -40,7 +40,6 @@ from werkzeug.datastructures import MultiDict
 from werkzeug.routing import RequestRedirect
 
 from app import cache
-from app.notify_client.email_branding_client import email_branding_client
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
 
@@ -455,16 +454,13 @@ def get_template(
 
 
 def get_email_logo_options(service):
-    if service.email_branding_id is None:
+    email_branding = service.email_branding
+    if email_branding is None:
         return {
             'asset_domain': get_logo_cdn_domain(),
             'fip_banner_english': not service.default_branding_is_french,
             'fip_banner_french': service.default_branding_is_french,
         }
-
-    email_branding = email_branding_client.get_email_branding(
-        service.email_branding_id
-    )['email_branding']
 
     return {
         'asset_domain': get_logo_cdn_domain(),

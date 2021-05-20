@@ -656,6 +656,32 @@ def test_should_show_template_id_on_template_page(
     assert page.select('.api-key-key')[0].text == fake_uuid
 
 
+def test_should_show_logos_on_template_page(
+    client_request,
+    fake_uuid,
+    mocker,
+    service_one,
+    app_,
+):
+    mocker.patch(
+        'app.service_api_client.get_service_template',
+        return_value={'data': template_json(SERVICE_ONE_ID, fake_uuid, type_='email')}
+    )
+    page = client_request.get(
+        '.view_template',
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    assert service_one['default_branding_is_french'] is False
+    assert service_one['email_branding'] is None
+
+    email_body = str(page.select_one('.email-message-body'))
+    assert f"https://{app_.config['ASSET_DOMAIN']}/gov-canada-en.png" in email_body
+    assert f"https://{app_.config['ASSET_DOMAIN']}/wmms-blk.png" in email_body
+
+
 def test_should_show_sms_template_with_downgraded_unicode_characters(
     client_request,
     mocker,
