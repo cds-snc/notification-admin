@@ -660,7 +660,7 @@
     }
 
     self.setElementDimensions(elObj, onDimensionsSet);
-  }; 
+  };
   Sticky.prototype.remove = function (el) {
     if ($.inArray(el, this._els) !== -1) {
 
@@ -789,6 +789,8 @@
 
       el.removeStickyClasses(this);
       $el.css('width', '');
+      $el.css('left', '');
+      $el.css('padding-left', '');
       // clear styles from any elements stuck while in a dialog mode
       dialog.releaseEl(el, this);
       el.removeShim();
@@ -929,6 +931,14 @@
   stickAtBottom.windowNotPastScrollingTo = function (windowPositions, scrollingTo) {
     return windowPositions.bottom > scrollingTo;
   };
+  stickAtBottom.setElWidth = function (el) {
+    var $el = el.$fixedEl;
+    $el.css({
+        // element will be absolutely positioned so cannot rely on parent element for width
+      'width': window.innerWidth + 'px',
+      'padding-left': (window.innerWidth - document.getElementsByTagName('main')[0].offsetWidth) / 2 + 'px',
+    });
+  };
   stickAtBottom.stick = function (el) {
     if (!el.isStuck()) {
       var $el = el.$fixedEl;
@@ -940,10 +950,10 @@
 
       el.addShim('after');
       $el.css({
-        // element will be absolutely positioned so cannot rely on parent element for width
-        'width': $el.width() + 'px',
-        'bottom': offset + 'px'
+        'bottom': offset + 'px',
+        'left': '0px',
       });
+      this.setElWidth(el);
       el.stick(this);
     }
   };
