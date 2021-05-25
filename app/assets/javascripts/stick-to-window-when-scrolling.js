@@ -933,6 +933,10 @@
   };
   stickAtBottom.setElWidth = function (el) {
     var $el = el.$fixedEl;
+    if (!el.isStuck()) {
+      return;
+    }
+
     $el.css({
         // element will be absolutely positioned so cannot rely on parent element for width
       'width': window.innerWidth + 'px',
@@ -953,8 +957,8 @@
         'bottom': offset + 'px',
         'left': '0px',
       });
-      this.setElWidth(el);
       el.stick(this);
+      this.setElWidth(el);
     }
   };
   stickAtBottom.stop = function (el) {
