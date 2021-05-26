@@ -332,7 +332,7 @@ source ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
 
 14.  Démarrer le service
 
-`flask run -p 6012 --host=0.0.0.0`.
+`flask run -p 6012 --host=localhost`.
 
 15. Pour tester
 
