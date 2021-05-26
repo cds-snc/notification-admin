@@ -682,6 +682,25 @@ def test_should_show_logos_on_template_page(
     assert f"https://{app_.config['ASSET_DOMAIN']}/wmms-blk.png" in email_body
 
 
+def test_should_not_show_send_buttons_on_template_page_for_user_without_permission(
+    client_request,
+    fake_uuid,
+    mock_get_service_template,
+    active_user_view_permissions,
+):
+    client_request.login(active_user_view_permissions)
+
+    page = client_request.get(
+        '.view_template',
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    assert "Ready to send?" not in str(page)
+    assert "Send test message to yourself" not in str(page)
+
+
 def test_should_show_sms_template_with_downgraded_unicode_characters(
     client_request,
     mocker,
