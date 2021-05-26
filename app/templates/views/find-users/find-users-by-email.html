@@ -1,6 +1,7 @@
 {% extends "views/platform-admin/_base_template.html" %}
-{% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/textbox.html" import textbox_search %}
 
 {% block per_page_title %}
   {{ _('Search for user') }}
@@ -18,16 +19,12 @@
       class='grid-row contain-floats'
   ) %}
     {% set label_txt = _('Find users by email, or partial email') %}
-    <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
-      {{ textbox(
+    <div class="md:w-full float-left py-0 px-0 px-gutterHalf box-border">
+      {{ textbox_search(
         form.search,
         width='w-full',
         label=label_txt
       ) }}
-    </div>
-    <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border align-button-with-textbox">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <button type="submit" class="button">{{ _('Search') }}</button>
     </div>
   {% endcall %}
 

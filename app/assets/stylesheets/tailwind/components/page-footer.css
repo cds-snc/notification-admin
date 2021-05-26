@@ -64,14 +64,5 @@
     @apply m-0;
   }
 
-  @screen md {
-    .align-button-with-textbox .button {
-      top: 32px;
-      left: -30px;
-      margin-right: -30px;
-      padding-top: 8px;
-      @apply relative w-full box-content;
-    }
-  }
   /*! purgecss end ignore */
 }
