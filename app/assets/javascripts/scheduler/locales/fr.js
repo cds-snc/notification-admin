@@ -6,7 +6,6 @@ export const FR = {
   at_end_of_calendar: "À la fin du calendrier",
   previous_month: "Le mois précédent",
   next_month: "Le mois prochain",
-  send_now: "envoyer maintenant",
   no_time_selected: "Aucune date ni heure n’a été choisie. Veuillez utiliser le calendrier ci-dessus pour programmer l’envoi.",
   message_will_be_sent: "Message sera envoyé : ",
   at: "à",

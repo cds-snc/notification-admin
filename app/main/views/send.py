@@ -197,7 +197,12 @@ def send_messages(service_id, template_id):
         'views/send.html',
         template=template,
         column_headings=list(ascii_uppercase[:len(column_headings)]),
-        example=[column_headings, get_example_csv_rows(template)],
+        example=[
+            column_headings,
+            get_example_csv_rows(template),
+            get_example_csv_rows(template),
+            get_example_csv_rows(template),
+        ],
         form=form
     )
 
@@ -542,38 +547,15 @@ def send_test_step(service_id, template_id, step_index):
     template.values = get_recipient_and_placeholders_from_session(template.template_type)
     template.values[current_placeholder] = None
 
-    if (
-        request.endpoint == 'main.send_one_off_step'
-        and step_index == 0
-        and template.template_type != 'letter'
-        and not (template.template_type == 'sms' and current_user.mobile_number is None)
-        and current_user.has_permissions('manage_templates', 'manage_service')
-    ):
-
-        type = first_column_headings[template.template_type][0]
-
-        if(type == "email address"):
-            type = _l("email address")
-        elif(type == "phone number"):
-            type = _l("phone number")
-
-        skip_link = (
-            '{} {}'.format(_l("Use my"), type),
-            url_for('.send_test', service_id=service_id, template_id=template.id),
-        )
-    else:
-        skip_link = None
     return render_template(
         'views/send-test.html',
         page_title=get_send_test_page_title(
             template.template_type,
             get_help_argument(),
             entering_recipient=not session['recipient'],
-            name=template.name,
         ),
         template=template,
         form=form,
-        skip_link=skip_link,
         optional_placeholder=optional_placeholder,
         back_link=back_link,
         help=get_help_argument(),
@@ -878,11 +860,11 @@ def all_placeholders_in_session(placeholders):
     )
 
 
-def get_send_test_page_title(template_type, help_argument, entering_recipient, name=None):
+def get_send_test_page_title(template_type, help_argument, entering_recipient):
     if help_argument:
         return _('Example text message')
     if entering_recipient:
-        return '{} ‘{}’'.format(_l("Send"), name)
+        return _('Add recipients')
     return _('Personalise this message')
 
 
@@ -927,10 +909,9 @@ def get_back_link(service_id, template, step_index):
         )
     elif is_current_user_the_recipient() and step_index == 0:
         return url_for(
-            'main.send_one_off_step',
+            'main.view_template',
             service_id=service_id,
             template_id=template.id,
-            step_index=0,
         )
     elif step_index == 0:
         if should_skip_template_page(template.template_type):
@@ -1066,7 +1047,8 @@ def send_notification(service_id, template_id):
         '.view_notification',
         service_id=service_id,
         notification_id=noti['id'],
-        help=request.args.get('help')
+        help=request.args.get('help'),
+        just_sent=True,
     ))
 
 
