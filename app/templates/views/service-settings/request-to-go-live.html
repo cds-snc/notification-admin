@@ -1,4 +1,5 @@
 {% extends "admin_template.html" %}
+{% from "components/banner.html" import banner_wrapper %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/info-box.html" import info_box %}
 {% from "components/page-header.html" import page_header %}
@@ -17,6 +18,27 @@
         _('Request to go live'),
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
+      {% if error %}
+        <div class="mb-12 clear-both contain-floats">
+          {% call banner_wrapper(type='dangerous') %}
+            <p class="font-bold">{{ _("Complete all the steps before submitting the request to go live:") }}</p>
+            <ul class="list-bullet">
+              {% if not current_service.has_submitted_use_case %}
+                <li>{{ _('Tell us about how you intend to use GC Notify') }}</li>
+              {% endif %}
+              {% if not current_service.has_templates %}
+                <li>{{ _('Add templates with content you plan on sending') }}</li>
+              {% endif %}
+              {% if not current_service.has_team_members_status %}
+                <li>{{ _('Add a team member who can manage settings') }}</li>
+              {% endif %}
+              {% if not current_service.has_accepted_tos %}
+                <li>{{ _('Accept the terms of use') }}</li>
+              {% endif %}
+            </ul>
+          {% endcall %}
+        </div>
+      {% endif %}
 
       {% if current_service.pending_live %}
         {{ info_box(
