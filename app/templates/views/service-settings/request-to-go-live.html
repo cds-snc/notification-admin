@@ -57,9 +57,15 @@
       {% endcall %}
 
       {% if not current_service.go_live_checklist_completed %}
+        <p class="font-bold">
+          {{ _("Ready to go live?") }}
+        </p>
         <p>
           {{ _("Once you complete all the steps, you'll be able to submit your request.") }}
         </p>
+        {% call form_wrapper() %}
+          {{ page_footer(_('Submit')) }}
+        {% endcall %}
       {% elif not current_service.pending_live %}
         <p>
           {{ _("Once you have completed all the steps, submit your request to the GC Notify team. We’ll be in touch within 2 business days.") }}
