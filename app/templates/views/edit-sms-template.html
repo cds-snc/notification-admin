@@ -31,7 +31,7 @@
           {% if current_user.platform_admin %}
             {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }}
           {% endif %}
-          {% set txt = _('Save') %}
+          {% set txt = _('Save template') %}
           {{ sticky_page_footer(
             txt
           ) }}

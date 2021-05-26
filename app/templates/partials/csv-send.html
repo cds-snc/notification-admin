@@ -1,26 +1,21 @@
 {% from "components/textbox.html" import textbox %}
 {% from "components/table.html" import list_table, text_field, index_field, index_field_heading %}
 
-<h2 class="heading-medium">
-  {{ _('Your file needs to look like this example') }}
-</h2>
-<p class="hint">
-  {{ _('Save your file as a') }} {% set type_1 = _('Comma Separated Values') %}
-  {% set type_2 = _('Tab Separated Values') %} {% set type_3 = _('Open Document Spreadsheet') %}
-  <acronym title="type_1">{{ _('CSV') }}</acronym>,
-  <acronym title="type_2">{{ _('TSV') }}</acronym>,
-  <acronym title="type_3">{{ _('ODS') }}</acronym> {{ _('or Microsoft Excel spreadsheet') }}
+<p>
+  {{ _("For example:") }}
 </p>
 
 <div class="spreadsheet" data-module="fullscreen-table">
-  {% set hint= _('Example') %} {% call(item, row_number) list_table( example,
+  {% set hint= _('Example') %} {% call(item, row_number) list_table(example,
   caption=hint, caption_visible=False, field_headings=[''] + column_headings )
   %} {{ index_field(row_number - 1) }} {% for column in item %} {{
   text_field(column) }} {% endfor %} {% endcall %}
 </div>
-<p class="table-show-more-link">
+
+<p class="-mt-12 mb-24">
   <a
     href="{{ url_for('.get_example_csv', service_id=current_service.id, template_id=template.id) }}"
+    class="button"
     download
     >{{ _('Download this example') }}</a
   >

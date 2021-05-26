@@ -15,12 +15,6 @@
     }
   }
 
-  .file-name {
-    background-color: #eee;
-    padding: 9px 15px;
-    @apply text-smaller leading-tight font-bold border-1 border-solid border-gray-lightgrey inline-block rounded-lg;
-  }
-
   a {
     @apply underline text-smaller border-b-2 border-transparent;
     -webkit-tap-highlight-color: rgba(0,0,0,0.3);
