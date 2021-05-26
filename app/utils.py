@@ -421,7 +421,8 @@ def get_template(
             show_recipient=show_recipient,
             redact_missing_personalisation=redact_missing_personalisation,
             reply_to=email_reply_to,
-            jinja_path=debug_template_path
+            jinja_path=debug_template_path,
+            **get_email_logo_options(service),
         )
     if 'sms' == template['template_type']:
         return SMSPreviewTemplate(
@@ -450,6 +451,24 @@ def get_template(
                 admin_base_url=current_app.config['ADMIN_BASE_URL'],
                 redact_missing_personalisation=redact_missing_personalisation,
             )
+
+
+def get_email_logo_options(service):
+    email_branding = service.email_branding
+    if email_branding is None:
+        return {
+            'asset_domain': get_logo_cdn_domain(),
+            'fip_banner_english': not service.default_branding_is_french,
+            'fip_banner_french': service.default_branding_is_french,
+        }
+
+    return {
+        'asset_domain': get_logo_cdn_domain(),
+        'brand_colour': email_branding['colour'],
+        'brand_logo': email_branding['logo'],
+        'brand_text': email_branding['text'],
+        'brand_name': email_branding['name'],
+    }
 
 
 def get_current_financial_year():

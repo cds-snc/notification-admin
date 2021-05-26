@@ -315,7 +315,7 @@ def test_should_show_new_template_choices_if_service_has_folder_permission(
         raise ElementNotFound()
 
     assert normalize_spaces(page.select_one('#add_new_template_form fieldset legend').text) == (
-        'New template'
+        'Create template'
     )
     assert [
         choice['value'] for choice in page.select('#add_new_template_form input[type=radio]')
@@ -424,7 +424,7 @@ def test_user_with_only_send_and_view_sees_letter_page(
         _test_page_title=False,
     )
     assert normalize_spaces(page.select_one('h1').text) == (
-        'Templates Two week reminder'
+        'Two week reminder'
     )
     assert normalize_spaces(page.select_one('title').text) == (
         'Two week reminder – Templates - service one – Notify'
@@ -443,6 +443,7 @@ def test_user_with_only_send_and_view_sees_letter_page(
         'Change',
     ),
 ))
+@pytest.mark.skip(reason="feature not in use")
 def test_letter_with_default_branding_has_add_logo_button(
     mocker,
     fake_uuid,
@@ -620,22 +621,20 @@ def test_should_be_able_to_view_a_template_with_links(
     )
 
     assert normalize_spaces(page.select_one('h1').text) == (
-        'Templates Two week reminder'
+        'Two week reminder'
     )
     assert normalize_spaces(page.select_one('title').text) == (
         'Two week reminder – Templates - service one – Notify'
     )
 
-    links_in_page = page.select('.pill-separate-item')
+    links_in_page = page.select('a')
 
-    assert len(links_in_page) == len(links_to_be_shown)
-
-    for index, link_to_be_shown in enumerate(links_to_be_shown):
-        assert links_in_page[index]['href'] == url_for(
+    for link_to_be_shown in links_to_be_shown:
+        assert url_for(
             link_to_be_shown,
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-        )
+        ) in [a["href"] for a in links_in_page]
 
     assert normalize_spaces(page.select_one('main p').text) == (
         permissions_warning_to_be_shown or 'To: phone number'
@@ -655,6 +654,32 @@ def test_should_show_template_id_on_template_page(
         _test_page_title=False,
     )
     assert page.select('.api-key-key')[0].text == fake_uuid
+
+
+def test_should_show_logos_on_template_page(
+    client_request,
+    fake_uuid,
+    mocker,
+    service_one,
+    app_,
+):
+    mocker.patch(
+        'app.service_api_client.get_service_template',
+        return_value={'data': template_json(SERVICE_ONE_ID, fake_uuid, type_='email')}
+    )
+    page = client_request.get(
+        '.view_template',
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    assert service_one['default_branding_is_french'] is False
+    assert service_one['email_branding'] is None
+
+    email_body = str(page.select_one('.email-message-body'))
+    assert f"https://{app_.config['ASSET_DOMAIN']}/gov-canada-en.png" in email_body
+    assert f"https://{app_.config['ASSET_DOMAIN']}/wmms-blk.png" in email_body
 
 
 def test_should_show_sms_template_with_downgraded_unicode_characters(
@@ -691,6 +716,7 @@ def test_should_show_sms_template_with_downgraded_unicode_characters(
         url_for, 'main.set_template_sender', template_id=fake_uuid(),
     )),
 ))
+@pytest.mark.skip(reason="feature not in use")
 def test_should_let_letter_contact_block_be_changed_for_the_template(
     mocker,
     mock_get_service_letter_template,
@@ -1280,7 +1306,7 @@ def test_should_redirect_when_saving_a_template(
 ):
     name = "new name"
     content = "template <em>content</em> with & entity"
-    client_request.post(
+    page = client_request.post(
         '.edit_service_template',
         service_id=SERVICE_ONE_ID,
         template_id=fake_uuid,
@@ -1292,14 +1318,12 @@ def test_should_redirect_when_saving_a_template(
             'service': SERVICE_ONE_ID,
             'process_type': 'normal',
         },
-        _expected_status=302,
-        _expected_redirect=url_for(
-            '.view_template',
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            _external=True,
-        ),
+        _follow_redirects=True,
     )
+
+    flash_banner = page.select_one('.banner-default-with-tick').string.strip()
+    assert flash_banner == f"'{name}' template saved"
+
     mock_update_service_template.assert_called_with(
         fake_uuid, name, 'sms', content, SERVICE_ONE_ID, None, 'normal',
     )
@@ -1877,9 +1901,11 @@ def test_get_human_readable_delta(from_time, until_time, message):
 
 def test_can_create_email_template_with_emoji(
     client_request,
-    mock_create_service_template
+    mock_create_service_template,
+    mock_get_template_folders,
+    mock_get_service_templates_when_no_templates_exist,
 ):
-    client_request.post(
+    page = client_request.post(
         '.add_service_template',
         service_id=SERVICE_ONE_ID,
         template_type='email',
@@ -1891,9 +1917,12 @@ def test_can_create_email_template_with_emoji(
             'service': SERVICE_ONE_ID,
             'process_type': 'normal'
         },
-        _expected_status=302,
+        _follow_redirects=True,
     )
     assert mock_create_service_template.called is True
+
+    flash_banner = page.select_one('.banner-default-with-tick').string.strip()
+    assert flash_banner == "'new name' template saved"
 
 
 def test_should_not_create_sms_template_with_emoji(
@@ -1988,7 +2017,7 @@ def test_should_show_message_before_redacting_template(
     )
 
     assert (
-        'Are you sure you want to hide personalisation after sending?'
+        'Are you sure you want to redact personalised variable content?'
     ) in page.select('.banner-dangerous')[0].text
 
     form = page.select('.banner-dangerous form')[0]
@@ -2038,7 +2067,7 @@ def test_should_show_hint_once_template_redacted(
         _test_page_title=False,
     )
 
-    assert page.select('.hint')[0].text == 'Personalisation is hidden after sending'
+    assert page.select('.hint')[0].text.strip() == "Recipients' information will be redacted from system"
 
 
 def test_should_not_show_redaction_stuff_for_letters(

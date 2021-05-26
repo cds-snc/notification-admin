@@ -148,6 +148,7 @@ def view_notification(service_id, notification_id):
             notification.get('key_type') == KEY_TYPE_TEST
         ),
         back_link=back_link,
+        just_sent=request.args.get('just_sent')
     )
 
 
