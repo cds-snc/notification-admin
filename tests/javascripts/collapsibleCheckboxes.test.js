@@ -40,19 +40,21 @@ describe('Collapsible fieldset', () => {
 
     // set up DOM
     document.body.innerHTML =
-      `<div class="form-group contain-floats box-border" data-module="collapsible-checkboxes" data-field-label="folder">
-        <div class="selection-summary"></div>
-        <fieldset id="folder_permissions">
-          <legend class="form-label heading-small">
-            Folders this team member can see
-          </legend>
-          <div class="checkboxes-nested">
-            <ul>
-              ${_checkboxes(1, 10)}
-            </ul>
-          </div>
-        </fieldset>
-      </div>`;
+      `<main>
+        <div class="form-group contain-floats box-border" data-module="collapsible-checkboxes" data-field-label="folder">
+          <div class="selection-summary"></div>
+          <fieldset id="folder_permissions">
+            <legend class="form-label heading-small">
+              Folders this team member can see
+            </legend>
+            <div class="checkboxes-nested">
+              <ul>
+                ${_checkboxes(1, 10)}
+              </ul>
+            </div>
+          </fieldset>
+        </div>
+      </main>`;
 
       formGroup = document.querySelector('.form-group');
       fieldset = formGroup.querySelector('fieldset');
