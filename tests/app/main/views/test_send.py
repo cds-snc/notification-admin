@@ -49,6 +49,7 @@ from tests.conftest import (
     no_reply_to_email_addresses,
     no_sms_senders,
     normalize_spaces,
+    service_one,
 )
 
 template_types = ['email', 'sms']
@@ -576,22 +577,19 @@ def test_upload_valid_csv_redirects_to_check_page(
     )
 
 
-@pytest.mark.parametrize('extra_args, expected_link_in_first_row, expected_recipient, expected_message', [
+@pytest.mark.parametrize('extra_args, expected_recipient, expected_message', [
     (
         {},
-        None,
         'To: 6502532223',
         'Test Service: A, Template <em>content</em> with & entity',
     ),
     (
         {'row_index': 2},
-        None,
         'To: 6502532223',
         'Test Service: A, Template <em>content</em> with & entity',
     ),
     (
         {'row_index': 4},
-        True,
         'To: 6502532225',
         'Test Service: C, Template <em>content</em> with & entity',
     ),
@@ -608,7 +606,6 @@ def test_upload_valid_csv_shows_preview_and_table(
     mock_s3_set_metadata,
     fake_uuid,
     extra_args,
-    expected_link_in_first_row,
     expected_recipient,
     expected_message,
 ):
@@ -643,23 +640,20 @@ def test_upload_valid_csv_shows_preview_and_table(
         original_file_name='example.csv',
     )
 
-    assert page.h1.text.strip() == 'Preview of Two week reminder'
+    assert page.h1.text.strip() == 'Review before sending'
     assert page.select_one('.sms-message-recipient').text.strip() == expected_recipient
     assert page.select_one('.sms-message-wrapper').text.strip() == expected_message
 
     assert page.select_one('.table-field-index').text.strip() == '2'
 
-    if expected_link_in_first_row:
-        assert page.select_one('.table-field-index a')['href'] == url_for(
-            'main.check_messages',
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            row_index=2,
-            original_file_name='example.csv',
-        )
-    else:
-        assert not page.select_one('.table-field-index').select_one('a')
+    assert page.select_one('.table-field-index a')['href'] == url_for(
+        'main.check_messages',
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        upload_id=fake_uuid,
+        row_index=2,
+        original_file_name='example.csv',
+    )
 
     for row_index, row in enumerate([
         (
@@ -942,7 +936,7 @@ def test_send_test_doesnt_show_file_contents(
         _follow_redirects=True,
     )
 
-    assert page.select('h1')[0].text.strip() == 'Preview of ‘Two week reminder’'
+    assert page.select('h1')[0].text.strip() == 'Review before sending'
     assert len(page.select('table')) == 0
     assert len(page.select('.banner-dangerous')) == 0
     assert page.select_one('button[type=submit]').text.strip() == 'Send 1 text message'
@@ -1063,7 +1057,7 @@ def test_send_one_off_does_not_send_without_the_correct_permissions(
     (
         mock_get_service_template_with_placeholders,
         partial(url_for, 'main.send_one_off'),
-        'Send ‘Two week reminder’',
+        'Add recipients',
         False,
     ),
     (
@@ -1087,19 +1081,19 @@ def test_send_one_off_does_not_send_without_the_correct_permissions(
     (
         mock_get_service_email_template,
         partial(url_for, 'main.send_one_off'),
-        'Send ‘Two week reminder’',
+        'Add recipients',
         False,
     ),
     (
         mock_get_service_letter_template,
         partial(url_for, 'main.send_test'),
-        'Send ‘Two week reminder’',
+        'Add recipients',
         False,
     ),
     (
         mock_get_service_letter_template,
         partial(url_for, 'main.send_one_off'),
-        'Send ‘Two week reminder’',
+        'Add recipients',
         False,
     ),
 ])
@@ -1186,66 +1180,6 @@ def test_send_one_off_or_test_shows_placeholders_in_correct_order(
     assert normalize_spaces(page.select_one('label').text) == expected_field_label
 
 
-@pytest.mark.parametrize('user, template_mock, expected_link_text, expected_link_url', [
-    (
-        active_user_with_permissions,
-        mock_get_service_template,
-        'Use my phone number',
-        partial(url_for, 'main.send_test')
-    ),
-    (
-        active_user_with_permissions,
-        mock_get_service_email_template,
-        'Use my email address',
-        partial(url_for, 'main.send_test')
-    ),
-    (
-        active_user_with_permissions,
-        mock_get_service_letter_template,
-        None, None
-    ),
-    (
-        active_caseworking_user,
-        mock_get_service_template,
-        None, None
-    ),
-])
-def test_send_one_off_has_skip_link(
-    client_request,
-    service_one,
-    fake_uuid,
-    mock_get_service_email_template,
-    mock_has_no_jobs,
-    mocker,
-    template_mock,
-    expected_link_text,
-    expected_link_url,
-    user,
-):
-    mocker.patch('app.user_api_client.get_user', return_value=user(fake_uuid))
-    template_mock(mocker)
-    mocker.patch('app.main.views.send.get_page_count_for_letter', return_value=9)
-
-    page = client_request.get(
-        'main.send_one_off_step',
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        step_index=0,
-        _follow_redirects=True,
-    )
-
-    skip_links = page.select('a.mt-16.block.clear-both')
-
-    if expected_link_text and expected_link_url:
-        assert skip_links[0].text.strip() == expected_link_text
-        assert skip_links[0]['href'] == expected_link_url(
-            service_id=service_one['id'],
-            template_id=fake_uuid,
-        )
-    else:
-        assert not skip_links
-
-
 @pytest.mark.parametrize('template_mock, expected_sticky', [
     (mock_get_service_template, False),
     (mock_get_service_email_template, True),
@@ -1300,17 +1234,15 @@ def test_skip_link_will_not_show_on_sms_one_off_if_service_has_no_mobile_number(
     assert not skip_links
 
 
-@pytest.mark.parametrize('user, link_index', (
-    (active_user_with_permissions, 2),
-    (active_caseworking_user, 1),
-))
+@pytest.mark.parametrize('user', [
+    active_user_with_permissions, active_caseworking_user
+])
 def test_send_one_off_offers_link_to_upload(
     client_request,
     fake_uuid,
     mock_get_service_template,
     mock_has_jobs,
     user,
-    link_index,
 ):
     client_request.login(user(fake_uuid))
 
@@ -1322,16 +1254,52 @@ def test_send_one_off_offers_link_to_upload(
     )
 
     back_link = page.select('main a')[0]
-    link = page.select('main a')[link_index]
+    link = page.select('main a')[2]
 
     assert back_link.text.strip() == 'Back'
 
-    assert link.text.strip() == 'Upload a list of phone numbers'
+    assert link.text.strip() == 'Upload a list of recipients'
     assert link['href'] == url_for(
         'main.send_messages',
         service_id=SERVICE_ONE_ID,
         template_id=fake_uuid,
     )
+
+
+@pytest.mark.parametrize('restricted, has_go_live_link', (
+    (True, True),
+    (False, False),
+), ids=["trial service", "live service"])
+def test_send_one_off_offers_link_to_request_to_go_live(
+    client_request,
+    fake_uuid,
+    mock_get_service_template,
+    mock_has_jobs,
+    active_user_with_permissions,
+    restricted,
+    has_go_live_link,
+):
+    service = service_one(active_user_with_permissions)
+    service['restricted'] = restricted
+    client_request.login(active_user_with_permissions, service=service)
+
+    page = client_request.get(
+        'main.send_one_off',
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _follow_redirects=True,
+    )
+
+    links = page.select('main a')
+
+    if has_go_live_link:
+        assert 'request to go live' in [link.text.strip() for link in links]
+        assert url_for(
+            'main.request_to_go_live',
+            service_id=SERVICE_ONE_ID,
+        ) in [link['href'] for link in links]
+    else:
+        assert 'request to go live' not in [link.text.strip() for link in links]
 
 
 @pytest.mark.parametrize('user', (
@@ -1569,24 +1537,24 @@ def test_send_test_email_message_without_placeholders_redirects_to_check_page(
         _follow_redirects=True,
     )
 
-    assert page.select('h1')[0].text.strip() == 'Preview of ‘Two week reminder’'
+    assert page.select('h1')[0].text.strip() == 'Review before sending'
 
 
 @pytest.mark.parametrize('permissions, expected_back_link_endpoint, extra_args', (
     (
         {'send_messages', 'manage_templates'},
-        'main.send_one_off_step',
-        {'template_id': unchanging_fake_uuid, 'step_index': 0},
+        'main.view_template',
+        {'template_id': unchanging_fake_uuid},
     ),
     (
         {'send_messages'},
-        'main.send_one_off_step',
-        {'template_id': unchanging_fake_uuid, 'step_index': 0},
+        'main.view_template',
+        {'template_id': unchanging_fake_uuid},
     ),
     (
         {'send_messages', 'view_activity'},
-        'main.send_one_off_step',
-        {'template_id': unchanging_fake_uuid, 'step_index': 0},
+        'main.view_template',
+        {'template_id': unchanging_fake_uuid},
     ),
 ))
 def test_send_test_sms_message_with_placeholders_shows_first_field(
@@ -2660,9 +2628,6 @@ def test_check_messages_shows_trial_mode_error_for_letters(
 
     assert len(page.select('.letter img')) == 3
 
-    if number_of_rows > 1:
-        assert page.select_one('.table-field-index a').text == '3'
-
 
 def test_check_messages_shows_data_errors_before_trial_mode_errors_for_letters(
     mocker,
@@ -3113,7 +3078,7 @@ def test_check_notification_shows_preview(
         template_id=fake_uuid
     )
 
-    assert page.h1.text.strip() == 'Preview of ‘Two week reminder’'
+    assert page.h1.text.strip() == 'Review before sending'
     assert (
         page.findAll('a', {'class': 'back-link'})[0]['href']
     ) == url_for(
@@ -3253,6 +3218,7 @@ def test_send_notification_redirects_to_view_page(
             service_id=SERVICE_ONE_ID,
             notification_id=fake_uuid,
             _external=True,
+            just_sent=True,
             **extra_redirect_args
         ),
         **extra_args
