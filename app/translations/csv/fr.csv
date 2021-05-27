@@ -1250,7 +1250,7 @@
 "This email address is already in use","Cette adresse courriel a déjà été utilisée"
 "You can change your service email address later in Settings.","Vous pourrez changer l'adresse d'envoi de votre service plus tard dans la section Paramètres."
 "What’s your service called?","Quel est le nom de votre service?"
-"A good service name uses words service users will recognize.","Un bon nom de service est facilement reconnaissables par les utilisateurs de votre service."
+"A good service name uses words service users recognize.","Un bon nom de service est facilement reconnaissables par les utilisateurs de votre service."
 "Bilingual service name","Nom bilingue du service"
 "API rate limit per minute","Limite d'appels à l’API par minute"
 "Yes, remove","Oui, retirer"
