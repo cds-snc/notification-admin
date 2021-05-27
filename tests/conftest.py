@@ -3043,8 +3043,8 @@ class ClientRequest:
         with self.logged_in_client.session_transaction() as session:
             yield session
 
-    def login(self, user, service=False):
-        if not service:
+    def login(self, user, service=""):
+        if service == "":
             service = self.service_one
         self.logged_in_client.login(user, self.mocker, service)
 
