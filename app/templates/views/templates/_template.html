@@ -13,6 +13,8 @@
     </p>
   {% else %}
     {% if current_user.has_permissions('send_messages', restrict_admin_usage=True) %}
+    <h2 class="heading-medium">{{ _('Ready to send?') }}</h2>
+
     <div class="mb-12">
       <a href="{{ url_for('.set_sender', service_id=current_service.id, template_id=template.id) }}" class="button">
         {{ _('Add recipients') }}

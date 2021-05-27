@@ -1,7 +1,7 @@
 {% macro nav_menu_item_mobile(
-  url=None, localised_txt=None, 
-  is_selected=False, 
-  is_external_link=False, 
+  url=None, localised_txt=None,
+  is_selected=False,
+  is_external_link=False,
   css_classes=None
 ) %}
   {% if url and localised_txt %}
@@ -17,8 +17,7 @@
         {{ localised_txt }}
         {% if is_external_link %}
         <img
-          aria-hidden="false"
-          aria-label="{{ localised_txt }}"
+          aria-hidden="true"
           src="{{ asset_url('images/external.svg') }}"
           alt="{{ _('External link') }}"
           class="inline w-8 h-8 pb-2"/>
