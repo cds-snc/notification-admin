@@ -1080,10 +1080,10 @@ def test_request_to_go_live_use_case_page_without_permission(
 
 
 @pytest.mark.parametrize('checklist_completed, expected_button', (
-    (False, False),
+    (False, True),
     (True, True),
 ))
-def test_should_not_show_go_live_button_if_checklist_not_complete(
+def test_should_always_show_go_live_button(
     client_request,
     mocker,
     mock_get_service_templates,
@@ -1102,10 +1102,10 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
     )
     assert page.h1.text == 'Request to go live'
+    assert page.select_one('form')['method'] == 'post'
+    assert 'action' not in page.select_one('form')
 
-    if expected_button:
-        assert page.select_one('form')['method'] == 'post'
-        assert 'action' not in page.select_one('form')
+    if checklist_completed:
         paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
         assert (
             'Once you have completed all the steps, submit your request to the GC Notify team. '
@@ -1113,8 +1113,6 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
         ) in paragraphs
         page.select_one('[type=submit]').text.strip() == ('Request to go live')
     else:
-        assert not page.select('form')
-        assert not page.select('[type=submit]')
         paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
         assert "Once you complete all the steps, you'll be able to submit your request." in paragraphs
 
