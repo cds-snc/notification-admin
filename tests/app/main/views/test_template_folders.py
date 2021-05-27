@@ -1344,7 +1344,7 @@ def test_radio_button_with_no_value_shows_custom_error_message(
     assert mock_move_to_template_folder.called is False
     assert mock_create_template_folder.called is False
 
-    assert page.select_one('span.error-message').text.strip() == 'Select the type of template you want to add'
+    assert page.select_one('span.error-message').text.strip() == 'Select the type of message you want to create'
 
 
 @pytest.mark.parametrize('data, error_msg', [
