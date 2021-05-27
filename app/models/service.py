@@ -399,12 +399,7 @@ class Service(JSONModel):
 
     @property
     def go_live_checklist_completed(self):
-        return all([
-            self.has_submitted_use_case,
-            self.has_templates,
-            self.has_team_members,
-            self.has_accepted_tos,
-        ])
+        return all([checklist['completed'] for checklist in self.go_live_checklist])
 
     @cached_property
     def free_sms_fragment_limit(self):
