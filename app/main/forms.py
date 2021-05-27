@@ -1597,7 +1597,7 @@ class TemplateAndFoldersSelectionForm(Form):
     add_template_by_template_type = RadioFieldWithRequiredMessage(_l('Create template'), validators=[
         required_for_ops('add-new-template'),
         Optional(),
-    ], required_message=_l('Select the type of template you want to add'))
+    ], required_message=_l('Select the type of message you want to create'))
 
 
 class ClearCacheForm(StripWhitespaceForm):
