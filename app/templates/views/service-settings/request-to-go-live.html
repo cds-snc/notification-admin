@@ -19,22 +19,15 @@
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
       {% if error %}
-        <div class="mb-12 clear-both contain-floats">
+        <div class="mb-12">
           {% call banner_wrapper(type='dangerous') %}
-            <p class="font-bold">{{ _("Complete all the steps before submitting the request to go live:") }}</p>
+            <p class="font-bold">{{ _("You must complete these steps before submitting the request:") }}</p>
             <ul class="list-bullet">
-              {% if not current_service.has_submitted_use_case %}
-                <li>{{ _('Tell us about how you intend to use GC Notify') }}</li>
-              {% endif %}
-              {% if not current_service.has_templates %}
-                <li>{{ _('Add templates with content you plan on sending') }}</li>
-              {% endif %}
-              {% if not current_service.has_team_members_status %}
-                <li>{{ _('Add a team member who can manage settings') }}</li>
-              {% endif %}
-              {% if not current_service.has_accepted_tos %}
-                <li>{{ _('Accept the terms of use') }}</li>
-              {% endif %}
+              {% for item in current_service.go_live_checklist %}
+                {% if not item['completed'] %}
+                  <li>{{ item['text'] }}</li>
+                {% endif %}
+              {% endfor %}
             </ul>
           {% endcall %}
         </div>
@@ -56,26 +49,13 @@
       {% endif %}
 
       {% call task_list_wrapper() %}
-        {{ task_list_item(
-          current_service.has_submitted_use_case,
-          _('Tell us about how you intend to use GC Notify'),
-          url_for('main.use_case', service_id=current_service.id),
-        ) }}
-        {{ task_list_item(
-          current_service.has_templates,
-          _('Add templates with content you plan on sending'),
-          url_for('main.choose_template', service_id=current_service.id),
-        ) }}
-        {{ task_list_item(
-          current_service.has_team_members_status,
-          _('Add a team member who can manage settings'),
-          url_for('main.manage_users', service_id=current_service.id),
-        ) }}
-        {{ task_list_item(
-          current_service.has_accepted_tos,
-          _('Accept the terms of use'),
-          url_for('main.terms_of_use', service_id=current_service.id),
-        ) }}
+        {% for item in current_service.go_live_checklist %}
+          {{ task_list_item(
+            item['completed'],
+            item['text'],
+            url_for(item['endpoint'], service_id=current_service.id),
+          ) }}
+        {% endfor %}
       {% endcall %}
 
       {% if not current_service.go_live_checklist_completed %}

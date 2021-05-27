@@ -373,6 +373,15 @@ class Service(JSONModel):
         return service_api_client.get_letter_contact(self.id, id)
 
     @property
+    def go_live_checklist(self):
+        return [
+            {'text': _('Tell us about how you intend to use GC Notify'), 'completed': self.has_submitted_use_case, 'endpoint': 'main.use_case'},
+            {'text': _('Add templates with content you plan on sending'), 'completed': self.has_templates, 'endpoint': 'main.choose_template'},
+            {'text': _('Add a team member who can manage settings'), 'completed': self.has_team_members_status, 'endpoint': 'main.manage_users'},
+            {'text': _('Accept the terms of use'), 'completed': self.has_accepted_tos, 'endpoint': 'main.terms_of_use'},
+        ]
+
+    @property
     def go_live_checklist_completed(self):
         return all([
             self.has_submitted_use_case,
