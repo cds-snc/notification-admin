@@ -937,9 +937,16 @@
       return;
     }
 
-    var main = document.getElementsByTagName('main')[0];
+    if (document.getElementsByTagName('main')) {
+      var main = document.getElementsByTagName('main')[0];
+    } else {
+      var main = document.getElementById('main_content') || document.getElementsByTagName('body')[0];
+    }
+
     var paddingValue = global.getComputedStyle(main).getPropertyValue('padding-left');
 
+    // At the moment we only support summing pixels.
+    // Make sure the padding left value is defined in pixels.
     var mainPaddingLeft = 0;
     if (new RegExp(/^\d+px$/).test(paddingValue)) {
       mainPaddingLeft = parseInt(paddingValue);
