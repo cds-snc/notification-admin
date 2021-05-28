@@ -319,7 +319,7 @@ def send_go_live_request(service, user, go_live_data) -> None:
 @user_is_gov_user
 def submit_request_to_go_live(service_id):
     if not current_service.go_live_checklist_completed:
-        abort(403)
+        return render_template('views/service-settings/request-to-go-live.html', error=True)
 
     go_live_data = current_service.use_case_data[1]
     current_service.update(go_live_user=current_user.id)

@@ -1,4 +1,5 @@
 {% extends "admin_template.html" %}
+{% from "components/banner.html" import banner_wrapper %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/info-box.html" import info_box %}
 {% from "components/page-header.html" import page_header %}
@@ -17,6 +18,20 @@
         _('Request to go live'),
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
+      {% if error %}
+        <div class="mb-12">
+          {% call banner_wrapper(type='dangerous') %}
+            <p class="font-bold">{{ _("You must complete these steps before submitting the request:") }}</p>
+            <ul class="list-bullet">
+              {% for item in current_service.go_live_checklist %}
+                {% if not item['completed'] %}
+                  <li>{{ item['text'] }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% endcall %}
+        </div>
+      {% endif %}
 
       {% if current_service.pending_live %}
         {{ info_box(
@@ -34,32 +49,25 @@
       {% endif %}
 
       {% call task_list_wrapper() %}
-        {{ task_list_item(
-          current_service.has_submitted_use_case,
-          _('Tell us about how you intend to use GC Notify'),
-          url_for('main.use_case', service_id=current_service.id),
-        ) }}
-        {{ task_list_item(
-          current_service.has_templates,
-          _('Add templates with content you plan on sending'),
-          url_for('main.choose_template', service_id=current_service.id),
-        ) }}
-        {{ task_list_item(
-          current_service.has_team_members_status,
-          _('Add a team member who can manage settings'),
-          url_for('main.manage_users', service_id=current_service.id),
-        ) }}
-        {{ task_list_item(
-          current_service.has_accepted_tos,
-          _('Accept the terms of use'),
-          url_for('main.terms_of_use', service_id=current_service.id),
-        ) }}
+        {% for item in current_service.go_live_checklist %}
+          {{ task_list_item(
+            item['status'],
+            item['text'],
+            url_for(item['endpoint'], service_id=current_service.id),
+          ) }}
+        {% endfor %}
       {% endcall %}
 
       {% if not current_service.go_live_checklist_completed %}
+        <p class="font-bold">
+          {{ _("Ready to go live?") }}
+        </p>
         <p>
           {{ _("Once you complete all the steps, you'll be able to submit your request.") }}
         </p>
+        {% call form_wrapper() %}
+          {{ page_footer(_('Submit')) }}
+        {% endcall %}
       {% elif not current_service.pending_live %}
         <p>
           {{ _("Once you have completed all the steps, submit your request to the GC Notify team. We’ll be in touch within 2 business days.") }}
