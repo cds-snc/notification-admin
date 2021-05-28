@@ -2927,6 +2927,7 @@ def mock_get_notification(
     notification_id=fake_uuid,
     notification_status='delivered',
     notification_provider_response=None,
+    personalisation=None,
     redact_personalisation=False,
     template_type=None,
     template_name='sample template',
@@ -2955,7 +2956,7 @@ def mock_get_notification(
                 'name': 'Test User',
                 'email_address': 'test@user.canada.ca'
             }
-        noti['personalisation'] = {'name': 'Jo'}
+        noti['personalisation'] = personalisation or {'name': 'Jo'}
         noti['template'] = template_json(
             service_id,
             '5407f4db-51c7-4150-8758-35412d42186a',

@@ -148,7 +148,8 @@ def view_notification(service_id, notification_id):
             notification.get('key_type') == KEY_TYPE_TEST
         ),
         back_link=back_link,
-        just_sent=request.args.get('just_sent')
+        just_sent=request.args.get('just_sent'),
+        attachments=get_attachments(notification),
     )
 
 
@@ -218,6 +219,15 @@ def get_single_notification_partials(notification):
             ),
         ),
     }
+
+
+def get_attachments(notification):
+    return [
+        v['document'] for k, v in (notification['personalisation'] or {}).items()
+        if isinstance(v, dict)
+        and 'document' in v
+        and v["document"].get('sending_method') == 'attach'
+    ]
 
 
 def get_all_personalisation_from_notification(notification):
