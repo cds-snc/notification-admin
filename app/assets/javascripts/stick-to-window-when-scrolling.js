@@ -937,10 +937,25 @@
       return;
     }
 
+    if (document.getElementsByTagName('main')) {
+      var main = document.getElementsByTagName('main')[0];
+    } else {
+      var main = document.getElementById('main_content') || document.getElementsByTagName('body')[0];
+    }
+
+    var paddingValue = global.getComputedStyle(main).getPropertyValue('padding-left');
+
+    // At the moment we only support summing pixels.
+    // Make sure the padding left value is defined in pixels.
+    var mainPaddingLeft = 0;
+    if (new RegExp(/^\d+px$/).test(paddingValue)) {
+      mainPaddingLeft = parseInt(paddingValue);
+    }
+
     $el.css({
         // element will be absolutely positioned so cannot rely on parent element for width
       'width': window.innerWidth + 'px',
-      'padding-left': (window.innerWidth - document.getElementsByTagName('main')[0].offsetWidth) / 2 + 'px',
+      'padding-left': (window.innerWidth - (main.offsetWidth - mainPaddingLeft)) / 2 + mainPaddingLeft + 'px',
     });
   };
   stickAtBottom.stick = function (el) {
