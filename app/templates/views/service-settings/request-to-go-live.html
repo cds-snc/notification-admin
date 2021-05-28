@@ -51,7 +51,7 @@
       {% call task_list_wrapper() %}
         {% for item in current_service.go_live_checklist %}
           {{ task_list_item(
-            item['completed'],
+            item['status'],
             item['text'],
             url_for(item['endpoint'], service_id=current_service.id),
           ) }}

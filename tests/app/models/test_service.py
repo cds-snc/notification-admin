@@ -278,27 +278,26 @@ def test_store_use_case_data(mocker, service_one):
 
 
 @pytest.mark.parametrize(
-    'has_submitted_use_case, has_templates, has_team_members, has_accepted_tos, expected_readyness', [
+    'has_submitted_use_case, has_templates, has_team_members_status, has_accepted_tos, expected_completed', [
         (True, True, True, True, True),
-        (False, True, True, True, False),
-        (True, False, True, True, False),
+        (True, True, "in-progress", True, False),
         (True, True, False, True, False),
-        (True, True, True, False, False),
     ]
 )
-def test_go_live_checklist_completed(
+def test_go_live_checklist(
     mocker,
     service_one,
     has_submitted_use_case,
     has_templates,
-    has_team_members,
+    has_team_members_status,
     has_accepted_tos,
-    expected_readyness,
+    expected_completed,
+    app_,
 ):
     for prop in [
         'has_submitted_use_case',
         'has_templates',
-        'has_team_members',
+        'has_team_members_status',
         'has_accepted_tos',
     ]:
         mocker.patch(
@@ -307,4 +306,49 @@ def test_go_live_checklist_completed(
             return_value=locals()[prop]
         )
 
-    assert Service(service_one).go_live_checklist_completed == expected_readyness
+    with app_.test_request_context():
+        checklist = Service(service_one).go_live_checklist
+        assert len(checklist) == 4
+        assert checklist[0].keys() == set(['text', 'status', 'endpoint', 'completed'])
+        assert {
+            'text': 'Add a team member who can manage settings',
+            'status': has_team_members_status,
+            'endpoint': 'main.manage_users',
+            'completed': expected_completed,
+        } in checklist
+
+
+@pytest.mark.parametrize(
+    'has_submitted_use_case, has_templates, has_team_members_status, has_accepted_tos, expected_readyness', [
+        (True, True, True, True, True),
+        (False, True, True, True, False),
+        (True, False, True, True, False),
+        (True, True, False, True, False),
+        (True, True, True, False, False),
+        (True, True, "in-progress", True, False),
+    ]
+)
+def test_go_live_checklist_completed(
+    mocker,
+    service_one,
+    has_submitted_use_case,
+    has_templates,
+    has_team_members_status,
+    has_accepted_tos,
+    expected_readyness,
+    app_,
+):
+    for prop in [
+        'has_submitted_use_case',
+        'has_templates',
+        'has_team_members_status',
+        'has_accepted_tos',
+    ]:
+        mocker.patch(
+            f'app.models.service.Service.{prop}',
+            new_callable=PropertyMock,
+            return_value=locals()[prop]
+        )
+
+    with app_.test_request_context():
+        assert Service(service_one).go_live_checklist_completed == expected_readyness
