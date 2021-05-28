@@ -21,6 +21,7 @@ from tests.conftest import (
     ORGANISATION_ID,
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
+    ClientRequest,
     active_user_no_api_key_permission,
     active_user_no_settings_permission,
     active_user_with_permissions,
@@ -1079,18 +1080,14 @@ def test_request_to_go_live_use_case_page_without_permission(
     )
 
 
-@pytest.mark.parametrize('checklist_completed, expected_button', (
-    (False, False),
-    (True, True),
-))
-def test_should_not_show_go_live_button_if_checklist_not_complete(
-    client_request,
+@pytest.mark.parametrize('checklist_completed', (False, True))
+def test_should_always_show_go_live_button(
+    client_request: ClientRequest,
     mocker,
     mock_get_service_templates,
     mock_get_users_by_service,
     mock_get_invites_for_service,
     checklist_completed,
-    expected_button,
 ):
     mocker.patch(
         'app.models.service.Service.go_live_checklist_completed',
@@ -1102,21 +1099,40 @@ def test_should_not_show_go_live_button_if_checklist_not_complete(
         'main.request_to_go_live', service_id=SERVICE_ONE_ID
     )
     assert page.h1.text == 'Request to go live'
-
-    if expected_button:
-        assert page.select_one('form')['method'] == 'post'
-        assert 'action' not in page.select_one('form')
+    assert page.select_one('form')['method'] == 'post'
+    assert 'action' not in page.select_one('form')
+    page.select_one('[type=submit]').text.strip() == ('Request to go live')
+    if checklist_completed:
         paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
         assert (
             'Once you have completed all the steps, submit your request to the GC Notify team. '
             'We’ll be in touch within 2 business days.'
         ) in paragraphs
-        page.select_one('[type=submit]').text.strip() == ('Request to go live')
     else:
-        assert not page.select('form')
-        assert not page.select('[type=submit]')
         paragraphs = [normalize_spaces(p.text) for p in page.select('main p')]
         assert "Once you complete all the steps, you'll be able to submit your request." in paragraphs
+
+
+def test_should_show_error_if_go_live_not_completed(
+    client_request: ClientRequest,
+    mocker,
+    mock_get_service_templates,
+    mock_get_users_by_service,
+    mock_get_invites_for_service,
+):
+    mocker.patch(
+        'app.models.service.Service.go_live_checklist_completed',
+        new_callable=PropertyMock,
+        return_value=False,
+    )
+
+    page = client_request.post(
+        'main.request_to_go_live',
+        service_id=SERVICE_ONE_ID,
+        _expected_status=200,
+    )
+    banner_text = page.select_one('.banner').text.strip()
+    assert "You must complete these steps before submitting the request:" in banner_text
 
 
 def test_non_gov_users_cant_request_to_go_live(

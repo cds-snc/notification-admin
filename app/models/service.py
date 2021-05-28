@@ -373,13 +373,37 @@ class Service(JSONModel):
         return service_api_client.get_letter_contact(self.id, id)
 
     @property
+    def go_live_checklist(self):
+        # `status` can be False, True or "in-progress"
+        # `completed` is False or True
+        items = [
+            {
+                'text': _('Tell us about how you intend to use GC Notify'),
+                'status': self.has_submitted_use_case,
+                'endpoint': 'main.use_case'
+            },
+            {
+                'text': _('Add templates with content you plan on sending'),
+                'status': self.has_templates,
+                'endpoint': 'main.choose_template'
+            },
+            {
+                'text': _('Add a team member who can manage settings'),
+                'status': self.has_team_members_status,
+                'endpoint': 'main.manage_users'
+            },
+            {
+                'text': _('Accept the terms of use'),
+                'status': self.has_accepted_tos,
+                'endpoint': 'main.terms_of_use'
+            },
+        ]
+
+        return [item | {'completed': item['status'] is True} for item in items]
+
+    @property
     def go_live_checklist_completed(self):
-        return all([
-            self.has_submitted_use_case,
-            self.has_templates,
-            self.has_team_members,
-            self.has_accepted_tos,
-        ])
+        return all([checklist['completed'] for checklist in self.go_live_checklist])
 
     @cached_property
     def free_sms_fragment_limit(self):

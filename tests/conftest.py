@@ -3032,95 +3032,102 @@ def os_environ():
     os.environ = old_env
 
 
+class ClientRequest:
+    def __init__(self, logged_in_client, mocker, service_one):
+        self.logged_in_client = logged_in_client
+        self.mocker = mocker
+        self.service_one = service_one
+
+    @contextmanager
+    def session_transaction(self):
+        with self.logged_in_client.session_transaction() as session:
+            yield session
+
+    def login(self, user, service=""):
+        if service == "":
+            service = self.service_one
+        self.logged_in_client.login(user, self.mocker, service)
+
+    def logout(self):
+        self.logged_in_client.logout(None)
+
+    def get(
+        self,
+        endpoint,
+        _expected_status=200,
+        _follow_redirects=False,
+        _expected_redirect=None,
+        _test_page_title=True,
+        _optional_args="",
+        **endpoint_kwargs
+    ):
+        return ClientRequest.get_url(
+            self,
+            url_for(endpoint, **(endpoint_kwargs or {})) + _optional_args,
+            _expected_status=_expected_status,
+            _follow_redirects=_follow_redirects,
+            _expected_redirect=_expected_redirect,
+            _test_page_title=_test_page_title,
+        )
+
+    def get_url(
+        self,
+        url,
+        _expected_status=200,
+        _follow_redirects=False,
+        _expected_redirect=None,
+        _test_page_title=True,
+        **endpoint_kwargs
+    ):
+        resp = self.logged_in_client.get(
+            url,
+            follow_redirects=_follow_redirects,
+        )
+        assert resp.status_code == _expected_status, resp.location
+        if _expected_redirect:
+            assert resp.location == _expected_redirect
+        page = BeautifulSoup(resp.data.decode('utf-8'), 'html.parser')
+        if _test_page_title:
+            count_of_h1s = len(page.select('h1'))
+            if count_of_h1s != 1:
+                raise AssertionError('Page should have one H1 ({} found)'.format(count_of_h1s))
+            page_title, h1 = (
+                normalize_spaces(page.find(selector).text) for selector in ('title', 'h1')
+            )
+
+            if not normalize_spaces(page_title).startswith(h1):
+                raise AssertionError('Page title ‘{}’ does not start with H1 ‘{}’'.format(page_title, h1))
+        return page
+
+    def post(
+        self,
+        endpoint,
+        _data=None,
+        _expected_status=None,
+        _follow_redirects=False,
+        _expected_redirect=None,
+        **endpoint_kwargs
+    ):
+        if _expected_status is None:
+            _expected_status = 200 if _follow_redirects else 302
+        resp = self.logged_in_client.post(
+            url_for(endpoint, **(endpoint_kwargs or {})),
+            data=_data,
+            follow_redirects=_follow_redirects,
+        )
+        assert resp.status_code == _expected_status
+        if _expected_redirect:
+            assert_url_expected(resp.location, _expected_redirect)
+        return BeautifulSoup(resp.data.decode('utf-8'), 'html.parser')
+
+
 @pytest.fixture
 def client_request(
     logged_in_client,
     mocker,
     service_one,
 ):
-    class ClientRequest:
-
-        @staticmethod
-        @contextmanager
-        def session_transaction():
-            with logged_in_client.session_transaction() as session:
-                yield session
-
-        def login(user, service=service_one):
-            logged_in_client.login(user, mocker, service)
-
-        def logout():
-            logged_in_client.logout(None)
-
-        @staticmethod
-        def get(
-            endpoint,
-            _expected_status=200,
-            _follow_redirects=False,
-            _expected_redirect=None,
-            _test_page_title=True,
-            _optional_args="",
-            **endpoint_kwargs
-        ):
-            return ClientRequest.get_url(
-                url_for(endpoint, **(endpoint_kwargs or {})) + _optional_args,
-                _expected_status=_expected_status,
-                _follow_redirects=_follow_redirects,
-                _expected_redirect=_expected_redirect,
-                _test_page_title=_test_page_title,
-            )
-
-        @staticmethod
-        def get_url(
-            url,
-            _expected_status=200,
-            _follow_redirects=False,
-            _expected_redirect=None,
-            _test_page_title=True,
-            **endpoint_kwargs
-        ):
-            resp = logged_in_client.get(
-                url,
-                follow_redirects=_follow_redirects,
-            )
-            assert resp.status_code == _expected_status, resp.location
-            if _expected_redirect:
-                assert resp.location == _expected_redirect
-            page = BeautifulSoup(resp.data.decode('utf-8'), 'html.parser')
-            if _test_page_title:
-                count_of_h1s = len(page.select('h1'))
-                if count_of_h1s != 1:
-                    raise AssertionError('Page should have one H1 ({} found)'.format(count_of_h1s))
-                page_title, h1 = (
-                    normalize_spaces(page.find(selector).text) for selector in ('title', 'h1')
-                )
-
-                if not normalize_spaces(page_title).startswith(h1):
-                    raise AssertionError('Page title ‘{}’ does not start with H1 ‘{}’'.format(page_title, h1))
-            return page
-
-        @staticmethod
-        def post(
-            endpoint,
-            _data=None,
-            _expected_status=None,
-            _follow_redirects=False,
-            _expected_redirect=None,
-            **endpoint_kwargs
-        ):
-            if _expected_status is None:
-                _expected_status = 200 if _follow_redirects else 302
-            resp = logged_in_client.post(
-                url_for(endpoint, **(endpoint_kwargs or {})),
-                data=_data,
-                follow_redirects=_follow_redirects,
-            )
-            assert resp.status_code == _expected_status
-            if _expected_redirect:
-                assert_url_expected(resp.location, _expected_redirect)
-            return BeautifulSoup(resp.data.decode('utf-8'), 'html.parser')
-
-    return ClientRequest
+    return ClientRequest(logged_in_client, mocker, service_one)
 
 
 def normalize_spaces(input):
