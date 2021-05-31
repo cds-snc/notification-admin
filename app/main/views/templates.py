@@ -333,6 +333,13 @@ def _add_template_by_type(template_type, template_folder_id):
             template_folder_id=template_folder_id,
         ))
 
+@main.route("/services/<service_id>/templates/create")
+@user_has_permissions('manage_templates')
+def create_template(service_id):
+    # form.add_template_by_template_type
+    # xxx
+    return render_template("views/templates/create.html")
+
 
 @main.route("/services/<service_id>/templates/copy")
 @main.route("/services/<service_id>/templates/all/copy")

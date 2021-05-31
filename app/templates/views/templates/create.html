@@ -1,0 +1,22 @@
+{% extends "admin_template.html" %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/radios.html" import radios %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Create template') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+  {% set header_txt = _('Create template') %}
+  {{ page_header(
+    header_txt,
+    back_link=url_for('main.templates', service_id=current_service.id)
+  ) }}
+ 
+  {% set label_txt = _('Name for this key') %}
+  {% set button_txt = _('Continue') %}
+
+{% endblock %}
