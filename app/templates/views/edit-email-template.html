@@ -6,7 +6,7 @@ form_wrapper %} {% block service_page_title %} {{ _(heading_action) }}
 {{_('email template') }} {% endblock %} {% block maincolumn_content %} {{
 page_header( _(heading_action) + ' ' + _('email template'),
 back_link=url_for('main.view_template', service_id=current_service.id,
-template_id=template.id) if template else url_for('main.choose_template',
+template_id=template.id) if template else url_for('main.create_template',
 service_id=current_service.id, template_folder_id=template_folder_id) ) }} {%
 call form_wrapper() %}
 <div class="grid-row contain-floats">
