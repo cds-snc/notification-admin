@@ -187,12 +187,12 @@ def test_notification_status_page_shows_attachments(
     )
 
     if expected_attachments:
-        assert "Attachments" in [h3.text for h3 in page.select('h3')]
+        assert "Attachments" in [h2.text for h2 in page.select('h2')]
         assert "poster.pdf — 694.8 kB" in str(page)
         assert "poster2.pdf — 1.3 MB" in str(page)
         assert "test.pdf" not in str(page)
     else:
-        assert "Attachments" not in [h3.text for h3 in page.select('h3')]
+        assert "Attachments" not in [h2.text for h2 in page.select('h2')]
 
 
 @pytest.mark.parametrize('extra_args, expected_back_link', [
