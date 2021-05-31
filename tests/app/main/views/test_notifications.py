@@ -195,6 +195,36 @@ def test_notification_status_page_shows_attachments(
         assert "Attachments" not in [h2.text for h2 in page.select('h2')]
 
 
+def test_notification_status_page_shows_attachments_with_links(
+    client_request,
+    mocker,
+    service_one,
+    fake_uuid,
+):
+    mock_get_notification(
+        mocker,
+        fake_uuid,
+        content='Download it ((poster_link))',
+        template_type='email',
+        personalisation={
+            'poster_link': {
+                'document': {
+                    'sending_method': 'link',
+                    'url': 'https://example.com/test.pdf',
+                }
+            },
+        },
+    )
+
+    page = client_request.get(
+        'main.view_notification',
+        service_id=service_one['id'],
+        notification_id=fake_uuid
+    )
+
+    assert "Download it https://example.com/test.pdf" in page.select_one('.email-message-body').text
+
+
 @pytest.mark.parametrize('extra_args, expected_back_link', [
     (
         {},
