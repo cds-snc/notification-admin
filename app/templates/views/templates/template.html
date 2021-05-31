@@ -45,8 +45,8 @@
 
   {% include 'views/templates/_template.html' %}
 
-  <div class="flex mb-16 -mt-8">
-      <div class="w-1/4">
+  <div class="flex mb-16 -mt-8{% if template.template_type != 'email' %} flex-col{% endif %}">
+      <div class="{% if template.template_type == 'email' %}w-1/4{% else %}mb-6{% endif %}">
         {% if current_user.has_permissions('manage_templates') and not template._template.archived %}
           <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}">
             {{ _('Edit this template') }}
@@ -54,7 +54,7 @@
         {% endif %}
       </div>
     {% if template._template.updated_at %}
-    <div class="w-3/4 text-right">
+    <div class="{% if template.template_type == 'email' %}w-3/4 text-right{% endif %}">
       <span>
         {% set last_edited = _('Last edited') %}
         {{ last_edited }}
