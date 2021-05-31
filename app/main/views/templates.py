@@ -178,10 +178,11 @@ def process_folder_management_form(form, current_folder_id):
     new_folder_id = None
 
     if form.is_add_template_op:
-        return _add_template_by_type(
-            form.add_template_by_template_type.data,
-            current_folder_id,
-        )
+        return redirect(url_for(
+            '.create_template',
+            service_id=current_service.id,
+            template_folder_id=current_folder_id,
+        ))
 
     if form.is_add_folder_op:
         new_folder_id = template_folder_api_client.create_template_folder(

@@ -44,6 +44,7 @@
           cancellable: true,
           setFocus: this.getFocusRoutine("#add_new_folder_name", false)
         },
+        // xxx remove
         {
           key: "add-new-template",
           $el: this.$form.find("#add_new_template_form"),
@@ -279,6 +280,10 @@
           ? this.$liveRegionCounter.before(state.$el)
           : state.$el.detach()
       );
+
+      if (this.currentState === "add-new-template") {
+        // nav to create page. xxx
+      }
 
       // use dialog mode for states which contain more than one form control
       if (
