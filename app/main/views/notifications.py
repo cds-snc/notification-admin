@@ -148,7 +148,8 @@ def view_notification(service_id, notification_id):
             notification.get('key_type') == KEY_TYPE_TEST
         ),
         back_link=back_link,
-        just_sent=request.args.get('just_sent')
+        just_sent=request.args.get('just_sent'),
+        attachments=get_attachments(notification, 'attach').values(),
     )
 
 
@@ -220,6 +221,18 @@ def get_single_notification_partials(notification):
     }
 
 
+def get_attachments(notification, sending_method):
+    if sending_method not in ['attach', 'link']:
+        raise NotImplementedError
+    return {
+        k: v['document']
+        for k, v in (notification.get('personalisation', {})).items()
+        if isinstance(v, dict)
+        and 'document' in v
+        and v["document"].get('sending_method') == sending_method
+    }
+
+
 def get_all_personalisation_from_notification(notification):
 
     if notification['template'].get('redact_personalisation'):
@@ -231,15 +244,10 @@ def get_all_personalisation_from_notification(notification):
     if notification['template']['template_type'] == 'sms':
         notification['personalisation']['phone_number'] = notification['to']
 
-    # Extract any file objects from the personalization
-    file_keys = [
-        k for k, v in (notification['personalisation'] or {}).items() if isinstance(v, dict) and 'document' in v
-    ]
-
     personalisation_data = notification['personalisation'].copy()
 
-    for key in file_keys:
-        personalisation_data[key] = personalisation_data[key]['document']['url']
+    for key, attachment in get_attachments(notification, 'link').items():
+        personalisation_data[key] = attachment['url']
 
     return personalisation_data
 

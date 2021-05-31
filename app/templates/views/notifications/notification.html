@@ -108,4 +108,16 @@
       {{ ajax_block(partials, updates_url, 'status', finished=finished) }}
     {% endif %}
 
+    {% if attachments %}
+      <h2 class="heading-small">{{ _("Attachments") }}</h2>
+
+      <ul class="list list-bullet">
+        {% for attachment in attachments %}
+          <li>
+            {{ attachment['filename'] }} &mdash; {{ attachment['file_size'] | filesizeformat }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
 {% endblock %}

@@ -129,6 +129,102 @@ def test_notification_status_page_respects_redaction(
     )
 
 
+@pytest.mark.parametrize('with_attachments, expected_attachments', [
+    (True, True),
+    (False, False),
+])
+def test_notification_status_page_shows_attachments(
+    client_request,
+    mocker,
+    service_one,
+    fake_uuid,
+    with_attachments,
+    expected_attachments,
+):
+    personalisation = {
+        'name': 'Jo',
+        'poster_link': {
+            'document': {
+                'sending_method': 'link',
+                'filename': 'test.pdf',
+                'file_size': 694807,
+                'url': 'https://example.com/test.pdf',
+            }
+        },
+        'poster': {
+            'document': {
+                'sending_method': 'attach',
+                'filename': 'poster.pdf',
+                'file_size': 694807,
+                'url': 'https://example.com/poster.pdf',
+            }
+        },
+        'poster2': {
+            'document': {
+                'sending_method': 'attach',
+                'filename': 'poster2.pdf',
+                'file_size': 1305213,
+                'url': 'https://example.com/poster2.pdf',
+            }
+        },
+
+    }
+    if not with_attachments:
+        del personalisation['poster']
+        del personalisation['poster2']
+
+    mock_get_notification(
+        mocker,
+        fake_uuid,
+        template_type='email',
+        personalisation=personalisation,
+    )
+
+    page = client_request.get(
+        'main.view_notification',
+        service_id=service_one['id'],
+        notification_id=fake_uuid
+    )
+
+    if expected_attachments:
+        assert "Attachments" in [h2.text for h2 in page.select('h2')]
+        assert "poster.pdf — 694.8 kB" in str(page)
+        assert "poster2.pdf — 1.3 MB" in str(page)
+        assert "test.pdf" not in str(page)
+    else:
+        assert "Attachments" not in [h2.text for h2 in page.select('h2')]
+
+
+def test_notification_status_page_shows_attachments_with_links(
+    client_request,
+    mocker,
+    service_one,
+    fake_uuid,
+):
+    mock_get_notification(
+        mocker,
+        fake_uuid,
+        content='Download it ((poster_link))',
+        template_type='email',
+        personalisation={
+            'poster_link': {
+                'document': {
+                    'sending_method': 'link',
+                    'url': 'https://example.com/test.pdf',
+                }
+            },
+        },
+    )
+
+    page = client_request.get(
+        'main.view_notification',
+        service_id=service_one['id'],
+        notification_id=fake_uuid
+    )
+
+    assert "Download it https://example.com/test.pdf" in page.select_one('.email-message-body').text
+
+
 @pytest.mark.parametrize('extra_args, expected_back_link', [
     (
         {},
