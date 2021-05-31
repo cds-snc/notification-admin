@@ -1506,6 +1506,23 @@ def required_for_ops(*operations):
     return validate
 
 
+class CreateTemplateForm(Form):
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self.add_template_by_template_type.choices = list(filter(None, [
+            ('email', _l('Email')),
+            ('sms', _l('Text message'))
+        ]))
+
+    add_template_by_template_type = RadioFieldWithRequiredMessage(_l('Create template'), validators=[
+        Optional(),
+    ], required_message=_l('Select the type of message you want to create'))
+
+
 class TemplateAndFoldersSelectionForm(Form):
     """
     This form expects the form data to include an operation, based on which submit button is clicked.

@@ -18,6 +18,10 @@
  
   {% set label_txt = _('Name for this key') %}
   {% set button_txt = _('Continue') %}
+    {% call form_wrapper() %}
+    {{ radios(form.add_template_by_template_type, disable=disabled_options) }}
+    {{ page_footer(button_txt) }}
+  {% endcall %}
 
 
 {% endblock %}

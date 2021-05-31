@@ -28,6 +28,7 @@ from app import (
 )
 from app.main import main
 from app.main.forms import (
+    CreateTemplateForm,
     EmailTemplateForm,
     LetterTemplateForm,
     LetterTemplatePostageForm,
@@ -343,6 +344,7 @@ def create_template(service_id, folder_id=None):
         "views/templates/create.html",
         service_id=service_id,
         template_folder_id=folder_id,
+        form=CreateTemplateForm(),
     )
 
 
