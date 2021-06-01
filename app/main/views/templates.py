@@ -328,6 +328,7 @@ def _add_template_by_type(template_type, template_folder_id):
             template_folder_id=template_folder_id,
         ))
 
+
 @main.route("/services/<service_id>/templates/create", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/templates/folders/<folder_id>/create", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/templates/<template_type>/create", methods=['GET', 'POST'])
