@@ -177,13 +177,6 @@ def process_folder_management_form(form, current_folder_id):
     current_service.get_template_folder_with_user_permission_or_403(current_folder_id, current_user)
     new_folder_id = None
 
-    if form.is_add_template_op:
-        return redirect(url_for(
-            '.create_template',
-            service_id=current_service.id,
-            template_folder_id=current_folder_id,
-        ))
-
     if form.is_add_folder_op:
         new_folder_id = template_folder_api_client.create_template_folder(
             current_service.id,
@@ -341,7 +334,6 @@ def _add_template_by_type(template_type, template_folder_id):
 @main.route("/services/<service_id>/templates/<template_type>/folders/<folder_id>/create", methods=['GET', 'POST'])
 @user_has_permissions('manage_templates')
 def create_template(service_id, template_type="all", folder_id=None):
-    # xxx
     form = CreateTemplateForm()
 
     if request.method == 'POST' and form.validate_on_submit():

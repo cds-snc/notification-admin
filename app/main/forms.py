@@ -1558,18 +1558,13 @@ class TemplateAndFoldersSelectionForm(Form):
         self.templates_and_folders.choices = template_list.as_id_and_name
 
         self.op = None
-        self.is_move_op = self.is_add_folder_op = self.is_add_template_op = False
+        self.is_move_op = self.is_add_folder_op = False
 
         self.move_to.all_template_folders = all_template_folders
         self.move_to.choices = [
             (item['id'], item['name'])
             for item in ([self.ALL_TEMPLATES_FOLDER] + all_template_folders)
         ]
-
-        self.add_template_by_template_type.choices = list(filter(None, [
-            ('email', _l('Email')),
-            ('sms', _l('Text message'))
-        ]))
 
     def is_selected(self, template_folder_id):
         return template_folder_id in (self.templates_and_folders.data or [])
@@ -1579,9 +1574,8 @@ class TemplateAndFoldersSelectionForm(Form):
 
         self.is_move_op = self.op in {'move-to-existing-folder', 'move-to-new-folder'}
         self.is_add_folder_op = self.op in {'add-new-folder', 'move-to-new-folder'}
-        self.is_add_template_op = self.op in {'add-new-template'}
 
-        if not (self.is_add_folder_op or self.is_move_op or self.is_add_template_op):
+        if not (self.is_add_folder_op or self.is_move_op):
             return False
 
         return super().validate()
@@ -1608,11 +1602,6 @@ class TemplateAndFoldersSelectionForm(Form):
         ])
     add_new_folder_name = StringField(_l('Folder name'), validators=[required_for_ops('add-new-folder')])
     move_to_new_folder_name = StringField(_l('Folder name'), validators=[required_for_ops('move-to-new-folder')])
-
-    add_template_by_template_type = RadioFieldWithRequiredMessage(_l('Create template'), validators=[
-        required_for_ops('add-new-template'),
-        Optional(),
-    ], required_message=_l('Select the type of message you want to create'))
 
 
 class ClearCacheForm(StripWhitespaceForm):
