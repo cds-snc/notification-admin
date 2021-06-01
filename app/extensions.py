@@ -10,4 +10,6 @@ antivirus_client = AntivirusClient()
 statsd_client = StatsdClient()
 zendesk_client = ZendeskClient()
 redis_client = RedisClient()
-cache = Cache(config={'CACHE_TYPE': 'simple'})  # TODO: pull config out to config.py later
+cache = Cache(
+    config={"CACHE_TYPE": "simple"}
+)  # TODO: pull config out to config.py later

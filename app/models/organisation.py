@@ -9,34 +9,37 @@ from app.notify_client.organisations_api_client import organisations_client
 class Organisation(JSONModel):
 
     TYPES = (
-        ('central', _('Government of Canada')),  # CDS note: central key name comes from GDS
-        ('local', 'Local government'),
-        ('nhs_central', 'NHS – central government agency or public body'),
-        ('nhs_local', 'NHS Trust or Clinical Commissioning Group'),
-        ('nhs_gp', 'GP practice'),
-        ('emergency_service', 'Emergency service'),
-        ('school_or_college', 'School or college'),
-        ('other', 'Other'),
+        (
+            "central",
+            _("Government of Canada"),
+        ),  # CDS note: central key name comes from GDS
+        ("local", "Local government"),
+        ("nhs_central", "NHS – central government agency or public body"),
+        ("nhs_local", "NHS Trust or Clinical Commissioning Group"),
+        ("nhs_gp", "GP practice"),
+        ("emergency_service", "Emergency service"),
+        ("school_or_college", "School or college"),
+        ("other", "Other"),
     )
 
     ALLOWED_PROPERTIES = {
-        'id',
-        'name',
-        'active',
-        'crown',
-        'default_branding_is_french',
-        'organisation_type',
-        'letter_branding_id',
-        'email_branding_id',
-        'agreement_signed',
-        'agreement_signed_at',
-        'agreement_signed_by_id',
-        'agreement_signed_version',
-        'agreement_signed_on_behalf_of_name',
-        'agreement_signed_on_behalf_of_email_address',
-        'domains',
-        'request_to_go_live_notes',
-        'count_of_live_services',
+        "id",
+        "name",
+        "active",
+        "crown",
+        "default_branding_is_french",
+        "organisation_type",
+        "letter_branding_id",
+        "email_branding_id",
+        "agreement_signed",
+        "agreement_signed_at",
+        "agreement_signed_by_id",
+        "agreement_signed_version",
+        "agreement_signed_on_behalf_of_name",
+        "agreement_signed_on_behalf_of_email_address",
+        "domains",
+        "request_to_go_live_notes",
+        "count_of_live_services",
     }
 
     @classmethod
@@ -56,21 +59,23 @@ class Organisation(JSONModel):
         return cls.create(
             name=form.name.data,
             crown={
-                'crown': True,
-                'non-crown': False,
-                'unknown': None,
+                "crown": True,
+                "non-crown": False,
+                "unknown": None,
             }.get(form.crown_status.data),
             organisation_type=form.organisation_type.data,
         )
 
     @classmethod
     def create(cls, name, crown, organisation_type, agreement_signed=False):
-        return cls(organisations_client.create_organisation(
-            name=name,
-            crown=crown,
-            organisation_type=organisation_type,
-            agreement_signed=agreement_signed,
-        ))
+        return cls(
+            organisations_client.create_organisation(
+                name=name,
+                crown=crown,
+                organisation_type=organisation_type,
+                agreement_signed=agreement_signed,
+            )
+        )
 
     def __init__(self, _dict):
 
@@ -86,30 +91,32 @@ class Organisation(JSONModel):
 
     def as_agreement_statement_for_go_live_request(self, fallback_domain):
         if self.agreement_signed:
-            agreement_statement = 'Yes, on behalf of {}.'.format(self.name)
+            agreement_statement = "Yes, on behalf of {}.".format(self.name)
         elif self.name:
-            agreement_statement = '{} (organisation is {}, {}).'.format(
+            agreement_statement = "{} (organisation is {}, {}).".format(
                 {
-                    False: 'No',
-                    None: 'Can’t tell',
+                    False: "No",
+                    None: "Can’t tell",
                 }.get(self.agreement_signed),
                 self.name,
                 {
-                    True: 'a crown body',
-                    False: 'a non-crown body',
-                    None: 'crown status unknown',
+                    True: "a crown body",
+                    False: "a non-crown body",
+                    None: "crown status unknown",
                 }.get(self.crown),
             )
         else:
-            agreement_statement = 'Can’t tell (domain is {}).'.format(fallback_domain)
+            agreement_statement = "Can’t tell (domain is {}).".format(fallback_domain)
 
         if self.request_to_go_live_notes:
-            agreement_statement = agreement_statement + ' ' + self.request_to_go_live_notes
+            agreement_statement = (
+                agreement_statement + " " + self.request_to_go_live_notes
+            )
 
         return agreement_statement
 
     def as_info_for_branding_request(self, fallback_domain):
-        return self.name or 'Can’t tell (domain is {})'.format(fallback_domain)
+        return self.name or "Can’t tell (domain is {})".format(fallback_domain)
 
     @property
     def organisation_type_label(self):
@@ -117,7 +124,7 @@ class Organisation(JSONModel):
 
     @property
     def default_branding_is_french(self):
-        return self._dict['default_branding_is_french']
+        return self._dict["default_branding_is_french"]
 
     @property
     def crown_status_or_404(self):
@@ -131,20 +138,22 @@ class Organisation(JSONModel):
 
     @property
     def live_services(self):
-        return [s for s in self.services if s['active'] and not s['restricted']]
+        return [s for s in self.services if s["active"] and not s["restricted"]]
 
     @property
     def trial_services(self):
-        return [s for s in self.services if not s['active'] or s['restricted']]
+        return [s for s in self.services if not s["active"] or s["restricted"]]
 
     @cached_property
     def invited_users(self):
         from app.models.user import OrganisationInvitedUsers
+
         return OrganisationInvitedUsers(self.id)
 
     @cached_property
     def active_users(self):
         from app.models.user import OrganisationUsers
+
         return OrganisationUsers(self.id)
 
     @cached_property

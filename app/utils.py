@@ -43,15 +43,21 @@ from app import cache
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
 
-SENDING_STATUSES = ['created', 'pending', 'sending', 'pending-virus-check']
-DELIVERED_STATUSES = ['delivered', 'sent', 'returned-letter']
-FAILURE_STATUSES = ['failed', 'temporary-failure', 'permanent-failure',
-                    'technical-failure', 'virus-scan-failed', 'validation-failed']
+SENDING_STATUSES = ["created", "pending", "sending", "pending-virus-check"]
+DELIVERED_STATUSES = ["delivered", "sent", "returned-letter"]
+FAILURE_STATUSES = [
+    "failed",
+    "temporary-failure",
+    "permanent-failure",
+    "technical-failure",
+    "virus-scan-failed",
+    "validation-failed",
+]
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
 
-with open('{}/email_domains.txt'.format(
-    os.path.dirname(os.path.realpath(__file__))
-)) as email_domains:
+with open(
+    "{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))
+) as email_domains:
     GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains]
 
 
@@ -69,26 +75,26 @@ def get_latest_stats(lang):
         date, notification_type, count = line
         year = date[:4]
         year_month = date[:7]
-        month = f'{get_month_name(date)} {year}'
+        month = f"{get_month_name(date)} {year}"
         if month not in monthly_stats:
             monthly_stats[month] = defaultdict(int)
         monthly_stats[month][notification_type] = count
-        monthly_stats[month]['total'] += count
-        monthly_stats[month]['year_month'] = year_month
+        monthly_stats[month]["total"] += count
+        monthly_stats[month]["year_month"] = year_month
 
-        if notification_type == 'sms':
+        if notification_type == "sms":
             sms_total += count
-        elif notification_type == 'email':
+        elif notification_type == "email":
             emails_total += count
 
     live_services = len(service_api_client.get_live_services_data()["data"])
 
     return {
-        'monthly_stats': monthly_stats,
-        'emails_total': emails_total,
-        'sms_total': sms_total,
-        'notifications_total': sms_total + emails_total,
-        'live_services': live_services,
+        "monthly_stats": monthly_stats,
+        "emails_total": emails_total,
+        "sms_total": sms_total,
+        "notifications_total": sms_total + emails_total,
+        "live_services": live_services,
     }
 
 
@@ -101,7 +107,9 @@ def user_has_permissions(*permissions, **permission_kwargs):
             if not current_user.has_permissions(*permissions, **permission_kwargs):
                 abort(403)
             return func(*args, **kwargs)
+
         return wrap_func
+
     return wrap
 
 
@@ -113,6 +121,7 @@ def user_is_gov_user(f):
         if not current_user.is_gov_user:
             abort(403)
         return f(*args, **kwargs)
+
     return wrapped
 
 
@@ -124,16 +133,18 @@ def user_is_platform_admin(f):
         if not current_user.platform_admin:
             abort(403)
         return f(*args, **kwargs)
+
     return wrapped
 
 
 def redirect_to_sign_in(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
-        if 'user_details' not in session:
-            return redirect(url_for('main.sign_in'))
+        if "user_details" not in session:
+            return redirect(url_for("main.sign_in"))
         else:
             return f(*args, **kwargs)
+
     return wrapped
 
 
@@ -143,28 +154,42 @@ def get_errors_for_csv(recipients, template_type):
 
     if any(recipients.rows_with_bad_recipients):
         number_of_bad_recipients = len(list(recipients.rows_with_bad_recipients))
-        if 'sms' == template_type:
+        if "sms" == template_type:
             if 1 == number_of_bad_recipients:
                 errors.append(_("fix") + " 1 " + _("phone number"))
             else:
-                errors.append(_("fix") + " {} ".format(number_of_bad_recipients) + _("phone numbers"))
-        elif 'email' == template_type:
+                errors.append(
+                    _("fix")
+                    + " {} ".format(number_of_bad_recipients)
+                    + _("phone numbers")
+                )
+        elif "email" == template_type:
             if 1 == number_of_bad_recipients:
                 errors.append(_("fix") + " 1 " + _("email address"))
             else:
-                errors.append(_("fix") + " {} ".format(number_of_bad_recipients) + _("email addresses"))
-        elif 'letter' == template_type:
+                errors.append(
+                    _("fix")
+                    + " {} ".format(number_of_bad_recipients)
+                    + _("email addresses")
+                )
+        elif "letter" == template_type:
             if 1 == number_of_bad_recipients:
                 errors.append(_("fix") + " 1 " + _("address"))
             else:
-                errors.append(_("fix") + " {} ".format(number_of_bad_recipients) + _("addresses"))
+                errors.append(
+                    _("fix") + " {} ".format(number_of_bad_recipients) + _("addresses")
+                )
 
     if any(recipients.rows_with_missing_data):
         number_of_rows_with_missing_data = len(list(recipients.rows_with_missing_data))
         if 1 == number_of_rows_with_missing_data:
             errors.append(_("enter missing data in 1 row"))
         else:
-            errors.append(_("enter missing data in {} rows").format(number_of_rows_with_missing_data))
+            errors.append(
+                _("enter missing data in {} rows").format(
+                    number_of_rows_with_missing_data
+                )
+            )
 
     return errors
 
@@ -172,62 +197,82 @@ def get_errors_for_csv(recipients, template_type):
 def generate_notifications_csv(**kwargs):
     from app import notification_api_client
     from app.s3_client.s3_csv_client import s3download
-    if 'page' not in kwargs:
-        kwargs['page'] = 1
 
-    if kwargs.get('job_id'):
-        original_file_contents = s3download(kwargs['service_id'], kwargs['job_id'])
+    if "page" not in kwargs:
+        kwargs["page"] = 1
+
+    if kwargs.get("job_id"):
+        original_file_contents = s3download(kwargs["service_id"], kwargs["job_id"])
         original_upload = RecipientCSV(
             original_file_contents,
-            template_type=kwargs['template_type'],
+            template_type=kwargs["template_type"],
         )
         original_column_headers = original_upload.column_headers
-        fieldnames = ['Row number'] + original_column_headers + ['Template', 'Type', 'Job', 'Status', 'Time']
+        fieldnames = (
+            ["Row number"]
+            + original_column_headers
+            + ["Template", "Type", "Job", "Status", "Time"]
+        )
     else:
-        fieldnames = ['Recipient', 'Template', 'Type', 'Sent by', 'Sent by email', 'Job', 'Status', 'Time']
+        fieldnames = [
+            "Recipient",
+            "Template",
+            "Type",
+            "Sent by",
+            "Sent by email",
+            "Job",
+            "Status",
+            "Time",
+        ]
 
-    yield ','.join(fieldnames) + '\n'
+    yield ",".join(fieldnames) + "\n"
 
-    while kwargs['page']:
-        notifications_resp = notification_api_client.get_notifications_for_service(**kwargs)
-        for notification in notifications_resp['notifications']:
-            if kwargs.get('job_id'):
-                values = [
-                    notification['row_number'],
-                ] + [
-                    original_upload[notification['row_number'] - 1].get(header).data
-                    for header in original_column_headers
-                ] + [
-                    notification['template_name'],
-                    notification['template_type'],
-                    notification['job_name'],
-                    notification['status'],
-                    notification['created_at'],
-                ]
+    while kwargs["page"]:
+        notifications_resp = notification_api_client.get_notifications_for_service(
+            **kwargs
+        )
+        for notification in notifications_resp["notifications"]:
+            if kwargs.get("job_id"):
+                values = (
+                    [
+                        notification["row_number"],
+                    ]
+                    + [
+                        original_upload[notification["row_number"] - 1].get(header).data
+                        for header in original_column_headers
+                    ]
+                    + [
+                        notification["template_name"],
+                        notification["template_type"],
+                        notification["job_name"],
+                        notification["status"],
+                        notification["created_at"],
+                    ]
+                )
             else:
                 values = [
-                    notification['recipient'],
-                    notification['template_name'],
-                    notification['template_type'],
-                    notification['created_by_name'] or '',
-                    notification['created_by_email_address'] or '',
-                    notification['job_name'] or '',
-                    notification['status'],
-                    notification['created_at']
+                    notification["recipient"],
+                    notification["template_name"],
+                    notification["template_type"],
+                    notification["created_by_name"] or "",
+                    notification["created_by_email_address"] or "",
+                    notification["job_name"] or "",
+                    notification["status"],
+                    notification["created_at"],
                 ]
             yield Spreadsheet.from_rows([map(str, values)]).as_csv_data
 
-        if notifications_resp['links'].get('next'):
-            kwargs['page'] += 1
+        if notifications_resp["links"].get("next"):
+            kwargs["page"] += 1
         else:
             return
     raise Exception("Should never reach here")
 
 
 def get_page_from_request():
-    if 'page' in request.args:
+    if "page" in request.args:
         try:
-            return int(request.args['page'])
+            return int(request.args["page"])
         except ValueError:
             return None
     else:
@@ -235,42 +280,50 @@ def get_page_from_request():
 
 
 def generate_previous_dict(view, service_id, page, url_args=None):
-    return generate_previous_next_dict(view, service_id, page - 1, 'Previous page', url_args or {})
+    return generate_previous_next_dict(
+        view, service_id, page - 1, "Previous page", url_args or {}
+    )
 
 
 def generate_next_dict(view, service_id, page, url_args=None):
-    return generate_previous_next_dict(view, service_id, page + 1, 'Next page', url_args or {})
+    return generate_previous_next_dict(
+        view, service_id, page + 1, "Next page", url_args or {}
+    )
 
 
 def generate_previous_next_dict(view, service_id, page, title, url_args):
     return {
-        'url': url_for(view, service_id=service_id, page=page, **url_args),
-        'title': title,
-        'label': 'page {}'.format(page)
+        "url": url_for(view, service_id=service_id, page=page, **url_args),
+        "title": title,
+        "label": "page {}".format(page),
     }
 
 
-def email_safe(string, whitespace='.'):
+def email_safe(string, whitespace="."):
     # strips accents, diacritics etc
-    string = ''.join(c for c in unicodedata.normalize('NFD', string) if unicodedata.category(c) != 'Mn')
-    string = ''.join(
-        word.lower() if word.isalnum() or word in [whitespace, '-', '_'] else ''
-        for word in re.sub(r'\s+', whitespace, string.strip())
+    string = "".join(
+        c
+        for c in unicodedata.normalize("NFD", string)
+        if unicodedata.category(c) != "Mn"
     )
-    string = re.sub(r'\.{2,}', '.', string)
+    string = "".join(
+        word.lower() if word.isalnum() or word in [whitespace, "-", "_"] else ""
+        for word in re.sub(r"\s+", whitespace, string.strip())
+    )
+    string = re.sub(r"\.{2,}", ".", string)
     # Replace a sequence like ".-." or "._." to "-""
-    string = re.sub(r'(\.)(-|_)(\.)', r"\g<2>", string)
+    string = re.sub(r"(\.)(-|_)(\.)", r"\g<2>", string)
     # Disallow to repeat - _ or .
-    string = re.sub(r'(\.|-|_){2,}', r'\g<1>', string)
-    return string.strip('.')
+    string = re.sub(r"(\.|-|_){2,}", r"\g<1>", string)
+    return string.strip(".")
 
 
 def email_safe_name(string):
-    return string.replace('"', '').strip()
+    return string.replace('"', "").strip()
 
 
 def id_safe(string):
-    return email_safe(string, whitespace='-')
+    return email_safe(string, whitespace="-")
 
 
 def get_remote_addr(request):
@@ -282,26 +335,23 @@ def get_remote_addr(request):
         return None
 
 
-class Spreadsheet():
+class Spreadsheet:
 
-    allowed_file_extensions = ['csv', 'xlsx', 'xls', 'ods', 'xlsm', 'tsv']
+    allowed_file_extensions = ["csv", "xlsx", "xls", "ods", "xlsm", "tsv"]
 
-    def __init__(self, csv_data=None, rows=None, filename=''):
+    def __init__(self, csv_data=None, rows=None, filename=""):
 
         self.filename = filename
 
         if csv_data and rows:
-            raise TypeError('Spreadsheet must be created from either rows or CSV data')
+            raise TypeError("Spreadsheet must be created from either rows or CSV data")
 
-        self._csv_data = csv_data or ''
+        self._csv_data = csv_data or ""
         self._rows = rows or []
 
     @property
     def as_dict(self):
-        return {
-            'file_name': self.filename,
-            'data': self.as_csv_data
-        }
+        return {"file_name": self.filename, "data": self.as_csv_data}
 
     @property
     def as_csv_data(self):
@@ -319,71 +369,76 @@ class Spreadsheet():
 
     @staticmethod
     def get_extension(filename):
-        return path.splitext(filename)[1].lower().lstrip('.')
+        return path.splitext(filename)[1].lower().lstrip(".")
 
     @staticmethod
     def normalise_newlines(file_content):
-        return '\r\n'.join(file_content.read().decode('utf-8').splitlines())
+        return "\r\n".join(file_content.read().decode("utf-8").splitlines())
 
     @classmethod
-    def from_rows(cls, rows, filename=''):
+    def from_rows(cls, rows, filename=""):
         return cls(rows=rows, filename=filename)
 
     @classmethod
-    def from_dict(cls, dictionary, filename=''):
+    def from_dict(cls, dictionary, filename=""):
         return cls.from_rows(
-            zip(
-                *sorted(dictionary.items(), key=lambda pair: pair[0])
-            ),
+            zip(*sorted(dictionary.items(), key=lambda pair: pair[0])),
             filename=filename,
         )
 
     @classmethod
-    def from_file(cls, file_content, filename=''):
+    def from_file(cls, file_content, filename=""):
         extension = cls.get_extension(filename)
 
-        if extension == 'csv':
-            return cls(csv_data=Spreadsheet.normalise_newlines(file_content), filename=filename)
+        if extension == "csv":
+            return cls(
+                csv_data=Spreadsheet.normalise_newlines(file_content), filename=filename
+            )
 
-        if extension == 'tsv':
-            file_content = StringIO(
-                Spreadsheet.normalise_newlines(file_content))
+        if extension == "tsv":
+            file_content = StringIO(Spreadsheet.normalise_newlines(file_content))
 
         instance = cls.from_rows(
-            pyexcel.iget_array(
-                file_type=extension,
-                file_stream=file_content),
-            filename)
+            pyexcel.iget_array(file_type=extension, file_stream=file_content), filename
+        )
         pyexcel.free_resources()
         return instance
 
     @property
     def as_rows(self):
         if not self._rows:
-            self._rows = list(csv.reader(
-                StringIO(self._csv_data),
-                quoting=csv.QUOTE_MINIMAL,
-                skipinitialspace=True,
-            ))
+            self._rows = list(
+                csv.reader(
+                    StringIO(self._csv_data),
+                    quoting=csv.QUOTE_MINIMAL,
+                    skipinitialspace=True,
+                )
+            )
         return self._rows
 
     @property
     def as_excel_file(self):
         io = BytesIO()
-        pyexcel_xlsx.save_data(io, {'Sheet 1': self.as_rows})
+        pyexcel_xlsx.save_data(io, {"Sheet 1": self.as_rows})
         return io.getvalue()
 
 
 def get_help_argument():
-    return request.args.get('help') if request.args.get('help') in ('1', '2', '3') else None
+    return (
+        request.args.get("help")
+        if request.args.get("help") in ("1", "2", "3")
+        else None
+    )
 
 
 def email_address_ends_with(email_address, known_domains):
     return any(
-        email_address.lower().endswith((
-            "@{}".format(known),
-            ".{}".format(known),
-        ))
+        email_address.lower().endswith(
+            (
+                "@{}".format(known),
+                ".{}".format(known),
+            )
+        )
         for known in known_domains
     )
 
@@ -391,9 +446,7 @@ def email_address_ends_with(email_address, known_domains):
 def is_gov_user(email_address):
     return email_address_ends_with(
         email_address, GOVERNMENT_EMAIL_DOMAIN_NAMES
-    ) or email_address_ends_with(
-        email_address, organisations_client.get_domains()
-    )
+    ) or email_address_ends_with(email_address, organisations_client.get_domains())
 
 
 def get_template(
@@ -410,21 +463,24 @@ def get_template(
     # Add a folder to the project root called 'jinja_templates' with copies from notification-utls repo of:
     # 'email_preview_template.jinja2'
     # 'sms_preview_template.jinja2'
-    debug_template_path = (path.dirname(path.abspath(__file__))
-                           if os.environ.get('USE_LOCAL_JINJA_TEMPLATES') == 'True' else None)
+    debug_template_path = (
+        path.dirname(path.abspath(__file__))
+        if os.environ.get("USE_LOCAL_JINJA_TEMPLATES") == "True"
+        else None
+    )
 
-    if 'email' == template['template_type']:
+    if "email" == template["template_type"]:
         return EmailPreviewTemplate(
             template,
             from_name=service.name,
-            from_address='{}@notifications.service.gov.uk'.format(service.email_from),
+            from_address="{}@notifications.service.gov.uk".format(service.email_from),
             show_recipient=show_recipient,
             redact_missing_personalisation=redact_missing_personalisation,
             reply_to=email_reply_to,
             jinja_path=debug_template_path,
             **get_email_logo_options(service),
         )
-    if 'sms' == template['template_type']:
+    if "sms" == template["template_type"]:
         return SMSPreviewTemplate(
             template,
             prefix=service.name,
@@ -433,22 +489,22 @@ def get_template(
             show_sender=bool(sms_sender),
             show_recipient=show_recipient,
             redact_missing_personalisation=redact_missing_personalisation,
-            jinja_path=debug_template_path
+            jinja_path=debug_template_path,
         )
-    if 'letter' == template['template_type']:
+    if "letter" == template["template_type"]:
         if letter_preview_url:
             return LetterImageTemplate(
                 template,
                 image_url=letter_preview_url,
                 page_count=int(page_count),
-                contact_block=template['reply_to_text'],
-                postage=template['postage'],
+                contact_block=template["reply_to_text"],
+                postage=template["postage"],
             )
         else:
             return LetterPreviewTemplate(
                 template,
-                contact_block=template['reply_to_text'],
-                admin_base_url=current_app.config['ADMIN_BASE_URL'],
+                contact_block=template["reply_to_text"],
+                admin_base_url=current_app.config["ADMIN_BASE_URL"],
                 redact_missing_personalisation=redact_missing_personalisation,
             )
 
@@ -457,38 +513,40 @@ def get_email_logo_options(service):
     email_branding = service.email_branding
     if email_branding is None:
         return {
-            'asset_domain': get_logo_cdn_domain(),
-            'fip_banner_english': not service.default_branding_is_french,
-            'fip_banner_french': service.default_branding_is_french,
+            "asset_domain": get_logo_cdn_domain(),
+            "fip_banner_english": not service.default_branding_is_french,
+            "fip_banner_french": service.default_branding_is_french,
         }
 
     return {
-        'asset_domain': get_logo_cdn_domain(),
-        'brand_colour': email_branding['colour'],
-        'brand_logo': email_branding['logo'],
-        'brand_text': email_branding['text'],
-        'brand_name': email_branding['name'],
+        "asset_domain": get_logo_cdn_domain(),
+        "brand_colour": email_branding["colour"],
+        "brand_logo": email_branding["logo"],
+        "brand_text": email_branding["text"],
+        "brand_name": email_branding["name"],
     }
 
 
 def get_current_financial_year():
     now = datetime.utcnow()
     current_month = int(now.strftime(no_pad_month()))
-    current_year = int(now.strftime('%Y'))
+    current_year = int(now.strftime("%Y"))
     return current_year if current_month > 3 else current_year - 1
 
 
 def get_available_until_date(created_at, service_data_retention_days=7):
-    created_at_date = dateutil.parser.parse(created_at).replace(hour=0, minute=0, second=0)
+    created_at_date = dateutil.parser.parse(created_at).replace(
+        hour=0, minute=0, second=0
+    )
     return created_at_date + timedelta(days=service_data_retention_days + 1)
 
 
 def email_or_sms_not_enabled(template_type, permissions):
-    return (template_type in ['email', 'sms']) and (template_type not in permissions)
+    return (template_type in ["email", "sms"]) and (template_type not in permissions)
 
 
 def get_logo_cdn_domain():
-    return current_app.config['ASSET_DOMAIN']
+    return current_app.config["ASSET_DOMAIN"]
 
 
 def parse_filter_args(filter_dict):
@@ -496,83 +554,84 @@ def parse_filter_args(filter_dict):
         filter_dict = MultiDict(filter_dict)
 
     return MultiDict(
-        (
-            key,
-            (','.join(filter_dict.getlist(key))).split(',')
-        )
+        (key, (",".join(filter_dict.getlist(key))).split(","))
         for key in filter_dict.keys()
-        if ''.join(filter_dict.getlist(key))
+        if "".join(filter_dict.getlist(key))
     )
 
 
 def set_status_filters(filter_args):
-    status_filters = filter_args.get('status', [])
-    return list(OrderedSet(chain(
-        (status_filters or REQUESTED_STATUSES),
-        DELIVERED_STATUSES if 'delivered' in status_filters else [],
-        SENDING_STATUSES if 'sending' in status_filters else [],
-        FAILURE_STATUSES if 'failed' in status_filters else []
-    )))
+    status_filters = filter_args.get("status", [])
+    return list(
+        OrderedSet(
+            chain(
+                (status_filters or REQUESTED_STATUSES),
+                DELIVERED_STATUSES if "delivered" in status_filters else [],
+                SENDING_STATUSES if "sending" in status_filters else [],
+                FAILURE_STATUSES if "failed" in status_filters else [],
+            )
+        )
+    )
 
 
 def unicode_truncate(s, length):
-    encoded = s.encode('utf-8')[:length]
-    return encoded.decode('utf-8', 'ignore')
+    encoded = s.encode("utf-8")[:length]
+    return encoded.decode("utf-8", "ignore")
 
 
 def starts_with_initial(name):
-    return bool(re.match(r'^.\.', name))
+    return bool(re.match(r"^.\.", name))
 
 
 def remove_middle_initial(name):
-    return re.sub(r'\s+.\s+', ' ', name)
+    return re.sub(r"\s+.\s+", " ", name)
 
 
 def remove_digits(name):
-    return ''.join(c for c in name if not c.isdigit())
+    return "".join(c for c in name if not c.isdigit())
 
 
 def normalize_spaces(name):
-    return ' '.join(name.split())
+    return " ".join(name.split())
 
 
 def guess_name_from_email_address(email_address):
 
-    possible_name = re.split(r'[\@\+]', email_address)[0]
+    possible_name = re.split(r"[\@\+]", email_address)[0]
 
-    if '.' not in possible_name or starts_with_initial(possible_name):
-        return ''
+    if "." not in possible_name or starts_with_initial(possible_name):
+        return ""
 
-    return Take(
-        possible_name
-    ).then(
-        str.replace, '.', ' '
-    ).then(
-        remove_digits
-    ).then(
-        remove_middle_initial
-    ).then(
-        str.title
-    ).then(
-        make_quotes_smart
-    ).then(
-        normalize_spaces
+    return (
+        Take(possible_name)
+        .then(str.replace, ".", " ")
+        .then(remove_digits)
+        .then(remove_middle_initial)
+        .then(str.title)
+        .then(make_quotes_smart)
+        .then(normalize_spaces)
     )
 
 
 def should_skip_template_page(template_type):
     return (
-        current_user.has_permissions('send_messages')
-        and not current_user.has_permissions('manage_templates', 'manage_api_keys')
-        and template_type != 'letter'
+        current_user.has_permissions("send_messages")
+        and not current_user.has_permissions("manage_templates", "manage_api_keys")
+        and template_type != "letter"
     )
 
 
 def get_default_sms_sender(sms_senders):
-    return str(next((
-        Field(x['sms_sender'], html='escape')
-        for x in sms_senders if x['is_default']
-    ), "None"))
+    return str(
+        next(
+            (
+                Field(x["sms_sender"], html="escape")
+                for x in sms_senders
+                if x["is_default"]
+            ),
+            "None",
+        )
+    )
 
 
 def printing_today_or_tomorrow():
@@ -580,9 +639,9 @@ def printing_today_or_tomorrow():
     now_est = convert_utc_to_est(now_utc)
 
     if now_est.time() < time(17, 30):
-        return 'today'
+        return "today"
     else:
-        return 'tomorrow'
+        return "tomorrow"
 
 
 def redact_mobile_number(mobile_number, spacing=""):
@@ -597,71 +656,74 @@ def redact_mobile_number(mobile_number, spacing=""):
 def get_letter_printing_statement(status, created_at):
     created_at_dt = parser.parse(created_at).replace(tzinfo=None)
     if letter_can_be_cancelled(status, created_at_dt):
-        return 'Printing starts {} at 5:30pm'.format(printing_today_or_tomorrow())
+        return "Printing starts {} at 5:30pm".format(printing_today_or_tomorrow())
     else:
-        printed_datetime = utc_string_to_aware_gmt_datetime(created_at) + timedelta(hours=6, minutes=30)
+        printed_datetime = utc_string_to_aware_gmt_datetime(created_at) + timedelta(
+            hours=6, minutes=30
+        )
         if printed_datetime.date() == datetime.now().date():
-            return 'Printed today at 5:30pm'
+            return "Printed today at 5:30pm"
         elif printed_datetime.date() == datetime.now().date() - timedelta(days=1):
-            return 'Printed yesterday at 5:30pm'
+            return "Printed yesterday at 5:30pm"
 
-        printed_date = printed_datetime.strftime('%d %B').lstrip('0')
+        printed_date = printed_datetime.strftime("%d %B").lstrip("0")
 
-        return 'Printed on {} at 5:30pm'.format(printed_date)
+        return "Printed on {} at 5:30pm".format(printed_date)
 
 
 def report_security_finding(
-        title,
-        finding,
-        criticality,
-        severity,
-        url="",
-        types=["Unusual Behaviors"],
-        UserDefinedFields={"app": "NotifyAdmin"}):
-    client = boto3.client('sts')
+    title,
+    finding,
+    criticality,
+    severity,
+    url="",
+    types=["Unusual Behaviors"],
+    UserDefinedFields={"app": "NotifyAdmin"},
+):
+    client = boto3.client("sts")
     response = client.get_caller_identity()
 
     account = response["Account"]
 
     product = f'arn:aws:securityhub:{current_app.config["AWS_REGION"].lower()}:{account}:product/{account}/default'
-    client = boto3.client('securityhub', region_name=current_app.config["AWS_REGION"].lower())
+    client = boto3.client(
+        "securityhub", region_name=current_app.config["AWS_REGION"].lower()
+    )
     client.batch_import_findings(
         Findings=[
             {
-                'SchemaVersion': '2018-10-08',
-                'Id': str(uuid.uuid4()),
-                'ProductArn': product,
-                'GeneratorId': 'NotifyAdminFinding',
-                'AwsAccountId': account,
-                'Types': types,
-                'CreatedAt': datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-                'UpdatedAt': datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-                'FirstObservedAt': datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-                'Severity': {
-                    'Normalized': severity
-                },
-                'Criticality': criticality,
-                'Title': title,
-                'Description': finding,
-                'SourceUrl': url,
-                'Resources': [
+                "SchemaVersion": "2018-10-08",
+                "Id": str(uuid.uuid4()),
+                "ProductArn": product,
+                "GeneratorId": "NotifyAdminFinding",
+                "AwsAccountId": account,
+                "Types": types,
+                "CreatedAt": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "UpdatedAt": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "FirstObservedAt": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "Severity": {"Normalized": severity},
+                "Criticality": criticality,
+                "Title": title,
+                "Description": finding,
+                "SourceUrl": url,
+                "Resources": [
                     {
-                        'Type': 'Container',
-                        'Id': os.getenv("HOST", "localhost"),
-                        'Partition': 'aws',
-                        'Region': current_app.config["AWS_REGION"].lower(),
-                        'Details': {
-                            'Container': {
-                                'Name': os.getenv("HOST", "localhost"),
-                                'ImageName': 'notify/admin',
+                        "Type": "Container",
+                        "Id": os.getenv("HOST", "localhost"),
+                        "Partition": "aws",
+                        "Region": current_app.config["AWS_REGION"].lower(),
+                        "Details": {
+                            "Container": {
+                                "Name": os.getenv("HOST", "localhost"),
+                                "ImageName": "notify/admin",
                             },
                         },
                     },
                 ],
-                'VerificationState': 'UNKNOWN',
-                'WorkflowState': 'NEW',
-                'RecordState': 'ACTIVE',
-                'UserDefinedFields': UserDefinedFields
+                "VerificationState": "UNKNOWN",
+                "WorkflowState": "NEW",
+                "RecordState": "ACTIVE",
+                "UserDefinedFields": UserDefinedFields,
             },
         ]
     )
@@ -710,7 +772,7 @@ def documentation_url(feature=None, section=None):
         "send": {
             "sending-a-file-by-email": {
                 "en": "sending-a-file-by-email",
-                "fr": "envoyer-un-fichier-par-courriel"
+                "fr": "envoyer-un-fichier-par-courriel",
             }
         }
     }
@@ -734,4 +796,5 @@ class PermanentRedirect(RequestRedirect):
     308 status codes are not supported when Internet Explorer is used with Windows 7
     and Windows 8.1, so this class keeps the original status code of 301.
     """
+
     code = 301

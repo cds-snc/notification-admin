@@ -2,12 +2,11 @@ from flask_babel import _
 from flask_babel import lazy_gettext as _l
 
 
-class TemplateList():
-
+class TemplateList:
     def __init__(
         self,
         service,
-        template_type='all',
+        template_type="all",
         template_folder_id=None,
         user=None,
     ):
@@ -22,30 +21,30 @@ class TemplateList():
         ):
             yield item
 
-    def get_templates_and_folders(self, template_type, template_folder_id, user, ancestors):
+    def get_templates_and_folders(
+        self, template_type, template_folder_id, user, ancestors
+    ):
 
         for item in self.service.get_template_folders(
-            template_type, template_folder_id, user,
+            template_type,
+            template_folder_id,
+            user,
         ):
             yield TemplateListFolder(
                 item,
                 folders=self.service.get_template_folders(
-                    template_type, item['id'], user
+                    template_type, item["id"], user
                 ),
-                templates=self.service.get_templates(
-                    template_type, item['id']
-                ),
+                templates=self.service.get_templates(template_type, item["id"]),
                 ancestors=ancestors,
                 service_id=self.service.id,
             )
             for sub_item in self.get_templates_and_folders(
-                template_type, item['id'], user, ancestors + [item]
+                template_type, item["id"], user, ancestors + [item]
             ):
                 yield sub_item
 
-        for item in self.service.get_templates(
-            template_type, template_folder_id, user
-        ):
+        for item in self.service.get_templates(template_type, template_folder_id, user):
             yield TemplateListTemplate(
                 item,
                 ancestors=ancestors,
@@ -62,13 +61,14 @@ class TemplateList():
 
     @property
     def folder_is_empty(self):
-        return not any(self.get_templates_and_folders(
-            'all', self.template_folder_id, self.user, []
-        ))
+        return not any(
+            self.get_templates_and_folders(
+                "all", self.template_folder_id, self.user, []
+            )
+        )
 
 
-class TemplateLists():
-
+class TemplateLists:
     def __init__(self, user):
         self.services = sorted(
             user.services,
@@ -94,7 +94,7 @@ class TemplateLists():
             for service_templates_and_folders in TemplateList(
                 service, user=self.user
             ).get_templates_and_folders(
-                template_type='all',
+                template_type="all",
                 template_folder_id=None,
                 user=self.user,
                 ancestors=[template_list_service],
@@ -106,7 +106,7 @@ class TemplateLists():
         return bool(self.services)
 
 
-class TemplateListItem():
+class TemplateListItem:
 
     is_service = False
 
@@ -115,8 +115,8 @@ class TemplateListItem():
         template_or_folder,
         ancestors,
     ):
-        self.id = template_or_folder['id']
-        self.name = template_or_folder['name']
+        self.id = template_or_folder["id"]
+        self.name = template_or_folder["name"]
         self.ancestors = ancestors
 
 
@@ -133,10 +133,10 @@ class TemplateListTemplate(TemplateListItem):
         super().__init__(template, ancestors)
         self.service_id = service_id
         self.hint = {
-            'email': _l('Email template'),
-            'sms': _l('Text message template'),
-            'letter': _l('Letter template'),
-        }.get(template['template_type'])
+            "email": _l("Email template"),
+            "sms": _l("Text message template"),
+            "letter": _l("Letter template"),
+        }.get(template["template_type"])
 
 
 class TemplateListFolder(TemplateListItem):
@@ -160,22 +160,22 @@ class TemplateListFolder(TemplateListItem):
     def _hint_parts(self):
 
         if self.number_of_folders == self.number_of_templates == 0:
-            yield 'Empty'  # These strings are wrapped later on in the html
+            yield "Empty"  # These strings are wrapped later on in the html
 
         if self.number_of_templates == 1:
-            yield '1 template'
+            yield "1 template"
         elif self.number_of_templates > 1:
             # this one still needs wrapping because we do not have unique keys for each x in "x templates"
-            yield '{} '.format(self.number_of_templates) + _('templates')
+            yield "{} ".format(self.number_of_templates) + _("templates")
 
         if self.number_of_folders == 1:
-            yield '1 folder'
+            yield "1 folder"
         elif self.number_of_folders > 1:
-            yield '{} folders'.format(self.number_of_folders)
+            yield "{} folders".format(self.number_of_folders)
 
     @property
     def hint(self):
-        return ', '.join(self._hint_parts)
+        return ", ".join(self._hint_parts)
 
 
 class TemplateListService(TemplateListFolder):

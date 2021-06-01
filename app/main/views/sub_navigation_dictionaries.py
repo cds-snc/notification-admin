@@ -16,7 +16,7 @@ def features_nav():
                     "name": "Template formatting guide",
                     "link": "main.templates",
                 },
-            ]
+            ],
         }
     ]
 
