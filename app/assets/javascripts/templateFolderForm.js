@@ -44,12 +44,11 @@
           cancellable: true,
           setFocus: this.getFocusRoutine("#add_new_folder_name", false)
         },
-        // xxx remove
         {
           key: "add-new-template",
           $el: this.$form.find("#add_new_template_form"),
           cancellable: true,
-          setFocus: this.getFocusRoutine("#add_new_template_form legend", true)
+          setFocus: this.getFocusRoutine("#add_new_template_form", true)
         }
       ];
 
@@ -151,7 +150,7 @@
     };
 
     this.addClearButton = function(state) {
-      let selector = "button[value=add-new-template]";
+      let selector = "button#add-new-template";
       let $clear = this.makeButton(window.polyglot.t("clear_button"), {
         onclick: () => {
           // uncheck all templates and folders
@@ -293,11 +292,7 @@
       }
 
       // use dialog mode for states which contain more than one form control
-      if (
-        ["move-to-existing-folder", "add-new-template"].indexOf(
-          this.currentState
-        ) !== -1
-      ) {
+      if ( this.currentState === "move-to-existing-folder") {
         mode = "dialog";
       }
       GOVUK.stickAtBottomWhenScrolling.setMode(mode);
