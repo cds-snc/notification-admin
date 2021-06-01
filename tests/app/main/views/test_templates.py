@@ -678,8 +678,8 @@ def test_should_show_logos_on_template_page(
     assert service_one['email_branding'] is None
 
     email_body = str(page.select_one('.email-message-body'))
-    assert f"https://{app_.config['ASSET_DOMAIN']}/gov-canada-en.png" in email_body
-    assert f"https://{app_.config['ASSET_DOMAIN']}/wmms-blk.png" in email_body
+    assert f"https://{app_.config['ASSET_DOMAIN']}/gc-logo-en.png" in email_body
+    assert f"https://{app_.config['ASSET_DOMAIN']}/canada-logo.png" in email_body
 
 
 def test_should_not_show_send_buttons_on_template_page_for_user_without_permission(
