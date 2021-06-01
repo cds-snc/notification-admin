@@ -1518,7 +1518,7 @@ class CreateTemplateForm(Form):
             ('sms', _l('Text message'))
         ]))
 
-    what_type = RadioField(_l('Create template'))
+    what_type = RadioField(_l('Type of message'))
 
 
 class TemplateAndFoldersSelectionForm(Form):
