@@ -337,28 +337,30 @@ def _add_template_by_type(template_type, template_folder_id):
 
 @main.route("/services/<service_id>/templates/create", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/templates/folders/<folder_id>/create", methods=['GET', 'POST'])
+@main.route("/services/<service_id>/templates/<template_type>/create", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/templates/<template_type>/folders/<folder_id>/create", methods=['GET', 'POST'])
 @user_has_permissions('manage_templates')
 def create_template(service_id, template_type="all", folder_id=None):
     # xxx
     form = CreateTemplateForm()
-    if request.method == 'POST':
+
+    if request.method == 'POST' and form.validate_on_submit():
         if not current_user.has_permissions('manage_templates'):
             abort(403)
         try:
             return _add_template_by_type(
-                form.add_template_by_template_type.data,
+                form.what_type.data,
                 folder_id,
             )
         except HTTPError as e:
             flash(e.message)
-
     return render_template(
         "views/templates/create.html",
         service_id=service_id,
         template_folder_id=folder_id,
         template_type=template_type,
         form=form,
+        option_hints={}
     )
 
 

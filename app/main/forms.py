@@ -1513,14 +1513,12 @@ class CreateTemplateForm(Form):
         **kwargs
     ):
         super().__init__(*args, **kwargs)
-        self.add_template_by_template_type.choices = list(filter(None, [
+        self.what_type.choices = list(filter(None, [
             ('email', _l('Email')),
             ('sms', _l('Text message'))
         ]))
 
-    add_template_by_template_type = RadioFieldWithRequiredMessage(_l('Create template'), validators=[
-        Optional(),
-    ], required_message=_l('Select the type of message you want to create'))
+    what_type = RadioField(_l('Create template'))
 
 
 class TemplateAndFoldersSelectionForm(Form):
