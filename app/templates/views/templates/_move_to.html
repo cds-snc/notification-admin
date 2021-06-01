@@ -28,9 +28,14 @@
       {{ page_footer(_('Add new folder'), button_name='operation', button_value='add-new-folder') }}
     </fieldset>
   </div>
-  <a href="{{url_for('main.create_template', service_id=current_service.id, template_folder_id=template_folder_id)}}" class="button">
-    {{ _("Create template") }}
-  </a>
+  <div id="add_new_template_form">
+    <div class="js-will-stick-at-bottom-when-scrolling">
+    {{ radios(templates_and_folders_form.add_template_by_template_type) }}
+    </div>
+    <div class="js-will-stick-at-bottom-when-scrolling">
+    {{ page_footer(_('Continue'), button_name='operation', button_value='add-new-template') }}
+    </div>
+  </div>
   <div class="selection-counter visuallyhidden" role="status" aria-live="polite">
     {{ _('Nothing selected') }}
   </div>

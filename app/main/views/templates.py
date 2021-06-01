@@ -337,8 +337,9 @@ def _add_template_by_type(template_type, template_folder_id):
 
 @main.route("/services/<service_id>/templates/create", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/templates/folders/<folder_id>/create", methods=['GET', 'POST'])
+@main.route("/services/<service_id>/templates/<template_type>/folders/<folder_id>/create", methods=['GET', 'POST'])
 @user_has_permissions('manage_templates')
-def create_template(service_id, folder_id=None):
+def create_template(service_id, template_type="all", folder_id=None):
     # xxx
     form = CreateTemplateForm()
     if request.method == 'POST':
@@ -356,6 +357,7 @@ def create_template(service_id, folder_id=None):
         "views/templates/create.html",
         service_id=service_id,
         template_folder_id=folder_id,
+        template_type=template_type,
         form=form,
     )
 

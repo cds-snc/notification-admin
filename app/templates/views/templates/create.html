@@ -13,7 +13,7 @@
   {% set header_txt = _('Create template') %}
   {{ page_header(
     header_txt,
-    back_link=url_for('main.choose_template', service_id=service_id, template_folder_id=template_folder_id)
+    back_link=url_for('main.choose_template', service_id=service_id, template_type=template_type, template_folder_id=template_folder_id)
   ) }}
  
   {% set label_txt = _('Name for this key') %}

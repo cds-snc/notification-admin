@@ -282,7 +282,8 @@
       );
 
       if (this.currentState === "add-new-template") {
-        // nav to create page. xxx
+        // nav to create page. 
+        window.location.href = `${window.location.href}/create`
       }
 
       // use dialog mode for states which contain more than one form control
