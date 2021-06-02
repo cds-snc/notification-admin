@@ -10,17 +10,12 @@ class Navigation:
 
     def __init__(self):
         self.mapping = {
-            navigation: {"main.{}".format(endpoint) for endpoint in endpoints}
-            for navigation, endpoints in self.mapping.items()
+            navigation: {"main.{}".format(endpoint) for endpoint in endpoints} for navigation, endpoints in self.mapping.items()
         }
 
     @property
     def endpoints_with_navigation(self):
-        return tuple(
-            chain.from_iterable(
-                (endpoints for navigation_item, endpoints in self.mapping.items())
-            )
-        )
+        return tuple(chain.from_iterable((endpoints for navigation_item, endpoints in self.mapping.items())))
 
     @property
     def endpoints_without_navigation(self):

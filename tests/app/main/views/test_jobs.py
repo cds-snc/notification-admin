@@ -25,10 +25,7 @@ from tests.conftest import (
             (
                 ("File Sending Delivered Failed"),
                 ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-                (
-                    "all email addresses.xlsx "
-                    "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"
-                ),
+                ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
                 ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
                 ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
             ),
@@ -41,10 +38,7 @@ from tests.conftest import (
                 ("even_later.csv " "Sending 2016-01-01 23:09:00.061258 1"),
                 ("File Sending Delivered Failed"),
                 ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-                (
-                    "all email addresses.xlsx "
-                    "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"
-                ),
+                ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
                 ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
                 ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
             ),
@@ -187,9 +181,7 @@ def test_should_show_page_for_one_job(
     )
 
     assert page.h1.text.strip() == "thisisatest.csv"
-    assert " ".join(page.find("tbody").find("tr").text.split()) == (
-        "6502532222 template content Delivered 11:10:00.061258"
-    )
+    assert " ".join(page.find("tbody").find("tr").text.split()) == ("6502532222 template content Delivered 11:10:00.061258")
     assert page.find("div", {"data-key": "notifications"})["data-resource"] == url_for(
         "main.view_job_updates",
         service_id=SERVICE_ONE_ID,
@@ -216,9 +208,7 @@ def test_should_show_page_for_one_job(
         from_job=fake_uuid,
     )
 
-    mock_get_notifications.assert_called_with(
-        SERVICE_ONE_ID, fake_uuid, status=expected_api_call
-    )
+    mock_get_notifications.assert_called_with(SERVICE_ONE_ID, fake_uuid, status=expected_api_call)
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -233,12 +223,8 @@ def test_should_show_page_for_one_job_with_flexible_data_retention(
     fake_uuid,
 ):
 
-    mock_get_service_data_retention.side_effect = [
-        [{"days_of_retention": 10, "notification_type": "sms"}]
-    ]
-    page = client_request.get(
-        "main.view_job", service_id=SERVICE_ONE_ID, job_id=fake_uuid, status="delivered"
-    )
+    mock_get_service_data_retention.side_effect = [[{"days_of_retention": 10, "notification_type": "sms"}]]
+    page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=fake_uuid, status="delivered")
 
     assert page.find("span", {"id": "time-left"}).text.split(" ")[0] == "2016-01-12"
     assert "Cancel sending these letters" not in page
@@ -259,10 +245,7 @@ def test_get_jobs_should_tell_user_if_more_than_one_page(
         job_id=fake_uuid,
         status="",
     )
-    assert (
-        page.find("p", {"class": "table-show-more-link"}).text.strip()
-        == "Only showing the first 50 rows"
-    )
+    assert page.find("p", {"class": "table-show-more-link"}).text.strip() == "Only showing the first 50 rows"
 
 
 def test_should_show_job_in_progress(
@@ -296,9 +279,7 @@ def test_should_show_letter_job(
     mocker,
 ):
 
-    get_notifications = mock_get_notifications(
-        mocker, active_user_with_permissions, diff_template_type="letter"
-    )
+    get_notifications = mock_get_notifications(mocker, active_user_with_permissions, diff_template_type="letter")
 
     page = client_request.get(
         "main.view_job",
@@ -310,13 +291,9 @@ def test_should_show_letter_job(
         "Sent by Test User on 2016-01-01 11:09:00.061258 Printing starts today at 5:30pm"
     )
     assert page.select(".banner-default-with-tick") == []
-    assert normalize_spaces(page.select("tbody tr")[0].text) == (
-        "1 Example Street template subject 2016-01-01 11:09:00.061258"
-    )
+    assert normalize_spaces(page.select("tbody tr")[0].text) == ("1 Example Street template subject 2016-01-01 11:09:00.061258")
     assert normalize_spaces(page.select(".keyline-block")[0].text) == ("1 Letter")
-    assert normalize_spaces(page.select(".keyline-block")[1].text) == (
-        "6 January Estimated delivery date"
-    )
+    assert normalize_spaces(page.select(".keyline-block")[1].text) == ("6 January Estimated delivery date")
     assert page.select("[download=download]") == []
     assert page.select(".hint") == []
 
@@ -428,9 +405,7 @@ def test_should_show_scheduled_job(
         job_id=fake_uuid,
     )
 
-    assert normalize_spaces(page.select("main p")[1].text) == (
-        "Sending Two week reminder 2016-01-02T00:00:00.061258"
-    )
+    assert normalize_spaces(page.select("main p")[1].text) == ("Sending Two week reminder 2016-01-02T00:00:00.061258")
     assert page.select("main p a")[0]["href"] == url_for(
         "main.view_template_version",
         service_id=SERVICE_ONE_ID,
@@ -485,17 +460,13 @@ def test_should_cancel_letter_job(client_request, mocker, active_user_with_permi
         job_status="finished",
     )
     mocker.patch("app.job_api_client.get_job", side_effect=[{"data": job}])
-    notifications_json = notification_json(
-        SERVICE_ONE_ID, job=job, status="created", template_type="letter"
-    )
+    notifications_json = notification_json(SERVICE_ONE_ID, job=job, status="created", template_type="letter")
     mocker.patch("app.job_api_client.get_job", side_effect=[{"data": job}])
     mocker.patch(
         "app.notification_api_client.get_notifications_for_service",
         side_effect=[notifications_json],
     )
-    mock_cancel = mocker.patch(
-        "app.main.jobs.job_api_client.cancel_letter_job", return_value=5
-    )
+    mock_cancel = mocker.patch("app.main.jobs.job_api_client.cancel_letter_job", return_value=5)
     client_request.post(
         "main.cancel_letter_job",
         service_id=SERVICE_ONE_ID,
@@ -536,23 +507,17 @@ def test_should_not_show_cancel_link_for_letter_job_if_too_late(
         job_id=job_id,
         created_at=job_created_at,
     )
-    notifications_json = notification_json(
-        SERVICE_ONE_ID, job=job, status="created", template_type="letter"
-    )
+    notifications_json = notification_json(SERVICE_ONE_ID, job=job, status="created", template_type="letter")
     mocker.patch("app.job_api_client.get_job", side_effect=[{"data": job}])
     mocker.patch(
         "app.notification_api_client.get_notifications_for_service",
         side_effect=[notifications_json],
     )
 
-    page = client_request.get(
-        "main.view_job", service_id=SERVICE_ONE_ID, job_id=str(job_id)
-    )
+    page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=str(job_id))
 
     assert "Cancel sending these letters" not in page
-    assert page.find(
-        "p", {"id": "printing-info"}
-    ).text.strip() == "Printed {} at 5:30pm".format(expected_fragment)
+    assert page.find("p", {"id": "printing-info"}).text.strip() == "Printed {} at 5:30pm".format(expected_fragment)
 
 
 @freeze_time("2019-06-20 15:32:00.000001")
@@ -573,26 +538,19 @@ def test_should_show_cancel_link_for_letter_job(
         created_at="2019-06-20T15:30:00.000001+00:00",
         job_status=job_status,
     )
-    notifications_json = notification_json(
-        SERVICE_ONE_ID, job=job, status="created", template_type="letter"
-    )
+    notifications_json = notification_json(SERVICE_ONE_ID, job=job, status="created", template_type="letter")
     mocker.patch("app.job_api_client.get_job", side_effect=[{"data": job}])
     mocker.patch(
         "app.notification_api_client.get_notifications_for_service",
         side_effect=[notifications_json],
     )
 
-    page = client_request.get(
-        "main.view_job", service_id=SERVICE_ONE_ID, job_id=str(job_id)
-    )
+    page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=str(job_id))
 
     assert page.find("a", text="Cancel sending these letters").attrs["href"] == url_for(
         "main.cancel_letter_job", service_id=SERVICE_ONE_ID, job_id=job_id
     )
-    assert (
-        page.find("p", {"id": "printing-info"}).text.strip()
-        == "Printing starts today at 5:30pm"
-    )
+    assert page.find("p", {"id": "printing-info"}).text.strip() == "Printing starts today at 5:30pm"
 
 
 @freeze_time("2019-06-20 15:31:00.000001")
@@ -618,9 +576,7 @@ def test_dont_cancel_letter_job_when_to_early_to_cancel(
         job_status=job_status,
         notification_count=2,
     )
-    mocker.patch(
-        "app.job_api_client.get_job", side_effect=[{"data": job}, {"data": job}]
-    )
+    mocker.patch("app.job_api_client.get_job", side_effect=[{"data": job}, {"data": job}])
 
     notifications_json = notification_json(
         SERVICE_ONE_ID,
@@ -644,10 +600,7 @@ def test_dont_cancel_letter_job_when_to_early_to_cancel(
     mock_cancel.assert_not_called()
     flash_message = normalize_spaces(page.find("div", class_="banner-dangerous").text)
 
-    assert (
-        "We are still processing these letters, please try again in a minute."
-        in flash_message
-    )
+    assert "We are still processing these letters, please try again in a minute." in flash_message
 
 
 @freeze_time("2016-01-01 00:00:00.000001")
@@ -662,9 +615,7 @@ def test_should_show_updates_for_one_job_as_json(
     mocker,
     fake_uuid,
 ):
-    response = logged_in_client.get(
-        url_for("main.view_job_updates", service_id=service_one["id"], job_id=fake_uuid)
-    )
+    response = logged_in_client.get(url_for("main.view_job_updates", service_id=service_one["id"], job_id=fake_uuid))
 
     assert response.status_code == 200
     content = json.loads(response.get_data(as_text=True))
@@ -723,10 +674,7 @@ def test_should_show_letter_job_with_first_class_if_notifications_are_first_clas
         job_id=fake_uuid,
     )
 
-    assert (
-        normalize_spaces(page.select(".keyline-block")[1].text)
-        == "5 January Estimated delivery date"
-    )
+    assert normalize_spaces(page.select(".keyline-block")[1].text) == "5 January Estimated delivery date"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -748,7 +696,4 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
         job_id=fake_uuid,
     )
 
-    assert (
-        normalize_spaces(page.select(".keyline-block")[1].text)
-        == "5 January Estimated delivery date"
-    )
+    assert normalize_spaces(page.select(".keyline-block")[1].text) == "5 January Estimated delivery date"

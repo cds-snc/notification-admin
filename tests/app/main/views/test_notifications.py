@@ -101,15 +101,9 @@ def test_notification_status_page_shows_details(
         notification_id=fake_uuid,
     )
 
-    assert normalize_spaces(page.select(".sms-message-recipient")[0].text) == (
-        "To: 6502532222"
-    )
-    assert normalize_spaces(page.select(".sms-message-wrapper")[0].text) == (
-        "service one: hello Jo"
-    )
-    assert normalize_spaces(page.select(".ajax-block-container p")[0].text) == (
-        expected_status
-    )
+    assert normalize_spaces(page.select(".sms-message-recipient")[0].text) == ("To: 6502532222")
+    assert normalize_spaces(page.select(".sms-message-wrapper")[0].text) == ("service one: hello Jo")
+    assert normalize_spaces(page.select(".ajax-block-container p")[0].text) == (expected_status)
 
     _mock_get_notification.assert_called_with(service_one["id"], fake_uuid)
 
@@ -143,10 +137,7 @@ def test_notification_status_page_respects_redaction(
         notification_id=fake_uuid,
     )
 
-    assert (
-        normalize_spaces(page.select(".sms-message-wrapper")[0].text)
-        == expected_content
-    )
+    assert normalize_spaces(page.select(".sms-message-wrapper")[0].text) == expected_content
 
     _mock_get_notification.assert_called_with(
         service_one["id"],
@@ -249,10 +240,7 @@ def test_notification_status_page_shows_attachments_with_links(
         notification_id=fake_uuid,
     )
 
-    assert (
-        "Download it https://example.com/test.pdf"
-        in page.select_one(".email-message-body").text
-    )
+    assert "Download it https://example.com/test.pdf" in page.select_one(".email-message-body").text
 
 
 @pytest.mark.parametrize(
@@ -297,7 +285,7 @@ def test_notification_status_shows_expected_back_link(
         "main.view_notification",
         service_id=SERVICE_ONE_ID,
         notification_id=fake_uuid,
-        **extra_args
+        **extra_args,
     )
     back_link = page.select_one(".back-link")
 
@@ -360,16 +348,10 @@ def test_notification_page_shows_page_for_letter_notification(
     assert normalize_spaces(page.select("main p:nth-of-type(1)")[0].text) == (
         "‘sample template’ was sent by Test User on 1 January at 1:01am"
     )
-    assert normalize_spaces(page.select("main p:nth-of-type(2)")[0].text) == (
-        "Printing starts today at 5:30pm"
-    )
-    assert normalize_spaces(page.select("main p:nth-of-type(3)")[0].text) == (
-        "Estimated delivery date: 6 January"
-    )
+    assert normalize_spaces(page.select("main p:nth-of-type(2)")[0].text) == ("Printing starts today at 5:30pm")
+    assert normalize_spaces(page.select("main p:nth-of-type(3)")[0].text) == ("Estimated delivery date: 6 January")
     assert len(page.select(".letter-postage")) == 1
-    assert normalize_spaces(page.select_one(".letter-postage").text) == (
-        "Postage: second class"
-    )
+    assert normalize_spaces(page.select_one(".letter-postage").text) == ("Postage: second class")
     assert page.select_one(".letter-postage")["class"] == [
         "letter-postage",
         "letter-postage-second",
@@ -447,12 +429,8 @@ def test_notification_page_shows_page_for_letter_sent_with_test_key(
         notification_id=fake_uuid,
     )
 
-    assert normalize_spaces(page.select("main p:nth-of-type(1)")[0].text) == (
-        expected_p1
-    )
-    assert normalize_spaces(page.select("main p:nth-of-type(2)")[0].text) == (
-        expected_p2
-    )
+    assert normalize_spaces(page.select("main p:nth-of-type(1)")[0].text) == (expected_p1)
+    assert normalize_spaces(page.select("main p:nth-of-type(2)")[0].text) == (expected_p2)
     assert normalize_spaces(page.select_one(".letter-postage").text) == expected_postage
     assert page.select("p.notification-status") == []
 
@@ -494,9 +472,7 @@ def test_notification_page_shows_cancelled_or_failed_letter(
         template_type="letter",
         notification_status=notification_status,
     )
-    mocker.patch(
-        "app.main.views.notifications.get_page_count_for_letter", return_value=1
-    )
+    mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
     page = client_request.get(
         "main.view_notification",
@@ -504,9 +480,7 @@ def test_notification_page_shows_cancelled_or_failed_letter(
         notification_id=fake_uuid,
     )
 
-    assert normalize_spaces(page.select("main p")[0].text) == (
-        "‘sample template’ was sent by Test User on 1 January at 1:01am"
-    )
+    assert normalize_spaces(page.select("main p")[0].text) == ("‘sample template’ was sent by Test User on 1 January at 1:01am")
     assert normalize_spaces(page.select("main p")[1].text) == (expected_message)
     assert not page.select("p.notification-status")
 
@@ -549,9 +523,7 @@ def test_notification_page_shows_cancel_link_for_letter_which_can_be_cancelled(
         template_type="letter",
         notification_status="created",
     )
-    mocker.patch(
-        "app.main.views.notifications.get_page_count_for_letter", return_value=1
-    )
+    mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
     page = client_request.get(
         "main.view_notification",
@@ -574,9 +546,7 @@ def test_notification_page_does_not_show_cancel_link_for_letter_which_cannot_be_
         template_type="letter",
         notification_status="delivered",
     )
-    mocker.patch(
-        "app.main.views.notifications.get_page_count_for_letter", return_value=1
-    )
+    mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
     page = client_request.get(
         "main.view_notification",
@@ -601,9 +571,7 @@ def test_notification_page_shows_page_for_first_class_letter_notification(
         template_type="letter",
         postage="first",
     )
-    mocker.patch(
-        "app.main.views.notifications.get_page_count_for_letter", return_value=3
-    )
+    mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=3)
 
     page = client_request.get(
         "main.view_notification",
@@ -611,17 +579,9 @@ def test_notification_page_shows_page_for_first_class_letter_notification(
         notification_id=fake_uuid,
     )
 
-    assert (
-        normalize_spaces(page.select("main p:nth-of-type(2)")[0].text)
-        == "Printing starts tomorrow at 5:30pm"
-    )
-    assert (
-        normalize_spaces(page.select("main p:nth-of-type(3)")[0].text)
-        == "Estimated delivery date: 5 January"
-    )
-    assert normalize_spaces(page.select_one(".letter-postage").text) == (
-        "Postage: first class"
-    )
+    assert normalize_spaces(page.select("main p:nth-of-type(2)")[0].text) == "Printing starts tomorrow at 5:30pm"
+    assert normalize_spaces(page.select("main p:nth-of-type(3)")[0].text) == "Estimated delivery date: 5 January"
+    assert normalize_spaces(page.select_one(".letter-postage").text) == ("Postage: first class")
     assert page.select_one(".letter-postage")["class"] == [
         "letter-postage",
         "letter-postage-first",
@@ -656,9 +616,7 @@ def test_should_show_image_of_letter_notification(
     assert response.get_data(as_text=True) == "foo"
 
 
-def test_should_show_image_of_letter_notification_that_failed_validation(
-    logged_in_client, fake_uuid, mocker
-):
+def test_should_show_image_of_letter_notification_that_failed_validation(logged_in_client, fake_uuid, mocker):
 
     mock_get_notification(
         mocker,
@@ -729,9 +687,7 @@ def test_notifification_page_shows_error_message_if_precompiled_letter_cannot_be
         "app.main.views.notifications.view_letter_notification_as_preview",
         side_effect=PdfReadError(),
     )
-    mocker.patch(
-        "app.main.views.notifications.pdf_page_count", side_effect=PdfReadError()
-    )
+    mocker.patch("app.main.views.notifications.pdf_page_count", side_effect=PdfReadError())
     page = client_request.get(
         "main.view_notification",
         service_id=SERVICE_ONE_ID,
@@ -739,10 +695,7 @@ def test_notifification_page_shows_error_message_if_precompiled_letter_cannot_be
     )
 
     error_message = page.find("p", class_="notification-status-cancelled").text
-    assert (
-        normalize_spaces(error_message)
-        == "Validation failed – this isn’t a PDF file that Notification can read"
-    )
+    assert normalize_spaces(error_message) == "Validation failed – this isn’t a PDF file that Notification can read"
 
 
 def test_should_404_for_unknown_extension(
@@ -784,9 +737,7 @@ def test_notification_page_has_link_to_download_letter(
 ):
 
     mock_get_notification(mocker, fake_uuid, template_type=template_type)
-    mocker.patch(
-        "app.main.views.notifications.get_page_count_for_letter", return_value=1
-    )
+    mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
     page = client_request.get(
         "main.view_notification",
@@ -832,9 +783,7 @@ def test_notification_page_has_expected_template_link_for_letter(
         is_precompiled_letter=is_precompiled_letter,
     )
 
-    mocker.patch(
-        "app.main.views.notifications.get_page_count_for_letter", return_value=1
-    )
+    mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
     page = client_request.get(
         "main.view_notification",
@@ -856,13 +805,9 @@ def test_should_show_image_of_precompiled_letter_notification(
     mocker,
 ):
 
-    mock_get_notification(
-        mocker, fake_uuid, template_type="letter", is_precompiled_letter=True
-    )
+    mock_get_notification(mocker, fake_uuid, template_type="letter", is_precompiled_letter=True)
 
-    mock_pdf_page_count = mocker.patch(
-        "app.main.views.notifications.pdf_page_count", return_value=1
-    )
+    mock_pdf_page_count = mocker.patch("app.main.views.notifications.pdf_page_count", return_value=1)
 
     mocker.patch(
         "app.main.views.notifications.notification_api_client.get_notification_letter_preview",
@@ -895,9 +840,7 @@ def test_show_cancel_letter_confirmation(
         template_type="letter",
         notification_status="created",
     )
-    mocker.patch(
-        "app.main.views.notifications.get_page_count_for_letter", return_value=1
-    )
+    mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
     page = client_request.get(
         "main.cancel_letter",
@@ -922,12 +865,8 @@ def test_cancelling_a_letter_calls_the_api(
         template_type="letter",
         notification_status="created",
     )
-    mocker.patch(
-        "app.main.views.notifications.get_page_count_for_letter", return_value=1
-    )
-    cancel_endpoint = mocker.patch(
-        "app.main.views.notifications.notification_api_client.update_notification_to_cancelled"
-    )
+    mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
+    cancel_endpoint = mocker.patch("app.main.views.notifications.notification_api_client.update_notification_to_cancelled")
 
     client_request.post(
         "main.cancel_letter",

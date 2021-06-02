@@ -15,9 +15,7 @@ def test_render_register_returns_template_with_form(client):
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert (
-        page.find("input", attrs={"name": "auth_type"}).attrs["value"] == "email_auth"
-    )
+    assert page.find("input", attrs={"name": "auth_type"}).attrs["value"] == "email_auth"
     assert page.select_one("#email_address")["spellcheck"] == "false"
     assert page.select_one("#email_address")["autocomplete"] == "email"
     assert page.select_one("#password")["autocomplete"] == "new-password"
@@ -67,16 +65,11 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         "auth_type": "sms_auth",
     }
 
-    response = client.post(
-        url_for("main.register"), data=user_data, follow_redirects=True
-    )
+    response = client.post(url_for("main.register"), data=user_data, follow_redirects=True)
     assert response.status_code == 200
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert (
-        page.select("main p")[0].text
-        == "An email has been sent to notfound@example.canada.ca."
-    )
+    assert page.select("main p")[0].text == "An email has been sent to notfound@example.canada.ca."
 
     mock_send_verify_email.assert_called_with(ANY, user_data["email_address"])
     mock_register_user.assert_called_with(
@@ -94,9 +87,7 @@ def test_register_continue_handles_missing_session_sensibly(
     # session is not set
     response = client.get(url_for("main.registration_continue"))
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.show_accounts_or_dashboard", _external=True
-    )
+    assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
 
 
 def test_process_register_returns_200_when_mobile_number_is_invalid(
@@ -145,9 +136,7 @@ def test_should_return_200_when_email_is_not_gov_uk(
     (
         "notfound@example.canada.ca",
         "example@lsquo.net",
-        pytest.param(
-            "example@ellipsis.com", marks=pytest.mark.xfail(raises=AssertionError)
-        ),
+        pytest.param("example@ellipsis.com", marks=pytest.mark.xfail(raises=AssertionError)),
     ),
 )
 def test_should_add_user_details_to_session(
@@ -344,9 +333,7 @@ def test_register_from_invite_when_user_registers_in_another_browser(
     assert response.location == url_for("main.verify", _external=True)
 
 
-@pytest.mark.parametrize(
-    "invite_email_address", ["gov-user@canada.ca", "non-gov-user@example.com"]
-)
+@pytest.mark.parametrize("invite_email_address", ["gov-user@canada.ca", "non-gov-user@example.com"])
 def test_register_from_email_auth_invite(
     client,
     sample_invite,
@@ -377,9 +364,7 @@ def test_register_from_email_auth_invite(
 
     resp = client.post(url_for("main.register_from_invite"), data=data)
     assert resp.status_code == 302
-    assert resp.location == url_for(
-        "main.service_dashboard", service_id=sample_invite["service"], _external=True
-    )
+    assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"], _external=True)
 
     # doesn't send any 2fa code
     assert not mock_send_verify_email.called
@@ -392,9 +377,7 @@ def test_register_from_email_auth_invite(
         data["password"],
         data["auth_type"],
     )
-    mock_accept_invite.assert_called_once_with(
-        sample_invite["service"], sample_invite["id"]
-    )
+    mock_accept_invite.assert_called_once_with(sample_invite["service"], sample_invite["id"])
     # just logs them in
     assert current_user.is_authenticated
     assert mock_add_user_to_service.called
@@ -431,13 +414,9 @@ def test_can_register_email_auth_without_phone_number(
 
     resp = client.post(url_for("main.register_from_invite"), data=data)
     assert resp.status_code == 302
-    assert resp.location == url_for(
-        "main.service_dashboard", service_id=sample_invite["service"], _external=True
-    )
+    assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"], _external=True)
 
-    mock_register_user.assert_called_once_with(
-        ANY, ANY, None, ANY, ANY  # mobile_number
-    )
+    mock_register_user.assert_called_once_with(ANY, ANY, None, ANY, ANY)  # mobile_number
 
 
 def test_cannot_register_with_sms_auth_and_missing_mobile_number(
@@ -462,9 +441,7 @@ def test_cannot_register_with_sms_auth_and_missing_mobile_number(
     assert err.attrs["data-error-label"] == "mobile_number"
 
 
-def test_register_from_invite_form_doesnt_show_mobile_number_field_if_email_auth(
-    client, sample_invite
-):
+def test_register_from_invite_form_doesnt_show_mobile_number_field_if_email_auth(client, sample_invite):
     sample_invite["auth_type"] = "email_auth"
     with client.session_transaction() as session:
         session["invited_user"] = sample_invite
@@ -473,7 +450,5 @@ def test_register_from_invite_form_doesnt_show_mobile_number_field_if_email_auth
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert (
-        page.find("input", attrs={"name": "auth_type"}).attrs["value"] == "email_auth"
-    )
+    assert page.find("input", attrs={"name": "auth_type"}).attrs["value"] == "email_auth"
     assert page.find("input", attrs={"name": "mobile_number"}) is None

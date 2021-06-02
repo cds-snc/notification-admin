@@ -18,9 +18,7 @@ def test_client_posts_archived_true_when_deleting_template(mocker):
     expected_url = "/service/{}/template/{}".format(SERVICE_ONE_ID, FAKE_TEMPLATE_ID)
 
     client = ServiceAPIClient()
-    mock_post = mocker.patch(
-        "app.notify_client.service_api_client.ServiceAPIClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.service_api_client.ServiceAPIClient.post")
 
     client.delete_service_template(SERVICE_ONE_ID, FAKE_TEMPLATE_ID)
     mock_post.assert_called_once_with(expected_url, data=expected_data)
@@ -151,10 +149,7 @@ def test_client_returns_count_of_service_templates(
         return_value={"data": template_data},
     )
 
-    assert (
-        service_api_client.count_service_templates(SERVICE_ONE_ID, **extra_args)
-        == expected_count
-    )
+    assert service_api_client.count_service_templates(SERVICE_ONE_ID, **extra_args) == expected_count
 
 
 @pytest.mark.parametrize(
@@ -230,13 +225,7 @@ def test_client_returns_count_of_service_templates(
             [SERVICE_ONE_ID, FAKE_TEMPLATE_ID, 1],
             [call("template-{}-version-1".format(FAKE_TEMPLATE_ID))],
             None,
-            [
-                call(
-                    "/service/{}/template/{}/version/1".format(
-                        SERVICE_ONE_ID, FAKE_TEMPLATE_ID
-                    )
-                )
-            ],
+            [call("/service/{}/template/{}/version/1".format(SERVICE_ONE_ID, FAKE_TEMPLATE_ID))],
             [
                 call(
                     "template-{}-version-1".format(FAKE_TEMPLATE_ID),
@@ -284,13 +273,7 @@ def test_client_returns_count_of_service_templates(
             [SERVICE_ONE_ID, FAKE_TEMPLATE_ID],
             [call("template-{}-versions".format(FAKE_TEMPLATE_ID))],
             None,
-            [
-                call(
-                    "/service/{}/template/{}/versions".format(
-                        SERVICE_ONE_ID, FAKE_TEMPLATE_ID
-                    )
-                )
-            ],
+            [call("/service/{}/template/{}/versions".format(SERVICE_ONE_ID, FAKE_TEMPLATE_ID))],
             [
                 call(
                     "template-{}-versions".format(FAKE_TEMPLATE_ID),
@@ -400,9 +383,7 @@ def test_deletes_service_cache(
 ):
     mocker.patch("app.notify_client.current_user", id="1")
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
-    mock_request = mocker.patch(
-        "notifications_python_client.base.BaseAPIClient.request"
-    )
+    mock_request = mocker.patch("notifications_python_client.base.BaseAPIClient.request")
 
     getattr(client, method)(*extra_args, **extra_kwargs)
 
@@ -477,9 +458,7 @@ def test_deletes_caches_when_modifying_templates(
 ):
     mocker.patch("app.notify_client.current_user", id="1")
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
-    mock_request = mocker.patch(
-        "notifications_python_client.base.BaseAPIClient.request"
-    )
+    mock_request = mocker.patch("notifications_python_client.base.BaseAPIClient.request")
 
     getattr(service_api_client, method)(*extra_args)
 
@@ -495,9 +474,7 @@ def test_deletes_caches_when_modifying_templates(
     ],
 )
 def test_has_accepted_tos(mocker, redis_return, expected):
-    mock_redis_get = mocker.patch(
-        "app.extensions.RedisClient.get", return_value=redis_return
-    )
+    mock_redis_get = mocker.patch("app.extensions.RedisClient.get", return_value=redis_return)
 
     assert service_api_client.has_accepted_tos(SERVICE_ONE_ID) == expected
 
@@ -527,9 +504,7 @@ def test_accept_tos(app_, mocker, monkeypatch, logged_in_client):
     ],
 )
 def test_has_submitted_use_case(mocker, redis_return, expected):
-    mock_redis_get = mocker.patch(
-        "app.extensions.RedisClient.get", return_value=redis_return
-    )
+    mock_redis_get = mocker.patch("app.extensions.RedisClient.get", return_value=redis_return)
 
     assert service_api_client.has_submitted_use_case(SERVICE_ONE_ID) == expected
 
@@ -557,9 +532,7 @@ def test_register_submit_use_case(mocker):
     ],
 )
 def test_get_use_case_data(mocker, redis_return, expected):
-    mock_redis_get = mocker.patch(
-        "app.extensions.RedisClient.get", return_value=redis_return
-    )
+    mock_redis_get = mocker.patch("app.extensions.RedisClient.get", return_value=redis_return)
 
     assert service_api_client.get_use_case_data(SERVICE_ONE_ID) == expected
 

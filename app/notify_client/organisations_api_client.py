@@ -13,11 +13,7 @@ class OrganisationsClient(NotifyAdminAPIClient):
 
     @cache.set("domains")
     def get_domains(self):
-        return list(
-            chain.from_iterable(
-                organisation["domains"] for organisation in self.get_organisations()
-            )
-        )
+        return list(chain.from_iterable(organisation["domains"] for organisation in self.get_organisations()))
 
     def get_organisation(self, org_id):
         return self.get(url="/organisations/{}".format(org_id))
@@ -71,16 +67,12 @@ class OrganisationsClient(NotifyAdminAPIClient):
         return self.get(url="/organisations/{}/services".format(org_id))
 
     def remove_user_from_organisation(self, org_id, user_id):
-        endpoint = "/organisations/{org_id}/users/{user_id}".format(
-            org_id=org_id, user_id=user_id
-        )
+        endpoint = "/organisations/{org_id}/users/{user_id}".format(org_id=org_id, user_id=user_id)
         data = _attach_current_user({})
         return self.delete(endpoint, data)
 
     def is_organisation_name_unique(self, org_id, name):
-        return self.get(
-            url="/organisations/unique", params={"org_id": org_id, "name": name}
-        )["result"]
+        return self.get(url="/organisations/unique", params={"org_id": org_id, "name": name})["result"]
 
 
 organisations_client = OrganisationsClient()

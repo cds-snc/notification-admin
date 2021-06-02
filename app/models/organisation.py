@@ -109,9 +109,7 @@ class Organisation(JSONModel):
             agreement_statement = "Can’t tell (domain is {}).".format(fallback_domain)
 
         if self.request_to_go_live_notes:
-            agreement_statement = (
-                agreement_statement + " " + self.request_to_go_live_notes
-            )
+            agreement_statement = agreement_statement + " " + self.request_to_go_live_notes
 
         return agreement_statement
 

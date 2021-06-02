@@ -142,9 +142,7 @@ def test_redirect_from_old_dashboard(
 
     assert response.status_code == 302
     assert response.location == expected_location
-    assert expected_location == url_for(
-        "main.service_dashboard", service_id=SERVICE_ONE_ID, _external=True
-    )
+    assert expected_location == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID, _external=True)
 
 
 def test_redirect_caseworkers_to_templates(
@@ -183,9 +181,7 @@ def test_get_started(
         service_id=SERVICE_ONE_ID,
     )
 
-    mock_get_service_templates_when_no_templates_exist.assert_called_once_with(
-        SERVICE_ONE_ID
-    )
+    mock_get_service_templates_when_no_templates_exist.assert_called_once_with(SERVICE_ONE_ID)
     assert "Get started" in page.text
 
 
@@ -232,9 +228,7 @@ def test_should_show_recent_templates_on_dashboard(
 
     mock_template_stats.assert_called_once_with(SERVICE_ONE_ID, limit_days=7)
 
-    headers = [
-        header.text.strip() for header in page.find_all("h2") + page.find_all("h1")
-    ]
+    headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
     assert "In the last 7 days" in headers
 
     table_rows = page.find_all("tbody")[1].find_all("tr")
@@ -293,17 +287,13 @@ def test_should_show_monthly_breakdown_of_template_usage(
     extra_args,
     template_label,
 ):
-    page = client_request.get(
-        "main.template_usage", service_id=SERVICE_ONE_ID, **extra_args
-    )
+    page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID, **extra_args)
 
     mock_get_monthly_template_usage.assert_called_once_with(SERVICE_ONE_ID, 2016)
 
     table_rows = page.select("tbody tr")
 
-    assert " ".join(table_rows[0].text.split()) == (
-        "My first template " + template_label + "2"
-    )
+    assert " ".join(table_rows[0].text.split()) == ("My first template " + template_label + "2")
 
     assert len(table_rows) == len(["April"])
     assert len(page.select(".table-no-data")) == len(["May", "June", "July"])
@@ -361,9 +351,7 @@ def test_stats_pages_show_last_3_years(
     )
 
     assert normalize_spaces(page.select_one(".pill").text) == (
-        "2012 to 2013 financial year "
-        "2013 to 2014 financial year "
-        "2014 to 2015 financial year"
+        "2012 to 2013 financial year " "2013 to 2014 financial year " "2014 to 2015 financial year"
     )
 
 
@@ -501,9 +489,7 @@ def test_correct_font_size_for_big_numbers(
         service_id=service_one["id"],
     )
 
-    assert expected_column_count == len(
-        page.select(".big-number-with-status {}".format(big_number_class))
-    )
+    assert expected_column_count == len(page.select(".big-number-with-status {}".format(big_number_class)))
 
 
 @pytest.mark.parametrize(
@@ -583,9 +569,7 @@ def test_dashboard_single_and_plural(
 
     mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
 
-    page = client_request.get(
-        "main.service_dashboard", service_id=service_one["id"], lang=lang
-    )
+    page = client_request.get("main.service_dashboard", service_id=service_one["id"], lang=lang)
 
     assert (
         normalize_spaces(page.select(".big-number-with-status")[0].text),
@@ -630,14 +614,9 @@ def test_should_show_recent_jobs_on_dashboard(
         )
     ):
         assert filename in table_rows[index].find_all("th")[0].text
-        assert (
-            "2016-01-01T11:09:00.061258+0000"
-            in table_rows[index].find_all("th")[0].text
-        )
+        assert "2016-01-01T11:09:00.061258+0000" in table_rows[index].find_all("th")[0].text
         for column_index, count in enumerate((1, 0, 0)):
-            assert table_rows[index].find_all("td")[column_index].text.strip() == str(
-                count
-            )
+            assert table_rows[index].find_all("td")[column_index].text.strip() == str(count)
 
 
 @freeze_time("2012-03-31 12:12:12")
@@ -662,10 +641,7 @@ def test_usage_page(
     nav_links = nav.find_all("a")
 
     assert normalize_spaces(nav_links[0].text) == "2010 to 2011 financial year"
-    assert (
-        normalize_spaces(nav.find("li", {"aria-selected": "true"}).text)
-        == "2011 to 2012 financial year"
-    )
+    assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 financial year"
     assert "252,190" in cols[1].text
     assert "Text messages" in cols[1].text
 
@@ -707,10 +683,7 @@ def test_usage_page_with_letters(
     nav_links = nav.find_all("a")
 
     assert normalize_spaces(nav_links[0].text) == "2010 to 2011 financial year"
-    assert (
-        normalize_spaces(nav.find("li", {"aria-selected": "true"}).text)
-        == "2011 to 2012 financial year"
-    )
+    assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 financial year"
     assert normalize_spaces(nav_links[1].text) == "2012 to 2013 financial year"
     assert "252,190" in cols[1].text
     assert "Text messages" in cols[1].text
@@ -763,9 +736,7 @@ def test_usage_page_displays_letters_ordered_by_postage(
             "postage": "first",
         },
     ]
-    mocker.patch(
-        "app.billing_api_client.get_billable_units", return_value=billable_units_resp
-    )
+    mocker.patch("app.billing_api_client.get_billable_units", return_value=billable_units_resp)
     service_one["permissions"].append("letter")
     page = client_request.get(
         "main.usage",
@@ -788,12 +759,7 @@ def test_usage_page_with_year_argument(
     mock_get_billable_units,
     mock_get_free_sms_fragment_limit,
 ):
-    assert (
-        logged_in_client.get(
-            url_for("main.usage", service_id=SERVICE_ONE_ID, year=2000)
-        ).status_code
-        == 200
-    )
+    assert logged_in_client.get(url_for("main.usage", service_id=SERVICE_ONE_ID, year=2000)).status_code == 200
     mock_get_billable_units.assert_called_once_with(SERVICE_ONE_ID, 2000)
     mock_get_usage.assert_called_once_with(SERVICE_ONE_ID, 2000)
     mock_get_free_sms_fragment_limit.assert_called_with(SERVICE_ONE_ID, 2000)
@@ -835,21 +801,13 @@ def _test_dashboard_menu(mocker, app_, usr, service, permissions):
         with app_.test_client() as client:
             usr["permissions"][str(service["id"])] = permissions
             usr["services"] = [service["id"]]
-            mocker.patch(
-                "app.user_api_client.check_verify_code", return_value=(True, "")
-            )
-            mocker.patch(
-                "app.service_api_client.get_services", return_value={"data": [service]}
-            )
+            mocker.patch("app.user_api_client.check_verify_code", return_value=(True, ""))
+            mocker.patch("app.service_api_client.get_services", return_value={"data": [service]})
             mocker.patch("app.user_api_client.get_user", return_value=usr)
             mocker.patch("app.user_api_client.get_user_by_email", return_value=usr)
-            mocker.patch(
-                "app.service_api_client.get_service", return_value={"data": service}
-            )
+            mocker.patch("app.service_api_client.get_service", return_value={"data": service})
             client.login(usr)
-            return client.get(
-                url_for("main.service_dashboard", service_id=service["id"])
-            )
+            return client.get(url_for("main.service_dashboard", service_id=service["id"]))
 
 
 def test_menu_send_messages(
@@ -885,9 +843,7 @@ def test_menu_send_messages(
         )
         assert url_for("main.manage_users", service_id=service_one["id"]) in page
 
-        url_service_settings = url_for(
-            "main.service_settings", service_id=service_one["id"]
-        )
+        url_service_settings = url_for("main.service_settings", service_id=service_one["id"])
         assert f'"{url_service_settings}"' not in page
         assert url_for("main.api_keys", service_id=service_one["id"]) not in page
         assert url_for("main.view_providers") not in page
@@ -1107,10 +1063,7 @@ def test_service_dashboard_updates_gets_dashboard_totals(
         service_id=SERVICE_ONE_ID,
     )
 
-    numbers = [
-        number.text.strip()
-        for number in page.find_all("div", class_="big-number-number")
-    ]
+    numbers = [number.text.strip() for number in page.find_all("div", class_="big-number-number")]
     assert "123" in numbers
     assert "456" in numbers
 

@@ -111,9 +111,7 @@ def test_client_parses_job_stats(mocker):
     expected_url = "/service/{}/job/{}".format(service_id, job_id)
 
     client = JobApiClient()
-    mock_get = mocker.patch(
-        "app.notify_client.job_api_client.JobApiClient.get", return_value=expected_data
-    )
+    mock_get = mocker.patch("app.notify_client.job_api_client.JobApiClient.get", return_value=expected_data)
 
     result = client.get_job(service_id, job_id)
 
@@ -151,9 +149,7 @@ def test_client_parses_empty_job_stats(mocker):
     expected_url = "/service/{}/job/{}".format(service_id, job_id)
 
     client = JobApiClient()
-    mock_get = mocker.patch(
-        "app.notify_client.job_api_client.JobApiClient.get", return_value=expected_data
-    )
+    mock_get = mocker.patch("app.notify_client.job_api_client.JobApiClient.get", return_value=expected_data)
 
     result = client.get_job(service_id, job_id)
 
@@ -230,9 +226,7 @@ def test_client_parses_job_stats_for_service(mocker):
     expected_url = "/service/{}/job".format(service_id)
 
     client = JobApiClient()
-    mock_get = mocker.patch(
-        "app.notify_client.job_api_client.JobApiClient.get", return_value=expected_data
-    )
+    mock_get = mocker.patch("app.notify_client.job_api_client.JobApiClient.get", return_value=expected_data)
 
     result = client.get_jobs(service_id)
 
@@ -297,9 +291,7 @@ def test_client_parses_empty_job_stats_for_service(mocker):
     expected_url = "/service/{}/job".format(service_id)
 
     client = JobApiClient()
-    mock_get = mocker.patch(
-        "app.notify_client.job_api_client.JobApiClient.get", return_value=expected_data
-    )
+    mock_get = mocker.patch("app.notify_client.job_api_client.JobApiClient.get", return_value=expected_data)
 
     result = client.get_jobs(service_id)
 
@@ -321,9 +313,7 @@ def test_cancel_job(mocker):
 
     JobApiClient().cancel_job("service_id", "job_id")
 
-    mock_post.assert_called_once_with(
-        url="/service/{}/job/{}/cancel".format("service_id", "job_id"), data={}
-    )
+    mock_post.assert_called_once_with(url="/service/{}/job/{}/cancel".format("service_id", "job_id"), data={})
 
 
 @pytest.mark.parametrize(
@@ -353,9 +343,7 @@ def test_has_jobs_sets_cache(
 
     JobApiClient().has_jobs(fake_uuid)
 
-    mock_get.assert_called_once_with(
-        url="/service/{}/job".format(fake_uuid), params={"page": 1}
-    )
+    mock_get.assert_called_once_with(url="/service/{}/job".format(fake_uuid), params={"page": 1})
     mock_redis_set.assert_called_once_with(
         "has_jobs-{}".format(fake_uuid),
         expected_cache_value,

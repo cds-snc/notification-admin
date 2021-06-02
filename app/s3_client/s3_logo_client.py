@@ -8,9 +8,7 @@ TEMP_TAG = "temp-{user_id}_"
 EMAIL_LOGO_LOCATION_STRUCTURE = "{temp}{unique_id}-{filename}"
 LETTER_PREFIX = "letters/static/images/letter-template/"
 LETTER_TEMP_TAG = LETTER_PREFIX + TEMP_TAG
-LETTER_TEMP_LOGO_LOCATION = (
-    "letters/static/images/letter-template/temp-{user_id}_{unique_id}-{filename}"
-)
+LETTER_TEMP_LOGO_LOCATION = "letters/static/images/letter-template/temp-{user_id}_{unique_id}-{filename}"
 
 
 def get_s3_object(bucket_name, filename):
@@ -27,9 +25,7 @@ def persist_logo(old_name, new_name):
     if old_name == new_name:
         return
     bucket_name = current_app.config["LOGO_UPLOAD_BUCKET_NAME"]
-    get_s3_object(bucket_name, new_name).copy_from(
-        CopySource="{}/{}".format(bucket_name, old_name)
-    )
+    get_s3_object(bucket_name, new_name).copy_from(CopySource="{}/{}".format(bucket_name, old_name))
     delete_s3_object(old_name)
 
 
@@ -66,9 +62,7 @@ def upload_email_logo(filename, filedata, region, user_id):
 
 
 def upload_letter_temp_logo(filename, filedata, region, user_id):
-    upload_filename = LETTER_TEMP_LOGO_LOCATION.format(
-        user_id=user_id, unique_id=str(uuid.uuid4()), filename=filename
-    )
+    upload_filename = LETTER_TEMP_LOGO_LOCATION.format(user_id=user_id, unique_id=str(uuid.uuid4()), filename=filename)
     bucket_name = current_app.config["LOGO_UPLOAD_BUCKET_NAME"]
     utils_s3upload(
         filedata=filedata,

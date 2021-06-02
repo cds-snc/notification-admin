@@ -81,9 +81,7 @@ from tests.conftest import (
         ),
     ],
 )
-@pytest.mark.parametrize(
-    "page_argument, expected_page_argument", [(1, 1), (22, 22), (None, 1)]
-)
+@pytest.mark.parametrize("page_argument, expected_page_argument", [(1, 1), (22, 22), (None, 1)])
 @pytest.mark.parametrize(
     "to_argument, expected_to_argument",
     [
@@ -123,7 +121,7 @@ def test_can_show_notifications(
             page=page_argument,
             _data={"to": to_argument},
             _expected_status=200,
-            **extra_args
+            **extra_args,
         )
     else:
         page = client_request.get(
@@ -131,14 +129,11 @@ def test_can_show_notifications(
             service_id=SERVICE_ONE_ID,
             status=status_argument,
             page=page_argument,
-            **extra_args
+            **extra_args,
         )
     text_of_first_row = page.select("tbody tr")[0].text
     assert "6502532222" in text_of_first_row
-    assert (
-        "template content" in text_of_first_row
-        or "template subject" in text_of_first_row
-    )
+    assert "template content" in text_of_first_row or "template subject" in text_of_first_row
     assert "Delivered" in text_of_first_row
     assert page_title in page.h1.text.strip()
 
@@ -170,7 +165,7 @@ def test_can_show_notifications(
             "main.get_notifications_as_json",
             service_id=service_one["id"],
             status=status_argument,
-            **extra_args
+            **extra_args,
         )
     )
     json_content = json.loads(json_response.get_data(as_text=True))
@@ -248,13 +243,9 @@ def test_link_to_download_notifications(
     expected_download_link,
 ):
     client_request.login(user(fake_uuid))
-    page = client_request.get(
-        "main.view_notifications", service_id=SERVICE_ONE_ID, **query_parameters
-    )
+    page = client_request.get("main.view_notifications", service_id=SERVICE_ONE_ID, **query_parameters)
     download_link = page.select_one("a[download=download]")
-    assert (download_link["href"] if download_link else None) == expected_download_link(
-        service_id=SERVICE_ONE_ID
-    )
+    assert (download_link["href"] if download_link else None) == expected_download_link(service_id=SERVICE_ONE_ID)
 
 
 def test_download_not_available_to_users_without_dashboard(
@@ -291,9 +282,7 @@ def test_letters_with_status_virus_scan_failed_shows_a_failure_description(
         status="",
     )
 
-    error_description = page.find(
-        "div", attrs={"class": "table-field-status-error"}
-    ).text.strip()
+    error_description = page.find("div", attrs={"class": "table-field-status-error"}).text.strip()
     assert "Virus detected\n" in error_description
 
 
@@ -335,18 +324,11 @@ def test_shows_message_when_no_notifications(
         message_type="sms",
     )
 
-    assert normalize_spaces(page.select("tbody tr")[0].text) == (
-        "No messages found (messages are kept for 7 days)"
-    )
+    assert normalize_spaces(page.select("tbody tr")[0].text) == ("No messages found (messages are kept for 7 days)")
 
 
 @pytest.mark.parametrize(
-    (
-        "initial_query_arguments,"
-        "form_post_data,"
-        "expected_search_box_label,"
-        "expected_search_box_contents"
-    ),
+    ("initial_query_arguments," "form_post_data," "expected_search_box_label," "expected_search_box_contents"),
     [
         (
             {},
@@ -401,7 +383,7 @@ def test_search_recipient_form(
         service_id=SERVICE_ONE_ID,
         _data=form_post_data,
         _expected_status=200,
-        **initial_query_arguments
+        **initial_query_arguments,
     )
 
     assert page.find("form")["method"] == "post"
@@ -513,9 +495,7 @@ def test_get_status_filters_constructs_links(client):
     ret = get_status_filters(Service({"id": "foo"}), "sms", STATISTICS)
 
     link = ret[0][2]
-    assert link == "/services/foo/notifications/sms?status={}".format(
-        quote("sending,delivered,failed")
-    )
+    assert link == "/services/foo/notifications/sms?status={}".format(quote("sending,delivered,failed"))
 
 
 def test_html_contains_notification_id(
@@ -584,9 +564,7 @@ def test_redacts_templates_that_should_be_redacted(
         message_type="sms",
     )
 
-    assert normalize_spaces(page.select("tbody tr th")[0].text) == (
-        "6502532222 hello [hidden]"
-    )
+    assert normalize_spaces(page.select("tbody tr th")[0].text) == ("6502532222 hello [hidden]")
 
 
 @pytest.mark.parametrize(
@@ -696,9 +674,7 @@ def test_sending_status_hint_displays_correctly_on_notifications_page(
     single_line,
     mocker,
 ):
-    mock_get_notifications(
-        mocker, True, diff_template_type=message_type, noti_status=status
-    )
+    mock_get_notifications(mocker, True, diff_template_type=message_type, noti_status=status)
 
     page = client_request.get(
         "main.view_notifications",
@@ -706,10 +682,7 @@ def test_sending_status_hint_displays_correctly_on_notifications_page(
         message_type=message_type,
     )
 
-    assert (
-        normalize_spaces(page.select(".table-field-right-aligned")[0].text)
-        == expected_hint_status
-    )
+    assert normalize_spaces(page.select(".table-field-right-aligned")[0].text) == expected_hint_status
     assert bool(page.select(".align-with-message-body")) is single_line
 
 

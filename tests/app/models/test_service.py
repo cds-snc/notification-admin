@@ -75,9 +75,7 @@ def _get_all_folders(active_user_with_permissions):
 def test_get_user_template_folders_only_returns_folders_visible_to_user(
     app_, mock_get_template_folders, service_one, active_user_with_permissions, mocker
 ):
-    mock_get_template_folders.return_value = _get_all_folders(
-        active_user_with_permissions
-    )
+    mock_get_template_folders.return_value = _get_all_folders(active_user_with_permissions)
     service = Service(service_one)
     result = service.get_user_template_folders(User(active_user_with_permissions))
     assert result == [
@@ -120,9 +118,7 @@ def test_get_user_template_folders_only_returns_folders_visible_to_user(
 def test_get_template_folders_shows_user_folders_when_user_id_passed_in(
     app_, mock_get_template_folders, service_one, active_user_with_permissions, mocker
 ):
-    mock_get_template_folders.return_value = _get_all_folders(
-        active_user_with_permissions
-    )
+    mock_get_template_folders.return_value = _get_all_folders(active_user_with_permissions)
     service = Service(service_one)
     result = service.get_template_folders(user=User(active_user_with_permissions))
     assert result == [
@@ -153,9 +149,7 @@ def test_get_template_folders_shows_user_folders_when_user_id_passed_in(
 def test_get_template_folders_shows_all_folders_when_user_id_not_passed_in(
     mock_get_template_folders, service_one, active_user_with_permissions, mocker
 ):
-    mock_get_template_folders.return_value = _get_all_folders(
-        active_user_with_permissions
-    )
+    mock_get_template_folders.return_value = _get_all_folders(active_user_with_permissions)
     service = Service(service_one)
     result = service.get_template_folders()
     assert result == [
@@ -180,9 +174,7 @@ def test_get_template_folders_shows_all_folders_when_user_id_not_passed_in(
     ]
 
 
-def test_organisation_type_when_services_organisation_has_no_org_type(
-    mocker, service_one, organisation_one
-):
+def test_organisation_type_when_services_organisation_has_no_org_type(mocker, service_one, organisation_one):
     service = Service(service_one)
     mocker.patch(
         "app.organisations_client.get_service_organisation",
@@ -193,9 +185,7 @@ def test_organisation_type_when_services_organisation_has_no_org_type(
     assert service.organisation_type == "central"
 
 
-def test_organisation_type_when_service_and_its_org_both_have_an_org_type(
-    mocker, service_one
-):
+def test_organisation_type_when_service_and_its_org_both_have_an_org_type(mocker, service_one):
     # service_one has an organisation_type of 'central'
     service = Service(service_one)
     org = organisation_json(organisation_type="local")
@@ -216,16 +206,12 @@ def test_has_team_members_status_no_invited_users(
     assert service.has_team_members_status is False
 
 
-def test_has_team_members_status_in_progress(
-    service_one, mock_get_invites_for_service, mock_get_users_by_service
-):
+def test_has_team_members_status_in_progress(service_one, mock_get_invites_for_service, mock_get_users_by_service):
     # 1 active user with "manage_service", 1 invited with "manage_service"
     assert Service(service_one).has_team_members_status == "in-progress"
 
 
-def test_has_team_members_status_multiple_active_users(
-    mocker, service_one, active_user_with_permissions
-):
+def test_has_team_members_status_multiple_active_users(mocker, service_one, active_user_with_permissions):
     # 2 active users with "manage_service" permission
     mocker.patch(
         "app.models.user.Users.client",
@@ -255,9 +241,7 @@ def test_has_submitted_go_live(mocker, service_one, fake_uuid):
 
 
 def test_has_submitted_use_case(mocker, service_one):
-    mocked = mocker.patch(
-        "app.service_api_client.has_submitted_use_case", return_value=True
-    )
+    mocked = mocker.patch("app.service_api_client.has_submitted_use_case", return_value=True)
 
     assert Service(service_one).has_submitted_use_case is True
 
@@ -279,12 +263,8 @@ def test_register_submit_use_case(mocker, service_one):
         ({"step": "step", "form_data": 42}, "step", 42),
     ],
 )
-def test_use_case_data(
-    mocker, service_one, service_return, expected_step, expected_form
-):
-    mocked = mocker.patch(
-        "app.service_api_client.get_use_case_data", return_value=service_return
-    )
+def test_use_case_data(mocker, service_one, service_return, expected_step, expected_form):
+    mocked = mocker.patch("app.service_api_client.get_use_case_data", return_value=service_return)
 
     assert Service(service_one).use_case_data == (expected_step, expected_form)
 
@@ -296,9 +276,7 @@ def test_store_use_case_data(mocker, service_one):
 
     Service(service_one).store_use_case_data("step", "form data")
 
-    mocked.assert_called_once_with(
-        service_one["id"], {"step": "step", "form_data": "form data"}
-    )
+    mocked.assert_called_once_with(service_one["id"], {"step": "step", "form_data": "form data"})
 
 
 @pytest.mark.parametrize(

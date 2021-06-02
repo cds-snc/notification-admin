@@ -18,9 +18,7 @@ from tests.conftest import api_user_active, platform_admin_user, set_config
     [api_user_active(str(uuid.uuid4())), platform_admin_user(str(uuid.uuid4()))],
     ids=["api_user", "platform_admin"],
 )
-@pytest.mark.parametrize(
-    "service", [service_json(active=True), None], ids=["active_service", "no_service"]
-)
+@pytest.mark.parametrize("service", [service_json(active=True), None], ids=["active_service", "no_service"])
 def test_active_service_can_be_modified(app_, method, user, service):
     api_client = NotifyAdminAPIClient()
 
@@ -36,9 +34,7 @@ def test_active_service_can_be_modified(app_, method, user, service):
 
 
 @pytest.mark.parametrize("method", ["put", "post", "delete"])
-def test_inactive_service_cannot_be_modified_by_normal_user(
-    app_, api_user_active, method
-):
+def test_inactive_service_cannot_be_modified_by_normal_user(app_, api_user_active, method):
     api_client = NotifyAdminAPIClient()
 
     with app_.test_request_context() as request_context, app_.test_client() as client:
@@ -53,9 +49,7 @@ def test_inactive_service_cannot_be_modified_by_normal_user(
 
 
 @pytest.mark.parametrize("method", ["put", "post", "delete"])
-def test_inactive_service_can_be_modified_by_platform_admin(
-    app_, platform_admin_user, method
-):
+def test_inactive_service_can_be_modified_by_platform_admin(app_, platform_admin_user, method):
     api_client = NotifyAdminAPIClient()
 
     with app_.test_request_context() as request_context, app_.test_client() as client:

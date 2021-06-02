@@ -20,19 +20,13 @@ def test_from_utils_template_calls_through(
     partial_call,
     expected_page_argument,
 ):
-    mock_from_db = mocker.patch(
-        "app.template_previews.TemplatePreview.from_database_object"
-    )
-    template = LetterPreviewTemplate(
-        mock_get_service_letter_template(None, None)["data"]
-    )
+    mock_from_db = mocker.patch("app.template_previews.TemplatePreview.from_database_object")
+    template = LetterPreviewTemplate(mock_get_service_letter_template(None, None)["data"])
 
     ret = partial_call(template, "foo")
 
     assert ret == mock_from_db.return_value
-    mock_from_db.assert_called_once_with(
-        template._template, "foo", template.values, page=expected_page_argument
-    )
+    mock_from_db.assert_called_once_with(template._template, "foo", template.values, page=expected_page_argument)
 
 
 @pytest.mark.parametrize(
@@ -67,12 +61,8 @@ def test_from_database_object_makes_request(
     mock_get_service_letter_template,
 ):
     resp = Mock(content="a", status_code="b", headers={"c": "d"})
-    request_mock = mocker.patch(
-        "app.template_previews.requests.post", return_value=resp
-    )
-    mocker.patch(
-        "app.template_previews.current_service", letter_branding=letter_branding
-    )
+    request_mock = mocker.patch("app.template_previews.requests.post", return_value=resp)
+    mocker.patch("app.template_previews.current_service", letter_branding=letter_branding)
     template = mock_get_service_letter_template("123", "456")["data"]
 
     ret = partial_call(template=template)
@@ -115,9 +105,7 @@ def test_page_count_unpacks_from_json_response(
     partial_call,
     expected_template_preview_args,
 ):
-    mock_template_preview = mocker.patch(
-        "app.template_previews.TemplatePreview.from_database_object"
-    )
+    mock_template_preview = mocker.patch("app.template_previews.TemplatePreview.from_database_object")
     mock_template_preview.return_value = (b'{"count": 99}', 200, {})
 
     assert partial_call({"template_type": "letter"}) == 99

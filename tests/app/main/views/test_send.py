@@ -91,9 +91,7 @@ def test_show_correct_title_and_description_for_sender_type(
     template_mock(mocker)
     sender_data(mocker)
 
-    page = client_request.get(
-        ".set_sender", service_id=service_one["id"], template_id=fake_uuid
-    )
+    page = client_request.get(".set_sender", service_id=service_one["id"], template_id=fake_uuid)
 
     assert page.select_one("h1").text == expected_title
 
@@ -112,22 +110,13 @@ def test_show_correct_title_and_description_for_sender_type(
         (mock_get_service_template, multiple_sms_senders_no_inbound),
     ],
 )
-def test_default_sender_is_checked_and_has_hint(
-    client_request, service_one, fake_uuid, template_mock, sender_data, mocker
-):
+def test_default_sender_is_checked_and_has_hint(client_request, service_one, fake_uuid, template_mock, sender_data, mocker):
     template_mock(mocker)
     sender_data(mocker)
-    page = client_request.get(
-        ".set_sender", service_id=service_one["id"], template_id=fake_uuid
-    )
+    page = client_request.get(".set_sender", service_id=service_one["id"], template_id=fake_uuid)
 
     assert page.select(".multiple-choice input")[0].has_attr("checked")
-    assert (
-        normalize_spaces(
-            page.select_one(".multiple-choice label .block-label-hint").text
-        )
-        == "(Default)"
-    )
+    assert normalize_spaces(page.select_one(".multiple-choice label .block-label-hint").text) == "(Default)"
     assert not page.select(".multiple-choice input")[1].has_attr("checked")
 
 
@@ -138,17 +127,10 @@ def test_default_inbound_sender_is_checked_and_has_hint_with_default_and_receive
     mock_get_service_template,
     multiple_sms_senders,
 ):
-    page = client_request.get(
-        ".set_sender", service_id=service_one["id"], template_id=fake_uuid
-    )
+    page = client_request.get(".set_sender", service_id=service_one["id"], template_id=fake_uuid)
 
     assert page.select(".multiple-choice input")[0].has_attr("checked")
-    assert (
-        normalize_spaces(
-            page.select_one(".multiple-choice label .block-label-hint").text
-        )
-        == "(Default and receives replies)"
-    )
+    assert normalize_spaces(page.select_one(".multiple-choice label .block-label-hint").text) == "(Default and receives replies)"
     assert not page.select(".multiple-choice input")[1].has_attr("checked")
     assert not page.select(".multiple-choice input")[2].has_attr("checked")
 
@@ -160,17 +142,10 @@ def test_sms_sender_has_receives_replies_hint(
     mock_get_service_template,
     multiple_sms_senders,
 ):
-    page = client_request.get(
-        ".set_sender", service_id=service_one["id"], template_id=fake_uuid
-    )
+    page = client_request.get(".set_sender", service_id=service_one["id"], template_id=fake_uuid)
 
     assert page.select(".multiple-choice input")[0].has_attr("checked")
-    assert (
-        normalize_spaces(
-            page.select_one(".multiple-choice label .block-label-hint").text
-        )
-        == "(Default and receives replies)"
-    )
+    assert normalize_spaces(page.select_one(".multiple-choice label .block-label-hint").text) == "(Default and receives replies)"
     assert not page.select(".multiple-choice input")[1].has_attr("checked")
     assert not page.select(".multiple-choice input")[2].has_attr("checked")
 
@@ -185,9 +160,7 @@ def test_sms_sender_has_receives_replies_hint(
         (mock_get_service_template, multiple_sms_senders),
     ],
 )
-def test_sender_session_is_present_after_selected(
-    client_request, service_one, fake_uuid, template_mock, sender_data, mocker
-):
+def test_sender_session_is_present_after_selected(client_request, service_one, fake_uuid, template_mock, sender_data, mocker):
     template_mock(mocker)
     sender_data(mocker)
     client_request.post(
@@ -211,9 +184,7 @@ def test_sender_session_is_present_after_selected(
         (mock_get_service_template, no_sms_senders),
     ],
 )
-def test_set_sender_redirects_if_no_sender_data(
-    client_request, service_one, fake_uuid, template_mock, sender_data, mocker
-):
+def test_set_sender_redirects_if_no_sender_data(client_request, service_one, fake_uuid, template_mock, sender_data, mocker):
     template_mock(mocker)
     sender_data(mocker)
     client_request.get(
@@ -251,10 +222,7 @@ def test_should_not_allow_files_to_be_uploaded_without_the_correct_permission(
         _follow_redirects=True,
     )
 
-    assert (
-        page.select("main p")[0].text.strip()
-        == "Sending text messages has been disabled for your service."
-    )
+    assert page.select("main p")[0].text.strip() == "Sending text messages has been disabled for your service."
     assert page.select(".back-link")[0].text == "Back"
     assert page.select(".back-link")[0]["href"] == url_for(
         ".view_template",
@@ -269,19 +237,14 @@ def test_example_spreadsheet(
     fake_uuid,
 ):
 
-    page = client_request.get(
-        ".send_messages", service_id=SERVICE_ONE_ID, template_id=fake_uuid
-    )
+    page = client_request.get(".send_messages", service_id=SERVICE_ONE_ID, template_id=fake_uuid)
 
-    assert normalize_spaces(page.select_one("tbody tr").text) == (
-        "1 phone number name date"
-    )
+    assert normalize_spaces(page.select_one("tbody tr").text) == ("1 phone number name date")
 
 
 @pytest.mark.parametrize(
     "filename, acceptable_file",
-    list(zip(test_spreadsheet_files, repeat(True)))
-    + list(zip(test_non_spreadsheet_files, repeat(False))),
+    list(zip(test_spreadsheet_files, repeat(True))) + list(zip(test_non_spreadsheet_files, repeat(False))),
 )
 def test_upload_files_in_different_formats(
     filename,
@@ -386,9 +349,7 @@ def test_shows_error_if_parsing_exception(
     )
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        expected_error_message
-    )
+    assert normalize_spaces(page.select_one(".banner-dangerous").text) == (expected_error_message)
 
 
 def test_upload_csv_file_with_errors_shows_check_page_with_errors(
@@ -414,9 +375,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
     )
 
     response = logged_in_client.post(
-        url_for(
-            "main.send_messages", service_id=service_one["id"], template_id=fake_uuid
-        ),
+        url_for("main.send_messages", service_id=service_one["id"], template_id=fake_uuid),
         data={"file": (BytesIO("".encode("utf-8")), "invalid.csv")},
         content_type="multipart/form-data",
         follow_redirects=True,
@@ -473,11 +432,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             """
             phone number, name
         """,
-            (
-                "Your file is missing some rows "
-                "It needs at least one row of data. "
-                "Skip to file contents"
-            ),
+            ("Your file is missing some rows " "It needs at least one row of data. " "Skip to file contents"),
         ),
         (
             "+16502532222",
@@ -502,11 +457,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             , example
             +16502532222, example
         """,
-            (
-                "There is a problem with invalid.csv "
-                "You need to enter missing data in 1 row "
-                "Skip to file contents"
-            ),
+            ("There is a problem with invalid.csv " "You need to enter missing data in 1 row " "Skip to file contents"),
         ),
         (
             """
@@ -515,11 +466,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             +16502532222,
             +16502532222, example
         """,
-            (
-                "There is a problem with invalid.csv "
-                "You need to enter missing data in 1 row "
-                "Skip to file contents"
-            ),
+            ("There is a problem with invalid.csv " "You need to enter missing data in 1 row " "Skip to file contents"),
         ),
     ],
 )
@@ -563,18 +510,14 @@ def test_upload_csv_invalid_extension(
 ):
 
     resp = logged_in_client.post(
-        url_for(
-            "main.send_messages", service_id=service_one["id"], template_id=fake_uuid
-        ),
+        url_for("main.send_messages", service_id=service_one["id"], template_id=fake_uuid),
         data={"file": (BytesIO("contents".encode("utf-8")), "invalid.txt")},
         content_type="multipart/form-data",
         follow_redirects=True,
     )
 
     assert resp.status_code == 200
-    assert "invalid.txt is not a spreadsheet that GC Notify can read" in resp.get_data(
-        as_text=True
-    )
+    assert "invalid.txt is not a spreadsheet that GC Notify can read" in resp.get_data(as_text=True)
 
 
 def test_upload_valid_csv_redirects_to_check_page(
@@ -655,7 +598,7 @@ def test_upload_valid_csv_shows_preview_and_table(
         template_id=fake_uuid,
         upload_id=fake_uuid,
         original_file_name="example.csv",
-        **extra_args
+        **extra_args,
     )
 
     mock_s3_set_metadata.assert_called_once_with(
@@ -755,9 +698,7 @@ def test_upload_valid_csv_only_sets_meta_if_filename_known(
         "app.main.views.send.get_page_count_for_letter",
         return_value=5,
     )
-    mocker.patch(
-        "app.main.views.send.TemplatePreview.from_utils_template", return_value="foo"
-    )
+    mocker.patch("app.main.views.send.TemplatePreview.from_utils_template", return_value="foo")
 
     client_request.get(
         "main.check_messages_preview",
@@ -808,12 +749,9 @@ def test_file_name_truncated_to_fit_in_s3_metadata(
 
     assert (
         sys.getsizeof(
-            "".join(
-                (
-                    "{}{}".format(key, value)
-                    for key, value in mock_s3_set_metadata.call_args_list[0][1].items()
-                )
-            ).encode("utf-8")
+            "".join(("{}{}".format(key, value) for key, value in mock_s3_set_metadata.call_args_list[0][1].items())).encode(
+                "utf-8"
+            )
         )
         == 1726
     )
@@ -893,12 +831,8 @@ def test_show_all_columns_if_there_are_duplicate_recipient_columns(
         _test_page_title=False,
     )
 
-    assert normalize_spaces(page.select_one("thead").text) == (
-        "Row in file1 phone number phone_number PHONENUMBER"
-    )
-    assert normalize_spaces(page.select_one("tbody").text) == (
-        "2 6502532225 6502532225 6502532225"
-    )
+    assert normalize_spaces(page.select_one("thead").text) == ("Row in file1 phone number phone_number PHONENUMBER")
+    assert normalize_spaces(page.select_one("tbody").text) == ("2 6502532225 6502532225 6502532225")
 
 
 @pytest.mark.parametrize(
@@ -1086,10 +1020,7 @@ def test_send_one_off_does_not_send_without_the_correct_permissions(
         _follow_redirects=True,
     )
 
-    assert (
-        page.select("main p")[0].text.strip()
-        == "Sending text messages has been disabled for your service."
-    )
+    assert page.select("main p")[0].text.strip() == "Sending text messages has been disabled for your service."
     assert page.select(".back-link")[0].text == "Back"
     assert page.select(".back-link")[0]["href"] == url_for(
         ".view_template",
@@ -1304,9 +1235,7 @@ def test_skip_link_will_not_show_on_sms_one_off_if_service_has_no_mobile_number(
     assert not skip_links
 
 
-@pytest.mark.parametrize(
-    "user", [active_user_with_permissions, active_caseworking_user]
-)
+@pytest.mark.parametrize("user", [active_user_with_permissions, active_caseworking_user])
 def test_send_one_off_offers_link_to_upload(
     client_request,
     fake_uuid,
@@ -1698,9 +1627,7 @@ def test_send_test_sms_message_with_placeholders_shows_first_field(
 
     assert page.select("label")[0].text.strip() == "Name"
     assert page.select("input")[0]["name"] == "placeholder_value"
-    assert page.select(".back-link")[0]["href"] == url_for(
-        expected_back_link_endpoint, service_id=SERVICE_ONE_ID, **extra_args
-    )
+    assert page.select(".back-link")[0]["href"] == url_for(expected_back_link_endpoint, service_id=SERVICE_ONE_ID, **extra_args)
     with client_request.session_transaction() as session:
         assert session["recipient"] == "6502532222"
 
@@ -1924,9 +1851,7 @@ def test_send_test_indicates_optional_address_columns(
         step_index=3,
     )
 
-    assert normalize_spaces(page.select("label")[0].text) == (
-        "Address line 4 " "Optional"
-    )
+    assert normalize_spaces(page.select("label")[0].text) == ("Address line 4 " "Optional")
     assert page.select(".back-link")[0]["href"] == url_for(
         "main.send_one_off_step",
         service_id=SERVICE_ONE_ID,
@@ -2009,13 +1934,9 @@ def test_send_test_works_as_letter_preview(
     mocker,
 ):
     service_one["permissions"] = ["letter"]
-    mocker.patch(
-        "app.service_api_client.get_service", return_value={"data": service_one}
-    )
+    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
     mocker.patch("app.main.views.send.get_page_count_for_letter", return_value=1)
-    mocked_preview = mocker.patch(
-        "app.main.views.send.TemplatePreview.from_utils_template", return_value="foo"
-    )
+    mocked_preview = mocker.patch("app.main.views.send.TemplatePreview.from_utils_template", return_value="foo")
 
     service_id = service_one["id"]
     template_id = fake_uuid
@@ -2081,9 +2002,7 @@ def test_download_example_csv(
         follow_redirects=True,
     )
     assert response.status_code == 200
-    assert response.get_data(as_text=True) == (
-        "phone number,name,date\r\n" "6502532222,example,example\r\n"
-    )
+    assert response.get_data(as_text=True) == ("phone number,name,date\r\n" "6502532222,example,example\r\n")
     assert "text/csv" in response.headers["Content-Type"]
 
 
@@ -2104,16 +2023,11 @@ def test_upload_csvfile_with_valid_phone_shows_all_numbers(
 
     mocker.patch(
         "app.main.views.send.s3download",
-        return_value="\n".join(
-            ["phone number"]
-            + ["65025322{0:02d}".format(final_two) for final_two in range(0, 53)]
-        ),
+        return_value="\n".join(["phone number"] + ["65025322{0:02d}".format(final_two) for final_two in range(0, 53)]),
     )
 
     response = logged_in_client.post(
-        url_for(
-            "main.send_messages", service_id=service_one["id"], template_id=fake_uuid
-        ),
+        url_for("main.send_messages", service_id=service_one["id"], template_id=fake_uuid),
         data={"file": (BytesIO("".encode("utf-8")), "valid.csv")},
         content_type="multipart/form-data",
         follow_redirects=True,
@@ -2137,9 +2051,7 @@ def test_upload_csvfile_with_valid_phone_shows_all_numbers(
     assert "6502532250" not in content
     assert "Only showing the first 50 rows" in content
 
-    mock_get_service_statistics.assert_called_once_with(
-        service_one["id"], today_only=True
-    )
+    mock_get_service_statistics.assert_called_once_with(service_one["id"], today_only=True)
 
 
 @pytest.mark.parametrize(
@@ -2180,9 +2092,7 @@ def test_upload_csvfile_with_international_validates(
     )
 
     assert response.status_code == 200
-    assert (
-        mock_recipients.call_args[1]["international_sms"] == should_allow_international
-    )
+    assert mock_recipients.call_args[1]["international_sms"] == should_allow_international
 
 
 def test_test_message_can_only_be_sent_now(
@@ -2284,9 +2194,7 @@ def test_create_job_should_call_api(
     )
 
 
-def test_can_start_letters_job(
-    platform_admin_client, mock_create_job, service_one, fake_uuid
-):
+def test_can_start_letters_job(platform_admin_client, mock_create_job, service_one, fake_uuid):
     with platform_admin_client.session_transaction() as session:
         session["file_uploads"] = {
             fake_uuid: {
@@ -2352,22 +2260,14 @@ def test_should_show_preview_letter_message(
     expected_page,
 ):
     service_one["permissions"] = ["letter"]
-    mocker.patch(
-        "app.service_api_client.get_service", return_value={"data": service_one}
-    )
+    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
     mocker.patch("app.main.views.send.get_page_count_for_letter", return_value=1)
 
     mocker.patch(
         "app.main.views.send.s3download",
-        return_value="\n".join(
-            ["address line 1, postcode"]
-            + ["123 street, abc123"]
-            + ["321 avenue, cba321"]
-        ),
+        return_value="\n".join(["address line 1, postcode"] + ["123 street, abc123"] + ["321 avenue, cba321"]),
     )
-    mocked_preview = mocker.patch(
-        "app.main.views.send.TemplatePreview.from_utils_template", return_value="foo"
-    )
+    mocked_preview = mocker.patch("app.main.views.send.TemplatePreview.from_utils_template", return_value="foo")
 
     service_id = service_one["id"]
     template_id = fake_uuid
@@ -2387,7 +2287,7 @@ def test_should_show_preview_letter_message(
             template_id=fake_uuid,
             upload_id=fake_uuid,
             filetype=filetype,
-            **extra_args
+            **extra_args,
         )
     )
 
@@ -2402,9 +2302,7 @@ def test_should_show_preview_letter_message(
     assert mocked_preview.call_args[1] == {"page": expected_page}
 
 
-def test_dont_show_preview_letter_templates_for_bad_filetype(
-    logged_in_client, mock_get_service_template, service_one, fake_uuid
-):
+def test_dont_show_preview_letter_templates_for_bad_filetype(logged_in_client, mock_get_service_template, service_one, fake_uuid):
     resp = logged_in_client.get(
         url_for(
             "main.check_messages_preview",
@@ -2587,7 +2485,7 @@ def test_check_messages_back_link(
         upload_id=fake_uuid,
         template_id=fake_uuid,
         _test_page_title=False,
-        **extra_args
+        **extra_args,
     )
 
     assert (page.findAll("a", {"class": "back-link"})[0]["href"]) == expected_url(
@@ -2621,10 +2519,7 @@ def test_check_messages_shows_too_many_messages_errors(
     # csv with 100 phone numbers
     mocker.patch(
         "app.main.views.send.s3download",
-        return_value=",\n".join(
-            ["phone number"]
-            + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 100)
-        ),
+        return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 100)),
     )
     mocker.patch(
         "app.service_api_client.get_service_statistics",
@@ -2656,9 +2551,7 @@ def test_check_messages_shows_too_many_messages_errors(
 
     # remove excess whitespace from element
     details = page.find("div", class_="banner-dangerous").findAll("p")[1]
-    details = " ".join(
-        [line.strip() for line in details.text.split("\n") if line.strip() != ""]
-    )
+    details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
     assert details == expected_msg
 
 
@@ -2737,8 +2630,7 @@ def test_check_messages_shows_trial_mode_error_for_letters(
     mocker.patch(
         "app.main.views.send.s3download",
         return_value="\n".join(
-            ["address_line_1,address_line_2,postcode,"]
-            + ["First Last,    123 Street,    SW1 1AA"] * number_of_rows
+            ["address_line_1,address_line_2,postcode,"] + ["First Last,    123 Street,    SW1 1AA"] * number_of_rows
         ),
     )
     mocker.patch(
@@ -2765,9 +2657,7 @@ def test_check_messages_shows_trial_mode_error_for_letters(
 
     if error_should_be_shown:
         assert normalize_spaces(error[0].text) == (
-            "{} "
-            "In trial mode, you can only preview how your letters will look "
-            "Skip to file contents"
+            "{} " "In trial mode, you can only preview how your letters will look " "Skip to file contents"
         ).format(expected_error_message)
     else:
         assert not error
@@ -2819,9 +2709,7 @@ def test_check_messages_shows_data_errors_before_trial_mode_errors_for_letters(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "There is a problem with example.xlsx "
-        "You need to enter missing data in 2 rows "
-        "Skip to file contents"
+        "There is a problem with example.xlsx " "You need to enter missing data in 2 rows " "Skip to file contents"
     )
     assert not page.select(".table-field-index a")
 
@@ -2830,9 +2718,7 @@ def test_check_messages_shows_data_errors_before_trial_mode_errors_for_letters(
     "uploaded_file_name",
     (
         pytest.param("applicants.ods"),  # normal job
-        pytest.param(
-            "thisisatest.csv", marks=pytest.mark.xfail
-        ),  # different template version
+        pytest.param("thisisatest.csv", marks=pytest.mark.xfail),  # different template version
         pytest.param("send_me_later.csv"),  # should look at scheduled job
         pytest.param("full_of_regret.csv", marks=pytest.mark.xfail),  # job is cancelled
     ),
@@ -2850,9 +2736,7 @@ def test_warns_if_file_sent_already(
     mocker,
     uploaded_file_name,
 ):
-    mocker.patch(
-        "app.main.views.send.s3download", return_value=("phone number,\n16502532222")
-    )
+    mocker.patch("app.main.views.send.s3download", return_value=("phone number,\n16502532222"))
 
     page = client_request.get(
         "main.check_messages",
@@ -2886,10 +2770,7 @@ def test_check_messages_column_error_doesnt_show_optional_columns(
 
     mocker.patch(
         "app.main.views.send.s3download",
-        return_value="\n".join(
-            ["address_line_1,address_line_2,foo"]
-            + ["First Lastname,1 Example Road,SW1 1AA"]
-        ),
+        return_value="\n".join(["address_line_1,address_line_2,foo"] + ["First Lastname,1 Example Road,SW1 1AA"]),
     )
 
     mocker.patch(
@@ -2932,9 +2813,7 @@ def test_check_messages_adds_sender_id_in_session_to_metadata(
     mock_s3_set_metadata,
     fake_uuid,
 ):
-    mocker.patch(
-        "app.main.views.send.s3download", return_value=("phone number,\n+16502532222")
-    )
+    mocker.patch("app.main.views.send.s3download", return_value=("phone number,\n+16502532222"))
     mocker.patch("app.main.views.send.get_sms_sender_from_session")
 
     with client_request.session_transaction() as session:
@@ -3009,15 +2888,11 @@ def test_letters_from_csv_files_dont_have_download_link(
         template_id=fake_uuid,
         upload_id=fake_uuid,
         _test_page_title=False,
-        **extra_args
+        **extra_args,
     )
 
-    assert normalize_spaces(
-        page.select_one(".banner-dangerous").text
-    ) == normalize_spaces(
-        "You cannot send this letter "
-        "In trial mode, you can only preview how your letters will look "
-        "Skip to file contents"
+    assert normalize_spaces(page.select_one(".banner-dangerous").text) == normalize_spaces(
+        "You cannot send this letter " "In trial mode, you can only preview how your letters will look " "Skip to file contents"
     )
 
     assert len(page.select(".letter img")) == 5
@@ -3110,8 +2985,7 @@ def test_send_one_off_letter_errors_in_trial_mode(
     )
 
     assert normalize_spaces(page.select(".banner-dangerous")) == normalize_spaces(
-        "You cannot send this letter "
-        "In trial mode, you can only preview how your letters will look"
+        "You cannot send this letter " "In trial mode, you can only preview how your letters will look"
     )
 
     assert len(page.select(".letter img")) == 5
@@ -3161,9 +3035,7 @@ def test_check_messages_shows_over_max_row_error(
     )
 
 
-@pytest.mark.parametrize(
-    "existing_session_items", [{}, {"recipient": "6502532223"}, {"name": "Jo"}]
-)
+@pytest.mark.parametrize("existing_session_items", [{}, {"recipient": "6502532223"}, {"name": "Jo"}])
 def test_check_notification_redirects_if_session_not_populated(
     client_request,
     service_one,
@@ -3189,9 +3061,7 @@ def test_check_notification_redirects_if_session_not_populated(
     )
 
 
-@pytest.mark.parametrize(
-    "existing_session_items", [{}, {"recipient": "6502532223"}, {"name": "Jo"}]
-)
+@pytest.mark.parametrize("existing_session_items", [{}, {"recipient": "6502532223"}, {"name": "Jo"}])
 def test_check_notification_redirects_with_help_if_session_not_populated(
     logged_in_client,
     service_one,
@@ -3220,16 +3090,12 @@ def test_check_notification_redirects_with_help_if_session_not_populated(
     )
 
 
-def test_check_notification_shows_preview(
-    client_request, service_one, fake_uuid, mock_get_service_template
-):
+def test_check_notification_shows_preview(client_request, service_one, fake_uuid, mock_get_service_template):
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
         session["placeholders"] = {}
 
-    page = client_request.get(
-        "main.check_notification", service_id=service_one["id"], template_id=fake_uuid
-    )
+    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     assert page.h1.text.strip() == "Review before sending"
     assert (page.findAll("a", {"class": "back-link"})[0]["href"]) == url_for(
@@ -3286,9 +3152,7 @@ def test_send_notification_submits_data(
         session["recipient"] = recipient
         session["placeholders"] = placeholders
 
-    client_request.post(
-        "main.send_notification", service_id=SERVICE_ONE_ID, template_id=fake_uuid
-    )
+    client_request.post("main.send_notification", service_id=SERVICE_ONE_ID, template_id=fake_uuid)
 
     mock_send_notification.assert_called_once_with(
         SERVICE_ONE_ID,
@@ -3311,9 +3175,7 @@ def test_send_notification_clears_session(
         session["placeholders"] = {"a": "b"}
         session["send_step"] = "main.send_test_step"
 
-    client_request.post(
-        "main.send_notification", service_id=service_one["id"], template_id=fake_uuid
-    )
+    client_request.post("main.send_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     with client_request.session_transaction() as session:
         assert "recipient" not in session
@@ -3342,9 +3204,7 @@ def test_send_notification_redirects_if_missing_data(
     )
 
 
-@pytest.mark.parametrize(
-    "extra_args, extra_redirect_args", [({}, {}), ({"help": "3"}, {"help": "3"})]
-)
+@pytest.mark.parametrize("extra_args, extra_redirect_args", [({}, {}), ({"help": "3"}, {"help": "3"})])
 def test_send_notification_redirects_to_view_page(
     client_request,
     fake_uuid,
@@ -3368,16 +3228,14 @@ def test_send_notification_redirects_to_view_page(
             notification_id=fake_uuid,
             _external=True,
             just_sent=True,
-            **extra_redirect_args
+            **extra_redirect_args,
         ),
-        **extra_args
+        **extra_args,
     )
 
 
 TRIAL_MODE_MSG = "Can’t send to this recipient when service is in trial mode"
-TOO_LONG_MSG = (
-    "Content for template has a character count greater than the limit of 612"
-)
+TOO_LONG_MSG = "Content for template has a character count greater than the limit of 612"
 SERVICE_DAILY_LIMIT_MSG = "Exceeded send limits (1000) for today"
 
 
@@ -3430,10 +3288,7 @@ def test_send_notification_shows_error_if_400(
     )
 
     assert normalize_spaces(page.select(".banner-dangerous h1")[0].text) == expected_h1
-    assert (
-        normalize_spaces(page.select(".banner-dangerous p")[0].text)
-        == expected_err_details
-    )
+    assert normalize_spaces(page.select(".banner-dangerous p")[0].text) == expected_err_details
     assert not page.find("input[type=submit]")
 
 
@@ -3462,9 +3317,7 @@ def test_send_notification_shows_email_error_in_trial_mode(
         _expected_status=200,
     )
 
-    assert normalize_spaces(page.select(".banner-dangerous h1")[0].text) == (
-        "You cannot send to this email address"
-    )
+    assert normalize_spaces(page.select(".banner-dangerous h1")[0].text) == ("You cannot send to this email address")
     assert normalize_spaces(page.select(".banner-dangerous p")[0].text) == (
         "In trial mode, you can only send to yourself and members of your team. To send to more recipients, request to go live."
     )
@@ -3552,9 +3405,7 @@ def test_preview_is_translated(
     lang,
     expected_content,
 ):
-    mock_get_service_email_template(
-        mocker, content=None, subject="[Action] Please do something"
-    )
+    mock_get_service_email_template(mocker, content=None, subject="[Action] Please do something")
     mocker.patch("app.get_current_locale", return_value=lang)
 
     with client_request.session_transaction() as session:
@@ -3670,9 +3521,7 @@ def test_s3_send_link_is_shown(
     bulk_send_allowed,
     number_of_s3_upload_links,
 ):
-    mocker.patch(
-        "app.main.views.send.service_can_bulk_send", return_value=bulk_send_allowed
-    )
+    mocker.patch("app.main.views.send.service_can_bulk_send", return_value=bulk_send_allowed)
     mock_get_service_email_template(mocker)
     partial_url = partial(url_for, "main.send_one_off")
     response = logged_in_client.get(
@@ -3692,9 +3541,7 @@ def test_s3_send_link_is_shown(
         (False, "Emails are disabled"),
     ],
 )
-def test_s3_send_page_only_visible_to_hc(
-    logged_in_client, fake_uuid, mocker, bulk_send_allowed, expected_title
-):
+def test_s3_send_page_only_visible_to_hc(logged_in_client, fake_uuid, mocker, bulk_send_allowed, expected_title):
     class Object(object):
         pass
 
@@ -3705,12 +3552,8 @@ def test_s3_send_page_only_visible_to_hc(
         x.key = filename
         s3_file_objects.append(x)
 
-    mocker.patch(
-        "app.main.views.send.service_can_bulk_send", return_value=bulk_send_allowed
-    )
-    mocker.patch(
-        "app.main.views.send.list_bulk_send_uploads", return_value=s3_file_objects
-    )
+    mocker.patch("app.main.views.send.service_can_bulk_send", return_value=bulk_send_allowed)
+    mocker.patch("app.main.views.send.list_bulk_send_uploads", return_value=s3_file_objects)
     mock_get_service_email_template(mocker)
     partial_url = partial(url_for, "main.s3_send")
     response = logged_in_client.get(
@@ -3739,9 +3582,7 @@ def test_s3_send_shows_available_files(
         s3_file_objects.append(x)
 
     mocker.patch("app.main.views.send.service_can_bulk_send", return_value=True)
-    mocker.patch(
-        "app.main.views.send.list_bulk_send_uploads", return_value=s3_file_objects
-    )
+    mocker.patch("app.main.views.send.list_bulk_send_uploads", return_value=s3_file_objects)
     mock_get_service_email_template(mocker)
     partial_url = partial(url_for, "main.s3_send")
     response = logged_in_client.get(

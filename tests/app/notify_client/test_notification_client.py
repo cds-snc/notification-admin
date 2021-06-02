@@ -41,21 +41,15 @@ from tests import notification_json, single_notification_json
         ),
     ],
 )
-def test_client_gets_notifications_for_service_and_job_by_page(
-    mocker, arguments, expected_call
-):
+def test_client_gets_notifications_for_service_and_job_by_page(mocker, arguments, expected_call):
 
-    mock_get = mocker.patch(
-        "app.notify_client.notification_api_client.NotificationApiClient.get"
-    )
+    mock_get = mocker.patch("app.notify_client.notification_api_client.NotificationApiClient.get")
     NotificationApiClient().get_notifications_for_service("abcd1234", **arguments)
     mock_get.assert_called_once_with(**expected_call)
 
 
 def test_send_notification(mocker, logged_in_client, active_user_with_permissions):
-    mock_post = mocker.patch(
-        "app.notify_client.notification_api_client.NotificationApiClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.notification_api_client.NotificationApiClient.post")
     NotificationApiClient().send_notification(
         "foo",
         template_id="bar",
@@ -75,9 +69,7 @@ def test_send_notification(mocker, logged_in_client, active_user_with_permission
 
 
 def test_get_notification(mocker):
-    mock_get = mocker.patch(
-        "app.notify_client.notification_api_client.NotificationApiClient.get"
-    )
+    mock_get = mocker.patch("app.notify_client.notification_api_client.NotificationApiClient.get")
     NotificationApiClient().get_notification("foo", "bar")
     mock_get.assert_called_once_with(url="/service/foo/notifications/bar")
 
@@ -92,19 +84,11 @@ def test_get_notification(mocker):
         ("technical-failure", "technical-failure"),
     ],
 )
-def test_get_api_notifications_changes_letter_statuses(
-    mocker, letter_status, expected_status
-):
+def test_get_api_notifications_changes_letter_statuses(mocker, letter_status, expected_status):
     service_id = str(uuid.uuid4())
-    sms_notification = single_notification_json(
-        service_id, notification_type="sms", status="created"
-    )
-    email_notification = single_notification_json(
-        service_id, notification_type="email", status="created"
-    )
-    letter_notification = single_notification_json(
-        service_id, notification_type="letter", status=letter_status
-    )
+    sms_notification = single_notification_json(service_id, notification_type="sms", status="created")
+    email_notification = single_notification_json(service_id, notification_type="email", status="created")
+    letter_notification = single_notification_json(service_id, notification_type="letter", status=letter_status)
     notis = notification_json(service_id=service_id, rows=0)
     notis["notifications"] = [sms_notification, email_notification, letter_notification]
 
@@ -124,9 +108,7 @@ def test_get_api_notifications_changes_letter_statuses(
 
 
 def test_update_notification_to_cancelled(mocker):
-    mock_post = mocker.patch(
-        "app.notify_client.notification_api_client.NotificationApiClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.notification_api_client.NotificationApiClient.post")
     NotificationApiClient().update_notification_to_cancelled("foo", "bar")
     mock_post.assert_called_once_with(
         url="/service/foo/notifications/bar/cancel",

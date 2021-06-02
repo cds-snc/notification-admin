@@ -34,9 +34,7 @@ def test_create_email_change_event_calls_events_api(app_, mock_events):
     updated_by_id = str(uuid.uuid4())
 
     with app_.test_request_context(environ_base={"REMOTE_ADDR": "1.2.3.4"}):
-        create_email_change_event(
-            user_id, updated_by_id, "original@example.com", "new@example.com"
-        )
+        create_email_change_event(user_id, updated_by_id, "original@example.com", "new@example.com")
 
         mock_events.assert_called_with(
             "update_user_email",
@@ -61,9 +59,7 @@ def test_create_mobile_number_change_event_calls_events_api(app_, mock_events):
     updated_by_id = str(uuid.uuid4())
 
     with app_.test_request_context(environ_base={"REMOTE_ADDR": "1.2.3.4"}):
-        create_mobile_number_change_event(
-            user_id, updated_by_id, "07700900000", "07700900999"
-        )
+        create_mobile_number_change_event(user_id, updated_by_id, "07700900000", "07700900999")
 
         mock_events.assert_called_with(
             "update_user_mobile_number",

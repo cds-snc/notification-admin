@@ -30,9 +30,7 @@ def email_branding():
 @main.route("/email-branding/<branding_id>/edit/<logo>", methods=["GET", "POST"])
 @user_is_platform_admin
 def update_email_branding(branding_id, logo=None):
-    email_branding = email_branding_client.get_email_branding(branding_id)[
-        "email_branding"
-    ]
+    email_branding = email_branding_client.get_email_branding(branding_id)["email_branding"]
 
     form = ServiceUpdateEmailBranding(
         name=email_branding["name"],
@@ -63,9 +61,7 @@ def update_email_branding(branding_id, logo=None):
                 )
             )
 
-        updated_logo_name = (
-            permanent_email_logo_name(logo, session["user_id"]) if logo else None
-        )
+        updated_logo_name = permanent_email_logo_name(logo, session["user_id"]) if logo else None
 
         email_branding_client.update_email_branding(
             branding_id=branding_id,
@@ -112,9 +108,7 @@ def create_email_branding(logo=None):
 
             return redirect(url_for(".create_email_branding", logo=upload_filename))
 
-        updated_logo_name = (
-            permanent_email_logo_name(logo, session["user_id"]) if logo else None
-        )
+        updated_logo_name = permanent_email_logo_name(logo, session["user_id"]) if logo else None
 
         email_branding_client.create_email_branding(
             logo=updated_logo_name,

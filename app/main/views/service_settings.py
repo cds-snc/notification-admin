@@ -93,15 +93,12 @@ def service_settings(service_id: str):
         "free_yearly_email": current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
         "free_yearly_sms": current_app.config["FREE_YEARLY_SMS_LIMIT"],
     }
-    assert (
-        limits["free_yearly_email"] >= 2_000_000
-    ), "The user-interface does not support French translations of < 2M"
+    assert limits["free_yearly_email"] >= 2_000_000, "The user-interface does not support French translations of < 2M"
 
     return render_template(
         "views/service-settings.html",
         service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS,
-        sending_domain=current_service.sending_domain
-        or current_app.config["SENDING_DOMAIN"],
+        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],
         limits=limits,
     )
 
@@ -128,9 +125,7 @@ def service_name_change(service_id):
     )
 
 
-@main.route(
-    "/services/<service_id>/service-settings/name/confirm", methods=["GET", "POST"]
-)
+@main.route("/services/<service_id>/service-settings/name/confirm", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def service_name_change_confirm(service_id):
     # Validate password for form
@@ -145,15 +140,11 @@ def service_name_change_confirm(service_id):
                 name=session["service_name_change"],
             )
         except HTTPError as e:
-            error_msg = "Duplicate service name '{}'".format(
-                session["service_name_change"]
-            )
+            error_msg = "Duplicate service name '{}'".format(session["service_name_change"])
             if e.status_code == 400 and error_msg in e.message["name"]:
                 # Redirect the user back to the change service name screen
                 flash(_("This service name is already in use"), "error")
-                return redirect(
-                    url_for("main.service_name_change", service_id=service_id)
-                )
+                return redirect(url_for("main.service_name_change", service_id=service_id))
             else:
                 raise e
         else:
@@ -166,9 +157,7 @@ def service_name_change_confirm(service_id):
     )
 
 
-@main.route(
-    "/services/<service_id>/service-settings/email_from", methods=["GET", "POST"]
-)
+@main.route("/services/<service_id>/service-settings/email_from", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def service_email_from_change(service_id):
     form = ChangeEmailFromServiceForm(service_id=service_id)
@@ -182,15 +171,12 @@ def service_email_from_change(service_id):
             return redirect(url_for(".service_settings", service_id=service_id))
 
         session["service_email_from_change"] = form.email_from.data
-        return redirect(
-            url_for(".service_email_from_change_confirm", service_id=service_id)
-        )
+        return redirect(url_for(".service_email_from_change_confirm", service_id=service_id))
 
     return render_template(
         "views/service-settings/email_from.html",
         form=form,
-        sending_domain=current_service.sending_domain
-        or current_app.config["SENDING_DOMAIN"],
+        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],
     )
 
 
@@ -208,19 +194,13 @@ def service_email_from_change_confirm(service_id):
 
     if form.validate_on_submit():
         try:
-            current_service.update(
-                email_from=email_safe(session["service_email_from_change"])
-            )
+            current_service.update(email_from=email_safe(session["service_email_from_change"]))
         except HTTPError as e:
-            error_msg = "Duplicate email address '{}'".format(
-                session["service_email_from_change"]
-            )
+            error_msg = "Duplicate email address '{}'".format(session["service_email_from_change"])
             if e.status_code == 400 and error_msg in e.message["email_from"]:
                 # Redirect the user back to the change service email_from screen
                 flash(_("This email address is already in use"), "error")
-                return redirect(
-                    url_for("main.service_email_from_change", service_id=service_id)
-                )
+                return redirect(url_for("main.service_email_from_change", service_id=service_id))
             else:
                 raise e
         else:
@@ -233,18 +213,14 @@ def service_email_from_change_confirm(service_id):
     )
 
 
-@main.route(
-    "/services/<service_id>/service-settings/request-to-go-live", methods=["GET"]
-)
+@main.route("/services/<service_id>/service-settings/request-to-go-live", methods=["GET"])
 @user_has_permissions()
 @user_is_gov_user
 def request_to_go_live(service_id):
     if current_user.has_permissions("manage_service"):
         return render_template("views/service-settings/request-to-go-live.html")
     else:
-        return render_template(
-            "views/service-settings/request-to-go-live-no-admin.html"
-        )
+        return render_template("views/service-settings/request-to-go-live-no-admin.html")
 
 
 @main.route(
@@ -278,9 +254,7 @@ def use_case(service_id):
             "next_step": "about-notifications",
             "page_title": _("About your service"),
             "step": 1,
-            "back_link": url_for(
-                "main.request_to_go_live", service_id=current_service.id
-            ),
+            "back_link": url_for("main.request_to_go_live", service_id=current_service.id),
         },
         {
             "form": GoLiveAboutNotificationsForm,
@@ -341,9 +315,7 @@ def send_go_live_request(service, user, go_live_data) -> None:
     go_live_data = go_live_data | {
         "service_name": service.name,
         "service_id": str(service.id),
-        "service_url": url_for(
-            ".service_dashboard", service_id=service.id, _external=True
-        ),
+        "service_url": url_for(".service_dashboard", service_id=service.id, _external=True),
         "support_type": "go_live_request",
         "main_use_case": go_live_data["purpose"],
         "name": user.name,
@@ -368,16 +340,12 @@ def send_go_live_request(service, user, go_live_data) -> None:
     user_api_client.send_contact_request(data)
 
 
-@main.route(
-    "/services/<service_id>/service-settings/request-to-go-live", methods=["POST"]
-)
+@main.route("/services/<service_id>/service-settings/request-to-go-live", methods=["POST"])
 @user_has_permissions("manage_service")
 @user_is_gov_user
 def submit_request_to_go_live(service_id):
     if not current_service.go_live_checklist_completed:
-        return render_template(
-            "views/service-settings/request-to-go-live.html", error=True
-        )
+        return render_template("views/service-settings/request-to-go-live.html", error=True)
 
     go_live_data = current_service.use_case_data[1]
     current_service.update(go_live_user=current_user.id)
@@ -389,23 +357,16 @@ def submit_request_to_go_live(service_id):
     return redirect(url_for(".service_settings", service_id=service_id))
 
 
-@main.route(
-    "/services/<service_id>/service-settings/switch-live", methods=["GET", "POST"]
-)
+@main.route("/services/<service_id>/service-settings/switch-live", methods=["GET", "POST"])
 @user_is_platform_admin
 def service_switch_live(service_id):
-    form = ServiceOnOffSettingForm(
-        name="Make service live", enabled=not current_service.trial_mode
-    )
+    form = ServiceOnOffSettingForm(name="Make service live", enabled=not current_service.trial_mode)
 
     if form.validate_on_submit():
         live = form.enabled.data
         message_limit = current_app.config["DEFAULT_SERVICE_LIMIT"]
         if live:
-            if (
-                current_service.message_limit
-                != current_app.config["DEFAULT_SERVICE_LIMIT"]
-            ):
+            if current_service.message_limit != current_app.config["DEFAULT_SERVICE_LIMIT"]:
                 message_limit = current_service.message_limit
             else:
                 message_limit = current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"]
@@ -428,12 +389,9 @@ def service_switch_live(service_id):
 @user_has_permissions("manage_service")
 def service_switch_upload_document(service_id):
     title = _("Send files by email")
-    form = ServiceOnOffSettingForm(
-        name=title, enabled=current_service.has_permission("upload_document")
-    )
+    form = ServiceOnOffSettingForm(name=title, enabled=current_service.has_permission("upload_document"))
     help = _(
-        "This feature is only available when sending through the API.<br>"
-        "Learn more in the <a href='{}'>API documentation</a>."
+        "This feature is only available when sending through the API.<br>" "Learn more in the <a href='{}'>API documentation</a>."
     ).format(documentation_url("send", section="sending-a-file-by-email"))
 
     if form.validate_on_submit():
@@ -484,9 +442,7 @@ def service_set_permission(service_id, permission):
         abort(404)
 
     title = PLATFORM_ADMIN_SERVICE_PERMISSIONS[permission]["title"]
-    form = ServiceOnOffSettingForm(
-        name=title, enabled=current_service.has_permission(permission)
-    )
+    form = ServiceOnOffSettingForm(name=title, enabled=current_service.has_permission(permission))
 
     if form.validate_on_submit():
         current_service.force_permission(permission, on=form.enabled.data)
@@ -503,9 +459,7 @@ def service_set_permission(service_id, permission):
 @main.route("/services/<service_id>/service-settings/archive", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def archive_service(service_id):
-    if not current_service.active and (
-        current_service.trial_mode or current_user.platform_admin
-    ):
+    if not current_service.active and (current_service.trial_mode or current_user.platform_admin):
         abort(403)
     if request.method == "POST":
         service_api_client.archive_service(service_id)
@@ -535,9 +489,7 @@ def suspend_service(service_id):
         return redirect(url_for(".service_settings", service_id=service_id))
     else:
         flash(
-            _(
-                "This will suspend the service and revoke all API keys. Are you sure you want to suspend this service?"
-            ),
+            _("This will suspend the service and revoke all API keys. Are you sure you want to suspend this service?"),
             "suspend",
         )
         return service_settings(service_id)
@@ -551,25 +503,19 @@ def resume_service(service_id):
         return redirect(url_for(".service_settings", service_id=service_id))
     else:
         flash(
-            _(
-                "This will resume the service. New API keys are required for this service to use the API"
-            ),
+            _("This will resume the service. New API keys are required for this service to use the API"),
             "resume",
         )
         return service_settings(service_id)
 
 
-@main.route(
-    "/services/<service_id>/service-settings/set-reply-to-email", methods=["GET"]
-)
+@main.route("/services/<service_id>/service-settings/set-reply-to-email", methods=["GET"])
 @user_has_permissions("manage_service")
 def service_set_reply_to_email(service_id):
     return redirect(url_for(".service_email_reply_to", service_id=service_id))
 
 
-@main.route(
-    "/services/<service_id>/service-settings/sending-domain", methods=["GET", "POST"]
-)
+@main.route("/services/<service_id>/service-settings/sending-domain", methods=["GET", "POST"])
 @user_is_platform_admin
 def service_sending_domain(service_id):
     form = SendingDomainForm()
@@ -584,9 +530,7 @@ def service_sending_domain(service_id):
 
     default_sending = current_app.config["SENDING_DOMAIN"]
     template = "views/service-settings/sending_domain.html"
-    return render_template(
-        template, service_id=service_id, sending_domain=default_sending, form=form
-    )
+    return render_template(template, service_id=service_id, sending_domain=default_sending, form=form)
 
 
 @main.route("/services/<service_id>/service-settings/email-reply-to", methods=["GET"])
@@ -606,20 +550,12 @@ def service_add_email_reply_to(service_id):
     is_default = first_email_address if first_email_address else form.is_default.data
     if form.validate_on_submit():
         try:
-            notification_id = service_api_client.verify_reply_to_email_address(
-                service_id, form.email_address.data
-            )["data"]["id"]
+            notification_id = service_api_client.verify_reply_to_email_address(service_id, form.email_address.data)["data"]["id"]
         except HTTPError as e:
-            error_msg = (
-                "Your service already uses '{}' as an email reply-to address.".format(
-                    form.email_address.data
-                )
-            )
+            error_msg = "Your service already uses '{}' as an email reply-to address.".format(form.email_address.data)
             if e.status_code == 400 and error_msg == e.message:
                 flash(error_msg, "error")
-                return redirect(
-                    url_for(".service_email_reply_to", service_id=service_id)
-                )
+                return redirect(url_for(".service_email_reply_to", service_id=service_id))
             else:
                 raise e
         return redirect(
@@ -650,31 +586,23 @@ def service_verify_reply_to_address(service_id, notification_id):
         "views/service-settings/email-reply-to/verify.html",
         service_id=service_id,
         notification_id=notification_id,
-        partials=get_service_verify_reply_to_address_partials(
-            service_id, notification_id
-        ),
+        partials=get_service_verify_reply_to_address_partials(service_id, notification_id),
         verb=(_("Change") if replace else _("Add")),
         replace=replace,
         is_default=is_default,
     )
 
 
-@main.route(
-    "/services/<service_id>/service-settings/email-reply-to/<notification_id>/verify.json"
-)
+@main.route("/services/<service_id>/service-settings/email-reply-to/<notification_id>/verify.json")
 @user_has_permissions("manage_service")
 def service_verify_reply_to_address_updates(service_id, notification_id):
-    return jsonify(
-        **get_service_verify_reply_to_address_partials(service_id, notification_id)
-    )
+    return jsonify(**get_service_verify_reply_to_address_partials(service_id, notification_id))
 
 
 def get_service_verify_reply_to_address_partials(service_id, notification_id):
     form = ServiceReplyToEmailForm()
     first_email_address = current_service.count_email_reply_to_addresses == 0
-    notification = notification_api_client.get_notification(
-        current_app.config["NOTIFY_SERVICE_ID"], notification_id
-    )
+    notification = notification_api_client.get_notification(current_app.config["NOTIFY_SERVICE_ID"], notification_id)
     replace = request.args.get("replace", False)
     replace = False if replace == "False" else replace
     existing_is_default = False
@@ -685,9 +613,7 @@ def get_service_verify_reply_to_address_partials(service_id, notification_id):
     is_default = True if (request.args.get("is_default", False) == "True") else False
     if notification["status"] in DELIVERED_STATUSES:
         verification_status = "success"
-        if notification["to"] not in [
-            i["email_address"] for i in current_service.email_reply_to_addresses
-        ]:
+        if notification["to"] not in [i["email_address"] for i in current_service.email_reply_to_addresses]:
             if replace:
                 service_api_client.update_reply_to_email_address(
                     current_service.id,
@@ -702,12 +628,8 @@ def get_service_verify_reply_to_address_partials(service_id, notification_id):
                     is_default=is_default,
                 )
     created_at_no_tz = notification["created_at"][:-6]
-    seconds_since_sending = (
-        datetime.utcnow() - datetime.strptime(created_at_no_tz, "%Y-%m-%dT%H:%M:%S.%f")
-    ).seconds
-    if notification["status"] in FAILURE_STATUSES or (
-        notification["status"] in SENDING_STATUSES and seconds_since_sending > 45
-    ):
+    seconds_since_sending = (datetime.utcnow() - datetime.strptime(created_at_no_tz, "%Y-%m-%dT%H:%M:%S.%f")).seconds
+    if notification["status"] in FAILURE_STATUSES or (notification["status"] in SENDING_STATUSES and seconds_since_sending > 45):
         verification_status = "failure"
         form.email_address.data = notification["to"]
         form.is_default.data = is_default
@@ -741,9 +663,7 @@ def get_service_verify_reply_to_address_partials(service_id, notification_id):
 @user_has_permissions("manage_service")
 def service_edit_email_reply_to(service_id, reply_to_email_id):
     form = ServiceReplyToEmailForm()
-    reply_to_email_address = current_service.get_email_reply_to_address(
-        reply_to_email_id
-    )
+    reply_to_email_address = current_service.get_email_reply_to_address(reply_to_email_id)
     if request.method == "GET":
         form.email_address.data = reply_to_email_address["email_address"]
         form.is_default.data = reply_to_email_address["is_default"]
@@ -753,26 +673,16 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
                 current_service.id,
                 reply_to_email_id=reply_to_email_id,
                 email_address=form.email_address.data,
-                is_default=True
-                if reply_to_email_address["is_default"]
-                else form.is_default.data,
+                is_default=True if reply_to_email_address["is_default"] else form.is_default.data,
             )
             return redirect(url_for(".service_email_reply_to", service_id=service_id))
         try:
-            notification_id = service_api_client.verify_reply_to_email_address(
-                service_id, form.email_address.data
-            )["data"]["id"]
+            notification_id = service_api_client.verify_reply_to_email_address(service_id, form.email_address.data)["data"]["id"]
         except HTTPError as e:
-            error_msg = (
-                "Your service already uses ‘{}’ as a reply-to email address.".format(
-                    form.email_address.data
-                )
-            )
+            error_msg = "Your service already uses ‘{}’ as a reply-to email address.".format(form.email_address.data)
             if e.status_code == 400 and error_msg == e.message:
                 flash(error_msg, "error")
-                return redirect(
-                    url_for(".service_email_reply_to", service_id=service_id)
-                )
+                return redirect(url_for(".service_email_reply_to", service_id=service_id))
             else:
                 raise e
         return redirect(
@@ -780,17 +690,13 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
                 ".service_verify_reply_to_address",
                 service_id=service_id,
                 notification_id=notification_id,
-                is_default=True
-                if reply_to_email_address["is_default"]
-                else form.is_default.data,
+                is_default=True if reply_to_email_address["is_default"] else form.is_default.data,
                 replace=reply_to_email_id,
             )
         )
 
     if request.endpoint == "main.service_confirm_delete_email_reply_to":
-        flash(
-            _("Are you sure you want to delete this reply-to email address?"), "delete"
-        )
+        flash(_("Are you sure you want to delete this reply-to email address?"), "delete")
     return render_template(
         "views/service-settings/email-reply-to/edit.html",
         form=form,
@@ -817,16 +723,10 @@ def service_delete_email_reply_to(service_id, reply_to_email_id):
 )
 @user_has_permissions("manage_service")
 def service_set_inbound_number(service_id):
-    available_inbound_numbers = (
-        inbound_number_client.get_available_inbound_sms_numbers()
-    )
-    inbound_numbers_value_and_label = [
-        (number["id"], number["number"]) for number in available_inbound_numbers["data"]
-    ]
+    available_inbound_numbers = inbound_number_client.get_available_inbound_sms_numbers()
+    inbound_numbers_value_and_label = [(number["id"], number["number"]) for number in available_inbound_numbers["data"]]
     no_available_numbers = available_inbound_numbers["data"] == []
-    form = ServiceInboundNumberForm(
-        inbound_number_choices=inbound_numbers_value_and_label
-    )
+    form = ServiceInboundNumberForm(inbound_number_choices=inbound_numbers_value_and_label)
 
     if form.validate_on_submit():
         service_api_client.add_sms_sender(
@@ -845,17 +745,13 @@ def service_set_inbound_number(service_id):
     )
 
 
-@main.route(
-    "/services/<service_id>/service-settings/sms-prefix", methods=["GET", "POST"]
-)
+@main.route("/services/<service_id>/service-settings/sms-prefix", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def service_set_sms_prefix(service_id):
 
     form = SMSPrefixForm(enabled=("on" if current_service.prefix_sms else "off"))
 
-    form.enabled.label.text = "{} ‘{}:’".format(
-        _("Start all text messages with"), current_service.name
-    )
+    form.enabled.label.text = "{} ‘{}:’".format(_("Start all text messages with"), current_service.name)
 
     if form.validate_on_submit():
         current_service.update(prefix_sms=(form.enabled.data == "on"))
@@ -870,9 +766,7 @@ def service_set_sms_prefix(service_id):
 )
 @user_has_permissions("manage_service")
 def service_set_international_sms(service_id):
-    form = InternationalSMSForm(
-        enabled="on" if current_service.has_permission("international_sms") else "off"
-    )
+    form = InternationalSMSForm(enabled="on" if current_service.has_permission("international_sms") else "off")
     if form.validate_on_submit():
         current_service.force_permission(
             "international_sms",
@@ -906,18 +800,14 @@ def service_set_letters(service_id):
     )
 
 
-@main.route(
-    "/services/<service_id>/service-settings/set-<channel>", methods=["GET", "POST"]
-)
+@main.route("/services/<service_id>/service-settings/set-<channel>", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def service_set_channel(service_id, channel):
 
     if channel not in {"email", "sms", "letter"}:
         abort(404)
 
-    form = ServiceSwitchChannelForm(
-        channel=channel, enabled=current_service.has_permission(channel)
-    )
+    form = ServiceSwitchChannelForm(channel=channel, enabled=current_service.has_permission(channel))
 
     if form.validate_on_submit():
         current_service.force_permission(
@@ -967,9 +857,7 @@ def service_add_letter_contact(service_id):
         new_letter_contact = service_api_client.add_letter_contact(
             current_service.id,
             contact_block=form.letter_contact_block.data.replace("\r", "") or None,
-            is_default=first_contact_block
-            if first_contact_block
-            else form.is_default.data,
+            is_default=first_contact_block if first_contact_block else form.is_default.data,
         )
         if from_template:
             service_api_client.update_service_template_sender(
@@ -977,14 +865,8 @@ def service_add_letter_contact(service_id):
                 from_template,
                 new_letter_contact["data"]["id"],
             )
-            return redirect(
-                url_for(
-                    ".view_template", service_id=service_id, template_id=from_template
-                )
-            )
-        return redirect(
-            url_for(".service_letter_contact_details", service_id=service_id)
-        )
+            return redirect(url_for(".view_template", service_id=service_id, template_id=from_template))
+        return redirect(url_for(".service_letter_contact_details", service_id=service_id))
     return render_template(
         "views/service-settings/letter-contact/add.html",
         form=form,
@@ -996,9 +878,7 @@ def service_add_letter_contact(service_id):
                 service_id=current_service.id,
             )
             if from_template
-            else url_for(
-                ".service_letter_contact_details", service_id=current_service.id
-            )
+            else url_for(".service_letter_contact_details", service_id=current_service.id)
         ),
     )
 
@@ -1016,9 +896,7 @@ def service_add_letter_contact(service_id):
 @user_has_permissions("manage_service")
 def service_edit_letter_contact(service_id, letter_contact_id):
     letter_contact_block = current_service.get_letter_contact_block(letter_contact_id)
-    form = ServiceLetterContactBlockForm(
-        letter_contact_block=letter_contact_block["contact_block"]
-    )
+    form = ServiceLetterContactBlockForm(letter_contact_block=letter_contact_block["contact_block"])
     if request.method == "GET":
         form.is_default.data = letter_contact_block["is_default"]
     if form.validate_on_submit():
@@ -1027,9 +905,7 @@ def service_edit_letter_contact(service_id, letter_contact_id):
             contact_block=form.letter_contact_block.data.replace("\r", "") or None,
             is_default=letter_contact_block["is_default"] or form.is_default.data,
         )
-        return redirect(
-            url_for(".service_letter_contact_details", service_id=service_id)
-        )
+        return redirect(url_for(".service_letter_contact_details", service_id=service_id))
 
     if request.endpoint == "main.service_confirm_delete_letter_contact":
         flash(_("Are you sure you want to delete this contact block?"), "delete")
@@ -1057,9 +933,7 @@ def service_delete_letter_contact(service_id, letter_contact_id):
         service_id=current_service.id,
         letter_contact_id=letter_contact_id,
     )
-    return redirect(
-        url_for(".service_letter_contact_details", service_id=current_service.id)
-    )
+    return redirect(url_for(".service_letter_contact_details", service_id=current_service.id))
 
 
 @main.route("/services/<service_id>/service-settings/sms-sender", methods=["GET"])
@@ -1070,9 +944,7 @@ def service_sms_senders(service_id):
     )
 
 
-@main.route(
-    "/services/<service_id>/service-settings/sms-sender/add", methods=["GET", "POST"]
-)
+@main.route("/services/<service_id>/service-settings/sms-sender/add", methods=["GET", "POST"])
 @user_is_platform_admin
 def service_add_sms_sender(service_id):
     form = ServiceSmsSenderForm()
@@ -1114,9 +986,7 @@ def service_edit_sms_sender(service_id, sms_sender_id):
         service_api_client.update_sms_sender(
             current_service.id,
             sms_sender_id=sms_sender_id,
-            sms_sender=sms_sender["sms_sender"]
-            if is_inbound_number
-            else form.sms_sender.data.replace("\r", ""),
+            sms_sender=sms_sender["sms_sender"] if is_inbound_number else form.sms_sender.data.replace("\r", ""),
             is_default=True if sms_sender["is_default"] else form.is_default.data,
         )
         return redirect(url_for(".service_sms_senders", service_id=service_id))
@@ -1156,14 +1026,9 @@ def service_set_letter_contact_block(service_id):
     if not current_service.has_permission("letter"):
         abort(403)
 
-    form = ServiceLetterContactBlockForm(
-        letter_contact_block=current_service.letter_contact_block
-    )
+    form = ServiceLetterContactBlockForm(letter_contact_block=current_service.letter_contact_block)
     if form.validate_on_submit():
-        current_service.update(
-            letter_contact_block=form.letter_contact_block.data.replace("\r", "")
-            or None
-        )
+        current_service.update(letter_contact_block=form.letter_contact_block.data.replace("\r", "") or None)
         if request.args.get("from_template"):
             return redirect(
                 url_for(
@@ -1173,14 +1038,10 @@ def service_set_letter_contact_block(service_id):
                 )
             )
         return redirect(url_for(".service_settings", service_id=service_id))
-    return render_template(
-        "views/service-settings/set-letter-contact-block.html", form=form
-    )
+    return render_template("views/service-settings/set-letter-contact-block.html", form=form)
 
 
-@main.route(
-    "/services/<service_id>/service-settings/set-message-limit", methods=["GET", "POST"]
-)
+@main.route("/services/<service_id>/service-settings/set-message-limit", methods=["GET", "POST"])
 @user_is_platform_admin
 def set_message_limit(service_id):
 
@@ -1208,9 +1069,7 @@ def set_free_sms_allowance(service_id):
     form = FreeSMSAllowance(free_sms_allowance=current_service.free_sms_fragment_limit)
 
     if form.validate_on_submit():
-        billing_api_client.create_or_update_free_sms_fragment_limit(
-            service_id, form.free_sms_allowance.data
-        )
+        billing_api_client.create_or_update_free_sms_fragment_limit(service_id, form.free_sms_allowance.data)
 
         return redirect(url_for(".service_settings", service_id=service_id))
 
@@ -1364,22 +1223,16 @@ def request_letter_branding(service_id):
 def link_service_to_organisation(service_id):
 
     all_organisations = organisations_client.get_organisations()
-    current_linked_organisation = organisations_client.get_service_organisation(
-        service_id
-    ).get("id", None)
+    current_linked_organisation = organisations_client.get_service_organisation(service_id).get("id", None)
 
     form = LinkOrganisationsForm(
-        choices=convert_dictionary_to_wtforms_choices_format(
-            all_organisations, "id", "name"
-        ),
+        choices=convert_dictionary_to_wtforms_choices_format(all_organisations, "id", "name"),
         organisations=current_linked_organisation,
     )
 
     if form.validate_on_submit():
         if form.organisations.data != current_linked_organisation:
-            organisations_client.update_service_organisation(
-                service_id, form.organisations.data
-            )
+            organisations_client.update_service_organisation(service_id, form.organisations.data)
         return redirect(url_for(".service_settings", service_id=service_id))
 
     return render_template(
@@ -1409,16 +1262,12 @@ def branding_request(service_id):
         )
         branding_style = current_branding
     else:
-        current_branding_filename = "https://{}/{}".format(
-            cdn_url, current_service.email_branding["logo"]
-        )
+        current_branding_filename = "https://{}/{}".format(cdn_url, current_service.email_branding["logo"])
         branding_style = "custom"
         choices.append(
             (
                 "custom",
-                _("Custom {} logo").format(current_service.name)
-                + "||"
-                + current_branding_filename,
+                _("Custom {} logo").format(current_service.name) + "||" + current_branding_filename,
             )
         )
 
@@ -1437,18 +1286,14 @@ def branding_request(service_id):
                 current_app.config["AWS_REGION"],
                 user_id=session["user_id"],
             )
-            current_user.send_branding_request(
-                current_service.id, current_service.name, upload_filename
-            )
+            current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
 
         default_branding_is_french = None
         branding_choice = form.branding_style.data
         if branding_choice == "custom" or file_submitted:
             default_branding_is_french = None
         else:
-            default_branding_is_french = (
-                branding_choice == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
-            )
+            default_branding_is_french = branding_choice == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
 
         if default_branding_is_french is not None:
             current_service.update(
@@ -1479,9 +1324,7 @@ def data_retention(service_id):
 def add_data_retention(service_id):
     form = ServiceDataRetentionForm()
     if form.validate_on_submit():
-        service_api_client.create_service_data_retention(
-            service_id, form.notification_type.data, form.days_of_retention.data
-        )
+        service_api_client.create_service_data_retention(service_id, form.notification_type.data, form.days_of_retention.data)
         return redirect(url_for(".data_retention", service_id=service_id))
     return render_template("views/service-settings/data-retention/add.html", form=form)
 
@@ -1493,13 +1336,9 @@ def add_data_retention(service_id):
 @user_is_platform_admin
 def edit_data_retention(service_id, data_retention_id):
     data_retention_item = current_service.get_data_retention_item(data_retention_id)
-    form = ServiceDataRetentionEditForm(
-        days_of_retention=data_retention_item["days_of_retention"]
-    )
+    form = ServiceDataRetentionEditForm(days_of_retention=data_retention_item["days_of_retention"])
     if form.validate_on_submit():
-        service_api_client.update_service_data_retention(
-            service_id, data_retention_id, form.days_of_retention.data
-        )
+        service_api_client.update_service_data_retention(service_id, data_retention_id, form.days_of_retention.data)
         return redirect(url_for(".data_retention", service_id=service_id))
     return render_template(
         "views/service-settings/data-retention/edit.html",

@@ -172,89 +172,59 @@ def test_should_show_all_providers(
     domestic_sms_first_row = domestic_sms_table.tbody.find_all("tr")[0]
     table_data = domestic_sms_first_row.find_all("td")
 
-    assert (
-        table_data[0].find_all("a")[0]["href"]
-        == "/provider/6005e192-4738-4962-beec-ebd982d0b03f"
-    )
+    assert table_data[0].find_all("a")[0]["href"] == "/provider/6005e192-4738-4962-beec-ebd982d0b03f"
     assert table_data[0].text.strip() == "Domestic SMS Provider"
     assert table_data[1].text.strip() == "1"
     assert table_data[2].text.strip() == "42"
     assert table_data[3].text.strip() == "True"
     assert table_data[4].text.strip() == "2017-01-16T15:20:40"
     assert table_data[5].text.strip() == "Test User"
-    assert (
-        table_data[6].find_all("a")[0]["href"]
-        == "/provider/6005e192-4738-4962-beec-ebd982d0b03f/edit"
-    )
+    assert table_data[6].find_all("a")[0]["href"] == "/provider/6005e192-4738-4962-beec-ebd982d0b03f/edit"
 
     domestic_sms_second_row = domestic_sms_table.tbody.find_all("tr")[1]
     table_data = domestic_sms_second_row.find_all("td")
 
-    assert (
-        table_data[0].find_all("a")[0]["href"]
-        == "/provider/0bd529cd-a0fd-43e5-80ee-b95ef6b0d51f"
-    )
+    assert table_data[0].find_all("a")[0]["href"] == "/provider/0bd529cd-a0fd-43e5-80ee-b95ef6b0d51f"
     assert table_data[0].text.strip() == "Second Domestic SMS Provider"
     assert table_data[1].text.strip() == "2"
     assert table_data[2].text.strip() == "58"
     assert table_data[3].text.strip() == "True"
     assert table_data[4].text.strip() == "None"
     assert table_data[5].text.strip() == "None"
-    assert (
-        table_data[6].find_all("a")[0]["href"]
-        == "/provider/0bd529cd-a0fd-43e5-80ee-b95ef6b0d51f/edit"
-    )
+    assert table_data[6].find_all("a")[0]["href"] == "/provider/0bd529cd-a0fd-43e5-80ee-b95ef6b0d51f/edit"
 
     domestic_email_first_row = domestic_email_table.tbody.find_all("tr")[0]
     domestic_email_table_data = domestic_email_first_row.find_all("td")
 
-    assert (
-        domestic_email_table_data[0].find_all("a")[0]["href"]
-        == "/provider/6005e192-4738-4962-beec-ebd982d0b03a"
-    )
+    assert domestic_email_table_data[0].find_all("a")[0]["href"] == "/provider/6005e192-4738-4962-beec-ebd982d0b03a"
     assert domestic_email_table_data[0].text.strip() == "first_email_provider"
     assert domestic_email_table_data[1].text.strip() == "1"
     assert domestic_email_table_data[2].text.strip() == "True"
     assert domestic_email_table_data[3].text.strip() == "None"
     assert domestic_email_table_data[4].text.strip() == "None"
-    assert (
-        domestic_email_table_data[5].find_all("a")[0]["href"]
-        == "/provider/6005e192-4738-4962-beec-ebd982d0b03a/edit"
-    )
+    assert domestic_email_table_data[5].find_all("a")[0]["href"] == "/provider/6005e192-4738-4962-beec-ebd982d0b03a/edit"
 
     domestic_email_second_row = domestic_email_table.tbody.find_all("tr")[1]
     domestic_email_table_data = domestic_email_second_row.find_all("td")
 
-    assert (
-        domestic_email_table_data[0].find_all("a")[0]["href"]
-        == "/provider/0bd529cd-a0fd-43e5-80ee-b95ef6b0d51b"
-    )
+    assert domestic_email_table_data[0].find_all("a")[0]["href"] == "/provider/0bd529cd-a0fd-43e5-80ee-b95ef6b0d51b"
     assert domestic_email_table_data[0].text.strip() == "second_email_provider"
     assert domestic_email_table_data[1].text.strip() == "2"
     assert domestic_email_table_data[2].text.strip() == "True"
     assert domestic_email_table_data[3].text.strip() == "None"
     assert domestic_email_table_data[4].text.strip() == "None"
-    assert (
-        domestic_email_table_data[5].find_all("a")[0]["href"]
-        == "/provider/0bd529cd-a0fd-43e5-80ee-b95ef6b0d51b/edit"
-    )
+    assert domestic_email_table_data[5].find_all("a")[0]["href"] == "/provider/0bd529cd-a0fd-43e5-80ee-b95ef6b0d51b/edit"
 
     international_sms_first_row = international_sms_table.tbody.find_all("tr")[0]
     table_data = international_sms_first_row.find_all("td")
 
-    assert (
-        table_data[0].find_all("a")[0]["href"]
-        == "/provider/67c770f5-918e-4afa-a5ff-880b9beb161d"
-    )
+    assert table_data[0].find_all("a")[0]["href"] == "/provider/67c770f5-918e-4afa-a5ff-880b9beb161d"
     assert table_data[0].text.strip() == "First International SMS Provider"
     assert table_data[1].text.strip() == "10"
     assert table_data[2].text.strip() == "False"
     assert table_data[3].text.strip() == "None"
     assert table_data[4].text.strip() == "None"
-    assert (
-        table_data[5].find_all("a")[0]["href"]
-        == "/provider/67c770f5-918e-4afa-a5ff-880b9beb161d/edit"
-    )
+    assert table_data[5].find_all("a")[0]["href"] == "/provider/67c770f5-918e-4afa-a5ff-880b9beb161d/edit"
 
 
 def test_add_monthly_traffic():
@@ -328,17 +298,13 @@ def test_should_show_error_on_bad_provider_priority(
 
     client.login(platform_admin_user, mocker)
     response = client.post(
-        url_for(
-            "main.edit_provider", provider_id=stub_provider["provider_details"]["id"]
-        ),
+        url_for("main.edit_provider", provider_id=stub_provider["provider_details"]["id"]),
         data={"priority": "not valid"},
     )
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert response.status_code == 200
-    assert "Not a valid integer value" in str(
-        page.find_all("span", {"class": re.compile(r"error-message")})[0]
-    )
+    assert "Not a valid integer value" in str(page.find_all("span", {"class": re.compile(r"error-message")})[0])
 
 
 def test_should_show_error_on_negative_provider_priority(
@@ -353,17 +319,13 @@ def test_should_show_error_on_negative_provider_priority(
 
     client.login(platform_admin_user, mocker)
     response = client.post(
-        url_for(
-            "main.edit_provider", provider_id=stub_provider["provider_details"]["id"]
-        ),
+        url_for("main.edit_provider", provider_id=stub_provider["provider_details"]["id"]),
         data={"priority": -1},
     )
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert response.status_code == 200
-    assert "Must be between 1 and 100" in str(
-        page.find_all("span", {"class": re.compile(r"error-message")})[0]
-    )
+    assert "Must be between 1 and 100" in str(page.find_all("span", {"class": re.compile(r"error-message")})[0])
 
 
 def test_should_show_error_on_too_big_provider_priority(
@@ -378,17 +340,13 @@ def test_should_show_error_on_too_big_provider_priority(
 
     client.login(platform_admin_user, mocker)
     response = client.post(
-        url_for(
-            "main.edit_provider", provider_id=stub_provider["provider_details"]["id"]
-        ),
+        url_for("main.edit_provider", provider_id=stub_provider["provider_details"]["id"]),
         data={"priority": 101},
     )
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert response.status_code == 200
-    assert "Must be between 1 and 100" in str(
-        page.find_all("span", {"class": re.compile(r"error-message")})[0]
-    )
+    assert "Must be between 1 and 100" in str(page.find_all("span", {"class": re.compile(r"error-message")})[0])
 
 
 def test_should_show_error_on_too_little_provider_priority(
@@ -403,17 +361,13 @@ def test_should_show_error_on_too_little_provider_priority(
 
     client.login(platform_admin_user, mocker)
     response = client.post(
-        url_for(
-            "main.edit_provider", provider_id=stub_provider["provider_details"]["id"]
-        ),
+        url_for("main.edit_provider", provider_id=stub_provider["provider_details"]["id"]),
         data={"priority": 0},
     )
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert response.status_code == 200
-    assert "Must be between 1 and 100" in str(
-        page.find_all("span", {"class": re.compile(r"error-message")})[0]
-    )
+    assert "Must be between 1 and 100" in str(page.find_all("span", {"class": re.compile(r"error-message")})[0])
 
 
 def test_should_update_provider_priority(
@@ -425,21 +379,15 @@ def test_should_update_provider_priority(
         "app.provider_client.get_provider_by_id",
         return_value=copy.deepcopy(stub_provider),
     )
-    mocker.patch(
-        "app.provider_client.update_provider", return_value=copy.deepcopy(stub_provider)
-    )
+    mocker.patch("app.provider_client.update_provider", return_value=copy.deepcopy(stub_provider))
 
     client.login(platform_admin_user, mocker)
     response = client.post(
-        url_for(
-            "main.edit_provider", provider_id=stub_provider["provider_details"]["id"]
-        ),
+        url_for("main.edit_provider", provider_id=stub_provider["provider_details"]["id"]),
         data={"priority": 2},
     )
 
-    app.provider_client.update_provider.assert_called_with(
-        stub_provider["provider_details"]["id"], 2
-    )
+    app.provider_client.update_provider.assert_called_with(stub_provider["provider_details"]["id"], 2)
     assert response.status_code == 302
     assert response.location == "http://localhost/providers"
 
@@ -451,11 +399,7 @@ def test_should_show_provider_version_history(client, platform_admin_user, mocke
     )
 
     client.login(platform_admin_user, mocker)
-    response = client.get(
-        url_for(
-            "main.view_provider", provider_id=stub_provider_history["data"][0]["id"]
-        )
-    )
+    response = client.get(url_for("main.view_provider", provider_id=stub_provider_history["data"][0]["id"]))
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
     table = page.find("table")
@@ -466,10 +410,7 @@ def test_should_show_provider_version_history(client, platform_admin_user, mocke
 
     assert response.status_code == 200
 
-    assert (
-        page.find_all("h1")[0].text.strip()
-        == stub_provider_history["data"][0]["display_name"]
-    )
+    assert page.find_all("h1")[0].text.strip() == stub_provider_history["data"][0]["display_name"]
     assert len(table_rows) == 3
 
     assert table_headings[0].text.strip() == "Version"

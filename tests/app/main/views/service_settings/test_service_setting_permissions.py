@@ -21,9 +21,7 @@ def get_service_settings_page(
     mock_get_service_data_retention,
 ):
     client_request.login(platform_admin_user)
-    return functools.partial(
-        client_request.get, "main.service_settings", service_id=service_one["id"]
-    )
+    return functools.partial(client_request.get, "main.service_settings", service_id=service_one["id"])
 
 
 def test_service_set_permission_requires_platform_admin(
@@ -69,9 +67,7 @@ def test_service_set_permission(
         data={"enabled": form_data},
     )
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.service_settings", service_id=service_one["id"], _external=True
-    )
+    assert response.location == url_for("main.service_settings", service_id=service_one["id"], _external=True)
     force_permission.assert_called_with(permission, on=on)
 
 
@@ -94,18 +90,11 @@ def test_service_set_permission(
         ),
     ],
 )
-def test_service_setting_toggles_show(
-    get_service_settings_page, service_one, service_fields, endpoint, kwargs, text
-):
+def test_service_setting_toggles_show(get_service_settings_page, service_one, service_fields, endpoint, kwargs, text):
     link_url = url_for(endpoint, **kwargs, service_id=service_one["id"])
     service_one.update(service_fields)
     page = get_service_settings_page()
-    assert (
-        normalize_spaces(
-            page.find("a", {"href": link_url}).find_parent("tr").text.strip()
-        )
-        == text
-    )
+    assert normalize_spaces(page.find("a", {"href": link_url}).find_parent("tr").text.strip()) == text
 
 
 @pytest.mark.parametrize(
@@ -166,9 +155,7 @@ def test_service_settings_doesnt_show_option_if_parent_permission_disabled(
         ({"active": True}, "Resume service"),
     ],
 )
-def test_service_setting_toggles_dont_show(
-    get_service_settings_page, service_one, service_fields, hidden_button_text
-):
+def test_service_setting_toggles_dont_show(get_service_settings_page, service_one, service_fields, hidden_button_text):
     service_one.update(service_fields)
     page = get_service_settings_page()
     toggles = page.find_all("a", {"class": "button"})
@@ -189,10 +176,6 @@ def test_normal_user_doesnt_see_any_toggle_buttons(
 ):
     page = client_request.get("main.service_settings", service_id=service_one["id"])
 
-    toggles = [
-        a
-        for a in page.find_all("a", {"class": "button"})
-        if a.text != "Request to go live" and "Trial" not in a.text
-    ]
+    toggles = [a for a in page.find_all("a", {"class": "button"}) if a.text != "Request to go live" and "Trial" not in a.text]
 
     assert toggles == []

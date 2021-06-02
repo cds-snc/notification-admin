@@ -29,19 +29,16 @@ class JSONModel:
             # Re-raise any `AttributeError`s that are not directly on
             # this object because they indicate an underlying exception
             # that we don’t want to swallow
-            if str(e) != "'{}' object has no attribute '{}'".format(
-                self.__class__.__name__, attr
-            ):
+            if str(e) != "'{}' object has no attribute '{}'".format(self.__class__.__name__, attr):
                 raise e
 
         if attr in super().__getattribute__("ALLOWED_PROPERTIES"):
             return super().__getattribute__("_dict")[attr]
 
         raise AttributeError(
-            (
-                "'{}' object has no attribute '{}' and '{}' is not a field "
-                "in the underlying JSON"
-            ).format(self.__class__.__name__, attr, attr)
+            ("'{}' object has no attribute '{}' and '{}' is not a field " "in the underlying JSON").format(
+                self.__class__.__name__, attr, attr
+            )
         )
 
     def _get_by_id(self, things, id):

@@ -21,11 +21,7 @@ def _get_argument(argument_name, client_method, args, kwargs):
     with suppress(KeyError):
         return signature(client_method).parameters[argument_name].default
 
-    raise TypeError(
-        "{}() takes no argument called '{}'".format(
-            client_method.__name__, argument_name
-        )
-    )
+    raise TypeError("{}() takes no argument called '{}'".format(client_method.__name__, argument_name))
 
 
 def _make_key(key_format, client_method, args, kwargs):

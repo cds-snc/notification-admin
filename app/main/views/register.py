@@ -35,10 +35,7 @@ def register_from_invite():
     form = RegisterUserFromInviteForm(invited_user)
 
     if form.validate_on_submit():
-        if (
-            form.service.data != invited_user.service
-            or form.email_address.data != invited_user.email_address
-        ):
+        if form.service.data != invited_user.service or form.email_address.data != invited_user.email_address:
             abort(400)
         _do_registration(form, send_email=False, send_sms=invited_user.sms_auth)
         invited_user.accept_invite()
@@ -49,9 +46,7 @@ def register_from_invite():
             # so just activate them straight away
             return activate_user(session["user_details"]["id"])
 
-    return render_template(
-        "views/register-from-invite.html", invited_user=invited_user, form=form
-    )
+    return render_template("views/register-from-invite.html", invited_user=invited_user, form=form)
 
 
 @main.route("/register-from-org-invite", methods=["GET", "POST"])
@@ -66,10 +61,7 @@ def register_from_org_invite():
     form.auth_type.data = "sms_auth"
 
     if form.validate_on_submit():
-        if (
-            form.organisation.data != invited_org_user.organisation
-            or form.email_address.data != invited_org_user.email_address
-        ):
+        if form.organisation.data != invited_org_user.organisation or form.email_address.data != invited_org_user.email_address:
             abort(400)
         _do_registration(
             form,

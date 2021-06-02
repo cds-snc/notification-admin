@@ -4,9 +4,7 @@ import pytest
 
 from app.utils import get_errors_for_csv
 
-MockRecipients = namedtuple(
-    "RecipientCSV", ["rows_with_bad_recipients", "rows_with_missing_data"]
-)
+MockRecipients = namedtuple("RecipientCSV", ["rows_with_bad_recipients", "rows_with_missing_data"])
 
 
 @pytest.mark.parametrize(

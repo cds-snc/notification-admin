@@ -105,9 +105,7 @@ def invite_org_user(org_id):
         )
         return redirect(url_for(".manage_org_users", org_id=org_id))
 
-    return render_template(
-        "views/organisations/organisation/users/invite-org-user.html", form=form
-    )
+    return render_template("views/organisations/organisation/users/invite-org-user.html", form=form)
 
 
 @main.route("/organisations/<org_id>/users/<user_id>", methods=["GET"])
@@ -143,14 +141,10 @@ def remove_user_from_organisation(org_id, user_id):
     )
 
 
-@main.route(
-    "/organisations/<org_id>/cancel-invited-user/<invited_user_id>", methods=["GET"]
-)
+@main.route("/organisations/<org_id>/cancel-invited-user/<invited_user_id>", methods=["GET"])
 @user_has_permissions()
 def cancel_invited_org_user(org_id, invited_user_id):
-    org_invite_api_client.cancel_invited_user(
-        org_id=org_id, invited_user_id=invited_user_id
-    )
+    org_invite_api_client.cancel_invited_user(org_id=org_id, invited_user_id=invited_user_id)
 
     return redirect(url_for("main.manage_org_users", org_id=org_id))
 
@@ -166,16 +160,14 @@ def organisation_settings(org_id):
     )
 
     if current_organisation.email_branding_id:
-        email_branding = email_branding_client.get_email_branding(
-            current_organisation.email_branding_id
-        )["email_branding"]["name"]
+        email_branding = email_branding_client.get_email_branding(current_organisation.email_branding_id)["email_branding"][
+            "name"
+        ]
 
     letter_branding = None
 
     if current_organisation.letter_branding_id:
-        letter_branding = letter_branding_client.get_letter_branding(
-            current_organisation.letter_branding_id
-        )["name"]
+        letter_branding = letter_branding_client.get_letter_branding(current_organisation.letter_branding_id)["name"]
 
     return render_template(
         "views/organisations/organisation/settings/index.html",
@@ -193,9 +185,7 @@ def edit_organisation_name(org_id):
         form.name.data = current_organisation.name
 
     if form.validate_on_submit():
-        unique_name = organisations_client.is_organisation_name_unique(
-            org_id, form.name.data
-        )
+        unique_name = organisations_client.is_organisation_name_unique(org_id, form.name.data)
         if not unique_name:
             form.name.errors.append("This organisation name is already in use")
             return render_template(
@@ -215,9 +205,7 @@ def edit_organisation_name(org_id):
 @user_is_platform_admin
 def edit_organisation_type(org_id):
 
-    form = OrganisationOrganisationTypeForm(
-        organisation_type=current_organisation.organisation_type
-    )
+    form = OrganisationOrganisationTypeForm(organisation_type=current_organisation.organisation_type)
 
     if form.validate_on_submit():
         org_service_ids = [service["id"] for service in current_organisation.services]
@@ -235,9 +223,7 @@ def edit_organisation_type(org_id):
     )
 
 
-@main.route(
-    "/organisations/<org_id>/settings/edit-crown-status", methods=["GET", "POST"]
-)
+@main.route("/organisations/<org_id>/settings/edit-crown-status", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_crown_status(org_id):
 
@@ -295,9 +281,7 @@ def edit_organisation_agreement(org_id):
     )
 
 
-@main.route(
-    "/organisations/<org_id>/settings/set-email-branding", methods=["GET", "POST"]
-)
+@main.route("/organisations/<org_id>/settings/set-email-branding", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_email_branding(org_id):
 
@@ -334,9 +318,7 @@ def edit_organisation_email_branding(org_id):
     )
 
 
-@main.route(
-    "/organisations/<org_id>/settings/preview-email-branding", methods=["GET", "POST"]
-)
+@main.route("/organisations/<org_id>/settings/preview-email-branding", methods=["GET", "POST"])
 @user_is_platform_admin
 def organisation_preview_email_branding(org_id):
 
@@ -358,9 +340,7 @@ def organisation_preview_email_branding(org_id):
                 default_branding_is_french=default_branding_is_french,
             )
         else:
-            organisations_client.update_organisation(
-                org_id, email_branding_id=form.branding_style.data
-            )
+            organisations_client.update_organisation(org_id, email_branding_id=form.branding_style.data)
         return redirect(url_for(".organisation_settings", org_id=org_id))
 
     return render_template(
@@ -370,9 +350,7 @@ def organisation_preview_email_branding(org_id):
     )
 
 
-@main.route(
-    "/organisations/<org_id>/settings/set-letter-branding", methods=["GET", "POST"]
-)
+@main.route("/organisations/<org_id>/settings/set-letter-branding", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_letter_branding(org_id):
     letter_branding = letter_branding_client.get_all_letter_branding()
@@ -398,9 +376,7 @@ def edit_organisation_letter_branding(org_id):
     )
 
 
-@main.route(
-    "/organisations/<org_id>/settings/preview-letter-branding", methods=["GET", "POST"]
-)
+@main.route("/organisations/<org_id>/settings/preview-letter-branding", methods=["GET", "POST"])
 @user_is_platform_admin
 def organisation_preview_letter_branding(org_id):
     branding_style = request.args.get("branding_style")
@@ -408,9 +384,7 @@ def organisation_preview_letter_branding(org_id):
     form = PreviewBranding(branding_style=branding_style)
 
     if form.validate_on_submit():
-        organisations_client.update_organisation(
-            org_id, letter_branding_id=form.branding_style.data
-        )
+        organisations_client.update_organisation(org_id, letter_branding_id=form.branding_style.data)
         return redirect(url_for(".organisation_settings", org_id=org_id))
 
     return render_template(
@@ -434,11 +408,7 @@ def edit_organisation_domains(org_id):
     if form.validate_on_submit():
         organisations_client.update_organisation(
             org_id,
-            domains=list(
-                OrderedDict.fromkeys(
-                    domain.lower() for domain in filter(None, form.domains.data)
-                )
-            ),
+            domains=list(OrderedDict.fromkeys(domain.lower() for domain in filter(None, form.domains.data))),
         )
         return redirect(url_for(".organisation_settings", org_id=org_id))
 
@@ -450,9 +420,7 @@ def edit_organisation_domains(org_id):
     )
 
 
-@main.route(
-    "/organisations/<org_id>/settings/edit-name/confirm", methods=["GET", "POST"]
-)
+@main.route("/organisations/<org_id>/settings/edit-name/confirm", methods=["GET", "POST"])
 @user_has_permissions()
 def confirm_edit_organisation_name(org_id):
     # Validate password for form
@@ -485,18 +453,14 @@ def confirm_edit_organisation_name(org_id):
     )
 
 
-@main.route(
-    "/organisations/<org_id>/settings/edit-go-live-notes", methods=["GET", "POST"]
-)
+@main.route("/organisations/<org_id>/settings/edit-go-live-notes", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_go_live_notes(org_id):
 
     form = GoLiveNotesForm()
 
     if form.validate_on_submit():
-        organisations_client.update_organisation(
-            org_id, request_to_go_live_notes=form.request_to_go_live_notes.data
-        )
+        organisations_client.update_organisation(org_id, request_to_go_live_notes=form.request_to_go_live_notes.data)
         return redirect(url_for(".organisation_settings", org_id=org_id))
 
     org = organisations_client.get_organisation(org_id)

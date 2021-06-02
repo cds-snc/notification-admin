@@ -28,9 +28,7 @@ class Blocklist:
     def __call__(self, form, field):
         if current_app.config.get("HIPB_ENABLED", None):
             hibp_bad_password_found = False
-            for i in range(
-                0, 3
-            ):  # Try 3 times. If the HIPB API is down then fall back to the old banlist.
+            for i in range(0, 3):  # Try 3 times. If the HIPB API is down then fall back to the old banlist.
                 try:
                     response = pwnedpasswords.check(field.data)
                     if response > 0:
@@ -77,9 +75,7 @@ class ValidGovEmail:
         access_text = _("If you think you should have access")
         contact_text = _("contact us")
 
-        message = ('{} {} <a href="{}">{}</a>').format(
-            gov_email, access_text, contact_url, contact_text
-        )
+        message = ('{} {} <a href="{}">{}</a>').format(gov_email, access_text, contact_url, contact_text)
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
 
@@ -110,9 +106,7 @@ class NoCommasInPlaceHolders:
 
 class OnlySMSCharacters:
     def __call__(self, form, field):
-        non_sms_characters = sorted(
-            list(SanitiseSMS.get_non_compatible_characters(field.data))
-        )
+        non_sms_characters = sorted(list(SanitiseSMS.get_non_compatible_characters(field.data)))
         if non_sms_characters:
             raise ValidationError(
                 "You can’t use {} in text messages. {} won’t show up properly on everyone’s phones.".format(
@@ -150,18 +144,12 @@ class DoesNotStartWithDoubleZero:
 
 def validate_email_from(form, field):
     if email_safe(field.data) != field.data.lower():
-        raise ValidationError(
-            _l("This entry must contain valid characters for an email address.")
-        )
+        raise ValidationError(_l("This entry must contain valid characters for an email address."))
     if len(field.data) > 64:
         raise ValidationError(_l("This cannot exceed 64 characters in length"))
     # this filler is used because service id is not available when validating a new service to be created
-    service_id = getattr(
-        form, "service_id", current_app.config["NOTIFY_BAD_FILLER_UUID"]
-    )
-    unique_name = service_api_client.is_service_email_from_unique(
-        service_id, field.data
-    )
+    service_id = getattr(form, "service_id", current_app.config["NOTIFY_BAD_FILLER_UUID"])
+    unique_name = service_api_client.is_service_email_from_unique(service_id, field.data)
     if not unique_name:
         raise ValidationError(_l("This email address is already in use"))
 
@@ -170,12 +158,8 @@ def validate_service_name(form, field):
     if len(field.data) > 255:
         raise ValidationError(_l("This cannot exceed 255 characters in length"))
     if field.data != email_safe_name(field.data):
-        raise ValidationError(
-            _l("This entry must contain valid characters for an email address.")
-        )
-    service_id = getattr(
-        form, "service_id", current_app.config["NOTIFY_BAD_FILLER_UUID"]
-    )
+        raise ValidationError(_l("This entry must contain valid characters for an email address."))
+    service_id = getattr(form, "service_id", current_app.config["NOTIFY_BAD_FILLER_UUID"])
     unique_name = service_api_client.is_service_name_unique(
         service_id,
         field.data,

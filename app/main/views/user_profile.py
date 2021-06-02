@@ -57,9 +57,7 @@ def user_profile_name():
         current_user.update(name=form.new_name.data)
         return redirect(url_for(".user_profile"))
 
-    return render_template(
-        "views/user-profile/change.html", thing=_("name"), form_field=form.new_name
-    )
+    return render_template("views/user-profile/change.html", thing=_("name"), form_field=form.new_name)
 
 
 @main.route("/user-profile/email", methods=["GET", "POST"])
@@ -67,9 +65,7 @@ def user_profile_name():
 @user_is_gov_user
 def user_profile_email():
 
-    form = ChangeEmailForm(
-        User.already_registered, email_address=current_user.email_address
-    )
+    form = ChangeEmailForm(User.already_registered, email_address=current_user.email_address)
 
     if form.validate_on_submit():
         session[NEW_EMAIL] = form.email_address.data
@@ -94,12 +90,8 @@ def user_profile_email_authenticate():
         return redirect("main.user_profile_email")
 
     if form.validate_on_submit():
-        user_api_client.send_change_email_verification(
-            current_user.id, session[NEW_EMAIL]
-        )
-        return render_template(
-            "views/change-email-continue.html", new_email=session[NEW_EMAIL]
-        )
+        user_api_client.send_change_email_verification(current_user.id, session[NEW_EMAIL])
+        return render_template("views/change-email-continue.html", new_email=session[NEW_EMAIL])
 
     return render_template(
         "views/user-profile/authenticate.html",
@@ -208,9 +200,7 @@ def user_profile_password():
     form = ChangePasswordForm(_check_password)
 
     if form.validate_on_submit():
-        user_api_client.update_password(
-            current_user.id, password=form.new_password.data
-        )
+        user_api_client.update_password(current_user.id, password=form.new_password.data)
         return redirect(url_for(".user_profile"))
 
     return render_template("views/user-profile/change-password.html", form=form)
@@ -302,9 +292,7 @@ def user_profile_validate_security_keys():
 @main.route("/user-profile/disable-platform-admin-view", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_disable_platform_admin_view():
-    if not current_user.platform_admin and not session.get(
-        "disable_platform_admin_view"
-    ):
+    if not current_user.platform_admin and not session.get("disable_platform_admin_view"):
         abort(403)
 
     form = ServiceOnOffSettingForm(
@@ -318,6 +306,4 @@ def user_profile_disable_platform_admin_view():
         session["disable_platform_admin_view"] = not form.enabled.data
         return redirect(url_for(".user_profile"))
 
-    return render_template(
-        "views/user-profile/disable-platform-admin-view.html", form=form
-    )
+    return render_template("views/user-profile/disable-platform-admin-view.html", form=form)

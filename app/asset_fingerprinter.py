@@ -19,9 +19,7 @@ class AssetFingerprinter(object):
     * 'app/static' is assumed to be the root for all asset files
     """
 
-    def __init__(
-        self, asset_root="/static/", filesystem_path="app/static/", cdn_domain=None
-    ):
+    def __init__(self, asset_root="/static/", filesystem_path="app/static/", cdn_domain=None):
         self._cache = {}
         self._cdn_domain = cdn_domain
         self._asset_root = asset_root
@@ -30,10 +28,7 @@ class AssetFingerprinter(object):
     def get_url(self, asset_path):
         if asset_path not in self._cache:
             self._cache[asset_path] = (
-                self._asset_root
-                + asset_path
-                + "?"
-                + self.get_asset_fingerprint(self._filesystem_path + asset_path)
+                self._asset_root + asset_path + "?" + self.get_asset_fingerprint(self._filesystem_path + asset_path)
             )
         return self._cache[asset_path]
 

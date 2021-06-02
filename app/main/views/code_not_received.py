@@ -12,9 +12,7 @@ from app.utils import redirect_to_sign_in
 def resend_email_verification():
     user = User.from_email_address(session["user_details"]["email"])
     user.send_verify_email()
-    return render_template(
-        "views/resend-email-verification.html", email=user.email_address
-    )
+    return render_template("views/resend-email-verification.html", email=user.email_address)
 
 
 @main.route("/text-not-received", methods=["GET", "POST"])

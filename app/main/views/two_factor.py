@@ -14,9 +14,7 @@ from app.utils import redirect_to_sign_in
 @redirect_to_sign_in
 def two_factor_email_sent():
     if current_user.is_authenticated:
-        return redirect_when_logged_in(
-            user=current_user, platform_admin=current_user.platform_admin
-        )
+        return redirect_when_logged_in(user=current_user, platform_admin=current_user.platform_admin)
 
     user_id = session["user_details"]["id"]
 
@@ -34,11 +32,7 @@ def two_factor_email_sent():
     if form.validate_on_submit():
         return log_in_user(user_id)
 
-    title = (
-        _("Email re-sent")
-        if request.args.get("email_resent")
-        else _("Check your email")
-    )
+    title = _("Email re-sent") if request.args.get("email_resent") else _("Check your email")
     return render_template(
         "views/two-factor-email.html",
         title=title,
@@ -51,9 +45,7 @@ def two_factor_email_sent():
 @redirect_to_sign_in
 def two_factor_sms_sent():
     if current_user.is_authenticated:
-        return redirect_when_logged_in(
-            user=current_user, platform_admin=current_user.platform_admin
-        )
+        return redirect_when_logged_in(user=current_user, platform_admin=current_user.platform_admin)
 
     user_id = session["user_details"]["id"]
 
@@ -80,10 +72,7 @@ def _is_safe_redirect_url(target):
 
     host_url = urlparse(request.host_url)
     redirect_url = urlparse(urljoin(request.host_url, target))
-    return (
-        redirect_url.scheme in ("http", "https")
-        and host_url.netloc == redirect_url.netloc
-    )
+    return redirect_url.scheme in ("http", "https") and host_url.netloc == redirect_url.netloc
 
 
 def log_in_user(user_id):

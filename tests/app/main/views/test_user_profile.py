@@ -18,17 +18,12 @@ def test_should_show_overview_page(client_request, mock_get_security_keys):
     assert "Use platform admin view" not in page
 
 
-def test_overview_page_shows_disable_for_platform_admin(
-    client_request, platform_admin_user, mock_get_security_keys
-):
+def test_overview_page_shows_disable_for_platform_admin(client_request, platform_admin_user, mock_get_security_keys):
     client_request.login(platform_admin_user)
     page = client_request.get(("main.user_profile"))
     assert page.select_one("h1").text.strip() == "Your profile"
     disable_platform_admin_row = page.select("tr")[-1]
-    assert (
-        " ".join(disable_platform_admin_row.text.split())
-        == "Use platform admin view Yes Change"
-    )
+    assert " ".join(disable_platform_admin_row.text.split()) == "Use platform admin view Yes Change"
 
 
 def test_should_show_name_page(client_request, mock_get_security_keys):
@@ -95,15 +90,10 @@ def test_should_render_change_email_continue_after_authenticate_email(
         session["new-email"] = "new_notify@notify.canada.ca"
     page = client_request.post(
         "main.user_profile_email_authenticate",
-        data={
-            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"
-        },
+        data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
         _expected_status=200,
     )
-    assert (
-        "Click the link in the email to confirm the change to your email address."
-        in page.text
-    )
+    assert "Click the link in the email to confirm the change to your email address." in page.text
 
 
 def test_should_redirect_to_user_profile_when_user_confirms_email_link(
@@ -114,15 +104,11 @@ def test_should_redirect_to_user_profile_when_user_confirms_email_link(
 ):
 
     token = generate_token(
-        payload=json.dumps(
-            {"user_id": api_user_active["id"], "email": "new_email@canada.ca"}
-        ),
+        payload=json.dumps({"user_id": api_user_active["id"], "email": "new_email@canada.ca"}),
         secret=app_.config["SECRET_KEY"],
         salt=app_.config["DANGEROUS_SALT"],
     )
-    response = logged_in_client.get(
-        url_for_endpoint_with_token("main.user_profile_email_confirm", token=token)
-    )
+    response = logged_in_client.get(url_for_endpoint_with_token("main.user_profile_email_confirm", token=token))
 
     assert response.status_code == 302
     assert response.location == url_for("main.user_profile", _external=True)
@@ -183,9 +169,7 @@ def test_should_redirect_after_mobile_number_authenticate(
 
     client_request.post(
         "main.user_profile_mobile_number_authenticate",
-        _data={
-            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"
-        },
+        _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
         _expected_status=302,
         _expected_redirect=url_for(
             "main.user_profile_mobile_number_confirm",
@@ -275,9 +259,7 @@ def test_should_redirect_after_password_change(
     )
 
 
-def test_should_list_security_keys(
-    app_, client_request, api_nongov_user_active, mock_get_security_keys_with_key
-):
+def test_should_list_security_keys(app_, client_request, api_nongov_user_active, mock_get_security_keys_with_key):
     with captured_templates(app_) as templates:
         page = client_request.get(("main.user_profile_security_keys"))
         template, context = templates[0]
@@ -297,9 +279,7 @@ def test_deleting_security_key(
 
     # Listing keys
     with captured_templates(app_) as templates:
-        client_request.get(
-            ("main.user_profile_security_keys_confirm_delete"), keyid=key_id
-        )
+        client_request.get(("main.user_profile_security_keys_confirm_delete"), keyid=key_id)
         template, context = templates[0]
         assert template.name == "views/user-profile/security-keys.html"
 
@@ -318,9 +298,7 @@ def test_deleting_security_key(
 
 
 def test_adding_security_key(app_, client_request, api_nongov_user_active, mocker):
-    register_mock = mocker.patch(
-        "app.user_api_client.register_security_key", return_value={"data": "blob"}
-    )
+    register_mock = mocker.patch("app.user_api_client.register_security_key", return_value={"data": "blob"})
 
     # Listing keys
     with captured_templates(app_) as templates:
@@ -338,12 +316,8 @@ def test_adding_security_key(app_, client_request, api_nongov_user_active, mocke
 
 
 def test_complete_adding_security_key(client_request, api_nongov_user_active, mocker):
-    mock = mocker.patch(
-        "app.user_api_client.add_security_key_user", return_value={"id": "fake"}
-    )
-    client_request.post(
-        ("main.user_profile_complete_security_keys"), _data="fake", _expected_status=200
-    )
+    mock = mocker.patch("app.user_api_client.add_security_key_user", return_value={"id": "fake"})
+    client_request.post(("main.user_profile_complete_security_keys"), _data="fake", _expected_status=200)
     mock.assert_called_once_with(
         api_nongov_user_active["id"],
         base64.b64encode("fake".encode("utf-8")).decode("utf-8"),
@@ -355,25 +329,19 @@ def test_authenticate_security_key(client_request, api_nongov_user_active, mocke
         "app.user_api_client.authenticate_security_keys",
         return_value={"data": base64.b64encode("fake".encode("utf-8"))},
     )
-    response = client_request.post(
-        ("main.user_profile_authenticate_security_keys"), _expected_status=200
-    )
+    response = client_request.post(("main.user_profile_authenticate_security_keys"), _expected_status=200)
     assert response.text == "fake"
     mock.assert_called_once_with(api_nongov_user_active["id"])
 
 
-def test_validate_security_key_api_error(
-    client_request, api_nongov_user_active, mocker
-):
+def test_validate_security_key_api_error(client_request, api_nongov_user_active, mocker):
     mock_login = mocker.patch("app.models.user.User.login")
     mock_validate = mocker.patch(
         "app.user_api_client.validate_security_keys",
         side_effect=HTTPError(response=Mock(status_code=500)),
     )
 
-    client_request.post(
-        ("main.user_profile_validate_security_keys"), _data="fake", _expected_status=500
-    )
+    client_request.post(("main.user_profile_validate_security_keys"), _data="fake", _expected_status=500)
 
     assert mock_validate.called
     assert mock_login.called is False
@@ -388,9 +356,7 @@ def test_validate_security_key(
     password_changed,
 ):
     mock_login = mocker.patch("app.models.user.User.login")
-    mock_validate = mocker.patch(
-        "app.user_api_client.validate_security_keys", return_value={"status": "OK"}
-    )
+    mock_validate = mocker.patch("app.user_api_client.validate_security_keys", return_value={"status": "OK"})
     mock_change_password = mocker.patch("app.models.user.User.update_password")
     new_user = dict(api_nongov_user_active)
     new_user["current_session_id"] = fake_uuid
@@ -403,9 +369,7 @@ def test_validate_security_key(
                 "password": "somepassword",
             }
 
-    client_request.post(
-        ("main.user_profile_validate_security_keys"), _data="fake", _expected_status=200
-    )
+    client_request.post(("main.user_profile_validate_security_keys"), _data="fake", _expected_status=200)
 
     with client_request.session_transaction() as session:
         assert api_nongov_user_active["current_session_id"] is None
@@ -441,14 +405,10 @@ def test_non_gov_user_cannot_access_change_email_page(
 
 
 def test_normal_user_doesnt_see_disable_platform_admin(client_request):
-    client_request.get(
-        "main.user_profile_disable_platform_admin_view", _expected_status=403
-    )
+    client_request.get("main.user_profile_disable_platform_admin_view", _expected_status=403)
 
 
-def test_platform_admin_can_see_disable_platform_admin_page(
-    client_request, platform_admin_user
-):
+def test_platform_admin_can_see_disable_platform_admin_page(client_request, platform_admin_user):
     client_request.login(platform_admin_user)
     page = client_request.get("main.user_profile_disable_platform_admin_view")
 

@@ -56,9 +56,7 @@ def test_create_email_branding(mocker):
         "brand_type": "custom_logo",
     }
 
-    mock_post = mocker.patch(
-        "app.notify_client.email_branding_client.EmailBrandingClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.email_branding_client.EmailBrandingClient.post")
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
     EmailBrandingClient().create_email_branding(
         logo=org_data["logo"],
@@ -82,9 +80,7 @@ def test_update_email_branding(mocker, fake_uuid):
         "brand_type": "custom_logo",
     }
 
-    mock_post = mocker.patch(
-        "app.notify_client.email_branding_client.EmailBrandingClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.email_branding_client.EmailBrandingClient.post")
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
     EmailBrandingClient().update_email_branding(
         branding_id=fake_uuid,
@@ -95,9 +91,7 @@ def test_update_email_branding(mocker, fake_uuid):
         brand_type="custom_logo",
     )
 
-    mock_post.assert_called_once_with(
-        url="/email-branding/{}".format(fake_uuid), data=org_data
-    )
+    mock_post.assert_called_once_with(url="/email-branding/{}".format(fake_uuid), data=org_data)
     assert mock_redis_delete.call_args_list == [
         call("email_branding-{}".format(fake_uuid)),
         call("email_branding"),

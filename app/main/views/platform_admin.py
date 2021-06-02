@@ -82,9 +82,7 @@ def get_status_box_data(stats, key, label, threshold=FAILURE_THRESHOLD):
 
 
 def get_tech_failure_status_box_data(stats):
-    stats = get_status_box_data(
-        stats, "technical-failure", "technical failures", ZERO_FAILURE_THRESHOLD
-    )
+    stats = get_status_box_data(stats, "technical-failure", "technical failures", ZERO_FAILURE_THRESHOLD)
     stats.pop("percentage")
     return stats
 
@@ -99,12 +97,8 @@ def make_columns(global_stats, complaints_number):
             },
             "other_data": [
                 get_tech_failure_status_box_data(global_stats["email"]),
-                get_status_box_data(
-                    global_stats["email"], "permanent-failure", "permanent failures"
-                ),
-                get_status_box_data(
-                    global_stats["email"], "temporary-failure", "temporary failures"
-                ),
+                get_status_box_data(global_stats["email"], "permanent-failure", "permanent failures"),
+                get_status_box_data(global_stats["email"], "temporary-failure", "temporary failures"),
                 {
                     "number": complaints_number,
                     "label": "complaints",
@@ -113,9 +107,7 @@ def make_columns(global_stats, complaints_number):
                         global_stats["email"]["total"],
                         COMPLAINT_THRESHOLD,
                     ),
-                    "percentage": get_formatted_percentage_two_dp(
-                        complaints_number, global_stats["email"]["total"]
-                    ),
+                    "percentage": get_formatted_percentage_two_dp(complaints_number, global_stats["email"]["total"]),
                     "url": url_for("main.platform_admin_list_complaints"),
                 },
             ],
@@ -132,12 +124,8 @@ def make_columns(global_stats, complaints_number):
             },
             "other_data": [
                 get_tech_failure_status_box_data(global_stats["sms"]),
-                get_status_box_data(
-                    global_stats["sms"], "permanent-failure", "permanent failures"
-                ),
-                get_status_box_data(
-                    global_stats["sms"], "temporary-failure", "temporary failures"
-                ),
+                get_status_box_data(global_stats["sms"], "permanent-failure", "permanent failures"),
+                get_status_box_data(global_stats["sms"], "temporary-failure", "temporary failures"),
             ],
             "test_data": {
                 "number": global_stats["sms"]["test-key"],
@@ -202,9 +190,7 @@ def platform_admin_services():
         include_from_test_key=form.include_from_test_key.data,
         form=form,
         services=list(format_stats_by_service(services)),
-        page_title="{} services".format(
-            "Trial mode" if request.endpoint == "main.trial_services" else "Live"
-        ),
+        page_title="{} services".format("Trial mode" if request.endpoint == "main.trial_services" else "Live"),
         global_stats=create_global_stats(services),
     )
 
@@ -213,12 +199,8 @@ def platform_admin_services():
 @user_is_platform_admin
 def platform_admin_api_keys():
     n_days_back = 2
-    api_key_list = api_key_api_client.get_api_keys_ranked_by_notifications_created(
-        n_days_back
-    )
-    return render_template(
-        "views/platform-admin/api_keys_ranked.html", api_key_list=api_key_list
-    )
+    api_key_list = api_key_api_client.get_api_keys_ranked_by_notifications_created(n_days_back)
+    return render_template("views/platform-admin/api_keys_ranked.html", api_key_list=api_key_list)
 
 
 @main.route("/platform-admin/reports")
@@ -258,9 +240,7 @@ def live_services_csv():
 
     for row in results:
         if row["live_date"]:
-            row["live_date"] = datetime.strptime(
-                row["live_date"], "%a, %d %b %Y %X %Z"
-            ).strftime("%d-%m-%Y")
+            row["live_date"] = datetime.strptime(row["live_date"], "%a, %d %b %Y %X %Z").strftime("%d-%m-%Y")
 
         live_services_data.append([row[api_key] for api_key in column_names.keys()])
 
@@ -296,10 +276,7 @@ def performance_platform_xlsx():
                 row["service_id"],
                 row["organisation_name"],
                 row["service_name"],
-                datetime.strptime(row["live_date"], "%a, %d %b %Y %X %Z").strftime(
-                    "%Y-%m-%dT%H:%M:%S"
-                )
-                + "Z"
+                datetime.strptime(row["live_date"], "%a, %d %b %Y %X %Z").strftime("%Y-%m-%dT%H:%M:%S") + "Z"
                 if row["live_date"]
                 else None,
                 "notification",
@@ -345,9 +322,7 @@ def trial_report_csv():
     )
 
 
-@main.route(
-    "/platform-admin/reports/notifications-sent-by-service", methods=["GET", "POST"]
-)
+@main.route("/platform-admin/reports/notifications-sent-by-service", methods=["GET", "POST"])
 @user_is_platform_admin
 def notifications_sent_by_service():
     form = RequiredDateFilterForm()
@@ -368,14 +343,10 @@ def notifications_sent_by_service():
             "count_permanent_failure",
             "count_sent",
         ]
-        result = notification_api_client.get_notification_status_by_service(
-            start_date, end_date
-        )
+        result = notification_api_client.get_notification_status_by_service(start_date, end_date)
 
         for row in result:
-            row[0] = datetime.strptime(row[0], "%a, %d %b %Y %X %Z").strftime(
-                "%Y-%m-%d"
-            )
+            row[0] = datetime.strptime(row[0], "%a, %d %b %Y %X %Z").strftime("%Y-%m-%d")
 
         return (
             Spreadsheet.from_rows([headers] + result).as_csv_data,
@@ -388,14 +359,10 @@ def notifications_sent_by_service():
             },
         )
 
-    return render_template(
-        "views/platform-admin/notifications_by_service.html", form=form
-    )
+    return render_template("views/platform-admin/notifications_by_service.html", form=form)
 
 
-@main.route(
-    "/platform-admin/reports/send-method-stats-by-service", methods=["GET", "POST"]
-)
+@main.route("/platform-admin/reports/send-method-stats-by-service", methods=["GET", "POST"])
 @user_is_platform_admin
 def send_method_stats_by_service():
     form = RequiredDateFilterForm()
@@ -412,9 +379,7 @@ def send_method_stats_by_service():
             "send_method",
             "count",
         ]
-        result = platform_stats_api_client.get_send_method_stats_by_service(
-            start_date, end_date
-        )
+        result = platform_stats_api_client.get_send_method_stats_by_service(start_date, end_date)
 
         return (
             Spreadsheet.from_rows([headers] + result).as_csv_data,
@@ -427,9 +392,7 @@ def send_method_stats_by_service():
             },
         )
 
-    return render_template(
-        "views/platform-admin/send_method_stats_by_service.html", form=form
-    )
+    return render_template("views/platform-admin/send_method_stats_by_service.html", form=form)
 
 
 @main.route("/platform-admin/reports/usage-for-all-services", methods=["GET", "POST"])
@@ -478,9 +441,7 @@ def usage_for_all_services():
             )
         else:
             flash("No results for dates")
-    return render_template(
-        "views/platform-admin/usage_for_all_services.html", form=form
-    )
+    return render_template("views/platform-admin/usage_for_all_services.html", form=form)
 
 
 @main.route("/platform-admin/complaints")
@@ -494,14 +455,10 @@ def platform_admin_list_complaints():
 
     prev_page = None
     if response["links"].get("prev"):
-        prev_page = generate_previous_dict(
-            "main.platform_admin_list_complaints", None, page
-        )
+        prev_page = generate_previous_dict("main.platform_admin_list_complaints", None, page)
     next_page = None
     if response["links"].get("next"):
-        next_page = generate_next_dict(
-            "main.platform_admin_list_complaints", None, page
-        )
+        next_page = generate_next_dict("main.platform_admin_list_complaints", None, page)
 
     return render_template(
         "views/platform-admin/complaints.html",
@@ -519,23 +476,14 @@ def platform_admin_returned_letters():
     form = ReturnedLettersForm()
 
     if form.validate_on_submit():
-        references = [
-            re.sub("NOTIFY00[0-9]", "", r.strip())
-            for r in form.references.data.split("\n")
-            if r.strip()
-        ]
+        references = [re.sub("NOTIFY00[0-9]", "", r.strip()) for r in form.references.data.split("\n") if r.strip()]
 
         try:
             letter_jobs_client.submit_returned_letters(references)
         except HTTPError as error:
             if error.status_code == 400:
-                error_references = [
-                    re.match("references (.*) does not match", e["message"]).group(1)
-                    for e in error.message
-                ]
-                form.references.errors.append(
-                    "Invalid references: {}".format(", ".join(error_references))
-                )
+                error_references = [re.match("references (.*) does not match", e["message"]).group(1) for e in error.message]
+                form.references.errors.append("Invalid references: {}".format(", ".join(error_references)))
             else:
                 raise error
         else:
@@ -564,9 +512,7 @@ def letter_validation_preview(from_platform_admin):
     form = PDFUploadForm()
 
     view_location = (
-        "views/platform-admin/letter-validation-preview.html"
-        if from_platform_admin
-        else "views/letter-validation-preview.html"
+        "views/platform-admin/letter-validation-preview.html" if from_platform_admin else "views/letter-validation-preview.html"
     )
 
     if form.validate_on_submit():
@@ -622,9 +568,7 @@ def letter_validation_preview(from_platform_admin):
             else:
                 raise error
 
-    return render_template(
-        view_location, form=form, message=message, pages=pages, result=result
-    )
+    return render_template(view_location, form=form, message=message, pages=pages, result=result)
 
 
 @main.route("/platform-admin/clear-cache", methods=["GET", "POST"])
@@ -683,17 +627,12 @@ def clear_cache():
     )
 
     form = ClearCacheForm()
-    form.model_type.choices = [
-        (key, key.replace("_", " ").title()) for key in CACHE_KEYS
-    ]
+    form.model_type.choices = [(key, key.replace("_", " ").title()) for key in CACHE_KEYS]
 
     if form.validate_on_submit():
         to_delete = form.model_type.data
 
-        num_deleted = max(
-            redis_client.delete_cache_keys_by_pattern(pattern)
-            for pattern in CACHE_KEYS[to_delete]
-        )
+        num_deleted = max(redis_client.delete_cache_keys_by_pattern(pattern) for pattern in CACHE_KEYS[to_delete])
         msg = "Removed {} {} object{} from redis"
         flash(
             msg.format(num_deleted, to_delete, "s" if num_deleted != 1 else ""),
@@ -739,15 +678,11 @@ def create_global_stats(services):
         "letter": {"delivered": 0, "failed": 0, "requested": 0},
     }
     for service in services:
-        for msg_type, status in itertools.product(
-            ("sms", "email", "letter"), ("delivered", "failed", "requested")
-        ):
+        for msg_type, status in itertools.product(("sms", "email", "letter"), ("delivered", "failed", "requested")):
             stats[msg_type][status] += service["statistics"][msg_type][status]
 
     for stat in stats.values():
-        stat["failure_rate"] = get_formatted_percentage(
-            stat["failed"], stat["requested"]
-        )
+        stat["failure_rate"] = get_formatted_percentage(stat["failed"], stat["requested"])
     return stats
 
 
@@ -758,9 +693,7 @@ def format_stats_by_service(services):
             "name": service["name"],
             "stats": {
                 msg_type: {
-                    "sending": stats["requested"]
-                    - stats["delivered"]
-                    - stats["failed"],
+                    "sending": stats["requested"] - stats["delivered"] - stats["failed"],
                     "delivered": stats["delivered"],
                     "failed": stats["failed"],
                 }

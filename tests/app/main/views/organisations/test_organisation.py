@@ -23,9 +23,7 @@ def test_organisation_page_shows_all_organisations(platform_admin_client, mocker
         {"id": "3", "name": "Test 3", "active": False, "count_of_live_services": 2},
     ]
 
-    get_organisations = mocker.patch(
-        "app.models.organisation.Organisations.client", return_value=orgs
-    )
+    get_organisations = mocker.patch("app.models.organisation.Organisations.client", return_value=orgs)
     response = platform_admin_client.get(url_for(".organisations"))
 
     assert response.status_code == 200
@@ -36,17 +34,9 @@ def test_organisation_page_shows_all_organisations(platform_admin_client, mocker
     for index, org in enumerate(orgs):
         assert page.select("a.browse-list-link")[index].text == org["name"]
         if not org["active"]:
-            assert (
-                page.select_one(".table-field-status-default,heading-medium").text
-                == "- archived"
-            )
-        assert normalize_spaces(page.select(".browse-list-hint")[index].text) == (
-            expected_hints[index]
-        )
-    assert (
-        normalize_spaces(page.select_one("a.button-secondary").text)
-        == "New organisation"
-    )
+            assert page.select_one(".table-field-status-default,heading-medium").text == "- archived"
+        assert normalize_spaces(page.select(".browse-list-hint")[index].text) == (expected_hints[index])
+    assert normalize_spaces(page.select_one("a.button-secondary").text) == "New organisation"
     get_organisations.assert_called_once_with()
 
 
@@ -71,9 +61,7 @@ def test_page_to_create_new_organisation(
     client_request.login(platform_admin_user)
     page = client_request.get(".add_organisation", _test_page_title=False)
 
-    assert [
-        (input["type"], input["name"], input["value"]) for input in page.select("input")
-    ] == [
+    assert [(input["type"], input["name"], input["value"]) for input in page.select("input")] == [
         ("text", "name", ""),
         ("radio", "organisation_type", "central"),
         ("radio", "organisation_type", "local"),
@@ -128,19 +116,14 @@ def test_create_new_organisation_validates(
     platform_admin_user,
     mocker,
 ):
-    mock_create_organisation = mocker.patch(
-        "app.organisations_client.create_organisation"
-    )
+    mock_create_organisation = mocker.patch("app.organisations_client.create_organisation")
 
     client_request.login(platform_admin_user)
     page = client_request.post(
         ".add_organisation",
         _expected_status=200,
     )
-    assert [
-        (error["data-error-label"], normalize_spaces(error.text))
-        for error in page.select(".error-message")
-    ] == [
+    assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
         ("name", "This cannot be empty"),
         ("organisation_type", "You need to choose an option"),
         ("crown_status", "You need to choose an option"),
@@ -158,19 +141,11 @@ def test_organisation_services_shows_live_services_only(
     mocker.patch(
         "app.organisations_client.get_organisation_services",
         return_value=[
-            service_json(
-                id_=SERVICE_ONE_ID, name="1", restricted=False, active=True
-            ),  # live
+            service_json(id_=SERVICE_ONE_ID, name="1", restricted=False, active=True),  # live
             service_json(id_="2", name="2", restricted=True, active=True),  # trial
-            service_json(
-                id_="3", name="3", restricted=True, active=False
-            ),  # trial, now archived
-            service_json(
-                id_="4", name="4", restricted=False, active=False
-            ),  # was live, now archived
-            service_json(
-                id_=SERVICE_TWO_ID, name="5", restricted=False, active=True
-            ),  # live, member of
+            service_json(id_="3", name="3", restricted=True, active=False),  # trial, now archived
+            service_json(id_="4", name="4", restricted=False, active=False),  # was live, now archived
+            service_json(id_=SERVICE_TWO_ID, name="5", restricted=False, active=True),  # live, member of
         ],
     )
 
@@ -182,12 +157,8 @@ def test_organisation_services_shows_live_services_only(
 
     assert normalize_spaces(services[0].text) == "1"
     assert normalize_spaces(services[1].text) == "5"
-    assert services[0].find("a")["href"] == url_for(
-        "main.usage", service_id=SERVICE_ONE_ID
-    )
-    assert services[1].find("a")["href"] == url_for(
-        "main.usage", service_id=SERVICE_TWO_ID
-    )
+    assert services[0].find("a")["href"] == url_for("main.usage", service_id=SERVICE_ONE_ID)
+    assert services[1].find("a")["href"] == url_for("main.usage", service_id=SERVICE_TWO_ID)
 
 
 def test_organisation_trial_mode_services_shows_all_non_live_services(
@@ -218,12 +189,8 @@ def test_organisation_trial_mode_services_shows_all_non_live_services(
 
     assert normalize_spaces(services[0].text) == "2"
     assert normalize_spaces(services[1].text) == "3"
-    assert services[0].find("a")["href"] == url_for(
-        "main.service_dashboard", service_id="2"
-    )
-    assert services[1].find("a")["href"] == url_for(
-        "main.service_dashboard", service_id="3"
-    )
+    assert services[0].find("a")["href"] == url_for("main.service_dashboard", service_id="2")
+    assert services[1].find("a")["href"] == url_for("main.service_dashboard", service_id="3")
 
 
 def test_organisation_trial_mode_services_doesnt_work_if_not_platform_admin(
@@ -237,9 +204,7 @@ def test_organisation_trial_mode_services_doesnt_work_if_not_platform_admin(
     )
 
 
-def test_organisation_settings_platform_admin_only(
-    client_request, mock_get_organisation, organisation_one
-):
+def test_organisation_settings_platform_admin_only(client_request, mock_get_organisation, organisation_one):
     client_request.get(
         ".organisation_settings",
         org_id=organisation_one["id"],
@@ -247,9 +212,7 @@ def test_organisation_settings_platform_admin_only(
     )
 
 
-def test_organisation_settings_for_platform_admin(
-    client_request, platform_admin_user, mock_get_organisation, organisation_one
-):
+def test_organisation_settings_for_platform_admin(client_request, platform_admin_user, mock_get_organisation, organisation_one):
     expected_rows = [
         "Label Value Action",
         "Name Org 1 Change",
@@ -303,17 +266,11 @@ def test_organisation_settings_for_platform_admin(
             (
                 (
                     "yes",
-                    (
-                        "Yes "
-                        "Users will be told their organisation has already signed the agreement"
-                    ),
+                    ("Yes " "Users will be told their organisation has already signed the agreement"),
                 ),
                 (
                     "no",
-                    (
-                        "No "
-                        "Users will be prompted to sign the agreement before they can go live"
-                    ),
+                    ("No " "Users will be prompted to sign the agreement before they can go live"),
                 ),
                 (
                     "unknown",
@@ -498,9 +455,7 @@ def test_update_organisation_name(
     )
 
     assert response.status_code == 302
-    assert response.location == url_for(
-        ".confirm_edit_organisation_name", org_id=organisation_one["id"], _external=True
-    )
+    assert response.location == url_for(".confirm_edit_organisation_name", org_id=organisation_one["id"], _external=True)
     assert mock_organisation_name_is_unique.called
 
 
@@ -517,10 +472,7 @@ def test_update_organisation_with_incorrect_input(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    assert (
-        normalize_spaces(page.select_one(".error-message").text)
-        == "This cannot be empty"
-    )
+    assert normalize_spaces(page.select_one(".error-message").text) == "This cannot be empty"
 
 
 def test_update_organisation_with_non_unique_name(
@@ -537,10 +489,7 @@ def test_update_organisation_with_non_unique_name(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    assert (
-        normalize_spaces(page.select_one(".error-message").text)
-        == "This organisation name is already in use"
-    )
+    assert normalize_spaces(page.select_one(".error-message").text) == "This organisation name is already in use"
 
     assert mock_organisation_name_is_not_unique.called
 
@@ -565,13 +514,9 @@ def test_confirm_update_organisation(
     )
 
     assert response.status_code == 302
-    assert response.location == url_for(
-        ".organisation_settings", org_id=organisation_one["id"], _external=True
-    )
+    assert response.location == url_for(".organisation_settings", org_id=organisation_one["id"], _external=True)
 
-    mock_update_organisation.assert_called_with(
-        organisation_one["id"], name=session["organisation_name_change"]
-    )
+    mock_update_organisation.assert_called_with(organisation_one["id"], name=session["organisation_name_change"])
 
 
 def test_confirm_update_organisation_with_incorrect_password(
@@ -582,16 +527,12 @@ def test_confirm_update_organisation_with_incorrect_password(
 
     mocker.patch("app.user_api_client.verify_password", return_value=False)
 
-    response = platform_admin_client.post(
-        url_for(".confirm_edit_organisation_name", org_id=organisation_one["id"])
-    )
+    response = platform_admin_client.post(url_for(".confirm_edit_organisation_name", org_id=organisation_one["id"]))
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    assert (
-        normalize_spaces(page.select_one(".error-message").text) == "Invalid password"
-    )
+    assert normalize_spaces(page.select_one(".error-message").text) == "Invalid password"
 
 
 def test_confirm_update_organisation_with_name_already_in_use(
@@ -615,14 +556,10 @@ def test_confirm_update_organisation_with_name_already_in_use(
         ),
     )
 
-    response = platform_admin_client.post(
-        url_for(".confirm_edit_organisation_name", org_id=organisation_one["id"])
-    )
+    response = platform_admin_client.post(url_for(".confirm_edit_organisation_name", org_id=organisation_one["id"]))
 
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.edit_organisation_name", org_id=organisation_one["id"], _external=True
-    )
+    assert response.location == url_for("main.edit_organisation_name", org_id=organisation_one["id"], _external=True)
 
 
 def test_get_edit_organisation_go_live_notes_page(
@@ -630,9 +567,7 @@ def test_get_edit_organisation_go_live_notes_page(
     mock_get_organisation,
     organisation_one,
 ):
-    response = platform_admin_client.get(
-        url_for(".edit_organisation_go_live_notes", org_id=organisation_one["id"])
-    )
+    response = platform_admin_client.get(url_for(".edit_organisation_go_live_notes", org_id=organisation_one["id"]))
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
@@ -640,9 +575,7 @@ def test_get_edit_organisation_go_live_notes_page(
     assert page.find("textarea", id="request_to_go_live_notes")
 
 
-@pytest.mark.parametrize(
-    "input_note,saved_note", [("Needs permission", "Needs permission"), ("  ", None)]
-)
+@pytest.mark.parametrize("input_note,saved_note", [("Needs permission", "Needs permission"), ("  ", None)])
 def test_post_edit_organisation_go_live_notes_updates_go_live_notes(
     platform_admin_client,
     mock_get_organisation,
@@ -659,13 +592,9 @@ def test_post_edit_organisation_go_live_notes_updates_go_live_notes(
         data={"request_to_go_live_notes": input_note},
     )
 
-    mock_update_organisation.assert_called_once_with(
-        organisation_one["id"], request_to_go_live_notes=saved_note
-    )
+    mock_update_organisation.assert_called_once_with(organisation_one["id"], request_to_go_live_notes=saved_note)
     assert response.status_code == 302
-    assert response.location == url_for(
-        ".organisation_settings", org_id=organisation_one["id"], _external=True
-    )
+    assert response.location == url_for(".organisation_settings", org_id=organisation_one["id"], _external=True)
 
 
 @pytest.mark.skip(reason="feature not in use")

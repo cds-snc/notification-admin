@@ -50,9 +50,7 @@ def test_existing_user_accept_invite_calls_api_and_redirects_to_dashboard(
     )
 
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.service_dashboard", service_id=expected_service, _external=True
-    )
+    assert response.location == url_for("main.service_dashboard", service_id=expected_service, _external=True)
 
 
 def test_existing_user_with_no_permissions_or_folder_permissions_accept_invite(
@@ -74,9 +72,7 @@ def test_existing_user_with_no_permissions_or_folder_permissions_accept_invite(
     mocker.patch("app.invite_api_client.accept_invite", return_value=sample_invite)
 
     response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"))
-    mock_add_user_to_service.assert_called_with(
-        expected_service, USER_ONE_ID, expected_permissions, expected_folder_permissions
-    )
+    mock_add_user_to_service.assert_called_with(expected_service, USER_ONE_ID, expected_permissions, expected_folder_permissions)
 
     assert response.status_code == 302
 
@@ -293,8 +289,7 @@ def test_new_user_accept_invite_calls_api_and_views_registration_page(
     assert page.h1.string.strip() == "Create an account"
 
     assert normalize_spaces(page.select_one("main p").text) == (
-        "Your account will be created with this email address: "
-        "invited_user@test.canada.ca"
+        "Your account will be created with this email address: " "invited_user@test.canada.ca"
     )
 
     form = page.find("form")
@@ -340,16 +335,10 @@ def test_new_user_accept_invite_with_malformed_token(
                 status_code=400,
                 json={
                     "result": "error",
-                    "message": {
-                        "invitation": {
-                            "Something’s wrong with this link. Make sure you’ve copied the whole thing."
-                        }
-                    },
+                    "message": {"invitation": {"Something’s wrong with this link. Make sure you’ve copied the whole thing."}},
                 },
             ),
-            message={
-                "invitation": "Something’s wrong with this link. Make sure you’ve copied the whole thing."
-            },
+            message={"invitation": "Something’s wrong with this link. Make sure you’ve copied the whole thing."},
         ),
     )
 
@@ -436,9 +425,7 @@ def test_signed_in_existing_user_cannot_use_anothers_invite(
     mock_get_service,
 ):
     mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
-    mocker.patch(
-        "app.user_api_client.get_users_for_service", return_value=[api_user_active]
-    )
+    mocker.patch("app.user_api_client.get_users_for_service", return_value=[api_user_active])
 
     page = client_request.get(
         "main.accept_invite",
@@ -527,9 +514,7 @@ def test_new_invited_user_verifies_and_added_to_service(
     assert response.location == url_for("main.verify", _external=True)
 
     # that sends user on to verify
-    response = client.post(
-        url_for("main.verify"), data={"two_factor_code": "12345"}, follow_redirects=True
-    )
+    response = client.post(url_for("main.verify"), data={"two_factor_code": "12345"}, follow_redirects=True)
     assert response.status_code == 200
 
     # when they post codes back to admin user should be added to
@@ -543,9 +528,7 @@ def test_new_invited_user_verifies_and_added_to_service(
 
     with client.session_transaction() as session:
         new_user_id = session["user_id"]
-        mock_add_user_to_service.assert_called_with(
-            data["service"], new_user_id, expected_permissions, []
-        )
+        mock_add_user_to_service.assert_called_with(data["service"], new_user_id, expected_permissions, [])
         mock_accept_invite.assert_called_with(data["service"], sample_invite["id"])
         mock_check_verify_code.assert_called_once_with(new_user_id, "12345", "sms")
         assert service_one["id"] == session["service_id"]
@@ -577,15 +560,11 @@ def test_existing_user_accepts_and_sets_email_auth(
         "main.accept_invite",
         token="thisisnotarealtoken",
         _expected_status=302,
-        _expected_redirect=url_for(
-            "main.service_dashboard", service_id=service_one["id"], _external=True
-        ),
+        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"], _external=True),
     )
 
     mock_get_unknown_user_by_email.assert_called_once_with("test@user.canada.ca")
-    mock_update_user_attribute.assert_called_once_with(
-        USER_ONE_ID, auth_type="email_auth"
-    )
+    mock_update_user_attribute.assert_called_once_with(USER_ONE_ID, auth_type="email_auth")
     mock_add_user_to_service.assert_called_once_with(ANY, USER_ONE_ID, ANY, ANY)
 
 
@@ -612,9 +591,7 @@ def test_existing_user_doesnt_get_auth_changed_by_service_without_permission(
         "main.accept_invite",
         token="thisisnotarealtoken",
         _expected_status=302,
-        _expected_redirect=url_for(
-            "main.service_dashboard", service_id=service_one["id"], _external=True
-        ),
+        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"], _external=True),
     )
 
     assert not mock_update_user_attribute.called
@@ -646,9 +623,7 @@ def test_existing_email_auth_user_without_phone_cannot_set_sms_auth(
         "main.accept_invite",
         token="thisisnotarealtoken",
         _expected_status=302,
-        _expected_redirect=url_for(
-            "main.service_dashboard", service_id=service_one["id"], _external=True
-        ),
+        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"], _external=True),
     )
 
     assert not mock_update_user_attribute.called
@@ -676,14 +651,8 @@ def test_existing_email_auth_user_with_phone_can_set_sms_auth(
         "main.accept_invite",
         token="thisisnotarealtoken",
         _expected_status=302,
-        _expected_redirect=url_for(
-            "main.service_dashboard", service_id=service_one["id"], _external=True
-        ),
+        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"], _external=True),
     )
 
-    mock_get_unknown_user_by_email.assert_called_once_with(
-        sample_invite["email_address"]
-    )
-    mock_update_user_attribute.assert_called_once_with(
-        USER_ONE_ID, auth_type="sms_auth"
-    )
+    mock_get_unknown_user_by_email.assert_called_once_with(sample_invite["email_address"])
+    mock_update_user_attribute.assert_called_once_with(USER_ONE_ID, auth_type="sms_auth")

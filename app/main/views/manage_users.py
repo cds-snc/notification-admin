@@ -97,14 +97,8 @@ def edit_user_permissions(service_id, user_id):
         service_id,
         folder_permissions=None
         if user.platform_admin
-        else [
-            f["id"]
-            for f in current_service.all_template_folders
-            if user.has_template_folder_permission(f)
-        ],
-        all_template_folders=None
-        if user.platform_admin
-        else current_service.all_template_folders,
+        else [f["id"] for f in current_service.all_template_folders if user.has_template_folder_permission(f)],
+        all_template_folders=None if user.platform_admin else current_service.all_template_folders,
     )
 
     if form.validate_on_submit():
@@ -143,9 +137,7 @@ def remove_user_from_service(service_id, user_id):
     return redirect(url_for(".manage_users", service_id=service_id))
 
 
-@main.route(
-    "/services/<service_id>/users/<uuid:user_id>/edit-email", methods=["GET", "POST"]
-)
+@main.route("/services/<service_id>/users/<uuid:user_id>/edit-email", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def edit_user_email(service_id, user_id):
     user = current_service.get_team_member(user_id)
@@ -162,9 +154,7 @@ def edit_user_email(service_id, user_id):
     if form.validate_on_submit():
         session["team_member_email_change"] = form.email_address.data
 
-        return redirect(
-            url_for(".confirm_edit_user_email", user_id=user.id, service_id=service_id)
-        )
+        return redirect(url_for(".confirm_edit_user_email", user_id=user.id, service_id=service_id))
 
     return render_template(
         "views/manage-users/edit-user-email.html",
@@ -184,18 +174,14 @@ def confirm_edit_user_email(service_id, user_id):
     if "team_member_email_change" in session:
         new_email = session["team_member_email_change"]
     else:
-        return redirect(
-            url_for(".edit_user_email", service_id=service_id, user_id=user_id)
-        )
+        return redirect(url_for(".edit_user_email", service_id=service_id, user_id=user_id))
     if request.method == "POST":
         try:
             user.update(email_address=new_email, updated_by=current_user.id)
         except HTTPError as e:
             abort(500, e)
         else:
-            create_email_change_event(
-                user.id, current_user.id, user.email_address, new_email
-            )
+            create_email_change_event(user.id, current_user.id, user.email_address, new_email)
         finally:
             session.pop("team_member_email_change", None)
 
@@ -248,18 +234,14 @@ def confirm_edit_user_mobile_number(service_id, user_id):
     if "team_member_mobile_change" in session:
         new_number = session["team_member_mobile_change"]
     else:
-        return redirect(
-            url_for(".edit_user_mobile_number", service_id=service_id, user_id=user_id)
-        )
+        return redirect(url_for(".edit_user_mobile_number", service_id=service_id, user_id=user_id))
     if request.method == "POST":
         try:
             user.update(mobile_number=new_number, updated_by=current_user.id)
         except HTTPError as e:
             abort(500, e)
         else:
-            create_mobile_number_change_event(
-                user.id, current_user.id, user.mobile_number, new_number
-            )
+            create_mobile_number_change_event(user.id, current_user.id, user.mobile_number, new_number)
         finally:
             session.pop("team_member_mobile_change", None)
 
@@ -273,9 +255,7 @@ def confirm_edit_user_mobile_number(service_id, user_id):
     )
 
 
-@main.route(
-    "/services/<service_id>/cancel-invited-user/<uuid:invited_user_id>", methods=["GET"]
-)
+@main.route("/services/<service_id>/cancel-invited-user/<uuid:invited_user_id>", methods=["GET"])
 @user_has_permissions("manage_service")
 def cancel_invited_user(service_id, invited_user_id):
     current_service.cancel_invite(invited_user_id)

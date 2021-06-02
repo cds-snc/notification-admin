@@ -23,9 +23,7 @@ class InviteApiClient(NotifyAdminAPIClient):
             "service": str(service_id),
             "email_address": email_address,
             "from_user": invite_from_id,
-            "permissions": ",".join(
-                sorted(translate_permissions_from_admin_roles_to_db(permissions))
-            ),
+            "permissions": ",".join(sorted(translate_permissions_from_admin_roles_to_db(permissions))),
             "auth_type": auth_type,
             "invite_link_host": self.admin_url,
             "folder_permissions": folder_permissions,
@@ -43,17 +41,13 @@ class InviteApiClient(NotifyAdminAPIClient):
     def cancel_invited_user(self, service_id, invited_user_id):
         data = {"status": "cancelled"}
         data = _attach_current_user(data)
-        self.post(
-            url="/service/{0}/invite/{1}".format(service_id, invited_user_id), data=data
-        )
+        self.post(url="/service/{0}/invite/{1}".format(service_id, invited_user_id), data=data)
 
     @cache.delete("service-{service_id}")
     @cache.delete("user-{invited_user_id}")
     def accept_invite(self, service_id, invited_user_id):
         data = {"status": "accepted"}
-        self.post(
-            url="/service/{0}/invite/{1}".format(service_id, invited_user_id), data=data
-        )
+        self.post(url="/service/{0}/invite/{1}".format(service_id, invited_user_id), data=data)
 
 
 invite_api_client = InviteApiClient()

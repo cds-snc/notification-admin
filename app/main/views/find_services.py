@@ -12,9 +12,7 @@ def find_services_by_name():
     form = SearchByNameForm()
     services_found = None
     if form.validate_on_submit():
-        services_found = service_api_client.find_services_by_name(
-            service_name=form.search.data
-        )["data"]
+        services_found = service_api_client.find_services_by_name(service_name=form.search.data)["data"]
     return render_template(
         "views/find-services/find-services-by-name.html",
         form=form,

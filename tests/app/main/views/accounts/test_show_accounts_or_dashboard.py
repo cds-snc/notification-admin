@@ -47,9 +47,7 @@ def test_show_accounts_or_dashboard_redirects_to_choose_account_or_service_dashb
     assert response.location == url_for(endpoint, _external=True, **endpoint_kwargs)
 
 
-def test_show_accounts_or_dashboard_redirects_if_service_in_session(
-    client, mocker, mock_get_service
-):
+def test_show_accounts_or_dashboard_redirects_if_service_in_session(client, mocker, mock_get_service):
     client.login(user_with_orgs_and_services(num_orgs=1, num_services=1), mocker=mocker)
     with client.session_transaction() as session:
         session["service_id"] = "service1"
@@ -58,9 +56,7 @@ def test_show_accounts_or_dashboard_redirects_if_service_in_session(
     response = client.get(url_for(".show_accounts_or_dashboard"))
 
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.service_dashboard", service_id="service1", _external=True
-    )
+    assert response.location == url_for("main.service_dashboard", service_id="service1", _external=True)
 
 
 def test_show_accounts_or_dashboard_redirects_if_org_in_session(client, mocker):
@@ -72,9 +68,7 @@ def test_show_accounts_or_dashboard_redirects_if_org_in_session(client, mocker):
     response = client.get(url_for(".show_accounts_or_dashboard"))
 
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.organisation_dashboard", org_id="org1", _external=True
-    )
+    assert response.location == url_for("main.organisation_dashboard", org_id="org1", _external=True)
 
 
 def test_show_accounts_or_dashboard_doesnt_redirect_to_service_dashboard_if_user_not_part_of_service_in_session(
@@ -88,9 +82,7 @@ def test_show_accounts_or_dashboard_doesnt_redirect_to_service_dashboard_if_user
     response = client.get(url_for(".show_accounts_or_dashboard"))
 
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.organisation_dashboard", org_id="org1", _external=True
-    )
+    assert response.location == url_for("main.organisation_dashboard", org_id="org1", _external=True)
 
 
 def test_show_accounts_or_dashboard_doesnt_redirect_to_org_dashboard_if_user_not_part_of_org_in_session(
@@ -106,9 +98,7 @@ def test_show_accounts_or_dashboard_doesnt_redirect_to_org_dashboard_if_user_not
     response = client.get(url_for(".show_accounts_or_dashboard"))
 
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.organisation_dashboard", org_id="org1", _external=True
-    )
+    assert response.location == url_for("main.organisation_dashboard", org_id="org1", _external=True)
 
 
 def test_show_accounts_or_dashboard_redirects_if_not_logged_in(client, app_):
@@ -117,9 +107,7 @@ def test_show_accounts_or_dashboard_redirects_if_not_logged_in(client, app_):
     assert response.location == url_for("main.index", _external=True)
 
 
-def test_show_accounts_or_dashboard_redirects_to_service_dashboard_if_platform_admin(
-    client, mocker, mock_get_service
-):
+def test_show_accounts_or_dashboard_redirects_to_service_dashboard_if_platform_admin(client, mocker, mock_get_service):
     client.login(
         user_with_orgs_and_services(num_orgs=1, num_services=1, platform_admin=True),
         mocker=mocker,
@@ -131,14 +119,10 @@ def test_show_accounts_or_dashboard_redirects_to_service_dashboard_if_platform_a
     response = client.get(url_for(".show_accounts_or_dashboard"))
 
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.service_dashboard", service_id="service2", _external=True
-    )
+    assert response.location == url_for("main.service_dashboard", service_id="service2", _external=True)
 
 
-def test_show_accounts_or_dashboard_redirects_to_org_dashboard_if_platform_admin(
-    client, mocker
-):
+def test_show_accounts_or_dashboard_redirects_to_org_dashboard_if_platform_admin(client, mocker):
     client.login(
         user_with_orgs_and_services(num_orgs=1, num_services=1, platform_admin=True),
         mocker=mocker,
@@ -150,6 +134,4 @@ def test_show_accounts_or_dashboard_redirects_to_org_dashboard_if_platform_admin
     response = client.get(url_for(".show_accounts_or_dashboard"))
 
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.organisation_dashboard", org_id="org2", _external=True
-    )
+    assert response.location == url_for("main.organisation_dashboard", org_id="org2", _external=True)

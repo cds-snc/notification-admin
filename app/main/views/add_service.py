@@ -89,9 +89,7 @@ def _create_service(
     email_from: str,
     default_branding_is_french: bool,
 ) -> ServiceResult:
-    free_sms_fragment_limit = current_app.config[
-        "DEFAULT_FREE_SMS_FRAGMENT_LIMITS"
-    ].get(organisation_type)
+    free_sms_fragment_limit = current_app.config["DEFAULT_FREE_SMS_FRAGMENT_LIMITS"].get(organisation_type)
 
     try:
         service_id = service_api_client.create_service(
@@ -105,9 +103,7 @@ def _create_service(
         )
         session["service_id"] = service_id
 
-        billing_api_client.create_or_update_free_sms_fragment_limit(
-            service_id, free_sms_fragment_limit
-        )
+        billing_api_client.create_or_update_free_sms_fragment_limit(service_id, free_sms_fragment_limit)
 
         return SuccessResult(service_id)
     except HTTPError as e:
@@ -152,9 +148,7 @@ def add_service():
     form_cls = WIZARD_DICT[current_step]["form_cls"]
     # as the form always does a 302 after success, GET is a fresh form with possible re-use of session data i.e. Back
     if request.method == "GET":
-        return _renderTemplateStep(
-            form_cls(data=session[SESSION_FORM_KEY]), current_step
-        )
+        return _renderTemplateStep(form_cls(data=session[SESSION_FORM_KEY]), current_step)
     # must be a POST, continue to validate
     form = form_cls(request.form)
     if not form.validate_on_submit():
@@ -175,17 +169,13 @@ def add_service():
     for step in WIZARD_ORDER:
         temp_form_cls = WIZARD_DICT[step]["form_cls"]
         temp_form = temp_form_cls(data=data)
-        if (
-            not temp_form.validate()
-        ):  # something isn't right, jump to the form with bad / missing data
+        if not temp_form.validate():  # something isn't right, jump to the form with bad / missing data
             return redirect(url_for(".add_service", current_step=step))
 
     # all forms valid from session data, time to transact
     email_from = email_safe(data["email_from"])
     service_name = data["name"]
-    default_branding_is_french = (
-        data["default_branding"] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
-    )
+    default_branding_is_french = data["default_branding"] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
 
     service_result: ServiceResult = _create_service(
         service_name,
@@ -198,9 +188,7 @@ def add_service():
     session.pop(SESSION_FORM_KEY, None)
 
     if service_result.is_success():
-        return redirect(
-            url_for("main.service_dashboard", service_id=service_result.service_id)
-        )
+        return redirect(url_for("main.service_dashboard", service_id=service_result.service_id))
     form_cls = WIZARD_DICT[current_step]["form_cls"]
     form = form_cls(request.form)
     session[SESSION_FORM_KEY] = form.data

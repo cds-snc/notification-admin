@@ -31,16 +31,10 @@ def view_providers():
 
 
 def add_monthly_traffic(domestic_sms_providers):
-    total_sms_sent = sum(
-        provider["current_month_billable_sms"] for provider in domestic_sms_providers
-    )
+    total_sms_sent = sum(provider["current_month_billable_sms"] for provider in domestic_sms_providers)
 
     for provider in domestic_sms_providers:
-        percentage = (
-            (provider["current_month_billable_sms"] / total_sms_sent * 100)
-            if total_sms_sent
-            else 0
-        )
+        percentage = (provider["current_month_billable_sms"] / total_sms_sent * 100) if total_sms_sent else 0
         provider["monthly_traffic"] = round(percentage)
 
 
@@ -54,15 +48,11 @@ def edit_provider(provider_id):
         provider_client.update_provider(provider_id, form.priority.data)
         return redirect(url_for(".view_providers"))
 
-    return render_template(
-        "views/providers/edit-provider.html", form=form, provider=provider
-    )
+    return render_template("views/providers/edit-provider.html", form=form, provider=provider)
 
 
 @main.route("/provider/<provider_id>")
 @user_is_platform_admin
 def view_provider(provider_id):
     versions = provider_client.get_provider_versions(provider_id)
-    return render_template(
-        "views/providers/provider.html", provider_versions=versions["data"]
-    )
+    return render_template("views/providers/provider.html", provider_versions=versions["data"])

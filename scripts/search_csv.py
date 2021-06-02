@@ -19,9 +19,7 @@ def search_single_file(filename):
                     d.append(
                         {
                             "keyword": keyword,
-                            "found_string": row["source"]
-                            if row["target"] == ""
-                            else row["target"],
+                            "found_string": row["source"] if row["target"] == "" else row["target"],
                         }
                     )
                     continue
@@ -44,9 +42,7 @@ def search_translation_strings():
         writer = csv.DictWriter(csvfile, fieldnames=["keyword", "found_string"])
         writer.writeheader()
         for row in d:
-            writer.writerow(
-                {"keyword": row["keyword"], "found_string": row["found_string"]}
-            )
+            writer.writerow({"keyword": row["keyword"], "found_string": row["found_string"]})
 
 
 search_translation_strings()

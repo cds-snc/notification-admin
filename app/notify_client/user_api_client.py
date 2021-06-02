@@ -65,11 +65,7 @@ class UserApiClient(NotifyAdminAPIClient):
         data = dict(kwargs)
         disallowed_attributes = set(data.keys()) - ALLOWED_ATTRIBUTES
         if disallowed_attributes:
-            raise TypeError(
-                "Not allowed to update user attributes: {}".format(
-                    ", ".join(disallowed_attributes)
-                )
-            )
+            raise TypeError("Not allowed to update user attributes: {}".format(", ".join(disallowed_attributes)))
 
         url = "/user/{}".format(user_id)
         user_data = self.post(url, data=data)
@@ -166,10 +162,7 @@ class UserApiClient(NotifyAdminAPIClient):
         # permissions passed in are the combined admin roles, not db permissions
         endpoint = "/service/{}/users/{}".format(service_id, user_id)
         data = {
-            "permissions": [
-                {"permission": x}
-                for x in translate_permissions_from_admin_roles_to_db(permissions)
-            ],
+            "permissions": [{"permission": x} for x in translate_permissions_from_admin_roles_to_db(permissions)],
             "folder_permissions": folder_permissions,
         }
 
@@ -182,15 +175,10 @@ class UserApiClient(NotifyAdminAPIClient):
 
     @cache.delete("service-{service_id}-template-folders")
     @cache.delete("user-{user_id}")
-    def set_user_permissions(
-        self, user_id, service_id, permissions, folder_permissions=None
-    ):
+    def set_user_permissions(self, user_id, service_id, permissions, folder_permissions=None):
         # permissions passed in are the combined admin roles, not db permissions
         data = {
-            "permissions": [
-                {"permission": x}
-                for x in translate_permissions_from_admin_roles_to_db(permissions)
-            ],
+            "permissions": [{"permission": x} for x in translate_permissions_from_admin_roles_to_db(permissions)],
         }
 
         if folder_permissions is not None:
@@ -273,9 +261,7 @@ class UserApiClient(NotifyAdminAPIClient):
         return f"user-{user_id}-last-email-login"
 
     def _create_message_digest(self, password):
-        return hashlib.sha256(
-            (password + os.getenv("DANGEROUS_SALT")).encode("utf-8")
-        ).hexdigest()
+        return hashlib.sha256((password + os.getenv("DANGEROUS_SALT")).encode("utf-8")).hexdigest()
 
 
 user_api_client = UserApiClient()

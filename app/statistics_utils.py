@@ -31,13 +31,9 @@ def add_rates_to(delivery_statistics):
             delivery_statistics["emails_failed"],
             delivery_statistics["emails_requested"],
         ),
-        sms_failure_rate=get_formatted_percentage(
-            delivery_statistics["sms_failed"], delivery_statistics["sms_requested"]
-        ),
-        week_end_datetime=parser.parse(
-            delivery_statistics.get("week_end", str(datetime.utcnow()))
-        ),
-        **delivery_statistics
+        sms_failure_rate=get_formatted_percentage(delivery_statistics["sms_failed"], delivery_statistics["sms_requested"]),
+        week_end_datetime=parser.parse(delivery_statistics.get("week_end", str(datetime.utcnow()))),
+        **delivery_statistics,
     )
 
 
@@ -59,21 +55,13 @@ def statistics_by_state(statistics):
     return {
         "sms": {
             "processed": statistics["sms_requested"],
-            "sending": (
-                statistics["sms_requested"]
-                - statistics["sms_failed"]
-                - statistics["sms_delivered"]
-            ),
+            "sending": (statistics["sms_requested"] - statistics["sms_failed"] - statistics["sms_delivered"]),
             "delivered": statistics["sms_delivered"],
             "failed": statistics["sms_failed"],
         },
         "email": {
             "processed": statistics["emails_requested"],
-            "sending": (
-                statistics["emails_requested"]
-                - statistics["emails_failed"]
-                - statistics["emails_delivered"]
-            ),
+            "sending": (statistics["emails_requested"] - statistics["emails_failed"] - statistics["emails_delivered"]),
             "delivered": statistics["emails_delivered"],
             "failed": statistics["emails_failed"],
         },
@@ -83,9 +71,7 @@ def statistics_by_state(statistics):
 def get_failure_rate_for_job(job):
     if not job.get("notifications_delivered"):
         return 1 if job.get("notifications_failed") else 0
-    return job.get("notifications_failed", 0) / (
-        job.get("notifications_failed", 0) + job.get("notifications_delivered", 0)
-    )
+    return job.get("notifications_failed", 0) / (job.get("notifications_failed", 0) + job.get("notifications_delivered", 0))
 
 
 def add_rate_to_job(job):

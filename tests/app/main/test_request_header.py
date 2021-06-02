@@ -12,9 +12,7 @@ from tests.conftest import set_config_values
         (False, "key_1", 200),
     ],
 )
-def test_route_correct_secret_key(
-    app_, check_proxy_header, header_value, expected_code
-):
+def test_route_correct_secret_key(app_, check_proxy_header, header_value, expected_code):
     with set_config_values(
         app_,
         {

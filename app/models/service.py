@@ -71,14 +71,10 @@ class Service(JSONModel):
         return service_api_client.update_service(self.id, **kwargs)
 
     def update_count_as_live(self, count_as_live):
-        return service_api_client.update_count_as_live(
-            self.id, count_as_live=count_as_live
-        )
+        return service_api_client.update_count_as_live(self.id, count_as_live=count_as_live)
 
     def update_status(self, live, message_limit):
-        return service_api_client.update_status(
-            self.id, live=live, message_limit=message_limit
-        )
+        return service_api_client.update_status(self.id, live=live, message_limit=message_limit)
 
     def force_permission(self, permission, on=False):
 
@@ -126,16 +122,7 @@ class Service(JSONModel):
 
     @cached_property
     def has_team_members(self):
-        return (
-            len(
-                [
-                    user
-                    for user in self.active_users
-                    if user.has_permission_for_service(self.id, "manage_service")
-                ]
-            )
-            > 1
-        )
+        return len([user for user in self.active_users if user.has_permission_for_service(self.id, "manage_service")]) > 1
 
     @cached_property
     def has_team_members_status(self):
@@ -149,9 +136,7 @@ class Service(JSONModel):
             return True
 
         active_and_invited_members = [
-            user
-            for user in self.team_members
-            if user.has_permission_for_service(self.id, "manage_service")
+            user for user in self.team_members if user.has_permission_for_service(self.id, "manage_service")
         ]
         if len(active_and_invited_members) > 1:
             return "in-progress"
@@ -179,11 +164,7 @@ class Service(JSONModel):
 
         templates = service_api_client.get_service_templates(self.id)["data"]
 
-        return [
-            template
-            for template in templates
-            if template["template_type"] in self.available_template_types
-        ]
+        return [template for template in templates if template["template_type"] in self.available_template_types]
 
     @cached_property
     def all_template_ids(self):
@@ -202,14 +183,11 @@ class Service(JSONModel):
         return [
             template
             for template in self.all_templates
-            if (set(template_type) & {"all", template["template_type"]})
-            and template.get("folder") == template_folder_id
+            if (set(template_type) & {"all", template["template_type"]}) and template.get("folder") == template_folder_id
         ]
 
     def get_template(self, template_id, version=None):
-        return service_api_client.get_service_template(
-            self.id, str(template_id), version
-        )["data"]
+        return service_api_client.get_service_template(self.id, str(template_id), version)["data"]
 
     def get_template_folder_with_user_permission_or_403(self, folder_id, user):
         template_folder = self.get_template_folder(folder_id)
@@ -299,11 +277,7 @@ class Service(JSONModel):
     @property
     def default_email_reply_to_address(self):
         return next(
-            (
-                x["email_address"]
-                for x in self.email_reply_to_addresses
-                if x["is_default"]
-            ),
+            (x["email_address"] for x in self.email_reply_to_addresses if x["is_default"]),
             None,
         )
 
@@ -355,11 +329,7 @@ class Service(JSONModel):
     @property
     def default_letter_contact_block(self):
         return next(
-            (
-                letter_contact_block
-                for letter_contact_block in self.letter_contact_details
-                if letter_contact_block["is_default"]
-            ),
+            (letter_contact_block for letter_contact_block in self.letter_contact_details if letter_contact_block["is_default"]),
             None,
         )
 
@@ -441,11 +411,7 @@ class Service(JSONModel):
 
     def get_days_of_retention(self, notification_type):
         return next(
-            (
-                dr
-                for dr in self.data_retention
-                if dr["notification_type"] == notification_type
-            ),
+            (dr for dr in self.data_retention if dr["notification_type"] == notification_type),
             {},
         ).get("days_of_retention", current_app.config["ACTIVITY_STATS_LIMIT_DAYS"])
 
@@ -460,9 +426,7 @@ class Service(JSONModel):
     @cached_property
     def email_branding(self):
         if self.email_branding_id:
-            return email_branding_client.get_email_branding(self.email_branding_id)[
-                "email_branding"
-            ]
+            return email_branding_client.get_email_branding(self.email_branding_id)["email_branding"]
         return None
 
     @cached_property
@@ -503,9 +467,7 @@ class Service(JSONModel):
 
     @cached_property
     def inbound_number(self):
-        return inbound_number_client.get_inbound_sms_number_for_service(self.id)[
-            "data"
-        ].get("number", "")
+        return inbound_number_client.get_inbound_sms_number_for_service(self.id)["data"].get("number", "")
 
     @property
     def has_inbound_number(self):
@@ -565,9 +527,7 @@ class Service(JSONModel):
                 user_folders.append(folder_attrs)
         return user_folders
 
-    def get_template_folders(
-        self, template_type="all", parent_folder_id=None, user=None
-    ):
+    def get_template_folders(self, template_type="all", parent_folder_id=None, user=None):
         if user:
             folders = self.get_user_template_folders(user)
         else:
@@ -578,10 +538,7 @@ class Service(JSONModel):
         return [
             folder
             for folder in folders
-            if (
-                folder["parent_id"] == parent_folder_id
-                and self.is_folder_visible(folder["id"], template_type, user)
-            )
+            if (folder["parent_id"] == parent_folder_id and self.is_folder_visible(folder["id"], template_type, user))
         ]
 
     def get_template_folder(self, folder_id):
@@ -603,9 +560,7 @@ class Service(JSONModel):
 
         if any(
             self.is_folder_visible(child_folder["id"], template_type, user)
-            for child_folder in self.get_template_folders(
-                template_type, template_folder_id, user
-            )
+            for child_folder in self.get_template_folders(template_type, template_folder_id, user)
         ):
             return True
 
@@ -618,9 +573,7 @@ class Service(JSONModel):
         if folder["id"] is None:
             return [folder]
 
-        return self.get_template_folder_path(folder["parent_id"]) + [
-            self.get_template_folder(folder["id"])
-        ]
+        return self.get_template_folder_path(folder["parent_id"]) + [self.get_template_folder(folder["id"])]
 
     def get_template_path(self, template):
         return self.get_template_folder_path(template["folder"]) + [
@@ -628,9 +581,9 @@ class Service(JSONModel):
         ]
 
     def get_template_folders_and_templates(self, template_type, template_folder_id):
-        return self.get_templates(
+        return self.get_templates(template_type, template_folder_id) + self.get_template_folders(
             template_type, template_folder_id
-        ) + self.get_template_folders(template_type, template_folder_id)
+        )
 
     @property
     def count_of_templates_and_folders(self):

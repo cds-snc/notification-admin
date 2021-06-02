@@ -20,28 +20,18 @@ class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT")
     ZENDESK_API_KEY = os.environ.get("ZENDESK_API_KEY")
-    CONTACT_EMAIL = os.environ.get(
-        "CONTACT_EMAIL", "assistance+notification@cds-snc.ca"
-    )
+    CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "assistance+notification@cds-snc.ca")
     SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security-securite@cds-snc.ca")
     SENDING_DOMAIN = os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca")
 
     if os.environ.get("HEROKU_APP_NAME", "") != "":
-        ADMIN_BASE_URL = (
-            "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"
-        )
+        ADMIN_BASE_URL = "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"
     else:
         ADMIN_BASE_URL = os.environ.get("ADMIN_BASE_URL", "http://localhost:6012")
 
-    DOCUMENTATION_DOMAIN = os.getenv(
-        "DOCUMENTATION_DOMAIN", "documentation.notification.canada.ca"
-    )
-    TEMPLATE_PREVIEW_API_HOST = os.environ.get(
-        "TEMPLATE_PREVIEW_API_HOST", "http://localhost:6013"
-    )
-    TEMPLATE_PREVIEW_API_KEY = os.environ.get(
-        "TEMPLATE_PREVIEW_API_KEY", "my-secret-key"
-    )
+    DOCUMENTATION_DOMAIN = os.getenv("DOCUMENTATION_DOMAIN", "documentation.notification.canada.ca")
+    TEMPLATE_PREVIEW_API_HOST = os.environ.get("TEMPLATE_PREVIEW_API_HOST", "http://localhost:6013")
+    TEMPLATE_PREVIEW_API_KEY = os.environ.get("TEMPLATE_PREVIEW_API_KEY", "my-secret-key")
     NOTIFY_SERVICE_ID = "d6aa2c68-a2d9-4437-ab19-3ae8eb202553"
     NOTIFY_USER_ID = "6af522d0-2915-4e52-83a3-3690455a5fe6"
     NOTIFY_TEMPLATE_PREFILL_SERVICE_ID = "93305b36-b0a0-4a34-9ab2-c1b7bb5ca489"
@@ -64,9 +54,7 @@ class Config(object):
 
     ASSETS_DEBUG = False
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
-    DEFAULT_LIVE_SERVICE_LIMIT = int(
-        os.environ.get("DEFAULT_LIVE_SERVICE_LIMIT", 10_000)
-    )
+    DEFAULT_LIVE_SERVICE_LIMIT = int(os.environ.get("DEFAULT_LIVE_SERVICE_LIMIT", 10_000))
     DEFAULT_SERVICE_LIMIT = int(os.environ.get("DEFAULT_SERVICE_LIMIT", 50))
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
         "central": 25_000,
@@ -95,15 +83,11 @@ class Config(object):
     SHOW_STYLEGUIDE = os.getenv("SHOW_STYLEGUIDE", "False")
     WTF_CSRF_ENABLED = True
     WTF_CSRF_TIME_LIMIT = None
-    CSV_UPLOAD_BUCKET_NAME = os.getenv(
-        "CSV_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-csv-upload"
-    )
+    CSV_UPLOAD_BUCKET_NAME = os.getenv("CSV_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-csv-upload")
     ACTIVITY_STATS_LIMIT_DAYS = 7
     TEST_MESSAGE_FILENAME = "Report"
     NOTIFY_ENVIRONMENT = "development"
-    LOGO_UPLOAD_BUCKET_NAME = os.getenv(
-        "ASSET_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-asset-upload"
-    )
+    LOGO_UPLOAD_BUCKET_NAME = os.getenv("ASSET_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-asset-upload")
     ASSET_DOMAIN = os.getenv("ASSET_DOMAIN", "assets.notification.canada.ca")
     MOU_BUCKET_NAME = os.getenv("MOU_BUCKET_NAME", "")
     ROUTE_SECRET_KEY_1 = os.environ.get("ROUTE_SECRET_KEY_1", "")

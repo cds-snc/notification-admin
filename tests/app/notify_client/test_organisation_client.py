@@ -122,9 +122,7 @@ def test_deletes_domain_cache(
 ):
     mocker.patch("app.notify_client.current_user", id="1")
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
-    mock_request = mocker.patch(
-        "notifications_python_client.base.BaseAPIClient.request"
-    )
+    mock_request = mocker.patch("notifications_python_client.base.BaseAPIClient.request")
 
     organisations_client.update_organisation(fake_uuid, foo="bar")
 
@@ -134,25 +132,17 @@ def test_deletes_domain_cache(
 
 def test_update_organisation_when_not_updating_org_type(mocker, fake_uuid):
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
-    mock_post = mocker.patch(
-        "app.notify_client.organisations_api_client.OrganisationsClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.organisations_api_client.OrganisationsClient.post")
 
     organisations_client.update_organisation(fake_uuid, foo="bar")
 
-    mock_post.assert_called_with(
-        url="/organisations/{}".format(fake_uuid), data={"foo": "bar"}
-    )
+    mock_post.assert_called_with(url="/organisations/{}".format(fake_uuid), data={"foo": "bar"})
     assert mock_redis_delete.call_args_list == [call("organisations"), call("domains")]
 
 
-def test_update_organisation_when_updating_org_type_and_org_has_services(
-    mocker, fake_uuid
-):
+def test_update_organisation_when_updating_org_type_and_org_has_services(mocker, fake_uuid):
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
-    mock_post = mocker.patch(
-        "app.notify_client.organisations_api_client.OrganisationsClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.organisations_api_client.OrganisationsClient.post")
 
     organisations_client.update_organisation(
         fake_uuid,
@@ -160,9 +150,7 @@ def test_update_organisation_when_updating_org_type_and_org_has_services(
         organisation_type="central",
     )
 
-    mock_post.assert_called_with(
-        url="/organisations/{}".format(fake_uuid), data={"organisation_type": "central"}
-    )
+    mock_post.assert_called_with(url="/organisations/{}".format(fake_uuid), data={"organisation_type": "central"})
     assert mock_redis_delete.call_args_list == [
         call("service-a", "service-b", "service-c"),
         call("organisations"),
@@ -170,13 +158,9 @@ def test_update_organisation_when_updating_org_type_and_org_has_services(
     ]
 
 
-def test_update_organisation_when_updating_org_type_but_org_has_no_services(
-    mocker, fake_uuid
-):
+def test_update_organisation_when_updating_org_type_but_org_has_no_services(mocker, fake_uuid):
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
-    mock_post = mocker.patch(
-        "app.notify_client.organisations_api_client.OrganisationsClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.organisations_api_client.OrganisationsClient.post")
 
     organisations_client.update_organisation(
         fake_uuid,
@@ -184,9 +168,7 @@ def test_update_organisation_when_updating_org_type_but_org_has_no_services(
         organisation_type="central",
     )
 
-    mock_post.assert_called_with(
-        url="/organisations/{}".format(fake_uuid), data={"organisation_type": "central"}
-    )
+    mock_post.assert_called_with(url="/organisations/{}".format(fake_uuid), data={"organisation_type": "central"})
     assert mock_redis_delete.call_args_list == [
         call("organisations"),
         call("domains"),
@@ -197,18 +179,14 @@ def test_update_service_organisation(mocker, fake_uuid):
     org_id, service_id = fake_uuid, fake_uuid
 
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
-    mock_post = mocker.patch(
-        "app.notify_client.organisations_api_client.OrganisationsClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.organisations_api_client.OrganisationsClient.post")
 
     organisations_client.update_service_organisation(
         service_id,
         org_id,
     )
 
-    mock_post.assert_called_with(
-        url="/organisations/{}/service".format(org_id), data={"service_id": service_id}
-    )
+    mock_post.assert_called_with(url="/organisations/{}/service".format(org_id), data={"service_id": service_id})
     assert mock_redis_delete.call_args_list == [
         call("organisations"),
         call("live-service-and-organisation-counts"),

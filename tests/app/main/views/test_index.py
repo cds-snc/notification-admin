@@ -29,9 +29,7 @@ service = [
 
 
 def test_non_logged_in_user_can_see_homepage(mocker, client):
-    mocker.patch(
-        "app.service_api_client.get_live_services_data", return_value={"data": service}
-    )
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
         return_value={"data": [("2020-11-01", "email", 20)]},
@@ -50,9 +48,7 @@ def test_non_logged_in_user_can_see_homepage(mocker, client):
 
 
 def test_home_page_a11y(mocker, client):
-    mocker.patch(
-        "app.service_api_client.get_live_services_data", return_value={"data": service}
-    )
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
         return_value={"data": [("2020-11-01", "email", 20)]},
@@ -139,9 +135,7 @@ def test_static_pages(
 
 
 def test_activity_page(mocker, client):
-    mocker.patch(
-        "app.service_api_client.get_live_services_data", return_value={"data": service}
-    )
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
         return_value={"data": [("2020-11-01", "email", 20)]},
@@ -254,24 +248,18 @@ def test_letter_template_preview_links_to_the_correct_image(
     branding_style,
     filename,
 ):
-    page = client_request.get(
-        "main.letter_template", _test_page_title=False, branding_style=branding_style
-    )
+    page = client_request.get("main.letter_template", _test_page_title=False, branding_style=branding_style)
 
     image_link = page.find("img")["src"]
 
-    assert image_link == url_for(
-        "main.letter_branding_preview_image", filename=filename, page=1
-    )
+    assert image_link == url_for("main.letter_branding_preview_image", filename=filename, page=1)
 
 
 def test_letter_template_preview_headers(
     client,
     mock_get_letter_branding_by_id,
 ):
-    response = client.get(
-        url_for("main.letter_template", branding_style="hm-government")
-    )
+    response = client.get(url_for("main.letter_template", branding_style="hm-government"))
 
     assert response.headers.get("X-Frame-Options") == "SAMEORIGIN"
 
@@ -293,9 +281,7 @@ def test_query_params(
     heading,
     mocker,
 ):
-    mocker.patch(
-        "app.service_api_client.get_live_services_data", return_value={"data": service}
-    )
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
         return_value={"data": [("2020-11-01", "email", 20)]},

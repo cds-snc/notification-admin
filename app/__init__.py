@@ -135,9 +135,7 @@ def create_app(application):
 
     application.config.from_object(configs[notify_environment])
     asset_fingerprinter._cdn_domain = application.config["ASSET_DOMAIN"]
-    asset_fingerprinter._asset_root = urljoin(
-        application.config["ADMIN_BASE_URL"], application.config["ASSET_PATH"]
-    )
+    asset_fingerprinter._asset_root = urljoin(application.config["ADMIN_BASE_URL"], application.config["ASSET_PATH"])
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
     babel = Babel(application)
@@ -464,9 +462,7 @@ def format_notification_status(status, template_type, provider_response=None):
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(
         {"created", "pending", "sending"},
-        " "
-        + _("since")
-        + ' <span class="local-datetime-short">{}</span>'.format(created),
+        " " + _("since") + ' <span class="local-datetime-short">{}</span>'.format(created),
     ).get(status, '<span class="local-datetime-short">{}</span>'.format(updated))
 
 
@@ -548,15 +544,11 @@ def load_user(user_id):
 def load_service_before_request():
     if "/static/" in request.url:
         _request_ctx_stack.top.service = None
-        _request_ctx_stack.top.organisation = (
-            None  # added to init None to ensure request context has None or something
-        )
+        _request_ctx_stack.top.organisation = None  # added to init None to ensure request context has None or something
         return
     if _request_ctx_stack.top is not None:
         _request_ctx_stack.top.service = None
-        _request_ctx_stack.top.organisation = (
-            None  # added to init None to ensure request context has None or something
-        )
+        _request_ctx_stack.top.organisation = None  # added to init None to ensure request context has None or something
 
         if request.view_args:
             service_id = request.view_args.get("service_id", session.get("service_id"))
@@ -565,9 +557,7 @@ def load_service_before_request():
 
         if service_id:
             try:
-                _request_ctx_stack.top.service = Service(
-                    service_api_client.get_service(service_id)["data"]
-                )
+                _request_ctx_stack.top.service = Service(service_api_client.get_service(service_id)["data"])
             except HTTPError as exc:
                 # if service id isn't real, then 404 rather than 500ing later because we expect service to be set
                 if exc.status_code == 404:
@@ -599,12 +589,8 @@ def load_organisation_before_request():
 
 def save_service_or_org_after_request(response):
     # Only save the current session if the request is 200
-    service_id = (
-        request.view_args.get("service_id", None) if request.view_args else None
-    )
-    organisation_id = (
-        request.view_args.get("org_id", None) if request.view_args else None
-    )
+    service_id = request.view_args.get("service_id", None) if request.view_args else None
+    organisation_id = request.view_args.get("org_id", None) if request.view_args else None
     if response.status_code == 200:
         if service_id:
             session["service_id"] = service_id
@@ -644,9 +630,7 @@ def useful_headers_after_request(response):
     if asset_fingerprinter.is_static_asset(request.url):
         response.headers.add("Cache-Control", "public, max-age=31536000, immutable")
     else:
-        response.headers.add(
-            "Cache-Control", "no-store, no-cache, private, must-revalidate"
-        )
+        response.headers.add("Cache-Control", "no-store, no-cache, private, must-revalidate")
     for key, value in response.headers:
         response.headers[key] = SanitiseASCII.encode(value)
     return response
@@ -654,9 +638,7 @@ def useful_headers_after_request(response):
 
 def register_errorhandlers(application):  # noqa (C901 too complex)
     def _error_response(error_code):
-        resp = make_response(
-            render_template("error/{0}.html".format(error_code)), error_code
-        )
+        resp = make_response(render_template("error/{0}.html".format(error_code)), error_code)
         return useful_headers_after_request(resp)
 
     @application.errorhandler(HTTPError)
@@ -675,9 +657,7 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
             if isinstance(error.message, str):
                 msg = [_(error.message)]
             else:
-                msg = list(
-                    itertools.chain(_(error.message[x]) for x in error.message.keys())
-                )
+                msg = list(itertools.chain(_(error.message[x]) for x in error.message.keys()))
 
             resp = make_response(render_template("error/400.html", message=msg))
             return useful_headers_after_request(resp)
@@ -728,14 +708,12 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
         application.logger.warning("csrf.error_message: {}".format(reason))
 
         if "user_id" not in session:
-            application.logger.warning(
-                u"csrf.session_expired: Redirecting user to log in page"
-            )
+            application.logger.warning("csrf.session_expired: Redirecting user to log in page")
 
             return application.login_manager.unauthorized()
 
         application.logger.warning(
-            u"csrf.invalid_token: Aborting request, user_id: {user_id}",
+            "csrf.invalid_token: Aborting request, user_id: {user_id}",
             extra={"user_id": session["user_id"]},
         )
 

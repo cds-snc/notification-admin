@@ -21,14 +21,10 @@ def test_should_render_email_verification_resend_show_email_address_and_resend_v
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
     assert page.h1.string == "Check your email"
-    expected = "A new confirmation email has been sent to {}".format(
-        api_user_active["email_address"]
-    )
+    expected = "A new confirmation email has been sent to {}".format(api_user_active["email_address"])
     message = page.find_all("p", {"class": "email-confirm"})[0].text
     assert message == expected
-    mock_send_verify_email.assert_called_with(
-        api_user_active["id"], api_user_active["email_address"]
-    )
+    mock_send_verify_email.assert_called_with(api_user_active["id"], api_user_active["email_address"])
 
 
 def test_should_render_correct_resend_template_for_active_user(
@@ -71,9 +67,7 @@ def test_should_render_correct_resend_template_for_pending_user(
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert page.h1.string == "Check your mobile number"
 
-    expected = (
-        "Check your mobile phone number is correct and then re-send the security code."
-    )
+    expected = "Check your mobile phone number is correct and then re-send the security code."
     message = page.find_all("p", {"class": "phone-confirm"})[0].text
     assert message == expected
     assert page.find("form").input["value"] == api_user_pending["mobile_number"]

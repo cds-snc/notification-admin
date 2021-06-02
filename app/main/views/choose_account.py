@@ -24,9 +24,7 @@ def choose_account():
     if current_user.platform_admin:
         org_count, live_service_count = (
             len(Organisations()),
-            status_api_client.get_count_of_live_services_and_organisations()[
-                "services"
-            ],
+            status_api_client.get_count_of_live_services_and_organisations()["services"],
         )
     return render_template(
         "views/choose-account.html",
@@ -43,26 +41,17 @@ def show_accounts_or_dashboard():
         return redirect(url_for(".index"))
 
     service_id = session.get("service_id")
-    if service_id and (
-        current_user.belongs_to_service(service_id) or current_user.platform_admin
-    ):
+    if service_id and (current_user.belongs_to_service(service_id) or current_user.platform_admin):
         return redirect(url_for(".service_dashboard", service_id=service_id))
 
     organisation_id = session.get("organisation_id")
-    if organisation_id and (
-        current_user.belongs_to_organisation(organisation_id)
-        or current_user.platform_admin
-    ):
+    if organisation_id and (current_user.belongs_to_organisation(organisation_id) or current_user.platform_admin):
         return redirect(url_for(".organisation_dashboard", org_id=organisation_id))
 
     if len(current_user.service_ids) == 1 and not current_user.organisation_ids:
-        return redirect(
-            url_for(".service_dashboard", service_id=current_user.service_ids[0])
-        )
+        return redirect(url_for(".service_dashboard", service_id=current_user.service_ids[0]))
 
     if len(current_user.organisation_ids) == 1 and not current_user.trial_mode_services:
-        return redirect(
-            url_for(".organisation_dashboard", org_id=current_user.organisation_ids[0])
-        )
+        return redirect(url_for(".organisation_dashboard", org_id=current_user.organisation_ids[0]))
 
     return redirect(url_for(".choose_account"))

@@ -55,9 +55,7 @@ FAILURE_STATUSES = [
 ]
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
 
-with open(
-    "{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))
-) as email_domains:
+with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))) as email_domains:
     GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains]
 
 
@@ -158,38 +156,24 @@ def get_errors_for_csv(recipients, template_type):
             if 1 == number_of_bad_recipients:
                 errors.append(_("fix") + " 1 " + _("phone number"))
             else:
-                errors.append(
-                    _("fix")
-                    + " {} ".format(number_of_bad_recipients)
-                    + _("phone numbers")
-                )
+                errors.append(_("fix") + " {} ".format(number_of_bad_recipients) + _("phone numbers"))
         elif "email" == template_type:
             if 1 == number_of_bad_recipients:
                 errors.append(_("fix") + " 1 " + _("email address"))
             else:
-                errors.append(
-                    _("fix")
-                    + " {} ".format(number_of_bad_recipients)
-                    + _("email addresses")
-                )
+                errors.append(_("fix") + " {} ".format(number_of_bad_recipients) + _("email addresses"))
         elif "letter" == template_type:
             if 1 == number_of_bad_recipients:
                 errors.append(_("fix") + " 1 " + _("address"))
             else:
-                errors.append(
-                    _("fix") + " {} ".format(number_of_bad_recipients) + _("addresses")
-                )
+                errors.append(_("fix") + " {} ".format(number_of_bad_recipients) + _("addresses"))
 
     if any(recipients.rows_with_missing_data):
         number_of_rows_with_missing_data = len(list(recipients.rows_with_missing_data))
         if 1 == number_of_rows_with_missing_data:
             errors.append(_("enter missing data in 1 row"))
         else:
-            errors.append(
-                _("enter missing data in {} rows").format(
-                    number_of_rows_with_missing_data
-                )
-            )
+            errors.append(_("enter missing data in {} rows").format(number_of_rows_with_missing_data))
 
     return errors
 
@@ -208,11 +192,7 @@ def generate_notifications_csv(**kwargs):
             template_type=kwargs["template_type"],
         )
         original_column_headers = original_upload.column_headers
-        fieldnames = (
-            ["Row number"]
-            + original_column_headers
-            + ["Template", "Type", "Job", "Status", "Time"]
-        )
+        fieldnames = ["Row number"] + original_column_headers + ["Template", "Type", "Job", "Status", "Time"]
     else:
         fieldnames = [
             "Recipient",
@@ -228,19 +208,14 @@ def generate_notifications_csv(**kwargs):
     yield ",".join(fieldnames) + "\n"
 
     while kwargs["page"]:
-        notifications_resp = notification_api_client.get_notifications_for_service(
-            **kwargs
-        )
+        notifications_resp = notification_api_client.get_notifications_for_service(**kwargs)
         for notification in notifications_resp["notifications"]:
             if kwargs.get("job_id"):
                 values = (
                     [
                         notification["row_number"],
                     ]
-                    + [
-                        original_upload[notification["row_number"] - 1].get(header).data
-                        for header in original_column_headers
-                    ]
+                    + [original_upload[notification["row_number"] - 1].get(header).data for header in original_column_headers]
                     + [
                         notification["template_name"],
                         notification["template_type"],
@@ -280,15 +255,11 @@ def get_page_from_request():
 
 
 def generate_previous_dict(view, service_id, page, url_args=None):
-    return generate_previous_next_dict(
-        view, service_id, page - 1, "Previous page", url_args or {}
-    )
+    return generate_previous_next_dict(view, service_id, page - 1, "Previous page", url_args or {})
 
 
 def generate_next_dict(view, service_id, page, url_args=None):
-    return generate_previous_next_dict(
-        view, service_id, page + 1, "Next page", url_args or {}
-    )
+    return generate_previous_next_dict(view, service_id, page + 1, "Next page", url_args or {})
 
 
 def generate_previous_next_dict(view, service_id, page, title, url_args):
@@ -301,11 +272,7 @@ def generate_previous_next_dict(view, service_id, page, title, url_args):
 
 def email_safe(string, whitespace="."):
     # strips accents, diacritics etc
-    string = "".join(
-        c
-        for c in unicodedata.normalize("NFD", string)
-        if unicodedata.category(c) != "Mn"
-    )
+    string = "".join(c for c in unicodedata.normalize("NFD", string) if unicodedata.category(c) != "Mn")
     string = "".join(
         word.lower() if word.isalnum() or word in [whitespace, "-", "_"] else ""
         for word in re.sub(r"\s+", whitespace, string.strip())
@@ -391,16 +358,12 @@ class Spreadsheet:
         extension = cls.get_extension(filename)
 
         if extension == "csv":
-            return cls(
-                csv_data=Spreadsheet.normalise_newlines(file_content), filename=filename
-            )
+            return cls(csv_data=Spreadsheet.normalise_newlines(file_content), filename=filename)
 
         if extension == "tsv":
             file_content = StringIO(Spreadsheet.normalise_newlines(file_content))
 
-        instance = cls.from_rows(
-            pyexcel.iget_array(file_type=extension, file_stream=file_content), filename
-        )
+        instance = cls.from_rows(pyexcel.iget_array(file_type=extension, file_stream=file_content), filename)
         pyexcel.free_resources()
         return instance
 
@@ -424,11 +387,7 @@ class Spreadsheet:
 
 
 def get_help_argument():
-    return (
-        request.args.get("help")
-        if request.args.get("help") in ("1", "2", "3")
-        else None
-    )
+    return request.args.get("help") if request.args.get("help") in ("1", "2", "3") else None
 
 
 def email_address_ends_with(email_address, known_domains):
@@ -444,9 +403,9 @@ def email_address_ends_with(email_address, known_domains):
 
 
 def is_gov_user(email_address):
-    return email_address_ends_with(
-        email_address, GOVERNMENT_EMAIL_DOMAIN_NAMES
-    ) or email_address_ends_with(email_address, organisations_client.get_domains())
+    return email_address_ends_with(email_address, GOVERNMENT_EMAIL_DOMAIN_NAMES) or email_address_ends_with(
+        email_address, organisations_client.get_domains()
+    )
 
 
 def get_template(
@@ -463,11 +422,7 @@ def get_template(
     # Add a folder to the project root called 'jinja_templates' with copies from notification-utls repo of:
     # 'email_preview_template.jinja2'
     # 'sms_preview_template.jinja2'
-    debug_template_path = (
-        path.dirname(path.abspath(__file__))
-        if os.environ.get("USE_LOCAL_JINJA_TEMPLATES") == "True"
-        else None
-    )
+    debug_template_path = path.dirname(path.abspath(__file__)) if os.environ.get("USE_LOCAL_JINJA_TEMPLATES") == "True" else None
 
     if "email" == template["template_type"]:
         return EmailPreviewTemplate(
@@ -535,9 +490,7 @@ def get_current_financial_year():
 
 
 def get_available_until_date(created_at, service_data_retention_days=7):
-    created_at_date = dateutil.parser.parse(created_at).replace(
-        hour=0, minute=0, second=0
-    )
+    created_at_date = dateutil.parser.parse(created_at).replace(hour=0, minute=0, second=0)
     return created_at_date + timedelta(days=service_data_retention_days + 1)
 
 
@@ -554,9 +507,7 @@ def parse_filter_args(filter_dict):
         filter_dict = MultiDict(filter_dict)
 
     return MultiDict(
-        (key, (",".join(filter_dict.getlist(key))).split(","))
-        for key in filter_dict.keys()
-        if "".join(filter_dict.getlist(key))
+        (key, (",".join(filter_dict.getlist(key))).split(",")) for key in filter_dict.keys() if "".join(filter_dict.getlist(key))
     )
 
 
@@ -624,11 +575,7 @@ def should_skip_template_page(template_type):
 def get_default_sms_sender(sms_senders):
     return str(
         next(
-            (
-                Field(x["sms_sender"], html="escape")
-                for x in sms_senders
-                if x["is_default"]
-            ),
+            (Field(x["sms_sender"], html="escape") for x in sms_senders if x["is_default"]),
             "None",
         )
     )
@@ -658,9 +605,7 @@ def get_letter_printing_statement(status, created_at):
     if letter_can_be_cancelled(status, created_at_dt):
         return "Printing starts {} at 5:30pm".format(printing_today_or_tomorrow())
     else:
-        printed_datetime = utc_string_to_aware_gmt_datetime(created_at) + timedelta(
-            hours=6, minutes=30
-        )
+        printed_datetime = utc_string_to_aware_gmt_datetime(created_at) + timedelta(hours=6, minutes=30)
         if printed_datetime.date() == datetime.now().date():
             return "Printed today at 5:30pm"
         elif printed_datetime.date() == datetime.now().date() - timedelta(days=1):
@@ -686,9 +631,7 @@ def report_security_finding(
     account = response["Account"]
 
     product = f'arn:aws:securityhub:{current_app.config["AWS_REGION"].lower()}:{account}:product/{account}/default'
-    client = boto3.client(
-        "securityhub", region_name=current_app.config["AWS_REGION"].lower()
-    )
+    client = boto3.client("securityhub", region_name=current_app.config["AWS_REGION"].lower())
     client.batch_import_findings(
         Findings=[
             {

@@ -26,9 +26,7 @@ def test_form_contains_next_24h(app_):
     assert choices[85] == ("2016-01-05T00:00:00.061258", "Monday at midnight")
 
     with pytest.raises(IndexError):
-        assert choices[
-            12 + (3 * 24) + 2  # hours left in the day  # 3 days  # magic number
-        ]
+        assert choices[12 + (3 * 24) + 2]  # hours left in the day  # 3 days  # magic number
 
 
 @freeze_time("2016-01-01 11:09:00.061258")

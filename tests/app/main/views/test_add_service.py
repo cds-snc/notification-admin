@@ -79,9 +79,7 @@ def test_form_with_no_branding_should_warn_this_cant_be_empty(
         current_step="choose_logo",
         _expected_status=200,
     )
-    assert normalize_spaces(page.select_one(".error-message").text) == (
-        "This cannot be empty"
-    )
+    assert normalize_spaces(page.select_one(".error-message").text) == ("This cannot be empty")
 
 
 def test_form_with_invalid_branding_should_request_another_valid_value(
@@ -96,9 +94,7 @@ def test_form_with_invalid_branding_should_request_another_valid_value(
         current_step="choose_logo",
         _expected_status=200,
     )
-    assert normalize_spaces(page.select_one(".error-message").text) == (
-        "You need to choose an option"
-    )
+    assert normalize_spaces(page.select_one(".error-message").text) == ("You need to choose an option")
 
 
 def test_wizard_no_flow_information_should_go_to_step1(
@@ -149,10 +145,7 @@ def test_wizard_flow_with_step_2_should_display_email_from(
         current_step="choose_email_from",
         _expected_status=200,
     )
-    assert (
-        page.select_one("h1").text.strip()
-        == "Create a sending email address for your service"
-    )
+    assert page.select_one("h1").text.strip() == "Create a sending email address for your service"
 
 
 def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
@@ -168,19 +161,14 @@ def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
     assert mock_service_email_from_is_unique.called is True
 
 
-def test_wizard_flow_with_step_3_should_display_branding_form(
-    client_request, mock_service_email_from_is_unique
-):
+def test_wizard_flow_with_step_3_should_display_branding_form(client_request, mock_service_email_from_is_unique):
     page = client_request.get(
         "main.add_service",
         _data={},
         current_step="choose_logo",
         _expected_status=200,
     )
-    assert (
-        page.select_one("h1").text.strip()
-        == "Choose the default language of your service"
-    )
+    assert page.select_one("h1").text.strip() == "Choose the default language of your service"
 
 
 def test_wizard_flow_with_non_matching_steps_info_should_fallback_to_step1(
@@ -196,9 +184,7 @@ def test_wizard_flow_with_non_matching_steps_info_should_fallback_to_step1(
     assert page.select_one("h1").text.strip() == "Name your service"
 
 
-def test_wizard_flow_with_junk_step_info_should_fallback_to_step1(
-    client_request, mock_service_name_is_unique
-):
+def test_wizard_flow_with_junk_step_info_should_fallback_to_step1(client_request, mock_service_name_is_unique):
     page = client_request.post(
         "main.add_service",
         _data={
@@ -288,16 +274,11 @@ def test_should_add_service_and_redirect_to_tour_when_no_services(
     mock_create_service_template.assert_called_once_with(
         "Example text message template",
         "sms",
-        (
-            "Hey ((name)), I’m trying out GC Notify. Today is "
-            "((day of week)) and my favourite colour is ((colour))."
-        ),
+        ("Hey ((name)), I’m trying out GC Notify. Today is " "((day of week)) and my favourite colour is ((colour))."),
         101,
     )
     assert session["service_id"] == 101
-    mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(
-        101, sms_limit
-    )
+    mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(101, sms_limit)
 
 
 @pytest.mark.skip(reason="feature not in use - defaults to central")
@@ -322,9 +303,7 @@ def test_add_service_has_to_choose_org_type(
         },
         _expected_status=200,
     )
-    assert normalize_spaces(page.select_one(".error-message").text) == (
-        "You need to choose an option"
-    )
+    assert normalize_spaces(page.select_one(".error-message").text) == ("You need to choose an option")
     assert mock_create_service.called is False
     assert mock_create_service_template.called is False
     assert mock_create_or_update_free_sms_fragment_limit.called is False
@@ -336,9 +315,7 @@ def test_add_service_has_to_choose_org_type(
         "test@canada.ca",
         "test@tbs-sct.gc.ca",
         "test@canada.ca",
-        pytest.param(
-            "test@not-canada.ca", marks=pytest.mark.xfail(raises=AssertionError)
-        ),
+        pytest.param("test@not-canada.ca", marks=pytest.mark.xfail(raises=AssertionError)),
     ),
 )
 def test_get_should_only_show_nhs_org_types_radios_if_user_has_nhs_email(
@@ -419,9 +396,7 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
         default_branding_is_french=True,
         organisation_type=organisation_type,
     )
-    mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(
-        101, free_allowance
-    )
+    mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(101, free_allowance)
     assert len(mock_create_service_template.call_args_list) == 0
     assert session["service_id"] == 101
 
@@ -470,9 +445,7 @@ def test_should_return_form_errors_with_duplicate_service_name_regardless_of_cas
         },
         _expected_status=200,
     )
-    assert page.select_one(".error-message").text.strip() == (
-        "This service name is already in use"
-    )
+    assert page.select_one(".error-message").text.strip() == ("This service name is already in use")
     assert mock_service_name_is_not_unique.called is True
 
 

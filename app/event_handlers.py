@@ -8,9 +8,7 @@ def on_user_logged_in(_sender, user):
     _send_event("sucessful_login", user_id=user.id)
 
 
-def create_email_change_event(
-    user_id, updated_by_id, original_email_address, new_email_address
-):
+def create_email_change_event(user_id, updated_by_id, original_email_address, new_email_address):
     _send_event(
         "update_user_email",
         user_id=user_id,
@@ -20,9 +18,7 @@ def create_email_change_event(
     )
 
 
-def create_mobile_number_change_event(
-    user_id, updated_by_id, original_mobile_number, new_mobile_number
-):
+def create_mobile_number_change_event(user_id, updated_by_id, original_mobile_number, new_mobile_number):
     _send_event(
         "update_user_mobile_number",
         user_id=user_id,

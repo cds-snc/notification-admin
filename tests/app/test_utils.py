@@ -126,16 +126,12 @@ def test_generate_next_dict(client):
 
 
 def test_generate_previous_next_dict_adds_other_url_args(client):
-    ret = generate_next_dict(
-        "main.view_notifications", "foo", 2, {"message_type": "blah"}
-    )
+    ret = generate_next_dict("main.view_notifications", "foo", 2, {"message_type": "blah"})
     assert "notifications/blah" in ret["url"]
 
 
 def test_can_create_spreadsheet_from_large_excel_file():
-    with open(
-        str(Path.cwd() / "tests" / "spreadsheet_files" / "excel 2007.xlsx"), "rb"
-    ) as xl:
+    with open(str(Path.cwd() / "tests" / "spreadsheet_files" / "excel 2007.xlsx"), "rb") as xl:
         ret = Spreadsheet.from_file(xl, filename="xl.xlsx")
     assert ret.as_csv_data
 
@@ -153,10 +149,7 @@ def test_can_create_spreadsheet_from_dict():
 
 
 def test_can_create_spreadsheet_from_dict_with_filename():
-    assert (
-        Spreadsheet.from_dict({}, filename="empty.csv").as_dict["file_name"]
-        == "empty.csv"
-    )
+    assert Spreadsheet.from_dict({}, filename="empty.csv").as_dict["file_name"] == "empty.csv"
 
 
 @pytest.mark.parametrize(
@@ -172,10 +165,7 @@ def test_can_create_spreadsheet_from_dict_with_filename():
 def test_spreadsheet_checks_for_bad_arguments(args, kwargs):
     with pytest.raises(TypeError) as exception:
         Spreadsheet(*args, **kwargs)
-    assert (
-        str(exception.value)
-        == "Spreadsheet must be created from either rows or CSV data"
-    )
+    assert str(exception.value) == "Spreadsheet must be created from either rows or CSV data"
 
 
 @pytest.mark.parametrize(
@@ -308,9 +298,7 @@ def test_generate_notifications_csv_returns_correct_csv_file(
         "app.s3_client.s3_csv_client.s3download",
         return_value=original_file_contents,
     )
-    csv_content = generate_notifications_csv(
-        service_id="1234", job_id=fake_uuid, template_type="sms"
-    )
+    csv_content = generate_notifications_csv(service_id="1234", job_id=fake_uuid, template_type="sms")
     csv_file = DictReader(StringIO("\n".join(csv_content)))
     assert csv_file.fieldnames == expected_column_headers
     assert next(csv_file) == dict(zip(expected_column_headers, expected_1st_row))
@@ -351,9 +339,7 @@ def test_generate_notifications_csv_calls_twice_if_next_link(
 
     service_id = "1234"
     response_with_links = _get_notifications_csv(rows=7, with_links=True)
-    response_with_no_links = _get_notifications_csv(
-        rows=3, row_number=8, with_links=False
-    )
+    response_with_no_links = _get_notifications_csv(rows=3, row_number=8, with_links=False)
 
     mock_get_notifications = mocker.patch(
         "app.notification_api_client.get_notifications_for_service",
@@ -380,9 +366,7 @@ def test_generate_notifications_csv_calls_twice_if_next_link(
 
 
 def test_get_cdn_domain_on_localhost(client, mocker):
-    mocker.patch.dict(
-        "app.current_app.config", values={"ADMIN_BASE_URL": "http://localhost:6012"}
-    )
+    mocker.patch.dict("app.current_app.config", values={"ADMIN_BASE_URL": "http://localhost:6012"})
     domain = get_logo_cdn_domain()
     assert domain == current_app.config["ASSET_DOMAIN"]
 
@@ -481,9 +465,7 @@ def test_printing_today_or_tomorrow_returns_tomorrow(datetime):
     ],
 )
 @pytest.mark.skip(reason="feature not in use")
-def test_get_letter_printing_statement_when_letter_prints_today(
-    created_at, current_datetime
-):
+def test_get_letter_printing_statement_when_letter_prints_today(created_at, current_datetime):
     with freeze_time(current_datetime):
         statement = get_letter_printing_statement("created", created_at)
 
@@ -498,9 +480,7 @@ def test_get_letter_printing_statement_when_letter_prints_today(
     ],
 )
 @pytest.mark.skip(reason="feature not in use")
-def test_get_letter_printing_statement_when_letter_prints_tomorrow(
-    created_at, current_datetime
-):
+def test_get_letter_printing_statement_when_letter_prints_tomorrow(created_at, current_datetime):
     with freeze_time(current_datetime):
         statement = get_letter_printing_statement("created", created_at)
 
@@ -517,9 +497,7 @@ def test_get_letter_printing_statement_when_letter_prints_tomorrow(
 )
 @freeze_time("2017-07-07 12:00:00")
 @pytest.mark.skip(reason="feature not in use")
-def test_get_letter_printing_statement_for_letter_that_has_been_sent(
-    created_at, print_day
-):
+def test_get_letter_printing_statement_for_letter_that_has_been_sent(created_at, print_day):
     statement = get_letter_printing_statement("delivered", created_at)
 
     assert statement == "Printed {} at 5:30pm".format(print_day)
@@ -531,9 +509,7 @@ def test_report_security_finding(mocker):
     client.get_caller_identity.return_value = {"Account": "123456789"}
     report_security_finding("foo", "bar", 50, 50)
 
-    boto_client.client.assert_called_with(
-        "securityhub", region_name=current_app.config["AWS_REGION"]
-    )
+    boto_client.client.assert_called_with("securityhub", region_name=current_app.config["AWS_REGION"])
     client.get_caller_identity.assert_called()
     client.batch_import_findings.assert_called()
 

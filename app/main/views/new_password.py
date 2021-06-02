@@ -29,18 +29,14 @@ def new_password(token):
             current_app.config["EMAIL_EXPIRY_SECONDS"],
         )
     except SignatureExpired:
-        flash(
-            _(
-                "The security code in the email we sent you has expired. Enter your email address to re-send."
-            )
-        )
+        flash(_("The security code in the email we sent you has expired. Enter your email address to re-send."))
         return redirect(url_for(".forgot_password"))
 
     email_address = json.loads(token_data)["email"]
     user = User.from_email_address(email_address)
-    if user.password_changed_at and datetime.strptime(
-        user.password_changed_at, "%Y-%m-%d %H:%M:%S.%f"
-    ) > datetime.strptime(json.loads(token_data)["created_at"], "%Y-%m-%d %H:%M:%S.%f"):
+    if user.password_changed_at and datetime.strptime(user.password_changed_at, "%Y-%m-%d %H:%M:%S.%f") > datetime.strptime(
+        json.loads(token_data)["created_at"], "%Y-%m-%d %H:%M:%S.%f"
+    ):
         flash(_("The security code in the email has already been used"))
         return redirect(url_for("main.index"))
 
@@ -61,6 +57,4 @@ def new_password(token):
             user.send_verify_code()
             return redirect(url_for("main.two_factor_sms_sent"))
     else:
-        return render_template(
-            "views/new-password.html", token=token, form=form, user=user
-        )
+        return render_template("views/new-password.html", token=token, form=form, user=user)

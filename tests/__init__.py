@@ -24,9 +24,7 @@ class TestClient(FlaskClient):
         if mocker and service:
             with self.session_transaction() as session:
                 session["service_id"] = service["id"]
-            mocker.patch(
-                "app.service_api_client.get_service", return_value={"data": service}
-            )
+            mocker.patch("app.service_api_client.get_service", return_value={"data": service})
 
         with patch("app.events_api_client.create_event"):
             login_user(model_user)
@@ -88,8 +86,7 @@ def user_json(
         "permissions": permissions,
         "auth_type": auth_type,
         "failed_login_count": failed_login_count,
-        "logged_in_at": logged_in_at
-        or datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f"),
+        "logged_in_at": logged_in_at or datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f"),
         "state": state,
         "max_failed_login_count": max_failed_login_count,
         "platform_admin": platform_admin,
@@ -290,9 +287,7 @@ def template_json(
     return template
 
 
-def template_version_json(
-    service_id, id_, created_by, version=1, created_at=None, **kwargs
-):
+def template_version_json(service_id, id_, created_by, version=1, created_at=None, **kwargs):
     template = template_json(service_id, id_, **kwargs)
     template["created_by"] = created_by_json(
         created_by["id"],
@@ -534,17 +529,13 @@ def single_notification_json(
     return data
 
 
-def validate_route_permission(
-    mocker, app_, method, response_code, route, permissions, usr, service
-):
+def validate_route_permission(mocker, app_, method, response_code, route, permissions, usr, service):
     usr["permissions"][str(service["id"])] = permissions
     usr["services"] = [service["id"]]
     mocker.patch("app.user_api_client.check_verify_code", return_value=(True, ""))
     mocker.patch("app.service_api_client.get_services", return_value={"data": []})
     mocker.patch("app.service_api_client.update_service", return_value=service)
-    mocker.patch(
-        "app.service_api_client.update_service_with_properties", return_value=service
-    )
+    mocker.patch("app.service_api_client.update_service_with_properties", return_value=service)
     mocker.patch("app.user_api_client.get_user", return_value=usr)
     mocker.patch("app.user_api_client.get_user_by_email", return_value=usr)
     mocker.patch("app.service_api_client.get_service", return_value={"data": service})
@@ -565,16 +556,12 @@ def validate_route_permission(
     return resp
 
 
-def validate_route_permission_with_client(
-    mocker, client, method, response_code, route, permissions, usr, service
-):
+def validate_route_permission_with_client(mocker, client, method, response_code, route, permissions, usr, service):
     usr["permissions"][str(service["id"])] = permissions
     mocker.patch("app.user_api_client.check_verify_code", return_value=(True, ""))
     mocker.patch("app.service_api_client.get_services", return_value={"data": []})
     mocker.patch("app.service_api_client.update_service", return_value=service)
-    mocker.patch(
-        "app.service_api_client.update_service_with_properties", return_value=service
-    )
+    mocker.patch("app.service_api_client.update_service_with_properties", return_value=service)
     mocker.patch("app.user_api_client.get_user", return_value=usr)
     mocker.patch("app.user_api_client.get_user_by_email", return_value=usr)
     mocker.patch("app.service_api_client.get_service", return_value={"data": service})
@@ -604,8 +591,6 @@ def assert_url_expected(actual, expected):
             # serialized string
             assert parse_qs(expected_parts.query) == parse_qs(actual_parts.query)
         else:
-            assert getattr(actual_parts, attribute) == getattr(
-                expected_parts, attribute
-            ), ("Expected redirect: {}\n" "Actual redirect: {}").format(
-                expected, actual
-            )
+            assert getattr(actual_parts, attribute) == getattr(expected_parts, attribute), (
+                "Expected redirect: {}\n" "Actual redirect: {}"
+            ).format(expected, actual)

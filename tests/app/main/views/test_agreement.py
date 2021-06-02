@@ -31,9 +31,7 @@ class _MockS3Object:
             [
                 (
                     ["back-link"],
-                    partial(
-                        url_for, "main.request_to_go_live", service_id=SERVICE_ONE_ID
-                    ),
+                    partial(url_for, "main.request_to_go_live", service_id=SERVICE_ONE_ID),
                 ),
                 (
                     [],
@@ -51,9 +49,7 @@ class _MockS3Object:
             [
                 (
                     ["back-link"],
-                    partial(
-                        url_for, "main.request_to_go_live", service_id=SERVICE_ONE_ID
-                    ),
+                    partial(url_for, "main.request_to_go_live", service_id=SERVICE_ONE_ID),
                 ),
                 (
                     [],
@@ -79,9 +75,7 @@ class _MockS3Object:
             [
                 (
                     ["back-link"],
-                    partial(
-                        url_for, "main.request_to_go_live", service_id=SERVICE_ONE_ID
-                    ),
+                    partial(url_for, "main.request_to_go_live", service_id=SERVICE_ONE_ID),
                 ),
                 (
                     [],
@@ -107,9 +101,7 @@ class _MockS3Object:
             [
                 (
                     ["back-link"],
-                    partial(
-                        url_for, "main.request_to_go_live", service_id=SERVICE_ONE_ID
-                    ),
+                    partial(url_for, "main.request_to_go_live", service_id=SERVICE_ONE_ID),
                 ),
                 (
                     [],
@@ -177,9 +169,7 @@ def test_download_service_agreement(
         "app.models.organisation.organisations_client.get_service_organisation",
         return_value=organisation_json(crown=crown),
     )
-    mock_get_s3_object = mocker.patch(
-        "app.s3_client.s3_mou_client.get_s3_object", return_value=_MockS3Object(b"foo")
-    )
+    mock_get_s3_object = mocker.patch("app.s3_client.s3_mou_client.get_s3_object", return_value=_MockS3Object(b"foo"))
 
     response = logged_in_client.get(
         url_for(
@@ -192,9 +182,7 @@ def test_download_service_agreement(
     if expected_file_served:
         assert response.get_data() == b"foo"
         assert response.headers["Content-Type"] == "application/pdf"
-        assert response.headers["Content-Disposition"] == (
-            'attachment; filename="{}"'.format(expected_file_served)
-        )
+        assert response.headers["Content-Disposition"] == ('attachment; filename="{}"'.format(expected_file_served))
         mock_get_s3_object.assert_called_once_with("test-mou", expected_file_fetched)
     else:
         assert not expected_file_fetched
@@ -206,14 +194,9 @@ def test_show_accept_agreement_page(
     mocker,
     mock_get_service_organisation,
 ):
-    page = client_request.get(
-        "main.service_accept_agreement", service_id=SERVICE_ONE_ID
-    )
+    page = client_request.get("main.service_accept_agreement", service_id=SERVICE_ONE_ID)
 
-    assert [
-        (input["type"], input["name"], input.get("id"))
-        for input in page.select("input")
-    ] == [
+    assert [(input["type"], input["name"], input.get("id")) for input in page.select("input")] == [
         ("radio", "who", "who-0"),
         ("radio", "who", "who-1"),
         ("text", "on_behalf_of_name", "on_behalf_of_name"),
@@ -223,37 +206,28 @@ def test_show_accept_agreement_page(
     ]
 
     assert normalize_spaces(page.select_one("label[for=version]").text) == (
-        "Which version of the agreement do you want to accept? "
-        "The version number is on the front page, for example ‘3.6’"
+        "Which version of the agreement do you want to accept? " "The version number is on the front page, for example ‘3.6’"
     )
     assert page.select_one("input[name=version]")["value"] == ""
 
-    assert normalize_spaces(page.select_one("#who legend").text) == (
-        "Who are you accepting the agreement for?"
-    )
+    assert normalize_spaces(page.select_one("#who legend").text) == ("Who are you accepting the agreement for?")
     assert normalize_spaces(page.select_one("label[for=who-0]").text) == ("Yourself")
     assert page.select("input[name=who]")[0]["value"] == "me"
     assert "checked" not in page.select("input[name=who]")[0]
     assert "data-target" not in page.select(".multiple-choice")[0]
-    assert normalize_spaces(page.select_one("label[for=who-1]").text) == (
-        "Someone else"
-    )
+    assert normalize_spaces(page.select_one("label[for=who-1]").text) == ("Someone else")
     assert page.select("input[name=who]")[1]["value"] == "someone-else"
     assert "checked" not in page.select("input[name=who]")[1]
     assert page.select(".multiple-choice")[1]["data-target"] == "on-behalf-of"
-    assert [
-        field["name"]
-        for field in page.select("#on-behalf-of.conditional-radio-panel input")
-    ] == ["on_behalf_of_name", "on_behalf_of_email"]
+    assert [field["name"] for field in page.select("#on-behalf-of.conditional-radio-panel input")] == [
+        "on_behalf_of_name",
+        "on_behalf_of_email",
+    ]
 
-    assert normalize_spaces(page.select_one("label[for=on_behalf_of_name]").text) == (
-        "What’s their name?"
-    )
+    assert normalize_spaces(page.select_one("label[for=on_behalf_of_name]").text) == ("What’s their name?")
     assert page.select_one("input[name=on_behalf_of_name]")["value"] == ""
 
-    assert normalize_spaces(page.select_one("label[for=on_behalf_of_email]").text) == (
-        "What’s their email address?"
-    )
+    assert normalize_spaces(page.select_one("label[for=on_behalf_of_email]").text) == ("What’s their email address?")
     assert page.select_one("input[name=on_behalf_of_email]")["value"] == ""
 
 
@@ -271,14 +245,9 @@ def test_accept_agreement_page_populates(
         ),
     )
 
-    page = client_request.get(
-        "main.service_accept_agreement", service_id=SERVICE_ONE_ID
-    )
+    page = client_request.get("main.service_accept_agreement", service_id=SERVICE_ONE_ID)
 
-    assert [
-        (field["name"], field["value"])
-        for field in page.select("input[type=text], input[type=email]")
-    ] == [
+    assert [(field["name"], field["value"]) for field in page.select("input[type=text], input[type=email]")] == [
         ("on_behalf_of_name", "Firstname Lastname"),
         ("on_behalf_of_email", "test@example.com"),
         ("version", "1.2"),
@@ -361,9 +330,7 @@ def test_accept_agreement_page_validates(
         _data=data,
         _expected_status=200,
     )
-    assert [
-        error.text.strip() for error in page.select(".error-message")
-    ] == expected_errors
+    assert [error.text.strip() for error in page.select(".error-message")] == expected_errors
 
 
 @pytest.mark.parametrize(
@@ -473,9 +440,7 @@ def test_show_confirm_agreement_page(
             agreement_signed_on_behalf_of_email_address=email,
         ),
     )
-    page = client_request.get(
-        "main.service_confirm_agreement", service_id=SERVICE_ONE_ID
-    )
+    page = client_request.get("main.service_confirm_agreement", service_id=SERVICE_ONE_ID)
     assert normalize_spaces(page.select_one("main p").text) == expected_paragraph
 
 
@@ -542,9 +507,7 @@ def test_show_public_agreement_page(
     variant,
     expected_status,
 ):
-    mocker.patch(
-        "app.s3_client.s3_mou_client.get_s3_object", return_value=_MockS3Object()
-    )
+    mocker.patch("app.s3_client.s3_mou_client.get_s3_object", return_value=_MockS3Object())
     response = client.get(
         url_for(
             endpoint,

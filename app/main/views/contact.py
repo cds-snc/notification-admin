@@ -55,9 +55,7 @@ steps = [
 
 @main.route("/contact", methods=["GET", "POST"])
 def contact():
-    current_step = request.args.get(
-        "current_step", session.get(SESSION_FORM_STEP_KEY, DEFAULT_STEP)
-    )
+    current_step = request.args.get("current_step", session.get(SESSION_FORM_STEP_KEY, DEFAULT_STEP))
     try:
         form_obj = [f for f in steps if f["current_step"] == current_step][0]
     except IndexError:
@@ -78,11 +76,7 @@ def contact():
             if len(possibilities) == 1:
                 form_obj = possibilities[0]
             else:
-                form_obj = [
-                    e
-                    for e in possibilities
-                    if form.support_type.data in e["support_types"]
-                ][0]
+                form_obj = [e for e in possibilities if form.support_type.data in e["support_types"]][0]
         except IndexError:
             return redirect(url_for(".contact", current_step=DEFAULT_STEP))
         form = form_obj["form"](data=_form_data())
@@ -98,9 +92,7 @@ def contact():
         previous_step=form_obj["previous_step"],
         step_hint=form_obj.get("step"),
         total_steps_hint=form_obj.get("total_steps"),
-        **_labels(
-            form_obj["previous_step"], form_obj["current_step"], form.support_type.data
-        ),
+        **_labels(form_obj["previous_step"], form_obj["current_step"], form.support_type.data),
     )
 
 
@@ -160,13 +152,9 @@ def send_contact_request(form: SetUpDemoPrimaryPurpose):
     }
     data = {key: form.data[key] for key in of_interest if key in form.data}
     if current_user and current_user.is_authenticated:
-        data["user_profile"] = url_for(
-            ".user_information", user_id=current_user.id, _external=True
-        )
+        data["user_profile"] = url_for(".user_information", user_id=current_user.id, _external=True)
 
-    data["friendly_support_type"] = str(
-        dict(form.support_type.choices)[form.support_type.data]
-    )
+    data["friendly_support_type"] = str(dict(form.support_type.choices)[form.support_type.data])
     user_api_client.send_contact_request(data)
 
 

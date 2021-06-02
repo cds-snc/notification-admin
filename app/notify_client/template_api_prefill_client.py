@@ -17,9 +17,7 @@ class TemplateApiPrefillClient(NotifyAdminAPIClient):
 
     def get_template(self, template_id):
         try:
-            endpoint = "/service/{}/template/{}".format(
-                self.prefill_service_id, template_id
-            )
+            endpoint = "/service/{}/template/{}".format(self.prefill_service_id, template_id)
             result = self.get(url=endpoint)
             return result["data"]
         except HTTPError as e:

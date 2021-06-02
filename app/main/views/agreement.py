@@ -41,9 +41,7 @@ def service_accept_agreement(service_id):
             agreement_signed_on_behalf_of_name=form.on_behalf_of_name.data,
             agreement_signed_on_behalf_of_email_address=form.on_behalf_of_email.data,
         )
-        return redirect(
-            url_for("main.service_confirm_agreement", service_id=current_service.id)
-        )
+        return redirect(url_for("main.service_confirm_agreement", service_id=current_service.id))
 
     return render_template(
         "views/agreement/agreement-accept.html",
@@ -55,10 +53,7 @@ def service_accept_agreement(service_id):
 @user_has_permissions("manage_service")
 def service_confirm_agreement(service_id):
 
-    if (
-        not current_service.organisation
-        or current_service.organisation.agreement_signed_version is None
-    ):
+    if not current_service.organisation or current_service.organisation.agreement_signed_version is None:
         abort(403)
 
     if request.method == "POST":
@@ -67,9 +62,7 @@ def service_confirm_agreement(service_id):
             agreement_signed_at=str(datetime.utcnow()),
             agreement_signed_by_id=current_user.id,
         )
-        return redirect(
-            url_for("main.request_to_go_live", service_id=current_service.id)
-        )
+        return redirect(url_for("main.request_to_go_live", service_id=current_service.id))
 
     return render_template("views/agreement/agreement-confirm.html")
 

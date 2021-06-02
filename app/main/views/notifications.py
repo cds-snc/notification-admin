@@ -49,18 +49,14 @@ from app.utils import (
 @main.route("/services/<service_id>/notification/<uuid:notification_id>")
 @user_has_permissions("view_activity", "send_messages")
 def view_notification(service_id, notification_id):
-    notification = notification_api_client.get_notification(
-        service_id, str(notification_id)
-    )
+    notification = notification_api_client.get_notification(service_id, str(notification_id))
     notification["template"].update({"reply_to_text": notification["reply_to_text"]})
 
     personalisation = get_all_personalisation_from_notification(notification)
 
     if notification["template"]["is_precompiled_letter"]:
         try:
-            file_contents = view_letter_notification_as_preview(
-                service_id, notification_id, "pdf"
-            )
+            file_contents = view_letter_notification_as_preview(service_id, notification_id, "pdf")
             page_count = pdf_page_count(io.BytesIO(file_contents))
         except PdfReadError:
             return render_template(
@@ -68,9 +64,7 @@ def view_notification(service_id, notification_id):
                 created_at=notification["created_at"],
             )
     else:
-        page_count = get_page_count_for_letter(
-            notification["template"], values=personalisation
-        )
+        page_count = get_page_count_for_letter(notification["template"], values=personalisation)
 
     if notification.get("postage"):
         notification["template"]["postage"] = notification["postage"]
@@ -93,15 +87,11 @@ def view_notification(service_id, notification_id):
     else:
         job = None
 
-    letter_print_day = get_letter_printing_statement(
-        notification["status"], notification["created_at"]
-    )
+    letter_print_day = get_letter_printing_statement(notification["status"], notification["created_at"])
 
     notification_created = parser.parse(notification["created_at"]).replace(tzinfo=None)
 
-    show_cancel_button = notification[
-        "notification_type"
-    ] == "letter" and letter_can_be_cancelled(
+    show_cancel_button = notification["notification_type"] == "letter" and letter_can_be_cancelled(
         notification["status"], notification_created
     )
 
@@ -167,9 +157,7 @@ def view_notification(service_id, notification_id):
 def cancel_letter(service_id, notification_id):
 
     if request.method == "POST":
-        notification_api_client.update_notification_to_cancelled(
-            current_service.id, notification_id
-        )
+        notification_api_client.update_notification_to_cancelled(current_service.id, notification_id)
         return redirect(
             url_for(
                 "main.view_notification",
@@ -183,9 +171,7 @@ def cancel_letter(service_id, notification_id):
 
 
 def get_preview_error_image():
-    path = os.path.join(
-        os.path.dirname(__file__), "..", "..", "static", "images", "preview_error.png"
-    )
+    path = os.path.join(os.path.dirname(__file__), "..", "..", "static", "images", "preview_error.png")
     with open(path, "rb") as file:
         return file.read()
 
@@ -196,15 +182,11 @@ def view_letter_notification_as_preview(service_id, notification_id, filetype):
 
     if filetype not in ("pdf", "png"):
         abort(404)
-    notification = notification_api_client.get_notification(
-        service_id, str(notification_id)
-    )
+    notification = notification_api_client.get_notification(service_id, str(notification_id))
     try:
         if notification["status"] == "validation-failed":
-            preview = (
-                notification_api_client.get_notification_letter_preview_with_overlay(
-                    service_id, notification_id, filetype, page=request.args.get("page")
-                )
+            preview = notification_api_client.get_notification_letter_preview_with_overlay(
+                service_id, notification_id, filetype, page=request.args.get("page")
             )
         else:
             preview = notification_api_client.get_notification_letter_preview(
@@ -221,11 +203,7 @@ def view_letter_notification_as_preview(service_id, notification_id, filetype):
 @main.route("/services/<service_id>/notification/<notification_id>.json")
 @user_has_permissions("view_activity", "send_messages")
 def view_notification_updates(service_id, notification_id):
-    return jsonify(
-        **get_single_notification_partials(
-            notification_api_client.get_notification(service_id, notification_id)
-        )
-    )
+    return jsonify(**get_single_notification_partials(notification_api_client.get_notification(service_id, notification_id)))
 
 
 def get_single_notification_partials(notification):
@@ -244,9 +222,7 @@ def get_attachments(notification, sending_method):
     return {
         k: v["document"]
         for k, v in (notification.get("personalisation", {})).items()
-        if isinstance(v, dict)
-        and "document" in v
-        and v["document"].get("sending_method") == sending_method
+        if isinstance(v, dict) and "document" in v and v["document"].get("sending_method") == sending_method
     }
 
 
@@ -275,9 +251,7 @@ def download_notifications_csv(service_id):
     filter_args = parse_filter_args(request.args)
     filter_args["status"] = set_status_filters(filter_args)
 
-    service_data_retention_days = current_service.get_days_of_retention(
-        filter_args.get("message_type")[0]
-    )
+    service_data_retention_days = current_service.get_days_of_retention(filter_args.get("message_type")[0])
     return Response(
         stream_with_context(
             generate_notifications_csv(

@@ -11,8 +11,7 @@ class TemplatePreview:
             "letter_contact_block": template.get("reply_to_text", ""),
             "template": template,
             "values": values,
-            "filename": current_service.letter_branding
-            and current_service.letter_branding["filename"],
+            "filename": current_service.letter_branding and current_service.letter_branding["filename"],
         }
         resp = requests.post(
             "{}/preview.{}{}".format(
@@ -21,11 +20,7 @@ class TemplatePreview:
                 "?page={}".format(page) if page else "",
             ),
             json=data,
-            headers={
-                "Authorization": "Token {}".format(
-                    current_app.config["TEMPLATE_PREVIEW_API_KEY"]
-                )
-            },
+            headers={"Authorization": "Token {}".format(current_app.config["TEMPLATE_PREVIEW_API_KEY"])},
         )
         return (resp.content, resp.status_code, resp.headers.items())
 
@@ -40,11 +35,7 @@ class TemplatePreview:
         resp = requests.post(
             "{}/preview.png".format(current_app.config["TEMPLATE_PREVIEW_API_HOST"]),
             json=data,
-            headers={
-                "Authorization": "Token {}".format(
-                    current_app.config["TEMPLATE_PREVIEW_API_KEY"]
-                )
-            },
+            headers={"Authorization": "Token {}".format(current_app.config["TEMPLATE_PREVIEW_API_KEY"])},
         )
         return (resp.content, resp.status_code, resp.headers.items())
 
@@ -71,13 +62,7 @@ def get_page_count_for_letter(template, values=None):
 
 def validate_letter(pdf_file):
     return requests.post(
-        "{}/precompiled/validate?include_preview=true".format(
-            current_app.config["TEMPLATE_PREVIEW_API_HOST"]
-        ),
+        "{}/precompiled/validate?include_preview=true".format(current_app.config["TEMPLATE_PREVIEW_API_HOST"]),
         data=pdf_file,
-        headers={
-            "Authorization": "Token {}".format(
-                current_app.config["TEMPLATE_PREVIEW_API_KEY"]
-            )
-        },
+        headers={"Authorization": "Token {}".format(current_app.config["TEMPLATE_PREVIEW_API_KEY"])},
     )

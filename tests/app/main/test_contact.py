@@ -27,26 +27,18 @@ def test_identity_step_logged_in(client_request, mocker):
         _expected_status=200,
     )
 
-    assert set(input["name"] for input in page.select("input")) == set(
-        ["support_type", "csrf_token"]
-    )
+    assert set(input["name"] for input in page.select("input")) == set(["support_type", "csrf_token"])
 
     # Select a contact reason and submit the form
-    page = client_request.post(
-        ".contact", _expected_status=200, _data={"support_type": "other"}
-    )
+    page = client_request.post(".contact", _expected_status=200, _data={"support_type": "other"})
 
     # On step 2, to type a message
     assert_has_back_link(page)
-    assert page.select_one(".back-link")["href"] == url_for(
-        ".contact", current_step="identity"
-    )
+    assert page.select_one(".back-link")["href"] == url_for(".contact", current_step="identity")
     assert normalize_spaces(page.find("h1").text) == "Tell us more"
 
     # Message step
-    page = client_request.post(
-        ".contact", _expected_status=200, _data={"message": "My message"}
-    )
+    page = client_request.post(".contact", _expected_status=200, _data={"message": "My message"})
 
     # Contact email has been sent
     assert_no_back_link(page)
@@ -63,10 +55,7 @@ def test_identity_step_validates(client_request):
         _data={"name": "", "email_address": "foo", "support_type": ""},
     )
 
-    assert [
-        (error["data-error-label"], normalize_spaces(error.text))
-        for error in page.select(".error-message")
-    ] == [
+    assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
         ("name", "This cannot be empty"),
         ("email_address", "Enter a valid email address"),
         ("support_type", "You need to choose an option"),
@@ -87,21 +76,16 @@ def test_back_link_goes_to_previous_step(client_request):
         },
     )
 
-    assert page.select_one(".back-link")["href"] == url_for(
-        ".contact", current_step="identity"
-    )
+    assert page.select_one(".back-link")["href"] == url_for(".contact", current_step="identity")
 
-    page = client_request.get_url(
-        page.select_one(".back-link")["href"], _test_page_title=False
-    )
+    page = client_request.get_url(page.select_one(".back-link")["href"], _test_page_title=False)
 
     # Fields have been saved and are filled
     assert page.select_one("input[checked]")["value"] == "other"
-    assert [
-        (input["name"], input["value"])
-        for input in page.select("input")
-        if input["name"] in ["name", "email_address"]
-    ] == [("name", "John"), ("email_address", "john@example.com")]
+    assert [(input["name"], input["value"]) for input in page.select("input") if input["name"] in ["name", "email_address"]] == [
+        ("name", "John"),
+        ("email_address", "john@example.com"),
+    ]
 
 
 def test_invalid_step_name_redirects(client_request):
@@ -122,9 +106,7 @@ def test_invalid_step_name_redirects(client_request):
     )
 
 
-@pytest.mark.parametrize(
-    "support_type", ["ask_question", "technical_support", "give_feedback", "other"]
-)
+@pytest.mark.parametrize("support_type", ["ask_question", "technical_support", "give_feedback", "other"])
 def test_message_step_validates(client_request, support_type, mocker):
     mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
 
@@ -142,10 +124,9 @@ def test_message_step_validates(client_request, support_type, mocker):
 
     assert_has_back_link(page)
 
-    assert [
-        (error["data-error-label"], normalize_spaces(error.text))
-        for error in page.select(".error-message")
-    ] == [("message", "This field is required.")]
+    assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
+        ("message", "This field is required.")
+    ]
 
     mock_send_contact_request.assert_not_called()
 
@@ -173,11 +154,10 @@ def test_saves_form_to_session(client_request, mocker):
 
     # Fields have been saved and are filled
     assert page.select_one("input[checked]")["value"] == "other"
-    assert [
-        (input["name"], input["value"])
-        for input in page.select("input")
-        if input["name"] in ["name", "email_address"]
-    ] == [("name", ""), ("email_address", "john@example.com")]
+    assert [(input["name"], input["value"]) for input in page.select("input") if input["name"] in ["name", "email_address"]] == [
+        ("name", ""),
+        ("email_address", "john@example.com"),
+    ]
 
     # Validating first step
     client_request.post(
@@ -198,9 +178,7 @@ def test_saves_form_to_session(client_request, mocker):
     assert normalize_spaces(page.find("h1").text) == "Tell us more"
 
     # Filling a message
-    page = client_request.post(
-        ".contact", _expected_status=200, _data={"message": "My message"}
-    )
+    page = client_request.post(".contact", _expected_status=200, _data={"message": "My message"})
 
     assert_no_back_link(page)
     assert normalize_spaces(page.find("h1").text) == "Thanks for contacting us"
@@ -212,11 +190,10 @@ def test_saves_form_to_session(client_request, mocker):
 
     # Fields are blank
     assert page.select_one("input[checked]") is None
-    assert [
-        (input["name"], input["value"])
-        for input in page.select("input")
-        if input["name"] in ["name", "email_address"]
-    ] == [("name", ""), ("email_address", "")]
+    assert [(input["name"], input["value"]) for input in page.select("input") if input["name"] in ["name", "email_address"]] == [
+        ("name", ""),
+        ("email_address", ""),
+    ]
 
 
 @pytest.mark.parametrize(
@@ -252,9 +229,7 @@ def test_all_reasons_message_step_success(
     assert normalize_spaces(page.find("h1").text) == expected_heading
 
     message = "This is my message"
-    page = client_request.post(
-        ".contact", _expected_status=200, _data={"message": message}
-    )
+    page = client_request.post(".contact", _expected_status=200, _data={"message": message})
 
     assert_no_back_link(page)
     assert normalize_spaces(page.find("h1").text) == "Thanks for contacting us"
@@ -301,9 +276,7 @@ def test_demo_steps_success(client_request, mocker):
     assert_has_back_link(page)
     assert normalize_spaces(page.find("h1").text) == "Set up a demo"
     assert "Step 1 of 2" in page.text
-    page = submit_form(
-        ["department_org_name", "program_service_name", "intended_recipients"]
-    )
+    page = submit_form(["department_org_name", "program_service_name", "intended_recipients"])
 
     # Main use case step
     assert len(page.select(".back-link")) == 1
@@ -325,9 +298,7 @@ def test_demo_steps_success(client_request, mocker):
             "main_use_case_details": data["main_use_case_details"],
             "program_service_name": data["program_service_name"],
             "department_org_name": data["department_org_name"],
-            "user_profile": url_for(
-                ".user_information", user_id=current_user.id, _external=True
-            ),
+            "user_profile": url_for(".user_information", user_id=current_user.id, _external=True),
             "friendly_support_type": "Set up a demo to learn more about GC Notify",
         }
     )
@@ -397,9 +368,7 @@ def test_demo_steps_validation(
 
         # Making sure that the error is flagged
         if input_name in fields_group and has_error:
-            assert [
-                error["data-error-label"] for error in page.select(".error-message")
-            ] == [input_name]
+            assert [error["data-error-label"] for error in page.select(".error-message")] == [input_name]
             mock_send_contact_request.assert_not_called()
             return
         # Submitted only valid data, no errors

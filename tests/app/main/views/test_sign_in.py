@@ -29,10 +29,7 @@ def test_render_sign_in_template_for_new_user(client_request):
 def test_sign_in_explains_session_timeout(client):
     response = client.get(url_for("main.sign_in", next="/foo"))
     assert response.status_code == 200
-    assert (
-        "We signed you out because you haven’t used GC Notify for a while."
-        in response.get_data(as_text=True)
-    )
+    assert "We signed you out because you haven’t used GC Notify for a while." in response.get_data(as_text=True)
 
 
 def test_sign_in_explains_other_browser(logged_in_client, api_user_active, mocker):
@@ -44,9 +41,7 @@ def test_sign_in_explains_other_browser(logged_in_client, api_user_active, mocke
 
     response = logged_in_client.get(url_for("main.sign_in", next="/foo"))
 
-    assert_str = (
-        "We signed you out because you signed in to GC Notify on another device"
-    )
+    assert_str = "We signed you out because you signed in to GC Notify on another device"
 
     assert response.status_code == 200
     assert assert_str in response.get_data(as_text=True)
@@ -68,9 +63,7 @@ def test_doesnt_redirect_to_sign_in_if_no_session_info(
 @pytest.mark.parametrize(
     "db_sess_id, cookie_sess_id",
     [
-        pytest.param(
-            None, None, marks=pytest.mark.xfail
-        ),  # OK - not used notify since browser signout was implemented
+        pytest.param(None, None, marks=pytest.mark.xfail),  # OK - not used notify since browser signout was implemented
         (
             uuid.UUID(int=1),
             None,
@@ -91,9 +84,7 @@ def test_redirect_to_sign_in_if_logged_in_from_other_browser(
 
     response = logged_in_client.get(url_for("main.choose_account"))
     assert response.status_code == 302
-    assert response.location == url_for(
-        "main.sign_in", next="/accounts", _external=True
-    )
+    assert response.location == url_for("main.sign_in", next="/accounts", _external=True)
 
 
 def test_logged_in_user_redirects_to_account(client_request):
@@ -188,14 +179,10 @@ def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login(
         data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
     )
     assert response.status_code == 302
-    assert response.location == url_for(
-        ".two_factor_email_sent", requires_email_login=True, _external=True
-    )
+    assert response.location == url_for(".two_factor_email_sent", requires_email_login=True, _external=True)
 
     mock_get_security_keys.assert_called_with(api_user_active["id"])
-    mock_send_verify_code.assert_called_once_with(
-        api_user_active["id"], "email", None, None
-    )
+    mock_send_verify_code.assert_called_once_with(api_user_active["id"], "email", None, None)
     mock_verify_password.assert_called_with(
         api_user_active["id"],
         "val1dPassw0rd!",
@@ -215,12 +202,8 @@ def test_process_email_auth_sign_in_return_2fa_template(
     mock_register_email_login,
     mocker,
 ):
-    mocker.patch(
-        "app.user_api_client.get_user", return_value=api_user_active_email_auth
-    )
-    mocker.patch(
-        "app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth
-    )
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
 
     response = client.post(
         url_for("main.sign_in"),
@@ -229,9 +212,7 @@ def test_process_email_auth_sign_in_return_2fa_template(
     assert response.status_code == 302
     assert response.location == url_for(".two_factor_email_sent", _external=True)
     mock_register_email_login.assert_called_with(api_user_active_email_auth["id"])
-    mock_send_verify_code.assert_called_with(
-        api_user_active_email_auth["id"], "email", None, None
-    )
+    mock_send_verify_code.assert_called_with(api_user_active_email_auth["id"], "email", None, None)
     mock_verify_password.assert_called_with(
         api_user_active_email_auth["id"],
         "val1dPassw0rd!",
@@ -251,9 +232,7 @@ def test_should_return_locked_out_true_when_user_is_locked(
         },
     )
     assert resp.status_code == 200
-    assert "The email address or password you entered is incorrect" in resp.get_data(
-        as_text=True
-    )
+    assert "The email address or password you entered is incorrect" in resp.get_data(as_text=True)
 
 
 def test_should_return_200_when_user_does_not_exist(
@@ -265,10 +244,7 @@ def test_should_return_200_when_user_does_not_exist(
         data={"email_address": "notfound@canada.ca", "password": "doesNotExist!"},
     )
     assert response.status_code == 200
-    assert (
-        "The email address or password you entered is incorrect"
-        in response.get_data(as_text=True)
-    )
+    assert "The email address or password you entered is incorrect" in response.get_data(as_text=True)
 
 
 def test_should_return_redirect_when_user_is_pending(
@@ -302,9 +278,7 @@ def test_should_attempt_redirect_when_user_is_pending(
             "password": "val1dPassw0rd!",
         },
     )
-    assert response.location == url_for(
-        "main.resend_email_verification", _external=True
-    )
+    assert response.location == url_for("main.resend_email_verification", _external=True)
     assert response.status_code == 302
 
 
@@ -347,16 +321,10 @@ def test_sign_in_security_center_notification_for_non_NA_signins(
     mocker,
     monkeypatch,
 ):
-    monkeypatch.setitem(
-        current_app.config, "IP_GEOLOCATE_SERVICE", "https://example.com/"
-    )
+    monkeypatch.setitem(current_app.config, "IP_GEOLOCATE_SERVICE", "https://example.com/")
 
-    mocker.patch(
-        "app.user_api_client.get_user", return_value=api_user_active_email_auth
-    )
-    mocker.patch(
-        "app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth
-    )
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
 
     reporter = mocker.patch("app.main.views.sign_in.report_security_finding")
 
@@ -384,12 +352,8 @@ def test_sign_in_geolookup_disabled_in_dev(
 ):
     assert current_app.config["IP_GEOLOCATE_SERVICE"] == ""
 
-    mocker.patch(
-        "app.user_api_client.get_user", return_value=api_user_active_email_auth
-    )
-    mocker.patch(
-        "app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth
-    )
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
 
     geolookup_mock = mocker.patch("app.main.views.sign_in._geolocate_lookup")
 

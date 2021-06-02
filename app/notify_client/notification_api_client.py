@@ -42,13 +42,9 @@ class NotificationApiClient(NotifyAdminAPIClient):
         else:
             if limit_days is not None:
                 params["limit_days"] = limit_days
-            return self.get(
-                url="/service/{}/notifications".format(service_id), params=params
-            )
+            return self.get(url="/service/{}/notifications".format(service_id), params=params)
 
-    def send_notification(
-        self, service_id, *, template_id, recipient, personalisation, sender_id
-    ):
+    def send_notification(self, service_id, *, template_id, recipient, personalisation, sender_id):
         data = {
             "template_id": template_id,
             "to": recipient,
@@ -57,14 +53,10 @@ class NotificationApiClient(NotifyAdminAPIClient):
         if sender_id:
             data["sender_id"] = sender_id
         data = _attach_current_user(data)
-        return self.post(
-            url="/service/{}/send-notification".format(service_id), data=data
-        )
+        return self.post(url="/service/{}/send-notification".format(service_id), data=data)
 
     def get_notification(self, service_id, notification_id):
-        return self.get(
-            url="/service/{}/notifications/{}".format(service_id, notification_id)
-        )
+        return self.get(url="/service/{}/notifications/{}".format(service_id, notification_id))
 
     def get_api_notifications_for_service(self, service_id):
         ret = self.get_notifications_for_service(
@@ -87,9 +79,7 @@ class NotificationApiClient(NotifyAdminAPIClient):
                     notification["status"] = "received"
         return notifications
 
-    def get_notification_letter_preview(
-        self, service_id, notification_id, file_type, page=None
-    ):
+    def get_notification_letter_preview(self, service_id, notification_id, file_type, page=None):
 
         get_url = "/service/{}/template/preview/{}/{}{}".format(
             service_id,
@@ -100,9 +90,7 @@ class NotificationApiClient(NotifyAdminAPIClient):
 
         return self.get(url=get_url)
 
-    def get_notification_letter_preview_with_overlay(
-        self, service_id, notification_id, file_type, page=None
-    ):
+    def get_notification_letter_preview_with_overlay(self, service_id, notification_id, file_type, page=None):
         get_url = "/service/{}/template/preview/{}/{}{}{}".format(
             service_id,
             notification_id,
@@ -115,9 +103,7 @@ class NotificationApiClient(NotifyAdminAPIClient):
 
     def update_notification_to_cancelled(self, service_id, notification_id):
         return self.post(
-            url="/service/{}/notifications/{}/cancel".format(
-                service_id, notification_id
-            ),
+            url="/service/{}/notifications/{}/cancel".format(service_id, notification_id),
             data={},
         )
 

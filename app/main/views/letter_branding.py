@@ -58,9 +58,7 @@ def update_letter_branding(branding_id, logo=None):
     file_upload_form_submitted = file_upload_form.file.data
     details_form_submitted = request.form.get("operation") == "branding-details"
 
-    logo = (
-        logo if logo else permanent_letter_logo_name(letter_branding["filename"], "svg")
-    )
+    logo = logo if logo else permanent_letter_logo_name(letter_branding["filename"], "svg")
 
     if file_upload_form_submitted and file_upload_form.validate_on_submit():
         upload_filename = upload_letter_temp_logo(
@@ -73,11 +71,7 @@ def update_letter_branding(branding_id, logo=None):
         if logo.startswith(LETTER_TEMP_TAG.format(user_id=session["user_id"])):
             delete_letter_temp_file(logo)
 
-        return redirect(
-            url_for(
-                ".update_letter_branding", branding_id=branding_id, logo=upload_filename
-            )
-        )
+        return redirect(url_for(".update_letter_branding", branding_id=branding_id, logo=upload_filename))
 
     if details_form_submitted and letter_branding_details_form.validate_on_submit():
         db_filename = letter_filename_for_db(logo, session["user_id"])
@@ -117,9 +111,7 @@ def update_letter_branding(branding_id, logo=None):
                 filename=letter_branding["filename"],
                 name=letter_branding["name"],
             )
-            file_upload_form.file.errors = [
-                "Error saving uploaded file - try uploading again"
-            ]
+            file_upload_form.file.errors = ["Error saving uploaded file - try uploading again"]
 
     return render_template(
         "views/letter-branding/manage-letter-branding.html",
@@ -171,9 +163,7 @@ def create_letter_branding(logo=None):
 
             except HTTPError as e:
                 if "name" in e.message:
-                    letter_branding_details_form.name.errors.append(
-                        e.message["name"][0]
-                    )
+                    letter_branding_details_form.name.errors.append(e.message["name"][0])
                 else:
                     raise e
         else:
@@ -190,9 +180,7 @@ def create_letter_branding(logo=None):
 
 
 def get_png_file_from_svg(filename):
-    filename_for_template_preview = get_letter_filename_with_no_path_or_extension(
-        filename
-    )
+    filename_for_template_preview = get_letter_filename_with_no_path_or_extension(filename)
 
     template_preview_svg_endpoint = "{}/{}.svg.png".format(
         current_app.config["TEMPLATE_PREVIEW_API_HOST"], filename_for_template_preview
@@ -200,11 +188,7 @@ def get_png_file_from_svg(filename):
 
     response = requests_get(
         template_preview_svg_endpoint,
-        headers={
-            "Authorization": "Token {}".format(
-                current_app.config["TEMPLATE_PREVIEW_API_KEY"]
-            )
-        },
+        headers={"Authorization": "Token {}".format(current_app.config["TEMPLATE_PREVIEW_API_KEY"])},
     )
 
     return response.content

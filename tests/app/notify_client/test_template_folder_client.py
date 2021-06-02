@@ -17,16 +17,12 @@ def test_create_template_folder_calls_correct_api_endpoint(mocker, parent_id):
 
     client = TemplateFolderAPIClient()
 
-    mock_post = mocker.patch(
-        "app.notify_client.template_folder_api_client.TemplateFolderAPIClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.template_folder_api_client.TemplateFolderAPIClient.post")
 
     client.create_template_folder(some_service_id, name="foo", parent_id=parent_id)
 
     mock_post.assert_called_once_with(expected_url, data)
-    mock_redis_delete.assert_called_once_with(
-        "service-{}-template-folders".format(some_service_id)
-    )
+    mock_redis_delete.assert_called_once_with("service-{}-template-folders".format(some_service_id))
 
 
 def test_get_template_folders_calls_correct_api_endpoint(mocker):
@@ -68,9 +64,7 @@ def test_move_templates_and_folders(mocker):
     )
 
     mock_api_post.assert_called_once_with(
-        "/service/{}/template-folder/{}/contents".format(
-            some_service_id, some_folder_id
-        ),
+        "/service/{}/template-folder/{}/contents".format(some_service_id, some_folder_id),
         {
             "folders": ["1", "2", "3"],
             "templates": ["a", "b", "c"],
@@ -114,16 +108,12 @@ def test_update_template_folder_calls_correct_api_endpoint(mocker):
 
     some_service_id = uuid.uuid4()
     template_folder_id = uuid.uuid4()
-    expected_url = "/service/{}/template-folder/{}".format(
-        some_service_id, template_folder_id
-    )
+    expected_url = "/service/{}/template-folder/{}".format(some_service_id, template_folder_id)
     data = {"name": "foo", "users_with_permission": ["some_id"]}
 
     client = TemplateFolderAPIClient()
 
-    mock_post = mocker.patch(
-        "app.notify_client.template_folder_api_client.TemplateFolderAPIClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.template_folder_api_client.TemplateFolderAPIClient.post")
 
     client.update_template_folder(
         some_service_id,
@@ -133,9 +123,7 @@ def test_update_template_folder_calls_correct_api_endpoint(mocker):
     )
 
     mock_post.assert_called_once_with(expected_url, data)
-    mock_redis_delete.assert_called_once_with(
-        "service-{}-template-folders".format(some_service_id)
-    )
+    mock_redis_delete.assert_called_once_with("service-{}-template-folders".format(some_service_id))
 
 
 def test_delete_template_folder_calls_correct_api_endpoint(mocker):
@@ -143,19 +131,13 @@ def test_delete_template_folder_calls_correct_api_endpoint(mocker):
 
     some_service_id = uuid.uuid4()
     template_folder_id = uuid.uuid4()
-    expected_url = "/service/{}/template-folder/{}".format(
-        some_service_id, template_folder_id
-    )
+    expected_url = "/service/{}/template-folder/{}".format(some_service_id, template_folder_id)
 
     client = TemplateFolderAPIClient()
 
-    mock_delete = mocker.patch(
-        "app.notify_client.template_folder_api_client.TemplateFolderAPIClient.delete"
-    )
+    mock_delete = mocker.patch("app.notify_client.template_folder_api_client.TemplateFolderAPIClient.delete")
 
     client.delete_template_folder(some_service_id, template_folder_id)
 
     mock_delete.assert_called_once_with(expected_url, {})
-    mock_redis_delete.assert_called_once_with(
-        "service-{}-template-folders".format(some_service_id)
-    )
+    mock_redis_delete.assert_called_once_with("service-{}-template-folders".format(some_service_id))

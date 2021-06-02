@@ -24,10 +24,7 @@ def accept_invite(token):
         flash(_(str(exception)))
         return redirect(url_for("main.sign_in"))
 
-    if (
-        not current_user.is_anonymous
-        and current_user.email_address.lower() != invited_user.email_address.lower()
-    ):
+    if not current_user.is_anonymous and current_user.email_address.lower() != invited_user.email_address.lower():
         message = Markup(
             _(
                 "You’re signed in as %(email)s. This invite is for another email address. "
@@ -50,9 +47,7 @@ def accept_invite(token):
 
     if invited_user.status == "accepted":
         session.pop("invited_user", None)
-        return redirect(
-            url_for("main.service_dashboard", service_id=invited_user.service)
-        )
+        return redirect(url_for("main.service_dashboard", service_id=invited_user.service))
 
     session["invited_user"] = invited_user.serialize()
 
@@ -61,9 +56,7 @@ def accept_invite(token):
     if existing_user:
         invited_user.accept_invite()
         if existing_user in Users(invited_user.service):
-            return redirect(
-                url_for("main.service_dashboard", service_id=invited_user.service)
-            )
+            return redirect(url_for("main.service_dashboard", service_id=invited_user.service))
         else:
             service = Service.from_id(invited_user.service)
             # if the service you're being added to can modify auth type, then check if this is relevant
@@ -89,10 +82,7 @@ def accept_invite(token):
 @main.route("/organisation-invitation/<token>")
 def accept_org_invite(token):
     invited_org_user = InvitedOrgUser.from_token(token)
-    if (
-        not current_user.is_anonymous
-        and current_user.email_address.lower() != invited_org_user.email_address.lower()
-    ):
+    if not current_user.is_anonymous and current_user.email_address.lower() != invited_org_user.email_address.lower():
         message = Markup(
             _(
                 "You’re signed in as %(email)s. This invite is for another email address. "
@@ -115,9 +105,7 @@ def accept_org_invite(token):
 
     if invited_org_user.status == "accepted":
         session.pop("invited_org_user", None)
-        return redirect(
-            url_for("main.organisation_dashboard", org_id=invited_org_user.organisation)
-        )
+        return redirect(url_for("main.organisation_dashboard", org_id=invited_org_user.organisation))
 
     session["invited_org_user"] = invited_org_user.serialize()
 
@@ -127,11 +115,7 @@ def accept_org_invite(token):
     if existing_user:
         invited_org_user.accept_invite()
         if existing_user not in organisation_users:
-            existing_user.add_to_organisation(
-                organisation_id=invited_org_user.organisation
-            )
-        return redirect(
-            url_for("main.organisation_dashboard", org_id=invited_org_user.organisation)
-        )
+            existing_user.add_to_organisation(organisation_id=invited_org_user.organisation)
+        return redirect(url_for("main.organisation_dashboard", org_id=invited_org_user.organisation))
     else:
         return redirect(url_for("main.register_from_org_invite"))

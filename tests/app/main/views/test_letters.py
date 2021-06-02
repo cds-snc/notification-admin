@@ -21,9 +21,7 @@ def test_letters_access_restricted(
 ):
     service_one["permissions"] = permissions
 
-    mocker.patch(
-        "app.service_api_client.get_service", return_value={"data": service_one}
-    )
+    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
     response = platform_admin_client.get(url(service_id=service_one["id"]))
 
@@ -42,9 +40,7 @@ def test_letters_lets_in_without_permission(
     service_one,
 ):
     service_one["permissions"] = ["letter"]
-    mocker.patch(
-        "app.service_api_client.get_service", return_value={"data": service_one}
-    )
+    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
     client.login(api_user_active)
     response = client.get(url(service_id=service_one["id"]))

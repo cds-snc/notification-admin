@@ -37,10 +37,7 @@ def test_model_raises_for_unknown_attributes(json_response):
     with pytest.raises(AttributeError) as e:
         model.foo
 
-    assert str(e.value) == (
-        "'JSONModel' object has no attribute 'foo' and 'foo' is not a "
-        "field in the underlying JSON"
-    )
+    assert str(e.value) == ("'JSONModel' object has no attribute 'foo' and 'foo' is not a " "field in the underlying JSON")
 
 
 def test_model_raises_keyerror_if_item_missing_from_dict():

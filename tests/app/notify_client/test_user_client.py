@@ -58,16 +58,12 @@ def test_client_updates_password_separately(mocker, api_user_active):
     expected_url = "/user/{}/update-password".format(api_user_active["id"])
     expected_params = {"_password": "newpassword"}
     user_api_client.max_failed_login_count = 1  # doesn't matter for this test
-    mock_update_password = mocker.patch(
-        "app.notify_client.user_api_client.UserApiClient.post"
-    )
+    mock_update_password = mocker.patch("app.notify_client.user_api_client.UserApiClient.post")
 
     user_api_client.update_password(api_user_active["id"], expected_params["_password"])
     mock_update_password.assert_called_once_with(
         expected_url,
-        data={
-            "_password": "272dfee24acc4d6cc0f81a26d17a406cad1ee7579bcc1671c22f530b6d6845c3"
-        },
+        data={"_password": "272dfee24acc4d6cc0f81a26d17a406cad1ee7579bcc1671c22f530b6d6845c3"},
     )
 
 
@@ -77,9 +73,7 @@ def test_client_activates_if_pending(mocker, api_user_pending):
 
     user_api_client.activate_user(api_user_pending["id"])
 
-    mock_post.assert_called_once_with(
-        "/user/{}/activate".format(api_user_pending["id"]), data=None
-    )
+    mock_post.assert_called_once_with("/user/{}/activate".format(api_user_pending["id"]), data=None)
 
 
 def test_client_passes_admin_url_when_sending_email_auth(
@@ -103,13 +97,9 @@ def test_client_passes_admin_url_when_sending_email_auth(
 def test_client_converts_admin_permissions_to_db_permissions_on_edit(app_, mocker):
     mock_post = mocker.patch("app.notify_client.user_api_client.UserApiClient.post")
 
-    user_api_client.set_user_permissions(
-        "user_id", "service_id", permissions={"send_messages", "view_activity"}
-    )
+    user_api_client.set_user_permissions("user_id", "service_id", permissions={"send_messages", "view_activity"})
 
-    assert sorted(
-        mock_post.call_args[1]["data"]["permissions"], key=lambda x: x["permission"]
-    ) == sorted(
+    assert sorted(mock_post.call_args[1]["data"]["permissions"], key=lambda x: x["permission"]) == sorted(
         [
             {"permission": "send_texts"},
             {"permission": "send_emails"},
@@ -120,9 +110,7 @@ def test_client_converts_admin_permissions_to_db_permissions_on_edit(app_, mocke
     )
 
 
-def test_client_converts_admin_permissions_to_db_permissions_on_add_to_service(
-    app_, mocker
-):
+def test_client_converts_admin_permissions_to_db_permissions_on_add_to_service(app_, mocker):
     mock_post = mocker.patch(
         "app.notify_client.user_api_client.UserApiClient.post",
         return_value={"data": {}},
@@ -135,9 +123,7 @@ def test_client_converts_admin_permissions_to_db_permissions_on_add_to_service(
         folder_permissions=[],
     )
 
-    assert sorted(
-        mock_post.call_args[1]["data"]["permissions"], key=lambda x: x["permission"]
-    ) == sorted(
+    assert sorted(mock_post.call_args[1]["data"]["permissions"], key=lambda x: x["permission"]) == sorted(
         [
             {"permission": "send_texts"},
             {"permission": "send_emails"},
@@ -149,13 +135,7 @@ def test_client_converts_admin_permissions_to_db_permissions_on_add_to_service(
 
 
 @pytest.mark.parametrize(
-    (
-        "expected_cache_get_calls,"
-        "cache_value,"
-        "expected_api_calls,"
-        "expected_cache_set_calls,"
-        "expected_return_value,"
-    ),
+    ("expected_cache_get_calls," "cache_value," "expected_api_calls," "expected_cache_set_calls," "expected_return_value,"),
     [
         (
             [call("user-{}".format(user_id))],
@@ -244,9 +224,7 @@ def test_deletes_user_cache(
 ):
     mocker.patch("app.notify_client.current_user", id="1")
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
-    mock_request = mocker.patch(
-        "notifications_python_client.base.BaseAPIClient.request"
-    )
+    mock_request = mocker.patch("notifications_python_client.base.BaseAPIClient.request")
 
     getattr(client, method)(*extra_args, **extra_kwargs)
 

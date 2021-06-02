@@ -47,9 +47,7 @@ def index():
         admin_base_url=current_app.config["ADMIN_BASE_URL"],
         stats=get_latest_stats(get_current_locale(current_app)),
         csv_max_rows=current_app.config["CSV_MAX_ROWS"],
-        default_free_sms_fragment_limits_central=current_app.config[
-            "DEFAULT_FREE_SMS_FRAGMENT_LIMITS"
-        ]["central"],
+        default_free_sms_fragment_limits_central=current_app.config["DEFAULT_FREE_SMS_FRAGMENT_LIMITS"]["central"],
     )
 
 
@@ -101,10 +99,7 @@ def pricing():
         "views/pricing/index.html",
         sms_rate=0.0158,
         international_sms_rates=sorted(
-            [
-                (cc, country["names"], country["billable_units"])
-                for cc, country in INTERNATIONAL_BILLING_RATES.items()
-            ],
+            [(cc, country["names"], country["billable_units"]) for cc, country in INTERNATIONAL_BILLING_RATES.items()],
             key=lambda x: x[0],
         ),
         search_form=SearchByNameForm(),
@@ -130,9 +125,7 @@ def email_template():
         branding_style = None
 
     if branding_style is not None:
-        email_branding = email_branding_client.get_email_branding(branding_style)[
-            "email_branding"
-        ]
+        email_branding = email_branding_client.get_email_branding(branding_style)["email_branding"]
         branding_type = email_branding["brand_type"]
 
     if branding_type == "fip_english":
@@ -155,16 +148,10 @@ def email_template():
         colour = email_branding["colour"]
         brand_text = email_branding["text"]
         brand_colour = colour
-        brand_logo = (
-            "https://{}/{}".format(get_logo_cdn_domain(), email_branding["logo"])
-            if email_branding["logo"]
-            else None
-        )
+        brand_logo = "https://{}/{}".format(get_logo_cdn_domain(), email_branding["logo"]) if email_branding["logo"] else None
         fip_banner_english = branding_type in ["fip_english", "both_english"]
         fip_banner_french = branding_type in ["fip_french", "both_french"]
-        logo_with_background_colour = (
-            branding_type == "custom_logo_with_background_colour"
-        )
+        logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
         brand_name = email_branding["name"]
 
     template = {
@@ -239,9 +226,7 @@ def letter_template():
         branding_style = None
 
     if branding_style:
-        filename = letter_branding_client.get_letter_branding(branding_style)[
-            "filename"
-        ]
+        filename = letter_branding_client.get_letter_branding(branding_style)["filename"]
     else:
         filename = "no-branding"
 
@@ -256,11 +241,7 @@ def letter_template():
         )
     )
 
-    resp = make_response(
-        render_template(
-            "views/service-settings/letter-preview.html", template=template_image
-        )
-    )
+    resp = make_response(render_template("views/service-settings/letter-preview.html", template=template_image))
 
     resp.headers["X-Frame-Options"] = "SAMEORIGIN"
     return resp
@@ -286,9 +267,7 @@ def features():
 
 @main.route("/why-notify", endpoint="why-notify")
 def why_notify():
-    rate_sms = current_app.config.get("DEFAULT_FREE_SMS_FRAGMENT_LIMITS", {}).get(
-        "central", 10000
-    )
+    rate_sms = current_app.config.get("DEFAULT_FREE_SMS_FRAGMENT_LIMITS", {}).get("central", 10000)
     return render_template("views/why-notify.html", rate_sms=rate_sms)
 
 
@@ -319,23 +298,17 @@ def features_templates():
 
 @main.route("/security", endpoint="security")
 def security():
-    return render_template(
-        "views/security.html", security_email=current_app.config["SECURITY_EMAIL"]
-    )
+    return render_template("views/security.html", security_email=current_app.config["SECURITY_EMAIL"])
 
 
 @main.route("/welcome", endpoint="welcome")
 def welcome():
-    return render_template(
-        "views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"]
-    )
+    return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"])
 
 
 @main.route("/activity", endpoint="activity")
 def activity():
-    return render_template(
-        "views/activity.html", **get_latest_stats(get_current_locale(current_app))
-    )
+    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app)))
 
 
 @main.route("/activity/download", endpoint="activity_download")
@@ -365,9 +338,7 @@ def terms():
 
 @main.route("/messages-status", endpoint="messages_status")
 def messages_status():
-    return render_template(
-        "views/messages-status.html", navigation_links=features_nav()
-    )
+    return render_template("views/messages-status.html", navigation_links=features_nav())
 
 
 # --- Redirects --- #

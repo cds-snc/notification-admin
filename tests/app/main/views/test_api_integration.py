@@ -73,10 +73,7 @@ def test_should_show_api_page_with_no_notifications(
         service_id=SERVICE_ONE_ID,
     )
     rows = page.find_all("div", {"class": "api-notifications-item"})
-    assert (
-        "When you send messages via the API they’ll appear here."
-        in rows[len(rows) - 1].text.strip()
-    )
+    assert "When you send messages via the API they’ll appear here." in rows[len(rows) - 1].text.strip()
 
 
 @pytest.mark.parametrize(
@@ -211,10 +208,7 @@ def test_should_show_api_keys_page(
         (
             mock_get_service,
             [
-                (
-                    "Live – sends to anyone "
-                    "Not available because your service is in trial mode."
-                ),
+                ("Live – sends to anyone " "Not available because your service is in trial mode."),
                 "Team and safelist – limits who you can send to",
                 "Test – pretends to send messages",
             ],
@@ -299,9 +293,7 @@ def test_cant_create_normal_api_key_in_trial_mode(
     fake_uuid,
     mocker,
 ):
-    mock_post = mocker.patch(
-        "app.notify_client.api_key_api_client.ApiKeyApiClient.post"
-    )
+    mock_post = mocker.patch("app.notify_client.api_key_api_client.ApiKeyApiClient.post")
 
     client_request.post(
         "main.create_api_key",
@@ -389,17 +381,13 @@ def test_should_redirect_after_revoking_api_key(
             _external=True,
         ),
     )
-    mock_revoke_api_key.assert_called_once_with(
-        service_id=SERVICE_ONE_ID, key_id=fake_uuid
-    )
+    mock_revoke_api_key.assert_called_once_with(service_id=SERVICE_ONE_ID, key_id=fake_uuid)
     mock_get_api_keys.assert_called_once_with(
         SERVICE_ONE_ID,
     )
 
 
-@pytest.mark.parametrize(
-    "route", ["main.api_keys", "main.create_api_key", "main.revoke_api_key"]
-)
+@pytest.mark.parametrize("route", ["main.api_keys", "main.create_api_key", "main.revoke_api_key"])
 def test_route_permissions(
     mocker,
     app_,
@@ -423,9 +411,7 @@ def test_route_permissions(
         )
 
 
-@pytest.mark.parametrize(
-    "route", ["main.api_keys", "main.create_api_key", "main.revoke_api_key"]
-)
+@pytest.mark.parametrize("route", ["main.api_keys", "main.create_api_key", "main.revoke_api_key"])
 def test_route_invalid_permissions(
     mocker,
     app_,
@@ -461,9 +447,7 @@ def test_should_show_safelist_page(
         service_id=SERVICE_ONE_ID,
     )
     textboxes = page.find_all("input", {"type": "text"})
-    for index, value in enumerate(
-        ["test@example.com"] + [""] * 4 + ["6502532222"] + [""] * 4
-    ):
+    for index, value in enumerate(["test@example.com"] + [""] * 4 + ["6502532222"] + [""] * 4):
         assert textboxes[index]["value"] == value
 
 
@@ -551,9 +535,7 @@ def test_callback_forms_validation(
         "bearer_token": bearer_token,
     }
 
-    response = client_request.post(
-        endpoint, service_id=service_one["id"], _data=data, _expected_status=200
-    )
+    response = client_request.post(endpoint, service_id=service_one["id"], _data=data, _expected_status=200)
     error_msgs = " ".join(msg.text.strip() for msg in response.select(".error-message"))
 
     assert error_msgs == expected_errors
@@ -631,9 +613,7 @@ def test_callback_forms_can_be_cleared(
     assert not page.select(".error-message")
 
     if delete_should_be_called:
-        mocked_delete.assert_called_once_with(
-            expected_delete_url.format(service_one["id"], callback_ids[0])
-        )
+        mocked_delete.assert_called_once_with(expected_delete_url.format(service_one["id"], callback_ids[0]))
     else:
         assert mocked_delete.call_args_list == []
 
@@ -661,9 +641,7 @@ def test_callbacks_button_links_straight_to_delivery_status_if_service_has_no_in
         service_id=service_one["id"],
     )
 
-    assert page.select(".api-header-links")[2]["href"] == url_for(
-        expected_link, service_id=service_one["id"]
-    )
+    assert page.select(".api-header-links")[2]["href"] == url_for(expected_link, service_id=service_one["id"])
 
 
 def test_callbacks_page_redirects_to_delivery_status_if_service_has_no_inbound_sms(
@@ -678,10 +656,7 @@ def test_callbacks_page_redirects_to_delivery_status_if_service_has_no_inbound_s
         _follow_redirects=True,
     )
 
-    assert (
-        normalize_spaces(page.select_one("h1").text)
-        == "Callbacks for delivery receipts"
-    )
+    assert normalize_spaces(page.select_one("h1").text) == "Callbacks for delivery receipts"
 
 
 @pytest.mark.parametrize(
@@ -703,9 +678,7 @@ def test_back_link_directs_to_api_integration_from_delivery_callback_if_no_inbou
         _follow_redirects=True,
     )
 
-    assert page.select_one(".back-link")["href"] == url_for(
-        expected_link, service_id=service_one["id"]
-    )
+    assert page.select_one(".back-link")["href"] == url_for(expected_link, service_id=service_one["id"])
 
 
 @pytest.mark.parametrize(
@@ -898,16 +871,10 @@ def test_callbacks_page_works_when_no_apis_set(
     service_one["inbound_api"] = inbound_api
     service_one["service_callback_api"] = service_callback_api
 
-    mocker.patch(
-        "app.service_api_client.get_service_callback_api", return_value=delivery_url
-    )
-    mocker.patch(
-        "app.service_api_client.get_service_inbound_api", return_value=inbound_url
-    )
+    mocker.patch("app.service_api_client.get_service_callback_api", return_value=delivery_url)
+    mocker.patch("app.service_api_client.get_service_inbound_api", return_value=inbound_url)
 
-    page = client_request.get(
-        "main.api_callbacks", service_id=service_one["id"], _follow_redirects=True
-    )
+    page = client_request.get("main.api_callbacks", service_id=service_one["id"], _follow_redirects=True)
     expected_rows = [
         expected_1st_table_row,
         expected_2nd_table_row,

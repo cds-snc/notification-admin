@@ -21,9 +21,7 @@ class BillingAPIClient(NotifyAdminAPIClient):
         )
         return result["free_sms_fragment_limit"]
 
-    def create_or_update_free_sms_fragment_limit(
-        self, service_id, free_sms_fragment_limit, year=None
-    ):
+    def create_or_update_free_sms_fragment_limit(self, service_id, free_sms_fragment_limit, year=None):
         # year = None will update current and future year in the API
         data = {
             "financial_year_start": year,

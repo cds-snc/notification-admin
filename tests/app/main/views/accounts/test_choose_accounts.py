@@ -91,52 +91,32 @@ def test_choose_account_should_show_choose_accounts_page(
 
     # first org
     assert outer_list_items[0].a.text == "Org 1"
-    assert outer_list_items[0].a["href"] == url_for(
-        ".organisation_dashboard", org_id="o1"
-    )
-    assert normalize_spaces(
-        outer_list_items[0].select_one(".browse-list-hint").text
-    ) == ("1 live service")
+    assert outer_list_items[0].a["href"] == url_for(".organisation_dashboard", org_id="o1")
+    assert normalize_spaces(outer_list_items[0].select_one(".browse-list-hint").text) == ("1 live service")
 
     # second org
     assert outer_list_items[1].a.text == "Org 2"
-    assert outer_list_items[1].a["href"] == url_for(
-        ".organisation_dashboard", org_id="o2"
-    )
-    assert normalize_spaces(
-        outer_list_items[1].select_one(".browse-list-hint").text
-    ) == ("2 live services")
+    assert outer_list_items[1].a["href"] == url_for(".organisation_dashboard", org_id="o2")
+    assert normalize_spaces(outer_list_items[1].select_one(".browse-list-hint").text) == ("2 live services")
 
     # third org
     assert outer_list_items[2].a.text == "Org 3"
-    assert outer_list_items[2].a["href"] == url_for(
-        ".organisation_dashboard", org_id="o3"
-    )
-    assert normalize_spaces(
-        outer_list_items[2].select_one(".browse-list-hint").text
-    ) == ("0 live services")
+    assert outer_list_items[2].a["href"] == url_for(".organisation_dashboard", org_id="o3")
+    assert normalize_spaces(outer_list_items[2].select_one(".browse-list-hint").text) == ("0 live services")
 
     # orphaned live services
     assert outer_list_items[3].a.text == "Service 1"
-    assert outer_list_items[3].a["href"] == url_for(
-        ".service_dashboard", service_id=SERVICE_TWO_ID
-    )
+    assert outer_list_items[3].a["href"] == url_for(".service_dashboard", service_id=SERVICE_TWO_ID)
     assert outer_list_items[4].a.text == "service one"
-    assert outer_list_items[4].a["href"] == url_for(
-        ".service_dashboard", service_id="12345"
-    )
+    assert outer_list_items[4].a["href"] == url_for(".service_dashboard", service_id="12345")
 
     # orphaned trial services
     trial_services_list_items = page.select("nav ul")[1].select("li")
     assert len(trial_services_list_items) == 3
     assert trial_services_list_items[0].a.text == "service three"
-    assert trial_services_list_items[0].a["href"] == url_for(
-        ".service_dashboard", service_id="abcde"
-    )
+    assert trial_services_list_items[0].a["href"] == url_for(".service_dashboard", service_id="abcde")
     assert trial_services_list_items[1].a.text == "service three"
-    assert trial_services_list_items[1].a["href"] == url_for(
-        ".service_dashboard", service_id="abcde"
-    )
+    assert trial_services_list_items[1].a["href"] == url_for(".service_dashboard", service_id="abcde")
 
     assert mock_get_organisation.call_args_list == []
 

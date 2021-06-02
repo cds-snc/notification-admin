@@ -31,9 +31,7 @@ def test_client_creates_invite(
         },
     )
 
-    invite_api_client.create_invite(
-        "12345", "67890", "test@example.com", {"send_messages"}, "sms_auth", [fake_uuid]
-    )
+    invite_api_client.create_invite("12345", "67890", "test@example.com", {"send_messages"}, "sms_auth", [fake_uuid])
 
     mock_post.assert_called_once_with(
         url="/service/{}/invite".format("67890"),

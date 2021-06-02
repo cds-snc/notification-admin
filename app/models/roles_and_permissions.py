@@ -12,9 +12,7 @@ roles = {
 
 # same dict as above, but flipped round
 roles_by_permission = {
-    permission: next(
-        role for role, permissions in roles.items() if permission in permissions
-    )
+    permission: next(role for role, permissions in roles.items() if permission in permissions)
     for permission in chain(*list(roles.values()))
 }
 
@@ -35,9 +33,7 @@ def translate_permissions_from_db_to_admin_roles(permissions):
 
     look them up in roles_by_permission, falling back to just passing through from the api if they aren't in the dict
     """
-    return {
-        roles_by_permission.get(permission, permission) for permission in permissions
-    }
+    return {roles_by_permission.get(permission, permission) for permission in permissions}
 
 
 def translate_permissions_from_admin_roles_to_db(permissions):
@@ -46,8 +42,4 @@ def translate_permissions_from_admin_roles_to_db(permissions):
 
     Looks them up in the roles dict, falling back to just passing through if they're not recognised.
     """
-    return set(
-        chain.from_iterable(
-            roles.get(permission, [permission]) for permission in permissions
-        )
-    )
+    return set(chain.from_iterable(roles.get(permission, [permission]) for permission in permissions))

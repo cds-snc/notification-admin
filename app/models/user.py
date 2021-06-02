@@ -74,9 +74,7 @@ class User(JSONModel, UserMixin):
         return bool(User.from_email_address_or_none(email_address))
 
     @classmethod
-    def from_email_address_and_password_or_none(
-        cls, email_address, password, login_data={}
-    ):
+    def from_email_address_and_password_or_none(cls, email_address, password, login_data={}):
         user = cls.from_email_address_or_none(email_address)
         if not user:
             return None
@@ -128,10 +126,7 @@ class User(JSONModel, UserMixin):
 
     def logged_in_elsewhere(self):
         # if the current user (ie: db object) has no session, they've never logged in before
-        return (
-            self.current_session_id is not None
-            and session.get("current_session_id") != self.current_session_id
-        )
+        return self.current_session_id is not None and session.get("current_session_id") != self.current_session_id
 
     def activate(self):
         if self.state == "pending":
@@ -152,9 +147,7 @@ class User(JSONModel, UserMixin):
             return False
 
         if self.email_auth and len(self.security_keys) == 0:
-            user_api_client.send_verify_code(
-                self.id, "email", None, request.args.get("next")
-            )
+            user_api_client.send_verify_code(self.id, "email", None, request.args.get("next"))
             user_api_client.register_last_email_login_datetime(self.id)
             return True
         if self.sms_auth and len(self.security_keys) == 0:
@@ -195,18 +188,12 @@ class User(JSONModel, UserMixin):
 
     @property
     def platform_admin(self):
-        return self._platform_admin and not session.get(
-            "disable_platform_admin_view", False
-        )
+        return self._platform_admin and not session.get("disable_platform_admin_view", False)
 
-    def has_permissions(
-        self, *permissions, restrict_admin_usage=False, allow_org_user=False
-    ):
+    def has_permissions(self, *permissions, restrict_admin_usage=False, allow_org_user=False):
         unknown_permissions = set(permissions) - all_permissions
         if unknown_permissions:
-            raise TypeError(
-                "{} are not valid permissions".format(list(unknown_permissions))
-            )
+            raise TypeError("{} are not valid permissions".format(list(unknown_permissions)))
 
         # Service id is always set on the request for service specific views.
         service_id = _get_service_id_from_view_args()
@@ -227,17 +214,12 @@ class User(JSONModel, UserMixin):
         if not permissions and self.belongs_to_service(service_id):
             return True
 
-        if any(
-            self.has_permission_for_service(service_id, permission)
-            for permission in permissions
-        ):
+        if any(self.has_permission_for_service(service_id, permission) for permission in permissions):
             return True
 
         from app.models.service import Service
 
-        return allow_org_user and self.belongs_to_organisation(
-            Service.from_id(service_id).organisation_id
-        )
+        return allow_org_user and self.belongs_to_organisation(Service.from_id(service_id).organisation_id)
 
     def has_permission_for_service(self, service_id, permission):
         return permission in self._permissions.get(service_id, [])
@@ -300,25 +282,15 @@ class User(JSONModel, UserMixin):
     def services(self):
         from app.models.service import Service
 
-        return self.sort_services(
-            [Service(service) for service in self.orgs_and_services["services"]]
-        )
+        return self.sort_services([Service(service) for service in self.orgs_and_services["services"]])
 
     @property
     def services_with_organisation(self):
-        return [
-            service
-            for service in self.services
-            if self.belongs_to_organisation(service.organisation_id)
-        ]
+        return [service for service in self.services if self.belongs_to_organisation(service.organisation_id)]
 
     @property
     def services_without_organisations(self):
-        return [
-            service
-            for service in self.services
-            if not self.belongs_to_organisation(service.organisation_id)
-        ]
+        return [service for service in self.services if not self.belongs_to_organisation(service.organisation_id)]
 
     @property
     def service_ids(self):
@@ -334,16 +306,11 @@ class User(JSONModel, UserMixin):
 
     @property
     def live_services_not_belonging_to_users_organisations(self):
-        return self.sort_services(
-            set(self.live_services).union(self.services_without_organisations)
-        )
+        return self.sort_services(set(self.live_services).union(self.services_without_organisations))
 
     @property
     def organisations(self):
-        return [
-            Organisation(organisation)
-            for organisation in self.orgs_and_services["organisations"]
-        ]
+        return [Organisation(organisation) for organisation in self.orgs_and_services["organisations"]]
 
     @property
     def organisation_ids(self):
@@ -422,14 +389,10 @@ class User(JSONModel, UserMixin):
         user_api_client.send_already_registered_email(self.id, self.email_address)
 
     def send_branding_request(self, serviceID, service_name, filename):
-        user_api_client.send_branding_request(
-            self.id, serviceID, service_name, filename
-        )
+        user_api_client.send_branding_request(self.id, serviceID, service_name, filename)
 
     def refresh_session_id(self):
-        self.current_session_id = user_api_client.get_user(self.id).get(
-            "current_session_id"
-        )
+        self.current_session_id = user_api_client.get_user(self.id).get("current_session_id")
         session["current_session_id"] = self.current_session_id
 
     def add_to_service(self, service_id, permissions, folder_permissions):
@@ -499,9 +462,7 @@ class InvitedUser(JSONModel):
             self._permissions = permissions
         else:
             self._permissions = permissions.split(",")
-        self._permissions = translate_permissions_from_db_to_admin_roles(
-            self.permissions
-        )
+        self._permissions = translate_permissions_from_db_to_admin_roles(self.permissions)
 
     @property
     def from_user(self):
@@ -536,14 +497,7 @@ class InvitedUser(JSONModel):
         return self.service == service_id and permission in self.permissions
 
     def __eq__(self, other):
-        return (
-            self.id,
-            self.service,
-            self._from_user,
-            self.email_address,
-            self.auth_type,
-            self.status,
-        ) == (
+        return (self.id, self.service, self._from_user, self.email_address, self.auth_type, self.status,) == (
             other.id,
             other.service,
             other._from_user,
@@ -589,13 +543,7 @@ class InvitedOrgUser(JSONModel):
         self._invited_by = _dict["invited_by"]
 
     def __eq__(self, other):
-        return (
-            self.id,
-            self.organisation,
-            self._invited_by,
-            self.email_address,
-            self.status,
-        ) == (
+        return (self.id, self.organisation, self._invited_by, self.email_address, self.status,) == (
             other.id,
             other.organisation,
             other._invited_by,
@@ -605,9 +553,7 @@ class InvitedOrgUser(JSONModel):
 
     @classmethod
     def create(cls, invite_from_id, org_id, email_address):
-        return cls(
-            org_invite_api_client.create_invite(invite_from_id, org_id, email_address)
-        )
+        return cls(org_invite_api_client.create_invite(invite_from_id, org_id, email_address))
 
     @classmethod
     def from_session(cls):
@@ -675,9 +621,7 @@ class InvitedUsers(Users):
     model = InvitedUser
 
     def __init__(self, service_id):
-        self.items = [
-            user for user in self.client(service_id) if user["status"] != "accepted"
-        ]
+        self.items = [user for user in self.client(service_id) if user["status"] != "accepted"]
 
 
 class OrganisationInvitedUsers(InvitedUsers):

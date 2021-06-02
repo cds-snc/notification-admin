@@ -85,9 +85,7 @@ def template_history(service_id):
 def template_usage(service_id):
 
     year, current_financial_year = requested_and_current_financial_year(request)
-    stats = template_statistics_client.get_monthly_template_usage_for_service(
-        service_id, year
-    )
+    stats = template_statistics_client.get_monthly_template_usage_for_service(service_id, year)
 
     stats = sorted(stats, key=lambda x: (x["count"]), reverse=True)
 
@@ -106,10 +104,7 @@ def template_usage(service_id):
             ],
         }
 
-    months = [
-        get_monthly_template_stats(month, stats)
-        for month in get_months_for_financial_year(year, time_format="%B")
-    ]
+    months = [get_monthly_template_stats(month, stats) for month in get_months_for_financial_year(year, time_format="%B")]
 
     return render_template(
         "views/dashboard/all-template-statistics.html",
@@ -147,9 +142,7 @@ def monthly(service_id):
     year, current_financial_year = requested_and_current_financial_year(request)
     return render_template(
         "views/dashboard/monthly.html",
-        months=format_monthly_stats_to_list(
-            service_api_client.get_monthly_notification_stats(service_id, year)["data"]
-        ),
+        months=format_monthly_stats_to_list(service_api_client.get_monthly_notification_stats(service_id, year)["data"]),
         years=get_tuples_of_financial_years(
             partial_url=partial(url_for, ".monthly", service_id=service_id),
             start=current_financial_year - 2,
@@ -202,18 +195,13 @@ def aggregate_notifications_stats(template_statistics):
 
 
 def get_dashboard_partials(service_id):
-    all_statistics = template_statistics_client.get_template_statistics_for_service(
-        service_id, limit_days=7
-    )
+    all_statistics = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=7)
     template_statistics = aggregate_template_usage(all_statistics)
 
     scheduled_jobs, immediate_jobs = [], []
     if job_api_client.has_jobs(service_id):
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
-        immediate_jobs = [
-            add_rate_to_job(job)
-            for job in job_api_client.get_immediate_jobs(service_id)
-        ]
+        immediate_jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id)]
 
     stats = aggregate_notifications_stats(all_statistics)
     column_width, max_notifiction_count = get_column_properties(
@@ -221,14 +209,11 @@ def get_dashboard_partials(service_id):
     )
     dashboard_totals = (get_dashboard_totals(stats),)
     highest_notification_count = max(
-        sum(value[key] for key in {"requested", "failed", "delivered"})
-        for key, value in dashboard_totals[0].items()
+        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals[0].items()
     )
 
     return {
-        "upcoming": render_template(
-            "views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs
-        ),
+        "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
         "totals": render_template(
             "views/dashboard/_totals.html",
             service_id=service_id,
@@ -239,9 +224,7 @@ def get_dashboard_partials(service_id):
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",
             template_statistics=template_statistics,
-            most_used_template_count=max(
-                [row["count"] for row in template_statistics] or [0]
-            ),
+            most_used_template_count=max([row["count"] for row in template_statistics] or [0]),
         ),
         "has_template_statistics": bool(template_statistics),
         "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
@@ -251,28 +234,20 @@ def get_dashboard_partials(service_id):
 
 def get_dashboard_totals(statistics):
     for msg_type in statistics.values():
-        msg_type["failed_percentage"] = get_formatted_percentage(
-            msg_type["failed"], msg_type["requested"]
-        )
+        msg_type["failed_percentage"] = get_formatted_percentage(msg_type["failed"], msg_type["requested"])
         msg_type["show_warning"] = float(msg_type["failed_percentage"]) > 3
     return statistics
 
 
 def calculate_usage(usage, free_sms_fragment_limit):
-    sms_breakdowns = [
-        breakdown for breakdown in usage if breakdown["notification_type"] == "sms"
-    ]
+    sms_breakdowns = [breakdown for breakdown in usage if breakdown["notification_type"] == "sms"]
 
     # this relies on the assumption: only one SMS rate per financial year.
     sms_rate = 0 if len(sms_breakdowns) == 0 else sms_breakdowns[0].get("rate", 0)
     sms_sent = get_sum_billing_units(sms_breakdowns)
     sms_free_allowance = free_sms_fragment_limit
 
-    emails = [
-        breakdown["billing_units"]
-        for breakdown in usage
-        if breakdown["notification_type"] == "email"
-    ]
+    emails = [breakdown["billing_units"] for breakdown in usage if breakdown["notification_type"] == "email"]
     emails_sent = 0 if len(emails) == 0 else emails[0]
 
     letters = [
@@ -302,7 +277,7 @@ def format_monthly_stats_to_list(historical_stats):
                 date=key,
                 future=yyyy_mm_to_datetime(key) > datetime.utcnow(),
                 name=get_month_name(key),
-                **aggregate_status_types(value)
+                **aggregate_status_types(value),
             )
             for key, value in historical_stats.items()
         ),
@@ -326,9 +301,7 @@ def aggregate_status_types(counts_dict):
 def get_months_for_financial_year(year, time_format="%B"):
     return [
         month.strftime(time_format)
-        for month in (
-            get_months_for_year(4, 13, year) + get_months_for_year(1, 4, year + 1)
-        )
+        for month in (get_months_for_year(4, 13, year) + get_months_for_year(1, 4, year + 1))
         if month < datetime.now()
     ]
 
@@ -343,9 +316,7 @@ def get_sum_billing_units(billing_units, month=None):
     return sum(b["billing_units"] for b in billing_units)
 
 
-def get_free_paid_breakdown_for_billable_units(
-    year, free_sms_fragment_limit, billing_units
-):
+def get_free_paid_breakdown_for_billable_units(year, free_sms_fragment_limit, billing_units):
     cumulative = 0
     letter_cumulative = 0
     sms_units = [x for x in billing_units if x["notification_type"] == "sms"]
@@ -358,11 +329,7 @@ def get_free_paid_breakdown_for_billable_units(
             free_sms_fragment_limit,
             cumulative,
             previous_cumulative,
-            [
-                billing_month
-                for billing_month in sms_units
-                if billing_month["month"] == month
-            ],
+            [billing_month for billing_month in sms_units if billing_month["month"] == month],
         )
         letter_billing = [
             (
@@ -392,9 +359,7 @@ def get_free_paid_breakdown_for_billable_units(
         }
 
 
-def get_free_paid_breakdown_for_month(
-    free_sms_fragment_limit, cumulative, previous_cumulative, monthly_usage
-):
+def get_free_paid_breakdown_for_month(free_sms_fragment_limit, cumulative, previous_cumulative, monthly_usage):
     allowance = free_sms_fragment_limit
 
     total_monthly_billing_units = get_sum_billing_units(monthly_usage)

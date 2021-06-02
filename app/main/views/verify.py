@@ -49,11 +49,7 @@ def verify_email(token):
             current_app.config["EMAIL_EXPIRY_SECONDS"],
         )
     except SignatureExpired:
-        flash(
-            _(
-                "The security code in the email we sent you has expired. We’ve sent you a new one."
-            )
-        )
+        flash(_("The security code in the email we sent you has expired. We’ve sent you a new one."))
         return redirect(url_for("main.resend_email_verification"))
 
     # token contains json blob of format: {'user_id': '...', 'secret_code': '...'} (secret_code is unused)
@@ -86,9 +82,7 @@ def activate_user(user_id):
 
     invited_org_user = session.get("invited_org_user")
     if invited_org_user:
-        user_api_client.add_user_to_organisation(
-            invited_org_user["organisation"], session["user_details"]["id"]
-        )
+        user_api_client.add_user_to_organisation(invited_org_user["organisation"], session["user_details"]["id"])
 
     if organisation_id:
         return redirect(url_for("main.organisation_dashboard", org_id=organisation_id))
@@ -100,7 +94,5 @@ def _add_invited_user_to_service(invited_user):
     invitation = InvitedUser(invited_user)
     user = User.from_id(session["user_id"])
     service_id = invited_user["service"]
-    user_api_client.add_user_to_service(
-        service_id, user.id, invitation.permissions, invitation.folder_permissions
-    )
+    user_api_client.add_user_to_service(service_id, user.id, invitation.permissions, invitation.folder_permissions)
     return service_id

@@ -60,9 +60,7 @@ def test_sum_of_statistics_sums_inputs():
     "emails_failed,emails_requested,expected_failure_rate",
     [(0, 0, "0"), (0, 1, "0.0"), (1, 3, "33.3")],
 )
-def test_add_rates_sets_email_failure_rate(
-    emails_failed, emails_requested, expected_failure_rate
-):
+def test_add_rates_sets_email_failure_rate(emails_failed, emails_requested, expected_failure_rate):
     resp = add_rates_to(
         {
             "emails_failed": emails_failed,
@@ -79,9 +77,7 @@ def test_add_rates_sets_email_failure_rate(
     "sms_failed,sms_requested,expected_failure_rate",
     [(0, 0, "0"), (0, 1, "0.0"), (1, 3, "33.3")],
 )
-def test_add_rates_sets_sms_failure_rate(
-    sms_failed, sms_requested, expected_failure_rate
-):
+def test_add_rates_sets_sms_failure_rate(sms_failed, sms_requested, expected_failure_rate):
     resp = add_rates_to(
         {
             "emails_failed": 0,
@@ -95,9 +91,7 @@ def test_add_rates_sets_sms_failure_rate(
 
 
 def test_add_rates_keeps_original_raw_data():
-    resp = add_rates_to(
-        {"emails_failed": 1, "emails_requested": 2, "sms_failed": 3, "sms_requested": 4}
-    )
+    resp = add_rates_to({"emails_failed": 1, "emails_requested": 2, "sms_failed": 3, "sms_requested": 4})
 
     assert resp["emails_failed"] == 1
     assert resp["emails_requested"] == 2
@@ -141,9 +135,7 @@ def test_add_rate_to_job_calculates_rate(failed, delivered, expected_failure_rat
 
 
 def test_add_rate_to_job_preserves_initial_fields():
-    resp = add_rate_to_job(
-        {"notifications_failed": 0, "notifications_delivered": 0, "id": "foo"}
-    )
+    resp = add_rate_to_job({"notifications_failed": 0, "notifications_delivered": 0, "id": "foo"})
 
     assert set(resp.keys()) == {
         "notifications_failed",

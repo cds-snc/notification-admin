@@ -48,11 +48,7 @@ class NotifyAdminAPIClient(BaseAPIClient):
 
         # if the current service is inactive and the user isn't a platform admin, we should block them from making any
         # stateful modifications to that service
-        if (
-            current_service
-            and not current_service.active
-            and not current_user.platform_admin
-        ):
+        if current_service and not current_service.active and not current_user.platform_admin:
             abort(403)
 
     def log_admin_call(self, url, method):
@@ -103,9 +99,7 @@ class NotifyAdminAPIClient(BaseAPIClient):
             try:
                 return super()._perform_request(method, url, kwargs)
             except HTTP503Error as e:
-                logger.warn(
-                    "Retrying API request after failure {} {}".format(method, url)
-                )
+                logger.warn("Retrying API request after failure {} {}".format(method, url))
                 if i == 3:
                     raise e
 

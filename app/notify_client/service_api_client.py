@@ -62,9 +62,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.get("/service/delivered-notifications-stats-by-month-data")
 
     def find_services_by_name(self, service_name):
-        return self.get(
-            "/service/find-services-by-name", params={"service_name": service_name}
-        )
+        return self.get("/service/find-services-by-name", params={"service_name": service_name})
 
     def get_live_services_data(self, params_dict=None):
         """
@@ -116,11 +114,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         }
 
         if disallowed_attributes:
-            raise TypeError(
-                "Not allowed to update service attributes: {}".format(
-                    ", ".join(disallowed_attributes)
-                )
-            )
+            raise TypeError("Not allowed to update service attributes: {}".format(", ".join(disallowed_attributes)))
 
         endpoint = "/service/{0}".format(service_id)
         return self.post(endpoint, data)
@@ -172,9 +166,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         Remove a user from a service
         """
-        endpoint = "/service/{service_id}/users/{user_id}".format(
-            service_id=service_id, user_id=user_id
-        )
+        endpoint = "/service/{service_id}/users/{user_id}".format(service_id=service_id, user_id=user_id)
         data = _attach_current_user({})
         return self.delete(endpoint, data)
 
@@ -210,9 +202,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     @cache.delete("service-{service_id}-templates")
     @cache.delete("template-{id_}-version-None")
     @cache.delete("template-{id_}-versions")
-    def update_service_template(
-        self, id_, name, type_, content, service_id, subject=None, process_type=None
-    ):
+    def update_service_template(self, id_, name, type_, content, service_id, subject=None, process_type=None):
         """
         Update a service template.
         """
@@ -248,9 +238,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "reply_to": reply_to,
         }
         data = _attach_current_user(data)
-        return self.post(
-            "/service/{0}/template/{1}".format(service_id, template_id), data
-        )
+        return self.post("/service/{0}/template/{1}".format(service_id, template_id), data)
 
     @cache.delete("service-{service_id}-templates")
     @cache.delete("template-{template_id}-version-None")
@@ -266,9 +254,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         Retrieve a service template.
         """
-        endpoint = "/service/{service_id}/template/{template_id}".format(
-            service_id=service_id, template_id=template_id
-        )
+        endpoint = "/service/{service_id}/template/{template_id}".format(service_id=service_id, template_id=template_id)
         if version:
             endpoint = "{base}/version/{version}".format(base=endpoint, version=version)
         return self.get(endpoint)
@@ -278,9 +264,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         Retrieve a list of versions for a template
         """
-        endpoint = "/service/{service_id}/template/{template_id}/versions".format(
-            service_id=service_id, template_id=template_id
-        )
+        endpoint = "/service/{service_id}/template/{template_id}/versions".format(service_id=service_id, template_id=template_id)
         return self.get(endpoint)
 
     @cache.set("service-{service_id}-templates")
@@ -334,9 +318,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.get("/service/{0}/history".format(service_id))
 
     def get_monthly_notification_stats(self, service_id, year):
-        return self.get(
-            url="/service/{}/notifications/monthly?year={}".format(service_id, year)
-        )
+        return self.get(url="/service/{}/notifications/monthly?year={}".format(service_id, year))
 
     def get_safelist(self, service_id):
         return self.get(url="/service/{}/safelist".format(service_id))
@@ -379,34 +361,24 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.post("/service/{}/inbound-api".format(service_id), data)
 
     @cache.delete("service-{service_id}")
-    def update_service_inbound_api(
-        self, service_id, url, bearer_token, user_id, inbound_api_id
-    ):
+    def update_service_inbound_api(self, service_id, url, bearer_token, user_id, inbound_api_id):
         data = {"url": url, "updated_by_id": user_id}
         if bearer_token:
             data["bearer_token"] = bearer_token
-        return self.post(
-            "/service/{}/inbound-api/{}".format(service_id, inbound_api_id), data
-        )
+        return self.post("/service/{}/inbound-api/{}".format(service_id, inbound_api_id), data)
 
     def get_service_inbound_api(self, service_id, inbound_sms_api_id):
-        return self.get(
-            "/service/{}/inbound-api/{}".format(service_id, inbound_sms_api_id)
-        )["data"]
+        return self.get("/service/{}/inbound-api/{}".format(service_id, inbound_sms_api_id))["data"]
 
     @cache.delete("service-{service_id}")
     def delete_service_inbound_api(self, service_id, callback_api_id):
-        return self.delete(
-            "/service/{}/inbound-api/{}".format(service_id, callback_api_id)
-        )
+        return self.delete("/service/{}/inbound-api/{}".format(service_id, callback_api_id))
 
     def get_reply_to_email_addresses(self, service_id):
         return self.get("/service/{}/email-reply-to".format(service_id))
 
     def get_reply_to_email_address(self, service_id, reply_to_email_id):
-        return self.get(
-            "/service/{}/email-reply-to/{}".format(service_id, reply_to_email_id)
-        )
+        return self.get("/service/{}/email-reply-to/{}".format(service_id, reply_to_email_id))
 
     def verify_reply_to_email_address(self, service_id, email_address):
         return self.post(
@@ -422,9 +394,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         )
 
     @cache.delete("service-{service_id}")
-    def update_reply_to_email_address(
-        self, service_id, reply_to_email_id, email_address, is_default=False
-    ):
+    def update_reply_to_email_address(self, service_id, reply_to_email_id, email_address, is_default=False):
         return self.post(
             "/service/{}/email-reply-to/{}".format(
                 service_id,
@@ -436,9 +406,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     @cache.delete("service-{service_id}")
     def delete_reply_to_email_address(self, service_id, reply_to_email_id):
         return self.post(
-            "/service/{}/email-reply-to/{}/archive".format(
-                service_id, reply_to_email_id
-            ),
+            "/service/{}/email-reply-to/{}/archive".format(service_id, reply_to_email_id),
             data=None,
         )
 
@@ -446,9 +414,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.get("/service/{}/letter-contact".format(service_id))
 
     def get_letter_contact(self, service_id, letter_contact_id):
-        return self.get(
-            "/service/{}/letter-contact/{}".format(service_id, letter_contact_id)
-        )
+        return self.get("/service/{}/letter-contact/{}".format(service_id, letter_contact_id))
 
     @cache.delete("service-{service_id}")
     def add_letter_contact(self, service_id, contact_block, is_default=False):
@@ -458,9 +424,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         )
 
     @cache.delete("service-{service_id}")
-    def update_letter_contact(
-        self, service_id, letter_contact_id, contact_block, is_default=False
-    ):
+    def update_letter_contact(self, service_id, letter_contact_id, contact_block, is_default=False):
         return self.post(
             "/service/{}/letter-contact/{}".format(
                 service_id,
@@ -472,9 +436,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     @cache.delete("service-{service_id}")
     def delete_letter_contact(self, service_id, letter_contact_id):
         return self.post(
-            "/service/{}/letter-contact/{}/archive".format(
-                service_id, letter_contact_id
-            ),
+            "/service/{}/letter-contact/{}/archive".format(service_id, letter_contact_id),
             data=None,
         )
 
@@ -485,18 +447,14 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.get("/service/{}/sms-sender/{}".format(service_id, sms_sender_id))
 
     @cache.delete("service-{service_id}")
-    def add_sms_sender(
-        self, service_id, sms_sender, is_default=False, inbound_number_id=None
-    ):
+    def add_sms_sender(self, service_id, sms_sender, is_default=False, inbound_number_id=None):
         data = {"sms_sender": sms_sender, "is_default": is_default}
         if inbound_number_id:
             data["inbound_number_id"] = inbound_number_id
         return self.post("/service/{}/sms-sender".format(service_id), data=data)
 
     @cache.delete("service-{service_id}")
-    def update_sms_sender(
-        self, service_id, sms_sender_id, sms_sender, is_default=False
-    ):
+    def update_sms_sender(self, service_id, sms_sender_id, sms_sender, is_default=False):
         return self.post(
             "/service/{}/sms-sender/{}".format(service_id, sms_sender_id),
             data={"sms_sender": sms_sender, "is_default": is_default},
@@ -510,14 +468,10 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         )
 
     def get_service_callback_api(self, service_id, callback_api_id):
-        return self.get(
-            "/service/{}/delivery-receipt-api/{}".format(service_id, callback_api_id)
-        )["data"]
+        return self.get("/service/{}/delivery-receipt-api/{}".format(service_id, callback_api_id))["data"]
 
     @cache.delete("service-{service_id}")
-    def update_service_callback_api(
-        self, service_id, url, bearer_token, user_id, callback_api_id
-    ):
+    def update_service_callback_api(self, service_id, url, bearer_token, user_id, callback_api_id):
         data = {"url": url, "updated_by_id": user_id}
         if bearer_token:
             data["bearer_token"] = bearer_token
@@ -528,9 +482,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
 
     @cache.delete("service-{service_id}")
     def delete_service_callback_api(self, service_id, callback_api_id):
-        return self.delete(
-            "/service/{}/delivery-receipt-api/{}".format(service_id, callback_api_id)
-        )
+        return self.delete("/service/{}/delivery-receipt-api/{}".format(service_id, callback_api_id))
 
     @cache.delete("service-{service_id}")
     def create_service_callback_api(self, service_id, url, bearer_token, user_id):
@@ -538,9 +490,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.post("/service/{}/delivery-receipt-api".format(service_id), data)
 
     @cache.delete("service-{service_id}-data-retention")
-    def create_service_data_retention(
-        self, service_id, notification_type, days_of_retention
-    ):
+    def create_service_data_retention(self, service_id, notification_type, days_of_retention):
         data = {
             "notification_type": notification_type,
             "days_of_retention": days_of_retention,
@@ -549,13 +499,9 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.post("/service/{}/data-retention".format(service_id), data)
 
     @cache.delete("service-{service_id}-data-retention")
-    def update_service_data_retention(
-        self, service_id, data_retention_id, days_of_retention
-    ):
+    def update_service_data_retention(self, service_id, data_retention_id, days_of_retention):
         data = {"days_of_retention": days_of_retention}
-        return self.post(
-            "/service/{}/data-retention/{}".format(service_id, data_retention_id), data
-        )
+        return self.post("/service/{}/data-retention/{}".format(service_id, data_retention_id), data)
 
     @cache.set("service-{service_id}-data-retention")
     def get_service_data_retention(self, service_id):
@@ -568,9 +514,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         if not current_app.config["REDIS_ENABLED"]:
             raise NotImplementedError("Cannot accept ToS without using Redis")
 
-        current_app.logger.info(
-            f"Terms of use accepted by user {current_user.id} for service {service_id}"
-        )
+        current_app.logger.info(f"Terms of use accepted by user {current_user.id} for service {service_id}")
 
         redis_client.set(
             self._tos_key_name(service_id),
@@ -579,9 +523,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         )
 
     def has_submitted_use_case(self, service_id):
-        return (
-            redis_client.get(self._submitted_use_case_key_name(service_id)) is not None
-        )
+        return redis_client.get(self._submitted_use_case_key_name(service_id)) is not None
 
     def register_submit_use_case(self, service_id):
         redis_client.set(

@@ -11,9 +11,7 @@ from app.main.validators import (
 )
 
 
-@pytest.mark.parametrize(
-    "password", ["notification", "11111111", "kittykat", "blackbox"]
-)
+@pytest.mark.parametrize("password", ["notification", "11111111", "kittykat", "blackbox"])
 def test_should_raise_validation_error_for_password(
     client,
     mock_get_user_by_email,
@@ -134,17 +132,11 @@ def test_sms_character_validation(client, msg):
     [
         (
             "∆ abc 📲 def 📵 ghi",
-            (
-                "You can’t use ∆, 📲 or 📵 in text messages. "
-                "They won’t show up properly on everyone’s phones."
-            ),
+            ("You can’t use ∆, 📲 or 📵 in text messages. " "They won’t show up properly on everyone’s phones."),
         ),
         (
             "📵",
-            (
-                "You can’t use 📵 in text messages. "
-                "It won’t show up properly on everyone’s phones."
-            ),
+            ("You can’t use 📵 in text messages. " "It won’t show up properly on everyone’s phones."),
         ),
     ],
 )

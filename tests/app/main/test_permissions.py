@@ -49,9 +49,7 @@ def _test_permissions(
     will_succeed,
     kwargs={},
 ):
-    mocker.patch(
-        "app.service_api_client.get_live_services_data", return_value={"data": service}
-    )
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
 
     request.view_args.update({"service_id": "foo"})
     if usr:
@@ -64,10 +62,7 @@ def _test_permissions(
         decorated_index()
     else:
         try:
-            if (
-                decorated_index().location != "/sign-in?next=%2F"
-                or decorated_index().status_code != 302
-            ):
+            if decorated_index().location != "/sign-in?next=%2F" or decorated_index().status_code != 302:
                 pytest.fail("Failed to throw a forbidden or unauthorised exception")
         except (Forbidden, Unauthorized):
             pass
@@ -98,9 +93,7 @@ def test_user_has_permissions_or(
 ):
     user = _user_with_permissions()
     mocker.patch("app.user_api_client.get_user", return_value=user)
-    _test_permissions(
-        mocker, client, user, ["send_messages", "manage_service"], will_succeed=True
-    )
+    _test_permissions(mocker, client, user, ["send_messages", "manage_service"], will_succeed=True)
 
 
 def test_user_has_permissions_multiple(
@@ -109,17 +102,13 @@ def test_user_has_permissions_multiple(
 ):
     user = _user_with_permissions()
     mocker.patch("app.user_api_client.get_user", return_value=user)
-    _test_permissions(
-        mocker, client, user, ["manage_templates", "manage_service"], will_succeed=True
-    )
+    _test_permissions(mocker, client, user, ["manage_templates", "manage_service"], will_succeed=True)
 
 
 def test_exact_permissions(client, mocker):
     user = _user_with_permissions()
     mocker.patch("app.user_api_client.get_user", return_value=user)
-    mocker.patch(
-        "app.service_api_client.get_live_services_data", return_value={"data": service}
-    )
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
 
     _test_permissions(
         mocker,
@@ -136,9 +125,7 @@ def test_platform_admin_user_can_access_page_that_has_no_permissions(
     mocker,
 ):
     mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user)
-    mocker.patch(
-        "app.service_api_client.get_live_services_data", return_value={"data": service}
-    )
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
 
     _test_permissions(mocker, client, platform_admin_user, [], will_succeed=True)
 
@@ -312,9 +299,7 @@ def test_services_pages_that_org_users_are_allowed_to_see(
 ):
     api_user_active["services"] = user_services
     api_user_active["organisations"] = user_organisations
-    api_user_active["permissions"] = {
-        service_id: ["manage_service"] for service_id in user_services
-    }
+    api_user_active["permissions"] = {service_id: ["manage_service"] for service_id in user_services}
     service = service_json(
         name="SERVICE WITH ORG",
         id_=SERVICE_ONE_ID,
@@ -369,9 +354,7 @@ def test_service_navigation_for_org_user(
         service_id=SERVICE_ONE_ID,
     )
 
-    assert [item.text.strip() for item in page.select("nav.navigation a")] == [
-        "Team members"
-    ]
+    assert [item.text.strip() for item in page.select("nav.navigation a")] == ["Team members"]
 
 
 def get_name_of_decorator_from_ast_node(node):
@@ -403,16 +386,13 @@ def get_routes_and_decorators(argument_name=None):
             if inspect.isfunction(function):
                 decorators = list(get_decorators_for_function(function))
                 if "main.route" in decorators and (
-                    not argument_name
-                    or argument_name in inspect.signature(function).parameters.keys()
+                    not argument_name or argument_name in inspect.signature(function).parameters.keys()
                 ):
                     yield "{}.{}".format(module_name, function_name), decorators
 
 
 def format_decorators(decorators, indent=8):
-    return "\n".join(
-        "{}@{}".format(" " * indent, decorator) for decorator in decorators
-    )
+    return "\n".join("{}@{}".format(" " * indent, decorator) for decorator in decorators)
 
 
 def test_code_to_extract_decorators_works_with_known_examples():
@@ -438,9 +418,9 @@ def test_code_to_extract_decorators_works_with_known_examples():
 
 def test_routes_have_permissions_decorators():
 
-    for endpoint, decorators in list(
-        get_routes_and_decorators(SERVICE_ID_ARGUMENT)
-    ) + list(get_routes_and_decorators(ORGANISATION_ID_ARGUMENT)):
+    for endpoint, decorators in list(get_routes_and_decorators(SERVICE_ID_ARGUMENT)) + list(
+        get_routes_and_decorators(ORGANISATION_ID_ARGUMENT)
+    ):
         file, function = endpoint.split(".")
 
         assert "user_is_logged_in" not in decorators, (

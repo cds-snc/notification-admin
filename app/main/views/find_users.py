@@ -16,12 +16,8 @@ def find_users_by_email():
     form = SearchUsersByEmailForm()
     users_found = None
     if form.validate_on_submit():
-        users_found = user_api_client.find_users_by_full_or_partial_email(
-            form.search.data
-        )["data"]
-    return render_template(
-        "views/find-users/find-users-by-email.html", form=form, users_found=users_found
-    )
+        users_found = user_api_client.find_users_by_full_or_partial_email(form.search.data)["data"]
+    return render_template("views/find-users/find-users-by-email.html", form=form, users_found=users_found)
 
 
 @main.route("/users/<user_id>", methods=["GET"])
@@ -68,9 +64,7 @@ def archive_user(user_id):
         return redirect(url_for(".user_information", user_id=user_id))
     else:
         flash(
-            _(
-                "There's no way to reverse this! Are you sure you want to archive this user?"
-            ),
+            _("There's no way to reverse this! Are you sure you want to archive this user?"),
             "archive",
         )
         return user_information(user_id)

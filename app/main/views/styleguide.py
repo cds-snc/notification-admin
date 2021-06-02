@@ -19,10 +19,10 @@ def styleguide():
         abort(404)
 
     class FormExamples(Form):
-        username = StringField(u"Username")
-        password = PasswordField(u"Password", [validators.required()])
+        username = StringField("Username")
+        password = PasswordField("Password", [validators.required()])
         code = StringField("Enter code")
-        message = TextAreaField(u"Message")
+        message = TextAreaField("Message")
         file_upload = FileField("Upload a CSV file to add your recipients’ details")
 
     sms = "Your vehicle tax for ((registration number)) is due on ((date)). Renew online at www.gov.uk/vehicle-tax"

@@ -18,9 +18,7 @@ class ApiKeyApiClient(NotifyAdminAPIClient):
 
     def revoke_api_key(self, service_id, key_id):
         data = _attach_current_user({})
-        return self.post(
-            url="/service/{0}/api-key/revoke/{1}".format(service_id, key_id), data=data
-        )
+        return self.post(url="/service/{0}/api-key/revoke/{1}".format(service_id, key_id), data=data)
 
     def get_api_keys_ranked_by_notifications_created(self, n_days_back):
         return self.get(

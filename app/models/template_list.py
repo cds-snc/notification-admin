@@ -16,14 +16,10 @@ class TemplateList:
         self.user = user
 
     def __iter__(self):
-        for item in self.get_templates_and_folders(
-            self.template_type, self.template_folder_id, self.user, ancestors=[]
-        ):
+        for item in self.get_templates_and_folders(self.template_type, self.template_folder_id, self.user, ancestors=[]):
             yield item
 
-    def get_templates_and_folders(
-        self, template_type, template_folder_id, user, ancestors
-    ):
+    def get_templates_and_folders(self, template_type, template_folder_id, user, ancestors):
 
         for item in self.service.get_template_folders(
             template_type,
@@ -32,16 +28,12 @@ class TemplateList:
         ):
             yield TemplateListFolder(
                 item,
-                folders=self.service.get_template_folders(
-                    template_type, item["id"], user
-                ),
+                folders=self.service.get_template_folders(template_type, item["id"], user),
                 templates=self.service.get_templates(template_type, item["id"]),
                 ancestors=ancestors,
                 service_id=self.service.id,
             )
-            for sub_item in self.get_templates_and_folders(
-                template_type, item["id"], user, ancestors + [item]
-            ):
+            for sub_item in self.get_templates_and_folders(template_type, item["id"], user, ancestors + [item]):
                 yield sub_item
 
         for item in self.service.get_templates(template_type, template_folder_id, user):
@@ -61,11 +53,7 @@ class TemplateList:
 
     @property
     def folder_is_empty(self):
-        return not any(
-            self.get_templates_and_folders(
-                "all", self.template_folder_id, self.user, []
-            )
-        )
+        return not any(self.get_templates_and_folders("all", self.template_folder_id, self.user, []))
 
 
 class TemplateLists:
@@ -91,9 +79,7 @@ class TemplateLists:
 
             yield template_list_service
 
-            for service_templates_and_folders in TemplateList(
-                service, user=self.user
-            ).get_templates_and_folders(
+            for service_templates_and_folders in TemplateList(service, user=self.user).get_templates_and_folders(
                 template_type="all",
                 template_folder_id=None,
                 user=self.user,
