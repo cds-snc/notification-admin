@@ -152,8 +152,13 @@ class Production(Config):
     CHECK_PROXY_HEADER = False
 
 
+class Staging(Production):
+    NOTIFY_ENVIRONMENT = 'staging'
+
+
 configs = {
     'development': Development,
+    'test': Test,
+    'staging': Staging,
     'production': Production,
-    'test': Test
 }
