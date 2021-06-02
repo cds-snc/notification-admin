@@ -1,0 +1,15 @@
+{% extends "content_template.html" %}
+
+{% block per_page_title %}
+  {{ _('Email formatting guide') }}
+{% endblock %}
+
+{% block content_column_content %}
+  <h1 class="heading heading-large">{{ _('Email formatting guide') }}</h1>
+  <p>
+    {{ _('Use this guide to write email message templates. Make sure to send yourself a message before sending to recipients to ensure formatting looks good.') }}
+  </p>
+
+  {% include "partials/guidance/formatting.html" %}
+  {% include "partials/guidance/links.html" %}
+{% endblock %}

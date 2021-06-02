@@ -26,6 +26,9 @@
           <div>
             {{ nav_link_dark(label=_("API documentation"), href=documentation_url(), external_link_img=asset_url('images/external-white.svg'), class="-ml-2") }}
           </div>
+          <div>
+            {{ nav_link_dark(label=_("Guidance"), href=url_for('main.guidance'), class="-ml-2") }}
+          </div>
         </div>
         <div class="flex-1 grid grid-cols-1 gap-y-1 lg:grid-rows-4">
           <div>

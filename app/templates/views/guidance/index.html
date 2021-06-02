@@ -1,0 +1,32 @@
+{% extends "content_template.html" %}
+
+{% block per_page_title %}
+  {{ _('Guidance') }}
+{% endblock %}
+
+{% block content_column_content %}
+  <h1 class="heading heading-large">{{ _('Guidance') }}</h1>
+
+  <p>
+    {{ _("This guidance is for teams using GC Notify to send emails and text messages.") }}
+  </p>
+
+  <p>
+    {{ _("It explains how to:") }}
+  </p>
+
+  <ul class="list-disc ml-8">
+    <li class="mb-5">
+      <a href="{{ url_for('.format') }}">{{ _('Format email messages') }}</a><br>
+      <p>{{ _("This includes how to insert titles, bulleted lists, and links.") }}</p>
+    </li>
+    <li class="mb-5">
+      <a href="{{ url_for('.personalise') }}">{{ _('Personalise messages to recipients') }}</a><br>
+      <p>{{ _("This includes how to use variables to tailor messages.") }}</p>
+    </li>
+    <li class="mb-5">
+      <a href="{{ url_for('.messages_status') }}">{{ _('Track message delivery status') }}</a><br>
+      <p>{{ _("This includes reasons why messages could not be delivered.") }}</p>
+    </li>
+  </ul>
+{% endblock %}

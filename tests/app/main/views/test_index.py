@@ -111,7 +111,8 @@ def test_security_txt(client):
     'privacy', 'pricing', 'terms', 'roadmap', 'why-notify',
     'features', 'security', 'messages_status',
     'email', 'sms', 'letters', 'welcome',
-    'features',
+    'features', 'format', 'personalise',
+    'guidance',
 ])
 def test_static_pages(
     client_request,
@@ -141,11 +142,11 @@ def test_activity_page(mocker, client):
     ('redirect_email', 'email'),
     ('redirect_sms', 'sms'),
     ('redirect_letters', 'letters'),
-    ('redirect_templates', 'templates'),
     ('redirect_security', 'security'),
     ('redirect_terms', 'terms'),
     ('redirect_messages_status', 'messages_status'),
     ('redirect_contact', 'contact'),
+    ('redirect_format', 'format'),
 ])
 def test_old_static_pages_redirect(
     client,

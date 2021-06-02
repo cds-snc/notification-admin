@@ -26,7 +26,6 @@ from app.main.forms import (
     FieldWithNoneOption,
     SearchByNameForm,
 )
-from app.main.views.sub_navigation_dictionaries import features_nav
 from app.utils import (
     Spreadsheet,
     documentation_url,
@@ -260,10 +259,7 @@ def callbacks():
 
 @main.route('/features', endpoint='features')
 def features():
-    return render_template(
-        'views/features.html',
-        navigation_links=features_nav()
-    )
+    return render_template('views/features.html')
 
 
 @main.route('/why-notify', endpoint='why-notify')
@@ -277,42 +273,37 @@ def why_notify():
 
 @main.route('/roadmap', endpoint='roadmap')
 def roadmap():
-    return render_template(
-        'views/roadmap.html',
-        navigation_links=features_nav()
-    )
+    return render_template('views/roadmap.html')
 
 
 @main.route('/email', endpoint='email')
 def features_email():
-    return render_template(
-        'views/emails.html',
-        navigation_links=features_nav()
-    )
+    return render_template('views/emails.html')
 
 
 @main.route('/sms', endpoint='sms')
 def features_sms():
-    return render_template(
-        'views/text-messages.html',
-        navigation_links=features_nav()
-    )
+    return render_template('views/text-messages.html')
 
 
 @main.route('/letters', endpoint='letters')
 def features_letters():
-    return render_template(
-        'views/letters.html',
-        navigation_links=features_nav()
-    )
+    return render_template('views/letters.html')
 
 
-@main.route('/templates', endpoint='templates')
-def features_templates():
-    return render_template(
-        'views/templates.html',
-        navigation_links=features_nav()
-    )
+@main.route('/guidance', endpoint='guidance')
+def guidance():
+    return render_template('views/guidance/index.html')
+
+
+@main.route('/format', endpoint='format')
+def format():
+    return render_template('views/guidance/format.html')
+
+
+@main.route('/personalise', endpoint='personalise')
+def personalise():
+    return render_template('views/guidance/personalise.html')
 
 
 @main.route('/security', endpoint='security')
@@ -359,17 +350,12 @@ def activity_download():
 
 @main.route('/terms', endpoint='terms')
 def terms():
-    return render_template(
-        'views/terms-of-use.html'
-    )
+    return render_template('views/terms-of-use.html')
 
 
 @main.route('/messages-status', endpoint='messages_status')
 def messages_status():
-    return render_template(
-        'views/messages-status.html',
-        navigation_links=features_nav()
-    )
+    return render_template('views/messages-status.html')
 
 
 # --- Redirects --- #
@@ -378,9 +364,10 @@ def messages_status():
 @main.route('/features/email', endpoint='redirect_email')
 @main.route('/features/sms', endpoint='redirect_sms')
 @main.route('/features/letters', endpoint='redirect_letters')
-@main.route('/features/templates', endpoint='redirect_templates')
+@main.route('/features/templates', endpoint='redirect_format')
 @main.route('/features/security', endpoint='redirect_security')
 @main.route('/features/terms', endpoint='redirect_terms')
 @main.route('/features/messages-status', endpoint='redirect_messages_status')
+@main.route('/templates', endpoint='redirect_format')
 def old_page_redirects():
     return redirect(url_for(request.endpoint.replace('redirect_', '')), code=301)
