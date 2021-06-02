@@ -7,6 +7,7 @@ from notifications_python_client.errors import HTTPError
 from app.models.user import User
 from tests import sample_uuid
 from tests.conftest import (
+    ClientRequest,
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
     _template,
@@ -921,7 +922,7 @@ def test_should_not_show_radios_and_buttons_for_move_destination_if_incorrect_pe
 
 
 def test_should_show_radios_and_buttons_for_move_destination_if_correct_permissions(
-    client_request,
+    client_request: ClientRequest,
     mocker,
     service_one,
     mock_get_service_templates,
@@ -959,7 +960,6 @@ def test_should_show_radios_and_buttons_for_move_destination_if_correct_permissi
         'move-to-existing-folder',
         'move-to-new-folder',
         'add-new-folder',
-        'add-new-template',
     }
 
 
