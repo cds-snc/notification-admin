@@ -75,7 +75,7 @@
       this.$form.on("click", "button.js-button-action", event =>
         this.actionButtonClicked(event)
       );
-      this.$form.on("click", "button#add-new-template", event => {
+      this.$form.on("click", "button[value=add-new-template]", event => {
         event.stopPropagation();
         event.preventDefault();
         window.location.href = `${window.location.href}/create`
@@ -304,14 +304,10 @@
       }
     };
 
-    this.onClick = function() {
-      window.location.href = `${window.location.href}/create`
-    }
-
     this.nothingSelectedButtons = $(`
       <div id="nothing_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button" id="add-new-template">${window.polyglot.t(
+          <button class="button" value="add-new-template">${window.polyglot.t(
             "new_template_button"
           )}</button>
           <button class="button js-button-action button-secondary copy-template" value="copy-template">${window.polyglot.t(
