@@ -612,7 +612,7 @@ def validate_route_permission_with_client(mocker,
     return resp
 
 
-def assert_url_expected(actual, expected):
+def assert_url_expected(actual: str, expected: str):
     actual_parts = urlparse(actual)
     expected_parts = urlparse(expected)
     for attribute in actual_parts._fields:
