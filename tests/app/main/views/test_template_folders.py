@@ -1203,11 +1203,11 @@ def test_should_be_able_to_move_a_sub_item(
 def test_no_action_if_user_fills_in_ambiguous_fields(
     client_request: ClientRequest,
     service_one: Service,
-    mock_get_service_templates,
     mock_get_template_folders,
     mock_move_to_template_folder,
     mock_create_template_folder,
-    data,
+    mock_get_service_templates,
+    data: dict,
 ):
     service_one.permissions += ['letter']
 
@@ -1229,7 +1229,7 @@ def test_no_action_if_user_fills_in_ambiguous_fields(
 
     assert page.select_one('button[value={}]'.format(data['operation']))
 
-    assert 'Create template' in page.select('#add_new_template_form')
+    assert 'Create template' in page.select_one('#add_new_template_form a.button').text
 
     assert [
         ROOT_FOLDER_ID,
@@ -1320,7 +1320,7 @@ def test_should_be_able_to_move_to_new_folder(
     )
 
 
-def test_radio_button_with_no_value_shows_custom_error_message(
+def test_radio_button_with_no_value_shows_error_message(
     client_request: ClientRequest,
 ):
     page = client_request.post(
