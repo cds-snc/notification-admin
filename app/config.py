@@ -153,7 +153,7 @@ class Production(Config):
 
 
 class Staging(Production):
-    pass
+    NOTIFY_ENVIRONMENT = 'staging'
 
 
 configs = {
