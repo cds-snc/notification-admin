@@ -4,12 +4,13 @@ import pytest
 from flask import abort, url_for
 from notifications_python_client.errors import HTTPError
 
+from app.models.service import Service
 from app.models.user import User
 from tests import sample_uuid
 from tests.conftest import (
-    ClientRequest,
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
+    ClientRequest,
     _template,
     active_caseworking_user,
     active_user_view_permissions,
@@ -1200,15 +1201,15 @@ def test_should_be_able_to_move_a_sub_item(
     },
 ])
 def test_no_action_if_user_fills_in_ambiguous_fields(
-    client_request,
-    service_one,
+    client_request: ClientRequest,
+    service_one: Service,
     mock_get_service_templates,
     mock_get_template_folders,
     mock_move_to_template_folder,
     mock_create_template_folder,
     data,
 ):
-    service_one['permissions'] += ['letter']
+    service_one.permissions += ['letter']
 
     mock_get_template_folders.return_value = [
         _folder('parent_folder', PARENT_FOLDER_ID, None),
@@ -1228,13 +1229,7 @@ def test_no_action_if_user_fills_in_ambiguous_fields(
 
     assert page.select_one('button[value={}]'.format(data['operation']))
 
-    assert [
-        'email',
-        'sms'
-    ] == [
-        radio['value']
-        for radio in page.select('#add_new_template_form input[type=radio]')
-    ]
+    assert 'Create template' == page.select('#add_new_template_form')
 
     assert [
         ROOT_FOLDER_ID,
