@@ -790,9 +790,9 @@ def mock_get_services_with_no_services(mocker, fake_uuid, user=None):
 
 
 @pytest.fixture(scope="function")
-def mock_get_services_with_one_service(mocker, fake_uuid, user=None):
+def mock_get_services_with_one_service(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(fake_uuid)
+        user = api_user_active
 
     def _get_services(params_dict=None):
         return {"data": [service_json(SERVICE_ONE_ID, "service_one", [user["id"]], 1000, True, True)]}
@@ -853,9 +853,9 @@ def mock_get_deleted_template(mocker):
 
 
 @pytest.fixture(scope="function")
-def mock_get_template_version(mocker, fake_uuid, user=None):
+def mock_get_template_version(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(fake_uuid)
+        user = api_user_active
 
     def _get(service_id, template_id, version):
         template_version = template_version_json(service_id, template_id, user, version=version)
@@ -865,9 +865,9 @@ def mock_get_template_version(mocker, fake_uuid, user=None):
 
 
 @pytest.fixture(scope="function")
-def mock_get_template_versions(mocker, fake_uuid, user=None):
+def mock_get_template_versions(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(fake_uuid)
+        user = api_user_active
 
     def _get(service_id, template_id):
         template_version = template_version_json(service_id, template_id, user, version=1)
@@ -1212,7 +1212,11 @@ def platform_admin_user(fake_uuid):
 
 
 @pytest.fixture(scope="function")
-def api_user_active(fake_uuid, email_address="test@user.canada.ca"):
+def api_user_active(fake_uuid):
+    return api_user_active_fn(fake_uuid)
+
+
+def api_user_active_fn(fake_uuid, email_address="test@user.canada.ca"):
     user_data = {
         "id": fake_uuid,
         "name": "Test User",
@@ -1741,7 +1745,6 @@ def mock_get_locked_user(mocker, api_user_locked):
     return mocker.patch("app.user_api_client.get_user", side_effect=_get_user)
 
 
-
 @pytest.fixture(scope="function")
 def mock_get_user_locked(mocker, api_user_locked):
     return mocker.patch("app.user_api_client.get_user", return_value=api_user_locked)
@@ -1776,14 +1779,13 @@ def mock_get_locked_user_by_email(mocker, api_user_locked):
 @pytest.fixture(scope="function")
 def mock_get_unknown_user_by_email(mocker, user=None):
     if user is None:
-        user = api_user_active(USER_ONE_ID)
+        user = api_user_active_fn(USER_ONE_ID)
 
     def _get_user(email_address):
         user["email_address"] = email_address
         return user
 
     return mocker.patch("app.user_api_client.get_user_by_email", side_effect=_get_user)
-
 
 
 @pytest.fixture(scope="function")
@@ -3579,7 +3581,7 @@ def mock_get_organisation_services(mocker, api_user_active, fake_uuid):
         return [
             service_json("12345", "service one"),
             service_json("67890", "service two"),
-            service_json(SERVICE_ONE_ID, "service one", [api_user_active(fake_uuid)["id"]]),
+            service_json(SERVICE_ONE_ID, "service one", [api_user_active["id"]]),
         ]
 
     return mocker.patch(
