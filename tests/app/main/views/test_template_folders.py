@@ -1239,26 +1239,6 @@ def test_should_be_able_to_move_a_sub_item(
             "move_to_new_folder_name": "foo",
             "move_to": None,
         },
-        # add a new template, but also select move destination
-        {
-            "operation": "add-new-template",
-            "templates_and_folders": [],
-            "move_to_new_folder_name": "",
-            "move_to": PARENT_FOLDER_ID,
-            "add_template_by_template_type": "email",
-        },
-        # add a new template, but also move to root folder
-        {
-            "operation": "add-new-template",
-            "templates_and_folders": [],
-            "move_to_new_folder_name": "",
-            "move_to": ROOT_FOLDER_ID,
-            "add_template_by_template_type": "email",
-        },
-        # add a new template, but don't select anything
-        {
-            "operation": "add-new-template",
-        },
     ],
 )
 def test_no_action_if_user_fills_in_ambiguous_fields(
