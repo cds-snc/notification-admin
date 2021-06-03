@@ -15,6 +15,7 @@ from app.models.user import User
 
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
+
     __getattr__ = dict.get
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
@@ -169,37 +170,37 @@ def service_json(
     if inbound_api is None:
         inbound_api = []
     service_dict = {
-        'id': id_,
-        'name': name,
-        'users': users,
-        'message_limit': message_limit,
-        'rate_limit': rate_limit,
-        'active': active,
-        'restricted': restricted,
-        'email_from': email_from,
-        'reply_to_email_address': reply_to_email_address,
-        'sms_sender': sms_sender,
-        'research_mode': research_mode,
-        'organisation_type': organisation_type,
-        'email_branding': email_branding,
-        'default_branding_is_french': default_branding_is_french,
-        'branding': branding,
-        'created_at': created_at or str(datetime.utcnow()),
-        'letter_branding': None,
-        'letter_contact_block': letter_contact_block,
-        'permissions': permissions,
-        'inbound_api': inbound_api,
-        'service_callback_api': service_callback_api,
-        'prefix_sms': prefix_sms,
-        'contact_link': None,
-        'volume_email': 111111,
-        'volume_sms': 222222,
-        'volume_letter': 333333,
-        'consent_to_research': True,
-        'count_as_live': True,
-        'organisation': organisation_id,
-        'sending_domain': sending_domain,
-        'go_live_user': go_live_user,
+        "id": id_,
+        "name": name,
+        "users": users,
+        "message_limit": message_limit,
+        "rate_limit": rate_limit,
+        "active": active,
+        "restricted": restricted,
+        "email_from": email_from,
+        "reply_to_email_address": reply_to_email_address,
+        "sms_sender": sms_sender,
+        "research_mode": research_mode,
+        "organisation_type": organisation_type,
+        "email_branding": email_branding,
+        "default_branding_is_french": default_branding_is_french,
+        "branding": branding,
+        "created_at": created_at or str(datetime.utcnow()),
+        "letter_branding": None,
+        "letter_contact_block": letter_contact_block,
+        "permissions": permissions,
+        "inbound_api": inbound_api,
+        "service_callback_api": service_callback_api,
+        "prefix_sms": prefix_sms,
+        "contact_link": None,
+        "volume_email": 111111,
+        "volume_sms": 222222,
+        "volume_letter": 333333,
+        "consent_to_research": True,
+        "count_as_live": True,
+        "organisation": organisation_id,
+        "sending_domain": sending_domain,
+        "go_live_user": go_live_user,
     }
     service: Service = dotdict(service_dict)
     return service

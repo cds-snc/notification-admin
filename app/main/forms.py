@@ -1470,18 +1470,11 @@ def required_for_ops(*operations):
 
 
 class CreateTemplateForm(Form):
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.what_type.choices = list(filter(None, [
-            ('email', _l('Email')),
-            ('sms', _l('Text message'))
-        ]))
+        self.what_type.choices = list(filter(None, [("email", _l("Email")), ("sms", _l("Text message"))]))
 
-    what_type = RadioField(_l('Type of message'))
+    what_type = RadioField(_l("Type of message"))
 
 
 class TemplateAndFoldersSelectionForm(Form):
@@ -1532,8 +1525,8 @@ class TemplateAndFoldersSelectionForm(Form):
     def validate(self):
         self.op = request.form.get("operation")
 
-        self.is_move_op = self.op in {'move-to-existing-folder', 'move-to-new-folder'}
-        self.is_add_folder_op = self.op in {'add-new-folder', 'move-to-new-folder'}
+        self.is_move_op = self.op in {"move-to-existing-folder", "move-to-new-folder"}
+        self.is_add_folder_op = self.op in {"add-new-folder", "move-to-new-folder"}
 
         if not (self.is_add_folder_op or self.is_move_op):
             return False

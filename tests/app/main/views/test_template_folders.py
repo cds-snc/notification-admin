@@ -1015,11 +1015,11 @@ def test_should_show_radios_and_buttons_for_move_destination_if_correct_permissi
         "folder_one_two",
         "folder_two",
     ]
-    assert set(x['value'] for x in page.find_all('button', {'name': 'operation'})) == {
-        'unknown',
-        'move-to-existing-folder',
-        'move-to-new-folder',
-        'add-new-folder',
+    assert set(x["value"] for x in page.find_all("button", {"name": "operation"})) == {
+        "unknown",
+        "move-to-existing-folder",
+        "move-to-new-folder",
+        "add-new-folder",
     }
 
 
@@ -1270,7 +1270,7 @@ def test_no_action_if_user_fills_in_ambiguous_fields(
     mock_get_service_templates,
     data: dict,
 ):
-    service_one.permissions += ['letter']
+    service_one.permissions += ["letter"]
 
     mock_get_template_folders.return_value = [
         _folder("parent_folder", PARENT_FOLDER_ID, None),
@@ -1290,7 +1290,7 @@ def test_no_action_if_user_fills_in_ambiguous_fields(
 
     assert page.select_one("button[value={}]".format(data["operation"]))
 
-    assert 'Create template' in page.select_one('#add_new_template_form a.button').text
+    assert "Create template" in page.select_one("#add_new_template_form a.button").text
 
     assert [
         ROOT_FOLDER_ID,
@@ -1374,14 +1374,14 @@ def test_radio_button_with_no_value_shows_error_message(
     client_request: ClientRequest,
 ):
     page = client_request.post(
-        'main.create_template',
+        "main.create_template",
         service_id=SERVICE_ONE_ID,
         _data={"operation": "add-new-template"},
         _expected_status=200,
         _expected_redirect=None,
     )
 
-    assert page.select_one('span.error-message').text.strip() == 'You need to choose an option'
+    assert page.select_one("span.error-message").text.strip() == "You need to choose an option"
 
 
 @pytest.mark.parametrize(
