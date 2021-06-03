@@ -18,10 +18,10 @@ from tests.app.main.views.test_template_folders import (
     _template,
 )
 from tests.conftest import (
-    ClientRequest,
     SERVICE_ONE_ID,
     SERVICE_TWO_ID,
     TEMPLATE_ONE_ID,
+    ClientRequest,
     ElementNotFound,
     active_caseworking_user,
     active_user_view_permissions,
