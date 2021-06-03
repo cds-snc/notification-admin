@@ -3,28 +3,27 @@ from itertools import chain
 from flask_babel import lazy_gettext as _l
 
 roles = {
-    'send_messages': ['send_texts', 'send_emails', 'send_letters'],
-    'manage_templates': ['manage_templates'],
-    'manage_service': ['manage_users', 'manage_settings'],
-    'manage_api_keys': ['manage_api_keys'],
-    'view_activity': ['view_activity'],
+    "send_messages": ["send_texts", "send_emails", "send_letters"],
+    "manage_templates": ["manage_templates"],
+    "manage_service": ["manage_users", "manage_settings"],
+    "manage_api_keys": ["manage_api_keys"],
+    "view_activity": ["view_activity"],
 }
 
 # same dict as above, but flipped round
 roles_by_permission = {
-    permission: next(
-        role for role, permissions in roles.items() if permission in permissions
-    ) for permission in chain(*list(roles.values()))
+    permission: next(role for role, permissions in roles.items() if permission in permissions)
+    for permission in chain(*list(roles.values()))
 }
 
 all_permissions = set(roles_by_permission.values())
 
 permissions = (
-    ('view_activity', _l('See dashboard')),
-    ('send_messages', _l('Send messages')),
-    ('manage_templates', _l('Add and edit templates')),
-    ('manage_service', _l('Manage settings and team')),
-    ('manage_api_keys', _l('Manage API integration')),
+    ("view_activity", _l("See dashboard")),
+    ("send_messages", _l("Send messages")),
+    ("manage_templates", _l("Add and edit templates")),
+    ("manage_service", _l("Manage settings and team")),
+    ("manage_api_keys", _l("Manage API integration")),
 )
 
 

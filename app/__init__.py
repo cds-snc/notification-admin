@@ -74,21 +74,13 @@ from app.notify_client.letter_jobs_client import letter_jobs_client
 from app.notify_client.notification_api_client import notification_api_client
 from app.notify_client.org_invite_api_client import org_invite_api_client
 from app.notify_client.organisations_api_client import organisations_client
-from app.notify_client.platform_stats_api_client import (
-    platform_stats_api_client,
-)
+from app.notify_client.platform_stats_api_client import platform_stats_api_client
 from app.notify_client.provider_client import provider_client
 from app.notify_client.service_api_client import service_api_client
 from app.notify_client.status_api_client import status_api_client
-from app.notify_client.template_api_prefill_client import (
-    template_api_prefill_client,
-)
-from app.notify_client.template_folder_api_client import (
-    template_folder_api_client,
-)
-from app.notify_client.template_statistics_api_client import (
-    template_statistics_client,
-)
+from app.notify_client.template_api_prefill_client import template_api_prefill_client
+from app.notify_client.template_folder_api_client import template_folder_api_client
+from app.notify_client.template_statistics_api_client import template_statistics_client
 from app.notify_client.user_api_client import user_api_client
 from app.utils import documentation_url, id_safe
 
@@ -98,29 +90,29 @@ csrf = CSRFProtect()
 
 # The current service attached to the request stack.
 def _get_current_service():
-    return _lookup_req_object('service')
+    return _lookup_req_object("service")
 
 
 current_service = LocalProxy(_get_current_service)
 
 # The current organisation attached to the request stack.
-current_organisation = LocalProxy(partial(_lookup_req_object, 'organisation'))
+current_organisation = LocalProxy(partial(_lookup_req_object, "organisation"))
 
 navigation = {
-    'header_navigation': HeaderNavigation(),
-    'admin_navigation': AdminNavigation(),
-    'org_navigation': OrgNavigation(),
-    'main_navigation': MainNavigation()
+    "header_navigation": HeaderNavigation(),
+    "admin_navigation": AdminNavigation(),
+    "org_navigation": OrgNavigation(),
+    "main_navigation": MainNavigation(),
 }
 
 
 def get_current_locale(application):
-    requestLang = request.accept_languages.best_match(application.config['LANGUAGES'])
+    requestLang = request.accept_languages.best_match(application.config["LANGUAGES"])
     if requestLang is None:
         requestLang = "en"
 
-    if request.args.get('lang') and request.args.get('lang') in ["en", "fr"]:
-        lang = request.args.get('lang')
+    if request.args.get("lang") and request.args.get("lang") in ["en", "fr"]:
+        lang = request.args.get("lang")
     else:
         lang = session.get("userlang", requestLang)
 
@@ -131,11 +123,11 @@ def get_current_locale(application):
 def create_app(application):
     setup_commands(application)
 
-    notify_environment = os.environ['NOTIFY_ENVIRONMENT']
+    notify_environment = os.environ["NOTIFY_ENVIRONMENT"]
 
     application.config.from_object(configs[notify_environment])
-    asset_fingerprinter._cdn_domain = application.config['ASSET_DOMAIN']
-    asset_fingerprinter._asset_root = urljoin(application.config['ADMIN_BASE_URL'], application.config['ASSET_PATH'])
+    asset_fingerprinter._cdn_domain = application.config["ASSET_DOMAIN"]
+    asset_fingerprinter._asset_root = urljoin(application.config["ADMIN_BASE_URL"], application.config["ASSET_PATH"])
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
     babel = Babel(application)
@@ -147,14 +139,12 @@ def create_app(application):
     init_app(application)
 
     for client in (
-
         # Gubbins
         csrf,
         login_manager,
         proxy_fix,
         request_helper,
         cache,
-
         # API clients
         api_key_api_client,
         billing_api_client,
@@ -177,27 +167,25 @@ def create_app(application):
         template_statistics_client,
         template_api_prefill_client,
         user_api_client,
-
         # External API clients
         antivirus_client,
         statsd_client,
         zendesk_client,
-        redis_client
-
+        redis_client,
     ):
         client.init_app(application)
 
     logging.init_app(application, statsd_client)
 
     # Log a warning message if Redis is not enabled
-    if not application.config['REDIS_ENABLED']:
+    if not application.config["REDIS_ENABLED"]:
         application.logger.warning(
-            'Redis is not enabled. Some features may not be supported. '
-            'If you want to enable Redis, look at REDIS_* config variables.'
+            "Redis is not enabled. Some features may not be supported. "
+            "If you want to enable Redis, look at REDIS_* config variables."
         )
 
-    login_manager.login_view = 'main.sign_in'
-    login_manager.login_message_category = 'default'
+    login_manager.login_view = "main.sign_in"
+    login_manager.login_message_category = "default"
     login_manager.session_protection = None
     login_manager.anonymous_user = AnonymousUser
 
@@ -205,9 +193,11 @@ def create_app(application):
     redis_client.redis_store.decode_responses = True
 
     from app.main import main as main_blueprint
+
     application.register_blueprint(main_blueprint)
 
     from .status import status as status_blueprint
+
     application.register_blueprint(status_blueprint)
 
     add_template_filters(application)
@@ -236,15 +226,15 @@ def init_app(application):
 
     @application.context_processor
     def _attach_current_service():
-        return {'current_service': current_service}
+        return {"current_service": current_service}
 
     @application.context_processor
     def _attach_current_organisation():
-        return {'current_org': current_organisation}
+        return {"current_org": current_organisation}
 
     @application.context_processor
     def _attach_current_user():
-        return {'current_user': current_user}
+        return {"current_user": current_user}
 
     @application.context_processor
     def _nav_selected():
@@ -258,21 +248,21 @@ def init_app(application):
     @application.context_processor
     def inject_global_template_variables():
         return {
-            'header_colour': application.config['HEADER_COLOUR'],
-            'asset_url': asset_fingerprinter.get_url,
-            'asset_s3_url': asset_fingerprinter.get_s3_url,
-            'current_lang': get_current_locale(application),
-            'admin_base_url': application.config['ADMIN_BASE_URL'],
-            'sending_domain': application.config['SENDING_DOMAIN'],
-            'documentation_url': documentation_url,
+            "header_colour": application.config["HEADER_COLOUR"],
+            "asset_url": asset_fingerprinter.get_url,
+            "asset_s3_url": asset_fingerprinter.get_s3_url,
+            "current_lang": get_current_locale(application),
+            "admin_base_url": application.config["ADMIN_BASE_URL"],
+            "sending_domain": application.config["SENDING_DOMAIN"],
+            "documentation_url": documentation_url,
         }
 
 
 def convert_to_boolean(value):
     if isinstance(value, string_types):
-        if value.lower() in ['t', 'true', 'on', 'yes', '1']:
+        if value.lower() in ["t", "true", "on", "yes", "1"]:
             return True
-        elif value.lower() in ['f', 'false', 'off', 'no', '0']:
+        elif value.lower() in ["f", "false", "off", "no", "0"]:
             return False
 
     return value
@@ -285,90 +275,79 @@ def linkable_name(value):
 def format_number(number):
     lang = get_current_locale(current_app)
 
-    if lang == 'fr':
+    if lang == "fr":
         # Spaces as separators
-        return '{:,}'.format(number).replace(',', '\xa0')  # \xa0: nbsp
-    return '{:,}'.format(number)  # Commas as separators
+        return "{:,}".format(number).replace(",", "\xa0")  # \xa0: nbsp
+    return "{:,}".format(number)  # Commas as separators
 
 
 def format_datetime(date):
-    return '{} at {}'.format(
-        format_date(date),
-        format_time(date)
-    )
+    return "{} at {}".format(format_date(date), format_time(date))
 
 
 def format_datetime_24h(date):
-    return '{} at {}'.format(
+    return "{} at {}".format(
         format_date(date),
         format_time_24h(date),
     )
 
 
 def format_datetime_normal(date):
-    return '{} at {}'.format(
-        format_date_normal(date),
-        format_time(date)
-    )
+    return "{} at {}".format(format_date_normal(date), format_time(date))
 
 
 def format_datetime_short(date):
-    return '{} at {}'.format(
-        format_date_short(date),
-        format_time(date)
-    )
+    return "{} at {}".format(format_date_short(date), format_time(date))
 
 
 def format_datetime_relative(date):
-    return '{} at {}'.format(
-        get_human_day(date),
-        format_time(date)
-    )
+    return "{} at {}".format(get_human_day(date), format_time(date))
 
 
 def format_datetime_numeric(date):
-    return '{} {}'.format(
+    return "{} {}".format(
         format_date_numeric(date),
         format_time_24h(date),
     )
 
 
 def format_date_numeric(date):
-    return utc_string_to_aware_gmt_datetime(date).strftime('%Y-%m-%d')
+    return utc_string_to_aware_gmt_datetime(date).strftime("%Y-%m-%d")
 
 
 def format_time_24h(date):
-    return utc_string_to_aware_gmt_datetime(date).strftime('%H:%M')
+    return utc_string_to_aware_gmt_datetime(date).strftime("%H:%M")
 
 
 def get_human_day(time):
     #  Add 1 minute to transform 00:00 into ‘midnight today’ instead of ‘midnight tomorrow’
     date = (utc_string_to_aware_gmt_datetime(time) - timedelta(minutes=1)).date()
     if date == (datetime.utcnow() + timedelta(days=1)).date():
-        return 'tomorrow'
+        return "tomorrow"
     if date == datetime.utcnow().date():
-        return 'today'
+        return "today"
     if date == (datetime.utcnow() - timedelta(days=1)).date():
-        return 'yesterday'
+        return "yesterday"
     return _format_datetime_short(date)
 
 
 def format_time(date):
-    return {
-        '12:00AM': 'Midnight',
-        '12:00PM': 'Midday'
-    }.get(
-        utc_string_to_aware_gmt_datetime(date).strftime('%-I:%M%p'),
-        utc_string_to_aware_gmt_datetime(date).strftime('%-I:%M%p')
-    ).lower()
+    return (
+        {"12:00AM": "Midnight", "12:00PM": "Midday"}
+        .get(
+            utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
+            utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
+        )
+        .lower()
+    )
 
 
 def format_date(date):
-    return utc_string_to_aware_gmt_datetime(date).strftime('%A %d %B %Y')
+    return utc_string_to_aware_gmt_datetime(date).strftime("%A %d %B %Y")
 
 
 def format_date_normal(date):
-    return utc_string_to_aware_gmt_datetime(date).strftime('%d %B %Y').lstrip('0')
+    return utc_string_to_aware_gmt_datetime(date).strftime("%d %B %Y").lstrip("0")
 
 
 def format_date_short(date):
@@ -376,7 +355,7 @@ def format_date_short(date):
 
 
 def _format_datetime_short(datetime):
-    return datetime.strftime('%d %B').lstrip('0')
+    return datetime.strftime("%d %B").lstrip("0")
 
 
 def format_delta(_date):
@@ -408,9 +387,9 @@ def translate_preview_template(_template_str):
 
 def format_thousands(value):
     if isinstance(value, Number):
-        return '{:,.0f}'.format(value)
+        return "{:,.0f}".format(value)
     if value is None:
-        return ''
+        return ""
     return value
 
 
@@ -423,11 +402,7 @@ def valid_phone_number(phone_number):
 
 
 def format_notification_type(notification_type):
-    return {
-        'email': 'Email',
-        'sms': 'SMS',
-        'letter': 'Letter'
-    }[notification_type]
+    return {"email": "Email", "sms": "SMS", "letter": "Letter"}[notification_type]
 
 
 def format_notification_status(status, template_type, provider_response=None):
@@ -435,98 +410,104 @@ def format_notification_status(status, template_type, provider_response=None):
         return _(provider_response)
 
     return {
-        'email': {
-            'failed': _('Failed'),
-            'technical-failure': _('Technical failure'),
-            'temporary-failure': _('Inbox not accepting messages right now'),
-            'permanent-failure': _('Email address does not exist'),
-            'delivered': _('Delivered'),
-            'sending': _('Sending'),
-            'created': _('Sending'),
-            'sent': _('Delivered')
+        "email": {
+            "failed": _("Failed"),
+            "technical-failure": _("Technical failure"),
+            "temporary-failure": _("Inbox not accepting messages right now"),
+            "permanent-failure": _("Email address does not exist"),
+            "delivered": _("Delivered"),
+            "sending": _("Sending"),
+            "created": _("Sending"),
+            "sent": _("Delivered"),
         },
-        'sms': {
-            'failed': _('Failed'),
-            'technical-failure': _('Technical failure'),
-            'temporary-failure': _('Phone number not accepting messages right now'),
-            'permanent-failure': _('Phone number does not exist'),
-            'delivered': _('Delivered'),
-            'sending': _('Sending'),
-            'created': _('Sending'),
-            'pending': _('Sending'),
-            'sent': _('Sent')
+        "sms": {
+            "failed": _("Failed"),
+            "technical-failure": _("Technical failure"),
+            "temporary-failure": _("Phone number not accepting messages right now"),
+            "permanent-failure": _("Phone number does not exist"),
+            "delivered": _("Delivered"),
+            "sending": _("Sending"),
+            "created": _("Sending"),
+            "pending": _("Sending"),
+            "sent": _("Sent"),
         },
-        'letter': {
-            'failed': '',
-            'technical-failure': 'Technical failure',
-            'temporary-failure': '',
-            'permanent-failure': '',
-            'delivered': '',
-            'received': '',
-            'accepted': '',
-            'sending': '',
-            'created': '',
-            'sent': '',
-            'pending-virus-check': '',
-            'virus-scan-failed': 'Virus detected',
-            'returned-letter': '',
-            'cancelled': '',
-            'validation-failed': 'Validation failed',
-        }
+        "letter": {
+            "failed": "",
+            "technical-failure": "Technical failure",
+            "temporary-failure": "",
+            "permanent-failure": "",
+            "delivered": "",
+            "received": "",
+            "accepted": "",
+            "sending": "",
+            "created": "",
+            "sent": "",
+            "pending-virus-check": "",
+            "virus-scan-failed": "Virus detected",
+            "returned-letter": "",
+            "cancelled": "",
+            "validation-failed": "Validation failed",
+        },
     }[template_type].get(status, status)
 
 
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(
-        {'created', 'pending', 'sending'},
-        ' ' + _('since') + ' <span class="local-datetime-short">{}</span>'.format(created)
+        {"created", "pending", "sending"},
+        " " + _("since") + ' <span class="local-datetime-short">{}</span>'.format(created),
     ).get(status, '<span class="local-datetime-short">{}</span>'.format(updated))
 
 
 def format_notification_status_as_field_status(status, notification_type):
-    return {
-        'letter': {
-            'failed': 'error',
-            'technical-failure': 'error',
-            'temporary-failure': 'error',
-            'permanent-failure': 'error',
-            'delivered': None,
-            'sent': None,
-            'sending': None,
-            'created': None,
-            'accepted': None,
-            'pending-virus-check': None,
-            'virus-scan-failed': 'error',
-            'returned-letter': None,
-            'cancelled': 'error',
-        }
-    }.get(
-        notification_type,
+    return (
         {
-            'failed': 'error',
-            'technical-failure': 'error',
-            'temporary-failure': 'error',
-            'permanent-failure': 'error',
-            'delivered': None,
-            'sent': None,
-            'sending': 'default',
-            'created': 'default',
-            'pending': 'default',
+            "letter": {
+                "failed": "error",
+                "technical-failure": "error",
+                "temporary-failure": "error",
+                "permanent-failure": "error",
+                "delivered": None,
+                "sent": None,
+                "sending": None,
+                "created": None,
+                "accepted": None,
+                "pending-virus-check": None,
+                "virus-scan-failed": "error",
+                "returned-letter": None,
+                "cancelled": "error",
+            }
         }
-    ).get(status, 'error')
+        .get(
+            notification_type,
+            {
+                "failed": "error",
+                "technical-failure": "error",
+                "temporary-failure": "error",
+                "permanent-failure": "error",
+                "delivered": None,
+                "sent": None,
+                "sending": "default",
+                "created": "default",
+                "pending": "default",
+            },
+        )
+        .get(status, "error")
+    )
 
 
 def format_notification_status_as_url(status, notification_type):
     url = partial(url_for, "main.messages_status")
 
     if status not in {
-        'technical-failure', 'temporary-failure', 'permanent-failure',
+        "technical-failure",
+        "temporary-failure",
+        "permanent-failure",
     }:
         return None
 
     return {
-        'email': url(_anchor='email-statuses'),
-        'sms': url(_anchor='sms-statuses')
+        "email": url(_anchor="email-statuses"),
+        "sms": url(_anchor="sms-statuses"),
     }.get(notification_type)
 
 
@@ -536,15 +517,15 @@ def get_and_n_more_text(number_of_addresses):
     if number_of_hidden_addresses < 1:
         # This should never happen - this function is not
         # called in this case.
-        return _('…and 0 more')
+        return _("…and 0 more")
     if number_of_hidden_addresses == 1:
-        return _('…and 1 more')
+        return _("…and 1 more")
     if number_of_hidden_addresses > 1:
-        return _('…and {} more').format(number_of_hidden_addresses)
+        return _("…and {} more").format(number_of_hidden_addresses)
 
 
 def nl2br(value):
-    return formatters.nl2br(value) if value else ''
+    return formatters.nl2br(value) if value else ""
 
 
 @login_manager.user_loader
@@ -553,7 +534,7 @@ def load_user(user_id):
 
 
 def load_service_before_request():
-    if '/static/' in request.url:
+    if "/static/" in request.url:
         _request_ctx_stack.top.service = None
         _request_ctx_stack.top.organisation = None  # added to init None to ensure request context has None or something
         return
@@ -562,15 +543,13 @@ def load_service_before_request():
         _request_ctx_stack.top.organisation = None  # added to init None to ensure request context has None or something
 
         if request.view_args:
-            service_id = request.view_args.get('service_id', session.get('service_id'))
+            service_id = request.view_args.get("service_id", session.get("service_id"))
         else:
-            service_id = session.get('service_id')
+            service_id = session.get("service_id")
 
         if service_id:
             try:
-                _request_ctx_stack.top.service = Service(
-                    service_api_client.get_service(service_id)['data']
-                )
+                _request_ctx_stack.top.service = Service(service_api_client.get_service(service_id)["data"])
             except HTTPError as exc:
                 # if service id isn't real, then 404 rather than 500ing later because we expect service to be set
                 if exc.status_code == 404:
@@ -580,14 +559,14 @@ def load_service_before_request():
 
 
 def load_organisation_before_request():
-    if '/static/' in request.url:
+    if "/static/" in request.url:
         _request_ctx_stack.top.organisation = None
         return
     if _request_ctx_stack.top is not None:
         _request_ctx_stack.top.organisation = None
 
         if request.view_args:
-            org_id = request.view_args.get('org_id')
+            org_id = request.view_args.get("org_id")
 
             if org_id:
                 try:
@@ -602,45 +581,48 @@ def load_organisation_before_request():
 
 def save_service_or_org_after_request(response):
     # Only save the current session if the request is 200
-    service_id = request.view_args.get('service_id', None) if request.view_args else None
-    organisation_id = request.view_args.get('org_id', None) if request.view_args else None
+    service_id = request.view_args.get("service_id", None) if request.view_args else None
+    organisation_id = request.view_args.get("org_id", None) if request.view_args else None
     if response.status_code == 200:
         if service_id:
-            session['service_id'] = service_id
-            session['organisation_id'] = None
+            session["service_id"] = service_id
+            session["organisation_id"] = None
         elif organisation_id:
-            session['service_id'] = None
-            session['organisation_id'] = organisation_id
+            session["service_id"] = None
+            session["organisation_id"] = organisation_id
     return response
 
 
 #  https://www.owasp.org/index.php/List_of_useful_HTTP_headers
 def useful_headers_after_request(response):
-    response.headers.add('X-Frame-Options', 'deny')
-    response.headers.add('X-Content-Type-Options', 'nosniff')
-    response.headers.add('X-XSS-Protection', '1; mode=block')
-    response.headers.add('Permissions-Policy', 'interest-cohort=()')
-    response.headers.add('Content-Security-Policy', (
-        "default-src 'self' {asset_domain} 'unsafe-inline';"
-        "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
-        "connect-src 'self' *.google-analytics.com;"
-        "object-src 'self';"
-        "style-src 'self' *.googleapis.com 'unsafe-inline';"
-        "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-        "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
-        "frame-src 'self' www.youtube.com;".format(
-            asset_domain=current_app.config['ASSET_DOMAIN'],
-        )
-    ))
-    if 'Cache-Control' in response.headers:
-        del response.headers['Cache-Control']
+    response.headers.add("X-Frame-Options", "deny")
+    response.headers.add("X-Content-Type-Options", "nosniff")
+    response.headers.add("X-XSS-Protection", "1; mode=block")
+    response.headers.add("Permissions-Policy", "interest-cohort=()")
+    response.headers.add(
+        "Content-Security-Policy",
+        (
+            "default-src 'self' {asset_domain} 'unsafe-inline';"
+            "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
+            "connect-src 'self' *.google-analytics.com;"
+            "object-src 'self';"
+            "style-src 'self' *.googleapis.com 'unsafe-inline';"
+            "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
+            "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
+            "frame-src 'self' www.youtube.com;".format(
+                asset_domain=current_app.config["ASSET_DOMAIN"],
+            )
+        ),
+    )
+    if "Cache-Control" in response.headers:
+        del response.headers["Cache-Control"]
     # Cache static assets (CSS, JS, images) for a long time
     # as they have unique hashes thanks to the asset
     # fingerprinter
     if asset_fingerprinter.is_static_asset(request.url):
-        response.headers.add('Cache-Control', 'public, max-age=31536000, immutable')
+        response.headers.add("Cache-Control", "public, max-age=31536000, immutable")
     else:
-        response.headers.add('Cache-Control', 'no-store, no-cache, private, must-revalidate')
+        response.headers.add("Cache-Control", "no-store, no-cache, private, must-revalidate")
     for key, value in response.headers:
         response.headers[key] = SanitiseASCII.encode(value)
     return response
@@ -653,11 +635,13 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
 
     @application.errorhandler(HTTPError)
     def render_http_error(error):
-        application.logger.warning("API {} failed with status {} message {}".format(
-            error.response.url if error.response else 'unknown',
-            error.status_code,
-            error.message
-        ))
+        application.logger.warning(
+            "API {} failed with status {} message {}".format(
+                error.response.url if error.response else "unknown",
+                error.status_code,
+                error.message,
+            )
+        )
         error_code = error.status_code
         if error_code == 400:
             # all incoming 400 errors from the API are wrapped for translation
@@ -671,11 +655,13 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
             return useful_headers_after_request(resp)
         elif error_code not in [401, 404, 403, 410]:
             # probably a 500 or 503
-            application.logger.exception("API {} failed with status {} message {}".format(
-                error.response.url if error.response else 'unknown',
-                error.status_code,
-                error.message
-            ))
+            application.logger.exception(
+                "API {} failed with status {} message {}".format(
+                    error.response.url if error.response else "unknown",
+                    error.status_code,
+                    error.message,
+                )
+            )
             error_code = 500
         return _error_response(error_code)
 
@@ -706,36 +692,41 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
     @application.errorhandler(BadSignature)
     def handle_bad_token(error):
         # if someone has a malformed token
-        flash(_('There’s something wrong with the link you’ve used.'))
+        flash(_("There’s something wrong with the link you’ve used."))
         return _error_response(404)
 
     @application.errorhandler(CSRFError)
     def handle_csrf(reason):
-        application.logger.warning('csrf.error_message: {}'.format(reason))
+        application.logger.warning("csrf.error_message: {}".format(reason))
 
-        if 'user_id' not in session:
-            application.logger.warning(
-                u'csrf.session_expired: Redirecting user to log in page'
-            )
+        if "user_id" not in session:
+            application.logger.warning("csrf.session_expired: Redirecting user to log in page")
 
             return application.login_manager.unauthorized()
 
         application.logger.warning(
-            u'csrf.invalid_token: Aborting request, user_id: {user_id}',
-            extra={'user_id': session['user_id']})
+            "csrf.invalid_token: Aborting request, user_id: {user_id}",
+            extra={"user_id": session["user_id"]},
+        )
 
-        resp = make_response(render_template(
-            "error/400.html",
-            message=['Something went wrong, please go back and try again.']
-        ), 400)
+        resp = make_response(
+            render_template(
+                "error/400.html",
+                message=["Something went wrong, please go back and try again."],
+            ),
+            400,
+        )
         return useful_headers_after_request(resp)
 
     @application.errorhandler(405)
     def handle_405(error):
-        resp = make_response(render_template(
-            "error/400.html",
-            message=['Something went wrong, please go back and try again.']
-        ), 405)
+        resp = make_response(
+            render_template(
+                "error/400.html",
+                message=["Something went wrong, please go back and try again."],
+            ),
+            405,
+        )
         return useful_headers_after_request(resp)
 
     @application.errorhandler(WerkzeugHTTPException)
@@ -751,7 +742,7 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
     def handle_bad_request(error):
         current_app.logger.exception(error)
         # We want the Flask in browser stacktrace
-        if current_app.config.get('DEBUG', None):
+        if current_app.config.get("DEBUG", None):
             raise error
         if "Detected newline in header value" in str(error):
             return _error_response(400)

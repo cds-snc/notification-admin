@@ -2,12 +2,13 @@ import os
 import sys
 import traceback
 import newrelic.agent  # See https://bit.ly/2xBVKBH
+
 newrelic.agent.initialize()  # noqa: E402
 
 workers = 5
 worker_class = "eventlet"
 bind = "0.0.0.0:{}".format(os.getenv("PORT"))
-accesslog = '-'
+accesslog = "-"
 
 # See AWS doc
 # > We also recommend that you configure the idle timeout of your application
@@ -26,7 +27,7 @@ def on_starting(server):
 def worker_abort(worker):
     worker.log.info("worker received ABORT {}".format(worker.pid))
     for threadId, stack in sys._current_frames().items():
-        worker.log.error(''.join(traceback.format_stack(stack)))
+        worker.log.error("".join(traceback.format_stack(stack)))
 
 
 def on_exit(server):
