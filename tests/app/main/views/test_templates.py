@@ -1125,26 +1125,24 @@ def test_cant_copy_template_from_non_member_service(
     "endpoint, data, expected_error",
     (
         (
-            "main.choose_template",
+            "main.create_template",
             {
-                "operation": "add-new-template",
-                "add_template_by_template_type": "email",
+                "what_type": "email",
             },
             "Sending emails has been disabled for your service.",
         ),
         (
-            "main.choose_template",
+            "main.create_template",
             {
-                "operation": "add-new-template",
-                "add_template_by_template_type": "sms",
+                "what_type": "sms",
             },
             "Sending text messages has been disabled for your service.",
         ),
     ),
 )
 def test_should_not_allow_creation_of_template_through_form_without_correct_permission(
-    client_request,
-    service_one,
+    client_request: ClientRequest,
+    service_one: Service,
     mock_get_service_templates,
     mock_get_template_folders,
     endpoint,
