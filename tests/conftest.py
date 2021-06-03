@@ -1738,9 +1738,9 @@ def mock_get_user_pending(mocker, api_user_pending):
 
 
 @pytest.fixture(scope="function")
-def mock_get_user_by_email(mocker, user=None):
+def mock_get_user_by_email(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     def _get_user(email_address):
         user["email_address"] = email_address
