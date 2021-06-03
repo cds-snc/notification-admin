@@ -1631,9 +1631,10 @@ def mock_register_user(mocker, api_user_pending):
 
 
 @pytest.fixture(scope="function")
-def mock_get_non_govuser(mocker, user=None):
+def mock_get_non_govuser(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(sample_uuid(), email_address="someuser@notonsafelist.com")
+        user = api_user_active
+        user["email_address"] = "someuser@notonsafelist.com"
 
     def _get_user(id_):
         user["id"] = id_
@@ -1643,9 +1644,9 @@ def mock_get_non_govuser(mocker, user=None):
 
 
 @pytest.fixture(scope="function")
-def mock_get_user(mocker, user=None):
+def mock_get_user(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     def _get_user(id_):
         user["id"] = id_
@@ -1667,17 +1668,17 @@ def mock_get_user_email_auth(mocker, user=None):
 
 
 @pytest.fixture(scope="function")
-def mock_get_login_events(mocker, user=None):
+def mock_get_login_events(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     return mocker.patch("app.user_api_client.get_login_events_for_user", return_value=[])
 
 
 @pytest.fixture(scope="function")
-def mock_get_login_events_with_data(mocker, user=None):
+def mock_get_login_events_with_data(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     data = [
         {"data": {"user-agent": "foo", "location": "bar"}},
@@ -1687,17 +1688,17 @@ def mock_get_login_events_with_data(mocker, user=None):
 
 
 @pytest.fixture(scope="function")
-def mock_get_security_keys(mocker, user=None, keys=[]):
+def mock_get_security_keys(mocker, api_user_active, user=None, keys=[]):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     return mocker.patch("app.user_api_client.get_security_keys_for_user", return_value=keys)
 
 
 @pytest.fixture(scope="function")
-def mock_get_security_keys_with_key(mocker, user=None):
+def mock_get_security_keys_with_key(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     key = {
         "id": sample_uuid(),
@@ -1711,9 +1712,9 @@ def mock_get_security_keys_with_key(mocker, user=None):
 
 
 @pytest.fixture(scope="function")
-def mock_get_organisation_user(mocker, user=None):
+def mock_get_organisation_user(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     def _get_user(id_):
         user["id"] = id_
