@@ -1,13 +1,7 @@
 from flask import abort, current_app, render_template
 from flask_wtf import FlaskForm as Form
 from notifications_utils.template import Template
-from wtforms import (
-    FileField,
-    PasswordField,
-    StringField,
-    TextAreaField,
-    validators,
-)
+from wtforms import FileField, PasswordField, StringField, TextAreaField, validators
 
 from app.main import main
 

@@ -1,22 +1,11 @@
 from botocore.exceptions import ClientError as BotoClientError
-from flask import (
-    current_app,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import current_app, redirect, render_template, request, session, url_for
 from notifications_python_client.errors import HTTPError
 from requests import get as requests_get
 
 from app import letter_branding_client
 from app.main import main
-from app.main.forms import (
-    SearchByNameForm,
-    ServiceLetterBrandingDetails,
-    SVGFileUpload,
-)
+from app.main.forms import SearchByNameForm, ServiceLetterBrandingDetails, SVGFileUpload
 from app.s3_client.s3_logo_client import (
     LETTER_TEMP_TAG,
     delete_letter_temp_file,

@@ -6,10 +6,7 @@ from flask import current_app
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from notifications_utils.field import Field
-from notifications_utils.recipients import (
-    InvalidEmailError,
-    validate_email_address,
-)
+from notifications_utils.recipients import InvalidEmailError, validate_email_address
 from notifications_utils.sanitise_text import SanitiseSMS
 from wtforms import ValidationError
 from wtforms.validators import Email

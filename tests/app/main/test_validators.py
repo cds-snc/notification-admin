@@ -4,11 +4,7 @@ import pytest
 from wtforms import ValidationError
 
 from app.main.forms import RegisterUserForm, ServiceSmsSenderForm
-from app.main.validators import (
-    NoCommasInPlaceHolders,
-    OnlySMSCharacters,
-    ValidGovEmail,
-)
+from app.main.validators import NoCommasInPlaceHolders, OnlySMSCharacters, ValidGovEmail
 
 
 @pytest.mark.parametrize("password", ["notification", "11111111", "kittykat", "blackbox"])

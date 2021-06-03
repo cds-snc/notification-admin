@@ -6,13 +6,7 @@ from markupsafe import Markup
 from app.main import main
 from app.models.organisation import Organisation
 from app.models.service import Service
-from app.models.user import (
-    InvitedOrgUser,
-    InvitedUser,
-    OrganisationUsers,
-    User,
-    Users,
-)
+from app.models.user import InvitedOrgUser, InvitedUser, OrganisationUsers, User, Users
 from app.notify_client import InviteTokenError
 
 

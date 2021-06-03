@@ -10,16 +10,10 @@ from flask import (
     url_for,
 )
 from flask_login import current_user
-from notifications_utils.international_billing_rates import (
-    INTERNATIONAL_BILLING_RATES,
-)
+from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
-from app import (
-    email_branding_client,
-    get_current_locale,
-    letter_branding_client,
-)
+from app import email_branding_client, get_current_locale, letter_branding_client
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,

@@ -12,10 +12,7 @@ from app.main.views.dashboard import (
     get_dashboard_totals,
     get_free_paid_breakdown_for_billable_units,
 )
-from tests import (
-    validate_route_permission,
-    validate_route_permission_with_client,
-)
+from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
     a11y_test,

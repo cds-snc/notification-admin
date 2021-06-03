@@ -1,14 +1,7 @@
 from abc import ABC
 from typing import List, Text
 
-from flask import (
-    current_app,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import current_app, redirect, render_template, request, session, url_for
 from flask_babel import _
 from notifications_python_client.errors import HTTPError
 

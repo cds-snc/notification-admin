@@ -8,11 +8,7 @@ from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 
 from app.main.views.templates import get_human_readable_delta
-from tests import (
-    single_notification_json,
-    template_json,
-    validate_route_permission,
-)
+from tests import single_notification_json, template_json, validate_route_permission
 from tests.app.main.views.test_template_folders import (
     CHILD_FOLDER_ID,
     FOLDER_TWO_ID,

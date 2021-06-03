@@ -10,10 +10,7 @@ from flask_wtf.file import FileAllowed
 from flask_wtf.file import FileField as FileField_wtf
 from notifications_utils.columns import Columns
 from notifications_utils.formatters import strip_whitespace
-from notifications_utils.recipients import (
-    InvalidPhoneError,
-    validate_phone_number,
-)
+from notifications_utils.recipients import InvalidPhoneError, validate_phone_number
 from notifications_utils.strftime_codes import no_pad_hour12, no_pad_hour24
 from wtforms import (
     BooleanField,
@@ -35,14 +32,7 @@ from wtforms import (
     widgets,
 )
 from wtforms.fields.html5 import EmailField, SearchField, TelField
-from wtforms.validators import (
-    URL,
-    AnyOf,
-    DataRequired,
-    Length,
-    Optional,
-    Regexp,
-)
+from wtforms.validators import URL, AnyOf, DataRequired, Length, Optional, Regexp
 from wtforms.widgets import CheckboxInput, ListWidget
 
 from app import format_thousands
