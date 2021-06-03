@@ -1656,6 +1656,15 @@ def mock_get_user(mocker, api_user_active, user=None):
 
 
 @pytest.fixture(scope="function")
+def mock_get_user_platform_admin(mocker, platform_admin_user):
+    def _get_user(id_):
+        platform_admin_user["id"] = id_
+        return platform_admin_user
+
+    return mocker.patch("app.user_api_client.get_user", side_effect=_get_user)
+
+
+@pytest.fixture(scope="function")
 def mock_get_user_email_auth(mocker, user=None):
     if user is None:
         user = api_user_active_email_auth(sample_uuid())
@@ -1725,7 +1734,12 @@ def mock_get_organisation_user(mocker, api_user_active, user=None):
 
 @pytest.fixture(scope="function")
 def mock_get_locked_user(mocker, api_user_locked):
-    return mock_get_user(mocker, user=api_user_locked)
+    def _get_user(id_):
+        api_user_locked["id"] = id_
+        return api_user_locked
+
+    return mocker.patch("app.user_api_client.get_user", side_effect=_get_user)
+
 
 
 @pytest.fixture(scope="function")
@@ -1751,6 +1765,15 @@ def mock_get_user_by_email(mocker, api_user_active, user=None):
 
 
 @pytest.fixture(scope="function")
+def mock_get_locked_user_by_email(mocker, api_user_locked):
+    def _get_user(email_address):
+        api_user_locked["email_address"] = email_address
+        return api_user_locked
+
+    return mocker.patch("app.user_api_client.get_user_by_email", side_effect=_get_user)
+
+
+@pytest.fixture(scope="function")
 def mock_get_unknown_user_by_email(mocker, user=None):
     if user is None:
         user = api_user_active(USER_ONE_ID)
@@ -1761,10 +1784,6 @@ def mock_get_unknown_user_by_email(mocker, user=None):
 
     return mocker.patch("app.user_api_client.get_user_by_email", side_effect=_get_user)
 
-
-@pytest.fixture(scope="function")
-def mock_get_locked_user_by_email(mocker, api_user_locked):
-    return mock_get_user_by_email(mocker, user=api_user_locked)
 
 
 @pytest.fixture(scope="function")
@@ -3096,8 +3115,9 @@ def platform_admin_client(
     mocker,
     service_one,
     mock_login,
+    mock_get_user_platform_admin,
 ):
-    mock_get_user(mocker, user=platform_admin_user)
+    mock_get_user_platform_admin
     client.login(platform_admin_user, mocker, service_one)
     yield client
 
