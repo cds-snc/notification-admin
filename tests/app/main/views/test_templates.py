@@ -706,23 +706,15 @@ def test_should_show_sms_template_with_downgraded_unicode_characters(
 
 
 @pytest.mark.parametrize(
-    "mock_contact_block, expected_partial_url",
+    "mock_contact_block, endpoint",
     (
         (
             no_letter_contact_blocks,
-            partial(
-                url_for,
-                "main.service_add_letter_contact",
-                from_template=fake_uuid(),
-            ),
+            "main.service_add_letter_contact",
         ),
         (
             single_letter_contact_block,
-            partial(
-                url_for,
-                "main.set_template_sender",
-                template_id=fake_uuid(),
-            ),
+            "main.set_template_sender",
         ),
     ),
 )
@@ -735,7 +727,7 @@ def test_should_let_letter_contact_block_be_changed_for_the_template(
     service_one,
     fake_uuid,
     mock_contact_block,
-    expected_partial_url,
+    endpoint,
 ):
     mocker.patch("app.main.views.templates.get_page_count_for_letter", return_value=1)
     mock_contact_block(mocker)
@@ -746,7 +738,11 @@ def test_should_let_letter_contact_block_be_changed_for_the_template(
         template_id=fake_uuid,
         _test_page_title=False,
     )
-
+    expected_partial_url = partial(
+                url_for,
+                endpoint,
+                template_id=fake_uuid,
+            )
     assert page.select_one("a.edit-template-link-letter-contact")["href"] == expected_partial_url(service_id=SERVICE_ONE_ID)
 
 
