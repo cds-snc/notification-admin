@@ -23,7 +23,6 @@ from tests.conftest import (
     ElementNotFound,
     active_caseworking_user,
     active_user_view_permissions,
-    fake_uuid,
     mock_get_service_email_template,
     mock_get_service_letter_template,
     mock_get_service_template,
@@ -739,10 +738,10 @@ def test_should_let_letter_contact_block_be_changed_for_the_template(
         _test_page_title=False,
     )
     expected_partial_url = partial(
-                url_for,
-                endpoint,
-                template_id=fake_uuid,
-            )
+        url_for,
+        endpoint,
+        template_id=fake_uuid,
+    )
     assert page.select_one("a.edit-template-link-letter-contact")["href"] == expected_partial_url(service_id=SERVICE_ONE_ID)
 
 

@@ -182,50 +182,50 @@ def test_returns_value_from_cache(
     assert mock_redis_set.call_args_list == expected_cache_set_calls
 
 
-@pytest.mark.parametrize(
-    "client, method, extra_args, extra_kwargs",
-    [
-        (
-            user_api_client,
-            "add_user_to_service",
-            [SERVICE_ONE_ID, sample_uuid(), [], []],
-            {},
-        ),
-        (user_api_client, "update_user_attribute", [user_id], {}),
-        (user_api_client, "reset_failed_login_count", [user_id], {}),
-        (user_api_client, "update_user_attribute", [user_id], {}),
-        (user_api_client, "update_password", [user_id, "hunter2"], {}),
-        (user_api_client, "verify_password", [user_id, "hunter2"], {}),
-        (user_api_client, "check_verify_code", [user_id, "", ""], {}),
-        (user_api_client, "validate_security_keys", [user_id, {}], {}),
-        (user_api_client, "add_user_to_service", [SERVICE_ONE_ID, user_id, [], []], {}),
-        (user_api_client, "add_user_to_organisation", [sample_uuid(), user_id], {}),
-        (user_api_client, "set_user_permissions", [user_id, SERVICE_ONE_ID, []], {}),
-        (user_api_client, "archive_user", [user_id], {}),
-        (service_api_client, "remove_user_from_service", [SERVICE_ONE_ID, user_id], {}),
-        (
-            service_api_client,
-            "create_service",
-            ["", "", 0, False, user_id, sample_uuid(), False],
-            {},
-        ),
-        (invite_api_client, "accept_invite", [SERVICE_ONE_ID, user_id], {}),
-    ],
-)
-def test_deletes_user_cache_activate_user(
-    app_,
-    mock_get_user,
-    mocker,
-    api_user_pending,
-):
-    mocker.patch("app.notify_client.current_user", id="1")
-    mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
-    mock_request = mocker.patch("notifications_python_client.base.BaseAPIClient.request")
+# @pytest.mark.parametrize(
+#     "client, method, extra_args, extra_kwargs",
+#     [
+#         (
+#             user_api_client,
+#             "add_user_to_service",
+#             [SERVICE_ONE_ID, sample_uuid(), [], []],
+#             {},
+#         ),
+#         (user_api_client, "update_user_attribute", [user_id], {}),
+#         (user_api_client, "reset_failed_login_count", [user_id], {}),
+#         (user_api_client, "update_user_attribute", [user_id], {}),
+#         (user_api_client, "update_password", [user_id, "hunter2"], {}),
+#         (user_api_client, "verify_password", [user_id, "hunter2"], {}),
+#         (user_api_client, "check_verify_code", [user_id, "", ""], {}),
+#         (user_api_client, "validate_security_keys", [user_id, {}], {}),
+#         (user_api_client, "add_user_to_service", [SERVICE_ONE_ID, user_id, [], []], {}),
+#         (user_api_client, "add_user_to_organisation", [sample_uuid(), user_id], {}),
+#         (user_api_client, "set_user_permissions", [user_id, SERVICE_ONE_ID, []], {}),
+#         (user_api_client, "archive_user", [user_id], {}),
+#         (service_api_client, "remove_user_from_service", [SERVICE_ONE_ID, user_id], {}),
+#         (
+#             service_api_client,
+#             "create_service",
+#             ["", "", 0, False, user_id, sample_uuid(), False],
+#             {},
+#         ),
+#         (invite_api_client, "accept_invite", [SERVICE_ONE_ID, user_id], {}),
+#     ],
+# )
+# def test_deletes_user_cache_activate_user(
+#     app_,
+#     mock_get_user,
+#     mocker,
+#     api_user_pending,
+# ):
+#     mocker.patch("app.notify_client.current_user", id="1")
+#     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
+#     mock_request = mocker.patch("notifications_python_client.base.BaseAPIClient.request")
 
-    getattr(user_api_client, "activate_user")(*[api_user_pending(sample_uuid())["id"]])
+#     getattr(user_api_client, "activate_user")(*[api_user_pending(sample_uuid())["id"]])
 
-    assert call("user-{}".format(user_id)) in mock_redis_delete.call_args_list
-    assert len(mock_request.call_args_list) == 1
+#     assert call("user-{}".format(user_id)) in mock_redis_delete.call_args_list
+#     assert len(mock_request.call_args_list) == 1
 
 
 def test_deletes_user_cache(

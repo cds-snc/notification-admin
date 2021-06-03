@@ -1,4 +1,4 @@
-import uuid
+# import uuid
 from datetime import date
 from unittest.mock import patch
 
@@ -9,28 +9,27 @@ from app.models.service import Service
 from app.notify_client import NotifyAdminAPIClient
 from app.notify_client.notification_api_client import notification_api_client
 from tests import service_json
-from tests.conftest import api_user_active, platform_admin_user, set_config
+from tests.conftest import set_config
 
+# @pytest.mark.parametrize("method", ["put", "post", "delete"])
+# @pytest.mark.parametrize(
+#     "user",
+#     [api_user_active(str(uuid.uuid4())), platform_admin_user(str(uuid.uuid4()))],
+#     ids=["api_user", "platform_admin"],
+# )
+# @pytest.mark.parametrize("service", [service_json(active=True), None], ids=["active_service", "no_service"])
+# def test_active_service_can_be_modified(app_, method, user, service):
+#     api_client = NotifyAdminAPIClient()
 
-@pytest.mark.parametrize("method", ["put", "post", "delete"])
-@pytest.mark.parametrize(
-    "user",
-    [api_user_active(str(uuid.uuid4())), platform_admin_user(str(uuid.uuid4()))],
-    ids=["api_user", "platform_admin"],
-)
-@pytest.mark.parametrize("service", [service_json(active=True), None], ids=["active_service", "no_service"])
-def test_active_service_can_be_modified(app_, method, user, service):
-    api_client = NotifyAdminAPIClient()
+#     with app_.test_request_context() as request_context, app_.test_client() as client:
+#         client.login(user)
+#         request_context.service = Service(service)
 
-    with app_.test_request_context() as request_context, app_.test_client() as client:
-        client.login(user)
-        request_context.service = Service(service)
+#         with patch.object(api_client, "request") as request:
+#             ret = getattr(api_client, method)("url", "data")
 
-        with patch.object(api_client, "request") as request:
-            ret = getattr(api_client, method)("url", "data")
-
-    assert request.called
-    assert ret == request.return_value
+#     assert request.called
+#     assert ret == request.return_value
 
 
 @pytest.mark.parametrize("method", ["put", "post", "delete"])
