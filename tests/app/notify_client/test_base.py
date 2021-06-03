@@ -13,12 +13,12 @@ def test_retry_on_server_error_2_failed_tries(mocker):
 
     # 2 failures, 1 good response, successful on last try
     mocker.patch(
-        'notifications_python_client.base.requests.request',
+        "notifications_python_client.base.requests.request",
         side_effect=[
             requests.exceptions.ConnectionError(),
             requests.exceptions.ConnectionError(),
-            response
-        ]
+            response,
+        ],
     )
 
     assert service_api_client.get_live_services_data() == {"foo": "bar"}
@@ -32,13 +32,13 @@ def test_retry_on_server_error_3_failed_tries(mocker):
 
     # 3 failures, 1 good response: too many failures
     mocker.patch(
-        'notifications_python_client.base.requests.request',
+        "notifications_python_client.base.requests.request",
         side_effect=[
             requests.exceptions.ConnectionError(),
             requests.exceptions.ConnectionError(),
             requests.exceptions.ConnectionError(),
-            response
-        ]
+            response,
+        ],
     )
 
     with pytest.raises(HTTP503Error):

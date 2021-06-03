@@ -5,11 +5,11 @@ from app import get_current_locale
 from app.main import main
 
 
-@main.route('/sign-out', methods=(['GET']))
+@main.route("/sign-out", methods=(["GET"]))
 def sign_out():
     currentlang = get_current_locale(current_app)
     session.clear()
     logout_user()
     session["userlang"] = currentlang
 
-    return redirect(url_for('main.index'))
+    return redirect(url_for("main.index"))
