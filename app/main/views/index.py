@@ -261,7 +261,7 @@ def callbacks():
 
 @main.route("/features", endpoint="features")
 def features():
-    return render_template('views/features.html')
+    return render_template("views/features.html")
 
 
 @main.route("/why-notify", endpoint="why-notify")
@@ -272,37 +272,37 @@ def why_notify():
 
 @main.route("/roadmap", endpoint="roadmap")
 def roadmap():
-    return render_template('views/roadmap.html')
+    return render_template("views/roadmap.html")
 
 
 @main.route("/email", endpoint="email")
 def features_email():
-    return render_template('views/emails.html')
+    return render_template("views/emails.html")
 
 
 @main.route("/sms", endpoint="sms")
 def features_sms():
-    return render_template('views/text-messages.html')
+    return render_template("views/text-messages.html")
 
 
 @main.route("/letters", endpoint="letters")
 def features_letters():
-    return render_template('views/letters.html')
+    return render_template("views/letters.html")
 
 
-@main.route('/guidance', endpoint='guidance')
+@main.route("/guidance", endpoint="guidance")
 def guidance():
-    return render_template('views/guidance/index.html')
+    return render_template("views/guidance/index.html")
 
 
-@main.route('/format', endpoint='format')
+@main.route("/format", endpoint="format")
 def format():
-    return render_template('views/guidance/format.html')
+    return render_template("views/guidance/format.html")
 
 
-@main.route('/personalise', endpoint='personalise')
+@main.route("/personalise", endpoint="personalise")
 def personalise():
-    return render_template('views/guidance/personalise.html')
+    return render_template("views/guidance/personalise.html")
 
 
 @main.route("/security", endpoint="security")
@@ -342,24 +342,25 @@ def activity_download():
 
 @main.route("/terms", endpoint="terms")
 def terms():
-    return render_template('views/terms-of-use.html')
+    return render_template("views/terms-of-use.html")
 
 
 @main.route("/messages-status", endpoint="messages_status")
 def messages_status():
-    return render_template('views/messages-status.html')
+    return render_template("views/messages-status.html")
 
 
 # --- Redirects --- #
 
-@main.route('/features/roadmap', endpoint='redirect_roadmap')
-@main.route('/features/email', endpoint='redirect_email')
-@main.route('/features/sms', endpoint='redirect_sms')
-@main.route('/features/letters', endpoint='redirect_letters')
-@main.route('/features/templates', endpoint='redirect_format')
-@main.route('/features/security', endpoint='redirect_security')
-@main.route('/features/terms', endpoint='redirect_terms')
-@main.route('/features/messages-status', endpoint='redirect_messages_status')
-@main.route('/templates', endpoint='redirect_format')
+
+@main.route("/features/roadmap", endpoint="redirect_roadmap")
+@main.route("/features/email", endpoint="redirect_email")
+@main.route("/features/sms", endpoint="redirect_sms")
+@main.route("/features/letters", endpoint="redirect_letters")
+@main.route("/features/templates", endpoint="redirect_format")
+@main.route("/features/security", endpoint="redirect_security")
+@main.route("/features/terms", endpoint="redirect_terms")
+@main.route("/features/messages-status", endpoint="redirect_messages_status")
+@main.route("/templates", endpoint="redirect_format")
 def old_page_redirects():
     return redirect(url_for(request.endpoint.replace("redirect_", "")), code=301)

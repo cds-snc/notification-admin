@@ -25,8 +25,11 @@ display_result $? 1 "Requirements check"
 
 make babel
 
+black ./app ./tests --check
+display_result $? 2 "Code style check (Black)"
+
 flake8 .
-display_result $? 1 "Code style check"
+display_result $? 1 "Code style check (flake8)"
 
 isort --check-only ./app ./tests
 display_result $? 2 "Import order check"

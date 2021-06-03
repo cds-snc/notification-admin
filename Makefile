@@ -70,4 +70,5 @@ run-dev:
 
 .PHONY: format
 format:
-	black ./
+	isort ./app ./tests
+	black ./app ./tests
