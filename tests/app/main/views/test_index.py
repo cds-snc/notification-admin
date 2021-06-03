@@ -104,27 +104,18 @@ def test_security_txt(client):
         "Hiring: https://digital.canada.ca/join-our-team/",
         "Hiring: https://numerique.canada.ca/rejoindre-notre-equipe/",
     ]
-    assert response.get_data(as_text=True) == ("\n".join(security_info))
+    assert response.get_data(as_text=True) == (
+        '\n'.join(security_info)
+    )
 
 
-@pytest.mark.parametrize(
-    "view",
-    [
-        "privacy",
-        "pricing",
-        "terms",
-        "roadmap",
-        "why-notify",
-        "features",
-        "security",
-        "messages_status",
-        "email",
-        "sms",
-        "letters",
-        "welcome",
-        "features",
-    ],
-)
+@pytest.mark.parametrize('view', [
+    'privacy', 'pricing', 'terms', 'roadmap', 'why-notify',
+    'features', 'security', 'messages_status',
+    'email', 'sms', 'letters', 'welcome',
+    'features', 'format', 'personalise',
+    'guidance',
+])
 def test_static_pages(
     client_request,
     mock_get_organisation_by_domain,
@@ -145,22 +136,23 @@ def test_activity_page(mocker, client):
     assert response.status_code == 200
 
 
-@pytest.mark.parametrize(
-    "view, expected_view",
-    [
-        ("redirect_roadmap", "roadmap"),
-        ("redirect_email", "email"),
-        ("redirect_sms", "sms"),
-        ("redirect_letters", "letters"),
-        ("redirect_templates", "templates"),
-        ("redirect_security", "security"),
-        ("redirect_terms", "terms"),
-        ("redirect_messages_status", "messages_status"),
-        ("redirect_contact", "contact"),
-    ],
-)
-def test_old_static_pages_redirect(client, view, expected_view):
-    response = client.get(url_for("main.{}".format(view)))
+@pytest.mark.parametrize('view, expected_view', [
+    ('redirect_roadmap', 'roadmap'),
+    ('redirect_email', 'email'),
+    ('redirect_sms', 'sms'),
+    ('redirect_letters', 'letters'),
+    ('redirect_security', 'security'),
+    ('redirect_terms', 'terms'),
+    ('redirect_messages_status', 'messages_status'),
+    ('redirect_contact', 'contact'),
+    ('redirect_format', 'format'),
+])
+def test_old_static_pages_redirect(
+    client,
+    view,
+    expected_view
+):
+    response = client.get(url_for('main.{}'.format(view)))
     assert response.status_code == 301
     assert response.location == url_for("main.{}".format(expected_view), _external=True)
 
