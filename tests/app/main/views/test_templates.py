@@ -286,27 +286,27 @@ def test_should_show_live_search_if_service_has_lots_of_folders(
     ),
 )
 def test_should_show_new_template_choices_if_service_has_folder_permission(
-    client_request,
-    service_one,
+    client_request: ClientRequest,
+    service_one: Service,
     mock_get_service_templates,
     mock_get_template_folders,
     extra_permissions,
     expected_values,
     expected_labels,
 ):
-    service_one["permissions"] += extra_permissions
+    service_one.permissions += extra_permissions
 
     page = client_request.get(
-        "main.choose_template",
+        "main.create_template",
         service_id=SERVICE_ONE_ID,
     )
 
-    if not page.select("#add_new_template_form"):
+    if not page.select("#what_type"):
         raise ElementNotFound()
 
-    assert normalize_spaces(page.select_one("#add_new_template_form fieldset legend").text) == ("Create template")
-    assert [choice["value"] for choice in page.select("#add_new_template_form input[type=radio]")] == expected_values
-    assert [normalize_spaces(choice.text) for choice in page.select("#add_new_template_form label")] == expected_labels
+    assert normalize_spaces(page.select_one("fieldset#what_type legend").text) == ("Type of message")
+    assert [choice["value"] for choice in page.select("#what_type input[type=radio]")] == expected_values
+    assert [normalize_spaces(choice.text) for choice in page.select("#what_type label")] == expected_labels
 
 
 def test_should_show_page_for_one_template(
