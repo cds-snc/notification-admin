@@ -8,6 +8,7 @@ from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 
 from app.main.views.templates import get_human_readable_delta
+from app.models.service import Service
 from tests import single_notification_json, template_json, validate_route_permission
 from tests.app.main.views.test_template_folders import (
     CHILD_FOLDER_ID,
@@ -17,6 +18,7 @@ from tests.app.main.views.test_template_folders import (
     _template,
 )
 from tests.conftest import (
+    ClientRequest,
     SERVICE_ONE_ID,
     SERVICE_TWO_ID,
     TEMPLATE_ONE_ID,
@@ -55,26 +57,22 @@ def test_should_show_empty_page_when_no_templates(
     assert page.select_one("#add_new_template_form")
 
 
-def test_should_show_add_template_form_if_service_has_folder_permission(
-    client_request,
-    service_one,
+def test_should_show_create_template_button_if_service_has_folder_permission(
+    client_request: ClientRequest,
+    service_one: Service,
     mock_get_service_templates_when_no_templates_exist,
     mock_get_template_folders,
 ):
     page = client_request.get(
         "main.choose_template",
-        service_id=service_one["id"],
+        service_id=service_one.id,
     )
 
     assert normalize_spaces(page.select_one("h1").text) == ("Templates")
     assert normalize_spaces(page.select_one("main p").text) == (
         "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
     )
-    assert [(item["name"], item["value"]) for item in page.select("[type=radio]")] == [
-        ("add_template_by_template_type", "email"),
-        ("add_template_by_template_type", "sms"),
-    ]
-    assert not page.select("main a")
+    assert "Create template" in page.select_one("#add_new_template_form a.button").text
 
 
 @pytest.mark.parametrize(
