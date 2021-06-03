@@ -3536,28 +3536,31 @@ def mock_update_service_organisation(mocker):
     )
 
 
-def _get_organisation_services(organisation_id):
-    if organisation_id == "o1":
-        return [
-            service_json("12345", "service one", restricted=False),
-            service_json("67890", "service two"),
-            service_json("abcde", "service three"),
-        ]
-    if organisation_id == "o2":
-        return [
-            service_json("12345", "service one", restricted=False),
-            service_json("67890", "service two", restricted=False),
-            service_json("abcde", "service three"),
-        ]
-    return [
-        service_json("12345", "service one"),
-        service_json("67890", "service two"),
-        service_json(SERVICE_ONE_ID, "service one", [api_user_active(fake_uuid())["id"]]),
-    ]
+organisation_o1 = [
+    service_json("12345", "service one", restricted=False),
+    service_json("67890", "service two"),
+    service_json("abcde", "service three"),
+]
+organisation_o2 = [
+    service_json("12345", "service one", restricted=False),
+    service_json("67890", "service two", restricted=False),
+    service_json("abcde", "service three"),
+]
 
 
 @pytest.fixture(scope="function")
-def mock_get_organisation_services(mocker, api_user_active):
+def mock_get_organisation_services(mocker, api_user_active, fake_uuid):
+    def _get_organisation_services(organisation_id):
+        if organisation_id == "o1":
+            return organisation_o1
+        if organisation_id == "o2":
+            return organisation_o2
+        return [
+            service_json("12345", "service one"),
+            service_json("67890", "service two"),
+            service_json(SERVICE_ONE_ID, "service one", [api_user_active(fake_uuid)["id"]]),
+        ]
+
     return mocker.patch(
         "app.organisations_client.get_organisation_services",
         side_effect=_get_organisation_services,
@@ -3715,7 +3718,7 @@ def mock_get_non_empty_organisations_and_services_for_user(mocker, organisation_
                     "count_of_live_services": 0,
                 },
             ],
-            "services": (_get_organisation_services("o1") + _get_organisation_services("o2") + _make_services("Service")),
+            "services": (organisation_o1 + organisation_o2 + _make_services("Service")),
         }
 
     return mocker.patch(
@@ -3814,4 +3817,4 @@ def mock_get_service_and_organisation_counts(mocker):
     )
 
 
-next(app_(None))  # used to init for other tests
+# next(app_(None))  # used to init for other tests
