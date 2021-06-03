@@ -150,7 +150,7 @@
     };
 
     this.addClearButton = function(state) {
-      let selector = "button#add-new-template";
+      let selector = "button[value=add-new-template]";
       let $clear = this.makeButton(window.polyglot.t("clear_button"), {
         onclick: () => {
           // uncheck all templates and folders

@@ -1753,6 +1753,7 @@ def test_should_show_page_for_a_deleted_template(
 @pytest.mark.parametrize(
     "route",
     [
+        "main.create_template",
         "main.add_service_template",
         "main.edit_service_template",
         "main.delete_service_template",
@@ -1815,6 +1816,7 @@ def test_route_permissions_for_choose_template(
 @pytest.mark.parametrize(
     "route",
     [
+        "main.create_template",
         "main.add_service_template",
         "main.edit_service_template",
         "main.delete_service_template",
