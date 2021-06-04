@@ -5,7 +5,7 @@ from flask import request
 
 class Navigation:
     mapping: dict = {}
-    exclude: set = set([])
+    exclude: set = set()
     selected_attribute = "class=selected"
 
     def __init__(self):
