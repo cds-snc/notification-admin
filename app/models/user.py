@@ -615,7 +615,7 @@ class OrganisationUsers(Users):
     client = user_api_client.get_users_for_organisation
 
 
-class InvitedUsers(Users):
+class InvitedUsers(ModelList):
 
     client = invite_api_client.get_invites_for_service
     model = InvitedUser
@@ -624,6 +624,10 @@ class InvitedUsers(Users):
         self.items = [user for user in self.client(service_id) if user["status"] != "accepted"]
 
 
-class OrganisationInvitedUsers(InvitedUsers):
+class OrganisationInvitedUsers(ModelList):
+
     client = org_invite_api_client.get_invites_for_organisation
     model = InvitedOrgUser
+
+    def __init__(self, service_id):
+        self.items = [user for user in self.client(service_id) if user["status"] != "accepted"]
