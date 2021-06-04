@@ -387,7 +387,7 @@ def translate_preview_template(_template_str):
 
 def format_thousands(value):
     if isinstance(value, Number):
-        return "{:,.0f}".format(value)
+        return "{:,.0f}".format(Number(value))
     if value is None:
         return ""
     return value

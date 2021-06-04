@@ -51,12 +51,12 @@ class JSONModel:
 class ModelList(ABC, Sequence):
     @property
     @abstractmethod
-    def client():
+    def client(self):
         pass
 
     @property
     @abstractmethod
-    def model():
+    def model(self):
         pass
 
     def __init__(self):
