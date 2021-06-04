@@ -3,3 +3,6 @@
 
 # Ignore all HTML files:
 *.html
+
+# Ignore minified/compiled css
+app/assets/stylesheets/index.css

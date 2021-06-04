@@ -72,4 +72,4 @@ run-dev:
 format:
 	isort ./app ./tests
 	black ./app ./tests
-	npx prettier --write app/assets/javascripts app/assets/stylesheets/tailwind
+	npx prettier --write app/assets/javascripts app/assets/stylesheets

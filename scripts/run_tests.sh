@@ -34,7 +34,7 @@ display_result $? 1 "Code style check (flake8)"
 isort --check-only ./app ./tests
 display_result $? 2 "Import order check"
 
-npx prettier --check app/assets/javascripts app/assets/stylesheets/tailwind
+npx prettier --check app/assets/javascripts app/assets/stylesheets
 display_result $? 1 "JS/CSS code style check"
 
 npm test
