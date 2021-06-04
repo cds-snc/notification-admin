@@ -12,7 +12,7 @@
     padding-right: 2px;
     @apply block text-center;
   }
-  
+
   .align-with-heading-copy {
     margin-top: 25px;
     @apply block;

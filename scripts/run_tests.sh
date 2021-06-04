@@ -34,8 +34,11 @@ display_result $? 1 "Code style check (flake8)"
 isort --check-only ./app ./tests
 display_result $? 2 "Import order check"
 
+npx prettier --check app/assets/javascripts app/assets/stylesheets/tailwind
+display_result $? 1 "JS/CSS code style check"
+
 npm test
-display_result $? 3 "Front end code style check"
+display_result $? 1 "npm test"
 
 ## Code coverage
 py.test -n4 --maxfail=1 tests/ --strict -p no:warnings
