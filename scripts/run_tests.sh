@@ -34,7 +34,7 @@ display_result $? 1 "Code style check (flake8)"
 isort --check-only ./app ./tests
 display_result $? 1 "Import order check"
 
-mypy ./app ./tests
+mypy ./
 display_result $? 1 "Type check"
 
 npm test

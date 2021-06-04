@@ -21,7 +21,7 @@ from flask import (
     url_for,
 )
 from flask._compat import string_types
-from flask.globals import _lookup_req_object, _request_ctx_stack
+from flask.globals import _lookup_req_object, _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect

@@ -409,13 +409,14 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
     auth_type = HiddenField("auth_type", validators=[DataRequired()])
 
 
-class PermissionsAbstract(StripWhitespaceForm):
-    def __init__(self):
-        for permission, label in permissions:
-            self[permission] = BooleanField(label)
+PermissionsAbstract = type(
+    "PermissionsAbstract",
+    (StripWhitespaceForm,),
+    {permission: BooleanField(label) for permission, label in permissions},
+)
 
 
-class PermissionsForm(PermissionsAbstract):
+class PermissionsForm(PermissionsAbstract):  # type: ignore
     def __init__(self, all_template_folders=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.folder_permissions.choices = []
