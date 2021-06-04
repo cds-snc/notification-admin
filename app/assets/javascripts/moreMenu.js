@@ -25,7 +25,9 @@
 
     $menuItems = $(menuItemsId);
     $menuContainer = $(menuContainerId);
-    $moreMenu.click(() => menuToggle($moreMenu, $menuContainer, $moreMenu.find(".arrow")));
+    $moreMenu.click(() =>
+      menuToggle($moreMenu, $menuContainer, $moreMenu.find(".arrow"))
+    );
 
     // Take the number of menu items and calculate individual outer width
     // of each one.
@@ -85,9 +87,11 @@
       // Need to adjust re-alignment..
       $moreMenuItems.children().removeClass();
       $moreMenuItems.children().addClass("text-right px-5");
-      $moreMenuItems.find(".header--active")
-        .removeClass("header--active")  
-        .parent().addClass("menu--active");
+      $moreMenuItems
+        .find(".header--active")
+        .removeClass("header--active")
+        .parent()
+        .addClass("menu--active");
 
       const divider = $("<div/>")
         .addClass("w-full px-5")

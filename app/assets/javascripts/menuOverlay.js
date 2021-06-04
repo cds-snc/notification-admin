@@ -37,7 +37,7 @@
   function init($menuButton) {
     const contentId = "#" + $menuButton.attr("data-menu-overlay-content");
     const $content = $(contentId);
-    
+
     const closeId = "#" + $menuButton.attr("data-menu-overlay-close");
     const $closeButton = $content.find(closeId);
 
