@@ -292,7 +292,7 @@
       }
 
       // use dialog mode for states which contain more than one form control
-      if ( this.currentState === "move-to-existing-folder") {
+      if (this.currentState === "move-to-existing-folder") {
         mode = "dialog";
       }
       GOVUK.stickAtBottomWhenScrolling.setMode(mode);
