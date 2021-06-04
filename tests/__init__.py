@@ -9,7 +9,16 @@ from flask import url_for
 from flask.testing import FlaskClient
 from flask_login import login_user
 
+from app.models.service import Service
 from app.models.user import User
+
+
+class dotdict(dict):
+    """dot.notation access to dictionary attributes"""
+
+    __getattr__ = dict.get
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
 
 
 class TestClient(FlaskClient):
@@ -160,7 +169,7 @@ def service_json(
         permissions = ["email", "sms"]
     if inbound_api is None:
         inbound_api = []
-    return {
+    service_dict = {
         "id": id_,
         "name": name,
         "users": users,
@@ -193,6 +202,8 @@ def service_json(
         "sending_domain": sending_domain,
         "go_live_user": go_live_user,
     }
+    service: Service = dotdict(service_dict)
+    return service
 
 
 def organisation_json(
@@ -580,7 +591,7 @@ def validate_route_permission_with_client(mocker, client, method, response_code,
     return resp
 
 
-def assert_url_expected(actual, expected):
+def assert_url_expected(actual: str, expected: str):
     actual_parts = urlparse(actual)
     expected_parts = urlparse(expected)
     for attribute in actual_parts._fields:

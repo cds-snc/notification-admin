@@ -3134,12 +3134,12 @@ class ClientRequest:
 
     def get(
         self,
-        endpoint,
-        _expected_status=200,
-        _follow_redirects=False,
-        _expected_redirect=None,
-        _test_page_title=True,
-        _optional_args="",
+        endpoint: str,
+        _expected_status: int = 200,
+        _follow_redirects: bool = False,
+        _expected_redirect: str = None,
+        _test_page_title: bool = True,
+        _optional_args: str = "",
         **endpoint_kwargs,
     ):
         return ClientRequest.get_url(
@@ -3153,11 +3153,11 @@ class ClientRequest:
 
     def get_url(
         self,
-        url,
-        _expected_status=200,
-        _follow_redirects=False,
-        _expected_redirect=None,
-        _test_page_title=True,
+        url: str,
+        _expected_status: int = 200,
+        _follow_redirects: bool = False,
+        _expected_redirect: str = None,
+        _test_page_title: bool = True,
         **endpoint_kwargs,
     ):
         resp = self.logged_in_client.get(
@@ -3180,11 +3180,11 @@ class ClientRequest:
 
     def post(
         self,
-        endpoint,
-        _data=None,
-        _expected_status=None,
-        _follow_redirects=False,
-        _expected_redirect=None,
+        endpoint: str,
+        _data: dict = None,
+        _expected_status: int = None,
+        _follow_redirects: bool = False,
+        _expected_redirect: str = None,
         **endpoint_kwargs,
     ):
         if _expected_status is None:
