@@ -26,17 +26,20 @@ display_result $? 1 "Requirements check"
 make babel
 
 black ./app ./tests --check
-display_result $? 2 "Code style check (Black)"
+display_result $? 1 "Code style check (Black)"
 
 flake8 .
 display_result $? 1 "Code style check (flake8)"
 
 isort --check-only ./app ./tests
-display_result $? 2 "Import order check"
+display_result $? 1 "Import order check"
+
+mypy ./app ./tests
+display_result $? 1 "Type check"
 
 npm test
-display_result $? 3 "Front end code style check"
+display_result $? 1 "Front end code style check"
 
 ## Code coverage
 py.test -n4 --maxfail=1 tests/ --strict -p no:warnings
-display_result $? 4 "Code coverage"
+display_result $? 1 "Code coverage"
