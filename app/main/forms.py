@@ -409,11 +409,13 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
     auth_type = HiddenField("auth_type", validators=[DataRequired()])
 
 
-PermissionsAbstract = type(
-    "PermissionsAbstract",
-    (StripWhitespaceForm,),
-    {permission: BooleanField(label) for permission, label in permissions},
-)
+# PermissionsAbstract = type(
+#     "PermissionsAbstract",
+#     (StripWhitespaceForm,),
+#     {permission: BooleanField(label) for permission, label in permissions},
+# )
+class PermissionsAbstract(StripWhitespaceForm):
+    self.permission
 
 
 class PermissionsForm(PermissionsAbstract):
@@ -604,7 +606,7 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
 
 
 class CreateServiceStepLogoForm(StripWhitespaceForm):
-    def _getSelectBilingualChoices(self) -> dict:
+    def _getSelectBilingualChoices(self):
         cdn_url = get_logo_cdn_domain()
         default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
         default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
