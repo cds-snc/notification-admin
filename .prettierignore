@@ -1,0 +1,5 @@
+# Ignore minified js:
+*.min.js
+
+# Ignore all HTML files:
+*.html
