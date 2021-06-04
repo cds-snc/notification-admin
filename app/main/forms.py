@@ -409,13 +409,10 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
     auth_type = HiddenField("auth_type", validators=[DataRequired()])
 
 
-# PermissionsAbstract = type(
-#     "PermissionsAbstract",
-#     (StripWhitespaceForm,),
-#     {permission: BooleanField(label) for permission, label in permissions},
-# )
 class PermissionsAbstract(StripWhitespaceForm):
-    self.permission
+    def __init__(self):
+        for permission, label in permissions:
+            self[permission] = BooleanField(label)
 
 
 class PermissionsForm(PermissionsAbstract):
