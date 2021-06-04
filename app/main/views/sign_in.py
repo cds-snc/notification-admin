@@ -52,7 +52,7 @@ def sign_in():
         if user and session.get("invited_user"):
             invited_user = InvitedUser.from_session()
             if user.email_address.lower() != invited_user.email_address.lower():
-                flash(_("You can't accept an invite for another person."))
+                flash(_("You cannot accept an invite for another person."))
                 session.pop("invited_user", None)
                 abort(403)
             else:
