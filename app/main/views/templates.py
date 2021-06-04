@@ -338,8 +338,6 @@ def create_template(service_id, template_type="all", template_folder_id=None):
     form = CreateTemplateForm()
 
     if request.method == "POST" and form.validate_on_submit():
-        if not current_user.has_permissions("manage_templates"):
-            abort(403)
         try:
             return _add_template_by_type(
                 form.what_type.data,
@@ -353,6 +351,7 @@ def create_template(service_id, template_type="all", template_folder_id=None):
         template_folder_id=template_folder_id,
         template_type=template_type,
         form=form,
+        disabled_options={},
         option_hints={},
     )
 
