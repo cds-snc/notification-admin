@@ -30,10 +30,9 @@
   </div>
   <div id="add_new_template_form">
     <div class="js-will-stick-at-bottom-when-scrolling">
-    {{ radios(templates_and_folders_form.add_template_by_template_type) }}
-    </div>
-    <div class="js-will-stick-at-bottom-when-scrolling">
-    {{ page_footer(_('Continue'), button_name='operation', button_value='add-new-template') }}
+      <a class="button" href="{{ url_for('main.create_template', service_id=current_service.id, template_type=template_type, template_folder_id=current_template_folder_id) }}">
+        {{ _('Create template') }}
+      </a>
     </div>
   </div>
   <div class="selection-counter visuallyhidden" role="status" aria-live="polite">

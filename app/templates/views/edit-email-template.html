@@ -14,7 +14,7 @@
     page_header(
       _(heading_action) + ' ' + _('email template'),
       back_link=url_for('main.view_template', service_id=current_service.id,
-      template_id=template.id) if template else url_for('main.choose_template',
+      template_id=template.id) if template else url_for('main.create_template',
       service_id=current_service.id, template_folder_id=template_folder_id)
     )
   }}

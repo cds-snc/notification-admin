@@ -4,11 +4,13 @@ import pytest
 from flask import abort, url_for
 from notifications_python_client.errors import HTTPError
 
+from app.models.service import Service
 from app.models.user import User
 from tests import sample_uuid
 from tests.conftest import (
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
+    ClientRequest,
     _template,
     active_caseworking_user,
     active_user_view_permissions,
@@ -972,7 +974,7 @@ def test_should_not_show_radios_and_buttons_for_move_destination_if_incorrect_pe
 
 
 def test_should_show_radios_and_buttons_for_move_destination_if_correct_permissions(
-    client_request,
+    client_request: ClientRequest,
     mocker,
     service_one,
     mock_get_service_templates,
@@ -1018,7 +1020,6 @@ def test_should_show_radios_and_buttons_for_move_destination_if_correct_permissi
         "move-to-existing-folder",
         "move-to-new-folder",
         "add-new-folder",
-        "add-new-template",
     }
 
 
@@ -1238,38 +1239,18 @@ def test_should_be_able_to_move_a_sub_item(
             "move_to_new_folder_name": "foo",
             "move_to": None,
         },
-        # add a new template, but also select move destination
-        {
-            "operation": "add-new-template",
-            "templates_and_folders": [],
-            "move_to_new_folder_name": "",
-            "move_to": PARENT_FOLDER_ID,
-            "add_template_by_template_type": "email",
-        },
-        # add a new template, but also move to root folder
-        {
-            "operation": "add-new-template",
-            "templates_and_folders": [],
-            "move_to_new_folder_name": "",
-            "move_to": ROOT_FOLDER_ID,
-            "add_template_by_template_type": "email",
-        },
-        # add a new template, but don't select anything
-        {
-            "operation": "add-new-template",
-        },
     ],
 )
 def test_no_action_if_user_fills_in_ambiguous_fields(
-    client_request,
-    service_one,
-    mock_get_service_templates,
+    client_request: ClientRequest,
+    service_one: Service,
     mock_get_template_folders,
     mock_move_to_template_folder,
     mock_create_template_folder,
-    data,
+    mock_get_service_templates,
+    data: dict,
 ):
-    service_one["permissions"] += ["letter"]
+    service_one.permissions += ["letter"]
 
     mock_get_template_folders.return_value = [
         _folder("parent_folder", PARENT_FOLDER_ID, None),
@@ -1289,7 +1270,7 @@ def test_no_action_if_user_fills_in_ambiguous_fields(
 
     assert page.select_one("button[value={}]".format(data["operation"]))
 
-    assert ["email", "sms"] == [radio["value"] for radio in page.select("#add_new_template_form input[type=radio]")]
+    assert "Create template" in page.select_one("#add_new_template_form a.button").text
 
     assert [
         ROOT_FOLDER_ID,
@@ -1369,26 +1350,18 @@ def test_should_be_able_to_move_to_new_folder(
     )
 
 
-def test_radio_button_with_no_value_shows_custom_error_message(
-    client_request,
-    service_one,
-    mock_get_service_templates,
-    mock_get_template_folders,
-    mock_move_to_template_folder,
-    mock_create_template_folder,
+def test_radio_button_with_no_value_shows_error_message(
+    client_request: ClientRequest,
 ):
     page = client_request.post(
-        "main.choose_template",
+        "main.create_template",
         service_id=SERVICE_ONE_ID,
         _data={"operation": "add-new-template"},
         _expected_status=200,
         _expected_redirect=None,
     )
 
-    assert mock_move_to_template_folder.called is False
-    assert mock_create_template_folder.called is False
-
-    assert page.select_one("span.error-message").text.strip() == "Select the type of message you want to create"
+    assert page.select_one("span.error-message").text.strip() == "You need to choose an option"
 
 
 @pytest.mark.parametrize(

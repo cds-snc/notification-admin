@@ -8,6 +8,7 @@ from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 
 from app.main.views.templates import get_human_readable_delta
+from app.models.service import Service
 from tests import single_notification_json, template_json, validate_route_permission
 from tests.app.main.views.test_template_folders import (
     CHILD_FOLDER_ID,
@@ -20,6 +21,7 @@ from tests.conftest import (
     SERVICE_ONE_ID,
     SERVICE_TWO_ID,
     TEMPLATE_ONE_ID,
+    ClientRequest,
     ElementNotFound,
     active_caseworking_user,
     active_user_view_permissions,
@@ -55,26 +57,22 @@ def test_should_show_empty_page_when_no_templates(
     assert page.select_one("#add_new_template_form")
 
 
-def test_should_show_add_template_form_if_service_has_folder_permission(
-    client_request,
-    service_one,
+def test_should_show_create_template_button_if_service_has_folder_permission(
+    client_request: ClientRequest,
+    service_one: Service,
     mock_get_service_templates_when_no_templates_exist,
     mock_get_template_folders,
 ):
     page = client_request.get(
         "main.choose_template",
-        service_id=service_one["id"],
+        service_id=service_one.id,
     )
 
     assert normalize_spaces(page.select_one("h1").text) == ("Templates")
     assert normalize_spaces(page.select_one("main p").text) == (
         "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
     )
-    assert [(item["name"], item["value"]) for item in page.select("[type=radio]")] == [
-        ("add_template_by_template_type", "email"),
-        ("add_template_by_template_type", "sms"),
-    ]
-    assert not page.select("main a")
+    assert "Create template" in page.select_one("#add_new_template_form a.button").text
 
 
 @pytest.mark.parametrize(
@@ -288,27 +286,27 @@ def test_should_show_live_search_if_service_has_lots_of_folders(
     ),
 )
 def test_should_show_new_template_choices_if_service_has_folder_permission(
-    client_request,
-    service_one,
+    client_request: ClientRequest,
+    service_one: Service,
     mock_get_service_templates,
     mock_get_template_folders,
     extra_permissions,
     expected_values,
     expected_labels,
 ):
-    service_one["permissions"] += extra_permissions
+    service_one.permissions += extra_permissions
 
     page = client_request.get(
-        "main.choose_template",
+        "main.create_template",
         service_id=SERVICE_ONE_ID,
     )
 
-    if not page.select("#add_new_template_form"):
+    if not page.select("#what_type"):
         raise ElementNotFound()
 
-    assert normalize_spaces(page.select_one("#add_new_template_form fieldset legend").text) == ("Create template")
-    assert [choice["value"] for choice in page.select("#add_new_template_form input[type=radio]")] == expected_values
-    assert [normalize_spaces(choice.text) for choice in page.select("#add_new_template_form label")] == expected_labels
+    assert normalize_spaces(page.select_one("fieldset#what_type legend").text) == ("Type of message")
+    assert [choice["value"] for choice in page.select("#what_type input[type=radio]")] == expected_values
+    assert [normalize_spaces(choice.text) for choice in page.select("#what_type label")] == expected_labels
 
 
 def test_should_show_page_for_one_template(
@@ -1127,26 +1125,24 @@ def test_cant_copy_template_from_non_member_service(
     "endpoint, data, expected_error",
     (
         (
-            "main.choose_template",
+            "main.create_template",
             {
-                "operation": "add-new-template",
-                "add_template_by_template_type": "email",
+                "what_type": "email",
             },
             "Sending emails has been disabled for your service.",
         ),
         (
-            "main.choose_template",
+            "main.create_template",
             {
-                "operation": "add-new-template",
-                "add_template_by_template_type": "sms",
+                "what_type": "sms",
             },
             "Sending text messages has been disabled for your service.",
         ),
     ),
 )
 def test_should_not_allow_creation_of_template_through_form_without_correct_permission(
-    client_request,
-    service_one,
+    client_request: ClientRequest,
+    service_one: Service,
     mock_get_service_templates,
     mock_get_template_folders,
     endpoint,
@@ -1757,6 +1753,7 @@ def test_should_show_page_for_a_deleted_template(
 @pytest.mark.parametrize(
     "route",
     [
+        "main.create_template",
         "main.add_service_template",
         "main.edit_service_template",
         "main.delete_service_template",
@@ -1819,6 +1816,7 @@ def test_route_permissions_for_choose_template(
 @pytest.mark.parametrize(
     "route",
     [
+        "main.create_template",
         "main.add_service_template",
         "main.edit_service_template",
         "main.delete_service_template",
