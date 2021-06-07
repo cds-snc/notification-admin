@@ -40,13 +40,14 @@
     @apply absolute bg-gray-grey2;
   }
 
- .select-nested .multiple-choice ul {
+  .select-nested .multiple-choice ul {
     margin-bottom: -5px;
     padding-left: 12px;
     @apply mt-2;
   }
 
-  .select-nested .multiple-choice [type=checkbox]+label::before, .select-nested .multiple-choice [type=radio]+label::before {
+  .select-nested .multiple-choice [type="checkbox"] + label::before,
+  .select-nested .multiple-choice [type="radio"] + label::before {
     @apply bg-white;
   }
 
@@ -64,9 +65,9 @@
     box-shadow: 0 5px 00 #fff;
   }
 
-  .multiple-choice input:disabled+label {
+  .multiple-choice input:disabled + label {
     @apply opacity-100 text-gray-grey1 cursor-default;
   }
-  
+
   /*! purgecss end ignore */
 }

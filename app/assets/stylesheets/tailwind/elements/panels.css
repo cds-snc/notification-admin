@@ -1,7 +1,7 @@
 @layer components {
   .panel {
-    padding: .7895em;
-    margin-bottom: .7895em;
+    padding: 0.7895em;
+    margin-bottom: 0.7895em;
     border-left: solid;
     @apply box-border clear-both border-gray-grey2;
   }

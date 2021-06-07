@@ -1,8 +1,6 @@
 @import "./components/tailwind.css";
 
-
 @import "./toolkit/shims.css";
-
 
 /* elements */
 @import "./elements/reset.css";
@@ -12,7 +10,6 @@
 @import "./elements/form-validation.css";
 @import "./elements/lists.css";
 @import "./elements/panels.css";
-
 
 /* components */
 @import "./components/grid.css";
@@ -41,14 +38,12 @@
 @import "./components/task-list.css";
 @import "./components/back-link.css";
 
-
 /* views */
 @import "./views/dashboard.css";
 @import "./views/users.css";
 @import "./views/api.css";
 @import "./views/template.css";
 @import "./views/notification.css";
-
 
 /*! purgecss start ignore */
 @-ms-viewport {
@@ -81,7 +76,6 @@ td,
 th {
   @apply font-body;
 }
-
 
 html,
 body,
@@ -208,8 +202,8 @@ label {
 }
 
 .border-box {
-  font-size:.9em;
-  border:1px solid #000;
+  font-size: 0.9em;
+  border: 1px solid #000;
   @apply p-8 mb-8;
 }
 .border-box strong {
@@ -282,7 +276,7 @@ label {
 
   .homepage-colour-swap {
     background-color: #cddae6;
-    padding:2rem 0;
+    padding: 2rem 0;
   }
 
   .highlight {
@@ -307,25 +301,25 @@ label {
     @apply p-2 max-w-full;
   }
   @screen smaller {
-    #global-header .header-proposition #proposition-links li{
-      width:95%;
+    #global-header .header-proposition #proposition-links li {
+      width: 95%;
     }
-    
+
     #global-header .header-proposition #proposition-links a {
       @apply text-smaller;
       line-height: 1.4;
     }
   }
 
-  #add_template_by_template_type{	
-    legend{	
-      font-weight:bold;	
-      font-size:1.2em;	
-    }	
+  #add_template_by_template_type {
+    legend {
+      font-weight: bold;
+      font-size: 1.2em;
+    }
   }
 
-  #organisation_type{	
-    display:none;	
+  #organisation_type {
+    display: none;
   }
 }
 

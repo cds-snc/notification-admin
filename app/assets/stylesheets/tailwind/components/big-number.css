@@ -23,10 +23,12 @@
   .big-number-link {
     @apply no-underline mb-2 text-white block bg-blue-govukblue border-2 border-blue-govukblue border-solid;
   }
-  .big-number-link:hover, .big-number-link:hover .big-number {
+  .big-number-link:hover,
+  .big-number-link:hover .big-number {
     @apply text-blue-lightblue25;
   }
-  .big-number-link:active, .big-number-link:focus {
+  .big-number-link:active,
+  .big-number-link:focus {
     @apply outline-yellow bg-blue-govukblue;
   }
 
@@ -34,11 +36,15 @@
     @apply text-smaller p-6 block text-white bg-green-green;
   }
 
-  .big-number-status-link:link, .big-number-status-link:visited, .big-number-status-link:active, .big-number-status-link:hover {
+  .big-number-status-link:link,
+  .big-number-status-link:visited,
+  .big-number-status-link:active,
+  .big-number-status-link:hover {
     @apply text-white no-underline;
   }
 
-  .big-number-status-link:active, .big-number-status-link:focus {
+  .big-number-status-link:active,
+  .big-number-status-link:focus {
     @apply text-black border-black border-solid border-1;
   }
   /*! purgecss end ignore */

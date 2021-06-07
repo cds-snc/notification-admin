@@ -16,12 +16,12 @@
 
   footer #footer-primary a img {
     @apply text-blue;
-    content:url("/static/images/external-white.svg");
+    content: url("/static/images/external-white.svg");
   }
 
   footer #footer-primary a:focus img {
     @apply text-blue;
-    content:url("/static/images/external.svg");
+    content: url("/static/images/external.svg");
   }
 
   .page-footer {
@@ -32,11 +32,13 @@
     @apply ml-6;
   }
 
-  .page-footer-delete-link a:visited, .page-footer-delete-link a:link {
+  .page-footer-delete-link a:visited,
+  .page-footer-delete-link a:link {
     vertical-align: center;
     @apply p-1 border-2 border-transparent inline-block text-red;
   }
-  .page-footer-delete-link a:hover, .page-footer-delete-link a:active {
+  .page-footer-delete-link a:hover,
+  .page-footer-delete-link a:active {
     @apply text-red-mellow;
   }
 

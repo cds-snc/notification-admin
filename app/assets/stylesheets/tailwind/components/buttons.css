@@ -1,24 +1,31 @@
 @layer components {
-
   /* Note: Buttons are <a> sometimes, which is why :link and :visited styles exist */
   /*! purgecss start ignore */
-  .button, .button:link, .button:visited {
-    padding: .526315em .789473em .263157em;
+  .button,
+  .button:link,
+  .button:visited {
+    padding: 0.526315em 0.789473em 0.263157em;
     box-shadow: 0 2px 0 theme("colors.green.border");
     @apply no-underline inline-block text-white text-smaller leading-tight align-top bg-green;
   }
 
   .button-blue {
-    width:210px;
+    width: 210px;
     @apply block mt-8 text-center py-4 px-8;
   }
-  .button-blue, .button-blue:link, .button-blue:visited {
+  .button-blue,
+  .button-blue:link,
+  .button-blue:visited {
     @apply bg-blue text-white text-smaller;
   }
-  .button-blue-lighter, .button-blue-lighter:link, .button-blue-lighter:visited {
+  .button-blue-lighter,
+  .button-blue-lighter:link,
+  .button-blue-lighter:visited {
     @apply bg-blue-lighter border-b-2 border-white font-bold text-base text-black px-5 py-4;
   }
-  .button-blue-lighter-nb, .button-blue-lighter-nb:link, .button-blue-lighter-nb:visited {
+  .button-blue-lighter-nb,
+  .button-blue-lighter-nb:link,
+  .button-blue-lighter-nb:visited {
     box-shadow: none;
     @apply bg-blue-lighter border-none font-semibold text-small text-black px-6 py-1;
   }
@@ -40,7 +47,9 @@
     @apply bg-red-hover;
   }
 
-  .button-secondary, .button-secondary:visited, .button-secondary:link {
+  .button-secondary,
+  .button-secondary:visited,
+  .button-secondary:link {
     box-shadow: 0 2px 0 theme("colors.gray.border");
     font-size: 1em;
     @apply text-black bg-gray-button;

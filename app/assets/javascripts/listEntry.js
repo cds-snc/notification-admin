@@ -1,21 +1,23 @@
 (function (Modules) {
-  'use strict';
+  "use strict";
 
   var lists = [],
-      listEntry,
-      ListEntry;
+    listEntry,
+    ListEntry;
 
   ListEntry = function (elm) {
     var $elm = $(elm),
-        idPattern = $elm.prop('id');
+      idPattern = $elm.prop("id");
 
-    if (!idPattern) { return false; }
+    if (!idPattern) {
+      return false;
+    }
     this.idPattern = idPattern;
-    this.elementSelector = '.list-entry, .list-entry-remove, .list-entry-add';
+    this.elementSelector = ".list-entry, .list-entry-remove, .list-entry-add";
     this.entries = [];
     this.$wrapper = $elm;
     this.minEntries = 2;
-    this.listItemName = this.$wrapper.data('listItemName');
+    this.listItemName = this.$wrapper.data("listItemName");
     this.getSharedAttributes();
 
     this.getValues();
@@ -24,43 +26,43 @@
     this.render();
     this.bindEvents();
   };
-  ListEntry.optionalAttributes = ['aria-describedby'];
+  ListEntry.optionalAttributes = ["aria-describedby"];
   ListEntry.prototype.entryTemplate = Hogan.compile(
     '<div class="list-entry">' +
       '<label for="{{{id}}}" class="text-box-number-label">' +
-        '<span class="visuallyhidden">{{listItemName}} {{numberTranslation}} </span>{{number}}.' +
-      '</label>' +
-      '<input' +
-        ' name="{{name}}-{{index}}"' +
-        ' id="{{id}}"' +
-        ' value="{{value}}"' +
-        ' {{{sharedAttributes}}}' +
-      '/>' +
-      '{{#button}}' +
-        '<button type="button" class="button button-secondary list-entry-remove">' +
-          '{{removeTranslation}}<span class="visuallyhidden"> {{listItemName}} {{numberTranslation}} {{number}}</span>' +
-        '</button>' +
-      '{{/button}}' +
-    '</div>'
+      '<span class="visuallyhidden">{{listItemName}} {{numberTranslation}} </span>{{number}}.' +
+      "</label>" +
+      "<input" +
+      ' name="{{name}}-{{index}}"' +
+      ' id="{{id}}"' +
+      ' value="{{value}}"' +
+      " {{{sharedAttributes}}}" +
+      "/>" +
+      "{{#button}}" +
+      '<button type="button" class="button button-secondary list-entry-remove">' +
+      '{{removeTranslation}}<span class="visuallyhidden"> {{listItemName}} {{numberTranslation}} {{number}}</span>' +
+      "</button>" +
+      "{{/button}}" +
+      "</div>"
   );
   ListEntry.prototype.addButtonTemplate = Hogan.compile(
     '<button type="button" class="button button-secondary list-entry-add m-0 mb-8 text-smaller leading-tight">{{addAnotherTranslation}} {{listItemName}} ({{entriesLeft}} {{remainingTranslation}})</button>'
   );
   ListEntry.prototype.getSharedAttributes = function () {
-    var $inputs = this.$wrapper.find('input'),
-        attributeTemplate = Hogan.compile(' {{name}}="{{value}}"'),
-        generatedAttributes = ['id', 'name', 'value'],
-        attributes = [],
-        attrIdx,
-        elmAttributes,
-        getAttributesHTML;
+    var $inputs = this.$wrapper.find("input"),
+      attributeTemplate = Hogan.compile(' {{name}}="{{value}}"'),
+      generatedAttributes = ["id", "name", "value"],
+      attributes = [],
+      attrIdx,
+      elmAttributes,
+      getAttributesHTML;
 
     getAttributesHTML = function (attrsByElm) {
-      var attrStr = '',
-          elmIdx = attrsByElm.length,
-          existingAttributes = [],
-          elmAttrs,
-          attrIdx;
+      var attrStr = "",
+        elmIdx = attrsByElm.length,
+        existingAttributes = [],
+        elmAttrs,
+        attrIdx;
 
       while (elmIdx--) {
         elmAttrs = attrsByElm[elmIdx];
@@ -68,7 +70,10 @@
         while (attrIdx--) {
           // prevent duplicates
           if ($.inArray(elmAttrs[attrIdx].name, existingAttributes) === -1) {
-            attrStr += attributeTemplate.render({ 'name': elmAttrs[attrIdx].name, 'value': elmAttrs[attrIdx].value });
+            attrStr += attributeTemplate.render({
+              name: elmAttrs[attrIdx].name,
+              value: elmAttrs[attrIdx].value,
+            });
             existingAttributes.push(elmAttrs[attrIdx].name);
           }
         }
@@ -79,11 +84,13 @@
     $inputs.each(function (idx, elm) {
       attrIdx = elm.attributes.length;
       elmAttributes = [];
-      while(attrIdx--) {
-        if ($.inArray(elm.attributes[attrIdx].name, generatedAttributes) === -1) {
+      while (attrIdx--) {
+        if (
+          $.inArray(elm.attributes[attrIdx].name, generatedAttributes) === -1
+        ) {
           elmAttributes.push({
-            'name': elm.attributes[attrIdx].name,
-            'value': elm.attributes[attrIdx].value
+            name: elm.attributes[attrIdx].name,
+            value: elm.attributes[attrIdx].value,
           });
         }
       }
@@ -92,26 +99,30 @@
       }
     });
 
-    this.sharedAttributes = (attributes.length) ? getAttributesHTML(attributes) : '';
+    this.sharedAttributes = attributes.length
+      ? getAttributesHTML(attributes)
+      : "";
   };
   ListEntry.prototype.getValues = function () {
     this.entries = [];
-    this.$wrapper.find('input').each(function (idx, elm) {
-      var val = $(elm).val();
+    this.$wrapper.find("input").each(
+      function (idx, elm) {
+        var val = $(elm).val();
 
-      this.entries.push(val);
-    }.bind(this));
+        this.entries.push(val);
+      }.bind(this)
+    );
   };
   ListEntry.prototype.trimEntries = function () {
     var entryIdx = this.entries.length,
-        newEntries = [];
+      newEntries = [];
 
     while (entryIdx--) {
-      if (this.entries[entryIdx] !== '') {
+      if (this.entries[entryIdx] !== "") {
         newEntries.push(this.entries[entryIdx]);
       } else {
         if (entryIdx < this.minEntries) {
-          newEntries.push('');
+          newEntries.push("");
         }
       }
     }
@@ -126,30 +137,44 @@
     }
   };
   ListEntry.prototype.bindEvents = function () {
-    this.$wrapper.on('click', '.list-entry-remove', function (e) {
-      this.removeEntry($(e.target));
-    }.bind(this));
-    this.$wrapper.on('click', '.list-entry-add', function (e) {
-      this.addEntry();
-    }.bind(this));
+    this.$wrapper.on(
+      "click",
+      ".list-entry-remove",
+      function (e) {
+        this.removeEntry($(e.target));
+      }.bind(this)
+    );
+    this.$wrapper.on(
+      "click",
+      ".list-entry-add",
+      function (e) {
+        this.addEntry();
+      }.bind(this)
+    );
   };
   ListEntry.prototype.shiftFocus = function (opts) {
     var numberTargeted;
 
-    if (opts.action === 'remove') {
-      numberTargeted = (opts.entryNumberFocused > 1) ? opts.entryNumberFocused - 1 : 1;
-    } else { // opts.action === 'add'
+    if (opts.action === "remove") {
+      numberTargeted =
+        opts.entryNumberFocused > 1 ? opts.entryNumberFocused - 1 : 1;
+    } else {
+      // opts.action === 'add'
       numberTargeted = opts.entryNumberFocused + 1;
     }
-    this.$wrapper.find('.list-entry').eq(numberTargeted - 1).find('input').focus();
+    this.$wrapper
+      .find(".list-entry")
+      .eq(numberTargeted - 1)
+      .find("input")
+      .focus();
   };
   ListEntry.prototype.removeEntryFromEntries = function (entryNumber) {
     var idx,
-        len,
-        newEntries = [];
+      len,
+      newEntries = [];
 
     for (idx = 0, len = this.entries.length; idx < len; idx++) {
-      if ((entryNumber - 1) !== idx) {
+      if (entryNumber - 1 !== idx) {
         newEntries.push(this.entries[idx]);
       }
     }
@@ -159,57 +184,65 @@
     var currentLastEntryNumber = this.entries.length;
 
     this.getValues();
-    this.entries.push('');
+    this.entries.push("");
     this.render();
-    this.shiftFocus({ 'action' : 'add', 'entryNumberFocused' : currentLastEntryNumber });
+    this.shiftFocus({
+      action: "add",
+      entryNumberFocused: currentLastEntryNumber,
+    });
   };
   ListEntry.prototype.removeEntry = function ($removeButton) {
-    var entryNumber = parseInt($removeButton.find('span').text().match(/\d+/)[0], 10);
+    var entryNumber = parseInt(
+      $removeButton.find("span").text().match(/\d+/)[0],
+      10
+    );
 
     this.getValues();
     this.removeEntryFromEntries(entryNumber);
     this.render();
-    this.shiftFocus({ 'action' : 'remove', 'entryNumberFocused' : entryNumber });
+    this.shiftFocus({ action: "remove", entryNumberFocused: entryNumber });
   };
   ListEntry.prototype.render = function () {
     this.$wrapper.find(this.elementSelector).remove();
-    $.each(this.entries, function (idx, entry) {
-      var entryNumber = idx + 1,
+    $.each(
+      this.entries,
+      function (idx, entry) {
+        var entryNumber = idx + 1,
           dataObj = {
-            'id' : this.getId(entryNumber),
-            'number' : entryNumber,
-            'index': idx,
-            'name' : this.getId(),
-            'value' : entry,
-            'listItemName' : this.listItemName,
-            'sharedAttributes': this.sharedAttributes,
-            'addAnotherTranslation': window.polyglot.t("add_another"),
-            'numberTranslation': window.polyglot.t("number"),
-            'removeTranslation': window.polyglot.t("remove"),
-            'remainingTranslation': window.polyglot.t("remaining")
+            id: this.getId(entryNumber),
+            number: entryNumber,
+            index: idx,
+            name: this.getId(),
+            value: entry,
+            listItemName: this.listItemName,
+            sharedAttributes: this.sharedAttributes,
+            addAnotherTranslation: window.polyglot.t("add_another"),
+            numberTranslation: window.polyglot.t("number"),
+            removeTranslation: window.polyglot.t("remove"),
+            remainingTranslation: window.polyglot.t("remaining"),
           };
 
-      if (entryNumber > 1) {
-        dataObj.button = true;
-      }
-      this.$wrapper.append(this.entryTemplate.render(dataObj));
-    }.bind(this));
+        if (entryNumber > 1) {
+          dataObj.button = true;
+        }
+        this.$wrapper.append(this.entryTemplate.render(dataObj));
+      }.bind(this)
+    );
     if (this.entries.length < this.maxEntries) {
-      this.$wrapper.append(this.addButtonTemplate.render({
-        'listItemName' : this.listItemName,
-        'entriesLeft' : (this.maxEntries - this.entries.length),
-        'addAnotherTranslation': window.polyglot.t("add_another"),
-        'numberTranslation': window.polyglot.t("number"),
-        'removeTranslation': window.polyglot.t("remove"),
-        'remainingTranslation': window.polyglot.t("remaining")
-      }));
+      this.$wrapper.append(
+        this.addButtonTemplate.render({
+          listItemName: this.listItemName,
+          entriesLeft: this.maxEntries - this.entries.length,
+          addAnotherTranslation: window.polyglot.t("add_another"),
+          numberTranslation: window.polyglot.t("number"),
+          removeTranslation: window.polyglot.t("remove"),
+          remainingTranslation: window.polyglot.t("remaining"),
+        })
+      );
     }
   };
 
   Modules.ListEntry = function () {
-
-    this.start = component => lists.push(new ListEntry($(component)));
-
+    this.start = (component) => lists.push(new ListEntry($(component)));
   };
-
 })(window.GOVUK.Modules);

@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { store } from "./index";
 import dayjs from "dayjs";
 
-const formattedDay = day => {
+const formattedDay = (day) => {
   return dayjs(day).format("dddd, MMMM DD YYYY");
 };
 
