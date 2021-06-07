@@ -49,7 +49,9 @@
   .template-list-item-without-ancestors .message-name a:first-child {
     @apply block;
   }
-  .template-list-item-without-ancestors .message-name a.template-list-folder:first-child {
+  .template-list-item-without-ancestors
+    .message-name
+    a.template-list-folder:first-child {
     background-position: 0 2px;
     text-indent: 40px;
     @apply pl-0;

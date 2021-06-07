@@ -12,9 +12,9 @@
   .list-entry-remove {
     @apply block mb-6 mt-2 static overflow-hidden text-smaller leading-tight;
   }
-  @media (min-width: theme('screens.sm')) {
+  @media (min-width: theme("screens.sm")) {
     .list-entry-remove {
-      left:100%;
+      left: 100%;
       @apply inline-block m-0 ml-4 absolute top-0;
     }
   }

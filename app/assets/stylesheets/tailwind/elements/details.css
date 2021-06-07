@@ -34,7 +34,7 @@
     @apply hidden;
   }
 
-  details[open]>summary:before {
+  details[open] > summary:before {
     @apply block w-0 h-0 border-solid border-transparent;
     -webkit-clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
     clip-path: polygon(0% 0%, 50% 100%, 100% 0%);

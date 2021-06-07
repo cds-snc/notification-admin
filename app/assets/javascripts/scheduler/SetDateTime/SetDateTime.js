@@ -1,16 +1,13 @@
 import React, { useContext } from "react";
 import { store } from "./index";
 
-const setDateAndTimeValue = val => {
+const setDateAndTimeValue = (val) => {
   const ref = document.getElementById("scheduled_for");
 
   let value = val;
 
   if (window.moment && val) {
-    value = moment(val)
-      .utc()
-      .format()
-      .replace("Z", "");
+    value = moment(val).utc().format().replace("Z", "");
   }
 
   if (ref) {
@@ -19,7 +16,11 @@ const setDateAndTimeValue = val => {
 };
 
 const refreshSchedule = (selected, time) => {
-  if (!time || selected.length === 0 || document.getElementById("js-schedule-send-at").classList.contains("hidden")) {
+  if (
+    !time ||
+    selected.length === 0 ||
+    document.getElementById("js-schedule-send-at").classList.contains("hidden")
+  ) {
     setDateAndTimeValue("");
     return null;
   }
@@ -39,14 +40,14 @@ export const SetDateTime = () => {
     document.getElementById("js-schedule-send-at").classList.toggle("hidden");
     document.getElementById("js-schedule-button").classList.toggle("hidden");
     refreshSchedule(selected, time);
-  }
+  };
 
   // Clicking the "Send now" button.
   // Always reset the scheduled time, if set
   document.getElementById("js-send-now-button").onclick = (e) => {
     setDateAndTimeValue("");
     return null;
-  }
+  };
 
   refreshSchedule(selected, time);
   return null;

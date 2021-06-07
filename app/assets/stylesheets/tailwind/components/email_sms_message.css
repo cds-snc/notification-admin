@@ -17,7 +17,8 @@
     @apply block absolute border-solid border-transparent border-b-gray-button border-l-gray-button;
   }
 
-  .sms-message-sender, .sms-message-recipient {
+  .sms-message-sender,
+  .sms-message-recipient {
     padding-top: 2px;
     padding-bottom: 8px;
 

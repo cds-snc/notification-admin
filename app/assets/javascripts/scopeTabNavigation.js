@@ -45,7 +45,7 @@
   }
 
   function init($component) {
-    registerTabNavigationScope($component[0])
+    registerTabNavigationScope($component[0]);
   }
 
   Modules.ScopeTabNavigation = function () {

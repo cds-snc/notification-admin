@@ -9,14 +9,14 @@ export const Weeks = () => {
   return (
     <section
       id="Calendar-dates"
-      onKeyDown={event => {
+      onKeyDown={(event) => {
         const key = event.key.replace("Arrow", "");
         onKeyDown({ key, dispatch });
       }}
       aria-label={translate("calendar_dates")}
       role="application"
     >
-      {weeks.map(week => {
+      {weeks.map((week) => {
         return (
           <div key={yearMonthDay(week[0])} className="Calendar-row">
             <Days week={week} />

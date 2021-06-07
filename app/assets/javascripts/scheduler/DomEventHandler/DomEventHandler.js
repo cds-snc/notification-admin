@@ -5,7 +5,7 @@ const useBuildEvent = () => {
   const { dispatch } = useContext(store);
 
   useEffect(() => {
-    const handler = data => {
+    const handler = (data) => {
       console.log("custom event called", data.detail);
       dispatch(data.detail);
     };

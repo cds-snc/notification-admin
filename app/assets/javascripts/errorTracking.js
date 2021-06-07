@@ -1,12 +1,8 @@
-(function(Modules) {
+(function (Modules) {
   "use strict";
 
-  
-
-  Modules.TrackError = function() {
+  Modules.TrackError = function () {
     // removed for now
     return;
-
   };
-
 })();

@@ -51,7 +51,7 @@
   #content,
   .global-cookie-message p {
     max-width: 960px;
-    @apply my-0 mx-gutterHalf
+    @apply my-0 mx-gutterHalf;
   }
   @screen md {
     #content,

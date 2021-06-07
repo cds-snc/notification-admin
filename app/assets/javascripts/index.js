@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 
 if (!window.APP_PHRASES || typeof APP_PHRASES === "undefined") {
   window.APP_PHRASES = {
-    now: "Now"
+    now: "Now",
   };
 }
 
@@ -17,7 +17,10 @@ if (!window.APP_LANG || typeof APP_LANG === "undefined") {
 window.moment = Moment;
 window.DiffDOM = DiffDOM;
 
-window.polyglot = new Polyglot({ phrases: APP_PHRASES || {}, locale: APP_LANG });
+window.polyglot = new Polyglot({
+  phrases: APP_PHRASES || {},
+  locale: APP_LANG,
+});
 window.Swal = Swal;
 
 let nowLabel = "Now Label";
