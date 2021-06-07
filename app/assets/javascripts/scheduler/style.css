@@ -435,7 +435,7 @@
 .messageTextStyle {
   font-size: 20px;
   line-height: 1.25;
-  color: #0B0C0C;
+  color: #0b0c0c;
   max-width: 706px;
 }
 .confirmationWrapper {
@@ -446,13 +446,13 @@
   padding: 0.75rem 1rem;
 }
 .confirmation > p {
-  margin-top: 0
+  margin-top: 0;
 }
 .confirmation.set {
   background: rgba(255, 221, 0, 0.25);
-  border-left: 5px solid #FFDD00;
+  border-left: 5px solid #ffdd00;
 }
 .confirmation.unset {
   background: rgba(235, 87, 87, 0.35);
-  border-left: 5px solid #EB5757;
+  border-left: 5px solid #eb5757;
 }

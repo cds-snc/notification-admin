@@ -1,5 +1,5 @@
 window.formatAllDates = function () {
-  $(".local-datetime-short").each(function(index) {
+  $(".local-datetime-short").each(function (index) {
     let datetime = new Date($(this).text().trim());
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
 
@@ -9,13 +9,13 @@ window.formatAllDates = function () {
           month: "short",
           day: "numeric",
           hour: "numeric",
-          minute: "2-digit"
+          minute: "2-digit",
         })
       );
     }
   });
 
-  $(".local-datetime-short-year").each(function(index) {
+  $(".local-datetime-short-year").each(function (index) {
     let datetime = new Date($(this).text().trim());
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
 
@@ -24,30 +24,30 @@ window.formatAllDates = function () {
         datetime.toLocaleString(locale, {
           month: "short",
           day: "numeric",
-          year: "numeric"
+          year: "numeric",
         })
       );
     }
   });
 
-  $(".local-datetime-full").each(function(index) {
+  $(".local-datetime-full").each(function (index) {
     let datetime = new Date($(this).text().trim());
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
 
-    if ($(this).text().trim() === 'None') {
+    if ($(this).text().trim() === "None") {
       $(this).text(window.APP_PHRASES["never"]);
     }
 
     if (datetime instanceof Date && !isNaN(datetime)) {
       $(this).text(
-        datetime.toLocaleDateString(locale, {dateStyle: 'long'})
-        + ", "
-        + datetime.toLocaleTimeString(locale, {timeStyle: 'short'})
+        datetime.toLocaleDateString(locale, { dateStyle: "long" }) +
+          ", " +
+          datetime.toLocaleTimeString(locale, { timeStyle: "short" })
       );
     }
   });
 
-  $(".relative-time-past").each(function(index) {
+  $(".relative-time-past").each(function (index) {
     let timeRaw = new Date($(this).text().trim());
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
     let time = moment(timeRaw);
@@ -55,26 +55,25 @@ window.formatAllDates = function () {
     if (time.isValid() && window.APP_LANG) {
       let isToday = moment().isSame(time, "day");
       let dayStr = "";
-      let timeStr = timeRaw.toLocaleTimeString(locale, {timeStyle: 'short'});
+      let timeStr = timeRaw.toLocaleTimeString(locale, { timeStyle: "short" });
 
       if (isToday && window.APP_PHRASES) {
         dayStr = window.APP_PHRASES["today"];
       } else {
-        dayStr = timeRaw.toLocaleDateString(locale, {dateStyle: 'long'});
+        dayStr = timeRaw.toLocaleDateString(locale, { dateStyle: "long" });
       }
 
       $(this).text(`${dayStr}, ${timeStr}`);
     }
   });
-
-}
+};
 
 $(() => GOVUK.stickAtTopWhenScrolling.init());
 $(() => GOVUK.stickAtBottomWhenScrolling.init());
 
 window.formatAllDates();
 
-$(".format-ua").each(function(index) {
+$(".format-ua").each(function (index) {
   let text = $(this).text();
   text = text.replace(/[0-9]*\.?[0-9]+/g, "");
   text = text.replace(/\s+/g, " ").trim();
@@ -87,22 +86,14 @@ showHideContent.init();
 $(() => GOVUK.modules.start());
 
 $(() =>
-  $(".error-message")
-    .eq(0)
-    .parent("label")
-    .next("input")
-    .trigger("focus")
+  $(".error-message").eq(0).parent("label").next("input").trigger("focus")
 );
 
-$(() =>
-  $(".banner-dangerous")
-    .eq(0)
-    .trigger("focus")
-);
+$(() => $(".banner-dangerous").eq(0).trigger("focus"));
 
 //
 
-(function() {
+(function () {
   "use strict";
   var root = this || window;
   if (typeof root.GOVUK === "undefined") {
@@ -124,7 +115,7 @@ $(() =>
         Deleting a cookie:
         GOVUK.cookie('hobnob', null);
     */
-  GOVUK.cookie = function(name, value, options) {
+  GOVUK.cookie = function (name, value, options) {
     if (typeof value !== "undefined") {
       if (value === false || value === null) {
         return GOVUK.setCookie(name, "", { days: -1 });
@@ -135,7 +126,7 @@ $(() =>
       return GOVUK.getCookie(name);
     }
   };
-  GOVUK.setCookie = function(name, value, options) {
+  GOVUK.setCookie = function (name, value, options) {
     if (typeof options === "undefined") {
       options = {};
     }
@@ -150,7 +141,7 @@ $(() =>
     }
     document.cookie = cookieString;
   };
-  GOVUK.getCookie = function(name) {
+  GOVUK.getCookie = function (name) {
     var nameEQ = name + "=";
     var cookies = document.cookie.split(";");
     for (var i = 0, len = cookies.length; i < len; i++) {
@@ -165,16 +156,16 @@ $(() =>
     return null;
   };
 }.call(this));
-(function() {
+(function () {
   "use strict";
   var root = this || window;
   if (typeof root.GOVUK === "undefined") {
     root.GOVUK = {};
   }
 
-  GOVUK.addCookieMessage = function() {};
+  GOVUK.addCookieMessage = function () {};
 }.call(this));
-(function() {
+(function () {
   "use strict";
 
   // add cookie message
@@ -188,7 +179,7 @@ $(() =>
       i,
       _i;
     for (i = 0, _i = els.length; i < _i; i++) {
-      els[i].addEventListener("click", function(e) {
+      els[i].addEventListener("click", function (e) {
         // jshint ignore:line
         e.preventDefault();
         var target = document.getElementById(

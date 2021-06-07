@@ -5,7 +5,7 @@ import { store, parseMonth, yearMonthDay } from "./index";
 export const Days = ({ week }) => {
   const { date } = useContext(store);
   const month = parseMonth(date);
-  return week.map(day => {
+  return week.map((day) => {
     if (Number(day.$M) + 1 !== Number(month)) {
       return (
         <span

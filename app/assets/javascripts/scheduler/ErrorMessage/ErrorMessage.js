@@ -23,7 +23,7 @@ export const ErrorMessage = () => {
         Please correct the errors on the page
       </h3>
       <ol className="error-list__list" id="formErrors">
-        {errors.map(item => {
+        {errors.map((item) => {
           return (
             <ErrorItem key={item.id} text={item.text} target={item.target} />
           );

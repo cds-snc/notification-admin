@@ -5,18 +5,18 @@ import { FR } from "./locales/fr";
 
 const translations = {
   en: EN,
-  fr: FR
+  fr: FR,
 };
 
 const LANGUAGES = ["en", "fr"]; // en
 const LOCALE = window.APP_LANG === "en" ? LANGUAGES[0] : LANGUAGES[1];
 
-export const getTranslate = langCode => key =>
+export const getTranslate = (langCode) => (key) =>
   translations[langCode][key] || key;
 
 const initialState = {
   langCode: LOCALE,
-  translate: getTranslate(LOCALE)
+  translate: getTranslate(LOCALE),
 };
 
 export const I18nContext = React.createContext(initialState);
@@ -28,7 +28,7 @@ export const I18nProvider = ({ value = {}, children }) => {
       case "setLanguage":
         return {
           langCode: action.payload,
-          translate: getTranslate(action.payload)
+          translate: getTranslate(action.payload),
         };
       default:
         return state;

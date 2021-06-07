@@ -15,18 +15,23 @@ const state = {
     { val: "13:00", label: "1:00 PM" },
     { val: "14:00", label: "2:00 PM" },
     { val: "15:00", label: "3:00 PM" },
-    { val: "16:00", label: "4:00 PM" }
-  ]
+    { val: "16:00", label: "4:00 PM" },
+  ],
 };
 
-describe("Time utils", function() {
+describe("Time utils", function () {
   const dayjsToday = dayjs()
     .set("hour", 0)
     .set("minute", 0)
     .set("second", 0)
     .set("millisecond", 0);
 
-  const constructedToday = dayjsToday.year() + "-" + (dayjsToday.month() + 1) + "-" + dayjsToday.date()
+  const constructedToday =
+    dayjsToday.year() +
+    "-" +
+    (dayjsToday.month() + 1) +
+    "-" +
+    dayjsToday.date();
 
   test("getStartTime correctly returns midnight for a day that is not today", async () => {
     expect(getStartTime(state.today)).toBe(0); // midnight
@@ -37,7 +42,7 @@ describe("Time utils", function() {
   });
 
   test("Populate Times shows all 24h for a future date", async () => {
-    expect(populateTimes(false, ["2050-01-01"])).toHaveLength(24)
+    expect(populateTimes(false, ["2050-01-01"])).toHaveLength(24);
   });
 
   test("dateIsToday returns true when evaluating today", async () => {
@@ -50,8 +55,10 @@ describe("Time utils", function() {
 
   test("timeValuesToday culls times that have already passed", async () => {
     // this test will fail between midnight and 1 AM
-    const culled_time_values = timeValuesToday(constructedToday, state.time_values);
+    const culled_time_values = timeValuesToday(
+      constructedToday,
+      state.time_values
+    );
     expect(culled_time_values).not.toHaveLength(6);
-  })
-
-})
+  });
+});

@@ -222,6 +222,15 @@ That's it.
 
 Your site is now available on [http://localhost:6012](http://localhost:6012).
 
+
+## Redis
+
+You need a [redis](https://redis.io/) server running to use certain parts of Notify, such as the "go live" flow. To use redis, add `REDIS_ENABLED=1` to your .env file and run the following command:
+
+```bash
+redis-server
+```
+
 =======
 
 

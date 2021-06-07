@@ -29,7 +29,7 @@
     @apply pl-2 text-smaller leading-tight font-body;
   }
 
-  @media (min-width: theme('screens.md')) {
+  @media (min-width: theme("screens.md")) {
     .textbox-colour-preview {
       width: 38px;
       height: 38px;

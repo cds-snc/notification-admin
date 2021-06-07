@@ -5,22 +5,23 @@
   }
 
   p {
-    margin-top: .3125em;
+    margin-top: 0.3125em;
     margin-bottom: 1.25em;
   }
   @screen sm {
     p {
-      margin-top: .0658em;
+      margin-top: 0.0658em;
       margin-bottom: 1.0526em;
     }
   }
 
   a {
     @apply underline text-smaller border-b-2 border-transparent;
-    -webkit-tap-highlight-color: rgba(0,0,0,0.3);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
   }
 
-  a:visited, a:link {
+  a:visited,
+  a:link {
     @apply text-blue;
   }
 
@@ -33,7 +34,7 @@
   }
 
   .heading-small {
-    margin-top: .625em;
+    margin-top: 0.625em;
     margin-bottom: 1.0526em;
     @apply text-smaller leading-tight font-bold block;
   }
@@ -51,15 +52,15 @@
   @screen sm {
     .heading-medium {
       margin-top: 1.875em;
-      margin-bottom: .8333em;
+      margin-bottom: 0.8333em;
       @apply text-title;
     }
   }
 
   .heading-large {
     line-height: 1.111;
-    margin-top: .2em;
-    margin-bottom: .4167em;
+    margin-top: 0.2em;
+    margin-bottom: 0.4167em;
     @apply text-lg font-bold block;
   }
   .heading-large .heading-secondary {
@@ -69,8 +70,8 @@
   }
   @screen md {
     .heading-large {
-      margin-top: .25em;
-      margin-bottom: .5556em;
+      margin-top: 0.25em;
+      margin-bottom: 0.5556em;
     }
     .heading-large .heading-secondary {
       padding-top: 6px;
@@ -87,10 +88,10 @@
   }
 
   main {
-    font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial,sans-serif;
+    font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
-  .product-page-intro h1{
-    font-family: "Helvetica Neue", Helvetica, Arial,sans-serif;
+  .product-page-intro h1 {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 
   hr {
@@ -98,7 +99,8 @@
     @apply block bg-gray-grey2 border-0 my-gutter p-0;
   }
 
-  b, strong {
+  b,
+  strong {
     font-weight: bold;
   }
 
