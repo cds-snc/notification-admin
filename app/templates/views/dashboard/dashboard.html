@@ -14,10 +14,8 @@
 
   <div class="dashboard">
 
-    <h1 class="visuallyhidden">{{ _('Dashboard') }}</h1>
-    {% if current_user.has_permissions('manage_templates') and not current_service.all_templates %}
-      {% include 'views/dashboard/write-first-messages.html' %}
-    {% endif %}
+    <h1 class="heading-large">{{ _('Dashboard') }}</h1>
+    {% include 'views/dashboard/quick-links.html' %}
 
     {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
 

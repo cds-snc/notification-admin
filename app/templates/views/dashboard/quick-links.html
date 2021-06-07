@@ -1,0 +1,14 @@
+<h2 class="heading-medium visuallyhidden">{{ _('Get started') }}</h2>
+
+<nav>
+  <div>
+    <h2>{{ _("Write") }}</h2>
+    <p>{{ _("Prepare to send messages by creating your own templates.") }}</p>
+    <a class="button" href="{{ url_for('.create_template', service_id=current_service.id) }}">{{ _("Create a template") }}</a>
+  </div>
+  <div>
+    <h2>{{ _("Send") }}</h2>
+    <p>{{ _("Send existing messages to specific recipients.") }}</p>
+    <a class="button" href="{{ url_for('.choose_template', service_id=current_service.id) }}">{{ _("Choose a template") }}</a>
+  </div>
+</nav>
