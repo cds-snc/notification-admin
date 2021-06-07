@@ -1,5 +1,5 @@
 {% macro task_shortcut(title, img_src, description, button_url, button_text) %}
-  <div class="border p-gutterHalf flex-1">
+  <div class="border border-blue p-gutterHalf flex-1 flex flex-col">
     <div class="flex mb-8">
       <img 
         class="flex-0 w-10 h-10" 
@@ -11,7 +11,7 @@
       </h2>
     </div>
     <p>{{ description }}</p>
-    <a class="button flex-end" href="{{ button_url }}">
+    <a class="button-blue mt-auto" href="{{ button_url }}">
       {{ button_text }}
     </a>
   </div>
