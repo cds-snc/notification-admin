@@ -83,7 +83,7 @@
   option:active,
   option:checked,
   select:focus::-ms-value {
-    @apply text-white bg-blue-govukblue;
+    @apply text-white bg-blue;
   }
 
   #add_template_by_template_type legend {

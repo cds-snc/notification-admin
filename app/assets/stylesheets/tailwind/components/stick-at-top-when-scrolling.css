@@ -101,14 +101,14 @@
   .js-cancel {
     margin-top: -10px;
     margin-right: -10px;
-    @apply inline-block p-4 pb-2 underline text-blue-govukblue cursor-pointer;
+    @apply inline-block p-4 pb-2 underline text-blue cursor-pointer;
   }
   .js-cancel:hover {
     @apply text-blue-lightblue;
   }
   .js-cancel:focus,
   .js-cancel:active {
-    @apply bg-yellow outline-none text-blue-govukblue;
+    @apply bg-yellow outline-none text-blue;
   }
   /*! purgecss end ignore */
 }
