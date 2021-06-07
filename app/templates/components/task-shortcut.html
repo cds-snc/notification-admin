@@ -1,0 +1,18 @@
+{% macro task_shortcut(title, img_src, description, button_url, button_text) %}
+  <div class="border p-gutterHalf flex-1">
+    <div class="flex mb-8">
+      <img 
+        class="flex-0 w-10 h-10" 
+        aria-hidden="true" 
+        src="{{ img_src }}"
+      />
+      <h2 class="font-bold text-base ml-2 flex-1">
+        {{ title }}
+      </h2>
+    </div>
+    <p>{{ description }}</p>
+    <a class="button flex-end" href="{{ button_url }}">
+      {{ button_text }}
+    </a>
+  </div>
+{% endmacro %}
