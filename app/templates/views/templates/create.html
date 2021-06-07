@@ -1,0 +1,26 @@
+{% extends "admin_template.html" %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/radios.html" import radios %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Create template') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+  {% set header_txt = _('Create template') %}
+  {{ page_header(
+    header_txt,
+    back_link=url_for('main.choose_template', service_id=service_id, template_type=template_type, template_folder_id=template_folder_id)
+  ) }}
+ 
+  {% set label_txt = _('Name for this key') %}
+  {% set button_txt = _('Continue') %}
+    {% call form_wrapper() %}
+    {{ radios(form.what_type, disable=disabled_options, option_hints=option_hints) }}
+    {{ page_footer(button_txt) }}
+  {% endcall %}
+
+
+{% endblock %}

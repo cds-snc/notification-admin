@@ -20,6 +20,7 @@ from app import (
 )
 from app.main import main
 from app.main.forms import (
+    CreateTemplateForm,
     EmailTemplateForm,
     LetterTemplateForm,
     LetterTemplatePostageForm,
@@ -166,12 +167,6 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
 def process_folder_management_form(form, current_folder_id):
     current_service.get_template_folder_with_user_permission_or_403(current_folder_id, current_user)
     new_folder_id = None
-
-    if form.is_add_template_op:
-        return _add_template_by_type(
-            form.add_template_by_template_type.data,
-            current_folder_id,
-        )
 
     if form.is_add_folder_op:
         new_folder_id = template_folder_api_client.create_template_folder(
@@ -332,6 +327,33 @@ def _add_template_by_type(template_type, template_folder_id):
                 template_folder_id=template_folder_id,
             )
         )
+
+
+@main.route("/services/<service_id>/templates/create", methods=["GET", "POST"])
+@main.route("/services/<service_id>/templates/folders/<template_folder_id>/create", methods=["GET", "POST"])
+@main.route("/services/<service_id>/templates/<template_type>/create", methods=["GET", "POST"])
+@main.route("/services/<service_id>/templates/<template_type>/folders/<template_folder_id>/create", methods=["GET", "POST"])
+@user_has_permissions("manage_templates")
+def create_template(service_id, template_type="all", template_folder_id=None):
+    form = CreateTemplateForm()
+
+    if request.method == "POST" and form.validate_on_submit():
+        try:
+            return _add_template_by_type(
+                form.what_type.data,
+                template_folder_id,
+            )
+        except HTTPError as e:
+            flash(e.message)
+    return render_template(
+        "views/templates/create.html",
+        service_id=service_id,
+        template_folder_id=template_folder_id,
+        template_type=template_type,
+        form=form,
+        disabled_options={},
+        option_hints={},
+    )
 
 
 @main.route("/services/<service_id>/templates/copy")

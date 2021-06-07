@@ -48,7 +48,7 @@
           key: "add-new-template",
           $el: this.$form.find("#add_new_template_form"),
           cancellable: true,
-          setFocus: this.getFocusRoutine("#add_new_template_form legend", true)
+          setFocus: this.getFocusRoutine("#add_new_template_form", true)
         }
       ];
 
@@ -74,6 +74,12 @@
 
       this.$form.on("click", "button.js-button-action", event =>
         this.actionButtonClicked(event)
+      );
+      this.$form.on("click", "button[value=add-new-template]", event => {
+        event.stopPropagation();
+        event.preventDefault();
+        window.location.href = `${window.location.href}/create`
+      }
       );
       this.$form.on("change", "input[type=checkbox]", () =>
         this.templateFolderCheckboxChanged()
@@ -275,17 +281,18 @@
 
       // detach everything, unless they are the currentState
       this.states.forEach(state =>
-        state.key === this.currentState
+        state.key === this.currentState && state.key !== "add-new-template"
           ? this.$liveRegionCounter.before(state.$el)
           : state.$el.detach()
       );
 
+      if (this.currentState === "add-new-template") {
+        // nav to create page. 
+        window.location.href = `${window.location.href}/create`
+      }
+
       // use dialog mode for states which contain more than one form control
-      if (
-        ["move-to-existing-folder", "add-new-template"].indexOf(
-          this.currentState
-        ) !== -1
-      ) {
+      if (this.currentState === "move-to-existing-folder") {
         mode = "dialog";
       }
       GOVUK.stickAtBottomWhenScrolling.setMode(mode);
@@ -300,7 +307,7 @@
     this.nothingSelectedButtons = $(`
       <div id="nothing_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button js-button-action" value="add-new-template">${window.polyglot.t(
+          <button class="button" value="add-new-template">${window.polyglot.t(
             "new_template_button"
           )}</button>
           <button class="button js-button-action button-secondary copy-template" value="copy-template">${window.polyglot.t(
