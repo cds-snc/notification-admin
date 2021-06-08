@@ -1,8 +1,9 @@
 import csv
 import os
+from typing import List
 
 # input keywords here, lowercase
-keywords = []
+keywords: List[str] = []
 # example
 # keywords = ["can't","can’t","cannot","can not"]
 

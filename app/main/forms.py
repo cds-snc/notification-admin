@@ -416,7 +416,7 @@ PermissionsAbstract = type(
 )
 
 
-class PermissionsForm(PermissionsAbstract):
+class PermissionsForm(PermissionsAbstract):  # type: ignore
     def __init__(self, all_template_folders=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.folder_permissions.choices = []
@@ -604,7 +604,7 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
 
 
 class CreateServiceStepLogoForm(StripWhitespaceForm):
-    def _getSelectBilingualChoices(self) -> dict:
+    def _getSelectBilingualChoices(self):
         cdn_url = get_logo_cdn_domain()
         default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
         default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
