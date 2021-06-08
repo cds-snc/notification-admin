@@ -14,3 +14,4 @@ requests-mock==1.8.0
 # used for creating manifest file locally
 jinja2-cli[yaml]==0.7.0
 black==21.5b2
+mypy==0.812
