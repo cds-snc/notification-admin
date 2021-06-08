@@ -6,7 +6,7 @@
 
   .edit-template-link {
     z-index: 10000;
-    @apply text-smaller leading-tight font-normal absolute text-white py-4 px-gutterHalf bg-blue-govukblue;
+    @apply text-smaller leading-tight font-normal absolute text-white py-4 px-gutterHalf bg-blue;
   }
   .edit-template-link:link,
   .edit-template-link:visited {

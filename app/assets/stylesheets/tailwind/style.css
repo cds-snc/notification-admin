@@ -254,7 +254,7 @@ label {
     @apply absolute overflow-hidden border-0 p-0;
   }
   .research-mode {
-    @apply font-bold inline-block bg-blue-govukblue text-white py-2 px-4 rounded;
+    @apply font-bold inline-block bg-blue text-white py-2 px-4 rounded;
   }
 
   .js-enabled .live-search {
