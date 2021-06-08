@@ -14,6 +14,7 @@ from app.main.views.dashboard import (
 )
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
+    ClientRequest,
     SERVICE_ONE_ID,
     a11y_test,
     active_caseworking_user,
@@ -160,10 +161,9 @@ def test_redirect_caseworkers_to_templates(
     )
 
 
-def test_get_started(
-    client_request,
+def test_task_shortcuts(
+    client_request: ClientRequest,
     mocker,
-    mock_get_service_templates_when_no_templates_exist,
     mock_get_jobs,
     mock_get_service_statistics,
     mock_get_usage,
@@ -178,12 +178,12 @@ def test_get_started(
         service_id=SERVICE_ONE_ID,
     )
 
-    mock_get_service_templates_when_no_templates_exist.assert_called_once_with(SERVICE_ONE_ID)
-    assert "Get started" in page.text
+    assert "Create a template" in page.text
 
 
-def test_get_started_is_hidden_once_templates_exist(
-    client_request,
+def test_task_shortcut_is_hidden_if_no_permissions(
+    client_request: ClientRequest,
+    active_user_with_permissions,
     mocker,
     mock_get_service_templates,
     mock_get_jobs,
@@ -195,13 +195,15 @@ def test_get_started_is_hidden_once_templates_exist(
         "app.template_statistics_client.get_template_statistics_for_service",
         return_value=copy.deepcopy(stub_template_stats),
     )
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity"]
+    client_request.login(active_user_with_permissions)
+
     page = client_request.get(
         "main.service_dashboard",
         service_id=SERVICE_ONE_ID,
     )
 
-    mock_get_service_templates.assert_called_once_with(SERVICE_ONE_ID)
-    assert "Get started" not in page.text
+    assert "Create a template" not in page.text
 
 
 def test_should_show_recent_templates_on_dashboard(
