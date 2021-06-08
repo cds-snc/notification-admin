@@ -14,8 +14,8 @@ from app.main.views.dashboard import (
 )
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
-    ClientRequest,
     SERVICE_ONE_ID,
+    ClientRequest,
     a11y_test,
     active_caseworking_user,
     active_user_view_permissions,
