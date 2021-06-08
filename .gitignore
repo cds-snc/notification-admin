@@ -91,3 +91,4 @@ schedule-message.html
 
 jinja_templates/
 scripts/searchresults.csv
+dump.rdb
