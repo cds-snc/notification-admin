@@ -17,7 +17,7 @@
     @apply block p-gutterHalf no-underline;
   }
   .previous-and-next-navigation li a:visited {
-    @apply text-blue-govukblue;
+    @apply text-blue;
   }
   .previous-and-next-navigation li a:hover,
   .previous-and-next-navigation li a:active {

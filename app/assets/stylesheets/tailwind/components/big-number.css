@@ -21,7 +21,7 @@
   }
 
   .big-number-link {
-    @apply no-underline mb-2 text-white block bg-blue-govukblue border-2 border-blue-govukblue border-solid;
+    @apply no-underline mb-2 text-white block bg-blue border-2 border-blue border-solid;
   }
   .big-number-link:hover,
   .big-number-link:hover .big-number {
@@ -29,11 +29,11 @@
   }
   .big-number-link:active,
   .big-number-link:focus {
-    @apply outline-yellow bg-blue-govukblue;
+    @apply outline-yellow bg-blue;
   }
 
   .big-number-status {
-    @apply text-smaller p-6 block text-white bg-green-green;
+    @apply text-smaller p-6 block text-white bg-green-darker;
   }
 
   .big-number-status-link:link,

@@ -17,7 +17,7 @@
   }
 
   .pill a {
-    @apply bg-blue-govukblue border-2 border-solid border-blue-govukblue text-white relative no-underline cursor-pointer;
+    @apply bg-blue border-2 border-solid border-blue text-white relative no-underline cursor-pointer;
   }
   .pill a .pill-label {
     @apply underline;
@@ -51,7 +51,7 @@
   }
   .pill-separate-item:link,
   .pill-separate-item:visited {
-    @apply bg-blue-govukblue text-white underline;
+    @apply bg-blue text-white underline;
   }
   .pill-separate-item:hover,
   .pill-separate-item:focus,

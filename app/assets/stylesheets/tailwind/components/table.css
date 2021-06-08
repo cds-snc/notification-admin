@@ -226,7 +226,7 @@
     @apply text-small leading-tight font-normal text-gray-grey1 py-4 px-0 text-center border-0 border-b-1 border-solid border-gray-grey2 mb-16;
   }
   a.table-show-more-link {
-    @apply text-blue-govukblue;
+    @apply text-blue;
   }
 
   .wide-left-hand-column {

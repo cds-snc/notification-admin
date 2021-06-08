@@ -6,7 +6,7 @@ from flask import abort
 
 class JSONModel:
 
-    ALLOWED_PROPERTIES = set()
+    ALLOWED_PROPERTIES: set = set()
 
     def __init__(self, _dict):
         # in the case of a bad request _dict may be `None`
@@ -51,12 +51,12 @@ class JSONModel:
 class ModelList(ABC, Sequence):
     @property
     @abstractmethod
-    def client():
+    def client(self):
         pass
 
     @property
     @abstractmethod
-    def model():
+    def model(self):
         pass
 
     def __init__(self):
