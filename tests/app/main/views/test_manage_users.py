@@ -29,16 +29,16 @@ from tests.conftest import (
             (
                 "Test User (you) "
                 "Can See dashboard statistics "
-                "Can Send messages "
-                "Can Create and edit messages "
+                "Can Send message templates "
+                "Can Create and edit message templates "
                 "Can Manage settings and team "
                 "Can Manage API integration"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
                 "Can See dashboard statistics "
-                "Cannot Send messages "
-                "Cannot Create and edit messages "
+                "Cannot Send message templates "
+                "Cannot Create and edit message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration "
                 "Change details"
@@ -49,16 +49,16 @@ from tests.conftest import (
             (
                 "Test User With Empty Permissions (you) "
                 "Cannot See dashboard statistics "
-                "Cannot Send messages "
-                "Cannot Creaate and edit messages "
+                "Cannot Send message templates "
+                "Cannot Create and edit message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
                 "Can See dashboard statistics "
-                "Cannot Send messages "
-                "Cannot Create and edit messages "
+                "Cannot Send message templates "
+                "Cannot Create and edit message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
@@ -68,16 +68,16 @@ from tests.conftest import (
             (
                 "Test User With Permissions (you) "
                 "Can See dashboard statistics "
-                "Cannot Send messages "
-                "Cannot Create and edit messages "
+                "Cannot Send message templates "
+                "Cannot Create and edit message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
                 "Can See dashboard statistics "
-                "Cannot Send messages "
-                "Cannot Create and edit messages "
+                "Cannot Send message templates "
+                "Cannot Create and edit message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
@@ -87,16 +87,16 @@ from tests.conftest import (
             (
                 "Test User With Permissions (you) "
                 "Can See dashboard statistics "
-                "Cannot Send messages "
-                "Can Create and edit messages "
+                "Cannot Send message templates "
+                "Can Create and edit message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
                 "Can See dashboard statistics "
-                "Cannot Send messages "
-                "Cannot Create and edit messages "
+                "Cannot Send message templates "
+                "Cannot Create and edit message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
@@ -106,16 +106,16 @@ from tests.conftest import (
             (
                 "Test User With Permissions (you) "
                 "Can See dashboard statistics "
-                "Cannot Send messages "
-                "Can Create and edit messages "
+                "Cannot Send message templates "
+                "Can Create and edit message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
                 "Can See dashboard statistics "
-                "Cannot Send messages "
-                "Cannot Create and edit messages "
+                "Cannot Send message templates "
+                "Cannot Create and edit message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
