@@ -8,7 +8,7 @@
         _("Write"),
         asset_url('images/dashboard/edit-solid.svg'),
         _("Prepare to send messages by creating your own templates."),
-        url_for('.create_template', service_id=current_service.id),
+        url_for('.create_template', service_id=current_service.id, source="dashboard"),
         _("Create a template"),
       )
     }}
