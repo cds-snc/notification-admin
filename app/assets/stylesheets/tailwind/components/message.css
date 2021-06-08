@@ -22,7 +22,7 @@
     margin-left: -2px;
   }
   .message-name a .message-name-separator:before {
-    @apply border-blue-govukblue;
+    @apply border-blue;
   }
 
   .message-type {
