@@ -29,16 +29,16 @@ from tests.conftest import (
             (
                 "Test User (you) "
                 "Can See dashboard statistics "
-                "Can Send message templates "
                 "Can Create and edit message templates "
+                "Can Send message templates "
                 "Can Manage settings and team "
                 "Can Manage API integration"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
                 "Can See dashboard statistics "
-                "Cannot Send message templates "
                 "Cannot Create and edit message templates "
+                "Cannot Send message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration "
                 "Change details"
@@ -49,16 +49,16 @@ from tests.conftest import (
             (
                 "Test User With Empty Permissions (you) "
                 "Cannot See dashboard statistics "
-                "Cannot Send message templates "
                 "Cannot Create and edit message templates "
+                "Cannot Send message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
                 "Can See dashboard statistics "
-                "Cannot Send message templates "
                 "Cannot Create and edit message templates "
+                "Cannot Send message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
@@ -68,16 +68,16 @@ from tests.conftest import (
             (
                 "Test User With Permissions (you) "
                 "Can See dashboard statistics "
-                "Cannot Send message templates "
                 "Cannot Create and edit message templates "
+                "Cannot Send message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
                 "Can See dashboard statistics "
-                "Cannot Send message templates "
                 "Cannot Create and edit message templates "
+                "Cannot Send message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
@@ -87,16 +87,16 @@ from tests.conftest import (
             (
                 "Test User With Permissions (you) "
                 "Can See dashboard statistics "
-                "Cannot Send message templates "
                 "Can Create and edit message templates "
+                "Cannot Send message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
                 "Can See dashboard statistics "
-                "Cannot Send message templates "
                 "Cannot Create and edit message templates "
+                "Cannot Send message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
@@ -106,16 +106,16 @@ from tests.conftest import (
             (
                 "Test User With Permissions (you) "
                 "Can See dashboard statistics "
-                "Cannot Send message templates "
                 "Can Create and edit message templates "
+                "Cannot Send message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
                 "Can See dashboard statistics "
-                "Cannot Send message templates "
                 "Cannot Create and edit message templates "
+                "Cannot Send message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
@@ -187,8 +187,8 @@ def test_should_show_caseworker_on_overview_page(
     assert normalize_spaces(page.select(".user-list-item")[0].text) == (
         "Test User With Permissions (you) "
         "Can See dashboard statistics "
-        "Cannot Send messages "
-        "Cannot Create and edit messages "
+        "Cannot Create and edit message templates "
+        "Cannot Send message templates "
         "Cannot Manage settings and team "
         "Cannot Manage API integration"
     )
@@ -196,8 +196,8 @@ def test_should_show_caseworker_on_overview_page(
     assert normalize_spaces(page.select(".user-list-item")[6].text) == (
         "Test User zzzzzzz@example.canada.ca "
         "Cannot See dashboard statistics "
-        "Can Send messages "
-        "Cannot Create and edit messages "
+        "Cannot Create and edit message templates "
+        "Can Send message templates "
         "Cannot Manage settings and team "
         "Cannot Manage API integration"
     )
@@ -252,8 +252,8 @@ def test_service_without_caseworking_doesnt_show_admin_vs_caseworker(
 ):
     page = client_request.get(endpoint, service_id=SERVICE_ONE_ID, **extra_args)
     assert page.select("input[type=checkbox]")[0]["name"] == "view_activity"
-    assert page.select("input[type=checkbox]")[1]["name"] == "send_messages"
-    assert page.select("input[type=checkbox]")[2]["name"] == "manage_templates"
+    assert page.select("input[type=checkbox]")[1]["name"] == "manage_templates"
+    assert page.select("input[type=checkbox]")[2]["name"] == "send_messages"
     assert page.select("input[type=checkbox]")[3]["name"] == "manage_service"
     assert page.select("input[type=checkbox]")[4]["name"] == "manage_api_keys"
 
@@ -329,8 +329,8 @@ def test_user_with_no_mobile_number_cant_be_set_to_sms_auth(
             {"user_id": sample_uuid()},
             [
                 ("view_activity", True),
-                ("send_messages", True),
                 ("manage_templates", True),
+                ("send_messages", True),
                 ("manage_service", True),
                 ("manage_api_keys", True),
             ],
@@ -340,8 +340,8 @@ def test_user_with_no_mobile_number_cant_be_set_to_sms_auth(
             {},
             [
                 ("view_activity", False),
-                ("send_messages", False),
                 ("manage_templates", False),
+                ("send_messages", False),
                 ("manage_service", False),
                 ("manage_api_keys", False),
             ],
@@ -880,8 +880,8 @@ def test_cancel_invited_user_doesnt_work_if_user_not_invited_to_this_service(
             (
                 "invited_user@test.canada.ca (invited) "
                 "Can See dashboard statistics "
-                "Can Send messages "
-                "Cannot Creaate and edit messages "
+                "Cannot Create and edit message templates "
+                "Can Send message templates "
                 "Can Manage settings and team "
                 "Can Manage API integration "
                 "Cancel invitation"
@@ -893,8 +893,8 @@ def test_cancel_invited_user_doesnt_work_if_user_not_invited_to_this_service(
                 "invited_user@test.canada.ca (cancelled invite) "
                 # all permissions are greyed out
                 "Cannot See dashboard statistics "
-                "Cannot Send messages "
-                "Cannot Create and edit messages "
+                "Cannot Create and edit message templates "
+                "Cannot Send message templates "
                 "Cannot Manage settings and team "
                 "Cannot Manage API integration"
             ),
