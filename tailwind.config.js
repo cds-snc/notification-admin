@@ -51,7 +51,6 @@ module.exports = {
         lighter: "#B2E3FF",
         default: "#26374A",
         selected: "#75b9e0",
-        govukblue: "#005ea5",
         lightblue25: "#d5e8f3",
         lightblue: "#2b8cc4",
         slightlight: "#284162"

@@ -147,7 +147,7 @@ class Test(Development):
 
 
 class Production(Config):
-    HEADER_COLOUR = "#005EA5"  # $govuk-blue
+    HEADER_COLOUR = "#26374A"  # blue.default
     HTTP_PROTOCOL = "https"
     NOTIFY_ENVIRONMENT = "production"
     CHECK_PROXY_HEADER = False
