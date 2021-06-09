@@ -3,13 +3,13 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/radios.html" import radios %}
 {% from "components/form.html" import form_wrapper %}
+{% set header_txt = _('Create template') %}
 
 {% block service_page_title %}
-  {{ _('Create template') }}
+  {{ header_txt }}
 {% endblock %}
 
 {% block maincolumn_content %}
-  {% set header_txt = _('Create template') %}
   {% set choose_url = url_for('main.choose_template', service_id=service_id, template_type=template_type, template_folder_id=template_folder_id) %}
   {% set dashboard_url = url_for('main.service_dashboard', service_id=service_id) %}
   {% set back_url = dashboard_url if request.args.get('source') == 'dashboard' else choose_url %}
@@ -17,13 +17,11 @@
     header_txt,
     back_link=back_url
   ) }}
- 
-  {% set label_txt = _('Name for this key') %}
-  {% set button_txt = _('Continue') %}
-    {% call form_wrapper() %}
+  
+  <p>{{ _('Create a template to start writing a message.') }}</p>
+  {% call form_wrapper() %}
     {{ radios(form.what_type, disable=disabled_options, option_hints=option_hints) }}
-    {{ page_footer(button_txt) }}
+    {{ page_footer(_('Continue')) }}
   {% endcall %}
-
 
 {% endblock %}

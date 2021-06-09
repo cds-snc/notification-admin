@@ -63,6 +63,9 @@
       {% endif %}
     </div>
   {% endif %}
+    {% if sending_view %}
+      <p>{{ _('Select template to send.') }}
+    {% endif %}
     {% if show_template_nav %}
       <div class="mb-12 clear-both contain-floats">
         {{ pill(template_nav_items, current_value=template_type, show_count=False) }}
@@ -71,7 +74,7 @@
 
     {{ live_search(target_selector='#template-list .template-list-item', show=show_search_box, form=search_form) }}
 
-    {% if current_user.has_permissions('manage_templates') and user_has_template_folder_permission %}
+    {% if not sending_view and current_user.has_permissions('manage_templates') and user_has_template_folder_permission %}
       {% call form_wrapper(
           class='sticky-scroll-area',
           module='template-folder-form',
