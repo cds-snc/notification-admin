@@ -2,20 +2,24 @@
   /* Note: Buttons are <a> sometimes, which is why :link and :visited styles exist */
   /*! purgecss start ignore */
   .button,
-  .button:link,
-  .button:visited {
+  a.button,
+  a.button:link,
+  a.button:visited,
+  a.button:active {
     padding: 0.526315em 0.789473em 0.263157em;
     box-shadow: 0 2px 0 theme("colors.blue.border");
     @apply no-underline inline-block text-white text-smaller leading-tight align-top bg-blue;
   }
 
-  .button:hover {
+  .button:hover,
+  a.button:hover {
     @apply bg-blue-slightlight;
   }
 
-  .button:focus {
-    outline: 3px solid theme("colors.yellow.default");
-    @apply border-transparent shadow-outline;
+  .button:focus,
+  a.button:focus {
+    outline: 1px solid theme("colors.yellow.default");
+    @apply border-transparent text-white shadow-outline;
   }
 
   .button-blue-lighter,
