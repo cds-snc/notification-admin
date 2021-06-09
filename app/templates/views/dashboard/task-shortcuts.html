@@ -1,0 +1,22 @@
+{% from "components/task-shortcut.html" import task_shortcut %}
+
+<div class="flex space-x-gutter mb-16 mt-12">
+  {% if current_user.has_permissions('manage_templates') %}
+    {{ task_shortcut(
+        _("Write"),
+        asset_url('images/dashboard/edit-solid.svg'),
+        _("Prepare to send messages by creating your own templates."),
+        url_for('.create_template', service_id=current_service.id, source="dashboard"),
+        _("Create a template"),
+      )
+    }}
+    {# {{ task_shortcut(
+      _("Send"),
+      asset_url('images/dashboard/paper-plane-solid.svg'),
+      _("Send existing messages to specific recipients."),
+      url_for('.choose_template', service_id=current_service.id),
+      _("Choose a template"),
+    )
+  }} #}
+  {% endif %}
+</div>

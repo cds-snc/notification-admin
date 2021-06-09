@@ -14,14 +14,14 @@
 
   <div class="dashboard">
 
-    <h1 class="visuallyhidden">{{ _('Dashboard') }}</h1>
-    {% if current_user.has_permissions('manage_templates') and not current_service.all_templates %}
-      {% include 'views/dashboard/write-first-messages.html' %}
+    <h1 class="heading-large">{{ _('Dashboard') }}</h1>
+    {% if current_user.has_permissions('manage_templates') or current_user.has_permissions('send_messages') %}
+      {% include 'views/dashboard/task-shortcuts.html' %}
     {% endif %}
 
     {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
 
-    <h2 class="heading-medium">
+    <h2 class="heading-medium mt-8">
       {{ _('In the last 7 days') }}
     </h2>
 
