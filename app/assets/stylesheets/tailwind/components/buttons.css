@@ -19,7 +19,7 @@
   .button:focus,
   a.button:focus {
     outline: 1px solid theme("colors.yellow.default");
-    @apply border-transparent text-white shadow-outline;
+    @apply border-transparent shadow-outline;
   }
 
   .button-blue-lighter,
