@@ -18,7 +18,7 @@
     {% if current_user.has_permissions('manage_templates') or current_user.has_permissions('send_messages') %}
       {% include 'views/dashboard/task-shortcuts.html' %}
     {% endif %}
-    
+
     {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
 
     <h2 class="heading-medium mt-8">

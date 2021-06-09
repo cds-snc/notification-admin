@@ -11,8 +11,10 @@
       </h2>
     </div>
     <p>{{ description }}</p>
-    <a class="button-blue mt-auto" href="{{ button_url }}">
-      {{ button_text }}
-    </a>
-  </div>
+      <div class="mt-auto flex-0">
+        <a class="button" href="{{ button_url }}">
+          {{ button_text }}
+        </a>
+      </div>    
+    </div>
 {% endmacro %}
