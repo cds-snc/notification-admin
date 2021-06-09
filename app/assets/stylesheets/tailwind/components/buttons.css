@@ -2,22 +2,26 @@
   /* Note: Buttons are <a> sometimes, which is why :link and :visited styles exist */
   /*! purgecss start ignore */
   .button,
-  .button:link,
-  .button:visited {
+  a.button,
+  a.button:link,
+  a.button:visited,
+  a.button:active {
     padding: 0.526315em 0.789473em 0.263157em;
-    box-shadow: 0 2px 0 theme("colors.green.border");
-    @apply no-underline inline-block text-white text-smaller leading-tight align-top bg-green;
+    box-shadow: 0 2px 0 theme("colors.blue.border");
+    @apply no-underline inline-block text-white text-smaller leading-tight align-top bg-blue;
   }
 
-  .button-blue {
-    width: 210px;
-    @apply block mt-8 text-center py-4 px-8;
+  .button:hover,
+  a.button:hover {
+    @apply bg-blue-slightlight;
   }
-  .button-blue,
-  .button-blue:link,
-  .button-blue:visited {
-    @apply bg-blue text-white text-smaller;
+
+  .button:focus,
+  a.button:focus {
+    outline: 1px solid theme("colors.yellow.default");
+    @apply border-transparent shadow-outline;
   }
+
   .button-blue-lighter,
   .button-blue-lighter:link,
   .button-blue-lighter:visited {
@@ -28,15 +32,6 @@
   .button-blue-lighter-nb:visited {
     box-shadow: none;
     @apply bg-blue-lighter border-none font-semibold text-small text-black px-6 py-1;
-  }
-
-  .button:hover {
-    @apply bg-green-hover;
-  }
-
-  .button:focus {
-    outline: 3px solid theme("colors.yellow.default");
-    @apply border-transparent;
   }
 
   .button-red {
