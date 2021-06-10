@@ -21,10 +21,11 @@
     {% endif %}
   </p>
 {% else %}
+  {% set display_checkboxes = current_user.has_permissions('manage_templates') and not sending_view %}
   <nav id="template-list" class="{{ 'top-gutter-5px contain-floats' if (not show_template_nav and not show_search_box) else '' }}">
     {% for item in template_list %}
-      <div class="template-list-item {% if current_user.has_permissions('manage_templates') %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}">
-        {% if current_user.has_permissions('manage_templates') %}
+      <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}">
+        {% if display_checkboxes %}
           {{ unlabelled_checkbox(
             id='templates-or-folder-{}'.format(item.id),
             name='templates_and_folders',

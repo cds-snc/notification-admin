@@ -10,13 +10,15 @@
         _("Create a template"),
       )
     }}
-    {# {{ task_shortcut(
-      _("Send"),
-      asset_url('images/dashboard/paper-plane-solid.svg'),
-      _("Send existing messages to specific recipients."),
-      url_for('.choose_template', service_id=current_service.id),
-      _("Choose a template"),
-    )
-  }} #}
+  {% endif %}
+  {% if current_user.has_permissions('send_messages') %}
+    {{ task_shortcut(
+        _("Send"),
+        asset_url('images/dashboard/paper-plane-solid.svg'),
+        _("Send existing messages to specific recipients."),
+        url_for('.choose_template', service_id=current_service.id, view="sending"),
+        _("Choose a template"),
+      )
+    }}
   {% endif %}
 </div>

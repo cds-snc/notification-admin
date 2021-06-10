@@ -161,27 +161,48 @@ def test_redirect_caseworkers_to_templates(
     )
 
 
-def test_task_shortcuts(
+@pytest.mark.parametrize(
+    "permissions,text_in_page,text_not_in_page",
+    [
+        (["view_activity", "manage_templates"], ["Create a template"], ["Choose a template"]),
+        (["view_activity", "send_messages"], ["Choose a template"], ["Create a template"]),
+        (["view_activity"], [], ["Create a template", "Choose a template"]),
+        (["view_activity", "manage_templates", "send_messages"], ["Create a template", "Choose a template"], []),
+    ],
+)
+def test_task_shortcuts_are_visible_based_on_permissions(
     client_request: ClientRequest,
+    active_user_with_permissions,
     mocker,
+    mock_get_service_templates,
     mock_get_jobs,
     mock_get_service_statistics,
     mock_get_usage,
+    mock_get_inbound_sms_summary,
+    permissions: list,
+    text_in_page: list,
+    text_not_in_page: list,
 ):
     mocker.patch(
         "app.template_statistics_client.get_template_statistics_for_service",
         return_value=copy.deepcopy(stub_template_stats),
     )
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
+    client_request.login(active_user_with_permissions)
 
     page = client_request.get(
         "main.service_dashboard",
         service_id=SERVICE_ONE_ID,
     )
 
-    assert "Create a template" in page.text
+    for text in text_in_page:
+        assert text in page.text
+
+    for text in text_not_in_page:
+        assert text not in page.text
 
 
-def test_task_shortcut_is_hidden_if_no_permissions(
+def test_sending_link_has_query_param(
     client_request: ClientRequest,
     active_user_with_permissions,
     mocker,
@@ -195,15 +216,15 @@ def test_task_shortcut_is_hidden_if_no_permissions(
         "app.template_statistics_client.get_template_statistics_for_service",
         return_value=copy.deepcopy(stub_template_stats),
     )
-    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity"]
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity", "send_messages"]
     client_request.login(active_user_with_permissions)
 
     page = client_request.get(
         "main.service_dashboard",
         service_id=SERVICE_ONE_ID,
     )
-
-    assert "Create a template" not in page.text
+    sending_url = url_for("main.choose_template", service_id=SERVICE_ONE_ID, view="sending")
+    assert sending_url == page.select_one("a.button").attrs["href"]
 
 
 def test_should_show_recent_templates_on_dashboard(
