@@ -22,20 +22,14 @@ def test_selected_menus(
     mock_get_template_folders,
     mock_get_service_templates_when_no_templates_exist,
     page_name,
-    page_menu
+    page_menu,
 ):
     page = client_request.get(
         page_name,
         service_id=SERVICE_ONE_ID,
     )
 
-    menus = [
-        "Dashboard",
-        "Templates",
-        "Api integration",
-        "Team members",
-        "Settings"
-    ]
+    menus = ["Dashboard", "Templates", "Api integration", "Team members", "Settings"]
 
     for menu in menus:
         menu_desktop_active = page.find_all("a", {"class": "header--active"}, text=re.compile(menu))
