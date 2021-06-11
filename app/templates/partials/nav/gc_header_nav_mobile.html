@@ -40,15 +40,10 @@
           {% if not current_user.platform_admin %}
             <!-- service menu dropdown / signed in / mobile -->
             {% if current_user.has_permissions() %} {# service in the context #}
-              {% if current_user.has_permissions('view_activity') %}
                 {{ nav_menu_item_mobile(url_for('main.service_dashboard', service_id=current_service.id),_('Dashboard'),header_navigation.is_selected('dashboard')) }}
-              {% endif %}
               {{ nav_menu_item_mobile( url_for('main.choose_template', service_id=current_service.id),_('Templates'),header_navigation.is_selected('templates')) }}
               {% if not current_user.has_permissions('view_activity') %}
                 {{ nav_menu_item_mobile(url_for('main.view_notifications', service_id=current_service.id, status='sending,delivered,failed'),_('Sent messages'),header_navigation.is_selected('sent-messages')) }}
-                {% if current_service.has_jobs %}
-                  {{ nav_menu_item_mobile(url_for('main.view_jobs', service_id=current_service.id),_('Uploaded files'),header_navigation.is_selected('uploaded-files')) }}
-                {% endif %}
               {% endif %}
               {% if current_user.has_permissions('manage_api_keys') %}
                 {{ nav_menu_item_mobile(url_for('main.api_integration', service_id=current_service.id),_('API integration'),header_navigation.is_selected('api-integration')) }}

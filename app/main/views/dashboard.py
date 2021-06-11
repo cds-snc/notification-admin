@@ -57,9 +57,6 @@ def service_dashboard(service_id):
         session.pop("invited_user", None)
         session["service_id"] = service_id
 
-    if not current_user.has_permissions("view_activity"):
-        return redirect(url_for("main.choose_template", service_id=service_id))
-
     return render_template(
         "views/dashboard/dashboard.html",
         updates_url=url_for(".service_dashboard_updates", service_id=service_id),
