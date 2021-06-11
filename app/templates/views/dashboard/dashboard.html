@@ -40,16 +40,17 @@
           template_txt
         ) }}
       {% endif %}
+
+      {% if partials['has_jobs'] %}
+        {{ ajax_block(partials, updates_url, 'jobs', interval=5) }}
+        {% set more_txt = _('See all uploaded files') %}
+        {{ show_more(
+          url_for('.view_jobs', service_id=current_service.id),
+          more_txt
+        ) }}
+      {% endif %}
     {% endif %}
 
-    {% if partials['has_jobs'] %}
-      {{ ajax_block(partials, updates_url, 'jobs', interval=5) }}
-      {% set more_txt = _('See all uploaded files') %}
-      {{ show_more(
-        url_for('.view_jobs', service_id=current_service.id),
-        more_txt
-      ) }}
-    {% endif %}
   </div>
 
 {% endblock %}
