@@ -19,34 +19,36 @@
       {% include 'views/dashboard/task-shortcuts.html' %}
     {% endif %}
 
-    {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
+    {% if partials["upcoming"] %}
+      <h2 class="heading-medium mt-8">{{ _("Scheduled sends") }}</h2>
+      {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
+    {% endif %}
 
     <h2 class="heading-medium mt-8">
-      {{ _('In the last 7 days') }}
+      {{ _('Sent in the last week') }}
     </h2>
 
     {{ ajax_block(partials, updates_url, 'totals', interval=5) }}
-    {% set msg_txt = _('Check messages sent per month') %}
     {{ show_more(
       url_for('.monthly', service_id=current_service.id),
-      msg_txt
+      _('See all messages sent')
     ) }}
 
     {% if partials['has_template_statistics'] %}
+      <h2 class="heading-medium mt-8">{{ _("Templates used") }}</h2>
       {{ ajax_block(partials, updates_url, 'template-statistics', interval=5) }}
-      {% set template_txt = _('Check templates used by month') %}
       {{ show_more(
         url_for('.template_usage', service_id=current_service.id),
-        template_txt
+        _('See all templates used')
       ) }}
     {% endif %}
 
     {% if partials['has_jobs'] %}
+      <h2 class="heading-medium mt-8">{{ _("Bulk sends") }}</h2>
       {{ ajax_block(partials, updates_url, 'jobs', interval=5) }}
-      {% set more_txt = _('See all uploaded files') %}
       {{ show_more(
         url_for('.view_jobs', service_id=current_service.id),
-        more_txt
+        _('See all bulk sends')
       ) }}
     {% endif %}
 

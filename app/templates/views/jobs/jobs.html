@@ -2,14 +2,21 @@
 {% extends "admin_template.html" %}
 
 {% block service_page_title %}
-  {{ _('Uploaded files') }}
+  {{ _('Bulk sends') }}
 {% endblock %}
 
 {% block maincolumn_content %}
-    <h1 class="heading-large">{{ _('Uploaded files') }}</h1>
-    <div class="dashboard">
-      {{ scheduled_jobs|safe }}
-      {% include 'views/dashboard/_jobs.html' %}
-      {{ previous_next_navigation(prev_page, next_page) }}
-    </div>
+  <h1 class="heading-large">{{ _('Bulk sends') }}</h1>
+
+  {% if scheduled_jobs %}
+    <h2 class="heading-medium mt-8">{{ _("Scheduled messages") }}</h2>
+    {{ scheduled_jobs|safe }}
+  {% endif %}
+
+  {% if jobs %}
+    <h2 class="heading-medium mt-8">{{ _("Sent messages") }}</h2>
+    {% include 'views/dashboard/_jobs.html' %}
+  {% endif %}
+
+  {{ previous_next_navigation(prev_page, next_page) }}
 {% endblock %}

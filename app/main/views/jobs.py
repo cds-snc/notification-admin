@@ -14,6 +14,7 @@ from flask import (
     stream_with_context,
     url_for,
 )
+from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils.letter_timings import (
@@ -62,21 +63,18 @@ def view_jobs(service_id):
     if jobs_response["links"].get("next", None):
         next_page = generate_next_dict("main.view_jobs", service_id, page)
 
-    scheduled_jobs = ""
-    if not current_user.has_permissions("view_activity") and page == 1:
-        scheduled_jobs = render_template(
-            "views/dashboard/_upcoming.html",
-            scheduled_jobs=job_api_client.get_scheduled_jobs(service_id),
-            hide_heading=True,
-        )
-
     return render_template(
         "views/jobs/jobs.html",
         jobs=jobs,
         page=page,
         prev_page=prev_page,
         next_page=next_page,
-        scheduled_jobs=scheduled_jobs,
+        scheduled_jobs=render_template(
+            "views/dashboard/_upcoming.html",
+            scheduled_jobs=job_api_client.get_scheduled_jobs(service_id),
+            hide_show_more=True,
+            title=_("Scheduled messages"),
+        ),
     )
 
 

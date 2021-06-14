@@ -1,42 +1,35 @@
-{% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading %}
-{% from "components/big-number.html" import big_number %}
+{% from "components/table.html" import list_table, field, row_heading %}
 {% from "components/show-more.html" import show_more %}
 
 <div class="ajax-block-container">
   {% if scheduled_jobs %}
     <div class='dashboard-table'>
-      {% if not hide_heading %}
-        <h2 class="heading-medium heading-upcoming-jobs">
-          In the next few days
-        </h2>
-      {% endif %}
       {% call(item, row_number) list_table(
         scheduled_jobs,
-        caption="In the next few days",
+        caption=_("Scheduled sends"),
         caption_visible=False,
         empty_message='Nothing to see here',
         field_headings=[
-          'File',
-          'Messages to be sent'
+          _("Bulk name"),
+          _("Details")
         ],
-        field_headings_visible=True
+        field_headings_visible=False
       ) %}
         {% call row_heading() %}
           <div class="file-list">
             <a class="file-list-filename" href="{{ url_for('.view_job', service_id=current_service.id, job_id=item.id) }}">{{ item.original_file_name }}</a>
-            <span class="file-list-hint">
-              {{ _('Sending') }} <span class="local-datetime-short">{{ item.scheduled_for }}</span>
-            </span>
           </div>
         {% endcall %}
         {% call field() %}
-          {{ big_number(
-            item.notification_count,
-            smallest=True
-          ) }}
+          {{ _("Scheduled to send to {} recipients starting").format(item.notification_count | format_number) }} <span class="local-datetime-short">{{ item.scheduled_for }}</span>
         {% endcall %}
       {% endcall %}
-      {{ show_more() }}
+      {% if not hide_show_more %}
+        {{ show_more(
+          url_for('.view_jobs', service_id=current_service.id),
+          _('See all bulk sends')
+        ) }}
+      {% endif %}
     </div>
   {% endif %}
 </div>
