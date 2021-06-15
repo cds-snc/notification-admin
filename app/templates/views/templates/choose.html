@@ -53,7 +53,8 @@
           folders=template_folder_path,
           service_id=current_service.id,
           template_type=template_type,
-          current_user=current_user
+          current_user=current_user,
+          sending_view=sending_view
         ) }}
       </div>
       {% if current_user.has_permissions('manage_templates') and current_template_folder_id and user_has_template_folder_permission %}
