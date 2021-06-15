@@ -29,8 +29,8 @@ from tests.conftest import (
     [
         (
             ("Bulk name Details"),
-            ("send_me_later.csv " "Scheduled to send to 30 recipients starting 2016-01-01 11:09:00.061258"),
-            ("even_later.csv " "Scheduled to send to 30 recipients starting 2016-01-01 23:09:00.061258"),
+            ("send_me_later.csv " "Starting 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
+            ("even_later.csv " "Starting 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
             ("Bulk name Sending Delivered Failed"),
             ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
             ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
@@ -41,7 +41,7 @@ from tests.conftest import (
 )
 @freeze_time("2012-12-12 12:12")
 # This test assumes EST
-def test_jobs_page_shows_scheduled_jobs_if_user_doesnt_have_dashboard(
+def test_jobs_page_shows_scheduled_jobs(
     client_request,
     service_one,
     active_user_with_permissions,

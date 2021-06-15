@@ -18,10 +18,17 @@
         {% call row_heading() %}
           <div class="file-list">
             <a class="file-list-filename" href="{{ url_for('.view_job', service_id=current_service.id, job_id=item.id) }}">{{ item.original_file_name }}</a>
+            <span class="file-list-hint">
+              {{ _("Starting") }} <span class="local-datetime-short">{{ item.scheduled_for }}</span>
+            </span>
           </div>
         {% endcall %}
         {% call field() %}
-          {{ _("Scheduled to send to {} recipients starting").format(item.notification_count | format_number) }} <span class="local-datetime-short">{{ item.scheduled_for }}</span>
+          {% if item.notification_count > 1 %}
+            {{ _("Scheduled to send to {} recipients").format(item.notification_count | format_number) }}
+          {% else %}
+            {{ _("Scheduled to send to 1 recipient") }}
+          {% endif %}
         {% endcall %}
       {% endcall %}
       {% if not hide_show_more %}

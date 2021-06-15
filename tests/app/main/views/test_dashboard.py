@@ -409,13 +409,11 @@ def test_should_show_upcoming_jobs_on_dashboard(
     assert len(table_rows) == 2
 
     assert "send_me_later.csv" in table_rows[0].find_all("th")[0].text
-    assert (
-        table_rows[0].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients starting 2016-01-01 11:09:00.061258"
-    )
+    assert "Starting 2016-01-01 11:09:00.061258" in table_rows[0].find_all("th")[0].text
+    assert table_rows[0].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
     assert "even_later.csv" in table_rows[1].find_all("th")[0].text
-    assert (
-        table_rows[1].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients starting 2016-01-01 23:09:00.061258"
-    )
+    assert "Starting 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
+    assert table_rows[1].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
 
 
 @pytest.mark.parametrize(
