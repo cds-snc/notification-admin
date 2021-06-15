@@ -447,6 +447,7 @@ def get_job_partials(job, template):
         "status": render_template(
             "partials/jobs/status.html",
             job=job,
+            template=template,
             template_type=template["template_type"],
             letter_print_day=get_letter_printing_statement("created", job["created_at"]),
         ),

@@ -19,7 +19,7 @@
       {% include 'views/dashboard/task-shortcuts.html' %}
     {% endif %}
 
-    {% if partials["upcoming"] %}
+    {% if partials['has_scheduled_jobs'] %}
       <h2 class="heading-medium mt-8">{{ _("Scheduled sends") }}</h2>
       {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
     {% endif %}

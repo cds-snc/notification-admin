@@ -406,7 +406,7 @@ def test_should_show_scheduled_job(
         template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
         version=1,
     )
-    assert page.select_one("button[type=submit]").text.strip() == "Cancel sending"
+    assert page.select_one("button[type=submit]").text.strip() == "Cancel scheduled send"
 
 
 def test_should_cancel_job(
