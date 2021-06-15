@@ -74,7 +74,9 @@ def view_jobs(service_id):
             scheduled_jobs=job_api_client.get_scheduled_jobs(service_id),
             hide_show_more=True,
             title=_("Scheduled messages"),
-        ),
+        )
+        if page == 1
+        else None,
     )
 
 
