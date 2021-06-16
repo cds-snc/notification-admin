@@ -207,23 +207,27 @@ def test_should_not_show_template_nav_if_only_one_type_of_template(
 def test_should_not_show_checkboxes_if_sending(
     client_request: ClientRequest,
     mock_get_template_folders,
-    mock_get_service_templates_with_only_one_template,
+    mock_get_service_templates,
 ):
     page = client_request.get("main.choose_template", service_id=SERVICE_ONE_ID, view="sending")
     assert "Create template" not in page.text
     assert "Select template to send" in page.text
     assert not page.select("input[type=checkbox]")
+    pill_links = [a["href"] for a in page.select(".pill a")]
+    assert all([link.endswith("?view=sending") for link in pill_links])
 
 
 def test_should_show_checkboxes_if_not_sending(
     client_request: ClientRequest,
     mock_get_template_folders,
-    mock_get_service_templates_with_only_one_template,
+    mock_get_service_templates,
 ):
     page = client_request.get("main.choose_template", service_id=SERVICE_ONE_ID)
     assert "Create template" in page.text
     assert "Select template to send" not in page.text
     assert page.select("input[type=checkbox]")
+    pill_links = [a["href"] for a in page.select(".pill a")]
+    assert all([not link.endswith("?view=sending") for link in pill_links])
 
 
 def test_should_not_show_live_search_if_list_of_templates_fits_onscreen(
