@@ -204,7 +204,7 @@ def test_should_not_show_template_nav_if_only_one_type_of_template(
     assert not page.select(".pill")
 
 
-def test_should_not_show_checkboxes_if_sending(
+def test_choose_template_page_with_sending_view(
     client_request: ClientRequest,
     mock_get_template_folders,
     mock_get_service_templates,
@@ -217,7 +217,7 @@ def test_should_not_show_checkboxes_if_sending(
     assert all([link.endswith("?view=sending") for link in pill_links])
 
 
-def test_should_show_checkboxes_if_not_sending(
+def test_choose_template_page_without_sending_view(
     client_request: ClientRequest,
     mock_get_template_folders,
     mock_get_service_templates,
