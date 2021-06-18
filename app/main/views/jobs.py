@@ -449,6 +449,7 @@ def get_job_partials(job, template):
             job=job,
             template=template,
             template_type=template["template_type"],
+            template_version=job["template_version"],
             letter_print_day=get_letter_printing_statement("created", job["created_at"]),
         ),
         "can_letter_job_be_cancelled": can_letter_job_be_cancelled,
