@@ -18,36 +18,30 @@ from tests.conftest import (
 
 
 @pytest.mark.parametrize(
-    "user, expected_rows",
+    "user",
+    [
+        active_user_with_permissions,
+        active_caseworking_user,
+    ],
+)
+@pytest.mark.parametrize(
+    "expected_rows",
     [
         (
-            active_user_with_permissions,
-            (
-                ("File Sending Delivered Failed"),
-                ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-                ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-                ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-                ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-            ),
-        ),
-        (
-            active_caseworking_user,
-            (
-                ("File Messages to be sent"),
-                ("send_me_later.csv " "Sending 2016-01-01 11:09:00.061258 1"),
-                ("even_later.csv " "Sending 2016-01-01 23:09:00.061258 1"),
-                ("File Sending Delivered Failed"),
-                ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-                ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-                ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-                ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-            ),
-        ),
+            ("Bulk name Details"),
+            ("send_me_later.csv " "Starting 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
+            ("even_later.csv " "Starting 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
+            ("Bulk name Sending Delivered Failed"),
+            ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+        )
     ],
 )
 @freeze_time("2012-12-12 12:12")
 # This test assumes EST
-def test_jobs_page_shows_scheduled_jobs_if_user_doesnt_have_dashboard(
+def test_jobs_page_shows_scheduled_jobs(
     client_request,
     service_one,
     active_user_with_permissions,
@@ -105,11 +99,11 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
 
     for index, row in enumerate(
         (
-            ("File Sending Delivered Failed"),
-            ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-            ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-            ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
-            ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 1 0 0"),
+            ("Bulk name Sending Delivered Failed"),
+            ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
         )
     ):
         assert normalize_spaces(page.select("tr")[index].text) == row
@@ -412,7 +406,7 @@ def test_should_show_scheduled_job(
         template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
         version=1,
     )
-    assert page.select_one("button[type=submit]").text.strip() == "Cancel sending"
+    assert page.select_one("button[type=submit]").text.strip() == "Cancel scheduled send"
 
 
 def test_should_cancel_job(

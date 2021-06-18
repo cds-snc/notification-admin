@@ -2125,6 +2125,7 @@ def mock_get_jobs(mocker, api_user_active):
                 scheduled_for=scheduled_for,
                 job_status=job_status,
                 template_version=template_version,
+                notification_count=30,
             )
             for filename, scheduled_for, job_status, template_version in (
                 ("export 1/1/2016.xls", "", "finished", 1),

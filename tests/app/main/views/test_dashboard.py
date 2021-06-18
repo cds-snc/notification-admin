@@ -247,7 +247,7 @@ def test_should_show_recent_templates_on_dashboard(
     mock_template_stats.assert_called_once_with(SERVICE_ONE_ID, limit_days=7)
 
     headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
-    assert "In the last 7 days" in headers
+    assert "Sent in the last week" in headers
 
     table_rows = page.find_all("tbody")[1].find_all("tr")
 
@@ -407,11 +407,11 @@ def test_should_show_upcoming_jobs_on_dashboard(
     assert len(table_rows) == 2
 
     assert "send_me_later.csv" in table_rows[0].find_all("th")[0].text
-    assert "Sending 2016-01-01 11:09:00.061258" in table_rows[0].find_all("th")[0].text
-    assert table_rows[0].find_all("td")[0].text.strip() == "1"
+    assert "Starting 2016-01-01 11:09:00.061258" in table_rows[0].find_all("th")[0].text
+    assert table_rows[0].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
     assert "even_later.csv" in table_rows[1].find_all("th")[0].text
-    assert "Sending 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
-    assert table_rows[1].find_all("td")[0].text.strip() == "1"
+    assert "Starting 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
+    assert table_rows[1].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
 
 
 @pytest.mark.parametrize(
@@ -633,7 +633,7 @@ def test_should_show_recent_jobs_on_dashboard(
     ):
         assert filename in table_rows[index].find_all("th")[0].text
         assert "2016-01-01T11:09:00.061258+0000" in table_rows[index].find_all("th")[0].text
-        for column_index, count in enumerate((1, 0, 0)):
+        for column_index, count in enumerate((30, 0, 0)):
             assert table_rows[index].find_all("td")[column_index].text.strip() == str(count)
 
 

@@ -229,6 +229,7 @@ def get_dashboard_partials(service_id):
         "has_template_statistics": bool(template_statistics),
         "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
         "has_jobs": bool(immediate_jobs),
+        "has_scheduled_jobs": bool(scheduled_jobs),
     }
 
 
