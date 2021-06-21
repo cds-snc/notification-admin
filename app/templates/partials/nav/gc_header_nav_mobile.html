@@ -50,7 +50,7 @@
                   {{ nav_menu_item_mobile(url_for('main.view_jobs', service_id=current_service.id),_('Bulk sends'),header_navigation.is_selected('bulk-sends')) }}
                 {% endif %}
               {% endif %}
-              {% if current_user.has_permissions('manage_api_keys') %}
+              {% if current_user.has_permissions('manage_api_keys') and not current_service.api_is_disabled %}
                 {{ nav_menu_item_mobile(url_for('main.api_integration', service_id=current_service.id),_('API integration'),header_navigation.is_selected('api-integration')) }}
               {% endif %}
               {{ nav_menu_item_mobile(url_for('main.manage_users', service_id=current_service.id),_('Team members'),header_navigation.is_selected('team-members')) }}
