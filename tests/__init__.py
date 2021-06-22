@@ -382,6 +382,7 @@ def job_json(
     notifications_requested=1,
     job_status="finished",
     scheduled_for="",
+    api_key=None,
 ):
     if job_id is None:
         job_id = str(generate_uuid())
@@ -407,6 +408,7 @@ def job_json(
             created_by["email_address"],
         ),
         "scheduled_for": scheduled_for,
+        "api_key": api_key,
     }
     return data
 
