@@ -8,6 +8,7 @@ from freezegun import freeze_time
 from app.main.views.jobs import get_available_until_date
 from tests import job_json, notification_json, sample_uuid
 from tests.conftest import (
+    JOB_API_KEY_NAME,
     SERVICE_ONE_ID,
     active_caseworking_user,
     active_user_with_permissions,
@@ -426,7 +427,7 @@ def test_should_show_job_from_api(
     )
 
     assert normalize_spaces(page.select("main p")[0].text) == (
-        "'Two week reminder' sent from the API using the key 'API key name' on 2016-01-01T00:00:00.061258+0000"
+        f"'Two week reminder' sent from the API using the key '{JOB_API_KEY_NAME}' on 2016-01-01T00:00:00.061258+0000"
     )
 
 
@@ -446,7 +447,7 @@ def test_should_show_scheduled_job_with_api_key(
     )
 
     assert normalize_spaces(page.select("main p")[0].text) == (
-        "'Two week reminder' scheduled from the API using the key 'API key name'"
+        f"'Two week reminder' scheduled from the API using the key '{JOB_API_KEY_NAME}'"
     )
     assert normalize_spaces(page.select("main p")[1].text) == ("Sending Two week reminder 2016-01-02T00:00:00.061258")
     assert [(a.text, a["href"]) for a in page.select("main p")[0].select("a")] == [
@@ -459,7 +460,7 @@ def test_should_show_scheduled_job_with_api_key(
                 version=1,
             ),
         ),
-        ("API key name", url_for("main.api_keys", service_id=SERVICE_ONE_ID)),
+        (JOB_API_KEY_NAME, url_for("main.api_keys", service_id=SERVICE_ONE_ID)),
     ]
     assert page.select_one("button[type=submit]").text.strip() == "Cancel scheduled send"
 
