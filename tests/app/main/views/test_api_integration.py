@@ -530,7 +530,7 @@ def test_should_validate_safelist_items(
         _expected_status=200,
     )
 
-    assert page.h1.string.strip() == "There was a problem with your safelist"
+    assert page.select_one(".banner-title").string.strip() == "There was a problem with your safelist"
     jump_links = page.select(".banner-dangerous a")
 
     assert jump_links[0].string.strip() == "Enter valid email addresses"

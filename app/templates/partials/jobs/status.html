@@ -2,25 +2,28 @@
   <p class='mb-12 clear-both contain-floats'>
     {% if job.scheduled_for %}
       {% if job.processing_started %}
-        {{ _('Sent by') }} {{ job.created_by.name }} {{ _('on') }} <span class="local-datetime-short">{{ job.processing_started}}</span>
-        {% if template_type == "letter" %}
-          <p id="printing-info">
-            {{ letter_print_day }}
-          </p>
+        {% if not job.api_key %}
+          {{ _('Sent by') }} {{ job.created_by.name }} {{ _('on') }} <span class="local-datetime-short">{{ job.processing_started}}</span>
+          {% if template_type == "letter" %}
+            <p id="printing-info">
+              {{ letter_print_day }}
+            </p>
+          {% endif %}
+        {% else %}
+          {{ _("'<a href='{}'>{}</a>' sent from the API using the key <a href='{}'>{}</a>").format(url_for('.view_template_version', service_id=current_service.id, template_id=template.id, version=template_version), template.name, url_for('.api_keys', service_id=current_service.id), job.api_key.name) }} {{ _('on') }} <span class="local-datetime-short">{{ job.processing_started}}</span>
         {% endif %}
       {% else %}
         {% if not job.api_key %}
           {{ _('Uploaded by') }} {{ job.created_by.name }} {{ _('on') }} <span class="local-datetime-short">{{ job.created_at}}</span>
-          }
         {% else %}
-          {{ _("'<a href='{}'>{}</a>' scheduled from the API using the key <a href='{}'>{}</a>").format(url_for('.view_template', service_id=current_service.id, template_id=template.id), template.name, url_for('.api_keys', service_id=current_service.id), job.api_key.name) }}
+          {{ _("'<a href='{}'>{}</a>' scheduled from the API using the key '<a href='{}'>{}</a>'").format(url_for('.view_template_version', service_id=current_service.id, template_id=template.id, version=template_version), template.name, url_for('.api_keys', service_id=current_service.id), job.api_key.name) }}
         {% endif %}
       {% endif %}
     {% else %}
       {% if not job.api_key %}
         {{ _('Sent by') }} {{ job.created_by.name }} {{ _('on') }} <span class="local-datetime-short">{{ job.created_at}}</span>
       {% else %}
-        {{ _("'<a href='{}'>{}</a>' sent from the API using the key <a href='{}'>{}</a>").format(url_for('.view_template', service_id=current_service.id, template_id=template.id), template.name, url_for('.api_keys', service_id=current_service.id), job.api_key.name) }}
+        {{ _("'<a href='{}'>{}</a>' sent from the API using the key '<a href='{}'>{}</a>'").format(url_for('.view_template_version', service_id=current_service.id, template_id=template.id, version=template_version), template.name, url_for('.api_keys', service_id=current_service.id), job.api_key.name) }} {{ _('on') }} <span class="local-datetime-short">{{ job.created_at}}</span>
       {% endif %}
       {% if template_type == "letter" %}
         <p id="printing-info">
