@@ -19,9 +19,9 @@
 
   {% if form.email_addresses.errors or form.phone_numbers.errors %}
     {% call banner_wrapper(type='dangerous') %}
-      <h1 class='banner-title'>
+      <h2 class='banner-title'>
         {{ _('There was a problem with your safelist') }}
-      </h1>
+      </h2>
       <p>{{ _('Fix these errors:') }}</p>
       <ul>
         {% if form.email_addresses.errors %}
