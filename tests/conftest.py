@@ -763,6 +763,7 @@ ORGANISATION_ID = "c011fa40-4cbe-4524-b415-dde2f421bd9c"
 ORGANISATION_TWO_ID = "d9b5be73-0b36-4210-9d89-8f1a5c2fef26"
 TEMPLATE_ONE_ID = "b22d7d94-2197-4a7d-a8e7-fd5f9770bf48"
 USER_ONE_ID = "7b395b52-c6c1-469c-9d61-54166461c1ab"
+JOB_API_KEY_NAME = "API key name"
 
 
 @pytest.fixture(scope="function")
@@ -2045,6 +2046,14 @@ def mock_get_job(mocker, api_user_active):
     return mocker.patch("app.job_api_client.get_job", side_effect=_get_job)
 
 
+@pytest.fixture(scope="function")
+def mock_get_job_with_api_key(mocker, api_user_active):
+    def _get_job(service_id, job_id):
+        return {"data": job_json(service_id, api_user_active, job_id=job_id, api_key={"name": JOB_API_KEY_NAME})}
+
+    return mocker.patch("app.job_api_client.get_job", side_effect=_get_job)
+
+
 @pytest.fixture
 def mock_get_job_doesnt_exist(mocker):
     def _get_job(service_id, job_id):
@@ -2063,6 +2072,23 @@ def mock_get_scheduled_job(mocker, api_user_active):
                 job_id=job_id,
                 job_status="scheduled",
                 scheduled_for="2016-01-02T00:00:00.061258",
+            )
+        }
+
+    return mocker.patch("app.job_api_client.get_job", side_effect=_get_job)
+
+
+@pytest.fixture(scope="function")
+def mock_get_scheduled_job_with_api_key(mocker, api_user_active):
+    def _get_job(service_id, job_id):
+        return {
+            "data": job_json(
+                service_id,
+                api_user_active,
+                job_id=job_id,
+                job_status="scheduled",
+                scheduled_for="2016-01-02T00:00:00.061258",
+                api_key={"name": "API key name"},
             )
         }
 

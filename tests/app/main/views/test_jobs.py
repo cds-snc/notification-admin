@@ -8,6 +8,7 @@ from freezegun import freeze_time
 from app.main.views.jobs import get_available_until_date
 from tests import job_json, notification_json, sample_uuid
 from tests.conftest import (
+    JOB_API_KEY_NAME,
     SERVICE_ONE_ID,
     active_caseworking_user,
     active_user_with_permissions,
@@ -399,6 +400,7 @@ def test_should_show_scheduled_job(
         job_id=fake_uuid,
     )
 
+    assert normalize_spaces(page.select("main p")[0].text) == ("Uploaded by Test User on 2016-01-01T00:00:00.061258+0000")
     assert normalize_spaces(page.select("main p")[1].text) == ("Sending Two week reminder 2016-01-02T00:00:00.061258")
     assert page.select("main p a")[0]["href"] == url_for(
         "main.view_template_version",
@@ -406,6 +408,60 @@ def test_should_show_scheduled_job(
         template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
         version=1,
     )
+    assert page.select_one("button[type=submit]").text.strip() == "Cancel scheduled send"
+
+
+@freeze_time("2016-01-01T00:00:00.061258")
+def test_should_show_job_from_api(
+    client_request,
+    mock_get_service_template,
+    mock_get_job_with_api_key,
+    mock_get_service_data_retention,
+    mock_get_notifications,
+    fake_uuid,
+):
+    page = client_request.get(
+        "main.view_job",
+        service_id=SERVICE_ONE_ID,
+        job_id=fake_uuid,
+    )
+
+    assert normalize_spaces(page.select("main p")[0].text) == (
+        f"'Two week reminder' sent from the API using the key '{JOB_API_KEY_NAME}' on 2016-01-01T00:00:00.061258+0000"
+    )
+
+
+@freeze_time("2016-01-01T00:00:00.061258")
+def test_should_show_scheduled_job_with_api_key(
+    client_request,
+    mock_get_service_template,
+    mock_get_scheduled_job_with_api_key,
+    mock_get_service_data_retention,
+    mock_get_notifications,
+    fake_uuid,
+):
+    page = client_request.get(
+        "main.view_job",
+        service_id=SERVICE_ONE_ID,
+        job_id=fake_uuid,
+    )
+
+    assert normalize_spaces(page.select("main p")[0].text) == (
+        f"'Two week reminder' scheduled from the API using the key '{JOB_API_KEY_NAME}'"
+    )
+    assert normalize_spaces(page.select("main p")[1].text) == ("Sending Two week reminder 2016-01-02T00:00:00.061258")
+    assert [(a.text, a["href"]) for a in page.select("main p")[0].select("a")] == [
+        (
+            "Two week reminder",
+            url_for(
+                "main.view_template_version",
+                service_id=SERVICE_ONE_ID,
+                template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
+                version=1,
+            ),
+        ),
+        (JOB_API_KEY_NAME, url_for("main.api_keys", service_id=SERVICE_ONE_ID)),
+    ]
     assert page.select_one("button[type=submit]").text.strip() == "Cancel scheduled send"
 
 
