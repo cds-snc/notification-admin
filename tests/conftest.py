@@ -2088,7 +2088,7 @@ def mock_get_scheduled_job_with_api_key(mocker, api_user_active):
                 job_id=job_id,
                 job_status="scheduled",
                 scheduled_for="2016-01-02T00:00:00.061258",
-                api_key={"name": "API key name"},
+                api_key={"name": JOB_API_KEY_NAME},
             )
         }
 
