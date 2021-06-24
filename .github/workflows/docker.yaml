@@ -61,9 +61,18 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         kubectl set image deployment.apps/admin admin=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
+
+    - name: my-app-install token
+      id: notify-pr-bot
+      uses: getsentry/action-github-app-token@v1
+      with:
+        app_id: ${{ secrets.PRBOT_APP_ID }}
+        private_key: ${{ secrets.PRBOT_PRIVATE_KEY }}
+
     - uses: cds-snc/notification-pr-bot@master
       env:
-        TOKEN: ${{ secrets.TOKEN }}
+        TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
+
     - name: Run a11y tracker
       run: |
         curl -s https://api.a11y.cdssandbox.xyz/v1/reports\?recent\=true > /dev/null
