@@ -2,10 +2,12 @@
 
 Notifications admin application.
 
+
 ## Upstream
 
 This repo is a clone / modifed version of:
 https://github.com/alphagov/notifications-admin
+
 
 ## Features of this application
 
@@ -14,35 +16,39 @@ https://github.com/alphagov/notifications-admin
  - Send batch emails and SMS by uploading a CSV
  - Show history of notifications
 
+
 ## Functional constraints
 
 - We currently do not support sending of letters
 - We currently do not receive a response if text messages were delivered or not
 
+
 ## First-time setup
 
-Brew is a package manager for OSX. The following command installs brew:
+[Brew is a package manager](https://brew.sh/) for OSX. The following command installs brew:
 ```shell
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
 Languages needed
-- Python 3.4
+- Python 3.9
 - [Node](https://nodejs.org/) 10.15.3 or greater
 - [npm](https://www.npmjs.com/) 6.4.1 or greater
+
 ```shell
     brew install node
 ```
 
-
 [NPM](npmjs.org) is Node's package management tool. `n` is a tool for managing
 different versions of Node. The following installs `n` and uses the long term support (LTS)
 version of Node.
+
 ```shell
     npm install -g n
     n lts
     npm rebuild node-sass
 ```
+
 
 ### Local installation instruction 
 
@@ -112,10 +118,12 @@ source  ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
 
 `make test`
 
+
 ## Rebuilding the frontend assets
 
 If you want the front end assets to re-compile on changes, leave this running
 in a separate terminal from the app
+
 ```shell
     npm run watch
 ```
@@ -170,6 +178,7 @@ from flask_babel import _
 ```
 
 Wrap your text
+
 ```
 _('Your text here')
 ```
@@ -179,8 +188,8 @@ For JavaScript
 ```
 // add your text to main_template
 window.APP_PHRASES = {
-        now: "{{ _('Now') }}",
-      }
+  now: "{{ _('Now') }}",
+}
 ```
 
 ```
@@ -259,11 +268,11 @@ https://github.com/alphagov/notifications-admin
 
 Brew est un gestionnaire de paquets pour OSX. La commande suivante permet d'installer brew :
 ```shell
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
 Langages nécessaires
-- Python 3.X
+- Python 3.9
 - [Node](https://nodejs.org/) 10.15.3 ou supérieur
 - [npm](https://www.npmjs.com/) 6.4.1 ou plus
 ```shell
