@@ -330,7 +330,7 @@ def test_should_show_service_name(
     assert page.find("input", attrs={"type": "text"})["value"] == "service one"
     assert page.select_one("main p").text == "Users will see your service name:"
     assert normalize_spaces(page.select_one("main ul").text) == (
-        "as your email sender name" "at the start of every text message " 
+        "as your email sender name" "at the start of every text message "
     )
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
