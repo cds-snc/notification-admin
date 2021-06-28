@@ -60,17 +60,24 @@ On OS X:
 
 `pyenv global 3.9.1`
 
-4. Ensure it installed by running
+4. Ensure that version `3.9.1` is now the default by running
 
 `python --version` 
 
-if it did not, take a look here: https://github.com/pyenv/pyenv/issues/660
+If it did not, add to your shell rc file. ex: `.bashrc` or `.zshrc`
+```
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+```
+and open a new terminal.
+
+If you are still not running Python 3.9.1 take a look here: https://github.com/pyenv/pyenv/issues/660
 
 5. Install `virtualenv`:
 
 `pip install virtualenvwrapper`
 
-6. Add the following to your shell rc file. ex: `.bashrc` or `.zshrc`
+6. Add the following to your `.bashrc` or `.zshrc`
 
 ```
 source  ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
