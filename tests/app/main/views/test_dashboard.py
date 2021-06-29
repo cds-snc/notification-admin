@@ -15,6 +15,7 @@ from app.main.views.dashboard import (
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
+    ClientRequest,
     a11y_test,
     active_caseworking_user,
     active_user_view_permissions,
@@ -160,48 +161,68 @@ def test_redirect_caseworkers_to_templates(
     )
 
 
-def test_get_started(
-    client_request,
-    mocker,
-    mock_get_service_templates_when_no_templates_exist,
-    mock_get_jobs,
-    mock_get_service_statistics,
-    mock_get_usage,
-):
-    mocker.patch(
-        "app.template_statistics_client.get_template_statistics_for_service",
-        return_value=copy.deepcopy(stub_template_stats),
-    )
-
-    page = client_request.get(
-        "main.service_dashboard",
-        service_id=SERVICE_ONE_ID,
-    )
-
-    mock_get_service_templates_when_no_templates_exist.assert_called_once_with(SERVICE_ONE_ID)
-    assert "Get started" in page.text
-
-
-def test_get_started_is_hidden_once_templates_exist(
-    client_request,
-    mocker,
+@pytest.mark.parametrize(
+    "permissions, text_in_page, text_not_in_page",
+    [
+        (["view_activity", "manage_templates"], ["Create a template"], ["Choose a template"]),
+        (["view_activity", "send_messages"], ["Choose a template"], ["Create a template"]),
+        (["view_activity"], [], ["Create a template", "Choose a template"]),
+        (["view_activity", "manage_templates", "send_messages"], ["Create a template", "Choose a template"], []),
+    ],
+)
+def test_task_shortcuts_are_visible_based_on_permissions(
+    client_request: ClientRequest,
+    active_user_with_permissions,
     mock_get_service_templates,
     mock_get_jobs,
-    mock_get_service_statistics,
-    mock_get_usage,
-    mock_get_inbound_sms_summary,
+    mock_get_template_statistics,
+    permissions: list,
+    text_in_page: list,
+    text_not_in_page: list,
 ):
-    mocker.patch(
-        "app.template_statistics_client.get_template_statistics_for_service",
-        return_value=copy.deepcopy(stub_template_stats),
-    )
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
+    client_request.login(active_user_with_permissions)
+
     page = client_request.get(
         "main.service_dashboard",
         service_id=SERVICE_ONE_ID,
     )
 
-    mock_get_service_templates.assert_called_once_with(SERVICE_ONE_ID)
-    assert "Get started" not in page.text
+    for text in text_in_page:
+        assert text in page.text
+
+    for text in text_not_in_page:
+        assert text not in page.text
+
+
+def test_sending_link_has_query_param(
+    client_request: ClientRequest,
+    active_user_with_permissions,
+    mock_get_service_templates,
+    mock_get_jobs,
+    mock_get_template_statistics,
+):
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity", "send_messages"]
+    client_request.login(active_user_with_permissions)
+
+    page = client_request.get(
+        "main.service_dashboard",
+        service_id=SERVICE_ONE_ID,
+    )
+    sending_url = url_for("main.choose_template", service_id=SERVICE_ONE_ID, view="sending")
+    assert sending_url == page.select_one("a.button").attrs["href"]
+
+
+def test_no_sending_link_if_no_templates(
+    client_request: ClientRequest,
+    mock_get_service_templates_when_no_templates_exist,
+    mock_get_template_statistics,
+    mock_get_jobs,
+):
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+    assert url_for("main.choose_template", service_id=SERVICE_ONE_ID, view="sending") not in str(page)
+    assert "Send existing messages to specific recipients." not in str(page)
 
 
 def test_should_show_recent_templates_on_dashboard(
@@ -226,7 +247,7 @@ def test_should_show_recent_templates_on_dashboard(
     mock_template_stats.assert_called_once_with(SERVICE_ONE_ID, limit_days=7)
 
     headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
-    assert "In the last 7 days" in headers
+    assert "Sent in the last week" in headers
 
     table_rows = page.find_all("tbody")[1].find_all("tr")
 
@@ -386,11 +407,11 @@ def test_should_show_upcoming_jobs_on_dashboard(
     assert len(table_rows) == 2
 
     assert "send_me_later.csv" in table_rows[0].find_all("th")[0].text
-    assert "Sending 2016-01-01 11:09:00.061258" in table_rows[0].find_all("th")[0].text
-    assert table_rows[0].find_all("td")[0].text.strip() == "1"
+    assert "Starting 2016-01-01 11:09:00.061258" in table_rows[0].find_all("th")[0].text
+    assert table_rows[0].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
     assert "even_later.csv" in table_rows[1].find_all("th")[0].text
-    assert "Sending 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
-    assert table_rows[1].find_all("td")[0].text.strip() == "1"
+    assert "Starting 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
+    assert table_rows[1].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
 
 
 @pytest.mark.parametrize(
@@ -612,7 +633,7 @@ def test_should_show_recent_jobs_on_dashboard(
     ):
         assert filename in table_rows[index].find_all("th")[0].text
         assert "2016-01-01T11:09:00.061258+0000" in table_rows[index].find_all("th")[0].text
-        for column_index, count in enumerate((1, 0, 0)):
+        for column_index, count in enumerate((30, 0, 0)):
             assert table_rows[index].find_all("td")[column_index].text.strip() == str(count)
 
 

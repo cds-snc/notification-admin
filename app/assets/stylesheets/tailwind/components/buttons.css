@@ -2,64 +2,76 @@
   /* Note: Buttons are <a> sometimes, which is why :link and :visited styles exist */
   /*! purgecss start ignore */
   .button,
-  .button:link,
-  .button:visited {
+  a.button,
+  a.button:link,
+  a.button:visited,
+  a.button:active {
     padding: 0.526315em 0.789473em 0.263157em;
-    box-shadow: 0 2px 0 theme("colors.green.border");
-    @apply no-underline inline-block text-white text-smaller leading-tight align-top bg-green;
+    box-shadow: 0 2px 0 theme("colors.blue.border");
+    @apply no-underline inline-block text-white text-smaller leading-tight align-top bg-blue;
   }
 
-  .button-blue {
-    width: 210px;
-    @apply block mt-8 text-center py-4 px-8;
+  .button:hover,
+  a.button:hover {
+    @apply bg-blue-slightlight;
   }
-  .button-blue,
-  .button-blue:link,
-  .button-blue:visited {
-    @apply bg-blue text-white text-smaller;
+
+  .button:focus,
+  a.button:focus {
+    outline: 1px solid theme("colors.yellow.default");
+    @apply border-transparent shadow-outline;
   }
+
   .button-blue-lighter,
-  .button-blue-lighter:link,
-  .button-blue-lighter:visited {
+  a.button-blue-lighter,
+  a.button-blue-lighter:link,
+  a.button-blue-lighter:visited {
     @apply bg-blue-lighter border-b-2 border-white font-bold text-base text-black px-5 py-4;
   }
-  .button-blue-lighter-nb,
-  .button-blue-lighter-nb:link,
-  .button-blue-lighter-nb:visited {
-    box-shadow: none;
-    @apply bg-blue-lighter border-none font-semibold text-small text-black px-6 py-1;
+
+  .button-blue-lighter:hover,
+  a.button-blue-lighter:hover {
+    @apply bg-gray-grey2;
   }
 
-  .button:hover {
-    @apply bg-green-hover;
+  .button-blue-lighter:focus,
+  a.button-blue-lighter:focus {
+    box-shadow: 0px;
+    @apply bg-yellow outline-none border-none outline-none;
   }
 
-  .button:focus {
-    outline: 3px solid theme("colors.yellow.default");
-    @apply border-transparent;
-  }
-
-  .button-red {
+  .button-red,
+  a.button-red {
     @apply bg-red;
     box-shadow: 0 2px 0 theme("colors.red.border");
   }
-  .button-red:hover {
+  .button-red:hover,
+  a.button-red:hover {
     @apply bg-red-hover;
   }
 
   .button-secondary,
-  .button-secondary:visited,
-  .button-secondary:link {
+  a.button-secondary,
+  a.button-secondary:visited,
+  a.button-secondary:link {
     box-shadow: 0 2px 0 theme("colors.gray.border");
     font-size: 1em;
     @apply text-black bg-gray-button;
   }
 
-  .button-secondary:hover {
+  .button-secondary:hover,
+  a.button-secondary:hover {
     @apply bg-gray-hover;
   }
 
-  .button.disabled {
+  .button-secondary:focus,
+  a.button-secondary:focus {
+    outline: 1px solid theme("colors.yellow.default");
+    @apply border-transparent shadow-outline;
+  }
+
+  .button.disabled,
+  a.button.disabled {
     @apply opacity-50 cursor-default;
   }
   /*! purgecss end ignore */

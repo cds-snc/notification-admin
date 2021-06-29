@@ -117,8 +117,8 @@
   }
 
   .header--active {
-    @apply border-b-4;
-    @apply border-blue;
+    @apply border-b-4 !important;
+    @apply border-blue !important;
   }
 
   .menu--active {

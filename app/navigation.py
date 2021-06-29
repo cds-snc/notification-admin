@@ -234,7 +234,7 @@ class HeaderNavigation(Navigation):
             "view_notifications",
             "view_notification",
         },
-        "uploaded-files": {
+        "bulk-sends": {
             "view_jobs",
             "view_job",
         },
