@@ -60,17 +60,24 @@ On OS X:
 
 `pyenv global 3.9.1`
 
-4. Ensure it installed by running
+4. Ensure that version `3.9.1` is now the default by running
 
 `python --version` 
 
-if it did not, take a look here: https://github.com/pyenv/pyenv/issues/660
+If it did not, add to your shell rc file. ex: `.bashrc` or `.zshrc`
+```
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+```
+and open a new terminal.
+
+If you are still not running Python 3.9.1 take a look here: https://github.com/pyenv/pyenv/issues/660
 
 5. Install `virtualenv`:
 
 `pip install virtualenvwrapper`
 
-6. Add the following to your shell rc file. ex: `.bashrc` or `.zshrc`
+6. Add the following to your `.bashrc` or `.zshrc`
 
 ```
 source  ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
@@ -295,17 +302,23 @@ Sur macOS :
 
 `pyenv global 3.9.1`
 
-4. Assurez-vous qu'il est installé en exécutant
+4. Assurez-vous que la version 3.9.1 est maintenant la version par défaut en exécutant
 
-`python --version` 
+`python --version`
 
-si ce n'est pas le cas, jetez un coup d'œil ici : https://github.com/pyenv/pyenv/issues/660
+Si ce n’est pas le cas, ajoutez les lignes suivantes à votre fichier shell rc. ex : `.bashrc` ou `.zshrc`
+```
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+```
+et ouvrez un nouveau terminal.
+Si vous n’utilisez toujours pas Python 3.9.1, jetez un coup d’œil ici : https://github.com/pyenv/pyenv/issues/660
 
 5. Installez `virtualenv` :
 
 `pip install virtualenvwrapper`
 
-6. Ajoutez ce qui suit à votre fichier rc shell. ex : `.bashrc` ou `.zshrc`
+6. Ajoutez ce qui suit à votre `.bashrc` ou `.zshrc`
 
 ```
 export WORKON_HOME=$HOME/.virtualenvs
