@@ -147,6 +147,8 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
     if request.method == "GET" and initial_state:
         templates_and_folders_form.op = initial_state
 
+    sending_view = request.args.get("view") == "sending"
+
     return render_template(
         "views/templates/choose.html",
         current_template_folder_id=template_folder_id,
@@ -154,7 +156,8 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
         template_list=template_list,
         show_search_box=current_service.count_of_templates_and_folders > 7,
         show_template_nav=(current_service.has_multiple_template_types and (len(current_service.all_templates) > 2)),
-        template_nav_items=get_template_nav_items(template_folder_id),
+        sending_view=sending_view,
+        template_nav_items=get_template_nav_items(template_folder_id, sending_view),
         template_type=template_type,
         search_form=SearchByNameForm(),
         templates_and_folders_form=templates_and_folders_form,
@@ -191,7 +194,7 @@ def get_template_nav_label(value):
     }[value]
 
 
-def get_template_nav_items(template_folder_id):
+def get_template_nav_items(template_folder_id, sending_view):
     return [
         (
             get_template_nav_label(key),
@@ -201,6 +204,7 @@ def get_template_nav_items(template_folder_id):
                 service_id=current_service.id,
                 template_type=key,
                 template_folder_id=template_folder_id,
+                view="sending" if sending_view else None,
             ),
             "",
         )

@@ -28,7 +28,7 @@
 {% macro primary_button_blue_lighter(label="TODO: LABEL THIS BUTTON", href="/", class=None) %}
 <a
     href="{{ href }}"
-    class="button button-blue-lighter mr-10 hover:bg-gray-grey2 focus:bg-yellow focus:outline-none {% if class %} {{ class }} {% endif %}">
+    class="button button-blue-lighter mr-10 {% if class %} {{ class }} {% endif %}">
     {{ label }}
 </a>
 {% endmacro %}
