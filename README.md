@@ -306,7 +306,7 @@ Sur macOS :
 
 `python --version`
 
-Si ce n’est pas le cas, ajoutez les lignes suivantes à votre fichier shell rc. ex : .bashrc ou .zshrc
+Si ce n’est pas le cas, ajoutez les lignes suivantes à votre fichier shell rc. ex : `.bashrc` ou `.zshrc`
 ```
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
@@ -318,7 +318,7 @@ Si vous n’utilisez toujours pas Python 3.9.1, jetez un coup d’œil ici : htt
 
 `pip install virtualenvwrapper`
 
-6. Ajoutez ce qui suit à votre `.bashrc` ou `.zshrc
+6. Ajoutez ce qui suit à votre `.bashrc` ou `.zshrc`
 
 ```
 export WORKON_HOME=$HOME/.virtualenvs
