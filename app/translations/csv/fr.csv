@@ -1440,3 +1440,4 @@
 "'<a href='{}'>{}</a>' sent from the API using the key '<a href='{}'>{}</a>'","'<a href='{}'>{}</a>' envoyé de l'API en utilisant la clé '<a href='{}'>{}</a>'"
 "'<a href='{}'>{}</a>' scheduled from the API using the key '<a href='{}'>{}</a>'","'<a href='{}'>{}</a>' programmé de l'API en utilisant la clé '<a href='{}'>{}</a>'"
 "Starting","Démarrant"
+"Make it something people would search for in their inbox.","Les gens devraient pouvoir trouver ce nom dans leur boîte de réception."
