@@ -31,8 +31,8 @@
 
     {% call form_wrapper() %}
       {{ page_footer(button_text=_('Agree'),
-      secondary_link=url_for('main.request_to_go_live', service_id=current_service.id), 
-      secondary_link_text=_("Skip and go back to list") ) }}
+                     secondary_link=url_for('main.request_to_go_live', service_id=current_service.id), 
+                     secondary_link_text=_("Skip and go back to list")) }}
     {% endcall %}
 
   </div>
