@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Admin front end for Notification",
   "engines": {
-    "node": "10"
+    "node": "14"
   },
   "scripts": {
     "test": "jest --config tests/javascripts/jest.config.js tests/javascripts",
