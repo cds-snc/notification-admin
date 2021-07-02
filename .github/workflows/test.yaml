@@ -31,7 +31,7 @@ jobs:
       env:
         A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
     - name: Notify Slack channel if this job failed in default branch
-      if: ${{ failure() }} && github.ref == 'refs/heads/master'
+      if: ${{ failure() && github.ref == 'refs/heads/master' }}
       run: |
         json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-admin/|notification-admin> !'}"
         curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
