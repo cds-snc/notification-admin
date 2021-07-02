@@ -13,12 +13,10 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     name: Build and push
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-         node-version: '10'
     - name: Install AWS CLI
       run: |
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
