@@ -38,4 +38,4 @@ jobs:
     - name: The job has failed
       if: ${{ failure() }}
       run: |
-        curl -X POST -H 'Content-type: application/json' --data "{'text':'<!here> CI is failing'}" ${{ secrets.SLACK_WEBHOOK }}
+        curl -X POST -H 'Content-type: application/json' --data "{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-admin/|notification-admin> !'}" ${{ secrets.SLACK_WEBHOOK }}
