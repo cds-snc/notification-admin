@@ -27,6 +27,10 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
+
+    - name: Try to fail
+      run: exit 1
+
     - run: /bin/bash -c "scripts/bootstrap.sh && make test"
       env:
         A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
@@ -34,4 +38,4 @@ jobs:
     - name: The job has failed
       if: ${{ failure() }}
       run: |
-        curl -X POST -H 'Content-type: application/json' --data "{'text':'<\!here> CI is failing in <https://github.com/cds-snc/notification-admin/|notification-admin> !'}" ${{ secrets.SLACK_WEBHOOK }}
+        curl -X POST -H 'Content-type: application/json' --data "{'text':'CI is failing'}" ${{ secrets.SLACK_WEBHOOK }}
