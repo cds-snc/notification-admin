@@ -140,7 +140,7 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='email') %}
-          {% set txt = _('Reply-to email addresses') %}
+          {% set txt = _('Reply-to addresses') %}
           {% set not_set = _('Not set') %}
           {{ text_field(txt) }}
           {% call field(status='default' if current_service.count_email_reply_to_addresses == 0 else '') %}
