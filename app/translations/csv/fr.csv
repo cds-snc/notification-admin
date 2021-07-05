@@ -891,7 +891,7 @@
 "You can","Vous pouvez"
 "set the sign-in method for individual team members","définir la méthode de connexion pour chaque membre de l'équipe"
 "Your team members sign in with a text message code.","Les membres de votre équipe se connectent au moyen d’un code envoyé par message texte."
-"Please <a href='{}'>{}</a> if signing in with a text message is a problem for your team.","Veuillez <a href='{}'>{}</a> si la connexion par message texte est problématique pour votre équipe."
+"If signing in with a text message is a problem for your team, <a href='{}'>{}</a>.","Veuillez <a href='{}'>{}</a> si la connexion par message texte est problématique pour votre équipe."
 "Set email branding","Définir l'image de marque du courriel"
 "French Government of Canada signature","Signature du gouvernement du Canada en français"
 "English Government of Canada signature","Signature du gouvernement du Canada en anglais"
