@@ -150,6 +150,7 @@
 "Personalise this message","Personnalisez le message"
 "This service name is already in use","Ce nom de service a déjà été utilisé"
 "Change your service name","Modifier le nom du service"
+"Name your service something people would search for in their inbox.","Donnez à votre service un nom que les gens chercheraient dans leur boîte de réception."
 "Thank you for your request to go live. We’ll get back to you within one working day.","Merci pour votre demande d'activation du service. Nous communiquerons avec vous dans un délai d'un jour ouvrable."
 "‘%(service_name)s’ was deleted","‘%(service_name)s’ a été supprimé"
 "Are you sure you want to delete","Voulez-vous vraiment supprimer"
