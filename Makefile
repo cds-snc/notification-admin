@@ -63,3 +63,13 @@ test-requirements:
 .PHONY: coverage
 coverage: venv ## Create coverage report
 	. venv/bin/activate && coveralls
+
+.PHONY: run-dev
+run-dev:
+	flask run -p 6012 --host=localhost
+
+.PHONY: format
+format:
+	isort ./app ./tests
+	black ./app ./tests
+	npx prettier --write app/assets/javascripts app/assets/stylesheets

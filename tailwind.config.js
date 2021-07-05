@@ -50,8 +50,8 @@ module.exports = {
       blue: {
         lighter: "#B2E3FF",
         default: "#26374A",
+        border: "#1A3152",
         selected: "#75b9e0",
-        govukblue: "#005ea5",
         lightblue25: "#d5e8f3",
         lightblue: "#2b8cc4",
         slightlight: "#284162"

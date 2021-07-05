@@ -17,10 +17,10 @@ import dayjs from "dayjs";
 const state = {
   today: "2020-01-01",
   firstAvailableDate: "2020-01-01",
-  lastAvailableDate: "2020-01-15"
+  lastAvailableDate: "2020-01-15",
 };
 
-describe("Handles formatting", function() {
+describe("Handles formatting", function () {
   test("Full date", async () => {
     const day = formattedDay("2020-01-01");
     expect(day).toEqual("Wednesday January 01 2020");
@@ -47,7 +47,7 @@ describe("Handles formatting", function() {
   });
 });
 
-describe("First and Last days", function() {
+describe("First and Last days", function () {
   test("First day", async () => {
     const day = getFirstDay("2020-01-01");
     expect(day).toEqual("1");
@@ -59,7 +59,7 @@ describe("First and Last days", function() {
   });
 });
 
-describe("Creates an array of dayjs dates", function() {
+describe("Creates an array of dayjs dates", function () {
   test("Dates", async () => {
     const dates = getDates("2020-01-01");
     const { $D: day } = dates[1][0];
@@ -67,7 +67,7 @@ describe("Creates an array of dayjs dates", function() {
   });
 });
 
-describe("Selected dates", function() {
+describe("Selected dates", function () {
   test("Is selected", async () => {
     expect(isSelected(["2020-01-01"], "2020-01-01")).toEqual(0);
     expect(isSelected(["2020-01-01"], "2020-01-02")).toEqual(-1);
@@ -95,13 +95,13 @@ describe("Selected dates", function() {
   });
 });
 
-describe("Is before or after date", function() {
+describe("Is before or after date", function () {
   test("Is at start of calendar", async () => {
     let date = "2050-01-01";
     let firstAvailableDate = dayjs(date);
     let stateObj = { ...state, firstAvailableDate, focusedDayNum: 1 };
     expect(beforeFirstDayInMonth(stateObj)).toEqual({
-      updateMessage: "at_start_of_calendar"
+      updateMessage: "at_start_of_calendar",
     });
   });
 
@@ -115,7 +115,7 @@ describe("Is before or after date", function() {
     expect(beforeFirstDayInMonth(stateObj)).toEqual({
       date: "2020-02-01",
       focusedDayNum: 29,
-      updateMessage: ""
+      updateMessage: "",
     });
   });
 
@@ -124,7 +124,7 @@ describe("Is before or after date", function() {
     let lastDay = getLastDay(date);
     let stateObj = { ...state, lastDay, focusedDayNum: 29 };
     expect(afterLastDayInMonth(stateObj)).toEqual({
-      updateMessage: "at_end_of_calendar"
+      updateMessage: "at_end_of_calendar",
     });
   });
 
@@ -137,17 +137,17 @@ describe("Is before or after date", function() {
       date,
       lastDay,
       focusedDayNum: 29,
-      lastAvailableDate
+      lastAvailableDate,
     };
     expect(afterLastDayInMonth(stateObj)).toEqual({
       date: "2020-03-01",
       focusedDayNum: 1,
-      updateMessage: ""
+      updateMessage: "",
     });
   });
 });
 
-describe("Next day", function() {
+describe("Next day", function () {
   // on first day left right up down
   // on last day left right up down
   // on 14th day left right up down

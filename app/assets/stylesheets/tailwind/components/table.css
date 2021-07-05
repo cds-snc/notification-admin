@@ -1,17 +1,21 @@
 @layer components {
   /* GOV UK Base styles */
-  table, .table {
+  table,
+  .table {
     border-spacing: 0;
     @apply w-full mb-gutter border-collapse;
   }
-  table th, table td {
-    padding: .632em 1.05em .4743em 0;
+  table th,
+  table td {
+    padding: 0.632em 1.05em 0.4743em 0;
     @apply leading-tight text-smaller text-left border-solid border-0 border-b-1 border-gray-grey2;
   }
   thead th {
     @apply font-bold;
   }
-  td:last-child, th:last-child, .table-field-heading:last-child {
+  td:last-child,
+  th:last-child,
+  .table-field-heading:last-child {
     padding-right: 0 !important;
   }
   table .numeric {
@@ -25,14 +29,16 @@
     @apply text-left;
   }
 
-  .table-font-xsmall th, .table-font-xsmall td.table-field-index {
+  .table-font-xsmall th,
+  .table-font-xsmall td.table-field-index {
     @apply font-bold;
   }
   .table-font-xsmall td {
     @apply font-normal;
   }
-  .table-font-xsmall th, .table-font-xsmall td {
-    padding: 0.75em 1.25em .5625em 0;
+  .table-font-xsmall th,
+  .table-font-xsmall td {
+    padding: 0.75em 1.25em 0.5625em 0;
     @apply text-small leading-tight;
   }
 
@@ -44,14 +50,12 @@
   }
 
   .table-heading {
-
     @apply my-gutterHalf mx-0 text-left;
   }
 
   .table-row-group {
     @apply border-0 border-t-1 border-b-1 border-solid border-gray-grey2;
   }
-
 
   .dashboard-table .heading-medium {
     @apply mb-2;
@@ -72,7 +76,9 @@
     width: 52.5%;
     @apply font-normal table-cell;
   }
-  .dashboard-table .table-row th .hint, .dashboard-table .table-row th p, .settings-table td.table-field-left-aligned div {
+  .dashboard-table .table-row th .hint,
+  .dashboard-table .table-row th p,
+  .settings-table td.table-field-left-aligned div {
     @apply truncate;
   }
 
@@ -94,7 +100,6 @@
   .settings-table .table-heading {
     @apply mb-8;
   }
-
 
   .table-field {
     @apply align-top;
@@ -159,13 +164,15 @@
   .table-field-status-error {
     @apply font-bold text-red;
   }
-  .table-field-status-error a:link, .table-field-status-error a:visited {
-    @apply text-red
+  .table-field-status-error a:link,
+  .table-field-status-error a:visited {
+    @apply text-red;
   }
   .table-field-status-error .status-hint {
     @apply block font-normal text-red mt-2;
   }
-  .table-field-status-yes, .table-field-status-no {
+  .table-field-status-yes,
+  .table-field-status-no {
     text-indent: -999em;
     background-position: 50% 50%;
     @apply block bg-no-repeat bg-19;
@@ -204,30 +211,28 @@
     @apply border-solid border-yellow;
   }
 
-
-  .table-empty-message, .table-no-data {
+  .table-empty-message,
+  .table-no-data {
     padding-top: 0.75em;
     padding-bottom: 0.5625em;
     @apply text-small leading-tight text-gray-grey1 border-solid border-gray-grey2 border-0 border-t-1 border-b-1 px-0;
   }
 
   .table-no-data {
-    @apply mt-4 mb-16 ;
+    @apply mt-4 mb-16;
   }
-
 
   .table-show-more-link {
     @apply text-small leading-tight font-normal text-gray-grey1 py-4 px-0 text-center border-0 border-b-1 border-solid border-gray-grey2 mb-16;
   }
   a.table-show-more-link {
-    @apply text-blue-govukblue;
+    @apply text-blue;
   }
 
   .wide-left-hand-column {
     max-width: 560px;
     @apply block truncate;
   }
-
 
   .truncate-text {
     @apply truncate;
@@ -260,7 +265,7 @@
     // 11 accounts for the padding of the table cell
     */
     min-width: 194px - 11px;
-    @apply border-t-0
+    @apply border-t-0;
   }
   .spreadsheet td:first-child {
     min-width: auto;

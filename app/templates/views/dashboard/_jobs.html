@@ -4,11 +4,11 @@
 <div class='dashboard-table ajax-block-container'>
   {% call(item, row_number) list_table(
     jobs,
-    caption="Recent files uploaded",
+    caption=_("Bulk sends"),
     caption_visible=False,
     empty_message='You haven’t uploaded any files recently',
     field_headings=[
-      _('File'),
+      _('Bulk name'),
       _('Sending'),
       _('Delivered'),
       _('Failed')
@@ -19,7 +19,7 @@
       <div class="file-list">
         <a class="file-list-filename" href="{{ url_for('.view_job', service_id=current_service.id, job_id=item.id) }}">{{ item.original_file_name }}</a>
         <span class="file-list-hint">
-          {{ _('Sent') }} 
+          {{ _('Sent') }}
             <span class="local-datetime-short">
               {{item.scheduled_for if item.scheduled_for else item.created_at}}
             </span>

@@ -7,32 +7,28 @@ from app.notify_client import NotifyAdminAPIClient, _attach_current_user, cache
 
 
 class OrganisationsClient(NotifyAdminAPIClient):
-
-    @cache.set('organisations')
+    @cache.set("organisations")
     def get_organisations(self):
-        return self.get(url='/organisations')
+        return self.get(url="/organisations")
 
-    @cache.set('domains')
+    @cache.set("domains")
     def get_domains(self):
-        return list(chain.from_iterable(
-            organisation['domains']
-            for organisation in self.get_organisations()
-        ))
+        return list(chain.from_iterable(organisation["domains"] for organisation in self.get_organisations()))
 
     def get_organisation(self, org_id):
-        return self.get(url='/organisations/{}'.format(org_id))
+        return self.get(url="/organisations/{}".format(org_id))
 
     def get_organisation_by_domain(self, domain):
         try:
             return self.get(
-                url='/organisations/by-domain?domain={}'.format(domain),
+                url="/organisations/by-domain?domain={}".format(domain),
             )
         except HTTPError as error:
             if error.status_code == 404:
                 return None
             raise error
 
-    @cache.delete('organisations')
+    @cache.delete("organisations")
     def create_organisation(self, name, crown, organisation_type, agreement_signed):
         return self.post(
             url="/organisations",
@@ -41,16 +37,16 @@ class OrganisationsClient(NotifyAdminAPIClient):
                 "crown": crown,
                 "organisation_type": organisation_type,
                 "agreement_signed": agreement_signed,
-            }
+            },
         )
 
-    @cache.delete('domains')
-    @cache.delete('organisations')
+    @cache.delete("domains")
+    @cache.delete("organisations")
     def update_organisation(self, org_id, cached_service_ids=None, **kwargs):
         api_response = self.post(url="/organisations/{}".format(org_id), data=kwargs)
 
-        if kwargs.get('organisation_type') and cached_service_ids:
-            redis_client.delete(*map('service-{}'.format, cached_service_ids))
+        if kwargs.get("organisation_type") and cached_service_ids:
+            redis_client.delete(*map("service-{}".format, cached_service_ids))
 
         return api_response
 
@@ -60,33 +56,23 @@ class OrganisationsClient(NotifyAdminAPIClient):
     def get_service_organisation(self, service_id):
         return self.get(url="/service/{}/organisation".format(service_id))
 
-    @cache.delete('service-{service_id}')
-    @cache.delete('live-service-and-organisation-counts')
-    @cache.delete('organisations')
+    @cache.delete("service-{service_id}")
+    @cache.delete("live-service-and-organisation-counts")
+    @cache.delete("organisations")
     def update_service_organisation(self, service_id, org_id):
-        data = {
-            'service_id': service_id
-        }
-        return self.post(
-            url="/organisations/{}/service".format(org_id),
-            data=data
-        )
+        data = {"service_id": service_id}
+        return self.post(url="/organisations/{}/service".format(org_id), data=data)
 
     def get_organisation_services(self, org_id):
         return self.get(url="/organisations/{}/services".format(org_id))
 
     def remove_user_from_organisation(self, org_id, user_id):
-        endpoint = '/organisations/{org_id}/users/{user_id}'.format(
-            org_id=org_id,
-            user_id=user_id)
+        endpoint = "/organisations/{org_id}/users/{user_id}".format(org_id=org_id, user_id=user_id)
         data = _attach_current_user({})
         return self.delete(endpoint, data)
 
     def is_organisation_name_unique(self, org_id, name):
-        return self.get(
-            url="/organisations/unique",
-            params={"org_id": org_id, "name": name}
-        )["result"]
+        return self.get(url="/organisations/unique", params={"org_id": org_id, "name": name})["result"]
 
 
 organisations_client = OrganisationsClient()

@@ -8,7 +8,7 @@ import { SetDateTime } from "./SetDateTime/SetDateTime";
 import { Confirmation } from "./Confirmation/Confirmation";
 import { DomEventHandler } from "./DomEventHandler/DomEventHandler";
 import dayjs from "dayjs";
-import './style.css';
+import "./style.css";
 
 export const App = () => {
   let options = {};
@@ -18,7 +18,7 @@ export const App = () => {
 
   const providerState = options.init({
     dayjs,
-    defaultState: defaultState()
+    defaultState: defaultState(),
   });
 
   return (

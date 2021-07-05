@@ -3,12 +3,12 @@
   {{ _('To include a link, add the full URL (starting with https://) and it will become a clickable hyperlink. For example:') }}
 </p>
 <div class="panel-container">
-  <div class="panel-input mb-12 wrap-text" aria-label="{{ _('An example of the input for a fully typed out URL such as https://www.canada.ca.') }}'">
+  <div class="panel-input break-words" aria-label="{{ _('An example of the input for a fully typed out URL such as https://www.canada.ca.') }}'">
     <p>
       {{ _('Apply now at') }} https://www.canada.ca
     </p>
   </div>
-  <div class="panel-preview panel-border-wide mb-12 wrap-text" aria-label="{{ _('A preview shows the clickable link for ‘canada.ca’ underlined and in gray.') }}">
+  <div class="panel-preview break-words" aria-label="{{ _('A preview shows the clickable link for ‘canada.ca’ underlined and in gray.') }}">
     <p>
       {{ _('Apply now at') }}
       <a href="https://www.canada.ca">https://www.canada.ca</a>
@@ -19,12 +19,12 @@
   {{ _('To embed a link in your message, use square brackets around descriptive text, followed by round brackets around the URL. Make sure links make sense out of context (avoid “click here”). For example:') }}
 </p>
 <div class="panel-container">
-  <div class="panel-input mb-12" aria-label="{{ _('An example of the input for an embedded link. Sign in is surrounded by square brackets [Sign in], immediately followed by the URL surrounded by parentheses (https://www.canada.ca/sign-in).') }}">
-    <p class="wrap-text">
+  <div class="panel-input" aria-label="{{ _('An example of the input for an embedded link. Sign in is surrounded by square brackets [Sign in], immediately followed by the URL surrounded by parentheses (https://www.canada.ca/sign-in).') }}">
+    <p class="break-words">
       {{ _('[Sign in](https://www.canada.ca/sign-in)') }}
     </p>
   </div>
-  <div class="panel-preview panel-border-wide mb-12" aria-label="{{ _('A preview shows the text ‘Sign in’ as a clickable link, underlined and in gray.') }}">
+  <div class="panel-preview" aria-label="{{ _('A preview shows the text ‘Sign in’ as a clickable link, underlined and in gray.') }}">
     <p>
       <a href="https://www.canada.ca">{{ _('Sign in') }}</a>
     </p>
@@ -35,7 +35,7 @@
   {{ _('To include a personalised link in your message, use double round brackets around the personalised link, as you would for a variable. To embed a personalised link, use square brackets around the descriptive text, followed by triple round brackets around the variable link.') }}
 </p>
 <div class="panel-container">
-  <div class="panel-input mb-12" aria-label="{{ _('An example of the input for a personalised link. ‘Your personalised link’ is surrounded by square brackets [Your personalised link], immediately followed by triple round brackets, (((link))).') }}">
+  <div class="panel-input" aria-label="{{ _('An example of the input for a personalised link. ‘Your personalised link’ is surrounded by square brackets [Your personalised link], immediately followed by triple round brackets, (((link))).') }}">
     <p>
       {{ _('Apply now at') }} ((<span class="placeholder-no-brackets">{{_('link')}}</span>))
     </p>
@@ -43,7 +43,7 @@
       [{{ _('Your personalised link') }}](((<span class="placeholder-no-brackets">{{ _('link') }}</span>)))
     </p>
   </div>
-  <div class="panel-preview panel-border-wide mb-12" aria-label="{{ _('A preview shows the text ‘Your personalised link’ as a clickable link, underlined and in gray.') }}">
+  <div class="panel-preview" aria-label="{{ _('A preview shows the text ‘Your personalised link’ as a clickable link, underlined and in gray.') }}">
     <p>
       {{ _('Apply now at') }}
       <a href="https://www.canada.ca">https://www.canada.ca</a>

@@ -81,7 +81,7 @@
   mark {
     @apply m-0 p-0;
   }
-  
+
   h1,
   h2,
   h3,
@@ -117,19 +117,19 @@
     line-height: inherit;
     font-weight: normal;
   }
-  
+
   abbr[title],
   acronym[title] {
     @apply no-underline;
   }
-  
+
   /* Legend --------------------------------
   // Fix legend text wrapping in Edge and IE
   // ---------------------------------------
   // 1. IE9-11 & Edge 12-13
   // 2. IE8-11
   */
-  
+
   legend {
     @apply box-border max-w-full table overflow-hidden;
   }

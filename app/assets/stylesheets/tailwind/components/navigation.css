@@ -30,13 +30,13 @@
     padding-top: 14px;
     padding-bottom: 11px;
     max-width: 50%;
-    @apply text-smaller leading-tight font-bold px-0 inline-block truncate
+    @apply text-smaller leading-tight font-bold px-0 inline-block truncate;
   }
 
   .navigation-service-switch {
     padding-top: 14px;
     padding-bottom: 11px;
-    @apply text-smaller leading-tight font-normal text-right absolute top-0 right-0 pr-0 pl-gutterHalf
+    @apply text-smaller leading-tight font-normal text-right absolute top-0 right-0 pr-0 pl-gutterHalf;
   }
   .navigation-service-switch:hover {
     @apply underline text-blue-lightblue;
@@ -117,8 +117,8 @@
   }
 
   .header--active {
-    @apply border-b-4;
-    @apply border-blue;
+    @apply border-b-4 !important;
+    @apply border-blue !important;
   }
 
   .menu--active {
@@ -136,11 +136,12 @@
     width: 102px;
     height: 1px;
     left: 124px;
-    background: #C6C6C6;
+    background: #c6c6c6;
   }
 
   .shadow {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
   /*! purgecss end ignore */
 }

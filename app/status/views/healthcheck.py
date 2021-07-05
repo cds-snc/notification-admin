@@ -5,9 +5,9 @@ from app import status_api_client, version
 from app.status import status
 
 
-@status.route('/_status', methods=['GET'])
+@status.route("/_status", methods=["GET"])
 def show_status():
-    if request.args.get('elb', None) or request.args.get('simple', None):
+    if request.args.get("elb", None) or request.args.get("simple", None):
         return jsonify(status="ok"), 200
     else:
         try:
@@ -15,8 +15,12 @@ def show_status():
         except HTTPError as e:
             current_app.logger.exception("API failed to respond")
             return jsonify(status="error", message=str(e.message)), 500
-        return jsonify(
-            status="ok",
-            api=api_status,
-            commit_sha=version.__commit_sha__,
-            build_time=version.__time__), 200
+        return (
+            jsonify(
+                status="ok",
+                api=api_status,
+                commit_sha=version.__commit_sha__,
+                build_time=version.__time__,
+            ),
+            200,
+        )

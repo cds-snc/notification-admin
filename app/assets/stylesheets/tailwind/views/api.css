@@ -8,7 +8,7 @@
     @apply border-t-1 border-solid border-gray-grey2 p-0 pt-4;
   }
   .api-notifications-item-title {
-    @apply block no-underline text-blue-govukblue;
+    @apply block no-underline text-blue;
   }
   .api-notifications-item-recipient {
     @apply inline;
@@ -20,7 +20,7 @@
     @apply text-right;
   }
   .api-notifications-item-key {
-    padding-left: 46px!important;
+    padding-left: 46px !important;
     @apply inline-block;
   }
   .api-notifications-item-data {

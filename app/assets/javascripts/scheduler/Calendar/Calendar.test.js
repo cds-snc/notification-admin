@@ -6,11 +6,11 @@ import { Calendar } from "./Calendar";
 import { render, fireEvent, wait } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 
-describe("Calendar", function() {
+describe("Calendar", function () {
   // setup
   const i18nState = {
     langCode: "en",
-    translate: getTranslate("en")
+    translate: getTranslate("en"),
   };
 
   const today = dayjs("2020-02-28");
@@ -63,35 +63,35 @@ describe("Calendar", function() {
 
     fireEvent.keyDown(document.activeElement, {
       key: "ArrowLeft",
-      code: 37
+      code: 37,
     });
 
     await wait(() => expect(document.activeElement).toHaveTextContent("28"));
 
     fireEvent.keyDown(document.activeElement, {
       key: "ArrowUp",
-      code: 38
+      code: 38,
     });
 
     await wait(() => expect(document.activeElement).toHaveTextContent("21"));
 
     fireEvent.keyDown(document.activeElement, {
       key: "ArrowDown",
-      code: 40
+      code: 40,
     });
 
     await wait(() => expect(document.activeElement).toHaveTextContent("28"));
 
     fireEvent.keyDown(document.activeElement, {
       key: "ArrowRight",
-      code: 39
+      code: 39,
     });
 
     await wait(() => expect(document.activeElement).toHaveTextContent("29"));
 
     fireEvent.keyDown(document.activeElement, {
       key: "ArrowRight",
-      code: 39
+      code: 39,
     });
 
     await wait(() => expect(document.activeElement).toHaveTextContent("1"));

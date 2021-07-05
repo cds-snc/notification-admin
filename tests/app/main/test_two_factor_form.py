@@ -10,56 +10,62 @@ from tests.conftest import (
 
 
 def _check_code(code):
-    return user_api_client.check_verify_code('1', code, "sms")
+    return user_api_client.check_verify_code("1", code, "sms")
 
 
-@pytest.mark.parametrize('post_data', [
-    {'two_factor_code': '12345'},
-    {'two_factor_code': ' 12345 '},
-])
+@pytest.mark.parametrize(
+    "post_data",
+    [
+        {"two_factor_code": "12345"},
+        {"two_factor_code": " 12345 "},
+    ],
+)
 def test_form_is_valid_returns_no_errors(
     app_,
     mock_check_verify_code,
     post_data,
 ):
-    with app_.test_request_context(method='POST', data=post_data):
+    with app_.test_request_context(method="POST", data=post_data):
         form = TwoFactorForm(_check_code)
         assert form.validate() is True
         assert form.errors == {}
 
 
-@pytest.mark.parametrize('mock, post_data, expected_error', (
+@pytest.mark.parametrize(
+    "mock, post_data, expected_error",
     (
-        mock_check_verify_code,
-        {'two_factor_code': '1234'},
-        'Not enough numbers',
+        (
+            mock_check_verify_code,
+            {"two_factor_code": "1234"},
+            "Not enough numbers",
+        ),
+        (
+            mock_check_verify_code,
+            {"two_factor_code": "123456"},
+            "Too many numbers",
+        ),
+        (
+            mock_check_verify_code,
+            {},
+            "This cannot be empty",
+        ),
+        (
+            mock_check_verify_code,
+            {"two_factor_code": "12E45"},
+            "Numbers only",
+        ),
+        (
+            mock_check_verify_code_code_expired,
+            {"two_factor_code": "99999"},
+            "That security code has expired",
+        ),
+        (
+            mock_check_verify_code_code_not_found,
+            {"two_factor_code": "99999"},
+            "Code not found",
+        ),
     ),
-    (
-        mock_check_verify_code,
-        {'two_factor_code': '123456'},
-        'Too many numbers',
-    ),
-    (
-        mock_check_verify_code,
-        {},
-        'This cannot be empty',
-    ),
-    (
-        mock_check_verify_code,
-        {'two_factor_code': '12E45'},
-        'Numbers only',
-    ),
-    (
-        mock_check_verify_code_code_expired,
-        {'two_factor_code': '99999'},
-        'That security code has expired',
-    ),
-    (
-        mock_check_verify_code_code_not_found,
-        {'two_factor_code': '99999'},
-        'Code not found',
-    ),
-))
+)
 def test_returns_errors_when_code_is_too_short(
     app_,
     mocker,
@@ -68,7 +74,7 @@ def test_returns_errors_when_code_is_too_short(
     expected_error,
 ):
     mock(mocker)
-    with app_.test_request_context(method='POST', data=post_data):
+    with app_.test_request_context(method="POST", data=post_data):
         form = TwoFactorForm(_check_code)
         assert form.validate() is False
-        assert form.errors == {'two_factor_code': [expected_error]}
+        assert form.errors == {"two_factor_code": [expected_error]}

@@ -1,0 +1,15 @@
+{% extends "content_template.html" %}
+
+{% block per_page_title %}
+  {{ _('Personalisation guide') }}
+{% endblock %}
+
+{% block content_column_content %}
+  <h1 class="heading heading-large">{{ _('Personalisation guide') }}</h1>
+  <p>
+    {{ _('Use this guide to personalise email and text message templates. Make sure to send yourself a test message to ensure variables populate your template as expected.') }}
+  </p>
+
+  {% include "partials/guidance/personalisation.html" %}
+  {% include "partials/guidance/conditional-text.html" %}
+{% endblock %}

@@ -4,32 +4,34 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/message-count-label.html" import message_count_label %}
+{% from "components/banner.html" import banner %}
 
-{% set file_contents_header_id = 'file-preview' %}
-{% macro skip_to_file_contents() %}
-  <p class="visually-hidden">
-    <a href="#{{ file_contents_header_id }}">{{ _('Skip to file contents') }}</a>
-  </p>
-{% endmacro %}
+{% set page_title = _('Review before sending') %}
 
 {% block service_page_title %}
-  {{ _("Preview of") + " " + template.name }}
+  {{ page_title }}
 {% endblock %}
 
 {% block maincolumn_content %}
+  {{ page_header(page_title, back_link=back_link) }}
 
-  {{ page_header(
-    _('Preview of') + " " + template.name,
-    back_link=back_link
-  ) }}
-
-  {{ skip_to_file_contents() }}
-
-  {{ template|string|translate_preview_template }}
+  {{
+    banner(
+      _("'{}' was uploaded.").format(original_file_name),
+      'default',
+      with_tick=True
+    )
+  }}
 
   {% if not request.args.from_test %}
   <h2 class="heading-medium">{{ _('Recipients') }}</h2>
-  <h3 class="file-name" id="{{ file_contents_header_id }}">{{ original_file_name }}</h3>
+  <p>
+    {% if count_of_recipients > 1 %}
+      {{ _("{} recipients from {}.").format(count_of_recipients, original_file_name) }}
+    {% else %}
+      {{ _("1 recipient from {}.").format(original_file_name) }}
+    {% endif %}
+  </p>
 
   <div class="fullscreen-content" data-module="fullscreen-table">
     {% call(item, row_number) list_table(
@@ -42,11 +44,7 @@
     ) %}
       {% call index_field() %}
         <span>
-          {% if (item.index + 2) == preview_row %}
-            {{ item.index + 2 }}
-          {% else %}
-            <a href="{{ url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name) }}">{{ item.index + 2 }}</a>
-          {% endif %}
+          <a href="{{ url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name) }}" class="text-small">{{ item.index + 2 }}</a>
         </span>
       {% endcall %}
       {% for column in recipients.column_headers %}
@@ -64,47 +62,43 @@
     {% endcall %}
   </div>
 
+  {% if count_of_displayed_recipients < count_of_recipients %}
+    <p>
+      {{ _('Only showing the first')}} {{ count_of_displayed_recipients }} {{ _('rows') }}
+    </p>
   {% endif %}
+
+  {% endif %}
+
+
+  <h2 class="heading-medium">{{ _('Message preview') }}</h2>
+
+  <p>
+    {{ _("The example below previews one recipient (row {} from {}).").format(preview_row, original_file_name) }}
+  </p>
+
+  {{ template|string|translate_preview_template }}
 
 
   <div class="mb-12 clear-both contain-floats">
     <form method="post" enctype="multipart/form-data" action="{{url_for('main.start_job', service_id=current_service.id, upload_id=upload_id, original_file_name=original_file_name)}}" class='page-footer'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <input type="hidden" id="scheduled_for" name="scheduled_for" value=""/>
-      <div class="form-group ">
-        <h2 class="heading-medium">{{ _('Schedule notifications') }}</h2>
-        <fieldset id="send_now_later" class="contain-floats w-full">
-          <legend class="form-label">{{ _('When would you like to send') }} {{"{}?".format(template.name)}}</legend>
-          <div class="multiple-choice">
-            <input id="send_now_later-0" name="send_now_later" type="radio" value="1" checked="">
-            <label class="block-label" for="send_now_later-0">{{ _('Now') }}</label>
-          </div> 
-          <div class="multiple-choice">
-            <input id="send_now_later-1" name="send_now_later" type="radio" value="2">
-            <label class="block-label" for="send_now_later-1">{{ _('Later') }}</label>
-          </div>
-        </fieldset>
-      </div>
-      <div 
-        id="schedule-send-at" 
-        class="hidden"
+      <button type="submit" class="button" id="js-send-now-button">{{ _('Send now') }}</button>
+      <button type="submit" class="button button-secondary" id="js-send-later-button">
+        {{ _('Schedule for later') }}
+      </button>
+      <div
+        id="js-schedule-send-at"
+        class="hidden mt-12"
         data-module="webpack-loader"
         data-webpack-loader="Scheduler">
       </div>
-
-      {% if template.template_type != 'letter' or not request.args.from_test %}
-      <button type="submit" class="button" id="submit-button">{{ _('Send now') }}</button>
-      {% else %}
-        <a href="{{ url_for('main.check_messages_preview', service_id=current_service.id, template_id=template.id, upload_id=upload_id, filetype='pdf') }}" download class="button">{{ _('Download as a PDF') }}</a>
-      {% endif %}
+      <button type="submit" class="button hidden" id="js-schedule-button">
+        {{ _('Schedule') }}
+      </button>
     </form>
   </div>
-
-  {% if count_of_displayed_recipients < count_of_recipients %}
-    <p class="table-show-more-link">
-      {{ _('Only showing the first')}} {{ count_of_displayed_recipients }} {{ _('rows') }}
-    </p>
-  {% endif %}
 
   <script type="text/javascript" src="{{ asset_url('javascripts/scheduler.min.js') }}"></script>
 

@@ -26,7 +26,12 @@ steps = [
         "current_step": "message",
         "previous_step": DEFAULT_STEP,
         "next_step": None,
-        "support_types": ['ask_question', 'technical_support', 'give_feedback', 'other'],
+        "support_types": [
+            "ask_question",
+            "technical_support",
+            "give_feedback",
+            "other",
+        ],
     },
     {
         "form": SetUpDemoOrgDetails,
@@ -48,13 +53,13 @@ steps = [
 ]
 
 
-@main.route('/contact', methods=['GET', 'POST'])
+@main.route("/contact", methods=["GET", "POST"])
 def contact():
-    current_step = request.args.get('current_step', session.get(SESSION_FORM_STEP_KEY, DEFAULT_STEP))
+    current_step = request.args.get("current_step", session.get(SESSION_FORM_STEP_KEY, DEFAULT_STEP))
     try:
         form_obj = [f for f in steps if f["current_step"] == current_step][0]
     except IndexError:
-        return redirect(url_for('.contact', current_step=DEFAULT_STEP))
+        return redirect(url_for(".contact", current_step=DEFAULT_STEP))
     form = form_obj["form"](data=_form_data())
 
     # Validating the final form
@@ -62,7 +67,7 @@ def contact():
         session.pop(SESSION_FORM_KEY, None)
         session.pop(SESSION_FORM_STEP_KEY, None)
         send_contact_request(form)
-        return render_template('views/contact/thanks.html')
+        return render_template("views/contact/thanks.html")
 
     # Going on to the next step in the form
     if form.validate_on_submit():
@@ -71,18 +76,16 @@ def contact():
             if len(possibilities) == 1:
                 form_obj = possibilities[0]
             else:
-                form_obj = [
-                    e for e in possibilities if form.support_type.data in e["support_types"]
-                ][0]
+                form_obj = [e for e in possibilities if form.support_type.data in e["support_types"]][0]
         except IndexError:
-            return redirect(url_for('.contact', current_step=DEFAULT_STEP))
+            return redirect(url_for(".contact", current_step=DEFAULT_STEP))
         form = form_obj["form"](data=_form_data())
 
     session[SESSION_FORM_KEY] = form.data
     session[SESSION_FORM_STEP_KEY] = form_obj["current_step"]
 
     return render_template(
-        'views/contact/form.html',
+        "views/contact/form.html",
         form=form,
         next_step=form_obj["next_step"],
         current_step=form_obj["current_step"],
@@ -97,14 +100,14 @@ def _form_data():
     fallback = {}
     if current_user.is_authenticated:
         fallback = {
-            'name': current_user.name,
-            'email_address': current_user.email_address,
+            "name": current_user.name,
+            "email_address": current_user.email_address,
         }
     return session.get(SESSION_FORM_KEY, fallback)
 
 
 def _labels(previous_step, current_step, support_type):
-    back_link = url_for('.contact', current_step=previous_step)
+    back_link = url_for(".contact", current_step=previous_step)
     message_label = None
 
     if current_step == "message":
@@ -121,7 +124,7 @@ def _labels(previous_step, current_step, support_type):
             page_title = _l("Ask a question")
             message_label = _l("Your question")
         else:
-            raise NotImplementedError
+            raise NotImplementedError(f"Unsupported support_type: {str(support_type)}")
     elif current_step in ["set_up_demo.org_details", "set_up_demo.primary_purpose"]:
         page_title = _l("Set up a demo")
     else:
@@ -137,16 +140,24 @@ def _labels(previous_step, current_step, support_type):
 
 def send_contact_request(form: SetUpDemoPrimaryPurpose):
     of_interest = {
-        'name', 'support_type', 'email_address', 'department_org_name',
-        'program_service_name', 'intended_recipients', 'main_use_case', 'main_use_case_details', 'message'}
+        "name",
+        "support_type",
+        "email_address",
+        "department_org_name",
+        "program_service_name",
+        "intended_recipients",
+        "main_use_case",
+        "main_use_case_details",
+        "message",
+    }
     data = {key: form.data[key] for key in of_interest if key in form.data}
     if current_user and current_user.is_authenticated:
-        data['user_profile'] = url_for('.user_information', user_id=current_user.id, _external=True)
+        data["user_profile"] = url_for(".user_information", user_id=current_user.id, _external=True)
 
-    data['friendly_support_type'] = str(dict(form.support_type.choices)[form.support_type.data])
+    data["friendly_support_type"] = str(dict(form.support_type.choices)[form.support_type.data])
     user_api_client.send_contact_request(data)
 
 
-@main.route('/support/ask-question-give-feedback', endpoint='redirect_contact')
+@main.route("/support/ask-question-give-feedback", endpoint="redirect_contact")
 def redirect_contact():
-    return redirect(url_for('main.contact'), code=301)
+    return redirect(url_for("main.contact"), code=301)

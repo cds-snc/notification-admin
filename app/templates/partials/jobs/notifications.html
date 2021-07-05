@@ -14,7 +14,7 @@
       <a href="{{ url_for('.view_template_version', service_id=current_service.id, template_id=template.id, version=template_version) }}">{{ template.name }}</a>
       <span class="local-datetime-short">{{ job.scheduled_for }}</span>
     </p>
-    {% set btn_txt = _('Cancel sending') %}
+    {% set btn_txt = _('Cancel scheduled send') %}
     <div class="page-footer">
       {% call form_wrapper() %}
         {{ page_footer(
@@ -56,7 +56,7 @@
           heading_1,
           heading_2
         ],
-        field_headings_visible=False
+        field_headings_visible=True
       ) %}
         {% call row_heading() %}
           <a class="file-list-filename" href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=item.id, from_job=job.id) }}">{{ item.to }}</a>
