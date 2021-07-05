@@ -1330,7 +1330,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
     def get_row(page, index):
         return normalize_spaces(page.select("tbody tr")[index].text)
 
-    assert get_row(page, 6) == "Reply-to email addresses test@example.com …and 2 more Manage"
+    assert get_row(page, 6) == "Reply-to addresses test@example.com …and 2 more Manage"
 
 
 @pytest.mark.parametrize(
