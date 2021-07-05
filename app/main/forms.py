@@ -1325,7 +1325,7 @@ class ServiceDeliveryStatusCallbackForm(CallbackForm):
 
 class InternationalSMSForm(StripWhitespaceForm):
     enabled = RadioField(
-        _l("Enable sending to international phone numbers"),
+        _l("Sending to international phone numbers"),
         choices=[
             ("on", _l("On")),
             ("off", _l("Off")),
