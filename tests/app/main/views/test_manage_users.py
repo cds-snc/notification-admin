@@ -275,6 +275,58 @@ def test_manage_users_page_shows_member_auth_type_if_service_has_email_auth_acti
     assert bool(page.select_one(".tick-cross-list-hint")) == displays_auth_type
 
 
+def test_should_show_you_should_have_at_least_two_members_when_only_one_present_with_manage_service_permission(
+    client_request,
+    service_one,
+    mock_get_users_by_service,
+    mock_get_invites_for_service,
+    mock_get_template_folders,
+    mock_get_security_keys,
+):
+    page = client_request.get("main.manage_users", service_id=service_one["id"])
+    assert len(page.find_all("p")) == 2
+    assert page.find_all("p")[1].text.strip() == "You should have at least two team members who can manage settings."
+
+
+def test_does_not_show_you_should_have_at_least_two_members_only_when_two_members_present(
+    client_request,
+    fake_uuid,
+    service_one,
+    mocker,
+    mock_get_invites_for_service,
+    mock_get_template_folders,
+    mock_get_security_keys,
+):
+    current_user = active_user_with_permissions(fake_uuid)
+    other_user = copy.deepcopy(current_user)
+    other_user["email_address"] = "zzzzzzz@example.canada.ca"
+    other_user["name"] = "ZZZZZZZZ"
+    other_user["id"] = "zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz"
+
+    mocker.patch("app.user_api_client.get_user", return_value=current_user)
+    mocker.patch("app.models.user.Users.client", return_value=[current_user, other_user])
+    page = client_request.get("main.manage_users", service_id=service_one["id"])
+    assert len(page.find_all("p")) == 1
+    assert page.find_all("p")[0].text.strip() != "You should have at least two team members who can manage settings."
+
+
+def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_have_permissions(
+    client_request,
+    fake_uuid,
+    service_one,
+    mocker,
+    mock_get_invites_for_service,
+    mock_get_template_folders,
+    mock_get_security_keys,
+):
+    current_user = active_user_view_permissions(fake_uuid)
+    mocker.patch("app.user_api_client.get_user", return_value=current_user)
+    mocker.patch("app.models.user.Users.client", return_value=[current_user])
+    page = client_request.get("main.manage_users", service_id=service_one["id"])
+    assert len(page.find_all("p")) == 1
+    assert page.find_all("p")[0].text.strip() != "You should have at least two team members who can manage settings."
+
+
 @pytest.mark.parametrize(
     "user, sms_option_disabled, expected_label",
     [
