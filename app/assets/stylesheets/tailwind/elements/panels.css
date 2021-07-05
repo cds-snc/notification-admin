@@ -1,7 +1,7 @@
 @layer components {
   .panel {
-    padding: .7895em;
-    margin-bottom: .7895em;
+    padding: 0.7895em;
+    margin-bottom: 0.7895em;
     border-left: solid;
     @apply box-border clear-both border-gray-grey2;
   }
@@ -30,7 +30,7 @@
     @apply float-left w-full pb-0;
   }
   /* Note: This is incredibly fragile, and needs rebuilding. */
-  
+
   /* The first panel in a group */
   .form-group .panel-border-narrow:first-child {
     @apply mt-4;
@@ -49,38 +49,32 @@
 
   /* Template Formatting Guide styles */
   .panel-container {
-    @apply flex w-full;
+    @apply flex w-full flex-col mb-12;
   }
-  @screen xs {
+  @screen sm {
     .panel-container {
-      @apply flex-col;
+      @apply flex-row;
     }
   }
 
   .panel-container > * {
     min-width: 200px;
     padding: 1em;
-    @apply inline-block w-6/12 border-1 border-solid border-gray-lightgrey mb-12 align-top
+    @apply inline-block border-1 border-solid border-gray-lightgrey flex-1;
   }
-  @screen xs {
-    .panel-container > * {
-      @apply w-full;
+
+  .panel-preview {
+    @apply mt-6 ml-0;
+  }
+  @screen sm {
+    .panel-preview {
+      @apply mt-0 ml-6;
     }
   }
 
   .panel-container > .panel-input {
     border-left-width: 24px;
-    margin-right: 1em;
     @apply border-gray-grey2;
-  }
-  @screen xs {
-    .panel-container > .panel-input {
-      @apply mr-0 mb-4;
-    }
-  }
-
-  .panel-container .wrap-text {
-    word-break: break-word;
   }
 
   .panel-container h3 {

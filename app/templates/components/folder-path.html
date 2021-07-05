@@ -4,9 +4,10 @@
   template_type,
   current_user,
   link_current_item=False,
-  root_element='h1'
+  root_element='h1',
+  sending_view=false
 ) %}
-  <{{ root_element }} class="heading-medium folder-heading">
+  <{{ root_element }} class="{% if root_element == 'h1' %}heading-medium {% endif %}folder-heading">
     {% for folder in folders %}
       {% if loop.last and not link_current_item %}
         {% if folder.template_type or not folder.id %}
@@ -17,12 +18,12 @@
       {% else %}
         {% if folder.id %}
           {% if current_user.has_template_folder_permission(folder) %}
-            <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type, template_folder_id=folder.id) }}" class="folder-heading-folder {% if loop.index < (loop.length - 1) %}folder-heading-folder-truncated{% endif %}" title="{{ folder.name }}">{{ folder.name }}</a>
+            <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type, template_folder_id=folder.id, view='sending' if sending_view else None) }}" class="folder-heading-folder {% if loop.index < (loop.length - 1) %}folder-heading-folder-truncated{% endif %}" title="{{ folder.name }}">{{ folder.name }}</a>
           {% else %}
             <span class="folder-heading-folder">{{ folder.name }}</span>
           {% endif %}
         {% else %}
-          <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type) }}" title="Templates" class="{% if loop.length > 2 %}folder-heading-folder-root-truncated{% endif %}">{{ _('Templates') }}</a>
+          <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type, view='sending' if sending_view else None) }}" title="{{ _('Templates') }}" class="{% if loop.length > 2 %}folder-heading-folder-root-truncated{% endif %}">{{ _('Templates') }}</a>
         {% endif %}
         {% if not loop.last %}{{ folder_path_separator() }}{% endif %}
       {% endif %}

@@ -16,7 +16,7 @@ export const DaysOfTheWeek = () => {
       role="presentation"
       aria-hidden="true"
     >
-      {weekdays.map(day => {
+      {weekdays.map((day) => {
         return (
           <span
             key={day.shortname}

@@ -1,31 +1,45 @@
-{% extends "admin_template.html" %} {% from "components/textbox.html" import
-textbox %} {% from "components/page-header.html" import page_header %} {% from
-"components/page-footer.html" import sticky_page_footer %} {% from
-"components/radios.html" import radios %} {% from "components/form.html" import
-form_wrapper %} {% block service_page_title %} {{ _(heading_action) }}
-{{_('email template') }} {% endblock %} {% block maincolumn_content %} {{
-page_header( _(heading_action) + ' ' + _('email template'),
-back_link=url_for('main.view_template', service_id=current_service.id,
-template_id=template.id) if template else url_for('main.choose_template',
-service_id=current_service.id, template_folder_id=template_folder_id) ) }} {%
-call form_wrapper() %}
-<div class="grid-row contain-floats">
-  <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
-    <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
-      <a href="{{ url_for('main.templates') }}" target="_blank"
-        >{{ _('How to format your message') }}</a
-      >
-    </div>
+{% extends "admin_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import sticky_page_footer %}
+{% from "components/radios.html" import radios %}
+{% from "components/form.html" import form_wrapper %}
 
-    {% set hint_txt = _('Your recipients will not see this template name.') %} {{
-    textbox(form.name, width='w-full', hint=hint_txt, rows=10) }} {{
-    textbox(form.subject, width='w-full', highlight_tags=True, rows=2) }} {{
-    textbox(form.template_content, highlight_tags=True, width='w-full', rows=8) }}
-    {% if current_user.platform_admin %} {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }} {%
-    endif %} {% set txt = _('Save') %} {{ sticky_page_footer( txt ) }}
+{% block service_page_title %}
+  {{ _(heading_action) }} {{_('email template') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+  {{
+    page_header(
+      _(heading_action) + ' ' + _('email template'),
+      back_link=url_for('main.view_template', service_id=current_service.id,
+      template_id=template.id) if template else url_for('main.create_template',
+      service_id=current_service.id, template_folder_id=template_folder_id)
+    )
+  }}
+  {% call form_wrapper() %}
+  <div class="grid-row">
+    <div class="md:w-5/6 px-gutterHalf box-border">
+      <div class="form-group mb-gutterHalf md:mb-gutter">
+        {{ _("A template allows you to send a similar information to many people. Use <a href='{}' target='_blank'>the personalisation guide</a> to tailor messages for each recipient.").format(url_for('.personalise')) }}
+      </div>
+
+      {{ textbox(form.name, width='w-full', hint=_('Your recipients will not see this template name.'), rows=10) }}
+
+      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell people what the email is about. Try to it keep it shorter than 10 words.")) }}
+
+      {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=8, hint=_("Use the <a href='{}' target='_blank'>email formatting guide</a> to craft your message.").format(url_for('.format'))) }}
+
+      {% if current_user.platform_admin %}
+        {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }}
+      {% endif %}
+
+      {{ sticky_page_footer(_('Save template')) }}
+    </div>
   </div>
-</div>
-{% endcall %} {% endblock %}
+  {% endcall %}
+{% endblock %}
 
 {% block page_script %}
 {{ super() }}

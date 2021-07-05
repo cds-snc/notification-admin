@@ -62,7 +62,7 @@
   }
   .content-fixed .back-to-top-link,
   .content-fixed-onload .back-to-top-link {
-    @apply opacity-100 transition-opacity ease-in-out duration-600;
+    @apply opacity-100 transition-opacity ease-in-out duration-300;
   }
 
   .js-stick-at-top-when-scrolling.content-fixed,
@@ -75,7 +75,7 @@
   }
 
   .js-stick-at-top-when-scrolling.content-fixed {
-    transition: background 0.6s ease-in-out, margin-top 0.4s ease-out;
+    transition: background 0.3s ease-in-out, margin-top 0.3s ease-out;
   }
   .js-stick-at-bottom-when-scrolling.content-fixed,
   .js-stick-at-bottom-when-scrolling.content-fixed-onload {
@@ -88,7 +88,7 @@
   }
 
   .js-stick-at-bottom-when-scrolling.content-fixed {
-    @apply transition-background duration-600 ease-in-out;
+    @apply transition-background duration-300 ease-in-out;
   }
   .js-stick-at-bottom-when-scrolling-loaded.content-fixed-onload {
     @apply transition-none;
@@ -101,14 +101,14 @@
   .js-cancel {
     margin-top: -10px;
     margin-right: -10px;
-    @apply inline-block p-4 pb-2 underline text-blue-govukblue cursor-pointer;
+    @apply inline-block p-4 pb-2 underline text-blue cursor-pointer;
   }
   .js-cancel:hover {
     @apply text-blue-lightblue;
   }
   .js-cancel:focus,
   .js-cancel:active {
-    @apply bg-yellow outline-none text-blue-govukblue;
+    @apply bg-yellow outline-none text-blue;
   }
   /*! purgecss end ignore */
 }

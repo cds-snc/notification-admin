@@ -5,11 +5,12 @@ import {
   I18nContext,
   formattedDay,
   yearMonthDay,
-  isSelected
+  isSelected,
 } from "./index";
 
 export const Day = ({ day }) => {
-  const { today, selected, focusedDayNum, dispatch, isBlockedDay } = useContext(store);
+  const { today, selected, focusedDayNum, dispatch, isBlockedDay } =
+    useContext(store);
   const { translate } = useContext(I18nContext);
   const { $D: dayNum = 0 } = day;
   const { $D: todayDayNum = 0 } = today;
@@ -44,7 +45,7 @@ export const Day = ({ day }) => {
       data-timestamp={day.unix()}
       data-day={`${dayNum}`}
       data-date={formattedDate}
-      onFocus={event => {
+      onFocus={(event) => {
         const focused = event.currentTarget.dataset["day"];
         const date = event.currentTarget.dataset["date"];
         if (Number(focusedDayNum) !== Number(focused)) {
@@ -55,7 +56,7 @@ export const Day = ({ day }) => {
         dispatch({ type: "SELECT_DATE", payload: yearMonthDay(day) });
         dispatch({
           type: "CALENDAR_UPDATES",
-          payload: `selected ${label}`
+          payload: `selected ${label}`,
         });
       }}
       {...currentState}

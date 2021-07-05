@@ -10,34 +10,27 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-    {% set txt = _('text message template') %}
-    {% set action = heading_action + " " +txt %}
-    {{ page_header(
-      action,
-      back_link=url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.choose_template', service_id=current_service.id, template_folder_id=template_folder_id)
-    ) }}
+  {{ page_header(
+    heading_action + " " + _('text message template'),
+    back_link=url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.create_template', service_id=current_service.id, template_folder_id=template_folder_id)
+  ) }}
 
-    {% call form_wrapper() %}
-      <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
-        <a href="{{ url_for('main.templates') }}" target="_blank">{{ _('How to format your message') }}</a>
+  {% call form_wrapper() %}
+    <div class="md:w-5/6 form-group mb-gutterHalf md:mb-gutter">
+      {{ _("A template allows you to send a similar information to many people. Use <a href='{}' target='_blank'>the personalisation guide</a> to tailor messages for each recipient.").format(url_for('.personalise')) }}
+    </div>
+
+    <div class="grid-row contain-floats">
+      <div class="md:w-2/3 px-gutterHalf">
+        {{ textbox(form.name, width='w-full', hint=_('Your recipients will not see this template name.')) }}
       </div>
-      {% set txt = _('Your recipients will not see this template name.') %}
-      <div class="grid-row contain-floats">
-        <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
-          {{ textbox(form.name, width='w-full', hint=txt) }}
-        </div>
-        <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
-          {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5) }}
-          {% if current_user.platform_admin %}
-            {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }}
-          {% endif %}
-          {% set txt = _('Save') %}
-          {{ sticky_page_footer(
-            txt
-          ) }}
-        </div>
+      <div class="md:w-2/3 px-gutterHalf">
+        {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5) }}
+        {% if current_user.platform_admin %}
+          {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }}
+        {% endif %}
+        {{ sticky_page_footer(_('Save template')) }}
       </div>
-    {% endcall %}
-
-
+    </div>
+  {% endcall %}
 {% endblock %}

@@ -60,17 +60,24 @@ On OS X:
 
 `pyenv global 3.9.1`
 
-4. Ensure it installed by running
+4. Ensure that version `3.9.1` is now the default by running
 
 `python --version` 
 
-if it did not, take a look here: https://github.com/pyenv/pyenv/issues/660
+If it did not, add to your shell rc file. ex: `.bashrc` or `.zshrc`
+```
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+```
+and open a new terminal.
+
+If you are still not running Python 3.9.1 take a look here: https://github.com/pyenv/pyenv/issues/660
 
 5. Install `virtualenv`:
 
 `pip install virtualenvwrapper`
 
-6. Add the following to your shell rc file. ex: `.bashrc` or `.zshrc`
+6. Add the following to your `.bashrc` or `.zshrc`
 
 ```
 source  ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
@@ -104,7 +111,7 @@ source  ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
 
 14.  Run the service
 
-`flask run -p 6012 --host=0.0.0.0`
+`flask run -p 6012 --host=localhost`
 
 15. To test
 
@@ -212,16 +219,24 @@ Note: Tests may break if `USE_LOCAL_JINJA_TEMPLATES` is set to `True` in your .e
 A `docker-compose.yml` is provided to anyone that wants to leverage docker as for their setup. You can look at the [full documentation here](https://docs.docker.com/compose/).
 To run this project with docker-compose, you will also need to run [notification-api](https://github.com/cds-snc/notification-api) with docker-compose, as it relies on the postgres database set there.
 
-To start the project :
+To start the project:
 
 ```bash
-aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region us-east-1 | base64 --decode > .env
 docker-compose up
 ```
 
 That's it.
 
 Your site is now available on [http://localhost:6012](http://localhost:6012).
+
+
+## Redis
+
+You need a [redis](https://redis.io/) server running to use certain parts of Notify, such as the "go live" flow. To use redis, add `REDIS_ENABLED=1` to your .env file and run the following command:
+
+```bash
+redis-server
+```
 
 =======
 
@@ -287,17 +302,23 @@ Sur macOS :
 
 `pyenv global 3.9.1`
 
-4. Assurez-vous qu'il est installé en exécutant
+4. Assurez-vous que la version 3.9.1 est maintenant la version par défaut en exécutant
 
-`python --version` 
+`python --version`
 
-si ce n'est pas le cas, jetez un coup d'œil ici : https://github.com/pyenv/pyenv/issues/660
+Si ce n’est pas le cas, ajoutez les lignes suivantes à votre fichier shell rc. ex : `.bashrc` ou `.zshrc`
+```
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+```
+et ouvrez un nouveau terminal.
+Si vous n’utilisez toujours pas Python 3.9.1, jetez un coup d’œil ici : https://github.com/pyenv/pyenv/issues/660
 
 5. Installez `virtualenv` :
 
 `pip install virtualenvwrapper`
 
-6. Ajoutez ce qui suit à votre fichier rc shell. ex : `.bashrc` ou `.zshrc`
+6. Ajoutez ce qui suit à votre `.bashrc` ou `.zshrc`
 
 ```
 export WORKON_HOME=$HOME/.virtualenvs
@@ -333,7 +354,7 @@ source ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
 
 14.  Démarrer le service
 
-`flask run -p 6012 --host=0.0.0.0`.
+`flask run -p 6012 --host=localhost`.
 
 15. Pour tester
 
@@ -441,7 +462,6 @@ Pour faire fonctionner ce projet avec docker-compose, vous allez aussi avoir bes
 Pour démarrer le projet:
 
 ```bash
-aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region us-east-1 | base64 --decode > .env
 docker-compose up
 ```
 
