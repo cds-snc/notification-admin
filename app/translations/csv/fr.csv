@@ -875,7 +875,7 @@
 "Yes, delete ","Oui, supprimer "
 "You have not added any reply-to email addresses yet","Vous n’avez pas encore ajouté d’adresse courriel de réponse"
 "Add reply-to email address","Ajouter une adresse courriel de réponse"
-"You need to add at least one reply-to address so recipients can reply to your messages.","Vous devez ajouter au moins une adresse de réponse pour que les destinataires puissent répondre à vos messages."
+"Add a reply-to address so recipients can reply to your messages.","Ajoutez une adresse de réponse pour que les destinataires puissent répondre à vos messages."
 "Emails with a reply-to address:","Les courriels ayant une adresse de réponse :"
 "are less likely to be labelled as spam","ont moins de chances d’être classés comme pourriel"
 "appear more trustworthy","semblent plus dignes de confiance"
