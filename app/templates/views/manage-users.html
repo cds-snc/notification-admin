@@ -15,15 +15,17 @@
     {{ _('Team members') }}
   </h1>
 
+{% if not has_team_members and current_user.has_permissions('manage_service') %}
   <p>
     {{ _("You should have at least two team members who can manage settings.") }}
   </p>
+{% endif %}
 
-  {% if show_search_box %}
-    <div data-module="autofocus">
-      {{ live_search(target_selector='.user-list-item', show=True, form=form) }}
-    </div>
-  {% endif %}
+{% if show_search_box %}
+  <div data-module="autofocus">
+    {{ live_search(target_selector='.user-list-item', show=True, form=form) }}
+  </div>
+{% endif %}
 
   {% if current_user.has_permissions('manage_service') %}
     <div>
