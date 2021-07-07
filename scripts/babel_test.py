@@ -24,6 +24,8 @@ extra_keys_in_app = set(
     ]
 )
 
+keys_wrongly_detected = set( ["header" ] )
+
 
 def csv_to_dict(filename):
     d = dict()
@@ -45,7 +47,7 @@ if __name__ == "__main__":
     app = csv_to_dict(sys.argv[1])
     csv_fr = csv_to_dict("app/translations/csv/fr.csv")
 
-    app_keys = set(app.keys()).union(extra_keys_in_app)
+    app_keys = set(app.keys()).union(extra_keys_in_app).difference(keys_wrongly_detected)
     csv_fr_keys = set(csv_fr.keys())
 
 
