@@ -24,7 +24,7 @@ extra_keys_in_app = set(
     ]
 )
 
-keys_wrongly_detected = set( ["header" ] )
+keys_wrongly_detected = set( ["header", "Send {}", "Not a valid phone number" ] )
 
 
 def csv_to_dict(filename):
