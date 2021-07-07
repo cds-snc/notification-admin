@@ -807,7 +807,7 @@
 "Find services by name, or by partial name","Chercher des services par leur nom ou par une partie du nom"
 "No services found.","Aucun service trouvé."
 "Search for user","Chercher un utilisateur"
-"Find users by email, or by partial email","Chercher des utilisateurs par leur courriel ou par une partie de courriel"
+"Find users by email, or partial email","Chercher des utilisateurs par leur adresse courriel ou par une partie de l'adresse courriel"
 "Email complaints","Plaintes par courriel"
 "Inbound SMS numbers","Numéros SMS entrants"
 "Providers","Fournisseurs"
