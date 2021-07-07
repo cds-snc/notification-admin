@@ -52,5 +52,5 @@ in_app_not_in_fr_csv = app_keys.difference(csv_fr_keys)
 in_fr_csv_not_in_app = csv_fr_keys.difference(app_keys)
 
 printMissingKeys("missing from fr.csv", in_app_not_in_fr_csv)
-printMissingKeys("unused translations (check api before deleting!)", in_fr_csv_not_in_app)
+# printMissingKeys("unused translations (check api before deleting!)", in_fr_csv_not_in_app)
 print(" ")  # noqa: T001
