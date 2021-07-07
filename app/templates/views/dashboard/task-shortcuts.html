@@ -1,6 +1,6 @@
 {% from "components/task-shortcut.html" import task_shortcut %}
 
-<div class="flex space-x-gutter mb-16 mt-12 px-12">
+<div class="flex space-x-gutter mb-16 mt-12">
   {% if current_user.has_permissions('manage_templates') %}
     {{ task_shortcut(
         _("Write"),
