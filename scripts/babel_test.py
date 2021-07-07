@@ -24,7 +24,7 @@ extra_keys_in_app = set(
     ]
 )
 
-keys_wrongly_detected = set( ["header", "Send {}", "Not a valid phone number" ] )
+keys_wrongly_detected = set(["header", "Send {}", "Not a valid phone number"])
 
 
 def csv_to_dict(filename):
@@ -49,7 +49,6 @@ if __name__ == "__main__":
 
     app_keys = set(app.keys()).union(extra_keys_in_app).difference(keys_wrongly_detected)
     csv_fr_keys = set(csv_fr.keys())
-
 
     in_app_not_in_fr_csv = app_keys.difference(csv_fr_keys)
     in_fr_csv_not_in_app = csv_fr_keys.difference(app_keys)
