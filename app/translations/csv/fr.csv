@@ -97,7 +97,7 @@
 "Must be a valid https URL","L’URL https doit être valide"
 "Bearer token","Jeton 'Bearer'"
 "Must be at least 10 characters","Doit contenir au moins 10 caractères"
-"Send to international phone numbers","Envoyer des messages texte à des numéros de téléphone internationaux"
+"Send text messages to international phone numbers","Envoyer des messages texte à des numéros de téléphone internationaux"
 "Folder name","Nom du dossier"
 "Email","Courriel"
 "Text message","Message texte"
