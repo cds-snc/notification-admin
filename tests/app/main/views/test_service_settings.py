@@ -1641,7 +1641,7 @@ def test_service_verify_reply_to_address(
         notification_id=notification["id"],
         _optional_args="?is_default={}{}".format(is_default, replace),
     )
-    assert page.find("h1").text == "{} email reply-to address".format(expected_header)
+    assert page.find("h1").text == "{} reply-to email address".format(expected_header)
     if replace:
         assert "/email-reply-to/123/edit" in page.find("a", text="Back").attrs["href"]
     else:
