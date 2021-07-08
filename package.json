@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Admin front end for Notification",
   "engines": {
-    "node": "10"
+    "node": "14"
   },
   "scripts": {
     "test": "jest --config tests/javascripts/jest.config.js tests/javascripts",
@@ -23,12 +23,12 @@
   "license": "MIT",
   "homepage": "https://github.com/cds-snc/notification-admin#readme",
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
     "dayjs": "^1.10.4",
     "diff-dom": "4.2.1",
     "govuk_frontend_toolkit": "9.0.0",
     "hogan": "1.0.2",
-    "jquery": "^3.5.1",
+    "jquery": "^3.6.0",
     "jquery-migrate": "^3.3.2",
     "moment": "^2.29.1",
     "node-polyglot": "^2.4.0",
