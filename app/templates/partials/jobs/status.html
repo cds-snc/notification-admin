@@ -10,7 +10,7 @@
             </p>
           {% endif %}
         {% else %}
-          {{ _("'<a href='{}'>{}</a>' sent from the API using the key <a href='{}'>{}</a>").format(url_for('.view_template_version', service_id=current_service.id, template_id=template.id, version=template_version), template.name, url_for('.api_keys', service_id=current_service.id), job.api_key.name) }} {{ _('on') }} <span class="local-datetime-short">{{ job.processing_started}}</span>
+          {{ _("'<a href='{}'>{}</a>' sent from the API using the key '<a href='{}'>{}</a>'").format(url_for('.view_template_version', service_id=current_service.id, template_id=template.id, version=template_version), template.name, url_for('.api_keys', service_id=current_service.id), job.api_key.name) }} {{ _('on') }} <span class="local-datetime-short">{{ job.processing_started}}</span>
         {% endif %}
       {% else %}
         {% if not job.api_key %}
