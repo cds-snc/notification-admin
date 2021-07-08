@@ -29,10 +29,10 @@ from tests.conftest import (
     "expected_rows",
     [
         (
-            ("Bulk name Details"),
+            ("List name Details"),
             ("send_me_later.csv " "Starting 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
             ("even_later.csv " "Starting 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
-            ("Bulk name Sending Delivered Failed"),
+            ("List name Sending Delivered Failed"),
             ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
             ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
             ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
@@ -100,7 +100,7 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
 
     for index, row in enumerate(
         (
-            ("Bulk name Sending Delivered Failed"),
+            ("List name Sending Delivered Failed"),
             ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
             ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
             ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
