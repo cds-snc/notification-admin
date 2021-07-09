@@ -328,8 +328,17 @@ def test_should_show_service_name(
     page = client_request.get("main.service_name_change", service_id=SERVICE_ONE_ID)
     assert page.find("h1").text == "Change your service name"
     assert page.find("input", attrs={"type": "text"})["value"] == "service one"
-    assert page.select_one("main p").text == "Name your service something people would search for in their inbox."
+    assert page.select_one("main p").text.strip() == (
+    "Name your service something people would search for in their inbox."
+    "Users will see your service name:"
+    )
     assert normalize_spaces(page.select_one("main ul").text) == ("as your email sender name at the start of every text message")
+    
+    
+        assert page.select_one("main p").text.strip() == (
+        "For added security, GC Notify has sent you an email message "
+        "with a security code to confirm you still control a valid Government email address."
+    
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
 
