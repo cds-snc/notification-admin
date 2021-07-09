@@ -1079,7 +1079,7 @@
 "File","Fichier"
 "You cannot delete a default email reply to address","Vous ne pouvez pas supprimer l'adresse courriel de réponse réglée par défaut"
 "Your service already uses ","Votre service utilise déjà "
-"as a reply-to email address.","comme adresse courriel de réponse"
+"as an email reply-to address.","comme adresse courriel de réponse"
 "Cannot send to international mobile numbers","On ne peut pas envoyer à des numéros de téléphone internationaux"
 "You cannot remove the only user for a service","Vous ne pouvez pas retirer le seul utilisateur d’un service."
 "User cannot be removed from service. Check that all services have another team member who can manage settings","L'utilisateur ne peut pas être retiré du service. Vérifiez que tous les services ont un autre membre de l'équipe qui peut gérer les paramètres"
