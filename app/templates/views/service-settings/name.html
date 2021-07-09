@@ -14,10 +14,7 @@
   {{ page_header(
     _('Change your service name'),
     back_link=url_for('main.service_settings', service_id=current_service.id)
-  ) }}
-
-  <p>{{ _('Name your service something people would search for in their inbox.') }}</p>
-  
+  ) }}  
   <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
     {% if current_service.prefix_sms %}
       <p>{{ _('Users will see your service name:') }}</p>
@@ -28,9 +25,8 @@
     {% else %}
       <p>{{ _('Users will see your service name as your email sender name.') }}</p>
     {% endif %}
-
   </div>
-
+  <p>{{ _('Name your service something people would search for in their inbox.') }}</p>
   {% call form_wrapper() %}
     {% set save_txt = _('Save') %}
     {{ textbox(form.name) }}
