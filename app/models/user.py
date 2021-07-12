@@ -214,10 +214,13 @@ class User(JSONModel, UserMixin):
         if not permissions and self.belongs_to_service(service_id):
             return True
 
+        from app.models.service import Service
+
+        if "manage_api_keys" in permissions and Service.from_id(service_id).api_is_disabled:
+            return False
+
         if any(self.has_permission_for_service(service_id, permission) for permission in permissions):
             return True
-
-        from app.models.service import Service
 
         return allow_org_user and self.belongs_to_organisation(Service.from_id(service_id).organisation_id)
 
