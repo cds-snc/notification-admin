@@ -18,7 +18,7 @@ extra_keys_in_app = set(
         "Code has expired",  # api
         "Code already sent",  # api
         "Code has already been used",  # api
-        "as a reply-to email address.",  # api
+        "as an email reply-to address.",  # api
         "You cannot remove the only user for a service",  # api
         "Cannot send to international mobile numbers",  # api
     ]
