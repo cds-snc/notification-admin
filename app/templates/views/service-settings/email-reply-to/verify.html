@@ -7,7 +7,7 @@
 {% from "components/ajax-block.html" import ajax_block %}
 
 {% block service_page_title %}
-  {{ verb }} {{ _('email reply-to address') }}
+  {{ verb }} {{ _('reply-to email address') }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -17,7 +17,7 @@
     {% set back_link_href = url_for('.service_add_email_reply_to', service_id=service_id) %}
   {% endif %}
   {{ page_header(
-    verb + ' ' + _('email reply-to address'),
+    verb + ' ' + _('reply-to email address'),
     back_link=back_link_href
   ) }}
   {{ ajax_block(
