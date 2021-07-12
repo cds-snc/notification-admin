@@ -4,7 +4,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/table.html" import row_group, row, text_field, edit_field, field, boolean_field, list_table with context %}
 
-{% set txt = _('Reply-to email addresses') %}
+{% set txt = _('Reply-to addresses') %}
 
 {% block service_page_title %}
   {{ txt }}
@@ -45,13 +45,13 @@
     <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
       {% if current_user.has_permissions('manage_service') %}
         <div class="js-stick-at-bottom-when-scrolling">
-          <a href="{{ url_for('.service_add_email_reply_to', service_id=current_service.id) }}" class="button">{{ _('Add reply-to email address') }}</a>
+          <a href="{{ url_for('.service_add_email_reply_to', service_id=current_service.id) }}" class="button">{{ _('Add reply-to address') }}</a>
         </div>
       {% endif %}
     </div>
     <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
       <p>
-        {{ _('You need to add at least one reply-to address so recipients can reply to your messages.') }}
+        {{ _('Add a reply-to address so recipients can reply to your email messages.') }}
       </p>
       <p>
         {{ _('Emails with a reply-to address:') }}

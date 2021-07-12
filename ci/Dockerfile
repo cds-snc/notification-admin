@@ -15,7 +15,7 @@ WORKDIR /app
 COPY requirements.txt /app
 RUN set -ex && pip3 install -r requirements.txt
 
-COPY package.json package-lock.json /app/
+COPY package.json package-lock.json .snyk /app/
 RUN npm ci
 
 COPY . /app

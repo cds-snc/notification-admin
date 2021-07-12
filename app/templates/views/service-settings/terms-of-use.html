@@ -24,13 +24,15 @@
     </p>
 
     <ul class="list list-bullet">
-      <li>{{ _("Get consent from people before sending them notifications") }}</li>
-      <li>{{ _("Follow your organisation’s privacy and security requirements") }}</li>
-      <li>{{ _("Send information that is either unclassified or Protected A only") }}</li>
+      <li>{{ _("Get consent from people before sending them notifications.") }}</li>
+      <li>{{ _("Follow your organisation’s privacy and security requirements.") }}</li>
+      <li>{{ _("Send information that is either unclassified or Protected A only.") }}</li>
     </ul>
 
     {% call form_wrapper() %}
-      {{ page_footer(_('Agree')) }}
+      {{ page_footer(button_text=_('Agree'),
+                     secondary_link=url_for('main.request_to_go_live', service_id=current_service.id), 
+                     secondary_link_text=_("Skip and go back to list")) }}
     {% endcall %}
 
   </div>
