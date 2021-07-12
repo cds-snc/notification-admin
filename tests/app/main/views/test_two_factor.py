@@ -64,7 +64,7 @@ def test_should_render_email_two_factor_page(
     response = client.get(url_for("main.two_factor_email_sent"))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert page.select_one("main p").text.strip() == ("We’ve sent you an email with a security code to sign in to GC Notify.")
+    assert page.select_one("main p").text.strip() == ("We’ve sent you an email with a security code.")
     assert page.select_one("label").text.strip("Text message code")
     assert page.select_one("input")["type"] == "tel"
     assert page.select_one("input")["pattern"] == "[0-9]*"

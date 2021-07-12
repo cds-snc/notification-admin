@@ -28,6 +28,7 @@ def manage_users(service_id):
     return render_template(
         "views/manage-users.html",
         users=current_service.team_members,
+        has_team_members=current_service.has_team_members,
         current_user=current_user,
         show_search_box=(len(current_service.team_members) > 7),
         form=SearchUsersForm(),
