@@ -30,10 +30,8 @@ jobs:
     - run: /bin/bash -c "scripts/bootstrap.sh && make test"
       env:
         A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
-
     - name: Check for missing translations
       run: make test-translations
-
     - name: Notify Slack channel if this job failed in default branch
       if: ${{ failure() && github.ref == 'refs/heads/master' }}
       run: |

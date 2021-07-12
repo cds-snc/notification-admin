@@ -44,7 +44,6 @@ def printMissingKeys(name, keys):
     else:
         print("\nNo missing keys detected")  # noqa: T001
     print(" ")  # noqa: T001
-    return len(keys)
 
 
 if __name__ == "__main__":
@@ -60,5 +59,5 @@ if __name__ == "__main__":
     num_missing = printMissingKeys("missing from fr.csv", in_app_not_in_fr_csv)
     # printMissingKeys("unused translations (check api before deleting!)", in_fr_csv_not_in_app)
 
-    if num_missing > 0:
+    if len(in_app_not_in_fr_csv) > 0:
         exit(1)
