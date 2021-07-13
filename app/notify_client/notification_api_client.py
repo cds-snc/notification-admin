@@ -61,7 +61,7 @@ class NotificationApiClient(NotifyAdminAPIClient):
     def get_api_notifications_for_service(self, service_id):
         ret = self.get_notifications_for_service(
             service_id,
-            include_jobs=False,
+            include_jobs=True,
             include_from_test_key=True,
             include_one_off=False,
             count_pages=False,
