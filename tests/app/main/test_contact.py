@@ -42,7 +42,7 @@ def test_identity_step_logged_in(client_request, mocker):
 
     # Contact email has been sent
     assert_no_back_link(page)
-    assert normalize_spaces(page.find("h1").text) == "Thanks for contacting us"
+    assert normalize_spaces(page.find("h1").text) == "Thank you for contacting us"
     mock_send_contact_request.assert_called_once()
 
 
@@ -181,7 +181,7 @@ def test_saves_form_to_session(client_request, mocker):
     page = client_request.post(".contact", _expected_status=200, _data={"message": "My message"})
 
     assert_no_back_link(page)
-    assert normalize_spaces(page.find("h1").text) == "Thanks for contacting us"
+    assert normalize_spaces(page.find("h1").text) == "Thank you for contacting us"
 
     mock_send_contact_request.assert_called_once()
 
@@ -232,7 +232,7 @@ def test_all_reasons_message_step_success(
     page = client_request.post(".contact", _expected_status=200, _data={"message": message})
 
     assert_no_back_link(page)
-    assert normalize_spaces(page.find("h1").text) == "Thanks for contacting us"
+    assert normalize_spaces(page.find("h1").text) == "Thank you for contacting us"
 
     profile = url_for(".user_information", user_id=current_user.id, _external=True)
 
@@ -286,7 +286,7 @@ def test_demo_steps_success(client_request, mocker):
 
     # Thank you page
     assert_no_back_link(page)
-    assert normalize_spaces(page.find("h1").text) == "Thanks for contacting us"
+    assert normalize_spaces(page.find("h1").text) == "Thank you for contacting us"
 
     mock_send_contact_request.assert_called_once_with(
         {
