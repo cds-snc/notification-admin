@@ -119,7 +119,7 @@ def test_get_api_notifications_includes_jobs(mocker):
     NotificationApiClient().get_api_notifications_for_service(service_id)
 
     call_args_params = mock_get.call_args[1]["params"]
-    assert call_args_params.get("include_jobs") == True
+    assert call_args_params.get("include_jobs") is True
 
 
 def test_update_notification_to_cancelled(mocker):
