@@ -107,6 +107,21 @@ def test_get_api_notifications_changes_letter_statuses(mocker, letter_status, ex
     assert ret["notifications"][2]["status"] == expected_status
 
 
+def test_get_api_notifications_includes_jobs(mocker):
+    service_id = str(uuid.uuid4())
+    notis = notification_json(service_id=service_id, rows=0)
+    notis["notifications"] = []
+    mock_get = mocker.patch(
+        "app.notify_client.notification_api_client.NotificationApiClient.get",
+        return_value=notis,
+    )
+
+    NotificationApiClient().get_api_notifications_for_service(service_id)
+
+    call_args_params = mock_get.call_args[1]["params"]
+    assert call_args_params.get("include_jobs") == True
+
+
 def test_update_notification_to_cancelled(mocker):
     mock_post = mocker.patch("app.notify_client.notification_api_client.NotificationApiClient.post")
     NotificationApiClient().update_notification_to_cancelled("foo", "bar")
