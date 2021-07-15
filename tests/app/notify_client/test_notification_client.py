@@ -129,7 +129,7 @@ def test_get_api_notifications_ignores_non_api_notifications(mocker):
     notis = notification_json(service_id=service_id, rows=0)
     admin_notification = single_notification_json(service_id, notification_type="email", status="created", api_key=None)
     api_notification = single_notification_json(service_id, notification_type="email", status="created", api_key="api key id")
-    notis["notifications"] = [api_notification, admin_notification]
+    notis["notifications"] = [admin_notification, api_notification]
     mocker.patch(
         "app.notify_client.notification_api_client.NotificationApiClient.get",
         return_value=notis,
