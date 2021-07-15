@@ -47,7 +47,7 @@ def printMissingKeys(name, keys):
 def malformed_rows(filename):
     malformed_rows_found = False
     with open(filename, newline="") as file:
-        extra_space_pattern = re.compile('".*"(\s*,\s+|\s+,\s*)".*"')  # at least one space on at least one side of the comma
+        extra_space_pattern = re.compile(r'".*"(\s*,\s+|\s+,\s*)".*"')  # at least one space on at least one side of the comma
         for row in file.readlines():
             if extra_space_pattern.match(row):
                 print(f"Extra space: {row}", end="")  # noqa: T001
@@ -73,4 +73,4 @@ if __name__ == "__main__":
     if malformed_rows(fr_csv_filename) or len(in_app_not_in_fr_csv) > 0:
         exit(1)
     else:
-        print("\nNo problems in fr.csv detected.\n")  # noqa: T001
+        print("\nNo problems detected in fr.csv\n")  # noqa: T001
