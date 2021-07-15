@@ -414,10 +414,6 @@ class Service(JSONModel):
         ).get("days_of_retention", current_app.config["ACTIVITY_STATS_LIMIT_DAYS"])
 
     @property
-    def api_is_disabled(self):
-        return self.id in current_app.config["API_DISABLED_SERVICE_IDS"]
-
-    @property
     def email_branding_id(self):
         return self._dict["email_branding"]
 
