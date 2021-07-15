@@ -66,6 +66,7 @@ class NotificationApiClient(NotifyAdminAPIClient):
             include_one_off=False,
             count_pages=False,
         )
+        ret["notifications"] = [n for n in ret["notifications"] if n["api_key"] is not None]
         return self.map_letters_to_accepted(ret)
 
     @staticmethod
