@@ -70,7 +70,7 @@
     {% set field_alignment = 'table-field-right-aligned' if align == 'right' else 'table-field-left-aligned' %}
     {% set border = '' if border else 'table-field-noborder' %}
 
-    <td class="{{ [field_alignment, border]|join(' ') }}">
+    <td class="{{ [field_alignment, border]|join(' ') }} border-t-1 border-black">
       <div class="{{ 'table-field-status-' + status if status }}">{{ caller() }}</div>
     </td>
 {%- endmacro %}
