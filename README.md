@@ -207,13 +207,11 @@ make babel
 
 - Testing
 
-Some typos will not cause `babel` to complain but will lead to incorrect or missing French text in the app. To test for some that we've encountered, run
-
+Some typos in the `fr.csv` file might not be caught by `babel` but will lead to incorrect or missing French text in the app. To test for the kinds of typos we’ve encountered before, run:
 ```bash
 make test-translations
 ```
-
-Note that this make target is run during our CI process and will fail if any problems are detected.
+Note that this make target is always run during our CI process and will fail if any problems are detected when pushing changes.
 
 ## Using Local Jinja for testing template changes
 
@@ -454,6 +452,14 @@ Actuellement, il s'agit d'une étape manuelle. Ajoutez une ligne à `fr.csv` dan
 ```Bash
 make babel
 ```
+
+- Tester
+
+Certaines erreurs de frappe dans le fichier `fr.csv` pourraient ne pas être détectées par `babel` mais entraîneraient des changements incorrects ou du texte manquant en français dans l’application. Pour tester contre ces types d’erreurs de frappe qu’on a vu dans le passé, exécutez :
+```bash
+make test-translations
+```
+Cette cible make est toujours exécutée pendant le processus d’intégration continue et échouera si des problèmes sont détectés lorsqu’on pousse le code.
 
 ## Utiliser Jinja localement pour tester les changements de modèles
 
