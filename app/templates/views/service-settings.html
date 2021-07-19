@@ -10,24 +10,26 @@
 
 {% block maincolumn_content %}
 
-    <h1 class="heading-medium">{{ _('Settings') }}</h1>
+    <h1 class="heading-large">{{ _('Settings') }}</h1>
 
     {% if current_service.trial_mode %}
-      <div class="bg-gray px-5 py-2 mb-20 lg:w-3/4">
+      <div class="bg-gray px-8 pt-1">
         {% if current_service.has_submitted_go_live %}
           <h2 class="heading-small mt-5">{{ _('Your request to go live is being reviewed') }}</h2>
           <p>
             {{ _("We’ll be in touch within 2 business days.") }}
           </p>
         {% else %}
-          <h2 class="heading-small mt-5">{{ _('Your service is in trial mode') }}</h2>
+          <h2 class="heading-small">{{ _('Your service is in trial mode') }}</h2>
           {% if current_user.has_permissions('manage_service') %}
-            <p>
-              {{ _('To send notifications to more people, request to go live.') }}
-            </p>
-            <p class="text-right">
-              <a href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}" class="button" role="button">{{ _('Request to go live') }}</a>
-            </p>
+            <div class="flex mt-5">
+              <p class="flex-1 self-center">
+                {{ _('To send notifications to more people, request to go live.') }}
+              </p>
+              <p class="flex-0 self-center">
+                <a href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}" class="button" role="button">{{ _('Request to go live') }}</a>
+              </p>
+            </div>
           {% else %}
             <p>
               {{ _('Your service manager can ask to have these restrictions removed.') }}
@@ -38,7 +40,7 @@
     {% endif %}
 
     <div class="mb-12 clear-both contain-floats settings-table body-copy-table">
-      {% set caption = _('General') %}
+      {% set caption = _('Service') %}
       {% set heading_1 = _('Label') %}
       {% set heading_2 = _('Value') %}
       {% set heading_3 = _('Action') %}
@@ -47,7 +49,6 @@
         caption=caption,
         field_headings=[heading_1, heading_2, heading_3],
         field_headings_visible=False,
-        caption_visible=False
       ) %}
 
         {% call row() %}
