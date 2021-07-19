@@ -435,45 +435,6 @@ def test_route_invalid_permissions(
         )
 
 
-@pytest.mark.parametrize(
-    "route",
-    [
-        "main.api_integration",
-        "main.api_keys",
-        "main.create_api_key",
-        "main.delivery_status_callback",
-        "main.revoke_api_key",
-    ],
-)
-@pytest.mark.parametrize("api_is_disabled", [True, False])
-def test_route_disallowed_if_api_disabled_for_service(
-    mocker,
-    app_,
-    fake_uuid,
-    api_user_active,
-    service_one,
-    mock_get_api_keys,
-    mock_get_api_key_statistics,
-    mock_get_valid_service_callback_api,
-    mock_get_notifications,
-    route,
-    api_is_disabled,
-):
-    if api_is_disabled:
-        app_.config["API_DISABLED_SERVICE_IDS"] = f"foo,{service_one['id']},bar"
-    with app_.test_request_context():
-        validate_route_permission(
-            mocker,
-            app_,
-            "GET",
-            403 if api_is_disabled else 200,
-            url_for(route, service_id=service_one["id"], key_id=fake_uuid),
-            ["manage_api_keys"],
-            api_user_active,
-            service_one,
-        )
-
-
 def test_should_show_safelist_page(
     client_request,
     mock_login,
