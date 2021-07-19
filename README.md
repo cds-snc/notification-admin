@@ -205,6 +205,16 @@ Currently this is a manual step. Add a row to `fr.csv` in `app/translations/csv/
 make babel
 ```
 
+- Testing
+
+Some typos will not cause `babel` to complain but will lead to incorrect or missing French text in the app. To test for some that we've encountered, run
+
+```bash
+make test-translations
+```
+
+Note that this make target is run during our CI process and will fail if any problems are detected.
+
 ## Using Local Jinja for testing template changes
 
 See the [notification-api](https://github.com/cds-snc/notification-api) README for detailed instructions.
