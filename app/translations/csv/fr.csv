@@ -1088,7 +1088,7 @@
 "To tailor messages to each recipient, see the <a href='{}' target='_blank'>personalisation guide</a>.","Pour adapter les messages à chaque destinataire, consultez le <a href='{}' target='_blank'>guide de personalisation</a>."
 "Personalisation guide","Guide de personnalisation"
 "Use this guide to personalise email and text message templates. Make sure to send yourself a test message to ensure variables populate your template as expected.","Utilisez ce guide pour personnaliser les gabarits de courriels et de messages texte. Vous devriez vous envoyer un message test pour vous assurer que les variables remplissent votre gabarit comme prévu."
-"To learn more about how to structure emails, see the <a href='{}'>email formatting guide</a>.","Pour en savoir plus sur la façon de structurer les courriels, consultez le <a href='{}'>guide de mise en forme de courriels</a>."
+"To learn more about how to structure emails, see the <a href='{}' target='_blank'>email formatting guide</a>.","Pour en savoir plus sur la façon de structurer les courriels, consultez le <a href='{}' target='_blank'>guide de mise en forme de courriels</a>."
 "Titles","Titres"
 "To add a title to your message, use the number sign (#) followed by a space. To add a subtitle, use two number signs (##) followed by a space. For example:","Pour ajouter un titre à votre message, utilisez un dièse (#) suivi d’une espace. Pour ajouter un sous-titre, utilisez deux dièses (##) suivi d’une espace. Par exemple :"
 "This is plain paragraph text","Voici un paragraphe ordinaire."
