@@ -22,7 +22,7 @@
   <div class="grid-row">
     <div class="md:w-5/6 px-gutterHalf box-border">
       <div class="form-group mb-gutterHalf md:mb-gutter">
-        {{ _("A template allows you to send a similar information to many people. Use <a href='{}' target='_blank'>the personalisation guide</a> to tailor messages for each recipient.").format(url_for('.personalise')) }}
+        {{ _("A template allows you to send a similar information to many people. Use the <a href='{}' target='_blank'>personalisation guide</a> to tailor messages for each recipient.").format(url_for('.personalise')) }}
       </div>
 
       {{ textbox(form.name, width='w-full', hint=_('Your recipients will not see this template name.'), rows=10) }}
