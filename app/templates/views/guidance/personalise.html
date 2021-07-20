@@ -10,7 +10,7 @@
     {{ _('Use this guide to personalise email and text message templates. Make sure to send yourself a test message to ensure variables populate your template as expected.') }}
   </p>
   <p>
-    {{ _('To learn more about how to structure emails, see the <a href='{}' target='_blank'>email formatting guide</a>.') }}.format(url_for('.format'))) }}
+    {{ _('To learn more about how to structure emails, see the <a href='{}' target='_blank'>email formatting guide</a>.').format(url_for('.format'))) }}
   </p>
   {% include "partials/guidance/personalisation.html" %}
   {% include "partials/guidance/conditional-text.html" %}
