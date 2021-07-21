@@ -427,7 +427,7 @@ def copy_template(service_id, template_id):
         f"views/edit-{template['template_type']}-template.html",
         form=form,
         template=template,
-        heading=_l("Add email template") if template["template_type"] == "email" else _l("Add text message template"),
+        heading=_l("Copy email template") if template["template_type"] == "email" else _l("Copy text message template"),
         service_id=service_id,
         services=current_user.service_ids,
     )
