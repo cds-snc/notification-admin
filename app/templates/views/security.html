@@ -55,10 +55,11 @@
     <h3 class="heading-small">{{ _('Protect sensitive information') }}</h3>
     <p>{{ _('Some messages include sensitive information like security codes or password reset links.') }}</p>
     <p>{{ _('If you’re sending a message with sensitive information, you can choose to hide those details on the GC Notify dashboard once the message has been sent. This means that only the message recipient will be able to see that information.') }}</p>
+    <p>{{ _('GC Notify also has alarms in place that flag if administrators access services with notifications that might be sensitive.') }}</p>
   </section>
 
   <section>
-    <h2 class="heading-medium">{{ _('User permissions and logging in') }}</h2>
+    <h2 class="heading-medium">{{ _('User permissions and signing in') }}</h2>
     <p>{{ _('You can set different user permissions in GC Notify. This lets you control who in your team has access to certain parts of the service.') }}</p>
 
     <h3 class="heading-small">{{ _('Two-factor authentication') }}</h3>
@@ -67,7 +68,7 @@
       <li>{{ _('your email address and password') }}</li>
       <li>{{ _('a code that GC Notify sends to your email or phone') }}</li>
     </ul>
-    <p>{{ _('Once you have signed in the first time, you can add a hardware-based security key to further increase the security of your account.') }}</p>
+    <p>{{ _('Once you have signed in, you can add a hardware-based security key to further increase the security of your account.') }}</p>
     <p>{{ _('If you are having issues creating or accessing your account, email our support team at ') }} <a href="mailto:assistance@cds-snc.ca">assistance@cds-snc.ca</a>.</p>
   </section>
 
@@ -77,9 +78,9 @@
       {{ _('Our approach to information risk management follows TBS guidance. It assesses:') }}
     </p>
     <ul style="list-style-type: disc; margin-left: 2em; margin-bottom: 20px;">
-      <li>{{ _('how GC Notify is built') }}</li>
-      <li>{{ _('the infrastructure GC Notify is built upon') }}</li>
-      <li>{{ _('support for the GC Notify service') }}</li>
+      <li>{{ _('how GC Notify is built.') }}</li>
+      <li>{{ _('the infrastructure GC Notify is built upon.') }}</li>
+      <li>{{ _('support for the GC Notify service.') }}</li>
     </ul>
     <p>
       {{ _('This approach also applies to the service providers GC Notify uses to send messages.') }}
@@ -92,9 +93,11 @@
       {{ _('Things we do to manage risks include:') }}
     </p>
     <ul style="list-style-type: disc; margin-left: 2em; margin-bottom: 20px;">
-      <li>{{ _('formal risk assessments based on TBS and CCCS guidance') }}</li>
-      <li>{{ _('residual risk statement preparation and active management of the risk treatment plan') }}</li>
-      <li>{{ _('security impact assessments') }}</li>
+      <li>{{ _('internal and third-party security audits.') }}</li>
+      <li>{{ _('formal risk assessments based on TBS and CCCS guidance.') }}</li>
+      <li>{{ _('residual risk statement preparation and active management of the risk treatment plan.') }}</li>
+      <li>{{ _('security impact assessments.') }}</li>
+      <li>{{ _('third-party penetration testing.') }}</li>
     </ul>
   </section>
 
@@ -109,6 +112,10 @@
     <h2 class="heading-medium">{{ _('Data Categorization') }}</h2>
     <p>
       {{ _('You can use GC Notify to send messages designated up to and including “Protected A” per the <a href=https://www.tbs-sct.gc.ca/pol/doc-eng.aspx?id=32614>Standard on Security Categorization</a>.') }}
+    </p>
+    <p>
+      {{ _('Messages should not include “Protected B” information as both emails and text messages sent to the public are not end-to-end encrypted.
+') }}
     </p>
   </section>
 
