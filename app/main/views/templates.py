@@ -427,7 +427,7 @@ def copy_template(service_id, template_id):
         f"views/edit-{template['template_type']}-template.html",
         form=form,
         template=template,
-        heading_action=(_l("Add email template") if template["template_type"] == "email" else _l("Add text message template")),
+        heading=_l("Add email template") if template["template_type"] == "email" else _l("Add text message template"),
         service_id=service_id,
         services=current_user.service_ids,
     )
@@ -633,7 +633,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             template_type=template_type,
             template_folder_id=template_folder_id,
             service_id=service_id,
-            heading_action=_l("New email template") if template_type == "email" else _l("New text message template"),
+            heading=_l("New email template") if template_type == "email" else _l("New text message template"),
         )
 
 
@@ -718,9 +718,7 @@ def edit_service_template(service_id, template_id):
             f"views/edit-{template['template_type']}-template.html",
             form=form,
             template=template,
-            heading_action=(
-                _l("Edit email template") if template["template_type"] == "email" else _l("Edit text message template")
-            ),
+            heading=_l("Edit email template") if template["template_type"] == "email" else _l("Edit text message template"),
         )
 
 
