@@ -86,9 +86,11 @@ def test_get_notification(mocker):
 )
 def test_get_api_notifications_changes_letter_statuses(mocker, letter_status, expected_status):
     service_id = str(uuid.uuid4())
-    sms_notification = single_notification_json(service_id, notification_type="sms", status="created")
-    email_notification = single_notification_json(service_id, notification_type="email", status="created")
-    letter_notification = single_notification_json(service_id, notification_type="letter", status=letter_status)
+    sms_notification = single_notification_json(service_id, notification_type="sms", status="created", api_key="api key id")
+    email_notification = single_notification_json(service_id, notification_type="email", status="created", api_key="api key id")
+    letter_notification = single_notification_json(
+        service_id, notification_type="letter", status=letter_status, api_key="api key id"
+    )
     notis = notification_json(service_id=service_id, rows=0)
     notis["notifications"] = [sms_notification, email_notification, letter_notification]
 
@@ -105,6 +107,38 @@ def test_get_api_notifications_changes_letter_statuses(mocker, letter_status, ex
     assert ret["notifications"][0]["status"] == "created"
     assert ret["notifications"][1]["status"] == "created"
     assert ret["notifications"][2]["status"] == expected_status
+
+
+def test_get_api_notifications_includes_jobs(mocker):
+    service_id = str(uuid.uuid4())
+    notis = notification_json(service_id=service_id, rows=0)
+    notis["notifications"] = []
+    mock_get = mocker.patch(
+        "app.notify_client.notification_api_client.NotificationApiClient.get",
+        return_value=notis,
+    )
+
+    NotificationApiClient().get_api_notifications_for_service(service_id)
+
+    call_args_params = mock_get.call_args[1]["params"]
+    assert call_args_params.get("include_jobs") is True
+
+
+def test_get_api_notifications_ignores_non_api_notifications(mocker):
+    service_id = str(uuid.uuid4())
+    notis = notification_json(service_id=service_id, rows=0)
+    admin_notification = single_notification_json(service_id, notification_type="email", status="created", api_key=None)
+    api_notification = single_notification_json(service_id, notification_type="email", status="created", api_key="api key id")
+    notis["notifications"] = [admin_notification, api_notification]
+    mocker.patch(
+        "app.notify_client.notification_api_client.NotificationApiClient.get",
+        return_value=notis,
+    )
+
+    ret = NotificationApiClient().get_api_notifications_for_service(service_id)
+
+    assert len(ret["notifications"]) == 1
+    assert ret["notifications"][0]["api_key"] == "api key id"
 
 
 def test_update_notification_to_cancelled(mocker):

@@ -8,7 +8,7 @@
     <thead class="table-field-headings{% if field_headings_visible %}-visible{% endif %}">
       <tr>
         {% for field_heading in field_headings %}
-          <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}" width="{% if equal_length %}{{ (100 / field_headings|length)|int }}%{% endif %}">
+          <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}{% if not field_headings_visible %} border-0{% endif %}" width="{% if equal_length %}{{ (100 / field_headings|length)|int }}%{% endif %}">
             {% if field_headings_visible %}
               {{ field_heading }}
             {% else %}

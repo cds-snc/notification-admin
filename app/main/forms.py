@@ -625,7 +625,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         self.default_branding.choices = self._getSelectBilingualChoices()
 
     default_branding = RadioField(
-        "",
+        _l("Default language"),
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
