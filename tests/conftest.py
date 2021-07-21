@@ -2242,6 +2242,74 @@ def mock_get_notifications(
 
 
 @pytest.fixture(scope="function")
+def mock_get_api_notifications(
+    mocker,
+    api_user_active,
+    template_content=None,
+    diff_template_type=None,
+    personalisation=None,
+    redact_personalisation=False,
+    is_precompiled_letter=False,
+    client_reference=None,
+    noti_status=None,
+    postage=None,
+):
+    def _get_notifications(
+        service_id,
+        job_id=None,
+        page=1,
+        page_size=50,
+        count_pages=None,
+        template_type=None,
+        status=None,
+        limit_days=None,
+        rows=5,
+        include_jobs=None,
+        include_from_test_key=None,
+        to=None,
+        include_one_off=None,
+    ):
+        job = None
+        if job_id is not None:
+            job = job_json(service_id, api_user_active, job_id=job_id)
+        if diff_template_type or template_type:
+            template = template_json(
+                service_id,
+                id_=str(generate_uuid()),
+                type_=diff_template_type or template_type[0],
+                content=template_content,
+                redact_personalisation=redact_personalisation,
+                is_precompiled_letter=is_precompiled_letter,
+            )
+        else:
+            template = template_json(
+                service_id,
+                id_=str(generate_uuid()),
+                content=template_content,
+                redact_personalisation=redact_personalisation,
+            )
+        return notification_json(
+            service_id,
+            api_key="api key id",
+            template=template,
+            rows=rows,
+            job=job,
+            with_links=True if count_pages is None else count_pages,
+            personalisation=personalisation,
+            template_type=diff_template_type,
+            client_reference=client_reference,
+            status=noti_status,
+            created_by_name="Firstname Lastname",
+            postage=postage,
+        )
+
+    return mocker.patch(
+        "app.notification_api_client.get_notifications_for_service",
+        side_effect=_get_notifications,
+    )
+
+
+@pytest.fixture(scope="function")
 def mock_get_notifications_with_previous_next(mocker):
     def _get_notifications(
         service_id,
@@ -2257,6 +2325,31 @@ def mock_get_notifications_with_previous_next(mocker):
         include_one_off=None,
     ):
         return notification_json(service_id, rows=50, with_links=True if count_pages is None else count_pages)
+
+    return mocker.patch(
+        "app.notification_api_client.get_notifications_for_service",
+        side_effect=_get_notifications,
+    )
+
+
+@pytest.fixture(scope="function")
+def mock_get_api_notifications_with_previous_next(mocker):
+    def _get_notifications(
+        service_id,
+        job_id=None,
+        page=1,
+        count_pages=None,
+        template_type=None,
+        status=None,
+        limit_days=None,
+        include_jobs=None,
+        include_from_test_key=None,
+        to=None,
+        include_one_off=None,
+    ):
+        return notification_json(
+            service_id, rows=50, with_links=True if count_pages is None else count_pages, api_key="api key id"
+        )
 
     return mocker.patch(
         "app.notification_api_client.get_notifications_for_service",
