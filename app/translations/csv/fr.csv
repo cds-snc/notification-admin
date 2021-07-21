@@ -1012,7 +1012,7 @@
 "TBS security playbook","du guide de sécurité du SCT;"
 "Canadian Centre for Cyber Security (CCCS) Information Technology Security Guidance (ITSG-33)","du guide sur la gestion de la sécurité des technologies de l’information (ITSG-33) du Centre canadien pour la cybersécurité (CCC)."
 "protective monitoring to record activity, and raise alerts about any suspicious activity","Une surveillance de protection permettant d’enregistrer les activités et de signaler toute activité suspecte"
-"using JSON Web Tokens, to avoid sending API keys when your service talks to GC Notify","L’utilisation de jetons Web JSON pour éviter l’envoi de clés API lorsque votre service communique avec GC Notification"
+"the option to use JSON Web Tokens, to avoid sending API keys when your service talks to GC Notify","L’option d'utiliser des jetons Web JSON pour éviter l’envoi de clés API lorsque votre service communique avec GC Notification"
 "Protect sensitive information","Protection des renseignements de nature délicate"
 "Some messages include sensitive information like security codes or password reset links.","Certains messages comportent des renseignements de nature délicate comme des codes de sécurité ou des liens de réinitialisation de mot de passe."
 "If you’re sending a message with sensitive information, you can choose to hide those details on the GC Notify dashboard once the message has been sent. This means that only the message recipient will be able to see that information.","Si vous envoyez un message renfermant des renseignements de nature délicate, vous avez la possibilité de les masquer dans le tableau de bord de GC Notification une fois que le message a été envoyé. Cela signifie que seul le destinataire du message pourra voir ces renseignements."
