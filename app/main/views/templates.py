@@ -423,24 +423,14 @@ def copy_template(service_id, template_id):
     template["name"] = _get_template_copy_name(template, current_service.all_templates)
     form = form_objects[template["template_type"]](**template)
 
-    if template["template_type"] == "email":
-        return render_template(
-            "views/edit-email-template.html",
-            form=form,
-            template=template,
-            heading_action=_l("Add email template"),
-            service_id=service_id,
-            services=current_user.service_ids,
-        )
-    else:
-        return render_template(
-            "views/edit-sms-template.html",
-            form=form,
-            template=template,
-            heading_action=_l("Add text message template"),
-            service_id=service_id,
-            services=current_user.service_ids,
-        )
+    return render_template(
+        f"views/edit-{template['template_type']}-template.html",
+        form=form,
+        template=template,
+        heading_action=(_l("Add email template") if template["template_type"] == "email" else _l("Add text message template")),
+        service_id=service_id,
+        services=current_user.service_ids,
+    )
 
 
 def _get_template_copy_name(template, existing_templates):
@@ -637,24 +627,14 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             )
         )
     else:
-        if template_type == "email":
-            return render_template(
-                "views/edit-email-template.html",
-                form=form,
-                template_type=template_type,
-                template_folder_id=template_folder_id,
-                service_id=service_id,
-                heading_action=_l("New email template"),
-            )
-        else:
-            return render_template(
-                "views/edit-sms-template.html",
-                form=form,
-                template_type=template_type,
-                template_folder_id=template_folder_id,
-                service_id=service_id,
-                heading_action=_l("New text message template"),
-            )
+        return render_template(
+            f"views/edit-{template_type}-template.html",
+            form=form,
+            template_type=template_type,
+            template_folder_id=template_folder_id,
+            service_id=service_id,
+            heading_action=_l("New email template") if template_type == "email" else _l("New text message template"),
+        )
 
 
 def abort_403_if_not_admin_user():
@@ -734,20 +714,14 @@ def edit_service_template(service_id, template_id):
             )
         )
     else:
-        if template["template_type"] == "email":
-            return render_template(
-                "views/edit-email-template.html",
-                form=form,
-                template=template,
-                heading_action=_l("Edit email template"),
-            )
-        else:
-            return render_template(
-                "views/edit-sms-template.html",
-                form=form,
-                template=template,
-                heading_action=_l("Edit text message template"),
-            )
+        return render_template(
+            f"views/edit-{template['template_type']}-template.html",
+            form=form,
+            template=template,
+            heading_action=(
+                _l("Edit email template") if template["template_type"] == "email" else _l("Edit text message template")
+            ),
+        )
 
 
 @main.route("/services/<service_id>/templates/<template_id>/delete", methods=["GET", "POST"])
