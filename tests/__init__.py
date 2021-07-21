@@ -432,6 +432,7 @@ def notification_json(
     client_reference=None,
     created_by_name=None,
     postage=None,
+    api_key=None,
 ):
     if template is None:
         template = template_json(service_id, str(generate_uuid()), type_=template_type)
@@ -470,6 +471,7 @@ def notification_json(
             {
                 "id": sample_uuid(),
                 "to": to,
+                "api_key": api_key,
                 "template": template,
                 "job": job_payload,
                 "sent_at": sent_at,
@@ -505,6 +507,7 @@ def single_notification_json(
     sent_at=None,
     created_at=None,
     updated_at=None,
+    api_key=None,
     notification_type="sms",
 ):
     if template is None:
@@ -535,7 +538,7 @@ def single_notification_json(
         "template": template,
         "job_row_number": 0,
         "notification_type": notification_type,
-        "api_key": None,
+        "api_key": api_key,
         "job": job_payload,
         "sent_by": "mmg",
     }

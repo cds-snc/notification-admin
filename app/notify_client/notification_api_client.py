@@ -61,11 +61,12 @@ class NotificationApiClient(NotifyAdminAPIClient):
     def get_api_notifications_for_service(self, service_id):
         ret = self.get_notifications_for_service(
             service_id,
-            include_jobs=False,
+            include_jobs=True,
             include_from_test_key=True,
             include_one_off=False,
             count_pages=False,
         )
+        ret["notifications"] = [n for n in ret["notifications"] if n.get("api_key") is not None]
         return self.map_letters_to_accepted(ret)
 
     @staticmethod
