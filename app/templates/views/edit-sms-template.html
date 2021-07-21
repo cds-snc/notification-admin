@@ -6,12 +6,12 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  {{ heading_action }} {{ _('text message template') }}
+  {{ heading_action }}
 {% endblock %}
 
 {% block maincolumn_content %}
   {{ page_header(
-    heading_action + " " + _('text message template'),
+    heading_action,
     back_link=url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.create_template', service_id=current_service.id, template_folder_id=template_folder_id)
   ) }}
 
