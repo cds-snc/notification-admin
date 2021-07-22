@@ -1294,7 +1294,7 @@ def test_send_one_off_offers_link_to_request_to_go_live(
             in [link["href"] for link in links]
         )
     else:
-        assert "request to go live" not in [link.text.strip() for link in links]
+        assert "activate service" not in [link.text.strip() for link in links]
 
 
 @pytest.mark.parametrize(
