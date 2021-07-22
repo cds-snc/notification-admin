@@ -1,5 +1,6 @@
 import csv
 import sys
+import re
 
 extra_keys_in_app = set(
     [
@@ -31,24 +32,32 @@ def csv_to_dict(filename):
     d = dict()
     with open(filename, newline="") as csvfile:
         reader = csv.DictReader(csvfile)
-        for row in reader:
-            d[row["source"]] = row["target"]
+        for index, row in enumerate(reader):
+            d[row["source"]] = row.get("location", f"{filename}:{index+1}")
     return d
 
 
-def printMissingKeys(name, keys):
-    if keys:
-        print("\n----- " + name)  # noqa: T001
-        for k in keys:
-            print(k)  # noqa: T001
-    else:
-        print("\nNo missing keys detected")  # noqa: T001
-    print(" ")  # noqa: T001
+def printMissingKeys(name, keys, app):
+    for k in keys:
+        print(f'{name} : {app[k]} : "{k}"')  # noqa: T001
+
+
+def malformed_rows(filename):
+    malformed_rows_found = False
+    with open(filename, newline="") as file:
+        extra_space_pattern = re.compile(r'".*"(\s*,\s+|\s+,\s*)".*"')  # at least one space on at least one side of the comma
+        for index, row in enumerate(file.readlines()):
+            if extra_space_pattern.match(row):
+                print(f"Extra space : {filename}:{index+1} : {row}", end="")  # noqa: T001
+                malformed_rows_found = True
+    return malformed_rows_found
 
 
 if __name__ == "__main__":
+    fr_csv_filename = "app/translations/csv/fr.csv"
+
     app = csv_to_dict(sys.argv[1])
-    csv_fr = csv_to_dict("app/translations/csv/fr.csv")
+    csv_fr = csv_to_dict(fr_csv_filename)
 
     app_keys = set(app.keys()).union(extra_keys_in_app).difference(keys_wrongly_detected)
     csv_fr_keys = set(csv_fr.keys())
@@ -56,8 +65,10 @@ if __name__ == "__main__":
     in_app_not_in_fr_csv = app_keys.difference(csv_fr_keys)
     in_fr_csv_not_in_app = csv_fr_keys.difference(app_keys)
 
-    printMissingKeys("missing from fr.csv", in_app_not_in_fr_csv)
+    printMissingKeys("missing from fr.csv", in_app_not_in_fr_csv, app)
     # printMissingKeys("unused translations (check api before deleting!)", in_fr_csv_not_in_app)
 
-    if len(in_app_not_in_fr_csv) > 0:
+    if malformed_rows(fr_csv_filename) or len(in_app_not_in_fr_csv) > 0:
         exit(1)
+    else:
+        print("\nNo problems detected in fr.csv\n")  # noqa: T001

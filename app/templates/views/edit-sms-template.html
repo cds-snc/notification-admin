@@ -6,18 +6,18 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  {{ heading_action }} {{ _('text message template') }}
+  {{ heading }}
 {% endblock %}
 
 {% block maincolumn_content %}
   {{ page_header(
-    heading_action + " " + _('text message template'),
+    heading,
     back_link=url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.create_template', service_id=current_service.id, template_folder_id=template_folder_id)
   ) }}
 
   {% call form_wrapper() %}
     <div class="md:w-5/6 form-group mb-gutterHalf md:mb-gutter">
-      {{ _("A template allows you to send a similar information to many people. Use <a href='{}' target='_blank'>the personalisation guide</a> to tailor messages for each recipient.").format(url_for('.personalise')) }}
+      {{ _("A template allows you to send a similar information to many people. Use the <a href='{}' target='_blank'>personalisation guide</a> to tailor messages for each recipient.").format(url_for('.personalise')) }}
     </div>
 
     <div class="grid-row contain-floats">

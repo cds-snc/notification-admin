@@ -11,6 +11,7 @@ from app.utils import documentation_url
 from tests import sample_uuid, validate_route_permission
 from tests.conftest import (
     SERVICE_ONE_ID,
+    mock_get_api_notifications,
     mock_get_empty_service_callback_api,
     mock_get_empty_service_inbound_api,
     mock_get_live_service,
@@ -29,7 +30,7 @@ def test_should_show_api_page(
     api_user_active,
     mock_get_service,
     mock_has_permissions,
-    mock_get_notifications,
+    mock_get_api_notifications,
 ):
     page = client_request.get(
         "main.api_integration",
@@ -48,7 +49,7 @@ def test_should_show_api_page_with_lots_of_notifications(
     api_user_active,
     mock_get_service,
     mock_has_permissions,
-    mock_get_notifications_with_previous_next,
+    mock_get_api_notifications_with_previous_next,
 ):
     page = client_request.get(
         "main.api_integration",
@@ -92,7 +93,7 @@ def test_letter_notifications_should_have_link_to_view_letter(
     template_type,
     link_text,
 ):
-    mock_get_notifications(mocker, api_user_active, diff_template_type=template_type)
+    mock_get_api_notifications(mocker, api_user_active, diff_template_type=template_type)
     page = client_request.get(
         "main.api_integration",
         service_id=SERVICE_ONE_ID,
@@ -131,7 +132,7 @@ def test_letter_notifications_should_show_client_reference(
     client_reference,
     shows_ref,
 ):
-    mock_get_notifications(mocker, api_user_active, client_reference=client_reference)
+    mock_get_api_notifications(mocker, api_user_active, client_reference=client_reference)
 
     page = client_request.get(
         "main.api_integration",
@@ -429,45 +430,6 @@ def test_route_invalid_permissions(
             403,
             url_for(route, service_id=service_one["id"], key_id=fake_uuid),
             ["view_activity"],
-            api_user_active,
-            service_one,
-        )
-
-
-@pytest.mark.parametrize(
-    "route",
-    [
-        "main.api_integration",
-        "main.api_keys",
-        "main.create_api_key",
-        "main.delivery_status_callback",
-        "main.revoke_api_key",
-    ],
-)
-@pytest.mark.parametrize("api_is_disabled", [True, False])
-def test_route_disallowed_if_api_disabled_for_service(
-    mocker,
-    app_,
-    fake_uuid,
-    api_user_active,
-    service_one,
-    mock_get_api_keys,
-    mock_get_api_key_statistics,
-    mock_get_valid_service_callback_api,
-    mock_get_notifications,
-    route,
-    api_is_disabled,
-):
-    if api_is_disabled:
-        app_.config["API_DISABLED_SERVICE_IDS"] = f"foo,{service_one['id']},bar"
-    with app_.test_request_context():
-        validate_route_permission(
-            mocker,
-            app_,
-            "GET",
-            403 if api_is_disabled else 200,
-            url_for(route, service_id=service_one["id"], key_id=fake_uuid),
-            ["manage_api_keys"],
             api_user_active,
             service_one,
         )
