@@ -85,7 +85,7 @@ six==1.15.0
 smartypants==2.0.1
 statsd==3.3.0
 texttable==1.6.3
-urllib3==1.26.4
+urllib3==1.26.5
 webencodings==0.5.1
 Werkzeug==1.0.1
 xlrd==1.2.0
