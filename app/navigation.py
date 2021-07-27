@@ -568,6 +568,7 @@ class OrgNavigation(Navigation):
     exclude = {
         "accept_invite",
         "accept_org_invite",
+        "a11y",
         "action_blocked",
         "add_data_retention",
         "add_inbound_sms_admin",
