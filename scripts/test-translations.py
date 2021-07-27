@@ -53,6 +53,18 @@ def malformed_rows(filename):
     return malformed_rows_found
 
 
+def need_nbsp(filename):
+    with open(filename, newline="") as csvfile:
+        missing_nbsp = False
+        reader = csv.DictReader(csvfile)
+        for index, row in enumerate(reader):
+            french = row["target"]
+            if " :" in french or "« " in french or " »" in french:
+                print(f"need &nbsp; in French: {filename}:{index+2}: {french}")  # noqa: T001
+                missing_nbsp = True
+    return missing_nbsp
+
+
 if __name__ == "__main__":
     fr_csv_filename = "app/translations/csv/fr.csv"
 
@@ -68,7 +80,8 @@ if __name__ == "__main__":
     printMissingKeys("missing from fr.csv", in_app_not_in_fr_csv, app)
     # printMissingKeys("unused translations (check api before deleting!)", in_fr_csv_not_in_app)
 
-    if malformed_rows(fr_csv_filename) or len(in_app_not_in_fr_csv) > 0:
+    missing_nbsp = need_nbsp(fr_csv_filename)
+    if malformed_rows(fr_csv_filename) or missing_nbsp or len(in_app_not_in_fr_csv) > 0:
         exit(1)
     else:
         print("\nNo problems detected in fr.csv\n")  # noqa: T001
