@@ -999,31 +999,31 @@
 "Data available until","Données disponibles jusqu'au"
 "Previous versions","Versions précédentes"
 "Back to current templates","Retour aux gabarits existants"
-"Accessibility","Accessibilité",
-"Our approach","Notre approche",
-"GC Notify was started using open-source code in the United Kingdom ","GC Notification est issu du code source ouvert du Royaume-Uni ",
-"Originally built to the UK government’s accessibility standards, Notify has been modified for the Canadian context.","Construit à l’origine selon les normes d’accessibilité du gouvernement britannique, Notify a été modifié pour le contexte canadien.",
-"Our goal is to go above the minimum compliance requirement level AA of the Web Content Accessibility Guidelines 2.1 ","Notre objectif est d’aller au-delà de l’exigence minimale de conformité au niveau AA des Directives d’accessibilité au contenu Web 2.1 ",
-"Known issues and limitations","Problèmes et limitations connus",
-"Screen readers do not always read text in emails in the correct language.","Les lecteurs d’écran ne lisent pas toujours le texte des courriels dans la bonne langue.",
-"GC Notify is not currently tested with mobile browsers.","GC Notification n’est pas actuellement testé avec les navigateurs mobiles.",
-"Learn more about how we approach our work in the ","Pour en savoir plus sur la façon dont nous abordons notre travail, consultez le ",
-"https://digital.canada.ca/a11y/","https://numerique.canada.ca/a11y/",
-"CDS Accessibility Handbook","Guide d’accessibilité du SNC",
-"Our commitment","Notre engagement",
-"We are committed to meeting your needs no matter how you use the service. We understand that people may have different needs for accommodation. To make sure we can be inclusive of everyone, we want to learn from you.","Nous nous engageons à répondre à vos besoins, quelle que soit la façon dont vous utilisez le service. Nous comprenons que les gens peuvent avoir des besoins différents en matière d’adaptation. Pour nous assurer que nous pouvons inclure tout le monde, nous voulons apprendre de vos expériences.",
-"Tell us how we’re doing","Donnez-nous votre avis",
-"To tell us about accessibility issues in GC Notify, you can:","Faites-nous part de problèmes d’accessibilité dans GC Notification :",
-"Reach out to us through our ","Utilisez notre ",
-"contact form","formulaire de contact",
-"Email us at ","Écrivez-nous à l’adresse courriel ",
-"Create an issue on our ","Créez un problème (« issue ») dans notre ",
-"public GitHub repository","dépôt public GitHub",
-"We will work with you to:","Nous travaillerons avec vous pour :",
-"Understand issues you’ve encountered and how they impact you.","Comprendre les problèmes que vous avez rencontrés et leur impact sur vous.",
-"Log all bugs in our product backlog and address them with high priority.","Enregistrer tous les bogues dans notre backlog de produit et les traiter avec une priorité élevée.",
-"Resolve issues as soon as we can.","Résoudre les problèmes dès que possible.",
-"We are grateful for your feedback and insights.","Nous vous remercions de vos commentaires et de vos idées.",
+"Accessibility","Accessibilité"
+"Our approach","Notre approche"
+"GC Notify was started using open-source code in the United Kingdom ","GC Notification est issu du code source ouvert du Royaume-Uni "
+"Originally built to the UK government’s accessibility standards, Notify has been modified for the Canadian context.","Construit à l’origine selon les normes d’accessibilité du gouvernement britannique, Notify a été modifié pour le contexte canadien."
+"Our goal is to go above the minimum compliance requirement level AA of the Web Content Accessibility Guidelines 2.1 ","Notre objectif est d’aller au-delà de l’exigence minimale de conformité au niveau AA des Directives d’accessibilité au contenu Web 2.1 "
+"Known issues and limitations","Problèmes et limitations connus"
+"Screen readers do not always read text in emails in the correct language.","Les lecteurs d’écran ne lisent pas toujours le texte des courriels dans la bonne langue."
+"GC Notify is not currently tested with mobile browsers.","GC Notification n’est pas actuellement testé avec les navigateurs mobiles."
+"Learn more about how we approach our work in the ","Pour en savoir plus sur la façon dont nous abordons notre travail, consultez le "
+"https://digital.canada.ca/a11y/","https://numerique.canada.ca/a11y/"
+"CDS Accessibility Handbook","Guide d’accessibilité du SNC"
+"Our commitment","Notre engagement"
+"We are committed to meeting your needs no matter how you use the service. We understand that people may have different needs for accommodation. To make sure we can be inclusive of everyone, we want to learn from you.","Nous nous engageons à répondre à vos besoins, quelle que soit la façon dont vous utilisez le service. Nous comprenons que les gens peuvent avoir des besoins différents en matière d’adaptation. Pour nous assurer que nous pouvons inclure tout le monde, nous voulons apprendre de vos expériences."
+"Tell us how we’re doing","Donnez-nous votre avis"
+"To tell us about accessibility issues in GC Notify, you can:","Faites-nous part de problèmes d’accessibilité dans GC Notification :"
+"Reach out to us through our ","Utilisez notre "
+"contact form","formulaire de contact"
+"Email us at ","Écrivez-nous à l’adresse courriel "
+"Create an issue on our ","Créez un problème (« issue ») dans notre "
+"public GitHub repository","dépôt public GitHub"
+"We will work with you to:","Nous travaillerons avec vous pour :"
+"Understand issues you’ve encountered and how they impact you.","Comprendre les problèmes que vous avez rencontrés et leur impact sur vous."
+"Log all bugs in our product backlog and address them with high priority.","Enregistrer tous les bogues dans notre backlog de produit et les traiter avec une priorité élevée."
+"Resolve issues as soon as we can.","Résoudre les problèmes dès que possible."
+"We are grateful for your feedback and insights.","Nous vous remercions de vos commentaires et de vos idées."
 "GC Notify is built for the needs of government services. It has processes in place to:","GC Notification est un système conçu pour répondre aux besoins des services gouvernementaux. Il comporte des processus permettant de&nbsp;:"
 "protect user data.","protéger les données des utilisateurs."
 "keep systems secure.","maintenir la sécurité des systèmes."
