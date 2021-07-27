@@ -304,6 +304,11 @@ def security():
     return render_template("views/security.html", security_email=current_app.config["SECURITY_EMAIL"])
 
 
+@main.route("/a11y", endpoint="a11y")
+def accessibility():
+    return render_template("views/a11y.html")
+
+
 @main.route("/welcome", endpoint="welcome")
 def welcome():
     return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"])
