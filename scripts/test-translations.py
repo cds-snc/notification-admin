@@ -61,7 +61,7 @@ def duplicate_keys(filename):
         for index, row in enumerate(reader):
             key = row["source"]
             if key in keys:
-                print(f"Duplicate: {filename}:{index+2} : {key}")
+                print(f"Duplicate: {filename}:{index+2} : {key}")  # noqa: T001
                 duplicates_found = True
             keys.add(key)
     return duplicates_found
