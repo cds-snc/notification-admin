@@ -305,7 +305,7 @@ def security():
 
 
 @main.route("/a11y", endpoint="a11y")
-def accessibility():
+def a11y():
     return render_template("views/a11y.html")
 
 
