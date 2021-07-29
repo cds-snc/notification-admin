@@ -1,6 +1,6 @@
 import csv
-import sys
 import re
+import sys
 
 extra_keys_in_app = set(
     [
@@ -53,6 +53,18 @@ def malformed_rows(filename):
     return malformed_rows_found
 
 
+def need_nbsp(filename):
+    with open(filename, newline="") as csvfile:
+        missing_nbsp = False
+        reader = csv.DictReader(csvfile)
+        for index, row in enumerate(reader):
+            french = row["target"]
+            if " :" in french or "« " in french or " »" in french:
+                print(f"need &nbsp; in French: {filename}:{index+2}: {french}")  # noqa: T001
+                missing_nbsp = True
+    return missing_nbsp
+
+
 def duplicate_keys(filename):
     keys = set()
     duplicates_found = False
@@ -82,11 +94,12 @@ if __name__ == "__main__":
     printMissingKeys("missing from fr.csv", in_app_not_in_fr_csv, app)
     # printMissingKeys("unused translations (check api before deleting!)", in_fr_csv_not_in_app)
 
+    missing_nbsp = need_nbsp(fr_csv_filename)
     has_keys_missing = len(in_app_not_in_fr_csv) > 0
     has_malformed_rows = malformed_rows(fr_csv_filename)
     has_duplicate_keys = duplicate_keys(fr_csv_filename)
 
-    if has_malformed_rows or has_duplicate_keys or has_keys_missing:
+    if has_malformed_rows or has_duplicate_keys or missing_nbsp or has_keys_missing:
         exit(1)
     else:
         print("\nNo problems detected in fr.csv\n")  # noqa: T001
