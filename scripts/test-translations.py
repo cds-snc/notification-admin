@@ -1,6 +1,6 @@
 import csv
-import sys
 import re
+import sys
 
 extra_keys_in_app = set(
     [
@@ -64,7 +64,7 @@ def need_nbsp(filename):
                 missing_nbsp = True
     return missing_nbsp
 
-    
+
 def duplicate_keys(filename):
     keys = set()
     duplicates_found = False
