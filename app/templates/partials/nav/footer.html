@@ -92,6 +92,23 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
+          {{ nav_link_light(label=_("Accessibility"), href=url_for('main.a11y')) }}
+        </div>
+        <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
+          <img
+            aria-hidden="true"
+            alt="{{ _('Separator') }}"
+            class="self-center"
+            src="{{ asset_url('images/bullet.svg') }}"
+          />
+        </div>
+        <div class="flex-shrink lg:mx-5">
+          <img
+            aria-hidden="true"
+            alt="{{ _('Separator') }}"
+            class="self-center lg:hidden inline mr-3"
+            src="{{ asset_url('images/bullet.svg') }}"
+          />
           {{ nav_link_light(label=_("Terms of use"), href=url_for('main.terms')) }}
         </div>
         <div class="lg:hidden p-5 mt-10">
