@@ -8,16 +8,43 @@ Providers
 
 {% block platform_admin_content %}
 
-  <h1 class="heading-large">Providers</h1>
+  <h1 class="heading-large">{{ _("Providers") }}</h1>
+  <h2 class="heading-medium">{{ _("Email") }}</h2>
 
-  <h2 class="heading-medium">SMS</h2>
+  {% call(item, row_number) list_table(
+      email_providers,
+      caption="Email providers",
+      caption_visible=False,
+      empty_message='No email providers',
+      field_headings=['Provider', 'Priority', 'Active', 'Last updated', 'Updated by'],
+      field_headings_visible=True
+  ) %}
+
+      {{ link_field(item.display_name, url_for('main.view_provider', provider_id=item.id)) }}
+
+      {{ text_field(item.priority) }}
+
+      {{ text_field(item.active) }}
+
+      {% if item.updated_at %}
+        <span class="local-datetime-short">{{ text_field(item.updated_at) }}</span>
+      {% else %}
+          {{ text_field('None') }}
+      {% endif %}
+
+      {{ optional_text_field(item.created_by_name, default='None') }}
+
+      {{ link_field('{{ _("Change") }}', url_for('main.edit_provider', provider_id=item.id)) }}
+
+  {% endcall %}
+  <h2 class="heading-medium">{{ _("SMS") }}</h2>
 
   {% call(item, row_number) list_table(
       domestic_sms_providers,
       caption="Domestic SMS providers",
       caption_visible=False,
       empty_message='No domestic sms providers',
-      field_headings=['Provider', 'Priority', '% monthly traffic', 'Active', 'Last Updated', 'Updated By'],
+      field_headings=['Provider', 'Priority', '% monthly traffic', 'Active', 'Last updated', 'Updated by'],
       field_headings_visible=True
   ) %}
 
@@ -37,47 +64,18 @@ Providers
 
       {{ optional_text_field(item.created_by_name, default='None') }}
 
-      {{ link_field('change', url_for('main.edit_provider', provider_id=item.id)) }}
+      {{ link_field('{{ _("Change") }}', url_for('main.edit_provider', provider_id=item.id)) }}
 
   {% endcall %}
 
-  <h2 class="heading-medium">Email</h2>
-
-  {% call(item, row_number) list_table(
-      email_providers,
-      caption="Email providers",
-      caption_visible=False,
-      empty_message='No email providers',
-      field_headings=['Provider', 'Priority', 'Active', 'Last Updated', 'Updated By'],
-      field_headings_visible=True
-  ) %}
-
-      {{ link_field(item.display_name, url_for('main.view_provider', provider_id=item.id)) }}
-
-      {{ text_field(item.priority) }}
-
-      {{ text_field(item.active) }}
-
-      {% if item.updated_at %}
-        <span class="local-datetime-short">{{ text_field(item.updated_at) }}</span>
-      {% else %}
-          {{ text_field('None') }}
-      {% endif %}
-
-      {{ optional_text_field(item.created_by_name, default='None') }}
-
-      {{ link_field('change', url_for('main.edit_provider', provider_id=item.id)) }}
-
-  {% endcall %}
-
-  <h1 class="heading-large">International SMS Providers</h1>
+  <h1 class="heading-large">{{ _("International SMS providers") }}</h1>
 
   {% call(item, row_number) list_table(
       intl_sms_providers,
       caption="International SMS providers",
       caption_visible=False,
       empty_message='No international sms providers',
-      field_headings=['Provider', 'Priority', 'Active', 'Last Updated', 'Updated By'],
+      field_headings=['Provider', 'Priority', 'Active', 'Last updated', 'Updated by'],
       field_headings_visible=True
   ) %}
 
@@ -95,7 +93,7 @@ Providers
 
       {{ optional_text_field(item.created_by_name, default='None') }}
 
-      {{ link_field('change', url_for('main.edit_provider', provider_id=item.id)) }}
+      {{ link_field('{{ _("Change") }}', url_for('main.edit_provider', provider_id=item.id)) }}
 
   {% endcall %}
 
