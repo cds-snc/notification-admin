@@ -73,7 +73,7 @@ def mock_get_service_settings_page_common(
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
-                "Reply-to email addresses Not set Manage",
+                "Reply-to addresses Not set Manage",
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
                 "Yearly free maximum 10 million emails",
@@ -96,7 +96,7 @@ def mock_get_service_settings_page_common(
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
-                "Reply-to email addresses Not set Manage",
+                "Reply-to addresses Not set Manage",
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
                 "Yearly free maximum 10 million emails",
@@ -212,7 +212,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
-                "Reply-to email addresses test@example.com Manage",
+                "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
                 "Label Value Action",
@@ -231,7 +231,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
-                "Reply-to email addresses test@example.com Manage",
+                "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
                 "Label Value Action",
@@ -328,8 +328,8 @@ def test_should_show_service_name(
     page = client_request.get("main.service_name_change", service_id=SERVICE_ONE_ID)
     assert page.find("h1").text == "Change your service name"
     assert page.find("input", attrs={"type": "text"})["value"] == "service one"
-    assert page.select_one("main p").text == "Users will see your service name:"
-    assert normalize_spaces(page.select_one("main ul").text) == ("as your email sender name at the start of every text message")
+    assert page.select_one("main p").text == "Name your service something people would search for in their inbox."
+    assert normalize_spaces(page.select_one("main ul").text) == ("as your email sender name. at the start of every text message.")
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
 
@@ -340,7 +340,7 @@ def test_should_show_service_name_with_no_prefixing(
     service_one["prefix_sms"] = False
     page = client_request.get("main.service_name_change", service_id=SERVICE_ONE_ID)
     assert page.find("h1").text == "Change your service name"
-    assert page.select_one("main p").text == "Users will see your service name as your email sender name."
+    assert page.select_one("main p").text == "Name your service something people would search for in their inbox."
 
 
 def test_should_redirect_after_change_service_name(
@@ -1330,7 +1330,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
     def get_row(page, index):
         return normalize_spaces(page.select("tbody tr")[index].text)
 
-    assert get_row(page, 6) == "Reply-to email addresses test@example.com …and 2 more Manage"
+    assert get_row(page, 6) == "Reply-to addresses test@example.com …and 2 more Manage"
 
 
 @pytest.mark.parametrize(
@@ -1641,7 +1641,7 @@ def test_service_verify_reply_to_address(
         notification_id=notification["id"],
         _optional_args="?is_default={}{}".format(is_default, replace),
     )
-    assert page.find("h1").text == "{} email reply-to address".format(expected_header)
+    assert page.find("h1").text == "{} reply-to email address".format(expected_header)
     if replace:
         assert "/email-reply-to/123/edit" in page.find("a", text="Back").attrs["href"]
     else:

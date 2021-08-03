@@ -17,7 +17,7 @@
         back_link=url_for('main.service_settings', service_id=current_service.id)
       ) }}
       <p>
-        {{ _('Charges may apply for messages sent to international phone numbers – so be careful!') }}</p>
+        {{ _('Charges may apply for messages sent to international phone numbers.') }}</p>
       {% call form_wrapper() %}
         {{ radios(form.enabled) }}
         {% set save_txt = _('Save') %}

@@ -6,13 +6,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  {{ _(heading_action) }} {{_('email template') }}
+  {{ heading }}
 {% endblock %}
 
 {% block maincolumn_content %}
   {{
     page_header(
-      _(heading_action) + ' ' + _('email template'),
+      heading,
       back_link=url_for('main.view_template', service_id=current_service.id,
       template_id=template.id) if template else url_for('main.create_template',
       service_id=current_service.id, template_folder_id=template_folder_id)
@@ -22,7 +22,7 @@
   <div class="grid-row">
     <div class="md:w-5/6 px-gutterHalf box-border">
       <div class="form-group mb-gutterHalf md:mb-gutter">
-        {{ _("A template allows you to send a similar information to many people. Use <a href='{}' target='_blank'>the personalisation guide</a> to tailor messages for each recipient.").format(url_for('.personalise')) }}
+        {{ _("A template allows you to send a similar information to many people. Use the <a href='{}' target='_blank'>personalisation guide</a> to tailor messages for each recipient.").format(url_for('.personalise')) }}
       </div>
 
       {{ textbox(form.name, width='w-full', hint=_('Your recipients will not see this template name.'), rows=10) }}

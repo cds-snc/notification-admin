@@ -3,16 +3,16 @@
 {% from "components/page-footer.html" import page_footer %}
 
 {% block per_page_title %}
-  {{ _('Thanks for contacting us') }}
+  {{ _('Thank you for contacting us') }}
 {% endblock %}
 
 {% block maincolumn_content %}
   <h1 class="heading-large">
-    {{ _('Thanks for contacting us') }}
+    {{ _('Thank you for contacting us') }}
   </h1>
 
   <p class="mb-10">
-    {{ _("We'll be in touch within 2 business days.") }}
+    {{ _("We'll be in touch by email within 2 business days.") }}
   </p>
 
   <p>
@@ -23,6 +23,10 @@
     <li class="mb-5">
       <a href="{{ url_for('.features') }}">{{ _('Features') }}</a><br>
       <p>{{ _("What's possible with GC Notify") }}</p>
+    </li>
+    <li class="mb-5">
+      <a href="{{ url_for('.guidance') }}">{{ _('Guidance') }}</a><br>
+      <p>{{ _("How to use GC Notify to send messages") }}</p>
     </li>
     <li class="mb-5">
       <a href="{{ documentation_url() }}" target="_blank">{{ _('API documentation') }}</a><br>

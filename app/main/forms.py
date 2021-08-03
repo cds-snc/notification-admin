@@ -164,7 +164,7 @@ def password(label=_l("Password")):
         label,
         validators=[
             DataRequired(message=_l("This cannot be empty")),
-            Length(8, 255, message=_l("Must be at least 8 characters")),
+            Length(8, 255, message=_l("Must be at least 8 characters and hard to guess")),
             Blocklist(message=_l("Choose a password that’s harder to guess")),
         ],
     )
@@ -625,7 +625,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         self.default_branding.choices = self._getSelectBilingualChoices()
 
     default_branding = RadioField(
-        "",
+        _l("Default language"),
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
