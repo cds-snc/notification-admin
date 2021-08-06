@@ -47,7 +47,7 @@
 
         {% call row() %}
           {% call field(border=False) %}
-            <a href="{{ url_for('main.service_dashboard', service_id=service['id']) }}" class="browse-list-link">{{ service['name'] }}</a>
+            <a href="{{ url_for('main.service_dashboard', service_id=service['id']) }}" class="browse-list-link">{{ service['name']|truncate(35) }}</a>
           {% endcall %}
 
           {{ stats_fields('email', service['stats']) }}
