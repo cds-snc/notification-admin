@@ -2,6 +2,7 @@ import hashlib
 import os
 from datetime import datetime, timedelta
 from typing import Dict
+from flask import url_for
 
 from notifications_python_client.errors import HTTPError
 
@@ -130,6 +131,7 @@ class UserApiClient(NotifyAdminAPIClient):
             "email": self.contact_email,
             "serviceID": serviceID,
             "service_name": service_name,
+            "service_url": url_for(".service_dashboard", service_id=serviceID, _external=True),
             "filename": filename,
         }
         endpoint = "/user/{0}/branding-request".format(user_id)
