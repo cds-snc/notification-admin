@@ -2,8 +2,8 @@ import hashlib
 import os
 from datetime import datetime, timedelta
 from typing import Dict
-from flask import url_for
 
+from flask import url_for
 from notifications_python_client.errors import HTTPError
 
 from app.extensions import redis_client
