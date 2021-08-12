@@ -188,14 +188,7 @@
     @apply block text-right;
   }
   .table-field-right-aligned a {
-    @apply block relative;
-  }
-  .table-field-right-aligned a:before {
-    content: "";
-    top: -15px;
-    bottom: -11px;
-    left: -15px;
-    @apply block absolute right-0 bg-transparent;
+    @apply relative;
   }
   .table-field-right-aligned a:hover {
     @apply text-blue-lightblue;
