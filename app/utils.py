@@ -71,6 +71,10 @@ def get_latest_stats(lang):
     sms_total = 0
     for line in results:
         date, notification_type, count = line
+        if "lambda" in current_app.config["API_HOST_NAME"]:
+            date = line["month"]
+            notification_type = line["notification_type"]
+            count = line["count"]
         year = date[:4]
         year_month = date[:7]
         month = f"{get_month_name(date)} {year}"
