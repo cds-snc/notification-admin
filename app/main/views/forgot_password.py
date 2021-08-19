@@ -18,7 +18,7 @@ def forgot_password():
                 flash(
                     _(
                         "You cannot reset your password as your account has been blocked. "
-                        + "Please email us at assistance@cds-snc.ca"
+                        + "Please email us at assistance+notification@cds-snc.ca"
                     )
                 )
                 abort(400)
