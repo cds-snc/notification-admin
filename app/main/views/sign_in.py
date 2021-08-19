@@ -40,9 +40,9 @@ def sign_in():
 
         if user and user.locked:
             flash(
-                _("Your account has been locked after {} sign-in attempts. Please email us at assistance+notification@cds-snc.ca").format(
-                    user.max_failed_login_count
-                )
+                _(
+                    "Your account has been locked after {} sign-in attempts. Please email us at assistance+notification@cds-snc.ca"
+                ).format(user.max_failed_login_count)
             )
             abort(400)
 
