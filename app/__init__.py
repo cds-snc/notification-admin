@@ -608,7 +608,7 @@ def useful_headers_after_request(response):
             "object-src 'self';"
             "style-src 'self' *.googleapis.com 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-            "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
+            "img-src 'self' {asset_domain} *.canada.ca *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
             "frame-src 'self' www.youtube.com;".format(
                 asset_domain=current_app.config["ASSET_DOMAIN"],
             )
