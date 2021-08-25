@@ -446,7 +446,7 @@ def get_template(
             redact_missing_personalisation=redact_missing_personalisation,
             reply_to=email_reply_to,
             jinja_path=debug_template_path,
-            allow_html=(service.id == current_app.config["ALLOW_HTML_SERVICE_ID"]),
+            allow_html=(service.id in current_app.config["ALLOW_HTML_SERVICE_ID"]),
             **get_email_logo_options(service),
         )
     if "sms" == template["template_type"]:
