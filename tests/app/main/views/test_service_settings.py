@@ -2318,7 +2318,7 @@ def test_inbound_sms_sender_is_not_editable(
     if hide_textbox:
         assert (
             normalize_spaces(page.select_one('form[method="post"] p').text)
-            == "GOVUK This phone number receives replies and can’t be changed"
+            == "GOVUK This phone number receives replies and cannot be changed"
         )
 
 

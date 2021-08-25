@@ -82,11 +82,11 @@
             {% if current_service.has_permission('email_auth') %}
               <div class="tick-cross-list-hint">
                 {% if user.security_keys|length > 0  %}
-                {{ _('Logs in with a Fido2 key') }}
+                {{ _('Signs in with a Fido2 key') }}
                 {% elif user.auth_type == 'sms_auth'  %}
-                {{ _('Logs in with a text message code') }}
+                {{ _('Signs in with a text message code') }}
                 {% else %}
-                {{ _('Logs in with an email code') }}
+                {{ _('Signs in with an email code') }}
                 {% endif %}
               </div>
             {% endif %}
