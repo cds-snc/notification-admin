@@ -1036,7 +1036,7 @@
 "for more information on how personal information is handled by GC Notify.","pour obtenir de plus amples renseignements sur la façon dont les renseignements personnels sont traités par GC Notification."
 "Technical security","Sécurité technique"
 "GC Notify is hosted in an Amazon Web Services (AWS) cloud instance located in 3 availability zones in the Montreal region, with Shared Services Canada (SSC) guardrails designed to create a Protected B medium availability, medium integrity (PBMM) environment.","GC Notification est hébergé dans une instance en nuage d'Amazon Web Services (AWS) située dans 3 zones de disponibilité dans la région de Montréal, avec des mesures de sécurité de Services partagés Canada (SSC) conçues pour créer un environnement Protegé B à disponibilité et intégrité moyennes (PBMM)."
-"Other technical security controls include","Les autres contrôles techniques de sécurité comprennent notamment&nbsp;:"
+"Other technical security controls include:","Les autres contrôles techniques de sécurité comprennent notamment&nbsp;:"
 "implementation of security controls from","La mise en œuvre de contrôles de sécurité à partir"
 "Treasury Board of Canada Secretariat (TBS) cloud guardrails.","des mesures de sécurité infonuagiques du Secrétariat du Conseil du Trésor du Canada (SCT)."
 "TBS security playbook.","du guide de sécurité du SCT."
