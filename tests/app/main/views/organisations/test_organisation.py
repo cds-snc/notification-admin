@@ -29,7 +29,7 @@ def test_organisation_page_shows_all_organisations(platform_admin_client, mocker
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    expected_hints = ("0 live service(s)", "1 live servic(e)", "2 live service(s)")
+    expected_hints = ("0 live service(s)", "1 live service(s)", "2 live service(s)")
 
     for index, org in enumerate(orgs):
         assert page.select("a.browse-list-link")[index].text == org["name"]
