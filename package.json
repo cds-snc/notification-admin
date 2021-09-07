@@ -31,7 +31,7 @@
     "jquery": "^3.6.0",
     "jquery-migrate": "^3.3.2",
     "moment": "^2.29.1",
-    "node-polyglot": "^2.4.0",
+    "node-polyglot": "^2.4.2",
     "query-command-supported": "1.0.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
