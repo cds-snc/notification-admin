@@ -15,3 +15,4 @@ requests-mock==1.8.0
 jinja2-cli[yaml]==0.7.0
 black==21.5b2
 mypy==0.812
+urllib3>=1.25.9 # not directly required, pinned by Snyk to avoid a vulnerability
