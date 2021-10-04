@@ -717,7 +717,7 @@ def test_cannot_rename_folder_blank(
         _expected_status=200,
     )
 
-    mock_update.assert_not_called()
+    assert mock_update.called is False
 
 
 def test_manage_folder_users(
@@ -1358,7 +1358,7 @@ def test_cannot_create_blank_new_folder(
     )
 
     assert mock_move_to_template_folder.called is False
-    mock_create_template_folder.assert_not_called()
+    assert mock_create_template_folder.called is False
 
 
 def test_should_be_able_to_move_to_new_folder(
@@ -1409,7 +1409,6 @@ def test_cannot_move_to_blank_new_folder(
     mock_move_to_template_folder,
     mock_create_template_folder,
 ):
-    new_folder_id = mock_create_template_folder.return_value
     FOLDER_TWO_ID = str(uuid.uuid4())
     mock_get_template_folders.return_value = [
         _folder("parent_folder", PARENT_FOLDER_ID, None),
@@ -1431,8 +1430,8 @@ def test_cannot_move_to_blank_new_folder(
         _expected_status=200,
     )
 
-    mock_create_template_folder.assert_not_called()
-    mock_move_to_template_folder.assert_not_called()
+    assert mock_create_template_folder.called is False
+    assert mock_move_to_template_folder.called is False
 
 
 def test_radio_button_with_no_value_shows_error_message(
