@@ -694,6 +694,32 @@ def test_rename_folder(
     )
 
 
+def test_cannot_rename_folder_blank(
+    client_request,
+    active_user_with_permissions,
+    service_one,
+    mock_get_template_folders,
+    mocker,
+):
+    mock_update = mocker.patch("app.template_folder_api_client.update_template_folder")
+    folder_id = str(uuid.uuid4())
+    mock_get_template_folders.return_value = [_folder("folder_two", folder_id, None, [active_user_with_permissions["id"]])]
+    mocker.patch(
+        "app.models.user.Users.client",
+        return_value=[active_user_with_permissions],
+    )
+
+    client_request.post(
+        "main.manage_template_folder",
+        service_id=service_one["id"],
+        template_folder_id=folder_id,
+        _data={"name": "    ", "users_with_permission": []},
+        _expected_status=200,
+    )
+
+    mock_update.assert_not_called()
+
+
 def test_manage_folder_users(
     client_request,
     active_user_with_permissions,
@@ -1310,6 +1336,31 @@ def test_new_folder_is_created_if_only_new_folder_is_filled_out(
     mock_create_template_folder.assert_called_once_with(SERVICE_ONE_ID, name="new folder", parent_id=None)
 
 
+def test_cannot_create_blank_new_folder(
+    client_request,
+    service_one,
+    mock_get_service_templates,
+    mock_get_template_folders,
+    mock_move_to_template_folder,
+    mock_create_template_folder,
+):
+    data = {
+        "move_to_new_folder_name": "",
+        "add_new_folder_name": "  ",
+        "operation": "add-new-folder",
+    }
+
+    client_request.post(
+        "main.choose_template",
+        service_id=SERVICE_ONE_ID,
+        _data=data,
+        _expected_status=200,
+    )
+
+    assert mock_move_to_template_folder.called is False
+    mock_create_template_folder.assert_not_called()
+
+
 def test_should_be_able_to_move_to_new_folder(
     client_request,
     service_one,
@@ -1348,6 +1399,40 @@ def test_should_be_able_to_move_to_new_folder(
         folder_ids={FOLDER_TWO_ID},
         template_ids={TEMPLATE_ONE_ID},
     )
+
+
+def test_cannot_move_to_blank_new_folder(
+    client_request,
+    service_one,
+    mock_get_service_templates,
+    mock_get_template_folders,
+    mock_move_to_template_folder,
+    mock_create_template_folder,
+):
+    new_folder_id = mock_create_template_folder.return_value
+    FOLDER_TWO_ID = str(uuid.uuid4())
+    mock_get_template_folders.return_value = [
+        _folder("parent_folder", PARENT_FOLDER_ID, None),
+        _folder("folder_two", FOLDER_TWO_ID, None),
+    ]
+
+    client_request.post(
+        "main.choose_template",
+        service_id=SERVICE_ONE_ID,
+        template_folder_id=None,
+        _data={
+            "operation": "move-to-new-folder",
+            "move_to_new_folder_name": "  ",
+            "templates_and_folders": [
+                FOLDER_TWO_ID,
+                TEMPLATE_ONE_ID,
+            ],
+        },
+        _expected_status=200,
+    )
+
+    mock_create_template_folder.assert_not_called()
+    mock_move_to_template_folder.assert_not_called()
 
 
 def test_radio_button_with_no_value_shows_error_message(
