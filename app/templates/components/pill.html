@@ -21,6 +21,8 @@
             <div class="pill-label{% if not show_count %} pill-centered-item{% endif %}">  
             {% if label == "sending" %}
                 {{ _('sending') }}
+            {% elif label == "sent" %}
+              {{ _('sent') }}
             {% elif label == "delivered" %}
               {{ _('delivered') }}
             {% elif label == "total" %}

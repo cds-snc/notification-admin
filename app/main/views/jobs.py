@@ -219,7 +219,7 @@ def view_notifications(service_id, message_type=None):
         "views/notifications.html",
         partials=get_notifications(service_id, message_type),
         message_type=message_type,
-        status=request.args.get("status") or "sending,delivered,failed",
+        status=request.args.get("status") or "sending,sent,delivered,failed",
         page=request.args.get("page", 1),
         to=request.form.get("to", ""),
         search_form=SearchNotificationsForm(
@@ -335,16 +335,17 @@ def get_status_filters(service, message_type, statistics):
         }
     else:
         stats = statistics[message_type]
-    stats["sending"] = stats["requested"] - stats["delivered"] - stats["failed"]
+    stats["sending"] = stats["requested"] - stats["delivered"] - stats["failed"] - stats["sent"]
 
     filters = [
         # key, label, option
         ("requested", "total", "sending,delivered,failed"),
         ("sending", "sending", "sending"),
+        ("sent", "sent", "sent"),
         ("delivered", "delivered", "delivered"),
         ("failed", "failed", "failed"),
     ]
-    return [
+    labels = [
         # return list containing label, option, link, count
         (
             label,
@@ -359,6 +360,7 @@ def get_status_filters(service, message_type, statistics):
         )
         for key, label, option in filters
     ]
+    return labels
 
 
 def _get_job_counts(job):

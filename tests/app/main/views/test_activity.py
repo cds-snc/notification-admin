@@ -185,7 +185,7 @@ def test_can_show_notifications_if_data_retention_not_available(
     page = client_request.get(
         "main.view_notifications",
         service_id=SERVICE_ONE_ID,
-        status="sending,delivered,failed",
+        status="sending,sent,delivered,failed",
     )
     assert page.h1.text.strip() == "Messages"
 
@@ -495,7 +495,7 @@ def test_get_status_filters_constructs_links(client):
     ret = get_status_filters(Service({"id": "foo"}), "sms", STATISTICS)
 
     link = ret[0][2]
-    assert link == "/services/foo/notifications/sms?status={}".format(quote("sending,delivered,failed"))
+    assert link == "/services/foo/notifications/sms?status={}".format(quote("sending,sent,delivered,failed"))
 
 
 def test_html_contains_notification_id(
@@ -536,7 +536,7 @@ def test_html_contains_links_for_failed_notifications(
         "main.view_notifications",
         service_id=SERVICE_ONE_ID,
         message_type="sms",
-        status="sending%2Cdelivered%2Cfailed",
+        status="sending%2Csent%2Cdelivered%2Cfailed",
     )
     notifications = response.tbody.find_all("tr")
     for tr in notifications:

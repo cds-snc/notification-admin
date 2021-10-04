@@ -44,7 +44,8 @@ from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
 
 SENDING_STATUSES = ["created", "pending", "sending", "pending-virus-check"]
-DELIVERED_STATUSES = ["delivered", "sent", "returned-letter"]
+SENT_STATUSES = ["sent"]
+DELIVERED_STATUSES = ["delivered", "returned-letter"]
 FAILURE_STATUSES = [
     "failed",
     "temporary-failure",
@@ -53,7 +54,7 @@ FAILURE_STATUSES = [
     "virus-scan-failed",
     "validation-failed",
 ]
-REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
+REQUESTED_STATUSES = SENDING_STATUSES + SENT_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
 
 with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))) as email_domains:
     GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains]
@@ -533,6 +534,7 @@ def set_status_filters(filter_args):
                 (status_filters or REQUESTED_STATUSES),
                 DELIVERED_STATUSES if "delivered" in status_filters else [],
                 SENDING_STATUSES if "sending" in status_filters else [],
+                SENT_STATUSES if "sent" in status_filters else [],
                 FAILURE_STATUSES if "failed" in status_filters else [],
             )
         )

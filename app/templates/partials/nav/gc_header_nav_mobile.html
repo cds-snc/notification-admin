@@ -45,7 +45,7 @@
               {% endif %}
               {{ nav_menu_item_mobile( url_for('main.choose_template', service_id=current_service.id),_('Templates'),header_navigation.is_selected('templates')) }}
               {% if not current_user.has_permissions('view_activity') %}
-                {{ nav_menu_item_mobile(url_for('main.view_notifications', service_id=current_service.id, status='sending,delivered,failed'),_('Sent messages'),header_navigation.is_selected('sent-messages')) }}
+                {{ nav_menu_item_mobile(url_for('main.view_notifications', service_id=current_service.id, status='sending,sent,delivered,failed'),_('Sent messages'),header_navigation.is_selected('sent-messages')) }}
                 {% if current_service.has_jobs %}
                   {{ nav_menu_item_mobile(url_for('main.view_jobs', service_id=current_service.id),_('Bulk sends'),header_navigation.is_selected('bulk-sends')) }}
                 {% endif %}

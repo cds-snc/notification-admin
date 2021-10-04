@@ -252,7 +252,7 @@ def test_notification_status_page_shows_attachments_with_links(
                 url_for,
                 "main.view_notifications",
                 message_type="sms",
-                status="sending,delivered,failed",
+                status="sending,sent,delivered,failed",
             ),
         ),
         (
