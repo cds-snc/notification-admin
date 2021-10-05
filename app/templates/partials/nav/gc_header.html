@@ -20,14 +20,12 @@
           src="{{ asset_s3_url('gov-canada-en.svg') }}"
         />
       {% else %}
-        <a href="/">
-          <img
-            alt="{{ _('Government of Canada') }}"
-            width="250"
-            class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2"
-            src="{{ asset_s3_url('gov-canada-fr.svg') }}"
-          />
-        </a>
+        <img
+          alt="{{ _('Government of Canada') }}"
+          width="250"
+          class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2"
+          src="{{ asset_s3_url('gov-canada-fr.svg') }}"
+        />
       {% endif %}
     </div>
     <!-- start sub nav -->
@@ -45,7 +43,7 @@
         href=url_for('main.set_lang') + "?from=" + request.path,
         label=long_lang_switch,
         aria_label=long_lang_switch,
-        lang=lang_switch,
+        lang="fr-CA" if lang_switch == "FR" else "en-CA",
         class="mr-0 ml-5"
       ) }}
     </nav>

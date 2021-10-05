@@ -22,7 +22,7 @@
   .pill a .pill-label {
     @apply no-underline;
   }
-   .pill a:hover {
+  .pill a:hover {
     @apply underline;
   }
   .pill a:active,
