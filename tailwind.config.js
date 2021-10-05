@@ -26,9 +26,9 @@ module.exports = {
       titlelarge: "2.7rem",
       lg: "3.6rem",
       xl: "3.8rem",
-      "48": "4.8rem",
+      '48': "4.8rem",
       xxl: "6.5rem",
-      "3xl": "9rem",
+      '3xl': "9rem",
       brand: "2.6rem"
     },
     screens: {
@@ -103,11 +103,11 @@ module.exports = {
         folderBlueHoverPng: "url('/static/images/folder-blue-bold-hover.png')"
       },
       backgroundSize: {
-        "19": "19px"
+        '19': "19px"
       },
       borderWidth: {
-        "1": "1px",
-        "10": "10px"
+        '1': "1px",
+        '10': "10px"
       },
       fontFamily: {
         sans: ["lato"],
@@ -115,20 +115,20 @@ module.exports = {
         monospace: ["monospace"]
       },
       inset: {
-        "2": "2px",
-        "5": "5px",
-        "7": "7px"
+        '2': "2px",
+        '5': "5px",
+        '7': "7px"
       },
       keyframes: {
         ellipsis: {
-          "100%": { width: "1.25em" }
+          '100%': { width: "1.25em" }
         },
       },
       lineHeight: {
-        "extra-tight": "0.9"
+        'extra-tight': "0.9"
       },
       maxWidth: {
-        "4xl": "53rem"
+        '4xl': "53rem"
       },
       outline: {
         yellow: "3px solid #ffbf47",
@@ -141,16 +141,16 @@ module.exports = {
         doubleGutter: "60px"
       },
       transitionDuration: {
-        "600": "600ms"
+        '600': "600ms"
       },
       transitionProperty: {
         background: "background"
       },
       width: {
-        "5/8": "62.5%"
+        '5/8': "62.5%"
       },
       zIndex: {
-        "100": 100
+        '100': 100
       },
     },
   },
