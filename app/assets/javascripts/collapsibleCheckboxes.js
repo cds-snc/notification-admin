@@ -5,7 +5,7 @@
 
   function Summary(module) {
     this.module = module;
-    this.$el = module.$formGroup.find(".selection-summary");
+    this.$el = module.$formGroup.find("fieldset .selection-summary");
     this.fieldLabel = module.fieldLabel;
 
     this.translate = false;
@@ -63,7 +63,7 @@
   function Footer(module) {
     this.module = module;
     this.fieldLabel = module.fieldLabel;
-    this.fieldsetId = module.$fieldset.attr("id");
+    this.$checkboxesDivId = module.$formGroup.find("fieldset .select-nested.checkboxes-nested").attr("id");
     this.$el = this.getEl(this.module.expanded);
     this.module.$formGroup.append(this.$el);
   }
@@ -84,7 +84,7 @@
               <button
                 class="button button-secondary inline-block w-auto"
                 aria-expanded="${expanded ? "true" : "false"}"
-                aria-controls="${this.fieldsetId}">
+                aria-controls="${this.checkboxesDivId}">
               ${buttonContent}
               </button>
             </div>`);
@@ -106,41 +106,30 @@
   CollapsibleCheckboxes.prototype.start = function (component) {
     this.$formGroup = $(component);
     this.$fieldset = this.$formGroup.find("fieldset");
+    this.$checkboxesDiv = this.$fieldset.find(".select-nested.checkboxes-nested");
     this.$checkboxes = this.$fieldset.find("input[type=checkbox]");
     this.fieldLabel = this.$formGroup.data("fieldLabel");
     this.total = this.$checkboxes.length;
     this.legendText = this.$fieldset.find("legend").text().trim();
     this.expanded = false;
 
-    this.addHeadingHideLegend();
-
     // generate summary and footer
     this.footer = new Footer(this);
     this.summary = new Summary(this);
 
-    this.$fieldset.before(this.summary.$el);
+    this.$fieldset.find(".selection-summary").replaceWith(this.summary.$el);
 
     // add custom classes
     this.$formGroup.addClass("selection-wrapper");
     this.$fieldset.addClass("selection-content mb-8 focus:outline-none");
 
     // hide checkboxes
-    this.$fieldset.hide();
+    this.$checkboxesDiv.hide();
 
     this.bindEvents();
   };
   CollapsibleCheckboxes.prototype.getSelection = function () {
     return this.$checkboxes.filter(":checked").length;
-  };
-  CollapsibleCheckboxes.prototype.addHeadingHideLegend = function () {
-    const headingLevel = this.$formGroup.data("heading-level") || "2";
-
-    this.$heading = $(
-      `<h${headingLevel} class="heading-small">${this.legendText}</h${headingLevel}>`
-    );
-    this.$fieldset.before(this.$heading);
-
-    this.$fieldset.find("legend").addClass("visuallyhidden");
   };
   CollapsibleCheckboxes.prototype.expand = function (e) {
     if (e !== undefined) {
@@ -148,7 +137,7 @@
     }
 
     if (!this.expanded) {
-      this.$fieldset.show();
+      this.$checkboxesDiv.show();
       this.expanded = true;
       this.summary.update(this.getSelection());
       this.footer.update(this.expanded);
@@ -163,7 +152,7 @@
     }
 
     if (this.expanded) {
-      this.$fieldset.hide();
+      this.$checkboxesDiv.hide();
       this.expanded = false;
       this.summary.update(this.getSelection());
       this.footer.update(this.expanded);
