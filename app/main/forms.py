@@ -1463,7 +1463,7 @@ def required_for_ops(*operations):
         if form.op not in operations and any(field.raw_data):
             # super weird
             raise validators.StopValidation("Must be empty")
-        if form.op in operations and not any(map(is_blank, field.raw_data)):
+        if form.op in operations and all(map(is_blank, field.raw_data)):
             raise validators.StopValidation(_l("This cannot be empty"))
 
     return validate
