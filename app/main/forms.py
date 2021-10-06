@@ -50,7 +50,7 @@ from app.main.validators import (
 )
 from app.models.organisation import Organisation
 from app.models.roles_and_permissions import permissions, roles
-from app.utils import get_logo_cdn_domain, guess_name_from_email_address
+from app.utils import get_logo_cdn_domain, guess_name_from_email_address, is_blank
 
 
 def get_time_value_and_label(future_time):
@@ -1463,7 +1463,7 @@ def required_for_ops(*operations):
         if form.op not in operations and any(field.raw_data):
             # super weird
             raise validators.StopValidation("Must be empty")
-        if form.op in operations and not any(map(lambda s: s.strip() if isinstance(s, str) else s, field.raw_data)):
+        if form.op in operations and not any(map(is_blank, field.raw_data)):
             raise validators.StopValidation(_l("This cannot be empty"))
 
     return validate

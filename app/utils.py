@@ -9,6 +9,7 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
+from typing import Any
 
 import boto3
 import dateutil
@@ -755,3 +756,8 @@ class PermanentRedirect(RequestRedirect):
     """
 
     code = 301
+
+
+def is_blank(content: Any) -> bool:
+    content = str(content)
+    return not content or content.isspace()
