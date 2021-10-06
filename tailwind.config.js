@@ -73,7 +73,7 @@ module.exports = {
         default: "#ffbf47"
       },
       green: {
-        default: "#00823b",
+        default: "#00672F",
         darker: "#00703C",
         hover: "#00692f",
         border: "#003618",
