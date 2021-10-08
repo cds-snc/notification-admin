@@ -47,7 +47,7 @@ describe('Collapsible fieldset', () => {
               Folders this team member can see
             </legend>
             <div class="selection-summary"></div>
-            <div id="folder-permission-checkboxes" class="checkboxes-nested">
+            <div id="folder-permission-checkboxes" class="select-nested checkboxes-nested">
               <ul>
                 ${_checkboxes(1, 10)}
               </ul>
@@ -92,7 +92,7 @@ describe('Collapsible fieldset', () => {
 
     });
 
-    test("adds a heading before the selected fieldset", () => {
+    test("adds a legend within the selected fieldset", () => {
 
       const heading = helpers.element(fieldset.querySelector('legend.heading-small'));
 
