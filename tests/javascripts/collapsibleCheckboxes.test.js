@@ -1,4 +1,5 @@
 const helpers = require('./support/helpers');
+require('@testing-library/jest-dom');
 
 beforeAll(() => {
   // TODO: remove this when tests for sticky JS are written
@@ -109,12 +110,10 @@ describe('Collapsible fieldset', () => {
 
     });
 
-    test("the legend of the fieldset is visible", () => {
+    test("the legendd of the fieldset is visible", () => {
 
-      const legend = helpers.element(fieldset.querySelector('legend'));
-
+      const legend = fieldset.querySelector('legend');
       expect(legend).toBeVisible();
-
     });
 
     test("has a button to expand the fieldset", () => {
@@ -137,7 +136,7 @@ describe('Collapsible fieldset', () => {
 
     test("hides the checkboxes", () => {
 
-      expect(helpers.element(checkboxesContainer)).not.toBeVisible();
+      expect(checkboxesContainer).not.toBeVisible();
 
     });
 
