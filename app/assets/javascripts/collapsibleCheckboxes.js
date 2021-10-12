@@ -63,7 +63,9 @@
   function Footer(module) {
     this.module = module;
     this.fieldLabel = module.fieldLabel;
-    this.$checkboxesDivId = module.$formGroup.find("fieldset .select-nested.checkboxes-nested").attr("id");
+    this.$checkboxesDivId = module.$formGroup
+      .find("fieldset .select-nested.checkboxes-nested")
+      .attr("id");
     this.$el = this.getEl(this.module.expanded);
     this.module.$formGroup.append(this.$el);
   }
@@ -106,7 +108,9 @@
   CollapsibleCheckboxes.prototype.start = function (component) {
     this.$formGroup = $(component);
     this.$fieldset = this.$formGroup.find("fieldset");
-    this.$checkboxesDiv = this.$fieldset.find(".select-nested.checkboxes-nested");
+    this.$checkboxesDiv = this.$fieldset.find(
+      ".select-nested.checkboxes-nested"
+    );
     this.$checkboxes = this.$fieldset.find("input[type=checkbox]");
     this.fieldLabel = this.$formGroup.data("fieldLabel");
     this.total = this.$checkboxes.length;
