@@ -42,7 +42,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         "expected_page_title,"
         "expected_parent_link_args,"
         "extra_args,"
-        "expected_nav_links,"
         "expected_items, "
         "expected_displayed_items, "
         "expected_searchable_text, "
@@ -54,7 +53,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates",
             [],
             {},
-            ["All", "Email", "Text message", "Letter"],
             [
                 "folder_one 2 folders",
                 "folder_one folder_one_one 1 template, 1 folder",
@@ -102,7 +100,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates",
             [],
             {"template_type": "sms"},
-            ["All", "Email", "Text message", "Letter"],
             [
                 "folder_one 1 folder",
                 "folder_one folder_one_one 1 folder",
@@ -131,7 +128,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_one",
             [{"template_type": "all"}],
             {"template_folder_id": PARENT_FOLDER_ID},
-            ["All", "Email", "Text message", "Letter"],
             [
                 "folder_one_one 1 template, 1 folder",
                 "folder_one_one folder_one_one_one 1 template",
@@ -157,7 +153,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_one",
             [{"template_type": "sms"}],
             {"template_type": "sms", "template_folder_id": PARENT_FOLDER_ID},
-            ["All", "Email", "Text message", "Letter"],
             [
                 "folder_one_one 1 folder",
                 "folder_one_one folder_one_one_one 1 template",
@@ -178,7 +173,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_one",
             [{"template_type": "email"}],
             {"template_type": "email", "template_folder_id": PARENT_FOLDER_ID},
-            ["All", "Email", "Text message", "Letter"],
             [],
             [],
             [],
@@ -192,7 +186,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
                 {"template_type": "all", "template_folder_id": PARENT_FOLDER_ID},
             ],
             {"template_folder_id": CHILD_FOLDER_ID},
-            ["All", "Email", "Text message", "Letter"],
             [
                 "folder_one_one_one 1 template",
                 "folder_one_one_one sms_template_nested Text message template",
@@ -218,7 +211,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
                 {"template_type": "all", "template_folder_id": CHILD_FOLDER_ID},
             ],
             {"template_folder_id": GRANDCHILD_FOLDER_ID},
-            ["All", "Email", "Text message", "Letter"],
             [
                 "sms_template_nested Text message template",
             ],
@@ -242,7 +234,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
                 "template_type": "email",
                 "template_folder_id": GRANDCHILD_FOLDER_ID,
             },
-            ["All", "Email", "Text message", "Letter"],
             [],
             [],
             [],
@@ -253,7 +244,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_two",
             [{"template_type": "all"}],
             {"template_folder_id": FOLDER_TWO_ID},
-            ["All", "Email", "Text message", "Letter"],
             [],
             [],
             [],
@@ -264,7 +254,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_two",
             [{"template_type": "sms"}],
             {"template_folder_id": FOLDER_TWO_ID, "template_type": "sms"},
-            ["All", "Email", "Text message", "Letter"],
             [],
             [],
             [],
@@ -282,7 +271,6 @@ def test_should_show_templates_folder_page(
     expected_page_title,
     expected_parent_link_args,
     extra_args,
-    expected_nav_links,
     expected_items,
     expected_displayed_items,
     expected_searchable_text,
@@ -311,6 +299,7 @@ def test_should_show_templates_folder_page(
         },
     )
 
+    expected_nav_links = ["All", "Email", "Text message", "Letter"]
     service_one["permissions"] += ["letter"]
 
     page = client_request.get(
