@@ -19,8 +19,11 @@
   .pill a {
     @apply border-solid border-blue relative cursor-pointer;
   }
-  .pill a .pill-label {
+  .pill a .pill-content {
     @apply no-underline;
+  }
+  .pill a:hover .pill-label {
+    @apply underline;
   }
   .pill a:hover {
     @apply bg-blue-lightblue;
@@ -40,6 +43,10 @@
   a:link.pill-selected-item,
   a:visited.pill-selected-item {
     @apply text-blue;
+  }
+  a:link.pill-selected-item:hover,
+  a:visited.pill-selected-item:hover {
+    @apply text-white;
   }
 
   .pill-unselected-item {

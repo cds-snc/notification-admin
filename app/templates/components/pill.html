@@ -14,10 +14,10 @@
         <a href="{{ link }}" class='pill-unselected-item' aria-selected='false' role='tab'>
       {% endif %}
 
-          <div class="pill-label{% if show_count %} pill-count-item{% else %} pill-centered-item{% endif %}">
+          <div class="pill-content{% if show_count %} pill-count-item{% else %} pill-centered-item{% endif %}">
           {% if show_count %}
               <div class="inline">{{ big_number(count, **big_number_args) }}</div>
-              <div class="inline">
+              <div class="inline pill-label">
               {% if label == "sending" %}
                   {{ _('sending') }}
               {% elif label == "delivered" %}
