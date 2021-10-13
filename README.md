@@ -21,9 +21,9 @@ https://github.com/alphagov/notifications-admin
 
 ## First-time setup
 
-Brew is a package manager for OSX. The following command installs brew:
+[Brew is a package manager](https://brew.sh/) for OSX. The following command installs brew:
 ```shell
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
 Languages needed

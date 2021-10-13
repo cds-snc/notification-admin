@@ -47,7 +47,6 @@
     "axe-cli": "git+https://git@github.com/dequelabs/axe-cli.git",
     "babel-loader": "^8.2.2",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "caniuse-lite": "^1.0.30001264",
     "chromedriver": "^81.0.0",
     "css-loader": "^3.6.0",
     "cssnano": "^4.1.10",

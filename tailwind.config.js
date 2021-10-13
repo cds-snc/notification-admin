@@ -63,7 +63,7 @@ module.exports = {
         selected: "#e1e4e7",
         hover: "#d0d3d6",
         border: "#b5babe",
-        grey1: "#6f777b",
+        grey1: "#595959",
         grey2: "#bfc1c3",
         grey4: "#f8f8f8",
         lightgrey: "#C0C1C3",
@@ -74,7 +74,7 @@ module.exports = {
         default: "#ffbf47"
       },
       green: {
-        default: "#00823b",
+        default: "#00672F",
         darker: "#00703C",
         hover: "#00692f",
         border: "#003618",
@@ -106,8 +106,8 @@ module.exports = {
         '19': '19px',
       },
       borderWidth: {
-        '1':'1px',
-        '10':'10px',
+        '1': '1px',
+        '10': '10px',
       },
       fontFamily: {
         sans: ["lato"],
@@ -158,14 +158,14 @@ module.exports = {
     },
   },
   plugins: [
-    plugin(function({ addVariant, e }) {
+    plugin(function ({ addVariant, e }) {
       addVariant('link', ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
           return `.${e(`link${separator}${className}`)}:link`
         })
       })
     }),
-    plugin(function({ addUtilities, theme }) {
+    plugin(function ({ addUtilities, theme }) {
       const individualBorderColors = {
         '.border-b-gray-button': {
           borderBottomColor: theme('colors').gray.button
