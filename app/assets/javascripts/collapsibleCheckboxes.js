@@ -86,7 +86,7 @@
               <button
                 class="button button-secondary inline-block w-auto"
                 aria-expanded="${expanded ? "true" : "false"}"
-                aria-controls="${this.checkboxesDivId}">
+                aria-controls="${this.$checkboxesDivId}">
               ${buttonContent}
               </button>
             </div>`);
