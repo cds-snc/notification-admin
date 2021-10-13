@@ -607,6 +607,7 @@
 "Schedule and send up to {} messages to a list of recipients","Programmer et envoyer jusqu’à {} messages à une liste de destinataires."
 "Write personalised email or text messages using variables.","Rédiger des courriels ou des messages texte personnalisés en utilisant des variables."
 "Track message delivery status in your dashboard","Suivre l’état de livraison des messages dans votre tableau de bord."
+"An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user.","Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
 "Learn more about features","En savoir plus sur les fonctionnalités"
 "Integrate email and text message notifications into your service","Intégrez des notifications par courriel ou message texte dans votre service"
 "Two ways to send:","Deux modes d’envoi&nbsp;:"

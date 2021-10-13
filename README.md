@@ -27,7 +27,7 @@ Brew is a package manager for OSX. The following command installs brew:
 ```
 
 Languages needed
-- Python 3.4
+- Python 3.9
 - [Node](https://nodejs.org/) 10.15.3 or greater
 - [npm](https://www.npmjs.com/) 6.4.1 or greater
 ```shell

@@ -13,7 +13,7 @@
 
   .pill a,
   .pill-selected-item {
-    @apply block float-left box-border w-full py-5 no-underline self-center;
+    @apply block float-left shadow-outline2 w-full py-5 no-underline self-center;
   }
 
   .pill a {
@@ -23,7 +23,7 @@
     @apply no-underline;
   }
   .pill a:hover {
-    @apply underline;
+    @apply bg-blue-lightblue;
   }
   .pill a:active,
   .pill a:focus {
