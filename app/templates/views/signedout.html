@@ -409,7 +409,7 @@
                 {% if session["userlang"] == "en" %}
 
                   <img
-                    alt="An illustration of a price tag with 0$ indicated along with main features like: unlimited emails, batch send to recipients, customizable templates, and analytics dashboard."
+                    alt="An illustration of a price tag indicating $0 and main features as no set up fee, no cost to use, no procurement."
                     loading="lazy"
                     width="300"
                     style="object-fit: contain; object-position: 0% 30%;"
@@ -420,7 +420,7 @@
                 {% else %}
 
                   <img
-                    alt="Illustration d'une étiquette affichant « 0 $ » et les caractéristiques principales du produit : courriels illimités, envoi de messages en lot, gabarits personnalisables et tableau de bord analytique."
+                    alt="Illustration d'une étiquette sur laquelle sont écrits le prix de « 0 $ » et les caractéristiques principales du produit : aucun coût d’installation, aucuns frais d’utilisation, aucun achat externe."
                     loading="lazy"
                     width="300"
                     style="object-fit: contain; object-position: 0% 30%;"
@@ -440,21 +440,21 @@
         <div class="bg-gray" role="region" aria-label="{{ _('Counter') }}">
           <div class="container px-10 py-20 flex flex-col lg:flex-row justify-between">
             <!-- Box 1-->
-            <div class="flex flex-col items-start justify-end pb-10 lg:pb-0">
+            <div class="flex flex-2 flex-col items-start justify-end pb-10 lg:pb-0">
               <div class="text-brand font-bold extra-tight font-sans">{{ _("GC Notify by the numbers") }}</div>
               <div class="text-base py-2">
                 {{ content_link_light(label=_("Learn more about activity on GC Notify"), href=url_for('.activity' ), class="-ml-2") }}
               </div>
             </div>
             <!-- Box 2-->
-            <div class="pb-10 lg:pb-0">
-              <div class="text-xxl font-bold leading-none font-sans">{{ stats.live_services | format_number }}</div>
+            <div class="flex-1 pb-10 lg:pb-0">
+              <div class="xs:text-lg md:text-xxl font-bold leading-none font-sans">{{ stats.live_services | format_number }}</div>
               <div class="text-base py-2">{{ _("services using GC Notify") }}</div>
             </div>
             <!-- Box 3-->
-            <div class="pb-10 lg:pb-0">
+            <div class="flex-2 pb-10 lg:pb-0">
               <div
-                class="text-xxl font-bold leading-none font-sans">{{ stats.notifications_total | format_number }}</div>
+                class="xs:text-lg md:text-xxl font-bold leading-none font-sans">{{ stats.notifications_total | format_number }}</div>
               <div class="text-base py-2">{{ _("messages sent") }}</div>
             </div>
             <!-- end -->
