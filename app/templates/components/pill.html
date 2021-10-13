@@ -26,6 +26,8 @@
                 {{ _('total') }}
               {% elif label == "failed" %}
                 {{ _('failed') }}
+              {% else %}
+                {{ label }}
               {% endif %}
               </div>
           {% else %}
