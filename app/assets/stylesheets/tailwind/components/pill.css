@@ -11,13 +11,19 @@
     float: left;
   }
 
+  .pill {
+    /* pixel nudging for box-shadow border */
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+
   .pill a,
   .pill-selected-item {
     @apply block float-left shadow-outline2 w-full py-5 no-underline self-center;
   }
 
   .pill a {
-    @apply border-solid border-blue relative cursor-pointer;
+    @apply border-none relative cursor-pointer;
   }
   .pill a .pill-content {
     @apply no-underline;
@@ -34,7 +40,7 @@
   }
 
   .pill-selected-item {
-    @apply border-2 border-solid border-black relative z-10 text-black outline-white;
+    @apply bg-white relative z-10 text-black outline-white;
   }
   .pill-selected-item:focus {
     z-index: 1000;
@@ -50,7 +56,7 @@
   }
 
   .pill-unselected-item {
-    @apply bg-blue text-white border-2 border-solid border-black relative z-10 text-black outline-white;
+    @apply bg-blue text-white relative z-10 text-black outline-white;
   }
   .pill-unselected-item:focus {
     z-index: 1000;
