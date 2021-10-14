@@ -11,6 +11,12 @@
     float: left;
   }
 
+  .pill {
+    /* pixel nudging for box-shadow border */
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+
   .pill a,
   .pill-selected-item {
     @apply block float-left shadow-outline2 w-full py-5 no-underline self-center;
