@@ -17,7 +17,7 @@
   }
 
   .pill a {
-    @apply relative cursor-pointer;
+    @apply border-none relative cursor-pointer;
   }
   .pill a .pill-content {
     @apply no-underline;
@@ -34,7 +34,7 @@
   }
 
   .pill-selected-item {
-    @apply border-none relative z-10 text-black outline-white;
+    @apply relative z-10 text-black outline-white;
   }
   .pill-selected-item:focus {
     z-index: 1000;
@@ -50,7 +50,7 @@
   }
 
   .pill-unselected-item {
-    @apply border-none bg-blue text-white relative z-10 text-black outline-white;
+    @apply bg-blue text-white relative z-10 text-black outline-white;
   }
   .pill-unselected-item:focus {
     z-index: 1000;
