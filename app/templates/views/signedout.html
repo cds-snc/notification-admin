@@ -245,25 +245,13 @@
                   {{ _("Integrate email and text message notifications into your service") }}
                 </h2>
 
-                {% if session["userlang"] == "en" %}
-                  <img
-                    alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top lg:hidden"
-                    width="390"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-
-                  />
-                {% else %}
-                  <img
-                    alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top lg:hidden"
-                    width="390"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-                  />
-                {% endif %}
-
+                <img
+                  alt="{{ _('An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user.') }}"
+                  loading="lazy"
+                  class="max-w-full md:max-w-xl block align-top lg:hidden"
+                  width="390"
+                  src="{{ asset_s3_url('integrate-1.svg') }}"
+                />
 
                 <p class="block text-base mb-0 pt-20 lg:pt-4">
                   {{ _("Two ways to send:") }}
@@ -281,26 +269,14 @@
                 </p>
               </div>
               <div class="image-content pt-10 lg:pt-0 flex">
-                {% if session["userlang"] == "en" %}
-                  <img
-                    alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
-                    width="400"
-                    style="object-fit: contain; object-position: 0% 50%;"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-                  />
-                {% else %}
-                  <img
-                    alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
-                    width="400"
-                    style="object-fit: contain; object-position: 0% 50%;"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-                  />
-                {% endif %}
-
+                <img
+                  alt="{{ _('An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user.') }}"
+                  loading="lazy"
+                  class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
+                  width="400"
+                  style="object-fit: contain; object-position: 0% 50%;"
+                  src="{{ asset_s3_url('integrate-1.svg') }}"
+                />
               </div>
             </div>
           </div>

@@ -9,32 +9,33 @@
   <div role='tablist' class='pill flex'>
     {% for label, option, link, count in items %}
       {% if current_value == option %}
-        <div class='pill-selected-item{% if not show_count %} pill-centered-item{% endif %}' aria-selected='true' role='tab'>
+        <a href="{{ link }}" class='pill-selected-item{% if not show_count %} pill-centered-item{% endif %}' aria-selected='true' role='tab'>
       {% else %}
-        <a href="{{ link }}" aria-selected='false' role='tab'>
+        <a href="{{ link }}" class='pill-unselected-item' aria-selected='false' role='tab'>
       {% endif %}
-        {% if show_count %}
-            {{ big_number(count, **big_number_args) }}
-        {% endif %}
-            <div class="pill-label{% if not show_count %} pill-centered-item{% endif %}">  
-            {% if label == "sending" %}
-                {{ _('sending') }}
-            {% elif label == "delivered" %}
-              {{ _('delivered') }}
-            {% elif label == "total" %}
-              {{ _('total') }}
-            {% elif label == "failed" %}
-              {{ _('failed') }}
-            {% else %}
-             {{label}}
-            {% endif %}
 
-            </div>
-            {% if current_value == option %}
+          <div class="pill-content{% if show_count %} pill-count-item{% else %} pill-centered-item{% endif %}">
+          {% if show_count %}
+              <div class="inline">{{ big_number(count, **big_number_args) }}</div>
+              <div class="inline pill-label">
+              {% if label == "sending" %}
+                  {{ _('sending') }}
+              {% elif label == "delivered" %}
+                {{ _('delivered') }}
+              {% elif label == "total" %}
+                {{ _('total') }}
+              {% elif label == "failed" %}
+                {{ _('failed') }}
+              {% else %}
+                {{ label }}
+              {% endif %}
+              </div>
+          {% else %}
+              {{label}}
+          {% endif %}
           </div>
-      {% else %}
-          </a>
-      {% endif %}
+
+        </a>
     {% endfor %}
   </div>
 {% endmacro %}
