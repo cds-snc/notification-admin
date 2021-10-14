@@ -34,7 +34,7 @@
   }
 
   .pill-selected-item {
-    @apply relative z-10 text-black outline-white;
+    @apply bg-white relative z-10 text-black outline-white;
   }
   .pill-selected-item:focus {
     z-index: 1000;
