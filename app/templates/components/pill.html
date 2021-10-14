@@ -6,14 +6,12 @@
   big_number_args={'smaller': True},
   show_count=True
 ) %}
-  <ul role='tablist' class='pill flex'>
+  <div role='tablist' class='pill flex'>
     {% for label, option, link, count in items %}
       {% if current_value == option %}
-        <li aria-selected='true' role='tab'>
-          <div class='pill-selected-item{% if not show_count %} pill-centered-item{% endif %}' tabindex='0'>
+        <div class='pill-selected-item{% if not show_count %} pill-centered-item{% endif %}' aria-selected='true' role='tab'>
       {% else %}
-        <li aria-selected='false' role='tab'>
-          <a href="{{ link }}">
+        <a href="{{ link }}" aria-selected='false' role='tab'>
       {% endif %}
         {% if show_count %}
             {{ big_number(count, **big_number_args) }}
@@ -31,13 +29,12 @@
              {{label}}
             {% endif %}
 
-          </div>
+            </div>
             {% if current_value == option %}
           </div>
       {% else %}
           </a>
       {% endif %}
-        </li>
     {% endfor %}
-  </ul>
+  </div>
 {% endmacro %}
