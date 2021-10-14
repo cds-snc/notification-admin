@@ -16,7 +16,7 @@
   .show-more-empty span {
     top: -11px;
     outline: 10px solid white;
-    @apply relative bg-white inline-block border-b-1 border-solid border-blue-lightblue;
+    @apply relative bg-white inline-block border-b-1 border-solid border-blue;
   }
 
   .show-more-empty {
