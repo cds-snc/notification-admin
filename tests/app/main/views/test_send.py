@@ -83,9 +83,7 @@ def test_show_correct_title_and_description_for_sender_type(
     page = client_request.get(".set_sender", service_id=service_one["id"], template_id=fake_uuid)
 
     assert page.select_one("h1").text == expected_title
-
-    for element in ("legend", "legend .visually-hidden"):
-        assert normalize_spaces(page.select_one(element).text) == expected_description
+    assert normalize_spaces(page.select_one("legend .visually-hidden").text) == expected_description
 
 
 @pytest.mark.parametrize(
