@@ -63,7 +63,7 @@ module.exports = {
         selected: "#e1e4e7",
         hover: "#d0d3d6",
         border: "#b5babe",
-        grey1: "#6f777b",
+        grey1: "#595959",
         grey2: "#bfc1c3",
         grey4: "#f8f8f8",
         lightgrey: "#C0C1C3",
@@ -159,7 +159,7 @@ module.exports = {
   },
   plugins: [
     plugin(function ({ addVariant, e }) {
-      addVariant("link", ({ modifySelectors, separator }) => {
+      addVariant('link', ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
           return `.${e(`link${separator}${className}`)}:link`;
         });

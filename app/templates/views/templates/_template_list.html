@@ -33,7 +33,7 @@
             value=item.id,
           ) }}
         {% endif %}
-        <h2 class="message-name">
+        <p class="message-name">
           {% for ancestor in item.ancestors %}
             <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=ancestor.id, view='sending' if sending_view else None) }}" class="template-list-folder">
               {{- format_item_name(ancestor.name) -}}
@@ -48,7 +48,7 @@
               <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
             </a>
           {% endif %}
-        </h2>
+        </p>
         <p class="message-type">
           {{ _(item.hint) }}
         </p>
