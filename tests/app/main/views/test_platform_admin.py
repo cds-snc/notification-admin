@@ -1238,7 +1238,7 @@ def test_get_notifications_sent_by_service_validates_form(mocker, client_request
     assert len(errors) == 2
 
     for error in errors:
-        assert normalize_spaces(error.text) == "Not a valid date value"
+        assert normalize_spaces(error.text) == "Not a valid date value."
 
     mock_get_stats_from_api.assert_not_called()
 
