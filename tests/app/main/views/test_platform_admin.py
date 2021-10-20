@@ -1217,8 +1217,8 @@ def test_get_notifications_sent_by_service_shows_date_form(client_request, platf
     page = client_request.get("main.notifications_sent_by_service")
 
     assert [(input["type"], input["name"], input["value"]) for input in page.select("input")] == [
-        ("text", "start_date", ""),
-        ("text", "end_date", ""),
+        ("date", "start_date", ""),
+        ("date", "end_date", ""),
         ("hidden", "csrf_token", ANY),
     ]
 
