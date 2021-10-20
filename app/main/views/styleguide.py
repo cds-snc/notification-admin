@@ -14,7 +14,7 @@ def styleguide():
 
     class FormExamples(Form):
         username = StringField("Username")
-        password = PasswordField("Password", [validators.required()])
+        password = PasswordField("Password", [validators.input_required()])
         code = StringField("Enter code")
         message = TextAreaField("Message")
         file_upload = FileField("Upload a CSV file to add your recipients’ details")
