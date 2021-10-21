@@ -80,7 +80,7 @@
     <label class="block-label" for="{{ option.id }}" >
       {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
       {% if '||' in option.label.text %}
-        <div id="logo-img">
+        <div id="{{ option.id }}-img">
           <img src={{option.label.text.split("||")[1] }} style="width: 400px;margin-top:16px">
         </div>
       {% endif %}
