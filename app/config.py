@@ -119,6 +119,9 @@ class Config(object):
     FREE_YEARLY_SMS_LIMIT = int(os.getenv("FREE_YEARLY_SMS_LIMIT", 25_000))
     FREE_YEARLY_EMAIL_LIMIT = int(os.getenv("FREE_YEARLY_EMAIL_LIMIT", 10_000_000))
 
+    # Feature Flags
+    BULK_INSERTION = os.getenv("BULK_INSERTION", False)
+
 
 class Development(Config):
     DEBUG = True
