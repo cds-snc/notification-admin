@@ -31,7 +31,7 @@ from wtforms import (
     validators,
     widgets,
 )
-from wtforms.fields.html5 import EmailField, SearchField, TelField
+from wtforms.fields.core import EmailField, SearchField, TelField
 from wtforms.validators import URL, AnyOf, DataRequired, Length, Optional, Regexp
 from wtforms.widgets import CheckboxInput, ListWidget
 
