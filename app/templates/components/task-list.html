@@ -7,7 +7,7 @@
       </strong>
     {% elif status %}
       <strong class="task-list-indicator-completed" id="{{ label|id_safe }}">
-        <img aria-hidden="true" src="{{ asset_url('images/tick.png') }}" class="w-6 h-6 inline-block mr-2 -mt-1">
+        <img aria-hidden="true" src="{{ asset_url('images/tick.svg') }}" class="w-6 h-6 inline-block mr-2 -mt-1">
         {{ _('Completed') }}
       </strong>
     {% else %}
