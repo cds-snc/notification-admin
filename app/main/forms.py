@@ -899,15 +899,15 @@ class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):
         choices=[
             (
                 "status_updates",
-                _l("Information specific for each recipient (e.g. status update)"),
+                _l("Information specific for each recipient (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> status update)"),
             ),
             (
                 "transactional_messages",
-                _l("Action required by each recipient (e.g. password reset)"),
+                _l("Action required by each recipient (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> password reset)"),
             ),
             (
                 "newsletters",
-                _l("News or information sent in bulk to many recipients (e.g. newsletter)"),
+                _l("News or information sent in bulk to many recipients (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> newsletter)"),
             ),
             ("other", _l("Other")),
         ],
