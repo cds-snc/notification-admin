@@ -43,6 +43,7 @@
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
     "@fullhuman/postcss-purgecss": "^3.1.3",
+    "@testing-library/jest-dom": "^5.14.1",
     "autoprefixer": "^9.8.8",
     "axe-cli": "git+https://git@github.com/dequelabs/axe-cli.git",
     "babel-loader": "^8.2.2",
