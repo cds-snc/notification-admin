@@ -93,8 +93,8 @@ module.exports = {
         ellipsis: "ellipsis steps(4,end) 1.5s infinite"
       },
       backgroundImage: {
-        tick: "url('/static/images/tick.png')",
-        crossGrey: "url('/static/images/cross-grey.png')",
+        tick: "url('/static/images/tick.svg')",
+        crossGrey: "url('/static/images/cross-grey.svg')",
         folder: "url('/static/images/folder-black.svg')",
         folderBlack: "url('/static/images/folder-black-bold.svg')",
         folderBlackPng: "url('/static/images/folder-black-bold.png')",
