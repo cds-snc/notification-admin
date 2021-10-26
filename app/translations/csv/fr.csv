@@ -1489,3 +1489,5 @@
 "An example of the input for an email containing content in English and French, including language attribute tags.","Un exemple de la saisie pour un courriel avec du contenu en français et en anglais, y compris les balises d’attributs de langue."
 "A preview shows English and French content, with the correct language attributes set.","Un aperçu montre le contenu en français et en anglais, avec les attributs de langue bien indiqués."
 "Change details for","Modifier les détails pour"
+"main footer","pied de page principal"
+"secondary footer","pied de page secondaire"
