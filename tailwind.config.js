@@ -128,9 +128,6 @@ module.exports = {
       lineHeight: {
         'extra-tight': "0.9"
       },
-      maxWidth: {
-        '4xl': "53rem"
-      },
       outline: {
         yellow: "3px solid #ffbf47",
         white: "1px solid rgba(255, 255, 255, 0.1)"
@@ -149,6 +146,12 @@ module.exports = {
       },
       width: {
         '5/8': "62.5%"
+      },
+      maxWidth: {
+        '4xl': "53rem"
+      },
+      minHeight: {
+        target: "45px"
       },
       flex: {
         2: "2 2 0%",
