@@ -28,7 +28,7 @@
   {% call select_wrapper(
     field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style
   ) %}
-  <div class="select-nested {{ "radios" if input == "radio" else "checkboxes" }}-nested">
+  <div id="folder-permission-checkboxes" class="select-nested {{ "radios" if input == "radio" else "checkboxes" }}-nested">
       {{ select_list(child_map[None], child_map, disable, option_hints, input=input) }}
     </div>
   {% endcall %}
@@ -38,11 +38,8 @@
 {% macro select_wrapper(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text") %}
   {% set is_collapsible = collapsible_opts|length %}
   <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter {% if field.errors %} form-group-error{% endif %}"{% if is_collapsible %} data-module="collapsible-checkboxes"{% if collapsible_opts.field %} data-field-label="{{ collapsible_opts.field }}"{% endif %}{% endif %}>
-    {% if is_collapsible %}
-    <div class="selection-summary" role="region" aria-live="polite"></div>
-    {% endif %}
     <fieldset id="{{ field.id }}" class="contain-floats w-full">
-      <legend class="{{ 'form-label' if not hide_legend else '' }}{% if legend_style != 'text' %} {{ legend_style }}{% endif %}">
+      <legend class="{{ 'form-label heading-small' }}{% if legend_style != 'text' %} {{ legend_style }}{% endif %}">
         {% if hide_legend %}<span class="visually-hidden">{% endif %}
           {{ field.label.text|safe }}
         {% if hide_legend %}</span>{% endif %}
@@ -57,6 +54,9 @@
           </span>
         {% endif %}
       </legend>
+      {% if is_collapsible %}
+      <div class="selection-summary" role="region" aria-live="polite"></div>
+      {% endif %}
       {{ caller() }}
     </fieldset>
   </div>
