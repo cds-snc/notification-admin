@@ -24,12 +24,20 @@
     all: (selection, total, field) => {
       return window.polyglot.t(`all_${field}s`);
     },
-    some: (selection, total, field) => `${selection} of ${total} ${field}s`,
+    some: (selection, total, field) =>
+      window.polyglot.t(`selection_of_total_${field}`, {
+        selection: selection,
+        total: total,
+        smart_count: selection,
+      }),
     none: (selection, total, field) =>
       ({
-        folder: "No folders (only templates outside a folder)",
-        "team member": "No team members (only you)",
-      }[field] || `No ${field}s`),
+        folder: window.polyglot.t("no_folders_only_outside_folder"),
+        "team member": window.polyglot.t("no_team_member_only_you"),
+      }[field] ||
+      window.polyglot.t("no_fields", {
+        field: field,
+      })),
   };
   Summary.prototype.addContent = function () {
     this.$text = $(`<p class="selection-summary__text" />`);
@@ -75,7 +83,12 @@
       return window.polyglot.t(`choose_${fieldLabel}s`);
     },
     done: (fieldLabel) =>
-      `Done<span class="visuallyhidden"> choosing ${fieldLabel}s</span>`,
+      [
+        window.polyglot.t("done"),
+        "<span class='visuallyhidden'> ",
+        window.polyglot.t(`choosing ${fieldLabel}s`),
+        "</span>",
+      ].join(""),
   };
   Footer.prototype.getEl = function (expanded) {
     const buttonState = expanded ? "done" : "change";

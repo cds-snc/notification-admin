@@ -7,3 +7,5 @@
 "sent-dashboard-plural","sent"
 "Not a valid international number","Not a valid phone number"
 "Not a valid local number","Not a valid phone number"
+"many {selection} of {total} folders","{selection} of {total} folders"
+"many {selection} of {total} team members","{selection} of {total} team members"
