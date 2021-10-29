@@ -14,7 +14,7 @@
 </fieldset>
 
 {% if form.folder_permissions.all_template_folders %}
-  {{ checkboxes_nested(form.folder_permissions, form.folder_permissions.children(), hide_legend=True, collapsible_opts={ 'field': 'folder' }) }}
+  {{ checkboxes_nested(form.folder_permissions, form.folder_permissions.children(), hide_legend=False, collapsible_opts={ 'field': 'folder' }) }}
 {% elif user and user.platform_admin %}
   <p class="mb-12 clear-both contain-floats">
     {{ _('Platform admin users can access all template folders.') }}
