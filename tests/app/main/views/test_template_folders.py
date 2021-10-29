@@ -42,7 +42,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         "expected_page_title,"
         "expected_parent_link_args,"
         "extra_args,"
-        "expected_nav_links,"
         "expected_items, "
         "expected_displayed_items, "
         "expected_searchable_text, "
@@ -54,7 +53,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates",
             [],
             {},
-            ["Email", "Text message", "Letter"],
             [
                 "folder_one 2 folders",
                 "folder_one folder_one_one 1 template, 1 folder",
@@ -102,7 +100,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates",
             [],
             {"template_type": "sms"},
-            ["All", "Email", "Letter"],
             [
                 "folder_one 1 folder",
                 "folder_one folder_one_one 1 folder",
@@ -131,7 +128,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_one",
             [{"template_type": "all"}],
             {"template_folder_id": PARENT_FOLDER_ID},
-            ["Email", "Text message", "Letter"],
             [
                 "folder_one_one 1 template, 1 folder",
                 "folder_one_one folder_one_one_one 1 template",
@@ -157,7 +153,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_one",
             [{"template_type": "sms"}],
             {"template_type": "sms", "template_folder_id": PARENT_FOLDER_ID},
-            ["All", "Email", "Letter"],
             [
                 "folder_one_one 1 folder",
                 "folder_one_one folder_one_one_one 1 template",
@@ -178,7 +173,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_one",
             [{"template_type": "email"}],
             {"template_type": "email", "template_folder_id": PARENT_FOLDER_ID},
-            ["All", "Text message", "Letter"],
             [],
             [],
             [],
@@ -192,7 +186,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
                 {"template_type": "all", "template_folder_id": PARENT_FOLDER_ID},
             ],
             {"template_folder_id": CHILD_FOLDER_ID},
-            ["Email", "Text message", "Letter"],
             [
                 "folder_one_one_one 1 template",
                 "folder_one_one_one sms_template_nested Text message template",
@@ -218,7 +211,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
                 {"template_type": "all", "template_folder_id": CHILD_FOLDER_ID},
             ],
             {"template_folder_id": GRANDCHILD_FOLDER_ID},
-            ["Email", "Text message", "Letter"],
             [
                 "sms_template_nested Text message template",
             ],
@@ -242,7 +234,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
                 "template_type": "email",
                 "template_folder_id": GRANDCHILD_FOLDER_ID,
             },
-            ["All", "Text message", "Letter"],
             [],
             [],
             [],
@@ -253,7 +244,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_two",
             [{"template_type": "all"}],
             {"template_folder_id": FOLDER_TWO_ID},
-            ["Email", "Text message", "Letter"],
             [],
             [],
             [],
@@ -264,7 +254,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_two",
             [{"template_type": "sms"}],
             {"template_folder_id": FOLDER_TWO_ID, "template_type": "sms"},
-            ["All", "Email", "Letter"],
             [],
             [],
             [],
@@ -282,7 +271,6 @@ def test_should_show_templates_folder_page(
     expected_page_title,
     expected_parent_link_args,
     extra_args,
-    expected_nav_links,
     expected_items,
     expected_displayed_items,
     expected_searchable_text,
@@ -311,6 +299,7 @@ def test_should_show_templates_folder_page(
         },
     )
 
+    expected_nav_links = ["All", "Email", "Text message", "Letter"]
     service_one["permissions"] += ["letter"]
 
     page = client_request.get(
@@ -473,7 +462,7 @@ def test_get_manage_folder_viewing_permissions_for_users(
         _test_page_title=False,
     )
     assert normalize_spaces(page.select_one("title").text) == ("folder_two – Templates - service one – Notify")
-    form_labels = page.select("legend[class=form-label]")
+    form_labels = page.select("legend")
     assert normalize_spaces(form_labels[0].text) == "Team members who can see this folder"
     checkboxes = page.select("input[name=users_with_permission]")
 
@@ -692,6 +681,32 @@ def test_rename_folder(
         name="new beautiful name",
         users_with_permission=None,
     )
+
+
+def test_cannot_rename_folder_blank(
+    client_request,
+    active_user_with_permissions,
+    service_one,
+    mock_get_template_folders,
+    mocker,
+):
+    mock_update = mocker.patch("app.template_folder_api_client.update_template_folder")
+    folder_id = str(uuid.uuid4())
+    mock_get_template_folders.return_value = [_folder("folder_two", folder_id, None, [active_user_with_permissions["id"]])]
+    mocker.patch(
+        "app.models.user.Users.client",
+        return_value=[active_user_with_permissions],
+    )
+
+    client_request.post(
+        "main.manage_template_folder",
+        service_id=service_one["id"],
+        template_folder_id=folder_id,
+        _data={"name": "    ", "users_with_permission": []},
+        _expected_status=200,
+    )
+
+    assert mock_update.called is False
 
 
 def test_manage_folder_users(
@@ -1310,6 +1325,31 @@ def test_new_folder_is_created_if_only_new_folder_is_filled_out(
     mock_create_template_folder.assert_called_once_with(SERVICE_ONE_ID, name="new folder", parent_id=None)
 
 
+def test_cannot_create_blank_new_folder(
+    client_request,
+    service_one,
+    mock_get_service_templates,
+    mock_get_template_folders,
+    mock_move_to_template_folder,
+    mock_create_template_folder,
+):
+    data = {
+        "move_to_new_folder_name": "",
+        "add_new_folder_name": "  ",
+        "operation": "add-new-folder",
+    }
+
+    client_request.post(
+        "main.choose_template",
+        service_id=SERVICE_ONE_ID,
+        _data=data,
+        _expected_status=200,
+    )
+
+    assert mock_move_to_template_folder.called is False
+    assert mock_create_template_folder.called is False
+
+
 def test_should_be_able_to_move_to_new_folder(
     client_request,
     service_one,
@@ -1348,6 +1388,39 @@ def test_should_be_able_to_move_to_new_folder(
         folder_ids={FOLDER_TWO_ID},
         template_ids={TEMPLATE_ONE_ID},
     )
+
+
+def test_cannot_move_to_blank_new_folder(
+    client_request,
+    service_one,
+    mock_get_service_templates,
+    mock_get_template_folders,
+    mock_move_to_template_folder,
+    mock_create_template_folder,
+):
+    FOLDER_TWO_ID = str(uuid.uuid4())
+    mock_get_template_folders.return_value = [
+        _folder("parent_folder", PARENT_FOLDER_ID, None),
+        _folder("folder_two", FOLDER_TWO_ID, None),
+    ]
+
+    client_request.post(
+        "main.choose_template",
+        service_id=SERVICE_ONE_ID,
+        template_folder_id=None,
+        _data={
+            "operation": "move-to-new-folder",
+            "move_to_new_folder_name": "  ",
+            "templates_and_folders": [
+                FOLDER_TWO_ID,
+                TEMPLATE_ONE_ID,
+            ],
+        },
+        _expected_status=200,
+    )
+
+    assert mock_create_template_folder.called is False
+    assert mock_move_to_template_folder.called is False
 
 
 def test_radio_button_with_no_value_shows_error_message(

@@ -1,0 +1,47 @@
+{% extends "content_template.html" %}
+{% from "components/table.html" import mapping_table, row, text_field, edit_field, field with context %}
+
+{% block per_page_title %}
+  {{ _('Accessibility') }}
+{% endblock %}
+
+{% block content_column_content %}
+  <h1 class="heading-large">{{ _('Accessibility') }}</h1>
+
+  <section>  
+    <h2 class="heading-medium">{{ _('Our approach') }}</h2>
+    <p>{{ _('GC Notify was started using open-source code from the United Kingdom ') }} (<a href='https://www.notifications.service.gov.uk/'>GOV.UK Notify</a>). {{ _('Originally built to the UK government’s accessibility standards, Notify has been modified for the Canadian context.') }}</p>
+    <p>{{ _('Our goal is to go above the minimum compliance requirement level AA of the Web Content Accessibility Guidelines 2.1 ') }} (<a href='https://www.w3.org/TR/WCAG21/'>WCAG 2.1</a>).</p>
+
+    <h3 class="heading-small">{{ _('Known issues and limitations') }}</h3>
+
+    <ul style="list-style-type: disc; margin-left: 2em; margin-bottom: 20px;">
+      <li>{{ _('Screen readers do not always read text in emails in the correct language.') }}</li>
+      <li>{{ _('GC Notify is not currently tested with mobile browsers.') }}</li>
+    </ul>
+    <p>{{ _('Learn more about how we approach our work in the ') }}<a href='{{ _("https://digital.canada.ca/a11y/") }}'>{{ _('CDS Accessibility Handbook') }}.</a> </p>
+  </section>
+ 
+  <section>  
+    <h2 class="heading-medium">{{ _('Our commitment') }}</h2>
+    <p>{{ _('We are committed to meeting your needs no matter how you use the service. We understand that people may have different needs for accommodation. To make sure we can be inclusive of everyone, we want to learn from you.') }}</p>
+
+    <h3 class="heading-small">{{ _('Tell us how we’re doing') }}</h3>
+
+    <p>{{ _('To tell us about accessibility issues in GC Notify, you can:') }}</p>
+    <ul style="list-style-type: disc; margin-left: 2em; margin-bottom: 20px;">
+      <li>{{ _('Reach out to us through our ') }} <a href='{{ url_for("main.contact") }}'>{{ _('contact form') }}</a>.</li>
+      <li>{{ _('Email us at ') }}<a href="mailto:assistance+notification@cds-snc.ca">assistance+notification@cds-snc.ca</a>.</li>
+      <li>{{ _('Create an issue on our ') }}<a href='https://github.com/cds-snc/notification-admin'>{{ _('public GitHub repository') }}</a>.</li>
+    </ul>
+
+    <p>{{ _('We will work with you to:') }}</p>
+    <ul style="list-style-type: disc; margin-left: 2em; margin-bottom: 20px;">
+      <li>{{ _('Understand issues you’ve encountered and how they impact you.') }}</li>
+      <li>{{ _('Log all bugs in our product backlog and address them with high priority.') }}</li>
+      <li>{{ _('Resolve issues as soon as we can.') }}</li>
+    </ul>
+    <p>{{ _('We are grateful for your feedback and insights.') }} </p>
+  </section>
+ 
+{% endblock %}

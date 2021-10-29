@@ -19,10 +19,11 @@ from app.utils import (
     get_letter_printing_statement,
     get_logo_cdn_domain,
     get_remote_addr,
+    get_template,
     printing_today_or_tomorrow,
     report_security_finding,
 )
-from tests.conftest import fake_uuid
+from tests.conftest import SERVICE_ONE_ID, fake_uuid, set_config, template_json
 
 
 def _get_notifications_csv(
@@ -608,3 +609,20 @@ def test_documentation_url(mocker, app_, feature, lang, section, expected):
     with app_.test_request_context():
         mocker.patch("app.get_current_locale", return_value=lang)
         assert documentation_url(feature, section) == expected
+
+
+@pytest.mark.parametrize(
+    "allowed_service_id, allow_html",
+    [
+        (SERVICE_ONE_ID, True),
+        ("", False),
+    ],
+)
+def test_get_template_with_html_allowed(mocker, app_, service_one, fake_uuid, allowed_service_id, allow_html):
+    template = template_json(SERVICE_ONE_ID, fake_uuid, type_="email")
+
+    with set_config(app_, "ALLOW_HTML_SERVICE_IDS", allowed_service_id):
+        email_template = get_template(template, service_one)
+
+    assert email_template is not None
+    assert email_template.allow_html is allow_html

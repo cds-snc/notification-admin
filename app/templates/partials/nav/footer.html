@@ -3,7 +3,7 @@
 
 <footer aria-label="{{ _('footer menu') }}">
   <div class="bg-blue">
-    <nav id="footer-primary" class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4" aria-label="footer links">
+    <nav id="footer-primary" class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4" aria-label="{{ _('main footer') }}">
       <div class="py-24 grid lg:grid-cols-3 md:grid-cols-2 smaller:grid-cols-1 gap-4">
         <div class="flex-1 grid grid-cols-1 gap-y-1 grid-rows-4">
           <div>
@@ -48,7 +48,7 @@
       id="footer-secondary"
       class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4
        grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 gap-16 md:gap-4 py-24"
-      aria-label="footer secondary links">
+      aria-label="{{ _('secondary footer') }}">
 
       <div class="flex flex-col gap-4 lg:flex-row lg:items-center md:col-span-2">
         <div class="flex-shrink mr-5">
@@ -76,6 +76,23 @@
             src="{{ asset_url('images/bullet.svg') }}"
           />
           {{ nav_link_light(label=_("Security"), href=url_for('main.security')) }}
+        </div>
+        <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
+          <img
+            aria-hidden="true"
+            alt="{{ _('Separator') }}"
+            class="self-center"
+            src="{{ asset_url('images/bullet.svg') }}"
+          />
+        </div>
+        <div class="flex-shrink lg:mx-5">
+          <img
+            aria-hidden="true"
+            alt="{{ _('Separator') }}"
+            class="self-center lg:hidden inline mr-3"
+            src="{{ asset_url('images/bullet.svg') }}"
+          />
+          {{ nav_link_light(label=_("Accessibility"), href=url_for('main.a11y')) }}
         </div>
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img

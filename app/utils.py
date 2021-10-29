@@ -9,6 +9,7 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
+from typing import Any
 
 import boto3
 import dateutil
@@ -62,6 +63,14 @@ with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file_
 user_is_logged_in = login_required
 
 
+def is_lambda_api():
+    """
+    We need to detect if we are connected to the lambda api rather than the k8s api,
+    since some response data is different
+    """
+    return "lambda" in current_app.config["API_HOST_NAME"]
+
+
 @cache.memoize(timeout=3600)
 def get_latest_stats(lang):
     results = service_api_client.get_stats_by_month()["data"]
@@ -70,7 +79,12 @@ def get_latest_stats(lang):
     emails_total = 0
     sms_total = 0
     for line in results:
-        date, notification_type, count = line
+        if is_lambda_api():
+            date = line["month"]
+            notification_type = line["notification_type"]
+            count = line["count"]
+        else:
+            date, notification_type, count = line
         year = date[:4]
         year_month = date[:7]
         month = f"{get_month_name(date)} {year}"
@@ -433,6 +447,7 @@ def get_template(
             redact_missing_personalisation=redact_missing_personalisation,
             reply_to=email_reply_to,
             jinja_path=debug_template_path,
+            allow_html=(service.id in current_app.config["ALLOW_HTML_SERVICE_IDS"]),
             **get_email_logo_options(service),
         )
     if "sms" == template["template_type"]:
@@ -741,3 +756,8 @@ class PermanentRedirect(RequestRedirect):
     """
 
     code = 301
+
+
+def is_blank(content: Any) -> bool:
+    content = str(content)
+    return not content or content.isspace()

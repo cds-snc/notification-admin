@@ -76,13 +76,12 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
 
 
 @pytest.mark.parametrize(
-    "user, expected_page_title, extra_args, expected_nav_links, expected_templates",
+    "user, expected_page_title, extra_args, expected_templates",
     [
         (
             active_user_view_permissions,
             "Templates",
             {},
-            ["Email", "Text message", "Letter"],
             [
                 "sms_template_one",
                 "sms_template_two",
@@ -96,28 +95,24 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
             active_user_view_permissions,
             "Templates",
             {"template_type": "sms"},
-            ["All", "Email", "Letter"],
             ["sms_template_one", "sms_template_two"],
         ),
         (
             active_user_view_permissions,
             "Templates",
             {"template_type": "email"},
-            ["All", "Text message", "Letter"],
             ["email_template_one", "email_template_two"],
         ),
         (
             active_user_view_permissions,
             "Templates",
             {"template_type": "letter"},
-            ["All", "Email", "Text message"],
             ["letter_template_one", "letter_template_two"],
         ),
         (
             active_caseworking_user,
             "Templates",
             {},
-            ["Email", "Text message", "Letter"],
             [
                 "sms_template_one",
                 "sms_template_two",
@@ -131,7 +126,6 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
             active_caseworking_user,
             "Templates",
             {"template_type": "email"},
-            ["All", "Text message", "Letter"],
             ["email_template_one", "email_template_two"],
         ),
     ],
@@ -142,7 +136,6 @@ def test_should_show_page_for_choosing_a_template(
     mock_get_template_folders,
     mock_has_no_jobs,
     extra_args,
-    expected_nav_links,
     expected_templates,
     service_one,
     mocker,
@@ -150,6 +143,7 @@ def test_should_show_page_for_choosing_a_template(
     user,
     expected_page_title,
 ):
+    expected_nav_links = ["All", "Email", "Text message", "Letter"]
     service_one["permissions"].append("letter")
     client_request.login(user(fake_uuid))
 

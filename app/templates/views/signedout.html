@@ -159,7 +159,7 @@
 
               {% if session["userlang"] == "en" %}
                 <img
-                  alt="An illustration that shows how a personalized message template can be created using variables such as name, day of the week and colour."
+                  alt="An illustration that shows how a personalised message template can be created using variables such as name, day of the week and colour."
                   loading="lazy"
                   width="400"
                   src="{{ asset_s3_url('text-messages-en-v2.svg') }}"
@@ -245,25 +245,13 @@
                   {{ _("Integrate email and text message notifications into your service") }}
                 </h2>
 
-                {% if session["userlang"] == "en" %}
-                  <img
-                    alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top lg:hidden"
-                    width="390"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-
-                  />
-                {% else %}
-                  <img
-                    alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top lg:hidden"
-                    width="390"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-                  />
-                {% endif %}
-
+                <img
+                  alt="{{ _('An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user.') }}"
+                  loading="lazy"
+                  class="max-w-full md:max-w-xl block align-top lg:hidden"
+                  width="390"
+                  src="{{ asset_s3_url('integrate-1.svg') }}"
+                />
 
                 <p class="block text-base mb-0 pt-20 lg:pt-4">
                   {{ _("Two ways to send:") }}
@@ -281,26 +269,14 @@
                 </p>
               </div>
               <div class="image-content pt-10 lg:pt-0 flex">
-                {% if session["userlang"] == "en" %}
-                  <img
-                    alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
-                    width="400"
-                    style="object-fit: contain; object-position: 0% 50%;"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-                  />
-                {% else %}
-                  <img
-                    alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
-                    width="400"
-                    style="object-fit: contain; object-position: 0% 50%;"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-                  />
-                {% endif %}
-
+                <img
+                  alt="{{ _('An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user.') }}"
+                  loading="lazy"
+                  class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
+                  width="400"
+                  style="object-fit: contain; object-position: 0% 50%;"
+                  src="{{ asset_s3_url('integrate-1.svg') }}"
+                />
               </div>
             </div>
           </div>
@@ -409,7 +385,7 @@
                 {% if session["userlang"] == "en" %}
 
                   <img
-                    alt="An illustration of a price tag with 0$ indicated along with main features like: unlimited emails, batch send to recipients, customizable templates, and analytics dashboard."
+                    alt="An illustration of a price tag indicating $0 and main features as no set up fee, no cost to use, no procurement."
                     loading="lazy"
                     width="300"
                     style="object-fit: contain; object-position: 0% 30%;"
@@ -420,7 +396,7 @@
                 {% else %}
 
                   <img
-                    alt="Illustration d'une étiquette affichant « 0 $ » et les caractéristiques principales du produit : courriels illimités, envoi de messages en lot, gabarits personnalisables et tableau de bord analytique."
+                    alt="Illustration d'une étiquette sur laquelle sont écrits le prix de « 0 $ » et les caractéristiques principales du produit : aucun coût d’installation, aucuns frais d’utilisation, aucun achat externe."
                     loading="lazy"
                     width="300"
                     style="object-fit: contain; object-position: 0% 30%;"
@@ -440,21 +416,21 @@
         <div class="bg-gray" role="region" aria-label="{{ _('Counter') }}">
           <div class="container px-10 py-20 flex flex-col lg:flex-row justify-between">
             <!-- Box 1-->
-            <div class="flex flex-col items-start justify-end pb-10 lg:pb-0">
+            <div class="flex flex-2 flex-col items-start justify-end pb-10 lg:pb-0">
               <div class="text-brand font-bold extra-tight font-sans">{{ _("GC Notify by the numbers") }}</div>
               <div class="text-base py-2">
                 {{ content_link_light(label=_("Learn more about activity on GC Notify"), href=url_for('.activity' ), class="-ml-2") }}
               </div>
             </div>
             <!-- Box 2-->
-            <div class="pb-10 lg:pb-0">
-              <div class="text-xxl font-bold leading-none font-sans">{{ stats.live_services | format_number }}</div>
+            <div class="flex-1 pb-10 lg:pb-0">
+              <div class="xs:text-lg md:text-xxl font-bold leading-none font-sans">{{ stats.live_services | format_number }}</div>
               <div class="text-base py-2">{{ _("services using GC Notify") }}</div>
             </div>
             <!-- Box 3-->
-            <div class="pb-10 lg:pb-0">
+            <div class="flex-2 pb-10 lg:pb-0">
               <div
-                class="text-xxl font-bold leading-none font-sans">{{ stats.notifications_total | format_number }}</div>
+                class="xs:text-lg md:text-xxl font-bold leading-none font-sans">{{ stats.notifications_total | format_number }}</div>
               <div class="text-base py-2">{{ _("messages sent") }}</div>
             </div>
             <!-- end -->

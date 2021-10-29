@@ -6,14 +6,14 @@
 {% from "components/table.html" import mapping_table, row, text_field, optional_text_field, edit_field, delete_field, field, boolean_field with context %}
 
 {% block per_page_title %}
-  {{ _('Security key(s)') }}
+  {{ _('Security keys') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <div class="test-key-message"></div>
 
-  {% set title_txt = _('Security key(s)') %}
+  {% set title_txt = _('Security keys') %}
   {{ page_header(
     title_txt,
     back_link=url_for('.user_profile')
