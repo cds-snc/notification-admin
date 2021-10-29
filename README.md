@@ -281,7 +281,7 @@ https://github.com/alphagov/notifications-admin
 
 ## Première mise en place
 
-Brew est un gestionnaire de paquets pour OSX. La commande suivante permet d'installer brew :
+[Brew est un gestionnaire de paquets]((https://brew.sh/)) pour OSX. La commande suivante permet d'installer brew :
 ```shell
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
@@ -443,8 +443,8 @@ Pour JavaScript
 ```
 // ajoutez votre texte au main_template
 window.APP_PHRASES = {
-    now: "{{ _('Now') }}",
-    }
+  now: "{{ _('Now') }}",
+}
 ```
 
 ```
