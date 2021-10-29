@@ -128,7 +128,7 @@ describe('Collapsible fieldset', () => {
     test("has the correct aria attributes on the button", () => {
 
       expect(helpers.element(formGroup.querySelector('.button')).hasAttributesSetTo({
-        'aria-controls': checkboxesContainer.getAttribute('id'),
+        'aria-controls': fieldset.getAttribute('id'),
         'aria-expanded': 'false'
       })).toBe(true);
 
@@ -150,7 +150,9 @@ describe('Collapsible fieldset', () => {
     const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
     // default state is for none to be selected
-    expect(summaryText.textContent.trim()).toEqual("No folders (only templates outside a folder)");
+    expect(window.polyglot.t(summaryText.textContent.trim())).toEqual(
+      "No folders (only templates outside a folder)"
+    );
 
   });
 
@@ -166,7 +168,9 @@ describe('Collapsible fieldset', () => {
 
     const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
-    expect(summaryText.textContent.trim()).toEqual("3 of 10 folders");
+    expect(window.polyglot.t(summaryText.textContent.trim())).toEqual(
+      "3 of 10 folders"
+    );
 
   });
 

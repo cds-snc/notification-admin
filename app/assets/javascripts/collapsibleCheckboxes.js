@@ -24,12 +24,20 @@
     all: (selection, total, field) => {
       return window.polyglot.t(`all_${field}s`);
     },
-    some: (selection, total, field) => `${selection} of ${total} ${field}s`,
+    some: (selection, total, field) =>
+      window.polyglot.t(`selection_of_total_${field}`, {
+        selection: selection,
+        total: total,
+        smart_count: selection,
+      }),
     none: (selection, total, field) =>
       ({
-        folder: "No folders (only templates outside a folder)",
-        "team member": "No team members (only you)",
-      }[field] || `No ${field}s`),
+        folder: window.polyglot.t("no_folders_only_outside_folder"),
+        "team member": window.polyglot.t("no_team_member_only_you"),
+      }[field] ||
+      window.polyglot.t("no_fields", {
+        field: field,
+      })),
   };
   Summary.prototype.addContent = function () {
     this.$text = $(`<p class="selection-summary__text" />`);
@@ -63,6 +71,7 @@
   function Footer(module) {
     this.module = module;
     this.fieldLabel = module.fieldLabel;
+    this.fieldsetId = module.$fieldset.attr("id");
     this.$checkboxesDivId = module.$formGroup
       .find("fieldset .select-nested.checkboxes-nested")
       .attr("id");
@@ -75,18 +84,23 @@
       return window.polyglot.t(`choose_${fieldLabel}s`);
     },
     done: (fieldLabel) =>
-      `Done<span class="visuallyhidden"> choosing ${fieldLabel}s</span>`,
+      `${window.polyglot.t(
+        "done"
+      )}<span class='visuallyhidden'> ${window.polyglot.t(
+        `choosing ${fieldLabel}s`
+      )}</span>`,
   };
   Footer.prototype.getEl = function (expanded) {
     const buttonState = expanded ? "done" : "change";
     const buttonContent = this.buttonContent[buttonState](this.fieldLabel);
     const stickyClass = expanded ? " js-stick-at-bottom-when-scrolling" : "";
 
+    console.log("expanded", expanded);
     return $(`<div class="clear-both selection-footer${stickyClass}">
               <button
                 class="button button-secondary inline-block w-auto"
                 aria-expanded="${expanded ? "true" : "false"}"
-                aria-controls="${this.$checkboxesDivId}">
+                aria-controls="${this.fieldsetId}">
               ${buttonContent}
               </button>
             </div>`);
@@ -109,7 +123,7 @@
     this.$formGroup = $(component);
     this.$fieldset = this.$formGroup.find("fieldset");
     this.$checkboxesDiv = this.$fieldset.find(
-      ".select-nested.checkboxes-nested"
+      ".select-nested.checkboxes-nested, .multiple-choice"
     );
     this.$checkboxes = this.$fieldset.find("input[type=checkbox]");
     this.fieldLabel = this.$formGroup.data("fieldLabel");
@@ -125,7 +139,7 @@
 
     // add custom classes
     this.$formGroup.addClass("selection-wrapper");
-    this.$fieldset.addClass("selection-content mb-8 focus:outline-none");
+    this.$fieldset.addClass("selection-content focus:outline-none");
 
     // hide checkboxes
     this.$checkboxesDiv.hide();
