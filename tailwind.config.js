@@ -16,7 +16,8 @@ module.exports = {
       outset2neg: "0 -2px 0 0 rgba(191, 193, 195, 0.2)",
       outset3: "3px 0 0 0 rgba(191, 193, 195, 0.2)",
       yellow3: "-3px 0 0 0 rgba(255, 191, 71, 1), 3px 0 0 0 rgba(255, 191, 71, 1)",
-      focusLine2: "0 2px 0 3px #1A3152"
+      focusLine2: "0 2px 0 3px #1A3152",
+      button2: "0 2px 0 rgb(38, 55, 74, 1)"
     },
     fontSize: {
       xs: "1.3rem",
@@ -128,9 +129,6 @@ module.exports = {
       lineHeight: {
         'extra-tight': "0.9"
       },
-      maxWidth: {
-        '4xl': "53rem"
-      },
       outline: {
         yellow: "3px solid #ffbf47",
         white: "1px solid rgba(255, 255, 255, 0.1)"
@@ -149,6 +147,12 @@ module.exports = {
       },
       width: {
         '5/8': "62.5%"
+      },
+      maxWidth: {
+        '4xl': "53rem"
+      },
+      minHeight: {
+        target: "45px"
       },
       flex: {
         2: "2 2 0%",
