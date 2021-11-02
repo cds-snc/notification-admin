@@ -134,10 +134,10 @@ module.exports = {
         white: "1px solid rgba(255, 255, 255, 0.1)"
       },
       spacing: {
-        gutter: "30px",
-        gutterHalf: "15px",
-        gutterAndAHalf: "45px",
-        doubleGutter: "60px"
+        gutter: "3.0rem",
+        gutterHalf: "1.5rem",
+        gutterAndAHalf: "4.5rem",
+        doubleGutter: "6.0rem"
       },
       transitionDuration: {
         '600': "600ms"
