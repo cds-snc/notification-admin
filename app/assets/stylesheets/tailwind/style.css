@@ -109,6 +109,11 @@ input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
 }
 
+.decoration-clone {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
 .hidden,
 .js-enabled .js-hidden {
   @apply hidden invisible;
