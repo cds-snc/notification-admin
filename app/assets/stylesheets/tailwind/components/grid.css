@@ -1,8 +1,8 @@
 @layer components {
   /*! purgecss start ignore */
   .grid-row {
-    margin-left: -15px;
-    margin-right: -15px;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
     @apply my-0;
   }
 
