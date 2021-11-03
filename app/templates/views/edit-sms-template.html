@@ -17,7 +17,7 @@
 
   {% call form_wrapper() %}
     <div class="md:w-5/6 form-group mb-gutterHalf md:mb-gutter">
-      {{ _("A template allows you to send a similar information to many people. Use the <a href='{}' target='_blank'>personalisation guide</a> to tailor messages for each recipient.").format(url_for('.personalise')) }}
+      {{ _("A template allows you to send a similar information to many people. Use the <a href='{}' target='_blank'>personalisation guide <span class='sr-only'> (Opens in a new tab)</span><img aria-hidden='true' role='presentation' class='inline w-6 h-6 ml-2 self-center' src='{}'/></a> to tailor messages for each recipient.").format(url_for('.personalise'), asset_url('images/external.svg')) }}
     </div>
 
     <div class="grid-row contain-floats">
