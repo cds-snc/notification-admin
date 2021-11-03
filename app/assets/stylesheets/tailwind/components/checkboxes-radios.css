@@ -51,6 +51,10 @@
     @apply bg-white;
   }
 
+  [data-module*="collapsible"] button[aria-expanded="true"] {
+    @apply mt-8;
+  }
+
   .conditional-radio-panel {
     @apply border-0 border-l-4 border-solid border-gray-grey2;
     margin: -20px 0 0 17px;

@@ -73,7 +73,7 @@
                 {% if folder_count == 0 %}
                 {{ _('Cannot see any folders') }}
                 {% elif folder_count != current_service.all_template_folders | length %}
-                  Can see {{ folder_count }} folder{% if folder_count > 1 %}s{% endif %}
+                  {{ _('Can see') }} {{ folder_count }} {{ _('folder') }}{% if folder_count > 1 %}s{% endif %}
                 {% else %}
                 {{ _('Can see all folders') }}
                 {% endif%}
