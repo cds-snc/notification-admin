@@ -58,7 +58,8 @@
           {{ edit_field(
               change_txt,
               url_for('.service_name_change', service_id=current_service.id),
-              permissions=['manage_service']
+              permissions=['manage_service'],
+              for=txt
             )
           }}
         {% endcall %}
@@ -70,7 +71,8 @@
           {{ edit_field(
               change_txt,
               url_for('.service_email_from_change', service_id=current_service.id),
-              permissions=['manage_service']
+              permissions=['manage_service'],
+              for=txt
             )
           }}
         {% endcall %}
@@ -78,18 +80,19 @@
         {% call row() %}
           {% set txt = _('Sign-in method') %}
           {{ text_field(txt) }}
-          {% set txt = _('Email code or text message code') %}
-          {% set else_txt = _('Text message code') %}
+          {% set value = _('Email code or text message code') %}
+          {% set else_value = _('Text message code') %}
           {{ text_field(
-            txt
+            value
             if 'email_auth' in current_service.permissions
-            else else_txt
+            else else_value
           ) }}
           {{ edit_field(
               change_txt,
               url_for('.service_set_auth_type',
               service_id=current_service.id),
-              permissions=['manage_service']
+              permissions=['manage_service'],
+              for=txt
             )
           }}
         {% endcall %}
@@ -136,7 +139,8 @@
               channel='email',
               service_id=current_service.id
             ),
-            permissions=['manage_service']
+            permissions=['manage_service'],
+            for=txt
           )}}
         {% endcall %}
 
@@ -152,25 +156,27 @@
               </div>
             {% endif %}
           {% endcall %}
-          {% set txt = _('Manage') %}
+          {% set manage_txt = _('Manage') %}
           {{ edit_field(
-              txt,
+              manage_txt,
               url_for('.service_email_reply_to',
               service_id=current_service.id),
-              permissions=['manage_service','manage_api_keys']
+              permissions=['manage_service','manage_api_keys'],
+              for=txt
             )
           }}
         {% endcall %}
         {% call settings_row(if_has_permission='email') %}
           {% set txt = _('Email branding') %}
           {{ text_field(txt) }}
-          {% set txt = _('Your branding<br> ({})') %}
-          {{ text_field(txt.format(current_service.email_branding_name)|safe if current_service.email_branding else _(current_service.email_branding_name)) }}
+          {% set value = _('Your branding<br> ({})') %}
+          {{ text_field(value.format(current_service.email_branding_name)|safe if current_service.email_branding else _(current_service.email_branding_name)) }}
           {{ edit_field(
             change_txt,
             url_for('.branding_request', service_id=current_service.id),
             permissions=['manage_service'],
-            attributes=""
+            attributes="",
+            for=txt
           )}}
         {% endcall %}
         {% call settings_row(if_has_permission='email') %}
@@ -181,6 +187,7 @@
             change_txt,
             url_for('.service_switch_upload_document', service_id=current_service.id),
             permissions=['manage_service'],
+            for=txt
           )}}
         {% endcall %}
         {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
@@ -215,7 +222,8 @@
               service_id=current_service.id,
               channel='sms'
             ),
-            permissions=['manage_service']
+            permissions=['manage_service'],
+            for=txt
           )}}
         {% endcall %}
 
@@ -227,7 +235,8 @@
               change_txt,
               url_for('.service_set_sms_prefix',
               service_id=current_service.id),
-              permissions=['manage_service']
+              permissions=['manage_service'],
+              for=txt
           )
           }}
         {% endcall %}
@@ -240,7 +249,8 @@
               change_txt,
               url_for('.service_set_international_sms',
               service_id=current_service.id),
-              permissions=['manage_service']
+              permissions=['manage_service'],
+              for=txt
           )
           }}
         {% endcall %}
@@ -281,12 +291,17 @@
             {% set txt = _('Live') %}
             {{ text_field(txt)}}
             {% if current_service.trial_mode and not current_service.organisation %}
-              {% set txt = _('No (organisation must be set first)') %}
-              {{ text_field(txt) }}
+              {% set value = _('No (organisation must be set first)') %}
+              {{ text_field(value) }}
               {{ text_field('') }}
             {% else %}
               {{ boolean_field(not current_service.trial_mode) }}
-              {{ edit_field(change_txt, url_for('.service_switch_live', service_id=current_service.id)) }}
+              {{ edit_field(
+                change_txt, 
+                url_for('.service_switch_live', 
+                service_id=current_service.id,
+                for=txt
+              )) }}
             {% endif %}
           {% endcall %}
 
@@ -296,7 +311,12 @@
             {% set no_txt = _('No') %}
             {{ text_field(txt)}}
             {{ text_field(yes_txt if current_service.count_as_live else no_txt) }}
-            {{ edit_field(change_txt, url_for('.service_switch_count_as_live', service_id=current_service.id)) }}
+            {{ edit_field(
+              change_txt, 
+              url_for('.service_switch_count_as_live', 
+              service_id=current_service.id,
+              for=txt
+            )) }}
           {% endcall %}
 
           {% call row() %}
@@ -308,8 +328,8 @@
                   {{ current_service.organisation.name }}
                 </a>
               {% else %}
-                {% set txt = _('Not set') %}
-                <span class="table-field-status-default">{{txt}}</span>
+                {% set value = _('Not set') %}
+                <span class="table-field-status-default">{{value}}</span>
               {% endif %}
               {% if current_service.organisation_type %}
                 <div class="hint">
@@ -317,14 +337,24 @@
                 </div>
               {% endif %}
             {% endcall %}
-            {{ edit_field(change_txt, url_for('.link_service_to_organisation', service_id=current_service.id)) }}
+            {{ edit_field(
+              change_txt, 
+              url_for('.link_service_to_organisation', 
+              service_id=current_service.id,
+              for=txt
+            )) }}
           {% endcall %}
 
           {% call row() %}
             {% set txt = _('Daily message limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.message_limit | format_number) }}
-            {{ edit_field(change_txt, url_for('.set_message_limit', service_id=current_service.id)) }}
+            {{ edit_field(
+              change_txt, 
+              url_for('.set_message_limit', 
+              service_id=current_service.id,
+              for=txt
+            )) }}
           {% endcall %}
           {% call row() %}
             {% set txt = _('API rate limit per minute') %}
@@ -345,12 +375,13 @@
                 </div>
               {% endif %}
             {% endcall %}
-            {% set txt = _('Manage') %}
+            {% set manage_txt = _('Manage') %}
             {{ edit_field(
-                txt,
+                manage_txt,
                 url_for('.service_sms_senders',
                 service_id=current_service.id),
-                permissions=['manage_service','manage_api_keys']
+                permissions=['manage_service','manage_api_keys'],
+                for=txt,
             )
             }}
           {% endcall %}
@@ -363,7 +394,8 @@
                 change_txt,
                 url_for('.service_set_inbound_sms',
                 service_id=current_service.id),
-                permissions=['manage_service']
+                permissions=['manage_service'],
+                for=txt,
             )
             }}
           {% endcall %}
@@ -372,19 +404,34 @@
             {% set txt = _('Free text message allowance') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.free_sms_fragment_limit | format_number) }}
-            {{ edit_field(change_txt, url_for('.set_free_sms_allowance', service_id=current_service.id)) }}
+            {{ edit_field(
+              change_txt, 
+              url_for('.set_free_sms_allowance', 
+              service_id=current_service.id,
+              for=txt
+            )) }}
           {% endcall %}
           {% call row() %}
             {% set txt = _('Email branding') %}
             {{ text_field(txt)}}
             {{ text_field(_(current_service.email_branding_name)) }}
-            {{ edit_field(change_txt, url_for('.service_set_email_branding', service_id=current_service.id)) }}
+            {{ edit_field(
+              change_txt, 
+              url_for('.service_set_email_branding', 
+              service_id=current_service.id,
+              for=txt
+            )) }}
           {% endcall %}
           {% call row() %}
             {% set txt = _('Letter branding') %}
             {{ text_field(txt)}}
             {{ optional_text_field(current_service.letter_branding.name) }}
-            {{ edit_field(change_txt, url_for('.service_set_letter_branding', service_id=current_service.id)) }}
+            {{ edit_field(
+              change_txt, 
+              url_for('.service_set_letter_branding', 
+              service_id=current_service.id,
+              for=txt
+            )) }}
           {% endcall %}
           {% call row() %}
             {% set txt = _('Data retention') %}
@@ -392,7 +439,12 @@
             {% call field() %}
                 {{ current_service.data_retention | join(', ', attribute='notification_type') }}
             {% endcall %}
-            {{ edit_field(change_txt, url_for('.data_retention', service_id=current_service.id)) }}
+            {{ edit_field(
+              change_txt, 
+              url_for('.data_retention', 
+              service_id=current_service.id,
+              for=txt
+            )) }}
           {% endcall %}
 
           {% for permission in service_permissions %}
@@ -400,7 +452,12 @@
               {% call row() %}
                 {{ text_field(_(service_permissions[permission].title))}}
                 {{ boolean_field(current_service.has_permission(permission)) }}
-                {{ edit_field(change_txt, url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, permission=permission if not service_permissions[permission].endpoint else None)) }}
+                {{ edit_field(
+                  change_txt, 
+                  url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, 
+                  permission=permission if not service_permissions[permission].endpoint else None,
+                  for=txt
+                )) }}
               {% endcall %}
             {% endif %}
           {% endfor %}
@@ -413,7 +470,8 @@
             change_txt,
             url_for('.service_sending_domain', service_id=current_service.id),
             permissions=['manage_service'],
-            attributes=""
+            attributes="",
+            for=txt
           )}}
           {% endcall %}
 
