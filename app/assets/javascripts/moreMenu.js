@@ -6,7 +6,6 @@
     varWidth = 1,
     ctr = 0,
     $moreMenu = null,
-    $moreMenuToggle = null,
     $menuContainer = null,
     $menuItems = null,
     collectedSet = [];
@@ -24,7 +23,7 @@
     const menuItemsId = "#" + $moreMenu.attr("data-module-menu-items");
     const menuContainerId = "#" + $moreMenu.attr("data-module-menu-container");
 
-    $moreMenuToggle = $menuItems = $(menuItemsId);
+    $menuItems = $(menuItemsId);
     $menuContainer = $(menuContainerId);
     $moreMenu.click(() =>
       menuToggle($moreMenu, $menuContainer, $moreMenu.find(".arrow"))
