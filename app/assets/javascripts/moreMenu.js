@@ -6,6 +6,7 @@
     varWidth = 1,
     ctr = 0,
     $moreMenu = null,
+    $moreMenuToggle = null,
     $menuContainer = null,
     $menuItems = null,
     collectedSet = [];
@@ -23,7 +24,7 @@
     const menuItemsId = "#" + $moreMenu.attr("data-module-menu-items");
     const menuContainerId = "#" + $moreMenu.attr("data-module-menu-container");
 
-    $menuItems = $(menuItemsId);
+    $moreMenuToggle = $menuItems = $(menuItemsId);
     $menuContainer = $(menuContainerId);
     $moreMenu.click(() =>
       menuToggle($moreMenu, $menuContainer, $moreMenu.find(".arrow"))
@@ -50,10 +51,11 @@
 
     // Calculate how many items fit on the total width.
     // Substract 1 as CSS :gt property is 0-based index.
-    fitCount = Math.floor((elemWidth / varWidth) * ctr) - 1;
+    // Substract another one to account for the "Plus" item
+    fitCount = Math.floor((elemWidth / varWidth) * ctr) - 2;
 
     // Reset display and width on all menu items.
-    $menuItems.children().css({ display: "block", width: "auto" });
+    $menuItems.children().css({ display: "flex", width: "auto" });
 
     // Get the menu items that don't fit in the limited space, if any,
     // make sure to exclude the 'More' menu itself though.
@@ -66,7 +68,7 @@
     var $moreMenuItems = $("<div/>")
       .attr("id", "more-menu-items")
       .addClass(
-        "absolute right-0 flex flex-col flex-shrink-0 text-right bg-gray mr-24"
+        "absolute right-0 mr-gutterHalf flex flex-col flex-shrink-0 text-right bg-gray"
       );
     $menuContainer.html($moreMenuItems);
 
