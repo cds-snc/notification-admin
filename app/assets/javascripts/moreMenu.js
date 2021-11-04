@@ -67,7 +67,7 @@
     var $moreMenuItems = $("<div/>")
       .attr("id", "more-menu-items")
       .addClass(
-        "absolute right-0 mr-gutterHalf flex flex-col flex-shrink-0 text-right bg-gray"
+        "absolute right-0 mr-gutterHalf flex flex-col flex-shrink-0 text-right bg-gray divide-y divide-gray-grey2  shadow"
       );
     $menuContainer.html($moreMenuItems);
 
@@ -93,17 +93,6 @@
         .removeClass("header--active")
         .parent()
         .addClass("menu--active");
-
-      const divider = $("<div/>")
-        .addClass("w-full px-5")
-        .append($("<div/>").addClass("float-right menu-divider"));
-      let $currentItem = $moreMenuItems.children().first();
-      const dividerCount = $moreMenuItems.children().length - 1;
-      for (var idx = 0; idx < dividerCount; idx++) {
-        const $nextItem = $currentItem.next();
-        divider.clone().insertAfter($currentItem);
-        $currentItem = $nextItem;
-      }
     } else {
       // Hide the More menu when it does not contain item(s).
       $moreMenu.addClass("hidden");
