@@ -3,11 +3,12 @@
 # Run `make freeze-requirements` to update requirements.txt
 # with package version changes made in requirements-app.txt
 
-timeago==1.0.15
-Flask==1.1.2
-Flask-WTF==0.14.3
-Flask-Login==0.5.0
+Werkzeug==2.0.2
+Flask==2.0.2
+Flask-Babel==2.0.0
 Flask-Caching==1.10.1
+Flask-Login==0.5.0
+Flask-WTF==0.15.1
 
 blinker==1.4
 pyexcel==0.6.6
@@ -20,10 +21,10 @@ gunicorn==20.1.0
 eventlet==0.30.2
 notifications-python-client==6.0.2
 sentry-sdk[flask]==1.0.0
+timeago==1.0.15
 
 Babel==2.9.1
 boto3==1.17.58
-Flask-Babel==2.0.0
 newrelic==6.2.0.156
 python-dotenv==0.17.1
 pwnedpasswords==2.0.0
@@ -33,27 +34,26 @@ ua-parser==0.10.0
 user-agents==2.2.0
 WTForms==3.0.0a1
 email-validator==1.1.2
-Werkzeug==1.0.1
 greenlet==1.1.2
 
 # PaaS
 awscli-cwlogs>=1.4.6,<1.5
 
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
-itsdangerous==0.24  # pyup: <1.0.0
+itsdangerous==2.0
 
-git+https://github.com/cds-snc/notifier-utils.git@46.3.0#egg=notifications-utils
+git+https://github.com/cds-snc/notifier-utils.git@46.4.0#egg=notifications-utils
 
-rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
+rsa>=4.7.2 # not directly required, pinned by Snyk to avoid a vulnerability
 
 ## The following requirements were added by pip freeze:
 awscli==1.19.58
 bleach==3.3.0
 botocore==1.20.58
 cachetools==4.2.1
-certifi==2021.5.30
+certifi==2021.10.8
 chardet==4.0.0
-click==8.0.1
+click==8.0.3
 colorama==0.4.3
 dnspython==1.16.0
 docopt==0.6.2
@@ -62,20 +62,20 @@ et-xmlfile==1.1.0
 flask-redis==0.4.0
 future==0.18.2
 idna==2.10
-Jinja2==2.11.3
+Jinja2==3.0.2
 jmespath==0.10.0
 lml==0.1.0
-lxml==4.6.3
+lxml==4.6.4
 MarkupSafe==2.0.1
 mistune==0.8.4
 openpyxl==3.0.9
 orderedset==2.0.3
-packaging==21.0
+packaging==21.2
 phonenumbers==8.12.21
 py-w3c==0.3.1
 pyasn1==0.4.8
 pyexcel-ezodf==0.3.4
-PyJWT==2.2.0
+PyJWT==2.3.0
 pyparsing==2.4.7
 PyPDF2==1.26.0
 python-dateutil==2.8.2
@@ -87,6 +87,13 @@ six==1.16.0
 smartypants==2.0.1
 statsd==3.3.0
 texttable==1.6.4
+types-bleach==3.3.0
+types-cachetools==4.2.1
+types-python-dateutil==2.8.2
+types-pytz==2021.1.1
+types-PyYAML==5.4.1
+types-redis==3.5.3
+types-requests==2.25.1
 urllib3==1.26.7
 webencodings==0.5.1
 xlrd==1.2.0

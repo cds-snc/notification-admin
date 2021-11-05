@@ -20,7 +20,6 @@ from flask import (
     session,
     url_for,
 )
-from flask._compat import string_types
 from flask.globals import _lookup_req_object, _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
 from flask_login import LoginManager, current_user
@@ -259,7 +258,7 @@ def init_app(application):
 
 
 def convert_to_boolean(value):
-    if isinstance(value, string_types):
+    if isinstance(value, str):
         if value.lower() in ["t", "true", "on", "yes", "1"]:
             return True
         elif value.lower() in ["f", "false", "off", "no", "0"]:

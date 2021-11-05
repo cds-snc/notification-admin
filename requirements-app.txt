@@ -1,11 +1,12 @@
 # Run `make freeze-requirements` to update requirements.txt
 # with package version changes made in requirements-app.txt
 
-timeago==1.0.15
-Flask==1.1.2
-Flask-WTF==0.14.3
-Flask-Login==0.5.0
+Werkzeug==2.0.2
+Flask==2.0.2
+Flask-Babel==2.0.0
 Flask-Caching==1.10.1
+Flask-Login==0.5.0
+Flask-WTF==0.15.1
 
 blinker==1.4
 pyexcel==0.6.6
@@ -18,10 +19,10 @@ gunicorn==20.1.0
 eventlet==0.30.2
 notifications-python-client==6.0.2
 sentry-sdk[flask]==1.0.0
+timeago==1.0.15
 
 Babel==2.9.1
 boto3==1.17.58
-Flask-Babel==2.0.0
 newrelic==6.2.0.156
 python-dotenv==0.17.1
 pwnedpasswords==2.0.0
@@ -31,15 +32,14 @@ ua-parser==0.10.0
 user-agents==2.2.0
 WTForms==3.0.0a1
 email-validator==1.1.2
-Werkzeug==1.0.1
 greenlet==1.1.2
 
 # PaaS
 awscli-cwlogs>=1.4.6,<1.5
 
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
-itsdangerous==0.24  # pyup: <1.0.0
+itsdangerous==2.0
 
-git+https://github.com/cds-snc/notifier-utils.git@46.3.0#egg=notifications-utils
+git+https://github.com/cds-snc/notifier-utils.git@46.4.0#egg=notifications-utils
 
-rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
+rsa>=4.7.2 # not directly required, pinned by Snyk to avoid a vulnerability
