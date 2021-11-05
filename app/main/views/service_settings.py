@@ -98,7 +98,7 @@ def service_settings(service_id: str):
     return render_template(
         "views/service-settings.html",
         service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS,
-        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],
+        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],  # type: ignore
         limits=limits,
     )
 
