@@ -1,11 +1,11 @@
-from app.models.service import Service
-from flask import _request_ctx_stack
 from functools import partial
 from unittest.mock import Mock
 
 import pytest
+from flask import _request_ctx_stack
 from notifications_utils.template import LetterPreviewTemplate
 
+from app.models.service import Service
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 
 
