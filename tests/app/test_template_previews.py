@@ -2,11 +2,11 @@ from functools import partial
 from unittest.mock import Mock
 
 import pytest
-from flask import _request_ctx_stack
 from notifications_utils.template import LetterPreviewTemplate
 
 from app.models.service import Service
 from app.template_previews import TemplatePreview, get_page_count_for_letter
+from tests import local_context
 
 
 @pytest.mark.parametrize(
@@ -66,14 +66,14 @@ def test_from_database_object_makes_request(
     service_id = "123"
     service_mock = mock_get_service(service_id)
     service = Service(service_mock["data"])
-    _request_ctx_stack.top.service = service
 
-    resp = Mock(content="a", status_code="b", headers={"c": "d"})
-    request_mock = mocker.patch("app.template_previews.requests.post", return_value=resp)
-    mocker.patch("app.template_previews.current_service", letter_branding=letter_branding)
-    template = mock_get_service_letter_template(service_id, "456")["data"]
+    with local_context("service", service):
+        resp = Mock(content="a", status_code="b", headers={"c": "d"})
+        request_mock = mocker.patch("app.template_previews.requests.post", return_value=resp)
+        mocker.patch("app.template_previews.current_service", letter_branding=letter_branding)
+        template = mock_get_service_letter_template(service_id, "456")["data"]
 
-    ret = from_database_object(template=template)
+        ret = from_database_object(template=template)
 
     assert ret[0] == "a"
     assert ret[1] == "b"

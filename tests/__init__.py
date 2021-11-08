@@ -1,9 +1,11 @@
 import uuid
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 from urllib.parse import parse_qs, urlparse
 
 import pytest
+from flask import _request_ctx_stack
 from flask import session as flask_session
 from flask import url_for
 from flask.testing import FlaskClient
@@ -43,6 +45,29 @@ class TestClient(FlaskClient):
 
     def logout(self, user):
         self.get(url_for("main.sign_out"))
+
+
+@contextmanager
+def local_context(context_name, context_obj):
+    """Context manager to place an object on top of the current WSGI stack.
+
+    The unittext patch code can trigger inspection of context object not yet
+    present in the WSGI stack. Use this context manager as such to prepare
+    the test:
+
+    with local_context("service", service):
+        mocker.patch("app.template_previews.current_service", letter_branding=letter_branding)
+
+    This would guarantee that proper object will be found upon execution as expected,
+    as well as remove the context object once out of the manager scope.
+    """
+    namespace = _request_ctx_stack.top
+    previous_context = getattr(namespace, context_name) if hasattr(namespace, context_name) else None
+    setattr(namespace, context_name, context_obj)
+    try:
+        yield context_obj
+    finally:
+        setattr(namespace, context_name, previous_context)
 
 
 def sample_uuid():
