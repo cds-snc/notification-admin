@@ -72,29 +72,27 @@
     {% endif %}
 
     {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
-      <div class="flex items-center">
-        <h2 class="font-bold text-titlelarge text-black inline">
+      <div class="flex flex-col items-start md:flex-row md:items-center">
+        <h2 class="font-bold text-titlelarge text-black inline mr-gutterHalf ">
           {{ url_text }}
         </h2>
         {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
         <a
-          class="self-end ml-gutterHalf mt-1 p-2 min-h-target inline-flex items-center focus:outline-none border-b-2 border-transparent focus:border-blue"
+          class="mt-2 min-h-target inline-flex flex-col items-start sm:flex-row sm:items-center focus:outline-none border-b-2 border-transparent focus:border-blue text-small underline visited:text-blue link:text-blue"
           href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
           role="button">
-          <div class="flex flex-initial flex-row items-baseline text-base">
             <div
               id="live-banner"
-              class="shadow-button2 px-6 py-1 bg-blue-lighter text-black text-small font-bold inline-block mr-4">
+              class="shadow-button2 px-6 py-1 mb-2 bg-blue-lighter text-black font-bold inline-block">
               {{ _('Trial') }}
             </div>
-            <div class="inline-block text-small underline visited:text-blue link:text-blue">
+            <span class="sm:mx-4">
               {% if current_service.pending_live %}
                 {{ _('Request being reviewed') }}
               {% else %}
                 {{ _('Request to go live') }}
               {% endif %}
-            </div>
-          </div>
+            </span>
         </a>
         {% endif %}
       </div>

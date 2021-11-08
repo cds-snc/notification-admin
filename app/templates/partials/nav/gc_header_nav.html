@@ -63,9 +63,9 @@
   </div>
 </nav>
 {% if withnav %}
-  <nav class="bg-gray xs:hidden smaller:hidden sm:hidden md:flex" aria-label="{{ _('main navigation') }}">
+  <nav class="bg-gray hidden md:visible md:flex" aria-label="{{ _('main navigation') }}">
     <div class="container px-gutterHalf">
-      <div id="proposition-links" class="flex flex-no-wrap">
+      <div id="proposition-links" class="flex flex-no-wrap items-baseline">
         {% if not current_user.is_authenticated %}
           {{ nav_menu_item('/',_('Home'),'pl-0 header--'+header_navigation.is_selected('home')) }}
           {{ nav_menu_item(url_for('main.why-notify'),_('Why GC Notify'),'header--'+header_navigation.is_selected('why-notify')) }}
@@ -119,7 +119,7 @@
           data-module="more-menu"
           data-module-menu-items="proposition-links"
           data-module-menu-container="more-menu-container"
-          class="hidden flex-shrink-0 text-center bg-gray self-center">
+          class="hidden flex-grow text-right bg-gray self-stretch justify-end">
           <a
             href="#"
             aria-hidden="false"
@@ -138,6 +138,6 @@
       <!-- MD-LG menu and nav bar END -->
     </div>
   </nav>
-  <div id="more-menu-container" class="container hidden">
+  <div id="more-menu-container" class="relative container hidden">
   </div>
 {% endif %}
