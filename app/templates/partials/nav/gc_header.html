@@ -50,8 +50,7 @@
     <!-- end sub nav -->
   </div>
   <div class="pt-5 pb-6">
-    <div>
-      <a href="/" class="py-1 no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:text-blue">
+      <a href="/" class="py-1 min-h-target inline-flex items-center no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:text-blue">
         {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
         and not platform_admin_view_ind %}
           <span id="gc-title"
@@ -67,36 +66,33 @@
         </span>
         {% endif %}
       </a>
-    </div>
     {% set url_text = current_service.name %}
     {% if platform_admin_view_ind %}
       {% set url_text = _('Admin panel') %}
     {% endif %}
 
     {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
-      <div>
-        <h2 class="font-bold text-titlelarge text-black inline">
+      <div class="flex flex-col items-start md:flex-row md:items-center">
+        <h2 class="font-bold text-titlelarge text-black inline mr-gutterHalf ">
           {{ url_text }}
         </h2>
         {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
         <a
-          class="self-end mb-4 py-2 px-1 inline-block align-middle focus:outline-none border-b-2 border-transparent focus:border-blue"
+          class="mt-2 min-h-target inline-flex flex-col items-start sm:flex-row sm:items-center focus:outline-none border-b-2 border-transparent focus:border-blue text-small underline visited:text-blue link:text-blue"
           href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
           role="button">
-          <div class="flex flex-initial flex-row items-baseline text-base">
             <div
               id="live-banner"
-              class="shadow-button2 px-6 py-1 bg-blue-lighter text-black text-small font-bold inline-block mr-4">
+              class="shadow-button2 px-6 py-1 bg-blue-lighter text-black font-bold inline-block">
               {{ _('Trial') }}
             </div>
-            <div class="inline-block text-small underline visited:text-blue link:text-blue">
+            <span class="sm:mx-4">
               {% if current_service.pending_live %}
                 {{ _('Request being reviewed') }}
               {% else %}
                 {{ _('Request to go live') }}
               {% endif %}
-            </div>
-          </div>
+            </span>
         </a>
         {% endif %}
       </div>
