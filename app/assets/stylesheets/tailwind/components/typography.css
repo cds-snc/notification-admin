@@ -8,6 +8,10 @@
     margin-top: 0.3125em;
     margin-bottom: 1.25em;
     max-width: 80ch;
+    line-height: 1.5em;
+  }
+  p + p {
+    margin-top: 2.25em;
   }
   @screen sm {
     p {
