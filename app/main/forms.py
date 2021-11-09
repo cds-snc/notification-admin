@@ -611,11 +611,19 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         choices = [
             (
                 FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
-                _l("English-first") + "||" + default_en_filename,
+                _l("English-first")
+                + "||"
+                + default_en_filename
+                + "||"
+                + _l("Bilingual logo with Government of Canada written first in English, then in French"),
             ),
             (
                 FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
-                _l("French-first") + "||" + default_fr_filename,
+                _l("French-first")
+                + "||"
+                + default_fr_filename
+                + "||"
+                + _l("Bilingual logo with Government of Canada written first in French, then in English"),
             ),
         ]
         return choices
