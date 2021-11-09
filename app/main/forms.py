@@ -873,15 +873,21 @@ class ContactNotify(StripWhitespaceForm):
 
 
 class ContactMessageStep(ContactNotify):
-    message = TextAreaField(_l("Message"), validators=[DataRequired(), Length(max=2000)])
+    message = TextAreaField(
+        _l("Message"),
+        validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
+    )
 
 
 class SetUpDemoOrgDetails(ContactNotify):
     department_org_name = StringField(
         _l("Name of department or organisation"),
-        validators=[DataRequired(), Length(max=500)],
+        validators=[DataRequired(message=_l("Enter the name of your department or organisation")), Length(max=500)],
     )
-    program_service_name = StringField(_l("Name of program or service"), validators=[DataRequired(), Length(max=500)])
+    program_service_name = StringField(
+        _l("Name of program or service"),
+        validators=[DataRequired(message=_l("Enter the name of your program or service")), Length(max=500)],
+    )
     intended_recipients = RadioField(
         _l("Who are the intended recipients of notifications?"),
         choices=[
@@ -921,7 +927,7 @@ class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):
     )
     main_use_case_details = TextAreaField(
         _l("What will messages be about?"),
-        validators=[DataRequired(), Length(max=2000)],
+        validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
     )
 
 
