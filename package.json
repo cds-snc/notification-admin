@@ -25,7 +25,7 @@
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "dayjs": "^1.10.7",
-    "diff-dom": "4.2.1",
+    "diff-dom": "4.2.3",
     "govuk_frontend_toolkit": "9.0.1",
     "hogan": "1.0.2",
     "jquery": "^3.6.0",
