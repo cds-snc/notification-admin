@@ -16,7 +16,8 @@ module.exports = {
       outset2neg: "0 -2px 0 0 rgba(191, 193, 195, 0.2)",
       outset3: "3px 0 0 0 rgba(191, 193, 195, 0.2)",
       yellow3: "-3px 0 0 0 rgba(255, 191, 71, 1), 3px 0 0 0 rgba(255, 191, 71, 1)",
-      focusLine2: "0 2px 0 3px #1A3152"
+      focusLine2: "0 2px 0 3px #1A3152",
+      button2: "0 2px 0 rgb(38, 55, 74, 1)"
     },
     fontSize: {
       xs: "1.3rem",
@@ -93,8 +94,8 @@ module.exports = {
         ellipsis: "ellipsis steps(4,end) 1.5s infinite"
       },
       backgroundImage: {
-        tick: "url('/static/images/tick.png')",
-        crossGrey: "url('/static/images/cross-grey.png')",
+        tick: "url('/static/images/tick.svg')",
+        crossGrey: "url('/static/images/cross-grey.svg')",
         folder: "url('/static/images/folder-black.svg')",
         folderBlack: "url('/static/images/folder-black-bold.svg')",
         folderBlackPng: "url('/static/images/folder-black-bold.png')",
@@ -128,18 +129,15 @@ module.exports = {
       lineHeight: {
         'extra-tight': "0.9"
       },
-      maxWidth: {
-        '4xl': "53rem"
-      },
       outline: {
         yellow: "3px solid #ffbf47",
         white: "1px solid rgba(255, 255, 255, 0.1)"
       },
       spacing: {
-        gutter: "30px",
-        gutterHalf: "15px",
-        gutterAndAHalf: "45px",
-        doubleGutter: "60px"
+        gutter: "3.0rem",
+        gutterHalf: "1.5rem",
+        gutterAndAHalf: "4.5rem",
+        doubleGutter: "6.0rem"
       },
       transitionDuration: {
         '600': "600ms"
@@ -149,6 +147,12 @@ module.exports = {
       },
       width: {
         '5/8': "62.5%"
+      },
+      maxWidth: {
+        '4xl': "53rem"
+      },
+      minHeight: {
+        target: "45px"
       },
       flex: {
         2: "2 2 0%",

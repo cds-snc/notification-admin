@@ -1,4 +1,5 @@
 const helpers = require('./support/helpers');
+require('@testing-library/jest-dom');
 
 beforeAll(() => {
   // TODO: remove this when tests for sticky JS are written
@@ -42,12 +43,12 @@ describe('Collapsible fieldset', () => {
     document.body.innerHTML =
       `<main>
         <div class="form-group contain-floats box-border" data-module="collapsible-checkboxes" data-field-label="folder">
-          <div class="selection-summary"></div>
           <fieldset id="folder_permissions">
             <legend class="form-label heading-small">
               Folders this team member can see
             </legend>
-            <div class="checkboxes-nested">
+            <div class="selection-summary"></div>
+            <div id="folder-permission-checkboxes" class="select-nested checkboxes-nested">
               <ul>
                 ${_checkboxes(1, 10)}
               </ul>
@@ -58,7 +59,7 @@ describe('Collapsible fieldset', () => {
 
       formGroup = document.querySelector('.form-group');
       fieldset = formGroup.querySelector('fieldset');
-      checkboxesContainer = fieldset.querySelector('.checkboxes-nested');
+      checkboxesContainer = fieldset.querySelector('#folder-permission-checkboxes');
       checkboxes = checkboxesContainer.querySelectorAll('input[type=checkbox]');
 
   });
@@ -92,11 +93,9 @@ describe('Collapsible fieldset', () => {
 
     });
 
-    test("adds a heading before the selected fieldset", () => {
+    test("adds a legend within the selected fieldset", () => {
 
-      const heading = helpers.element(fieldset).getPreviousSibling(
-        el => (el.nodeName === 'h2') && (el.hasClass('heading-small'))
-      );
+      const heading = helpers.element(fieldset.querySelector('legend.heading-small'));
 
       expect(heading).not.toBeNull();
 
@@ -111,12 +110,10 @@ describe('Collapsible fieldset', () => {
 
     });
 
-    test("the legend of the fieldset is visually hidden", () => {
+    test("the legendd of the fieldset is visible", () => {
 
-      const legend = helpers.element(fieldset.querySelector('legend'));
-
-      expect(legend.hasClass('visuallyhidden')).toBe(true);
-
+      const legend = fieldset.querySelector('legend');
+      expect(legend).toBeVisible();
     });
 
     test("has a button to expand the fieldset", () => {
@@ -139,7 +136,7 @@ describe('Collapsible fieldset', () => {
 
     test("hides the checkboxes", () => {
 
-      expect(helpers.element(fieldset).is('hidden')).toEqual(true);
+      expect(checkboxesContainer).not.toBeVisible();
 
     });
 
@@ -150,10 +147,12 @@ describe('Collapsible fieldset', () => {
     // start module
     window.GOVUK.modules.start();
 
-    const summaryText = document.querySelector('.selection-summary__text');
+    const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
     // default state is for none to be selected
-    expect(summaryText.textContent.trim()).toEqual("No folders (only templates outside a folder)");
+    expect(window.polyglot.t(summaryText.textContent.trim())).toEqual(
+      "No folders (only templates outside a folder)"
+    );
 
   });
 
@@ -167,9 +166,11 @@ describe('Collapsible fieldset', () => {
     // start module
     window.GOVUK.modules.start();
 
-    const summaryText = document.querySelector('.selection-summary__text');
+    const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
-    expect(summaryText.textContent.trim()).toEqual("3 of 10 folders");
+    expect(window.polyglot.t(summaryText.textContent.trim())).toEqual(
+      "3 of 10 folders"
+    );
 
   });
 
@@ -181,7 +182,7 @@ describe('Collapsible fieldset', () => {
     // start module
     window.GOVUK.modules.start();
 
-    const summaryText = document.querySelector('.selection-summary__text');
+    const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
     expect(summaryText.textContent.trim()).toEqual("All folders");
 
@@ -194,7 +195,7 @@ describe('Collapsible fieldset', () => {
     // start module
     window.GOVUK.modules.start();
 
-    const summaryText = document.querySelector('.selection-summary__text');
+    const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
     expect(summaryText.classList.contains('.selection-summary__text-label')).toBe(false);
 
@@ -254,7 +255,7 @@ describe('Collapsible fieldset', () => {
 
     test("it hides the checkboxes", () => {
 
-      expect(helpers.element(fieldset).is('hidden')).toBe(true);
+      expect(checkboxesContainer.style).toHaveProperty('display', 'none');
 
     });
 
@@ -350,7 +351,7 @@ describe('Collapsible fieldset', () => {
 
         showCheckboxes();
 
-        const summaryText = document.querySelector('.selection-summary__text');
+        const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
         // click the first checkbox
         helpers.triggerEvent(checkboxes[0], 'click');
@@ -370,7 +371,7 @@ describe('Collapsible fieldset', () => {
 
         showCheckboxes();
 
-        const summaryText = document.querySelector('.selection-summary__text');
+        const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
         // click the first checkbox
         helpers.triggerEvent(checkboxes[0], 'click');
@@ -390,7 +391,7 @@ describe('Collapsible fieldset', () => {
 
         showCheckboxes();
 
-        const summaryText = document.querySelector('.selection-summary__text');
+        const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
         // click the first checkbox
         helpers.triggerEvent(checkboxes[0], 'click');
@@ -414,7 +415,7 @@ describe('Collapsible fieldset', () => {
 
         showCheckboxes();
 
-        const summaryText = document.querySelector('.selection-summary__text');
+        const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
         // click the first checkbox
         helpers.triggerEvent(checkboxes[1], 'click');
@@ -434,7 +435,7 @@ describe('Collapsible fieldset', () => {
 
         showCheckboxes();
 
-        const summaryText = document.querySelector('.selection-summary__text');
+        const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
         // click the first checkbox
         helpers.triggerEvent(checkboxes[1], 'click');
@@ -458,7 +459,7 @@ describe('Collapsible fieldset', () => {
 
         showCheckboxes();
 
-        const summaryText = document.querySelector('.selection-summary__text');
+        const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
         helpers.triggerEvent(checkboxes[0], 'click');
 
@@ -477,7 +478,7 @@ describe('Collapsible fieldset', () => {
 
         showCheckboxes();
 
-        const summaryText = document.querySelector('.selection-summary__text');
+        const summaryText = document.querySelector('fieldset .selection-summary .selection-summary__text');
 
         helpers.triggerEvent(checkboxes[0], 'click');
 

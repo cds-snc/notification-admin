@@ -8,12 +8,15 @@
   link_img_class=None
 ) %}
     <a
-        {% if aria_label %} aria-label="{{ aria_label }}" {% endif %}
         class="inline-block self-center py-1 px-4 line-under text-small border-b-2 border-transparent focus:outline-none focus:bg-yellow focus:border-blue hover:underline {% if class %} {{ class }} {% endif %}"
         href="{{ href }}"
-        {% if lang %} lang="{{ lang }}" {% endif %}
-        aria-label="{{ label }}">
-        {{ label }}
+        {% if lang %} lang="{{ lang }}" {% endif %}>
+        {% if aria_label and aria_label != label %} 
+            <span class="sr-only">{{ aria_label }}</span>
+            <span role="presentation" aria-hidden="true">{{ label }}</span>
+        {% else %}
+            {{ label }}
+        {% endif %}
         {% if link_img %}
             <img
                 aria-hidden="true"

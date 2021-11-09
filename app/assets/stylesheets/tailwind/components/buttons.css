@@ -6,9 +6,9 @@
   a.button:link,
   a.button:visited,
   a.button:active {
-    padding: 0.526315em 0.789473em 0.263157em;
+    padding: 0.55em 1em 0.45em;
     box-shadow: 0 2px 0 theme("colors.blue.border");
-    @apply no-underline inline-block text-white text-smaller leading-tight align-top bg-blue;
+    @apply no-underline inline-flex items-center text-white text-smaller leading-tight align-top bg-blue min-h-target;
   }
 
   .button:hover,
