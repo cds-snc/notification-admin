@@ -190,7 +190,6 @@ def test_terms_page_has_correct_content(client_request):
 
 
 def test_css_is_served_from_correct_path(client_request):
-
     page = client_request.get("main.features")  # easy static page
 
     for index, link in enumerate(page.select("link[rel=stylesheet]")):

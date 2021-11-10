@@ -675,8 +675,6 @@ def test_sending_status_hint_displays_correctly_on_notifications_page(
     mocker,
 ):
     mock_get_notifications(mocker, True, diff_template_type=message_type, noti_status=status)
-
-    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_notifications",
         service_id=service_one["id"],

@@ -3234,19 +3234,22 @@ def os_environ():
 
 
 class ClientRequest:
-    def __init__(self, logged_in_client, mocker, service_one):
+    def __init__(self, logged_in_client, mocker, service_one, user):
         self.logged_in_client = logged_in_client
         self.mocker = mocker
         self.service_one = service_one
+        self.user = user
 
     @contextmanager
     def session_transaction(self):
         with self.logged_in_client.session_transaction() as session:
             yield session
 
-    def login(self, user, service=""):
-        if service == "":
+    def login(self, user=None, service=None):
+        if service is None:
             service = self.service_one
+        if user is None:
+            user = self.user
         self.logged_in_client.login(user, self.mocker, service)
 
     def logout(self):
@@ -3280,6 +3283,7 @@ class ClientRequest:
         _test_page_title: bool = True,
         **endpoint_kwargs,
     ):
+        self.login(self.user)
         resp = self.logged_in_client.get(
             url,
             follow_redirects=_follow_redirects,
@@ -3309,6 +3313,7 @@ class ClientRequest:
     ):
         if _expected_status is None:
             _expected_status = 200 if _follow_redirects else 302
+        self.login(self.user)
         resp = self.logged_in_client.post(
             url_for(endpoint, **(endpoint_kwargs or {})),
             data=_data,
@@ -3325,8 +3330,9 @@ def client_request(
     logged_in_client,
     mocker,
     service_one,
+    active_user_with_permissions,
 ):
-    return ClientRequest(logged_in_client, mocker, service_one)
+    return ClientRequest(logged_in_client, mocker, service_one, active_user_with_permissions)
 
 
 def normalize_spaces(input):

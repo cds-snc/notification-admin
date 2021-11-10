@@ -469,7 +469,6 @@ def test_confirm_agreement_page_persists(
         "app.models.organisation.organisations_client.get_service_organisation",
         return_value=organisation_json(agreement_signed_version="1.2"),
     )
-    client_request.login(active_user_with_permissions)
     client_request.post(
         "main.service_confirm_agreement",
         service_id=SERVICE_ONE_ID,

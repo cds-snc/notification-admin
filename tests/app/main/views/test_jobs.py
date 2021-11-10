@@ -414,6 +414,7 @@ def test_should_show_scheduled_job(
 @freeze_time("2016-01-01T00:00:00.061258")
 def test_should_show_job_from_api(
     client_request,
+    active_user_with_permissions,
     mock_get_service_template,
     mock_get_job_with_api_key,
     mock_get_service_data_retention,
@@ -665,6 +666,7 @@ def test_should_show_updates_for_one_job_as_json(
     mocker,
     fake_uuid,
 ):
+    logged_in_client.login(active_user_with_permissions)
     response = logged_in_client.get(url_for("main.view_job_updates", service_id=service_one["id"], job_id=fake_uuid))
 
     assert response.status_code == 200
@@ -737,7 +739,6 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
     mock_get_service_data_retention,
     mocker,
 ):
-
     mock_get_service_letter_template(mocker, postage="first")
 
     page = client_request.get(
