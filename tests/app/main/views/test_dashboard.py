@@ -279,9 +279,11 @@ def test_should_show_recent_templates_on_dashboard(
     ],
 )
 def test_should_show_redirect_from_template_history(
+    active_user_with_permissions,
     client_request,
     extra_args,
 ):
+    client_request.login(active_user_with_permissions)
     client_request.get(
         "main.template_history",
         service_id=SERVICE_ONE_ID,
@@ -300,11 +302,13 @@ def test_should_show_redirect_from_template_history(
     ],
 )
 def test_should_show_monthly_breakdown_of_template_usage(
+    active_user_with_permissions,
     client_request,
     mock_get_monthly_template_usage,
     extra_args,
     template_label,
 ):
+    client_request.login(active_user_with_permissions)
     page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID, **extra_args)
 
     mock_get_monthly_template_usage.assert_called_once_with(SERVICE_ONE_ID, 2016)
@@ -358,11 +362,13 @@ def test_monthly_shows_letters_in_breakdown(
 )
 @freeze_time("2015-01-01 15:15:15.000000")
 def test_stats_pages_show_last_3_years(
+    active_user_with_permissions,
     client_request,
     endpoint,
     mock_get_monthly_notification_stats,
     mock_get_monthly_template_usage,
 ):
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         endpoint,
         service_id=SERVICE_ONE_ID,
@@ -386,6 +392,7 @@ def test_monthly_has_equal_length_tables(
 @freeze_time("2016-01-01 11:09:00.061258")
 # This test assumes EST
 def test_should_show_upcoming_jobs_on_dashboard(
+    active_user_with_permissions,
     client_request,
     mock_get_service_templates,
     mock_get_template_statistics,
@@ -394,6 +401,7 @@ def test_should_show_upcoming_jobs_on_dashboard(
     mock_get_usage,
     mock_get_inbound_sms_summary,
 ):
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.service_dashboard",
         service_id=SERVICE_ONE_ID,
@@ -601,6 +609,7 @@ def test_dashboard_single_and_plural(
 @freeze_time("2016-01-01 11:09:00.061258")
 # This test assumes EST
 def test_should_show_recent_jobs_on_dashboard(
+    active_user_with_permissions,
     client_request,
     mock_get_service_templates,
     mock_get_template_statistics,
@@ -609,6 +618,7 @@ def test_should_show_recent_jobs_on_dashboard(
     mock_get_usage,
     mock_get_inbound_sms_summary,
 ):
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.service_dashboard",
         service_id=SERVICE_ONE_ID,

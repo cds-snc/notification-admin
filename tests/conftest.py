@@ -3283,7 +3283,6 @@ class ClientRequest:
         _test_page_title: bool = True,
         **endpoint_kwargs,
     ):
-        self.login(self.user)
         resp = self.logged_in_client.get(
             url,
             follow_redirects=_follow_redirects,
@@ -3313,7 +3312,6 @@ class ClientRequest:
     ):
         if _expected_status is None:
             _expected_status = 200 if _follow_redirects else 302
-        self.login(self.user)
         resp = self.logged_in_client.post(
             url_for(endpoint, **(endpoint_kwargs or {})),
             data=_data,

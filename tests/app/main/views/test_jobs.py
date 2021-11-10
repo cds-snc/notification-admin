@@ -167,7 +167,7 @@ def test_should_show_page_for_one_job(
     expected_api_call,
     user,
 ):
-
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -219,6 +219,7 @@ def test_should_show_page_for_one_job_with_flexible_data_retention(
 ):
 
     mock_get_service_data_retention.side_effect = [[{"days_of_retention": 10, "notification_type": "sms"}]]
+    client_request.login(active_user_with_permissions)
     page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=fake_uuid, status="delivered")
 
     assert page.find("span", {"id": "time-left"}).text.split(" ")[0] == "2016-01-12"
@@ -388,12 +389,14 @@ def test_should_show_letter_job_with_banner_after_sending_after_1730(
 @freeze_time("2016-01-01T00:00:00.061258")
 def test_should_show_scheduled_job(
     client_request,
+    active_user_with_permissions,
     mock_get_service_template,
     mock_get_scheduled_job,
     mock_get_service_data_retention,
     mock_get_notifications,
     fake_uuid,
 ):
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -421,6 +424,7 @@ def test_should_show_job_from_api(
     mock_get_notifications,
     fake_uuid,
 ):
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -435,12 +439,14 @@ def test_should_show_job_from_api(
 @freeze_time("2016-01-01T00:00:00.061258")
 def test_should_show_scheduled_job_with_api_key(
     client_request,
+    active_user_with_permissions,
     mock_get_service_template,
     mock_get_scheduled_job_with_api_key,
     mock_get_service_data_retention,
     mock_get_notifications,
     fake_uuid,
 ):
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -596,6 +602,7 @@ def test_should_show_cancel_link_for_letter_job(
         side_effect=[notifications_json],
     )
 
+    client_request.login(active_user_with_permissions)
     page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=str(job_id))
 
     assert page.find("a", text="Cancel sending these letters").attrs["href"] == url_for(
@@ -642,6 +649,7 @@ def test_dont_cancel_letter_job_when_to_early_to_cancel(
     )
 
     mock_cancel = mocker.patch("app.main.jobs.job_api_client.cancel_letter_job")
+    client_request.login(active_user_with_permissions)
     page = client_request.post(
         "main.cancel_letter_job",
         service_id=SERVICE_ONE_ID,
@@ -731,6 +739,7 @@ def test_should_show_letter_job_with_first_class_if_notifications_are_first_clas
 
 @freeze_time("2016-01-01 11:09:00.061258")
 def test_should_show_letter_job_with_first_class_if_no_notifications(
+    active_user_with_permissions,
     client_request,
     service_one,
     mock_get_job,
@@ -741,6 +750,7 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
 ):
     mock_get_service_letter_template(mocker, postage="first")
 
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,

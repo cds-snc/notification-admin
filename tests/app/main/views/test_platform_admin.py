@@ -751,7 +751,7 @@ def test_platform_admin_with_start_and_end_dates_provided(mocker, platform_admin
 
 
 @freeze_time("2018-6-11")
-def test_platform_admin_with_only_a_start_date_provided(mocker, platform_admin_client):
+def test_platform_admin_with_only_a_start_date_provided(mocker, platform_admin_client, platform_admin_user):
     start_date = "2018-01-01"
     api_args = {
         "start_date": datetime.date(2018, 1, 1),
@@ -762,6 +762,7 @@ def test_platform_admin_with_only_a_start_date_provided(mocker, platform_admin_c
     aggregate_stats_mock = mocker.patch("app.main.views.platform_admin.platform_stats_api_client.get_aggregate_platform_stats")
     complaint_count_mock = mocker.patch("app.main.views.platform_admin.complaint_api_client.get_complaint_count")
 
+    platform_admin_client.login(platform_admin_user)
     platform_admin_client.get(url_for("main.platform_admin", start_date=start_date))
 
     aggregate_stats_mock.assert_called_with(api_args)

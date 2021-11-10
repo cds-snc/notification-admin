@@ -73,6 +73,7 @@ from tests.conftest import (
 )
 @freeze_time("2016-01-01 11:09:00.061258")
 def test_notification_status_page_shows_details(
+    active_user_with_permissions,
     client_request,
     mocker,
     mock_has_no_jobs,
@@ -95,6 +96,7 @@ def test_notification_status_page_shows_details(
         key_type=key_type,
     )
 
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_notification",
         service_id=service_one["id"],
@@ -117,6 +119,7 @@ def test_notification_status_page_shows_details(
 )
 @freeze_time("2016-01-01 11:09:00.061258")
 def test_notification_status_page_respects_redaction(
+    active_user_with_permissions,
     client_request,
     mocker,
     service_one,
@@ -131,6 +134,7 @@ def test_notification_status_page_respects_redaction(
         redact_personalisation=template_redaction_setting,
     )
 
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_notification",
         service_id=service_one["id"],
@@ -297,11 +301,12 @@ def test_notification_status_shows_expected_back_link(
 
 @freeze_time("2012-01-01 01:01")
 def test_notification_page_doesnt_link_to_template_in_tour(
+    active_user_with_permissions,
     client_request,
     fake_uuid,
     mock_get_notification,
 ):
-
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_notification",
         service_id=SERVICE_ONE_ID,
@@ -490,6 +495,7 @@ def test_notification_page_shows_cancelled_or_failed_letter(
 @pytest.mark.parametrize("notification_type", ["email", "sms"])
 @freeze_time("2016-01-01 15:00")
 def test_notification_page_does_not_show_cancel_link_for_sms_or_email_notifications(
+    active_user_with_permissions,
     client_request,
     mocker,
     fake_uuid,
@@ -502,6 +508,7 @@ def test_notification_page_does_not_show_cancel_link_for_sms_or_email_notificati
         notification_status="created",
     )
 
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_notification",
         service_id=SERVICE_ONE_ID,
@@ -513,6 +520,7 @@ def test_notification_page_does_not_show_cancel_link_for_sms_or_email_notificati
 
 @freeze_time("2016-01-01 15:00")
 def test_notification_page_shows_cancel_link_for_letter_which_can_be_cancelled(
+    active_user_with_permissions,
     client_request,
     mocker,
     fake_uuid,
@@ -525,6 +533,7 @@ def test_notification_page_shows_cancel_link_for_letter_which_can_be_cancelled(
     )
     mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_notification",
         service_id=SERVICE_ONE_ID,
@@ -536,6 +545,7 @@ def test_notification_page_shows_cancel_link_for_letter_which_can_be_cancelled(
 
 @freeze_time("2016-01-01 15:00")
 def test_notification_page_does_not_show_cancel_link_for_letter_which_cannot_be_cancelled(
+    active_user_with_permissions,
     client_request,
     mocker,
     fake_uuid,
@@ -548,6 +558,7 @@ def test_notification_page_does_not_show_cancel_link_for_letter_which_cannot_be_
     )
     mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.view_notification",
         service_id=SERVICE_ONE_ID,
@@ -830,6 +841,7 @@ def test_should_show_image_of_precompiled_letter_notification(
 
 @freeze_time("2016-01-01 15:00")
 def test_show_cancel_letter_confirmation(
+    active_user_with_permissions,
     client_request,
     mocker,
     fake_uuid,
@@ -842,6 +854,7 @@ def test_show_cancel_letter_confirmation(
     )
     mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.cancel_letter",
         service_id=SERVICE_ONE_ID,
@@ -855,6 +868,7 @@ def test_show_cancel_letter_confirmation(
 
 @freeze_time("2016-01-01 15:00")
 def test_cancelling_a_letter_calls_the_api(
+    active_user_with_permissions,
     client_request,
     mocker,
     fake_uuid,
@@ -868,6 +882,7 @@ def test_cancelling_a_letter_calls_the_api(
     mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
     cancel_endpoint = mocker.patch("app.main.views.notifications.notification_api_client.update_notification_to_cancelled")
 
+    client_request.login(active_user_with_permissions)
     client_request.post(
         "main.cancel_letter",
         service_id=SERVICE_ONE_ID,

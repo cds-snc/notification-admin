@@ -1612,6 +1612,7 @@ def test_add_reply_to_email_address_sends_test_notification(mocker, client_reque
 @freeze_time("2018-06-01 11:11:00.061258")
 def test_service_verify_reply_to_address(
     mocker,
+    active_user_with_permissions,
     client_request,
     fake_uuid,
     get_non_default_reply_to_email_address,
@@ -1635,6 +1636,7 @@ def test_service_verify_reply_to_address(
     mock_add_reply_to_email_address = mocker.patch("app.service_api_client.add_reply_to_email_address")
     mock_update_reply_to_email_address = mocker.patch("app.service_api_client.update_reply_to_email_address")
     mocker.patch("app.service_api_client.get_reply_to_email_addresses", return_value=[])
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.service_verify_reply_to_address",
         service_id=SERVICE_ONE_ID,
@@ -1671,7 +1673,9 @@ def test_service_verify_reply_to_address(
 
 
 @freeze_time("2018-06-01 11:11:00.061258")
-def test_add_reply_to_email_address_fails_if_notification_not_delivered_in_45_sec(mocker, client_request, fake_uuid):
+def test_add_reply_to_email_address_fails_if_notification_not_delivered_in_45_sec(
+    active_user_with_permissions, mocker, client_request, fake_uuid
+):
     notification = {
         "id": fake_uuid,
         "status": "sending",
@@ -1684,6 +1688,7 @@ def test_add_reply_to_email_address_fails_if_notification_not_delivered_in_45_se
     mocker.patch("app.service_api_client.get_reply_to_email_addresses", return_value=[])
     mocker.patch("app.notification_api_client.get_notification", return_value=notification)
     mock_add_reply_to_email_address = mocker.patch("app.service_api_client.add_reply_to_email_address")
+    client_request.login(active_user_with_permissions)
     page = client_request.get(
         "main.service_verify_reply_to_address",
         service_id=SERVICE_ONE_ID,
@@ -2927,12 +2932,13 @@ def test_should_show_page_to_set_message_limit(
     ],
 )
 def test_should_set_message_limit(
+    platform_admin_user,
     platform_admin_client,
     given_limit,
     expected_limit,
     mock_update_message_limit,
 ):
-
+    platform_admin_client.login(platform_admin_user)
     response = platform_admin_client.post(
         url_for(
             "main.set_message_limit",
@@ -2967,13 +2973,14 @@ def test_should_show_page_to_set_sms_allowance(platform_admin_client, mock_get_f
     ],
 )
 def test_should_set_sms_allowance(
+    platform_admin_user,
     platform_admin_client,
     given_allowance,
     expected_api_argument,
     mock_get_free_sms_fragment_limit,
     mock_create_or_update_free_sms_fragment_limit,
 ):
-
+    platform_admin_client.login(platform_admin_user)
     response = platform_admin_client.post(
         url_for(
             "main.set_free_sms_allowance",
