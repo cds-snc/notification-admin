@@ -25,15 +25,19 @@
       {% call form_wrapper(action=url_for('.contact', current_step=current_step), autocomplete=True) %}
 
         {% if current_step == "identity" %}
+        
           {% if not current_user.is_authenticated %}
             {{ textbox(form.name, width='md:w-2/3', autocomplete='name') }}
             {{ textbox(form.email_address, width='md:w-2/3', autocomplete='email') }}
           {% endif %}
           {{ radios(form.support_type) }}
+          
         {% endif %}
 
         {% if current_step == "message" %}
           {{ textbox(form.message, width='md:w-2/3',label=message_label, hint='', rows=10) }}
+          
+
         {% endif %}
 
         {% if current_step == "set_up_demo.org_details" %}
@@ -50,6 +54,7 @@
         {% if next_step != None %}
           {{ page_footer(_('Continue')) }}
         {% else %}
+        {{ form.recaptcha}}
           {{ page_footer(_('Send')) }}
         {% endif %}
 

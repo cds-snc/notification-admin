@@ -603,13 +603,13 @@ def useful_headers_after_request(response):
         "Content-Security-Policy",
         (
             "default-src 'self' {asset_domain} 'unsafe-inline';"
-            "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
+            "script-src 'self' {asset_domain} *.google-analytics.com *.google.com *.gstatic.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
             "connect-src 'self' *.google-analytics.com;"
             "object-src 'self';"
             "style-src 'self' *.googleapis.com 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
             "img-src 'self' {asset_domain} *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
-            "frame-src 'self' www.youtube.com;".format(
+            "frame-src 'self' *.google.com www.youtube.com;".format(
                 asset_domain=current_app.config["ASSET_DOMAIN"],
             )
         ),
