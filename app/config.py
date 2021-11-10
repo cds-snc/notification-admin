@@ -58,12 +58,9 @@ class Config(object):
     ANTIVIRUS_API_KEY = os.environ.get("ANTIVIRUS_API_KEY")
 
     RECAPTCHA_USE_SSL = True
-    # Don't use hardcoded keys, not secure 
-    # instead use environment variables to store them
-    # os.environ.get("")
     RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_PUBLIC_KEY")
     RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY")
-    RECAPTCHA_OPTIONS = {'theme': 'white'}
+    RECAPTCHA_OPTIONS = {"theme": "white"}
 
     ASSETS_DEBUG = False
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")

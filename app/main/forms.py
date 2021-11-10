@@ -54,8 +54,6 @@ from app.models.roles_and_permissions import permissions, roles
 from app.utils import get_logo_cdn_domain, guess_name_from_email_address, is_blank
 
 
-
-
 def get_time_value_and_label(future_time):
     return (
         future_time.replace(tzinfo=None).isoformat(),
@@ -64,7 +62,6 @@ def get_time_value_and_label(future_time):
             get_human_time(future_time.astimezone(pytz.timezone("Europe/London"))),
         ),
     )
-
 
 
 def get_human_time(time):
@@ -860,7 +857,7 @@ class CreateInboundSmsForm(StripWhitespaceForm):
             raise ValidationError(_l("This number already exists"))
 
 
-class ContactNotify(StripWhitespaceForm):   
+class ContactNotify(StripWhitespaceForm):
     not_empty = _l("This cannot be empty")
     name = StringField(_l("Your name"), validators=[DataRequired(message=not_empty), Length(max=255)])
     support_type = RadioField(
@@ -874,14 +871,12 @@ class ContactNotify(StripWhitespaceForm):
         ],
     )
     email_address = email_address(label=_l("Your email"), gov_user=False)
-    
-    
+
 
 class ContactMessageStep(ContactNotify):
     message = TextAreaField(_l("Message"), validators=[DataRequired(), Length(max=2000)])
     recaptcha = RecaptchaField(_l("Are you human?"), validators=[DataRequired()])
-    # TO DO - figure out how to actually add recaptcha to the form
-    # Read more documentation on RecaptchaField 
+
 
 class SetUpDemoOrgDetails(ContactNotify):
     department_org_name = StringField(
