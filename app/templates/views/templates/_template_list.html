@@ -31,6 +31,7 @@
             name='templates_and_folders',
             data=templates_and_folders_form.is_selected(item.id),
             value=item.id,
+            label=_("Select the {name} {type}").format(name=item.name, type=_("folder") if item.is_folder else item.hint)
           ) }}
         {% endif %}
         <p class="message-name">

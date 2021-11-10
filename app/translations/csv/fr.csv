@@ -303,6 +303,7 @@
 "address","adresse"
 "addresses","adresses"
 "Template","Gabarit"
+"template","gabarit"
 "Delete","Supprimer"
 "Back","Retour"
 "sending","envoi en cours"
@@ -1501,3 +1502,4 @@
 "Can see","Peut voir"
 "main footer","pied de page principal"
 "secondary footer","pied de page secondaire"
+"Select the {name} {type}","Sélectionner le {type} {name}"
