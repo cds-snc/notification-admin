@@ -61,6 +61,7 @@ class Config(object):
     RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_PUBLIC_KEY")
     RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY")
     RECAPTCHA_OPTIONS = {"theme": "white"}
+    RECAPTCHA_PARAMETERS = {"hl": "en"}
 
     ASSETS_DEBUG = False
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")

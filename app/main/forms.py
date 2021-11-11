@@ -875,7 +875,7 @@ class ContactNotify(StripWhitespaceForm):
 
 class ContactMessageStep(ContactNotify):
     message = TextAreaField(_l("Message"), validators=[DataRequired(), Length(max=2000)])
-    recaptcha = RecaptchaField(_l("Are you human?"), validators=[DataRequired()])
+    recaptcha = RecaptchaField()
 
 
 class SetUpDemoOrgDetails(ContactNotify):

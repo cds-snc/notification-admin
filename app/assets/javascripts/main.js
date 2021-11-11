@@ -68,6 +68,28 @@ window.formatAllDates = function () {
   });
 };
 
+// Dynamic set Google reCaptcha locale based on users language
+window.addEventListener("load", function () {
+  const container = document.getElementById("captcha_container");
+  if (container) {
+    const iframeGoogleCaptcha = container.querySelector("iframe");
+    const actualLang = iframeGoogleCaptcha
+      .getAttribute("src")
+      .match(/hl=(.*?)&/)
+      .pop();
+
+    // For setting new language
+    if (actualLang !== window.APP_LANG) {
+      iframeGoogleCaptcha.setAttribute(
+        "src",
+        iframeGoogleCaptcha
+          .getAttribute("src")
+          .replace(/hl=(.*?)&/, "hl=" + window.APP_LANG + "&")
+      );
+    }
+  }
+});
+
 $(() => GOVUK.stickAtTopWhenScrolling.init());
 $(() => GOVUK.stickAtBottomWhenScrolling.init());
 

@@ -54,7 +54,9 @@
         {% if next_step != None %}
           {{ page_footer(_('Continue')) }}
         {% else %}
-        {{ form.recaptcha}}
+          <div id="captcha_container">
+          {{ form.recaptcha}}
+          </div>
           {{ page_footer(_('Send')) }}
         {% endif %}
 

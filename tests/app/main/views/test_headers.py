@@ -43,14 +43,14 @@ def test_owasp_useful_headers_set(
     assert response.headers["Permissions-Policy"] == "interest-cohort=()"
     assert response.headers["Content-Security-Policy"] == (
         "default-src 'self' static.example.com 'unsafe-inline';"
-        "script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
+        "script-src 'self' static.example.com *.google-analytics.com *.google.com *.gstatic.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
         "connect-src 'self' *.google-analytics.com;"
         "object-src 'self';"
         "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
         "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
-        "frame-src 'self' www.youtube.com;"
+        "frame-src 'self' *.google.com www.youtube.com;"
     )
 
 
@@ -95,12 +95,12 @@ def test_headers_non_ascii_characters_are_replaced(
     assert response.status_code == 200
     assert response.headers["Content-Security-Policy"] == (
         "default-src 'self' static.example.com 'unsafe-inline';"
-        "script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
+        "script-src 'self' static.example.com *.google-analytics.com *.google.com *.gstatic.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
         "connect-src 'self' *.google-analytics.com;"
         "object-src 'self';"
         "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
         "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
-        "frame-src 'self' www.youtube.com;"
+        "frame-src 'self' *.google.com www.youtube.com;"
     )
