@@ -612,11 +612,19 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         choices = [
             (
                 FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
-                _l("English-first") + "||" + default_en_filename,
+                _l("English-first")
+                + "||"
+                + default_en_filename
+                + "||"
+                + _l("Bilingual logo with Government of Canada written first in English, then in French"),
             ),
             (
                 FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
-                _l("French-first") + "||" + default_fr_filename,
+                _l("French-first")
+                + "||"
+                + default_fr_filename
+                + "||"
+                + _l("Bilingual logo with Government of Canada written first in French, then in English"),
             ),
         ]
         return choices
@@ -626,7 +634,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         self.default_branding.choices = self._getSelectBilingualChoices()
 
     default_branding = RadioField(
-        _l("Default language"),
+        _l("Default language <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
@@ -779,7 +787,7 @@ class ChangePasswordForm(StripWhitespaceForm):
 
 class CsvUploadForm(StripWhitespaceForm):
     file = FileField(
-        "Add recipients",
+        _l("Add recipients"),
         validators=[DataRequired(message="Please pick a file"), CsvFileValidator()],
     )
 
