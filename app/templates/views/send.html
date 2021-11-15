@@ -24,11 +24,14 @@
   </div>
 
   <p>
-    {{ _('Save your file as a') }} {% set csv_acronym = _('Comma Separated Values') %}
-    {% set tsv_acr = _('Tab Separated Values') %} {% set ods_acronym = _('Open Document Spreadsheet') %}
-    <acronym title="{{ csv_acronym }}">{{ _('CSV') }}</acronym>,
-    <acronym title="{{ tsv_acronym }}">{{ _('TSV') }}</acronym>,
-    <acronym title="{{ ods_acronym }}">{{ _('ODS') }}</acronym> {{ _('or Microsoft Excel spreadsheet') }}
+    {{ _('Save your file as a') }} 
+    {% set csv_acronym = _('Comma Separated Values') %}
+    {% set tsv_acr = _('Tab Separated Values') %} 
+    {% set ods_acronym = _('Open Document Spreadsheet') %}
+    <span class="sr-only">{{ csv_acronym }}</span><span aria-hidden="true">{{ _('CSV') }}</span>, 
+    <span class="sr-only">{{ tsv_acr }}</span><span aria-hidden="true">{{ _('TSV') }}</span>, 
+    <span class="sr-only">{{ ods_acronym }}</span><span aria-hidden="true">{{ _('ODS') }}</span>
+    {{ _('or Microsoft Excel spreadsheet') }}.
   </p>
 
   <p>

@@ -81,7 +81,7 @@
       {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
       {% if '||' in option.label.text %}
         <div id="{{ option.id }}-img">
-          <img src={{option.label.text.split("||")[1] }} style="width: 400px;margin-top:16px">
+          <img src="{{option.label.text.split('||')[1] }}" alt="{{option.label.text.split('||')[2] }}" style="width: 400px;margin-top:16px">
         </div>
       {% endif %}
       {% if option_hints[option.data] %}
