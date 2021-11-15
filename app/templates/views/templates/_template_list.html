@@ -22,38 +22,46 @@
   </p>
 {% else %}
   {% set display_checkboxes = current_user.has_permissions('manage_templates') and not sending_view %}
+
   <nav id="template-list" class="{{ 'top-gutter-5px contain-floats' if (not show_template_nav and not show_search_box) else '' }}">
-    {% for item in template_list %}
-      <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}">
-        {% if display_checkboxes %}
-          {{ unlabelled_checkbox(
-            id='templates-or-folder-{}'.format(item.id),
-            name='templates_and_folders',
-            data=templates_and_folders_form.is_selected(item.id),
-            value=item.id,
-            label=_("Select the {name} {type}").format(name=item.name, type=_("folder") if item.is_folder else item.hint)
-          ) }}
-        {% endif %}
-        <p class="message-name">
-          {% for ancestor in item.ancestors %}
-            <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=ancestor.id, view='sending' if sending_view else None) }}" class="template-list-folder">
-              {{- format_item_name(ancestor.name) -}}
-            </a> <span class="message-name-separator"></span>
-          {% endfor %}
-          {% if item.is_folder %}
-            <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=item.id, view='sending' if sending_view else None) }}" class="template-list-folder">
-              <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
-            </a>
-          {% else %}
-            <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=item.id) }}" class="template-list-template">
-              <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
-            </a>
+    {% if display_checkboxes %}
+      <fieldset>
+        <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
+    {% endif %}
+      {% for item in template_list %}
+        <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}">
+          {% if display_checkboxes %}
+            {{ unlabelled_checkbox(
+              id='templates-or-folder-{}'.format(item.id),
+              name='templates_and_folders',
+              data=templates_and_folders_form.is_selected(item.id),
+              value=item.id,
+              label=_("Select the {name} {type}").format(name=item.name, type=_("folder") if item.is_folder else item.hint)
+            ) }}
           {% endif %}
-        </p>
-        <p class="message-type">
-          {{ _(item.hint) }}
-        </p>
-      </div>
-    {% endfor %}
+          <p class="message-name" id="label-for-templates-or-folder-{{item.id}}">
+            {% for ancestor in item.ancestors %}
+              <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=ancestor.id, view='sending' if sending_view else None) }}" class="template-list-folder">
+                {{- format_item_name(ancestor.name) -}}
+              </a> <span class="message-name-separator"></span>
+            {% endfor %}
+            {% if item.is_folder %}
+              <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=item.id, view='sending' if sending_view else None) }}" class="template-list-folder">
+                <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
+              </a>
+            {% else %}
+              <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=item.id) }}" class="template-list-template">
+                <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
+              </a>
+            {% endif %}
+          </p>
+          <p class="message-type">
+            {{ _(item.hint) }}
+          </p>
+        </div>
+      {% endfor %}
+    {% if display_checkboxes %}
+      </fieldset>
+    {% endif %}
   </nav>
 {% endif %}
