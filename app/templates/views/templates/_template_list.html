@@ -39,7 +39,7 @@
               label=_("Select the {name} {type}").format(name=item.name, type=_("folder") if item.is_folder else item.hint)
             ) }}
           {% endif %}
-          <p class="message-name" id="label-for-templates-or-folder-{{item.id}}">
+          <p class="message-name">
             {% for ancestor in item.ancestors %}
               <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=ancestor.id, view='sending' if sending_view else None) }}" class="template-list-folder">
                 {{- format_item_name(ancestor.name) -}}
