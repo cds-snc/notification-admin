@@ -106,19 +106,19 @@ def mock_get_service_settings_page_common(
                 "Send international text messages Off Change Send international text messages",
                 "Yearly free maximum 25,000 text messages",
                 "Label Value Action",
-                "Live On Change",
-                "Count in list of live services Yes Change",
-                "Organisation Test Organisation Government of Canada Change",
-                "Daily message limit 1,000 Change",
+                "Live On Change Live",
+                "Count in list of live services Yes Change Count in list of live services",
+                "Organisation Test Organisation Government of Canada Change Organisation",
+                "Daily message limit 1,000 Change Daily message limit",
                 "API rate limit per minute 100",
                 "Text message senders GOVUK Manage Text message senders",
                 "Receive text messages Off Change Receive text messages",
-                "Free text message allowance 250,000 Change",
-                "Email branding English Government of Canada signature Change",
-                "Letter branding Not set Change",
-                "Data retention email Change",
-                "Receive inbound SMS Off Change",
-                "Email authentication Off Change",
+                "Free text message allowance 250,000 Change Free text message allowance",
+                "Email branding English Government of Canada signature Change Email branding",
+                "Letter branding Not set Change Letter branding",
+                "Data retention email Change Data retention",
+                "Receive inbound SMS Off Change Receive inbound SMS",
+                "Email authentication Off Change Email authentication",
             ],
         ),
     ],
@@ -175,7 +175,7 @@ def test_no_go_live_link_for_service_without_organisation(
 
     assert page.find("h1").text == "Settings"
     assert normalize_spaces(page.select("tr")[16].text) == ("Live No (organisation must be set first)")
-    assert normalize_spaces(page.select("tr")[18].text) == ("Organisation Not set Government of Canada Change")
+    assert normalize_spaces(page.select("tr")[18].text) == ("Organisation Not set Government of Canada Change Organisation")
 
 
 def test_organisation_name_links_to_org_dashboard(
