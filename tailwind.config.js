@@ -119,7 +119,8 @@ module.exports = {
       inset: {
         '2': "2px",
         '5': "5px",
-        '7': "7px"
+        '7': "7px",
+        'full': "100%"
       },
       keyframes: {
         ellipsis: {
