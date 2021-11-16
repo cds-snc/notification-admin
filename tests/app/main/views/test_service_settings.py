@@ -266,10 +266,10 @@ def test_should_show_overview_for_service_with_more_things_set(
     service_one["email_branding"] = uuid4()
     response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    sr = page.find_all("tr")
+    rows = page.find_all("tr")
     for index, row in enumerate(expected_rows):
         formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
-        visible = sr[index + 1]
+        visible = rows[index + 1]
         sr_only = visible.find("span", "sr-only")
         if sr_only:
             sr_only.extract()
