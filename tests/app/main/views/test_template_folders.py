@@ -336,9 +336,9 @@ def test_should_show_templates_folder_page(
 
     all_page_items_styled_with_checkboxes = page.select(".template-list-item-with-checkbox")
     for item in all_page_items_styled_with_checkboxes:
-            sr_only = item.find("span", "sr-only")
-            if sr_only:
-                sr_only.extract()
+        sr_only = item.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
 
     assert len(all_page_items) == len(all_page_items_styled_with_checkboxes)
 
