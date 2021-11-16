@@ -349,10 +349,9 @@
             {{ text_field(current_service.message_limit | format_number) }}
             {{ edit_field(
               change_txt, 
-              url_for('.set_message_limit', 
-              service_id=current_service.id,
+              url_for('.set_message_limit', service_id=current_service.id),
               for=txt
-            )) }}
+            ) }}
           {% endcall %}
           {% call row() %}
             {% set txt = _('API rate limit per minute') %}
@@ -390,8 +389,7 @@
             {{ boolean_field('inbound_sms' in current_service.permissions) }}
             {{ edit_field(
                 change_txt,
-                url_for('.service_set_inbound_sms',
-                service_id=current_service.id),
+                url_for('.service_set_inbound_sms', service_id=current_service.id),
                 permissions=['manage_service'],
                 for=txt,
             )
@@ -448,10 +446,9 @@
                 {{ boolean_field(current_service.has_permission(permission)) }}
                 {{ edit_field(
                   change_txt, 
-                  url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, 
-                  permission=permission if not service_permissions[permission].endpoint else None,
-                  for=txt
-                )) }}
+                  url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, permission=permission if not service_permissions[permission].endpoint else None,), 
+                  for=_(service_permissions[permission].title)
+                ) }}
               {% endcall %}
             {% endif %}
           {% endfor %}

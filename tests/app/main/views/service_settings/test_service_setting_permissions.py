@@ -76,6 +76,12 @@ def test_service_set_permission(
     [
         ({"restricted": True}, ".service_switch_live", {}, "Live Off Change Live"),
         ({"restricted": False}, ".service_switch_live", {}, "Live On Change Live"),
+        (
+            {"permissions": ["letter"]},
+            ".service_set_permission",
+            {"permission": "upload_letters"},
+            "Uploading letters Off Change Uploading letters",
+        ),
     ],
 )
 def test_service_setting_toggles_show(get_service_settings_page, service_one, service_fields, endpoint, kwargs, text):
