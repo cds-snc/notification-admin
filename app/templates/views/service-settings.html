@@ -298,10 +298,9 @@
               {{ boolean_field(not current_service.trial_mode) }}
               {{ edit_field(
                 change_txt, 
-                url_for('.service_switch_live', 
-                service_id=current_service.id,
+                url_for('.service_switch_live', service_id=current_service.id),
                 for=txt
-              )) }}
+              ) }}
             {% endif %}
           {% endcall %}
 
@@ -313,10 +312,9 @@
             {{ text_field(yes_txt if current_service.count_as_live else no_txt) }}
             {{ edit_field(
               change_txt, 
-              url_for('.service_switch_count_as_live', 
-              service_id=current_service.id,
+              url_for('.service_switch_count_as_live', service_id=current_service.id),
               for=txt
-            )) }}
+            ) }}
           {% endcall %}
 
           {% call row() %}
@@ -340,9 +338,9 @@
             {{ edit_field(
               change_txt, 
               url_for('.link_service_to_organisation', 
-              service_id=current_service.id,
+              service_id=current_service.id),
               for=txt
-            )) }}
+            ) }}
           {% endcall %}
 
           {% call row() %}
@@ -406,10 +404,9 @@
             {{ text_field(current_service.free_sms_fragment_limit | format_number) }}
             {{ edit_field(
               change_txt, 
-              url_for('.set_free_sms_allowance', 
-              service_id=current_service.id,
+              url_for('.set_free_sms_allowance', service_id=current_service.id),
               for=txt
-            )) }}
+            ) }}
           {% endcall %}
           {% call row() %}
             {% set txt = _('Email branding') %}
@@ -417,10 +414,9 @@
             {{ text_field(_(current_service.email_branding_name)) }}
             {{ edit_field(
               change_txt, 
-              url_for('.service_set_email_branding', 
-              service_id=current_service.id,
+              url_for('.service_set_email_branding', service_id=current_service.id),
               for=txt
-            )) }}
+            ) }}
           {% endcall %}
           {% call row() %}
             {% set txt = _('Letter branding') %}
@@ -428,10 +424,9 @@
             {{ optional_text_field(current_service.letter_branding.name) }}
             {{ edit_field(
               change_txt, 
-              url_for('.service_set_letter_branding', 
-              service_id=current_service.id,
+              url_for('.service_set_letter_branding', service_id=current_service.id),
               for=txt
-            )) }}
+            ) }}
           {% endcall %}
           {% call row() %}
             {% set txt = _('Data retention') %}
@@ -441,10 +436,9 @@
             {% endcall %}
             {{ edit_field(
               change_txt, 
-              url_for('.data_retention', 
-              service_id=current_service.id,
+              url_for('.data_retention', service_id=current_service.id),
               for=txt
-            )) }}
+            ) }}
           {% endcall %}
 
           {% for permission in service_permissions %}
