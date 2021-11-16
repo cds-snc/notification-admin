@@ -446,7 +446,7 @@
                 {{ boolean_field(current_service.has_permission(permission)) }}
                 {{ edit_field(
                   change_txt, 
-                  url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, permission=permission if not service_permissions[permission].endpoint else None,), 
+                  url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, permission=permission if not service_permissions[permission].endpoint else None), 
                   for=_(service_permissions[permission].title)
                 ) }}
               {% endcall %}
