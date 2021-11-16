@@ -66,21 +66,21 @@ def mock_get_service_settings_page_common(
             None,
             [
                 "Label Value Action",
-                "Service name Test Service Change Service name",
-                "Sending email address test.service@{sending_domain} Change Sending email address",
-                "Sign-in method Text message code Change Sign-in method",
+                "Service name Test Service Change",
+                "Sending email address test.service@{sending_domain} Change",
+                "Sign-in method Text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
-                "Send emails On Change Send emails",
-                "Reply-to addresses Not set Manage Reply-to addresses",
-                "Email branding English Government of Canada signature Change Email branding",
-                "Send files by email Off (API-only) Change Send files by email",
+                "Send emails On Change",
+                "Reply-to addresses Not set Manage",
+                "Email branding English Government of Canada signature Change",
+                "Send files by email Off (API-only) Change",
                 "Yearly free maximum 10 million emails",
                 "Label Value Action",
-                "Send text messages On Change Send text messages",
-                "Start text messages with service name On Change Start text messages with service name",
-                "Send international text messages Off Change Send international text messages",
+                "Send text messages On Change",
+                "Start text messages with service name On Change",
+                "Send international text messages Off Change",
                 "Yearly free maximum 25,000 text messages",
             ],
         ),
@@ -89,36 +89,36 @@ def mock_get_service_settings_page_common(
             "test.example.com",
             [
                 "Label Value Action",
-                "Service name Test Service Change Service name",
-                "Sending email address test.service@{sending_domain} Change Sending email address",
-                "Sign-in method Text message code Change Sign-in method",
+                "Service name Test Service Change",
+                "Sending email address test.service@{sending_domain} Change",
+                "Sign-in method Text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
-                "Send emails On Change Send emails",
-                "Reply-to addresses Not set Manage Reply-to addresses",
-                "Email branding English Government of Canada signature Change Email branding",
-                "Send files by email Off (API-only) Change Send files by email",
+                "Send emails On Change",
+                "Reply-to addresses Not set Manage",
+                "Email branding English Government of Canada signature Change",
+                "Send files by email Off (API-only) Change",
                 "Yearly free maximum 10 million emails",
                 "Label Value Action",
-                "Send text messages On Change Send text messages",
-                "Start text messages with service name On Change Start text messages with service name",
-                "Send international text messages Off Change Send international text messages",
+                "Send text messages On Change",
+                "Start text messages with service name On Change",
+                "Send international text messages Off Change",
                 "Yearly free maximum 25,000 text messages",
                 "Label Value Action",
-                "Live On Change Live",
-                "Count in list of live services Yes Change Count in list of live services",
-                "Organisation Test Organisation Government of Canada Change Organisation",
-                "Daily message limit 1,000 Change Daily message limit",
+                "Live On Change",
+                "Count in list of live services Yes Change",
+                "Organisation Test Organisation Government of Canada Change",
+                "Daily message limit 1,000 Change",
                 "API rate limit per minute 100",
-                "Text message senders GOVUK Manage Text message senders",
-                "Receive text messages Off Change Receive text messages",
-                "Free text message allowance 250,000 Change Free text message allowance",
-                "Email branding English Government of Canada signature Change Email branding",
-                "Letter branding Not set Change Letter branding",
-                "Data retention email Change Data retention",
-                "Receive inbound SMS Off Change Receive inbound SMS",
-                "Email authentication Off Change Email authentication",
+                "Text message senders GOVUK Manage",
+                "Receive text messages Off Change",
+                "Free text message allowance 250,000 Change",
+                "Email branding English Government of Canada signature Change",
+                "Letter branding Not set Change",
+                "Data retention email Change",
+                "Receive inbound SMS Off Change",
+                "Email authentication Off Change",
             ],
         ),
     ],
@@ -156,6 +156,11 @@ def test_should_show_overview(
     rows = page.select("tr")
     for index, row in enumerate(expected_rows):
         formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
+        visible = rows[index]
+        sr_only = visible.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
+            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
         assert formatted_row == " ".join(rows[index].text.split())
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
@@ -205,39 +210,39 @@ def test_organisation_name_links_to_org_dashboard(
         (
             ["email", "sms", "inbound_sms", "international_sms"],
             [
-                "Service name service one Change Service name",
-                "Sending email address test.service@{sending_domain} Change Sending email address",
-                "Sign-in method Text message code Change Sign-in method",
+                "Service name service one Change",
+                "Sending email address test.service@{sending_domain} Change",
+                "Sign-in method Text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
-                "Send emails On Change Send emails",
-                "Reply-to addresses test@example.com Manage Reply-to addresses",
-                "Email branding Your branding (Organisation name) Change Email branding",
-                "Send files by email Off (API-only) Change Send files by email",
+                "Send emails On Change",
+                "Reply-to addresses test@example.com Manage",
+                "Email branding Your branding (Organisation name) Change",
+                "Send files by email Off (API-only) Change",
                 "Label Value Action",
-                "Send text messages On Change Send text messages",
-                "Start text messages with service name On Change Start text messages with service name",
-                "Send international text messages On Change Send international text messages",
+                "Send text messages On Change",
+                "Start text messages with service name On Change",
+                "Send international text messages On Change",
             ],
         ),
         (
             ["email", "sms", "email_auth"],
             [
-                "Service name service one Change Service name",
-                "Sending email address test.service@{sending_domain} Change Sending email address",
-                "Sign-in method Email code or text message code Change Sign-in method",
+                "Service name service one Change",
+                "Sending email address test.service@{sending_domain} Change",
+                "Sign-in method Email code or text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
-                "Send emails On Change Send emails",
-                "Reply-to addresses test@example.com Manage Reply-to addresses",
-                "Email branding Your branding (Organisation name) Change Email branding",
-                "Send files by email Off (API-only) Change Send files by email",
+                "Send emails On Change",
+                "Reply-to addresses test@example.com Manage",
+                "Email branding Your branding (Organisation name) Change",
+                "Send files by email Off (API-only) Change",
                 "Label Value Action",
-                "Send text messages On Change Send text messages",
-                "Start text messages with service name On Change Start text messages with service name",
-                "Send international text messages Off Change Send international text messages",
+                "Send text messages On Change",
+                "Start text messages with service name On Change",
+                "Send international text messages Off Change",
             ],
         ),
     ],
@@ -261,9 +266,15 @@ def test_should_show_overview_for_service_with_more_things_set(
     service_one["email_branding"] = uuid4()
     response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    sr = page.find_all("tr")
     for index, row in enumerate(expected_rows):
         formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
-        assert formatted_row == " ".join(page.find_all("tr")[index + 1].text.split())
+        visible = sr[index + 1]
+        sr_only = visible.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
+            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+        assert formatted_row == " ".join(visible.text.split())
 
 
 def test_if_cant_send_letters_then_cant_see_letter_contact_block(
