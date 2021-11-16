@@ -74,19 +74,19 @@ def test_service_set_permission(
 @pytest.mark.parametrize(
     "service_fields, endpoint, kwargs, text",
     [
-        ({"restricted": True}, ".service_switch_live", {}, "Live Off Change"),
-        ({"restricted": False}, ".service_switch_live", {}, "Live On Change"),
+        ({"restricted": True}, ".service_switch_live", {}, "Live Off Change Live"),
+        ({"restricted": False}, ".service_switch_live", {}, "Live On Change Live"),
         (
             {"permissions": ["sms"]},
             ".service_set_inbound_number",
             {},
-            "Receive inbound SMS Off Change",
+            "Receive inbound SMS Off Change Receive inbound SMS",
         ),
         (
             {"permissions": ["letter"]},
             ".service_set_permission",
             {"permission": "upload_letters"},
-            "Uploading letters Off Change",
+            "Uploading letters Off Change Uploading letters",
         ),
     ],
 )
@@ -94,7 +94,7 @@ def test_service_setting_toggles_show(get_service_settings_page, service_one, se
     link_url = url_for(endpoint, **kwargs, service_id=service_one["id"])
     service_one.update(service_fields)
     page = get_service_settings_page()
-    assert normalize_spaces(page.find("a", {"href": link_url}).find_parent("tr").text.strip()) == text
+    assert normalize_spaces(page.find("a", {"href": link_url}).text.strip()) == text
 
 
 @pytest.mark.parametrize(
