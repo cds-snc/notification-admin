@@ -129,7 +129,7 @@ def email_address(label=_l("Email address"), gov_user=True, required=True):
         validators.append(ValidGovEmail())
 
     if required:
-        validators.append(DataRequired(message=_l("This cannot be empty")))
+        validators.append(DataRequired(message=_l("Enter your email address")))
 
     return EmailField(label, validators, render_kw={"spellcheck": "false"})
 
@@ -865,7 +865,7 @@ class CreateInboundSmsForm(StripWhitespaceForm):
 
 
 class ContactNotify(StripWhitespaceForm):
-    not_empty = _l("This cannot be empty")
+    not_empty = _l("Enter your name")
     name = StringField(_l("Your name"), validators=[DataRequired(message=not_empty), Length(max=255)])
     support_type = RadioField(
         _l("How can we help?"),
@@ -903,7 +903,7 @@ class SetUpDemoOrgDetails(ContactNotify):
             ("external", _l("Partners from other organisations (external)")),
             ("public", _l("Public")),
         ],
-        validators=[DataRequired()],
+        validators=[DataRequired(message=_l("You need to choose an option"))],
     )
 
 
@@ -931,7 +931,7 @@ class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):
             ),
             ("other", _l("Other")),
         ],
-        validators=[DataRequired()],
+        validators=[DataRequired(message=_l("You need to choose an option"))],
     )
     main_use_case_details = TextAreaField(
         _l("What will messages be about?"),
