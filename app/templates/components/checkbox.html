@@ -38,9 +38,11 @@
   >
 {% endmacro %}
 
-{% macro unlabelled_checkbox(id, name, data=None, value="y") %}
+{% macro unlabelled_checkbox(id, name, data=None, value="y", label="") %}
   <div class="multiple-choice">
     {{ checkbox_input(id, name, data, value) }}
-    <label></label>
+    <label for="{{id}}">
+      <span class="sr-only">{{label}}</span>
+    </label>
   </div>
 {% endmacro %}
