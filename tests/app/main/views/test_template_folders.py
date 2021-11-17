@@ -329,7 +329,16 @@ def test_should_show_templates_folder_page(
         assert links_in_page[index].text.strip() == expected_link
 
     all_page_items = page.select(".template-list-item")
+    for item in all_page_items:
+        sr_only = item.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
+
     all_page_items_styled_with_checkboxes = page.select(".template-list-item-with-checkbox")
+    for item in all_page_items_styled_with_checkboxes:
+        sr_only = item.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
 
     assert len(all_page_items) == len(all_page_items_styled_with_checkboxes)
 
@@ -1627,9 +1636,17 @@ def test_should_filter_templates_folder_page_based_on_user_permissions(
             and "template-list-item-hidden-by-default" not in tag["class"]
         )
     )
+    for item in displayed_page_items:
+        sr_only = item.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
     assert [[i.strip() for i in e.text.split("\n") if i.strip()] for e in displayed_page_items] == expected_displayed_items
 
     all_page_items = page.select(".template-list-item")
+    for item in all_page_items:
+        sr_only = item.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
     assert [[i.strip() for i in e.text.split("\n") if i.strip()] for e in all_page_items] == expected_items
 
     if expected_empty_message:

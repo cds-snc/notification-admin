@@ -125,7 +125,7 @@ def test_message_step_validates(client_request, support_type, mocker):
     assert_has_back_link(page)
 
     assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
-        ("message", "This field is required.")
+        ("message", "You need to enter something if you want to contact us")
     ]
 
     mock_send_contact_request.assert_not_called()
