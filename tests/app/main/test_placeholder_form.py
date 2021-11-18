@@ -19,7 +19,7 @@ def test_form_class_not_mutated(app_):
 @pytest.mark.parametrize(
     "service_can_send_international_sms, placeholder_name, template_type, value, expected_error",
     [
-        (False, "email address", "email", "", "This cannot be empty"),
+        (False, "email address", "email", "", "Enter your email address"),
         (False, "email address", "email", "12345", "Enter a valid email address"),
         (
             False,
