@@ -5,29 +5,33 @@
 
   function open($menu, $items) {
     // show menu
-    $items.toggleClass("hidden", false);
-    $items.removeClass("opacity-0");
-    $items.addClass("opacity-100");
-    setFocusToFirstItem($items);
-    const $arrow = $menu.find(".arrow");
-    if ($arrow.length > 0) {
-      $arrow.toggleClass("flip", true);
+    if (!this.hasFocus) {
+      $items.toggleClass("hidden", false);
+      $items.removeClass("opacity-0");
+      $items.addClass("opacity-100");
+      setFocusToFirstItem($items);
+      const $arrow = $menu.find(".arrow");
+      if ($arrow.length > 0) {
+        $arrow.toggleClass("flip", true);
+      }
+      $menu.attr("aria-expanded", true);
+      this.hasFocus = true;
     }
-    $menu.attr("aria-expanded", true);
-    console.log("open");
   }
 
   function close($menu, $items) {
-    // hide menu
-    $items.toggleClass("hidden", true);
-    $items.removeClass("opacity-100");
-    $items.addClass("opacity-0");
-    const $arrow = $menu.find(".arrow");
-    if ($arrow.length > 0) {
-      $arrow.toggleClass("flip", false);
+    // hide menu if open
+    if (this.hasFocus) {
+      $items.toggleClass("hidden", true);
+      $items.removeClass("opacity-100");
+      $items.addClass("opacity-0");
+      const $arrow = $menu.find(".arrow");
+      if ($arrow.length > 0) {
+        $arrow.toggleClass("flip", false);
+      }
+      $menu.attr("aria-expanded", false);
+      this.hasFocus = false;
     }
-    $menu.attr("aria-expanded", false);
-    console.log("close");
   }
 
   function toggleMenu($menu, $items) {
@@ -76,10 +80,14 @@
 
     $menu.click(() => toggleMenu($menu, $items));
     registerKeyDownEscape($items, () => close($menu, $items));
+    $("body").click((e) => {
+      if (e.target != $menu[0]) {
+        close($menu, $items);
+      }
+    });
     // Key handlers for menubutton
     $menu.keydown((e) => {
       let flag = false;
-      console.log(e.code, e.target.text());
       switch (e.code) {
         case "Enter":
         case "Space":
@@ -106,14 +114,12 @@
       if (flag) {
         e.stopPropagation();
         e.preventDefault();
-        console.log("flag", flag);
       }
     });
 
     //Key handlers for menu items
     $menuItems.keydown((e) => {
       let flag = false;
-      console.log(e.code, e.target.text());
       switch (e.code) {
         case "ArrowDown":
           setFocusToNextItem($items, $(e.target));
@@ -133,7 +139,6 @@
       if (flag) {
         e.stopPropagation();
         e.preventDefault();
-        console.log("flag", flag);
       }
     });
   }
@@ -142,6 +147,7 @@
     this.menuItems = [];
     this.firstItem = null;
     this.lastItem = null;
+    this.hasFocus = false;
 
     this.start = function (component) {
       let $component = $(component);
