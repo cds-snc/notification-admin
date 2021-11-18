@@ -57,6 +57,9 @@ class Config(object):
     ANTIVIRUS_API_HOST = os.environ.get("ANTIVIRUS_API_HOST")
     ANTIVIRUS_API_KEY = os.environ.get("ANTIVIRUS_API_KEY")
 
+    # Used by WTForms to implement ReCaptcha validation using ReCaptchaField
+    # https://flask-wtf.readthedocs.io/en/0.15.x/form/#recaptcha
+
     RECAPTCHA_USE_SSL = True
     RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_PUBLIC_KEY")
     RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY")
