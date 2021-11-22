@@ -3,7 +3,7 @@ import re
 from collections import OrderedDict
 from datetime import datetime
 
-from flask import abort, flash, redirect, render_template, request, url_for
+from flask import abort, flash, redirect, render_template, request, url_for, current_app
 from notifications_python_client.errors import HTTPError
 from requests import RequestException
 
@@ -201,6 +201,18 @@ def platform_admin_api_keys():
     n_days_back = 2
     api_key_list = api_key_api_client.get_api_keys_ranked_by_notifications_created(n_days_back)
     return render_template("views/platform-admin/api_keys_ranked.html", api_key_list=api_key_list)
+
+
+@main.route("/platform-admin/platform_admin_stats", endpoint="platform_admin_stats")
+@user_is_platform_admin
+def platform_admin_stats():
+    services_near_limit = service_api_client.get_services_near_limit()["data"]
+    current_app.logger.info(services_near_limit)
+
+    return render_template(
+        "views/platform-admin/platform_admin_stats.html",
+        services_near_limit=services_near_limit,
+    )
 
 
 @main.route("/platform-admin/reports")

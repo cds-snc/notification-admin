@@ -70,6 +70,12 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         return self.get("/service/live-services-data", params=params_dict)
 
+    def get_services_near_limit(self):
+        """
+        Retrieve a list of live services that have been near their daily limit
+        """
+        return self.get("/service/services-near-limit")
+
     def get_active_services(self, params_dict=None):
         """
         Retrieve a list of active services.

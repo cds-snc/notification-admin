@@ -49,6 +49,9 @@ class AdminNavigation(Navigation):
         "live_api_keys": {
             "live_api_keys",
         },
+        "platform_admin_stats": {
+            "platform_admin_stats",
+        },
         "email_branding": {
             "email_branding",
         },
@@ -511,6 +514,7 @@ class MainNavigation(Navigation):
         "find_users_by_email",
         "letter_branding",
         "live_api_keys",
+        "platform_admin_stats",
         "live_services",
         "live_services_csv",
         "notifications_sent_by_service",
@@ -644,6 +648,7 @@ class OrgNavigation(Navigation):
         "letter_template",
         "link_service_to_organisation",
         "live_api_keys",
+        "platform_admin_stats",
         "live_services",
         "live_services_csv",
         "manage_template_folder",
