@@ -49,28 +49,24 @@
 
   function setFocusToLastItem($items) {
     const $menuItems = $items.children("[role='menuitem']");
-    $menuItems.last().focus().attr("tabindex", 0);
+
+    $menuItems.last().focus();
   }
   function setFocusToFirstItem($items) {
     const $menuItems = $items.children("[role='menuitem']");
-    $menuItems.first().focus().attr("tabindex", 0);
+
+    $menuItems.first().focus();
   }
 
   function setFocusToNextItem($items, $current) {
     const $menuItems = $items.children("[role='menuitem']");
     const i = $current.index();
-    $menuItems
-      .eq(i + 1 === $menuItems.length ? 0 : i + 1)
-      .focus()
-      .attr("tabindex", 0);
+    $menuItems.eq(i + 1 === $menuItems.length ? 0 : i + 1).focus();
   }
   function setFocusToPreviousItem($items, $current) {
     const $menuItems = $items.children("[role='menuitem']");
     const i = $current.index();
-    $menuItems
-      .eq(i - 1 === -1 ? $menuItems.length - 1 : i - 1)
-      .focus()
-      .attr("tabindex", 0);
+    $menuItems.eq(i - 1 === -1 ? $menuItems.length - 1 : i - 1).focus();
   }
 
   function init($menu) {
