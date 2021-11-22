@@ -156,6 +156,11 @@ def test_should_show_overview(
     rows = page.select("tr")
     for index, row in enumerate(expected_rows):
         formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
+        visible = rows[index]
+        sr_only = visible.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
+            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
         assert formatted_row == " ".join(rows[index].text.split())
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
@@ -175,7 +180,7 @@ def test_no_go_live_link_for_service_without_organisation(
 
     assert page.find("h1").text == "Settings"
     assert normalize_spaces(page.select("tr")[16].text) == ("Live No (organisation must be set first)")
-    assert normalize_spaces(page.select("tr")[18].text) == ("Organisation Not set Government of Canada Change")
+    assert normalize_spaces(page.select("tr")[18].text) == ("Organisation Not set Government of Canada Change Organisation")
 
 
 def test_organisation_name_links_to_org_dashboard(
@@ -261,9 +266,15 @@ def test_should_show_overview_for_service_with_more_things_set(
     service_one["email_branding"] = uuid4()
     response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    rows = page.find_all("tr")
     for index, row in enumerate(expected_rows):
         formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
-        assert formatted_row == " ".join(page.find_all("tr")[index + 1].text.split())
+        visible = rows[index + 1]
+        sr_only = visible.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
+            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+        assert formatted_row == " ".join(visible.text.split())
 
 
 def test_if_cant_send_letters_then_cant_see_letter_contact_block(
@@ -1330,7 +1341,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
     def get_row(page, index):
         return normalize_spaces(page.select("tbody tr")[index].text)
 
-    assert get_row(page, 6) == "Reply-to addresses test@example.com …and 2 more Manage"
+    assert get_row(page, 6) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
 
 
 @pytest.mark.parametrize(
@@ -1490,7 +1501,7 @@ def test_no_senders_message_shows(
 @pytest.mark.parametrize(
     "reply_to_input, expected_error",
     [
-        ("", "This cannot be empty"),
+        ("", "Enter your email address"),
         ("testtest", "Enter a valid email address"),
     ],
 )

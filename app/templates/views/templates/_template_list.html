@@ -22,7 +22,12 @@
   </p>
 {% else %}
   {% set display_checkboxes = current_user.has_permissions('manage_templates') and not sending_view %}
+
   <nav id="template-list" class="{{ 'top-gutter-5px contain-floats' if (not show_template_nav and not show_search_box) else '' }}">
+    {% if display_checkboxes %}
+      <fieldset>
+        <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
+    {% endif %}
     {% for item in template_list %}
       <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}">
         {% if display_checkboxes %}
@@ -31,6 +36,7 @@
             name='templates_and_folders',
             data=templates_and_folders_form.is_selected(item.id),
             value=item.id,
+            label=_("Select the {name} {type}").format(name=item.name, type=_("folder") if item.is_folder else item.hint)
           ) }}
         {% endif %}
         <p class="message-name">
@@ -54,5 +60,8 @@
         </p>
       </div>
     {% endfor %}
+    {% if display_checkboxes %}
+      </fieldset>
+    {% endif %}
   </nav>
 {% endif %}
