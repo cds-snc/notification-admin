@@ -54,10 +54,12 @@
         {% if next_step != None %}
           {{ page_footer(_('Continue')) }}
         {% else %}
-          <div id="captcha_container" data-module="recaptcha-language" class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
+          <div id="captcha_container" data-module="recaptcha-language" class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter {% if form.recaptcha.errors %}form-group-error contain-floats{% endif %}">
           {{ form.recaptcha}}
           {% if form.recaptcha.errors %}
-              {{ _('Check the CAPTCHA before submitting the form') }}
+          <span class="error-message" data-module="track-error" data-error-type="{{ form.recaptcha.errors[0] }}" data-error-label="reCaptcha">
+            {{ _('Check the CAPTCHA before submitting the form') }}
+          </span>
           {% endif %}
           </div>
           {{ page_footer(_('Send')) }}
