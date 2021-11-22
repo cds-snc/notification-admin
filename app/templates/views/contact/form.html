@@ -56,9 +56,9 @@
         {% else %}
           <div id="captcha_container" data-module="recaptcha-language" class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
           {{ form.recaptcha}}
-          {% for error in form.recaptcha.errors %}
-              {{ error }}
-          {% endfor %}
+          {% if form.recaptcha.errors %}
+              {{ _('Check the CAPTCHA before submitting the form') }}
+          {% endif %}
           </div>
           {{ page_footer(_('Send')) }}
         {% endif %}
