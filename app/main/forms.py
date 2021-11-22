@@ -886,6 +886,7 @@ class ContactMessageStep(ContactNotify):
         _l("Message"),
         validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
     )
+    recaptcha = RecaptchaField()
 
 
 class SetUpDemoOrgDetails(ContactNotify):
@@ -906,6 +907,7 @@ class SetUpDemoOrgDetails(ContactNotify):
         ],
         validators=[DataRequired(message=_l("You need to choose an option"))],
     )
+    recaptcha = RecaptchaField()
 
 
 class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):

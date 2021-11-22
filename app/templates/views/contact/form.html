@@ -54,8 +54,11 @@
         {% if next_step != None %}
           {{ page_footer(_('Continue')) }}
         {% else %}
-          <div id="captcha_container">
+          <div id="captcha_container" data-module="recaptcha-language" class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
           {{ form.recaptcha}}
+          {% for error in form.recaptcha.errors %}
+              {{ error }}
+          {% endfor %}
           </div>
           {{ page_footer(_('Send')) }}
         {% endif %}

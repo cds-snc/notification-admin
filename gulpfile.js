@@ -53,6 +53,7 @@ const javascripts = () => {
     paths.src + "javascripts/fullscreenTable.js",
     paths.src + "javascripts/previewPane.js",
     paths.src + "javascripts/colourPreview.js",
+    paths.src + "javascripts/recaptchaLanguage.js",
     paths.src + "javascripts/templateFolderForm.js",
     paths.src + "javascripts/collapsibleCheckboxes.js",
     paths.src + "javascripts/moreMenu.js",
