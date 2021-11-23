@@ -1,59 +1,45 @@
 <!-- Large screen menu dropdown -->
-<div class="hidden md:visible md:flex relative justify-end inline-block text-left w-full text-blue visited:text-blue link:text-blue no-underline text-small">
-  <button aria-controls="account-menu-options"
-          aria-expanded="false"
-          aria-haspopup="true"
-          class="inline-flex items-center line-under shadow-sm text-sm font-medium text-gray-700 px-4 py-1 border-b-2 border-transparent focus:outline-none focus:bg-yellow focus:border-blue hover:bg-gray-50 hover:underline"
-          id="account-menu"
-          data-module="menu"
-          data-menu-items="account-menu-options"
-          type="button">
-      {{ _('Your account') }}
-      <img
-        alt="{{ _('Your account') }}"
-        aria-hidden="true"
-        class="account-menu-arrow ml-2 inline arrow self-center"
-        src="{{ asset_url('images/arrow-licorice.svg') }}"
-        width="15"
-      />
+<nav class="hidden md:visible md:flex relative justify-end inline-block text-left w-full text-blue visited:text-blue
+    link:text-blue no-underline text-small">
+  <button
+    aria-expanded="false"
+    aria-haspopup="true"
+    aria-controls="account-menu-options"
+    class="inline-flex items-center line-under shadow-sm text-sm font-medium text-gray-700 px-4 py-1 border-b-2
+      border-transparent focus:outline-none focus:bg-yellow focus:border-blue hover:bg-gray-50 hover:underline"
+    id="account-menu"
+    data-module="menu"
+    data-menu-items="account-menu-options">
+      {{ _('Your account') }} 
+      <img alt="{{ _('Your account') }}" aria-hidden="true" class="account-menu-arrow ml-2 inline arrow self-center" src="{{ asset_url('images/arrow-licorice.svg') }}" width="15"/>
   </button>
-
-  <div id="account-menu-options"
-    class="absolute flex flex-col content-end divide-y divide-gray right-0 top-full w-auto text-right rounded bg-white shadow hidden"
-    role="menu"
-    aria-orientation="vertical">
+  <ul
+    id="account-menu-options"
+    class="absolute flex flex-col content-end divide-y divide-gray right-0 top-full w-auto text-right rounded bg-white shadow
+      hidden"
+      hidden>
     {% if current_user.platform_admin %}
-      <a
-        id="account-menu-link"
-        href="{{ url_for('main.live_services') }}"
-        class="flex justify-end items-center min-h-target px-8 py-4 leading-none no-underline text-small border-transparent border-b-0 focus:border-b-0 focus:outline-none focus:shadow-insetLine2 {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}"
-        role="menuitem"
-        tabindex="-1">
-        {{ _('Admin panel') }}
-      </a>
+      <li>
+        <a id="account-menu-link" href="{{ url_for('main.live_services') }}" class="flex justify-end items-center min-h-target px-8 py-4 leading-none no-underline text-small border-transparent border-b-0 focus:border-b-0 focus:outline-none focus:shadow-insetLine2 {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}">
+          {{ _('Admin panel') }}
+        </a>
+      </li>
     {% endif %}
-      <a
-        href="{{ url_for('main.choose_account') }}"
-        class="flex justify-end items-center min-h-target px-8 py-4 leading-none no-underline text-small border-transparent border-b-0 focus:border-b-0 focus:outline-none focus:shadow-insetLine2 {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}"
-        role="menuitem"
-        tabindex="-1">
+    <li>
+      <a href="{{ url_for('main.choose_account') }}" class="flex justify-end items-center min-h-target px-8 py-4 leading-none no-underline text-small border-transparent border-b-0 focus:border-b-0 focus:outline-none focus:shadow-insetLine2 {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}">
         {{ _('Your services') }}
       </a>
-      <a
-        href="{{ url_for('main.user_profile') }}"
-        class="flex justify-end items-center min-h-target px-8 py-4 leading-none no-underline text-small border-transparent border-b-0 focus:border-b-0 focus:outline-none focus:shadow-insetLine2 {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}"
-        role="menuitem"
-        tabindex="-1">
+    </li>
+    <li>
+      <a href="{{ url_for('main.user_profile') }}" class="flex justify-end items-center min-h-target px-8 py-4 leading-none no-underline text-small border-transparent border-b-0 focus:border-b-0 focus:outline-none focus:shadow-insetLine2 {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}">
         {{ _('Your profile') }}
       </a>
-      <a
-        href="{{ url_for('main.sign_out') }}"
-        class="flex justify-end items-center min-h-target px-8 py-4 leading-none text-blue no-underline text-small border-transparent border-b-0 focus:border-b-0 visited:text-blue link:text-blue focus:outline-none focus:shadow-insetLine2 {% if main_navigation.is_selected('sign_out') %} menu--active {% endif %}"
-        role="menuitem"
-        tabindex="-1">
+    </li>
+    <li>
+      <a href="{{ url_for('main.sign_out') }}" class="flex justify-end items-center min-h-target px-8 py-4 leading-none text-blue no-underline text-small border-transparent border-b-0 focus:border-b-0 visited:text-blue link:text-blue focus:outline-none focus:shadow-insetLine2 {% if main_navigation.is_selected('sign_out') %} menu--active {% endif %}">
         {{ _('Sign out') }}
       </a>
-  </div>
-
-</div>
+    </li>
+  </ul>
+</nav>
 <!-- Large screen dropdown END -->
