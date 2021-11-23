@@ -198,7 +198,7 @@ def test_saves_form_to_session(client_request, mocker):
 
 @pytest.mark.parametrize("support_type", ["ask_question", "technical_support", "give_feedback", "other"])
 def test_recaptcha_js_exists(client_request, support_type, mocker):
-    mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
+    mocker.patch("app.user_api_client.send_contact_request")
     # Load contact page
     page = client_request.get(".contact", _test_page_title=False)
 
