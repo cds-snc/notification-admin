@@ -8,7 +8,7 @@
    * @param {*} fn Function to execute on Escape key press
    */
   function registerKeyDownEscape($selector, fn) {
-    $(window).keydown(function (e) {
+    $selector.keydown(function (e) {
       if (e.key == "Escape") {
         const displayed = !!$selector.not(":hidden");
         if (displayed) fn();
