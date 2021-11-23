@@ -15,9 +15,8 @@
   </button>
   <ul
     id="account-menu-options"
-    class="absolute flex flex-col content-end divide-y divide-gray right-0 top-full w-auto text-right rounded bg-white shadow
-      hidden"
-      hidden>
+    class="absolute flex flex-col content-end divide-y divide-gray right-0 top-full w-auto text-right rounded bg-white shadow hidden"
+    hidden>
     {% if current_user.platform_admin %}
       <li>
         <a id="account-menu-link" href="{{ url_for('main.live_services') }}" class="flex justify-end items-center min-h-target px-8 py-4 leading-none no-underline text-small border-transparent border-b-0 focus:border-b-0 focus:outline-none focus:shadow-insetLine2 {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}">
