@@ -59,19 +59,13 @@
     const itemsId = "#" + $menu.attr("data-menu-items");
     const $items = $(itemsId);
     const $menuItems = $items.children("[href]");
+    this.hasFocus = false;
 
     // Click toggler
     $menu.click(() => toggleMenu($menu, $items));
 
     // Register Escape key from anywhere in the window to close the menu
     registerKeyDownEscape($(window), () => close($menu, $items));
-
-    // Click anywhere but the menu items to close
-    $("body").click((e) => {
-      if (e.target != $items) {
-        close($menu, $items);
-      }
-    });
 
     // Key handlers for toggle button
     $menu.keydown((e) => {
@@ -114,7 +108,7 @@
   }
 
   Modules.Menu = function () {
-    this.hasFocus = false;
+    this.hasFocus;
 
     this.start = function (component) {
       let $component = $(component);
