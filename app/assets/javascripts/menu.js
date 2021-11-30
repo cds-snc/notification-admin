@@ -58,7 +58,6 @@
   function init($menu) {
     const itemsId = "#" + $menu.attr("data-menu-items");
     const $items = $(itemsId);
-    const $menuItems = $items.children("[href]");
     this.hasFocus = false;
 
     // Click toggler
