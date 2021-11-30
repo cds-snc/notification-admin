@@ -66,45 +66,6 @@
 
     // Register Escape key from anywhere in the window to close the menu
     registerKeyDownEscape($(window), () => close($menu, $items));
-
-    // Key handlers for toggle button
-    $menu.keydown((e) => {
-      let flag = false;
-      switch (e.code) {
-        case "Enter":
-        case "Space":
-          if ($menu) {
-            toggleMenu($menu, $items);
-            flag = true;
-          }
-          break;
-        case "Escape":
-          close($menu, $items);
-          break;
-        default:
-          break;
-      }
-      if (flag) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-    });
-
-    //Key handlers for list of links
-    $menuItems.keydown((e) => {
-      let flag = false;
-      switch (e.code) {
-        case "Escape":
-          close($menu, $items);
-          break;
-        default:
-          break;
-      }
-      if (flag) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-    });
   }
 
   Modules.Menu = function () {
