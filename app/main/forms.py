@@ -738,7 +738,7 @@ class SMSTemplateForm(BaseTemplateForm):
 
 
 class EmailTemplateForm(BaseTemplateForm):
-    subject = TextAreaField(_l("Subject"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
 
 class LetterTemplateForm(EmailTemplateForm):
