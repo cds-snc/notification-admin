@@ -23,6 +23,7 @@ class NotifyAdminAPIClient(BaseAPIClient):
         self.service_id = app.config["ADMIN_CLIENT_USER_NAME"]
         self.api_key = app.config["ADMIN_CLIENT_SECRET"]
         self.route_secret = app.config["ROUTE_SECRET_KEY_1"]
+        self.sensitive_services = app.config["SENSITIVE_SERVICES"].split(",")
 
     def generate_headers(self, api_token):
         headers = {
@@ -52,9 +53,10 @@ class NotifyAdminAPIClient(BaseAPIClient):
             abort(403)
 
     def log_admin_call(self, url, method):
+        service_is_sensitive = any(service in url for service in self.sensitive_services)
         if hasattr(current_user, "platform_admin") and current_user.platform_admin:
             user = current_user.email_address + "|" + current_user.id
-            logger.warn("Admin API request {} {} {} ".format(method, url, user))
+            logger.warn("{}Admin API request {} {} {} ".format("Sensitive " if service_is_sensitive else "", method, url, user))
 
     def get(self, url, params=None):
         if (
