@@ -63,14 +63,6 @@ with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file_
 user_is_logged_in = login_required
 
 
-def is_lambda_api():
-    """
-    We need to detect if we are connected to the lambda api rather than the k8s api,
-    since some response data is different
-    """
-    return "lambda" in current_app.config["API_HOST_NAME"]
-
-
 @cache.memoize(timeout=3600)
 def get_latest_stats(lang):
     results = service_api_client.get_stats_by_month()["data"]
@@ -79,7 +71,7 @@ def get_latest_stats(lang):
     emails_total = 0
     sms_total = 0
     for line in results:
-        if is_lambda_api():
+        if isinstance(line, dict):  # the lambda returns info in a different format than the k8s cluster.
             date = line["month"]
             notification_type = line["notification_type"]
             count = line["count"]
