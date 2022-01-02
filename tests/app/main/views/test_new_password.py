@@ -1,4 +1,11 @@
+""" test_new_password.py
+    isort:skip_file
+"""
+
 import json
+import os
+import pytest
+
 from datetime import datetime
 
 from flask import url_for
@@ -6,6 +13,17 @@ from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import generate_token
 
 from tests.conftest import url_for_endpoint_with_token
+
+
+@pytest.fixture(autouse=True)
+def stub_mixpanel(mocker):
+    environment_vars = os.environ.copy()
+    os.environ["MIXPANEL_PROJECT_TOKEN"] = "project_token_from_mixpanel"
+    mocker.patch("mixpanel.Mixpanel")
+
+    yield
+
+    os.environ = environment_vars
 
 
 def test_should_render_new_password_template(

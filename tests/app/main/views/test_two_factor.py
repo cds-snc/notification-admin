@@ -1,8 +1,25 @@
+""" test_two_factor.py
+    isort:skip_file
+"""
+
+import os
 import pytest
+
 from bs4 import BeautifulSoup
 from flask import url_for
 
 from tests.conftest import SERVICE_ONE_ID, captured_templates, mock_get_user
+
+
+@pytest.fixture(autouse=True)
+def stub_mixpanel(mocker):
+    environment_vars = os.environ.copy()
+    os.environ["MIXPANEL_PROJECT_TOKEN"] = "project_token_from_mixpanel"
+    mocker.patch("mixpanel.Mixpanel")
+
+    yield
+
+    os.environ = environment_vars
 
 
 def test_should_render_sms_two_factor_page(
