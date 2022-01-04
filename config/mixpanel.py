@@ -21,7 +21,7 @@ class NotifyMixpanel:
         self.mixpanel: Mixpanel = Mixpanel(os.environ.get("MIXPANEL_PROJECT_TOKEN"))
         self.user = user
 
-    def track_event(self) -> None:
+    def track_event(self, ) -> None:
         if self.user:
             self.mixpanel.track(self.user.email_address, "Logged in", {})
 
@@ -30,7 +30,6 @@ class NotifyMixpanel:
             profile = {
                 "$first_name": self.user.name.split()[0],
                 "$last_name": self.user.name.split()[-1],
-                "$email": self.user.email_address,
-                "$phone": self.user.mobile_number,
+                "$email": self.user.email_address
             }
             self.mixpanel.people_set(self.user.email_address, profile, meta={})
