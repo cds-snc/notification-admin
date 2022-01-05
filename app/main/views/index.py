@@ -258,7 +258,7 @@ def callbacks():
 @main.route("/features", endpoint="features")
 def features():
     endpoint = 'https://articles.cdssandbox.xyz/notification-gc-notify/wp-json/wp/v2/pages/'
-    response = requests.get(endpoint+'?slug=features&1=5')
+    response = requests.get(endpoint+'?slug=features&1=8')
     if response:
         parsed = json.loads(response.content)
         title = '<h1 class="heading-large">' + parsed[0]["title"]["rendered"] + '</h1>'
