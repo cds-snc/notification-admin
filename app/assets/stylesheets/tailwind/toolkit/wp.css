@@ -1,0 +1,20 @@
+.wp-block-columns {
+  display: flex;
+}
+
+.wp-block-column {
+  flex: 1;
+}
+
+@media (max-width: 1024px) {
+
+  .wp-block-columns{
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .wp-block-column {
+    flex-basis: 100% !important;
+    margin: 20px 0;
+  }
+}
