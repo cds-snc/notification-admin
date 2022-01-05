@@ -67,11 +67,17 @@
     <div class="container px-gutterHalf">
       <div id="proposition-links" class="flex flex-no-wrap items-baseline">
         {% if not current_user.is_authenticated %}
-          {{ nav_menu_item('/',_('Home'),'pl-0 header--'+header_navigation.is_selected('home')) }}
-          {{ nav_menu_item(url_for('main.why-notify'),_('Why GC Notify'),'header--'+header_navigation.is_selected('why-notify')) }}
-          {{ nav_menu_item(url_for('main.features'),_('Features'),'header--'+header_navigation.is_selected('features')) }}
-          {{ nav_menu_item(documentation_url(),_('API documentation'),'header--'+header_navigation.is_selected('documentation'), is_external_link=True) }}
-          {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
+          {% if nav_items %}
+            {% for i in nav_items %}
+              {{ nav_menu_item(i.url, i.title, 'header--active' if i.active else '', is_external_link=i.target )}}
+            {% endfor %}
+          {% else %}
+            {{ nav_menu_item('/',_('Home'),'pl-0 header--'+header_navigation.is_selected('home'))}}
+            {{ nav_menu_item(url_for('main.why-notify'),_('Why GC Notify'),'header--'+header_navigation.is_selected('why-notify')) }}
+            {{ nav_menu_item(url_for('main.features'),_('Features'),'header--'+header_navigation.is_selected('features')) }}
+            {{ nav_menu_item(documentation_url(),_('API documentation'),'header--'+header_navigation.is_selected('documentation'), is_external_link=True) }}
+            {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
+          {% endif %}
         {% else %}
           {% if not current_user.platform_admin %}
             {% if current_user.has_permissions() %}

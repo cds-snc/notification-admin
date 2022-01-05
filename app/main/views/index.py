@@ -1,16 +1,8 @@
-import json
 from datetime import datetime
 
 import requests
-from flask import (
-    abort,
-    current_app,
-    make_response,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+import os
+from flask import abort, current_app, make_response, redirect, render_template, request, url_for, json
 from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
@@ -259,11 +251,24 @@ def callbacks():
 def features():
     endpoint = "https://articles.cdssandbox.xyz/notification-gc-notify/wp-json/wp/v2/pages/"
     response = requests.get(endpoint + "?slug=features&1=10")
+
+    filename = os.path.join(os.path.dirname(__file__), "..", "notify-admin.json")
+    with open(filename) as test_file:
+        data = json.load(test_file)
+
+    nav_items = []
+    for item in data["items"]:
+        nav_items.append({k: item[k] for k in ("title", "url", "target")})
+
+    for item in nav_items:
+        # add "active" class
+        item['active'] = True if item['url'] == request.path else False
+
     if response:
         parsed = json.loads(response.content)
         title = '<h1 class="heading-large">' + parsed[0]["title"]["rendered"] + "</h1>"
         html_content = title + parsed[0]["content"]["rendered"]
-        return render_template("views/features.html", html_content=html_content)
+        return render_template("views/features.html", html_content=html_content, nav_items=nav_items)
     else:
         print("An error has occurred.")
         return "Error"
@@ -273,7 +278,7 @@ def features():
 
 @main.route("/why-notify", endpoint="why-notify")
 def why_notify():
-    rate_sms = current_app.config.get("DEFAULT_FREE_SMS_FRAGMENT_LIMITS", {}).get("central", 10000)
+    # rate_sms = current_app.config.get("DEFAULT_FREE_SMS_FRAGMENT_LIMITS", {}).get("central", 10000)
 
     endpoint = "https://articles.cdssandbox.xyz/notification-gc-notify/wp-json/wp/v2/pages/"
     response = requests.get(endpoint + "?slug=why-gc-notify&1=12")
