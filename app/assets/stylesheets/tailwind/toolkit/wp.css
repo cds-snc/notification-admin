@@ -1,0 +1,49 @@
+.wp-block-columns {
+  display: grid;
+  grid-gap: 30px;
+}
+
+.wp-block-columns > * {
+  grid-column: 1 / -1;
+  margin: 0 !important;
+}
+
+@media (min-width: 900px) {
+  .wp-block-columns {
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .wp-block-column {
+    grid-column-start: auto;
+    grid-column-end: span 6;
+  }
+
+  .wp-block-column:only-child {
+    grid-column-end: span 12;
+  }
+}
+
+@media (min-width: 1200px) {
+  /* Three column layout */
+  .wp-block-column:not([style*='flex-basis']):nth-last-child(3):first-child,
+  .wp-block-column:not([style*='flex-basis']):nth-last-child(3):first-child
+    ~ .wp-block-column {
+    grid-column-end: span 4;
+  }
+
+  /* "25 / 50 / 25" layout */
+  .wp-block-column[style*='25%'] {
+    grid-column-end: span 3;
+  }
+  .wp-block-column[style*='50%'] {
+    grid-column-end: span 6;
+  }
+
+  /* "30 / 70" and "70 / 30" layouts */
+  .wp-block-column[style*='33.33%'] {
+    grid-column-end: span 4;
+  }
+  .wp-block-column[style*='66.66%'] {
+    grid-column-end: span 8;
+  }
+}

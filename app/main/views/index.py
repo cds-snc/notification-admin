@@ -9,6 +9,8 @@ from flask import (
     request,
     url_for,
 )
+import json
+import requests
 from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
@@ -255,7 +257,18 @@ def callbacks():
 
 @main.route("/features", endpoint="features")
 def features():
-    return render_template("views/features.html")
+    endpoint = 'https://articles.cdssandbox.xyz/notification-gc-notify/wp-json/wp/v2/pages/'
+    response = requests.get(endpoint+'?slug=features&1=5')
+    if response:
+        parsed = json.loads(response.content)
+        title = '<h1 class="heading-large">' + parsed[0]["title"]["rendered"] + '</h1>'
+        html_content = title + parsed[0]["content"]["rendered"]
+        return render_template('views/features.html', html_content=html_content)
+    else:
+        print('An error has occurred.')
+        return "Error"
+    
+    #return render_template("views/features.html")
 
 
 @main.route("/why-notify", endpoint="why-notify")
