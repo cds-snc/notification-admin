@@ -14,6 +14,7 @@ gov.bc.ca
 gov.mb.ca
 gov.sk.ca
 gnb.ca
+snb.ca
 gov.pe.ca
 gov.nl.ca
 gov.yk.ca
