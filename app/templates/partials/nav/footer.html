@@ -33,7 +33,7 @@
       aria-label="{{ _('secondary footer') }}">
 
       <div class="flex flex-col gap-4 lg:flex-row lg:items-center md:col-span-2">
-        <div class="flex-shrink mr-5">
+        <div class="flex-shrink mr-5 flex">
           <img
             aria-hidden="true"
             alt="{{ _('Separator') }}"
@@ -50,7 +50,7 @@
             src="{{ asset_url('images/bullet.svg') }}"
           />
         </div>
-        <div class="flex-shrink lg:mx-5">
+        <div class="flex-shrink lg:mx-5 flex">
           <img
             aria-hidden="true"
             alt="{{ _('Separator') }}"
@@ -67,7 +67,7 @@
             src="{{ asset_url('images/bullet.svg') }}"
           />
         </div>
-        <div class="flex-shrink lg:mx-5">
+        <div class="flex-shrink lg:mx-5 flex">
           <img
             aria-hidden="true"
             alt="{{ _('Separator') }}"
@@ -84,7 +84,7 @@
             src="{{ asset_url('images/bullet.svg') }}"
           />
         </div>
-        <div class="flex-shrink lg:mx-5">
+        <div class="flex-shrink lg:mx-5 flex">
           <img
             aria-hidden="true"
             alt="{{ _('Separator') }}"
@@ -93,14 +93,14 @@
           />
           {{ nav_link_light(label=_("Terms of use"), href=url_for('main.terms')) }}
         </div>
-        <div class="lg:hidden p-5 mt-10">
+        <div class="lg:hidden mt-10">
           <div class="inline-block">
             {{ nav_button(
               href="#top",
               label=_('Top of page'),
               aria_label=_('Top of page'),
               link_img=asset_url('images/arrow-licorice.svg'),
-              class="text-blue bg-white",
+              class="text-blue pl-0",
               link_img_class="transform rotate-180"
             ) }}
           </div>
