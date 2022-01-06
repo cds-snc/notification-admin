@@ -23,7 +23,7 @@ class NotifyMixpanel:
 
     def track_event(self, msg="Logged in") -> None:
         if self.user:
-            self.mixpanel.track(self.user.email_address, msg, {})
+            self.mixpanel.track(self.user.email_address, msg, { "product": "Notify" })
 
     def track_user_profile(self) -> None:
         if self.user:
@@ -32,4 +32,4 @@ class NotifyMixpanel:
                 "$last_name": self.user.name.split()[-1],
                 "$email": self.user.email_address,
             }
-            self.mixpanel.people_set(self.user.email_address, profile, meta={})
+            self.mixpanel.people_set(self.user.email_address, profile, meta={ "product": "Notify" })
