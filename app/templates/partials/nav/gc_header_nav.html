@@ -69,7 +69,9 @@
         {% if not current_user.is_authenticated %}
           {% if nav_items %}
             {% for i in nav_items %}
-              {{ nav_menu_item(i.url, i.title, 'header--active' if i.active else '', is_external_link=i.target )}}
+              {% if 'main' in i.description %}
+                {{ nav_menu_item(i.url, i.title, 'header--active' if i.active else '', is_external_link=i.target )}}
+              {% endif %}
             {% endfor %}
           {% else %}
             {{ nav_menu_item('/',_('Home'),'pl-0 header--'+header_navigation.is_selected('home'))}}

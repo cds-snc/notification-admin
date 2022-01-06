@@ -258,7 +258,7 @@ def features():
 
     nav_items = []
     for item in data["items"]:
-        nav_items.append({k: item[k] for k in ("title", "url", "target")})
+        nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
 
     for item in nav_items:
         # add "active" class
