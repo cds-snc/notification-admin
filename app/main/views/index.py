@@ -252,17 +252,20 @@ def features():
     endpoint = "https://articles.cdssandbox.xyz/notification-gc-notify/wp-json/wp/v2/pages/"
     response = requests.get(endpoint + "?slug=features&1=10")
 
-    filename = os.path.join(os.path.dirname(__file__), "..", "notify-admin.json")
-    with open(filename) as test_file:
-        data = json.load(test_file)
+    nav_endpoint = "https://articles.cdssandbox.xyz/notification-gc-notify/wp-json/menus/v1/menus/notify-admin"
+    nav_response = requests.get(nav_endpoint)
+    nav_items = None
 
-    nav_items = []
-    for item in data["items"]:
-        nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
+    if nav_response:
+        nav_data = json.loads(nav_response.content)
 
-    for item in nav_items:
-        # add "active" class
-        item['active'] = True if item['url'] == request.path else False
+        nav_items = []
+        for item in nav_data["items"]:
+            nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
+
+        for item in nav_items:
+            # add "active" class
+            item["active"] = True if item["url"] == request.path else False
 
     if response:
         parsed = json.loads(response.content)
