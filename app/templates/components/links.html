@@ -45,7 +45,7 @@
 {% macro nav_link_light(label="TODO: LABEL THIS LINK", href="/", class=None, is_external_link=False) %}
 <a
     href="{{ href }}"
-    class="p-2 text-blue text-small no-underline line-under border-b-2 border-transparent visited:text-blue link:text-blue hover:underline focus:border-blue focus:outline-none focus:text-blue decoration-clone min-h-target {% if class %} {{ class }} {% endif %}"
+    class="p-2 text-blue text-small no-underline line-under border-b-2 border-transparent visited:text-blue link:text-blue hover:underline focus:border-blue focus:outline-none focus:text-blue decoration-clone inline-flex items-center min-h-target {% if class %} {{ class }} {% endif %}"
     {% if is_external_link %}
         target="_blank"
         aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
