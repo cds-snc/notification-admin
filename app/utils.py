@@ -10,6 +10,7 @@ from io import BytesIO, StringIO
 from itertools import chain
 from os import path
 from typing import Any
+import random
 
 import requests
 import boto3
@@ -763,9 +764,10 @@ def is_blank(content: Any) -> bool:
     content = str(content)
     return not content or content.isspace()
 
-def request_content(slug: str, params = {}) -> str:
+def request_content(endpoint: str, params = {}) -> str:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
-    response = requests.get(f"https://{base_endpoint}/{slug}", params)
+    params['bust_cache'] = random.random()
+    response = requests.get(f"https://{base_endpoint}/{endpoint}", params)
     if response:
         parsed = json.loads(response.content)
         return parsed
