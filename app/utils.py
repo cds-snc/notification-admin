@@ -779,4 +779,4 @@ def request_content(endpoint: str, params={"lang": "en"}) -> str:
         # cache.set(params['slug'], parsed)
         return parsed
     else:
-        return "" # return cache.get(params['slug']) or ""
+        return ""  # return cache.get(params['slug']) or ""
