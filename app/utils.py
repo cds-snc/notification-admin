@@ -776,6 +776,7 @@ def request_content(endpoint: str, params={"lang": "en"}) -> str:
     response = requests.get(f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}", params)
     if response:
         parsed = json.loads(response.content)
+        # cache.set(params['slug'], parsed)
         return parsed
     else:
-        return ""
+        return "" # return cache.get(params['slug']) or ""
