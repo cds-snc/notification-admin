@@ -247,8 +247,9 @@ def callbacks():
 
 
 @main.route("/features", endpoint="features")
-def features():
-    slug = "features"
+@main.route("/why-notify", endpoint="why-notify")
+def page_content():
+    slug = request.endpoint.replace("main.", "")
     response = request_content("pages", {'slug':slug} )
     nav_response = request_content("menus/v1/menus/notify-admin")
     nav_items = None
@@ -266,18 +267,6 @@ def features():
         title = '<h1 class="heading-large">' + response[0]["title"]["rendered"] + "</h1>"
         html_content = title + response[0]["content"]["rendered"]
         return render_template("views/features.html", html_content=html_content, nav_items=nav_items)
-    else:
-        return "Error"
-
-
-@main.route("/why-notify", endpoint="why-notify")
-def why_notify():
-    # rate_sms = current_app.config.get("DEFAULT_FREE_SMS_FRAGMENT_LIMITS", {}).get("central", 10000)
-    response = request_content("pages?slug=features&1=11")
-    if response:
-        title = '<h1 class="heading-large">' + response[0]["title"]["rendered"] + "</h1>"
-        html_content = title + response[0]["content"]["rendered"]
-        return render_template("views/why-notify.html", html_content=html_content)
     else:
         return "Error"
 
