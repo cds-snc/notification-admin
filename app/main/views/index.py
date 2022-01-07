@@ -1,6 +1,15 @@
 from datetime import datetime
-import os
-from flask import abort, current_app, make_response, redirect, render_template, request, url_for, json
+
+from flask import (
+    abort,
+    current_app,
+    make_response,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
@@ -17,8 +26,8 @@ from app.utils import (
     documentation_url,
     get_latest_stats,
     get_logo_cdn_domain,
+    request_content,
     user_is_logged_in,
-    request_content
 )
 
 
@@ -250,13 +259,18 @@ def callbacks():
 @main.route("/why-notify", endpoint="why-notify")
 def page_content():
     slug = request.endpoint.replace("main.", "")
-    response = request_content("pages", {'slug':slug} )
-    nav_response = request_content("menus/v1/menus/notify-admin")
+    response = request_content("wp/v2/pages", {"slug": slug})
+
+    nav_url = "menus/v1/menus/notify-admin"
+    if "userlang" in session and session["userlang"] == "fr":
+        nav_url = "menus/v1/menus/notify-admin-fr"
+
+    nav_response = request_content(nav_url)
     nav_items = None
 
     if nav_response:
         nav_items = []
-        for item in nav_data["items"]:
+        for item in nav_response["items"]:
             nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
 
         for item in nav_items:
