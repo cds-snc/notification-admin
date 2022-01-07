@@ -1,8 +1,8 @@
-{% macro content_link_light(label="TODO: LABEL THIS LINK", href="/", class=None, external_link_img=None) %}
+{% macro content_link_light(label="TODO: LABEL THIS LINK", href="/", class=None, is_external_link=False) %}
 <a
     class="my-0 p-2 line-under text-base border-b-2 border-transparent link:text-blue visited:text-blue focus:bg-yellow focus:border-blue focus:no-underline focus:outline-none hover:no-underline decoration-clone {% if class %} {{ class }} {% endif %}"
     href="{{ href }}"
-    {% if external_link_img %}
+    {% if is_external_link %}
         target="_blank"
         aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
     {% else %}
@@ -10,21 +10,21 @@
     {% endif %}
     >
     {{ label }}
-    {% if external_link_img %}
+    {% if is_external_link %}
         <img
             aria-hidden="true"
-            src="{{ external_link_img }}"
+            src="{{ asset_url('images/external.svg') }}"
             alt="{{ _('External link') }}"
             class="inline w-8 h-8 ml-2 self-center"/>
     {% endif %}
 </a>
 {% endmacro %}
 
-{% macro nav_link_dark(label="TODO: LABEL THIS LINK", href="/", class=None, external_link_img=None) %}
+{% macro nav_link_dark(label="TODO: LABEL THIS LINK", href="/", class=None, is_external_link=False) %}
 <a
     href="{{ href }}"
     class="p-2 text-white text-small no-underline line-under border-b-2 border-transparent visited:text-white link:text-white hover:underline focus:border-white focus:outline-none focus:text-blue decoration-clone flex items-center min-h-target {% if class %} {{ class }} {% endif %}"
-    {% if external_link_img %}
+    {% if is_external_link %}
         target="_blank"
         aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
     {% else %}
@@ -32,21 +32,21 @@
     {% endif %}
     >
     {{ label }}
-    {% if external_link_img %}
+    {% if is_external_link %}
         <img
             aria-hidden="true"
             alt="{{ _('External link') }}"
             class="inline w-6 h-6 ml-2 self-center"
-            src="{{ external_link_img }}"/>
+            src="{{ asset_url('images/external-white.svg') }}"/>
     {% endif %}
 </a>
 {% endmacro %}
 
-{% macro nav_link_light(label="TODO: LABEL THIS LINK", href="/", class=None, external_link_img=None) %}
+{% macro nav_link_light(label="TODO: LABEL THIS LINK", href="/", class=None, is_external_link=False) %}
 <a
     href="{{ href }}"
     class="p-2 text-blue text-small no-underline line-under border-b-2 border-transparent visited:text-blue link:text-blue hover:underline focus:border-blue focus:outline-none focus:text-blue decoration-clone min-h-target {% if class %} {{ class }} {% endif %}"
-    {% if external_link_img %}
+    {% if is_external_link %}
         target="_blank"
         aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
     {% else %}
@@ -54,12 +54,12 @@
     {% endif %}
     >
     {{ label }}
-    {% if external_link_img %}
+    {% if is_external_link %}
         <img
             aria-hidden="true"
             alt="{{ _('External link') }}"
             class="inline w-6 h-6 ml-2 self-center"
-            src="{{ external_link_img }}"/>
+            src="{{ asset_url('images/external.svg') }}"/>
     {% endif %}
 </a>
 {% endmacro %}

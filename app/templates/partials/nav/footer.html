@@ -1,5 +1,5 @@
 {% from "components/buttons.html" import nav_button, secondary_button_transparent_white %}
-{% from "components/links.html" import nav_link_dark, nav_link_light %}
+{% from "components/links.html" import nav_link_dark, nav_link_light with context %}
 
 <footer aria-label="{{ _('footer menu') }}">
   <div class="bg-blue">
@@ -13,7 +13,7 @@
         </div>
         <div class="flex-1 grid grid-cols-1 gap-y-1 md:grid-rows-4 place-items-start">
           <span class="text-white text-base font-bold">{{ _("Using GC Notify") }}</span>
-          {{ nav_link_dark(label=_("API documentation"), href=documentation_url(), external_link_img=asset_url('images/external-white.svg'), class="-ml-2") }}
+          {{ nav_link_dark(label=_("API documentation"), href=documentation_url(), is_external_link=True, class="-ml-2") }}
           {{ nav_link_dark(label=_("Guidance"), href=url_for('main.guidance'), class="-ml-2") }}
         </div>
         <div class="flex-1 grid grid-cols-1 gap-y-1 lg:grid-rows-4 place-items-start">
