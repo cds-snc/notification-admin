@@ -7,7 +7,6 @@ from flask import (
     redirect,
     render_template,
     request,
-    session,
     url_for,
 )
 from flask_login import current_user
@@ -262,7 +261,7 @@ def page_content():
     response = request_content("wp/v2/pages", {"slug": slug})
 
     nav_url = "menus/v1/menus/notify-admin"
-    if "userlang" in session and session["userlang"] == "fr":
+    if get_current_locale(current_app) == "fr":
         nav_url = "menus/v1/menus/notify-admin-fr"
 
     nav_response = request_content(nav_url)
