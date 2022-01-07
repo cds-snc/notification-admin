@@ -11,12 +11,13 @@ from itertools import chain
 from os import path
 from typing import Any
 
+import requests
 import boto3
 import dateutil
 import pyexcel
 import pyexcel_xlsx
 from dateutil import parser
-from flask import abort, current_app, redirect, request, session, url_for
+from flask import abort, current_app, redirect, request, session, url_for,  json
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_required
@@ -761,3 +762,12 @@ class PermanentRedirect(RequestRedirect):
 def is_blank(content: Any) -> bool:
     content = str(content)
     return not content or content.isspace()
+
+def request_content(slug: str, params = {}) -> str:
+    base_endpoint = current_app.config["GC_ARTICLES_API"]
+    response = requests.get(f"https://{base_endpoint}/{slug}", params)
+    if response:
+        parsed = json.loads(response.content)
+        return parsed
+    else:
+        return ""
