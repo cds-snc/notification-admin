@@ -532,7 +532,7 @@ def test_get_remote_addr(app_, forwarded_for, remote_addr, expected):
         assert get_remote_addr(request) == expected
 
 
-def test_get_latest_stats(mocker, app_):
+def test_get_latest_stats_k8s(mocker, app_):
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
         return_value={
@@ -540,6 +540,40 @@ def test_get_latest_stats(mocker, app_):
                 ("2020-10-01", "sms", 5),
                 ("2020-10-01", "email", 10),
                 ("2020-09-01", "sms", 3),
+            ]
+        },
+    )
+    mocker.patch(
+        "app.service_api_client.get_live_services_data",
+        return_value={"data": ["service"]},
+    )
+
+    with app_.test_request_context():
+        assert get_latest_stats("en") == {
+            "notifications_total": 18,
+            "emails_total": 10,
+            "sms_total": 8,
+            "live_services": 1,
+            "monthly_stats": {
+                "October 2020": {
+                    "email": 10,
+                    "sms": 5,
+                    "total": 15,
+                    "year_month": "2020-10",
+                },
+                "September 2020": {"sms": 3, "total": 3, "year_month": "2020-09"},
+            },
+        }
+
+
+def test_get_latest_stats_lambda(mocker, app_):
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={
+            "data": [
+                {"month": "2020-10-01", "notification_type": "sms", "count": 5},
+                {"month": "2020-10-01", "notification_type": "email", "count": 10},
+                {"month": "2020-09-01", "notification_type": "sms", "count": 3},
             ]
         },
     )
