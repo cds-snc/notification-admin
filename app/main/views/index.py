@@ -259,6 +259,10 @@ def callbacks():
 def page_content():
     slug = request.endpoint.replace("main.", "")
     response = request_content("wp/v2/pages", {"slug": slug, "lang": get_current_locale(current_app)})
+    
+    # show technical difficulties if no result
+    if(response == ""):
+     abort(500)
 
     nav_url = "menus/v1/menus/notify-admin"
     if get_current_locale(current_app) == "fr":
