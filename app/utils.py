@@ -778,7 +778,7 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> str:
         parsed = json.loads(response.content)
         
         current_app.logger.info(f"Saving to cache: {cache_key}");
-        cache.set(cache_key, parsed, timeout=20)
+        cache.set(cache_key, parsed, timeout=86400) # set expiry to 1 day
         
         return parsed
     except:
