@@ -767,16 +767,25 @@ def is_blank(content: Any) -> bool:
 
 def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> str:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
-    params["bust_cache"] = random.random()
     lang_endpoint = ""
+    cache_key = "%s/%s" % (params["lang"], params["slug"])
 
     if params["lang"] == "fr":
         lang_endpoint = "/fr"
 
-    response = requests.get(f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}", params)
-    if response:
+    try: 
+        response = requests.get(f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}", params)
         parsed = json.loads(response.content)
-        cache.set(params['slug'], parsed)
+        
+        current_app.logger.info(f"Saving to cache: {cache_key}");
+        cache.set(cache_key, parsed, timeout=20)
+        
         return parsed
-    else:
-        return cache.get(params['slug']) or ""
+    except:
+        current_app.logger.info(f"Cache hit: {cache_key}")
+        
+        if cache.get(cache_key):
+            return cache.get(cache_key)
+        else:
+            current_app.logger.info(f"Cache miss: {cache_key}")
+            return ""
