@@ -765,7 +765,7 @@ def is_blank(content: Any) -> bool:
     return not content or content.isspace()
 
 
-def request_content(endpoint: str, params={"lang": "en"}) -> str:
+def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> str:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     params["bust_cache"] = random.random()
     lang_endpoint = ""
@@ -776,7 +776,7 @@ def request_content(endpoint: str, params={"lang": "en"}) -> str:
     response = requests.get(f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}", params)
     if response:
         parsed = json.loads(response.content)
-        # cache.set(params['slug'], parsed)
+        cache.set(params['slug'], parsed)
         return parsed
     else:
-        return ""  # return cache.get(params['slug']) or ""
+        return cache.get(params['slug']) or ""
