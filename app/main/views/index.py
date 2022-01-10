@@ -27,6 +27,7 @@ from app.utils import (
     documentation_url,
     get_latest_stats,
     get_logo_cdn_domain,
+    request_content,
     user_is_logged_in,
 )
 
@@ -256,25 +257,33 @@ def callbacks():
 
 
 @main.route("/features", endpoint="features")
-def features():
-    endpoint = 'https://articles.cdssandbox.xyz/notification-gc-notify/wp-json/wp/v2/pages/'
-    response = requests.get(endpoint+'?slug=features&1=8')
-    if response:
-        parsed = json.loads(response.content)
-        title = '<h1 class="heading-large">' + parsed[0]["title"]["rendered"] + '</h1>'
-        html_content = title + parsed[0]["content"]["rendered"]
-        return render_template('views/features.html', html_content=html_content)
-    else:
-        print('An error has occurred.')
-        return "Error"
-    
-    #return render_template("views/features.html")
-
-
 @main.route("/why-notify", endpoint="why-notify")
-def why_notify():
-    rate_sms = current_app.config.get("DEFAULT_FREE_SMS_FRAGMENT_LIMITS", {}).get("central", 10000)
-    return render_template("views/why-notify.html", rate_sms=rate_sms)
+def page_content():
+    slug = request.endpoint.replace("main.", "")
+    response = request_content("wp/v2/pages", {"slug": slug, "lang": get_current_locale(current_app)})
+
+    nav_url = "menus/v1/menus/notify-admin"
+    if get_current_locale(current_app) == "fr":
+        nav_url = "menus/v1/menus/notify-admin-fr"
+
+    nav_response = request_content(nav_url)
+    nav_items = None
+
+    if nav_response:
+        nav_items = []
+        for item in nav_response["items"]:
+            nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
+
+        for item in nav_items:
+            # add "active" class
+            item["active"] = True if item["url"] == request.path else False
+
+    if response:
+        title = '<h1 class="heading-large">' + response[0]["title"]["rendered"] + "</h1>"
+        html_content = title + response[0]["content"]["rendered"]
+        return render_template("views/features.html", html_content=html_content, nav_items=nav_items)
+    else:
+        return "Error"
 
 
 @main.route("/roadmap", endpoint="roadmap")

@@ -1,5 +1,6 @@
 import csv
 import os
+import random
 import re
 import unicodedata
 import uuid
@@ -15,8 +16,9 @@ import boto3
 import dateutil
 import pyexcel
 import pyexcel_xlsx
+import requests
 from dateutil import parser
-from flask import abort, current_app, redirect, request, session, url_for
+from flask import abort, current_app, json, redirect, request, session, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_required
@@ -761,3 +763,20 @@ class PermanentRedirect(RequestRedirect):
 def is_blank(content: Any) -> bool:
     content = str(content)
     return not content or content.isspace()
+
+
+def request_content(endpoint: str, params={"lang": "en"}) -> str:
+    base_endpoint = current_app.config["GC_ARTICLES_API"]
+    params["bust_cache"] = random.random()
+    lang_endpoint = ""
+
+    if params["lang"] == "fr":
+        lang_endpoint = "/fr"
+
+    response = requests.get(f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}", params)
+    if response:
+        parsed = json.loads(response.content)
+        # cache.set(params['slug'], parsed)
+        return parsed
+    else:
+        return ""  # return cache.get(params['slug']) or ""
