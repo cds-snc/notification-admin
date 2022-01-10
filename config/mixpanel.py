@@ -21,7 +21,7 @@ class NotifyMixpanel:
         self.mixpanel: Mixpanel = Mixpanel(os.environ.get("MIXPANEL_PROJECT_TOKEN"))
         self.user = user
 
-    def track_event(self, msg="Sent message") -> None:
+    def track_event(self, msg="Notify: Sent message") -> None:
         if self.user:
             self.mixpanel.track(self.user.email_address, msg, {"product": "Notify"})
 

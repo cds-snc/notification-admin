@@ -24,7 +24,7 @@ class Authenticator:
 
     def __exit__(self, _exec_type, _exec_value, _traceback) -> None:
         self.mixpanel.track_user_profile()
-        self.mixpanel.track_event("Logged in")
+        self.mixpanel.track_event("Notify: Logged in")
 
         # get rid of anything in the session that we don't expect to have been set during register/sign in flow
         session.pop("user_details", None)
