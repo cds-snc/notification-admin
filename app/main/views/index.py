@@ -279,9 +279,9 @@ def page_content():
             item["active"] = True if item["url"] == request.path else False
 
     if response:
-        title = '<h1 class="heading-large">' + response[0]["title"]["rendered"] + "</h1>"
-        html_content = title + response[0]["content"]["rendered"]
-        return render_template("views/features.html", html_content=html_content, nav_items=nav_items)
+        title = response[0]["title"]["rendered"]
+        html_content = response[0]["content"]["rendered"]
+        return render_template("views/features.html", title=title, html_content=html_content, nav_items=nav_items)
     else:
         return "Error"
 
