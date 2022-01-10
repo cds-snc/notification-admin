@@ -285,7 +285,7 @@ def page_content():
     if response:
         title = response[0]["title"]["rendered"]
         html_content = response[0]["content"]["rendered"]
-        return render_template("views/features.html", title=title, html_content=html_content, nav_items=nav_items)
+        return render_template("views/" + slug + ".html", title=title, html_content=html_content, nav_items=nav_items)
     else:
         return "Error"
 
