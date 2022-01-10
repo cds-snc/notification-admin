@@ -1,8 +1,10 @@
 {% extends "content_template.html" %}
+
 {% block per_page_title %}
-  {{ _('Features') }}
+  {{ title }}
 {% endblock %}
 
 {% block maincolumn_content %}
+  <h1 class="heading-large">{{ title }}</h1>
   {{ html_content|safe  }}
 {% endblock %}
