@@ -780,7 +780,7 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> str:
         cache.set(cache_key, parsed, timeout=86400)  # set expiry to 1 day
 
         return parsed
-    except:
+    except BaseException:
         current_app.logger.info(f"Cache hit: {cache_key}")
 
         if cache.get(cache_key):
