@@ -1,24 +1,24 @@
 import os
+import flask
 
 from app.models.user import User
 from mixpanel import Mixpanel  # type: ignore
 
 
-class MixpanelInitializationError(Exception):
-    """raised when MIXPANEL_PROJECT_TOKEN environment varaible is not set"""
-
-
 class NotifyMixpanel:
     def __new__(klazz, user: User = None):
         if not os.environ.get("MIXPANEL_PROJECT_TOKEN"):
-            raise MixpanelInitializationError
+            flask.current_app.logger.warning(
+                "MIXPANEL_PROJECT_TOKEN is not set. Mixpanel features will not be supported. "
+                "in order to enable Mixpanel, set MIXPANEL_PROJECT_TOKEN environment variable."
+            )
 
         return super(NotifyMixpanel, klazz).__new__(klazz)
 
     def __init__(self, user: User = None) -> None:
         super().__init__()
 
-        self.mixpanel: Mixpanel = Mixpanel(os.environ.get("MIXPANEL_PROJECT_TOKEN"))
+        self.mixpanel: Mixpanel = Mixpanel(os.environ.get("MIXPANEL_PROJECT_TOKEN", ""))
         self.user = user
 
     def track_event(self, msg="Notify: Sent message") -> None:
