@@ -252,10 +252,10 @@ def callbacks():
 
 
 # --- API-driven pages --- #
-@main.route("/features-api", endpoint="features-api")
-@main.route("/why-notify-api", endpoint="why-notify-api")
+@main.route("/features-wp", endpoint="features-wp")
+@main.route("/why-notify-wp", endpoint="why-notify-wp")
 def page_content():
-    slug = request.endpoint.replace("main.", "").replace("-api", "")
+    slug = request.endpoint.replace("main.", "").replace("-wp", "")
     response = request_content("wp/v2/pages", {"slug": slug, "lang": get_current_locale(current_app)})
 
     # show technical difficulties if no result
@@ -275,8 +275,8 @@ def page_content():
             nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
 
         for item in nav_items:
-            # Append "-api" to item URL (eg, menu item URLs points at /features, not /features-api)
-            item["active"] = True if (item["url"] + "-api") == request.path else False
+            # Append "-wp" to item URL (eg, menu item URLs points at /features, not /features-api)
+            item["active"] = True if (item["url"] + "-wp") == request.path else False
 
     if response:
         title = response[0]["title"]["rendered"]
