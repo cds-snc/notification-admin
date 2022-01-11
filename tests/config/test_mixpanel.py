@@ -32,6 +32,7 @@ def test_when_mixpanel_project_token_is_not_set(mocker, environment_vars_fixture
 
     mocked_current_app_logger_warning_fxn.assert_called_once()
 
+
 def test_when_mixpanel_project_token_is_set(mocker, environment_vars_fixtures):
     mocked_current_app_logger_warning_fxn = mocker.patch("flask.current_app.logger.warning")
     NotifyMixpanel(user)
