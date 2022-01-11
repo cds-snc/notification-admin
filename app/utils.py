@@ -1,6 +1,5 @@
 import csv
 import os
-import random
 import re
 import unicodedata
 import uuid

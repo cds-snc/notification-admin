@@ -114,6 +114,8 @@ def test_security_txt(client):
         "pricing",
         "terms",
         "roadmap",
+        "features",
+        "why-notify",
         "security",
         "messages_status",
         "email",

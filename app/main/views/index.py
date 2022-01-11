@@ -9,8 +9,6 @@ from flask import (
     request,
     url_for,
 )
-import json
-import requests
 from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
@@ -253,13 +251,11 @@ def callbacks():
     return redirect(documentation_url("callbacks"), code=301)
 
 
-# --- Features page set --- #
-
-
-@main.route("/features", endpoint="features")
-@main.route("/why-notify", endpoint="why-notify")
+# --- API-driven pages --- #
+@main.route("/features-api", endpoint="features-api")
+@main.route("/why-notify-api", endpoint="why-notify-api")
 def page_content():
-    slug = request.endpoint.replace("main.", "")
+    slug = request.endpoint.replace("main.", "").replace("-api", "")
     response = request_content("wp/v2/pages", {"slug": slug, "lang": get_current_locale(current_app)})
 
     # show technical difficulties if no result
@@ -270,7 +266,7 @@ def page_content():
     if get_current_locale(current_app) == "fr":
         nav_url = "menus/v1/menus/notify-admin-fr"
 
-    nav_response = request_content(nav_url, {"slug": nav_url, "lang": get_current_locale(current_app)})
+    nav_response = request_content(nav_url)
     nav_items = None
 
     if nav_response:
@@ -279,15 +275,26 @@ def page_content():
             nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
 
         for item in nav_items:
-            # add "active" class
-            item["active"] = True if item["url"] == request.path else False
+            # Append "-api" to item URL (eg, menu item URLs points at /features, not /features-api)
+            item["active"] = True if (item["url"] + "-api") == request.path else False
 
     if response:
         title = response[0]["title"]["rendered"]
         html_content = response[0]["content"]["rendered"]
-        return render_template("views/" + slug + ".html", title=title, html_content=html_content, nav_items=nav_items)
+        return render_template("views/page-content.html", title=title, html_content=html_content, nav_items=nav_items)
     else:
         return "Error"
+
+
+@main.route("/features", endpoint="features")
+def features():
+    return render_template("views/features.html")
+
+
+@main.route("/why-notify", endpoint="why-notify")
+def why_notify():
+    rate_sms = current_app.config.get("DEFAULT_FREE_SMS_FRAGMENT_LIMITS", {}).get("central", 10000)
+    return render_template("views/why-notify.html", rate_sms=rate_sms)
 
 
 @main.route("/roadmap", endpoint="roadmap")
