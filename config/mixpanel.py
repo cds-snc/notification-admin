@@ -9,7 +9,7 @@ class NotifyMixpanel:
     def __new__(klazz, user: User = None):
         if not os.environ.get("MIXPANEL_PROJECT_TOKEN"):
             flask.current_app.logger.warning(
-                "MIXPANEL_PROJECT_TOKEN is not set. Mixpanel features will not be supported. "
+                "MIXPANEL_PROJECT_TOKEN is not set. Mixpanel features will not be supported."
                 "In order to enable Mixpanel, set MIXPANEL_PROJECT_TOKEN environment variable."
             )
 
