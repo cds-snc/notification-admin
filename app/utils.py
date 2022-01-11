@@ -773,17 +773,17 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> str:
     if params["lang"] == "fr":
         lang_endpoint = "/fr"
 
-    try: 
+    try:
         response = requests.get(f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}", params)
         parsed = json.loads(response.content)
-        
-        current_app.logger.info(f"Saving to cache: {cache_key}");
-        cache.set(cache_key, parsed, timeout=86400) # set expiry to 1 day
-        
+
+        current_app.logger.info(f"Saving to cache: {cache_key}")
+        cache.set(cache_key, parsed, timeout=86400)  # set expiry to 1 day
+
         return parsed
     except:
         current_app.logger.info(f"Cache hit: {cache_key}")
-        
+
         if cache.get(cache_key):
             return cache.get(cache_key)
         else:

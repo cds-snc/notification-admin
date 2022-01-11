@@ -270,7 +270,7 @@ def page_content():
     if get_current_locale(current_app) == "fr":
         nav_url = "menus/v1/menus/notify-admin-fr"
 
-    nav_response = request_content(nav_url, { "slug": nav_url, "lang": get_current_locale(current_app)})
+    nav_response = request_content(nav_url, {"slug": nav_url, "lang": get_current_locale(current_app)})
     nav_items = None
 
     if nav_response:
