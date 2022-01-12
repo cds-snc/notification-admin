@@ -1,8 +1,9 @@
 import os
+
 from flask import current_app
+from mixpanel import Mixpanel  # type: ignore
 
 from app.models.user import User
-from mixpanel import Mixpanel  # type: ignore
 
 
 class NotifyMixpanel:
