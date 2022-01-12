@@ -8,7 +8,7 @@ from app.models.user import User
 
 class NotifyMixpanel:
 
-    def __check_mixpanel():
+    def __check_mixpanel(cls): # type: ignore
         if not os.environ.get("MIXPANEL_PROJECT_TOKEN"):
             current_app.logger.warning(
                 "MIXPANEL_PROJECT_TOKEN is not set. Mixpanel features will not be supported."
@@ -32,11 +32,11 @@ class NotifyMixpanel:
 
         return wrapper
 
-    @__mixpanel_enabled
+    @__mixpanel_enabled # type: ignore
     def track_event(self, user: User, msg="Notify: Sent message") -> None:
         self.mixpanel.track(user.email_address, msg, {"product": "Notify"})
 
-    @__mixpanel_enabled
+    @__mixpanel_enabled # type: ignore
     def track_user_profile(self, user: User) -> None:
         profile = {
             "$first_name": user.name.split()[0],
