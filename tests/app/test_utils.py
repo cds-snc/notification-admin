@@ -666,9 +666,6 @@ def test_get_template_with_html_allowed(mocker, app_, service_one, fake_uuid, al
 def test_find_item_url():
     items = [{"name": "home", "url": "/"}, {"name": "page 1", "url": "/page-1"}, {"name": "page 2", "url": "/page-2"}]
 
-    found = find_item_url(None, "")
-    assert found is None
-
     found = find_item_url(items, "")
     assert found is None
 

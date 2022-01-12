@@ -57,6 +57,7 @@ FAILURE_STATUSES = [
     "validation-failed",
 ]
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
+CACHE_TTL = 86400
 
 with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))) as email_domains:
     GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains]
@@ -786,13 +787,12 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
             raise NotFound()
 
         current_app.logger.info(f"Saving to cache: {cache_key}")
-        cache.set(cache_key, parsed, timeout=86400)  # set expiry to 1 day
+        cache.set(cache_key, parsed, timeout=CACHE_TTL)
 
         return parsed
     except Exception:
-        current_app.logger.info(f"Cache hit: {cache_key}")
-
         if cache.get(cache_key):
+            current_app.logger.info(f"Cache hit: {cache_key}")
             return cache.get(cache_key)
         else:
             current_app.logger.info(f"Cache miss: {cache_key}")
@@ -800,13 +800,10 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
 
 
 def find_item_url(items=[], url=""):
-    try:
-        found = list(filter(lambda item: item["url"] == url, items))
-        if len(found) == 0:
-            return None
-        return found
-    except TypeError:
+    found = list(filter(lambda item: item["url"] == url, items))
+    if len(found) == 0:
         return None
+    return found
 
 
 def get_nav_wp(locale):

@@ -372,16 +372,17 @@ def page_content(path=""):
 
     if path:
         # check if the path exists in the nav items
-        found = find_item_url(nav_items, path)
+        clean_url = path.replace("/", "")
+        found = find_item_url(nav_items, f"/{clean_url}")
 
     if found is None:
         abort(404)
 
-    response = request_content("wp/v2/pages", {"slug": path.replace("/", ""), "lang": locale})
+    response = request_content("wp/v2/pages", {"slug": path, "lang": locale})
 
     if response:
         title = response[0]["title"]["rendered"]
         html_content = response[0]["content"]["rendered"]
-        return render_template("views/page-content.html", title=title, html_content=html_content, nav_items=nav_items)
+        return render_template("views/page-content.html", title=title, html_content=html_content, nav_items={})
     else:
         abort(500)
