@@ -1,9 +1,8 @@
 import json
 import os
-import pytest
-
 from datetime import datetime
 
+import pytest
 from flask import url_for
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import generate_token
