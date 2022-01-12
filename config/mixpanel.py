@@ -18,7 +18,7 @@ class NotifyMixpanel:
         else:
             return True
 
-    __enabled = __check_mixpanel()
+    __enabled = __check_mixpanel()  # type: ignore
 
     def __init__(self) -> None:
         super().__init__()
