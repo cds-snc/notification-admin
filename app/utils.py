@@ -39,6 +39,7 @@ from notifications_utils.timezones import (
 )
 from orderedset._orderedset import OrderedSet
 from werkzeug.datastructures import MultiDict
+from werkzeug.exceptions import NotFound
 from werkzeug.routing import RequestRedirect
 
 from app import cache
@@ -773,8 +774,16 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
         lang_endpoint = "/fr"
 
     try:
-        response = requests.get(f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}", params)
+        url = f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}"
+        response = requests.get(url, params)
         parsed = json.loads(response.content)
+
+        if response.status_code >= 400 or not parsed:
+            # Getting back a 4xx or 5xx status code
+            current_app.logger.info(
+                f"Error requesting content. URL: {url}, params: {params}, status: {response.status_code}, data: {parsed}"
+            )
+            raise NotFound()
 
         current_app.logger.info(f"Saving to cache: {cache_key}")
         cache.set(cache_key, parsed, timeout=86400)  # set expiry to 1 day
