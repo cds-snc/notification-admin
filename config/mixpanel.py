@@ -8,7 +8,7 @@ from app.models.user import User
 
 class NotifyMixpanel:
 
-    def __check_mixpanel(cls):  # type: ignore
+    def __check_mixpanel():  # type: ignore
         if not os.environ.get("MIXPANEL_PROJECT_TOKEN"):
             current_app.logger.warning(
                 "MIXPANEL_PROJECT_TOKEN is not set. Mixpanel features will not be supported."
