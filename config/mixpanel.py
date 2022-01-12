@@ -1,5 +1,5 @@
 import os
-import flask
+from flask import current_app
 
 from app.models.user import User
 from mixpanel import Mixpanel  # type: ignore
@@ -7,10 +7,9 @@ from mixpanel import Mixpanel  # type: ignore
 
 class NotifyMixpanel:
 
-    @staticmethod
     def __check_mixpanel():
         if not os.environ.get("MIXPANEL_PROJECT_TOKEN"):
-            flask.current_app.logger.warning(
+            current_app.logger.warning(
                 "MIXPANEL_PROJECT_TOKEN is not set. Mixpanel features will not be supported."
                 "In order to enable Mixpanel, set MIXPANEL_PROJECT_TOKEN environment variable."
             )
@@ -18,7 +17,7 @@ class NotifyMixpanel:
         else:
             return True
 
-    __enabled = __check_mixpanel.__func__()
+    __enabled = __check_mixpanel()
 
     def __init__(self) -> None:
         super().__init__()
