@@ -9,7 +9,7 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-from typing import Any
+from typing import Any, Union
 
 import boto3
 import dateutil
@@ -764,7 +764,7 @@ def is_blank(content: Any) -> bool:
     return not content or content.isspace()
 
 
-def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> str:
+def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[list, dict, None]:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     lang_endpoint = ""
     cache_key = "%s/%s" % (params["lang"], params["slug"])
@@ -787,4 +787,4 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> str:
             return cache.get(cache_key)
         else:
             current_app.logger.info(f"Cache miss: {cache_key}")
-            return ""
+            return None
