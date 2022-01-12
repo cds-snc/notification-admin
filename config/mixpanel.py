@@ -1,5 +1,4 @@
 import os
-from pdb import set_trace
 import flask
 
 from app.models.user import User
