@@ -23,8 +23,10 @@ from app.main.forms import (
 from app.utils import (
     Spreadsheet,
     documentation_url,
+    find_item_url,
     get_latest_stats,
     get_logo_cdn_domain,
+    get_nav_wp,
     request_content,
     user_is_logged_in,
 )
@@ -251,41 +253,6 @@ def callbacks():
     return redirect(documentation_url("callbacks"), code=301)
 
 
-# --- API-driven pages --- #
-@main.route("/features-wp", endpoint="features-wp")
-@main.route("/why-notify-wp", endpoint="why-notify-wp")
-def page_content():
-    slug = request.endpoint.replace("main.", "").replace("-wp", "")
-    response = request_content("wp/v2/pages", {"slug": slug, "lang": get_current_locale(current_app)})
-
-    # show technical difficulties if no result
-    if response is None:
-        abort(500)
-
-    nav_url = "menus/v1/menus/notify-admin"
-    if get_current_locale(current_app) == "fr":
-        nav_url = "menus/v1/menus/notify-admin-fr"
-
-    nav_response = request_content(nav_url)
-    nav_items = None
-
-    if nav_response:
-        nav_items = []
-        for item in nav_response["items"]:
-            nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
-
-        for item in nav_items:
-            # Append "-wp" to item URL (eg, menu item URLs points at /features, not /features-api)
-            item["active"] = True if (item["url"] + "-wp") == request.path else False
-
-    if response:
-        title = response[0]["title"]["rendered"]
-        html_content = response[0]["content"]["rendered"]
-        return render_template("views/page-content.html", title=title, html_content=html_content, nav_items=nav_items)
-    else:
-        return "Error"
-
-
 @main.route("/features", endpoint="features")
 def features():
     return render_template("views/features.html")
@@ -383,8 +350,6 @@ def messages_status():
 
 
 # --- Redirects --- #
-
-
 @main.route("/features/roadmap", endpoint="redirect_roadmap")
 @main.route("/features/email", endpoint="redirect_email")
 @main.route("/features/sms", endpoint="redirect_sms")
@@ -396,3 +361,27 @@ def messages_status():
 @main.route("/templates", endpoint="redirect_format")
 def old_page_redirects():
     return redirect(url_for(request.endpoint.replace("redirect_", "")), code=301)
+
+
+# --- Wildcard for API-driven pages --- #
+@main.route("/<path:path>")
+def page_content(path=""):
+    locale = get_current_locale(current_app)
+    nav_items = get_nav_wp(locale)
+    found = None
+
+    if path:
+        # check if the path exists in the nav items
+        found = find_item_url(nav_items, path)
+
+    if found is None:
+        abort(404)
+
+    response = request_content("wp/v2/pages", {"slug": path.replace("/", ""), "lang": locale})
+
+    if response:
+        title = response[0]["title"]["rendered"]
+        html_content = response[0]["content"]["rendered"]
+        return render_template("views/page-content.html", title=title, html_content=html_content, nav_items=nav_items)
+    else:
+        abort(404)

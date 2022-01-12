@@ -797,3 +797,27 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
         else:
             current_app.logger.info(f"Cache miss: {cache_key}")
             return None
+
+
+def find_item_url(items, url):
+    return list(filter(lambda item: item["url"] == url, items))
+
+
+def get_nav_wp(locale):
+    nav_url = "menus/v1/menus/notify-admin"
+    if locale == "fr":
+        nav_url = "menus/v1/menus/notify-admin-fr"
+
+    nav_response = request_content(nav_url)
+    nav_items = None
+
+    if nav_response:
+        nav_items = []
+        for item in nav_response["items"]:
+            nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
+
+        for item in nav_items:
+            # Append "-wp" to item URL (eg, menu item URLs points at /features, not /features-api)
+            item["active"] = True if (item["url"] + "-wp") == request.path else False
+
+    return nav_items
