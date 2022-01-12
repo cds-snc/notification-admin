@@ -384,4 +384,4 @@ def page_content(path=""):
         html_content = response[0]["content"]["rendered"]
         return render_template("views/page-content.html", title=title, html_content=html_content, nav_items=nav_items)
     else:
-        abort(404)
+        abort(500)

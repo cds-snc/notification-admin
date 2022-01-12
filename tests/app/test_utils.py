@@ -12,6 +12,7 @@ from app.utils import (
     Spreadsheet,
     documentation_url,
     email_safe,
+    find_item_url,
     generate_next_dict,
     generate_notifications_csv,
     generate_previous_dict,
@@ -660,3 +661,19 @@ def test_get_template_with_html_allowed(mocker, app_, service_one, fake_uuid, al
 
     assert email_template is not None
     assert email_template.allow_html is allow_html
+
+
+def test_find_item_url():
+    items = [{"name": "home", "url": "/"}, {"name": "page 1", "url": "/page-1"}, {"name": "page 2", "url": "/page-2"}]
+
+    found = find_item_url(None, "")
+    assert found is None
+
+    found = find_item_url(items, "")
+    assert found is None
+
+    found = find_item_url(items, "/")
+    assert found[0]["name"] == "home"
+
+    found = find_item_url(items, "/page-2")
+    assert found[0]["name"] == "page 2"

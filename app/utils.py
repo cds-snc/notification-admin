@@ -799,8 +799,14 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
             return None
 
 
-def find_item_url(items, url):
-    return list(filter(lambda item: item["url"] == url, items))
+def find_item_url(items=[], url=""):
+    try:
+        found = list(filter(lambda item: item["url"] == url, items))
+        if len(found) == 0:
+            return None
+        return found
+    except TypeError:
+        return None
 
 
 def get_nav_wp(locale):
@@ -815,9 +821,5 @@ def get_nav_wp(locale):
         nav_items = []
         for item in nav_response["items"]:
             nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
-
-        for item in nav_items:
-            # Append "-wp" to item URL (eg, menu item URLs points at /features, not /features-api)
-            item["active"] = True if (item["url"] + "-wp") == request.path else False
 
     return nav_items
