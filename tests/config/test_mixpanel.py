@@ -28,28 +28,28 @@ def test_when_mixpanel_project_token_is_not_set(mocker, environment_vars_fixture
     os.environ["MIXPANEL_PROJECT_TOKEN"] = ""
 
     mocked_current_app_logger_warning_fxn = mocker.patch("flask.current_app.logger.warning")
-    NotifyMixpanel(user)
+    NotifyMixpanel()
 
     mocked_current_app_logger_warning_fxn.assert_called_once()
 
 
 def test_when_mixpanel_project_token_is_set(mocker, environment_vars_fixtures):
     mocked_current_app_logger_warning_fxn = mocker.patch("flask.current_app.logger.warning")
-    NotifyMixpanel(user)
+    NotifyMixpanel()
 
     mocked_current_app_logger_warning_fxn.assert_not_called()
 
 
 def test_track_mixpanel_user_profile_when_user_is_not_present(mocker, environment_vars_fixtures):
     mocked_mixpanel_people_set_fxn = mocker.patch("mixpanel.Mixpanel.people_set")
-    NotifyMixpanel().track_user_profile()
+    NotifyMixpanel().track_user_profile(user)
 
     mocked_mixpanel_people_set_fxn.assert_not_called()
 
 
 def test_track_mixpanel_user_profile(mocker, environment_vars_fixtures):
     mocked_mixpanel_people_set_fxn = mocker.patch("mixpanel.Mixpanel.people_set")
-    NotifyMixpanel(user).track_user_profile()
+    NotifyMixpanel().track_user_profile(user)
 
     mocked_mixpanel_people_set_fxn.assert_called_once()
 
@@ -63,6 +63,6 @@ def test_track_mixpanel_event_when_user_is_not_present(mocker, environment_vars_
 
 def test_track_mixpanel_event(mocker, environment_vars_fixtures):
     mocked_mixpanel_track_fxn = mocker.patch("mixpanel.Mixpanel.track")
-    NotifyMixpanel(user).track_event()
+    NotifyMixpanel().track_event(user)
 
     mocked_mixpanel_track_fxn.assert_called_once()

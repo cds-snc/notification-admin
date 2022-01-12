@@ -1,7 +1,3 @@
-""" test_new_password.py
-    isort:skip_file
-"""
-
 import json
 import os
 import pytest

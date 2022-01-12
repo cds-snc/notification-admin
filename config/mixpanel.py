@@ -7,33 +7,30 @@ from mixpanel import Mixpanel  # type: ignore
 
 
 class NotifyMixpanel:
-    def __new__(klazz):
+
+    @staticmethod
+    def __check_mixpanel():
         if not os.environ.get("MIXPANEL_PROJECT_TOKEN"):
             flask.current_app.logger.warning(
                 "MIXPANEL_PROJECT_TOKEN is not set. Mixpanel features will not be supported."
                 "In order to enable Mixpanel, set MIXPANEL_PROJECT_TOKEN environment variable."
             )
-            
             return False
         else:
             return True
+
+    __enabled = __check_mixpanel.__func__()
 
     def __init__(self) -> None:
         super().__init__()
 
         self.mixpanel: Mixpanel = Mixpanel(os.environ.get("MIXPANEL_PROJECT_TOKEN", ""))
 
-
     def __mixpanel_enabled(callable):
         def wrapper(*args, **kwargs):
-            outcome = _check_mixpanel()
-
-            import pdb; pdb.set_trace()
-
-            if outcome:
+            if NotifyMixpanel.__enabled:
                 callable(*args, **kwargs)
-                
-        
+
         return wrapper
 
     @__mixpanel_enabled
