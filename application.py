@@ -1,11 +1,10 @@
 import os
 
 import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
-
 from dotenv import load_dotenv
 from flask import Flask
+from sentry_sdk.integrations.flask import FlaskIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app import create_app

@@ -40,7 +40,7 @@ def test_when_mixpanel_project_token_is_set(mocker, environment_vars_fixtures):
 
 def test_track_mixpanel_user_profile_when_user_is_not_present(mocker, environment_vars_fixtures):
     mocked_mixpanel_people_set_fxn = mocker.patch("mixpanel.Mixpanel.people_set")
-    NotifyMixpanel().track_user_profile(user)
+    NotifyMixpanel().track_user_profile(None)
 
     mocked_mixpanel_people_set_fxn.assert_not_called()
 
@@ -54,7 +54,7 @@ def test_track_mixpanel_user_profile(mocker, environment_vars_fixtures):
 
 def test_track_mixpanel_event_when_user_is_not_present(mocker, environment_vars_fixtures):
     mocked_mixpanel_track_fxn = mocker.patch("mixpanel.Mixpanel.track")
-    NotifyMixpanel().track_event()
+    NotifyMixpanel().track_event(None)
 
     mocked_mixpanel_track_fxn.assert_not_called()
 
