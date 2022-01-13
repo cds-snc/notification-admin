@@ -14,6 +14,7 @@ from notifications_utils.international_billing_rates import INTERNATIONAL_BILLIN
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
 from app import email_branding_client, get_current_locale, letter_branding_client
+from app.articles import find_item_url, get_nav_wp, request_content, set_active_nav_item
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
@@ -23,13 +24,9 @@ from app.main.forms import (
 from app.utils import (
     Spreadsheet,
     documentation_url,
-    find_item_url,
     get_latest_stats,
     get_logo_cdn_domain,
-    get_nav_wp,
-    request_content,
     user_is_logged_in,
-    set_active_nav_item,
 )
 
 
