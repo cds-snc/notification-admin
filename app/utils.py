@@ -9,15 +9,14 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-from typing import Any, Union
+from typing import Any
 
 import boto3
 import dateutil
 import pyexcel
 import pyexcel_xlsx
-import requests
 from dateutil import parser
-from flask import abort, current_app, json, redirect, request, session, url_for
+from flask import abort, current_app, redirect, request, session, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_required
@@ -39,7 +38,6 @@ from notifications_utils.timezones import (
 )
 from orderedset._orderedset import OrderedSet
 from werkzeug.datastructures import MultiDict
-from werkzeug.exceptions import NotFound
 from werkzeug.routing import RequestRedirect
 
 from app import cache
@@ -763,37 +761,3 @@ class PermanentRedirect(RequestRedirect):
 def is_blank(content: Any) -> bool:
     content = str(content)
     return not content or content.isspace()
-
-
-def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[list, dict, None]:
-    base_endpoint = current_app.config["GC_ARTICLES_API"]
-    lang_endpoint = ""
-    cache_key = "%s/%s" % (params["lang"], params["slug"])
-
-    if params["lang"] == "fr":
-        lang_endpoint = "/fr"
-
-    try:
-        url = f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}"
-        response = requests.get(url, params)
-        parsed = json.loads(response.content)
-
-        if response.status_code >= 400 or not parsed:
-            # Getting back a 4xx or 5xx status code
-            current_app.logger.info(
-                f"Error requesting content. URL: {url}, params: {params}, status: {response.status_code}, data: {parsed}"
-            )
-            raise NotFound()
-
-        current_app.logger.info(f"Saving to cache: {cache_key}")
-        cache.set(cache_key, parsed, timeout=86400)  # set expiry to 1 day
-
-        return parsed
-    except Exception:
-        current_app.logger.info(f"Cache hit: {cache_key}")
-
-        if cache.get(cache_key):
-            return cache.get(cache_key)
-        else:
-            current_app.logger.info(f"Cache miss: {cache_key}")
-            return None
