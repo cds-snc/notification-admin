@@ -663,14 +663,32 @@ def test_get_template_with_html_allowed(mocker, app_, service_one, fake_uuid, al
     assert email_template.allow_html is allow_html
 
 
-def test_find_item_url():
+def _get_items():
     items = [{"name": "home", "url": "/"}, {"name": "page 1", "url": "/page-1"}, {"name": "page 2", "url": "/page-2"}]
+    return [i.copy() for i in items]
+
+
+def test_find_item_url():
+    items = _get_items()
+
+    found = find_item_url(items)
+    assert found is False
 
     found = find_item_url(items, "")
-    assert found is None
+    assert found is False
 
     found = find_item_url(items, "/")
-    assert found[0]["name"] == "home"
+    assert found is True
 
     found = find_item_url(items, "/page-2")
-    assert found[0]["name"] == "page 2"
+    assert found is True
+
+    # trailing slash
+    found = find_item_url(items, "/page-2/")
+    assert found is False
+
+    found = find_item_url(items, "/page-2/page-1")
+    assert found is False
+
+    found = find_item_url(items, "/page-3")
+    assert found is False

@@ -372,10 +372,9 @@ def page_content(path=""):
 
     if path:
         # check if the path exists in the nav items
-        clean_url = path.replace("/", "")
-        found = find_item_url(nav_items, f"/{clean_url}")
+        found = find_item_url(nav_items, request.path)
 
-    if found is None:
+    if not found:
         abort(404)
 
     response = request_content("wp/v2/pages", {"slug": path, "lang": locale})

@@ -799,11 +799,9 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
             return None
 
 
-def find_item_url(items=[], url="") -> Optional[dict]:
+def find_item_url(items=[], url="") -> bool:
     found = list(filter(lambda item: item["url"] == url, items))
-    if len(found) == 0:
-        return None
-    return found
+    return len(found) != 0
 
 
 def get_nav_wp(locale: str) -> Optional[list]:
