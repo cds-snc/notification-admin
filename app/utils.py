@@ -804,6 +804,11 @@ def find_item_url(items=[], url="") -> bool:
     return len(found) != 0
 
 
+def set_active_nav_item(items=[], url="") -> None:
+    for item in items:
+        item["active"] = True if item["url"] == url else False
+
+
 def get_nav_wp(locale: str) -> Optional[list]:
     nav_url = "menus/v1/menus/notify-admin"
     if locale == "fr":
