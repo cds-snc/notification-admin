@@ -57,7 +57,7 @@ FAILURE_STATUSES = [
     "validation-failed",
 ]
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
-CACHE_TTL = 86400
+GC_ARTICLES_CACHE_TTL = 86400
 
 with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))) as email_domains:
     GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains]
@@ -787,7 +787,7 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
             raise NotFound()
 
         current_app.logger.info(f"Saving to cache: {cache_key}")
-        cache.set(cache_key, parsed, timeout=CACHE_TTL)
+        cache.set(cache_key, parsed, timeout=GC_ARTICLES_CACHE_TTL)
 
         return parsed
     except Exception:
