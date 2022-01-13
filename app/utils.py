@@ -9,7 +9,7 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 import boto3
 import dateutil
@@ -799,14 +799,14 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
             return None
 
 
-def find_item_url(items=[], url="") -> Union[dict, None]:
+def find_item_url(items=[], url="") -> Optional[dict]:
     found = list(filter(lambda item: item["url"] == url, items))
     if len(found) == 0:
         return None
     return found
 
 
-def get_nav_wp(locale) -> Union[list, None]:
+def get_nav_wp(locale: str) -> Optional[list]:
     nav_url = "menus/v1/menus/notify-admin"
     if locale == "fr":
         nav_url = "menus/v1/menus/notify-admin-fr"
