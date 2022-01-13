@@ -1,14 +1,10 @@
-""" test-mixpanel.py
-    isort:skip_file
-"""
-
 import os
+
 import pytest
 
 from app.models.user import User
 from config.mixpanel import NotifyMixpanel
 from tests.conftest import active_user_with_permissions, fake_uuid
-
 
 user = User(active_user_with_permissions(fake_uuid))
 

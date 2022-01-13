@@ -1,10 +1,6 @@
-""" test_two_factor.py
-    isort:skip_file
-"""
-
 import os
-import pytest
 
+import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
