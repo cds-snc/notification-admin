@@ -799,14 +799,14 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
             return None
 
 
-def find_item_url(items=[], url=""):
+def find_item_url(items=[], url="") -> Union[dict, None]:
     found = list(filter(lambda item: item["url"] == url, items))
     if len(found) == 0:
         return None
     return found
 
 
-def get_nav_wp(locale):
+def get_nav_wp(locale) -> Union[list, None]:
     nav_url = "menus/v1/menus/notify-admin"
     if locale == "fr":
         nav_url = "menus/v1/menus/notify-admin-fr"
