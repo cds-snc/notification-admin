@@ -363,7 +363,7 @@ def old_page_redirects():
     return redirect(url_for(request.endpoint.replace("redirect_", "")), code=301)
 
 
-# --- Wildcard for API-driven pages --- #
+# --- Dynamic routes handling for GCArticles API-driven pages --- #
 @main.route("/<path:path>")
 def page_content(path=""):
     locale = get_current_locale(current_app)
