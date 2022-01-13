@@ -60,9 +60,9 @@ def get_nav_wp(locale: str) -> Optional[list]:
     nav_response = request_content(nav_url)
     nav_items = None
 
-    if nav_response:
+    if isinstance(nav_response, dict) and "items" in nav_response:
         nav_items = []
-        for item in nav_response["items"]:
+        for item in nav_response.get("items", []):
             nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
 
     return nav_items
