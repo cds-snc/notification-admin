@@ -259,7 +259,7 @@ def page_content():
     response = request_content("wp/v2/pages", {"slug": slug, "lang": get_current_locale(current_app)})
 
     # show technical difficulties if no result
-    if response == "":
+    if response is None:
         abort(500)
 
     nav_url = "menus/v1/menus/notify-admin"
