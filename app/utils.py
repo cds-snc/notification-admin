@@ -15,9 +15,8 @@ import boto3
 import dateutil
 import pyexcel
 import pyexcel_xlsx
-import requests
 from dateutil import parser
-from flask import abort, current_app, json, redirect, request, session, url_for
+from flask import abort, current_app, redirect, request, session, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_required
@@ -762,29 +761,3 @@ class PermanentRedirect(RequestRedirect):
 def is_blank(content: Any) -> bool:
     content = str(content)
     return not content or content.isspace()
-
-
-def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> str:
-    base_endpoint = current_app.config["GC_ARTICLES_API"]
-    lang_endpoint = ""
-    cache_key = "%s/%s" % (params["lang"], params["slug"])
-
-    if params["lang"] == "fr":
-        lang_endpoint = "/fr"
-
-    try:
-        response = requests.get(f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}", params)
-        parsed = json.loads(response.content)
-
-        current_app.logger.info(f"Saving to cache: {cache_key}")
-        cache.set(cache_key, parsed, timeout=86400)  # set expiry to 1 day
-
-        return parsed
-    except Exception:
-        current_app.logger.info(f"Cache hit: {cache_key}")
-
-        if cache.get(cache_key):
-            return cache.get(cache_key)
-        else:
-            current_app.logger.info(f"Cache miss: {cache_key}")
-            return ""
