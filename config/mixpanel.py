@@ -13,16 +13,15 @@ class NotifyMixpanel():
     def __init__(self) -> None:
         super().__init__()
         self.token = os.environ.get("MIXPANEL_PROJECT_TOKEN")
+        self.mixpanel = Mixpanel(self.token)
         if not self.token:
             current_app.logger.warning(
                 "MIXPANEL_PROJECT_TOKEN is not set. Mixpanel features will not be supported."
                 "In order to enable Mixpanel, set MIXPANEL_PROJECT_TOKEN environment variable."
             )
             NotifyMixpanel.enabled = False
-            self.mixpanel = None
         else:
             NotifyMixpanel.enabled = True
-            self.mixpanel = Mixpanel(self.token)
 
     def __mixpanel_enabled(callable):
         def wrapper(*args, **kwargs):
@@ -32,15 +31,13 @@ class NotifyMixpanel():
 
     @__mixpanel_enabled  # type: ignore
     def track_event(self, user: User, msg="Notify: Sent message") -> None:
-        if user:
-            self.mixpanel.track(user.email_address, msg, {"product": "Notify"})
+        self.mixpanel.track(user.email_address, msg, {"product": "Notify"})
 
     @__mixpanel_enabled  # type: ignore
     def track_user_profile(self, user: User) -> None:
-        if user:
-            profile = {
-                "$first_name": user.name.split()[0],
-                "$last_name": user.name.split()[-1],
-                "$email": user.email_address,
-            }
-            self.mixpanel.people_set(user.email_address, profile, meta={"product": "Notify"})
+        profile = {
+            "$first_name": user.name.split()[0],
+            "$last_name": user.name.split()[-1],
+            "$email": user.email_address,
+        }
+        self.mixpanel.people_set(user.email_address, profile, meta={"product": "Notify"})
