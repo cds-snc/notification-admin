@@ -31,13 +31,15 @@ class NotifyMixpanel():
 
     @__mixpanel_enabled  # type: ignore
     def track_event(self, user: User, msg="Notify: Sent message") -> None:
-        self.mixpanel.track(user.email_address, msg, {"product": "Notify"})
+        if user:
+            self.mixpanel.track(user.email_address, msg, {"product": "Notify"})
 
     @__mixpanel_enabled  # type: ignore
     def track_user_profile(self, user: User) -> None:
-        profile = {
-            "$first_name": user.name.split()[0],
-            "$last_name": user.name.split()[-1],
-            "$email": user.email_address,
-        }
-        self.mixpanel.people_set(user.email_address, profile, meta={"product": "Notify"})
+        if user:
+            profile = {
+                "$first_name": user.name.split()[0],
+                "$last_name": user.name.split()[-1],
+                "$email": user.email_address,
+            }
+            self.mixpanel.people_set(user.email_address, profile, meta={"product": "Notify"})
