@@ -6,32 +6,28 @@ from mixpanel import Mixpanel  # type: ignore
 from app.models.user import User
 
 
-class MixpanelConf(type):
-    def __new__(klazz, name, bases, namespace):
-        conf = super().__new__(klazz, name, bases, namespace)
-        if not os.environ.get("MIXPANEL_PROJECT_TOKEN"):
+class NotifyMixpanel():
+
+    enabled = False
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.token = os.environ.get("MIXPANEL_PROJECT_TOKEN")
+        if not self.token:
             current_app.logger.warning(
                 "MIXPANEL_PROJECT_TOKEN is not set. Mixpanel features will not be supported."
                 "In order to enable Mixpanel, set MIXPANEL_PROJECT_TOKEN environment variable."
             )
-            conf.enabled = False
+            NotifyMixpanel.enabled = False
+            self.mixpanel = None
         else:
-            conf.enabled = True
-
-        return conf
-
-
-class NotifyMixpanel(metaclass=MixpanelConf):
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.mixpanel: Mixpanel = Mixpanel(os.environ.get("MIXPANEL_PROJECT_TOKEN", ""))
+            NotifyMixpanel.enabled = True
+            self.mixpanel = Mixpanel(self.token)
 
     def __mixpanel_enabled(callable):
         def wrapper(*args, **kwargs):
             if NotifyMixpanel.enabled:
                 callable(*args, **kwargs)
-
         return wrapper
 
     @__mixpanel_enabled  # type: ignore
