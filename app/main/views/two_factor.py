@@ -6,6 +6,7 @@ from user_agents import parse
 from app import user_api_client
 from app.main import main
 from app.main.forms import TwoFactorForm
+from app.main.views.authenticator import Authenticator
 from app.models.user import User
 from app.utils import redirect_to_sign_in
 
@@ -76,21 +77,8 @@ def _is_safe_redirect_url(target):
 
 
 def log_in_user(user_id):
-    try:
-        user = User.from_id(user_id)
-        # the user will have a new current_session_id set by the API - store it in the cookie for future requests
-        session["current_session_id"] = user.current_session_id
-        # Check if coming from new password page
-        if "password" in session.get("user_details", {}):
-            user.update_password(session["user_details"]["password"])
-        user.activate()
-        user.login()
-    finally:
-        # get rid of anything in the session that we don't expect to have been set during register/sign in flow
-        session.pop("user_details", None)
-        session.pop("file_uploads", None)
-
-    return redirect_when_logged_in(user=user, platform_admin=user.platform_admin)
+    with Authenticator(user_id) as user:
+        return redirect_when_logged_in(user=user, platform_admin=user.platform_admin)
 
 
 def redirect_when_logged_in(user, platform_admin):
