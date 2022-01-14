@@ -14,7 +14,12 @@ from notifications_utils.international_billing_rates import INTERNATIONAL_BILLIN
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
 from app import email_branding_client, get_current_locale, letter_branding_client
-from app.articles import find_item_url, get_nav_wp, request_content, set_active_nav_item
+from app.articles import (
+    find_item_url,
+    get_nav_items,
+    request_content,
+    set_active_nav_item,
+)
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
@@ -364,22 +369,22 @@ def old_page_redirects():
 # --- Dynamic routes handling for GCArticles API-driven pages --- #
 @main.route("/<path:path>")
 def page_content(path=""):
-    locale = get_current_locale(current_app)
-    nav_items = get_nav_wp(locale)
-    found = None
+    nav_items = get_nav_items()
+    page_id = ""
 
-    if path:
-        # check if the path exists in the nav items
-        found = find_item_url(nav_items, request.path)
+    # http://localhost:6012/preview?id=15
+    if path == "preview":
+        page_id = request.args.get("id")
 
-    if not found:
+    # if URL path not in the menu items (the known paths), 404
+    if not find_item_url(nav_items, request.path):
         abort(404)
 
-    response = request_content("wp/v2/pages", {"slug": path, "lang": locale})
+    response = request_content(f"wp/v2/pages/{page_id}", {"slug": path})
 
     if response:
-        title = response[0]["title"]["rendered"]
-        html_content = response[0]["content"]["rendered"]
+        title = response["title"]["rendered"]
+        html_content = response["content"]["rendered"]
         set_active_nav_item(nav_items, request.path)
         return render_template("views/page-content.html", title=title, html_content=html_content, nav_items=nav_items)
     else:

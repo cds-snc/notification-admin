@@ -4,7 +4,7 @@ import requests
 from flask import current_app, json
 from werkzeug.exceptions import NotFound
 
-from app import cache
+from app import cache, get_current_locale
 
 GC_ARTICLES_CACHE_TTL = 86400
 
@@ -19,12 +19,13 @@ def set_active_nav_item(items=[], url="") -> None:
         item["active"] = True if item["url"] == url else False
 
 
-def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[list, dict, None]:
+def request_content(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     lang_endpoint = ""
-    cache_key = "%s/%s" % (params["lang"], params["slug"])
+    lang = get_current_locale(current_app)
+    cache_key = "%s/%s" % (lang, params["slug"])
 
-    if params["lang"] == "fr":
+    if lang == "fr":
         lang_endpoint = "/fr"
 
     try:
@@ -42,6 +43,9 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
         current_app.logger.info(f"Saving to cache: {cache_key}")
         cache.set(cache_key, parsed, timeout=GC_ARTICLES_CACHE_TTL)
 
+        if isinstance(parsed, list):
+            return parsed[0]
+
         return parsed
     except Exception:
         if cache.get(cache_key):
@@ -52,7 +56,14 @@ def request_content(endpoint: str, params={"slug": "", "lang": "en"}) -> Union[l
             return None
 
 
-def get_nav_wp(locale: str) -> Optional[list]:
+def get_nav_items() -> Optional[list]:
+    # @todo add caching
+    locale = get_current_locale(current_app)
+    items = _get_nav_wp(locale)
+    return items
+
+
+def _get_nav_wp(locale: str) -> Optional[list]:
     nav_url = "menus/v1/menus/notify-admin"
     if locale == "fr":
         nav_url = "menus/v1/menus/notify-admin-fr"
@@ -62,7 +73,10 @@ def get_nav_wp(locale: str) -> Optional[list]:
 
     if isinstance(nav_response, dict) and "items" in nav_response:
         nav_items = []
-        for item in nav_response.get("items", []):
+        for item in nav_response["items"]:
             nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
+
+        # always append a link called "preview", so that 'check_path' will find it
+        nav_items.append({"title": "preview", "url": "/preview", "target": "", "description": ""})
 
     return nav_items
