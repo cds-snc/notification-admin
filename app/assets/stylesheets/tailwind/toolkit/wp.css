@@ -1,0 +1,40 @@
+@layer components {
+  /* Cover */
+
+  .wp-block-cover > span {
+    margin: 32px calc(50% - 50vw);
+    max-width: 100vw;
+    width: 100vw;
+  }
+
+  .wp-block-cover .wp-block-cover__inner-container {
+    @apply px-gutterHalf py-20;
+  }
+
+  /* TODO: Apply the different background colors for cover component using our tailwind tokens (blue and silver) */
+
+  /* Columns */
+
+  .wp-block-columns {
+    display: flex;
+  }
+
+  .wp-block-column {
+    flex-grow: 0;
+  }
+
+  @media (min-width: theme("screens.lg")) {
+    .wp-block-columns > * + * {
+      @apply pl-gutter;
+    }
+  }
+
+  @media (max-width: theme("screens.lg")) {
+    .wp-block-columns {
+      flex-direction: column;
+    }
+    .wp-block-column {
+      flex-basis: 100% !important;
+    }
+  }
+}

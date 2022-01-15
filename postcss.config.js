@@ -3,7 +3,7 @@ const cssnano = require("cssnano");
 console.log("=== POST CSS  ===");
 
 const purgecss = require("@fullhuman/postcss-purgecss")({
-  content: ["./app/**/*.html","./app/assets/javascripts/*.js"],
+  content: ["./app/**/*.html", "./app/assets/javascripts/*.js"],
   safelist: [
     "line-under",
     "flip",
@@ -27,18 +27,23 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "mb-8",
     "focus:outline-none",
     "w-3/6",
+    "wp-block-columns",
+    "wp-block-column",
+    "wp-block-cover",
+    "pr-gutter",
+    "mt-0",
   ],
-  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+  defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
 });
 
 module.exports = {
   plugins: [
-    require('postcss-import'),
+    require("postcss-import"),
     require("tailwindcss"),
     cssnano({
-      preset: "default"
+      preset: "default",
     }),
     require("autoprefixer"),
-    purgecss
-  ]
+    purgecss,
+  ],
 };
