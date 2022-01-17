@@ -1,4 +1,36 @@
 @layer components {
+  /* Phase banner TEMPORARY */
+
+  .phase-banner--container {
+    background: #f4f4f4;
+    line-height: 1.33;
+  }
+  
+  .phase-banner {
+    display: flex;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .phase-banner  span {
+    font-size: 90%;
+  }
+  
+  .phase-banner > span:first-of-type {
+    border: 2px black solid;
+    padding: 1px 5px;
+    letter-spacing: 1px;
+    margin-right: 1.7em;
+
+  }
+
+  .phase-banner a {
+    font-size: inherit;
+    text-decoration: underline !important;
+  }
+
   /* Cover */
 
   .wp-block-cover > span {
