@@ -6,7 +6,12 @@ from werkzeug.exceptions import NotFound
 
 from app import cache, get_current_locale
 
+import os
+
 GC_ARTICLES_CACHE_TTL = 86400
+GC_ARTICLES_AUTH_API_ENDPOINT = '/wp-json/jwt-auth/v1/token'
+GC_ARTICLES_API_AUTH_USERNAME = os.environ.get('GC_ARTICLES_API_AUTH_USERNAME')
+GC_ARTICLES_API_AUTH_PASSWORD = os.environ.get('GC_ARTICLES_API_AUTH_PASSWORD')
 
 
 def find_item_url(items=[], url="") -> bool:
@@ -18,6 +23,16 @@ def set_active_nav_item(items=[], url="") -> None:
     for item in items:
         item["active"] = True if item["url"] == url else False
 
+def authenticate(username=GC_ARTICLES_API_AUTH_USERNAME, password=GC_ARTICLES_API_AUTH_PASSWORD, auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT) -> dict:
+    base_endpoint = current_app.config["GC_ARTICLES_API"]
+    url = f"https://{base_endpoint}{auth_endpoint}"
+    
+    res = requests.post(url=url, data={
+        "username": username,
+        "password": password
+    })
+
+    return json.loads(res.text)
 
 def request_content(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
@@ -25,12 +40,18 @@ def request_content(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
     lang = get_current_locale(current_app)
     cache_key = "%s/%s" % (lang, params["slug"])
 
+    auth_response = authenticate();
+
+    headers = {
+        'Authorization': ('Bearer ' + auth_response.token)
+    }
+
     if lang == "fr":
         lang_endpoint = "/fr"
 
     try:
         url = f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}"
-        response = requests.get(url, params)
+        response = requests.get(url, params, headers=headers)
         parsed = json.loads(response.content)
 
         if response.status_code >= 400 or not parsed:
