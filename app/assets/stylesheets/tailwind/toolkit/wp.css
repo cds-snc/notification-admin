@@ -20,10 +20,13 @@
   
   .phase-banner > span:first-of-type {
     border: 2px black solid;
+    background-color: black;
     padding: 1px 5px;
     letter-spacing: 1px;
     margin-right: 1.7em;
-
+    color: white;
+    /* color: #f4f4f4; */
+    font-weight: 700;
   }
 
   .phase-banner a {
