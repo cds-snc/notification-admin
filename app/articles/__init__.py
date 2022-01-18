@@ -23,16 +23,35 @@ def set_active_nav_item(items=[], url="") -> None:
     for item in items:
         item["active"] = True if item["url"] == url else False
 
+def validate_token(token):
+    base_endpoint = current_app.config["GC_ARTICLES_API"]
+    url = f"https://{base_endpoint}/jwt-auth/v1/token/validate"
+
+    res = requests.post(url=url)
+
+    return res.status_code == 200
+
 def authenticate(username=GC_ARTICLES_API_AUTH_USERNAME, password=GC_ARTICLES_API_AUTH_PASSWORD, auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT) -> dict:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     url = f"https://{base_endpoint}{auth_endpoint}"
     
+    # If we have one cached, check if it's still valid and return it
+    if cache.get('gc_articles_bearer_token'):
+        token = cache.get('gc_articles_bearer_token')
+        if validate_token(token):
+            return token
+
+    # Otherwise get a fresh one
     res = requests.post(url=url, data={
         "username": username,
         "password": password
     })
 
-    return json.loads(res.text)
+    parsed = json.loads(res.text)
+
+    cache.set('gc_articles_bearer_token', parsed['token'], timeout=600)
+
+    return parsed['token']
 
 def request_content(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
