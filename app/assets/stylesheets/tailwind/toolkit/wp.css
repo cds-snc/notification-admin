@@ -1,5 +1,17 @@
 @layer components {
   /* Phase banner TEMPORARY */
+  .preview-fullpage-border {
+    width: calc(100% - 10px);
+    position: fixed;
+    height: calc(100% - 10px);
+    border: 3px dashed black;
+    top: 5px;
+    left: 5px;
+    pointer-events: none;
+
+    -webkit-box-shadow: 0px 0px 0px 5px #fd0; 
+    box-shadow: 0px 0px 0px 5px #fd0;
+  }
 
   .phase-banner--container {
     background: #fd0;
