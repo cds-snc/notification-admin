@@ -372,7 +372,6 @@ def page_content(path=""):
     nav_items = get_nav_items()
     page_id = ""
 
-    # http://localhost:6012/preview?id=15
     if path == "preview":
         page_id = request.args.get("id")
 
