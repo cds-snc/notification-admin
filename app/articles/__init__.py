@@ -63,10 +63,10 @@ def request_content(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
     lang = get_current_locale(current_app)
     cache_key = "%s/%s" % (lang, params["slug"])
 
-    auth_response = authenticate()
+    token = authenticate()
 
     headers = {
-        'Authorization': ('Bearer ' + auth_response['token'])
+        'Authorization': ('Bearer ' + token)
     }
 
     if lang == "fr":
