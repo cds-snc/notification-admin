@@ -25,9 +25,13 @@ def set_active_nav_item(items=[], url="") -> None:
 
 def validate_token(token):
     base_endpoint = current_app.config["GC_ARTICLES_API"]
-    url = f"https://{base_endpoint}/jwt-auth/v1/token/validate"
+    url = f"https://{base_endpoint}/wp-json/jwt-auth/v1/token/validate"
 
-    res = requests.post(url=url)
+    headers = {
+        'Authorization': ('Bearer ' + token)
+    }
+
+    res = requests.post(url=url, headers=headers)
 
     return res.status_code == 200
 
