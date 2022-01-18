@@ -2,7 +2,7 @@
   /* Phase banner TEMPORARY */
 
   .phase-banner--container {
-    background: #f4f4f4;
+    background: #fd0;
     line-height: 1.33;
   }
   
@@ -24,8 +24,7 @@
     padding: 1px 5px;
     letter-spacing: 1px;
     margin-right: 1.7em;
-    color: white;
-    /* color: #f4f4f4; */
+    color: #fd0;
     font-weight: 700;
   }
 
