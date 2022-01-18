@@ -23,9 +23,9 @@ def set_active_nav_item(items=[], url="") -> None:
     for item in items:
         item["active"] = True if item["url"] == url else False
 
-def validate_token(token):
+def validate_token(token, auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT):
     base_endpoint = current_app.config["GC_ARTICLES_API"]
-    url = f"https://{base_endpoint}/wp-json/jwt-auth/v1/token/validate"
+    url = f"https://{base_endpoint}{auth_endpoint}/validate"
 
     headers = {
         'Authorization': ('Bearer ' + token)
