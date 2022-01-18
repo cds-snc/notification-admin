@@ -113,19 +113,16 @@
   </div>
 </div>
 {% block gc_header %}
-<div class="preview-fullpage-border"></div>
+
+{% if g.preview %}
+  <div class="preview-fullpage-border"></div>
+{% endif %}
 
 <header>
-<div class="phase-banner--container">
-  <div class="container px-gutterHalf phase-banner">
-    <span>PREVIEW</span>
-    <span>
-      <span>This is a preview of drafted content. Information on this page is not finalized and subject to change.</span>
-      <br />
-      <span>Edit this page here: <a href="https://articles.cdssandbox.xyz/notification-gc-notify/">https://articles.cdssandbox.xyz/notification-gc-notify/</a>.</span>
-    </span>
-  </div>
-</div>
+
+{% if g.preview %}
+  {% include 'components/preview-banner.html' %}
+{% endif %}
 
 {% include 'partials/nav/gc_header.html' %}
 
