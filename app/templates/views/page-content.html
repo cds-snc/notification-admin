@@ -1,6 +1,9 @@
 {% extends "content_template.html" %}
 
 {% block per_page_title %}
+  {% if g.preview %}
+    [{{ _('PREVIEW') }}]
+  {% endif %}
   {{ title }}
 {% endblock %}
 
