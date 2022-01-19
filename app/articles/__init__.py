@@ -68,7 +68,7 @@ def request_content(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
     token = authenticate()
 
     headers = {
-        'Authorization': ('Bearer ' + token)
+        "Authorization": "Bearer {}".format(token)
     }
 
     if lang == "fr":
