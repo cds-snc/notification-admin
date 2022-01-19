@@ -30,7 +30,7 @@ def validate_token(token, auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT):
     url = f"https://{base_endpoint}{auth_endpoint}/validate"
 
     headers = {
-        'Authorization': ('Bearer ' + token)
+         "Authorization": "Bearer {}".format(token)
     }
 
     res = requests.post(url=url, headers=headers)
