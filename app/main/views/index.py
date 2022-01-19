@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import (
     abort,
     current_app,
+    g,
     make_response,
     redirect,
     render_template,
@@ -374,6 +375,11 @@ def page_content(path=""):
 
     if path == "preview":
         page_id = request.args.get("id")
+        # 'g' will set a global variable for this 1 request
+        g.preview = True
+        # URL for editing a page
+        gc_articles_base_url = current_app.config["GC_ARTICLES_API"]
+        g.preview_url = f"https://{gc_articles_base_url}/wp-admin/post.php?post={page_id}&action=edit"
 
     # if URL path not in the menu items (the known paths), 404
     if not find_item_url(nav_items, request.path):
