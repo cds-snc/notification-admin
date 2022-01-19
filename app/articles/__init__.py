@@ -9,12 +9,9 @@ from app import cache, get_current_locale
 import os
 
 GC_ARTICLES_PAGE_CACHE_TTL = 86400
-GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = 'gc_articles_bearer_token'
 GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = 86400
-GC_ARTICLES_API = current_app.config["GC_ARTICLES_API"]
 GC_ARTICLES_AUTH_API_ENDPOINT = '/wp-json/jwt-auth/v1/token'
-GC_ARTICLES_API_AUTH_USERNAME = current_app.config['GC_ARTICLES_API_AUTH_USERNAME']
-GC_ARTICLES_API_AUTH_PASSWORD = current_app.config['GC_ARTICLES_API_AUTH_PASSWORD']
+GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = 'gc_articles_bearer_token'
 
 
 def find_item_url(items=[], url="") -> bool:
@@ -26,7 +23,10 @@ def set_active_nav_item(items=[], url="") -> None:
     for item in items:
         item["active"] = True if item["url"] == url else False
 
-def validate_token(token, auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT, base_endpoint=GC_ARTICLES_API):
+def validate_token(token):
+    auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT
+    base_endpoint=current_app.config['GC_ARTICLES_API']
+
     url = f"https://{base_endpoint}{auth_endpoint}/validate"
 
     headers = {
@@ -37,10 +37,15 @@ def validate_token(token, auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT, base_endp
 
     return res.status_code == 200
 
-def authenticate(username=GC_ARTICLES_API_AUTH_USERNAME, password=GC_ARTICLES_API_AUTH_PASSWORD, base_endpoint=GC_ARTICLES_API, auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT) -> dict:
+def authenticate() -> str:
+    auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT
+    base_endpoint=current_app.config['GC_ARTICLES_API']
+    username=current_app.config['GC_ARTICLES_API_AUTH_USERNAME']
+    password=current_app.config['GC_ARTICLES_API_AUTH_PASSWORD']
+    
     url = f"https://{base_endpoint}{auth_endpoint}"
     
-    # If we have one cached, check if it's still valid and return it
+    # If we have a token cached, check if it's still valid and return it
     if cache.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY):
         token = cache.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY)
         if validate_token(token):
@@ -59,12 +64,13 @@ def authenticate(username=GC_ARTICLES_API_AUTH_USERNAME, password=GC_ARTICLES_AP
     return parsed['token']
 
 def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> Union[dict, None]:
-    base_endpoint = GC_ARTICLES_API
+    base_endpoint = current_app.config['GC_ARTICLES_API']
+    
     lang_endpoint = ""
     lang = get_current_locale(current_app)
     cache_key = "%s/%s/%s" % (endpoint, lang, params["slug"])
     headers = {}
-
+    
     if (auth_required):
         token = authenticate()
 
