@@ -8,7 +8,9 @@ from app import cache, get_current_locale
 
 import os
 
-GC_ARTICLES_CACHE_TTL = 86400
+GC_ARTICLES_PAGE_CACHE_TTL = 86400
+GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = 'gc_articles_bearer_token'
+GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_API_ENDPOINT = '/wp-json/jwt-auth/v1/token'
 GC_ARTICLES_API_AUTH_USERNAME = os.environ.get('GC_ARTICLES_API_AUTH_USERNAME')
 GC_ARTICLES_API_AUTH_PASSWORD = os.environ.get('GC_ARTICLES_API_AUTH_PASSWORD')
@@ -40,8 +42,8 @@ def authenticate(username=GC_ARTICLES_API_AUTH_USERNAME, password=GC_ARTICLES_AP
     url = f"https://{base_endpoint}{auth_endpoint}"
     
     # If we have one cached, check if it's still valid and return it
-    if cache.get('gc_articles_bearer_token'):
-        token = cache.get('gc_articles_bearer_token')
+    if cache.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY):
+        token = cache.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY)
         if validate_token(token):
             return token
 
@@ -53,7 +55,7 @@ def authenticate(username=GC_ARTICLES_API_AUTH_USERNAME, password=GC_ARTICLES_AP
 
     parsed = json.loads(res.text)
 
-    cache.set('gc_articles_bearer_token', parsed['token'], timeout=600)
+    cache.set(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY, parsed['token'], timeout=GC_ARTICLES_AUTH_TOKEN_CACHE_TTL)
 
     return parsed['token']
 
@@ -85,7 +87,7 @@ def request_content(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
             raise NotFound()
 
         current_app.logger.info(f"Saving to cache: {cache_key}")
-        cache.set(cache_key, parsed, timeout=GC_ARTICLES_CACHE_TTL)
+        cache.set(cache_key, parsed, timeout=GC_ARTICLES_PAGE_CACHE_TTL)
 
         if isinstance(parsed, list):
             return parsed[0]
