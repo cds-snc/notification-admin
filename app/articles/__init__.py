@@ -1,3 +1,4 @@
+import os
 from typing import Optional, Union
 
 import requests
@@ -6,12 +7,10 @@ from werkzeug.exceptions import NotFound
 
 from app import cache, get_current_locale
 
-import os
-
 GC_ARTICLES_PAGE_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = 86400
-GC_ARTICLES_AUTH_API_ENDPOINT = '/wp-json/jwt-auth/v1/token'
-GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = 'gc_articles_bearer_token'
+GC_ARTICLES_AUTH_API_ENDPOINT = "/wp-json/jwt-auth/v1/token"
+GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = "gc_articles_bearer_token"
 
 
 def find_item_url(items=[], url="") -> bool:
@@ -23,60 +22,58 @@ def set_active_nav_item(items=[], url="") -> None:
     for item in items:
         item["active"] = True if item["url"] == url else False
 
+
 def validate_token(token):
-    auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT
-    base_endpoint=current_app.config['GC_ARTICLES_API']
+    auth_endpoint = GC_ARTICLES_AUTH_API_ENDPOINT
+    base_endpoint = current_app.config["GC_ARTICLES_API"]
 
     url = f"https://{base_endpoint}{auth_endpoint}/validate"
 
-    headers = {
-         "Authorization": "Bearer {}".format(token)
-    }
+    headers = {"Authorization": "Bearer {}".format(token)}
 
     res = requests.post(url=url, headers=headers)
 
     return res.status_code == 200
 
-def authenticate() -> str:
-    auth_endpoint=GC_ARTICLES_AUTH_API_ENDPOINT
-    base_endpoint=current_app.config['GC_ARTICLES_API']
-    username=current_app.config['GC_ARTICLES_API_AUTH_USERNAME']
-    password=current_app.config['GC_ARTICLES_API_AUTH_PASSWORD']
-    
+
+def authenticate(username, password, base_endpoint) -> Union[str, None]:
+    auth_endpoint = GC_ARTICLES_AUTH_API_ENDPOINT
+
     url = f"https://{base_endpoint}{auth_endpoint}"
-    
+
     # If we have a token cached, check if it's still valid and return it
     if cache.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY):
         token = cache.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY)
         if validate_token(token):
             return token
 
-    # Otherwise get a fresh one
-    res = requests.post(url=url, data={
-        "username": username,
-        "password": password
-    })
+    try:
+        # Otherwise get a fresh one
+        res = requests.post(url=url, data={"username": username, "password": password})
 
-    parsed = json.loads(res.text)
+        parsed = json.loads(res.text)
 
-    cache.set(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY, parsed['token'], timeout=GC_ARTICLES_AUTH_TOKEN_CACHE_TTL)
+        cache.set(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY, parsed["token"], timeout=GC_ARTICLES_AUTH_TOKEN_CACHE_TTL)
 
-    return parsed['token']
+        return parsed["token"]
+    except Exception:
+        return None
+
 
 def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> Union[dict, None]:
-    base_endpoint = current_app.config['GC_ARTICLES_API']
-    
+    base_endpoint = current_app.config["GC_ARTICLES_API"]
+    username = current_app.config["GC_ARTICLES_API_AUTH_USERNAME"]
+    password = current_app.config["GC_ARTICLES_API_AUTH_PASSWORD"]
+
     lang_endpoint = ""
     lang = get_current_locale(current_app)
     cache_key = "%s/%s/%s" % (endpoint, lang, params["slug"])
     headers = {}
-    
-    if (auth_required):
-        token = authenticate()
 
-        headers = {
-            "Authorization": "Bearer {}".format(token)
-        }
+    if auth_required:
+        token = authenticate(username, password, base_endpoint)
+
+        headers = {"Authorization": "Bearer {}".format(token)}
 
     if lang == "fr":
         lang_endpoint = "/fr"
