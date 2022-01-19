@@ -25,6 +25,8 @@ class Config(object):
     SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security-securite@cds-snc.ca")
     SENDING_DOMAIN = os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca")
     GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.cdssandbox.xyz/notification-gc-notify")
+    GC_ARTICLES_API_AUTH_USERNAME = os.environ.get("GC_ARTICLES_API_AUTH_USERNAME")
+    GC_ARTICLES_API_AUTH_PASSWORD = os.environ.get("GC_ARTICLES_API_AUTH_PASSWORD")
 
     if os.environ.get("HEROKU_APP_NAME", "") != "":
         ADMIN_BASE_URL = "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"

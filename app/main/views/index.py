@@ -371,15 +371,17 @@ def old_page_redirects():
 def page_content(path=""):
     nav_items = get_nav_items()
     page_id = ""
+    auth_required = False
 
     if path == "preview":
         page_id = request.args.get("id")
+        auth_required = True
 
     # if URL path not in the menu items (the known paths), 404
     if not find_item_url(nav_items, request.path):
         abort(404)
 
-    response = request_content(f"wp/v2/pages/{page_id}", {"slug": path})
+    response = request_content(f"wp/v2/pages/{page_id}", {"slug": path}, auth_required=auth_required)
 
     if response:
         title = response["title"]["rendered"]
