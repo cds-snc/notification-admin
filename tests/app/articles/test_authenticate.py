@@ -28,7 +28,6 @@ def test_authenticate_success():
 def test_authenticate_bad_credentials():
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     auth_endpoint = articles.GC_ARTICLES_AUTH_API_ENDPOINT
-    valid_token = "this-is-a-valid-token"
 
     endpoint = f"https://{base_endpoint}{auth_endpoint}"
 
