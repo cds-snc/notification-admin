@@ -1,4 +1,3 @@
-import base64
 import requests_mock
 from flask import current_app
 
@@ -47,7 +46,7 @@ def test_validate_token_bad_token():
             request_headers=request_headers
         )
 
-        valid = articles.validate_token("this-is-a-bad-token")
+        valid = articles.validate_token(token)
         assert valid == False
         assert mock.called
         assert mock.request_history[0].url == endpoint
@@ -71,7 +70,7 @@ def test_validate_token_expired_token():
             request_headers=request_headers
         )
 
-        valid = articles.validate_token("expired-token")
+        valid = articles.validate_token(token)
         assert valid == False
         assert mock.called
         assert mock.request_history[0].url == endpoint
