@@ -4,6 +4,9 @@
   {{ title }}
 {% endblock %}
 
+{# Empty on purpose to remove py-10 from admin_template #}
+{% block main_content_class %}{% endblock %}
+
 {% block maincolumn_content %}
   <h1 class="heading-large">{{ title }}</h1>
   <div class="space-y-doubleGutter">

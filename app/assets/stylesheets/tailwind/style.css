@@ -45,9 +45,9 @@
 @import "./views/template.css";
 @import "./views/notification.css";
 
-/*! purgecss start ignore */
 @import "./toolkit/wp.css";
 
+/*! purgecss start ignore */
 @-ms-viewport {
   width: device-width;
 }

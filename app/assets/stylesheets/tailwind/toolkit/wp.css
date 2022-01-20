@@ -1,40 +1,91 @@
 @layer components {
+  /*! purgecss start ignore */
   /* Cover */
 
+  .wp-block-cover {
+    position: relative;
+    color: var(--text);
+  }
+
+  /* Theming the cover blocks with our tokens */
+
+  .wp-block-cover.bg-blue-slightlight {
+    --bg: theme("colors.blue.slightlight");
+    --text: theme("colors.white.default");
+    --interactive: theme("colors.blue.lighter");
+  }
+  .wp-block-cover.bg-gray {
+    --bg: theme("colors.gray.default");
+    --text: theme("colors.black.default");
+    --interactive: theme("colors.blue.default");
+  }
+
+  .wp-block-cover a:not(.button):not(:focus) {
+    color: var(--interactive);
+  }
+
   .wp-block-cover > span {
-    margin: 32px calc(50% - 50vw);
+    margin: 0 calc(50% - 50vw);
     max-width: 100vw;
     width: 100vw;
+    height: 100%;
+    position: absolute;
+    background-color: var(--bg);
   }
 
   .wp-block-cover .wp-block-cover__inner-container {
-    @apply px-gutterHalf py-20;
+    position: relative;
+    @apply py-20;
   }
-
-  /* TODO: Apply the different background colors for cover component using our tailwind tokens (blue and silver) */
+  .wp-block-cover.flow .wp-block-cover__inner-container > * + * {
+    @apply mt-doubleGutter;
+  }
 
   /* Columns */
 
   .wp-block-columns {
     display: flex;
+    @apply -mx-gutterHalf;
   }
 
   .wp-block-column {
     flex-grow: 0;
+    @apply px-gutterHalf;
   }
-
-  @media (min-width: theme("screens.lg")) {
-    .wp-block-columns > * + * {
-      @apply pl-gutter;
-    }
+  .wp-block-column > * + * {
+    @apply mt-gutter;
   }
 
   @media (max-width: theme("screens.lg")) {
     .wp-block-columns {
       flex-direction: column;
     }
+    .wp-block-columns > * + * {
+      @apply mt-gutter;
+    }
     .wp-block-column {
       flex-basis: 100% !important;
     }
   }
+  .has-text-align-center {
+    @apply text-center mx-auto;
+  }
+
+  /* Button blocks */
+
+  .wp-block-buttons {
+    display: flex;
+  }
+  .wp-block-buttons > *:not(:last-child) {
+    @apply mr-gutter;
+  }
+
+  .wp-block-button a,
+  .wp-block-button a:link,
+  .wp-block-button a:visited {
+    text-decoration: inherit;
+    color: inherit;
+  }
+
+  /*! purgecss end ignore */
 }
