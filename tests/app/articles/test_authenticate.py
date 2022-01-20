@@ -40,6 +40,6 @@ def test_authenticate_bad_credentials():
         )
 
         token = articles.authenticate("user", "bad_password", base_endpoint)
-        assert token == None
+        assert token is None
         assert mock.called
         assert mock.request_history[0].url == endpoint

@@ -17,7 +17,7 @@ def test_validate_token_valid():
         mock.request("POST", endpoint, json=response_json, status_code=200, request_headers=request_headers)
 
         valid = articles.validate_token(token)
-        assert valid == True
+        assert valid is True
         assert mock.called
         assert mock.request_history[0].url == endpoint
 
@@ -35,7 +35,7 @@ def test_validate_token_bad_token():
         mock.request("POST", endpoint, json=response_json, status_code=403, request_headers=request_headers)
 
         valid = articles.validate_token(token)
-        assert valid == False
+        assert valid is False
         assert mock.called
         assert mock.request_history[0].url == endpoint
 
@@ -53,6 +53,6 @@ def test_validate_token_expired_token():
         mock.request("POST", endpoint, json=response_json, status_code=403, request_headers=request_headers)
 
         valid = articles.validate_token(token)
-        assert valid == False
+        assert valid is False
         assert mock.called
         assert mock.request_history[0].url == endpoint
