@@ -1,8 +1,8 @@
 from typing import Optional, Union
 
 import requests
-from flask import current_app, json
-from werkzeug.exceptions import NotFound
+from flask import abort, current_app, json
+from werkzeug.exceptions import NotFound, Unauthorized
 
 from app import cache, get_current_locale
 
@@ -11,11 +11,6 @@ GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_API_ENDPOINT = "/wp-json/jwt-auth/v1/token"
 GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = "gc_articles_bearer_token"
 REQUEST_TIMEOUT = 5
-
-
-def find_item_url(items=[], url="") -> bool:
-    found = list(filter(lambda item: item["url"] == url, items))
-    return len(found) != 0
 
 
 def set_active_nav_item(items=[], url="") -> None:
@@ -83,6 +78,9 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
         response = requests.get(url, params, headers=headers, timeout=REQUEST_TIMEOUT)
         parsed = json.loads(response.content)
 
+        if response.status_code == 403:
+            raise Unauthorized()
+
         if response.status_code >= 400 or not parsed:
             # Getting back a 4xx or 5xx status code
             current_app.logger.info(
@@ -97,13 +95,19 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
             return parsed[0]
 
         return parsed
-    except Exception:
+    except NotFound:
+        abort(404)
+    except Unauthorized:
+        abort(403)
+    except ConnectionError:
         if cache.get(cache_key):
             current_app.logger.info(f"Cache hit: {cache_key}")
             return cache.get(cache_key)
         else:
             current_app.logger.info(f"Cache miss: {cache_key}")
             return None
+    except Exception:
+        return None
 
 
 def get_nav_items() -> Optional[list]:
