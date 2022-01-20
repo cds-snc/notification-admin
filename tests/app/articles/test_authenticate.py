@@ -35,13 +35,7 @@ def test_authenticate_bad_credentials():
         mock.request(
             "POST",
             endpoint,
-            json={
-                "code": "jwt_auth_failed",
-                "data": {
-                    "status": 403
-                },
-                "message": "Invalid Credentials."
-            },
+            json={"code": "jwt_auth_failed", "data": {"status": 403}, "message": "Invalid Credentials."},
             status_code=200,
         )
 
