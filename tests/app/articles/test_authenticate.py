@@ -36,9 +36,11 @@ def test_authenticate_bad_credentials():
             "POST",
             endpoint,
             json={
-                "code": "[jwt_auth] incorrect_password",
-                "message": '<strong>ERROR<\/strong>: Incorrect password. <a href="https:\/\/articles.cdssandbox.xyz\/notification-gc-notify\/sign-in-se-connecter\/?action=lostpassword" title="Password Lost and Found">Lost your password<\/a>?',
-                "data": {"status": 403},
+                "code": "jwt_auth_failed",
+                "data": {
+                    "status": 403
+                },
+                "message": "Invalid Credentials."
             },
             status_code=200,
         )
