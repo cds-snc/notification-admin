@@ -10,6 +10,7 @@ GC_ARTICLES_PAGE_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_API_ENDPOINT = "/wp-json/jwt-auth/v1/token"
 GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = "gc_articles_bearer_token"
+REQUEST_TIMEOUT = 5
 
 
 def find_item_url(items=[], url="") -> bool:
@@ -30,7 +31,7 @@ def validate_token(token):
 
     headers = {"Authorization": "Bearer {}".format(token)}
 
-    res = requests.post(url=url, headers=headers)
+    res = requests.post(url=url, headers=headers, timeout=REQUEST_TIMEOUT)
 
     return res.status_code == 200
 
@@ -48,7 +49,7 @@ def authenticate(username, password, base_endpoint) -> Union[str, None]:
 
     try:
         # Otherwise get a fresh one
-        res = requests.post(url=url, data={"username": username, "password": password})
+        res = requests.post(url=url, data={"username": username, "password": password}, timeout=REQUEST_TIMEOUT)
 
         parsed = json.loads(res.text)
 
@@ -79,7 +80,7 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
 
     try:
         url = f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}"
-        response = requests.get(url, params, headers=headers)
+        response = requests.get(url, params, headers=headers, timeout=REQUEST_TIMEOUT)
         parsed = json.loads(response.content)
 
         if response.status_code >= 400 or not parsed:
