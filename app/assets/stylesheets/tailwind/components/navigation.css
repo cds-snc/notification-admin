@@ -1,20 +1,16 @@
 @layer components {
   /*! purgecss start ignore */
 
-  header a:hover {
+  header a:hover,
+  .preview-banner a {
     @apply underline !important;
   }
 
-  header a:not(.underline):link,
-  header a:not(.underline):visited,
-  header a:not(.underline):link:focus,
-  header a:not(.underline):focus:visited {
+  header a:link,
+  header a:visited,
+  header a:link:focus,
+  header a:focus:visited {
     @apply no-underline text-blue;
-  }
-
-  header a.bg-yellow:focus {
-    @apply bg-white border-b-0 outline-black;
-    outline-style: auto;
   }
 
   a:focus #live-banner,
