@@ -59,10 +59,11 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     username = current_app.config["GC_ARTICLES_API_AUTH_USERNAME"]
     password = current_app.config["GC_ARTICLES_API_AUTH_PASSWORD"]
+    slug = params["slug"]
 
     lang_endpoint = ""
     lang = get_current_locale(current_app)
-    cache_key = "%s/%s/%s" % (endpoint, lang, params["slug"])
+    cache_key = f"{endpoint}/{lang}/{slug}"
     headers = {}
 
     if auth_required:
