@@ -59,9 +59,11 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     username = current_app.config["GC_ARTICLES_API_AUTH_USERNAME"]
     password = current_app.config["GC_ARTICLES_API_AUTH_PASSWORD"]
-    slug = params["slug"]
 
-    lang_endpoint = ""
+    # strip {"slug": "preview"} from dict but keep everything else
+    request_params = {k: v for k, v in params.items() if v != "preview"}
+    slug = request_params.get("slug", "preview")
+
     lang = get_current_locale(current_app)
     cache_key = f"{endpoint}/{lang}/{slug}"
     headers = {}
@@ -71,12 +73,13 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
 
         headers = {"Authorization": "Bearer {}".format(token)}
 
-    if lang == "fr":
-        lang_endpoint = "/fr"
+    # add 'lang' param explicitly when a slug exists
+    if request_params.get("slug"):
+        request_params["lang"] = lang
 
     try:
-        url = f"https://{base_endpoint}{lang_endpoint}/wp-json/{endpoint}"
-        response = requests.get(url, params, headers=headers, timeout=REQUEST_TIMEOUT)
+        url = f"https://{base_endpoint}/wp-json/{endpoint}"
+        response = requests.get(url, params=request_params, headers=headers, timeout=REQUEST_TIMEOUT)
         parsed = json.loads(response.content)
 
         if response.status_code == 403:
@@ -85,7 +88,7 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
         if response.status_code >= 400 or not parsed:
             # Getting back a 4xx or 5xx status code
             current_app.logger.info(
-                f"Error requesting content. URL: {url}, params: {params}, status: {response.status_code}, data: {parsed}"
+                f"Error requesting content. URL: {url}, params: {request_params}, status: {response.status_code}, data: {parsed}"
             )
             raise NotFound()
 
