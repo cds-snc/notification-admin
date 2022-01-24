@@ -369,12 +369,14 @@ def page_content(path=""):
     page_id = ""
     auth_required = False
 
-    if current_user and current_user.is_authenticated and path == "preview":
+    if path == "preview":
+        if not request.args.get("id") or not current_user.is_authenticated:
+            abort(404)
+
         page_id = request.args.get("id")
         auth_required = True
         # 'g' will set a global variable for this 1 request
         g.preview = True
-        # URL for editing a page
         gc_articles_base_url = current_app.config["GC_ARTICLES_API"]
         g.preview_url = f"https://{gc_articles_base_url}/wp-admin/post.php?post={page_id}&action=edit"
 
