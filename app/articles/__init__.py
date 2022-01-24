@@ -70,7 +70,6 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
 
     if auth_required:
         token = authenticate(username, password, base_endpoint)
-
         headers = {"Authorization": "Bearer {}".format(token)}
 
     # add 'lang' param explicitly when a slug exists
