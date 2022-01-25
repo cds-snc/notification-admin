@@ -384,8 +384,11 @@ def page_content(path=""):
 
     if response:
         title = response["title"]["rendered"]
+        slug_en = response["slug_en"]
         html_content = response["content"]["rendered"]
         set_active_nav_item(nav_items, request.path)
-        return render_template("views/page-content.html", title=title, html_content=html_content, nav_items=nav_items)
+        return render_template(
+            "views/page-content.html", title=title, html_content=html_content, nav_items=nav_items, slug=slug_en
+        )
     else:
         abort(500)
