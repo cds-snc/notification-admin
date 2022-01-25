@@ -15,12 +15,7 @@ from notifications_utils.international_billing_rates import INTERNATIONAL_BILLIN
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
 from app import email_branding_client, get_current_locale, letter_branding_client
-from app.articles import (
-    find_item_url,
-    get_nav_items,
-    request_content,
-    set_active_nav_item,
-)
+from app.articles import get_nav_items, request_content, set_active_nav_item
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
@@ -372,25 +367,28 @@ def old_page_redirects():
 def page_content(path=""):
     nav_items = get_nav_items()
     page_id = ""
+    auth_required = False
 
     if path == "preview":
+        if not request.args.get("id") or not current_user.is_authenticated:
+            abort(404)
+
         page_id = request.args.get("id")
+        auth_required = True
         # 'g' will set a global variable for this 1 request
         g.preview = True
-        # URL for editing a page
         gc_articles_base_url = current_app.config["GC_ARTICLES_API"]
         g.preview_url = f"https://{gc_articles_base_url}/wp-admin/post.php?post={page_id}&action=edit"
 
-    # if URL path not in the menu items (the known paths), 404
-    if not find_item_url(nav_items, request.path):
-        abort(404)
-
-    response = request_content(f"wp/v2/pages/{page_id}", {"slug": path})
+    response = request_content(f"wp/v2/pages/{page_id}", {"slug": path}, auth_required=auth_required)
 
     if response:
         title = response["title"]["rendered"]
+        slug_en = response["slug_en"]
         html_content = response["content"]["rendered"]
         set_active_nav_item(nav_items, request.path)
-        return render_template("views/page-content.html", title=title, html_content=html_content, nav_items=nav_items)
+        return render_template(
+            "views/page-content.html", title=title, html_content=html_content, nav_items=nav_items, slug=slug_en
+        )
     else:
         abort(500)
