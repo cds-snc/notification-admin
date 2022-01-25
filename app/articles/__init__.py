@@ -9,7 +9,7 @@ from app import cache, get_current_locale
 GC_ARTICLES_PAGE_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_API_ENDPOINT = "/wp-json/jwt-auth/v1/token"
-GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = "gc_articles_bearer_token"
+GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = "gc-articles-bearer-token"
 REQUEST_TIMEOUT = 5
 
 
