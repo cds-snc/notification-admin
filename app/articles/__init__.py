@@ -137,3 +137,19 @@ def _get_nav_wp(locale: str) -> Optional[list]:
         nav_items.append({"title": "preview", "url": "/preview", "target": "", "description": ""})
 
     return nav_items
+
+
+# Return URL path for the language switcher
+def get_lang_url(response, page_id):
+    # url either looks like:
+    # - /preview?id=11
+    # - /wild-card
+
+    alt_lang = "fr" if (get_current_locale(current_app) == "en") else "en"
+
+    if page_id:
+        lang_id = response.get(f"id_{alt_lang}") or response.get("id")
+        return f"/preview?id={lang_id}"
+
+    lang_slug = response.get(f"slug_{alt_lang}") or response.get("slug")
+    return f"/{lang_slug}"

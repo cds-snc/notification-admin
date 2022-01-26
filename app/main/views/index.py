@@ -15,7 +15,7 @@ from notifications_utils.international_billing_rates import INTERNATIONAL_BILLIN
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
 from app import email_branding_client, get_current_locale, letter_branding_client
-from app.articles import get_nav_items, request_content, set_active_nav_item
+from app.articles import get_lang_url, get_nav_items, request_content, set_active_nav_item
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
@@ -388,7 +388,12 @@ def page_content(path=""):
         html_content = response["content"]["rendered"]
         set_active_nav_item(nav_items, request.path)
         return render_template(
-            "views/page-content.html", title=title, html_content=html_content, nav_items=nav_items, slug=slug_en
+            "views/page-content.html",
+            title=title,
+            html_content=html_content,
+            nav_items=nav_items,
+            slug=slug_en,
+            lang_url=get_lang_url(response, page_id),
         )
     else:
         abort(500)
