@@ -148,10 +148,15 @@ def get_lang_url(response: dict, has_page_id: bool) -> str:
     alt_lang = "fr" if (get_current_locale(current_app) == "en") else "en"
 
     if has_page_id:
-        lang_id = response.get(f"id_{alt_lang}") or response.get("id")
-        return f"/preview?id={lang_id}"
+        if response.get(f"id_{alt_lang}"):
+            lang_id = response.get(f"id_{alt_lang}")
+            return f"/preview?id={lang_id}"
+        else:
+            # if no translated page id, return 404 explicitly
+            return "/404"
 
     lang_slug = response.get(f"slug_{alt_lang}") or response.get("slug")
+    # if no translated page slug, this will 404 by itself
     return f"/{lang_slug}"
 
 

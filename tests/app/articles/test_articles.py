@@ -50,6 +50,39 @@ class TestGetLangURL:
         assert lang_url == "/page-en"
 
 
+class TestGetLangURLNoTranslation:
+    @pytest.fixture
+    def response(self):
+        return {
+            "id": 2,
+            "slug": "page-no-translation",
+            "id_en": 2,
+            "id_fr": None,
+            "slug_en": "page-no-translation",
+            "slug_fr": None,
+        }
+
+    @patch("app.articles.get_current_locale", return_value="en")
+    def test_get_lang_url_with_page_id_en(self, param, response):
+        lang_url = get_lang_url(response, has_page_id=True)
+        assert lang_url == "/404"
+
+    @patch("app.articles.get_current_locale", return_value="fr")
+    def test_get_lang_url_with_page_id_fr(self, param, response):
+        lang_url = get_lang_url(response, has_page_id=True)
+        assert lang_url == "/preview?id=2"
+
+    @patch("app.articles.get_current_locale", return_value="en")
+    def test_get_lang_url_with_slug_en(self, param, response):
+        lang_url = get_lang_url(response, has_page_id=False)
+        assert lang_url == "/page-no-translation"
+
+    @patch("app.articles.get_current_locale", return_value="fr")
+    def test_get_lang_url_with_slug_fr(self, param, response):
+        lang_url = get_lang_url(response, has_page_id=False)
+        assert lang_url == "/page-no-translation"
+
+
 @patch.dict("app.articles.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
 class TestGetPreviewURL:
     @patch("app.articles.get_current_locale", return_value="en")
