@@ -156,7 +156,7 @@ def get_lang_url(response, page_id):
 
 
 # Return URL for the "Edit this page" link in the preview banner header
-def get_preview_url(page_id):
+def get_preview_url(page_id: int) -> str:
     lang = get_current_locale(current_app)
     base_endpoint = current_app.config["GC_ARTICLES_API"]
 
