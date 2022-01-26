@@ -397,7 +397,7 @@ def page_content(path=""):
             html_content=html_content,
             nav_items=nav_items,
             slug=slug_en,
-            lang_url=get_lang_url(response, page_id),
+            lang_url=get_lang_url(response, bool(page_id)),
         )
     else:
         abort(500)
