@@ -6,11 +6,16 @@
     @apply underline !important;
   }
 
-  header a:link,
-  header a:visited,
-  header a:link:focus,
-  header a:focus:visited {
+  header a:not(.underline):link,
+  header a:not(.underline):visited,
+  header a:not(.underline):link:focus,
+  header a:not(.underline):focus:visited {
     @apply no-underline text-blue;
+  }
+
+  header a.bg-yellow:focus {
+    @apply bg-white border-b-0 outline-black;
+    outline-style: auto;
   }
 
   a:focus #live-banner,
