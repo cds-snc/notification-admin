@@ -7,10 +7,11 @@
   {{ title }}
 {% endblock %}
 
+{% block body_classes %}wp{% endblock %}
+
 {% block maincolumn_content %}
   <h1 class="heading-large">{{ title }}</h1>
   <div class="space-y-doubleGutter page-content {{ slug }}">
     {{ html_content|safe  }}
   </div>
-  
 {% endblock %}
