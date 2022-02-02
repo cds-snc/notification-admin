@@ -38,23 +38,27 @@
     @apply text-blue;
   }
 
+  .page-content h3,
   .heading-small {
     margin-top: 0.625em;
     margin-bottom: 1.0526em;
     @apply text-smaller leading-tight font-bold block;
   }
   @screen md {
+    .page-content h3,
     .heading-small {
       margin-top: 1.0526em;
     }
   }
 
+  .page-content h2,
   .heading-medium {
     margin-top: 1.25em;
     margin-bottom: 0.5em;
     @apply text-base leading-tight block font-bold mt-gutter block;
   }
   @screen sm {
+    .page-content h2,
     .heading-medium {
       margin-top: 1.875em;
       margin-bottom: 0.8333em;

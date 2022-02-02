@@ -8,7 +8,6 @@
   }
 
   /* Theming the cover blocks with our tokens */
-
   .wp-block-cover.bg-blue-slightlight {
     --bg: theme("colors.blue.slightlight");
     --text: theme("colors.white.default");
@@ -85,6 +84,24 @@
   .wp-block-button a:visited {
     text-decoration: inherit;
     color: inherit;
+  }
+
+  /* Semantic styling for content pages */
+
+  .page-content ul {
+    @apply list list-bullet;
+  }
+
+  .page-content blockquote {
+    padding: 0.7895em;
+    margin-bottom: 0.7895em;
+    border-left: solid;
+    @apply box-border clear-both border-gray-grey2;
+    border-left-width: 10px;
+  }
+
+  .wp-block-columns.panel-container {
+    @apply mx-0;
   }
 
   /*! purgecss end ignore */

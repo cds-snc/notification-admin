@@ -7,11 +7,14 @@
   {{ title }}
 {% endblock %}
 
-{# Empty on purpose to remove py-10 from admin_template #}
-{% block main_content_class %}{% endblock %}
+
+{% block main_content_class %}{{ "py-10" if slug != "home" }}{% endblock %}
+
 
 {% block maincolumn_content %}
-  <h1 class="heading-large">{{ title }}</h1>
+  {% if slug != "home" %}
+    <h1 class="heading-large">{{ title }}</h1>
+  {% endif %}
   <div class="space-y-doubleGutter page-content {{ slug }}">
     {{ html_content|safe  }}
   </div>
