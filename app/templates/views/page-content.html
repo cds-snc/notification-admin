@@ -1,7 +1,7 @@
 {% extends "content_template.html" %}
 
 {% block per_page_title %}
-  {% if g.preview %}
+  {% if g.preview_url %}
     [{{ _('PREVIEW') }}]
   {% endif %}
   {{ title }}
@@ -18,5 +18,4 @@
   <div class="space-y-doubleGutter page-content {{ slug }}">
     {{ html_content|safe  }}
   </div>
-  
 {% endblock %}
