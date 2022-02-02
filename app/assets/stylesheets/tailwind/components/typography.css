@@ -66,6 +66,8 @@
     }
   }
 
+  .page-content h1,
+  .page-content.home h2,
   .heading-large {
     line-height: 1.111;
     margin-top: 0.2em;
@@ -78,6 +80,8 @@
     @apply block text-gray-grey1 text-title leading-tight;
   }
   @screen md {
+    .page-content h1,
+    .page-content.home h2,
     .heading-large {
       margin-top: 0.25em;
       margin-bottom: 0.5556em;

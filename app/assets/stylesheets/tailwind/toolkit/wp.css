@@ -56,6 +56,10 @@
     @apply mt-gutter;
   }
 
+  .stack-swap .wp-block-column * + .wp-block-image {
+    @apply hidden;
+  }
+
   @media (max-width: theme("screens.lg")) {
     .wp-block-columns {
       flex-direction: column;
@@ -63,8 +67,18 @@
     .wp-block-columns > * + * {
       @apply mt-gutter;
     }
+    .wp-block-columns.stack-swap > * + * {
+      @apply mt-0;
+    }
     .wp-block-column {
       flex-basis: 100% !important;
+    }
+
+    .stack-swap .wp-block-column > .wp-block-image:only-child {
+      @apply hidden;
+    }
+    .stack-swap .wp-block-column * + .wp-block-image {
+      @apply block;
     }
   }
   .has-text-align-center {
@@ -90,7 +104,7 @@
   /* Semantic styling for content pages */
 
   .page-content ul {
-    @apply list list-bullet;
+    @apply list-bullet;
   }
 
   .page-content blockquote {
