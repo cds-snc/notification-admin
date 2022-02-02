@@ -7,6 +7,7 @@
   a.button:visited,
   a.button:active {
     padding: 0.55em 1em 0.45em;
+    box-shadow: 0 2px 0 theme("colors.blue.border");
     @apply no-underline inline-flex items-center text-white text-smaller leading-tight align-top bg-blue min-h-target;
   }
 
@@ -78,6 +79,7 @@
   a.button-link,
   a.button-link:visited,
   a.button-link:link {
+    box-shadow: none;
     @apply bg-transparent border-b-2 border-transparent px-5 py-4 underline;
   }
   .button-link:hover,

@@ -8,7 +8,7 @@
 {% endblock %}
 
 
-{% block body_classes %}{{ "overflow-x-hidden" if slug == "home" }}{% endblock %}
+{% block body_classes %}wp {{ "overflow-x-hidden" if slug == "home" }}{% endblock %}
 {% block main_content_class %}{{ "py-10" if slug != "home" }}{% endblock %}
 
 

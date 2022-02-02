@@ -29,8 +29,6 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "w-3/6",
     "pr-gutter",
     "mt-0",
-    "lg:order-none",
-    "order-last",
     "max-w-xl",
   ],
   defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
