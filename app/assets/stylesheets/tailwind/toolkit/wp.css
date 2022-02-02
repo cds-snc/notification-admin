@@ -44,6 +44,7 @@
 
   .wp-block-columns {
     display: flex;
+    width: calc(100% + theme("spacing.gutter"));
     @apply -mx-gutterHalf;
   }
 

@@ -8,6 +8,7 @@
 {% endblock %}
 
 
+{% block body_classes %}{{ "overflow-x-hidden" if slug == "home" }}{% endblock %}
 {% block main_content_class %}{{ "py-10" if slug != "home" }}{% endblock %}
 
 
@@ -15,7 +16,7 @@
   {% if slug != "home" %}
     <h1 class="heading-large">{{ title }}</h1>
   {% endif %}
-  <div class="space-y-doubleGutter page-content {{ slug }}">
+  <div class="{{ 'space-y-doubleGutter' if slug == 'home' }} page-content {{ slug }}">
     {{ html_content|safe  }}
   </div>
 {% endblock %}
