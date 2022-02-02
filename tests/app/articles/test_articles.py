@@ -24,10 +24,6 @@ class TestSetActiveNavItem:
             assert item["active"] is False
 
 
-<<<<<<< HEAD
-def test_set_active_nav_item():
-    items = _get_items()
-=======
 class TestGetLangURL:
     @pytest.fixture
     def response(self):
@@ -65,7 +61,6 @@ class TestGetLangURLNoTranslation:
             "slug_en": "page-no-translation",
             "slug_fr": None,
         }
->>>>>>> 757545a16148fe2899b44d434caf75eb3405e23a
 
     @patch("app.articles.get_current_locale", return_value="en")
     def test_get_lang_url_with_page_id_en(self, param, response):
