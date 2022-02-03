@@ -13,6 +13,10 @@ GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = "gc-articles-bearer-token"
 REQUEST_TIMEOUT = 5
 
 
+def _get_alt_locale(locale):
+    return "fr" if locale == "en" else "en"
+
+
 def set_active_nav_item(items=[], url="") -> None:
     for item in items:
         item["active"] = True if item["url"] == url else False
@@ -55,17 +59,18 @@ def authenticate(username, password, base_endpoint) -> Union[str, None]:
         return None
 
 
-def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> Union[dict, None]:
+def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> Union[dict, str, None]:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     username = current_app.config["GC_ARTICLES_API_AUTH_USERNAME"]
     password = current_app.config["GC_ARTICLES_API_AUTH_PASSWORD"]
 
     # strip {"slug": "preview"} from dict but keep everything else
     request_params = {k: v for k, v in params.items() if v != "preview"}
-    slug = request_params.get("slug", "preview")
+    slug = request_params.get("slug")
+    slug_for_cache = slug or "preview"
 
     lang = get_current_locale(current_app)
-    cache_key = f"{endpoint}/{lang}/{slug}"
+    cache_key = f"{endpoint}/{lang}/{slug_for_cache}"
     headers = {}
 
     if auth_required:
@@ -73,13 +78,24 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
         headers = {"Authorization": "Bearer {}".format(token)}
 
     # add 'lang' param explicitly when a slug exists
-    if request_params.get("slug"):
+    if slug:
         request_params["lang"] = lang
 
     try:
         url = f"https://{base_endpoint}/wp-json/{endpoint}"
         response = requests.get(url, params=request_params, headers=headers, timeout=REQUEST_TIMEOUT)
         parsed = json.loads(response.content)
+
+        # if getting page by slug and "parsed" is empty
+        if slug and not parsed:
+            # try again, with same slug but new language
+            request_params["lang"] = _get_alt_locale(request_params.get("lang"))
+            lang_response = requests.get(url, params=request_params, headers=headers, timeout=REQUEST_TIMEOUT)
+            lang_parsed = json.loads(lang_response.content)
+
+            # if we get a response for the other language, return a redirect string
+            if lang_parsed:
+                return f"/set-lang?from=/{slug}"
 
         if response.status_code == 403:
             raise Unauthorized()
@@ -145,7 +161,7 @@ def get_lang_url(response: dict, has_page_id: bool) -> str:
     # - /preview?id=11
     # - /wild-card
 
-    alt_lang = "fr" if (get_current_locale(current_app) == "en") else "en"
+    alt_lang = _get_alt_locale(get_current_locale(current_app))
 
     if has_page_id:
         if response.get(f"id_{alt_lang}"):

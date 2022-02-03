@@ -371,7 +371,6 @@ def old_page_redirects():
 # --- Dynamic routes handling for GCArticles API-driven pages --- #
 @main.route("/<path:path>")
 def page_content(path=""):
-    nav_items = get_nav_items()
     page_id = ""
     auth_required = False
 
@@ -386,11 +385,17 @@ def page_content(path=""):
 
     response = request_content(f"wp/v2/pages/{page_id}", {"slug": path}, auth_required=auth_required)
 
+    if isinstance(response, str):
+        return redirect(response)
+
     if response:
         title = response["title"]["rendered"]
         slug_en = response["slug_en"]
         html_content = response["content"]["rendered"]
+
+        nav_items = get_nav_items()
         set_active_nav_item(nav_items, request.path)
+
         return render_template(
             "views/page-content.html",
             title=title,
