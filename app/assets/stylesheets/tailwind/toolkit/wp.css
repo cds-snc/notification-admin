@@ -1,7 +1,6 @@
 @layer components {
   /*! purgecss start ignore */
   /* Cover */
-
   .wp-block-cover {
     position: relative;
     color: var(--text);
@@ -105,12 +104,15 @@
   }
 
   /* Semantic styling for content pages */
-
-  .page-content ul {
+  .wp .page-content ul {
     @apply list list-bullet;
   }
 
-  .page-content blockquote {
+  .wp .page-content ul li {
+    @apply pt-4;
+  }
+
+  .wp .page-content blockquote {
     padding: 0.7895em;
     margin-bottom: 0.7895em;
     border-left: solid;
@@ -118,9 +120,17 @@
     border-left-width: 10px;
   }
 
-  .wp-block-columns.panel-container {
+  .wp .wp-block-columns.panel-container {
     @apply mx-0;
   }
 
+  /* Semantic styling for specific pages */
+  .wp .page-content.home a {
+    @apply text-base;
+  }
+
+  .wp .page-content.home p + ul {
+    @apply -mt-6;
+  }
   /*! purgecss end ignore */
 }
