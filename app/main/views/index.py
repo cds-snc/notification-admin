@@ -385,9 +385,11 @@ def page_content(path=""):
 
     response = request_content(f"wp/v2/pages/{page_id}", {"slug": path}, auth_required=auth_required)
 
+    # when response is a string, redirect to change our language setting
     if isinstance(response, str):
         return redirect(response)
 
+    # when response is a dict, display the content
     if response:
         title = response["title"]["rendered"]
         slug_en = response["slug_en"]
