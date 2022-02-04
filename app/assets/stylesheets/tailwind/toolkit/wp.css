@@ -88,7 +88,6 @@
   }
 
   /* Button blocks */
-
   .wp-block-buttons {
     display: flex;
   }
@@ -104,15 +103,15 @@
   }
 
   /* Semantic styling for content pages */
-  .wp .page-content ul {
+  .page-content ul {
     @apply list list-bullet;
   }
 
-  .wp .page-content ul li {
+  .page-content ul li {
     @apply pt-4;
   }
 
-  .wp .page-content blockquote {
+  .page-content blockquote {
     padding: 0.7895em;
     margin-bottom: 0.7895em;
     border-left: solid;
@@ -120,7 +119,7 @@
     border-left-width: 10px;
   }
 
-  .wp .wp-block-columns.panel-container {
+  .wp-block-columns.panel-container {
     @apply mx-0;
   }
 
@@ -130,7 +129,7 @@
   }
 
   .wp .page-content.home p + ul {
-    @apply -mt-6;
+    @apply -mt-gutterHalf;
   }
   /*! purgecss end ignore */
 }
