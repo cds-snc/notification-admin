@@ -42,7 +42,7 @@
   .heading-small {
     margin-top: 0.625em;
     margin-bottom: 1.0526em;
-    @apply text-smaller leading-tight font-bold block;
+    @apply font-sans text-smaller leading-tight font-bold block;
   }
   @screen md {
     .page-content h3,
@@ -56,7 +56,7 @@
   .heading-medium {
     margin-top: 1.25em;
     margin-bottom: 0.5em;
-    @apply text-base leading-tight block font-bold mt-gutter block;
+    @apply font-sans text-base leading-tight font-bold mt-gutter block;
   }
   @screen sm {
     .page-content h2,
@@ -73,7 +73,7 @@
     line-height: 1.111;
     margin-top: 0.2em;
     margin-bottom: 0.4167em;
-    @apply text-lg font-bold block;
+    @apply font-sans text-lg font-bold block;
   }
   .heading-large .heading-secondary {
     padding-top: 9px;

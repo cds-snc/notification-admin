@@ -398,6 +398,7 @@ def page_content(path=""):
             nav_items=nav_items,
             slug=slug_en,
             lang_url=get_lang_url(response, bool(page_id)),
+            stats=get_latest_stats(get_current_locale(current_app)),
         )
     else:
         abort(500)
