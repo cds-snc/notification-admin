@@ -16,7 +16,11 @@
   {% if slug != "home" %}
     <h1 class="heading-large">{{ title }}</h1>
   {% endif %}
-  <div class="{{ 'space-y-doubleGutter' if slug == 'home' }} page-content {{ slug }}">
-    {{ html_content|safe  }}
+  <div class="{{ 'space-y-doubleGutter mb-doubleGutter' if slug == 'home' }} page-content {{ slug }}">
+    {{ html_content | safe }}
   </div>
+  {% if slug == "home" %}
+    {% include 'partials/page-content/counter.html' %}
+    {% include 'partials/page-content/cta.html' %}
+  {% endif %}
 {% endblock %}

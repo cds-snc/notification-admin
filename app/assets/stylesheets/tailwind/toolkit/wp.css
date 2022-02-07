@@ -1,7 +1,6 @@
 @layer components {
   /*! purgecss start ignore */
   /* Cover */
-
   .wp-block-cover {
     position: relative;
     color: var(--text);
@@ -89,7 +88,6 @@
   }
 
   /* Button blocks */
-
   .wp-block-buttons {
     display: flex;
   }
@@ -105,9 +103,12 @@
   }
 
   /* Semantic styling for content pages */
-
   .page-content ul {
     @apply list list-bullet;
+  }
+
+  .page-content ul li {
+    @apply pt-4;
   }
 
   .page-content blockquote {
@@ -122,5 +123,13 @@
     @apply mx-0;
   }
 
+  /* Semantic styling for specific pages */
+  .wp .page-content.home a {
+    @apply text-base;
+  }
+
+  .wp .page-content.home p + ul {
+    @apply -mt-gutterHalf;
+  }
   /*! purgecss end ignore */
 }
