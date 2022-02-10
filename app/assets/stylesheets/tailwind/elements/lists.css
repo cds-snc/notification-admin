@@ -5,6 +5,7 @@
   }
 
   .list {
+    max-width: 80ch;
     @apply p-0 mt-2 mb-8;
   }
 

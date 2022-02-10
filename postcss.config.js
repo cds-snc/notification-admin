@@ -27,11 +27,9 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "mb-8",
     "focus:outline-none",
     "w-3/6",
-    "wp-block-columns",
-    "wp-block-column",
-    "wp-block-cover",
     "pr-gutter",
     "mt-0",
+    "max-w-xl",
   ],
   defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
 });

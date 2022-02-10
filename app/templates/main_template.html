@@ -114,13 +114,13 @@
 </div>
 {% block gc_header %}
 
-{% if g.preview %}
+{% if g.preview_url %}
   <div class="preview-fullpage-border"></div>
 {% endif %}
 
 <header>
 
-{% if g.preview %}
+{% if g.preview_url %}
   {% include 'components/preview-banner.html' %}
 {% endif %}
 
