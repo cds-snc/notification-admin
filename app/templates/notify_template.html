@@ -2,6 +2,13 @@
 <!DOCTYPE html>
 <html lang="{{ current_lang|default('en') }}">
   <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KRKRZQV');</script>
+    <!-- End Google Tag Manager -->
     <meta charset="utf-8" />
     <title>{% block page_title %}Notify{% endblock %}</title>
     <link
@@ -21,6 +28,10 @@
     {% block meta %}{% endblock %}
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KRKRZQV"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     {% include 'partials/cds_ascii_art.html' %}
     {% block main_content %}{% endblock %}
     <script type="text/javascript" src="{{ asset_url('javascripts/main.min.js') }}"></script>
