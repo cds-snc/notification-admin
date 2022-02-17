@@ -39,8 +39,9 @@
           label=_('Sign in')
         ) }}
       {% endif %}
+      {% set set_lang_url = lang_url or request.path %}
       {{ nav_button(
-        href=url_for('main.set_lang') + "?from=" + request.path,
+        href=url_for('main.set_lang') + "?from=" + set_lang_url,
         label=long_lang_switch,
         aria_label=long_lang_switch,
         lang="fr-CA" if lang_switch == "FR" else "en-CA",

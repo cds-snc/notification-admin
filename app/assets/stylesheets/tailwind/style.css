@@ -37,6 +37,7 @@
 @import "./components/stick-at-top-when-scrolling.css";
 @import "./components/task-list.css";
 @import "./components/back-link.css";
+@import "./components/preview-fullpage-border.css";
 
 /* views */
 @import "./views/dashboard.css";
@@ -45,9 +46,9 @@
 @import "./views/template.css";
 @import "./views/notification.css";
 
-/*! purgecss start ignore */
 @import "./toolkit/wp.css";
 
+/*! purgecss start ignore */
 @-ms-viewport {
   width: device-width;
 }

@@ -37,7 +37,7 @@
   .button-blue-lighter:focus,
   a.button-blue-lighter:focus {
     box-shadow: 0px;
-    @apply bg-yellow outline-none border-none outline-none;
+    @apply bg-yellow outline-none border-transparent outline-none;
   }
 
   .button-red,
@@ -73,6 +73,22 @@
   .button.disabled,
   a.button.disabled {
     @apply opacity-50 cursor-default;
+  }
+
+  .button-link,
+  a.button-link,
+  a.button-link:visited,
+  a.button-link:link {
+    box-shadow: none;
+    @apply bg-transparent border-b-2 border-transparent px-5 py-4 underline;
+  }
+  .button-link:hover,
+  a.button-link:hover {
+    @apply no-underline;
+  }
+  .button-link:focus,
+  a.button-link:focus {
+    @apply bg-yellow text-blue outline-none border-white no-underline;
   }
   /*! purgecss end ignore */
 }

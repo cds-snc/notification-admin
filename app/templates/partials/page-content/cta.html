@@ -1,0 +1,21 @@
+{% from "components/buttons.html" import primary_button_blue_lighter, secondary_button_transparent_white %}
+
+<!-- start section 7 -->
+  <div class="wp-block-cover bg-blue-slightlight">
+    <span class="bg-blue-slightlight" aria-hidden="true"></span>
+    <div class="wp-block-cover__inner-container py-doubleGutter space-y-doubleGutter flex flex-col items-center">
+          <h2 class="heading-large">
+            {{ _("Start sending test messages right away!") }}
+          </h2>
+            {{ primary_button_blue_lighter(label=_("Try it now"), href=url_for('.register' )) }}
+          <p class="text-white">
+            {{ _("Want to know more?") }}
+            {{ secondary_button_transparent_white(
+              label=_("Get in touch"), 
+              href=url_for('.contact'),
+              class="-ml-2"
+            ) }}
+          </p>
+    </div>
+  </div>
+<!-- end section 7 -->

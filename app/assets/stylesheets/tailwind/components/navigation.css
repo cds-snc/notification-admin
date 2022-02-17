@@ -1,7 +1,8 @@
 @layer components {
   /*! purgecss start ignore */
 
-  header a:hover {
+  header a:hover,
+  .preview-banner a {
     @apply underline !important;
   }
 

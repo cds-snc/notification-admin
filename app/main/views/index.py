@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import (
     abort,
     current_app,
+    g,
     make_response,
     redirect,
     render_template,
@@ -15,8 +16,9 @@ from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
 from app import email_branding_client, get_current_locale, letter_branding_client
 from app.articles import (
-    find_item_url,
+    get_lang_url,
     get_nav_items,
+    get_preview_url,
     request_content,
     set_active_nav_item,
 )
@@ -369,22 +371,41 @@ def old_page_redirects():
 # --- Dynamic routes handling for GCArticles API-driven pages --- #
 @main.route("/<path:path>")
 def page_content(path=""):
-    nav_items = get_nav_items()
     page_id = ""
+    auth_required = False
 
     if path == "preview":
+        if not request.args.get("id") or not current_user.is_authenticated:
+            abort(404)
+
+        auth_required = True
         page_id = request.args.get("id")
+        # 'g' sets a global variable for this request
+        g.preview_url = get_preview_url(page_id)
 
-    # if URL path not in the menu items (the known paths), 404
-    if not find_item_url(nav_items, request.path):
-        abort(404)
+    response = request_content(f"wp/v2/pages/{page_id}", {"slug": path}, auth_required=auth_required)
 
-    response = request_content(f"wp/v2/pages/{page_id}", {"slug": path})
+    # when response is a string, redirect to change our language setting
+    if isinstance(response, str):
+        return redirect(response)
 
+    # when response is a dict, display the content
     if response:
         title = response["title"]["rendered"]
+        slug_en = response["slug_en"]
         html_content = response["content"]["rendered"]
+
+        nav_items = get_nav_items()
         set_active_nav_item(nav_items, request.path)
-        return render_template("views/page-content.html", title=title, html_content=html_content, nav_items=nav_items)
+
+        return render_template(
+            "views/page-content.html",
+            title=title,
+            html_content=html_content,
+            nav_items=nav_items,
+            slug=slug_en,
+            lang_url=get_lang_url(response, bool(page_id)),
+            stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+        )
     else:
         abort(500)

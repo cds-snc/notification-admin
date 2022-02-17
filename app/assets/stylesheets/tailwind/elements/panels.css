@@ -80,4 +80,8 @@
   .panel-container h3 {
     @apply mt-0;
   }
+  .panel-preview ul li,
+  .panel-preview ol li {
+    @apply my-2;
+  }
 }
