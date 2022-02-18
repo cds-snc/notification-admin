@@ -29,5 +29,5 @@ npm rebuild node-sass
 make generate-version-file
 make babel
 
-npm install
+npm ci install
 npm run build
