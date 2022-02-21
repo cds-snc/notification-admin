@@ -1,0 +1,26 @@
+{% extends "content_template.html" %}
+
+{% block per_page_title %}
+  {% if g.preview_url %}
+    [{{ _('PREVIEW') }}]
+  {% endif %}
+  {{ title }}
+{% endblock %}
+
+
+{% block body_classes %}wp {{ "overflow-x-hidden" if slug == "home" }}{% endblock %}
+{% block main_content_class %}{{ "py-10" if slug != "home" }}{% endblock %}
+
+
+{% block maincolumn_content %}
+  {% if slug != "home" %}
+    <h1 class="heading-large">{{ title }}</h1>
+  {% endif %}
+  <div class="{{ 'space-y-doubleGutter mb-doubleGutter' if slug == 'home' }} page-content {{ slug }}">
+    {{ html_content | safe }}
+  </div>
+  {% if slug == "home" %}
+    {% include 'partials/page-content/counter.html' %}
+    {% include 'partials/page-content/cta.html' %}
+  {% endif %}
+{% endblock %}

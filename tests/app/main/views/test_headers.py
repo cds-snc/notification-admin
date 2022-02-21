@@ -49,7 +49,7 @@ def test_owasp_useful_headers_set(
         "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
-        "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
+        "'self' static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
         "frame-src 'self' www.youtube.com;"
     )
 
@@ -101,6 +101,6 @@ def test_headers_non_ascii_characters_are_replaced(
         "style-src 'self' *.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
-        "'self' static.example.com *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
+        "'self' static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
         "frame-src 'self' www.youtube.com;"
     )

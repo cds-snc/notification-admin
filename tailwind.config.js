@@ -133,7 +133,8 @@ module.exports = {
       },
       outline: {
         yellow: "3px solid #ffbf47",
-        white: "1px solid rgba(255, 255, 255, 0.1)"
+        white: "1px solid rgba(255, 255, 255, 0.1)",
+        black: "1px solid black"
       },
       spacing: {
         gutter: "3.0rem",

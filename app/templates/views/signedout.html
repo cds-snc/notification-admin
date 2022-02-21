@@ -1,7 +1,7 @@
 {% extends "notify_template.html" %}
 {% set withnav = True %}
 {% from "components/buttons.html" import primary_button_blue_lighter, secondary_button_transparent_white %}
-{% from "components/links.html" import content_link_light %}
+{% from "components/links.html" import content_link_light with context %}
 {% from "components/page-footer.html" import page_footer %}
 
 {% block meta %} {% set description = _('GC Notify lets you send emails and text messages to your users') %}
@@ -265,7 +265,7 @@
                   </li>
                 </ul>
                 <p class="pt-10 text-base mb-0 text-blue">
-                  {{ content_link_light(label=_("How to integrate GC Notify with your system"), href=documentation_url(), external_link_img=asset_url('images/external.svg')) }}
+                  {{ content_link_light(label=_("How to integrate GC Notify with your system"), href=documentation_url(), is_external_link=True) }}
                 </p>
               </div>
               <div class="image-content pt-10 lg:pt-0 flex">

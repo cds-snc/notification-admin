@@ -1,0 +1,135 @@
+@layer components {
+  /*! purgecss start ignore */
+  /* Cover */
+  .wp-block-cover {
+    position: relative;
+    color: var(--text);
+  }
+
+  /* Theming the cover blocks with our tokens */
+  .wp-block-cover.bg-blue-slightlight {
+    --bg: theme("colors.blue.slightlight");
+    --text: theme("colors.white.default");
+    --interactive: theme("colors.blue.lighter");
+  }
+  .wp-block-cover.bg-gray {
+    --bg: theme("colors.gray.default");
+    --text: theme("colors.black.default");
+    --interactive: theme("colors.blue.default");
+  }
+
+  .wp-block-cover a:not(.button):not(:focus) {
+    color: var(--interactive);
+  }
+
+  .wp-block-cover > span {
+    margin: 0 calc(50% - 50vw);
+    max-width: 100vw;
+    width: 100vw;
+    height: 100%;
+    position: absolute;
+    background-color: var(--bg);
+  }
+
+  .wp-block-cover .wp-block-cover__inner-container {
+    position: relative;
+    @apply py-20;
+  }
+  .wp-block-cover.flow
+    .wp-block-cover__inner-container
+    > :not(template)
+    + :not(template) {
+    @apply mt-doubleGutter;
+  }
+
+  /* Columns */
+
+  .wp-block-columns {
+    display: flex;
+    width: calc(100% + theme("spacing.gutter"));
+    @apply -mx-gutterHalf;
+  }
+
+  .wp-block-column {
+    flex-grow: 0;
+    @apply px-gutterHalf;
+  }
+  .wp-block-column > :not(template) + :not(template) {
+    @apply mt-gutter;
+  }
+
+  .stack-swap .wp-block-column * + .wp-block-image {
+    @apply hidden;
+  }
+
+  @media (max-width: theme("screens.lg")) {
+    .wp-block-columns {
+      flex-direction: column;
+    }
+    .wp-block-columns > :not(template) + :not(template) {
+      @apply mt-gutter;
+    }
+    .wp-block-columns.stack-swap > :not(template) + :not(template) {
+      @apply mt-0;
+    }
+    .wp-block-column {
+      flex-basis: 100% !important;
+    }
+
+    .stack-swap .wp-block-column > .wp-block-image:only-child {
+      @apply hidden;
+    }
+    .stack-swap .wp-block-column * + .wp-block-image {
+      @apply block;
+    }
+  }
+  .has-text-align-center {
+    @apply text-center mx-auto;
+  }
+
+  /* Button blocks */
+  .wp-block-buttons {
+    display: flex;
+  }
+  .wp-block-buttons > *:not(:last-child) {
+    @apply mr-gutter;
+  }
+
+  .wp-block-button a,
+  .wp-block-button a:link,
+  .wp-block-button a:visited {
+    text-decoration: inherit;
+    color: inherit;
+  }
+
+  /* Semantic styling for content pages */
+  .page-content ul {
+    @apply list list-bullet;
+  }
+
+  .page-content ul li {
+    @apply pt-4;
+  }
+
+  .page-content blockquote {
+    padding: 0.7895em;
+    margin-bottom: 0.7895em;
+    border-left: solid;
+    @apply box-border clear-both border-gray-grey2;
+    border-left-width: 10px;
+  }
+
+  .wp-block-columns.panel-container {
+    @apply mx-0;
+  }
+
+  /* Semantic styling for specific pages */
+  .wp .page-content.home a {
+    @apply text-base;
+  }
+
+  .wp .page-content.home p + ul {
+    @apply -mt-gutterHalf;
+  }
+  /*! purgecss end ignore */
+}
