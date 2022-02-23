@@ -44,43 +44,77 @@
 
   /* Columns */
 
+  /* Columns plural */
+  /* Stacked layout (responsive) */
   .wp-block-columns {
-    display: flex;
-    width: calc(100% + theme("spacing.gutter"));
-    @apply -mx-gutterHalf;
+    flex-direction: column;
   }
-
-  .wp-block-column {
-    flex-grow: 0;
-    @apply px-gutterHalf;
-  }
-  .wp-block-column > :not(template) + :not(template) {
+  /* Gives some flow spacing for all columns when stacked */
+  .wp-block-columns > :not(template) + :not(template) {
     @apply mt-gutter;
   }
+  /* stack-swap usage:
+    *
+  *
+  */
+  .wp-block-columns.stack-swap > :not(template) + :not(template) {
+    @apply mt-0;
+  }
 
-  .stack-swap .wp-block-column * + .wp-block-image {
+  /* Gives space to columns when columns isn't first child */
+  .page-content > * + .wp-block-columns {
+    @apply mt-doubleGutter;
+  }
+
+  /* Single column */
+
+  .wp-block-column > h1:first-child,
+  .wp-block-column > h2:first-child,
+  .wp-block-column > h3:first-child {
+    @apply mt-0;
+  }
+
+  /* 3 rem wide icons */
+  .wp-block-column[style*="3rem"] {
+    box-sizing: content-box;
+    display: flex;
+    height: 3rem;
+    align-items: center;
+  }
+
+  /* Hide wp-block-image if only child of a column */
+  .stack-swap .wp-block-column > .wp-block-image:only-child {
     @apply hidden;
   }
 
-  @media (max-width: theme("screens.lg")) {
+  @screen lg {
+    /* Columns plural */
     .wp-block-columns {
-      flex-direction: column;
+      display: flex;
+      flex-direction: row;
+      width: calc(100% + theme("spacing.gutter"));
+      @apply -mx-gutterHalf;
     }
     .wp-block-columns > :not(template) + :not(template) {
-      @apply mt-gutter;
-    }
-    .wp-block-columns.stack-swap > :not(template) + :not(template) {
       @apply mt-0;
     }
+
+    /* Single column */
     .wp-block-column {
-      flex-basis: 100% !important;
+      flex-grow: 0;
+      @apply px-gutterHalf;
+    }
+    .wp-block-column > :not(template) + :not(template) {
+      @apply mt-gutter;
     }
 
+    /* On lg screens: Show wp-block-image if only child of a column */
     .stack-swap .wp-block-column > .wp-block-image:only-child {
-      @apply hidden;
-    }
-    .stack-swap .wp-block-column * + .wp-block-image {
       @apply block;
+    }
+    /* On lg screens: Hide wp-block-image if it isn't the first child */
+    .stack-swap .wp-block-column * + .wp-block-image {
+      @apply hidden;
     }
   }
   .has-text-align-center {
@@ -102,12 +136,22 @@
     color: inherit;
   }
 
+  /* panels using wp-columns */
+  .wp-block-columns.panel-container {
+    max-width: 80ch;
+    @apply mx-0 w-full;
+  }
+
+  .wp-block-columns.panel-container .panel-preview *:first-child {
+    @apply mt-0;
+  }
+
   /* Semantic styling for content pages */
   .page-content ul {
     @apply list list-bullet;
   }
 
-  .page-content ul li {
+  .page-content ul li + li {
     @apply pt-4;
   }
 
@@ -119,17 +163,13 @@
     border-left-width: 10px;
   }
 
-  .wp-block-columns.panel-container {
-    @apply mx-0;
-  }
-
   /* Semantic styling for specific pages */
   .wp .page-content.home a {
     @apply text-base;
   }
 
   .wp .page-content.home p + ul {
-    @apply -mt-gutterHalf;
+    margin-top: -0.5rem;
   }
   /*! purgecss end ignore */
 }

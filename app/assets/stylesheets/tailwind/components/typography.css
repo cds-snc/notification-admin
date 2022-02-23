@@ -40,14 +40,14 @@
 
   .page-content h3,
   .heading-small {
-    margin-top: 0.625em;
+    margin-top: 2.3684em;
     margin-bottom: 1.0526em;
     @apply font-sans text-smaller leading-tight font-bold block;
   }
   @screen md {
     .page-content h3,
     .heading-small {
-      margin-top: 1.0526em;
+      margin-top: 2.3684em;
       max-width: 80ch;
     }
   }
