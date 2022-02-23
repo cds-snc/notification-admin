@@ -53,9 +53,15 @@
   .wp-block-columns > :not(template) + :not(template) {
     @apply mt-gutter;
   }
-  /* stack-swap usage:
-    *
-  *
+
+  /*  stack-swap usage:
+  *   In a two column layout:
+  *   - One column has all the content as you'd want it on a smaller screen.
+  *   - One column contains a duplicate of the image from the other column.
+  *   
+  *   stack-swap will:
+  *   - remove the usual flow spacing on smaller screens
+  *   - hide the image if it is the only child in a column
   */
   .wp-block-columns.stack-swap > :not(template) + :not(template) {
     @apply mt-0;
