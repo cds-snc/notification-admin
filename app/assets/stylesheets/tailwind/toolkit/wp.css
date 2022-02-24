@@ -80,6 +80,11 @@
     @apply mt-0;
   }
 
+  /* Overwrite the flex basis when in a stacked layout */
+  .wp-block-column[style*="flex-basis"] {
+    flex-basis: 100% !important;
+  }
+
   /* 3 rem wide icons */
   .wp-block-column[style*="3rem"] {
     box-sizing: content-box;
@@ -154,7 +159,7 @@
 
   /* Semantic styling for content pages */
   .page-content ul {
-    @apply list list-bullet;
+    @apply list pl-8;
   }
 
   .page-content ul li + li {
