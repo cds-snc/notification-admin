@@ -1497,6 +1497,14 @@ class CreateTemplateForm(Form):
     what_type = RadioField(_l("Type of message"))
 
 
+class AddRecipientsForm(Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.what_type.choices = [("one_recipient", _l("One recipient")), ("many_recipients", _l("Many recipients"))]
+
+    what_type = RadioField("")
+
+
 class TemplateAndFoldersSelectionForm(Form):
     """
     This form expects the form data to include an operation, based on which submit button is clicked.

@@ -149,6 +149,7 @@ class HeaderNavigation(Navigation):
         },
         "templates": {
             "action_blocked",
+            "add_recipients",
             "add_service_template",
             "check_messages",
             "check_notification",
@@ -382,6 +383,7 @@ class MainNavigation(Navigation):
         },
         "templates": {
             "action_blocked",
+            # "add_recipients",
             "add_service_template",
             "check_messages",
             "check_notification",
@@ -573,6 +575,7 @@ class OrgNavigation(Navigation):
         "add_data_retention",
         "add_inbound_sms_admin",
         "add_organisation",
+        # "add_recipients",
         "add_service",
         "add_service_template",
         "api_callbacks",

@@ -20,6 +20,7 @@ from app import (
 )
 from app.main import main
 from app.main.forms import (
+    AddRecipientsForm,
     CreateTemplateForm,
     EmailTemplateForm,
     LetterTemplateForm,
@@ -384,7 +385,7 @@ def choose_template_to_copy(
         service = Service(service_api_client.get_service(from_service)["data"])
 
         return render_template(
-            "views/templates/copy.html",
+            "`views/templates/copy.html`",
             services_templates_and_folders=TemplateList(service, template_folder_id=from_folder, user=current_user),
             template_folder_path=service.get_template_folder_path(from_folder),
             from_service=service,
@@ -915,3 +916,30 @@ def get_human_readable_delta(from_time, until_time):
     else:
         days = delta.days
         return "{} day{}".format(days, "" if days == 1 else "s")
+
+
+@main.route("/services/<service_id>/add-recipients/<template_id>", methods=["GET", "POST"])
+@user_has_permissions("send_messages", restrict_admin_usage=True)
+def add_recipients(service_id, template_id):
+    form = AddRecipientsForm()
+    option_hints = {
+        "one_recipient": Markup(_l("Send to only one email address.")),
+        "many_recipients": Markup(_l("Upload a file with email addresses.")),
+    }
+
+    if request.method == "POST" and form.validate_on_submit():
+        try:
+            pass
+            # return _add_template_by_type(
+            #     form.what_type.data,
+            #     template_folder_id,
+            # )
+        except HTTPError as e:
+            flash(e.message)
+    return render_template(
+        "views/templates/add-recipients.html",
+        service_id=service_id,
+        form=form,
+        disabled_options={},
+        option_hints=option_hints,
+    )
