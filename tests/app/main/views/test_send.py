@@ -3085,13 +3085,8 @@ def test_check_notification_shows_preview(client_request, service_one, fake_uuid
     page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     assert page.h1.text.strip() == "Review before sending"
-    assert (page.findAll("a", {"class": "back-link"})[0]["href"]) == url_for(
-        "main.send_one_off_step",
-        service_id=service_one["id"],
-        template_id=fake_uuid,
-        step_index=0,
-    )
-
+    assert (page.findAll("a", {"class": "back-link"})[0]["href"]) == url_for(".add_recipients", service_id=service_one["id"], template_id=fake_uuid)
+    
     # assert tour not visible
     assert not page.select(".banner-tour")
     assert page.form.attrs["action"] == url_for(

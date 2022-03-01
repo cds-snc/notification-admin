@@ -593,7 +593,7 @@ def test_edit_letter_templates_postage_updates_postage(client_request, service_o
         ),
         (
             ["send_messages", "manage_templates"],
-            [".set_sender", ".edit_service_template"],
+            [".add_recipients", ".edit_service_template"],
             None,
         ),
     ],

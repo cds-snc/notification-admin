@@ -395,7 +395,7 @@ def choose_template_to_copy(
         service = Service(service_api_client.get_service(from_service)["data"])
 
         return render_template(
-            "`views/templates/copy.html`",
+            "views/templates/copy.html",
             services_templates_and_folders=TemplateList(service, template_folder_id=from_folder, user=current_user),
             template_folder_path=service.get_template_folder_path(from_folder),
             from_service=service,
