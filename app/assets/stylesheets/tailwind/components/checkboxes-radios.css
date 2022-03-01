@@ -25,6 +25,11 @@
   .multiple-choice .conditional {
     @apply relative float-none border-gray-grey2;
   }
+
+  .multiple-choice .conditional .form-group {
+    @apply mb-0;
+  }
+
   .select-nested .multiple-choice:before,
   .multiple-choice .conditional:before {
     content: "";
