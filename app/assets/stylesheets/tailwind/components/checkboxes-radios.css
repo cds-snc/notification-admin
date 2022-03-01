@@ -14,6 +14,7 @@
   }
 
   .multiple-choice .conditional {
+    padding: 8px 15px 0 12px; /* Match top left and right padding in .multiple-choice > label {...} in form-multiple-choice.css */
     @apply hidden;
   }
   .multiple-choice input:checked ~ .conditional {
@@ -33,7 +34,7 @@
   }
 
   .multiple-choice .conditional:before {
-    left: -21px;
+    left: -22px;
   }
 
   .select-nested .multiple-choice label,
@@ -45,12 +46,13 @@
     @apply mb-4;
   }
 
-  .radios-nested .block-label-hint:after {
+  .radios-nested .block-label-hint:after,
+  .has-conditional input:checked + label .block-label-hint:after {
     content: "";
     top: 45px;
     left: 16px;
     width: 4px;
-    height: 25px;
+    height: calc(100% - 45px);
     @apply absolute bg-gray-grey2;
   }
 

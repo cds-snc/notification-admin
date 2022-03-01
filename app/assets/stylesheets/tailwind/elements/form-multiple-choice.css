@@ -18,8 +18,7 @@
     z-index: 1;
   }
 
-  .multiple-choice > label,
-  .multiple-choice .conditional {
+  .multiple-choice > label {
     @apply cursor-pointer block;
     /* remove 300ms pause on mobile */
     padding: 8px 15px 9px 12px;
