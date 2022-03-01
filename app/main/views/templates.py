@@ -938,7 +938,7 @@ def add_recipients(service_id, template_id):
     }
     option_conditionals = {"one_recipient": form.placeholder_value}
 
-    if request.method == "POST" and form.validate_on_submit():
+    if request.method == "POST":
         try:
             if form.what_type.data == "many_recipients":
                 return redirect(
@@ -948,7 +948,7 @@ def add_recipients(service_id, template_id):
                         template_id=template_id,
                     )
                 )
-            else:
+            elif form.validate_on_submit():
                 session["recipient"] = form.placeholder_value.data
                 session["placeholders"]["email address"] = form.placeholder_value.data
                 return redirect(url_for(".send_one_off_step", service_id=service_id, template_id=template_id, step_index=1))
