@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from string import ascii_uppercase
 
 from dateutil.parser import parse
-from flask import abort, flash, jsonify, redirect, render_template, request, url_for
+from flask import abort, flash, jsonify, redirect, render_template, request, url_for, current_app
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -31,7 +31,7 @@ from app.main.forms import (
     TemplateAndFoldersSelectionForm,
     TemplateFolderForm,
 )
-from app.main.views.send import get_example_csv_rows, get_sender_details
+from app.main.views.send import get_example_csv_rows, get_sender_details, send_messages
 from app.models.service import Service
 from app.models.template_list import TemplateList, TemplateLists
 from app.template_previews import TemplatePreview, get_page_count_for_letter
@@ -931,12 +931,20 @@ def add_recipients(service_id, template_id):
     option_conditionals = {"one_recipient": "some kind of form"}
 
     if request.method == "POST" and form.validate_on_submit():
+
+        current_app.logger.info(form.what_type.data)
+
         try:
-            pass
-            # return _add_template_by_type(
-            #     form.what_type.data,
-            #     template_folder_id,
-            # )
+            if form.what_type.data == "many_recipients":
+                return redirect(
+                    url_for(
+                        "main.send_messages",
+                        service_id=service_id,
+                        template_id=template_id,
+                    )
+                )
+            else:
+                pass
         except HTTPError as e:
             flash(e.message)
     return render_template(
