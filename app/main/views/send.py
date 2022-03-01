@@ -934,6 +934,8 @@ def get_back_link(service_id, template, step_index):
                 service_id=service_id,
                 template_id=template.id,
             )
+    elif step_index == 1:
+        return url_for(".add_recipients", service_id=current_service.id, template_id=template.id)
     else:
         return url_for(
             "main.send_one_off_step",
