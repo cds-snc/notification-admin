@@ -1503,6 +1503,13 @@ class AddRecipientsForm(Form):
         self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
 
     what_type = RadioField("")
+    placeholder_value = EmailField(
+        _l("Email address"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            ValidEmail(),
+        ],
+    )
 
 
 class TemplateAndFoldersSelectionForm(Form):

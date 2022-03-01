@@ -936,12 +936,9 @@ def add_recipients(service_id, template_id):
         "many_recipients": Markup(_l("Upload a file with email addresses.")),
         "one_recipient": Markup(_l("Send to only one email address.")),
     }
-    option_conditionals = {"one_recipient": "some kind of form"}
+    option_conditionals = {"one_recipient": form.placeholder_value}
 
     if request.method == "POST" and form.validate_on_submit():
-
-        current_app.logger.info(form.what_type.data)
-
         try:
             if form.what_type.data == "many_recipients":
                 return redirect(
@@ -952,8 +949,8 @@ def add_recipients(service_id, template_id):
                     )
                 )
             else:
-                session["recipient"] = "test@gmail.com"  # TODO get the value from the form
-                session["placeholders"]["email address"] = "test@gmail.com"  # TODO get the value from the form
+                session["recipient"] = form.placeholder_value.data
+                session["placeholders"]["email address"] = form.placeholder_value.data
                 return redirect(url_for(".send_one_off_step", service_id=service_id, template_id=template_id, step_index=1))
         except HTTPError as e:
             flash(e.message)

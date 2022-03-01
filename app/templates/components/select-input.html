@@ -1,3 +1,5 @@
+{% from "components/textbox.html" import textbox %}
+
 {% macro select(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", option_conditionals={}) %}
   {% call select_wrapper(
     field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style
@@ -85,24 +87,14 @@
             {% endif %}
           </label>
           {% if has_conditional %}
-              <div aria-live="polite" class="conditional form-group contain-floats box-border mb-0" data-module="">
-                {# option_conditionals[option.data] #}
-                <label class="form-label" for="placeholder_value">
-                  Email address
-                </label>
-                <span></span>
-                <input
-                  aria-required="true"
-                  class="form-control w-full  input focus:shadow-outline"
-                  data-module=""
-                  id="placeholder_value"
-                  name="placeholder_value"
-                  required=""
-                  rows="8"
-                  spellcheck="false"
-                  type="email"
-                  value="">
-                </div>
+              <div class="conditional">
+              {{ textbox( 
+                  option_conditionals[option.data],
+                  label=_(option_conditionals[option.data].label.text)|capitalize, 
+                  hint=hint_txt if optional_placeholder else None, 
+                  width='w-full', 
+                ) }}
+              </div>
             {% endif %}
             {% if caller %}
               {{ caller() }}
