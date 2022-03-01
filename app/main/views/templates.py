@@ -2,7 +2,17 @@ from datetime import datetime, timedelta
 from string import ascii_uppercase
 
 from dateutil.parser import parse
-from flask import abort, flash, jsonify, redirect, render_template, request, url_for, current_app, session
+from flask import (
+    abort,
+    current_app,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -31,7 +41,7 @@ from app.main.forms import (
     TemplateAndFoldersSelectionForm,
     TemplateFolderForm,
 )
-from app.main.views.send import get_example_csv_rows, get_sender_details, send_messages
+from app.main.views.send import get_example_csv_rows, get_sender_details
 from app.models.service import Service
 from app.models.template_list import TemplateList, TemplateLists
 from app.template_previews import TemplatePreview, get_page_count_for_letter
@@ -921,8 +931,6 @@ def get_human_readable_delta(from_time, until_time):
 @main.route("/services/<service_id>/add-recipients/<template_id>", methods=["GET", "POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def add_recipients(service_id, template_id):
-    template = current_service.get_template(template_id)
-
     form = AddRecipientsForm()
     option_hints = {
         "many_recipients": Markup(_l("Upload a file with email addresses.")),
