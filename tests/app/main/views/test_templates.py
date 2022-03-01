@@ -2132,3 +2132,47 @@ def test_add_sender_link_only_appears_on_services_with_no_senders(
         service_id=SERVICE_ONE_ID,
         from_template=fake_uuid,
     )
+
+
+def test_add_recipients_redirects_many_recipients(
+    client_request,
+    fake_uuid,
+):
+    client_request.post(
+        "main.add_recipients",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "what_type": "many_recipients",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".send_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _external=True,
+        ),
+    )
+
+
+def test_add_recipients_redirects_one_recipient(
+    client_request,
+    fake_uuid,
+):
+    with client_request.session_transaction() as session:
+        session["placeholders"] = {}
+
+    client_request.post(
+        "main.add_recipients",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={"what_type": "one_recipient", "placeholder_value": "test@cds-snc.ca"},
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".send_one_off_step",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            step_index=1,
+            _external=True,
+        ),
+    )
