@@ -10,14 +10,15 @@
     }
   }
 
-  .multiple-choice input {
+  .multiple-choice [type="radio"],
+  .multiple-choice [type="checkbox"] {
     @apply absolute cursor-pointer left-0 top-0 outline-none opacity-0;
     width: 38px;
     height: 38px;
     z-index: 1;
   }
 
-  .multiple-choice label,
+  .multiple-choice > label,
   .multiple-choice .conditional {
     @apply cursor-pointer block;
     /* remove 300ms pause on mobile */
