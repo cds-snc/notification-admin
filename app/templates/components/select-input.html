@@ -1,9 +1,9 @@
-{% macro select(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio") %}
+{% macro select(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", option_conditionals={}) %}
   {% call select_wrapper(
     field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style
   ) %}
     {% for option in field %}
-      {{ select_input(option, disable, option_hints, input=input) }}
+      {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals) }}
     {% endfor %}
   {% endcall %}
 {% endmacro %}
@@ -62,7 +62,8 @@
   </div>
 {% endmacro %}
 
-{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio") %}
+{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio", option_conditionals={}) %}
+  {% set has_conditional = option_conditionals[option.data] %}
   {% if as_list_item %}
   <li class="multiple-choice" {% if data_target %}data-target="{{ data_target }}"{% endif %}>
   {% else %}
@@ -90,6 +91,11 @@
         </div>
       {% endif %}
     </label>
+    {% if has_conditional %}
+    <div class="conditional">
+      {{ option_conditionals[option.data] }}
+    </div>
+    {% endif %}
     {% if caller %}
         {{ caller() }}
     {% endif %}

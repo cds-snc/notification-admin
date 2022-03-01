@@ -921,10 +921,15 @@ def get_human_readable_delta(from_time, until_time):
 @main.route("/services/<service_id>/add-recipients/<template_id>", methods=["GET", "POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def add_recipients(service_id, template_id):
+    template = current_service.get_template(template_id)
+
     form = AddRecipientsForm()
     option_hints = {
-        "one_recipient": Markup(_l("Send to only one email address.")),
         "many_recipients": Markup(_l("Upload a file with email addresses.")),
+        "one_recipient": Markup(_l("Send to only one email address.")),
+    }
+    option_conditionals = {
+        "one_recipient": "some kind of form"
     }
 
     if request.method == "POST" and form.validate_on_submit():
@@ -942,4 +947,5 @@ def add_recipients(service_id, template_id):
         form=form,
         disabled_options={},
         option_hints=option_hints,
+        option_conditionals=option_conditionals,
     )

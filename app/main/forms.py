@@ -1500,7 +1500,7 @@ class CreateTemplateForm(Form):
 class AddRecipientsForm(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.what_type.choices = [("one_recipient", _l("One recipient")), ("many_recipients", _l("Many recipients"))]
+        self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
 
     what_type = RadioField("")
 
