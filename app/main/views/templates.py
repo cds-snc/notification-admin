@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from string import ascii_uppercase
 
 from dateutil.parser import parse
-from flask import abort, flash, jsonify, redirect, render_template, request, url_for, current_app
+from flask import abort, flash, jsonify, redirect, render_template, request, url_for, current_app, session
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -944,7 +944,9 @@ def add_recipients(service_id, template_id):
                     )
                 )
             else:
-                pass
+                session["recipient"] = "test@gmail.com"  # TODO get the value from the form
+                session["placeholders"]["email address"] = "test@gmail.com"  # TODO get the value from the form
+                return redirect(url_for(".send_one_off_step", service_id=service_id, template_id=template_id, step_index=1))
         except HTTPError as e:
             flash(e.message)
     return render_template(
