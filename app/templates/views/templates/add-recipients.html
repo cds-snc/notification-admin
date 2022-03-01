@@ -10,14 +10,14 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-  {% set choose_url = url_for('main.choose_template', service_id=service_id, template_type=template_type, template_folder_id=template_folder_id) %}
+  {% set choose_url = url_for('main.view_template', service_id=service_id, template_id=template_id) %}
   {% set dashboard_url = url_for('main.service_dashboard', service_id=service_id) %}
   {% set back_url = dashboard_url if request.args.get('source') == 'dashboard' else choose_url %}
   {{ page_header(
     header_txt,
     back_link=back_url
   ) }}
-  
+
   {% call form_wrapper() %}
     {{ select(form.what_type, disable=disabled_options, option_hints=option_hints, option_conditionals=option_conditionals) }}
     {{ page_footer(_('Continue')) }}

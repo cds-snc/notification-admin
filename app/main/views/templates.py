@@ -928,9 +928,7 @@ def add_recipients(service_id, template_id):
         "many_recipients": Markup(_l("Upload a file with email addresses.")),
         "one_recipient": Markup(_l("Send to only one email address.")),
     }
-    option_conditionals = {
-        "one_recipient": "some kind of form"
-    }
+    option_conditionals = {"one_recipient": "some kind of form"}
 
     if request.method == "POST" and form.validate_on_submit():
         try:
@@ -944,6 +942,7 @@ def add_recipients(service_id, template_id):
     return render_template(
         "views/templates/add-recipients.html",
         service_id=service_id,
+        template_id=template_id,
         form=form,
         disabled_options={},
         option_hints=option_hints,
