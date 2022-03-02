@@ -2,7 +2,7 @@
 
 {% macro select(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", option_conditionals={}) %}
   {% call select_wrapper(
-    field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style
+    field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style, input
   ) %}
   {% for option in field %}
     {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals) }}
@@ -24,7 +24,7 @@
 {% endmacro %}
 {% macro select_nested(field, child_map, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio") %}
   {% call select_wrapper(
-    field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style
+    field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style, input
   ) %}
   <div
     id="folder-permission-checkboxes"
@@ -36,10 +36,12 @@
   </div>
   {% endcall %}
 {% endmacro %}
-{% macro select_wrapper(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text") %}
+{% macro select_wrapper(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio") %}
   {% set is_collapsible = collapsible_opts|length %}
+  {% set group = "radiogroup" if input == "radio" else "group" if input == "checkbox" %}
   <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter {% if field.errors %} form-group-error{% endif %}" {% if is_collapsible %} data-module="collapsible-checkboxes" {% if collapsible_opts.field %} data-field-label="{{ collapsible_opts.field }}" {% endif %} {% endif %}>
-    <fieldset id="{{ field.id }}" class="contain-floats w-full" role="group">
+    {{ field.label.text|safe }} hi
+    <fieldset id="{{ field.id }}" class="contain-floats w-full" role="{{ group }}" aria-labelledby="{{ field.id }}-label">
       <legend class="{{ 'form-label heading-small' }}{% if legend_style != 'text' %} {{ legend_style }}{% endif %}">
         {% if hide_legend %}
           <span class="visually-hidden">

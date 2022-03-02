@@ -15,7 +15,8 @@
   {% set back_url = dashboard_url if request.args.get('source') == 'dashboard' else choose_url %}
   {{ page_header(
     header_txt,
-    back_link=back_url
+    back_link=back_url,
+    id_text=form.what_type.id + "-label"
   ) }}
 
   {% call form_wrapper() %}
