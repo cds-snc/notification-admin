@@ -30,7 +30,8 @@ from app import (
 )
 from app.main import main
 from app.main.forms import (
-    AddRecipientsForm,
+    AddEmailRecipientsForm,
+    AddSMSRecipientsForm,
     CreateTemplateForm,
     EmailTemplateForm,
     LetterTemplateForm,
@@ -931,11 +932,21 @@ def get_human_readable_delta(from_time, until_time):
 @main.route("/services/<service_id>/add-recipients/<template_id>", methods=["GET", "POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def add_recipients(service_id, template_id):
-    form = AddRecipientsForm()
-    option_hints = {
-        "many_recipients": Markup(_l("Upload a file with email addresses.")),
-        "one_recipient": Markup(_l("Send to only one email address.")),
-    }
+
+    template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+
+    if template["template_type"] == "email":
+        form = AddEmailRecipientsForm()
+        option_hints = {
+            "many_recipients": Markup(_l("Upload a file with email addresses.")),
+            "one_recipient": Markup(_l("Send to only one email address.")),
+        }
+    else:
+        form = AddSMSRecipientsForm()
+        option_hints = {
+            "many_recipients": Markup(_l("Upload a file with number.")),
+            "one_recipient": Markup(_l("Send to only one number.")),
+        }
     option_conditionals = {"one_recipient": form.placeholder_value}
 
     if request.method == "POST":
@@ -949,11 +960,16 @@ def add_recipients(service_id, template_id):
                     )
                 )
             elif form.validate_on_submit():
+                session["placeholders"] = {}
                 session["recipient"] = form.placeholder_value.data
-                session["placeholders"]["email address"] = form.placeholder_value.data
+                if template["template_type"] == "email":
+                    session["placeholders"]["email address"] = form.placeholder_value.data
+                else:
+                    session["placeholders"]["phone number"] = form.placeholder_value.data
                 return redirect(url_for(".send_one_off_step", service_id=service_id, template_id=template_id, step_index=1))
         except HTTPError as e:
             flash(e.message)
+
     return render_template(
         "views/templates/add-recipients.html",
         service_id=service_id,

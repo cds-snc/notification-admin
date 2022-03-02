@@ -1497,19 +1497,23 @@ class CreateTemplateForm(Form):
     what_type = RadioField(_l("Type of message"))
 
 
-class AddRecipientsForm(Form):
+class AddEmailRecipientsForm(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
 
     what_type = RadioField("")
-    placeholder_value = EmailField(
-        _l("Email address"),
-        validators=[
-            DataRequired(message=_l("This cannot be empty")),
-            ValidEmail(),
-        ],
-    )
+    placeholder_value = email_address(gov_user=False)
+
+
+
+class AddSMSRecipientsForm(Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
+
+    what_type = RadioField("")
+    placeholder_value = international_phone_number()
 
 
 class TemplateAndFoldersSelectionForm(Form):
