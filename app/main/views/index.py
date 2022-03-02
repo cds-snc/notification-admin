@@ -408,4 +408,4 @@ def page_content(path=""):
             stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
         )
     else:
-        abort(500)
+        abort(404)

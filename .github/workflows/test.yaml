@@ -34,7 +34,7 @@ jobs:
     - name: Check for missing translations
       run: make test-translations
     - name: Notify Slack channel if this job failed in default branch
-      if: ${{ failure() && github.ref == 'refs/heads/master' }}
+      if: ${{ failure() && github.ref == 'refs/heads/main' }}
       run: |
         json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-admin/|notification-admin> !'}"
         curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

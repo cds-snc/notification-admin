@@ -1,0 +1,26 @@
+{
+	"name": "Python 3.9",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "dev",
+	"workspaceFolder": "/workspace",
+
+	"settings": { 
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": true,
+		"python.linting.pylintPath": "/usr/local/bin/pylint",
+		"python.pythonPath": "/usr/local/bin/python",
+	},
+
+	"extensions": [
+		"donjayamanne.python-extension-pack",
+		"ms-python.vscode-pylance",
+		"eamodio.gitlens",
+		"wholroyd.jinja",
+		"pmbenjamin.vscode-snyk",
+		"visualstudioexptteam.vscodeintellicode",
+		"yzhang.markdown-all-in-one",
+		"ms-ossdata.vscode-postgresql",
+	],
+
+	"postCreateCommand": "notify-dev-entrypoint.sh"
+}
