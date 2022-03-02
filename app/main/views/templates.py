@@ -944,8 +944,8 @@ def add_recipients(service_id, template_id):
     else:
         form = AddSMSRecipientsForm()
         option_hints = {
-            "many_recipients": Markup(_l("Upload a file with number.")),
-            "one_recipient": Markup(_l("Send to only one number.")),
+            "many_recipients": Markup(_l("Upload a file with phone numbers.")),
+            "one_recipient": Markup(_l("Send to only one phone number.")),
         }
     option_conditionals = {"one_recipient": form.placeholder_value}
 
