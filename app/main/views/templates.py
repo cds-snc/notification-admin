@@ -4,7 +4,6 @@ from string import ascii_uppercase
 from dateutil.parser import parse
 from flask import (
     abort,
-    current_app,
     flash,
     jsonify,
     redirect,
