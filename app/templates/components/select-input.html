@@ -40,7 +40,6 @@
   {% set is_collapsible = collapsible_opts|length %}
   {% set group = "radiogroup" if input == "radio" else "group" if input == "checkbox" %}
   <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter {% if field.errors %} form-group-error{% endif %}" {% if is_collapsible %} data-module="collapsible-checkboxes" {% if collapsible_opts.field %} data-field-label="{{ collapsible_opts.field }}" {% endif %} {% endif %}>
-    {{ field.label.text|safe }} hi
     <fieldset id="{{ field.id }}" class="contain-floats w-full" role="{{ group }}" aria-labelledby="{{ field.id }}-label">
       <legend class="{{ 'form-label heading-small' }}{% if legend_style != 'text' %} {{ legend_style }}{% endif %}">
         {% if hide_legend %}

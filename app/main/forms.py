@@ -129,7 +129,7 @@ def email_address(label=_l("Email address"), gov_user=True, required=True):
         validators.append(ValidGovEmail())
 
     if required:
-        validators.append(DataRequired(message=_l("Enter your email address")))
+        validators.append(DataRequired(message=_l("Enter an email address")))
 
     return EmailField(label, validators, render_kw={"spellcheck": "false"})
 
@@ -1503,8 +1503,7 @@ class AddEmailRecipientsForm(Form):
         self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
 
     what_type = RadioField("")
-    placeholder_value = email_address(gov_user=False)
-
+    placeholder_value = email_address(_l("Email address of recipient"), gov_user=False)
 
 
 class AddSMSRecipientsForm(Form):
@@ -1513,7 +1512,7 @@ class AddSMSRecipientsForm(Form):
         self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
 
     what_type = RadioField("")
-    placeholder_value = international_phone_number()
+    placeholder_value = international_phone_number(_l("Phone number of recipient"))
 
 
 class TemplateAndFoldersSelectionForm(Form):
