@@ -1501,7 +1501,7 @@ def test_no_senders_message_shows(
 @pytest.mark.parametrize(
     "reply_to_input, expected_error",
     [
-        ("", "Enter your email address"),
+        ("", "Enter an email address"),
         ("testtest", "Enter a valid email address"),
     ],
 )
