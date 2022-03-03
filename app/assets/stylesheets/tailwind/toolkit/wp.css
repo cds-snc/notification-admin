@@ -161,7 +161,7 @@
 
   /* Semantic styling for content pages */
   .page-content ul {
-    @apply list list-bullet pl-4;
+    @apply list list-bullet pl-8;
   }
   .page-content ul ul {
     list-style-type: circle;
