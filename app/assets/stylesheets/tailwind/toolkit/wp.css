@@ -80,7 +80,7 @@
     @apply mt-0;
   }
 
-  @media (max-width: theme("screen.lg")) {
+  @media (max-width: theme("screens.lg")) {
     /* Overwrite the flex basis when in a stacked layout */
     .wp-block-column[style*="flex-basis"] {
       flex-basis: 100% !important;
@@ -161,7 +161,7 @@
 
   /* Semantic styling for content pages */
   .page-content ul {
-    @apply list list-bullet pl-8;
+    @apply list list-bullet pl-4;
   }
   .page-content ul ul {
     list-style-type: circle;
