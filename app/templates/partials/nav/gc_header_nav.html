@@ -76,7 +76,7 @@
           {% else %}
             {{ nav_menu_item('/', _('Home'), 'pl-0 header--'+header_navigation.is_selected('home'), 'nav-head-home')}}
             {{ nav_menu_item(url_for('main.why-notify'), _('Why GC Notify'), 'header--'+header_navigation.is_selected('why-notify'), 'nav-head-why-notify') }}
-            {{ nav_menu_item(url_for('main.features'), _('Features'), 'header--'+header_navigation.is_selected('features')), 'nav-head-features' }}
+            {{ nav_menu_item(url_for('main.features'), _('Features'), 'header--'+header_navigation.is_selected('features'), 'nav-head-features') }}
             {{ nav_menu_item(documentation_url(), _('API documentation'), 'header--'+header_navigation.is_selected('documentation'), 'nav-head-doc', True) }}
             {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact'), 'nav-head-contact') }}
           {% endif %}
