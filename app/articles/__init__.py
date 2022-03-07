@@ -75,7 +75,7 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False, to_
     slug = request_params.get("slug")
 
     lang = get_current_locale(current_app)
-    
+
     if slug:
         cache_key += f"/{lang}/{slug}"
 

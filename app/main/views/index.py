@@ -1,5 +1,5 @@
-from datetime import datetime
 import json
+from datetime import datetime
 
 from flask import (
     abort,
@@ -25,6 +25,7 @@ from app.articles import (
     request_content,
     set_active_nav_item,
 )
+from app.extensions import redis_client
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
@@ -38,7 +39,6 @@ from app.utils import (
     get_logo_cdn_domain,
     user_is_logged_in,
 )
-from app.extensions import redis_client
 
 
 @main.route("/")
@@ -378,7 +378,7 @@ def page_content(path=""):
     pages_endpoint = "wp/v2/pages"
     page_id = ""
     auth_required = False
-    to_cache=True
+    to_cache = True
 
     if path == "preview":
         if not request.args.get("id") or not current_user.is_authenticated:
@@ -391,7 +391,6 @@ def page_content(path=""):
         # 'g' sets a global variable for this request
         g.preview_url = get_preview_url(page_id)
 
-    
     lang = get_current_locale(current_app)
     cache_key = f"{GC_ARTICLES_CACHE_PREFIX}{pages_endpoint}/{lang}/{path}"
 
