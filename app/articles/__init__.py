@@ -6,6 +6,8 @@ from werkzeug.exceptions import NotFound, Unauthorized
 
 from app import cache, get_current_locale
 
+from app.extensions import redis_client
+
 GC_ARTICLES_PAGE_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_API_ENDPOINT = "/wp-json/jwt-auth/v1/token"
@@ -41,8 +43,8 @@ def authenticate(username, password, base_endpoint) -> Union[str, None]:
     url = f"https://{base_endpoint}{auth_endpoint}"
 
     # If we have a token cached, check if it's still valid and return it
-    if cache.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY):
-        token = cache.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY)
+    if redis_client.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY) is not None:
+        token = redis_client.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY)
         if validate_token(token):
             return token
 
@@ -52,7 +54,7 @@ def authenticate(username, password, base_endpoint) -> Union[str, None]:
 
         parsed = json.loads(res.text)
 
-        cache.set(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY, parsed["token"], timeout=GC_ARTICLES_AUTH_TOKEN_CACHE_TTL)
+        redis_client.set(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY, parsed["token"], ex=GC_ARTICLES_AUTH_TOKEN_CACHE_TTL)
 
         return parsed["token"]
     except Exception:
