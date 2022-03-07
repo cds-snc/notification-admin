@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from string import ascii_uppercase
 
 from dateutil.parser import parse
-from flask import abort, flash, jsonify, redirect, render_template, request, url_for
+from flask import abort, current_app, flash, jsonify, redirect, render_template, request, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -581,8 +581,14 @@ def add_service_template(service_id, template_type, template_folder_id=None):
     if not current_service.has_permission("letter") and template_type == "letter":
         abort(403)
 
+    # SJA
+
     form = form_objects[template_type]()
+
     if form.validate_on_submit():
+
+        current_app.logger.info(f"----- add  {form['button_pressed']} ------")
+
         if form.process_type.data != "normal":
             abort_403_if_not_admin_user()
         try:
@@ -649,6 +655,9 @@ def edit_service_template(service_id, template_id):
     template["template_content"] = template["content"]
     form = form_objects[template["template_type"]](**template)
     if form.validate_on_submit():
+
+        current_app.logger.info(f"-----  edit {form['button_pressed']} ------")
+
         if form.process_type.data != template["process_type"]:
             abort_403_if_not_admin_user()
 
