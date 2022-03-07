@@ -604,7 +604,7 @@ def useful_headers_after_request(response):
         (
             "default-src 'self' {asset_domain} 'unsafe-inline';"
             "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
-            "connect-src 'self' *.google-analytics.com;"
+            "connect-src 'self' *.google-analytics.com www.googletagmanager.com;"
             "object-src 'self';"
             "style-src 'self' *.googleapis.com 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
