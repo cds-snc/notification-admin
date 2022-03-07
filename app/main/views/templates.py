@@ -85,6 +85,25 @@ def view_template(service_id, template_id):
     )
 
 
+@main.route("/services/<service_id>/templates/<uuid:template_id>/preview", methods=["GET", "POST"])
+@user_has_permissions()
+def preview_template(service_id, template_id):
+    template = current_service.get_template(template_id)
+    template_folder = current_service.get_template_folder(template["folder"])
+
+    user_has_template_permission = current_user.has_template_folder_permission(template_folder)
+
+    if should_skip_template_page(template["template_type"]):
+        return redirect(url_for(".send_one_off", service_id=service_id, template_id=template_id))
+
+    return render_template(
+        "views/templates/preview_template.html",
+        template=get_email_preview_template(template, template_id, service_id),
+        template_postage=template["postage"],
+        user_has_template_permission=user_has_template_permission,
+    )
+
+
 @main.route("/services/<service_id>/start-tour/<uuid:template_id>")
 @user_has_permissions("view_activity")
 def start_tour(service_id, template_id):
@@ -581,13 +600,9 @@ def add_service_template(service_id, template_type, template_folder_id=None):
     if not current_service.has_permission("letter") and template_type == "letter":
         abort(403)
 
-    # SJA
-
     form = form_objects[template_type]()
 
     if form.validate_on_submit():
-
-        current_app.logger.info(f"----- add  {form['button_pressed']} ------")
 
         if form.process_type.data != "normal":
             abort_403_if_not_admin_user()
@@ -656,7 +671,8 @@ def edit_service_template(service_id, template_id):
     form = form_objects[template["template_type"]](**template)
     if form.validate_on_submit():
 
-        current_app.logger.info(f"-----  edit {form['button_pressed']} ------")
+        button_pressed = form["button_pressed"]
+        current_app.logger.info(f"-----  edit {button_pressed} ------")
 
         if form.process_type.data != template["process_type"]:
             abort_403_if_not_admin_user()
@@ -708,9 +724,8 @@ def edit_service_template(service_id, template_id):
             else:
                 raise e
         else:
-            flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
-
-            return redirect(url_for(".view_template", service_id=service_id, template_id=template_id))
+            # flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
+            return redirect(url_for(".preview_template", service_id=service_id, template_id=template_id))
 
     if email_or_sms_not_enabled(template["template_type"], current_service.permissions):
         return redirect(

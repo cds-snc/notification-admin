@@ -730,6 +730,7 @@ class BaseTemplateForm(StripWhitespaceForm):
         ],
         default="normal",
     )
+    button_pressed = StringField()
 
 
 class SMSTemplateForm(BaseTemplateForm):

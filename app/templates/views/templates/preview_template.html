@@ -1,0 +1,119 @@
+{% extends "admin_template.html" %}
+{% from "components/banner.html" import banner_wrapper %}
+{% from "components/folder-path.html" import folder_path, page_title_folder_path %}
+{% from "components/page-footer.html" import page_footer, sticky_page_footer, sticky_page_footer_two_submit_buttons %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/api-key.html" import api_key %}
+{% from "components/page-header.html" import page_header %}
+
+{% block service_page_title %}
+  {{ page_title_folder_path(current_service.get_template_path(template._template)) }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  <div>
+    {{ folder_path(
+      folders=current_service.get_template_path(template._template),
+      service_id=current_service.id,
+      template_type='all',
+      current_user=current_user,
+      root_element='h2',
+    ) }}
+    {{ page_header(template._template.name) }}
+  </div>
+
+<div class="w-full template-container">
+  {{ template|string|translate_preview_template }}
+</div>
+
+
+  {# {% include 'views/templates/_template.html' %} #}
+
+  <div class="flex mb-16 -mt-8{% if template.template_type != 'email' %} flex-col{% endif %}">
+      <div class="{% if template.template_type == 'email' %}w-1/4{% else %}mb-6{% endif %}">
+        {% if current_user.has_permissions('manage_templates') and not template._template.archived %}
+
+          <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}">
+            {{ _('Edit') }}
+          </a>
+          &nbsp; &nbsp; 
+          <a href="{{ url_for(".view_template", service_id=current_service.id, template_id=template.id) }}">
+            {{ _('Done') }}
+          </a>
+
+      {# <form action="{{url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button
+          data-button-id="btn1"
+          type="submit"
+          class="button text-base outline-none focus:shadow-outline"
+          name="button_pressed"
+          value="edit"
+        >
+          Edit
+        </button>
+      </form>
+
+      <form action="{{ url_for(".view_template", service_id=current_service.id, template_id=template.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button
+          data-button-id="btn2"
+          type="submit"
+          class="button text-base outline-none focus:shadow-outline"
+          name="button_pressed"
+          value="{{ button2_value }}"
+        >
+          Done
+        </button>
+      </form> #}
+
+
+
+
+
+
+
+        {% endif %}
+      </div>
+    {% if template._template.updated_at %}
+    <div class="{% if template.template_type == 'email' %}w-3/4 text-right{% endif %}">
+      <span>
+        {% set last_edited = _('Last edited') %}
+        {{ last_edited }}
+        {{ template._template.updated_at|format_delta }}
+      </span>
+
+      &emsp;
+      {% set version_txt = _('See previous versions') %}
+      <a href="{{ url_for('.view_template_versions', service_id=current_service.id, template_id=template.id) }}">{{ version_txt }}</a>
+    </div>
+    {% endif %}
+  </div>
+
+  {# <div class="mb-16">
+    {{ api_key(template.id, name="Template ID", thing='template ID') }}
+  </div> #}
+
+  {# {% if current_user.has_permissions('manage_templates') and user_has_template_permission %}
+    {% if template.template_type != 'letter' %}
+      {% if not template._template.redact_personalisation %}
+        <div class="page-footer-delete-link block page-footer-delete-link-without-button mb-6">
+          <a href="{{ url_for('.confirm_redact_template', service_id=current_service.id, template_id=template.id) }}">{{ _('Redact personalised variable content after sending') }}</a>
+        </div>
+      {% else %}
+        <p class="hint">
+          {{ _("Recipients' information will be redacted from system") }}
+        </p>
+      {% endif %}
+    {% endif %}
+    {% if not template._template.archived %}
+      {% set delete_txt = _('Delete this template') %}
+      <div class="page-footer-delete-link block page-footer-delete-link-without-button">
+        <a href="{{ url_for('.delete_service_template', service_id=current_service.id, template_id=template.id) }}">{{ delete_txt }}</a>
+      </div>
+      &emsp;
+    {% endif %}
+  {% endif %} #}
+
+{% endblock %}
