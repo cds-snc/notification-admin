@@ -65,6 +65,7 @@
   {% if count_of_displayed_recipients < count_of_recipients %}
     <p>
       {{ _('Only showing the first')}} {{ count_of_displayed_recipients }} {{ _('rows') }}
+      <a href="?original_file_name={{ original_file_name }}&show={{ count_of_displayed_recipients + 10 }}">Show the next 10 recipients</a>
     </p>
   {% endif %}
 
