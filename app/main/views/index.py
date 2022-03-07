@@ -375,6 +375,7 @@ def old_page_redirects():
 # --- Dynamic routes handling for GCArticles API-driven pages --- #
 @main.route("/<path:path>")
 def page_content(path=""):
+    pages_endpoint = "wp/v2/pages"
     page_id = ""
     auth_required = False
 
@@ -384,12 +385,13 @@ def page_content(path=""):
 
         auth_required = True
         page_id = request.args.get("id")
+        pages_endpoint = f"wp/v2/pages/{page_id}"
         # 'g' sets a global variable for this request
         g.preview_url = get_preview_url(page_id)
 
-    pages_endpoint = f"wp/v2/pages/{page_id}"
+    
     lang = get_current_locale(current_app)
-    cache_key = f"{GC_ARTICLES_CACHE_PREFIX}{pages_endpoint}{lang}/{path}"
+    cache_key = f"{GC_ARTICLES_CACHE_PREFIX}{pages_endpoint}/{lang}/{path}"
 
     cached = redis_client.get(cache_key)
     if cached is not None:
