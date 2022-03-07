@@ -64,18 +64,21 @@ def authenticate(username, password, base_endpoint) -> Union[str, None]:
         return None
 
 
-def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> Union[dict, str, None]:
+def request_content(endpoint: str, params={"slug": ""}, auth_required=False, to_cache=True) -> Union[dict, str, None]:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     username = current_app.config["GC_ARTICLES_API_AUTH_USERNAME"]
     password = current_app.config["GC_ARTICLES_API_AUTH_PASSWORD"]
+    cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}"
 
     # strip {"slug": "preview"} from dict but keep everything else
     request_params = {k: v for k, v in params.items() if v != "preview"}
     slug = request_params.get("slug")
-    slug_for_cache = slug or "preview"
 
     lang = get_current_locale(current_app)
-    cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}/{lang}/{slug_for_cache}"
+    
+    if slug:
+        cache_key += f"/{lang}/{slug}"
+
     headers = {}
 
     if auth_required:
@@ -112,8 +115,10 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
             )
             raise NotFound()
 
-        current_app.logger.info(f"Saving to cache: {cache_key}")
-        redis_client.set(cache_key, json.dumps(parsed), ex=GC_ARTICLES_FALLBACK_CACHE_TTL)
+        if to_cache:
+            # Save/update the Fallback cache
+            current_app.logger.info(f"Saving to cache: {cache_key}")
+            redis_client.set(cache_key, json.dumps(parsed), ex=GC_ARTICLES_FALLBACK_CACHE_TTL)
 
         if isinstance(parsed, list):
             return parsed[0]
@@ -124,6 +129,7 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
     except Unauthorized:
         abort(403)
     except requests.exceptions.ConnectionError:
+        # Fallback cache in case we can't connect to GC Articles
         cached = redis_client.get(cache_key)
         if cached is not None:
             current_app.logger.info(f"Cache hit: {cache_key}")

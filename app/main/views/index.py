@@ -378,6 +378,7 @@ def page_content(path=""):
     pages_endpoint = "wp/v2/pages"
     page_id = ""
     auth_required = False
+    to_cache=True
 
     if path == "preview":
         if not request.args.get("id") or not current_user.is_authenticated:
@@ -386,6 +387,7 @@ def page_content(path=""):
         auth_required = True
         page_id = request.args.get("id")
         pages_endpoint = f"wp/v2/pages/{page_id}"
+        to_cache = False
         # 'g' sets a global variable for this request
         g.preview_url = get_preview_url(page_id)
 
@@ -398,9 +400,10 @@ def page_content(path=""):
         current_app.logger.info(f"Cache hit: {cache_key}")
         response = json.loads(cached)
     else:
-        response = request_content(pages_endpoint, {"slug": path}, auth_required=auth_required)
-        current_app.logger.info(f"Saving menu to cache: {cache_key}")
-        redis_client.set(cache_key, json.dumps(response), ex=GC_ARTICLES_DEFAULT_CACHE_TTL)
+        response = request_content(pages_endpoint, {"slug": path}, auth_required=auth_required, to_cache=to_cache)
+        if to_cache:
+            current_app.logger.info(f"Saving menu to cache: {cache_key}")
+            redis_client.set(cache_key, json.dumps(response), ex=GC_ARTICLES_DEFAULT_CACHE_TTL)
 
     # when response is a string, redirect to change our language setting
     if isinstance(response, str):
