@@ -80,7 +80,7 @@
     @apply mt-0;
   }
 
-  @media (max-width: theme("screen.lg")) {
+  @media (max-width: theme("screens.lg")) {
     /* Overwrite the flex basis when in a stacked layout */
     .wp-block-column[style*="flex-basis"] {
       flex-basis: 100% !important;
