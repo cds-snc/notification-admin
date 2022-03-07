@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 from flask import (
     abort,
@@ -16,6 +17,8 @@ from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
 from app import email_branding_client, get_current_locale, letter_branding_client
 from app.articles import (
+    GC_ARTICLES_CACHE_PREFIX,
+    GC_ARTICLES_DEFAULT_CACHE_TTL,
     get_lang_url,
     get_nav_items,
     get_preview_url,
@@ -35,6 +38,7 @@ from app.utils import (
     get_logo_cdn_domain,
     user_is_logged_in,
 )
+from app.extensions import redis_client
 
 
 @main.route("/")
@@ -383,7 +387,18 @@ def page_content(path=""):
         # 'g' sets a global variable for this request
         g.preview_url = get_preview_url(page_id)
 
-    response = request_content(f"wp/v2/pages/{page_id}", {"slug": path}, auth_required=auth_required)
+    pages_endpoint = f"wp/v2/pages/{page_id}"
+    lang = get_current_locale(current_app)
+    cache_key = f"{GC_ARTICLES_CACHE_PREFIX}{pages_endpoint}{lang}/{path}"
+
+    cached = redis_client.get(cache_key)
+    if cached is not None:
+        current_app.logger.info(f"Cache hit: {cache_key}")
+        response = json.loads(cached)
+    else:
+        response = request_content(pages_endpoint, {"slug": path}, auth_required=auth_required)
+        current_app.logger.info(f"Saving menu to cache: {cache_key}")
+        redis_client.set(cache_key, json.dumps(response), ex=GC_ARTICLES_DEFAULT_CACHE_TTL)
 
     # when response is a string, redirect to change our language setting
     if isinstance(response, str):

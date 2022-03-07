@@ -7,7 +7,11 @@ from werkzeug.exceptions import NotFound, Unauthorized
 from app import get_current_locale
 from app.extensions import redis_client
 
-GC_ARTICLES_PAGE_CACHE_TTL = 86400
+GC_ARTICLES_CACHE_PREFIX = "gc-articles--"
+GC_ARTICLES_DEFAULT_CACHE_TTL = 3600
+GC_ARTICLES_NAV_CACHE_TTL = 86400
+GC_ARTICLES_FALLBACK_CACHE_PREFIX = "gc-articles-fallback--"
+GC_ARTICLES_FALLBACK_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_API_ENDPOINT = "/wp-json/jwt-auth/v1/token"
 GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = "gc-articles-bearer-token"
@@ -71,7 +75,7 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
     slug_for_cache = slug or "preview"
 
     lang = get_current_locale(current_app)
-    cache_key = f"{endpoint}/{lang}/{slug_for_cache}"
+    cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}{lang}/{slug_for_cache}"
     headers = {}
 
     if auth_required:
@@ -109,7 +113,7 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
             raise NotFound()
 
         current_app.logger.info(f"Saving to cache: {cache_key}")
-        redis_client.set(cache_key, json.dumps(parsed), ex=GC_ARTICLES_PAGE_CACHE_TTL)
+        redis_client.set(cache_key, json.dumps(parsed), ex=GC_ARTICLES_FALLBACK_CACHE_TTL)
 
         if isinstance(parsed, list):
             return parsed[0]
@@ -146,7 +150,17 @@ def _get_nav_wp(locale: str) -> Optional[list]:
     if locale == "fr":
         nav_url = "menus/v1/menus/notify-admin-fr"
 
-    nav_response = request_content(nav_url)
+    cache_key = f"{GC_ARTICLES_CACHE_PREFIX}{nav_url}"
+
+    cached = redis_client.get(cache_key)
+    if cached is not None:
+        current_app.logger.info(f"Cache hit: {cache_key}")
+        nav_response = json.loads(cached)
+    else:
+        nav_response = request_content(nav_url)
+        current_app.logger.info(f"Saving menu to cache: {cache_key}")
+        redis_client.set(cache_key, json.dumps(nav_response), ex=GC_ARTICLES_NAV_CACHE_TTL)
+
     nav_items = None
 
     if isinstance(nav_response, dict) and "items" in nav_response:
