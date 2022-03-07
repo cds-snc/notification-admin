@@ -4,8 +4,7 @@ import requests
 from flask import abort, current_app, json
 from werkzeug.exceptions import NotFound, Unauthorized
 
-from app import cache, get_current_locale
-
+from app import get_current_locale
 from app.extensions import redis_client
 
 GC_ARTICLES_PAGE_CACHE_TTL = 86400
@@ -110,7 +109,7 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
             raise NotFound()
 
         current_app.logger.info(f"Saving to cache: {cache_key}")
-        cache.set(cache_key, parsed, timeout=GC_ARTICLES_PAGE_CACHE_TTL)
+        redis_client.set(cache_key, json.dumps(parsed), ex=GC_ARTICLES_PAGE_CACHE_TTL)
 
         if isinstance(parsed, list):
             return parsed[0]
@@ -120,13 +119,17 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
         abort(404)
     except Unauthorized:
         abort(403)
-    except ConnectionError:
-        if cache.get(cache_key):
+    except requests.exceptions.ConnectionError:
+        cached = redis_client.get(cache_key)
+        if cached is not None:
             current_app.logger.info(f"Cache hit: {cache_key}")
-            return cache.get(cache_key)
-        else:
-            current_app.logger.info(f"Cache miss: {cache_key}")
-            return None
+            obj = json.loads(cached)
+            if isinstance(obj, list):
+                return obj[0]
+            return obj
+
+        current_app.logger.info(f"Cache miss: {cache_key}")
+        return None
     except Exception:
         return None
 
