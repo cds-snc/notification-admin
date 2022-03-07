@@ -90,5 +90,25 @@
   .fullscreen-shim + .table-show-more-link {
     margin-top: -28px;
   }
+
+  svg.table-overflow rect {
+    fill: url(#cut);
+  }
+  @screen sm {
+    svg.table-overflow rect {
+      fill: url(#cut-sm);
+    }
+  }
+  @screen md {
+    svg.table-overflow rect {
+      fill: url(#cut-md);
+    }
+  }
+  @screen lg {
+    svg.table-overflow rect {
+      fill: url(#cut-lg);
+    }
+  }
+
   /*! purgecss end ignore */
 }
