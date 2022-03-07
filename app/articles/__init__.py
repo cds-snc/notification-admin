@@ -75,7 +75,7 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False) -> 
     slug_for_cache = slug or "preview"
 
     lang = get_current_locale(current_app)
-    cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}{lang}/{slug_for_cache}"
+    cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}/{lang}/{slug_for_cache}"
     headers = {}
 
     if auth_required:
