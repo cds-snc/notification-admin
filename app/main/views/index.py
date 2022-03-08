@@ -17,8 +17,6 @@ from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
 from app import email_branding_client, get_current_locale, letter_branding_client
 from app.articles import (
-    GC_ARTICLES_CACHE_PREFIX,
-    GC_ARTICLES_DEFAULT_CACHE_TTL,
     _get_alt_locale,
     get_lang_url,
     get_nav_items,

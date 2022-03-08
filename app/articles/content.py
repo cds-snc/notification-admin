@@ -97,12 +97,6 @@ def get_page_by_slug(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
 def get_page_by_id(endpoint: str) -> Union[dict, None]:
     return get_content(endpoint, auth_required=True)
 
-def get_menu():
-    return None
-
-def _get_cache_key():
-    return ''
-
 def _get_headers(auth_required=False):
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     username = current_app.config["GC_ARTICLES_API_AUTH_USERNAME"]

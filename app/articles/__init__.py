@@ -10,15 +10,7 @@ from app.articles.content import get_content
 from app.extensions import redis_client
 
 GC_ARTICLES_CACHE_PREFIX = "gc-articles--"
-GC_ARTICLES_DEFAULT_CACHE_TTL = int(timedelta(days=1).total_seconds())
 GC_ARTICLES_NAV_CACHE_TTL = int(timedelta(days=5).total_seconds())
-GC_ARTICLES_FALLBACK_CACHE_PREFIX = "gc-articles-fallback--"
-GC_ARTICLES_FALLBACK_CACHE_TTL = int(timedelta(days=7).total_seconds())
-GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = int(timedelta(days=1).total_seconds())
-GC_ARTICLES_AUTH_API_ENDPOINT = "/wp-json/jwt-auth/v1/token"
-GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = "gc-articles-bearer-token"
-REQUEST_TIMEOUT = 5
-
 
 def _get_alt_locale(locale):
     return "fr" if locale == "en" else "en"
@@ -27,43 +19,6 @@ def _get_alt_locale(locale):
 def set_active_nav_item(items=[], url="") -> None:
     for item in items:
         item["active"] = True if item["url"] == url else False
-
-
-def validate_token(token):
-    auth_endpoint = GC_ARTICLES_AUTH_API_ENDPOINT
-    base_endpoint = current_app.config["GC_ARTICLES_API"]
-
-    url = f"https://{base_endpoint}{auth_endpoint}/validate"
-
-    headers = {"Authorization": "Bearer {}".format(token)}
-
-    res = requests.post(url=url, headers=headers, timeout=REQUEST_TIMEOUT)
-
-    return res.status_code == 200
-
-
-def authenticate(username, password, base_endpoint) -> Union[str, None]:
-    auth_endpoint = GC_ARTICLES_AUTH_API_ENDPOINT
-
-    url = f"https://{base_endpoint}{auth_endpoint}"
-
-    # If we have a token cached, check if it's still valid and return it
-    if redis_client.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY) is not None:
-        token = redis_client.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY)
-        if validate_token(token):
-            return token
-
-    try:
-        # Otherwise get a fresh one
-        res = requests.post(url=url, data={"username": username, "password": password}, timeout=REQUEST_TIMEOUT)
-
-        parsed = json.loads(res.text)
-
-        redis_client.set(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY, parsed["token"], ex=GC_ARTICLES_AUTH_TOKEN_CACHE_TTL)
-
-        return parsed["token"]
-    except Exception:
-        return None
 
 
 def get_nav_items() -> Optional[list]:
