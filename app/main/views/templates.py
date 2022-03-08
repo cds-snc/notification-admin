@@ -107,6 +107,7 @@ def preview_template(service_id, template_id):
         if request.form["button_pressed"] == "edit":
             return redirect(url_for(".edit_service_template", service_id=current_service.id, template_id=template_id))
         else:
+            flash(_("'{}' template saved").format(template["name"]), "default_with_tick")
             return redirect(url_for(".view_template", service_id=current_service.id, template_id=template_id))
 
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
@@ -644,15 +645,23 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             else:
                 raise e
         else:
-            flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
-
-            return redirect(
-                url_for(
-                    ".preview_template",
-                    service_id=service_id,
-                    template_id=new_template["data"]["id"],
+            if request.form.get("button_pressed") == "preview":
+                return redirect(
+                    url_for(
+                        ".preview_template",
+                        service_id=service_id,
+                        template_id=new_template["data"]["id"],
+                    )
                 )
-            )
+            else:
+                flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
+                return redirect(
+                    url_for(
+                        ".view_template",
+                        service_id=service_id,
+                        template_id=new_template["data"]["id"],
+                    )
+                )
 
     if email_or_sms_not_enabled(template_type, current_service.permissions):
         return redirect(
@@ -742,8 +751,23 @@ def edit_service_template(service_id, template_id):
             else:
                 raise e
         else:
-            flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
-            return redirect(url_for(".preview_template", service_id=service_id, template_id=template_id))
+            if request.form.get("button_pressed") == "preview":
+                return redirect(
+                    url_for(
+                        ".preview_template",
+                        service_id=service_id,
+                        template_id=template_id,
+                    )
+                )
+            else:
+                flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
+                return redirect(
+                    url_for(
+                        ".view_template",
+                        service_id=service_id,
+                        template_id=template_id,
+                    )
+                )
 
     if email_or_sms_not_enabled(template["template_type"], current_service.permissions):
         return redirect(

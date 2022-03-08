@@ -34,11 +34,7 @@
       {% if current_user.platform_admin %}
         {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }}
       {% endif %}
-
-      {{ sticky_page_footer(_('Preview')) }}
-      {# {{ sticky_page_footer_two_submit_buttons(_('Save'), "save", _("Preview"), "preview") }} #}
-      
-
+      {{ sticky_page_footer_two_submit_buttons(_('Save'), "save", _("Preview"), "preview") }}
     </div>
   </div>
   {% endcall %}
