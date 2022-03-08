@@ -8,13 +8,13 @@
 <head>
   <meta charset="utf-8"/>
   <title>{% block page_title %}Notification{% endblock %}</title>
+  {% include 'partials/google-tag-manager-head.html' %}
 
   <link
     rel="stylesheet"
     media="screen"
     href="{{ asset_url('stylesheets/index.css') }}"
   />
-
 
   <link
     rel="shortcut icon"
@@ -96,6 +96,7 @@
 </head>
 
 <body class="{% block body_classes %}{% endblock %} flex flex-col min-h-screen">
+{% include 'partials/google-tag-manager-body.html' %}
 <script>
   document.body.className = document.body.className
     ? document.body.className + " js-enabled"
