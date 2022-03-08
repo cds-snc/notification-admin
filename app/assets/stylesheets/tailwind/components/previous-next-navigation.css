@@ -1,8 +1,6 @@
 @layer components {
   .previous-and-next-navigation {
-    margin-left: -15px;
-    margin-right: 15px;
-    @apply block my-gutter;
+    @apply block my-gutter -mx-gutterHalf;
   }
 
   .previous-and-next-navigation ul {
@@ -10,11 +8,14 @@
   }
 
   .previous-and-next-navigation li {
-    @apply text-small leading-tight font-normal float-left text-right list-none m-0 p-0 w-1/2;
+    @apply text-small leading-tight font-normal list-none m-0 p-0 w-1/2;
   }
 
   .previous-and-next-navigation li a {
-    @apply block p-gutterHalf no-underline;
+    @apply flex p-gutterHalf  no-underline;
+  }
+  .previous-and-next-navigation .pagination-part-title {
+    @apply block text-titlelarge leading-tight font-bold ml-gutterHalf;
   }
   .previous-and-next-navigation li a:visited {
     @apply text-blue;
@@ -25,23 +26,29 @@
   }
 
   .previous-and-next-navigation .pagination-icon {
-    margin-bottom: 1px;
-    height: 0.482em;
-    width: 0.63em;
+    margin-top: 0.684em;
+    height: 0.684em;
+    width: 0.894em;
     @apply inline-block;
   }
 
   .previous-and-next-navigation .pagination-label {
     margin-top: 0.1em;
-    @apply inline-block underline;
+    @apply block underline;
   }
   .previous-and-next-navigation .pagination-label:empty {
     @apply hidden;
   }
 
-  @screen xs {
+  @screen sm {
+    .previous-and-next-navigation .next-page {
+      @apply ml-auto;
+    }
     .previous-and-next-navigation .next-page a {
-      @apply text-right;
+      @apply justify-end;
+    }
+    .previous-and-next-navigation .next-page .pagination-part-title {
+      @apply ml-0 mr-gutterHalf;
     }
   }
 }

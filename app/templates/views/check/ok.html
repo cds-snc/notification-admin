@@ -1,5 +1,6 @@
 {% extends "admin_template.html" %}
 {% from "components/table.html" import list_table, field, text_field, index_field, hidden_field_heading %}
+{% from "components/previous-next-navigation.html" import previous_next_navigation %}
 {% from "components/file-upload.html" import file_upload %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
@@ -99,6 +100,19 @@
   </p>
 
   {{ template|string|translate_preview_template }}
+
+
+  {{ previous_next_navigation(
+    previous_page={
+      "url":url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(preview_row - 1), original_file_name=original_file_name),
+      "title":_('Previous preview'),
+      "label":_('Row {}').format(preview_row - 1)} if preview_row > 2, 
+    next_page={
+      "url":url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(preview_row + 1), original_file_name=original_file_name),
+      "title":_('Next preview'),
+      "label":_('Row {}').format(preview_row + 1)
+    } if preview_row < count_of_recipients + 1
+  ) }}
 
 
   <div class="mb-12 clear-both contain-floats">
