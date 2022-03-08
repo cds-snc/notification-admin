@@ -3,25 +3,25 @@
     @apply block my-gutter -mx-gutterHalf;
   }
 
-  .previous-and-next-navigation ul {
+  .previous-and-next-navigation .group {
     @apply m-0 p-0;
   }
 
-  .previous-and-next-navigation li {
+  .previous-and-next-navigation .page {
     @apply text-small leading-tight font-normal list-none m-0 p-0 w-1/2;
   }
 
-  .previous-and-next-navigation li a {
+  .previous-and-next-navigation .page a {
     @apply flex p-gutterHalf  no-underline;
   }
   .previous-and-next-navigation .pagination-part-title {
     @apply block text-titlelarge leading-tight font-bold ml-gutterHalf;
   }
-  .previous-and-next-navigation li a:visited {
+  .previous-and-next-navigation .page a:visited {
     @apply text-blue;
   }
-  .previous-and-next-navigation li a:hover,
-  .previous-and-next-navigation li a:active {
+  .previous-and-next-navigation .page a:hover,
+  .previous-and-next-navigation .page a:active {
     @apply bg-gray-grey4;
   }
 
