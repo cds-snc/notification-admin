@@ -19,12 +19,14 @@ from app import email_branding_client, get_current_locale, letter_branding_clien
 from app.articles import (
     GC_ARTICLES_CACHE_PREFIX,
     GC_ARTICLES_DEFAULT_CACHE_TTL,
+    _get_alt_locale,
     get_lang_url,
     get_nav_items,
     get_preview_url,
-    request_content,
     set_active_nav_item,
 )
+from app.articles.content import get_page_by_id, get_page_by_slug, get_page_by_slug_with_cache
+
 from app.extensions import redis_client
 from app.main import main
 from app.main.forms import (
@@ -373,58 +375,81 @@ def old_page_redirects():
 
 
 # --- Dynamic routes handling for GCArticles API-driven pages --- #
+def _render_dynamic_page(response):
+    title = response["title"]["rendered"]
+    slug_en = response["slug_en"]
+    html_content = response["content"]["rendered"]
+    page_id = request.args.get("id")
+
+    nav_items = get_nav_items()
+    set_active_nav_item(nav_items, request.path)
+
+    return render_template(
+        "views/page-content.html",
+        title=title,
+        html_content=html_content,
+        nav_items=nav_items,
+        slug=slug_en,
+        lang_url=get_lang_url(response, bool(page_id)),
+        stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+    )
+
+@main.route("/preview")
+def preview_content():
+    if not request.args.get("id"):
+        abort(404)
+
+    # User must be authenticated
+    if not current_user.is_authenticated:
+        abort(404)
+
+    # Append the page_id to the request endpoint
+    page_id = request.args.get("id")
+    endpoint = f"wp/v2/pages/{page_id}"
+
+    # 'g' sets a global variable for this request for use in the template
+    g.preview_url = get_preview_url(page_id)
+
+    response = get_page_by_id(endpoint)
+
+    return _render_dynamic_page(response)
+
+
 @main.route("/<path:path>")
 def page_content(path=""):
-    pages_endpoint = "wp/v2/pages"
+    endpoint = "wp/v2/pages"
     page_id = ""
-    auth_required = False
-    to_cache = True
-
-    if path == "preview":
-        if not request.args.get("id") or not current_user.is_authenticated:
-            abort(404)
-
-        auth_required = True
-        page_id = request.args.get("id")
-        pages_endpoint = f"wp/v2/pages/{page_id}"
-        to_cache = False
-        # 'g' sets a global variable for this request
-        g.preview_url = get_preview_url(page_id)
-
     lang = get_current_locale(current_app)
-    cache_key = f"{GC_ARTICLES_CACHE_PREFIX}{pages_endpoint}/{lang}/{path}"
 
-    cached = redis_client.get(cache_key)
-    if cached is not None:
-        current_app.logger.info(f"Cache hit: {cache_key}")
-        response = json.loads(cached)
-    else:
-        response = request_content(pages_endpoint, {"slug": path}, auth_required=auth_required, to_cache=to_cache)
-        if to_cache:
-            current_app.logger.info(f"Saving menu to cache: {cache_key}")
-            redis_client.set(cache_key, json.dumps(response), ex=GC_ARTICLES_DEFAULT_CACHE_TTL)
+    params = {
+        "slug": path,
+        "lang": lang
+    }
 
-    # when response is a string, redirect to change our language setting
-    if isinstance(response, str):
-        return redirect(response)
+    # If user is authenticated, don't cache it
+    if current_user.is_authenticated:
+        response = get_page_by_slug(endpoint, params=params)
+    else: 
+        response = get_page_by_slug_with_cache(endpoint, params=params)
 
-    # when response is a dict, display the content
+    ##
+    # If response was empty, it's possible the logged-in user's current language
+    # doesn't match the requested page language, so let's try again.
+    ##
+    if not response:
+        # try again, with same slug but new language
+        params["lang"] = _get_alt_locale(params.get("lang"))
+        lang_response = get_page_by_slug(endpoint, params=params)
+
+        lang_parsed = json.loads(lang_response.content)
+
+        # if we get a response for the other language, redirect
+        if lang_parsed:
+            return redirect(f"/set-lang?from=/{path}")
+
     if response:
-        title = response["title"]["rendered"]
-        slug_en = response["slug_en"]
-        html_content = response["content"]["rendered"]
-
-        nav_items = get_nav_items()
-        set_active_nav_item(nav_items, request.path)
-
-        return render_template(
-            "views/page-content.html",
-            title=title,
-            html_content=html_content,
-            nav_items=nav_items,
-            slug=slug_en,
-            lang_url=get_lang_url(response, bool(page_id)),
-            stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
-        )
+        if isinstance(response, list):
+            response = response[0]
+        return _render_dynamic_page(response)
     else:
         abort(404)

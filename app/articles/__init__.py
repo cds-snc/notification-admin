@@ -6,6 +6,7 @@ from flask import abort, current_app, json
 from werkzeug.exceptions import NotFound, Unauthorized
 
 from app import get_current_locale
+from app.articles.content import get_content
 from app.extensions import redis_client
 
 GC_ARTICLES_CACHE_PREFIX = "gc-articles--"
@@ -65,83 +66,6 @@ def authenticate(username, password, base_endpoint) -> Union[str, None]:
         return None
 
 
-def request_content(endpoint: str, params={"slug": ""}, auth_required=False, to_cache=True) -> Union[dict, str, None]:
-    base_endpoint = current_app.config["GC_ARTICLES_API"]
-    username = current_app.config["GC_ARTICLES_API_AUTH_USERNAME"]
-    password = current_app.config["GC_ARTICLES_API_AUTH_PASSWORD"]
-    cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}"
-
-    # strip {"slug": "preview"} from dict but keep everything else
-    request_params = {k: v for k, v in params.items() if v != "preview"}
-    slug = request_params.get("slug")
-
-    lang = get_current_locale(current_app)
-
-    if slug:
-        cache_key += f"/{lang}/{slug}"  # append lang/slug to cache key
-        request_params["lang"] = lang  # add 'lang' param explicitly
-
-    headers = {}
-
-    if auth_required:
-        token = authenticate(username, password, base_endpoint)
-        headers = {"Authorization": "Bearer {}".format(token)}
-
-    try:
-        url = f"https://{base_endpoint}/wp-json/{endpoint}"
-        response = requests.get(url, params=request_params, headers=headers, timeout=REQUEST_TIMEOUT)
-        parsed = json.loads(response.content)
-
-        # if getting page by slug and "parsed" is empty
-        if slug and not parsed:
-            # try again, with same slug but new language
-            request_params["lang"] = _get_alt_locale(request_params.get("lang"))
-            lang_response = requests.get(url, params=request_params, headers=headers, timeout=REQUEST_TIMEOUT)
-            lang_parsed = json.loads(lang_response.content)
-
-            # if we get a response for the other language, return a redirect string
-            if lang_parsed:
-                return f"/set-lang?from=/{slug}"
-
-        if response.status_code == 403:
-            raise Unauthorized()
-
-        if response.status_code >= 400 or not parsed:
-            # Getting back a 4xx or 5xx status code
-            current_app.logger.info(
-                f"Error requesting content. URL: {url}, params: {request_params}, status: {response.status_code}, data: {parsed}"
-            )
-            raise NotFound()
-
-        if to_cache:
-            # Save/update the Fallback cache
-            current_app.logger.info(f"Saving to cache: {cache_key}")
-            redis_client.set(cache_key, json.dumps(parsed), ex=GC_ARTICLES_FALLBACK_CACHE_TTL)
-
-        if isinstance(parsed, list):
-            return parsed[0]
-
-        return parsed
-    except NotFound:
-        abort(404)
-    except Unauthorized:
-        abort(403)
-    except requests.exceptions.ConnectionError:
-        # Fallback cache in case we can't connect to GC Articles
-        cached = redis_client.get(cache_key)
-        if cached is not None:
-            current_app.logger.info(f"Cache hit: {cache_key}")
-            obj = json.loads(cached)
-            if isinstance(obj, list):
-                return obj[0]
-            return obj
-
-        current_app.logger.info(f"Cache miss: {cache_key}")
-        return None
-    except Exception:
-        return None
-
-
 def get_nav_items() -> Optional[list]:
     # @todo add caching
     locale = get_current_locale(current_app)
@@ -161,7 +85,7 @@ def _get_nav_wp(locale: str) -> Optional[list]:
         current_app.logger.info(f"Cache hit: {cache_key}")
         nav_response = json.loads(cached)
     else:
-        nav_response = request_content(nav_url)
+        nav_response = get_content(nav_url)
         current_app.logger.info(f"Saving menu to cache: {cache_key}")
         redis_client.set(cache_key, json.dumps(nav_response), ex=GC_ARTICLES_NAV_CACHE_TTL)
 
