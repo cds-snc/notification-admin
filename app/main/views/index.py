@@ -397,7 +397,6 @@ def preview_content():
 @main.route("/<path:path>")
 def page_content(path=""):
     endpoint = "wp/v2/pages"
-    page_id = ""
     lang = get_current_locale(current_app)
 
     params = {
@@ -411,27 +410,15 @@ def page_content(path=""):
     else: 
         response = get_page_by_slug_with_cache(endpoint, params=params)
 
-    ##
-    # If response was empty, it's possible the logged-in user's current language
-    # doesn't match the requested page language, so let's try again.
-    ##
     if not response:
-        # try again, with same slug but new language
-        params["lang"] = _get_alt_locale(params.get("lang"))
-        lang_response = get_page_by_slug(endpoint, params=params)
+        response = _try_alternate_language(endpoint, params)
 
-        lang_parsed = json.loads(lang_response.content)
-
-        # if we get a response for the other language, redirect
-        if lang_parsed:
-            return redirect(f"/set-lang?from=/{path}")
-
-    if response:
-        if isinstance(response, list):
-            response = response[0]
-        return _render_dynamic_page(response)
-    else:
+    if not response:
         abort(404)
+
+    if isinstance(response, list):
+        response = response[0]
+    return _render_dynamic_page(response)
 
 def _render_dynamic_page(response):
     title = response["title"]["rendered"]
@@ -448,6 +435,22 @@ def _render_dynamic_page(response):
         html_content=html_content,
         nav_items=nav_items,
         slug=slug_en,
-        lang_url=get_lang_url(response, bool(page_id)),
+        lang_url=get_lang_url(response, bool(page_id)), # revisit page_id
         stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
     )
+
+##
+# If response was empty, it's possible the logged-in user's current language
+# doesn't match the requested page language, so let's try again.
+##
+def _try_alternate_language(endpoint, params):
+    path = params.get("slug")
+    # try again, with same slug but new language
+    params["lang"] = _get_alt_locale(params.get("lang"))
+    lang_response = get_page_by_slug(endpoint, params=params)
+
+    lang_parsed = json.loads(lang_response.content)
+
+    # if we get a response for the other language, redirect
+    if lang_parsed:
+        return redirect(f"/set-lang?from=/{path}")
