@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Optional, Union
 
 import requests
@@ -8,11 +9,11 @@ from app import get_current_locale
 from app.extensions import redis_client
 
 GC_ARTICLES_CACHE_PREFIX = "gc-articles--"
-GC_ARTICLES_DEFAULT_CACHE_TTL = 3600
-GC_ARTICLES_NAV_CACHE_TTL = 86400
+GC_ARTICLES_DEFAULT_CACHE_TTL = int(timedelta(days=1).total_seconds())
+GC_ARTICLES_NAV_CACHE_TTL = int(timedelta(days=5).total_seconds())
 GC_ARTICLES_FALLBACK_CACHE_PREFIX = "gc-articles-fallback--"
-GC_ARTICLES_FALLBACK_CACHE_TTL = 86400
-GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = 86400
+GC_ARTICLES_FALLBACK_CACHE_TTL = int(timedelta(days=7).total_seconds())
+GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = int(timedelta(days=1).total_seconds())
 GC_ARTICLES_AUTH_API_ENDPOINT = "/wp-json/jwt-auth/v1/token"
 GC_ARTICLES_AUTH_TOKEN_CACHE_KEY = "gc-articles-bearer-token"
 REQUEST_TIMEOUT = 5
