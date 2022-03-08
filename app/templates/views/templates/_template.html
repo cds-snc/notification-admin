@@ -16,7 +16,7 @@
     <h2 class="heading-medium">{{ _('Ready to send?') }}</h2>
 
     <div class="mb-12">
-      <a href="{{ url_for('.set_sender', service_id=current_service.id, template_id=template.id) }}" class="button">
+      <a href="{{ url_for('.add_recipients', service_id=current_service.id, template_id=template.id) }}" class="button">
         {{ _('Add recipients') }}
       </a>
       <a href="{{ url_for('.send_test', service_id=current_service.id, template_id=template.id) }}" class="button button button-secondary">{{ _('Send test message to yourself') }}</a>

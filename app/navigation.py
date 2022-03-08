@@ -149,6 +149,7 @@ class HeaderNavigation(Navigation):
         },
         "templates": {
             "action_blocked",
+            "add_recipients",
             "add_service_template",
             "check_messages",
             "check_notification",

@@ -593,7 +593,7 @@ def test_edit_letter_templates_postage_updates_postage(client_request, service_o
         ),
         (
             ["send_messages", "manage_templates"],
-            [".set_sender", ".edit_service_template"],
+            [".add_recipients", ".edit_service_template"],
             None,
         ),
     ],
@@ -2131,4 +2131,62 @@ def test_add_sender_link_only_appears_on_services_with_no_senders(
         "main.service_add_letter_contact",
         service_id=SERVICE_ONE_ID,
         from_template=fake_uuid,
+    )
+
+
+@pytest.mark.parametrize(
+    "template_mock",
+    [
+        mock_get_service_email_template,
+        mock_get_service_template,
+    ],
+)
+def test_add_recipients_redirects_many_recipients(template_mock, client_request, mocker):
+    template_mock(mocker)
+    template_id = fake_uuid
+
+    client_request.post(
+        "main.add_recipients",
+        service_id=SERVICE_ONE_ID,
+        template_id=template_id,
+        _data={
+            "what_type": "many_recipients",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".send_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=template_id,
+            _external=True,
+        ),
+    )
+
+
+@pytest.mark.parametrize(
+    "template_type, template_mock",
+    [
+        ("email", mock_get_service_email_template),
+        ("sms", mock_get_service_template),
+    ],
+)
+def test_add_recipients_redirects_one_recipient(template_type, template_mock, client_request, fake_uuid, mocker):
+    template_mock(mocker)
+    template_id = fake_uuid
+    with client_request.session_transaction() as session:
+        session["placeholders"] = {}
+    recipient = "test@cds-snc.ca" if template_type == "email" else "6135555555"
+
+    client_request.post(
+        "main.add_recipients",
+        service_id=SERVICE_ONE_ID,
+        template_id=template_id,
+        _data={"what_type": "one_recipient", "placeholder_value": recipient},
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".send_one_off_step",
+            service_id=SERVICE_ONE_ID,
+            template_id=template_id,
+            step_index=1,
+            _external=True,
+        ),
     )
