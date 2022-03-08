@@ -5,6 +5,7 @@
 {% from "components/textbox.html" import textbox %}
 {% from "components/api-key.html" import api_key %}
 {% from "components/page-header.html" import page_header %}
+{% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
   {{ page_title_folder_path(current_service.get_template_path(template._template)) }}
@@ -34,13 +35,16 @@
       <div class="{% if template.template_type == 'email' %}w-1/4{% else %}mb-6{% endif %}">
         {% if current_user.has_permissions('manage_templates') and not template._template.archived %}
 
+
+{# 
+
           <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}">
             {{ _('Edit') }}
           </a>
           &nbsp; &nbsp; 
           <a href="{{ url_for(".view_template", service_id=current_service.id, template_id=template.id) }}">
             {{ _('Done') }}
-          </a>
+          </a> #}
 
       {# <form action="{{url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
@@ -67,11 +71,6 @@
           Done
         </button>
       </form> #}
-
-
-
-
-
 
 
         {% endif %}
@@ -115,5 +114,9 @@
       &emsp;
     {% endif %}
   {% endif %} #}
+
+  <form method='post'>
+    {{ sticky_page_footer_two_submit_buttons(_('Edit'), 'edit', _('Done'), 'done') }}
+  </form>
 
 {% endblock %}

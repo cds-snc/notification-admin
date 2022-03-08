@@ -1516,6 +1516,13 @@ class AddSMSRecipientsForm(Form):
     placeholder_value = international_phone_number(_l("Phone number of recipient"))
 
 
+# class EditPreviewForm(Form):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+
+#     button_pressed = ""
+
+
 class TemplateAndFoldersSelectionForm(Form):
     """
     This form expects the form data to include an operation, based on which submit button is clicked.

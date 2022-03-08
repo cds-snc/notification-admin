@@ -33,6 +33,7 @@ from app.main.forms import (
     AddEmailRecipientsForm,
     AddSMSRecipientsForm,
     CreateTemplateForm,
+    # EditPreviewForm,
     EmailTemplateForm,
     LetterTemplateForm,
     LetterTemplatePostageForm,
@@ -102,6 +103,12 @@ def view_template(service_id, template_id):
 def preview_template(service_id, template_id):
     template = current_service.get_template(template_id)
     template_folder = current_service.get_template_folder(template["folder"])
+
+    if request.method == "POST":
+        if request.form["button_pressed"] == "edit":
+            return redirect(url_for(".edit_service_template", service_id=current_service.id, template_id=template_id))
+        else:
+            return redirect(url_for(".view_template", service_id=current_service.id, template_id=template_id))
 
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
