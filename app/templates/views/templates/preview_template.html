@@ -75,7 +75,7 @@
 
         {% endif %}
       </div>
-    {% if template._template.updated_at %}
+    {# {% if template._template.updated_at %}
     <div class="{% if template.template_type == 'email' %}w-3/4 text-right{% endif %}">
       <span>
         {% set last_edited = _('Last edited') %}
@@ -87,7 +87,7 @@
       {% set version_txt = _('See previous versions') %}
       <a href="{{ url_for('.view_template_versions', service_id=current_service.id, template_id=template.id) }}">{{ version_txt }}</a>
     </div>
-    {% endif %}
+    {% endif %} #}
   </div>
 
   {# <div class="mb-16">
