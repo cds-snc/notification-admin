@@ -1298,7 +1298,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
         },
         _expected_status=302,
         _expected_redirect=url_for(
-            ".view_template",
+            ".preview_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
             _external=True,
@@ -1506,7 +1506,7 @@ def test_removing_placeholders_is_not_a_breaking_change(
         },
         _expected_status=302,
         _expected_redirect=url_for(
-            "main.view_template",
+            "main.preview_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
             _external=True,
@@ -1585,7 +1585,7 @@ def test_should_redirect_when_saving_a_template_email(
         },
         _expected_status=302,
         _expected_redirect=url_for(
-            ".view_template",
+            ".preview_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
             _external=True,
