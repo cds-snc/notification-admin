@@ -3,6 +3,9 @@
   .fullscreen-content {
     @apply p-0 m-0 mb-12 bg-white z-10 overflow-hidden box-border border-0 border-solid border-gray-grey2 border-b-1;
   }
+  .fullscreen-content.table-truncated {
+    @apply border-0 mb-0;
+  }
   .fullscreen-content .table {
     @apply mb-0;
   }
@@ -91,6 +94,9 @@
     margin-top: -28px;
   }
 
+  svg.table-overflow {
+    @apply text-gray-grey2 mb-12;
+  }
   svg.table-overflow rect {
     fill: url(#cut);
   }

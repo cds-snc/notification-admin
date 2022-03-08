@@ -33,7 +33,7 @@
     {% endif %}
   </p>
 
-  <div class="fullscreen-content" data-module="fullscreen-table">
+  <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}" data-module="fullscreen-table">
     {% call(item, row_number) list_table(
       recipients.displayed_rows,
       caption=original_file_name,
@@ -63,19 +63,19 @@
   </div>
 
   {% if count_of_displayed_recipients < count_of_recipients %}
-    <svg class="table-overflow" width="100%" height="1rem" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+    <svg aria-hidden="true" role="presentation" class="table-overflow" width="100%" height="1rem" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">
       <defs>
         <pattern id="cut" viewBox="0,0,100,12" width="33.333%" preserveAspectRatio="none" height="100%" overflow="visible">
-          <path d="M0 11L16.6667 1L33.3334 11L50 1L66.6667 11L83.3334 1L100 11" vector-effect="non-scaling-stroke" stroke-width="1" stroke-linecap="square" stroke="#BFC1C3"/>
+          <path d="M0 11L16.6667 1L33.3334 11L50 1L66.6667 11L83.3334 1L100 11" vector-effect="non-scaling-stroke" stroke-width="1" stroke-linecap="square" stroke="currentColor"/>
         </pattern>
         <pattern id="cut-sm" viewBox="0,0,100,12" width="20%" preserveAspectRatio="none" height="100%" overflow="visible">
-          <path d="M0 11L16.6667 1L33.3334 11L50 1L66.6667 11L83.3334 1L100 11" vector-effect="non-scaling-stroke" stroke-width="1" stroke-linecap="square" stroke="#BFC1C3"/>
+          <path d="M0 11L16.6667 1L33.3334 11L50 1L66.6667 11L83.3334 1L100 11" vector-effect="non-scaling-stroke" stroke-width="1" stroke-linecap="square" stroke="currentColor"/>
         </pattern>
         <pattern id="cut-md" viewBox="0,0,100,12" width="12.5%" preserveAspectRatio="none" height="100%" overflow="visible">
-          <path d="M0 11L16.6667 1L33.3334 11L50 1L66.6667 11L83.3334 1L100 11" vector-effect="non-scaling-stroke" stroke-width="1" stroke-linecap="square" stroke="#BFC1C3"/>
+          <path d="M0 11L16.6667 1L33.3334 11L50 1L66.6667 11L83.3334 1L100 11" vector-effect="non-scaling-stroke" stroke-width="1" stroke-linecap="square" stroke="currentColor"/>
         </pattern>
         <pattern id="cut-lg" viewBox="0,0,100,12" width="10%" preserveAspectRatio="none" height="100%" overflow="visible">
-          <path d="M0 11L16.6667 1L33.3334 11L50 1L66.6667 11L83.3334 1L100 11" vector-effect="non-scaling-stroke" stroke-width="1" stroke-linecap="square" stroke="#BFC1C3"/>
+          <path d="M0 11L16.6667 1L33.3334 11L50 1L66.6667 11L83.3334 1L100 11" vector-effect="non-scaling-stroke" stroke-width="1" stroke-linecap="square" stroke="currentColor"/>
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill="url(#cut)"/>
