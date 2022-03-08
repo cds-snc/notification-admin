@@ -296,7 +296,8 @@ label {
     }
   }
 
-  .hint {
+  .hint,
+  .block-label-hint {
     @apply text-gray-grey1;
   }
 
