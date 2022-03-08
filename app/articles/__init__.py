@@ -79,13 +79,13 @@ def request_content(endpoint: str, params={"slug": ""}, auth_required=False, to_
 
     if slug:
         cache_key += f"/{lang}/{slug}"  # append lang/slug to cache key
-        request_params["lang"] = lang   # add 'lang' param explicitly
+        request_params["lang"] = lang  # add 'lang' param explicitly
 
     headers = {}
 
     if auth_required:
         token = authenticate(username, password, base_endpoint)
-        headers = {"Authorization": "Bearer {}".format(token)}        
+        headers = {"Authorization": "Bearer {}".format(token)}
 
     try:
         url = f"https://{base_endpoint}/wp-json/{endpoint}"
