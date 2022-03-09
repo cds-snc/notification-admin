@@ -410,7 +410,7 @@ def page_content(path=""):
         response = get_page_by_slug_with_cache(endpoint, params=params)
 
     if not response:
-        _try_alternate_language(endpoint, params)
+        return _try_alternate_language(endpoint, params)
 
     if not response:
         abort(404)
