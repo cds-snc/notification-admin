@@ -1,5 +1,7 @@
 from datetime import timedelta
+
 from flask import current_app
+
 from app import get_current_locale
 
 REQUEST_TIMEOUT = 5

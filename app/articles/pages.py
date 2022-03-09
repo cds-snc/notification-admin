@@ -28,6 +28,7 @@ def get_page_by_slug_with_cache(endpoint: str, params={"slug": ""}) -> Union[dic
     return response
 
 
+# Not cached
 def get_page_by_slug(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
     return get_content(endpoint, params, auth_required=False)
 
