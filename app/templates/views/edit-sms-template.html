@@ -13,7 +13,7 @@
   {{ page_header(
     heading,
     back_link=url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.create_template', service_id=current_service.id, template_folder_id=template_folder_id),
-    back_link_aria_label=_('Back to template {}').format(template.name)
+    back_link_aria_label=_('Back to template {}').format(template.name) if template else _('Back')
   ) }}
 
   {% call form_wrapper() %}

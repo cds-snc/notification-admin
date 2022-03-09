@@ -1295,10 +1295,11 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
             "template_type": "sms",
             "service": SERVICE_ONE_ID,
             "process_type": process_type,
+            "button_pressed": "save",
         },
         _expected_status=302,
         _expected_redirect=url_for(
-            ".preview_template",
+            ".view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
             _external=True,
@@ -1503,10 +1504,11 @@ def test_removing_placeholders_is_not_a_breaking_change(
             "name": existing_template["name"],
             "template_content": "no placeholders",
             "subject": existing_template["subject"],
+            "button_pressed": "save",
         },
         _expected_status=302,
         _expected_redirect=url_for(
-            "main.preview_template",
+            "main.view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
             _external=True,
@@ -1582,6 +1584,50 @@ def test_should_redirect_when_saving_a_template_email(
             "service": SERVICE_ONE_ID,
             "subject": subject,
             "process_type": "normal",
+            "button_pressed": "save",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _external=True,
+        ),
+    )
+    mock_update_service_template.assert_called_with(
+        fake_uuid,
+        name,
+        "email",
+        content,
+        SERVICE_ONE_ID,
+        subject,
+        "normal",
+    )
+
+
+def test_should_redirect_when_previewing_a_template_email(
+    client_request,
+    mock_get_service_email_template,
+    mock_update_service_template,
+    mock_get_user_by_email,
+    fake_uuid,
+):
+    name = "new name"
+    content = "template <em>content</em> with & entity ((thing)) ((date))"
+    subject = "subject & entity"
+    client_request.post(
+        ".edit_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "id": fake_uuid,
+            "name": name,
+            "template_content": content,
+            "template_type": "email",
+            "service": SERVICE_ONE_ID,
+            "subject": subject,
+            "process_type": "normal",
+            "button_pressed": "preview",
         },
         _expected_status=302,
         _expected_redirect=url_for(
@@ -1599,6 +1645,52 @@ def test_should_redirect_when_saving_a_template_email(
         SERVICE_ONE_ID,
         subject,
         "normal",
+    )
+
+
+def test_preview_should_redirect_on_edit(
+    client_request,
+    mock_get_service_email_template,
+    mock_get_user_by_email,
+    fake_uuid,
+):
+    client_request.post(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "button_pressed": "edit",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _external=True,
+        ),
+    )
+
+
+def test_preview_should_redirect_on_save(
+    client_request,
+    mock_get_service_email_template,
+    mock_get_user_by_email,
+    fake_uuid,
+):
+    client_request.post(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "button_pressed": "save",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _external=True,
+        ),
     )
 
 

@@ -387,6 +387,7 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         "service": SERVICE_ONE_ID,
         "process_type": "normal",
         "parent_folder_id": PARENT_FOLDER_ID,
+        "button_pressed": "save"
     }
     client_request.post(
         ".add_service_template",
@@ -395,7 +396,7 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         template_folder_id=PARENT_FOLDER_ID,
         _data=data,
         _expected_redirect=url_for(
-            "main.preview_template",
+            "main.view_template",
             service_id=SERVICE_ONE_ID,
             template_id="new%20name",
             _external=True,
