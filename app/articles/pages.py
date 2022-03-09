@@ -12,8 +12,6 @@ from app.extensions import redis_client
 def get_page_by_slug_with_cache(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
     lang = get_current_locale(current_app)
     slug = params.get("slug")
-
-    lang = get_current_locale(current_app)
     cache_key = f"{GC_ARTICLES_CACHE_PREFIX}{endpoint}/{lang}/{slug}"
 
     cached = redis_client.get(cache_key)
@@ -22,7 +20,7 @@ def get_page_by_slug_with_cache(endpoint: str, params={"slug": ""}) -> Union[dic
         current_app.logger.info(f"Cache hit: {cache_key}")
         response = json.loads(cached)
     else:
-        response = get_page_by_slug(endpoint, params, auth_required=False)
+        response = get_page_by_slug(endpoint, params)
 
         current_app.logger.info(f"Saving menu to cache: {cache_key}")
         redis_client.set(cache_key, json.dumps(response), ex=GC_ARTICLES_DEFAULT_CACHE_TTL)
