@@ -72,6 +72,7 @@ def test_request_content_en_404_but_fr_exists(app_, mocker, capsys):
             assert isinstance(response, str)
             assert response == "/set-lang?from=/la-page"
 
+
 @pytest.mark.skip(reason="Need to rewrite")
 def test_request_content_en_404_but_fr_doesnt_exist(app_, mocker, capsys):
     with app_.test_request_context():
