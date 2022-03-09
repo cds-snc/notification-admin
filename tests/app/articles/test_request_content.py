@@ -2,14 +2,13 @@ import pytest
 import requests_mock
 from werkzeug.exceptions import NotFound
 
-# from app.articles import request_content
+from app.articles import request_content
 
 gc_articles_api = "articles.cdssandbox.xyz/notification-gc-notify"
 notify_url = f"https://{gc_articles_api}/wp-json/pages"
 
 
 # pytest ./tests/app/articles/test_request_content.py -k test_request_content
-@pytest.mark.skip(reason="Need to rewrite")
 def test_request_content_en(app_, mocker, capsys):
     with app_.test_request_context():
         mocker.patch("app.articles.get_current_locale", return_value="en")
@@ -28,7 +27,6 @@ def test_request_content_en(app_, mocker, capsys):
             assert response["content"]["rendered"] == "The Content"
 
 
-@pytest.mark.skip(reason="Need to rewrite")
 def test_request_content_fr(app_, mocker, capsys):
     with app_.test_request_context():
         mocker.patch("app.articles.get_current_locale", return_value="fr")
@@ -47,7 +45,6 @@ def test_request_content_fr(app_, mocker, capsys):
             assert response["content"]["rendered"] == "Le contentu"
 
 
-@pytest.mark.skip(reason="Need to rewrite")
 def test_request_content_en_404_but_fr_exists(app_, mocker, capsys):
     def json_callback(request, context):
         if "lang=en" in request.query:
@@ -73,7 +70,6 @@ def test_request_content_en_404_but_fr_exists(app_, mocker, capsys):
             assert response == "/set-lang?from=/la-page"
 
 
-@pytest.mark.skip(reason="Need to rewrite")
 def test_request_content_en_404_but_fr_doesnt_exist(app_, mocker, capsys):
     with app_.test_request_context():
         mocker.patch("app.articles.get_current_locale", return_value="en")
