@@ -391,7 +391,7 @@ def preview_content():
 
     response = get_page_by_id(endpoint)
 
-    return _render_dynamic_page(response)
+    return _render_articles_page(response)
 
 
 @main.route("/<path:path>")
@@ -418,9 +418,9 @@ def page_content(path=""):
 
     if isinstance(response, list):
         response = response[0]
-    return _render_dynamic_page(response)
+    return _render_articles_page(response)
 
-def _render_dynamic_page(response):
+def _render_articles_page(response):
     title = response["title"]["rendered"]
     slug_en = response["slug_en"]
     html_content = response["content"]["rendered"]
