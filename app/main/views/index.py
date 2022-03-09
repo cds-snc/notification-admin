@@ -417,6 +417,7 @@ def page_content(path=""):
 
     if isinstance(response, list):
         response = response[0]
+
     return _render_articles_page(response)
 
 
@@ -455,3 +456,5 @@ def _try_alternate_language(endpoint, params):
     # if we get a response for the other language, redirect
     if lang_parsed:
         return redirect(f"/set-lang?from=/{slug}")
+
+    return None
