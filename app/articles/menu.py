@@ -9,7 +9,6 @@ from app.extensions import redis_client
 
 
 def get_nav_items() -> Optional[list]:
-    # @todo add caching
     locale = get_current_locale(current_app)
     items = _get_nav_wp(locale)
     return items

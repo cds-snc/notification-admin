@@ -49,7 +49,7 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
         return parsed
     except Unauthorized:
         abort(401)
-    except requests.exceptions.ConnectionError:  # TODO ???
+    except requests.exceptions.ConnectionError:
         # Fallback cache in case we can't connect to GC Articles
         cached = redis_client.get(cache_key)
         if cached is not None:
