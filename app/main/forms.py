@@ -730,7 +730,6 @@ class BaseTemplateForm(StripWhitespaceForm):
         ],
         default="normal",
     )
-    button_pressed = StringField()
 
 
 class SMSTemplateForm(BaseTemplateForm):
@@ -1514,13 +1513,6 @@ class AddSMSRecipientsForm(Form):
 
     what_type = RadioField("")
     placeholder_value = international_phone_number(_l("Phone number of recipient"))
-
-
-# class EditPreviewForm(Form):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-
-#     button_pressed = ""
 
 
 class TemplateAndFoldersSelectionForm(Form):

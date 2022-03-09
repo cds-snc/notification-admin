@@ -4,7 +4,6 @@ from string import ascii_uppercase
 from dateutil.parser import parse
 from flask import (
     abort,
-    current_app,
     flash,
     jsonify,
     redirect,
@@ -29,7 +28,7 @@ from app import (
     template_statistics_client,
 )
 from app.main import main
-from app.main.forms import (  # EditPreviewForm,
+from app.main.forms import (
     AddEmailRecipientsForm,
     AddSMSRecipientsForm,
     CreateTemplateForm,
@@ -620,9 +619,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
         abort(403)
 
     form = form_objects[template_type]()
-
     if form.validate_on_submit():
-
         if form.process_type.data != "normal":
             abort_403_if_not_admin_user()
         try:
@@ -697,10 +694,6 @@ def edit_service_template(service_id, template_id):
     template["template_content"] = template["content"]
     form = form_objects[template["template_type"]](**template)
     if form.validate_on_submit():
-
-        button_pressed = form["button_pressed"]
-        current_app.logger.info(f"-----  edit {button_pressed} ------")
-
         if form.process_type.data != template["process_type"]:
             abort_403_if_not_admin_user()
 
