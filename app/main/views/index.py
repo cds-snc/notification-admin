@@ -19,13 +19,15 @@ from app import email_branding_client, get_current_locale, letter_branding_clien
 from app.articles import (
     _get_alt_locale,
     get_lang_url,
-    get_nav_items,
     get_preview_url,
     set_active_nav_item,
 )
-from app.articles.pages import get_page_by_id, get_page_by_slug, get_page_by_slug_with_cache
-
-from app.extensions import redis_client
+from app.articles.menu import get_nav_items
+from app.articles.pages import (
+    get_page_by_id,
+    get_page_by_slug,
+    get_page_by_slug_with_cache,
+)
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
@@ -399,15 +401,12 @@ def page_content(path=""):
     endpoint = "wp/v2/pages"
     lang = get_current_locale(current_app)
 
-    params = {
-        "slug": path,
-        "lang": lang
-    }
+    params = {"slug": path, "lang": lang}
 
     # If user is authenticated, don't cache it
     if current_user.is_authenticated:
         response = get_page_by_slug(endpoint, params=params)
-    else: 
+    else:
         response = get_page_by_slug_with_cache(endpoint, params=params)
 
     if not response:
@@ -419,6 +418,7 @@ def page_content(path=""):
     if isinstance(response, list):
         response = response[0]
     return _render_articles_page(response)
+
 
 def _render_articles_page(response):
     title = response["title"]["rendered"]
@@ -438,6 +438,7 @@ def _render_articles_page(response):
         lang_url=get_lang_url(response, bool(page_id)),
         stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
     )
+
 
 ##
 # If response was empty, it's possible the logged-in user's current language
