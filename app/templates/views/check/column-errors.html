@@ -19,6 +19,8 @@
   {{ _('Error') }}
 {% endblock %}
 
+{% block main_content_class %}py-10 space-y-doubleGutter{% endblock %}
+
 {% block maincolumn_content %}
 
   {{ govuk_back_link(back_link) }}
@@ -151,76 +153,78 @@
   </div>
 
   {% if not request.args.from_test %}
+    <section class="clear-both contain-floats">
+      {% set column_headers = recipients._raw_column_headers if recipients.duplicate_recipient_column_headers else recipients.column_headers %}
 
-    {% set column_headers = recipients._raw_column_headers if recipients.duplicate_recipient_column_headers else recipients.column_headers %}
+      <h2 class="heading-medium" id="{{ file_contents_header_id }}">{{ original_file_name }}</h2>
 
-    <h2 class="heading-medium" id="{{ file_contents_header_id }}">{{ original_file_name }}</h2>
-
-    <div class="fullscreen-content" data-module="fullscreen-table">
-      {% call(item, row_number) list_table(
-        recipients.displayed_rows,
-        caption=original_file_name,
-        caption_visible=False,
-        field_headings=[
-          '<span class="visually-hidden">Row in file</span><span aria-hidden="true">1</span>'|safe
-        ] + column_headers
-      ) %}
-        {% call index_field() %}
-          <span>
-            {% set displayed_index = item.index + 2 %}
-            {% if (
-              trying_to_send_letters_in_trial_mode and
-              (not errors or recipients.more_rows_than_can_send) and
-              displayed_index != preview_row
-            ) %}
-              <a href="{{ url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=displayed_index, original_file_name=original_file_name) }}">{{ displayed_index }}</a>
+      <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}" data-module="fullscreen-table">
+        {% call(item, row_number) list_table(
+          recipients.displayed_rows,
+          caption=original_file_name,
+          caption_visible=False,
+          field_headings=[
+            '<span class="visually-hidden">Row in file</span><span aria-hidden="true">1</span>'|safe
+          ] + column_headers
+        ) %}
+          {% call index_field() %}
+            <span>
+              {% set displayed_index = item.index + 2 %}
+              {% if (
+                trying_to_send_letters_in_trial_mode and
+                (not errors or recipients.more_rows_than_can_send) and
+                displayed_index != preview_row
+              ) %}
+                <a href="{{ url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=displayed_index, original_file_name=original_file_name) }}">{{ displayed_index }}</a>
+              {% else %}
+                {{ displayed_index }}
+              {% endif %}
+            </span>
+          {% endcall %}
+          {% for column in column_headers %}
+            {% if item[column].error and not recipients.missing_column_headers %}
+              {% call field() %}
+                <span>
+                  <span class="table-field-error-label">{{ _(item[column].error) }}</span>
+                  {{ item[column].data if item[column].data != None }}
+                </span>
+              {% endcall %}
+            {% elif item[column].ignore %}
+              {{ text_field(item[column].data or '', status='default') }}
             {% else %}
-              {{ displayed_index }}
+              {{ text_field(item[column].data or '') }}
             {% endif %}
-          </span>
-        {% endcall %}
-        {% for column in column_headers %}
-          {% if item[column].error and not recipients.missing_column_headers %}
-            {% call field() %}
-              <span>
-                <span class="table-field-error-label">{{ _(item[column].error) }}</span>
-                {{ item[column].data if item[column].data != None }}
-              </span>
-            {% endcall %}
-          {% elif item[column].ignore %}
-            {{ text_field(item[column].data or '', status='default') }}
-          {% else %}
-            {{ text_field(item[column].data or '') }}
-          {% endif %}
-        {% endfor %}
-        {% if item[None].data %}
-          {% for column in item[None].data %}
-            {{ text_field(column, status='default') }}
           {% endfor %}
-        {% endif %}
-      {% endcall %}
-    {% endif %}
-  </div>
-
-  {% if recipients.too_many_rows %}
-    <p class="table-show-more-link">
-        {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }}
-    </p>
-  {% elif count_of_displayed_recipients < count_of_recipients %}
-    <p class="table-show-more-link">
-      {% if row_errors and not recipients.missing_column_headers %}
-        {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows with errors') }}
-      {% else %}
-        {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }}
+          {% if item[None].data %}
+            {% for column in item[None].data %}
+              {{ text_field(column, status='default') }}
+            {% endfor %}
+          {% endif %}
+        {% endcall %}
       {% endif %}
-    </p>
-  {% elif row_errors and not recipients.missing_column_headers %}
-    <p class="table-show-more-link">
-      {{ _('Only showing rows with errors') }}
-    </p>
-  {% endif %}
+    </div>
 
-  <h2 class="heading-medium">{{ _('Preview of') }} {{ template.name }}</h2>
-  {{ template|string|translate_preview_template }}
-
+    {% if recipients.too_many_rows %}
+      <p class="table-show-more-link">
+          {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }}.
+      </p>
+    {% elif count_of_displayed_recipients < count_of_recipients %}
+      {% include "views/check/table-overflow.html" %}
+      <p>
+        {% if row_errors and not recipients.missing_column_headers %}
+          {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows with errors') }}.
+        {% else %}
+          {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }}.
+        {% endif %}
+      </p>
+    {% elif row_errors and not recipients.missing_column_headers %}
+      <p>
+        {{ _('Only showing rows with errors') }}.
+      </p>
+    {% endif %}
+  </section>
+  <section>
+    <h2 class="heading-medium">{{ _('Preview of') }} {{ template.name }}</h2>
+    {{ template|string|translate_preview_template }}
+  </section>
 {% endblock %}
