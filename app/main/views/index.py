@@ -23,7 +23,7 @@ from app.articles import (
     get_preview_url,
     set_active_nav_item,
 )
-from app.articles.api import get_page_by_id, get_page_by_slug, get_page_by_slug_with_cache
+from app.articles.pages import get_page_by_id, get_page_by_slug, get_page_by_slug_with_cache
 
 from app.extensions import redis_client
 from app.main import main

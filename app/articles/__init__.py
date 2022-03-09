@@ -6,7 +6,7 @@ from flask import abort, current_app, json
 from werkzeug.exceptions import NotFound, Unauthorized
 
 from app import get_current_locale
-from app.articles.api import get_content
+from app.articles.pages import get_content
 from app.extensions import redis_client
 
 GC_ARTICLES_CACHE_PREFIX = "gc-articles--"
