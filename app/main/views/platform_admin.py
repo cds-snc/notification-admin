@@ -623,6 +623,13 @@ def clear_cache():
                     "live-service-and-organisation-counts",
                 ],
             ),
+            (
+                "gc-articles",
+                [
+                    "gc-articles--*",
+                    "gc-articles-fallback--*"
+                ]
+            ),
         ]
     )
 
