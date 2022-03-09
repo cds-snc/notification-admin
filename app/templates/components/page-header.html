@@ -2,11 +2,12 @@
   h1,
   back_link=None,
   sub_text=None,
-  id_text=None
+  id_text=None,
+  back_link_aria_label=None
 ) %}
 
   {% if back_link %}
-    {{ govuk_back_link(back_link) }}
+    {{ govuk_back_link(back_link, aria_label=back_link_aria_label) }}
   {% endif %}
   {% if sub_text %}
   <div class="text-small text-gray-grey1 my-5">
@@ -19,8 +20,10 @@
 {% endmacro %}
 
 
-{% macro govuk_back_link(back_link) %}
-
+{% macro govuk_back_link(back_link, aria_label=None) %}
+  {% if aria_label %}
+  <a class="back-link" href="{{ back_link }}" aria-label="{{ aria_label }}" >{{ _('Back') }}</a>
+  {% else %}
   <a class="back-link" href="{{ back_link }}">{{ _('Back') }}</a>
-
+  {% endif %}
 {% endmacro %}

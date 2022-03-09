@@ -15,7 +15,8 @@
       heading,
       back_link=url_for('main.view_template', service_id=current_service.id,
       template_id=template.id) if template else url_for('main.create_template',
-      service_id=current_service.id, template_folder_id=template_folder_id)
+      service_id=current_service.id, template_folder_id=template_folder_id),
+      back_link_aria_label=_('Back to template ') + template.name
     )
   }}
   {% call form_wrapper() %}
