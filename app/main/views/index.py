@@ -447,14 +447,16 @@ def _render_articles_page(response):
 ##
 def _try_alternate_language(endpoint, params):
     slug = params.get("slug")
+
     # try again, with same slug but new language
     params["lang"] = _get_alt_locale(params.get("lang"))
-    lang_response = get_page_by_slug(endpoint, params=params)
+    response = get_page_by_slug(endpoint, params=params)
 
-    lang_parsed = json.loads(lang_response.content)
+    if isinstance(response, list):
+        response = response[0]
 
     # if we get a response for the other language, redirect
-    if lang_parsed:
+    if response:
         return redirect(f"/set-lang?from=/{slug}")
 
-    return None
+    abort(404)

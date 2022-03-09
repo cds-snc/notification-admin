@@ -61,8 +61,8 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
 
         current_app.logger.info(f"Cache miss: {cache_key}")
         return None
-    # except Exception:
-    #     return None
+    except Exception:
+        return None
 
 
 def validate_token(token):
