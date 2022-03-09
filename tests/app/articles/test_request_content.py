@@ -2,7 +2,7 @@ import pytest
 import requests_mock
 from werkzeug.exceptions import NotFound
 
-from app.articles import request_content
+# from app.articles import request_content
 
 gc_articles_api = "articles.cdssandbox.xyz/notification-gc-notify"
 notify_url = f"https://{gc_articles_api}/wp-json/pages"
