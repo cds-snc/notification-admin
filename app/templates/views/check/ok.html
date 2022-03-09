@@ -27,9 +27,9 @@
       <h2 class="heading-medium">{{ _('Recipients') }}</h2>
       <p>
         {% if count_of_recipients > 1 %}
-          {{ _("{} recipients in the file {}.").format(count_of_recipients, original_file_name) }}
+          {{ _("{} recipients in the file '{}'.").format(count_of_recipients, original_file_name) }}
         {% else %}
-          {{ _("1 recipient in the file {}.").format(original_file_name) }}
+          {{ _("1 recipient in the file '{}'.").format(original_file_name) }}
         {% endif %}
       </p>
       <div
@@ -66,7 +66,7 @@
         {% include "views/check/table-overflow.html" %}
         <p>
           {{ _('Only shows the first {} recipients.').format(count_of_displayed_recipients) }}
-          <a href="?original_file_name={{ original_file_name }}&show={{ count_of_displayed_recipients + 10 }}">{{ _('Show the next 10 recipients.') }}</a>
+          <a href="?original_file_name={{ original_file_name }}&show={{ count_of_displayed_recipients + 10 }}">{{ _('Show the next 10 recipients') }}</a>.
         </p>
       {% endif %}
     </section>
