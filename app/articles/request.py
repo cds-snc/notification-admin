@@ -10,12 +10,14 @@ from app.articles import (
     GC_ARTICLES_AUTH_API_ENDPOINT,
     GC_ARTICLES_AUTH_TOKEN_CACHE_KEY,
     GC_ARTICLES_AUTH_TOKEN_CACHE_TTL,
+    GC_ARTICLES_FALLBACK_CACHE_PREFIX,
+    GC_ARTICLES_FALLBACK_CACHE_TTL,
     REQUEST_TIMEOUT,
 )
 from app.extensions import redis_client
 
 
-def get_content(endpoint: str, params={}, auth_required=False) -> Union[dict, None]:
+def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -> Union[dict, None]:
     base_url = current_app.config["GC_ARTICLES_API"]
     lang = get_current_locale(current_app)
 
@@ -36,32 +38,29 @@ def get_content(endpoint: str, params={}, auth_required=False) -> Union[dict, No
             )
             raise NotFound()
 
-        # Long-term "Fallback" cache TODO :maybe move to get_cacheable_page
-        # slug = params["slug"]
-        # cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}/{lang}/{slug}"
-        # current_app.logger.info(f"Saving to cache: {cache_key}")
-        # redis_client.set(cache_key, json.dumps(parsed), ex=GC_ARTICLES_FALLBACK_CACHE_TTL)
-
-        # TODO probably remove this
-        # if isinstance(parsed, list):
-        #     return parsed[0]
+        # Long-term "Fallback" cache
+        if cacheable:
+            slug = params.get("slug")
+            cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}"
+            if slug:
+                cache_key += f"/{lang}/{slug}"
+            current_app.logger.info(f"Saving to cache: {cache_key}")
+            redis_client.set(cache_key, json.dumps(parsed), ex=GC_ARTICLES_FALLBACK_CACHE_TTL)
 
         return parsed
-    # except NotFound:
-    #     abort(404)
-    # except Unauthorized:
-    #     abort(403)
+    except Unauthorized:
+        abort(401)
     except requests.exceptions.ConnectionError:  # TODO ???
         # Fallback cache in case we can't connect to GC Articles
-        # cached = redis_client.get(cache_key)
-        # if cached is not None:
-        #     current_app.logger.info(f"Cache hit: {cache_key}")
-        #     obj = json.loads(cached)
-        #     if isinstance(obj, list):
-        #         return obj[0]
-        #     return obj
+        cached = redis_client.get(cache_key)
+        if cached is not None:
+            current_app.logger.info(f"Cache hit: {cache_key}")
+            obj = json.loads(cached)
+            if isinstance(obj, list):
+                return obj[0]
+            return obj
 
-        # current_app.logger.info(f"Cache miss: {cache_key}")
+        current_app.logger.info(f"Cache miss: {cache_key}")
         return None
     # except Exception:
     #     return None

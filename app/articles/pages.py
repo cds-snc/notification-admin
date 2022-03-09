@@ -36,4 +36,4 @@ def get_page_by_slug(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
 
 # Not cached
 def get_page_by_id(endpoint: str) -> Union[dict, None]:
-    return get_content(endpoint, auth_required=True)
+    return get_content(endpoint, auth_required=True, cacheable=False)
