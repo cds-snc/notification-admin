@@ -410,7 +410,7 @@ def page_content(path=""):
         response = get_page_by_slug_with_cache(endpoint, params=params)
 
     if not response:
-        response = _try_alternate_language(endpoint, params)
+        _try_alternate_language(endpoint, params)
 
     if not response:
         abort(404)
@@ -445,7 +445,7 @@ def _render_articles_page(response):
 # doesn't match the requested page language, so let's try again.
 ##
 def _try_alternate_language(endpoint, params):
-    path = params.get("slug")
+    slug = params.get("slug")
     # try again, with same slug but new language
     params["lang"] = _get_alt_locale(params.get("lang"))
     lang_response = get_page_by_slug(endpoint, params=params)
@@ -454,4 +454,4 @@ def _try_alternate_language(endpoint, params):
 
     # if we get a response for the other language, redirect
     if lang_parsed:
-        return redirect(f"/set-lang?from=/{path}")
+        return redirect(f"/set-lang?from=/{slug}")
