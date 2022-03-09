@@ -435,7 +435,7 @@ def _render_articles_page(response):
         html_content=html_content,
         nav_items=nav_items,
         slug=slug_en,
-        lang_url=get_lang_url(response, bool(page_id)), # revisit page_id
+        lang_url=get_lang_url(response, bool(page_id)),
         stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
     )
 
