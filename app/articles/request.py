@@ -20,7 +20,7 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
     base_url = current_app.config["GC_ARTICLES_API"]
     lang = get_current_locale(current_app)
 
-    headers = _get_headers(auth_required)
+    headers = _get_headers(auth_required=auth_required)
 
     try:
         url = f"https://{base_url}/wp-json/{endpoint}"
