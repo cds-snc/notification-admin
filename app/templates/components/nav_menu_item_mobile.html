@@ -15,6 +15,9 @@
         class="no-underline hover:underline {% if is_selected %} menu--active {% endif %} {{ css_classes }}"
         {% if is_external_link %}
         target="_blank"
+        aria-label="{{ localised_txt }} ({{ _('Opens in a new tab') }})"
+        {% else %}
+        aria-label="{{ localised_txt }}"
         {% endif %}
       >
         {{ localised_txt }}
