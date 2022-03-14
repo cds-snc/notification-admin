@@ -111,8 +111,32 @@ def preview_template(service_id, template_id):
         if request.form["button_pressed"] == "edit":
             return redirect(url_for(".edit_service_template", service_id=current_service.id, template_id=template_id))
         else:
-            flash(_("'{}' template saved").format(template["name"]), "default_with_tick")
-            return redirect(url_for(".view_template", service_id=current_service.id, template_id=template_id))
+            try:
+                service_api_client.update_service_template(
+                    str(template_id),
+                    template["name"],
+                    template["template_type"],
+                    template["content"],
+                    service_id,
+                    template["subject"],
+                    template["process_type"],
+                )
+                flash(_("'{}' template saved").format(template["name"]), "default_with_tick")
+                return redirect(
+                    url_for(
+                        ".view_template",
+                        service_id=service_id,
+                        template_id=template_id,
+                    )
+                )
+            except HTTPError as e:
+                if e.status_code == 400:
+                    if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
+                        flash(e.message["content"])
+                    else:
+                        raise e
+                else:
+                    raise e
 
     if should_skip_template_page(template["template_type"]):
         return redirect(url_for(".send_one_off", service_id=service_id, template_id=template_id))
@@ -719,15 +743,6 @@ def edit_service_template(service_id, template_id):
 
         session["preview_template_data"] = new_template_data
 
-        if request.form.get("button_pressed") == "preview":
-            return redirect(
-                url_for(
-                    ".preview_template",
-                    service_id=service_id,
-                    template_id=template_id,
-                )
-            )
-
         new_template = get_template(new_template_data, current_service)
         template_change = get_template(template, current_service).compare_to(new_template)
         if template_change.placeholders_added and not request.form.get("confirm"):
@@ -744,24 +759,6 @@ def edit_service_template(service_id, template_id):
                 ],
                 form=form,
             )
-        try:
-            service_api_client.update_service_template(
-                template_id,
-                form.name.data,
-                template["template_type"],
-                form.template_content.data,
-                service_id,
-                subject,
-                form.process_type.data,
-            )
-        except HTTPError as e:
-            if e.status_code == 400:
-                if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
-                    form.template_content.errors.extend(e.message["content"])
-                else:
-                    raise e
-            else:
-                raise e
         else:
             if request.form.get("button_pressed") == "preview":
                 return redirect(
@@ -772,14 +769,33 @@ def edit_service_template(service_id, template_id):
                     )
                 )
             else:
-                flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
-                return redirect(
-                    url_for(
-                        ".view_template",
-                        service_id=service_id,
-                        template_id=template_id,
+                try:
+                    service_api_client.update_service_template(
+                        template_id,
+                        form.name.data,
+                        template["template_type"],
+                        form.template_content.data,
+                        service_id,
+                        subject,
+                        form.process_type.data,
                     )
-                )
+                    flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
+                    return redirect(
+                        url_for(
+                            ".view_template",
+                            service_id=service_id,
+                            template_id=template_id,
+                        )
+                    )
+
+                except HTTPError as e:
+                    if e.status_code == 400:
+                        if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
+                            form.template_content.errors.extend(e.message["content"])
+                        else:
+                            raise e
+                    else:
+                        raise e
 
     if email_or_sms_not_enabled(template["template_type"], current_service.permissions):
         return redirect(
