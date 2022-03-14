@@ -160,7 +160,7 @@ def preview_template(service_id, template_id=None):
         return redirect(url_for(".send_one_off", service_id=service_id, template_id=template["id"]))
 
     if template["id"]:
-        back_link = url_for(".edit_service_template", service_id=current_service.id, template_id=template.id)
+        back_link = url_for(".edit_service_template", service_id=current_service.id, template_id=template["id"])
     else:
         back_link = url_for(
             ".add_service_template",
