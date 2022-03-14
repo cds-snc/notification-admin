@@ -80,7 +80,7 @@ def view_template(service_id, template_id):
     template = current_service.get_template(template_id)
     template_folder = current_service.get_template_folder(template["folder"])
 
-    session["preview_template_data"] = None
+    session.pop("preview_template_data", None)
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
     if should_skip_template_page(template["template_type"]):
@@ -144,7 +144,7 @@ def preview_template(service_id, template_id=None):
                     url_for(
                         ".view_template",
                         service_id=service_id,
-                        template_id=template_id,
+                        template_id=new_template["data"]["id"],
                     )
                 )
             except HTTPError as e:
@@ -430,7 +430,7 @@ def _add_template_by_type(template_type, template_folder_id):
 @user_has_permissions("manage_templates")
 def create_template(service_id, template_type="all", template_folder_id=None):
     form = CreateTemplateForm()
-
+    session.pop("preview_template_data", None)
     if request.method == "POST" and form.validate_on_submit():
         try:
             return _add_template_by_type(
@@ -671,7 +671,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
     if not current_service.has_permission("letter") and template_type == "letter":
         abort(403)
 
-    template = session.get("preview_template_data", {})
+    template = session.get("preview_template_data", dict())
     form = form_objects[template_type](**template)
 
     if form.validate_on_submit():
