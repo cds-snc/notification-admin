@@ -4,7 +4,6 @@ from string import ascii_uppercase
 from dateutil.parser import parse
 from flask import (
     abort,
-    current_app,
     flash,
     jsonify,
     redirect,
@@ -20,7 +19,6 @@ from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
 from notifications_utils.formatters import nl2br
 from notifications_utils.recipients import first_column_headings
-from notifications_utils.template import Template
 
 from app import (
     current_service,
@@ -139,12 +137,14 @@ def preview_template(service_id, template_id=None):
                         template["process_type"],
                         template["folder"],
                     )
+                    template_id = new_template["data"]["id"]
+
                 flash(_("'{}' template saved").format(template["name"]), "default_with_tick")
                 return redirect(
                     url_for(
                         ".view_template",
                         service_id=service_id,
-                        template_id=new_template["data"]["id"],
+                        template_id=template_id,
                     )
                 )
             except HTTPError as e:
