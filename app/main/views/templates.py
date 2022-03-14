@@ -4,6 +4,7 @@ from string import ascii_uppercase
 from dateutil.parser import parse
 from flask import (
     abort,
+    current_app,
     flash,
     jsonify,
     redirect,
@@ -19,6 +20,7 @@ from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
 from notifications_utils.formatters import nl2br
 from notifications_utils.recipients import first_column_headings
+from notifications_utils.template import Template
 
 from app import (
     current_service,
@@ -83,6 +85,7 @@ def view_template(service_id, template_id):
     template = current_service.get_template(template_id)
     template_folder = current_service.get_template_folder(template["folder"])
 
+    session["preview_template_data"] = None
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
     if should_skip_template_page(template["template_type"]):
@@ -99,8 +102,10 @@ def view_template(service_id, template_id):
 @main.route("/services/<service_id>/templates/<uuid:template_id>/preview", methods=["GET", "POST"])
 @user_has_permissions()
 def preview_template(service_id, template_id):
-    template = current_service.get_template(template_id)
-    template_folder = current_service.get_template_folder(template["folder"])
+    if session["preview_template_data"]:
+        template = session["preview_template_data"]
+    else:
+        template = current_service.get_template(template_id)
 
     if request.method == "POST":
         if request.form["button_pressed"] == "edit":
@@ -109,16 +114,12 @@ def preview_template(service_id, template_id):
             flash(_("'{}' template saved").format(template["name"]), "default_with_tick")
             return redirect(url_for(".view_template", service_id=current_service.id, template_id=template_id))
 
-    user_has_template_permission = current_user.has_template_folder_permission(template_folder)
-
     if should_skip_template_page(template["template_type"]):
         return redirect(url_for(".send_one_off", service_id=service_id, template_id=template_id))
 
     return render_template(
         "views/templates/preview_template.html",
         template=get_email_preview_template(template, template_id, service_id),
-        template_postage=template["postage"],
-        user_has_template_permission=user_has_template_permission,
     )
 
 
@@ -691,6 +692,12 @@ def abort_403_if_not_admin_user():
 @user_has_permissions("manage_templates")
 def edit_service_template(service_id, template_id):
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+    new_template_data = session.get("preview_template_data")
+    if new_template_data:
+        template["content"] = new_template_data["content"]
+        template["name"] = new_template_data["name"]
+        template["subject"] = new_template_data["subject"]
+
     template["template_content"] = template["content"]
     form = form_objects[template["template_type"]](**template)
     if form.validate_on_submit():
@@ -707,7 +714,19 @@ def edit_service_template(service_id, template_id):
             "id": template["id"],
             "process_type": form.process_type.data,
             "reply_to_text": template["reply_to_text"],
+            "folder": template["folder"],
         }
+
+        session["preview_template_data"] = new_template_data
+
+        if request.form.get("button_pressed") == "preview":
+            return redirect(
+                url_for(
+                    ".preview_template",
+                    service_id=service_id,
+                    template_id=template_id,
+                )
+            )
 
         new_template = get_template(new_template_data, current_service)
         template_change = get_template(template, current_service).compare_to(new_template)
