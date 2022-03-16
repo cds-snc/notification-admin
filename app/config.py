@@ -77,7 +77,6 @@ class Config(object):
     EMAIL_EXPIRY_SECONDS = 3600  # 1 hour
     INVITATION_EXPIRY_SECONDS = 3_600 * 24 * 2  # 2 days - also set on api
     EMAIL_2FA_EXPIRY_SECONDS = 1_800  # 30 Minutes
-    HEADER_COLOUR = "#FFBF47"  # $yellow
     HTTP_PROTOCOL = "http"
     MAX_FAILED_LOGIN_COUNT = 10
     NOTIFY_APP_NAME = "admin"
@@ -156,7 +155,6 @@ class Test(Development):
 
 
 class Production(Config):
-    HEADER_COLOUR = "#26374A"  # blue.default
     HTTP_PROTOCOL = "https"
     NOTIFY_ENVIRONMENT = "production"
     CHECK_PROXY_HEADER = False

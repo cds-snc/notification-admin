@@ -248,13 +248,16 @@ def init_app(application):
     @application.context_processor
     def inject_global_template_variables():
         return {
-            "header_colour": application.config["HEADER_COLOUR"],
+            "admin_base_url": application.config["ADMIN_BASE_URL"],
             "asset_url": asset_fingerprinter.get_url,
             "asset_s3_url": asset_fingerprinter.get_s3_url,
             "current_lang": get_current_locale(application),
-            "admin_base_url": application.config["ADMIN_BASE_URL"],
-            "sending_domain": application.config["SENDING_DOMAIN"],
             "documentation_url": documentation_url,
+            "google_analytics_id": "UA-102484926-14",
+            # application.config["GOOGLE_ANALYTICS_ID"],
+            "google_tag_manager_id": "GTM-KRKRZQV",
+            # application.config["GOOGLE_TAG_MANAGER_ID"],
+            "sending_domain": application.config["SENDING_DOMAIN"],
         }
 
 
