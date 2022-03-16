@@ -16,7 +16,9 @@
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
     data-module="{% if autofocus %}autofocus{% elif colour_preview %}colour-preview{% endif %}"
   >
-    <label class="form-label" for="{{ field.name }}" aria-describedby="{{ field.name }}-hint {{ field.name }}-error-message">
+    {% set describedby = [field.name + '-hint' if hint else '', field.name + '-error-message' if field.errors else ''] | join(' ') %}
+
+    <label class="form-label" for="{{ field.name }}" {% if describedby %} aria-describedby="{{ describedby | trim }}" {% endif %} >
       {% if label %}
         {{ label }}
       {% else %}
