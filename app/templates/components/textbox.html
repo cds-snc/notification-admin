@@ -16,23 +16,23 @@
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
     data-module="{% if autofocus %}autofocus{% elif colour_preview %}colour-preview{% endif %}"
   >
-    <label class="form-label" for="{{ field.name }}">
+    <label class="form-label" for="{{ field.name }}" aria-describedby="{{ field.name }}-hint {{ field.name }}-error-message">
       {% if label %}
         {{ label }}
       {% else %}
         {{ field.label.text }}
       {% endif %}
-      {% if hint %}
-        <span class="form-hint">
-          {{ hint }}
-        </span>
-      {% endif %}
-      {% if field.errors %}
-        <span class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
-          {% if not safe_error_message %}{{ _(field.errors[0]) }}{% else %}{{ field.errors[0]|safe }}{% endif %}
-        </span>
-      {% endif %}
     </label>
+    {% if hint %}
+      <span id="{{ field.name }}-hint" class="form-hint">
+        {{ hint }}
+      </span>
+    {% endif %}
+    {% if field.errors %}
+      <span id="{{ field.name }}-error-message" class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
+        {% if not safe_error_message %}{{ _(field.errors[0]) }}{% else %}{{ field.errors[0]|safe }}{% endif %}
+      </span>
+    {% endif %}
     {%
       if highlight_tags
     %}
