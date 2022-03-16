@@ -1,6 +1,7 @@
 import itertools
 import os
 import re
+import secrets
 import urllib
 from datetime import datetime, timedelta, timezone
 from functools import partial
@@ -213,6 +214,7 @@ def init_app(application):
     application.before_request(load_service_before_request)
     application.before_request(load_organisation_before_request)
     application.before_request(request_helper.check_proxy_header_before_request)
+    application.before_request(load_request_nonce)
 
     @application.before_request
     def make_session_permanent():
@@ -257,6 +259,7 @@ def init_app(application):
             # application.config["GOOGLE_ANALYTICS_ID"],
             "google_tag_manager_id": "GTM-KRKRZQV",
             # application.config["GOOGLE_TAG_MANAGER_ID"],
+            "request_nonce": _request_ctx_stack.top.nonce,
             "sending_domain": application.config["SENDING_DOMAIN"],
         }
 
@@ -582,6 +585,13 @@ def load_organisation_before_request():
                         raise
 
 
+def load_request_nonce():
+    if "/static/" in request.url:
+        _request_ctx_stack.top.nonce = None
+    elif _request_ctx_stack.top is not None:
+        _request_ctx_stack.top.nonce = secrets.token_urlsafe()
+
+
 def save_service_or_org_after_request(response):
     # Only save the current session if the request is 200
     service_id = request.view_args.get("service_id", None) if request.view_args else None
@@ -606,14 +616,15 @@ def useful_headers_after_request(response):
         "Content-Security-Policy",
         (
             "default-src 'self' {asset_domain} 'unsafe-inline';"
-            "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
+            "script-src 'self' {asset_domain} 'nonce-{nonce}' data:;"
             "connect-src 'self' *.google-analytics.com www.googletagmanager.com;"
             "object-src 'self';"
             "style-src 'self' *.googleapis.com 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
+            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk data:;"  # noqa: E501
             "frame-src 'self' www.youtube.com;".format(
                 asset_domain=current_app.config["ASSET_DOMAIN"],
+                nonce=_request_ctx_stack.top.nonce,
             )
         ),
     )
