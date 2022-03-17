@@ -4,7 +4,7 @@
   nonce="{{ request_nonce }}"
   src="https://www.googletagmanager.com/gtag/js?id={{ google_analytics_id }}"
 ></script>
-<script>
+<script nonce="{{ request_nonce }}">
   <!-- The data layer: https://developers.google.com/tag-platform/tag-manager/web/datalayer -->
   window.dataLayer = window.dataLayer || []
 

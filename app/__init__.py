@@ -616,13 +616,13 @@ def useful_headers_after_request(response):
         "Content-Security-Policy",
         (
             "default-src 'self' {asset_domain} 'unsafe-inline';"
-            "script-src 'self' {asset_domain} 'nonce-{nonce}' data:;"
-            "connect-src 'self' *.google-analytics.com www.googletagmanager.com;"
+            "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' data:;"
+            "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
-            "style-src 'self' *.googleapis.com 'unsafe-inline';"
+            "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com;"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk data:;"  # noqa: E501
-            "frame-src 'self' www.youtube.com;".format(
+            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
+            "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(
                 asset_domain=current_app.config["ASSET_DOMAIN"],
                 nonce=_request_ctx_stack.top.nonce,
             )
