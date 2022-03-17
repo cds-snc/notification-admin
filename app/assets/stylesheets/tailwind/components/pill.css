@@ -32,11 +32,11 @@
     @apply underline;
   }
   .pill a:hover {
-    @apply bg-blue-lightblue;
+    @apply bg-blue-lightblue text-white;
   }
   .pill a:active,
   .pill a:focus {
-    @apply z-10 bg-yellow outline-none;
+    @apply z-10 bg-yellow text-blue outline-none;
   }
 
   .pill-selected-item {
@@ -46,14 +46,6 @@
     z-index: 1000;
     @apply outline-yellow;
   }
-  a:link.pill-selected-item,
-  a:visited.pill-selected-item {
-    @apply text-blue;
-  }
-  a:link.pill-selected-item:hover,
-  a:visited.pill-selected-item:hover {
-    @apply text-white;
-  }
 
   .pill-unselected-item {
     @apply bg-blue text-white relative z-10 text-black outline-white;
@@ -62,12 +54,13 @@
     z-index: 1000;
     @apply outline-yellow;
   }
-  a:link.pill-unselected-item,
-  a:visited.pill-unselected-item {
+  a.pill-unselected-item:link,
+  a.pill-unselected-item:visited {
     @apply text-white;
   }
-  a:focus.pill-unselected-item {
-    @apply text-blue;
+  a.pill-unselected-item:focus,
+  a.pill-unselected-item:active {
+    @apply bg-yellow text-blue;
   }
 
   .pill-centered-item {
