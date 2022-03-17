@@ -619,7 +619,7 @@ def useful_headers_after_request(response):
             "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' data:;"
             "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
-            "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com;"
+            "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
             "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
             "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(
