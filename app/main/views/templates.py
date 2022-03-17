@@ -686,8 +686,8 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             abort_403_if_not_admin_user()
 
         subject = form.subject.data if hasattr(form, "subject") else None
-        if request.form.get("button_pressed") == "preview":
 
+        if request.form.get("button_pressed") == "preview":
             preview_template_data = {
                 "name": form.name.data,
                 "content": form.template_content.data,
@@ -699,7 +699,6 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 "folder": template_folder_id,
             }
             session["preview_template_data"] = preview_template_data
-
             return redirect(
                 url_for(
                     ".preview_template",
@@ -727,23 +726,14 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             else:
                 raise e
         else:
-            if request.form.get("button_pressed") == "preview":
-                return redirect(
-                    url_for(
-                        ".preview_template",
-                        service_id=service_id,
-                        template_id=new_template["data"]["id"],
-                    )
+            flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
+            return redirect(
+                url_for(
+                    ".view_template",
+                    service_id=service_id,
+                    template_id=new_template["data"]["id"],
                 )
-            else:
-                flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
-                return redirect(
-                    url_for(
-                        ".view_template",
-                        service_id=service_id,
-                        template_id=new_template["data"]["id"],
-                    )
-                )
+            )
 
     if email_or_sms_not_enabled(template_type, current_service.permissions):
         return redirect(

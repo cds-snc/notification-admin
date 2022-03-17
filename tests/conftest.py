@@ -1121,6 +1121,24 @@ def mock_get_service_templates_when_no_templates_exist(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_get_service_template_when_no_template_exists(mocker):
+    def _create(service_id, template_id, version=None):
+        return {
+            "data": {
+                "id": template_id,
+                "service_id": service_id,
+                "folder": None,
+                "template_type": "email",
+                "subject": "subject",
+                "content": "content",
+                "postage": None,
+            }
+        }
+
+    return mocker.patch("app.service_api_client.get_service_template", side_effect=_create)
+
+
+@pytest.fixture(scope="function")
 def mock_get_service_templates_with_only_one_template(mocker):
     def _get(service_id):
         return {

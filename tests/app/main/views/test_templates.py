@@ -2035,7 +2035,7 @@ def test_can_create_email_template_with_emoji(
     client_request,
     mock_create_service_template,
     mock_get_template_folders,
-    mock_get_service_templates_when_no_templates_exist,
+    mock_get_service_template_when_no_template_exists,
 ):
     page = client_request.post(
         ".add_service_template",
@@ -2048,6 +2048,7 @@ def test_can_create_email_template_with_emoji(
             "template_type": "email",
             "service": SERVICE_ONE_ID,
             "process_type": "normal",
+            "button_pressed": "save",
         },
         _follow_redirects=True,
     )
