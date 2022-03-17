@@ -1637,15 +1637,6 @@ def test_should_redirect_when_previewing_a_template_email(
             _external=True,
         ),
     )
-    mock_update_service_template.assert_called_with(
-        fake_uuid,
-        name,
-        "email",
-        content,
-        SERVICE_ONE_ID,
-        subject,
-        "normal",
-    )
 
 
 def test_preview_should_redirect_on_edit(
@@ -1654,6 +1645,16 @@ def test_preview_should_redirect_on_edit(
     mock_get_user_by_email,
     fake_uuid,
 ):
+
+    with client_request.session_transaction() as session:
+        session["preview_template_data"] = {
+            "name": "template 1",
+            "content": "hi there",
+            "subject": "test subject",
+            "template_type": "email",
+            "id": fake_uuid,
+        }
+
     client_request.post(
         ".preview_template",
         service_id=SERVICE_ONE_ID,
@@ -1671,12 +1672,21 @@ def test_preview_should_redirect_on_edit(
     )
 
 
-def test_preview_should_redirect_on_save(
+def test_preview_should_update_and_redirect_on_save(
     client_request,
-    mock_get_service_email_template,
-    mock_get_user_by_email,
+    mock_update_service_template,
     fake_uuid,
 ):
+    with client_request.session_transaction() as session:
+        session["preview_template_data"] = {
+            "name": "test name",
+            "content": "test content",
+            "subject": "test subject",
+            "template_type": "email",
+            "process_type": "normal",
+            "id": fake_uuid,
+        }
+
     client_request.post(
         ".preview_template",
         service_id=SERVICE_ONE_ID,
@@ -1691,6 +1701,43 @@ def test_preview_should_redirect_on_save(
             template_id=fake_uuid,
             _external=True,
         ),
+    )
+    mock_update_service_template.assert_called_with(
+        fake_uuid, "test name", "email", "test content", SERVICE_ONE_ID, "test subject", "normal"
+    )
+
+
+def test_preview_should_create_and_redirect_on_save(
+    client_request,
+    mock_create_service_template,
+    fake_uuid,
+):
+    with client_request.session_transaction() as session:
+        session["preview_template_data"] = {
+            "name": "test name",
+            "content": "test content",
+            "subject": "test subject",
+            "template_type": "email",
+            "process_type": "normal",
+            "folder": None,
+        }
+
+    client_request.post(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        _data={
+            "button_pressed": "save",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _external=True,
+        ),
+    )
+    mock_create_service_template.assert_called_with(
+        "test name", "email", "test content", SERVICE_ONE_ID, "test subject", "normal", None
     )
 
 

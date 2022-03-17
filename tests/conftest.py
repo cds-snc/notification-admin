@@ -976,7 +976,15 @@ def mock_create_service_template(mocker, fake_uuid):
         process_type=None,
         parent_folder_id=None,
     ):
-        template = template_json(fake_uuid, name, type_, content, service, process_type, parent_folder_id)
+        template = template_json(
+            service_id=service,
+            id_=fake_uuid,
+            name=name,
+            type_=type_,
+            content=content,
+            process_type=process_type,
+            folder=parent_folder_id,
+        )
         return {"data": template}
 
     return mocker.patch("app.service_api_client.create_service_template", side_effect=_create)

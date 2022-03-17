@@ -64,7 +64,14 @@ def get_email_preview_template(template, template_id, service_id):
     email_preview_template = get_template(
         template,
         current_service,
-        letter_preview_url=None,
+        letter_preview_url=url_for(
+            ".view_letter_template_preview",
+            service_id=service_id,
+            template_id=template_id,
+            filetype="png",
+        )
+        if template_id and service_id
+        else None,
         show_recipient=True,
         page_count=get_page_count_for_letter(template),
     )
@@ -117,7 +124,7 @@ def preview_template(service_id, template_id=None):
 
         else:
             try:
-                if template["id"]:
+                if template.get("id"):
                     service_api_client.update_service_template(
                         str(template_id),
                         template["name"],
