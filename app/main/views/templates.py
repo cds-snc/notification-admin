@@ -437,6 +437,7 @@ def _add_template_by_type(template_type, template_folder_id):
 @user_has_permissions("manage_templates")
 def create_template(service_id, template_type="all", template_folder_id=None):
     form = CreateTemplateForm()
+
     session.pop("preview_template_data", None)
     if request.method == "POST" and form.validate_on_submit():
         try:
@@ -727,6 +728,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 raise e
         else:
             flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
+
             return redirect(
                 url_for(
                     ".view_template",
@@ -792,7 +794,6 @@ def edit_service_template(service_id, template_id):
         }
 
         session["preview_template_data"] = new_template_data
-
         new_template = get_template(new_template_data, current_service)
         template_change = get_template(template, current_service).compare_to(new_template)
         if template_change.placeholders_added and not request.form.get("confirm"):
