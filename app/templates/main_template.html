@@ -147,8 +147,8 @@
 {% include 'partials/google-analytics.html' %}
 
 {% block page_script %}
-<script type="text/javascript" src="{{ asset_url('javascripts/main.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>
+<script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/main.min.js') }}"></script>
+<script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>
 {% endblock %}
 </body>
 </html>
