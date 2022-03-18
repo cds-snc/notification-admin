@@ -111,8 +111,6 @@ def get_preview_data(service_id, template_id=None):
     for key in preview_data_keys:
         value = redis_client.get(f"{prefix}-{key}")
         data[key] = value.decode() if value is not None else None
-    if data.get("process_type") is None:
-        data["process_type"] = "normal"
     return data
 
 
@@ -720,6 +718,8 @@ def add_service_template(service_id, template_type, template_folder_id=None):
         abort(403)
 
     template = get_preview_data(service_id)
+    if template.get("process_type") is None:
+        template["process_type"] = "normal"
     form = form_objects[template_type](**template)
 
     if form.validate_on_submit():
@@ -816,7 +816,10 @@ def edit_service_template(service_id, template_id):
         template["subject"] = new_template_data["subject"]
 
     template["template_content"] = template["content"]
+    if template.get("process_type") is None:
+        template["process_type"] = "normal"
     form = form_objects[template["template_type"]](**template)
+
     if form.validate_on_submit():
         if form.process_type.data != template["process_type"]:
             abort_403_if_not_admin_user()
