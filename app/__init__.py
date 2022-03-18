@@ -218,12 +218,12 @@ def init_app(application):
 
     @application.before_request
     def make_session_permanent():
-        # this is dumb. You'd think, given that there's `config['PERMANENT_SESSION_LIFETIME']`, that you'd enable
+        # This is misleading. You'd think, given that there's `config['PERMANENT_SESSION_LIFETIME']`, that you'd enable
         # permanent sessions in the config too - but no, you have to declare it for each request.
         # https://stackoverflow.com/questions/34118093/flask-permanent-session-where-to-define-them
         # session.permanent is also, helpfully, a way of saying that the session isn't permanent - in that, it will
         # expire on its own, as opposed to being controlled by the browser's session. Because session is a proxy, it's
-        # only accessible from within a request context, so we need to set this before every request :rolls_eyes:
+        # only accessible from within a request context, so we need to set this before every request.
         session.permanent = True
 
     @application.context_processor
