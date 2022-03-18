@@ -21,7 +21,6 @@ from flask import (
     session,
     url_for,
 )
-from flask._compat import string_types
 from flask.globals import _lookup_req_object, _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
 from flask_login import LoginManager, current_user
@@ -209,16 +208,6 @@ def create_app(application):
 
 
 def init_app(application):
-    def safe_get_request_nonce():
-        # Using hasattr() won't work when digging into the request stack with
-        # inexistent attribute as the request stack overrides the normal behavior
-        # and will deviate from expected behavior.
-        try:
-            return _request_ctx_stack.top.nonce
-        except (AttributeError):
-            application.logger.warning("Request nonce could not be retrieved.")
-            return ""
-
     application.after_request(useful_headers_after_request)
     application.after_request(save_service_or_org_after_request)
     application.before_request(load_service_before_request)
@@ -270,6 +259,17 @@ def init_app(application):
             "request_nonce": safe_get_request_nonce(),
             "sending_domain": application.config["SENDING_DOMAIN"],
         }
+
+
+def safe_get_request_nonce():
+    # Using hasattr() won't work when digging into the request stack with
+    # inexistent attribute as the request stack overrides the normal behavior
+    # and will deviate from expected behavior.
+    try:
+        return _request_ctx_stack.top.nonce
+    except (AttributeError):
+        current_app.logger.warning("Request nonce could not be retrieved.")
+        return ""
 
 
 def linkable_name(value):
