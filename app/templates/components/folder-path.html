@@ -7,28 +7,41 @@
   root_element='h1',
   sending_view=false
 ) %}
-  <{{ root_element }} class="{% if root_element == 'h1' %}heading-medium {% endif %}folder-heading">
-    {% for folder in folders %}
-      {% if loop.last and not link_current_item %}
-        {% if folder.template_type or not folder.id %}
-          <span class="folder-heading-template">{{ folder.name }}</span>
-        {% else %}
-          <span class="folder-heading-folder">{{ folder.name }}</span>
-        {% endif %}
-      {% else %}
-        {% if folder.id %}
-          {% if current_user.has_template_folder_permission(folder) %}
-            <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type, template_folder_id=folder.id, view='sending' if sending_view else None) }}" class="folder-heading-folder {% if loop.index < (loop.length - 1) %}folder-heading-folder-truncated{% endif %}" title="{{ folder.name }}">{{ folder.name }}</a>
+  {% if folders | length > 1 %}
+    <nav class="folder-heading" aria-label="{{_('Current folder path')}}">
+      {% for folder in folders %}
+        {% if loop.last and not link_current_item %}
+          {% if folder.template_type or not folder.id %}
+            <span class="folder-heading-template" aria-current="true">{{ folder.name }}</span>
           {% else %}
-            <span class="folder-heading-folder">{{ folder.name }}</span>
+            <span class="folder-heading-folder" aria-current="true">{{ folder.name }}</span>
           {% endif %}
         {% else %}
-          <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type, view='sending' if sending_view else None) }}" title="{{ _('Templates') }}" class="{% if loop.length > 2 %}folder-heading-folder-root-truncated{% endif %}">{{ _('Templates') }}</a>
+          <span class="folder-heading-folder-group">
+          {% if folder.id %}
+            {% if current_user.has_template_folder_permission(folder) %}
+              {% if loop.index < (loop.length - 1) %}
+                <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type, template_folder_id=folder.id, view='sending' if sending_view else None) }}" class="folder-heading-folder folder-heading-folder-truncated" title="{{ folder.name }}">{{ folder.name }}</a>
+              {% else %}
+                <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type, template_folder_id=folder.id, view='sending' if sending_view else None) }}" class="folder-heading-folder">{{ folder.name }}</a>
+              {% endif %}
+              
+            {% else %}
+              <span class="folder-heading-folder">{{ folder.name }}</span>
+            {% endif %}
+          {% else %}
+            {% if loop.length > 2 %}
+              <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type, view='sending' if sending_view else None) }}" class="folder-heading-folder-root folder-heading-folder-root-truncated" title="{{ folder.name }}">{{ _('Templates') }}</a>
+            {% else %}
+              <a href="{{ url_for('.choose_template', service_id=service_id, template_type=template_type, view='sending' if sending_view else None) }}" class="folder-heading-folder-root">{{ _('Templates') }}</a>
+            {% endif %}
+          {% endif %}
+          {% if not loop.last %}{{ folder_path_separator() }}{% endif %}
+          </span>
         {% endif %}
-        {% if not loop.last %}{{ folder_path_separator() }}{% endif %}
-      {% endif %}
-    {% endfor %}
-  </{{ root_element }}>
+      {% endfor %}
+    </nav>
+  {% endif %}
 {% endmacro %}
 
 
@@ -39,41 +52,52 @@
   current_user
 ) %}
   {% if folder_path %}
-    <h2 class="heading-medium folder-heading">
+    <nav class="folder-heading" aria-label="{{_('Current folder path')}}">
       {% if folder_path|length == 1 %}
         <a href="{{ url_for('.choose_template_to_copy', service_id=current_service_id) }}">{{ _('Services') }}</a>
         {{ folder_path_separator() }}
       {% endif %}
       {% for folder in folder_path %}
         {% if loop.last %}
-          <span class="folder-heading-folder">
+          <span class="folder-heading-folder" aria-current="true">
             {{ folder.name if folder.id else from_service.name }}
           </span>
         {% else %}
-          {% if folder.id %}
-            {% if current_user.has_template_folder_permission(folder) %}
-              <a href="{{ url_for('.choose_template_to_copy', service_id=current_service_id, from_service=from_service.id, from_folder=folder.id) }}" class="folder-heading-folder">{{ folder.name }}</a>
-             {% else %}
-              <span class="folder-heading-folder">{{ folder.name }}</span>
+          <span class="folder-heading-folder-group">
+            {% if folder.id %}
+              {% if current_user.has_template_folder_permission(folder) %}
+                <a href="{{ url_for('.choose_template_to_copy', service_id=current_service_id, from_service=from_service.id, from_folder=folder.id) }}" class="folder-heading-folder">{{ folder.name }}</a>
+              {% else %}
+                <span class="folder-heading-folder">{{ folder.name }}</span>
+              {% endif %}
+              {% if not loop.last %}{{ folder_path_separator() }}{% endif %}
+            {% elif folder.parent_id == None %}
+              <a href="{{ url_for('.choose_template_to_copy', service_id=current_service_id, from_service=from_service.id, from_folder=folder.id) }}" class="folder-heading-folder">{{ from_service.name }}</a> {% if not loop.last %}{{ folder_path_separator() }}{% endif %}
+            {% else %}
+              <a href="{{ url_for('.choose_template_to_copy', service_id=current_service_id, from_service=from_service.id) }}">{{ from_service.name }}</a> {% if not loop.last %}{{ folder_path_separator() }}{% endif %}
             {% endif %}
-            {% if not loop.last %}{{ folder_path_separator() }}{% endif %}
-          {% elif folder.parent_id == None %}
-            <a href="{{ url_for('.choose_template_to_copy', service_id=current_service_id, from_service=from_service.id, from_folder=folder.id) }}" class="folder-heading-folder">{{ from_service.name }}</a> {% if not loop.last %}{{ folder_path_separator() }}{% endif %}
-          {% else %}
-            <a href="{{ url_for('.choose_template_to_copy', service_id=current_service_id, from_service=from_service.id) }}">{{ from_service.name }}</a> {% if not loop.last %}{{ folder_path_separator() }}{% endif %}
-          {% endif %}
+          </span>
         {% endif %}
       {% endfor %}
-    </h2>
+    </nav>
   {% endif %}
 {% endmacro %}
 
 
-{% macro page_title_folder_path(folders) %}
+{% macro page_title_folder_path(folders, separator='–') %}
   {% for folder in folders|reverse %}
     {{ folder.name }}
     {% if not loop.last %}
-      –
+      {{separator}}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro forward_folder_path(folders, separator='/') %}
+  {% for folder in folders %}
+    {{ folder.name }}
+    {% if not loop.last %}
+      {{separator}}
     {% endif %}
   {% endfor %}
 {% endmacro %}
