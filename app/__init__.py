@@ -257,7 +257,7 @@ def init_app(application):
             "documentation_url": documentation_url,
             "google_analytics_id": application.config["GOOGLE_ANALYTICS_ID"],
             "google_tag_manager_id": application.config["GOOGLE_TAG_MANAGER_ID"],
-            "request_nonce": _request_ctx_stack.top.nonce,
+            "request_nonce": _request_ctx_stack.top.nonce if _request_ctx_stack.top.nonce else "",
             "sending_domain": application.config["SENDING_DOMAIN"],
         }
 
