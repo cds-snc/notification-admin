@@ -725,9 +725,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
     if form.validate_on_submit():
         if form.process_type.data != "normal":
             abort_403_if_not_admin_user()
-
         subject = form.subject.data if hasattr(form, "subject") else None
-
         if request.form.get("button_pressed") == "preview":
             preview_template_data = {
                 "name": form.name.data,
@@ -746,14 +744,13 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                     service_id=service_id,
                 )
             )
-
         try:
             new_template = service_api_client.create_service_template(
                 form.name.data,
                 template_type,
                 form.template_content.data,
                 service_id,
-                form.subject.data if hasattr(form, "subject") else None,
+                subject,
                 form.process_type.data,
                 template_folder_id,
             )
@@ -814,7 +811,6 @@ def edit_service_template(service_id, template_id):
         template["content"] = new_template_data["content"]
         template["name"] = new_template_data["name"]
         template["subject"] = new_template_data["subject"]
-
     template["template_content"] = template["content"]
     if template.get("process_type") is None:
         template["process_type"] = "normal"
