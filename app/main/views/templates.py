@@ -125,10 +125,9 @@ def delete_preview_data(service_id, template_id=None):
 @main.route("/services/<service_id>/templates/<uuid:template_id>")
 @user_has_permissions()
 def view_template(service_id, template_id):
+    delete_preview_data(service_id, template_id)
     template = current_service.get_template(template_id)
     template_folder = current_service.get_template_folder(template["folder"])
-
-    delete_preview_data(service_id, template_id)
 
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
@@ -477,8 +476,9 @@ def _add_template_by_type(template_type, template_folder_id):
 @main.route("/services/<service_id>/templates/<template_type>/folders/<template_folder_id>/create", methods=["GET", "POST"])
 @user_has_permissions("manage_templates")
 def create_template(service_id, template_type="all", template_folder_id=None):
-    form = CreateTemplateForm()
     delete_preview_data(service_id)
+    form = CreateTemplateForm()
+
     if request.method == "POST" and form.validate_on_submit():
         try:
             return _add_template_by_type(
@@ -808,7 +808,6 @@ def abort_403_if_not_admin_user():
 @user_has_permissions("manage_templates")
 def edit_service_template(service_id, template_id):
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
-
     new_template_data = get_preview_data(service_id, template_id)
 
     if new_template_data["content"]:
@@ -834,7 +833,6 @@ def edit_service_template(service_id, template_id):
             "reply_to_text": template["reply_to_text"],
             "folder": template["folder"],
         }
-
         set_preview_data(new_template_data, service_id, template_id)
 
         new_template = get_template(new_template_data, current_service)
