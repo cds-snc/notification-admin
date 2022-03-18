@@ -255,10 +255,8 @@ def init_app(application):
             "asset_s3_url": asset_fingerprinter.get_s3_url,
             "current_lang": get_current_locale(application),
             "documentation_url": documentation_url,
-            "google_analytics_id": "UA-102484926-14",
-            # application.config["GOOGLE_ANALYTICS_ID"],
-            "google_tag_manager_id": "GTM-KRKRZQV",
-            # application.config["GOOGLE_TAG_MANAGER_ID"],
+            "google_analytics_id": application.config["GOOGLE_ANALYTICS_ID"],
+            "google_tag_manager_id": application.config["GOOGLE_TAG_MANAGER_ID"],
             "request_nonce": _request_ctx_stack.top.nonce,
             "sending_domain": application.config["SENDING_DOMAIN"],
         }
