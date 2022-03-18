@@ -1640,20 +1640,19 @@ def test_should_redirect_when_previewing_a_template_email(
 
 
 def test_preview_should_redirect_on_edit(
-    client_request,
-    mock_get_service_email_template,
-    mock_get_user_by_email,
-    fake_uuid,
+    client_request, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
 ):
-
-    with client_request.session_transaction() as session:
-        session["preview_template_data"] = {
-            "name": "template 1",
-            "content": "hi there",
-            "subject": "test subject",
-            "template_type": "email",
-            "id": fake_uuid,
-        }
+    preview_data = {
+        "name": "template 1",
+        "content": "hi there",
+        "subject": "test subject",
+        "template_type": "email",
+        "id": fake_uuid,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
 
     client_request.post(
         ".preview_template",
@@ -1672,20 +1671,19 @@ def test_preview_should_redirect_on_edit(
     )
 
 
-def test_preview_should_update_and_redirect_on_save(
-    client_request,
-    mock_update_service_template,
-    fake_uuid,
-):
-    with client_request.session_transaction() as session:
-        session["preview_template_data"] = {
-            "name": "test name",
-            "content": "test content",
-            "subject": "test subject",
-            "template_type": "email",
-            "process_type": "normal",
-            "id": fake_uuid,
-        }
+def test_preview_should_update_and_redirect_on_save(client_request, mock_update_service_template, fake_uuid, mocker):
+    preview_data = {
+        "name": "test name",
+        "content": "test content",
+        "subject": "test subject",
+        "template_type": "email",
+        "process_type": "normal",
+        "id": fake_uuid,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
 
     client_request.post(
         ".preview_template",
@@ -1707,20 +1705,19 @@ def test_preview_should_update_and_redirect_on_save(
     )
 
 
-def test_preview_should_create_and_redirect_on_save(
-    client_request,
-    mock_create_service_template,
-    fake_uuid,
-):
-    with client_request.session_transaction() as session:
-        session["preview_template_data"] = {
-            "name": "test name",
-            "content": "test content",
-            "subject": "test subject",
-            "template_type": "email",
-            "process_type": "normal",
-            "folder": None,
-        }
+def test_preview_should_create_and_redirect_on_save(client_request, mock_create_service_template, fake_uuid, mocker):
+    preview_data = {
+        "name": "test name",
+        "content": "test content",
+        "subject": "test subject",
+        "template_type": "email",
+        "process_type": "normal",
+        "folder": None,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
 
     client_request.post(
         ".preview_template",
