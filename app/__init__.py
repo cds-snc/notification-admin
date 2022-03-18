@@ -257,19 +257,19 @@ def init_app(application):
             "documentation_url": documentation_url,
             "google_analytics_id": application.config["GOOGLE_ANALYTICS_ID"],
             "google_tag_manager_id": application.config["GOOGLE_TAG_MANAGER_ID"],
-            "request_nonce": _request_ctx_stack.top.nonce if hasattr(_request_ctx_stack.top, "nonce") else "",
+            "request_nonce": safe_get_request_nonce(),
             "sending_domain": application.config["SENDING_DOMAIN"],
         }
 
 
-def convert_to_boolean(value):
-    if isinstance(value, string_types):
-        if value.lower() in ["t", "true", "on", "yes", "1"]:
-            return True
-        elif value.lower() in ["f", "false", "off", "no", "0"]:
-            return False
-
-    return value
+def safe_get_request_nonce():
+    # Using hasattr() won't work when digging into the request stack with
+    # inexistent attribute as the request stack overrides the normal behavior
+    # and will deviate from expected behavior.
+    try:
+        return _request_ctx_stack.top.nonce
+    except(AttributeError):
+        return ""
 
 
 def linkable_name(value):
@@ -621,7 +621,7 @@ def useful_headers_after_request(response):
             "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
             "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(
                 asset_domain=current_app.config["ASSET_DOMAIN"],
-                nonce=_request_ctx_stack.top.nonce,
+                nonce=safe_get_request_nonce(),
             )
         ),
     )
