@@ -1,13 +1,13 @@
 from datetime import datetime
 from functools import partial
-from unittest.mock import ANY, Mock
+from unittest.mock import ANY, patch, Mock, MagicMock
 
 import pytest
 from flask import url_for
 from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 
-from app.main.views.templates import get_human_readable_delta
+from app.main.views.templates import get_human_readable_delta, set_preview_data, get_preview_data
 from app.models.service import Service
 from tests import single_notification_json, template_json, validate_route_permission
 from tests.app.main.views.test_template_folders import (
@@ -35,6 +35,43 @@ from tests.conftest import (
 )
 from tests.conftest import service_one as create_sample_service
 from tests.conftest import single_letter_contact_block
+
+
+class MockRedis:
+    def __init__(self):
+        self.cache = dict()
+
+    def get(self, key):
+        if key in self.cache:
+            return self.cache[key]
+        return None
+
+    def set(self, key, value, *args, **kwargs):
+        self.cache[key] = value
+
+
+def test_set_get(fake_uuid, mocker):
+    mock_redis_obj = MockRedis()
+    mock_redis_method = MagicMock()
+    mock_redis_method.get = Mock(side_effect=mock_redis_obj.get)
+    mock_redis_method.set = Mock(side_effect=mock_redis_obj.set)
+    mocker.patch("app.main.views.templates.redis_client", mock_redis_method)
+
+    expected_data = {
+        "name": "test name",
+        "content": "test content",
+        "template_content": "test content",
+        "subject": "test subject",
+        "template_type": "email",
+        "process_type": "normal",
+        "id": fake_uuid,
+        "folder": None,
+        "reply_to_text": "reply@go.com",
+    }
+    set_preview_data(expected_data, fake_uuid)
+    actual_data = get_preview_data(fake_uuid)
+
+    assert expected_data == actual_data
 
 
 def test_should_show_empty_page_when_no_templates(
