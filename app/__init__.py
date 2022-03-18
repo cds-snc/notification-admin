@@ -256,7 +256,7 @@ def init_app(application):
             "documentation_url": documentation_url,
             "google_analytics_id": application.config["GOOGLE_ANALYTICS_ID"],
             "google_tag_manager_id": application.config["GOOGLE_TAG_MANAGER_ID"],
-            "request_nonce": safe_get_request_nonce(),
+            "request_nonce": _request_ctx_stack.top.nonce,
             "sending_domain": application.config["SENDING_DOMAIN"],
         }
 
@@ -621,7 +621,7 @@ def useful_headers_after_request(response):
             "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
             "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(
                 asset_domain=current_app.config["ASSET_DOMAIN"],
-                nonce=safe_get_request_nonce(),
+                nonce=_request_ctx_stack.top.nonce,
             )
         ),
     )
