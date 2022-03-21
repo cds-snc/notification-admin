@@ -510,6 +510,7 @@ def manage_template_folder(service_id, template_folder_id):
     return render_template(
         "views/templates/manage-template-folder.html",
         form=form,
+        current_template_folder = current_service.get_template_folder_path(template_folder_id)[-1],
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         current_service_id=current_service.id,
         template_folder_id=template_folder_id,

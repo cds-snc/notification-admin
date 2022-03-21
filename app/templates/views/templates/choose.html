@@ -11,7 +11,7 @@
 {% set page_title = _('Templates') %}
 
 {% block service_page_title %}
-  {{ page_title_folder_path(template_folder_path) }}
+  {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -64,7 +64,7 @@
       {% endif %}
     </div>
     <h1 class="heading-medium">
-      {{ current_template_folder.name }}
+      {{ _('Browse {}').format(current_template_folder.name) }}
     </h1>
   {% endif %}
     {% if sending_view %}

@@ -49,8 +49,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
     ),
     [
         (
-            "Templates - service one – Notify",
-            "Templates",
+            "Browse Templates - service one – Notify",
+            "Browse Templates",
             [],
             {},
             [
@@ -96,8 +96,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "Templates - service one – Notify",
-            "Templates",
+            "Browse Templates - service one – Notify",
+            "Browse Templates",
             [],
             {"template_type": "sms"},
             [
@@ -124,8 +124,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "folder_one – Templates - service one – Notify",
-            "Templates folder_one",
+            "Browse folder_one – Templates - service one – Notify",
+            "Browse Templates folder_one",
             [{"template_type": "all"}],
             {"template_folder_id": PARENT_FOLDER_ID},
             [
@@ -149,8 +149,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "folder_one – Templates - service one – Notify",
-            "Templates folder_one",
+            "Browse folder_one – Templates - service one – Notify",
+            "Browse Templates folder_one",
             [{"template_type": "sms"}],
             {"template_type": "sms", "template_folder_id": PARENT_FOLDER_ID},
             [
@@ -169,8 +169,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "folder_one – Templates - service one – Notify",
-            "Templates folder_one",
+            "Browse folder_one – Templates - service one – Notify",
+            "Browse Templates folder_one",
             [{"template_type": "email"}],
             {"template_type": "email", "template_folder_id": PARENT_FOLDER_ID},
             [],
@@ -179,8 +179,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "There are no email templates in this folder",
         ),
         (
-            "folder_one_one – folder_one – Templates - service one – Notify",
-            "Templates folder_one folder_one_one",
+            "Browse folder_one_one – folder_one – Templates - service one – Notify",
+            "Browse Templates folder_one folder_one_one",
             [
                 {"template_type": "all"},
                 {"template_type": "all", "template_folder_id": PARENT_FOLDER_ID},
@@ -203,8 +203,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "folder_one_one_one – folder_one_one – folder_one – Templates - service one – Notify",
-            "Templates folder_one folder_one_one folder_one_one_one",
+            "Browse folder_one_one_one – folder_one_one – folder_one – Templates - service one – Notify",
+            "Browse Templates folder_one folder_one_one folder_one_one_one",
             [
                 {"template_type": "all"},
                 {"template_type": "all", "template_folder_id": PARENT_FOLDER_ID},
@@ -223,8 +223,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "folder_one_one_one – folder_one_one – folder_one – Templates - service one – Notify",
-            "Templates folder_one folder_one_one folder_one_one_one",
+            "Browse folder_one_one_one – folder_one_one – folder_one – Templates - service one – Notify",
+            "Browse Templates folder_one folder_one_one folder_one_one_one",
             [
                 {"template_type": "email"},
                 {"template_type": "email", "template_folder_id": PARENT_FOLDER_ID},
@@ -240,8 +240,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "There are no email templates in this folder",
         ),
         (
-            "folder_two – Templates - service one – Notify",
-            "Templates folder_two",
+            "Browse folder_two – Templates - service one – Notify",
+            "Browse Templates folder_two",
             [{"template_type": "all"}],
             {"template_folder_id": FOLDER_TWO_ID},
             [],
@@ -250,8 +250,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "This folder is empty",
         ),
         (
-            "folder_two – Templates - service one – Notify",
-            "Templates folder_two",
+            "Browse folder_two – Templates - service one – Notify",
+            "Browse Templates folder_two",
             [{"template_type": "sms"}],
             {"template_folder_id": FOLDER_TWO_ID, "template_type": "sms"},
             [],
