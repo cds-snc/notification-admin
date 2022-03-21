@@ -23,7 +23,6 @@ service = [
     }
 ]
 
-
 def test_owasp_useful_headers_set(
     client,
     mocker,
@@ -34,23 +33,28 @@ def test_owasp_useful_headers_set(
         "app.service_api_client.get_stats_by_month",
         return_value={"data": [("2020-11-01", "email", 20)]},
     )
+    
+    nonce = "PTV4HSwytpCSrW4v001LB5qKL-Hp0QyMJiGqNnKV2no"
+    mocker.patch(
+        "app.safe_get_request_nonce",
+        return_value=nonce
+    )
     response = client.get("/")
 
     assert response.status_code == 200
     assert response.headers["X-Frame-Options"] == "deny"
     assert response.headers["X-Content-Type-Options"] == "nosniff"
     assert response.headers["X-XSS-Protection"] == "1; mode=block"
-    assert response.headers["Permissions-Policy"] == "interest-cohort=()"
     assert response.headers["Content-Security-Policy"] == (
         "default-src 'self' static.example.com 'unsafe-inline';"
-        "script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
-        "connect-src 'self' *.google-analytics.com;"
+        f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+        "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
         "object-src 'self';"
-        "style-src 'self' *.googleapis.com 'unsafe-inline';"
+        "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
-        "'self' static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
-        "frame-src 'self' www.youtube.com;"
+        "'self' static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
+        "frame-src 'self' www.googletagmanager.com www.youtube.com;"
     )
 
 
