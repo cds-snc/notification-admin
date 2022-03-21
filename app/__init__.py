@@ -616,6 +616,7 @@ def useful_headers_after_request(response):
     response.headers.add("X-Content-Type-Options", "nosniff")
     response.headers.add("X-XSS-Protection", "1; mode=block")
     nonce = _request_ctx_stack.top.nonce
+    asset_domain=current_app.config["ASSET_DOMAIN"]
     current_app.logger.warning(f"Request nonce is {nonce}")
     response.headers.add(
         "Content-Security-Policy",
@@ -628,7 +629,7 @@ def useful_headers_after_request(response):
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
             "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
             "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(
-                asset_domain=current_app.config["ASSET_DOMAIN"]
+                asset_domain=asset_domain
             )
         ),
     )
