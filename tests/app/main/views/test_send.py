@@ -1244,7 +1244,7 @@ def test_send_one_off_offers_link_to_upload(
 
     assert back_link.text.strip() == "Back"
 
-    assert link.text.strip() == "Upload a list of recipients"
+    assert link.text.strip() == "Upload file with recipients"
     assert link["href"] == url_for(
         "main.send_messages",
         service_id=SERVICE_ONE_ID,
