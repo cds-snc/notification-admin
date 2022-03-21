@@ -28,6 +28,7 @@ def test_owasp_useful_headers_set(
     mocker,
     mock_get_service_and_organisation_counts,
 ):
+    # Given...
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
@@ -39,8 +40,11 @@ def test_owasp_useful_headers_set(
         "app.safe_get_request_nonce",
         return_value=nonce
     )
+
+    # When...
     response = client.get("/")
 
+    # Then...
     assert response.status_code == 200
     assert response.headers["X-Frame-Options"] == "deny"
     assert response.headers["X-Content-Type-Options"] == "nosniff"
