@@ -248,7 +248,7 @@ def init_app(application):
 
     @application.context_processor
     def inject_global_template_variables():
-        nonce = _request_ctx_stack.top.nonce
+        nonce = safe_get_request_nonce()
         current_app.logger.warning(f"Injecting nonce {nonce} in request")
         return {
             "admin_base_url": application.config["ADMIN_BASE_URL"],
@@ -269,10 +269,10 @@ def safe_get_request_nonce():
     # and will deviate from expected behavior.
     try:
         nonce = _request_ctx_stack.top.nonce
-        current_app.logger.info(f"Request nonce is {nonce}.")
+        current_app.logger.info(f"Safe get nonce of {nonce}.")
         return nonce
     except (AttributeError):
-        current_app.logger.warning("Request nonce could not be retrieved.")
+        current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
         return ""
 
 
@@ -615,8 +615,8 @@ def useful_headers_after_request(response):
     response.headers.add("X-Frame-Options", "deny")
     response.headers.add("X-Content-Type-Options", "nosniff")
     response.headers.add("X-XSS-Protection", "1; mode=block")
-    nonce = _request_ctx_stack.top.nonce
-    asset_domain=current_app.config["ASSET_DOMAIN"]
+    nonce = safe_get_request_nonce()
+    asset_domain = current_app.config["ASSET_DOMAIN"]
     current_app.logger.warning(f"Request nonce is {nonce}")
     response.headers.add(
         "Content-Security-Policy",
@@ -628,9 +628,7 @@ def useful_headers_after_request(response):
             "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
             "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
-            "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(
-                asset_domain=asset_domain
-            )
+            "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(asset_domain=asset_domain)
         ),
     )
     if "Cache-Control" in response.headers:
