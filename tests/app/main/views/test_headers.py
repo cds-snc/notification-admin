@@ -23,6 +23,7 @@ service = [
     }
 ]
 
+
 def test_owasp_useful_headers_set(
     client,
     mocker,
@@ -34,12 +35,9 @@ def test_owasp_useful_headers_set(
         "app.service_api_client.get_stats_by_month",
         return_value={"data": [("2020-11-01", "email", 20)]},
     )
-    
+
     nonce = "PTV4HSwytpCSrW4v001LB5qKL-Hp0QyMJiGqNnKV2no"
-    mocker.patch(
-        "app.safe_get_request_nonce",
-        return_value=nonce
-    )
+    mocker.patch("app.safe_get_request_nonce", return_value=nonce)
 
     # When...
     response = client.get("/")
