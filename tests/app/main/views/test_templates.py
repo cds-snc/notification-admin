@@ -776,7 +776,7 @@ def test_should_not_show_send_buttons_on_template_page_for_user_without_permissi
     )
 
     assert "Ready to send?" not in str(page)
-    assert "Send test message to yourself" not in str(page)
+    assert "No, send yourself this message" not in str(page)
 
 
 def test_should_show_sms_template_with_downgraded_unicode_characters(
