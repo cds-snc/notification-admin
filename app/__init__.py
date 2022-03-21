@@ -248,6 +248,8 @@ def init_app(application):
 
     @application.context_processor
     def inject_global_template_variables():
+        nonce = _request_ctx_stack.top.nonce
+        current_app.logger.warning(f"Injecting nonce {nonce} in request")
         return {
             "admin_base_url": application.config["ADMIN_BASE_URL"],
             "asset_url": asset_fingerprinter.get_url,
@@ -256,7 +258,7 @@ def init_app(application):
             "documentation_url": documentation_url,
             "google_analytics_id": application.config["GOOGLE_ANALYTICS_ID"],
             "google_tag_manager_id": application.config["GOOGLE_TAG_MANAGER_ID"],
-            "request_nonce": _request_ctx_stack.top.nonce,
+            "request_nonce": nonce,
             "sending_domain": application.config["SENDING_DOMAIN"],
         }
 
@@ -266,7 +268,9 @@ def safe_get_request_nonce():
     # inexistent attribute as the request stack overrides the normal behavior
     # and will deviate from expected behavior.
     try:
-        return _request_ctx_stack.top.nonce
+        nonce = _request_ctx_stack.top.nonce
+        current_app.logger.info(f"Request nonce is {nonce}.")
+        return nonce
     except (AttributeError):
         current_app.logger.warning("Request nonce could not be retrieved.")
         return ""
@@ -587,7 +591,9 @@ def load_request_nonce():
     if "/static/" in request.url:
         _request_ctx_stack.top.nonce = None
     elif _request_ctx_stack.top is not None:
-        _request_ctx_stack.top.nonce = secrets.token_urlsafe()
+        token = secrets.token_urlsafe()
+        _request_ctx_stack.top.nonce = token
+        current_app.logger.warning(f"Set request nonce to {token}")
 
 
 def save_service_or_org_after_request(response):
@@ -609,19 +615,20 @@ def useful_headers_after_request(response):
     response.headers.add("X-Frame-Options", "deny")
     response.headers.add("X-Content-Type-Options", "nosniff")
     response.headers.add("X-XSS-Protection", "1; mode=block")
+    nonce = _request_ctx_stack.top.nonce
+    current_app.logger.warning(f"Request nonce is {nonce}")
     response.headers.add(
         "Content-Security-Policy",
         (
             "default-src 'self' {asset_domain} 'unsafe-inline';"
-            "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
             "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
             "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
             "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
             "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(
-                asset_domain=current_app.config["ASSET_DOMAIN"],
-                nonce=_request_ctx_stack.top.nonce,
+                asset_domain=current_app.config["ASSET_DOMAIN"]
             )
         ),
     )
