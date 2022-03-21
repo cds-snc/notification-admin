@@ -125,7 +125,7 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         ),
         (
             "Browse folder_one – Templates - service one – Notify",
-            "Browse Templates folder_one",
+            "Browse folder_one",
             [{"template_type": "all"}],
             {"template_folder_id": PARENT_FOLDER_ID},
             [
@@ -150,7 +150,7 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         ),
         (
             "Browse folder_one – Templates - service one – Notify",
-            "Browse Templates folder_one",
+            "Browse folder_one",
             [{"template_type": "sms"}],
             {"template_type": "sms", "template_folder_id": PARENT_FOLDER_ID},
             [
@@ -170,7 +170,7 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         ),
         (
             "Browse folder_one – Templates - service one – Notify",
-            "Browse Templates folder_one",
+            "Browse folder_one",
             [{"template_type": "email"}],
             {"template_type": "email", "template_folder_id": PARENT_FOLDER_ID},
             [],
@@ -180,7 +180,7 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         ),
         (
             "Browse folder_one_one – folder_one – Templates - service one – Notify",
-            "Browse Templates folder_one folder_one_one",
+            "Browse folder_one_one",
             [
                 {"template_type": "all"},
                 {"template_type": "all", "template_folder_id": PARENT_FOLDER_ID},
@@ -204,7 +204,7 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         ),
         (
             "Browse folder_one_one_one – folder_one_one – folder_one – Templates - service one – Notify",
-            "Browse Templates folder_one folder_one_one folder_one_one_one",
+            "Browse folder_one_one_one",
             [
                 {"template_type": "all"},
                 {"template_type": "all", "template_folder_id": PARENT_FOLDER_ID},
@@ -224,7 +224,7 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         ),
         (
             "Browse folder_one_one_one – folder_one_one – folder_one – Templates - service one – Notify",
-            "Browse Templates folder_one folder_one_one folder_one_one_one",
+            "Browse folder_one_one_one",
             [
                 {"template_type": "email"},
                 {"template_type": "email", "template_folder_id": PARENT_FOLDER_ID},
@@ -241,7 +241,7 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         ),
         (
             "Browse folder_two – Templates - service one – Notify",
-            "Browse Templates folder_two",
+            "Browse folder_two",
             [{"template_type": "all"}],
             {"template_folder_id": FOLDER_TWO_ID},
             [],
@@ -251,7 +251,7 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         ),
         (
             "Browse folder_two – Templates - service one – Notify",
-            "Browse Templates folder_two",
+            "Browse folder_two",
             [{"template_type": "sms"}],
             {"template_folder_id": FOLDER_TWO_ID, "template_type": "sms"},
             [],
@@ -311,15 +311,6 @@ def test_should_show_templates_folder_page(
 
     assert normalize_spaces(page.select_one("title").text) == expected_title_tag
     assert normalize_spaces(page.select_one("h1").text) == expected_page_title
-
-    assert len(page.select("h1 a")) == len(expected_parent_link_args)
-
-    for index, parent_link in enumerate(page.select("h1 a")):
-        assert parent_link["href"] == url_for(
-            "main.choose_template",
-            service_id=SERVICE_ONE_ID,
-            **expected_parent_link_args[index],
-        )
 
     links_in_page = page.select(".pill a")
 

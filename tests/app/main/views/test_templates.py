@@ -1019,7 +1019,7 @@ def test_choose_a_template_to_copy_from_folder_within_service(
     for actual, expected in zip(actual, expected):
         assert normalize_spaces(actual.text) == expected
 
-    links = page.select("main nav a")
+    links = page.select("main nav#template-list a")
     assert links[0]["href"] == url_for(
         "main.choose_template_to_copy",
         service_id=SERVICE_ONE_ID,
