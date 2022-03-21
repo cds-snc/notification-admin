@@ -163,7 +163,7 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
     return render_template(
         "views/templates/choose.html",
         current_template_folder_id=template_folder_id,
-        current_template_folder = current_service.get_template_folder_path(template_folder_id)[-1],
+        current_template_folder=current_service.get_template_folder_path(template_folder_id)[-1],
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         template_list=template_list,
         show_search_box=current_service.count_of_templates_and_folders > 7,
@@ -510,7 +510,7 @@ def manage_template_folder(service_id, template_folder_id):
     return render_template(
         "views/templates/manage-template-folder.html",
         form=form,
-        current_template_folder = current_service.get_template_folder_path(template_folder_id)[-1],
+        current_template_folder=current_service.get_template_folder_path(template_folder_id)[-1],
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         current_service_id=current_service.id,
         template_folder_id=template_folder_id,
