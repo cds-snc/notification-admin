@@ -1,8 +1,17 @@
 {
-	"name": "Python 3.9",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "dev",
-	"workspaceFolder": "/workspace",
+	"name": "notification-admin",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": ".."
+	},
+
+	"remoteEnv": {
+		"PATH": "/home/vscode/.local/bin:${containerEnv:PATH}" // give our installed Python modules precedence
+	},
+
+	"containerEnv": {
+		"SHELL": "/bin/zsh"
+	},
 
 	"settings": { 
 		"python.linting.enabled": true,
@@ -22,5 +31,7 @@
 		"ms-ossdata.vscode-postgresql",
 	],
 
-	"postCreateCommand": "notify-dev-entrypoint.sh"
+	"forwardPorts": [6012],
+	"postCreateCommand": "notify-dev-entrypoint.sh",
+	"remoteUser": "vscode"
 }
