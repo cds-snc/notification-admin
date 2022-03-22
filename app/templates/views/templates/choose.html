@@ -11,7 +11,11 @@
 {% set page_title = _('Templates') %}
 
 {% block service_page_title %}
-  {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
+  {% if (not current_service.all_templates) and (not current_service.all_template_folders) %}
+    {{ page_title_folder_path(template_folder_path) }}
+  {% else %}
+    {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
+  {% endif %}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -46,7 +50,7 @@
     {% endif %}
 
   {% else %}
-
+    
     <div class="grid-row contain-floats">
       <div class="{% if current_user.has_permissions('manage_templates') %} md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border {% else %} w-full float-left py-0 px-0 px-gutterHalf box-border {% endif %}">
         {{ folder_path(
