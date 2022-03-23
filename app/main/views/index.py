@@ -89,10 +89,6 @@ def verify_mobile():
     return render_template("views/verify-mobile.html")
 
 
-@main.route("/privacy")
-def privacy():
-    return render_template("views/privacy.html")
-
 
 @main.route("/pricing")
 def pricing():
@@ -258,17 +254,6 @@ def callbacks():
     return redirect(documentation_url("callbacks"), code=301)
 
 
-@main.route("/features", endpoint="features")
-def features():
-    return render_template("views/features.html")
-
-
-@main.route("/why-notify", endpoint="why-notify")
-def why_notify():
-    rate_sms = current_app.config.get("DEFAULT_FREE_SMS_FRAGMENT_LIMITS", {}).get("central", 10000)
-    return render_template("views/why-notify.html", rate_sms=rate_sms)
-
-
 @main.route("/roadmap", endpoint="roadmap")
 def roadmap():
     return render_template("views/roadmap.html")
@@ -289,11 +274,6 @@ def features_letters():
     return render_template("views/letters.html")
 
 
-@main.route("/guidance", endpoint="guidance")
-def guidance():
-    return render_template("views/guidance/index.html")
-
-
 @main.route("/format", endpoint="format")
 def format():
     return render_template("views/guidance/format.html")
@@ -302,11 +282,6 @@ def format():
 @main.route("/personalise", endpoint="personalise")
 def personalise():
     return render_template("views/guidance/personalise.html")
-
-
-@main.route("/security", endpoint="security")
-def security():
-    return render_template("views/security.html", security_email=current_app.config["SECURITY_EMAIL"])
 
 
 @main.route("/a11y", endpoint="a11y")
