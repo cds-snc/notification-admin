@@ -6,7 +6,7 @@
 {% block maincolumn_content %}
   <div>
     {{ page_header(
-        template._template.name,
+        _('Previewing template {}').format(template._template.name),
         back_link=back_link
     ) }}
   </div>
