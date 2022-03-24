@@ -17,7 +17,7 @@
 
     <div class="mb-12">
       <a href="{{ url_for('.add_recipients', service_id=current_service.id, template_id=template.id) }}" class="button">
-        {{ _('Add recipients') }}
+        {{ _('Yes, add recipients') }}
       </a>
       <a href="{{ url_for('.send_test', service_id=current_service.id, template_id=template.id) }}" class="button button button-secondary">{{ _('No, send yourself this message') }}</a>
     </div>

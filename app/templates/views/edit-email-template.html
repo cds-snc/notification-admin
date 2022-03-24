@@ -28,7 +28,7 @@
 
       {{ textbox(form.name, width='w-full', hint=_('Your recipients will not see this template name.'), rows=10) }}
 
-      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to it keep it shorter than 10 words.")) }}
+      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to keep it shorter than 10 words.")) }}
 
       {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=8, hint=_("Use the <a href='{}' target='_blank'>email formatting guide <span class='sr-only'> (Opens in a new tab)</span><img aria-hidden='true' role='presentation' class='inline w-6 h-6 ml-2 self-center' src='{}'/></a> to craft your message.").format(url_for('.format'), asset_url('images/external.svg'))) }}
 
