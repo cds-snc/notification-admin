@@ -39,6 +39,7 @@
         {% else %}
           <div class="self-center flex-shrink-0">
             <a
+              id="nav-sign-in-desktop"
               href="{{ url_for('main.sign_in' ) }}"
               class="px-5 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
               {{ _('Sign in') }}
@@ -48,6 +49,7 @@
         <div class="pl-5">
           <div class="h-14 p-1 border-2 border-solid border-gray rounded-lg">
             <a
+              id="nav-lang"
               class="px-1 block line-under leading-none text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
               href="{{ url_for('main.set_lang') }}?from={{ request.path }}"
               lang="{{ 'fr-CA' if lang_switch == 'FR' else 'en-CA' }}">
@@ -74,11 +76,11 @@
               {% endif %}
             {% endfor %}
           {% else %}
-            {{ nav_menu_item('/',_('Home'),'pl-0 header--'+header_navigation.is_selected('home'))}}
-            {{ nav_menu_item(url_for('main.why-notify'),_('Why GC Notify'),'header--'+header_navigation.is_selected('why-notify')) }}
-            {{ nav_menu_item(url_for('main.features'),_('Features'),'header--'+header_navigation.is_selected('features')) }}
-            {{ nav_menu_item(documentation_url(),_('API documentation'),'header--'+header_navigation.is_selected('documentation'), is_external_link=True) }}
-            {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
+            {{ nav_menu_item('/', _('Home'), 'pl-0 header--'+header_navigation.is_selected('home'), 'nav-head-home')}}
+            {{ nav_menu_item(url_for('main.why-notify'), _('Why GC Notify'), 'header--'+header_navigation.is_selected('why-notify'), 'nav-head-why-notify') }}
+            {{ nav_menu_item(url_for('main.features'), _('Features'), 'header--'+header_navigation.is_selected('features'), 'nav-head-features') }}
+            {{ nav_menu_item(documentation_url(), _('API documentation'), 'header--'+header_navigation.is_selected('documentation'), 'nav-head-doc', True) }}
+            {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact'), 'nav-head-contact') }}
           {% endif %}
         {% else %}
           {% if not current_user.platform_admin %}
