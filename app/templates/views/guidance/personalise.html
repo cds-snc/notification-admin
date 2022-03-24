@@ -10,7 +10,7 @@
     {{ _('You can use 1 template to include personal content for each recipient, such as their unique appointment time. This personal content, such as name and date of birth, helps recipients trust that your message is meant for them.  Send yourself a test message to check the personal content appears in the correct place.') }}
   </p>
   <p>
-    {{ _("To learn how to format emails, read the <a href='{}' target='_blank'>email formatting guide</a>.").format(url_for('.format')) }}
+    {{ _("To learn how to format emails, read the <a id='link-personalise-guide' href='{}' target='_blank'>email formatting guide</a>.").format(url_for('.format')) }}
   </p>
   {% include "partials/guidance/personalisation.html" %}
   {% include "partials/guidance/conditional-text.html" %}
