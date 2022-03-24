@@ -124,8 +124,9 @@ def create_app(application):
     setup_commands(application)
 
     notify_environment = os.environ["NOTIFY_ENVIRONMENT"]
+    config = configs[notify_environment]
 
-    application.config.from_object(configs[notify_environment])
+    application.config.from_object(config)
     asset_fingerprinter._cdn_domain = application.config["ASSET_DOMAIN"]
     asset_fingerprinter._asset_root = urljoin(application.config["ADMIN_BASE_URL"], application.config["ASSET_PATH"])
 
@@ -191,6 +192,9 @@ def create_app(application):
 
     # make sure we handle unicode correctly
     redis_client.redis_store.decode_responses = True
+
+    # Log the application configuration
+    application.logger.info(f"Notify config: {config.get_safe_config()}")
 
     from app.main import main as main_blueprint
 
