@@ -249,7 +249,7 @@ def init_app(application):
     @application.context_processor
     def inject_global_template_variables():
         nonce = safe_get_request_nonce()
-        current_app.logger.warning(f"Injecting nonce {nonce} in request")
+        current_app.logger.debug(f"Injecting nonce {nonce} in request")
         return {
             "admin_base_url": application.config["ADMIN_BASE_URL"],
             "asset_url": asset_fingerprinter.get_url,
@@ -269,7 +269,7 @@ def safe_get_request_nonce():
     # and will deviate from expected behavior.
     try:
         nonce = _request_ctx_stack.top.nonce
-        current_app.logger.info(f"Safe get nonce of {nonce}.")
+        current_app.logger.debug(f"Safe get request nonce of {nonce}.")
         return nonce
     except (AttributeError):
         current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
@@ -617,7 +617,6 @@ def useful_headers_after_request(response):
     response.headers.add("X-XSS-Protection", "1; mode=block")
     nonce = safe_get_request_nonce()
     asset_domain = current_app.config["ASSET_DOMAIN"]
-    current_app.logger.warning(f"Request nonce is {nonce}")
     response.headers.add(
         "Content-Security-Policy",
         (

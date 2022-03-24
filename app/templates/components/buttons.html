@@ -37,6 +37,7 @@
     id_key=None
 ) %}
 <a
+    {% if id_key %}id="{{ id_key }}"{% endif %}
     href="{{ href }}"
     class="button button-blue-lighter mr-10 {% if class %} {{ class }} {% endif %}">
     {{ label }}
