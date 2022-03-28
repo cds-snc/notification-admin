@@ -479,7 +479,7 @@
   <!-- END CONTENT-->
 
   {% if scrollTo == "true" %}
-    <script>
+    <script nonce="{{ request_nonce }}">
       var el = document.getElementById("contact-form")
       el.scrollIntoView()
     </script>
