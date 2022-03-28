@@ -30,6 +30,11 @@ def get_page_by_slug_with_cache(endpoint: str, params={"slug": ""}) -> Union[dic
 
 # Not cached
 def get_page_by_slug(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
+    # if no explict lang is set, set to the current locale
+    if not params.get("lang"):
+        lang_params = {"lang": get_current_locale(current_app)}
+        return get_content(endpoint, {**params, **lang_params}, auth_required=False)
+
     return get_content(endpoint, params, auth_required=False)
 
 

@@ -2,7 +2,7 @@ from typing import Union
 
 import requests
 from flask import abort, current_app, json
-from werkzeug.exceptions import NotFound, Unauthorized
+from werkzeug.exceptions import Forbidden, NotFound
 
 from app import get_current_locale
 from app.articles import (
@@ -18,7 +18,6 @@ from app.extensions import redis_client
 
 def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -> Union[dict, None]:
     base_url = current_app.config["GC_ARTICLES_API"]
-    lang = get_current_locale(current_app)
 
     headers = _get_headers(auth_required=auth_required)
 
@@ -28,7 +27,7 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
         parsed = json.loads(response.content)
 
         if response.status_code == 403:
-            raise Unauthorized()
+            raise Forbidden()
 
         if response.status_code >= 400 or not parsed:
             # Getting back a 4xx or 5xx status code
@@ -39,6 +38,7 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
 
         # Long-term "Fallback" cache
         if cacheable:
+            lang = get_current_locale(current_app)
             slug = params.get("slug")
             cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}"
             if slug:
@@ -47,8 +47,8 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
             redis_client.set(cache_key, json.dumps(parsed), ex=GC_ARTICLES_FALLBACK_CACHE_TTL)
 
         return parsed
-    except Unauthorized:
-        abort(401)
+    except Forbidden:
+        abort(403)
     except requests.exceptions.ConnectionError:
         # Fallback cache in case we can't connect to GC Articles
         cached = redis_client.get(cache_key)
