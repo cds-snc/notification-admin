@@ -36,7 +36,7 @@
     property="og:image"
     content="{{ asset_url('images/product/notify-main.jpg') }}"
   />
-  <script>
+  <script nonce="{{ request_nonce }}">
     window.APP_LANG = "{{ current_lang }}"
     window.APP_PHRASES = {
       now: "{{ _('Now') }}",
@@ -97,7 +97,7 @@
 
 <body class="{% block body_classes %}{% endblock %} flex flex-col min-h-screen">
 {% include 'partials/google-tag-manager-body.html' %}
-<script>
+<script nonce="{{ request_nonce }}">
   document.body.className = document.body.className
     ? document.body.className + " js-enabled"
     : "js-enabled";
