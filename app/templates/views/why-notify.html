@@ -28,7 +28,7 @@
 </div>
 <div class="pl-24">
   <p>{{ _('GC Notify does not store contact lists and only stores information about recipients for 7 days. You can also hide sensitive information by redacting personal details from messages after they’ve been sent, so that only recipients see their personal information.') }}</p>
-  <p><a href="{{ url_for('main.privacy') }}">{{ _('Learn more about privacy protection') }}</a></p>
+  <p><a id="link-why-notify-privacy-protection" href="{{ url_for('main.privacy') }}">{{ _('Learn more about privacy protection') }}</a></p>
 </div>
 <div class="pl-24">
   <img aria-hidden="true" src="{{ asset_url('images/why-notify/secure.svg') }}" class="float-left -ml-20 w-12 h-12" />
@@ -36,7 +36,7 @@
 </div>
 <div class="pl-24">
   <p>{{ _('GC Notify keeps your account secure with two-factor authentication. This means you’ll need to enter a code that gets sent to your email or phone when you sign in. GC Notify is authorized for Protected A information. Data is encrypted whenever it passes through GC Notify and when it is stored in the system.') }}</p>
-  <p><a href="{{ url_for('main.security') }}">{{ _('Learn more about security') }}</a>.
+  <p><a id="link-why-notify-security" href="{{ url_for('main.security') }}">{{ _('Learn more about security') }}</a>.
 </div>
 <div class="pl-24">
   <img aria-hidden="true" src="{{ asset_url('images/why-notify/check.svg') }}" class="float-left -ml-20 w-12 h-12" />
@@ -54,7 +54,7 @@
   <p>{{ _('Try out GC Notify before committing. When you create an account you will start in trial mode allowing you to experiment by sending messages to yourself and other people on your team. Once you’ve updated your settings and added examples of messages you want to send, you can request to go live with your service to send to more recipients.') }}</p>
 
   {% if not current_user.is_authenticated %}
-    <p><a href="{{ url_for('main.register') }}">{{ _('Create an account and try it for yourself') }}</a></p>
+    <p><a id="link-why-notify-try-it" href="{{ url_for('main.register') }}">{{ _('Create an account and try it for yourself') }}</a></p>
   {% endif %}
 </div>
 

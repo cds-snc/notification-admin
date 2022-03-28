@@ -36,7 +36,8 @@
       {% else %}
         {{ nav_button(
           href=url_for('main.sign_in'),
-          label=_('Sign in')
+          label=_('Sign in'),
+          id_key='header-sign-in'
         ) }}
       {% endif %}
       {% set set_lang_url = lang_url or request.path %}
@@ -45,7 +46,8 @@
         label=long_lang_switch,
         aria_label=long_lang_switch,
         lang="fr-CA" if lang_switch == "FR" else "en-CA",
-        class="mr-0 ml-5"
+        class="mr-0 ml-5",
+        id_key='header-lang'
       ) }}
     </nav>
     <!-- end sub nav -->

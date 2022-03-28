@@ -14,9 +14,9 @@
               {% endif %}
             {% endfor %}
           {% else %}
-            {{ nav_link_dark(label=_("Why GC Notify"), href=url_for('main.why-notify'), class="-ml-2") }}
-            {{ nav_link_dark(label=_("Features"), href=url_for('main.features'), class="-ml-2") }}
-            {{ nav_link_dark(label=_("Activity on GC Notify"), href=url_for('main.activity'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-why-notify', label=_('Why GC Notify'), href=url_for('main.why-notify'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-features', label=_('Features'), href=url_for('main.features'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-activity', label=_('Activity on GC Notify'), href=url_for('main.activity'), class="-ml-2") }}
           {% endif %}
         </div>
         <div class="grid grid-cols-1 gap-y-1 auto-rows-min place-items-start">
@@ -28,8 +28,8 @@
               {% endif %}
             {% endfor %}
           {% else %}
-            {{ nav_link_dark(label=_("API documentation"), href=documentation_url(), is_external_link=True, class="-ml-2") }}
-            {{ nav_link_dark(label=_("Guidance"), href=url_for('main.guidance'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-doc', label=_('API documentation'), href=documentation_url(), is_external_link=True, class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-guidance', label=_('Guidance'), href=url_for('main.guidance'), class="-ml-2") }}
           {% endif %}
         </div>
         <div class="grid grid-cols-1 gap-y-1 auto-rows-min place-items-start">
@@ -41,7 +41,7 @@
               {% endif %}
             {% endfor %}
           {% else %}
-            {{ nav_link_dark(label=_("Contact us"), href=url_for('main.contact'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-contact', label=_('Contact us'), href=url_for('main.contact'), class="-ml-2") }}
           {% endif %}
         </div>
       </div>
@@ -64,7 +64,7 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          {{ nav_link_light(label=_("Privacy"), href=url_for('main.privacy')) }}
+          {{ nav_link_light(id_key='nav-footer-secondary-privacy', label=_('Privacy'), href=url_for('main.privacy')) }}
         </div>
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img
@@ -81,7 +81,7 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          {{ nav_link_light(label=_("Security"), href=url_for('main.security')) }}
+          {{ nav_link_light(id_key='nav-footer-secondary-security', label=_('Security'), href=url_for('main.security')) }}
         </div>
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img
@@ -98,7 +98,7 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          {{ nav_link_light(label=_("Accessibility"), href=url_for('main.a11y')) }}
+          {{ nav_link_light(id_key='nav-footer-secondary-a11y', label=_('Accessibility'), href=url_for('main.a11y')) }}
         </div>
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img
@@ -115,7 +115,7 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          {{ nav_link_light(label=_("Terms of use"), href=url_for('main.terms')) }}
+          {{ nav_link_light(id_key='nav-footer-secondary-terms', label=_('Terms of use'), href=url_for('main.terms')) }}
         </div>
         <div class="lg:hidden mt-10">
           <div class="inline-block">

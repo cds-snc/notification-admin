@@ -17,15 +17,15 @@
 
   <ul class="list-disc ml-8">
     <li class="mb-5">
-      <a href="{{ url_for('.format') }}">{{ _('Format email messages') }}</a><br>
+      <a id="link-guidance-format-emails" href="{{ url_for('.format') }}">{{ _('Format email messages') }}</a><br>
       <p>{{ _("This includes how to insert titles, bulleted lists, and links.") }}</p>
     </li>
     <li class="mb-5">
-      <a href="{{ url_for('.personalise') }}">{{ _('Personalise messages to recipients') }}</a><br>
+      <a id="link-guidance-personalise" href="{{ url_for('.personalise') }}">{{ _('Personalise messages to recipients') }}</a><br>
       <p>{{ _("This includes how to use variables to tailor messages.") }}</p>
     </li>
     <li class="mb-5">
-      <a href="{{ url_for('.messages_status') }}">{{ _('Track message delivery status') }}</a><br>
+      <a id="link-guidance-delivery-status" href="{{ url_for('.messages_status') }}">{{ _('Track message delivery status') }}</a><br>
       <p>{{ _("This includes reasons why messages could not be delivered.") }}</p>
     </li>
   </ul>
