@@ -10,7 +10,7 @@
 
 {% block maincolumn_content %}
 
-<script>
+<script nonce="{{ request_nonce }}">
  var csrf_token = "{{ csrf_token() }}";
 </script>
 

@@ -18,7 +18,7 @@
     ) }}
   </div>
 </div>
-<script>
+<script nonce="{{ request_nonce }}">
   var csrf_token = "{{ csrf_token() }}";
 </script>
 

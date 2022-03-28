@@ -71,7 +71,7 @@
 
 {{ template|string|translate_preview_template }}
 
-<script>
+<script nonce="{{ request_nonce }}">
   function isIE() {
     ua = navigator.userAgent;
     /* MSIE used to detect old browsers and Trident used to newer ones*/
