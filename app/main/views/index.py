@@ -1,5 +1,5 @@
-from datetime import datetime
 import re
+from datetime import datetime
 
 from flask import (
     abort,
@@ -457,7 +457,7 @@ def _try_alternate_language(endpoint, params):
 
     # if we get a response for the other language, redirect
     if response:
-        if re.match(r'^[A-Za-z0-9_\-]+$', slug):
+        if re.match(r"^[A-Za-z0-9_\-]+$", slug):
             return redirect(f"/set-lang?from=/{slug}")
 
     abort(404)
