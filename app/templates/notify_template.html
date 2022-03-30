@@ -25,7 +25,7 @@
     {% include 'partials/cds_ascii_art.html' %}
     {% include 'partials/google-tag-manager-body.html' %}
     {% block main_content %}{% endblock %}
-    <script type="text/javascript" src="{{ asset_url('javascripts/main.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>
+    <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/main.min.js') }}"></script>
+    <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>
   </body>
 </html>
