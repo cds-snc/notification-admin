@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import Any, List
 
 from dotenv import load_dotenv
 
@@ -114,6 +114,37 @@ class Config(object):
     WTF_CSRF_TIME_LIMIT = None
 
     ZENDESK_API_KEY = os.environ.get("ZENDESK_API_KEY")
+
+    @classmethod
+    def get_sensitive_config(cls) -> list[str]:
+        "List of config keys that contain sensitive information"
+        return [
+            "ADMIN_CLIENT_SECRET",
+            "SECRET_KEY",
+            "DANGEROUS_SALT",
+            "ZENDESK_API_KEY",
+            "GC_ARTICLES_API_AUTH_USERNAME",
+            "GC_ARTICLES_API_AUTH_PASSWORD",
+            "TEMPLATE_PREVIEW_API_KEY",
+            "ANTIVIRUS_API_KEY",
+            "ROUTE_SECRET_KEY_1",
+            "ROUTE_SECRET_KEY_2",
+        ]
+
+    @classmethod
+    def get_config(cls, sensitive_config: list[str]) -> dict[str, Any]:
+        "Returns a dict of config keys and values"
+        config = {}
+        for attr in dir(cls):
+            attr_value = "***" if attr in sensitive_config else getattr(cls, attr)
+            if not attr.startswith("__") and not callable(attr_value):
+                config[attr] = attr_value
+        return config
+
+    @classmethod
+    def get_safe_config(cls) -> dict[str, Any]:
+        "Returns a dict of config keys and values with sensitive values masked"
+        return cls.get_config(cls.get_sensitive_config())
 
 
 class Development(Config):
