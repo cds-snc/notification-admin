@@ -1,17 +1,23 @@
 {% macro nav_menu_item_mobile(
-  url=None, localised_txt=None,
+  url=None, 
+  localised_txt=None,
   is_selected=False,
-  is_external_link=False,
-  css_classes=None
+  css_classes=None,
+  id_key=None,
+  is_external_link=False
 ) %}
   {% if url and localised_txt %}
     <li class="mb-4">
       <a
+        {% if id_key %}id="{{ id_key }}"{% endif %}
         aria-label="{{ localised_txt }}"
         href="{{ url }}"
         class="no-underline hover:underline {% if is_selected %} menu--active {% endif %} {{ css_classes }}"
         {% if is_external_link %}
         target="_blank"
+        aria-label="{{ localised_txt }} ({{ _('Opens in a new tab') }})"
+        {% else %}
+        aria-label="{{ localised_txt }}"
         {% endif %}
       >
         {{ localised_txt }}

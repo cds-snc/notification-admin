@@ -103,5 +103,7 @@
       </button>
     </form>
   </div>
-  <script type="text/javascript" src="{{ asset_url('javascripts/scheduler.min.js') }}"></script>
+
+  <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/scheduler.min.js') }}"></script>
+
 {% endblock %}

@@ -1244,7 +1244,7 @@ def test_send_one_off_offers_link_to_upload(
 
     assert back_link.text.strip() == "Back"
 
-    assert link.text.strip() == "Upload a list of recipients"
+    assert link.text.strip() == "Upload file with recipients"
     assert link["href"] == url_for(
         "main.send_messages",
         service_id=SERVICE_ONE_ID,
@@ -1838,7 +1838,8 @@ def test_send_test_indicates_optional_address_columns(
         step_index=3,
     )
 
-    assert normalize_spaces(page.select("label")[0].text) == ("Address line 4 " "Optional")
+    assert normalize_spaces(page.select("label")[0].text) == ("Address line 4")
+    assert normalize_spaces(page.select("label + [id*='-hint']")[0].text) == ("Optional")
     assert page.select(".back-link")[0]["href"] == url_for(
         "main.send_one_off_step",
         service_id=SERVICE_ONE_ID,
