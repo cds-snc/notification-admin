@@ -15,6 +15,7 @@ from flask import (
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
+import json
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
 from notifications_utils.formatters import nl2br
@@ -62,17 +63,20 @@ form_objects = {
 
 
 def get_email_preview_template(template, template_id, service_id):
-    email_preview_template = get_template(
-        template,
-        current_service,
-        letter_preview_url=url_for(
+    if template_id and service_id:
+        letter_preview_url = url_for(
             ".view_letter_template_preview",
             service_id=service_id,
             template_id=template_id,
             filetype="png",
         )
-        if template_id and service_id
-        else None,
+    else:
+        letter_preview_url = None
+
+    email_preview_template = get_template(
+        template,
+        current_service,
+        letter_preview_url=letter_preview_url,
         show_recipient=True,
         page_count=get_page_count_for_letter(template),
     )
@@ -80,44 +84,26 @@ def get_email_preview_template(template, template_id, service_id):
     return email_preview_template
 
 
-preview_data_keys = [
-    "name",
-    "content",
-    "template_content",
-    "subject",
-    "template_type",
-    "id",
-    "process_type",
-    "reply_to_text",
-    "folder",
-]
-
-
-def preview_prefix(service_id, template_id=None):
+def preview_key(service_id, template_id=None):
     return f"template-preview:{service_id}:{template_id}"
 
 
 def set_preview_data(data, service_id, template_id=None):
-    prefix = preview_prefix(service_id, template_id)
-    for key in preview_data_keys:
-        value = data.get(key)
-        if value is not None:
-            redis_client.set(key=f"{prefix}-{key}", value=value.encode(), ex=int(timedelta(days=1).total_seconds()))
+    key = preview_key(service_id, template_id)
+    redis_client.set(key=key, value=json.dumps(data), ex=int(timedelta(days=1).total_seconds()))
 
 
 def get_preview_data(service_id, template_id=None):
-    prefix = preview_prefix(service_id, template_id)
-    data = dict()
-    for key in preview_data_keys:
-        value = redis_client.get(f"{prefix}-{key}")
-        data[key] = value.decode() if value is not None else None
-    return data
+    key = preview_key(service_id, template_id)
+    try:
+        return json.loads(redis_client.get(key))
+    except:
+        return dict()
 
 
 def delete_preview_data(service_id, template_id=None):
-    prefix = preview_prefix(service_id, template_id)
-    for key in preview_data_keys:
-        redis_client.delete(f"{prefix}-{key}")
+    key = preview_key(service_id, template_id)
+    redis_client.delete(key)
 
 
 @main.route("/services/<service_id>/templates/<uuid:template_id>")
@@ -807,7 +793,7 @@ def edit_service_template(service_id, template_id):
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
     new_template_data = get_preview_data(service_id, template_id)
 
-    if new_template_data["content"]:
+    if new_template_data.get("content"):
         template["content"] = new_template_data["content"]
         template["name"] = new_template_data["name"]
         template["subject"] = new_template_data["subject"]
