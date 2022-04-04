@@ -5,10 +5,8 @@
     class='banner{% if type %}-{{ type }}{% endif %}{% if with_tick %}-with-tick{% else %} banner{% endif %}'
     {% if type == "dangerous" %}
       role="alert"
-      aria-live="assertive"
     {% else %}
       role="status"
-      aria-live="polite"
     {% endif %}
   >
     {% set ariadescribedby = 'banner-body' %}
