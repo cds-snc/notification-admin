@@ -1,6 +1,7 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% macro banner(body, type=None, with_tick=False, delete_button=None, subhead=None, context=None, action=None) %}
+  {% set ariadescribedby = ['banner-subhead' if subhead, 'banner-context' if context] | join(' ') | trim %}
   <div
     class='banner{% if type %}-{{ type }}{% endif %}{% if with_tick %}-with-tick{% else %} banner{% endif %}'
     {% if type == "dangerous" %}
@@ -9,24 +10,19 @@
       role="status"
     {% endif %}
   >
-    {% set ariadescribedby = 'banner-body' %}
     {% if subhead -%}
-      <h1 class="banner-title"  id="banner-subhead">{{ subhead }}</h1>
-      {% set ariadescribedby = [ariadescribedby, 'banner-subhead'] | join(' ') %}
+      <h1 class='banner-title' id="banner-subhead">{{ subhead }}</h1>
     {%- endif -%}
-    <span id="banner-body">
     {{ body }}
-    </span>
     {% if context %}
-    <p id="banner-context">
+    <p class="banner-context" id="banner-context">
       {{ context }}
-      {% set ariadescribedby = [ariadescribedby, 'banner-context'] | join(' ') %}
     </p>
     {% endif %}
     {% if delete_button %}
       {% call form_wrapper(action=action) %}
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-        <button type="submit" class="button button-red mt-4" name="delete" aria-describedby="{{ ariadescribedby }}">{{ delete_button }}</button>
+        <button type="submit" class="button button-red mt-4" name="delete" {% if ariadescribedby != '' %} aria-describedby="{{ ariadescribedby }}" {% endif %}>{{ delete_button }}</button>
       {% endcall %}
     {% endif %}
   </div>
