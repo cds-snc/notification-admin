@@ -3,7 +3,10 @@ from flask_babel import _
 from flask_login import current_user
 
 from app import user_api_client
-from app.event_handlers import create_archive_user_event
+from app.event_handlers import (
+    create_archive_user_event,
+    create_reset_password_user_event,
+)
 from app.main import main
 from app.main.forms import SearchUsersByEmailForm
 from app.models.user import User
@@ -66,5 +69,22 @@ def archive_user(user_id):
         flash(
             _("There's no way to reverse this. Are you sure you want to archive this user?"),
             "archive",
+        )
+        return user_information(user_id)
+
+
+@main.route("/users/<uuid:user_id>/reset_password", methods=["GET", "POST"])
+@user_is_platform_admin
+def reset_password(user_id):
+    if request.method == "POST":
+        user = User.from_id(user_id)
+        user_api_client.send_reset_password_url(user.email_address)
+        create_reset_password_user_event(str(user_id), current_user.id)
+
+        return redirect(url_for(".user_information", user_id=user_id))
+    else:
+        flash(
+            _("There's no way to reverse this. Are you sure you want to reset the password for this user?"),
+            "reset",
         )
         return user_information(user_id)

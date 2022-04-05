@@ -59,11 +59,13 @@
       </p>
       {% endif %}
       {% if user.state == 'active' %}
-        <span class="page-footer-delete-link page-footer-delete-link-without-button">
-          <a href="{{ url_for('main.archive_user', user_id=user.id) }}">
-            {{ _('Archive user') }}
-          </a>
-        </span>
+        <div>
+          <span class="page-footer-delete-link page-footer-delete-link-without-button">
+            <a href="{{ url_for('main.archive_user', user_id=user.id) }}">
+              {{ _('Archive user') }}
+            </a>
+          </span>
+        </div>
         <div>
           <hr>
           {% if user.blocked %}
@@ -80,6 +82,13 @@
             </span>
 
           {% endif %}
+        </div>
+        <div>
+          <span class="page-footer-delete-link page-footer-delete-link-without-button">
+            <a href="{{ url_for('main.reset_password', user_id=user.id) }}">
+              {{ _('Reset password for this user') }}
+            </a>
+          </span>
         </div>
       {% endif %}
     </div>
