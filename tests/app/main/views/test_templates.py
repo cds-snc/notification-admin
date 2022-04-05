@@ -16,6 +16,7 @@ from app.main.views.templates import (
 from app.models.service import Service
 from tests import (
     MockRedis,
+    sample_uuid,
     single_notification_json,
     template_json,
     validate_route_permission,
@@ -1730,7 +1731,7 @@ def test_preview_page_contains_preview(
     assert f"https://{app_.config['ASSET_DOMAIN']}/canada-logo.png" in email_body
 
 
-def test_preview_should_redirect_on_edit(
+def test_preview_edit_button_should_redirect_to_edit_page(
     client_request, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
 ):
     preview_data = {
@@ -1760,6 +1761,83 @@ def test_preview_should_redirect_on_edit(
             _external=True,
         ),
     )
+
+
+def test_preview_edit_button_should_redirect_to_add_page(
+    client_request, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
+):
+    preview_data = {
+        "name": "template 1",
+        "content": "hi there",
+        "subject": "test subject",
+        "template_type": "email",
+        "folder": "",
+        "id": None,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
+
+    client_request.post(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "button_pressed": "edit",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".add_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=None,
+            template_type="email",
+            template_folder_id="",
+            _external=True,
+        ),
+    )
+
+
+@pytest.mark.parametrize("id", (sample_uuid(), None))
+def test_preview_has_correct_back_link(
+    id, client_request, app_, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
+):
+    preview_data = {
+        "name": "test name",
+        "subject": "test subject",
+        "content": "test content",
+        "template_type": "email",
+        "folder": "",
+        "id": id,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
+
+    page = client_request.get(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=id,
+        _test_page_title=False,
+    )
+
+    expected_back_url = (
+        url_for(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=id,
+        )
+        if id
+        else url_for(
+            ".add_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=id,
+            template_type="email",
+            template_folder_id="",
+        )
+    )
+    assert page.select(".back-link")[0]["href"] == expected_back_url
 
 
 def test_preview_should_update_and_redirect_on_save(client_request, mock_update_service_template, fake_uuid, mocker):
