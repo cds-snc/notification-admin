@@ -14,7 +14,12 @@ from app.main.views.templates import (
     set_preview_data,
 )
 from app.models.service import Service
-from tests import single_notification_json, template_json, validate_route_permission, MockRedis
+from tests import (
+    MockRedis,
+    single_notification_json,
+    template_json,
+    validate_route_permission,
+)
 from tests.app.main.views.test_template_folders import (
     CHILD_FOLDER_ID,
     FOLDER_TWO_ID,

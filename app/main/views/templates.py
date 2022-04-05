@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta
 from string import ascii_uppercase
 
@@ -15,7 +16,6 @@ from flask import (
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
-import json
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
 from notifications_utils.formatters import nl2br
