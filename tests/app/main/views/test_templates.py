@@ -101,22 +101,11 @@ class TestRedisPreviewUtilities:
             "folder": None,
             "reply_to_text": "reply@go.com",
         }
-        expected_data = {
-            "name": None,
-            "content": None,
-            "template_content": None,
-            "subject": None,
-            "template_type": None,
-            "process_type": None,
-            "id": None,
-            "folder": None,
-            "reply_to_text": None,
-        }
         set_preview_data(data, fake_uuid)
         delete_preview_data(fake_uuid)
         actual_data = get_preview_data(fake_uuid)
 
-        assert actual_data == expected_data
+        assert actual_data == {}
 
 
 def test_should_show_empty_page_when_no_templates(
@@ -1719,6 +1708,37 @@ def test_should_redirect_when_previewing_a_template_email(
             _external=True,
         ),
     )
+
+
+def test_preview_page_contains_preview(
+    client_request, app_, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
+):
+    preview_data = {
+        "name": "test name",
+        "subject": "test subject",
+        "content": "test content",
+        "template_type": "email",
+        "id": fake_uuid,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
+
+    page = client_request.get(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    assert "test name" in page.text
+    assert "test subject" in page.text
+    assert "test content" in page.text
+
+    email_body = str(page.select_one(".email-message-body"))
+    assert f"https://{app_.config['ASSET_DOMAIN']}/gc-logo-en.png" in email_body
+    assert f"https://{app_.config['ASSET_DOMAIN']}/canada-logo.png" in email_body
 
 
 def test_preview_should_redirect_on_edit(
