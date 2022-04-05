@@ -1,7 +1,6 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% macro banner(body, type=None, with_tick=False, delete_button=None, subhead=None, context=None, action=None) %}
-  {% set ariadescribedby = ['banner-subhead' if subhead, 'banner-context' if context] | join(' ') | trim %}
   <div
     class='banner{% if type %}-{{ type }}{% endif %}{% if with_tick %}-with-tick{% else %} banner{% endif %}'
     {% if type == "dangerous" %}
@@ -11,18 +10,18 @@
     {% endif %}
   >
     {% if subhead -%}
-      <h1 class='banner-title' id="banner-subhead">{{ subhead }}</h1>
+      <h1 class='banner-title'>{{ subhead }}</h1>
     {%- endif -%}
     {{ body }}
     {% if context %}
-    <p class="banner-context" id="banner-context">
+    <p class="banner-context">
       {{ context }}
     </p>
     {% endif %}
     {% if delete_button %}
       {% call form_wrapper(action=action) %}
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-        <button type="submit" class="button button-red mt-4" name="delete" {% if ariadescribedby != '' %} aria-describedby="{{ ariadescribedby }}" {% endif %}>{{ delete_button }}</button>
+        <button type="submit" class="button button-red mt-4" name="delete">{{ delete_button }}</button>
       {% endcall %}
     {% endif %}
   </div>
