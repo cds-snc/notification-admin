@@ -1230,14 +1230,14 @@ class Safelist(StripWhitespaceForm):
         EmailFieldInSafelist("", validators=[Optional(), ValidEmail()], default=""),
         min_entries=5,
         max_entries=5,
-        label=_l("Email addresses"),
+        label=_l("Email safelist"),
     )
 
     phone_numbers = FieldList(
         InternationalPhoneNumberInSafelist("", validators=[Optional()], default=""),
         min_entries=5,
         max_entries=5,
-        label=_l("Mobile numbers"),
+        label=_l("Phone safelist"),
     )
 
 

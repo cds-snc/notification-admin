@@ -9,6 +9,14 @@
     @apply relative align-middle mb-6;
   }
 
+  .list-entry label {
+    @apply sr-only;
+  }
+
+  .list-entry .form-group {
+    @apply mb-4;
+  }
+
   .list-entry-remove {
     @apply block mb-6 mt-2 static overflow-hidden text-smaller leading-tight;
   }
