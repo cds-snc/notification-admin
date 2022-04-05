@@ -3,7 +3,6 @@ from string import ascii_uppercase
 
 from dateutil.parser import parse
 from flask import (
-    current_app,
     abort,
     flash,
     jsonify,
@@ -47,7 +46,6 @@ from app.main.forms import (
 from app.main.views.send import get_example_csv_rows, get_sender_details
 from app.models.service import Service
 from app.models.template_list import TemplateList, TemplateLists
-from app.notify_client import cache
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
@@ -93,9 +91,10 @@ def set_preview_data(data, service_id, template_id=None):
 
 def get_preview_data(service_id, template_id=None):
     key = f"template-preview:{service_id}:{template_id}"
-    try:
-        return json.loads(redis_client.get(key))
-    except:
+    data = redis_client.get(key)
+    if data:
+        return json.loads(data)
+    else:
         return dict()
 
 
@@ -129,8 +128,6 @@ def view_template(service_id, template_id):
 @user_has_permissions()
 def preview_template(service_id, template_id=None):
     template = get_preview_data(service_id, template_id)
-    current_app.logger.warning(f"preview_template {service_id} {template_id}")
-    current_app.logger.warning(template)
 
     if request.method == "POST":
         if request.form["button_pressed"] == "edit":
@@ -819,8 +816,6 @@ def edit_service_template(service_id, template_id):
             "folder": template["folder"],
         }
         set_preview_data(new_template_data, service_id, template_id)
-
-        current_app.logger.warning(f"set_preview_data {service_id} {template_id}")
 
         new_template = get_template(new_template_data, current_service)
         template_change = get_template(template, current_service).compare_to(new_template)

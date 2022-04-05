@@ -14,7 +14,7 @@ from app.main.views.templates import (
     set_preview_data,
 )
 from app.models.service import Service
-from tests import single_notification_json, template_json, validate_route_permission
+from tests import single_notification_json, template_json, validate_route_permission, MockRedis
 from tests.app.main.views.test_template_folders import (
     CHILD_FOLDER_ID,
     FOLDER_TWO_ID,
@@ -40,22 +40,6 @@ from tests.conftest import (
 )
 from tests.conftest import service_one as create_sample_service
 from tests.conftest import single_letter_contact_block
-
-
-class MockRedis:
-    def __init__(self):
-        self.cache = dict()
-
-    def get(self, key):
-        if key in self.cache:
-            return self.cache[key]
-        return None
-
-    def set(self, key, value, *args, **kwargs):
-        self.cache[key] = value
-
-    def delete(self, key):
-        self.cache.pop(key, None)
 
 
 class TestRedisPreviewUtilities:
