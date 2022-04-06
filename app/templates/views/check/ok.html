@@ -23,7 +23,7 @@
       ) }}
   </section>
   {% if not request.args.from_test %}
-    <section class="clear-both contain-floats">
+    <section class="clear-both contain-floats" id="ok-file">
       <h2 class="heading-medium">{{ _('Recipients') }}</h2>
       <p>
         {% if count_of_recipients > 1 %}
@@ -45,7 +45,7 @@
         ) %}
         {% call index_field() %}
         <span>
-          <a href="{{ url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name) }}" class="text-small">{{ item.index + 2 }}</a>
+          <a href="{{ url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name, _anchor='ok-preview') }}" class="text-small">{{ item.index + 2 }}</a>
         </span>
         {% endcall %}
         {% for column in recipients.column_headers %}
@@ -66,12 +66,12 @@
         {% include "views/check/table-overflow.html" %}
         <p>
           {{ _('Only shows the first {} recipients.').format(count_of_displayed_recipients) }}
-          <a href="?original_file_name={{ original_file_name }}&show={{ count_of_displayed_recipients + 10 }}">{{ _('Show the next 10 recipients') }}</a>.
+          <a href="?original_file_name={{ original_file_name }}&show={{ count_of_displayed_recipients + 10 }}#ok-file">{{ _('Show the next 10 recipients') }}</a>.
         </p>
       {% endif %}
     </section>
   {% endif %}
-  <section>
+  <section id="ok-preview">
     <h2 class="heading-medium">{{ _('Preview of one message out of {}').format(count_of_recipients) }}</h2>
     <p>
       {{ _("This shows the message to the recipient of row {}.").format(preview_row) }}
@@ -79,11 +79,11 @@
     {{ template|string|translate_preview_template }}
     {{ previous_next_navigation(
     previous_page={
-      "url":url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(preview_row - 1), original_file_name=original_file_name),
+      "url":url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(preview_row - 1), original_file_name=original_file_name, _anchor='ok-preview'),
       "title":_('Previous preview'),
       "label":_('Row {}').format(preview_row - 1)} if preview_row > 2, 
     next_page={
-      "url":url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(preview_row + 1), original_file_name=original_file_name),
+      "url":url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(preview_row + 1), original_file_name=original_file_name, _anchor='ok-preview'),
       "title":_('Next preview'),
       "label":_('Row {}').format(preview_row + 1)
     } if preview_row < count_of_recipients + 1
