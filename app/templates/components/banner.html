@@ -5,6 +5,7 @@
     class='banner{% if type %}-{{ type }}{% endif %}{% if with_tick %}-with-tick{% else %} banner{% endif %}'
     {% if type == "dangerous" %}
       role="alert"
+      tabindex="-1"
     {% else %}
       role="status"
     {% endif %}
