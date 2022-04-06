@@ -1101,7 +1101,7 @@
 "Are you sure you want to block this user?","Voulez-vous vraiment bloquer cet utilisateur?"
 "Are you sure you want to unblock this user?","Voulez-vous vraiment débloquer cet utilisateur?"
 "There's no way to reverse this. Are you sure you want to archive this user?","Êtes-vous certain de vouloir archiver cet utilisateur? Vous ne pourrez pas revenir sur cette décision."
-"There's no way to reverse this. Are you sure you want to reset the password for this user?","Êtes-vous certain de vouloir réinitialiser le mot de passe pour cet utilisateur? Vous ne pourrez pas revenir sur cette décision."
+"Are you sure you want to reset the password for this user?","Êtes-vous certain de vouloir réinitialiser le mot de passe pour cet utilisateur?"
 "You cannot undo this action.","Cette action est irréversible."
 "Code has expired","Le code a expiré"
 "Code not found","Code non trouvé"
