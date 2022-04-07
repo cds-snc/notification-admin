@@ -36,6 +36,7 @@ WTForms==3.0.0a1
 email-validator==1.1.2
 Werkzeug==1.0.1
 greenlet==1.1.2
+mixpanel==4.9.0
 
 # PaaS
 awscli-cwlogs>=1.4.6,<1.5
