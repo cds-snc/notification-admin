@@ -1,0 +1,22 @@
+{% extends "admin_template.html" %}
+{% from "components/page-footer.html" import sticky_page_footer_two_submit_buttons %}
+{% from "components/page-header.html" import page_header %}
+
+{% block per_page_title %}{{_('Previewing template {}').format(template._template.name)}}{% endblock %}
+
+{% block maincolumn_content %}
+  <div>
+    {{ page_header(
+        _('Previewing template {}').format(template._template.name),
+        back_link=back_link
+    ) }}
+  </div>
+
+  <div class="w-full template-container">
+    {{ template|string|translate_preview_template }}
+  </div>
+
+  <form method='post'>
+    {{ sticky_page_footer_two_submit_buttons(_('Save'), 'save', _('Edit'), 'edit') }}
+  </form>
+{% endblock %}
