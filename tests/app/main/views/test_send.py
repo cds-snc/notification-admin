@@ -525,7 +525,7 @@ def test_upload_valid_csv_redirects_to_check_page(
             template_id=fake_uuid,
             upload_id=fake_uuid,
             original_file_name="valid.csv",
-            _external=True,
+            _external=True
         ),
     )
 
@@ -610,6 +610,7 @@ def test_upload_valid_csv_shows_preview_and_table(
         upload_id=fake_uuid,
         row_index=2,
         original_file_name="example.csv",
+        _anchor='ok-preview',
     )
 
     for row_index, row in enumerate(
