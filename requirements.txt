@@ -8,6 +8,7 @@ Flask==1.1.2
 Flask-WTF==0.14.3
 Flask-Login==0.5.0
 Flask-Caching==1.10.1
+environs==9.5.0
 
 blinker==1.4
 pyexcel==0.6.6
@@ -47,6 +48,7 @@ git+https://github.com/cds-snc/notifier-utils.git@46.5.0#egg=notifications-utils
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
 
 ## The following requirements were added by pip freeze:
+async-timeout==4.0.2
 awscli==1.19.58
 bleach==3.3.0
 botocore==1.20.58
@@ -55,6 +57,7 @@ certifi==2021.5.30
 chardet==4.0.0
 click==8.0.1
 colorama==0.4.3
+Deprecated==1.2.13
 dnspython==1.16.0
 docopt==0.6.2
 docutils==0.15.2
@@ -67,11 +70,11 @@ jmespath==0.10.0
 lml==0.1.0
 lxml==4.6.3
 MarkupSafe==2.0.1
+marshmallow==3.15.0
 mistune==0.8.4
 openpyxl==3.0.9
-mixpanel==4.9.0
 orderedset==2.0.3
-packaging==21.0
+packaging==21.3
 phonenumbers==8.12.21
 py-w3c==0.3.1
 pyasn1==0.4.8
@@ -88,7 +91,8 @@ six==1.16.0
 smartypants==2.0.1
 statsd==3.3.0
 texttable==1.6.4
-urllib3==1.26.7
+urllib3==1.26.9
 webencodings==0.5.1
+wrapt==1.14.0
 xlrd==1.2.0
 xlwt==1.3.0
