@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
 from app.models.user import User
+from tests.conftest import api_user_active as create_active_user
 from tests.conftest import normalize_spaces
 
 
@@ -140,6 +141,40 @@ def test_process_sms_auth_sign_in_return_2fa_template(
         {"location": None, "user-agent": "werkzeug/1.0.1"},
     )
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
+
+
+def test_forced_password_reset(
+    client,
+    mocker,
+    api_user_active,
+    mock_send_verify_code,
+    mock_get_user,
+    mock_get_user_by_email,
+    mock_verify_password,
+    mock_get_security_keys,
+    email_address,
+    password,
+    last_email_login,
+    fake_uuid,
+):
+
+    sample_user = create_active_user(fake_uuid, email_address=email_address)
+    sample_user.password_expired = True
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=sample_user,
+    )
+
+    client.post(
+        url_for("main.sign_in"),
+        data={"email_address": email_address, "password": password},
+        _expected_redirect=url_for(
+            "main.forced_password_reset",
+            email_address=sample_user.email_address,
+            _external=True,
+        ),
+    )
 
 
 @pytest.mark.parametrize(
