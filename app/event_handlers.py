@@ -32,10 +32,6 @@ def create_archive_user_event(user_id, archived_by_id):
     _send_event("archive_user", user_id=user_id, archived_by_id=archived_by_id)
 
 
-def create_reset_password_user_event(user_id, archived_by_id):
-    _send_event("reset_password", user_id=user_id, archived_by_id=archived_by_id)
-
-
 def _send_event(event_type, **kwargs):
     event_data = _construct_event_data(request)
     event_data.update(kwargs)

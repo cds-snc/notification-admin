@@ -3,10 +3,7 @@ from flask_babel import _
 from flask_login import current_user
 
 from app import user_api_client
-from app.event_handlers import (
-    create_archive_user_event,
-    create_reset_password_user_event,
-)
+from app.event_handlers import create_archive_user_event
 from app.main import main
 from app.main.forms import SearchUsersByEmailForm
 from app.models.user import User
@@ -79,8 +76,7 @@ def reset_password(user_id):
     if request.method == "POST":
         user = User.from_id(user_id)
         user_api_client.send_reset_password_url(user.email_address)
-        create_reset_password_user_event(str(user_id), current_user.id)
-
+        user.update(password_expired=True, updated_by=current_user.id)
         return redirect(url_for(".user_information", user_id=user_id))
     else:
         flash(
