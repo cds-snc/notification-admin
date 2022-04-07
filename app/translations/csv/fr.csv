@@ -1530,3 +1530,7 @@
 "Phone number of recipient","Numéro de téléphone du destinataire"
 "Back to template {}","Retour au gabarit {}"
 "Previewing template {}","Aperçu du gabarit {}"
+"You need to create a new password","Vous devez créer un nouveau mot de passe"
+"GC Notify needs you to create a new password for this account.","GC Notification vous demande de créer un nouveau mot de passe pour votre compte."
+"Check your email. We sent you a password reset link.","Vérifiez votre courriel. Nous vous avons envoyé un lien pour réinitialiser votre mot de passe."
+"Read why we are asking you to create a new password", "Lisez pourquoi nous vous demandons de créer un nouveau mot de passe."
