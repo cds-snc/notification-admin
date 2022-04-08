@@ -1234,7 +1234,7 @@ def platform_admin_user(fake_uuid):
         "organisations": [],
         "current_session_id": None,
         "logged_in_at": None,
-        "password_expired": False
+        "password_expired": False,
     }
     return user_data
 
