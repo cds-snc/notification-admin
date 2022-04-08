@@ -323,6 +323,11 @@ def test_email_address_is_treated_case_insensitively_when_signing_in_as_invited_
     sample_invite["email_address"] = "TEST@user.canada.ca"
 
     mocker.patch(
+        "app.user_api_client.get_user_by_email_or_none",
+        return_value=None
+    )
+
+    mocker.patch(
         "app.models.user.User.from_email_address_and_password_or_none",
         return_value=User(api_user_active),
     )

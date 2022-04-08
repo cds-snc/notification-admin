@@ -1533,4 +1533,6 @@
 "You need to create a new password","Vous devez créer un nouveau mot de passe"
 "GC Notify needs you to create a new password for this account.","GC Notification vous demande de créer un nouveau mot de passe pour votre compte."
 "Check your email. We sent you a password reset link.","Vérifiez votre courriel. Nous vous avons envoyé un lien pour réinitialiser votre mot de passe."
-"Read why we are asking you to create a new password", "Lisez pourquoi nous vous demandons de créer un nouveau mot de passe."
+"Why we are asking you to create a new password","Pourquoi nous vous demandons de créer un nouveau mot de passe."
+"GC Notify has reset all users' passwords out of an abundance of caution following the discovery of a potential security risk on March 29, 2022.", GC Notification a réinitialisé le mot de passe de tous les utilisateurs par excès de prudence, suivant la découverte d’une faille potentielle le 29 mars 2022."
+"If you don't receive a password reset link in your inbox, please contact our support team.","Si vous ne recevez pas de courriel pour réinitialiser votre mot de passe, contactez notre équipe de soutien technique."
