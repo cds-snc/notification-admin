@@ -45,9 +45,9 @@
   details .arrow {
     @apply text-small hidden;
   }
-  
+
   details .details-body {
-    border-left: 5px solid #c4c4c4; 
+    border-left: 5px solid #c4c4c4;
     padding-left: 10px;
     margin-left: 5px;
   }
