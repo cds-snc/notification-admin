@@ -59,38 +59,36 @@
       </p>
       {% endif %}
       {% if user.state == 'active' %}
-        <div>
-          <span class="page-footer-delete-link page-footer-delete-link-without-button">
-            <a href="{{ url_for('main.archive_user', user_id=user.id) }}">
-              {{ _('Archive user') }}
-            </a>
-          </span>
-        </div>
-        <div>
-          <hr>
+        <h2 class="heading-medium">{{ _('Admin tools') }}</h2>
+        <nav class="browse-list">
+          <ul>
+            <li class="browse-list-item delete-link">
+              <a href="{{ url_for('main.archive_user', user_id=user.id) }}">
+                {{ _('Archive user') }}
+              </a>
+            </li>
           {% if user.blocked %}
-          <span class="page-footer-success-link page-footer-success-link-without-button">
+            <li class="browse-list-item delete-link">
               <a href="{{ url_for('main.unblock_user', user_id=user.id) }}">
                 {{ _('Unblock user') }}
               </a>
-            </span>
+            </li>
           {% else %}
-          <span class="page-footer-delete-link page-footer-delete-link-without-button">
+            <li class="browse-list-item delete-link">
               <a href="{{ url_for('main.block_user', user_id=user.id) }}">
                 {{ _('Block user') }}
               </a>
-            </span>
-
+            </li>
           {% endif %}
-        </div>
-        <div>
-          <span class="page-footer-delete-link page-footer-delete-link-without-button">
+          <li class="browse-list-item delete-link">
             <a href="{{ url_for('main.reset_password', user_id=user.id) }}">
               {{ _('Reset password for this user') }}
             </a>
-          </span>
-        </div>
+          </li>
+          </ul>
+        </nav>
       {% endif %}
+      <hr>
     </div>
   </div>
 {% endblock %}
