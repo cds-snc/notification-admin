@@ -1200,6 +1200,7 @@ def api_user_pending(fake_uuid):
         "organisations": [],
         "current_session_id": None,
         "password_changed_at": str(datetime.utcnow()),
+        "password_expired": False,
     }
     return user_data
 
@@ -1283,6 +1284,7 @@ def api_user_active_email_auth(fake_uuid, email_address="test@user.canada.ca"):
         "organisations": [],
         "current_session_id": None,
         "security_keys": [],
+        "password_expired": False,
     }
     return user_data
 
