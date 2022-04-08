@@ -38,6 +38,20 @@
     @apply text-blue;
   }
 
+  [class*="delete-link"] a:visited,
+  [class*="delete-link"] a:link {
+    @apply text-red;
+  }
+
+  [class*="delete-link"] a:hover,
+  [class*="delete-link"] a:active {
+    @apply text-red-mellow;
+  }
+
+  [class*="delete-link"] a:focus {
+    @apply border-red-mellow text-blue;
+  }
+
   .page-content h3,
   .heading-small {
     margin-top: 2.3684em;

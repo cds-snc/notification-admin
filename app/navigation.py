@@ -170,6 +170,7 @@ class HeaderNavigation(Navigation):
             "send_test_step",
             "set_sender",
             "set_template_sender",
+            "preview_template",
             "view_template",
             "view_template_version",
             "view_template_versions",

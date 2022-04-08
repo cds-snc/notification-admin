@@ -21,6 +21,22 @@ class dotdict(dict):
     __delattr__ = dict.__delitem__  # type: ignore
 
 
+class MockRedis:
+    def __init__(self):
+        self.cache = dict()
+
+    def get(self, key):
+        if key in self.cache:
+            return self.cache[key]
+        return None
+
+    def set(self, key, value, *args, **kwargs):
+        self.cache[key] = value
+
+    def delete(self, key):
+        self.cache.pop(key, None)
+
+
 class TestClient(FlaskClient):
     def login(self, user, mocker=None, service=None):
         # Skipping authentication here and just log them in
