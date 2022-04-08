@@ -36,7 +36,7 @@ def sign_in():
             "location": _geolocate_ip(get_remote_addr(request)),
         }
 
-        user = User.from_email_address(form.email_address.data)
+        user = User.from_email_address_or_none(form.email_address.data)
         if user and user.password_expired:
             return redirect(url_for("main.forced_password_reset", email_address=user.email_address))
 
