@@ -37,7 +37,7 @@ def sign_in():
         }
 
         user = User.from_email_address(form.email_address.data)
-        if user.password_expired:
+        if user and user.password_expired == True:
             return redirect(url_for("main.forced_password_reset", email_address=user.email_address))
 
         user = User.from_email_address_and_password_or_none(form.email_address.data, form.password.data, login_data)

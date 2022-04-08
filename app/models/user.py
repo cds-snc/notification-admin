@@ -61,7 +61,10 @@ class User(JSONModel, UserMixin):
 
     @classmethod
     def from_email_address(cls, email_address):
-        return cls(user_api_client.get_user_by_email(email_address))
+        try:
+            return cls(user_api_client.get_user_by_email(email_address))
+        except:
+            return None
 
     @classmethod
     def from_email_address_or_none(cls, email_address):
