@@ -3,9 +3,11 @@
 {% macro banner(body, type=None, with_tick=False, delete_button=None, subhead=None, context=None, action=None) %}
   <div
     class='banner{% if type %}-{{ type }}{% endif %}{% if with_tick %}-with-tick{% else %} banner{% endif %}'
-    {% if type == 'dangerous' %}
-    role='group'
-    tabindex='-1'
+    {% if type == "dangerous" %}
+      role="alert"
+      tabindex="-1"
+    {% else %}
+      role="status"
     {% endif %}
   >
     {% if subhead -%}
@@ -13,7 +15,7 @@
     {%- endif -%}
     {{ body }}
     {% if context %}
-    <p>
+    <p class="banner-context">
       {{ context }}
     </p>
     {% endif %}
