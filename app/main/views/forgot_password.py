@@ -33,5 +33,6 @@ def forgot_password():
 
 @main.route("/forced-password-reset/<email_address>", methods=["GET"])
 def forced_password_reset(email_address):
+    email_address = email_address.replace(" ", "+")
     user_api_client.send_reset_password_url(email_address)
     return render_template("views/forced-password-reset.html")
