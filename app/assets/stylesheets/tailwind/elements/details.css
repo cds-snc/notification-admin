@@ -1,6 +1,6 @@
 @layer components {
   details {
-    @apply block clear-both;
+    @apply block clear-both relative;
   }
 
   details summary {
@@ -42,7 +42,25 @@
     border-top-color: inherit;
   }
 
+  details[open]:not(:last-child) {
+    @apply mb-gutterHalf;
+  }
+
   details .arrow {
     @apply text-small hidden;
+  }
+
+  details > *:not(summary) {
+    padding-left: 25px;
+  }
+
+  details:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 40px;
+    height: calc(100% - 40px);
+    width: 25px;
+    box-shadow: inset 5px 0 0 theme("colors.gray.border");
   }
 }
