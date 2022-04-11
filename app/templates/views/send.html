@@ -40,7 +40,7 @@
 
   {% include "partials/csv-send.html" %}
 
-<script>
+<script nonce="{{ request_nonce }}">
   function isIE() {
     var ua = navigator.userAgent;
     /* MSIE used to detect old browsers and Trident used to newer ones*/

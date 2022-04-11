@@ -1,7 +1,7 @@
 {% extends "admin_template.html" %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/page-header.html" import page_header %}
-{% from "components/page-footer.html" import sticky_page_footer %}
+{% from "components/page-footer.html" import sticky_page_footer_two_submit_buttons %}
 {% from "components/radios.html" import radios %}
 {% from "components/form.html" import form_wrapper %}
 
@@ -15,7 +15,8 @@
       heading,
       back_link=url_for('main.view_template', service_id=current_service.id,
       template_id=template.id) if template else url_for('main.create_template',
-      service_id=current_service.id, template_folder_id=template_folder_id)
+      service_id=current_service.id, template_folder_id=template_folder_id),
+      back_link_aria_label=_('Back to template {}').format(template.name) if template else _('Back')
     )
   }}
   {% call form_wrapper() %}
@@ -34,8 +35,7 @@
       {% if current_user.platform_admin %}
         {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }}
       {% endif %}
-
-      {{ sticky_page_footer(_('Save template')) }}
+      {{ sticky_page_footer_two_submit_buttons(_('Save'), "save", _("Preview"), "preview") }}
     </div>
   </div>
   {% endcall %}
@@ -43,7 +43,7 @@
 
 {% block page_script %}
 {{ super() }}
-<script>
+<script nonce="{{ request_nonce }}">
   const loadContent = templateId => {
     const callback = `/services/templates/${templateId}/get-data`;
 
