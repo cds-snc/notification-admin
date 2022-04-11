@@ -102,13 +102,13 @@
       </label>
       {% if hint %}
         {% set describedby = describedby + field.name + '-hint ' %}
-        <span class="form-hint">
+        <span id="{{ field.name }}-hint" class="form-hint">
           {{ hint }}
         </span>
       {% endif %}
       {% if field.errors %}
         {% set describedby = describedby + field.name + '-error-message ' %}
-        <span class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
+        <span id="{{ field.name }}-error-message" class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
           {% if not safe_error_message %}{{ _(field.errors[0]) }}{% else %}{{ field.errors[0]|safe }}{% endif %}
         </span>
       {% endif %}
@@ -116,11 +116,10 @@
     
     {% set field_class = '{}'.format(width) %}
 
-    {% set field_class = 'form-control input focus:shadow-outline ' + field_class + (
+    {% set field_class = 'form-control input focus:shadow-outline min-h-target ' + field_class + (
         ' form-control-error' if field.errors else ''
     ) %}
-    <div class="w-full grid grid-cols-4 gap-x-2">
-      <div class="col-span-3">
+    <div class="w-full flex gap-x-2">
         {{ field(
           class=field_class,
           data_module='highlight-tags' if highlight_tags else '',
@@ -131,11 +130,10 @@
           aria_describedby=describedby|trim if describedby != '' else false,
           **kwargs
         ) }}
-      </div>
 
       <div class="box-border">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button type="submit" class="button w-full h-full" style="padding:unset; box-shadow:unset">{{ _('Search') }}</button>
+        <button type="submit" class="button w-full min-h-target shadow-none">{{ _('Search') }}</button>
       </div>
     </div>
 
