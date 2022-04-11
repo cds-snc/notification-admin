@@ -89,6 +89,38 @@ def verify_mobile():
     return render_template("views/verify-mobile.html")
 
 
+@main.route("/privacy")
+def privacy():
+    page_id = ""
+    auth_required = False
+
+    response = request_content(f"wp/v2/pages/{page_id}", {"slug": "privacy"}, auth_required=auth_required)
+
+    # when response is a string, redirect to the other lang
+    if isinstance(response, str):
+        return redirect("/confidentialite", 301)
+
+    # when response is a dict, display the content
+    elif response:
+        title = response["title"]["rendered"]
+        slug_en = response["slug_en"]
+        html_content = response["content"]["rendered"]
+
+        nav_items = get_nav_items()
+        set_active_nav_item(nav_items, request.path)
+
+        return render_template(
+            "views/page-content.html",
+            title=title,
+            html_content=html_content,
+            nav_items=nav_items,
+            slug=slug_en,
+            lang_url=get_lang_url(response, bool(page_id)),
+            stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+        )
+    else:
+        abort(404)
+
 
 @main.route("/pricing")
 def pricing():
@@ -254,6 +286,72 @@ def callbacks():
     return redirect(documentation_url("callbacks"), code=301)
 
 
+@main.route("/features", endpoint="features")
+def features():
+    page_id = ""
+    auth_required = False
+
+    response = request_content(f"wp/v2/pages/{page_id}", {"slug": "features"}, auth_required=auth_required)
+
+    # when response is a string, redirect to the other lang
+    if isinstance(response, str):
+        return redirect("/fonctionalites", 301)
+
+    # when response is a dict, display the content
+    elif response:
+        title = response["title"]["rendered"]
+        slug_en = response["slug_en"]
+        html_content = response["content"]["rendered"]
+
+        nav_items = get_nav_items()
+        set_active_nav_item(nav_items, request.path)
+
+        return render_template(
+            "views/page-content.html",
+            title=title,
+            html_content=html_content,
+            nav_items=nav_items,
+            slug=slug_en,
+            lang_url=get_lang_url(response, bool(page_id)),
+            stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+        )
+    else:
+        abort(404)
+
+
+@main.route("/why-notify", endpoint="why-notify")
+def why_notify():
+    page_id = ""
+    auth_required = False
+
+    response = request_content(f"wp/v2/pages/{page_id}", {"slug": "why-notify"}, auth_required=auth_required)
+
+    # when response is a string, redirect to the other lang
+    if isinstance(response, str):
+        return redirect("/pourquoi-notification", 301)
+
+    # when response is a dict, display the content
+    elif response:
+        title = response["title"]["rendered"]
+        slug_en = response["slug_en"]
+        html_content = response["content"]["rendered"]
+
+        nav_items = get_nav_items()
+        set_active_nav_item(nav_items, request.path)
+
+        return render_template(
+            "views/page-content.html",
+            title=title,
+            html_content=html_content,
+            nav_items=nav_items,
+            slug=slug_en,
+            lang_url=get_lang_url(response, bool(page_id)),
+            stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+        )
+    else:
+        abort(404)
+
+
 @main.route("/roadmap", endpoint="roadmap")
 def roadmap():
     return render_template("views/roadmap.html")
@@ -274,14 +372,83 @@ def features_letters():
     return render_template("views/letters.html")
 
 
+@main.route("/guidance", endpoint="guidance")
+def guidance():
+    page_id = ""
+    auth_required = False
+
+    response = request_content(f"wp/v2/pages/{page_id}", {"slug": "guidance"}, auth_required=auth_required)
+
+    # when response is a string, redirect to the other lang
+    if isinstance(response, str):
+        return redirect("/guides-reference", 301)
+
+    # when response is a dict, display the content
+    elif response:
+        title = response["title"]["rendered"]
+        slug_en = response["slug_en"]
+        html_content = response["content"]["rendered"]
+
+        nav_items = get_nav_items()
+        set_active_nav_item(nav_items, request.path)
+
+        return render_template(
+            "views/page-content.html",
+            title=title,
+            html_content=html_content,
+            nav_items=nav_items,
+            slug=slug_en,
+            lang_url=get_lang_url(response, bool(page_id)),
+            stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+        )
+    else:
+        abort(404)
+
+
 @main.route("/format", endpoint="format")
 def format():
-    return render_template("views/guidance/format.html")
+    if get_current_locale(current_app) == "en":
+        return redirect("formatting-guide", 301)
+    else:
+        return redirect("guide-mise-en-forme", 301)
 
 
 @main.route("/personalise", endpoint="personalise")
 def personalise():
     return render_template("views/guidance/personalise.html")
+
+
+@main.route("/security", endpoint="security")
+def security():
+    page_id = ""
+    auth_required = False
+
+    response = request_content(f"wp/v2/pages/{page_id}", {"slug": "security"}, auth_required=auth_required)
+
+    # when response is a string, redirect to the other lang
+    if isinstance(response, str):
+        return redirect("/securite", 301)
+
+    # when response is a dict, display the content
+    elif response:
+        title = response["title"]["rendered"]
+        slug_en = response["slug_en"]
+        html_content = response["content"]["rendered"]
+
+        nav_items = get_nav_items()
+        set_active_nav_item(nav_items, request.path)
+
+        return render_template(
+            "views/page-content.html",
+            title=title,
+            html_content=html_content,
+            nav_items=nav_items,
+            slug=slug_en,
+            lang_url=get_lang_url(response, bool(page_id)),
+            stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+        )
+    else:
+        abort(404)
 
 
 @main.route("/a11y", endpoint="a11y")
