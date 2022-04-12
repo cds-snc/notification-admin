@@ -42,13 +42,16 @@
     border-top-color: inherit;
   }
 
+  details[open]:not(:last-child) {
+    @apply mb-gutterHalf;
+  }
+
   details .arrow {
     @apply text-small hidden;
   }
 
-  details .details-body {
-    border-left: 5px solid #c4c4c4;
-    padding-left: 10px;
-    margin-left: 5px;
+  details [id^="details-content"] {
+    padding-left: 25px;
+    box-shadow: inset 5px 0 0 theme("colors.gray.border");
   }
 }

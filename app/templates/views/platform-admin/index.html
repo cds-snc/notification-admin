@@ -16,15 +16,13 @@
   </h1>
   <details {% if form.errors %}open{% endif %}>
     <summary>{{ _('Apply filters') }}</summary>
-    {% call form_wrapper(method="get") %}
-      {{ textbox(form.start_date, width='w-2/3', hint="Enter start date in format YYYY-MM-DD") }}
-      {{ textbox(form.end_date, width='w-2/3', hint="Enter end date in format YYYY-MM-DD") }}
-      <br>
-      <br>
-      <div>
-      <button style="margin-bottom:20px" type="submit" class="button">Filter</button>
-      </div>
-    {% endcall %}
+    <div>
+      {% call form_wrapper(method="get") %}
+        {{ textbox(form.start_date, width='w-2/3', hint=_("Enter start date in format YYYY-MM-DD")) }}
+        {{ textbox(form.end_date, width='w-2/3', hint=_("Enter end date in format YYYY-MM-DD")) }}
+        <button style="margin-bottom:20px" type="submit" class="button">{{ _("Filter") }}</button>
+      {% endcall %}
+    </div>
   </details>
 
   <div class="grid-row contain-floats mb-12 clear-both contain-floats">
