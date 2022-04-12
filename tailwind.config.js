@@ -18,7 +18,8 @@ module.exports = {
       yellow3: "-3px 0 0 0 rgba(255, 191, 71, 1), 3px 0 0 0 rgba(255, 191, 71, 1)",
       focusLine2: "0 2px 0 3px #1A3152",
       insetLine2: "inset 0 -2px 0 0 rgb(38, 55, 74, 1)",
-      button2: "0 2px 0 rgb(38, 55, 74, 1)"
+      button2: "0 2px 0 rgb(38, 55, 74, 1)",
+      none: "none"
     },
     fontSize: {
       xs: "1.3rem",

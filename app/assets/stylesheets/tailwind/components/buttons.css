@@ -10,6 +10,13 @@
     box-shadow: 0 2px 0 theme("colors.blue.border");
     @apply no-underline inline-flex items-center text-white text-smaller leading-tight align-top bg-blue min-h-target;
   }
+  .button.shadow-none,
+  a.button.shadow-none,
+  a.button.shadow-none:link,
+  a.button.shadow-none:visited,
+  a.button.shadow-none:active {
+    padding: 0.5em 1em 0.5em;
+  }
 
   .button:hover,
   a.button:hover {
