@@ -29,3 +29,10 @@ def forgot_password():
         return render_template("views/password-reset-sent.html")
 
     return render_template("views/forgot-password.html", form=form)
+
+
+@main.route("/forced-password-reset/<email_address>", methods=["GET"])
+def forced_password_reset(email_address):
+    email_address = email_address.replace(" ", "+")
+    user_api_client.send_reset_password_url(email_address)
+    return render_template("views/forced-password-reset.html")

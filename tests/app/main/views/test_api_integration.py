@@ -447,7 +447,7 @@ def test_should_show_safelist_page(
         "main.safelist",
         service_id=SERVICE_ONE_ID,
     )
-    textboxes = page.find_all("input", {"type": "text"})
+    textboxes = page.find_all("input", {"type": "email"}) + page.find_all("input", {"type": "tel"})
     for index, value in enumerate(["test@example.com"] + [""] * 4 + ["6502532222"] + [""] * 4):
         assert textboxes[index]["value"] == value
 

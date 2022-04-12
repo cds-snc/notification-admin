@@ -33,6 +33,7 @@ def test_should_render_new_password_template(
         {
             "email": api_user_active["email_address"],
             "created_at": str(datetime.utcnow()),
+            "password_expired": False,
         }
     )
     token = generate_token(data, app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"])
