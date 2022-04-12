@@ -81,6 +81,6 @@ def reset_password(user_id):
     else:
         flash(
             _("Are you sure you want to request a password reset for this user?"),
-            "reset",
+            "request",
         )
         return user_information(user_id)
