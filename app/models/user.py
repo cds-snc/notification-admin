@@ -46,6 +46,7 @@ class User(JSONModel, UserMixin):
         "platform_admin",
         "state",
         "blocked",
+        "password_expired",
     }
 
     def __init__(self, _dict):

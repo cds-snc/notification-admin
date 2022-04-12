@@ -387,11 +387,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             telephone,name
             +16502532222
         """,
-            (
-                "Your file needs a column called ‘phone number’ "
-                "Right now it has columns called ‘telephone’ and ‘name’. "
-                "Skip to file contents"
-            ),
+            ("Your file needs a column called ‘phone number’ " "Right now it has columns called ‘telephone’ and ‘name’."),
         ),
         (
             """
@@ -400,8 +396,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
         """,
             (
                 "The columns in your file need to match the double brackets in your template "
-                "Your file is missing a column called ‘name’. "
-                "Skip to file contents"
+                "Your file is missing a column called ‘name’."
             ),
         ),
         (
@@ -411,30 +406,27 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
         """,
             (
                 "Your file has more than one column called ‘phone number’ or ‘PHONE_NUMBER’ "
-                "Delete or rename one of these columns and try again. "
-                "Skip to file contents"
+                "Delete or rename one of these columns and try again."
             ),
         ),
         (
             """
             phone number, name
         """,
-            ("Your file is missing some rows " "It needs at least one row of data. " "Skip to file contents"),
+            ("Your file is missing some rows " "It needs at least one row of data."),
         ),
         (
             "+16502532222",
             (
                 "Your file is missing some rows "
-                "It needs at least one row of data, and columns called ‘name’ and ‘phone number’. "
-                "Skip to file contents"
+                "It needs at least one row of data, and columns called ‘name’ and ‘phone number’."
             ),
         ),
         (
             "",
             (
                 "Your file is missing some rows "
-                "It needs at least one row of data, and columns called ‘name’ and ‘phone number’. "
-                "Skip to file contents"
+                "It needs at least one row of data, and columns called ‘name’ and ‘phone number’."
             ),
         ),
         (
@@ -444,7 +436,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             , example
             +16502532222, example
         """,
-            ("There is a problem with invalid.csv " "You need to enter missing data in 1 row " "Skip to file contents"),
+            ("There is a problem with invalid.csv " "You need to enter missing data in 1 row"),
         ),
         (
             """
@@ -453,7 +445,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             +16502532222,
             +16502532222, example
         """,
-            ("There is a problem with invalid.csv " "You need to enter missing data in 1 row " "Skip to file contents"),
+            ("There is a problem with invalid.csv " "You need to enter missing data in 1 row"),
         ),
     ],
 )
@@ -2577,8 +2569,7 @@ def test_check_messages_shows_trial_mode_error(
 
     assert " ".join(page.find("div", class_="banner-dangerous").text.split()) == (
         "You cannot send to this phone number "
-        "In trial mode, you can only send to yourself and team members. To send to more recipients, request to go live. "
-        "Skip to file contents"
+        "In trial mode, you can only send to yourself and team members. To send to more recipients, request to go live."
     )
 
 
@@ -2645,9 +2636,9 @@ def test_check_messages_shows_trial_mode_error_for_letters(
     error = page.select(".banner-dangerous")
 
     if error_should_be_shown:
-        assert normalize_spaces(error[0].text) == (
-            "{} " "In trial mode, you can only preview how your letters will look " "Skip to file contents"
-        ).format(expected_error_message)
+        assert normalize_spaces(error[0].text) == ("{} " "In trial mode, you can only preview how your letters will look").format(
+            expected_error_message
+        )
     else:
         assert not error
 
@@ -2698,7 +2689,7 @@ def test_check_messages_shows_data_errors_before_trial_mode_errors_for_letters(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "There is a problem with example.xlsx " "You need to enter missing data in 2 rows " "Skip to file contents"
+        "There is a problem with example.xlsx " "You need to enter missing data in 2 rows"
     )
     assert not page.select(".table-field-index a")
 
@@ -2737,9 +2728,7 @@ def test_warns_if_file_sent_already(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "These messages have already been sent today "
-        "If you need to re-send them, rename the file and upload it again. "
-        "Skip to file contents"
+        "These messages have already been sent today " "If you need to re-send them, rename the file and upload it again."
     )
 
     mock_get_jobs.assert_called_once_with(SERVICE_ONE_ID, limit_days=0)
@@ -2785,8 +2774,7 @@ def test_check_messages_column_error_doesnt_show_optional_columns(
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
         "Your file needs a column called ‘postcode’ "
-        "Right now it has columns called ‘address_line_1’, ‘address_line_2’ and ‘foo’. "
-        "Skip to file contents"
+        "Right now it has columns called ‘address_line_1’, ‘address_line_2’ and ‘foo’."
     )
 
 
@@ -2881,7 +2869,7 @@ def test_letters_from_csv_files_dont_have_download_link(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == normalize_spaces(
-        "You cannot send this letter " "In trial mode, you can only preview how your letters will look " "Skip to file contents"
+        "You cannot send this letter " "In trial mode, you can only preview how your letters will look"
     )
 
     assert len(page.select(".letter img")) == 5
@@ -3017,10 +3005,7 @@ def test_check_messages_shows_over_max_row_error(
     )
 
     assert " ".join(page.find("div", class_="banner-dangerous").text.split()) == (
-        "Your file has too many rows "
-        "GC Notify can process up to 11,111 rows at once. "
-        "Your file has 99,999 rows. "
-        "Skip to file contents"
+        "Your file has too many rows " "GC Notify can process up to 11,111 rows at once. " "Your file has 99,999 rows."
     )
 
 

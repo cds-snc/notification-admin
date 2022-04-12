@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
 from app.models.user import User
+from tests.conftest import api_user_active as create_active_user
 from tests.conftest import normalize_spaces
 
 
@@ -140,6 +141,33 @@ def test_process_sms_auth_sign_in_return_2fa_template(
         {"location": None, "user-agent": "werkzeug/1.0.1"},
     )
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
+
+
+def test_forced_password_reset(
+    client,
+    mocker,
+    mock_send_verify_code,
+    mock_verify_password,
+    mock_get_security_keys,
+    fake_uuid,
+):
+
+    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user["is_authenticated"] = False
+    sample_user["password_expired"] = True
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=sample_user,
+    )
+
+    response = client.post(url_for("main.sign_in"), data={"email_address": "test@admin.ca", "password": "123_hello_W"})
+
+    assert response.location == url_for(
+        "main.forced_password_reset",
+        email_address="test@admin.ca",
+        _external=True,
+    )
 
 
 @pytest.mark.parametrize(
@@ -293,6 +321,8 @@ def test_email_address_is_treated_case_insensitively_when_signing_in_as_invited_
     mock_get_security_keys,
 ):
     sample_invite["email_address"] = "TEST@user.canada.ca"
+
+    mocker.patch("app.user_api_client.get_user_by_email_or_none", return_value=None)
 
     mocker.patch(
         "app.models.user.User.from_email_address_and_password_or_none",

@@ -6,6 +6,7 @@ Flask==1.1.2
 Flask-WTF==0.14.3
 Flask-Login==0.5.0
 Flask-Caching==1.10.1
+environs==9.5.0
 
 blinker==1.4
 pyexcel==0.6.6
@@ -33,6 +34,7 @@ WTForms==3.0.0a1
 email-validator==1.1.2
 Werkzeug==1.0.1
 greenlet==1.1.2
+mixpanel==4.9.0
 
 # PaaS
 awscli-cwlogs>=1.4.6,<1.5

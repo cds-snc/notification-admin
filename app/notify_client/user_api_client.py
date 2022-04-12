@@ -11,14 +11,7 @@ from app.models.roles_and_permissions import (
 )
 from app.notify_client import NotifyAdminAPIClient, cache
 
-ALLOWED_ATTRIBUTES = {
-    "name",
-    "email_address",
-    "mobile_number",
-    "auth_type",
-    "updated_by",
-    "blocked",
-}
+ALLOWED_ATTRIBUTES = {"name", "email_address", "mobile_number", "auth_type", "updated_by", "blocked", "password_expired"}
 
 
 class UserApiClient(NotifyAdminAPIClient):
