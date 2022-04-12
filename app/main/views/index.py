@@ -415,7 +415,10 @@ def format():
 
 @main.route("/personalise", endpoint="personalise")
 def personalise():
-    return render_template("views/guidance/personalise.html")
+    if get_current_locale(current_app) == "en":
+        return redirect("personalisation-guide", 301)
+    else:
+        return redirect("etat-livraison-messages", 301)
 
 
 @main.route("/security", endpoint="security")
@@ -453,7 +456,10 @@ def security():
 
 @main.route("/a11y", endpoint="a11y")
 def a11y():
-    return render_template("views/a11y.html")
+    if get_current_locale(current_app) == "en":
+        return redirect("accessibility", 301)
+    else:
+        return redirect("accessibilite", 301)
 
 
 @main.route("/welcome", endpoint="welcome")
@@ -488,12 +494,18 @@ def activity_download():
 
 @main.route("/terms", endpoint="terms")
 def terms():
-    return render_template("views/terms-of-use.html")
+    if get_current_locale(current_app) == "en":
+        return redirect("terms-of-use", 301)
+    else:
+        return redirect("conditions-utilisation", 301)
 
 
 @main.route("/messages-status", endpoint="messages_status")
 def messages_status():
-    return render_template("views/messages-status.html")
+    if get_current_locale(current_app) == "en":
+        return redirect("message-delivery-status", 301)
+    else:
+        return redirect("etat-livraison-messages", 301)
 
 
 # --- Redirects --- #

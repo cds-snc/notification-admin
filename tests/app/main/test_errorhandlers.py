@@ -48,7 +48,7 @@ def test_csrf_returns_400(logged_in_client, mocker):
     csrf_err = CSRFError("400 Bad Request: The CSRF tokens do not match.")
     mocker.patch("app.main.views.index.render_template", side_effect=csrf_err)
 
-    response = logged_in_client.get("/terms")
+    response = logged_in_client.get("/terms-of-use")
 
     assert response.status_code == 400
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")

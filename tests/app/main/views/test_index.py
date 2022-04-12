@@ -132,7 +132,7 @@ def test_static_pages(
     mock_get_organisation_by_domain,
     view,
 ):
-    page = client_request.get("main.{}".format(view))
+    page = client_request.get("main.{}".format(view), _follow_redirects=True)
     assert not page.select_one("meta[name=description]")
 
 
@@ -180,7 +180,7 @@ def test_old_documentation_page_redirects(client):
 
 
 def test_terms_page_has_correct_content(client_request):
-    terms_page = client_request.get("main.terms")
+    terms_page = client_request.get("main.terms", _follow_redirects=True)
     assert normalize_spaces(terms_page.select("main p")[0].text) == (
         "The following terms apply to use of GC Notify, a product operated by the "
         "Canadian Digital Service (CDS). GC Notify is available for use by Canadian federal "
