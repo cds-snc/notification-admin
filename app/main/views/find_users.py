@@ -80,7 +80,7 @@ def reset_password(user_id):
         return redirect(url_for(".user_information", user_id=user_id))
     else:
         flash(
-            _("Are you sure you want to reset the password for this user?"),
-            "reset",
+            _("Are you sure you want to request a password reset for this user?"),
+            "request",
         )
         return user_information(user_id)
