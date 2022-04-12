@@ -25,6 +25,10 @@
     @apply text-smaller leading-tight font-normal text-gray-grey1 m-0 pb-2;
   }
 
+  .email-message {
+    @apply bg-white;
+  }
+
   .email-message-table {
     @apply text-smaller leading-tight font-normal align-top border-0 border-b border-solid border-b-gray-grey2;
   }

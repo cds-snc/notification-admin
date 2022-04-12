@@ -602,6 +602,7 @@ def test_upload_valid_csv_shows_preview_and_table(
         upload_id=fake_uuid,
         row_index=2,
         original_file_name="example.csv",
+        _anchor="ok-preview",
     )
 
     for row_index, row in enumerate(
@@ -2027,9 +2028,9 @@ def test_upload_csvfile_with_valid_phone_shows_all_numbers(
     content = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "6502532201" in content
-    assert "6502532249" in content
-    assert "6502532250" not in content
-    assert "Only showing the first 50 rows" in content
+    assert "6502532209" in content
+    assert "6502532210" not in content
+    assert "Only shows the first 10 recipients" in content
 
     mock_get_service_statistics.assert_called_once_with(service_one["id"], today_only=True)
 
@@ -2126,7 +2127,7 @@ def test_letter_can_only_be_sent_now(
     )
 
     assert 'name="scheduled_for"' not in page
-    assert normalize_spaces(page.select_one("[type=submit]").text) == ("Send now")
+    assert normalize_spaces(page.select_one("[type=submit]").text) == ("Send all now")
 
 
 @pytest.mark.parametrize("when", ["", "2016-08-25T13:04:21.767198"])

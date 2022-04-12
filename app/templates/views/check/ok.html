@@ -1,99 +1,103 @@
 {% extends "admin_template.html" %}
 {% from "components/table.html" import list_table, field, text_field, index_field, hidden_field_heading %}
+{% from "components/previous-next-navigation.html" import previous_next_navigation %}
 {% from "components/file-upload.html" import file_upload %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/message-count-label.html" import message_count_label %}
 {% from "components/banner.html" import banner %}
-
 {% set page_title = _('Review before sending') %}
-
 {% block service_page_title %}
   {{ page_title }}
 {% endblock %}
 
+{% block main_content_class %}py-10 space-y-doubleGutter{% endblock %}
+
 {% block maincolumn_content %}
-  {{ page_header(page_title, back_link=back_link) }}
-
-  {{
-    banner(
-      _("'{}' was uploaded.").format(original_file_name),
-      'default',
-      with_tick=True
-    )
-  }}
-
+  <section>
+    {{ page_header(page_title, back_link=back_link) }}
+    {{ banner(
+        _("'{}' was uploaded.").format(original_file_name),
+        'default',
+        with_tick=True
+      ) }}
+  </section>
   {% if not request.args.from_test %}
-  <h2 class="heading-medium">{{ _('Recipients') }}</h2>
-  <p>
-    {% if count_of_recipients > 1 %}
-      {{ _("{} recipients from {}.").format(count_of_recipients, original_file_name) }}
-    {% else %}
-      {{ _("1 recipient from {}.").format(original_file_name) }}
-    {% endif %}
-  </p>
-
-  <div class="fullscreen-content" data-module="fullscreen-table">
-    {% call(item, row_number) list_table(
-      recipients.displayed_rows,
-      caption=original_file_name,
-      caption_visible=False,
-      field_headings=[
-        '<span class="visually-hidden">Row in file</span><span aria-hidden="true">1</span>'|safe
-      ] + recipients.column_headers
-    ) %}
-      {% call index_field() %}
-        <span>
-          <a href="{{ url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name) }}" class="text-small">{{ item.index + 2 }}</a>
-        </span>
-      {% endcall %}
-      {% for column in recipients.column_headers %}
-        {% if item[column].ignore %}
-          {{ text_field(item[column].data or '', status='default') }}
+    <section class="clear-both contain-floats" id="ok-file">
+      <h2 class="heading-medium">{{ _('Recipients') }}</h2>
+      <p>
+        {% if count_of_recipients > 1 %}
+          {{ _("{} recipients in the file '{}'.").format(count_of_recipients, original_file_name) }}
         {% else %}
-          {{ text_field(item[column].data or '') }}
+          {{ _("1 recipient in the file '{}'.").format(original_file_name) }}
         {% endif %}
-      {% endfor %}
-      {% if item[None].data %}
-        {% for column in item[None].data %}
-          {{ text_field(column, status='default') }}
+      </p>
+      <div
+        class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}"
+        data-module="fullscreen-table">
+        {% call(item, row_number) list_table(
+          recipients.displayed_rows,
+          caption=original_file_name,
+          caption_visible=False,
+          field_headings=[
+            '<span class="visually-hidden">' | safe + _("Row in file") + '</span><span aria-hidden="true"> 1</span>' | safe
+          ] + recipients.column_headers
+        ) %}
+        {% call index_field() %}
+        <span>
+          <a href="{{ url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name, _anchor='ok-preview') }}" class="text-small">{{ item.index + 2 }}</a>
+        </span>
+        {% endcall %}
+        {% for column in recipients.column_headers %}
+          {% if item[column].ignore %}
+            {{ text_field(item[column].data or '', status='default') }}
+          {% else %}
+            {{ text_field(item[column].data or '') }}
+          {% endif %}
         {% endfor %}
+        {% if item[None].data %}
+          {% for column in item[None].data %}
+            {{ text_field(column, status='default') }}
+          {% endfor %}
+        {% endif %}
+        {% endcall %}
+      </div>
+      {% if count_of_displayed_recipients < count_of_recipients %}
+        {% include "views/check/table-overflow.html" %}
+        <p>
+          {{ _('Only shows the first {} recipients.').format(count_of_displayed_recipients) }}
+          <a href="?original_file_name={{ original_file_name }}&show={{ count_of_displayed_recipients + 10 }}#ok-file">{{ _('Show the next 10 recipients') }}</a>.
+        </p>
       {% endif %}
-    {% endcall %}
-  </div>
-
-  {% if count_of_displayed_recipients < count_of_recipients %}
+    </section>
+  {% endif %}
+  <section id="ok-preview">
+    <h2 class="heading-medium">{{ _('Preview of one message out of {}').format(count_of_recipients) }}</h2>
     <p>
-      {{ _('Only showing the first')}} {{ count_of_displayed_recipients }} {{ _('rows') }}
+      {{ _("This shows the message to the recipient of row {}.").format(preview_row) }}
     </p>
-  {% endif %}
-
-  {% endif %}
-
-
-  <h2 class="heading-medium">{{ _('Message preview') }}</h2>
-
-  <p>
-    {{ _("The example below previews one recipient (row {} from {}).").format(preview_row, original_file_name) }}
-  </p>
-
-  {{ template|string|translate_preview_template }}
-
-
+    {{ template|string|translate_preview_template }}
+    {{ previous_next_navigation(
+    previous_page={
+      "url":url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(preview_row - 1), original_file_name=original_file_name, _anchor='ok-preview'),
+      "title":_('Previous preview'),
+      "label":_('Row {}').format(preview_row - 1)} if preview_row > 2, 
+    next_page={
+      "url":url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(preview_row + 1), original_file_name=original_file_name, _anchor='ok-preview'),
+      "title":_('Next preview'),
+      "label":_('Row {}').format(preview_row + 1)
+    } if preview_row < count_of_recipients + 1
+  ) }}
+  </section>
   <div class="mb-12 clear-both contain-floats">
-    <form method="post" enctype="multipart/form-data" action="{{url_for('main.start_job', service_id=current_service.id, upload_id=upload_id, original_file_name=original_file_name)}}" class='page-footer'>
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('main.start_job', service_id=current_service.id, upload_id=upload_id, original_file_name=original_file_name) }}" class='page-footer'>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <input type="hidden" id="scheduled_for" name="scheduled_for" value=""/>
-      <button type="submit" class="button" id="js-send-now-button">{{ _('Send now') }}</button>
+      <button type="submit" class="button" id="js-send-now-button">{{ _('Send all now') }}</button>
       <button type="submit" class="button button-secondary" id="js-send-later-button">
         {{ _('Schedule for later') }}
       </button>
-      <div
-        id="js-schedule-send-at"
-        class="hidden mt-12"
-        data-module="webpack-loader"
-        data-webpack-loader="Scheduler">
-      </div>
+      <div id="js-schedule-send-at" class="hidden mt-12" data-module="webpack-loader" data-webpack-loader="Scheduler"></div>
       <button type="submit" class="button hidden" id="js-schedule-button">
         {{ _('Schedule') }}
       </button>
