@@ -230,7 +230,7 @@ def test_reset_password_prompts_for_confirmation(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert "Are you sure you want to reset the password for this user?" in page.find("div", class_="banner-dangerous").text
+    assert "Are you sure you want to request a password reset for this user?" in page.find("div", class_="banner-dangerous").text
 
 
 def test_unblock_user_resets_failed_login_count(
