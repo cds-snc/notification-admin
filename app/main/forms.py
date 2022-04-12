@@ -1242,14 +1242,14 @@ class Safelist(StripWhitespaceForm):
 
 
 class DateFilterForm(StripWhitespaceForm):
-    start_date = DateField("Start Date", [validators.optional()])
-    end_date = DateField("End Date", [validators.optional()])
-    include_from_test_key = BooleanField("Include test keys", default="checked", false_values={"N"})
+    start_date = DateField(_l("Start Date"), [validators.optional()])
+    end_date = DateField(_l("End Date"), [validators.optional()])
+    include_from_test_key = BooleanField(_l("Include test keys"), default="checked", false_values={"N"})
 
 
 class RequiredDateFilterForm(StripWhitespaceForm):
-    start_date = DateField("Start Date")
-    end_date = DateField("End Date")
+    start_date = DateField(_l("Start Date"))
+    end_date = DateField(_l("End Date"))
 
 
 class SearchByNameForm(StripWhitespaceForm):

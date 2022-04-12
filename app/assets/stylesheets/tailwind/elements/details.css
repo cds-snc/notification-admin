@@ -1,6 +1,6 @@
 @layer components {
   details {
-    @apply block clear-both relative;
+    @apply block clear-both;
   }
 
   details summary {
@@ -50,17 +50,8 @@
     @apply text-small hidden;
   }
 
-  details > *:not(summary) {
+  details [id^="details-content"] {
     padding-left: 25px;
-  }
-
-  details:before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 40px;
-    height: calc(100% - 40px);
-    width: 25px;
     box-shadow: inset 5px 0 0 theme("colors.gray.border");
   }
 }
