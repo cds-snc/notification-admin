@@ -170,7 +170,7 @@ def test_old_static_pages_redirect(client, view, expected_view):
         ("messages_status", "message-delivery-status"),
         ("format", "formatting-guide"),
         ("personalise", "personalisation-guide"),
-    ]
+    ],
 )
 def test_old_static_pages_redirect_to_wildcard(client, view, expected_redirect_url):
     response = client.get(url_for("main.{}".format(view)))

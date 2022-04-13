@@ -300,7 +300,6 @@ def format():
     return redirect(slug, 301)
 
 
-
 @main.route("/personalise", endpoint="personalise")
 def personalise():
     slug = "personalisation-guide" if get_current_locale(current_app) == "en" else "etat-livraison-messages"
