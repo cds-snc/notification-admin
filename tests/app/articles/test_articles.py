@@ -4,7 +4,7 @@ import pytest
 
 from app.articles import get_lang_url, get_preview_url, set_active_nav_item
 
-gc_articles_api = "articles.cdssandbox.xyz/notification-gc-notify"
+gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"
 
 
 class TestSetActiveNavItem:
