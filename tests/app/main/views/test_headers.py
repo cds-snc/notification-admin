@@ -24,6 +24,20 @@ service = [
 ]
 
 
+def test_presence_of_security_headers(client, mocker):
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+
+    response = client.get("/")
+
+    assert response.status_code == 200
+
+    assert response.headers.has_key("Strict-Transport-Security") == True
+    assert response.headers["Strict-Transport-Security"] == "max-age=63072000; includeSubDomains; preload"
+
 def test_owasp_useful_headers_set(
     client,
     mocker,
