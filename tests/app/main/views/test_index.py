@@ -112,18 +112,14 @@ def test_security_txt(client):
     [
         "privacy",
         "pricing",
-        "terms",
         "roadmap",
         "features",
         "why-notify",
         "security",
-        "messages_status",
         "email",
         "sms",
         "letters",
         "welcome",
-        "format",
-        "personalise",
         "guidance",
     ],
 )
@@ -132,7 +128,7 @@ def test_static_pages(
     mock_get_organisation_by_domain,
     view,
 ):
-    page = client_request.get("main.{}".format(view), _follow_redirects=True)
+    page = client_request.get("main.{}".format(view))
     assert not page.select_one("meta[name=description]")
 
 
@@ -165,6 +161,21 @@ def test_old_static_pages_redirect(client, view, expected_view):
     response = client.get(url_for("main.{}".format(view)))
     assert response.status_code == 301
     assert response.location == url_for("main.{}".format(expected_view), _external=True)
+
+
+@pytest.mark.parametrize(
+    "view, expected_redirect_url",
+    [
+        ("terms", "terms-of-use"),
+        ("messages_status", "message-delivery-status"),
+        ("format", "formatting-guide"),
+        ("personalise", "personalisation-guide"),
+    ]
+)
+def test_old_static_pages_redirect_to_wildcard(client, view, expected_redirect_url):
+    response = client.get(url_for("main.{}".format(view)))
+    assert response.status_code == 301
+    assert response.location.endswith(f"/{expected_redirect_url}")
 
 
 def test_old_callbacks_page_redirects(client):

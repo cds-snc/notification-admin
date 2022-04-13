@@ -1,10 +1,11 @@
 from typing import Optional, Union
 
 import requests
-from flask import abort, current_app, json
+from flask import abort, current_app, json, redirect, render_template, request
 from werkzeug.exceptions import NotFound, Unauthorized
 
 from app import cache, get_current_locale
+from app.utils import get_latest_stats
 
 GC_ARTICLES_PAGE_CACHE_TTL = 86400
 GC_ARTICLES_AUTH_TOKEN_CACHE_TTL = 86400
@@ -153,6 +154,38 @@ def _get_nav_wp(locale: str) -> Optional[list]:
         nav_items.append({"title": "preview", "url": "/preview", "target": "", "description": ""})
 
     return nav_items
+
+
+def get_content_by_slug_or_redirect(slug_en, slug_fr):
+    page_id = ""
+    auth_required = False
+
+    response = request_content(f"wp/v2/pages/{page_id}", {"slug": slug_en}, auth_required=auth_required)
+
+    # when response is a string, redirect to the other lang
+    if isinstance(response, str):
+        return redirect(f"/{slug_fr}", 301)
+
+    # when response is a dict, display the content
+    elif response:
+        title = response["title"]["rendered"]
+        slug = response["slug_en"]
+        html_content = response["content"]["rendered"]
+
+        nav_items = get_nav_items()
+        set_active_nav_item(nav_items, request.path)
+
+        return render_template(
+            "views/page-content.html",
+            title=title,
+            html_content=html_content,
+            nav_items=nav_items,
+            slug=slug,
+            lang_url=get_lang_url(response, bool(page_id)),
+            stats=get_latest_stats(get_current_locale(current_app)) if slug == "home" else None,
+        )
+    else:
+        abort(404)
 
 
 # Return URL path for the language switcher
