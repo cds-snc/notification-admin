@@ -295,7 +295,7 @@ def features():
 
     # when response is a string, redirect to the other lang
     if isinstance(response, str):
-        return redirect("/fonctionalites", 301)
+        return redirect("/fonctionnalites", 301)
 
     # when response is a dict, display the content
     elif response:
