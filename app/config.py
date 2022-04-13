@@ -71,7 +71,7 @@ class Config(object):
     HTTP_PROTOCOL = "http"
     INVITATION_EXPIRY_SECONDS = 3_600 * 24 * 2  # 2 days - also set on api
     IP_GEOLOCATE_SERVICE = os.environ.get("IP_GEOLOCATE_SERVICE", "").rstrip("/")
-    GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.cdssandbox.xyz/notification-gc-notify")
+    GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.alpha.canada.ca/notification-gc-notify")
     GC_ARTICLES_API_AUTH_USERNAME = os.environ.get("GC_ARTICLES_API_AUTH_USERNAME")
     GC_ARTICLES_API_AUTH_PASSWORD = os.environ.get("GC_ARTICLES_API_AUTH_PASSWORD")
 
