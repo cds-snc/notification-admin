@@ -143,12 +143,9 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
 
 
-def test_forced_password_reset(
+def test_sign_in_redirects_to_forced_password_reset(
     client,
     mocker,
-    mock_send_verify_code,
-    mock_verify_password,
-    mock_get_security_keys,
     fake_uuid,
 ):
 
@@ -165,9 +162,82 @@ def test_forced_password_reset(
 
     assert response.location == url_for(
         "main.forced_password_reset",
-        email_address="test@admin.ca",
         _external=True,
     )
+
+
+def test_forced_password_reset(
+    client,
+    mocker,
+    fake_uuid,
+):
+
+    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user["is_authenticated"] = False
+    sample_user["password_expired"] = True
+
+    with client.session_transaction() as session:
+        session["reset_email_address"] = sample_user["email_address"]
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=sample_user,
+    )
+
+    mocked_send_email = mocker.patch("app.user_api_client.send_reset_password_url")
+    response = client.get(url_for("main.forced_password_reset"))
+
+    assert "You need to create a new password" in response.get_data(as_text=True)
+    mocked_send_email.assert_called_with(sample_user["email_address"])
+
+
+@pytest.mark.parametrize(
+    "email_address",
+    [
+        None,
+        "no_user@nope.com",
+    ],
+)
+def test_forced_password_reset_with_missing_or_bad_email_address(client, mocker, email_address):
+    if email_address:
+        with client.session_transaction() as session:
+            session["reset_email_address"] = email_address
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=None,
+    )
+
+    mocked_send_email = mocker.patch("app.user_api_client.send_reset_password_url")
+    response = client.get(url_for("main.forced_password_reset"))
+
+    assert "You need to create a new password" in response.get_data(as_text=True)
+    assert not mocked_send_email.called
+
+
+def test_forced_password_reset_password_not_expired(
+    client,
+    mocker,
+    fake_uuid,
+):
+
+    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user["is_authenticated"] = False
+    sample_user["password_expired"] = False
+
+    with client.session_transaction() as session:
+        session["reset_email_address"] = sample_user["email_address"]
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=sample_user,
+    )
+
+    mocked_send_email = mocker.patch("app.user_api_client.send_reset_password_url")
+    response = client.get(url_for("main.forced_password_reset"))
+
+    assert "You need to create a new password" in response.get_data(as_text=True)
+    assert not mocked_send_email.called
 
 
 @pytest.mark.parametrize(
