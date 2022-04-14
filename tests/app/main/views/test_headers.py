@@ -35,11 +35,12 @@ def test_presence_of_security_headers(client, mocker):
 
     assert response.status_code == 200
 
-    assert response.headers.has_key("Strict-Transport-Security") == True
+    assert "Strict-Transport-Security" in response.headers
     assert response.headers["Strict-Transport-Security"] == "max-age=63072000; includeSubDomains; preload"
 
-    assert response.headers.has_key("Referrer-Policy") == True
+    assert "Referrer-Policy" in response.headers
     assert response.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
+
 
 def test_owasp_useful_headers_set(
     client,
