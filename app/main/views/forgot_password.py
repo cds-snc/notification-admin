@@ -1,10 +1,11 @@
-from flask import abort, flash, render_template
+from flask import abort, flash, render_template, session
 from flask_babel import _
 from notifications_python_client.errors import HTTPError
 
 from app import user_api_client
 from app.main import main
 from app.main.forms import ForgotPasswordForm
+from app.models.user import User
 
 
 @main.route("/forgot-password", methods=["GET", "POST"])
@@ -31,8 +32,9 @@ def forgot_password():
     return render_template("views/forgot-password.html", form=form)
 
 
-@main.route("/forced-password-reset/<email_address>", methods=["GET"])
-def forced_password_reset(email_address):
-    email_address = email_address.replace(" ", "+")
-    user_api_client.send_reset_password_url(email_address)
+@main.route("/forced-password-reset", methods=["GET"])
+def forced_password_reset():
+    email_address = session.pop("reset_email_address", None)
+    if email_address and User.from_email_address_or_none(email_address):
+        user_api_client.send_reset_password_url(email_address)
     return render_template("views/forced-password-reset.html")
