@@ -374,7 +374,7 @@ def old_page_redirects():
 
 
 # --- Dynamic routes handling for GCArticles API-driven pages --- #
-@main.route("/<path:path>")
+@main.route("/<path:path>", endpoint="wildcard")
 def page_content(path=""):
     page_id = ""
     auth_required = False

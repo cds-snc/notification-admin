@@ -318,3 +318,15 @@ def test_should_render_welcome(client):
     expected = "Create your first service"
     link_text = page.find_all("a", {"class": "button"})[0].text
     assert link_text == expected
+
+
+@pytest.mark.parametrize(
+    "slug, status",
+    [
+        ("slug", 404),
+        ("terms-of-use", 200),
+    ],
+)
+def test_wildcard_route(client, slug, status):
+    response = client.get(url_for("main.wildcard", path=slug))
+    assert response.status_code == status
