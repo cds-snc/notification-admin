@@ -6,7 +6,7 @@ from mixpanel import Mixpanel  # type: ignore
 from app.models.user import User
 
 
-class NotifyMixpanel():
+class NotifyMixpanel:
 
     enabled = False
 
@@ -27,6 +27,7 @@ class NotifyMixpanel():
         def wrapper(*args, **kwargs):
             if NotifyMixpanel.enabled:
                 callable(*args, **kwargs)
+
         return wrapper
 
     @__mixpanel_enabled  # type: ignore
