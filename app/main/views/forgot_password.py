@@ -35,6 +35,7 @@ def forgot_password():
 @main.route("/forced-password-reset", methods=["GET"])
 def forced_password_reset():
     email_address = session.pop("reset_email_address", None)
-    if email_address and User.from_email_address_or_none(email_address):
+    user = User.from_email_address_or_none(email_address)
+    if email_address and user and user.password_expired:
         user_api_client.send_reset_password_url(email_address)
     return render_template("views/forced-password-reset.html")

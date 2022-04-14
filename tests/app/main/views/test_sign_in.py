@@ -215,6 +215,31 @@ def test_forced_password_reset_with_missing_or_bad_email_address(client, mocker,
     assert not mocked_send_email.called
 
 
+def test_forced_password_reset_password_not_expired(
+    client,
+    mocker,
+    fake_uuid,
+):
+
+    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user["is_authenticated"] = False
+    sample_user["password_expired"] = False
+
+    with client.session_transaction() as session:
+        session["reset_email_address"] = sample_user["email_address"]
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=sample_user,
+    )
+
+    mocked_send_email = mocker.patch("app.user_api_client.send_reset_password_url")
+    response = client.get(url_for("main.forced_password_reset"))
+
+    assert "You need to create a new password" in response.get_data(as_text=True)
+    assert not mocked_send_email.called
+
+
 @pytest.mark.parametrize(
     "last_email_login",
     [
