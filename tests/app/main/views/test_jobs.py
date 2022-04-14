@@ -75,8 +75,8 @@ def test_get_jobs_shows_page_links(
     client_request.login(user(fake_uuid))
     page = client_request.get("main.view_jobs", service_id=SERVICE_ONE_ID)
 
-    assert "Next page" in page.find("li", {"class": "next-page"}).text
-    assert "Previous page" in page.find("li", {"class": "previous-page"}).text
+    assert "Next page" in page.find("div", {"class": "next-page"}).text
+    assert "Previous page" in page.find("div", {"class": "previous-page"}).text
 
 
 @pytest.mark.parametrize(
