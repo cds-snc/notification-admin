@@ -335,11 +335,14 @@ def test_wildcard_route(client, slug, status):
 @pytest.mark.parametrize(
     "slug, current_locale, status, expected_url",
     [
+        ("privacy", "en", 301, "privacy"),
+        ("privacy", "fr", 301, "confidentialite"),
+        ("confidentialite", "fr", 200, "confidentialite"),
         ("terms", "en", 301, "terms-of-use"),  # old route, redirect to correct lang
-        ("terms", "fr", 301, "conditions-utilisation"), 
+        ("terms", "fr", 301, "conditions-utilisation"),
         ("terms-of-use", "en", 200, "terms-of-use"),  # found page
         ("terms-of-use", "fr", 302, "conditions-utilisation"),  # found page, but 302 redirect to correct language
-    ]
+    ],
 )
 def test_get_content_by_slug_or_redirect(mocker, client, slug, current_locale, status, expected_url):
     mocker.patch("app.articles.get_current_locale", return_value=current_locale)
