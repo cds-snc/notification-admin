@@ -1,8 +1,15 @@
 import json
-
 from datetime import datetime
 
-from flask import current_app, flash, redirect, render_template, request, session, url_for
+from flask import (
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_babel import _
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import check_token
@@ -43,7 +50,7 @@ def new_password(token):
             "id": user.id,
             "email": user.email_address,
             "password": form.new_password.data,
-            "loginData": _constructLoginData(request)
+            "loginData": _constructLoginData(request),
         }
         if user.auth_type == "email_auth":
             # they've just clicked an email link, so have done an email auth journey anyway. Just log them in.

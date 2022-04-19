@@ -1,15 +1,4 @@
-import urllib.request
-
-from flask import (
-    abort,
-    current_app,
-    flash,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import abort, flash, redirect, render_template, request, session, url_for
 from flask_babel import _
 from flask_login import current_user
 
@@ -17,7 +6,7 @@ from app import login_manager
 from app.main import main
 from app.main.forms import LoginForm
 from app.models.user import InvitedUser, User
-from app.utils import get_remote_addr, report_security_finding, _constructLoginData
+from app.utils import _constructLoginData
 
 
 @main.route("/sign-in", methods=(["GET", "POST"]))
@@ -29,7 +18,7 @@ def sign_in():
 
     if form.validate_on_submit():
 
-        login_data = _constructLoginData(request) 
+        login_data = _constructLoginData(request)
 
         user = User.from_email_address_or_none(form.email_address.data)
         if user and user.password_expired:
@@ -80,4 +69,3 @@ def sign_in():
 @login_manager.unauthorized_handler
 def sign_in_again():
     return redirect(url_for("main.sign_in", next=request.path))
-

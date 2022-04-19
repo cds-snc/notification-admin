@@ -801,6 +801,7 @@ def _geolocate_ip(ip):
     else:
         return ip
 
+
 def _constructLoginData(request):
     return {
         "user-agent": request.headers["User-Agent"],
