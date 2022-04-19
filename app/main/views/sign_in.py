@@ -6,7 +6,7 @@ from app import login_manager
 from app.main import main
 from app.main.forms import LoginForm
 from app.models.user import InvitedUser, User
-from app.utils import _constructLoginData
+from app.utils import _constructLoginData, report_security_finding
 
 
 @main.route("/sign-in", methods=(["GET", "POST"]))
