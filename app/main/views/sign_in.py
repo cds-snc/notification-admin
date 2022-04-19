@@ -1,5 +1,3 @@
-import json
-import urllib.error
 import urllib.request
 
 from flask import (
@@ -19,7 +17,7 @@ from app import login_manager
 from app.main import main
 from app.main.forms import LoginForm
 from app.models.user import InvitedUser, User
-from app.utils import get_remote_addr, report_security_finding
+from app.utils import get_remote_addr, report_security_finding, _constructLoginData
 
 
 @main.route("/sign-in", methods=(["GET", "POST"]))
@@ -31,10 +29,7 @@ def sign_in():
 
     if form.validate_on_submit():
 
-        login_data = {
-            "user-agent": request.headers["User-Agent"],
-            "location": _geolocate_ip(get_remote_addr(request)),
-        }
+        login_data = _constructLoginData(request) 
 
         user = User.from_email_address_or_none(form.email_address.data)
         if user and user.password_expired:
@@ -86,38 +81,3 @@ def sign_in():
 def sign_in_again():
     return redirect(url_for("main.sign_in", next=request.path))
 
-
-def _geolocate_lookup(ip):
-    request = urllib.request.Request(url=f"{current_app.config['IP_GEOLOCATE_SERVICE']}/{ip}")
-
-    try:
-        with urllib.request.urlopen(request) as f:
-            response = f.read()
-    except urllib.error.HTTPError as e:
-        current_app.logger.debug("Exception found: {}".format(e))
-        return ip
-    else:
-        return json.loads(response.decode("utf-8-sig"))
-
-
-def _geolocate_ip(ip):
-    if not current_app.config["IP_GEOLOCATE_SERVICE"].startswith("http"):
-        return
-    resp = _geolocate_lookup(ip)
-
-    if isinstance(resp, str):
-        return ip
-
-    if "continent" in resp and resp["continent"] is not None and resp["continent"]["code"] != "NA":
-        report_security_finding(
-            "Suspicious log in location",
-            "Suspicious log in location detected, use the IP resolver to check the IP and correlate with logs.",
-            50,
-            50,
-            current_app.config.get("IP_GEOLOCATE_SERVICE", None) + ip,
-        )
-
-    if "city" in resp and resp["city"] is not None and resp["subdivisions"] is not None:
-        return resp["city"]["names"]["en"] + ", " + resp["subdivisions"][0]["iso_code"] + " (" + ip + ")"
-    else:
-        return ip

@@ -1,7 +1,10 @@
 import csv
+import json
 import os
 import re
 import unicodedata
+import urllib.error
+import urllib.request
 import uuid
 from collections import defaultdict
 from datetime import datetime, time, timedelta
@@ -761,3 +764,45 @@ class PermanentRedirect(RequestRedirect):
 def is_blank(content: Any) -> bool:
     content = str(content)
     return not content or content.isspace()
+
+
+def _geolocate_lookup(ip):
+    request = urllib.request.Request(url=f"{current_app.config['IP_GEOLOCATE_SERVICE']}/{ip}")
+
+    try:
+        with urllib.request.urlopen(request) as f:
+            response = f.read()
+    except urllib.error.HTTPError as e:
+        current_app.logger.debug("Exception found: {}".format(e))
+        return ip
+    else:
+        return json.loads(response.decode("utf-8-sig"))
+
+
+def _geolocate_ip(ip):
+    if not current_app.config["IP_GEOLOCATE_SERVICE"].startswith("http"):
+        return
+    resp = _geolocate_lookup(ip)
+
+    if isinstance(resp, str):
+        return ip
+
+    if "continent" in resp and resp["continent"] is not None and resp["continent"]["code"] != "NA":
+        report_security_finding(
+            "Suspicious log in location",
+            "Suspicious log in location detected, use the IP resolver to check the IP and correlate with logs.",
+            50,
+            50,
+            current_app.config.get("IP_GEOLOCATE_SERVICE", None) + ip,
+        )
+
+    if "city" in resp and resp["city"] is not None and resp["subdivisions"] is not None:
+        return resp["city"]["names"]["en"] + ", " + resp["subdivisions"][0]["iso_code"] + " (" + ip + ")"
+    else:
+        return ip
+
+def _constructLoginData(request):
+    return {
+        "user-agent": request.headers["User-Agent"],
+        "location": _geolocate_ip(get_remote_addr(request)),
+    }
