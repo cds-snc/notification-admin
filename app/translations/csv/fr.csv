@@ -1550,6 +1550,7 @@
 "You need to create a new password","Vous devez créer un nouveau mot de passe"
 "GC Notify needs you to create a new password for this account.","GC Notification vous demande de créer un nouveau mot de passe pour votre compte."
 "We'll send you an email to create a new password.","Nous vous enverrons un lien pour réinitialiser votre mot de passe."
+"The link in the email we sent you has expired","Le lien que nous vous avons envoyé par courriel a expiré."
 "Check your email. We sent you a password reset link.","Vérifiez votre courriel. Nous vous avons envoyé un lien pour réinitialiser votre mot de passe."
 "Why we are asking you to create a new password","Pourquoi nous vous demandons de créer un nouveau mot de passe."
 "GC Notify has expired all user passwords out of an abundance of caution following the discovery of a potential security risk on March 29, 2022.", GC Notification a expiré le mot de passe de tous les utilisateurs par excès de prudence, suivant la découverte d’une faille potentielle le 29 mars 2022."
