@@ -15,6 +15,9 @@ from app.models.user import User
 @main.route("/new-password/<path:token>", methods=["GET", "POST"])
 def new_password(token):
     try:
+
+        token_data_no_expiry = check_token(token, current_app.config["SECRET_KEY"], current_app.config["DANGEROUS_SALT"], None)
+
         token_data = check_token(
             token,
             current_app.config["SECRET_KEY"],
@@ -22,6 +25,7 @@ def new_password(token):
             current_app.config["EMAIL_EXPIRY_SECONDS"],
         )
     except SignatureExpired:
+        session["email_address"] = json.loads(token_data_no_expiry)["email"]
         flash(_("The security code in the email we sent you has expired. Enter your email address to re-send."))
         return redirect(url_for(".forgot_password"))
 
