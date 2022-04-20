@@ -185,6 +185,11 @@ class UserApiClient(NotifyAdminAPIClient):
         data = {"email": email_address}
         self.post(endpoint, data=data)
 
+    def send_forced_reset_password_url(self, email_address):
+        endpoint = "/user/forced-password-reset"
+        data = {"email": email_address}
+        self.post(endpoint, data=data)
+
     def find_users_by_full_or_partial_email(self, email_address):
         endpoint = "/user/find-users-by-email"
         data = {"email": email_address}
