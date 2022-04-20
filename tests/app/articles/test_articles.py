@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-from app.articles import get_lang_url, get_preview_url, set_active_nav_item
+from app.articles import get_content_by_slug_or_redirect, get_lang_url, get_preview_url, set_active_nav_item
 
 gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"
 
@@ -105,3 +105,41 @@ class TestGetPreviewURL:
 
         # return None as page_id. This should never happen in practice, since we check page_id beforehand
         assert preview_url == f"https://{gc_articles_api}/wp-admin/post.php?post=None&action=edit&lang=en"
+
+
+@patch("app.articles.request_content", return_value="string_response")
+@patch("app.articles.redirect")
+def test_get_content_by_slug_or_redirect_string(mock_redirect, mock_request_content):
+    get_content_by_slug_or_redirect("pineapple", "ananas")
+
+    mock_request_content.assert_called_with("wp/v2/pages/", {"slug": "pineapple"}, auth_required=False)
+    mock_redirect.assert_called_with("/ananas", 301)
+
+
+def test_get_content_by_slug_or_redirect_dict(app_, mocker):
+    response = {"title": {"rendered": "Title"}, "content": {"rendered": "Content"}, "slug_en": "slug"}
+    mocker.patch("app.articles.request_content", return_value=response)
+    mocker.patch("app.articles.get_nav_items", return_value="Nav Items")
+    mocker.patch("app.articles.get_lang_url", return_value="Lang url")
+    mocker.patch("app.articles.set_active_nav_item")
+    mock_render_template = mocker.patch("app.articles.render_template")
+
+    with app_.test_request_context():
+        get_content_by_slug_or_redirect("pineapple", "ananas")
+
+        mock_render_template.assert_called_with(
+            "views/page-content.html",
+            title=response["title"]["rendered"],
+            html_content=response["content"]["rendered"],
+            nav_items="Nav Items",
+            slug=response["slug_en"],
+            lang_url="Lang url",
+            stats=None,
+        )
+
+
+@patch("app.articles.request_content", return_value=None)
+@patch("app.articles.abort")
+def test_get_content_by_slug_or_redirect_none(mock_abort, mock_request_content):
+    get_content_by_slug_or_redirect("pineapple", "ananas")
+    mock_abort.assert_called_with(404)
