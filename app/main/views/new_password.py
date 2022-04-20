@@ -4,7 +4,6 @@ from datetime import datetime
 from flask import current_app, flash, redirect, render_template, session, url_for
 from flask_babel import _
 from itsdangerous import SignatureExpired, URLSafeTimedSerializer
-
 from notifications_utils.url_safe_token import check_token
 
 from app.main import main

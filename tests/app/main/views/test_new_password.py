@@ -7,7 +7,8 @@ from flask import url_for
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import generate_token
 
-from tests.conftest import url_for_endpoint_with_token, api_user_active as create_active_user
+from tests.conftest import api_user_active as create_active_user
+from tests.conftest import url_for_endpoint_with_token
 
 
 @pytest.fixture(autouse=True)
