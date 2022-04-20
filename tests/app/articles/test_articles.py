@@ -2,7 +2,12 @@ from unittest.mock import patch
 
 import pytest
 
-from app.articles import get_content_by_slug_or_redirect, get_lang_url, get_preview_url, set_active_nav_item
+from app.articles import (
+    get_content_by_slug_or_redirect,
+    get_lang_url,
+    get_preview_url,
+    set_active_nav_item,
+)
 
 gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"
 
