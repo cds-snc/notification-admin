@@ -29,7 +29,7 @@ def forgot_password():
                 raise e
         return render_template("views/password-reset-sent.html")
 
-    email_address = session.get("password_expired_email_address")
+    email_address = session.get("reset_email_address")
     user = User.from_email_address_or_none(email_address) if email_address else None
     if user and user.password_expired:
         return render_template("views/password-expired-link-expired.html", form=form)
