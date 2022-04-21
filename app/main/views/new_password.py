@@ -11,7 +11,7 @@ from flask import (
     url_for,
 )
 from flask_babel import _
-from itsdangerous import SignatureExpired
+from itsdangerous import SignatureExpired, URLSafeTimedSerializer
 from notifications_utils.url_safe_token import check_token
 
 from app.main import main
@@ -24,6 +24,7 @@ from app.utils import _constructLoginData
 @main.route("/new-password/<path:token>", methods=["GET", "POST"])
 def new_password(token):
     try:
+        token_data_no_checks = URLSafeTimedSerializer("").loads_unsafe(token)[1]
         token_data = check_token(
             token,
             current_app.config["SECRET_KEY"],
@@ -31,7 +32,14 @@ def new_password(token):
             current_app.config["EMAIL_EXPIRY_SECONDS"],
         )
     except SignatureExpired:
-        flash(_("The security code in the email we sent you has expired. Enter your email address to re-send."))
+        email_address = json.loads(token_data_no_checks).get("email", "")
+        session["email_address"] = email_address
+        user = User.from_email_address_or_none("email_address")
+        if user and user.password_expired:
+            flash(_("The link in the email we sent you has expired"))
+        else:
+            flash(_("The security code in the email we sent you has expired. Enter your email address to re-send."))
+
         return redirect(url_for(".forgot_password"))
 
     email_address = json.loads(token_data)["email"]
