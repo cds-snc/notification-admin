@@ -2,8 +2,8 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
-      {% if category in ['cancel', 'delete', 'suspend', 'resume', 'remove', 'revoke this API key', 'block', 'archive'] %}
-        {% set category_translations = {'cancel': _('cancel'), 'delete': _('delete'), 'suspend': _('suspend'), 'resume': _('resume'), 'remove': _('remove'), 'revoke this API key': _('revoke this API key'), 'block': _('block'), 'archive': _('archive')} %}
+      {% if category in ['cancel', 'delete', 'suspend', 'resume', 'remove', 'revoke this API key', 'block', 'archive', 'reset', 'request'] %}
+        {% set category_translations = {'cancel': _('cancel'), 'delete': _('delete'), 'suspend': _('suspend'), 'resume': _('resume'), 'remove': _('remove'), 'revoke this API key': _('revoke this API key'), 'block': _('block'), 'archive': _('archive') ,'reset': _('reset'), 'request': _('request')} %}
         {% set delete_button_text = "{}, {}".format(_('Yes'), category_translations.get(category, category)) %}
       {% elif category == 'try again' %}
         {% set delete_button_text = _('Try again') %}

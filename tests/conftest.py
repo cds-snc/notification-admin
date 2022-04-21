@@ -1200,6 +1200,7 @@ def api_user_pending(fake_uuid):
         "organisations": [],
         "current_session_id": None,
         "password_changed_at": str(datetime.utcnow()),
+        "password_expired": False,
     }
     return user_data
 
@@ -1234,6 +1235,7 @@ def platform_admin_user(fake_uuid):
         "organisations": [],
         "current_session_id": None,
         "logged_in_at": None,
+        "password_expired": False,
     }
     return user_data
 
@@ -1258,6 +1260,7 @@ def api_user_active(fake_uuid, email_address="test@user.canada.ca"):
         "current_session_id": None,
         "logged_in_at": None,
         "security_keys": [],
+        "password_expired": False,
     }
     return user_data
 
@@ -1281,6 +1284,7 @@ def api_user_active_email_auth(fake_uuid, email_address="test@user.canada.ca"):
         "organisations": [],
         "current_session_id": None,
         "security_keys": [],
+        "password_expired": False,
     }
     return user_data
 
@@ -1590,6 +1594,7 @@ def api_user_locked(fake_uuid):
         "current_session_id": None,
         "platform_admin": False,
         "services": [],
+        "password_expired": False,
     }
     return user_data
 
@@ -1612,6 +1617,7 @@ def api_user_request_password_reset(fake_uuid):
         "current_session_id": None,
         "platform_admin": False,
         "services": [],
+        "password_expired": False,
     }
     return user_data
 
@@ -1634,6 +1640,7 @@ def api_user_changed_password(fake_uuid):
         "current_session_id": None,
         "platform_admin": False,
         "services": [],
+        "password_expired": False,
     }
     return user_data
 
@@ -1863,7 +1870,7 @@ def mock_verify_password(mocker):
 
 @pytest.fixture(scope="function")
 def mock_update_user_password(mocker, api_user_active):
-    def _update(user_id, password):
+    def _update(user_id, password, login_data={}):
         api_user_active["id"] = user_id
         return api_user_active
 

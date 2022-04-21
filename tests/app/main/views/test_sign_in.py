@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
 from app.models.user import User
+from tests.conftest import api_user_active as create_active_user
 from tests.conftest import normalize_spaces
 
 
@@ -140,6 +141,103 @@ def test_process_sms_auth_sign_in_return_2fa_template(
         {"location": None, "user-agent": "werkzeug/1.0.1"},
     )
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
+
+
+def test_sign_in_redirects_to_forced_password_reset(
+    client,
+    mocker,
+    fake_uuid,
+):
+
+    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user["is_authenticated"] = False
+    sample_user["password_expired"] = True
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=sample_user,
+    )
+
+    response = client.post(url_for("main.sign_in"), data={"email_address": "test@admin.ca", "password": "123_hello_W"})
+
+    assert response.location == url_for(
+        "main.forced_password_reset",
+        _external=True,
+    )
+
+
+def test_forced_password_reset(
+    client,
+    mocker,
+    fake_uuid,
+):
+
+    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user["is_authenticated"] = False
+    sample_user["password_expired"] = True
+
+    with client.session_transaction() as session:
+        session["reset_email_address"] = sample_user["email_address"]
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=sample_user,
+    )
+
+    mocked_send_email = mocker.patch("app.user_api_client.send_forced_reset_password_url")
+    response = client.get(url_for("main.forced_password_reset"))
+
+    assert "Check your email. We sent you a password reset link" in response.get_data(as_text=True)
+    mocked_send_email.assert_called_with(sample_user["email_address"])
+
+
+@pytest.mark.parametrize(
+    "email_address",
+    [
+        None,
+        "no_user@nope.com",
+    ],
+)
+def test_forced_password_reset_with_missing_or_bad_email_address(client, mocker, email_address):
+    if email_address:
+        with client.session_transaction() as session:
+            session["reset_email_address"] = email_address
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=None,
+    )
+
+    mocked_send_email = mocker.patch("app.user_api_client.send_forced_reset_password_url")
+    response = client.get(url_for("main.forced_password_reset"))
+
+    assert "Check your email. We sent you a password reset link" in response.get_data(as_text=True)
+    assert not mocked_send_email.called
+
+
+def test_forced_password_reset_password_not_expired(
+    client,
+    mocker,
+    fake_uuid,
+):
+
+    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user["is_authenticated"] = False
+    sample_user["password_expired"] = False
+
+    with client.session_transaction() as session:
+        session["reset_email_address"] = sample_user["email_address"]
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=sample_user,
+    )
+
+    mocked_send_email = mocker.patch("app.user_api_client.send_forced_reset_password_url")
+    response = client.get(url_for("main.forced_password_reset"))
+
+    assert "Check your email. We sent you a password reset link" in response.get_data(as_text=True)
+    assert not mocked_send_email.called
 
 
 @pytest.mark.parametrize(
@@ -294,6 +392,8 @@ def test_email_address_is_treated_case_insensitively_when_signing_in_as_invited_
 ):
     sample_invite["email_address"] = "TEST@user.canada.ca"
 
+    mocker.patch("app.user_api_client.get_user_by_email_or_none", return_value=None)
+
     mocker.patch(
         "app.models.user.User.from_email_address_and_password_or_none",
         return_value=User(api_user_active),
@@ -326,10 +426,10 @@ def test_sign_in_security_center_notification_for_non_NA_signins(
     mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
 
-    reporter = mocker.patch("app.main.views.sign_in.report_security_finding")
+    reporter = mocker.patch("app.utils.report_security_finding")
 
     mocker.patch(
-        "app.main.views.sign_in._geolocate_lookup",
+        "app.utils._geolocate_lookup",
         return_value={"continent": {"code": "EU"}, "city": None, "subdivision": None},
     )
 
@@ -355,7 +455,7 @@ def test_sign_in_geolookup_disabled_in_dev(
     mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
 
-    geolookup_mock = mocker.patch("app.main.views.sign_in._geolocate_lookup")
+    geolookup_mock = mocker.patch("app.utils._geolocate_lookup")
 
     response = client.post(
         url_for("main.sign_in"),

@@ -1,3 +1,5 @@
+{% from "components/textbox.html" import textbox %}
+
 {% macro list_entry(
   field,
   item_name,
@@ -9,7 +11,7 @@
     <div class="validation-wrapper">
   {% endif %}
     <fieldset class="form-group contain-floats w-full box-border{% if field.errors %} form-group-error{% endif %}" id="{{ field.name }}">
-      <legend>
+      <legend class="float-left w-full mb-4">
         <span class="form-label">
           {{ field.label.text }}
           {% if hint %}
@@ -22,25 +24,17 @@
               {{ field.errors[0][0] }}
             </span>
           {% endif %}
-        </label>
+        </span>
       </legend>
-      <div class="input-list" data-module="list-entry" data-list-item-name="{{ item_name }}" id="list-entry-{{ field.name }}">
-        {% for index in range(0, field.entries|length) %}
-          <div class="list-entry">
-            <label for="input-{{ field.name }}-{{ index }}" class="text-box-number-label">
-              <span class="visuallyhidden">{{ item_name }} {{ _('number') }} </span>{{ index + 1 }}.
-            </label>
-            <input
-              type="text"
-              name="{{ field.name }}-{{ index }}"
-              id="input-{{ field.name }}-{{ index }}"
-              class="form-control lg:inline-block list-form-control w-full"
-              value="{{ field.data[index] }}"
-              {% if not autocomplete %}autocomplete="off"{% endif %}
-            />
-          </div>
+      <ol class="input-list list-decimal pl-gutter clear-left" data-list-item-name="{{ item_name }}" id="list-entry-{{ field.name }}">
+        {% for index in range(0, 5) %}
+          <li class="list-entry mb-0">
+
+              {{ textbox(field[index], label=[item_name, index + 1] | join(" ") | capitalize, width='w-full md:w-3/4', required=false) }}
+
+          </li>
         {% endfor %}
-      </div>
+      </ol>
     </fieldset>
   {% if error %}
     </div>

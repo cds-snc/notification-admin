@@ -4,7 +4,7 @@ from werkzeug.exceptions import Forbidden
 
 from app.articles.api import get_content
 
-gc_articles_api = "articles.cdssandbox.xyz/notification-gc-notify"
+gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"
 notify_url = f"https://{gc_articles_api}/wp-json/pages"
 
 

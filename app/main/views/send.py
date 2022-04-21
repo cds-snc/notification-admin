@@ -657,7 +657,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         contents,
         template_type=template.template_type,
         placeholders=template.placeholders,
-        max_initial_rows_shown=50,
+        max_initial_rows_shown=int(request.args.get("show") or 10),
         max_errors_shown=50,
         safelist=itertools.chain.from_iterable([user.name, user.mobile_number, user.email_address] for user in Users(service_id))
         if current_service.trial_mode

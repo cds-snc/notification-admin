@@ -2,8 +2,11 @@ import os
 from typing import Any, List
 
 from dotenv import load_dotenv
+from environs import Env
 from notifications_utils import logging
 
+env = Env()
+env.read_env()
 load_dotenv()
 
 
@@ -38,8 +41,8 @@ class Config(object):
     BULK_SEND_TEST_SERVICE_ID = os.getenv("BULK_SEND_TEST_SERVICE_ID")
     CHECK_PROXY_HEADER = False
     CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "assistance+notification@cds-snc.ca")
-    CSV_MAX_ROWS = os.getenv("CSV_MAX_ROWS", 50_000)
-    CSV_MAX_ROWS_BULK_SEND = os.getenv("CSV_MAX_ROWS_BULK_SEND", 100_000)
+    CSV_MAX_ROWS = env.int("CSV_MAX_ROWS", 50_000)
+    CSV_MAX_ROWS_BULK_SEND = env.int("CSV_MAX_ROWS_BULK_SEND", 100_000)
     CSV_UPLOAD_BUCKET_NAME = os.getenv("CSV_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-csv-upload")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT")
     DEBUG = False
@@ -53,13 +56,13 @@ class Config(object):
         "school_or_college": 25_000,
         "other": 25_000,
     }
-    DEFAULT_LIVE_SERVICE_LIMIT = int(os.environ.get("DEFAULT_LIVE_SERVICE_LIMIT", 10_000))
-    DEFAULT_SERVICE_LIMIT = int(os.environ.get("DEFAULT_SERVICE_LIMIT", 50))
+    DEFAULT_LIVE_SERVICE_LIMIT = env.int("DEFAULT_LIVE_SERVICE_LIMIT", 10_000)
+    DEFAULT_SERVICE_LIMIT = env.int("DEFAULT_SERVICE_LIMIT", 50)
     DOCUMENTATION_DOMAIN = os.getenv("DOCUMENTATION_DOMAIN", "documentation.notification.canada.ca")
     EMAIL_2FA_EXPIRY_SECONDS = 1_800  # 30 Minutes
     EMAIL_EXPIRY_SECONDS = 3600  # 1 hour
-    FREE_YEARLY_SMS_LIMIT = int(os.getenv("FREE_YEARLY_SMS_LIMIT", 25_000))
-    FREE_YEARLY_EMAIL_LIMIT = int(os.getenv("FREE_YEARLY_EMAIL_LIMIT", 10_000_000))
+    FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 25_000)
+    FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 10_000_000)
     GOOGLE_ANALYTICS_ID = os.getenv("GOOGLE_ANALYTICS_ID", "UA-102484926-14")
     GOOGLE_TAG_MANAGER_ID = os.getenv("GOOGLE_TAG_MANAGER_ID", "GTM-KRKRZQV")
     HC_EN_SERVICE_ID = os.getenv("HC_EN_SERVICE_ID")
@@ -68,7 +71,7 @@ class Config(object):
     HTTP_PROTOCOL = "http"
     INVITATION_EXPIRY_SECONDS = 3_600 * 24 * 2  # 2 days - also set on api
     IP_GEOLOCATE_SERVICE = os.environ.get("IP_GEOLOCATE_SERVICE", "").rstrip("/")
-    GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.cdssandbox.xyz/notification-gc-notify")
+    GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.alpha.canada.ca/notification-gc-notify")
     GC_ARTICLES_API_AUTH_USERNAME = os.environ.get("GC_ARTICLES_API_AUTH_USERNAME")
     GC_ARTICLES_API_AUTH_PASSWORD = os.environ.get("GC_ARTICLES_API_AUTH_PASSWORD")
 
@@ -87,7 +90,7 @@ class Config(object):
     PERMANENT_SESSION_LIFETIME = 20 * 60 * 60  # 20 hours
 
     REDIS_URL = os.environ.get("REDIS_URL")
-    REDIS_ENABLED = os.environ.get("REDIS_ENABLED") == "1"
+    REDIS_ENABLED = env.bool("REDIS_ENABLED", False)
 
     ROUTE_SECRET_KEY_1 = os.environ.get("ROUTE_SECRET_KEY_1", "")
     ROUTE_SECRET_KEY_2 = os.environ.get("ROUTE_SECRET_KEY_2", "")

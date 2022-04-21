@@ -68,3 +68,19 @@ def archive_user(user_id):
             "archive",
         )
         return user_information(user_id)
+
+
+@main.route("/users/<uuid:user_id>/reset_password", methods=["GET", "POST"])
+@user_is_platform_admin
+def reset_password(user_id):
+    if request.method == "POST":
+        user = User.from_id(user_id)
+        user_api_client.send_reset_password_url(user.email_address)
+        user.update(password_expired=True, updated_by=current_user.id)
+        return redirect(url_for(".user_information", user_id=user_id))
+    else:
+        flash(
+            _("Are you sure you want to request a password reset for this user?"),
+            "request",
+        )
+        return user_information(user_id)
