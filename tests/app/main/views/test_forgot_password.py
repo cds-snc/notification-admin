@@ -6,10 +6,27 @@ import app
 from tests.conftest import api_user_active as create_active_user
 
 
-def test_should_render_forgot_password(client):
+@pytest.mark.parametrize("password_expired", [True, False])
+def test_should_render_forgot_password(password_expired, client, mocker, fake_uuid):
+
+    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user["is_authenticated"] = False
+    sample_user["password_expired"] = password_expired
+    mocker.patch(
+        "app.user_api_client.get_user_by_email_or_none",
+        return_value=sample_user,
+    )
+    if password_expired:
+        with client.session_transaction() as session:
+            session["reset_email_address"] = sample_user["email_address"]
+
     response = client.get(url_for(".forgot_password"))
+
     assert response.status_code == 200
-    assert "We’ll send you an email to create a new password." in response.get_data(as_text=True)
+    if password_expired:
+        assert "You need to create a new password" in response.get_data(as_text=True)
+    else:
+        assert "Forgot your password?" in response.get_data(as_text=True)
 
 
 @pytest.mark.parametrize("email_address", ["test@user.canada.ca", "someuser@notonsafelist.com"])

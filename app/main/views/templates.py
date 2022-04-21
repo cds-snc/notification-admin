@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta
 from string import ascii_uppercase
 
@@ -27,6 +28,7 @@ from app import (
     template_folder_api_client,
     template_statistics_client,
 )
+from app.extensions import redis_client
 from app.main import main
 from app.main.forms import (
     AddEmailRecipientsForm,
@@ -61,15 +63,20 @@ form_objects = {
 
 
 def get_email_preview_template(template, template_id, service_id):
-    email_preview_template = get_template(
-        template,
-        current_service,
-        letter_preview_url=url_for(
+    if template_id and service_id:
+        letter_preview_url = url_for(
             ".view_letter_template_preview",
             service_id=service_id,
             template_id=template_id,
             filetype="png",
-        ),
+        )
+    else:
+        letter_preview_url = None
+
+    email_preview_template = get_template(
+        template,
+        current_service,
+        letter_preview_url=letter_preview_url,
         show_recipient=True,
         page_count=get_page_count_for_letter(template),
     )
@@ -77,9 +84,29 @@ def get_email_preview_template(template, template_id, service_id):
     return email_preview_template
 
 
+def set_preview_data(data, service_id, template_id=None):
+    key = f"template-preview:{service_id}:{template_id}"
+    redis_client.set(key=key, value=json.dumps(data), ex=int(timedelta(days=1).total_seconds()))
+
+
+def get_preview_data(service_id, template_id=None):
+    key = f"template-preview:{service_id}:{template_id}"
+    data = redis_client.get(key)
+    if data:
+        return json.loads(data)
+    else:
+        return dict()
+
+
+def delete_preview_data(service_id, template_id=None):
+    key = f"template-preview:{service_id}:{template_id}"
+    redis_client.delete(key)
+
+
 @main.route("/services/<service_id>/templates/<uuid:template_id>")
 @user_has_permissions()
 def view_template(service_id, template_id):
+    delete_preview_data(service_id, template_id)
     template = current_service.get_template(template_id)
     template_folder = current_service.get_template_folder(template["folder"])
 
@@ -93,6 +120,86 @@ def view_template(service_id, template_id):
         template=get_email_preview_template(template, template_id, service_id),
         template_postage=template["postage"],
         user_has_template_permission=user_has_template_permission,
+    )
+
+
+@main.route("/services/<service_id>/templates/<uuid:template_id>/preview", methods=["GET", "POST"])
+@main.route("/services/<service_id>/templates/preview", methods=["GET", "POST"])
+@user_has_permissions()
+def preview_template(service_id, template_id=None):
+    template = get_preview_data(service_id, template_id)
+
+    if request.method == "POST":
+        if request.form["button_pressed"] == "edit":
+            if template["id"]:
+                return redirect(url_for(".edit_service_template", service_id=current_service.id, template_id=template_id))
+            else:
+                return redirect(
+                    url_for(
+                        ".add_service_template",
+                        service_id=current_service.id,
+                        template_type=template["template_type"],
+                        template_folder_id=template["folder"],
+                    )
+                )
+
+        else:
+            try:
+                if template.get("id"):
+                    service_api_client.update_service_template(
+                        str(template_id),
+                        template["name"],
+                        template["template_type"],
+                        template["content"],
+                        service_id,
+                        template["subject"],
+                        template["process_type"],
+                    )
+                else:
+                    new_template = service_api_client.create_service_template(
+                        template["name"],
+                        template["template_type"],
+                        template["content"],
+                        service_id,
+                        template["subject"],
+                        template["process_type"],
+                        template["folder"],
+                    )
+                    template_id = new_template["data"]["id"]
+
+                flash(_("'{}' template saved").format(template["name"]), "default_with_tick")
+                return redirect(
+                    url_for(
+                        ".view_template",
+                        service_id=service_id,
+                        template_id=template_id,
+                    )
+                )
+            except HTTPError as e:
+                if e.status_code == 400:
+                    if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
+                        flash(e.message["content"])
+                    else:
+                        raise e
+                else:
+                    raise e
+
+    if should_skip_template_page(template["template_type"]):
+        return redirect(url_for(".send_one_off", service_id=service_id, template_id=template["id"]))
+
+    if template["id"]:
+        back_link = url_for(".edit_service_template", service_id=current_service.id, template_id=template["id"])
+    else:
+        back_link = url_for(
+            ".add_service_template",
+            service_id=current_service.id,
+            template_type=template["template_type"],
+            template_folder_id=template["folder"],
+        )
+    return render_template(
+        "views/templates/preview_template.html",
+        template=get_email_preview_template(template, template["id"], service_id),
+        back_link=back_link,
     )
 
 
@@ -351,6 +458,7 @@ def _add_template_by_type(template_type, template_folder_id):
 @main.route("/services/<service_id>/templates/<template_type>/folders/<template_folder_id>/create", methods=["GET", "POST"])
 @user_has_permissions("manage_templates")
 def create_template(service_id, template_type="all", template_folder_id=None):
+    delete_preview_data(service_id)
     form = CreateTemplateForm()
 
     if request.method == "POST" and form.validate_on_submit():
@@ -594,17 +702,40 @@ def add_service_template(service_id, template_type, template_folder_id=None):
     if not current_service.has_permission("letter") and template_type == "letter":
         abort(403)
 
-    form = form_objects[template_type]()
+    template = get_preview_data(service_id)
+    if template.get("process_type") is None:
+        template["process_type"] = "normal"
+    form = form_objects[template_type](**template)
+
     if form.validate_on_submit():
         if form.process_type.data != "normal":
             abort_403_if_not_admin_user()
+        subject = form.subject.data if hasattr(form, "subject") else None
+        if request.form.get("button_pressed") == "preview":
+            preview_template_data = {
+                "name": form.name.data,
+                "content": form.template_content.data,
+                "template_content": form.template_content.data,
+                "subject": subject,
+                "template_type": template_type,
+                "id": None,
+                "process_type": form.process_type.data,
+                "folder": template_folder_id,
+            }
+            set_preview_data(preview_template_data, service_id)
+            return redirect(
+                url_for(
+                    ".preview_template",
+                    service_id=service_id,
+                )
+            )
         try:
             new_template = service_api_client.create_service_template(
                 form.name.data,
                 template_type,
                 form.template_content.data,
                 service_id,
-                form.subject.data if hasattr(form, "subject") else None,
+                subject,
                 form.process_type.data,
                 template_folder_id,
             )
@@ -659,8 +790,17 @@ def abort_403_if_not_admin_user():
 @user_has_permissions("manage_templates")
 def edit_service_template(service_id, template_id):
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+    new_template_data = get_preview_data(service_id, template_id)
+
+    if new_template_data.get("content"):
+        template["content"] = new_template_data["content"]
+        template["name"] = new_template_data["name"]
+        template["subject"] = new_template_data["subject"]
     template["template_content"] = template["content"]
+    if template.get("process_type") is None:
+        template["process_type"] = "normal"
     form = form_objects[template["template_type"]](**template)
+
     if form.validate_on_submit():
         if form.process_type.data != template["process_type"]:
             abort_403_if_not_admin_user()
@@ -675,7 +815,9 @@ def edit_service_template(service_id, template_id):
             "id": template["id"],
             "process_type": form.process_type.data,
             "reply_to_text": template["reply_to_text"],
+            "folder": template["folder"],
         }
+        set_preview_data(new_template_data, service_id, template_id)
 
         new_template = get_template(new_template_data, current_service)
         template_change = get_template(template, current_service).compare_to(new_template)
@@ -693,28 +835,43 @@ def edit_service_template(service_id, template_id):
                 ],
                 form=form,
             )
-        try:
-            service_api_client.update_service_template(
-                template_id,
-                form.name.data,
-                template["template_type"],
-                form.template_content.data,
-                service_id,
-                subject,
-                form.process_type.data,
-            )
-        except HTTPError as e:
-            if e.status_code == 400:
-                if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
-                    form.template_content.errors.extend(e.message["content"])
-                else:
-                    raise e
-            else:
-                raise e
         else:
-            flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
+            if request.form.get("button_pressed") == "preview":
+                return redirect(
+                    url_for(
+                        ".preview_template",
+                        service_id=service_id,
+                        template_id=template_id,
+                    )
+                )
+            else:
+                try:
+                    service_api_client.update_service_template(
+                        template_id,
+                        form.name.data,
+                        template["template_type"],
+                        form.template_content.data,
+                        service_id,
+                        subject,
+                        form.process_type.data,
+                    )
+                    flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
+                    return redirect(
+                        url_for(
+                            ".view_template",
+                            service_id=service_id,
+                            template_id=template_id,
+                        )
+                    )
 
-            return redirect(url_for(".view_template", service_id=service_id, template_id=template_id))
+                except HTTPError as e:
+                    if e.status_code == 400:
+                        if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
+                            form.template_content.errors.extend(e.message["content"])
+                        else:
+                            raise e
+                    else:
+                        raise e
 
     if email_or_sms_not_enabled(template["template_type"], current_service.permissions):
         return redirect(

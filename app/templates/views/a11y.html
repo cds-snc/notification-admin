@@ -19,7 +19,7 @@
       <li>{{ _('Screen readers do not always read text in emails in the correct language.') }}</li>
       <li>{{ _('GC Notify is not currently tested with mobile browsers.') }}</li>
     </ul>
-    <p>{{ _('Learn more about how we approach our work in the ') }}<a href='{{ _("https://digital.canada.ca/a11y/") }}'>{{ _('CDS Accessibility Handbook') }}.</a> </p>
+    <p>{{ _('Learn more about how we approach our work in the ') }}<a id="link-a11y-handbook" href='{{ _("https://digital.canada.ca/a11y/") }}'>{{ _('CDS Accessibility Handbook') }}.</a> </p>
   </section>
  
   <section>  
@@ -30,9 +30,9 @@
 
     <p>{{ _('To tell us about accessibility issues in GC Notify, you can:') }}</p>
     <ul style="list-style-type: disc; margin-left: 2em; margin-bottom: 20px;">
-      <li>{{ _('Reach out to us through our ') }} <a href='{{ url_for("main.contact") }}'>{{ _('contact form') }}</a>.</li>
+      <li>{{ _('Reach out to us through our ') }} <a id="link-a11y-contact" href='{{ url_for("main.contact") }}'>{{ _('contact form') }}</a>.</li>
       <li>{{ _('Email us at ') }}<a href="mailto:assistance+notification@cds-snc.ca">assistance+notification@cds-snc.ca</a>.</li>
-      <li>{{ _('Create an issue on our ') }}<a href='https://github.com/cds-snc/notification-admin'>{{ _('public GitHub repository') }}</a>.</li>
+      <li>{{ _('Create an issue on our ') }}<a id="link-a11y-github" href='https://github.com/cds-snc/notification-admin'>{{ _('public GitHub repository') }}</a>.</li>
     </ul>
 
     <p>{{ _('We will work with you to:') }}</p>

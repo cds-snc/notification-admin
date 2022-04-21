@@ -7,6 +7,7 @@ from flask import url_for
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import generate_token
 
+from tests.conftest import api_user_active as create_active_user
 from tests.conftest import url_for_endpoint_with_token
 
 
@@ -33,13 +34,14 @@ def test_should_render_new_password_template(
         {
             "email": api_user_active["email_address"],
             "created_at": str(datetime.utcnow()),
+            "password_expired": False,
         }
     )
     token = generate_token(data, app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"])
 
     response = client.get(url_for_endpoint_with_token(".new_password", token=token))
     assert response.status_code == 200
-    assert "You can now create a new password for your account." in response.get_data(as_text=True)
+    assert "A password that is hard to guess contains:" in response.get_data(as_text=True)
 
 
 def test_should_return_404_when_email_address_does_not_exist(
@@ -93,17 +95,33 @@ def test_should_redirect_index_if_user_has_already_changed_password(
     mock_get_user_by_email_user_changed_password.assert_called_once_with(user["email_address"])
 
 
-def test_should_redirect_to_forgot_password_with_flash_message_when_token_is_expired(app_, client, mock_login, mocker):
+def test_should_redirect_to_forgot_password_with_flash_message_when_token_is_expired(
+    app_, client, mock_login, mocker, fake_uuid, client_request
+):
+    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user["is_authenticated"] = False
+    mocker.patch(
+        "app.user_api_client.get_user_by_email_or_none",
+        return_value=sample_user,
+    )
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=sample_user,
+    )
     mocker.patch(
         "app.main.views.new_password.check_token",
         side_effect=SignatureExpired("expired"),
     )
-    token = generate_token("foo@bar.com", app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"])
+    token = generate_token(
+        json.dumps({"email": sample_user["email_address"]}), app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"]
+    )
 
     response = client.get(url_for_endpoint_with_token(".new_password", token=token))
 
     assert response.status_code == 302
     assert response.location == url_for(".forgot_password", _external=True)
+    with client_request.session_transaction() as session:
+        assert session["email_address"] == sample_user["email_address"]
 
 
 def test_should_sign_in_when_password_reset_is_successful_for_email_auth(

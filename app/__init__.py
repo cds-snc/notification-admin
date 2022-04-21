@@ -1,6 +1,7 @@
 import itertools
 import os
 import re
+import secrets
 import urllib
 from datetime import datetime, timedelta, timezone
 from functools import partial
@@ -20,7 +21,6 @@ from flask import (
     session,
     url_for,
 )
-from flask._compat import string_types
 from flask.globals import _lookup_req_object, _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
 from flask_login import LoginManager, current_user
@@ -124,8 +124,9 @@ def create_app(application):
     setup_commands(application)
 
     notify_environment = os.environ["NOTIFY_ENVIRONMENT"]
+    config = configs[notify_environment]
 
-    application.config.from_object(configs[notify_environment])
+    application.config.from_object(config)
     asset_fingerprinter._cdn_domain = application.config["ASSET_DOMAIN"]
     asset_fingerprinter._asset_root = urljoin(application.config["ADMIN_BASE_URL"], application.config["ASSET_PATH"])
 
@@ -192,6 +193,9 @@ def create_app(application):
     # make sure we handle unicode correctly
     redis_client.redis_store.decode_responses = True
 
+    # Log the application configuration
+    application.logger.info(f"Notify config: {config.get_safe_config()}")
+
     from app.main import main as main_blueprint
 
     application.register_blueprint(main_blueprint)
@@ -213,15 +217,16 @@ def init_app(application):
     application.before_request(load_service_before_request)
     application.before_request(load_organisation_before_request)
     application.before_request(request_helper.check_proxy_header_before_request)
+    application.before_request(load_request_nonce)
 
     @application.before_request
     def make_session_permanent():
-        # this is dumb. You'd think, given that there's `config['PERMANENT_SESSION_LIFETIME']`, that you'd enable
+        # This is misleading. You'd think, given that there's `config['PERMANENT_SESSION_LIFETIME']`, that you'd enable
         # permanent sessions in the config too - but no, you have to declare it for each request.
         # https://stackoverflow.com/questions/34118093/flask-permanent-session-where-to-define-them
         # session.permanent is also, helpfully, a way of saying that the session isn't permanent - in that, it will
         # expire on its own, as opposed to being controlled by the browser's session. Because session is a proxy, it's
-        # only accessible from within a request context, so we need to set this before every request :rolls_eyes:
+        # only accessible from within a request context, so we need to set this before every request.
         session.permanent = True
 
     @application.context_processor
@@ -247,25 +252,32 @@ def init_app(application):
 
     @application.context_processor
     def inject_global_template_variables():
+        nonce = safe_get_request_nonce()
+        current_app.logger.debug(f"Injecting nonce {nonce} in request")
         return {
-            "header_colour": application.config["HEADER_COLOUR"],
+            "admin_base_url": application.config["ADMIN_BASE_URL"],
             "asset_url": asset_fingerprinter.get_url,
             "asset_s3_url": asset_fingerprinter.get_s3_url,
             "current_lang": get_current_locale(application),
-            "admin_base_url": application.config["ADMIN_BASE_URL"],
-            "sending_domain": application.config["SENDING_DOMAIN"],
             "documentation_url": documentation_url,
+            "google_analytics_id": application.config["GOOGLE_ANALYTICS_ID"],
+            "google_tag_manager_id": application.config["GOOGLE_TAG_MANAGER_ID"],
+            "request_nonce": nonce,
+            "sending_domain": application.config["SENDING_DOMAIN"],
         }
 
 
-def convert_to_boolean(value):
-    if isinstance(value, string_types):
-        if value.lower() in ["t", "true", "on", "yes", "1"]:
-            return True
-        elif value.lower() in ["f", "false", "off", "no", "0"]:
-            return False
-
-    return value
+def safe_get_request_nonce():
+    # Using hasattr() won't work when digging into the request stack with
+    # inexistent attribute as the request stack overrides the normal behavior
+    # and will deviate from expected behavior.
+    try:
+        nonce = _request_ctx_stack.top.nonce
+        current_app.logger.debug(f"Safe get request nonce of {nonce}.")
+        return nonce
+    except (AttributeError):
+        current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
+        return ""
 
 
 def linkable_name(value):
@@ -579,6 +591,15 @@ def load_organisation_before_request():
                         raise
 
 
+def load_request_nonce():
+    if "/static/" in request.url:
+        _request_ctx_stack.top.nonce = None
+    elif _request_ctx_stack.top is not None:
+        token = secrets.token_urlsafe()
+        _request_ctx_stack.top.nonce = token
+        current_app.logger.warning(f"Set request nonce to {token}")
+
+
 def save_service_or_org_after_request(response):
     # Only save the current session if the request is 200
     service_id = request.view_args.get("service_id", None) if request.view_args else None
@@ -595,23 +616,24 @@ def save_service_or_org_after_request(response):
 
 #  https://www.owasp.org/index.php/List_of_useful_HTTP_headers
 def useful_headers_after_request(response):
+    response.headers.add("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
     response.headers.add("X-Frame-Options", "deny")
     response.headers.add("X-Content-Type-Options", "nosniff")
     response.headers.add("X-XSS-Protection", "1; mode=block")
-    response.headers.add("Permissions-Policy", "interest-cohort=()")
+    nonce = safe_get_request_nonce()
+    asset_domain = current_app.config["ASSET_DOMAIN"]
     response.headers.add(
         "Content-Security-Policy",
         (
             "default-src 'self' {asset_domain} 'unsafe-inline';"
-            "script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com 'unsafe-inline' 'unsafe-eval' data:;"
-            "connect-src 'self' *.google-analytics.com;"
+            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
-            "style-src 'self' *.googleapis.com 'unsafe-inline';"
+            "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.notifications.service.gov.uk data:;"  # noqa: E501
-            "frame-src 'self' www.youtube.com;".format(
-                asset_domain=current_app.config["ASSET_DOMAIN"],
-            )
+            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
+            "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(asset_domain=asset_domain)
         ),
     )
     if "Cache-Control" in response.headers:

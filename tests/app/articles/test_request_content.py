@@ -4,7 +4,7 @@ from werkzeug.exceptions import NotFound
 
 from app.articles import request_content
 
-gc_articles_api = "articles.cdssandbox.xyz/notification-gc-notify"
+gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"
 notify_url = f"https://{gc_articles_api}/wp-json/pages"
 
 
@@ -30,7 +30,7 @@ def test_request_content_en(app_, mocker, capsys):
 def test_request_content_fr(app_, mocker, capsys):
     with app_.test_request_context():
         mocker.patch("app.articles.get_current_locale", return_value="fr")
-        mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": "articles.cdssandbox.xyz/notification-gc-notify"})
+        mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": "articles.alpha.canada.ca/notification-gc-notify"})
         with requests_mock.mock() as mock:
             response_json = {"title": {"rendered": "Le titre"}, "content": {"rendered": "Le contentu"}}
             mock.request("GET", notify_url, json=response_json, status_code=200)
@@ -92,7 +92,7 @@ def test_request_content_en_404_but_fr_doesnt_exist(app_, mocker, capsys):
 def test_request_content_403(app_, mocker, capsys):
     with app_.test_request_context():
         mocker.patch("app.articles.get_current_locale", return_value="en")
-        mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": "articles.cdssandbox.xyz/notification-gc-notify"})
+        mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": "articles.alpha.canada.ca/notification-gc-notify"})
         with requests_mock.mock() as mock:
             response_json = {}
             mock.request("GET", notify_url, json=response_json, status_code=403)

@@ -6,6 +6,7 @@ Flask==1.1.2
 Flask-WTF==0.14.3
 Flask-Login==0.5.0
 Flask-Caching==1.10.1
+environs==9.5.0
 
 blinker==1.4
 pyexcel==0.6.6
@@ -33,6 +34,7 @@ WTForms==3.0.0a1
 email-validator==1.1.2
 Werkzeug==1.0.1
 greenlet==1.1.2
+mixpanel==4.9.0
 
 # PaaS
 awscli-cwlogs>=1.4.6,<1.5
@@ -40,6 +42,6 @@ awscli-cwlogs>=1.4.6,<1.5
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous==0.24  # pyup: <1.0.0
 
-git+https://github.com/cds-snc/notifier-utils.git@46.3.0#egg=notifications-utils
+git+https://github.com/cds-snc/notifier-utils.git@46.5.0#egg=notifications-utils
 
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability

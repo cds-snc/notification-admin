@@ -976,7 +976,15 @@ def mock_create_service_template(mocker, fake_uuid):
         process_type=None,
         parent_folder_id=None,
     ):
-        template = template_json(fake_uuid, name, type_, content, service, process_type, parent_folder_id)
+        template = template_json(
+            service_id=service,
+            id_=fake_uuid,
+            name=name,
+            type_=type_,
+            content=content,
+            process_type=process_type,
+            folder=parent_folder_id,
+        )
         return {"data": template}
 
     return mocker.patch("app.service_api_client.create_service_template", side_effect=_create)
@@ -1113,6 +1121,24 @@ def mock_get_service_templates_when_no_templates_exist(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_get_service_template_when_no_template_exists(mocker):
+    def _create(service_id, template_id, version=None):
+        return {
+            "data": {
+                "id": template_id,
+                "service_id": service_id,
+                "folder": None,
+                "template_type": "email",
+                "subject": "subject",
+                "content": "content",
+                "postage": None,
+            }
+        }
+
+    return mocker.patch("app.service_api_client.get_service_template", side_effect=_create)
+
+
+@pytest.fixture(scope="function")
 def mock_get_service_templates_with_only_one_template(mocker):
     def _get(service_id):
         return {
@@ -1174,6 +1200,7 @@ def api_user_pending(fake_uuid):
         "organisations": [],
         "current_session_id": None,
         "password_changed_at": str(datetime.utcnow()),
+        "password_expired": False,
     }
     return user_data
 
@@ -1208,6 +1235,7 @@ def platform_admin_user(fake_uuid):
         "organisations": [],
         "current_session_id": None,
         "logged_in_at": None,
+        "password_expired": False,
     }
     return user_data
 
@@ -1232,6 +1260,7 @@ def api_user_active(fake_uuid, email_address="test@user.canada.ca"):
         "current_session_id": None,
         "logged_in_at": None,
         "security_keys": [],
+        "password_expired": False,
     }
     return user_data
 
@@ -1255,6 +1284,7 @@ def api_user_active_email_auth(fake_uuid, email_address="test@user.canada.ca"):
         "organisations": [],
         "current_session_id": None,
         "security_keys": [],
+        "password_expired": False,
     }
     return user_data
 
@@ -1564,6 +1594,7 @@ def api_user_locked(fake_uuid):
         "current_session_id": None,
         "platform_admin": False,
         "services": [],
+        "password_expired": False,
     }
     return user_data
 
@@ -1586,6 +1617,7 @@ def api_user_request_password_reset(fake_uuid):
         "current_session_id": None,
         "platform_admin": False,
         "services": [],
+        "password_expired": False,
     }
     return user_data
 
@@ -1608,6 +1640,7 @@ def api_user_changed_password(fake_uuid):
         "current_session_id": None,
         "platform_admin": False,
         "services": [],
+        "password_expired": False,
     }
     return user_data
 

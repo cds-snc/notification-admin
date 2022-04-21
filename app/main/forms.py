@@ -1230,26 +1230,26 @@ class Safelist(StripWhitespaceForm):
         EmailFieldInSafelist("", validators=[Optional(), ValidEmail()], default=""),
         min_entries=5,
         max_entries=5,
-        label=_l("Email addresses"),
+        label=_l("Email safelist"),
     )
 
     phone_numbers = FieldList(
         InternationalPhoneNumberInSafelist("", validators=[Optional()], default=""),
         min_entries=5,
         max_entries=5,
-        label=_l("Mobile numbers"),
+        label=_l("Phone safelist"),
     )
 
 
 class DateFilterForm(StripWhitespaceForm):
-    start_date = DateField("Start Date", [validators.optional()])
-    end_date = DateField("End Date", [validators.optional()])
-    include_from_test_key = BooleanField("Include test keys", default="checked", false_values={"N"})
+    start_date = DateField(_l("Start Date"), [validators.optional()])
+    end_date = DateField(_l("End Date"), [validators.optional()])
+    include_from_test_key = BooleanField(_l("Include test keys"), default="checked", false_values={"N"})
 
 
 class RequiredDateFilterForm(StripWhitespaceForm):
-    start_date = DateField("Start Date")
-    end_date = DateField("End Date")
+    start_date = DateField(_l("Start Date"))
+    end_date = DateField(_l("End Date"))
 
 
 class SearchByNameForm(StripWhitespaceForm):

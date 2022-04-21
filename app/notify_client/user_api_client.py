@@ -11,14 +11,7 @@ from app.models.roles_and_permissions import (
 )
 from app.notify_client import NotifyAdminAPIClient, cache
 
-ALLOWED_ATTRIBUTES = {
-    "name",
-    "email_address",
-    "mobile_number",
-    "auth_type",
-    "updated_by",
-    "blocked",
-}
+ALLOWED_ATTRIBUTES = {"name", "email_address", "mobile_number", "auth_type", "updated_by", "blocked", "password_expired"}
 
 
 class UserApiClient(NotifyAdminAPIClient):
@@ -189,6 +182,11 @@ class UserApiClient(NotifyAdminAPIClient):
 
     def send_reset_password_url(self, email_address):
         endpoint = "/user/reset-password"
+        data = {"email": email_address}
+        self.post(endpoint, data=data)
+
+    def send_forced_reset_password_url(self, email_address):
+        endpoint = "/user/forced-password-reset"
         data = {"email": email_address}
         self.post(endpoint, data=data)
 
