@@ -28,7 +28,7 @@ def test_get_content_en(app_, mocker, capsys):
 
 def test_get_content_fr(app_, mocker, capsys):
     with app_.test_request_context():
-        mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": "articles.cdssandbox.xyz/notification-gc-notify"})
+        mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
         with requests_mock.mock() as mock:
             response_json = {"title": {"rendered": "Le titre"}, "content": {"rendered": "Le contentu"}}
             mock.request("GET", notify_url, json=response_json, status_code=200)
@@ -45,7 +45,7 @@ def test_get_content_fr(app_, mocker, capsys):
 
 def test_get_content_403(app_, mocker, capsys):
     with app_.test_request_context():
-        mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": "articles.cdssandbox.xyz/notification-gc-notify"})
+        mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
         with requests_mock.mock() as mock:
             response_json = {}
             mock.request("GET", notify_url, json=response_json, status_code=403)
