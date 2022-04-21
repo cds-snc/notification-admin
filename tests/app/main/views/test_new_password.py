@@ -95,11 +95,14 @@ def test_should_redirect_index_if_user_has_already_changed_password(
     mock_get_user_by_email_user_changed_password.assert_called_once_with(user["email_address"])
 
 
+@pytest.mark.parametrize("password_expired", [True, False])
 def test_should_redirect_to_forgot_password_with_flash_message_when_token_is_expired(
-    app_, client, mock_login, mocker, fake_uuid, client_request
+    password_expired, app_, client, mock_login, mocker, fake_uuid, client_request
 ):
     sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
     sample_user["is_authenticated"] = False
+    sample_user["password_expired"] = password_expired
+
     mocker.patch(
         "app.user_api_client.get_user_by_email_or_none",
         return_value=sample_user,
@@ -120,8 +123,9 @@ def test_should_redirect_to_forgot_password_with_flash_message_when_token_is_exp
 
     assert response.status_code == 302
     assert response.location == url_for(".forgot_password", _external=True)
-    with client_request.session_transaction() as session:
-        assert session["email_address"] == sample_user["email_address"]
+    if password_expired:
+        with client_request.session_transaction() as session:
+            assert session["reset_email_address"] == sample_user["email_address"]
 
 
 def test_should_sign_in_when_password_reset_is_successful_for_email_auth(

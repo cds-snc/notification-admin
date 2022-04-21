@@ -32,10 +32,10 @@ def new_password(token):
             current_app.config["EMAIL_EXPIRY_SECONDS"],
         )
     except SignatureExpired:
-        email_address = json.loads(token_data_no_checks).get("email", "")
-        session["email_address"] = email_address
-        user = User.from_email_address_or_none("email_address")
+        email_address = json.loads(token_data_no_checks).get("email")
+        user = User.from_email_address_or_none(email_address) if email_address else None
         if user and user.password_expired:
+            session["reset_email_address"] = email_address
             flash(_("The link in the email we sent you has expired"))
         else:
             flash(_("The security code in the email we sent you has expired. Enter your email address to re-send."))
