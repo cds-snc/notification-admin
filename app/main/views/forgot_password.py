@@ -29,7 +29,11 @@ def forgot_password():
                 raise e
         return render_template("views/password-reset-sent.html")
 
-    return render_template("views/forgot-password.html", form=form)
+    user = User.from_email_address_or_none(session.pop("email_address", ""))
+    if user and user.password_expired:
+        return render_template("views/password-expired-link-expired.html", form=form)
+    else:
+        return render_template("views/forgot-password.html", form=form)
 
 
 @main.route("/forced-password-reset", methods=["GET"])
