@@ -14,7 +14,7 @@ class Authenticator:
         session["current_session_id"] = self.user.current_session_id
 
         # Check if coming from new password page
-        if "password" in session.get("user_details", {}):
+        if "password" in session.get("user_details", {}) and "loginData" in session.get("user_details", {}):
             self.user.update_password(session["user_details"]["password"], session["user_details"]["loginData"])
 
         self.user.activate()
