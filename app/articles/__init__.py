@@ -24,12 +24,13 @@ def set_active_nav_item(items=[], url="") -> None:
         item["active"] = True if item["url"] == url else False
 
 
-# Return URL path for the language switcher
 def get_lang_url(response: dict, has_page_id: bool) -> str:
-    # url either looks like:
-    # - /preview?id=11
-    # - /wild-card
-
+    """
+    Return URL path for the language switcher
+    URL either looks like:
+        - /preview?id=11
+        - /wild-card
+    """
     alt_lang = _get_alt_locale(get_current_locale(current_app))
 
     if has_page_id:
@@ -37,16 +38,16 @@ def get_lang_url(response: dict, has_page_id: bool) -> str:
             lang_id = response.get(f"id_{alt_lang}")
             return f"/preview?id={lang_id}"
         else:
-            # if no translated page id, return 404 explicitly
+            """if no translated page id, return 404 explicitly"""
             return "/404"
 
     lang_slug = response.get(f"slug_{alt_lang}") or response.get("slug")
-    # if no translated page slug, this will 404 by itself
+    """if no translated page slug, this will 404 by itself"""
     return f"/{lang_slug}"
 
 
-# Return URL for the "Edit this page" link in the preview banner header
 def get_preview_url(page_id: int) -> str:
+    """Return URL for the "Edit this page" link in the preview banner header"""
     lang = get_current_locale(current_app)
     base_endpoint = current_app.config["GC_ARTICLES_API"]
 

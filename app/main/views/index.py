@@ -374,21 +374,21 @@ def old_page_redirects():
     return redirect(url_for(request.endpoint.replace("redirect_", "")), code=301)
 
 
-# --- Dynamic routes handling for GCArticles API-driven pages --- #
+"""Dynamic routes handling for GCArticles API-driven pages"""
 @main.route("/preview")
 def preview_content():
     if not request.args.get("id"):
         abort(404)
 
-    # User must be authenticated
+    """User must be authenticated"""
     if not current_user.is_authenticated:
         abort(404)
 
-    # Append the page_id to the request endpoint
+    """Append the page_id to the request endpoint"""
     page_id = request.args.get("id")
     endpoint = f"wp/v2/pages/{page_id}"
 
-    # 'g' sets a global variable for this request for use in the template
+    """'g' sets a global variable for this request for use in the template"""
     g.preview_url = get_preview_url(page_id)
 
     response = get_page_by_id(endpoint)
@@ -403,7 +403,7 @@ def page_content(path=""):
 
     params = {"slug": path, "lang": lang}
 
-    # If user is authenticated, don't cache it
+    """If user is authenticated, don't cache it"""
     if current_user.is_authenticated:
         response = get_page_by_slug(endpoint, params=params)
     else:
@@ -441,21 +441,21 @@ def _render_articles_page(response):
     )
 
 
-##
-# If response was empty, it's possible the logged-in user's current language
-# doesn't match the requested page language, so let's try again.
-##
 def _try_alternate_language(endpoint, params):
+    """
+    If response was empty, it's possible the logged-in user's current language
+    doesn't match the requested page language, so let's try again.
+    """
     slug = params.get("slug")
 
-    # try again, with same slug but new language
+    """try again, with same slug but new language"""
     params["lang"] = _get_alt_locale(params.get("lang"))
     response = get_page_by_slug(endpoint, params=params)
 
     if isinstance(response, list):
         response = response[0]
 
-    # if we get a response for the other language, redirect
+    """if we get a response for the other language, redirect"""
     if response:
         if re.match(r"^[A-Za-z0-9_\-]+$", slug):
             return redirect(f"/set-lang?from=/{slug}")

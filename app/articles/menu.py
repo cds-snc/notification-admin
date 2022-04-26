@@ -37,7 +37,7 @@ def _get_nav_wp(locale: str) -> Optional[list]:
         for item in nav_response["items"]:
             nav_items.append({k: item[k] for k in ("title", "url", "target", "description")})
 
-        # always append a link called "preview", so that 'check_path' will find it
+        """always append a link called "preview", so that 'check_path' will find it"""
         nav_items.append({"title": "preview", "url": "/preview", "target": "", "description": ""})
 
     return nav_items

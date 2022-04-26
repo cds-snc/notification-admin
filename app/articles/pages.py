@@ -8,7 +8,6 @@ from app.articles.api import get_content
 from app.extensions import redis_client
 
 
-# Cached
 def get_page_by_slug_with_cache(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
     lang = get_current_locale(current_app)
     slug = params.get("slug")
@@ -28,9 +27,8 @@ def get_page_by_slug_with_cache(endpoint: str, params={"slug": ""}) -> Union[dic
     return response
 
 
-# Not cached
 def get_page_by_slug(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
-    # if no explict lang is set, set to the current locale
+    """if no explict lang is set, set to the current locale"""
     if not params.get("lang"):
         lang_params = {"lang": get_current_locale(current_app)}
         return get_content(endpoint, {**params, **lang_params}, auth_required=False)
@@ -38,6 +36,5 @@ def get_page_by_slug(endpoint: str, params={"slug": ""}) -> Union[dict, None]:
     return get_content(endpoint, params, auth_required=False)
 
 
-# Not cached
 def get_page_by_id(endpoint: str) -> Union[dict, None]:
     return get_content(endpoint, auth_required=True, cacheable=False)

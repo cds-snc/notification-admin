@@ -30,13 +30,13 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
             raise Forbidden()
 
         if response.status_code >= 400 or not parsed:
-            # Getting back a 4xx or 5xx status code
+            """Getting back a 4xx or 5xx status code"""
             current_app.logger.info(
                 f"Error requesting content. URL: {url}, params: {params}, status: {response.status_code}, data: {parsed}"
             )
             raise NotFound()
 
-        # Long-term "Fallback" cache
+        """Long-term "Fallback" cache"""
         if cacheable:
             lang = get_current_locale(current_app)
             slug = params.get("slug")
@@ -50,7 +50,7 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
     except Forbidden:
         abort(403)
     except requests.exceptions.ConnectionError:
-        # Fallback cache in case we can't connect to GC Articles
+        """Fallback cache in case we can't connect to GC Articles"""
         cached = redis_client.get(cache_key)
         if cached is not None:
             current_app.logger.info(f"Cache hit: {cache_key}")
@@ -84,14 +84,14 @@ def authenticate(username, password, base_endpoint) -> Union[str, None]:
 
     url = f"https://{base_endpoint}{auth_endpoint}"
 
-    # If we have a token cached, check if it's still valid and return it
+    """If we have a token cached, check if it's still valid and return it"""
     if redis_client.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY) is not None:
         token = redis_client.get(GC_ARTICLES_AUTH_TOKEN_CACHE_KEY)
         if validate_token(token):
             return token
 
     try:
-        # Otherwise get a fresh one
+        """Otherwise get a fresh one"""
         res = requests.post(url=url, data={"username": username, "password": password}, timeout=REQUEST_TIMEOUT)
 
         parsed = json.loads(res.text)
