@@ -18,7 +18,7 @@
   <div class="grid-row contain-floats">
     <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       {% call form_wrapper() %}
-        {{ textbox(form_field, safe_error_message=True) }}
+        {{ textbox(form_field, safe_error_message=True, autocomplete='change-value') }}
         {{ page_footer(_('Save')) }}
       {% endcall %}
     </div>
