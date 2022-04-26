@@ -5,6 +5,7 @@
   }
 
   .list {
+    max-width: 80ch;
     @apply p-0 mt-2 mb-8;
   }
 
@@ -24,5 +25,14 @@
   /* Numbered lists */
   .list-number {
     @apply list-decimal pl-8;
+  }
+
+  /* Nested unordered lists */
+  .list ul {
+    list-style-type: circle;
+  }
+
+  .list ul ul {
+    list-style-type: square;
   }
 }

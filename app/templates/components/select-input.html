@@ -1,51 +1,54 @@
-{% macro select(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio") %}
+{% from "components/textbox.html" import textbox %}
+
+{% macro select(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", option_conditionals={}) %}
   {% call select_wrapper(
-    field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style
+    field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style, input
   ) %}
-    {% for option in field %}
-      {{ select_input(option, disable, option_hints, input=input) }}
-    {% endfor %}
+  {% for option in field %}
+    {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals) }}
+  {% endfor %}
   {% endcall %}
 {% endmacro %}
-
-
 {% macro select_list(options, child_map, disable=[], option_hints={}, input="radio") %}
-    <ul>
+  <ul>
     {% for option in options %}
       {% if child_map[option.data] %}
         {% call select_input(option, disable, option_hints, as_list_item=True, input=input) %}
-          {{ select_list(child_map[option.data], child_map, disable, option_hints, input=input) }}
+        {{ select_list(child_map[option.data], child_map, disable, option_hints, input=input) }}
         {% endcall %}
       {% else %}
-          {{ select_input(option, disable, option_hints, as_list_item=True, input=input) }}
+        {{ select_input(option, disable, option_hints, as_list_item=True, input=input) }}
       {% endif %}
     {% endfor %}
-    </ul>
+  </ul>
 {% endmacro %}
-
-
 {% macro select_nested(field, child_map, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio") %}
   {% call select_wrapper(
-    field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style
+    field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style, input
   ) %}
-  <div class="select-nested {{ "radios" if input == "radio" else "checkboxes" }}-nested">
-      {{ select_list(child_map[None], child_map, disable, option_hints, input=input) }}
-    </div>
+  <div
+    id="folder-permission-checkboxes"
+    class="select-nested {{ "
+    radios" if input == "
+    radio" else "
+    checkboxes" }}-nested">
+    {{ select_list(child_map[None], child_map, disable, option_hints, input=input) }}
+  </div>
   {% endcall %}
 {% endmacro %}
-
-
-{% macro select_wrapper(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text") %}
+{% macro select_wrapper(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio") %}
   {% set is_collapsible = collapsible_opts|length %}
-  <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter {% if field.errors %} form-group-error{% endif %}"{% if is_collapsible %} data-module="collapsible-checkboxes"{% if collapsible_opts.field %} data-field-label="{{ collapsible_opts.field }}"{% endif %}{% endif %}>
-    {% if is_collapsible %}
-    <div class="selection-summary" role="region" aria-live="polite"></div>
-    {% endif %}
-    <fieldset id="{{ field.id }}" class="contain-floats w-full">
-      <legend class="{{ 'form-label' if not hide_legend else '' }}{% if legend_style != 'text' %} {{ legend_style }}{% endif %}">
-        {% if hide_legend %}<span class="visually-hidden">{% endif %}
+  {% set group = "radiogroup" if input == "radio" else "group" if input == "checkbox" %}
+  <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter {% if field.errors %} form-group-error{% endif %}" {% if is_collapsible %} data-module="collapsible-checkboxes" {% if collapsible_opts.field %} data-field-label="{{ collapsible_opts.field }}" {% endif %} {% endif %}>
+    <fieldset id="{{ field.id }}" class="contain-floats w-full" role="{{ group }}" aria-labelledby="{{ field.id }}-label">
+      <legend class="{{ 'form-label heading-small' }}{% if legend_style != 'text' %} {{ legend_style }}{% endif %}">
+        {% if hide_legend %}
+          <span class="visually-hidden">
+          {% endif %}
           {{ field.label.text|safe }}
-        {% if hide_legend %}</span>{% endif %}
+          {% if hide_legend %}
+          </span>
+        {% endif %}
         {% if hint %}
           <span class="form-hint">
             {{ hint }}
@@ -57,45 +60,49 @@
           </span>
         {% endif %}
       </legend>
+      {% if is_collapsible %}
+        <div class="selection-summary" role="region" aria-live="polite"></div>
+      {% endif %}
       {{ caller() }}
     </fieldset>
   </div>
 {% endmacro %}
-
-{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio") %}
+{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio", option_conditionals={}) %}
+  {% set has_conditional = option_conditionals[option.data] %}
   {% if as_list_item %}
-  <li class="multiple-choice" {% if data_target %}data-target="{{ data_target }}"{% endif %}>
-  {% else %}
-  <div class="multiple-choice" {% if data_target %}data-target="{{ data_target }}"{% endif %}>
-  {% endif %}
-    <input
-      id="{{ option.id }}" name="{{ option.name }}" type="{{ input }}" value="{{ option.data }}"
-      {% if option.data in disable %}
-        disabled
+    <li class="multiple-choice" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
+    {% else %}
+      <div class="multiple-choice{{ ' has-conditional' if has_conditional}}" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
       {% endif %}
-      {% if option.checked %}
-        checked
-      {% endif %}
-    >
-    <label class="block-label" for="{{ option.id }}" >
-      {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
-      {% if '||' in option.label.text %}
-        <div id="logo-img">
-          <img src={{option.label.text.split("||")[1] }} style="width: 400px;margin-top:16px">
-        </div>
-      {% endif %}
-      {% if option_hints[option.data] %}
-        <div class="block-label-hint">
-          {{ option_hints[option.data] }}
-        </div>
-      {% endif %}
-    </label>
-    {% if caller %}
-        {{ caller() }}
-    {% endif %}
-  {% if as_list_item %}
-  </li>
-  {% else %}
-  </div>
-  {% endif %}
-{% endmacro %}
+      <input id="{{ option.id }}" name="{{ option.name }}" type="{{ input }}" value="{{ option.data }}" {% if option.data in disable %} disabled {% endif %} {% if option.checked %} checked {% endif %}>
+        <label class="block-label" for="{{ option.id }}">
+          {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
+          {% if '||' in option.label.text %}
+            <div id="{{ option.id }}-img">
+              <img src="{{ option.label.text.split('||')[1] }}" alt="{{ option.label.text.split('||')[2] }}" style="width: 400px;margin-top:16px"></div>
+            {% endif %}
+            {% if option_hints[option.data] %}
+              <div class="block-label-hint">
+                {{ option_hints[option.data] }}
+              </div>
+            {% endif %}
+          </label>
+          {% if has_conditional %}
+              <div class="conditional">
+              {{ textbox( 
+                  option_conditionals[option.data],
+                  label=_(option_conditionals[option.data].label.text)|capitalize, 
+                  hint=hint_txt if optional_placeholder else None, 
+                  width='w-full', 
+                ) }}
+              </div>
+            {% endif %}
+            {% if caller %}
+              {{ caller() }}
+            {% endif %}
+            {% if as_list_item %}
+            </li>
+        {% else %}
+          </div>
+        {% endif %}
+      {% endmacro %}

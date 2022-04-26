@@ -31,7 +31,7 @@ from wtforms import (
     validators,
     widgets,
 )
-from wtforms.fields.html5 import EmailField, SearchField, TelField
+from wtforms.fields.core import EmailField, SearchField, TelField
 from wtforms.validators import URL, AnyOf, DataRequired, Length, Optional, Regexp
 from wtforms.widgets import CheckboxInput, ListWidget
 
@@ -50,7 +50,7 @@ from app.main.validators import (
 )
 from app.models.organisation import Organisation
 from app.models.roles_and_permissions import permissions, roles
-from app.utils import get_logo_cdn_domain, guess_name_from_email_address
+from app.utils import get_logo_cdn_domain, guess_name_from_email_address, is_blank
 
 
 def get_time_value_and_label(future_time):
@@ -129,7 +129,7 @@ def email_address(label=_l("Email address"), gov_user=True, required=True):
         validators.append(ValidGovEmail())
 
     if required:
-        validators.append(DataRequired(message=_l("This cannot be empty")))
+        validators.append(DataRequired(message=_l("Enter an email address")))
 
     return EmailField(label, validators, render_kw={"spellcheck": "false"})
 
@@ -611,11 +611,19 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         choices = [
             (
                 FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
-                _l("English-first") + "||" + default_en_filename,
+                _l("English-first")
+                + "||"
+                + default_en_filename
+                + "||"
+                + _l("Bilingual logo with Government of Canada written first in English, then in French"),
             ),
             (
                 FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
-                _l("French-first") + "||" + default_fr_filename,
+                _l("French-first")
+                + "||"
+                + default_fr_filename
+                + "||"
+                + _l("Bilingual logo with Government of Canada written first in French, then in English"),
             ),
         ]
         return choices
@@ -625,7 +633,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         self.default_branding.choices = self._getSelectBilingualChoices()
 
     default_branding = RadioField(
-        _l("Default language"),
+        _l("Default language <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
@@ -730,7 +738,7 @@ class SMSTemplateForm(BaseTemplateForm):
 
 
 class EmailTemplateForm(BaseTemplateForm):
-    subject = TextAreaField(_l("Subject"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
 
 class LetterTemplateForm(EmailTemplateForm):
@@ -778,7 +786,7 @@ class ChangePasswordForm(StripWhitespaceForm):
 
 class CsvUploadForm(StripWhitespaceForm):
     file = FileField(
-        "Add recipients",
+        _l("Add recipients"),
         validators=[DataRequired(message="Please pick a file"), CsvFileValidator()],
     )
 
@@ -857,7 +865,7 @@ class CreateInboundSmsForm(StripWhitespaceForm):
 
 
 class ContactNotify(StripWhitespaceForm):
-    not_empty = _l("This cannot be empty")
+    not_empty = _l("Enter your name")
     name = StringField(_l("Your name"), validators=[DataRequired(message=not_empty), Length(max=255)])
     support_type = RadioField(
         _l("How can we help?"),
@@ -873,15 +881,21 @@ class ContactNotify(StripWhitespaceForm):
 
 
 class ContactMessageStep(ContactNotify):
-    message = TextAreaField(_l("Message"), validators=[DataRequired(), Length(max=2000)])
+    message = TextAreaField(
+        _l("Message"),
+        validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
+    )
 
 
 class SetUpDemoOrgDetails(ContactNotify):
     department_org_name = StringField(
         _l("Name of department or organisation"),
-        validators=[DataRequired(), Length(max=500)],
+        validators=[DataRequired(message=_l("Enter the name of your department or organisation")), Length(max=500)],
     )
-    program_service_name = StringField(_l("Name of program or service"), validators=[DataRequired(), Length(max=500)])
+    program_service_name = StringField(
+        _l("Name of program or service"),
+        validators=[DataRequired(message=_l("Enter the name of your program or service")), Length(max=500)],
+    )
     intended_recipients = RadioField(
         _l("Who are the intended recipients of notifications?"),
         choices=[
@@ -889,7 +903,7 @@ class SetUpDemoOrgDetails(ContactNotify):
             ("external", _l("Partners from other organisations (external)")),
             ("public", _l("Public")),
         ],
-        validators=[DataRequired()],
+        validators=[DataRequired(message=_l("You need to choose an option"))],
     )
 
 
@@ -899,23 +913,29 @@ class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):
         choices=[
             (
                 "status_updates",
-                _l("Information specific for each recipient (e.g. status update)"),
+                _l(
+                    "Information specific for each recipient (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> status update)"
+                ),
             ),
             (
                 "transactional_messages",
-                _l("Action required by each recipient (e.g. password reset)"),
+                _l(
+                    "Action required by each recipient (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> password reset)"
+                ),
             ),
             (
                 "newsletters",
-                _l("News or information sent in bulk to many recipients (e.g. newsletter)"),
+                _l(
+                    "News or information sent in bulk to many recipients (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> newsletter)"
+                ),
             ),
             ("other", _l("Other")),
         ],
-        validators=[DataRequired()],
+        validators=[DataRequired(message=_l("You need to choose an option"))],
     )
     main_use_case_details = TextAreaField(
         _l("What will messages be about?"),
-        validators=[DataRequired(), Length(max=2000)],
+        validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
     )
 
 
@@ -1210,26 +1230,26 @@ class Safelist(StripWhitespaceForm):
         EmailFieldInSafelist("", validators=[Optional(), ValidEmail()], default=""),
         min_entries=5,
         max_entries=5,
-        label=_l("Email addresses"),
+        label=_l("Email safelist"),
     )
 
     phone_numbers = FieldList(
         InternationalPhoneNumberInSafelist("", validators=[Optional()], default=""),
         min_entries=5,
         max_entries=5,
-        label=_l("Mobile numbers"),
+        label=_l("Phone safelist"),
     )
 
 
 class DateFilterForm(StripWhitespaceForm):
-    start_date = DateField("Start Date", [validators.optional()])
-    end_date = DateField("End Date", [validators.optional()])
-    include_from_test_key = BooleanField("Include test keys", default="checked", false_values={"N"})
+    start_date = DateField(_l("Start Date"), [validators.optional()])
+    end_date = DateField(_l("End Date"), [validators.optional()])
+    include_from_test_key = BooleanField(_l("Include test keys"), default="checked", false_values={"N"})
 
 
 class RequiredDateFilterForm(StripWhitespaceForm):
-    start_date = DateField("Start Date")
-    end_date = DateField("End Date")
+    start_date = DateField(_l("Start Date"))
+    end_date = DateField(_l("End Date"))
 
 
 class SearchByNameForm(StripWhitespaceForm):
@@ -1463,7 +1483,7 @@ def required_for_ops(*operations):
         if form.op not in operations and any(field.raw_data):
             # super weird
             raise validators.StopValidation("Must be empty")
-        if form.op in operations and not any(field.raw_data):
+        if form.op in operations and all(map(is_blank, field.raw_data)):
             raise validators.StopValidation(_l("This cannot be empty"))
 
     return validate
@@ -1475,6 +1495,24 @@ class CreateTemplateForm(Form):
         self.what_type.choices = [("email", _l("Email")), ("sms", _l("Text message"))]
 
     what_type = RadioField(_l("Type of message"))
+
+
+class AddEmailRecipientsForm(Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
+
+    what_type = RadioField("")
+    placeholder_value = email_address(_l("Email address of recipient"), gov_user=False)
+
+
+class AddSMSRecipientsForm(Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
+
+    what_type = RadioField("")
+    placeholder_value = international_phone_number(_l("Phone number of recipient"))
 
 
 class TemplateAndFoldersSelectionForm(Form):

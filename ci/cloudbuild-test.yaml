@@ -4,5 +4,6 @@ steps:
   args: ["-c", "/workspace/scripts/bootstrap.sh && make test"]
   env:
     - 'CHROMEDRIVER_PATH=/usr/bin/chromedriver'
+    - 'MIXPANEL_PROJECT_TOKEN=<project_token>'
 options:
  machineType: 'N1_HIGHCPU_32'

@@ -37,6 +37,7 @@
 @import "./components/stick-at-top-when-scrolling.css";
 @import "./components/task-list.css";
 @import "./components/back-link.css";
+@import "./components/preview-fullpage-border.css";
 
 /* views */
 @import "./views/dashboard.css";
@@ -44,6 +45,8 @@
 @import "./views/api.css";
 @import "./views/template.css";
 @import "./views/notification.css";
+
+@import "./toolkit/wp.css";
 
 /*! purgecss start ignore */
 @-ms-viewport {
@@ -107,6 +110,29 @@ input[type="search"]::-webkit-search-cancel-button {
 
 input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
+}
+
+section[id]:target {
+  scroll-margin-top: 30px;
+  --yellow: theme("colors.yellow.default");
+  --white: white;
+  box-shadow: 0 0 0 15px var(--white), 0 0 0 20px var(--yellow);
+  animation: target 3s linear 3s forwards;
+  /* @apply bg-yellow-light; */
+}
+
+@keyframes target {
+  0% {
+    box-shadow: 0 0 0 15px var(--white), 0 0 0 20px var(--yellow);
+  }
+  100% {
+    box-shadow: 0 0 0 15px var(--white), 0 0 0 20px var(--white);
+  }
+}
+
+.decoration-clone {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .hidden,
@@ -288,7 +314,8 @@ label {
     }
   }
 
-  .hint {
+  .hint,
+  .block-label-hint {
     @apply text-gray-grey1;
   }
 

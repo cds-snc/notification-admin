@@ -1,0 +1,16 @@
+@layer components {
+  /*! purgecss start ignore */
+  .preview-fullpage-border {
+    position: fixed;
+    height: calc(100% - 10px);
+    width: calc(100% - 10px);
+    top: 5px;
+    left: 5px;
+    z-index: 99; /* display over fullscreen elements */
+    pointer-events: none; /* allow click events through to elements underneath */
+
+    -webkit-box-shadow: 0px 0px 0px 5px #ffbf47;
+    box-shadow: 0px 0px 0px 5px #ffbf47;
+  }
+  /*! purgecss end ignore */
+}

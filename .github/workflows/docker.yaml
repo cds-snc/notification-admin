@@ -2,7 +2,7 @@ name: Build, push to AWS ECR, and deploy
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   AWS_REGION: ca-central-1
@@ -70,7 +70,7 @@ jobs:
         app_id: ${{ secrets.PRBOT_APP_ID }}
         private_key: ${{ secrets.PRBOT_PRIVATE_KEY }}
 
-    - uses: cds-snc/notification-pr-bot@master
+    - uses: cds-snc/notification-pr-bot@main
       env:
         TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
 
@@ -80,6 +80,12 @@ jobs:
         sleep 60
         json='{"product": "cds-snc/notification", "revision": "${{github.sha}}", "urls":["https://staging.notification.cdssandbox.xyz"], "spider": 1, "ci": 1}'
         curl -X POST -H 'X-API-KEY: ${{ secrets.A11Y_TRACKER_KEY }}' --data "$json" https://api.a11y.cdssandbox.xyz/v1
+
+    - name: Run scan websites
+      run: |
+        curl -s https://scan-websites.alpha.canada.ca > /dev/null
+        sleep 60
+        curl -X GET -H 'X-API-KEY: ${{ secrets.SCAN_WEBSITES_KEY }}' -H 'X-TEMPLATE-TOKEN: ${{ secrets.SCAN_WEBSITES_TEMPLATE }}' https://scan-websites.alpha.canada.ca/scans/start
 
     - name: Notify Slack channel if this job failed
       if: ${{ failure() }}

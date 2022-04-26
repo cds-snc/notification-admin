@@ -1,7 +1,7 @@
 {% extends "notify_template.html" %}
 {% set withnav = True %}
 {% from "components/buttons.html" import primary_button_blue_lighter, secondary_button_transparent_white %}
-{% from "components/links.html" import content_link_light %}
+{% from "components/links.html" import content_link_light with context %}
 {% from "components/page-footer.html" import page_footer %}
 
 {% block meta %} {% set description = _('GC Notify lets you send emails and text messages to your users') %}
@@ -49,7 +49,7 @@
     <div id="content" class="home-page-content contain-floats">
       <!-- start section 1 -->
       <div class="bg-blue-slightlight" role="main">
-        <div class="container px-10 py-24">
+        <div class="container px-gutterHalf py-24">
           <div
             class="flex flex-col lg:flex-row justify-between"
           >
@@ -62,10 +62,10 @@
               </p>
               <div class="pt-0 flex flex-wrap">
                 <div class="flex-shrink-0 place-self-center">
-                  {{ primary_button_blue_lighter(label=_("Create an account"), href=url_for('.register' )) }}
+                  {{ primary_button_blue_lighter(id_key='button-home-register', label=_("Create an account"), href=url_for('.register' )) }}
                 </div>
                 <div class="flex-shrink-0 py-4">
-                  {{ secondary_button_transparent_white(label=_('Sign in'), href=url_for('main.sign_in' )) }}
+                  {{ secondary_button_transparent_white(id_key='button-home-sign-in', label=_('Sign in'), href=url_for('main.sign_in' )) }}
                 </div>
               </div>
             </div>
@@ -93,7 +93,7 @@
 
       <!-- start section 2 -->
       <div class="bg-white" role="region" aria-label="{{ _('Target audience') }}">
-        <div class="container px-10 py-24">
+        <div class="container px-gutterHalf py-24">
           <div class="flex flex-col lg:flex-row justify-between">
             <div class="image-content pb-10 lg:pb-0">
 
@@ -136,7 +136,7 @@
                 </li>
               </ul>
               <p class="pt-10 text-blue text-base">
-                {{ content_link_light(label=_("How GC Notify meets government needs"), href=url_for('main.why-notify')) }}
+                {{ content_link_light(id_key='link-home-why-notify', label=_("How GC Notify meets government needs"), href=url_for('main.why-notify')) }}
               </p>
             </div>
           </div>
@@ -146,7 +146,7 @@
 
       <div class="bg-gray">
         <!-- start section 3 -->
-        <div class="container px-10 py-24" role="region" aria-label="{{ _('Features list') }}">
+        <div class="container px-gutterHalf py-24" role="region" aria-label="{{ _('Features list') }}">
           <div class="flex justify-center">
             <h2 class="leading-tight font-bold font-sans text-lg pb-6">
               {{ _("What you can do with GC Notify") }}
@@ -231,39 +231,27 @@
           </div>
 
           <div class="flex lg:justify-center">
-            {{ content_link_light(label=_("Learn more about features"), href=url_for('main.features'), class="mt-10") }}
+            {{ content_link_light(id_key='link-home-features', label=_("Learn more about features"), href=url_for('main.features'), class="mt-10") }}
           </div>
         </div>
         <!-- end section 3 -->
 
         <!-- start section 4 -->
         <div class="bg-white" role="region" aria-label="{{ _('API integration') }}">
-          <div class="container px-10 py-24">
+          <div class="container px-gutterHalf py-24">
             <div class="flex flex-col lg:flex-row justify-between">
               <div class="text-content max-w-4xl pb-10 lg:pb-0">
                 <h2 class="leading-tight font-bold font-sans text-lg pb-6">
                   {{ _("Integrate email and text message notifications into your service") }}
                 </h2>
 
-                {% if session["userlang"] == "en" %}
-                  <img
-                    alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top lg:hidden"
-                    width="390"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-
-                  />
-                {% else %}
-                  <img
-                    alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top lg:hidden"
-                    width="390"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-                  />
-                {% endif %}
-
+                <img
+                  alt="{{ _('An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user.') }}"
+                  loading="lazy"
+                  class="max-w-full md:max-w-xl block align-top lg:hidden"
+                  width="390"
+                  src="{{ asset_s3_url('integrate-1.svg') }}"
+                />
 
                 <p class="block text-base mb-0 pt-20 lg:pt-4">
                   {{ _("Two ways to send:") }}
@@ -277,30 +265,18 @@
                   </li>
                 </ul>
                 <p class="pt-10 text-base mb-0 text-blue">
-                  {{ content_link_light(label=_("How to integrate GC Notify with your system"), href=documentation_url(), external_link_img=asset_url('images/external.svg')) }}
+                  {{ content_link_light(id_key='link-home-doc', label=_("How to integrate GC Notify with your system"), href=documentation_url(), is_external_link=True) }}
                 </p>
               </div>
               <div class="image-content pt-10 lg:pt-0 flex">
-                {% if session["userlang"] == "en" %}
-                  <img
-                    alt="An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
-                    width="400"
-                    style="object-fit: contain; object-position: 0% 50%;"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-                  />
-                {% else %}
-                  <img
-                    alt="Illustration montrant les parties du flux de travail : l'intégration de l'API d'un point de vue technique, l'envoi d'un message dans le nuage et la réception d'une notification par un utilisateur."
-                    loading="lazy"
-                    class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
-                    width="400"
-                    style="object-fit: contain; object-position: 0% 50%;"
-                    src="{{ asset_s3_url('integrate-1.svg') }}"
-                  />
-                {% endif %}
-
+                <img
+                  alt="{{ _('An illustration that shows the parts of the workflow, from integrating the API on the technical side, to sending a message in the cloud to receiving a notification as a user.') }}"
+                  loading="lazy"
+                  class="max-w-full md:max-w-xl block align-top hidden lg:block lg:visible"
+                  width="400"
+                  style="object-fit: contain; object-position: 0% 50%;"
+                  src="{{ asset_s3_url('integrate-1.svg') }}"
+                />
               </div>
             </div>
           </div>
@@ -309,7 +285,7 @@
 
         <!-- start section 5 -->
         <div class="bg-gray" role="region" aria-label="{{ _('Benefits of GC Notify') }}">
-          <div class="container px-10 py-24">
+          <div class="container px-gutterHalf py-24">
             <div class="flex flex-col lg:flex-row justify-between">
               {% if session["userlang"] == "en" %}
                 <div class="image-content flex">
@@ -382,7 +358,7 @@
 
         <!-- start section 6 -->
         <div class="bg-white" role="region" aria-label="{{ _('Ease of use') }}">
-          <div class="container px-10 py-24">
+          <div class="container px-gutterHalf py-24">
 
             <h2 class="leading-tight font-bold lg:hidden font-sans text-lg pb-6">
               {{ _("Skip the procurement process") }}
@@ -409,7 +385,7 @@
                 {% if session["userlang"] == "en" %}
 
                   <img
-                    alt="An illustration of a price tag with 0$ indicated along with main features like: unlimited emails, batch send to recipients, customizable templates, and analytics dashboard."
+                    alt="An illustration of a price tag indicating $0 and main features as no set up fee, no cost to use, no procurement."
                     loading="lazy"
                     width="300"
                     style="object-fit: contain; object-position: 0% 30%;"
@@ -420,7 +396,7 @@
                 {% else %}
 
                   <img
-                    alt="Illustration d'une étiquette affichant « 0 $ » et les caractéristiques principales du produit : courriels illimités, envoi de messages en lot, gabarits personnalisables et tableau de bord analytique."
+                    alt="Illustration d'une étiquette sur laquelle sont écrits le prix de « 0 $ » et les caractéristiques principales du produit : aucun coût d’installation, aucuns frais d’utilisation, aucun achat externe."
                     loading="lazy"
                     width="300"
                     style="object-fit: contain; object-position: 0% 30%;"
@@ -438,24 +414,28 @@
 
         <!-- COUNTER -->
         <div class="bg-gray" role="region" aria-label="{{ _('Counter') }}">
-          <div class="container px-10 py-20 flex flex-col lg:flex-row justify-between">
+          <div class="container px-gutterHalf py-20 flex flex-col lg:flex-row justify-between items-baseline">
             <!-- Box 1-->
-            <div class="flex flex-col items-start justify-end pb-10 lg:pb-0">
-              <div class="text-brand font-bold extra-tight font-sans">{{ _("GC Notify by the numbers") }}</div>
-              <div class="text-base py-2">
-                {{ content_link_light(label=_("Learn more about activity on GC Notify"), href=url_for('.activity' ), class="-ml-2") }}
-              </div>
+            <div class="flex flex-2 flex-col items-start pb-10 lg:pb-0">
+              <h2 class="text-brand font-bold extra-tight font-sans">{{ _("GC Notify by the numbers") }}</h2>
+              <p class="text-base py-2 mt-0">
+                {{ content_link_light(id_key='link-home-activity', label=_("Learn more about activity on GC&nbsp;Notify"), href=url_for('.activity' ), class="-ml-2") }}
+              </p>
             </div>
             <!-- Box 2-->
-            <div class="pb-10 lg:pb-0">
-              <div class="text-xxl font-bold leading-none font-sans">{{ stats.live_services | format_number }}</div>
-              <div class="text-base py-2">{{ _("services using GC Notify") }}</div>
+            <div class="flex-1 pb-10 lg:pb-0">
+              <p class="text-base">
+                <span class="xs:text-lg md:text-xxl font-bold leading-none font-sans block pb-2">{{ stats.live_services | format_number }}</span>
+                {{ _("services using GC&nbsp;Notify") }}
+              </p>
             </div>
             <!-- Box 3-->
-            <div class="pb-10 lg:pb-0">
-              <div
-                class="text-xxl font-bold leading-none font-sans">{{ stats.notifications_total | format_number }}</div>
-              <div class="text-base py-2">{{ _("messages sent") }}</div>
+            <div class="flex-2 pb-10 lg:pb-0">
+              <p class="text-base">
+                <span
+                  class="xs:text-lg md:text-xxl font-bold leading-none font-sans block pb-2">{{ stats.notifications_total | format_number }}</span>
+                {{ _("messages sent") }}
+              </p>
             </div>
             <!-- end -->
           </div>
@@ -464,19 +444,20 @@
 
         <!-- start section 7 -->
         <div class="bg-blue-slightlight" role="region" aria-label="{{ _('Trial') }}">
-          <div class="container px-10 py-24">
+          <div class="container px-gutterHalf py-24">
             <div class="flex justify-center">
               <div>
                 <h2 class="pb-0 text-white leading-tight text-center font-sans text-lg">
                   {{ _("Start sending test messages right away!") }}
                 </h2>
                 <p class="p-16 text-center">
-                  {{ primary_button_blue_lighter(label=_("Try it now"), href=url_for('.register' )) }}
+                  {{ primary_button_blue_lighter(id_key='button-home-try-it-now', label=_('Try it now'), href=url_for('.register' )) }}
                 </p>
                 <p class="text-base text-white text-center mb-0">
                   {{ _("Want to know more?") }}
                   {{ secondary_button_transparent_white(
-                    label=_("Get in touch"), 
+                    id_key='button-home-contact',
+                    label=_('Get in touch'), 
                     href=url_for('.contact'),
                     class="-ml-2"
                   ) }}
@@ -492,13 +473,13 @@
   <!-- start section 8 -->
   {% include 'partials/nav/footer.html' %}
 
-{% include 'partials/analytics.html' %}
+{% include 'partials/google-analytics.html' %}
 
 
   <!-- END CONTENT-->
 
   {% if scrollTo == "true" %}
-    <script>
+    <script nonce="{{ request_nonce }}">
       var el = document.getElementById("contact-form")
       el.scrollIntoView()
     </script>

@@ -1,11 +1,25 @@
 import json
+import os
 from datetime import datetime
 
+import pytest
 from flask import url_for
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import generate_token
 
+from tests.conftest import api_user_active as create_active_user
 from tests.conftest import url_for_endpoint_with_token
+
+
+@pytest.fixture(autouse=True)
+def stub_mixpanel(mocker):
+    environment_vars = os.environ.copy()
+    os.environ["MIXPANEL_PROJECT_TOKEN"] = "project_token_from_mixpanel"
+    mocker.patch("mixpanel.Mixpanel")
+
+    yield
+
+    os.environ = environment_vars
 
 
 def test_should_render_new_password_template(
@@ -20,13 +34,14 @@ def test_should_render_new_password_template(
         {
             "email": api_user_active["email_address"],
             "created_at": str(datetime.utcnow()),
+            "password_expired": False,
         }
     )
     token = generate_token(data, app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"])
 
     response = client.get(url_for_endpoint_with_token(".new_password", token=token))
     assert response.status_code == 200
-    assert "You can now create a new password for your account." in response.get_data(as_text=True)
+    assert "A password that is hard to guess contains:" in response.get_data(as_text=True)
 
 
 def test_should_return_404_when_email_address_does_not_exist(
@@ -80,17 +95,37 @@ def test_should_redirect_index_if_user_has_already_changed_password(
     mock_get_user_by_email_user_changed_password.assert_called_once_with(user["email_address"])
 
 
-def test_should_redirect_to_forgot_password_with_flash_message_when_token_is_expired(app_, client, mock_login, mocker):
+@pytest.mark.parametrize("password_expired", [True, False])
+def test_should_redirect_to_forgot_password_with_flash_message_when_token_is_expired(
+    password_expired, app_, client, mock_login, mocker, fake_uuid, client_request
+):
+    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user["is_authenticated"] = False
+    sample_user["password_expired"] = password_expired
+
+    mocker.patch(
+        "app.user_api_client.get_user_by_email_or_none",
+        return_value=sample_user,
+    )
+    mocker.patch(
+        "app.user_api_client.get_user_by_email",
+        return_value=sample_user,
+    )
     mocker.patch(
         "app.main.views.new_password.check_token",
         side_effect=SignatureExpired("expired"),
     )
-    token = generate_token("foo@bar.com", app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"])
+    token = generate_token(
+        json.dumps({"email": sample_user["email_address"]}), app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"]
+    )
 
     response = client.get(url_for_endpoint_with_token(".new_password", token=token))
 
     assert response.status_code == 302
     assert response.location == url_for(".forgot_password", _external=True)
+    if password_expired:
+        with client_request.session_transaction() as session:
+            assert session["reset_email_address"] == sample_user["email_address"]
 
 
 def test_should_sign_in_when_password_reset_is_successful_for_email_auth(
@@ -121,6 +156,8 @@ def test_should_sign_in_when_password_reset_is_successful_for_email_auth(
 
     # the log-in flow makes a couple of calls
     mock_get_user.assert_called_once_with(user["id"])
-    mock_update_user_password.assert_called_once_with(user["id"], "a-new_password")
+    mock_update_user_password.assert_called_once_with(
+        user["id"], "a-new_password", {"location": None, "user-agent": "werkzeug/1.0.1"}
+    )
 
     assert not mock_send_verify_code.called

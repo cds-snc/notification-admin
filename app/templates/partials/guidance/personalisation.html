@@ -2,7 +2,7 @@
   {{ _('Variables') }}
 </h2>
 <p>
- {{ _('To add personalised information about the message recipients, use double brackets around the variable name. Recipients are more likely to trust information that’s relevant and clearly meant for them. For example:') }}
+ {{ _('A “variable” is a place in a template where you’ll include personal content.  In your template, use double brackets to show each variable, such as ((name)) and ((appointment date)).  For example:') }}
 </p>
 <div class="panel-container">
   <div class="panel-input" aria-label="{{ _('An example of the input for variables. Double brackets surround placeholder text such as ((given name)) or ((appointment date)) to be replaced with recipient information.') }}">
@@ -23,5 +23,5 @@
   </div>
 </div>
 <p>
-  {{ _('When you send your message, you’ll be able to replace the placeholder variables with personalised content. You can do this manually for one recipient or upload a list of contacts with personal details and let GC Notify do it for you.')}}
+  {{ _('If there’s only 1 recipient, manually insert the personal content into the variables in the message.</p><p>If there’s a list of recipients, upload a spreadsheet with recipient email addresses. Include a column for each variable, listing recipient content for that variable. Then GC Notify enters the personal content into the variable in each message.')}}
 </p>

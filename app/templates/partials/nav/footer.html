@@ -1,42 +1,48 @@
 {% from "components/buttons.html" import nav_button, secondary_button_transparent_white %}
-{% from "components/links.html" import nav_link_dark, nav_link_light %}
+{% from "components/links.html" import nav_link_dark, nav_link_light with context %}
 
 <footer aria-label="{{ _('footer menu') }}">
   <div class="bg-blue">
-    <nav id="footer-primary" class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4" aria-label="footer links">
-      <div class="py-24 grid lg:grid-cols-3 md:grid-cols-2 smaller:grid-cols-1 gap-4">
-        <div class="flex-1 grid grid-cols-1 gap-y-1 grid-rows-4">
-          <div>
-            <span class="text-white text-base font-bold">{{ _("About") }}</span>
-          </div>
-          <div>
-            {{ nav_link_dark(label=_("Why GC Notify"), href=url_for('main.why-notify'), class="-ml-2") }}
-          </div>
-          <div>
-            {{ nav_link_dark(label=_("Features"), href=url_for('main.features'), class="-ml-2") }}
-          </div>
-          <div>
-            {{ nav_link_dark(label=_("Activity on GC Notify"), href=url_for('main.activity'), class="-ml-2") }}
-          </div>
+    <nav id="footer-primary" class="container px-gutterHalf" aria-label="{{ _('main footer') }}">
+      <div class="py-24 grid lg:grid-cols-3 md:grid-cols-2 smaller:grid-cols-1 gap-x-gutter gap-y-gutterAndAHalf">
+        <div class="grid grid-cols-1 gap-y-1 auto-rows-min place-items-start">
+          <span class="text-white text-base font-bold mb-gutterHalf">{{ _("About") }}</span>
+          {% if nav_items %}
+            {% for i in nav_items %}
+              {% if 'footer:about' in i.description %}
+                {{ nav_link_dark(i.title, href=i.url, class="-ml-2", is_external_link=i.target) }}
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            {{ nav_link_dark(id_key='nav-footer-primary-why-notify', label=_('Why GC Notify'), href=url_for('main.why-notify'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-features', label=_('Features'), href=url_for('main.features'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-activity', label=_('Activity on GC Notify'), href=url_for('main.activity'), class="-ml-2") }}
+          {% endif %}
         </div>
-        <div class="flex-1 grid grid-cols-1 gap-y-1 md:grid-rows-4">
-          <div>
-            <span class="text-white text-base font-bold">{{ _("Using GC Notify") }}</span>
-          </div>
-          <div>
-            {{ nav_link_dark(label=_("API documentation"), href=documentation_url(), external_link_img=asset_url('images/external-white.svg'), class="-ml-2") }}
-          </div>
-          <div>
-            {{ nav_link_dark(label=_("Guidance"), href=url_for('main.guidance'), class="-ml-2") }}
-          </div>
+        <div class="grid grid-cols-1 gap-y-1 auto-rows-min place-items-start">
+          <span class="text-white text-base font-bold mb-gutterHalf">{{ _("Using GC Notify") }}</span>
+          {% if nav_items %}
+            {% for i in nav_items %}
+              {% if 'footer:using' in i.description %}
+                {{ nav_link_dark(i.title, href=i.url, class="-ml-2", is_external_link=i.target) }}
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            {{ nav_link_dark(id_key='nav-footer-primary-doc', label=_('API documentation'), href=documentation_url(), is_external_link=True, class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-guidance', label=_('Guidance'), href=url_for('main.guidance'), class="-ml-2") }}
+          {% endif %}
         </div>
-        <div class="flex-1 grid grid-cols-1 gap-y-1 lg:grid-rows-4">
-          <div>
-            <span class="text-white text-base font-bold">{{ _("Support") }}</span>
-          </div>
-          <div class="lg:row-span-3">
-            {{ nav_link_dark(label=_("Contact us"), href=url_for('main.contact'), class="-ml-2") }}
-          </div>
+        <div class="grid grid-cols-1 gap-y-1 auto-rows-min place-items-start">
+          <span class="text-white text-base font-bold mb-gutterHalf">{{ _("Support") }}</span>
+          {% if nav_items %}
+            {% for i in nav_items %}
+              {% if 'footer:support' in i.description %}
+                {{ nav_link_dark(i.title, href=i.url, class="-ml-2", is_external_link=i.target) }}
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            {{ nav_link_dark(id_key='nav-footer-primary-contact', label=_('Contact us'), href=url_for('main.contact'), class="-ml-2") }}
+          {% endif %}
         </div>
       </div>
     </nav>
@@ -46,9 +52,9 @@
   <div class="bg-gray">
     <nav
       id="footer-secondary"
-      class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4
+      class="container px-gutterHalf
        grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 gap-16 md:gap-4 py-24"
-      aria-label="footer secondary links">
+      aria-label="{{ _('secondary footer') }}">
 
       <div class="flex flex-col gap-4 lg:flex-row lg:items-center md:col-span-2">
         <div class="flex-shrink mr-5">
@@ -58,7 +64,7 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          {{ nav_link_light(label=_("Privacy"), href=url_for('main.privacy')) }}
+          {{ nav_link_light(id_key='nav-footer-secondary-privacy', label=_('Privacy'), href=url_for('main.privacy')) }}
         </div>
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img
@@ -75,7 +81,7 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          {{ nav_link_light(label=_("Security"), href=url_for('main.security')) }}
+          {{ nav_link_light(id_key='nav-footer-secondary-security', label=_('Security'), href=url_for('main.security')) }}
         </div>
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img
@@ -92,7 +98,7 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          {{ nav_link_light(label=_("Accessibility"), href=url_for('main.a11y')) }}
+          {{ nav_link_light(id_key='nav-footer-secondary-a11y', label=_('Accessibility'), href=url_for('main.a11y')) }}
         </div>
         <div class="hidden lg:visible lg:inline-block self-center lg:mx-5">
           <img
@@ -109,16 +115,16 @@
             class="self-center lg:hidden inline mr-3"
             src="{{ asset_url('images/bullet.svg') }}"
           />
-          {{ nav_link_light(label=_("Terms of use"), href=url_for('main.terms')) }}
+          {{ nav_link_light(id_key='nav-footer-secondary-terms', label=_('Terms of use'), href=url_for('main.terms')) }}
         </div>
-        <div class="lg:hidden p-5 mt-10">
+        <div class="lg:hidden mt-10">
           <div class="inline-block">
             {{ nav_button(
               href="#top",
               label=_('Top of page'),
               aria_label=_('Top of page'),
               link_img=asset_url('images/arrow-licorice.svg'),
-              class="text-blue bg-white",
+              class="text-blue pl-0",
               link_img_class="transform rotate-180"
             ) }}
           </div>

@@ -7,6 +7,11 @@
   p {
     margin-top: 0.3125em;
     margin-bottom: 1.25em;
+    max-width: 80ch;
+    line-height: 1.5em;
+  }
+  p + p {
+    margin-top: 2.25em;
   }
   @screen sm {
     p {
@@ -33,23 +38,42 @@
     @apply text-blue;
   }
 
+  [class*="delete-link"] a:visited,
+  [class*="delete-link"] a:link {
+    @apply text-red;
+  }
+
+  [class*="delete-link"] a:hover,
+  [class*="delete-link"] a:active {
+    @apply text-red-mellow;
+  }
+
+  [class*="delete-link"] a:focus {
+    @apply border-red-mellow text-blue;
+  }
+
+  .page-content h3,
   .heading-small {
-    margin-top: 0.625em;
+    margin-top: 2.3684em;
     margin-bottom: 1.0526em;
-    @apply text-smaller leading-tight font-bold block;
+    @apply font-sans text-smaller leading-tight font-bold block;
   }
   @screen md {
+    .page-content h3,
     .heading-small {
-      margin-top: 1.0526em;
+      margin-top: 2.3684em;
+      max-width: 80ch;
     }
   }
 
+  .page-content h2,
   .heading-medium {
     margin-top: 1.25em;
     margin-bottom: 0.5em;
-    @apply text-base leading-tight block font-bold mt-gutter block;
+    @apply font-sans text-base leading-tight font-bold mt-gutter block;
   }
   @screen sm {
+    .page-content h2,
     .heading-medium {
       margin-top: 1.875em;
       margin-bottom: 0.8333em;
@@ -57,11 +81,13 @@
     }
   }
 
+  .page-content h1,
+  .page-content.home h2,
   .heading-large {
     line-height: 1.111;
     margin-top: 0.2em;
     margin-bottom: 0.4167em;
-    @apply text-lg font-bold block;
+    @apply font-sans text-lg font-bold block;
   }
   .heading-large .heading-secondary {
     padding-top: 9px;
@@ -69,6 +95,8 @@
     @apply block text-gray-grey1 text-title leading-tight;
   }
   @screen md {
+    .page-content h1,
+    .page-content.home h2,
     .heading-large {
       margin-top: 0.25em;
       margin-bottom: 0.5556em;

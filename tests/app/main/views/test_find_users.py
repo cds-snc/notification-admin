@@ -221,6 +221,18 @@ def test_archive_user_prompts_for_confirmation(
     assert "Are you sure you want to archive this user?" in page.find("div", class_="banner-dangerous").text
 
 
+def test_reset_password_prompts_for_confirmation(
+    platform_admin_client,
+    api_user_active,
+    mock_get_organisations_and_services_for_user,
+):
+    response = platform_admin_client.get(url_for("main.reset_password", user_id=api_user_active["id"]))
+
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    assert "Are you sure you want to request a password reset for this user?" in page.find("div", class_="banner-dangerous").text
+
+
 def test_unblock_user_resets_failed_login_count(
     platform_admin_client,
     api_user_active,

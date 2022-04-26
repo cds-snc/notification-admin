@@ -1,15 +1,26 @@
 from datetime import datetime
 from functools import partial
-from unittest.mock import ANY, Mock
+from unittest.mock import ANY, MagicMock, Mock
 
 import pytest
 from flask import url_for
 from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 
-from app.main.views.templates import get_human_readable_delta
+from app.main.views.templates import (
+    delete_preview_data,
+    get_human_readable_delta,
+    get_preview_data,
+    set_preview_data,
+)
 from app.models.service import Service
-from tests import single_notification_json, template_json, validate_route_permission
+from tests import (
+    MockRedis,
+    sample_uuid,
+    single_notification_json,
+    template_json,
+    validate_route_permission,
+)
 from tests.app.main.views.test_template_folders import (
     CHILD_FOLDER_ID,
     FOLDER_TWO_ID,
@@ -35,6 +46,56 @@ from tests.conftest import (
 )
 from tests.conftest import service_one as create_sample_service
 from tests.conftest import single_letter_contact_block
+
+
+class TestRedisPreviewUtilities:
+    def test_set_get(self, fake_uuid, mocker):
+        mock_redis_obj = MockRedis()
+        mock_redis_method = MagicMock()
+        mock_redis_method.get = Mock(side_effect=mock_redis_obj.get)
+        mock_redis_method.set = Mock(side_effect=mock_redis_obj.set)
+        mocker.patch("app.main.views.templates.redis_client", mock_redis_method)
+
+        expected_data = {
+            "name": "test name",
+            "content": "test content",
+            "template_content": "test content",
+            "subject": "test subject",
+            "template_type": "email",
+            "process_type": "normal",
+            "id": fake_uuid,
+            "folder": None,
+            "reply_to_text": "reply@go.com",
+        }
+        set_preview_data(expected_data, fake_uuid)
+        actual_data = get_preview_data(fake_uuid)
+
+        assert actual_data == expected_data
+
+    def test_delete(self, fake_uuid, mocker):
+        mock_redis_obj = MockRedis()
+        mock_redis_method = MagicMock()
+        mock_redis_method.get = Mock(side_effect=mock_redis_obj.get)
+        mock_redis_method.set = Mock(side_effect=mock_redis_obj.set)
+        mock_redis_method.delete = Mock(side_effect=mock_redis_obj.delete)
+        mocker.patch("app.main.views.templates.redis_client", mock_redis_method)
+
+        data = {
+            "name": "test name",
+            "content": "test content",
+            "template_content": "test content",
+            "subject": "test subject",
+            "template_type": "email",
+            "process_type": "normal",
+            "id": fake_uuid,
+            "folder": None,
+            "reply_to_text": "reply@go.com",
+        }
+        set_preview_data(data, fake_uuid)
+        delete_preview_data(fake_uuid)
+        actual_data = get_preview_data(fake_uuid)
+
+        assert actual_data == {}
 
 
 def test_should_show_empty_page_when_no_templates(
@@ -76,13 +137,12 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
 
 
 @pytest.mark.parametrize(
-    "user, expected_page_title, extra_args, expected_nav_links, expected_templates",
+    "user, expected_page_title, extra_args, expected_templates",
     [
         (
             active_user_view_permissions,
             "Templates",
             {},
-            ["Email", "Text message", "Letter"],
             [
                 "sms_template_one",
                 "sms_template_two",
@@ -96,28 +156,24 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
             active_user_view_permissions,
             "Templates",
             {"template_type": "sms"},
-            ["All", "Email", "Letter"],
             ["sms_template_one", "sms_template_two"],
         ),
         (
             active_user_view_permissions,
             "Templates",
             {"template_type": "email"},
-            ["All", "Text message", "Letter"],
             ["email_template_one", "email_template_two"],
         ),
         (
             active_user_view_permissions,
             "Templates",
             {"template_type": "letter"},
-            ["All", "Email", "Text message"],
             ["letter_template_one", "letter_template_two"],
         ),
         (
             active_caseworking_user,
             "Templates",
             {},
-            ["Email", "Text message", "Letter"],
             [
                 "sms_template_one",
                 "sms_template_two",
@@ -131,7 +187,6 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
             active_caseworking_user,
             "Templates",
             {"template_type": "email"},
-            ["All", "Text message", "Letter"],
             ["email_template_one", "email_template_two"],
         ),
     ],
@@ -142,7 +197,6 @@ def test_should_show_page_for_choosing_a_template(
     mock_get_template_folders,
     mock_has_no_jobs,
     extra_args,
-    expected_nav_links,
     expected_templates,
     service_one,
     mocker,
@@ -150,6 +204,7 @@ def test_should_show_page_for_choosing_a_template(
     user,
     expected_page_title,
 ):
+    expected_nav_links = ["All", "Email", "Text message", "Letter"]
     service_one["permissions"].append("letter")
     client_request.login(user(fake_uuid))
 
@@ -599,7 +654,7 @@ def test_edit_letter_templates_postage_updates_postage(client_request, service_o
         ),
         (
             ["send_messages", "manage_templates"],
-            [".set_sender", ".edit_service_template"],
+            [".add_recipients", ".edit_service_template"],
             None,
         ),
     ],
@@ -700,7 +755,7 @@ def test_should_not_show_send_buttons_on_template_page_for_user_without_permissi
     )
 
     assert "Ready to send?" not in str(page)
-    assert "Send test message to yourself" not in str(page)
+    assert "No, send yourself this message" not in str(page)
 
 
 def test_should_show_sms_template_with_downgraded_unicode_characters(
@@ -1301,6 +1356,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
             "template_type": "sms",
             "service": SERVICE_ONE_ID,
             "process_type": process_type,
+            "button_pressed": "save",
         },
         _expected_status=302,
         _expected_redirect=url_for(
@@ -1509,6 +1565,7 @@ def test_removing_placeholders_is_not_a_breaking_change(
             "name": existing_template["name"],
             "template_content": "no placeholders",
             "subject": existing_template["subject"],
+            "button_pressed": "save",
         },
         _expected_status=302,
         _expected_redirect=url_for(
@@ -1588,6 +1645,7 @@ def test_should_redirect_when_saving_a_template_email(
             "service": SERVICE_ONE_ID,
             "subject": subject,
             "process_type": "normal",
+            "button_pressed": "save",
         },
         _expected_status=302,
         _expected_redirect=url_for(
@@ -1605,6 +1663,247 @@ def test_should_redirect_when_saving_a_template_email(
         SERVICE_ONE_ID,
         subject,
         "normal",
+    )
+
+
+def test_should_redirect_when_previewing_a_template_email(
+    client_request,
+    mock_get_service_email_template,
+    mock_update_service_template,
+    mock_get_user_by_email,
+    fake_uuid,
+):
+    name = "new name"
+    content = "template <em>content</em> with & entity ((thing)) ((date))"
+    subject = "subject & entity"
+    client_request.post(
+        ".edit_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "id": fake_uuid,
+            "name": name,
+            "template_content": content,
+            "template_type": "email",
+            "service": SERVICE_ONE_ID,
+            "subject": subject,
+            "process_type": "normal",
+            "button_pressed": "preview",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".preview_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _external=True,
+        ),
+    )
+
+
+def test_preview_page_contains_preview(
+    client_request, app_, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
+):
+    preview_data = {
+        "name": "test name",
+        "subject": "test subject",
+        "content": "test content",
+        "template_type": "email",
+        "id": fake_uuid,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
+
+    page = client_request.get(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    assert "test name" in page.text
+    assert "test subject" in page.text
+    assert "test content" in page.text
+
+    email_body = str(page.select_one(".email-message-body"))
+    assert f"https://{app_.config['ASSET_DOMAIN']}/gc-logo-en.png" in email_body
+    assert f"https://{app_.config['ASSET_DOMAIN']}/canada-logo.png" in email_body
+
+
+def test_preview_edit_button_should_redirect_to_edit_page(
+    client_request, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
+):
+    preview_data = {
+        "name": "template 1",
+        "content": "hi there",
+        "subject": "test subject",
+        "template_type": "email",
+        "id": fake_uuid,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
+
+    client_request.post(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "button_pressed": "edit",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _external=True,
+        ),
+    )
+
+
+def test_preview_edit_button_should_redirect_to_add_page(
+    client_request, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
+):
+    preview_data = {
+        "name": "template 1",
+        "content": "hi there",
+        "subject": "test subject",
+        "template_type": "email",
+        "folder": "",
+        "id": None,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
+
+    client_request.post(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "button_pressed": "edit",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".add_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=None,
+            template_type="email",
+            template_folder_id="",
+            _external=True,
+        ),
+    )
+
+
+@pytest.mark.parametrize("id", (sample_uuid(), None))
+def test_preview_has_correct_back_link(
+    id, client_request, app_, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
+):
+    preview_data = {
+        "name": "test name",
+        "subject": "test subject",
+        "content": "test content",
+        "template_type": "email",
+        "folder": "",
+        "id": id,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
+
+    page = client_request.get(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=id,
+        _test_page_title=False,
+    )
+
+    expected_back_url = (
+        url_for(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=id,
+        )
+        if id
+        else url_for(
+            ".add_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=id,
+            template_type="email",
+            template_folder_id="",
+        )
+    )
+    assert page.select(".back-link")[0]["href"] == expected_back_url
+
+
+def test_preview_should_update_and_redirect_on_save(client_request, mock_update_service_template, fake_uuid, mocker):
+    preview_data = {
+        "name": "test name",
+        "content": "test content",
+        "subject": "test subject",
+        "template_type": "email",
+        "process_type": "normal",
+        "id": fake_uuid,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
+
+    client_request.post(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "button_pressed": "save",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _external=True,
+        ),
+    )
+    mock_update_service_template.assert_called_with(
+        fake_uuid, "test name", "email", "test content", SERVICE_ONE_ID, "test subject", "normal"
+    )
+
+
+def test_preview_should_create_and_redirect_on_save(client_request, mock_create_service_template, fake_uuid, mocker):
+    preview_data = {
+        "name": "test name",
+        "content": "test content",
+        "subject": "test subject",
+        "template_type": "email",
+        "process_type": "normal",
+        "folder": None,
+    }
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data,
+    )
+
+    client_request.post(
+        ".preview_template",
+        service_id=SERVICE_ONE_ID,
+        _data={
+            "button_pressed": "save",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _external=True,
+        ),
+    )
+    mock_create_service_template.assert_called_with(
+        "test name", "email", "test content", SERVICE_ONE_ID, "test subject", "normal", None
     )
 
 
@@ -1902,7 +2201,7 @@ def test_can_create_email_template_with_emoji(
     client_request,
     mock_create_service_template,
     mock_get_template_folders,
-    mock_get_service_templates_when_no_templates_exist,
+    mock_get_service_template_when_no_template_exists,
 ):
     page = client_request.post(
         ".add_service_template",
@@ -1915,6 +2214,7 @@ def test_can_create_email_template_with_emoji(
             "template_type": "email",
             "service": SERVICE_ONE_ID,
             "process_type": "normal",
+            "button_pressed": "save",
         },
         _follow_redirects=True,
     )
@@ -2137,4 +2437,62 @@ def test_add_sender_link_only_appears_on_services_with_no_senders(
         "main.service_add_letter_contact",
         service_id=SERVICE_ONE_ID,
         from_template=fake_uuid,
+    )
+
+
+@pytest.mark.parametrize(
+    "template_mock",
+    [
+        mock_get_service_email_template,
+        mock_get_service_template,
+    ],
+)
+def test_add_recipients_redirects_many_recipients(template_mock, client_request, mocker):
+    template_mock(mocker)
+    template_id = fake_uuid
+
+    client_request.post(
+        "main.add_recipients",
+        service_id=SERVICE_ONE_ID,
+        template_id=template_id,
+        _data={
+            "what_type": "many_recipients",
+        },
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".send_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=template_id,
+            _external=True,
+        ),
+    )
+
+
+@pytest.mark.parametrize(
+    "template_type, template_mock",
+    [
+        ("email", mock_get_service_email_template),
+        ("sms", mock_get_service_template),
+    ],
+)
+def test_add_recipients_redirects_one_recipient(template_type, template_mock, client_request, fake_uuid, mocker):
+    template_mock(mocker)
+    template_id = fake_uuid
+    with client_request.session_transaction() as session:
+        session["placeholders"] = {}
+    recipient = "test@cds-snc.ca" if template_type == "email" else "6135555555"
+
+    client_request.post(
+        "main.add_recipients",
+        service_id=SERVICE_ONE_ID,
+        template_id=template_id,
+        _data={"what_type": "one_recipient", "placeholder_value": recipient},
+        _expected_status=302,
+        _expected_redirect=url_for(
+            ".send_one_off_step",
+            service_id=SERVICE_ONE_ID,
+            template_id=template_id,
+            step_index=1,
+            _external=True,
+        ),
     )

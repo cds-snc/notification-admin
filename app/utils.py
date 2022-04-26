@@ -1,7 +1,10 @@
 import csv
+import json
 import os
 import re
 import unicodedata
+import urllib.error
+import urllib.request
 import uuid
 from collections import defaultdict
 from datetime import datetime, time, timedelta
@@ -9,6 +12,7 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
+from typing import Any
 
 import boto3
 import dateutil
@@ -63,12 +67,12 @@ with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file_
 user_is_logged_in = login_required
 
 
-def is_lambda_api():
+def from_lambda_api(line):
     """
     We need to detect if we are connected to the lambda api rather than the k8s api,
     since some response data is different
     """
-    return "lambda" in current_app.config["API_HOST_NAME"]
+    return isinstance(line, dict)
 
 
 @cache.memoize(timeout=3600)
@@ -79,7 +83,7 @@ def get_latest_stats(lang):
     emails_total = 0
     sms_total = 0
     for line in results:
-        if is_lambda_api():
+        if from_lambda_api(line):
             date = line["month"]
             notification_type = line["notification_type"]
             count = line["count"]
@@ -757,3 +761,51 @@ class PermanentRedirect(RequestRedirect):
     """
 
     code = 301
+
+
+def is_blank(content: Any) -> bool:
+    content = str(content)
+    return not content or content.isspace()
+
+
+def _geolocate_lookup(ip):
+    request = urllib.request.Request(url=f"{current_app.config['IP_GEOLOCATE_SERVICE']}/{ip}")
+
+    try:
+        with urllib.request.urlopen(request) as f:
+            response = f.read()
+    except urllib.error.HTTPError as e:
+        current_app.logger.debug("Exception found: {}".format(e))
+        return ip
+    else:
+        return json.loads(response.decode("utf-8-sig"))
+
+
+def _geolocate_ip(ip):
+    if not current_app.config["IP_GEOLOCATE_SERVICE"].startswith("http"):
+        return
+    resp = _geolocate_lookup(ip)
+
+    if isinstance(resp, str):
+        return ip
+
+    if "continent" in resp and resp["continent"] is not None and resp["continent"]["code"] != "NA":
+        report_security_finding(
+            "Suspicious log in location",
+            "Suspicious log in location detected, use the IP resolver to check the IP and correlate with logs.",
+            50,
+            50,
+            current_app.config.get("IP_GEOLOCATE_SERVICE", None) + ip,
+        )
+
+    if "city" in resp and resp["city"] is not None and resp["subdivisions"] is not None:
+        return resp["city"]["names"]["en"] + ", " + resp["subdivisions"][0]["iso_code"] + " (" + ip + ")"
+    else:
+        return ip
+
+
+def _constructLoginData(request):
+    return {
+        "user-agent": request.headers["User-Agent"],
+        "location": _geolocate_ip(get_remote_addr(request)),
+    }

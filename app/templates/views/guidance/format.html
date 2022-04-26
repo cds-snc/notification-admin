@@ -10,7 +10,7 @@
     {{ _('Use this guide to write email message templates. Make sure to send yourself a message before sending to recipients to ensure formatting looks good.') }}
   </p>
   <p>
-    {{ _("To tailor messages to each recipient, see the <a href='{}' target='_blank'>personalisation guide</a>.").format(url_for('.personalise')) }}
+    {{ _("To tailor messages to each recipient, read the <a id='link-format-guide' href='{}' target='_blank'>personalisation guide</a>.").format(url_for('.personalise')) }}
   </p>
 
   {% include "partials/guidance/formatting.html" %}

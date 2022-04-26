@@ -73,7 +73,7 @@
                 {% if folder_count == 0 %}
                 {{ _('Cannot see any folders') }}
                 {% elif folder_count != current_service.all_template_folders | length %}
-                  Can see {{ folder_count }} folder{% if folder_count > 1 %}s{% endif %}
+                  {{ _('Can see') }} {{ folder_count }} {{ _('folder') }}{% if folder_count > 1 %}s{% endif %}
                 {% else %}
                 {{ _('Can see all folders') }}
                 {% endif%}
@@ -97,7 +97,7 @@
                 {% if user.status == 'pending' %}
                   <a href="{{ url_for('.cancel_invited_user', service_id=current_service.id, invited_user_id=user.id)}}">{{ _('Cancel invitation') }}</a>
                 {% elif user.state == 'active' and current_user.id != user.id %}
-                  <a href="{{ url_for('.edit_user_permissions', service_id=current_service.id, user_id=user.id)}}">{{ _('Change details') }}</a>
+                  <a href="{{ url_for('.edit_user_permissions', service_id=current_service.id, user_id=user.id)}}" aria-label="{{ _('Change details for') }} {{ user.name }}" >{{ _('Change details') }}</a>
                 {% endif %}
               </li>
             </ul>

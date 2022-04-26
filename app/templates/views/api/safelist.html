@@ -58,6 +58,7 @@
         {{ list_entry(
           form.email_addresses,
           item_name=_('email'),
+          hint=_('Enter up to {} {}').format(5,_("email addresses")),
           autocomplete=False
         ) }}
         <h2 class="heading-small">
@@ -66,6 +67,7 @@
         {{ list_entry(
           form.phone_numbers,
           item_name=_('phone number'),
+          hint=_('Enter up to {} {}').format(5,_("phone numbers")),
           autocomplete=False
         ) }}
 

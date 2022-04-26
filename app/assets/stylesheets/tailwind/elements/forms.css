@@ -22,7 +22,7 @@
     @apply mb-2 text-smaller leading-tight font-normal;
   }
   .form-label.heading-small {
-    @apply text-smaller leading-tight font-bold mb-2;
+    @apply text-smaller leading-tight font-bold mb-2 mt-0;
   }
   .form-label + .hint {
     margin-top: -5px;

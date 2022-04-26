@@ -49,7 +49,7 @@
     id="list-uploader"
     href="{{ url_for('.send_messages', service_id=current_service.id, template_id=template.id) }}"
   >
-    {{ _('Upload a list of recipients') }}
+    {{ _('Upload file with recipients') }}
   </a>
 </p>
 {% endif %}
@@ -71,7 +71,7 @@
 
 {{ template|string|translate_preview_template }}
 
-<script>
+<script nonce="{{ request_nonce }}">
   function isIE() {
     ua = navigator.userAgent;
     /* MSIE used to detect old browsers and Trident used to newer ones*/

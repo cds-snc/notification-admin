@@ -5,19 +5,24 @@
   lang=None,
   class=None,
   link_img=None,
-  link_img_class=None
+  link_img_class=None,
+  id_key=None
 ) %}
     <a
-        {% if aria_label %} aria-label="{{ aria_label }}" {% endif %}
-        class="inline-block self-center py-1 px-4 line-under text-small border-b-2 border-transparent focus:outline-none focus:bg-yellow focus:border-blue hover:underline {% if class %} {{ class }} {% endif %}"
+        {% if id_key %}id="{{ id_key }}"{% endif %}
+        class="inline-flex items-center self-center py-1 px-4 line-under text-small border-b-2 border-transparent focus:outline-none focus:bg-yellow focus:border-blue hover:underline min-h-target {% if class %} {{ class }} {% endif %}"
         href="{{ href }}"
-        {% if lang %} lang="{{ lang }}" {% endif %}
-        aria-label="{{ label }}">
-        {{ label }}
+        {% if lang %} lang="{{ lang }}" {% endif %}>
+        {% if aria_label and aria_label != label %} 
+            <span class="sr-only">{{ aria_label }}</span>
+            <span role="presentation" aria-hidden="true">{{ label }}</span>
+        {% else %}
+            {{ label }}
+        {% endif %}
         {% if link_img %}
             <img
                 aria-hidden="true"
-                alt="{{ _('External link') }}"
+                alt=""
                 class="inline w-6 h-6 ml-2 self-center {% if link_img %} {{ link_img_class }} {% endif %}"
                 src="{{ link_img }}"/>
         {% endif %}
@@ -25,32 +30,32 @@
 {% endmacro %}
 
 
-{% macro primary_button_blue_lighter(label="TODO: LABEL THIS BUTTON", href="/", class=None) %}
+{% macro primary_button_blue_lighter(
+    label="TODO: LABEL THIS BUTTON",
+    href="/",
+    class=None,
+    id_key=None
+) %}
 <a
+    {% if id_key %}id="{{ id_key }}"{% endif %}
     href="{{ href }}"
     class="button button-blue-lighter mr-10 {% if class %} {{ class }} {% endif %}">
     {{ label }}
 </a>
 {% endmacro %}
 
-{% macro secondary_button_transparent_white(label="TODO: LABEL THIS BUTTON", href="/", class=None, external_link_img=None) %}
+{% macro secondary_button_transparent_white(
+    label="TODO: LABEL THIS BUTTON",
+    href="/",
+    class=None,
+    id_key=None
+) %}
 <a
+    {% if id_key %}id="{{ id_key }}"{% endif %}
     href="{{ href }}"
     class="p-4 line-under text-base text-default underline text-white border-b-2 border-transparent link:text-white visited:text-white hover:no-underline focus:text-blue focus:outline-none focus:border-b-2 focus:border-white focus:no-underline {% if class %} {{ class }} {% endif %}"
-    {% if external_link_img %}
-        target="_blank"
-        aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
-    {% else %}
-        aria-label="{{ label }}"
-    {% endif %}
+    aria-label="{{ label }}"
     >
     {{ label }}
-    {% if external_link_img %}
-        <img
-            aria-hidden="true"
-            alt="{{ _('External link') }}"
-            class="inline w-6 h-6 ml-2 self-center"
-            src="{{ external_link_img }}"/>
-    {% endif %}
 </a>
 {% endmacro %}

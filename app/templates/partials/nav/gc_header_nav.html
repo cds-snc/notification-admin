@@ -1,14 +1,16 @@
-{% from "components/nav_menu_item.html" import nav_menu_item %}
+{% from "components/nav_menu_item.html" import nav_menu_item with context %}
 
 {% set lang_switch = 'EN' %}
+{% set long_lang_switch = 'English' %}
 
 {% if session["userlang"] == "en" %}
   {% set lang_switch = 'FR' %}
+  {% set long_lang_switch = 'Français' %}
 {% endif %}
 
 <hr class="m-0 md:hidden bg-blue" style="height: 4px"/>
 <nav class="md:hidden" aria-label="{{ _('mobile navigation') }}">
-  <div class="container lg:px-10 md:px-8 sm:px-4 smaller:px-4 xs:px-4">
+  <div class="container px-gutterHalf">
     <!-- Mobile menu and nav bar -->
     <div class="grid grid-cols-2">
       <div class="flex">
@@ -37,6 +39,7 @@
         {% else %}
           <div class="self-center flex-shrink-0">
             <a
+              id="nav-sign-in-desktop"
               href="{{ url_for('main.sign_in' ) }}"
               class="px-5 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
               {{ _('Sign in') }}
@@ -46,10 +49,12 @@
         <div class="pl-5">
           <div class="h-14 p-1 border-2 border-solid border-gray rounded-lg">
             <a
-              aria-label="{{ lang_switch }}"
-              class="px-1 line-under leading-none inline text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
-              href="{{ url_for('main.set_lang') }}?from={{ request.path }}">
-              {{ lang_switch }}
+              id="nav-lang"
+              class="px-1 block line-under leading-none text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
+              href="{{ url_for('main.set_lang') }}?from={{ request.path }}"
+              lang="{{ 'fr-CA' if lang_switch == 'FR' else 'en-CA' }}">
+              <span class="sr-only">{{ long_lang_switch }}</span>
+              <span role="presentation" aria-hidden="true">{{ lang_switch }}</span>
             </a>
           </div>
         </div>
@@ -60,15 +65,23 @@
   </div>
 </nav>
 {% if withnav %}
-  <nav class="bg-gray xs:hidden smaller:hidden sm:hidden md:flex" aria-label="{{ _('main navigation') }}">
-    <div class="container px-10">
-      <div id="proposition-links" class="flex flex-no-wrap">
+  <nav class="bg-gray hidden md:visible md:flex" aria-label="{{ _('main navigation') }}">
+    <div class="container px-gutterHalf">
+      <div id="proposition-links" class="flex flex-no-wrap items-baseline">
         {% if not current_user.is_authenticated %}
-          {{ nav_menu_item('/',_('Home'),'pl-0 header--'+header_navigation.is_selected('home')) }}
-          {{ nav_menu_item(url_for('main.why-notify'),_('Why GC Notify'),'header--'+header_navigation.is_selected('why-notify')) }}
-          {{ nav_menu_item(url_for('main.features'),_('Features'),'header--'+header_navigation.is_selected('features')) }}
-          {{ nav_menu_item(documentation_url(),_('API documentation'),'header--'+header_navigation.is_selected('documentation'), external_link_img=asset_url('images/external.svg')) }}
-          {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
+          {% if nav_items %}
+            {% for i in nav_items %}
+              {% if 'main' in i.description %}
+                {{ nav_menu_item(i.url, i.title, 'header--active' if i.active else '', is_external_link=i.target )}}
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            {{ nav_menu_item('/', _('Home'), 'pl-0 header--'+header_navigation.is_selected('home'), 'nav-head-home')}}
+            {{ nav_menu_item(url_for('main.why-notify'), _('Why GC Notify'), 'header--'+header_navigation.is_selected('why-notify'), 'nav-head-why-notify') }}
+            {{ nav_menu_item(url_for('main.features'), _('Features'), 'header--'+header_navigation.is_selected('features'), 'nav-head-features') }}
+            {{ nav_menu_item(documentation_url(), _('API documentation'), 'header--'+header_navigation.is_selected('documentation'), 'nav-head-doc', True) }}
+            {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact'), 'nav-head-contact') }}
+          {% endif %}
         {% else %}
           {% if not current_user.platform_admin %}
             {% if current_user.has_permissions() %}
@@ -116,7 +129,7 @@
           data-module="more-menu"
           data-module-menu-items="proposition-links"
           data-module-menu-container="more-menu-container"
-          class="hidden flex-shrink-0 text-center bg-gray self-center">
+          class="hidden flex-grow text-right bg-gray self-stretch justify-end">
           <a
             href="#"
             aria-hidden="false"
@@ -135,6 +148,6 @@
       <!-- MD-LG menu and nav bar END -->
     </div>
   </nav>
-  <div id="more-menu-container" class="container hidden">
+  <div id="more-menu-container" class="relative container hidden">
   </div>
 {% endif %}

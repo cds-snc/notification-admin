@@ -21,6 +21,7 @@ from tests.conftest import api_user_active, platform_admin_user, set_config
 @pytest.mark.parametrize("service", [service_json(active=True), None], ids=["active_service", "no_service"])
 def test_active_service_can_be_modified(app_, method, user, service):
     api_client = NotifyAdminAPIClient()
+    api_client.init_app(app_)
 
     with app_.test_request_context() as request_context, app_.test_client() as client:
         client.login(user)
@@ -36,6 +37,7 @@ def test_active_service_can_be_modified(app_, method, user, service):
 @pytest.mark.parametrize("method", ["put", "post", "delete"])
 def test_inactive_service_cannot_be_modified_by_normal_user(app_, api_user_active, method):
     api_client = NotifyAdminAPIClient()
+    api_client.init_app(app_)
 
     with app_.test_request_context() as request_context, app_.test_client() as client:
         client.login(api_user_active)
@@ -51,6 +53,7 @@ def test_inactive_service_cannot_be_modified_by_normal_user(app_, api_user_activ
 @pytest.mark.parametrize("method", ["put", "post", "delete"])
 def test_inactive_service_can_be_modified_by_platform_admin(app_, platform_admin_user, method):
     api_client = NotifyAdminAPIClient()
+    api_client.init_app(app_)
 
     with app_.test_request_context() as request_context, app_.test_client() as client:
         client.login(platform_admin_user)
@@ -116,8 +119,9 @@ def test_get_notification_status_by_service(mocker):
 
 
 @pytest.mark.parametrize("method", ["put", "post", "delete"])
-def test_logging_enabled_for_admin_users(app_, platform_admin_user, method, caplog):
+def test_non_sensitive_logging_enabled_for_admin_users(app_, platform_admin_user, method, caplog):
     api_client = NotifyAdminAPIClient()
+    api_client.init_app(app_)
 
     with app_.test_request_context() as request_context, app_.test_client() as client:
         client.login(platform_admin_user)
@@ -128,4 +132,27 @@ def test_logging_enabled_for_admin_users(app_, platform_admin_user, method, capl
 
     assert request.called
     assert len(caplog.records) == 1
+    assert " Admin API request" in caplog.text
+    assert "Sensitive" not in caplog.text
+    assert ret == request.return_value
+
+
+@pytest.mark.parametrize("method", ["put", "post", "delete"])
+def test_sensitive_logging_enabled_for_admin_users(app_, platform_admin_user, method, caplog):
+    sensitive_service = Service(service_json(id_="ss1111"))
+
+    api_client = NotifyAdminAPIClient()
+    with set_config(app_, "SENSITIVE_SERVICES", "222, ss1111,33333"):
+        api_client.init_app(app_)
+
+    with app_.test_request_context() as request_context, app_.test_client() as client:
+        client.login(platform_admin_user)
+        request_context.service = sensitive_service
+
+        with patch.object(api_client, "request") as request:
+            ret = getattr(api_client, method)("url", "data")
+
+    assert request.called
+    assert len(caplog.records) == 1
+    assert "Sensitive Admin API request" in caplog.text
     assert ret == request.return_value

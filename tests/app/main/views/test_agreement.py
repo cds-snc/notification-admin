@@ -206,7 +206,10 @@ def test_show_accept_agreement_page(
     ]
 
     assert normalize_spaces(page.select_one("label[for=version]").text) == (
-        "Which version of the agreement do you want to accept? " "The version number is on the front page, for example ‘3.6’"
+        "Which version of the agreement do you want to accept?"
+    )
+    assert normalize_spaces(page.select_one("label[for=version] + span#version-hint").text) == (
+        "The version number is on the front page, for example ‘3.6’"
     )
     assert page.select_one("input[name=version]")["value"] == ""
 

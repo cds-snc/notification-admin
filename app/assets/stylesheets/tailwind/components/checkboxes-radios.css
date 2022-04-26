@@ -13,17 +13,37 @@
     @apply mb-0;
   }
 
-  .select-nested .multiple-choice {
+  .multiple-choice .conditional {
+    padding: 8px 15px 0 12px; /* Match top left and right padding in .multiple-choice > label {...} in form-multiple-choice.css */
+    @apply hidden;
+  }
+  .multiple-choice input:checked ~ .conditional {
+    @apply block;
+  }
+
+  .select-nested .multiple-choice,
+  .multiple-choice .conditional {
     @apply relative float-none border-gray-grey2;
   }
-  .select-nested .multiple-choice:before {
+
+  .multiple-choice .conditional .form-group {
+    @apply mb-0;
+  }
+
+  .select-nested .multiple-choice:before,
+  .multiple-choice .conditional:before {
     content: "";
     width: 4px;
     left: 17px;
     @apply bg-gray-grey2 bottom-0 absolute h-full;
   }
 
-  .select-nested .multiple-choice label {
+  .multiple-choice .conditional:before {
+    left: -22px;
+  }
+
+  .select-nested .multiple-choice label,
+  .multiple-choice .conditional label {
     @apply float-none;
   }
 
@@ -31,12 +51,13 @@
     @apply mb-4;
   }
 
-  .radios-nested .block-label-hint:after {
+  .radios-nested .block-label-hint:after,
+  .has-conditional input:checked + label .block-label-hint:after {
     content: "";
     top: 45px;
     left: 16px;
     width: 4px;
-    height: 25px;
+    height: calc(100% - 45px);
     @apply absolute bg-gray-grey2;
   }
 
@@ -49,6 +70,10 @@
   .select-nested .multiple-choice [type="checkbox"] + label::before,
   .select-nested .multiple-choice [type="radio"] + label::before {
     @apply bg-white;
+  }
+
+  [data-module*="collapsible"] button[aria-expanded="true"] {
+    @apply mt-8;
   }
 
   .conditional-radio-panel {

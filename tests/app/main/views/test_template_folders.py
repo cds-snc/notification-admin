@@ -15,6 +15,7 @@ from tests.conftest import (
     active_caseworking_user,
     active_user_view_permissions,
     active_user_with_permissions,
+    fake_uuid,
     normalize_spaces,
 )
 
@@ -42,7 +43,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
         "expected_page_title,"
         "expected_parent_link_args,"
         "extra_args,"
-        "expected_nav_links,"
         "expected_items, "
         "expected_displayed_items, "
         "expected_searchable_text, "
@@ -54,7 +54,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates",
             [],
             {},
-            ["Email", "Text message", "Letter"],
             [
                 "folder_one 2 folders",
                 "folder_one folder_one_one 1 template, 1 folder",
@@ -102,7 +101,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates",
             [],
             {"template_type": "sms"},
-            ["All", "Email", "Letter"],
             [
                 "folder_one 1 folder",
                 "folder_one folder_one_one 1 folder",
@@ -131,7 +129,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_one",
             [{"template_type": "all"}],
             {"template_folder_id": PARENT_FOLDER_ID},
-            ["Email", "Text message", "Letter"],
             [
                 "folder_one_one 1 template, 1 folder",
                 "folder_one_one folder_one_one_one 1 template",
@@ -157,7 +154,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_one",
             [{"template_type": "sms"}],
             {"template_type": "sms", "template_folder_id": PARENT_FOLDER_ID},
-            ["All", "Email", "Letter"],
             [
                 "folder_one_one 1 folder",
                 "folder_one_one folder_one_one_one 1 template",
@@ -178,7 +174,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_one",
             [{"template_type": "email"}],
             {"template_type": "email", "template_folder_id": PARENT_FOLDER_ID},
-            ["All", "Text message", "Letter"],
             [],
             [],
             [],
@@ -192,7 +187,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
                 {"template_type": "all", "template_folder_id": PARENT_FOLDER_ID},
             ],
             {"template_folder_id": CHILD_FOLDER_ID},
-            ["Email", "Text message", "Letter"],
             [
                 "folder_one_one_one 1 template",
                 "folder_one_one_one sms_template_nested Text message template",
@@ -218,7 +212,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
                 {"template_type": "all", "template_folder_id": CHILD_FOLDER_ID},
             ],
             {"template_folder_id": GRANDCHILD_FOLDER_ID},
-            ["Email", "Text message", "Letter"],
             [
                 "sms_template_nested Text message template",
             ],
@@ -242,7 +235,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
                 "template_type": "email",
                 "template_folder_id": GRANDCHILD_FOLDER_ID,
             },
-            ["All", "Text message", "Letter"],
             [],
             [],
             [],
@@ -253,7 +245,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_two",
             [{"template_type": "all"}],
             {"template_folder_id": FOLDER_TWO_ID},
-            ["Email", "Text message", "Letter"],
             [],
             [],
             [],
@@ -264,7 +255,6 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "Templates folder_two",
             [{"template_type": "sms"}],
             {"template_folder_id": FOLDER_TWO_ID, "template_type": "sms"},
-            ["All", "Email", "Letter"],
             [],
             [],
             [],
@@ -282,7 +272,6 @@ def test_should_show_templates_folder_page(
     expected_page_title,
     expected_parent_link_args,
     extra_args,
-    expected_nav_links,
     expected_items,
     expected_displayed_items,
     expected_searchable_text,
@@ -311,6 +300,7 @@ def test_should_show_templates_folder_page(
         },
     )
 
+    expected_nav_links = ["All", "Email", "Text message", "Letter"]
     service_one["permissions"] += ["letter"]
 
     page = client_request.get(
@@ -340,7 +330,16 @@ def test_should_show_templates_folder_page(
         assert links_in_page[index].text.strip() == expected_link
 
     all_page_items = page.select(".template-list-item")
+    for item in all_page_items:
+        sr_only = item.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
+
     all_page_items_styled_with_checkboxes = page.select(".template-list-item-with-checkbox")
+    for item in all_page_items_styled_with_checkboxes:
+        sr_only = item.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
 
     assert len(all_page_items) == len(all_page_items_styled_with_checkboxes)
 
@@ -389,6 +388,7 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         "service": SERVICE_ONE_ID,
         "process_type": "normal",
         "parent_folder_id": PARENT_FOLDER_ID,
+        "button_pressed": "save",
     }
     client_request.post(
         ".add_service_template",
@@ -399,7 +399,7 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         _expected_redirect=url_for(
             "main.view_template",
             service_id=SERVICE_ONE_ID,
-            template_id="new%20name",
+            template_id=fake_uuid(),
             _external=True,
         ),
     )
@@ -473,7 +473,7 @@ def test_get_manage_folder_viewing_permissions_for_users(
         _test_page_title=False,
     )
     assert normalize_spaces(page.select_one("title").text) == ("folder_two – Templates - service one – Notify")
-    form_labels = page.select("legend[class=form-label]")
+    form_labels = page.select("legend")
     assert normalize_spaces(form_labels[0].text) == "Team members who can see this folder"
     checkboxes = page.select("input[name=users_with_permission]")
 
@@ -692,6 +692,32 @@ def test_rename_folder(
         name="new beautiful name",
         users_with_permission=None,
     )
+
+
+def test_cannot_rename_folder_blank(
+    client_request,
+    active_user_with_permissions,
+    service_one,
+    mock_get_template_folders,
+    mocker,
+):
+    mock_update = mocker.patch("app.template_folder_api_client.update_template_folder")
+    folder_id = str(uuid.uuid4())
+    mock_get_template_folders.return_value = [_folder("folder_two", folder_id, None, [active_user_with_permissions["id"]])]
+    mocker.patch(
+        "app.models.user.Users.client",
+        return_value=[active_user_with_permissions],
+    )
+
+    client_request.post(
+        "main.manage_template_folder",
+        service_id=service_one["id"],
+        template_folder_id=folder_id,
+        _data={"name": "    ", "users_with_permission": []},
+        _expected_status=200,
+    )
+
+    assert mock_update.called is False
 
 
 def test_manage_folder_users(
@@ -1310,6 +1336,31 @@ def test_new_folder_is_created_if_only_new_folder_is_filled_out(
     mock_create_template_folder.assert_called_once_with(SERVICE_ONE_ID, name="new folder", parent_id=None)
 
 
+def test_cannot_create_blank_new_folder(
+    client_request,
+    service_one,
+    mock_get_service_templates,
+    mock_get_template_folders,
+    mock_move_to_template_folder,
+    mock_create_template_folder,
+):
+    data = {
+        "move_to_new_folder_name": "",
+        "add_new_folder_name": "  ",
+        "operation": "add-new-folder",
+    }
+
+    client_request.post(
+        "main.choose_template",
+        service_id=SERVICE_ONE_ID,
+        _data=data,
+        _expected_status=200,
+    )
+
+    assert mock_move_to_template_folder.called is False
+    assert mock_create_template_folder.called is False
+
+
 def test_should_be_able_to_move_to_new_folder(
     client_request,
     service_one,
@@ -1348,6 +1399,39 @@ def test_should_be_able_to_move_to_new_folder(
         folder_ids={FOLDER_TWO_ID},
         template_ids={TEMPLATE_ONE_ID},
     )
+
+
+def test_cannot_move_to_blank_new_folder(
+    client_request,
+    service_one,
+    mock_get_service_templates,
+    mock_get_template_folders,
+    mock_move_to_template_folder,
+    mock_create_template_folder,
+):
+    FOLDER_TWO_ID = str(uuid.uuid4())
+    mock_get_template_folders.return_value = [
+        _folder("parent_folder", PARENT_FOLDER_ID, None),
+        _folder("folder_two", FOLDER_TWO_ID, None),
+    ]
+
+    client_request.post(
+        "main.choose_template",
+        service_id=SERVICE_ONE_ID,
+        template_folder_id=None,
+        _data={
+            "operation": "move-to-new-folder",
+            "move_to_new_folder_name": "  ",
+            "templates_and_folders": [
+                FOLDER_TWO_ID,
+                TEMPLATE_ONE_ID,
+            ],
+        },
+        _expected_status=200,
+    )
+
+    assert mock_create_template_folder.called is False
+    assert mock_move_to_template_folder.called is False
 
 
 def test_radio_button_with_no_value_shows_error_message(
@@ -1554,9 +1638,17 @@ def test_should_filter_templates_folder_page_based_on_user_permissions(
             and "template-list-item-hidden-by-default" not in tag["class"]
         )
     )
+    for item in displayed_page_items:
+        sr_only = item.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
     assert [[i.strip() for i in e.text.split("\n") if i.strip()] for e in displayed_page_items] == expected_displayed_items
 
     all_page_items = page.select(".template-list-item")
+    for item in all_page_items:
+        sr_only = item.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
     assert [[i.strip() for i in e.text.split("\n") if i.strip()] for e in all_page_items] == expected_items
 
     if expected_empty_message:

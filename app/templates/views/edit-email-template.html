@@ -1,7 +1,7 @@
 {% extends "admin_template.html" %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/page-header.html" import page_header %}
-{% from "components/page-footer.html" import sticky_page_footer %}
+{% from "components/page-footer.html" import sticky_page_footer_two_submit_buttons %}
 {% from "components/radios.html" import radios %}
 {% from "components/form.html" import form_wrapper %}
 
@@ -15,27 +15,27 @@
       heading,
       back_link=url_for('main.view_template', service_id=current_service.id,
       template_id=template.id) if template else url_for('main.create_template',
-      service_id=current_service.id, template_folder_id=template_folder_id)
+      service_id=current_service.id, template_folder_id=template_folder_id),
+      back_link_aria_label=_('Back to template {}').format(template.name) if template else _('Back')
     )
   }}
   {% call form_wrapper() %}
   <div class="grid-row">
     <div class="md:w-5/6 px-gutterHalf box-border">
       <div class="form-group mb-gutterHalf md:mb-gutter">
-        {{ _("A template allows you to send a similar information to many people. Use the <a href='{}' target='_blank'>personalisation guide</a> to tailor messages for each recipient.").format(url_for('.personalise')) }}
+        {{ _("A template allows you to send the same message to many people. To tailor messages for each recipient, visit the <a href='{}' target='_blank'>Personalisation guide<span class='sr-only'> (Opens in a new tab)</span><img aria-hidden='true' role='presentation' class='inline w-6 h-6 ml-2 self-center' src='{}'/></a>.").format(url_for('.personalise'), asset_url('images/external.svg')) }}
       </div>
 
       {{ textbox(form.name, width='w-full', hint=_('Your recipients will not see this template name.'), rows=10) }}
 
-      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell people what the email is about. Try to it keep it shorter than 10 words.")) }}
+      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to keep it shorter than 10 words.")) }}
 
-      {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=8, hint=_("Use the <a href='{}' target='_blank'>email formatting guide</a> to craft your message.").format(url_for('.format'))) }}
+      {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=8, hint=_("Use the <a href='{}' target='_blank'>email formatting guide <span class='sr-only'> (Opens in a new tab)</span><img aria-hidden='true' role='presentation' class='inline w-6 h-6 ml-2 self-center' src='{}'/></a> to craft your message.").format(url_for('.format'), asset_url('images/external.svg'))) }}
 
       {% if current_user.platform_admin %}
         {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }}
       {% endif %}
-
-      {{ sticky_page_footer(_('Save template')) }}
+      {{ sticky_page_footer_two_submit_buttons(_('Save'), "save", _("Preview"), "preview") }}
     </div>
   </div>
   {% endcall %}
@@ -43,7 +43,7 @@
 
 {% block page_script %}
 {{ super() }}
-<script>
+<script nonce="{{ request_nonce }}">
   const loadContent = templateId => {
     const callback = `/services/templates/${templateId}/get-data`;
 
