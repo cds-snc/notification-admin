@@ -21,8 +21,9 @@ def get_page_by_slug_with_cache(endpoint: str, params={"slug": ""}) -> Union[dic
     else:
         response = get_page_by_slug(endpoint, params)
 
-        current_app.logger.info(f"Saving menu to cache: {cache_key}")
-        redis_client.set(cache_key, json.dumps(response), ex=GC_ARTICLES_DEFAULT_CACHE_TTL)
+        if response is not None:
+            current_app.logger.info(f"Saving menu to cache: {cache_key}")
+            redis_client.set(cache_key, json.dumps(response), ex=GC_ARTICLES_DEFAULT_CACHE_TTL)
 
     return response
 
