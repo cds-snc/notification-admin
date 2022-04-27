@@ -375,6 +375,8 @@ def old_page_redirects():
 
 
 """Dynamic routes handling for GCArticles API-driven pages"""
+
+
 @main.route("/preview")
 def preview_content():
     if not request.args.get("id"):
