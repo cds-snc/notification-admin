@@ -21,7 +21,8 @@
       form.email_address,
       width='w-full',
       hint=_('This should be a shared inbox managed by your team, not your own email address.'),
-      safe_error_message=True
+      safe_error_message=True,
+      autocomplete="email"
     ) }}
     {% if not first_email_address %}
       <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
