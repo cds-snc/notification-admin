@@ -56,8 +56,8 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
 
         current_app.logger.info(f"Cache miss: {cache_key}")
         return None
-    except Exception:
-        current_app.logger.info("There was an unspecified (potentially non-http) error when making the request")
+    except Exception as err:
+        current_app.logger.info(err)
         return None
 
 def _get_cache_key(endpoint, params):
