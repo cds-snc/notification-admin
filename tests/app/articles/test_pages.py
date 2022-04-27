@@ -55,7 +55,7 @@ def test_get_page_by_slug_with_cache_miss(app_, mocker):
         with requests_mock.mock() as request_mock:
             request_mock.get(notify_url, json=response_json, status_code=200)
 
-            response = get_page_by_slug_with_cache(endpoint, params)
+            get_page_by_slug_with_cache(endpoint, params)
 
             assert mock_redis_method.get.called
             assert mock_redis_method.get.call_count == 1
