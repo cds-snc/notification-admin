@@ -1,0 +1,69 @@
+ARG APP_DIR="/app"
+ARG APP_VENV="/opt/venv"
+
+# Build image
+FROM python:3.9-alpine as build
+
+ARG APP_DIR
+ARG APP_VENV
+
+RUN apk add --no-cache \
+    autoconf \
+    automake \
+    bash \
+    build-base \
+    cmake \
+    g++ \
+    git \
+    libexecinfo-dev \
+    libffi-dev \
+    libtool \
+    libxml2-dev \
+    libxslt-dev \    
+    nodejs \
+    npm \    
+    make       
+
+RUN mkdir -p ${APP_DIR}
+WORKDIR ${APP_DIR}
+
+RUN python -m venv ${APP_VENV}
+ENV PATH="${APP_VENV}/bin:$PATH"
+
+RUN pip3 install awslambdaric
+
+COPY requirements.txt ${APP_DIR}
+RUN python -m pip install wheel && \
+    pip3 install -r requirements.txt
+
+COPY . ${APP_DIR}
+
+RUN npm ci && \
+    npm run build && \
+    rm -rf node_modules
+
+RUN make babel && \
+    make generate-version-file
+
+# Final image
+FROM python:3.9-alpine
+
+ARG APP_DIR
+ARG APP_VENV
+ARG GIT_SHA
+ENV GIT_SHA ${GIT_SHA}
+ENV PATH="${APP_VENV}/bin:$PATH"
+ENV PORT=6012
+ENV PYTHONDONTWRITEBYTECODE 1
+
+RUN apk add --no-cache libstdc++
+
+WORKDIR ${APP_DIR}
+
+COPY --from=build ${APP_DIR} ${APP_DIR}
+COPY --from=build ${APP_VENV} ${APP_VENV}
+COPY bin/entry.sh /
+COPY bin/sync_lambda_envs.sh /
+
+ENTRYPOINT [ "/entry.sh" ]
+CMD [ "application.handler" ] 
