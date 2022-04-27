@@ -13,7 +13,7 @@
   <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
     <h1 class="heading-large">{{ _('Create an account') }}</h1>
     {% call form_wrapper(autocomplete=True) %}
-      {{ textbox(form.name, width='w-full md:w-3/4') }}
+      {{ textbox(form.name, width='w-full md:w-3/4', autocomplete='name') }}
       {% set hint_txt = _('Must be a federal government email address') %}
       {{ textbox(form.email_address, hint=hint_txt, width='w-full md:w-3/4', safe_error_message=True, autocomplete='email') }}
       <div class="extra-tracking">

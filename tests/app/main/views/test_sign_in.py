@@ -16,7 +16,7 @@ def test_render_sign_in_template_for_new_user(client_request):
     assert normalize_spaces(page.select_one("h1").text) == "Sign in"
     assert normalize_spaces(page.select("label")[0].text) == "Email address"
     assert page.select_one("#email_address")["value"] == ""
-    assert page.select_one("#email_address")["autocomplete"] == "email"
+    assert page.select_one("#email_address")["autocomplete"] == "username"
     assert normalize_spaces(page.select("label")[1].text) == "Password"
     assert page.select_one("#password")["value"] == ""
     assert page.select_one("#password")["autocomplete"] == "current-password"
