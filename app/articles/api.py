@@ -60,6 +60,7 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
         current_app.logger.info(err)
         return None
 
+
 def _get_cache_key(endpoint, params):
     cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}"
     lang = get_current_locale(current_app)
