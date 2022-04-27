@@ -42,7 +42,8 @@ def test_get_page_by_slug_with_cache_retrieve_from_cache(app_, mocker):
 
 
 def test_get_page_by_slug_with_cache_miss(app_, mocker):
-    mock_redis_obj = MockRedis()
+    redis_cache = {"gc-articles-fallback--pages/en/mypage": json.dumps(response_json)}
+    mock_redis_obj = MockRedis(redis_cache)
     mock_redis_method = MagicMock()
     mock_redis_method.get = Mock(side_effect=mock_redis_obj.get)
     mock_redis_method.set = Mock(side_effect=mock_redis_obj.set)
