@@ -19,15 +19,15 @@ fallback_cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}/en/mypage"
 
 response_json = json.dumps({"content": {"rendered": "The Content"}, "title": {"rendered": "The Title"}})
 
-redis_cache = {"gc-articles--wp/v2/pages/en/mypage": json.dumps(response_json)}
-
-mock_redis_obj = MockRedis(redis_cache)
-mock_redis_method = MagicMock()
-mock_redis_method.get = Mock(side_effect=mock_redis_obj.get)
-mock_redis_method.set = Mock(side_effect=mock_redis_obj.set)
-
 
 def test_get_page_by_slug_with_cache_retrieve_from_cache(app_, mocker):
+    redis_cache = {cache_key: json.dumps(response_json)}
+
+    mock_redis_obj = MockRedis(redis_cache)
+    mock_redis_method = MagicMock()
+    mock_redis_method.get = Mock(side_effect=mock_redis_obj.get)
+    mock_redis_method.set = Mock(side_effect=mock_redis_obj.set)
+
     mocker.patch("app.articles.pages.redis_client", mock_redis_method)
 
     with app_.test_request_context():
