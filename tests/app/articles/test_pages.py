@@ -1,7 +1,7 @@
 import json
 from unittest.mock import MagicMock, Mock
-import requests
 
+import requests
 import requests_mock
 
 from app.articles import GC_ARTICLES_CACHE_PREFIX
@@ -67,7 +67,7 @@ def test_get_page_by_slug_with_cache_miss_with_fallback(app_, mocker):
             assert mock_redis_method.get.called
             assert mock_redis_method.get.call_count == 2
             assert mock_redis_method.get.called_with(cache_key)
-            
+
             """ Should fall through to the fallback cache """
             assert mock_redis_method.get.called_with("gc-articles-fallback--pages/en/mypage")
             assert mock_redis_method.get("gc-articles-fallback--pages/en/mypage") is not None
