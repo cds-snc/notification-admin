@@ -18,7 +18,7 @@ from app.extensions import redis_client
 
 def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -> Union[dict, None]:
     base_url = current_app.config["GC_ARTICLES_API"]
-
+    cache_key = _get_cache_key(endpoint, params)
     headers = _get_headers(auth_required=auth_required)
 
     try:
@@ -38,11 +38,6 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
 
         """Long-term "Fallback" cache"""
         if cacheable:
-            lang = get_current_locale(current_app)
-            slug = params.get("slug")
-            cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}"
-            if slug:
-                cache_key += f"/{lang}/{slug}"
             current_app.logger.info(f"Saving to cache: {cache_key}")
             redis_client.set(cache_key, json.dumps(parsed), ex=GC_ARTICLES_FALLBACK_CACHE_TTL)
 
@@ -64,6 +59,14 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
     except Exception:
         current_app.logger.info("There was an unspecified (potentially non-http) error when making the request")
         return None
+
+def _get_cache_key(endpoint, params):
+    cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}{endpoint}"
+    lang = get_current_locale(current_app)
+    slug = params.get("slug")
+    if slug:
+        cache_key += f"/{lang}/{slug}"
+    return cache_key
 
 
 def validate_token(token):
