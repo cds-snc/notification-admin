@@ -1,12 +1,9 @@
 import json
 from unittest.mock import MagicMock, Mock
 
-import pytest
 import requests_mock
-from werkzeug.exceptions import Forbidden
 
-from app.articles import GC_ARTICLES_CACHE_PREFIX, GC_ARTICLES_FALLBACK_CACHE_PREFIX
-from app.articles.api import get_content
+from app.articles import GC_ARTICLES_CACHE_PREFIX
 from app.articles.pages import get_page_by_slug_with_cache
 from tests import MockRedis
 
@@ -35,7 +32,7 @@ def test_get_page_by_slug_with_cache_retrieve_from_cache(app_, mocker):
         with requests_mock.mock() as mock:
             mock.request("GET", notify_url, json=response_json, status_code=200)
 
-            response = get_page_by_slug_with_cache(endpoint, params)
+            get_page_by_slug_with_cache(endpoint, params)
 
             assert mock_redis_method.get.called
             assert mock_redis_method.get.call_count == 1

@@ -1,12 +1,8 @@
 import json
-import unittest
-from http.client import responses
-from unittest.mock import ANY, MagicMock, Mock, patch
+from unittest.mock import MagicMock, Mock
 
-import pytest
 import requests
 import requests_mock
-from werkzeug.exceptions import Forbidden
 
 from app.articles import (
     GC_ARTICLES_FALLBACK_CACHE_PREFIX,
