@@ -60,6 +60,12 @@ def test_get_page_by_slug_with_cache_miss(app_, mocker):
             assert mock_redis_method.get.called
             assert mock_redis_method.get.call_count == 1
             assert mock_redis_method.get.called_with(cache_key)
-            assert mock_redis_method.get(cache_key) is not None
+            assert mock_redis_method.get(cache_key) is None
+
+            """ Should fall through to the fallback cache """
+            assert mock_redis_method.get.called_with("gc-articles-fallback--pages/en/mypage")
+            assert mock_redis_method.get("gc-articles-fallback--pages/en/mypage") is not None
+            assert mock_redis_method.get("gc-articles-fallback--pages/en/mypage") == json.dumps(response_json)
 
             assert request_mock.called
+            # assert mock_redis_method.set.called
