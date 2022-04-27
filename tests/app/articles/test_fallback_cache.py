@@ -19,7 +19,7 @@ mock_redis_method = MagicMock()
 mock_redis_method.get = Mock(side_effect=mock_redis_obj.get)
 mock_redis_method.set = Mock(side_effect=mock_redis_obj.set)
 
-response_json = json.dumps({"content": {"rendered": "The Content"}, "title": {"rendered": "The Title"}})
+response_json = {"content": {"rendered": "The Content"}, "title": {"rendered": "The Title"}}
 cache_key = f"{GC_ARTICLES_FALLBACK_CACHE_PREFIX}pages/en/mypage"
 
 
