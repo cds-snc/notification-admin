@@ -35,28 +35,26 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build container
-        env:
-          DOCKER_BUILDKIT: 1
-        run: |
-          CACHE_TAG=$PR_NUMBER
-          if [ -z "$(aws ecr batch-get-image --repository-name=$IMAGE --image-ids=imageTag=$PR_NUMBER --query 'images[].imageId.imageTag' --output text)" ]; then
-            CACHE_TAG=latest
-          fi
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
+      - name: Move dockerignore
+        run: |
           mv ci/Dockerfile.lambda.dockerignore .
-          docker build \
-            --cache-from $REGISTRY/$IMAGE:$CACHE_TAG \
-            --build-arg GIT_SHA=${GITHUB_SHA::7} \
-            --build-arg BUILDKIT_INLINE_CACHE=1 \
-            -t $REGISTRY/$IMAGE:$PR_NUMBER . \
-            -f ci/Dockerfile.lambda
 
-      - name: Push containers to ECR
-        run: |
-          docker tag $REGISTRY/$IMAGE:$PR_NUMBER $REGISTRY/$IMAGE:latest
-          docker push $REGISTRY/$IMAGE:$PR_NUMBER
-          docker push $REGISTRY/$IMAGE:latest
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ci/Dockerfile.lambda                    
+          cache-from: $REGISTRY/$IMAGE:latest          
+          build-args: |
+            GIT_SHA=${GITHUB_SHA::7}
+            BUILDKIT_INLINE_CACHE=1
+          push: true
+          tags: |
+            $REGISTRY/$IMAGE:$PR_NUMBER
+            $REGISTRY/$IMAGE:latest
 
       - name: Delete old images
         run: |
@@ -122,6 +120,8 @@ jobs:
                 API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
                 ADMIN_BASE_URL=$URL
               }" > /dev/null 2>&1
+
+            aws lambda wait function-updated --function-name $FUNCTION_NAME-$PR_NUMBER
           fi
 
       - name: Update PR
@@ -134,5 +134,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `:test_tube: [PR Review environment](${process.env.URL.slice(1, -1)})`
+              body: `## :test_tube: Review environment\n${process.env.URL.slice(1, -1)}`
             })
