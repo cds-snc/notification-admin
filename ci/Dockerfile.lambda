@@ -36,10 +36,11 @@ COPY requirements.txt ${APP_DIR}
 RUN python -m pip install wheel && \
     pip3 install -r requirements.txt
 
-COPY . ${APP_DIR}
+COPY package.json package-lock.json .snyk ${APP_DIR}
+RUN npm ci
 
-RUN npm ci && \
-    npm run build && \
+COPY . ${APP_DIR}
+RUN npm run build && \
     rm -rf node_modules
 
 RUN make babel && \

@@ -6,7 +6,8 @@ on:
       - main
 
 env:
-  FUNCTION_NAME: "notify-admin"
+  AWS_DEFAULT_REGION: ca-central-1
+  FUNCTION_NAME: "notify-admin-pr"
   GITHUB_SHA: ${{ github.sha }}
   IMAGE: notify/admin
   REGISTRY: 239043911459.dkr.ecr.ca-central-1.amazonaws.com
@@ -26,8 +27,8 @@ jobs:
         id: aws-creds
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
       - name: Login to ECR
@@ -38,9 +39,14 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
         run: |
+          CACHE_TAG=$PR_NUMBER
+          if [ -z "$(aws ecr batch-get-image --repository-name=$IMAGE --image-ids=imageTag=$PR_NUMBER --query 'images[].imageId.imageTag' --output text)" ]; then
+            CACHE_TAG=latest
+          fi
+
           mv ci/Dockerfile.lambda.dockerignore .
           docker build \
-            --cache-from $REGISTRY/$IMAGE:$PR_NUMBER \
+            --cache-from $REGISTRY/$IMAGE:$CACHE_TAG \
             --build-arg GIT_SHA=${GITHUB_SHA::7} \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             -t $REGISTRY/$IMAGE:$PR_NUMBER . \
@@ -48,14 +54,15 @@ jobs:
 
       - name: Push containers to ECR
         run: |
+          docker tag $REGISTRY/$IMAGE:$PR_NUMBER $REGISTRY/$IMAGE:latest
           docker push $REGISTRY/$IMAGE:$PR_NUMBER
+          docker push $REGISTRY/$IMAGE:latest
 
       - name: Delete old images
         run: |
-          IMAGES_TO_DELETE="$(aws ecr list-images --region ca-central-1 --repository-name $IMAGE --filter "tagStatus=UNTAGGED" --query 'imageIds[*]' --output json)"
+          IMAGES_TO_DELETE="$(aws ecr list-images --repository-name $IMAGE --filter "tagStatus=UNTAGGED" --query 'imageIds[*]' --output json)"
           aws ecr batch-delete-image \
-            --region ca-central-1 \
-            --repository-name $REGISTRY/$IMAGE \
+            --repository-name $IMAGE \
             --image-ids "$IMAGES_TO_DELETE" || true
 
       - name: Logout of Amazon ECR
@@ -72,13 +79,11 @@ jobs:
         id: aws-creds
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
       - name: Create/Update lambda function
-        env:
-          LAMBDA_ENV: NOTIFY_ENVIRONMENT=staging,FLASK_APP=application.py,IP_GEOLOCATE_SERVICE=False,REDIS_ENABLED=False,SENDING_DOMAIN=staging.notification.cdssandbox.xyz
         run: |
           if aws lambda get-function --function-name $FUNCTION_NAME-$PR_NUMBER > /dev/null 2>&1; then
             aws lambda update-function-code \
@@ -93,12 +98,9 @@ jobs:
               --timeout 15 \
               --memory-size 1024 \
               --code ImageUri=$REGISTRY/$IMAGE:$PR_NUMBER \
-              --environment Variables={${{ env.LAMBDA_ENV }}} \
               --description "$GITHUB_REPOSITORY/pull/$PR_NUMBER" > /dev/null 2>&1
 
             aws lambda wait function-active --function-name $FUNCTION_NAME-$PR_NUMBER
-            echo URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)" >> $GITHUB_ENV
-            
             aws lambda add-permission \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
               --statement-id FunctionURLAllowPublicAccess \
@@ -106,9 +108,11 @@ jobs:
               --principal "*" \
               --function-url-auth-type NONE > /dev/null 2>&1
 
+            URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)"
+            echo "URL=$URL" >> $GITHUB_ENV
             aws lambda update-function-configuration \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
-              --environment Variables={${{ env.LAMBDA_ENV }},ADMIN_BASE_URL="$URL"} > /dev/null 2>&1
+              --environment "Variables={NOTIFY_ENVIRONMENT=staging,FLASK_APP=application.py,IP_GEOLOCATE_SERVICE=False,REDIS_ENABLED=False,SENDING_DOMAIN=staging.notification.cdssandbox.xyz,ADMIN_BASE_URL=$URL}" > /dev/null 2>&1
           fi
 
       - name: Update PR
