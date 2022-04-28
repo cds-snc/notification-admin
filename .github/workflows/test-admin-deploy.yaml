@@ -47,14 +47,14 @@ jobs:
         with:
           context: .
           file: ci/Dockerfile.lambda                    
-          cache-from: $REGISTRY/$IMAGE:latest          
+          cache-from: ${{ env.REGISTRY }}/${{ env.$IMAGE }}:latest          
           build-args: |
             GIT_SHA=${GITHUB_SHA::7}
             BUILDKIT_INLINE_CACHE=1
           push: true
           tags: |
-            $REGISTRY/$IMAGE:$PR_NUMBER
-            $REGISTRY/$IMAGE:latest
+            ${{ env.REGISTRY }}/${{ env.$IMAGE }}:${{ env.$PR_NUMBER }}
+            ${{ env.REGISTRY }}/${{ env.$IMAGE }}:latest
 
       - name: Delete old images
         run: |
