@@ -110,9 +110,18 @@ jobs:
 
             URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)"
             echo "URL=$URL" >> $GITHUB_ENV
+            
             aws lambda update-function-configuration \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
-              --environment "Variables={NOTIFY_ENVIRONMENT=staging,FLASK_APP=application.py,IP_GEOLOCATE_SERVICE=False,REDIS_ENABLED=False,SENDING_DOMAIN=staging.notification.cdssandbox.xyz,ADMIN_BASE_URL=$URL}" > /dev/null 2>&1
+              --environment "Variables={\
+                NOTIFY_ENVIRONMENT=staging,\
+                FLASK_APP=application.py,\
+                IP_GEOLOCATE_SERVICE=False,\
+                REDIS_ENABLED=False,\
+                SENDING_DOMAIN=staging.notification.cdssandbox.xyz,\
+                API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
+                ADMIN_BASE_URL=$URL
+              }" > /dev/null 2>&1
           fi
 
       - name: Update PR
@@ -125,5 +134,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Deployed URL: ${process.env.URL.slice(1, -1)}`
+              body: `:test_tube: [PR Review environment](${process.env.URL.slice(1, -1)})`
             })
