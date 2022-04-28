@@ -1,6 +1,8 @@
 import os
 
 import sentry_sdk
+
+from apig_wsgi import make_lambda_handler
 from dotenv import load_dotenv
 from flask import Flask
 from sentry_sdk.integrations.flask import FlaskIntegration
@@ -25,6 +27,8 @@ application.wsgi_app = ProxyFix(application.wsgi_app)  # type: ignore
 
 create_app(application)
 
+apig_wsgi_handler = make_lambda_handler(application, binary_support=True)
+
 if os.environ.get("USE_LOCAL_JINJA_TEMPLATES") == "True":
     print("")  # noqa: T001
     print("========================================================")  # noqa: T001
@@ -34,3 +38,7 @@ if os.environ.get("USE_LOCAL_JINJA_TEMPLATES") == "True":
     print("")  # noqa: T001
     print("========================================================")  # noqa: T001
     print("")  # noqa: T001
+
+
+def handler(event, context):
+    return apig_wsgi_handler(event, context)
