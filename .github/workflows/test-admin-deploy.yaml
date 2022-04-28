@@ -119,9 +119,9 @@ jobs:
                 API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
                 ADMIN_BASE_URL=$URL
               }" > /dev/null 2>&1
-
-            aws lambda wait function-updated --function-name $FUNCTION_NAME-$PR_NUMBER
           fi
+
+          aws lambda wait function-updated --function-name $FUNCTION_NAME-$PR_NUMBER
 
       - name: Update PR
         if: env.URL != ''
