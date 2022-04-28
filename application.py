@@ -1,5 +1,4 @@
 import os
-import json
 
 import sentry_sdk
 
@@ -42,7 +41,4 @@ if os.environ.get("USE_LOCAL_JINJA_TEMPLATES") == "True":
 
 
 def handler(event, context):
-    print(json.dumps(event, indent=2, sort_keys=True))
-    response = apig_wsgi_handler(event, context)
-    print(json.dumps(response, indent=2, sort_keys=True))
-    return response
+    return apig_wsgi_handler(event, context)
