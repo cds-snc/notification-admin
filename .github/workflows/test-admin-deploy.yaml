@@ -8,7 +8,6 @@ on:
 env:
   AWS_DEFAULT_REGION: ca-central-1
   FUNCTION_NAME: "notify-admin-pr"
-  GITHUB_SHA: ${{ github.sha }}
   IMAGE: notify/admin
   REGISTRY: 239043911459.dkr.ecr.ca-central-1.amazonaws.com
   ROLE_ARN: arn:aws:iam::239043911459:role/service-role/notify-admin-role-t6iqgjej
@@ -47,14 +46,14 @@ jobs:
         with:
           context: .
           file: ci/Dockerfile.lambda                    
-          cache-from: ${{ env.REGISTRY }}/${{ env.$IMAGE }}:latest          
+          cache-from: ${{ env.REGISTRY }}/${{ env.IMAGE }}:latest          
           build-args: |
-            GIT_SHA=${GITHUB_SHA::7}
+            GIT_SHA=${{ github.sha }}
             BUILDKIT_INLINE_CACHE=1
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.$IMAGE }}:${{ env.$PR_NUMBER }}
-            ${{ env.REGISTRY }}/${{ env.$IMAGE }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.PR_NUMBER }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE }}:latest
 
       - name: Delete old images
         run: |
