@@ -16,13 +16,23 @@
   ) }}
 
   <div class="form-group">
-    <p>{{ _('Users will see your sending email address in the \'From\' field of the emails you send.') }}</p>
-    <p>{{ _('Your sending email address helps build trust with recipients. A good email address is relevant and as concise as possible.') }}</p>
+    <ul class="list-disc ml-5">
+      <li class="pt-4 text-base leading-tight">
+        {{ _('Users will see your sending email address in the \'From\' field of the emails you send.') }} 
+      </li>
+      <li class="pt-4 text-base leading-tight">
+        {{ _('Your sending email address helps build trust with recipients. A good email address is relevant and as concise as possible.') }}
+      </li>
+      <li class="pt-4 text-base leading-tight">
+        {{ _('Only enter the name before the at symbol using lowercase letters, periods, dashes or underscores.') }}
+      </li>
+    </ul>
+    <br />
   </div>
 
   {% call form_wrapper() %}
     {% set save_txt = _('Save') %}
-    {% set hint_txt = _('Up to 64 characters') %}
+    {% set hint_txt = _('Up to 64 characters. Only enter the name before the at symbol, without spaces.') %}
     {% set suffix_txt = '@' + sending_domain %}
     {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt) }}
     {{ page_footer(save_txt) }}

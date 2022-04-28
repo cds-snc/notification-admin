@@ -1,12 +1,11 @@
 <p>{{ _('Your sending email address helps build trust with recipients. A good email address is relevant and as concise as possible.') }}</p>
+<p>{{ _('Only enter the name before the at symbol using lowercase letters, periods, dashes or underscores.') }}</p>
 
 {% set suffix_txt = '@' + sending_domain %}
 
-<p>{{ _('For example: passports.passeports') }}{{ suffix_txt }}</p>
-
 <div class="form-wrap">
   {% call form_wrapper() %}
-    {% set hint_txt = _('Up to 64 characters') %}
+    {% set hint_txt = _('Up to 64 characters. Only enter the name before the at symbol, without spaces.') %}
 
     {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt, width='1-2', maxlength=64) }}
     {{ form.name }}
