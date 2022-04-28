@@ -2,7 +2,7 @@ ARG APP_DIR="/app"
 ARG APP_VENV="/opt/venv"
 
 # Build image
-FROM python:3.9-alpine as build
+FROM python:3.9-alpine as base
 
 ARG APP_DIR
 ARG APP_VENV
@@ -47,7 +47,7 @@ RUN make babel && \
     make generate-version-file
 
 # Final image
-FROM python:3.9-alpine
+FROM python:3.9-alpine as lambda
 
 ARG APP_DIR
 ARG APP_VENV
@@ -61,8 +61,8 @@ RUN apk add --no-cache libstdc++
 
 WORKDIR ${APP_DIR}
 
-COPY --from=build ${APP_DIR} ${APP_DIR}
-COPY --from=build ${APP_VENV} ${APP_VENV}
+COPY --from=base ${APP_DIR} ${APP_DIR}
+COPY --from=base ${APP_VENV} ${APP_VENV}
 COPY bin/entry.sh /
 COPY bin/sync_lambda_envs.sh /
 
