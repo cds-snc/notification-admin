@@ -141,6 +141,8 @@ class DoesNotStartWithDoubleZero:
 
 def validate_email_from(form, field):
     if email_safe(field.data) != field.data.lower():
+        # fix their data instead of only warning them
+        field.data = email_safe(field.data)
         raise ValidationError(_l("This entry must contain valid characters for an email address."))
     if len(field.data) > 64:
         raise ValidationError(_l("This cannot exceed 64 characters in length"))
