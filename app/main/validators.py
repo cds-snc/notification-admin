@@ -143,7 +143,7 @@ def validate_email_from(form, field):
     if email_safe(field.data) != field.data.lower():
         # fix their data instead of only warning them
         field.data = email_safe(field.data)
-        raise ValidationError(_l("This entry must contain valid characters for an email address."))
+        raise ValidationError(_l("Make sure we formatted your email address correctly."))
     if len(field.data) > 64:
         raise ValidationError(_l("This cannot exceed 64 characters in length"))
     # this filler is used because service id is not available when validating a new service to be created
@@ -157,7 +157,7 @@ def validate_service_name(form, field):
     if len(field.data) > 255:
         raise ValidationError(_l("This cannot exceed 255 characters in length"))
     if field.data != email_safe_name(field.data):
-        raise ValidationError(_l("This entry must contain valid characters for an email address."))
+        raise ValidationError(_l("Make sure we formatted your email address correctly."))
     service_id = getattr(form, "service_id", current_app.config["NOTIFY_BAD_FILLER_UUID"])
     unique_name = service_api_client.is_service_name_unique(
         service_id,
