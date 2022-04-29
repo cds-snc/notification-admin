@@ -148,6 +148,20 @@ def test_wizard_flow_with_step_2_should_display_email_from(
     assert page.select_one("h1").text.strip() == "Create a sending email address for your service"
 
 
+def test_wizard_flow_with_step_2_should_correct_invalid_email_from(
+    client_request,
+):
+    page = client_request.post(
+        "main.add_service",
+        _data={"email_from": "[Health Canada! - Sante&&Canada]"},
+        current_step="choose_email_from",
+        _expected_status=200,
+    )
+
+    # ensure email has spaces and special characters removed
+    assert page.find(id="email_from")["value"] == "health.canada-santecanada"
+
+
 def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
     client_request,
     mock_service_email_from_is_unique,
