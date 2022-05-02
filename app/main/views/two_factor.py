@@ -8,7 +8,7 @@ from app.main import main
 from app.main.forms import TwoFactorForm
 from app.main.views.authenticator import Authenticator
 from app.models.user import User
-from app.utils import redirect_to_sign_in
+from app.utils import is_safe_redirect_url, redirect_to_sign_in
 
 
 @main.route("/two-factor-email-sent", methods=["GET", "POST"])
@@ -67,15 +67,6 @@ def two_factor_sms_sent():
     return render_template("views/two-factor-sms.html", form=form)
 
 
-# see http://flask.pocoo.org/snippets/62/
-def _is_safe_redirect_url(target):
-    from urllib.parse import urljoin, urlparse
-
-    host_url = urlparse(request.host_url)
-    redirect_url = urlparse(urljoin(request.host_url, target))
-    return redirect_url.scheme in ("http", "https") and host_url.netloc == redirect_url.netloc
-
-
 def log_in_user(user_id):
     with Authenticator(user_id) as user:
         return redirect_when_logged_in(user=user, platform_admin=user.platform_admin)
@@ -83,7 +74,7 @@ def log_in_user(user_id):
 
 def redirect_when_logged_in(user, platform_admin):
     next_url = request.args.get("next")
-    if next_url and _is_safe_redirect_url(next_url):
+    if next_url and is_safe_redirect_url(next_url):
         url = next_url
     elif platform_admin:
         url = url_for("main.choose_account")
