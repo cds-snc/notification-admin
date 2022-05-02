@@ -9,9 +9,9 @@ from app.articles.pages import get_page_by_slug_with_cache
 from tests import MockRedis
 
 gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"
-notify_url = f"https://{gc_articles_api}/wp-json"
+gc_articles_url = f"https://{gc_articles_api}/wp-json"
 endpoint = "wp/v2/pages"
-request_url = f"{notify_url}/{endpoint}"
+request_url = f"{gc_articles_url}/{endpoint}"
 
 params = {"slug": "mypage", "lang": "en"}
 cache_key = f"{GC_ARTICLES_CACHE_PREFIX}{endpoint}/en/mypage"
