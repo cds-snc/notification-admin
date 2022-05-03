@@ -529,7 +529,7 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
             self.service_id = service_id
 
     email_from = StringField(
-        _l("Sending email address"),
+        _l("Sending email address name"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,
@@ -653,7 +653,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
 
 class CreateServiceStepEmailFromForm(StripWhitespaceForm):
     email_from = StringField(
-        _l("Sending email address"),
+        _l("Sending email address name"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,

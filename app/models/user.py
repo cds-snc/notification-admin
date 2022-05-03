@@ -113,8 +113,8 @@ class User(JSONModel, UserMixin):
         response = user_api_client.update_user_attribute(self.id, **kwargs)
         self.__init__(response)
 
-    def update_password(self, password):
-        response = user_api_client.update_password(self.id, password)
+    def update_password(self, password, login_data={}):
+        response = user_api_client.update_password(self.id, password, login_data)
         self.__init__(response)
 
     def set_permissions(self, service_id, permissions, folder_permissions):
