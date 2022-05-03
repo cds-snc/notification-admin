@@ -97,7 +97,10 @@ def verify_mobile():
 
 @main.route("/privacy")
 def privacy():
-    return get_content_by_slug_or_redirect("privacy", "confidentialite")
+    if get_current_locale(current_app) == "en":
+        return page_content("privacy")
+    else:
+        return redirect("confidentialite", 307)
 
 
 @main.route("/pricing")
@@ -266,12 +269,18 @@ def callbacks():
 
 @main.route("/features", endpoint="features")
 def features():
-    return get_content_by_slug_or_redirect("features", "fonctionnalites")
+    if get_current_locale(current_app) == "en":
+        return page_content("features")
+    else:
+        return redirect("fonctionnalites", 307)
 
 
 @main.route("/why-notify", endpoint="why-notify")
 def why_notify():
-    return get_content_by_slug_or_redirect("why-notify", "pourquoi-notification")
+    if get_current_locale(current_app) == "en":
+        return page_content("why-notify")
+    else:
+        return redirect("pourquoi-notification", 307)
 
 
 @main.route("/roadmap", endpoint="roadmap")
@@ -296,7 +305,10 @@ def features_letters():
 
 @main.route("/guidance", endpoint="guidance")
 def guidance():
-    return get_content_by_slug_or_redirect("guidance", "guides-reference")
+    if get_current_locale(current_app) == "en":
+        return page_content("guidance")
+    else:
+        return redirect("guides-reference", 307)
 
 
 @main.route("/format", endpoint="format")
@@ -313,7 +325,10 @@ def personalise():
 
 @main.route("/security", endpoint="security")
 def security():
-    return get_content_by_slug_or_redirect("security", "securite")
+    if get_current_locale(current_app) == "en":
+        return page_content("security")
+    else:
+        return redirect("securite", 307)
 
 
 @main.route("/a11y", endpoint="a11y")
