@@ -97,7 +97,7 @@ def verify_mobile():
 
 @main.route("/privacy")
 def privacy():
-    return render_template("views/privacy.html")
+    return page_content(path="privacy")
 
 
 @main.route("/pricing")
@@ -266,7 +266,7 @@ def callbacks():
 
 @main.route("/features", endpoint="features")
 def features():
-    return render_template("views/features.html")
+    return page_content(path="features")
 
 
 @main.route("/why-notify", endpoint="why-notify")
@@ -297,27 +297,27 @@ def features_letters():
 
 @main.route("/guidance", endpoint="guidance")
 def guidance():
-    return render_template("views/guidance/index.html")
+    return page_content(path="guidance")
 
 
 @main.route("/format", endpoint="format")
 def format():
-    return render_template("views/guidance/format.html")
+    return page_content(path="format")
 
 
 @main.route("/personalise", endpoint="personalise")
 def personalise():
-    return render_template("views/guidance/personalise.html")
+    return page_content(path="personalise")
 
 
 @main.route("/security", endpoint="security")
 def security():
-    return render_template("views/security.html", security_email=current_app.config["SECURITY_EMAIL"])
+    return page_content(path="security")
 
 
 @main.route("/a11y", endpoint="a11y")
 def a11y():
-    return render_template("views/a11y.html")
+    return page_content(path="a11y")
 
 
 @main.route("/welcome", endpoint="welcome")
@@ -352,12 +352,12 @@ def activity_download():
 
 @main.route("/terms", endpoint="terms")
 def terms():
-    return render_template("views/terms-of-use.html")
+    return page_content(path="terms-of-use")
 
 
 @main.route("/messages-status", endpoint="messages_status")
 def messages_status():
-    return render_template("views/messages-status.html")
+    return page_content(path="message-delivery-status")
 
 
 # --- Redirects --- #
