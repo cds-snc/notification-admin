@@ -414,9 +414,6 @@ def page_content(path=""):
     if not response:
         return _try_alternate_language(endpoint, params)
 
-    if not response:
-        abort(404)
-
     if isinstance(response, list):
         response = response[0]
 
