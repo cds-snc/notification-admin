@@ -97,7 +97,8 @@ def verify_mobile():
 
 @main.route("/privacy")
 def privacy():
-    return page_content(path="privacy")
+    path = "privacy" if get_current_locale(current_app) == "en" else "confidentialite"
+    return page_content(path)
 
 
 @main.route("/pricing")
@@ -266,13 +267,14 @@ def callbacks():
 
 @main.route("/features", endpoint="features")
 def features():
-    return page_content(path="features")
+    path = "features" if get_current_locale(current_app) == "en" else "fonctionnalites"
+    return page_content(path)
 
 
 @main.route("/why-notify", endpoint="why-notify")
 def why_notify():
-    rate_sms = current_app.config.get("DEFAULT_FREE_SMS_FRAGMENT_LIMITS", {}).get("central", 10000)
-    return render_template("views/why-notify.html", rate_sms=rate_sms)
+    path = "why-notify" if get_current_locale(current_app) == "en" else "pourquoi-notification"
+    return page_content(path)
 
 
 @main.route("/roadmap", endpoint="roadmap")
@@ -297,27 +299,32 @@ def features_letters():
 
 @main.route("/guidance", endpoint="guidance")
 def guidance():
-    return page_content(path="guidance")
+    path = "guidance" if get_current_locale(current_app) == "en" else "guides-reference"
+    return page_content(path)
 
 
 @main.route("/format", endpoint="format")
 def format():
-    return page_content(path="format")
+    slug = "formatting-guide" if get_current_locale(current_app) == "en" else "guide-mise-en-forme"
+    return redirect(slug, 301)
 
 
 @main.route("/personalise", endpoint="personalise")
 def personalise():
-    return page_content(path="personalise")
+    slug = "personalisation-guide" if get_current_locale(current_app) == "en" else "etat-livraison-messages"
+    return redirect(slug, 301)
 
 
 @main.route("/security", endpoint="security")
 def security():
-    return page_content(path="security")
+    path = "security" if get_current_locale(current_app) == "en" else "securite"
+    return page_content(path)
 
 
 @main.route("/a11y", endpoint="a11y")
 def a11y():
-    return page_content(path="a11y")
+    slug = "accessibility" if get_current_locale(current_app) == "en" else "accessibilite"
+    return redirect(slug, 301)
 
 
 @main.route("/welcome", endpoint="welcome")
@@ -352,12 +359,14 @@ def activity_download():
 
 @main.route("/terms", endpoint="terms")
 def terms():
-    return page_content(path="terms-of-use")
+    slug = "terms-of-use" if get_current_locale(current_app) == "en" else "conditions-utilisation"
+    return redirect(slug, 301)
 
 
 @main.route("/messages-status", endpoint="messages_status")
 def messages_status():
-    return page_content(path="message-delivery-status")
+    slug = "message-delivery-status" if get_current_locale(current_app) == "en" else "etat-livraison-messages"
+    return redirect(slug, 301)
 
 
 # --- Redirects --- #
