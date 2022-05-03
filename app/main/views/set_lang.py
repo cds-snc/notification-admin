@@ -1,6 +1,7 @@
-from flask import current_app, redirect, request, session
+from flask import current_app, redirect, request, session, url_for
 
 from app.main import main
+from app.utils import is_safe_redirect_url
 
 
 @main.route("/set-lang")
@@ -13,4 +14,10 @@ def set_lang():
     else:
         session["userlang"] = "en"
 
-    return redirect(request.args.get("from", "/"))
+    if is_safe_redirect_url(request.args.get("from", "/")):
+        url = request.args.get("from", "/")
+    else:
+        # redirect to main page in case of an invalid redirect
+        url = url_for("main.show_accounts_or_dashboard")
+
+    return redirect(url)
