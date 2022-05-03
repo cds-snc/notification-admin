@@ -22,8 +22,8 @@ class dotdict(dict):
 
 
 class MockRedis:
-    def __init__(self):
-        self.cache = dict()
+    def __init__(self, cache=dict()):
+        self.cache = cache
 
     def get(self, key):
         if key in self.cache:

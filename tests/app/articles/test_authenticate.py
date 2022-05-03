@@ -1,12 +1,12 @@
 import requests_mock
 from flask import current_app
 
-from app import articles
+from app.articles import api
 
 
 def test_authenticate_success():
     base_endpoint = current_app.config["GC_ARTICLES_API"]
-    auth_endpoint = articles.GC_ARTICLES_AUTH_API_ENDPOINT
+    auth_endpoint = api.GC_ARTICLES_AUTH_API_ENDPOINT
     valid_token = "this-is-a-valid-token"
 
     endpoint = f"https://{base_endpoint}{auth_endpoint}"
@@ -19,7 +19,7 @@ def test_authenticate_success():
             status_code=200,
         )
 
-        token = articles.authenticate("user", "password", base_endpoint)
+        token = api.authenticate("user", "password", base_endpoint)
         assert token == valid_token
         assert mock.called
         assert mock.request_history[0].url == endpoint
@@ -27,7 +27,7 @@ def test_authenticate_success():
 
 def test_authenticate_bad_credentials():
     base_endpoint = current_app.config["GC_ARTICLES_API"]
-    auth_endpoint = articles.GC_ARTICLES_AUTH_API_ENDPOINT
+    auth_endpoint = api.GC_ARTICLES_AUTH_API_ENDPOINT
 
     endpoint = f"https://{base_endpoint}{auth_endpoint}"
 
@@ -39,7 +39,7 @@ def test_authenticate_bad_credentials():
             status_code=200,
         )
 
-        token = articles.authenticate("user", "bad_password", base_endpoint)
+        token = api.authenticate("user", "bad_password", base_endpoint)
         assert token is None
         assert mock.called
         assert mock.request_history[0].url == endpoint
