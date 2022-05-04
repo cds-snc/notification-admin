@@ -95,12 +95,6 @@ def verify_mobile():
     return render_template("views/verify-mobile.html")
 
 
-@main.route("/privacy")
-def privacy():
-    path = "privacy" if get_current_locale(current_app) == "en" else "confidentialite"
-    return page_content(path)
-
-
 @main.route("/pricing")
 def pricing():
     return render_template(
@@ -265,18 +259,6 @@ def callbacks():
     return redirect(documentation_url("callbacks"), code=301)
 
 
-@main.route("/features", endpoint="features")
-def features():
-    path = "features" if get_current_locale(current_app) == "en" else "fonctionnalites"
-    return page_content(path)
-
-
-@main.route("/why-notify", endpoint="why-notify")
-def why_notify():
-    path = "why-notify" if get_current_locale(current_app) == "en" else "pourquoi-notification"
-    return page_content(path)
-
-
 @main.route("/roadmap", endpoint="roadmap")
 def roadmap():
     return render_template("views/roadmap.html")
@@ -297,12 +279,6 @@ def features_letters():
     return render_template("views/letters.html")
 
 
-@main.route("/guidance", endpoint="guidance")
-def guidance():
-    path = "guidance" if get_current_locale(current_app) == "en" else "guides-reference"
-    return page_content(path)
-
-
 @main.route("/format", endpoint="format")
 def format():
     slug = "formatting-guide" if get_current_locale(current_app) == "en" else "guide-mise-en-forme"
@@ -313,12 +289,6 @@ def format():
 def personalise():
     slug = "personalisation-guide" if get_current_locale(current_app) == "en" else "etat-livraison-messages"
     return redirect(slug, 301)
-
-
-@main.route("/security", endpoint="security")
-def security():
-    path = "security" if get_current_locale(current_app) == "en" else "securite"
-    return page_content(path)
 
 
 @main.route("/a11y", endpoint="a11y")
