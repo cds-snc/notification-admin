@@ -675,9 +675,9 @@ def test_set_lang(
 
     # test a valid route redirects correctly (second request will be in French)
     page = client_request.get(
-        **{"endpoint": "main.set_lang", "from": "/why-notify", "_expected_status": 200, "_follow_redirects": True}
+        **{"endpoint": "main.set_lang", "from": "/welcome", "_expected_status": 200, "_follow_redirects": True}
     )
-    assert page.select_one("h1").text.strip() == "Pourquoi utiliser GC Notification"
+    assert page.select_one("h1").text.strip() == "Bienvenue dans GC Notification"
 
     # test an external route route redirects correctly (third request will be in English)
     page = client_request.get(
