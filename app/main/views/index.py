@@ -12,7 +12,6 @@ from flask import (
     url_for,
 )
 from flask_login import current_user
-from flask_babel import lazy_gettext as _l
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
