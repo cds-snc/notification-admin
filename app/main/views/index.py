@@ -11,6 +11,7 @@ from flask import (
     request,
     url_for,
 )
+from flask_babel import _
 from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
@@ -47,7 +48,7 @@ from app.utils import (
 def index():
     if current_user and current_user.is_authenticated:
         return redirect(url_for("main.choose_account"))
-    
+
     path = "home" if get_current_locale(current_app) == "en" else "accueil"
     return page_content(path=path)
 
@@ -273,24 +274,6 @@ def features_letters():
     return render_template("views/letters.html")
 
 
-@main.route("/format", endpoint="format")
-def format():
-    slug = "formatting-guide" if get_current_locale(current_app) == "en" else "guide-mise-en-forme"
-    return redirect(slug, 301)
-
-
-@main.route("/personalise", endpoint="personalise")
-def personalise():
-    slug = "personalisation-guide" if get_current_locale(current_app) == "en" else "guide-personnalisation"
-    return redirect(slug, 301)
-
-
-@main.route("/a11y", endpoint="a11y")
-def a11y():
-    slug = "accessibility" if get_current_locale(current_app) == "en" else "accessibilite"
-    return redirect(slug, 301)
-
-
 @main.route("/welcome", endpoint="welcome")
 def welcome():
     return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"])
@@ -333,7 +316,7 @@ def messages_status():
     return redirect(slug, 301)
 
 
-# --- Redirects --- #
+# --- Interal Redirects --- #
 @main.route("/features/roadmap", endpoint="redirect_roadmap")
 @main.route("/features/email", endpoint="redirect_email")
 @main.route("/features/sms", endpoint="redirect_sms")
@@ -345,6 +328,15 @@ def messages_status():
 @main.route("/templates", endpoint="redirect_format")
 def old_page_redirects():
     return redirect(url_for(request.endpoint.replace("redirect_", "")), code=301)
+
+
+# --- GCA Redirects --- #
+@main.route("/a11y", endpoint="/accessibility")
+@main.route("/why-notify", endpoint="/why-gc-notify")
+@main.route("/personalise", endpoint="/personalisation-guide")
+@main.route("/format", endpoint="/formatting-guide")
+def gca_redirects():
+    return redirect(_(request.endpoint.replace("main.", "")), code=301)
 
 
 """Dynamic routes handling for GCArticles API-driven pages"""
