@@ -3967,4 +3967,13 @@ def mock_get_service_and_organisation_counts(mocker):
     )
 
 
+def pytest_generate_tests(metafunc):
+    # Copied from https://gist.github.com/pfctdayelise/5719730
+    idparametrize = metafunc.definition.get_closest_marker("idparametrize")
+    if idparametrize:
+        argnames, testdata = idparametrize.args
+        ids, argvalues = zip(*sorted(testdata.items()))
+        metafunc.parametrize(argnames, argvalues, ids=ids)
+
+
 next(app_(None))  # used to init for other tests
