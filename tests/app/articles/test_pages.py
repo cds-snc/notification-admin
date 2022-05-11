@@ -1,6 +1,7 @@
 import json
 from unittest.mock import MagicMock, Mock
 
+import pytest
 import requests
 import requests_mock
 
@@ -99,3 +100,49 @@ def test_bad_slug_doesnt_save_empty_cache_entry(app_, mocker):
             assert mock_redis_method.get.called_with(cache_key)
             assert mock_redis_method.get.called_with(fallback_cache_key)
             assert not mock_redis_method.set.called
+
+
+@pytest.mark.parametrize("url", ["/a11y", "/why-notify", "/personalise", "/format"])
+def test_gca_redirects_work(client_request, mocker, url):
+    """
+    This test ensures that the pages we renamed properly provide a permanent redirect, and exist in GCA
+    """
+
+    # ensure each url is a permenent redirect
+    client_request.get_url(url, _expected_status=301)
+
+    # ensure target location exists and returns content
+    page = client_request.get_url(url, _follow_redirects=True)
+    assert page.find("span", id="gc-title").text.strip() == "GC Notify"
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "/why-gc-notify",
+        "/features",
+        "/guidance",
+        "/security",
+        "/privacy",
+        "/accessibility",
+        # "/terms", this returns a 302 because it was renamed in GCA - not sure how to fix this.
+        "/pourquoi-gc-notification?lang=fr",
+        "/fonctionnalites?lang=fr",
+        "/guides-reference?lang=fr",
+        "/securite?lang=fr",
+        "/confidentialite?lang=fr",
+        "/accessibilite?lang=fr",
+        "/conditions-dutilisation?lang=fr",
+    ],
+)
+def test_gca_content_exists_en_fr(client_request, mocker, url):
+    """
+    This test is ensures the content we link to exists on GCA.  If someone removes a page on GCA, this will fail.
+    """
+
+    # ensure target location exists and returns content
+    page = client_request.get_url(url, _expected_status=200)
+    assert (
+        page.find("span", id="gc-title").text.strip() == "GC Notify"
+        or page.find("span", id="gc-title").text.strip() == "GC Notification"
+    )
