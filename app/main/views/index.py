@@ -289,7 +289,7 @@ def activity_download():
     stats = get_latest_stats(get_current_locale(current_app))["monthly_stats"]
 
     csv_data = [["date", "sms_count", "email_count", "total"]]
-    for _, row in stats.items():
+    for date, row in stats.items():
         csv_data.append([row["year_month"], row["sms"], row["email"], row["total"]])
 
     return (
