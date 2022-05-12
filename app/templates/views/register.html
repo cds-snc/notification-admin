@@ -24,7 +24,7 @@
       {% set txt = _('Must be at least 8 characters and hard to guess') %}
       {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
       <p>
-        {{ _("By creating an account, you agree to the <a href='{}'>terms of use</a>.").format(url_for('main.terms')) }}
+        {{ _("By creating an account, you agree to the <a href='{}'>terms of use</a>.").format(_('/terms')) }}
       </p>
       {{form.auth_type}}
       {% set txt = _('Continue') %}

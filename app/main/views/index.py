@@ -66,7 +66,7 @@ def robots():
 
 @main.route("/.well-known/security.txt")
 def security_txt():
-    security_policy = url_for("main.security", _external=True)
+    security_policy = url_for("main.index", _external=True).rstrip("/") + _("/security")
     security_info = [
         f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
         "Preferred-Languages: en, fr",
@@ -304,18 +304,6 @@ def activity_download():
     )
 
 
-@main.route("/terms", endpoint="terms")
-def terms():
-    slug = "terms-of-use" if get_current_locale(current_app) == "en" else "conditions-utilisation"
-    return redirect(slug, 301)
-
-
-@main.route("/messages-status", endpoint="messages_status")
-def messages_status():
-    slug = "message-delivery-status" if get_current_locale(current_app) == "en" else "etat-livraison-messages"
-    return redirect(slug, 301)
-
-
 # --- Interal Redirects --- #
 @main.route("/features/roadmap", endpoint="redirect_roadmap")
 @main.route("/features/email", endpoint="redirect_email")
@@ -335,6 +323,7 @@ def old_page_redirects():
 @main.route("/why-notify", endpoint="/why-gc-notify")
 @main.route("/personalise", endpoint="/personalisation-guide")
 @main.route("/format", endpoint="/formatting-guide")
+@main.route("/messages-status", endpoint="/formatting-guide")
 def gca_redirects():
     return redirect(_(request.endpoint.replace("main.", "")), code=301)
 
