@@ -125,7 +125,7 @@ def test_gca_redirects_work(client_request, mocker, url):
         "/security",
         "/privacy",
         "/accessibility",
-        # "/terms", this returns a 302 because it was renamed in GCA - not sure how to fix this.
+        "/terms",
         "/pourquoi-gc-notification?lang=fr",
         "/fonctionnalites?lang=fr",
         "/guides-reference?lang=fr",

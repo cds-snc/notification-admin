@@ -96,7 +96,8 @@ def test_security_txt(client):
     response = client.get(url_for("main.security_txt"))
     assert response.headers["Content-Type"] == "text/plain"
     assert response.status_code == 200
-    security_policy = url_for("main.security", _external=True)
+    security_policy = url_for("main.index", _external=True).rstrip("/") + "/security"
+
     security_info = [
         f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
         "Preferred-Languages: en, fr",
@@ -110,21 +111,12 @@ def test_security_txt(client):
 @pytest.mark.parametrize(
     "view",
     [
-        "privacy",
         "pricing",
-        "terms",
         "roadmap",
-        "features",
-        "why-notify",
-        "security",
-        "messages_status",
         "email",
         "sms",
         "letters",
         "welcome",
-        "format",
-        "personalise",
-        "guidance",
     ],
 )
 def test_static_pages(
@@ -133,6 +125,29 @@ def test_static_pages(
     view,
 ):
     page = client_request.get("main.{}".format(view))
+    assert not page.select_one("meta[name=description]")
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "/privacy",
+        "/terms",
+        "/features",
+        "/why-gc-notify",
+        "/security",
+        "/formatting-guide",
+        "/personalisation-guide",
+        "/guidance",
+        "/message-delivery-status",
+    ],
+)
+def test_static_pages_gca(
+    client_request,
+    mock_get_organisation_by_domain,
+    url,
+):
+    page = client_request.get_url(url, _follow_redirects=True)
     assert not page.select_one("meta[name=description]")
 
 
@@ -154,11 +169,7 @@ def test_activity_page(mocker, client):
         ("redirect_email", "email"),
         ("redirect_sms", "sms"),
         ("redirect_letters", "letters"),
-        ("redirect_security", "security"),
-        ("redirect_terms", "terms"),
-        ("redirect_messages_status", "messages_status"),
         ("redirect_contact", "contact"),
-        ("redirect_format", "format"),
     ],
 )
 def test_old_static_pages_redirect(client, view, expected_view):
@@ -180,7 +191,7 @@ def test_old_documentation_page_redirects(client):
 
 
 def test_terms_page_has_correct_content(client_request):
-    terms_page = client_request.get("main.terms")
+    terms_page = client_request.get_url("/terms")
     assert normalize_spaces(terms_page.select("main p")[0].text) == (
         "The following terms apply to use of GC Notify, a product operated by the "
         "Canadian Digital Service (CDS). GC Notify is available for use by Canadian federal "
