@@ -19,7 +19,6 @@ from flask import (
     render_template,
     request,
     session,
-    url_for,
 )
 from flask.globals import _lookup_req_object, _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _

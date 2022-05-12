@@ -1,7 +1,4 @@
-from functools import partial
-
 import pytest
-from flask import url_for
 
 from app import format_notification_status_as_url
 
