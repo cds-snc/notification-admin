@@ -391,6 +391,7 @@ def _render_articles_page(response):
         slug=slug_en,
         lang_url=get_lang_url(response, bool(page_id)),
         stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+        isHome=True if slug_en == "home" else None,
     )
 
 

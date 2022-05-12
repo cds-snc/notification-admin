@@ -6,6 +6,22 @@
   {{ content_page_title }}
 {% endblock %}
 
+{% block meta %}
+    {% if isHome %}
+      {% set description = _('GC Notify lets you send emails and text messages to your users') %}
+      {% set keywords = _('e-notify, e notify, Enotify, gc notify, notify, canada notify, canada email, email notifications, Government of Canada, federal government, Canada SMS, Canada Notification service') %}
+      {% set meta_title = _('GC Notify | GC Notification') %}
+      <meta name="description" content="{{ description }}"/>
+      <meta name="keywords" content="{{ keywords }}"/>
+      <meta property="og:title" content="{{ meta_title }}"/>
+      <meta property="og:description" content="{{ description }}"/>
+      <meta
+        property="og:image"
+        content="{{ asset_url('images/product/notify-main.jpg') }}"
+      />
+      <meta property="og:url" content="{{ admin_base_url }}"/>
+    {% endif %}
+  {% endblock %}
 {% block maincolumn_content %}
 
   <div class="grid-row contain-floats">
