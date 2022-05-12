@@ -14,7 +14,7 @@
               {% endif %}
             {% endfor %}
           {% else %}
-            {{ nav_link_dark(id_key='nav-footer-primary-why-notify', label=_('Why GC Notify'), href=_('/why-notify'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-why-notify', label=_('Why GC Notify'), href=_('/why-gc-notify'), class="-ml-2") }}
             {{ nav_link_dark(id_key='nav-footer-primary-features', label=_('Features'), href=_('/features'), class="-ml-2") }}
             {{ nav_link_dark(id_key='nav-footer-primary-activity', label=_('Activity on GC Notify'), href=url_for('main.activity'), class="-ml-2") }}
           {% endif %}
