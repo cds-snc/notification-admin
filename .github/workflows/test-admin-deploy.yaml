@@ -64,7 +64,7 @@ jobs:
             type=gha,scope=base
             type=gha,scope=lambda
           cache-to: |
-            type=gha,scope=lambda          
+            type=gha,scope=lambda
           build-args: |
             GIT_SHA=${{ github.sha }}
           tags: |
@@ -132,7 +132,8 @@ jobs:
                 REDIS_ENABLED=False,\
                 SENDING_DOMAIN=staging.notification.cdssandbox.xyz,\
                 API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
-                ADMIN_BASE_URL=$URL
+                ADMIN_BASE_URL=$URL,\
+                GC_ARTICLES_API=articles.alpha.canada.ca/notification-gc-notify
               }" > /dev/null 2>&1
           fi
 
