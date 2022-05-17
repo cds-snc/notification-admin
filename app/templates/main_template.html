@@ -96,6 +96,9 @@
 </head>
 
 <body class="{% block body_classes %}{% endblock %} flex flex-col min-h-screen">
+  {% if isHome %}
+    {% include 'partials/cds_ascii_art.html' %}
+  {% endif %}
 {% include 'partials/google-tag-manager-body.html' %}
 <script nonce="{{ request_nonce }}">
   document.body.className = document.body.className
