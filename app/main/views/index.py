@@ -11,7 +11,6 @@ from flask import (
     request,
     url_for,
 )
-from flask_babel import _
 from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
@@ -29,6 +28,7 @@ from app.articles.pages import (
     get_page_by_slug,
     get_page_by_slug_with_cache,
 )
+from app.articles.routing import gca_url_for
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
@@ -66,7 +66,7 @@ def robots():
 
 @main.route("/.well-known/security.txt")
 def security_txt():
-    security_policy = url_for("main.index", _external=True).rstrip("/") + _("/security")
+    security_policy = gca_url_for("security", _external=True)
     security_info = [
         f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
         "Preferred-Languages: en, fr",
@@ -319,13 +319,13 @@ def old_page_redirects():
 
 
 # --- GCA Redirects --- #
-@main.route("/a11y", endpoint="/accessibility")
-@main.route("/why-notify", endpoint="/why-gc-notify")
-@main.route("/personalise", endpoint="/personalisation-guide")
-@main.route("/format", endpoint="/formatting-guide")
-@main.route("/messages-status", endpoint="/formatting-guide")
+@main.route("/a11y", endpoint="accessibility")
+@main.route("/why-notify", endpoint="whynotify")
+@main.route("/personalise", endpoint="personalisation_guide")
+@main.route("/format", endpoint="formatting_guide")
+@main.route("/messages-status", endpoint="message_delivery_status")
 def gca_redirects():
-    return redirect(_(request.endpoint.replace("main.", "")), code=301)
+    return redirect(gca_url_for(request.endpoint.replace("main.", "")), code=301)
 
 
 """Dynamic routes handling for GCArticles API-driven pages"""
