@@ -132,8 +132,7 @@ jobs:
                 REDIS_ENABLED=False,\
                 SENDING_DOMAIN=staging.notification.cdssandbox.xyz,\
                 API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
-                ADMIN_BASE_URL=$URL,\
-                GC_ARTICLES_API=articles.alpha.canada.ca/notification-gc-notify
+                ADMIN_BASE_URL=$URL
               }" > /dev/null 2>&1
           fi
 
