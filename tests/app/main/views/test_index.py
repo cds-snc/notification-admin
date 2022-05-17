@@ -2,6 +2,7 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
+from app.articles.routing import gca_url_for
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import documentation_url
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
@@ -96,7 +97,7 @@ def test_security_txt(client):
     response = client.get(url_for("main.security_txt"))
     assert response.headers["Content-Type"] == "text/plain"
     assert response.status_code == 200
-    security_policy = url_for("main.index", _external=True).rstrip("/") + "/security"
+    security_policy = gca_url_for("security", _external=True)
 
     security_info = [
         f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
