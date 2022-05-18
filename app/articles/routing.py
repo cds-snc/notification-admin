@@ -3,7 +3,7 @@ from flask import current_app, url_for
 from app.articles import get_current_locale
 
 GC_ARTICLES_ROUTES = {
-    "home": {"en": "/home", "fr": "/acceuil"},
+    "home": {"en": "/home", "fr": "/accueil"},
     "whynotify": {"en": "/why-gc-notify", "fr": "/pourquoi-gc-notification"},
     "features": {"en": "/features", "fr": "/fonctionnalites"},
     "guidance": {"en": "/guidance", "fr": "/guides-reference"},
