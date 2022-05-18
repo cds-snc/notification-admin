@@ -67,7 +67,7 @@ def mock_get_service_settings_page_common(
             [
                 "Label Value Action",
                 "Service name Test Service Change",
-                "Sending email address test.service@{sending_domain} Change",
+                "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
@@ -90,7 +90,7 @@ def mock_get_service_settings_page_common(
             [
                 "Label Value Action",
                 "Service name Test Service Change",
-                "Sending email address test.service@{sending_domain} Change",
+                "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
@@ -211,7 +211,7 @@ def test_organisation_name_links_to_org_dashboard(
             ["email", "sms", "inbound_sms", "international_sms"],
             [
                 "Service name service one Change",
-                "Sending email address test.service@{sending_domain} Change",
+                "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
@@ -230,7 +230,7 @@ def test_organisation_name_links_to_org_dashboard(
             ["email", "sms", "email_auth"],
             [
                 "Service name service one Change",
-                "Sending email address test.service@{sending_domain} Change",
+                "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Email code or text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",

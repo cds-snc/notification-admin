@@ -660,3 +660,32 @@ def test_get_template_with_html_allowed(mocker, app_, service_one, fake_uuid, al
 
     assert email_template is not None
     assert email_template.allow_html is allow_html
+
+
+def test_set_lang(
+    client_request,
+    mocker,
+):
+    # test an invalid route redirects correctly (first request defaults to english)
+    # The args in are in a dictionary because "from" is a reserved word :/
+    page = client_request.get(
+        **{"endpoint": "main.set_lang", "from": "/whatever", "_expected_status": 404, "_follow_redirects": True}
+    )
+    assert page.select_one("h1").text.strip() == "Page could not be found"
+
+    # test a valid route redirects correctly (second request will be in French)
+    page = client_request.get(
+        **{"endpoint": "main.set_lang", "from": "/why-notify", "_expected_status": 200, "_follow_redirects": True}
+    )
+    assert page.select_one("h1").text.strip() == "Pourquoi utiliser GC Notification"
+
+    # test an external route route redirects correctly (third request will be in English)
+    page = client_request.get(
+        **{
+            "endpoint": "main.set_lang",
+            "from": "https://malicious.hacker.com",
+            "_expected_status": 302,
+            "_follow_redirects": False,
+        }
+    )
+    assert len(page.findAll(text="/accounts-or-dashboard")) == 1

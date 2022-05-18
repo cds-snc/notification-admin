@@ -16,7 +16,7 @@ def test_render_sign_in_template_for_new_user(client_request):
     assert normalize_spaces(page.select_one("h1").text) == "Sign in"
     assert normalize_spaces(page.select("label")[0].text) == "Email address"
     assert page.select_one("#email_address")["value"] == ""
-    assert page.select_one("#email_address")["autocomplete"] == "email"
+    assert page.select_one("#email_address")["autocomplete"] == "username"
     assert normalize_spaces(page.select("label")[1].text) == "Password"
     assert page.select_one("#password")["value"] == ""
     assert page.select_one("#password")["autocomplete"] == "current-password"
@@ -426,10 +426,10 @@ def test_sign_in_security_center_notification_for_non_NA_signins(
     mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
 
-    reporter = mocker.patch("app.main.views.sign_in.report_security_finding")
+    reporter = mocker.patch("app.utils.report_security_finding")
 
     mocker.patch(
-        "app.main.views.sign_in._geolocate_lookup",
+        "app.utils._geolocate_lookup",
         return_value={"continent": {"code": "EU"}, "city": None, "subdivision": None},
     )
 
@@ -455,7 +455,7 @@ def test_sign_in_geolookup_disabled_in_dev(
     mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
 
-    geolookup_mock = mocker.patch("app.main.views.sign_in._geolocate_lookup")
+    geolookup_mock = mocker.patch("app.utils._geolocate_lookup")
 
     response = client.post(
         url_for("main.sign_in"),

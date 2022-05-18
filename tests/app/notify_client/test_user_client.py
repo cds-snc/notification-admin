@@ -63,7 +63,7 @@ def test_client_updates_password_separately(mocker, api_user_active):
     user_api_client.update_password(api_user_active["id"], expected_params["_password"])
     mock_update_password.assert_called_once_with(
         expected_url,
-        data={"_password": "272dfee24acc4d6cc0f81a26d17a406cad1ee7579bcc1671c22f530b6d6845c3"},
+        data={"_password": "272dfee24acc4d6cc0f81a26d17a406cad1ee7579bcc1671c22f530b6d6845c3", "loginData": {}},
     )
 
 
