@@ -1,5 +1,4 @@
 import pytest
-from flask import session
 
 from app.articles.routing import GC_ARTICLES_ROUTES, gca_url_for
 
@@ -38,7 +37,7 @@ def test_ensure_all_french_gca_routes_in_GC_ARTICLES_ROUTES_exist(client_request
     render_article = mocker.patch("app.main.views.index._render_articles_page", return_value="")
 
     url = gca_url_for(route)
-    page = client_request.get_url(url, _expected_status=200, _test_page_title=False)
+    client_request.get_url(url, _expected_status=200, _test_page_title=False)
 
     assert render_article.called
 
@@ -51,6 +50,6 @@ def test_ensure_all_english_gca_routes_in_GC_ARTICLES_ROUTES_exist(client_reques
     render_article = mocker.patch("app.main.views.index._render_articles_page", return_value="")
 
     url = gca_url_for(route)
-    page = client_request.get_url(url, _expected_status=200, _test_page_title=False)
+    client_request.get_url(url, _expected_status=200, _test_page_title=False)
 
     assert render_article.called
