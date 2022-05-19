@@ -19,7 +19,6 @@ from flask import (
     render_template,
     request,
     session,
-    url_for,
 )
 from flask.globals import _lookup_req_object, _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
@@ -42,6 +41,7 @@ from werkzeug.exceptions import abort
 from werkzeug.local import LocalProxy
 
 from app import proxy_fix
+from app.articles.routing import gca_url_for
 from app.asset_fingerprinter import asset_fingerprinter
 from app.commands import setup_commands
 from app.config import configs
@@ -209,6 +209,9 @@ def create_app(application):
     register_errorhandlers(application)
 
     setup_event_handlers()
+
+    # allow gca_url_for to be called from any template
+    application.jinja_env.globals["gca_url_for"] = gca_url_for
 
 
 def init_app(application):
@@ -508,7 +511,8 @@ def format_notification_status_as_field_status(status, notification_type):
 
 
 def format_notification_status_as_url(status, notification_type):
-    url = partial(url_for, "main.messages_status")
+    def url(_anchor):
+        return gca_url_for("message_delivery_status") + "#" + _anchor
 
     if status not in {
         "technical-failure",

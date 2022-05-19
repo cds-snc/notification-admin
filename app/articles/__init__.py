@@ -1,8 +1,6 @@
 from datetime import timedelta
 
-from flask import current_app
-
-from app import get_current_locale
+from flask import current_app, request, session
 
 REQUEST_TIMEOUT = 5
 GC_ARTICLES_AUTH_API_ENDPOINT = "/wp-json/jwt-auth/v1/token"
@@ -52,3 +50,17 @@ def get_preview_url(page_id: int) -> str:
     base_endpoint = current_app.config["GC_ARTICLES_API"]
 
     return f"https://{base_endpoint}/wp-admin/post.php?post={page_id}&action=edit&lang={lang}"
+
+
+# TODO: refactor app/__init__ to move this method to a central place (without creating circular dependencies (good luck ;) )
+def get_current_locale(application):
+    requestLang = request.accept_languages.best_match(application.config["LANGUAGES"])
+    if requestLang is None:
+        requestLang = "en"
+
+    if request.args.get("lang") and request.args.get("lang") in ["en", "fr"]:
+        lang = request.args.get("lang")
+    else:
+        lang = session.get("userlang", requestLang)
+
+    return lang

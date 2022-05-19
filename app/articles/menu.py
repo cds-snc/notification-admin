@@ -2,8 +2,11 @@ from typing import Optional
 
 from flask import current_app, json
 
-from app import get_current_locale
-from app.articles import GC_ARTICLES_CACHE_PREFIX, GC_ARTICLES_NAV_CACHE_TTL
+from app.articles import (
+    GC_ARTICLES_CACHE_PREFIX,
+    GC_ARTICLES_NAV_CACHE_TTL,
+    get_current_locale,
+)
 from app.articles.api import get_content
 from app.extensions import redis_client
 
