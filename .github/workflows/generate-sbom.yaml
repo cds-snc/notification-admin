@@ -7,14 +7,14 @@ on:
     paths:
       - package.json
       - requirements.txt
-      - .github/workflows/generate_sbom.yaml
+      - .github/workflows/generate-sbom.yaml
   push:
     branches:
       - main
     paths:
       - package.json
       - requirements.txt
-      - .github/workflows/generate_sbom.yaml
+      - .github/workflows/generate-sbom.yaml
 
 jobs:
   generate-sbom:
@@ -34,5 +34,5 @@ jobs:
         uses: cds-snc/security-tools/.github/actions/generate-sbom@d39a08b2145375940f52c0b4b8c58a8cf3603bdb
         with:
           dependency_track_api_key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
-          project_name: notification-admin/front-end
+          project_name: notification-admin/frontend
           project_type: node          
