@@ -29,11 +29,13 @@ def test_gca_url_for_creates_asbolute_url(app_, mocker, route, lang, expectedURL
     assert route == expectedURL
 
 
+@pytest.mark.skip(reason="This is an integration test, should be elsewhere")
 @pytest.mark.parametrize("route", list(GC_ARTICLES_ROUTES))
 def test_ensure_all_french_gca_routes_in_GC_ARTICLES_ROUTES_exist(client_request, mocker, route):
 
     mocker.patch("app.articles.routing.get_current_locale", return_value="fr")
     mocker.patch("app.main.views.index.get_current_locale", return_value="fr")
+    mocker.patch("app.main.views.index.get_page_by_slug", return_value={"some": "value"})
     render_article = mocker.patch("app.main.views.index._render_articles_page", return_value="")
 
     url = gca_url_for(route)
@@ -42,11 +44,13 @@ def test_ensure_all_french_gca_routes_in_GC_ARTICLES_ROUTES_exist(client_request
     assert render_article.called
 
 
+@pytest.mark.skip(reason="This is an integration test, should be elsewhere")
 @pytest.mark.parametrize("route", list(GC_ARTICLES_ROUTES))
 def test_ensure_all_english_gca_routes_in_GC_ARTICLES_ROUTES_exist(client_request, mocker, route):
 
     mocker.patch("app.articles.routing.get_current_locale", return_value="en")
     mocker.patch("app.main.views.index.get_current_locale", return_value="en")
+    mocker.patch("app.main.views.index.get_page_by_slug", return_value={"some": "value"})
     render_article = mocker.patch("app.main.views.index._render_articles_page", return_value="")
 
     url = gca_url_for(route)

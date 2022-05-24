@@ -105,17 +105,17 @@ def test_bad_slug_doesnt_save_empty_cache_entry(app_, mocker):
 @pytest.mark.parametrize("url", ["/a11y", "/why-notify", "/personalise", "/format", "/messages-status"])
 def test_gca_redirects_work(client_request, mocker, url):
     """
-    This test ensures that the pages we renamed properly provide a permanent redirect, and exist in GCA
+    This test ensures that the pages we renamed properly provide a permanent redirect
     """
+
+    mocker.patch("app.main.views.index.get_page_by_slug", return_value={"some": "value"})
+    mocker.patch("app.main.views.index._render_articles_page", return_value="")
 
     # ensure each url is a permenent redirect
     client_request.get_url(url, _expected_status=301)
 
-    # ensure target location exists and returns content
-    page = client_request.get_url(url, _follow_redirects=True)
-    assert page.find("span", id="gc-title").text.strip() == "GC Notify"
 
-
+@pytest.mark.skip(reason="This is an integration test, should be elsewhere")
 @pytest.mark.parametrize(
     "url",
     [
