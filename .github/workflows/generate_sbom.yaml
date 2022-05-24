@@ -7,14 +7,14 @@ on:
     paths:
       - package.json
       - requirements.txt
-      - .github/workflows/generate_sbom.yml
+      - .github/workflows/generate_sbom.yaml
   push:
     branches:
       - main
     paths:
       - package.json
       - requirements.txt
-      - .github/workflows/generate_sbom.yml
+      - .github/workflows/generate_sbom.yaml
 
 jobs:
   generate-sbom:
