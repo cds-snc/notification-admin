@@ -62,6 +62,8 @@
       .children(":gt(" + fitCount + ")")
       .not("#more-menu");
 
+    collectedSet.find(" > div").addClass("z-50");
+
     // Empty the more menu and add the out of space menu items in
     // a special set.
     var $moreMenuItems = $("<div/>")
