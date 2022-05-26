@@ -51,7 +51,7 @@
             <a
               id="nav-lang"
               class="px-1 block line-under leading-none text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
-              href="{{ url_for('main.set_lang') }}?from={{ request.path }}"
+              href="{{ url_for('main.set_lang') }}?from={{ lang_url or request.path }}"
               lang="{{ 'fr-CA' if lang_switch == 'FR' else 'en-CA' }}">
               <span class="sr-only">{{ long_lang_switch }}</span>
               <span role="presentation" aria-hidden="true">{{ lang_switch }}</span>
