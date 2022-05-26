@@ -1,7 +1,4 @@
-from functools import partial
-
 import pytest
-from flask import url_for
 
 from app import format_notification_status_as_url
 
@@ -10,45 +7,45 @@ from app import format_notification_status_as_url
     "status, notification_type, expected",
     (
         # Successful statuses aren’t linked
-        ("created", "email", lambda: None),
-        ("sending", "email", lambda: None),
-        ("delivered", "email", lambda: None),
+        ("created", "email", None),
+        ("sending", "email", None),
+        ("delivered", "email", None),
         # Failures are linked to the channel-specific page
         (
             "temporary-failure",
             "email",
-            partial(url_for, "main.messages_status", _anchor="email-statuses"),
+            "/message-delivery-status#email-statuses",
         ),
         (
             "permanent-failure",
             "email",
-            partial(url_for, "main.messages_status", _anchor="email-statuses"),
+            "/message-delivery-status#email-statuses",
         ),
         (
             "technical-failure",
             "email",
-            partial(url_for, "main.messages_status", _anchor="email-statuses"),
+            "/message-delivery-status#email-statuses",
         ),
         (
             "temporary-failure",
             "sms",
-            partial(url_for, "main.messages_status", _anchor="sms-statuses"),
+            "/message-delivery-status#sms-statuses",
         ),
         (
             "permanent-failure",
             "sms",
-            partial(url_for, "main.messages_status", _anchor="sms-statuses"),
+            "/message-delivery-status#sms-statuses",
         ),
         (
             "technical-failure",
             "sms",
-            partial(url_for, "main.messages_status", _anchor="sms-statuses"),
+            "/message-delivery-status#sms-statuses",
         ),
         # Letter statuses are never linked
-        ("technical-failure", "letter", lambda: None),
-        ("cancelled", "letter", lambda: None),
-        ("accepted", "letter", lambda: None),
-        ("received", "letter", lambda: None),
+        ("technical-failure", "letter", None),
+        ("cancelled", "letter", None),
+        ("accepted", "letter", None),
+        ("received", "letter", None),
     ),
 )
 def test_format_notification_status_as_url(
@@ -57,4 +54,4 @@ def test_format_notification_status_as_url(
     notification_type,
     expected,
 ):
-    assert format_notification_status_as_url(status, notification_type) == expected()
+    assert format_notification_status_as_url(status, notification_type) == expected

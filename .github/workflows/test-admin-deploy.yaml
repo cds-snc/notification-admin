@@ -10,7 +10,7 @@ env:
   FUNCTION_NAME: "notify-admin-pr"
   IMAGE: notify/admin
   REGISTRY: 239043911459.dkr.ecr.ca-central-1.amazonaws.com
-  ROLE_ARN: arn:aws:iam::239043911459:role/service-role/notify-admin-role-t6iqgjej
+  ROLE_ARN: arn:aws:iam::239043911459:role/notify-admin-pr
 
 jobs:
   build-and-push-container:
@@ -64,7 +64,7 @@ jobs:
             type=gha,scope=base
             type=gha,scope=lambda
           cache-to: |
-            type=gha,scope=lambda          
+            type=gha,scope=lambda
           build-args: |
             GIT_SHA=${{ github.sha }}
           tags: |
@@ -137,6 +137,9 @@ jobs:
           fi
 
           aws lambda wait function-updated --function-name $FUNCTION_NAME-$PR_NUMBER
+          aws lambda put-function-concurrency \
+            --function-name $FUNCTION_NAME-$PR_NUMBER \
+            --reserved-concurrent-executions 3
 
       - name: Update PR
         if: env.URL != ''

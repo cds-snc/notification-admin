@@ -4,7 +4,6 @@ import requests
 from flask import abort, current_app, json
 from werkzeug.exceptions import Forbidden, NotFound
 
-from app import get_current_locale
 from app.articles import (
     GC_ARTICLES_AUTH_API_ENDPOINT,
     GC_ARTICLES_AUTH_TOKEN_CACHE_KEY,
@@ -12,6 +11,7 @@ from app.articles import (
     GC_ARTICLES_FALLBACK_CACHE_PREFIX,
     GC_ARTICLES_FALLBACK_CACHE_TTL,
     REQUEST_TIMEOUT,
+    get_current_locale,
 )
 from app.extensions import redis_client
 
