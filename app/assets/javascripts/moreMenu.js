@@ -62,14 +62,12 @@
       .children(":gt(" + fitCount + ")")
       .not("#more-menu");
 
-    collectedSet.find(" > div").addClass("z-50");
-
     // Empty the more menu and add the out of space menu items in
     // a special set.
     var $moreMenuItems = $("<div/>")
       .attr("id", "more-menu-items")
       .addClass(
-        "absolute right-0 mr-gutterHalf flex flex-col flex-shrink-0 text-right bg-gray divide-y divide-gray-grey2  shadow"
+        "absolute right-0 mr-gutterHalf flex flex-col flex-shrink-0 text-right bg-gray divide-y divide-gray-grey2  shadow z-50"
       );
     $menuContainer.html($moreMenuItems);
 
