@@ -29,7 +29,7 @@ service = [
 ]
 
 
-def test_non_logged_in_user_can_see_homepage(mocker, client):
+def test_non_logged_in_user_can_see_homepage(mocker, client, mock_calls_out_to_GCA):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
