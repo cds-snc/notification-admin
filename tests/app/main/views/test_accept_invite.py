@@ -133,7 +133,7 @@ def test_invite_goes_in_session(
     "user, landing_page_title",
     [
         (active_user_with_permissions, "Dashboard"),
-        (active_caseworking_user, "Templates"),
+        (active_caseworking_user, "Browse Templates"),
     ],
 )
 def test_accepting_invite_removes_invite_from_session(
