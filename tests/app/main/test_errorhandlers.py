@@ -5,7 +5,7 @@ from flask_wtf.csrf import CSRFError
 from notifications_python_client.errors import HTTPError
 
 
-def test_bad_url_returns_page_not_found(client):
+def test_bad_url_returns_page_not_found(client, mock_GCA_404):
     response = client.get("/bad_url")
     assert response.status_code == 404
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
