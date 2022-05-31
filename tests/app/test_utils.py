@@ -662,24 +662,27 @@ def test_get_template_with_html_allowed(mocker, app_, service_one, fake_uuid, al
     assert email_template.allow_html is allow_html
 
 
-def test_set_lang(
+def test_set_lang_bad_route(
     client_request,
-    mocker,
+    mock_GCA_404,
 ):
-    # test an invalid route redirects correctly (first request defaults to english)
+    # test an invalid route redirects correctly
     # The args in are in a dictionary because "from" is a reserved word :/
     page = client_request.get(
         **{"endpoint": "main.set_lang", "from": "/whatever", "_expected_status": 404, "_follow_redirects": True}
     )
     assert page.select_one("h1").text.strip() == "Page could not be found"
 
-    # test a valid route redirects correctly (second request will be in French)
+
+def test_set_lang_good_route(client_request):
     page = client_request.get(
         **{"endpoint": "main.set_lang", "from": "/welcome", "_expected_status": 200, "_follow_redirects": True}
     )
-    assert page.select_one("h1").text.strip() == "Bienvenue dans GC Notification"
+    assert page.select_one("h1").text.strip() == "Welcome to GC Notify"
 
-    # test an external route route redirects correctly (third request will be in English)
+
+def test_set_lang_external_route(client_request):
+    # test an external route route redirects correctly
     page = client_request.get(
         **{
             "endpoint": "main.set_lang",
