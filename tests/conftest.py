@@ -4000,4 +4000,18 @@ def mock_calls_out_to_GCA(mocker):
     )
 
 
+@pytest.fixture(scope="function")
+def mock_GCA_404(mocker):
+    """
+    (GC ARTICLES) This fixture mocks GCA methods so that calls to invalid URLs will produce a 404
+    """
+    mocker.patch("app.main.views.index.get_page_by_slug", return_value=None)
+
+    mocker.patch("app.main.views.index.get_page_by_slug_with_cache", return_value=None)
+
+    mocker.patch(
+        "app.main.views.index.get_nav_items", return_value=[{"title": "Home", "url": "/", "target": "", "description": "main"}]
+    )
+
+
 next(app_(None))  # used to init for other tests
