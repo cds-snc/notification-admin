@@ -29,6 +29,7 @@ def test_gca_url_for_creates_asbolute_url(app_, mocker, route, lang, expectedURL
     assert route == expectedURL
 
 
+@pytest.mark.skip(reason="these tests reach out to GCA and are flaky; may re-enable inside of an integration-type suite")
 @pytest.mark.integration
 @pytest.mark.parametrize("route", list(GC_ARTICLES_ROUTES))
 def test_ensure_all_french_gca_routes_in_GC_ARTICLES_ROUTES_exist(client_request, mocker, route):
@@ -43,6 +44,7 @@ def test_ensure_all_french_gca_routes_in_GC_ARTICLES_ROUTES_exist(client_request
     assert render_article.called
 
 
+@pytest.mark.skip(reason="these tests reach out to GCA and are flaky; may re-enable inside of an integration-type suite")
 @pytest.mark.integration
 @pytest.mark.parametrize("route", list(GC_ARTICLES_ROUTES))
 def test_ensure_all_english_gca_routes_in_GC_ARTICLES_ROUTES_exist(client_request, mocker, route):

@@ -24,7 +24,7 @@ service = [
 ]
 
 
-def test_presence_of_security_headers(client, mocker):
+def test_presence_of_security_headers(client, mocker, mock_calls_out_to_GCA):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
@@ -42,11 +42,7 @@ def test_presence_of_security_headers(client, mocker):
     assert response.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
 
 
-def test_owasp_useful_headers_set(
-    client,
-    mocker,
-    mock_get_service_and_organisation_counts,
-):
+def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisation_counts, mock_calls_out_to_GCA):
     # Given...
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
@@ -105,9 +101,7 @@ def test_headers_cache_static_assets(client, url, cache_headers):
 
 
 def test_headers_non_ascii_characters_are_replaced(
-    client,
-    mocker,
-    mock_get_service_and_organisation_counts,
+    client, mocker, mock_get_service_and_organisation_counts, mock_calls_out_to_GCA
 ):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(

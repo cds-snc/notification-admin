@@ -3967,4 +3967,46 @@ def mock_get_service_and_organisation_counts(mocker):
     )
 
 
+@pytest.fixture(scope="function")
+def mock_calls_out_to_GCA(mocker):
+    """
+    (GC ARTICLES) This fixture mocks GCA methods so no network calls are made to GCA
+    """
+    mocker.patch(
+        "app.main.views.index.get_page_by_slug",
+        return_value={
+            "title": {"rendered": "Home"},
+            "slug_en": "home",
+            "content": {"rendered": "<div>hello! I am rendered content</div>"},
+        },
+    )
+
+    mocker.patch(
+        "app.main.views.index.get_page_by_slug_with_cache",
+        return_value={
+            "title": {"rendered": "Home"},
+            "slug_en": "home",
+            "content": {"rendered": "<div>hello! I am rendered content</div>"},
+        },
+    )
+
+    mocker.patch(
+        "app.main.views.index.get_nav_items", return_value=[{"title": "Home", "url": "/", "target": "", "description": "main"}]
+    )
+
+
+@pytest.fixture(scope="function")
+def mock_GCA_404(mocker):
+    """
+    (GC ARTICLES) This fixture mocks GCA methods so that calls to invalid URLs will produce a 404
+    """
+    mocker.patch("app.main.views.index.get_page_by_slug", return_value=None)
+
+    mocker.patch("app.main.views.index.get_page_by_slug_with_cache", return_value=None)
+
+    mocker.patch(
+        "app.main.views.index.get_nav_items", return_value=[{"title": "Home", "url": "/", "target": "", "description": "main"}]
+    )
+
+
 next(app_(None))  # used to init for other tests
