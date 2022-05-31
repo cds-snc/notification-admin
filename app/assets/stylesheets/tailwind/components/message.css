@@ -86,17 +86,20 @@
 
   .grid-row .folder-heading {
     word-wrap: break-word;
-    @apply mx-0 mt-gutterHalf mb-8;
+    @apply flex flex-wrap align-baseline mx-0;
   }
   .folder-heading a,
   .folder-heading-folder {
-    background-size: auto 20px;
+    background-size: auto 19px;
     background-position: 0px 4px;
-    min-height: 30px;
+    min-height: 3rem;
     @apply inline bg-no-repeat align-top text-smaller;
   }
   .folder-heading-folder {
-    @apply p-0 pl-16 bg-folderBlackPng bg-folderBlack;
+    @apply p-0 pl-gutter bg-folderBlackPng bg-folderBlack;
+  }
+  .folder-heading-folder-group:not(:last-child) {
+    @apply mr-4 mb-4;
   }
   .folder-heading-folder-truncated {
     @apply w-0 p-0 pl-12 whitespace-no-wrap overflow-hidden;
@@ -107,26 +110,23 @@
   }
 
   .folder-heading a {
-    @apply inline-block align-top;
+    @apply inline;
   }
   .folder-heading a.folder-heading-folder {
-    text-overflow: ellipsis;
-    background-position: 0px 4px;
-    @apply inline overflow-hidden bg-folderBluePng bg-folderBlue;
+    @apply inline bg-folderBluePng bg-folderBlue;
   }
   .folder-heading a.folder-heading-folder:hover {
     @apply bg-folderBlueHoverPng bg-folderBlueHover;
   }
   .folder-heading a.folder-heading-folder-truncated {
-    background-position: 0px 2px;
     @apply inline-block;
   }
   .folder-heading a:hover {
     @apply text-blue-lightblue;
   }
   .folder-heading-manage-link {
-    top: -6px;
-    @apply block relative text-right p-0 pt-8;
+    min-height: 3rem;
+    @apply block text-right;
   }
 
   .message-name-separator,
@@ -136,8 +136,8 @@
   .message-name-separator:before,
   .folder-heading-separator:before {
     content: "";
-    top: -5px;
-    bottom: 1px;
+    top: -9px;
+    bottom: -9px;
     right: 7px;
     width: 9px;
     height: 9px;

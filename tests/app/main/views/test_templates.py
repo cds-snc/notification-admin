@@ -141,7 +141,7 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
     [
         (
             active_user_view_permissions,
-            "Templates",
+            "Browse Templates",
             {},
             [
                 "sms_template_one",
@@ -154,25 +154,25 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
         ),
         (
             active_user_view_permissions,
-            "Templates",
+            "Browse Templates",
             {"template_type": "sms"},
             ["sms_template_one", "sms_template_two"],
         ),
         (
             active_user_view_permissions,
-            "Templates",
+            "Browse Templates",
             {"template_type": "email"},
             ["email_template_one", "email_template_two"],
         ),
         (
             active_user_view_permissions,
-            "Templates",
+            "Browse Templates",
             {"template_type": "letter"},
             ["letter_template_one", "letter_template_two"],
         ),
         (
             active_caseworking_user,
-            "Templates",
+            "Browse Templates",
             {},
             [
                 "sms_template_one",
@@ -185,7 +185,7 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
         ),
         (
             active_caseworking_user,
-            "Templates",
+            "Browse Templates",
             {"template_type": "email"},
             ["email_template_one", "email_template_two"],
         ),
@@ -1080,7 +1080,7 @@ def test_choose_a_template_to_copy_from_folder_within_service(
     for actual, expected in zip(actual, expected):
         assert normalize_spaces(actual.text) == expected
 
-    links = page.select("main nav a")
+    links = page.select("main nav#template-list a")
     assert links[0]["href"] == url_for(
         "main.choose_template_to_copy",
         service_id=SERVICE_ONE_ID,
