@@ -168,6 +168,8 @@ def test_old_documentation_page_redirects(client):
     assert response.location == documentation_url()
 
 
+@pytest.mark.skip(reason="This calls out to GCA and is now an integration test")
+@pytest.mark.integration
 def test_terms_page_has_correct_content(client_request):
     terms_page = client_request.get_url("/terms")
     assert normalize_spaces(terms_page.select("main p")[0].text) == (
