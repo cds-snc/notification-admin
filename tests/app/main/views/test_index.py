@@ -48,7 +48,7 @@ def test_non_logged_in_user_can_see_homepage(mocker, client, mock_calls_out_to_G
     )
 
 
-def test_home_page_a11y(mocker, client):
+def test_home_page_a11y(mocker, client, mock_calls_out_to_GCA):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
@@ -126,29 +126,6 @@ def test_static_pages(
     view,
 ):
     page = client_request.get("main.{}".format(view))
-    assert not page.select_one("meta[name=description]")
-
-
-@pytest.mark.parametrize(
-    "url",
-    [
-        "/privacy",
-        "/terms",
-        "/features",
-        "/why-gc-notify",
-        "/security",
-        "/formatting-guide",
-        "/personalisation-guide",
-        "/guidance",
-        "/message-delivery-status",
-    ],
-)
-def test_static_pages_gca(
-    client_request,
-    mock_get_organisation_by_domain,
-    url,
-):
-    page = client_request.get_url(url, _follow_redirects=True)
     assert not page.select_one("meta[name=description]")
 
 
@@ -288,13 +265,7 @@ def test_letter_template_preview_headers(
         ("sa?SDFa?DFa,/", "sa?SDFa?DFa,/", "GC Notify"),
     ],
 )
-def test_query_params(
-    client,
-    query_key,
-    query_value,
-    heading,
-    mocker,
-):
+def test_query_params(client, query_key, query_value, heading, mocker, mock_calls_out_to_GCA):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
