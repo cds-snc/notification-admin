@@ -181,6 +181,7 @@ class Production(Config):
 
 class Staging(Production):
     NOTIFY_ENVIRONMENT = "staging"
+    NOTIFY_LOG_LEVEL = "INFO"
 
 
 configs = {
