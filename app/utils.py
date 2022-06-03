@@ -782,7 +782,7 @@ def _geolocate_lookup(ip):
         with urllib.request.urlopen(request) as f:
             response = f.read()
     except urllib.error.HTTPError as e:
-        current_app.logger.debug("Exception found: {}".format(e))
+        current_app.logger.warning("Exception found: {}".format(e))
         return ip
     else:
         return json.loads(response.decode("utf-8-sig"))
