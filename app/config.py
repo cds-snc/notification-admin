@@ -176,10 +176,12 @@ class Production(Config):
     CHECK_PROXY_HEADER = False
     HTTP_PROTOCOL = "https"
     NOTIFY_ENVIRONMENT = "production"
+    NOTIFY_LOG_LEVEL = "INFO"
 
 
 class Staging(Production):
     NOTIFY_ENVIRONMENT = "staging"
+    NOTIFY_LOG_LEVEL = "INFO"
 
 
 configs = {
