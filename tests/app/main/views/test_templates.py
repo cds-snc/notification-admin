@@ -686,14 +686,11 @@ def test_should_be_able_to_view_a_template_with_links(
     links_in_page = page.select("a")
 
     for link_to_be_shown in links_to_be_shown:
-        assert (
-            url_for(
-                link_to_be_shown,
-                service_id=SERVICE_ONE_ID,
-                template_id=fake_uuid,
-            )
-            in [a["href"] for a in links_in_page]
-        )
+        assert url_for(
+            link_to_be_shown,
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        ) in [a["href"] for a in links_in_page]
 
     assert normalize_spaces(page.select_one("main p").text) == (permissions_warning_to_be_shown or "To: phone number")
 

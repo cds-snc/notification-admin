@@ -1277,13 +1277,10 @@ def test_send_one_off_offers_link_to_request_to_go_live(
 
     if has_go_live_link:
         assert "request to go live" in [link.text.strip() for link in links]
-        assert (
-            url_for(
-                "main.request_to_go_live",
-                service_id=SERVICE_ONE_ID,
-            )
-            in [link["href"] for link in links]
-        )
+        assert url_for(
+            "main.request_to_go_live",
+            service_id=SERVICE_ONE_ID,
+        ) in [link["href"] for link in links]
     else:
         assert "request to go live" not in [link.text.strip() for link in links]
 
