@@ -368,7 +368,7 @@ def test_sms_two_factor_should_set_password_when_new_password_exists_in_session(
             "id": api_user_active["id"],
             "email": api_user_active["email_address"],
             "password": "changedpassword",
-            "loginData": {"location": None, "user-agent": "werkzeug/1.0.1"},
+            "loginData": {"location": None, "user-agent": "UA"},
         }
 
     response = client.post(url_for("main.two_factor_sms_sent"), data={"two_factor_code": "12345"})
@@ -376,7 +376,7 @@ def test_sms_two_factor_should_set_password_when_new_password_exists_in_session(
     assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
 
     mock_update_user_password.assert_called_once_with(
-        api_user_active["id"], "changedpassword", {"location": None, "user-agent": "werkzeug/1.0.1"}
+        api_user_active["id"], "changedpassword", {"location": None, "user-agent": "UA"}
     )
 
 
@@ -396,7 +396,7 @@ def test_email_two_factor_should_set_password_when_new_password_exists_in_sessio
             "id": api_user_active["id"],
             "email": api_user_active["email_address"],
             "password": "changedpassword",
-            "loginData": {"location": None, "user-agent": "werkzeug/1.0.1"},
+            "loginData": {"location": None, "user-agent": "UA"},
         }
 
     response = client.post(url_for("main.two_factor_email_sent"), data={"two_factor_code": "12345"})
@@ -404,7 +404,7 @@ def test_email_two_factor_should_set_password_when_new_password_exists_in_sessio
     assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
 
     mock_update_user_password.assert_called_once_with(
-        api_user_active["id"], "changedpassword", {"location": None, "user-agent": "werkzeug/1.0.1"}
+        api_user_active["id"], "changedpassword", {"location": None, "user-agent": "UA"}
     )
 
 
