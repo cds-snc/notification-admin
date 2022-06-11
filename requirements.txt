@@ -76,9 +76,9 @@ phonenumbers==8.12.21
 py-w3c==0.3.1
 pyasn1==0.4.8
 pyexcel-ezodf==0.3.4
-PyJWT==2.2.0
+PyJWT==2.4.0
 pyparsing==2.4.7
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 python-dateutil==2.8.2
 python-json-logger==2.0.1
 redis==3.5.3
