@@ -1,10 +1,10 @@
 import uuid
 from datetime import datetime, timedelta
+from unittest import mock
 
 import pytest
 from bs4 import BeautifulSoup
 from flask import current_app, url_for
-from unittest import mock
 
 from app.models.user import User
 from tests.conftest import api_user_active as create_active_user
