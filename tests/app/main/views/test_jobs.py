@@ -40,7 +40,7 @@ from tests.conftest import (
         )
     ],
 )
-@freeze_time("2012-12-12 12:12")
+@pytest.mark.freeze_time("2012-12-12 12:12")
 # This test assumes EST
 def test_jobs_page_shows_scheduled_jobs(
     client_request,
@@ -86,7 +86,7 @@ def test_get_jobs_shows_page_links(
         active_caseworking_user,
     ],
 )
-@freeze_time("2012-12-12 12:12")
+@pytest.mark.freeze_time("2012-12-12 12:12")
 def test_jobs_page_doesnt_show_scheduled_on_page_2(
     client_request,
     service_one,
@@ -153,7 +153,7 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
         ),
     ],
 )
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 def test_should_show_page_for_one_job(
     client_request,
     active_user_with_permissions,
@@ -206,7 +206,7 @@ def test_should_show_page_for_one_job(
     mock_get_notifications.assert_called_with(SERVICE_ONE_ID, fake_uuid, status=expected_api_call)
 
 
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 def test_should_show_page_for_one_job_with_flexible_data_retention(
     client_request,
     active_user_with_permissions,
@@ -262,7 +262,7 @@ def test_should_show_job_in_progress(
     assert page.find("p", {"class": "hint"}).text.strip() == "Report is 50% complete…"
 
 
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 @pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job(
     client_request,
@@ -313,7 +313,7 @@ def test_should_show_letter_job(
     )
 
 
-@freeze_time("2016-01-01 11:09:00")
+@pytest.mark.freeze_time("2016-01-01 11:09:00")
 @pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job_with_banner_after_sending_before_1730(
     client_request,
@@ -337,7 +337,7 @@ def test_should_show_letter_job_with_banner_after_sending_before_1730(
     )
 
 
-@freeze_time("2016-01-01 11:09:00")
+@pytest.mark.freeze_time("2016-01-01 11:09:00")
 @pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job_with_banner_when_there_are_multiple_CSV_rows(
     client_request,
@@ -361,7 +361,7 @@ def test_should_show_letter_job_with_banner_when_there_are_multiple_CSV_rows(
     )
 
 
-@freeze_time("2016-01-01 18:09:00")
+@pytest.mark.freeze_time("2016-01-01 18:09:00")
 @pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job_with_banner_after_sending_after_1730(
     client_request,
@@ -385,7 +385,7 @@ def test_should_show_letter_job_with_banner_after_sending_after_1730(
     )
 
 
-@freeze_time("2016-01-01T00:00:00.061258")
+@pytest.mark.freeze_time("2016-01-01T00:00:00.061258")
 def test_should_show_scheduled_job(
     client_request,
     mock_get_service_template,
@@ -411,7 +411,7 @@ def test_should_show_scheduled_job(
     assert page.select_one("button[type=submit]").text.strip() == "Cancel scheduled send"
 
 
-@freeze_time("2016-01-01T00:00:00.061258")
+@pytest.mark.freeze_time("2016-01-01T00:00:00.061258")
 def test_should_show_job_from_api(
     client_request,
     mock_get_service_template,
@@ -431,7 +431,7 @@ def test_should_show_job_from_api(
     )
 
 
-@freeze_time("2016-01-01T00:00:00.061258")
+@pytest.mark.freeze_time("2016-01-01T00:00:00.061258")
 def test_should_show_scheduled_job_with_api_key(
     client_request,
     mock_get_service_template,
@@ -531,7 +531,7 @@ def test_should_cancel_letter_job(client_request, mocker, active_user_with_permi
     mock_cancel.assert_called_once_with(SERVICE_ONE_ID, job_id)
 
 
-@freeze_time("2019-06-20 17:30:00.000001")
+@pytest.mark.freeze_time("2019-06-20 17:30:00.000001")
 @pytest.mark.parametrize(
     "job_created_at, expected_fragment",
     [
@@ -570,7 +570,7 @@ def test_should_not_show_cancel_link_for_letter_job_if_too_late(
     assert page.find("p", {"id": "printing-info"}).text.strip() == "Printed {} at 5:30pm".format(expected_fragment)
 
 
-@freeze_time("2019-06-20 15:32:00.000001")
+@pytest.mark.freeze_time("2019-06-20 15:32:00.000001")
 @pytest.mark.parametrize(" job_status", ["finished", "in progress"])
 def test_should_show_cancel_link_for_letter_job(
     client_request,
@@ -603,7 +603,7 @@ def test_should_show_cancel_link_for_letter_job(
     assert page.find("p", {"id": "printing-info"}).text.strip() == "Printing starts today at 5:30pm"
 
 
-@freeze_time("2019-06-20 15:31:00.000001")
+@pytest.mark.freeze_time("2019-06-20 15:31:00.000001")
 @pytest.mark.parametrize(
     "job_status,number_of_processed_notifications",
     [["in progress", 2], ["finished", 1]],
@@ -653,7 +653,7 @@ def test_dont_cancel_letter_job_when_to_early_to_cancel(
     assert "We are still processing these letters, please try again in a minute." in flash_message
 
 
-@freeze_time("2016-01-01 00:00:00.000001")
+@pytest.mark.freeze_time("2016-01-01 00:00:00.000001")
 def test_should_show_updates_for_one_job_as_json(
     logged_in_client,
     service_one,
@@ -689,7 +689,7 @@ def test_should_show_updates_for_one_job_as_json(
         ("2016-01-02 23:59:59.000000+00:00", "2016-01-10"),
     ],
 )
-@freeze_time("2016-01-10 12:00:00.000000")
+@pytest.mark.freeze_time("2016-01-10 12:00:00.000000")
 def test_available_until_datetime(job_created_at, expected_date):
     """We are putting a raw datetime string in the span, which later gets
     formatted by js on the client. That formatting doesn't exist in the
@@ -700,7 +700,7 @@ def test_available_until_datetime(job_created_at, expected_date):
     assert available_until_date == expected_date
 
 
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 @pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job_with_first_class_if_notifications_are_first_class(
     client_request,
@@ -727,7 +727,7 @@ def test_should_show_letter_job_with_first_class_if_notifications_are_first_clas
     assert normalize_spaces(page.select(".keyline-block")[1].text) == "5 January Estimated delivery date"
 
 
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 def test_should_show_letter_job_with_first_class_if_no_notifications(
     client_request,
     service_one,

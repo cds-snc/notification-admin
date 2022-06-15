@@ -750,7 +750,7 @@ def test_platform_admin_with_start_and_end_dates_provided(mocker, platform_admin
     complaint_count_mock.assert_called_with(api_args)
 
 
-@freeze_time("2018-6-11")
+@pytest.mark.freeze_time("2018-6-11")
 def test_platform_admin_with_only_a_start_date_provided(mocker, platform_admin_client):
     start_date = "2018-01-01"
     api_args = {

@@ -493,7 +493,7 @@ def test_get_letter_printing_statement_when_letter_prints_tomorrow(created_at, c
         ("2017-03-26T12:00:00+00:00", "on 26 March"),
     ],
 )
-@freeze_time("2017-07-07 12:00:00")
+@pytest.mark.freeze_time("2017-07-07 12:00:00")
 @pytest.mark.skip(reason="feature not in use")
 def test_get_letter_printing_statement_for_letter_that_has_been_sent(created_at, print_day):
     statement = get_letter_printing_statement("delivered", created_at)

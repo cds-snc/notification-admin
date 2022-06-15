@@ -481,7 +481,7 @@ def test_has_accepted_tos(mocker, redis_return, expected):
     mock_redis_get.assert_called_once_with(f"tos-accepted-{SERVICE_ONE_ID}")
 
 
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 def test_accept_tos(app_, mocker, monkeypatch, logged_in_client):
     monkeypatch.setitem(app_.config, "REDIS_ENABLED", True)
 
@@ -511,7 +511,7 @@ def test_has_submitted_use_case(mocker, redis_return, expected):
     mock_redis_get.assert_called_once_with(f"use-case-submitted-{SERVICE_ONE_ID}")
 
 
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 def test_register_submit_use_case(mocker):
     mock_redis_set = mocker.patch("app.extensions.RedisClient.set")
 

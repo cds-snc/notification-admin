@@ -254,7 +254,7 @@ def test_add_user_to_service_calls_correct_endpoint_and_deletes_keys_from_cache(
     ]
 
 
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 def test_register_last_email_login_datetime(mocker):
     mock_redis_set = mocker.patch("app.extensions.RedisClient.set")
     user_id = uuid.uuid4()

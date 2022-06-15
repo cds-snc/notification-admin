@@ -455,7 +455,7 @@ def test_should_show_notifications_for_a_service_with_next_previous(
         ("2016-01-02 23:59:59.000000+00:00", "2016-01-10"),
     ],
 )
-@freeze_time("2016-01-10 12:00:00.000000")
+@pytest.mark.freeze_time("2016-01-10 12:00:00.000000")
 def test_available_until_datetime(job_created_at, expected_date):
     """We are putting a raw datetime string in the span, which later gets
     formatted by js on the client. That formatting doesn't exist in the
@@ -594,7 +594,7 @@ def test_big_numbers_and_search_dont_show_for_letters(
     assert (len(page.select("[type=search]")) > 0) == search_bar_visible
 
 
-@freeze_time("2017-09-27 16:30:00.000000")
+@pytest.mark.freeze_time("2017-09-27 16:30:00.000000")
 @pytest.mark.parametrize(
     "message_type, status, expected_hint_status, single_line",
     [

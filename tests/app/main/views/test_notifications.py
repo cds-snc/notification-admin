@@ -71,7 +71,7 @@ from tests.conftest import (
         active_caseworking_user,
     ],
 )
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 def test_notification_status_page_shows_details(
     client_request,
     mocker,
@@ -115,7 +115,7 @@ def test_notification_status_page_shows_details(
         (True, "service one: hello hidden"),
     ],
 )
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 def test_notification_status_page_respects_redaction(
     client_request,
     mocker,
@@ -295,7 +295,7 @@ def test_notification_status_shows_expected_back_link(
         assert back_link is None
 
 
-@freeze_time("2012-01-01 01:01")
+@pytest.mark.freeze_time("2012-01-01 01:01")
 def test_notification_page_doesnt_link_to_template_in_tour(
     client_request,
     fake_uuid,
@@ -315,7 +315,7 @@ def test_notification_page_doesnt_link_to_template_in_tour(
     assert len(page.select("main p:nth-of-type(1) a")) == 0
 
 
-@freeze_time("2016-01-01 01:01")
+@pytest.mark.freeze_time("2016-01-01 01:01")
 @pytest.mark.skip(reason="feature not in use")
 def test_notification_page_shows_page_for_letter_notification(
     client_request,
@@ -370,7 +370,7 @@ def test_notification_page_shows_page_for_letter_notification(
     assert mock_page_count.call_args_list[0][1]["values"] == {"name": "Jo"}
 
 
-@freeze_time("2016-01-01 01:01")
+@pytest.mark.freeze_time("2016-01-01 01:01")
 @pytest.mark.parametrize(
     "is_precompiled_letter, expected_p1, expected_p2, expected_postage",
     (
@@ -456,7 +456,7 @@ def test_notification_page_shows_page_for_letter_sent_with_test_key(
         ),
     ),
 )
-@freeze_time("2016-01-01 01:01")
+@pytest.mark.freeze_time("2016-01-01 01:01")
 @pytest.mark.skip(reason="feature not in use")
 def test_notification_page_shows_cancelled_or_failed_letter(
     client_request,
@@ -488,7 +488,7 @@ def test_notification_page_shows_cancelled_or_failed_letter(
 
 
 @pytest.mark.parametrize("notification_type", ["email", "sms"])
-@freeze_time("2016-01-01 15:00")
+@pytest.mark.freeze_time("2016-01-01 15:00")
 def test_notification_page_does_not_show_cancel_link_for_sms_or_email_notifications(
     client_request,
     mocker,
@@ -511,7 +511,7 @@ def test_notification_page_does_not_show_cancel_link_for_sms_or_email_notificati
     assert "Cancel sending this letter" not in normalize_spaces(page.text)
 
 
-@freeze_time("2016-01-01 15:00")
+@pytest.mark.freeze_time("2016-01-01 15:00")
 def test_notification_page_shows_cancel_link_for_letter_which_can_be_cancelled(
     client_request,
     mocker,
@@ -534,7 +534,7 @@ def test_notification_page_shows_cancel_link_for_letter_which_can_be_cancelled(
     assert "Cancel sending this letter" in normalize_spaces(page.text)
 
 
-@freeze_time("2016-01-01 15:00")
+@pytest.mark.freeze_time("2016-01-01 15:00")
 def test_notification_page_does_not_show_cancel_link_for_letter_which_cannot_be_cancelled(
     client_request,
     mocker,
@@ -557,7 +557,7 @@ def test_notification_page_does_not_show_cancel_link_for_letter_which_cannot_be_
     assert "Cancel sending this letter" not in normalize_spaces(page.text)
 
 
-@freeze_time("2016-01-01 18:00")
+@pytest.mark.freeze_time("2016-01-01 18:00")
 @pytest.mark.skip(reason="feature not in use")
 def test_notification_page_shows_page_for_first_class_letter_notification(
     client_request,
@@ -828,7 +828,7 @@ def test_should_show_image_of_precompiled_letter_notification(
     assert mock_pdf_page_count.called_once()
 
 
-@freeze_time("2016-01-01 15:00")
+@pytest.mark.freeze_time("2016-01-01 15:00")
 def test_show_cancel_letter_confirmation(
     client_request,
     mocker,
@@ -853,7 +853,7 @@ def test_show_cancel_letter_confirmation(
     assert "Are you sure you want to cancel sending this letter?" in flash_message
 
 
-@freeze_time("2016-01-01 15:00")
+@pytest.mark.freeze_time("2016-01-01 15:00")
 def test_cancelling_a_letter_calls_the_api(
     client_request,
     mocker,

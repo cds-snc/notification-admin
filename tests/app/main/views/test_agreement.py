@@ -460,7 +460,7 @@ def test_confirm_agreement_page_403s_if_previous_step_not_taken(
     )
 
 
-@freeze_time("2012-01-01 01:01")
+@pytest.mark.freeze_time("2012-01-01 01:01")
 def test_confirm_agreement_page_persists(
     client_request,
     mocker,

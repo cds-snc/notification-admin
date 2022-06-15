@@ -270,7 +270,7 @@ def test_should_show_recent_templates_on_dashboard(
     assert "100" in table_rows[3].find_all("td")[0].text
 
 
-@freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
+@pytest.mark.freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
 @pytest.mark.parametrize(
     "extra_args",
     [
@@ -290,7 +290,7 @@ def test_should_show_redirect_from_template_history(
     )
 
 
-@freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
+@pytest.mark.freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
 @pytest.mark.parametrize(
     "extra_args, template_label",
     [
@@ -356,7 +356,7 @@ def test_monthly_shows_letters_in_breakdown(
         "main.template_usage",
     ],
 )
-@freeze_time("2015-01-01 15:15:15.000000")
+@pytest.mark.freeze_time("2015-01-01 15:15:15.000000")
 def test_stats_pages_show_last_3_years(
     client_request,
     endpoint,
@@ -383,7 +383,7 @@ def test_monthly_has_equal_length_tables(
     assert page.select_one(".table-field-headings th").get("width") == "33%"
 
 
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 # This test assumes EST
 def test_should_show_upcoming_jobs_on_dashboard(
     client_request,
@@ -598,7 +598,7 @@ def test_dashboard_single_and_plural(
 ##
 
 
-@freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.freeze_time("2016-01-01 11:09:00.061258")
 # This test assumes EST
 def test_should_show_recent_jobs_on_dashboard(
     client_request,
@@ -637,7 +637,7 @@ def test_should_show_recent_jobs_on_dashboard(
             assert table_rows[index].find_all("td")[column_index].text.strip() == str(count)
 
 
-@freeze_time("2012-03-31 12:12:12")
+@pytest.mark.freeze_time("2012-03-31 12:12:12")
 @pytest.mark.skip(reason="feature not in use")
 def test_usage_page(
     client_request,
@@ -677,7 +677,7 @@ def test_usage_page(
     assert "1,230 text messages at 1.65p" in table
 
 
-@freeze_time("2012-03-31 12:12:12")
+@pytest.mark.freeze_time("2012-03-31 12:12:12")
 @pytest.mark.skip(reason="feature not in use")
 def test_usage_page_with_letters(
     client_request,
@@ -722,7 +722,7 @@ def test_usage_page_with_letters(
     assert "5 first class letters at 33p" in normalize_spaces(table)
 
 
-@freeze_time("2012-04-30 12:12:12")
+@pytest.mark.freeze_time("2012-04-30 12:12:12")
 @pytest.mark.skip(reason="feature not in use")
 def test_usage_page_displays_letters_ordered_by_postage(
     mocker,
@@ -795,7 +795,7 @@ def test_usage_page_for_invalid_year(
     )
 
 
-@freeze_time("2012-03-31 12:12:12")
+@pytest.mark.freeze_time("2012-03-31 12:12:12")
 @pytest.mark.skip(reason="feature not in use")
 def test_future_usage_page(
     client_request,

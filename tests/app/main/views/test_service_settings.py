@@ -420,7 +420,7 @@ def test_show_restricted_service(
         assert url_for(".request_to_go_live", service_id=SERVICE_ONE_ID) not in page
 
 
-@freeze_time("2017-04-01 11:09:00.061258")
+@pytest.mark.freeze_time("2017-04-01 11:09:00.061258")
 @pytest.mark.parametrize(
     "current_limit, expected_limit",
     [
@@ -1620,7 +1620,7 @@ def test_add_reply_to_email_address_sends_test_notification(mocker, client_reque
         ("permanent-failure", 1, 0),
     ],
 )
-@freeze_time("2018-06-01 11:11:00.061258")
+@pytest.mark.freeze_time("2018-06-01 11:11:00.061258")
 def test_service_verify_reply_to_address(
     mocker,
     client_request,
@@ -1681,7 +1681,7 @@ def test_service_verify_reply_to_address(
         assert page.find("input", type="email").attrs["value"] == notification["to"]
 
 
-@freeze_time("2018-06-01 11:11:00.061258")
+@pytest.mark.freeze_time("2018-06-01 11:11:00.061258")
 def test_add_reply_to_email_address_fails_if_notification_not_delivered_in_45_sec(mocker, client_request, fake_uuid):
     notification = {
         "id": fake_uuid,
@@ -2928,7 +2928,7 @@ def test_should_show_page_to_set_message_limit(
     assert normalize_spaces(page.select_one("label").text) == "Daily message limit"
 
 
-@freeze_time("2017-04-01 11:09:00.061258")
+@pytest.mark.freeze_time("2017-04-01 11:09:00.061258")
 @pytest.mark.parametrize(
     "given_limit, expected_limit",
     [
@@ -2968,7 +2968,7 @@ def test_should_show_page_to_set_sms_allowance(platform_admin_client, mock_get_f
     mock_get_free_sms_fragment_limit.assert_called_once_with(SERVICE_ONE_ID)
 
 
-@freeze_time("2017-04-01 11:09:00.061258")
+@pytest.mark.freeze_time("2017-04-01 11:09:00.061258")
 @pytest.mark.parametrize(
     "given_allowance, expected_api_argument",
     [
