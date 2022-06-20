@@ -8,7 +8,7 @@ from flask import url_for
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 
-from tests.conftest import api_user_active as create_user
+from tests.conftest import create_api_user_active, url_for_endpoint_with_token
 from tests.conftest import captured_templates, url_for_endpoint_with_token
 
 
@@ -204,8 +204,8 @@ def test_should_redirect_after_mobile_number_confirm(
     fake_uuid,
     phone_number_to_register_with,
 ):
-    user_before = create_user(fake_uuid)
-    user_after = create_user(fake_uuid)
+    user_before = create_api_user_active(with_unique_id=True)
+    user_after = create_api_user_active(with_unique_id=True)
     user_before["current_session_id"] = str(uuid.UUID(int=1))
     user_after["current_session_id"] = str(uuid.UUID(int=2))
 

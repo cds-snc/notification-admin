@@ -6,8 +6,6 @@ from app.models.user import User
 from config.mixpanel import NotifyMixpanel
 from tests.conftest import active_user_with_permissions, fake_uuid
 
-user = User(active_user_with_permissions(fake_uuid))
-
 
 @pytest.fixture(autouse=True)
 def environment_vars_fixtures():
@@ -43,6 +41,7 @@ def test_track_mixpanel_user_profile_when_user_is_not_present(mocker, environmen
 
 def test_track_mixpanel_user_profile(mocker, environment_vars_fixtures):
     mocked_mixpanel_people_set_fxn = mocker.patch("mixpanel.Mixpanel.people_set")
+    user = User(active_user_with_permissions(fake_uuid))
     NotifyMixpanel().track_user_profile(user)
 
     mocked_mixpanel_people_set_fxn.assert_called_once()
@@ -57,6 +56,7 @@ def test_track_mixpanel_event_when_user_is_not_present(mocker, environment_vars_
 
 def test_track_mixpanel_event(mocker, environment_vars_fixtures):
     mocked_mixpanel_track_fxn = mocker.patch("mixpanel.Mixpanel.track")
+    user = User(active_user_with_permissions(fake_uuid))
     NotifyMixpanel().track_event(user)
 
     mocked_mixpanel_track_fxn.assert_called_once()
