@@ -4267,3 +4267,25 @@ def create_notifications(
         postage=postage,
         to=to,
     )
+def create_template(
+    service_id=SERVICE_ONE_ID,
+    template_id=None,
+    template_type='sms',
+    name='sample template',
+    content='Template content',
+    subject='Template subject',
+    redact_personalisation=False,
+    postage=None,
+    folder=None
+):
+    return template_json(
+        service_id=service_id,
+        id_=template_id or str(generate_uuid()),
+        name=name,
+        type_=template_type,
+        content=content,
+        subject=subject,
+        redact_personalisation=redact_personalisation,
+        postage=postage,
+        folder=folder,
+    )

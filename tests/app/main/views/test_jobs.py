@@ -10,10 +10,10 @@ from tests import job_json, notification_json, sample_uuid
 from tests.conftest import (
     JOB_API_KEY_NAME,
     SERVICE_ONE_ID,
-    active_caseworking_user,
-    active_user_with_permissions,
+    create_active_caseworking_user,
+    create_active_user_with_permissions,
+    create_template,
     mock_get_notifications,
-    mock_get_service_letter_template,
     normalize_spaces,
 )
 
@@ -21,8 +21,8 @@ from tests.conftest import (
 @pytest.mark.parametrize(
     "user",
     [
-        active_user_with_permissions,
-        active_caseworking_user,
+        create_active_user_with_permissions(),
+        create_active_caseworking_user(),
     ],
 )
 @pytest.mark.parametrize(
@@ -51,7 +51,7 @@ def test_jobs_page_shows_scheduled_jobs(
     user,
     expected_rows,
 ):
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
     page = client_request.get("main.view_jobs", service_id=service_one["id"])
 
     for index, row in enumerate(expected_rows):
@@ -61,8 +61,8 @@ def test_jobs_page_shows_scheduled_jobs(
 @pytest.mark.parametrize(
     "user",
     [
-        active_user_with_permissions,
-        active_caseworking_user,
+        create_active_user_with_permissions,
+        create_active_caseworking_user,
     ],
 )
 def test_get_jobs_shows_page_links(
@@ -82,8 +82,8 @@ def test_get_jobs_shows_page_links(
 @pytest.mark.parametrize(
     "user",
     [
-        active_user_with_permissions,
-        active_caseworking_user,
+        create_active_user_with_permissions,
+        create_active_caseworking_user,
     ],
 )
 @freeze_time("2012-12-12 12:12")
@@ -113,8 +113,8 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
 @pytest.mark.parametrize(
     "user",
     [
-        active_user_with_permissions,
-        active_caseworking_user,
+        create_active_user_with_permissions,
+        create_active_caseworking_user,
     ],
 )
 @pytest.mark.parametrize(
@@ -738,7 +738,10 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
     mocker,
 ):
 
-    mock_get_service_letter_template(mocker, postage="first")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": create_template(template_type="letter", postage="first")},
+    )
 
     page = client_request.get(
         "main.view_job",
