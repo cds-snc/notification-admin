@@ -9,6 +9,7 @@ from notifications_python_client.errors import HTTPError
 from app.s3_client.s3_logo_client import EMAIL_LOGO_LOCATION_STRUCTURE, TEMP_TAG
 from app.utils import get_logo_cdn_domain
 from tests.conftest import (
+    create_email_branding,
     mock_get_email_branding,
     normalize_spaces,
     platform_admin_user,
@@ -101,10 +102,7 @@ def test_create_new_email_branding_without_logo(
 
 
 def test_create_email_branding_requires_a_name_when_submitting_logo_details(
-    client_request,
-    mocker,
-    fake_uuid,
-    mock_create_email_branding,
+    client_request, mocker, mock_create_email_branding, platform_admin_user
 ):
     mocker.patch("app.main.views.email_branding.persist_logo")
     mocker.patch("app.main.views.email_branding.delete_email_temp_files_created_by")
@@ -116,7 +114,7 @@ def test_create_email_branding_requires_a_name_when_submitting_logo_details(
         "name": "",
         "brand_type": "custom_logo",
     }
-    client_request.login(platform_admin_user(fake_uuid))
+    client_request.login(platform_admin_user)
     page = client_request.post(
         ".create_email_branding",
         content_type="multipart/form-data",
@@ -128,11 +126,7 @@ def test_create_email_branding_requires_a_name_when_submitting_logo_details(
     assert mock_create_email_branding.called is False
 
 
-def test_create_email_branding_does_not_require_a_name_when_uploading_a_file(
-    client_request,
-    mocker,
-    fake_uuid,
-):
+def test_create_email_branding_does_not_require_a_name_when_uploading_a_file(client_request, mocker, platform_admin_user):
     mocker.patch("app.main.views.email_branding.upload_email_logo", return_value="temp_filename")
     data = {
         "file": (BytesIO("".encode("utf-8")), "test.png"),
@@ -141,7 +135,7 @@ def test_create_email_branding_does_not_require_a_name_when_uploading_a_file(
         "name": "",
         "brand_type": "custom_logo",
     }
-    client_request.login(platform_admin_user(fake_uuid))
+    client_request.login(platform_admin_user)
     page = client_request.post(
         ".create_email_branding",
         content_type="multipart/form-data",
@@ -204,9 +198,11 @@ def test_create_new_email_branding_when_branding_saved(platform_admin_client, mo
         ("main.update_email_branding", True),
     ],
 )
-def test_deletes_previous_temp_logo_after_uploading_logo(platform_admin_client, mocker, endpoint, has_data, fake_uuid):
+def test_deletes_previous_temp_logo_after_uploading_logo(
+    platform_admin_client, mocker, mock_get_all_email_branding, endpoint, has_data, fake_uuid
+):
     if has_data:
-        mock_get_email_branding(mocker, fake_uuid)
+        mocker.patch("app.email_branding_client.get_email_branding", return_value=create_email_branding(fake_uuid))
 
     with platform_admin_client.session_transaction() as session:
         user_id = session["user_id"]
