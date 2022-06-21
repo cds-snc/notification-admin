@@ -4188,3 +4188,82 @@ def create_platform_admin_user(with_unique_id=False):
         "current_session_id": None,
         "logged_in_at": None,
     }
+
+
+def create_notification(
+    notifification_id=None,
+    service_id="abcd",
+    notification_status="delivered",
+    redact_personalisation=False,
+    template_type=None,
+    template_name="sample template",
+    is_precompiled_letter=False,
+    key_type=None,
+    postage=None,
+    sent_one_off=True,
+    reply_to_text=None,
+):
+    noti = notification_json(
+        service_id,
+        rows=1,
+        status=notification_status,
+        template_type=template_type,
+        postage=postage,
+        reply_to_text=reply_to_text,
+    )["notifications"][0]
+
+    noti["id"] = notifification_id or sample_uuid()
+    if sent_one_off:
+        noti["created_by"] = {"id": sample_uuid(), "name": "Test User", "email_address": "test@user.gov.uk"}
+    noti["personalisation"] = {"name": "Jo"}
+    noti["template"] = template_json(
+        service_id,
+        "5407f4db-51c7-4150-8758-35412d42186a",
+        content="hello ((name))",
+        subject="blah",
+        redact_personalisation=redact_personalisation,
+        type_=template_type,
+        is_precompiled_letter=is_precompiled_letter,
+        name=template_name,
+    )
+    if key_type:
+        noti["key_type"] = key_type
+    return noti
+
+
+def create_notifications(
+    service_id=SERVICE_ONE_ID,
+    template_type="sms",
+    rows=5,
+    status=None,
+    subject="subject",
+    content="content",
+    client_reference=None,
+    personalisation=None,
+    redact_personalisation=False,
+    is_precompiled_letter=False,
+    postage=None,
+    to=None,
+):
+    template = template_json(
+        service_id,
+        id_=str(generate_uuid()),
+        type_=template_type,
+        subject=subject,
+        content=content,
+        redact_personalisation=redact_personalisation,
+        is_precompiled_letter=is_precompiled_letter,
+    )
+
+    return notification_json(
+        service_id,
+        template=template,
+        rows=rows,
+        personalisation=personalisation,
+        template_type=template_type,
+        client_reference=client_reference,
+        status=status,
+        created_by_name="Firstname Lastname",
+        postage=postage,
+        to=to,
+    )
