@@ -6,7 +6,8 @@ import pytest
 from freezegun import freeze_time
 
 from app import invite_api_client, service_api_client, user_api_client
-from tests import SERVICE_ONE_ID, sample_uuid
+from tests import sample_uuid
+from tests.conftest import SERVICE_ONE_ID
 
 user_id = sample_uuid()
 
