@@ -10,11 +10,9 @@ from tests.conftest import (
     ORGANISATION_ID,
     SERVICE_ONE_ID,
     SERVICE_TWO_ID,
-    active_user_with_permissions,
     create_platform_admin_user,
     create_active_user_with_permissions,
     normalize_spaces,
-    platform_admin_user,
 )
 
 
@@ -604,9 +602,9 @@ def test_post_edit_organisation_go_live_notes_updates_go_live_notes(
     "user",
     (
         pytest.param(
-            platform_admin_user,
+            create_platform_admin_user(),
         ),
-        pytest.param(active_user_with_permissions, marks=pytest.mark.xfail),
+        pytest.param(create_active_user_with_permissions(), marks=pytest.mark.xfail),
     ),
 )
 def test_view_organisation_domains(
@@ -687,9 +685,9 @@ def test_view_organisation_domains(
     "user",
     (
         pytest.param(
-            platform_admin_user,
+            create_platform_admin_user(),
         ),
-        pytest.param(active_user_with_permissions, marks=pytest.mark.xfail),
+        pytest.param(create_active_user_with_permissions(), marks=pytest.mark.xfail),
     ),
 )
 def test_update_organisation_domains(
