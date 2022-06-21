@@ -11,8 +11,8 @@ from tests.conftest import (
     SERVICE_ONE_ID,
     SERVICE_TWO_ID,
     active_user_with_permissions,
-    create_platform_admin_user,
     create_active_user_with_permissions,
+    create_platform_admin_user,
     normalize_spaces,
     platform_admin_user,
 )

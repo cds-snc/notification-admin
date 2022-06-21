@@ -9,7 +9,11 @@ from app.models.service import Service
 from app.notify_client import NotifyAdminAPIClient
 from app.notify_client.notification_api_client import notification_api_client
 from tests import service_json
-from tests.conftest import create_api_user_active, create_platform_admin_user, set_config
+from tests.conftest import (
+    create_api_user_active,
+    create_platform_admin_user,
+    set_config,
+)
 
 
 @pytest.mark.parametrize("method", ["put", "post", "delete"])
