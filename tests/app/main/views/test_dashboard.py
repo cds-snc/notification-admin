@@ -17,8 +17,8 @@ from tests.conftest import (
     SERVICE_ONE_ID,
     ClientRequest,
     a11y_test,
-    active_caseworking_user,
-    active_user_view_permissions,
+    create_active_caseworking_user,
+    create_active_user_view_permissions,
     normalize_spaces,
 )
 
@@ -123,8 +123,8 @@ def create_stats(
 @pytest.mark.parametrize(
     "user",
     (
-        active_user_view_permissions,
-        active_caseworking_user,
+        create_active_user_view_permissions(),
+        create_active_caseworking_user(),
     ),
 )
 def test_redirect_from_old_dashboard(
@@ -133,7 +133,7 @@ def test_redirect_from_old_dashboard(
     mocker,
     fake_uuid,
 ):
-    mocker.patch("app.user_api_client.get_user", return_value=user(fake_uuid))
+    mocker.patch("app.user_api_client.get_user", return_value=user)
     expected_location = "http://localhost/services/{}".format(SERVICE_ONE_ID)
 
     response = logged_in_client.get("/services/{}/dashboard".format(SERVICE_ONE_ID))
