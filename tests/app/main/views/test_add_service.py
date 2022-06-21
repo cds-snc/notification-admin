@@ -48,7 +48,10 @@ def test_get_should_not_render_radios_if_org_type_known(
     client_request,
     mocker,
 ):
-    mock_get_organisation_by_domain(mocker, organisation_type="central")
+    mocker.patch(
+        "app.organisations_client.get_organisation_by_domain",
+        return_value=organisation_json(organisation_type="central"),
+    )
     page = client_request.get("main.add_service")
     assert page.select_one("h1").text.strip() == "Name your service"
     assert page.select_one("input[name=name]")["value"] == ""
