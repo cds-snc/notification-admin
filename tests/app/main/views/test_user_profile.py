@@ -8,8 +8,11 @@ from flask import url_for
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 
-from tests.conftest import create_api_user_active, url_for_endpoint_with_token
-from tests.conftest import captured_templates, url_for_endpoint_with_token
+from tests.conftest import (
+    captured_templates,
+    create_api_user_active,
+    url_for_endpoint_with_token,
+)
 
 
 def test_should_show_overview_page(client_request, mock_get_security_keys):
