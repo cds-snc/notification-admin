@@ -8,10 +8,7 @@ from notifications_python_client.errors import HTTPError
 
 from app.s3_client.s3_logo_client import EMAIL_LOGO_LOCATION_STRUCTURE, TEMP_TAG
 from app.utils import get_logo_cdn_domain
-from tests.conftest import (
-    create_email_branding,
-    normalize_spaces,
-)
+from tests.conftest import create_email_branding, normalize_spaces
 
 
 def test_email_branding_page_shows_full_branding_list(platform_admin_client, mock_get_all_email_branding):
