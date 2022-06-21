@@ -10,9 +10,7 @@ from app.s3_client.s3_logo_client import EMAIL_LOGO_LOCATION_STRUCTURE, TEMP_TAG
 from app.utils import get_logo_cdn_domain
 from tests.conftest import (
     create_email_branding,
-    mock_get_email_branding,
     normalize_spaces,
-    platform_admin_user,
 )
 
 
