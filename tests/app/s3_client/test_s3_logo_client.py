@@ -54,9 +54,12 @@ def test_upload_email_logo_calls_correct_args(client, mocker, fake_uuid, upload_
     )
 
 
-def test_upload_letter_temp_logo_calls_correct_args(mocker, fake_uuid, letter_upload_filename):
+def test_upload_letter_temp_logo_calls_correct_args(app_, mocker, fake_uuid, letter_upload_filename):
     mocker.patch("uuid.uuid4", return_value=upload_id)
-    mocker.patch.dict("flask.current_app.config", {"LOGO_UPLOAD_BUCKET_NAME": bucket})
+
+    with app_.app_context():
+        mocker.patch.dict("flask.current_app.config", {"LOGO_UPLOAD_BUCKET_NAME": bucket})
+
     mocked_s3_upload = mocker.patch("app.s3_client.s3_logo_client.utils_s3upload")
 
     new_filename = upload_letter_temp_logo(filename=svg_filename, user_id=fake_uuid, filedata=data, region=region)
@@ -71,9 +74,11 @@ def test_upload_letter_temp_logo_calls_correct_args(mocker, fake_uuid, letter_up
     assert new_filename == "letters/static/images/letter-template/temp-{}_test_uuid-test.svg".format(fake_uuid)
 
 
-def test_upload_letter_png_logo_calls_correct_args(mocker):
+def test_upload_letter_png_logo_calls_correct_args(app_, mocker):
     mocked_s3_upload = mocker.patch("app.s3_client.s3_logo_client.utils_s3upload")
-    mocker.patch.dict("flask.current_app.config", {"LOGO_UPLOAD_BUCKET_NAME": bucket})
+
+    with app_.app_context():
+        mocker.patch.dict("flask.current_app.config", {"LOGO_UPLOAD_BUCKET_NAME": bucket})
 
     upload_letter_png_logo(filename, data, region)
 
