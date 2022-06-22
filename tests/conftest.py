@@ -1234,7 +1234,7 @@ def api_user_active(fake_uuid):
         "id": fake_uuid,
         "name": "Test User",
         "password": "somepassword",
-        "email_address": "test@user.gov.uk",
+        "email_address": "test@user.canada.ca",
         "mobile_number": "6502532222",
         "blocked": False,
         "state": "active",
