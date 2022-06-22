@@ -4,7 +4,6 @@ import pytest
 
 from app.models.user import User
 from config.mixpanel import NotifyMixpanel
-from tests.conftest import active_user_with_permissions, fake_uuid
 
 
 @pytest.fixture(autouse=True)
