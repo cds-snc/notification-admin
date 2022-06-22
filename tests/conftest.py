@@ -4202,6 +4202,9 @@ def create_notification(
     postage=None,
     sent_one_off=True,
     reply_to_text=None,
+    personalisation=None,
+    content=None,
+    notification_provider_response=None,
 ):
     noti = notification_json(
         service_id,
@@ -4210,16 +4213,21 @@ def create_notification(
         template_type=template_type,
         postage=postage,
         reply_to_text=reply_to_text,
+        provider_response=notification_provider_response,
     )["notifications"][0]
 
+    noti_content = "hello ((name))" if content is None else content
     noti["id"] = notifification_id or sample_uuid()
     if sent_one_off:
         noti["created_by"] = {"id": sample_uuid(), "name": "Test User", "email_address": "test@user.gov.uk"}
-    noti["personalisation"] = {"name": "Jo"}
+    if personalisation:
+        noti["personalisation"] = personalisation
+    else:
+        noti["personalisation"] = {"name": "Jo"}
     noti["template"] = template_json(
         service_id,
         "5407f4db-51c7-4150-8758-35412d42186a",
-        content="hello ((name))",
+        content=noti_content,
         subject="blah",
         redact_personalisation=redact_personalisation,
         type_=template_type,
@@ -4267,16 +4275,18 @@ def create_notifications(
         postage=postage,
         to=to,
     )
+
+
 def create_template(
     service_id=SERVICE_ONE_ID,
     template_id=None,
-    template_type='sms',
-    name='sample template',
-    content='Template content',
-    subject='Template subject',
+    template_type="sms",
+    name="sample template",
+    content="Template content",
+    subject="Template subject",
     redact_personalisation=False,
     postage=None,
-    folder=None
+    folder=None,
 ):
     return template_json(
         service_id=service_id,
