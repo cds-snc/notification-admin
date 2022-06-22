@@ -9,13 +9,11 @@ from app.utils import is_gov_user
 from tests.conftest import (
     SERVICE_ONE_ID,
     USER_ONE_ID,
-    active_caseworking_user,
     create_active_user_empty_permissions,
     create_active_user_manage_template_permissions,
     create_active_user_view_permissions,
     create_active_user_with_permissions,
     normalize_spaces,
-    platform_admin_user,
     sample_uuid,
 )
 
