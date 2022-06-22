@@ -5,7 +5,7 @@ from unittest.mock import call
 import pytest
 from freezegun import freeze_time
 
-from app import service_api_client, user_api_client
+from app import invite_api_client, service_api_client, user_api_client
 from tests import sample_uuid
 from tests.conftest import SERVICE_ONE_ID
 
@@ -196,6 +196,7 @@ def test_returns_value_from_cache(
         (user_api_client, "archive_user", [user_id], {}),
         (service_api_client, "remove_user_from_service", [SERVICE_ONE_ID, user_id], {}),
         (service_api_client, "create_service", ["", "", 0, False, user_id, sample_uuid(), False], {}),
+        (invite_api_client, "accept_invite", [SERVICE_ONE_ID, user_id], {}),
     ],
 )
 def test_deletes_user_cache(
