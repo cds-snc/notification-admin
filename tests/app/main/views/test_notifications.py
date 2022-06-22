@@ -11,8 +11,9 @@ from PyPDF2.utils import PdfReadError
 
 from tests.conftest import (
     SERVICE_ONE_ID,
-    active_caseworking_user,
-    active_user_with_permissions,
+    create_active_caseworking_user,
+    create_active_user_with_permissions,
+    create_notification,
     mock_get_notification,
     normalize_spaces,
 )
@@ -67,8 +68,8 @@ from tests.conftest import (
 @pytest.mark.parametrize(
     "user",
     [
-        active_user_with_permissions,
-        active_caseworking_user,
+        create_active_user_with_permissions(),
+        create_active_caseworking_user(),
     ],
 )
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -85,15 +86,14 @@ def test_notification_status_page_shows_details(
     expected_status,
 ):
 
-    mocker.patch("app.user_api_client.get_user", return_value=user(fake_uuid))
+    mocker.patch("app.user_api_client.get_user", return_value=user)
 
-    _mock_get_notification = mock_get_notification(
-        mocker,
-        fake_uuid,
+    notification = create_notification(
         notification_status=notification_status,
         notification_provider_response=provider_response,
         key_type=key_type,
     )
+    _mock_get_notification = mocker.patch("app.notification_api_client.get_notification", return_value=notification)
 
     page = client_request.get(
         "main.view_notification",
@@ -125,10 +125,9 @@ def test_notification_status_page_respects_redaction(
     expected_content,
 ):
 
-    _mock_get_notification = mock_get_notification(
-        mocker,
-        fake_uuid,
-        redact_personalisation=template_redaction_setting,
+    _mock_get_notification = mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(redact_personalisation=template_redaction_setting),
     )
 
     page = client_request.get(
@@ -191,12 +190,16 @@ def test_notification_status_page_shows_attachments(
         del personalisation["poster"]
         del personalisation["poster2"]
 
-    mock_get_notification(
-        mocker,
-        fake_uuid,
-        template_type="email",
-        personalisation=personalisation,
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(template_type="email", personalisation=personalisation),
     )
+    # mock_get_notification(
+    #     mocker,
+    #     fake_uuid,
+    #     template_type="email",
+    #     personalisation=personalisation,
+    # )
 
     page = client_request.get(
         "main.view_notification",
@@ -219,19 +222,21 @@ def test_notification_status_page_shows_attachments_with_links(
     service_one,
     fake_uuid,
 ):
-    mock_get_notification(
-        mocker,
-        fake_uuid,
-        content="Download it ((poster_link))",
-        template_type="email",
-        personalisation={
-            "poster_link": {
-                "document": {
-                    "sending_method": "link",
-                    "url": "https://example.com/test.pdf",
-                }
+
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(
+            content="Download it ((poster_link))",
+            template_type="email",
+            personalisation={
+                "poster_link": {
+                    "document": {
+                        "sending_method": "link",
+                        "url": "https://example.com/test.pdf",
+                    }
+                },
             },
-        },
+        ),
     )
 
     page = client_request.get(
@@ -490,16 +495,14 @@ def test_notification_page_shows_cancelled_or_failed_letter(
 @pytest.mark.parametrize("notification_type", ["email", "sms"])
 @freeze_time("2016-01-01 15:00")
 def test_notification_page_does_not_show_cancel_link_for_sms_or_email_notifications(
-    client_request,
-    mocker,
-    fake_uuid,
-    notification_type,
+    client_request, mocker, fake_uuid, notification_type, mock_get_notification
 ):
-    mock_get_notification(
-        mocker,
-        fake_uuid,
-        template_type=notification_type,
-        notification_status="created",
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(
+            template_type=notification_type,
+            notification_status="created",
+        ),
     )
 
     page = client_request.get(
@@ -517,11 +520,12 @@ def test_notification_page_shows_cancel_link_for_letter_which_can_be_cancelled(
     mocker,
     fake_uuid,
 ):
-    mock_get_notification(
-        mocker,
-        fake_uuid,
-        template_type="letter",
-        notification_status="created",
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(
+            template_type="letter",
+            notification_status="created",
+        ),
     )
     mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
@@ -540,11 +544,12 @@ def test_notification_page_does_not_show_cancel_link_for_letter_which_cannot_be_
     mocker,
     fake_uuid,
 ):
-    mock_get_notification(
-        mocker,
-        fake_uuid,
-        template_type="letter",
-        notification_status="delivered",
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(
+            template_type="letter",
+            notification_status="delivered",
+        ),
     )
     mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
@@ -596,7 +601,7 @@ def test_should_show_image_of_letter_notification(
     filetype,
 ):
 
-    mock_get_notification(mocker, fake_uuid, template_type="letter")
+    mocker.patch("app.notification_api_client.get_notification", return_value=create_notification(template_type="letter"))
 
     mocker.patch(
         "app.main.views.notifications.notification_api_client.get_notification_letter_preview",
@@ -618,11 +623,12 @@ def test_should_show_image_of_letter_notification(
 
 def test_should_show_image_of_letter_notification_that_failed_validation(logged_in_client, fake_uuid, mocker):
 
-    mock_get_notification(
-        mocker,
-        fake_uuid,
-        template_type="letter",
-        notification_status="validation-failed",
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(
+            template_type="letter",
+            notification_status="validation-failed",
+        ),
     )
 
     mocker.patch(
@@ -649,7 +655,7 @@ def test_should_show_preview_error_image_letter_notification_on_preview_error(
     mocker,
 ):
 
-    mock_get_notification(mocker, fake_uuid, template_type="letter")
+    mocker.patch("app.notification_api_client.get_notification", return_value=create_notification(template_type="letter"))
 
     mocker.patch(
         "app.main.views.notifications.notification_api_client.get_notification_letter_preview",
@@ -676,12 +682,13 @@ def test_notifification_page_shows_error_message_if_precompiled_letter_cannot_be
     mocker,
     fake_uuid,
 ):
-    mock_get_notification(
-        mocker,
-        fake_uuid,
-        notification_status="validation-failed",
-        template_type="letter",
-        is_precompiled_letter=True,
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(
+            notification_status="validation-failed",
+            template_type="letter",
+            is_precompiled_letter=True,
+        ),
     )
     mocker.patch(
         "app.main.views.notifications.view_letter_notification_as_preview",
@@ -736,7 +743,10 @@ def test_notification_page_has_link_to_download_letter(
     expected_link,
 ):
 
-    mock_get_notification(mocker, fake_uuid, template_type=template_type)
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(notification_status="created", template_type=template_type),
+    )
     mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
     page = client_request.get(
@@ -775,12 +785,12 @@ def test_notification_page_has_expected_template_link_for_letter(
     )
 
     mocker.patch("app.main.views.notifications.pdf_page_count", return_value=1)
-
-    mock_get_notification(
-        mocker,
-        fake_uuid,
-        template_type="letter",
-        is_precompiled_letter=is_precompiled_letter,
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(
+            template_type="letter",
+            is_precompiled_letter=is_precompiled_letter,
+        ),
     )
 
     mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
@@ -805,7 +815,10 @@ def test_should_show_image_of_precompiled_letter_notification(
     mocker,
 ):
 
-    mock_get_notification(mocker, fake_uuid, template_type="letter", is_precompiled_letter=True)
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(template_type="letter", is_precompiled_letter=True),
+    )
 
     mock_pdf_page_count = mocker.patch("app.main.views.notifications.pdf_page_count", return_value=1)
 
@@ -834,11 +847,12 @@ def test_show_cancel_letter_confirmation(
     mocker,
     fake_uuid,
 ):
-    mock_get_notification(
-        mocker,
-        fake_uuid,
-        template_type="letter",
-        notification_status="created",
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(
+            template_type="letter",
+            notification_status="created",
+        ),
     )
     mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
 
@@ -859,11 +873,12 @@ def test_cancelling_a_letter_calls_the_api(
     mocker,
     fake_uuid,
 ):
-    mock_get_notification(
-        mocker,
-        fake_uuid,
-        template_type="letter",
-        notification_status="created",
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=create_notification(
+            template_type="letter",
+            notification_status="created",
+        ),
     )
     mocker.patch("app.main.views.notifications.get_page_count_for_letter", return_value=1)
     cancel_endpoint = mocker.patch("app.main.views.notifications.notification_api_client.update_notification_to_cancelled")
