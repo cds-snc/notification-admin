@@ -1713,7 +1713,7 @@ def mock_get_security_keys(mocker, user=None, keys=[]):
 
 
 @pytest.fixture(scope="function")
-def mock_get_security_keys_with_key(mocker, api_user_active, mock_get_security_keys, user=None):
+def mock_get_security_keys_with_key(mocker, api_user_active, user=None):
     if user is None:
         user = api_user_active
 
@@ -1725,7 +1725,7 @@ def mock_get_security_keys_with_key(mocker, api_user_active, mock_get_security_k
         "updated_at": (datetime.utcnow() - timedelta(hours=5)).isoformat(),
     }
 
-    return mock_get_security_keys(mocker, user, [key])
+    return mocker.patch("app.user_api_client.get_security_keys_for_user", return_value=[key])
 
 
 @pytest.fixture(scope="function")
