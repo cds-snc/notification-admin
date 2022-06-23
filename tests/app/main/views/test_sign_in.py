@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
 from app.models.user import User
-from tests.conftest import api_user_active as create_active_user
 from tests.conftest import normalize_spaces
 
 
@@ -147,7 +146,7 @@ def test_sign_in_redirects_to_forced_password_reset(client, mocker, fake_uuid, c
 
     sample_user = create_active_user
     sample_user["id"] = fake_uuid
-    sample_user["email_address"] = email_address = "test@admin.ca"
+    sample_user["email_address"] = "test@admin.ca"
     sample_user["is_authenticated"] = False
     sample_user["password_expired"] = True
 
@@ -168,7 +167,7 @@ def test_forced_password_reset(client, mocker, fake_uuid, create_active_user):
 
     sample_user = create_active_user
     sample_user["id"] = fake_uuid
-    sample_user["email_address"] = email_address = "test@admin.ca"
+    sample_user["email_address"] = "test@admin.ca"
     sample_user["is_authenticated"] = False
     sample_user["password_expired"] = True
 
@@ -215,7 +214,7 @@ def test_forced_password_reset_password_not_expired(client, mocker, fake_uuid, c
 
     sample_user = create_active_user
     sample_user["id"] = fake_uuid
-    sample_user["email_address"] = email_address = "test@admin.ca"
+    sample_user["email_address"] = "test@admin.ca"
     sample_user["is_authenticated"] = False
     sample_user["password_expired"] = False
 

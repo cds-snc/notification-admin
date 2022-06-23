@@ -15,7 +15,6 @@ from tests.conftest import (
     create_active_caseworking_user,
     create_active_user_with_permissions,
     create_active_user_view_permissions,
-    fake_uuid,
     normalize_spaces,
 )
 
