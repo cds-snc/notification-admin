@@ -22,9 +22,6 @@ from tests.conftest import (
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
     ClientRequest,
-    active_user_no_api_key_permission,
-    active_user_no_settings_permission,
-    active_user_with_permissions,
     create_active_user_no_api_key_permission,
     create_active_user_no_settings_permission,
     create_active_user_with_permissions,
@@ -36,20 +33,7 @@ from tests.conftest import (
     create_reply_to_email_address,
     create_sample_invite,
     create_sms_sender,
-    get_default_letter_contact_block,
-    get_default_reply_to_email_address,
-    get_default_sms_sender,
-    get_inbound_number_sms_sender,
-    get_non_default_letter_contact_block,
-    get_non_default_reply_to_email_address,
-    get_non_default_sms_sender,
     mock_get_service_organisation,
-    multiple_letter_contact_blocks,
-    multiple_reply_to_email_addresses,
-    multiple_sms_senders,
-    no_letter_contact_blocks,
-    no_reply_to_email_addresses,
-    no_sms_senders,
     normalize_spaces,
 )
 
@@ -2031,7 +2015,6 @@ def test_delete_letter_contact_block(
     client_request,
     service_one,
     fake_uuid,
-    get_default_letter_contact_block,
     mocker,
 ):
     mock_delete = mocker.patch("app.service_api_client.delete_letter_contact")

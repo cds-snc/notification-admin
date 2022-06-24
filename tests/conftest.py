@@ -2579,6 +2579,8 @@ def sample_invite(mocker, service_one, status="pending", permissions=None):
         auth_type,
         folder_permissions,
     )
+
+
 def create_sample_invite(service_id, from_user, status="pending", permissions=None):
     id_ = USER_ONE_ID
     from_user = from_user
@@ -2619,6 +2621,7 @@ def mock_create_invite(mocker, sample_invite):
         return sample_invite
 
     return mocker.patch("app.invite_api_client.create_invite", side_effect=_create_invite)
+
 
 @pytest.fixture(scope="function")
 def mock_get_invites_for_service(mocker, service_one, sample_invite):

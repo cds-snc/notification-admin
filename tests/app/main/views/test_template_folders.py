@@ -13,8 +13,8 @@ from tests.conftest import (
     ClientRequest,
     _template,
     create_active_caseworking_user,
-    create_active_user_with_permissions,
     create_active_user_view_permissions,
+    create_active_user_with_permissions,
     normalize_spaces,
 )
 
