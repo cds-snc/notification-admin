@@ -2579,6 +2579,27 @@ def sample_invite(mocker, service_one, status="pending", permissions=None):
         auth_type,
         folder_permissions,
     )
+def create_sample_invite(service_id, from_user, status="pending", permissions=None):
+    id_ = USER_ONE_ID
+    from_user = from_user
+    email_address = "invited_user@test.canada.ca"
+    service_id = service_id
+    permissions = permissions or "view_activity,send_messages,manage_service,manage_api_keys"
+    created_at = str(datetime.utcnow())
+    auth_type = "sms_auth"
+    folder_permissions = []
+
+    return invite_json(
+        id_,
+        from_user,
+        service_id,
+        email_address,
+        permissions,
+        created_at,
+        status,
+        auth_type,
+        folder_permissions,
+    )
 
 
 @pytest.fixture(scope="function")
@@ -2598,7 +2619,6 @@ def mock_create_invite(mocker, sample_invite):
         return sample_invite
 
     return mocker.patch("app.invite_api_client.create_invite", side_effect=_create_invite)
-
 
 @pytest.fixture(scope="function")
 def mock_get_invites_for_service(mocker, service_one, sample_invite):
@@ -4188,6 +4208,141 @@ def create_platform_admin_user(with_unique_id=False):
         "current_session_id": None,
         "logged_in_at": None,
     }
+
+
+def create_reply_to_email_address(
+    id_="1234", service_id="abcd", email_address="test@example.com", is_default=True, created_at=None, updated_at=None
+):
+    return {
+        "id": id_,
+        "service_id": service_id,
+        "email_address": email_address,
+        "is_default": is_default,
+        "created_at": created_at,
+        "updated_at": updated_at,
+    }
+
+
+def create_multiple_email_reply_to_addresses(service_id="abcd"):
+    return [
+        {
+            "id": "1234",
+            "service_id": service_id,
+            "email_address": "test@example.com",
+            "is_default": True,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+        {
+            "id": "5678",
+            "service_id": service_id,
+            "email_address": "test2@example.com",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+        {
+            "id": "9457",
+            "service_id": service_id,
+            "email_address": "test3@example.com",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+    ]
+
+
+def create_sms_sender(
+    id_="1234", service_id="abcd", sms_sender="GOVUK", is_default=True, created_at=None, inbound_number_id=None, updated_at=None
+):
+    return {
+        "id": id_,
+        "service_id": service_id,
+        "sms_sender": sms_sender,
+        "is_default": is_default,
+        "created_at": created_at,
+        "inbound_number_id": inbound_number_id,
+        "updated_at": updated_at,
+    }
+
+
+def create_multiple_sms_senders(service_id="abcd"):
+    return [
+        {
+            "id": "1234",
+            "service_id": service_id,
+            "sms_sender": "Example",
+            "is_default": True,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": "1234",
+            "updated_at": None,
+        },
+        {
+            "id": "5678",
+            "service_id": service_id,
+            "sms_sender": "Example 2",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+        {
+            "id": "9457",
+            "service_id": service_id,
+            "sms_sender": "Example 3",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+    ]
+
+
+def create_letter_contact_block(
+    id_="1234",
+    service_id="abcd",
+    contact_block="1 Example Street",
+    is_default=True,
+    created_at=None,
+    updated_at=None,
+):
+    return {
+        "id": id_,
+        "service_id": service_id,
+        "contact_block": contact_block,
+        "is_default": is_default,
+        "created_at": created_at,
+        "updated_at": updated_at,
+    }
+
+
+def create_multiple_letter_contact_blocks(service_id="abcd"):
+    return [
+        {
+            "id": "1234",
+            "service_id": service_id,
+            "contact_block": "1 Example Street",
+            "is_default": True,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+        {
+            "id": "5678",
+            "service_id": service_id,
+            "contact_block": "2 Example Street",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+        {
+            "id": "9457",
+            "service_id": service_id,
+            "contact_block": "3 Example Street",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+    ]
 
 
 def create_notification(
