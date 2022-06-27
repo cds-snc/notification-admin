@@ -398,33 +398,6 @@ def multiple_sms_senders_with_diff_default(mocker):
 
 
 @pytest.fixture(scope="function")
-def multiple_sms_senders_no_inbound(mocker):
-    def _get(service_id):
-        return [
-            {
-                "id": "1234",
-                "service_id": service_id,
-                "sms_sender": "Example",
-                "is_default": True,
-                "created_at": datetime.utcnow(),
-                "inbound_number_id": None,
-                "updated_at": None,
-            },
-            {
-                "id": "5678",
-                "service_id": service_id,
-                "sms_sender": "Example 2",
-                "is_default": False,
-                "created_at": datetime.utcnow(),
-                "inbound_number_id": None,
-                "updated_at": None,
-            },
-        ]
-
-    return mocker.patch("app.service_api_client.get_sms_senders", side_effect=_get)
-
-
-@pytest.fixture(scope="function")
 def no_sms_senders(mocker):
     def _get(service_id):
         return []
@@ -1051,6 +1024,54 @@ def mock_update_service_template_400_content_too_big(mocker):
     return mocker.patch("app.service_api_client.update_service_template", side_effect=_update)
 
 
+def create_template(
+    service_id=SERVICE_ONE_ID,
+    template_id=None,
+    template_type="sms",
+    name="sample template",
+    content="Template content",
+    subject="Template subject",
+    redact_personalisation=False,
+    postage=None,
+    folder=None,
+):
+    return template_json(
+        service_id=service_id,
+        id_=template_id or str(generate_uuid()),
+        name=name,
+        type_=template_type,
+        content=content,
+        subject=subject,
+        redact_personalisation=redact_personalisation,
+        postage=postage,
+        folder=folder,
+    )
+
+def create_email_template():
+    return create_template(
+        name="Two week reminder",
+        template_type="email",
+        content="Your vehicle tax expires on ((date))",
+        subject="Your ((thing)) is due soon",
+    )
+
+def create_sms_template():
+    return create_template(
+        name="Two week reminder",
+        template_type="sms",
+        content= "((name)), Template <em>content</em> with & entity",
+        subject="Two week reminder",
+    )
+def create_letter_template():
+    return create_template(
+        name="Two week reminder",
+        template_type="letter",
+        content= "Template <em>content</em> with & entity",
+        subject="Two week reminder",
+        postage="second",
+    )
+
+  
 def create_service_templates(service_id, number_of_templates=6):
     template_types = ["sms", "sms", "email", "email", "letter", "letter"]
     service_templates = []
@@ -3999,7 +4020,7 @@ def create_api_user_active(with_unique_id=False):
         "id": str(uuid4()) if with_unique_id else sample_uuid(),
         "name": "Test User",
         "password": "somepassword",
-        "email_address": "test@user.gov.uk",
+        "email_address": "test@user.canada.ca",
         "mobile_number": "07700 900762",
         "state": "active",
         "failed_login_count": 0,
@@ -4020,7 +4041,7 @@ def create_active_user_empty_permissions(with_unique_id=False):
         "name": "Test User With Empty Permissions",
         "password": "somepassword",
         "password_changed_at": str(datetime.utcnow()),
-        "email_address": "test@user.gov.uk",
+        "email_address": "test@user.canada.ca",
         "mobile_number": "07700 900763",
         "state": "active",
         "failed_login_count": 0,
@@ -4040,7 +4061,7 @@ def create_active_user_with_permissions(with_unique_id=False):
         "name": "Test User",
         "password": "somepassword",
         "password_changed_at": str(datetime.utcnow()),
-        "email_address": "test@user.gov.uk",
+        "email_address": "test@user.canada.ca",
         "mobile_number": "07700 900762",
         "state": "active",
         "failed_login_count": 0,
@@ -4070,7 +4091,7 @@ def create_active_user_view_permissions(with_unique_id=False):
         "name": "Test User With Permissions",
         "password": "somepassword",
         "password_changed_at": str(datetime.utcnow()),
-        "email_address": "test@user.gov.uk",
+        "email_address": "test@user.canada.ca",
         "mobile_number": "07700 900762",
         "state": "active",
         "failed_login_count": 0,
@@ -4089,7 +4110,7 @@ def create_active_caseworking_user(with_unique_id=False):
         "name": "Test User",
         "password": "somepassword",
         "password_changed_at": str(datetime.utcnow()),
-        "email_address": "caseworker@example.gov.uk",
+        "email_address": "caseworker@example.canada.ca",
         "mobile_number": "07700 900762",
         "state": "active",
         "failed_login_count": 0,
@@ -4114,7 +4135,7 @@ def create_active_user_no_api_key_permission(with_unique_id=False):
         "name": "Test User With Permissions",
         "password": "somepassword",
         "password_changed_at": str(datetime.utcnow()),
-        "email_address": "test@user.gov.uk",
+        "email_address": "test@user.canada.ca",
         "mobile_number": "07700 900762",
         "state": "active",
         "failed_login_count": 0,
@@ -4139,7 +4160,7 @@ def create_active_user_no_settings_permission(with_unique_id=False):
         "name": "Test User With Permissions",
         "password": "somepassword",
         "password_changed_at": str(datetime.utcnow()),
-        "email_address": "test@user.gov.uk",
+        "email_address": "test@user.canada.ca",
         "mobile_number": "07700 900762",
         "state": "active",
         "failed_login_count": 0,
@@ -4164,7 +4185,7 @@ def create_active_user_manage_template_permissions(with_unique_id=False):
         "name": "Test User With Permissions",
         "password": "somepassword",
         "password_changed_at": str(datetime.utcnow()),
-        "email_address": "test@user.gov.uk",
+        "email_address": "test@user.canada.ca",
         "mobile_number": "07700 900762",
         "state": "active",
         "failed_login_count": 0,
@@ -4300,6 +4321,59 @@ def create_multiple_sms_senders(service_id="abcd"):
         },
     ]
 
+def create_multiple_sms_senders_no_inbound(service_id="abcd"):
+    return [
+        {
+            "id": "1234",
+            "service_id": service_id,
+            "sms_sender": "Example",
+            "is_default": True,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+        {
+            "id": "5678",
+            "service_id": service_id,
+            "sms_sender": "Example 2",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+    ]
+
+def create_multiple_sms_senders_with_diff_default(service_id="abcd"):
+    return [
+        {
+            "id": "1234",
+            "service_id": service_id,
+            "sms_sender": "Example",
+            "is_default": True,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+        {
+            "id": "5678",
+            "service_id": service_id,
+            "sms_sender": "Example 2",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+        {
+            "id": "9457",
+            "service_id": service_id,
+            "sms_sender": "Example 3",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": "12354",
+            "updated_at": None,
+        },
+    ]
+
 
 def create_letter_contact_block(
     id_="1234",
@@ -4377,7 +4451,7 @@ def create_notification(
     noti_content = "hello ((name))" if content is None else content
     noti["id"] = notifification_id or sample_uuid()
     if sent_one_off:
-        noti["created_by"] = {"id": sample_uuid(), "name": "Test User", "email_address": "test@user.gov.uk"}
+        noti["created_by"] = {"id": sample_uuid(), "name": "Test User", "email_address": "test@user.canada.ca"}
     if personalisation:
         noti["personalisation"] = personalisation
     else:
@@ -4446,7 +4520,7 @@ def create_template(
     postage=None,
     folder=None,
 ):
-    return template_json(
+    return {"data": template_json(
         service_id=service_id,
         id_=template_id or str(generate_uuid()),
         name=name,
@@ -4456,4 +4530,4 @@ def create_template(
         redact_personalisation=redact_personalisation,
         postage=postage,
         folder=folder,
-    )
+    )}
