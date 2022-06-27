@@ -1035,17 +1035,19 @@ def create_template(
     postage=None,
     folder=None,
 ):
-    return template_json(
-        service_id=service_id,
-        id_=template_id or str(generate_uuid()),
-        name=name,
-        type_=template_type,
-        content=content,
-        subject=subject,
-        redact_personalisation=redact_personalisation,
-        postage=postage,
-        folder=folder,
-    )
+    return {
+        "data": template_json(
+            service_id=service_id,
+            id_=template_id or str(generate_uuid()),
+            name=name,
+            type_=template_type,
+            content=content,
+            subject=subject,
+            redact_personalisation=redact_personalisation,
+            postage=postage,
+            folder=folder,
+        )
+    }
 
 
 def create_email_template():
@@ -1066,12 +1068,22 @@ def create_sms_template():
     )
 
 
-def create_letter_template():
+def create_letter_template(postage="second"):
     return create_template(
         name="Two week reminder",
         template_type="letter",
         content="Template <em>content</em> with & entity",
         subject="Two week reminder",
+        postage=postage,
+    )
+
+
+def create_letter_template_with_variables():
+    return create_template(
+        name="Two week reminder",
+        template_type="letter",
+        subject="Your ((thing)) is due soon",
+        content="Your vehicle tax expires on ((date))",
         postage="second",
     )
 

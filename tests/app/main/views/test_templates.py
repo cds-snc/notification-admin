@@ -34,18 +34,18 @@ from tests.conftest import (
     TEMPLATE_ONE_ID,
     ClientRequest,
     ElementNotFound,
-    active_caseworking_user,
-    active_user_view_permissions,
+    create_active_caseworking_user,
+    create_active_user_view_permissions,
+    create_email_template,
+    create_letter_contact_block,
+    create_letter_template,
+    create_letter_template_with_variables,
+    create_sms_template,
+    create_template,
     fake_uuid,
-    mock_get_service_email_template,
-    mock_get_service_letter_template,
-    mock_get_service_template,
     mock_get_service_template_with_process_type,
-    no_letter_contact_blocks,
     normalize_spaces,
 )
-from tests.conftest import service_one as create_sample_service
-from tests.conftest import single_letter_contact_block
 
 
 class TestRedisPreviewUtilities:
@@ -140,7 +140,7 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
     "user, expected_page_title, extra_args, expected_templates",
     [
         (
-            active_user_view_permissions,
+            create_active_user_view_permissions(),
             "Browse Templates",
             {},
             [
@@ -153,25 +153,25 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
             ],
         ),
         (
-            active_user_view_permissions,
+            create_active_user_view_permissions(),
             "Browse Templates",
             {"template_type": "sms"},
             ["sms_template_one", "sms_template_two"],
         ),
         (
-            active_user_view_permissions,
+            create_active_user_view_permissions(),
             "Browse Templates",
             {"template_type": "email"},
             ["email_template_one", "email_template_two"],
         ),
         (
-            active_user_view_permissions,
+            create_active_user_view_permissions(),
             "Browse Templates",
             {"template_type": "letter"},
             ["letter_template_one", "letter_template_two"],
         ),
         (
-            active_caseworking_user,
+            create_active_caseworking_user(),
             "Browse Templates",
             {},
             [
@@ -184,7 +184,7 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
             ],
         ),
         (
-            active_caseworking_user,
+            create_active_caseworking_user(),
             "Browse Templates",
             {"template_type": "email"},
             ["email_template_one", "email_template_two"],
@@ -206,7 +206,7 @@ def test_should_show_page_for_choosing_a_template(
 ):
     expected_nav_links = ["All", "Email", "Text message", "Letter"]
     service_one["permissions"].append("letter")
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
 
     page = client_request.get("main.choose_template", service_id=service_one["id"], **extra_args)
 
@@ -409,14 +409,10 @@ def test_should_show_page_for_one_template(
 
 
 def test_caseworker_redirected_to_one_off(
-    client_request,
-    mock_get_service_templates,
-    mock_get_service_template,
-    mocker,
-    fake_uuid,
+    client_request, mock_get_service_templates, mock_get_service_template, mocker, fake_uuid, active_caseworking_user
 ):
 
-    mocker.patch("app.user_api_client.get_user", return_value=active_caseworking_user(fake_uuid))
+    mocker.patch("app.user_api_client.get_user", return_value=active_caseworking_user)
 
     client_request.get(
         "main.view_template",
@@ -559,11 +555,14 @@ def test_view_letter_template_displays_postage(
 ):
     mocker.patch("app.main.views.templates.get_page_count_for_letter", return_value=1)
     client_request.login(active_user_with_permissions)
-    mock_get_service_letter_template(mocker, postage=template_postage)
+
+    template = create_letter_template(postage=template_postage)
+    mocker.patch("app.service_api_client.get_service_template", return_value=template)
+
     page = client_request.get(
         "main.view_template",
         service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
+        template_id=template["data"]["id"],
         _test_page_title=False,
     )
 
@@ -591,7 +590,8 @@ def test_edit_letter_template_postage_page_displays_correctly(
     fake_uuid,
     mocker,
 ):
-    mock_get_service_letter_template(mocker)
+    mocker.patch("app.service_api_client.get_service_template", return_value=create_letter_template())
+
     page = client_request.get(
         "main.edit_template_postage",
         service_id=SERVICE_ONE_ID,
@@ -623,7 +623,7 @@ def test_edit_letter_template_postage_page_404s_if_template_is_not_a_letter(
 
 def test_edit_letter_templates_postage_updates_postage(client_request, service_one, mocker, fake_uuid):
     mock_update_template_postage = mocker.patch("app.main.views.templates.service_api_client.update_service_template_postage")
-    mock_get_service_letter_template(mocker)
+    mocker.patch("app.service_api_client.get_service_template", return_value=create_letter_template())
 
     client_request.post(
         "main.edit_template_postage",
@@ -1229,11 +1229,11 @@ def test_should_not_allow_creation_of_a_template_without_correct_permission(
 
 
 @pytest.mark.parametrize(
-    "fixture,  expected_status_code",
+    "template_data,  expected_status_code",
     [
-        (mock_get_service_email_template, 200),
-        (mock_get_service_template, 200),
-        (mock_get_service_letter_template, 302),
+        (create_email_template(), 200),
+        (create_sms_template(), 200),
+        (create_letter_template(), 302),
     ],
 )
 def test_should_redirect_to_one_off_if_template_type_is_letter(
@@ -1242,10 +1242,11 @@ def test_should_redirect_to_one_off_if_template_type_is_letter(
     multiple_sms_senders,
     fake_uuid,
     mocker,
-    fixture,
+    template_data,
     expected_status_code,
 ):
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_service_template", return_value=template_data)
+
     client_request.get(
         ".set_sender",
         service_id=SERVICE_ONE_ID,
@@ -1365,8 +1366,9 @@ def test_should_403_when_edit_template_with_non_default_process_type_for_non_pla
     mock_update_service_template,
     fake_uuid,
     process_type,
+    service_one,
 ):
-    service = create_sample_service(active_user_with_permissions)
+    service = service_one
     client.login(active_user_with_permissions, mocker, service)
     mocker.patch(
         "app.user_api_client.get_users_for_service",
@@ -1398,8 +1400,9 @@ def test_should_403_when_create_template_with_non_default_process_type_for_non_p
     mock_update_service_template,
     fake_uuid,
     process_type,
+    service_one,
 ):
-    service = create_sample_service(active_user_with_permissions)
+    service = service_one
     client.login(active_user_with_permissions, mocker, service)
     mocker.patch(
         "app.user_api_client.get_users_for_service",
@@ -1423,10 +1426,10 @@ def test_should_403_when_create_template_with_non_default_process_type_for_non_p
 
 
 @pytest.mark.parametrize(
-    "template_mock, template_type, expected_paragraphs",
+    "template_data, template_type, expected_paragraphs",
     [
         (
-            mock_get_service_email_template,
+            create_email_template(),
             "email",
             [
                 "You removed ((date))",
@@ -1435,7 +1438,7 @@ def test_should_403_when_create_template_with_non_default_process_type_for_non_p
             ],
         ),
         (
-            mock_get_service_letter_template,
+            create_letter_template_with_variables(),
             "letter",
             [
                 "You removed ((date))",
@@ -1451,17 +1454,20 @@ def test_should_show_interstitial_when_making_breaking_change(
     mock_get_user_by_email,
     fake_uuid,
     mocker,
-    template_mock,
+    template_data,
     template_type,
     expected_paragraphs,
 ):
-    template_mock(
-        mocker,
-        subject="Your ((thing)) is due soon",
-        content="Your vehicle tax expires on ((date))",
-    )
+    # template_mock(
+    #     mocker,
+    #     subject="Your ((thing)) is due soon",
+    #     content="Your vehicle tax expires on ((date))",
+    # )
+
+    mocker.patch("app.service_api_client.get_service_template", return_value=template_data)
+
     data = {
-        "id": fake_uuid,
+        "id": template_data["data"]["id"],
         "name": "new name",
         "template_content": "hello lets talk about ((thing))",
         "template_type": template_type,
@@ -1476,7 +1482,7 @@ def test_should_show_interstitial_when_making_breaking_change(
     page = client_request.post(
         ".edit_service_template",
         service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
+        template_id=template_data["data"]["id"],
         _data=data,
         _expected_status=200,
     )
@@ -1485,7 +1491,7 @@ def test_should_show_interstitial_when_making_breaking_change(
     assert page.find("a", {"class": "back-link"})["href"] == url_for(
         ".edit_service_template",
         service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
+        template_id=template_data["data"]["id"],
     )
     for index, p in enumerate(expected_paragraphs):
         assert normalize_spaces(page.select("main p")[index].text) == p
@@ -2307,12 +2313,13 @@ def test_should_show_hint_once_template_redacted(
     fake_uuid,
 ):
 
-    mock_get_service_email_template(mocker, redact_personalisation=True)
+    template = create_template(redact_personalisation=True)
+    mocker.patch("app.service_api_client.get_service_template", return_value=template)
 
     page = client_request.get(
         "main.view_template",
         service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
+        template_id=template["data"]["id"],
         _test_page_title=False,
     )
 
@@ -2367,21 +2374,22 @@ def test_set_template_sender(
 
 
 @pytest.mark.parametrize(
-    "fixture",
+    "data",
     [
-        no_letter_contact_blocks,
-        single_letter_contact_block,
+        [],
+        [create_letter_contact_block()],
     ],
 )
 def test_add_sender_link_only_appears_on_services_with_no_senders(
     client_request,
     fake_uuid,
     mocker,
-    fixture,
+    data,
     mock_get_service_letter_template,
     no_letter_contact_blocks,
 ):
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_letter_contacts", return_value=data)
+
     page = client_request.get(
         "main.set_template_sender",
         service_id=SERVICE_ONE_ID,
@@ -2396,14 +2404,15 @@ def test_add_sender_link_only_appears_on_services_with_no_senders(
 
 
 @pytest.mark.parametrize(
-    "template_mock",
+    "template_data",
     [
-        mock_get_service_email_template,
-        mock_get_service_template,
+        create_email_template(),
+        create_sms_template(),
     ],
 )
-def test_add_recipients_redirects_many_recipients(template_mock, client_request, mocker):
-    template_mock(mocker)
+def test_add_recipients_redirects_many_recipients(template_data, client_request, mocker):
+    mocker.patch("app.service_api_client.get_service_template", return_value=template_data)
+
     template_id = fake_uuid
 
     client_request.post(
@@ -2424,14 +2433,15 @@ def test_add_recipients_redirects_many_recipients(template_mock, client_request,
 
 
 @pytest.mark.parametrize(
-    "template_type, template_mock",
+    "template_type, template_data",
     [
-        ("email", mock_get_service_email_template),
-        ("sms", mock_get_service_template),
+        ("email", create_email_template()),
+        ("sms", create_sms_template()),
     ],
 )
-def test_add_recipients_redirects_one_recipient(template_type, template_mock, client_request, fake_uuid, mocker):
-    template_mock(mocker)
+def test_add_recipients_redirects_one_recipient(template_type, template_data, client_request, fake_uuid, mocker):
+    mocker.patch("app.service_api_client.get_service_template", return_value=template_data)
+
     template_id = fake_uuid
     with client_request.session_transaction() as session:
         session["placeholders"] = {}
