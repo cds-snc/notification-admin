@@ -1047,6 +1047,7 @@ def create_template(
         folder=folder,
     )
 
+
 def create_email_template():
     return create_template(
         name="Two week reminder",
@@ -1055,23 +1056,26 @@ def create_email_template():
         subject="Your ((thing)) is due soon",
     )
 
+
 def create_sms_template():
     return create_template(
         name="Two week reminder",
         template_type="sms",
-        content= "((name)), Template <em>content</em> with & entity",
+        content="((name)), Template <em>content</em> with & entity",
         subject="Two week reminder",
     )
+
+
 def create_letter_template():
     return create_template(
         name="Two week reminder",
         template_type="letter",
-        content= "Template <em>content</em> with & entity",
+        content="Template <em>content</em> with & entity",
         subject="Two week reminder",
         postage="second",
     )
 
-  
+
 def create_service_templates(service_id, number_of_templates=6):
     template_types = ["sms", "sms", "email", "email", "letter", "letter"]
     service_templates = []
@@ -4321,6 +4325,7 @@ def create_multiple_sms_senders(service_id="abcd"):
         },
     ]
 
+
 def create_multiple_sms_senders_no_inbound(service_id="abcd"):
     return [
         {
@@ -4342,6 +4347,7 @@ def create_multiple_sms_senders_no_inbound(service_id="abcd"):
             "updated_at": None,
         },
     ]
+
 
 def create_multiple_sms_senders_with_diff_default(service_id="abcd"):
     return [
@@ -4520,14 +4526,16 @@ def create_template(
     postage=None,
     folder=None,
 ):
-    return {"data": template_json(
-        service_id=service_id,
-        id_=template_id or str(generate_uuid()),
-        name=name,
-        type_=template_type,
-        content=content,
-        subject=subject,
-        redact_personalisation=redact_personalisation,
-        postage=postage,
-        folder=folder,
-    )}
+    return {
+        "data": template_json(
+            service_id=service_id,
+            id_=template_id or str(generate_uuid()),
+            name=name,
+            type_=template_type,
+            content=content,
+            subject=subject,
+            redact_personalisation=redact_personalisation,
+            postage=postage,
+            folder=folder,
+        )
+    }

@@ -3310,74 +3310,74 @@ def test_service_switch_can_upload_document_lets_contact_details_be_added_and_sh
     assert normalize_spaces(page.h1.text) == "Send files by email"
 
 
-# @pytest.mark.parametrize(
-#     "user",
-#     (
-#         platform_admin_user,
-#         active_user_with_permissions,
-#         pytest.param(active_user_no_settings_permission, marks=pytest.mark.xfail),
-#     ),
-# )
-# def test_archive_service_after_confirm(
-#     client_request,
-#     mocker,
-#     mock_get_organisations,
-#     mock_get_service_and_organisation_counts,
-#     mock_get_organisations_and_services_for_user,
-#     user,
-#     fake_uuid,
-# ):
-#     mocked_fn = mocker.patch("app.service_api_client.post")
-#     client_request.login(user(fake_uuid))
-#     page = client_request.post(
-#         "main.archive_service",
-#         service_id=SERVICE_ONE_ID,
-#         _follow_redirects=True,
-#     )
+@pytest.mark.parametrize(
+    "user",
+    (
+        create_platform_admin_user(),
+        create_active_user_with_permissions(),
+        pytest.param(create_active_user_no_settings_permission(), marks=pytest.mark.xfail),
+    ),
+)
+def test_archive_service_after_confirm(
+    client_request,
+    mocker,
+    mock_get_organisations,
+    mock_get_service_and_organisation_counts,
+    mock_get_organisations_and_services_for_user,
+    user,
+    fake_uuid,
+):
+    mocked_fn = mocker.patch("app.service_api_client.post")
+    client_request.login(user)
+    page = client_request.post(
+        "main.archive_service",
+        service_id=SERVICE_ONE_ID,
+        _follow_redirects=True,
+    )
 
-#     mocked_fn.assert_called_once_with("/service/{}/archive".format(SERVICE_ONE_ID), data=None)
-#     assert normalize_spaces(page.select_one("h1").text) == "Your services"
-#     assert normalize_spaces(page.select_one(".banner-default-with-tick").text) == ("‘service one’ was deleted")
+    mocked_fn.assert_called_once_with("/service/{}/archive".format(SERVICE_ONE_ID), data=None)
+    assert normalize_spaces(page.select_one("h1").text) == "Your services"
+    assert normalize_spaces(page.select_one(".banner-default-with-tick").text) == ("‘service one’ was deleted")
 
 
-# @pytest.mark.parametrize(
-#     "user",
-#     (
-#         platform_admin_user,
-#         active_user_with_permissions,
-#         pytest.param(active_user_no_settings_permission, marks=pytest.mark.xfail),
-#     ),
-# )
-# def test_archive_service_prompts_user(
-#     client_request,
-#     mocker,
-#     single_reply_to_email_address,
-#     single_letter_contact_block,
-#     mock_get_service_organisation,
-#     single_sms_sender,
-#     mock_get_service_settings_page_common,
-#     fake_uuid,
-#     user,
-# ):
-#     mocked_fn = mocker.patch("app.service_api_client.post")
-#     client_request.login(user(fake_uuid))
+@pytest.mark.parametrize(
+    "user",
+    (
+        create_platform_admin_user(),
+        create_active_user_with_permissions(),
+        pytest.param(create_active_user_no_settings_permission(), marks=pytest.mark.xfail),
+    ),
+)
+def test_archive_service_prompts_user(
+    client_request,
+    mocker,
+    single_reply_to_email_address,
+    single_letter_contact_block,
+    mock_get_service_organisation,
+    single_sms_sender,
+    mock_get_service_settings_page_common,
+    fake_uuid,
+    user,
+):
+    mocked_fn = mocker.patch("app.service_api_client.post")
+    client_request.login(user)
 
-#     settings_page = client_request.get("main.archive_service", service_id=SERVICE_ONE_ID)
-#     delete_link = settings_page.select(".page-footer-delete-link a")[0]
-#     assert normalize_spaces(delete_link.text) == "Delete this service"
-#     assert delete_link["href"] == url_for(
-#         "main.archive_service",
-#         service_id=SERVICE_ONE_ID,
-#     )
+    settings_page = client_request.get("main.archive_service", service_id=SERVICE_ONE_ID)
+    delete_link = settings_page.select(".page-footer-delete-link a")[0]
+    assert normalize_spaces(delete_link.text) == "Delete this service"
+    assert delete_link["href"] == url_for(
+        "main.archive_service",
+        service_id=SERVICE_ONE_ID,
+    )
 
-#     delete_page = client_request.get(
-#         "main.archive_service",
-#         service_id=SERVICE_ONE_ID,
-#     )
-#     assert normalize_spaces(delete_page.select_one(".banner-dangerous").text) == (
-#         "Are you sure you want to delete ‘service one’? " "There’s no way to undo this. " "Yes, delete"
-#     )
-#     assert mocked_fn.called is False
+    delete_page = client_request.get(
+        "main.archive_service",
+        service_id=SERVICE_ONE_ID,
+    )
+    assert normalize_spaces(delete_page.select_one(".banner-dangerous").text) == (
+        "Are you sure you want to delete ‘service one’? " "There’s no way to undo this. " "Yes, delete"
+    )
+    assert mocked_fn.called is False
 
 
 def test_cant_archive_inactive_service(
