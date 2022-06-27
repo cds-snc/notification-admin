@@ -21,8 +21,6 @@ from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooL
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
-    active_caseworking_user,
-    active_user_with_permissions,
     create_active_caseworking_user,
     create_active_user_with_permissions,
     create_email_template,
@@ -34,18 +32,9 @@ from tests.conftest import (
     create_sms_template,
     create_template,
     fake_uuid,
-    mock_get_international_service,
-    mock_get_live_service,
-    mock_get_service,
     mock_get_service_email_template,
     mock_get_service_letter_template,
     mock_get_service_template,
-    mock_get_service_template_with_placeholders,
-    multiple_reply_to_email_addresses,
-    multiple_sms_senders,
-    multiple_sms_senders_with_diff_default,
-    no_reply_to_email_addresses,
-    no_sms_senders,
     normalize_spaces,
 )
 
