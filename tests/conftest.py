@@ -4513,4 +4513,3 @@ def create_notifications(
         postage=postage,
         to=to,
     )
-
