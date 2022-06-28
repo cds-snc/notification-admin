@@ -74,26 +74,34 @@ def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisat
     )
 
 
+# @pytest.mark.skip(reason="infinite sadness")
 @pytest.mark.parametrize(
-    "url, cache_headers",
+    "url, use_fingerprinting, cache_headers",
     [
         (
-            asset_fingerprinter.get_url("stylesheets/index.css"),
+            "stylesheets/index.css",
+            True,
             "public, max-age=31536000, immutable",
         ),
         (
-            asset_fingerprinter.get_url("images/favicon.ico"),
+            "images/favicon.ico",
+            True,
             "public, max-age=31536000, immutable",
         ),
         (
-            asset_fingerprinter.get_url("javascripts/main.min.js"),
+            "javascripts/main.min.js",
+            True,
             "public, max-age=31536000, immutable",
         ),
-        ("/robots.txt", "no-store, no-cache, private, must-revalidate"),
+        ("/robots.txt", False, "no-store, no-cache, private, must-revalidate"),
     ],
     ids=["CSS file", "image", "JS file", "static page"],
 )
-def test_headers_cache_static_assets(client, url, cache_headers):
+def test_headers_cache_static_assets(client, url, use_fingerprinting, cache_headers):
+
+    if use_fingerprinting:
+        url = asset_fingerprinter.get_url(url)
+
     response = client.get(url)
 
     assert response.status_code == 200
