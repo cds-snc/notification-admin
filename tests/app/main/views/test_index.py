@@ -186,10 +186,10 @@ def test_css_is_served_from_correct_path(client_request):
     for index, link in enumerate(page.select("link[rel=stylesheet]")):
         assert link["href"].startswith(
             [
-                "http://localhost:6012/static/stylesheets/index.css",
+                "/static/stylesheets/index.css",
                 "https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap",
                 "https://fonts.googleapis.com/css?",
-                "http://localhost:6012/static/stylesheets/main.css?",
+                "/static/stylesheets/main.css?",
             ][index]
         )
 

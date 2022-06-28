@@ -142,9 +142,9 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
 
 
-def test_sign_in_redirects_to_forced_password_reset(client, mocker, fake_uuid, create_active_user):
+def test_sign_in_redirects_to_forced_password_reset(client, mocker, fake_uuid, api_user_active):
 
-    sample_user = create_active_user
+    sample_user = api_user_active
     sample_user["id"] = fake_uuid
     sample_user["email_address"] = "test@admin.ca"
     sample_user["is_authenticated"] = False
@@ -163,9 +163,9 @@ def test_sign_in_redirects_to_forced_password_reset(client, mocker, fake_uuid, c
     )
 
 
-def test_forced_password_reset(client, mocker, fake_uuid, create_active_user):
+def test_forced_password_reset(client, mocker, fake_uuid, api_user_active):
 
-    sample_user = create_active_user
+    sample_user = api_user_active
     sample_user["id"] = fake_uuid
     sample_user["email_address"] = "test@admin.ca"
     sample_user["is_authenticated"] = False
@@ -210,9 +210,9 @@ def test_forced_password_reset_with_missing_or_bad_email_address(client, mocker,
     assert not mocked_send_email.called
 
 
-def test_forced_password_reset_password_not_expired(client, mocker, fake_uuid, create_active_user):
+def test_forced_password_reset_password_not_expired(client, mocker, fake_uuid, api_user_active):
 
-    sample_user = create_active_user
+    sample_user = api_user_active
     sample_user["id"] = fake_uuid
     sample_user["email_address"] = "test@admin.ca"
     sample_user["is_authenticated"] = False

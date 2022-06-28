@@ -740,7 +740,7 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
 
     mocker.patch(
         "app.service_api_client.get_service_template",
-        return_value={"data": create_template(template_type="letter", postage="first")},
+        return_value=create_template(template_type="letter", postage="first"),
     )
 
     page = client_request.get(
