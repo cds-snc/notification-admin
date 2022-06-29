@@ -30,14 +30,14 @@ create_app(application)
 apig_wsgi_handler = make_lambda_handler(application, binary_support=True)
 
 if os.environ.get("USE_LOCAL_JINJA_TEMPLATES") == "True":
-    print("")  # noqa: T001
-    print("========================================================")  # noqa: T001
-    print("")  # noqa: T001
-    print("WARNING: USING LOCAL JINJA from /jinja_templates FOLDER!")  # noqa: T001
-    print(".env USE_LOCAL_JINJA_TEMPLATES=True")  # noqa: T001
-    print("")  # noqa: T001
-    print("========================================================")  # noqa: T001
-    print("")  # noqa: T001
+    print("")  # noqa: T201
+    print("========================================================")  # noqa: T201
+    print("")  # noqa: T201
+    print("WARNING: USING LOCAL JINJA from /jinja_templates FOLDER!")  # noqa: T201
+    print(".env USE_LOCAL_JINJA_TEMPLATES=True")  # noqa: T201
+    print("")  # noqa: T201
+    print("========================================================")  # noqa: T201
+    print("")  # noqa: T201
 
 
 def handler(event, context):
