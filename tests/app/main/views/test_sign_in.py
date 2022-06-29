@@ -1,6 +1,6 @@
-from unittest import mock
 import uuid
 from datetime import datetime, timedelta
+from unittest import mock
 
 import pytest
 from bs4 import BeautifulSoup
