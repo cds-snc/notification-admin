@@ -4,7 +4,7 @@ from unittest.mock import ANY
 import pwnedpasswords
 import pytest
 from bs4 import BeautifulSoup
-from flask import session, url_for
+from flask import url_for
 from flask_login import current_user
 
 from app.models.user import InvitedUser
@@ -160,7 +160,8 @@ def test_should_add_user_details_to_session(
         },
     )
     assert response.status_code == 302
-    assert session["user_details"]["email"] == email_address
+    with client.session_transaction() as session:
+        assert session["user_details"]["email"] == email_address
 
 
 def test_blocklist1_can_contact_hibp_api(app_):
