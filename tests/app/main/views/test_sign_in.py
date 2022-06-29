@@ -1,3 +1,4 @@
+from unittest import mock
 import uuid
 from datetime import datetime, timedelta
 
@@ -137,7 +138,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     mock_verify_password.assert_called_with(
         api_user_active["id"],
         password,
-        {"location": None, "user-agent": "werkzeug/1.0.1"},
+        {"location": None, "user-agent": mock.ANY},
     )
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
 
@@ -277,7 +278,7 @@ def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login(
     mock_verify_password.assert_called_with(
         api_user_active["id"],
         "val1dPassw0rd!",
-        {"location": None, "user-agent": "werkzeug/1.0.1"},
+        {"location": None, "user-agent": mock.ANY},
     )
     mock_register_email_login.assert_called_with(api_user_active["id"])
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
@@ -307,7 +308,7 @@ def test_process_email_auth_sign_in_return_2fa_template(
     mock_verify_password.assert_called_with(
         api_user_active_email_auth["id"],
         "val1dPassw0rd!",
-        {"location": None, "user-agent": "werkzeug/1.0.1"},
+        {"location": None, "user-agent": mock.ANY},
     )
 
 
