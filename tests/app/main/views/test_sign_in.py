@@ -421,7 +421,7 @@ def test_sign_in_security_center_notification_for_non_NA_signins(
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
 
     reporter = mocker.patch("app.utils.report_security_finding")
-
+    mocker.patch("app.utils.get_remote_addr", return_value="1.2.3.4")
     mocker.patch(
         "app.utils._geolocate_lookup",
         return_value={"continent": {"code": "EU"}, "city": None, "subdivision": None},
