@@ -74,7 +74,6 @@ def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisat
     )
 
 
-# @pytest.mark.skip(reason="infinite sadness")
 @pytest.mark.parametrize(
     "url, use_fingerprinting, cache_headers",
     [

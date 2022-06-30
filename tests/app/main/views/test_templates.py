@@ -1458,11 +1458,6 @@ def test_should_show_interstitial_when_making_breaking_change(
     template_type,
     expected_paragraphs,
 ):
-    # template_mock(
-    #     mocker,
-    #     subject="Your ((thing)) is due soon",
-    #     content="Your vehicle tax expires on ((date))",
-    # )
 
     mocker.patch("app.service_api_client.get_service_template", return_value=template_data)
 

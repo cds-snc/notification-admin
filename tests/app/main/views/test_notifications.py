@@ -194,12 +194,6 @@ def test_notification_status_page_shows_attachments(
         "app.notification_api_client.get_notification",
         return_value=create_notification(template_type="email", personalisation=personalisation),
     )
-    # mock_get_notification(
-    #     mocker,
-    #     fake_uuid,
-    #     template_type="email",
-    #     personalisation=personalisation,
-    # )
 
     page = client_request.get(
         "main.view_notification",
