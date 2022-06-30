@@ -29,7 +29,6 @@ def test_from_utils_template_calls_through(
     mock_from_db.assert_called_once_with(template._template, "foo", template.values, page=expected_page_argument)
 
 
-@pytest.mark.skip(reason="werkzeug death")
 @pytest.mark.parametrize(
     "partial_call, expected_url",
     [
