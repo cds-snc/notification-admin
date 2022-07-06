@@ -9,7 +9,7 @@
 {% endif %}
 
 <hr class="m-0 md:hidden bg-blue" style="height: 4px"/>
-<nav class="md:hidden" aria-label="{{ _('mobile navigation') }}">
+<nav class="md:hidden" aria-label="{{ _('Main menu') }}">
   <div class="container px-gutterHalf">
     <!-- Mobile menu and nav bar -->
     <div class="grid grid-cols-2">
@@ -65,7 +65,7 @@
   </div>
 </nav>
 {% if withnav %}
-  <nav class="bg-gray hidden md:visible md:flex" aria-label="{{ _('main navigation') }}">
+  <nav class="bg-gray hidden md:visible md:flex" aria-label="{{ _('Main menu') }}">
     <div class="container px-gutterHalf">
       <div id="proposition-links" class="flex flex-no-wrap items-baseline">
         {% if not current_user.is_authenticated %}

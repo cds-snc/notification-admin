@@ -23,7 +23,7 @@
 {% else %}
   {% set display_checkboxes = current_user.has_permissions('manage_templates') and not sending_view %}
 
-  <nav id="template-list" class="{{ 'top-gutter-5px contain-floats' if (not show_template_nav and not show_search_box) else '' }}">
+  <nav id="template-list" class="{{ 'top-gutter-5px contain-floats' if (not show_template_nav and not show_search_box) else '' }}"  aria-label="{{ _('Templates and folders') }}">
     {% if display_checkboxes %}
       <fieldset>
         <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
