@@ -146,18 +146,18 @@ class TemplateListFolder(TemplateListItem):
     def _hint_parts(self):
 
         if self.number_of_folders == self.number_of_templates == 0:
-            yield "Empty"  # These strings are wrapped later on in the html
+            yield "Empty"  # This strings is wrapped later on in the html
 
         if self.number_of_templates == 1:
-            yield "1 template"
+            yield _("1 template")  # These still need wrapping bc we join folders+templates
         elif self.number_of_templates > 1:
             # this one still needs wrapping because we do not have unique keys for each x in "x templates"
             yield "{} ".format(self.number_of_templates) + _("templates")
 
         if self.number_of_folders == 1:
-            yield "1 folder"
+            yield _("1 folder")
         elif self.number_of_folders > 1:
-            yield "{} folders".format(self.number_of_folders)
+            yield "{} ".format(self.number_of_folders) + _("folders")
 
     @property
     def hint(self):
