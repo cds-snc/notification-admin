@@ -36,6 +36,7 @@ email-validator==1.1.2
 Werkzeug==2.0.2
 greenlet==1.1.2
 mixpanel==4.9.0
+redis==3.5.3 # pinned for now
 
 # PaaS
 awscli-cwlogs>=1.4.6,<1.5
