@@ -1,20 +1,19 @@
-{% macro task_shortcut(title, img_src, description, button_url, button_text) %}
-  <div class="border border-blue p-gutterHalf flex-1 flex flex-col">
-    <div class="flex mb-8">
-      <img 
-        class="flex-none w-10 h-10" 
-        aria-hidden="true" 
-        src="{{ img_src }}"
-      />
-      <h2 class="font-bold text-base ml-2 flex-1">
-        {{ title }}
+{% macro task_shortcut(description, link_url, link_text, title=false, icon=false) %}
+  <div class="border border-gray-300 p-gutterHalf flex-1">
+    {% if title %}
+      <h2 class="text-sans font-title">
+          {{ title }}
       </h2>
-    </div>
+    {% endif %}
     <p>{{ description }}</p>
       <div class="mt-auto flex-none">
-        <a class="button" href="{{ button_url }}">
-          {{ button_text }}
+        <a class="flex mr-auto justify-between items-center" href="{{ link_url }}">
+          {{ link_text }}
+          {% if icon %}
+            <i aria-hidden="true" class="fa-solid fa-{{icon}}"></i>
+          {% endif %}
         </a>
+        
       </div>    
     </div>
 {% endmacro %}

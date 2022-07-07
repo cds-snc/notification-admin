@@ -74,6 +74,16 @@ module.exports = {
         lightgrey: "#C0C1C3",
         visitedlight: "#929AA4",
         visiteddark: "#C8CDD1",
+        /* trying to slowly implement a more consistent scale below */
+        100: "#F0F2F5",
+        200: "#CFD5DD",
+        300: "#AFB9C3" /* 3:1 contrast on white */,
+        400: "#909CA8",
+        500: "#737F8C",
+        600: "#5E6975",
+        700: "#49535D" /* 7:1 contrast on white */,
+        800: "#343C45",
+        900: "#21262C",
       },
       yellow: {
         default: "#ffbf47",
