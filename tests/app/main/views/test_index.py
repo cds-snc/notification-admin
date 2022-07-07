@@ -179,19 +179,19 @@ def test_terms_page_has_correct_content(client_request):
     )
 
 
-def test_css_is_served_from_correct_path(client_request):
-
+@pytest.mark.parametrize(
+    "css_file_start",
+    [
+        "http://localhost:6012/static/stylesheets/index.css",
+        "https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap",
+        "https://fonts.googleapis.com/css?",
+    ],
+)
+def test_css_is_served_from_correct_path(client_request, css_file_start):
     page = client_request.get("main.welcome")  # easy static page
 
-    for index, link in enumerate(page.select("link[rel=stylesheet]")):
-        assert link["href"].startswith(
-            [
-                "http://localhost:6012/static/stylesheets/index.css",
-                "https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap",
-                "https://fonts.googleapis.com/css?",
-                "http://localhost:6012/static/stylesheets/main.css?",
-            ][index]
-        )
+    # ensure <link> element's `href` value begins with `css_file_start`
+    assert page.select_one(f'link[href^="{css_file_start}"]') is not None
 
 
 @pytest.mark.parametrize(

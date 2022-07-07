@@ -1,13 +1,13 @@
 import json
 import os
 from datetime import datetime
+from unittest import mock
 
 import pytest
 from flask import url_for
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import generate_token
 
-from tests.conftest import api_user_active as create_active_user
 from tests.conftest import url_for_endpoint_with_token
 
 
@@ -97,11 +97,12 @@ def test_should_redirect_index_if_user_has_already_changed_password(
 
 @pytest.mark.parametrize("password_expired", [True, False])
 def test_should_redirect_to_forgot_password_with_flash_message_when_token_is_expired(
-    password_expired, app_, client, mock_login, mocker, fake_uuid, client_request
+    password_expired, app_, client, mock_login, mocker, fake_uuid, client_request, api_user_active
 ):
-    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user = api_user_active
     sample_user["is_authenticated"] = False
     sample_user["password_expired"] = password_expired
+    sample_user["email_address"] = "test@admin.ca"
 
     mocker.patch(
         "app.user_api_client.get_user_by_email_or_none",
@@ -156,8 +157,6 @@ def test_should_sign_in_when_password_reset_is_successful_for_email_auth(
 
     # the log-in flow makes a couple of calls
     mock_get_user.assert_called_once_with(user["id"])
-    mock_update_user_password.assert_called_once_with(
-        user["id"], "a-new_password", {"location": None, "user-agent": "werkzeug/1.0.1"}
-    )
+    mock_update_user_password.assert_called_once_with(user["id"], "a-new_password", {"location": None, "user-agent": mock.ANY})
 
     assert not mock_send_verify_code.called

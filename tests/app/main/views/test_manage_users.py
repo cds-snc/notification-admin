@@ -9,14 +9,11 @@ from app.utils import is_gov_user
 from tests.conftest import (
     SERVICE_ONE_ID,
     USER_ONE_ID,
-    active_caseworking_user,
-    active_user_empty_permissions,
-    active_user_manage_template_permission,
-    active_user_no_mobile,
-    active_user_view_permissions,
-    active_user_with_permissions,
+    create_active_user_empty_permissions,
+    create_active_user_manage_template_permissions,
+    create_active_user_view_permissions,
+    create_active_user_with_permissions,
     normalize_spaces,
-    platform_admin_user,
     sample_uuid,
 )
 
@@ -25,7 +22,7 @@ from tests.conftest import (
     "user, expected_self_text, expected_coworker_text",
     [
         (
-            active_user_with_permissions,
+            create_active_user_with_permissions(),
             (
                 "Test User (you) "
                 "Can See dashboard statistics "
@@ -45,7 +42,7 @@ from tests.conftest import (
             ),
         ),
         (
-            active_user_empty_permissions,
+            create_active_user_empty_permissions(),
             (
                 "Test User With Empty Permissions (you) "
                 "Cannot See dashboard statistics "
@@ -64,7 +61,7 @@ from tests.conftest import (
             ),
         ),
         (
-            active_user_view_permissions,
+            create_active_user_view_permissions(),
             (
                 "Test User With Permissions (you) "
                 "Can See dashboard statistics "
@@ -83,7 +80,7 @@ from tests.conftest import (
             ),
         ),
         (
-            active_user_manage_template_permission,
+            create_active_user_manage_template_permissions(),
             (
                 "Test User With Permissions (you) "
                 "Can See dashboard statistics "
@@ -102,7 +99,7 @@ from tests.conftest import (
             ),
         ),
         (
-            active_user_manage_template_permission,
+            create_active_user_manage_template_permissions(),
             (
                 "Test User With Permissions (you) "
                 "Can See dashboard statistics "
@@ -135,7 +132,7 @@ def test_should_show_overview_page(
     expected_coworker_text,
     active_user_view_permissions,
 ):
-    current_user = user(fake_uuid)
+    current_user = user
     other_user = copy.deepcopy(active_user_view_permissions)
     other_user["email_address"] = "zzzzzzz@example.canada.ca"
     other_user["name"] = "ZZZZZZZZ"
@@ -160,6 +157,8 @@ def test_should_show_overview_page(
 
 
 def test_should_show_caseworker_on_overview_page(
+    active_user_view_permissions,
+    active_caseworking_user,
     client_request,
     mocker,
     mock_get_invites_for_service,
@@ -168,8 +167,10 @@ def test_should_show_caseworker_on_overview_page(
     service_one,
 ):
     service_one["permissions"].append("caseworking")
-    current_user = active_user_view_permissions(fake_uuid)
-    other_user = active_caseworking_user(uuid.uuid4())
+    current_user = active_user_view_permissions
+
+    other_user = active_caseworking_user
+    other_user["id"] = uuid.uuid4()
     other_user["email_address"] = "zzzzzzz@example.canada.ca"
 
     mocker.patch("app.user_api_client.get_user", return_value=current_user)
@@ -289,6 +290,7 @@ def test_should_show_you_should_have_at_least_two_members_when_only_one_present_
 
 
 def test_does_not_show_you_should_have_at_least_two_members_only_when_two_members_present(
+    active_user_with_permissions,
     client_request,
     fake_uuid,
     service_one,
@@ -297,7 +299,7 @@ def test_does_not_show_you_should_have_at_least_two_members_only_when_two_member
     mock_get_template_folders,
     mock_get_security_keys,
 ):
-    current_user = active_user_with_permissions(fake_uuid)
+    current_user = active_user_with_permissions
     other_user = copy.deepcopy(current_user)
     other_user["email_address"] = "zzzzzzz@example.canada.ca"
     other_user["name"] = "ZZZZZZZZ"
@@ -311,6 +313,7 @@ def test_does_not_show_you_should_have_at_least_two_members_only_when_two_member
 
 
 def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_have_permissions(
+    active_user_view_permissions,
     client_request,
     fake_uuid,
     service_one,
@@ -319,7 +322,7 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
     mock_get_template_folders,
     mock_get_security_keys,
 ):
-    current_user = active_user_view_permissions(fake_uuid)
+    current_user = active_user_view_permissions
     mocker.patch("app.user_api_client.get_user", return_value=current_user)
     mocker.patch("app.models.user.Users.client", return_value=[current_user])
     page = client_request.get("main.manage_users", service_id=service_one["id"])
@@ -328,11 +331,11 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
 
 
 @pytest.mark.parametrize(
-    "user, sms_option_disabled, expected_label",
+    "sms_option_disabled, mobile_number, expected_label",
     [
         (
-            active_user_no_mobile,
             True,
+            None,
             """
             Text message code
             Not available because this team member has not added a
@@ -340,8 +343,8 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
         """,
         ),
         (
-            active_user_with_permissions,
             False,
+            "9025555555",
             """
             Text message code
         """,
@@ -352,15 +355,19 @@ def test_user_with_no_mobile_number_cant_be_set_to_sms_auth(
     client_request,
     mock_get_users_by_service,
     mock_get_template_folders,
-    user,
+    api_user_active,
     sms_option_disabled,
+    mobile_number,
     expected_label,
     service_one,
     mocker,
     fake_uuid,
+    active_user_with_permissions,
 ):
+    active_user_with_permissions["mobile_number"] = mobile_number
+
     service_one["permissions"].append("email_auth")
-    mocker.patch("app.user_api_client.get_user", return_value=user(fake_uuid))
+    mocker.patch("app.user_api_client.get_user", return_value=active_user_with_permissions)
 
     page = client_request.get(
         "main.edit_user_permissions",
@@ -592,9 +599,10 @@ def test_cant_edit_user_folder_permissions_for_platform_admin_users(
     mock_set_user_permissions,
     mock_get_template_folders,
     fake_uuid,
+    platform_admin_user,
 ):
     service_one["permissions"] = ["edit_folder_permissions"]
-    mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user(fake_uuid))
+    mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user)
     mock_get_template_folders.return_value = [
         {
             "id": "folder-id-1",

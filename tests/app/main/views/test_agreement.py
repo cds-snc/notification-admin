@@ -7,11 +7,7 @@ from flask import url_for
 from freezegun import freeze_time
 
 from tests import organisation_json
-from tests.conftest import (
-    SERVICE_ONE_ID,
-    mock_get_service_organisation,
-    normalize_spaces,
-)
+from tests.conftest import SERVICE_ONE_ID, normalize_spaces
 
 
 class _MockS3Object:
@@ -120,11 +116,9 @@ def test_show_agreement_page(
     crown,
     expected_links,
 ):
-    mock_get_service_organisation(
-        mocker,
-        crown=crown,
-        agreement_signed=agreement_signed,
-    )
+    org = organisation_json(crown=crown, agreement_signed=agreement_signed)
+    mocker.patch("app.organisations_client.get_service_organisation", return_value=org)
+
     page = client_request.get("main.service_agreement", service_id=SERVICE_ONE_ID)
     links = page.select("main .md\\:w-5\\/6 a")
     assert len(links) == len(expected_links)

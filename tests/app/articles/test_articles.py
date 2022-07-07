@@ -83,24 +83,31 @@ class TestGetLangURLNoTranslation:
         assert lang_url == "/page-no-translation"
 
 
-@patch.dict("app.articles.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
 class TestGetPreviewURL:
     @patch("app.articles.get_current_locale", return_value="en")
-    def test_get_preview_url_en(self, param):
+    def test_get_preview_url_en(self, mocker, app_):
+        with app_.app_context():
+            mocker.patch("app.articles.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
         page_id = 123
         preview_url = get_preview_url(page_id)
 
         assert preview_url == f"https://{gc_articles_api}/wp-admin/post.php?post={page_id}&action=edit&lang=en"
 
     @patch("app.articles.get_current_locale", return_value="fr")
-    def test_get_preview_url_fr(self, param):
+    def test_get_preview_url_fr(self, mocker, app_):
+        with app_.app_context():
+            mocker.patch("app.articles.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
+
         page_id = 123
         preview_url = get_preview_url(page_id)
 
         assert preview_url == f"https://{gc_articles_api}/wp-admin/post.php?post={page_id}&action=edit&lang=fr"
 
     @patch("app.articles.get_current_locale", return_value="en")
-    def test_get_preview_url_None_as_id(self, param):
+    def test_get_preview_url_None_as_id(self, mocker, app_):
+        with app_.app_context():
+            mocker.patch("app.articles.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
+
         preview_url = get_preview_url(page_id=None)
 
         # return None as page_id. This should never happen in practice, since we check page_id beforehand

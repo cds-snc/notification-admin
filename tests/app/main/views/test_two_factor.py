@@ -4,7 +4,7 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
-from tests.conftest import SERVICE_ONE_ID, captured_templates, mock_get_user
+from tests.conftest import SERVICE_ONE_ID, captured_templates
 
 
 @pytest.fixture(autouse=True)
@@ -66,7 +66,8 @@ def test_should_render_email_two_factor_page(
     mock_get_login_events,
     mocker,
 ):
-    mock_get_user(mocker, api_user_active_email_auth)
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
+
     # TODO this lives here until we work out how to
     # reassign the session after it is lost mid register process
     with client.session_transaction() as session:
@@ -149,19 +150,21 @@ def test_should_login_platform_admin_user_and_redirect_to_your_services(
     client,
     platform_admin_user,
     mocker,
+    api_user_active,
     mock_check_verify_code,
     mock_create_event,
     mock_get_security_keys,
     mock_get_login_events,
     method,
 ):
-    mock_get_user(mocker, platform_admin_user)
 
+    mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user)
     with client.session_transaction() as session:
         session["user_details"] = {
             "id": platform_admin_user["id"],
             "email": platform_admin_user["email_address"],
         }
+
     response = client.post(url_for(f"main.two_factor_{method}_sent"), data={"two_factor_code": "12345"})
 
     assert response.status_code == 302
@@ -368,16 +371,14 @@ def test_sms_two_factor_should_set_password_when_new_password_exists_in_session(
             "id": api_user_active["id"],
             "email": api_user_active["email_address"],
             "password": "changedpassword",
-            "loginData": {"location": None, "user-agent": "werkzeug/1.0.1"},
+            "loginData": {"location": None},
         }
 
     response = client.post(url_for("main.two_factor_sms_sent"), data={"two_factor_code": "12345"})
     assert response.status_code == 302
     assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
 
-    mock_update_user_password.assert_called_once_with(
-        api_user_active["id"], "changedpassword", {"location": None, "user-agent": "werkzeug/1.0.1"}
-    )
+    mock_update_user_password.assert_called_once_with(api_user_active["id"], "changedpassword", {"location": None})
 
 
 def test_email_two_factor_should_set_password_when_new_password_exists_in_session(
@@ -396,16 +397,14 @@ def test_email_two_factor_should_set_password_when_new_password_exists_in_sessio
             "id": api_user_active["id"],
             "email": api_user_active["email_address"],
             "password": "changedpassword",
-            "loginData": {"location": None, "user-agent": "werkzeug/1.0.1"},
+            "loginData": {"location": None},
         }
 
     response = client.post(url_for("main.two_factor_email_sent"), data={"two_factor_code": "12345"})
     assert response.status_code == 302
     assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
 
-    mock_update_user_password.assert_called_once_with(
-        api_user_active["id"], "changedpassword", {"location": None, "user-agent": "werkzeug/1.0.1"}
-    )
+    mock_update_user_password.assert_called_once_with(api_user_active["id"], "changedpassword", {"location": None})
 
 
 def test_two_factor_returns_error_when_user_is_locked(

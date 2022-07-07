@@ -1,12 +1,12 @@
 import uuid
 from datetime import datetime, timedelta
+from unittest import mock
 
 import pytest
 from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
 from app.models.user import User
-from tests.conftest import api_user_active as create_active_user
 from tests.conftest import normalize_spaces
 
 
@@ -138,18 +138,16 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     mock_verify_password.assert_called_with(
         api_user_active["id"],
         password,
-        {"location": None, "user-agent": "werkzeug/1.0.1"},
+        {"location": None, "user-agent": mock.ANY},
     )
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
 
 
-def test_sign_in_redirects_to_forced_password_reset(
-    client,
-    mocker,
-    fake_uuid,
-):
+def test_sign_in_redirects_to_forced_password_reset(client, mocker, fake_uuid, api_user_active):
 
-    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user = api_user_active
+    sample_user["id"] = fake_uuid
+    sample_user["email_address"] = "test@admin.ca"
     sample_user["is_authenticated"] = False
     sample_user["password_expired"] = True
 
@@ -166,13 +164,11 @@ def test_sign_in_redirects_to_forced_password_reset(
     )
 
 
-def test_forced_password_reset(
-    client,
-    mocker,
-    fake_uuid,
-):
+def test_forced_password_reset(client, mocker, fake_uuid, api_user_active):
 
-    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user = api_user_active
+    sample_user["id"] = fake_uuid
+    sample_user["email_address"] = "test@admin.ca"
     sample_user["is_authenticated"] = False
     sample_user["password_expired"] = True
 
@@ -215,13 +211,11 @@ def test_forced_password_reset_with_missing_or_bad_email_address(client, mocker,
     assert not mocked_send_email.called
 
 
-def test_forced_password_reset_password_not_expired(
-    client,
-    mocker,
-    fake_uuid,
-):
+def test_forced_password_reset_password_not_expired(client, mocker, fake_uuid, api_user_active):
 
-    sample_user = create_active_user(fake_uuid, email_address="test@admin.ca")
+    sample_user = api_user_active
+    sample_user["id"] = fake_uuid
+    sample_user["email_address"] = "test@admin.ca"
     sample_user["is_authenticated"] = False
     sample_user["password_expired"] = False
 
@@ -284,7 +278,7 @@ def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login(
     mock_verify_password.assert_called_with(
         api_user_active["id"],
         "val1dPassw0rd!",
-        {"location": None, "user-agent": "werkzeug/1.0.1"},
+        {"location": None, "user-agent": mock.ANY},
     )
     mock_register_email_login.assert_called_with(api_user_active["id"])
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
@@ -314,7 +308,7 @@ def test_process_email_auth_sign_in_return_2fa_template(
     mock_verify_password.assert_called_with(
         api_user_active_email_auth["id"],
         "val1dPassw0rd!",
-        {"location": None, "user-agent": "werkzeug/1.0.1"},
+        {"location": None, "user-agent": mock.ANY},
     )
 
 
@@ -427,7 +421,7 @@ def test_sign_in_security_center_notification_for_non_NA_signins(
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
 
     reporter = mocker.patch("app.utils.report_security_finding")
-
+    mocker.patch("app.utils.get_remote_addr", return_value="1.2.3.4")
     mocker.patch(
         "app.utils._geolocate_lookup",
         return_value={"continent": {"code": "EU"}, "city": None, "subdivision": None},

@@ -1,4 +1,3 @@
-import uuid
 from datetime import date
 from unittest.mock import patch
 
@@ -9,13 +8,20 @@ from app.models.service import Service
 from app.notify_client import NotifyAdminAPIClient
 from app.notify_client.notification_api_client import notification_api_client
 from tests import service_json
-from tests.conftest import api_user_active, platform_admin_user, set_config
+from tests.conftest import (
+    create_api_user_active,
+    create_platform_admin_user,
+    set_config,
+)
 
 
 @pytest.mark.parametrize("method", ["put", "post", "delete"])
 @pytest.mark.parametrize(
     "user",
-    [api_user_active(str(uuid.uuid4())), platform_admin_user(str(uuid.uuid4()))],
+    [
+        create_api_user_active(),
+        create_platform_admin_user(),
+    ],
     ids=["api_user", "platform_admin"],
 )
 @pytest.mark.parametrize("service", [service_json(active=True), None], ids=["active_service", "no_service"])

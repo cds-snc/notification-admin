@@ -7,15 +7,12 @@ from freezegun import freeze_time
 
 from app import invite_api_client, service_api_client, user_api_client
 from tests import sample_uuid
-from tests.conftest import SERVICE_ONE_ID, api_user_pending
+from tests.conftest import SERVICE_ONE_ID
 
 user_id = sample_uuid()
 
 
-def test_client_gets_all_users_for_service(
-    mocker,
-    fake_uuid,
-):
+def test_client_gets_all_users_for_service(mocker, fake_uuid, api_user_pending):
 
     user_api_client.max_failed_login_count = 99  # doesn't matter for this test
     mock_get = mocker.patch(
@@ -47,7 +44,7 @@ def test_client_uses_correct_find_by_email(mocker, api_user_active):
     mock_get.assert_called_once_with(expected_url, params=expected_params)
 
 
-def test_client_only_updates_allowed_attributes(mocker):
+def test_client_only_updates_allowed_attributes(mocker, api_user_pending):
     mocker.patch("app.notify_client.current_user", id="1")
     with pytest.raises(TypeError) as error:
         user_api_client.update_user_attribute("user_id", id="1")
@@ -185,31 +182,20 @@ def test_returns_value_from_cache(
 @pytest.mark.parametrize(
     "client, method, extra_args, extra_kwargs",
     [
-        (
-            user_api_client,
-            "add_user_to_service",
-            [SERVICE_ONE_ID, sample_uuid(), [], []],
-            {},
-        ),
+        (user_api_client, "add_user_to_service", [SERVICE_ONE_ID, sample_uuid(), [], []], {}),
         (user_api_client, "update_user_attribute", [user_id], {}),
         (user_api_client, "reset_failed_login_count", [user_id], {}),
         (user_api_client, "update_user_attribute", [user_id], {}),
         (user_api_client, "update_password", [user_id, "hunter2"], {}),
         (user_api_client, "verify_password", [user_id, "hunter2"], {}),
         (user_api_client, "check_verify_code", [user_id, "", ""], {}),
-        (user_api_client, "validate_security_keys", [user_id, {}], {}),
         (user_api_client, "add_user_to_service", [SERVICE_ONE_ID, user_id, [], []], {}),
         (user_api_client, "add_user_to_organisation", [sample_uuid(), user_id], {}),
         (user_api_client, "set_user_permissions", [user_id, SERVICE_ONE_ID, []], {}),
-        (user_api_client, "activate_user", [api_user_pending(sample_uuid())["id"]], {}),
+        (user_api_client, "activate_user", [user_id], {}),
         (user_api_client, "archive_user", [user_id], {}),
         (service_api_client, "remove_user_from_service", [SERVICE_ONE_ID, user_id], {}),
-        (
-            service_api_client,
-            "create_service",
-            ["", "", 0, False, user_id, sample_uuid(), False],
-            {},
-        ),
+        (service_api_client, "create_service", ["", "", 0, False, user_id, sample_uuid(), False], {}),
         (invite_api_client, "accept_invite", [SERVICE_ONE_ID, user_id], {}),
     ],
 )

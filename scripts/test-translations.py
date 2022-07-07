@@ -39,7 +39,7 @@ def csv_to_dict(filename):
 
 def printMissingKeys(name, keys, app):
     for k in keys:
-        print(f'{name} : {app[k]} : "{k}"')  # noqa: T001
+        print(f'{name} : {app[k]} : "{k}"')  # noqa: T201
 
 
 def malformed_rows(filename):
@@ -48,7 +48,7 @@ def malformed_rows(filename):
         extra_space_pattern = re.compile(r'".*"(\s*,\s+|\s+,\s*)".*"')  # at least one space on at least one side of the comma
         for index, row in enumerate(file.readlines()):
             if extra_space_pattern.match(row):
-                print(f"Extra space : {filename}:{index+1} : {row}", end="")  # noqa: T001
+                print(f"Extra space : {filename}:{index+1} : {row}", end="")  # noqa: T201
                 malformed_rows_found = True
     return malformed_rows_found
 
@@ -60,7 +60,7 @@ def need_nbsp(filename):
         for index, row in enumerate(reader):
             french = row["target"]
             if " :" in french or "« " in french or " »" in french:
-                print(f"need &nbsp; in French: {filename}:{index+2}: {french}")  # noqa: T001
+                print(f"need &nbsp; in French: {filename}:{index+2}: {french}")  # noqa: T201
                 missing_nbsp = True
     return missing_nbsp
 
@@ -73,7 +73,7 @@ def duplicate_keys(filename):
         for index, row in enumerate(reader):
             key = row["source"]
             if key in keys:
-                print(f"Duplicate: {filename}:{index+2} : {key}")  # noqa: T001
+                print(f"Duplicate: {filename}:{index+2} : {key}")  # noqa: T201
                 duplicates_found = True
             keys.add(key)
     return duplicates_found
@@ -102,4 +102,4 @@ if __name__ == "__main__":
     if has_malformed_rows or has_duplicate_keys or missing_nbsp or has_keys_missing:
         exit(1)
     else:
-        print("\nNo problems detected in fr.csv\n")  # noqa: T001
+        print("\nNo problems detected in fr.csv\n")  # noqa: T201

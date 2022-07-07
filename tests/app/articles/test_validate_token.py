@@ -4,55 +4,58 @@ from flask import current_app
 from app.articles import api
 
 
-def test_validate_token_valid():
-    base_endpoint = current_app.config["GC_ARTICLES_API"]
-    auth_endpoint = api.GC_ARTICLES_AUTH_API_ENDPOINT
+def test_validate_token_valid(app_):
+    with app_.app_context():
+        base_endpoint = current_app.config["GC_ARTICLES_API"]
+        auth_endpoint = api.GC_ARTICLES_AUTH_API_ENDPOINT
 
-    token = "this-is-a-valid-token"
-    endpoint = f"https://{base_endpoint}{auth_endpoint}/validate"
-    request_headers = {"Authorization": "Bearer {}".format(token)}
-    response_json = {"code": "jwt_auth_valid_token", "data": {"status": 200}}
+        token = "this-is-a-valid-token"
+        endpoint = f"https://{base_endpoint}{auth_endpoint}/validate"
+        request_headers = {"Authorization": "Bearer {}".format(token)}
+        response_json = {"code": "jwt_auth_valid_token", "data": {"status": 200}}
 
-    with requests_mock.mock() as mock:
-        mock.request("POST", endpoint, json=response_json, status_code=200, request_headers=request_headers)
+        with requests_mock.mock() as mock:
+            mock.request("POST", endpoint, json=response_json, status_code=200, request_headers=request_headers)
 
-        valid = api.validate_token(token)
-        assert valid is True
-        assert mock.called
-        assert mock.request_history[0].url == endpoint
-
-
-def test_validate_token_bad_token():
-    base_endpoint = current_app.config["GC_ARTICLES_API"]
-    auth_endpoint = api.GC_ARTICLES_AUTH_API_ENDPOINT
-
-    token = "this-is-a-bad-token"
-    endpoint = f"https://{base_endpoint}{auth_endpoint}/validate"
-    request_headers = {"Authorization": "Bearer {}".format(token)}
-    response_json = {"code": "jwt_auth_invalid_token", "message": "Signature verification failed", "data": {"status": 403}}
-
-    with requests_mock.mock() as mock:
-        mock.request("POST", endpoint, json=response_json, status_code=403, request_headers=request_headers)
-
-        valid = api.validate_token(token)
-        assert valid is False
-        assert mock.called
-        assert mock.request_history[0].url == endpoint
+            valid = api.validate_token(token)
+            assert valid is True
+            assert mock.called
+            assert mock.request_history[0].url == endpoint
 
 
-def test_validate_token_expired_token():
-    base_endpoint = current_app.config["GC_ARTICLES_API"]
-    auth_endpoint = api.GC_ARTICLES_AUTH_API_ENDPOINT
+def test_validate_token_bad_token(app_):
+    with app_.app_context():
+        base_endpoint = current_app.config["GC_ARTICLES_API"]
+        auth_endpoint = api.GC_ARTICLES_AUTH_API_ENDPOINT
 
-    token = "this-is-an-expired-token"
-    endpoint = f"https://{base_endpoint}{auth_endpoint}/validate"
-    request_headers = {"Authorization": "Bearer {}".format(token)}
-    response_json = {"code": "jwt_auth_invalid_token", "message": "Expired token", "data": {"status": 403}}
+        token = "this-is-a-bad-token"
+        endpoint = f"https://{base_endpoint}{auth_endpoint}/validate"
+        request_headers = {"Authorization": "Bearer {}".format(token)}
+        response_json = {"code": "jwt_auth_invalid_token", "message": "Signature verification failed", "data": {"status": 403}}
 
-    with requests_mock.mock() as mock:
-        mock.request("POST", endpoint, json=response_json, status_code=403, request_headers=request_headers)
+        with requests_mock.mock() as mock:
+            mock.request("POST", endpoint, json=response_json, status_code=403, request_headers=request_headers)
 
-        valid = api.validate_token(token)
-        assert valid is False
-        assert mock.called
-        assert mock.request_history[0].url == endpoint
+            valid = api.validate_token(token)
+            assert valid is False
+            assert mock.called
+            assert mock.request_history[0].url == endpoint
+
+
+def test_validate_token_expired_token(app_):
+    with app_.app_context():
+        base_endpoint = current_app.config["GC_ARTICLES_API"]
+        auth_endpoint = api.GC_ARTICLES_AUTH_API_ENDPOINT
+
+        token = "this-is-an-expired-token"
+        endpoint = f"https://{base_endpoint}{auth_endpoint}/validate"
+        request_headers = {"Authorization": "Bearer {}".format(token)}
+        response_json = {"code": "jwt_auth_invalid_token", "message": "Expired token", "data": {"status": 403}}
+
+        with requests_mock.mock() as mock:
+            mock.request("POST", endpoint, json=response_json, status_code=403, request_headers=request_headers)
+
+            valid = api.validate_token(token)
+            assert valid is False
+            assert mock.called
+            assert mock.request_history[0].url == endpoint
