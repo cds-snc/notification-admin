@@ -4,10 +4,9 @@ from unittest.mock import ANY
 import pwnedpasswords
 import pytest
 from bs4 import BeautifulSoup
-from flask import session, url_for
-from flask_login import current_user
+from flask import url_for
 
-from app.models.user import InvitedUser
+from app.models.user import InvitedUser, User
 
 
 def test_render_register_returns_template_with_form(client):
@@ -160,7 +159,8 @@ def test_should_add_user_details_to_session(
         },
     )
     assert response.status_code == 302
-    assert session["user_details"]["email"] == email_address
+    with client.session_transaction() as session:
+        assert session["user_details"]["email"] == email_address
 
 
 def test_blocklist1_can_contact_hibp_api(app_):
@@ -346,12 +346,14 @@ def test_register_from_email_auth_invite(
     mock_create_event,
     mock_add_user_to_service,
     invite_email_address,
+    fake_uuid,
+    mocker,
 ):
+    mock_login_user = mocker.patch("app.models.user.login_user")
     sample_invite["auth_type"] = "email_auth"
     sample_invite["email_address"] = invite_email_address
     with client.session_transaction() as session:
         session["invited_user"] = sample_invite
-    assert not current_user.is_authenticated
 
     data = {
         "name": "invited user",
@@ -379,7 +381,16 @@ def test_register_from_email_auth_invite(
     )
     mock_accept_invite.assert_called_once_with(sample_invite["service"], sample_invite["id"])
     # just logs them in
-    assert current_user.is_authenticated
+    mock_login_user.assert_called_once_with(
+        User({"id": fake_uuid, "platform_admin": False})  # This ID matches the return value of mock_register_user
+    )
+    mock_add_user_to_service.assert_called_once_with(
+        sample_invite["service"],
+        fake_uuid,  # This ID matches the return value of mock_register_user
+        {"manage_api_keys", "manage_service", "send_messages", "view_activity"},
+        [],
+    )
+
     assert mock_add_user_to_service.called
 
     with client.session_transaction() as session:

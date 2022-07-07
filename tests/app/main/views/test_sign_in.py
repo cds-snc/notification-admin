@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timedelta
+from unittest import mock
 
 import pytest
 from bs4 import BeautifulSoup
@@ -137,7 +138,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     mock_verify_password.assert_called_with(
         api_user_active["id"],
         password,
-        {"location": None, "user-agent": "werkzeug/1.0.1"},
+        {"location": None, "user-agent": mock.ANY},
     )
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
 
@@ -277,7 +278,7 @@ def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login(
     mock_verify_password.assert_called_with(
         api_user_active["id"],
         "val1dPassw0rd!",
-        {"location": None, "user-agent": "werkzeug/1.0.1"},
+        {"location": None, "user-agent": mock.ANY},
     )
     mock_register_email_login.assert_called_with(api_user_active["id"])
     mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
@@ -307,7 +308,7 @@ def test_process_email_auth_sign_in_return_2fa_template(
     mock_verify_password.assert_called_with(
         api_user_active_email_auth["id"],
         "val1dPassw0rd!",
-        {"location": None, "user-agent": "werkzeug/1.0.1"},
+        {"location": None, "user-agent": mock.ANY},
     )
 
 
@@ -420,7 +421,7 @@ def test_sign_in_security_center_notification_for_non_NA_signins(
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
 
     reporter = mocker.patch("app.utils.report_security_finding")
-
+    mocker.patch("app.utils.get_remote_addr", return_value="1.2.3.4")
     mocker.patch(
         "app.utils._geolocate_lookup",
         return_value={"continent": {"code": "EU"}, "city": None, "subdivision": None},
