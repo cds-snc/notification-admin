@@ -344,6 +344,12 @@ def notifications_sent_by_service():
             "count_sent",
         ]
         result = notification_api_client.get_notification_status_by_service(start_date, end_date)
+        result = list(
+            map(
+                lambda row: list(map(lambda key: row[key], headers)),
+                result,
+            )
+        )
 
         for row in result:
             row[0] = datetime.strptime(row[0], "%a, %d %b %Y %X %Z").strftime("%Y-%m-%d")
