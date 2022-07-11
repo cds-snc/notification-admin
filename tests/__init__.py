@@ -17,7 +17,7 @@ from app.models.user import User
 # In tests where we freeze time, the code in the test function will get the frozen time but the
 # fixtures will be using the current time. This causes itsdangerous to raise an exception - when
 # the session is decoded it appears to be created in the future.
-freezegun.configure(extend_ignore_list=["itsdangerous"])
+freezegun.configure(extend_ignore_list=["itsdangerous"])  # type: ignore
 
 
 class dotdict(dict):
