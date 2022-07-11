@@ -1,5 +1,5 @@
 import pytest
-from flask import session, url_for
+from flask import url_for
 
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import is_gov_user
@@ -48,7 +48,10 @@ def test_get_should_not_render_radios_if_org_type_known(
     client_request,
     mocker,
 ):
-    mock_get_organisation_by_domain(mocker, organisation_type="central")
+    mocker.patch(
+        "app.organisations_client.get_organisation_by_domain",
+        return_value=organisation_json(organisation_type="central"),
+    )
     page = client_request.get("main.add_service")
     assert page.select_one("h1").text.strip() == "Name your service"
     assert page.select_one("input[name=name]")["value"] == ""
@@ -291,7 +294,9 @@ def test_should_add_service_and_redirect_to_tour_when_no_services(
         ("Hey ((name)), I’m trying out GC Notify. Today is " "((day of week)) and my favourite colour is ((colour))."),
         101,
     )
-    assert session["service_id"] == 101
+
+    with client_request.session_transaction() as session:
+        assert session["service_id"] == 101
     mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(101, sms_limit)
 
 
@@ -412,7 +417,8 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
     )
     mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(101, free_allowance)
     assert len(mock_create_service_template.call_args_list) == 0
-    assert session["service_id"] == 101
+    with client_request.session_transaction() as session:
+        assert session["service_id"] == 101
 
 
 def test_should_return_form_errors_when_service_name_is_empty(

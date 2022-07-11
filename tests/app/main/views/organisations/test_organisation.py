@@ -11,6 +11,8 @@ from tests.conftest import (
     SERVICE_ONE_ID,
     SERVICE_TWO_ID,
     active_user_with_permissions,
+    create_active_user_with_permissions,
+    create_platform_admin_user,
     normalize_spaces,
     platform_admin_user,
 )
@@ -288,9 +290,9 @@ def test_organisation_settings_for_platform_admin(client_request, platform_admin
     "user",
     (
         pytest.param(
-            platform_admin_user,
+            create_platform_admin_user(),
         ),
-        pytest.param(active_user_with_permissions, marks=pytest.mark.xfail),
+        pytest.param(create_active_user_with_permissions(), marks=pytest.mark.xfail),
     ),
 )
 def test_view_organisation_settings(
@@ -303,7 +305,7 @@ def test_view_organisation_settings(
     expected_selected,
     user,
 ):
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
 
     page = client_request.get(endpoint, org_id=organisation_one["id"])
 
@@ -376,9 +378,9 @@ def test_view_organisation_settings(
     "user",
     (
         pytest.param(
-            platform_admin_user,
+            create_platform_admin_user(),
         ),
-        pytest.param(active_user_with_permissions, marks=pytest.mark.xfail),
+        pytest.param(create_active_user_with_permissions(), marks=pytest.mark.xfail),
     ),
 )
 def test_update_organisation_settings(
@@ -394,7 +396,7 @@ def test_update_organisation_settings(
     user,
 ):
     mocker.patch("app.organisations_client.get_organisation_services", return_value=[])
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
 
     client_request.post(
         endpoint,
