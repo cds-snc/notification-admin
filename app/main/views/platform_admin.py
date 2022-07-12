@@ -345,10 +345,10 @@ def notifications_sent_by_service():
         ]
         result = notification_api_client.get_notification_status_by_service(start_date, end_date)
 
-        # Sometimes the api returns lists of dicts, and sometimes lists of lists. We do a quick fix here to deal with both cases.
-        # The long term fix to to have api consistent in the format of the data it sends.
+        # Sometimes the api returns lists of dicts, and sometimes lists of lists.
+        # We do a quick fix here to deal with both cases. The long term fix to
+        # have api consistent in the format of the data it sends.
         # See https://app.zenhub.com/workspaces/notify-planning-614b3ad91bc2030015ed22f5/issues/cds-snc/notification-planning/653
-
         result = list(
             map(
                 lambda row: list(map(lambda key: row[key], headers)) if isinstance(row, dict) else row,
