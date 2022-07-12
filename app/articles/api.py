@@ -24,7 +24,7 @@ def get_content(endpoint: str, params={}, auth_required=False, cacheable=True) -
     try:
         url = f"https://{base_url}/wp-json/{endpoint}"
         response = requests.get(url, params=params, headers=headers, timeout=REQUEST_TIMEOUT)
-        parsed = json.loads(response.content)
+        parsed = json.loads(response.content.decode("utf-8"))
 
         if response.status_code == 403:
             raise Forbidden()

@@ -12,6 +12,10 @@
     $menuButton.attr("aria-expanded", show);
     if (show) {
       $content.toggleClass("hidden", false);
+      // a11y: focus on the first anchor tag when the menu opens
+      if ($content.find("a").length > 0) {
+        $content.find("a")[0].focus();
+      }
     }
     // Hide the menu..
     else {
