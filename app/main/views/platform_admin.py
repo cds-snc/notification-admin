@@ -346,7 +346,7 @@ def notifications_sent_by_service():
         result = notification_api_client.get_notification_status_by_service(start_date, end_date)
         result = list(
             map(
-                lambda row: list(map(lambda key: row[key], headers)),
+                lambda row: list(map(lambda key: row[key], headers)) if isinstance(row, dict) else row,
                 result,
             )
         )
