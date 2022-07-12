@@ -58,7 +58,7 @@
     {{ _('Your services') }}
   </h1>
 
-  <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}mt-8 block clear-both contain-floats{% endif %}">
+  <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}mt-8 block clear-both contain-floats{% endif %}" aria-label="{{ _('Your services') }}">
 
     {% if current_user.platform_admin %}
       <div class="grid-row contain-floats">

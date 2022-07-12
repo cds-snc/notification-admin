@@ -1,6 +1,6 @@
-{% macro browse_list(items) %}
+{% macro browse_list(items, label) %}
   {% if items %}
-    <nav class="browse-list">
+    <nav class="browse-list" aria-label="{{ label }}">
       <ul>
         {% for item in items %}
           {% if item.title and item.link %}
