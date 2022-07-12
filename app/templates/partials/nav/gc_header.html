@@ -29,7 +29,7 @@
       {% endif %}
     </div>
     <!-- start sub nav -->
-    <nav aria-label="{{ _('language and sign-in') }}"
+    <nav aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
          class="xs:hidden smaller:hidden sm:hidden md:flex justify-end">
       {% if current_user.is_authenticated %}
         {% include 'partials/nav/account_menu.html' %}
