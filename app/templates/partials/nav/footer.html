@@ -1,9 +1,9 @@
 {% from "components/buttons.html" import nav_button, secondary_button_transparent_white %}
 {% from "components/links.html" import nav_link_dark, nav_link_light with context %}
 
-<footer aria-label="{{ _('footer menu') }}">
+<footer>
   <div class="bg-blue">
-    <nav id="footer-primary" class="container px-gutterHalf" aria-label="{{ _('main footer') }}">
+    <nav id="footer-primary" class="container px-gutterHalf" aria-label="{{ _('General information') }}">
       <div class="py-24 grid lg:grid-cols-3 md:grid-cols-2 smaller:grid-cols-1 gap-x-gutter gap-y-gutterAndAHalf">
         <div class="grid grid-cols-1 gap-y-1 auto-rows-min place-items-start">
           <span class="text-white text-base font-bold mb-gutterHalf">{{ _("About") }}</span>
@@ -54,7 +54,7 @@
       id="footer-secondary"
       class="container px-gutterHalf
        grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 gap-16 md:gap-4 py-24"
-      aria-label="{{ _('secondary footer') }}">
+      aria-label="{{ _('Legal information') }}">
 
       <div class="flex flex-col gap-4 lg:flex-row lg:items-center md:col-span-2">
         <div class="flex-shrink mr-5">
