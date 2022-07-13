@@ -1,7 +1,7 @@
 {% from "components/task-shortcut.html" import task_shortcut %}
 
 <h2 class="heading-medium">{{ _("Get started")}}</h2>
-<p>{{_("To send a message, always <span class='font-bold'>start</span> from a template. If your team does not use the API, <a href='{}'>use a spreadsheet</a>.").format(gca_url_for('home')) }}</p>
+<p>{{_("To send a message, always <span class='font-bold'>start</span> from a template. If your team does not use the API, <a href='{}'>use&nbsp;a&nbsp;spreadsheet</a>.").format(gca_url_for('spreadsheets')) }}</p>
 <div class="flex space-x-gutter mb-16 mt-12">
   {% if current_user.has_permissions('manage_templates') %}
     {{ task_shortcut(

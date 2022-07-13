@@ -809,6 +809,7 @@
 "Get started","Pour commencer"
 "Edit this reusable message whenever you need.","Pour réutiliser et modifier ce message au besoin"
 "Reuse a message you’ve already created.","Pour réutiliser un message existant"
+"To send a message, always <span class='font-bold'>start</span> from a template. If your team does not use the API, <a href='{}'>use&nbsp;a&nbsp;spreadsheet</a>.","Pour envoyer un message, <span class='font-bold'>commencez</span> toujours par un gabarit. Si votre équipe n’utilise pas l’API, utilisez une <a href='{}'>feuille&nbsp;de&nbsp;calcul</a>."
 "Logos should be PNG files, 108px high","Les logos doivent être en format PNG et d’une hauteur de 108 pixels"
 "New branding","Nouvelle image marque"
 "Send an unlimited number of free emails with GC Notify.","Vous pouvez envoyer gratuitement un nombre illimité de courriels avec GC Notification."
@@ -1566,4 +1567,3 @@
 "Words separated by a space.","Mots séparés par des espaces."
 "No common passwords.","Aucun mot de passe courant."
 "You may use letters, numbers, dots, dashes or underscores.","Vous pouvez utiliser des lettres, des chiffres, des points, des tirets ou des barres de soulignement."
-"To send a message, always <span class='font-bold'>start</span> from a template. If your team does not use the API, <a href='{}'>use a spreadsheet</a>.","Pour envoyer un message, <span class='font-bold'>commencez</span> toujours par un gabarit. Si votre équipe n’utilise pas l’API, utilisez une <a href='{}'>feuille de calcul</a>."
