@@ -15,6 +15,7 @@ plugins.concat = require("gulp-concat");
 plugins.cssUrlAdjuster = require("gulp-css-url-adjuster");
 plugins.jshint = require("gulp-jshint");
 plugins.prettyerror = require("gulp-prettyerror");
+plugins.faMinify = require("gulp-fa-minify");
 plugins.uglify = require("gulp-uglify");
 
 // 2. CONFIGURATION
@@ -24,7 +25,13 @@ const paths = {
   dist: "app/static/",
   templates: "app/templates/",
   npm: "node_modules/",
-  toolkit: "node_modules/govuk_frontend_toolkit/"
+  toolkit: "node_modules/govuk_frontend_toolkit/",
+};
+
+const icons = () => {
+  return src(paths.src + "fontawesome/js/solid.js")
+    .pipe(plugins.faMinify({ fas: ["plus", "arrow-right"] }))
+    .pipe(dest(paths.dist + "javascripts/"));
 };
 
 // 3. TASKS
@@ -59,30 +66,31 @@ const javascripts = () => {
     paths.src + "javascripts/menu.js",
     paths.src + "javascripts/menuOverlay.js",
     paths.src + "javascripts/scopeTabNavigation.js",
-    paths.src + "javascripts/main.js"
+    paths.src + "javascripts/main.js",
   ])
     .pipe(plugins.prettyerror())
     .pipe(
       plugins.babel({
-        presets: ["@babel/preset-env"]
+        presets: ["@babel/preset-env"],
       })
     )
-    .pipe(plugins.addSrc.prepend([
-      //paths.src + 'javascripts/main.min.js',
-      paths.npm + "hogan.js/dist/hogan-3.0.2.js",
-      paths.npm + "jquery/dist/jquery.min.js",
-      paths.npm + "jquery-migrate/dist/jquery-migrate.min.js",
-      paths.npm + "query-command-supported/dist/queryCommandSupported.min.js",
-      //paths.npm + "diff-dom/diffDOM.js",
-      paths.npm + "textarea-caret/index.js"
-    ]))
+    .pipe(
+      plugins.addSrc.prepend([
+        //paths.src + 'javascripts/main.min.js',
+        paths.npm + "hogan.js/dist/hogan-3.0.2.js",
+        paths.npm + "jquery/dist/jquery.min.js",
+        paths.npm + "jquery-migrate/dist/jquery-migrate.min.js",
+        paths.npm + "query-command-supported/dist/queryCommandSupported.min.js",
+        //paths.npm + "diff-dom/diffDOM.js",
+        paths.npm + "textarea-caret/index.js",
+      ])
+    )
     .pipe(plugins.uglify())
     .pipe(plugins.concat("all.min.js"))
     .pipe(
       plugins.addSrc.prepend([
         paths.src + "javascripts/main.min.js",
         paths.src + "javascripts/scheduler.min.js",
-        paths.src + "fontawesome/js/solid.min.js",
         paths.src + "fontawesome/js/fontawesome.min.js",
       ])
     )
@@ -102,32 +110,31 @@ const images = () => {
   return src([
     paths.toolkit + "images/**/*",
     paths.template + "assets/images/**/*",
-    paths.src + "images/**/*"
+    paths.src + "images/**/*",
   ]).pipe(dest(paths.dist + "images/"));
 };
 
 const watchFiles = {
-  javascripts: cb => {
+  javascripts: (cb) => {
     watch([paths.src + "javascripts/**/*"], javascripts);
     cb();
   },
-  images: cb => {
+  images: (cb) => {
     watch([paths.src + "images/**/*"], images);
     cb();
   },
-  self: cb => {
+  self: (cb) => {
     watch(["gulpfile.js"], defaultTask);
     cb();
-  }
+  },
 };
 
 // Default: compile everything
 const defaultTask = parallel(
-  series(
-    images
-  ),
+  series(images),
   series(static_css),
-  series(javascripts)
+  series(javascripts),
+  series(icons)
 );
 
 // Watch for changes and re-run tasks
