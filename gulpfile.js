@@ -13,9 +13,10 @@ plugins.babel = require("gulp-babel");
 plugins.base64 = require("gulp-base64-inline");
 plugins.concat = require("gulp-concat");
 plugins.cssUrlAdjuster = require("gulp-css-url-adjuster");
+plugins.faMinify = require("gulp-fa-minify");
 plugins.jshint = require("gulp-jshint");
 plugins.prettyerror = require("gulp-prettyerror");
-plugins.faMinify = require("gulp-fa-minify");
+plugins.rename = require("gulp-rename");
 plugins.uglify = require("gulp-uglify");
 
 // 2. CONFIGURATION
@@ -31,6 +32,8 @@ const paths = {
 const icons = () => {
   return src(paths.src + "fontawesome/js/solid.js")
     .pipe(plugins.faMinify({ fas: ["plus", "arrow-right"] }))
+    .pipe(plugins.uglify())
+    .pipe(plugins.rename({ suffix: '.min' }))
     .pipe(dest(paths.dist + "javascripts/"));
 };
 
