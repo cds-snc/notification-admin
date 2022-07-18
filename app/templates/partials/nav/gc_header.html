@@ -30,8 +30,8 @@
     </div>
     <!-- start sub nav -->
     <nav aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
-         class="xs:hidden smaller:hidden sm:hidden md:flex justify-end">
-      <ul class="flex w-full">
+         class="xs:hidden smaller:hidden sm:hidden md:flex">
+      <ul class="flex w-full justify-end">
         {% if current_user.is_authenticated %}
           {% include 'partials/nav/account_menu.html' %}
         {% else %}
