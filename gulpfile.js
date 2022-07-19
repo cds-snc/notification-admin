@@ -29,16 +29,18 @@ const paths = {
   toolkit: "node_modules/govuk_frontend_toolkit/",
 };
 
+// 3. TASKS
+// - - - - - - - - - - - - - - -
+
+// Build icon library and minify it
+
 const icons = () => {
   return src(paths.src + "fontawesome/js/solid.js")
     .pipe(plugins.faMinify({ fas: ["plus", "arrow-right"] }))
     .pipe(plugins.uglify())
-    .pipe(plugins.rename({ suffix: '.min' }))
+    .pipe(plugins.rename({ suffix: ".min" }))
     .pipe(dest(paths.dist + "javascripts/"));
 };
-
-// 3. TASKS
-// - - - - - - - - - - - - - - -
 
 // Move GOV.UK template resources
 
