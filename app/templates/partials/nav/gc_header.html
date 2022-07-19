@@ -30,25 +30,31 @@
     </div>
     <!-- start sub nav -->
     <nav aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
-         class="xs:hidden smaller:hidden sm:hidden md:flex justify-end">
-      {% if current_user.is_authenticated %}
-        {% include 'partials/nav/account_menu.html' %}
-      {% else %}
-        {{ nav_button(
-          href=url_for('main.sign_in'),
-          label=_('Sign in'),
-          id_key='header-sign-in'
-        ) }}
-      {% endif %}
-      {% set set_lang_url = lang_url or request.path %}
-      {{ nav_button(
-        href=url_for('main.set_lang') + "?from=" + set_lang_url,
-        label=long_lang_switch,
-        aria_label=long_lang_switch,
-        lang="fr-CA" if lang_switch == "FR" else "en-CA",
-        class="mr-0 ml-5",
-        id_key='header-lang'
-      ) }}
+         class="xs:hidden smaller:hidden sm:hidden md:flex">
+      <ul class="flex w-full justify-end">
+        {% if current_user.is_authenticated %}
+          {% include 'partials/nav/account_menu.html' %}
+        {% else %}
+          <li>
+            {{ nav_button(
+              href=url_for('main.sign_in'),
+              label=_('Sign in'),
+              id_key='header-sign-in'
+            ) }}
+          </li>
+        {% endif %}
+        {% set set_lang_url = lang_url or request.path %}
+        <li>
+          {{ nav_button(
+            href=url_for('main.set_lang') + "?from=" + set_lang_url,
+            label=long_lang_switch,
+            aria_label=long_lang_switch,
+            lang="fr-CA" if lang_switch == "FR" else "en-CA",
+            class="mr-0 ml-5",
+            id_key='header-lang'
+          ) }}
+        </li>
+      </ul>
     </nav>
     <!-- end sub nav -->
   </div>
