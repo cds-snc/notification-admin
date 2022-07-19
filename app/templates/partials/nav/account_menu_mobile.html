@@ -1,6 +1,7 @@
 <!-- account menu dropdown / mobile -->
 <div class="md:hidden">
   <button
+    aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}" 
     aria-expanded="false"
     aria-haspopup="true"
     id="account-icon-mobile"
@@ -10,7 +11,6 @@
     data-menu-overlay-close="account-close-mobile">
     <img
       aria-hidden="false"
-      aria-label="{{ _('Account menu') }}"
       src="{{ asset_url('images/account-icon.svg') }}"
       alt="{{ _('Account menu') }}"
       class="w-10 h-10"/>
