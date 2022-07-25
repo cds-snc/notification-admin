@@ -353,7 +353,7 @@ def test_should_show_live_search_if_service_has_lots_of_folders(
             ],
             [
                 "Email",
-                "Text message",
+                "Text",
             ],
         ),
         pytest.param(
@@ -361,7 +361,7 @@ def test_should_show_live_search_if_service_has_lots_of_folders(
             ["email", "sms"],
             [
                 "Email",
-                "Text message",
+                "Text",
             ],
         ),
     ),
@@ -385,7 +385,8 @@ def test_should_show_new_template_choices_if_service_has_folder_permission(
     if not page.select("#what_type"):
         raise ElementNotFound()
 
-    assert normalize_spaces(page.select_one("fieldset#what_type legend").text) == ("Type of message")
+    assert normalize_spaces(page.select_one("fieldset#what_type")["aria-labelledby"]) == ("what_type-label")
+    assert normalize_spaces(page.select_one("#what_type-label").text) == ("Will you send the message by email or text?")
     assert [choice["value"] for choice in page.select("#what_type input[type=radio]")] == expected_values
     assert [normalize_spaces(choice.text) for choice in page.select("#what_type label")] == expected_labels
 

@@ -1492,9 +1492,9 @@ def required_for_ops(*operations):
 class CreateTemplateForm(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.what_type.choices = [("email", _l("Email")), ("sms", _l("Text message"))]
+        self.what_type.choices = [("email", _l("Email")), ("sms", _l("Text"))]
 
-    what_type = RadioField(_l("Type of message"))
+    what_type = RadioField("")
 
 
 class AddEmailRecipientsForm(Form):
