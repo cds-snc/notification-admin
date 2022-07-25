@@ -210,7 +210,7 @@ def test_sending_link_has_query_param(
         service_id=SERVICE_ONE_ID,
     )
     sending_url = url_for("main.choose_template", service_id=SERVICE_ONE_ID, view="sending")
-    assert sending_url == page.select_one("a.button").attrs["href"]
+    assert sending_url == page.select_one(".dashboard .border a").attrs["href"]
 
 
 def test_no_sending_link_if_no_templates(
@@ -222,7 +222,7 @@ def test_no_sending_link_if_no_templates(
     page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
 
     assert url_for("main.choose_template", service_id=SERVICE_ONE_ID, view="sending") not in str(page)
-    assert "Send existing messages to specific recipients." not in str(page)
+    assert "Reuse a message you’ve already created." not in str(page)
 
 
 def test_should_show_recent_templates_on_dashboard(

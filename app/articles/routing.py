@@ -14,6 +14,7 @@ GC_ARTICLES_ROUTES = {
     "personalisation_guide": {"en": "/personalisation-guide", "fr": "/guide-personnalisation"},
     "message_delivery_status": {"en": "/message-delivery-status", "fr": "/etat-livraison-messages"},
     "formatting_guide": {"en": "/formatting-guide", "fr": "/guide-mise-en-forme"},
+    "spreadsheets": {"en": "/spreadsheets", "fr": "/feuille-de-calcul"},
 }
 
 

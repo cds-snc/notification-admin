@@ -7,7 +7,7 @@
     @apply text-smaller leading-tight font-normal border-0;
   }
   .dashboard > .heading-medium:first-of-type {
-    @apply mt-gutterHalf;
+    @apply mt-doubleGutter;
   }
 
   .keyline-block {

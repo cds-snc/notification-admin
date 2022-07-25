@@ -1,23 +1,23 @@
 {% from "components/task-shortcut.html" import task_shortcut %}
 
+<h2 class="heading-medium">{{ _("Get started")}}</h2>
+<p>{{_("To send a message, always <span class='font-bold'>start</span> from a template. If your team does not use the API, <a href='{}'>use&nbsp;a&nbsp;spreadsheet</a>.").format(gca_url_for('spreadsheets')) }}</p>
 <div class="flex space-x-gutter mb-16 mt-12">
   {% if current_user.has_permissions('manage_templates') %}
     {{ task_shortcut(
-        _("Write"),
-        asset_url('images/dashboard/edit-solid.svg'),
-        _("Prepare to send messages by creating your own templates."),
-        url_for('.create_template', service_id=current_service.id, source="dashboard"),
-        _("Create a template"),
+        description=_("Edit this reusable message whenever you need."),
+        link_url=url_for('.create_template', service_id=current_service.id, source="dashboard"),
+        link_text=_("Create a template"),
+        icon="plus"
       )
     }}
   {% endif %}
   {% if current_user.has_permissions('send_messages') and current_service.has_templates %}
     {{ task_shortcut(
-        _("Send"),
-        asset_url('images/dashboard/paper-plane-solid.svg'),
-        _("Send existing messages to specific recipients."),
-        url_for('.choose_template', service_id=current_service.id, view="sending"),
-        _("Choose a template"),
+        description=_("Reuse a message you’ve already created."),
+        link_url=url_for('.choose_template', service_id=current_service.id, view="sending"),
+        link_text=_("Choose a template"),
+        icon="arrow-right"
       )
     }}
   {% endif %}
