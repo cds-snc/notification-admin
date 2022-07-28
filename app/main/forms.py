@@ -735,7 +735,7 @@ class BaseTemplateForm(StripWhitespaceForm):
 class SMSTemplateForm(BaseTemplateForm):
     def validate_template_content(self, field):
         OnlySMSCharacters()(None, field)
-    
+
     template_content = TextAreaField(
         _l("Text message"),
         validators=[
@@ -755,6 +755,7 @@ class EmailTemplateForm(BaseTemplateForm):
             NoCommasInPlaceHolders(),
         ],
     )
+
 
 class LetterTemplateForm(EmailTemplateForm):
     subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])
