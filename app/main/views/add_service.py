@@ -8,7 +8,6 @@ from notifications_python_client.errors import HTTPError
 from app import billing_api_client, service_api_client
 from app.main import main
 from app.main.forms import (
-    CreateServiceStepEmailFromForm,
     CreateServiceStepLogoForm,
     CreateServiceStepNameForm,
     FieldWithLanguageOptions,
@@ -22,28 +21,21 @@ SESSION_FORM_KEY = "add_service_form"
 DEFAULT_ORGANISATION_TYPE: str = "central"
 
 STEP_NAME: str = "choose_service_name"
-STEP_EMAIL: str = "choose_email_from"
 STEP_LOGO: str = "choose_logo"
 
-DEFAULT_STEP = STEP_NAME
+STEP_SERVICE_AND_EMAIL = STEP_NAME
 
-STEP_NAME_HEADER: str = _("Name your service")
-STEP_LOGO_HEADER: str = _("Choose the default language of your service")
-STEP_EMAIL_HEADER: str = _("Create a sending email address for your service")
+STEP_NAME_HEADER: str = _("Create service name and email address")
+STEP_LOGO_HEADER: str = _("Choose order for official languages")
 
-WIZARD_ORDER = [DEFAULT_STEP, STEP_EMAIL, STEP_LOGO]
+WIZARD_ORDER = [STEP_LOGO, STEP_SERVICE_AND_EMAIL]
 
 # wizard list init here for current_app context usage
 WIZARD_DICT = {
-    DEFAULT_STEP: {
+    STEP_SERVICE_AND_EMAIL: {
         "form_cls": CreateServiceStepNameForm,
         "header": STEP_NAME_HEADER,
         "tmpl": "partials/add-service/step-create-service.html",
-    },
-    STEP_EMAIL: {
-        "form_cls": CreateServiceStepEmailFromForm,
-        "header": STEP_EMAIL_HEADER,
-        "tmpl": "partials/add-service/step-choose-email.html",
     },
     STEP_LOGO: {
         "form_cls": CreateServiceStepLogoForm,
@@ -131,16 +123,20 @@ def _renderTemplateStep(form, current_step) -> Text:
 @user_is_gov_user
 def add_service():
     current_step = request.args.get("current_step", None)
-    # if nothing supplied or bad data in the querystring, default
+    current_step_is_junk = ""
+    # if nothing supplied or bad data in the querystring, step_logo is first
     if not current_step or current_step not in WIZARD_ORDER:
-        current_step = DEFAULT_STEP
+        current_step_is_junk = True if (current_step is not None and current_step not in WIZARD_ORDER) else False
+        current_step = STEP_LOGO
     # init session
     if SESSION_FORM_KEY not in session:
         session[SESSION_FORM_KEY] = {}
     # get the right form class
     form_cls = WIZARD_DICT[current_step]["form_cls"]
     # as the form always does a 302 after success, GET is a fresh form with possible re-use of session data i.e. Back
-    if request.method == "GET":
+    if request.method == "GET" or current_step_is_junk or len(request.form) == 0:
+        return _renderTemplateStep(form_cls(data=session[SESSION_FORM_KEY]), current_step)
+    if current_step == STEP_LOGO and len(request.form) > 0 and "default_branding" not in request.form:
         return _renderTemplateStep(form_cls(data=session[SESSION_FORM_KEY]), current_step)
     # must be a POST, continue to validate
     form = form_cls(request.form)
@@ -169,7 +165,6 @@ def add_service():
     email_from = email_safe(data["email_from"])
     service_name = data["name"]
     default_branding_is_french = data["default_branding"] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
-
     service_result: ServiceResult = _create_service(
         service_name,
         DEFAULT_ORGANISATION_TYPE,

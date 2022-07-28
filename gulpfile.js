@@ -75,6 +75,7 @@ const javascripts = () => {
     paths.src + "javascripts/menu.js",
     paths.src + "javascripts/menuOverlay.js",
     paths.src + "javascripts/scopeTabNavigation.js",
+    paths.src + "javascripts/url-typer.js",
     paths.src + "javascripts/main.js",
   ])
     .pipe(plugins.prettyerror())

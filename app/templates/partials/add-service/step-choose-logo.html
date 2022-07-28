@@ -1,13 +1,12 @@
-<p>{{ _('This determines the Government of Canada signature that will be used by default in the email messages you send.') }}</p>
+<p>{{ _('You can change the order later in Settings.') }}</p> 
+<p>{{ _('When GC Notify sends your messages, your emails show Government of Canada branding.') }}</p>
 
 <div class="form-wrap">
     {% call form_wrapper() %}
     {{ radios(form.default_branding) }}
     {{ form.name }}
     {{ form.email_from }}
-    {% set button_txt = _('Create service') %}
+    {% set button_txt = _('Continue') %}
     {{ page_footer(button_txt) }}
     {% endcall %}
 </div>
-
-<p>{{ _('You can change the email branding later in Settings.') }}</p>
