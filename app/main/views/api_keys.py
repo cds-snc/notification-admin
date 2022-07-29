@@ -93,16 +93,16 @@ def create_api_key(service_id):
     if form.validate_on_submit():
         if form.key_type.data in disabled_options:
             abort(400)
-        secret = api_key_api_client.create_api_key(
+        keydata = api_key_api_client.create_api_key(
             service_id=service_id,
             key_name=form.key_name.data,
             key_type=form.key_type.data,
         )
         return render_template(
             "views/api/keys/show.html",
-            secret=secret,
+            secret=keydata["data"],
             service_id=service_id,
-            key_name=email_safe(form.key_name.data, whitespace="_"),
+            key_name=email_safe(keydata["key_name"], whitespace="_"),
         )
     return render_template(
         "views/api/keys/create.html",
