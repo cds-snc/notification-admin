@@ -1307,6 +1307,7 @@ def test_get_free_paid_breakdown_for_billable_units(now, expected_number_of_mont
         )
 
 
+@pytest.mark.skip(reason="TODO: a11y test")
 @pytest.mark.a11y
 def test_dashboard_page_a11y(
     logged_in_client,

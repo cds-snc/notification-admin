@@ -343,15 +343,11 @@ def notifications_sent_by_service():
             "count_permanent_failure",
             "count_sent",
         ]
+        # The api returns a dict and we convert the data to a list.
         result = notification_api_client.get_notification_status_by_service(start_date, end_date)
-
-        # Sometimes the api returns lists of dicts, and sometimes lists of lists.
-        # We do a quick fix here to deal with both cases. The long term fix to
-        # have api consistent in the format of the data it sends.
-        # See https://app.zenhub.com/workspaces/notify-planning-614b3ad91bc2030015ed22f5/issues/cds-snc/notification-planning/653
         result = list(
             map(
-                lambda row: list(map(lambda key: row[key], headers)) if isinstance(row, dict) else row,
+                lambda row: list(map(lambda key: row[key], headers)),
                 result,
             )
         )
