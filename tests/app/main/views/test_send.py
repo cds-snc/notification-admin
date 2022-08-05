@@ -391,7 +391,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
     assert "There is a problem with invalid.csv" in content
     assert "+16502532222" in content
     assert "Missing" in content
-    assert "Re-upload your file" in content
+    assert "Choose file" in content
 
 
 @pytest.mark.parametrize(

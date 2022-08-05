@@ -1,4 +1,5 @@
 {% extends "admin_template.html" %}
+{% from "components/page-header.html" import page_header %}
 {% from "components/banner.html" import banner_wrapper %}
 {% from "components/table.html" import list_table, field, text_field, index_field, hidden_field_heading %}
 {% from "components/file-upload.html" import file_upload %}
@@ -7,6 +8,7 @@
 
 {% set prefix_txt = _('a column called') %}
 {% set prefix_plural_txt = _('columns called') %}
+{% set page_title = _('Check there’s a column for each variable') %}
 
 {% set file_contents_header_id = 'file-preview' %}
 {% macro skip_to_file_contents() %}
@@ -23,7 +25,12 @@
 
 {% block maincolumn_content %}
 
-  {{ govuk_back_link(back_link) }}
+{{
+    page_header(
+      page_title,
+      back_link
+    )
+  }}
 
   <div class="mb-12 clear-both contain-floats">
     {% call banner_wrapper(type='dangerous') %}
@@ -60,20 +67,22 @@
       {% elif not recipients.has_recipient_columns %}
 
         <h1 class='banner-title' data-module="track-error" data-error-type="Missing recipient columns" data-error-label="{{ upload_id }}">
-          {{ _('Your file needs') }} {{ (
+          {{ _('Spreadsheet is missing') }} {{ (
             recipients.missing_column_headers
             if template.template_type == 'letter' else required_recipient_columns
           ) | formatted_list(
+            conjunction=and_txt,
             prefix=prefix_txt,
             prefix_plural=prefix_plural_txt
           ) }}
         </h1>
         <p>
-          {{ _('Right now it has') }} {{ recipients.column_headers | formatted_list(
-            prefix=prefix_txt,
-            prefix_plural=prefix_plural_txt
+          {{ _('The current column headings are') }} {{ recipients.column_headers | formatted_list(
+            conjunction=and_txt
           ) }}.
         </p>
+
+
 
       {% elif recipients.duplicate_recipient_column_headers %}
        {% set or_txt = _('or') %}
@@ -90,18 +99,23 @@
           {{ _('Delete or rename one of these columns and try again.') }}
         </p>
 
+
       {% elif recipients.missing_column_headers %}
         {% set and_txt = _('and') %}
         <h1 class='banner-title' data-module="track-error" data-error-type="Missing placeholder columns" data-error-label="{{ upload_id }}">
-          {{ _('The columns in your file need to match the double brackets in your template') }}
-        </h1>
-        <p>
-          {{ _('Your file is missing') }} {{ recipients.missing_column_headers | formatted_list(
+          {{ _('Spreadsheet is missing') }} {{ recipients.missing_column_headers | formatted_list(
             conjunction=and_txt,
             prefix=prefix_txt,
             prefix_plural=prefix_plural_txt
-          ) }}.
+          ) }}
+        </h1>
+        <p>
+          {{ _('The current column headings are') }} {{ recipients.column_headers | formatted_list(
+            conjunction=and_txt
+          ) }}
         </p>
+
+
 
       {% elif sent_previously %}
 
@@ -136,25 +150,32 @@
   </div>
 
 
-  <div class="js-stick-at-top-when-scrolling">
-    <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
+    <div class="form-group contain-floats box-border">
+      <p>{{ _('Fix the errors and re-upload your file.') }}</p>
       {% set button_txt = _('Re-upload your file') %}
       {% if not request.args.from_test %}
         {{ file_upload(
           form.file,
           action=url_for('.send_messages', service_id=current_service.id, template_id=template.id),
-          button_text=button_txt
+          button_text=_('Choose file')
         ) }}
       {% endif %}
     </div>
-    <a href="#content" class="back-to-top-link">{{ _('Back to top') }}</a>
-  </div>
 
   {% if not request.args.from_test %}
     <section class="clear-both contain-floats">
       {% set column_headers = recipients._raw_column_headers if recipients.duplicate_recipient_column_headers else recipients.column_headers %}
 
-      <h2 class="heading-medium" id="{{ file_contents_header_id }}">{{ original_file_name }}</h2>
+      <h2 class="heading-medium" id="{{ file_contents_header_id }}">{{ _('Current spreadsheet') }}</h2>
+      <p>
+        {% if count_of_recipients > 1 %}
+          {{ _("{} recipients in the file '{}'.").format(count_of_recipients, original_file_name) }}
+        {% elif count_of_recipients == 1 %}
+          {{ _("1 recipient in the file '{}'.").format(original_file_name) }}
+        {% else %}
+          {{ _("There are no recipients in the file '{}'.").format(original_file_name) }}
+        {% endif %}
+      </p>
 
       <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}" data-module="fullscreen-table">
         {% call(item, row_number) list_table(

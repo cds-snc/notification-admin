@@ -786,7 +786,7 @@ class ChangePasswordForm(StripWhitespaceForm):
 
 class CsvUploadForm(StripWhitespaceForm):
     file = FileField(
-        _l("Add recipients"),
+        _l("Choose a file"),
         validators=[DataRequired(message="Please pick a file"), CsvFileValidator()],
     )
 

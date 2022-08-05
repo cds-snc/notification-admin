@@ -27,6 +27,11 @@
     @apply list-decimal pl-8;
   }
 
+  ol.list-custom li::before {
+    content: var(--prefix, "") " " counter(list-item) ". ";
+    @apply font-bold;
+  }
+
   /* Nested unordered lists */
   .list ul {
     list-style-type: circle;

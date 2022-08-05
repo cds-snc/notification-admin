@@ -235,8 +235,8 @@
     white-space: normal !important;
   }
 
-  .spreadsheet {
-    margin-bottom: -30px;
+  .spreadsheet thead {
+    user-select: none;
   }
   .spreadsheet .table {
     @apply mb-0;

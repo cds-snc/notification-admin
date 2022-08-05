@@ -166,6 +166,7 @@ module.exports = {
       },
       maxWidth: {
         "4xl": "53rem",
+        "80ch": "80ch",
       },
       minHeight: {
         target: "45px",
