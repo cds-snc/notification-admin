@@ -629,7 +629,7 @@ def useful_headers_after_request(response):
     asset_domain = current_app.config["ASSET_DOMAIN"]
     response.headers.add(
         "Content-Security-Policy",
-        (   
+        (
             "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
             "default-src 'self' {asset_domain} 'unsafe-inline';"
             f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
