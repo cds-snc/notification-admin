@@ -62,6 +62,7 @@ def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisat
     assert response.headers["X-Content-Type-Options"] == "nosniff"
     assert response.headers["X-XSS-Protection"] == "1; mode=block"
     assert response.headers["Content-Security-Policy"] == (
+        "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
         "default-src 'self' static.example.com 'unsafe-inline';"
         f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
         "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
@@ -123,6 +124,7 @@ def test_headers_non_ascii_characters_are_replaced(
 
     assert response.status_code == 200
     assert response.headers["Content-Security-Policy"] == (
+        "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
         "default-src 'self' static.example.com 'unsafe-inline';"
         f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
         "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
