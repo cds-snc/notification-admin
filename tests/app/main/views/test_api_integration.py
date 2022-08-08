@@ -259,7 +259,7 @@ def test_should_create_api_key_with_type_normal(
     key_name_fixed = "some_default_key_name_12"
     post = mocker.patch(
         "app.notify_client.api_key_api_client.ApiKeyApiClient.post",
-        return_value={"data": {"data": fake_uuid, "key_name": key_name_fixed}},
+        return_value={"data": {"key": fake_uuid, "key_name": key_name_fixed}},
     )
 
     page = client_request.post(
