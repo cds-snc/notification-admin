@@ -48,6 +48,7 @@ def test_non_logged_in_user_can_see_homepage(mocker, client, mock_calls_out_to_G
     )
 
 
+@pytest.mark.skip(reason="TODO: a11y test")
 def test_home_page_a11y(mocker, client, mock_calls_out_to_GCA):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(

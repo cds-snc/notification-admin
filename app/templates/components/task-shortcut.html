@@ -1,5 +1,5 @@
 {% macro task_shortcut(description, link_url, link_text, title=false, icon=false) %}
-  <div class="border border-gray-300 p-gutterHalf flex-1">
+  <div class="border border-gray-300 border-b-4 p-gutterHalf flex-1 flex flex-col">
     {% if title %}
       <h2 class="text-sans font-title">
           {{ title }}
@@ -7,10 +7,10 @@
     {% endif %}
     <p>{{ description }}</p>
       <div class="mt-auto flex-none">
-        <a class="flex mr-auto justify-between items-center" href="{{ link_url }}">
+        <a class="flex mr-auto justify-between items-end" href="{{ link_url }}">
           {{ link_text }}
           {% if icon %}
-            <i aria-hidden="true" class="fa-solid fa-{{icon}}"></i>
+            <i aria-hidden="true" class="p-1 fa-solid fa-{{icon}}"></i>
           {% endif %}
         </a>
         
