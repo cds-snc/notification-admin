@@ -255,25 +255,26 @@ def test_should_create_api_key_with_type_normal(
     fake_uuid,
     mocker,
 ):
-    key_name = "some_default_key_name_12"
+    key_name_from_user = "Some default key name 1/2"
+    key_name_fixed = "some_default_key_name_12"
     post = mocker.patch(
         "app.notify_client.api_key_api_client.ApiKeyApiClient.post",
-        return_value={"data": {"data": fake_uuid, "key_name": key_name}},
+        return_value={"data": {"data": fake_uuid, "key_name": key_name_fixed}},
     )
 
     page = client_request.post(
         "main.create_api_key",
         service_id=SERVICE_ONE_ID,
-        _data={"key_name": key_name, "key_type": "normal"},
+        _data={"key_name": key_name_from_user, "key_type": "normal"},
         _expected_status=200,
     )
 
-    assert page.select_one("span.api-key-key").text.strip() == ("{}-{}-{}".format(key_name, SERVICE_ONE_ID, fake_uuid))
+    assert page.select_one("span.api-key-key").text.strip() == ("{}-{}-{}".format(key_name_fixed, SERVICE_ONE_ID, fake_uuid))
 
     post.assert_called_once_with(
         url="/service/{}/api-key".format(SERVICE_ONE_ID),
         data={
-            "name": key_name,
+            "name": key_name_from_user,
             "key_type": "normal",
             "created_by": api_user_active["id"],
         },
