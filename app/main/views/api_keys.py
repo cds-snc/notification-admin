@@ -100,7 +100,7 @@ def create_api_key(service_id):
         )
         return render_template(
             "views/api/keys/show.html",
-            secret=keydata["data"],
+            secret=keydata["key"],
             service_id=service_id,
             key_name=email_safe(keydata["key_name"], whitespace="_"),
         )
