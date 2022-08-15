@@ -736,9 +736,25 @@ class SMSTemplateForm(BaseTemplateForm):
     def validate_template_content(self, field):
         OnlySMSCharacters()(None, field)
 
+    template_content = TextAreaField(
+        _l("Text message"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            NoCommasInPlaceHolders(),
+        ],
+    )
+
 
 class EmailTemplateForm(BaseTemplateForm):
     subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
+
+    template_content = TextAreaField(
+        _l("Email message"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            NoCommasInPlaceHolders(),
+        ],
+    )
 
 
 class LetterTemplateForm(EmailTemplateForm):
@@ -1492,9 +1508,9 @@ def required_for_ops(*operations):
 class CreateTemplateForm(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.what_type.choices = [("email", _l("Email")), ("sms", _l("Text message"))]
+        self.what_type.choices = [("email", _l("Email")), ("sms", _l("Text"))]
 
-    what_type = RadioField(_l("Type of message"))
+    what_type = RadioField("")
 
 
 class AddEmailRecipientsForm(Form):
