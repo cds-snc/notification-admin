@@ -123,10 +123,10 @@ def _renderTemplateStep(form, current_step) -> Text:
 @user_is_gov_user
 def add_service():
     current_step = request.args.get("current_step", None)
-    current_step_is_junk = ""
+    current_step_is_junk = False
     # if nothing supplied or bad data in the querystring, step_logo is first
     if not current_step or current_step not in WIZARD_ORDER:
-        current_step_is_junk = True if (current_step is not None and current_step not in WIZARD_ORDER) else False
+        current_step_is_junk = current_step is not None and current_step not in WIZARD_ORDER
         current_step = STEP_LOGO
     # init session
     if SESSION_FORM_KEY not in session:
