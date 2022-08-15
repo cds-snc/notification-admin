@@ -811,7 +811,7 @@
 "Start sending messages","Pour envoyer des messages"
 "Start here to write a new message.","Commencez par rédiger un nouveau message."
 "Edit and send a message you’ve already created. You can also share templates with your team. ","Modifiez et envoyez un message existant. Vous pouvez aussi partager un gabarit avec votre équipe."
-"If you’re sending to more than 1 recipient, use the API or <a href='{}'>prepare a spreadsheet</a>.<br/>Next, write your message. Start by creating a template, or reuse a template you’ve already created.","Pour envoyer à plus d’un destinataire, utilisez l’API ou <a href='{}'>préparez une feuille de calcul</a>.<br/>Ensuite, rédigez votre message. Commencez par un gabarit, ou en utilisant un gabarit existant."
+"If you’re sending to more than 1 recipient, use the API or <a href='{}'>prepare a&nbsp;spreadsheet</a>.<br/>Next, write your message. Start by creating a template, or reuse a template you’ve already&nbsp;created.","Pour envoyer à plus d’un destinataire, utilisez l’API ou <a href='{}'>préparez une feuille&nbsp;de&nbsp;calcul</a>.<br/>Ensuite, rédigez votre message. Commencez par un gabarit, ou en utilisant un gabarit existant."
 "Logos should be PNG files, 108px high","Les logos doivent être en format PNG et d’une hauteur de 108 pixels"
 "New branding","Nouvelle image marque"
 "Send an unlimited number of free emails with GC Notify.","Vous pouvez envoyer gratuitement un nombre illimité de courriels avec GC Notification."

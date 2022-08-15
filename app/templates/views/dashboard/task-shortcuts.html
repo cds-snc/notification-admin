@@ -1,7 +1,7 @@
 {% from "components/task-shortcut.html" import task_shortcut %}
 
 <h2 class="heading-medium">{{ _("Start sending messages")}}</h2>
-<p>{{_("If you’re sending to more than 1 recipient, use the API or <a href='{}'>prepare a spreadsheet</a>.<br/>Next, write your message. Start by creating a template, or reuse a template you’ve already created.").format(gca_url_for('spreadsheets')) }}</p>
+<p>{{_("If you’re sending to more than 1 recipient, use the API or <a href='{}'>prepare a&nbsp;spreadsheet</a>.<br/>Next, write your message. Start by creating a template, or reuse a template you’ve already&nbsp;created.").format(gca_url_for('spreadsheets')) }}</p>
 <div class="flex space-x-gutter mb-16 mt-12">
   {% if current_user.has_permissions('manage_templates') %}
     {{ task_shortcut(
