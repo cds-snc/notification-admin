@@ -18,17 +18,19 @@
   ) }}
 
   {% call form_wrapper() %}
-    <div class="grid-row contain-floats">
+    <div class="grid-row contain-floats md:flex my-gutterAndAHalf">
       <div class="md:max-w-2/3 px-gutterHalf mb-gutterHalf">
         {{ task_shortcut(
-            description=_("You can put double brackets around a variable to insert custom content."),
+            description=_("You can put double brackets around a variable to insert custom&nbsp;content."),
             link_url=gca_url_for('personalisation_guide'),
             link_text=_("Guide: Send messages with custom content"),
             icon="arrow-up-right-from-square"
           )
         }}
       </div>
+    </div>
 
+    <div class="grid-row contain-floats">
       <div class="md:w-2/3 px-gutterHalf">
         {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Choose a name that helps you find the template when you need to reuse it.')) }}
       </div>
