@@ -36,7 +36,11 @@ const paths = {
 
 const icons = () => {
   return src(paths.src + "fontawesome/js/solid.js")
-    .pipe(plugins.faMinify({ fas: ["plus", "arrow-right"] }))
+    .pipe(
+      plugins.faMinify({
+        fas: ["plus", "arrow-right", "arrow-up-right-from-square"],
+      })
+    )
     .pipe(plugins.uglify())
     .pipe(plugins.rename({ suffix: ".min" }))
     .pipe(dest(paths.dist + "javascripts/"));

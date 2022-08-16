@@ -3,7 +3,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/radios.html" import radios %}
 {% from "components/form.html" import form_wrapper %}
-{% set header_txt = _('Create template') %}
+{% set header_txt = _('Will you send the message by email or text?') %}
 
 {% block service_page_title %}
   {{ header_txt }}
@@ -15,12 +15,12 @@
   {% set back_url = dashboard_url if request.args.get('source') == 'dashboard' else choose_url %}
   {{ page_header(
     header_txt,
-    back_link=back_url
+    back_link=back_url,
+    id_text=form.what_type.id + "-label"
   ) }}
-  
-  <p>{{ _('Create a template to start writing a message.') }}</p>
+
   {% call form_wrapper() %}
-    {{ radios(form.what_type, disable=disabled_options, option_hints=option_hints) }}
+    {{ radios(form.what_type, disable=disabled_options, option_hints=option_hints, hide_legend=True) }}
     {{ page_footer(_('Continue')) }}
   {% endcall %}
 
