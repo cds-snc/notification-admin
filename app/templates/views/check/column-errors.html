@@ -38,48 +38,49 @@
       {% if recipients.too_many_rows %}
 
         <h1 class='banner-title' data-module="track-error" data-error-type="Too many rows" data-error-label="{{ upload_id }}">
-          {{ _('Your file has too many rows') }}
+          {{ _('Include only {} recipients per spreadsheet.').format(recipients.max_rows | format_number) }}
         </h1>
         <p>
-          {{ _('GC Notify can process up to') }}
-          {{ "{:,}".format(recipients.max_rows) }} {{ _('rows at once. Your file has')}}
-          {{ "{:,}".format(recipients|length) }} {{ _('rows.') }}
+          {{ _('To upload and send, return to the template and repeat the steps for each spreadsheet separately.') }}
         </p>
 
       {% elif not count_of_recipients %}
 
         <h1 class='banner-title' data-module="track-error" data-error-type="No rows" data-error-label="{{ upload_id }}">
-          {{ _('Your file is missing some rows') }}
+          {% if recipients.missing_column_headers %}
+          {{ _('Your spreadsheet is missing columns and needs at least 1 row with recipient information.') }}
+          {% else %}
+          {{ _('Spreadsheets need at least 1 row with recipient information.') }}
+          {% endif %}
+
         </h1>
         {% if recipients.missing_column_headers %}
           <p>
-            {{ _('It needs at least one row of data, and') }} {{ recipients.missing_column_headers | sort() | formatted_list(
+            {{ _('Add {} as well as 1 row for each recipient.').format(recipients.missing_column_headers | sort() | formatted_list(
               prefix=prefix_txt,
               prefix_plural=prefix_plural_txt
-            ) }}.
+            )) }}
           </p>
         {% else %}
           <p>
-            {{ _('It needs at least one row of data.') }}
+            {{ _('Add a row for each recipient.') }}
           </p>
         {% endif %}
 
       {% elif not recipients.has_recipient_columns %}
 
         <h1 class='banner-title' data-module="track-error" data-error-type="Missing recipient columns" data-error-label="{{ upload_id }}">
-          {{ _('Spreadsheet is missing') }} {{ (
+          {{ _('Your spreadsheet is missing') }} {{ (
             recipients.missing_column_headers
             if template.template_type == 'letter' else required_recipient_columns
           ) | formatted_list(
             conjunction=and_txt,
             prefix=prefix_txt,
             prefix_plural=prefix_plural_txt
-          ) }}
+          ) }}.
         </h1>
         <p>
-          {{ _('The current column headings are') }} {{ recipients.column_headers | formatted_list(
-            conjunction=and_txt
-          ) }}.
+          {{ _('Add the missing column.') }}
         </p>
 
 
@@ -87,7 +88,7 @@
       {% elif recipients.duplicate_recipient_column_headers %}
        {% set or_txt = _('or') %}
         <h1 class='banner-title' data-module="track-error" data-error-type="Duplicate recipient columns" data-error-label="{{ upload_id }}">
-          {{ _('Your file has more than one column called') }} {{ (
+          {{ _('Spreadsheets can only have one column called') }} {{ (
             recipients.duplicate_recipient_column_headers
           ) | formatted_list(
             conjunction=or_txt,
@@ -96,23 +97,31 @@
           ) }}
         </h1>
         <p>
-          {{ _('Delete or rename one of these columns and try again.') }}
+          {{ _('Delete or rename one of the columns for') }} {{ (
+            recipients.duplicate_recipient_column_headers
+          ) | formatted_list(
+            conjunction=or_txt,
+            prefix='',
+            prefix_plural=''
+          ) }}.
         </p>
 
 
       {% elif recipients.missing_column_headers %}
         {% set and_txt = _('and') %}
         <h1 class='banner-title' data-module="track-error" data-error-type="Missing placeholder columns" data-error-label="{{ upload_id }}">
-          {{ _('Spreadsheet is missing') }} {{ recipients.missing_column_headers | formatted_list(
+          {{ _('Your spreadsheet is missing') }} {{ recipients.missing_column_headers | formatted_list(
             conjunction=and_txt,
             prefix=prefix_txt,
             prefix_plural=prefix_plural_txt
-          ) }}
+          ) }}.
         </h1>
         <p>
-          {{ _('The current column headings are') }} {{ recipients.column_headers | formatted_list(
-            conjunction=and_txt
-          ) }}
+          {% if recipients.missing_column_headers | length > 1 %}
+            {{ _('Add the missing columns.') }}
+          {% else %}
+            {{ _('Add the missing column.') }}
+          {% endif %}
         </p>
 
 

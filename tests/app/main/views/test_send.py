@@ -402,17 +402,14 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             telephone,name
             +16502532222
         """,
-            ("Your file needs a column called ‘phone number’ " "Right now it has columns called ‘telephone’ and ‘name’."),
+            ("Your spreadsheet is missing a column called ‘phone number’. " "Add the missing column."),
         ),
         (
             """
             phone number
             +16502532222
         """,
-            (
-                "The columns in your file need to match the double brackets in your template "
-                "Your file is missing a column called ‘name’."
-            ),
+            ("Your spreadsheet is missing a column called ‘name’. " "Add the missing column."),
         ),
         (
             """
@@ -420,28 +417,28 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             +16502532223,++16502532224,+16502532225,
         """,
             (
-                "Your file has more than one column called ‘phone number’ or ‘PHONE_NUMBER’ "
-                "Delete or rename one of these columns and try again."
+                "Spreadsheets can only have one column called ‘phone number’ or ‘PHONE_NUMBER’ "
+                "Delete or rename one of the columns for ‘phone number’ or ‘PHONE_NUMBER’."
             ),
         ),
         (
             """
             phone number, name
         """,
-            ("Your file is missing some rows " "It needs at least one row of data."),
+            ("Spreadsheets need at least 1 row with recipient information. " "Add a row for each recipient."),
         ),
         (
             "+16502532222",
             (
-                "Your file is missing some rows "
-                "It needs at least one row of data, and columns called ‘name’ and ‘phone number’."
+                "Your spreadsheet is missing columns and needs at least 1 row with recipient information. "
+                "Add columns called ‘name’ and ‘phone number’ as well as 1 row for each recipient."
             ),
         ),
         (
             "",
             (
-                "Your file is missing some rows "
-                "It needs at least one row of data, and columns called ‘name’ and ‘phone number’."
+                "Your spreadsheet is missing columns and needs at least 1 row with recipient information. "
+                "Add columns called ‘name’ and ‘phone number’ as well as 1 row for each recipient."
             ),
         ),
         (
@@ -623,8 +620,8 @@ def test_upload_valid_csv_shows_preview_and_table(
     for row_index, row in enumerate(
         [
             (
-                '<td class="table-field-left-aligned"> <div class=""> <div class="do-not-truncate-text" title="6502532223">6502532223</div> </div> </td>',  # noqa: E501
-                '<td class="table-field-left-aligned"> <div class=""> <div class="do-not-truncate-text" title="A">A</div> </div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="6502532223">6502532223</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="A">A</div> </td>',  # noqa: E501
                 (
                     '<td class="table-field-left-aligned"> '
                     '<div class="table-field-status-default"> '
@@ -636,8 +633,8 @@ def test_upload_valid_csv_shows_preview_and_table(
                 ),
             ),
             (
-                '<td class="table-field-left-aligned"> <div class=""> <div class="do-not-truncate-text" title="6502532224">6502532224</div> </div> </td>',  # noqa: E501
-                '<td class="table-field-left-aligned"> <div class=""> <div class="do-not-truncate-text" title="B">B</div> </div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="6502532224">6502532224</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="B">B</div> </td>',  # noqa: E501
                 (
                     '<td class="table-field-left-aligned"> '
                     '<div class="table-field-status-default"> '
@@ -649,8 +646,8 @@ def test_upload_valid_csv_shows_preview_and_table(
                 ),
             ),
             (
-                '<td class="table-field-left-aligned"> <div class=""> <div class="do-not-truncate-text" title="6502532225">6502532225</div> </div> </td>',  # noqa: E501
-                '<td class="table-field-left-aligned"> <div class=""> <div class="do-not-truncate-text" title="C">C</div> </div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="6502532225">6502532225</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="C">C</div> </td>',  # noqa: E501
                 (
                     '<td class="table-field-left-aligned"> '
                     '<div class="table-field-status-default"> '
@@ -2531,10 +2528,10 @@ def test_check_messages_shows_too_many_messages_errors(
         _test_page_title=False,
     )
 
-    assert page.find("h1").text.strip() == "Too many recipients"
+    assert page.find(role="alert").find("h1").text.strip() == "Too many recipients"
 
     # remove excess whitespace from element
-    details = page.find("div", class_="banner-dangerous").findAll("p")[1]
+    details = page.find(role="alert").findAll("p")[1]
     details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
     assert details == expected_msg
 
@@ -2570,7 +2567,7 @@ def test_check_messages_shows_trial_mode_error(
         _test_page_title=False,
     )
 
-    assert " ".join(page.find("div", class_="banner-dangerous").text.split()) == (
+    assert " ".join(page.find(role="alert").text.split()) == (
         "You cannot send to this phone number "
         "In trial mode, you can only send to yourself and team members. To send to more recipients, request to go live."
     )
@@ -2777,8 +2774,8 @@ def test_check_messages_column_error_doesnt_show_optional_columns(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "Your file needs a column called ‘postcode’ "
-        "Right now it has columns called ‘address_line_1’, ‘address_line_2’ and ‘foo’."
+        "Your spreadsheet is missing a column called ‘postcode’. "
+        "Add the missing column."
     )
 
 
@@ -3004,8 +3001,9 @@ def test_check_messages_shows_over_max_row_error(
         _test_page_title=False,
     )
 
-    assert " ".join(page.find("div", class_="banner-dangerous").text.split()) == (
-        "Your file has too many rows " "GC Notify can process up to 11,111 rows at once. " "Your file has 99,999 rows."
+    assert " ".join(page.find(role="alert").text.split()) == (
+        "Include only 11,111 recipients per spreadsheet. "
+        "To upload and send, return to the template and repeat the steps for each spreadsheet separately."
     )
 
 
@@ -3360,7 +3358,7 @@ def test_reply_to_is_previewed_if_chosen(
     [
         (
             "fr",
-            "De service one Répondre à test@example.com À adresse courriel Objet Template subject",
+            "De service one Répondre à test@example.com À email address Objet Template subject",
         ),
         (
             "en",
