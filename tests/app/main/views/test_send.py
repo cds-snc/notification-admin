@@ -2774,8 +2774,7 @@ def test_check_messages_column_error_doesnt_show_optional_columns(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "Your spreadsheet is missing a column called ‘postcode’. "
-        "Add the missing column."
+        "Your spreadsheet is missing a column called ‘postcode’. " "Add the missing column."
     )
 
 
