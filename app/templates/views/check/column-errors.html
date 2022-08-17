@@ -37,23 +37,23 @@
 
       {% if recipients.too_many_rows %}
 
-        <h1 class='banner-title' data-module="track-error" data-error-type="Too many rows" data-error-label="{{ upload_id }}">
+        <h2 class='banner-title' data-module="track-error" data-error-type="Too many rows" data-error-label="{{ upload_id }}">
           {{ _('Include only {} recipients per spreadsheet.').format(recipients.max_rows | format_number) }}
-        </h1>
+        </h2>
         <p>
           {{ _('To upload and send, return to the template and repeat the steps for each spreadsheet separately.') }}
         </p>
 
       {% elif not count_of_recipients %}
 
-        <h1 class='banner-title' data-module="track-error" data-error-type="No rows" data-error-label="{{ upload_id }}">
+        <h2 class='banner-title' data-module="track-error" data-error-type="No rows" data-error-label="{{ upload_id }}">
           {% if recipients.missing_column_headers %}
           {{ _('Your spreadsheet is missing columns and needs at least 1 row with recipient information.') }}
           {% else %}
           {{ _('Spreadsheets need at least 1 row with recipient information.') }}
           {% endif %}
 
-        </h1>
+        </h2>
         {% if recipients.missing_column_headers %}
           <p>
             {{ _('Add {} as well as 1 row for each recipient.').format(recipients.missing_column_headers | sort() | formatted_list(
@@ -69,7 +69,7 @@
 
       {% elif not recipients.has_recipient_columns %}
 
-        <h1 class='banner-title' data-module="track-error" data-error-type="Missing recipient columns" data-error-label="{{ upload_id }}">
+        <h2 class='banner-title' data-module="track-error" data-error-type="Missing recipient columns" data-error-label="{{ upload_id }}">
           {{ _('Your spreadsheet is missing') }} {{ (
             recipients.missing_column_headers
             if template.template_type == 'letter' else required_recipient_columns
@@ -78,7 +78,7 @@
             prefix=prefix_txt,
             prefix_plural=prefix_plural_txt
           ) }}.
-        </h1>
+        </h2>
         <p>
           {{ _('Add the missing column.') }}
         </p>
@@ -87,7 +87,7 @@
 
       {% elif recipients.duplicate_recipient_column_headers %}
        {% set or_txt = _('or') %}
-        <h1 class='banner-title' data-module="track-error" data-error-type="Duplicate recipient columns" data-error-label="{{ upload_id }}">
+        <h2 class='banner-title' data-module="track-error" data-error-type="Duplicate recipient columns" data-error-label="{{ upload_id }}">
           {{ _('Spreadsheets can only have one column called') }} {{ (
             recipients.duplicate_recipient_column_headers
           ) | formatted_list(
@@ -95,7 +95,7 @@
             prefix='',
             prefix_plural=''
           ) }}
-        </h1>
+        </h2>
         <p>
           {{ _('Delete or rename one of the columns for') }} {{ (
             recipients.duplicate_recipient_column_headers
@@ -109,13 +109,13 @@
 
       {% elif recipients.missing_column_headers %}
         {% set and_txt = _('and') %}
-        <h1 class='banner-title' data-module="track-error" data-error-type="Missing placeholder columns" data-error-label="{{ upload_id }}">
+        <h2 class='banner-title' data-module="track-error" data-error-type="Missing placeholder columns" data-error-label="{{ upload_id }}">
           {{ _('Your spreadsheet is missing') }} {{ recipients.missing_column_headers | formatted_list(
             conjunction=and_txt,
             prefix=prefix_txt,
             prefix_plural=prefix_plural_txt
           ) }}.
-        </h1>
+        </h2>
         <p>
           {% if recipients.missing_column_headers | length > 1 %}
             {{ _('Add the missing columns.') }}
