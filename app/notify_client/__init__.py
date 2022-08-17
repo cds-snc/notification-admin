@@ -23,6 +23,7 @@ class NotifyAdminAPIClient(BaseAPIClient):
         self.service_id = app.config["ADMIN_CLIENT_USER_NAME"]
         self.api_key = app.config["ADMIN_CLIENT_SECRET"]
         self.route_secret = app.config["ROUTE_SECRET_KEY_1"]
+        self.waf_secret = app.config["WAF_SECRET"]
         self.sensitive_services = [x.strip() for x in app.config["SENSITIVE_SERVICES"].split(",")]
 
     def generate_headers(self, api_token):
@@ -31,6 +32,7 @@ class NotifyAdminAPIClient(BaseAPIClient):
             "Authorization": "Bearer {}".format(api_token),
             "X-Custom-Forwarder": self.route_secret,
             "User-agent": "NOTIFY-API-PYTHON-CLIENT/{}".format(__version__),
+            "WAF-secret": self.waf_secret,
         }
         return self._add_request_id_header(headers)
 
