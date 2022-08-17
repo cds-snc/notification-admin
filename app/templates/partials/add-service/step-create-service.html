@@ -6,8 +6,8 @@
   <div class="details-body">
     <p>{{ _("Recipients can check the name and email address to confirm the message comes from your service.") }}</p>
     <p>{{ _("In this example, a government service has chosen the name ‘Renew your license’ and the email address 'renew@notification.canada.ca':") }}</p>
-    <p>{{ _("Service name: Renew your license | Renouveler votre permis") }}
-    <br>{{ _("Email address: renew@notification.canada.ca") }}
+    <p>{{ _("Service name: <b>Renew your license | Renouveler votre permis</b>") }}
+    <br>{{ _("Email address: <b>renew</b>@notification.canada.ca") }}
     </p>
   </div>
 </details>
@@ -34,7 +34,7 @@
   </p>
   <p>{{ _("This email address cannot receive replies. In Settings, you can enter a different email for replies. Currently your service is set to prevent replies.") }}</p>
 
-  {% set button_txt = _('Create Service') %}
+  {% set button_txt = _('Create service') %}
   {{ page_footer(button_txt) }}
 
   {% endcall %}
