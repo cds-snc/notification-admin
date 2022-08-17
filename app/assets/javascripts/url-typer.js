@@ -1,7 +1,7 @@
-(function ($) {
+(function (Modules) {
   var previewVisible = false;
 
-  $("input#email_from").on("keyup", function () {
+  Modules.UrlTyper = $("input#email_from").on("keyup", function () {
     var inputValue = $(this)
       .val()
       .toLowerCase()
@@ -30,4 +30,4 @@
       }
     }
   });
-})(jQuery);
+})(window.GOVUK.Modules);

@@ -14,8 +14,7 @@
 
 <h2 class="heading-medium">{{ _("Service name") }}</h2>
 <p>{{ _("GC Notify also shows the service name at the start of every text message.") }}</p>
-
-<div class="form-wrap">
+<div data-module="url-typer" class="form-wrap">
   {% call form_wrapper() %}
     {% set hint_txt = _('Use a name that recipients will recognize. Maximum 255 characters.') %}
 
