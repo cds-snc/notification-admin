@@ -304,16 +304,11 @@ def activity_download():
     )
 
 
-# --- Interal Redirects --- #
+# --- Internal Redirects --- #
 @main.route("/features/roadmap", endpoint="redirect_roadmap")
 @main.route("/features/email", endpoint="redirect_email")
 @main.route("/features/sms", endpoint="redirect_sms")
 @main.route("/features/letters", endpoint="redirect_letters")
-@main.route("/features/templates", endpoint="redirect_format")
-@main.route("/features/security", endpoint="redirect_security")
-@main.route("/features/terms", endpoint="redirect_terms")
-@main.route("/features/messages-status", endpoint="redirect_messages_status")
-@main.route("/templates", endpoint="redirect_format")
 def old_page_redirects():
     return redirect(url_for(request.endpoint.replace("redirect_", "")), code=301)
 
