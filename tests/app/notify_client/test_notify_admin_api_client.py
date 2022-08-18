@@ -80,12 +80,12 @@ def test_generate_headers_sets_standard_headers(app_):
     # with patch('app.notify_client.has_request_context', return_value=False):
     headers = api_client.generate_headers("api_token")
 
-    assert set(headers.keys()) == {"Authorization", "Content-type", "User-agent", "X-Custom-Forwarder", "WAF-secret"}
+    assert set(headers.keys()) == {"Authorization", "Content-type", "User-agent", "X-Custom-Forwarder", "waf-secret"}
     assert headers["Authorization"] == "Bearer api_token"
     assert headers["Content-type"] == "application/json"
     assert headers["User-agent"].startswith("NOTIFY-API-PYTHON-CLIENT")
     assert headers["X-Custom-Forwarder"] == "proxy-secret"
-    assert headers["WAF-secret"] == "waf-secret"
+    assert headers["waf-secret"] == "waf-secret"
 
 
 def test_generate_headers_sets_request_id_if_in_request_context(app_):
@@ -102,7 +102,7 @@ def test_generate_headers_sets_request_id_if_in_request_context(app_):
         "X-Custom-Forwarder",
         "X-B3-TraceId",
         "X-B3-SpanId",
-        "WAF-secret",
+        "waf-secret",
     }
     assert headers["X-B3-TraceId"] == request_context.request.request_id
     assert headers["X-B3-SpanId"] == request_context.request.span_id

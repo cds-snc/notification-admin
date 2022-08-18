@@ -32,7 +32,7 @@ class NotifyAdminAPIClient(BaseAPIClient):
             "Authorization": "Bearer {}".format(api_token),
             "X-Custom-Forwarder": self.route_secret,
             "User-agent": "NOTIFY-API-PYTHON-CLIENT/{}".format(__version__),
-            "WAF-secret": self.waf_secret,
+            "waf-secret": self.waf_secret,
         }
         return self._add_request_id_header(headers)
 
