@@ -1,14 +1,17 @@
 <p>{{ _('Your sending email address helps build trust with recipients. A good email address is relevant and as concise as possible.') }}</p>
-<p>{{ _('You may use letters, numbers, dots, dashes or underscores.') }}</p>
+<p>{{ _('An email address contains two parts: the name and the domain, separated by the at symbol. For your service, you can choose the name part.')}}</p>
+<p>{{ _('You may use letters, numbers, dots, dashes or underscores. You can change this later in Settings.')}}</p>
+<p>{{ _('Sending email address name')}}<p>
 
 {% set suffix_txt = '@' + sending_domain %}
 
 <div class="form-wrap">
   {% call form_wrapper() %}
     {% set hint_txt = _('Up to 64 characters. Enter what comes before the at symbol, without spaces.') %}
-
     {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt, width='1-2', maxlength=64) }}
     {{ form.name }}
+
+    <p>{{ _('Enter a name to preview your sending email address.')}}</p>
 
     {% set button_txt = _('Continue') %}
     {{ page_footer(button_txt) }}
