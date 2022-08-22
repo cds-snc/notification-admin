@@ -72,4 +72,6 @@ run-dev:
 format:
 	isort ./app ./tests
 	black ./app ./tests
+	isort --check-only ./app ./tests
+	mypy ./
 	npx prettier --write app/assets/javascripts app/assets/stylesheets
