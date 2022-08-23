@@ -388,14 +388,15 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
 
     assert response.status_code == 200
     content = response.get_data(as_text=True)
-    assert "There is a problem with invalid.csv" in content
+    assert "Errors in current spreadsheet" in content
+    assert "invalid.csv" in content
     assert "+16502532222" in content
     assert "Missing" in content
     assert "Choose file" in content
 
 
 @pytest.mark.parametrize(
-    "file_contents, expected_error,",
+    "file_contents, expected_error, expected_heading",
     [
         (
             """
@@ -403,6 +404,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             +16502532222
         """,
             ("Your spreadsheet is missing a column called ‘phone number’. " "Add the missing column."),
+            "Check there’s a column for each variable",
         ),
         (
             """
@@ -410,6 +412,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             +16502532222
         """,
             ("Your spreadsheet is missing a column called ‘name’. " "Add the missing column."),
+            "Check there’s a column for each variable",
         ),
         (
             """
@@ -420,12 +423,14 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
                 "Spreadsheets can only have one column called ‘phone number’ or ‘PHONE_NUMBER’ "
                 "Delete or rename one of the columns for ‘phone number’ or ‘PHONE_NUMBER’."
             ),
+            "Check there’s a column for each variable",
         ),
         (
             """
             phone number, name
         """,
             ("Spreadsheets need at least 1 row with recipient information. " "Add a row for each recipient."),
+            "Check there’s a column for each variable",
         ),
         (
             "+16502532222",
@@ -433,6 +438,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
                 "Your spreadsheet is missing columns and needs at least 1 row with recipient information. "
                 "Add columns called ‘name’ and ‘phone number’ as well as 1 row for each recipient."
             ),
+            "Check there’s a column for each variable",
         ),
         (
             "",
@@ -440,6 +446,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
                 "Your spreadsheet is missing columns and needs at least 1 row with recipient information. "
                 "Add columns called ‘name’ and ‘phone number’ as well as 1 row for each recipient."
             ),
+            "Check there’s a column for each variable",
         ),
         (
             """
@@ -448,7 +455,8 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             , example
             +16502532222, example
         """,
-            ("There is a problem with invalid.csv " "You need to enter missing data in 1 row"),
+            ("Enter missing data in 1 row"),
+            "Edit your spreadsheet",
         ),
         (
             """
@@ -457,7 +465,8 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             +16502532222,
             +16502532222, example
         """,
-            ("There is a problem with invalid.csv " "You need to enter missing data in 1 row"),
+            ("Enter missing data in 1 row"),
+            "Edit your spreadsheet",
         ),
     ],
 )
@@ -474,6 +483,7 @@ def test_upload_csv_file_with_missing_columns_shows_error(
     fake_uuid,
     file_contents,
     expected_error,
+    expected_heading,
 ):
 
     mocker.patch("app.main.views.send.s3download", return_value=file_contents)
@@ -489,7 +499,8 @@ def test_upload_csv_file_with_missing_columns_shows_error(
     with client_request.session_transaction() as session:
         assert "file_uploads" not in session
 
-    assert normalize_spaces(page.select(".banner-dangerous")[0].text) == expected_error
+    assert normalize_spaces(page.find(role="alert").text) == expected_error
+    assert normalize_spaces(page.select_one("h1").text) == expected_heading
 
 
 def test_upload_csv_invalid_extension(
@@ -2689,9 +2700,7 @@ def test_check_messages_shows_data_errors_before_trial_mode_errors_for_letters(
         original_file_name="example.xlsx",
     )
 
-    assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "There is a problem with example.xlsx " "You need to enter missing data in 2 rows"
-    )
+    assert normalize_spaces(page.find(role="alert").text) == ("Enter missing data in 2 rows")
     assert not page.select(".table-field-index a")
 
 

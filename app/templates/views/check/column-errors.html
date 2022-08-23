@@ -40,7 +40,7 @@
         <h2 class='banner-title' data-module="track-error" data-error-type="Too many rows" data-error-label="{{ upload_id }}">
           {{ _('Include only {} recipients per spreadsheet.').format(recipients.max_rows | format_number) }}
         </h2>
-        <p>
+        <p class="mb-0">
           {{ _('To upload and send, return to the template and repeat the steps for each spreadsheet separately.') }}
         </p>
 
@@ -55,14 +55,14 @@
 
         </h2>
         {% if recipients.missing_column_headers %}
-          <p>
+          <p class="mb-0">
             {{ _('Add {} as well as 1 row for each recipient.').format(recipients.missing_column_headers | sort() | formatted_list(
               prefix=prefix_txt,
               prefix_plural=prefix_plural_txt
             )) }}
           </p>
         {% else %}
-          <p>
+          <p class="mb-0">
             {{ _('Add a row for each recipient.') }}
           </p>
         {% endif %}
@@ -79,7 +79,7 @@
             prefix_plural=prefix_plural_txt
           ) }}.
         </h2>
-        <p>
+        <p class="mb-0">
           {{ _('Add the missing column.') }}
         </p>
 
@@ -96,7 +96,7 @@
             prefix_plural=''
           ) }}
         </h2>
-        <p>
+        <p class="mb-0">
           {{ _('Delete or rename one of the columns for') }} {{ (
             recipients.duplicate_recipient_column_headers
           ) | formatted_list(
@@ -116,7 +116,7 @@
             prefix_plural=prefix_plural_txt
           ) }}.
         </h2>
-        <p>
+        <p class="mb-0">
           {% if recipients.missing_column_headers | length > 1 %}
             {{ _('Add the missing columns.') }}
           {% else %}
@@ -160,7 +160,6 @@
 
 
     <div class="form-group contain-floats box-border">
-      <p>{{ _('Fix the errors and re-upload your file.') }}</p>
       {% set button_txt = _('Re-upload your file') %}
       {% if not request.args.from_test %}
         {{ file_upload(
@@ -176,15 +175,23 @@
       {% set column_headers = recipients._raw_column_headers if recipients.duplicate_recipient_column_headers else recipients.column_headers %}
 
       <h2 class="heading-medium" id="{{ file_contents_header_id }}">{{ _('Current spreadsheet') }}</h2>
-      <p>
-        {% if count_of_recipients > 1 %}
-          {{ _("{} recipients in the file '{}'.").format(count_of_recipients, original_file_name) }}
-        {% elif count_of_recipients == 1 %}
-          {{ _("1 recipient in the file '{}'.").format(original_file_name) }}
-        {% else %}
-          {{ _("There are no recipients in the file '{}'.").format(original_file_name) }}
-        {% endif %}
-      </p>
+      {% if recipients.too_many_rows %}
+        <p class="table-show-more-link">
+            {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }}.
+        </p>
+      {% elif count_of_displayed_recipients < count_of_recipients %}
+        <p>
+          {% if row_errors and not recipients.missing_column_headers %}
+            {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows with errors') }}.
+          {% else %}
+            {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }}.
+          {% endif %}
+        </p>
+      {% elif row_errors and not recipients.missing_column_headers %}
+        <p>
+          {{ _('Only showing rows with errors') }}.
+        </p>
+      {% endif %}
 
       <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}" data-module="fullscreen-table">
         {% call(item, row_number) list_table(
@@ -231,24 +238,8 @@
         {% endcall %}
       {% endif %}
     </div>
-
-    {% if recipients.too_many_rows %}
-      <p class="table-show-more-link">
-          {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }}.
-      </p>
-    {% elif count_of_displayed_recipients < count_of_recipients %}
+    {% if count_of_displayed_recipients < count_of_recipients %}
       {% include "views/check/table-overflow.html" %}
-      <p>
-        {% if row_errors and not recipients.missing_column_headers %}
-          {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows with errors') }}.
-        {% else %}
-          {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }}.
-        {% endif %}
-      </p>
-    {% elif row_errors and not recipients.missing_column_headers %}
-      <p>
-        {{ _('Only showing rows with errors') }}.
-      </p>
     {% endif %}
   </section>
   <section>
