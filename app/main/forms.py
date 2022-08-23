@@ -593,12 +593,32 @@ class OrganisationDomainsForm(StripWhitespaceForm):
     )
 
 
+# class CreateServiceStepNameForm(StripWhitespaceForm):
+#     name = StringField(
+#         _l("Enter bilingual service name"),
+#         validators=[]
+#     )
+
+#     email_from = StringField(
+#         _l("Enter the part before ‘@notification.canada.ca’"),
+#         validators=[]
+#     )
+
+
 class CreateServiceStepNameForm(StripWhitespaceForm):
     name = StringField(
-        _l("Bilingual service name"),
+        _l("Enter bilingual service name"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_service_name,
+        ],
+    )
+
+    email_from = StringField(
+        _l("Enter the part before ‘@notification.canada.ca’"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validate_email_from,
         ],
     )
 
@@ -633,7 +653,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         self.default_branding.choices = self._getSelectBilingualChoices()
 
     default_branding = RadioField(
-        _l("Default language <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
+        _l("Choose which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
@@ -647,16 +667,6 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
                     FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
                 ]
             ),
-        ],
-    )
-
-
-class CreateServiceStepEmailFromForm(StripWhitespaceForm):
-    email_from = StringField(
-        _l("Sending email address name"),
-        validators=[
-            DataRequired(message=_l("This cannot be empty")),
-            validate_email_from,
         ],
     )
 
