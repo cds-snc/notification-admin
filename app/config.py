@@ -94,6 +94,7 @@ class Config(object):
 
     ROUTE_SECRET_KEY_1 = os.environ.get("ROUTE_SECRET_KEY_1", "")
     ROUTE_SECRET_KEY_2 = os.environ.get("ROUTE_SECRET_KEY_2", "")
+    WAF_SECRET = os.environ.get("WAF_SECRET", "waf-secret")
     SECRET_KEY = os.environ.get("SECRET_KEY")
     SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security-securite@cds-snc.ca")
     SEND_FILE_MAX_AGE_DEFAULT = 365 * 24 * 60 * 60  # 1 year
@@ -133,6 +134,7 @@ class Config(object):
             "ANTIVIRUS_API_KEY",
             "ROUTE_SECRET_KEY_1",
             "ROUTE_SECRET_KEY_2",
+            "WAF_SECRET",
         ]
 
     @classmethod
