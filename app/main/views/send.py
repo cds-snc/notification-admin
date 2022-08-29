@@ -529,8 +529,10 @@ def send_test_step(service_id, template_id, step_index):
         )
 
     optional_placeholder = current_placeholder in optional_address_columns
+    placeholder_meta = template.placeholders_meta[current_placeholder]
     form = get_placeholder_form_instance(
         current_placeholder,
+        placeholder_meta,
         dict_to_populate_from=get_normalised_placeholders_from_session(),
         template_type=template.template_type,
         optional_placeholder=optional_placeholder,
@@ -573,6 +575,7 @@ def send_test_step(service_id, template_id, step_index):
         ),
         template=template,
         form=form,
+        placeholder_meta=placeholder_meta,
         optional_placeholder=optional_placeholder,
         back_link=back_link,
         help=get_help_argument(),

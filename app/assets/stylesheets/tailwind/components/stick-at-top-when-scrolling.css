@@ -110,5 +110,16 @@
   .js-cancel:active {
     @apply bg-yellow outline-none text-blue;
   }
+
+  /* New CSS only version of this. Whenever we can remove an instance of this javascript */
+
+  .stick-at-top-when-scrolling {
+    @apply sticky top-0 z-50 bg-white py-gutterHalf;
+  }
+
+  .stick-at-top-when-scrolling .page-footer {
+    @apply mb-gutterHalf;
+  }
+
   /*! purgecss end ignore */
 }
