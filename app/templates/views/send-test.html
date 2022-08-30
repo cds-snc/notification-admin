@@ -33,7 +33,7 @@
   <div
     class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border {% if form_label == 'phone number' %}extra-tracking{% endif %}"
   >
-    {% if not placeholder_meta.is_conditional %}
+    {% if not is_conditional %}
       {% set hint_txt = _('Optional') %}
       {% if form_label == 'phone number' %}
         {{ textbox( form.placeholder_value,
@@ -42,7 +42,7 @@
         {{ textbox( form.placeholder_value,
         label=form.placeholder_value.label.text|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', ) }}
       {% endif %}
-    {% elif placeholder_meta.is_conditional %}
+    {% elif is_conditional %}
       {{ radios(form.placeholder_value) }}
     {% endif %}
   </div>
