@@ -16,7 +16,7 @@ def test_form_class_not_mutated(app_):
 
         assert str(form1.placeholder_value.label) == '<label for="placeholder_value">name</label>'
         assert str(form2.placeholder_value.label) == '<label for="placeholder_value">city</label>'
-        assert str(form3.placeholder_value.label) == '<label for="placeholder_value">Show content of ((elligible))</label>'
+        assert str(form3.placeholder_value.label) == '<label for="placeholder_value">Do you want to include the content in ((elligible)) ?</label>'
 
 
 @pytest.mark.parametrize(

@@ -1408,7 +1408,7 @@ def get_placeholder_form_instance(
         field = StringField(placeholder_name)
     elif is_conditional:
         field = RadioField(
-            _l("Show content of (({}))").format(placeholder_name),
+            _l("Do you want to include the content in (({})) ?").format(placeholder_name),
             choices=[
                 ("yes", _l("Yes")),
                 ("no", _l("No")),
