@@ -8,6 +8,7 @@
   a.button:active {
     padding: 0.55em 1em 0.45em;
     box-shadow: 0 2px 0 theme("colors.blue.border");
+    cursor: pointer;
     @apply no-underline inline-flex items-center text-white text-smaller leading-tight align-top bg-blue min-h-target;
   }
   .button.shadow-none,
@@ -25,7 +26,8 @@
 
   .button:focus,
   a.button:focus {
-    outline: 1px solid theme("colors.yellow.default");
+    outline: 3px solid theme("colors.yellow.default");
+    outline-offset: 0;
     @apply border-transparent shadow-outline;
   }
 
@@ -48,6 +50,8 @@
   }
 
   .button-red,
+  a.button-red:visited,
+  a.button-red:link,
   a.button-red {
     @apply bg-red;
     box-shadow: 0 2px 0 theme("colors.red.border");

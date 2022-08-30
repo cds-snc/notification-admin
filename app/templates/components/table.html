@@ -71,7 +71,11 @@
     {% set border = '' if border else 'table-field-noborder' %}
 
     <td class="{{ [field_alignment, border]|join(' ') }}">
-      <div class="{{ 'table-field-status-' + status if status }}">{{ caller() }}</div>
+      {% if status %}
+        <div class="{{ 'table-field-status-' + status }}">{{ caller() }}</div>
+      {% else %}
+        {{ caller() }}
+      {% endif %}
     </td>
 {%- endmacro %}
 

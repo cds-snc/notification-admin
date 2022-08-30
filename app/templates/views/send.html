@@ -2,7 +2,9 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/file-upload.html" import file_upload %}
 {% from "components/message-count-label.html" import recipient_count_label %}
-{% set page_title = _('Upload file with recipients') %}
+{% from "components/table.html" import list_table, text_field, index_field, index_field_heading %}
+
+{% set page_title = _('Prepare spreadsheet') %}
 
 {% block service_page_title %}
   {{ page_title }}
@@ -19,26 +21,55 @@
     )
   }}
 
-  <div class="page-footer mb-12 clear-both contain-floats">
-    {{ file_upload( form.file, button_text=_('Choose a file')) }}
-  </div>
+    <p>
+      {{ _('GC Notify can help create your spreadsheet or you can use a spreadsheet from your files.')}}
+    </p>
 
-  <p>
-    {{ _('Save your file as a') }} 
-    {% set csv_acronym = _('Comma Separated Values') %}
-    {% set tsv_acr = _('Tab Separated Values') %} 
-    {% set ods_acronym = _('Open Document Spreadsheet') %}
-    <span class="sr-only">{{ csv_acronym }}</span><span aria-hidden="true">{{ _('CSV') }}</span>, 
-    <span class="sr-only">{{ tsv_acr }}</span><span aria-hidden="true">{{ _('TSV') }}</span>, 
-    <span class="sr-only">{{ ods_acronym }}</span><span aria-hidden="true">{{ _('ODS') }}</span>
-    {{ _('or Microsoft Excel spreadsheet') }}.
-  </p>
 
-  <p>
-    {{ _("Your file must include columns with recipients and variables from your personalised message.") }}
-  </p>
+  <h2 class="heading-medium">{{ _('Create spreadsheet') }}</h2>
+  <details>
+      <summary>{{ _('For help, follow steps to create your spreadsheet') }}</summary>
+      <div class="details-body">
+        <ol class="list list-custom space-y-gutter" style='--prefix: "{{_("Step")}}"' >
+          <li>{{ _("GC Notify has created columns with headings for your variables. Copy and paste into your own empty spreadsheet or <a href={} download>download as an Excel file</a>.").format(url_for('.get_example_csv', service_id=current_service.id, template_id=template.id)) }}
+            <div class="spreadsheet mt-gutterHalf">
+              {% set hint= _('Example') %} 
+              {% call(item, row_number) list_table(
+                example,
+                caption=hint, 
+                caption_visible=False, 
+                field_headings=[''] + column_headings 
+              ) %} 
+                {{ index_field(row_number - 1) }} 
+                {% for column in item %} 
+                  {{ text_field(column) }} 
+                {% endfor %}
+              {% endcall %}
+            </div>
+          </li>
+          <li>{{ _("Add rows with information for each recipient.") }}</li>
+          <li>{{ _("Name and save file.") }}</li>
+        </ol>
+      </div>
+    </details>
+  <h2 class="heading-medium">{{ _('Use your own spreadsheet') }}</h2>
 
-  {% include "partials/csv-send.html" %}
+  {% macro acronym(acronym, expanded) %}
+     <span class="sr-only">{{ expanded }}</span><span aria-hidden="true">{{ acronym }}</span>
+  {% endmacro %}
+
+  <p>{{ _('For compatibility with GC Notify, spreadsheets must:') }}</p>
+  <ol class="list list-bullet">
+    <li>{{ _('Use {}, {}, {} or Excel format.').format(
+      acronym(_('CSV'), _('Comma Separated Values')), 
+      acronym(_('TSV'), _('Tab Separated Values')), 
+      acronym(_('ODS'), _('Open Document Spreadsheet'))
+    ) }}</li>
+    <li>{{ _('Have column headings for {}.').format(example[0] | formatted_list(conjunction=_('and'))) }}</li>
+    <li>{{ _('Not have any blank rows.') }}</li>
+  </ol>
+  {{ file_upload( form.file, button_text=_('Choose a file'), accept=".csv,.tsv,.ods,.xls,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,text/tab-separated-values") }}
+
 
 <script nonce="{{ request_nonce }}">
   function isIE() {
