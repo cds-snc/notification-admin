@@ -82,7 +82,7 @@
               <img src="{{ option.label.text.split('||')[1] }}" alt="{{ option.label.text.split('||')[2] }}" style="width: 400px;margin-top:16px"></div>
             {% endif %}
             {% if option_hints[option.data] %}
-              <div class="block-label-hint">
+              <div class="block-label-hint max-w-80ch">
                 {{ option_hints[option.data] }}
               </div>
             {% endif %}
