@@ -33,6 +33,14 @@ jobs:
         MIXPANEL_PROJECT_TOKEN: <project_token>
     - name: Check for missing translations
       run: make test-translations
+    - name: Checks for new endpoints against AWS WAF rules
+      uses: cds-snc/notification-utils/.github/actions/waffles@main
+      with:
+        app-loc: '/github/workspace'
+        app-libs: '/github/workspace/env/site-packages'
+        flask-mod: 'application'
+        flask-prop: 'application'
+        base-url: 'https://staging.notification.cdssandbox.xyz'
     - name: Notify Slack channel if this job failed in default branch
       if: ${{ failure() && github.ref == 'refs/heads/main' }}
       run: |
