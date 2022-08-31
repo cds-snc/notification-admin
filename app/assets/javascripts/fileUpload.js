@@ -8,7 +8,7 @@
 
     this.showCancelButton = () =>
       $("#file-upload-button", this.$form).replaceWith(`
-      <a href="" class='button button-red'>${cancelText}</a>
+      <a href="" class='button button-red font-normal'>${this.cancelText}</a>
     `);
 
     this.start = function (component) {

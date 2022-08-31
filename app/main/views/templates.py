@@ -1096,14 +1096,22 @@ def add_recipients(service_id, template_id):
     if template["template_type"] == "email":
         form = AddEmailRecipientsForm()
         option_hints = {
-            "many_recipients": Markup(_l("Upload a file with email addresses.")),
-            "one_recipient": Markup(_l("Send to only one email address.")),
+            "many_recipients": Markup(
+                _l(
+                    "Upload or create a spreadsheet. GC Notify can create columns with headings for the email address and any other variables."
+                )
+            ),
+            "one_recipient": Markup(_l("Enter their email address.")),
         }
     else:
         form = AddSMSRecipientsForm()
         option_hints = {
-            "many_recipients": Markup(_l("Upload a file with phone numbers.")),
-            "one_recipient": Markup(_l("Send to only one phone number.")),
+            "many_recipients": Markup(
+                _l(
+                    "Upload or create a spreadsheet. GC Notify can create columns with headings for the phone numbers and any other variables."
+                )
+            ),
+            "one_recipient": Markup(_l("Enter their phone number.")),
         }
     option_conditionals = {"one_recipient": form.placeholder_value}
 
