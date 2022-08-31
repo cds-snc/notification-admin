@@ -53,4 +53,4 @@ jobs:
         app-libs: '/github/workspace/env/site-packages'
         flask-mod: 'application'
         flask-prop: 'application'
-        base-url: 'https://api.document.staging.notification.cdssandbox.xyz'
+        base-url: 'https://staging.notification.cdssandbox.xyz'
