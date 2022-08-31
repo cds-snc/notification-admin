@@ -22,9 +22,9 @@
       {{ big_number_with_status(
         statistics['sms']['requested'],
         message_count_label(statistics['sms']['requested'], 'sms', suffix=sent_single, suffix_plural=sent_plural),
-        200,
-        106.5,
-        true,
+        statistics['sms']['failed'],
+        statistics['sms']['failed_percentage'],
+        statistics['sms']['show_warning'],
         failure_link=url_for(".view_notifications", service_id=service_id, message_type='sms', status='failed'),
         link=url_for(".view_notifications", service_id=service_id, message_type='sms', status='sending,delivered,failed'),
         smaller=smaller_font_size
