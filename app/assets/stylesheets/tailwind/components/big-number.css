@@ -33,14 +33,14 @@
   }
 
   .big-number-status {
-    @apply text-smaller p-6 block text-white bg-green-darker;
+    @apply text-smaller block text-white bg-green-darker;
   }
 
   .big-number-status-link:link,
   .big-number-status-link:visited,
   .big-number-status-link:active,
   .big-number-status-link:hover {
-    @apply text-white no-underline;
+    @apply text-white;
   }
 
   .big-number-status-link:active,
