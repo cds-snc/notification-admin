@@ -128,9 +128,15 @@
       if (openAttr === true) {
         details.__summary.setAttribute("aria-expanded", "true");
         details.__content.setAttribute("aria-hidden", "false");
+        details.__interactive.forEach((element) => {
+          element.setAttribute("tabIndex", 0);
+        });
       } else {
         details.__summary.setAttribute("aria-expanded", "false");
         details.__content.setAttribute("aria-hidden", "true");
+        details.__interactive.forEach((element) => {
+          element.setAttribute("tabIndex", -1);
+        });
         if (!NATIVE_DETAILS) {
           details.__content.style.display = "none";
         }
