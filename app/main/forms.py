@@ -1406,14 +1406,14 @@ def get_placeholder_form_instance(
             field = uk_mobile_number(label=placeholder_name)
     elif optional_placeholder:
         field = StringField(placeholder_name)
-    elif placeholder_meta['is_conditional']:
+    elif placeholder_meta["is_conditional"]:
         field = RadioField(
-        _l("Show content of (({}))").format(placeholder_name),
-        choices=[
-            ("yes", _l("Yes")),
-            ("no", _l("No")),
-        ],
-    )
+            _l("Show content of (({}))").format(placeholder_name),
+            choices=[
+                ("yes", _l("Yes")),
+                ("no", _l("No")),
+            ],
+        )
     else:
         field = StringField(
             placeholder_name,
