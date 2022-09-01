@@ -1198,7 +1198,7 @@ def test_send_one_off_has_sticky_header_for_email_and_letter(
         _follow_redirects=True,
     )
 
-    assert bool(page.select(".js-stick-at-top-when-scrolling")) == expected_sticky
+    assert bool(page.select(".stick-at-top-when-scrolling")) == expected_sticky
 
 
 @pytest.mark.parametrize(

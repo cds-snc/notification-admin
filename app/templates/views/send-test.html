@@ -2,6 +2,7 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/message-count-label.html" import recipient_count_label %}
+{% from "components/radios.html" import radios %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/form.html" import form_wrapper %}
 
@@ -15,7 +16,7 @@
 
 {% call
   form_wrapper(
-    class='js-stick-at-top-when-scrolling send-one-off-form' if template.template_type != 'sms' else 'send-one-off-form',
+    class='stick-at-top-when-scrolling send-one-off-form' if template.template_type != 'sms' else 'send-one-off-form',
     module="autofocus",
     data_kwargs={'force-focus': True} )
 %}
@@ -32,14 +33,18 @@
   <div
     class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border {% if form_label == 'phone number' %}extra-tracking{% endif %}"
   >
-    {% set hint_txt = _('Optional') %}
-    {% if form_label == 'phone number' %}
-      {{ textbox( form.placeholder_value,
-    label=_(form.placeholder_value.label.text)|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', ) }}
+    {% if is_conditional %}
+      {{ radios(form.placeholder_value) }}
     {% else %}
-      {{ textbox( form.placeholder_value,
-      label=form.placeholder_value.label.text|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', ) }}
-  {% endif %}
+      {% set hint_txt = _('Optional') %}
+      {% if form_label == 'phone number' %}
+        {{ textbox( form.placeholder_value,
+      label=_(form.placeholder_value.label.text)|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', ) }}
+      {% else %}
+        {{ textbox( form.placeholder_value,
+        label=form.placeholder_value.label.text|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', ) }}
+      {% endif %}
+    {% endif %}
   </div>
 </div>
 
