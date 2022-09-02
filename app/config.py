@@ -4,6 +4,7 @@ from typing import Any, List
 from dotenv import load_dotenv
 from environs import Env
 from notifications_utils import logging
+
 from app.articles.routing import GC_ARTICLES_ROUTES
 
 env = Env()
