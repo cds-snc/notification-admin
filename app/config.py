@@ -4,6 +4,7 @@ from typing import Any, List
 from dotenv import load_dotenv
 from environs import Env
 from notifications_utils import logging
+from app.articles.routing import GC_ARTICLES_ROUTES
 
 env = Env()
 env.read_env()
@@ -19,6 +20,10 @@ if os.environ.get("VCAP_APPLICATION"):
 
 
 class Config(object):
+
+    # for waffles: pull out the routes into a flat list of the form ['/home', '/accueil', '/why-gc-notify', ...]
+    EXTRA_ROUTES = [item for sublist in map(lambda x: x.values(), GC_ARTICLES_ROUTES.values()) for item in sublist]
+
     ACTIVITY_STATS_LIMIT_DAYS = 7
     if os.environ.get("HEROKU_APP_NAME", "") != "":
         ADMIN_BASE_URL = "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"
