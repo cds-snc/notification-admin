@@ -1393,6 +1393,7 @@ def get_placeholder_form_instance(
     placeholder_name,
     dict_to_populate_from,
     template_type,
+    is_conditional=False,
     optional_placeholder=False,
     allow_international_phone_numbers=False,
 ):
@@ -1405,6 +1406,14 @@ def get_placeholder_form_instance(
             field = uk_mobile_number(label=placeholder_name)
     elif optional_placeholder:
         field = StringField(placeholder_name)
+    elif is_conditional:
+        field = RadioField(
+            _l("Do you want to include the content in (({})) ?").format(placeholder_name),
+            choices=[
+                ("yes", _l("Yes")),
+                ("no", _l("No")),
+            ],
+        )
     else:
         field = StringField(
             placeholder_name,

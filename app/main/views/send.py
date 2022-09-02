@@ -529,10 +529,16 @@ def send_test_step(service_id, template_id, step_index):
         )
 
     optional_placeholder = current_placeholder in optional_address_columns
+    try:
+        is_conditional = template.placeholders_meta[current_placeholder]["is_conditional"]
+    except KeyError:
+        is_conditional = False
+
     form = get_placeholder_form_instance(
         current_placeholder,
         dict_to_populate_from=get_normalised_placeholders_from_session(),
         template_type=template.template_type,
+        is_conditional=is_conditional,
         optional_placeholder=optional_placeholder,
         allow_international_phone_numbers=current_service.has_permission("international_sms"),
     )
@@ -573,6 +579,7 @@ def send_test_step(service_id, template_id, step_index):
         ),
         template=template,
         form=form,
+        is_conditional=is_conditional,
         optional_placeholder=optional_placeholder,
         back_link=back_link,
         help=get_help_argument(),
