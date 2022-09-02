@@ -48,6 +48,10 @@ jobs:
       run: |
         cp -f .env.example .env
 
+    - name: set PYTHONPATH
+      run: |
+        echo "PYTHONPATH=/github/workspace/env/site-packages:${{ env.PYTHONPATH}}" >> $GITHUB_ENV
+
     - name: Checks for new endpoints against AWS WAF rules
       uses: cds-snc/notification-utils/.github/actions/waffles@main
       with:
