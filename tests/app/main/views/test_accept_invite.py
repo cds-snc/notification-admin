@@ -160,6 +160,8 @@ def test_accepting_invite_removes_invite_from_session(
     sample_invite["email_address"] = user["email_address"]
 
     mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
+    mocker.patch("app.billing_api_client.get_billable_units", return_value="")
+
     client_request.login(user)
 
     page = client_request.get(
