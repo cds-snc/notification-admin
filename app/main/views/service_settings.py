@@ -55,6 +55,7 @@ from app.main.forms import (
     ServiceSwitchChannelForm,
     SetEmailBranding,
     SetLetterBranding,
+    SMSMessageLimit,
     SMSPrefixForm,
 )
 from app.s3_client.s3_logo_client import upload_email_logo
@@ -1053,10 +1054,22 @@ def set_message_limit(service_id):
             flash(_("An email has been sent to service users"), "default_with_tick")
         return redirect(url_for(".service_settings", service_id=service_id))
 
-    return render_template(
-        "views/service-settings/set-message-limit.html",
-        form=form,
-    )
+    return render_template("views/service-settings/set-message-limit.html", form=form, heading=_("Daily email message limit"))
+
+
+@main.route("/services/<service_id>/service-settings/set-sms-message-limit", methods=["GET", "POST"])
+@user_is_platform_admin
+def set_sms_message_limit(service_id):
+
+    form = SMSMessageLimit(message_limit=current_service.sms_daily_limit)
+
+    if form.validate_on_submit():
+        service_api_client.update_sms_message_limit(service_id, form.message_limit.data)
+        if current_service.live:
+            flash(_("An email has been sent to service users"), "default_with_tick")
+        return redirect(url_for(".service_settings", service_id=service_id))
+
+    return render_template("views/service-settings/set-message-limit.html", form=form, heading=_("Daily SMS message limit"))
 
 
 @main.route(

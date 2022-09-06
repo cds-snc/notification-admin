@@ -98,10 +98,18 @@
         {% endcall %}
 
         {% call row() %}
-          {% set txt = _('Daily message limit') %}
+          {% set txt = _('Daily email message limit') %}
           {{ text_field(txt)}}
           {% set message_limit = _('{} notifications').format(current_service.message_limit | format_number) %}
           {{ text_field(message_limit) }}
+          {{ text_field('') }}
+        {% endcall %}
+
+        {% call row() %}
+          {% set txt = _('Daily SMS message limit') %}
+          {{ text_field(txt)}}
+          {% set sms_daily_limit = _('{} notifications').format(current_service.sms_daily_limit | format_number) %}
+          {{ text_field(sms_daily_limit) }}
           {{ text_field('') }}
         {% endcall %}
 
@@ -344,7 +352,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Daily message limit') %}
+            {% set txt = _('Daily email message limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.message_limit | format_number) }}
             {{ edit_field(
@@ -353,6 +361,18 @@
               for=txt
             ) }}
           {% endcall %}
+          
+          {% call row() %}
+            {% set txt = _('Daily SMS message limit') %}
+            {{ text_field(txt)}}
+            {{ text_field(current_service.sms_daily_limit | format_number) }}
+            {{ edit_field(
+              change_txt, 
+              url_for('.set_sms_message_limit', service_id=current_service.id),
+              for=txt
+            ) }}
+          {% endcall %}
+
           {% call row() %}
             {% set txt = _('API rate limit per minute') %}
             {{ text_field(txt)}}
