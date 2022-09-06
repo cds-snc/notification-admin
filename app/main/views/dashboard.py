@@ -10,6 +10,7 @@ from flask_login import current_user
 from werkzeug.utils import redirect
 
 from app import (
+    billing_api_client,
     current_service,
     job_api_client,
     service_api_client,
@@ -52,6 +53,7 @@ def redirect_service_dashboard(service_id):
 @main.route("/services/<service_id>")
 @user_has_permissions()
 def service_dashboard(service_id):
+    year, current_financial_year = requested_and_current_financial_year(request)
 
     if session.get("invited_user"):
         session.pop("invited_user", None)
@@ -64,6 +66,7 @@ def service_dashboard(service_id):
         "views/dashboard/dashboard.html",
         updates_url=url_for(".service_dashboard_updates", service_id=service_id),
         partials=get_dashboard_partials(service_id),
+        monthy_usage=billing_api_client.get_billable_units(service_id, year),
     )
 
 
