@@ -38,7 +38,12 @@ const icons = () => {
   return src(paths.src + "fontawesome/js/solid.js")
     .pipe(
       plugins.faMinify({
-        fas: ["plus", "arrow-right", "arrow-up-right-from-square"],
+        fas: [
+          "plus",
+          "arrow-right",
+          "arrow-up-right-from-square",
+          "circle-question",
+        ],
       })
     )
     .pipe(plugins.uglify())
