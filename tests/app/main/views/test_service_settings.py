@@ -61,7 +61,7 @@ def mock_get_service_settings_page_common(
                 "Service name Test Service Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
-                "Daily message limit 1,000 notifications",
+                "Daily email message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
@@ -84,7 +84,7 @@ def mock_get_service_settings_page_common(
                 "Service name Test Service Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
-                "Daily message limit 1,000 notifications",
+                "Daily email message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
@@ -101,7 +101,7 @@ def mock_get_service_settings_page_common(
                 "Live On Change",
                 "Count in list of live services Yes Change",
                 "Organisation Test Organisation Government of Canada Change",
-                "Daily message limit 1,000 Change",
+                "Daily email message limit 1,000 Change",
                 "API rate limit per minute 100",
                 "Text message senders GOVUK Manage",
                 "Receive text messages Off Change",
@@ -206,7 +206,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
-                "Daily message limit 1,000 notifications",
+                "Daily email message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
@@ -225,7 +225,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Email code or text message code Change",
-                "Daily message limit 1,000 notifications",
+                "Daily email message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
@@ -2916,7 +2916,7 @@ def test_should_show_page_to_set_message_limit(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    assert normalize_spaces(page.select_one("label").text) == "Daily message limit"
+    assert normalize_spaces(page.select_one("label").text) == "Daily email message limit"
 
 
 @freeze_time("2017-04-01 11:09:00.061258")
