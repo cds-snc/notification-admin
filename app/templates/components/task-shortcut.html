@@ -12,11 +12,6 @@
       <div class="mt-auto flex-none">
         <a class="flex mr-auto justify-between items-end" href="{{ link_url }}" {% if external %}target="_blank"{% endif %}>
           {{ link_text }}
-          {% if external %}
-            <span class="sr-only">
-              {{ _("Opens in a new tab") }}
-            </span>
-          {% endif %}
           {% if icon %}
             <i aria-hidden="true" class="p-1 fa-solid fa-{{icon}}"></i>
           {% endif %}

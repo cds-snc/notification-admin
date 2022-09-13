@@ -9,21 +9,11 @@
     {% if id_key %}id="{{ id_key }}"{% endif %}
     class="my-0 p-2 line-under text-base border-b-2 border-transparent link:text-blue visited:text-blue focus:bg-yellow focus:border-blue focus:no-underline focus:outline-none hover:no-underline decoration-clone {% if class %} {{ class }} {% endif %}"
     href="{{ href }}"
-    {% if is_external_link %}
-        target="_blank"
-        aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
-    {% else %}
-        aria-label="{{ label }}"
-    {% endif %}
+    {% if is_external_link %}target="_blank"{% endif %}
     >
     {{ label }}
-    {% if is_external_link %}
-        <img
-            aria-hidden="true"
-            src="{{ asset_url('images/external.svg') }}"
-            alt="{{ _('External link') }}"
-            class="inline w-8 h-8 ml-2 self-center"/>
-    {% endif %}
+    {% if is_external_link %}<i aria-hidden="true" class="pl-2 fa-solid fa-arrow-up-right-from-square"></i>{% endif %}
+
 </a>
 {% endmacro %}
 
@@ -38,21 +28,11 @@
     {% if id_key %}id="{{ id_key }}"{% endif %}
     href="{{ href }}"
     class="p-2 text-white text-small no-underline line-under border-b-2 border-transparent visited:text-white link:text-white hover:underline focus:border-white focus:outline-none focus:text-blue decoration-clone flex items-center min-h-target {% if class %} {{ class }} {% endif %}"
-    {% if is_external_link %}
-        target="_blank"
-        aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
-    {% else %}
-        aria-label="{{ label }}"
-    {% endif %}
+    {% if is_external_link %}target="_blank"{% endif %}
     >
     {{ label }}
-    {% if is_external_link %}
-        <img
-            aria-hidden="true"
-            alt="{{ _('External link') }}"
-            class="inline w-6 h-6 ml-2 self-center"
-            src="{{ asset_url('images/external-white.svg') }}"/>
-    {% endif %}
+    {% if is_external_link %}<i aria-hidden="true" class="pl-2 fa-solid fa-arrow-up-right-from-square"></i>{% endif %}
+
 </a>
 {% endmacro %}
 
@@ -67,20 +47,10 @@
     {% if id_key %}id="{{ id_key }}"{% endif %}
     href="{{ href }}"
     class="p-2 text-blue text-small no-underline line-under border-b-2 border-transparent visited:text-blue link:text-blue hover:underline focus:border-blue focus:outline-none focus:text-blue decoration-clone inline-flex items-center min-h-target {% if class %} {{ class }} {% endif %}"
-    {% if is_external_link %}
-        target="_blank"
-        aria-label="{{ label }} ({{ _('Opens in a new tab') }})"
-    {% else %}
-        aria-label="{{ label }}"
-    {% endif %}
+    {% if is_external_link %}target="_blank"{% endif %}
     >
     {{ label }}
-    {% if is_external_link %}
-        <img
-            aria-hidden="true"
-            alt="{{ _('External link') }}"
-            class="inline w-6 h-6 ml-2 self-center"
-            src="{{ asset_url('images/external.svg') }}"/>
-    {% endif %}
+    {% if is_external_link %}<i aria-hidden="true" class="pl-2 fa-solid fa-arrow-up-right-from-square"></i>{% endif %}
+    
 </a>
 {% endmacro %}
