@@ -691,6 +691,16 @@ class NewOrganisationForm(
 
 class MessageLimit(StripWhitespaceForm):
     message_limit = IntegerField(
+        _l("Daily message limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
+    )
+
+
+class EmailMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
         _l("Daily email message limit"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),

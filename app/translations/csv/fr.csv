@@ -1043,6 +1043,7 @@
 "You need to ask your service manager to add templates before you can send","Vous devez demander à votre gestionnaire de service d’ajouter des gabarits avant de pouvoir envoyer des messages"
 "Copy an existing template","Copier un gabarit existant"
 "Delete this folder","Supprimer ce dossier"
+"Daily message limit","Limite d'envoi quotidienne"
 "Daily email message limit","Limite d'envoi quotidienne"
 "Daily SMS message limit","Daily SMS message limit"
 "Last edited","Dernière modification&nbsp;: "

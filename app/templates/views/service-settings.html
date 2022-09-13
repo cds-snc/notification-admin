@@ -98,7 +98,8 @@
         {% endcall %}
 
         {% call row() %}
-          {% set txt = _('Daily email message limit') %}
+        
+          {% set txt = _('Daily email message limit') if config["FF_SPIKE_SMS_DAILY_LIMIT"]  else _('Daily message limit') %}
           {{ text_field(txt)}}
           {% set message_limit = _('{} notifications').format(current_service.message_limit | format_number) %}
           {{ text_field(message_limit) }}
@@ -353,7 +354,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Daily email message limit') %}
+            {% set txt = _('Daily email message limit') if config["FF_SPIKE_SMS_DAILY_LIMIT"]  else _('Daily message limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.message_limit | format_number) }}
             {{ edit_field(
