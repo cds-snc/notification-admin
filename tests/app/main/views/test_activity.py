@@ -604,7 +604,7 @@ def test_big_numbers_and_search_dont_show_for_letters(
         page=1,
     )
 
-    assert (len(page.select("[role=tablist]")) > 0) == tablist_visible
+    assert (len(page.select(".pill[role=nav]")) > 0) == tablist_visible
     assert (len(page.select("[type=search]")) > 0) == search_bar_visible
 
 
