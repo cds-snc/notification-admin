@@ -12,7 +12,7 @@ GC_ARTICLES_ROUTES = {
     "other_services": {"en": "/other-services", "fr": "/autres-services"},
     "personalisation_guide": {"en": "/personalisation-guide", "fr": "/guide-personnalisation"},
     "privacy": {"en": "/privacy", "fr": "/confidentialite"},
-    "privacy-old": {"en": "/privacy-old", "fr": "/confidentialite-old"},
+    "privacy_old": {"en": "/privacy-old", "fr": "/confidentialite-old"},
     "security": {"en": "/security", "fr": "/securite"},
     "security_old": {"en": "/security-old", "fr": "/securite-old"},
     "spreadsheets": {"en": "/spreadsheets", "fr": "/feuille-de-calcul"},
