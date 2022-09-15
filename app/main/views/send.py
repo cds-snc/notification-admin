@@ -34,6 +34,7 @@ from app import (
     job_api_client,
     notification_api_client,
     service_api_client,
+    template_statistics_client,
 )
 from app.main import main
 from app.main.forms import (
@@ -43,6 +44,7 @@ from app.main.forms import (
     SetSenderForm,
     get_placeholder_form_instance,
 )
+from app.main.views.dashboard import aggregate_notifications_stats
 from app.models.user import Users
 from app.s3_client.s3_csv_client import (
     copy_bulk_send_file_to_uploads,
@@ -963,6 +965,8 @@ def check_notification(service_id, template_id):
 
 def _check_notification(service_id, template_id, exception=None):
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
+    stats_daily = aggregate_notifications_stats(all_statistics_daily)
     email_reply_to = None
     sms_sender = None
     if db_template["template_type"] == "email":
@@ -1002,6 +1006,7 @@ def _check_notification(service_id, template_id, exception=None):
         template=template,
         back_link=back_link,
         help=get_help_argument(),
+        stats_daily=stats_daily,
         **(get_template_error_dict(exception) if exception else {}),
     )
 

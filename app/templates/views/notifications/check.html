@@ -67,7 +67,7 @@
       {% else %}
         {{ _('This notification will count as {} text messages.').format(fragment_count) }}
       {% endif %}
-      {{ _("Today, you've sent {} of your {} text messages daily limit.").format(0, 100) }}
+      {{ _("Today, you've sent {} of your {} text messages daily limit.").format(current_service.sms_count_today, stats_daily.sms.delivered) }}
     </p>
   </section>
   <div class="js-stick-at-bottom-when-scrolling">

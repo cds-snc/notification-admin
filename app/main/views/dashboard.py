@@ -196,6 +196,7 @@ def aggregate_notifications_stats(template_statistics):
 
 def get_dashboard_partials(service_id):
     all_statistics = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=7)
+    # all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
     template_statistics = aggregate_template_usage(all_statistics)
 
     scheduled_jobs, immediate_jobs = [], []
@@ -204,10 +205,12 @@ def get_dashboard_partials(service_id):
         immediate_jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id)]
 
     stats = aggregate_notifications_stats(all_statistics)
+    # stats_daily = aggregate_notifications_stats(all_statistics_daily)
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
     )
     dashboard_totals = (get_dashboard_totals(stats),)
+    # dashboard_totals_daily = (get_dashboard_totals(stats_daily),)
     highest_notification_count = max(
         sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals[0].items()
     )
