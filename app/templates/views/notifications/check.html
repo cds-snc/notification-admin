@@ -58,6 +58,13 @@
 
   {{ template|string|translate_preview_template }}
 
+  <section id="sms-count" class="mb-16">
+    <h2 class="heading-medium"> {{ _('Text message count') }} </h2>
+    <p>
+      {{ _('These notifications will count as {} text messages.').format(40) }}
+      {{ _("Today, you've sent {} of your {} text messages daily limit.").format(0, 100) }}
+    </p>
+  </section>
   <div class="js-stick-at-bottom-when-scrolling">
     <form method="post" enctype="multipart/form-data" action="{{url_for(
         'main.send_notification',
