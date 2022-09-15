@@ -60,8 +60,13 @@
 
   <section id="sms-count" class="mb-16">
     <h2 class="heading-medium"> {{ _('Text message count') }} </h2>
+    {% set fragment_count = template.fragment_count %}
     <p>
-      {{ _('These notifications will count as {} text messages.').format(40) }}
+      {% if fragment_count == 1 %}
+        {{ _('This notification will count as 1 text message.') }}
+      {% else %}
+        {{ _('This notification will count as {} text messages.').format(fragment_count) }}
+      {% endif %}
       {{ _("Today, you've sent {} of your {} text messages daily limit.").format(0, 100) }}
     </p>
   </section>

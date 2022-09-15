@@ -1634,3 +1634,6 @@
 "You can change the order later in Settings.","Vous pourrez changer l’ordre ultérieurement via les paramètres."
 "The email address always ends with ‘@notification.canada.ca’.","L’adresse courriel se termine toujours par « @notification.canada.ca »."
 "Enter the part before ‘@notification.canada.ca’","Saisissez la partie précédant « @notification.canada.ca »."
+"This notification will count as {} text messages.","This notification will count as {} text messages."
+"This notification will count as 1 text message1.","This notification will count as 1 text message."
+"Today, you’ve sent {} of your {} text messages daily limit.","Today, you’ve sent {} of your {} text messages daily limit."
