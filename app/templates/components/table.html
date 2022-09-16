@@ -195,8 +195,7 @@
   id=None
 ) %}
   {% call field(align='right') %}
-    <span {% if id %}id="{{ id }}"{% endif %} class="spark-bar">
-      <span style="width: {{ count / max_count * 100 }}%">
+    <span {% if id %}id="{{ id }}"{% endif %} class="spark-bar" style="--data: {{ count / max_count * 100 }}%">
         {{ big_number(
           count,
           smallest=True
