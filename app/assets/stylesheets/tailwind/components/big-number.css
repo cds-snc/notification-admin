@@ -31,21 +31,28 @@
   .big-number-link:focus {
     @apply outline-yellow bg-blue;
   }
+  .big-number-link:hover .big-number-label,
+  .big-number-link:active .big-number-label,
+  .big-number-link:focus .big-number-label {
+    @apply no-underline;
+  }
 
   .big-number-status {
-    @apply text-smaller p-6 block text-white bg-green-darker;
+    @apply text-smaller block text-white bg-green-darker;
   }
 
   .big-number-status-link:link,
   .big-number-status-link:visited,
   .big-number-status-link:active,
   .big-number-status-link:hover {
-    @apply text-white no-underline;
+    @apply text-white;
   }
 
   .big-number-status-link:active,
   .big-number-status-link:focus {
-    @apply text-black border-black border-solid border-1;
+    background-color: revert;
+    box-shadow: none;
+    @apply outline-yellow border-0;
   }
   /*! purgecss end ignore */
 }
