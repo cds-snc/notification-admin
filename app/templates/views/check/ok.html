@@ -92,8 +92,8 @@
   <section id="sms-count" class="mb-16">
     <h2 class="heading-medium"> {{ _('Text message count') }} </h2>
     <p>
-      {{ _('These notifications will count as {} text messages.').format(40) }}
-      {{ _("Today, you've sent {} of your {} text messages daily limit.").format(0, 100) }}
+      {{ _('These notifications will count as {} text messages.').format(count_of_recipients*template.fragment_count) }}
+      {{ _("You have {} text messages remaining before you reach your daily limit.").format(remaining_sms_messages) }}
     </p>
   </section>
   <div class="mb-12 clear-both contain-floats">
