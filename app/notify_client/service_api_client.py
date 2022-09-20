@@ -87,6 +87,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             # this list is the ALLOWED attributes - anything not in this list will be disallowed
             "name",
             "message_limit",
+            "sms_daily_limit",
             "active",
             "restricted",
             "email_from",
@@ -143,6 +144,13 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.update_service(
             service_id,
             message_limit=message_limit,
+        )
+
+    # This method is not cached because it calls through to one which is
+    def update_sms_message_limit(self, service_id, sms_daily_limit):
+        return self.update_service(
+            service_id,
+            sms_daily_limit=sms_daily_limit,
         )
 
     # This method is not cached because it calls through to one which is
