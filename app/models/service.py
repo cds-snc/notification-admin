@@ -33,6 +33,7 @@ class Service(JSONModel):
         "letter_branding",
         "letter_contact_block",
         "message_limit",
+        "sms_daily_limit",
         "rate_limit",
         "name",
         "permissions",
