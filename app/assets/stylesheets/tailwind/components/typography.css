@@ -38,6 +38,11 @@
     @apply text-blue;
   }
 
+  a[target="_blank"]::after {
+    content: var(--opens-in-new-tab);
+    @apply sr-only;
+  }
+
   [class*="delete-link"] a:visited,
   [class*="delete-link"] a:link {
     @apply text-red;
