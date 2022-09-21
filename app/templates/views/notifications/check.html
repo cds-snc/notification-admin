@@ -57,7 +57,7 @@
   {% endif %}
 
   {{ template|string|translate_preview_template }}
-  {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
+  {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] and template.template_type == 'sms'%}
     <section id="sms-count" class="mb-16">
       <h2 class="heading-medium"> {{ _('Text message count') }} </h2>
       {% set fragment_count = template.fragment_count %}
