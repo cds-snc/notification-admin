@@ -3,18 +3,21 @@ from flask import current_app, url_for
 from app.articles import get_current_locale
 
 GC_ARTICLES_ROUTES = {
-    "home": {"en": "/home", "fr": "/accueil"},
-    "whynotify": {"en": "/why-gc-notify", "fr": "/pourquoi-gc-notification"},
-    "features": {"en": "/features", "fr": "/fonctionnalites"},
-    "guidance": {"en": "/guidance", "fr": "/guides-reference"},
-    "security": {"en": "/security", "fr": "/securite"},
-    "privacy": {"en": "/privacy", "fr": "/confidentialite"},
     "accessibility": {"en": "/accessibility", "fr": "/accessibilite"},
-    "terms": {"en": "/terms", "fr": "/conditions-dutilisation"},
-    "personalisation_guide": {"en": "/personalisation-guide", "fr": "/guide-personnalisation"},
-    "message_delivery_status": {"en": "/message-delivery-status", "fr": "/etat-livraison-messages"},
+    "features": {"en": "/features", "fr": "/fonctionnalites"},
     "formatting_guide": {"en": "/formatting-guide", "fr": "/guide-mise-en-forme"},
+    "guidance": {"en": "/guidance", "fr": "/guides-reference"},
+    "home": {"en": "/home", "fr": "/accueil"},
+    "message_delivery_status": {"en": "/message-delivery-status", "fr": "/etat-livraison-messages"},
+    "other_services": {"en": "/other-services", "fr": "/autres-services"},
+    "personalisation_guide": {"en": "/personalisation-guide", "fr": "/guide-personnalisation"},
+    "privacy": {"en": "/privacy", "fr": "/confidentialite"},
+    "privacy_old": {"en": "/privacy-old", "fr": "/confidentialite-old"},
+    "security": {"en": "/security", "fr": "/securite"},
+    "security_old": {"en": "/security-old", "fr": "/securite-old"},
     "spreadsheets": {"en": "/spreadsheets", "fr": "/feuille-de-calcul"},
+    "terms": {"en": "/terms", "fr": "/conditions-dutilisation"},
+    "whynotify": {"en": "/why-gc-notify", "fr": "/pourquoi-gc-notification"},
 }
 
 
