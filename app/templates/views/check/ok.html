@@ -89,18 +89,20 @@
     } if preview_row < count_of_recipients + 1
   ) }}
   </section>
-  <section id="sms-count" class="mb-16">
-    <h2 class="heading-medium"> {{ _('Text message count') }} </h2>
-    <p>
-      {{ _('These notifications will count as approximately {} text messages.').format((count_of_recipients*template.fragment_count) | format_number) }}
-      {% set sms_requested = stats_daily.sms.requested %}
-      {% if sms_requested == 1 %}
-        {{ _("Today, you've requested 1 text message and your daily limit is {}.").format(current_service.sms_daily_limit | format_number) }}
-      {% else %}
-        {{ _("Today, you've requested {} text messages and your daily limit is {}.").format(sms_requested | format_number, current_service.sms_daily_limit | format_number) }}
-      {% endif %}
-    </p>
-  </section>
+  {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
+    <section id="sms-count" class="mb-16">
+      <h2 class="heading-medium"> {{ _('Text message count') }} </h2>
+      <p>
+        {{ _('These notifications will count as approximately {} text messages.').format((count_of_recipients*template.fragment_count) | format_number) }}
+        {% set sms_requested = stats_daily.sms.requested %}
+        {% if sms_requested == 1 %}
+          {{ _("Today, you've requested 1 text message and your daily limit is {}.").format(current_service.sms_daily_limit | format_number) }}
+        {% else %}
+          {{ _("Today, you've requested {} text messages and your daily limit is {}.").format(sms_requested | format_number, current_service.sms_daily_limit | format_number) }}
+        {% endif %}
+      </p>
+    </section>
+  {% endif %}
   <div class="mb-12 clear-both contain-floats">
     <form method="post" enctype="multipart/form-data" action="{{ url_for('main.start_job', service_id=current_service.id, upload_id=upload_id, original_file_name=original_file_name) }}" class='page-footer'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>

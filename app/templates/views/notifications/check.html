@@ -57,24 +57,26 @@
   {% endif %}
 
   {{ template|string|translate_preview_template }}
+  {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
+    <section id="sms-count" class="mb-16">
+      <h2 class="heading-medium"> {{ _('Text message count') }} </h2>
+      {% set fragment_count = template.fragment_count %}
+      {% set sms_requested = stats_daily.sms.requested %}
+      <p>
+        {% if fragment_count == 1 %}
+          {{ _('This notification will count as 1 text message.') }}
+        {% else %}
+          {{ _('This notification will count as {} text messages.').format(fragment_count | format_number) }}
+        {% endif %}
+        {% if sms_requested == 1 %}
+          {{ _("Today, you've requested 1 text message and your daily limit is {}.").format(current_service.sms_daily_limit | format_number) }}
+        {% else %}
+          {{ _("Today, you've requested {} text messages and your daily limit is {}.").format(sms_requested | format_number, current_service.sms_daily_limit | format_number) }}
+        {% endif %}
+      </p>
+    </section>
+  {% endif %}
 
-  <section id="sms-count" class="mb-16">
-    <h2 class="heading-medium"> {{ _('Text message count') }} </h2>
-    {% set fragment_count = template.fragment_count %}
-    {% set sms_requested = stats_daily.sms.requested %}
-    <p>
-      {% if fragment_count == 1 %}
-        {{ _('This notification will count as 1 text message.') }}
-      {% else %}
-        {{ _('This notification will count as {} text messages.').format(fragment_count | format_number) }}
-      {% endif %}
-      {% if sms_requested == 1 %}
-        {{ _("Today, you've requested 1 text message and your daily limit is {}.").format(current_service.sms_daily_limit | format_number) }}
-      {% else %}
-        {{ _("Today, you've requested {} text messages and your daily limit is {}.").format(sms_requested | format_number, current_service.sms_daily_limit | format_number) }}
-      {% endif %}
-    </p>
-  </section>
   <div class="js-stick-at-bottom-when-scrolling">
     <form method="post" enctype="multipart/form-data" action="{{url_for(
         'main.send_notification',
