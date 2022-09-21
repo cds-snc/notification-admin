@@ -6,11 +6,14 @@
   .user-list-item {
     @apply py-gutterHalf pl-0 align-baseline;
   }
+  .user-list-item .label {
+    @apply font-bold;
+  }
   .user-list-item .hint {
-    @apply text-gray-700;
+    @apply text-gray-700 font-normal;
   }
   .user-list-item:last-child {
-    @apply border-b-1;
+    @apply border-b-1 border-gray-300;
   }
 
   .user-list-edit-link {
