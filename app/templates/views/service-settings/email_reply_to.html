@@ -22,24 +22,29 @@
       <div class="user-list-item">
         <span class="hint">{{ _('You have not added any reply-to email addresses yet' ) }}</span>
       </div>
-    {% endif %}
-    {% for item in current_service.email_reply_to_addresses %}
-      <div class="user-list-item">
-        <h3>
-          <span class="heading-small">{{ item.email_address }}</span>&ensp;<span class="hint">
-            {%- if item.is_default -%}
-              ({{ _('default') }})
+    {% else %}
+    <ul class="divide-y divide-gray-300">
+      {% for item in current_service.email_reply_to_addresses %}
+        <li class="user-list-item">
+          <div class="user-list-group space-y-gutterHalf">
+            <div class="flex flex-wrap justify-between gap-2">
+              <span class="label">{{ item.email_address }}
+                {%- if item.is_default -%}
+                  <span class="hint">&nbsp;({{ _('default') }})</span> 
+                {% endif %}
+              </span> 
+              {% if current_user.has_permissions('manage_service') %}
+                <a aria-label="{{ _('Change') }} {{ item.email_address }}" class="user-list-edit-link" href="{{ url_for('.service_edit_email_reply_to', service_id =current_service.id, reply_to_email_id = item.id) }}">{{ _('Change') }}</a>
+              {% endif %}
+            </div>
+            {% if current_service.count_email_reply_to_addresses > 1 %}
+              {{ api_key(item.id, thing="ID") }}
             {% endif %}
-          </span>
-        </h3>
-        {% if current_user.has_permissions('manage_service') %}
-          <a class="user-list-edit-link" href="{{ url_for('.service_edit_email_reply_to', service_id =current_service.id, reply_to_email_id = item.id) }}">{{ _('Change') }}</a>
-        {% endif %}
-        {% if current_service.count_email_reply_to_addresses > 1 %}
-          {{ api_key(item.id, thing="ID") }}
-        {% endif %}
-      </div>
-    {% endfor %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
   </div>
   <div class="grid-row contain-floats">
     <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
