@@ -735,6 +735,8 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 def check_messages(service_id, template_id, upload_id, row_index=2):
 
     data = _check_messages(service_id, template_id, upload_id, row_index)
+    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
+    data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily)
 
     if (
         data["recipients"].too_many_rows

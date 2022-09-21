@@ -92,8 +92,13 @@
   <section id="sms-count" class="mb-16">
     <h2 class="heading-medium"> {{ _('Text message count') }} </h2>
     <p>
-      {{ _('These notifications will count as {} text messages.').format(count_of_recipients*template.fragment_count) }}
-      {{ _("You have {} text messages remaining before you reach your daily limit.").format(remaining_sms_messages) }}
+      {{ _('These notifications will count as approximately {} text messages.').format((count_of_recipients*template.fragment_count) | format_number) }}
+      {% set sms_requested = stats_daily.sms.requested %}
+      {% if sms_requested == 1 %}
+        {{ _("Today, you've requested 1 text message and your daily limit is {}.").format(current_service.sms_daily_limit | format_number) }}
+      {% else %}
+        {{ _("Today, you've requested {} text messages and your daily limit is {}.").format(sms_requested | format_number, current_service.sms_daily_limit | format_number) }}
+      {% endif %}
     </p>
   </section>
   <div class="mb-12 clear-both contain-floats">
