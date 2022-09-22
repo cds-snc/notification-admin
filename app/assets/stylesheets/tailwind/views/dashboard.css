@@ -15,25 +15,22 @@
   }
 
   .spark-bar {
-    @apply text-small leading-tight font-normal w-full block box-border h-6 text-black text-left;
-  }
-  .spark-bar span {
-    @apply box-border inline-block overflow-visible text-black p-2 mx-0 bg-gray-button;
-    transition: width 0.6s ease-in-out;
-    padding-bottom: 2px;
-    margin-top: 3px;
-    margin-bottom: 5px;
-    text-indent: -2px;
+    background: linear-gradient(
+      to right,
+      theme("colors.gray.300") var(--data),
+      transparent 0
+    );
+    @apply block px-2 py-4 w-full text-black text-left;
   }
 
   .file-list-filename {
-    @apply text-smaller leading-tight font-bold block truncate pt-4 pb-12 border-b-2 border-transparent;
+    @apply text-smaller leading-tight font-bold block pt-4 pb-12 border-b-2 border-transparent;
     margin-bottom: -30px;
     margin-top: -10px;
   }
   .file-list-hint {
     max-width: 580px;
-    @apply text-small leading-tight font-normal block truncate pointer-events-none text-gray-grey1;
+    @apply text-small leading-tight font-normal block pointer-events-none text-gray-grey1;
   }
 
   .failure-highlight {

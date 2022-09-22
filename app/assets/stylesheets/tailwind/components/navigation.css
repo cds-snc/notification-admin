@@ -31,7 +31,7 @@
     padding-top: 14px;
     padding-bottom: 11px;
     max-width: 50%;
-    @apply text-smaller leading-tight font-bold px-0 inline-block truncate;
+    @apply text-smaller leading-tight font-bold px-0 inline-block;
   }
 
   .navigation-service-switch {

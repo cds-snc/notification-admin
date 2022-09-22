@@ -76,11 +76,6 @@
     width: 52.5%;
     @apply font-normal table-cell;
   }
-  .dashboard-table .table-row th .hint,
-  .dashboard-table .table-row th p,
-  .settings-table td.table-field-left-aligned div {
-    @apply truncate;
-  }
 
   .settings-table table {
     @apply mb-2 table-fixed;
@@ -224,7 +219,7 @@
 
   .wide-left-hand-column {
     max-width: 560px;
-    @apply block truncate;
+    @apply block;
   }
 
   .truncate-text {

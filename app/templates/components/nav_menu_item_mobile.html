@@ -13,21 +13,10 @@
         aria-label="{{ localised_txt }}"
         href="{{ url }}"
         class="no-underline hover:underline {% if is_selected %} menu--active {% endif %} {{ css_classes }}"
-        {% if is_external_link %}
-        target="_blank"
-        aria-label="{{ localised_txt }} ({{ _('Opens in a new tab') }})"
-        {% else %}
-        aria-label="{{ localised_txt }}"
-        {% endif %}
+        {% if is_external_link %}target="_blank"{% endif %}
       >
         {{ localised_txt }}
-        {% if is_external_link %}
-        <img
-          aria-hidden="true"
-          src="{{ asset_url('images/external.svg') }}"
-          alt="{{ _('External link') }}"
-          class="inline w-8 h-8 pb-2"/>
-        {% endif %}
+        {% if is_external_link %}<i aria-hidden="true" class="pl-2 fa-solid fa-arrow-up-right-from-square"></i>{% endif %}
       </a>
     </li>
   {% endif %}
