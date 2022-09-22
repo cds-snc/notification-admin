@@ -633,8 +633,6 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     statistics = service_api_client.get_service_statistics(service_id, today_only=True)
     remaining_messages = current_service.message_limit - sum(stat["requested"] for stat in statistics.values())
-    # todo: update with the sms specific limit when available
-    remaining_sms_messages = current_service.message_limit - sum(stat["requested"] for stat in statistics.values())
 
     contents = s3download(service_id, upload_id)
 
@@ -705,7 +703,6 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         upload_id=upload_id,
         form=CsvUploadForm(),
         remaining_messages=remaining_messages,
-        remaining_sms_messages=remaining_sms_messages,
         choose_time_form=choose_time_form,
         back_link=back_link,
         help=get_help_argument(),
