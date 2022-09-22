@@ -12,18 +12,20 @@
   }
 
   .pill {
-    /* pixel nudging for box-shadow border */
-    margin-left: 2px;
-    margin-right: 2px;
+    @apply bg-blue border-2 border-blue;
+  }
+
+  .pill > a + a {
+    @apply border-l-2 border-blue;
   }
 
   .pill a,
   .pill-selected-item {
-    @apply block float-left shadow-outline2 w-full py-5 no-underline self-center;
+    @apply block float-left w-full py-5 self-center no-underline;
   }
 
   .pill a {
-    @apply border-none relative cursor-pointer;
+    @apply border-b-0 relative cursor-pointer;
   }
   .pill a .pill-content {
     @apply no-underline;
@@ -31,36 +33,40 @@
   .pill a:hover .pill-label {
     @apply underline;
   }
-  .pill a:hover {
-    @apply bg-blue-lightblue text-white;
-  }
   .pill a:active,
   .pill a:focus {
     @apply z-10 bg-yellow text-blue outline-none;
   }
 
-  .pill-selected-item {
-    @apply bg-white relative z-10 text-black outline-white;
+  a.pill-selected-item {
+    @apply relative z-10 bg-gray-100 outline-white;
   }
-  .pill-selected-item:focus {
+  a.pill-selected-item:hover {
+    @apply bg-blue-700 text-white;
+  }
+  a.pill-selected-item:focus {
     z-index: 1000;
     @apply outline-yellow;
   }
 
-  .pill-unselected-item {
-    @apply bg-blue text-white relative z-10 text-black outline-white;
+  a.pill-unselected-item {
+    @apply relative z-10 outline-white;
   }
-  .pill-unselected-item:focus {
-    z-index: 1000;
-    @apply outline-yellow;
-  }
+  /* LVHA-order: :link — :visited — :hover — :active */
   a.pill-unselected-item:link,
   a.pill-unselected-item:visited {
-    @apply text-white;
+    @apply bg-blue text-white;
+  }
+  a.pill-unselected-item:hover {
+    @apply bg-blue-700;
   }
   a.pill-unselected-item:focus,
   a.pill-unselected-item:active {
     @apply bg-yellow text-blue;
+  }
+  a.pill-unselected-item:focus {
+    z-index: 1000;
+    @apply outline-yellow;
   }
 
   .pill-centered-item {
@@ -81,7 +87,7 @@
   .pill-separate-item:hover,
   .pill-separate-item:focus,
   .pill-separate-item:link:focus {
-    @apply text-blue-lightblue25;
+    @apply bg-yellow text-blue;
   }
   /*! purgecss end ignore */
 }
