@@ -55,12 +55,17 @@ module.exports = {
       },
       blue: {
         lighter: "#B2E3FF",
-        default: "#26374A",
+        default: "#213045",
         border: "#1A3152",
         selected: "#75b9e0",
         lightblue25: "#d5e8f3",
         lightblue: "#0154B0",
         slightlight: "#284162",
+        /* trying to slowly implement a more consistent scale below */
+        300: "#71A7F3",
+        500: "#4C8CE6",
+        700: "#24508F",
+        800: "#213045" /* Brand blue (default)*/,
       },
       gray: {
         default: "#eee",
