@@ -674,7 +674,6 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         if current_service.trial_mode
         else None,
         remaining_messages=remaining_messages,
-        remaining_sms_messages=remaining_sms_messages,
         international_sms=current_service.has_permission("international_sms"),
         max_rows=get_csv_max_rows(service_id),
     )
@@ -686,6 +685,18 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
     else:
         back_link = url_for(".send_messages", service_id=service_id, template_id=template.id)
         choose_time_form = ChooseTimeForm()
+
+    sms_parts_to_send = 0
+    is_sms_parts_estimated = False
+    if len(recipients) > 1000:
+        # estimate using the first row
+        template.values = recipients[0].recipient_and_personalisation
+        sms_parts_to_send = template.fragment_count * len(recipients)
+        is_sms_parts_estimated = True
+    else:
+        for row in range(len(recipients)):
+            template.values = recipients[row - 2].recipient_and_personalisation
+            sms_parts_to_send += template.fragment_count
 
     if preview_row < 2:
         abort(404)
@@ -706,6 +717,9 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         upload_id=upload_id,
         form=CsvUploadForm(),
         remaining_messages=remaining_messages,
+        remaining_sms_messages=remaining_sms_messages,
+        sms_parts_to_send=sms_parts_to_send,
+        is_sms_parts_estimated=is_sms_parts_estimated,
         choose_time_form=choose_time_form,
         back_link=back_link,
         help=get_help_argument(),
@@ -755,6 +769,9 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
         return render_template("views/check/column-errors.html", **data)
 
     data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
+    data["sms_parts_requested"] = data["stats_daily"]["sms"]["requested"]
+    data["sms_parts_remaining"] = current_service.sms_daily_limit - data["sms_parts_requested"]
+    data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > data["sms_parts_remaining"]
 
     metadata_kwargs = {
         "notification_count": data["count_of_recipients"],
@@ -1007,11 +1024,19 @@ def _check_notification(service_id, template_id, exception=None):
         raise PermanentRedirect(back_link)
 
     template.values = get_recipient_and_placeholders_from_session(template.template_type)
+
+    sms_parts_data = {}
+    sms_parts_data["sms_parts_to_send"] = template.fragment_count
+    sms_parts_data["is_sms_parts_estimated"] = False
+    sms_parts_data["sms_parts_requested"] = stats_daily["sms"]["requested"]
+    sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - sms_parts_data["sms_parts_requested"]
+    sms_parts_data["send_exceeds_daily_limit"] = sms_parts_data["sms_parts_to_send"] > sms_parts_data["sms_parts_remaining"]
     return dict(
         template=template,
         back_link=back_link,
         help=get_help_argument(),
         stats_daily=stats_daily,
+        **sms_parts_data,
         **(get_template_error_dict(exception) if exception else {}),
     )
 

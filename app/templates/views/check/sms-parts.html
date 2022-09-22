@@ -1,0 +1,31 @@
+<section id="sms-count" class="mb-16">
+    <h2 class="heading-medium"> 
+    {{ _('You can send {} text message parts per day').format(current_service.sms_daily_limit | format_number) }} 
+    </h2>
+    <p class="my-4">
+    {{ _("If a text message is more than 160 characters, it’s divided into several parts. ") }}
+    {{ _("Each part counts toward your {} daily limit. ").format(current_service.sms_daily_limit | format_number) }}
+    </p>
+    <p class="my-4">
+    {% if sms_parts_requested == 1 %}
+        {{ _("You’ve already sent 1 text message part today. ") }}
+    {% else %}
+        {{ _("You’ve already sent {} text message parts today. ").format(sms_parts_requested | format_number) }}
+    {% endif %}
+    {{ _("You have {} remaining. ").format(sms_parts_remaining | format_number) }}
+    </p>
+    <p class="my-4">
+    {% if is_sms_parts_estimated %}
+        {{ _("You’re about to send approximately {} text message parts. ").format(sms_parts_to_send | format_number) }}
+    {% else %}
+        {{ _("You’re about to send {} text message parts. ").format(sms_parts_to_send | format_number) }}
+    {% endif %}
+
+    {% if not is_sms_parts_estimated and send_exceeds_daily_limit %}
+        {{ _("This exceeds your daily limit. ") }}
+    {% endif %}
+    {% if is_sms_parts_estimated and send_exceeds_daily_limit %}
+        {{ _("This might exceed your daily limit. ") }}
+    {% endif %}
+    </p>
+</section>
