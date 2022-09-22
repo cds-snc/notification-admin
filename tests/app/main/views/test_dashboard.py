@@ -655,11 +655,12 @@ def test_usage_page(
     mock_get_free_sms_fragment_limit.assert_called_with(SERVICE_ONE_ID, 2011)
 
     cols = page.find_all("div", {"class": "w-1\\/2"})
-    nav = page.find("ul", {"class": "pill", "role": "tablist"})
+    nav = page.find("ul", {"class": "pill", "role": "nav"})
     nav_links = nav.find_all("a")
 
     assert normalize_spaces(nav_links[0].text) == "2010 to 2011 financial year"
     assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 financial year"
+    assert normalize_spaces(nav["aria-label"]) == "Filter by year"
     assert "252,190" in cols[1].text
     assert "Text messages" in cols[1].text
 
@@ -697,12 +698,14 @@ def test_usage_page_with_letters(
     mock_get_free_sms_fragment_limit.assert_called_with(SERVICE_ONE_ID, 2011)
 
     cols = page.find_all("div", {"class": "md\\:w-1\\/3"})
-    nav = page.find("ul", {"class": "pill", "role": "tablist"})
+    nav = page.find("ul", {"class": "pill", "role": "nav"})
     nav_links = nav.find_all("a")
 
     assert normalize_spaces(nav_links[0].text) == "2010 to 2011 financial year"
     assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 financial year"
     assert normalize_spaces(nav_links[1].text) == "2012 to 2013 financial year"
+    assert normalize_spaces(nav["aria-label"]) == "Filter by year"
+
     assert "252,190" in cols[1].text
     assert "Text messages" in cols[1].text
 

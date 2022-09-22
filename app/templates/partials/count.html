@@ -1,5 +1,5 @@
 {% from "components/pill.html" import pill %}
 
 <div class="mb-12 clear-both ajax-block-container contain-floats">
-  {{ pill(counts, request.args.get('status', '')) }}
+  {{ pill(items=counts, current_value=request.args.get('status', ''), label=_("Filter by status")) }}
 </div>
