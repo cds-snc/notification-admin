@@ -1,5 +1,5 @@
 {% extends "admin_template.html" %}
-{% from "components/table.html" import list_table, field, link_field, text_field, index_field, hidden_field_heading %}
+{% from "components/table.html" import list_table, field, text_field, index_field, hidden_field_heading %}
 {% from "components/previous-next-navigation.html" import previous_next_navigation %}
 {% from "components/file-upload.html" import file_upload %}
 {% from "components/page-header.html" import page_header %}
@@ -39,7 +39,12 @@
           caption_visible=False,
           field_headings=field_headings
         ) %}
-        {{ link_field(item.index + 2, url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name, _anchor='ok-preview')) }}
+        {% call index_field() %}
+          <a class="text-small" href="{{url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name, _anchor='ok-preview')}}">
+            {{item.index + 2}}
+          </a>
+        {% endcall %}
+
         {% for column in recipients.column_headers %}
           {% if item[column].ignore %}
             {{ text_field(item[column].data or '', status='default') }}

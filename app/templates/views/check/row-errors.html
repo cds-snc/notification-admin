@@ -71,7 +71,7 @@
       </p>
     {% endif %}
 
-    <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}" data-module="fullscreen-table">
+    <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}">
       {% call(item, row_number) list_table(
         recipients.displayed_rows,
         caption=original_file_name,
