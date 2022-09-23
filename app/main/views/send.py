@@ -688,15 +688,16 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     sms_parts_to_send = 0
     is_sms_parts_estimated = False
-    if len(recipients) > 1000:
-        # estimate using the first row
-        template.values = recipients[0].recipient_and_personalisation
-        sms_parts_to_send = template.fragment_count * len(recipients)
-        is_sms_parts_estimated = True
-    else:
-        for row in range(len(recipients)):
-            template.values = recipients[row - 2].recipient_and_personalisation
-            sms_parts_to_send += template.fragment_count
+    if db_template["template_type"] == "sms":
+        if len(recipients) > 1000:
+            # estimate using the first row
+            template.values = recipients[0].recipient_and_personalisation
+            sms_parts_to_send = template.fragment_count * len(recipients)
+            is_sms_parts_estimated = True
+        else:
+            for row in range(len(recipients)):
+                template.values = recipients[row].recipient_and_personalisation
+                sms_parts_to_send += template.fragment_count
 
     if preview_row < 2:
         abort(404)
@@ -1026,11 +1027,12 @@ def _check_notification(service_id, template_id, exception=None):
     template.values = get_recipient_and_placeholders_from_session(template.template_type)
 
     sms_parts_data = {}
-    sms_parts_data["sms_parts_to_send"] = template.fragment_count
-    sms_parts_data["is_sms_parts_estimated"] = False
-    sms_parts_data["sms_parts_requested"] = stats_daily["sms"]["requested"]
-    sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - sms_parts_data["sms_parts_requested"]
-    sms_parts_data["send_exceeds_daily_limit"] = sms_parts_data["sms_parts_to_send"] > sms_parts_data["sms_parts_remaining"]
+    if db_template["template_type"] == "sms":
+        sms_parts_data["sms_parts_to_send"] = template.fragment_count
+        sms_parts_data["is_sms_parts_estimated"] = False
+        sms_parts_data["sms_parts_requested"] = stats_daily["sms"]["requested"]
+        sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - sms_parts_data["sms_parts_requested"]
+        sms_parts_data["send_exceeds_daily_limit"] = sms_parts_data["sms_parts_to_send"] > sms_parts_data["sms_parts_remaining"]
     return dict(
         template=template,
         back_link=back_link,
