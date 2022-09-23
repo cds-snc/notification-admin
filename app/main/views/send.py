@@ -748,7 +748,7 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
         return render_template("views/check/column-errors.html", **data)
 
     data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
-    data["field_headings"] = ["1"] + [x for x in data["recipients"].column_headers]
+
     metadata_kwargs = {
         "notification_count": data["count_of_recipients"],
         "template_id": str(template_id),

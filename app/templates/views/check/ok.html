@@ -37,7 +37,9 @@
           recipients.displayed_rows,
           caption=original_file_name,
           caption_visible=False,
-          field_headings=field_headings
+          field_headings=[
+            '<span class="visually-hidden">' | safe + _("Row in file") + '</span><span aria-hidden="true"> 1</span>' | safe
+          ] + recipients.column_headers
         ) %}
         {% call index_field() %}
           <a class="text-small" href="{{url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name, _anchor='ok-preview')}}">
