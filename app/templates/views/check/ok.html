@@ -1,5 +1,5 @@
 {% extends "admin_template.html" %}
-{% from "components/table.html" import list_table, field, text_field, index_field, hidden_field_heading %}
+{% from "components/table.html" import list_table, field, link_field, text_field, index_field, hidden_field_heading %}
 {% from "components/previous-next-navigation.html" import previous_next_navigation %}
 {% from "components/file-upload.html" import file_upload %}
 {% from "components/page-header.html" import page_header %}
@@ -32,22 +32,14 @@
           {{ _("1 recipient in the file '{}'.").format(original_file_name) }}
         {% endif %}
       </p>
-      <div
-        class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}"
-        data-module="fullscreen-table">
+      <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}">
         {% call(item, row_number) list_table(
           recipients.displayed_rows,
           caption=original_file_name,
           caption_visible=False,
-          field_headings=[
-            '<span class="visually-hidden">' | safe + _("Row in file") + '</span><span aria-hidden="true"> 1</span>' | safe
-          ] + recipients.column_headers
+          field_headings=field_headings
         ) %}
-        {% call index_field() %}
-        <span>
-          <a href="{{ url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name, _anchor='ok-preview') }}" class="text-small">{{ item.index + 2 }}</a>
-        </span>
-        {% endcall %}
+        {{ link_field(item.index + 2, url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name, _anchor='ok-preview')) }}
         {% for column in recipients.column_headers %}
           {% if item[column].ignore %}
             {{ text_field(item[column].data or '', status='default') }}
