@@ -134,6 +134,9 @@ jobs:
                 API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
                 ADMIN_BASE_URL=$URL
               }" > /dev/null 2>&1
+
+            aws logs create-log-group --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER > /dev/null 2>&1
+            aws logs put-retention-policy --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER --retention-in-days 14 > /dev/null 2>&1
           fi
 
           aws lambda wait function-updated --function-name $FUNCTION_NAME-$PR_NUMBER
