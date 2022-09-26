@@ -24,7 +24,7 @@ def test_form_class_not_mutated(app_):
         )
         assert (
             str(form3.placeholder_value.label)
-            == '<label for="placeholder_value">Do you want to include the content in ((elligible)) ?</label>'
+            == '<label for="placeholder_value">Do you want to include the content in ((elligible)) ?</label>'
         )
 
 
