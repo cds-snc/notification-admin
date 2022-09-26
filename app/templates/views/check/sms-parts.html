@@ -15,9 +15,14 @@
     {{ _("You have {} remaining. ").format(sms_parts_remaining | format_number) }}
     </p>
     <p class="my-4">
-    {% if is_sms_parts_estimated %}
-        {{ _("You’re about to send approximately {} text message parts. ").format(sms_parts_to_send | format_number) }}
-    {% else %}
+    
+    {% if is_sms_parts_estimated and sms_parts_to_send == 1 %}
+        {{ _("You’re about to send approximately 1 text message part. ").format(sms_parts_to_send | format_number) }}
+    {% elif is_sms_parts_estimated and sms_parts_to_send > 1 %}
+        {{ _("You’re about to send {} text message parts. ").format(sms_parts_to_send | format_number) }}
+    {% elif not is_sms_parts_estimated and sms_parts_to_send == 1 %}
+        {{ _("You’re about to send 1 text message part. ").format(sms_parts_to_send | format_number) }}
+    {% elif not is_sms_parts_estimated and sms_parts_to_send > 1 %}
         {{ _("You’re about to send {} text message parts. ").format(sms_parts_to_send | format_number) }}
     {% endif %}
 
