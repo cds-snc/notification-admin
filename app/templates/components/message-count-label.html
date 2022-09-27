@@ -19,6 +19,18 @@
     {%- else -%}
       {{ _('text-messages') }}
     {%- endif -%}
+  {%- elif template_type == 'sms-parts' -%}
+    {%- if count == 0 -%}
+      {%- if session["userlang"] == "fr" -%}
+        {{ _('text message fragment') }}
+      {%- else -%}
+        {{ _('text message fragments') }}
+      {%- endif -%}
+    {%- elif count == 1  -%}
+      {{ _('text message fragment') }}
+    {%- else -%}
+      {{ _('text message fragments') }}
+    {%- endif -%}
   {%- elif template_type == 'email' -%}
     {%- if count == 0 -%}
       {%- if session["userlang"] == "fr" -%}
