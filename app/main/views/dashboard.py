@@ -214,9 +214,7 @@ def get_dashboard_partials(service_id):
     highest_notification_count_weekly = max(
         sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_weekly[0].items()
     )
-    highest_notification_count_daily = max(
-        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_daily[0].items()
-    )
+
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
         "daily_totals": render_template(
@@ -224,7 +222,6 @@ def get_dashboard_partials(service_id):
             service_id=service_id,
             statistics=dashboard_totals_daily[0],
             column_width=column_width,
-            smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
         ),
         "weekly_totals": render_template(
             "views/dashboard/_totals.html",

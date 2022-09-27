@@ -15,8 +15,8 @@
       ) }}
     </div>
     <div id="total-sms" class="{{column_width}}">
-            {{ big_number(
-                sms_parts_remaining,
+      {{ big_number(
+        sms_parts_remaining,
         message_count_label(sms_parts_remaining, 'sms-parts', suffix=suffix, suffix_plural=suffix),
         status=True,
       ) }}
