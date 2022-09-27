@@ -1,0 +1,24 @@
+{% from "components/big-number.html" import big_number %}
+{% from "components/message-count-label.html" import message_count_label %}
+
+{% set sent_single = _('sent-dashboard-single') %}
+{% set sent_plural = _('sent-dashboard-plural') %}
+
+<div class="ajax-block-container">
+  <div class="grid-row contain-floats">
+    <div id="total-email" class="{{column_width}}">
+      {{ big_number(
+        statistics['email']['requested'],
+        message_count_label(statistics['email']['requested'], 'email', suffix=sent_single, suffix_plural=sent_plural),
+        status=True,
+      ) }}
+    </div>
+    <div id="total-sms" class="{{column_width}}">
+            {{ big_number(
+        statistics['sms']['requested'],
+        message_count_label(statistics['sms']['requested'], 'sms', suffix=sent_single, suffix_plural=sent_plural),
+        status=True,
+      ) }}
+    </div>
+  </div>
+</div>
