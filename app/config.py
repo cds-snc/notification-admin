@@ -110,7 +110,7 @@ class Config(object):
     SESSION_COOKIE_SECURE = True
     SESSION_REFRESH_EACH_REQUEST = True
     SENSITIVE_SERVICES = os.environ.get("SENSITIVE_SERVICES", "")
-    SHOW_STYLEGUIDE = env.bool("SHOW_STYLEGUIDE", False)
+    SHOW_STYLEGUIDE = env.bool("SHOW_STYLEGUIDE", True)
 
     # Hosted graphite statsd prefix
     STATSD_HOST = os.getenv("STATSD_HOST")
