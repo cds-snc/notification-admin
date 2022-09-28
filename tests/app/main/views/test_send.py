@@ -1047,7 +1047,7 @@ def test_send_one_off_does_not_send_without_the_correct_permissions(
         (
             create_sms_template(),  # SMS
             partial(url_for, "main.send_test"),
-            "Personalise this message",
+            "What is the custom content in ((thing)) ?",
             False,
         ),
         (
@@ -1071,7 +1071,7 @@ def test_send_one_off_does_not_send_without_the_correct_permissions(
         (
             create_email_template(),
             partial(url_for, "main.send_test"),
-            "Personalise this message",
+            "What is the custom content in ((thing)) ?",
             False,
         ),
         (
@@ -1340,7 +1340,7 @@ def test_link_to_upload_not_offered_when_entering_personalisation(
 
     # We’re entering personalisation
     assert page.select_one("input[type=text]")["name"] == "placeholder_value"
-    assert page.select_one("label[for=placeholder_value]").text.strip() == "Name"
+    assert page.select_one("h1 label[for=placeholder_value]").text.strip() == "What is the custom content in ((name)) ?"
     # …but first link on the page is ‘Back’, so not preceeded by ‘Upload’
     assert page.select_one("main a").text == "Back"
     assert "Upload" not in page.select_one("main").text
@@ -1846,8 +1846,8 @@ def test_send_test_indicates_optional_address_columns(
         step_index=3,
     )
 
-    assert normalize_spaces(page.select("label")[0].text) == ("Address line 4")
-    assert normalize_spaces(page.select("label + [id*='-hint']")[0].text) == ("Optional")
+    assert normalize_spaces(page.select("h1 label")[0].text) == ("What is the custom content in ((address line 4)) ?")
+    assert normalize_spaces(page.select("h1 + [id*='-hint']")[0].text) == ("Optional")
     assert page.select(".back-link")[0]["href"] == url_for(
         "main.send_one_off_step",
         service_id=SERVICE_ONE_ID,

@@ -12,7 +12,7 @@
 
 {% block maincolumn_content %}
 
-{{ govuk_back_link(back_url) }}
+{{ govuk_back_link(back_link) }}
 
 {% call
   form_wrapper(
@@ -39,10 +39,10 @@
       {% set hint_txt = _('Optional') %}
       {% if form_label == 'phone number' %}
         {{ textbox( form.placeholder_value,
-      label=_(form.placeholder_value.label.text)|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', is_page_heading=true,) }}
+      label=_(form.placeholder_value.label.text)|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', is_page_heading=True,) }}
       {% else %}
         {{ textbox( form.placeholder_value,
-        label=form.placeholder_value.label.text|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', is_page_heading=true,) }}
+        label=form.placeholder_value.label.text|capitalize, hint=hint_txt, width='w-full', is_page_heading=True,) }}
       {% endif %}
     {% endif %}
   </div>
