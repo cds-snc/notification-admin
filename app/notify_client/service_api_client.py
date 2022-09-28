@@ -112,6 +112,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "go_live_user",
             "go_live_at",
             "sending_domain",
+            "sms_volume_today",
         }
 
         if disallowed_attributes:

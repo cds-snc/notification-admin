@@ -362,6 +362,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
     mock_s3_upload,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     fake_uuid,
@@ -477,6 +478,7 @@ def test_upload_csv_file_with_missing_columns_shows_error(
     mock_s3_upload,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     service_one,
@@ -572,6 +574,7 @@ def test_upload_valid_csv_shows_preview_and_table(
     mock_get_service_template_with_placeholders,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
@@ -722,6 +725,7 @@ def test_file_name_truncated_to_fit_in_s3_metadata(
     mock_get_service_template_with_placeholders,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
@@ -767,6 +771,7 @@ def test_check_messages_replaces_invalid_characters_in_file_name(
     mock_get_service_template_with_placeholders,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
@@ -810,6 +815,7 @@ def test_show_all_columns_if_there_are_duplicate_recipient_columns(
     mock_get_service_template_with_placeholders,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     fake_uuid,
@@ -856,6 +862,7 @@ def test_404_for_previewing_a_row_out_of_range(
     mock_get_service_template_with_placeholders,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
@@ -901,6 +908,7 @@ def test_send_test_doesnt_show_file_contents(
     mock_s3_upload,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_has_no_jobs,
     service_one,
     fake_uuid,
@@ -1554,6 +1562,7 @@ def test_send_test_email_message_without_placeholders_redirects_to_check_page(
     mock_s3_upload,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_has_no_jobs,
     fake_uuid,
     user,
@@ -2007,6 +2016,7 @@ def test_upload_csvfile_with_valid_phone_shows_all_numbers(
     mock_get_service_template,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_live_service,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
@@ -2067,6 +2077,7 @@ def test_upload_csvfile_with_international_validates(
     mock_has_permissions,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     fake_uuid,
@@ -2104,6 +2115,7 @@ def test_test_message_can_only_be_sent_now(
     mock_s3_download,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
@@ -2127,6 +2139,7 @@ def test_letter_can_only_be_sent_now(
     mock_get_service_letter_template,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_s3_set_metadata,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
@@ -2365,6 +2378,7 @@ def test_route_permissions_send_check_notifications(
     service_one,
     mock_send_notification,
     mock_get_service_template,
+    mock_get_template_statistics,
     fake_uuid,
     route,
     response_code,
@@ -2440,6 +2454,7 @@ def test_check_messages_back_link(
     mock_get_users_by_service,
     mock_has_permissions,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_download,
@@ -2502,6 +2517,7 @@ def test_check_messages_shows_too_many_messages_errors(
     mock_get_service,  # set message_limit to 50
     mock_get_users_by_service,
     mock_get_service_template,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     fake_uuid,
@@ -2553,6 +2569,7 @@ def test_check_messages_shows_trial_mode_error(
     mock_get_service_template,
     mock_has_permissions,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     fake_uuid,
@@ -2606,6 +2623,7 @@ def test_check_messages_shows_trial_mode_error_for_letters(
     mock_has_permissions,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
@@ -2664,6 +2682,7 @@ def test_check_messages_shows_data_errors_before_trial_mode_errors_for_letters(
     mock_has_permissions,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     fake_uuid,
@@ -2720,6 +2739,7 @@ def test_warns_if_file_sent_already(
     mock_get_service_template,
     mock_has_permissions,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     fake_uuid,
@@ -2752,6 +2772,7 @@ def test_check_messages_column_error_doesnt_show_optional_columns(
     fake_uuid,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
 ):
@@ -2794,6 +2815,7 @@ def test_check_messages_adds_sender_id_in_session_to_metadata(
     mock_get_service_template,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
@@ -2842,6 +2864,7 @@ def test_letters_from_csv_files_dont_have_download_link(
     fake_uuid,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
@@ -2895,6 +2918,7 @@ def test_one_off_letters_have_download_link(
     fake_uuid,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     restricted,
     service_one,
 ):
@@ -2942,6 +2966,7 @@ def test_send_one_off_letter_errors_in_trial_mode(
     fake_uuid,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_s3_set_metadata,
 ):
@@ -2983,6 +3008,7 @@ def test_check_messages_shows_over_max_row_error(
     mock_get_service_template_with_placeholders,
     mock_has_permissions,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_download,
@@ -3022,6 +3048,7 @@ def test_check_notification_redirects_if_session_not_populated(
     fake_uuid,
     existing_session_items,
     mock_get_service_template_with_placeholders,
+    mock_get_template_statistics,
 ):
     with client_request.session_transaction() as session:
         session.update(existing_session_items)
@@ -3048,6 +3075,7 @@ def test_check_notification_redirects_with_help_if_session_not_populated(
     fake_uuid,
     existing_session_items,
     mock_get_service_template_with_placeholders,
+    mock_get_template_statistics,
 ):
     with logged_in_client.session_transaction() as session:
         session.update(existing_session_items)
@@ -3070,7 +3098,9 @@ def test_check_notification_redirects_with_help_if_session_not_populated(
     )
 
 
-def test_check_notification_shows_preview(client_request, service_one, fake_uuid, mock_get_service_template):
+def test_check_notification_shows_preview(
+    client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics
+):
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
         session["placeholders"] = {}
@@ -3242,6 +3272,7 @@ def test_send_notification_shows_error_if_400(
     fake_uuid,
     mocker,
     mock_get_service_template_with_placeholders,
+    mock_get_template_statistics,
     exception_msg,
     expected_h1,
     expected_err_details,
@@ -3274,6 +3305,7 @@ def test_send_notification_shows_email_error_in_trial_mode(
     fake_uuid,
     mocker,
     mock_get_service_email_template,
+    mock_get_template_statistics,
 ):
     class MockHTTPError(HTTPError):
         message = TRIAL_MODE_MSG
@@ -3329,6 +3361,7 @@ def test_reply_to_is_previewed_if_chosen(
     mock_s3_set_metadata,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     get_default_reply_to_email_address,
@@ -3417,6 +3450,7 @@ def test_sms_sender_is_previewed(
     mock_s3_set_metadata,
     mock_get_users_by_service,
     mock_get_service_statistics,
+    mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     get_default_sms_sender,
