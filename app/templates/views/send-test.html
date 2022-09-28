@@ -7,7 +7,7 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  {{ form.placeholder_value.label.text }}
+  {{ form.placeholder_value.label.text | capitalize }}
 {% endblock %}
 
 {% block maincolumn_content %}
