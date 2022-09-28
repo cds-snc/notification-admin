@@ -1055,25 +1055,25 @@ def test_send_one_off_does_not_send_without_the_correct_permissions(
         (
             create_sms_template(),  # SMS
             partial(url_for, "main.send_test"),
-            "What is the custom content in ((thing)) ?",
+            "What is the custom content in ((name)) ?",
             False,
         ),
         (
             create_sms_template(),
             partial(url_for, "main.send_one_off"),
-            "Add recipients",
+            "Phone number",
             False,
         ),
         (
             create_sms_template(),
             partial(url_for, "main.send_test", help=1),
-            "Example text message",
+            "What is the custom content in ((name)) ?",
             True,
         ),
         (
             create_email_template(),
             partial(url_for, "main.send_test", help=1),
-            "Example text message",
+            "What is the custom content in ((thing)) ?",
             True,
         ),
         (
@@ -1085,7 +1085,7 @@ def test_send_one_off_does_not_send_without_the_correct_permissions(
         (
             create_email_template(),
             partial(url_for, "main.send_one_off"),
-            "Add recipients",
+            "Email address",
             False,
         ),
     ],
@@ -1123,13 +1123,13 @@ def test_send_one_off_or_test_has_correct_page_titles(
             "main.send_test_step",
             0,
             {"phone number": "6502532222"},
-            "One",
+            "What is the custom content in ((one)) ?",
         ),
         (
             "main.send_test_step",
             1,
             {"phone number": "6502532222", "one": "one"},
-            "Two",
+            "What is the custom content in ((two)) ?",
         ),
         (
             "main.send_one_off_step",
@@ -1141,13 +1141,13 @@ def test_send_one_off_or_test_has_correct_page_titles(
             "main.send_one_off_step",
             1,
             {"phone number": "6502532222"},
-            "One",
+            "What is the custom content in ((one)) ?",
         ),
         (
             "main.send_one_off_step",
             2,
             {"phone number": "6502532222", "one": "one"},
-            "Two",
+            "What is the custom content in ((two)) ?",
         ),
     ],
 )
@@ -1629,7 +1629,7 @@ def test_send_test_sms_message_with_placeholders_shows_first_field(
         _follow_redirects=True,
     )
 
-    assert page.select("label")[0].text.strip() == "Name"
+    assert page.select("label")[0].text.strip() == "What is the custom content in ((name)) ?"
     assert page.select("input")[0]["name"] == "placeholder_value"
     assert page.select(".back-link")[0]["href"] == url_for(expected_back_link_endpoint, service_id=SERVICE_ONE_ID, **extra_args)
     with client_request.session_transaction() as session:
