@@ -244,7 +244,8 @@ def test_should_show_recent_templates_on_dashboard(
         service_id=SERVICE_ONE_ID,
     )
 
-    mock_template_stats.assert_called_once_with(SERVICE_ONE_ID, limit_days=7)
+    mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=7)
+    mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=1)
 
     headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
     assert "Sent in the last week" in headers
