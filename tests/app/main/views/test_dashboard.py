@@ -565,7 +565,7 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 2, "delivered": 2, "failed": 0},
                 "sms": {"requested": 2, "delivered": 2, "failed": 0},
             },
-            ("2 courriels envoyés Aucun échec", "2 messages texte envoyé Aucun échec"),
+            ("2 courriels envoyés Aucun échec", "2 messages texte envoyés Aucun échec"),
             "fr",
         ),
     ],
