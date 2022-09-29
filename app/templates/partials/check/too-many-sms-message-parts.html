@@ -2,11 +2,11 @@
   {% if original_file_name %}
     {{ _('Too many recipients') }}
   {% else %}
-    {{ _('SMS daily limit reached') }}
+    {{ _("You’ve reached the daily limit") }}
   {% endif %}
 </h1>
 <p>
-  {{ _('You can only send') }} {{ current_service.sms_daily_limit | format_number }} {{ _('message parts per day') }}
+  {{ _('You can only send') }} {{ current_service.sms_daily_limit | format_number }} {{ _('text message fragments per day') }}
   {%- if current_service.trial_mode %}
     {{ _("in trial mode. To send more messages, <a href='{}'>request to go live</a>").format(url_for('main.request_to_go_live', service_id=current_service.id)) }}
   {%- endif -%}
