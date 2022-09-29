@@ -1,0 +1,40 @@
+<h1 class='banner-title' data-module="track-error" data-error-type="Trial mode: too many recipients" data-error-label="{{ upload_id }}">
+  {% if original_file_name %}
+    {{ _('Too many recipients') }}
+  {% else %}
+    {{ _('SMS daily limit reached') }}
+  {% endif %}
+</h1>
+<p>
+  {{ _('You can only send') }} {{ current_service.sms_daily_limit | format_number }} {{ _('message parts per day') }}
+  {%- if current_service.trial_mode %}
+    {{ _("in trial mode. To send more messages, <a href='{}'>request to go live</a>").format(url_for('main.request_to_go_live', service_id=current_service.id)) }}
+  {%- endif -%}
+  .
+</p>
+{% if original_file_name %}
+  <p>
+    {% if current_service.message_limit != remaining_messages %}
+      {{ _('You can still send') }} {{ remaining_messages }} {{ _('message parts today, but') }}
+    {% endif %}
+    ‘{{ original_file_name }}’ {{ _('contains') }}
+    {{ count_of_recipients }}
+    {% if count_of_recipients == 1 -%}
+      {%- if template.template_type == 'email' -%}
+        {{ _('email address') }}
+      {%- elif template.template_type == 'sms' -%}
+        {{ _('phone number') }}
+      {%- elif template.template_type == 'letter' -%}
+        {{ _('address') }}
+      {%- endif -%}
+    {%- else -%}
+      {%- if template.template_type == 'email' -%}
+        {{ _('email addresses') }}
+      {%- elif template.template_type == 'sms' -%}
+        {{ _('phone numbers') }}
+      {%- elif template.template_type == 'letter' -%}
+        {{ _('addresses') }}
+      {%- endif -%}
+    {%- endif -%}.
+  </p>
+{% endif %}

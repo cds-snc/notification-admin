@@ -34,6 +34,13 @@
         {% endwith %}
       {% endcall %}
     </div>
+  {% elif error == 'too-many-sms-messages' %}
+    {{ govuk_back_link(back_link) }}
+    <div class="mb-12 clear-both contain-floats">
+      {% call banner_wrapper(type='dangerous') %}
+        {% include "partials/check/too-many-sms-message-parts.html" %}
+      {% endcall %}
+    </div>
   {% elif error == 'too-many-messages' %}
     {{ govuk_back_link(back_link) }}
     <div class="mb-12 clear-both contain-floats">
