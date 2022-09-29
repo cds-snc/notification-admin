@@ -127,7 +127,7 @@ class Config(object):
     ZENDESK_API_KEY = os.environ.get("ZENDESK_API_KEY")
 
     # FEATURE FLAGS
-    FF_SPIKE_SMS_DAILY_LIMIT = os.environ.get("FF_SPIKE_SMS_DAILY_LIMIT", False)
+    FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
