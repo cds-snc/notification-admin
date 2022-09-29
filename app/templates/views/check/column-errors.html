@@ -153,6 +153,10 @@
 
         {% include "partials/check/too-many-messages.html" %}
 
+      {% elif send_exceeds_sms_daily_limit %}
+        
+      {% include "partials/check/too-many-sms-message-parts.html" %}
+
       {% endif %}
 
     {% endcall %}

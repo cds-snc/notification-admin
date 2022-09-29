@@ -14,8 +14,8 @@
 </p>
 {% if original_file_name %}
   <p>
-    {% if current_service.message_limit != remaining_messages %}
-      {{ _('You can still send') }} {{ remaining_messages }} {{ _('message parts today, but') }}
+    {% if current_service.sms_daily_limit != remaining_sms_messages %}
+      {{ _('You can still send') }} {{ remaining_sms_messages }} {{ _('message parts today, but') }}
     {% endif %}
     ‘{{ original_file_name }}’ {{ _('contains') }}
     {{ count_of_recipients }}
@@ -23,7 +23,7 @@
       {%- if template.template_type == 'email' -%}
         {{ _('email address') }}
       {%- elif template.template_type == 'sms' -%}
-        {{ _('phone number') }}
+        {{ _('message fragment') }}
       {%- elif template.template_type == 'letter' -%}
         {{ _('address') }}
       {%- endif -%}
@@ -31,7 +31,7 @@
       {%- if template.template_type == 'email' -%}
         {{ _('email addresses') }}
       {%- elif template.template_type == 'sms' -%}
-        {{ _('phone numbers') }}
+        {{ _('message fragment') }}
       {%- elif template.template_type == 'letter' -%}
         {{ _('addresses') }}
       {%- endif -%}

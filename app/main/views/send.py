@@ -773,6 +773,10 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     data["sms_parts_requested"] = data["stats_daily"]["sms"]["requested"]
     data["sms_parts_remaining"] = current_service.sms_daily_limit - data["sms_parts_requested"]
     data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > data["sms_parts_remaining"]
+    data["send_exceeds_sms_daily_limit"] = data["sms_parts_to_send"] > data["sms_parts_remaining"]
+
+    if data["send_exceeds_sms_daily_limit"]:
+        return render_template("views/check/column-errors.html", **data)
 
     metadata_kwargs = {
         "notification_count": data["count_of_recipients"],
