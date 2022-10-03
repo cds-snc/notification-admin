@@ -23,13 +23,6 @@
 <div class="grid-row contain-floats">
   {% set form_label = form.placeholder_value.label.text %}
 
-  {% if current_service.trial_mode %}
-  <p class="px-gutterHalf">
-    {{ _("In trial mode, you can only send to your team members on GC Notify.") }}<br>
-    {{ _("To send to more recipients, <a href='{}'>request to go live</a>.").format(url_for('.request_to_go_live', service_id=current_service.id)) }}
-  </p>
-  {% endif %}
-
   <div
     class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border {% if form_label == 'phone number' %}extra-tracking{% endif %}"
   >
