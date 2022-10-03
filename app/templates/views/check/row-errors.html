@@ -71,13 +71,13 @@
       </p>
     {% endif %}
 
-    <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}" data-module="fullscreen-table">
+    <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}">
       {% call(item, row_number) list_table(
         recipients.displayed_rows,
         caption=original_file_name,
         caption_visible=False,
         field_headings=[
-          '<span class="visually-hidden">Row in file</span><span aria-hidden="true" class="table-field-invisible-error">1</span>'|safe
+          '<span class="visually-hidden">_("Row in file")</span><span aria-hidden="true" class="table-field-invisible-error">1</span>'|safe
         ] + recipients.column_headers
       ) %}
         {% call index_field() %}
