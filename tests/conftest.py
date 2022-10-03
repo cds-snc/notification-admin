@@ -32,7 +32,7 @@ from . import (
     user_json,
 )
 
-if os.getenv('_PYTEST_RAISE', "0") != "0":
+if os.getenv("_PYTEST_RAISE", "0") != "0":
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_exception_interact(call):
@@ -41,6 +41,7 @@ if os.getenv('_PYTEST_RAISE', "0") != "0":
     @pytest.hookimpl(tryfirst=True)
     def pytest_internalerror(excinfo):
         raise excinfo.value
+
 
 class ElementNotFound(Exception):
     pass
