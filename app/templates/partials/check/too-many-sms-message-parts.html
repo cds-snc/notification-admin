@@ -1,5 +1,5 @@
 <h1 class='banner-title' data-module="track-error" data-error-type="Trial mode: too many recipients" data-error-label="{{ upload_id }}">
-  {% if original_file_name %}
+  {% if remaining_sms_messages > 0 %}
     {{ _('Too many recipients') }}
   {% else %}
     {{ _("You’ve reached the daily limit") }}
@@ -14,7 +14,7 @@
 </p>
 {% if original_file_name %}
   <p>
-    {% if current_service.sms_daily_limit != remaining_sms_messages %}
+    {% if remaining_sms_messages > 0 %}
       {{ _('You can still send') }} {{ remaining_sms_messages }} {{ _('message parts today, but') }}
     {% endif %}
     ‘{{ original_file_name }}’ {{ _('contains') }}
