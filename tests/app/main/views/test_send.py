@@ -2504,8 +2504,8 @@ def test_check_messages_back_link(
 @pytest.mark.parametrize(
     "num_requested,expected_msg",
     [
-        (0, "You can still send 20 message fragments today, but ‘valid.csv’ contains 30 message fragments."),
-        (1, "You can still send 19 message fragments today, but ‘valid.csv’ contains 30 message fragments."),
+        (0, "You can only send 20 text message fragments per day in trial mode. To send more messages, request to go live."),
+        (1, "You can only send 20 text message fragments per day in trial mode. To send more messages, request to go live."),
     ],
     ids=["none_sent", "some_sent"],
 )
@@ -2557,10 +2557,10 @@ def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAI
             _test_page_title=False,
         )
 
-    assert page.find(role="alert").find("h1").text.strip() == "Too many recipients"
+    assert page.find(role="alert").find("h1").text.strip() == "Too many SMS message fragments"
 
     # remove excess whitespace from element
-    details = page.find(role="alert").findAll("p")[1]
+    details = page.find(role="alert").findAll("p")[0]
     details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
     assert details == expected_msg
 
