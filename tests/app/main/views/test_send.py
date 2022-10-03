@@ -1257,7 +1257,7 @@ def test_send_one_off_offers_link_to_upload(
     )
 
     back_link = page.select("main a")[0]
-    link = page.select("main a")[2]
+    link = page.select("main a#list-uploader")[0]
 
     assert back_link.text.strip() == "Back"
 
@@ -1292,7 +1292,7 @@ def test_send_one_off_offers_link_to_request_to_go_live(
     client_request.login(active_user_with_permissions, service=service)
 
     page = client_request.get(
-        "main.send_one_off",
+        "main.add_recipients",
         service_id=SERVICE_ONE_ID,
         template_id=fake_uuid,
         _follow_redirects=True,
