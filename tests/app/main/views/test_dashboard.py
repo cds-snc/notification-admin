@@ -441,7 +441,38 @@ def test_correct_columns_display_on_dashboard(
 
     assert len(page.select(column_name)) == expected_column_count
 
+@pytest.mark.parametrize(
+    "feature_flag",
+    [True, False],
+)
+def test_usage_section_shown(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    app_,
+    feature_flag
+    ):
+    app_.config["FF_SPIKE_SMS_DAILY_LIMIT"] = feature_flag
 
+    page = client_request.get(
+        "main.service_dashboard",
+        service_id=service_one["id"],
+    )
+    headings = [element.text.strip() for element in page.find_all("h2")]
+    big_number_labels = [element.text.strip() for element in page.select(".big-number-label")]
+    
+    if feature_flag:
+        assert "Usage today" in headings
+        assert "text messages  left today" in big_number_labels
+    else:
+        assert "Usage today" not in headings
+        assert "text messages  left today" not in big_number_labels 
+        
+        
 @pytest.mark.parametrize(
     "permissions, totals, big_number_class, expected_column_count",
     [
