@@ -1047,7 +1047,7 @@ def get_template_error_dict(exception):
     # TODO: Make API return some computer-friendly identifier as well as the end user error messages
     if "service is in trial mode" in exception.message:
         error = "not-allowed-to-send-to"
-    elif "Exceeded send limits" in exception.message:
+    elif "Exceeded send limits" in exception.message or "Exceeded sms send limits" in exception.message:
         error = "too-many-messages"
     elif "Content for template has a character count greater than the limit of" in exception.message:
         error = "message-too-long"
