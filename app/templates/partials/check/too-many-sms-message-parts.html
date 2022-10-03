@@ -15,7 +15,7 @@
 {% if original_file_name %}
   <p>
     {% if remaining_sms_messages > 0 %}
-      {{ _('You can still send') }} {{ remaining_sms_messages }} {{ _('message parts today, but') }}
+      {{ _('You can still send') }} {{ remaining_sms_messages }} {{ _('message fragments today, but') }}
     {% endif %}
     ‘{{ original_file_name }}’ {{ _('contains') }}
     {{ count_of_recipients }}
@@ -31,7 +31,7 @@
       {%- if template.template_type == 'email' -%}
         {{ _('email addresses') }}
       {%- elif template.template_type == 'sms' -%}
-        {{ _('message fragment') }}
+        {{ _('message fragments') }}
       {%- elif template.template_type == 'letter' -%}
         {{ _('addresses') }}
       {%- endif -%}
