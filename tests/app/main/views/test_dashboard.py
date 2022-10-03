@@ -446,7 +446,7 @@ def test_correct_columns_display_on_dashboard(
     "feature_flag",
     [True, False],
 )
-def test_usage_section_shown(
+def test_daily_usage_section_shown(
     client_request,
     mocker,
     mock_get_service_templates,
