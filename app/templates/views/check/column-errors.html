@@ -25,7 +25,7 @@
 {% endmacro %}
 
 {% block service_page_title %}
-  {{ _('Error') }}
+  {{ page_title }}
 {% endblock %}
 
 {% block main_content_class %}py-10 space-y-doubleGutter{% endblock %}
@@ -156,20 +156,20 @@
           {% endwith %}
         </div>
 
-      {% elif recipients.more_rows_than_can_send %}
-
-        {% include "partials/check/too-many-messages.html" %}
-
-      {% elif send_exceeds_daily_limit %}
+        {% elif send_exceeds_daily_limit %}
         
-      {% include "partials/check/too-many-sms-message-parts.html" %}
+          {% include "partials/check/too-many-sms-message-parts.html" %}
+
+        {% elif recipients.more_rows_than_can_send %}
+
+          {% include "partials/check/too-many-messages.html" %}
 
       {% endif %}
 
     {% endcall %}
   </div>
 
-
+  {% if not send_exceeds_daily_limit %}
     <div class="form-group contain-floats box-border">
       {% set button_txt = _('Re-upload your file') %}
       {% if not request.args.from_test %}
@@ -180,6 +180,7 @@
         ) }}
       {% endif %}
     </div>
+  {% endif %}
 
   {% if not request.args.from_test %}
     <section class="clear-both contain-floats">
