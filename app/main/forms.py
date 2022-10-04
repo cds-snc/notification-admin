@@ -711,7 +711,7 @@ class EmailMessageLimit(StripWhitespaceForm):
 
 class SMSMessageLimit(StripWhitespaceForm):
     message_limit = IntegerField(
-        _l("Daily SMS message limit"),
+        _l("Daily SMS fragment limit"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validators.NumberRange(min=1),

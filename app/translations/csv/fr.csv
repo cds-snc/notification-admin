@@ -1045,7 +1045,7 @@
 "Delete this folder","Supprimer ce dossier"
 "Daily message limit","Limite d'envoi quotidienne"
 "Daily email message limit","Limite quotidienne d'envoi par courriel"
-"Daily SMS message limit","Limite quotidienne d'envoi par message texte"
+"Daily SMS fragment limit","Limite quotidienne d'envoi par message texte"
 "Last edited","Dernière modification&nbsp;: "
 "See previous versions","Voir les versions précédentes"
 "Delete this template","Supprimer ce gabarit"
