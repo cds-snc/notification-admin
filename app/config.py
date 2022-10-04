@@ -182,6 +182,7 @@ class Test(Development):
     TESTING = True
     WTF_CSRF_ENABLED = False
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
+    FF_SPIKE_SMS_DAILY_LIMIT = False
 
 
 class Production(Config):
