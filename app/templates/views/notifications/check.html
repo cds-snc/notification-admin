@@ -35,7 +35,11 @@
       {% endcall %}
     </div>
   {% elif error == 'too-many-sms-messages' %}
-    {{ govuk_back_link(back_link) }}
+    {% if sms_parts_remaining == 0 %}
+      {{ page_header(_('You’ve reached the daily limit'), back_link=back_link) }}
+    {% else %}
+      {{ page_header(_('This message exceeds your daily limit'), back_link=back_link) }}
+    {% endif %}
     <div class="mb-12 clear-both contain-floats">
       {% call banner_wrapper(type='dangerous') %}
         {% include "partials/check/too-many-sms-message-parts.html" %}

@@ -1656,4 +1656,5 @@
 "text message fragments per day","bouts de message texte par jour"
 "Too many text message fragments","Trop de bouts de message texte"
 "These messages exceed your daily limit","Ces messages dépassent votre limite quotidienne"
+"This message exceeds your daily limit","Ce message dépasse votre limite quotidienne"
 "If a message is long, it travels in fragments. Each fragment counts toward your daily limit.","Un message long est transmis en fragments. Chaque fragment compte dans votre limite quotidienne de fragments de message texte."
