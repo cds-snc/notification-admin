@@ -183,6 +183,7 @@ class Test(Development):
     TESTING = True
     WTF_CSRF_ENABLED = False
     FF_SPIKE_SMS_DAILY_LIMIT = False
+    FF_SMS_PARTS_UI = False
 
 
 class Production(Config):

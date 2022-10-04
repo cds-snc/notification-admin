@@ -457,7 +457,7 @@ def test_daily_usage_section_shown(
     app_,
     feature_flag,
 ):
-    app_.config["FF_SPIKE_SMS_DAILY_LIMIT"] = feature_flag
+    app_.config["FF_SMS_PARTS_UI"] = feature_flag
 
     page = client_request.get(
         "main.service_dashboard",
