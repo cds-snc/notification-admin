@@ -2557,7 +2557,7 @@ def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAI
             _test_page_title=False,
         )
 
-    assert page.find(role="alert").find("h1").text.strip() == "Too many SMS message fragments"
+    assert page.find(role="alert").find("h1").text.strip() == "Too many text message fragments"
 
     # remove excess whitespace from element
     details = page.find(role="alert").findAll("p")[0]
