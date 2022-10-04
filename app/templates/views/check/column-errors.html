@@ -11,7 +11,7 @@
 
 {% if send_exceeds_daily_limit and (sms_parts_remaining <= 0) %}
   {% set page_title = _('You’ve reached the daily limit') %}
-{% elif send_exceeds_daily_limit %}
+{% elif send_exceeds_daily_limit or recipients.more_rows_than_can_send %}
   {% set page_title = _('These messages exceed your daily limit') %}
 {% else %}
   {% set page_title = _('Check there’s a column for each variable') %}
