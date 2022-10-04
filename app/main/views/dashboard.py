@@ -195,38 +195,47 @@ def aggregate_notifications_stats(template_statistics):
 
 
 def get_dashboard_partials(service_id):
-    all_statistics = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=7)
-    template_statistics = aggregate_template_usage(all_statistics)
+    all_statistics_weekly = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=7)
+    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
+    template_statistics_weekly = aggregate_template_usage(all_statistics_weekly)
 
     scheduled_jobs, immediate_jobs = [], []
     if job_api_client.has_jobs(service_id):
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
         immediate_jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id)]
 
-    stats = aggregate_notifications_stats(all_statistics)
+    stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
+    stats_daily = aggregate_notifications_stats(all_statistics_daily)
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
     )
-    dashboard_totals = (get_dashboard_totals(stats),)
-    highest_notification_count = max(
-        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals[0].items()
+    dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
+    dashboard_totals_daily = (get_dashboard_totals(stats_daily),)
+    highest_notification_count_weekly = max(
+        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_weekly[0].items()
     )
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
-        "totals": render_template(
+        "daily_totals": render_template(
+            "views/dashboard/_totals_daily.html",
+            service_id=service_id,
+            statistics=dashboard_totals_daily[0],
+            column_width=column_width,
+        ),
+        "weekly_totals": render_template(
             "views/dashboard/_totals.html",
             service_id=service_id,
-            statistics=dashboard_totals[0],
+            statistics=dashboard_totals_weekly[0],
             column_width=column_width,
-            smaller_font_size=(highest_notification_count > max_notifiction_count),
+            smaller_font_size=(highest_notification_count_weekly > max_notifiction_count),
         ),
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",
-            template_statistics=template_statistics,
-            most_used_template_count=max([row["count"] for row in template_statistics] or [0]),
+            template_statistics=template_statistics_weekly,
+            most_used_template_count=max([row["count"] for row in template_statistics_weekly] or [0]),
         ),
-        "has_template_statistics": bool(template_statistics),
+        "has_template_statistics": bool(template_statistics_weekly),
         "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
         "has_jobs": bool(immediate_jobs),
         "has_scheduled_jobs": bool(scheduled_jobs),

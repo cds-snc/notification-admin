@@ -286,7 +286,7 @@ def test_should_show_total_on_live_trial_services_pages(
         ),
         (
             "main.live_services",
-            ("2 courriels envoyés Aucun échec", "2 messages texte envoyé Aucun échec"),
+            ("2 courriels envoyés Aucun échec", "2 messages texte envoyés Aucun échec"),
             2,
             2,
             "fr",
