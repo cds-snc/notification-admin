@@ -181,6 +181,7 @@ class Test(Development):
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
     TESTING = True
     WTF_CSRF_ENABLED = False
+    GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
 
 
 class Production(Config):
