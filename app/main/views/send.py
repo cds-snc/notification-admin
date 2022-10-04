@@ -36,7 +36,6 @@ from app import (
     service_api_client,
     template_statistics_client,
 )
-from app.extensions import redis_client
 from app.main import main
 from app.main.forms import (
     ChooseTimeForm,
