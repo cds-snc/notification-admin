@@ -181,6 +181,7 @@ class Test(Development):
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
     TESTING = True
     WTF_CSRF_ENABLED = False
+    FF_SPIKE_SMS_DAILY_LIMIT = False
 
 
 class Production(Config):
