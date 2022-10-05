@@ -9,18 +9,18 @@ from os import path
 from uuid import uuid4
 from zipfile import BadZipFile
 
-from unittest.mock import MagicMock, Mock
 import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
+from notifications_utils.clients.redis import sms_daily_count_cache_key
 from notifications_utils.recipients import RecipientCSV
 from notifications_utils.template import LetterImageTemplate, LetterPreviewTemplate
-from notifications_utils.clients.redis import sms_daily_count_cache_key
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
+
 from app.main.views.send import daily_sms_count
-from tests import validate_route_permission, validate_route_permission_with_client, MockRedis
+from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
     create_active_caseworking_user,

@@ -18,6 +18,7 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils import SMS_CHAR_COUNT_LIMIT
+from notifications_utils.clients.redis import sms_daily_count_cache_key
 from notifications_utils.columns import Columns
 from notifications_utils.recipients import (
     RecipientCSV,
@@ -33,9 +34,9 @@ from app import (
     current_service,
     job_api_client,
     notification_api_client,
+    redis_client,
     service_api_client,
     template_statistics_client,
-    redis_client,
 )
 from app.main import main
 from app.main.forms import (
@@ -66,7 +67,6 @@ from app.utils import (
     unicode_truncate,
     user_has_permissions,
 )
-from notifications_utils.clients.redis import sms_daily_count_cache_key
 
 
 def daily_sms_count(service_id):
