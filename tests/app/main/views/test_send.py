@@ -19,7 +19,7 @@ from notifications_utils.template import LetterImageTemplate, LetterPreviewTempl
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
-from app.main.views.send import daily_sms_count
+from app.main.views.send import daily_sms_fragment_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -50,11 +50,11 @@ test_non_spreadsheet_files = glob(path.join("tests", "non_spreadsheet_files", "*
 
 
 @pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
-def test_daily_sms_count(mocker, redis_value, expected_result):
+def test_daily_sms_fragment_count(mocker, redis_value, expected_result):
     mocker.patch(
         "app.extensions.redis_client.get", lambda x: redis_value if x == sms_daily_count_cache_key(SERVICE_ONE_ID) else None
     )
-    assert daily_sms_count(SERVICE_ONE_ID) == expected_result
+    assert daily_sms_fragment_count(SERVICE_ONE_ID) == expected_result
 
 
 @pytest.mark.parametrize(

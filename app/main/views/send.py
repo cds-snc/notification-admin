@@ -69,7 +69,7 @@ from app.utils import (
 )
 
 
-def daily_sms_count(service_id):
+def daily_sms_fragment_count(service_id):
     return int(redis_client.get(sms_daily_count_cache_key(service_id)) or "0")
 
 
@@ -639,8 +639,8 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     statistics = service_api_client.get_service_statistics(service_id, today_only=True)
     remaining_messages = current_service.message_limit - sum(stat["requested"] for stat in statistics.values())
-    sms_sent_today = daily_sms_count(service_id)
-    remaining_sms_messages = current_service.sms_daily_limit - sms_sent_today
+    sms_fragments_sent_today = daily_sms_fragment_count(service_id)
+    remaining_sms_message_fragments = current_service.sms_daily_limit - sms_fragments_sent_today
 
     contents = s3download(service_id, upload_id)
 
@@ -724,7 +724,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         upload_id=upload_id,
         form=CsvUploadForm(),
         remaining_messages=remaining_messages,
-        remaining_sms_messages=remaining_sms_messages,
+        remaining_sms_message_fragments=remaining_sms_message_fragments,
         sms_parts_to_send=sms_parts_to_send,
         is_sms_parts_estimated=is_sms_parts_estimated,
         choose_time_form=choose_time_form,
