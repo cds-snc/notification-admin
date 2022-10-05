@@ -777,7 +777,7 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
 
     data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
     data["sms_parts_requested"] = data["stats_daily"]["sms"]["requested"]
-    data["sms_parts_remaining"] = current_service.sms_daily_limit - data["sms_parts_requested"]
+    data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
     data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > data["sms_parts_remaining"]
 
     metadata_kwargs = {
@@ -1037,7 +1037,7 @@ def _check_notification(service_id, template_id, exception=None):
         sms_parts_data["sms_parts_to_send"] = template.fragment_count
         sms_parts_data["is_sms_parts_estimated"] = False
         sms_parts_data["sms_parts_requested"] = stats_daily["sms"]["requested"]
-        sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - sms_parts_data["sms_parts_requested"]
+        sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
         sms_parts_data["send_exceeds_daily_limit"] = sms_parts_data["sms_parts_to_send"] > sms_parts_data["sms_parts_remaining"]
     return dict(
         template=template,
