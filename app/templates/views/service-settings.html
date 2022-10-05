@@ -110,7 +110,7 @@
           {% call row() %}
             {% set txt = _('Daily text fragments limit') %}
             {{ text_field(txt)}}
-            {% set sms_daily_limit = _('{}').format(current_service.sms_daily_limit | format_number) %}
+            {% set sms_daily_limit = _('{} fragments').format(current_service.sms_daily_limit | format_number) %}
             {{ text_field(sms_daily_limit) }}
             {{ text_field('') }}
           {% endcall %}
