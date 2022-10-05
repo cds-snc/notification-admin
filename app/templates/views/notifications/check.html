@@ -57,7 +57,7 @@
   {% endif %}
 
   {{ template|string|translate_preview_template }}
-  {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] and template.template_type == 'sms'%}
+  {% if config["FF_SMS_PARTS_UI"] and template.template_type == 'sms'%}
     {% include 'views/check/sms-parts.html' %}
   {% endif %}
 
