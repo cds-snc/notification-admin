@@ -9,16 +9,18 @@ from os import path
 from uuid import uuid4
 from zipfile import BadZipFile
 
+from unittest.mock import MagicMock, Mock
 import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
 from notifications_utils.recipients import RecipientCSV
 from notifications_utils.template import LetterImageTemplate, LetterPreviewTemplate
+from notifications_utils.clients.redis import sms_daily_count_cache_key
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
-
-from tests import validate_route_permission, validate_route_permission_with_client
+from app.main.views.send import daily_sms_count
+from tests import validate_route_permission, validate_route_permission_with_client, MockRedis
 from tests.conftest import (
     SERVICE_ONE_ID,
     create_active_caseworking_user,
@@ -45,6 +47,14 @@ unchanging_fake_uuid = uuid.uuid4()
 # The * ignores hidden files, eg .DS_Store
 test_spreadsheet_files = glob(path.join("tests", "spreadsheet_files", "*"))
 test_non_spreadsheet_files = glob(path.join("tests", "non_spreadsheet_files", "*"))
+
+
+@pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
+def test_daily_sms_count(mocker, redis_value, expected_result):
+    mocker.patch(
+        "app.extensions.redis_client.get", lambda x: redis_value if x == sms_daily_count_cache_key(SERVICE_ONE_ID) else None
+    )
+    assert daily_sms_count(SERVICE_ONE_ID) == expected_result
 
 
 @pytest.mark.parametrize(
