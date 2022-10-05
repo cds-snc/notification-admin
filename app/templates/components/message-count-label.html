@@ -42,11 +42,7 @@
   {%- if (count == 0 or count == 1) -%}
   {{" "}} {{ suffix }}
   {%- else -%}
-    {%- if template_type == 'sms' -%}
-        {{" "}} {{ suffix }}
-    {%- else -%}
-        {{" "}} {{ suffix_plural }}
-    {%- endif -%}
+    {{" "}} {{ suffix_plural }}
   {%- endif %} 
 
 {%- endmacro %}
