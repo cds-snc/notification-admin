@@ -70,7 +70,7 @@ from notifications_utils.clients.redis import sms_daily_count_cache_key
 
 
 def daily_sms_count(service_id):
-    return redis_client.get(sms_daily_count_cache_key(service_id)) or 0
+    return int(redis_client.get(sms_daily_count_cache_key(service_id)) or "0")
 
 
 def service_can_bulk_send(service_id):
@@ -639,7 +639,6 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     statistics = service_api_client.get_service_statistics(service_id, today_only=True)
     remaining_messages = current_service.message_limit - sum(stat["requested"] for stat in statistics.values())
-    # todo: currently stat["requested"] uses sms messages, update this when sms parts becomes available
     sms_sent_today = daily_sms_count(service_id)
     remaining_sms_messages = current_service.sms_daily_limit - sms_sent_today
 
