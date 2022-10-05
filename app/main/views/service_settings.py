@@ -1077,7 +1077,7 @@ def set_sms_message_limit(service_id):
             flash(_("An email has been sent to service users"), "default_with_tick")
         return redirect(url_for(".service_settings", service_id=service_id))
 
-    return render_template("views/service-settings/set-message-limit.html", form=form, heading=_("Daily SMS message limit"))
+    return render_template("views/service-settings/set-message-limit.html", form=form, heading=_("Daily text fragments limit"))
 
 
 @main.route(

@@ -108,9 +108,9 @@
         
         {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
           {% call row() %}
-            {% set txt = _('Daily SMS message limit') %}
+            {% set txt = _('Daily text fragments limit') %}
             {{ text_field(txt)}}
-            {% set sms_daily_limit = _('{} notifications').format(current_service.sms_daily_limit | format_number) %}
+            {% set sms_daily_limit = _('{} fragments').format(current_service.sms_daily_limit | format_number) %}
             {{ text_field(sms_daily_limit) }}
             {{ text_field('') }}
           {% endcall %}
@@ -366,7 +366,7 @@
           
           {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
             {% call row() %}
-              {% set txt = _('Daily SMS message limit') %}
+              {% set txt = _('Daily text fragments limit') %}
               {{ text_field(txt)}}
               {{ text_field(current_service.sms_daily_limit | format_number) }}
               {{ edit_field(
