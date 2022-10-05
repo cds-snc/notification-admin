@@ -780,6 +780,9 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
     data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > data["sms_parts_remaining"]
 
+    if current_app.config["FF_SPIKE_SMS_DAILY_LIMIT"] and data["send_exceeds_daily_limit"]:
+        return render_template("views/check/column-errors.html", **data)
+
     metadata_kwargs = {
         "notification_count": data["count_of_recipients"],
         "template_id": str(template_id),
@@ -1055,6 +1058,8 @@ def get_template_error_dict(exception):
         error = "not-allowed-to-send-to"
     elif "Exceeded send limits" in exception.message:
         error = "too-many-messages"
+    elif "Exceeded sms send limits" in exception.message:
+        error = "too-many-sms-messages"
     elif "Content for template has a character count greater than the limit of" in exception.message:
         error = "message-too-long"
     else:
