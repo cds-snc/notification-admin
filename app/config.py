@@ -128,6 +128,7 @@ class Config(object):
 
     # FEATURE FLAGS
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
+    FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
@@ -181,6 +182,8 @@ class Test(Development):
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
     TESTING = True
     WTF_CSRF_ENABLED = False
+    FF_SPIKE_SMS_DAILY_LIMIT = False
+    FF_SMS_PARTS_UI = False
 
 
 class Production(Config):
