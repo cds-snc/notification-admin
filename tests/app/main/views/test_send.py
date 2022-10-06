@@ -13,11 +13,13 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
+from notifications_utils.clients.redis import sms_daily_count_cache_key
 from notifications_utils.recipients import RecipientCSV
 from notifications_utils.template import LetterImageTemplate, LetterPreviewTemplate
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
+from app.main.views.send import daily_sms_fragment_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -36,6 +38,7 @@ from tests.conftest import (
     mock_get_service_letter_template,
     mock_get_service_template,
     normalize_spaces,
+    set_config,
 )
 
 template_types = ["email", "sms"]
@@ -45,6 +48,14 @@ unchanging_fake_uuid = uuid.uuid4()
 # The * ignores hidden files, eg .DS_Store
 test_spreadsheet_files = glob(path.join("tests", "spreadsheet_files", "*"))
 test_non_spreadsheet_files = glob(path.join("tests", "non_spreadsheet_files", "*"))
+
+
+@pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
+def test_daily_sms_fragment_count(mocker, redis_value, expected_result):
+    mocker.patch(
+        "app.extensions.redis_client.get", lambda x: redis_value if x == sms_daily_count_cache_key(SERVICE_ONE_ID) else None
+    )
+    assert daily_sms_fragment_count(SERVICE_ONE_ID) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -2503,20 +2514,131 @@ def test_check_messages_back_link(
 @pytest.mark.parametrize(
     "num_requested,expected_msg",
     [
-        (0, "‘valid.csv’ contains 100 phone numbers."),
+        (0, "If a message is long, it travels in fragments. Each fragment counts toward your daily limit."),
+        (1, "If a message is long, it travels in fragments. Each fragment counts toward your daily limit."),
+    ],
+    ids=["none_sent", "some_sent"],
+)
+def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAILY_LIMIT_true(
+    app_,
+    mocker,
+    client_request,
+    mock_get_service,  # set message_limit to 50 and sms limit to 20
+    mock_get_users_by_service,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_download,
+    mock_s3_set_metadata,
+    fake_uuid,
+    num_requested,
+    expected_msg,
+):
+    # csv with 100 phone numbers
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 30)),
+    )
+    mocker.patch(
+        "app.service_api_client.get_service_statistics",
+        return_value={
+            "sms": {"requested": num_requested, "delivered": 0, "failed": 0},
+            "email": {"requested": 0, "delivered": 0, "failed": 0},
+        },
+    )
+
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {
+            fake_uuid: {
+                "template_id": fake_uuid,
+                "notification_count": 1,
+                "valid": True,
+            }
+        }
+
+    with set_config(app_, "FF_SPIKE_SMS_DAILY_LIMIT", True):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="valid.csv",
+            _test_page_title=False,
+        )
+
+    # remove excess whitespace from element
+    details = page.find(role="alert").findAll("p")[0]
+    details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
+    assert details == expected_msg
+
+
+def test_check_messages_does_not_show_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAILY_LIMIT_false(
+    app_,
+    mocker,
+    client_request,
+    mock_get_service,  # set message_limit to 50 and sms limit to 20
+    mock_get_users_by_service,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_download,
+    mock_s3_set_metadata,
+    fake_uuid,
+):
+    # csv with 100 phone numbers
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 30)),
+    )
+    mocker.patch(
+        "app.service_api_client.get_service_statistics",
+        return_value={
+            "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            "email": {"requested": 0, "delivered": 0, "failed": 0},
+        },
+    )
+
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {
+            fake_uuid: {
+                "template_id": fake_uuid,
+                "notification_count": 1,
+                "valid": True,
+            }
+        }
+
+    with set_config(app_, "FF_SPIKE_SMS_DAILY_LIMIT", False):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="valid.csv",
+            _test_page_title=False,
+        )
+
+    assert page.find(role="alert") is None
+
+
+@pytest.mark.parametrize(
+    "num_requested,expected_msg",
+    [
+        (0, "‘valid.csv’ contains 100 email addresses."),
         (
             1,
-            "You can still send 49 messages today, but ‘valid.csv’ contains 100 phone numbers.",
+            "You can still send 49 messages today, but ‘valid.csv’ contains 100 email addresses.",
         ),
     ],
     ids=["none_sent", "some_sent"],
 )
-def test_check_messages_shows_too_many_messages_errors(
+def test_check_messages_shows_too_many_email_messages_errors(
     mocker,
     client_request,
     mock_get_service,  # set message_limit to 50
     mock_get_users_by_service,
-    mock_get_service_template,
+    mock_get_service_email_template_without_placeholders,
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
@@ -2527,13 +2649,13 @@ def test_check_messages_shows_too_many_messages_errors(
     # csv with 100 phone numbers
     mocker.patch(
         "app.main.views.send.s3download",
-        return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 100)),
+        return_value=",\n".join(["email address"] + ([mock_get_users_by_service(None)[0]["email_address"]] * 100)),
     )
     mocker.patch(
         "app.service_api_client.get_service_statistics",
         return_value={
-            "sms": {"requested": num_requested, "delivered": 0, "failed": 0},
-            "email": {"requested": 0, "delivered": 0, "failed": 0},
+            "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            "email": {"requested": num_requested, "delivered": 0, "failed": 0},
         },
     )
 
@@ -3601,3 +3723,23 @@ def test_s3_send_shows_available_files(
     multiple_choise_options = [x.text.strip() for x in options]
 
     assert multiple_choise_options == expected_filenames
+
+
+@pytest.mark.parametrize(
+    "feature_flag, expected",
+    [(True, 1), (False, 0)],
+)
+def test_sms_parts_section_is_visible_depending_on_ff(
+    feature_flag, expected, client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, app_
+):
+    app_.config["FF_SMS_PARTS_UI"] = feature_flag
+
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    assert page.h1.text.strip() == "Review before sending"
+    sms_count = page.select("#sms-count")
+    assert len(list(sms_count)) == expected
