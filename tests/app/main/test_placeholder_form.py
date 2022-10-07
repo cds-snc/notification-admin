@@ -14,11 +14,17 @@ def test_form_class_not_mutated(app_):
         assert form2.validate_on_submit()
         assert not form3.validate_on_submit()
 
-        assert str(form1.placeholder_value.label) == '<label for="placeholder_value">name</label>'
-        assert str(form2.placeholder_value.label) == '<label for="placeholder_value">city</label>'
+        assert (
+            str(form1.placeholder_value.label)
+            == '<label for="placeholder_value">What is the custom content in ((name)) ?</label>'
+        )
+        assert (
+            str(form2.placeholder_value.label)
+            == '<label for="placeholder_value">What is the custom content in ((city)) ?</label>'
+        )
         assert (
             str(form3.placeholder_value.label)
-            == '<label for="placeholder_value">Do you want to include the content in ((elligible)) ?</label>'
+            == '<label for="placeholder_value">Do you want to include the content in ((elligible)) ?</label>'
         )
 
 

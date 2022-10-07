@@ -1066,37 +1066,37 @@ def test_send_one_off_does_not_send_without_the_correct_permissions(
         (
             create_sms_template(),  # SMS
             partial(url_for, "main.send_test"),
-            "Personalise this message",
+            "What is the custom content in ((name)) ?",
             False,
         ),
         (
             create_sms_template(),
             partial(url_for, "main.send_one_off"),
-            "Add recipients",
+            "Phone number",
             False,
         ),
         (
             create_sms_template(),
             partial(url_for, "main.send_test", help=1),
-            "Example text message",
+            "What is the custom content in ((name)) ?",
             True,
         ),
         (
             create_email_template(),
             partial(url_for, "main.send_test", help=1),
-            "Example text message",
+            "What is the custom content in ((thing)) ?",
             True,
         ),
         (
             create_email_template(),
             partial(url_for, "main.send_test"),
-            "Personalise this message",
+            "What is the custom content in ((thing)) ?",
             False,
         ),
         (
             create_email_template(),
             partial(url_for, "main.send_one_off"),
-            "Add recipients",
+            "Email address",
             False,
         ),
     ],
@@ -1134,13 +1134,13 @@ def test_send_one_off_or_test_has_correct_page_titles(
             "main.send_test_step",
             0,
             {"phone number": "6502532222"},
-            "One",
+            "What is the custom content in ((one)) ?",
         ),
         (
             "main.send_test_step",
             1,
             {"phone number": "6502532222", "one": "one"},
-            "Two",
+            "What is the custom content in ((two)) ?",
         ),
         (
             "main.send_one_off_step",
@@ -1152,13 +1152,13 @@ def test_send_one_off_or_test_has_correct_page_titles(
             "main.send_one_off_step",
             1,
             {"phone number": "6502532222"},
-            "One",
+            "What is the custom content in ((one)) ?",
         ),
         (
             "main.send_one_off_step",
             2,
             {"phone number": "6502532222", "one": "one"},
-            "Two",
+            "What is the custom content in ((two)) ?",
         ),
     ],
 )
@@ -1268,7 +1268,7 @@ def test_send_one_off_offers_link_to_upload(
     )
 
     back_link = page.select("main a")[0]
-    link = page.select("main a")[2]
+    link = page.select("main a#list-uploader")[0]
 
     assert back_link.text.strip() == "Back"
 
@@ -1303,7 +1303,7 @@ def test_send_one_off_offers_link_to_request_to_go_live(
     client_request.login(active_user_with_permissions, service=service)
 
     page = client_request.get(
-        "main.send_one_off",
+        "main.add_recipients",
         service_id=SERVICE_ONE_ID,
         template_id=fake_uuid,
         _follow_redirects=True,
@@ -1359,7 +1359,7 @@ def test_link_to_upload_not_offered_when_entering_personalisation(
 
     # We’re entering personalisation
     assert page.select_one("input[type=text]")["name"] == "placeholder_value"
-    assert page.select_one("label[for=placeholder_value]").text.strip() == "Name"
+    assert page.select_one("h1 label[for=placeholder_value]").text.strip() == "What is the custom content in ((name)) ?"
     # …but first link on the page is ‘Back’, so not preceeded by ‘Upload’
     assert page.select_one("main a").text == "Back"
     assert "Upload" not in page.select_one("main").text
@@ -1640,7 +1640,7 @@ def test_send_test_sms_message_with_placeholders_shows_first_field(
         _follow_redirects=True,
     )
 
-    assert page.select("label")[0].text.strip() == "Name"
+    assert page.select("label")[0].text.strip() == "What is the custom content in ((name)) ?"
     assert page.select("input")[0]["name"] == "placeholder_value"
     assert page.select(".back-link")[0]["href"] == url_for(expected_back_link_endpoint, service_id=SERVICE_ONE_ID, **extra_args)
     with client_request.session_transaction() as session:
@@ -1866,8 +1866,8 @@ def test_send_test_indicates_optional_address_columns(
         step_index=3,
     )
 
-    assert normalize_spaces(page.select("label")[0].text) == ("Address line 4")
-    assert normalize_spaces(page.select("label + [id*='-hint']")[0].text) == ("Optional")
+    assert normalize_spaces(page.select("h1 label")[0].text) == ("What is the custom content in ((address line 4)) ?")
+    assert normalize_spaces(page.select("h1 + [id*='-hint']")[0].text) == ("Optional")
     assert page.select(".back-link")[0]["href"] == url_for(
         "main.send_one_off_step",
         service_id=SERVICE_ONE_ID,

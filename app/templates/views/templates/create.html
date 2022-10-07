@@ -1,5 +1,5 @@
 {% extends "admin_template.html" %}
-{% from "components/page-header.html" import page_header %}
+{% from "components/page-header.html" import page_header, govuk_back_link %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/radios.html" import radios %}
 {% from "components/form.html" import form_wrapper %}
@@ -13,13 +13,15 @@
   {% set choose_url = url_for('main.choose_template', service_id=service_id, template_type=template_type, template_folder_id=template_folder_id) %}
   {% set dashboard_url = url_for('main.service_dashboard', service_id=service_id) %}
   {% set back_url = dashboard_url if request.args.get('source') == 'dashboard' else choose_url %}
-  {{ page_header(
-    header_txt,
-    back_link=back_url,
-    id_text=form.what_type.id + "-label"
-  ) }}
+  {{ govuk_back_link(back_url) }}
 
   {% call form_wrapper() %}
+    <legend>
+    {{ page_header(
+      header_txt,
+      id_text=form.what_type.id + "-label"
+    ) }}
+    </legend>
     {{ radios(form.what_type, disable=disabled_options, option_hints=option_hints, hide_legend=True) }}
     {{ page_footer(_('Continue')) }}
   {% endcall %}

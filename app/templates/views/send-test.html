@@ -1,5 +1,5 @@
 {% extends "admin_template.html" %}
-{% from "components/page-header.html" import page_header %}
+{% from "components/page-header.html" import page_header, govuk_back_link %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/message-count-label.html" import recipient_count_label %}
 {% from "components/radios.html" import radios %}
@@ -7,12 +7,12 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  {{ page_title }}
+  {{ form.placeholder_value.label.text | capitalize }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
-{{ page_header(page_title, back_link=back_link ) }}
+{{ govuk_back_link(back_link) }}
 
 {% call
   form_wrapper(
@@ -23,26 +23,19 @@
 <div class="grid-row contain-floats">
   {% set form_label = form.placeholder_value.label.text %}
 
-  {% if current_service.trial_mode %}
-  <p class="px-gutterHalf">
-    {{ _("In trial mode, you can only send to your team members on GC Notify.") }}<br>
-    {{ _("To send to more recipients, <a href='{}'>request to go live</a>.").format(url_for('.request_to_go_live', service_id=current_service.id)) }}
-  </p>
-  {% endif %}
-
   <div
     class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border {% if form_label == 'phone number' %}extra-tracking{% endif %}"
   >
     {% if is_conditional %}
-      {{ radios(form.placeholder_value) }}
+      {{ radios(form.placeholder_value, is_page_heading=True) }}
     {% else %}
       {% set hint_txt = _('Optional') %}
       {% if form_label == 'phone number' %}
         {{ textbox( form.placeholder_value,
-      label=_(form.placeholder_value.label.text)|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', ) }}
+      label=_(form.placeholder_value.label.text)|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', is_page_heading=True,) }}
       {% else %}
         {{ textbox( form.placeholder_value,
-        label=form.placeholder_value.label.text|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', ) }}
+        label=form.placeholder_value.label.text|capitalize, hint=hint_txt if optional_placeholder else None, width='w-full', is_page_heading=True,) }}
       {% endif %}
     {% endif %}
   </div>
