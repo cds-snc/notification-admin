@@ -11,7 +11,8 @@
   suffix=None,
   safe_error_message=False,
   rows=8,
-  required=true
+  required=true,
+  is_page_heading=false
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
@@ -19,13 +20,18 @@
   >
     {% set describedby = '' %}
 
+    {% if is_page_heading %}
+    <h1><label class="form-label heading-large" for="{{ field.name }}" >
+    {% else %}
     <label class="form-label" for="{{ field.name }}" >
+    {% endif %}
       {% if label %}
         {{ label }}
       {% else %}
         {{ field.label.text }}
       {% endif %}
     </label>
+    {% if is_page_heading %}</h1>{% endif %}
     {% if hint %}
     {% set describedby = describedby + field.name + '-hint ' %}
       <span id="{{ field.name }}-hint" class="form-hint">

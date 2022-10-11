@@ -244,7 +244,8 @@ def test_should_show_recent_templates_on_dashboard(
         service_id=SERVICE_ONE_ID,
     )
 
-    mock_template_stats.assert_called_once_with(SERVICE_ONE_ID, limit_days=7)
+    mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=7)
+    mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=1)
 
     headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
     assert "Sent in the last week" in headers
@@ -442,6 +443,38 @@ def test_correct_columns_display_on_dashboard(
 
 
 @pytest.mark.parametrize(
+    "feature_flag",
+    [True, False],
+)
+def test_daily_usage_section_shown(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    app_,
+    feature_flag,
+):
+    app_.config["FF_SMS_PARTS_UI"] = feature_flag
+
+    page = client_request.get(
+        "main.service_dashboard",
+        service_id=service_one["id"],
+    )
+    headings = [element.text.strip() for element in page.find_all("h2")]
+    big_number_labels = [element.text.strip() for element in page.select(".big-number-label")]
+
+    if feature_flag:
+        assert "Usage today" in headings
+        assert "text messages  left today" in big_number_labels
+    else:
+        assert "Usage today" not in headings
+        assert "text messages  left today" not in big_number_labels
+
+
+@pytest.mark.parametrize(
     "permissions, totals, big_number_class, expected_column_count",
     [
         (
@@ -564,7 +597,7 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 2, "delivered": 2, "failed": 0},
                 "sms": {"requested": 2, "delivered": 2, "failed": 0},
             },
-            ("2 courriels envoyés Aucun échec", "2 messages texte envoyé Aucun échec"),
+            ("2 courriels envoyés Aucun échec", "2 messages texte envoyés Aucun échec"),
             "fr",
         ),
     ],

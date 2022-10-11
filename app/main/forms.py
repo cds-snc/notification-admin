@@ -711,7 +711,7 @@ class EmailMessageLimit(StripWhitespaceForm):
 
 class SMSMessageLimit(StripWhitespaceForm):
     message_limit = IntegerField(
-        _l("Daily SMS message limit"),
+        _l("Daily text fragments limit"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validators.NumberRange(min=1),
@@ -1425,10 +1425,10 @@ def get_placeholder_form_instance(
         else:
             field = uk_mobile_number(label=placeholder_name)
     elif optional_placeholder:
-        field = StringField(placeholder_name)
+        field = StringField(_l("What is the custom content in (({})) ?").format(placeholder_name))
     elif is_conditional:
         field = RadioField(
-            _l("Do you want to include the content in (({})) ?").format(placeholder_name),
+            _l("Do you want to include the content in (({})) ?").format(placeholder_name),
             choices=[
                 ("yes", _l("Yes")),
                 ("no", _l("No")),
@@ -1436,7 +1436,7 @@ def get_placeholder_form_instance(
         )
     else:
         field = StringField(
-            placeholder_name,
+            _l("What is the custom content in (({})) ?").format(placeholder_name),
             validators=[DataRequired(message=_l("This cannot be empty"))],
         )
 

@@ -13,11 +13,13 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
+from notifications_utils.clients.redis import sms_daily_count_cache_key
 from notifications_utils.recipients import RecipientCSV
 from notifications_utils.template import LetterImageTemplate, LetterPreviewTemplate
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
+from app.main.views.send import daily_sms_fragment_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -36,6 +38,7 @@ from tests.conftest import (
     mock_get_service_letter_template,
     mock_get_service_template,
     normalize_spaces,
+    set_config,
 )
 
 template_types = ["email", "sms"]
@@ -45,6 +48,14 @@ unchanging_fake_uuid = uuid.uuid4()
 # The * ignores hidden files, eg .DS_Store
 test_spreadsheet_files = glob(path.join("tests", "spreadsheet_files", "*"))
 test_non_spreadsheet_files = glob(path.join("tests", "non_spreadsheet_files", "*"))
+
+
+@pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
+def test_daily_sms_fragment_count(mocker, redis_value, expected_result):
+    mocker.patch(
+        "app.extensions.redis_client.get", lambda x: redis_value if x == sms_daily_count_cache_key(SERVICE_ONE_ID) else None
+    )
+    assert daily_sms_fragment_count(SERVICE_ONE_ID) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -1055,37 +1066,37 @@ def test_send_one_off_does_not_send_without_the_correct_permissions(
         (
             create_sms_template(),  # SMS
             partial(url_for, "main.send_test"),
-            "Personalise this message",
+            "What is the custom content in ((name)) ?",
             False,
         ),
         (
             create_sms_template(),
             partial(url_for, "main.send_one_off"),
-            "Add recipients",
+            "Phone number",
             False,
         ),
         (
             create_sms_template(),
             partial(url_for, "main.send_test", help=1),
-            "Example text message",
+            "What is the custom content in ((name)) ?",
             True,
         ),
         (
             create_email_template(),
             partial(url_for, "main.send_test", help=1),
-            "Example text message",
+            "What is the custom content in ((thing)) ?",
             True,
         ),
         (
             create_email_template(),
             partial(url_for, "main.send_test"),
-            "Personalise this message",
+            "What is the custom content in ((thing)) ?",
             False,
         ),
         (
             create_email_template(),
             partial(url_for, "main.send_one_off"),
-            "Add recipients",
+            "Email address",
             False,
         ),
     ],
@@ -1123,13 +1134,13 @@ def test_send_one_off_or_test_has_correct_page_titles(
             "main.send_test_step",
             0,
             {"phone number": "6502532222"},
-            "One",
+            "What is the custom content in ((one)) ?",
         ),
         (
             "main.send_test_step",
             1,
             {"phone number": "6502532222", "one": "one"},
-            "Two",
+            "What is the custom content in ((two)) ?",
         ),
         (
             "main.send_one_off_step",
@@ -1141,13 +1152,13 @@ def test_send_one_off_or_test_has_correct_page_titles(
             "main.send_one_off_step",
             1,
             {"phone number": "6502532222"},
-            "One",
+            "What is the custom content in ((one)) ?",
         ),
         (
             "main.send_one_off_step",
             2,
             {"phone number": "6502532222", "one": "one"},
-            "Two",
+            "What is the custom content in ((two)) ?",
         ),
     ],
 )
@@ -1257,7 +1268,7 @@ def test_send_one_off_offers_link_to_upload(
     )
 
     back_link = page.select("main a")[0]
-    link = page.select("main a")[2]
+    link = page.select("main a#list-uploader")[0]
 
     assert back_link.text.strip() == "Back"
 
@@ -1292,7 +1303,7 @@ def test_send_one_off_offers_link_to_request_to_go_live(
     client_request.login(active_user_with_permissions, service=service)
 
     page = client_request.get(
-        "main.send_one_off",
+        "main.add_recipients",
         service_id=SERVICE_ONE_ID,
         template_id=fake_uuid,
         _follow_redirects=True,
@@ -1348,7 +1359,7 @@ def test_link_to_upload_not_offered_when_entering_personalisation(
 
     # We’re entering personalisation
     assert page.select_one("input[type=text]")["name"] == "placeholder_value"
-    assert page.select_one("label[for=placeholder_value]").text.strip() == "Name"
+    assert page.select_one("h1 label[for=placeholder_value]").text.strip() == "What is the custom content in ((name)) ?"
     # …but first link on the page is ‘Back’, so not preceeded by ‘Upload’
     assert page.select_one("main a").text == "Back"
     assert "Upload" not in page.select_one("main").text
@@ -1629,7 +1640,7 @@ def test_send_test_sms_message_with_placeholders_shows_first_field(
         _follow_redirects=True,
     )
 
-    assert page.select("label")[0].text.strip() == "Name"
+    assert page.select("label")[0].text.strip() == "What is the custom content in ((name)) ?"
     assert page.select("input")[0]["name"] == "placeholder_value"
     assert page.select(".back-link")[0]["href"] == url_for(expected_back_link_endpoint, service_id=SERVICE_ONE_ID, **extra_args)
     with client_request.session_transaction() as session:
@@ -1855,8 +1866,8 @@ def test_send_test_indicates_optional_address_columns(
         step_index=3,
     )
 
-    assert normalize_spaces(page.select("label")[0].text) == ("Address line 4")
-    assert normalize_spaces(page.select("label + [id*='-hint']")[0].text) == ("Optional")
+    assert normalize_spaces(page.select("h1 label")[0].text) == ("What is the custom content in ((address line 4)) ?")
+    assert normalize_spaces(page.select("h1 + [id*='-hint']")[0].text) == ("Optional")
     assert page.select(".back-link")[0]["href"] == url_for(
         "main.send_one_off_step",
         service_id=SERVICE_ONE_ID,
@@ -2503,20 +2514,131 @@ def test_check_messages_back_link(
 @pytest.mark.parametrize(
     "num_requested,expected_msg",
     [
-        (0, "‘valid.csv’ contains 100 phone numbers."),
+        (0, "If a message is long, it travels in fragments. Each fragment counts toward your daily limit."),
+        (1, "If a message is long, it travels in fragments. Each fragment counts toward your daily limit."),
+    ],
+    ids=["none_sent", "some_sent"],
+)
+def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAILY_LIMIT_true(
+    app_,
+    mocker,
+    client_request,
+    mock_get_service,  # set message_limit to 50 and sms limit to 20
+    mock_get_users_by_service,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_download,
+    mock_s3_set_metadata,
+    fake_uuid,
+    num_requested,
+    expected_msg,
+):
+    # csv with 100 phone numbers
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 30)),
+    )
+    mocker.patch(
+        "app.service_api_client.get_service_statistics",
+        return_value={
+            "sms": {"requested": num_requested, "delivered": 0, "failed": 0},
+            "email": {"requested": 0, "delivered": 0, "failed": 0},
+        },
+    )
+
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {
+            fake_uuid: {
+                "template_id": fake_uuid,
+                "notification_count": 1,
+                "valid": True,
+            }
+        }
+
+    with set_config(app_, "FF_SPIKE_SMS_DAILY_LIMIT", True):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="valid.csv",
+            _test_page_title=False,
+        )
+
+    # remove excess whitespace from element
+    details = page.find(role="alert").findAll("p")[0]
+    details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
+    assert details == expected_msg
+
+
+def test_check_messages_does_not_show_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAILY_LIMIT_false(
+    app_,
+    mocker,
+    client_request,
+    mock_get_service,  # set message_limit to 50 and sms limit to 20
+    mock_get_users_by_service,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_download,
+    mock_s3_set_metadata,
+    fake_uuid,
+):
+    # csv with 100 phone numbers
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 30)),
+    )
+    mocker.patch(
+        "app.service_api_client.get_service_statistics",
+        return_value={
+            "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            "email": {"requested": 0, "delivered": 0, "failed": 0},
+        },
+    )
+
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {
+            fake_uuid: {
+                "template_id": fake_uuid,
+                "notification_count": 1,
+                "valid": True,
+            }
+        }
+
+    with set_config(app_, "FF_SPIKE_SMS_DAILY_LIMIT", False):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="valid.csv",
+            _test_page_title=False,
+        )
+
+    assert page.find(role="alert") is None
+
+
+@pytest.mark.parametrize(
+    "num_requested,expected_msg",
+    [
+        (0, "‘valid.csv’ contains 100 email addresses."),
         (
             1,
-            "You can still send 49 messages today, but ‘valid.csv’ contains 100 phone numbers.",
+            "You can still send 49 messages today, but ‘valid.csv’ contains 100 email addresses.",
         ),
     ],
     ids=["none_sent", "some_sent"],
 )
-def test_check_messages_shows_too_many_messages_errors(
+def test_check_messages_shows_too_many_email_messages_errors(
     mocker,
     client_request,
     mock_get_service,  # set message_limit to 50
     mock_get_users_by_service,
-    mock_get_service_template,
+    mock_get_service_email_template_without_placeholders,
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
@@ -2527,13 +2649,13 @@ def test_check_messages_shows_too_many_messages_errors(
     # csv with 100 phone numbers
     mocker.patch(
         "app.main.views.send.s3download",
-        return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 100)),
+        return_value=",\n".join(["email address"] + ([mock_get_users_by_service(None)[0]["email_address"]] * 100)),
     )
     mocker.patch(
         "app.service_api_client.get_service_statistics",
         return_value={
-            "sms": {"requested": num_requested, "delivered": 0, "failed": 0},
-            "email": {"requested": 0, "delivered": 0, "failed": 0},
+            "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            "email": {"requested": num_requested, "delivered": 0, "failed": 0},
         },
     )
 
@@ -3601,3 +3723,23 @@ def test_s3_send_shows_available_files(
     multiple_choise_options = [x.text.strip() for x in options]
 
     assert multiple_choise_options == expected_filenames
+
+
+@pytest.mark.parametrize(
+    "feature_flag, expected",
+    [(True, 1), (False, 0)],
+)
+def test_sms_parts_section_is_visible_depending_on_ff(
+    feature_flag, expected, client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, app_
+):
+    app_.config["FF_SMS_PARTS_UI"] = feature_flag
+
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    assert page.h1.text.strip() == "Review before sending"
+    sms_count = page.select("#sms-count")
+    assert len(list(sms_count)) == expected
