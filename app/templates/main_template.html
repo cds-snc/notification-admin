@@ -30,6 +30,14 @@
     href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap"
     rel="stylesheet"
   />
+  <!-- Font Awesome (Icons) -->
+  <link href="https://unpkg.com/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+  <!-- GC Design System -->
+  <link rel="stylesheet" href="/node_modules/gcds-components/dist/gcds/gcds.css">
+  <script type="module" src="/components/dist/gcds/gcds.esm.js"></script>
+  <script nomodule src="/components/dist/gcds/gcds.js"></script>
+
   <meta name="theme-color" content="#0b0c0c"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta
@@ -142,7 +150,14 @@
 
 
 {% block after_header %}{% endblock %}
-
+<div>
+  <gcds-button
+  button-role="primary"
+  button-type="button"
+  >
+    Primary
+  </gcds-button>
+</div>
 
 {% block content %}{% endblock %}
 <div id="global-app-error" class="app-error hidden"></div>
