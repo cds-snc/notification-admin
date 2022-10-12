@@ -101,7 +101,7 @@
   }
   .table-field-index {
     width: 15px;
-    @apply text-smaller leading-tight font-bold;
+    @apply relative text-smaller leading-tight font-bold;
   }
   .table-field-index a:before {
     content: "";
