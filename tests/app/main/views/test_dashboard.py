@@ -164,10 +164,10 @@ def test_redirect_caseworkers_to_templates(
 @pytest.mark.parametrize(
     "permissions, text_in_page, text_not_in_page",
     [
-        (["view_activity", "manage_templates"], ["Create a template"], ["Choose a template"]),
-        (["view_activity", "send_messages"], ["Choose a template"], ["Create a template"]),
-        (["view_activity"], [], ["Create a template", "Choose a template"]),
-        (["view_activity", "manage_templates", "send_messages"], ["Create a template", "Choose a template"], []),
+        (["view_activity", "manage_templates"], ["Create template"], ["Choose template"]),
+        (["view_activity", "send_messages"], ["Choose template"], ["Create template"]),
+        (["view_activity"], [], ["Create template", "Choose template"]),
+        (["view_activity", "manage_templates", "send_messages"], ["Create template", "Choose template"], []),
     ],
 )
 def test_task_shortcuts_are_visible_based_on_permissions(
