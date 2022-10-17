@@ -81,6 +81,7 @@ def _create_service(
             service_name=service_name,
             organisation_type=organisation_type,
             message_limit=current_app.config["DEFAULT_SERVICE_LIMIT"],
+            sms_daily_limit=current_app.config["DEFAULT_SMS_DAILY_LIMIT"],
             restricted=True,
             user_id=session["user_id"],
             email_from=email_from,
