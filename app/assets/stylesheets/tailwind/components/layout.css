@@ -1,4 +1,5 @@
 @layer components {
+
   /*! purgecss start ignore */
   .banner,
   .banner-default,
@@ -16,6 +17,18 @@
     @apply border-red text-red mt-gutterHalf;
   }
 
+  .banner-dangerous p {
+    @apply my-gutterHalf;
+  }
+
+  .banner-dangerous p:last-child {
+    @apply mb-0;
+  }
+
+  .banner-dangerous p:first-child {
+    @apply mt-0;
+  }
+
   .banner-title {
     @apply text-title border-none pl-0 font-bold;
   }
@@ -31,44 +44,53 @@
   }
 
   .column-main .heading-large,
-  .column-main > .heading-medium {
+  .column-main>.heading-medium {
     @apply mx-0 mb-8 mt-gutterHalf break-words;
   }
+
   .column-main .heading-large.top-gutter-0,
-  .column-main > .heading-medium.top-gutter-0 {
+  .column-main>.heading-medium.top-gutter-0 {
     @apply mt-0;
   }
 
   #content {
     @apply pb-gutter outline-none;
   }
+
   @screen md {
     #content {
       padding-bottom: 90px;
     }
   }
+
   /* This was previously the %site-width-container mixin */
   #content,
   .global-cookie-message p {
     max-width: 960px;
     @apply my-0 mx-gutterHalf;
   }
+
   @screen md {
+
     #content,
     .global-cookie-message p {
       @apply mx-gutter;
     }
   }
+
   @screen lg {
+
     #content,
     .global-cookie-message p {
       @apply mx-auto;
     }
   }
+
   /* Home page was built with different CSS - override */
   #content.home-page-content {
     max-width: none;
     @apply mx-0 pb-0;
   }
+
   /*! purgecss end ignore */
 }
