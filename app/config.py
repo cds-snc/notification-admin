@@ -63,6 +63,7 @@ class Config(object):
         "other": 25_000,
     }
     DEFAULT_LIVE_SERVICE_LIMIT = env.int("DEFAULT_LIVE_SERVICE_LIMIT", 10_000)
+    DEFAULT_LIVE_SMS_DAILY_LIMIT = env.int("DEFAULT_LIVE_SMS_DAILY_LIMIT", 1000)
     DEFAULT_SERVICE_LIMIT = env.int("DEFAULT_SERVICE_LIMIT", 50)
     DEFAULT_SMS_DAILY_LIMIT = env.int("DEFAULT_SMS_DAILY_LIMIT", 50)
     DOCUMENTATION_DOMAIN = os.getenv("DOCUMENTATION_DOMAIN", "documentation.notification.canada.ca")

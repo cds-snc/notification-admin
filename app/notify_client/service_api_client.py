@@ -125,10 +125,11 @@ class ServiceAPIClient(NotifyAdminAPIClient):
 
     @cache.delete("live-service-and-organisation-counts")
     @cache.delete("organisations")
-    def update_status(self, service_id, live, message_limit):
+    def update_status(self, service_id, live, message_limit, sms_daily_limit):
         return self.update_service(
             service_id,
             message_limit=message_limit,
+            sms_daily_limit=sms_daily_limit,
             restricted=(not live),
             go_live_at=str(datetime.utcnow()) if live else None,
         )
