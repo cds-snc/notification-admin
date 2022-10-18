@@ -639,7 +639,6 @@ def test_switch_service_to_live(
 ):
     service_one["message_limit"] = current_limit
     service_one["sms_daily_limit"] = current_sms_limit
-
     client_request.login(platform_admin_user, service_one)
     client_request.post(
         "main.service_switch_live",
