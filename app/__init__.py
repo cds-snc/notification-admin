@@ -639,7 +639,9 @@ def useful_headers_after_request(response):
             "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
             "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
-            "frame-src 'self' www.googletagmanager.com www.youtube.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;".format(asset_domain=asset_domain)
+            "frame-src 'self' www.googletagmanager.com www.youtube.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;".format(
+                asset_domain=asset_domain
+            )
         ),
     )
     if "Cache-Control" in response.headers:
