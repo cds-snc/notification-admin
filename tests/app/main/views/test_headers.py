@@ -65,13 +65,14 @@ def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisat
         "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
         "default-src 'self' static.example.com 'unsafe-inline';"
         f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-        "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
+        f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+        "connect-src 'self' *.google-analytics.com *.googletagmanager.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
         "object-src 'self';"
         "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
         "'self' static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
-        "frame-src 'self' www.googletagmanager.com www.youtube.com;"
+        "frame-src 'self' www.googletagmanager.com www.youtube.com https://cdssnc.qualtrics.com/;"
     )
 
 
@@ -127,11 +128,12 @@ def test_headers_non_ascii_characters_are_replaced(
         "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
         "default-src 'self' static.example.com 'unsafe-inline';"
         f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-        "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
+        f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+        "connect-src 'self' *.google-analytics.com *.googletagmanager.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
         "object-src 'self';"
         "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
         "'self' static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
-        "frame-src 'self' www.googletagmanager.com www.youtube.com;"
+        "frame-src 'self' www.googletagmanager.com www.youtube.com https://cdssnc.qualtrics.com/;"
     )
