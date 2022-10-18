@@ -73,6 +73,7 @@ def test_client_creates_service_with_correct_data(
         "My first service",
         "central_government",
         1,
+        10,
         True,
         fake_uuid,
         "test@example.com",
@@ -89,6 +90,7 @@ def test_client_creates_service_with_correct_data(
             # The rest pass through with the same names
             organisation_type="central_government",
             message_limit=1,
+            sms_daily_limit=10,
             restricted=True,
             user_id=fake_uuid,
             email_from="test@example.com",
