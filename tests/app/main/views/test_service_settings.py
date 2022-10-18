@@ -170,7 +170,7 @@ def test_should_show_overview(
                 "Service name Test Service Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
-                "Daily email message limit 1,000 notifications",
+                "Daily message limit 1,000 notifications",
                 "Daily text fragments limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
@@ -194,7 +194,7 @@ def test_should_show_overview(
                 "Service name Test Service Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
-                "Daily email message limit 1,000 notifications",
+                "Daily message limit 1,000 notifications",
                 "Daily text fragments limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
@@ -212,7 +212,7 @@ def test_should_show_overview(
                 "Live On Change",
                 "Count in list of live services Yes Change",
                 "Organisation Test Organisation Government of Canada Change",
-                "Daily email message limit 1,000 Change",
+                "Daily message limit 1,000 Change",
                 "Daily text fragments limit 1,000 Change",
                 "API rate limit per minute 100",
                 "Text message senders GOVUK Manage",
@@ -406,7 +406,7 @@ def test_should_show_overview_for_service_with_more_things_set(
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
-                "Daily email message limit 1,000 notifications",
+                "Daily message limit 1,000 notifications",
                 "Daily text fragments limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
@@ -426,7 +426,7 @@ def test_should_show_overview_for_service_with_more_things_set(
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Email code or text message code Change",
-                "Daily email message limit 1,000 notifications",
+                "Daily message limit 1,000 notifications",
                 "Daily text fragments limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
@@ -3124,11 +3124,7 @@ def test_should_show_page_to_set_message_limit(
     response = platform_admin_client.get(url_for("main.set_message_limit", service_id=SERVICE_ONE_ID))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-
-    if app_.config["FF_SPIKE_SMS_DAILY_LIMIT"]:
-        assert normalize_spaces(page.select_one("label").text) == "Daily email message limit"
-    else:
-        assert normalize_spaces(page.select_one("label").text) == "Daily message limit"
+    assert normalize_spaces(page.select_one("label").text) == "Daily message limit"
 
 
 @freeze_time("2017-04-01 11:09:00.061258")
