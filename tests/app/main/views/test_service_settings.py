@@ -619,12 +619,12 @@ def test_show_restricted_service(
 
 @freeze_time("2017-04-01 11:09:00.061258")
 @pytest.mark.parametrize(
-    "current_limit, expected_limit",
+    "current_limit, expected_limit, current_sms_limit, expected_sms_limit",
     [
-        (42, 42),
+        (42, 42, 33, 33),
         # Maps to DEFAULT_SERVICE_LIMIT and DEFAULT_LIVE_SERVICE_LIMIT in config
-        (50, 10_000),
-        (50_000, 50_000),
+        (50, 10_000, 50, 1000),
+        (50_000, 50_000, 3000, 3000),
     ],
 )
 def test_switch_service_to_live(
@@ -634,8 +634,12 @@ def test_switch_service_to_live(
     service_one,
     current_limit,
     expected_limit,
+    current_sms_limit,
+    expected_sms_limit,
 ):
     service_one["message_limit"] = current_limit
+    service_one["sms_daily_limit"] = current_sms_limit
+
     client_request.login(platform_admin_user, service_one)
     client_request.post(
         "main.service_switch_live",
@@ -651,6 +655,7 @@ def test_switch_service_to_live(
     mock_update_service.assert_called_with(
         SERVICE_ONE_ID,
         message_limit=expected_limit,
+        sms_daily_limit=expected_sms_limit,
         restricted=False,
         go_live_at="2017-04-01 11:09:00.061258",
     )
@@ -711,11 +716,11 @@ def test_show_live_banner(
 
 
 @pytest.mark.parametrize(
-    "current_limit, expected_limit",
+    "current_limit, expected_limit, current_sms_limit, expected_sms_limit",
     [
-        (42, 50),
-        (50, 50),
-        (50_000, 50),
+        (42, 50, 33, 50),
+        (50, 50, 50, 50),
+        (50_000, 50, 3000, 50),
     ],
 )
 def test_switch_service_to_restricted(
@@ -725,9 +730,12 @@ def test_switch_service_to_restricted(
     mock_update_service,
     current_limit,
     expected_limit,
+    current_sms_limit,
+    expected_sms_limit,
     service_one,
 ):
     service_one["message_limit"] = current_limit
+    service_one["sms_daily_limit"] = current_sms_limit
     client_request.login(platform_admin_user, service_one)
     client_request.post(
         "main.service_switch_live",
@@ -740,7 +748,9 @@ def test_switch_service_to_restricted(
             _external=True,
         ),
     )
-    mock_update_service.assert_called_with(SERVICE_ONE_ID, message_limit=expected_limit, restricted=True, go_live_at=None)
+    mock_update_service.assert_called_with(
+        SERVICE_ONE_ID, message_limit=expected_limit, sms_daily_limit=expected_sms_limit, restricted=True, go_live_at=None
+    )
 
 
 @pytest.mark.parametrize(

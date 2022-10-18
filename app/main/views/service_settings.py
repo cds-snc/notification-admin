@@ -367,6 +367,7 @@ def service_switch_live(service_id):
     if form.validate_on_submit():
         live = form.enabled.data
         message_limit = current_app.config["DEFAULT_SERVICE_LIMIT"]
+        sms_daily_limit = current_app.config["DEFAULT_SMS_DAILY_LIMIT"]
         if live:
             if current_service.message_limit != current_app.config["DEFAULT_SERVICE_LIMIT"]:
                 message_limit = current_service.message_limit
