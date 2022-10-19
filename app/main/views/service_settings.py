@@ -367,14 +367,21 @@ def service_switch_live(service_id):
     if form.validate_on_submit():
         live = form.enabled.data
         message_limit = current_app.config["DEFAULT_SERVICE_LIMIT"]
+        sms_daily_limit = current_app.config["DEFAULT_SMS_DAILY_LIMIT"]
         if live:
             if current_service.message_limit != current_app.config["DEFAULT_SERVICE_LIMIT"]:
                 message_limit = current_service.message_limit
             else:
                 message_limit = current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"]
+
+            if current_service.sms_daily_limit != current_app.config["DEFAULT_SMS_DAILY_LIMIT"]:
+                sms_daily_limit = current_service.sms_daily_limit
+            else:
+                sms_daily_limit = current_app.config["DEFAULT_LIVE_SMS_DAILY_LIMIT"]
+
             flash(_("An email has been sent to service users"), "default_with_tick")
 
-        current_service.update_status(live=live, message_limit=message_limit)
+        current_service.update_status(live=live, message_limit=message_limit, sms_daily_limit=sms_daily_limit)
         return redirect(url_for(".service_settings", service_id=service_id))
 
     return render_template(
