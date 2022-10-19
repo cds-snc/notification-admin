@@ -113,13 +113,13 @@
     </ol>
   </div>
   {% if api_notifications.notifications %}
-      <div class="mt-gutterHalf">
+      <div class="api-notifications-item border-t-0 block mt-gutterhalf">
         {% if api_notifications.notifications|length == 50 %}
-          <p>
+          <p class="api-notifications-item-meta">
             {{ _('Only showing the first 50 messages.') }}
           </p>
         {% endif %}
-        <p>
+        <p class="api-notifications-item-meta mt-0">
           {{ _('GC Notify deletes messages after 7 days.') }}
         </p>
       </div>
