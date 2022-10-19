@@ -1,11 +1,15 @@
 @layer components {
   /*! purgecss start ignore */
   .api-notifications {
-    @apply font-monospace border-0 border-b-1 border-solid border-gray-grey2;
+    @apply font-monospace border-0 border-b-1 border-solid border-gray-300;
   }
 
   .api-notifications-item {
-    @apply border-t-1 border-solid border-gray-grey2 p-0 pt-4;
+    @apply flex align-baseline gap-2 border-t-1 border-solid border-gray-300 p-0;
+  }
+  .api-notifications-item::before {
+    width: 2ch;
+    @apply text-right bg-gray-200 text-gray-800 font-normal p-2 border-0 border-r-1 border-solid border-gray-300;
   }
   .api-notifications-item-title {
     @apply block no-underline text-blue;
