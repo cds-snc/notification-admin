@@ -395,6 +395,7 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
     mock_create_service.assert_called_once_with(
         service_name="testing the post",
         message_limit=app_.config["DEFAULT_SERVICE_LIMIT"],
+        sms_daily_limit=app_.config["DEFAULT_SMS_DAILY_LIMIT"],
         restricted=True,
         user_id=api_user_active["id"],
         email_from="testing.the.post",
