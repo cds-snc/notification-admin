@@ -195,6 +195,37 @@ def test_task_shortcuts_are_visible_based_on_permissions(
         assert text not in page.text
 
 
+@pytest.mark.parametrize(
+    "admin_url, is_widget_present",
+    [
+        ("http://localhost:6012", True),
+        ("https://staging.notification.cdssandbox.xyz", True),
+        ("https://notification.canada.ca", False),
+    ],
+)
+def test_survey_widget_presence(
+    client_request: ClientRequest,
+    active_user_with_permissions,
+    mock_get_service_templates,
+    mock_get_jobs,
+    mock_get_template_statistics,
+    mocker,
+    admin_url,
+    is_widget_present,
+):
+    mocker.patch.dict("app.current_app.config", values={"ADMIN_BASE_URL": admin_url})
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity", "manage_templates"]
+    client_request.login(active_user_with_permissions)
+
+    page = client_request.get(
+        "main.service_dashboard",
+        service_id=SERVICE_ONE_ID,
+    )
+
+    widget = page.select_one("#ZN_2nHmsSE63l43P0y")  # find by the qualtrics survey ID
+    assert bool(widget) == is_widget_present
+
+
 def test_sending_link_has_query_param(
     client_request: ClientRequest,
     active_user_with_permissions,
