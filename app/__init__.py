@@ -632,12 +632,13 @@ def useful_headers_after_request(response):
         (
             "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
             "default-src 'self' {asset_domain} 'unsafe-inline';"
-            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com https://unpkg.com/ 'nonce-{nonce}' 'unsafe-eval' data:;"
             "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
-            "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
+            "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com https://unpkg.com/ 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
             "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
+            "gcds-src 'self' https://unpkg.com/ 'unsafe-inline';"
             "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(asset_domain=asset_domain)
         ),
     )
