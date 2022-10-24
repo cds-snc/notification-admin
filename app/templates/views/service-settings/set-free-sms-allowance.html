@@ -12,7 +12,7 @@
 
   {% call form_wrapper() %}
     {{ page_header(
-      'Free text message allowance',
+      _('Free fragments per year'),
       back_link=url_for('.service_settings', service_id=current_service.id)
     ) }}
     {{ textbox(form.free_sms_allowance) }}
