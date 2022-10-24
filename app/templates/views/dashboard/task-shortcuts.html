@@ -7,7 +7,7 @@
     {{ task_shortcut(
         description=_("Start here to write a new message."),
         link_url=url_for('.create_template', service_id=current_service.id, source="dashboard"),
-        link_text=_("Create a template"),
+        link_text=_("Create template"),
         icon="plus"
       )
     }}
@@ -16,7 +16,7 @@
     {{ task_shortcut(
         description=_("Edit and send a message you’ve already created. You can also share templates with your team. "),
         link_url=url_for('.choose_template', service_id=current_service.id, view="sending"),
-        link_text=_("Choose a template"),
+        link_text=_("Choose template"),
         icon="arrow-right"
       )
     }}

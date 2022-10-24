@@ -421,7 +421,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Free text message allowance') %}
+            {% set txt = _('Free fragments per year') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.free_sms_fragment_limit | format_number) }}
             {{ edit_field(
