@@ -172,7 +172,7 @@ def test_should_show_empty_api_keys_page(
 
     assert response.status_code == 200
     assert "You have not created any API keys yet" in response.get_data(as_text=True)
-    assert "Create an API key" in response.get_data(as_text=True)
+    assert "Create API key" in response.get_data(as_text=True)
     mock_get_no_api_keys.assert_called_once_with(service_id)
 
 
