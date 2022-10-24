@@ -17,7 +17,7 @@ def test_non_gov_user_cannot_see_add_service_button(
 ):
     client.login(api_nongov_user_active)
     response = client.get(url_for("main.choose_account"))
-    assert "Add a new service" not in response.get_data(as_text=True)
+    assert "Add new service" not in response.get_data(as_text=True)
     assert response.status_code == 200
 
 
