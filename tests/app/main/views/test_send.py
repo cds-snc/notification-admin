@@ -2514,8 +2514,8 @@ def test_check_messages_back_link(
 @pytest.mark.parametrize(
     "num_requested,expected_msg",
     [
-        (0, "If a message is long, it travels in fragments. Each fragment counts toward your daily limit."),
-        (1, "If a message is long, it travels in fragments. Each fragment counts toward your daily limit."),
+        (0, "You’ve sent too many text messages or too many long messages."),
+        (1, "You’ve sent too many text messages or too many long messages."),
     ],
     ids=["none_sent", "some_sent"],
 )
@@ -2568,7 +2568,7 @@ def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAI
         )
 
     # remove excess whitespace from element
-    details = page.find(role="alert").findAll("p")[0]
+    details = page.find(role="alert").findAll("h2")[0]
     details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
     assert details == expected_msg
 
