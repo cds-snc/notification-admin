@@ -3,8 +3,8 @@
 {% if current_user.is_authenticated and is_not_prod_domain %}
     <!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
     <script type='text/javascript' nonce='{{ request_nonce }}'>
-        // Qualtrics expects upper case for the language.
-        window.qualtrics_lang = window.APP_LANG.toUpperCase();
+        // Qualtrics expects upper case for the language, default to 'EN'.
+        window.QUALTRICS_LANG = window.APP_LANG && window.APP_LANG.toUpperCase() || 'EN';
 
         // Qualtrics loading code.
         (function(){var g=function(e,h,f,g){
