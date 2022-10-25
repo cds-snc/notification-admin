@@ -1,3 +1,11 @@
+{% from "components/links.html" import content_link %}
+
+<h2 class='banner-title' data-module="track-error" data-error-type="SMS quota reached" data-error-label="{{ upload_id }}">
+  {{ _("You’ve sent too many text messages or too many long messages.") }}
+</h2>
 <p>
-  {{ _('If a message is long, it travels in fragments. Each fragment counts toward your daily limit.') }}
+  {{ _('Long text messages travel in fragments and count toward your daily limit.') }}
+</p>
+<p>
+  {{ _('You can send more text messages tomorrow. To raise your limit for future sends, {contact_us}.').format(contact_us=content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
 </p>

@@ -1662,4 +1662,6 @@
 "Too many text message fragments","Trop de bouts de message texte"
 "These messages exceed your daily limit","Ces messages dépassent votre limite quotidienne"
 "This message exceeds your daily limit","Ce message dépasse votre limite quotidienne"
-"If a message is long, it travels in fragments. Each fragment counts toward your daily limit.","Un long message est transmis en fragments. Chaque fragment compte dans votre limite quotidienne de fragments de message texte."
+"You’ve sent too many text messages or too many long messages.","Vous avez envoyé trop de messages texte ou trop de longs messages."
+"Long text messages travel in fragments and count toward your daily limit.","Un long message est transmis en fragments. Chaque fragment compte dans votre limite quotidienne de fragments de message texte."
+"You can send more text messages tomorrow. To raise your limit for future sends, {contact_us}.","Vous pourrez envoyer d’autres messages texte demain. Pour augmenter votre capacité d’envoi à l’avenir, {contact_us}."
