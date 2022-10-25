@@ -1,4 +1,4 @@
-{% from "components/links.html" import content_link_light with context %}
+{% from "components/links.html" import content_link with context %}
 
 {% if stats %}
 <!-- COUNTER -->
@@ -9,7 +9,7 @@
       <div class="space-y-gutterHalf">
         <h2 class="heading-medium">{{ _("GC Notify by the numbers") }}</h2>
         <p>
-          {{ content_link_light(label=_("Learn more about activity on GC&nbsp;Notify"), href=url_for('.activity' ), class="-ml-2") }}
+          {{ content_link(label=_("Learn more about activity on GC&nbsp;Notify"), href=url_for('.activity' )) }}
         </p>
       </div>
       <!-- Box 2-->
