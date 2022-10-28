@@ -93,10 +93,10 @@ def _get_current_service():
     return _lookup_req_object("service")
 
 
-current_service = LocalProxy(_get_current_service)
+current_service: Service = LocalProxy(_get_current_service)  # type: ignore
 
 # The current organisation attached to the request stack.
-current_organisation = LocalProxy(partial(_lookup_req_object, "organisation"))
+current_organisation: Organisation = LocalProxy(partial(_lookup_req_object, "organisation"))  # type: ignore
 
 navigation = {
     "header_navigation": HeaderNavigation(),
