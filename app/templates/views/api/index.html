@@ -54,13 +54,13 @@
     </p>
   </div>
 
-  <div class="grid-row contain-floats">
-    <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
+  <div class="grid-row flex items-baseline">
+    <div class="w-1/2 py-0 px-0 px-gutterHalf box-border">
       <h2 class="heading-small">
         {{ _('Message log') }}
       </h2>
     </div>
-    <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border align-with-heading-copy-right">
+    <div class="w-1/2 py-0 px-0 px-gutterHalf box-border align-with-heading-copy-right">
       <a href="{{ url_for('.api_integration', service_id=current_service.id) }}">{{ _('Refresh') }}</a>
     </div>
   </div>
@@ -75,50 +75,54 @@
         </p>
       </div>
     {% endif %}
-    {% for notification in api_notifications.notifications %}
-      <details class="api-notifications-item">
-        <summary class="api-notifications-item-title">
-          <h3 class="api-notifications-item-recipient">
-            {{ notification.to }}
-          </h3>
-          <span class="grid-row contain-floats api-notifications-item-meta">
-            <span class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border api-notifications-item-key">
-              {{notification.key_name}}
-            </span>
-            <span class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border api-notifications-item-time">
-                {{ notification.created_at|format_delta }}
-            </span>
-          </span>
-        </summary>
-        <div>
-          <dl id="notification-{{ notification.id }}" class="api-notifications-item-data mb-12 clear-both contain-floats">
-            {% for key in [
-              'id', 'client_reference', 'notification_type', 'created_at', 'updated_at', 'sent_at', 'status'
-            ] %}
-              {% if notification[key] %}
-                <dt>{{ key }}:</dt>
-                <dd class="api-notifications-item-data-item local-datetime-full">{{ notification[key] }}</dd>
-              {% endif %}
-            {% endfor %}
-            {% if notification.status not in ('pending-virus-check', 'virus-scan-failed') %}
-              <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">{{ _('View') }} {{ message_count_label(1, notification.template.template_type, suffix='') }}</a>
-            {% endif %}
-          </dl>
-        </div>
-      </details>
-    {% endfor %}
-    {% if api_notifications.notifications %}
-      <div class="api-notifications-item">
+    <ol class="list-custom" style="--suffix: ''">
+      {% for notification in api_notifications.notifications %}
+        <li class="api-notifications-item">
+          <details class="">
+            <summary class="api-notifications-item-title">
+              <h3 class="api-notifications-item-recipient">
+                {{ notification.to }}
+              </h3>
+              <span class="grid-row contain-floats api-notifications-item-meta">
+                <span class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border api-notifications-item-key">
+                  {{notification.key_name}}
+                </span>
+                <span class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border api-notifications-item-time">
+                    {{ notification.created_at|format_delta }}
+                </span>
+              </span>
+            </summary>
+            <div>
+              <dl id="notification-{{ notification.id }}" class="api-notifications-item-data mb-12 clear-both contain-floats">
+                {% for key in [
+                  'id', 'client_reference', 'notification_type', 'created_at', 'updated_at', 'sent_at', 'status'
+                ] %}
+                  {% if notification[key] %}
+                    <dt>{{ key }}:</dt>
+                    <dd class="api-notifications-item-data-item local-datetime-full">{{ notification[key] }}</dd>
+                  {% endif %}
+                {% endfor %}
+                {% if notification.status not in ('pending-virus-check', 'virus-scan-failed') %}
+                  <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">{{ _('View') }} {{ message_count_label(1, notification.template.template_type, suffix='') }}</a>
+                {% endif %}
+              </dl>
+            </div>
+          </details>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+  {% if api_notifications.notifications %}
+      <div class="api-notifications-item border-t-0 block mt-gutterhalf">
         {% if api_notifications.notifications|length == 50 %}
           <p class="api-notifications-item-meta">
             {{ _('Only showing the first 50 messages.') }}
           </p>
         {% endif %}
-        <p class="api-notifications-item-meta">
+        <p class="api-notifications-item-meta mt-0">
           {{ _('GC Notify deletes messages after 7 days.') }}
         </p>
       </div>
     {% endif %}
-  </div>
 
 {% endblock %}

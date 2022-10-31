@@ -1,6 +1,11 @@
-<div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
+<div class="template-version">
   <h2 class="message-name">{{ template.name }}</h2>
   <p class="hint">
+    {% if template.get_raw('version', 1) == total_versions %}
+      {{ _("Current version") }}{{ _(": ")}}
+    {% else %}
+      {{ _("Version {}").format(template.get_raw('version', 1)) }}{{ _(": ")}}
+    {% endif %}
     {% if template.get_raw('version', 1) > 1 %}
       {{ _('Edit made') }} {% if template.get_raw('updated_at', None) %}<span class="local-datetime-full">{{ template.get_raw('updated_at') }}</span>{% endif %}
     {% else %}
@@ -11,6 +16,6 @@
   </p>
 </div>
 
-<div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
+<div class="template-preview">
   {{ template|string|translate_preview_template }}
 </div>
