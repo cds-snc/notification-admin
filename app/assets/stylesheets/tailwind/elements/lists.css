@@ -28,7 +28,8 @@
   }
 
   ol.list-custom li::before {
-    content: var(--prefix, "") " " counter(list-item) ". ";
+    content: var(--prefix, "") " " counter(list-item) var(--suffix, ". ");
+    display: list-item;
     @apply font-bold;
   }
 
