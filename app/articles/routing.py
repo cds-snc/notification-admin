@@ -15,6 +15,8 @@ GC_ARTICLES_ROUTES = {
     "privacy_old": {"en": "/privacy-old", "fr": "/confidentialite-old"},
     "security": {"en": "/security", "fr": "/securite"},
     "security_old": {"en": "/security-old", "fr": "/securite-old"},
+    "service-level-agreement": {"en": "/service-level-agreement", "fr": "/accord-niveaux-de-service"},
+    "service-level-objectives": {"en": "/service-level-objectives", "fr": "/objectifs-niveau-de-service"},
     "spreadsheets": {"en": "/spreadsheets", "fr": "/feuille-de-calcul"},
     "terms": {"en": "/terms", "fr": "/conditions-dutilisation"},
     "whynotify": {"en": "/why-gc-notify", "fr": "/pourquoi-gc-notification"},
