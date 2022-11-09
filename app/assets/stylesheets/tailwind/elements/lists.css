@@ -27,8 +27,15 @@
     @apply list-decimal pl-8;
   }
 
+  ol.list-custom {
+    counter-reset: list-counter 0;
+  }
+  ol.list-custom li {
+    counter-increment: list-counter;
+  }
+
   ol.list-custom li::before {
-    content: var(--prefix, "") " " counter(list-item) var(--suffix, ". ");
+    content: var(--prefix, "") " " counter(list-counter) var(--suffix, ". ");
     display: list-item;
     @apply font-bold;
   }
