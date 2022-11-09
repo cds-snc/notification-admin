@@ -170,8 +170,13 @@
     list-style-type: square;
   }
 
-  .page-content ul li + li {
+  .page-content ul li + li,
+  .page-content ol li + li {
     @apply pt-4;
+  }
+
+  .page-content ol {
+    @apply list list-number pl-8;
   }
 
   .page-content blockquote {
