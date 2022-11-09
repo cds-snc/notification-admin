@@ -5,7 +5,7 @@
 > 1-3 sentence description of the changed you're proposing, including a link to
 > a GitHub Issue # or Trello card if applicable.
 
-> **Note**: Are you adding a new endpoint? Make sure you add the endpoint to the [WAF rules](https://github.com/cds-snc/notification-terraform/blob/main/aws/eks/admin_waf_regex_patterns.tf).
+> **Note**: Are you adding a new endpoint? Make sure you add the endpoint to the [WAF rules](https://github.com/cds-snc/notification-utils/tree/main/.github/actions/waffles#supporting-a-new-url-within-gcnotify).
 
 ---
 
