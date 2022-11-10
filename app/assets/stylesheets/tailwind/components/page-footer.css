@@ -28,10 +28,10 @@
     footer #footer-secondary li {
       @apply flex items-center;
     }
-    footer #footer-secondary li:not(:last-child):after {
+    footer #footer-secondary li:not(:last-child) .separator {
       @apply px-gutterHalf;
       line-height: 0;
-      height: 8px;
+      height: 4px;
       /* 4px by 4px black circle */
       content: url("/static/images/bullet.svg");
     }
