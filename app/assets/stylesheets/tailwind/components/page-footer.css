@@ -32,8 +32,6 @@
       @apply px-gutterHalf;
       line-height: 0;
       height: 4px;
-      /* 4px by 4px black circle */
-      content: url("/static/images/bullet.svg");
     }
   }
 
