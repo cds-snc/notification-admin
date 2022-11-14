@@ -29,7 +29,7 @@ python-dotenv==0.17.1
 pwnedpasswords==2.0.0
 PyYAML==5.4.1
 translate-toolkit==3.3.6
-ua-parser==0.10.0
+ua-parser==0.15.0
 user-agents==2.2.0
 WTForms==3.0.0a1
 email-validator==1.1.2
@@ -47,3 +47,4 @@ itsdangerous==2.0.1  # pyup: <1.0.0
 git+https://github.com/cds-snc/notifier-utils.git@49.1.0#egg=notifications-utils
 
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
