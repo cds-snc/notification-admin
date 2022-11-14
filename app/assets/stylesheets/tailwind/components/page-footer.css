@@ -24,6 +24,17 @@
     content: url("/static/images/external.svg");
   }
 
+  @media (min-width: theme("screens.lg")) {
+    footer #footer-secondary li {
+      @apply flex items-center;
+    }
+    footer #footer-secondary li:not(:last-child) .separator {
+      @apply px-gutterHalf;
+      line-height: 0;
+      height: 4px;
+    }
+  }
+
   .page-footer {
     @apply relative mb-12;
   }
