@@ -63,7 +63,7 @@ class Organisation(JSONModel):
                 "non-crown": False,
                 "unknown": None,
             }.get(form.crown_status.data),
-            organisation_type=form.organisation_type.data,
+            organisation_type=form.org_type.data,
         )
 
     @classmethod
