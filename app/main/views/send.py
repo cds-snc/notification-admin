@@ -26,7 +26,7 @@ from notifications_utils.recipients import (
     optional_address_columns,
 )
 from notifications_utils.sanitise_text import SanitiseASCII
-from orderedset import OrderedSet
+from ordered_set import OrderedSet
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateError
 

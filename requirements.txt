@@ -46,7 +46,8 @@ awscli-cwlogs>=1.4.6,<1.5
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous==2.0.1  # pyup: <1.0.0
 
-git+https://github.com/cds-snc/notifier-utils.git@49.1.0#egg=notifications-utils
+# git+https://github.com/cds-snc/notifier-utils.git@49.1.0#egg=notifications-utils
+git+https://github.com/cds-snc/notifier-utils.git@python-3.10#egg=notifications-utils
 
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
 
@@ -74,9 +75,9 @@ MarkupSafe==2.0.1
 marshmallow==3.18.0
 mistune==0.8.4
 openpyxl==3.0.10
-orderedset==2.0.3
+ordered-set==4.1.0
 packaging==21.3
-phonenumbers==8.12.56
+phonenumbers==8.12.57
 py-w3c==0.3.1
 pyasn1==0.4.8
 pyexcel-ezodf==0.3.4
