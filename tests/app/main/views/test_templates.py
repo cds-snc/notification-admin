@@ -1654,8 +1654,9 @@ def test_should_redirect_when_previewing_a_template_email(
     )
 
 
+@pytest.mark.parametrize("redis_initialized", (True, False))
 def test_preview_page_contains_preview(
-    client_request, app_, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
+    redis_initialized, client_request, app_, mock_get_service_email_template, mock_get_user_by_email, fake_uuid, mocker
 ):
     preview_data = {
         "name": "test name",
@@ -1665,8 +1666,12 @@ def test_preview_page_contains_preview(
         "id": fake_uuid,
     }
     mocker.patch(
-        "app.main.views.templates.get_preview_data",
+        "app.models.service.Service.get_template_with_user_permission_or_403",
         return_value=preview_data,
+    )
+    mocker.patch(
+        "app.main.views.templates.get_preview_data",
+        return_value=preview_data if redis_initialized else {},
     )
 
     page = client_request.get(
