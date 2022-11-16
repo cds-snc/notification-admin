@@ -205,7 +205,7 @@ def edit_organisation_name(org_id):
 @user_is_platform_admin
 def edit_organisation_type(org_id):
 
-    form = OrganisationOrganisationTypeForm(organisation_type=current_organisation.organisation_type)
+    form = OrganisationOrganisationTypeForm(org_type=current_organisation.organisation_type)
 
     if form.validate_on_submit():
         org_service_ids = [service["id"] for service in current_organisation.services]
@@ -213,7 +213,7 @@ def edit_organisation_type(org_id):
         organisations_client.update_organisation(
             current_organisation.id,
             cached_service_ids=org_service_ids,
-            organisation_type=form.organisation_type.data,
+            organisation_type=form.org_type.data,
         )
         return redirect(url_for(".organisation_settings", org_id=org_id))
 
