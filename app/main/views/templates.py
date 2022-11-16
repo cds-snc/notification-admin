@@ -128,6 +128,9 @@ def view_template(service_id, template_id):
 @user_has_permissions()
 def preview_template(service_id, template_id=None):
     template = get_preview_data(service_id, template_id)
+    if not template:
+        # template == {} if the user has not yet clicked the preview link
+        template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
     if request.method == "POST":
         if request.form["button_pressed"] == "edit":
