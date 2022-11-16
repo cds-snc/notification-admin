@@ -2,6 +2,7 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
+from app.articles.routing import gca_url_for
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import documentation_url
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
@@ -28,7 +29,7 @@ service = [
 ]
 
 
-def test_non_logged_in_user_can_see_homepage(mocker, client):
+def test_non_logged_in_user_can_see_homepage(mocker, client, mock_calls_out_to_GCA):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
@@ -47,7 +48,8 @@ def test_non_logged_in_user_can_see_homepage(mocker, client):
     )
 
 
-def test_home_page_a11y(mocker, client):
+@pytest.mark.skip(reason="TODO: a11y test")
+def test_home_page_a11y(mocker, client, mock_calls_out_to_GCA):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
@@ -96,7 +98,8 @@ def test_security_txt(client):
     response = client.get(url_for("main.security_txt"))
     assert response.headers["Content-Type"] == "text/plain"
     assert response.status_code == 200
-    security_policy = url_for("main.security", _external=True)
+    security_policy = gca_url_for("security", _external=True)
+
     security_info = [
         f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
         "Preferred-Languages: en, fr",
@@ -110,21 +113,12 @@ def test_security_txt(client):
 @pytest.mark.parametrize(
     "view",
     [
-        "privacy",
         "pricing",
-        "terms",
         "roadmap",
-        "features",
-        "why-notify",
-        "security",
-        "messages_status",
         "email",
         "sms",
         "letters",
         "welcome",
-        "format",
-        "personalise",
-        "guidance",
     ],
 )
 def test_static_pages(
@@ -154,11 +148,7 @@ def test_activity_page(mocker, client):
         ("redirect_email", "email"),
         ("redirect_sms", "sms"),
         ("redirect_letters", "letters"),
-        ("redirect_security", "security"),
-        ("redirect_terms", "terms"),
-        ("redirect_messages_status", "messages_status"),
         ("redirect_contact", "contact"),
-        ("redirect_format", "format"),
     ],
 )
 def test_old_static_pages_redirect(client, view, expected_view):
@@ -179,8 +169,10 @@ def test_old_documentation_page_redirects(client):
     assert response.location == documentation_url()
 
 
+@pytest.mark.skip(reason="This calls out to GCA and is now an integration test")
+@pytest.mark.integration
 def test_terms_page_has_correct_content(client_request):
-    terms_page = client_request.get("main.terms")
+    terms_page = client_request.get_url("/terms")
     assert normalize_spaces(terms_page.select("main p")[0].text) == (
         "The following terms apply to use of GC Notify, a product operated by the "
         "Canadian Digital Service (CDS). GC Notify is available for use by Canadian federal "
@@ -188,19 +180,19 @@ def test_terms_page_has_correct_content(client_request):
     )
 
 
-def test_css_is_served_from_correct_path(client_request):
+@pytest.mark.parametrize(
+    "css_file_start",
+    [
+        "http://localhost:6012/static/stylesheets/index.css",
+        "https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap",
+        "https://fonts.googleapis.com/css?",
+    ],
+)
+def test_css_is_served_from_correct_path(client_request, css_file_start):
+    page = client_request.get("main.welcome")  # easy static page
 
-    page = client_request.get("main.features")  # easy static page
-
-    for index, link in enumerate(page.select("link[rel=stylesheet]")):
-        assert link["href"].startswith(
-            [
-                "http://localhost:6012/static/stylesheets/index.css",
-                "https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap",
-                "https://fonts.googleapis.com/css?",
-                "http://localhost:6012/static/stylesheets/main.css?",
-            ][index]
-        )
+    # ensure <link> element's `href` value begins with `css_file_start`
+    assert page.select_one(f'link[href^="{css_file_start}"]') is not None
 
 
 @pytest.mark.parametrize(
@@ -276,13 +268,7 @@ def test_letter_template_preview_headers(
         ("sa?SDFa?DFa,/", "sa?SDFa?DFa,/", "GC Notify"),
     ],
 )
-def test_query_params(
-    client,
-    query_key,
-    query_value,
-    heading,
-    mocker,
-):
+def test_query_params(client, query_key, query_value, heading, mocker, mock_calls_out_to_GCA):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",

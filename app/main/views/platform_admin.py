@@ -343,7 +343,14 @@ def notifications_sent_by_service():
             "count_permanent_failure",
             "count_sent",
         ]
+        # The api returns a dict and we convert the data to a list.
         result = notification_api_client.get_notification_status_by_service(start_date, end_date)
+        result = list(
+            map(
+                lambda row: list(map(lambda key: row[key], headers)),
+                result,
+            )
+        )
 
         for row in result:
             row[0] = datetime.strptime(row[0], "%a, %d %b %Y %X %Z").strftime("%Y-%m-%d")
@@ -623,6 +630,7 @@ def clear_cache():
                     "live-service-and-organisation-counts",
                 ],
             ),
+            ("gc-articles", ["gc-articles--*", "gc-articles-fallback--*"]),
         ]
     )
 

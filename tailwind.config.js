@@ -55,12 +55,17 @@ module.exports = {
       },
       blue: {
         lighter: "#B2E3FF",
-        default: "#26374A",
+        default: "#213045",
         border: "#1A3152",
         selected: "#75b9e0",
         lightblue25: "#d5e8f3",
         lightblue: "#0154B0",
         slightlight: "#284162",
+        /* trying to slowly implement a more consistent scale below */
+        300: "#71A7F3",
+        500: "#4C8CE6",
+        700: "#24508F",
+        800: "#213045" /* Brand blue (default)*/,
       },
       gray: {
         default: "#eee",
@@ -74,6 +79,16 @@ module.exports = {
         lightgrey: "#C0C1C3",
         visitedlight: "#929AA4",
         visiteddark: "#C8CDD1",
+        /* trying to slowly implement a more consistent scale below */
+        100: "#F0F2F5",
+        200: "#CFD5DD",
+        300: "#AFB9C3" /* 3:1 contrast on white */,
+        400: "#909CA8",
+        500: "#737F8C",
+        600: "#5E6975",
+        700: "#49535D" /* 7:1 contrast on white */,
+        800: "#343C45",
+        900: "#21262C",
       },
       yellow: {
         default: "#ffbf47",
@@ -156,6 +171,8 @@ module.exports = {
       },
       maxWidth: {
         "4xl": "53rem",
+        "80ch": "80ch",
+        "2/3": "66.666667%",
       },
       minHeight: {
         target: "45px",

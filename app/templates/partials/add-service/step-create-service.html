@@ -1,32 +1,40 @@
-<p>{{ _('GC Notify displays your service name:') }}</p>
-<p>
-<ul class="list-bullet">
-  <li>{{ _('as the ‘from’ address on emails you send.') }}</li>
-  <li>{{ _('at the start of every text message.') }}</li>
-</ul>
-</p>
+<p>{{ _("You can change the name and email address later in Settings.") }}</p>
+<p>{{ _("When GC Notify sends your emails, the ‘From’ field shows the name followed by the email address.") }}</p>
 
-<p>{{ _('A good service name uses words service users recognize.') }}
-<br/><br/>
-  {{ _('For example:') }} {{ _('Renew your passport | Renouveler votre passeport') }}
-</p>
+<details>
+  <summary>{{ _('Learn more about the ‘From’ field') }}</summary>
+  <div class="details-body">
+    <p>{{ _("Recipients can check the name and email address to confirm the message comes from your service.") }}</p>
+    <p>{{ _("In this example, a government service has chosen the name ‘Renew your license’ and the email address ’renew@notification.canada.ca’:") }}</p>
+    <p>{{ _("Service name: <b>Renew your license | Renouveler votre permis</b>") }}
+    <br>{{ _("Email address: <b>renew</b>@notification.canada.ca") }}
+    </p>
+  </div>
+</details>
 
-<h2 class="heading-medium">{{ _('What’s your service called?') }}</h2>
-<p>
-  {{ _('Make it something people would search for in their inbox.') }}
-</p>
-
-<div class="form-wrap">
+<h2 class="heading-medium">{{ _("Service name") }}</h2>
+<p>{{ _("GC Notify also shows the service name at the start of every text message.") }}</p>
+<div data-module="url-typer" class="form-wrap">
   {% call form_wrapper() %}
-    {% set hint_txt = _('Up to 255 characters') %}
+    {% set hint_txt = _('Use a name that recipients will recognize. Maximum 255 characters.') %}
 
     {{ textbox(form.name, hint=hint_txt, maxlength=255) }}
-    {% set button_txt = _('Continue') %}
-    {{ page_footer(button_txt) }}
+
+    <h2 class="heading-medium">{{ _("Email address") }}</h2>
+    <p>{{ _("The email address always ends with ‘@notification.canada.ca’.") }}
+      {% set hint_txt = _('Maximum 64 characters with no spaces. Characters can include letters, numbers, dots, dashes, and underscores.') %}
+
+      {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt, width='1-2', maxlength=64) }}
+
+      <span id="preview" style="display: none">
+        {{ _("Your service’s email address will be:") }}
+        <b><span id="fixed-email-address"></span>@notification.canada.ca</b>
+      </span>
+  </p>
+  <p>{{ _("This email address cannot receive replies. In Settings, you can enter a different email for replies. Currently your service is set to prevent replies.") }}</p>
+
+  {% set button_txt = _('Create service') %}
+  {{ page_footer(button_txt) }}
 
   {% endcall %}
 </div>
-
-<p>
-  {{ _('You can change your service name later in Settings.') }}
-</p>

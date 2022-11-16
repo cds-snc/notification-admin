@@ -1,4 +1,5 @@
 {% extends "admin_template.html" %}
+{% from "components/page-header.html" import page_header %}
 {% from "components/banner.html" import banner_wrapper %}
 {% from "components/table.html" import list_table, field, text_field, index_field, hidden_field_heading %}
 {% from "components/file-upload.html" import file_upload %}
@@ -6,6 +7,8 @@
 {% from "components/message-count-label.html" import message_count_label %}
 
 {% set file_contents_header_id = 'file-preview' %}
+{% set page_title = _('Edit your spreadsheet') %}
+
 {% macro skip_to_file_contents() %}
   <p class="visually-hidden">
     <a href="#{{ file_contents_header_id }}">{{ _('Skip to file contents') }}</a>
@@ -20,53 +23,61 @@
 
 {% block maincolumn_content %}
 
-  {{ govuk_back_link(back_link) }}
+{{ page_header(
+  page_title,
+  back_link
+) }}
 
   <div class="mb-12 clear-both contain-floats">
     {% call banner_wrapper(type='dangerous') %}
       {% if row_errors|length == 1 %}
-        <h1 class='banner-title' data-module="track-error" data-error-type="Bad rows" data-error-label="{{ upload_id }}">
-          {{ _('There is a problem with') }} {{ original_file_name }}
-        </h1>
-        <p>
-          {{ _('You need to') }} {{ row_errors[0] }}
+        <p class="mb-0">
+          {{ row_errors[0] | capitalize }}
         </p>
       {% else %}
-        <h1 class='banner-title' data-module="track-error" data-error-type="Bad rows" data-error-label="{{ upload_id }}">
-          {{ _('There are some problems with') }} {{ original_file_name }}
-        </h1>
-        <p>
-          {{ _('You need to:') }}
-        </p>
         <ul class="list-bullet">
           {% for error in row_errors %}
-            <li>{{ error }}</li>
+            <li>{{ error | capitalize }}</li>
           {% endfor %}
         </ul>
       {% endif %}
     {% endcall %}
   </div>
 
-  <div class="js-stick-at-top-when-scrolling">
-    <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
+    <div class="form-group contain-floats box-border">
       {% set button_txt = _('Re-upload your file') %}
-      {{ file_upload(
-        form.file,
-        action=url_for('.send_messages', service_id=current_service.id, template_id=template.id),
-        button_text=button_txt
-      ) }}
+      {% if not request.args.from_test %}
+        {{ file_upload(
+          form.file,
+          action=url_for('.send_messages', service_id=current_service.id, template_id=template.id),
+          button_text=_('Choose file')
+        ) }}
+      {% endif %}
     </div>
-    <a href="#main_content" class="back-to-top-link">{{ _('Back to top') }}</a>
-  </div>
 
   <section class="clear-both contain-floats">
-    <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}" data-module="fullscreen-table">
+    <h2 class="heading-medium" id="{{ file_contents_header_id }}">{{ _('Errors in current spreadsheet') }}</h2>
+    {% if count_of_displayed_recipients < count_of_recipients %}
+      <p>
+        {% if row_errors and not recipients.missing_column_headers %}
+          {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows with errors') }} {{ _("in &lsquo;{}&rsquo;").format(original_file_name) }}.
+        {% else %}
+          {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }} {{ _("in &lsquo;{}&rsquo;").format(original_file_name) }}.
+        {% endif %}
+      </p>
+    {% elif row_errors and not recipients.missing_column_headers %}
+      <p>
+        {{ _('Only showing rows with errors') }} {{ _("in &lsquo;{}&rsquo;").format(original_file_name) }}.
+      </p>
+    {% endif %}
+
+    <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}">
       {% call(item, row_number) list_table(
         recipients.displayed_rows,
         caption=original_file_name,
         caption_visible=False,
         field_headings=[
-          '<span class="visually-hidden">Row in file</span><span aria-hidden="true" class="table-field-invisible-error">1</span>'|safe
+          '<span class="visually-hidden">_("Row in file")</span><span aria-hidden="true" class="table-field-invisible-error">1</span>'|safe
         ] + recipients.column_headers
       ) %}
         {% call index_field() %}
@@ -97,18 +108,8 @@
     </div>
     {% if count_of_displayed_recipients < count_of_recipients %}
       {% include "views/check/table-overflow.html" %}
-      <p>
-        {% if row_errors and not recipients.missing_column_headers %}
-          {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows with errors') }}.
-        {% else %}
-          {{ _('Only showing the first') }} {{ count_of_displayed_recipients }} {{ _('rows') }}.
-        {% endif %}
-      </p>
-    {% elif row_errors and not recipients.missing_column_headers %}
-      <p>
-        {{ _('Only showing rows with errors') }}.
-      </p>
     {% endif %}
+    
   </section>
 
 {% endblock %}

@@ -4,22 +4,20 @@
     @apply text-smaller leading-tight font-normal my-12;
   }
   .user-list-item {
-    padding-right: 150px;
-    @apply relative pt-gutterHalf pb-gutterHalf pl-0 border-t-1 border-solid border-gray-grey2;
+    @apply py-gutterHalf pl-0 align-baseline;
   }
-  .user-list-item h3 {
-    @apply truncate pr-gutterHalf text-gray-grey1;
+  .user-list-item .label {
+    @apply font-bold;
   }
-  .user-list-item h3 .heading-small {
-    @apply text-black;
+  .user-list-item .hint {
+    @apply text-gray-700 font-normal;
   }
   .user-list-item:last-child {
-    @apply border-b-1;
+    @apply border-b-1 border-gray-300;
   }
 
   .user-list-edit-link {
-    top: 15px;
-    @apply absolute text-right right-0;
+    @apply text-right;
   }
   /*! purgecss end ignore */
 }

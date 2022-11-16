@@ -11,6 +11,8 @@ from tests.conftest import (
     SERVICE_ONE_ID,
     SERVICE_TWO_ID,
     active_user_with_permissions,
+    create_active_user_with_permissions,
+    create_platform_admin_user,
     normalize_spaces,
     platform_admin_user,
 )
@@ -63,15 +65,14 @@ def test_page_to_create_new_organisation(
 
     assert [(input["type"], input["name"], input["value"]) for input in page.select("input")] == [
         ("text", "name", ""),
-        ("radio", "organisation_type", "central"),
-        ("radio", "organisation_type", "local"),
-        ("radio", "organisation_type", "nhs_central"),
-        ("radio", "organisation_type", "nhs_local"),
-        ("radio", "organisation_type", "nhs_gp"),
-        ("radio", "organisation_type", "emergency_service"),
-        ("radio", "organisation_type", "school_or_college"),
-        ("radio", "organisation_type", "other"),
-        ("hidden", "organisation_type", "central"),
+        ("radio", "org_type", "central"),
+        ("radio", "org_type", "local"),
+        ("radio", "org_type", "nhs_central"),
+        ("radio", "org_type", "nhs_local"),
+        ("radio", "org_type", "nhs_gp"),
+        ("radio", "org_type", "emergency_service"),
+        ("radio", "org_type", "school_or_college"),
+        ("radio", "org_type", "other"),
         ("radio", "crown_status", "crown"),
         ("radio", "crown_status", "non-crown"),
         ("hidden", "csrf_token", ANY),
@@ -93,7 +94,7 @@ def test_create_new_organisation(
         ".add_organisation",
         _data={
             "name": "new name",
-            "organisation_type": "local",
+            "org_type": "local",
             "crown_status": "non-crown",
         },
         _expected_redirect=url_for(
@@ -125,7 +126,7 @@ def test_create_new_organisation_validates(
     )
     assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
         ("name", "This cannot be empty"),
-        ("organisation_type", "You need to choose an option"),
+        ("org_type", "You need to choose an option"),
         ("crown_status", "You need to choose an option"),
     ]
     assert mock_create_organisation.called is False
@@ -288,9 +289,9 @@ def test_organisation_settings_for_platform_admin(client_request, platform_admin
     "user",
     (
         pytest.param(
-            platform_admin_user,
+            create_platform_admin_user(),
         ),
-        pytest.param(active_user_with_permissions, marks=pytest.mark.xfail),
+        pytest.param(create_active_user_with_permissions(), marks=pytest.mark.xfail),
     ),
 )
 def test_view_organisation_settings(
@@ -303,7 +304,7 @@ def test_view_organisation_settings(
     expected_selected,
     user,
 ):
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
 
     page = client_request.get(endpoint, org_id=organisation_one["id"])
 
@@ -327,17 +328,17 @@ def test_view_organisation_settings(
     (
         (
             ".edit_organisation_type",
-            {"organisation_type": "central"},
+            {"org_type": "central"},
             {"cached_service_ids": [], "organisation_type": "central"},
         ),
         (
             ".edit_organisation_type",
-            {"organisation_type": "local"},
+            {"org_type": "local"},
             {"cached_service_ids": [], "organisation_type": "local"},
         ),
         (
             ".edit_organisation_type",
-            {"organisation_type": "nhs_local"},
+            {"org_type": "nhs_local"},
             {"cached_service_ids": [], "organisation_type": "nhs_local"},
         ),
         (
@@ -376,9 +377,9 @@ def test_view_organisation_settings(
     "user",
     (
         pytest.param(
-            platform_admin_user,
+            create_platform_admin_user(),
         ),
-        pytest.param(active_user_with_permissions, marks=pytest.mark.xfail),
+        pytest.param(create_active_user_with_permissions(), marks=pytest.mark.xfail),
     ),
 )
 def test_update_organisation_settings(
@@ -394,7 +395,7 @@ def test_update_organisation_settings(
     user,
 ):
     mocker.patch("app.organisations_client.get_organisation_services", return_value=[])
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
 
     client_request.post(
         endpoint,
@@ -427,7 +428,7 @@ def test_update_organisation_sector_sends_service_id_data_to_api_client(
     client_request.post(
         "main.edit_organisation_type",
         org_id=organisation_one["id"],
-        _data={"organisation_type": "central"},
+        _data={"org_type": "central"},
         _expected_status=302,
         _expected_redirect=url_for(
             "main.organisation_settings",

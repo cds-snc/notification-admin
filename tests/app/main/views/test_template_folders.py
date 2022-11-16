@@ -12,10 +12,9 @@ from tests.conftest import (
     TEMPLATE_ONE_ID,
     ClientRequest,
     _template,
-    active_caseworking_user,
-    active_user_view_permissions,
-    active_user_with_permissions,
-    fake_uuid,
+    create_active_caseworking_user,
+    create_active_user_view_permissions,
+    create_active_user_with_permissions,
     normalize_spaces,
 )
 
@@ -50,8 +49,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
     ),
     [
         (
-            "Templates - service one – Notify",
-            "Templates",
+            "Browse Templates - service one – Notify",
+            "Browse Templates",
             [],
             {},
             [
@@ -97,8 +96,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "Templates - service one – Notify",
-            "Templates",
+            "Browse Templates - service one – Notify",
+            "Browse Templates",
             [],
             {"template_type": "sms"},
             [
@@ -125,8 +124,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "folder_one – Templates - service one – Notify",
-            "Templates folder_one",
+            "Browse folder_one – Templates - service one – Notify",
+            "Browse folder_one",
             [{"template_type": "all"}],
             {"template_folder_id": PARENT_FOLDER_ID},
             [
@@ -150,8 +149,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "folder_one – Templates - service one – Notify",
-            "Templates folder_one",
+            "Browse folder_one – Templates - service one – Notify",
+            "Browse folder_one",
             [{"template_type": "sms"}],
             {"template_type": "sms", "template_folder_id": PARENT_FOLDER_ID},
             [
@@ -170,8 +169,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "folder_one – Templates - service one – Notify",
-            "Templates folder_one",
+            "Browse folder_one – Templates - service one – Notify",
+            "Browse folder_one",
             [{"template_type": "email"}],
             {"template_type": "email", "template_folder_id": PARENT_FOLDER_ID},
             [],
@@ -180,8 +179,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "There are no email templates in this folder",
         ),
         (
-            "folder_one_one – folder_one – Templates - service one – Notify",
-            "Templates folder_one folder_one_one",
+            "Browse folder_one_one – folder_one – Templates - service one – Notify",
+            "Browse folder_one_one",
             [
                 {"template_type": "all"},
                 {"template_type": "all", "template_folder_id": PARENT_FOLDER_ID},
@@ -204,8 +203,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "folder_one_one_one – folder_one_one – folder_one – Templates - service one – Notify",
-            "Templates folder_one folder_one_one folder_one_one_one",
+            "Browse folder_one_one_one – folder_one_one – folder_one – Templates - service one – Notify",
+            "Browse folder_one_one_one",
             [
                 {"template_type": "all"},
                 {"template_type": "all", "template_folder_id": PARENT_FOLDER_ID},
@@ -224,8 +223,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "folder_one_one_one – folder_one_one – folder_one – Templates - service one – Notify",
-            "Templates folder_one folder_one_one folder_one_one_one",
+            "Browse folder_one_one_one – folder_one_one – folder_one – Templates - service one – Notify",
+            "Browse folder_one_one_one",
             [
                 {"template_type": "email"},
                 {"template_type": "email", "template_folder_id": PARENT_FOLDER_ID},
@@ -241,8 +240,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "There are no email templates in this folder",
         ),
         (
-            "folder_two – Templates - service one – Notify",
-            "Templates folder_two",
+            "Browse folder_two – Templates - service one – Notify",
+            "Browse folder_two",
             [{"template_type": "all"}],
             {"template_folder_id": FOLDER_TWO_ID},
             [],
@@ -251,8 +250,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             "This folder is empty",
         ),
         (
-            "folder_two – Templates - service one – Notify",
-            "Templates folder_two",
+            "Browse folder_two – Templates - service one – Notify",
+            "Browse folder_two",
             [{"template_type": "sms"}],
             {"template_folder_id": FOLDER_TWO_ID, "template_type": "sms"},
             [],
@@ -313,15 +312,6 @@ def test_should_show_templates_folder_page(
     assert normalize_spaces(page.select_one("title").text) == expected_title_tag
     assert normalize_spaces(page.select_one("h1").text) == expected_page_title
 
-    assert len(page.select("h1 a")) == len(expected_parent_link_args)
-
-    for index, parent_link in enumerate(page.select("h1 a")):
-        assert parent_link["href"] == url_for(
-            "main.choose_template",
-            service_id=SERVICE_ONE_ID,
-            **expected_parent_link_args[index],
-        )
-
     links_in_page = page.select(".pill a")
 
     assert len(links_in_page) == len(expected_nav_links)
@@ -379,7 +369,7 @@ def test_should_show_templates_folder_page(
     mock_get_service_templates.assert_called_once_with(SERVICE_ONE_ID)
 
 
-def test_can_create_email_template_with_parent_folder(client_request, mock_create_service_template):
+def test_can_create_email_template_with_parent_folder(client_request, mock_create_service_template, fake_uuid):
     data = {
         "name": "new name",
         "subject": "Food incoming!",
@@ -388,7 +378,6 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         "service": SERVICE_ONE_ID,
         "process_type": "normal",
         "parent_folder_id": PARENT_FOLDER_ID,
-        "button_pressed": "save",
     }
     client_request.post(
         ".add_service_template",
@@ -396,12 +385,7 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         template_type="email",
         template_folder_id=PARENT_FOLDER_ID,
         _data=data,
-        _expected_redirect=url_for(
-            "main.view_template",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid(),
-            _external=True,
-        ),
+        _expected_redirect=url_for("main.view_template", service_id=SERVICE_ONE_ID, template_id=fake_uuid, _external=True),
     )
     mock_create_service_template.assert_called_once_with(
         data["name"],
@@ -445,14 +429,16 @@ def test_get_manage_folder_page(
 def test_get_manage_folder_viewing_permissions_for_users(
     client_request,
     active_user_with_permissions,
+    active_user_view_permissions,
     service_one,
     mock_get_template_folders,
     mock_get_users_by_service,
     mocker,
 ):
     folder_id = str(uuid.uuid4())
-    team_member = active_user_view_permissions(str(uuid.uuid4()))
-    team_member_2 = active_user_view_permissions(str(uuid.uuid4()))
+    team_member = create_active_user_view_permissions(with_unique_id=True)
+    team_member_2 = create_active_user_view_permissions(with_unique_id=True)
+
     mock_get_template_folders.return_value = [
         _folder(
             "folder_two",
@@ -490,6 +476,7 @@ def test_get_manage_folder_viewing_permissions_for_users(
 def test_get_manage_folder_viewing_permissions_for_users_not_visible_when_no_manage_settings_permission(
     client_request,
     active_user_with_permissions,
+    active_user_view_permissions,
     service_one,
     mock_get_template_folders,
     mocker,
@@ -503,8 +490,9 @@ def test_get_manage_folder_viewing_permissions_for_users_not_visible_when_no_man
         "view_activity",
     ]
     folder_id = str(uuid.uuid4())
-    team_member = active_user_view_permissions(str(uuid.uuid4()))
-    team_member_2 = active_user_view_permissions(str(uuid.uuid4()))
+    team_member = create_active_user_view_permissions(with_unique_id=True)
+    team_member_2 = create_active_user_view_permissions(with_unique_id=True)
+
     service_one["permissions"] += ["edit_folder_permissions"]
     mock_get_template_folders.return_value = [
         {
@@ -723,11 +711,13 @@ def test_cannot_rename_folder_blank(
 def test_manage_folder_users(
     client_request,
     active_user_with_permissions,
+    active_user_view_permissions,
     service_one,
     mock_get_template_folders,
     mocker,
 ):
-    team_member = active_user_view_permissions(str(uuid.uuid4()))
+    team_member = create_active_user_view_permissions(with_unique_id=True)
+
     mock_update = mocker.patch("app.template_folder_api_client.update_template_folder")
     folder_id = str(uuid.uuid4())
     mock_get_template_folders.return_value = [
@@ -767,6 +757,7 @@ def test_manage_folder_users(
 def test_manage_folder_users_doesnt_change_permissions_current_user_cannot_manage_users(
     client_request,
     active_user_with_permissions,
+    active_user_view_permissions,
     service_one,
     mock_get_template_folders,
     mocker,
@@ -779,7 +770,8 @@ def test_manage_folder_users_doesnt_change_permissions_current_user_cannot_manag
         "manage_api_keys",
         "view_activity",
     ]
-    team_member = active_user_view_permissions(str(uuid.uuid4()))
+    team_member = create_active_user_view_permissions(with_unique_id=True)
+
     mock_update = mocker.patch("app.template_folder_api_client.update_template_folder")
     folder_id = str(uuid.uuid4())
     mock_get_template_folders.return_value = [
@@ -930,9 +922,9 @@ def test_delete_folder(client_request, service_one, mock_get_template_folders, m
 @pytest.mark.parametrize(
     "user",
     [
-        pytest.param(active_user_with_permissions),
-        pytest.param(active_user_view_permissions, marks=pytest.mark.xfail(raises=AssertionError)),
-        pytest.param(active_caseworking_user, marks=pytest.mark.xfail(raises=AssertionError)),
+        pytest.param(create_active_user_with_permissions()),
+        pytest.param(create_active_user_view_permissions(), marks=pytest.mark.xfail(raises=AssertionError)),
+        pytest.param(create_active_caseworking_user(), marks=pytest.mark.xfail(raises=AssertionError)),
     ],
 )
 def test_should_show_checkboxes_for_selecting_templates(
@@ -945,7 +937,7 @@ def test_should_show_checkboxes_for_selecting_templates(
     fake_uuid,
     user,
 ):
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
 
     page = client_request.get(
         "main.choose_template",
@@ -966,10 +958,10 @@ def test_should_show_checkboxes_for_selecting_templates(
 @pytest.mark.parametrize(
     "user",
     [
-        active_user_view_permissions,
-        active_caseworking_user,
+        create_active_user_view_permissions(),
+        create_active_caseworking_user(),
         pytest.param(
-            active_user_with_permissions,
+            create_active_user_with_permissions(),
             marks=pytest.mark.xfail(raises=AssertionError),
         ),
     ],
@@ -984,7 +976,7 @@ def test_should_not_show_radios_and_buttons_for_move_destination_if_incorrect_pe
     fake_uuid,
     user,
 ):
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
 
     page = client_request.get(
         "main.choose_template",
@@ -1115,8 +1107,8 @@ def test_should_be_able_to_move_to_existing_folder(
 @pytest.mark.parametrize(
     "user, expected_status, expected_called",
     [
-        (active_user_view_permissions, 403, False),
-        (active_user_with_permissions, 302, True),
+        (create_active_user_view_permissions(), 403, False),
+        (create_active_user_with_permissions(), 302, True),
     ],
 )
 def test_should_not_be_able_to_move_to_existing_folder_if_dont_have_permission(
@@ -1130,7 +1122,7 @@ def test_should_not_be_able_to_move_to_existing_folder_if_dont_have_permission(
     expected_status,
     expected_called,
 ):
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
     FOLDER_TWO_ID = str(uuid.uuid4())
     mock_get_template_folders.return_value = [
         _folder("folder_one", PARENT_FOLDER_ID, None),

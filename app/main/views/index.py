@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 from flask import (
@@ -16,12 +17,18 @@ from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
 from app import email_branding_client, get_current_locale, letter_branding_client
 from app.articles import (
+    _get_alt_locale,
     get_lang_url,
-    get_nav_items,
     get_preview_url,
-    request_content,
     set_active_nav_item,
 )
+from app.articles.menu import get_nav_items
+from app.articles.pages import (
+    get_page_by_id,
+    get_page_by_slug,
+    get_page_by_slug_with_cache,
+)
+from app.articles.routing import gca_url_for
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
@@ -42,14 +49,8 @@ def index():
     if current_user and current_user.is_authenticated:
         return redirect(url_for("main.choose_account"))
 
-    return render_template(
-        "views/signedout.html",
-        scrollTo="false",
-        admin_base_url=current_app.config["ADMIN_BASE_URL"],
-        stats=get_latest_stats(get_current_locale(current_app)),
-        csv_max_rows=current_app.config["CSV_MAX_ROWS"],
-        default_free_sms_fragment_limits_central=current_app.config["DEFAULT_FREE_SMS_FRAGMENT_LIMITS"]["central"],
-    )
+    path = "home" if get_current_locale(current_app) == "en" else "accueil"
+    return page_content(path=path)
 
 
 @main.route("/robots.txt")
@@ -65,7 +66,7 @@ def robots():
 
 @main.route("/.well-known/security.txt")
 def security_txt():
-    security_policy = url_for("main.security", _external=True)
+    security_policy = gca_url_for("security", _external=True)
     security_info = [
         f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
         "Preferred-Languages: en, fr",
@@ -87,11 +88,6 @@ def error(status_code):
 @user_is_logged_in
 def verify_mobile():
     return render_template("views/verify-mobile.html")
-
-
-@main.route("/privacy")
-def privacy():
-    return render_template("views/privacy.html")
 
 
 @main.route("/pricing")
@@ -258,17 +254,6 @@ def callbacks():
     return redirect(documentation_url("callbacks"), code=301)
 
 
-@main.route("/features", endpoint="features")
-def features():
-    return render_template("views/features.html")
-
-
-@main.route("/why-notify", endpoint="why-notify")
-def why_notify():
-    rate_sms = current_app.config.get("DEFAULT_FREE_SMS_FRAGMENT_LIMITS", {}).get("central", 10000)
-    return render_template("views/why-notify.html", rate_sms=rate_sms)
-
-
 @main.route("/roadmap", endpoint="roadmap")
 def roadmap():
     return render_template("views/roadmap.html")
@@ -289,31 +274,6 @@ def features_letters():
     return render_template("views/letters.html")
 
 
-@main.route("/guidance", endpoint="guidance")
-def guidance():
-    return render_template("views/guidance/index.html")
-
-
-@main.route("/format", endpoint="format")
-def format():
-    return render_template("views/guidance/format.html")
-
-
-@main.route("/personalise", endpoint="personalise")
-def personalise():
-    return render_template("views/guidance/personalise.html")
-
-
-@main.route("/security", endpoint="security")
-def security():
-    return render_template("views/security.html", security_email=current_app.config["SECURITY_EMAIL"])
-
-
-@main.route("/a11y", endpoint="a11y")
-def a11y():
-    return render_template("views/a11y.html")
-
-
 @main.route("/welcome", endpoint="welcome")
 def welcome():
     return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"])
@@ -329,7 +289,7 @@ def activity_download():
     stats = get_latest_stats(get_current_locale(current_app))["monthly_stats"]
 
     csv_data = [["date", "sms_count", "email_count", "total"]]
-    for _, row in stats.items():
+    for date, row in stats.items():
         csv_data.append([row["year_month"], row["sms"], row["email"], row["total"]])
 
     return (
@@ -344,68 +304,109 @@ def activity_download():
     )
 
 
-@main.route("/terms", endpoint="terms")
-def terms():
-    return render_template("views/terms-of-use.html")
-
-
-@main.route("/messages-status", endpoint="messages_status")
-def messages_status():
-    return render_template("views/messages-status.html")
-
-
-# --- Redirects --- #
+# --- Internal Redirects --- #
 @main.route("/features/roadmap", endpoint="redirect_roadmap")
 @main.route("/features/email", endpoint="redirect_email")
 @main.route("/features/sms", endpoint="redirect_sms")
 @main.route("/features/letters", endpoint="redirect_letters")
-@main.route("/features/templates", endpoint="redirect_format")
-@main.route("/features/security", endpoint="redirect_security")
-@main.route("/features/terms", endpoint="redirect_terms")
-@main.route("/features/messages-status", endpoint="redirect_messages_status")
-@main.route("/templates", endpoint="redirect_format")
 def old_page_redirects():
     return redirect(url_for(request.endpoint.replace("redirect_", "")), code=301)
 
 
-# --- Dynamic routes handling for GCArticles API-driven pages --- #
+# --- GCA Redirects --- #
+@main.route("/a11y", endpoint="accessibility")
+@main.route("/why-notify", endpoint="whynotify")
+@main.route("/personalise", endpoint="personalisation_guide")
+@main.route("/format", endpoint="formatting_guide")
+@main.route("/messages-status", endpoint="message_delivery_status")
+def gca_redirects():
+    return redirect(gca_url_for(request.endpoint.replace("main.", "")), code=301)
+
+
+"""Dynamic routes handling for GCArticles API-driven pages"""
+
+
+@main.route("/preview")
+def preview_content():
+    if not request.args.get("id"):
+        abort(404)
+
+    """User must be authenticated"""
+    if not current_user.is_authenticated:
+        abort(404)
+
+    """Append the page_id to the request endpoint"""
+    page_id = request.args.get("id")
+    endpoint = f"wp/v2/pages/{page_id}"
+
+    """'g' sets a global variable for this request for use in the template"""
+    g.preview_url = get_preview_url(page_id)
+
+    response = get_page_by_id(endpoint)
+
+    return _render_articles_page(response)
+
+
 @main.route("/<path:path>")
 def page_content(path=""):
-    page_id = ""
-    auth_required = False
+    endpoint = "wp/v2/pages"
+    lang = get_current_locale(current_app)
 
-    if path == "preview":
-        if not request.args.get("id") or not current_user.is_authenticated:
-            abort(404)
+    params = {"slug": path, "lang": lang}
 
-        auth_required = True
-        page_id = request.args.get("id")
-        # 'g' sets a global variable for this request
-        g.preview_url = get_preview_url(page_id)
-
-    response = request_content(f"wp/v2/pages/{page_id}", {"slug": path}, auth_required=auth_required)
-
-    # when response is a string, redirect to change our language setting
-    if isinstance(response, str):
-        return redirect(response)
-
-    # when response is a dict, display the content
-    if response:
-        title = response["title"]["rendered"]
-        slug_en = response["slug_en"]
-        html_content = response["content"]["rendered"]
-
-        nav_items = get_nav_items()
-        set_active_nav_item(nav_items, request.path)
-
-        return render_template(
-            "views/page-content.html",
-            title=title,
-            html_content=html_content,
-            nav_items=nav_items,
-            slug=slug_en,
-            lang_url=get_lang_url(response, bool(page_id)),
-            stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
-        )
+    """If user is authenticated, don't cache it"""
+    if current_user.is_authenticated:
+        response = get_page_by_slug(endpoint, params=params)
     else:
-        abort(404)
+        response = get_page_by_slug_with_cache(endpoint, params=params)
+
+    if not response:
+        return _try_alternate_language(endpoint, params)
+
+    if isinstance(response, list):
+        response = response[0]
+
+    return _render_articles_page(response)
+
+
+def _render_articles_page(response):
+    title = response["title"]["rendered"]
+    slug_en = response["slug_en"]
+    html_content = response["content"]["rendered"]
+    page_id = request.args.get("id")
+
+    nav_items = get_nav_items()
+    set_active_nav_item(nav_items, request.path)
+
+    return render_template(
+        "views/page-content.html",
+        title=title,
+        html_content=html_content,
+        nav_items=nav_items,
+        slug=slug_en,
+        lang_url=get_lang_url(response, bool(page_id)),
+        stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+        isHome=True if slug_en == "home" else None,
+    )
+
+
+def _try_alternate_language(endpoint, params):
+    """
+    If response was empty, it's possible the logged-in user's current language
+    doesn't match the requested page language, so let's try again.
+    """
+    slug = params.get("slug")
+
+    """try again, with same slug but new language"""
+    params["lang"] = _get_alt_locale(params.get("lang"))
+    response = get_page_by_slug(endpoint, params=params)
+
+    if isinstance(response, list):
+        response = response[0]
+
+    """if we get a response for the other language, redirect"""
+    if response:
+        if re.match(r"^[A-Za-z0-9_\-]+$", slug):
+            return redirect(f"/set-lang?from=/{slug}")
+
+    abort(404)

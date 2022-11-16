@@ -1,5 +1,5 @@
 <!-- Large screen menu dropdown -->
-<nav class="hidden md:visible md:flex relative justify-end inline-block text-left w-full text-blue visited:text-blue
+<li class="hidden md:visible md:flex relative justify-end inline-block text-left w-full text-blue visited:text-blue
     link:text-blue no-underline text-small">
   <button
     aria-controls="account-menu-options"
@@ -15,7 +15,7 @@
   </button>
   <ul
     id="account-menu-options"
-    class="absolute flex flex-col content-end divide-y divide-gray right-0 top-full w-auto text-right rounded bg-white shadow hidden"
+    class="absolute flex flex-col content-end divide-y divide-gray right-0 top-full w-auto text-right rounded bg-white shadow hidden z-50"
     hidden>
     {% if current_user.platform_admin %}
       <li>
@@ -40,5 +40,5 @@
       </a>
     </li>
   </ul>
-</nav>
+</li>
 <!-- Large screen dropdown END -->

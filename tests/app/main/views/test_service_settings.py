@@ -22,27 +22,19 @@ from tests.conftest import (
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
     ClientRequest,
-    active_user_no_api_key_permission,
-    active_user_no_settings_permission,
-    active_user_with_permissions,
-    get_default_letter_contact_block,
-    get_default_reply_to_email_address,
-    get_default_sms_sender,
-    get_inbound_number_sms_sender,
-    get_non_default_letter_contact_block,
-    get_non_default_reply_to_email_address,
-    get_non_default_sms_sender,
+    create_active_user_no_api_key_permission,
+    create_active_user_no_settings_permission,
+    create_active_user_with_permissions,
+    create_letter_contact_block,
+    create_multiple_email_reply_to_addresses,
+    create_multiple_letter_contact_blocks,
+    create_multiple_sms_senders,
+    create_platform_admin_user,
+    create_reply_to_email_address,
+    create_sample_invite,
+    create_sms_sender,
     mock_get_service_organisation,
-    multiple_letter_contact_blocks,
-    multiple_reply_to_email_addresses,
-    multiple_sms_senders,
-    no_letter_contact_blocks,
-    no_reply_to_email_addresses,
-    no_sms_senders,
     normalize_spaces,
-    platform_admin_user,
-    sample_invite,
-    service_one,
 )
 
 FAKE_TEMPLATE_ID = uuid4()
@@ -62,12 +54,12 @@ def mock_get_service_settings_page_common(
     "user, sending_domain, expected_rows",
     [
         (
-            active_user_with_permissions,
+            create_active_user_with_permissions(),
             None,
             [
                 "Label Value Action",
                 "Service name Test Service Change",
-                "Sending email address test.service@{sending_domain} Change",
+                "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
@@ -85,12 +77,12 @@ def mock_get_service_settings_page_common(
             ],
         ),
         (
-            platform_admin_user,
+            create_platform_admin_user(),
             "test.example.com",
             [
                 "Label Value Action",
                 "Service name Test Service Change",
-                "Sending email address test.service@{sending_domain} Change",
+                "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
@@ -113,7 +105,7 @@ def mock_get_service_settings_page_common(
                 "API rate limit per minute 100",
                 "Text message senders GOVUK Manage",
                 "Receive text messages Off Change",
-                "Free text message allowance 250,000 Change",
+                "Free fragments per year 250,000 Change",
                 "Email branding English Government of Canada signature Change",
                 "Letter branding Not set Change",
                 "Data retention email Change",
@@ -138,31 +130,144 @@ def test_should_show_overview(
     mock_get_service_settings_page_common,
     app_,
 ):
-    service_one = service_json(
-        SERVICE_ONE_ID,
-        users=[api_user_active["id"]],
-        permissions=["sms", "email"],
-        organisation_id=ORGANISATION_ID,
-        restricted=False,
-        sending_domain=sending_domain,
-    )
-    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
+    # TODO: remove this test once the sms daily limit feature rolls out and rename the new one
+    if not app_.config["FF_SPIKE_SMS_DAILY_LIMIT"]:
+        service_one = service_json(
+            SERVICE_ONE_ID,
+            users=[api_user_active["id"]],
+            permissions=["sms", "email"],
+            organisation_id=ORGANISATION_ID,
+            restricted=False,
+            sending_domain=sending_domain,
+        )
+        mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
-    client.login(user(fake_uuid), mocker, service_one)
-    response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
-    assert response.status_code == 200
-    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert page.find("h1").text == "Settings"
-    rows = page.select("tr")
-    for index, row in enumerate(expected_rows):
-        formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
-        visible = rows[index]
-        sr_only = visible.find("span", "sr-only")
-        if sr_only:
-            sr_only.extract()
-            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-        assert formatted_row == " ".join(rows[index].text.split())
-    app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
+        client.login(user, mocker, service_one)
+        response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert page.find("h1").text == "Settings"
+        rows = page.select("tr")
+        for index, row in enumerate(expected_rows):
+            formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
+            visible = rows[index]
+            sr_only = visible.find("span", "sr-only")
+            if sr_only:
+                sr_only.extract()
+                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+            assert formatted_row == " ".join(rows[index].text.split())
+        app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
+
+
+@pytest.mark.parametrize(
+    "user, sending_domain, expected_rows",
+    [
+        (
+            create_active_user_with_permissions(),
+            None,
+            [
+                "Label Value Action",
+                "Service name Test Service Change",
+                "Sending email address name test.service@{sending_domain} Change",
+                "Sign-in method Text message code Change",
+                "Daily message limit 1,000 notifications",
+                "Daily text fragments limit 1,000 notifications",
+                "API rate limit per minute 100 calls",
+                "Label Value Action",
+                "Send emails On Change",
+                "Reply-to addresses Not set Manage",
+                "Email branding English Government of Canada signature Change",
+                "Send files by email Off (API-only) Change",
+                "Yearly free maximum 10 million emails",
+                "Label Value Action",
+                "Send text messages On Change",
+                "Start text messages with service name On Change",
+                "Send international text messages Off Change",
+                "Yearly free maximum 25,000 text messages",
+            ],
+        ),
+        (
+            create_platform_admin_user(),
+            "test.example.com",
+            [
+                "Label Value Action",
+                "Service name Test Service Change",
+                "Sending email address name test.service@{sending_domain} Change",
+                "Sign-in method Text message code Change",
+                "Daily message limit 1,000 notifications",
+                "Daily text fragments limit 1,000 notifications",
+                "API rate limit per minute 100 calls",
+                "Label Value Action",
+                "Send emails On Change",
+                "Reply-to addresses Not set Manage",
+                "Email branding English Government of Canada signature Change",
+                "Send files by email Off (API-only) Change",
+                "Yearly free maximum 10 million emails",
+                "Label Value Action",
+                "Send text messages On Change",
+                "Start text messages with service name On Change",
+                "Send international text messages Off Change",
+                "Yearly free maximum 25,000 text messages",
+                "Label Value Action",
+                "Live On Change",
+                "Count in list of live services Yes Change",
+                "Organisation Test Organisation Government of Canada Change",
+                "Daily message limit 1,000 Change",
+                "Daily text fragments limit 1,000 Change",
+                "API rate limit per minute 100",
+                "Text message senders GOVUK Manage",
+                "Receive text messages Off Change",
+                "Free fragments per year 250,000 Change",
+                "Email branding English Government of Canada signature Change",
+                "Letter branding Not set Change",
+                "Data retention email Change",
+                "Receive inbound SMS Off Change",
+                "Email authentication Off Change",
+            ],
+        ),
+    ],
+)
+def test_should_show_overview_inc_sms_daily_limit(
+    client,
+    mocker,
+    api_user_active,
+    fake_uuid,
+    no_reply_to_email_addresses,
+    no_letter_contact_blocks,
+    mock_get_service_organisation,
+    single_sms_sender,
+    user,
+    sending_domain,
+    expected_rows,
+    mock_get_service_settings_page_common,
+    app_,
+):
+    if app_.config["FF_SPIKE_SMS_DAILY_LIMIT"]:
+        service_one = service_json(
+            SERVICE_ONE_ID,
+            users=[api_user_active["id"]],
+            permissions=["sms", "email"],
+            organisation_id=ORGANISATION_ID,
+            restricted=False,
+            sending_domain=sending_domain,
+        )
+        mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
+
+        client.login(user, mocker, service_one)
+        response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert page.find("h1").text == "Settings"
+        rows = page.select("tr")
+        for index, row in enumerate(expected_rows):
+            formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
+            visible = rows[index]
+            sr_only = visible.find("span", "sr-only")
+            if sr_only:
+                sr_only.extract()
+                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+            assert formatted_row == " ".join(rows[index].text.split())
+        app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
 
 def test_no_go_live_link_for_service_without_organisation(
@@ -173,14 +278,20 @@ def test_no_go_live_link_for_service_without_organisation(
     single_sms_sender,
     platform_admin_user,
     mock_get_service_settings_page_common,
+    app_,
 ):
     mocker.patch("app.organisations_client.get_service_organisation", return_value=None)
     client_request.login(platform_admin_user)
     page = client_request.get("main.service_settings", service_id=SERVICE_ONE_ID)
 
     assert page.find("h1").text == "Settings"
-    assert normalize_spaces(page.select("tr")[16].text) == ("Live No (organisation must be set first)")
-    assert normalize_spaces(page.select("tr")[18].text) == ("Organisation Not set Government of Canada Change Organisation")
+
+    if app_.config["FF_SPIKE_SMS_DAILY_LIMIT"]:
+        assert normalize_spaces(page.select("tr")[17].text) == ("Live No (organisation must be set first)")
+        assert normalize_spaces(page.select("tr")[19].text) == ("Organisation Not set Government of Canada Change Organisation")
+    else:
+        assert normalize_spaces(page.select("tr")[16].text) == ("Live No (organisation must be set first)")
+        assert normalize_spaces(page.select("tr")[18].text) == ("Organisation Not set Government of Canada Change Organisation")
 
 
 def test_organisation_name_links_to_org_dashboard(
@@ -192,6 +303,8 @@ def test_organisation_name_links_to_org_dashboard(
     mock_get_service_settings_page_common,
     mocker,
     mock_get_service_organisation,
+    service_one,
+    app_,
 ):
     service_one = service_json(SERVICE_ONE_ID, permissions=["sms", "email"], organisation_id=ORGANISATION_ID)
     mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
@@ -199,7 +312,11 @@ def test_organisation_name_links_to_org_dashboard(
     client_request.login(platform_admin_user, service_one)
     response = client_request.get("main.service_settings", service_id=SERVICE_ONE_ID)
 
-    org_row = response.select("tr")[18]
+    if app_.config["FF_SPIKE_SMS_DAILY_LIMIT"]:
+        org_row = response.select("tr")[19]
+    else:
+        org_row = response.select("tr")[18]
+
     assert org_row.find("a")["href"] == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find("a").text) == "Test Organisation"
 
@@ -211,9 +328,9 @@ def test_organisation_name_links_to_org_dashboard(
             ["email", "sms", "inbound_sms", "international_sms"],
             [
                 "Service name service one Change",
-                "Sending email address test.service@{sending_domain} Change",
+                "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
-                "Daily message limit 1,000 notifications",
+                "Daily message limit 1,000 notifications",  # TODO: remove "email" when feature flag is removed
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
@@ -230,7 +347,7 @@ def test_organisation_name_links_to_org_dashboard(
             ["email", "sms", "email_auth"],
             [
                 "Service name service one Change",
-                "Sending email address test.service@{sending_domain} Change",
+                "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Email code or text message code Change",
                 "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
@@ -260,21 +377,101 @@ def test_should_show_overview_for_service_with_more_things_set(
     mock_get_service_settings_page_common,
     permissions,
     expected_rows,
+    app_,
 ):
-    client.login(active_user_with_permissions, mocker, service_one)
-    service_one["permissions"] = permissions
-    service_one["email_branding"] = uuid4()
-    response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
-    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    rows = page.find_all("tr")
-    for index, row in enumerate(expected_rows):
-        formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
-        visible = rows[index + 1]
-        sr_only = visible.find("span", "sr-only")
-        if sr_only:
-            sr_only.extract()
-            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-        assert formatted_row == " ".join(visible.text.split())
+    # TODO: remove this test once the sms daily limit feature rolls out
+    if not app_.config["FF_SPIKE_SMS_DAILY_LIMIT"]:
+        client.login(active_user_with_permissions, mocker, service_one)
+        service_one["permissions"] = permissions
+        service_one["email_branding"] = uuid4()
+        response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        rows = page.find_all("tr")
+        for index, row in enumerate(expected_rows):
+            formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
+            visible = rows[index + 1]
+            sr_only = visible.find("span", "sr-only")
+            if sr_only:
+                sr_only.extract()
+                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+            assert formatted_row == " ".join(visible.text.split())
+
+
+@pytest.mark.parametrize(
+    "permissions, expected_rows",
+    [
+        (
+            ["email", "sms", "inbound_sms", "international_sms"],
+            [
+                "Service name service one Change",
+                "Sending email address name test.service@{sending_domain} Change",
+                "Sign-in method Text message code Change",
+                "Daily message limit 1,000 notifications",
+                "Daily text fragments limit 1,000 notifications",
+                "API rate limit per minute 100 calls",
+                "Label Value Action",
+                "Send emails On Change",
+                "Reply-to addresses test@example.com Manage",
+                "Email branding Your branding (Organisation name) Change",
+                "Send files by email Off (API-only) Change",
+                "Label Value Action",
+                "Send text messages On Change",
+                "Start text messages with service name On Change",
+                "Send international text messages On Change",
+            ],
+        ),
+        (
+            ["email", "sms", "email_auth"],
+            [
+                "Service name service one Change",
+                "Sending email address name test.service@{sending_domain} Change",
+                "Sign-in method Email code or text message code Change",
+                "Daily message limit 1,000 notifications",
+                "Daily text fragments limit 1,000 notifications",
+                "API rate limit per minute 100 calls",
+                "Label Value Action",
+                "Send emails On Change",
+                "Reply-to addresses test@example.com Manage",
+                "Email branding Your branding (Organisation name) Change",
+                "Send files by email Off (API-only) Change",
+                "Label Value Action",
+                "Send text messages On Change",
+                "Start text messages with service name On Change",
+                "Send international text messages Off Change",
+            ],
+        ),
+    ],
+)
+def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_limit(
+    client,
+    active_user_with_permissions,
+    mocker,
+    service_one,
+    single_reply_to_email_address,
+    single_letter_contact_block,
+    single_sms_sender,
+    mock_get_service_organisation,
+    mock_get_email_branding,
+    mock_get_service_settings_page_common,
+    permissions,
+    expected_rows,
+    app_,
+):
+    if app_.config["FF_SPIKE_SMS_DAILY_LIMIT"]:
+        client.login(active_user_with_permissions, mocker, service_one)
+        service_one["permissions"] = permissions
+        service_one["email_branding"] = uuid4()
+        response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        rows = page.find_all("tr")
+        for index, row in enumerate(expected_rows):
+            formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
+            visible = rows[index + 1]
+            sr_only = visible.find("span", "sr-only")
+            if sr_only:
+                sr_only.extract()
+                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+            assert formatted_row == " ".join(visible.text.split())
 
 
 def test_if_cant_send_letters_then_cant_see_letter_contact_block(
@@ -378,12 +575,12 @@ def test_should_redirect_after_change_service_name(
     "user, expected_text, expected_link",
     [
         (
-            active_user_with_permissions,
+            create_active_user_with_permissions(),
             "To send notifications to more people, request to go live.",
             True,
         ),
         (
-            active_user_no_settings_permission,
+            create_active_user_no_settings_permission(),
             "Your service manager can ask to have these restrictions removed.",
             False,
         ),
@@ -401,7 +598,7 @@ def test_show_restricted_service(
     expected_text,
     expected_link,
 ):
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
     page = client_request.get(
         "main.service_settings",
         service_id=SERVICE_ONE_ID,
@@ -422,12 +619,12 @@ def test_show_restricted_service(
 
 @freeze_time("2017-04-01 11:09:00.061258")
 @pytest.mark.parametrize(
-    "current_limit, expected_limit",
+    "current_limit, expected_limit, current_sms_limit, expected_sms_limit",
     [
-        (42, 42),
+        (42, 42, 33, 33),
         # Maps to DEFAULT_SERVICE_LIMIT and DEFAULT_LIVE_SERVICE_LIMIT in config
-        (50, 10_000),
-        (50_000, 50_000),
+        (50, 10_000, 50, 1000),
+        (50_000, 50_000, 3000, 3000),
     ],
 )
 def test_switch_service_to_live(
@@ -437,8 +634,11 @@ def test_switch_service_to_live(
     service_one,
     current_limit,
     expected_limit,
+    current_sms_limit,
+    expected_sms_limit,
 ):
     service_one["message_limit"] = current_limit
+    service_one["sms_daily_limit"] = current_sms_limit
     client_request.login(platform_admin_user, service_one)
     client_request.post(
         "main.service_switch_live",
@@ -454,6 +654,7 @@ def test_switch_service_to_live(
     mock_update_service.assert_called_with(
         SERVICE_ONE_ID,
         message_limit=expected_limit,
+        sms_daily_limit=expected_sms_limit,
         restricted=False,
         go_live_at="2017-04-01 11:09:00.061258",
     )
@@ -514,11 +715,11 @@ def test_show_live_banner(
 
 
 @pytest.mark.parametrize(
-    "current_limit, expected_limit",
+    "current_limit, expected_limit, current_sms_limit, expected_sms_limit",
     [
-        (42, 50),
-        (50, 50),
-        (50_000, 50),
+        (42, 50, 33, 50),
+        (50, 50, 50, 50),
+        (50_000, 50, 3000, 50),
     ],
 )
 def test_switch_service_to_restricted(
@@ -528,9 +729,12 @@ def test_switch_service_to_restricted(
     mock_update_service,
     current_limit,
     expected_limit,
+    current_sms_limit,
+    expected_sms_limit,
     service_one,
 ):
     service_one["message_limit"] = current_limit
+    service_one["sms_daily_limit"] = current_sms_limit
     client_request.login(platform_admin_user, service_one)
     client_request.post(
         "main.service_switch_live",
@@ -543,7 +747,9 @@ def test_switch_service_to_restricted(
             _external=True,
         ),
     )
-    mock_update_service.assert_called_with(SERVICE_ONE_ID, message_limit=expected_limit, restricted=True, go_live_at=None)
+    mock_update_service.assert_called_with(
+        SERVICE_ONE_ID, message_limit=expected_limit, sms_daily_limit=expected_sms_limit, restricted=True, go_live_at=None
+    )
 
 
 @pytest.mark.parametrize(
@@ -678,14 +884,9 @@ def test_should_redirect_after_service_name_confirmation(
 
 
 @pytest.mark.parametrize("sending_domain", [None, "test.example.com"])
-def test_service_email_from_change(
-    client_request,
-    app_,
-    sending_domain,
-    active_user_with_permissions,
-):
+def test_service_email_from_change(client_request, app_, sending_domain, active_user_with_permissions, service_one):
     sending_domain = sending_domain or app_.config["SENDING_DOMAIN"]
-    service = service_one(active_user_with_permissions) | {"sending_domain": sending_domain}
+    service = service_one | {"sending_domain": sending_domain}
     client_request.login(active_user_with_permissions, service)
 
     page = client_request.get(
@@ -777,6 +978,8 @@ def test_should_raise_duplicate_name_handled(
     ],
 )
 def test_request_to_go_live_page(
+    active_user_with_permissions,
+    active_user_no_settings_permission,
     client_request,
     mocker,
     service_one,
@@ -791,19 +994,18 @@ def test_request_to_go_live_page(
     submitted_use_case,
     expected_use_case_checklist_item,
 ):
-    active_user_with_permissions,
+
+    user1 = create_active_user_with_permissions()
+    user2 = create_active_user_no_settings_permission()
     mock_get_users = mocker.patch(
         "app.models.user.Users.client",
-        return_value=(
-            [active_user_with_permissions(fake_uuid)] * count_of_users_with_manage_service
-            + [active_user_no_settings_permission(fake_uuid)]
-        ),
+        return_value=([user1] * count_of_users_with_manage_service + [user2]),
     )
     mock_get_invites = mocker.patch(
         "app.models.user.InvitedUsers.client",
         return_value=(
-            ([sample_invite(mocker, service_one)] * count_of_invites_with_manage_service)
-            + [sample_invite(mocker, service_one, permissions="view_activity")]
+            ([create_sample_invite(service_id=service_one.id, from_user=user1["id"])] * count_of_invites_with_manage_service)
+            + [create_sample_invite(service_id=service_one.id, from_user=user2["id"], permissions="view_activity")]
         ),
     )
 
@@ -865,14 +1067,11 @@ def test_request_to_go_live_page(
     ids=["service pending live", "trial service"],
 )
 def test_request_to_go_live_page_without_manage_service_permission(
-    client_request,
-    active_user_no_settings_permission,
-    service_params,
-    expected_sentence,
+    client_request, active_user_no_settings_permission, service_params, expected_sentence, service_one
 ):
     assert "manage_service" not in active_user_no_settings_permission["permissions"]
 
-    service = service_one(active_user_no_settings_permission) | service_params
+    service = service_one | service_params
     client_request.login(active_user_no_settings_permission, service)
 
     page = client_request.get(
@@ -1333,6 +1532,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
     mock_get_service_organisation,
     multiple_sms_senders,
     mock_get_service_settings_page_common,
+    app_,
 ):
     service_one["permissions"] = ["email", "sms"]
 
@@ -1341,7 +1541,10 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
     def get_row(page, index):
         return normalize_spaces(page.select("tbody tr")[index].text)
 
-    assert get_row(page, 6) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
+    if app_.config["FF_SPIKE_SMS_DAILY_LIMIT"]:
+        assert get_row(page, 7) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
+    else:
+        assert get_row(page, 6) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
 
 
 @pytest.mark.parametrize(
@@ -1368,11 +1571,12 @@ def test_api_ids_dont_show_on_option_pages_with_a_single_sender(
 
 
 @pytest.mark.parametrize(
-    ("sender_list_page," "sample_data," "expected_items," "is_platform_admin,"),
+    ("sender_list_page, endpoint_to_mock, sample_data, expected_items, is_platform_admin"),
     [
         (
             "main.service_email_reply_to",
-            multiple_reply_to_email_addresses,
+            "app.service_api_client.get_reply_to_email_addresses",
+            create_multiple_email_reply_to_addresses(),
             [
                 "test@example.com (default) Change 1234",
                 "test2@example.com Change 5678",
@@ -1382,7 +1586,8 @@ def test_api_ids_dont_show_on_option_pages_with_a_single_sender(
         ),
         (
             "main.service_letter_contact_details",
-            multiple_letter_contact_blocks,
+            "app.service_api_client.get_letter_contacts",
+            create_multiple_letter_contact_blocks(),
             [
                 "Blank Make default",
                 "1 Example Street (default) Change 1234",
@@ -1393,7 +1598,8 @@ def test_api_ids_dont_show_on_option_pages_with_a_single_sender(
         ),
         (
             "main.service_sms_senders",
-            multiple_sms_senders,
+            "app.service_api_client.get_sms_senders",
+            create_multiple_sms_senders(),
             [
                 "Example (default and receives replies) Change 1234",
                 "Example 2 Change 5678",
@@ -1408,11 +1614,12 @@ def test_default_option_shows_for_default_sender(
     platform_admin_user,
     mocker,
     sender_list_page,
+    endpoint_to_mock,
     sample_data,
     expected_items,
     is_platform_admin,
 ):
-    sample_data(mocker)
+    mocker.patch(endpoint_to_mock, return_value=sample_data)
 
     if is_platform_admin:
         client_request.login(platform_admin_user)
@@ -1456,23 +1663,18 @@ def test_remove_default_from_default_letter_contact_block(
 
 
 @pytest.mark.parametrize(
-    "sender_list_page, sample_data, expected_output, is_platform_admin",
+    "sender_list_page, endpoint_to_mock, expected_output, is_platform_admin",
     [
         (
             "main.service_email_reply_to",
-            no_reply_to_email_addresses,
+            "app.service_api_client.get_reply_to_email_addresses",
             "You have not added any reply-to email addresses yet",
             False,
         ),
-        (
-            "main.service_letter_contact_details",
-            no_letter_contact_blocks,
-            "Blank (default)",
-            False,
-        ),
+        ("main.service_letter_contact_details", "app.service_api_client.get_letter_contacts", "Blank (default)", False),
         (
             "main.service_sms_senders",
-            no_sms_senders,
+            "app.service_api_client.get_sms_senders",
             "You have not added any text message senders yet",
             True,
         ),
@@ -1482,12 +1684,12 @@ def test_no_senders_message_shows(
     client_request,
     platform_admin_user,
     sender_list_page,
+    endpoint_to_mock,
     expected_output,
-    sample_data,
     is_platform_admin,
     mocker,
 ):
-    sample_data(mocker)
+    mocker.patch(endpoint_to_mock, return_value=[])
 
     if is_platform_admin:
         client_request.login(platform_admin_user)
@@ -1578,15 +1780,15 @@ def test_incorrect_sms_sender_input(
 
 
 @pytest.mark.parametrize(
-    "fixture, data, api_default_args",
+    "reply_to_addresses, data, api_default_args",
     [
-        (no_reply_to_email_addresses, {}, True),
-        (multiple_reply_to_email_addresses, {}, False),
-        (multiple_reply_to_email_addresses, {"is_default": "y"}, True),
+        ([], {}, True),
+        (create_multiple_email_reply_to_addresses(), {}, False),
+        (create_multiple_email_reply_to_addresses(), {"is_default": "y"}, True),
     ],
 )
-def test_add_reply_to_email_address_sends_test_notification(mocker, client_request, fixture, data, api_default_args):
-    fixture(mocker)
+def test_add_reply_to_email_address_sends_test_notification(mocker, client_request, reply_to_addresses, data, api_default_args):
+    mocker.patch("app.service_api_client.get_reply_to_email_addresses", return_value=reply_to_addresses)
     data["email_address"] = "test@example.com"
     mock_verify = mocker.patch(
         "app.service_api_client.verify_reply_to_email_address",
@@ -1707,15 +1909,17 @@ def test_add_reply_to_email_address_fails_if_notification_not_delivered_in_45_se
 
 
 @pytest.mark.parametrize(
-    "fixture, data, api_default_args",
+    "letter_contact_blocks, data, api_default_args",
     [
-        (no_letter_contact_blocks, {}, True),
-        (multiple_letter_contact_blocks, {}, False),
-        (multiple_letter_contact_blocks, {"is_default": "y"}, True),
+        ([], {}, True),  # no existing letter contact blocks
+        (create_multiple_letter_contact_blocks(), {}, False),
+        (create_multiple_letter_contact_blocks(), {"is_default": "y"}, True),
     ],
 )
-def test_add_letter_contact(fixture, data, api_default_args, mocker, client_request, mock_add_letter_contact):
-    fixture(mocker)
+def test_add_letter_contact(letter_contact_blocks, data, api_default_args, mocker, client_request, mock_add_letter_contact):
+
+    mocker.patch("app.service_api_client.get_letter_contacts", return_value=letter_contact_blocks)
+
     data["letter_contact_block"] = "1 Example Street"
     client_request.post("main.service_add_letter_contact", service_id=SERVICE_ONE_ID, _data=data)
 
@@ -1770,25 +1974,13 @@ def test_add_letter_contact_when_coming_from_template(
 
 
 @pytest.mark.parametrize(
-    "fixture, data, api_default_args",
-    [
-        (no_sms_senders, {}, True),
-        (multiple_sms_senders, {}, False),
-        (multiple_sms_senders, {"is_default": "y"}, True),
-    ],
+    "sms_senders, data, api_default_args",
+    [([], {}, True), (create_multiple_sms_senders(), {}, False), (create_multiple_sms_senders(), {"is_default": "y"}, True)],
 )
-def test_add_sms_sender(
-    fixture,
-    data,
-    api_default_args,
-    mocker,
-    client_request,
-    mock_add_sms_sender,
-    platform_admin_user,
-):
+def test_add_sms_sender(sms_senders, data, api_default_args, mocker, client_request, mock_add_sms_sender, platform_admin_user):
     client_request.login(platform_admin_user)
 
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_sms_senders", return_value=sms_senders)
     data["sms_sender"] = "Example"
     client_request.post("main.service_add_sms_sender", service_id=SERVICE_ONE_ID, _data=data)
 
@@ -1796,32 +1988,44 @@ def test_add_sms_sender(
 
 
 @pytest.mark.parametrize(
-    "sender_page, fixture, checkbox_present",
+    "sender_page, function_to_mock, data,  checkbox_present",
     [
-        ("main.service_add_email_reply_to", no_reply_to_email_addresses, False),
-        ("main.service_add_email_reply_to", multiple_reply_to_email_addresses, True),
-        ("main.service_add_letter_contact", no_letter_contact_blocks, False),
-        ("main.service_add_letter_contact", multiple_letter_contact_blocks, True),
+        ("main.service_add_email_reply_to", "app.service_api_client.get_reply_to_email_addresses", [], False),
+        (
+            "main.service_add_email_reply_to",
+            "app.service_api_client.get_reply_to_email_addresses",
+            create_multiple_email_reply_to_addresses(),
+            True,
+        ),
+        ("main.service_add_letter_contact", "app.service_api_client.get_letter_contacts", [], False),
+        (
+            "main.service_add_letter_contact",
+            "app.service_api_client.get_letter_contacts",
+            create_multiple_letter_contact_blocks(),
+            True,
+        ),
     ],
 )
-def test_default_box_doesnt_show_on_first_sender(sender_page, fixture, mocker, checkbox_present, client_request):
-    fixture(mocker)
+def test_default_box_doesnt_show_on_first_sender(sender_page, function_to_mock, mocker, data, checkbox_present, client_request):
+
+    mocker.patch(function_to_mock, side_effect=lambda service_id: data)
+
     page = client_request.get(sender_page, service_id=SERVICE_ONE_ID)
 
     assert bool(page.select_one("[name=is_default]")) == checkbox_present
 
 
 @pytest.mark.parametrize(
-    "fixture, data, api_default_args",
+    "reply_to_address, data, api_default_args",
     [
-        (get_default_reply_to_email_address, {"is_default": "y"}, True),
-        (get_default_reply_to_email_address, {}, True),
-        (get_non_default_reply_to_email_address, {}, False),
-        (get_non_default_reply_to_email_address, {"is_default": "y"}, True),
+        (create_reply_to_email_address(), {"is_default": "y"}, True),
+        (create_reply_to_email_address(), {}, True),
+        (create_reply_to_email_address(is_default=False), {}, False),
+        (create_reply_to_email_address(is_default=False), {"is_default": "y"}, True),
     ],
 )
 def test_edit_reply_to_email_address_sends_verification_notification_if_address_is_changed(
-    fixture,
+    reply_to_address,
     data,
     api_default_args,
     mocker,
@@ -1832,7 +2036,7 @@ def test_edit_reply_to_email_address_sends_verification_notification_if_address_
         "app.service_api_client.verify_reply_to_email_address",
         return_value={"data": {"id": "123"}},
     )
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_reply_to_email_address", return_value=reply_to_address)
     data["email_address"] = "test@tbs-sct.gc.ca"
     client_request.post(
         "main.service_edit_email_reply_to",
@@ -1844,16 +2048,16 @@ def test_edit_reply_to_email_address_sends_verification_notification_if_address_
 
 
 @pytest.mark.parametrize(
-    "fixture, data, api_default_args",
+    "reply_to_address, data, api_default_args",
     [
-        (get_default_reply_to_email_address, {"is_default": "y"}, True),
-        (get_default_reply_to_email_address, {}, True),
-        (get_non_default_reply_to_email_address, {}, False),
-        (get_non_default_reply_to_email_address, {"is_default": "y"}, True),
+        (create_reply_to_email_address(), {"is_default": "y"}, True),
+        (create_reply_to_email_address(), {}, True),
+        (create_reply_to_email_address(is_default=False), {}, False),
+        (create_reply_to_email_address(is_default=False), {"is_default": "y"}, True),
     ],
 )
 def test_edit_reply_to_email_address_goes_straight_to_update_if_address_not_changed(
-    fixture,
+    reply_to_address,
     data,
     api_default_args,
     mocker,
@@ -1861,7 +2065,8 @@ def test_edit_reply_to_email_address_goes_straight_to_update_if_address_not_chan
     client_request,
     mock_update_reply_to_email_address,
 ):
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_reply_to_email_address", return_value=reply_to_address)
+
     mock_verify = mocker.patch("app.service_api_client.verify_reply_to_email_address")
     data["email_address"] = "test@example.com"
     client_request.post(
@@ -1881,10 +2086,10 @@ def test_edit_reply_to_email_address_goes_straight_to_update_if_address_not_chan
 
 
 @pytest.mark.parametrize(
-    "fixture, expected_link_text, partial_href",
+    "sender_details, expected_link_text, partial_href",
     [
         (
-            get_non_default_reply_to_email_address,
+            create_reply_to_email_address(is_default=False),
             "Delete",
             partial(
                 url_for,
@@ -1893,7 +2098,7 @@ def test_edit_reply_to_email_address_goes_straight_to_update_if_address_not_chan
             ),
         ),
         (
-            get_default_reply_to_email_address,
+            create_reply_to_email_address(),
             None,
             None,
         ),
@@ -1901,14 +2106,14 @@ def test_edit_reply_to_email_address_goes_straight_to_update_if_address_not_chan
 )
 def test_shows_delete_link_for_email_reply_to_address(
     mocker,
-    fixture,
+    sender_details,
     expected_link_text,
     partial_href,
     fake_uuid,
     client_request,
 ):
 
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_reply_to_email_address", return_value=sender_details)
 
     page = client_request.get(
         "main.service_edit_email_reply_to",
@@ -1968,16 +2173,16 @@ def test_delete_reply_to_email_address(
 
 
 @pytest.mark.parametrize(
-    "fixture, data, api_default_args",
+    "letter_contact_block, data, api_default_args",
     [
-        (get_default_letter_contact_block, {"is_default": "y"}, True),
-        (get_default_letter_contact_block, {}, True),
-        (get_non_default_letter_contact_block, {}, False),
-        (get_non_default_letter_contact_block, {"is_default": "y"}, True),
+        (create_letter_contact_block(), {"is_default": "y"}, True),
+        (create_letter_contact_block(), {}, True),
+        (create_letter_contact_block(is_default=False), {}, False),
+        (create_letter_contact_block(is_default=False), {"is_default": "y"}, True),
     ],
 )
 def test_edit_letter_contact_block(
-    fixture,
+    letter_contact_block,
     data,
     api_default_args,
     mocker,
@@ -1985,7 +2190,8 @@ def test_edit_letter_contact_block(
     client_request,
     mock_update_letter_contact,
 ):
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_letter_contact", return_value=letter_contact_block)
+
     data["letter_contact_block"] = "1 Example Street"
     client_request.post(
         "main.service_edit_letter_contact",
@@ -2026,7 +2232,6 @@ def test_delete_letter_contact_block(
     client_request,
     service_one,
     fake_uuid,
-    get_default_letter_contact_block,
     mocker,
 ):
     mock_delete = mocker.patch("app.service_api_client.delete_letter_contact")
@@ -2047,16 +2252,16 @@ def test_delete_letter_contact_block(
 
 
 @pytest.mark.parametrize(
-    "fixture, data, api_default_args",
+    "sms_sender, data, api_default_args",
     [
-        (get_default_sms_sender, {"is_default": "y", "sms_sender": "test"}, True),
-        (get_default_sms_sender, {"sms_sender": "test"}, True),
-        (get_non_default_sms_sender, {"sms_sender": "test"}, False),
-        (get_non_default_sms_sender, {"is_default": "y", "sms_sender": "test"}, True),
+        (create_sms_sender(), {"is_default": "y", "sms_sender": "test"}, True),
+        (create_sms_sender(), {"sms_sender": "test"}, True),
+        (create_sms_sender(is_default=False), {"sms_sender": "test"}, False),
+        (create_sms_sender(is_default=False), {"is_default": "y", "sms_sender": "test"}, True),
     ],
 )
 def test_edit_sms_sender(
-    fixture,
+    sms_sender,
     data,
     api_default_args,
     mocker,
@@ -2067,7 +2272,8 @@ def test_edit_sms_sender(
 ):
     client_request.login(platform_admin_user)
 
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_sms_sender", return_value=sms_sender)
+
     client_request.post(
         "main.service_edit_sms_sender",
         service_id=SERVICE_ONE_ID,
@@ -2084,11 +2290,12 @@ def test_edit_sms_sender(
 
 
 @pytest.mark.parametrize(
-    "sender_page, fixture, default_message, params, checkbox_present, is_platform_admin",
+    "sender_page, endpoint_to_mock, sender_details, default_message, params, checkbox_present, is_platform_admin",
     [
         (
             "main.service_edit_email_reply_to",
-            get_default_reply_to_email_address,
+            "app.service_api_client.get_reply_to_email_address",
+            create_reply_to_email_address(),
             "This is the default reply-to address for service one emails",
             "reply_to_email_id",
             False,
@@ -2096,7 +2303,8 @@ def test_edit_sms_sender(
         ),
         (
             "main.service_edit_email_reply_to",
-            get_non_default_reply_to_email_address,
+            "app.service_api_client.get_reply_to_email_address",
+            create_reply_to_email_address(is_default=False),
             "This is the default reply-to address for service one emails",
             "reply_to_email_id",
             True,
@@ -2104,7 +2312,8 @@ def test_edit_sms_sender(
         ),
         (
             "main.service_edit_letter_contact",
-            get_default_letter_contact_block,
+            "app.service_api_client.get_letter_contact",
+            create_letter_contact_block(),
             "This is currently your default address for service one.",
             "letter_contact_id",
             False,
@@ -2112,7 +2321,8 @@ def test_edit_sms_sender(
         ),
         (
             "main.service_edit_letter_contact",
-            get_non_default_letter_contact_block,
+            "app.service_api_client.get_letter_contact",
+            create_letter_contact_block(is_default=False),
             "THIS TEXT WONT BE TESTED",
             "letter_contact_id",
             True,
@@ -2120,7 +2330,8 @@ def test_edit_sms_sender(
         ),
         (
             "main.service_edit_sms_sender",
-            get_default_sms_sender,
+            "app.service_api_client.get_sms_sender",
+            create_sms_sender(),
             "This is the default text message sender.",
             "sms_sender_id",
             False,
@@ -2128,7 +2339,8 @@ def test_edit_sms_sender(
         ),
         (
             "main.service_edit_sms_sender",
-            get_non_default_sms_sender,
+            "app.service_api_client.get_sms_sender",
+            create_sms_sender(is_default=False),
             "This is the default text message sender.",
             "sms_sender_id",
             True,
@@ -2137,10 +2349,11 @@ def test_edit_sms_sender(
     ],
 )
 def test_default_box_shows_on_non_default_sender_details_while_editing(
-    fixture,
     fake_uuid,
     mocker,
     sender_page,
+    endpoint_to_mock,
+    sender_details,
     client_request,
     platform_admin_user,
     default_message,
@@ -2151,7 +2364,8 @@ def test_default_box_shows_on_non_default_sender_details_while_editing(
     page_arguments = {"service_id": SERVICE_ONE_ID}
     page_arguments[params] = fake_uuid
 
-    fixture(mocker)
+    mocker.patch(endpoint_to_mock, return_value=sender_details)
+    # mocker.patch(function_to_mock, side_effect=lambda service_id: data)
 
     if is_platform_admin:
         client_request.login(platform_admin_user)
@@ -2165,19 +2379,15 @@ def test_default_box_shows_on_non_default_sender_details_while_editing(
 
 
 @pytest.mark.parametrize(
-    "fixture, expected_link_text, partial_href",
+    "sms_sender, expected_link_text, partial_href",
     [
         (
-            get_non_default_sms_sender,
+            create_sms_sender(is_default=False),
             "Delete",
-            partial(
-                url_for,
-                "main.service_confirm_delete_sms_sender",
-                sms_sender_id=sample_uuid(),
-            ),
+            partial(url_for, "main.service_confirm_delete_sms_sender", sms_sender_id=sample_uuid()),
         ),
         (
-            get_default_sms_sender,
+            create_sms_sender(is_default=True),
             None,
             None,
         ),
@@ -2185,15 +2395,14 @@ def test_default_box_shows_on_non_default_sender_details_while_editing(
 )
 def test_shows_delete_link_for_sms_sender(
     mocker,
-    fixture,
+    sms_sender,
     expected_link_text,
     partial_href,
     fake_uuid,
     client_request,
     platform_admin_user,
 ):
-
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_sms_sender", return_value=sms_sender)
 
     client_request.login(platform_admin_user)
 
@@ -2243,11 +2452,11 @@ def test_confirm_delete_sms_sender(
 
 
 @pytest.mark.parametrize(
-    "fixture, expected_link_text",
+    "sms_sender, expected_link_text",
     [
-        (get_inbound_number_sms_sender, None),
-        (get_default_sms_sender, None),
-        (get_non_default_sms_sender, "Delete"),
+        (create_sms_sender(is_default=False, inbound_number_id="1234"), None),
+        (create_sms_sender(is_default=True), None),
+        (create_sms_sender(is_default=False), "Delete"),
     ],
 )
 def test_inbound_sms_sender_is_not_deleteable(
@@ -2255,11 +2464,11 @@ def test_inbound_sms_sender_is_not_deleteable(
     platform_admin_user,
     service_one,
     fake_uuid,
-    fixture,
+    sms_sender,
     expected_link_text,
     mocker,
 ):
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_sms_sender", return_value=sms_sender)
 
     client_request.login(platform_admin_user)
     page = client_request.get(
@@ -2300,10 +2509,10 @@ def test_delete_sms_sender(
 
 
 @pytest.mark.parametrize(
-    "fixture, hide_textbox, fixture_sender_id",
+    "sms_sender, hide_textbox",
     [
-        (get_inbound_number_sms_sender, True, "1234"),
-        (get_default_sms_sender, False, "1234"),
+        (create_sms_sender(is_default=False, inbound_number_id="1234"), True),
+        (create_sms_sender(is_default=True), False),
     ],
 )
 def test_inbound_sms_sender_is_not_editable(
@@ -2311,18 +2520,17 @@ def test_inbound_sms_sender_is_not_editable(
     platform_admin_user,
     service_one,
     fake_uuid,
-    fixture,
+    sms_sender,
     hide_textbox,
-    fixture_sender_id,
     mocker,
 ):
-    fixture(mocker)
+    mocker.patch("app.service_api_client.get_sms_sender", return_value=sms_sender)
 
     client_request.login(platform_admin_user)
     page = client_request.get(
         ".service_edit_sms_sender",
         service_id=SERVICE_ONE_ID,
-        sms_sender_id=fixture_sender_id,
+        sms_sender_id=fake_uuid,
     )
 
     assert bool(page.find("input", attrs={"name": "sms_sender"})) != hide_textbox
@@ -2920,11 +3128,11 @@ def test_organisation_type_pages_are_platform_admin_only(
 
 def test_should_show_page_to_set_message_limit(
     platform_admin_client,
+    app_,
 ):
     response = platform_admin_client.get(url_for("main.set_message_limit", service_id=SERVICE_ONE_ID))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-
     assert normalize_spaces(page.select_one("label").text) == "Daily message limit"
 
 
@@ -3322,9 +3530,9 @@ def test_service_switch_can_upload_document_lets_contact_details_be_added_and_sh
 @pytest.mark.parametrize(
     "user",
     (
-        platform_admin_user,
-        active_user_with_permissions,
-        pytest.param(active_user_no_settings_permission, marks=pytest.mark.xfail),
+        create_platform_admin_user(),
+        create_active_user_with_permissions(),
+        pytest.param(create_active_user_no_settings_permission(), marks=pytest.mark.xfail),
     ),
 )
 def test_archive_service_after_confirm(
@@ -3337,7 +3545,7 @@ def test_archive_service_after_confirm(
     fake_uuid,
 ):
     mocked_fn = mocker.patch("app.service_api_client.post")
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
     page = client_request.post(
         "main.archive_service",
         service_id=SERVICE_ONE_ID,
@@ -3352,9 +3560,9 @@ def test_archive_service_after_confirm(
 @pytest.mark.parametrize(
     "user",
     (
-        platform_admin_user,
-        active_user_with_permissions,
-        pytest.param(active_user_no_settings_permission, marks=pytest.mark.xfail),
+        create_platform_admin_user(),
+        create_active_user_with_permissions(),
+        pytest.param(create_active_user_no_settings_permission(), marks=pytest.mark.xfail),
     ),
 )
 def test_archive_service_prompts_user(
@@ -3369,7 +3577,7 @@ def test_archive_service_prompts_user(
     user,
 ):
     mocked_fn = mocker.patch("app.service_api_client.post")
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
 
     settings_page = client_request.get("main.archive_service", service_id=SERVICE_ONE_ID)
     delete_link = settings_page.select(".page-footer-delete-link a")[0]
@@ -3781,7 +3989,7 @@ def test_set_inbound_sms_when_inbound_number_is_not_set(
     "user, expected_paragraphs",
     [
         (
-            active_user_with_permissions,
+            create_active_user_with_permissions(),
             [
                 "Your service can receive text messages sent to 07700900123.",
                 "You can still send text messages from a sender name if you "
@@ -3791,7 +3999,7 @@ def test_set_inbound_sms_when_inbound_number_is_not_set(
             ],
         ),
         (
-            active_user_no_api_key_permission,
+            create_active_user_no_api_key_permission(),
             [
                 "Your service can receive text messages sent to 07700900123.",
                 "You can still send text messages from a sender name if you "
@@ -3814,7 +4022,7 @@ def test_set_inbound_sms_when_inbound_number_is_set(
         "app.inbound_number_client.get_inbound_sms_number_for_service",
         return_value={"data": {"number": "07700900123"}},
     )
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
     page = client_request.get(
         "main.service_set_inbound_sms",
         service_id=SERVICE_ONE_ID,

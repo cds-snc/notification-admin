@@ -1,0 +1,16 @@
+.env*
+.git
+.devcontainer
+.dockerignore
+.github
+.gitignore
+.mypy_cache
+.prettierignore
+.pytest_cache
+__pycache__
+ci
+pytest.ini
+README.md
+requirements-app.txt
+requirements_for_test.txt
+tests

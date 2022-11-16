@@ -6,14 +6,26 @@ from app.main.forms import get_placeholder_form_instance
 def test_form_class_not_mutated(app_):
 
     with app_.test_request_context(method="POST", data={"placeholder_value": ""}):
-        form1 = get_placeholder_form_instance("name", {}, "sms", optional_placeholder=False)
-        form2 = get_placeholder_form_instance("city", {}, "sms", optional_placeholder=True)
+        form1 = get_placeholder_form_instance("name", {}, "sms", is_conditional=False, optional_placeholder=False)
+        form2 = get_placeholder_form_instance("city", {}, "sms", is_conditional=False, optional_placeholder=True)
+        form3 = get_placeholder_form_instance("elligible", {}, "sms", is_conditional=True, optional_placeholder=False)
 
         assert not form1.validate_on_submit()
         assert form2.validate_on_submit()
+        assert not form3.validate_on_submit()
 
-        assert str(form1.placeholder_value.label) == '<label for="placeholder_value">name</label>'
-        assert str(form2.placeholder_value.label) == '<label for="placeholder_value">city</label>'
+        assert (
+            str(form1.placeholder_value.label)
+            == '<label for="placeholder_value">What is the custom content in ((name)) ?</label>'
+        )
+        assert (
+            str(form2.placeholder_value.label)
+            == '<label for="placeholder_value">What is the custom content in ((city)) ?</label>'
+        )
+        assert (
+            str(form3.placeholder_value.label)
+            == '<label for="placeholder_value">Do you want to include the content in ((elligible)) ?</label>'
+        )
 
 
 @pytest.mark.parametrize(
@@ -63,6 +75,7 @@ def test_validates_recipients(
             placeholder_name,
             {},
             template_type,
+            is_conditional=False,
             allow_international_phone_numbers=service_can_send_international_sms,
         )
 

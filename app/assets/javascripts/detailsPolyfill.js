@@ -99,6 +99,8 @@
       // Save shortcuts to the inner summary and content elements
       details.__summary = details.getElementsByTagName("summary").item(0);
       details.__content = details.getElementsByTagName("div").item(0);
+      details.__interactive =
+        details.__content.querySelectorAll("a, input, button");
 
       // If the content doesn't have an ID, assign it one now
       // which we'll need for the summary's aria-controls assignment
@@ -126,9 +128,15 @@
       if (openAttr === true) {
         details.__summary.setAttribute("aria-expanded", "true");
         details.__content.setAttribute("aria-hidden", "false");
+        details.__interactive.forEach((element) => {
+          element.setAttribute("tabIndex", 0);
+        });
       } else {
         details.__summary.setAttribute("aria-expanded", "false");
         details.__content.setAttribute("aria-hidden", "true");
+        details.__interactive.forEach((element) => {
+          element.setAttribute("tabIndex", -1);
+        });
         if (!NATIVE_DETAILS) {
           details.__content.style.display = "none";
         }
@@ -174,6 +182,9 @@
         "aria-hidden",
         hidden ? "false" : "true"
       );
+      summary.__details.__interactive.forEach((element) => {
+        element.setAttribute("tabIndex", hidden ? 0 : -1);
+      });
 
       if (!NATIVE_DETAILS) {
         summary.__details.__content.style.display = expanded ? "none" : "";

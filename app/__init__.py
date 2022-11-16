@@ -19,7 +19,6 @@ from flask import (
     render_template,
     request,
     session,
-    url_for,
 )
 from flask.globals import _lookup_req_object, _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
@@ -42,6 +41,7 @@ from werkzeug.exceptions import abort
 from werkzeug.local import LocalProxy
 
 from app import proxy_fix
+from app.articles.routing import gca_url_for
 from app.asset_fingerprinter import asset_fingerprinter
 from app.commands import setup_commands
 from app.config import configs
@@ -93,10 +93,10 @@ def _get_current_service():
     return _lookup_req_object("service")
 
 
-current_service = LocalProxy(_get_current_service)
+current_service: Service = LocalProxy(_get_current_service)  # type: ignore
 
 # The current organisation attached to the request stack.
-current_organisation = LocalProxy(partial(_lookup_req_object, "organisation"))
+current_organisation: Organisation = LocalProxy(partial(_lookup_req_object, "organisation"))  # type: ignore
 
 navigation = {
     "header_navigation": HeaderNavigation(),
@@ -209,6 +209,9 @@ def create_app(application):
     register_errorhandlers(application)
 
     setup_event_handlers()
+
+    # allow gca_url_for to be called from any template
+    application.jinja_env.globals["gca_url_for"] = gca_url_for
 
 
 def init_app(application):
@@ -387,8 +390,8 @@ def translate_preview_template(_template_str):
             "Reply to": _("Reply to"),
             "From:": _("From:"),
             "To:": _("To:"),
-            "phone number": _("phone number"),
-            "email address": _("email address"),
+            "phone number": "phone number",
+            "email address": "email address",
             "hidden": _("hidden"),
         }.get(word, match)
 
@@ -508,7 +511,8 @@ def format_notification_status_as_field_status(status, notification_type):
 
 
 def format_notification_status_as_url(status, notification_type):
-    url = partial(url_for, "main.messages_status")
+    def url(_anchor):
+        return gca_url_for("message_delivery_status") + "#" + _anchor
 
     if status not in {
         "technical-failure",
@@ -626,14 +630,18 @@ def useful_headers_after_request(response):
     response.headers.add(
         "Content-Security-Policy",
         (
+            "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
             "default-src 'self' {asset_domain} 'unsafe-inline';"
-            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
+            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            "connect-src 'self' *.google-analytics.com *.googletagmanager.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
             "object-src 'self';"
             "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
-            "frame-src 'self' www.googletagmanager.com www.youtube.com;".format(asset_domain=asset_domain)
+            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+            "frame-src 'self' www.googletagmanager.com www.youtube.com https://cdssnc.qualtrics.com/;".format(
+                asset_domain=asset_domain
+            )
         ),
     )
     if "Cache-Control" in response.headers:

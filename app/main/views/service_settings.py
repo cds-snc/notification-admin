@@ -55,6 +55,7 @@ from app.main.forms import (
     ServiceSwitchChannelForm,
     SetEmailBranding,
     SetLetterBranding,
+    SMSMessageLimit,
     SMSPrefixForm,
 )
 from app.s3_client.s3_logo_client import upload_email_logo
@@ -98,7 +99,7 @@ def service_settings(service_id: str):
     return render_template(
         "views/service-settings.html",
         service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS,
-        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],
+        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],  # type: ignore
         limits=limits,
     )
 
@@ -365,14 +366,21 @@ def service_switch_live(service_id):
     if form.validate_on_submit():
         live = form.enabled.data
         message_limit = current_app.config["DEFAULT_SERVICE_LIMIT"]
+        sms_daily_limit = current_app.config["DEFAULT_SMS_DAILY_LIMIT"]
         if live:
             if current_service.message_limit != current_app.config["DEFAULT_SERVICE_LIMIT"]:
                 message_limit = current_service.message_limit
             else:
                 message_limit = current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"]
+
+            if current_service.sms_daily_limit != current_app.config["DEFAULT_SMS_DAILY_LIMIT"]:
+                sms_daily_limit = current_service.sms_daily_limit
+            else:
+                sms_daily_limit = current_app.config["DEFAULT_LIVE_SMS_DAILY_LIMIT"]
+
             flash(_("An email has been sent to service users"), "default_with_tick")
 
-        current_service.update_status(live=live, message_limit=message_limit)
+        current_service.update_status(live=live, message_limit=message_limit, sms_daily_limit=sms_daily_limit)
         return redirect(url_for(".service_settings", service_id=service_id))
 
     return render_template(
@@ -1056,7 +1064,23 @@ def set_message_limit(service_id):
     return render_template(
         "views/service-settings/set-message-limit.html",
         form=form,
+        heading=_("Daily message limit"),
     )
+
+
+@main.route("/services/<service_id>/service-settings/set-sms-message-limit", methods=["GET", "POST"])
+@user_is_platform_admin
+def set_sms_message_limit(service_id):
+
+    form = SMSMessageLimit(message_limit=current_service.sms_daily_limit, other_data="HI")
+
+    if form.validate_on_submit():
+        service_api_client.update_sms_message_limit(service_id, form.message_limit.data)
+        if current_service.live:
+            flash(_("An email has been sent to service users"), "default_with_tick")
+        return redirect(url_for(".service_settings", service_id=service_id))
+
+    return render_template("views/service-settings/set-message-limit.html", form=form, heading=_("Daily text fragments limit"))
 
 
 @main.route(

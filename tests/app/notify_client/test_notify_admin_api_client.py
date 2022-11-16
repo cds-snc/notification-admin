@@ -1,4 +1,3 @@
-import uuid
 from datetime import date
 from unittest.mock import patch
 
@@ -9,13 +8,20 @@ from app.models.service import Service
 from app.notify_client import NotifyAdminAPIClient
 from app.notify_client.notification_api_client import notification_api_client
 from tests import service_json
-from tests.conftest import api_user_active, platform_admin_user, set_config
+from tests.conftest import (
+    create_api_user_active,
+    create_platform_admin_user,
+    set_config,
+)
 
 
 @pytest.mark.parametrize("method", ["put", "post", "delete"])
 @pytest.mark.parametrize(
     "user",
-    [api_user_active(str(uuid.uuid4())), platform_admin_user(str(uuid.uuid4()))],
+    [
+        create_api_user_active(),
+        create_platform_admin_user(),
+    ],
     ids=["api_user", "platform_admin"],
 )
 @pytest.mark.parametrize("service", [service_json(active=True), None], ids=["active_service", "no_service"])
@@ -74,16 +80,12 @@ def test_generate_headers_sets_standard_headers(app_):
     # with patch('app.notify_client.has_request_context', return_value=False):
     headers = api_client.generate_headers("api_token")
 
-    assert set(headers.keys()) == {
-        "Authorization",
-        "Content-type",
-        "User-agent",
-        "X-Custom-Forwarder",
-    }
+    assert set(headers.keys()) == {"Authorization", "Content-type", "User-agent", "X-Custom-Forwarder", "waf-secret"}
     assert headers["Authorization"] == "Bearer api_token"
     assert headers["Content-type"] == "application/json"
     assert headers["User-agent"].startswith("NOTIFY-API-PYTHON-CLIENT")
     assert headers["X-Custom-Forwarder"] == "proxy-secret"
+    assert headers["waf-secret"] == "waf-secret"
 
 
 def test_generate_headers_sets_request_id_if_in_request_context(app_):
@@ -100,6 +102,7 @@ def test_generate_headers_sets_request_id_if_in_request_context(app_):
         "X-Custom-Forwarder",
         "X-B3-TraceId",
         "X-B3-SpanId",
+        "waf-secret",
     }
     assert headers["X-B3-TraceId"] == request_context.request.request_id
     assert headers["X-B3-SpanId"] == request_context.request.span_id

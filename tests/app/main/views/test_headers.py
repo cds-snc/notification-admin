@@ -24,7 +24,7 @@ service = [
 ]
 
 
-def test_presence_of_security_headers(client, mocker):
+def test_presence_of_security_headers(client, mocker, mock_calls_out_to_GCA):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
@@ -42,11 +42,7 @@ def test_presence_of_security_headers(client, mocker):
     assert response.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
 
 
-def test_owasp_useful_headers_set(
-    client,
-    mocker,
-    mock_get_service_and_organisation_counts,
-):
+def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisation_counts, mock_calls_out_to_GCA):
     # Given...
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
@@ -66,38 +62,47 @@ def test_owasp_useful_headers_set(
     assert response.headers["X-Content-Type-Options"] == "nosniff"
     assert response.headers["X-XSS-Protection"] == "1; mode=block"
     assert response.headers["Content-Security-Policy"] == (
+        "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
         "default-src 'self' static.example.com 'unsafe-inline';"
-        f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-        "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
+        f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+        f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+        "connect-src 'self' *.google-analytics.com *.googletagmanager.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
         "object-src 'self';"
         "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
-        "'self' static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
-        "frame-src 'self' www.googletagmanager.com www.youtube.com;"
+        "'self' static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+        "frame-src 'self' www.googletagmanager.com www.youtube.com https://cdssnc.qualtrics.com/;"
     )
 
 
 @pytest.mark.parametrize(
-    "url, cache_headers",
+    "url, use_fingerprinting, cache_headers",
     [
         (
-            asset_fingerprinter.get_url("stylesheets/index.css"),
+            "stylesheets/index.css",
+            True,
             "public, max-age=31536000, immutable",
         ),
         (
-            asset_fingerprinter.get_url("images/favicon.ico"),
+            "images/favicon.ico",
+            True,
             "public, max-age=31536000, immutable",
         ),
         (
-            asset_fingerprinter.get_url("javascripts/main.min.js"),
+            "javascripts/main.min.js",
+            True,
             "public, max-age=31536000, immutable",
         ),
-        ("/robots.txt", "no-store, no-cache, private, must-revalidate"),
+        ("/robots.txt", False, "no-store, no-cache, private, must-revalidate"),
     ],
     ids=["CSS file", "image", "JS file", "static page"],
 )
-def test_headers_cache_static_assets(client, url, cache_headers):
+def test_headers_cache_static_assets(client, url, use_fingerprinting, cache_headers):
+
+    if use_fingerprinting:
+        url = asset_fingerprinter.get_url(url)
+
     response = client.get(url)
 
     assert response.status_code == 200
@@ -105,9 +110,7 @@ def test_headers_cache_static_assets(client, url, cache_headers):
 
 
 def test_headers_non_ascii_characters_are_replaced(
-    client,
-    mocker,
-    mock_get_service_and_organisation_counts,
+    client, mocker, mock_get_service_and_organisation_counts, mock_calls_out_to_GCA
 ):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
@@ -122,13 +125,15 @@ def test_headers_non_ascii_characters_are_replaced(
 
     assert response.status_code == 200
     assert response.headers["Content-Security-Policy"] == (
+        "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
         "default-src 'self' static.example.com 'unsafe-inline';"
-        f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-        "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
+        f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+        f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+        "connect-src 'self' *.google-analytics.com *.googletagmanager.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
         "object-src 'self';"
         "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
         "font-src 'self' static.example.com *.googleapis.com *.gstatic.com data:;"
         "img-src "
-        "'self' static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
-        "frame-src 'self' www.googletagmanager.com www.youtube.com;"
+        "'self' static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+        "frame-src 'self' www.googletagmanager.com www.youtube.com https://cdssnc.qualtrics.com/;"
     )

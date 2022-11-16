@@ -529,7 +529,7 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
             self.service_id = service_id
 
     email_from = StringField(
-        _l("Sending email address"),
+        _l("Sending email address name"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,
@@ -549,7 +549,7 @@ class RenameOrganisationForm(StripWhitespaceForm):
 
 
 class OrganisationOrganisationTypeForm(StripWhitespaceForm):
-    organisation_type = OrganisationTypeField("What type of organisation is this?")
+    org_type = OrganisationTypeField("What type of organisation is this?")
 
 
 class OrganisationCrownStatusForm(StripWhitespaceForm):
@@ -593,12 +593,32 @@ class OrganisationDomainsForm(StripWhitespaceForm):
     )
 
 
+# class CreateServiceStepNameForm(StripWhitespaceForm):
+#     name = StringField(
+#         _l("Enter bilingual service name"),
+#         validators=[]
+#     )
+
+#     email_from = StringField(
+#         _l("Enter the part before ‘@notification.canada.ca’"),
+#         validators=[]
+#     )
+
+
 class CreateServiceStepNameForm(StripWhitespaceForm):
     name = StringField(
-        _l("Bilingual service name"),
+        _l("Enter bilingual service name"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_service_name,
+        ],
+    )
+
+    email_from = StringField(
+        _l("Enter the part before ‘@notification.canada.ca’"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validate_email_from,
         ],
     )
 
@@ -633,7 +653,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         self.default_branding.choices = self._getSelectBilingualChoices()
 
     default_branding = RadioField(
-        _l("Default language <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
+        _l("Choose which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
@@ -647,16 +667,6 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
                     FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
                 ]
             ),
-        ],
-    )
-
-
-class CreateServiceStepEmailFromForm(StripWhitespaceForm):
-    email_from = StringField(
-        _l("Sending email address"),
-        validators=[
-            DataRequired(message=_l("This cannot be empty")),
-            validate_email_from,
         ],
     )
 
@@ -682,6 +692,26 @@ class NewOrganisationForm(
 class MessageLimit(StripWhitespaceForm):
     message_limit = IntegerField(
         _l("Daily message limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
+    )
+
+
+class EmailMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l("Daily email message limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
+    )
+
+
+class SMSMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l("Daily text fragments limit"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validators.NumberRange(min=1),
@@ -736,9 +766,25 @@ class SMSTemplateForm(BaseTemplateForm):
     def validate_template_content(self, field):
         OnlySMSCharacters()(None, field)
 
+    template_content = TextAreaField(
+        _l("Text message"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            NoCommasInPlaceHolders(),
+        ],
+    )
+
 
 class EmailTemplateForm(BaseTemplateForm):
     subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
+
+    template_content = TextAreaField(
+        _l("Email message"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            NoCommasInPlaceHolders(),
+        ],
+    )
 
 
 class LetterTemplateForm(EmailTemplateForm):
@@ -786,7 +832,7 @@ class ChangePasswordForm(StripWhitespaceForm):
 
 class CsvUploadForm(StripWhitespaceForm):
     file = FileField(
-        _l("Add recipients"),
+        _l("Choose a file"),
         validators=[DataRequired(message="Please pick a file"), CsvFileValidator()],
     )
 
@@ -1367,6 +1413,7 @@ def get_placeholder_form_instance(
     placeholder_name,
     dict_to_populate_from,
     template_type,
+    is_conditional=False,
     optional_placeholder=False,
     allow_international_phone_numbers=False,
 ):
@@ -1378,10 +1425,18 @@ def get_placeholder_form_instance(
         else:
             field = uk_mobile_number(label=placeholder_name)
     elif optional_placeholder:
-        field = StringField(placeholder_name)
+        field = StringField(_l("What is the custom content in (({})) ?").format(placeholder_name))
+    elif is_conditional:
+        field = RadioField(
+            _l("Do you want to include the content in (({})) ?").format(placeholder_name),
+            choices=[
+                ("yes", _l("Yes")),
+                ("no", _l("No")),
+            ],
+        )
     else:
         field = StringField(
-            placeholder_name,
+            _l("What is the custom content in (({})) ?").format(placeholder_name),
             validators=[DataRequired(message=_l("This cannot be empty"))],
         )
 
@@ -1492,9 +1547,9 @@ def required_for_ops(*operations):
 class CreateTemplateForm(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.what_type.choices = [("email", _l("Email")), ("sms", _l("Text message"))]
+        self.what_type.choices = [("email", _l("Email")), ("sms", _l("Text"))]
 
-    what_type = RadioField(_l("Type of message"))
+    what_type = RadioField("")
 
 
 class AddEmailRecipientsForm(Form):

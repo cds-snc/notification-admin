@@ -138,15 +138,12 @@ def test_can_create_spreadsheet_from_large_excel_file():
 
 
 def test_can_create_spreadsheet_from_dict():
-    assert (
-        Spreadsheet.from_dict(
-            OrderedDict(
-                foo="bar",
-                name="Jane",
-            )
-        ).as_csv_data
-        == ("foo,name\r\n" "bar,Jane\r\n")
-    )
+    assert Spreadsheet.from_dict(
+        OrderedDict(
+            foo="bar",
+            name="Jane",
+        )
+    ).as_csv_data == ("foo,name\r\n" "bar,Jane\r\n")
 
 
 def test_can_create_spreadsheet_from_dict_with_filename():
@@ -504,11 +501,13 @@ def test_get_letter_printing_statement_for_letter_that_has_been_sent(created_at,
     assert statement == "Printed {} at 5:30pm".format(print_day)
 
 
-def test_report_security_finding(mocker):
+def test_report_security_finding(mocker, app_):
     boto_client = mocker.patch("app.utils.boto3")
     client = boto_client.client.return_value = mocker.Mock()
     client.get_caller_identity.return_value = {"Account": "123456789"}
-    report_security_finding("foo", "bar", 50, 50)
+
+    with app_.app_context():
+        report_security_finding("foo", "bar", 50, 50)
 
     boto_client.client.assert_called_with("securityhub", region_name=current_app.config["AWS_REGION"])
     client.get_caller_identity.assert_called()
@@ -660,3 +659,35 @@ def test_get_template_with_html_allowed(mocker, app_, service_one, fake_uuid, al
 
     assert email_template is not None
     assert email_template.allow_html is allow_html
+
+
+def test_set_lang_bad_route(
+    client_request,
+    mock_GCA_404,
+):
+    # test an invalid route redirects correctly
+    # The args in are in a dictionary because "from" is a reserved word :/
+    page = client_request.get(
+        **{"endpoint": "main.set_lang", "from": "/whatever", "_expected_status": 404, "_follow_redirects": True}
+    )
+    assert page.select_one("h1").text.strip() == "Page could not be found"
+
+
+def test_set_lang_good_route(client_request):
+    page = client_request.get(
+        **{"endpoint": "main.set_lang", "from": "/welcome", "_expected_status": 200, "_follow_redirects": True}
+    )
+    assert page.select_one("h1").text.strip() == "Welcome to GC Notify"
+
+
+def test_set_lang_external_route(client_request):
+    # test an external route route redirects correctly
+    page = client_request.get(
+        **{
+            "endpoint": "main.set_lang",
+            "from": "https://malicious.hacker.com",
+            "_expected_status": 302,
+            "_follow_redirects": False,
+        }
+    )
+    assert len(page.findAll(text="/accounts-or-dashboard")) == 1

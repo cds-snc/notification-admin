@@ -9,7 +9,7 @@
 {% endif %}
 
 <hr class="m-0 md:hidden bg-blue" style="height: 4px"/>
-<nav class="md:hidden" aria-label="{{ _('mobile navigation') }}">
+<nav class="md:hidden" aria-label="{{ _('Main menu') }}">
   <div class="container px-gutterHalf">
     <!-- Mobile menu and nav bar -->
     <div class="grid grid-cols-2">
@@ -33,7 +33,7 @@
       <!--  start mobile navigation -->
       {% include 'partials/nav/gc_header_nav_mobile.html' %}
       <!--  end mobile navigation -->
-      <div aria-label="{{ _('language and sign-in') }}" class="flex justify-end self-center">
+      <div class="flex justify-end self-center">
         {% if current_user.is_authenticated %}
           {% include 'partials/nav/account_menu_mobile.html' %}
         {% else %}
@@ -51,7 +51,7 @@
             <a
               id="nav-lang"
               class="px-1 block line-under leading-none text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
-              href="{{ url_for('main.set_lang') }}?from={{ request.path }}"
+              href="{{ url_for('main.set_lang') }}?from={{ lang_url or request.path }}"
               lang="{{ 'fr-CA' if lang_switch == 'FR' else 'en-CA' }}">
               <span class="sr-only">{{ long_lang_switch }}</span>
               <span role="presentation" aria-hidden="true">{{ lang_switch }}</span>
@@ -65,7 +65,7 @@
   </div>
 </nav>
 {% if withnav %}
-  <nav class="bg-gray hidden md:visible md:flex" aria-label="{{ _('main navigation') }}">
+  <nav class="bg-gray hidden md:visible md:flex" aria-label="{{ _('Main menu') }}">
     <div class="container px-gutterHalf">
       <div id="proposition-links" class="flex flex-no-wrap items-baseline">
         {% if not current_user.is_authenticated %}
@@ -77,8 +77,8 @@
             {% endfor %}
           {% else %}
             {{ nav_menu_item('/', _('Home'), 'pl-0 header--'+header_navigation.is_selected('home'), 'nav-head-home')}}
-            {{ nav_menu_item(url_for('main.why-notify'), _('Why GC Notify'), 'header--'+header_navigation.is_selected('why-notify'), 'nav-head-why-notify') }}
-            {{ nav_menu_item(url_for('main.features'), _('Features'), 'header--'+header_navigation.is_selected('features'), 'nav-head-features') }}
+            {{ nav_menu_item(gca_url_for('whynotify'), _('Why GC Notify'), 'header--'+header_navigation.is_selected('why-notify'), 'nav-head-why-notify') }}
+            {{ nav_menu_item(gca_url_for('features'), _('Features'), 'header--'+header_navigation.is_selected('features'), 'nav-head-features') }}
             {{ nav_menu_item(documentation_url(), _('API documentation'), 'header--'+header_navigation.is_selected('documentation'), 'nav-head-doc', True) }}
             {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact'), 'nav-head-contact') }}
           {% endif %}

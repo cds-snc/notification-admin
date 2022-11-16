@@ -18,6 +18,7 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils import SMS_CHAR_COUNT_LIMIT
+from notifications_utils.clients.redis import sms_daily_count_cache_key
 from notifications_utils.columns import Columns
 from notifications_utils.recipients import (
     RecipientCSV,
@@ -33,7 +34,9 @@ from app import (
     current_service,
     job_api_client,
     notification_api_client,
+    redis_client,
     service_api_client,
+    template_statistics_client,
 )
 from app.main import main
 from app.main.forms import (
@@ -43,6 +46,7 @@ from app.main.forms import (
     SetSenderForm,
     get_placeholder_form_instance,
 )
+from app.main.views.dashboard import aggregate_notifications_stats
 from app.models.user import Users
 from app.s3_client.s3_csv_client import (
     copy_bulk_send_file_to_uploads,
@@ -63,6 +67,10 @@ from app.utils import (
     unicode_truncate,
     user_has_permissions,
 )
+
+
+def daily_sms_fragment_count(service_id):
+    return int(redis_client.get(sms_daily_count_cache_key(service_id)) or "0")
 
 
 def service_can_bulk_send(service_id):
@@ -529,10 +537,16 @@ def send_test_step(service_id, template_id, step_index):
         )
 
     optional_placeholder = current_placeholder in optional_address_columns
+    try:
+        is_conditional = template.placeholders_meta[current_placeholder]["is_conditional"]
+    except KeyError:
+        is_conditional = False
+
     form = get_placeholder_form_instance(
         current_placeholder,
         dict_to_populate_from=get_normalised_placeholders_from_session(),
         template_type=template.template_type,
+        is_conditional=is_conditional,
         optional_placeholder=optional_placeholder,
         allow_international_phone_numbers=current_service.has_permission("international_sms"),
     )
@@ -573,6 +587,7 @@ def send_test_step(service_id, template_id, step_index):
         ),
         template=template,
         form=form,
+        is_conditional=is_conditional,
         optional_placeholder=optional_placeholder,
         back_link=back_link,
         help=get_help_argument(),
@@ -624,6 +639,8 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     statistics = service_api_client.get_service_statistics(service_id, today_only=True)
     remaining_messages = current_service.message_limit - sum(stat["requested"] for stat in statistics.values())
+    sms_fragments_sent_today = daily_sms_fragment_count(service_id)
+    remaining_sms_message_fragments = current_service.sms_daily_limit - sms_fragments_sent_today
 
     contents = s3download(service_id, upload_id)
 
@@ -675,6 +692,19 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         back_link = url_for(".send_messages", service_id=service_id, template_id=template.id)
         choose_time_form = ChooseTimeForm()
 
+    sms_parts_to_send = 0
+    is_sms_parts_estimated = False
+    if db_template["template_type"] == "sms":
+        if len(recipients) > 1000:
+            # estimate using the first row
+            template.values = recipients[0].recipient_and_personalisation
+            sms_parts_to_send = template.fragment_count * len(recipients)
+            is_sms_parts_estimated = True
+        else:
+            for row in range(len(recipients)):
+                template.values = recipients[row].recipient_and_personalisation
+                sms_parts_to_send += template.fragment_count
+
     if preview_row < 2:
         abort(404)
 
@@ -694,6 +724,9 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         upload_id=upload_id,
         form=CsvUploadForm(),
         remaining_messages=remaining_messages,
+        remaining_sms_message_fragments=remaining_sms_message_fragments,
+        sms_parts_to_send=sms_parts_to_send,
+        is_sms_parts_estimated=is_sms_parts_estimated,
         choose_time_form=choose_time_form,
         back_link=back_link,
         help=get_help_argument(),
@@ -723,6 +756,8 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 def check_messages(service_id, template_id, upload_id, row_index=2):
 
     data = _check_messages(service_id, template_id, upload_id, row_index)
+    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
+    data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily)
 
     if (
         data["recipients"].too_many_rows
@@ -741,6 +776,12 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
         return render_template("views/check/column-errors.html", **data)
 
     data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
+    data["sms_parts_requested"] = data["stats_daily"]["sms"]["requested"]
+    data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
+    data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > data["sms_parts_remaining"]
+
+    if current_app.config["FF_SPIKE_SMS_DAILY_LIMIT"] and data["send_exceeds_daily_limit"]:
+        return render_template("views/check/column-errors.html", **data)
 
     metadata_kwargs = {
         "notification_count": data["count_of_recipients"],
@@ -956,6 +997,8 @@ def check_notification(service_id, template_id):
 
 def _check_notification(service_id, template_id, exception=None):
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
+    stats_daily = aggregate_notifications_stats(all_statistics_daily)
     email_reply_to = None
     sms_sender = None
     if db_template["template_type"] == "email":
@@ -991,10 +1034,20 @@ def _check_notification(service_id, template_id, exception=None):
         raise PermanentRedirect(back_link)
 
     template.values = get_recipient_and_placeholders_from_session(template.template_type)
+
+    sms_parts_data = {}
+    if db_template["template_type"] == "sms":
+        sms_parts_data["sms_parts_to_send"] = template.fragment_count
+        sms_parts_data["is_sms_parts_estimated"] = False
+        sms_parts_data["sms_parts_requested"] = stats_daily["sms"]["requested"]
+        sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
+        sms_parts_data["send_exceeds_daily_limit"] = sms_parts_data["sms_parts_to_send"] > sms_parts_data["sms_parts_remaining"]
     return dict(
         template=template,
         back_link=back_link,
         help=get_help_argument(),
+        stats_daily=stats_daily,
+        **sms_parts_data,
         **(get_template_error_dict(exception) if exception else {}),
     )
 
@@ -1005,6 +1058,8 @@ def get_template_error_dict(exception):
         error = "not-allowed-to-send-to"
     elif "Exceeded send limits" in exception.message:
         error = "too-many-messages"
+    elif "Exceeded SMS daily sending limit" in exception.message:
+        error = "too-many-sms-messages"
     elif "Content for template has a character count greater than the limit of" in exception.message:
         error = "message-too-long"
     else:

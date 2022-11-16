@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from environs import Env
 from notifications_utils import logging
 
+from app.articles.routing import GC_ARTICLES_ROUTES
+
 env = Env()
 env.read_env()
 load_dotenv()
@@ -19,6 +21,10 @@ if os.environ.get("VCAP_APPLICATION"):
 
 
 class Config(object):
+
+    # for waffles: pull out the routes into a flat list of the form ['/home', '/accueil', '/why-gc-notify', ...]
+    EXTRA_ROUTES = [item for sublist in map(lambda x: x.values(), GC_ARTICLES_ROUTES.values()) for item in sublist]
+
     ACTIVITY_STATS_LIMIT_DAYS = 7
     if os.environ.get("HEROKU_APP_NAME", "") != "":
         ADMIN_BASE_URL = "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"
@@ -57,7 +63,9 @@ class Config(object):
         "other": 25_000,
     }
     DEFAULT_LIVE_SERVICE_LIMIT = env.int("DEFAULT_LIVE_SERVICE_LIMIT", 10_000)
+    DEFAULT_LIVE_SMS_DAILY_LIMIT = env.int("DEFAULT_LIVE_SMS_DAILY_LIMIT", 1000)
     DEFAULT_SERVICE_LIMIT = env.int("DEFAULT_SERVICE_LIMIT", 50)
+    DEFAULT_SMS_DAILY_LIMIT = env.int("DEFAULT_SMS_DAILY_LIMIT", 50)
     DOCUMENTATION_DOMAIN = os.getenv("DOCUMENTATION_DOMAIN", "documentation.notification.canada.ca")
     EMAIL_2FA_EXPIRY_SECONDS = 1_800  # 30 Minutes
     EMAIL_EXPIRY_SECONDS = 3600  # 1 hour
@@ -94,6 +102,7 @@ class Config(object):
 
     ROUTE_SECRET_KEY_1 = os.environ.get("ROUTE_SECRET_KEY_1", "")
     ROUTE_SECRET_KEY_2 = os.environ.get("ROUTE_SECRET_KEY_2", "")
+    WAF_SECRET = os.environ.get("WAF_SECRET", "waf-secret")
     SECRET_KEY = os.environ.get("SECRET_KEY")
     SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security-securite@cds-snc.ca")
     SEND_FILE_MAX_AGE_DEFAULT = 365 * 24 * 60 * 60  # 1 year
@@ -103,7 +112,7 @@ class Config(object):
     SESSION_COOKIE_SECURE = True
     SESSION_REFRESH_EACH_REQUEST = True
     SENSITIVE_SERVICES = os.environ.get("SENSITIVE_SERVICES", "")
-    SHOW_STYLEGUIDE = os.getenv("SHOW_STYLEGUIDE", "False")
+    SHOW_STYLEGUIDE = env.bool("SHOW_STYLEGUIDE", True)
 
     # Hosted graphite statsd prefix
     STATSD_HOST = os.getenv("STATSD_HOST")
@@ -119,6 +128,10 @@ class Config(object):
 
     ZENDESK_API_KEY = os.environ.get("ZENDESK_API_KEY")
 
+    # FEATURE FLAGS
+    FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
+    FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
+
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
         "List of config keys that contain sensitive information"
@@ -133,6 +146,7 @@ class Config(object):
             "ANTIVIRUS_API_KEY",
             "ROUTE_SECRET_KEY_1",
             "ROUTE_SECRET_KEY_2",
+            "WAF_SECRET",
         ]
 
     @classmethod
@@ -170,16 +184,21 @@ class Test(Development):
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
     TESTING = True
     WTF_CSRF_ENABLED = False
+    GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
+    FF_SPIKE_SMS_DAILY_LIMIT = False
+    FF_SMS_PARTS_UI = False
 
 
 class Production(Config):
     CHECK_PROXY_HEADER = False
     HTTP_PROTOCOL = "https"
     NOTIFY_ENVIRONMENT = "production"
+    NOTIFY_LOG_LEVEL = "INFO"
 
 
 class Staging(Production):
     NOTIFY_ENVIRONMENT = "staging"
+    NOTIFY_LOG_LEVEL = "INFO"
 
 
 configs = {

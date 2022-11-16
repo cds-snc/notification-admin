@@ -17,8 +17,8 @@ from tests.conftest import (
     SERVICE_ONE_ID,
     ClientRequest,
     a11y_test,
-    active_caseworking_user,
-    active_user_view_permissions,
+    create_active_caseworking_user,
+    create_active_user_view_permissions,
     normalize_spaces,
 )
 
@@ -123,8 +123,8 @@ def create_stats(
 @pytest.mark.parametrize(
     "user",
     (
-        active_user_view_permissions,
-        active_caseworking_user,
+        create_active_user_view_permissions(),
+        create_active_caseworking_user(),
     ),
 )
 def test_redirect_from_old_dashboard(
@@ -133,7 +133,7 @@ def test_redirect_from_old_dashboard(
     mocker,
     fake_uuid,
 ):
-    mocker.patch("app.user_api_client.get_user", return_value=user(fake_uuid))
+    mocker.patch("app.user_api_client.get_user", return_value=user)
     expected_location = "http://localhost/services/{}".format(SERVICE_ONE_ID)
 
     response = logged_in_client.get("/services/{}/dashboard".format(SERVICE_ONE_ID))
@@ -164,10 +164,10 @@ def test_redirect_caseworkers_to_templates(
 @pytest.mark.parametrize(
     "permissions, text_in_page, text_not_in_page",
     [
-        (["view_activity", "manage_templates"], ["Create a template"], ["Choose a template"]),
-        (["view_activity", "send_messages"], ["Choose a template"], ["Create a template"]),
-        (["view_activity"], [], ["Create a template", "Choose a template"]),
-        (["view_activity", "manage_templates", "send_messages"], ["Create a template", "Choose a template"], []),
+        (["view_activity", "manage_templates"], ["Create template"], ["Choose template"]),
+        (["view_activity", "send_messages"], ["Choose template"], ["Create template"]),
+        (["view_activity"], [], ["Create template", "Choose template"]),
+        (["view_activity", "manage_templates", "send_messages"], ["Create template", "Choose template"], []),
     ],
 )
 def test_task_shortcuts_are_visible_based_on_permissions(
@@ -195,6 +195,37 @@ def test_task_shortcuts_are_visible_based_on_permissions(
         assert text not in page.text
 
 
+@pytest.mark.parametrize(
+    "admin_url, is_widget_present",
+    [
+        ("http://localhost:6012", True),
+        ("https://staging.notification.cdssandbox.xyz", True),
+        ("https://notification.canada.ca", False),
+    ],
+)
+def test_survey_widget_presence(
+    client_request: ClientRequest,
+    active_user_with_permissions,
+    mock_get_service_templates,
+    mock_get_jobs,
+    mock_get_template_statistics,
+    mocker,
+    admin_url,
+    is_widget_present,
+):
+    mocker.patch.dict("app.current_app.config", values={"ADMIN_BASE_URL": admin_url})
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity", "manage_templates"]
+    client_request.login(active_user_with_permissions)
+
+    page = client_request.get(
+        "main.service_dashboard",
+        service_id=SERVICE_ONE_ID,
+    )
+
+    widget = page.select_one("#ZN_2nHmsSE63l43P0y")  # find by the qualtrics survey ID
+    assert bool(widget) == is_widget_present
+
+
 def test_sending_link_has_query_param(
     client_request: ClientRequest,
     active_user_with_permissions,
@@ -210,7 +241,7 @@ def test_sending_link_has_query_param(
         service_id=SERVICE_ONE_ID,
     )
     sending_url = url_for("main.choose_template", service_id=SERVICE_ONE_ID, view="sending")
-    assert sending_url == page.select_one("a.button").attrs["href"]
+    assert sending_url == page.select_one(".dashboard .border a").attrs["href"]
 
 
 def test_no_sending_link_if_no_templates(
@@ -222,7 +253,7 @@ def test_no_sending_link_if_no_templates(
     page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
 
     assert url_for("main.choose_template", service_id=SERVICE_ONE_ID, view="sending") not in str(page)
-    assert "Send existing messages to specific recipients." not in str(page)
+    assert "Reuse a message you’ve already created." not in str(page)
 
 
 def test_should_show_recent_templates_on_dashboard(
@@ -244,7 +275,8 @@ def test_should_show_recent_templates_on_dashboard(
         service_id=SERVICE_ONE_ID,
     )
 
-    mock_template_stats.assert_called_once_with(SERVICE_ONE_ID, limit_days=7)
+    mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=7)
+    mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=1)
 
     headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
     assert "Sent in the last week" in headers
@@ -442,6 +474,38 @@ def test_correct_columns_display_on_dashboard(
 
 
 @pytest.mark.parametrize(
+    "feature_flag",
+    [True, False],
+)
+def test_daily_usage_section_shown(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    app_,
+    feature_flag,
+):
+    app_.config["FF_SMS_PARTS_UI"] = feature_flag
+
+    page = client_request.get(
+        "main.service_dashboard",
+        service_id=service_one["id"],
+    )
+    headings = [element.text.strip() for element in page.find_all("h2")]
+    big_number_labels = [element.text.strip() for element in page.select(".big-number-label")]
+
+    if feature_flag:
+        assert "Usage today" in headings
+        assert "text messages  left today" in big_number_labels
+    else:
+        assert "Usage today" not in headings
+        assert "text messages  left today" not in big_number_labels
+
+
+@pytest.mark.parametrize(
     "permissions, totals, big_number_class, expected_column_count",
     [
         (
@@ -564,7 +628,7 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 2, "delivered": 2, "failed": 0},
                 "sms": {"requested": 2, "delivered": 2, "failed": 0},
             },
-            ("2 courriels envoyés Aucun échec", "2 messages texte envoyé Aucun échec"),
+            ("2 courriels envoyés Aucun échec", "2 messages texte envoyés Aucun échec"),
             "fr",
         ),
     ],
@@ -655,11 +719,12 @@ def test_usage_page(
     mock_get_free_sms_fragment_limit.assert_called_with(SERVICE_ONE_ID, 2011)
 
     cols = page.find_all("div", {"class": "w-1\\/2"})
-    nav = page.find("ul", {"class": "pill", "role": "tablist"})
+    nav = page.find("ul", {"class": "pill", "role": "nav"})
     nav_links = nav.find_all("a")
 
     assert normalize_spaces(nav_links[0].text) == "2010 to 2011 financial year"
     assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 financial year"
+    assert normalize_spaces(nav["aria-label"]) == "Filter by year"
     assert "252,190" in cols[1].text
     assert "Text messages" in cols[1].text
 
@@ -697,12 +762,14 @@ def test_usage_page_with_letters(
     mock_get_free_sms_fragment_limit.assert_called_with(SERVICE_ONE_ID, 2011)
 
     cols = page.find_all("div", {"class": "md\\:w-1\\/3"})
-    nav = page.find("ul", {"class": "pill", "role": "tablist"})
+    nav = page.find("ul", {"class": "pill", "role": "nav"})
     nav_links = nav.find_all("a")
 
     assert normalize_spaces(nav_links[0].text) == "2010 to 2011 financial year"
     assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 financial year"
     assert normalize_spaces(nav_links[1].text) == "2012 to 2013 financial year"
+    assert normalize_spaces(nav["aria-label"]) == "Filter by year"
+
     assert "252,190" in cols[1].text
     assert "Text messages" in cols[1].text
 
@@ -1204,106 +1271,110 @@ def test_get_free_paid_breakdown_for_billable_units(now, expected_number_of_mont
                 },
             ],
         )
-        assert list(billing_units) == [
-            {
-                "free": 100000,
-                "name": "April",
-                "paid": 0,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 100000,
-                "name": "May",
-                "paid": 0,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 50000,
-                "name": "June",
-                "paid": 50000,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 0,
-                "name": "July",
-                "paid": 0,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 0,
-                "name": "August",
-                "paid": 0,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 0,
-                "name": "September",
-                "paid": 0,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 0,
-                "name": "October",
-                "paid": 0,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 0,
-                "name": "November",
-                "paid": 0,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 0,
-                "name": "December",
-                "paid": 0,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 0,
-                "name": "January",
-                "paid": 0,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 0,
-                "name": "February",
-                "paid": 2000,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-            {
-                "free": 0,
-                "name": "March",
-                "paid": 0,
-                "letter_total": 0,
-                "letters": [],
-                "letter_cumulative": 0,
-            },
-        ][:expected_number_of_months]
+        assert (
+            list(billing_units)
+            == [
+                {
+                    "free": 100000,
+                    "name": "April",
+                    "paid": 0,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 100000,
+                    "name": "May",
+                    "paid": 0,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 50000,
+                    "name": "June",
+                    "paid": 50000,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 0,
+                    "name": "July",
+                    "paid": 0,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 0,
+                    "name": "August",
+                    "paid": 0,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 0,
+                    "name": "September",
+                    "paid": 0,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 0,
+                    "name": "October",
+                    "paid": 0,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 0,
+                    "name": "November",
+                    "paid": 0,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 0,
+                    "name": "December",
+                    "paid": 0,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 0,
+                    "name": "January",
+                    "paid": 0,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 0,
+                    "name": "February",
+                    "paid": 2000,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+                {
+                    "free": 0,
+                    "name": "March",
+                    "paid": 0,
+                    "letter_total": 0,
+                    "letters": [],
+                    "letter_cumulative": 0,
+                },
+            ][:expected_number_of_months]
+        )
 
 
+@pytest.mark.skip(reason="TODO: a11y test")
 @pytest.mark.a11y
 def test_dashboard_page_a11y(
     logged_in_client,

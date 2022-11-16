@@ -59,7 +59,7 @@ def a11y_test(slug: str, html):
 
 
 @pytest.fixture
-def app_(request):
+def app_():
     app = Flask("app")
     create_app(app)
 
@@ -398,33 +398,6 @@ def multiple_sms_senders_with_diff_default(mocker):
 
 
 @pytest.fixture(scope="function")
-def multiple_sms_senders_no_inbound(mocker):
-    def _get(service_id):
-        return [
-            {
-                "id": "1234",
-                "service_id": service_id,
-                "sms_sender": "Example",
-                "is_default": True,
-                "created_at": datetime.utcnow(),
-                "inbound_number_id": None,
-                "updated_at": None,
-            },
-            {
-                "id": "5678",
-                "service_id": service_id,
-                "sms_sender": "Example 2",
-                "is_default": False,
-                "created_at": datetime.utcnow(),
-                "inbound_number_id": None,
-                "updated_at": None,
-            },
-        ]
-
-    return mocker.patch("app.service_api_client.get_sms_senders", side_effect=_get)
-
-
-@pytest.fixture(scope="function")
 def no_sms_senders(mocker):
     def _get(service_id):
         return []
@@ -568,7 +541,7 @@ def fake_uuid():
 @pytest.fixture(scope="function")
 def mock_get_service(mocker, api_user_active):
     def _get(service_id):
-        service = service_json(service_id, users=[api_user_active["id"]], message_limit=50)
+        service = service_json(service_id, users=[api_user_active["id"]], message_limit=50, sms_daily_limit=20)
         return {"data": service}
 
     return mocker.patch("app.service_api_client.get_service", side_effect=_get)
@@ -682,6 +655,7 @@ def mock_create_service(mocker):
         service_name,
         organisation_type,
         message_limit,
+        sms_daily_limit,
         restricted,
         user_id,
         email_from,
@@ -692,6 +666,7 @@ def mock_create_service(mocker):
             service_name,
             [user_id],
             message_limit=message_limit,
+            sms_daily_limit=sms_daily_limit,
             restricted=restricted,
             email_from=email_from,
             default_branding_is_french=default_branding_is_french,
@@ -772,18 +747,15 @@ def mock_get_services(mocker, fake_uuid, user=None):
         user = active_user_with_permissions(fake_uuid)
 
     def _get_services(params_dict=None):
-        service_one = service_json(SERVICE_ONE_ID, "service_one", [user["id"]], 1000, True, False)
-        service_two = service_json(SERVICE_TWO_ID, "service_two", [user["id"]], 1000, True, False)
+        service_one = service_json(SERVICE_ONE_ID, "service_one", [active_user_with_permissions["id"]], 1000, True, False)
+        service_two = service_json(SERVICE_TWO_ID, "service_two", [active_user_with_permissions["id"]], 1000, True, False)
         return {"data": [service_one, service_two]}
 
     return mocker.patch("app.service_api_client.get_services", side_effect=_get_services)
 
 
 @pytest.fixture(scope="function")
-def mock_get_services_with_no_services(mocker, fake_uuid, user=None):
-    if user is None:
-        user = active_user_with_permissions(fake_uuid)
-
+def mock_get_services_with_no_services(mocker):
     def _get_services(params_dict=None):
         return {"data": []}
 
@@ -791,12 +763,9 @@ def mock_get_services_with_no_services(mocker, fake_uuid, user=None):
 
 
 @pytest.fixture(scope="function")
-def mock_get_services_with_one_service(mocker, fake_uuid, user=None):
-    if user is None:
-        user = api_user_active(fake_uuid)
-
+def mock_get_services_with_one_service(mocker, api_user_active):
     def _get_services(params_dict=None):
-        return {"data": [service_json(SERVICE_ONE_ID, "service_one", [user["id"]], 1000, True, True)]}
+        return {"data": [service_json(SERVICE_ONE_ID, "service_one", [api_user_active["id"]], 1000, True, True)]}
 
     return mocker.patch("app.service_api_client.get_services", side_effect=_get_services)
 
@@ -854,24 +823,18 @@ def mock_get_deleted_template(mocker):
 
 
 @pytest.fixture(scope="function")
-def mock_get_template_version(mocker, fake_uuid, user=None):
-    if user is None:
-        user = api_user_active(fake_uuid)
-
+def mock_get_template_version(mocker, api_user_active):
     def _get(service_id, template_id, version):
-        template_version = template_version_json(service_id, template_id, user, version=version)
+        template_version = template_version_json(service_id, template_id, api_user_active, version=version)
         return {"data": template_version}
 
     return mocker.patch("app.service_api_client.get_service_template", side_effect=_get)
 
 
 @pytest.fixture(scope="function")
-def mock_get_template_versions(mocker, fake_uuid, user=None):
-    if user is None:
-        user = api_user_active(fake_uuid)
-
+def mock_get_template_versions(mocker, api_user_active):
     def _get(service_id, template_id):
-        template_version = template_version_json(service_id, template_id, user, version=1)
+        template_version = template_version_json(service_id, template_id, api_user_active, version=1)
         return {"data": [template_version]}
 
     return mocker.patch("app.service_api_client.get_service_template_versions", side_effect=_get)
@@ -941,11 +904,19 @@ def mock_get_service_email_template(mocker, content=None, subject=None, redact_p
 
 @pytest.fixture(scope="function")
 def mock_get_service_email_template_without_placeholders(mocker):
-    return mock_get_service_email_template(
-        mocker,
-        content="Your vehicle tax expires soon",
-        subject="Your thing is due soon",
-    )
+    def _get(service_id, template_id, version=None):
+        template = template_json(
+            service_id,
+            template_id,
+            "Two week reminder",
+            "email",
+            "Your vehicle tax expires soon",
+            "Your thing is due soon",
+            redact_personalisation=False,
+        )
+        return {"data": template}
+
+    return mocker.patch("app.service_api_client.get_service_template", side_effect=_get)
 
 
 @pytest.fixture(scope="function")
@@ -1061,6 +1032,70 @@ def mock_update_service_template_400_content_too_big(mocker):
         raise http_error
 
     return mocker.patch("app.service_api_client.update_service_template", side_effect=_update)
+
+
+def create_template(
+    service_id=SERVICE_ONE_ID,
+    template_id=None,
+    template_type="sms",
+    name="sample template",
+    content="Template content",
+    subject="Template subject",
+    redact_personalisation=False,
+    postage=None,
+    folder=None,
+):
+    return {
+        "data": template_json(
+            service_id=service_id,
+            id_=template_id or str(generate_uuid()),
+            name=name,
+            type_=template_type,
+            content=content,
+            subject=subject,
+            redact_personalisation=redact_personalisation,
+            postage=postage,
+            folder=folder,
+        )
+    }
+
+
+def create_email_template():
+    return create_template(
+        name="Two week reminder",
+        template_type="email",
+        content="Your vehicle tax expires on ((date))",
+        subject="Your ((thing)) is due soon",
+    )
+
+
+def create_sms_template():
+    return create_template(
+        name="Two week reminder",
+        template_type="sms",
+        content="((name)), Template <em>content</em> with & entity",
+        subject="Two week reminder",
+    )
+
+
+def create_letter_template(postage="second"):
+    return create_template(
+        name="Two week reminder",
+        template_type="letter",
+        content="Template <em>content</em> with & entity",
+        subject="Two week reminder",
+        postage=postage,
+    )
+
+
+def create_letter_template_with_variables():
+    return create_template(
+        name="Two week reminder",
+        template_type="letter",
+        subject="Your ((thing)) is due soon",
+        content="Your vehicle tax expires on ((date))",
+        postage="second",
+    )
 
 
 def create_service_templates(service_id, number_of_templates=6):
@@ -1241,12 +1276,12 @@ def platform_admin_user(fake_uuid):
 
 
 @pytest.fixture(scope="function")
-def api_user_active(fake_uuid, email_address="test@user.canada.ca"):
+def api_user_active(fake_uuid):
     user_data = {
         "id": fake_uuid,
         "name": "Test User",
         "password": "somepassword",
-        "email_address": email_address,
+        "email_address": "test@user.canada.ca",
         "mobile_number": "6502532222",
         "blocked": False,
         "state": "active",
@@ -1665,33 +1700,29 @@ def mock_register_user(mocker, api_user_pending):
 
 
 @pytest.fixture(scope="function")
-def mock_get_non_govuser(mocker, user=None):
-    if user is None:
-        user = api_user_active(sample_uuid(), email_address="someuser@notonsafelist.com")
+def mock_get_non_govuser(mocker, api_user_active):
+    api_user_active["email_address"] = "someuser@notonwhitelist.com"
 
     def _get_user(id_):
-        user["id"] = id_
-        return user
+        api_user_active["id"] = id_
+        return api_user_active
 
     return mocker.patch("app.user_api_client.get_user", side_effect=_get_user)
 
 
 @pytest.fixture(scope="function")
-def mock_get_user(mocker, user=None):
-    if user is None:
-        user = api_user_active(sample_uuid())
-
+def mock_get_user(mocker, api_user_active):
     def _get_user(id_):
-        user["id"] = id_
-        return user
+        api_user_active["id"] = id_
+        return api_user_active
 
     return mocker.patch("app.user_api_client.get_user", side_effect=_get_user)
 
 
 @pytest.fixture(scope="function")
-def mock_get_user_email_auth(mocker, user=None):
+def mock_get_user_email_auth(mocker, api_user_active_email_auth, user=None):
     if user is None:
-        user = api_user_active_email_auth(sample_uuid())
+        user = api_user_active_email_auth
 
     def _get_user(id_):
         user["id"] = id_
@@ -1703,15 +1734,15 @@ def mock_get_user_email_auth(mocker, user=None):
 @pytest.fixture(scope="function")
 def mock_get_login_events(mocker, user=None):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     return mocker.patch("app.user_api_client.get_login_events_for_user", return_value=[])
 
 
 @pytest.fixture(scope="function")
-def mock_get_login_events_with_data(mocker, user=None):
+def mock_get_login_events_with_data(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     data = [
         {"data": {"user-agent": "foo", "location": "bar"}},
@@ -1723,15 +1754,15 @@ def mock_get_login_events_with_data(mocker, user=None):
 @pytest.fixture(scope="function")
 def mock_get_security_keys(mocker, user=None, keys=[]):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     return mocker.patch("app.user_api_client.get_security_keys_for_user", return_value=keys)
 
 
 @pytest.fixture(scope="function")
-def mock_get_security_keys_with_key(mocker, user=None):
+def mock_get_security_keys_with_key(mocker, api_user_active, user=None):
     if user is None:
-        user = api_user_active(sample_uuid())
+        user = api_user_active
 
     key = {
         "id": sample_uuid(),
@@ -1741,29 +1772,16 @@ def mock_get_security_keys_with_key(mocker, user=None):
         "updated_at": (datetime.utcnow() - timedelta(hours=5)).isoformat(),
     }
 
-    return mock_get_security_keys(mocker, user, [key])
-
-
-@pytest.fixture(scope="function")
-def mock_get_organisation_user(mocker, user=None):
-    if user is None:
-        user = api_user_active(sample_uuid())
-
-    def _get_user(id_):
-        user["id"] = id_
-        return user
-
-    return mocker.patch("app.user_api_client.get_user", side_effect=_get_user)
+    return mocker.patch("app.user_api_client.get_security_keys_for_user", return_value=[key])
 
 
 @pytest.fixture(scope="function")
 def mock_get_locked_user(mocker, api_user_locked):
-    return mock_get_user(mocker, user=api_user_locked)
+    def _get_user(id_):
+        api_user_locked["id"] = id_
+        return api_user_locked
 
-
-@pytest.fixture(scope="function")
-def mock_get_user_locked(mocker, api_user_locked):
-    return mocker.patch("app.user_api_client.get_user", return_value=api_user_locked)
+    return mocker.patch("app.user_api_client.get_user", side_effect=_get_user)
 
 
 @pytest.fixture(scope="function")
@@ -1772,32 +1790,23 @@ def mock_get_user_pending(mocker, api_user_pending):
 
 
 @pytest.fixture(scope="function")
-def mock_get_user_by_email(mocker, user=None):
-    if user is None:
-        user = api_user_active(sample_uuid())
-
+def mock_get_user_by_email(mocker, api_user_active):
     def _get_user(email_address):
-        user["email_address"] = email_address
-        return user
+        api_user_active["email_address"] = email_address
+        return api_user_active
 
     return mocker.patch("app.user_api_client.get_user_by_email", side_effect=_get_user)
 
 
 @pytest.fixture(scope="function")
-def mock_get_unknown_user_by_email(mocker, user=None):
-    if user is None:
-        user = api_user_active(USER_ONE_ID)
+def mock_get_unknown_user_by_email(mocker, api_user_active):
+    api_user_active["id"] = USER_ONE_ID
 
     def _get_user(email_address):
-        user["email_address"] = email_address
-        return user
+        api_user_active["email_address"] = email_address
+        return api_user_active
 
     return mocker.patch("app.user_api_client.get_user_by_email", side_effect=_get_user)
-
-
-@pytest.fixture(scope="function")
-def mock_get_locked_user_by_email(mocker, api_user_locked):
-    return mock_get_user_by_email(mocker, user=api_user_locked)
 
 
 @pytest.fixture(scope="function")
@@ -2619,6 +2628,29 @@ def sample_invite(mocker, service_one, status="pending", permissions=None):
     )
 
 
+def create_sample_invite(service_id, from_user, status="pending", permissions=None):
+    id_ = USER_ONE_ID
+    from_user = from_user
+    email_address = "invited_user@test.canada.ca"
+    service_id = service_id
+    permissions = permissions or "view_activity,send_messages,manage_service,manage_api_keys"
+    created_at = str(datetime.utcnow())
+    auth_type = "sms_auth"
+    folder_permissions = []
+
+    return invite_json(
+        id_,
+        from_user,
+        service_id,
+        email_address,
+        permissions,
+        created_at,
+        status,
+        auth_type,
+        folder_permissions,
+    )
+
+
 @pytest.fixture(scope="function")
 def sample_invited_user(mocker, sample_invite):
     return sample_invite
@@ -3249,7 +3281,7 @@ def platform_admin_client(
     service_one,
     mock_login,
 ):
-    mock_get_user(mocker, user=platform_admin_user)
+    mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user)
     client.login(platform_admin_user, mocker, service_one)
     yield client
 
@@ -3705,7 +3737,7 @@ def _get_organisation_services(organisation_id):
     return [
         service_json("12345", "service one"),
         service_json("67890", "service two"),
-        service_json(SERVICE_ONE_ID, "service one", [api_user_active(fake_uuid())["id"]]),
+        service_json(SERVICE_ONE_ID, "service one", [sample_uuid()]),
     ]
 
 
@@ -3967,4 +3999,539 @@ def mock_get_service_and_organisation_counts(mocker):
     )
 
 
-next(app_(None))  # used to init for other tests
+@pytest.fixture(scope="function")
+def mock_calls_out_to_GCA(mocker):
+    """
+    (GC ARTICLES) This fixture mocks GCA methods so no network calls are made to GCA
+    """
+    mocker.patch(
+        "app.main.views.index.get_page_by_slug",
+        return_value={
+            "title": {"rendered": "Home"},
+            "slug_en": "home",
+            "content": {"rendered": "<div>hello! I am rendered content</div>"},
+        },
+    )
+
+    mocker.patch(
+        "app.main.views.index.get_page_by_slug_with_cache",
+        return_value={
+            "title": {"rendered": "Home"},
+            "slug_en": "home",
+            "content": {"rendered": "<div>hello! I am rendered content</div>"},
+        },
+    )
+
+    mocker.patch(
+        "app.main.views.index.get_nav_items", return_value=[{"title": "Home", "url": "/", "target": "", "description": "main"}]
+    )
+
+
+@pytest.fixture(scope="function")
+def mock_GCA_404(mocker):
+    """
+    (GC ARTICLES) This fixture mocks GCA methods so that calls to invalid URLs will produce a 404
+    """
+    mocker.patch("app.main.views.index.get_page_by_slug", return_value=None)
+
+    mocker.patch("app.main.views.index.get_page_by_slug_with_cache", return_value=None)
+
+    mocker.patch(
+        "app.main.views.index.get_nav_items", return_value=[{"title": "Home", "url": "/", "target": "", "description": "main"}]
+    )
+
+
+def create_api_user_active(with_unique_id=False):
+    return {
+        "id": str(uuid4()) if with_unique_id else sample_uuid(),
+        "name": "Test User",
+        "password": "somepassword",
+        "email_address": "test@user.canada.ca",
+        "mobile_number": "07700 900762",
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {},
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "password_changed_at": str(datetime.utcnow()),
+        "services": [],
+        "organisations": [],
+        "current_session_id": None,
+        "logged_in_at": None,
+    }
+
+
+def create_active_user_empty_permissions(with_unique_id=False):
+    user_data = {
+        "id": str(uuid4()) if with_unique_id else sample_uuid(),
+        "name": "Test User With Empty Permissions",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@user.canada.ca",
+        "mobile_number": "07700 900763",
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {},
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "organisations": [],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+    }
+    return user_data
+
+
+def create_active_user_with_permissions(with_unique_id=False):
+    return {
+        "id": str(uuid4()) if with_unique_id else sample_uuid(),
+        "name": "Test User",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@user.canada.ca",
+        "mobile_number": "07700 900762",
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "send_texts",
+                "send_emails",
+                "send_letters",
+                "manage_users",
+                "manage_templates",
+                "manage_settings",
+                "manage_api_keys",
+                "view_activity",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "organisations": [ORGANISATION_ID],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+    }
+
+
+def create_active_user_view_permissions(with_unique_id=False):
+    return {
+        "id": str(uuid4()) if with_unique_id else sample_uuid(),
+        "name": "Test User With Permissions",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@user.canada.ca",
+        "mobile_number": "07700 900762",
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {SERVICE_ONE_ID: ["view_activity"]},
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "organisations": [],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+    }
+
+
+def create_active_caseworking_user(with_unique_id=False):
+    return {
+        "id": str(uuid4()) if with_unique_id else sample_uuid(),
+        "name": "Test User",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "caseworker@example.canada.ca",
+        "mobile_number": "07700 900762",
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "send_texts",
+                "send_emails",
+                "send_letters",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "organisations": [],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+    }
+
+
+def create_active_user_no_api_key_permission(with_unique_id=False):
+    return {
+        "id": str(uuid4()) if with_unique_id else sample_uuid(),
+        "name": "Test User With Permissions",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@user.canada.ca",
+        "mobile_number": "07700 900762",
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "manage_templates",
+                "manage_settings",
+                "view_activity",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "organisations": [],
+        "current_session_id": None,
+        "services": [SERVICE_ONE_ID],
+    }
+
+
+def create_active_user_no_settings_permission(with_unique_id=False):
+    return {
+        "id": str(uuid4()) if with_unique_id else sample_uuid(),
+        "name": "Test User With Permissions",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@user.canada.ca",
+        "mobile_number": "07700 900762",
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "manage_templates",
+                "manage_api_keys",
+                "view_activity",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "current_session_id": None,
+        "services": [SERVICE_ONE_ID],
+        "organisations": [],
+    }
+
+
+def create_active_user_manage_template_permissions(with_unique_id=False):
+    return {
+        "id": str(uuid4()) if with_unique_id else sample_uuid(),
+        "name": "Test User With Permissions",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@user.canada.ca",
+        "mobile_number": "07700 900762",
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "manage_templates",
+                "view_activity",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "organisations": [],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+    }
+
+
+def create_platform_admin_user(with_unique_id=False):
+    return {
+        "id": str(uuid4()) if with_unique_id else sample_uuid(),
+        "name": "Platform admin user",
+        "password": "somepassword",
+        "email_address": "platform@admin.gov.uk",
+        "mobile_number": "07700 900762",
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "send_texts",
+                "send_emails",
+                "send_letters",
+                "manage_users",
+                "manage_templates",
+                "manage_settings",
+                "manage_api_keys",
+                "view_activity",
+            ]
+        },
+        "platform_admin": True,
+        "auth_type": "sms_auth",
+        "password_changed_at": str(datetime.utcnow()),
+        "services": [],
+        "organisations": [],
+        "current_session_id": None,
+        "logged_in_at": None,
+    }
+
+
+def create_reply_to_email_address(
+    id_="1234", service_id="abcd", email_address="test@example.com", is_default=True, created_at=None, updated_at=None
+):
+    return {
+        "id": id_,
+        "service_id": service_id,
+        "email_address": email_address,
+        "is_default": is_default,
+        "created_at": created_at,
+        "updated_at": updated_at,
+    }
+
+
+def create_multiple_email_reply_to_addresses(service_id="abcd"):
+    return [
+        {
+            "id": "1234",
+            "service_id": service_id,
+            "email_address": "test@example.com",
+            "is_default": True,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+        {
+            "id": "5678",
+            "service_id": service_id,
+            "email_address": "test2@example.com",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+        {
+            "id": "9457",
+            "service_id": service_id,
+            "email_address": "test3@example.com",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+    ]
+
+
+def create_sms_sender(
+    id_="1234", service_id="abcd", sms_sender="GOVUK", is_default=True, created_at=None, inbound_number_id=None, updated_at=None
+):
+    return {
+        "id": id_,
+        "service_id": service_id,
+        "sms_sender": sms_sender,
+        "is_default": is_default,
+        "created_at": created_at,
+        "inbound_number_id": inbound_number_id,
+        "updated_at": updated_at,
+    }
+
+
+def create_multiple_sms_senders(service_id="abcd"):
+    return [
+        {
+            "id": "1234",
+            "service_id": service_id,
+            "sms_sender": "Example",
+            "is_default": True,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": "1234",
+            "updated_at": None,
+        },
+        {
+            "id": "5678",
+            "service_id": service_id,
+            "sms_sender": "Example 2",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+        {
+            "id": "9457",
+            "service_id": service_id,
+            "sms_sender": "Example 3",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+    ]
+
+
+def create_multiple_sms_senders_no_inbound(service_id="abcd"):
+    return [
+        {
+            "id": "1234",
+            "service_id": service_id,
+            "sms_sender": "Example",
+            "is_default": True,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+        {
+            "id": "5678",
+            "service_id": service_id,
+            "sms_sender": "Example 2",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+    ]
+
+
+def create_multiple_sms_senders_with_diff_default(service_id="abcd"):
+    return [
+        {
+            "id": "1234",
+            "service_id": service_id,
+            "sms_sender": "Example",
+            "is_default": True,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+        {
+            "id": "5678",
+            "service_id": service_id,
+            "sms_sender": "Example 2",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": None,
+            "updated_at": None,
+        },
+        {
+            "id": "9457",
+            "service_id": service_id,
+            "sms_sender": "Example 3",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "inbound_number_id": "12354",
+            "updated_at": None,
+        },
+    ]
+
+
+def create_letter_contact_block(
+    id_="1234",
+    service_id="abcd",
+    contact_block="1 Example Street",
+    is_default=True,
+    created_at=None,
+    updated_at=None,
+):
+    return {
+        "id": id_,
+        "service_id": service_id,
+        "contact_block": contact_block,
+        "is_default": is_default,
+        "created_at": created_at,
+        "updated_at": updated_at,
+    }
+
+
+def create_multiple_letter_contact_blocks(service_id="abcd"):
+    return [
+        {
+            "id": "1234",
+            "service_id": service_id,
+            "contact_block": "1 Example Street",
+            "is_default": True,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+        {
+            "id": "5678",
+            "service_id": service_id,
+            "contact_block": "2 Example Street",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+        {
+            "id": "9457",
+            "service_id": service_id,
+            "contact_block": "3 Example Street",
+            "is_default": False,
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+        },
+    ]
+
+
+def create_notification(
+    notifification_id=None,
+    service_id="abcd",
+    notification_status="delivered",
+    redact_personalisation=False,
+    template_type=None,
+    template_name="sample template",
+    is_precompiled_letter=False,
+    key_type=None,
+    postage=None,
+    sent_one_off=True,
+    reply_to_text=None,
+    personalisation=None,
+    content=None,
+    notification_provider_response=None,
+):
+    noti = notification_json(
+        service_id,
+        rows=1,
+        status=notification_status,
+        template_type=template_type,
+        postage=postage,
+        reply_to_text=reply_to_text,
+        provider_response=notification_provider_response,
+    )["notifications"][0]
+
+    noti_content = "hello ((name))" if content is None else content
+    noti["id"] = notifification_id or sample_uuid()
+    if sent_one_off:
+        noti["created_by"] = {"id": sample_uuid(), "name": "Test User", "email_address": "test@user.canada.ca"}
+    if personalisation:
+        noti["personalisation"] = personalisation
+    else:
+        noti["personalisation"] = {"name": "Jo"}
+    noti["template"] = template_json(
+        service_id,
+        "5407f4db-51c7-4150-8758-35412d42186a",
+        content=noti_content,
+        subject="blah",
+        redact_personalisation=redact_personalisation,
+        type_=template_type,
+        is_precompiled_letter=is_precompiled_letter,
+        name=template_name,
+    )
+    if key_type:
+        noti["key_type"] = key_type
+    return noti
+
+
+def create_notifications(
+    service_id=SERVICE_ONE_ID,
+    template_type="sms",
+    rows=5,
+    status=None,
+    subject="subject",
+    content="content",
+    client_reference=None,
+    personalisation=None,
+    redact_personalisation=False,
+    is_precompiled_letter=False,
+    postage=None,
+    to=None,
+):
+    template = template_json(
+        service_id,
+        id_=str(generate_uuid()),
+        type_=template_type,
+        subject=subject,
+        content=content,
+        redact_personalisation=redact_personalisation,
+        is_precompiled_letter=is_precompiled_letter,
+    )
+
+    return notification_json(
+        service_id,
+        template=template,
+        rows=rows,
+        personalisation=personalisation,
+        template_type=template_type,
+        client_reference=client_reference,
+        status=status,
+        created_by_name="Firstname Lastname",
+        postage=postage,
+        to=to,
+    )

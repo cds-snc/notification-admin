@@ -15,6 +15,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         service_name,
         organisation_type,
         message_limit,
+        sms_daily_limit,
         restricted,
         user_id,
         email_from,
@@ -28,6 +29,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "organisation_type": organisation_type,
             "active": True,
             "message_limit": message_limit,
+            "sms_daily_limit": sms_daily_limit,
             "user_id": user_id,
             "restricted": restricted,
             "email_from": email_from,
@@ -88,6 +90,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             # this list is the ALLOWED attributes - anything not in this list will be disallowed
             "name",
             "message_limit",
+            "sms_daily_limit",
             "active",
             "restricted",
             "email_from",
@@ -112,6 +115,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "go_live_user",
             "go_live_at",
             "sending_domain",
+            "sms_volume_today",
         }
 
         if disallowed_attributes:
@@ -122,10 +126,11 @@ class ServiceAPIClient(NotifyAdminAPIClient):
 
     @cache.delete("live-service-and-organisation-counts")
     @cache.delete("organisations")
-    def update_status(self, service_id, live, message_limit):
+    def update_status(self, service_id, live, message_limit, sms_daily_limit):
         return self.update_service(
             service_id,
             message_limit=message_limit,
+            sms_daily_limit=sms_daily_limit,
             restricted=(not live),
             go_live_at=str(datetime.utcnow()) if live else None,
         )
@@ -143,6 +148,13 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.update_service(
             service_id,
             message_limit=message_limit,
+        )
+
+    # This method is not cached because it calls through to one which is
+    def update_sms_message_limit(self, service_id, sms_daily_limit):
+        return self.update_service(
+            service_id,
+            sms_daily_limit=sms_daily_limit,
         )
 
     # This method is not cached because it calls through to one which is

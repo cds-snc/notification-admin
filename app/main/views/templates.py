@@ -270,6 +270,7 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
     return render_template(
         "views/templates/choose.html",
         current_template_folder_id=template_folder_id,
+        current_template_folder=current_service.get_template_folder_path(template_folder_id)[-1],
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         template_list=template_list,
         show_search_box=current_service.count_of_templates_and_folders > 7,
@@ -617,6 +618,7 @@ def manage_template_folder(service_id, template_folder_id):
     return render_template(
         "views/templates/manage-template-folder.html",
         form=form,
+        current_template_folder=current_service.get_template_folder_path(template_folder_id)[-1],
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         current_service_id=current_service.id,
         template_folder_id=template_folder_id,
@@ -775,7 +777,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             template_type=template_type,
             template_folder_id=template_folder_id,
             service_id=service_id,
-            heading=_l("New email template") if template_type == "email" else _l("New text message template"),
+            heading=_l("Create reusable template"),
         )
 
 
@@ -886,7 +888,7 @@ def edit_service_template(service_id, template_id):
             f"views/edit-{template['template_type']}-template.html",
             form=form,
             template=template,
-            heading=_l("Edit email template") if template["template_type"] == "email" else _l("Edit text message template"),
+            heading=_l("Edit reusable template"),
         )
 
 
@@ -1094,14 +1096,22 @@ def add_recipients(service_id, template_id):
     if template["template_type"] == "email":
         form = AddEmailRecipientsForm()
         option_hints = {
-            "many_recipients": Markup(_l("Upload a file with email addresses.")),
-            "one_recipient": Markup(_l("Send to only one email address.")),
+            "many_recipients": Markup(
+                _l(
+                    "Upload or create a spreadsheet. GC Notify can create columns with headings for the email address and any other variables."
+                )
+            ),
+            "one_recipient": Markup(_l("Enter their email address.")),
         }
     else:
         form = AddSMSRecipientsForm()
         option_hints = {
-            "many_recipients": Markup(_l("Upload a file with phone numbers.")),
-            "one_recipient": Markup(_l("Send to only one phone number.")),
+            "many_recipients": Markup(
+                _l(
+                    "Upload or create a spreadsheet. GC Notify can create columns with headings for the phone numbers and any other variables."
+                )
+            ),
+            "one_recipient": Markup(_l("Enter their phone number.")),
         }
     option_conditionals = {"one_recipient": form.placeholder_value}
 

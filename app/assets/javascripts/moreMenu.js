@@ -67,7 +67,7 @@
     var $moreMenuItems = $("<div/>")
       .attr("id", "more-menu-items")
       .addClass(
-        "absolute right-0 mr-gutterHalf flex flex-col flex-shrink-0 text-right bg-gray divide-y divide-gray-grey2  shadow"
+        "absolute right-0 mr-gutterHalf flex flex-col flex-shrink-0 text-right bg-gray divide-y divide-gray-grey2  shadow z-50"
       );
     $menuContainer.html($moreMenuItems);
 

@@ -9,12 +9,11 @@ import app
 from tests.conftest import (
     SERVICE_ONE_ID,
     USER_ONE_ID,
-    active_caseworking_user,
-    active_user_with_permissions,
+    create_active_caseworking_user,
+    create_active_user_with_permissions,
+    create_sample_invite,
+    normalize_spaces,
 )
-from tests.conftest import mock_check_invite_token as mock_check_token_invite
-from tests.conftest import normalize_spaces
-from tests.conftest import sample_invite as create_sample_invite
 
 
 def test_existing_user_accept_invite_calls_api_and_redirects_to_dashboard(
@@ -132,8 +131,8 @@ def test_invite_goes_in_session(
 @pytest.mark.parametrize(
     "user, landing_page_title",
     [
-        (active_user_with_permissions, "Dashboard"),
-        (active_caseworking_user, "Templates"),
+        (create_active_user_with_permissions(), "Dashboard"),
+        (create_active_caseworking_user(), "Browse Templates"),
     ],
 )
 def test_accepting_invite_removes_invite_from_session(
@@ -158,10 +157,11 @@ def test_accepting_invite_removes_invite_from_session(
     user,
     landing_page_title,
 ):
-    user = user(fake_uuid)
     sample_invite["email_address"] = user["email_address"]
 
     mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
+    mocker.patch("app.billing_api_client.get_billable_units", return_value="")
+
     client_request.login(user)
 
     page = client_request.get(
@@ -314,7 +314,7 @@ def test_cancelled_invited_user_accepts_invited_redirect_to_cancelled_invitation
     mock_get_service,
 ):
     cancelled_invitation = create_sample_invite(mocker, service_one, status="cancelled")
-    mock_check_token_invite(mocker, cancelled_invitation)
+    mocker.patch("app.invite_api_client.check_token", return_value=cancelled_invitation)
     response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"))
 
     app.invite_api_client.check_token.assert_called_with("thisisnotarealtoken")

@@ -147,7 +147,7 @@ def test_saves_form_to_session(client_request, mocker):
     )
 
     # Leaving form
-    client_request.get(".security")
+    client_request.get(".sign_in")
 
     # Going back
     page = client_request.get(".contact", _test_page_title=False)
@@ -171,7 +171,7 @@ def test_saves_form_to_session(client_request, mocker):
     )
 
     # Leaving form
-    client_request.get(".security")
+    client_request.get(".sign_in")
 
     # Going back
     page = client_request.get(".contact", _test_page_title=False)

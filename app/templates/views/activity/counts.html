@@ -3,7 +3,8 @@
 <div class='mb-12 clear-both contain-floats ajax-block-container'>
   <!-- counts.html -->
   {{ pill(
-    status_filters,
-    status
+    items=status_filters,
+    current_value=status,
+    label=_("Filter by status")
   ) }}
 </div>

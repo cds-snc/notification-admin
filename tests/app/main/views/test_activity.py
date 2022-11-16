@@ -11,10 +11,10 @@ from app.main.views.jobs import get_available_until_date, get_status_filters
 from app.models.service import Service
 from tests.conftest import (
     SERVICE_ONE_ID,
-    active_caseworking_user,
-    active_user_view_permissions,
-    active_user_with_permissions,
-    mock_get_notifications,
+    create_active_caseworking_user,
+    create_active_user_view_permissions,
+    create_active_user_with_permissions,
+    create_notifications,
     normalize_spaces,
 )
 
@@ -23,21 +23,21 @@ from tests.conftest import (
     "user,extra_args,expected_update_endpoint,expected_limit_days,page_title",
     [
         (
-            active_user_view_permissions,
+            create_active_user_view_permissions(),
             {"message_type": "email"},
             "/email.json",
             7,
             "Emails",
         ),
         (
-            active_user_view_permissions,
+            create_active_user_view_permissions(),
             {"message_type": "sms"},
             "/sms.json",
             7,
             "Text messages",
         ),
         (
-            active_caseworking_user,
+            create_active_caseworking_user(),
             {},
             ".json",
             7,
@@ -112,7 +112,7 @@ def test_can_show_notifications(
     mocker,
     fake_uuid,
 ):
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
     if expected_to_argument:
         page = client_request.post(
             "main.view_notifications",
@@ -194,7 +194,7 @@ def test_can_show_notifications_if_data_retention_not_available(
     "user, query_parameters, expected_download_link",
     [
         (
-            active_user_with_permissions,
+            create_active_user_with_permissions(),
             {},
             partial(
                 url_for,
@@ -203,12 +203,12 @@ def test_can_show_notifications_if_data_retention_not_available(
             ),
         ),
         (
-            active_user_with_permissions,
+            create_active_user_with_permissions(),
             {"status": "failed"},
             partial(url_for, ".download_notifications_csv", status="failed"),
         ),
         (
-            active_user_with_permissions,
+            create_active_user_with_permissions(),
             {"message_type": "sms"},
             partial(
                 url_for,
@@ -217,7 +217,7 @@ def test_can_show_notifications_if_data_retention_not_available(
             ),
         ),
         (
-            active_user_view_permissions,
+            create_active_user_view_permissions(),
             {},
             partial(
                 url_for,
@@ -225,7 +225,7 @@ def test_can_show_notifications_if_data_retention_not_available(
             ),
         ),
         (
-            active_caseworking_user,
+            create_active_caseworking_user(),
             {},
             lambda service_id: None,
         ),
@@ -242,7 +242,7 @@ def test_link_to_download_notifications(
     query_parameters,
     expected_download_link,
 ):
-    client_request.login(user(fake_uuid))
+    client_request.login(user)
     page = client_request.get("main.view_notifications", service_id=SERVICE_ONE_ID, **query_parameters)
     download_link = page.select_one("a[download=download]")
     assert (download_link["href"] if download_link else None) == expected_download_link(service_id=SERVICE_ONE_ID)
@@ -261,6 +261,7 @@ def test_download_not_available_to_users_without_dashboard(
     )
 
 
+@pytest.mark.skip(reason="letters: unused functionality")
 def test_letters_with_status_virus_scan_failed_shows_a_failure_description(
     mocker,
     active_user_with_permissions,
@@ -269,12 +270,11 @@ def test_letters_with_status_virus_scan_failed_shows_a_failure_description(
     mock_get_service_statistics,
     mock_get_service_data_retention,
 ):
-    mock_get_notifications(
-        mocker,
-        active_user_with_permissions,
-        is_precompiled_letter=True,
-        noti_status="virus-scan-failed",
+    notifications = create_notifications(
+        template_type="letter", status="virus-scan-failed", is_precompiled_letter=True, client_reference="client reference"
     )
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
+
     page = client_request.get(
         "main.view_notifications",
         service_id=service_one["id"],
@@ -296,12 +296,11 @@ def test_should_not_show_preview_link_for_precompiled_letters_in_virus_states(
     mock_get_service_data_retention,
     letter_status,
 ):
-    mock_get_notifications(
-        mocker,
-        active_user_with_permissions,
-        is_precompiled_letter=True,
-        noti_status=letter_status,
+    notifications = create_notifications(
+        template_type="letter", status=letter_status, is_precompiled_letter=True, client_reference="ref"
     )
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
+
     page = client_request.get(
         "main.view_notifications",
         service_id=service_one["id"],
@@ -526,12 +525,8 @@ def test_html_contains_links_for_failed_notifications(
     mock_get_service_data_retention,
     mocker,
 ):
-    mock_get_notifications(
-        mocker,
-        active_user_with_permissions,
-        diff_template_type="sms",
-        noti_status="technical-failure",
-    )
+    notifications = create_notifications(status="technical-failure")
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
     response = client_request.get(
         "main.view_notifications",
         service_id=SERVICE_ONE_ID,
@@ -544,27 +539,46 @@ def test_html_contains_links_for_failed_notifications(
         assert normalize_spaces(link_text) == "Technical failure"
 
 
+@pytest.mark.parametrize(
+    "notification_type, expected_row_contents",
+    (
+        ("sms", ("6502532222 hello & welcome [hidden]")),
+        ("email", ("example@canada.ca [hidden], hello & welcome")),
+        (
+            "letter",
+            (
+                # Letters don’t support redaction, but this test is still
+                # worthwhile to show that the ampersand is not double-escaped
+                "1 Example Street [hidden], hello & welcome"
+            ),
+        ),
+    ),
+)
 def test_redacts_templates_that_should_be_redacted(
     client_request,
     mocker,
     active_user_with_permissions,
     mock_get_service_statistics,
     mock_get_service_data_retention,
+    notification_type,
+    expected_row_contents,
 ):
-    mock_get_notifications(
-        mocker,
-        active_user_with_permissions,
-        template_content="hello ((name))",
+    notifications = create_notifications(
+        status="technical-failure",
+        content="hello & welcome ((name))",
+        subject="((name)), hello & welcome",
         personalisation={"name": "Jo"},
         redact_personalisation=True,
+        template_type=notification_type,
     )
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
     page = client_request.get(
         "main.view_notifications",
         service_id=SERVICE_ONE_ID,
         message_type="sms",
     )
 
-    assert normalize_spaces(page.select("tbody tr th")[0].text) == ("6502532222 hello [hidden]")
+    assert normalize_spaces(page.select("tbody tr th")[0].text) == (expected_row_contents)
 
 
 @pytest.mark.parametrize(
@@ -590,7 +604,7 @@ def test_big_numbers_and_search_dont_show_for_letters(
         page=1,
     )
 
-    assert (len(page.select("[role=tablist]")) > 0) == tablist_visible
+    assert (len(page.select("nav.pill")) > 0) == tablist_visible
     assert (len(page.select("[type=search]")) > 0) == search_bar_visible
 
 
@@ -674,7 +688,8 @@ def test_sending_status_hint_displays_correctly_on_notifications_page(
     single_line,
     mocker,
 ):
-    mock_get_notifications(mocker, True, diff_template_type=message_type, noti_status=status)
+    notifications = create_notifications(template_type=message_type, status=status)
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
 
     page = client_request.get(
         "main.view_notifications",
@@ -686,9 +701,13 @@ def test_sending_status_hint_displays_correctly_on_notifications_page(
     assert bool(page.select(".align-with-message-body")) is single_line
 
 
+@pytest.mark.skip(reason="letters: unused functionality")
 @pytest.mark.parametrize(
-    "is_precompiled_letter,expected_hint",
-    [(True, "Provided as PDF"), (False, "template subject")],
+    "is_precompiled_letter,expected_address,expected_hint",
+    [
+        (True, "Full Name\nFirst address line\npostcode", "ref"),
+        (False, "Full Name\nFirst address line\npostcode", "template subject"),
+    ],
 )
 def test_should_expected_hint_for_letters(
     client_request,
@@ -699,13 +718,17 @@ def test_should_expected_hint_for_letters(
     mocker,
     fake_uuid,
     is_precompiled_letter,
+    expected_address,
     expected_hint,
 ):
-    mock_get_notifications(
-        mocker,
-        active_user_with_permissions,
+    notifications = create_notifications(
+        template_type="letter",
+        subject=expected_hint,
         is_precompiled_letter=is_precompiled_letter,
+        client_reference=expected_hint,
+        to=expected_address,
     )
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
 
     page = client_request.get(
         "main.view_notifications",

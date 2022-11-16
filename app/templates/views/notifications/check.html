@@ -34,6 +34,17 @@
         {% endwith %}
       {% endcall %}
     </div>
+  {% elif error == 'too-many-sms-messages' %}
+    {% if sms_parts_remaining == 0 %}
+      {{ page_header(_('You’ve reached the daily limit'), back_link=back_link) }}
+    {% else %}
+      {{ page_header(_('This message exceeds your daily limit'), back_link=back_link) }}
+    {% endif %}
+    <div class="mb-12 clear-both contain-floats">
+      {% call banner_wrapper(type='dangerous') %}
+        {% include "partials/check/too-many-sms-message-parts.html" %}
+      {% endcall %}
+    </div>
   {% elif error == 'too-many-messages' %}
     {{ govuk_back_link(back_link) }}
     <div class="mb-12 clear-both contain-floats">
@@ -57,6 +68,9 @@
   {% endif %}
 
   {{ template|string|translate_preview_template }}
+  {% if config["FF_SMS_PARTS_UI"] and template.template_type == 'sms'%}
+    {% include 'views/check/sms-parts.html' %}
+  {% endif %}
 
   <div class="js-stick-at-bottom-when-scrolling">
     <form method="post" enctype="multipart/form-data" action="{{url_for(

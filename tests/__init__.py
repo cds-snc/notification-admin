@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 from urllib.parse import parse_qs, urlparse
 
+import freezegun
 import pytest
 from flask import session as flask_session
 from flask import url_for
@@ -11,6 +12,12 @@ from flask_login import login_user
 
 from app.models.service import Service
 from app.models.user import User
+
+# Add itsdangerous to the libraries which freezegun ignores to avoid errors.
+# In tests where we freeze time, the code in the test function will get the frozen time but the
+# fixtures will be using the current time. This causes itsdangerous to raise an exception - when
+# the session is decoded it appears to be created in the future.
+freezegun.configure(extend_ignore_list=["itsdangerous"])  # type: ignore
 
 
 class dotdict(dict):
@@ -22,8 +29,8 @@ class dotdict(dict):
 
 
 class MockRedis:
-    def __init__(self):
-        self.cache = dict()
+    def __init__(self, cache=dict()):
+        self.cache = cache
 
     def get(self, key):
         if key in self.cache:
@@ -157,6 +164,7 @@ def service_json(
     name="Test Service",
     users=None,
     message_limit=1000,
+    sms_daily_limit=1000,
     rate_limit=100,
     active=True,
     restricted=True,
@@ -190,6 +198,7 @@ def service_json(
         "name": name,
         "users": users,
         "message_limit": message_limit,
+        "sms_daily_limit": sms_daily_limit,
         "rate_limit": rate_limit,
         "active": active,
         "restricted": restricted,

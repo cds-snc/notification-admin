@@ -1,17 +1,20 @@
 @layer components {
   /*! purgecss start ignore */
   .js-enabled .file-upload-label {
-    @apply text-smaller leading-tight font-bold block m-0 mb-4;
+    @apply relative text-smaller leading-tight font-bold inline-block m-0 mb-4;
   }
   .js-enabled .file-upload-label .error-message {
     @apply p-0;
   }
 
   .js-enabled .file-upload-field {
-    width: 0.1px;
-    height: 0.1px;
+    font-size: 0.1px;
+    height: 100%;
+    left: 0;
+    top: 0;
+    min-width: 100%;
     z-index: -1;
-    @apply absolute overflow-hidden opacity-0;
+    @apply absolute opacity-0;
   }
   .js-enabled .file-upload-field:focus + #file-upload-button {
     @apply outline-yellow;

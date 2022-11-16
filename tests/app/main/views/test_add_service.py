@@ -1,5 +1,5 @@
 import pytest
-from flask import session, url_for
+from flask import url_for
 
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import is_gov_user
@@ -17,7 +17,7 @@ def test_non_gov_user_cannot_see_add_service_button(
 ):
     client.login(api_nongov_user_active)
     response = client.get(url_for("main.choose_account"))
-    assert "Add a new service" not in response.get_data(as_text=True)
+    assert "Add new service" not in response.get_data(as_text=True)
     assert response.status_code == 200
 
 
@@ -38,34 +38,16 @@ def test_get_should_render_add_service_template(
         return_value=org_json,
     )
     page = client_request.get("main.add_service")
-    assert page.select_one("h1").text.strip() == "Name your service"
-    assert page.select_one("input[name=name]")["value"] == ""
-    assert [label.text.strip() for label in page.select(".multiple-choice label")] == []
-    assert [radio["value"] for radio in page.select(".multiple-choice input")] == []
+    assert page.select_one("h1").text.strip() == "Choose order for official languages"
 
 
-def test_get_should_not_render_radios_if_org_type_known(
-    client_request,
-    mocker,
-):
-    mock_get_organisation_by_domain(mocker, organisation_type="central")
-    page = client_request.get("main.add_service")
-    assert page.select_one("h1").text.strip() == "Name your service"
-    assert page.select_one("input[name=name]")["value"] == ""
-    assert not page.select(".multiple-choice")
-
-
-def test_visible_branding_choices_on_service_email_from_step(client_request):
-    page = client_request.post(
-        "main.add_service",
-        _data={
-            "name": "testing the post",
-        },
-        current_step="choose_email_from",
-        _expected_status=200,
+def test_get_should_not_render_radios_if_org_type_known(client_request, mocker):
+    mocker.patch(
+        "app.organisations_client.get_organisation_by_domain",
+        return_value=organisation_json(organisation_type="central"),
     )
-    default_branding = page.select_one("input[name=email_from]")
-    assert default_branding["type"] == "text"
+    page = client_request.get("main.add_service")
+    assert page.select_one("h1").text.strip() == "Choose order for official languages"
 
 
 def test_form_with_no_branding_should_warn_this_cant_be_empty(
@@ -100,13 +82,8 @@ def test_form_with_invalid_branding_should_request_another_valid_value(
 def test_wizard_no_flow_information_should_go_to_step1(
     client_request,
 ):
-    page = client_request.post(
-        "main.add_service",
-        _data={},
-        _expected_status=200,
-    )
-    assert page.select_one("h1").text.strip() == "Name your service"
-    assert page.select_one("input[name=name]")["value"] == ""
+    page = client_request.post("main.add_service", _data={}, _expected_status=200)
+    assert page.select_one("h1").text.strip() == "Choose order for official languages"
 
 
 def test_wizard_flow_with_step_1_should_display_service_name_form(
@@ -119,56 +96,87 @@ def test_wizard_flow_with_step_1_should_display_service_name_form(
             "next_step": "choose_service_name",
         },
         _expected_status=200,
+        _follow_redirects=True,
     )
-    assert page.select_one("h1").text.strip() == "Name your service"
-
-
-def test_wizard_flow_with_step_1_should_call_service_name_is_unique(
-    client_request,
-    mock_service_name_is_unique,
-):
-    client_request.post(
-        "main.add_service",
-        _data={"name": "Service One"},
-        current_step="choose_service_name",
-        _expected_status=302,
-    )
-    assert mock_service_name_is_unique.called is True
+    assert page.select_one("h1").text.strip() == "Choose order for official languages"
 
 
 def test_wizard_flow_with_step_2_should_display_email_from(
     client_request,
+    mock_service_email_from_is_unique,
+    mock_service_name_is_unique,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
 ):
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
     page = client_request.post(
         "main.add_service",
         _data={},
-        current_step="choose_email_from",
+        current_step="choose_service_name",
         _expected_status=200,
     )
-    assert page.select_one("h1").text.strip() == "Create a sending email address for your service"
+    assert page.select_one("h1").text.strip() == "Create service name and email address"
+    assert page.select_one("h2").text.strip() == "Service name"
+
+
+def test_wizard_flow_with_step_2_should_correct_invalid_email_from(
+    client_request,
+    mock_service_email_from_is_unique,
+    mock_service_name_is_unique,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+    page = client_request.post(
+        "main.add_service",
+        _data={"name": "testing the post", "email_from": "[Health Canada! - Sante&&Canada]"},
+        current_step="choose_service_name",
+        _expected_status=200,
+    )
+
+    # ensure email has spaces and special characters removed
+    assert page.find(id="email_from")["value"] == "health.canada-santecanada"
 
 
 def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
     client_request,
     mock_service_email_from_is_unique,
+    mock_service_name_is_unique,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
 ):
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
     client_request.post(
         "main.add_service",
-        _data={"email_from": "email.from.here"},
-        current_step="choose_email_from",
+        _data={
+            "name": "testing the post",
+            "email_from": "testing.the.post",
+        },
+        current_step="choose_service_name",
         _expected_status=302,
+        _expected_redirect=url_for(
+            "main.service_dashboard",
+            service_id=101,
+            _external=True,
+        ),
     )
     assert mock_service_email_from_is_unique.called is True
+    assert mock_service_name_is_unique.called is True
+    assert mock_create_service.called is True
+    assert mock_create_or_update_free_sms_fragment_limit.called is True
 
 
-def test_wizard_flow_with_step_3_should_display_branding_form(client_request, mock_service_email_from_is_unique):
+def test_wizard_flow_with_step_0_should_display_branding_form(client_request, mock_service_email_from_is_unique):
     page = client_request.get(
         "main.add_service",
         _data={},
         current_step="choose_logo",
         _expected_status=200,
     )
-    assert page.select_one("h1").text.strip() == "Choose the default language of your service"
+    assert page.select_one("h1").text.strip() == "Choose order for official languages"
 
 
 def test_wizard_flow_with_non_matching_steps_info_should_fallback_to_step1(
@@ -179,9 +187,10 @@ def test_wizard_flow_with_non_matching_steps_info_should_fallback_to_step1(
         _data={
             "current_step": "",
         },
+        _follow_redirects=True,
         _expected_status=200,
     )
-    assert page.select_one("h1").text.strip() == "Name your service"
+    assert page.select_one("h1").text.strip() == "Choose order for official languages"
 
 
 def test_wizard_flow_with_junk_step_info_should_fallback_to_step1(client_request, mock_service_name_is_unique):
@@ -196,7 +205,7 @@ def test_wizard_flow_with_junk_step_info_should_fallback_to_step1(client_request
         current_step="junk_step",
         _expected_status=200,
     )
-    assert page.select_one("h1").text.strip() == "Name your service"
+    assert page.select_one("h1").text.strip() == "Choose order for official languages"
     assert mock_service_name_is_unique.called is False
 
 
@@ -277,7 +286,9 @@ def test_should_add_service_and_redirect_to_tour_when_no_services(
         ("Hey ((name)), I’m trying out GC Notify. Today is " "((day of week)) and my favourite colour is ((colour))."),
         101,
     )
-    assert session["service_id"] == 101
+
+    with client_request.session_transaction() as session:
+        assert session["service_id"] == 101
     mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(101, sms_limit)
 
 
@@ -331,10 +342,11 @@ def test_get_should_only_show_nhs_org_types_radios_if_user_has_nhs_email(
         return_value=None,
     )
     page = client_request.get("main.add_service")
-    assert page.select_one("h1").text.strip() == "Name your service"
-    assert page.select_one("input[name=name]")["value"] == ""
-    assert [label.text.strip() for label in page.select(".multiple-choice label")] == []
-    assert [radio["value"] for radio in page.select(".multiple-choice input")] == []
+    assert page.select_one("h1").text.strip() == "Choose order for official languages"
+    assert [radio["value"] for radio in page.select(".multiple-choice input")] == [
+        FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
+        FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
+    ]
 
 
 @pytest.mark.parametrize("organisation_type, free_allowance", [("central", 25 * 1000)])
@@ -356,30 +368,20 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
     client_request.post(
         "main.add_service",
         _data={
-            "name": "testing the post",
-        },
-        _expected_status=200,
-        _follow_redirects=True,
-    )
-    assert mock_service_name_is_unique.called is True
-
-    client_request.post(
-        "main.add_service",
-        _data={
-            "email_from": "testing.the.post",
-        },
-        current_step="choose_email_from",
-        _expected_status=200,
-        _follow_redirects=True,
-    )
-    assert mock_service_email_from_is_unique.called is True
-
-    client_request.post(
-        "main.add_service",
-        _data={
             "default_branding": FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
         },
         current_step="choose_logo",
+        _expected_status=200,
+        _follow_redirects=True,
+    )
+
+    client_request.post(
+        "main.add_service",
+        _data={
+            "name": "testing the post",
+            "email_from": "testing.the.post",
+        },
+        current_step="choose_service_name",
         _expected_status=302,
         _expected_redirect=url_for(
             "main.service_dashboard",
@@ -387,9 +389,13 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
             _external=True,
         ),
     )
+    assert mock_service_name_is_unique.called is True
+    assert mock_service_email_from_is_unique.called is True
+
     mock_create_service.assert_called_once_with(
         service_name="testing the post",
         message_limit=app_.config["DEFAULT_SERVICE_LIMIT"],
+        sms_daily_limit=app_.config["DEFAULT_SMS_DAILY_LIMIT"],
         restricted=True,
         user_id=api_user_active["id"],
         email_from="testing.the.post",
@@ -398,7 +404,8 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
     )
     mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(101, free_allowance)
     assert len(mock_create_service_template.call_args_list) == 0
-    assert session["service_id"] == 101
+    with client_request.session_transaction() as session:
+        assert session["service_id"] == 101
 
 
 def test_should_return_form_errors_when_service_name_is_empty(
@@ -410,6 +417,7 @@ def test_should_return_form_errors_when_service_name_is_empty(
         _data={
             "current_step": "choose_service_name",
         },
+        current_step="choose_service_name",
         _expected_status=200,
     )
     assert "This cannot be empty" in page.text
@@ -422,7 +430,7 @@ def test_should_return_form_errors_when_service_email_from_is_empty(
     page = client_request.post(
         "main.add_service",
         _data={"email_from": ""},
-        current_step="choose_email_from",
+        current_step="choose_service_name",
         _expected_status=200,
     )
     assert "This cannot be empty" in page.text
@@ -433,16 +441,18 @@ def test_should_return_form_errors_with_duplicate_service_name_regardless_of_cas
     mock_create_duplicate_service,
     mock_get_organisation_by_domain,
     mock_service_name_is_not_unique,
+    mock_service_email_from_is_unique,
 ):
     page = client_request.post(
         "main.add_service",
         _data={
-            "current_step": "choose_logo",
+            "current_step": "choose_service_name",
             "email_from": "servicE1",
             "name": "SERVICE ONE",
             "default_branding": FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
             "organisation_type": "central",
         },
+        current_step="choose_service_name",
         _expected_status=200,
     )
     assert page.select_one(".error-message").text.strip() == ("This service name is already in use")

@@ -5,6 +5,7 @@
 
   details summary {
     padding-left: 25px;
+    border-color: theme("colors.blue.default");
     @apply mb-gutterHalf underline inline-block text-blue cursor-pointer relative;
   }
   details summary:before {
