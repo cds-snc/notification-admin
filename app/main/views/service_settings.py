@@ -739,12 +739,6 @@ def service_delete_email_reply_to(service_id, reply_to_email_id):
         new_default_reply_to_address = get_new_default_reply_to_address(current_service, reply_to_email_address)
         service_api_client.update_reply_to_email_address(
             current_service.id,
-            reply_to_email_id=reply_to_email_id,
-            email_address=reply_to_email_address["email_address"],
-            is_default=False,
-        )
-        service_api_client.update_reply_to_email_address(
-            current_service.id,
             reply_to_email_id=new_default_reply_to_address["id"],
             email_address=new_default_reply_to_address["email_address"],
             is_default=True,

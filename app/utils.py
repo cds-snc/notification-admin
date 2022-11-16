@@ -44,7 +44,6 @@ from werkzeug.datastructures import MultiDict
 from werkzeug.routing import RequestRedirect
 
 from app import cache
-from app.models.service import Service
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
 
@@ -819,7 +818,7 @@ def _constructLoginData(request):
     }
 
 
-def get_new_default_reply_to_address(current_service: Service, default_reply_to_email_address):
+def get_new_default_reply_to_address(current_service, default_reply_to_email_address):
     non_default_reply_to_addresses = [
         reply_to
         for reply_to in current_service.email_reply_to_addresses
