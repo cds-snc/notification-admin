@@ -711,14 +711,13 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
             flash(_("Are you sure you want to delete your default reply-to email address?"), "delete")
         elif current_service.email_reply_to_addresses and current_service.count_email_reply_to_addresses > 1:
             not_default = [
-                x
-                for x in current_service.email_reply_to_addresses
-                if x["email_address"] != reply_to_email_address["email_address"]
+                reply_to
+                for reply_to in current_service.email_reply_to_addresses
+                if reply_to["email_address"] != reply_to_email_address["email_address"]
             ]
             new_default_address = not_default[0]
             email_address = new_default_address["email_address"]
-            message = _("Are you sure you want to delete your default reply-to email address?")
-            message += f" ‘{email_address}’ " + _("will become your default reply-to email address.")
+            message: str = _("Are you sure you want to delete your default reply-to email address?") + f" ‘{email_address}’ " + _("will become your default reply-to email address.")
             flash(message, "delete")
     return render_template(
         "views/service-settings/email-reply-to/edit.html",
