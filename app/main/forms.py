@@ -549,7 +549,7 @@ class RenameOrganisationForm(StripWhitespaceForm):
 
 
 class OrganisationOrganisationTypeForm(StripWhitespaceForm):
-    organisation_type = OrganisationTypeField("What type of organisation is this?")
+    org_type = OrganisationTypeField("What type of organisation is this?")
 
 
 class OrganisationCrownStatusForm(StripWhitespaceForm):

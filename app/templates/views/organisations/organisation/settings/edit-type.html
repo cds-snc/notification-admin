@@ -15,7 +15,7 @@
     back_link=url_for('.organisation_settings', org_id=current_org.id)
   ) }}
   {% call form_wrapper() %}
-    {{ radios(form.organisation_type) }}
+    {{ radios(form.org_type) }}
     {{ page_footer(_('Save')) }}
   {% endcall %}
 {% endblock %}

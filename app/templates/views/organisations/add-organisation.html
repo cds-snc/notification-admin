@@ -25,8 +25,7 @@
           {{ page_header(_('New organisation')) }}
           {% call form_wrapper() %}
             {{textbox(form.name)}}
-            {{radios(form.organisation_type)}}
-            <input type="hidden" name="organisation_type" value="central" />
+            {{radios(form.org_type)}}
             {{radios(form.crown_status)}}
             {% set button_txt = _('Save') %}
             {{ page_footer(button_txt) }}
