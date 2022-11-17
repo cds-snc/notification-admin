@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 from flask import current_app, request
 from freezegun import freeze_time
+from pytest_mock import MockerFixture
 
 from app import format_datetime_relative
 from app.utils import (
@@ -18,12 +19,19 @@ from app.utils import (
     get_latest_stats,
     get_letter_printing_statement,
     get_logo_cdn_domain,
+    get_new_default_reply_to_address,
     get_remote_addr,
     get_template,
     printing_today_or_tomorrow,
     report_security_finding,
 )
-from tests.conftest import SERVICE_ONE_ID, fake_uuid, set_config, template_json
+from tests.conftest import (
+    SERVICE_ONE_ID,
+    create_reply_to_email_address,
+    fake_uuid,
+    set_config,
+    template_json,
+)
 
 
 def _get_notifications_csv(
@@ -691,3 +699,14 @@ def test_set_lang_external_route(client_request):
         }
     )
     assert len(page.findAll(text="/accounts-or-dashboard")) == 1
+
+
+def test_get_new_default_reply_to_address(mocker: MockerFixture, app_, service_one):
+    reply_to_1 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_1@example.com", is_default=True)
+    reply_to_2 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_2@example.com", is_default=False)
+    reply_to_3 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_3@example.com", is_default=False)
+    reply_to_4 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_4@example.com", is_default=False)
+    service_one.email_reply_to_addresses = [reply_to_1, reply_to_2, reply_to_3, reply_to_4]
+
+    new_default = get_new_default_reply_to_address(service_one, reply_to_1)
+    assert reply_to_2 == new_default
