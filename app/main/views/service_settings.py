@@ -711,7 +711,9 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
         elif current_service.count_email_reply_to_addresses == 1:
             flash(_("Are you sure you want to delete this reply-to email address?"), "delete")
         elif current_service.email_reply_to_addresses and current_service.count_email_reply_to_addresses > 1:
-            new_default_reply_to_address = get_new_default_reply_to_address(current_service.email_reply_to_addresses, reply_to_email_address)
+            new_default_reply_to_address = get_new_default_reply_to_address(
+                current_service.email_reply_to_addresses, reply_to_email_address
+            )
             email_address = new_default_reply_to_address["email_address"]  # type: ignore
             message: str = (
                 _("Are you sure you want to delete this reply-to email address?")
@@ -736,7 +738,9 @@ def service_delete_email_reply_to(service_id, reply_to_email_id):
 
     # if this is the default, and other reply-tos exist, we need to switch the default before deleting
     if reply_to_email_address and reply_to_email_address["is_default"] and current_service.count_email_reply_to_addresses > 1:
-        new_default_reply_to_address = get_new_default_reply_to_address(current_service.email_reply_to_addresses, reply_to_email_address)
+        new_default_reply_to_address = get_new_default_reply_to_address(
+            current_service.email_reply_to_addresses, reply_to_email_address
+        )
         if new_default_reply_to_address:
             service_api_client.update_reply_to_email_address(
                 current_service.id,

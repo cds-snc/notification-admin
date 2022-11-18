@@ -1,8 +1,9 @@
 from typing import Optional, TypedDict
 
+
 class EmailReplyTo(TypedDict):
     archived: bool
-    created_at: str
+    created_at: Optional[str]
     email_address: str
     id: str
     is_default: bool

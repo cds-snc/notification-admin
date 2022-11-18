@@ -5,10 +5,10 @@ from urllib.parse import parse_qs, urlparse
 from uuid import UUID, uuid4
 
 import pytest
-from pytest_mock import MockerFixture
 from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
+from pytest_mock import MockerFixture
 
 import app
 from app.utils import email_safe
@@ -2152,13 +2152,12 @@ def test_confirm_delete_default_reply_to_email_address(fake_uuid, client_request
     assert page.select_one(".banner-dangerous form")["method"] == "post"
 
 
-
 def test_delete_reply_to_email_address(
-    client_request,
+    client_request: ClientRequest,
     service_one,
     fake_uuid,
     get_non_default_reply_to_email_address,
-    mocker,
+    mocker: MockerFixture,
 ):
     mock_delete = mocker.patch("app.service_api_client.delete_reply_to_email_address")
     client_request.post(
@@ -2174,8 +2173,32 @@ def test_delete_reply_to_email_address(
     mock_delete.assert_called_once_with(service_id=SERVICE_ONE_ID, reply_to_email_id=fake_uuid)
 
 
-# def test_delete_default_reply_to_email_address_switches_default():
+def test_delete_default_reply_to_email_address_switches_default(
+    client_request: ClientRequest, mocker: MockerFixture, service_one
+):
+    mock_delete = mocker.patch("app.service_api_client.delete_reply_to_email_address")
+    mock_update = mocker.patch("app.service_api_client.update_reply_to_email_address")
+    reply_to_1 = create_reply_to_email_address(service_id=service_one["id"], email_address="default@example.com", is_default=True)
+    reply_to_2 = create_reply_to_email_address(service_id=service_one["id"], email_address="test@example.com", is_default=False)
+    mocker.patch("app.models.service.Service.get_email_reply_to_address", return_value=reply_to_1)
+    service_one.email_reply_to_addresses = [reply_to_1, reply_to_2]
+    service_one.count_email_reply_to_addresses = 2
+    client_request.post(
+        ".service_delete_email_reply_to",
+        service_id=service_one["id"],
+        reply_to_email_id=reply_to_1["id"],
+        _expected_redirect=url_for(
+            "main.service_email_reply_to",
+            service_id=service_one["id"],
+            _external=True,
+        ),
+    )
 
+    mock_update.assert_called_once_with(
+        service_one["id"], email_address=reply_to_2["email_address"], reply_to_email_id=reply_to_2["id"], is_default=True
+    )
+
+    mock_delete.assert_called_once_with(service_id=service_one["id"], reply_to_email_id=reply_to_1["id"])
 
 
 @pytest.mark.parametrize(

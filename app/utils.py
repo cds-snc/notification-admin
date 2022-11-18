@@ -821,9 +821,7 @@ def _constructLoginData(request):
 
 def get_new_default_reply_to_address(email_reply_tos: List[EmailReplyTo], default_email_reply_to: EmailReplyTo):
     non_default_reply_tos = [
-        reply_to
-        for reply_to in email_reply_tos
-        if reply_to["email_address"] != default_email_reply_to["email_address"]
+        reply_to for reply_to in email_reply_tos if reply_to["email_address"] != default_email_reply_to["email_address"]
     ]
     if len(non_default_reply_tos) < 1:
         return None
