@@ -1,10 +1,10 @@
-from typing import TypedDict
+from typing import Optional, TypedDict
 
 class EmailReplyTo(TypedDict):
-    id: str
-    service_id: str
-    email_address: str
-    is_default: bool
     archived: bool
-    # created_at: 
-    # updated_at: bool
+    created_at: str
+    email_address: str
+    id: str
+    is_default: bool
+    service_id: str
+    updated_at: Optional[bool]
