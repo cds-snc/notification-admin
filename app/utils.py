@@ -12,7 +12,7 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-from typing import Any
+from typing import Any, List
 
 import boto3
 import dateutil
@@ -46,6 +46,7 @@ from werkzeug.routing import RequestRedirect
 from app import cache
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
+from app.types import EmailReplyTo
 
 SENDING_STATUSES = ["created", "pending", "sending", "pending-virus-check"]
 DELIVERED_STATUSES = ["delivered", "sent", "returned-letter"]
@@ -818,11 +819,12 @@ def _constructLoginData(request):
     }
 
 
-def get_new_default_reply_to_address(current_service, default_reply_to_email_address):
-    non_default_reply_to_addresses = [
+def get_new_default_reply_to_address(email_reply_tos: List[EmailReplyTo], default_email_reply_to: EmailReplyTo):
+    non_default_reply_tos = [
         reply_to
-        for reply_to in current_service.email_reply_to_addresses
-        if reply_to["email_address"] != default_reply_to_email_address["email_address"]
+        for reply_to in email_reply_tos
+        if reply_to["email_address"] != default_email_reply_to["email_address"]
     ]
-    new_default_reply_to_address = non_default_reply_to_addresses[0]
-    return new_default_reply_to_address
+    if len(non_default_reply_tos) < 1:
+        return None
+    return non_default_reply_tos[0]

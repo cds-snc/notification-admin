@@ -706,7 +706,7 @@ def test_get_new_default_reply_to_address(mocker: MockerFixture, app_, service_o
     reply_to_2 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_2@example.com", is_default=False)
     reply_to_3 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_3@example.com", is_default=False)
     reply_to_4 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_4@example.com", is_default=False)
-    service_one.email_reply_to_addresses = [reply_to_1, reply_to_2, reply_to_3, reply_to_4]
+    email_reply_tos = [reply_to_1, reply_to_2, reply_to_3, reply_to_4]
 
-    new_default = get_new_default_reply_to_address(service_one, reply_to_1)
+    new_default = get_new_default_reply_to_address(email_reply_tos, reply_to_1)  # type: ignore
     assert reply_to_2 == new_default

@@ -5,6 +5,7 @@ from urllib.parse import parse_qs, urlparse
 from uuid import UUID, uuid4
 
 import pytest
+from pytest_mock import MockerFixture
 from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
@@ -2090,7 +2091,7 @@ def test_edit_reply_to_email_address_goes_straight_to_update_if_address_not_chan
     [create_reply_to_email_address(is_default=False), create_reply_to_email_address()],
 )
 def test_always_shows_delete_link_for_email_reply_to_address(
-    mocker,
+    mocker: MockerFixture,
     sender_details,
     fake_uuid,
     client_request,
@@ -2135,6 +2136,23 @@ def test_confirm_delete_reply_to_email_address(fake_uuid, client_request, get_no
     assert page.select_one(".banner-dangerous form")["method"] == "post"
 
 
+def test_confirm_delete_default_reply_to_email_address(fake_uuid, client_request, get_default_reply_to_email_address):
+
+    page = client_request.get(
+        "main.service_confirm_delete_email_reply_to",
+        service_id=SERVICE_ONE_ID,
+        reply_to_email_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
+        "Are you sure you want to delete this reply-to email address? " "Yes, delete"
+    )
+    assert "action" not in page.select_one(".banner-dangerous form")
+    assert page.select_one(".banner-dangerous form")["method"] == "post"
+
+
+
 def test_delete_reply_to_email_address(
     client_request,
     service_one,
@@ -2154,6 +2172,10 @@ def test_delete_reply_to_email_address(
         ),
     )
     mock_delete.assert_called_once_with(service_id=SERVICE_ONE_ID, reply_to_email_id=fake_uuid)
+
+
+# def test_delete_default_reply_to_email_address_switches_default():
+
 
 
 @pytest.mark.parametrize(
