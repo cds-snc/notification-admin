@@ -27,14 +27,7 @@
   .tick-cross-list-edit-link {
     top: -25px;
     right: -135px;
-    @apply text-right absolute;
-  }
-  .tick-cross-list-edit-link a:before {
-    content: "";
-    top: -16px;
-    bottom: -15px;
-    left: -15px;
-    @apply block absolute right-0 bg-transparent;
+    @apply text-right;
   }
   .tick-cross-list-edit-link a:hover {
     @apply text-blue-lightblue;
@@ -43,13 +36,6 @@
   .tick-cross-list-edit-link a:focus {
     @apply text-black;
   }
-  .tick-cross-list-edit-link a:active:before,
-  .tick-cross-list-edit-link a:focus:before {
-    border-width: 15px 3px 15px 15px;
-    right: -3px;
-    @apply border-yellow border-solid;
-  }
-
   .tick-cross-list-hint {
     @apply text-gray-grey1 pt-2;
   }
