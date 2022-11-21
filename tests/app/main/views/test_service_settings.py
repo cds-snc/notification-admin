@@ -2181,8 +2181,8 @@ def test_delete_default_reply_to_email_address_switches_default(
     reply_to_1 = create_reply_to_email_address(service_id=service_one["id"], email_address="default@example.com", is_default=True)
     reply_to_2 = create_reply_to_email_address(service_id=service_one["id"], email_address="test@example.com", is_default=False)
     mocker.patch("app.models.service.Service.get_email_reply_to_address", return_value=reply_to_1)
-    service_one.email_reply_to_addresses = [reply_to_1, reply_to_2]
-    service_one.count_email_reply_to_addresses = 2
+    mocker.patch("app.models.service.Service.count_email_reply_to_addresses", 2)
+    mocker.patch("app.models.service.Service.email_reply_to_addresses", [reply_to_1, reply_to_2])
     client_request.post(
         ".service_delete_email_reply_to",
         service_id=service_one["id"],
