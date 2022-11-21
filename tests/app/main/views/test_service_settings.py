@@ -2136,12 +2136,18 @@ def test_confirm_delete_reply_to_email_address(fake_uuid, client_request, get_no
     assert page.select_one(".banner-dangerous form")["method"] == "post"
 
 
-def test_confirm_delete_default_reply_to_email_address(fake_uuid, client_request, get_default_reply_to_email_address):
-
+def test_confirm_delete_default_reply_to_email_address(
+    mocker: MockerFixture, fake_uuid, client_request, get_default_reply_to_email_address
+):
+    reply_tos = create_multiple_email_reply_to_addresses()
+    reply_to_for_deletion = reply_tos[1]
+    mocker.patch("app.models.service.Service.count_email_reply_to_addresses", len(reply_tos))
+    mocker.patch("app.models.service.Service.email_reply_to_addresses", reply_tos)
+    mocker.patch("app.models.service.Service.get_email_reply_to_address", return_value=reply_to_for_deletion)
     page = client_request.get(
         "main.service_confirm_delete_email_reply_to",
         service_id=SERVICE_ONE_ID,
-        reply_to_email_id=fake_uuid,
+        reply_to_email_id=reply_to_for_deletion["id"],
         _test_page_title=False,
     )
 
