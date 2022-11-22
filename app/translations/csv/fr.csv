@@ -1194,7 +1194,7 @@
 "…and {} more","et {} autres"
 "File","Fichier"
 "You cannot delete a default email reply to address if other reply to addresses exist","Vous ne pouvez pas supprimer l’adresse courriel de réponse réglée par défaut si d’autres adresses de réponse existent”
-"You’re about to delete your default reply-to address.","Vous êtes sur le point de supprimer l’adresse de réponse par défaut."
+"You're about to delete your default reply-to address.","Vous êtes sur le point de supprimer l’adresse de réponse par défaut."
 " The new default will be the next email on your list of reply-to addresses: ‘{}’"," ‘{}’ deviendra votre nouvelle adresse de réponse par défaut car elle figure sur votre liste d’adresses de réponse."
 "Your service already uses ","Votre service utilise déjà "
 "as an email reply-to address.","comme adresse courriel de réponse"
