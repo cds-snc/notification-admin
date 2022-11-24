@@ -80,8 +80,12 @@
 }
 
 .Calendar-nav--button:focus,
-.Calendar-item:hover:not(.Calendar-item--day):not(.Calendar-item--unavailable):not(:empty),
-.Calendar-item:focus:not(.Calendar-item--day):not(.Calendar-item--unavailable):not(:empty) {
+.Calendar-item:hover:not(.Calendar-item--day):not(
+    .Calendar-item--unavailable
+  ):not(:empty),
+.Calendar-item:focus:not(.Calendar-item--day):not(
+    .Calendar-item--unavailable
+  ):not(:empty) {
   outline: black inset;
   outline-offset: -4px;
   outline-offset: -4px;
