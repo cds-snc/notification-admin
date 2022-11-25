@@ -701,7 +701,7 @@ def test_set_lang_external_route(client_request):
     assert len(page.findAll(text="/accounts-or-dashboard")) == 1
 
 
-def test_get_new_default_reply_to_address(mocker: MockerFixture, app_, service_one):
+def test_get_new_default_reply_to_address_returns_next_in_list(mocker: MockerFixture, app_, service_one):
     reply_to_1 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_1@example.com", is_default=True)
     reply_to_2 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_2@example.com", is_default=False)
     reply_to_3 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_3@example.com", is_default=False)
@@ -710,3 +710,21 @@ def test_get_new_default_reply_to_address(mocker: MockerFixture, app_, service_o
 
     new_default = get_new_default_reply_to_address(email_reply_tos, reply_to_1)  # type: ignore
     assert reply_to_2 == new_default
+
+
+def test_get_new_default_reply_to_address_returns_none_if_reply_to_have_(mocker: MockerFixture, app_, service_one):
+    "this should never happen"
+    reply_to_1 = create_reply_to_email_address(service_id=service_one["id"], email_address="test@example.com", is_default=True)
+    reply_to_2 = create_reply_to_email_address(service_id=service_one["id"], email_address="test@example.com", is_default=False)
+    email_reply_tos = [reply_to_1, reply_to_2]
+
+    new_default = get_new_default_reply_to_address(email_reply_tos, reply_to_1)  # type: ignore
+    assert new_default == None
+
+
+def test_get_new_default_reply_to_address_returns_none_if_one_reply_to(mocker: MockerFixture, app_, service_one):
+    reply_to_1 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_1@example.com", is_default=True)
+    email_reply_tos = [reply_to_1]
+
+    new_default = get_new_default_reply_to_address(email_reply_tos, reply_to_1)  # type: ignore
+    assert new_default == None
