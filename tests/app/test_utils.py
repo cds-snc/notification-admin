@@ -719,7 +719,7 @@ def test_get_new_default_reply_to_address_returns_none_if_reply_to_have_(mocker:
     email_reply_tos = [reply_to_1, reply_to_2]
 
     new_default = get_new_default_reply_to_address(email_reply_tos, reply_to_1)  # type: ignore
-    assert new_default == None
+    assert new_default is None
 
 
 def test_get_new_default_reply_to_address_returns_none_if_one_reply_to(mocker: MockerFixture, app_, service_one):
@@ -727,4 +727,4 @@ def test_get_new_default_reply_to_address_returns_none_if_one_reply_to(mocker: M
     email_reply_tos = [reply_to_1]
 
     new_default = get_new_default_reply_to_address(email_reply_tos, reply_to_1)  # type: ignore
-    assert new_default == None
+    assert new_default is None
