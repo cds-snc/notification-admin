@@ -2,6 +2,7 @@ import json
 import os
 from contextlib import contextmanager
 from datetime import date, datetime, timedelta
+from typing import List
 from unittest.mock import Mock
 from uuid import UUID, uuid4
 
@@ -13,6 +14,7 @@ from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 
 from app import create_app
+from app.types import EmailReplyTo
 
 from . import (
     TestClient,
@@ -4262,7 +4264,7 @@ def create_platform_admin_user(with_unique_id=False):
 
 def create_reply_to_email_address(
     id_="1234", service_id="abcd", email_address="test@example.com", is_default=True, created_at=None, updated_at=None
-):
+) -> EmailReplyTo:
     return {
         "id": id_,
         "service_id": service_id,
@@ -4270,34 +4272,38 @@ def create_reply_to_email_address(
         "is_default": is_default,
         "created_at": created_at,
         "updated_at": updated_at,
+        "archived": False,
     }
 
 
-def create_multiple_email_reply_to_addresses(service_id="abcd"):
+def create_multiple_email_reply_to_addresses(service_id="abcd") -> List[EmailReplyTo]:
     return [
         {
             "id": "1234",
             "service_id": service_id,
             "email_address": "test@example.com",
             "is_default": True,
-            "created_at": datetime.utcnow(),
+            "created_at": str(datetime.utcnow()),
             "updated_at": None,
+            "archived": False,
         },
         {
             "id": "5678",
             "service_id": service_id,
             "email_address": "test2@example.com",
             "is_default": False,
-            "created_at": datetime.utcnow(),
+            "created_at": str(datetime.utcnow()),
             "updated_at": None,
+            "archived": False,
         },
         {
             "id": "9457",
             "service_id": service_id,
             "email_address": "test3@example.com",
             "is_default": False,
-            "created_at": datetime.utcnow(),
+            "created_at": str(datetime.utcnow()),
             "updated_at": None,
+            "archived": False,
         },
     ]
 

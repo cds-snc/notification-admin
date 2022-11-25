@@ -66,6 +66,7 @@ from app.utils import (
     documentation_url,
     email_safe,
     get_logo_cdn_domain,
+    get_new_default_reply_to_address,
     user_has_permissions,
     user_is_gov_user,
     user_is_platform_admin,
@@ -687,6 +688,7 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
         try:
             notification_id = service_api_client.verify_reply_to_email_address(service_id, form.email_address.data)["data"]["id"]
         except HTTPError as e:
+            # TODO: missing translation
             error_msg = "Your service already uses ‘{}’ as a reply-to email address.".format(form.email_address.data)
             if e.status_code == 400 and error_msg == e.message:
                 flash(error_msg, "error")
@@ -703,8 +705,20 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
             )
         )
 
-    if request.endpoint == "main.service_confirm_delete_email_reply_to":
-        flash(_("Are you sure you want to delete this reply-to email address?"), "delete")
+    if reply_to_email_address and request.endpoint == "main.service_confirm_delete_email_reply_to":
+        if not reply_to_email_address["is_default"]:
+            flash(_("Are you sure you want to delete this reply-to email address?"), "delete")
+        elif current_service.count_email_reply_to_addresses == 1:
+            flash(_("You're about to delete your default reply-to address."), "delete")
+        elif current_service.email_reply_to_addresses and current_service.count_email_reply_to_addresses > 1:
+            new_default_reply_to_address = get_new_default_reply_to_address(
+                current_service.email_reply_to_addresses, reply_to_email_address
+            )
+            email_address = new_default_reply_to_address["email_address"]  # type: ignore
+            message: str = _("You're about to delete your default reply-to address.") + _(
+                " The new default will be the next email on your list of reply-to addresses: ‘{}’"
+            ).format(email_address)
+            flash(message, "delete")
     return render_template(
         "views/service-settings/email-reply-to/edit.html",
         form=form,
@@ -718,6 +732,21 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
 )
 @user_has_permissions("manage_service")
 def service_delete_email_reply_to(service_id, reply_to_email_id):
+    reply_to_email_address = current_service.get_email_reply_to_address(reply_to_email_id)
+
+    # if this is the default, and other reply-tos exist, we need to switch the default before deleting
+    if reply_to_email_address and reply_to_email_address["is_default"] and current_service.count_email_reply_to_addresses > 1:
+        new_default_reply_to_address = get_new_default_reply_to_address(
+            current_service.email_reply_to_addresses, reply_to_email_address
+        )
+        if new_default_reply_to_address:
+            service_api_client.update_reply_to_email_address(
+                current_service.id,
+                reply_to_email_id=new_default_reply_to_address["id"],
+                email_address=new_default_reply_to_address["email_address"],
+                is_default=True,
+            )
+
     service_api_client.delete_reply_to_email_address(
         service_id=current_service.id,
         reply_to_email_id=reply_to_email_id,
