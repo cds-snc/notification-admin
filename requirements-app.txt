@@ -17,7 +17,7 @@ pyexcel-xlsx==0.6.0
 pyexcel-ods3==0.6.0
 pytz==2021.1
 gunicorn==20.1.0
-eventlet==0.30.2
+gevent==22.10.2
 notifications-python-client==6.0.2
 
 Babel==2.9.1
@@ -33,7 +33,7 @@ user-agents==2.2.0
 WTForms==3.0.0a1
 email-validator==1.1.2
 Werkzeug==2.0.2
-greenlet==1.1.2
+greenlet==2.0.0
 mixpanel==4.9.0
 redis==3.5.3 # pinned for now
 
