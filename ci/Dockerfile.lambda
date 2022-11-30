@@ -2,7 +2,7 @@ ARG APP_DIR="/app"
 ARG APP_VENV="/opt/venv"
 
 # Build image
-FROM python:3.9-alpine3.16 as base
+FROM python:3.10-alpine3.16 as base
 
 ARG APP_DIR
 ARG APP_VENV
@@ -47,7 +47,7 @@ RUN make babel && \
     make generate-version-file
 
 # Final image
-FROM python:3.9-alpine3.16 as lambda
+FROM python:3.10-alpine3.16 as lambda
 
 ARG APP_DIR
 ARG APP_VENV

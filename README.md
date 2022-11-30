@@ -31,7 +31,7 @@ https://github.com/alphagov/notifications-admin
 ```
 
 Languages needed
-- Python 3.9
+- Python 3.10
 - [Node](https://nodejs.org/) 10.15.3 or greater
 - [npm](https://www.npmjs.com/) 6.4.1 or greater
 
@@ -58,15 +58,15 @@ On OS X:
 
 `brew install pyenv`
 
-2. Install Python 3.9.1 or whatever is the latest
+2. Install Python 3.10.8 or whatever is the latest
 
-`pyenv install 3.9.1`
+`pyenv install 3.10.8`
 
-3. If you expect no conflicts, set `3.9.1` as you default
+3. If you expect no conflicts, set `3.10.8` as you default
 
-`pyenv global 3.9.1`
+`pyenv global 3.10.8`
 
-4. Ensure that version `3.9.1` is now the default by running
+4. Ensure that version `3.10.8` is now the default by running
 
 `python --version` 
 
@@ -77,7 +77,7 @@ eval "$(pyenv init -)"
 ```
 and open a new terminal.
 
-If you are still not running Python 3.9.1 take a look here: https://github.com/pyenv/pyenv/issues/660
+If you are still not running Python 3.10.8 take a look here: https://github.com/pyenv/pyenv/issues/660
 
 5. Install `virtualenv`:
 
@@ -86,12 +86,12 @@ If you are still not running Python 3.9.1 take a look here: https://github.com/p
 6. Add the following to your `.bashrc` or `.zshrc`
 
 ```
-source  ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
+source  ~/.pyenv/versions/3.10.8/bin/virtualenvwrapper.sh
 ```
 
 7. Restart your terminal and make your virtual environtment:
 
-`mkvirtualenv -p ~/.pyenv/versions/3.9.1/bin/python notifications-admin`
+`mkvirtualenv -p ~/.pyenv/versions/3.10.8/bin/python notifications-admin`
 
 8. You can now return to your environment any time by entering
 
@@ -287,7 +287,7 @@ https://github.com/alphagov/notifications-admin
 ```
 
 Langages nécessaires
-- Python 3.9
+- Python 3.10
 - [Node](https://nodejs.org/) 10.15.3 ou supérieur
 - [npm](https://www.npmjs.com/) 6.4.1 ou plus
 ```shell
@@ -311,15 +311,15 @@ Sur macOS :
 
 `brew install pyenv`
 
-2. Installez Python 3.9.1 ou la dernière version
+2. Installez Python 3.10.8 ou la dernière version
 
-`pyenv install 3.9.1`
+`pyenv install 3.10.8`
 
-3. Si vous n'attendez aucun conflit, mettez `3.9.1` comme valeur par défaut
+3. Si vous n'attendez aucun conflit, mettez `3.10.8` comme valeur par défaut
 
-`pyenv global 3.9.1`
+`pyenv global 3.10.8`
 
-4. Assurez-vous que la version 3.9.1 est maintenant la version par défaut en exécutant
+4. Assurez-vous que la version 3.10.8 est maintenant la version par défaut en exécutant
 
 `python --version`
 
@@ -329,7 +329,7 @@ eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 ```
 et ouvrez un nouveau terminal.
-Si vous n’utilisez toujours pas Python 3.9.1, jetez un coup d’œil ici : https://github.com/pyenv/pyenv/issues/660
+Si vous n’utilisez toujours pas Python 3.10.8, jetez un coup d’œil ici : https://github.com/pyenv/pyenv/issues/660
 
 5. Installez `virtualenv` :
 
@@ -340,12 +340,12 @@ Si vous n’utilisez toujours pas Python 3.9.1, jetez un coup d’œil ici : htt
 ```
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/Devel
-source ~/.pyenv/versions/3.9.1/bin/virtualenvwrapper.sh
+source ~/.pyenv/versions/3.10.8/bin/virtualenvwrapper.sh
 ```
 
 7. Redémarrez votre terminal et créez votre environnement virtuel :
 
-`mkvirtualenv -p ~/.pyenv/versions/3.9.1/bin/python notifications-admin`
+`mkvirtualenv -p ~/.pyenv/versions/3.10.8/bin/python notifications-admin`
 
 8. Vous pouvez maintenant retourner dans votre environnement à tout moment en entrant
 

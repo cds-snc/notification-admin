@@ -7,7 +7,7 @@ import newrelic.agent  # See https://bit.ly/2xBVKBH
 newrelic.agent.initialize()  # noqa: E402
 
 workers = 5
-worker_class = "eventlet"
+worker_class = "gevent"
 bind = "0.0.0.0:{}".format(os.getenv("PORT"))
 accesslog = "-"
 

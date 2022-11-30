@@ -39,7 +39,7 @@ from notifications_utils.timezones import (
     convert_utc_to_est,
     utc_string_to_aware_gmt_datetime,
 )
-from orderedset._orderedset import OrderedSet
+from ordered_set import OrderedSet
 from werkzeug.datastructures import MultiDict
 from werkzeug.routing import RequestRedirect
 
