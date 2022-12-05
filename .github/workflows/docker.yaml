@@ -65,7 +65,7 @@ jobs:
 
     - name: my-app-install token
       id: notify-pr-bot
-      uses: getsentry/action-github-app-token@v1
+      uses: getsentry/action-github-app-token@38a3ce582e170ddfe8789f509597c6944f2292a9 # v1
       with:
         app_id: ${{ secrets.PRBOT_APP_ID }}
         private_key: ${{ secrets.PRBOT_PRIVATE_KEY }}
