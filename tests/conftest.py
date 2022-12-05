@@ -3324,7 +3324,7 @@ class ClientRequest:
         endpoint: str,
         _expected_status: int = 200,
         _follow_redirects: bool = False,
-        _expected_redirect: str = None,
+        _expected_redirect: str | None = None,
         _test_page_title: bool = True,
         _optional_args: str = "",
         **endpoint_kwargs,
@@ -3343,7 +3343,7 @@ class ClientRequest:
         url: str,
         _expected_status: int = 200,
         _follow_redirects: bool = False,
-        _expected_redirect: str = None,
+        _expected_redirect: str | None = None,
         _test_page_title: bool = True,
         **endpoint_kwargs,
     ):
@@ -3368,10 +3368,10 @@ class ClientRequest:
     def post(
         self,
         endpoint: str,
-        _data: dict = None,
-        _expected_status: int = None,
+        _data: dict | None = None,
+        _expected_status: int | None = None,
         _follow_redirects: bool = False,
-        _expected_redirect: str = None,
+        _expected_redirect: str | None = None,
         **endpoint_kwargs,
     ):
         if _expected_status is None:
