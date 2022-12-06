@@ -13,7 +13,6 @@ from app.main.views.templates import (
     get_preview_data,
     set_preview_data,
 )
-from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from tests import (
     MockRedis,
@@ -47,8 +46,6 @@ from tests.conftest import (
     mock_get_service_template_with_process_type,
     normalize_spaces,
 )
-
-DEFAULT_PROCESS_TYPE = TemplateProcessTypes.BULK.value
 
 
 class TestRedisPreviewUtilities:
@@ -1272,7 +1269,7 @@ def test_should_redirect_when_saving_a_template(
             "template_content": content,
             "template_type": "sms",
             "service": SERVICE_ONE_ID,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": "normal",
         },
         _follow_redirects=True,
     )
@@ -1287,11 +1284,11 @@ def test_should_redirect_when_saving_a_template(
         content,
         SERVICE_ONE_ID,
         None,
-        TemplateProcessTypes.BULK.value,
+        "normal",
     )
 
 
-@pytest.mark.parametrize("process_type", [TemplateProcessTypes.NORMAL.value, TemplateProcessTypes.PRIORITY.value])
+@pytest.mark.parametrize("process_type", ["bulk", "priority"])
 def test_should_edit_content_when_process_type_is_set_not_platform_admin(
     client_request,
     mocker,
@@ -1355,7 +1352,7 @@ def test_should_not_allow_template_edits_without_correct_permission(
     )
 
 
-@pytest.mark.parametrize("process_type", [TemplateProcessTypes.NORMAL.value, TemplateProcessTypes.PRIORITY.value])
+@pytest.mark.parametrize("process_type", ["bulk", "priority"])
 def test_should_403_when_edit_template_with_non_default_process_type_for_non_platform_admin(
     client,
     active_user_with_permissions,
@@ -1389,7 +1386,7 @@ def test_should_403_when_edit_template_with_non_default_process_type_for_non_pla
     mock_update_service_template.called == 0
 
 
-@pytest.mark.parametrize("process_type", [TemplateProcessTypes.NORMAL.value, TemplateProcessTypes.PRIORITY.value])
+@pytest.mark.parametrize("process_type", ["bulk", "priority"])
 def test_should_403_when_create_template_with_non_default_process_type_for_non_platform_admin(
     client,
     active_user_with_permissions,
@@ -1466,7 +1463,7 @@ def test_should_show_interstitial_when_making_breaking_change(
         "template_type": template_type,
         "subject": "reminder '\" <span> & ((name))",
         "service": SERVICE_ONE_ID,
-        "process_type": DEFAULT_PROCESS_TYPE,
+        "process_type": "normal",
     }
 
     if template_type == "letter":
@@ -1546,7 +1543,7 @@ def test_should_not_create_too_big_template(
             "template_content": "template content",
             "template_type": "sms",
             "service": SERVICE_ONE_ID,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": "normal",
         },
         _expected_status=200,
     )
@@ -1569,7 +1566,7 @@ def test_should_not_update_too_big_template(
             "template_content": "template content",
             "service": SERVICE_ONE_ID,
             "template_type": "sms",
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": "normal",
         },
         _expected_status=200,
     )
@@ -1597,7 +1594,7 @@ def test_should_redirect_when_saving_a_template_email(
             "template_type": "email",
             "service": SERVICE_ONE_ID,
             "subject": subject,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": "normal",
             "button_pressed": "save",
         },
         _expected_status=302,
@@ -1614,7 +1611,7 @@ def test_should_redirect_when_saving_a_template_email(
         content,
         SERVICE_ONE_ID,
         subject,
-        DEFAULT_PROCESS_TYPE,
+        "normal",
     )
 
 
@@ -1639,7 +1636,7 @@ def test_should_redirect_when_previewing_a_template_email(
             "template_type": "email",
             "service": SERVICE_ONE_ID,
             "subject": subject,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": "normal",
             "button_pressed": "preview",
         },
         _expected_status=302,
@@ -2164,7 +2161,7 @@ def test_can_create_email_template_with_emoji(
             "template_content": "here's a burrito 🌯",
             "template_type": "email",
             "service": SERVICE_ONE_ID,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": "normal",
             "button_pressed": "save",
         },
         _follow_redirects=True,
@@ -2233,7 +2230,7 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(clien
             "template_content": msg,
             "template_type": "sms",
             "service": SERVICE_ONE_ID,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": "normal",
         },
         expected_status=302,
     )

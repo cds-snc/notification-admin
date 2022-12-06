@@ -44,7 +44,6 @@ from app.main.forms import (
     TemplateFolderForm,
 )
 from app.main.views.send import get_example_csv_rows, get_sender_details
-from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.template_list import TemplateList, TemplateLists
 from app.template_previews import TemplatePreview, get_page_count_for_letter
@@ -708,11 +707,11 @@ def add_service_template(service_id, template_type, template_folder_id=None):
 
     template = get_preview_data(service_id)
     if template.get("process_type") is None:
-        template["process_type"] = TemplateProcessTypes.BULK.value
+        template["process_type"] = "normal"
     form = form_objects[template_type](**template)
 
     if form.validate_on_submit():
-        if form.process_type.data != TemplateProcessTypes.BULK.value:
+        if form.process_type.data != "normal":
             abort_403_if_not_admin_user()
         subject = form.subject.data if hasattr(form, "subject") else None
         if request.form.get("button_pressed") == "preview":
@@ -802,12 +801,11 @@ def edit_service_template(service_id, template_id):
         template["subject"] = new_template_data["subject"]
     template["template_content"] = template["content"]
     if template.get("process_type") is None:
-        template["process_type"] = TemplateProcessTypes.BULK.value
+        template["process_type"] = "normal"
     form = form_objects[template["template_type"]](**template)
 
     if form.validate_on_submit():
-        # Do not abort if non-admin user saves an existing template
-        if form.process_type.data != TemplateProcessTypes.BULK.value and request.form.get("button_pressed") != "save":
+        if form.process_type.data != template["process_type"]:
             abort_403_if_not_admin_user()
 
         subject = form.subject.data if hasattr(form, "subject") else None
