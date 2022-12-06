@@ -494,7 +494,7 @@ def test_get_status_filters_constructs_links(client):
     ret = get_status_filters(Service({"id": "foo"}), "sms", STATISTICS)
 
     link = ret[0][2]
-    assert link == "/services/foo/notifications/sms?status={}".format(quote("sending,delivered,failed"))
+    assert link == "/services/foo/notifications/sms?status={}".format("sending,delivered,failed")
 
 
 def test_html_contains_notification_id(

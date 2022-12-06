@@ -85,14 +85,14 @@ def test_redirect_to_sign_in_if_logged_in_from_other_browser(
 
     response = logged_in_client.get(url_for("main.choose_account"))
     assert response.status_code == 302
-    assert response.location == url_for("main.sign_in", next="/accounts", _external=True)
+    assert response.location == url_for("main.sign_in", next="/accounts")
 
 
 def test_logged_in_user_redirects_to_account(client_request):
     client_request.get(
         "main.sign_in",
         _expected_status=302,
-        _expected_redirect=url_for("main.show_accounts_or_dashboard", _external=True),
+        _expected_redirect=url_for("main.show_accounts_or_dashboard"),
     )
 
 
@@ -133,7 +133,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
         data={"email_address": email_address, "password": password},
     )
     assert response.status_code == 302
-    assert response.location == url_for(".two_factor_sms_sent", _external=True)
+    assert response.location == url_for(".two_factor_sms_sent")
     mock_get_security_keys.assert_called_with(api_user_active["id"])
     mock_verify_password.assert_called_with(
         api_user_active["id"],
@@ -160,7 +160,6 @@ def test_sign_in_redirects_to_forced_password_reset(client, mocker, fake_uuid, a
 
     assert response.location == url_for(
         "main.forced_password_reset",
-        _external=True,
     )
 
 
@@ -271,7 +270,7 @@ def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login(
         data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
     )
     assert response.status_code == 302
-    assert response.location == url_for(".two_factor_email_sent", requires_email_login=True, _external=True)
+    assert response.location == url_for(".two_factor_email_sent", requires_email_login=True)
 
     mock_get_security_keys.assert_called_with(api_user_active["id"])
     mock_send_verify_code.assert_called_once_with(api_user_active["id"], "email", None, None)
@@ -302,7 +301,7 @@ def test_process_email_auth_sign_in_return_2fa_template(
         data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
     )
     assert response.status_code == 302
-    assert response.location == url_for(".two_factor_email_sent", _external=True)
+    assert response.location == url_for(".two_factor_email_sent")
     mock_register_email_login.assert_called_with(api_user_active_email_auth["id"])
     mock_send_verify_code.assert_called_with(api_user_active_email_auth["id"], "email", None, None)
     mock_verify_password.assert_called_with(
@@ -370,7 +369,7 @@ def test_should_attempt_redirect_when_user_is_pending(
             "password": "val1dPassw0rd!",
         },
     )
-    assert response.location == url_for("main.resend_email_verification", _external=True)
+    assert response.location == url_for("main.resend_email_verification")
     assert response.status_code == 302
 
 

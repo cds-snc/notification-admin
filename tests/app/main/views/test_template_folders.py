@@ -386,7 +386,7 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         template_type="email",
         template_folder_id=PARENT_FOLDER_ID,
         _data=data,
-        _expected_redirect=url_for("main.view_template", service_id=SERVICE_ONE_ID, template_id=fake_uuid, _external=True),
+        _expected_redirect=url_for("main.view_template", service_id=SERVICE_ONE_ID, template_id=fake_uuid),
     )
     mock_create_service_template.assert_called_once_with(
         data["name"],
@@ -671,7 +671,6 @@ def test_rename_folder(
             "main.choose_template",
             service_id=service_one["id"],
             template_folder_id=folder_id,
-            _external=True,
         ),
     )
 
@@ -743,7 +742,6 @@ def test_manage_folder_users(
             "main.choose_template",
             service_id=service_one["id"],
             template_folder_id=folder_id,
-            _external=True,
         ),
     )
 
@@ -800,7 +798,6 @@ def test_manage_folder_users_doesnt_change_permissions_current_user_cannot_manag
             "main.choose_template",
             service_id=service_one["id"],
             template_folder_id=folder_id,
-            _external=True,
         ),
     )
 
@@ -878,7 +875,6 @@ def test_delete_template_folder_should_detect_non_empty_folder_on_get(
             template_type="all",
             service_id=service_one["id"],
             template_folder_id=folder_id,
-            _external=True,
         ),
         _expected_status=302,
     )
@@ -913,7 +909,6 @@ def test_delete_folder(client_request, service_one, mock_get_template_folders, m
             "main.choose_template",
             service_id=service_one["id"],
             template_folder_id=parent_folder_id,
-            _external=True,
         ),
     )
 
@@ -1091,11 +1086,7 @@ def test_should_be_able_to_move_to_existing_folder(
             ],
         },
         _expected_status=302,
-        _expected_redirect=url_for(
-            "main.choose_template",
-            service_id=SERVICE_ONE_ID,
-            _external=True,
-        ),
+        _expected_redirect=url_for("main.choose_template", service_id=SERVICE_ONE_ID, _external=True),
     )
     mock_move_to_template_folder.assert_called_once_with(
         service_id=SERVICE_ONE_ID,
@@ -1317,12 +1308,7 @@ def test_new_folder_is_created_if_only_new_folder_is_filled_out(
         service_id=SERVICE_ONE_ID,
         _data=data,
         _expected_status=302,
-        _expected_redirect=url_for(
-            "main.choose_template",
-            service_id=service_one["id"],
-            template_folder_id=None,
-            _external=True,
-        ),
+        _expected_redirect=url_for("main.choose_template", service_id=service_one["id"], template_folder_id=None, _external=True),
     )
 
     assert mock_move_to_template_folder.called is False

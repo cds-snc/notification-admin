@@ -427,7 +427,6 @@ def test_caseworker_redirected_to_one_off(
             "main.send_one_off",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -454,7 +453,6 @@ def test_user_with_only_send_and_view_redirected_to_one_off(
             "main.send_one_off",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -1320,7 +1318,6 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
             ".view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
     mock_update_service_template.assert_called_with(
@@ -1529,7 +1526,6 @@ def test_removing_placeholders_is_not_a_breaking_change(
             "main.view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
     assert mock_update_service_template.called is True
@@ -1609,7 +1605,6 @@ def test_should_redirect_when_saving_a_template_email(
             ".view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
     mock_update_service_template.assert_called_with(
@@ -1652,7 +1647,6 @@ def test_should_redirect_when_previewing_a_template_email(
             ".preview_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -1720,7 +1714,6 @@ def test_preview_edit_button_should_redirect_to_edit_page(
             ".edit_service_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -1755,7 +1748,6 @@ def test_preview_edit_button_should_redirect_to_add_page(
             template_id=None,
             template_type="email",
             template_folder_id="",
-            _external=True,
         ),
     )
 
@@ -1828,7 +1820,6 @@ def test_preview_should_update_and_redirect_on_save(client_request, mock_update_
             ".view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
     mock_update_service_template.assert_called_with(
@@ -1861,7 +1852,6 @@ def test_preview_should_create_and_redirect_on_save(client_request, mock_create_
             ".view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
     mock_create_service_template.assert_called_with(
@@ -1994,7 +1984,6 @@ def test_should_redirect_when_deleting_a_template(
             ".choose_template",
             service_id=SERVICE_ONE_ID,
             template_folder_id=parent,
-            _external=True,
         ),
     )
 
@@ -2428,7 +2417,6 @@ def test_add_recipients_redirects_many_recipients(template_data, client_request,
             ".send_messages",
             service_id=SERVICE_ONE_ID,
             template_id=template_id,
-            _external=True,
         ),
     )
 
@@ -2459,6 +2447,5 @@ def test_add_recipients_redirects_one_recipient(template_type, template_data, cl
             service_id=SERVICE_ONE_ID,
             template_id=template_id,
             step_index=1,
-            _external=True,
         ),
     )

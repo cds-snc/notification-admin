@@ -62,4 +62,4 @@ def test_csrf_redirects_to_sign_in_page_if_not_signed_in(client, mocker):
     response = client.get("/accounts")
 
     assert response.status_code == 302
-    assert response.location == url_for("main.sign_in", next="/accounts", _external=True)
+    assert response.location == url_for("main.sign_in", next="/accounts")

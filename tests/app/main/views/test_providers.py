@@ -389,7 +389,7 @@ def test_should_update_provider_priority(
 
     app.provider_client.update_provider.assert_called_with(stub_provider["provider_details"]["id"], 2)
     assert response.status_code == 302
-    assert response.location == "http://localhost/providers"
+    assert response.location == "/providers"
 
 
 def test_should_show_provider_version_history(client, platform_admin_user, mocker):
