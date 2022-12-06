@@ -75,7 +75,7 @@ jobs:
         TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
 
     - name: Generate docker SBOM
-      uses: cds-snc/security-tools/.github/actions/generate-sbom@4c6b386722985552f3f008d04279a3f01402cc35 # renovate: tag=v1
+      uses: cds-snc/security-tools/.github/actions/generate-sbom@aa6a6b097e75fd2007aee070b89a8d03c955ac81 # v1
       with:
         dependency_track_api_key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
         docker_image: $DOCKER_SLUG:${GITHUB_SHA::7}
