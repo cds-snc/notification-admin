@@ -77,10 +77,7 @@ def test_find_users_by_email_validates_against_empty_search_submission(client_re
 def test_user_information_page_shows_information_about_user(client, platform_admin_user, mocker):
     mocker.patch(
         "app.user_api_client.get_user",
-        side_effect=[
-            platform_admin_user,
-            user_json(name="Apple Bloom", services=[1, 2], blocked=False),
-        ],
+        return_value=user_json(name="Apple Bloom", services=[1, 2]),
         autospec=True,
     )
 
@@ -120,10 +117,7 @@ def test_user_information_page_shows_information_about_user(client, platform_adm
 def test_user_information_page_shows_unblocked_user(client, platform_admin_user, mocker):
     mocker.patch(
         "app.user_api_client.get_user",
-        side_effect=[
-            platform_admin_user,
-            user_json(name="Blocked Apple Bloom", services=[1, 2], blocked=True),
-        ],
+        return_value=user_json(name="Blocked Apple Bloom", services=[1, 2], blocked=True),
         autospec=True,
     )
 
@@ -150,10 +144,7 @@ def test_user_information_page_shows_unblocked_user(client, platform_admin_user,
 def test_user_information_page_displays_if_there_are_failed_login_attempts(client, platform_admin_user, mocker):
     mocker.patch(
         "app.user_api_client.get_user",
-        side_effect=[
-            platform_admin_user,
-            user_json(name="Apple Bloom", failed_login_count=2, blocked=False),
-        ],
+        return_value=user_json(name="Apple Bloom", failed_login_count=2, blocked=False),
         autospec=True,
     )
 
