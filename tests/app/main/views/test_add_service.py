@@ -463,6 +463,7 @@ def test_non_safelist_user_cannot_access_create_service_page(
     mock_get_organisations,
 ):
     assert is_gov_user(api_nongov_user_active["email_address"]) is False
+    client_request.login(api_nongov_user_active)
     client_request.get(
         "main.add_service",
         _expected_status=403,
@@ -476,6 +477,7 @@ def test_non_safelist_user_cannot_create_service(
     mock_get_organisations,
 ):
     assert is_gov_user(api_nongov_user_active["email_address"]) is False
+    client_request.login(api_nongov_user_active)
     client_request.post(
         "main.add_service",
         _data={"name": "SERVICE TWO"},
