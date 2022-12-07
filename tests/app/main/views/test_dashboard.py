@@ -134,7 +134,7 @@ def test_redirect_from_old_dashboard(
     fake_uuid,
 ):
     mocker.patch("app.user_api_client.get_user", return_value=user)
-    expected_location = "http://localhost/services/{}".format(SERVICE_ONE_ID)
+    expected_location = "/services/{}".format(SERVICE_ONE_ID)
 
     response = logged_in_client.get("/services/{}/dashboard".format(SERVICE_ONE_ID))
 

@@ -221,9 +221,7 @@ def test_should_redirect_after_mobile_number_confirm(
         "main.user_profile_mobile_number_confirm",
         _data={"two_factor_code": "12345"},
         _expected_status=302,
-        _expected_redirect=url_for(
-            "main.user_profile",
-        ),
+        _expected_redirect=url_for("main.user_profile"),
     )
 
     # make sure the current_session_id has changed to what the API returned
