@@ -149,6 +149,7 @@ def test_redirect_caseworkers_to_templates(
     active_caseworking_user,
 ):
     mocker.patch("app.user_api_client.get_user", return_value=active_caseworking_user)
+    client_request.login(active_caseworking_user)
     client_request.get(
         "main.service_dashboard",
         service_id=SERVICE_ONE_ID,

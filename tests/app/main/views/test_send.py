@@ -261,7 +261,7 @@ def test_example_spreadsheet(
 def test_upload_files_in_different_formats(
     filename,
     acceptable_file,
-    logged_in_client,
+    client_request,
     service_one,
     mocker,
     mock_get_service_template,
@@ -269,7 +269,7 @@ def test_upload_files_in_different_formats(
     fake_uuid,
 ):
     with open(filename, "rb") as uploaded:
-        response = logged_in_client.post(
+        response = client_request.post(
             url_for(
                 "main.send_messages",
                 service_id=service_one["id"],
@@ -1014,6 +1014,7 @@ def test_send_test_step_redirects_if_session_not_setup(
         assert "recipient" not in session
         assert "placeholders" not in session
 
+    client_request.login(user)
     client_request.get(
         endpoint,
         service_id=SERVICE_ONE_ID,

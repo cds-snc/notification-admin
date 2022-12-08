@@ -147,6 +147,7 @@ def test_should_show_overview_page(
         ],
     )
 
+    client_request.login(current_user)
     page = client_request.get("main.manage_users", service_id=SERVICE_ONE_ID)
 
     assert normalize_spaces(page.select_one("h1").text) == "Team members"
@@ -182,6 +183,7 @@ def test_should_show_caseworker_on_overview_page(
         ],
     )
 
+    client_request.login(current_user)
     page = client_request.get("main.manage_users", service_id=SERVICE_ONE_ID)
 
     assert normalize_spaces(page.select_one("h1").text) == "Team members"
@@ -325,6 +327,8 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
     current_user = active_user_view_permissions
     mocker.patch("app.user_api_client.get_user", return_value=current_user)
     mocker.patch("app.models.user.Users.client", return_value=[current_user])
+
+    client_request.login(current_user)
     page = client_request.get("main.manage_users", service_id=service_one["id"])
     assert len(page.find_all("p")) == 1
     assert page.find_all("p")[0].text.strip() != "You should have at least two team members who can manage settings."

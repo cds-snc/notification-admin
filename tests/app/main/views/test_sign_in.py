@@ -40,12 +40,9 @@ def test_sign_in_explains_other_browser(logged_in_client, api_user_active, mocke
     with logged_in_client.session_transaction() as session:
         session["current_session_id"] = str(uuid.UUID(int=2))
 
-    response = logged_in_client.get(url_for("main.sign_in", next="/foo"))
+    page = logged_in_client.get("main.sign_in", next="/foo")
 
-    assert_str = "We signed you out because you signed in to GC Notify on another device"
-
-    assert response.status_code == 200
-    assert assert_str in response.get_data(as_text=True)
+    assert "We signed you out because you logged in to Notify on another device" in page.text
 
 
 def test_doesnt_redirect_to_sign_in_if_no_session_info(
@@ -75,17 +72,18 @@ def test_doesnt_redirect_to_sign_in_if_no_session_info(
         ),  # BAD - this person has just signed in on a different browser
     ],
 )
-def test_redirect_to_sign_in_if_logged_in_from_other_browser(
-    logged_in_client, api_user_active, mocker, db_sess_id, cookie_sess_id
-):
+def test_redirect_to_sign_in_if_logged_in_from_other_browser(client_request, api_user_active, mocker, db_sess_id, cookie_sess_id):
     api_user_active["current_session_id"] = db_sess_id
-    mocker.patch("app.user_api_client.get_user", return_value=api_user_active)
-    with logged_in_client.session_transaction() as session:
+
+    client_request.login(api_user_active)
+    with client_request.session_transaction() as session:
         session["current_session_id"] = str(cookie_sess_id)
 
-    response = logged_in_client.get(url_for("main.choose_account"))
-    assert response.status_code == 302
-    assert response.location == url_for("main.sign_in", next="/accounts")
+    client_request.get(
+        "main.choose_account",
+        _expected_status=302,
+        _expected_redirect=url_for("main.sign_in", next="/accounts"),
+    )
 
 
 def test_logged_in_user_redirects_to_account(client_request):
