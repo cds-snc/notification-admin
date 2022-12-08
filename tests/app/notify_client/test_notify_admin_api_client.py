@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 import pytest
 import werkzeug
+from flask import g
 
 from app.models.service import Service
 from app.notify_client import NotifyAdminAPIClient
@@ -31,7 +32,7 @@ def test_active_service_can_be_modified(app_, method, user, service):
 
     with app_.test_request_context() as request_context, app_.test_client() as client:
         client.login(user)
-        request_context.service = Service(service)
+        g.current_service = Service(service)
 
         with patch.object(api_client, "request") as request:
             ret = getattr(api_client, method)("url", "data")
@@ -47,7 +48,7 @@ def test_inactive_service_cannot_be_modified_by_normal_user(app_, api_user_activ
 
     with app_.test_request_context() as request_context, app_.test_client() as client:
         client.login(api_user_active)
-        request_context.service = Service(service_json(active=False))
+        g.current_service = Service(service_json(active=False))
 
         with patch.object(api_client, "request") as request:
             with pytest.raises(werkzeug.exceptions.Forbidden):
@@ -63,7 +64,7 @@ def test_inactive_service_can_be_modified_by_platform_admin(app_, platform_admin
 
     with app_.test_request_context() as request_context, app_.test_client() as client:
         client.login(platform_admin_user)
-        request_context.service = Service(service_json(active=False))
+        g.current_service = Service(service_json(active=False))
 
         with patch.object(api_client, "request") as request:
             ret = getattr(api_client, method)("url", "data")
@@ -128,7 +129,7 @@ def test_non_sensitive_logging_enabled_for_admin_users(app_, platform_admin_user
 
     with app_.test_request_context() as request_context, app_.test_client() as client:
         client.login(platform_admin_user)
-        request_context.service = Service(service_json(active=False))
+        g.current_service = Service(service_json(active=False))
 
         with patch.object(api_client, "request") as request:
             ret = getattr(api_client, method)("url", "data")
@@ -150,7 +151,7 @@ def test_sensitive_logging_enabled_for_admin_users(app_, platform_admin_user, me
 
     with app_.test_request_context() as request_context, app_.test_client() as client:
         client.login(platform_admin_user)
-        request_context.service = sensitive_service
+        g.current_service = sensitive_service
 
         with patch.object(api_client, "request") as request:
             ret = getattr(api_client, method)("url", "data")

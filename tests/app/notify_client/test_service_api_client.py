@@ -2,9 +2,11 @@ from unittest.mock import call
 from uuid import uuid4
 
 import pytest
+from flask import g
 from freezegun import freeze_time
 
 from app import invite_api_client, service_api_client, user_api_client
+from app.models.service import Service
 from app.notify_client.service_api_client import ServiceAPIClient
 from tests.conftest import SERVICE_ONE_ID
 
@@ -387,6 +389,8 @@ def test_deletes_service_cache(
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
     mock_request = mocker.patch("notifications_python_client.base.BaseAPIClient.request")
 
+    # set this to avoid the issue that our test isn't running in a real request and therefore this value won't be set
+    g.current_service = None
     getattr(client, method)(*extra_args, **extra_kwargs)
 
     assert call("service-{}".format(SERVICE_ONE_ID)) in mock_redis_delete.call_args_list
@@ -462,6 +466,8 @@ def test_deletes_caches_when_modifying_templates(
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
     mock_request = mocker.patch("notifications_python_client.base.BaseAPIClient.request")
 
+    # set this to avoid the issue that our test isn't running in a real request and therefore this value won't be set
+    g.current_service = None
     getattr(service_api_client, method)(*extra_args)
 
     assert mock_redis_delete.call_args_list == list(map(call, expected_cache_deletes))
