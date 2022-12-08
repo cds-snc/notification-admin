@@ -149,7 +149,7 @@ def test_should_add_user_details_to_session(
     email_address,
 ):
     client_request.logout()
-    response = client_request.post(
+    client_request.post(
         "main.register",
         _data={
             "name": "Test Codes",
@@ -158,7 +158,6 @@ def test_should_add_user_details_to_session(
             "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
         },
     )
-    # assert response.status_code == 302
     with client_request.session_transaction() as session:
         assert session["user_details"]["email"] == email_address
 

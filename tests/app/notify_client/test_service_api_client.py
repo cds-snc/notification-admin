@@ -6,7 +6,6 @@ from flask import g
 from freezegun import freeze_time
 
 from app import invite_api_client, service_api_client, user_api_client
-from app.models.service import Service
 from app.notify_client.service_api_client import ServiceAPIClient
 from tests.conftest import SERVICE_ONE_ID
 

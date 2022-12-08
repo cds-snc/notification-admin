@@ -30,7 +30,7 @@ def test_active_service_can_be_modified(app_, method, user, service):
     api_client = NotifyAdminAPIClient()
     api_client.init_app(app_)
 
-    with app_.test_request_context() as request_context, app_.test_client() as client:
+    with app_.test_request_context(), app_.test_client() as client:
         client.login(user)
         g.current_service = Service(service)
 
@@ -46,7 +46,7 @@ def test_inactive_service_cannot_be_modified_by_normal_user(app_, api_user_activ
     api_client = NotifyAdminAPIClient()
     api_client.init_app(app_)
 
-    with app_.test_request_context() as request_context, app_.test_client() as client:
+    with app_.test_request_context(), app_.test_client() as client:
         client.login(api_user_active)
         g.current_service = Service(service_json(active=False))
 
@@ -62,7 +62,7 @@ def test_inactive_service_can_be_modified_by_platform_admin(app_, platform_admin
     api_client = NotifyAdminAPIClient()
     api_client.init_app(app_)
 
-    with app_.test_request_context() as request_context, app_.test_client() as client:
+    with app_.test_request_context(), app_.test_client() as client:
         client.login(platform_admin_user)
         g.current_service = Service(service_json(active=False))
 
@@ -127,7 +127,7 @@ def test_non_sensitive_logging_enabled_for_admin_users(app_, platform_admin_user
     api_client = NotifyAdminAPIClient()
     api_client.init_app(app_)
 
-    with app_.test_request_context() as request_context, app_.test_client() as client:
+    with app_.test_request_context(), app_.test_client() as client:
         client.login(platform_admin_user)
         g.current_service = Service(service_json(active=False))
 
@@ -149,7 +149,7 @@ def test_sensitive_logging_enabled_for_admin_users(app_, platform_admin_user, me
     with set_config(app_, "SENSITIVE_SERVICES", "222, ss1111,33333"):
         api_client.init_app(app_)
 
-    with app_.test_request_context() as request_context, app_.test_client() as client:
+    with app_.test_request_context(), app_.test_client() as client:
         client.login(platform_admin_user)
         g.current_service = sensitive_service
 
