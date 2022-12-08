@@ -1,5 +1,4 @@
 import requests_mock
-
 from flask import current_app
 
 from app.articles import api
