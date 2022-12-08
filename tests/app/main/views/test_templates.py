@@ -779,28 +779,27 @@ def test_should_show_sms_template_with_downgraded_unicode_characters(
 
 
 def test_should_show_page_template_with_priority_select_if_platform_admin(
-    platform_admin_client,
+    client_request,
     platform_admin_user,
     mocker,
     mock_get_service_template,
     service_one,
     fake_uuid,
 ):
+
     mocker.patch("app.user_api_client.get_users_for_service", return_value=[platform_admin_user])
     template_id = fake_uuid
-    response = platform_admin_client.get(
-        url_for(
-            ".edit_service_template",
-            service_id=service_one["id"],
-            template_id=template_id,
-        )
+    client_request.login(platform_admin_user)
+    page = client_request.get(
+        ".edit_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=template_id,
     )
 
-    assert response.status_code == 200
-    assert "Two week reminder" in response.get_data(as_text=True)
-    assert "Template &lt;em&gt;content&lt;/em&gt; with &amp; entity" in response.get_data(as_text=True)
-    assert "Choose a priority queue" in response.get_data(as_text=True)
-    mock_get_service_template.assert_called_with(service_one["id"], template_id, None)
+    assert page.select_one("input[type=text]")["value"] == "Two week reminder"
+    assert "Template &lt;em&gt;content&lt;/em&gt; with &amp; entity" in str(page.select_one("textarea"))
+    assert "Choose a priority queue" in str(page.select_one("main"))
+    mock_get_service_template.assert_called_with(SERVICE_ONE_ID, template_id, None)
 
 
 @pytest.mark.parametrize("filetype", ["pdf", "png"])
