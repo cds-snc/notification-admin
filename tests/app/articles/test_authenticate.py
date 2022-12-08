@@ -1,4 +1,3 @@
-import pytest
 import requests_mock
 
 from flask import current_app
