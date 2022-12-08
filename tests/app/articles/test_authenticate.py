@@ -1,10 +1,13 @@
+import pytest
 import requests_mock
+
 from flask import current_app
 
 from app.articles import api
 
 
-def test_authenticate_success(app_):
+def test_authenticate_success(app_, mocker):
+    mocker.patch("app.articles.api.validate_token", return_value=False)
     with app_.app_context():
         base_endpoint = current_app.config["GC_ARTICLES_API"]
 
@@ -32,7 +35,8 @@ def test_authenticate_success(app_):
             assert mock.request_history[0].url == endpoint
 
 
-def test_authenticate_bad_credentials(app_):
+def test_authenticate_bad_credentials(app_, mocker):
+    mocker.patch("app.articles.api.validate_token", return_value=False)
     with app_.app_context():
         base_endpoint = current_app.config["GC_ARTICLES_API"]
         auth_endpoint = api.GC_ARTICLES_AUTH_API_ENDPOINT
