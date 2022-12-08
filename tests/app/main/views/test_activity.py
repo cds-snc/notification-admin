@@ -1,7 +1,7 @@
 import json
 import uuid
 from functools import partial
-from urllib.parse import parse_qs, quote, urlparse
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 from flask import url_for
