@@ -200,7 +200,7 @@ def test_task_shortcuts_are_visible_based_on_permissions(
     [
         ("http://localhost:6012", True),
         ("https://staging.notification.cdssandbox.xyz", True),
-        ("https://notification.canada.ca", False),
+        ("https://notification.canada.ca", True),
     ],
 )
 def test_survey_widget_presence(
