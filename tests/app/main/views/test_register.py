@@ -133,7 +133,7 @@ def test_should_return_200_when_email_is_not_gov_uk(
     "email_address",
     (
         "notfound@example.canada.ca",
-        pytest.param("example@lsquo.net", marks=pytest.mark.xfail(raises=AssertionError)),
+        "example@lsquo.net",
         pytest.param("example@ellipsis.com", marks=pytest.mark.xfail(raises=AssertionError)),
     ),
 )
