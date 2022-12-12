@@ -1534,6 +1534,18 @@ def active_user_empty_permissions(fake_uuid):
     return user_data
 
 
+@pytest.fixture(scope="function")
+def mock_get_scheduled_job_stats(mocker, api_user_active):
+    return mocker.patch(
+        "app.job_api_client.get_scheduled_job_stats",
+        return_value={
+            # These values match the return value of `mock_get_jobs`
+            "count": 2,
+            "soonest_scheduled_for": "2016-01-01 11:09:00",
+        },
+    )
+
+
 @pytest.fixture
 def active_user_manage_template_permission(fake_uuid):
     return {
