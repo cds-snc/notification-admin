@@ -1498,8 +1498,6 @@ def test_should_show_interstitial_when_making_breaking_change(
     )
 
 
-# TODO: fix flakiness
-@pytest.mark.skip()
 def test_removing_placeholders_is_not_a_breaking_change(
     client_request,
     mock_get_service_email_template,
@@ -1572,8 +1570,6 @@ def test_should_not_update_too_big_template(
     assert "Content has a character count greater than the limit of 459" in page.text
 
 
-# TODO: fix flakiness
-@pytest.mark.skip()
 def test_should_redirect_when_saving_a_template_email(
     client_request,
     mock_get_service_email_template,
@@ -1616,8 +1612,6 @@ def test_should_redirect_when_saving_a_template_email(
     )
 
 
-# TODO: fix flakiness
-@pytest.mark.skip()
 def test_should_redirect_when_previewing_a_template_email(
     client_request,
     mock_get_service_email_template,
