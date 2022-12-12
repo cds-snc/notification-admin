@@ -35,7 +35,6 @@ def test_sign_in_explains_session_timeout(client):
 
 def test_sign_in_explains_other_browser(client_request, api_user_active, mocker):
     api_user_active["current_session_id"] = str(uuid.UUID(int=1))
-    # mocker.patch("app.user_api_client.get_user", return_value=api_user_active)
 
     client_request.login(api_user_active)
     with client_request.session_transaction() as session:
