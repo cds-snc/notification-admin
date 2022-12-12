@@ -254,8 +254,6 @@ def test_example_spreadsheet(
     assert normalize_spaces(page.select_one("tbody tr").text) == ("1 phone number name date")
 
 
-# TODO: fix this test
-@pytest.mark.skip()
 @pytest.mark.parametrize(
     "filename, acceptable_file, expected_status",
     list(zip(test_spreadsheet_files, repeat(True), repeat(302)))
