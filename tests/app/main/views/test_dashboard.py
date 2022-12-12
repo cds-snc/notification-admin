@@ -415,7 +415,6 @@ def test_monthly_has_equal_length_tables(
     assert page.select_one(".table-field-headings th").get("width") == "33%"
 
 
-@pytest.mark.skip("Flaky test")
 @freeze_time("2016-01-01 11:09:00.061258")
 # This test assumes EST
 def test_should_show_upcoming_jobs_on_dashboard(
@@ -432,7 +431,7 @@ def test_should_show_upcoming_jobs_on_dashboard(
         service_id=SERVICE_ONE_ID,
     )
 
-    second_call = mock_get_jobs.call_args_list[0]
+    second_call = mock_get_jobs.call_args_list[1]
     assert second_call[0] == (SERVICE_ONE_ID,)
     assert second_call[1]["statuses"] == ["scheduled"]
 
@@ -679,7 +678,7 @@ def test_should_show_recent_jobs_on_dashboard(
         service_id=SERVICE_ONE_ID,
     )
 
-    third_call = mock_get_jobs.call_args_list[1]
+    third_call = mock_get_jobs.call_args_list[2]
     assert third_call[0] == (SERVICE_ONE_ID,)
     assert third_call[1]["limit_days"] == 7
     assert "scheduled" not in third_call[1]["statuses"]
