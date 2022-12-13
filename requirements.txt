@@ -46,8 +46,7 @@ awscli-cwlogs>=1.4.6,<1.5
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous==2.1.2  # pyup: <1.0.0
 
-#git+https://github.com/cds-snc/notifier-utils.git@50.0.0#egg=notifications-utils
-git+https://github.com/cds-snc/notifier-utils.git@renovate/all-minor#egg=notifications-utils # temporarily adding the upgraded utils all-minor PR
+git+https://github.com/cds-snc/notifier-utils.git@50.1.0#egg=notifications-utils
 
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
 
