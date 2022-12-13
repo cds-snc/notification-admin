@@ -91,7 +91,7 @@ csrf = CSRFProtect()
 current_service: Service = LocalProxy(lambda: g.current_service)  # type: ignore
 
 # The current organisation attached to the request stack.
-current_organisation = LocalProxy(lambda: g.current_organisation)
+current_organisation: Organisation = LocalProxy(lambda: g.current_organisation)
 
 navigation = {
     "header_navigation": HeaderNavigation(),
