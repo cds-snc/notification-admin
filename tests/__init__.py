@@ -10,6 +10,7 @@ from flask import url_for
 from flask.testing import FlaskClient
 from flask_login import login_user
 
+from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.user import User
 
@@ -286,7 +287,7 @@ def template_json(
     subject=None,
     version=1,
     archived=False,
-    process_type="normal",
+    process_type=TemplateProcessTypes.BULK.value,
     redact_personalisation=None,
     service_letter_contact=None,
     reply_to=None,
