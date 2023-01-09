@@ -806,8 +806,7 @@ def edit_service_template(service_id, template_id):
     form = form_objects[template["template_type"]](**template)
 
     if form.validate_on_submit():
-        # Do not abort if non-admin user saves an existing template
-        if form.process_type.data != TemplateProcessTypes.BULK.value and request.form.get("button_pressed") != "save":
+        if form.process_type.data != template["process_type"]:
             abort_403_if_not_admin_user()
 
         subject = form.subject.data if hasattr(form, "subject") else None

@@ -65,7 +65,7 @@ class TestRedisPreviewUtilities:
             "template_content": "test content",
             "subject": "test subject",
             "template_type": "email",
-            "process_type": "normal",
+            "process_type": DEFAULT_PROCESS_TYPE,
             "id": fake_uuid,
             "folder": None,
             "reply_to_text": "reply@go.com",
@@ -89,7 +89,7 @@ class TestRedisPreviewUtilities:
             "template_content": "test content",
             "subject": "test subject",
             "template_type": "email",
-            "process_type": "normal",
+            "process_type": DEFAULT_PROCESS_TYPE,
             "id": fake_uuid,
             "folder": None,
             "reply_to_text": "reply@go.com",
@@ -1289,7 +1289,7 @@ def test_should_redirect_when_saving_a_template(
         content,
         SERVICE_ONE_ID,
         None,
-        TemplateProcessTypes.BULK.value,
+        DEFAULT_PROCESS_TYPE,
     )
 
 
@@ -1808,7 +1808,7 @@ def test_preview_should_update_and_redirect_on_save(client_request, mock_update_
         "content": "test content",
         "subject": "test subject",
         "template_type": "email",
-        "process_type": "normal",
+        "process_type": DEFAULT_PROCESS_TYPE,
         "id": fake_uuid,
     }
     mocker.patch(
@@ -1832,7 +1832,7 @@ def test_preview_should_update_and_redirect_on_save(client_request, mock_update_
         ),
     )
     mock_update_service_template.assert_called_with(
-        fake_uuid, "test name", "email", "test content", SERVICE_ONE_ID, "test subject", "normal"
+        fake_uuid, "test name", "email", "test content", SERVICE_ONE_ID, "test subject", DEFAULT_PROCESS_TYPE
     )
 
 
@@ -1842,7 +1842,7 @@ def test_preview_should_create_and_redirect_on_save(client_request, mock_create_
         "content": "test content",
         "subject": "test subject",
         "template_type": "email",
-        "process_type": "normal",
+        "process_type": DEFAULT_PROCESS_TYPE,
         "folder": None,
     }
     mocker.patch(
@@ -1865,7 +1865,7 @@ def test_preview_should_create_and_redirect_on_save(client_request, mock_create_
         ),
     )
     mock_create_service_template.assert_called_with(
-        "test name", "email", "test content", SERVICE_ONE_ID, "test subject", "normal", None
+        "test name", "email", "test content", SERVICE_ONE_ID, "test subject", DEFAULT_PROCESS_TYPE, None
     )
 
 
@@ -2200,7 +2200,7 @@ def test_should_not_create_sms_template_with_emoji(
             "template_content": "here are some noodles 🍜",
             "template_type": "sms",
             "service": SERVICE_ONE_ID,
-            "process_type": "normal",
+            "process_type": DEFAULT_PROCESS_TYPE,
         },
         _expected_status=200,
     )
@@ -2224,7 +2224,7 @@ def test_should_not_update_sms_template_with_emoji(
             "template_content": "here's a burger 🍔",
             "service": SERVICE_ONE_ID,
             "template_type": "sms",
-            "process_type": "normal",
+            "process_type": DEFAULT_PROCESS_TYPE,
         },
         _expected_status=200,
     )
