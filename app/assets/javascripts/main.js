@@ -155,7 +155,7 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
     }
     return null;
   };
-}.call(this));
+}).call(this);
 (function () {
   "use strict";
   var root = this || window;
@@ -164,7 +164,7 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
   }
 
   GOVUK.addCookieMessage = function () {};
-}.call(this));
+}).call(this);
 (function () {
   "use strict";
 
@@ -215,4 +215,4 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
       });
     }
   }
-}.call(this));
+}).call(this);
