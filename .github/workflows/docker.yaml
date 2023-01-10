@@ -74,13 +74,13 @@ jobs:
       env:
         TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
 
-    - name: Generate docker SBOM
-      uses: cds-snc/security-tools/.github/actions/generate-sbom@4c6b386722985552f3f008d04279a3f01402cc35 # renovate: tag=v1
+    - name: Docker generate SBOM
+      uses: cds-snc/security-tools/.github/actions/generate-sbom@a38917b147dfc8f086abcf81529e3c12f26529b8 # v2.1.0
       with:
-        dependency_track_api_key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
-        docker_image: $DOCKER_SLUG:${GITHUB_SHA::7}
-        project_name: notification-admin/docker
-        project_type: docker
+        docker_image: "${{ env.DOCKER_SLUG }}:latest"
+        dockerfile_path: "ci/Dockerfile"
+        sbom_name: "notification-admin"
+        token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Run scan websites
       run: |
