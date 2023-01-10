@@ -15,7 +15,7 @@ extra_keys_in_app = set(
         "Your service already uses ",  # api
         "Code not found",  # api
         "Code already sent, wait 10 seconds",  # api
-        "You cannot delete a default email reply to address",  # api
+        "You cannot delete a default email reply to address if other reply to addresses exist",  # api
         "Code has expired",  # api
         "Code already sent",  # api
         "Code has already been used",  # api

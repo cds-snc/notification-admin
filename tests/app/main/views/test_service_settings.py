@@ -8,6 +8,7 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
+from pytest_mock import MockerFixture
 
 import app
 from app.utils import email_safe
@@ -2086,35 +2087,22 @@ def test_edit_reply_to_email_address_goes_straight_to_update_if_address_not_chan
 
 
 @pytest.mark.parametrize(
-    "sender_details, expected_link_text, partial_href",
-    [
-        (
-            create_reply_to_email_address(is_default=False),
-            "Delete",
-            partial(
-                url_for,
-                "main.service_confirm_delete_email_reply_to",
-                reply_to_email_id=sample_uuid(),
-            ),
-        ),
-        (
-            create_reply_to_email_address(),
-            None,
-            None,
-        ),
-    ],
+    "sender_details",
+    [create_reply_to_email_address(is_default=False), create_reply_to_email_address()],
 )
-def test_shows_delete_link_for_email_reply_to_address(
-    mocker,
+def test_always_shows_delete_link_for_email_reply_to_address(
+    mocker: MockerFixture,
     sender_details,
-    expected_link_text,
-    partial_href,
     fake_uuid,
     client_request,
 ):
 
     mocker.patch("app.service_api_client.get_reply_to_email_address", return_value=sender_details)
-
+    partial_href = partial(
+        url_for,
+        "main.service_confirm_delete_email_reply_to",
+        reply_to_email_id=sample_uuid(),
+    )
     page = client_request.get(
         "main.service_edit_email_reply_to",
         service_id=SERVICE_ONE_ID,
@@ -2127,12 +2115,9 @@ def test_shows_delete_link_for_email_reply_to_address(
         service_id=SERVICE_ONE_ID,
     )
 
-    if expected_link_text:
-        link = page.select_one(".page-footer a")
-        assert normalize_spaces(link.text) == expected_link_text
-        assert link["href"] == partial_href(service_id=SERVICE_ONE_ID)
-    else:
-        assert not page.select(".page-footer a")
+    link = page.select_one(".page-footer a")
+    assert normalize_spaces(link.text) == "Delete"
+    assert link["href"] == partial_href(service_id=SERVICE_ONE_ID)
 
 
 def test_confirm_delete_reply_to_email_address(fake_uuid, client_request, get_non_default_reply_to_email_address):
@@ -2151,12 +2136,34 @@ def test_confirm_delete_reply_to_email_address(fake_uuid, client_request, get_no
     assert page.select_one(".banner-dangerous form")["method"] == "post"
 
 
+def test_confirm_delete_default_reply_to_email_address(
+    mocker: MockerFixture, fake_uuid, client_request, get_default_reply_to_email_address
+):
+    reply_tos = create_multiple_email_reply_to_addresses()
+    reply_to_for_deletion = reply_tos[1]
+    mocker.patch("app.models.service.Service.count_email_reply_to_addresses", len(reply_tos))
+    mocker.patch("app.models.service.Service.email_reply_to_addresses", reply_tos)
+    mocker.patch("app.models.service.Service.get_email_reply_to_address", return_value=reply_to_for_deletion)
+    page = client_request.get(
+        "main.service_confirm_delete_email_reply_to",
+        service_id=SERVICE_ONE_ID,
+        reply_to_email_id=reply_to_for_deletion["id"],
+        _test_page_title=False,
+    )
+
+    assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
+        "Are you sure you want to delete this reply-to email address? " "Yes, delete"
+    )
+    assert "action" not in page.select_one(".banner-dangerous form")
+    assert page.select_one(".banner-dangerous form")["method"] == "post"
+
+
 def test_delete_reply_to_email_address(
-    client_request,
+    client_request: ClientRequest,
     service_one,
     fake_uuid,
     get_non_default_reply_to_email_address,
-    mocker,
+    mocker: MockerFixture,
 ):
     mock_delete = mocker.patch("app.service_api_client.delete_reply_to_email_address")
     client_request.post(
@@ -2170,6 +2177,34 @@ def test_delete_reply_to_email_address(
         ),
     )
     mock_delete.assert_called_once_with(service_id=SERVICE_ONE_ID, reply_to_email_id=fake_uuid)
+
+
+def test_delete_default_reply_to_email_address_switches_default(
+    client_request: ClientRequest, mocker: MockerFixture, service_one
+):
+    mock_delete = mocker.patch("app.service_api_client.delete_reply_to_email_address")
+    mock_update = mocker.patch("app.service_api_client.update_reply_to_email_address")
+    reply_to_1 = create_reply_to_email_address(service_id=service_one["id"], email_address="default@example.com", is_default=True)
+    reply_to_2 = create_reply_to_email_address(service_id=service_one["id"], email_address="test@example.com", is_default=False)
+    mocker.patch("app.models.service.Service.get_email_reply_to_address", return_value=reply_to_1)
+    mocker.patch("app.models.service.Service.count_email_reply_to_addresses", 2)
+    mocker.patch("app.models.service.Service.email_reply_to_addresses", [reply_to_1, reply_to_2])
+    client_request.post(
+        ".service_delete_email_reply_to",
+        service_id=service_one["id"],
+        reply_to_email_id=reply_to_1["id"],
+        _expected_redirect=url_for(
+            "main.service_email_reply_to",
+            service_id=service_one["id"],
+            _external=True,
+        ),
+    )
+
+    mock_update.assert_called_once_with(
+        service_one["id"], email_address=reply_to_2["email_address"], reply_to_email_id=reply_to_2["id"], is_default=True
+    )
+
+    mock_delete.assert_called_once_with(service_id=service_one["id"], reply_to_email_id=reply_to_1["id"])
 
 
 @pytest.mark.parametrize(

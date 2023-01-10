@@ -6,17 +6,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+    - name: Set up Python 3.10
+      uses: actions/setup-python@13ae5bb136fac2878aff31522b9efb785519f984 # v4.3.0
       with:
-        python-version: 3.9
+        python-version: '3.10'
 
     - name: Upgrade pip
       run: python -m pip install --upgrade pip
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
@@ -37,7 +37,7 @@ jobs:
         cp version.py "${{ github.workspace }}/app/"
 
     - name: Copy site-packages in workspace
-      working-directory: /opt/hostedtoolcache/Python/${{ env.python_version }}/x64/lib/python3.9/
+      working-directory: /opt/hostedtoolcache/Python/${{ env.python_version }}/x64/lib/python3.10/
       shell: bash
       run: |
         mkdir -p "${{ github.workspace }}/env/" && cp -fR site-packages "${{ github.workspace }}/env/"
@@ -53,7 +53,7 @@ jobs:
         echo "PYTHONPATH=/github/workspace/env/site-packages:${{ env.PYTHONPATH}}" >> $GITHUB_ENV
 
     - name: Checks for new endpoints against AWS WAF rules
-      uses: cds-snc/notification-utils/.github/actions/waffles@main
+      uses: cds-snc/notification-utils/.github/actions/waffles@d70335dbab2a1a6f12de99f9256b179312e2aef5 # 49.1.0
       with:
         app-loc: '/github/workspace'
         app-libs: '/github/workspace/env/site-packages'

@@ -19,9 +19,8 @@ pyexcel-xlsx==0.6.0
 pyexcel-ods3==0.6.0
 pytz==2021.1
 gunicorn==20.1.0
-eventlet==0.30.2
+gevent==22.10.2
 notifications-python-client==6.0.2
-sentry-sdk[flask]==1.0.0
 
 Babel==2.9.1
 boto3==1.17.58
@@ -36,7 +35,7 @@ user-agents==2.2.0
 WTForms==3.0.0a1
 email-validator==1.1.2
 Werkzeug==2.0.2
-greenlet==1.1.2
+greenlet==2.0.0
 mixpanel==4.9.0
 redis==3.5.3 # pinned for now
 
@@ -46,7 +45,7 @@ awscli-cwlogs>=1.4.6,<1.5
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous==2.0.1  # pyup: <1.0.0
 
-git+https://github.com/cds-snc/notifier-utils.git@49.1.0#egg=notifications-utils
+git+https://github.com/cds-snc/notifier-utils.git@50.0.0#egg=notifications-utils
 
 rsa>=4.1 # not directly required, pinned by Snyk to avoid a vulnerability
 
@@ -59,7 +58,7 @@ certifi==2022.9.24
 chardet==4.0.0
 click==8.1.3
 colorama==0.4.3
-dnspython==1.16.0
+dnspython==2.2.1
 docopt==0.6.2
 docutils==0.15.2
 et-xmlfile==1.1.0
@@ -71,12 +70,12 @@ jmespath==0.10.0
 lml==0.1.0
 lxml==4.9.1
 MarkupSafe==2.0.1
-marshmallow==3.18.0
+marshmallow==3.19.0
 mistune==0.8.4
 openpyxl==3.0.10
-orderedset==2.0.3
+ordered-set==4.1.0
 packaging==21.3
-phonenumbers==8.12.56
+phonenumbers==8.12.57
 py-w3c==0.3.1
 pyasn1==0.4.8
 pyexcel-ezodf==0.3.4
@@ -90,8 +89,10 @@ s3transfer==0.4.2
 six==1.16.0
 smartypants==2.0.1
 statsd==3.3.0
-texttable==1.6.4
-urllib3==1.26.12
+texttable==1.6.7
+urllib3==1.26.13
 webencodings==0.5.1
 xlrd==1.2.0
 xlwt==1.3.0
+zope.event==4.5.0
+zope.interface==5.5.2

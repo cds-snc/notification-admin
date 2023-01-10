@@ -12,7 +12,7 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-from typing import Any
+from typing import Any, List
 
 import boto3
 import dateutil
@@ -39,13 +39,14 @@ from notifications_utils.timezones import (
     convert_utc_to_est,
     utc_string_to_aware_gmt_datetime,
 )
-from orderedset._orderedset import OrderedSet
+from ordered_set import OrderedSet
 from werkzeug.datastructures import MultiDict
 from werkzeug.routing import RequestRedirect
 
 from app import cache
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
+from app.types import EmailReplyTo
 
 SENDING_STATUSES = ["created", "pending", "sending", "pending-virus-check"]
 DELIVERED_STATUSES = ["delivered", "sent", "returned-letter"]
@@ -816,3 +817,12 @@ def _constructLoginData(request):
         "user-agent": request.headers["User-Agent"],
         "location": _geolocate_ip(get_remote_addr(request)),
     }
+
+
+def get_new_default_reply_to_address(email_reply_tos: List[EmailReplyTo], default_email_reply_to: EmailReplyTo):
+    non_default_reply_tos = [
+        reply_to for reply_to in email_reply_tos if reply_to["email_address"] != default_email_reply_to["email_address"]
+    ]
+    if len(non_default_reply_tos) < 1:
+        return None
+    return non_default_reply_tos[0]

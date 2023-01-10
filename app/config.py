@@ -95,7 +95,7 @@ class Config(object):
     NOTIFY_SERVICE_ID = "d6aa2c68-a2d9-4437-ab19-3ae8eb202553"
     NOTIFY_TEMPLATE_PREFILL_SERVICE_ID = "93305b36-b0a0-4a34-9ab2-c1b7bb5ca489"
     NOTIFY_USER_ID = "6af522d0-2915-4e52-83a3-3690455a5fe6"
-    PERMANENT_SESSION_LIFETIME = 20 * 60 * 60  # 20 hours
+    PERMANENT_SESSION_LIFETIME = 8 * 60 * 60  # 8 hours
 
     REDIS_URL = os.environ.get("REDIS_URL")
     REDIS_ENABLED = env.bool("REDIS_ENABLED", False)
