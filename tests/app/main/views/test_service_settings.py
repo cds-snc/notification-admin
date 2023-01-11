@@ -622,10 +622,10 @@ def test_show_restricted_service(
 @pytest.mark.parametrize(
     "current_limit, expected_limit, current_sms_limit, expected_sms_limit",
     [
-        (42, 10_000, 33, 50),
+        (42, 10_000, 33, 1000),
         # Maps to DEFAULT_SERVICE_LIMIT and DEFAULT_LIVE_SERVICE_LIMIT in config
-        (50, 10_000, 50, 50),
-        (50_000, 10_000, 3000, 50),
+        (50, 10_000, 50, 1000),
+        (50_000, 10_000, 3000, 1000),
     ],
 )
 def test_switch_service_to_live(

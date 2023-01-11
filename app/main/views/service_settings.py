@@ -371,6 +371,7 @@ def service_switch_live(service_id):
 
         if live:
             message_limit = current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"]
+            sms_daily_limit = current_app.config["DEFAULT_LIVE_SMS_DAILY_LIMIT"]
 
         flash(_("An email has been sent to service users"), "default_with_tick")
 
