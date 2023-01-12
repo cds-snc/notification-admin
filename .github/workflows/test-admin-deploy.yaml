@@ -3,7 +3,12 @@ name: Deploy test admin environment
 on:
   pull_request:
     branches:
-      - main
+      - main  
+    types:
+      - labeled
+      - opened
+      - reopened
+      - synchronize
 
 env:
   AWS_DEFAULT_REGION: ca-central-1
@@ -14,6 +19,7 @@ env:
 
 jobs:
   build-and-push-container:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'Renovate') }}
     runs-on: ubuntu-latest
     steps:
       - name: Set envs
@@ -81,6 +87,7 @@ jobs:
         run: docker logout $REGISTRY
 
   deploy-test-admin:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'Renovate') }}
     runs-on: ubuntu-latest
     needs: build-and-push-container
     steps:
