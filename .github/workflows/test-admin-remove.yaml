@@ -4,7 +4,8 @@ on:
   pull_request:
     branches:
       - main  
-    types: [closed]
+    types:
+      - closed
 
 env:
   AWS_DEFAULT_REGION: ca-central-1
@@ -15,6 +16,7 @@ env:
 
 jobs:
   remove-test-admin:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'Renovate') }}
     runs-on: ubuntu-latest
     steps:
       - name: Set envs
