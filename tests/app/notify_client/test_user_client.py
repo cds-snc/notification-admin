@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from unittest.mock import call
 
 import pytest
+from flask import g
 from freezegun import freeze_time
 
 from app import invite_api_client, service_api_client, user_api_client
@@ -202,6 +203,7 @@ def test_returns_value_from_cache(
 def test_deletes_user_cache(
     app_,
     mock_get_user,
+    service_one,
     mocker,
     client,
     method,
@@ -212,6 +214,7 @@ def test_deletes_user_cache(
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
     mock_request = mocker.patch("notifications_python_client.base.BaseAPIClient.request")
 
+    g.current_service = None
     getattr(client, method)(*extra_args, **extra_kwargs)
 
     assert call("user-{}".format(user_id)) in mock_redis_delete.call_args_list

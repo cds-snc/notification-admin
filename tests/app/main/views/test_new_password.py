@@ -71,7 +71,7 @@ def test_should_redirect_to_two_factor_when_password_reset_is_successful(
         data={"new_password": "a-new_password"},
     )
     assert response.status_code == 302
-    assert response.location == url_for(".two_factor_sms_sent", _external=True)
+    assert response.location == url_for(".two_factor_sms_sent")
     mock_get_user_by_email_request_password_reset.assert_called_once_with(user["email_address"])
 
 
@@ -91,7 +91,7 @@ def test_should_redirect_index_if_user_has_already_changed_password(
         data={"new_password": "a-new_password"},
     )
     assert response.status_code == 302
-    assert response.location == url_for(".index", _external=True)
+    assert response.location == url_for(".index")
     mock_get_user_by_email_user_changed_password.assert_called_once_with(user["email_address"])
 
 
@@ -123,7 +123,7 @@ def test_should_redirect_to_forgot_password_with_flash_message_when_token_is_exp
     response = client.get(url_for_endpoint_with_token(".new_password", token=token))
 
     assert response.status_code == 302
-    assert response.location == url_for(".forgot_password", _external=True)
+    assert response.location == url_for(".forgot_password")
     if password_expired:
         with client_request.session_transaction() as session:
             assert session["reset_email_address"] == sample_user["email_address"]
@@ -151,7 +151,7 @@ def test_should_sign_in_when_password_reset_is_successful_for_email_auth(
     )
 
     assert response.status_code == 302
-    assert response.location == url_for(".show_accounts_or_dashboard", _external=True)
+    assert response.location == url_for(".show_accounts_or_dashboard")
     assert mock_get_user_by_email_request_password_reset.called
     assert mock_reset_failed_login_count.called
 

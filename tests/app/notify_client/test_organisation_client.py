@@ -1,6 +1,7 @@
 from unittest.mock import call
 
 import pytest
+from flask import g
 
 from app import organisations_client
 
@@ -124,6 +125,8 @@ def test_deletes_domain_cache(
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete")
     mock_request = mocker.patch("notifications_python_client.base.BaseAPIClient.request")
 
+    # set this to avoid the issue that our test isn't running in a real request and therefore this value won't be set
+    g.current_service = None
     organisations_client.update_organisation(fake_uuid, foo="bar")
 
     assert call("domains") in mock_redis_delete.call_args_list

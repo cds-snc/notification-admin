@@ -36,7 +36,7 @@ from tests.conftest import SERVICE_ONE_ID, SERVICE_TWO_ID, normalize_spaces
 def test_should_redirect_if_not_logged_in(client, endpoint):
     response = client.get(url_for(endpoint))
     assert response.status_code == 302
-    assert response.location == url_for("main.sign_in", next=url_for(endpoint), _external=True)
+    assert response.location == url_for("main.sign_in", next=url_for(endpoint))
 
 
 @pytest.mark.parametrize(
@@ -858,7 +858,7 @@ def test_platform_admin_submit_returned_letters(mocker, platform_admin_client):
     mock_client.assert_called_once_with(["REF1", "REF2"])
 
     assert response.status_code == 302
-    assert response.location == url_for("main.platform_admin_returned_letters", _external=True)
+    assert response.location == url_for("main.platform_admin_returned_letters")
 
 
 def test_platform_admin_submit_empty_returned_letters(mocker, platform_admin_client):

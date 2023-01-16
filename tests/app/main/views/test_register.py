@@ -26,7 +26,7 @@ def test_logged_in_user_redirects_to_account(
     client_request.get(
         "main.register",
         _expected_status=302,
-        _expected_redirect=url_for("main.show_accounts_or_dashboard", _external=True),
+        _expected_redirect=url_for("main.show_accounts_or_dashboard"),
     )
 
 
@@ -85,7 +85,7 @@ def test_register_continue_handles_missing_session_sensibly(
     # session is not set
     response = client.get(url_for("main.registration_continue"))
     assert response.status_code == 302
-    assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
+    assert response.location == url_for("main.show_accounts_or_dashboard")
 
 
 def test_process_register_returns_200_when_mobile_number_is_invalid(
@@ -138,7 +138,7 @@ def test_should_return_200_when_email_is_not_gov_uk(
     ),
 )
 def test_should_add_user_details_to_session(
-    client,
+    client_request,
     mock_send_verify_code,
     mock_register_user,
     mock_get_user_by_email_not_found,
@@ -148,17 +148,17 @@ def test_should_add_user_details_to_session(
     mock_login,
     email_address,
 ):
-    response = client.post(
-        url_for("main.register"),
-        data={
+    client_request.logout()
+    client_request.post(
+        "main.register",
+        _data={
             "name": "Test Codes",
             "email_address": email_address,
             "mobile_number": "+16502532222",
             "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
         },
     )
-    assert response.status_code == 302
-    with client.session_transaction() as session:
+    with client_request.session_transaction() as session:
         assert session["user_details"]["email"] == email_address
 
 
@@ -196,7 +196,7 @@ def test_register_with_existing_email_sends_emails(
 
     response = client.post(url_for("main.register"), data=user_data)
     assert response.status_code == 302
-    assert response.location == url_for("main.registration_continue", _external=True)
+    assert response.location == url_for("main.registration_continue")
 
 
 @pytest.mark.parametrize(
@@ -280,7 +280,7 @@ def test_register_from_invite(
         },
     )
     assert response.status_code == 302
-    assert response.location == url_for("main.verify", _external=True)
+    assert response.location == url_for("main.verify")
     mock_register_user.assert_called_once_with(
         "Registered in another Browser",
         invited_user.email_address,
@@ -324,7 +324,7 @@ def test_register_from_invite_when_user_registers_in_another_browser(
         },
     )
     assert response.status_code == 302
-    assert response.location == url_for("main.verify", _external=True)
+    assert response.location == url_for("main.verify")
 
 
 @pytest.mark.parametrize("invite_email_address", ["gov-user@canada.ca", "non-gov-user@example.com"])
@@ -360,7 +360,7 @@ def test_register_from_email_auth_invite(
 
     resp = client.post(url_for("main.register_from_invite"), data=data)
     assert resp.status_code == 302
-    assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"], _external=True)
+    assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"])
 
     # doesn't send any 2fa code
     assert not mock_send_verify_email.called
@@ -419,7 +419,7 @@ def test_can_register_email_auth_without_phone_number(
 
     resp = client.post(url_for("main.register_from_invite"), data=data)
     assert resp.status_code == 302
-    assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"], _external=True)
+    assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"])
 
     mock_register_user.assert_called_once_with(ANY, ANY, None, ANY, ANY)  # mobile_number
 

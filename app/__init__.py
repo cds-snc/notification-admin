@@ -4,7 +4,6 @@ import re
 import secrets
 import urllib
 from datetime import datetime, timedelta, timezone
-from functools import partial
 from numbers import Number
 from time import monotonic
 from urllib.parse import urljoin
@@ -20,7 +19,7 @@ from flask import (
     request,
     session,
 )
-from flask.globals import _lookup_req_object, _request_ctx_stack  # type: ignore
+from flask.globals import _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
@@ -89,14 +88,10 @@ csrf = CSRFProtect()
 
 
 # The current service attached to the request stack.
-def _get_current_service():
-    return _lookup_req_object("service")
-
-
-current_service: Service = LocalProxy(_get_current_service)  # type: ignore
+current_service: Service = LocalProxy(lambda: g.current_service)  # type: ignore
 
 # The current organisation attached to the request stack.
-current_organisation: Organisation = LocalProxy(partial(_lookup_req_object, "organisation"))  # type: ignore
+current_organisation: Organisation = LocalProxy(lambda: g.current_organisation)  # type: ignore
 
 navigation = {
     "header_navigation": HeaderNavigation(),
@@ -550,49 +545,45 @@ def load_user(user_id):
 
 
 def load_service_before_request():
+    g.current_service = None
+
     if "/static/" in request.url:
-        _request_ctx_stack.top.service = None
-        _request_ctx_stack.top.organisation = None  # added to init None to ensure request context has None or something
         return
-    if _request_ctx_stack.top is not None:
-        _request_ctx_stack.top.service = None
-        _request_ctx_stack.top.organisation = None  # added to init None to ensure request context has None or something
 
-        if request.view_args:
-            service_id = request.view_args.get("service_id", session.get("service_id"))
-        else:
-            service_id = session.get("service_id")
+    if request.view_args:
+        service_id = request.view_args.get("service_id", session.get("service_id"))
+    else:
+        service_id = session.get("service_id")
 
-        if service_id:
+    if service_id:
+        try:
+            g.current_service = Service.from_id(service_id)
+        except HTTPError as exc:
+            # if service id isn't real, then 404 rather than 500ing later because we expect service to be set
+            if exc.status_code == 404:
+                abort(404)
+            else:
+                raise
+
+
+def load_organisation_before_request():
+    g.current_organisation = None
+
+    if "/static/" in request.url:
+        return
+
+    if request.view_args:
+        org_id = request.view_args.get("org_id")
+
+        if org_id:
             try:
-                _request_ctx_stack.top.service = Service(service_api_client.get_service(service_id)["data"])
+                g.current_organisation = Organisation.from_id(org_id)
             except HTTPError as exc:
-                # if service id isn't real, then 404 rather than 500ing later because we expect service to be set
+                # if org id isn't real, then 404 rather than 500ing later because we expect org to be set
                 if exc.status_code == 404:
                     abort(404)
                 else:
                     raise
-
-
-def load_organisation_before_request():
-    if "/static/" in request.url:
-        _request_ctx_stack.top.organisation = None
-        return
-    if _request_ctx_stack.top is not None:
-        _request_ctx_stack.top.organisation = None
-
-        if request.view_args:
-            org_id = request.view_args.get("org_id")
-
-            if org_id:
-                try:
-                    _request_ctx_stack.top.organisation = Organisation.from_id(org_id)
-                except HTTPError as exc:
-                    # if org id isn't real, then 404 rather than 500ing later because we expect org to be set
-                    if exc.status_code == 404:
-                        abort(404)
-                    else:
-                        raise
 
 
 def load_request_nonce():

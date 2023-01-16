@@ -160,7 +160,6 @@ def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
         _expected_redirect=url_for(
             "main.service_dashboard",
             service_id=101,
-            _external=True,
         ),
     )
     assert mock_service_email_from_is_unique.called is True
@@ -268,7 +267,6 @@ def test_should_add_service_and_redirect_to_tour_when_no_services(
             "main.start_tour",
             service_id=101,
             template_id="Example%20text%20message%20template",
-            _external=True,
         ),
     )
     assert mock_get_services_with_no_services.called
@@ -386,7 +384,6 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
         _expected_redirect=url_for(
             "main.service_dashboard",
             service_id=101,
-            _external=True,
         ),
     )
     assert mock_service_name_is_unique.called is True
@@ -466,6 +463,7 @@ def test_non_safelist_user_cannot_access_create_service_page(
     mock_get_organisations,
 ):
     assert is_gov_user(api_nongov_user_active["email_address"]) is False
+    client_request.login(api_nongov_user_active)
     client_request.get(
         "main.add_service",
         _expected_status=403,
@@ -479,6 +477,7 @@ def test_non_safelist_user_cannot_create_service(
     mock_get_organisations,
 ):
     assert is_gov_user(api_nongov_user_active["email_address"]) is False
+    client_request.login(api_nongov_user_active)
     client_request.post(
         "main.add_service",
         _data={"name": "SERVICE TWO"},

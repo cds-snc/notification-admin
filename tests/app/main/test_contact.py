@@ -102,7 +102,7 @@ def test_invalid_step_name_redirects(client_request):
     client_request.get_url(
         url_for(".contact", current_step="nope"),
         _expected_status=302,
-        _expected_redirect=url_for(".contact", current_step="identity", _external=True),
+        _expected_redirect=url_for(".contact", current_step="identity"),
     )
 
 

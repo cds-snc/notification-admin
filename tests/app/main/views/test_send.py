@@ -209,7 +209,6 @@ def test_set_sender_redirects_if_no_sender_data(client_request, service_one, fak
             ".send_one_off",
             service_id=service_one["id"],
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -256,30 +255,31 @@ def test_example_spreadsheet(
 
 
 @pytest.mark.parametrize(
-    "filename, acceptable_file",
-    list(zip(test_spreadsheet_files, repeat(True))) + list(zip(test_non_spreadsheet_files, repeat(False))),
+    "filename, acceptable_file, expected_status",
+    list(zip(test_spreadsheet_files, repeat(True), repeat(302)))
+    + list(zip(test_non_spreadsheet_files, repeat(False), repeat(200))),
 )
 def test_upload_files_in_different_formats(
     filename,
     acceptable_file,
-    logged_in_client,
+    expected_status,
+    client_request,
     service_one,
     mocker,
     mock_get_service_template,
+    mock_s3_set_metadata,
     mock_s3_upload,
     fake_uuid,
 ):
     with open(filename, "rb") as uploaded:
-        response = logged_in_client.post(
-            url_for(
-                "main.send_messages",
-                service_id=service_one["id"],
-                template_id=fake_uuid,
-            ),
-            data={"file": (BytesIO(uploaded.read()), filename)},
-            content_type="multipart/form-data",
+        page = client_request.post(
+            "main.send_messages",
+            service_id=service_one["id"],
+            template_id=fake_uuid,
+            _data={"file": (BytesIO(uploaded.read()), filename)},
+            _content_type="multipart/form-data",
+            _expected_status=expected_status,
         )
-        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
     if acceptable_file:
         assert mock_s3_upload.call_args[0][1]["data"].strip() == (
@@ -288,6 +288,7 @@ def test_upload_files_in_different_formats(
             "07527 125 974,Not Pete,Magenta,Avacado\r\n"
             "07512 058 823,Still Not Pete,Crimson,Pear"
         )
+        # mock_s3_set_metadata.assert_called_once_with(SERVICE_ONE_ID, fake_uuid, original_file_name=filename)
     else:
         assert not mock_s3_upload.called
         assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
@@ -553,7 +554,6 @@ def test_upload_valid_csv_redirects_to_check_page(
             template_id=fake_uuid,
             upload_id=fake_uuid,
             original_file_name="valid.csv",
-            _external=True,
         ),
     )
 
@@ -1016,6 +1016,7 @@ def test_send_test_step_redirects_if_session_not_setup(
         assert "recipient" not in session
         assert "placeholders" not in session
 
+    client_request.login(user)
     client_request.get(
         endpoint,
         service_id=SERVICE_ONE_ID,
@@ -1412,7 +1413,6 @@ def test_send_test_redirects_to_end_if_step_out_of_bounds(
             expected_redirect,
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -1464,7 +1464,6 @@ def test_send_test_redirects_to_start_if_you_skip_steps(
         expected_redirect,
         service_id=service_one["id"],
         template_id=fake_uuid,
-        _external=True,
     )
 
 
@@ -1510,7 +1509,6 @@ def test_send_test_redirects_to_start_if_index_out_of_bounds_and_some_placeholde
             expected_redirect,
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -1554,7 +1552,6 @@ def test_send_test_sms_message_redirects_with_help_argument(
             template_id=fake_uuid,
             step_index=0,
             help=1,
-            _external=True,
         ),
     )
 
@@ -1792,7 +1789,6 @@ def test_send_test_letter_redirects_to_right_url(
             "main.check_notification",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         )
     )
 
@@ -1901,7 +1897,6 @@ def test_send_test_allows_empty_optional_address_columns(
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
             step_index=4,
-            _external=True,
         ),
     )
 
@@ -1929,7 +1924,6 @@ def test_send_test_sms_message_puts_submitted_data_in_session(
             "main.check_notification",
             service_id=service_one["id"],
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -3185,7 +3179,6 @@ def test_check_notification_redirects_if_session_not_populated(
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
             step_index=1,
-            _external=True,
         ),
     )
 
@@ -3216,7 +3209,6 @@ def test_check_notification_redirects_with_help_if_session_not_populated(
         service_id=service_one["id"],
         template_id=fake_uuid,
         help="2",
-        _external=True,
     )
 
 
@@ -3328,7 +3320,6 @@ def test_send_notification_redirects_if_missing_data(
             ".send_one_off",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -3355,7 +3346,6 @@ def test_send_notification_redirects_to_view_page(
             ".view_notification",
             service_id=SERVICE_ONE_ID,
             notification_id=fake_uuid,
-            _external=True,
             just_sent=True,
             **extra_redirect_args,
         ),
@@ -3628,7 +3618,6 @@ def test_redirects_to_template_if_job_exists_already(
             "main.send_messages",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 

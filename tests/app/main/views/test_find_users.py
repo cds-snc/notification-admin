@@ -77,10 +77,7 @@ def test_find_users_by_email_validates_against_empty_search_submission(client_re
 def test_user_information_page_shows_information_about_user(client, platform_admin_user, mocker):
     mocker.patch(
         "app.user_api_client.get_user",
-        side_effect=[
-            platform_admin_user,
-            user_json(name="Apple Bloom", services=[1, 2], blocked=False),
-        ],
+        return_value=user_json(name="Apple Bloom", services=[1, 2]),
         autospec=True,
     )
 
@@ -120,10 +117,7 @@ def test_user_information_page_shows_information_about_user(client, platform_adm
 def test_user_information_page_shows_unblocked_user(client, platform_admin_user, mocker):
     mocker.patch(
         "app.user_api_client.get_user",
-        side_effect=[
-            platform_admin_user,
-            user_json(name="Blocked Apple Bloom", services=[1, 2], blocked=True),
-        ],
+        return_value=user_json(name="Blocked Apple Bloom", services=[1, 2], blocked=True),
         autospec=True,
     )
 
@@ -150,10 +144,7 @@ def test_user_information_page_shows_unblocked_user(client, platform_admin_user,
 def test_user_information_page_displays_if_there_are_failed_login_attempts(client, platform_admin_user, mocker):
     mocker.patch(
         "app.user_api_client.get_user",
-        side_effect=[
-            platform_admin_user,
-            user_json(name="Apple Bloom", failed_login_count=2, blocked=False),
-        ],
+        return_value=user_json(name="Apple Bloom", failed_login_count=2, blocked=False),
         autospec=True,
     )
 
@@ -242,7 +233,7 @@ def test_unblock_user_resets_failed_login_count(
 
     response = platform_admin_client.post(url_for("main.unblock_user", user_id=api_user_active["id"]))
     assert response.status_code == 302
-    assert response.location == url_for("main.user_information", user_id=api_user_active["id"], _external=True)
+    assert response.location == url_for("main.user_information", user_id=api_user_active["id"])
     mock_user_client.assert_called_once_with("/user/{}/reset-failed-login-count".format(api_user_active["id"]), data={})
 
 
@@ -257,7 +248,7 @@ def test_archive_user_posts_to_user_client(
     response = platform_admin_client.post(url_for("main.archive_user", user_id=api_user_active["id"]))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.user_information", user_id=api_user_active["id"], _external=True)
+    assert response.location == url_for("main.user_information", user_id=api_user_active["id"])
     mock_user_client.assert_called_once_with("/user/{}/archive".format(api_user_active["id"]), data=None)
 
     assert mock_events.called
@@ -275,6 +266,6 @@ def test_archive_user_does_not_create_event_if_user_client_raises_exception(
         response = platform_admin_client.post(url_for("main.archive_user", user_id=api_user_active.id))
 
         assert response.status_code == 500
-        assert response.location == url_for("main.user_information", user_id=api_user_active["id"], _external=True)
+        assert response.location == url_for("main.user_information", user_id=api_user_active["id"])
         mock_user_client.assert_called_once_with("/user/{}/archive".format(api_user_active["id"]), data=None)
         assert not mock_events.called

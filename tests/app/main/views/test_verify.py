@@ -51,7 +51,7 @@ def test_should_redirect_to_welcome_screen_when_two_factor_code_is_correct(
 
     response = client.post(url_for("main.verify"), data={"two_factor_code": "12345"})
     assert response.status_code == 302
-    assert response.location == url_for("main.welcome", _external=True)
+    assert response.location == url_for("main.welcome")
 
     # make sure the current_session_id has changed to what the API returned
     with client.session_transaction() as session:
@@ -120,7 +120,7 @@ def test_verify_email_redirects_to_verify_if_token_valid(
     response = client.get(url_for("main.verify_email", token="notreal"))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.verify", _external=True)
+    assert response.location == url_for("main.verify")
 
     assert not mock_check_verify_code.called
     mock_send_verify_code.assert_called_once_with(api_user_pending["id"], "sms", api_user_pending["mobile_number"])
@@ -142,7 +142,7 @@ def test_verify_email_redirects_to_email_sent_if_token_expired(
     response = client.get(url_for("main.verify_email", token="notreal"))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.resend_email_verification", _external=True)
+    assert response.location == url_for("main.resend_email_verification")
 
 
 def test_verify_email_redirects_to_sign_in_if_user_active(
@@ -166,5 +166,5 @@ def test_verify_email_redirects_to_sign_in_if_user_active(
 def test_verify_redirects_to_sign_in_if_not_logged_in(client):
     response = client.get(url_for("main.verify"))
 
-    assert response.location == url_for("main.sign_in", _external=True)
+    assert response.location == url_for("main.sign_in")
     assert response.status_code == 302

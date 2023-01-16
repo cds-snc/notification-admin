@@ -93,10 +93,12 @@ def _create_service(
 
         return SuccessResult(service_id)
     except HTTPError as e:
-        if e.status_code == 400 and e.message["name"]:
+        # TODO: Investigate typing issue
+        if e.status_code == 400 and e.message["name"]:  # type: ignore
             errors = [_("This service name is already in use")]
             return DuplicateNameResult(errors)
-        if e.status_code == 400 and e.message["email_from"]:
+        # TODO: Investigate typing issue
+        if e.status_code == 400 and e.message["email_from"]:  # type: ignore
             errors = [_("This email address is already in use")]
             return DuplicateNameResult(errors)
         else:

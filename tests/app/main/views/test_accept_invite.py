@@ -49,7 +49,7 @@ def test_existing_user_accept_invite_calls_api_and_redirects_to_dashboard(
     )
 
     assert response.status_code == 302
-    assert response.location == url_for("main.service_dashboard", service_id=expected_service, _external=True)
+    assert response.location == url_for("main.service_dashboard", service_id=expected_service)
 
 
 def test_existing_user_with_no_permissions_or_folder_permissions_accept_invite(
@@ -119,7 +119,6 @@ def test_invite_goes_in_session(
         _expected_redirect=url_for(
             "main.service_dashboard",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
         _follow_redirects=False,
     )
@@ -255,7 +254,7 @@ def test_new_user_accept_invite_calls_api_and_redirects_to_registration(
     mock_get_service,
     mocker,
 ):
-    expected_redirect_location = "http://localhost/register-from-invite"
+    expected_redirect_location = "/register-from-invite"
 
     response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"))
 
@@ -375,7 +374,7 @@ def test_new_user_accept_invite_completes_new_registration_redirects_to_verify(
     expected_service = service_one["id"]
     expected_email = sample_invite["email_address"]
     expected_from_user = service_one["users"][0]
-    expected_redirect_location = "http://localhost/register-from-invite"
+    expected_redirect_location = "/register-from-invite"
 
     response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"))
     with client.session_transaction() as session:
@@ -397,7 +396,7 @@ def test_new_user_accept_invite_completes_new_registration_redirects_to_verify(
         "auth_type": "email_auth",
     }
 
-    expected_redirect_location = "http://localhost/verify"
+    expected_redirect_location = "/verify"
     response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
     assert response.location == expected_redirect_location
@@ -463,7 +462,6 @@ def test_accept_invite_does_not_treat_email_addresses_as_case_sensitive(
         _expected_redirect=url_for(
             "main.service_dashboard",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
 
@@ -497,7 +495,7 @@ def test_new_invited_user_verifies_and_added_to_service(
     # visit accept token page
     response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"))
     assert response.status_code == 302
-    assert response.location == url_for("main.register_from_invite", _external=True)
+    assert response.location == url_for("main.register_from_invite")
 
     # get redirected to register from invite
     data = {
@@ -511,7 +509,7 @@ def test_new_invited_user_verifies_and_added_to_service(
     }
     response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
-    assert response.location == url_for("main.verify", _external=True)
+    assert response.location == url_for("main.verify")
 
     # that sends user on to verify
     response = client.post(url_for("main.verify"), data={"two_factor_code": "12345"}, follow_redirects=True)
@@ -560,7 +558,7 @@ def test_existing_user_accepts_and_sets_email_auth(
         "main.accept_invite",
         token="thisisnotarealtoken",
         _expected_status=302,
-        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"], _external=True),
+        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"]),
     )
 
     mock_get_unknown_user_by_email.assert_called_once_with("test@user.canada.ca")
@@ -591,7 +589,7 @@ def test_existing_user_doesnt_get_auth_changed_by_service_without_permission(
         "main.accept_invite",
         token="thisisnotarealtoken",
         _expected_status=302,
-        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"], _external=True),
+        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"]),
     )
 
     assert not mock_update_user_attribute.called
@@ -623,7 +621,7 @@ def test_existing_email_auth_user_without_phone_cannot_set_sms_auth(
         "main.accept_invite",
         token="thisisnotarealtoken",
         _expected_status=302,
-        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"], _external=True),
+        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"]),
     )
 
     assert not mock_update_user_attribute.called
@@ -651,7 +649,7 @@ def test_existing_email_auth_user_with_phone_can_set_sms_auth(
         "main.accept_invite",
         token="thisisnotarealtoken",
         _expected_status=302,
-        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"], _external=True),
+        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"]),
     )
 
     mock_get_unknown_user_by_email.assert_called_once_with(sample_invite["email_address"])
