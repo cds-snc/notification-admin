@@ -135,7 +135,7 @@ def test_user_invite_already_accepted(client, mock_check_org_accepted_invite_tok
     response = client.get(url_for("main.accept_org_invite", token="thisisnotarealtoken"))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID, _external=True)
+    assert response.location == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID)
 
 
 def test_existing_user_invite_already_is_member_of_organisation(
@@ -150,7 +150,7 @@ def test_existing_user_invite_already_is_member_of_organisation(
     response = client.get(url_for("main.accept_org_invite", token="thisisnotarealtoken"))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID, _external=True)
+    assert response.location == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID)
 
     mock_check_org_invite_token.assert_called_once_with("thisisnotarealtoken")
     mock_accept_org_invite.assert_called_once_with(ORGANISATION_ID, ANY)
@@ -170,7 +170,7 @@ def test_existing_user_invite_not_a_member_of_organisation(
     response = client.get(url_for("main.accept_org_invite", token="thisisnotarealtoken"))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID, _external=True)
+    assert response.location == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID)
 
     mock_check_org_invite_token.assert_called_once_with("thisisnotarealtoken")
     mock_accept_org_invite.assert_called_once_with(ORGANISATION_ID, ANY)
@@ -191,7 +191,7 @@ def test_user_accepts_invite(
     response = client.get(url_for("main.accept_org_invite", token="thisisnotarealtoken"))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.register_from_org_invite", _external=True)
+    assert response.location == url_for("main.register_from_org_invite")
 
     mock_check_org_invite_token.assert_called_once_with("thisisnotarealtoken")
     mock_dont_get_user_by_email.assert_called_once_with("invited_user@test.canada.ca")
@@ -288,7 +288,7 @@ def test_org_user_registers_with_email_already_in_use(
     )
 
     assert response.status_code == 302
-    assert response.location == url_for("main.verify", _external=True)
+    assert response.location == url_for("main.verify")
 
     mock_get_user_by_email.assert_called_once_with(session["invited_org_user"]["email_address"])
     assert mock_register_user.called is False
@@ -322,7 +322,7 @@ def test_org_user_registration(
     )
 
     assert response.status_code == 302
-    assert response.location == url_for("main.verify", _external=True)
+    assert response.location == url_for("main.verify")
 
     mock_get_user_by_email.called is False
     mock_register_user.assert_called_once_with(
@@ -362,5 +362,4 @@ def test_verified_org_user_redirects_to_dashboard(
     assert response.location == url_for(
         "main.organisation_dashboard",
         org_id=invited_org_user["organisation"],
-        _external=True,
     )

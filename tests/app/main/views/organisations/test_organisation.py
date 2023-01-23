@@ -100,7 +100,6 @@ def test_create_new_organisation(
         _expected_redirect=url_for(
             "main.organisation_settings",
             org_id=ORGANISATION_ID,
-            _external=True,
         ),
     )
 
@@ -405,7 +404,6 @@ def test_update_organisation_settings(
         _expected_redirect=url_for(
             "main.organisation_settings",
             org_id=organisation_one["id"],
-            _external=True,
         ),
     )
 
@@ -433,7 +431,6 @@ def test_update_organisation_sector_sends_service_id_data_to_api_client(
         _expected_redirect=url_for(
             "main.organisation_settings",
             org_id=organisation_one["id"],
-            _external=True,
         ),
     )
 
@@ -456,7 +453,7 @@ def test_update_organisation_name(
     )
 
     assert response.status_code == 302
-    assert response.location == url_for(".confirm_edit_organisation_name", org_id=organisation_one["id"], _external=True)
+    assert response.location == url_for(".confirm_edit_organisation_name", org_id=organisation_one["id"])
     assert mock_organisation_name_is_unique.called
 
 
@@ -515,7 +512,7 @@ def test_confirm_update_organisation(
     )
 
     assert response.status_code == 302
-    assert response.location == url_for(".organisation_settings", org_id=organisation_one["id"], _external=True)
+    assert response.location == url_for(".organisation_settings", org_id=organisation_one["id"])
 
     mock_update_organisation.assert_called_with(organisation_one["id"], name=session["organisation_name_change"])
 
@@ -560,7 +557,7 @@ def test_confirm_update_organisation_with_name_already_in_use(
     response = platform_admin_client.post(url_for(".confirm_edit_organisation_name", org_id=organisation_one["id"]))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.edit_organisation_name", org_id=organisation_one["id"], _external=True)
+    assert response.location == url_for("main.edit_organisation_name", org_id=organisation_one["id"])
 
 
 def test_get_edit_organisation_go_live_notes_page(
@@ -595,7 +592,7 @@ def test_post_edit_organisation_go_live_notes_updates_go_live_notes(
 
     mock_update_organisation.assert_called_once_with(organisation_one["id"], request_to_go_live_notes=saved_note)
     assert response.status_code == 302
-    assert response.location == url_for(".organisation_settings", org_id=organisation_one["id"], _external=True)
+    assert response.location == url_for(".organisation_settings", org_id=organisation_one["id"])
 
 
 @pytest.mark.skip(reason="feature not in use")
@@ -711,7 +708,6 @@ def test_update_organisation_domains(
         _expected_redirect=url_for(
             "main.organisation_settings",
             org_id=organisation_one["id"],
-            _external=True,
         ),
     )
 

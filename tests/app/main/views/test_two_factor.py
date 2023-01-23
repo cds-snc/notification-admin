@@ -142,7 +142,7 @@ def test_sms_should_login_user_and_should_redirect_to_next_url(
         data={"two_factor_code": "12345"},
     )
     assert response.status_code == 302
-    assert response.location == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID, _external=True)
+    assert response.location == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
 
 
 @pytest.mark.parametrize("method", ["email", "sms"])
@@ -168,7 +168,7 @@ def test_should_login_platform_admin_user_and_redirect_to_your_services(
     response = client.post(url_for(f"main.two_factor_{method}_sent"), data={"two_factor_code": "12345"})
 
     assert response.status_code == 302
-    assert response.location == url_for("main.choose_account", _external=True)
+    assert response.location == url_for("main.choose_account")
 
 
 def test_email_should_login_user_and_should_redirect_to_next_url(
@@ -190,7 +190,7 @@ def test_email_should_login_user_and_should_redirect_to_next_url(
         data={"two_factor_code": "12345"},
     )
     assert response.status_code == 302
-    assert response.location == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID, _external=True)
+    assert response.location == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
 
 
 def test_sms_should_login_user_and_not_redirect_to_external_url(
@@ -213,7 +213,7 @@ def test_sms_should_login_user_and_not_redirect_to_external_url(
         data={"two_factor_code": "12345"},
     )
     assert response.status_code == 302
-    assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
+    assert response.location == url_for("main.show_accounts_or_dashboard")
 
 
 def test_email_should_login_user_and_not_redirect_to_external_url(
@@ -236,7 +236,7 @@ def test_email_should_login_user_and_not_redirect_to_external_url(
         data={"two_factor_code": "12345"},
     )
     assert response.status_code == 302
-    assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
+    assert response.location == url_for("main.show_accounts_or_dashboard")
 
 
 def test_sms_two_factor_code_should_login_user_and_redirect_to_show_accounts(
@@ -257,7 +257,7 @@ def test_sms_two_factor_code_should_login_user_and_redirect_to_show_accounts(
     response = client.post(url_for("main.two_factor_sms_sent"), data={"two_factor_code": "12345"})
 
     assert response.status_code == 302
-    assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
+    assert response.location == url_for("main.show_accounts_or_dashboard")
 
 
 def test_email_two_factor_code_should_login_user_and_redirect_to_show_accounts(
@@ -278,7 +278,7 @@ def test_email_two_factor_code_should_login_user_and_redirect_to_show_accounts(
     response = client.post(url_for("main.two_factor_email_sent"), data={"two_factor_code": "12345"})
 
     assert response.status_code == 302
-    assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
+    assert response.location == url_for("main.show_accounts_or_dashboard")
 
 
 def test_should_return_200_with_sms_two_factor_code_error_when_two_factor_code_is_wrong(
@@ -376,7 +376,7 @@ def test_sms_two_factor_should_set_password_when_new_password_exists_in_session(
 
     response = client.post(url_for("main.two_factor_sms_sent"), data={"two_factor_code": "12345"})
     assert response.status_code == 302
-    assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
+    assert response.location == url_for("main.show_accounts_or_dashboard")
 
     mock_update_user_password.assert_called_once_with(api_user_active["id"], "changedpassword", {"location": None})
 
@@ -402,7 +402,7 @@ def test_email_two_factor_should_set_password_when_new_password_exists_in_sessio
 
     response = client.post(url_for("main.two_factor_email_sent"), data={"two_factor_code": "12345"})
     assert response.status_code == 302
-    assert response.location == url_for("main.show_accounts_or_dashboard", _external=True)
+    assert response.location == url_for("main.show_accounts_or_dashboard")
 
     mock_update_user_password.assert_called_once_with(api_user_active["id"], "changedpassword", {"location": None})
 
@@ -439,7 +439,7 @@ def test_sms_two_factor_should_redirect_to_sign_in_if_user_not_in_session(
 ):
     response = client.post(url_for("main.two_factor_sms_sent"), data={"two_factor_code": "12345"})
     assert response.status_code == 302
-    assert response.location == url_for("main.sign_in", _external=True)
+    assert response.location == url_for("main.sign_in")
 
 
 def test_email_two_factor_should_redirect_to_sign_in_if_user_not_in_session(
@@ -449,7 +449,7 @@ def test_email_two_factor_should_redirect_to_sign_in_if_user_not_in_session(
 ):
     response = client.post(url_for("main.two_factor_email_sent"), data={"two_factor_code": "12345"})
     assert response.status_code == 302
-    assert response.location == url_for("main.sign_in", _external=True)
+    assert response.location == url_for("main.sign_in")
 
 
 def test_sms_two_factor_should_activate_pending_user(

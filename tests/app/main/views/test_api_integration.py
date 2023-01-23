@@ -376,7 +376,6 @@ def test_should_redirect_after_revoking_api_key(
         _expected_redirect=url_for(
             ".api_keys",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_revoke_api_key.assert_called_once_with(service_id=SERVICE_ONE_ID, key_id=fake_uuid)
@@ -579,7 +578,6 @@ def test_callback_forms_can_be_cleared(
         _expected_redirect=url_for(
             "main.api_callbacks",
             service_id=service_one["id"],
-            _external=True,
         ),
     )
 
@@ -624,7 +622,6 @@ def test_callback_forms_can_be_cleared_when_callback_and_inbound_apis_are_empty(
         _expected_redirect=url_for(
             "main.api_callbacks",
             service_id=service_one["id"],
-            _external=True,
         ),
     )
 

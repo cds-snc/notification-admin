@@ -44,7 +44,7 @@ def test_should_redirect_after_name_change(
         "main.user_profile_name",
         _data={"new_name": "New Name"},
         _expected_status=302,
-        _expected_redirect=url_for("main.user_profile", _external=True),
+        _expected_redirect=url_for("main.user_profile"),
     )
     assert mock_update_user_attribute.called is True
 
@@ -67,7 +67,6 @@ def test_should_redirect_after_email_change(
         _expected_status=302,
         _expected_redirect=url_for(
             "main.user_profile_email_authenticate",
-            _external=True,
         ),
     )
 
@@ -114,7 +113,7 @@ def test_should_redirect_to_user_profile_when_user_confirms_email_link(
     response = logged_in_client.get(url_for_endpoint_with_token("main.user_profile_email_confirm", token=token))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.user_profile", _external=True)
+    assert response.location == url_for("main.user_profile")
 
 
 def test_should_show_mobile_number_page(
@@ -141,7 +140,6 @@ def test_should_redirect_after_mobile_number_change(
         _expected_status=302,
         _expected_redirect=url_for(
             "main.user_profile_mobile_number_authenticate",
-            _external=True,
         ),
     )
     with client_request.session_transaction() as session:
@@ -176,7 +174,6 @@ def test_should_redirect_after_mobile_number_authenticate(
         _expected_status=302,
         _expected_redirect=url_for(
             "main.user_profile_mobile_number_confirm",
-            _external=True,
         ),
     )
 
@@ -213,7 +210,8 @@ def test_should_redirect_after_mobile_number_confirm(
     user_after["current_session_id"] = str(uuid.UUID(int=2))
 
     # first time (login decorator) return normally, second time (after 2FA return with new session id)
-    mocker.patch("app.user_api_client.get_user", side_effect=[user_before, user_after])
+    client_request.login(user_before)
+    mocker.patch("app.user_api_client.get_user", return_value=user_after)
 
     with client_request.session_transaction() as session:
         session["new-mob-password-confirmed"] = True
@@ -224,10 +222,7 @@ def test_should_redirect_after_mobile_number_confirm(
         "main.user_profile_mobile_number_confirm",
         _data={"two_factor_code": "12345"},
         _expected_status=302,
-        _expected_redirect=url_for(
-            "main.user_profile",
-            _external=True,
-        ),
+        _expected_redirect=url_for("main.user_profile"),
     )
 
     # make sure the current_session_id has changed to what the API returned
@@ -257,7 +252,6 @@ def test_should_redirect_after_password_change(
         _expected_status=302,
         _expected_redirect=url_for(
             "main.user_profile",
-            _external=True,
         ),
     )
 
@@ -293,7 +287,6 @@ def test_deleting_security_key(
         _expected_status=302,
         _expected_redirect=url_for(
             "main.user_profile_security_keys",
-            _external=True,
         ),
     )
 
@@ -429,7 +422,7 @@ def test_can_disable_platform_admin(client_request, platform_admin_user):
         "main.user_profile_disable_platform_admin_view",
         _data={"enabled": False},
         _expected_status=302,
-        _expected_redirect=url_for("main.user_profile", _external=True),
+        _expected_redirect=url_for("main.user_profile"),
     )
 
     with client_request.session_transaction() as session:
@@ -446,7 +439,7 @@ def test_can_reenable_platform_admin(client_request, platform_admin_user):
         "main.user_profile_disable_platform_admin_view",
         _data={"enabled": True},
         _expected_status=302,
-        _expected_redirect=url_for("main.user_profile", _external=True),
+        _expected_redirect=url_for("main.user_profile"),
     )
 
     with client_request.session_transaction() as session:

@@ -415,9 +415,7 @@ def test_should_show_page_for_one_template(
 def test_caseworker_redirected_to_one_off(
     client_request, mock_get_service_templates, mock_get_service_template, mocker, fake_uuid, active_caseworking_user
 ):
-
-    mocker.patch("app.user_api_client.get_user", return_value=active_caseworking_user)
-
+    client_request.login(active_caseworking_user)
     client_request.get(
         "main.view_template",
         service_id=SERVICE_ONE_ID,
@@ -427,7 +425,6 @@ def test_caseworker_redirected_to_one_off(
             "main.send_one_off",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -454,7 +451,6 @@ def test_user_with_only_send_and_view_redirected_to_one_off(
             "main.send_one_off",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -786,28 +782,27 @@ def test_should_show_sms_template_with_downgraded_unicode_characters(
 
 
 def test_should_show_page_template_with_priority_select_if_platform_admin(
-    platform_admin_client,
+    client_request,
     platform_admin_user,
     mocker,
     mock_get_service_template,
     service_one,
     fake_uuid,
 ):
+
     mocker.patch("app.user_api_client.get_users_for_service", return_value=[platform_admin_user])
     template_id = fake_uuid
-    response = platform_admin_client.get(
-        url_for(
-            ".edit_service_template",
-            service_id=service_one["id"],
-            template_id=template_id,
-        )
+    client_request.login(platform_admin_user)
+    page = client_request.get(
+        ".edit_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=template_id,
     )
 
-    assert response.status_code == 200
-    assert "Two week reminder" in response.get_data(as_text=True)
-    assert "Template &lt;em&gt;content&lt;/em&gt; with &amp; entity" in response.get_data(as_text=True)
-    assert "Choose a priority queue" in response.get_data(as_text=True)
-    mock_get_service_template.assert_called_with(service_one["id"], template_id, None)
+    assert page.select_one("input[type=text]")["value"] == "Two week reminder"
+    assert "Template &lt;em&gt;content&lt;/em&gt; with &amp; entity" in str(page.select_one("textarea"))
+    assert "Choose a priority queue" in str(page.select_one("main"))
+    mock_get_service_template.assert_called_with(SERVICE_ONE_ID, template_id, None)
 
 
 @pytest.mark.parametrize("filetype", ["pdf", "png"])
@@ -1320,7 +1315,6 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
             ".view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
     mock_update_service_template.assert_called_with(
@@ -1529,7 +1523,6 @@ def test_removing_placeholders_is_not_a_breaking_change(
             "main.view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
     assert mock_update_service_template.called is True
@@ -1609,7 +1602,6 @@ def test_should_redirect_when_saving_a_template_email(
             ".view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
     mock_update_service_template.assert_called_with(
@@ -1652,7 +1644,6 @@ def test_should_redirect_when_previewing_a_template_email(
             ".preview_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -1720,7 +1711,6 @@ def test_preview_edit_button_should_redirect_to_edit_page(
             ".edit_service_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -1755,7 +1745,6 @@ def test_preview_edit_button_should_redirect_to_add_page(
             template_id=None,
             template_type="email",
             template_folder_id="",
-            _external=True,
         ),
     )
 
@@ -1828,7 +1817,6 @@ def test_preview_should_update_and_redirect_on_save(client_request, mock_update_
             ".view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
     mock_update_service_template.assert_called_with(
@@ -1861,7 +1849,6 @@ def test_preview_should_create_and_redirect_on_save(client_request, mock_create_
             ".view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
     mock_create_service_template.assert_called_with(
@@ -1994,7 +1981,6 @@ def test_should_redirect_when_deleting_a_template(
             ".choose_template",
             service_id=SERVICE_ONE_ID,
             template_folder_id=parent,
-            _external=True,
         ),
     )
 
@@ -2428,7 +2414,6 @@ def test_add_recipients_redirects_many_recipients(template_data, client_request,
             ".send_messages",
             service_id=SERVICE_ONE_ID,
             template_id=template_id,
-            _external=True,
         ),
     )
 
@@ -2459,6 +2444,5 @@ def test_add_recipients_redirects_one_recipient(template_type, template_data, cl
             service_id=SERVICE_ONE_ID,
             template_id=template_id,
             step_index=1,
-            _external=True,
         ),
     )

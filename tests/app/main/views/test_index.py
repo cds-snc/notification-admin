@@ -75,7 +75,7 @@ def test_logged_in_user_redirects_to_choose_account(
     client_request.get(
         "main.sign_in",
         _expected_status=302,
-        _expected_redirect=url_for("main.show_accounts_or_dashboard", _external=True),
+        _expected_redirect=url_for("main.show_accounts_or_dashboard"),
     )
 
 
@@ -154,7 +154,7 @@ def test_activity_page(mocker, client):
 def test_old_static_pages_redirect(client, view, expected_view):
     response = client.get(url_for("main.{}".format(view)))
     assert response.status_code == 301
-    assert response.location == url_for("main.{}".format(expected_view), _external=True)
+    assert response.location == url_for("main.{}".format(expected_view))
 
 
 def test_old_callbacks_page_redirects(client):
@@ -262,7 +262,7 @@ def test_letter_template_preview_headers(
     "query_key, query_value, heading",
     [
         ("lang", "en", "GC Notify"),  # 'Notify' = english heading
-        ("lang", "fr", "GC Notification"),  # 'Notification' = french heading
+        ("lang", "fr", "Notification GC"),  # 'Notification' = french heading
         ("lang", "sa?SDFa?DFa,/", "GC Notify"),
         ("xyz", "xyz", "GC Notify"),
         ("sa?SDFa?DFa,/", "sa?SDFa?DFa,/", "GC Notify"),

@@ -147,6 +147,7 @@ def test_should_show_overview_page(
         ],
     )
 
+    client_request.login(current_user)
     page = client_request.get("main.manage_users", service_id=SERVICE_ONE_ID)
 
     assert normalize_spaces(page.select_one("h1").text) == "Team members"
@@ -182,6 +183,7 @@ def test_should_show_caseworker_on_overview_page(
         ],
     )
 
+    client_request.login(current_user)
     page = client_request.get("main.manage_users", service_id=SERVICE_ONE_ID)
 
     assert normalize_spaces(page.select_one("h1").text) == "Team members"
@@ -325,6 +327,8 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
     current_user = active_user_view_permissions
     mocker.patch("app.user_api_client.get_user", return_value=current_user)
     mocker.patch("app.models.user.Users.client", return_value=[current_user])
+
+    client_request.login(current_user)
     page = client_request.get("main.manage_users", service_id=service_one["id"])
     assert len(page.find_all("p")) == 1
     assert page.find_all("p")[0].text.strip() != "You should have at least two team members who can manage settings."
@@ -517,7 +521,6 @@ def test_edit_user_permissions(
         _expected_redirect=url_for(
             "main.manage_users",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_set_user_permissions.assert_called_with(
@@ -579,7 +582,6 @@ def test_edit_user_folder_permissions(
         _expected_redirect=url_for(
             "main.manage_users",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_set_user_permissions.assert_called_with(
@@ -640,7 +642,6 @@ def test_cant_edit_user_folder_permissions_for_platform_admin_users(
         _expected_redirect=url_for(
             "main.manage_users",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_set_user_permissions.assert_called_with(
@@ -706,7 +707,6 @@ def test_edit_user_permissions_including_authentication_with_email_auth_service(
         _expected_redirect=url_for(
             "main.manage_users",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
 
@@ -909,7 +909,7 @@ def test_cancel_invited_user_cancels_user_invitations(
         service_id=SERVICE_ONE_ID,
         invited_user_id=sample_invite["id"],
         _expected_status=302,
-        _expected_redirect=url_for("main.manage_users", service_id=SERVICE_ONE_ID, _external=True),
+        _expected_redirect=url_for("main.manage_users", service_id=SERVICE_ONE_ID),
     )
     mock_cancel.assert_called_once_with(
         service_id=SERVICE_ONE_ID,
@@ -1140,7 +1140,7 @@ def test_remove_user_from_service(
         "main.remove_user_from_service",
         service_id=service_one["id"],
         user_id=active_user_with_permissions["id"],
-        _expected_redirect=url_for("main.manage_users", service_id=service_one["id"], _external=True),
+        _expected_redirect=url_for("main.manage_users", service_id=service_one["id"]),
     )
     mock_remove_user_from_service.assert_called_once_with(service_one["id"], str(active_user_with_permissions["id"]))
 
@@ -1208,7 +1208,6 @@ def test_edit_user_email_redirects_to_confirmation(
             "main.confirm_edit_user_email",
             service_id=SERVICE_ONE_ID,
             user_id=active_user_with_permissions["id"],
-            _external=True,
         ),
     )
 
@@ -1226,7 +1225,7 @@ def test_edit_user_email_without_changing_goes_back_to_team_members(
         user_id=active_user_with_permissions["id"],
         _data={"email_address": active_user_with_permissions["email_address"]},
         _expected_status=302,
-        _expected_redirect=url_for("main.manage_users", service_id=SERVICE_ONE_ID, _external=True),
+        _expected_redirect=url_for("main.manage_users", service_id=SERVICE_ONE_ID),
     )
     assert mock_update_user_attribute.called is False
 
@@ -1253,7 +1252,6 @@ def test_edit_user_email_can_change_any_email_address_to_a_gov_email_address(
             "main.confirm_edit_user_email",
             service_id=SERVICE_ONE_ID,
             user_id=active_user_with_permissions["id"],
-            _external=True,
         ),
     )
 
@@ -1278,7 +1276,6 @@ def test_edit_user_email_can_change_a_non_gov_email_address_to_another_non_gov_e
             "main.confirm_edit_user_email",
             service_id=SERVICE_ONE_ID,
             user_id=active_user_with_permissions["id"],
-            _external=True,
         ),
     )
 
@@ -1388,7 +1385,6 @@ def test_confirm_edit_user_email_changes_user_email(
         _expected_redirect=url_for(
             "main.manage_users",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
 
@@ -1501,7 +1497,6 @@ def test_edit_user_mobile_number_redirects_to_confirmation(
             "main.confirm_edit_user_mobile_number",
             service_id=SERVICE_ONE_ID,
             user_id=active_user_with_permissions["id"],
-            _external=True,
         ),
     )
 
@@ -1523,7 +1518,6 @@ def test_edit_user_mobile_number_redirects_to_manage_users_if_number_not_changed
         _expected_redirect=url_for(
             "main.manage_users",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
 
@@ -1608,7 +1602,6 @@ def test_confirm_edit_user_mobile_number_changes_user_mobile_number(
         _expected_redirect=url_for(
             "main.manage_users",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_update_user_attribute.assert_called_once_with(

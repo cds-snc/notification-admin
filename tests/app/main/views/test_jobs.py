@@ -479,7 +479,6 @@ def test_should_cancel_job(
         _expected_redirect=url_for(
             "main.service_dashboard",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
 
@@ -525,7 +524,6 @@ def test_should_cancel_letter_job(client_request, mocker, active_user_with_permi
         _expected_redirect=url_for(
             "main.service_dashboard",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_cancel.assert_called_once_with(SERVICE_ONE_ID, job_id)

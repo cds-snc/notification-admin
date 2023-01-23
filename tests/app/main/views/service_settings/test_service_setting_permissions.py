@@ -67,7 +67,7 @@ def test_service_set_permission(
         data={"enabled": form_data},
     )
     assert response.status_code == 302
-    assert response.location == url_for("main.service_settings", service_id=service_one["id"], _external=True)
+    assert response.location == url_for("main.service_settings", service_id=service_one["id"])
     force_permission.assert_called_with(permission, on=on)
 
 

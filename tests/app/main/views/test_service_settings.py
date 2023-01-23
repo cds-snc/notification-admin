@@ -565,7 +565,6 @@ def test_should_redirect_after_change_service_name(
         _expected_redirect=url_for(
             "main.service_name_change_confirm",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
 
@@ -622,10 +621,10 @@ def test_show_restricted_service(
 @pytest.mark.parametrize(
     "current_limit, expected_limit, current_sms_limit, expected_sms_limit",
     [
-        (42, 42, 33, 33),
+        (42, 10_000, 33, 1000),
         # Maps to DEFAULT_SERVICE_LIMIT and DEFAULT_LIVE_SERVICE_LIMIT in config
         (50, 10_000, 50, 1000),
-        (50_000, 50_000, 3000, 3000),
+        (50_000, 10_000, 3000, 1000),
     ],
 )
 def test_switch_service_to_live(
@@ -649,7 +648,6 @@ def test_switch_service_to_live(
         _expected_redirect=url_for(
             "main.service_settings",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_update_service.assert_called_with(
@@ -745,7 +743,6 @@ def test_switch_service_to_restricted(
         _expected_response=url_for(
             "main.service_settings",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_update_service.assert_called_with(
@@ -807,7 +804,6 @@ def test_switch_service_to_count_as_live(
         _expected_redirect=url_for(
             "main.service_settings",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_update_service.assert_called_with(
@@ -873,7 +869,6 @@ def test_should_redirect_after_service_name_confirmation(
         _expected_redirect=url_for(
             "main.service_settings",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
 
@@ -917,7 +912,6 @@ def test_should_redirect_after_service_email_from_confirmation(
         _expected_redirect=url_for(
             "main.service_settings",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
 
@@ -940,7 +934,6 @@ def test_should_raise_duplicate_name_handled(
         _expected_redirect=url_for(
             "main.service_name_change",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
 
@@ -1112,7 +1105,7 @@ def test_request_to_go_live_terms_of_use_page(
         "main.terms_of_use",
         service_id=SERVICE_ONE_ID,
         _expected_status=302,
-        _expected_redirect=url_for("main.request_to_go_live", service_id=SERVICE_ONE_ID, _external=True),
+        _expected_redirect=url_for("main.request_to_go_live", service_id=SERVICE_ONE_ID),
     )
 
     mock_accept_tos.assert_called_once_with(SERVICE_ONE_ID)
@@ -1211,7 +1204,7 @@ def test_request_to_go_live_use_case_page(
         ".use_case",
         service_id=SERVICE_ONE_ID,
         _expected_status=302,
-        _expected_redirect=url_for("main.request_to_go_live", service_id=SERVICE_ONE_ID, _external=True),
+        _expected_redirect=url_for("main.request_to_go_live", service_id=SERVICE_ONE_ID),
         _data={
             "notification_types": ["sms"],
             "expected_volume": "1k-10k",
@@ -1639,7 +1632,6 @@ def test_remove_default_from_default_letter_contact_block(
     letter_contact_details_page = url_for(
         "main.service_letter_contact_details",
         service_id=SERVICE_ONE_ID,
-        _external=True,
     )
 
     link = client_request.get_url(letter_contact_details_page).select_one(".user-list-item a")
@@ -1804,7 +1796,6 @@ def test_add_reply_to_email_address_sends_test_notification(mocker, client_reque
             "main.service_verify_reply_to_address",
             service_id=SERVICE_ONE_ID,
             notification_id="123",
-            _external=True,
         )
         + "?is_default={}".format(api_default_args),
     )
@@ -1958,7 +1949,6 @@ def test_add_letter_contact_when_coming_from_template(
             "main.view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
-            _external=True,
         ),
     )
 
@@ -2173,7 +2163,6 @@ def test_delete_reply_to_email_address(
         _expected_redirect=url_for(
             "main.service_email_reply_to",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_delete.assert_called_once_with(service_id=SERVICE_ONE_ID, reply_to_email_id=fake_uuid)
@@ -2196,7 +2185,6 @@ def test_delete_default_reply_to_email_address_switches_default(
         _expected_redirect=url_for(
             "main.service_email_reply_to",
             service_id=service_one["id"],
-            _external=True,
         ),
     )
 
@@ -2277,7 +2265,6 @@ def test_delete_letter_contact_block(
         _expected_redirect=url_for(
             "main.service_letter_contact_details",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_delete.assert_called_once_with(
@@ -2537,7 +2524,6 @@ def test_delete_sms_sender(
         _expected_redirect=url_for(
             "main.service_sms_senders",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_delete.assert_called_once_with(service_id=SERVICE_ONE_ID, sms_sender_id="1234")
@@ -2657,7 +2643,6 @@ def test_set_letter_contact_block_saves(
         _expected_redirect=url_for(
             "main.service_settings",
             service_id=SERVICE_ONE_ID,
-            _external=True,
         ),
     )
     mock_update_service.assert_called_once_with(SERVICE_ONE_ID, letter_contact_block="foo bar baz waz")
@@ -2679,7 +2664,6 @@ def test_set_letter_contact_block_redirects_to_template(
             "main.view_template",
             service_id=service_one["id"],
             template_id=FAKE_TEMPLATE_ID,
-            _external=True,
         ),
     )
 
@@ -2787,7 +2771,6 @@ def test_service_set_letter_branding_redirects_to_preview_page_when_form_submitt
         _expected_redirect=url_for(
             expected_redirect,
             branding_style=expected_post_data,
-            _external=True,
             **extra_args,
         ),
         **extra_args,
@@ -2864,7 +2847,7 @@ def test_service_preview_letter_branding_saves(
         endpoint,
         _data={"branding_style": selected_letter_branding},
         _expected_status=302,
-        _expected_redirect=url_for(expected_redirect, _external=True, **extra_args),
+        _expected_redirect=url_for(expected_redirect, **extra_args),
         **extra_args,
     )
 
@@ -3029,7 +3012,7 @@ def test_should_send_branding_and_organisations_to_preview(
         endpoint,
         data={"branding_type": "custom_logo", "branding_style": "1"},
         _expected_status=302,
-        _expected_location=url_for(expected_redirect, branding_style="1", _external=True, **extra_args),
+        _expected_location=url_for(expected_redirect, branding_style="1", **extra_args),
         **extra_args,
     )
 
@@ -3110,7 +3093,7 @@ def test_should_set_branding_and_organisations(
         endpoint,
         _data={"branding_style": posted_value},
         _expected_status=302,
-        _expected_redirect=url_for(expected_redirect, _external=True, **extra_args),
+        _expected_redirect=url_for(expected_redirect, **extra_args),
         **extra_args,
     )
     expected_french_val = False if submitted_value == "__FIP-EN__" else True
@@ -3197,7 +3180,7 @@ def test_should_set_message_limit(
         },
     )
     assert response.status_code == 302
-    assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID, _external=True)
+    assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID)
 
     mock_update_message_limit.assert_called_with(SERVICE_ONE_ID, expected_limit)
 
@@ -3238,7 +3221,7 @@ def test_should_set_sms_allowance(
         },
     )
     assert response.status_code == 302
-    assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID, _external=True)
+    assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID)
 
     mock_create_or_update_free_sms_fragment_limit.assert_called_with(SERVICE_ONE_ID, expected_api_argument)
 
@@ -3254,7 +3237,6 @@ def test_old_set_letters_page_redirects(
             "main.service_set_channel",
             service_id=SERVICE_ONE_ID,
             channel="letter",
-            _external=True,
         ),
     )
 
@@ -3361,7 +3343,7 @@ def test_switch_service_enable_letters(
         service_id=service_one["id"],
         channel=channel,
         _data={"enabled": posted_value},
-        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"], _external=True),
+        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
     )
     assert set(mocked_fn.call_args[1]["permissions"]) == set(expected_updated_permissions)
     assert mocked_fn.call_args[0][0] == service_one["id"]
@@ -3413,7 +3395,7 @@ def test_service_switch_upload_document(
         "main.service_switch_upload_document",
         service_id=service_one["id"],
         _data={"enabled": posted_value},
-        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"], _external=True),
+        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
     )
     assert set(mocked_fn.call_args[1]["permissions"]) == set(expected_updated_permissions)
     assert mocked_fn.call_args[0][0] == service_one["id"]
@@ -3463,7 +3445,7 @@ def test_switch_service_enable_international_sms(
         "main.service_set_international_sms",
         service_id=service_one["id"],
         _data={"enabled": post_value},
-        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"], _external=True),
+        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
     )
 
     if international_sms_permission_expected_in_api_call:
@@ -3661,7 +3643,7 @@ def test_suspend_service_after_confirm(
     response = platform_admin_client.post(url_for("main.suspend_service", service_id=service_one["id"]))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.service_settings", service_id=service_one["id"], _external=True)
+    assert response.location == url_for("main.service_settings", service_id=service_one["id"])
     assert mocked_fn.call_args == call("/service/{}/suspend".format(service_one["id"]), data=None)
 
 
@@ -3721,7 +3703,7 @@ def test_resume_service_after_confirm(
     response = platform_admin_client.post(url_for("main.resume_service", service_id=service_one["id"]))
 
     assert response.status_code == 302
-    assert response.location == url_for("main.service_settings", service_id=service_one["id"], _external=True)
+    assert response.location == url_for("main.service_settings", service_id=service_one["id"])
     assert mocked_fn.call_args == call("/service/{}/resume".format(service_one["id"]), data=None)
 
 
@@ -4118,7 +4100,7 @@ def test_updates_sms_prefixing(
         "main.service_set_sms_prefix",
         service_id=SERVICE_ONE_ID,
         _data={"enabled": post_value},
-        _expected_redirect=url_for("main.service_settings", service_id=SERVICE_ONE_ID, _external=True),
+        _expected_redirect=url_for("main.service_settings", service_id=SERVICE_ONE_ID),
     )
     mock_update_service.assert_called_once_with(
         SERVICE_ONE_ID,
@@ -4350,7 +4332,7 @@ def test_add_service_data_retention(platform_admin_client, service_one, mock_cre
         data={"notification_type": "email", "days_of_retention": 5},
     )
     assert response.status_code == 302
-    settings_url = url_for("main.data_retention", service_id=service_one["id"], _external=True)
+    settings_url = url_for("main.data_retention", service_id=service_one["id"])
     assert settings_url == response.location
     assert mock_create_service_data_retention.called
 
@@ -4371,7 +4353,7 @@ def test_update_service_data_retention(
         data={"days_of_retention": 5},
     )
     assert response.status_code == 302
-    settings_url = url_for("main.data_retention", service_id=service_one["id"], _external=True)
+    settings_url = url_for("main.data_retention", service_id=service_one["id"])
     assert settings_url == response.location
     assert mock_update_service_data_retention.called
 
