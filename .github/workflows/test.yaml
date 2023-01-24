@@ -8,14 +8,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - name: Install poetry
-      env:
-        POETRY_VERSION: "1.3.0"
-      run: pip install poetry==${POETRY_VERSION} && poetry --version
     - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1.2.0
+    - name: Install poetry
+      run: pipx install poetry
     - uses: actions/setup-python@152ba7c4dd6521b8e9c93f72d362ce03bf6c4f20 # v1.2.3
       with:
         python-version: '3.10'
+        cache: poetry
+    - run: poetry install
     - uses: actions/setup-node@f1f314fca9dfce2769ece7d933488f076716723e # v1.4.6
       with:
         node-version: '14.x'
@@ -31,11 +31,6 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-    - name: Copy site-packages in workspace
-      working-directory: ${{ github.workspace }}
-      shell: bash
-      run: |
-        mkdir -p "${{ github.workspace }}/env/" && cp -fR $(poetry env list | poetry env info -p)/lib/python3.10/site-packages "${{ github.workspace }}/env/"
     - run: /bin/bash -c "scripts/bootstrap.sh && make test"
       env:
         A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
