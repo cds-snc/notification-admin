@@ -25,7 +25,7 @@ display_result $? 1 "Requirements check"
 
 make babel
 
-black ./app ./tests --check
+black --config pyproject.toml ./app ./tests --check
 display_result $? 1 "Code style check (Black)"
 
 flake8 .

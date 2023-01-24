@@ -16,13 +16,13 @@ echo -e "alias l='exa -alh'" >> ~/.zshrc
 echo -e "alias ll='exa -alh@ --git'" >> ~/.zshrc
 echo -e "alias lt='exa -al -T -L 2'" >> ~/.zshrc
 
-# Install Poetry
-pip install poetry==${POETRY_VERSION} \
-  && poetry --version
-
 # Poetry autocomplete
 echo -e "fpath+=/.zfunc" >> ~/.zshrc
 echo -e "autoload -Uz compinit && compinit"
+
+# Install Poetry
+pip install poetry==${POETRY_VERSION} \
+  && poetry --version
 
 # Initialize poetry autocompletions
 mkdir ~/.zfunc
