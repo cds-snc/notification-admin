@@ -1,10 +1,10 @@
 #!/bin/bash
-set -ex 
+set -ex
 
 ###################################################################
-# This script will get executed *once* the Docker container has 
+# This script will get executed *once* the Docker container has
 # been built. Commands that need to be executed with all available
-# tools and the filesystem mount enabled should be located here. 
+# tools and the filesystem mount enabled should be located here.
 ###################################################################
 
 # Define aliases
@@ -16,12 +16,25 @@ echo -e "alias l='exa -alh'" >> ~/.zshrc
 echo -e "alias ll='exa -alh@ --git'" >> ~/.zshrc
 echo -e "alias lt='exa -al -T -L 2'" >> ~/.zshrc
 
-# Warm up git index prior to display status in prompt else it will 
+# Install Poetry
+pip install poetry==${POETRY_VERSION} \
+  && poetry --version
+
+# Poetry autocomplete
+echo -e "fpath+=/.zfunc" >> ~/.zshrc
+echo -e "autoload -Uz compinit && compinit"
+
+# Initialize poetry autocompletions
+mkdir ~/.zfunc
+touch ~/.zfunc/_poetry
+poetry completions zsh > ~/.zfunc/_poetry
+
+# Warm up git index prior to display status in prompt else it will
 # be quite slow on every invocation of starship.
 git status
 
-pip3 install -r requirements.txt
-pip3 install -r requirements_for_test.txt
+# Install dependencies
+poetry install
 
 npm rebuild node-sass
 make generate-version-file
