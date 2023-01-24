@@ -19,7 +19,7 @@ GC_ARTICLES_ROUTES = {
     "service-level-objectives": {"en": "/service-level-objectives", "fr": "/objectifs-niveau-de-service"},
     "spreadsheets": {"en": "/spreadsheets", "fr": "/feuille-de-calcul"},
     "terms": {"en": "/terms", "fr": "/conditions-dutilisation"},
-    "whynotify": {"en": "/why-gc-notify", "fr": "/pourquoi-gc-notification"},
+    "whynotify": {"en": "/why-gc-notify", "fr": "/pourquoi-notification-gc"},
 }
 
 
