@@ -8,6 +8,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+    - name: Install poetry
+      env:
+        POETRY_VERSION: "1.3.0"
+      run: pip install poetry==${POETRY_VERSION} && poetry --version
     - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1.2.0
     - uses: actions/setup-python@152ba7c4dd6521b8e9c93f72d362ce03bf6c4f20 # v1.2.3
       with:
