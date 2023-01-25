@@ -83,10 +83,10 @@ jobs:
 
       - name: Create/Update lambda function
         run: |
-          if aws lambda get-function --function-name $FUNCTION_NAME-$PR_NUMBER ; then
+          if aws lambda get-function --function-name $FUNCTION_NAME-$PR_NUMBER > /dev/null 2>&1; then
             aws lambda update-function-code \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
-              --image-uri $REGISTRY/$IMAGE:$PR_NUMBER 
+              --image-uri $REGISTRY/$IMAGE:$PR_NUMBER > /dev/null 2>&1
 
           else
             aws lambda create-function \
@@ -96,7 +96,7 @@ jobs:
               --timeout 15 \
               --memory-size 1024 \
               --code ImageUri=$REGISTRY/$IMAGE:$PR_NUMBER \
-              --description "$GITHUB_REPOSITORY/pull/$PR_NUMBER" 
+              --description "$GITHUB_REPOSITORY/pull/$PR_NUMBER" > /dev/null 2>&1
 
             aws lambda wait function-active --function-name $FUNCTION_NAME-$PR_NUMBER
             aws lambda add-permission \
@@ -104,7 +104,7 @@ jobs:
               --statement-id FunctionURLAllowPublicAccess \
               --action lambda:InvokeFunctionUrl \
               --principal "*" \
-              --function-url-auth-type NONE 
+              --function-url-auth-type NONE > /dev/null 2>&1
 
             URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)"
             echo "URL=$URL" >> $GITHUB_ENV
@@ -119,10 +119,10 @@ jobs:
                 SENDING_DOMAIN=staging.notification.cdssandbox.xyz,\
                 API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
                 ADMIN_BASE_URL=$URL
-              }" 
+              }" > /dev/null 2>&1
 
-            aws logs create-log-group --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER 
-            aws logs put-retention-policy --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER --retention-in-days 14 
+            aws logs create-log-group --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER > /dev/null 2>&1
+            aws logs put-retention-policy --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER --retention-in-days 14 > /dev/null 2>&1
           fi
 
           aws lambda wait function-updated --function-name $FUNCTION_NAME-$PR_NUMBER
