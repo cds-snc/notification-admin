@@ -36,7 +36,7 @@ COPY requirements.txt ${APP_DIR}
 RUN python -m pip install wheel && \
     pip3 install -r requirements.txt
 
-COPY package.json package-lock.json .snyk ${APP_DIR}
+COPY package.json package-lock.json .snyk ${APP_DIR}/
 RUN npm ci
 
 COPY . ${APP_DIR}
