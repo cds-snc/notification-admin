@@ -23,7 +23,7 @@ test:
 
 .PHONY: babel-test
 test-translations: babel
-	pybabel extract -F babel.cfg -k _l -o /tmp/messages.po . && po2csv /tmp/messages.po /tmp/messages.csv
+	pybabel extract -F babel.cfg -k _l -o /tmp/messages.po . && poetry run po2csv /tmp/messages.po /tmp/messages.csv
 	rm /tmp/messages.po
 	python scripts/test-translations.py /tmp/messages.csv
 	rm /tmp/messages.csv
@@ -31,8 +31,8 @@ test-translations: babel
 .PHONY: babel
 babel:
 	python scripts/generate_en_translations.py
-	csv2po app/translations/csv/en.csv app/translations/en/LC_MESSAGES/messages.po
-	csv2po app/translations/csv/fr.csv app/translations/fr/LC_MESSAGES/messages.po
+	poetry run csv2po app/translations/csv/en.csv app/translations/en/LC_MESSAGES/messages.po
+	poetry run csv2po app/translations/csv/fr.csv app/translations/fr/LC_MESSAGES/messages.po
 	pybabel compile -d app/translations
 
 .PHONY: search-csv
