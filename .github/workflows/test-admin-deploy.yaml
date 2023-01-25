@@ -52,8 +52,8 @@ jobs:
         with:
           context: .
           file: ci/Dockerfile.lambda
-          target: base
           platforms: linux/amd64
+          target: base          
           push: false
           cache-from: |
             type=gha,scope=base
@@ -65,6 +65,7 @@ jobs:
         with:
           context: .
           file: ci/Dockerfile.lambda
+          platforms: linux/amd64
           target: lambda
           push: true
           cache-from: |
