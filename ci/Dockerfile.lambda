@@ -1,11 +1,13 @@
 ARG APP_DIR="/app"
 ARG APP_VENV="/opt/venv"
+ARG POETRY_VERSION="1.3.0"
 
 # Build image
 FROM python:3.10-alpine3.16@sha256:00be2731a1c650d3573aebd84a46c06f3a3251377323f6f43ff1386e70ea2992 as base
 
 ARG APP_DIR
 ARG APP_VENV
+ARG POETRY_VERSION
 
 RUN apk add --no-cache \
     autoconf \
@@ -19,22 +21,31 @@ RUN apk add --no-cache \
     libffi-dev \
     libtool \
     libxml2-dev \
-    libxslt-dev \    
+    libxslt-dev \
     nodejs \
-    npm \    
-    make       
+    npm \
+    make
 
 RUN mkdir -p ${APP_DIR}
 WORKDIR ${APP_DIR}
 
-RUN python -m venv ${APP_VENV}
+ENV POETRY_VIRTUALENVS_PATH="${APP_VENV}"
 ENV PATH="${APP_VENV}/bin:$PATH"
 
-RUN pip3 install awslambdaric
+RUN pip3 install poetry==${POETRY_VERSION} \
+  && poetry --version
 
-COPY requirements.txt ${APP_DIR}
-RUN python -m pip install wheel && \
-    pip3 install -r requirements.txt
+
+COPY pyproject.toml ${APP_DIR}
+
+RUN poetry add awslambdaric wheel
+RUN poetry install
+
+# RUN pip3 install awslambdaric
+
+# COPY requirements.txt ${APP_DIR}
+# RUN python -m pip install wheel && \
+#     pip3 install -r requirements.txt
 
 COPY package.json package-lock.json .snyk ${APP_DIR}/
 RUN npm ci
@@ -67,4 +78,4 @@ COPY bin/entry.sh /
 COPY bin/sync_lambda_envs.sh /
 
 ENTRYPOINT [ "/entry.sh" ]
-CMD [ "application.handler" ] 
+CMD [ "application.handler" ]
