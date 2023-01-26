@@ -41,12 +41,6 @@ COPY pyproject.toml ${APP_DIR}
 RUN poetry add awslambdaric wheel
 RUN poetry install
 
-# RUN pip3 install awslambdaric
-
-# COPY requirements.txt ${APP_DIR}
-# RUN python -m pip install wheel && \
-#     pip3 install -r requirements.txt
-
 COPY package.json package-lock.json .snyk ${APP_DIR}/
 RUN npm ci
 
