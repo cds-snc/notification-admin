@@ -20,7 +20,7 @@ function display_result {
   fi
 }
 
-make test-requirements
+poetry check
 display_result $? 1 "Requirements check"
 
 make babel
