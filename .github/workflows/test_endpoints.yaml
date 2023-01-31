@@ -23,8 +23,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+    - name: Install poetry
+      env:
+        POETRY_VERSION: "1.3.2"
+      run: pip install poetry==${POETRY_VERSION} && poetry --version
+
+    - name: Install requirements
+      run: poetry install --with test
 
     - name: Get python version
       run: |
@@ -36,11 +41,11 @@ jobs:
         printf '__commit_sha__ = "09cfe03100443fb9071bba88d5c8775ff54a9ebc"\n__time__ = "2022-07-25:15:11:05"\n' > version.py
         cp version.py "${{ github.workspace }}/app/"
 
-    - name: Copy site-packages in workspace
-      working-directory: /opt/hostedtoolcache/Python/${{ env.python_version }}/x64/lib/python3.10/
+ - name: Copy site-packages in workspace
+      working-directory: ${{ github.workspace }}
       shell: bash
       run: |
-        mkdir -p "${{ github.workspace }}/env/" && cp -fR site-packages "${{ github.workspace }}/env/"
+        mkdir -p "${{ github.workspace }}/env/" && cp -fR $(poetry env list | poetry env info -p)/lib/python3.10/site-packages "${{ github.workspace }}/env/"
 
     - name: Install development .env file
       working-directory: ${{ github.workspace }}
