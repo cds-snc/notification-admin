@@ -102,8 +102,9 @@ def test_bad_slug_doesnt_save_empty_cache_entry(app_, mocker):
             assert not mock_redis_method.set.called
 
 
-@pytest.mark.skip(reason="TODO: a11y test")
-@pytest.mark.parametrize("url", ["/a11y", "/why-notify", "/personalise", "/format", "/messages-status"])
+@pytest.mark.parametrize(
+    "url", ["/a11y", "/why-notify", "/personalise", "/format", "/messages-status", "/pourquoi-gc-notification"]
+)
 def test_gca_redirects_work(client_request, mocker, url):
     """
     This test ensures that the pages we renamed properly provide a permanent redirect
