@@ -39,6 +39,14 @@ babel:
 search-csv:
 	python scripts/search_csv.py
 
+.PHONY: freeze-requirements
+freeze-requirements:
+	poetry lock --no-update
+
+.PHONY: test-requirements
+test-requirements:
+	poetry lock --check
+
 .PHONY: coverage
 coverage: venv ## Create coverage report
 	. venv/bin/activate && coveralls
