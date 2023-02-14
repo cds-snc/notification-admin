@@ -42,14 +42,14 @@ WORKDIR ${APP_DIR}
 RUN python -m venv ${POETRY_HOME} \
     && ${POETRY_HOME}/bin/pip3 install poetry==${POETRY_VERSION}
 
-COPY pyproject.toml poetry.lock ${APP_DIR} /
+COPY pyproject.toml poetry.lock ${APP_DIR}/
 
 RUN python -m venv ${APP_VENV} \
     && . ${APP_VENV}/bin/activate \
     && poetry install \
     && poetry add awslambdaric wheel
 
-COPY package.json package-lock.json .snyk ${APP_DIR} /
+COPY package.json package-lock.json .snyk ${APP_DIR}/
 RUN npm ci
 
 COPY . ${APP_DIR}
