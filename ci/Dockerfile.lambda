@@ -64,37 +64,33 @@ RUN . ${APP_VENV}/bin/activate \
     && make generate-version-file
 
 # Final image
-FROM python:3.10-alpine3.16@sha256:00be2731a1c650d3573aebd84a46c06f3a3251377323f6f43ff1386e70ea2992 as lambda
+FROM python:3.10-slim as lambda
 
-# ARG APP_DIR
-# ARG APP_VENV
-# ARG POETRY_HOME
-# ARG POETRY_VERSION
-# ARG POETRY_VIRTUALENVS_CREATE
-# ARG GIT_SHA
-# ARG PATH
+ARG APP_DIR
+ARG APP_VENV
+ARG POETRY_HOME
+ARG POETRY_VERSION
+ARG POETRY_VIRTUALENVS_CREATE
+ARG GIT_SHA
+ARG PATH
 
-# ENV POETRY_HOME=${POETRY_HOME}
-# ENV POETRY_VERSION=${POETRY_VERSION}
-# ENV POETRY_VIRTUALENVS_CREATE=${POETRY_VIRTUALENVS_CREATE}
+ENV POETRY_HOME=${POETRY_HOME}
+ENV POETRY_VERSION=${POETRY_VERSION}
+ENV POETRY_VIRTUALENVS_CREATE=${POETRY_VIRTUALENVS_CREATE}
 
-# ENV GIT_SHA ${GIT_SHA}
-# ENV PATH=${PATH}
-# ENV PORT=6012
-# ENV PYTHONDONTWRITEBYTECODE 1
+ENV GIT_SHA ${GIT_SHA}
+ENV PATH=${PATH}
+ENV PORT=6012
+ENV PYTHONDONTWRITEBYTECODE 1
 
-# RUN apt-get install -y --no-install-recommends \
-#     libstdc++
-#     # && apt-get autoremove -y \
-#     # && apt-get clean -y \
-#     # && rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y --no-install-recommends libstdc++
 
-# WORKDIR ${APP_DIR}
+WORKDIR ${APP_DIR}
 
-# COPY --from=base ${APP_DIR} ${APP_DIR}
-# COPY --from=base ${POETRY_HOME} ${POETRY_HOME}
-# COPY bin/entry.sh /
-# COPY bin/sync_lambda_envs.sh /
+COPY --from=base ${APP_DIR} ${APP_DIR}
+COPY --from=base ${POETRY_HOME} ${POETRY_HOME}
+COPY bin/entry.sh /
+COPY bin/sync_lambda_envs.sh /
 
-# ENTRYPOINT [ "/entry.sh" ]
-# CMD [ "application.handler" ]
+ENTRYPOINT [ "/entry.sh" ]
+CMD [ "application.handler" ]
