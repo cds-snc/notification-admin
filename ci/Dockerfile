@@ -1,10 +1,23 @@
-FROM python:3.10-alpine3.16@sha256:00be2731a1c650d3573aebd84a46c06f3a3251377323f6f43ff1386e70ea2992
+FROM python:3.10-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV POETRY_VERSION="1.3.2"
 ENV POETRY_VIRTUALENVS_CREATE false
 
-RUN apk add --no-cache bash build-base libxml2-dev libxslt-dev git nodejs npm g++ make libffi-dev && rm -rf /var/cache/apk/*
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    bash \
+    build-essential \
+    libxml2-dev \
+    libxslt-dev \
+    git nodejs \
+    npm \
+    g++ \
+    make \
+    libffi-dev \
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 
 # update pip
 RUN python -m pip install wheel poetry==${POETRY_VERSION}
