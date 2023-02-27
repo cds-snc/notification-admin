@@ -11,6 +11,8 @@ from app.main import main
 from app.main.forms import (
     CreateServiceStepLogoForm,
     CreateServiceStepNameForm,
+    CreateServiceStepOrganisationForm,
+    CreateServiceStepOrganisationTypeForm,
     FieldWithLanguageOptions,
 )
 from app.utils import email_safe, user_is_gov_user, user_is_logged_in
@@ -23,13 +25,17 @@ DEFAULT_ORGANISATION_TYPE: str = "central"
 
 STEP_NAME: str = "choose_service_name"
 STEP_LOGO: str = "choose_logo"
+STEP_ORGANISATION: str = "choose_organisation"
+STEP_ORGANISATION_TYPE: str = "choose_organisation_type"
 
 STEP_SERVICE_AND_EMAIL = STEP_NAME
 
 STEP_NAME_HEADER: str = _("Create service name and email address")
 STEP_LOGO_HEADER: str = _("Choose order for official languages")
+STEP_ORGANISATION_HEADER: str = _("About your service")
+STEP_ORGANISATION_TYPE_HEADER: str = _("About your service")
 
-WIZARD_ORDER = [STEP_LOGO, STEP_SERVICE_AND_EMAIL]
+WIZARD_ORDER = [STEP_LOGO, STEP_SERVICE_AND_EMAIL, STEP_ORGANISATION_TYPE, STEP_ORGANISATION]
 
 # wizard list init here for current_app context usage
 WIZARD_DICT = {
@@ -42,6 +48,16 @@ WIZARD_DICT = {
         "form_cls": CreateServiceStepLogoForm,
         "header": STEP_LOGO_HEADER,
         "tmpl": "partials/add-service/step-choose-logo.html",
+    },
+    STEP_ORGANISATION_TYPE: {
+        "form_cls": CreateServiceStepOrganisationTypeForm,
+        "header": STEP_ORGANISATION_TYPE_HEADER,
+        "tmpl": "partials/add-service/step-enter-organisation-type.html",
+    },
+    STEP_ORGANISATION: {
+        "form_cls": CreateServiceStepOrganisationForm,
+        "header": STEP_ORGANISATION_HEADER,
+        "tmpl": "partials/add-service/step-enter-organisation.html",
     },
 }
 
