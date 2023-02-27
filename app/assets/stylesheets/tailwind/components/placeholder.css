@@ -54,5 +54,9 @@
     /* theme yellow */
     box-shadow: inset 0 -0.35em 0 0 #ffbf47;
   }
+
+  .autocomplete__input--focused {
+    outline-color: #ffbf47
+  }
   /*! purgecss end ignore */
 }

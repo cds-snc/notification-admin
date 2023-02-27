@@ -33,6 +33,22 @@
   </p>
   <p>{{ _("This email address cannot receive replies. In Settings, you can enter a different email for replies. Currently your service is set to prevent replies.") }}</p>
 
+  <!-- TODO: move this into a reusable component -->
+  <h2 class="heading-medium">Department</h2>
+  <p>Each service is linked to a department to help us understand how Notify is being used.</p>
+  <div class="w-full md:w-1/2 form-group contain-floats box-border mb-doubleGutter">
+    <label for="department"><strong>Enter your department</strong></label>
+    <select data-module="autocomplete" id="department">
+      <option value=""></option>
+      <option value="esdc">Employment and Social Development Canada</option>
+      <option value="hc">Health Canada</option>          
+      <option value="pspc">Public Services and Procurement Canada</option>
+      <option value="ssc">Shared Services Canada</option>
+      <option value="tbs">Treasury Board Secretariat</option>
+      <option value="tc">Transport Canada</option>
+    </select>
+  </div>  
+
   {% set button_txt = _('Create service') %}
   {{ page_footer(button_txt) }}
 
