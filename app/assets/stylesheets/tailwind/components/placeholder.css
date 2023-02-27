@@ -56,7 +56,7 @@
   }
 
   .autocomplete__input--focused {
-    outline-color: #ffbf47
+    outline-color: #ffbf47;
   }
   /*! purgecss end ignore */
 }
