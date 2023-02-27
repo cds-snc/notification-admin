@@ -40,12 +40,9 @@
     <label for="department"><strong>Enter your department</strong></label>
     <select data-module="autocomplete" id="department">
       <option value=""></option>
-      <option value="esdc">Employment and Social Development Canada</option>
-      <option value="hc">Health Canada</option>          
-      <option value="pspc">Public Services and Procurement Canada</option>
-      <option value="ssc">Shared Services Canada</option>
-      <option value="tbs">Treasury Board Secretariat</option>
-      <option value="tc">Transport Canada</option>
+      {% for item in autocomplete_items %}
+        <option value="{{ item['id'] }}">{{ item[current_lang] }}</option>
+      {% endfor %}
     </select>
   </div>  
 

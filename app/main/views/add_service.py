@@ -1,5 +1,6 @@
 from abc import ABC
 from typing import List, Text
+import json
 
 from flask import current_app, redirect, render_template, request, session, url_for
 from flask_babel import _
@@ -108,6 +109,7 @@ def _create_service(
 def _renderTemplateStep(form, current_step) -> Text:
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
+    autocomplete_items = json.load(open("app/static/data/departments-agencies.json", "r"))
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
     return render_template(
@@ -118,6 +120,7 @@ def _renderTemplateStep(form, current_step) -> Text:
         step_max=len(WIZARD_ORDER),
         tmpl=WIZARD_DICT[current_step]["tmpl"],
         back_link=back_link,
+        autocomplete_items=autocomplete_items
     )
 
 
