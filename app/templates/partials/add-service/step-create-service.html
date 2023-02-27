@@ -40,8 +40,8 @@
     <label for="department"><strong>Enter your department</strong></label>
     <select data-module="autocomplete" id="department">
       <option value=""></option>
-      {% for item in autocomplete_items %}
-        <option value="{{ item['id'] }}">{{ item[current_lang] }}</option>
+      {% for label in autocomplete_items[current_lang] %}
+        <option value="{{ label }}">{{ label }}</option>
       {% endfor %}
     </select>
   </div>  

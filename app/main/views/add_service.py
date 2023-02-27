@@ -109,7 +109,10 @@ def _create_service(
 def _renderTemplateStep(form, current_step) -> Text:
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
-    autocomplete_items = json.load(open("app/static/data/departments-agencies.json", "r"))
+    autocomplete_items = {
+        "en": json.load(open("app/assets/data/departments-agencies-en.json", "r")),
+        "fr": json.load(open("app/assets/data/departments-agencies-fr.json", "r")),
+    }
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
     return render_template(
