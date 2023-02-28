@@ -82,6 +82,12 @@ class Config(object):
     GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.alpha.canada.ca/notification-gc-notify")
     GC_ARTICLES_API_AUTH_USERNAME = os.environ.get("GC_ARTICLES_API_AUTH_USERNAME")
     GC_ARTICLES_API_AUTH_PASSWORD = os.environ.get("GC_ARTICLES_API_AUTH_PASSWORD")
+    SALESFORCE_DOMAIN = os.environ.get("SALESFORCE_DOMAIN")
+    SALESFORCE_USERNAME = os.environ.get("SALESFORCE_USERNAME")
+    SALESFORCE_CLIENT_ID = os.getenv("SALESFORCE_CLIENT_ID", "Notify")
+    SALESFORCE_CLIENT_KEY = os.environ.get("SALESFORCE_CLIENT_KEY")
+    SALESFORCE_CLIENT_PRIVATEKEY = os.environ.get("SALESFORCE_CLIENT_PRIVATEKEY")
+    SALESFORCE_GENERIC_ACCOUNT_ID = os.environ.get("SALESFORCE_GENERIC_ACCOUNT_ID")
 
     LANGUAGES = ["en", "fr"]
     LOGO_UPLOAD_BUCKET_NAME = os.getenv("ASSET_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-asset-upload")
@@ -131,6 +137,7 @@ class Config(object):
     # FEATURE FLAGS
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
+    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
@@ -146,6 +153,8 @@ class Config(object):
             "ANTIVIRUS_API_KEY",
             "ROUTE_SECRET_KEY_1",
             "ROUTE_SECRET_KEY_2",
+            "SALESFORCE_CLIENT_KEY",
+            "SALESFORCE_CLIENT_PRIVATEKEY",
             "WAF_SECRET",
         ]
 
@@ -164,6 +173,7 @@ class Development(Config):
     DEBUG = True
     MOU_BUCKET_NAME = "notify.tools-mou"
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+    SALESFORCE_DOMAIN = "test"
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-notify-secret-key")
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
@@ -187,6 +197,7 @@ class Test(Development):
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     FF_SPIKE_SMS_DAILY_LIMIT = False
     FF_SMS_PARTS_UI = False
+    SALESFORCE_DOMAIN = "test"
 
 
 class Production(Config):
@@ -199,6 +210,7 @@ class Production(Config):
 class Staging(Production):
     NOTIFY_ENVIRONMENT = "staging"
     NOTIFY_LOG_LEVEL = "INFO"
+    SALESFORCE_DOMAIN = "test"
 
 
 configs = {

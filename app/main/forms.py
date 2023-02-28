@@ -621,6 +621,8 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
             validate_email_from,
         ],
     )
+
+
 class CreateServiceStepOrganisationTypeForm(StripWhitespaceForm):
     federal = RadioField(
         ("What level of government is your service a part of?"),
@@ -633,11 +635,12 @@ class CreateServiceStepOrganisationTypeForm(StripWhitespaceForm):
 
 
 class CreateServiceStepOrganisationForm(StripWhitespaceForm):
-        
+
     department_org_name = StringField(
         _l("Name of your organisation"),
         validators=[Optional(), Length(max=500)],
     )
+
 
 class CreateServiceStepLogoForm(StripWhitespaceForm):
     def _getSelectBilingualChoices(self):
