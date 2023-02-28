@@ -22,5 +22,7 @@ def get_session() -> Salesforce | None:
         )
     except SalesforceAuthenticationFailed as auth_failure:
         current_app.logger.error(f"Salesforce login failed: {auth_failure}")
+    except Exception as ex:
+        current_app.logger.error(f"Salesforce login failed with uncaught exception: {ex}")
 
     return session

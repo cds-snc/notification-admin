@@ -31,8 +31,10 @@ def create(user: User):
             else:
                 current_app.logger.error(f"Salesforce Contact create failed: {result['errors']}")
 
-        except SalesforceError as err:
-            current_app.logger.error(f"Salesforce Contact create failed: {err}")
+        except SalesforceError as salesforce_error:
+            current_app.logger.error(f"Salesforce Contact create failed: {salesforce_error}")
+        except Exception as ex:
+            current_app.logger.error(f"Salesforce Contact create failed with uncaught exception: {ex}")
 
 
 def get_name_parts(full_name: str) -> dict[str, Optional[str]]:
