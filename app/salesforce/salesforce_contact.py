@@ -8,12 +8,16 @@ from app.models.user import User
 from .salesforce_auth import get_session
 
 
-def create(user: User):
+def create(user: User) -> bool:
     """Create a Salesforce Contact from the given Notify User
 
     Args:
         user (User): Notify User that has just been activated
+
+    Returns:
+        bool: Was the Contact created?
     """
+    is_created = False
     session = get_session()
     if session:
         name_parts = get_name_parts(user.name)
@@ -28,6 +32,7 @@ def create(user: User):
             )
             if result["success"]:
                 current_app.logger.info(f"Salesforce Contact created for: {user.email_address}")
+                is_created = True
             else:
                 current_app.logger.error(f"Salesforce Contact create failed: {result['errors']}")
 
@@ -35,6 +40,7 @@ def create(user: User):
             current_app.logger.error(f"Salesforce Contact create failed: {salesforce_error}")
         except Exception as ex:
             current_app.logger.error(f"Salesforce Contact create failed with uncaught exception: {ex}")
+    return is_created
 
 
 def get_name_parts(full_name: str) -> dict[str, Optional[str]]:
