@@ -621,6 +621,8 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
             validate_email_from,
         ],
     )
+
+
 class CreateServiceStepOrganisationTypeForm(StripWhitespaceForm):
     government_type = RadioField(
         ("What level of government is your service a part of?"),

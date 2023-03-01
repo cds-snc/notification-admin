@@ -22,10 +22,9 @@
 
 	"extensions": [
 		"donjayamanne.python-extension-pack",
-		"ms-python.vscode-pylance",
+		"ms-python.python",
 		"eamodio.gitlens",
 		"wholroyd.jinja",
-		"pmbenjamin.vscode-snyk",
 		"visualstudioexptteam.vscodeintellicode",
 		"yzhang.markdown-all-in-one",
 		"ms-ossdata.vscode-postgresql",

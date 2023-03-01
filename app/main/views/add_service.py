@@ -1,6 +1,6 @@
+import json
 from abc import ABC
 from typing import List, Text
-import json
 
 from flask import current_app, redirect, render_template, request, session, url_for
 from flask_babel import _
@@ -170,7 +170,7 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
         step_max=len(WIZARD_ORDER),
         tmpl=tmpl,
         back_link=back_link,
-        autocomplete_items=autocomplete_items
+        autocomplete_items=autocomplete_items,
     )
 
 
