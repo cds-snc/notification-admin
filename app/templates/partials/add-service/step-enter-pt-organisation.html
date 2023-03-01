@@ -6,7 +6,7 @@
   {% call form_wrapper() %}
 
     <!-- TODO: move this into a reusable component -->
-    <div class="w-full md:w-1/2 form-group contain-floats box-border mb-doubleGutter">
+    <div class="w-full md:w-1/2 form-group contain-floats box-border mb-gutterAndAHalf">
       <label for="department"><strong>Name of your province or territory</strong></label>
       <select data-module="autocomplete" id="pt">
         <option value=""></option>
@@ -16,7 +16,7 @@
       </select>
     </div>  
 
-    {{ textbox(form.org_name, hint="Optional: provide more granular info", maxlength=255) }}
+    {{ textbox(form.org_name, hint="Optional: provide more detailed information", maxlength=255) }}
 
     {% set button_txt = _('Create service') %}
     {{ page_footer(button_txt) }}
