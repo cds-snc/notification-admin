@@ -10,7 +10,7 @@
       <label for="department"><strong>Name of your department or agency</strong></label>
       <select data-module="autocomplete" id="department">
         <option value=""></option>
-        {% for label in autocomplete_items[current_lang] %}
+        {% for label in autocomplete_items_federal[current_lang] %}
           <option value="{{ label }}">{{ label }}</option>
         {% endfor %}
       </select>

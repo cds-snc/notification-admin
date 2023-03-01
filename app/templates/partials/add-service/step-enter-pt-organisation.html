@@ -10,8 +10,8 @@
       <label for="department"><strong>Name of your province or territory</strong></label>
       <select data-module="autocomplete" id="pt">
         <option value=""></option>
-        {% for label in autocomplete_items[current_lang] %}
-          <option value="{{ label }}">{{ label }}</option>
+        {% for item in autocomplete_items_pt[current_lang] %}
+          <option value="{{ item['name'] }}">{{ item['name'] }}</option>
         {% endfor %}
       </select>
     </div>  

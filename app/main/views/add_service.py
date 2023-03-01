@@ -154,9 +154,13 @@ def get_form_template(current_step, government_type):
 def _renderTemplateStep(form, current_step, government_type) -> Text:
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
-    autocomplete_items = {
+    autocomplete_items_federal = {
         "en": json.load(open("app/assets/data/departments-agencies-en.json", "r")),
         "fr": json.load(open("app/assets/data/departments-agencies-fr.json", "r")),
+    }
+    autocomplete_items_pt = {
+        "en": json.load(open("app/assets/data/provinces-territories-en.json", "r")),
+        "fr": json.load(open("app/assets/data/provinces-territories-en.json", "r")),
     }
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
@@ -170,7 +174,8 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
         step_max=len(WIZARD_ORDER),
         tmpl=tmpl,
         back_link=back_link,
-        autocomplete_items=autocomplete_items,
+        autocomplete_items_federal=autocomplete_items_federal,
+        autocomplete_items_pt=autocomplete_items_pt,
     )
 
 
