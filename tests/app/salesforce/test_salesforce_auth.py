@@ -25,10 +25,10 @@ def test_get_session(mocker, app_):
 def test_get_session_auth_failure(mocker, app_):
     with app_.app_context():
         mocker.patch("app.salesforce.salesforce_auth.Salesforce", side_effect=SalesforceAuthenticationFailed("aw", "dang"))
-        assert get_session() == None
+        assert get_session() is None
 
 
 def test_get_session_uncaught_exception(mocker, app_):
     with app_.app_context():
         mocker.patch("app.salesforce.salesforce_auth.Salesforce", side_effect=ValueError())
-        assert get_session() == None
+        assert get_session() is None
