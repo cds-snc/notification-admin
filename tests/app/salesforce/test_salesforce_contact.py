@@ -28,6 +28,7 @@ def test_create(mocker, app_, user):
                 "LastName": "Gamgee",
                 "Email": "samwise@fellowship.ca",
                 "Phone": "123-456-7890",
+                "AccountId": None,
             }
         )
 

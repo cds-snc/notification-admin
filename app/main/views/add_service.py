@@ -9,12 +9,12 @@ from notifications_python_client.errors import HTTPError
 from app import billing_api_client, service_api_client
 from app.main import main
 from app.main.forms import (
+    CreateServiceStepFederalOrganisationForm,
     CreateServiceStepLogoForm,
     CreateServiceStepNameForm,
-    CreateServiceStepFederalOrganisationForm,
-    CreateServiceStepPtOrganisationForm,
     CreateServiceStepOrganisationTypeForm,
     CreateServiceStepOtherOrganisationForm,
+    CreateServiceStepPtOrganisationForm,
     FieldWithLanguageOptions,
 )
 from app.utils import email_safe, user_is_gov_user, user_is_logged_in
@@ -65,23 +65,21 @@ WIZARD_DICT = {
 ORGANISIATION_STEP_DICT = {
     "federal": {
         "tmpl": "partials/add-service/step-enter-federal-organisation.html",
-        "form_cls": CreateServiceStepFederalOrganisationForm
+        "form_cls": CreateServiceStepFederalOrganisationForm,
     },
-    "pt": {
-        "tmpl": "partials/add-service/step-enter-pt-organisation.html",
-        "form_cls": CreateServiceStepPtOrganisationForm
-    },
+    "pt": {"tmpl": "partials/add-service/step-enter-pt-organisation.html", "form_cls": CreateServiceStepPtOrganisationForm},
     "other": {
         "tmpl": "partials/add-service/step-enter-other-organisation.html",
-        "form_cls": CreateServiceStepOtherOrganisationForm
-    }
+        "form_cls": CreateServiceStepOtherOrganisationForm,
+    },
 }
+
 
 def get_wizard_order():
     if current_app.config["FF_SALESFORCE_CONTACT"]:
-        return[STEP_LOGO, STEP_SERVICE_AND_EMAIL, STEP_ORGANISATION_TYPE, STEP_ORGANISATION]
+        return [STEP_LOGO, STEP_SERVICE_AND_EMAIL, STEP_ORGANISATION_TYPE, STEP_ORGANISATION]
     return [STEP_LOGO, STEP_SERVICE_AND_EMAIL]
-    
+
 
 # WIZARD_ORDER = get_wizard_order()
 
@@ -160,7 +158,7 @@ def get_form_template(current_step, government_type):
 
 def _renderTemplateStep(form, current_step, government_type) -> Text:
     WIZARD_ORDER = get_wizard_order()
-    
+
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
     autocomplete_items_federal = {
@@ -173,7 +171,7 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
     }
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
-    
+
     tmpl = get_form_template(current_step, government_type)
     return render_template(
         "views/add-service.html",
@@ -193,7 +191,7 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
 @user_is_gov_user
 def add_service():
     WIZARD_ORDER = get_wizard_order()
-    
+
     current_step = request.args.get("current_step", None)
     government_type = request.args.get("government_type", None)
 
