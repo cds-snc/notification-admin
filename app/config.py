@@ -137,7 +137,8 @@ class Config(object):
     # FEATURE FLAGS
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
-    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
+    # TODO: change to `env.bool("FF_SALESFORCE_CONTACT", False)` when the env var is added
+    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:

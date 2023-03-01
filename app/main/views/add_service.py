@@ -37,7 +37,6 @@ STEP_LOGO_HEADER: str = _("Choose order for official languages")
 STEP_ORGANISATION_HEADER: str = _("About your service")
 STEP_ORGANISATION_TYPE_HEADER: str = _("About your service")
 
-WIZARD_ORDER = [STEP_LOGO, STEP_SERVICE_AND_EMAIL, STEP_ORGANISATION_TYPE, STEP_ORGANISATION]
 
 # wizard list init here for current_app context usage
 WIZARD_DICT = {
@@ -77,6 +76,14 @@ ORGANISIATION_STEP_DICT = {
         "form_cls": CreateServiceStepOtherOrganisationForm
     }
 }
+
+def get_wizard_order():
+    if current_app.config["FF_SALESFORCE_CONTACT"]:
+        return[STEP_LOGO, STEP_SERVICE_AND_EMAIL, STEP_ORGANISATION_TYPE, STEP_ORGANISATION]
+    return [STEP_LOGO, STEP_SERVICE_AND_EMAIL]
+    
+
+# WIZARD_ORDER = get_wizard_order()
 
 # Utility classes
 class ServiceResult(ABC):
@@ -152,6 +159,8 @@ def get_form_template(current_step, government_type):
 
 
 def _renderTemplateStep(form, current_step, government_type) -> Text:
+    WIZARD_ORDER = get_wizard_order()
+    
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
     autocomplete_items_federal = {
@@ -183,6 +192,8 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
 @user_is_logged_in
 @user_is_gov_user
 def add_service():
+    WIZARD_ORDER = get_wizard_order()
+    
     current_step = request.args.get("current_step", None)
     government_type = request.args.get("government_type", None)
 
@@ -215,7 +226,7 @@ def add_service():
         # more steps to go, save valid submitted data to session and redirct to next form
         current_step = WIZARD_ORDER[idx + 1]
         session[SESSION_FORM_KEY].update(form.data)
-        if idx == len(WIZARD_ORDER) - 2:
+        if current_step == STEP_ORGANISATION_TYPE:
             government_type = form.data["government_type"]
         return redirect(url_for(".add_service", current_step=current_step, government_type=government_type))
     # no more steps left, re-validate validate session in case of stale session data
