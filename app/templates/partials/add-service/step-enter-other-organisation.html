@@ -5,9 +5,9 @@
 <div data-module="url-typer" class="form-wrap">
   {% call form_wrapper() %}
 
-    {{radios(form.government_type)}}
+    {{ textbox(form.org_name, maxlength=255) }}
 
-    {% set button_txt = _('Continue') %}
+    {% set button_txt = _('Create service') %}
     {{ page_footer(button_txt) }}
 
   {% endcall %}

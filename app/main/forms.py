@@ -622,7 +622,7 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
         ],
     )
 class CreateServiceStepOrganisationTypeForm(StripWhitespaceForm):
-    federal = RadioField(
+    government_type = RadioField(
         ("What level of government is your service a part of?"),
         choices=[
             ("federal", "Federal department or agency"),
@@ -632,12 +632,28 @@ class CreateServiceStepOrganisationTypeForm(StripWhitespaceForm):
     )
 
 
-class CreateServiceStepOrganisationForm(StripWhitespaceForm):
+class CreateServiceStepFederalOrganisationForm(StripWhitespaceForm):
         
-    department_org_name = StringField(
+    org_name = StringField(
         _l("Name of your organisation"),
         validators=[Optional(), Length(max=500)],
     )
+
+
+class CreateServiceStepPtOrganisationForm(StripWhitespaceForm):
+        
+    org_name = StringField(
+        _l("Name of your organisation"),
+        validators=[Optional(), Length(max=500)],
+    )
+
+class CreateServiceStepOtherOrganisationForm(StripWhitespaceForm):
+        
+    org_name = StringField(
+        _l("Name of your organisation"),
+        validators=[Length(max=500)],
+    )
+
 
 class CreateServiceStepLogoForm(StripWhitespaceForm):
     def _getSelectBilingualChoices(self):

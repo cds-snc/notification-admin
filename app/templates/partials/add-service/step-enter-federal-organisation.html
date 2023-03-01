@@ -1,0 +1,25 @@
+{% from "components/radios.html" import radios %}
+
+<p>{{ _("This information helps us understand how GC Notify is being used so we can better meet your needs.") }}</p>
+
+<div data-module="url-typer" class="form-wrap">
+  {% call form_wrapper() %}
+
+    <!-- TODO: move this into a reusable component -->
+    <div class="w-full md:w-1/2 form-group contain-floats box-border mb-doubleGutter">
+      <label for="department"><strong>Name of your department or agency</strong></label>
+      <select data-module="autocomplete" id="department">
+        <option value=""></option>
+        {% for label in autocomplete_items[current_lang] %}
+          <option value="{{ label }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>  
+
+    {{ textbox(form.org_name, hint="Optional: provide more granular info", maxlength=255) }}
+
+    {% set button_txt = _('Create service') %}
+    {{ page_footer(button_txt) }}
+
+  {% endcall %}
+</div>

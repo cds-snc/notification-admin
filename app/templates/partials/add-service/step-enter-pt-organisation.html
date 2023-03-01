@@ -7,8 +7,8 @@
 
     <!-- TODO: move this into a reusable component -->
     <div class="w-full md:w-1/2 form-group contain-floats box-border mb-doubleGutter">
-      <label for="department"><strong>Name of your department or agency</strong></label>
-      <select data-module="autocomplete" id="department">
+      <label for="department"><strong>Name of your province or territory</strong></label>
+      <select data-module="autocomplete" id="pt">
         <option value=""></option>
         {% for label in autocomplete_items[current_lang] %}
           <option value="{{ label }}">{{ label }}</option>
@@ -16,7 +16,7 @@
       </select>
     </div>  
 
-    {{ textbox(form.department_org_name, hint="Optional: provide more granular info", maxlength=255) }}
+    {{ textbox(form.org_name, hint="Optional: provide more granular info", maxlength=255) }}
 
     {% set button_txt = _('Create service') %}
     {{ page_footer(button_txt) }}
