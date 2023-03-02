@@ -15,6 +15,7 @@ from app.main.forms import (
     CreateServiceStepOrganisationTypeForm,
     CreateServiceStepOtherOrganisationForm,
     CreateServiceStepPtOrganisationForm,
+    CreateServiceStepCombinedOrganisationForm,
     FieldWithLanguageOptions,
 )
 from app.utils import email_safe, user_is_gov_user, user_is_logged_in
@@ -72,12 +73,16 @@ ORGANISIATION_STEP_DICT = {
         "tmpl": "partials/add-service/step-enter-other-organisation.html",
         "form_cls": CreateServiceStepOtherOrganisationForm,
     },
+    "combined": {
+        "tmpl": "partials/add-service/step-enter-combined-organisation.html",
+        "form_cls": CreateServiceStepCombinedOrganisationForm,
+    },
 }
 
 
 def get_wizard_order():
     if current_app.config["FF_SALESFORCE_CONTACT"]:
-        return [STEP_LOGO, STEP_SERVICE_AND_EMAIL, STEP_ORGANISATION_TYPE, STEP_ORGANISATION]
+        return [STEP_LOGO, STEP_SERVICE_AND_EMAIL, STEP_ORGANISATION]
     return [STEP_LOGO, STEP_SERVICE_AND_EMAIL]
 
 
@@ -143,13 +148,16 @@ def _create_service(
 
 def get_form_class(current_step, government_type):
     if current_step == STEP_ORGANISATION:
+        if not government_type:
+            return ORGANISIATION_STEP_DICT["combined"]["form_cls"]
         return ORGANISIATION_STEP_DICT[government_type]["form_cls"]
     return WIZARD_DICT[current_step]["form_cls"]
 
 
 def get_form_template(current_step, government_type):
-    government_type = government_type if government_type else "federal"
     if current_step == STEP_ORGANISATION:
+        if not government_type:
+            return ORGANISIATION_STEP_DICT["combined"]["tmpl"]
         return ORGANISIATION_STEP_DICT[government_type]["tmpl"]
     return WIZARD_DICT[current_step]["tmpl"]
 
@@ -167,6 +175,11 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
         "en": json.load(open("app/assets/data/provinces-territories-en.json", "r")),
         "fr": json.load(open("app/assets/data/provinces-territories-en.json", "r")),
     }
+    
+    autocomplete_items_combined = {
+        "en": autocomplete_items_federal["en"] + autocomplete_items_pt["en"],
+        "fr": autocomplete_items_federal["fr"] + autocomplete_items_pt["en"],
+    }
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
 
@@ -181,6 +194,7 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
         back_link=back_link,
         autocomplete_items_federal=autocomplete_items_federal,
         autocomplete_items_pt=autocomplete_items_pt,
+        autocomplete_items_combined=autocomplete_items_combined,
     )
 
 
@@ -223,7 +237,7 @@ def add_service():
         current_step = WIZARD_ORDER[idx + 1]
         session[SESSION_FORM_KEY].update(form.data)
         if current_step == STEP_ORGANISATION:
-            government_type = form.data["government_type"]
+            government_type = form.data["government_type"] if "government_type" in form.data else None
         return redirect(url_for(".add_service", current_step=current_step, government_type=government_type))
     # no more steps left, re-validate validate session in case of stale session data
     data = session[SESSION_FORM_KEY]
