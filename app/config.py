@@ -87,6 +87,7 @@ class Config(object):
     SALESFORCE_CLIENT_ID = os.getenv("SALESFORCE_CLIENT_ID", "Notify")
     SALESFORCE_CLIENT_KEY = os.environ.get("SALESFORCE_CLIENT_KEY")
     SALESFORCE_CLIENT_PRIVATEKEY = os.environ.get("SALESFORCE_CLIENT_PRIVATEKEY")
+    SALESFORCE_ENGAGEMENT_RECORD_TYPE = os.environ.get("SALESFORCE_ENGAGEMENT_RECORD_TYPE")
     SALESFORCE_GENERIC_ACCOUNT_ID = os.environ.get("SALESFORCE_GENERIC_ACCOUNT_ID")
 
     LANGUAGES = ["en", "fr"]
@@ -137,8 +138,7 @@ class Config(object):
     # FEATURE FLAGS
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
-    # TODO: change to `env.bool("FF_SALESFORCE_CONTACT", False)` when the env var is added
-    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
+    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
