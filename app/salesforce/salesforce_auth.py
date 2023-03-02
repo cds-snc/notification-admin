@@ -2,7 +2,6 @@ from base64 import b64decode
 
 from flask import current_app
 from simple_salesforce import Salesforce
-from simple_salesforce.exceptions import SalesforceAuthenticationFailed
 
 
 def get_session() -> Salesforce | None:
@@ -20,9 +19,6 @@ def get_session() -> Salesforce | None:
             privatekey=b64decode(current_app.config["SALESFORCE_CLIENT_PRIVATEKEY"]),
             domain=current_app.config["SALESFORCE_DOMAIN"],
         )
-    except SalesforceAuthenticationFailed as auth_failure:
-        current_app.logger.error(f"Salesforce login failed: {auth_failure}")
     except Exception as ex:
-        current_app.logger.error(f"Salesforce login failed with uncaught exception: {ex}")
-
+        current_app.logger.error(f"Salesforce login failed: {ex}")
     return session

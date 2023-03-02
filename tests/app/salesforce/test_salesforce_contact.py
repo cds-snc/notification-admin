@@ -1,7 +1,7 @@
 import pytest
 
 from app.models.user import User
-from app.salesforce.salesforce_contact import create, get_name_parts
+from app.salesforce.salesforce_contact import create
 
 
 @pytest.fixture
@@ -51,10 +51,3 @@ def test_create_exception(mocker, app_, user):
         mock_get_session = mocker.patch("app.salesforce.salesforce_contact.get_session")
         mock_get_session.return_value.Contact.create.side_effect = Exception()
         assert create(user) is False
-
-
-def test_get_name_parts():
-    assert get_name_parts("Frodo Baggins") == {"first": "Frodo", "last": "Baggins"}
-    assert get_name_parts("Smaug") == {"first": "Smaug", "last": None}
-    assert get_name_parts("") == {"first": None, "last": None}
-    assert get_name_parts("Gandalf The Grey") == {"first": "Gandalf", "last": "The Grey"}
