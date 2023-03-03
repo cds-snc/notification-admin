@@ -649,6 +649,7 @@ class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
         validators=[Optional(), Length(max=500)],
     )
 
+
 class CreateServiceStepPtOrganisationForm(StripWhitespaceForm):
 
     org_name = StringField(

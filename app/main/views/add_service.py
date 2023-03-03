@@ -9,15 +9,16 @@ from notifications_python_client.errors import HTTPError
 from app import billing_api_client, service_api_client
 from app.main import main
 from app.main.forms import (
+    CreateServiceStepCombinedOrganisationForm,
     CreateServiceStepFederalOrganisationForm,
     CreateServiceStepLogoForm,
     CreateServiceStepNameForm,
     CreateServiceStepOrganisationTypeForm,
     CreateServiceStepOtherOrganisationForm,
     CreateServiceStepPtOrganisationForm,
-    CreateServiceStepCombinedOrganisationForm,
     FieldWithLanguageOptions,
 )
+from app.salesforce import salesforce_engagement
 from app.utils import email_safe, user_is_gov_user, user_is_logged_in
 
 # Constants
@@ -175,7 +176,7 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
         "en": json.load(open("app/assets/data/provinces-territories-en.json", "r")),
         "fr": json.load(open("app/assets/data/provinces-territories-en.json", "r")),
     }
-    
+
     autocomplete_items_combined = {
         "en": autocomplete_items_federal["en"] + autocomplete_items_pt["en"],
         "fr": autocomplete_items_federal["fr"] + autocomplete_items_pt["en"],
@@ -264,6 +265,17 @@ def add_service():
     session.pop(SESSION_FORM_KEY, None)
 
     if service_result.is_success():
+
+        if current_app.config["FF_SALESFORCE_CONTACT"]:
+            salesforce_engagement.create(
+                {
+                    "id": service_result.service_id,
+                    "name": service_name,
+                    "account_id": current_app.config["SALESFORCE_GENERIC_ACCOUNT_ID"],  # form.data["department"]
+                    "user_id": session["user_id"],
+                }
+            )
+
         return redirect(url_for("main.service_dashboard", service_id=service_result.service_id))
     form_cls = get_form_class(current_step, government_type)
     form = form_cls(request.form)
