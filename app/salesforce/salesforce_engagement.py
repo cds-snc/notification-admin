@@ -53,7 +53,8 @@ def create(service: dict[str, str], session: Salesforce = None) -> Tuple[bool, O
                     "Type": ENGAGEMENT_TYPE,
                     "CDS_Lead_Team__c": ENGAGEMENT_TEAM,
                     "Product_to_Add__c": ENGAGEMENT_PRODUCT,
-                }
+                },
+                headers={"Sforce-Duplicate-Rule-Header": "allowSave=true"},
             )
             is_created = parse_result(result, f"Salesforce Engagement create for service ID {service.get('id')}")
             engagement_id = result.get("Id")

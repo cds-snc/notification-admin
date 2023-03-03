@@ -38,7 +38,8 @@ def create(user: User, account_id: str | None = None, session: Salesforce = None
                 "Email": user.email_address,
                 "Phone": user.mobile_number,
                 "AccountId": account_id,
-            }
+            },
+            headers={"Sforce-Duplicate-Rule-Header": "allowSave=true"},
         )
         is_created = parse_result(result, f"Salesforce Contact create for '{user.email_address}'")
         contact_id = result.get("Id")

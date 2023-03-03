@@ -30,7 +30,8 @@ def test_create(mocker, app_, user):
                 "Email": "samwise@fellowship.ca",
                 "Phone": "123-456-7890",
                 "AccountId": None,
-            }
+            },
+            headers={"Sforce-Duplicate-Rule-Header": "allowSave=true"},
         )
 
 
