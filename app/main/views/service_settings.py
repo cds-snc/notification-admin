@@ -59,6 +59,7 @@ from app.main.forms import (
     SMSPrefixForm,
 )
 from app.s3_client.s3_logo_client import upload_email_logo
+from app.salesforce import salesforce_engagement
 from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
@@ -352,6 +353,15 @@ def submit_request_to_go_live(service_id):
     go_live_data = current_service.use_case_data[1]
     current_service.update(go_live_user=current_user.id)
 
+    if current_app.config["FF_SALESFORCE_CONTACT"]:
+        salesforce_engagement.update_stage({
+            "id": service_id,
+            "name": current_service.name,
+            "stage_name": salesforce_engagement.ENGAGEMENT_STAGE_ACTIVATION,
+            "account_id": current_app.config["SALESFORCE_GENERIC_ACCOUNT_ID"], # will need to retrieve this somehow
+            "user_id": current_user.id,
+        })
+
     flash(_("Your request was submitted."), "default")
 
     send_go_live_request(current_service, current_user, go_live_data)
@@ -376,6 +386,13 @@ def service_switch_live(service_id):
         flash(_("An email has been sent to service users"), "default_with_tick")
 
         current_service.update_status(live=live, message_limit=message_limit, sms_daily_limit=sms_daily_limit)
+        
+        if current_app.config["FF_SALESFORCE_CONTACT"]:
+            salesforce_engagement.update_stage({
+                "id": service_id,
+                "stage_name": salesforce_engagement.ENGAGEMENT_STAGE_LIVE,
+            })        
+        
         return redirect(url_for(".service_settings", service_id=service_id))
 
     return render_template(

@@ -13,6 +13,7 @@ from .salesforce_utils import parse_result, query_one, query_param_sanitize
 ENGAGEMENT_PRODUCT = "GC Notify"
 ENGAGEMENT_TEAM = "Platform"
 ENGAGEMENT_TYPE = "New Business"
+ENGAGEMENT_STAGE_ACTIVATION = "Activation"
 ENGAGEMENT_STAGE_LIVE = "Live"
 ENGAGEMENT_STAGE_TRIAL = "Trial Account"
 
