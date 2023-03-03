@@ -23,7 +23,7 @@ def get_name_parts(full_name: str) -> dict[str, Optional[str]]:
     }
 
 
-def query_one(query: str, session: Salesforce) -> dict[str, Any] | None:
+def query_one(query: str, session: Salesforce) -> Optional[dict[str, Any]]:
     """Execute an SOQL query that expects to return a single record.
 
     Args:
@@ -73,5 +73,4 @@ def parse_result(result: int | dict[str, Any], op: str) -> bool:
         current_app.logger.info(f"{op} succeeded")
     else:
         current_app.logger.error(f"{op} failed: {result}")
-
     return is_success
