@@ -1,19 +1,13 @@
 {% from "components/radios.html" import radios %}
+{% from "components/autocomplete.html" import autocomplete %}
 
 <p>{{ _("This information helps us understand how GC Notify is being used so we can better meet your needs.") }}</p>
 
 <div data-module="url-typer" class="form-wrap">
   {% call form_wrapper() %}
 
-    <!-- TODO: move this into a reusable component -->
-    <div class="w-full md:w-1/2 form-group contain-floats box-border mb-gutterAndAHalf">
-      <label for="department"><strong>Name of your department or agency</strong></label>
-      <select data-module="autocomplete" id="department">
-        <option value=""></option>
-        {% for label in autocomplete_items_federal[current_lang] %}
-          <option value="{{ label }}">{{ label }}</option>
-        {% endfor %}
-      </select>
+    <div class="mb-gutterAndAHalf">
+      {{ autocomplete(autocomplete_items_federal[current_lang], "department", "Name of your department or agency", "For example: Canadian Army")}}
       <a href="{{ url_for('.add_service', current_step='choose_organisation', government_type='other') }}">
         Can't find your department or agency?
       </a>

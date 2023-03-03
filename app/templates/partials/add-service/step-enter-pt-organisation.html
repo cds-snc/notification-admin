@@ -1,12 +1,15 @@
 {% from "components/radios.html" import radios %}
+{% from "components/autocomplete.html" import autocomplete %}
 
 <p>{{ _("This information helps us understand how GC Notify is being used so we can better meet your needs.") }}</p>
 
 <div data-module="url-typer" class="form-wrap">
   {% call form_wrapper() %}
 
-    <!-- TODO: move this into a reusable component -->
-    <div class="w-full md:w-1/2 form-group contain-floats box-border mb-gutterAndAHalf">
+    <div class="mb-gutterAndAHalf">
+      {{ autocomplete(autocomplete_items_pt[current_lang], "pt", "Name of your province or territory") }}
+    </div>  
+
       <label for="department"><strong>Name of your province or territory</strong></label>
       <select data-module="autocomplete" id="pt">
         <option value=""></option>
