@@ -1,6 +1,7 @@
 import json
 from abc import ABC
 from typing import List, Text
+import requests
 
 from flask import current_app, redirect, render_template, request, session, url_for
 from flask_babel import _
@@ -65,6 +66,10 @@ ORGANISIATION_STEP_DICT = {
     },
 }
 
+# initialize data for the auto-complete
+org_data_url = "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
+response = requests.get(org_data_url)
+autocomplete_data = json.loads(response.text)
 
 def get_wizard_order():
     if current_app.config["FF_SALESFORCE_CONTACT"]:
@@ -153,18 +158,10 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
 
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
-    autocomplete_items_federal = {
-        "en": json.load(open("app/assets/data/departments-agencies-en.json", "r")),
-        "fr": json.load(open("app/assets/data/departments-agencies-fr.json", "r")),
-    }
-    autocomplete_items_pt = {
-        "en": json.load(open("app/assets/data/provinces-territories-en.json", "r")),
-        "fr": json.load(open("app/assets/data/provinces-territories-en.json", "r")),
-    }
 
     autocomplete_items_combined = {
-        "en": autocomplete_items_federal["en"] + autocomplete_items_pt["en"],
-        "fr": autocomplete_items_federal["fr"] + autocomplete_items_pt["en"],
+        "en": [item["name_eng"] for item in autocomplete_data],
+        "fr": [item["name_fra"] for item in  autocomplete_data],
     }
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
@@ -178,8 +175,6 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
         step_max=len(WIZARD_ORDER),
         tmpl=tmpl,
         back_link=back_link,
-        autocomplete_items_federal=autocomplete_items_federal,
-        autocomplete_items_pt=autocomplete_items_pt,
         autocomplete_items_combined=autocomplete_items_combined,
     )
 
