@@ -645,7 +645,7 @@ class CreateServiceStepFederalOrganisationForm(StripWhitespaceForm):
 class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
 
     org_name = StringField(
-        _l("Provide more detailed information (Optional)"),
+        _l("Does your group have additional or other names? (Optional)"),
         validators=[Optional(), Length(max=500)],
     )
 
