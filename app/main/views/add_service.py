@@ -10,12 +10,9 @@ from app import billing_api_client, service_api_client
 from app.main import main
 from app.main.forms import (
     CreateServiceStepCombinedOrganisationForm,
-    CreateServiceStepFederalOrganisationForm,
     CreateServiceStepLogoForm,
     CreateServiceStepNameForm,
-    CreateServiceStepOrganisationTypeForm,
     CreateServiceStepOtherOrganisationForm,
-    CreateServiceStepPtOrganisationForm,
     FieldWithLanguageOptions,
 )
 from app.salesforce import salesforce_engagement
@@ -30,14 +27,12 @@ DEFAULT_ORGANISATION_TYPE: str = "central"
 STEP_NAME: str = "choose_service_name"
 STEP_LOGO: str = "choose_logo"
 STEP_ORGANISATION: str = "choose_organisation"
-STEP_ORGANISATION_TYPE: str = "choose_organisation_type"
 
 STEP_SERVICE_AND_EMAIL = STEP_NAME
 
 STEP_NAME_HEADER: str = _("Create service name and email address")
 STEP_LOGO_HEADER: str = _("Choose order for official languages")
 STEP_ORGANISATION_HEADER: str = _("About your service")
-STEP_ORGANISATION_TYPE_HEADER: str = _("About your service")
 
 
 # wizard list init here for current_app context usage
@@ -52,11 +47,6 @@ WIZARD_DICT = {
         "header": STEP_LOGO_HEADER,
         "tmpl": "partials/add-service/step-choose-logo.html",
     },
-    STEP_ORGANISATION_TYPE: {
-        "form_cls": CreateServiceStepOrganisationTypeForm,
-        "header": STEP_ORGANISATION_TYPE_HEADER,
-        "tmpl": "partials/add-service/step-enter-organisation-type.html",
-    },
     STEP_ORGANISATION: {
         "form_cls": "",
         "header": STEP_ORGANISATION_HEADER,
@@ -65,11 +55,6 @@ WIZARD_DICT = {
 }
 
 ORGANISIATION_STEP_DICT = {
-    "federal": {
-        "tmpl": "partials/add-service/step-enter-federal-organisation.html",
-        "form_cls": CreateServiceStepFederalOrganisationForm,
-    },
-    "pt": {"tmpl": "partials/add-service/step-enter-pt-organisation.html", "form_cls": CreateServiceStepPtOrganisationForm},
     "other": {
         "tmpl": "partials/add-service/step-enter-other-organisation.html",
         "form_cls": CreateServiceStepOtherOrganisationForm,

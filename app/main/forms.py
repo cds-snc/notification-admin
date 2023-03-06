@@ -623,37 +623,10 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
     )
 
 
-class CreateServiceStepOrganisationTypeForm(StripWhitespaceForm):
-    government_type = RadioField(
-        ("What level of government is your service a part of?"),
-        choices=[
-            ("federal", "Federal department or agency"),
-            ("pt", "Provincial or Territorial government"),
-            ("other", "Other"),
-        ],
-    )
-
-
-class CreateServiceStepFederalOrganisationForm(StripWhitespaceForm):
-
-    org_name = StringField(
-        _l("Name of your organisation"),
-        validators=[Optional(), Length(max=500)],
-    )
-
-
 class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
 
     org_name = StringField(
         _l("Does your group have additional or other names? (Optional)"),
-        validators=[Optional(), Length(max=500)],
-    )
-
-
-class CreateServiceStepPtOrganisationForm(StripWhitespaceForm):
-
-    org_name = StringField(
-        _l("Name of your organisation"),
         validators=[Optional(), Length(max=500)],
     )
 
