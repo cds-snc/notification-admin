@@ -4,7 +4,7 @@
     {% if hint %}
       <span id="{{ id }}-hint" class="form-hint">{{ hint }}</span>
     {% endif %}
-    <select data-module="autocomplete" id="{{ id }}">
+    <select data-module="autocomplete" name="{{ id }}" id="{{ id }}">
       <option value=""></option>
       {% for option in options %}
         <option value="{{ option }}">{{ option }}</option>

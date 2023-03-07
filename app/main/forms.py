@@ -632,6 +632,14 @@ class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
 
 
 class CreateServiceStepOtherOrganisationForm(StripWhitespaceForm):
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.department.choices = kwargs["choices"]
+    #     self.department.label.text = kwargs["label"]
+    #     self.department.validators = [DataRequired()]
+
+    department = SelectField()
+    department.choices = ["a", "b"]
 
     org_name = StringField(
         _l("Name of your organisation"),

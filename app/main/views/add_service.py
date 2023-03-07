@@ -1,6 +1,6 @@
 import json
 from abc import ABC
-from typing import List, Text
+from typing import List, Optional, Text
 import requests
 
 from flask import current_app, redirect, render_template, request, session, url_for
@@ -105,6 +105,7 @@ def _create_service(
     organisation_type: str,
     email_from: str,
     default_branding_is_french: bool,
+    organisation_notes: Optional[str] = None,
 ) -> ServiceResult:
     free_sms_fragment_limit = current_app.config["DEFAULT_FREE_SMS_FRAGMENT_LIMITS"].get(organisation_type)
 
@@ -118,6 +119,7 @@ def _create_service(
             user_id=session["user_id"],
             email_from=email_from,
             default_branding_is_french=default_branding_is_french,
+            organisation_notes=organisation_notes,
         )
         session["service_id"] = service_id
 
@@ -223,6 +225,8 @@ def add_service():
     # no more steps left, re-validate validate session in case of stale session data
     data = session[SESSION_FORM_KEY]
     data.update(form.data)  # add newly submitted data from POST
+    if current_step == STEP_ORGANISATION:
+        data["department"] = request.form["department"]
     # iterate through all forms and validate
     for step in WIZARD_ORDER:
         temp_form_cls = get_form_class(current_step, government_type)
@@ -234,11 +238,18 @@ def add_service():
     email_from = email_safe(data["email_from"])
     service_name = data["name"]
     default_branding_is_french = data["default_branding"] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
+    print("data", data)
+    if current_app.config["FF_SALESFORCE_CONTACT"]:
+        # this will be visible at the go live request
+        organisation_notes = f"{data['department']} > {data['org_name']}"
+    else: 
+        organisation_notes = None
     service_result: ServiceResult = _create_service(
         service_name,
         DEFAULT_ORGANISATION_TYPE,
         email_from,
         default_branding_is_french,
+        organisation_notes,
     )
 
     # clear session after API POST
