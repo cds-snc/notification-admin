@@ -167,8 +167,9 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
     }
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
-
     tmpl = get_form_template(current_step, government_type)
+    if tmpl == ORGANISIATION_STEP_DICT["other"]["tmpl"]:
+        back_link = url_for(".add_service", current_step=STEP_ORGANISATION)
     return render_template(
         "views/add-service.html",
         form=form,
@@ -225,8 +226,8 @@ def add_service():
     # no more steps left, re-validate validate session in case of stale session data
     data = session[SESSION_FORM_KEY]
     data.update(form.data)  # add newly submitted data from POST
-    if current_step == STEP_ORGANISATION:
-        data["department"] = request.form["department"]
+    if current_step == STEP_ORGANISATION and not government_type:
+        data["parent_organisation_name"] = request.form["parent_organisation_name"]
     # iterate through all forms and validate
     for step in WIZARD_ORDER:
         temp_form_cls = get_form_class(current_step, government_type)
@@ -238,10 +239,11 @@ def add_service():
     email_from = email_safe(data["email_from"])
     service_name = data["name"]
     default_branding_is_french = data["default_branding"] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
-    print("data", data)
-    if current_app.config["FF_SALESFORCE_CONTACT"]:
-        # this will be visible at the go live request
-        organisation_notes = f"{data['department']} > {data['org_name']}"
+    # organisation_notes will be visible at the go live request
+    if current_app.config["FF_SALESFORCE_CONTACT"] and not government_type:
+        organisation_notes = f"{data['parent_organisation_name']} > {data['child_organisation_name']}"
+    elif current_app.config["FF_SALESFORCE_CONTACT"] and government_type:
+        organisation_notes = data['other_organisation_name']
     else: 
         organisation_notes = None
     service_result: ServiceResult = _create_service(
@@ -262,7 +264,7 @@ def add_service():
                 {
                     "id": service_result.service_id,
                     "name": service_name,
-                    "account_id": current_app.config["SALESFORCE_GENERIC_ACCOUNT_ID"],  # form.data["department"]
+                    "account_id": current_app.config["SALESFORCE_GENERIC_ACCOUNT_ID"],  # data['parent_organisation_name']
                     "user_id": session["user_id"],
                 }
             )
