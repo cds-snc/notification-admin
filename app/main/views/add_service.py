@@ -241,9 +241,14 @@ def add_service():
     default_branding_is_french = data["default_branding"] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
     # organisation_notes will be visible at the go live request
     if current_app.config["FF_SALESFORCE_CONTACT"] and not government_type:
-        organisation_notes = f"{data['parent_organisation_name']} > {data['child_organisation_name']}"
+        organisation_notes = json.dumps({
+            "parent_organisation_name": data["parent_organisation_name"],
+            "child_organisation_name": data["child_organisation_name"],
+        })
     elif current_app.config["FF_SALESFORCE_CONTACT"] and government_type:
-        organisation_notes = data['other_organisation_name']
+        organisation_notes = json.dumps({
+            "other_organisation_name": data["other_organisation_name"],
+        })
     else: 
         organisation_notes = None
     service_result: ServiceResult = _create_service(
