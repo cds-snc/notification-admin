@@ -1424,11 +1424,11 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "notifications-utils"
-version = "50.1.0"
-description = "Shared python code for GOV.UK Notify."
+version = "50.1.4"
+description = "Shared python code for Notification - Provides logging utils etc."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = "~3.10"
 files = []
 develop = false
 
@@ -1440,7 +1440,7 @@ cachetools = "4.2.4"
 Flask = "2.2.2"
 Flask-Redis = "0.4.0"
 itsdangerous = "2.1.2"
-Jinja2 = ">3.0.0"
+Jinja2 = "^3.0.0"
 markupsafe = "2.1.1"
 mistune = "0.8.4"
 ordered-set = "4.1.0"
@@ -1458,8 +1458,8 @@ werkzeug = "2.2.2"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "50.1.0"
-resolved_reference = "a9df07b9a98ea6a226505e6b483a270d050e6056"
+reference = "50.1.4"
+resolved_reference = "5bc1a9050c6451acb498eb6a1199400229bc0406"
 
 [[package]]
 name = "openpyxl"
@@ -2556,4 +2556,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.8"
-content-hash = "1218ff2751309228c53ee77198184db8f48676781aefb1a7031590eb67fbe7e0"
+content-hash = "6212b6d1129f6792ab8870e354e6bf306cba16b39d0df7c232d4268fa96816d0"

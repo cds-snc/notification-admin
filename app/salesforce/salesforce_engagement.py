@@ -84,7 +84,11 @@ def update_stage(service: dict[str, str], session: Salesforce = None) -> Tuple[b
 
         # Existing Engagement, update the stage name
         if engagement:
-            result = session.Opportunity.update(engagement.get("Id"), {"StageName": service.get("stage_name")})
+            result = session.Opportunity.update(
+                engagement.get("Id"),
+                {"StageName": service.get("stage_name")},
+                headers={"Sforce-Duplicate-Rule-Header": "allowSave=true"},
+            )
             is_updated = parse_result(result, f"Salesforce Engagement update '{service}'")
             engagement_id = engagement.get("Id")
         # Create the Engagement.  This handles Notify services that were created before Salesforce was added.

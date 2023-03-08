@@ -68,7 +68,9 @@ def update_account_id(user: User, account_id: str, session: Salesforce = None) -
 
         # Existing contact, update the AccountID
         if contact:
-            result = session.Contact.update(contact.get("Id"), {"AccountId": account_id})
+            result = session.Contact.update(
+                contact.get("Id"), {"AccountId": account_id}, headers={"Sforce-Duplicate-Rule-Header": "allowSave=true"}
+            )
             is_updated = parse_result(result, f"Salesforce Contact update '{user.email_address}' with account ID '{account_id}'")
             contact_id = contact.get("Id")
         # Create the contact.  This handles Notify users that were created before Salesforce was added.
