@@ -96,7 +96,8 @@ jobs:
               --timeout 15 \
               --memory-size 1024 \
               --code ImageUri=$REGISTRY/$IMAGE:$PR_NUMBER \
-              --description "$GITHUB_REPOSITORY/pull/$PR_NUMBER" > /dev/null 2>&1
+              --description "$GITHUB_REPOSITORY/pull/$PR_NUMBER" \
+              --vpc-config SubnetIds=${{ secrets.PR_REVIEW_ENV_SUBNET_IDS }},SecurityGroupIds=${{ secrets.PR_REVIEW_ENV_SECURITY_GROUP_IDS }} > /dev/null 2>&1
 
             aws lambda wait function-active --function-name $FUNCTION_NAME-$PR_NUMBER
             aws lambda add-permission \
@@ -115,7 +116,7 @@ jobs:
                 NOTIFY_ENVIRONMENT=staging,\
                 FLASK_APP=application.py,\
                 IP_GEOLOCATE_SERVICE=False,\
-                REDIS_ENABLED=False,\
+                REDIS_ENABLED=True,\
                 SENDING_DOMAIN=staging.notification.cdssandbox.xyz,\
                 API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
                 ADMIN_BASE_URL=$URL
