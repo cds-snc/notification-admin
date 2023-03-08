@@ -1,8 +1,8 @@
 import json
 from abc import ABC
 from typing import List, Text
-import requests
 
+import requests
 from flask import current_app, redirect, render_template, request, session, url_for
 from flask_babel import _
 from notifications_python_client.errors import HTTPError
@@ -70,6 +70,7 @@ ORGANISIATION_STEP_DICT = {
 org_data_url = "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
 response = requests.get(org_data_url)
 autocomplete_data = json.loads(response.text)
+
 
 def get_wizard_order():
     if current_app.config["FF_SALESFORCE_CONTACT"]:
@@ -161,7 +162,7 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
 
     autocomplete_items_combined = {
         "en": [item["name_eng"] for item in autocomplete_data],
-        "fr": [item["name_fra"] for item in  autocomplete_data],
+        "fr": [item["name_fra"] for item in autocomplete_data],
     }
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
