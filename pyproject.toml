@@ -74,7 +74,7 @@ pytest-xdist = "2.5.0"
 coveralls = "1.11.1"
 beautifulsoup4 = "4.11.1"
 freezegun = "1.2.1"
-flake8 = "4.0.1"
+flake8 = "6.0.0"
 flake8-print = "5.0.0"
 requests-mock = "1.10.0"
 # used for creating manifest file locally
