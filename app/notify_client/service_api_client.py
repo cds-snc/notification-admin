@@ -35,8 +35,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "restricted": restricted,
             "email_from": email_from,
             "default_branding_is_french": default_branding_is_french,
-            # TODO: uncomment this once the API can accept organisation_notes
-            # "organisation_notes": organisation_notes,
+            "organisation_notes": organisation_notes,
         }
         data = _attach_current_user(data)
         return self.post("/service", data)["data"]["id"]
