@@ -67,10 +67,22 @@ ORGANISIATION_STEP_DICT = {
     },
 }
 
-# initialize data for the auto-complete
-org_data_url = "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
-response = requests.get(org_data_url)
-autocomplete_data = json.loads(response.text)
+
+def get_autocomplete_data():
+    "request organisation data to populate the auto-complete field"
+    headers = {"Authorization": f"token {current_app.config['CRM_GITHUB_PERSONAL_ACCESS_TOKEN']}"}
+    response = requests.get(current_app.config["CRM_ORG_LIST_URL"], headers=headers)
+    _autocomplete_data = json.loads(response.text)
+    autocomplete_data = {
+        "en": [item["name_eng"] for item in _autocomplete_data],
+        "fr": [item["name_fra"] for item in _autocomplete_data],
+    }
+    return autocomplete_data
+
+# headers = {"Authorization": f"token {current_app.config['GITHUB_PERSONAL_ACCESS_TOKEN']}"}
+# response = requests.get(current_app.config["CRM_ORG_LIST_URL"], headers=headers)
+# autocomplete_data = json.loads(response.text)
+
 
 
 def get_wizard_order():
@@ -163,10 +175,8 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
 
-    autocomplete_items_combined = {
-        "en": [item["name_eng"] for item in autocomplete_data],
-        "fr": [item["name_fra"] for item in autocomplete_data],
-    }
+    autocomplete_data = get_autocomplete_data() if current_step == STEP_ORGANISATION else None
+    
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
     tmpl = get_form_template(current_step, government_type)
@@ -180,7 +190,7 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
         step_max=len(WIZARD_ORDER),
         tmpl=tmpl,
         back_link=back_link,
-        autocomplete_items_combined=autocomplete_items_combined,
+        autocomplete_items_combined=autocomplete_data,
     )
 
 
