@@ -8,7 +8,7 @@ from flask import current_app, redirect, render_template, request, session, url_
 from flask_babel import _
 from notifications_python_client.errors import HTTPError
 
-from app import billing_api_client, service_api_client
+from app import billing_api_client, get_current_locale, service_api_client
 from app.main import main
 from app.main.forms import (
     CreateServiceStepCombinedOrganisationForm,
@@ -17,7 +17,7 @@ from app.main.forms import (
     CreateServiceStepOtherOrganisationForm,
     FieldWithLanguageOptions,
 )
-from app.salesforce import salesforce_engagement
+from app.salesforce import salesforce_engagement, salesforce_utils
 from app.utils import email_safe, user_is_gov_user, user_is_logged_in
 
 # Constants
@@ -72,12 +72,16 @@ def get_autocomplete_data():
     "request organisation data to populate the auto-complete field"
     headers = {"Authorization": f"token {current_app.config['CRM_GITHUB_PERSONAL_ACCESS_TOKEN']}"}
     response = requests.get(current_app.config["CRM_ORG_LIST_URL"], headers=headers)
-    _autocomplete_data = json.loads(response.text)
-    autocomplete_data = {
-        "en": [item["name_eng"] for item in _autocomplete_data],
-        "fr": [item["name_fra"] for item in _autocomplete_data],
+    department_all_data = json.loads(response.text)
+    department_name_data = {
+        "en": [item["name_eng"] for item in department_all_data],
+        "fr": [item["name_fra"] for item in department_all_data],
     }
-    return autocomplete_data
+    return {
+        "all": department_all_data,
+        "names": department_name_data
+    }
+
 
 # headers = {"Authorization": f"token {current_app.config['GITHUB_PERSONAL_ACCESS_TOKEN']}"}
 # response = requests.get(current_app.config["CRM_ORG_LIST_URL"], headers=headers)
@@ -175,7 +179,7 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
 
-    autocomplete_data = get_autocomplete_data() if current_step == STEP_ORGANISATION else None
+    autocomplete_data = get_autocomplete_data()["names"] if current_step == STEP_ORGANISATION else None
     
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
@@ -272,11 +276,16 @@ def add_service():
     if service_result.is_success():
 
         if current_app.config["FF_SALESFORCE_CONTACT"]:
+            account_id = salesforce_utils.get_account_id_by_name(
+                account_name=data['parent_organisation_name'],
+                account_data=get_autocomplete_data()["all"],
+                current_lang=get_current_locale(current_app),
+            )
             salesforce_engagement.create(
                 {
                     "id": service_result.service_id,
                     "name": service_name,
-                    "account_id": current_app.config["SALESFORCE_GENERIC_ACCOUNT_ID"],  # data['parent_organisation_name']
+                    "account_id": account_id,
                     "user_id": session["user_id"],
                 }
             )
