@@ -7,7 +7,7 @@ from simple_salesforce import Salesforce
 from app.models.user import User
 
 from . import salesforce_contact
-from .salesforce_auth import get_session
+from .salesforce_auth import get_session, logout
 from .salesforce_utils import parse_result, query_one, query_param_sanitize
 
 ENGAGEMENT_PRODUCT = "GC Notify"
@@ -30,6 +30,7 @@ def create(service: dict[str, str], session: Salesforce = None) -> Tuple[bool, O
        Tuple[bool, Optional[str]]: Success indicator and the ID of the new Engagement
     """
     is_created = False
+    is_logout = not session
     engagement_id = None
     try:
         session = session if session else get_session()
@@ -61,6 +62,9 @@ def create(service: dict[str, str], session: Salesforce = None) -> Tuple[bool, O
 
     except Exception as ex:
         current_app.logger.error(f"Salesforce Engagement create failed: {ex}")
+    finally:
+        if is_logout:
+            logout(session)
     return (is_created, engagement_id)
 
 
@@ -77,6 +81,7 @@ def update_stage(service: dict[str, str], session: Salesforce = None) -> Tuple[b
         Tuple[bool, Optional[str]]: Success indicator and the ID of the Engagement
     """
     is_updated = False
+    is_logout = not session
     engagement_id = None
     try:
         session = session if session else get_session()
@@ -97,6 +102,9 @@ def update_stage(service: dict[str, str], session: Salesforce = None) -> Tuple[b
 
     except Exception as ex:
         current_app.logger.error(f"Salesforce Engagement update failed: {ex}")
+    finally:
+        if is_logout:
+            logout(session)
     return (is_updated, engagement_id)
 
 

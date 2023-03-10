@@ -1,7 +1,6 @@
 import json
 from abc import ABC
 from typing import List, Optional, Text
-import requests
 
 import requests
 from flask import current_app, redirect, render_template, request, session, url_for
@@ -66,27 +65,6 @@ ORGANISIATION_STEP_DICT = {
         "form_cls": CreateServiceStepCombinedOrganisationForm,
     },
 }
-
-
-def get_autocomplete_data():
-    "request organisation data to populate the auto-complete field"
-    headers = {"Authorization": f"token {current_app.config['CRM_GITHUB_PERSONAL_ACCESS_TOKEN']}"}
-    response = requests.get(current_app.config["CRM_ORG_LIST_URL"], headers=headers)
-    department_all_data = json.loads(response.text)
-    department_name_data = {
-        "en": [item["name_eng"] for item in department_all_data],
-        "fr": [item["name_fra"] for item in department_all_data],
-    }
-    return {
-        "all": department_all_data,
-        "names": department_name_data
-    }
-
-
-# headers = {"Authorization": f"token {current_app.config['GITHUB_PERSONAL_ACCESS_TOKEN']}"}
-# response = requests.get(current_app.config["CRM_ORG_LIST_URL"], headers=headers)
-# autocomplete_data = json.loads(response.text)
-
 
 
 def get_wizard_order():
@@ -179,8 +157,8 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
 
-    autocomplete_data = get_autocomplete_data()["names"] if current_step == STEP_ORGANISATION else None
-    
+    autocomplete_data = current_app.config["CRM_ORG_LIST"].get("names", {}) if current_step == STEP_ORGANISATION else None
+
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
     tmpl = get_form_template(current_step, government_type)
@@ -257,10 +235,10 @@ def add_service():
     default_branding_is_french = data["default_branding"] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
     # organisation_notes will be visible at the go live request
     if current_app.config["FF_SALESFORCE_CONTACT"] and not government_type:
-        organisation_notes =  f'{data["parent_organisation_name"]} > {data["child_organisation_name"]}'
+        organisation_notes = f'{data["parent_organisation_name"]} > {data["child_organisation_name"]}'
     elif current_app.config["FF_SALESFORCE_CONTACT"] and government_type:
-        organisation_notes =  data["other_organisation_name"]
-    else: 
+        organisation_notes = data["other_organisation_name"]
+    else:
         organisation_notes = None
     service_result: ServiceResult = _create_service(
         service_name,
@@ -277,8 +255,8 @@ def add_service():
 
         if current_app.config["FF_SALESFORCE_CONTACT"]:
             account_id = salesforce_utils.get_account_id_by_name(
-                account_name=data['parent_organisation_name'],
-                account_data=get_autocomplete_data()["all"],
+                account_name=data["parent_organisation_name"],
+                account_data=current_app.config["CRM_ORG_LIST"].get("all", []),
                 current_lang=get_current_locale(current_app),
             )
             salesforce_engagement.create(

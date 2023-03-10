@@ -5,7 +5,7 @@ from simple_salesforce import Salesforce
 
 from app.models.user import User
 
-from .salesforce_auth import get_session
+from .salesforce_auth import get_session, logout
 from .salesforce_utils import (
     get_name_parts,
     parse_result,
@@ -26,6 +26,7 @@ def create(user: User, account_id: str | None = None, session: Salesforce = None
         Tuple[bool, Optional[str]]: Success indicator and the ID of the new Contact
     """
     is_created = False
+    is_logout = not session
     contact_id = None
     try:
         session = session if session else get_session()
@@ -46,6 +47,9 @@ def create(user: User, account_id: str | None = None, session: Salesforce = None
 
     except Exception as ex:
         current_app.logger.error(f"Salesforce Contact create failed: {ex}")
+    finally:
+        if is_logout:
+            logout(session)
     return (is_created, contact_id)
 
 
@@ -61,6 +65,7 @@ def update_account_id(user: User, account_id: str, session: Salesforce = None) -
          Tuple[bool, Optional[str]]: Success indicator and the ID of the Contact
     """
     is_updated = False
+    is_logout = not session
     contact_id = None
     try:
         session = session if session else get_session()
@@ -78,7 +83,10 @@ def update_account_id(user: User, account_id: str, session: Salesforce = None) -
             is_updated, contact_id = create(user, account_id, session)
 
     except Exception as ex:
-        current_app.logger.error(f"Salesforce Contact updated failed: {ex}")
+        current_app.logger.error(f"Salesforce Contact update failed: {ex}")
+    finally:
+        if is_logout:
+            logout(session)
     return (is_updated, contact_id)
 
 
