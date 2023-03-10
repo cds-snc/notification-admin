@@ -210,9 +210,10 @@ def create_app(application):
     application.jinja_env.globals["gca_url_for"] = gca_url_for
 
     # Initialize Salesforce Account list
-    application.config["CRM_ORG_LIST"] = salesforce_account.get_accounts(
-        application.config["CRM_ORG_LIST_URL"], application.config["CRM_GITHUB_PERSONAL_ACCESS_TOKEN"]
-    )
+    if application.config["FF_SALESFORCE_CONTACT"]:
+        application.config["CRM_ORG_LIST"] = salesforce_account.get_accounts(
+            application.config["CRM_ORG_LIST_URL"], application.config["CRM_GITHUB_PERSONAL_ACCESS_TOKEN"]
+        )
 
 
 def init_app(application):

@@ -155,7 +155,9 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
     back_link = None
     step_num = WIZARD_ORDER.index(current_step) + 1
 
-    autocomplete_data = current_app.config["CRM_ORG_LIST"].get("names", {}) if current_step == STEP_ORGANISATION else None
+    autocomplete_data = None
+    if current_app.config["FF_SALESFORCE_CONTACT"] and current_step == STEP_ORGANISATION:
+        autocomplete_data = current_app.config["CRM_ORG_LIST"].get("names", {})
 
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
