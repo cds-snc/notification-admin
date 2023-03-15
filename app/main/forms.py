@@ -1754,6 +1754,22 @@ class GoLiveAboutServiceForm(StripWhitespaceForm):
         ],
         validators=[DataRequired()],
     )
+    
+class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
+    purpose = TextAreaField(
+        _l("For what purpose are you using GC Notify?"),
+        validators=[DataRequired(), Length(max=2000)],
+    )
+    intended_recipients = MultiCheckboxField(
+        _l("Who are the intended recipients of notifications?"),
+        default="",
+        choices=[
+            ("internal", _l("Colleagues within your department (internal)")),
+            ("external", _l("Partners from other organisations (external)")),
+            ("public", _l("Public")),
+        ],
+        validators=[DataRequired()],
+    )
 
 
 class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):

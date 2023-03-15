@@ -36,6 +36,7 @@ from app.main.forms import (
     FreeSMSAllowance,
     GoLiveAboutNotificationsForm,
     GoLiveAboutServiceForm,
+    GoLiveAboutServiceFormNoOrg,
     InternationalSMSForm,
     LinkOrganisationsForm,
     MessageLimit,
@@ -248,10 +249,10 @@ def terms_of_use(service_id):
 @user_is_gov_user
 def use_case(service_id):
     DEFAULT_STEP = "about-service"
-
+    display_org_question = not current_service.organisation_notes or not current_app.config["FF_SALESFORCE_CONTACT"]
     steps = [
         {
-            "form": GoLiveAboutServiceForm,
+            "form": GoLiveAboutServiceForm if display_org_question else GoLiveAboutServiceFormNoOrg,
             "current_step": DEFAULT_STEP,
             "previous_step": None,
             "next_step": "about-notifications",
@@ -311,6 +312,7 @@ def use_case(service_id):
         step_hint=form_details["step"],
         total_steps_hint=len(steps),
         back_link=form_details["back_link"],
+        display_org_question=display_org_question,
     )
 
 

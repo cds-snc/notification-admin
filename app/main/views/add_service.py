@@ -3,7 +3,6 @@ from abc import ABC
 from typing import List, Optional, Text
 import requests
 
-import requests
 from flask import current_app, redirect, render_template, request, session, url_for
 from flask_babel import _
 from notifications_python_client.errors import HTTPError
@@ -81,12 +80,6 @@ def get_autocomplete_data():
         "all": department_all_data,
         "names": department_name_data
     }
-
-
-# headers = {"Authorization": f"token {current_app.config['GITHUB_PERSONAL_ACCESS_TOKEN']}"}
-# response = requests.get(current_app.config["CRM_ORG_LIST_URL"], headers=headers)
-# autocomplete_data = json.loads(response.text)
-
 
 
 def get_wizard_order():

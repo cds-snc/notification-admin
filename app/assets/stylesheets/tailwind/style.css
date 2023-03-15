@@ -269,6 +269,10 @@ label {
   margin: 0.75em 0 0 30px;
 }
 
+input.autocomplete__input {
+  z-index: 5;
+}
+
 @layer components {
   /* Hide, but not for screenreaders */
   .visually-hidden,
