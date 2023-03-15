@@ -1,4 +1,7 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:0-3.10@sha256:047ade479c5e6b5f2cde0a3d3f8e55ec00cb87a14d5b0b9815314e0f02722eb8
+FROM mcr.microsoft.com/vscode/devcontainers/python:0-3.10
+
+ENV POETRY_VERSION="1.3.2"
+
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils 2>&1 \
     && apt-get -y install \
@@ -6,18 +9,18 @@ RUN apt-get update \
     emacs \
     exa \
     fd-find \
-    git \ 
+    git \
     iproute2 \
-    less \ 
+    less \
     libsodium-dev \
-    lsb-release \ 
+    lsb-release \
     man-db \
     manpages \
     net-tools \
-    nodejs \ 
+    nodejs \
     npm \
-    openssh-client \ 
-    procps \ 
+    openssh-client \
+    procps \
     sudo \
     tldr \
     unzip \
