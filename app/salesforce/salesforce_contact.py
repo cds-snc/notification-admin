@@ -5,7 +5,7 @@ from simple_salesforce import Salesforce
 
 from app.models.user import User
 
-from .salesforce_auth import get_session
+from .salesforce_auth import get_session, logout
 from .salesforce_utils import (
     get_name_parts,
     parse_result,
@@ -26,6 +26,7 @@ def create(user: User, account_id: str | None = None, session: Salesforce = None
         Tuple[bool, Optional[str]]: Success indicator and the ID of the new Contact
     """
     is_created = False
+    is_logout = not session
     contact_id = None
     try:
         session = session if session else get_session()
@@ -34,7 +35,8 @@ def create(user: User, account_id: str | None = None, session: Salesforce = None
             {
                 "FirstName": name_parts["first"] if name_parts["first"] else user.name,
                 "LastName": name_parts["last"] if name_parts["last"] else "",
-                "Title": user.id,
+                "Title": "created by Notify API",
+                "CDS_Contact_ID__c": user.id,
                 "Email": user.email_address,
                 "Phone": user.mobile_number,
                 "AccountId": account_id,
@@ -42,10 +44,13 @@ def create(user: User, account_id: str | None = None, session: Salesforce = None
             headers={"Sforce-Duplicate-Rule-Header": "allowSave=true"},
         )
         is_created = parse_result(result, f"Salesforce Contact create for '{user.email_address}'")
-        contact_id = result.get("Id")
+        contact_id = result.get("id")
 
     except Exception as ex:
         current_app.logger.error(f"Salesforce Contact create failed: {ex}")
+    finally:
+        if is_logout:
+            logout(session)
     return (is_created, contact_id)
 
 
@@ -61,6 +66,7 @@ def update_account_id(user: User, account_id: str, session: Salesforce = None) -
          Tuple[bool, Optional[str]]: Success indicator and the ID of the Contact
     """
     is_updated = False
+    is_logout = not session
     contact_id = None
     try:
         session = session if session else get_session()
@@ -78,7 +84,10 @@ def update_account_id(user: User, account_id: str, session: Salesforce = None) -
             is_updated, contact_id = create(user, account_id, session)
 
     except Exception as ex:
-        current_app.logger.error(f"Salesforce Contact updated failed: {ex}")
+        current_app.logger.error(f"Salesforce Contact update failed: {ex}")
+    finally:
+        if is_logout:
+            logout(session)
     return (is_updated, contact_id)
 
 
@@ -93,5 +102,5 @@ def get_contact_by_user_id(user_id: str, session: Salesforce) -> Optional[dict[s
     Returns:
         Optional[dict[str, str]]: Salesforce Contact details or None if can't be found
     """
-    query = f"SELECT Id, FirstName, LastName, AccountId FROM Contact WHERE Title = '{query_param_sanitize(user_id)}' LIMIT 1"
+    query = f"SELECT Id, FirstName, LastName, AccountId FROM Contact WHERE CDS_Contact_ID__c = '{query_param_sanitize(user_id)}' LIMIT 1"
     return query_one(query, session)

@@ -22,3 +22,16 @@ def get_session() -> Salesforce | None:
     except Exception as ex:
         current_app.logger.error(f"Salesforce login failed: {ex}")
     return session
+
+
+def logout(session: Salesforce):
+    """Logout of a Salesforce session
+
+    Args:
+        session (Salesforce): The session to revoke.
+    """
+    try:
+        if session and session.session_id:
+            session.oauth2("revoke", {"token": session.session_id}, method="POST")
+    except Exception as ex:
+        current_app.logger.error(f"Salesforce logout failed: {ex}")
