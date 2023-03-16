@@ -44,7 +44,7 @@
           {% if failure_link %}
             <div class="p-6 big-number-status-link flex justify-between items-end border-0" href="{{ failure_link }}">
               {{ failure_percentage }}%  {{_('failed') }}
-              <i aria-hidden="true" class="p-1 fa-solid fa-circle-question"></i>
+              <i aria-hidden="true" class="p-1 fa-solid {% if danger_zone %}fa-triangle-exclamation{% else %}{% endif %}"></i>
             </div>
             <div class="px-6 big-number-status-link flex justify-between items-end border-0">
               <a class="big-number-status-link" href="{{ failure_link }}">Review All</a>
@@ -82,7 +82,7 @@
       {% if number >= 1 %}
         {% if failure_link %}
           <div class="pb-4 big-number-status-link flex justify-between items-end border-0">
-            {{ problem_percentage }}% {{ _('failed') }}
+            {{ problem_percentage }}% {{ _('problem addresses') }}
             <i aria-hidden="true" class="p-1 fa-triangle-exclamation"></i>
           </div>
           <div class="{% if not bounce_status == "warning" %}big-number-status-link{% else %}big-number-status-link-warning{% endif %} flex justify-between items-end border-0">
@@ -90,7 +90,6 @@
             <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i>
           </div>
         {% else %}
-          {{ "{:,}".format(failures) }}
           {{ _('failed') }} – {{ failure_percentage }}%
         {% endif %}
       {% else %}
