@@ -887,7 +887,7 @@ class CreateKeyForm(StripWhitespaceForm):
 
     key_name = StringField(
         "Description of key",
-        validators=[DataRequired(message=_l("You need to give the key a name"))],
+        validators=[DataRequired(message=_l("You need to give the key a name")), Length(max=255)],
     )
 
     def validate_key_name(self, key_name):
