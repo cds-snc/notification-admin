@@ -41,6 +41,21 @@
     @apply text-smaller block text-white bg-green-darker;
   }
 
+  .big-number-status-warning {
+    @apply text-smaller block text-black bg-yellow;
+  }
+
+  .big-number-status-critical {
+    @apply text-smaller block text-white bg-red
+  }
+
+  .big-number-status-link-warning:link,
+  .big-number-status-link-warning:visited,
+  .big-number-status-link-warning:active,
+  .big-number-status-link-warning:hover {
+    @apply text-black;
+  }
+
   .big-number-status-link:link,
   .big-number-status-link:visited,
   .big-number-status-link:active,
