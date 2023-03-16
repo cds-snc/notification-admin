@@ -3,7 +3,14 @@ from datetime import datetime
 from functools import partial
 from itertools import groupby
 
-from flask import abort, jsonify, render_template, request, session, url_for
+from flask import (
+    abort, jsonify,
+    render_template,
+    request,
+    Response,
+    session,
+    url_for,
+)
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -15,12 +22,17 @@ from app import (
     service_api_client,
     template_statistics_client,
 )
+
+from app.extensions import bounce_rate_client
+
 from app.main import main
+from app.models.enum.bounce_rate_status import BounceRateStatus
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
 from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
     REQUESTED_STATUSES,
+    generate_notifications_csv,
     get_current_financial_year,
     get_month_name,
     user_has_permissions,
@@ -47,6 +59,36 @@ def temp_service_history(service_id):
 @user_has_permissions("view_activity", "send_messages")
 def redirect_service_dashboard(service_id):
     return redirect(url_for(".service_dashboard", service_id=service_id))
+
+
+@main.route("/services/<service_id>/problem-emails")
+def inaccurate_email_addresses(service_id):
+    #br = bounce_rate_client.get_bounce_rate(service_id)
+    return render_template(
+        "views/dashboard/review-email-list.html",
+        csv_list=get_send_list_by_template(service_id)
+    )
+
+
+def get_send_list_by_template(service_id):
+
+    class CsvReview:
+        name = "name"
+        problem_count = 0
+        sent_at = datetime.utcnow()
+
+    csv1 = CsvReview()
+    csv1.name = "Many bad emails.csv"
+    csv1.problem_count = 9
+    csv1.sent_at = datetime.utcnow()
+
+    csv2 = CsvReview()
+    csv2.name = "Not many bad emails.csv"
+    csv2.problem_count = 1
+    csv2.sent_at = datetime.utcnow()
+
+    problem_csvs = [csv1, csv2]
+    return problem_csvs
 
 
 @main.route("/services/<service_id>")
@@ -214,6 +256,9 @@ def get_dashboard_partials(service_id):
     highest_notification_count_weekly = max(
         sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_weekly[0].items()
     )
+    bounce_rate = get_service_bounce_rate(service_id)
+    #bounce_rate.problem_percentage = bounce_rate.total_bounce / dashboard_totals_weekly[0]["email"]["requested"]
+    #bounce_rate.bounce_status = BounceRateStatus.CRITICAL.value if bounce_rate.problem_percentage >= 0.10 else BounceRateStatus.WARNING.value
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
@@ -229,6 +274,7 @@ def get_dashboard_partials(service_id):
             statistics=dashboard_totals_weekly[0],
             column_width=column_width,
             smaller_font_size=(highest_notification_count_weekly > max_notifiction_count),
+            bounce_rate=bounce_rate
         ),
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",
@@ -241,6 +287,18 @@ def get_dashboard_partials(service_id):
         "has_scheduled_jobs": bool(scheduled_jobs),
     }
 
+
+def get_service_bounce_rate(service_id):
+    # Mock an object until we can plug in the bounce_rate_client
+    Object = lambda **kwargs: type("Object", (), kwargs)
+
+    # Get the services bounce rate
+    mock_bounce_rate_info = Object(
+        bounce_total = 5,
+        bounce_percentage = 0.05,
+        bounce_status = BounceRateStatus.WARNING.value
+    )
+    return mock_bounce_rate_info
 
 def get_dashboard_totals(statistics):
     for msg_type in statistics.values():
@@ -423,3 +481,6 @@ def get_column_properties(number_of_columns):
         2: ("w-1/2 float-left py-0 px-0 px-gutterHalf box-border", 999999999),
         3: ("md:w-1/3 float-left py-0 px-0 px-gutterHalf box-border", 99999),
     }.get(number_of_columns)
+
+def get_bounce_rate(service_id):
+    self.post

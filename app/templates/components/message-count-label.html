@@ -37,13 +37,13 @@
     {%- else -%}
     {{ _('letters') }}
     {%- endif -%}
-  {%- endif %} 
-  
+  {%- endif %}
+
   {%- if (count == 0 or count == 1) -%}
   {{" "}} {{ suffix }}
   {%- else -%}
     {{" "}} {{ suffix_plural }}
-  {%- endif %} 
+  {%- endif %}
 
 {%- endmacro %}
 
@@ -91,3 +91,12 @@
     {{" "}}{{ _("Template") }}
   {%- endif %}
 {%- endmacro %}
+
+{% macro problem_email_label(count, prefix="problem email")%}
+  {{ prefix }} {{" "}}
+  {%- if count == 1 -%}
+    {{ _('address') }}
+  {%- else -%}
+    {{ _('addresses') }}
+  {% endif %}
+{% endmacro %}

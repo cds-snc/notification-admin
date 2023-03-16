@@ -43,6 +43,7 @@ const icons = () => {
           "arrow-right",
           "arrow-up-right-from-square",
           "circle-question",
+          "triangle-exclamation",
         ],
       })
     )
