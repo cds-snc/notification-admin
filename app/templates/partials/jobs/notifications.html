@@ -1,10 +1,10 @@
-{% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading, notification_status_field %}
+{% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading, notification_status_field, review_address %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 
 {% set empty_txt = _('No messages to show') %}
-{% set heading_1 = _('Recipient') %}
-{% set heading_2 = _('Status') %}
+{% set heading_1 = _('Message') %}
+{% set heading_2 = _('Review Address') %}
 
 <div class="ajax-block-container" aria-labelledby='pill-selected-item'>
   {% if job.job_status == 'scheduled' %}
@@ -41,7 +41,7 @@
           <p class="{% if template.template_type != 'letter' %}mb-12 clear-both contain-floats{% endif %}">
             <a href="{{ download_link }}" download class="heading-small">{{ _('Download this report') }}</a>
             &emsp;
-            {{ _("Data available until") }} <span id="time-left" class="local-datetime-short-year">{{ available_until_date }}</span>
+            {{ _("Available until") }} <span id="time-left" class="local-datetime-short-year">{{ available_until_date }}</span>
           </p>
         {% endif %}
       {% if template.template_type == 'letter' %}
@@ -54,22 +54,23 @@
         empty_message=_("No messages to show"),
         field_headings=[
           heading_1,
-          heading_2
+          heading_2,
+          ""
         ],
         field_headings_visible=True
       ) %}
         {% call row_heading() %}
           <a class="file-list-filename" href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=item.id, from_job=job.id) }}">{{ item.to }}</a>
           <p class="file-list-hint">
-            {{ item.preview_of_content }}
+            {{ _('Message ') }} {{ item.status }}
           </p>
         {% endcall %}
-        {{ notification_status_field(item) }}
+        {{ review_address("No such address", item.created_at) }}
       {% endcall %}
 
       {% if more_than_one_page %}
         <p class="table-show-more-link">
-          {{ _('Only showing the first 50 rows') }}
+          {{ _('Only showing the first 50 rows', item.created_at) }}
         </p>
       {% endif %}
 

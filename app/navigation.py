@@ -375,6 +375,7 @@ class MainNavigation(Navigation):
 
     mapping = {
         "dashboard": {
+            "inaccurate_email_addresses",
             "monthly",
             "service_dashboard",
             "template_usage",
