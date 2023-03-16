@@ -27,6 +27,31 @@ from app.utils import (
     yyyy_mm_to_datetime,
 )
 
+@main.route("/services/<service_id>/review-emails")
+def review_email_addresses(service_id):
+    return render_template(
+        "views/dashboard/review-email-list.html",
+        csv_list=get_send_list_by_template(service_id)
+    )
+
+def get_send_list_by_template(service_id):
+    class CsvReview:
+        name = "name"
+        problem_count = 0
+        sent_at = datetime.utcnow()
+
+    csv1 = CsvReview()
+    csv1.name = "Many bad emails.csv"
+    csv1.problem_count = 9
+    csv1.sent_at = datetime.utcnow()
+
+    csv2 = CsvReview()
+    csv2.name = "Not many bad emails.csv"
+    csv2.problem_count = 1
+    csv2.sent_at = datetime.utcnow()
+
+    problem_csvs = [csv1, csv2]
+    return problem_csvs
 
 # This is a placeholder view method to be replaced
 # when product team makes decision about how/what/when
