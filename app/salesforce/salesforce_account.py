@@ -2,6 +2,7 @@ import json
 
 import requests
 from flask import current_app
+from unidecode import unidecode
 
 
 def get_accounts(export_url: str, github_token: str) -> dict[str, dict]:
@@ -26,7 +27,13 @@ def get_accounts(export_url: str, github_token: str) -> dict[str, dict]:
             "en": [item["name_eng"] for item in account_data],
             "fr": [item["name_fra"] for item in account_data],
         }
-        accounts = {"all": account_data, "names": account_name_data}
+        # unidecode is needed so that names starting with accents like é
+        # are sorted correctly
+        sorted_account_name_data = {
+            "en": sorted(account_name_data["en"], key=unidecode),
+            "fr": sorted(account_name_data["fr"], key=unidecode),
+        }
+        accounts = {"all": account_data, "names": sorted_account_name_data}
     except Exception as error:
         current_app.logger.error("Salesforce failed to load account data export: %s", error)
     return accounts
