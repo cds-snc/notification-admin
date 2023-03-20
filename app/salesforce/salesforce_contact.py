@@ -38,7 +38,6 @@ def create(user: User, account_id: str | None = None, session: Salesforce = None
                 "Title": "created by Notify API",
                 "CDS_Contact_ID__c": user.id,
                 "Email": user.email_address,
-                "Phone": user.mobile_number,
                 "AccountId": account_id,
             },
             headers={"Sforce-Duplicate-Rule-Header": "allowSave=true"},
