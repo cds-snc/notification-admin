@@ -83,7 +83,7 @@
         {% if failure_link %}
           <div class="pb-4 big-number-status-link flex justify-between items-end border-0">
             {{ problem_percentage }}% {{ _('problem addresses') }}
-            <i aria-hidden="true" class="p-1 fa-triangle-exclamation"></i>
+            <i aria-hidden="true" class="p-1 {% if bounce_status == "warning" %}fa-solid fa-fas fa-circle-exclamation{% elif bounce_status== "critical" %}fa-solid fa-fas fa-triangle-exclamation{% endif %}"></i>
           </div>
           <div class="{% if not bounce_status == "warning" %}big-number-status-link{% else %}big-number-status-link-warning{% endif %} flex justify-between items-end border-0">
             <a class="{% if not bounce_status == "warning" %}big-number-status-link{% else %}big-number-status-link-warning{% endif %}" href="{{ failure_link }}">{{ failure_link_label }}</a>

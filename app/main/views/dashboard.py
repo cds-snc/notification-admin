@@ -23,8 +23,6 @@ from app import (
     template_statistics_client,
 )
 
-from app.extensions import bounce_rate_client
-
 from app.main import main
 from app.models.enum.bounce_rate_status import BounceRateStatus
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
@@ -66,7 +64,8 @@ def inaccurate_email_addresses(service_id):
     #br = bounce_rate_client.get_bounce_rate(service_id)
     return render_template(
         "views/dashboard/review-email-list.html",
-        csv_list=get_send_list_by_template(service_id)
+        csv_list=get_send_list_by_template(service_id),
+        bounce_status=get_service_bounce_rate(service_id).bounce_status
     )
 
 
@@ -87,7 +86,12 @@ def get_send_list_by_template(service_id):
     csv2.problem_count = 1
     csv2.sent_at = datetime.utcnow()
 
-    problem_csvs = [csv1, csv2]
+    csv3 = CsvReview()
+    csv3.name = "Nothing bad here, you shouldn't see me!.csv"
+    csv3.problem_count = 0
+    csv3.sent_at = datetime.utcnow()
+
+    problem_csvs = [csv1, csv2, csv3]
     return problem_csvs
 
 
@@ -296,7 +300,7 @@ def get_service_bounce_rate(service_id):
     mock_bounce_rate_info = Object(
         bounce_total = 5,
         bounce_percentage = 0.05 * 100,
-        bounce_status = BounceRateStatus.NORMAL.value
+        bounce_status = BounceRateStatus.CRITICAL.value
     )
     return mock_bounce_rate_info
 
@@ -482,5 +486,3 @@ def get_column_properties(number_of_columns):
         3: ("md:w-1/3 float-left py-0 px-0 px-gutterHalf box-border", 99999),
     }.get(number_of_columns)
 
-def get_bounce_rate(service_id):
-    self.post

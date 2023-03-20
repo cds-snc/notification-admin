@@ -44,6 +44,7 @@ const icons = () => {
           "arrow-up-right-from-square",
           "circle-question",
           "triangle-exclamation",
+          "circle-exclamation",
         ],
       })
     )
