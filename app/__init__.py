@@ -424,6 +424,7 @@ def format_notification_status(status, template_type, provider_response=None):
             "failed": _("Failed"),
             "technical-failure": _("Technical failure"),
             "temporary-failure": _("Inbox not accepting messages right now"),
+            "virus-scan-failed": _("Attachment has virus"),
             "permanent-failure": _("Email address does not exist"),
             "delivered": _("Delivered"),
             "sending": _("Sending"),
