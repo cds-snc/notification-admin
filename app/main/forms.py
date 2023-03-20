@@ -1754,7 +1754,8 @@ class GoLiveAboutServiceForm(StripWhitespaceForm):
         ],
         validators=[DataRequired()],
     )
-    
+
+
 class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
     purpose = TextAreaField(
         _l("For what purpose are you using GC Notify?"),
