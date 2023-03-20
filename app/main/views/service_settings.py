@@ -60,7 +60,6 @@ from app.main.forms import (
     SMSPrefixForm,
 )
 from app.s3_client.s3_logo_client import upload_email_logo
-from app.salesforce import salesforce_engagement
 from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
