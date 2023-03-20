@@ -5,7 +5,7 @@ from flask import current_app, redirect, render_template, request, session, url_
 from flask_babel import _
 from notifications_python_client.errors import HTTPError
 
-from app import billing_api_client, get_current_locale, service_api_client
+from app import billing_api_client, service_api_client
 from app.main import main
 from app.main.forms import (
     CreateServiceStepCombinedOrganisationForm,
