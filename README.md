@@ -50,11 +50,11 @@ version of Node.
 ```
 
 
-### Local installation instruction 
+### Local installation instruction
 
 On OS X:
 
-1. Install PyEnv with Homebrew. This will preserve your sanity. 
+1. Install PyEnv with Homebrew. This will preserve your sanity.
 
 `brew install pyenv`
 
@@ -68,7 +68,7 @@ On OS X:
 
 4. Ensure that version `3.10.8` is now the default by running
 
-`python --version` 
+`python --version`
 
 If it did not, add to your shell rc file. ex: `.bashrc` or `.zshrc`
 ```
@@ -79,47 +79,41 @@ and open a new terminal.
 
 If you are still not running Python 3.10.8 take a look here: https://github.com/pyenv/pyenv/issues/660
 
-5. Install `virtualenv`:
+5. Install `poetry`:
 
-`pip install virtualenvwrapper`
+`pip install poetry==1.3.2`
 
-6. Add the following to your `.bashrc` or `.zshrc`
-
-```
-source  ~/.pyenv/versions/3.10.8/bin/virtualenvwrapper.sh
-```
-
-7. Restart your terminal and make your virtual environtment:
+6. Restart your terminal and make your virtual environtment:
 
 `mkvirtualenv -p ~/.pyenv/versions/3.10.8/bin/python notifications-admin`
 
-8. You can now return to your environment any time by entering
+7. You can now return to your environment any time by entering
 
 `workon notifications-admin`
 
-9. Find the appropriate env variables and copy them into the .env file. A sane set of defaults exists in `.env.example` in the root folder. If you are working for CDS you should use the ones in the LastPass folder. If using from lastPass and running the API locally, change API_HOST_NAME to point to your local machine
+8. Find the appropriate env variables and copy them into the .env file. A sane set of defaults exists in `.env.example` in the root folder. If you are working for CDS you should use the ones in the LastPass folder. If using from lastPass and running the API locally, change API_HOST_NAME to point to your local machine
 
-10. Install all dependencies
+9. Install all dependencies
 
 `pip3 install -r requirements.txt`
 
-11. Generate the version file ?!?
+10. Generate the version file ?!?
 
 `make generate-version-file`
 
-12. Generate the translations
+11. Generate the translations
 
 `make babel`
 
-13. Install npm and build the assets 
+12. Install npm and build the assets
 
 `npm install` followed by `npm run build`
 
-14.  Run the service
+13.  Run the service
 
 `flask run -p 6012 --host=localhost`
 
-15. To test
+14. To test
 
 `pip3 install -r requirements_for_test.txt`
 
@@ -138,16 +132,16 @@ in a separate terminal from the app
 
 ## Updating application dependencies
 
-`requirements.txt` file is generated from the `requirements-app.txt` in order to pin
-versions of all nested dependencies. If `requirements-app.txt` has been changed (or
-we want to update the unpinned nested dependencies) `requirements.txt` should be
+`poetry.lock` file is generated from the `pyproject.toml` in order to pin
+versions of all nested dependencies. If `pyproject.toml` has been changed (or
+we want to update the unpinned nested dependencies) `poetry.lock` should be
 regenerated with
 
 ```
-make freeze-requirements
+poetry lock --no-update
 ```
 
-`requirements.txt` should be committed alongside `requirements-app.txt` changes.
+`poetry.lock` should be committed alongside `pyproject.toml` changes.
 
 
 ## Working with static assets
@@ -167,7 +161,7 @@ When running on preview, staging and production there’s a bit more to it:
 <h1>{{ _('Hello') }}</h1>
 ```
 
-- For form hints 
+- For form hints
 
 Set a variable
 
@@ -208,7 +202,7 @@ let now_txt = window.polyglot.t("now");
 
 Currently this is a manual step. Add a row to `fr.csv` in `app/translations/csv/` for each new string you have wrapped. The format is: `"wrapped string","translation"`. Make sure the wrapped string you are adding is unique.
 
-- Compile 
+- Compile
 
 ```bash
 make babel
@@ -303,11 +297,11 @@ n lts
 npm rebuild node-sass
 ```
 
-### Instruction d'installation locale 
+### Instruction d'installation locale
 
 Sur macOS :
 
-1. Installer PyEnv avec Homebrew. Cela vous permettra de préserver votre santé mentale. 
+1. Installer PyEnv avec Homebrew. Cela vous permettra de préserver votre santé mentale.
 
 `brew install pyenv`
 
@@ -357,7 +351,7 @@ source ~/.pyenv/versions/3.10.8/bin/virtualenvwrapper.sh
 
 `pip3 install -r requirements.txt`
 
-11. Générer le fichier de version 
+11. Générer le fichier de version
 
 `make generate-version-file`
 
@@ -365,7 +359,7 @@ source ~/.pyenv/versions/3.10.8/bin/virtualenvwrapper.sh
 
 `make babel`
 
-13. Installer les dépendances npm et construire les actifs 
+13. Installer les dépendances npm et construire les actifs
 
 `npm install` suivi de `npm run build`.
 
@@ -416,7 +410,7 @@ Lorsque en production ou sur staging, c'est un peu plus compliqué:
 <h1>{{ _('Hello') }}</h1>
 ```
 
-- Pour des conseils sur les formulaires 
+- Pour des conseils sur les formulaires
 
 Crée une variable
 
@@ -456,7 +450,7 @@ let now_txt = window.polyglot.t("now") ;
 
 Actuellement, il s'agit d'une étape manuelle. Ajoutez une ligne à `fr.csv` dans `app/translations/csv/` pour chaque nouvelle  de charactère que vous avez enveloppée. Le format est le suivant : `"Texte Anglais", "traduction"`. Assurez-vous que la chaîne enveloppée que vous ajoutez est unique.
 
-- Compiler 
+- Compiler
 
 ```Bash
 make babel
