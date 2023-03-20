@@ -13,7 +13,7 @@
 		"SHELL": "/bin/zsh"
 	},
 
-	"settings": { 
+	"settings": {
 		"python.linting.enabled": true,
 		"python.linting.pylintEnabled": true,
 		"python.linting.pylintPath": "/usr/local/bin/pylint",
@@ -29,6 +29,7 @@
 		"visualstudioexptteam.vscodeintellicode",
 		"yzhang.markdown-all-in-one",
 		"ms-ossdata.vscode-postgresql",
+		"bungcip.better-toml",
 	],
 
 	"forwardPorts": [6012],
