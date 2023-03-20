@@ -12,32 +12,22 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-    <div class="">
+    <div class="page-content">
         <h1 class="heading-large py-4">{{ _('Review email addresses') }}</h1>
         <p>{{ _('Amazon Web Services may suspend GC Notify if we send too many problem emails.') }}</p>
-        <p>{{ _('Check that email addresses are entered properly. If necessary, use another method to conta ct recipients to confirm their email address.') }}</p>
+        <p>{{ _('Check that email addresses are entered properly. If necessary, use another method to contact recipients to confirm their email address.') }}</p>
         <p>{{ _('Remove addresses you cannot correct.') }}</p>
 
         <div class="bg-yellow px-5">
-            <p class="text-title ">
+            <p class="text-title py-4">
                 {{ _('{:,}').format(5) }}% {{ _('of email addresses need review') }}
             </p>
         </div>
 
         <h2 class="heading-medium mt-8">{{ _('Problem emails over the past 24 hours') }}</h2>
 
-        <div class="py-1">
-            <ul class="list list-bullet">
-            {% for csv in csv_list %}
-                <li>
-                    <a>{{ csv.problem_count }} {{_(" problem email addresses")}}</a>
-                    <span>
-                        {{ _( ' in ')}} '{{ csv.name }}'
-                    </span>
-                </li>
-            {% endfor %}
-            </ul>
-        </div>
-        <p class="text-small">{{ _('Updated every 5 minutes. Last updated {}')}}</p>
+
+        {{ ajax_block(partials, updates_url, 'problem_emails', interval=5)}}
+
     </div>
 {% endblock %}

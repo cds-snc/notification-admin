@@ -27,32 +27,6 @@ from app.utils import (
     yyyy_mm_to_datetime,
 )
 
-@main.route("/services/<service_id>/review-emails")
-def review_email_addresses(service_id):
-    return render_template(
-        "views/dashboard/review-email-list.html",
-        csv_list=get_send_list_by_template(service_id)
-    )
-
-def get_send_list_by_template(service_id):
-    class CsvReview:
-        name = "name"
-        problem_count = 0
-        sent_at = datetime.utcnow()
-
-    csv1 = CsvReview()
-    csv1.name = "Many bad emails.csv"
-    csv1.problem_count = 9
-    csv1.sent_at = datetime.utcnow()
-
-    csv2 = CsvReview()
-    csv2.name = "Not many bad emails.csv"
-    csv2.problem_count = 1
-    csv2.sent_at = datetime.utcnow()
-
-    problem_csvs = [csv1, csv2]
-    return problem_csvs
-
 # This is a placeholder view method to be replaced
 # when product team makes decision about how/what/when
 # to view history
@@ -92,10 +66,27 @@ def service_dashboard(service_id):
     )
 
 
+@main.route("/services/<service_id>/review-emails")
+def review_email_addresses(service_id):
+    return render_template(
+        "views/dashboard/review-email-list.html",
+        service_id=service_id,
+        updates_url=url_for(".problem_emails_updates", service_id=service_id),
+        partials=get_problem_email_partials(service_id)
+    )
+
+
 @main.route("/services/<service_id>/dashboard.json")
 @user_has_permissions("view_activity")
 def service_dashboard_updates(service_id):
     return jsonify(**get_dashboard_partials(service_id))
+
+
+@main.route("/services/<service_id>/review-emails/problem-emails.json")
+def problem_emails_updates(service_id):
+    problem_emails = get_send_list_by_template(service_id)
+
+    return jsonify(**get_problem_email_partials(service_id))
 
 
 @main.route("/services/<service_id>/template-activity")
@@ -264,6 +255,15 @@ def get_dashboard_partials(service_id):
         "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
         "has_jobs": bool(immediate_jobs),
         "has_scheduled_jobs": bool(scheduled_jobs),
+    }
+
+
+def get_problem_email_partials(service_id):
+    problem_csvs = get_send_list_by_template(service_id)
+    return {
+        "problem_emails": render_template(
+            "views/dashboard/_problem_emails.html",
+            csv_list=problem_csvs)
     }
 
 
@@ -448,3 +448,23 @@ def get_column_properties(number_of_columns):
         2: ("w-1/2 float-left py-0 px-0 px-gutterHalf box-border", 999999999),
         3: ("md:w-1/3 float-left py-0 px-0 px-gutterHalf box-border", 99999),
     }.get(number_of_columns)
+
+
+def get_send_list_by_template(service_id):
+    class CsvReview:
+        name = "name"
+        problem_count = 0
+        sent_at = datetime.utcnow()
+
+    csv1 = CsvReview()
+    csv1.name = "Many bad emails.csv"
+    csv1.problem_count = 9
+    csv1.sent_at = datetime.utcnow()
+
+    csv2 = CsvReview()
+    csv2.name = "Not many bad emails.csv"
+    csv2.problem_count = 1
+    csv2.sent_at = datetime.utcnow()
+
+    problem_csvs = [csv1, csv2]
+    return problem_csvs

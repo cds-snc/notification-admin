@@ -522,6 +522,7 @@ class MainNavigation(Navigation):
         "send_method_stats_by_service",
         "trial_report_csv",
         "usage_for_all_services",
+        "problem_emails_updates",
         "platform_admin",
         "platform_admin_letter_validation_preview",
         "platform_admin_list_complaints",

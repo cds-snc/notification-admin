@@ -1,0 +1,13 @@
+<div class="ajax-block-container">
+    <ul class="list list-bullet">
+    {% for csv in csv_list %}
+        <li>
+            <a>{{ csv.problem_count }} {{_(" problem email addresses")}}</a>
+            <span>
+                {{ _( ' in ')}} '{{ csv.name }}'
+            </span>
+        </li>
+    {% endfor %}
+    </ul>
+    <p class="text-small">{{ _('Updated every 5 minutes. Last updated {}').format("2023-03-20")}}</p>
+</div>
