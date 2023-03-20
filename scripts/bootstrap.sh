@@ -6,10 +6,11 @@
 # ./scripts/bootstrap.sh
 
 # we need the version file to exist otherwise the app will blow up
+echo $(pwd)
 make generate-version-file
 
 # Install Python development dependencies
-pip3 install -r requirements_for_test.txt
+poetry install --only test
 
 # compile translations
 make babel
