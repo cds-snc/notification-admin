@@ -623,6 +623,20 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
     )
 
 
+class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
+    child_organisation_name = StringField(
+        _l("Does your group have additional or other names? (Optional)"),
+        validators=[Optional(), Length(max=500)],
+    )
+
+
+class CreateServiceStepOtherOrganisationForm(StripWhitespaceForm):
+    other_organisation_name = StringField(
+        _l("Name of your organisation"),
+        validators=[DataRequired(), Length(max=500)],
+    )
+
+
 class CreateServiceStepLogoForm(StripWhitespaceForm):
     def _getSelectBilingualChoices(self):
         cdn_url = get_logo_cdn_domain()
@@ -1726,6 +1740,22 @@ class GoLiveAboutServiceForm(StripWhitespaceForm):
         _l("Name of department or organisation"),
         validators=[DataRequired(), Length(max=500)],
     )
+    purpose = TextAreaField(
+        _l("For what purpose are you using GC Notify?"),
+        validators=[DataRequired(), Length(max=2000)],
+    )
+    intended_recipients = MultiCheckboxField(
+        _l("Who are the intended recipients of notifications?"),
+        default="",
+        choices=[
+            ("internal", _l("Colleagues within your department (internal)")),
+            ("external", _l("Partners from other organisations (external)")),
+            ("public", _l("Public")),
+        ],
+        validators=[DataRequired()],
+    )
+    
+class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
     purpose = TextAreaField(
         _l("For what purpose are you using GC Notify?"),
         validators=[DataRequired(), Length(max=2000)],

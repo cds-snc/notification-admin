@@ -1,0 +1,14 @@
+{% macro autocomplete(options, id, label, hint=None) %}
+  <div class="w-full md:w-1/2 form-group contain-floats box-border">
+    <label for="{{ id }}"><strong>{{ label }}</strong></label>
+    {% if hint %}
+      <span id="{{ id }}-hint" class="form-hint">{{ hint }}</span>
+    {% endif %}
+    <select data-module="autocomplete" name="{{ id }}" id="{{ id }}">
+      <option value=""></option>
+      {% for option in options %}
+        <option value="{{ option }}">{{ option }}</option>
+      {% endfor %}
+    </select>
+  </div>  
+{% endmacro %}
