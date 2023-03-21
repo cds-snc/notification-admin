@@ -58,7 +58,21 @@ def create(service: dict[str, str], session: Salesforce = None) -> Tuple[bool, O
                 headers={"Sforce-Duplicate-Rule-Header": "allowSave=true"},
             )
             is_created = parse_result(result, f"Salesforce Engagement create for service ID {service.get('id')}")
-            engagement_id = result.get("Id")
+            engagement_id = result.get("id")
+
+            # Create the Product association
+            if engagement_id:
+                result = session.OpportunityLineItem.create(
+                    {
+                        "OpportunityId": engagement_id,
+                        "PricebookEntryId": current_app.config["SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID"],
+                        "Product2Id": current_app.config["SALESFORCE_ENGAGEMENT_PRODUCT_ID"],
+                        "Quantity": 1,
+                        "UnitPrice": 0,
+                    },
+                    headers={"Sforce-Duplicate-Rule-Header": "allowSave=true"},
+                )
+                parse_result(result, f"Salesforce Engagement OpportunityLineItem create for service ID {service.get('id')}")
 
     except Exception as ex:
         current_app.logger.error(f"Salesforce Engagement create failed: {ex}")

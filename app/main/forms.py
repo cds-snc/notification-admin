@@ -1754,7 +1754,8 @@ class GoLiveAboutServiceForm(StripWhitespaceForm):
         ],
         validators=[DataRequired()],
     )
-    
+
+
 class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
     purpose = TextAreaField(
         _l("For what purpose are you using GC Notify?"),
@@ -1791,6 +1792,7 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
         ],
         validators=[DataRequired()],
     )
+
 
 class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
     notification_types = MultiCheckboxField(

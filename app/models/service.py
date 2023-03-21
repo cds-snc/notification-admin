@@ -609,7 +609,7 @@ class Service(JSONModel):
 
     def get_api_key(self, id):
         return self._get_by_id(self.api_keys, id)
-    
+
     @property
     def organisation_notes(self):
         return self._dict["organisation_notes"]
