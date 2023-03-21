@@ -15,7 +15,7 @@
       {% endif %}
     </div>
     {% if label %}
-      <span class="big-number-label{% if status %} pb-0 link:text-blue visited:text-blue{% endif %}{% if link %} underline{% endif %}">{{ label }}</span>
+      <span class="big-number-label{% if status %} pb-0gtb link:text-blue visited:text-blue{% endif %}{% if link %} underline{% endif %}">{{ label }}</span>
     {% endif %}
   </div>
   {% if link %}
@@ -62,7 +62,7 @@
   </div>
 {% endmacro %}
 
-{% macro big_number_problem_emails_with_status(
+{% macro big_number_review_emails_with_status(
   number,
   label,
   problem_percentage,
@@ -78,24 +78,26 @@
   <div class="big-number-with-status">
     {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
 
-    <div class="p-6 {% if bounce_status == "critical" %}big-number-status-critical{% elif bounce_status == "warning"%}big-number-status-warning{% else%}big-number-status{% endif %}">
-      {% if number >= 1 %}
-        {% if failure_link %}
-          <div class="pb-4 big-number-status-link flex justify-between items-end border-0">
-            {{ problem_percentage }}% {{ _('problem addresses') }}
-            <i aria-hidden="true" class="p-1 {% if bounce_status == "warning" %}fa-solid fa-fas fa-circle-exclamation{% elif bounce_status== "critical" %}fa-solid fa-fas fa-triangle-exclamation{% endif %}"></i>
-          </div>
-          <div class="{% if not bounce_status == "warning" %}big-number-status-link{% else %}big-number-status-link-warning{% endif %} flex justify-between items-end border-0">
-            <a class="{% if not bounce_status == "warning" %}big-number-status-link{% else %}big-number-status-link-warning{% endif %}" href="{{ failure_link }}">{{ failure_link_label }}</a>
-            <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i>
-          </div>
-        {% else %}
-          {{ _('failed') }} – {{ failure_percentage }}%
-        {% endif %}
-      {% else %}
-        {{ pass_label }}
-      {% endif %}
-    </div>
+      <div class="p-6 {% if bounce_status == "critical" %}review-email-status-critical{% elif bounce_status == "warning"%}review-email-status-warning{% else%}review-email-status-normal{% endif %}">
+        <a class="no-underline" href="{{ failure_link }}">
+          {% if number >= 1 %}
+              {% if failure_link %}
+                <div class="review-email-label flex justify-between items-end border-0">
+                  <span>{{ problem_percentage }}% {{ _('problem addresses') }}</span>
+                  <i aria-hidden="true" class="p-1 {% if bounce_status == "warning" %}fa-solid fa-fas fa-circle-exclamation{% elif bounce_status== "critical" %}fa-solid fa-fas fa-triangle-exclamation{% endif %}"></i>
+                </div>
+                <div class="review-email-link flex justify-between items-end border-0">
+                  <span>{{ failure_link_label }}</span> 
+                  <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i>
+                </div>
+              {% else %}
+                {{ _('failed') }} – {{ failure_percentage }}%
+              {% endif %}
+            {% else %}
+              {{ pass_label }}
+          {% endif %}
+        </a>
+      </div>
   </div>
 {% endmacro %}
 

@@ -300,7 +300,7 @@ def get_service_bounce_rate(service_id):
     mock_bounce_rate_info = Object(
         bounce_total = 5,
         bounce_percentage = 0.05 * 100,
-        bounce_status = BounceRateStatus.CRITICAL.value
+        bounce_status = BounceRateStatus.NORMAL.value
     )
     return mock_bounce_rate_info
 

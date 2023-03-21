@@ -1,4 +1,4 @@
-{% from "components/big-number.html" import big_number_with_status, big_number_problem_emails_with_status %}
+{% from "components/big-number.html" import big_number_with_status, big_number_review_emails_with_status %}
 {% from "components/message-count-label.html" import message_count_label, problem_email_label %}
 
 {% set sent_single = _('sent-dashboard-single') %}
@@ -31,7 +31,7 @@
 
     <div id="problem-email-addresses" class="{{column_width}}">
       {% if config["FF_BOUNCE_RATE_V1"] %}
-        {{ big_number_problem_emails_with_status(
+        {{ big_number_review_emails_with_status(
           number=bounce_rate["bounce_total"],
           label=problem_email_label(bounce_rate["total_bounce"]),
           problem_percentage=bounce_rate["bounce_percentage"]|int,
