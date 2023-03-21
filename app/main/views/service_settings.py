@@ -35,6 +35,7 @@ from app.main.forms import (
     FieldWithLanguageOptions,
     FreeSMSAllowance,
     GoLiveAboutNotificationsForm,
+    GoLiveAboutNotificationsFormNoOrg,
     GoLiveAboutServiceForm,
     GoLiveAboutServiceFormNoOrg,
     InternationalSMSForm,
@@ -261,7 +262,7 @@ def use_case(service_id):
             "back_link": url_for("main.request_to_go_live", service_id=current_service.id),
         },
         {
-            "form": GoLiveAboutNotificationsForm,
+            "form": GoLiveAboutNotificationsForm if display_org_question else GoLiveAboutNotificationsFormNoOrg,
             "current_step": "about-notifications",
             "previous_step": DEFAULT_STEP,
             "next_step": None,
