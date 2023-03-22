@@ -29,6 +29,9 @@ mkdir ~/.zfunc
 touch ~/.zfunc/_poetry
 poetry completions zsh > ~/.zfunc/_poetry
 
+# Tell git the workspace repository is safe, else upcoming commands will fail.
+git config --global --add safe.directory /workspaces/notification-admin
+
 # Warm up git index prior to display status in prompt else it will
 # be quite slow on every invocation of starship.
 git status
