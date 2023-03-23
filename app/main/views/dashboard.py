@@ -3,7 +3,7 @@ from datetime import datetime
 from functools import partial
 from itertools import groupby
 
-from flask import Response, abort, jsonify, render_template, request, session, url_for
+from flask import abort, jsonify, render_template, request, session, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -22,7 +22,6 @@ from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
     REQUESTED_STATUSES,
-    generate_notifications_csv,
     get_current_financial_year,
     get_month_name,
     user_has_permissions,
