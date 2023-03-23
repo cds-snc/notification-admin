@@ -625,15 +625,15 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
 
 class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
     child_organisation_name = StringField(
-        _l("Does your group have additional or other names? (Optional)"),
+        _l("Enter any other names for your group (Optional)"),
         validators=[Optional(), Length(max=500)],
     )
 
 
 class CreateServiceStepOtherOrganisationForm(StripWhitespaceForm):
     other_organisation_name = StringField(
-        _l("Name of your organisation"),
-        validators=[DataRequired(), Length(max=500)],
+        _l("Enter name of your group"),
+        validators=[DataRequired(message=_l("Enter name to continue")), Length(max=500)],
     )
 
 

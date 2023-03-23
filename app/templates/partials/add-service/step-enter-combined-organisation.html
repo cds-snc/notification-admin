@@ -1,7 +1,7 @@
 {% from "components/radios.html" import radios %}
 {% from "components/autocomplete.html" import autocomplete %}
 
-<p>{{ _("This helps us better meet your needs.") }}</p>
+<p>{{ _("We use this information to improve GC Notify.") }}</p>
 
 <div data-module="url-typer" class="form-wrap">
   {% call form_wrapper() %}
@@ -9,7 +9,7 @@
     <div class="mb-gutterAndAHalf">
       {{ autocomplete(autocomplete_items_combined[current_lang], "parent_organisation_name", "Select your department or organisation", "For example: Treasury Board of Canada Secretariat") }}
       <a href="{{ url_for('.add_service', current_step='choose_organisation', government_type='other') }}">
-        Can't find your department or organisation?
+        Not on list?
       </a>
     </div>  
     
