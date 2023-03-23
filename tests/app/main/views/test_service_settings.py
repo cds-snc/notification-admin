@@ -1253,8 +1253,6 @@ def test_request_to_go_live_use_case_page_hides_organisation(
     organisation_question_visible: bool,
 ):
     with set_config(app_, "FF_SALESFORCE_CONTACT", salesforce_feature_flag):
-        store_mock = mocker.patch("app.service_api_client.store_use_case_data")
-        submit_use_case_mock = mocker.patch("app.service_api_client.register_submit_use_case")
         use_case_data_mock = mocker.patch("app.service_api_client.get_use_case_data")
         use_case_data_mock.return_value = None
         service_one.organisation_notes = organisation_notes
