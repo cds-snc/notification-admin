@@ -9,7 +9,6 @@ from app import user_api_client
 from app.main import main
 from app.main.forms import TwoFactorForm
 from app.models.user import InvitedUser, User
-from app.salesforce import salesforce_contact
 from app.utils import redirect_to_sign_in
 
 
@@ -67,9 +66,6 @@ def activate_user(user_id):
     organisation_id = session.get("organisation_id")
     activated_user = user.activate()
     activated_user.login()
-
-    if current_app.config["FF_SALESFORCE_CONTACT"]:
-        salesforce_contact.create(user)
 
     invited_user = session.get("invited_user")
     if invited_user:
