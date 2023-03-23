@@ -6,11 +6,12 @@ from uuid import UUID, uuid4
 
 import pytest
 from bs4 import BeautifulSoup
-from flask import url_for
+from flask import Flask, url_for
 from freezegun import freeze_time
 from pytest_mock import MockerFixture
 
 import app
+from app.models.service import Service
 from app.utils import email_safe
 from tests import (
     organisation_json,
@@ -1246,8 +1247,8 @@ def test_request_to_go_live_use_case_page(
 def test_request_to_go_live_use_case_page_hides_organisation(
     client_request: ClientRequest,
     mocker: MockerFixture,
-    app_,
-    service_one,
+    app_: Flask,
+    service_one: Service,
     salesforce_feature_flag: bool,
     organisation_notes: str,
     organisation_question_visible: bool,
@@ -1256,7 +1257,7 @@ def test_request_to_go_live_use_case_page_hides_organisation(
         use_case_data_mock = mocker.patch("app.service_api_client.get_use_case_data")
         use_case_data_mock.return_value = None
         service_one.organisation_notes = organisation_notes
-        page = client_request.get(".use_case", service_id=service_one["id"])
+        page = client_request.get(".use_case", service_id=service_one.id)
         organisation_question_visible_actual = page.body.find_all("label")[0].text.strip() == "Name of department or organisation"
         assert organisation_question_visible_actual == organisation_question_visible
 
