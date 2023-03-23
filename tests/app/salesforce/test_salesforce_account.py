@@ -6,7 +6,7 @@ def test_get_accounts_requests_correct_url(mocker, app_):
         mock_request = mocker.patch("app.salesforce.salesforce_account.requests.get")
     salesforce_account.get_accounts("www.test_url.ca", "secret_token")
     assert mock_request.called_with("www.test_url.ca")
-    assert mock_request.called_with(headers={"Authorization": f"token secret_token"})
+    assert mock_request.called_with(headers={"Authorization": "token secret_token"})
 
 
 def test_get_accounts_sorts_alphabetically(mocker, app_):
