@@ -1,0 +1,12 @@
+# Explicitly mark following files with lf end lines. These files
+# are meant to be executed on Linux, so we want to enforce.
+
+.devcontainer/scripts/notify-dev-entrypoints.sh eol=lf
+
+bin/entry.sh eol=lf
+bin/sync_lambda_envs.sh eol=lf
+
+scripts/bootstrap.sh eol=lf
+scripts/generate_en_translations.py eol=lf
+scripts/run_app.sh eol=lf
+scripts/run_tests.sh eol=lf
