@@ -23,7 +23,7 @@
         statistics['email']['failed'],
         (statistics['email']['failed_percentage'])|int,
         statistics['email']['show_warning'],
-        failure_link=url_for(".view_notifications", service_id=service_id, message_type='email', status='failed'),
+        failure_link=url_for(".view_notifications", service_id=service_id, message_type='email', status='failed') if statistics['email']['failed'] > 0 else None,
         link=url_for(".view_notifications", service_id=service_id, message_type='email', status='sending,delivered,failed'),
         smaller=smaller_font_size
       ) }}
@@ -36,7 +36,7 @@
           label=problem_email_label(bounce_rate["total_bounce"]),
           problem_percentage=bounce_rate["bounce_percentage"]|int,
           bounce_status=bounce_rate["bounce_status"],
-          failure_link=url_for('.inaccurate_email_addresses', service_id=service_id),
+          failure_link=url_for('.inaccurate_email_addresses', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
           link=url_for(".view_notifications", service_id=service_id, message_type='email', status='sending,delivered,failed'),
           smaller=smaller_font_size,
           failure_link_label="Review email addresses"

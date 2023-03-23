@@ -19,7 +19,9 @@
   .big-number-status {
     @apply text-smaller block text-white bg-green-darker;
   }
-
+  .big-number-status:hover > div {
+    @apply no-underline opacity-75;
+  }
   .big-number-with-status {
     @apply relative mb-8;
   }
@@ -63,7 +65,7 @@
     box-shadow: none;
     @apply outline-yellow border-0;
   }
-
+big-number-status
   /* Covers -normal, -warn, -critical */
   div[class*="review-email-status-"]:active,
   div[class*="review-email-status-"]:focus {
@@ -72,7 +74,7 @@
 
   div[class*="review-email-status-"]:hover div[class~="review-email-label"] span,
   div[class*="review-email-status-"]:hover div[class~="review-email-link"] span {
-    @apply no-underline text-blue-lightblue25;
+    @apply no-underline opacity-75;
   }
 
   .review-email-label {
@@ -84,27 +86,27 @@
   }
 
   .review-email-status-normal {
-    @apply no-underline mb-2 text-white block bg-green-darker border-2 border-green-darker border-solid;
+    @apply no-underline mb-2 text-white block bg-green-darker border-green-darker border-solid;
   }
 
   .review-email-status-normal .review-email-link {
-    @apply underline text-white bg-green-darker border-2 border-green-darker border-solid;
+    @apply underline text-white bg-green-darker border-green-darker border-solid;
   }
 
   .review-email-status-warning {
-    @apply no-underline mb-2 text-black block bg-yellow border-2 border-yellow border-solid;
+    @apply no-underline mb-2 text-black block bg-yellow border-yellow border-solid;
   }
 
   .review-email-status-warning .review-email-link {
-    @apply underline text-black bg-yellow border-2 border-yellow border-solid;
+    @apply underline text-black bg-yellow border-yellow border-solid;
   }
 
   .review-email-status-critical {
-    @apply no-underline mb-2 text-black block bg-red border-2 border-red border-solid;
+    @apply no-underline mb-2 text-black block bg-red border-red border-solid;
   }
 
   .review-email-status-critical .review-email-link {
-    @apply underline text-white bg-red border-2 border-red border-solid;
+    @apply underline text-white bg-red border-red border-solid;
   }
 
   /*! purgecss end ignore */
