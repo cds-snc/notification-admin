@@ -101,7 +101,7 @@ def test_client_creates_service_with_correct_data(
             user_id=fake_uuid,
             email_from="test@example.com",
             default_branding_is_french=False,
-            organisation_notes=""
+            organisation_notes="",
         ),
     )
 
