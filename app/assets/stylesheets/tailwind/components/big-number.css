@@ -65,7 +65,7 @@
     box-shadow: none;
     @apply outline-yellow border-0;
   }
-big-number-status
+
   /* Covers -normal, -warn, -critical */
   div[class*="review-email-status-"]:active,
   div[class*="review-email-status-"]:focus {
