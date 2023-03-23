@@ -65,6 +65,7 @@ notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", t
 rsa = "^4.1" # not directly required, pinned by Snyk to avoid a vulnerability
 simple-salesforce = "1.12.3"
 cryptography = "^39.0.1"
+unidecode = "^1.3.6"
 
 [tool.poetry.group.test.dependencies]
 isort = "5.10.1"
