@@ -1256,7 +1256,7 @@ def test_request_to_go_live_use_case_page_hides_organisation(
     with set_config(app_, "FF_SALESFORCE_CONTACT", salesforce_feature_flag):
         use_case_data_mock = mocker.patch("app.service_api_client.get_use_case_data")
         use_case_data_mock.return_value = None
-        service_one.organisation_notes = organisation_notes
+        service_one.organisation_notes = organisation_notes  # type: ignore
         page = client_request.get(".use_case", service_id=service_one.id)
         organisation_question_visible_actual = page.body.find_all("label")[0].text.strip() == "Name of department or organisation"
         assert organisation_question_visible_actual == organisation_question_visible
