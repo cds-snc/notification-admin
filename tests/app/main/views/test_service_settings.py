@@ -36,6 +36,7 @@ from tests.conftest import (
     create_sms_sender,
     mock_get_service_organisation,
     normalize_spaces,
+    set_config,
 )
 
 FAKE_TEMPLATE_ID = uuid4()
@@ -1231,6 +1232,35 @@ def test_request_to_go_live_use_case_page(
             "step": "about-notifications",
         },
     )
+
+
+@pytest.mark.parametrize(
+    "salesforce_feature_flag, organisation_notes, organisation_question_visible",
+    (
+        (False, "Some department > Some group", True),
+        (False, "", True),
+        (True, "Some department > Some group", False),
+        (True, "", True),
+    ),
+)
+def test_request_to_go_live_use_case_page_hides_organisation(
+    client_request: ClientRequest,
+    mocker: MockerFixture,
+    app_,
+    service_one,
+    salesforce_feature_flag: bool,
+    organisation_notes: str,
+    organisation_question_visible: bool,
+):
+    with set_config(app_, "FF_SALESFORCE_CONTACT", salesforce_feature_flag):
+        store_mock = mocker.patch("app.service_api_client.store_use_case_data")
+        submit_use_case_mock = mocker.patch("app.service_api_client.register_submit_use_case")
+        use_case_data_mock = mocker.patch("app.service_api_client.get_use_case_data")
+        use_case_data_mock.return_value = None
+        service_one.organisation_notes = organisation_notes
+        page = client_request.get(".use_case", service_id=service_one["id"])
+        organisation_question_visible_actual = page.body.find_all("label")[0].text.strip() == "Name of department or organisation"
+        assert organisation_question_visible_actual == organisation_question_visible
 
 
 def test_request_to_go_live_can_resume_use_case_page(
