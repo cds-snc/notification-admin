@@ -7,13 +7,13 @@
   {% call form_wrapper() %}
 
     <div class="mb-gutterAndAHalf">
-      {{ autocomplete(form.parent_organisation_name, autocomplete_items_combined[current_lang], hint="For example: Treasury Board of Canada Secretariat") }}
+      {{ autocomplete(form.parent_organisation_name, autocomplete_items_combined[current_lang], hint=_("For example: Treasury Board of Canada Secretariat")) }}
       <a href="{{ url_for('.add_service', current_step='choose_organisation', government_type='other') }}">
-        Not on list?
+        {{ _("Not on list?") }}
       </a>
     </div>  
     
-    {{ textbox(form.child_organisation_name, hint="For example: Canadian Digital Service", maxlength=255) }}
+    {{ textbox(form.child_organisation_name, hint=_("For example: Canadian Digital Service"), maxlength=255) }}
 
     {% set button_txt = _('Create service') %}
     {{ page_footer(button_txt) }}
