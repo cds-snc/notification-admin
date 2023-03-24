@@ -624,6 +624,11 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
 
 
 class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
+    parent_organisation_name = StringField(
+        _l("Select your department or organisation"),
+        validators=[DataRequired()]
+    )
+    
     child_organisation_name = StringField(
         _l("Enter any other names for your group (Optional)"),
         validators=[Optional(), Length(max=500)],
@@ -1792,6 +1797,7 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
         ],
         validators=[DataRequired()],
     )
+
 
 class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
     notification_types = MultiCheckboxField(

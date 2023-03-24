@@ -213,14 +213,10 @@ def add_service():
         # more steps to go, save valid submitted data to session and redirct to next form
         current_step = WIZARD_ORDER[idx + 1]
         session[SESSION_FORM_KEY].update(form.data)
-        if current_step == STEP_ORGANISATION:
-            government_type = form.data["government_type"] if "government_type" in form.data else None
         return redirect(url_for(".add_service", current_step=current_step, government_type=government_type))
     # no more steps left, re-validate validate session in case of stale session data
     data = session[SESSION_FORM_KEY]
     data.update(form.data)  # add newly submitted data from POST
-    if current_step == STEP_ORGANISATION and not government_type:
-        data["parent_organisation_name"] = request.form["parent_organisation_name"]
     # iterate through all forms and validate
     for step in WIZARD_ORDER:
         temp_form_cls = get_form_class(current_step, government_type)

@@ -1,10 +1,19 @@
-{% macro autocomplete(options, id, label, hint=None) %}
-  <div class="w-full md:w-1/2 form-group contain-floats box-border">
-    <label for="{{ id }}"><strong>{{ label }}</strong></label>
+{% macro autocomplete(field, options, hint=None) %}
+  <div class="w-full md:w-1/2 form-group contain-floats box-border {% if field.errors %} form-group-error{% endif %}">
+    {% set describedby = '' %}
+    
+    <label for="{{ field.name }}"><strong>{{ field.label }}</strong></label>
     {% if hint %}
-      <span id="{{ id }}-hint" class="form-hint">{{ hint }}</span>
+      <span id="{{ field.name }}-hint" class="form-hint">{{ hint }}</span>
     {% endif %}
-    <select data-module="autocomplete" name="{{ id }}" id="{{ id }}">
+    {% if field.errors %}
+    {% set describedby = describedby + field.name + '-error-message ' %}
+      <span id="{{ field.name }}-error-message" class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
+        {% if not safe_error_message %}{{ _(field.errors[0]) }}{% else %}{{ field.errors[0]|safe }}{% endif %}
+      </span>
+    {% endif %}
+
+    <select data-module="autocomplete" name="{{ field.name }}" id="{{ field.name }}">
       <option value=""></option>
       {% for option in options %}
         <option value="{{ option }}">{{ option }}</option>
