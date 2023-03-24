@@ -43,7 +43,6 @@ from app.main.validators import (
     LettersNumbersAndFullStopsOnly,
     NoCommasInPlaceHolders,
     OnlySMSCharacters,
-    OrganisationInList,
     ValidEmail,
     ValidGovEmail,
     validate_email_from,
@@ -626,10 +625,9 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
 
 class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
     parent_organisation_name = StringField(
-        _l("Select your department or organisation"),
-        validators=[DataRequired(_l("Choose name from drop-down menu")), OrganisationInList()]
+        _l("Select your department or organisation"), validators=[DataRequired(_l("Choose name from drop-down menu"))]
     )
-    
+
     child_organisation_name = StringField(
         _l("Enter any other names for your group (Optional)"),
         validators=[Optional(), Length(max=500)],

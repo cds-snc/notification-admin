@@ -166,7 +166,7 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
     return render_template(
         "views/add-service.html",
         form=form,
-        heading=_(WIZARD_DICT[current_step]["header"]),
+        heading=_(WIZARD_DICT[current_step]["header"]),  # type: ignore
         step_num=step_num,
         step_max=len(WIZARD_ORDER),
         tmpl=tmpl,
