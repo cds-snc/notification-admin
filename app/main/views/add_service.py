@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import List, Optional, Text
+from typing import Any, List, Optional, Text
 
 from flask import current_app, redirect, render_template, request, session, url_for
 from flask_babel import _
@@ -32,6 +32,8 @@ STEP_NAME_HEADER: str = _("Create service name and email address")
 STEP_LOGO_HEADER: str = _("Choose order for official languages")
 STEP_ORGANISATION_HEADER: str = _("About your service")
 
+GOVERNMENT_TYPE_OTHER: str = "other"
+GOVERNMENT_TYPE_COMBINED: str = "combined"
 
 # wizard list init here for current_app context usage
 WIZARD_DICT = {
@@ -53,18 +55,18 @@ WIZARD_DICT = {
 }
 
 ORGANISIATION_STEP_DICT = {
-    "other": {
+    GOVERNMENT_TYPE_OTHER: {
         "tmpl": "partials/add-service/step-enter-other-organisation.html",
         "form_cls": CreateServiceStepOtherOrganisationForm,
     },
-    "combined": {
+    GOVERNMENT_TYPE_COMBINED: {
         "tmpl": "partials/add-service/step-enter-combined-organisation.html",
         "form_cls": CreateServiceStepCombinedOrganisationForm,
     },
 }
 
 
-def get_wizard_order():
+def get_wizard_order() -> list[str]:
     if current_app.config["FF_SALESFORCE_CONTACT"]:
         return [STEP_LOGO, STEP_SERVICE_AND_EMAIL, STEP_ORGANISATION]
     return [STEP_LOGO, STEP_SERVICE_AND_EMAIL]
@@ -132,23 +134,23 @@ def _create_service(
             raise e
 
 
-def get_form_class(current_step, government_type):
+def get_form_class(current_step: str, government_type: Optional[str]) -> Any:
     if current_step == STEP_ORGANISATION:
-        if not government_type:
-            return ORGANISIATION_STEP_DICT["combined"]["form_cls"]
-        return ORGANISIATION_STEP_DICT[government_type]["form_cls"]
+        if government_type == GOVERNMENT_TYPE_OTHER:
+            return ORGANISIATION_STEP_DICT[GOVERNMENT_TYPE_OTHER]["form_cls"]
+        return ORGANISIATION_STEP_DICT[GOVERNMENT_TYPE_COMBINED]["form_cls"]
     return WIZARD_DICT[current_step]["form_cls"]
 
 
-def get_form_template(current_step, government_type):
+def get_form_template(current_step: str, government_type: Optional[str]) -> str:
     if current_step == STEP_ORGANISATION:
-        if not government_type:
-            return ORGANISIATION_STEP_DICT["combined"]["tmpl"]
-        return ORGANISIATION_STEP_DICT[government_type]["tmpl"]
+        if government_type == GOVERNMENT_TYPE_OTHER:
+            return ORGANISIATION_STEP_DICT[GOVERNMENT_TYPE_OTHER]["tmpl"]
+        return ORGANISIATION_STEP_DICT[GOVERNMENT_TYPE_COMBINED]["tmpl"]
     return WIZARD_DICT[current_step]["tmpl"]
 
 
-def _renderTemplateStep(form, current_step, government_type) -> Text:
+def _renderTemplateStep(form, current_step: str, government_type: Optional[str]) -> Text:
     WIZARD_ORDER = get_wizard_order()
 
     back_link = None
@@ -161,7 +163,7 @@ def _renderTemplateStep(form, current_step, government_type) -> Text:
     if step_num > 1:
         back_link = url_for(".add_service", current_step=WIZARD_ORDER[step_num - 2])
     tmpl = get_form_template(current_step, government_type)
-    if tmpl == ORGANISIATION_STEP_DICT["other"]["tmpl"]:
+    if tmpl == ORGANISIATION_STEP_DICT[GOVERNMENT_TYPE_OTHER]["tmpl"]:
         back_link = url_for(".add_service", current_step=STEP_ORGANISATION)
     return render_template(
         "views/add-service.html",
@@ -229,9 +231,9 @@ def add_service():
     service_name = data["name"]
     default_branding_is_french = data["default_branding"] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
     # organisation_notes will be visible at the go live request
-    if current_app.config["FF_SALESFORCE_CONTACT"] and not government_type:
+    if current_app.config["FF_SALESFORCE_CONTACT"] and government_type != GOVERNMENT_TYPE_OTHER:
         organisation_notes = f'{data["parent_organisation_name"]} > {data["child_organisation_name"]}'
-    elif current_app.config["FF_SALESFORCE_CONTACT"] and government_type:
+    elif current_app.config["FF_SALESFORCE_CONTACT"] and government_type == GOVERNMENT_TYPE_OTHER:
         organisation_notes = data["other_organisation_name"]
     else:
         organisation_notes = None
