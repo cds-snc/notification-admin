@@ -165,3 +165,16 @@ def validate_service_name(form, field):
     )
     if not unique_name:
         raise ValidationError(_l("This service name is already in use"))
+
+
+class OrganisationInList:
+    def __call__(self, form, field):
+        _organisation_list = current_app.config["CRM_ORG_LIST"].get("names", {})
+        try:
+            # TODO: use the dynamic language
+            organisation_list = _organisation_list["en"]
+            if organisation_list.index(field.data) == -1:
+                raise ValidationError(_l("Choose name from drop-down menu"))
+        except:
+            # TODO: fix the logging
+            current_app.log_exception("Problem validating the organisation input")
