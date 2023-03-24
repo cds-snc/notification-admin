@@ -662,6 +662,7 @@ def mock_create_service(mocker):
         user_id,
         email_from,
         default_branding_is_french,
+        organisation_notes="",
     ):
         service = service_json(
             101,
@@ -672,6 +673,7 @@ def mock_create_service(mocker):
             restricted=restricted,
             email_from=email_from,
             default_branding_is_french=default_branding_is_french,
+            organisation_notes=organisation_notes,
         )
         return service["id"]
 

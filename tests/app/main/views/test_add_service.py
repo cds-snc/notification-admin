@@ -144,8 +144,6 @@ def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
     client_request,
     mock_service_email_from_is_unique,
     mock_service_name_is_unique,
-    mock_create_service,
-    mock_create_or_update_free_sms_fragment_limit,
 ):
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
@@ -158,12 +156,36 @@ def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
         current_step="choose_service_name",
         _expected_status=302,
         _expected_redirect=url_for(
-            "main.service_dashboard",
-            service_id=101,
+            "main.add_service",
+            current_step="choose_organisation",
         ),
     )
     assert mock_service_email_from_is_unique.called is True
     assert mock_service_name_is_unique.called is True
+
+
+def test_wizard_flow_with_step_3_should_create_service(
+    client_request,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(
+            default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, name="testing the post", email_from="testing.the.post"
+        )
+    client_request.post(
+        "main.add_service",
+        _data={
+            "parent_organisation_name": "Department of socks",
+            "child_organisation_name": "Sock inspection group",
+        },
+        current_step="choose_organisation",
+        _expected_status=302,
+        _expected_redirect=url_for(
+            "main.service_dashboard",
+            service_id=101,
+        ),
+    )
     assert mock_create_service.called is True
     assert mock_create_or_update_free_sms_fragment_limit.called is True
 
