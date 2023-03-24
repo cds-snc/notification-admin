@@ -1,11 +1,12 @@
 import json
+from typing import Any
 
 import requests
 from flask import current_app
 from unidecode import unidecode
 
 
-def get_accounts(export_url: str, github_token: str) -> dict[str, dict]:
+def get_accounts(export_url: str, github_token: str) -> dict[str, Any]:
     """Retrieves the exported Salesforce account data from GitHub. This purposefully
     swallows all errors and returns an empty dict if there's a problem.  This will allow
     the user registration flow to gracefully omit department selection if needed.
@@ -15,9 +16,9 @@ def get_accounts(export_url: str, github_token: str) -> dict[str, dict]:
         github_token (str): GitHub personal access token with access to the data export
 
     Returns:
-        dict[str, dict]: The account data and localized name lists.
+        dict[str, Any]: The account data and localized name lists.
     """
-    accounts = {}
+    accounts: dict[str, Any] = {"all": [], "names": {}}
     try:
         response = requests.get(export_url, headers={"Authorization": f"token {github_token}"})
         response.raise_for_status()

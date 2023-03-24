@@ -47,6 +47,8 @@ class Config(object):
     BULK_SEND_TEST_SERVICE_ID = os.getenv("BULK_SEND_TEST_SERVICE_ID")
     CHECK_PROXY_HEADER = False
     CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "assistance+notification@cds-snc.ca")
+    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = os.getenv("CRM_GITHUB_PERSONAL_ACCESS_TOKEN")
+    CRM_ORG_LIST_URL = os.getenv("CRM_ORG_LIST_URL")
     CSV_MAX_ROWS = env.int("CSV_MAX_ROWS", 50_000)
     CSV_MAX_ROWS_BULK_SEND = env.int("CSV_MAX_ROWS_BULK_SEND", 100_000)
     CSV_UPLOAD_BUCKET_NAME = os.getenv("CSV_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-csv-upload")
@@ -131,6 +133,7 @@ class Config(object):
     ZENDESK_API_KEY = os.environ.get("ZENDESK_API_KEY")
 
     # FEATURE FLAGS
+    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
