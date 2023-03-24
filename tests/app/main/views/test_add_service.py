@@ -190,6 +190,32 @@ def test_wizard_flow_with_step_3_should_create_service(
     assert mock_create_or_update_free_sms_fragment_limit.called is True
 
 
+def test_wizard_flow_with_step_3b_should_create_service(
+    client_request,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(
+            default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, name="testing the post", email_from="testing.the.post"
+        )
+    client_request.post(
+        "main.add_service",
+        _data={
+            "other_organisation_name": "Department of magic",
+        },
+        current_step="choose_organisation",
+        government_type="other",
+        _expected_status=302,
+        _expected_redirect=url_for(
+            "main.service_dashboard",
+            service_id=101,
+        ),
+    )
+    assert mock_create_service.called is True
+    assert mock_create_or_update_free_sms_fragment_limit.called is True
+
+
 def test_wizard_flow_with_step_0_should_display_branding_form(client_request, mock_service_email_from_is_unique):
     page = client_request.get(
         "main.add_service",
