@@ -455,6 +455,7 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
         email_from="testing.the.post",
         default_branding_is_french=True,
         organisation_type=organisation_type,
+        organisation_notes=None,
     )
     mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(101, free_allowance)
     assert len(mock_create_service_template.call_args_list) == 0
