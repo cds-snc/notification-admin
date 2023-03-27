@@ -36,7 +36,7 @@ GOVERNMENT_TYPE_OTHER: str = "other"
 GOVERNMENT_TYPE_COMBINED: str = "combined"
 
 # wizard list init here for current_app context usage
-WIZARD_DICT = {
+WIZARD_DICT: dict[str, dict[str, Any]] = {
     STEP_SERVICE_AND_EMAIL: {
         "form_cls": CreateServiceStepNameForm,
         "header": STEP_NAME_HEADER,
@@ -54,7 +54,7 @@ WIZARD_DICT = {
     },
 }
 
-ORGANISIATION_STEP_DICT = {
+ORGANISIATION_STEP_DICT: dict[str, dict[str, Any]] = {
     GOVERNMENT_TYPE_OTHER: {
         "tmpl": "partials/add-service/step-enter-other-organisation.html",
         "form_cls": CreateServiceStepOtherOrganisationForm,
