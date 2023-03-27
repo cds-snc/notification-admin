@@ -78,6 +78,6 @@ describe('Prevent duplicate form submissions', () => {
     expect(consoleErrorSpy.mock.calls[0][0].message).toEqual('Not implemented: HTMLFormElement.prototype.requestSubmit')
     expect(consoleErrorSpy.mock.calls[1][0].message).toEqual('Not implemented: HTMLFormElement.prototype.requestSubmit')
 
-  // });
+   });
 
 });
