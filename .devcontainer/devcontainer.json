@@ -31,6 +31,12 @@
 		"bungcip.better-toml",
 	],
 
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "14.17.3"
+		}
+	},
+
 	"forwardPorts": [6012],
 	"postCreateCommand": "notify-dev-entrypoint.sh",
 	"remoteUser": "vscode"
