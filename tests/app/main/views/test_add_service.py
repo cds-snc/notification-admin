@@ -1,8 +1,6 @@
 import pytest
 from flask import Flask, url_for
 
-from app import create_app
-from app.config import Config, Test
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import is_gov_user
 from tests import organisation_json
