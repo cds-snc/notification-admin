@@ -181,6 +181,8 @@ class Test(Development):
     ANTIVIRUS_API_KEY = "test-antivirus-secret"
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     ASSET_DOMAIN = "static.example.com"
+    CRM_ORG_LIST_URL = "test-domain-dot-com"
+    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
     MOU_BUCKET_NAME = "test-mou"

@@ -141,10 +141,13 @@ def test_wizard_flow_with_step_2_should_correct_invalid_email_from(
 
 
 def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
+    mock_salesforce_get_accounts,
+    # app_,
     client_request,
     mock_service_email_from_is_unique,
     mock_service_name_is_unique,
 ):
+    # app_.config["FF_SALESFORCE_CONTACT"] = True
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
     client_request.post(
@@ -162,6 +165,7 @@ def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
     )
     assert mock_service_email_from_is_unique.called is True
     assert mock_service_name_is_unique.called is True
+    assert mock_salesforce_get_accounts.called is True
 
 
 def test_wizard_flow_with_step_3_should_create_service(

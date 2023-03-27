@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from flask import Flask, template_rendered, url_for
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
+from pytest_mock import MockerFixture
 
 from app import create_app
 from app.types import EmailReplyTo
@@ -4043,6 +4044,18 @@ def mock_GCA_404(mocker):
     mocker.patch(
         "app.main.views.index.get_nav_items", return_value=[{"title": "Home", "url": "/", "target": "", "description": "main"}]
     )
+
+
+@pytest.fixture(scope="function")
+def mock_salesforce_get_accounts(mocker: MockerFixture):
+    mock_crm_orgs = [
+        "Accessibility Standards Canada",
+        "Canada Post",
+        "Canada Revenue Agency",
+        "National Film Board",
+        "Royal Canadian Mint",
+    ]
+    return mocker.patch("app.salesforce_account.get_accounts", return_value=mock_crm_orgs)
 
 
 def create_api_user_active(with_unique_id=False):
