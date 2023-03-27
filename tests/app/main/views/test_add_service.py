@@ -141,6 +141,34 @@ def test_wizard_flow_with_step_2_should_correct_invalid_email_from(
 
 
 def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
+    client_request,
+    mock_service_email_from_is_unique,
+    mock_service_name_is_unique,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+    client_request.post(
+        "main.add_service",
+        _data={
+            "name": "testing the post",
+            "email_from": "testing.the.post",
+        },
+        current_step="choose_service_name",
+        _expected_status=302,
+        _expected_redirect=url_for(
+            "main.service_dashboard",
+            service_id=101,
+        ),
+    )
+    assert mock_service_email_from_is_unique.called is True
+    assert mock_service_name_is_unique.called is True
+    assert mock_create_service.called is True
+    assert mock_create_or_update_free_sms_fragment_limit.called is True
+
+
+def test_wizard_flow_with_step_2_post_should_go_to_step_3_with_ff(
     app_: Flask,
     client_request,
     mock_service_email_from_is_unique,
