@@ -14,7 +14,6 @@ from app.main.forms import (
     CreateServiceStepOtherOrganisationForm,
     FieldWithLanguageOptions,
 )
-from app.salesforce import salesforce_engagement, salesforce_utils
 from app.utils import email_safe, user_is_gov_user, user_is_logged_in
 
 # Constants
@@ -252,22 +251,6 @@ def add_service():
     session.pop(SESSION_FORM_KEY, None)
 
     if service_result.is_success():
-
-        if current_app.config["FF_SALESFORCE_CONTACT"]:
-            account_id = salesforce_utils.get_account_id_by_name(
-                account_name=data["parent_organisation_name"],
-                account_data=current_app.config["CRM_ORG_LIST"].get("all", []),
-                current_lang=get_current_locale(current_app),
-            )
-            salesforce_engagement.create(
-                {
-                    "id": service_result.service_id,
-                    "name": service_name,
-                    "account_id": account_id,
-                    "user_id": session["user_id"],
-                }
-            )
-
         return redirect(url_for("main.service_dashboard", service_id=service_result.service_id))
     form_cls = get_form_class(current_step, government_type)
     form = form_cls(request.form)
