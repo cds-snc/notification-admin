@@ -3,11 +3,7 @@
     
     <label for="{{ field.name }}"><strong>{{ field.label }}</strong></label>
     {% if hint %}
-      {% if field.errors %}
-        {% set hint_id = field.name + '-hint' %}
-      {% else %}
-        {% set hint_id = field.name + '__assistiveHint' %}
-      {% endif %}
+      {% set hint_id = field.name + '-hint' %}
       <span id="{{ hint_id }}" class="form-hint">{{ hint }}</span>
     {% endif %}
     {% if field.errors %}
@@ -16,7 +12,7 @@
       </span>
     {% endif %}
 
-    <select data-module="autocomplete" name="{{ field.name }}" id="{{ field.name }}">
+    <select data-module="autocomplete" name="{{ field.name }}" id="{{ field.name }}" aria-describedby="{{ field.name }}__assistiveHint {{ field.name }}-hint ">
       <option value=""></option>
       {% for option in options %}
         <option value="{{ option }}">{{ option }}</option>
