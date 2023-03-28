@@ -140,6 +140,7 @@ def test_wizard_flow_with_step_2_should_correct_invalid_email_from(
     assert page.find(id="email_from")["value"] == "health.canada-santecanada"
 
 
+# TODO: remove this test after the CRM integration is released
 def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
     client_request,
     mock_service_email_from_is_unique,

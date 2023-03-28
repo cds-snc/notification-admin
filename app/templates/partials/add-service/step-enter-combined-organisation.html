@@ -13,7 +13,7 @@
       </a>
     </div>  
     
-    {{ textbox(form.child_organisation_name, hint=_("For example: Canadian Digital Service"), maxlength=255) }}
+    {{ textbox(form.child_organisation_name, hint=_("For example: Canadian Digital Service"), maxlength=255, required=false) }}
 
     {% set button_txt = _('Create service') %}
     {{ page_footer(button_txt) }}
