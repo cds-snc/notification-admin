@@ -176,7 +176,7 @@ def test_wizard_flow_with_step_2_post_should_go_to_step_3_with_ff(
     mock_service_name_is_unique,
 ):
     app_.config["FF_SALESFORCE_CONTACT"] = True
-    app_.config["CRM_ORG_LIST"] = ["CDS", "TBS"]
+    app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
     client_request.post(
@@ -196,14 +196,22 @@ def test_wizard_flow_with_step_2_post_should_go_to_step_3_with_ff(
     assert mock_service_name_is_unique.called is True
 
 
+@pytest.mark.parametrize(
+    "child_organisation_name",
+    (
+        "Sock inspection group",
+        "",
+    ),
+)
 def test_wizard_flow_with_step_3_should_create_service(
     app_: Flask,
     client_request,
     mock_create_service,
     mock_create_or_update_free_sms_fragment_limit,
+    child_organisation_name: str,
 ):
     app_.config["FF_SALESFORCE_CONTACT"] = True
-    app_.config["CRM_ORG_LIST"] = ["CDS", "TBS"]
+    app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(
             default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, name="testing the post", email_from="testing.the.post"
@@ -212,7 +220,7 @@ def test_wizard_flow_with_step_3_should_create_service(
         "main.add_service",
         _data={
             "parent_organisation_name": "Department of socks",
-            "child_organisation_name": "Sock inspection group",
+            "child_organisation_name": child_organisation_name,
         },
         current_step="choose_organisation",
         _expected_status=302,
@@ -225,6 +233,31 @@ def test_wizard_flow_with_step_3_should_create_service(
     assert mock_create_or_update_free_sms_fragment_limit.called is True
 
 
+def test_wizard_flow_with_step_3_should_not_create_service_no_parent_org(
+    app_: Flask,
+    client_request,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(
+            default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, name="testing the post", email_from="testing.the.post"
+        )
+    client_request.post(
+        "main.add_service",
+        _data={
+            "parent_organisation_name": "",
+            "child_organisation_name": "Sock inspection group",
+        },
+        current_step="choose_organisation",
+        _expected_status=200,
+    )
+    assert mock_create_service.called is False
+    assert mock_create_or_update_free_sms_fragment_limit.called is False
+
+
 def test_wizard_flow_with_step_3b_should_create_service(
     app_: Flask,
     client_request,
@@ -232,7 +265,7 @@ def test_wizard_flow_with_step_3b_should_create_service(
     mock_create_or_update_free_sms_fragment_limit,
 ):
     app_.config["FF_SALESFORCE_CONTACT"] = True
-    app_.config["CRM_ORG_LIST"] = ["CDS", "TBS"]
+    app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(
             default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, name="testing the post", email_from="testing.the.post"
@@ -252,6 +285,31 @@ def test_wizard_flow_with_step_3b_should_create_service(
     )
     assert mock_create_service.called is True
     assert mock_create_or_update_free_sms_fragment_limit.called is True
+
+
+def test_wizard_flow_with_step_3b_create_service_no_org(
+    app_: Flask,
+    client_request,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(
+            default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, name="testing the post", email_from="testing.the.post"
+        )
+    client_request.post(
+        "main.add_service",
+        _data={
+            "other_organisation_name": "",
+        },
+        current_step="choose_organisation",
+        government_type="other",
+        _expected_status=200,
+    )
+    assert mock_create_service.called is False
+    assert mock_create_or_update_free_sms_fragment_limit.called is False
 
 
 def test_wizard_flow_with_step_0_should_display_branding_form(client_request, mock_service_email_from_is_unique):
