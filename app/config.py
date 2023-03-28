@@ -21,7 +21,6 @@ if os.environ.get("VCAP_APPLICATION"):
 
 
 class Config(object):
-
     # for waffles: pull out the routes into a flat list of the form ['/home', '/accueil', '/why-gc-notify', ...]
     EXTRA_ROUTES = [item for sublist in map(lambda x: x.values(), GC_ARTICLES_ROUTES.values()) for item in sublist]
 
@@ -107,7 +106,7 @@ class Config(object):
     ROUTE_SECRET_KEY_1 = os.environ.get("ROUTE_SECRET_KEY_1", "")
     ROUTE_SECRET_KEY_2 = os.environ.get("ROUTE_SECRET_KEY_2", "")
     WAF_SECRET = os.environ.get("WAF_SECRET", "waf-secret")
-    SECRET_KEY = os.environ.get("SECRET_KEY")
+    SECRET_KEY = env.list("SECRET_KEY", [])
     SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security-securite@cds-snc.ca")
     SEND_FILE_MAX_AGE_DEFAULT = 365 * 24 * 60 * 60  # 1 year
     SENDING_DOMAIN = os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca")
@@ -170,7 +169,7 @@ class Development(Config):
     DEBUG = True
     MOU_BUCKET_NAME = "notify.tools-mou"
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-notify-secret-key")
+    SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
 
@@ -187,7 +186,7 @@ class Test(Development):
     DEBUG = True
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = "test"
-    SECRET_KEY = "dev-notify-secret-key"
+    SECRET_KEY = ["dev-notify-secret-key"]
     TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
     TESTING = True
