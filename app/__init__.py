@@ -212,7 +212,7 @@ def create_app(application):
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:
         application.config["CRM_ORG_LIST"] = salesforce_account.get_accounts(
-            application.config["CRM_ORG_LIST_URL"], application.config["CRM_GITHUB_PERSONAL_ACCESS_TOKEN"]
+            application.config["CRM_ORG_LIST_URL"], application.config["CRM_GITHUB_PERSONAL_ACCESS_TOKEN"], application.logger
         )
 
 
