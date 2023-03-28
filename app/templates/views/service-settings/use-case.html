@@ -26,8 +26,9 @@
         <p>
           {{ _("This information helps us understand how GC Notify is being used so we can better meet your needs.") }}
         </p>
-
-        {{ textbox(form.department_org_name, width='md:w-2/3', autocomplete='organization') }}
+        {% if display_org_question %}
+          {{ textbox(form.department_org_name, width='md:w-2/3', autocomplete='organization') }}
+        {% endif %}
         {{ textbox(form.purpose, width='md:w-2/3', hint='', rows=10) }}
         {{ checkboxes(form.intended_recipients) }}
 
