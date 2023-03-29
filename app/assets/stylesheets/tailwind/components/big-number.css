@@ -48,7 +48,10 @@
   }
   .big-number-link:hover .big-number-label,
   .big-number-link:active .big-number-label,
-  .big-number-link:focus .big-number-label {
+  .big-number-link:focus .big-number-label,
+  .big-number-link:hover span,
+  .big-number-link:active span,
+  .big-number-link:focus span {
     @apply no-underline;
   }
 
@@ -69,11 +72,15 @@
   /* Covers -normal, -warn, -critical */
   div[class*="review-email-status-"]:active,
   div[class*="review-email-status-"]:focus {
-      @apply outline-yellow;
+    @apply outline-yellow;
   }
 
-  div[class*="review-email-status-"]:hover div[class~="review-email-label"] span,
-  div[class*="review-email-status-"]:hover div[class~="review-email-link"] span {
+  div[class*="review-email-status-"]:hover
+    div[class~="review-email-label"]
+    span,
+  div[class*="review-email-status-"]:hover
+    div[class~="review-email-link"]
+    span {
     @apply no-underline opacity-75;
   }
 
@@ -106,7 +113,7 @@
   }
 
   .review-email-status-critical .review-email-link {
-    @apply underline text-white bg-red border-red border-solid;
+    @apply text-white bg-red border-red border-solid;
   }
 
   /*! purgecss end ignore */
