@@ -1,18 +1,19 @@
 {% macro autocomplete(field, options, hint=None) %}
   <div class="w-full md:w-1/2 form-group contain-floats box-border {% if field.errors %} form-group-error{% endif %}">
     
-    <label for="{{ field.name }}"><strong>{{ field.label }}</strong></label>
-    {% if hint %}
-      {% set hint_id = field.name + '-hint' %}
-      <span id="{{ hint_id }}" class="form-hint">{{ hint }}</span>
-    {% endif %}
-    {% if field.errors %}
-      <span id="{{ field.name }}__assistiveHint" class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
-        {% if not safe_error_message %}{{ _(field.errors[0]) }}{% else %}{{ field.errors[0]|safe }}{% endif %}
-      </span>
-    {% endif %}
-
-    <select data-module="autocomplete" name="{{ field.name }}" id="{{ field.name }}" aria-describedby="{{ field.name }}__assistiveHint {{ field.name }}-hint ">
+    <label for="{{ field.name }}">
+      <strong>{{ field.label }}</strong>
+      {% if hint %}
+        {% set hint_id = field.name + '-hint' %}
+        <span id="{{ hint_id }}" class="form-hint">{{ hint }}</span>
+      {% endif %}
+      {% if field.errors %}
+        <span id="{{ field.name }}-error-message" class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
+          {% if not safe_error_message %}{{ _(field.errors[0]) }}{% else %}{{ field.errors[0]|safe }}{% endif %}
+        </span>
+      {% endif %}
+    </label>
+    <select data-module="autocomplete" name="{{ field.name }}" id="{{ field.name }}">
       <option value=""></option>
       {% for option in options %}
         <option value="{{ option }}">{{ option }}</option>
