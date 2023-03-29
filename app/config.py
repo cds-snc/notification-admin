@@ -128,6 +128,11 @@ class Config(object):
 
     ZENDESK_API_KEY = os.environ.get("ZENDESK_API_KEY")
 
+    # Bounce Rate parameters
+    BR_DISPLAY_VOLUME_MINIMUM = 1000
+    BR_WARNING_PERCENTAGE = 0.05
+    BR_CRITICAL_PERCENTAGE = 0.1
+
     # FEATURE FLAGS
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
