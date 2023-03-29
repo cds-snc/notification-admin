@@ -33,7 +33,7 @@ jobs:
     - name: Configure credentials to CDS public ECR using OIDC
       uses: aws-actions/configure-aws-credentials@master
       with:
-        role-to-assume: arn:aws:iam::283582579564:role/sre-bot-apply
+        role-to-assume: arn:aws:iam::283582579564:role/notification-admin-apply
         role-session-name: SREBotGitHubActions
         aws-region: "ca-central-1"
     - name: Login to ECR
