@@ -64,6 +64,7 @@ const javascripts = () => {
     paths.src + "javascripts/apiKey.js",
     paths.src + "javascripts/cbor.js",
     paths.src + "javascripts/fido2.js",
+    paths.src + "javascripts/autocomplete.js",
     paths.src + "javascripts/autofocus.js",
     paths.src + "javascripts/highlightTags.js",
     paths.src + "javascripts/fileUpload.js",
@@ -98,6 +99,7 @@ const javascripts = () => {
         paths.npm + "query-command-supported/dist/queryCommandSupported.min.js",
         //paths.npm + "diff-dom/diffDOM.js",
         paths.npm + "textarea-caret/index.js",
+        paths.npm + "accessible-autocomplete/dist/accessible-autocomplete.min.js",
       ])
     )
     .pipe(plugins.uglify())
@@ -114,7 +116,14 @@ const javascripts = () => {
 
 // copy static css
 const static_css = () => {
-  return src(paths.src + "/stylesheets/index.css").pipe(
+  return src(paths.src + "/stylesheets/index.css")
+  .pipe(
+    plugins.addSrc.prepend([
+      paths.npm + "accessible-autocomplete/dist/accessible-autocomplete.min.css",
+    ])
+  )
+  .pipe(plugins.concat("index.css"))
+  .pipe(
     dest(paths.dist + "stylesheets/")
   );
 };

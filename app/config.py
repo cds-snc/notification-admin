@@ -51,6 +51,8 @@ class Config(object):
     CSV_MAX_ROWS = env.int("CSV_MAX_ROWS", 50_000)
     CSV_MAX_ROWS_BULK_SEND = env.int("CSV_MAX_ROWS_BULK_SEND", 100_000)
     CSV_UPLOAD_BUCKET_NAME = os.getenv("CSV_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-csv-upload")
+    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = os.getenv("CRM_GITHUB_PERSONAL_ACCESS_TOKEN")
+    CRM_ORG_LIST_URL = os.getenv("CRM_ORG_LIST_URL")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT")
     DEBUG = False
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
@@ -133,6 +135,7 @@ class Config(object):
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
+    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
@@ -177,6 +180,8 @@ class Test(Development):
     ANTIVIRUS_API_KEY = "test-antivirus-secret"
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     ASSET_DOMAIN = "static.example.com"
+    CRM_ORG_LIST_URL = "test-domain-dot-com"
+    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
     MOU_BUCKET_NAME = "test-mou"
@@ -189,6 +194,7 @@ class Test(Development):
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     FF_SPIKE_SMS_DAILY_LIMIT = False
     FF_SMS_PARTS_UI = False
+    FF_SALESFORCE_CONTACT = False
 
 
 class Production(Config):

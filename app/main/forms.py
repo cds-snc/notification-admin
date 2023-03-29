@@ -623,6 +623,24 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
     )
 
 
+class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
+    parent_organisation_name = StringField(
+        _l("Select your department or organisation"), validators=[DataRequired(_l("Choose name from drop-down menu"))]
+    )
+
+    child_organisation_name = StringField(
+        _l("Enter any other names for your group (Optional)"),
+        validators=[Optional(), Length(max=500)],
+    )
+
+
+class CreateServiceStepOtherOrganisationForm(StripWhitespaceForm):
+    other_organisation_name = StringField(
+        _l("Enter name of your group"),
+        validators=[DataRequired(message=_l("Enter name to continue")), Length(max=500)],
+    )
+
+
 class CreateServiceStepLogoForm(StripWhitespaceForm):
     def _getSelectBilingualChoices(self):
         cdn_url = get_logo_cdn_domain()

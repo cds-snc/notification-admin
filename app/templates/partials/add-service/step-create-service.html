@@ -33,7 +33,12 @@
   </p>
   <p>{{ _("This email address cannot receive replies. In Settings, you can enter a different email for replies. Currently your service is set to prevent replies.") }}</p>
 
-  {% set button_txt = _('Create service') %}
+  {% if config["FF_SALESFORCE_CONTACT"] %}
+    {% set button_txt = _('Continue') %}
+  {% else %}
+    {% set button_txt = _('Create service') %}
+  {% endif %}
+
   {{ page_footer(button_txt) }}
 
   {% endcall %}
