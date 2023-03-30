@@ -325,7 +325,7 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
 
 def get_dashboard_totals(statistics):
     for msg_type in statistics.values():
-        msg_type["failed_percentage"] = get_formatted_percentage(msg_type["failed"], msg_type["requested"])
+        msg_type["failed_percentage"] = int(float(get_formatted_percentage(msg_type["failed"], msg_type["requested"])))
         msg_type["show_warning"] = float(msg_type["failed_percentage"]) > 3
     return statistics
 

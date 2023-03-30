@@ -21,7 +21,7 @@
         statistics['email']['requested'],
         message_count_label(statistics['email']['requested'], 'email', suffix=sent_single, suffix_plural=sent_plural),
         statistics['email']['failed'],
-        (statistics['email']['failed_percentage'])|int,
+        statistics['email']['failed_percentage'],
         statistics['email']['show_warning'],
         failure_link=url_for(".view_notifications", service_id=service_id, message_type='email', status='failed') if statistics['email']['failed'] > 0 else None,
         link=url_for(".view_notifications", service_id=service_id, message_type='email', status='sending,delivered,failed'),

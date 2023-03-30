@@ -515,7 +515,7 @@ def test_daily_usage_section_shown(
                 "sms": {"requested": 999999999, "delivered": 0, "failed": 0},
             },
             ".big-number",
-            2,
+            3,
         ),
         (
             ["email", "sms"],
@@ -524,7 +524,7 @@ def test_daily_usage_section_shown(
                 "sms": {"requested": 1000000, "delivered": 0, "failed": 0},
             },
             ".big-number-dark",
-            2,
+            3,
         ),
         (
             ["email", "sms", "letter"],
@@ -534,7 +534,7 @@ def test_daily_usage_section_shown(
                 "letter": {"requested": 99999, "delivered": 0, "failed": 0},
             },
             ".big-number",
-            3,
+            4,
         ),
         (
             ["email", "sms", "letter"],
@@ -544,7 +544,7 @@ def test_daily_usage_section_shown(
                 "letter": {"requested": 100000, "delivered": 0, "failed": 0},
             },
             ".big-number-dark",
-            3,
+            4,
         ),
     ],
 )
