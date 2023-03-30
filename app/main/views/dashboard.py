@@ -59,6 +59,7 @@ def redirect_service_dashboard(service_id):
 
 
 @main.route("/services/<service_id>/problem-emails")
+@user_has_permissions("view_activity", "send_messages")
 def inaccurate_email_addresses(service_id):
     return render_template(
         "views/dashboard/review-email-list.html",
