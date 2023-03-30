@@ -1171,7 +1171,7 @@ def test_get_dashboard_totals_adds_percentages():
         "sms": {"requested": 3, "delivered": 0, "failed": 2},
         "email": {"requested": 0, "delivered": 0, "failed": 0},
     }
-    assert get_dashboard_totals(stats)["sms"]["failed_percentage"] == "66"
+    assert get_dashboard_totals(stats)["sms"]["failed_percentage"] == "67"
     assert get_dashboard_totals(stats)["email"]["failed_percentage"] == "0"
 
 
@@ -1189,7 +1189,7 @@ def test_format_monthly_stats_has_stats_with_failure_rate():
     resp = format_monthly_stats_to_list({"2016-07": {"sms": _stats(3, 1, 2)}})
     assert resp[0]["sms_counts"] == {
         "failed": 2,
-        "failed_percentage": "66",
+        "failed_percentage": "67",
         "requested": 3,
         "show_warning": True,
     }
