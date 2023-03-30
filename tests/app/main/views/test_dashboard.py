@@ -583,7 +583,7 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 0, "delivered": 0, "failed": 0},
                 "sms": {"requested": 0, "delivered": 0, "failed": 0},
             },
-            ("0 emails sent No failures", "0 text messages sent No failures"),
+            ("0 emails sent No failures", "0 problem email addresses No problem addresses", "0 text messages sent No failures"),
             "en",
         ),
         (
@@ -592,7 +592,11 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 0, "delivered": 0, "failed": 0},
                 "sms": {"requested": 0, "delivered": 0, "failed": 0},
             },
-            ("0 courriel envoyé Aucun échec", "0 message texte envoyé Aucun échec"),
+            (
+                "0 courriel envoyé Aucun échec",
+                "0 problem email adresses No problem addresses",
+                "0 message texte envoyé Aucun échec",
+            ),
             "fr",
         ),
         (
@@ -601,7 +605,7 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 1, "delivered": 1, "failed": 0},
                 "sms": {"requested": 1, "delivered": 1, "failed": 0},
             },
-            ("1 email sent No failures", "1 text message sent No failures"),
+            ("1 email sent No failures", "0 problem email addresses No problem addresses", "1 text message sent No failures"),
             "en",
         ),
         (
@@ -610,7 +614,11 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 1, "delivered": 1, "failed": 0},
                 "sms": {"requested": 1, "delivered": 1, "failed": 0},
             },
-            ("1 courriel envoyé Aucun échec", "1 message texte envoyé Aucun échec"),
+            (
+                "1 courriel envoyé Aucun échec",
+                "0 problem email adresses No problem addresses",
+                "1 message texte envoyé Aucun échec",
+            ),
             "fr",
         ),
         (
@@ -619,7 +627,7 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 2, "delivered": 2, "failed": 0},
                 "sms": {"requested": 2, "delivered": 2, "failed": 0},
             },
-            ("2 emails sent No failures", "2 text messages sent No failures"),
+            ("2 emails sent No failures", "0 problem email addresses No problem addresses", "2 text messages sent No failures"),
             "en",
         ),
         (
@@ -628,7 +636,11 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 2, "delivered": 2, "failed": 0},
                 "sms": {"requested": 2, "delivered": 2, "failed": 0},
             },
-            ("2 courriels envoyés Aucun échec", "2 messages texte envoyés Aucun échec"),
+            (
+                "2 courriels envoyés Aucun échec",
+                "0 problem email adresses No problem addresses",
+                "2 messages texte envoyés Aucun échec",
+            ),
             "fr",
         ),
     ],
@@ -656,6 +668,7 @@ def test_dashboard_single_and_plural(
     assert (
         normalize_spaces(page.select(".big-number-with-status")[0].text),
         normalize_spaces(page.select(".big-number-with-status")[1].text),
+        normalize_spaces(page.select(".big-number-with-status")[2].text),
     ) == expected_big_numbers_single_plural
 
 
@@ -1158,7 +1171,7 @@ def test_get_dashboard_totals_adds_percentages():
         "sms": {"requested": 3, "delivered": 0, "failed": 2},
         "email": {"requested": 0, "delivered": 0, "failed": 0},
     }
-    assert get_dashboard_totals(stats)["sms"]["failed_percentage"] == "66.7"
+    assert get_dashboard_totals(stats)["sms"]["failed_percentage"] == "66"
     assert get_dashboard_totals(stats)["email"]["failed_percentage"] == "0"
 
 
@@ -1176,7 +1189,7 @@ def test_format_monthly_stats_has_stats_with_failure_rate():
     resp = format_monthly_stats_to_list({"2016-07": {"sms": _stats(3, 1, 2)}})
     assert resp[0]["sms_counts"] == {
         "failed": 2,
-        "failed_percentage": "66.7",
+        "failed_percentage": "66",
         "requested": 3,
         "show_warning": True,
     }
