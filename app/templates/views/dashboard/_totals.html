@@ -33,7 +33,7 @@
       {% if config["FF_BOUNCE_RATE_V1"] %}
         {{ big_number_review_emails_with_status(
           number=bounce_rate["bounce_total"],
-          label=problem_email_label(bounce_rate["total_bounce"]),
+          label=problem_email_label(bounce_rate["bounce_total"]),
           problem_percentage=bounce_rate["bounce_percentage"]|int,
           bounce_status=bounce_rate["bounce_status"],
           failure_link=url_for('.inaccurate_email_addresses', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
