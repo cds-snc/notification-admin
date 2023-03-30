@@ -193,6 +193,7 @@ class Test(Development):
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     FF_SPIKE_SMS_DAILY_LIMIT = False
     FF_SMS_PARTS_UI = False
+    FF_BOUNCE_RATE_V1 = True
 
 
 class Production(Config):
