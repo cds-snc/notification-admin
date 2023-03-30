@@ -1,9 +1,18 @@
 import calendar
+import time
 from datetime import datetime
 from functools import partial
 from itertools import groupby
 
-from flask import abort, jsonify, render_template, request, session, url_for
+from flask import (
+    abort,
+    current_app,
+    jsonify,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
@@ -52,11 +61,10 @@ def redirect_service_dashboard(service_id):
 
 @main.route("/services/<service_id>/problem-emails")
 def inaccurate_email_addresses(service_id):
-    # br = bounce_rate_client.get_bounce_rate(service_id)
     return render_template(
         "views/dashboard/review-email-list.html",
         csv_list=get_send_list_by_template(service_id),
-        bounce_status=get_service_bounce_rate(service_id).bounce_status,
+        bounce_status=BounceRateStatus.NORMAL,
     )
 
 
@@ -250,9 +258,6 @@ def get_dashboard_partials(service_id):
     highest_notification_count_weekly = max(
         sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_weekly[0].items()
     )
-    bounce_rate = get_service_bounce_rate(service_id)
-    # bounce_rate.problem_percentage = bounce_rate.total_bounce / dashboard_totals_weekly[0]["email"]["requested"]
-    # bounce_rate.bounce_status = BounceRateStatus.CRITICAL.value if bounce_rate.problem_percentage >= 0.10 else BounceRateStatus.WARNING.value
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
@@ -268,7 +273,7 @@ def get_dashboard_partials(service_id):
             statistics=dashboard_totals_weekly[0],
             column_width=column_width,
             smaller_font_size=(highest_notification_count_weekly > max_notifiction_count),
-            bounce_rate=bounce_rate,
+            bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
         ),
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",
@@ -282,10 +287,40 @@ def get_dashboard_partials(service_id):
     }
 
 
-def get_service_bounce_rate(service_id):
-    # Get the services bounce rate
-    mock_bounce_rate_info = {"bounce_total": 5, "bounce_percentage": 4, "bounce_status": BounceRateStatus.CRITICAL.value}
-    return mock_bounce_rate_info
+def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
+    """This function calculates the bounce rate using the daily statistics provided from the dashboard"""
+
+    class BounceRate:
+        bounce_total = 0
+        bounce_percentage = 0
+        bounce_status = BounceRateStatus.NORMAL.value
+
+    # Populate the bounce stats
+    bounce_rate = BounceRate()
+
+    # get total sent
+    total_sent = dashboard_totals_daily[0]["email"]["requested"]
+
+    # get total hard bounces
+    for stat in all_statistics_daily:
+        if stat["status"] == "permanent-failure":
+            bounce_rate.bounce_total = stat["count"]
+
+    # calc bounce rate
+    bounce_rate.bounce_percentage = 100 * (bounce_rate.bounce_total / total_sent) if total_sent > 0 else 0
+
+    # compute bounce status
+    # if volume is less than the threshold, indicate NORMAL status
+    if total_sent < current_app.config["BR_DISPLAY_VOLUME_MINIMUM"]:
+        bounce_rate.bounce_status = BounceRateStatus.NORMAL.value
+    # if bounce rate is above critical threshold, indicate CRITICAL status
+    elif bounce_rate.bounce_percentage >= current_app.config["BR_CRITICAL_PERCENTAGE"]:
+        bounce_rate.bounce_status = BounceRateStatus.CRITICAL.value
+    # if bounce rate is above warning threshold, indicate WARNING status
+    elif bounce_rate.bounce_percentage > current_app.config["BR_WARNING_PERCENTAGE"]:
+        bounce_rate.bounce_status = BounceRateStatus.WARNING.value
+
+    return bounce_rate
 
 
 def get_dashboard_totals(statistics):
