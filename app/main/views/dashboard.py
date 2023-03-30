@@ -248,12 +248,12 @@ def get_dashboard_partials(service_id):
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
         immediate_jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id)]
 
-    stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
+    # TODO: clean this up when design team decides on periods to show on dashboard
+    # stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
     stats_daily = aggregate_notifications_stats(all_statistics_daily)
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
     )
-    # TODO: clean this up when design team decides on periods to show on dashboard
     # dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     dashboard_totals_daily = (get_dashboard_totals(stats_daily),)
     highest_notification_count_daily = max(
