@@ -1394,3 +1394,142 @@ def test_dashboard_page_a11y(
 
     assert response.status_code == 200
     a11y_test(url, response.data.decode("utf-8"))
+
+
+class TestBounceRate:
+    @pytest.mark.parametrize(
+        "totals, expected_problem_emails, expected_problem_percent",
+        [
+            (
+                [
+                    {
+                        "count": 19,
+                        "is_precompiled_letter": False,
+                        "status": "delivered",
+                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_name": "test",
+                        "template_type": "email",
+                    },
+                    {
+                        "count": 1,
+                        "is_precompiled_letter": False,
+                        "status": "permanent-failure",
+                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_name": "test",
+                        "template_type": "email",
+                    },
+                ],
+                1,
+                "5% problem addresses",
+            ),
+            (
+                [
+                    {
+                        "count": 18,
+                        "is_precompiled_letter": False,
+                        "status": "delivered",
+                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_name": "test",
+                        "template_type": "email",
+                    },
+                    {
+                        "count": 2,
+                        "is_precompiled_letter": False,
+                        "status": "permanent-failure",
+                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_name": "test",
+                        "template_type": "email",
+                    },
+                ],
+                2,
+                "10% problem addresses",
+            ),
+            (
+                [
+                    {
+                        "count": 20,
+                        "is_precompiled_letter": False,
+                        "status": "delivered",
+                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_name": "test",
+                        "template_type": "email",
+                    }
+                ],
+                0,
+                "No problem addresses",
+            ),
+        ],
+    )
+    def test_bounce_rate_widget_displays_correct_status(
+        self,
+        client_request,
+        mocker,
+        mock_get_service_templates,
+        mock_get_template_statistics,
+        mock_get_service_statistics,
+        mock_get_jobs,
+        service_one,
+        totals,
+        expected_problem_emails,
+        expected_problem_percent,
+    ):
+
+        # service_one["permissions"] = permissions
+
+        mocker.patch(
+            "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=totals
+        )
+
+        page = client_request.get(
+            "main.service_dashboard",
+            service_id=service_one["id"],
+        )
+
+        assert int(page.select_one("#problem-email-addresses .big-number-number").text.strip()) == expected_problem_emails
+
+        if expected_problem_emails > 0:
+            assert page.select_one("#problem-email-addresses .review-email-label").text.strip() == expected_problem_percent
+
+    def test_bounce_rate_widget_doesnt_change_when_under_threshold(
+        self,
+        client_request,
+        mocker,
+        mock_get_service_templates,
+        mock_get_template_statistics,
+        mock_get_service_statistics,
+        mock_get_jobs,
+        service_one,
+        app_,
+    ):
+        threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
+
+        mock_data = [
+            {
+                "count": (threshold - 20) * 0.5,
+                "is_precompiled_letter": False,
+                "status": "delivered",
+                "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                "template_name": "test",
+                "template_type": "email",
+            },
+            {
+                "count": (threshold - 20) * 0.5,
+                "is_precompiled_letter": False,
+                "status": "permanent-failure",
+                "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                "template_name": "test",
+                "template_type": "email",
+            },
+        ]
+
+        mocker.patch(
+            "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
+        )
+
+        page = client_request.get(
+            "main.service_dashboard",
+            service_id=service_one["id"],
+        )
+
+        assert len(page.find_all(class_="review-email-status-critical")) == 0
+        assert len(page.find_all(class_="review-email-status-normal")) == 1
