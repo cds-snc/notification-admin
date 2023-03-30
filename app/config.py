@@ -21,7 +21,6 @@ if os.environ.get("VCAP_APPLICATION"):
 
 
 class Config(object):
-
     # for waffles: pull out the routes into a flat list of the form ['/home', '/accueil', '/why-gc-notify', ...]
     EXTRA_ROUTES = [item for sublist in map(lambda x: x.values(), GC_ARTICLES_ROUTES.values()) for item in sublist]
 
@@ -47,9 +46,13 @@ class Config(object):
     BULK_SEND_TEST_SERVICE_ID = os.getenv("BULK_SEND_TEST_SERVICE_ID")
     CHECK_PROXY_HEADER = False
     CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "assistance+notification@cds-snc.ca")
+    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = os.getenv("CRM_GITHUB_PERSONAL_ACCESS_TOKEN")
+    CRM_ORG_LIST_URL = os.getenv("CRM_ORG_LIST_URL")
     CSV_MAX_ROWS = env.int("CSV_MAX_ROWS", 50_000)
     CSV_MAX_ROWS_BULK_SEND = env.int("CSV_MAX_ROWS_BULK_SEND", 100_000)
     CSV_UPLOAD_BUCKET_NAME = os.getenv("CSV_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-csv-upload")
+    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = os.getenv("CRM_GITHUB_PERSONAL_ACCESS_TOKEN")
+    CRM_ORG_LIST_URL = os.getenv("CRM_ORG_LIST_URL")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT")
     DEBUG = False
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
@@ -103,7 +106,7 @@ class Config(object):
     ROUTE_SECRET_KEY_1 = os.environ.get("ROUTE_SECRET_KEY_1", "")
     ROUTE_SECRET_KEY_2 = os.environ.get("ROUTE_SECRET_KEY_2", "")
     WAF_SECRET = os.environ.get("WAF_SECRET", "waf-secret")
-    SECRET_KEY = os.environ.get("SECRET_KEY")
+    SECRET_KEY = env.list("SECRET_KEY", [])
     SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security-securite@cds-snc.ca")
     SEND_FILE_MAX_AGE_DEFAULT = 365 * 24 * 60 * 60  # 1 year
     SENDING_DOMAIN = os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca")
@@ -134,9 +137,11 @@ class Config(object):
     BR_CRITICAL_PERCENTAGE = 0.1
 
     # FEATURE FLAGS
+    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
     FF_BOUNCE_RATE_V1 = env.bool("FF_BOUNCE_RATE_V1", False)
+    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
@@ -170,7 +175,7 @@ class Development(Config):
     DEBUG = True
     MOU_BUCKET_NAME = "notify.tools-mou"
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-notify-secret-key")
+    SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
 
@@ -181,11 +186,13 @@ class Test(Development):
     ANTIVIRUS_API_KEY = "test-antivirus-secret"
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     ASSET_DOMAIN = "static.example.com"
+    CRM_ORG_LIST_URL = "test-domain-dot-com"
+    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = "test"
-    SECRET_KEY = "dev-notify-secret-key"
+    SECRET_KEY = ["dev-notify-secret-key"]
     TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
     TESTING = True
@@ -194,6 +201,7 @@ class Test(Development):
     FF_SPIKE_SMS_DAILY_LIMIT = False
     FF_SMS_PARTS_UI = False
     FF_BOUNCE_RATE_V1 = True
+    FF_SALESFORCE_CONTACT = False
 
 
 class Production(Config):

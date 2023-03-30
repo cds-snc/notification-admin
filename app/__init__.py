@@ -81,6 +81,7 @@ from app.notify_client.template_api_prefill_client import template_api_prefill_c
 from app.notify_client.template_folder_api_client import template_folder_api_client
 from app.notify_client.template_statistics_api_client import template_statistics_client
 from app.notify_client.user_api_client import user_api_client
+from app.salesforce import salesforce_account
 from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
@@ -207,6 +208,12 @@ def create_app(application):
 
     # allow gca_url_for to be called from any template
     application.jinja_env.globals["gca_url_for"] = gca_url_for
+
+    # Initialize Salesforce Account list
+    if application.config["FF_SALESFORCE_CONTACT"]:
+        application.config["CRM_ORG_LIST"] = salesforce_account.get_accounts(
+            application.config["CRM_ORG_LIST_URL"], application.config["CRM_GITHUB_PERSONAL_ACCESS_TOKEN"], application.logger
+        )
 
 
 def init_app(application):

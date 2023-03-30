@@ -48,6 +48,7 @@ class Service(JSONModel):
         "go_live_user",
         "go_live_at",
         "sending_domain",
+        "organisation_notes",
     }
 
     TEMPLATE_TYPES = (
@@ -608,3 +609,7 @@ class Service(JSONModel):
 
     def get_api_key(self, id):
         return self._get_by_id(self.api_keys, id)
+
+    @property
+    def organisation_notes(self):
+        return self._dict["organisation_notes"]
