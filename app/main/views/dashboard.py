@@ -253,10 +253,11 @@ def get_dashboard_partials(service_id):
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
     )
-    dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
+    # TODO: clean this up when design team decides on periods to show on dashboard
+    # dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     dashboard_totals_daily = (get_dashboard_totals(stats_daily),)
-    highest_notification_count_weekly = max(
-        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_weekly[0].items()
+    highest_notification_count_daily = max(
+        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_daily[0].items()
     )
 
     return {
@@ -270,9 +271,9 @@ def get_dashboard_partials(service_id):
         "weekly_totals": render_template(
             "views/dashboard/_totals.html",
             service_id=service_id,
-            statistics=dashboard_totals_weekly[0],
+            statistics=dashboard_totals_daily[0],
             column_width=column_width,
-            smaller_font_size=(highest_notification_count_weekly > max_notifiction_count),
+            smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
             bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
         ),
         "template-statistics": render_template(
