@@ -1,5 +1,4 @@
 import calendar
-import time
 from datetime import datetime
 from functools import partial
 from itertools import groupby
