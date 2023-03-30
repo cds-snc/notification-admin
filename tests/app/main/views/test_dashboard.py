@@ -279,7 +279,7 @@ def test_should_show_recent_templates_on_dashboard(
     mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=1)
 
     headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
-    assert "Sent in the last week" in headers
+    assert "Email" in headers
 
     table_rows = page.find_all("tbody")[1].find_all("tr")
 
