@@ -1,6 +1,6 @@
 import pytest
 
-from app import format_notification_status_as_url
+from app import format_notification_status, format_notification_status_as_url
 
 
 @pytest.mark.parametrize(
@@ -55,3 +55,32 @@ def test_format_notification_status_as_url(
     expected,
 ):
     assert format_notification_status_as_url(status, notification_type) == expected
+
+
+@pytest.mark.parametrize(
+    "template_type, status, feedback_subtype, , expected",
+    (
+        ("email", "failed", None, "Failed"),
+        ("email", "technical-failure", None, "Tech issue"),
+        ("email", "temporary-failure", None, "Content or inbox issue"),
+        ("email", "virus-scan-failed", None, "Attachment has virus"),
+        ("email", "permanent-failure", None, "No such address"),
+        ("email", "permanent-failure", "suppressed", "Blocked"),
+        ("email", "permanent-failure", "on-account-suppression-list", "Blocked"),
+        ("email", "delivered", None, "Delivered"),
+        ("email", "sending", None, "In transit"),
+        ("email", "created", None, "In transit"),
+        ("email", "sent", None, "Delivered"),
+        ("email", "pending", None, "In transit"),
+        ("email", "pending-virus-check", None, "In transit"),
+        ("email", "pii-check-failed", None, "Exceeds Protected A"),
+    ),
+)
+def test_format_notification_status_uses_correct_labels(
+    client,
+    template_type,
+    status,
+    feedback_subtype,
+    expected,
+):
+    assert format_notification_status(status, template_type, None, feedback_subtype) == expected
