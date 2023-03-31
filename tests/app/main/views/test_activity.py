@@ -536,7 +536,7 @@ def test_html_contains_links_for_failed_notifications(
     notifications = response.tbody.find_all("tr")
     for tr in notifications:
         link_text = tr.find("div", class_="table-field-status-error").find("a").text
-        assert normalize_spaces(link_text) == "Technical failure"
+        assert normalize_spaces(link_text) == "Tech issue"
 
 
 @pytest.mark.parametrize(
@@ -612,25 +612,25 @@ def test_big_numbers_and_search_dont_show_for_letters(
 @pytest.mark.parametrize(
     "message_type, status, expected_hint_status, single_line",
     [
-        ("email", "created", "Sending since 2017-09-27T16:30:00+00:00", True),
-        ("email", "sending", "Sending since 2017-09-27T16:30:00+00:00", True),
+        ("email", "created", "In transit since 2017-09-27T16:30:00+00:00", True),
+        ("email", "sending", "In transit since 2017-09-27T16:30:00+00:00", True),
         (
             "email",
             "temporary-failure",
-            "Inbox not accepting messages right now 16:31:00",
+            "Content or inbox issue 16:31:00",
             False,
         ),
-        ("email", "permanent-failure", "Email address does not exist 16:31:00", False),
+        ("email", "permanent-failure", "No such address 16:31:00", False),
         ("email", "delivered", "Delivered 16:31:00", True),
-        ("sms", "created", "Sending since 2017-09-27T16:30:00+00:00", True),
-        ("sms", "sending", "Sending since 2017-09-27T16:30:00+00:00", True),
+        ("sms", "created", "In transit since 2017-09-27T16:30:00+00:00", True),
+        ("sms", "sending", "In transit since 2017-09-27T16:30:00+00:00", True),
         (
             "sms",
             "temporary-failure",
-            "Phone number not accepting messages right now 16:31:00",
+            "Carrier issue 16:31:00",
             False,
         ),
-        ("sms", "permanent-failure", "Phone number does not exist 16:31:00", False),
+        ("sms", "permanent-failure", "No such number 16:31:00", False),
         ("sms", "delivered", "Delivered 16:31:00", True),
         ("letter", "created", "2017-09-27T16:30:00+00:00", True),
         ("letter", "pending-virus-check", "2017-09-27T16:30:00+00:00", True),
