@@ -280,7 +280,7 @@ def safe_get_request_nonce():
         nonce = _request_ctx_stack.top.nonce
         current_app.logger.debug(f"Safe get request nonce of {nonce}.")
         return nonce
-    except (AttributeError):
+    except AttributeError:
         current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
         return ""
 
@@ -422,32 +422,49 @@ def format_notification_type(notification_type):
     return {"email": "Email", "sms": "SMS", "letter": "Letter"}[notification_type]
 
 
-def format_notification_status(status, template_type, provider_response=None):
-    if provider_response:
+def format_notification_status(status, template_type, provider_response=None, feedback_subtype=None):
+    if template_type == "sms" and provider_response:
         return _(provider_response)
+
+    def _getStatusByBounceSubtype():
+        """Return the status of a notification based on the bounce sub type"""
+        if feedback_subtype:
+            return {
+                "email": {
+                    "suppressed": _("Blocked"),
+                    "on-account-suppression-list": _("Blocked"),
+                },
+            }[
+                template_type
+            ].get(feedback_subtype, _("No such address"))
+        else:
+            return _("No such address")
 
     return {
         "email": {
             "failed": _("Failed"),
-            "technical-failure": _("Technical failure"),
-            "temporary-failure": _("Inbox not accepting messages right now"),
+            "technical-failure": _("Tech issue"),
+            "temporary-failure": _("Content or inbox issue"),
             "virus-scan-failed": _("Attachment has virus"),
-            "permanent-failure": _("Email address does not exist"),
+            "permanent-failure": _getStatusByBounceSubtype(),
             "delivered": _("Delivered"),
-            "sending": _("Sending"),
-            "created": _("Sending"),
+            "sending": _("In transit"),
+            "created": _("In transit"),
             "sent": _("Delivered"),
+            "pending": _("In transit"),
+            "pending-virus-check": _("In transit"),
+            "pii-check-failed": _("Exceeds Protected A"),
         },
         "sms": {
             "failed": _("Failed"),
-            "technical-failure": _("Technical failure"),
-            "temporary-failure": _("Phone number not accepting messages right now"),
-            "permanent-failure": _("Phone number does not exist"),
+            "technical-failure": _("Tech issue"),
+            "temporary-failure": _("Carrier issue"),
+            "permanent-failure": _("No such number"),
             "delivered": _("Delivered"),
-            "sending": _("Sending"),
-            "created": _("Sending"),
-            "pending": _("Sending"),
-            "sent": _("Sent"),
+            "sending": _("In transit"),
+            "created": _("In transit"),
+            "pending": _("In transit"),
+            "sent": _("In transit"),
         },
         "letter": {
             "failed": "",

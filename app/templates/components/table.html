@@ -165,7 +165,7 @@
       {% if notification.status|format_notification_status_as_url(notification.notification_type) %}
         <a href="{{ notification.status|format_notification_status_as_url(notification.notification_type) }}">
       {% endif %}
-      {{ notification.status|format_notification_status(notification.template.template_type, notification.provider_response) }}
+      {{ notification.status|format_notification_status(notification.template.template_type, notification.provider_response, notification.feedback_subtype) }}
       {% if notification.status|format_notification_status_as_url(notification.notification_type) %}
         </a>
       {% endif %}
