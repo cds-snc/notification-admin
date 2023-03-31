@@ -97,7 +97,7 @@
   }
 
   .review-email-status-normal .review-email-link {
-    @apply underline text-white bg-green-darker border-green-darker border-solid;
+    @apply text-white bg-green-darker border-green-darker border-solid;
   }
 
   .review-email-status-warning {
@@ -105,7 +105,7 @@
   }
 
   .review-email-status-warning .review-email-link {
-    @apply underline text-black bg-yellow border-yellow border-solid;
+    @apply text-black bg-yellow border-yellow border-solid;
   }
 
   .review-email-status-critical {
