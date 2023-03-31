@@ -1686,4 +1686,6 @@
 "In transit","FR - In transit"
 "Exceeds Protected A","FR - Exceeds Protected A"
 "No such address","FR - No such address"
-"Blocked", "FR - Blocked"
+"Blocked","FR - Blocked"
+"No such number","FR - No such number"
+"Carrier issue","FR - Carrier issue"
