@@ -1681,3 +1681,5 @@
 "For example: Canadian Digital Service","Par exemple&nbsp;: Service numérique canadien"
 "Not on list?","Vous ne trouvez pas?"
 "Choose name from drop-down menu","Choisissez un nom dans le menu déroulant"
+"The number of daily text fragments cannot exceed the daily message limit","FR: The number of daily text fragments cannot exceed the daily message limit"
+"The daily message limit cannot be less than the number of daily text fragments","FR: The daily message limit cannot be less than the number of daily text fragments"
