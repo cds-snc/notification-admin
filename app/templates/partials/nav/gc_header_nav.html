@@ -122,32 +122,21 @@
             {% endif %}
           {% endif %}
         {% endif %}
-        <div
-          aria-expanded="false"
-          aria-haspopup="true"
+          <a
+          href="#"
           id="more-menu"
+          class="text-smaller text-blue py-5 visited:text-blue link:text-blue font-bold no-underline focus:outline-none focus:bg-yellow focus:border-b-4 focus:border-blue ml-auto items-center"
           data-module="more-menu"
           data-module-menu-items="proposition-links"
           data-module-menu-container="more-menu-container"
-          class="hidden flex-grow text-right bg-gray self-stretch justify-end">
-          <a
-            href="#"
-            aria-hidden="false"
-            class="text-smaller text-blue py-5 visited:text-blue link:text-blue font-bold no-underline focus:outline-none focus:bg-yellow focus:border-b-4 focus:border-blue">
+          aria-expanded="false">
             {{ _('More') }}
-            <img
-              alt="{{ _('More options') }}"
-              aria-hidden="true"
-              class="account-menu-arrow ml-2 inline arrow self-center"
-              src="{{ asset_url('images/arrow-licorice.svg') }}"
-              width="15"
-            />
+            <i aria-hidden="true" class="p-2 fa-solid fa-angle-down"></i>
           </a>
-        </div>
       </div>
       <!-- MD-LG menu and nav bar END -->
+    <div id="more-menu-container" class="relative hidden">
     </div>
   </nav>
-  <div id="more-menu-container" class="relative container hidden">
   </div>
 {% endif %}
