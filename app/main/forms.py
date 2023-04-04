@@ -704,10 +704,10 @@ class NewOrganisationForm(
 
 
 class MessageLimit(StripWhitespaceForm):
-    def validate_message_limit(form, field):
+    def validate_message_limit(self, field):
         if field.data < current_service.message_limit:
             raise ValidationError(
-                _l("The daily message limit cannot be less than the number of daily text fragments")
+                _l("The daily message limit must be greater or equal to the number of daily text fragments")
                 + f" ({current_service.sms_daily_limit})"
             )
 
@@ -731,10 +731,10 @@ class EmailMessageLimit(StripWhitespaceForm):
 
 
 class SMSMessageLimit(StripWhitespaceForm):
-    def validate_message_limit(form, field):
+    def validate_message_limit(self, field):
         if field.data > current_service.message_limit:
             raise ValidationError(
-                _l("The number of daily text fragments cannot exceed the daily message limit")
+                _l("The number of daily text fragments must be lower or equal to the daily message limit")
                 + f" ({current_service.message_limit})"
             )
 
