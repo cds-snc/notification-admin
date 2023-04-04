@@ -35,7 +35,7 @@ from wtforms.fields.core import EmailField, SearchField, TelField
 from wtforms.validators import URL, AnyOf, DataRequired, Length, Optional, Regexp
 from wtforms.widgets import CheckboxInput, ListWidget
 
-from app import format_thousands
+from app import current_service, format_thousands
 from app.main.validators import (
     Blocklist,
     CsvFileValidator,
@@ -192,9 +192,7 @@ class ForgivingIntegerField(StringField):
         super().__init__(label, **kwargs)
 
     def process_formdata(self, valuelist):
-
         if valuelist:
-
             value = valuelist[0].replace(",", "").replace(" ", "")
 
             try:
@@ -208,7 +206,6 @@ class ForgivingIntegerField(StringField):
         return super().process_formdata([value])
 
     def pre_validate(self, form):
-
         if self.data:
             error = None
             try:
@@ -229,7 +226,6 @@ class ForgivingIntegerField(StringField):
         return super().pre_validate(form)
 
     def __call__(self, **kwargs):
-
         if self.get_form().is_submitted() and not self.get_form().validate():
             return super().__call__(value=(self.raw_data or [None])[0], **kwargs)
 
@@ -708,6 +704,13 @@ class NewOrganisationForm(
 
 
 class MessageLimit(StripWhitespaceForm):
+    def validate_message_limit(form, field):
+        if field.data < current_service.message_limit:
+            raise ValidationError(
+                _l("The daily message limit cannot be less than the number of daily text fragments")
+                + f" ({current_service.sms_daily_limit})"
+            )
+
     message_limit = IntegerField(
         _l("Daily message limit"),
         validators=[
@@ -728,12 +731,16 @@ class EmailMessageLimit(StripWhitespaceForm):
 
 
 class SMSMessageLimit(StripWhitespaceForm):
+    def validate_message_limit(form, field):
+        if field.data > current_service.message_limit:
+            raise ValidationError(
+                _l("The number of daily text fragments cannot exceed the daily message limit")
+                + f" ({current_service.message_limit})"
+            )
+
     message_limit = IntegerField(
         _l("Daily text fragments limit"),
-        validators=[
-            DataRequired(message=_l("This cannot be empty")),
-            validators.NumberRange(min=1),
-        ],
+        validators=[DataRequired(message=_l("This cannot be empty")), validators.NumberRange(min=1)],
     )
 
 
@@ -1049,7 +1056,6 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
     phone_number = StringField(_l("Phone number"))
 
     def validate(self):
-
         if self.contact_details_type.data == "url":
             self.url.validators = [DataRequired(), URL(message="Must be a valid URL")]
 
@@ -1146,7 +1152,6 @@ class OnOffField(RadioField):
 
 class ServiceOnOffSettingForm(StripWhitespaceForm):
     def __init__(self, name, *args, truthy="On", falsey="Off", **kwargs):
-
         super().__init__(*args, **kwargs)
 
         if truthy == "On":
@@ -1619,7 +1624,6 @@ class TemplateAndFoldersSelectionForm(Form):
         *args,
         **kwargs,
     ):
-
         super().__init__(*args, **kwargs)
 
         self.templates_and_folders.choices = template_list.as_id_and_name
@@ -1683,7 +1687,6 @@ class GoLiveNotesForm(StripWhitespaceForm):
 class AcceptAgreementForm(StripWhitespaceForm):
     @classmethod
     def from_organisation(cls, org):
-
         if org.agreement_signed_on_behalf_of_name and org.agreement_signed_on_behalf_of_email_address:
             who = "someone-else"
         elif org.agreement_signed_version:  # only set if user has submitted form previously
