@@ -22,7 +22,7 @@
         {% else %}
           <h2 class="heading-small p-0 m-0">{{ _('Your service is in trial mode') }}</h2>
           {% if current_user.has_permissions('manage_service') %}
-            <div class="flex mt-5">
+            <div class="flex mt-5 mt-gutterHalf flex-col lg:flex-row items-baseline">
               <p class="flex-1 self-center mr-10 mb-0">
                 {{ _('To send notifications to more people, request to go live.') }}
               </p>
