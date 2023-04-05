@@ -22,13 +22,11 @@
         {% else %}
           <h2 class="heading-small p-0 m-0">{{ _('Your service is in trial mode') }}</h2>
           {% if current_user.has_permissions('manage_service') %}
-            <div class="flex mt-5 mt-gutterHalf flex-col lg:flex-row items-baseline">
-              <p class="flex-1 self-center mr-10 mb-0">
+            <div class="flex mt-5 mt-gutterHalf flex-col lg:flex-row items-baseline space-y-gutterHalf lg:space-y-0 ">
+              <p class="flex-1 mr-10 mb-0">
                 {{ _('To send notifications to more people, request to go live.') }}
               </p>
-              <p class="flex-0 self-center mb-0">
-                <a href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}" class="button" role="button">{{ _('Request to go live') }}</a>
-              </p>
+              <a href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}" class="button" role="button">{{ _('Request to go live') }}</a>
             </div>
           {% else %}
             <p>
