@@ -708,7 +708,7 @@ class MessageLimit(StripWhitespaceForm):
         if field.data < current_service.sms_daily_limit:
             raise ValidationError(
                 _l(
-                    "Your daily limit for text fragments is {sms_daily_limit}. Enter {sms_daily_limit} or a higher number."
+                    "Your daily limit for text fragments is {sms_daily_limit}. Enter a total number of daily messages that is {sms_daily_limit} or higher."
                 ).format(sms_daily_limit=format_number(current_service.sms_daily_limit))
             )
 

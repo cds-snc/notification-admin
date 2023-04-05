@@ -1683,4 +1683,4 @@
 "Choose name from drop-down menu","Choisissez un nom dans le menu déroulant"
 "You can send {message_limit} messages each day. Enter a number equal or less than {message_limit}.","Vous pouvez envoyer {message_limit} messages par jour. Saisissez un nombre inférieur ou égal à {message_limit}."
 "Your daily limit for text fragments is {sms_daily_limit}. Enter a total number of daily messages that is {sms_daily_limit} or higher."
-,"Le maximum de message quotidien doit être supérieur ou égal au maximum quotidien de fragments de message texte","Vous pouvez envoyer {sms_daily_limit} fragments de message texte par jour. Saisissez un nombre supérieur ou égal à {sms_daily_limit} pour la limite d’envoi quotidienne."
+"Le maximum de message quotidien doit être supérieur ou égal au maximum quotidien de fragments de message texte","Vous pouvez envoyer {sms_daily_limit} fragments de message texte par jour. Saisissez un nombre supérieur ou égal à {sms_daily_limit} pour la limite d’envoi quotidienne."
