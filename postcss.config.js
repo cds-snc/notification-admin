@@ -38,8 +38,10 @@ module.exports = {
   plugins: [
     require("postcss-import"),
     require("tailwindcss"),
-    cssnano({
-      preset: "default",
+    require('cssnano')({
+      preset: ['default', {
+        minifySelectors: false,
+      }],
     }),
     require("autoprefixer"),
     purgecss,
