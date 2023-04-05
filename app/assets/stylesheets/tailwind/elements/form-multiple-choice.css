@@ -36,14 +36,14 @@
 
   .multiple-choice [type="radio"] + label:before {
     content: "";
-    @apply bg-transparent border-2 border-solid border-black absolute top-0 left-0;
+    @apply bg-transparent border-2 border-solid border-black box-content absolute top-0 left-0;
     border-radius: 50%;
     width: 34px;
     height: 34px;
   }
   .multiple-choice [type="radio"] + label:after {
     content: "";
-    @apply border-10 border-solid w-0 h-0 absolute opacity-0;
+    @apply border-10 border-solid border-black w-0 h-0 absolute opacity-0;
     top: 9px;
     left: 9px;
     border-radius: 50%;
@@ -53,7 +53,7 @@
     content: "";
     width: 34px;
     height: 34px;
-    @apply bg-transparent absolute top-0 left-0 border-2 border-solid border-black;
+    @apply bg-transparent absolute top-0 left-0 border-2 border-solid border-black box-content;
   }
   .multiple-choice [type="checkbox"] + label:after {
     content: "";
@@ -63,7 +63,7 @@
     top: 10px;
     left: 8px;
     border-top-color: transparent;
-    @apply border-solid bg-transparent absolute opacity-0 transform -rotate-45;
+    @apply border-solid border-black box-content bg-transparent absolute opacity-0 transform -rotate-45;
   }
 
   /* Focus state */
