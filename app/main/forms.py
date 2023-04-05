@@ -35,7 +35,7 @@ from wtforms.fields.core import EmailField, SearchField, TelField
 from wtforms.validators import URL, AnyOf, DataRequired, Length, Optional, Regexp
 from wtforms.widgets import CheckboxInput, ListWidget
 
-from app import current_service, format_thousands, format_number
+from app import current_service, format_number, format_thousands
 from app.main.validators import (
     Blocklist,
     CsvFileValidator,
@@ -707,7 +707,9 @@ class MessageLimit(StripWhitespaceForm):
     def validate_message_limit(self, field):
         if field.data < current_service.sms_daily_limit:
             raise ValidationError(
-                _l("Your daily limit for text fragments is {sms_daily_limit}. Enter {sms_daily_limit} or a higher number.").format(sms_daily_limit=format_number(current_service.sms_daily_limit))
+                _l(
+                    "Your daily limit for text fragments is {sms_daily_limit}. Enter {sms_daily_limit} or a higher number."
+                ).format(sms_daily_limit=format_number(current_service.sms_daily_limit))
             )
 
     message_limit = IntegerField(
@@ -733,7 +735,9 @@ class SMSMessageLimit(StripWhitespaceForm):
     def validate_message_limit(self, field):
         if field.data > current_service.message_limit:
             raise ValidationError(
-                _l("You can send {message_limit} messages each day. Enter a number equal or less than {message_limit}.").format(message_limit=format_number(current_service.message_limit))
+                _l("You can send {message_limit} messages each day. Enter a number equal or less than {message_limit}.").format(
+                    message_limit=format_number(current_service.message_limit)
+                )
             )
 
     message_limit = IntegerField(
