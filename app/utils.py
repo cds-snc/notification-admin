@@ -349,7 +349,7 @@ class Spreadsheet:
                     return ""
                 writer = csv.DictWriter(converted, self.json_data[0].keys())
                 writer.writeheader()
-                writer.writerows(self.json_data) 
+                writer.writerows(self.json_data)
                 self._csv_data = converted.getvalue()
             else:
                 output = csv.writer(converted)
