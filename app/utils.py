@@ -324,15 +324,16 @@ class Spreadsheet:
 
     allowed_file_extensions = ["csv", "xlsx", "xls", "ods", "xlsm", "tsv"]
 
-    def __init__(self, csv_data=None, rows=None, filename=""):
+    def __init__(self, csv_data=None, rows=None, filename="", json_data=None):
 
         self.filename = filename
 
         if csv_data and rows:
             raise TypeError("Spreadsheet must be created from either rows or CSV data")
 
-        self._csv_data = csv_data or ""
-        self._rows = rows or []
+        self.json_data: list[dict[str, str]] = json_data or []
+        self._csv_data: str = csv_data or ""
+        self._rows: list = rows or []
 
     @property
     def as_dict(self):
@@ -340,8 +341,17 @@ class Spreadsheet:
 
     @property
     def as_csv_data(self):
-        if not self._csv_data:
-            with StringIO() as converted:
+        if self._csv_data:
+            return self._csv_data
+        with StringIO() as converted:
+            if self.json_data:
+                if len(self.json_data) == 0:
+                    return ""
+                writer = csv.DictWriter(converted, self.json_data[0].keys())
+                writer.writeheader()
+                writer.writerows(self.json_data) 
+                self._csv_data = converted.getvalue()
+            else:
                 output = csv.writer(converted)
                 for row in self._rows:
                     output.writerow(row)

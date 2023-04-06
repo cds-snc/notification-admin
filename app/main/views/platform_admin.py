@@ -303,13 +303,8 @@ def performance_platform_xlsx():
 def trial_report_csv():
     data = platform_stats_api_client.usage_for_trial_services()
 
-    output = io.StringIO()
-    writer = csv.DictWriter(output, data[0].keys())
-    writer.writeheader()
-    writer.writerows(data)
-
     return (
-        output.getvalue(),
+        Spreadsheet(json_data=data).as_csv_data,
         200,
         {
             "Content-Type": "text/csv; charset=utf-8",
@@ -376,18 +371,10 @@ def send_method_stats_by_service():
         start_date = form.start_date.data
         end_date = form.end_date.data
 
-        headers = [
-            "service_id",
-            "service_name",
-            "org_name",
-            "notification_type",
-            "send_method",
-            "count",
-        ]
-        result = platform_stats_api_client.get_send_method_stats_by_service(start_date, end_date)
+        data = platform_stats_api_client.get_send_method_stats_by_service(start_date, end_date)
 
         return (
-            Spreadsheet.from_rows([headers] + result).as_csv_data,
+            Spreadsheet(json_data=data).as_csv_data,
             200,
             {
                 "Content-Type": "text/csv; charset=utf-8",
