@@ -14,8 +14,8 @@ class PlatformStatsAPIClient(NotifyAdminAPIClient):
             },
         )
 
-    def usage_for_trial_services(self):
-        return self.get(url="/platform-stats/usage-for-trial-services")
+    def usage_for_trial_services(self) -> list[dict[str, str]]:
+        return self.get(url="/platform-stats/usage-for-trial-services")  # type: ignore
 
 
 platform_stats_api_client = PlatformStatsAPIClient()
