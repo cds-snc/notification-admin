@@ -1,3 +1,5 @@
+import csv
+import io
 import itertools
 import re
 from collections import OrderedDict
@@ -300,18 +302,14 @@ def performance_platform_xlsx():
 @user_is_platform_admin
 def trial_report_csv():
     data = platform_stats_api_client.usage_for_trial_services()
-    headers = [
-        "service_id",
-        "service_name",
-        "creation_date",
-        "created_by_name",
-        "created_by_email",
-        "notification_type",
-        "notification_sum",
-    ]
+
+    output = io.StringIO()
+    writer = csv.DictWriter(output, data[0].keys())
+    writer.writeheader()
+    writer.writerows(data)
 
     return (
-        Spreadsheet.from_rows([headers] + data).as_csv_data,
+        output.getvalue(),
         200,
         {
             "Content-Type": "text/csv; charset=utf-8",
