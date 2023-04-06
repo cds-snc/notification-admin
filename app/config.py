@@ -142,16 +142,17 @@ class Config(object):
         "List of config keys that contain sensitive information"
         return [
             "ADMIN_CLIENT_SECRET",
-            "SECRET_KEY",
-            "DANGEROUS_SALT",
-            "ZENDESK_API_KEY",
-            "GC_ARTICLES_API_AUTH_USERNAME",
-            "GC_ARTICLES_API_AUTH_PASSWORD",
-            "TEMPLATE_PREVIEW_API_KEY",
             "ANTIVIRUS_API_KEY",
+            "CRM_GITHUB_PERSONAL_ACCESS_TOKEN"
+            "DANGEROUS_SALT",
+            "GC_ARTICLES_API_AUTH_PASSWORD",
+            "GC_ARTICLES_API_AUTH_USERNAME",
             "ROUTE_SECRET_KEY_1",
             "ROUTE_SECRET_KEY_2",
+            "SECRET_KEY",
+            "TEMPLATE_PREVIEW_API_KEY",
             "WAF_SECRET",
+            "ZENDESK_API_KEY",
         ]
 
     @classmethod
