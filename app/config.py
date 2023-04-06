@@ -143,8 +143,7 @@ class Config(object):
         return [
             "ADMIN_CLIENT_SECRET",
             "ANTIVIRUS_API_KEY",
-            "CRM_GITHUB_PERSONAL_ACCESS_TOKEN"
-            "DANGEROUS_SALT",
+            "CRM_GITHUB_PERSONAL_ACCESS_TOKEN" "DANGEROUS_SALT",
             "GC_ARTICLES_API_AUTH_PASSWORD",
             "GC_ARTICLES_API_AUTH_USERNAME",
             "ROUTE_SECRET_KEY_1",
