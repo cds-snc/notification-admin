@@ -1,5 +1,3 @@
-import csv
-import io
 import itertools
 import re
 from collections import OrderedDict
