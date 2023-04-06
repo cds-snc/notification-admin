@@ -307,7 +307,7 @@ def trial_report_csv():
     writer = csv.DictWriter(output, data[0].keys())
     writer.writeheader()
     writer.writerows(data)
-    
+
     return (
         output.getvalue(),
         200,
