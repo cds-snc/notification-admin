@@ -1,5 +1,8 @@
 name: Build, push to AWS ECR, and deploy
 on: push
+  # push:
+  #   branches:
+  #     - main
 
 env:
   AWS_REGION: ca-central-1
@@ -43,3 +46,62 @@ jobs:
       uses: aws-actions/amazon-ecr-login@261a7de32bda11ba01f4d75c4ed6caf3739e54be # v1.5.3
       with:
         registry-type: public
+
+
+    
+
+    # - name: Build
+    #   run: |
+    #     docker pull $DOCKER_SLUG:latest
+    #     docker build \
+    #     --cache-from $DOCKER_SLUG:latest \
+    #     --build-arg GIT_SHA=${GITHUB_SHA::7} \
+    #     -t $DOCKER_SLUG:${GITHUB_SHA::7} \
+    #     -t $DOCKER_SLUG:latest \
+    #     -f ci/Dockerfile .
+    # - name: Publish
+    #   run: |
+    #     docker push $DOCKER_SLUG:latest && docker push $DOCKER_SLUG:${GITHUB_SHA::7}
+    # - name: Get Kubernetes configuration
+    #   env:
+    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #   run: |
+    #     aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-staging-eks-cluster --kubeconfig $HOME/.kube/config
+    # - name: Update image in staging
+    #   env:
+    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #   run: |
+    #     kubectl set image deployment.apps/admin admin=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
+
+    # - name: my-app-install token
+    #   id: notify-pr-bot
+    #   uses: getsentry/action-github-app-token@38a3ce582e170ddfe8789f509597c6944f2292a9 # v1.0.6
+    #   with:
+    #     app_id: ${{ secrets.PRBOT_APP_ID }}
+    #     private_key: ${{ secrets.PRBOT_PRIVATE_KEY }}
+
+    # - uses: cds-snc/notification-pr-bot@main
+    #   env:
+    #     TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
+
+    # - name: Docker generate SBOM
+    #   uses: cds-snc/security-tools/.github/actions/generate-sbom@cfec0943e40dbb78cee115bbbe89dc17f07b7a0f # v2.1.3
+    #   with:
+    #     docker_image: "${{ env.DOCKER_SLUG }}:latest"
+    #     dockerfile_path: "ci/Dockerfile"
+    #     sbom_name: "notification-admin"
+    #     token: "${{ secrets.GITHUB_TOKEN }}"
+
+    # - name: Run scan websites
+    #   run: |
+    #     curl -s https://scan-websites.alpha.canada.ca > /dev/null
+    #     sleep 60
+    #     curl -X GET -H 'X-API-KEY: ${{ secrets.SCAN_WEBSITES_KEY }}' -H 'X-TEMPLATE-TOKEN: ${{ secrets.SCAN_WEBSITES_TEMPLATE }}' https://scan-websites.alpha.canada.ca/scans/start
+
+    # - name: Notify Slack channel if this job failed
+    #   if: ${{ failure() }}
+    #   run: |
+    #     json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-admin/|notification-admin> !'}"
+    #     curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
