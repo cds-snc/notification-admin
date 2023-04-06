@@ -1381,14 +1381,14 @@ def test_send_method_stats_by_service(platform_admin_client, mocker):
     mock = mocker.patch(
         "app.platform_stats_api_client.get_send_method_stats_by_service",
         return_value=[
-            [
-                "Fake Service ID",
-                "My service",
-                "Org name",
-                "email",
-                "admin",
-                "5",
-            ]
+            {
+                "service_id": "Fake Service ID",
+                "service_name": "My service",
+                "organisation_name": "Org name",
+                "notification_type": "email",
+                "send_method": "admin",
+                "total_notifications": "5",
+            }
         ],
     )
 
@@ -1405,7 +1405,7 @@ def test_send_method_stats_by_service(platform_admin_client, mocker):
     assert response.headers["Content-Disposition"].startswith("attachment; filename=")
 
     assert response.get_data(as_text=True) == (
-        "service_id,service_name,org_name,notification_type,send_method,count\r\n"
+        "service_id,service_name,organisation_name,notification_type,send_method,total_notifications\r\n"
         + "Fake Service ID,My service,Org name,email,admin,5\r\n"
     )
     mock.assert_called_once_with(datetime.date(2020, 11, 1), datetime.date(2020, 12, 1))
