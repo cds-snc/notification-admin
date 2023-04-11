@@ -3187,7 +3187,8 @@ def test_should_show_page_to_set_message_limit(
 @pytest.mark.parametrize(
     "given_limit, expected_limit",
     [
-        ("1", 1),
+        pytest.param("1", 1, marks=pytest.mark.xfail),  # this is less than the sms daily limit so will fail
+        ("1000", 1_000),
         ("10_000", 10_000),
         pytest.param("foo", "foo", marks=pytest.mark.xfail),
     ],
@@ -3198,7 +3199,6 @@ def test_should_set_message_limit(
     expected_limit,
     mock_update_message_limit,
 ):
-
     response = platform_admin_client.post(
         url_for(
             "main.set_message_limit",
@@ -3212,6 +3212,37 @@ def test_should_set_message_limit(
     assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID)
 
     mock_update_message_limit.assert_called_with(SERVICE_ONE_ID, expected_limit)
+
+
+@freeze_time("2017-04-01 11:09:00.061258")
+@pytest.mark.parametrize(
+    "given_limit, expected_limit",
+    [
+        ("1", 1),
+        ("1000", 1_000),
+        pytest.param("10_000", 10_000, marks=pytest.mark.xfail),  # this is more than the daily message limit so will fail
+        pytest.param("foo", "foo", marks=pytest.mark.xfail),
+    ],
+)
+def test_should_set_sms_message_limit(
+    platform_admin_client,
+    given_limit,
+    expected_limit,
+    mock_update_sms_message_limit,
+):
+    response = platform_admin_client.post(
+        url_for(
+            "main.set_sms_message_limit",
+            service_id=SERVICE_ONE_ID,
+        ),
+        data={
+            "message_limit": given_limit,
+        },
+    )
+    assert response.status_code == 302
+    assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID)
+
+    mock_update_sms_message_limit.assert_called_with(SERVICE_ONE_ID, expected_limit)
 
 
 def test_should_show_page_to_set_sms_allowance(platform_admin_client, mock_get_free_sms_fragment_limit):
