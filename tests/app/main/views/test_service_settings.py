@@ -612,7 +612,7 @@ def test_show_restricted_service(
     assert expected_text in [normalize_spaces(p.text) for p in page.select("main p")]
 
     if expected_link:
-        request_to_live_link = page.select("main p")[1].select_one("a")
+        request_to_live_link = page.select_one("[data-testid='golivebtn']")
         assert request_to_live_link.text.strip() == "Request to go live"
         assert request_to_live_link["href"] == url_for(".request_to_go_live", service_id=SERVICE_ONE_ID)
     else:
