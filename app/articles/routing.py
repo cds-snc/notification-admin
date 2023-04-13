@@ -16,6 +16,7 @@ GC_ARTICLES_ROUTES = {
     "security": {"en": "/security", "fr": "/securite"},
     "security_old": {"en": "/security-old", "fr": "/securite-old"},
     "service-level-agreement": {"en": "/service-level-agreement", "fr": "/accord-niveaux-de-service"},
+    "service-level-agreement-202210": {"en": "/service-level-agreement-202210", "fr": "/accord-niveaux-de-service-202210"},
     "service-level-objectives": {"en": "/service-level-objectives", "fr": "/objectifs-niveau-de-service"},
     "spreadsheets": {"en": "/spreadsheets", "fr": "/feuille-de-calcul"},
     "terms": {"en": "/terms", "fr": "/conditions-dutilisation"},
