@@ -181,6 +181,7 @@ class Development(Config):
     FF_BOUNCE_RATE_V1 = True
     BR_DISPLAY_VOLUME_MINIMUM = 10
 
+
 class Test(Development):
     ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET", "dev-notify-secret-key")
     ANTIVIRUS_API_HOST = "https://test-antivirus"
@@ -202,6 +203,7 @@ class Test(Development):
     FF_SPIKE_SMS_DAILY_LIMIT = False
     FF_SMS_PARTS_UI = False
     FF_SALESFORCE_CONTACT = False
+
 
 class Production(Config):
     CHECK_PROXY_HEADER = False
