@@ -133,8 +133,8 @@ class Config(object):
 
     # Bounce Rate parameters
     BR_DISPLAY_VOLUME_MINIMUM = 1000
-    BR_WARNING_PERCENTAGE = 0.05
-    BR_CRITICAL_PERCENTAGE = 0.1
+    BR_WARNING_PERCENTAGE = 5
+    BR_CRITICAL_PERCENTAGE = 10
 
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
@@ -178,7 +178,8 @@ class Development(Config):
     SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
-
+    FF_BOUNCE_RATE_V1 = True
+    BR_DISPLAY_VOLUME_MINIMUM = 10
 
 class Test(Development):
     ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET", "dev-notify-secret-key")
@@ -200,9 +201,7 @@ class Test(Development):
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     FF_SPIKE_SMS_DAILY_LIMIT = False
     FF_SMS_PARTS_UI = False
-    FF_BOUNCE_RATE_V1 = True
     FF_SALESFORCE_CONTACT = False
-
 
 class Production(Config):
     CHECK_PROXY_HEADER = False
