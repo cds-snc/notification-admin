@@ -90,7 +90,7 @@
     <div class="pb-4 {% if bounce_status == "critical" %}review-email-status-critical{% elif bounce_status == "warning"%}review-email-status-critical{% else%}review-email-status-normal{% endif %} {% if problem_percentage == 0 %} p-6 {% endif %}">
       {% if number >= 1 %}
           {% if failure_link %}
-            <div class="p-6 review-email-label flex justify-between items-end border-0 {% if bounce_status== "warning" %} text-black {% endif %}">
+            <div class="p-6 review-email-label flex justify-between items-end border-0">
               <span>{{ problem_percentage }}% {{ _('problem addresses') }}</span>
               <i aria-hidden="true" class="p-1 {% if bounce_status == "warning" %}fa-solid fa-fas fa-triangle-exclamation{% elif bounce_status== "critical" %}fa-solid fa-fas fa-circle-exclamation{% endif %}"></i>
             </div>
