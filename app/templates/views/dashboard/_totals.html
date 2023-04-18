@@ -6,11 +6,10 @@
 
 {% set address_single = _('address') %}
 {% set address_plural = _('addresses') %}
-
 <div class="ajax-block-container">
   <h2 class="heading-medium mt-8">
     {% if config["FF_BOUNCE_RATE_V1"] %}
-      {{ _("Email") }}
+      {{ _("Emails in the last 24 hours") }}
     {% else %}
       {{ _("Sent in the last week") }}
     {% endif %}
@@ -34,7 +33,7 @@
         {{ big_number_review_emails_with_status(
           number=bounce_rate["bounce_total"],
           label=problem_email_label(bounce_rate["bounce_total"]),
-          problem_percentage=bounce_rate["bounce_percentage"]|int,
+          problem_percentage=bounce_rate["bounce_percentage"],
           bounce_status=bounce_rate["bounce_status"],
           failure_link=url_for('.inaccurate_email_addresses', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
           link=url_for(".view_notifications", service_id=service_id, message_type='email', status='sending,delivered,failed'),
@@ -73,7 +72,7 @@
     {% if config["FF_BOUNCE_RATE_V1"] %}
     <div id="total-sms">
     <h2 class="heading-medium mt-8">
-      {{ _('Text') }}
+      {{ _('Text messages in the last 24 hours') }}
     </h2>
       {{ big_number_with_status(
         statistics['sms']['requested'],
