@@ -1,0 +1,49 @@
+{% extends "admin_template.html" %}
+
+{% from "components/table.html" import list_table, notification_status_field, row_heading%}
+{% from "components/ajax-block.html" import ajax_block %}
+{% from "components/table.html" import list_table, link_field %}
+
+{% set address_single = _('address') %}
+{% set address_plural = _('addresses') %}
+
+{% block service_page_title %}
+  {{ _('Review email addresses') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+    <div class="page-content">
+        <h1 class="heading-large py-4">{{ _('Review email addresses') }}</h1>
+        <p>{{ _("GC Notify's email provider could suspend our services if we send too many problem emails.") }}</p>
+        <p>{{ _('Keep accurate contact information. Check email addresses are correct. If necessary confirm recipient’s email address using another contact method.') }}</p>
+        <p>{{ _('Remove addresses you cannot correct.') }}</p>
+
+        <div class="{% if bounce_rate["bounce_status"] == "critical" %}review-email-status-critical{% elif bounce_rate["bounce_status"] == "warning"%}review-email-status-critical{% else%}review-email-status-normal{% endif %} px-5">
+            <p class="text-title py-4">
+                <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-circle-exclamation"></i>
+                {{ bounce_rate["bounce_percentage"] }}% {{ _('of email addresses need review') }}
+            </p>
+        </div>
+
+        <h2 class="heading-medium mt-8">{{ _('Problem emails over the past 24 hours') }}</h2>
+
+
+        {# {{ ajax_block(partials, updates_url, 'problem_emails', interval=5)}} #}
+        <div class="ajax-block-container">
+            <ul class="list list-bullet">
+            {% for job in jobs %}
+                {% if job["bounce_count"] > 0 %}
+                    <li>
+                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='failed') }}">{{ job["bounce_count"] }} {{_(" problem email addresses")}}</a>
+                        <span>
+                            {{ _( ' in ')}} '{{ job.original_file_name }}'
+                        </span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+            {# <p class="text-small">{{ _('Updated every 5 minutes. Last updated {}').format("2023-03-20")}}</p> #}
+        </div>
+        
+    </div>
+{% endblock %}
