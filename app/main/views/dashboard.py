@@ -25,7 +25,7 @@ from app import (
 )
 from app.main import main
 from app.models.enum.bounce_rate_status import BounceRateStatus
-from app.statistics_utils import add_rate_to_job, get_formatted_percentage_zero_dp
+from app.statistics_utils import add_rate_to_job, get_formatted_percentage
 from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
@@ -60,37 +60,34 @@ def redirect_service_dashboard(service_id):
 
 @main.route("/services/<service_id>/problem-emails")
 @user_has_permissions("view_activity", "send_messages")
-def inaccurate_email_addresses(service_id):
+def problem_emails(service_id):
+    # get the daily stats
+    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
+
     return render_template(
         "views/dashboard/review-email-list.html",
-        csv_list=get_send_list_by_template(service_id),
         bounce_status=BounceRateStatus.NORMAL,
+        jobs=get_jobs_and_calculate_hard_bounces(service_id),
+        bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
     )
 
 
-def get_send_list_by_template(service_id):
-    class CsvReview:
-        name = "name"
-        problem_count = 0
-        sent_at = datetime.utcnow()
+def get_jobs_and_calculate_hard_bounces(service_id):
+    # get the jobs stats
+    jobs = []
+    if job_api_client.has_jobs(service_id):
+        jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id, limit_days=1)]
 
-    csv1 = CsvReview()
-    csv1.name = "Many bad emails.csv"
-    csv1.problem_count = 9
-    csv1.sent_at = datetime.utcnow()
+    # get the permanent failures
+    for job in jobs:
+        for stat in job["statistics"]:
+            if stat["status"] == "permanent-failure":
+                job["bounce_count"] = stat["count"]
 
-    csv2 = CsvReview()
-    csv2.name = "Not many bad emails.csv"
-    csv2.problem_count = 1
-    csv2.sent_at = datetime.utcnow()
+        if job.get("bounce_count") is None:
+            job["bounce_count"] = 0
 
-    csv3 = CsvReview()
-    csv3.name = "Nothing bad here, you shouldn't see me!.csv"
-    csv3.problem_count = 0
-    csv3.sent_at = datetime.utcnow()
-
-    problem_csvs = [csv1, csv2, csv3]
-    return problem_csvs
+    return jobs
 
 
 @main.route("/services/<service_id>")
@@ -240,7 +237,6 @@ def aggregate_notifications_stats(template_statistics):
 
 def get_dashboard_partials(service_id):
     all_statistics_weekly = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=7)
-    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
     template_statistics_weekly = aggregate_template_usage(all_statistics_weekly)
 
     scheduled_jobs, immediate_jobs = [], []
@@ -248,16 +244,11 @@ def get_dashboard_partials(service_id):
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
         immediate_jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id)]
 
-    # TODO: clean this up when design team decides on periods to show on dashboard
-    # stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
-    stats_daily = aggregate_notifications_stats(all_statistics_daily)
+    # get the daily stats
+    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
+
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
-    )
-    # dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
-    dashboard_totals_daily = (get_dashboard_totals(stats_daily),)
-    highest_notification_count_daily = max(
-        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_daily[0].items()
     )
 
     return {
@@ -286,6 +277,18 @@ def get_dashboard_partials(service_id):
         "has_jobs": bool(immediate_jobs),
         "has_scheduled_jobs": bool(scheduled_jobs),
     }
+
+
+def _get_daily_stats(service_id):
+    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
+    stats_daily = aggregate_notifications_stats(all_statistics_daily)
+    dashboard_totals_daily = (get_dashboard_totals(stats_daily),)
+
+    highest_notification_count_daily = max(
+        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_daily[0].items()
+    )
+
+    return dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily
 
 
 def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
@@ -321,12 +324,14 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
     elif bounce_rate.bounce_percentage > current_app.config["BR_WARNING_PERCENTAGE"]:
         bounce_rate.bounce_status = BounceRateStatus.WARNING.value
 
+    # convert bounce rate to a display-friendly manner
+    bounce_rate.bounce_percentage = round(bounce_rate.bounce_percentage, 1)
     return bounce_rate
 
 
 def get_dashboard_totals(statistics):
     for msg_type in statistics.values():
-        msg_type["failed_percentage"] = get_formatted_percentage_zero_dp(msg_type["failed"], msg_type["requested"])
+        msg_type["failed_percentage"] = get_formatted_percentage(msg_type["failed"], msg_type["requested"])
         msg_type["show_warning"] = float(msg_type["failed_percentage"]) > 3
     return statistics
 
