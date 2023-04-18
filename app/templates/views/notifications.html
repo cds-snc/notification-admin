@@ -4,6 +4,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/textbox.html" import textbox_search %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/problem-email-checkbox.html" import problem_email_checkbox %}
 
 {% set title_status = (
   'Failed '
@@ -62,6 +63,8 @@
       {{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}
     </p>
   {% endif %}
+  
+  {{ problem_email_checkbox() }}
 
   {{ ajax_block(
     partials,
