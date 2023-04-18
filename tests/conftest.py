@@ -3445,6 +3445,12 @@ def mock_update_message_limit(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_update_sms_message_limit(mocker):
+    sample_limit = 10000
+    return mocker.patch("app.service_api_client.update_sms_message_limit", return_value=sample_limit)
+
+
+@pytest.fixture(scope="function")
 def mock_create_or_update_free_sms_fragment_limit(mocker):
     sample_limit = 250000
     return mocker.patch(
