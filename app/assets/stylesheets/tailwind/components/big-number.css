@@ -109,7 +109,7 @@
   }
 
   .review-email-status-critical {
-    @apply no-underline mb-2 text-black block bg-red border-red border-solid;
+    @apply no-underline mb-2 text-white block bg-red border-red border-solid;
   }
 
   .review-email-status-critical .review-email-link {
