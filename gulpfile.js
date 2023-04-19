@@ -41,6 +41,7 @@ const icons = () => {
         fas: [
           "plus",
           "arrow-right",
+          "angle-down",
           "arrow-up-right-from-square",
           "circle-question",
           "triangle-exclamation",
