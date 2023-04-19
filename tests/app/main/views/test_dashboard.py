@@ -279,7 +279,7 @@ def test_should_show_recent_templates_on_dashboard(
     mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=1)
 
     headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
-    assert "Email" in headers
+    assert "Email in the last 24 hours" in headers
 
     table_rows = page.find_all("tbody")[1].find_all("tr")
 
@@ -1171,7 +1171,7 @@ def test_get_dashboard_totals_adds_percentages():
         "sms": {"requested": 3, "delivered": 0, "failed": 2},
         "email": {"requested": 0, "delivered": 0, "failed": 0},
     }
-    assert get_dashboard_totals(stats)["sms"]["failed_percentage"] == "67"
+    assert get_dashboard_totals(stats)["sms"]["failed_percentage"] == "66.7"
     assert get_dashboard_totals(stats)["email"]["failed_percentage"] == "0"
 
 
@@ -1189,7 +1189,7 @@ def test_format_monthly_stats_has_stats_with_failure_rate():
     resp = format_monthly_stats_to_list({"2016-07": {"sms": _stats(3, 1, 2)}})
     assert resp[0]["sms_counts"] == {
         "failed": 2,
-        "failed_percentage": "67",
+        "failed_percentage": "66.7",
         "requested": 3,
         "show_warning": True,
     }
@@ -1433,7 +1433,7 @@ class TestBounceRate:
                     },
                 ],
                 1,
-                "5% problem addresses",
+                "5.0% problem addresses",
             ),
             (
                 [
@@ -1455,7 +1455,7 @@ class TestBounceRate:
                     },
                 ],
                 2,
-                "10% problem addresses",
+                "10.0% problem addresses",
             ),
             (
                 [
