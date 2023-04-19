@@ -27,21 +27,21 @@ from tests.conftest import (
             {"message_type": "email"},
             "/email.json",
             7,
-            "Emails",
+            "Emails   in the past week",
         ),
         (
             create_active_user_view_permissions(),
             {"message_type": "sms"},
             "/sms.json",
             7,
-            "Text messages",
+            "Text messages   in the past week",
         ),
         (
             create_active_caseworking_user(),
             {},
             ".json",
             7,
-            "Sent messages",
+            "Sent messages in the past week",
         ),
     ],
 )
@@ -187,7 +187,7 @@ def test_can_show_notifications_if_data_retention_not_available(
         service_id=SERVICE_ONE_ID,
         status="sending,delivered,failed",
     )
-    assert page.h1.text.strip() == "Messages"
+    assert page.h1.text.strip() == "Messages   in the past week"
 
 
 @pytest.mark.parametrize(
