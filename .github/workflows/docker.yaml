@@ -61,6 +61,9 @@ jobs:
         docker push $DOCKER_SLUG:latest && docker push $DOCKER_SLUG:${GITHUB_SHA::7}
     - name: Get Kubernetes configuration
       env:
+        AWS_REGION: ca-central-1
+        AWS_DEFAULT_REGION: ca-central-1
+        AWS_SESSION_TOKEN:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
