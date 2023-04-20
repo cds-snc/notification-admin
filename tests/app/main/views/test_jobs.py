@@ -769,4 +769,4 @@ class TestBounceRate:
             job_id=fake_uuid,
         )
 
-        assert len(page.find(id="pe_filter")) != None
+        assert len(page.find(id="pe_filter")) is not None
