@@ -1,7 +1,9 @@
 {% from "components/checkbox.html" import checkbox %}
 
 {% macro problem_email_checkbox() %}
-    <h2 class="heading-medium">Filters</h2>
-    {{ checkbox({ "id": "pe_filter", "name": "pe_filter", "data": request.args.get('pe_filter'), "label": { "text": "Only show problem addresses"}}) }}
-    <br /><br /><br />
+    {% if config["FF_BOUNCE_RATE_V1"] %}
+        <h2 class="heading-medium">Filters</h2>
+        {{ checkbox({ "id": "pe_filter", "name": "pe_filter", "data": request.args.get('pe_filter'), "label": { "text": "Only show problem addresses"}}) }}
+        <br /><br /><br />
+    {% endif %}
 {% endmacro %}
