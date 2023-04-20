@@ -7,7 +7,7 @@
 {% set empty_txt = _('No messages to show') %}
 {% set heading_1 = _('Recipient') %}
 {% set heading_2 = _('Review Address') %}
-{% set heading_3 = _('Status') %}
+{% set heading_3 = right_aligned_field_heading(_('Status')) %}
 
 <div class="ajax-block-container" aria-labelledby='pill-selected-item'>
   {% if job.job_status == 'scheduled' %}

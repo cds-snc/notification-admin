@@ -9,7 +9,7 @@
     <div class='dashboard-table'>
       {% set heading_1 = _('Recipient') %}
       {% set heading_2 = _('Review Address') %}
-      {% set heading_3 = _('Status') %}
+      {% set heading_3 = right_aligned_field_heading(_('Status')) %}
   {% endif %}
     
     {% call(item, row_number) list_table(
