@@ -21,7 +21,13 @@
         <div class="{% if bounce_rate["bounce_status"] == "critical" %}review-email-status-critical{% elif bounce_rate["bounce_status"] == "warning"%}review-email-status-critical{% else%}review-email-status-normal{% endif %} px-5">
             <p class="text-title py-4">
                 <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-circle-exclamation"></i>
-                {{ bounce_rate["bounce_percentage"] }}% {{ _('of email addresses need review') }}
+                <strong>
+                    {% if bounce_rate["bounce_status"] == "warning" %}
+                    {{ _('Caution:') }}
+                    {% elif bounce_rate["bounce_status"] == "critical" %}
+                    {{ _('Critical:') }}
+                    {% endif %}
+                </strong> {{ bounce_rate["bounce_percentage"] }}% {{ _('of email addresses need review') }}
             </p>
         </div>
 
