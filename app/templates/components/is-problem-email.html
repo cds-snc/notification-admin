@@ -1,6 +1,6 @@
 {% macro is_probem_email(email) %}
   {% if email.status == 'permanent-failure' %}
-    <span style="color: #b10e1e" class="text-red">{{ _('Yes') }}</span>
+    <span class="text-red">{{ _('Yes') }}</span>
   {% else %}
     {{ _('No') }}
   {% endif %}
