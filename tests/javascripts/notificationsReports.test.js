@@ -1,4 +1,3 @@
-const helpers = require('./support/helpers');
 var hrefQueryParams = '';
 const { location } = window;
 const getHrefSpy = jest.fn(() => 'http://jobs-list?status=failed');
