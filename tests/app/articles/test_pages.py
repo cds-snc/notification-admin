@@ -115,3 +115,12 @@ def test_gca_redirects_work(client_request, mocker, url):
 
     # ensure each url is a permenent redirect
     client_request.get_url(url, _expected_status=301)
+
+class TestNoFailureUncached:
+    @patch("app.articles.get_current_locale", return_value="en")
+    def test_get_nav_items(self, mocker, app_):
+        
+        with app_.app_context():
+            mocker.patch("app.articles.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
+            mocker.patch("app.articles.api.get_content", values=None)
+            

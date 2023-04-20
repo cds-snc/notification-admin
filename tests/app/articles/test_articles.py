@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-from app.articles import get_lang_url, get_preview_url, set_active_nav_item
+from app.articles import get_lang_url, get_nav_items, get_preview_url, set_active_nav_item
 
 gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"
 
@@ -112,3 +112,16 @@ class TestGetPreviewURL:
 
         # return None as page_id. This should never happen in practice, since we check page_id beforehand
         assert preview_url == f"https://{gc_articles_api}/wp-admin/post.php?post=None&action=edit&lang=en"
+
+
+class TestNoFailureUncached:
+    @patch("app.articles.get_current_locale", return_value="en")
+    def test_get_nav_items(self, mocker, app_):
+        
+        with app_.app_context():
+            mocker.patch("app.articles.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
+            mocker.patch("app.articles.api.get_content", values=None)
+        
+        response = get_nav_items()
+        
+        
