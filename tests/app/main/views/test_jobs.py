@@ -748,3 +748,25 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
     )
 
     assert normalize_spaces(page.select(".keyline-block")[1].text) == "5 January Estimated delivery date"
+
+
+class TestBounceRate:
+    def test_jobs_page_shows_problem_email_filter(
+        self,
+        client_request,
+        active_user_with_permissions,
+        mock_get_service_template,
+        mock_get_job,
+        mocker,
+        mock_get_notifications,
+        mock_get_service_data_retention,
+        fake_uuid,
+    ):
+
+        page = client_request.get(
+            "main.view_job",
+            service_id=SERVICE_ONE_ID,
+            job_id=fake_uuid,
+        )
+
+        assert len(page.find(id="pe_filter")) != None
