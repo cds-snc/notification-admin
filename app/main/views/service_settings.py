@@ -1098,7 +1098,7 @@ def set_message_limit(service_id):
 @user_is_platform_admin
 def set_sms_message_limit(service_id):
 
-    form = SMSMessageLimit(message_limit=current_service.sms_daily_limit, other_data="HI")
+    form = SMSMessageLimit(message_limit=current_service.sms_daily_limit)
 
     if form.validate_on_submit():
         service_api_client.update_sms_message_limit(service_id, form.message_limit.data)
