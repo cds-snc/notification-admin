@@ -178,7 +178,7 @@ def test_notification_status_page_shows_details(
     notification_status,
     provider_response,
     expected_status,
-    app_
+    app_,
 ):
 
     mocker.patch("app.user_api_client.get_user", return_value=user)
