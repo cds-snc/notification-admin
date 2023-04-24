@@ -135,6 +135,7 @@ class Config(object):
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
+    FF_BOUNCE_RATE_V1 = env.bool("FF_BOUNCE_RATE_V1", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
 
     @classmethod
