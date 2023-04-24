@@ -520,12 +520,7 @@ def test_html_contains_notification_id(
 
 
 def test_html_contains_links_for_failed_notifications(
-    client_request,
-    active_user_with_permissions,
-    mock_get_service_statistics,
-    mock_get_service_data_retention,
-    mocker,
-    app_
+    client_request, active_user_with_permissions, mock_get_service_statistics, mock_get_service_data_retention, mocker, app_
 ):
     with set_config(app_, "FF_BOUNCE_RATE_V1", True):
         notifications = create_notifications(status="technical-failure")
@@ -556,6 +551,7 @@ def test_html_contains_links_for_failed_notifications(
     for tr in notifications:
         link_text = tr.find("div", class_="table-field-status-error").find("a").text
         assert normalize_spaces(link_text) == "Technical failure"
+
 
 @pytest.mark.parametrize(
     "notification_type, expected_row_contents",

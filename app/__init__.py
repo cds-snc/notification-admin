@@ -480,7 +480,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
                 "validation-failed": "Validation failed",
             },
         }[template_type].get(status, status)
-    
+
     # -----------------
     # remove this code when FF_BOUNCE_RATE_V1 is removed
     # -----------------
@@ -528,6 +528,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
             "validation-failed": "Validation failed",
         },
     }[template_type].get(status, status)
+
 
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(

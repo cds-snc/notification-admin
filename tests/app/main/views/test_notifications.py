@@ -85,7 +85,7 @@ def test_notification_status_page_shows_details_new_statuses(
     notification_status,
     provider_response,
     expected_status,
-    app_
+    app_,
 ):
     mocker.patch("app.user_api_client.get_user", return_value=user)
 
@@ -200,6 +200,7 @@ def test_notification_status_page_shows_details(
         assert normalize_spaces(page.select(".ajax-block-container p")[0].text) == (expected_status)
 
         _mock_get_notification.assert_called_with(service_one["id"], fake_uuid)
+
 
 @pytest.mark.parametrize(
     "template_redaction_setting, expected_content",
