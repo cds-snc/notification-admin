@@ -1,7 +1,7 @@
 import pytest
 
 from app import format_notification_status, format_notification_status_as_url
-
+from tests.conftest import set_config
 
 @pytest.mark.parametrize(
     "status, notification_type, expected",
@@ -82,5 +82,7 @@ def test_format_notification_status_uses_correct_labels(
     status,
     feedback_subtype,
     expected,
+    app_
 ):
-    assert format_notification_status(status, template_type, None, feedback_subtype) == expected
+    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+        assert format_notification_status(status, template_type, None, feedback_subtype) == expected
