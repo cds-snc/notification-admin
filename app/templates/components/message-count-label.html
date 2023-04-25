@@ -92,11 +92,22 @@
   {%- endif %}
 {%- endmacro %}
 
-{% macro problem_email_label(count, prefix="problem email")%}
-  {{ prefix }} {{" "}}
-  {%- if count == 1 -%}
-    {{ _('address') }}
-  {%- else -%}
-    {{ _('addresses') }}
-  {% endif %}
+{% macro problem_email_label(count, prefix=_("problem email"))%}
+  {%- if session["userlang"] == "en" -%}
+    {{ prefix }} {{" "}}
+    {%- if count == 1 -%}
+      {{ _('address') }}
+    {%- else -%}
+      {{ _('addresses') }}
+    {%- endif %}
+  {%- endif %}
+
+  {%- if session["userlang"] == "fr" -%}
+    {%- if count <= 1 -%}
+      {{ _('addresse courriel problématique') }}
+    {%- else -%}
+      {{ _('addresses courriel problématiques') }}
+    {%- endif %}
+    {{" "}}
+  {%- endif %}
 {% endmacro %}

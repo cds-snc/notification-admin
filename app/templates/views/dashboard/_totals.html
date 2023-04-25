@@ -38,7 +38,7 @@
           failure_link=url_for('.problem_emails', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
           link=url_for(".view_notifications", service_id=service_id, message_type='email', status='sending,delivered,failed'),
           smaller=smaller_font_size,
-          failure_link_label="Review email addresses"
+          failure_link_label=_("Review email addresses")
         ) }}
       {% else %}
         {{ big_number_with_status(
