@@ -81,7 +81,7 @@
   div[class*="review-email-status-"]:hover
     div[class~="review-email-link"]
     span {
-    @apply no-underline opacity-75;
+    @apply no-underline;
   }
 
   .review-email-label {
