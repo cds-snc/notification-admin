@@ -1688,7 +1688,7 @@
 "In transit","Envoi en cours"
 "Exceeds Protected A","Niveau supérieur à Protégé A"
 "No such address","Adresse inexistante"
-"Blocked","Bloquée"
+"Blocked","Message bloqué"
 "No such number","Numéro inexistant"
 "Carrier issue","Problème du fournisseur"
 "You can send {message_limit} messages each day. Enter a number equal or less than {message_limit}.","Vous pouvez envoyer {message_limit} messages par jour. Saisissez un nombre inférieur ou égal à {message_limit}."
