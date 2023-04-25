@@ -20,7 +20,7 @@
     @apply text-smaller block text-white bg-green-darker;
   }
   .big-number-status:hover > div {
-    @apply no-underline opacity-75;
+    @apply no-underline;
   }
   .big-number-with-status {
     @apply relative mb-8;
