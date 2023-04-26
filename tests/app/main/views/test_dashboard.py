@@ -594,7 +594,7 @@ def test_correct_font_size_for_big_numbers(
             },
             (
                 "0 courriel envoyé Aucun échec",
-                "0 problem email adresses No problem addresses",
+                "0 addresse courriel problématique Aucune adresse problématique",
                 "0 message texte envoyé Aucun échec",
             ),
             "fr",
@@ -616,7 +616,7 @@ def test_correct_font_size_for_big_numbers(
             },
             (
                 "1 courriel envoyé Aucun échec",
-                "0 problem email adresses No problem addresses",
+                "0 addresse courriel problématique Aucune adresse problématique",
                 "1 message texte envoyé Aucun échec",
             ),
             "fr",
@@ -638,7 +638,7 @@ def test_correct_font_size_for_big_numbers(
             },
             (
                 "2 courriels envoyés Aucun échec",
-                "0 problem email adresses No problem addresses",
+                "0 addresse courriel problématique Aucune adresse problématique",
                 "2 messages texte envoyés Aucun échec",
             ),
             "fr",
