@@ -51,13 +51,6 @@ def get_formatted_percentage_two_dp(x, tot):
     return "{0:.2f}".format((float(x) / tot * 100)) if tot else "0"
 
 
-def get_formatted_percentage_zero_dp(x, tot):
-    """
-    Return a percentage to zero decimal places
-    """
-    return "{0:.0f}".format((float(x) / tot * 100)) if tot else "0"
-
-
 def statistics_by_state(statistics):
     return {
         "sms": {
