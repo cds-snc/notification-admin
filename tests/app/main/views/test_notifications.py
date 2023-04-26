@@ -16,9 +16,103 @@ from tests.conftest import (
     create_notification,
     mock_get_notification,
     normalize_spaces,
+    set_config,
 )
 
 
+@pytest.mark.parametrize(
+    "key_type, notification_status, provider_response, expected_status",
+    [
+        (None, "created", None, "In transit"),
+        (None, "sending", None, "In transit"),
+        (None, "delivered", None, "Delivered"),
+        (None, "failed", None, "Failed"),
+        (
+            None,
+            "temporary-failure",
+            None,
+            "Carrier issue",
+        ),
+        (None, "permanent-failure", None, "No such number"),
+        (None, "technical-failure", None, "Tech issue"),
+        (
+            None,
+            "technical-failure",
+            "Blocked as spam by phone carrier",
+            "Blocked as spam by phone carrier",
+        ),
+        (
+            None,
+            "permanent-failure",
+            "The email address is on the GC Notify suppression list",
+            "The email address is on the GC Notify suppression list",
+        ),
+        (
+            None,
+            "permanent-failure",
+            "Email address is on our email provider suppression list",
+            "Email address is on our email provider suppression list",
+        ),
+        (
+            None,
+            "temporary-failure",
+            "Email was rejected because of its attachments",
+            "Email was rejected because of its attachments",
+        ),
+        ("team", "delivered", None, "Delivered"),
+        ("live", "delivered", None, "Delivered"),
+        ("test", "sending", None, "In transit (test)"),
+        ("test", "delivered", None, "Delivered (test)"),
+        ("test", "permanent-failure", None, "No such number (test)"),
+    ],
+)
+@pytest.mark.parametrize(
+    "user",
+    [
+        create_active_user_with_permissions(),
+        create_active_caseworking_user(),
+    ],
+)
+@freeze_time("2016-01-01 11:09:00.061258")
+def test_notification_status_page_shows_details_new_statuses(
+    client_request,
+    mocker,
+    mock_has_no_jobs,
+    service_one,
+    fake_uuid,
+    user,
+    key_type,
+    notification_status,
+    provider_response,
+    expected_status,
+    app_,
+):
+    mocker.patch("app.user_api_client.get_user", return_value=user)
+
+    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+        notification = create_notification(
+            notification_status=notification_status,
+            notification_provider_response=provider_response,
+            key_type=key_type,
+        )
+        _mock_get_notification = mocker.patch("app.notification_api_client.get_notification", return_value=notification)
+
+        page = client_request.get(
+            "main.view_notification",
+            service_id=service_one["id"],
+            notification_id=fake_uuid,
+        )
+
+        assert normalize_spaces(page.select(".sms-message-recipient")[0].text) == ("To: 6502532222")
+        assert normalize_spaces(page.select(".sms-message-wrapper")[0].text) == ("service one: hello Jo")
+        assert normalize_spaces(page.select(".ajax-block-container p")[0].text) == (expected_status)
+
+        _mock_get_notification.assert_called_with(service_one["id"], fake_uuid)
+
+
+# --------------------------------------------------------------------
+# remove the following test when FF_BOUNCE_RATE_V1 is removed
+# --------------------------------------------------------------------
 @pytest.mark.parametrize(
     "key_type, notification_status, provider_response, expected_status",
     [
@@ -84,28 +178,29 @@ def test_notification_status_page_shows_details(
     notification_status,
     provider_response,
     expected_status,
+    app_,
 ):
 
     mocker.patch("app.user_api_client.get_user", return_value=user)
+    with set_config(app_, "FF_BOUNCE_RATE_V1", False):
+        notification = create_notification(
+            notification_status=notification_status,
+            notification_provider_response=provider_response,
+            key_type=key_type,
+        )
+        _mock_get_notification = mocker.patch("app.notification_api_client.get_notification", return_value=notification)
 
-    notification = create_notification(
-        notification_status=notification_status,
-        notification_provider_response=provider_response,
-        key_type=key_type,
-    )
-    _mock_get_notification = mocker.patch("app.notification_api_client.get_notification", return_value=notification)
+        page = client_request.get(
+            "main.view_notification",
+            service_id=service_one["id"],
+            notification_id=fake_uuid,
+        )
 
-    page = client_request.get(
-        "main.view_notification",
-        service_id=service_one["id"],
-        notification_id=fake_uuid,
-    )
+        assert normalize_spaces(page.select(".sms-message-recipient")[0].text) == ("To: 6502532222")
+        assert normalize_spaces(page.select(".sms-message-wrapper")[0].text) == ("service one: hello Jo")
+        assert normalize_spaces(page.select(".ajax-block-container p")[0].text) == (expected_status)
 
-    assert normalize_spaces(page.select(".sms-message-recipient")[0].text) == ("To: 6502532222")
-    assert normalize_spaces(page.select(".sms-message-wrapper")[0].text) == ("service one: hello Jo")
-    assert normalize_spaces(page.select(".ajax-block-container p")[0].text) == (expected_status)
-
-    _mock_get_notification.assert_called_with(service_one["id"], fake_uuid)
+        _mock_get_notification.assert_called_with(service_one["id"], fake_uuid)
 
 
 @pytest.mark.parametrize(
@@ -124,7 +219,6 @@ def test_notification_status_page_respects_redaction(
     template_redaction_setting,
     expected_content,
 ):
-
     _mock_get_notification = mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=create_notification(redact_personalisation=template_redaction_setting),
@@ -216,7 +310,6 @@ def test_notification_status_page_shows_attachments_with_links(
     service_one,
     fake_uuid,
 ):
-
     mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=create_notification(
@@ -300,7 +393,6 @@ def test_notification_page_doesnt_link_to_template_in_tour(
     fake_uuid,
     mock_get_notification,
 ):
-
     page = client_request.get(
         "main.view_notification",
         service_id=SERVICE_ONE_ID,
@@ -321,7 +413,6 @@ def test_notification_page_shows_page_for_letter_notification(
     mocker,
     fake_uuid,
 ):
-
     count_of_pages = 3
 
     notification = mock_get_notification(
@@ -397,7 +488,6 @@ def test_notification_page_shows_page_for_letter_sent_with_test_key(
     expected_p2,
     expected_postage,
 ):
-
     mocker.patch(
         "app.main.views.notifications.view_letter_notification_as_preview",
         return_value=b"foo",
@@ -464,7 +554,6 @@ def test_notification_page_shows_cancelled_or_failed_letter(
     notification_status,
     expected_message,
 ):
-
     mock_get_notification(
         mocker,
         fake_uuid,
@@ -594,7 +683,6 @@ def test_should_show_image_of_letter_notification(
     mocker,
     filetype,
 ):
-
     mocker.patch("app.notification_api_client.get_notification", return_value=create_notification(template_type="letter"))
 
     mocker.patch(
@@ -616,7 +704,6 @@ def test_should_show_image_of_letter_notification(
 
 
 def test_should_show_image_of_letter_notification_that_failed_validation(logged_in_client, fake_uuid, mocker):
-
     mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=create_notification(
@@ -648,7 +735,6 @@ def test_should_show_preview_error_image_letter_notification_on_preview_error(
     fake_uuid,
     mocker,
 ):
-
     mocker.patch("app.notification_api_client.get_notification", return_value=create_notification(template_type="letter"))
 
     mocker.patch(
@@ -736,7 +822,6 @@ def test_notification_page_has_link_to_download_letter(
     template_type,
     expected_link,
 ):
-
     mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=create_notification(notification_status="created", template_type=template_type),
@@ -772,7 +857,6 @@ def test_notification_page_has_expected_template_link_for_letter(
     is_precompiled_letter,
     has_template_link,
 ):
-
     mocker.patch(
         "app.main.views.notifications.view_letter_notification_as_preview",
         return_value=b"foo",
@@ -808,7 +892,6 @@ def test_should_show_image_of_precompiled_letter_notification(
     fake_uuid,
     mocker,
 ):
-
     mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=create_notification(template_type="letter", is_precompiled_letter=True),
