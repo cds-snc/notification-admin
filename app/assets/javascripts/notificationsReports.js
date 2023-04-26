@@ -7,7 +7,6 @@
     $(document).on("change", cb_selector, function () {
       // use this syntax so dynamically added checbkoxes are also handled
       var $pe_checkbox = $(cb_selector);
-      console.log("cb chaned", $pe_checkbox.is(":checked"));
       $pe_checkbox.attr("disabled", true);
 
       // parse current URL
