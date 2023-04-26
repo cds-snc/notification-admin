@@ -1673,7 +1673,7 @@
 "You’ve sent too many text messages or too many long messages.","Vous avez envoyé trop de messages texte ou trop de longs messages."
 "Long text messages travel in fragments and count toward your daily limit.","Un long message est transmis en fragments. Chaque fragment compte dans votre limite quotidienne de fragments de message texte."
 "You can send more text messages tomorrow. To raise your limit for future sends, {contact_us}.","Vous pourrez envoyer d’autres messages texte demain. Pour augmenter votre capacité d’envoi à l’avenir, {contact_us}."
-"Virus in attachment","Virus dans la pièce jointe"
+"Attachment has virus","La pièce jointe contient un virus"
 "Enter name of your group","Saisissez le nom de votre groupe"
 "Enter any other names for your group (Optional)","Saisissez tout autre nom correspondant à votre groupe (optionnel)"
 "Enter name to continue","Saisissez un nom pour continuer"
@@ -1693,3 +1693,4 @@
 "Carrier issue","Problème du fournisseur"
 "You can send {message_limit} messages each day. Enter a number equal or less than {message_limit}.","Vous pouvez envoyer {message_limit} messages par jour. Saisissez un nombre inférieur ou égal à {message_limit}."
 "Your daily limit for text fragments is {sms_daily_limit}. Enter a total number of daily messages that is {sms_daily_limit} or higher.","Le maximum de message quotidien doit être supérieur ou égal au maximum quotidien de fragments de message texte","Vous pouvez envoyer {sms_daily_limit} fragments de message texte par jour. Saisissez un nombre supérieur ou égal à {sms_daily_limit} pour la limite d’envoi quotidienne."
+"Virus in attachment","Virus dans la pièce jointe"

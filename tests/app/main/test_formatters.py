@@ -64,7 +64,7 @@ def test_format_notification_status_as_url(
         ("email", "failed", None, "Failed"),
         ("email", "technical-failure", None, "Tech issue"),
         ("email", "temporary-failure", None, "Content or inbox issue"),
-        ("email", "virus-scan-failed", None, "Attachment has virus"),
+        ("email", "virus-scan-failed", None, "Virus in attachment"),
         ("email", "permanent-failure", None, "No such address"),
         ("email", "permanent-failure", "suppressed", "Blocked"),
         ("email", "permanent-failure", "on-account-suppression-list", "Blocked"),
