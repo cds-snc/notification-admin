@@ -441,7 +441,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
                 "failed": _("Failed"),
                 "technical-failure": _("Tech issue"),
                 "temporary-failure": _("Content or inbox issue"),
-                "virus-scan-failed": _("Attachment has virus"),
+                "virus-scan-failed": _("Virus in attachment"),
                 "permanent-failure": _getStatusByBounceSubtype(),
                 "delivered": _("Delivered"),
                 "sending": _("In transit"),
