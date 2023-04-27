@@ -539,18 +539,19 @@ def test_html_contains_links_for_failed_notifications(
     # -----------------
     # remove the following code when FF_BOUNCE_RATE_V1 is removed
     # -----------------
-    notifications = create_notifications(status="technical-failure")
-    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
-    response = client_request.get(
-        "main.view_notifications",
-        service_id=SERVICE_ONE_ID,
-        message_type="sms",
-        status="sending%2Cdelivered%2Cfailed",
-    )
-    notifications = response.tbody.find_all("tr")
-    for tr in notifications:
-        link_text = tr.find("div", class_="table-field-status-error").find("a").text
-        assert normalize_spaces(link_text) == "Technical failure"
+    with set_config(app_, "FF_BOUNCE_RATE_V1", False):
+        notifications = create_notifications(status="technical-failure")
+        mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
+        response = client_request.get(
+            "main.view_notifications",
+            service_id=SERVICE_ONE_ID,
+            message_type="sms",
+            status="sending%2Cdelivered%2Cfailed",
+        )
+        notifications = response.tbody.find_all("tr")
+        for tr in notifications:
+            link_text = tr.find("div", class_="table-field-status-error").find("a").text
+            assert normalize_spaces(link_text) == "Technical failure"
 
 
 @pytest.mark.parametrize(
