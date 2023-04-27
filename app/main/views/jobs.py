@@ -381,7 +381,7 @@ def _get_job_counts(job):
         )
         for label, query_param, count in [
             ["total", "", job.get("notification_count", 0)],
-            ["sending", "sending", sending],
+            ["in transit", "sending", sending],
             ["delivered", "delivered", job.get("notifications_delivered", 0)],
             ["failed", "failed", job.get("notifications_failed", 0)],
         ]

@@ -84,10 +84,10 @@ class JobApiClient(NotifyAdminAPIClient):
             page=page,
         )
 
-    def get_immediate_jobs(self, service_id):
+    def get_immediate_jobs(self, service_id, limit_days=7):
         return self.get_jobs(
             service_id,
-            limit_days=7,
+            limit_days=limit_days,
             statuses=self.NON_SCHEDULED_JOB_STATUSES,
         )["data"]
 
