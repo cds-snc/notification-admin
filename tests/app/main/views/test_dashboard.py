@@ -558,6 +558,7 @@ def test_daily_usage_section_shown(
         assert "Usage today" not in headings
         assert "text messages  left today" not in big_number_labels
 
+
 # -----------------
 # remove the following test when FF_BOUNCE_RATE_V1 is removed
 # -----------------
@@ -699,6 +700,7 @@ def test_correct_font_size_for_big_numbers(
         )
 
         assert expected_column_count == len(page.select(".big-number-with-status {}".format(big_number_class)))
+
 
 # -----------------
 # remove the following test when FF_BOUNCE_RATE_V1 is removed
@@ -886,7 +888,6 @@ def test_dashboard_single_and_plural(
             normalize_spaces(page.select(".big-number-with-status")[1].text),
             normalize_spaces(page.select(".big-number-with-status")[2].text),
         ) == expected_big_numbers_single_plural
-
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
