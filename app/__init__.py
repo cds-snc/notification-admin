@@ -280,7 +280,7 @@ def safe_get_request_nonce():
         nonce = _request_ctx_stack.top.nonce
         current_app.logger.debug(f"Safe get request nonce of {nonce}.")
         return nonce
-    except (AttributeError):
+    except AttributeError:
         current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
         return ""
 
@@ -422,7 +422,68 @@ def format_notification_type(notification_type):
     return {"email": "Email", "sms": "SMS", "letter": "Letter"}[notification_type]
 
 
-def format_notification_status(status, template_type, provider_response=None):
+def format_notification_status(status, template_type, provider_response=None, feedback_subtype=None):
+    if current_app.config["FF_BOUNCE_RATE_V1"]:
+        if template_type == "sms" and provider_response:
+            return _(provider_response)
+
+        def _getStatusByBounceSubtype():
+            """Return the status of a notification based on the bounce sub type"""
+            if feedback_subtype:
+                return {"email": {"suppressed": _("Blocked"), "on-account-suppression-list": _("Blocked"),},}[  # noqa
+                    template_type
+                ].get(feedback_subtype, _("No such address"))
+            else:
+                return _("No such address")
+
+        return {
+            "email": {
+                "failed": _("Failed"),
+                "technical-failure": _("Tech issue"),
+                "temporary-failure": _("Content or inbox issue"),
+                "virus-scan-failed": _("Virus in attachment"),
+                "permanent-failure": _getStatusByBounceSubtype(),
+                "delivered": _("Delivered"),
+                "sending": _("In transit"),
+                "created": _("In transit"),
+                "sent": _("Delivered"),
+                "pending": _("In transit"),
+                "pending-virus-check": _("In transit"),
+                "pii-check-failed": _("Exceeds Protected A"),
+            },
+            "sms": {
+                "failed": _("Failed"),
+                "technical-failure": _("Tech issue"),
+                "temporary-failure": _("Carrier issue"),
+                "permanent-failure": _("No such number"),
+                "delivered": _("Delivered"),
+                "sending": _("In transit"),
+                "created": _("In transit"),
+                "pending": _("In transit"),
+                "sent": _("In transit"),
+            },
+            "letter": {
+                "failed": "",
+                "technical-failure": "Technical failure",
+                "temporary-failure": "",
+                "permanent-failure": "",
+                "delivered": "",
+                "received": "",
+                "accepted": "",
+                "sending": "",
+                "created": "",
+                "sent": "",
+                "pending-virus-check": "",
+                "virus-scan-failed": "Virus detected",
+                "returned-letter": "",
+                "cancelled": "",
+                "validation-failed": "Validation failed",
+            },
+        }[template_type].get(status, status)
+
+    # -----------------
+    # remove this code when FF_BOUNCE_RATE_V1 is removed
+    # -----------------
     if provider_response:
         return _(provider_response)
 
