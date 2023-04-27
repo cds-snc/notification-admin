@@ -15,6 +15,7 @@ from tests.conftest import (
     create_template,
     mock_get_notifications,
     normalize_spaces,
+    set_config,
 )
 
 
@@ -761,12 +762,13 @@ class TestBounceRate:
         mock_get_notifications,
         mock_get_service_data_retention,
         fake_uuid,
+        app_,
     ):
+        with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+            page = client_request.get(
+                "main.view_job",
+                service_id=SERVICE_ONE_ID,
+                job_id=fake_uuid,
+            )
 
-        page = client_request.get(
-            "main.view_job",
-            service_id=SERVICE_ONE_ID,
-            job_id=fake_uuid,
-        )
-
-        assert len(page.find(id="pe_filter")) is not None
+            assert len(page.find(id="pe_filter")) is not None
