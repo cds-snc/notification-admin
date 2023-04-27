@@ -110,6 +110,105 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
     ):
         assert normalize_spaces(page.select("tr")[index].text) == row
 
+# -----------------
+# remove the following test when FF_BOUNCE_RATE_V1 is removed
+# -----------------
+@pytest.mark.parametrize(
+    "user",
+    [
+        create_active_user_with_permissions,
+        create_active_caseworking_user,
+    ],
+)
+@pytest.mark.parametrize(
+    "status_argument, expected_api_call",
+    [
+        (
+            "",
+            [
+                "created",
+                "pending",
+                "sending",
+                "pending-virus-check",
+                "delivered",
+                "sent",
+                "returned-letter",
+                "failed",
+                "temporary-failure",
+                "permanent-failure",
+                "technical-failure",
+                "virus-scan-failed",
+                "validation-failed",
+            ],
+        ),
+        ("sending", ["sending", "created", "pending", "pending-virus-check"]),
+        ("delivered", ["delivered", "sent", "returned-letter"]),
+        (
+            "failed",
+            [
+                "failed",
+                "temporary-failure",
+                "permanent-failure",
+                "technical-failure",
+                "virus-scan-failed",
+                "validation-failed",
+            ],
+        ),
+    ],
+)
+@freeze_time("2016-01-01 11:09:00.061258")
+def test_should_show_page_for_one_job_REMOVE(
+    client_request,
+    active_user_with_permissions,
+    mock_get_service_template,
+    mock_get_job,
+    mocker,
+    mock_get_notifications,
+    mock_get_service_data_retention,
+    fake_uuid,
+    status_argument,
+    expected_api_call,
+    user,
+    app_,
+):
+    with set_config(app_, "FF_BOUNCE_RATE_V1", False):
+        page = client_request.get(
+            "main.view_job",
+            service_id=SERVICE_ONE_ID,
+            job_id=fake_uuid,
+            status=status_argument,
+        )
+
+        assert page.h1.text.strip() == "thisisatest.csv"
+        assert " ".join(page.find("tbody").find("tr").text.split()) == ("6502532222 template content Delivered 11:10:00.061258")
+        assert page.find("div", {"data-key": "notifications"})["data-resource"] == url_for(
+            "main.view_job_updates",
+            service_id=SERVICE_ONE_ID,
+            job_id=fake_uuid,
+            status=status_argument,
+        )
+        csv_link = page.select_one("a[download]")
+        assert csv_link["href"] == url_for(
+            "main.view_job_csv",
+            service_id=SERVICE_ONE_ID,
+            job_id=fake_uuid,
+            status=status_argument,
+        )
+        assert csv_link.text == "Download this report"
+        assert page.find("span", {"id": "time-left"}).text.split(" ")[0] == "2016-01-09"
+
+        assert normalize_spaces(page.select_one("tbody tr").text) == normalize_spaces(
+            "6502532222 " "template content " "Delivered 11:10:00.061258"
+        )
+        assert page.select_one("tbody tr a")["href"] == url_for(
+            "main.view_notification",
+            service_id=SERVICE_ONE_ID,
+            notification_id=sample_uuid(),
+            from_job=fake_uuid,
+        )
+
+        mock_get_notifications.assert_called_with(SERVICE_ONE_ID, fake_uuid, status=expected_api_call)
+
 
 @pytest.mark.parametrize(
     "user",
@@ -167,44 +266,45 @@ def test_should_show_page_for_one_job(
     status_argument,
     expected_api_call,
     user,
+    app_,
 ):
+    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+        page = client_request.get(
+            "main.view_job",
+            service_id=SERVICE_ONE_ID,
+            job_id=fake_uuid,
+            status=status_argument,
+        )
 
-    page = client_request.get(
-        "main.view_job",
-        service_id=SERVICE_ONE_ID,
-        job_id=fake_uuid,
-        status=status_argument,
-    )
+        assert page.h1.text.strip() == "thisisatest.csv"
+        assert " ".join(page.find("tbody").find("tr").text.split()) == ("6502532222 template content No Delivered 11:10:00.061258")
+        assert page.find("div", {"data-key": "notifications"})["data-resource"] == url_for(
+            "main.view_job_updates",
+            service_id=SERVICE_ONE_ID,
+            job_id=fake_uuid,
+            status=status_argument,
+        )
+        csv_link = page.select_one("a[download]")
+        assert csv_link["href"] == url_for(
+            "main.view_job_csv",
+            service_id=SERVICE_ONE_ID,
+            job_id=fake_uuid,
+            status=status_argument,
+        )
+        assert csv_link.text == "Download this report"
+        assert page.find("span", {"id": "time-left"}).text.split(" ")[0] == "2016-01-09"
 
-    assert page.h1.text.strip() == "thisisatest.csv"
-    assert " ".join(page.find("tbody").find("tr").text.split()) == ("6502532222 template content No Delivered 11:10:00.061258")
-    assert page.find("div", {"data-key": "notifications"})["data-resource"] == url_for(
-        "main.view_job_updates",
-        service_id=SERVICE_ONE_ID,
-        job_id=fake_uuid,
-        status=status_argument,
-    )
-    csv_link = page.select_one("a[download]")
-    assert csv_link["href"] == url_for(
-        "main.view_job_csv",
-        service_id=SERVICE_ONE_ID,
-        job_id=fake_uuid,
-        status=status_argument,
-    )
-    assert csv_link.text == "Download this report"
-    assert page.find("span", {"id": "time-left"}).text.split(" ")[0] == "2016-01-09"
+        assert normalize_spaces(page.select_one("tbody tr").text) == normalize_spaces(
+            "6502532222 " "template content " "No " "Delivered 11:10:00.061258"
+        )
+        assert page.select_one("tbody tr a")["href"] == url_for(
+            "main.view_notification",
+            service_id=SERVICE_ONE_ID,
+            notification_id=sample_uuid(),
+            from_job=fake_uuid,
+        )
 
-    assert normalize_spaces(page.select_one("tbody tr").text) == normalize_spaces(
-        "6502532222 " "template content " "No " "Delivered 11:10:00.061258"
-    )
-    assert page.select_one("tbody tr a")["href"] == url_for(
-        "main.view_notification",
-        service_id=SERVICE_ONE_ID,
-        notification_id=sample_uuid(),
-        from_job=fake_uuid,
-    )
-
-    mock_get_notifications.assert_called_with(SERVICE_ONE_ID, fake_uuid, status=expected_api_call)
+        mock_get_notifications.assert_called_with(SERVICE_ONE_ID, fake_uuid, status=expected_api_call)
 
 
 @freeze_time("2016-01-01 11:09:00.061258")

@@ -20,6 +20,7 @@ from tests.conftest import (
     create_active_caseworking_user,
     create_active_user_view_permissions,
     normalize_spaces,
+    set_config,
 )
 
 stub_template_stats = [
@@ -256,6 +257,57 @@ def test_no_sending_link_if_no_templates(
     assert "Reuse a message you’ve already created." not in str(page)
 
 
+# -----------------
+# remove the following test when FF_BOUNCE_RATE_V1 is removed
+# -----------------
+def test_should_show_recent_templates_on_dashboard_REMOVE(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_jobs,
+    mock_get_service_statistics,
+    mock_get_usage,
+    mock_get_inbound_sms_summary,
+    app_,
+):
+    with set_config(app_, "FF_BOUNCE_RATE_V1", False):
+        mock_template_stats = mocker.patch(
+            "app.template_statistics_client.get_template_statistics_for_service",
+            return_value=copy.deepcopy(stub_template_stats),
+        )
+
+        page = client_request.get(
+            "main.service_dashboard",
+            service_id=SERVICE_ONE_ID,
+        )
+
+        mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=7)
+        mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=1)
+
+        headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
+        assert "Sent in the last week" in headers
+
+        table_rows = page.find_all("tbody")[1].find_all("tr")
+
+        assert len(table_rows) == 4
+
+        assert "Provided as PDF" in table_rows[0].find_all("th")[0].text
+        assert "Letter" in table_rows[0].find_all("th")[0].text
+        assert "400" in table_rows[0].find_all("td")[0].text
+
+        assert "three" in table_rows[1].find_all("th")[0].text
+        assert "Letter template" in table_rows[1].find_all("th")[0].text
+        assert "300" in table_rows[1].find_all("td")[0].text
+
+        assert "two" in table_rows[2].find_all("th")[0].text
+        assert "Email template" in table_rows[2].find_all("th")[0].text
+        assert "200" in table_rows[2].find_all("td")[0].text
+
+        assert "one" in table_rows[3].find_all("th")[0].text
+        assert "Text message template" in table_rows[3].find_all("th")[0].text
+        assert "100" in table_rows[3].find_all("td")[0].text
+
+
 def test_should_show_recent_templates_on_dashboard(
     client_request,
     mocker,
@@ -264,42 +316,44 @@ def test_should_show_recent_templates_on_dashboard(
     mock_get_service_statistics,
     mock_get_usage,
     mock_get_inbound_sms_summary,
+    app_,
 ):
-    mock_template_stats = mocker.patch(
-        "app.template_statistics_client.get_template_statistics_for_service",
-        return_value=copy.deepcopy(stub_template_stats),
-    )
+    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+        mock_template_stats = mocker.patch(
+            "app.template_statistics_client.get_template_statistics_for_service",
+            return_value=copy.deepcopy(stub_template_stats),
+        )
 
-    page = client_request.get(
-        "main.service_dashboard",
-        service_id=SERVICE_ONE_ID,
-    )
+        page = client_request.get(
+            "main.service_dashboard",
+            service_id=SERVICE_ONE_ID,
+        )
 
-    mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=7)
-    mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=1)
+        mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=7)
+        mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=1)
 
-    headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
-    assert "Email in the last 24 hours" in headers
+        headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
+        assert "Email in the last 24 hours" in headers
 
-    table_rows = page.find_all("tbody")[1].find_all("tr")
+        table_rows = page.find_all("tbody")[1].find_all("tr")
 
-    assert len(table_rows) == 4
+        assert len(table_rows) == 4
 
-    assert "Provided as PDF" in table_rows[0].find_all("th")[0].text
-    assert "Letter" in table_rows[0].find_all("th")[0].text
-    assert "400" in table_rows[0].find_all("td")[0].text
+        assert "Provided as PDF" in table_rows[0].find_all("th")[0].text
+        assert "Letter" in table_rows[0].find_all("th")[0].text
+        assert "400" in table_rows[0].find_all("td")[0].text
 
-    assert "three" in table_rows[1].find_all("th")[0].text
-    assert "Letter template" in table_rows[1].find_all("th")[0].text
-    assert "300" in table_rows[1].find_all("td")[0].text
+        assert "three" in table_rows[1].find_all("th")[0].text
+        assert "Letter template" in table_rows[1].find_all("th")[0].text
+        assert "300" in table_rows[1].find_all("td")[0].text
 
-    assert "two" in table_rows[2].find_all("th")[0].text
-    assert "Email template" in table_rows[2].find_all("th")[0].text
-    assert "200" in table_rows[2].find_all("td")[0].text
+        assert "two" in table_rows[2].find_all("th")[0].text
+        assert "Email template" in table_rows[2].find_all("th")[0].text
+        assert "200" in table_rows[2].find_all("td")[0].text
 
-    assert "one" in table_rows[3].find_all("th")[0].text
-    assert "Text message template" in table_rows[3].find_all("th")[0].text
-    assert "100" in table_rows[3].find_all("td")[0].text
+        assert "one" in table_rows[3].find_all("th")[0].text
+        assert "Text message template" in table_rows[3].find_all("th")[0].text
+        assert "100" in table_rows[3].find_all("td")[0].text
 
 
 @freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
@@ -504,6 +558,78 @@ def test_daily_usage_section_shown(
         assert "Usage today" not in headings
         assert "text messages  left today" not in big_number_labels
 
+# -----------------
+# remove the following test when FF_BOUNCE_RATE_V1 is removed
+# -----------------
+@pytest.mark.parametrize(
+    "permissions, totals, big_number_class, expected_column_count",
+    [
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 999999999, "delivered": 0, "failed": 0},
+            },
+            ".big-number",
+            2,
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 1000000000, "delivered": 0, "failed": 0},
+                "sms": {"requested": 1000000, "delivered": 0, "failed": 0},
+            },
+            ".big-number-dark",
+            2,
+        ),
+        (
+            ["email", "sms", "letter"],
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 99999, "delivered": 0, "failed": 0},
+                "letter": {"requested": 99999, "delivered": 0, "failed": 0},
+            },
+            ".big-number",
+            3,
+        ),
+        (
+            ["email", "sms", "letter"],
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+                "letter": {"requested": 100000, "delivered": 0, "failed": 0},
+            },
+            ".big-number-dark",
+            3,
+        ),
+    ],
+)
+def test_correct_font_size_for_big_numbers_REMOVE(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    permissions,
+    totals,
+    big_number_class,
+    expected_column_count,
+    app_,
+):
+    with set_config(app_, "FF_BOUNCE_RATE_V1", False):
+        service_one["permissions"] = permissions
+
+        mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
+
+        page = client_request.get(
+            "main.service_dashboard",
+            service_id=service_one["id"],
+        )
+
+        assert expected_column_count == len(page.select(".big-number-with-status {}".format(big_number_class)))
+
 
 @pytest.mark.parametrize(
     "permissions, totals, big_number_class, expected_column_count",
@@ -560,18 +686,107 @@ def test_correct_font_size_for_big_numbers(
     totals,
     big_number_class,
     expected_column_count,
+    app_,
 ):
+    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+        service_one["permissions"] = permissions
 
-    service_one["permissions"] = permissions
+        mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
 
-    mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
+        page = client_request.get(
+            "main.service_dashboard",
+            service_id=service_one["id"],
+        )
 
-    page = client_request.get(
-        "main.service_dashboard",
-        service_id=service_one["id"],
-    )
+        assert expected_column_count == len(page.select(".big-number-with-status {}".format(big_number_class)))
 
-    assert expected_column_count == len(page.select(".big-number-with-status {}".format(big_number_class)))
+# -----------------
+# remove the following test when FF_BOUNCE_RATE_V1 is removed
+# -----------------
+@pytest.mark.parametrize(
+    "permissions, totals, expected_big_numbers_single_plural, lang",
+    [
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            },
+            ("0 emails sent No failures", "0 text messages sent No failures"),
+            "en",
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            },
+            ("0 courriel envoyé Aucun échec", "0 message texte envoyé Aucun échec"),
+            "fr",
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 1, "delivered": 1, "failed": 0},
+                "sms": {"requested": 1, "delivered": 1, "failed": 0},
+            },
+            ("1 email sent No failures", "1 text message sent No failures"),
+            "en",
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 1, "delivered": 1, "failed": 0},
+                "sms": {"requested": 1, "delivered": 1, "failed": 0},
+            },
+            ("1 courriel envoyé Aucun échec", "1 message texte envoyé Aucun échec"),
+            "fr",
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 2, "delivered": 2, "failed": 0},
+                "sms": {"requested": 2, "delivered": 2, "failed": 0},
+            },
+            ("2 emails sent No failures", "2 text messages sent No failures"),
+            "en",
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 2, "delivered": 2, "failed": 0},
+                "sms": {"requested": 2, "delivered": 2, "failed": 0},
+            },
+            ("2 courriels envoyés Aucun échec", "2 messages texte envoyés Aucun échec"),
+            "fr",
+        ),
+    ],
+)
+def test_dashboard_single_and_plural_REMOVE(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    permissions,
+    totals,
+    expected_big_numbers_single_plural,
+    lang,
+    app_,
+):
+    with set_config(app_, "FF_BOUNCE_RATE_V1", False):
+        service_one["permissions"] = permissions
+
+        mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
+
+        page = client_request.get("main.service_dashboard", service_id=service_one["id"], lang=lang)
+
+        assert (
+            normalize_spaces(page.select(".big-number-with-status")[0].text),
+            normalize_spaces(page.select(".big-number-with-status")[1].text),
+        ) == expected_big_numbers_single_plural
 
 
 @pytest.mark.parametrize(
@@ -657,22 +872,21 @@ def test_dashboard_single_and_plural(
     totals,
     expected_big_numbers_single_plural,
     lang,
+    app_,
 ):
+    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+        service_one["permissions"] = permissions
 
-    service_one["permissions"] = permissions
+        mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
 
-    mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
+        page = client_request.get("main.service_dashboard", service_id=service_one["id"], lang=lang)
 
-    page = client_request.get("main.service_dashboard", service_id=service_one["id"], lang=lang)
+        assert (
+            normalize_spaces(page.select(".big-number-with-status")[0].text),
+            normalize_spaces(page.select(".big-number-with-status")[1].text),
+            normalize_spaces(page.select(".big-number-with-status")[2].text),
+        ) == expected_big_numbers_single_plural
 
-    assert (
-        normalize_spaces(page.select(".big-number-with-status")[0].text),
-        normalize_spaces(page.select(".big-number-with-status")[1].text),
-        normalize_spaces(page.select(".big-number-with-status")[2].text),
-    ) == expected_big_numbers_single_plural
-
-
-##
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -1485,23 +1699,24 @@ class TestBounceRate:
         totals,
         expected_problem_emails,
         expected_problem_percent,
+        app_,
     ):
+        with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+            # service_one["permissions"] = permissions
 
-        # service_one["permissions"] = permissions
+            mocker.patch(
+                "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=totals
+            )
 
-        mocker.patch(
-            "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=totals
-        )
+            page = client_request.get(
+                "main.service_dashboard",
+                service_id=service_one["id"],
+            )
 
-        page = client_request.get(
-            "main.service_dashboard",
-            service_id=service_one["id"],
-        )
+            assert int(page.select_one("#problem-email-addresses .big-number-number").text.strip()) == expected_problem_emails
 
-        assert int(page.select_one("#problem-email-addresses .big-number-number").text.strip()) == expected_problem_emails
-
-        if expected_problem_emails > 0:
-            assert page.select_one("#problem-email-addresses .review-email-label").text.strip() == expected_problem_percent
+            if expected_problem_emails > 0:
+                assert page.select_one("#problem-email-addresses .review-email-label").text.strip() == expected_problem_percent
 
     def test_bounce_rate_widget_doesnt_change_when_under_threshold(
         self,
@@ -1514,63 +1729,65 @@ class TestBounceRate:
         service_one,
         app_,
     ):
-        threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
+        with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+            threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
 
-        mock_data = [
-            {
-                "count": (threshold - 20) * 0.5,
-                "is_precompiled_letter": False,
-                "status": "delivered",
-                "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                "template_name": "test",
-                "template_type": "email",
-            },
-            {
-                "count": (threshold - 20) * 0.5,
-                "is_precompiled_letter": False,
-                "status": "permanent-failure",
-                "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                "template_name": "test",
-                "template_type": "email",
-            },
-        ]
+            mock_data = [
+                {
+                    "count": (threshold - 20) * 0.5,
+                    "is_precompiled_letter": False,
+                    "status": "delivered",
+                    "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                    "template_name": "test",
+                    "template_type": "email",
+                },
+                {
+                    "count": (threshold - 20) * 0.5,
+                    "is_precompiled_letter": False,
+                    "status": "permanent-failure",
+                    "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                    "template_name": "test",
+                    "template_type": "email",
+                },
+            ]
 
-        mocker.patch(
-            "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
-        )
+            mocker.patch(
+                "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
+            )
 
-        page = client_request.get(
-            "main.service_dashboard",
-            service_id=service_one["id"],
-        )
+            page = client_request.get(
+                "main.service_dashboard",
+                service_id=service_one["id"],
+            )
 
-        assert len(page.find_all(class_="review-email-status-critical")) == 0
-        assert len(page.find_all(class_="review-email-status-normal")) == 1
+            assert len(page.find_all(class_="review-email-status-critical")) == 0
+            assert len(page.find_all(class_="review-email-status-normal")) == 1
 
     def test_review_problem_emails_is_empty_when_no_probems(self, mocker, service_one, app_, client_request):
-        threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
+        with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+            threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
 
-        mock_data = [
-            {
-                "count": (threshold - 20) * 0.5,
-                "is_precompiled_letter": False,
-                "status": "delivered",
-                "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                "template_name": "test",
-                "template_type": "email",
-            }
-        ]
+            mock_data = [
+                {
+                    "count": int((threshold - 20) * 0.5),
+                    "is_precompiled_letter": False,
+                    "status": "delivered",
+                    "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                    "template_name": "test",
+                    "template_type": "email",
+                }
+            ]
 
-        mocker.patch(
-            "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
-        )
-        mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=[])
-        page = client_request.get(
-            "main.problem_emails",
-            service_id=service_one["id"],
-        )
+            mocker.patch(
+                "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
+            )
+            mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=[])
+            page = client_request.get(
+                "main.problem_emails",
+                service_id=service_one["id"],
+            )
 
-        assert page.find("p", {"class": "text-title"}).text.strip() == "0% of email addresses need review"
+            assert page.find("p", {"class": "text-title"}).text.strip() == "0.0% of email addresses need review"
 
     @pytest.mark.parametrize(
         "jobs, expected_problem_list_count",
