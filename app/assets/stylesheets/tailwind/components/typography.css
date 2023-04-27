@@ -21,7 +21,7 @@
   }
 
   a {
-    @apply underline text-smaller border-b-2 border-transparent;
+    @apply underline border-b-2 border-transparent;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
   }
 
