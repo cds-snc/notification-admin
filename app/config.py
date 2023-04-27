@@ -179,8 +179,6 @@ class Development(Config):
     SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
-    FF_BOUNCE_RATE_V1 = True
-    BR_DISPLAY_VOLUME_MINIMUM = 10
 
 
 class Test(Development):
