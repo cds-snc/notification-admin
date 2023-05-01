@@ -93,12 +93,6 @@ jobs:
         sbom_name: "notification-admin"
         token: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Run scan websites
-      run: |
-        curl -s https://scan-websites.alpha.canada.ca > /dev/null
-        sleep 60
-        curl -X GET -H 'X-API-KEY: ${{ secrets.SCAN_WEBSITES_KEY }}' -H 'X-TEMPLATE-TOKEN: ${{ secrets.SCAN_WEBSITES_TEMPLATE }}' https://scan-websites.alpha.canada.ca/scans/start
-
     - name: Notify Slack channel if this job failed
       if: ${{ failure() }}
       run: |
