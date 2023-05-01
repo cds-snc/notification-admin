@@ -44,6 +44,8 @@ const icons = () => {
           "angle-down",
           "arrow-up-right-from-square",
           "circle-question",
+          "triangle-exclamation",
+          "circle-exclamation",
         ],
       })
     )
@@ -83,6 +85,7 @@ const javascripts = () => {
     paths.src + "javascripts/menuOverlay.js",
     paths.src + "javascripts/scopeTabNavigation.js",
     paths.src + "javascripts/url-typer.js",
+    paths.src + "javascripts/notificationsReports.js",
     paths.src + "javascripts/main.js",
   ])
     .pipe(plugins.prettyerror())

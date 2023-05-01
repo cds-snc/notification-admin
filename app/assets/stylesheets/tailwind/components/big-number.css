@@ -16,6 +16,12 @@
     @apply text-smaller inline-block pb-4;
   }
 
+  .big-number-status {
+    @apply text-smaller block text-white bg-green-darker;
+  }
+  .big-number-status:hover > div {
+    @apply no-underline;
+  }
   .big-number-with-status {
     @apply relative mb-8;
   }
@@ -23,6 +29,15 @@
   .big-number-link {
     @apply no-underline mb-2 text-white block bg-blue border-2 border-blue border-solid;
   }
+
+  .big-number-link-normal {
+    @apply no-underline mb-2 text-white block;
+  }
+
+  .big-number-link-warning {
+    @apply no-underline mb-2 text-black block;
+  }
+
   .big-number-link:hover,
   .big-number-link:hover .big-number {
     @apply text-blue-lightblue25;
@@ -33,12 +48,11 @@
   }
   .big-number-link:hover .big-number-label,
   .big-number-link:active .big-number-label,
-  .big-number-link:focus .big-number-label {
+  .big-number-link:focus .big-number-label,
+  .big-number-link:hover span,
+  .big-number-link:active span,
+  .big-number-link:focus span {
     @apply no-underline;
-  }
-
-  .big-number-status {
-    @apply text-smaller block text-white bg-green-darker;
   }
 
   .big-number-status-link:link,
@@ -54,5 +68,53 @@
     box-shadow: none;
     @apply outline-yellow border-0;
   }
+
+  /* Covers -normal, -warn, -critical */
+  div[class*="review-email-status-"]:active,
+  div[class*="review-email-status-"]:focus {
+    @apply outline-yellow;
+  }
+
+  div[class*="review-email-status-"]:hover
+    div[class~="review-email-label"]
+    span,
+  div[class*="review-email-status-"]:hover
+    div[class~="review-email-link"]
+    span {
+    @apply no-underline;
+  }
+
+  .review-email-label {
+    @apply pb-4 text-white no-underline;
+  }
+
+  .review-email-status-warning a .review-email-label {
+    @apply pb-4 text-black no-underline;
+  }
+
+  .review-email-status-normal {
+    @apply no-underline mb-2 text-white block bg-green-darker border-green-darker border-solid;
+  }
+
+  .review-email-status-normal .review-email-link {
+    @apply text-white bg-green-darker border-green-darker border-solid;
+  }
+
+  .review-email-status-warning {
+    @apply no-underline mb-2 text-black block bg-yellow border-yellow border-solid;
+  }
+
+  .review-email-status-warning .review-email-link {
+    @apply text-black bg-yellow border-yellow border-solid;
+  }
+
+  .review-email-status-critical {
+    @apply no-underline mb-2 text-white block bg-red border-red border-solid;
+  }
+
+  .review-email-status-critical .review-email-link {
+    @apply text-white bg-red border-red border-solid;
+  }
+
   /*! purgecss end ignore */
 }
