@@ -4,6 +4,8 @@ from app.articles import get_current_locale
 
 GC_ARTICLES_ROUTES = {
     "accessibility": {"en": "/accessibility", "fr": "/accessibilite"},
+    "bounce_guidance": {"en": "/keep-accurate-contact-information", "fr": "/maintenez-a-jour-les-coordonnees"},
+    "delivery_failure": {"en": "/delivery-and-failure", "fr": "/livraison-reussie-et-echec"},
     "features": {"en": "/features", "fr": "/fonctionnalites"},
     "formatting_guide": {"en": "/formatting-guide", "fr": "/guide-mise-en-forme"},
     "guidance": {"en": "/guidance", "fr": "/guides-reference"},
