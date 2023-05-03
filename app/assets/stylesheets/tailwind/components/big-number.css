@@ -26,7 +26,7 @@
     @apply relative mb-8;
   }
 
-  .big-number-link {
+  .big-number-link, .big-number-with-status > .big-number {
     @apply no-underline mb-2 text-white block bg-blue border-2 border-blue border-solid;
   }
 
