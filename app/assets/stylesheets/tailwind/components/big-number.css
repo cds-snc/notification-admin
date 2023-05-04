@@ -1,5 +1,4 @@
 @layer components {
-
   /*! purgecss start ignore */
   .big-number {
     @apply block;
@@ -21,7 +20,7 @@
     @apply text-smaller block text-white bg-green-darker;
   }
 
-  .big-number-status:hover>div {
+  .big-number-status:hover > div {
     @apply no-underline;
   }
 
@@ -30,7 +29,7 @@
   }
 
   .big-number-link,
-  .big-number-with-status>.big-number {
+  .big-number-with-status > .big-number {
     @apply no-underline mb-2 text-white block bg-blue border-2 border-blue border-solid;
   }
 
