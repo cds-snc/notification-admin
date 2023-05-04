@@ -80,8 +80,12 @@
     @apply outline-yellow;
   }
 
-  div[class*="review-email-status-"]:hover div[class~="review-email-label"] span,
-  div[class*="review-email-status-"]:hover div[class~="review-email-link"] span {
+  div[class*="review-email-status-"]:hover
+    div[class~="review-email-label"]
+    span,
+  div[class*="review-email-status-"]:hover
+    div[class~="review-email-link"]
+    span {
     @apply no-underline;
   }
 
