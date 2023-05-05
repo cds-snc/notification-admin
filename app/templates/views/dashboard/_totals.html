@@ -36,7 +36,7 @@
           problem_percentage=bounce_rate["bounce_percentage"],
           bounce_status=bounce_rate["bounce_status"],
           failure_link=url_for('.problem_emails', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
-          link=url_for(".view_notifications", service_id=service_id, message_type='email', status='sending,delivered,failed'),
+          link=None,
           smaller=smaller_font_size,
           failure_link_label=_("Review email addresses")
         ) }}
