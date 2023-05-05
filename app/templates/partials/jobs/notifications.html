@@ -2,7 +2,6 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/is-problem-email.html" import is_probem_email %}
-{% from "components/problem-email-checkbox.html" import problem_email_checkbox %}
 
 {% set empty_txt = _('No messages to show') %}
 {% set heading_1 = _('Recipient') %}
@@ -10,78 +9,34 @@
 {% set heading_3 = right_aligned_field_heading(_('Status')) %}
 
 <div class="ajax-block-container" aria-labelledby='pill-selected-item'>
-  {% if job.job_status == 'scheduled' %}
-
-    <p>
-      {{ _('Sending') }}
-      <a href="{{ url_for('.view_template_version', service_id=current_service.id, template_id=template.id, version=template_version) }}">{{ template.name }}</a>
-      <span class="local-datetime-short">{{ job.scheduled_for }}</span>
-    </p>
-    {% set btn_txt = _('Cancel scheduled send') %}
-    <div class="page-footer">
-      {% call form_wrapper() %}
-        {{ page_footer(
-          button_text=btn_txt,
-          destructive=True
-        ) }}
-      {% endcall %}
-    </div>
-
-  {% else %}
-
-    {% if notifications %}
-      <div class="dashboard-table mb-12 clear-both contain-floats">
-    {% endif %}
-
-      {% if template.template_type == 'letter' %}
-        <div class="keyline-block mb-12 clear-both contain-floats">
-      {% endif %}
-        {% if percentage_complete < 100 %}
-          <p class="{% if template.template_type != 'letter' %}mb-12 clear-both contain-floats{% endif %} hint">
-            {{ _('Report is') }} {{ "{:.0f}%".format(percentage_complete * 0.99) }} {{ _('complete…') }}
-          </p>
-        {% elif notifications %}
-          <p class="{% if template.template_type != 'letter' %}mb-12 clear-both contain-floats{% endif %}">
-            <a href="{{ download_link }}" download class="heading-small">{{ _('Download this report') }}</a>
-            &emsp;
-            {{ _("Available until") }} <span id="time-left" class="local-datetime-short-year">{{ available_until_date }}</span>
-          </p>
-        {% endif %}
-      {% if template.template_type == 'letter' %}
-        </div>
-      {% endif %}
-      {{ problem_email_checkbox() }}
-      {% call(item, row_number) list_table(
-        notifications,
-        caption=uploaded_file_name,
-        caption_visible=False,
-        empty_message=_("No messages to show"),
-        field_headings=[heading_1,heading_2,heading_3] if config["FF_BOUNCE_RATE_V1"] else [heading_1, heading_3],
-        field_headings_visible=True if config["FF_BOUNCE_RATE_V1"] else False
-      ) %}
-        {% call row_heading() %}
-          <a class="file-list-filename" href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=item.id, from_job=job.id) }}">{{ item.to }}</a>
-          <p class="file-list-hint">
-            {{ item.preview_of_content }}
-          </p>
-        {% endcall %}
-        {% if config["FF_BOUNCE_RATE_V1"] %}
-          {% call field() %}
-            {{ is_probem_email(item) }}
-          {% endcall %}
-        {% endif %}
-
-        {{ notification_status_field(item) }}
-      {% endcall %}
-
-      {% if more_than_one_page %}
-        <p class="table-show-more-link">
-          {{ _('Only showing the first 50 rows') }}
+  {% if job.job_status != 'scheduled' %} 
+    {% call(item, row_number) list_table(
+      notifications,
+      caption=uploaded_file_name,
+      caption_visible=False,
+      empty_message=_("No messages to show"),
+      field_headings=[heading_1,heading_2,heading_3] if config["FF_BOUNCE_RATE_V1"] else [heading_1, heading_3],
+      field_headings_visible=True if config["FF_BOUNCE_RATE_V1"] else False
+    ) %}
+      {% call row_heading() %}
+        <a class="file-list-filename" href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=item.id, from_job=job.id) }}">{{ item.to }}</a>
+        <p class="file-list-hint">
+          {{ item.preview_of_content }}
         </p>
+      {% endcall %}
+      {% if config["FF_BOUNCE_RATE_V1"] %}
+        {% call field() %}
+          {{ is_probem_email(item) }}
+        {% endcall %}
       {% endif %}
 
-    {% if notifications %}
-      </div>
+      {{ notification_status_field(item) }}
+    {% endcall %}
+
+    {% if more_than_one_page %}
+      <p class="table-show-more-link">
+        {{ _('Only showing the first 50 rows') }}
+      </p>
     {% endif %}
 
   {% endif %}

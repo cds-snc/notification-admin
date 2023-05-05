@@ -1,0 +1,42 @@
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/problem-email-checkbox.html" import problem_email_checkbox %}
+
+<div class="ajax-block-container" aria-labelledby='pill-selected-item'> 
+  {% if job.job_status == 'scheduled' %}
+    <p>
+      {{ _('Sending') }}
+      <a href="{{ url_for('.view_template_version', service_id=current_service.id, template_id=template.id, version=template_version) }}">{{ template.name }}</a>
+      <span class="local-datetime-short">{{ job.scheduled_for }}</span>
+    </p>
+    {% set btn_txt = _('Cancel scheduled send') %}
+    <div class="page-footer">
+      {% call form_wrapper() %}
+        {{ page_footer(
+          button_text=btn_txt,
+          destructive=True
+        ) }}
+      {% endcall %}
+    </div>
+  {% else %}
+    {% if notifications %}
+      <div class="dashboard-table mb-12 clear-both contain-floats">
+    {% endif %}
+
+    {% if percentage_complete < 100 %}
+        <p class="mb-12 clear-both contain-floats hint">
+        {{ _('Report is') }} {{ "{:.0f}%".format(percentage_complete * 0.99) }} {{ _('complete…') }}
+        </p>
+    {% elif notifications %}
+        <p class="mb-12 clear-both contain-floats">
+        <a href="{{ download_link }}" download class="heading-small">{{ _('Download this report') }}</a>
+        &emsp;
+        {{ _("Available until") }} <span id="time-left" class="local-datetime-short-year">{{ available_until_date }}</span>
+        </p>
+    {% endif %}
+
+    {% if notifications %}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
