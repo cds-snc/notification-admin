@@ -118,6 +118,7 @@ def view_job(service_id, job_id):
             service_id=service_id,
             job_id=job["id"],
             status=request.args.get("status", ""),
+            pe_filter=request.args.get("pe_filter", ""),
         ),
         partials=partials,
         just_sent=bool(request.args.get("just_sent") == "yes" and template["template_type"] == "letter"),
@@ -425,6 +426,24 @@ def get_job_partials(job, template):
             can_letter_job_be_cancelled = True
     return {
         "counts": counts,
+        "notifications_header": render_template(
+            "partials/jobs/notifications_header.html",
+            notifications=list(add_preview_of_content_to_notifications(notifications["notifications"])),
+            percentage_complete=(job["notifications_requested"] / job["notification_count"] * 100),
+            download_link=url_for(
+                ".view_job_csv",
+                service_id=current_service.id,
+                job_id=job["id"],
+                status=request.args.get("status"),
+            ),
+            available_until_date=get_available_until_date(
+                job["created_at"],
+                service_data_retention_days=service_data_retention_days,
+            ),
+            job=job,
+            template=template,
+            template_version=job["template_version"],
+        ),
         "notifications": render_template(
             "partials/jobs/notifications.html",
             notifications=list(add_preview_of_content_to_notifications(notifications["notifications"])),
