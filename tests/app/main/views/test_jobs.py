@@ -187,6 +187,7 @@ def test_should_show_page_for_one_job_REMOVE(
             service_id=SERVICE_ONE_ID,
             job_id=fake_uuid,
             status=status_argument,
+            pe_filter="",
         )
         csv_link = page.select_one("a[download]")
         assert csv_link["href"] == url_for(
@@ -286,6 +287,7 @@ def test_should_show_page_for_one_job(
             service_id=SERVICE_ONE_ID,
             job_id=fake_uuid,
             status=status_argument,
+            pe_filter="",
         )
         csv_link = page.select_one("a[download]")
         assert csv_link["href"] == url_for(
