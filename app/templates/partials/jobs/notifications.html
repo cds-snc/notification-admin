@@ -10,29 +10,30 @@
 
 <div class="ajax-block-container" aria-labelledby='pill-selected-item'>
   {% if job.job_status != 'scheduled' %} 
-    {% call(item, row_number) list_table(
-      notifications,
-      caption=uploaded_file_name,
-      caption_visible=False,
-      empty_message=_("No messages to show"),
-      field_headings=[heading_1,heading_2,heading_3] if config["FF_BOUNCE_RATE_V1"] else [heading_1, heading_3],
-      field_headings_visible=True if config["FF_BOUNCE_RATE_V1"] else False
-    ) %}
-      {% call row_heading() %}
-        <a class="file-list-filename" href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=item.id, from_job=job.id) }}">{{ item.to }}</a>
-        <p class="file-list-hint">
-          {{ item.preview_of_content }}
-        </p>
-      {% endcall %}
-      {% if config["FF_BOUNCE_RATE_V1"] %}
-        {% call field() %}
-          {{ is_probem_email(item) }}
+    <div class="dashboard-table">
+      {% call(item, row_number) list_table(
+        notifications,
+        caption=uploaded_file_name,
+        caption_visible=False,
+        empty_message=_("No messages to show"),
+        field_headings=[heading_1,heading_2,heading_3] if config["FF_BOUNCE_RATE_V1"] else [heading_1, heading_3],
+        field_headings_visible=True if config["FF_BOUNCE_RATE_V1"] else False
+      ) %}
+        {% call row_heading() %}
+          <a class="file-list-filename" href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=item.id, from_job=job.id) }}">{{ item.to }}</a>
+          <p class="file-list-hint">
+            {{ item.preview_of_content }}
+          </p>
         {% endcall %}
-      {% endif %}
+        {% if config["FF_BOUNCE_RATE_V1"] %}
+          {% call field() %}
+            {{ is_probem_email(item) }}
+          {% endcall %}
+        {% endif %}
 
-      {{ notification_status_field(item) }}
-    {% endcall %}
-
+        {{ notification_status_field(item) }}
+      {% endcall %}
+    </div>
     {% if more_than_one_page %}
       <p class="table-show-more-link">
         {{ _('Only showing the first 50 rows') }}
