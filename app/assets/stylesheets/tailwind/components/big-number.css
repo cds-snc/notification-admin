@@ -19,14 +19,17 @@
   .big-number-status {
     @apply text-smaller block text-white bg-green-darker;
   }
+
   .big-number-status:hover > div {
     @apply no-underline;
   }
+
   .big-number-with-status {
     @apply relative mb-8;
   }
 
-  .big-number-link {
+  .big-number-link,
+  .big-number-with-status > .big-number {
     @apply no-underline mb-2 text-white block bg-blue border-2 border-blue border-solid;
   }
 
@@ -42,10 +45,12 @@
   .big-number-link:hover .big-number {
     @apply text-blue-lightblue25;
   }
+
   .big-number-link:active,
   .big-number-link:focus {
     @apply outline-yellow bg-blue;
   }
+
   .big-number-link:hover .big-number-label,
   .big-number-link:active .big-number-label,
   .big-number-link:focus .big-number-label,
