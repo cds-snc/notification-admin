@@ -1,7 +1,7 @@
 import copy
 
 import pytest
-from flask import url_for
+from flask import g, url_for
 from freezegun import freeze_time
 
 from app.main.views.dashboard import (
@@ -271,6 +271,11 @@ def test_should_show_recent_templates_on_dashboard_REMOVE(
     app_,
 ):
     with set_config(app_, "FF_BOUNCE_RATE_V1", False):
+        class FakeService:
+            id = "123"
+
+        g.current_service = FakeService()
+
         mock_template_stats = mocker.patch(
             "app.template_statistics_client.get_template_statistics_for_service",
             return_value=copy.deepcopy(stub_template_stats),
