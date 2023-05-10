@@ -39,7 +39,7 @@
   <div class="big-number-with-status">
     {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
     {% if show_failures %}
-      {% if not config["FF_BOUNCE_RATE_V1"] %}
+      {% if not config["FF_BOUNCE_RATE_V1"] and not current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
         <div class="big-number-status{% if danger_zone %} bg-red{% endif %}{% if not failures %} p-6{% endif %}">
           {% if failures %}
             {% if failure_link %}
