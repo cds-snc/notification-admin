@@ -117,9 +117,10 @@ def test_format_notification_status_as_url_REMOVE(
     app_,
 ):
     with set_config(app_, "FF_BOUNCE_RATE_V1", False):
+
         class FakeService:
             id = "123"
-            
+
         g.current_service = FakeService()
         assert format_notification_status_as_url(status, notification_type) == expected
 
