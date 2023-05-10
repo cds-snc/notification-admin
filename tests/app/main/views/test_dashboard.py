@@ -271,6 +271,7 @@ def test_should_show_recent_templates_on_dashboard_REMOVE(
     app_,
 ):
     with set_config(app_, "FF_BOUNCE_RATE_V1", False):
+
         class FakeService:
             id = "123"
 
