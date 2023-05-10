@@ -2,6 +2,7 @@
 {% from "components/banner.html" import banner %}
 {% from "components/ajax-block.html" import ajax_block %}
 {% from "components/page-footer.html" import page_footer %}
+{% from "components/problem-email-checkbox.html" import problem_email_checkbox %}
 
 {% block service_page_title %}
   {{ uploaded_file_name }}
@@ -19,6 +20,8 @@
       {{ ajax_block(partials, updates_url, 'status', finished=finished) }}
     {% endif %}
     {{ ajax_block(partials, updates_url, 'counts', finished=finished) }}
+    {{ ajax_block(partials, updates_url, 'notifications_header', finished=finished) }}
+    {{ problem_email_checkbox() }}
     {{ ajax_block(partials, updates_url, 'notifications', finished=finished) }}
 
     {% if can_cancel_letter_job %}

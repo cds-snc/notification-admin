@@ -1706,7 +1706,7 @@
 "problem addresses","d’adresses problématiques"
 "of email addresses need review","des adresses courriel doivent être révisées"
 "GC Notify's email provider could suspend our services if we send too many problem emails.","Le fournisseur de messagerie de Notification GC pourrait suspendre nos services si nous envoyons trop de courriels problématiques."
-"Keep accurate contact information. Check email addresses are correct. If necessary confirm recipient’s email address using another contact method.","Maintenez à jour les coordonnées. Vérifiez que les adresses courriel sont exactes. Au besoin, confirmez l’adresse courriel du ou de la destinataire en utilisant une autre méthode de contact."
+"<a href='{}'>Keep accurate contact information</a>. Check email addresses are correct. If necessary confirm recipient’s email address using another contact method.","<a href='{}'>Maintenez à jour les coordonnées</a>. Vérifiez que les adresses courriel sont exactes. Au besoin, confirmez l’adresse courriel du ou de la destinataire en utilisant une autre méthode de contact."
 "Remove addresses you cannot correct.","Supprimez les adresses que vous ne pouvez pas corriger."
 "Problem emails over the past 24 hours","Adresses problématiques au cours des dernières 24 heures"
 " in "," dans "

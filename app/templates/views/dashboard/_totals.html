@@ -8,7 +8,7 @@
 {% set address_plural = _('addresses') %}
 <div class="ajax-block-container">
   <h2 class="heading-medium mt-8">
-    {% if config["FF_BOUNCE_RATE_V1"] %}
+    {% if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
       {{ _("Email in the last 24 hours") }}
     {% else %}
       {{ _("Sent in the last week") }}
@@ -29,14 +29,14 @@
     </div>
 
     <div id="problem-email-addresses" class="{{column_width}}">
-      {% if config["FF_BOUNCE_RATE_V1"] %}
+      {% if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
         {{ big_number_review_emails_with_status(
           number=bounce_rate["bounce_total"],
           label=problem_email_label(bounce_rate["bounce_total"]),
           problem_percentage=bounce_rate["bounce_percentage"],
           bounce_status=bounce_rate["bounce_status"],
           failure_link=url_for('.problem_emails', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
-          link=url_for(".view_notifications", service_id=service_id, message_type='email', status='sending,delivered,failed'),
+          link=None,
           smaller=smaller_font_size,
           failure_link_label=_("Review email addresses")
         ) }}
@@ -69,7 +69,7 @@
       </div>
     {% endif %}
     </div>
-    {% if config["FF_BOUNCE_RATE_V1"] %}
+    {% if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
     <div id="total-sms">
     <h2 class="heading-medium mt-8">
       {{ _('Text messages in the last 24 hours') }}

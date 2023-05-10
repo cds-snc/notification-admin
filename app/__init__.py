@@ -208,6 +208,7 @@ def create_app(application):
 
     # allow gca_url_for to be called from any template
     application.jinja_env.globals["gca_url_for"] = gca_url_for
+    application.jinja_env.globals["current_service"] = current_service
 
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:
@@ -423,7 +424,7 @@ def format_notification_type(notification_type):
 
 
 def format_notification_status(status, template_type, provider_response=None, feedback_subtype=None):
-    if current_app.config["FF_BOUNCE_RATE_V1"]:
+    if current_app.config["FF_BOUNCE_RATE_V1"] or current_service.id in current_app.config["FF_ABTEST_SERVICE_ID"]:
         if template_type == "sms" and provider_response:
             return _(provider_response)
 
@@ -576,7 +577,11 @@ def format_notification_status_as_field_status(status, notification_type):
 
 def format_notification_status_as_url(status, notification_type):
     def url(_anchor):
-        return gca_url_for("message_delivery_status") + "#" + _anchor
+        if current_app.config["FF_BOUNCE_RATE_V1"] or current_service.id in current_app.config["FF_ABTEST_SERVICE_ID"]:
+            return gca_url_for("delivery_failure") + "#" + _anchor
+        # remove this when FF_BOUNCE_RATE_V1 is removed
+        else:
+            return gca_url_for("message_delivery_status") + "#" + _anchor
 
     if status not in {
         "technical-failure",
