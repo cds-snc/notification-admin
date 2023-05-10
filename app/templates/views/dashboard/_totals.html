@@ -9,7 +9,7 @@
 <div class="ajax-block-container">
   <h2 class="heading-medium mt-8">
     {% if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
-      {{ _("Email in the last 24 hours") }} {{ current_service.id }}
+      {{ _("Email in the last 24 hours") }}
     {% else %}
       {{ _("Sent in the last week") }}
     {% endif %}
