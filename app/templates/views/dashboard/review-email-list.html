@@ -47,9 +47,17 @@
                     </li>
                 {% endif %}
             {% endfor %}
+            {% for notification in one_offs["notifications"] %}
+                <li>
+                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">{{ notification["to"] }}</a>
+                    <span>
+                        {{ _( ' in ')}} '{{ notification["template"]["name"] }}'
+                    </span>
+                </li>
+            {% endfor %}
             </ul>
             {# <p class="text-small">{{ _('Updated every 5 minutes. Last updated {}').format("2023-03-20")}}</p> #}
         </div>
-        
+
     </div>
 {% endblock %}
