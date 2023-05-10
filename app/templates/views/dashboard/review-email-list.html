@@ -49,7 +49,7 @@
             {% endfor %}
             {% for notification in one_offs["notifications"] %}
                 <li>
-                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">{{ 1 problem email address }}</a>
+                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">{{_("1 problem email address")}}</a>
                     <span>
                         {{ _( ' in ')}} '{{ notification["template"]["name"] }}'
                     </span>
