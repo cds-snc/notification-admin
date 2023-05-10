@@ -68,7 +68,10 @@ def problem_emails(service_id):
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
 
     one_off_notifications = notification_api_client.get_notifications_for_service(
-        service_id, template_type=TemplateType.EMAIL.value, status=NotificationStatuses.PERMANENT_FAILURE.value, include_one_off=True
+        service_id,
+        template_type=TemplateType.EMAIL.value,
+        status=NotificationStatuses.PERMANENT_FAILURE.value,
+        include_one_off=True,
     )
 
     return render_template(
