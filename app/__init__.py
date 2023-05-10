@@ -209,7 +209,7 @@ def create_app(application):
     # allow gca_url_for to be called from any template
     application.jinja_env.globals["gca_url_for"] = gca_url_for
     application.jinja_env.globals["current_service"] = current_service
-    
+
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:
         application.config["CRM_ORG_LIST"] = salesforce_account.get_accounts(
