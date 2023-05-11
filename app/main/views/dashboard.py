@@ -72,14 +72,14 @@ def problem_emails(service_id):
         template_type=TemplateType.EMAIL.value,
         status=NotificationStatuses.PERMANENT_FAILURE.value,
         include_one_off=True,
-        include_jobs=False
+        include_jobs=False,
     )
 
     return render_template(
         "views/dashboard/review-email-list.html",
         bounce_status=BounceRateStatus.NORMAL,
         jobs=get_jobs_and_calculate_hard_bounces(service_id),
-        one_offs=one_off_notifications,
+        one_offs=one_off_notifications["notifications"],
         bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
     )
 
