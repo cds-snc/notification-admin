@@ -1,7 +1,7 @@
 {% from "components/checkbox.html" import checkbox %}
 
 {% macro problem_email_checkbox() %}
-    {% if config["FF_BOUNCE_RATE_V1"] %}
+    {% if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
         <h2 class="heading-medium">{{ _('Filter') }}</h2>
         {{ checkbox({ "id": "pe_filter", "name": "pe_filter", "data": request.args.get('pe_filter'), "label": { "text": _("Only show problem addresses")}}) }}
         <br /><br /><br />
