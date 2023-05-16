@@ -1767,7 +1767,13 @@ class TestBounceRate:
             assert int(page.select_one("#problem-email-addresses .big-number-number").text.strip()) == expected_problem_emails
 
             if expected_problem_emails > 0:
-                assert page.select_one("#problem-email-addresses .review-email-label").text.strip().replace('\n','').replace('  ','') == expected_problem_percent
+                assert (
+                    page.select_one("#problem-email-addresses .review-email-label")
+                    .text.strip()
+                    .replace("\n", "")
+                    .replace("  ", "")
+                    == expected_problem_percent
+                )
 
     def test_bounce_rate_widget_doesnt_change_when_under_threshold(
         self,
@@ -1838,7 +1844,10 @@ class TestBounceRate:
                 service_id=service_one["id"],
             )
 
-            assert page.find("p", {"class": "text-title"}).text.strip().replace('\n','').replace('  ','') == "Less than 0.1% of email addresses need review"
+            assert (
+                page.find("p", {"class": "text-title"}).text.strip().replace("\n", "").replace("  ", "")
+                == "Less than 0.1% of email addresses need review"
+            )
 
     @pytest.mark.parametrize(
         "jobs, expected_problem_list_count",
@@ -2124,7 +2133,10 @@ class TestBounceRate:
             service_id=service_one["id"],
         )
 
-        assert page.find("p", {"class": "text-title"}).text.strip().replace('\n','').replace('  ','') == "Less than 0.1% of email addresses need review"
-        
+        assert (
+            page.find("p", {"class": "text-title"}).text.strip().replace("\n", "").replace("  ", "")
+            == "Less than 0.1% of email addresses need review"
+        )
+
         # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
         assert len(page.select_one(".ajax-block-container .list.list-bullet").find_all("li")) == expected_problem_list_count
