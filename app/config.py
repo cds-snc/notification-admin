@@ -107,7 +107,7 @@ class Config(object):
     ROUTE_SECRET_KEY_2 = os.environ.get("ROUTE_SECRET_KEY_2", "")
     WAF_SECRET = os.environ.get("WAF_SECRET", "waf-secret")
     SECRET_KEY = env.list("SECRET_KEY", [])
-    SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security-securite@cds-snc.ca")
+    SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security+securite@cds-snc.ca")
     SEND_FILE_MAX_AGE_DEFAULT = 365 * 24 * 60 * 60  # 1 year
     SENDING_DOMAIN = os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca")
     SESSION_COOKIE_HTTPONLY = True
