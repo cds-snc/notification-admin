@@ -327,9 +327,6 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
     # if bounce rate is above warning threshold, indicate WARNING status
     elif bounce_rate.bounce_percentage >= current_app.config["BR_WARNING_PERCENTAGE"]:
         bounce_rate.bounce_status = BounceRateStatus.WARNING.value
-
-    # convert bounce rate to a display-friendly manner
-    bounce_rate.bounce_percentage = round(bounce_rate.bounce_percentage, 1)
     return bounce_rate
 
 
