@@ -35,7 +35,7 @@ xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; 
 pytz = "2021.3"
 gunicorn = "20.1.0"
 gevent = "22.10.2"
-notifications-python-client = "6.4.2"
+notifications-python-client = "6.4.1"
 
 Babel = "2.11.0"
 boto3 = "1.26.86"
