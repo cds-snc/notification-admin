@@ -22,7 +22,7 @@ Flask = "2.2.3"
 Flask-WTF = "1.0.1"
 Flask-Login = "0.6.2"
 Flask-Caching = "1.11.1"
-environs = "9.5.1"
+environs = "9.5.0"
 
 apig-wsgi = "2.15.0"
 blinker = "1.5"
