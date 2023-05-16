@@ -73,6 +73,7 @@ def problem_emails(service_id):
         status=NotificationStatuses.PERMANENT_FAILURE.value,
         include_one_off=True,
         include_jobs=False,
+        page_size=20,
     )
 
     return render_template(
