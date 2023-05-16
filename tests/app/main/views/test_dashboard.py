@@ -1692,6 +1692,50 @@ class TestBounceRate:
                 0,
                 "No problem addresses",
             ),
+            (
+                [
+                    {
+                        "count": 1100,
+                        "is_precompiled_letter": False,
+                        "status": "delivered",
+                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_name": "test",
+                        "template_type": "email",
+                    },
+                    {
+                        "count": 1,
+                        "is_precompiled_letter": False,
+                        "status": "permanent-failure",
+                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_name": "test",
+                        "template_type": "email",
+                    },
+                ],
+                1,
+                "Less than 0.1% problem addresses",
+            ),
+            (
+                [
+                    {
+                        "count": 999,
+                        "is_precompiled_letter": False,
+                        "status": "delivered",
+                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_name": "test",
+                        "template_type": "email",
+                    },
+                    {
+                        "count": 1,
+                        "is_precompiled_letter": False,
+                        "status": "permanent-failure",
+                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_name": "test",
+                        "template_type": "email",
+                    },
+                ],
+                1,
+                "0.1% problem addresses",
+            ),
         ],
     )
     def test_bounce_rate_widget_displays_correct_status(
@@ -1723,7 +1767,7 @@ class TestBounceRate:
             assert int(page.select_one("#problem-email-addresses .big-number-number").text.strip()) == expected_problem_emails
 
             if expected_problem_emails > 0:
-                assert page.select_one("#problem-email-addresses .review-email-label").text.strip() == expected_problem_percent
+                assert page.select_one("#problem-email-addresses .review-email-label").text.strip().replace('\n','').replace('  ','') == expected_problem_percent
 
     def test_bounce_rate_widget_doesnt_change_when_under_threshold(
         self,
@@ -1794,7 +1838,7 @@ class TestBounceRate:
                 service_id=service_one["id"],
             )
 
-            assert page.find("p", {"class": "text-title"}).text.strip() == "0.0% of email addresses need review"
+            assert page.find("p", {"class": "text-title"}).text.strip().replace('\n','').replace('  ','') == "Less than 0.1% of email addresses need review"
 
     @pytest.mark.parametrize(
         "jobs, expected_problem_list_count",
@@ -2021,6 +2065,37 @@ class TestBounceRate:
                 ],
                 0,
             ),
+            (
+                [
+                    {
+                        "failure_rate": 0.001,
+                        "api_key": None,
+                        "archived": False,
+                        "created_at": "2023-04-18T18:09:07.737196+00:00",
+                        "created_by": {"id": "24baebe0-fb11-4fc0-8609-1e853c31d0fe", "name": "Andrew Leith"},
+                        "id": "6b4a62a7-329f-4332-8106-63ecc6cf7a1c",
+                        "job_status": "finished",
+                        "notification_count": 1000,
+                        "original_file_name": "bulk_send_19_success_3.csv",
+                        "processing_finished": "2023-04-18T18:09:10.200722+00:00",
+                        "processing_started": "2023-04-18T18:09:08.041267+00:00",
+                        "scheduled_for": None,
+                        "sender_id": None,
+                        "service": "9cfb3884-fed6-4824-8901-c7d0857cc5b4",
+                        "service_name": {"name": "Bounce Rate"},
+                        "statistics": [{"count": 999, "status": "delivered"}],
+                        "template": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_version": 1,
+                        "updated_at": "2023-04-18T18:09:10.202238+00:00",
+                        "notifications_sent": 1000,
+                        "notifications_delivered": 999,
+                        "notifications_failed": 1,
+                        "notifications_requested": 1000,
+                        "bounce_count": 2,
+                    },
+                ],
+                1,
+            ),
         ],
     )
     def test_review_problem_emails_shows_csvs_when_problem_emails_exist(
@@ -2049,5 +2124,7 @@ class TestBounceRate:
             service_id=service_one["id"],
         )
 
+        assert page.find("p", {"class": "text-title"}).text.strip().replace('\n','').replace('  ','') == "Less than 0.1% of email addresses need review"
+        
         # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
         assert len(page.select_one(".ajax-block-container .list.list-bullet").find_all("li")) == expected_problem_list_count
