@@ -329,7 +329,7 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
         bounce_rate.bounce_status = BounceRateStatus.WARNING.value
 
     # convert bounce rate to a display-friendly manner
-    bounce_rate.bounce_percentage = round(bounce_rate.bounce_percentage, 1)
+    bounce_rate.bounce_percentage = bounce_rate.bounce_percentage
     return bounce_rate
 
 
