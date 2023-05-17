@@ -28,7 +28,7 @@
                     {% elif bounce_rate["bounce_status"] == "critical" %}
                     {{ _('Critical:') }}
                     {% endif %}
-                </strong> 
+                </strong>
                 {% if bounce_rate["bounce_percentage"] < 0.1 %}
                   {{ _('Less than') }} 0.1%
                 {% else %}
@@ -47,7 +47,14 @@
             {% for job in jobs %}
                 {% if job["bounce_count"] > 0 %}
                     <li>
-                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='failed') }}">{{ job["bounce_count"] }} {{_(" problem email addresses")}}</a>
+                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='failed') }}">
+                            {{ job["bounce_count"] }}
+                            {% if job["bounce_count"] > 1 %}
+                                {{_(' problem email addresses')}}
+                            {%- else -%}
+                                {{_(' problem email address')}}
+                            {%- endif -%}
+                        </a>
                         <span>
                             {{ _( ' in ')}} '{{ job.original_file_name }}'
                         </span>
