@@ -21,6 +21,9 @@
 	},
 
 	"extensions": [
+		"njpwerner.autodocstring",
+		"github.copilot",
+		"GitHub.copilot-labs",
 		"donjayamanne.python-extension-pack",
 		"ms-python.vscode-pylance",
 		"eamodio.gitlens",
