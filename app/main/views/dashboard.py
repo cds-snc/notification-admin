@@ -23,6 +23,7 @@ from app import (
     service_api_client,
     template_statistics_client,
 )
+from app.extensions import bounce_rate_client
 from app.main import main
 from app.models.enum.bounce_rate_status import BounceRateStatus
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
@@ -68,7 +69,7 @@ def problem_emails(service_id):
         "views/dashboard/review-email-list.html",
         bounce_status=BounceRateStatus.NORMAL,
         jobs=get_jobs_and_calculate_hard_bounces(service_id),
-        bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
+        bounce_rate=calculate_bounce_rate(all_statistics_daily, service_id),
     )
 
 
@@ -269,7 +270,7 @@ def get_dashboard_partials(service_id):
             else dashboard_totals_weekly[0],
             column_width=column_width,
             smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
-            bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
+            bounce_rate=calculate_bounce_rate(all_statistics_daily, service_id),
         ),
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",
@@ -295,38 +296,26 @@ def _get_daily_stats(service_id):
     return dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily
 
 
-def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
+def calculate_bounce_rate(all_statistics_daily, service_id):
     """This function calculates the bounce rate using the daily statistics provided from the dashboard"""
 
     class BounceRate:
         bounce_total = 0
-        bounce_percentage = 0
+        bounce_percentage = 0.
         bounce_status = BounceRateStatus.NORMAL.value
 
+    
     # Populate the bounce stats
     bounce_rate = BounceRate()
+    bounce_rate.bounce_percentage = 100*bounce_rate_client.get_bounce_rate(service_id)
+    bounce_rate.bounce_status = bounce_rate_client.check_bounce_rate_status(service_id)
 
-    # get total sent
-    total_sent = dashboard_totals_daily[0]["email"]["requested"]
-
+    # TODO: get this from redis
     # get total hard bounces
     for stat in all_statistics_daily:
         if stat["status"] == "permanent-failure":
             bounce_rate.bounce_total = stat["count"]
 
-    # calc bounce rate
-    bounce_rate.bounce_percentage = 100 * (bounce_rate.bounce_total / total_sent) if total_sent > 0 else 0
-
-    # compute bounce status
-    # if volume is less than the threshold, indicate NORMAL status
-    if total_sent < current_app.config["BR_DISPLAY_VOLUME_MINIMUM"]:
-        bounce_rate.bounce_status = BounceRateStatus.NORMAL.value
-    # if bounce rate is above critical threshold, indicate CRITICAL status
-    elif bounce_rate.bounce_percentage >= current_app.config["BR_CRITICAL_PERCENTAGE"]:
-        bounce_rate.bounce_status = BounceRateStatus.CRITICAL.value
-    # if bounce rate is above warning threshold, indicate WARNING status
-    elif bounce_rate.bounce_percentage >= current_app.config["BR_WARNING_PERCENTAGE"]:
-        bounce_rate.bounce_status = BounceRateStatus.WARNING.value
     return bounce_rate
 
 
