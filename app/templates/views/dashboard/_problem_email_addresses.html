@@ -28,6 +28,6 @@
     </div>
   </div>
   {{ show_more(
-    url_for(".view_notifications", service_id=service_id, message_type='letter', status=''),
+    url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
     _('See all problem addresses')
   ) }}
