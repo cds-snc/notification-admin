@@ -1,0 +1,33 @@
+{% from "components/big-number.html" import  big_number_review_emails_with_status %}
+{% from "components/show-more.html" import show_more %}
+{% from "components/task-shortcut.html" import task_shortcut %}
+{% from "components/message-count-label.html" import message_count_label, problem_email_label %}
+
+<h2 class="heading-medium mt-8">
+    {{ _('Problem email addresses') }}
+  </h2>
+  <div class="grid-row contain-floats">
+    <div id="problem-email-addresses" class="{{column_width}}">
+      {{ big_number_review_emails_with_status(
+        number=bounce_rate["bounce_total"],
+        label=problem_email_label(bounce_rate["bounce_total"]),
+        problem_percentage=bounce_rate["bounce_percentage"],
+        bounce_status=bounce_rate["bounce_status"],
+        failure_link=url_for('.problem_emails', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
+        link=None,
+        smaller=smaller_font_size,
+        failure_link_label=_("Review email addresses")
+      ) }}
+    </div id="problem-emails-guidance" class="{{column_width}}">
+      {{ task_shortcut(
+        description=_("GC Notify's email provider could suspend our services if we send too many problem emails."),
+        link_url=gca_url_for('delivery_failure'),
+        link_text=_("Guide: Keep accurate contact information."),
+        icon="arrow-up-right-from-square"
+      ) }}
+    </div>
+  </div>
+  {{ show_more(
+    url_for(".view_notifications", service_id=service_id, message_type='letter', status=''),
+    _('See all problem addresses')
+  ) }}

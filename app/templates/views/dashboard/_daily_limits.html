@@ -1,0 +1,35 @@
+{% from "components/show-more.html" import show_more %}
+{% from "components/big-number.html" import big_number, big_number_with_status, big_number_daily_limit_with_status %}
+
+
+<h2 class="heading-medium mt-8">
+    {{ _('Daily Limits') }}
+</h2>
+<div class="grid-row contain-floats">
+    <div id="email-daily-limits" class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
+        {{ big_number_daily_limit_with_status(
+        number=daily_limits["email"]["requested"],
+        label="emails",
+        messages_remaining=daily_limits["email"]["remaining"],
+        percentage=daily_limits["email"]["remaining_percentage"],
+        separator='/',
+        secondary_number=current_service.message_limit,
+        secondary_smallest=True,
+        ) }}
+    </div>
+    <div id="sms-daily-limits" class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
+        {{ big_number_daily_limit_with_status(
+        number=daily_limits["sms"]["requested"],
+        label="text messages",
+        messages_remaining=daily_limits["sms"]["remaining"],
+        percentage=daily_limits["sms"]["remaining_percentage"],
+        separator='/',
+        secondary_number=current_service.sms_daily_limit,
+        secondary_smallest=True,
+        ) }}
+    </div>
+</div>
+{{ show_more(
+    url_for('.service_settings', service_id=current_service.id),
+    _('Manage daily limits')
+) }}

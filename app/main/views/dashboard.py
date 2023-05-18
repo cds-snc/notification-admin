@@ -247,7 +247,9 @@ def get_dashboard_partials(service_id):
 
     stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
     # get the daily stats
-    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_stats_for_period(service_id, limit_days=1)
+    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_stats_for_period(
+        service_id, limit_days=1
+    )
 
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
@@ -262,6 +264,17 @@ def get_dashboard_partials(service_id):
             statistics=dashboard_totals_daily[0],
             column_width=column_width,
         ),
+        "daily_limits": render_template(
+            "views/dashboard/_daily_limits.html",
+            daily_limits=get_daily_limit_data(dashboard_totals_daily[0]),
+            column_width=column_width,
+        ),
+        "problem_email_addresses": render_template(
+            "views/dashboard/_problem_email_addresses.html",
+            statistics=dashboard_totals_daily[0],
+            bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
+            column_width=column_width,
+        ),
         "weekly_totals": render_template(
             "views/dashboard/_totals.html",
             service_id=service_id,
@@ -270,14 +283,12 @@ def get_dashboard_partials(service_id):
             else dashboard_totals_weekly[0],
             column_width=column_width,
             smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
-            bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
         ),
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",
             template_statistics=template_statistics_weekly,
             most_used_template_count=max([row["count"] for row in template_statistics_weekly] or [0]),
         ),
-        "daily_limits":get_daily_limits(service_id),
         "has_template_statistics": bool(template_statistics_weekly),
         "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
         "has_jobs": bool(immediate_jobs),
@@ -285,15 +296,25 @@ def get_dashboard_partials(service_id):
     }
 
 
-def get_daily_limits(service_id: str):
-    service = service_api_client.get_service(service_id)
+def get_daily_limit_data(dashboard_totals):
+    email_remaining = current_service.message_limit - dashboard_totals["email"]["requested"]
+    sms_parts_remaining = current_service.sms_daily_limit - dashboard_totals["sms"]["requested"]
 
     return {
-        "email_limit": service["data"]["message_limit"],
-        "sms_limit": service["data"]["sms_daily_limit"]
+        "email": {
+            "requested": dashboard_totals["email"]["requested"],
+            "remaining": email_remaining,
+            "remaining_percentage": int(email_remaining / current_service.message_limit * 100),
+        },
+        "sms": {
+            "requested": dashboard_totals["sms"]["requested"],
+            "remaining": sms_parts_remaining,
+            "remaining_percentage": int(sms_parts_remaining / current_service.sms_daily_limit * 100),
+        },
     }
 
-def _get_stats_for_period(service_id, limit_days: int=1):
+
+def _get_stats_for_period(service_id, limit_days: int = 1):
     all_statistics = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=limit_days)
     stats = aggregate_notifications_stats(all_statistics)
     dashboard_totals = (get_dashboard_totals(stats),)

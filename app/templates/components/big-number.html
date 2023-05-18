@@ -1,4 +1,4 @@
-{% macro big_number(number, label, link=None, status=None, currency='', secondary_number=None, smaller=False, smallest=False, secondary_smaller=False, secondary_smallest=False) %}
+{% macro big_number(number, label, link=None, status=None, currency='', separator='', secondary_number=None, smaller=False, smallest=False, secondary_smaller=False, secondary_smallest=False) %}
   {% if link %}
     <a class="big-number-link" href="{{ link }}">
   {% endif %}
@@ -15,6 +15,9 @@
       {% endif %}
       {% if secondary_number %}
       <span class="{% if secondary_smaller %} text-lg{%endif %}{% if secondary_smallest %} text-title{% endif %}">
+        {% if separator %}
+          {{ ' ' + separator + ' ' }}
+        {% endif %}
         {% if secondary_number is number %}
           {% if currency %}
             {{ "{}{:,.2f}".format(currency, secondary_number) }}
@@ -101,6 +104,31 @@
     {% endif %}
   </div>
 {% endmacro %}
+
+
+{% macro big_number_daily_limit_with_status(
+  number,
+  label,
+  messages_remaining,
+  percentage,
+  separator='/',
+  link=None,
+  secondary_number=None,
+  smaller=False,
+  smallest=False,
+  secondary_smaller=False,
+  secondary_smallest=False
+) %}
+  <div class="big-number-with-status">
+    {{ big_number(number, label, link=link, status=True, separator=separator, secondary_number=secondary_number, smaller=smaller, smallest=smallest, secondary_smaller=secondary_smaller, secondary_smallest=secondary_smallest) }}
+      <div class="big-number-status pb-4 p-6">
+        <a class="big-number-status-link flex justify-between items-end border-0" href="">
+          {{ "{:,} {} - {}%".format(messages_remaining, " remaining ", percentage) }}
+        </a>
+      </div>
+  </div>
+{% endmacro %}
+
 
 {% macro big_number_review_emails_with_status(
   number,
