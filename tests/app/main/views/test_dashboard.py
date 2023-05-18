@@ -1667,10 +1667,18 @@ class TestBounceRate:
                         "template_type": "email",
                     },
                     {
-                        "count": 2,
+                        "count": 1,
                         "is_precompiled_letter": False,
                         "status": "permanent-failure",
                         "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_name": "test",
+                        "template_type": "email",
+                    },
+                    {
+                        "count": 1,
+                        "is_precompiled_letter": False,
+                        "status": "permanent-failure",
+                        "template_id": "2156a57e-efd7-4531-b8f4-e333c64c03dc",
                         "template_name": "test",
                         "template_type": "email",
                     },
@@ -1738,7 +1746,7 @@ class TestBounceRate:
             ),
         ],
     )
-    def test_bounce_rate_widget_displays_correct_status(
+    def test_bounce_rate_widget_displays_correct_status_and_totals(
         self,
         client_request,
         mocker,

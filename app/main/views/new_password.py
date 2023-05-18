@@ -26,10 +26,9 @@ def new_password(token):
     try:
         token_data_no_checks = URLSafeTimedSerializer("").loads_unsafe(token)[1]
         token_data = check_token(
-            token,
-            current_app.config["SECRET_KEY"],
-            current_app.config["DANGEROUS_SALT"],
-            current_app.config["EMAIL_EXPIRY_SECONDS"],
+            token=token,
+            secret=current_app.config["SECRET_KEY"],
+            max_age_seconds=current_app.config["EMAIL_EXPIRY_SECONDS"],
         )
     except SignatureExpired:
         email_address = json.loads(token_data_no_checks).get("email")
