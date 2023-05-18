@@ -1525,14 +1525,14 @@ class ServiceDataRetentionForm(StripWhitespaceForm):
     )
     days_of_retention = IntegerField(
         label="Days of retention",
-        validators=[validators.NumberRange(min=3, max=90, message="Must be between 3 and 90")],
+        validators=[validators.NumberRange(min=3, max=7, message="Must be between 3 and 7")],
     )
 
 
 class ServiceDataRetentionEditForm(StripWhitespaceForm):
     days_of_retention = IntegerField(
         label="Days of retention",
-        validators=[validators.NumberRange(min=3, max=90, message="Must be between 3 and 90")],
+        validators=[validators.NumberRange(min=3, max=7, message="Must be between 3 and 7")],
     )
 
 

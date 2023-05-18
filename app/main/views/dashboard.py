@@ -312,7 +312,7 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
     # get total hard bounces
     for stat in all_statistics_daily:
         if stat["status"] == "permanent-failure":
-            bounce_rate.bounce_total = stat["count"]
+            bounce_rate.bounce_total += stat["count"]
 
     # calc bounce rate
     bounce_rate.bounce_percentage = 100 * (bounce_rate.bounce_total / total_sent) if total_sent > 0 else 0
@@ -327,9 +327,6 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
     # if bounce rate is above warning threshold, indicate WARNING status
     elif bounce_rate.bounce_percentage >= current_app.config["BR_WARNING_PERCENTAGE"]:
         bounce_rate.bounce_status = BounceRateStatus.WARNING.value
-
-    # convert bounce rate to a display-friendly manner
-    bounce_rate.bounce_percentage = round(bounce_rate.bounce_percentage, 1)
     return bounce_rate
 
 
