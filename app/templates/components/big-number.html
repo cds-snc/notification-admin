@@ -1,4 +1,4 @@
-{% macro big_number(number, label, link=None, status=None, currency='', smaller=False, smallest=False) %}
+{% macro big_number(number, label, link=None, status=None, currency='', secondary_number=None, smaller=False, smallest=False, secondary_smaller=False, secondary_smallest=False) %}
   {% if link %}
     <a class="big-number-link" href="{{ link }}">
   {% endif %}
@@ -13,6 +13,19 @@
       {% else %}
         {{ number }}
       {% endif %}
+      {% if secondary_number %}
+      <span class="{% if secondary_smaller %} text-lg{%endif %}{% if secondary_smallest %} text-title{% endif %}">
+        {% if secondary_number is number %}
+          {% if currency %}
+            {{ "{}{:,.2f}".format(currency, secondary_number) }}
+          {% else %}
+            {{ "{:,}".format(secondary_number) }}
+          {% endif %}
+        {% else %}
+            {{ secondary_number }}
+        {% endif %}
+      </span>
+      {% endif %}
     </div>
     {% if label %}
       <span class="big-number-label{% if status %} pb-0gtb link:text-blue visited:text-blue{% endif %}{% if link %} underline{% endif %}">{{ label }}</span>
@@ -23,7 +36,6 @@
   {% endif %}
 {% endmacro %}
 
-
 {% macro big_number_with_status(
   number,
   label,
@@ -33,11 +45,14 @@
   failure_link=None,
   link=None,
   show_failures=True,
+  secondary_number=None,
   smaller=False,
-  smallest=False
+  smallest=False,
+  secondary_smaller=False,
+  secondary_smallest=False
 ) %}
   <div class="big-number-with-status">
-    {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
+    {{ big_number(number, label, link=link, status=True, secondary_number=secondary_number, smaller=smaller, smallest=smallest, secondary_smaller=secondary_smaller, secondary_smallest=secondary_smallest) }}
     {% if show_failures %}
       {% if not config["FF_BOUNCE_RATE_V1"] and not current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
         <div class="big-number-status{% if danger_zone %} bg-red{% endif %}{% if not failures %} p-6{% endif %}">
@@ -121,7 +136,7 @@
               <i aria-hidden="true" class="p-1 {% if bounce_status == "warning" %}fa-solid fa-fas fa-circle-exclamation{% elif bounce_status== "critical" %}fa-solid fa-fas fa-triangle-exclamation{% endif %}"></i>
             </div>
             <div class="px-6 review-email-link flex justify-between items-end border-0">
-              <span class="underline font-bold">{{ failure_link_label }}</span> 
+              <span class="underline font-bold">{{ failure_link_label }}</span>
               <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i>
             </div>
           {% else %}

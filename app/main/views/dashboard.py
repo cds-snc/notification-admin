@@ -25,6 +25,7 @@ from app import (
 )
 from app.main import main
 from app.models.enum.bounce_rate_status import BounceRateStatus
+from app.notify_client.service_api_client import ServiceAPIClient
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
 from app.utils import (
     DELIVERED_STATUSES,
@@ -62,7 +63,7 @@ def redirect_service_dashboard(service_id):
 @user_has_permissions("view_activity", "send_messages")
 def problem_emails(service_id):
     # get the daily stats
-    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
+    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_stats_for_period(service_id)
 
     return render_template(
         "views/dashboard/review-email-list.html",
@@ -246,7 +247,7 @@ def get_dashboard_partials(service_id):
 
     stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
     # get the daily stats
-    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
+    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_stats_for_period(service_id, limit_days=1)
 
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
@@ -276,6 +277,7 @@ def get_dashboard_partials(service_id):
             template_statistics=template_statistics_weekly,
             most_used_template_count=max([row["count"] for row in template_statistics_weekly] or [0]),
         ),
+        "daily_limits":get_daily_limits(service_id),
         "has_template_statistics": bool(template_statistics_weekly),
         "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
         "has_jobs": bool(immediate_jobs),
@@ -283,16 +285,24 @@ def get_dashboard_partials(service_id):
     }
 
 
-def _get_daily_stats(service_id):
-    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-    stats_daily = aggregate_notifications_stats(all_statistics_daily)
-    dashboard_totals_daily = (get_dashboard_totals(stats_daily),)
+def get_daily_limits(service_id: str):
+    service = service_api_client.get_service(service_id)
 
-    highest_notification_count_daily = max(
-        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_daily[0].items()
+    return {
+        "email_limit": service["data"]["message_limit"],
+        "sms_limit": service["data"]["sms_daily_limit"]
+    }
+
+def _get_stats_for_period(service_id, limit_days: int=1):
+    all_statistics = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=limit_days)
+    stats = aggregate_notifications_stats(all_statistics)
+    dashboard_totals = (get_dashboard_totals(stats),)
+
+    highest_notification_count = max(
+        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals[0].items()
     )
 
-    return dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily
+    return dashboard_totals, highest_notification_count, all_statistics
 
 
 def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):

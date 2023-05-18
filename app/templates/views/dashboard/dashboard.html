@@ -32,10 +32,33 @@
     {% endif %}
 
     {{ ajax_block(partials, updates_url, 'weekly_totals', interval=5) }}
+
+    <h2 class="heading-medium mt-8">
+      {{ _('Daily Limits') }}
+    </h2>
+    <div class="grid-row contain-floats">
+      <div id="email-daily-limits" class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
+        {{ big_number_with_status(
+          number=0,
+          secondary_number=" / {}".format(partials["daily_limits"]["email_limit"]),
+          label="emails",
+          secondary_smallest=True
+        ) }}
+      </div>
+      <div id="sms-daily-limits" class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
+        {{ big_number_with_status(
+          number=0,
+          secondary_number=" / {}".format(partials["daily_limits"]["sms_limit"]),
+          label="text messages",
+          secondary_smallest=True
+        ) }}
+      </div>
+    </div>
     {{ show_more(
-      url_for('.monthly', service_id=current_service.id),
-      _('See all messages sent')
+      url_for('.service_settings', service_id=current_service.id),
+      _('Manage daily limits')
     ) }}
+    </div>
 
     {% if partials['has_template_statistics'] %}
       <h2 class="heading-medium mt-8">{{ _("Templates used") }}</h2>
