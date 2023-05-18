@@ -35,10 +35,9 @@ def verify():
 def verify_email(token):
     try:
         token_data = check_token(
-            token,
-            current_app.config["SECRET_KEY"],
-            current_app.config["DANGEROUS_SALT"],
-            current_app.config["EMAIL_EXPIRY_SECONDS"],
+            token=token,
+            secret=current_app.config["SECRET_KEY"],
+            max_age_seconds=current_app.config["EMAIL_EXPIRY_SECONDS"],
         )
     except SignatureExpired:
         flash(_("The security code in the email we sent you has expired. We’ve sent you a new one."))
