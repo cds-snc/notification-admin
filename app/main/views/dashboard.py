@@ -25,7 +25,6 @@ from app import (
 )
 from app.main import main
 from app.models.enum.bounce_rate_status import BounceRateStatus
-from app.notify_client.service_api_client import ServiceAPIClient
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
 from app.utils import (
     DELIVERED_STATUSES,
