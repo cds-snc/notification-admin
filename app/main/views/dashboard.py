@@ -302,7 +302,7 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
         bounce_total = 0
         bounce_percentage = 0
         bounce_status = BounceRateStatus.NORMAL.value
-        below_threshold  = False
+        below_threshold = False
 
     # Populate the bounce stats
     bounce_rate = BounceRate()
