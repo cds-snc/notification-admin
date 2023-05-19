@@ -302,6 +302,7 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
         bounce_total = 0
         bounce_percentage = 0
         bounce_status = BounceRateStatus.NORMAL.value
+        below_threshold  = False
 
     # Populate the bounce stats
     bounce_rate = BounceRate()
@@ -320,7 +321,13 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
     # compute bounce status
     # if volume is less than the threshold, indicate NORMAL status
     if total_sent < current_app.config["BR_DISPLAY_VOLUME_MINIMUM"]:
-        bounce_rate.bounce_status = BounceRateStatus.NORMAL.value
+        # We only want to show a neutral color on the dashboard if we are less than minimum volume
+        # but still over the warning threshold
+        if bounce_rate.bounce_percentage >= current_app.config["BR_WARNING_PERCENTAGE"]:
+            bounce_rate.below_threshold = True
+            bounce_rate.bounce_status = BounceRateStatus.WARNING.value
+        else:
+            bounce_rate.bounce_status = BounceRateStatus.NORMAL.value
     # if bounce rate is above critical threshold, indicate CRITICAL status
     elif bounce_rate.bounce_percentage >= current_app.config["BR_CRITICAL_PERCENTAGE"]:
         bounce_rate.bounce_status = BounceRateStatus.CRITICAL.value
