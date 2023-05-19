@@ -105,10 +105,9 @@ def user_profile_email_authenticate():
 @user_is_logged_in
 def user_profile_email_confirm(token):
     token_data = check_token(
-        token,
-        current_app.config["SECRET_KEY"],
-        current_app.config["DANGEROUS_SALT"],
-        current_app.config["EMAIL_EXPIRY_SECONDS"],
+        token=token,
+        secret=current_app.config["SECRET_KEY"],
+        max_age_seconds=current_app.config["EMAIL_EXPIRY_SECONDS"],
     )
     token_data = json.loads(token_data)
     user = User.from_id(token_data["user_id"])

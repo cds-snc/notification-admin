@@ -3500,7 +3500,6 @@ def valid_token(app_, fake_uuid):
     return generate_token(
         json.dumps({"user_id": fake_uuid, "secret_code": "my secret"}),
         app_.config["SECRET_KEY"],
-        app_.config["DANGEROUS_SALT"],
     )
 
 
