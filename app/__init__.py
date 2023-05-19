@@ -46,8 +46,8 @@ from app.commands import setup_commands
 from app.config import configs
 from app.extensions import (
     antivirus_client,
-    cache,
     bounce_rate_client,
+    cache,
     redis_client,
     statsd_client,
     zendesk_client,

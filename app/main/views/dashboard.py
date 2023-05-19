@@ -62,14 +62,11 @@ def redirect_service_dashboard(service_id):
 @main.route("/services/<service_id>/problem-emails")
 @user_has_permissions("view_activity", "send_messages")
 def problem_emails(service_id):
-    # get the daily stats
-    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
-
     return render_template(
         "views/dashboard/review-email-list.html",
         bounce_status=BounceRateStatus.NORMAL,
         jobs=get_jobs_and_calculate_hard_bounces(service_id),
-        bounce_rate=calculate_bounce_rate(all_statistics_daily, service_id),
+        bounce_rate=calculate_bounce_rate(service_id),
     )
 
 
@@ -247,7 +244,7 @@ def get_dashboard_partials(service_id):
 
     stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
     # get the daily stats
-    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
+    dashboard_totals_daily, highest_notification_count_daily, _ = _get_daily_stats(service_id)
 
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
@@ -270,7 +267,7 @@ def get_dashboard_partials(service_id):
             else dashboard_totals_weekly[0],
             column_width=column_width,
             smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
-            bounce_rate=calculate_bounce_rate(all_statistics_daily, service_id),
+            bounce_rate=calculate_bounce_rate(service_id),
         ),
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",
@@ -296,26 +293,19 @@ def _get_daily_stats(service_id):
     return dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily
 
 
-def calculate_bounce_rate(all_statistics_daily, service_id):
+def calculate_bounce_rate(service_id):
     """This function calculates the bounce rate using the daily statistics provided from the dashboard"""
 
     class BounceRate:
         bounce_total = 0
-        bounce_percentage = 0.
+        bounce_percentage = 0.0
         bounce_status = BounceRateStatus.NORMAL.value
 
-    
     # Populate the bounce stats
     bounce_rate = BounceRate()
-    bounce_rate.bounce_percentage = 100*bounce_rate_client.get_bounce_rate(service_id)
+    bounce_rate.bounce_percentage = 100 * bounce_rate_client.get_bounce_rate(service_id)
     bounce_rate.bounce_status = bounce_rate_client.check_bounce_rate_status(service_id)
-
-    # TODO: get this from redis
-    # get total hard bounces
-    for stat in all_statistics_daily:
-        if stat["status"] == "permanent-failure":
-            bounce_rate.bounce_total = stat["count"]
-
+    bounce_rate.bounce_total = bounce_rate_client.get_total_hard_bounces(service_id)
     return bounce_rate
 
 
