@@ -131,6 +131,9 @@ class Config(object):
 
     ZENDESK_API_KEY = os.environ.get("ZENDESK_API_KEY")
 
+    # Boune Rate parameters
+    BR_WARNING_PERCENTAGE = 5
+
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
