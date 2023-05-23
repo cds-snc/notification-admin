@@ -1477,8 +1477,8 @@ werkzeug = "2.2.3"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "feat/add-get-total-bounces"
-resolved_reference = "4a3366f1a0b0f15f248aa9753a7d9f08b8704ebe"
+reference = "50.3.4"
+resolved_reference = "fbd73b322c7e868b6491bc07032af20550a12692"
 
 [[package]]
 name = "openpyxl"
@@ -2505,4 +2505,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.8"
-content-hash = "f9c1b24e31bc6424cc7470dedad41caa150a556e6a6b1b72b7a37a7c671d73c5"
+content-hash = "a4f465644eebc25597ef20e28977c0ec2226517705f7cf70be226d107c8100d5"
