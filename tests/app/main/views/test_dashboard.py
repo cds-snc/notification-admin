@@ -1632,118 +1632,13 @@ def test_dashboard_page_a11y(
 
 class TestBounceRate:
     @pytest.mark.parametrize(
-        "totals, expected_problem_emails, expected_problem_percent",
+        "bounce_rate, bounce_rate_status, total_hard_bounces, expected_problem_percent",
         [
-            (
-                [
-                    {
-                        "count": 19,
-                        "is_precompiled_letter": False,
-                        "status": "delivered",
-                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                        "template_name": "test",
-                        "template_type": "email",
-                    },
-                    {
-                        "count": 1,
-                        "is_precompiled_letter": False,
-                        "status": "permanent-failure",
-                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                        "template_name": "test",
-                        "template_type": "email",
-                    },
-                ],
-                1,
-                "5.0% problem addresses",
-            ),
-            (
-                [
-                    {
-                        "count": 18,
-                        "is_precompiled_letter": False,
-                        "status": "delivered",
-                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                        "template_name": "test",
-                        "template_type": "email",
-                    },
-                    {
-                        "count": 1,
-                        "is_precompiled_letter": False,
-                        "status": "permanent-failure",
-                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                        "template_name": "test",
-                        "template_type": "email",
-                    },
-                    {
-                        "count": 1,
-                        "is_precompiled_letter": False,
-                        "status": "permanent-failure",
-                        "template_id": "2156a57e-efd7-4531-b8f4-e333c64c03dc",
-                        "template_name": "test",
-                        "template_type": "email",
-                    },
-                ],
-                2,
-                "10.0% problem addresses",
-            ),
-            (
-                [
-                    {
-                        "count": 20,
-                        "is_precompiled_letter": False,
-                        "status": "delivered",
-                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                        "template_name": "test",
-                        "template_type": "email",
-                    }
-                ],
-                0,
-                "No problem addresses",
-            ),
-            (
-                [
-                    {
-                        "count": 1100,
-                        "is_precompiled_letter": False,
-                        "status": "delivered",
-                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                        "template_name": "test",
-                        "template_type": "email",
-                    },
-                    {
-                        "count": 1,
-                        "is_precompiled_letter": False,
-                        "status": "permanent-failure",
-                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                        "template_name": "test",
-                        "template_type": "email",
-                    },
-                ],
-                1,
-                "Less than 0.1% problem addresses",
-            ),
-            (
-                [
-                    {
-                        "count": 999,
-                        "is_precompiled_letter": False,
-                        "status": "delivered",
-                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                        "template_name": "test",
-                        "template_type": "email",
-                    },
-                    {
-                        "count": 1,
-                        "is_precompiled_letter": False,
-                        "status": "permanent-failure",
-                        "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                        "template_name": "test",
-                        "template_type": "email",
-                    },
-                ],
-                1,
-                "0.1% problem addresses",
-            ),
+            (0.05, "x", 1, "5.0% problem addresses"),
+            (0.10, "x", 1, "10.0% problem addresses"),
+            (0.0, "x", 0, "No problem addresses"),
+            (0.0005, "x", 1, "Less than 0.1% problem addresses"),
+            (0.001, "x", 1, "0.1% problem addresses"),
         ],
     )
     def test_bounce_rate_widget_displays_correct_status_and_totals(
@@ -1755,26 +1650,27 @@ class TestBounceRate:
         mock_get_service_statistics,
         mock_get_jobs,
         service_one,
-        totals,
-        expected_problem_emails,
+        bounce_rate,
+        bounce_rate_status,
+        total_hard_bounces,
         expected_problem_percent,
         app_,
     ):
         with set_config(app_, "FF_BOUNCE_RATE_V1", True):
             # service_one["permissions"] = permissions
 
-            mocker.patch(
-                "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=totals
-            )
+            mocker.patch("app.main.views.dashboard.bounce_rate_client.get_bounce_rate", return_value=bounce_rate)
+            mocker.patch("app.main.views.dashboard.bounce_rate_client.check_bounce_rate_status", return_value=bounce_rate_status)
+            mocker.patch("app.main.views.dashboard.bounce_rate_client.get_total_hard_bounces", return_value=total_hard_bounces)
 
             page = client_request.get(
                 "main.service_dashboard",
                 service_id=service_one["id"],
             )
 
-            assert int(page.select_one("#problem-email-addresses .big-number-number").text.strip()) == expected_problem_emails
+            assert int(page.select_one("#problem-email-addresses .big-number-number").text.strip()) == total_hard_bounces
 
-            if expected_problem_emails > 0:
+            if total_hard_bounces > 0:
                 assert (
                     page.select_one("#problem-email-addresses .review-email-label")
                     .text.strip()
