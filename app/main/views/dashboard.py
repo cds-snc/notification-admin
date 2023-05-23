@@ -300,12 +300,24 @@ def calculate_bounce_rate(service_id):
         bounce_total = 0
         bounce_percentage = 0.0
         bounce_status = BounceRateStatus.NORMAL.value
+        below_threshold = False
 
     # Populate the bounce stats
     bounce_rate = BounceRate()
     bounce_rate.bounce_percentage = 100 * bounce_rate_client.get_bounce_rate(service_id)
-    bounce_rate.bounce_status = bounce_rate_client.check_bounce_rate_status(service_id)
     bounce_rate.bounce_total = bounce_rate_client.get_total_hard_bounces(service_id)
+    bounce_status = bounce_rate_client.check_bounce_rate_status(service_id)
+
+    # We only want to show a neutral color on the dashboard if we are less than minimum volume
+    # but still over the warning threshold
+    if (
+        bounce_status == BounceRateStatus.NORMAL.value
+        and bounce_rate.bounce_percentage > current_app.config["BR_WARNING_PERCENTAGE"]
+    ):
+        bounce_rate.bounce_status = BounceRateStatus.WARNING.value
+    else:
+        bounce_rate.bounce_status = bounce_status
+
     return bounce_rate
 
 
