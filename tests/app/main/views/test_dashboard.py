@@ -1634,11 +1634,11 @@ class TestBounceRate:
     @pytest.mark.parametrize(
         "bounce_rate, bounce_rate_status, total_hard_bounces, expected_problem_percent",
         [
-            (0.05, "x", 1, "5.0% problem addresses"),
-            (0.10, "x", 1, "10.0% problem addresses"),
-            (0.0, "x", 0, "No problem addresses"),
-            (0.0005, "x", 1, "Less than 0.1% problem addresses"),
-            (0.001, "x", 1, "0.1% problem addresses"),
+            (0.05, "warning", 1, "5.0% problem addresses"),
+            (0.10, "critical", 1, "10.0% problem addresses"),
+            (0.0, "normal", 0, "No problem addresses"),
+            (0.0005, "normal", 1, "Less than 0.1% problem addresses"),
+            (0.001, "normal", 1, "0.1% problem addresses"),
         ],
     )
     def test_bounce_rate_widget_displays_correct_status_and_totals(
