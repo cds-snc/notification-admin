@@ -1657,8 +1657,6 @@ class TestBounceRate:
         app_,
     ):
         with set_config(app_, "FF_BOUNCE_RATE_V1", True):
-            # service_one["permissions"] = permissions
-
             mocker.patch("app.main.views.dashboard.bounce_rate_client.get_bounce_rate", return_value=bounce_rate)
             mocker.patch("app.main.views.dashboard.bounce_rate_client.check_bounce_rate_status", return_value=bounce_rate_status)
             mocker.patch("app.main.views.dashboard.bounce_rate_client.get_total_hard_bounces", return_value=total_hard_bounces)
@@ -1691,30 +1689,9 @@ class TestBounceRate:
         app_,
     ):
         with set_config(app_, "FF_BOUNCE_RATE_V1", True):
-            threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
-
-            mock_data = [
-                {
-                    "count": (threshold - 20) * 0.5,
-                    "is_precompiled_letter": False,
-                    "status": "delivered",
-                    "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                    "template_name": "test",
-                    "template_type": "email",
-                },
-                {
-                    "count": (threshold - 20) * 0.5,
-                    "is_precompiled_letter": False,
-                    "status": "permanent-failure",
-                    "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                    "template_name": "test",
-                    "template_type": "email",
-                },
-            ]
-
-            mocker.patch(
-                "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
-            )
+            mocker.patch("app.main.views.dashboard.bounce_rate_client.get_bounce_rate", return_value=0.30)  # 30%
+            mocker.patch("app.main.views.dashboard.bounce_rate_client.check_bounce_rate_status", return_value="normal")
+            mocker.patch("app.main.views.dashboard.bounce_rate_client.get_total_hard_bounces", return_value=10)
 
             page = client_request.get(
                 "main.service_dashboard",
@@ -1726,22 +1703,10 @@ class TestBounceRate:
 
     def test_review_problem_emails_is_empty_when_no_probems(self, mocker, service_one, app_, client_request):
         with set_config(app_, "FF_BOUNCE_RATE_V1", True):
-            threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
+            mocker.patch("app.main.views.dashboard.bounce_rate_client.get_bounce_rate", return_value=0.0)
+            mocker.patch("app.main.views.dashboard.bounce_rate_client.check_bounce_rate_status", return_value="normal")
+            mocker.patch("app.main.views.dashboard.bounce_rate_client.get_total_hard_bounces", return_value=0)
 
-            mock_data = [
-                {
-                    "count": int((threshold - 20) * 0.5),
-                    "is_precompiled_letter": False,
-                    "status": "delivered",
-                    "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                    "template_name": "test",
-                    "template_type": "email",
-                }
-            ]
-
-            mocker.patch(
-                "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
-            )
             mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=[])
             page = client_request.get(
                 "main.problem_emails",
@@ -2014,23 +1979,6 @@ class TestBounceRate:
     def test_review_problem_emails_shows_csvs_when_problem_emails_exist(
         self, mocker, service_one, app_, client_request, jobs, expected_problem_list_count
     ):
-        threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
-
-        mock_data = [
-            {
-                "count": (threshold - 20) * 0.5,
-                "is_precompiled_letter": False,
-                "status": "delivered",
-                "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-                "template_name": "test",
-                "template_type": "email",
-            }
-        ]
-
-        mocker.patch(
-            "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
-        )
-
         mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=jobs)
         page = client_request.get(
             "main.problem_emails",
