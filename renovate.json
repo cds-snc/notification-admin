@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "local>cds-snc/renovate-config:no-grouping"
+    "local>cds-snc/renovate-config"
   ],
   "ignoreDeps": ["Werkzeug"]
 }
