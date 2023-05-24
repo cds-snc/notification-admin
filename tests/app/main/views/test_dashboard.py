@@ -1828,7 +1828,7 @@ class TestBounceRate:
             )
 
             assert len(page.find_all(class_="review-email-status-critical")) == 0
-            assert len(page.find_all(class_="review-email-status-normal")) == 1
+            assert len(page.find_all(class_="review-email-status-neutral")) == 1
 
     def test_review_problem_emails_is_empty_when_no_probems(self, mocker, service_one, app_, client_request):
         with set_config(app_, "FF_BOUNCE_RATE_V1", True):
