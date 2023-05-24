@@ -314,6 +314,7 @@ def calculate_bounce_rate(service_id):
         bounce_status == BounceRateStatus.NORMAL.value
         and bounce_rate.bounce_percentage > current_app.config["BR_WARNING_PERCENTAGE"]
     ):
+        bounce_rate.below_threshold = True
         bounce_rate.bounce_status = BounceRateStatus.WARNING.value
     else:
         bounce_rate.bounce_status = bounce_status
