@@ -5,7 +5,12 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
-from tests.conftest import SERVICE_ONE_ID, SERVICE_TWO_ID, normalize_spaces
+from tests.conftest import (
+    SERVICE_ONE_ID,
+    SERVICE_TWO_ID,
+    create_api_user_active,
+    normalize_spaces,
+)
 
 OS1, OS2, OS3, S1, S2, S3 = repeat(uuid.uuid4(), 6)
 
@@ -198,3 +203,18 @@ def test_choose_account_should_not_show_back_to_service_link_if_not_signed_in(
 
     assert page.select_one("h1").text == "Sign in"  # We’re not signed in
     assert page.select_one(".navigation-service a") is None
+
+
+def test_show_accounts_or_dashboard_should_redirect_to_welcome_if_no_services(
+    client_request,
+    api_user_active,
+):
+    # api_user_active has no services attached
+    client_request.login(api_user_active)
+    client_request.get(
+        "main.show_accounts_or_dashboard",
+        service_id=None,
+        user_id=api_user_active["id"],
+        _expected_status=302,
+        _expected_redirect=url_for("main.welcome"),
+    )
