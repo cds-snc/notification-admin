@@ -131,14 +131,17 @@ class Config(object):
 
     ZENDESK_API_KEY = os.environ.get("ZENDESK_API_KEY")
 
-    # Boune Rate parameters
+    # Bounce Rate parameters
+    BR_DISPLAY_VOLUME_MINIMUM = 1000
     BR_WARNING_PERCENTAGE = 5
+    BR_CRITICAL_PERCENTAGE = 10
 
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
     FF_BOUNCE_RATE_V1 = env.bool("FF_BOUNCE_RATE_V1", False)
+    FF_BOUNCE_RATE_V15 = env.bool("FF_BOUNCE_RATE_V15", False)
     FF_ABTEST_SERVICE_ID = [x.strip() for x in os.environ.get("FF_ABTEST_SERVICE_ID", "").split(",")]
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
 

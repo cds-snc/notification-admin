@@ -3,6 +3,7 @@
 {% from "components/table.html" import list_table, notification_status_field, row_heading%}
 {% from "components/ajax-block.html" import ajax_block %}
 {% from "components/table.html" import list_table, link_field %}
+{% from "components/show-more.html" import show_more %}
 
 {% set address_single = _('address') %}
 {% set address_plural = _('addresses') %}
@@ -27,7 +28,7 @@
                     {% elif bounce_rate["bounce_status"] == "critical" %}
                     {{ _('Critical:') }}
                     {% endif %}
-                </strong> 
+                </strong>
                 {% if bounce_rate["bounce_percentage"] < 0.1 %}
                   {{ _('Less than') }} 0.1%
                 {% else %}
@@ -46,16 +47,35 @@
             {% for job in jobs %}
                 {% if job["bounce_count"] > 0 %}
                     <li>
-                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='failed') }}">{{ job["bounce_count"] }} {{_(" problem email addresses")}}</a>
+                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='failed') }}">
+                            {{ job["bounce_count"] }}
+                            {% if job["bounce_count"] > 1 %}
+                                {{_(' problem email addresses')}}
+                            {%- else -%}
+                                {{_(' problem email address')}}
+                            {%- endif -%}
+                        </a>
                         <span>
                             {{ _( ' in ')}} '{{ job.original_file_name }}'
                         </span>
                     </li>
                 {% endif %}
             {% endfor %}
+            {% for notification in one_offs %}
+                <li>
+                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">{{notification["to"]}}</a>
+                    <span>
+                        {{ _( ' using template ')}} '{{ notification["template"]["name"] }}'
+                    </span>
+                </li>
+            {% endfor %}
             </ul>
+            {{ show_more(
+                url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
+                _("See all problem email addresses")
+            ) }}
             {# <p class="text-small">{{ _('Updated every 5 minutes. Last updated {}').format("2023-03-20")}}</p> #}
         </div>
-        
+
     </div>
 {% endblock %}

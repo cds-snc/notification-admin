@@ -223,6 +223,7 @@ def view_notifications(service_id, message_type=None):
         status=request.args.get("status") or "sending,delivered,failed",
         page=request.args.get("page", 1),
         to=request.form.get("to", ""),
+        pe_filter=request.form.get("pe_filter", ""),
         search_form=SearchNotificationsForm(
             message_type=message_type,
             to=request.form.get("to", ""),
