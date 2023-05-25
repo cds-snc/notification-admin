@@ -12,6 +12,7 @@ from app.main.views.dashboard import (
     get_dashboard_totals,
     get_free_paid_breakdown_for_billable_units,
 )
+from app.models.enum.notification_statuses import NotificationStatuses
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -19,6 +20,7 @@ from tests.conftest import (
     a11y_test,
     create_active_caseworking_user,
     create_active_user_view_permissions,
+    create_notification,
     normalize_spaces,
     set_config,
 )
@@ -1847,6 +1849,7 @@ class TestBounceRate:
                 "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
             )
             mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=[])
+            mocker.patch("app.notification_api_client.get_notifications_for_service", return_value={"notifications": []})
             page = client_request.get(
                 "main.problem_emails",
                 service_id=service_one["id"],
@@ -2136,6 +2139,106 @@ class TestBounceRate:
         )
 
         mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=jobs)
+        mocker.patch("app.notification_api_client.get_notifications_for_service", return_value={"notifications": []})
+        page = client_request.get(
+            "main.problem_emails",
+            service_id=service_one["id"],
+        )
+
+        # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
+        assert len(page.select_one(".ajax-block-container .list.list-bullet").find_all("li")) == expected_problem_list_count
+
+    @pytest.mark.parametrize(
+        "notifications, jobs, expected_problem_list_count",
+        [
+            (
+                {
+                    "notifications": [
+                        create_notification(
+                            template_type="email",
+                            notification_status=NotificationStatuses.PERMANENT_FAILURE.value,
+                            template_name="test",
+                        ),
+                        create_notification(
+                            template_type="email",
+                            notification_status=NotificationStatuses.PERMANENT_FAILURE.value,
+                            template_name="test",
+                        ),
+                    ]
+                },
+                [],
+                2,
+            ),
+            (
+                {
+                    "notifications": [
+                        create_notification(
+                            template_type="email",
+                            notification_status=NotificationStatuses.PERMANENT_FAILURE.value,
+                            template_name="test",
+                        ),
+                        create_notification(
+                            template_type="email",
+                            notification_status=NotificationStatuses.PERMANENT_FAILURE.value,
+                            template_name="test",
+                        ),
+                    ]
+                },
+                [
+                    {
+                        "failure_rate": 10.0,
+                        "api_key": None,
+                        "archived": False,
+                        "created_at": "2023-04-18T11:15:22.842906+00:00",
+                        "created_by": {"id": "24baebe0-fb11-4fc0-8609-1e853c31d0fe", "name": "Andrew Leith"},
+                        "id": "89e0f76e-777f-4d3a-aee1-bdd9277837ff",
+                        "job_status": "finished",
+                        "notification_count": 20,
+                        "original_file_name": "bulk_send_mix_20_2_fails copy.csv",
+                        "processing_finished": "2023-04-18T11:15:40.718126+00:00",
+                        "processing_started": "2023-04-18T11:15:39.333558+00:00",
+                        "scheduled_for": None,
+                        "sender_id": None,
+                        "service": "9cfb3884-fed6-4824-8901-c7d0857cc5b4",
+                        "service_name": {"name": "Bounce Rate"},
+                        "statistics": [{"count": 18, "status": "delivered"}, {"count": 2, "status": "permanent-failure"}],
+                        "template": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                        "template_version": 1,
+                        "updated_at": "2023-04-18T11:15:40.721100+00:00",
+                        "notifications_sent": 20,
+                        "notifications_delivered": 18,
+                        "notifications_failed": 2,
+                        "notifications_requested": 20,
+                        "bounce_count": 2,
+                    },
+                ],
+                3,
+            ),
+        ],
+        ids=["2 one-off bounces -> 2 rendered list items", "2 one-off bounces, 1 job with bounces -> 3 rendered list items"],
+    )
+    def test_review_problem_emails_shows_one_offs_when_problem_emails_exist(
+        self, mocker, service_one, app_, client_request, notifications, jobs, expected_problem_list_count
+    ):
+        threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
+
+        mock_data = [
+            {
+                "count": (threshold - 20) * 0.5,
+                "is_precompiled_letter": False,
+                "status": "delivered",
+                "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                "template_name": "test",
+                "template_type": "email",
+            }
+        ]
+
+        mocker.patch(
+            "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
+        )
+
+        mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=jobs)
+        mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
         page = client_request.get(
             "main.problem_emails",
             service_id=service_one["id"],

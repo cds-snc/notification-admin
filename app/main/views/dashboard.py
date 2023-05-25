@@ -20,11 +20,14 @@ from werkzeug.utils import redirect
 from app import (
     current_service,
     job_api_client,
+    notification_api_client,
     service_api_client,
     template_statistics_client,
 )
 from app.main import main
 from app.models.enum.bounce_rate_status import BounceRateStatus
+from app.models.enum.notification_statuses import NotificationStatuses
+from app.models.enum.template_types import TemplateType
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
 from app.utils import (
     DELIVERED_STATUSES,
@@ -64,10 +67,20 @@ def problem_emails(service_id):
     # get the daily stats
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
 
+    one_off_notifications = notification_api_client.get_notifications_for_service(
+        service_id,
+        template_type=TemplateType.EMAIL.value,
+        status=NotificationStatuses.PERMANENT_FAILURE.value,
+        include_one_off=True,
+        include_jobs=False,
+        page_size=20,
+    )
+
     return render_template(
         "views/dashboard/review-email-list.html",
         bounce_status=BounceRateStatus.NORMAL,
         jobs=get_jobs_and_calculate_hard_bounces(service_id),
+        one_offs=one_off_notifications["notifications"],
         bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
     )
 
