@@ -22,7 +22,7 @@
   {% set button_txt = _('Create') %}
   {% call form_wrapper() %}
     {{ textbox(form.key_name, label=label_txt) }}
-    {{ radios(form.key_type, disable=disabled_options, option_hints=option_hints) }}
+    {{ radios(form.key_type, disable=disabled_options, option_hints=option_hints, use_aria_labelledby=False) }}
     {{ page_footer(button_txt) }}
   {% endcall %}
 
