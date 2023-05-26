@@ -1,11 +1,7 @@
 import pytest
 
 from app.models.enum.notification_statuses import NotificationStatuses
-
-from tests.conftest import (
-    create_notification,
-    set_config,
-)
+from tests.conftest import create_notification, set_config
 
 jobs_2_failures = [
     {
@@ -254,6 +250,7 @@ jobs_1_failure = [
     }
 ]
 
+
 @pytest.mark.parametrize(
     "totals, expected_problem_emails, expected_problem_percent",
     [
@@ -398,12 +395,10 @@ def test_bounce_rate_widget_displays_correct_status_and_totals_v1(
 
         if expected_problem_emails > 0:
             assert (
-                page.select_one("#problem-email-addresses .review-email-label")
-                .text.strip()
-                .replace("\n", "")
-                .replace("  ", "")
+                page.select_one("#problem-email-addresses .review-email-label").text.strip().replace("\n", "").replace("  ", "")
                 == expected_problem_percent
             )
+
 
 @pytest.mark.parametrize(
     "bounce_rate, bounce_rate_status, total_hard_bounces, expected_problem_percent",
@@ -443,12 +438,10 @@ def test_bounce_rate_widget_displays_correct_status_and_totals_v15(
 
         if total_hard_bounces > 0:
             assert (
-                page.select_one("#problem-email-addresses .review-email-label")
-                .text.strip()
-                .replace("\n", "")
-                .replace("  ", "")
+                page.select_one("#problem-email-addresses .review-email-label").text.strip().replace("\n", "").replace("  ", "")
                 == expected_problem_percent
             )
+
 
 def test_bounce_rate_widget_doesnt_change_when_under_threshold_v1(
     client_request,
@@ -494,6 +487,7 @@ def test_bounce_rate_widget_doesnt_change_when_under_threshold_v1(
         assert len(page.find_all(class_="review-email-status-critical")) == 0
         assert len(page.find_all(class_="review-email-status-neutral")) == 1
 
+
 def test_bounce_rate_widget_doesnt_change_when_under_threshold_v15(
     client_request,
     mocker,
@@ -517,6 +511,7 @@ def test_bounce_rate_widget_doesnt_change_when_under_threshold_v15(
         assert len(page.find_all(class_="review-email-status-critical")) == 0
         assert len(page.find_all(class_="review-email-status-normal")) == 0
         assert len(page.find_all(class_="review-email-status-neutral")) == 1
+
 
 @pytest.mark.parametrize("FF_BOUNCE_RATE_V15", [True, False])
 def test_review_problem_emails_is_empty_when_no_probems(mocker, service_one, app_, client_request, FF_BOUNCE_RATE_V15):
@@ -549,6 +544,7 @@ def test_review_problem_emails_is_empty_when_no_probems(mocker, service_one, app
             == "Less than 0.1% of email addresses need review"
         )
 
+
 @pytest.mark.parametrize(
     "jobs, expected_problem_list_count, FF_BOUNCE_RATE_V15",
     [
@@ -558,7 +554,6 @@ def test_review_problem_emails_is_empty_when_no_probems(mocker, service_one, app
         (jobs_2_failures, 2, True),
         (jobs_0_failures, 0, True),
         (jobs_1_failure, 1, True),
-
     ],
 )
 def test_review_problem_emails_shows_csvs_when_problem_emails_exist(
@@ -591,6 +586,7 @@ def test_review_problem_emails_shows_csvs_when_problem_emails_exist(
 
         # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
         assert len(page.select_one(".ajax-block-container .list.list-bullet").find_all("li")) == expected_problem_list_count
+
 
 @pytest.mark.parametrize(
     "notifications, jobs, expected_problem_list_count",
