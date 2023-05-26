@@ -16,12 +16,10 @@
   {{ govuk_back_link(back_url) }}
 
   {% call form_wrapper() %}
-    <legend>
     {{ page_header(
       header_txt,
       id_text=form.what_type.id + "-label"
     ) }}
-    </legend>
     {{ radios(form.what_type, disable=disabled_options, option_hints=option_hints, hide_legend=True) }}
     {{ page_footer(_('Continue')) }}
   {% endcall %}
