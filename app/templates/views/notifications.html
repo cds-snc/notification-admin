@@ -49,10 +49,12 @@
     {% call form_wrapper(id="search-form") %}
       <input type="hidden" name="to" value="{{ search_form.to.data }}">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" style="visibility: hidden; position: absolute; left: -999em">submit</button>
     {% endcall %}
   {% else %}
     {% call form_wrapper(id="search-form") %}
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button type="submit" style="visibility: hidden; position: absolute; left: -999em">submit</button>
     {% endcall %}
   {% endif %}
 
