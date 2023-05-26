@@ -275,6 +275,7 @@ def get_dashboard_partials(service_id):
         if current_app.config["FF_BOUNCE_RATE_V15"]
         else calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily)
     )
+
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
         "daily_totals": render_template(

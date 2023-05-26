@@ -205,6 +205,7 @@ class Test(Development):
     FF_SMS_PARTS_UI = False
     FF_SALESFORCE_CONTACT = False
 
+
 class Production(Config):
     CHECK_PROXY_HEADER = False
     HTTP_PROTOCOL = "https"
