@@ -59,11 +59,11 @@
   {% endif %}
 
   {% if current_user.has_permissions('view_activity') %}
-    <p class="mb-12 clear-both contain-floats">
+    <div class="mb-12 clear-both contain-floats">
       <a href="{{ download_link }}" download="download" class="heading-small">{{ _('Download this report') }}</a>
       &emsp;
       {{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}
-    </p>
+    </div>
   {% endif %}
   
   {{ problem_email_checkbox() }}
