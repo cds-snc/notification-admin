@@ -567,65 +567,47 @@ def test_review_problem_emails_is_empty_when_no_probems_v15(mocker, service_one,
             )
 
 @pytest.mark.parametrize(
-    "jobs, expected_problem_list_count",
+    "jobs, expected_problem_list_count, FF_BOUNCE_RATE_V15",
     [
-        (jobs_2_failures, 2),
-        (jobs_0_failures, 0),
-        (jobs_1_failure, 1),
+        (jobs_2_failures, 2, False),
+        (jobs_0_failures, 0, False),
+        (jobs_1_failure, 1, False),
+        (jobs_2_failures, 2, True),
+        (jobs_0_failures, 0, True),
+        (jobs_1_failure, 1, True),
+
     ],
 )
-def test_review_problem_emails_shows_csvs_when_problem_emails_exist_v1(
-    mocker, service_one, app_, client_request, jobs, expected_problem_list_count
+def test_review_problem_emails_shows_csvs_when_problem_emails_exist(
+    mocker, service_one, app_, client_request, jobs, expected_problem_list_count, FF_BOUNCE_RATE_V15
 ):
-    threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
+    with set_config(app_, "FF_BOUNCE_RATE_V1", True) and set_config(app_, "FF_BOUNCE_RATE_V15", FF_BOUNCE_RATE_V15):
+        threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
 
-    mock_data = [
-        {
-            "count": (threshold - 20) * 0.5,
-            "is_precompiled_letter": False,
-            "status": "delivered",
-            "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
-            "template_name": "test",
-            "template_type": "email",
-        }
-    ]
+        mock_data = [
+            {
+                "count": (threshold - 20) * 0.5,
+                "is_precompiled_letter": False,
+                "status": "delivered",
+                "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                "template_name": "test",
+                "template_type": "email",
+            }
+        ]
 
-    mocker.patch(
-        "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
-    )
+        mocker.patch(
+            "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
+        )
 
-    mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=jobs)
-    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value={"notifications": []})
-    page = client_request.get(
-        "main.problem_emails",
-        service_id=service_one["id"],
-    )
+        mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=jobs)
+        mocker.patch("app.notification_api_client.get_notifications_for_service", return_value={"notifications": []})
+        page = client_request.get(
+            "main.problem_emails",
+            service_id=service_one["id"],
+        )
 
-    # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
-    assert len(page.select_one(".ajax-block-container .list.list-bullet").find_all("li")) == expected_problem_list_count
-
-@pytest.mark.parametrize(
-    "jobs, expected_problem_list_count",
-    [
-        (jobs_2_failures, 2),
-        (jobs_0_failures, 0),
-        (jobs_1_failure, 1),
-    ],
-)
-def test_review_problem_emails_shows_csvs_when_problem_emails_exist_v15(
-    mocker, service_one, app_, client_request, jobs, expected_problem_list_count
-):
-    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
-        with set_config(app_, "FF_BOUNCE_RATE_V15", True):
-            mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=jobs)
-            mocker.patch("app.notification_api_client.get_notifications_for_service", return_value={"notifications": []})
-            page = client_request.get(
-                "main.problem_emails",
-                service_id=service_one["id"],
-            )
-
-            # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
-            assert len(page.select_one(".ajax-block-container .list.list-bullet").find_all("li")) == expected_problem_list_count
+        # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
+        assert len(page.select_one(".ajax-block-container .list.list-bullet").find_all("li")) == expected_problem_list_count
 
 @pytest.mark.parametrize(
     "notifications, jobs, expected_problem_list_count",
