@@ -518,8 +518,9 @@ def test_bounce_rate_widget_doesnt_change_when_under_threshold_v15(
         assert len(page.find_all(class_="review-email-status-normal")) == 0
         assert len(page.find_all(class_="review-email-status-neutral")) == 1
 
-def test_review_problem_emails_is_empty_when_no_probems_v1(mocker, service_one, app_, client_request):
-    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+@pytest.mark.parametrize("FF_BOUNCE_RATE_V15", [True, False])
+def test_review_problem_emails_is_empty_when_no_probems(mocker, service_one, app_, client_request, FF_BOUNCE_RATE_V15):
+    with set_config(app_, "FF_BOUNCE_RATE_V1", True) and set_config(app_, "FF_BOUNCE_RATE_V15", FF_BOUNCE_RATE_V15):
         threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
 
         mock_data = [
@@ -547,24 +548,6 @@ def test_review_problem_emails_is_empty_when_no_probems_v1(mocker, service_one, 
             page.find("p", {"class": "text-title"}).text.strip().replace("\n", "").replace("  ", "")
             == "Less than 0.1% of email addresses need review"
         )
-
-def test_review_problem_emails_is_empty_when_no_probems_v15(mocker, service_one, app_, client_request):
-    with set_config(app_, "FF_BOUNCE_RATE_V1", True) and set_config(app_, "FF_BOUNCE_RATE_V15", True):
-            mocker.patch("app.main.views.dashboard.bounce_rate_client.get_bounce_rate", return_value=0.0)
-            mocker.patch("app.main.views.dashboard.bounce_rate_client.check_bounce_rate_status", return_value="normal")
-            mocker.patch("app.main.views.dashboard.bounce_rate_client.get_total_hard_bounces", return_value=0)
-
-            mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=[])
-            mocker.patch("app.notification_api_client.get_notifications_for_service", return_value={"notifications": []})
-            page = client_request.get(
-                "main.problem_emails",
-                service_id=service_one["id"],
-            )
-
-            assert (
-                page.find("p", {"class": "text-title"}).text.strip().replace("\n", "").replace("  ", "")
-                == "Less than 0.1% of email addresses need review"
-            )
 
 @pytest.mark.parametrize(
     "jobs, expected_problem_list_count, FF_BOUNCE_RATE_V15",
