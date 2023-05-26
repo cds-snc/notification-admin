@@ -45,13 +45,13 @@
 {%- endmacro %}
 
 {% macro row(id=None) -%}
-  <tr class="table-row" {% if id and id is string %}id="{{id}}"{% endif %}>
+  <tr class="table-row" {% if id and id is string %}id="cds{{id}}"{% endif %}>
     {{ caller() }}
   </tr>
 {%- endmacro %}
 
 {% macro row_group(id=None) %}
-  <tbody class="table-row-group" {% if id %}id="{{id}}"{% endif %}>
+  <tbody class="table-row-group" {% if id %}id="cds{{id}}"{% endif %}>
     {{ caller() }}
   </tbody>
 {%- endmacro %}
@@ -194,12 +194,11 @@
   id=None
 ) %}
   {% call field(align='right') %}
-    <span {% if id %}id="{{ id }}"{% endif %} class="spark-bar" style="--data: {{ count / max_count * 100 }}%">
+    <div {% if id %}id="cds{{ id }}"{% endif %} class="spark-bar" style="--data: {{ count / max_count * 100 }}%">
         {{ big_number(
           count,
           smallest=True
         ) }}
-      </span>
-    </span>
+    </div>
   {% endcall %}
 {% endmacro %}
