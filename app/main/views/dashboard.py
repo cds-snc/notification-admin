@@ -322,12 +322,14 @@ def get_bounce_rate_data_from_redis(service_id):
     class BounceRate:
         bounce_total = 0
         bounce_percentage = 0.0
+        bounce_rate.bounce_percentage_display = 0.0
         bounce_status = BounceRateStatus.NORMAL.value
         below_threshold = False
 
     # Populate the bounce stats
     bounce_rate = BounceRate()
-    bounce_rate.bounce_percentage = 100 * bounce_rate_client.get_bounce_rate(service_id)
+    bounce_rate.bounce_percentage = bounce_rate_client.get_bounce_rate(service_id)
+    bounce_rate.bounce_percentage_display = 100.0 * bounce_rate.bounce_percentage
     bounce_rate.bounce_total = bounce_rate_client.get_total_hard_bounces(service_id)
     bounce_status = bounce_rate_client.check_bounce_rate_status(service_id)
 
@@ -349,7 +351,8 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
 
     class BounceRate:
         bounce_total = 0
-        bounce_percentage = 0
+        bounce_percentage = 0.0
+        bounce_percentage_display = 0.0
         bounce_status = BounceRateStatus.NORMAL.value
         below_threshold = False
 
@@ -365,8 +368,8 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
             bounce_rate.bounce_total += stat["count"]
 
     # calc bounce rate
-    bounce_rate.bounce_percentage = 100 * (bounce_rate.bounce_total / total_sent) if total_sent > 0 else 0
-
+    bounce_rate.bounce_percentage = (bounce_rate.bounce_total / total_sent) if total_sent > 0 else 0
+    bounce_rate.bounce_percentage_display = 100.0 * bounce_rate.bounce_percentage
     # compute bounce status
     # if volume is less than the threshold, indicate NORMAL status
     if total_sent < current_app.config["BR_DISPLAY_VOLUME_MINIMUM"]:
