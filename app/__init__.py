@@ -46,6 +46,7 @@ from app.commands import setup_commands
 from app.config import configs
 from app.extensions import (
     antivirus_client,
+    bounce_rate_client,
     cache,
     redis_client,
     statsd_client,
@@ -169,6 +170,7 @@ def create_app(application):
         statsd_client,
         zendesk_client,
         redis_client,
+        bounce_rate_client,
     ):
         client.init_app(application)
 
