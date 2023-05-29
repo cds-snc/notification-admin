@@ -318,13 +318,16 @@ def _get_daily_stats(service_id):
     return dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily
 
 
+class BounceRate:
+    bounce_total = 0
+    bounce_percentage = 0.0
+    bounce_percentage_display = 0.0
+    bounce_status = BounceRateStatus.NORMAL.value
+    below_threshold = False
+
+
 def get_bounce_rate_data_from_redis(service_id):
-    class BounceRate:
-        bounce_total = 0
-        bounce_percentage = 0.0
-        bounce_rate.bounce_percentage_display = 0.0
-        bounce_status = BounceRateStatus.NORMAL.value
-        below_threshold = False
+    """This function gets bounce rate from Redis."""
 
     # Populate the bounce stats
     bounce_rate = BounceRate()
@@ -348,13 +351,6 @@ def get_bounce_rate_data_from_redis(service_id):
 
 def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
     """This function calculates the bounce rate using the daily statistics provided from the dashboard"""
-
-    class BounceRate:
-        bounce_total = 0
-        bounce_percentage = 0.0
-        bounce_percentage_display = 0.0
-        bounce_status = BounceRateStatus.NORMAL.value
-        below_threshold = False
 
     # Populate the bounce stats
     bounce_rate = BounceRate()
