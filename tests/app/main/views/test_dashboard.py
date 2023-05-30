@@ -472,7 +472,7 @@ def test_monthly_has_equal_length_tables(
 ):
     page = client_request.get("main.monthly", service_id=service_one["id"])
 
-    assert page.select_one(".table-field-headings th")["style"] == "width: 33%"
+    assert page.select_one(".table-field-headings th").get("width") == "33%"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
