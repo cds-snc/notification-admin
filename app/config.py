@@ -133,8 +133,6 @@ class Config(object):
 
     # Bounce Rate parameters
     BR_DISPLAY_VOLUME_MINIMUM = 1000
-    BR_WARNING_PERCENTAGE = 5
-    BR_CRITICAL_PERCENTAGE = 10
 
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
