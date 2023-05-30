@@ -41,7 +41,7 @@ def test_should_render_new_password_template(
 
     response = client.get(url_for_endpoint_with_token(".new_password", token=token))
     assert response.status_code == 200
-    assert "A password that is hard to guess contains:" in response.get_data(as_text=True)
+    assert "Your password must have:" in response.get_data(as_text=True)
 
 
 def test_should_return_404_when_email_address_does_not_exist(

@@ -180,7 +180,7 @@ def test_forced_password_reset(client, mocker, fake_uuid, api_user_active):
     mocked_send_email = mocker.patch("app.user_api_client.send_forced_reset_password_url")
     response = client.get(url_for("main.forced_password_reset"))
 
-    assert "Check your email. We sent you a password reset link" in response.get_data(as_text=True)
+    assert "Check your email. If you did not receive the link" in response.get_data(as_text=True)
     mocked_send_email.assert_called_with(sample_user["email_address"])
 
 
@@ -204,7 +204,7 @@ def test_forced_password_reset_with_missing_or_bad_email_address(client, mocker,
     mocked_send_email = mocker.patch("app.user_api_client.send_forced_reset_password_url")
     response = client.get(url_for("main.forced_password_reset"))
 
-    assert "Check your email. We sent you a password reset link" in response.get_data(as_text=True)
+    assert "Check your email. If you did not receive the link" in response.get_data(as_text=True)
     assert not mocked_send_email.called
 
 
@@ -227,7 +227,7 @@ def test_forced_password_reset_password_not_expired(client, mocker, fake_uuid, a
     mocked_send_email = mocker.patch("app.user_api_client.send_forced_reset_password_url")
     response = client.get(url_for("main.forced_password_reset"))
 
-    assert "Check your email. We sent you a password reset link" in response.get_data(as_text=True)
+    assert "Check your email. If you did not receive the link" in response.get_data(as_text=True)
     assert not mocked_send_email.called
 
 
