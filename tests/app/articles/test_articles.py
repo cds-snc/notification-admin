@@ -112,5 +112,3 @@ class TestGetPreviewURL:
 
         # return None as page_id. This should never happen in practice, since we check page_id beforehand
         assert preview_url == f"https://{gc_articles_api}/wp-admin/post.php?post=None&action=edit&lang=en"
-
-        

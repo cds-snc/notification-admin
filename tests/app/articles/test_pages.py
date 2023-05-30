@@ -115,4 +115,3 @@ def test_gca_redirects_work(client_request, mocker, url):
 
     # ensure each url is a permenent redirect
     client_request.get_url(url, _expected_status=301)
-            
