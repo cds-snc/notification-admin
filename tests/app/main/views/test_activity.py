@@ -516,8 +516,7 @@ def test_html_contains_notification_id(
 
     notifications = page.tbody.find_all("tr")
     for tr in notifications:
-        id = tr.attrs["id"]
-        assert uuid.UUID(id.lstrip("cds"))
+        assert uuid.UUID(tr.attrs["id"])
 
 
 def test_html_contains_links_for_failed_notifications(
