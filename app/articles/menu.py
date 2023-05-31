@@ -30,8 +30,11 @@ def _get_nav_wp(locale: str) -> Optional[list]:
         nav_response = json.loads(cached)
     else:
         nav_response = get_content(nav_url)
-        current_app.logger.info(f"Saving menu to cache: {cache_key}")
-        redis_client.set(cache_key, json.dumps(nav_response), ex=GC_ARTICLES_NAV_CACHE_TTL)
+        if nav_response is not None:
+            redis_client.set(cache_key, json.dumps(nav_response), ex=GC_ARTICLES_NAV_CACHE_TTL)
+            current_app.logger.info(f"Saving menu to cache: {cache_key}")
+        else:
+            return []
 
     nav_items = None
 
