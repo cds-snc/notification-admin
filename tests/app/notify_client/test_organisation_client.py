@@ -191,6 +191,7 @@ def test_update_service_organisation(mocker, fake_uuid):
 
     mock_post.assert_called_with(url="/organisations/{}/service".format(org_id), data={"service_id": service_id})
     assert mock_redis_delete.call_args_list == [
+        call("service-{}-data-retention".format(service_id)),
         call("organisations"),
         call("live-service-and-organisation-counts"),
         call("service-{}".format(service_id)),
