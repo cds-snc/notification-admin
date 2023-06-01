@@ -59,6 +59,7 @@ class OrganisationsClient(NotifyAdminAPIClient):
     @cache.delete("service-{service_id}")
     @cache.delete("live-service-and-organisation-counts")
     @cache.delete("organisations")
+    @cache.delete("service-{service_id}-data-retention")
     def update_service_organisation(self, service_id, org_id):
         data = {"service_id": service_id}
         return self.post(url="/organisations/{}/service".format(org_id), data=data)
