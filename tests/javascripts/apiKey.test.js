@@ -48,7 +48,7 @@ describe('API key', () => {
     // start the module
     window.GOVUK.modules.start();
 
-    expect(component.querySelector('input[type=button]')).toBeNull();
+    expect(component.querySelector('button[type=button]')).toBeNull();
 
   });
 
@@ -94,7 +94,7 @@ describe('API key', () => {
 
       test("It should add a button for copying the key to the clipboard", () => {
 
-        expect(component.querySelector('input[type=button]')).not.toBeNull();
+        expect(component.querySelector('button[type=button]')).not.toBeNull();
 
       });
 
@@ -129,7 +129,7 @@ describe('API key', () => {
       beforeEach(() => {
 
         keyEl = component.querySelector('span');
-        copyButton = component.querySelector('input[type=button]');
+        copyButton = component.querySelector('button[type=button]');
 
         // mock objects used to manipulate the page selection
         selectionMock = new helpers.SelectionMock(jest);
@@ -154,7 +154,7 @@ describe('API key', () => {
 
       test("It should swap the button for one to show the API key", () => {
 
-        expect(component.querySelector('input[type=button]').getAttribute('value')).toEqual('Show API key');
+        expect(component.querySelector('button[type=button]').textContent).toEqual('Show API key');
 
       });
 
@@ -180,7 +180,7 @@ describe('API key', () => {
 
         beforeEach(() => {
 
-          helpers.triggerEvent(component.querySelector('input[type=button]'), 'click');
+          helpers.triggerEvent(component.querySelector('button[type=button]'), 'click');
 
         });
 
@@ -192,7 +192,7 @@ describe('API key', () => {
 
         test("It should swap the button for one to copy the key to the clipboard", () => {
 
-          expect(component.querySelector('input[type=button]').getAttribute('value')).toEqual('Copy API key to clipboard');
+          expect(component.querySelector('button[type=button]').textContent).toEqual('Copy API key to clipboard');
 
         })
 
