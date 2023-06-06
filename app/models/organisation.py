@@ -13,6 +13,7 @@ class Organisation(JSONModel):
             "central",
             _("Government of Canada"),
         ),  # CDS note: central key name comes from GDS
+        ("province_or_territory", "Provincial or Territorial Government"),
         ("local", "Local government"),
         ("nhs_central", "NHS – central government agency or public body"),
         ("nhs_local", "NHS Trust or Clinical Commissioning Group"),

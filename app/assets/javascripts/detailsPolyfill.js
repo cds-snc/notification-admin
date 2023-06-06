@@ -112,7 +112,8 @@
       details.setAttribute("role", "group");
 
       // Add role=button to summary
-      details.__summary.setAttribute("role", "button");
+      // Removing as per https://html-validate.org/rules/no-redundant-role.html
+      // details.__summary.setAttribute("role", "button");
 
       // Add aria-controls
       details.__summary.setAttribute("aria-controls", details.__content.id);
