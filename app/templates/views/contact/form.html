@@ -29,7 +29,7 @@
             {{ textbox(form.name, width='md:w-2/3', autocomplete='name') }}
             {{ textbox(form.email_address, width='md:w-2/3', autocomplete='email') }}
           {% endif %}
-          {{ radios(form.support_type) }}
+          {{ radios(form.support_type, use_aria_labelledby=False) }}
         {% endif %}
 
         {% if current_step == "message" %}
@@ -39,11 +39,11 @@
         {% if current_step == "set_up_demo.org_details" %}
           {{ textbox(form.department_org_name, width='md:w-2/3') }}
           {{ textbox(form.program_service_name, width='md:w-2/3') }}
-          {{ radios(form.intended_recipients) }}
+          {{ radios(form.intended_recipients, use_aria_labelledby=False) }}
         {% endif %}
 
         {% if current_step == "set_up_demo.primary_purpose" %}
-          {{ radios(form.main_use_case) }}
+          {{ radios(form.main_use_case,  use_aria_labelledby=False) }}
           {{ textbox(form.main_use_case_details, width='md:w-2/3', rows=5) }}
         {% endif %}
 
