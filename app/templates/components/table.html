@@ -8,7 +8,7 @@
     <thead class="table-field-headings{% if field_headings_visible %}-visible{% endif %}">
       <tr>
         {% for field_heading in field_headings %}
-          <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}{% if not field_headings_visible %} border-0{% endif %}" width="{% if equal_length %}{{ (100 / field_headings|length)|int }}%{% endif %}">
+          <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}{% if not field_headings_visible %} border-0{% endif %}" {% if equal_length %}{{ 'style=\"width: {0}%\"'.format((100 / field_headings|length)|int)|safe }}{% endif %}>
             {% if field_headings_visible %}
               {{ field_heading }}
             {% else %}
@@ -45,13 +45,13 @@
 {%- endmacro %}
 
 {% macro row(id=None) -%}
-  <tr class="table-row" {% if id and id is string %}id="{{id}}"{% endif %}>
+  <tr class="table-row" {% if id and id is string %}id="cds{{id}}"{% endif %}>
     {{ caller() }}
   </tr>
 {%- endmacro %}
 
 {% macro row_group(id=None) %}
-  <tbody class="table-row-group" {% if id %}id="{{id}}"{% endif %}>
+  <tbody class="table-row-group" {% if id %}id="cds{{id}}"{% endif %}>
     {{ caller() }}
   </tbody>
 {%- endmacro %}
@@ -80,7 +80,7 @@
 {%- endmacro %}
 
 {% macro row_heading() -%}
-  <th class="table-field">
+  <th class="table-field" scope="row">
     {{ caller() }}
   </th>
 {%- endmacro %}
@@ -194,12 +194,11 @@
   id=None
 ) %}
   {% call field(align='right') %}
-    <span {% if id %}id="{{ id }}"{% endif %} class="spark-bar" style="--data: {{ count / max_count * 100 }}%">
+    <div {% if id %}id="cds{{ id }}"{% endif %} class="spark-bar" style="--data: {{ count / max_count * 100 }}%">
         {{ big_number(
           count,
           smallest=True
         ) }}
-      </span>
-    </span>
+    </div>
   {% endcall %}
 {% endmacro %}
