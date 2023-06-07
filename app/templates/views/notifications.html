@@ -33,6 +33,7 @@
       url_for('.get_notifications_as_json', service_id=current_service.id, message_type=message_type, status=status),
       'counts'
     ) }}
+    {{ problem_email_checkbox() }}
 
     {% call form_wrapper(
       action=url_for('.view_notifications', service_id=current_service.id, message_type=message_type),
@@ -60,14 +61,11 @@
 
   {% if current_user.has_permissions('view_activity') %}
     <div class="mb-12 clear-both contain-floats">
-      <a href="{{ download_link }}" download="download" class="heading-small">{{ _('Download this report') }}</a>
-      &emsp;
+      <a href="{{ download_link }}" download="download">{{ _('Download this report') }}</a>
       {{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}
     </div>
   {% endif %}
   
-  {{ problem_email_checkbox() }}
-
   {{ ajax_block(
     partials,
     url_for('.get_notifications_as_json', service_id=current_service.id, message_type=message_type, status=status, page=page),
