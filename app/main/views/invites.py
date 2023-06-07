@@ -79,7 +79,7 @@ def accept_org_invite(token):
         invited_org_user = InvitedOrgUser.from_token(token)
     except InviteTokenError:
         current_app.logger.warning(f"Bad org invite token: {token}")
-        flash(message="Bad token")
+        flash(message=_("bad invitation link"))
         abort(403)
 
     if not current_user.is_anonymous and current_user.email_address.lower() != invited_org_user.email_address.lower():
