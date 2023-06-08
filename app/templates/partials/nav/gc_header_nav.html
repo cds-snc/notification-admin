@@ -41,7 +41,7 @@
             <a
               id="nav-sign-in-desktop"
               href="{{ url_for('main.sign_in' ) }}"
-              class="px-5 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-small underline hover:no-underline">
+              class="px-5 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-smaller underline hover:no-underline">
               {{ _('Sign in') }}
             </a>
           </div>
@@ -50,7 +50,7 @@
           <div class="h-14 p-1 border-2 border-solid border-gray rounded-lg">
             <a
               id="nav-lang"
-              class="px-1 block line-under leading-none text-blue visited:text-blue link:text-blue text-small underline hover:no-underline"
+              class="px-1 block line-under leading-none text-blue visited:text-blue link:text-blue text-smaller underline hover:no-underline"
               href="{{ url_for('main.set_lang') }}?from={{ lang_url or request.path }}"
               lang="{{ 'fr-CA' if lang_switch == 'FR' else 'en-CA' }}">
               <span class="sr-only">{{ long_lang_switch }}</span>
