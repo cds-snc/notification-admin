@@ -60,9 +60,11 @@
   {% endif %}
 
   {% if current_user.has_permissions('view_activity') %}
-    <div class="mb-12 clear-both contain-floats">
-      <a href="{{ download_link }}" download="download">{{ _('Download this report') }}</a>
-      {{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}
+    <div class="mb-12 mt-12 clear-both contain-floats">
+      <a href="{{ download_link }}" download="download" class="text-smaller leading-tight font-bold">
+        {{ _('Download this report') }}
+      </a>
+      <div class="mt-2 text-small leading-tight font-normal">{{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}</div>
     </div>
   {% endif %}
   

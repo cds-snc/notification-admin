@@ -19,23 +19,19 @@
       {% endcall %}
     </div>
   {% else %}
+    <div class="mb-12 clear-both contain-floats">
+      {{ problem_email_checkbox() }}
+    </div>
     {% if notifications %}
-      <div class="dashboard-table mb-12 clear-both contain-floats">
-    {% endif %}
-
-    {% if percentage_complete < 100 %}
-        <p class="mb-12 clear-both contain-floats hint">
-        {{ _('Report is') }} {{ "{:.0f}%".format(percentage_complete * 0.99) }} {{ _('complete…') }}
-        </p>
-    {% elif notifications %}
-        <p class="mb-12 clear-both contain-floats">
-        <a href="{{ download_link }}" download class="heading-small">{{ _('Download this report') }}</a>
-        &emsp;
-        {{ _("Available until") }} <span id="time-left" class="local-datetime-short-year">{{ available_until_date }}</span>
-        </p>
-    {% endif %}
-
-    {% if notifications %}
+      <div class="dashboard-table mt-12 mb-12 clear-both contain-floats">
+        {% if percentage_complete < 100 %}
+          {{ _('Report is') }} {{ "{:.0f}%".format(percentage_complete * 0.99) }} {{ _('complete…') }}
+        {% else %}
+          <a href="{{ download_link }}" download class="text-smaller leading-tight font-bold">{{ _('Download this report') }}</a>
+          <div class="mt-2 text-small leading-tight font-normal">
+            {{ _("Available until") }} <span id="time-left" class="local-datetime-short-year">{{ available_until_date }}</span>
+          </div>
+        {% endif %}
       </div>
     {% endif %}
   {% endif %}
