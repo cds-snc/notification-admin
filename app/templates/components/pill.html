@@ -7,9 +7,15 @@
   show_count=True,
   label=""
 ) %}
+  {% set ns = namespace(current_value_not_in_items=True) %}
+  {% for label, option, link, count in items %}
+    {% if current_value == option %}
+      {% set ns.current_value_not_in_items = False %}
+    {% endif %}
+  {% endfor %}
   <nav class='pill flex' aria-label="{{ label }}">
     {% for label, option, link, count in items %}
-      {% if current_value == option %}
+      {% if current_value == option or (loop.index == 1 and ns.current_value_not_in_items) %}
         <a href="{{ link }}" class='pill-selected-item' aria-current='true'>
       {% else %}
         <a href="{{ link }}" class='pill-unselected-item'>

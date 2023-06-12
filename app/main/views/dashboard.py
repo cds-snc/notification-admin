@@ -546,8 +546,8 @@ def get_tuples_of_financial_years(
     partial_url,
     start=2015,
     end=None,
-):
-    return (
+) -> list:
+    return list(
         (
             _l("financial year"),
             year,
