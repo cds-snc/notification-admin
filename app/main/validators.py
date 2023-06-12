@@ -61,7 +61,6 @@ class CsvFileValidator:
 
 class ValidGovEmail:
     def __call__(self, form, field):
-
         if field.data == "":
             return
 
@@ -82,8 +81,7 @@ class ValidEmail(Email):
         super().__init__(_l("Enter a valid email address"))
 
     def __call__(self, form, field):
-
-        if field.data == "":
+        if not field.data:
             return
 
         try:
@@ -119,7 +117,6 @@ class OnlySMSCharacters:
 
 
 class LettersNumbersAndFullStopsOnly:
-
     regex = re.compile(r"^[a-zA-Z0-9\s\.]+$")
 
     def __init__(self, message="Use letters and numbers only"):
