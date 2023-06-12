@@ -61,7 +61,7 @@ class CsvFileValidator:
 
 class ValidGovEmail:
     def __call__(self, form, field):
-        if field.data == "":
+        if not field.data:
             return
 
         from flask import url_for
