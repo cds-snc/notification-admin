@@ -365,7 +365,7 @@ def test_should_show_job_in_progress(
         service_id=service_one["id"],
         job_id=fake_uuid,
     )
-    assert page.find("p", {"class": "hint"}).text.strip() == "Report is 50% complete…"
+    assert page.find("div", {"class": "dashboard-table"}).text.strip() == "Report is 50% complete…"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")

@@ -21,7 +21,6 @@
     {% endif %}
     {{ ajax_block(partials, updates_url, 'counts', finished=finished) }}
     {{ ajax_block(partials, updates_url, 'notifications_header', finished=finished) }}
-    {{ problem_email_checkbox() }}
     {{ ajax_block(partials, updates_url, 'notifications', finished=finished) }}
 
     {% if can_cancel_letter_job %}
