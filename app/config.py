@@ -216,9 +216,15 @@ class Staging(Production):
     NOTIFY_LOG_LEVEL = "INFO"
 
 
+class Scratch(Production):
+    NOTIFY_ENVIRONMENT = "scratch"
+    NOTIFY_LOG_LEVEL = "INFO"
+
+
 configs = {
     "development": Development,
     "test": Test,
     "staging": Staging,
     "production": Production,
+    "scratch": Scratch,
 }
