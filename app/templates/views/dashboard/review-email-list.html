@@ -16,7 +16,7 @@
     <div class="page-content">
         <h1 class="heading-large py-4">{{ _('Review email addresses') }}</h1>
         <p>{{ _("GC Notify's email provider could suspend our services if we send too many problem emails.") }}</p>
-        <p>{{ _("<a href='{}'>Keep accurate contact information</a>. Check email addresses are correct. If necessary confirm recipient’s email address using another contact method.").format(gca_url_for('delivery_failure')) }}</p>
+        <p>{{ _("<a href='{}'>Keep accurate contact information</a>. Check email addresses are correct. If necessary confirm recipient’s email address using another contact method.").format(gca_url_for('bounce_guidance')) }}</p>
         <p>{{ _('Remove addresses you cannot correct.') }}</p>
 
         <div class="{% if bounce_rate["bounce_status"] == "critical" %}review-email-status-critical{% elif bounce_rate["bounce_status"] == "warning"%}review-email-status-critical{% else%}review-email-status-normal{% endif %} px-5">
