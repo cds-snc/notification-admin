@@ -47,7 +47,7 @@
             {% for job in jobs %}
                 {% if job["bounce_count"] > 0 %}
                     <li>
-                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='failed') }}">
+                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='failed', pe_filter='true') }}">
                             {{ job["bounce_count"] }}
                             {% if job["bounce_count"] > 1 %}
                                 {{_(' problem email addresses')}}
