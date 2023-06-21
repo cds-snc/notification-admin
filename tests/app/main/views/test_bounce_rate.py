@@ -711,9 +711,7 @@ def test_review_problem_emails_shows_one_offs_when_problem_emails_exist(
         (jobs_1_failure),
     ],
 )
-def test_review_problem_emails_checks_problem_filter_checkbox(
-    mocker, service_one, app_, client_request, jobs
-):
+def test_review_problem_emails_checks_problem_filter_checkbox(mocker, service_one, app_, client_request, jobs):
     with set_config(app_, "FF_BOUNCE_RATE_V1", True):
         threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
 
@@ -740,4 +738,4 @@ def test_review_problem_emails_checks_problem_filter_checkbox(
         )
 
         # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
-        assert "pe_filter=true" in page.select_one(".ajax-block-container .list.list-bullet").select_one("li a")['href']
+        assert "pe_filter=true" in page.select_one(".ajax-block-container .list.list-bullet").select_one("li a")["href"]
