@@ -739,3 +739,4 @@ def test_review_problem_emails_checks_problem_filter_checkbox(mocker, service_on
 
         # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
         assert "pe_filter=true" in page.select_one(".ajax-block-container .list.list-bullet").select_one("li a")["href"]
+        assert "status=permanent-failure" in page.select_one(".ajax-block-container .list.list-bullet").select_one("li a")["href"]
