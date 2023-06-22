@@ -18,6 +18,7 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
+from notifications_utils import EMAIL_CHAR_COUNT_LIMIT, SMS_CHAR_COUNT_LIMIT
 from notifications_utils.formatters import nl2br
 from notifications_utils.recipients import first_column_headings
 
@@ -104,6 +105,11 @@ def delete_preview_data(service_id, template_id=None):
     redis_client.delete(key)
 
 
+def get_char_limit_error_msg(template_type):
+    CHAR_LIMIT = SMS_CHAR_COUNT_LIMIT if template_type == "sms" else EMAIL_CHAR_COUNT_LIMIT
+    return (_("Message must be less than {char_limit} characters")).format(char_limit=CHAR_LIMIT + 1)
+
+
 @main.route("/services/<service_id>/templates/<uuid:template_id>")
 @user_has_permissions()
 def view_template(service_id, template_id):
@@ -182,7 +188,8 @@ def preview_template(service_id, template_id=None):
             except HTTPError as e:
                 if e.status_code == 400:
                     if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
-                        flash(e.message["content"])
+                        error_message = get_char_limit_error_msg(template["template_type"])
+                        flash(error_message)
                     else:
                         raise e
                 else:
@@ -749,7 +756,8 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 and "content" in e.message
                 and any(["character count greater than" in x for x in e.message["content"]])
             ):
-                form.template_content.errors.extend(e.message["content"])
+                error_message = get_char_limit_error_msg(template_type)
+                form.template_content.errors.extend([error_message])
             else:
                 raise e
         else:
@@ -871,7 +879,8 @@ def edit_service_template(service_id, template_id):
                 except HTTPError as e:
                     if e.status_code == 400:
                         if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
-                            form.template_content.errors.extend(e.message["content"])
+                            error_message = get_char_limit_error_msg(template["template_type"])
+                            form.template_content.errors.extend([error_message])
                         else:
                             raise e
                     else:
