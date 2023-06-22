@@ -702,3 +702,41 @@ def test_review_problem_emails_shows_one_offs_when_problem_emails_exist(
 
     # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
     assert len(page.select_one(".ajax-block-container .list.list-bullet").find_all("li")) == expected_problem_list_count
+
+
+@pytest.mark.parametrize(
+    "jobs",
+    [
+        (jobs_2_failures),
+        (jobs_1_failure),
+    ],
+)
+def test_review_problem_emails_checks_problem_filter_checkbox(mocker, service_one, app_, client_request, jobs):
+    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+        threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
+
+        mock_data = [
+            {
+                "count": (threshold - 20) * 0.5,
+                "is_precompiled_letter": False,
+                "status": "delivered",
+                "template_id": "2156a57e-efd7-4531-b8f4-e7e0c64c03dc",
+                "template_name": "test",
+                "template_type": "email",
+            }
+        ]
+
+        mocker.patch(
+            "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=mock_data
+        )
+
+        mocker.patch("app.main.views.dashboard.get_jobs_and_calculate_hard_bounces", return_value=jobs)
+        mocker.patch("app.notification_api_client.get_notifications_for_service", return_value={"notifications": []})
+        page = client_request.get(
+            "main.problem_emails",
+            service_id=service_one["id"],
+        )
+
+        # ensure the number of CSVs displayed on this page correspond to what is found in the jobs data
+        assert "pe_filter=true" in page.select_one(".ajax-block-container .list.list-bullet").select_one("li a")["href"]
+        assert "status=permanent-failure" in page.select_one(".ajax-block-container .list.list-bullet").select_one("li a")["href"]
