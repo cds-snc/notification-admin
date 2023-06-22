@@ -1728,3 +1728,4 @@
 " problem email addresses"," adresses e-mail problématiques"
 ".contact",".etat-du-systeme"
 "Sign in to GC Notify","Se connecter à Notification GC"
+"Message must be less than {char_limit} characters","Le message doit comporter moins de {char_limit} caractères."

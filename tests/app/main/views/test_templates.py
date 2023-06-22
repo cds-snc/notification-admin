@@ -1547,7 +1547,7 @@ def test_should_not_create_too_big_template(
         },
         _expected_status=200,
     )
-    assert "Content has a character count greater than the limit of 459" in page.text
+    assert "Message must be less than 613 characters" in page.text
 
 
 def test_should_not_update_too_big_template(
@@ -1570,7 +1570,7 @@ def test_should_not_update_too_big_template(
         },
         _expected_status=200,
     )
-    assert "Content has a character count greater than the limit of 459" in page.text
+    assert "Message must be less than 613 characters" in page.text
 
 
 def test_should_redirect_when_saving_a_template_email(
