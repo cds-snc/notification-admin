@@ -438,7 +438,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
                         "suppressed": _("Blocked"),
                         "on-account-suppression-list": _("Blocked"),
                     },
-                }[  # noqa
+                }[
                     template_type
                 ].get(feedback_subtype, _("No such address"))
             else:
