@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1.2.0
-    - uses: actions/setup-python@152ba7c4dd6521b8e9c93f72d362ce03bf6c4f20 # v1.2.3
+    - uses: actions/setup-python@0f07f7f756721ebd886c2462646a35f78a8bc4de # v1.2.4
       with:
         python-version: '3.10'
     - uses: actions/setup-node@f1f314fca9dfce2769ece7d933488f076716723e # v1.4.6
