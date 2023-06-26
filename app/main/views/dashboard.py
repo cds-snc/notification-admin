@@ -111,7 +111,6 @@ def get_jobs_and_calculate_hard_bounces(service_id):
 @main.route("/services/<service_id>")
 @user_has_permissions()
 def service_dashboard(service_id):
-
     if session.get("invited_user"):
         session.pop("invited_user", None)
         session["service_id"] = service_id
@@ -135,14 +134,12 @@ def service_dashboard_updates(service_id):
 @main.route("/services/<service_id>/template-activity")
 @user_has_permissions("view_activity")
 def template_history(service_id):
-
     return redirect(url_for("main.template_usage", service_id=service_id), code=301)
 
 
 @main.route("/services/<service_id>/template-usage")
 @user_has_permissions("view_activity")
 def template_usage(service_id):
-
     year, current_financial_year = requested_and_current_financial_year(request)
     stats = template_statistics_client.get_monthly_template_usage_for_service(service_id, year)
 
@@ -188,7 +185,6 @@ def template_usage(service_id):
 @main.route("/services/<service_id>/usage")
 @user_has_permissions("manage_service", allow_org_user=True)
 def usage(service_id):
-
     if current_service.has_permission("view_activity") or current_user.platform_admin:
         return redirect(url_for(".service_dashboard", service_id=service_id))
 

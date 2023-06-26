@@ -47,7 +47,6 @@ def check_and_resend_verification_code():
 @main.route("/email-not-received", methods=["GET"])
 @redirect_to_sign_in
 def email_not_received():
-
     return render_template("views/email-not-received.html")
 
 

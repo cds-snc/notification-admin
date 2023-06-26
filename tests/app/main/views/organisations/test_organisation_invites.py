@@ -50,7 +50,6 @@ def test_invite_org_user(
     mock_get_organisation,
     sample_org_invite,
 ):
-
     mock_invite_org_user = mocker.patch(
         "app.org_invite_api_client.create_invite",
         return_value=sample_org_invite,

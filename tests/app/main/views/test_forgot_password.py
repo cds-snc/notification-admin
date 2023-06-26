@@ -7,7 +7,6 @@ import app
 
 @pytest.mark.parametrize("password_expired", [True, False])
 def test_should_render_forgot_password(password_expired, api_user_active, client, mocker, fake_uuid):
-
     sample_user = api_user_active
     sample_user["is_authenticated"] = False
     sample_user["password_expired"] = password_expired
@@ -52,7 +51,6 @@ def test_should_redirect_to_password_reset_sent_for_missing_email(
     api_user_active,
     mocker,
 ):
-
     mocker.patch(
         "app.user_api_client.send_reset_password_url",
         side_effect=HTTPError(Response(status=404), "Not found"),

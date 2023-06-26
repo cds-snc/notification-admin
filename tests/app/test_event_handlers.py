@@ -11,7 +11,6 @@ from app.models.user import User
 
 
 def test_on_user_logged_in_calls_events_api(app_, api_user_active, mock_events):
-
     with app_.test_request_context(environ_base={"REMOTE_ADDR": "1.2.3.4"}):
         on_user_logged_in(app_, User(api_user_active))
         mock_events.assert_called_with(

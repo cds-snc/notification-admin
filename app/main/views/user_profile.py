@@ -50,7 +50,6 @@ def user_profile():
 @main.route("/user-profile/name", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_name():
-
     form = ChangeNameForm(new_name=current_user.name)
 
     if form.validate_on_submit():
@@ -64,7 +63,6 @@ def user_profile_name():
 @user_is_logged_in
 @user_is_gov_user
 def user_profile_email():
-
     form = ChangeEmailForm(User.already_registered, email_address=current_user.email_address)
 
     if form.validate_on_submit():
@@ -120,7 +118,6 @@ def user_profile_email_confirm(token):
 @main.route("/user-profile/mobile-number", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number():
-
     form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
 
     if form.validate_on_submit():
@@ -137,7 +134,6 @@ def user_profile_mobile_number():
 @main.route("/user-profile/mobile-number/authenticate", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number_authenticate():
-
     # Validate password for form
     def _check_password(pwd):
         return user_api_client.verify_password(current_user.id, pwd)
@@ -163,7 +159,6 @@ def user_profile_mobile_number_authenticate():
 @main.route("/user-profile/mobile-number/confirm", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number_confirm():
-
     # Validate verify code for form
     def _check_code(cde):
         return user_api_client.check_verify_code(current_user.id, cde, "sms")
@@ -191,7 +186,6 @@ def user_profile_mobile_number_confirm():
 @main.route("/user-profile/password", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_password():
-
     # Validate password for form
     def _check_password(pwd):
         return user_api_client.verify_password(current_user.id, pwd)

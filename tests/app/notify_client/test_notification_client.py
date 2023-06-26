@@ -42,7 +42,6 @@ from tests import notification_json, single_notification_json
     ],
 )
 def test_client_gets_notifications_for_service_and_job_by_page(mocker, arguments, expected_call):
-
     mock_get = mocker.patch("app.notify_client.notification_api_client.NotificationApiClient.get")
     NotificationApiClient().get_notifications_for_service("abcd1234", **arguments)
     mock_get.assert_called_once_with(**expected_call)
