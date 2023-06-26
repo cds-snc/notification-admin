@@ -60,7 +60,7 @@ awscli-cwlogs = "^1.4.6"
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous = "2.1.2"  # pyup: <1.0.0
 
-notifications-utils = {git = "https://github.com/cds-snc/notifier-utils.git", rev = "51.0.4"}
+notifications-utils = {git = "https://github.com/cds-snc/notifier-utils.git", rev = "renovate/pypi-requests-vulnerability"}
 
 
 rsa = "^4.1" # not directly required, pinned by Snyk to avoid a vulnerability
