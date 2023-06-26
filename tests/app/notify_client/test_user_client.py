@@ -14,7 +14,6 @@ user_id = sample_uuid()
 
 
 def test_client_gets_all_users_for_service(mocker, fake_uuid, api_user_pending):
-
     user_api_client.max_failed_login_count = 99  # doesn't matter for this test
     mock_get = mocker.patch(
         "app.notify_client.user_api_client.UserApiClient.get",
@@ -33,7 +32,6 @@ def test_client_gets_all_users_for_service(mocker, fake_uuid, api_user_pending):
 
 
 def test_client_uses_correct_find_by_email(mocker, api_user_active):
-
     expected_url = "/user/email"
     expected_params = {"email": api_user_active["email_address"]}
 
@@ -160,7 +158,6 @@ def test_returns_value_from_cache(
     expected_api_calls,
     expected_cache_set_calls,
 ):
-
     mock_redis_get = mocker.patch(
         "app.extensions.RedisClient.get",
         return_value=cache_value,

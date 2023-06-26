@@ -217,7 +217,6 @@ def preview_template(service_id, template_id=None):
 @main.route("/services/<service_id>/start-tour/<uuid:template_id>")
 @user_has_permissions("view_activity")
 def start_tour(service_id, template_id):
-
     template = current_service.get_template(template_id)
 
     if template["template_type"] != "email":
@@ -415,7 +414,6 @@ def view_template_version_preview(service_id, template_id, version, filetype):
 
 
 def _add_template_by_type(template_type, template_folder_id):
-
     if template_type == "copy-existing":
         return redirect(
             url_for(
@@ -505,12 +503,10 @@ def choose_template_to_copy(
     from_service=None,
     from_folder=None,
 ):
-
     if from_folder and from_service is None:
         from_service = service_id
 
     if from_service:
-
         current_user.belongs_to_service_or_403(from_service)
         service = Service(service_api_client.get_service(from_service)["data"])
 
@@ -565,7 +561,6 @@ def copy_template(service_id, template_id):
 
 
 def _get_template_copy_name(template, existing_templates):
-
     template_names = [existing["name"] for existing in existing_templates]
 
     for index in reversed(range(1, 10)):
@@ -657,7 +652,6 @@ def delete_template_folder(service_id, template_folder_id):
         )
 
     if request.method == "POST":
-
         try:
             template_folder_api_client.delete_template_folder(current_service.id, template_folder_id)
 
@@ -707,7 +701,6 @@ def get_template_data(template_id):
 )
 @user_has_permissions("manage_templates")
 def add_service_template(service_id, template_type, template_folder_id=None):
-
     if template_type not in ["sms", "email", "letter"]:
         abort(404)
     if not current_service.has_permission("letter") and template_type == "letter":
@@ -968,7 +961,6 @@ def confirm_redact_template(service_id, template_id):
 @main.route("/services/<service_id>/templates/<template_id>/redact", methods=["POST"])
 @user_has_permissions("manage_templates")
 def redact_template(service_id, template_id):
-
     service_api_client.redact_service_template(service_id, template_id)
 
     flash(
@@ -1103,7 +1095,6 @@ def get_human_readable_delta(from_time, until_time):
 @main.route("/services/<service_id>/add-recipients/<template_id>", methods=["GET", "POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def add_recipients(service_id, template_id):
-
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
     if template["template_type"] == "email":

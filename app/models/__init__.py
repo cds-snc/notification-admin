@@ -5,7 +5,6 @@ from flask import abort
 
 
 class JSONModel:
-
     ALLOWED_PROPERTIES: set = set()
 
     def __init__(self, _dict):
@@ -22,7 +21,6 @@ class JSONModel:
         return self.id == other.id
 
     def __getattribute__(self, attr):
-
         try:
             return super().__getattribute__(attr)
         except AttributeError as e:

@@ -433,7 +433,12 @@ def format_notification_status(status, template_type, provider_response=None, fe
         def _getStatusByBounceSubtype():
             """Return the status of a notification based on the bounce sub type"""
             if feedback_subtype:
-                return {"email": {"suppressed": _("Blocked"), "on-account-suppression-list": _("Blocked"),},}[  # noqa
+                return {
+                    "email": {
+                        "suppressed": _("Blocked"),
+                        "on-account-suppression-list": _("Blocked"),
+                    },
+                }[
                     template_type
                 ].get(feedback_subtype, _("No such address"))
             else:

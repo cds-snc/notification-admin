@@ -372,7 +372,6 @@ class HeaderNavigation(Navigation):
 
 
 class MainNavigation(Navigation):
-
     mapping = {
         "dashboard": {
             "problem_emails",

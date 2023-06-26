@@ -152,7 +152,6 @@ def cancel_invited_org_user(org_id, invited_user_id):
 @main.route("/organisations/<org_id>/settings/", methods=["GET"])
 @user_is_platform_admin
 def organisation_settings(org_id):
-
     email_branding = (
         "French Government of Canada signature"
         if current_organisation.default_branding_is_french is True
@@ -204,7 +203,6 @@ def edit_organisation_name(org_id):
 @main.route("/organisations/<org_id>/settings/edit-type", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_type(org_id):
-
     form = OrganisationOrganisationTypeForm(org_type=current_organisation.organisation_type)
 
     if form.validate_on_submit():
@@ -226,7 +224,6 @@ def edit_organisation_type(org_id):
 @main.route("/organisations/<org_id>/settings/edit-crown-status", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_crown_status(org_id):
-
     form = OrganisationCrownStatusForm(
         crown_status={
             True: "crown",
@@ -255,7 +252,6 @@ def edit_organisation_crown_status(org_id):
 @main.route("/organisations/<org_id>/settings/edit-agreement", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_agreement(org_id):
-
     form = OrganisationAgreementSignedForm(
         agreement_signed={
             True: "yes",
@@ -284,7 +280,6 @@ def edit_organisation_agreement(org_id):
 @main.route("/organisations/<org_id>/settings/set-email-branding", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_email_branding(org_id):
-
     email_branding = email_branding_client.get_all_email_branding()
 
     current_branding = current_organisation.email_branding_id
@@ -321,7 +316,6 @@ def edit_organisation_email_branding(org_id):
 @main.route("/organisations/<org_id>/settings/preview-email-branding", methods=["GET", "POST"])
 @user_is_platform_admin
 def organisation_preview_email_branding(org_id):
-
     branding_style = request.args.get("branding_style", None)
     form = PreviewBranding(branding_style=branding_style)
 
@@ -400,7 +394,6 @@ def organisation_preview_letter_branding(org_id):
 )
 @user_is_platform_admin
 def edit_organisation_domains(org_id):
-
     return redirect(url_for(".organisation_settings", org_id=org_id))
 
     form = OrganisationDomainsForm()
@@ -456,7 +449,6 @@ def confirm_edit_organisation_name(org_id):
 @main.route("/organisations/<org_id>/settings/edit-go-live-notes", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_go_live_notes(org_id):
-
     form = GoLiveNotesForm()
 
     if form.validate_on_submit():

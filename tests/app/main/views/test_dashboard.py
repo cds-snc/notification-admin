@@ -525,7 +525,6 @@ def test_correct_columns_display_on_dashboard(
     expected_column_count,
     column_name,
 ):
-
     service_one["permissions"] = permissions
 
     page = client_request.get("main.service_dashboard", service_id=service_one["id"])

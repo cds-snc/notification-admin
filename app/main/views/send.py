@@ -191,7 +191,7 @@ def send_messages(service_id, template_id):
             )
         except (UnicodeDecodeError, BadZipFile, XLRDError):
             flash(_("Could not read {}. Try using a different file format.").format(form.file.data.filename))
-        except (XLDateError):
+        except XLDateError:
             flash(
                 _(
                     "{} contains numbers or dates that GC Notify can’t understand. "
@@ -287,7 +287,7 @@ def s3_send(service_id, template_id):
             )
         except (UnicodeDecodeError, BadZipFile, XLRDError):
             flash(_("Could not read {}. Try using a different file format.").format(form.s3_files.data))
-        except (XLDateError):
+        except XLDateError:
             flash(
                 _(
                     "{} contains numbers or dates that GC Notify can’t understand. "
@@ -599,7 +599,6 @@ def send_test_step(service_id, template_id, step_index):
 @main.route("/services/<service_id>/send/<template_id>/test.<filetype>", methods=["GET"])
 @user_has_permissions("send_messages")
 def send_test_preview(service_id, template_id, filetype):
-
     if filetype not in ("pdf", "png"):
         abort(404)
 
@@ -622,7 +621,6 @@ def send_test_preview(service_id, template_id, filetype):
 
 
 def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_pdf=False):
-
     try:
         # The happy path is that the job doesn’t already exist, so the
         # API will return a 404 and the client will raise HTTPError.
@@ -754,7 +752,6 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 )
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def check_messages(service_id, template_id, upload_id, row_index=2):
-
     data = _check_messages(service_id, template_id, upload_id, row_index)
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
     data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily)
@@ -845,7 +842,6 @@ def check_notification_preview(service_id, template_id, filetype):
 @main.route("/services/<service_id>/start-job/<upload_id>", methods=["POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def start_job(service_id, upload_id):
-
     job_api_client.create_job(upload_id, service_id, scheduled_for=request.form.get("scheduled_for", ""))
 
     session.pop("sender_id", None)
@@ -864,14 +860,12 @@ def start_job(service_id, upload_id):
 @main.route("/services/<service_id>/end-tour/<example_template_id>")
 @user_has_permissions("manage_templates")
 def go_to_dashboard_after_tour(service_id, example_template_id):
-
     service_api_client.delete_service_template(service_id, example_template_id)
 
     return redirect(url_for("main.service_dashboard", service_id=service_id))
 
 
 def fields_to_fill_in(template, prefill_current_user=False):
-
     recipient_columns = first_column_headings[template.template_type]
 
     if "letter" == template.template_type or not prefill_current_user:

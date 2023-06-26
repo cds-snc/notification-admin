@@ -165,7 +165,6 @@ def redirect_to_sign_in(f):
 
 
 def get_errors_for_csv(recipients, template_type):
-
     errors = []
 
     if any(recipients.rows_with_bad_recipients):
@@ -321,11 +320,9 @@ def get_remote_addr(request):
 
 
 class Spreadsheet:
-
     allowed_file_extensions = ["csv", "xlsx", "xls", "ods", "xlsm", "tsv"]
 
     def __init__(self, csv_data=None, rows=None, filename="", json_data=None):
-
         self.filename = filename
 
         if csv_data and rows:
@@ -576,7 +573,6 @@ def normalize_spaces(name):
 
 
 def guess_name_from_email_address(email_address):
-
     possible_name = re.split(r"[\@\+]", email_address)[0]
 
     if "." not in possible_name or starts_with_initial(possible_name):

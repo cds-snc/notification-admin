@@ -506,7 +506,6 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
     mock_service_name_is_unique,
     mock_service_email_from_is_unique,
 ):
-
     client_request.post(
         "main.add_service",
         _data={

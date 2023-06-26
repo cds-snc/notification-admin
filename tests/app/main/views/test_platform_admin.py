@@ -1171,7 +1171,10 @@ def test_get_performance_platform_report(platform_admin_client, mocker):
     )
     response = platform_admin_client.get(url_for("main.performance_platform_xlsx"))
     assert response.status_code == 200
-    assert pyexcel.get_array(file_type="xlsx", file_stream=response.get_data(),) == [
+    assert pyexcel.get_array(
+        file_type="xlsx",
+        file_stream=response.get_data(),
+    ) == [
         ["service_id", "agency", "service_name", "_timestamp", "service", "count"],
         [
             "abc123",
