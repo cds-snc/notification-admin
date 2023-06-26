@@ -155,7 +155,6 @@ def view_notification(service_id, notification_id):
 )
 @user_has_permissions("view_activity", "send_messages")
 def cancel_letter(service_id, notification_id):
-
     if request.method == "POST":
         notification_api_client.update_notification_to_cancelled(current_service.id, notification_id)
         return redirect(
@@ -179,7 +178,6 @@ def get_preview_error_image():
 @main.route("/services/<service_id>/notification/<uuid:notification_id>.<filetype>")
 @user_has_permissions("view_activity")
 def view_letter_notification_as_preview(service_id, notification_id, filetype):
-
     if filetype not in ("pdf", "png"):
         abort(404)
     notification = notification_api_client.get_notification(service_id, str(notification_id))
@@ -227,7 +225,6 @@ def get_attachments(notification, sending_method):
 
 
 def get_all_personalisation_from_notification(notification):
-
     if notification["template"].get("redact_personalisation"):
         notification["personalisation"] = {}
 

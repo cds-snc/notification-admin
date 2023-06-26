@@ -212,7 +212,6 @@ def test_all_reasons_message_step_success(
     expected_heading,
     friendly_support_type,
 ):
-
     mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
 
     page = client_request.post(

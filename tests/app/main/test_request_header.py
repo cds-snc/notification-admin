@@ -21,7 +21,6 @@ def test_route_correct_secret_key(app_, check_proxy_header, header_value, expect
             "CHECK_PROXY_HEADER": check_proxy_header,
         },
     ):
-
         with app_.test_client() as client:
             response = client.get(
                 path="/_status?elb=True",

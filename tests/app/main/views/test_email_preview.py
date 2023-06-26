@@ -7,7 +7,6 @@ from flask import url_for
 
 @pytest.mark.parametrize("query_args, result", [({}, True), ({"fip_banner_english": "false"}, "false")])
 def test_renders(client, mocker, query_args, result):
-
     mocker.patch("app.main.views.index.HTMLEmailTemplate.__str__", return_value="rendered")
 
     response = client.get(url_for("main.email_template", **query_args))
@@ -17,21 +16,18 @@ def test_renders(client, mocker, query_args, result):
 
 
 def test_displays_govuk_branding_by_default(client):
-
     response = client.get(url_for("main.email_template"))
 
     assert response.status_code == 200
 
 
 def test_displays_govuk_branding(client, mock_get_email_branding_with_govuk_brand_type):
-
     response = client.get(url_for("main.email_template", branding_style="1"))
 
     assert response.status_code == 200
 
 
 def test_displays_both_branding(client, mock_get_email_branding_with_both_brand_type):
-
     response = client.get(url_for("main.email_template", branding_style="1"))
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
@@ -47,7 +43,6 @@ def test_displays_both_branding(client, mock_get_email_branding_with_both_brand_
 
 
 def test_displays_org_branding(client, mock_get_email_branding):
-
     # mock_get_email_branding has 'brand_type' of 'custom_logo'
     response = client.get(url_for("main.email_template", branding_style="1"))
 
@@ -66,7 +61,6 @@ def test_displays_org_branding(client, mock_get_email_branding):
 
 
 def test_displays_org_branding_with_banner(client, mock_get_email_branding_with_custom_logo_with_background_colour_brand_type):
-
     response = client.get(url_for("main.email_template", branding_style="1"))
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
@@ -81,7 +75,6 @@ def test_displays_org_branding_with_banner(client, mock_get_email_branding_with_
 
 
 def test_displays_org_branding_with_banner_without_brand_text(client, mock_get_email_branding_without_brand_text):
-
     # mock_get_email_branding_without_brand_text has 'brand_type' of 'custom_logo_with_background_colour'
     response = client.get(url_for("main.email_template", branding_style="1"))
 

@@ -12,7 +12,6 @@ def test_looks_up_from_dict():
 
 def test_prefers_property_to_dict():
     class Custom(JSONModel):
-
         ALLOWED_PROPERTIES = {"foo"}
 
         @property
@@ -30,7 +29,6 @@ def test_prefers_property_to_dict():
     ),
 )
 def test_model_raises_for_unknown_attributes(json_response):
-
     model = JSONModel(json_response)
     assert model.ALLOWED_PROPERTIES == set()
 

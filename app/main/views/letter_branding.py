@@ -23,7 +23,6 @@ from app.utils import get_logo_cdn_domain, user_is_platform_admin
 @main.route("/letter-branding", methods=["GET"])
 @user_is_platform_admin
 def letter_branding():
-
     brandings = letter_branding_client.get_all_letter_branding()
 
     return render_template(
@@ -67,7 +66,6 @@ def update_letter_branding(branding_id, logo=None):
 
         try:
             if db_filename == letter_branding["filename"]:
-
                 letter_branding_client.update_letter_branding(
                     branding_id=branding_id,
                     filename=db_filename,

@@ -157,7 +157,6 @@ def test_should_login_platform_admin_user_and_redirect_to_your_services(
     mock_get_login_events,
     method,
 ):
-
     mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user)
     with client.session_transaction() as session:
         session["user_details"] = {

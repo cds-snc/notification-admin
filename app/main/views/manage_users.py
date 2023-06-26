@@ -39,7 +39,6 @@ def manage_users(service_id):
 @main.route("/services/<service_id>/users/invite", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def invite_user(service_id):
-
     form = InviteUserForm(
         invalid_email_address=current_user.email_address,
         all_template_folders=current_service.all_template_folders,

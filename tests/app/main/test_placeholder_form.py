@@ -4,7 +4,6 @@ from app.main.forms import get_placeholder_form_instance
 
 
 def test_form_class_not_mutated(app_):
-
     with app_.test_request_context(method="POST", data={"placeholder_value": ""}):
         form1 = get_placeholder_form_instance("name", {}, "sms", is_conditional=False, optional_placeholder=False)
         form2 = get_placeholder_form_instance("city", {}, "sms", is_conditional=False, optional_placeholder=True)

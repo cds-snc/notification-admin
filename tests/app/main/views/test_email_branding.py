@@ -12,7 +12,6 @@ from tests.conftest import create_email_branding, normalize_spaces
 
 
 def test_email_branding_page_shows_full_branding_list(platform_admin_client, mock_get_all_email_branding):
-
     response = platform_admin_client.get(url_for(".email_branding"))
 
     assert response.status_code == 200
@@ -54,7 +53,6 @@ def test_edit_email_branding_shows_the_correct_branding_info(platform_admin_clie
 
 
 def test_create_email_branding_does_not_show_any_branding_info(platform_admin_client, mock_no_email_branding):
-
     response = platform_admin_client.get(url_for(".create_email_branding"))
 
     assert response.status_code == 200

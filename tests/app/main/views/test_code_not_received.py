@@ -53,7 +53,6 @@ def test_should_render_correct_resend_template_for_pending_user(
     api_user_pending,
     mock_send_verify_code,
 ):
-
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_pending)
 
     with client.session_transaction() as session:
@@ -136,7 +135,6 @@ def test_check_and_redirect_to_verify_if_user_pending(
     mock_get_user_pending,
     mock_send_verify_code,
 ):
-
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_pending)
 
     with client.session_transaction() as session:

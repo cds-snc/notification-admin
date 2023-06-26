@@ -381,7 +381,6 @@ def test_bounce_rate_widget_displays_correct_status_and_totals_v1(
 ):
     with set_config(app_, "FF_BOUNCE_RATE_V1", True):
         with set_config(app_, "FF_BOUNCE_RATE_V15", False):
-
             mocker.patch(
                 "app.main.views.dashboard.template_statistics_client.get_template_statistics_for_service", return_value=totals
             )
