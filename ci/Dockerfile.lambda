@@ -49,7 +49,7 @@ RUN python -m venv ${APP_VENV} \
     && poetry install \
     && poetry add awslambdaric wheel
 
-COPY package.json package-lock.json .snyk ${APP_DIR}/
+COPY package.json package-lock.json ${APP_DIR}/
 RUN npm ci
 
 COPY . ${APP_DIR}

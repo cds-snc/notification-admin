@@ -16,7 +16,7 @@ def user_with_orgs_and_services(num_orgs, num_services, platform_admin=False):
 @pytest.mark.parametrize(
     "num_orgs,num_services,endpoint,endpoint_kwargs",
     [
-        (0, 0, ".choose_account", {}),
+        (0, 0, ".welcome", {}),
         (0, 2, ".choose_account", {}),
         # assumption is that live service is part of user’s organisation
         # – real users shouldn’t have orphaned live services, or access to
@@ -27,7 +27,7 @@ def user_with_orgs_and_services(num_orgs, num_services, platform_admin=False):
         (1, 0, ".organisation_dashboard", {"org_id": "org1"}),
     ],
 )
-def test_show_accounts_or_dashboard_redirects_to_choose_account_or_service_dashboard(
+def test_show_accounts_or_dashboard_redirects_to_choose_account_or_service_dashboard_or_welcome(
     client,
     mocker,
     mock_get_organisations_and_services_for_user,

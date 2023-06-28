@@ -116,7 +116,6 @@ def service_name_change(service_id):
         form.name.data = current_service.name
 
     if form.validate_on_submit():
-
         if form.name.data == current_service.name:
             return redirect(url_for(".service_settings", service_id=service_id))
 
@@ -170,7 +169,6 @@ def service_email_from_change(service_id):
         form.email_from.data = current_service.email_from
 
     if form.validate_on_submit():
-
         if form.email_from.data == current_service.email_from:
             return redirect(url_for(".service_settings", service_id=service_id))
 
@@ -419,7 +417,6 @@ def service_switch_upload_document(service_id):
 )
 @user_is_platform_admin
 def service_switch_count_as_live(service_id):
-
     form = ServiceOnOffSettingForm(
         name="Count in list of live services",
         enabled=current_service.count_as_live,
@@ -782,7 +779,6 @@ def service_set_inbound_number(service_id):
 @main.route("/services/<service_id>/service-settings/sms-prefix", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def service_set_sms_prefix(service_id):
-
     form = SMSPrefixForm(enabled=("on" if current_service.prefix_sms else "off"))
 
     form.enabled.label.text = "{} ‘{}:’".format(_("Start all text messages with"), current_service.name)
@@ -837,7 +833,6 @@ def service_set_letters(service_id):
 @main.route("/services/<service_id>/service-settings/set-<channel>", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def service_set_channel(service_id, channel):
-
     if channel not in {"email", "sms", "letter"}:
         abort(404)
 
@@ -1056,7 +1051,6 @@ def service_delete_sms_sender(service_id, sms_sender_id):
 )
 @user_has_permissions("manage_service")
 def service_set_letter_contact_block(service_id):
-
     if not current_service.has_permission("letter"):
         abort(403)
 
@@ -1078,7 +1072,6 @@ def service_set_letter_contact_block(service_id):
 @main.route("/services/<service_id>/service-settings/set-message-limit", methods=["GET", "POST"])
 @user_is_platform_admin
 def set_message_limit(service_id):
-
     form = MessageLimit(message_limit=current_service.message_limit)
 
     if form.validate_on_submit():
@@ -1097,7 +1090,6 @@ def set_message_limit(service_id):
 @main.route("/services/<service_id>/service-settings/set-sms-message-limit", methods=["GET", "POST"])
 @user_is_platform_admin
 def set_sms_message_limit(service_id):
-
     form = SMSMessageLimit(message_limit=current_service.sms_daily_limit)
 
     if form.validate_on_submit():
@@ -1115,7 +1107,6 @@ def set_sms_message_limit(service_id):
 )
 @user_is_platform_admin
 def set_free_sms_allowance(service_id):
-
     form = FreeSMSAllowance(free_sms_allowance=current_service.free_sms_fragment_limit)
 
     if form.validate_on_submit():
@@ -1271,7 +1262,6 @@ def request_letter_branding(service_id):
 )
 @user_is_platform_admin
 def link_service_to_organisation(service_id):
-
     all_organisations = organisations_client.get_organisations()
     current_linked_organisation = organisations_client.get_service_organisation(service_id).get("id", None)
 

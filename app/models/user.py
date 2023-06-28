@@ -31,7 +31,6 @@ def _get_org_id_from_view_args():
 
 
 class User(JSONModel, UserMixin):
-
     ALLOWED_PROPERTIES = {
         "id",
         "name",
@@ -141,7 +140,6 @@ class User(JSONModel, UserMixin):
         session["user_id"] = self.id
 
     def sign_in(self):
-
         session["user_details"] = {"email": self.email_address, "id": self.id}
 
         if not self.is_active:
@@ -412,7 +410,6 @@ class User(JSONModel, UserMixin):
 
 
 class InvitedUser(JSONModel):
-
     ALLOWED_PROPERTIES = {
         "id",
         "service",
@@ -498,7 +495,14 @@ class InvitedUser(JSONModel):
         return self.service == service_id and permission in self.permissions
 
     def __eq__(self, other):
-        return (self.id, self.service, self._from_user, self.email_address, self.auth_type, self.status,) == (
+        return (
+            self.id,
+            self.service,
+            self._from_user,
+            self.email_address,
+            self.auth_type,
+            self.status,
+        ) == (
             other.id,
             other.service,
             other._from_user,
@@ -530,7 +534,6 @@ class InvitedUser(JSONModel):
 
 
 class InvitedOrgUser(JSONModel):
-
     ALLOWED_PROPERTIES = {
         "id",
         "organisation",
@@ -544,7 +547,13 @@ class InvitedOrgUser(JSONModel):
         self._invited_by = _dict["invited_by"]
 
     def __eq__(self, other):
-        return (self.id, self.organisation, self._invited_by, self.email_address, self.status,) == (
+        return (
+            self.id,
+            self.organisation,
+            self._invited_by,
+            self.email_address,
+            self.status,
+        ) == (
             other.id,
             other.organisation,
             other._invited_by,
@@ -604,7 +613,6 @@ class AnonymousUser(AnonymousUserMixin):
 
 
 class Users(ModelList):
-
     client = user_api_client.get_users_for_service
     model = User
 
@@ -617,7 +625,6 @@ class OrganisationUsers(Users):
 
 
 class InvitedUsers(ModelList):
-
     client = invite_api_client.get_invites_for_service
     model = InvitedUser
 
@@ -626,7 +633,6 @@ class InvitedUsers(ModelList):
 
 
 class OrganisationInvitedUsers(ModelList):
-
     client = org_invite_api_client.get_invites_for_organisation
     model = InvitedOrgUser
 

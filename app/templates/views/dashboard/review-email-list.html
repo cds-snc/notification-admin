@@ -3,6 +3,7 @@
 {% from "components/table.html" import list_table, notification_status_field, row_heading%}
 {% from "components/ajax-block.html" import ajax_block %}
 {% from "components/table.html" import list_table, link_field %}
+{% from "components/show-more.html" import show_more %}
 
 {% set address_single = _('address') %}
 {% set address_plural = _('addresses') %}
@@ -15,7 +16,7 @@
     <div class="page-content">
         <h1 class="heading-large py-4">{{ _('Review email addresses') }}</h1>
         <p>{{ _("GC Notify's email provider could suspend our services if we send too many problem emails.") }}</p>
-        <p>{{ _("<a href='{}'>Keep accurate contact information</a>. Check email addresses are correct. If necessary confirm recipient’s email address using another contact method.").format(gca_url_for('delivery_failure')) }}</p>
+        <p>{{ _("<a href='{}'>Keep accurate contact information</a>. Check email addresses are correct. If necessary confirm recipient’s email address using another contact method.").format(gca_url_for('bounce_guidance')) }}</p>
         <p>{{ _('Remove addresses you cannot correct.') }}</p>
 
         <div class="{% if bounce_rate["bounce_status"] == "critical" %}review-email-status-critical{% elif bounce_rate["bounce_status"] == "warning"%}review-email-status-critical{% else%}review-email-status-normal{% endif %} px-5">
@@ -27,11 +28,11 @@
                     {% elif bounce_rate["bounce_status"] == "critical" %}
                     {{ _('Critical:') }}
                     {% endif %}
-                </strong> 
-                {% if bounce_rate["bounce_percentage"] < 0.1 %}
+                </strong>
+                {% if bounce_rate["bounce_percentage_display"] < 0.1 %}
                   {{ _('Less than') }} 0.1%
                 {% else %}
-                  {{ bounce_rate["bounce_percentage"]|round(2) }}%
+                  {{ bounce_rate["bounce_percentage_display"]|round(2) }}%
                 {% endif %}
                  {{ _('of email addresses need review') }}
             </p>
@@ -46,16 +47,35 @@
             {% for job in jobs %}
                 {% if job["bounce_count"] > 0 %}
                     <li>
-                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='failed') }}">{{ job["bounce_count"] }} {{_(" problem email addresses")}}</a>
+                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
+                            {{ job["bounce_count"] }}
+                            {% if job["bounce_count"] > 1 %}
+                                {{_(' problem email addresses')}}
+                            {%- else -%}
+                                {{_(' problem email address')}}
+                            {%- endif -%}
+                        </a>
                         <span>
                             {{ _( ' in ')}} '{{ job.original_file_name }}'
                         </span>
                     </li>
                 {% endif %}
             {% endfor %}
+            {% for notification in one_offs %}
+                <li>
+                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">{{notification["to"]}}</a>
+                    <span>
+                        {{ _( ' using template ')}} '{{ notification["template"]["name"] }}'
+                    </span>
+                </li>
+            {% endfor %}
             </ul>
+            {{ show_more(
+                url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
+                _("See all problem email addresses")
+            ) }}
             {# <p class="text-small">{{ _('Updated every 5 minutes. Last updated {}').format("2023-03-20")}}</p> #}
         </div>
-        
+
     </div>
 {% endblock %}

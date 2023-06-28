@@ -99,7 +99,6 @@ def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisat
     ids=["CSS file", "image", "JS file", "static page"],
 )
 def test_headers_cache_static_assets(client, url, use_fingerprinting, cache_headers):
-
     if use_fingerprinting:
         url = asset_fingerprinter.get_url(url)
 

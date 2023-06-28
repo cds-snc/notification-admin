@@ -480,7 +480,6 @@ def test_should_validate_safelist_items(
     client_request,
     mock_update_safelist,
 ):
-
     page = client_request.post(
         "main.safelist",
         service_id=SERVICE_ONE_ID,

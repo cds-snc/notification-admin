@@ -10,7 +10,6 @@ TTL = int(timedelta(days=7).total_seconds())
 
 
 def _get_argument(argument_name, client_method, args, kwargs):
-
     with suppress(KeyError):
         return kwargs[argument_name]
 

@@ -91,7 +91,10 @@ def test_if_existing_user_accepts_twice_they_redirect_to_sign_in(
     )
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert (page.h1.string, page.select("main p")[0].text.strip(),) == (
+    assert (
+        page.h1.string,
+        page.select("main p")[0].text.strip(),
+    ) == (
         "You need to sign in again",
         "We signed you out because you haven’t used GC Notify for a while.",
     )
@@ -193,7 +196,10 @@ def test_existing_user_of_service_get_redirected_to_signin(
     )
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert (page.h1.string, page.select("main p")[0].text.strip(),) == (
+    assert (
+        page.h1.string,
+        page.select("main p")[0].text.strip(),
+    ) == (
         "You need to sign in again",
         "We signed you out because you haven’t used GC Notify for a while.",
     )
@@ -238,7 +244,10 @@ def test_existing_signed_out_user_accept_invite_redirects_to_sign_in(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert (page.h1.string, page.select("main p")[0].text.strip(),) == (
+    assert (
+        page.h1.string,
+        page.select("main p")[0].text.strip(),
+    ) == (
         "You need to sign in again",
         "We signed you out because you haven’t used GC Notify for a while.",
     )

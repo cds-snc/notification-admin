@@ -17,7 +17,7 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock /app/
 RUN set -ex && poetry install
 
-COPY package.json package-lock.json .snyk /app/
+COPY package.json package-lock.json /app/
 RUN npm ci
 
 COPY . /app

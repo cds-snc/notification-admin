@@ -20,7 +20,6 @@ class TemplateList:
             yield item
 
     def get_templates_and_folders(self, template_type, template_folder_id, user, ancestors):
-
         for item in self.service.get_template_folders(
             template_type,
             template_folder_id,
@@ -65,16 +64,13 @@ class TemplateLists:
         self.user = user
 
     def __iter__(self):
-
         if len(self.services) == 1:
-
             for template_or_folder in TemplateList(self.services[0], user=self.user):
                 yield template_or_folder
 
             return
 
         for service in self.services:
-
             template_list_service = TemplateListService(service)
 
             yield template_list_service
@@ -93,7 +89,6 @@ class TemplateLists:
 
 
 class TemplateListItem:
-
     is_service = False
 
     def __init__(
@@ -107,7 +102,6 @@ class TemplateListItem:
 
 
 class TemplateListTemplate(TemplateListItem):
-
     is_folder = False
 
     def __init__(
@@ -126,7 +120,6 @@ class TemplateListTemplate(TemplateListItem):
 
 
 class TemplateListFolder(TemplateListItem):
-
     is_folder = True
 
     def __init__(
@@ -144,7 +137,6 @@ class TemplateListFolder(TemplateListItem):
 
     @property
     def _hint_parts(self):
-
         if self.number_of_folders == self.number_of_templates == 0:
             yield "Empty"  # This strings is wrapped later on in the html
 
@@ -165,7 +157,6 @@ class TemplateListFolder(TemplateListItem):
 
 
 class TemplateListService(TemplateListFolder):
-
     is_service = True
 
     def __init__(

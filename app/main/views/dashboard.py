@@ -20,11 +20,15 @@ from werkzeug.utils import redirect
 from app import (
     current_service,
     job_api_client,
+    notification_api_client,
     service_api_client,
     template_statistics_client,
 )
+from app.extensions import bounce_rate_client
 from app.main import main
 from app.models.enum.bounce_rate_status import BounceRateStatus
+from app.models.enum.notification_statuses import NotificationStatuses
+from app.models.enum.template_types import TemplateType
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
 from app.utils import (
     DELIVERED_STATUSES,
@@ -62,13 +66,27 @@ def redirect_service_dashboard(service_id):
 @user_has_permissions("view_activity", "send_messages")
 def problem_emails(service_id):
     # get the daily stats
-    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_stats_for_period(service_id)
+    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
+    bounce_rate_data = (
+        get_bounce_rate_data_from_redis(service_id)
+        if current_app.config["FF_BOUNCE_RATE_V15"]
+        else calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily)
+    )
+    one_off_notifications = notification_api_client.get_notifications_for_service(
+        service_id,
+        template_type=TemplateType.EMAIL.value,
+        status=NotificationStatuses.PERMANENT_FAILURE.value,
+        include_one_off=True,
+        include_jobs=False,
+        page_size=20,
+    )
 
     return render_template(
         "views/dashboard/review-email-list.html",
         bounce_status=BounceRateStatus.NORMAL,
         jobs=get_jobs_and_calculate_hard_bounces(service_id),
-        bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
+        bounce_rate=bounce_rate_data,
+        one_offs=one_off_notifications["notifications"],
     )
 
 
@@ -93,7 +111,6 @@ def get_jobs_and_calculate_hard_bounces(service_id):
 @main.route("/services/<service_id>")
 @user_has_permissions()
 def service_dashboard(service_id):
-
     if session.get("invited_user"):
         session.pop("invited_user", None)
         session["service_id"] = service_id
@@ -117,14 +134,12 @@ def service_dashboard_updates(service_id):
 @main.route("/services/<service_id>/template-activity")
 @user_has_permissions("view_activity")
 def template_history(service_id):
-
     return redirect(url_for("main.template_usage", service_id=service_id), code=301)
 
 
 @main.route("/services/<service_id>/template-usage")
 @user_has_permissions("view_activity")
 def template_usage(service_id):
-
     year, current_financial_year = requested_and_current_financial_year(request)
     stats = template_statistics_client.get_monthly_template_usage_for_service(service_id, year)
 
@@ -170,7 +185,6 @@ def template_usage(service_id):
 @main.route("/services/<service_id>/usage")
 @user_has_permissions("manage_service", allow_org_user=True)
 def usage(service_id):
-
     if current_service.has_permission("view_activity") or current_user.platform_admin:
         return redirect(url_for(".service_dashboard", service_id=service_id))
 
@@ -254,6 +268,11 @@ def get_dashboard_partials(service_id):
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
     )
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
+    bounce_rate_data = (
+        get_bounce_rate_data_from_redis(service_id)
+        if current_app.config["FF_BOUNCE_RATE_V15"]
+        else calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily)
+    )
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
@@ -282,6 +301,7 @@ def get_dashboard_partials(service_id):
             else dashboard_totals_weekly[0],
             column_width=column_width,
             smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
+            bounce_rate=bounce_rate_data,
         ),
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",
@@ -325,13 +345,36 @@ def _get_stats_for_period(service_id, limit_days: int = 1):
     return dashboard_totals, highest_notification_count, all_statistics
 
 
+class BounceRate:
+    bounce_total = 0
+    bounce_percentage = 0.0
+    bounce_percentage_display = 0.0
+    bounce_status = BounceRateStatus.NORMAL.value
+    below_threshold = False
+
+
+def get_bounce_rate_data_from_redis(service_id):
+    """This function gets bounce rate from Redis."""
+
+    # Populate the bounce stats
+    bounce_rate = BounceRate()
+    bounce_rate.bounce_percentage = bounce_rate_client.get_bounce_rate(service_id)
+    bounce_rate.bounce_percentage_display = 100.0 * bounce_rate.bounce_percentage
+    bounce_rate.bounce_total = bounce_rate_client.get_total_hard_bounces(service_id)
+    bounce_status = bounce_rate_client.check_bounce_rate_status(service_id)
+
+    # We only want to show a neutral color on the dashboard if we are less than minimum volume
+    # but still over the warning threshold
+    if bounce_status == BounceRateStatus.NORMAL.value and bounce_rate.bounce_percentage > bounce_rate_client._warning_threshold:
+        bounce_rate.below_threshold = True
+        bounce_rate.bounce_status = BounceRateStatus.WARNING.value
+    else:
+        bounce_rate.bounce_status = bounce_status
+    return bounce_rate
+
+
 def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
     """This function calculates the bounce rate using the daily statistics provided from the dashboard"""
-
-    class BounceRate:
-        bounce_total = 0
-        bounce_percentage = 0
-        bounce_status = BounceRateStatus.NORMAL.value
 
     # Populate the bounce stats
     bounce_rate = BounceRate()
@@ -345,17 +388,23 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
             bounce_rate.bounce_total += stat["count"]
 
     # calc bounce rate
-    bounce_rate.bounce_percentage = 100 * (bounce_rate.bounce_total / total_sent) if total_sent > 0 else 0
-
+    bounce_rate.bounce_percentage = (bounce_rate.bounce_total / total_sent) if total_sent > 0 else 0
+    bounce_rate.bounce_percentage_display = 100.0 * bounce_rate.bounce_percentage
     # compute bounce status
     # if volume is less than the threshold, indicate NORMAL status
     if total_sent < current_app.config["BR_DISPLAY_VOLUME_MINIMUM"]:
-        bounce_rate.bounce_status = BounceRateStatus.NORMAL.value
+        # We only want to show a neutral color on the dashboard if we are less than minimum volume
+        # but still over the warning threshold
+        if bounce_rate.bounce_percentage >= bounce_rate_client._warning_threshold:
+            bounce_rate.below_threshold = True
+            bounce_rate.bounce_status = BounceRateStatus.WARNING.value
+        else:
+            bounce_rate.bounce_status = BounceRateStatus.NORMAL.value
     # if bounce rate is above critical threshold, indicate CRITICAL status
-    elif bounce_rate.bounce_percentage >= current_app.config["BR_CRITICAL_PERCENTAGE"]:
+    elif bounce_rate.bounce_percentage >= bounce_rate_client._critical_threshold:
         bounce_rate.bounce_status = BounceRateStatus.CRITICAL.value
     # if bounce rate is above warning threshold, indicate WARNING status
-    elif bounce_rate.bounce_percentage >= current_app.config["BR_WARNING_PERCENTAGE"]:
+    elif bounce_rate.bounce_percentage >= bounce_rate_client._warning_threshold:
         bounce_rate.bounce_status = BounceRateStatus.WARNING.value
     return bounce_rate
 
@@ -524,8 +573,8 @@ def get_tuples_of_financial_years(
     partial_url,
     start=2015,
     end=None,
-):
-    return (
+) -> list:
+    return list(
         (
             _l("financial year"),
             year,

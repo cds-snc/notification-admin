@@ -17,7 +17,6 @@ def sign_in():
     form = LoginForm()
 
     if form.validate_on_submit():
-
         login_data = _constructLoginData(request)
 
         user = User.from_email_address_or_none(form.email_address.data)

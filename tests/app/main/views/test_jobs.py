@@ -323,7 +323,6 @@ def test_should_show_page_for_one_job_with_flexible_data_retention(
     mock_get_service_data_retention,
     fake_uuid,
 ):
-
     mock_get_service_data_retention.side_effect = [[{"days_of_retention": 10, "notification_type": "sms"}]]
     page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=fake_uuid, status="delivered")
 
@@ -365,7 +364,7 @@ def test_should_show_job_in_progress(
         service_id=service_one["id"],
         job_id=fake_uuid,
     )
-    assert page.find("p", {"class": "hint"}).text.strip() == "Report is 50% complete…"
+    assert page.find("div", {"class": "dashboard-table"}).text.strip() == "Report is 50% complete…"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -379,7 +378,6 @@ def test_should_show_letter_job(
     active_user_with_permissions,
     mocker,
 ):
-
     get_notifications = mock_get_notifications(mocker, active_user_with_permissions, diff_template_type="letter")
 
     page = client_request.get(
@@ -429,7 +427,6 @@ def test_should_show_letter_job_with_banner_after_sending_before_1730(
     mock_get_service_data_retention,
     fake_uuid,
 ):
-
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -453,7 +450,6 @@ def test_should_show_letter_job_with_banner_when_there_are_multiple_CSV_rows(
     mock_get_service_data_retention,
     fake_uuid,
 ):
-
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -477,7 +473,6 @@ def test_should_show_letter_job_with_banner_after_sending_after_1730(
     mock_get_service_data_retention,
     fake_uuid,
 ):
-
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -841,7 +836,6 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
     mock_get_service_data_retention,
     mocker,
 ):
-
     mocker.patch(
         "app.service_api_client.get_service_template",
         return_value=create_template(template_type="letter", postage="first"),

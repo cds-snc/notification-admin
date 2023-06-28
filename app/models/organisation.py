@@ -7,12 +7,12 @@ from app.notify_client.organisations_api_client import organisations_client
 
 
 class Organisation(JSONModel):
-
     TYPES = (
         (
             "central",
             _("Government of Canada"),
         ),  # CDS note: central key name comes from GDS
+        ("province_or_territory", "Provincial or Territorial Government"),
         ("local", "Local government"),
         ("nhs_central", "NHS – central government agency or public body"),
         ("nhs_local", "NHS Trust or Clinical Commissioning Group"),
@@ -78,7 +78,6 @@ class Organisation(JSONModel):
         )
 
     def __init__(self, _dict):
-
         super().__init__(_dict)
 
         if self._dict == {}:

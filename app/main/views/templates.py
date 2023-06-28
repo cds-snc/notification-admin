@@ -18,6 +18,7 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
+from notifications_utils import EMAIL_CHAR_COUNT_LIMIT, SMS_CHAR_COUNT_LIMIT
 from notifications_utils.formatters import nl2br
 from notifications_utils.recipients import first_column_headings
 
@@ -104,6 +105,11 @@ def delete_preview_data(service_id, template_id=None):
     redis_client.delete(key)
 
 
+def get_char_limit_error_msg(template_type):
+    CHAR_LIMIT = SMS_CHAR_COUNT_LIMIT if template_type == "sms" else EMAIL_CHAR_COUNT_LIMIT
+    return (_("Message must be less than {char_limit} characters")).format(char_limit=CHAR_LIMIT + 1)
+
+
 @main.route("/services/<service_id>/templates/<uuid:template_id>")
 @user_has_permissions()
 def view_template(service_id, template_id):
@@ -182,7 +188,8 @@ def preview_template(service_id, template_id=None):
             except HTTPError as e:
                 if e.status_code == 400:
                     if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
-                        flash(e.message["content"])
+                        error_message = get_char_limit_error_msg(template["template_type"])
+                        flash(error_message)
                     else:
                         raise e
                 else:
@@ -210,7 +217,6 @@ def preview_template(service_id, template_id=None):
 @main.route("/services/<service_id>/start-tour/<uuid:template_id>")
 @user_has_permissions("view_activity")
 def start_tour(service_id, template_id):
-
     template = current_service.get_template(template_id)
 
     if template["template_type"] != "email":
@@ -408,7 +414,6 @@ def view_template_version_preview(service_id, template_id, version, filetype):
 
 
 def _add_template_by_type(template_type, template_folder_id):
-
     if template_type == "copy-existing":
         return redirect(
             url_for(
@@ -498,12 +503,10 @@ def choose_template_to_copy(
     from_service=None,
     from_folder=None,
 ):
-
     if from_folder and from_service is None:
         from_service = service_id
 
     if from_service:
-
         current_user.belongs_to_service_or_403(from_service)
         service = Service(service_api_client.get_service(from_service)["data"])
 
@@ -558,7 +561,6 @@ def copy_template(service_id, template_id):
 
 
 def _get_template_copy_name(template, existing_templates):
-
     template_names = [existing["name"] for existing in existing_templates]
 
     for index in reversed(range(1, 10)):
@@ -650,7 +652,6 @@ def delete_template_folder(service_id, template_folder_id):
         )
 
     if request.method == "POST":
-
         try:
             template_folder_api_client.delete_template_folder(current_service.id, template_folder_id)
 
@@ -700,7 +701,6 @@ def get_template_data(template_id):
 )
 @user_has_permissions("manage_templates")
 def add_service_template(service_id, template_type, template_folder_id=None):
-
     if template_type not in ["sms", "email", "letter"]:
         abort(404)
     if not current_service.has_permission("letter") and template_type == "letter":
@@ -749,7 +749,8 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 and "content" in e.message
                 and any(["character count greater than" in x for x in e.message["content"]])
             ):
-                form.template_content.errors.extend(e.message["content"])
+                error_message = get_char_limit_error_msg(template_type)
+                form.template_content.errors.extend([error_message])
             else:
                 raise e
         else:
@@ -871,7 +872,8 @@ def edit_service_template(service_id, template_id):
                 except HTTPError as e:
                     if e.status_code == 400:
                         if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
-                            form.template_content.errors.extend(e.message["content"])
+                            error_message = get_char_limit_error_msg(template["template_type"])
+                            form.template_content.errors.extend([error_message])
                         else:
                             raise e
                     else:
@@ -959,7 +961,6 @@ def confirm_redact_template(service_id, template_id):
 @main.route("/services/<service_id>/templates/<template_id>/redact", methods=["POST"])
 @user_has_permissions("manage_templates")
 def redact_template(service_id, template_id):
-
     service_api_client.redact_service_template(service_id, template_id)
 
     flash(
@@ -1094,7 +1095,6 @@ def get_human_readable_delta(from_time, until_time):
 @main.route("/services/<service_id>/add-recipients/<template_id>", methods=["GET", "POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def add_recipients(service_id, template_id):
-
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
     if template["template_type"] == "email":

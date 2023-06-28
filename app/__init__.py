@@ -46,6 +46,7 @@ from app.commands import setup_commands
 from app.config import configs
 from app.extensions import (
     antivirus_client,
+    bounce_rate_client,
     cache,
     redis_client,
     statsd_client,
@@ -169,6 +170,7 @@ def create_app(application):
         statsd_client,
         zendesk_client,
         redis_client,
+        bounce_rate_client,
     ):
         client.init_app(application)
 
@@ -431,7 +433,12 @@ def format_notification_status(status, template_type, provider_response=None, fe
         def _getStatusByBounceSubtype():
             """Return the status of a notification based on the bounce sub type"""
             if feedback_subtype:
-                return {"email": {"suppressed": _("Blocked"), "on-account-suppression-list": _("Blocked"),},}[  # noqa
+                return {
+                    "email": {
+                        "suppressed": _("Blocked"),
+                        "on-account-suppression-list": _("Blocked"),
+                    },
+                }[
                     template_type
                 ].get(feedback_subtype, _("No such address"))
             else:

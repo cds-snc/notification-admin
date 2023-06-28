@@ -990,7 +990,6 @@ def test_request_to_go_live_page(
     submitted_use_case,
     expected_use_case_checklist_item,
 ):
-
     user1 = create_active_user_with_permissions()
     user2 = create_active_user_no_settings_permission()
     mock_get_users = mocker.patch(
@@ -1090,7 +1089,6 @@ def test_request_to_go_live_terms_of_use_page(
     client_request,
     mocker,
 ):
-
     page = client_request.get("main.terms_of_use", service_id=SERVICE_ONE_ID)
     assert page.h1.text == "Accepting the terms of use"
 
@@ -1938,7 +1936,6 @@ def test_add_reply_to_email_address_fails_if_notification_not_delivered_in_45_se
     ],
 )
 def test_add_letter_contact(letter_contact_blocks, data, api_default_args, mocker, client_request, mock_add_letter_contact):
-
     mocker.patch("app.service_api_client.get_letter_contacts", return_value=letter_contact_blocks)
 
     data["letter_contact_block"] = "1 Example Street"
@@ -2027,7 +2024,6 @@ def test_add_sms_sender(sms_senders, data, api_default_args, mocker, client_requ
     ],
 )
 def test_default_box_doesnt_show_on_first_sender(sender_page, function_to_mock, mocker, data, checkbox_present, client_request):
-
     mocker.patch(function_to_mock, side_effect=lambda service_id: data)
 
     page = client_request.get(sender_page, service_id=SERVICE_ONE_ID)
@@ -2115,7 +2111,6 @@ def test_always_shows_delete_link_for_email_reply_to_address(
     fake_uuid,
     client_request,
 ):
-
     mocker.patch("app.service_api_client.get_reply_to_email_address", return_value=sender_details)
     partial_href = partial(
         url_for,
@@ -2140,7 +2135,6 @@ def test_always_shows_delete_link_for_email_reply_to_address(
 
 
 def test_confirm_delete_reply_to_email_address(fake_uuid, client_request, get_non_default_reply_to_email_address):
-
     page = client_request.get(
         "main.service_confirm_delete_email_reply_to",
         service_id=SERVICE_ONE_ID,
@@ -2265,7 +2259,6 @@ def test_confirm_delete_letter_contact_block(
     client_request,
     get_default_letter_contact_block,
 ):
-
     page = client_request.get(
         "main.service_confirm_delete_letter_contact",
         service_id=SERVICE_ONE_ID,
@@ -2485,7 +2478,6 @@ def test_confirm_delete_sms_sender(
     platform_admin_user,
     get_non_default_sms_sender,
 ):
-
     client_request.login(platform_admin_user)
 
     page = client_request.get(
@@ -3270,7 +3262,6 @@ def test_should_set_sms_allowance(
     mock_get_free_sms_fragment_limit,
     mock_create_or_update_free_sms_fragment_limit,
 ):
-
     response = platform_admin_client.post(
         url_for(
             "main.set_free_sms_allowance",
@@ -4260,7 +4251,6 @@ def test_show_email_branding_request_page_when_email_branding_is_set(
     mock_get_email_branding,
     active_user_with_permissions,
 ):
-
     service_one = service_json(email_branding="1234")
     client_request.login(active_user_with_permissions, service=service_one)
 
@@ -4318,7 +4308,6 @@ def test_submit_email_branding_request(
     org_name,
     expected_organisation,
 ):
-
     mock_get_service_organisation(
         mocker,
         name=org_name,
@@ -4366,7 +4355,6 @@ def test_show_service_data_retention(
     service_one,
     mock_get_service_data_retention,
 ):
-
     mock_get_service_data_retention.return_value[0]["days_of_retention"] = 5
 
     response = platform_admin_client.get(url_for("main.data_retention", service_id=service_one["id"]))
@@ -4447,7 +4435,6 @@ def test_update_service_data_retention_populates_form(
     fake_uuid,
     mock_get_service_data_retention,
 ):
-
     mock_get_service_data_retention.return_value[0]["days_of_retention"] = 5
     response = platform_admin_client.get(
         url_for(

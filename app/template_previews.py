@@ -50,7 +50,6 @@ class TemplatePreview:
 
 
 def get_page_count_for_letter(template, values=None):
-
     if template["template_type"] != "letter":
         return None
 

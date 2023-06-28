@@ -25,7 +25,6 @@ class TemplateFolderAPIClient(NotifyAdminAPIClient):
     @cache.delete("service-{service_id}-template-folders")
     @cache.delete("service-{service_id}-templates")
     def move_to_folder(self, service_id, folder_id, template_ids, folder_ids):
-
         if folder_id:
             url = "/service/{}/template-folder/{}/contents".format(service_id, folder_id)
         else:
