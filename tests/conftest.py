@@ -2790,6 +2790,45 @@ def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
 
 
 @pytest.fixture(scope="function")
+def mock_get_monthly_template_usage_with_multiple_months(mocker, service_one, fake_uuid):
+    def _stats(service_id, year):
+        return [
+            {
+                "count": 1101,
+                "is_precompiled_letter": False,
+                "month": 5,
+                "name": "testtes",
+                "template_id": "34a2693e-664f-4081-870d-da42c8c1d320",
+                "type": "email",
+                "year": 2023,
+            },
+            {
+                "count": 1,
+                "is_precompiled_letter": False,
+                "month": 5,
+                "name": "tetet",
+                "template_id": "d98bf1a3-64e9-41ae-a907-d4a35e9cbdec",
+                "type": "email",
+                "year": 2023,
+            },
+            {
+                "count": 1,
+                "is_precompiled_letter": False,
+                "month": 6,
+                "name": "tetet",
+                "template_id": "d98bf1a3-64e9-41ae-a907-d4a35e9cbdec",
+                "type": "email",
+                "year": 2023,
+            },
+        ]
+
+    return mocker.patch(
+        "app.template_statistics_client.get_monthly_template_usage_for_service",
+        side_effect=_stats,
+    )
+
+
+@pytest.fixture(scope="function")
 def mock_get_monthly_notification_stats(mocker, service_one, fake_uuid):
     def _stats(service_id, year):
         return {
