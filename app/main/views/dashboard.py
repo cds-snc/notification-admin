@@ -150,7 +150,7 @@ def template_usage(service_id):
             "name": month_name,
             "templates_used": [
                 {
-                    "id": stat["template_id"],
+                    "id": month_name + "_" + stat["template_id"],
                     "name": stat["name"],
                     "type": stat["type"],
                     "requested_count": stat["count"],
