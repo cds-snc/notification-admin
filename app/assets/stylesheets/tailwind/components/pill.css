@@ -29,6 +29,7 @@
   }
   .pill a .pill-content {
     @apply no-underline;
+    display: block;
   }
   .pill a:hover .pill-label {
     @apply underline;
