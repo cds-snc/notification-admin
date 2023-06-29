@@ -17,7 +17,7 @@
         caption_visible=False,
         empty_message=_("No messages to show"),
         field_headings=[heading_1,heading_2,heading_3] if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] else [heading_1, heading_3],
-        field_headings_visible=True if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] and notifications else False
+        field_headings_visible=False if not notifications else True if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] and notifications else False
       ) %}
         {% call row_heading() %}
           <a class="file-list-filename" href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=item.id, from_job=job.id) }}">{{ item.to }}</a>
