@@ -839,11 +839,11 @@ def test_platform_admin_displays_stats_in_right_boxes_and_with_correct_styling(
     assert "5" in page.find_all("div", class_="md:w-1/3")[4].text
     # SMS technical failure status box - number is correct and failure class is used
     assert (
-        "1 technical failures" in page.find_all("div", class_="md:w-1/3")[1].find("div", class_="big-number-status bg-red").text
+        "1 technical failures" in page.find_all("div", class_="md:w-1/3")[1].find("span", class_="big-number-status bg-red").text
     )
     # Letter virus scan failure status box - number is correct and failure class is used
     assert (
-        "1 virus scan failures" in page.find_all("div", class_="md:w-1/3")[2].find("div", class_="big-number-status bg-red").text
+        "1 virus scan failures" in page.find_all("div", class_="md:w-1/3")[2].find("span", class_="big-number-status bg-red").text
     )
 
 
