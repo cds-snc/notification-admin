@@ -2376,6 +2376,7 @@ def mock_get_notifications_with_previous_next(mocker):
         side_effect=_get_notifications,
     )
 
+
 @pytest.fixture(scope="function")
 def mock_get_no_notifications(mocker):
     def _get_notifications(
@@ -2397,6 +2398,7 @@ def mock_get_no_notifications(mocker):
         "app.notification_api_client.get_notifications_for_service",
         side_effect=_get_notifications,
     )
+
 
 @pytest.fixture(scope="function")
 def mock_get_api_notifications_with_previous_next(mocker):
