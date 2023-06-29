@@ -5,7 +5,7 @@
   }
 
   .big-number-number {
-    @apply block .text-titlelarge font-bold leading-none;
+    @apply block .text-titlelarge pb-4 font-bold leading-none;
   }
 
   .big-number-dark {
@@ -13,7 +13,7 @@
   }
 
   .big-number-label {
-    @apply text-smaller inline-block pb-4;
+    @apply text-smaller inline-block;
   }
 
   .big-number-status {
