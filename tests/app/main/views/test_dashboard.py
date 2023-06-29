@@ -1381,7 +1381,7 @@ def test_service_dashboard_updates_gets_dashboard_totals(
         service_id=SERVICE_ONE_ID,
     )
 
-    numbers = [number.text.strip() for number in page.find_all("div", class_="big-number-number")]
+    numbers = [number.text.strip() for number in page.find_all("span", class_="big-number-number")]
     assert "123" in numbers
     assert "456" in numbers
 

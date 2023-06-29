@@ -442,8 +442,8 @@ def test_should_show_email_and_sms_stats_for_all_service_types(
 
     table_body = page.find_all("table")[0].find_all("tbody")[0]
     service_row_group = table_body.find_all("tbody")[0].find_all("tr")
-    email_stats = service_row_group[0].find_all("div", class_="big-number-number")
-    sms_stats = service_row_group[1].find_all("div", class_="big-number-number")
+    email_stats = service_row_group[0].find_all("span", class_="big-number-number")
+    sms_stats = service_row_group[1].find_all("span", class_="big-number-number")
     email_sending, email_delivered, email_failed = [int(x.text.strip()) for x in email_stats]
     sms_sending, sms_delivered, sms_failed = [int(x.text.strip()) for x in sms_stats]
 
@@ -834,7 +834,7 @@ def test_platform_admin_displays_stats_in_right_boxes_and_with_correct_styling(
     # Email complaints status box - link exists and number is correct
     assert page.find("a", string="15 complaints")
     # SMS total box - number is correct
-    assert page.find_all("div", class_="big-number-number")[1].text.strip() == "168"
+    assert page.find_all("span", class_="big-number-number")[1].text.strip() == "168"
     # Test SMS box - number is correct
     assert "5" in page.find_all("div", class_="md:w-1/3")[4].text
     # SMS technical failure status box - number is correct and failure class is used
