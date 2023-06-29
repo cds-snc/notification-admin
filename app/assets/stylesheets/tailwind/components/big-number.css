@@ -5,7 +5,7 @@
   }
 
   .big-number-number {
-    @apply block text-48 font-bold leading-none;
+    @apply block .text-titlelarge font-bold leading-none;
   }
 
   .big-number-dark {

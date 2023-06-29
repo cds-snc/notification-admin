@@ -11,8 +11,9 @@
       {{ big_number_review_emails_with_status(
         number=bounce_rate["bounce_total"],
         label=problem_email_label(bounce_rate["bounce_total"]),
-        problem_percentage=bounce_rate["bounce_percentage"],
+        problem_percentage=bounce_rate["bounce_percentage_display"],
         bounce_status=bounce_rate["bounce_status"],
+        bounce_threshold=bounce_rate["below_threshold"],
         failure_link=url_for('.problem_emails', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
         link=None,
         smaller=smaller_font_size,

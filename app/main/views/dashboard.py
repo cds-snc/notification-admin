@@ -260,9 +260,7 @@ def get_dashboard_partials(service_id):
 
     stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
     # get the daily stats
-    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_stats_for_period(
-        service_id, limit_days=1
-    )
+    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
 
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
@@ -282,17 +280,6 @@ def get_dashboard_partials(service_id):
             statistics=dashboard_totals_daily[0],
             column_width=column_width,
         ),
-        "daily_limits": render_template(
-            "views/dashboard/_daily_limits.html",
-            daily_limits=get_daily_limit_data(dashboard_totals_daily[0]),
-            column_width=column_width,
-        ),
-        "problem_email_addresses": render_template(
-            "views/dashboard/_problem_email_addresses.html",
-            statistics=dashboard_totals_daily[0],
-            bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
-            column_width=column_width,
-        ),
         "weekly_totals": render_template(
             "views/dashboard/_totals.html",
             service_id=service_id,
@@ -300,8 +287,13 @@ def get_dashboard_partials(service_id):
             if current_app.config["FF_BOUNCE_RATE_V1"] or current_service.id in current_app.config["FF_ABTEST_SERVICE_ID"]
             else dashboard_totals_weekly[0],
             column_width=column_width,
-            smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
-            bounce_rate=bounce_rate_data,
+            smaller_font_size=(highest_notification_count_daily > max_notifiction_count)
+        ),
+        "problem_email_addresses": render_template(
+            "views/dashboard/_problem_email_addresses.html",
+            statistics=dashboard_totals_daily[0],
+            bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
+            column_width=column_width,
         ),
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",
@@ -315,34 +307,16 @@ def get_dashboard_partials(service_id):
     }
 
 
-def get_daily_limit_data(dashboard_totals):
-    email_remaining = current_service.message_limit - dashboard_totals["email"]["requested"]
-    sms_parts_remaining = current_service.sms_daily_limit - dashboard_totals["sms"]["requested"]
+def _get_daily_stats(service_id):
+    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
+    stats_daily = aggregate_notifications_stats(all_statistics_daily)
+    dashboard_totals_daily = (get_dashboard_totals(stats_daily),)
 
-    return {
-        "email": {
-            "requested": dashboard_totals["email"]["requested"],
-            "remaining": email_remaining,
-            "remaining_percentage": int(email_remaining / current_service.message_limit * 100),
-        },
-        "sms": {
-            "requested": dashboard_totals["sms"]["requested"],
-            "remaining": sms_parts_remaining,
-            "remaining_percentage": int(sms_parts_remaining / current_service.sms_daily_limit * 100),
-        },
-    }
-
-
-def _get_stats_for_period(service_id, limit_days: int = 1):
-    all_statistics = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=limit_days)
-    stats = aggregate_notifications_stats(all_statistics)
-    dashboard_totals = (get_dashboard_totals(stats),)
-
-    highest_notification_count = max(
-        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals[0].items()
+    highest_notification_count_daily = max(
+        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_daily[0].items()
     )
 
-    return dashboard_totals, highest_notification_count, all_statistics
+    return dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily
 
 
 class BounceRate:
