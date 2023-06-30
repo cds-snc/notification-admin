@@ -8,7 +8,7 @@
         {% if currency %}
           {{ "{}{:,.2f}".format(currency, number) }}
         {% else %}
-          {{ "{:,}".format(number) }}
+          {{ "{:,}".format(number) if session['userlang'] == 'en' else "{:,}".format(number).replace(',', ' ') }}
         {% endif %}
       {% else %}
         {{ number }}
@@ -22,7 +22,7 @@
           {% if currency %}
             {{ "{}{:,.2f}".format(currency, secondary_number) }}
           {% else %}
-            {{ "{:,}".format(secondary_number) }}
+          {{ "{:,}".format(secondary_number) if session['userlang'] == 'en' else "{:,}".format(secondary_number).replace(',', ' ') }}
           {% endif %}
         {% else %}
             {{ secondary_number }}
@@ -82,7 +82,7 @@
           {% if failures %}
             {% if failure_link %}
               <div class="p-6 flex justify-between items-end border-0 no-underline" href="{{ failure_link }}">
-                {{ failure_percentage }}%  {{_('failed') }}
+                {{ failure_percentage + "%" if lang == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{_('failed') }}
                 <i aria-hidden="true" class="p-1 fa-solid {% if danger_zone %}fa-triangle-exclamation{% else %}{% endif %}"></i>
               </div>
               <div class="px-6 flex justify-between items-end border-0">
@@ -142,7 +142,8 @@
   pass_label=_("No problem addresses"),
   show_failures=True,
   smaller=False,
-  smallest=False
+  smallest=False,
+  lang=session['userlang'] if session['userlang'] else None
 ) %}
   <div class="big-number-with-status">
     {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
@@ -156,9 +157,9 @@
             <div class="p-6 review-email-label flex justify-between items-end border-0">
               <span>
                 {% if problem_percentage < 0.1 %}
-                  {{ _('Less than') }} 0.1%
+                  {{ _('Less than')}} {{'0.1%' if lang == 'en' else '0,1 %' }}
                 {% else %}
-                  {{ problem_percentage|round(2) }}%
+                  {{ problem_percentage|round(2)|string + "%" if lang == 'en' else problem_percentage|round(2)|replace('.', ',')|string + " %"}}
                 {% endif %}
                  {{ _('problem addresses') }}
               </span>

@@ -16,7 +16,7 @@
   <div class="grid-row contain-floats">
     <div id="total-email" class="{{column_width}}">
       {{ big_number_with_status(
-        statistics['email']['requested'],
+        36000,
         message_count_label(statistics['email']['requested'], 'email', suffix=sent_single, suffix_plural=sent_plural),
         statistics['email']['failed'],
         statistics['email']['failed_percentage'],
