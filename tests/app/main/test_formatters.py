@@ -57,72 +57,7 @@ def test_format_notification_status_as_url(
     expected,
     app_,
 ):
-    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
-        assert format_notification_status_as_url(status, notification_type) == expected
-
-
-# -----------------
-# remove this test when FF_BOUNCE_RATE_V1 is removed
-# -----------------
-@pytest.mark.parametrize(
-    "status, notification_type, expected",
-    (
-        # Successful statuses aren’t linked
-        ("created", "email", None),
-        ("sending", "email", None),
-        ("delivered", "email", None),
-        # Failures are linked to the channel-specific page
-        (
-            "temporary-failure",
-            "email",
-            "/message-delivery-status#email-statuses",
-        ),
-        (
-            "permanent-failure",
-            "email",
-            "/message-delivery-status#email-statuses",
-        ),
-        (
-            "technical-failure",
-            "email",
-            "/message-delivery-status#email-statuses",
-        ),
-        (
-            "temporary-failure",
-            "sms",
-            "/message-delivery-status#sms-statuses",
-        ),
-        (
-            "permanent-failure",
-            "sms",
-            "/message-delivery-status#sms-statuses",
-        ),
-        (
-            "technical-failure",
-            "sms",
-            "/message-delivery-status#sms-statuses",
-        ),
-        # Letter statuses are never linked
-        ("technical-failure", "letter", None),
-        ("cancelled", "letter", None),
-        ("accepted", "letter", None),
-        ("received", "letter", None),
-    ),
-)
-def test_format_notification_status_as_url_REMOVE(
-    client,
-    status,
-    notification_type,
-    expected,
-    app_,
-):
-    with set_config(app_, "FF_BOUNCE_RATE_V1", False):
-
-        class FakeService:
-            id = "123"
-
-        g.current_service = FakeService()
-        assert format_notification_status_as_url(status, notification_type) == expected
+    assert format_notification_status_as_url(status, notification_type) == expected
 
 
 @pytest.mark.parametrize(
@@ -145,5 +80,4 @@ def test_format_notification_status_as_url_REMOVE(
     ),
 )
 def test_format_notification_status_uses_correct_labels(client, template_type, status, feedback_subtype, expected, app_):
-    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
-        assert format_notification_status(status, template_type, None, feedback_subtype) == expected
+    assert format_notification_status(status, template_type, None, feedback_subtype) == expected
