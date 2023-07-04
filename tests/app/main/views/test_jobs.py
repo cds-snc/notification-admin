@@ -850,6 +850,25 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
     assert normalize_spaces(page.select(".keyline-block")[1].text) == "5 January Estimated delivery date"
 
 
+def test_a11y_ensure_headings_are_hidden_when_no_data_on_view_job_page(
+    client_request,
+    fake_uuid,
+    service_one,
+    mock_get_job,
+    mock_get_service_template,
+    mock_get_no_notifications,
+    mock_get_service_data_retention,
+):
+    page = client_request.get(
+        "main.view_job",
+        service_id=service_one["id"],
+        job_id=fake_uuid,
+        status="sending",
+    )
+    assert len(page.find_all("thead", {"class": "table-field-headings-visible"})) == 0
+    assert len(page.find_all("thead", {"class": "table-field-headings"})) == 1
+
+
 class TestBounceRate:
     def test_jobs_page_shows_problem_email_filter(
         self,
