@@ -1,4 +1,4 @@
-{% macro big_number(number, label, link=None, status=None, currency='', smaller=False, smallest=False) %}
+{% macro big_number(number, label, link=None, status=None, currency='', separator='', secondary_number=None, smaller=False, smallest=False, secondary_smaller=False, secondary_smallest=False) %}
   {% if link %}
     <a class="big-number-link" href="{{ link }}">
   {% endif %}
@@ -8,10 +8,26 @@
         {% if currency %}
           {{ "{}{:,.2f}".format(currency, number) }}
         {% else %}
-          {{ "{:,}".format(number) }}
+          {{ "{:,}".format(number) if session['userlang'] == 'en' else "{:,}".format(number).replace(',', ' ') }}
         {% endif %}
       {% else %}
         {{ number }}
+      {% endif %}
+      {% if secondary_number %}
+      <span class="{% if secondary_smaller %} text-lg{%endif %}{% if secondary_smallest %} text-title{% endif %}">
+        {% if separator %}
+          {{ ' ' + separator + ' ' }}
+        {% endif %}
+        {% if secondary_number is number %}
+          {% if currency %}
+            {{ "{}{:,.2f}".format(currency, secondary_number) }}
+          {% else %}
+          {{ "{:,}".format(secondary_number) if session['userlang'] == 'en' else "{:,}".format(secondary_number).replace(',', ' ') }}
+          {% endif %}
+        {% else %}
+            {{ secondary_number }}
+        {% endif %}
+      </span>
       {% endif %}
     </div>
     {% if label %}
@@ -23,7 +39,6 @@
   {% endif %}
 {% endmacro %}
 
-
 {% macro big_number_with_status(
   number,
   label,
@@ -33,19 +48,21 @@
   failure_link=None,
   link=None,
   show_failures=True,
+  secondary_number=None,
   smaller=False,
-  smallest=False
+  smallest=False,
+  secondary_smaller=False,
+  secondary_smallest=False
 ) %}
   <div class="big-number-with-status">
-    {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
+    {{ big_number(number, label, link=link, status=True, secondary_number=secondary_number, smaller=smaller, smallest=smallest, secondary_smaller=secondary_smaller, secondary_smallest=secondary_smallest) }}
     {% if show_failures %}
       {% if not config["FF_BOUNCE_RATE_V1"] and not current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
         <div class="big-number-status{% if danger_zone %} bg-red{% endif %}{% if not failures %} p-6{% endif %}">
           {% if failures %}
             {% if failure_link %}
               <a class="p-6 big-number-status-link flex justify-between items-end border-0" href="{{ failure_link }}">
-                {{ "{:,}".format(failures) }}
-                {{ _('failed') }} – {{ failure_percentage }}%
+                {{ failure_percentage + "%" if lang == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{ _('failed') }} –
                 <i aria-hidden="true" class="p-1 fa-solid fa-circle-question"></i>
               </a>
             {% else %}
@@ -64,7 +81,7 @@
           {% if failures %}
             {% if failure_link %}
               <div class="p-6 flex justify-between items-end border-0 no-underline" href="{{ failure_link }}">
-                {{ failure_percentage }}%  {{_('failed') }}
+                {{ failure_percentage + "%" if session["userlang"] == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{_('failed') }}
                 <i aria-hidden="true" class="p-1 fa-solid {% if danger_zone %}fa-triangle-exclamation{% else %}{% endif %}"></i>
               </div>
               <div class="px-6 flex justify-between items-end border-0">
@@ -87,6 +104,31 @@
   </div>
 {% endmacro %}
 
+
+{% macro big_number_daily_limit_with_status(
+  number,
+  label,
+  messages_remaining,
+  percentage,
+  separator='/',
+  link=None,
+  secondary_number=None,
+  smaller=False,
+  smallest=False,
+  secondary_smaller=False,
+  secondary_smallest=False
+) %}
+  <div class="big-number-with-status">
+    {{ big_number(number, label, link=link, status=True, separator=separator, secondary_number=secondary_number, smaller=smaller, smallest=smallest, secondary_smaller=secondary_smaller, secondary_smallest=secondary_smallest) }}
+      <div class="big-number-status pb-4 p-6">
+        <a class="big-number-status-link flex justify-between items-end border-0" href="">
+          {{ "{:,} {} - {}%".format(messages_remaining, " remaining ", percentage) }}
+        </a>
+      </div>
+  </div>
+{% endmacro %}
+
+
 {% macro big_number_review_emails_with_status(
   number,
   label,
@@ -99,7 +141,8 @@
   pass_label=_("No problem addresses"),
   show_failures=True,
   smaller=False,
-  smallest=False
+  smallest=False,
+  lang=session['userlang'] if session['userlang'] else None
 ) %}
   <div class="big-number-with-status">
     {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
@@ -113,16 +156,16 @@
             <div class="p-6 review-email-label flex justify-between items-end border-0">
               <span>
                 {% if problem_percentage < 0.1 %}
-                  {{ _('Less than') }} 0.1%
+                  {{ _('Less than')}} {{'0.1%' if lang == 'en' else '0,1 %' }}
                 {% else %}
-                  {{ problem_percentage|round(2) }}%
+                  {{ problem_percentage|round(2)|string + "%" if lang == 'en' else problem_percentage|round(2)|replace('.', ',')|string + " %"}}
                 {% endif %}
                  {{ _('problem addresses') }}
               </span>
               <i aria-hidden="true" class="p-1 {% if bounce_status == "warning" %}fa-solid fa-fas fa-circle-exclamation{% elif bounce_status== "critical" %}fa-solid fa-fas fa-triangle-exclamation{% endif %}"></i>
             </div>
             <div class="px-6 review-email-link flex justify-between items-end border-0">
-              <span class="underline font-bold">{{ failure_link_label }}</span> 
+              <span class="underline font-bold">{{ failure_link_label }}</span>
               <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i>
             </div>
           {% else %}
