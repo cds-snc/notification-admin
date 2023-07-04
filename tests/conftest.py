@@ -2378,6 +2378,29 @@ def mock_get_notifications_with_previous_next(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_get_no_notifications(mocker):
+    def _get_notifications(
+        service_id,
+        job_id=None,
+        page=1,
+        count_pages=None,
+        template_type=None,
+        status=None,
+        limit_days=None,
+        include_jobs=None,
+        include_from_test_key=None,
+        to=None,
+        include_one_off=None,
+    ):
+        return notification_json(service_id, rows=0, with_links=True if count_pages is None else count_pages)
+
+    return mocker.patch(
+        "app.notification_api_client.get_notifications_for_service",
+        side_effect=_get_notifications,
+    )
+
+
+@pytest.fixture(scope="function")
 def mock_get_api_notifications_with_previous_next(mocker):
     def _get_notifications(
         service_id,
