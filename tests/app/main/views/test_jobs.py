@@ -15,7 +15,6 @@ from tests.conftest import (
     create_template,
     mock_get_notifications,
     normalize_spaces,
-    set_config,
 )
 
 

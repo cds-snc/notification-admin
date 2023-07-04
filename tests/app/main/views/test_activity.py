@@ -16,7 +16,6 @@ from tests.conftest import (
     create_active_user_with_permissions,
     create_notifications,
     normalize_spaces,
-    set_config,
 )
 
 

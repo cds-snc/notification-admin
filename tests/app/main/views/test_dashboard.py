@@ -1,7 +1,7 @@
 import copy
 
 import pytest
-from flask import g, url_for
+from flask import url_for
 from freezegun import freeze_time
 
 from app.main.views.dashboard import (
@@ -20,7 +20,6 @@ from tests.conftest import (
     create_active_caseworking_user,
     create_active_user_view_permissions,
     normalize_spaces,
-    set_config,
 )
 
 stub_template_stats = [

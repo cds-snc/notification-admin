@@ -1,8 +1,6 @@
 import pytest
-from flask import g
 
 from app import format_notification_status, format_notification_status_as_url
-from tests.conftest import set_config
 
 
 @pytest.mark.parametrize(
