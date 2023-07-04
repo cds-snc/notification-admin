@@ -177,9 +177,7 @@ def test_should_show_page_for_one_job(
     )
 
     assert page.h1.text.strip() == "thisisatest.csv"
-    assert " ".join(page.find("tbody").find("tr").text.split()) == (
-        "6502532222 template content No Delivered 11:10:00.061258"
-    )
+    assert " ".join(page.find("tbody").find("tr").text.split()) == ("6502532222 template content No Delivered 11:10:00.061258")
     assert page.find("div", {"data-key": "notifications"})["data-resource"] == url_for(
         "main.view_job_updates",
         service_id=SERVICE_ONE_ID,

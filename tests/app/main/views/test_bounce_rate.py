@@ -393,10 +393,7 @@ def test_bounce_rate_widget_displays_correct_status_and_totals_v1(
 
         if expected_problem_emails > 0:
             assert (
-                page.select_one("#problem-email-addresses .review-email-label")
-                .text.strip()
-                .replace("\n", "")
-                .replace("  ", "")
+                page.select_one("#problem-email-addresses .review-email-label").text.strip().replace("\n", "").replace("  ", "")
                 == expected_problem_percent
             )
 
@@ -439,10 +436,7 @@ def test_bounce_rate_widget_displays_correct_status_and_totals_v15(
 
         if total_hard_bounces > 0:
             assert (
-                page.select_one("#problem-email-addresses .review-email-label")
-                .text.strip()
-                .replace("\n", "")
-                .replace("  ", "")
+                page.select_one("#problem-email-addresses .review-email-label").text.strip().replace("\n", "").replace("  ", "")
                 == expected_problem_percent
             )
 
