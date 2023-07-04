@@ -258,7 +258,6 @@ def get_dashboard_partials(service_id):
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
         immediate_jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id)]
 
-    stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
     # get the daily stats
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
 
