@@ -568,13 +568,3 @@ def get_column_properties(number_of_columns):
         2: ("w-1/2 float-left py-0 px-0 px-gutterHalf box-border", 999999999),
         3: ("md:w-1/3 float-left py-0 px-0 px-gutterHalf box-border", 99999),
     }.get(number_of_columns)
-
-
-def get_bounce_status_style_class(bounce_rate: BounceRate):
-    if bounce_rate.below_threshold:
-        return "review-email-status-neutral"
-    elif bounce_rate.bounce_status == BounceRateStatus.NORMAL.value:
-        return "review-email-status-normal"
-    elif bounce_rate.bounce_status == BounceRateStatus.CRITICAL.value or bounce_rate.bounce_status == BounceRateStatus.WARNING.value:
-        return "review-email-status-critical"
-
