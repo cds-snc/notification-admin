@@ -54,7 +54,7 @@ export const getDates = (date) => {
         .map(() => {
           start = start.add(1, "day");
           return start;
-        })
+        }),
     );
   }
 

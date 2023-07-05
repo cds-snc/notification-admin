@@ -43,7 +43,7 @@
         $(component).data("resource"),
         getQueue($(component).data("resource")),
         ($(component).data("interval-seconds") || 1.5) * 1000,
-        $(component).data("form")
+        $(component).data("form"),
       );
   };
 })(window.GOVUK.Modules);
