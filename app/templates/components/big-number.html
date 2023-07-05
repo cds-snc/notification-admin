@@ -134,7 +134,7 @@
   label,
   problem_percentage,
   bounce_status="normal",
-  bounce_threshold=False,
+  below_threshold=False,
   failure_link=None,
   failure_link_label=_("Review email addresses"),
   link=None,
@@ -149,7 +149,7 @@
     {% if failure_link %}
       <a class="big-number-link border-0 focus:border-b-0" href="{{ failure_link }}">
     {% endif %}
-    <div class="pb-4 {% if bounce_status == "critical" %}review-email-status-critical{% elif bounce_status == "warning" and bounce_threshold == True%}review-email-status-neutral{% elif bounce_status == "warning"%}review-email-status-critical{% else%}review-email-status-normal{% endif %} {% if problem_percentage == 0 %} p-6 {% endif %}">
+    <div class="pb-4 {% if below_threshold %} review-email-status-neutral {% elif bounce_status == "normal" %} review-email-status-normal {% elif bounce_status in ['critical', 'warning'] %} review-email-status-critical {% endif %} {% if problem_percentage == 0 %} p-6 {% endif %}">
       {% if number >= 1 %}
           {% if failure_link %}
             <div class="p-6 review-email-label flex justify-between items-end border-0">

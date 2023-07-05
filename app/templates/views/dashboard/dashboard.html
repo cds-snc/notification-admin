@@ -21,23 +21,24 @@
 
     {% if partials['has_scheduled_jobs'] %}
       <h2 class="heading-medium mt-8">{{ _("Scheduled sends") }}</h2>
-      {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
+      {{ ajax_block(partials, updates_url, 'upcoming', interval=2000) }}
     {% endif %}
 
     {% if config["FF_SMS_PARTS_UI"] %}
       <h2 class="heading-medium mt-8">
         {{ _('Usage today') }}
       </h2>
-      {{ ajax_block(partials, updates_url, 'daily_totals', interval=5) }}
+      {{ ajax_block(partials, updates_url, 'daily_totals', interval=2000) }}
     {% endif %}
 
-    {{ ajax_block(partials, updates_url, 'weekly_totals', interval=5) }}
+    {{ ajax_block(partials, updates_url, 'weekly_totals', interval=2000) }}
 
-    {{ ajax_block(partials, updates_url, 'problem_email_addresses', interval=5) }}
+    {{ ajax_block(partials, updates_url, 'problem_email_addresses', interval=2000) }}
+
 
     {% if partials['has_template_statistics'] %}
       <h2 class="heading-medium mt-8">{{ _("Templates used") }}</h2>
-      {{ ajax_block(partials, updates_url, 'template-statistics', interval=5) }}
+      {{ ajax_block(partials, updates_url, 'template-statistics', interval=2000) }}
       {{ show_more(
         url_for('.template_usage', service_id=current_service.id),
         _('See all templates used')
@@ -46,7 +47,7 @@
 
     {% if partials['has_jobs'] %}
       <h2 class="heading-medium mt-8">{{ _("Bulk sends") }}</h2>
-      {{ ajax_block(partials, updates_url, 'jobs', interval=5) }}
+      {{ ajax_block(partials, updates_url, 'jobs', interval=2000) }}
       {{ show_more(
         url_for('.view_jobs', service_id=current_service.id),
         _('See all bulk sends')
