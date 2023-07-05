@@ -146,7 +146,6 @@
 ) %}
   <div class="big-number-with-status">
     {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
-
     {% if failure_link %}
       <a class="big-number-link border-0 focus:border-b-0" href="{{ failure_link }}">
     {% endif %}

@@ -9,7 +9,7 @@
   }
 
   .big-number-dark {
-    @apply relative p-gutterHalf text-white bg-blue;
+    @apply block p-gutterHalf text-white bg-blue;
   }
 
   .big-number-label {

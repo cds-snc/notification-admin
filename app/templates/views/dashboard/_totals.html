@@ -2,7 +2,6 @@
 {% from "components/show-more.html" import show_more %}
 {% from "components/message-count-label.html" import message_count_label, problem_email_label %}
 
-
 {% set sent_single = _('sent-dashboard-single') %}
 {% set sent_plural = _('sent-dashboard-plural') %}
 
@@ -14,9 +13,9 @@
       {{ _("Sent in the last week") }}
   </h2>
   <div class="grid-row contain-floats">
-    <div id="total-email" class="{{column_width}}">
+    <div id="total-email" class="{{ column_width }}">
       {{ big_number_with_status(
-        36000,
+        statistics['email']['requested'],
         message_count_label(statistics['email']['requested'], 'email', suffix=sent_single, suffix_plural=sent_plural),
         statistics['email']['failed'],
         statistics['email']['failed_percentage'],
@@ -27,7 +26,7 @@
       ) }}
     </div>
 
-    <div id="total-sms" class="{{column_width}}">
+    <div id="total-sms" class="{{ column_width }}">
       {{ big_number_with_status(
         statistics['sms']['requested'],
         message_count_label(statistics['sms']['requested'], 'sms', suffix=sent_single, suffix_plural=sent_plural),
@@ -39,7 +38,8 @@
         smaller=smaller_font_size
       ) }}
     </div>
-    {% if current_service.has_permission('letter') %}
+
+  {% if current_service.has_permission('letter') %}
     <div id="total-letters" class="{{column_width}}">
       {{ big_number_with_status(
         statistics['letter']['requested'],
@@ -52,7 +52,7 @@
         smaller=smaller_font_size
       ) }}
     </div>
-    {% endif %}
+  {% endif %}
   </div>
   {{ show_more(
     url_for('.monthly', service_id=current_service.id),

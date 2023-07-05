@@ -250,22 +250,25 @@ def aggregate_notifications_stats(template_statistics):
 
 
 def get_dashboard_partials(service_id):
+    # Weekly stats
     all_statistics_weekly = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=7)
     template_statistics_weekly = aggregate_template_usage(all_statistics_weekly)
+    notification_stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
+
+    # Daily stats
+    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
 
     scheduled_jobs, immediate_jobs = [], []
     if job_api_client.has_jobs(service_id):
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
         immediate_jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id)]
 
-    stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
-    # get the daily stats
-    dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
+
 
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
     )
-    dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
+    dashboard_totals_weekly = (get_dashboard_totals(notification_stats_weekly),)
     bounce_rate_data = (
         get_bounce_rate_data_from_redis(service_id)
         if current_app.config["FF_BOUNCE_RATE_V15"]
@@ -283,9 +286,7 @@ def get_dashboard_partials(service_id):
         "weekly_totals": render_template(
             "views/dashboard/_totals.html",
             service_id=service_id,
-            statistics=dashboard_totals_daily[0]
-            if current_app.config["FF_BOUNCE_RATE_V1"] or current_service.id in current_app.config["FF_ABTEST_SERVICE_ID"]
-            else dashboard_totals_weekly[0],
+            statistics=dashboard_totals_weekly[0],
             column_width=column_width,
             smaller_font_size=(highest_notification_count_daily > max_notifiction_count)
         ),
