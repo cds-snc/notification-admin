@@ -29,14 +29,18 @@
 
   .js-stick-at-top-when-scrolling {
     top: 5px;
-    transition: top 0.1s ease-out, box-shadow 1s ease-in-out;
+    transition:
+      top 0.1s ease-out,
+      box-shadow 1s ease-in-out;
     margin-top: -10px;
     @apply mb-2;
   }
 
   .js-stick-at-bottom-when-scrolling {
     margin-top: -20px;
-    transition: bottom 0.1s ease-out, box-shadow 1s ease-in-out;
+    transition:
+      bottom 0.1s ease-out,
+      box-shadow 1s ease-in-out;
     @apply pr-0 pl-gutterHalf py-8;
   }
   .js-stick-at-bottom-when-scrolling + .js-stick-at-bottom-when-scrolling {
@@ -75,7 +79,9 @@
   }
 
   .js-stick-at-top-when-scrolling.content-fixed {
-    transition: background 0.3s ease-in-out, margin-top 0.3s ease-out;
+    transition:
+      background 0.3s ease-in-out,
+      margin-top 0.3s ease-out;
   }
   .js-stick-at-bottom-when-scrolling.content-fixed,
   .js-stick-at-bottom-when-scrolling.content-fixed-onload {
