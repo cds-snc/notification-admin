@@ -62,8 +62,7 @@
           {% if failures %}
             {% if failure_link %}
               <a class="p-6 big-number-status-link flex justify-between items-end border-0" href="{{ failure_link }}">
-                {{ "{:,}".format(failures) }}
-                {{ _('failed') }} – {{ failure_percentage }}%
+                {{ failure_percentage + "%" if session["userlang"] == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{ _('failed') }}
                 <i aria-hidden="true" class="p-1 fa-solid fa-circle-question"></i>
               </a>
             {% else %}
@@ -82,7 +81,7 @@
           {% if failures %}
             {% if failure_link %}
               <div class="p-6 flex justify-between items-end border-0 no-underline" href="{{ failure_link }}">
-                {{ failure_percentage + "%" if lang == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{_('failed') }}
+                {{ failure_percentage + "%" if session["userlang"] == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{_('failed') }}
                 <i aria-hidden="true" class="p-1 fa-solid {% if danger_zone %}fa-triangle-exclamation{% else %}{% endif %}"></i>
               </div>
               <div class="px-6 flex justify-between items-end border-0">
@@ -157,9 +156,9 @@
             <div class="p-6 review-email-label flex justify-between items-end border-0">
               <span>
                 {% if problem_percentage < 0.1 %}
-                  {{ _('Less than')}} {{'0.1%' if lang == 'en' else '0,1 %' }}
+                  {{ _('Less than')}} {{'0.1%' if session["userlang"] == 'en' else '0,1 %' }}
                 {% else %}
-                  {{ problem_percentage|round(2)|string + "%" if lang == 'en' else problem_percentage|round(2)|replace('.', ',')|string + " %"}}
+                  {{ problem_percentage|round(2)|string + "%" if session["userlang"] == 'en' else problem_percentage|round(2)|replace('.', ',')|string + " %"}}
                 {% endif %}
                  {{ _('problem addresses') }}
               </span>

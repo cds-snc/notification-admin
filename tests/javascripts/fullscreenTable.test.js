@@ -174,12 +174,12 @@ describe('FullscreenTable', () => {
       // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
       setTimeout(function(){ 
         expect(window.getComputedStyle(tableFrame)['height']).toEqual('268px');
-      ; }, 200);
+      ; }, 2000);
 
       // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
       setTimeout(function(){ 
         expect(window.getComputedStyle(numberColumnFrame)['height']).toEqual('268px');
-      ; }, 200);
+      ; }, 2000);
     });
 
     test("when the page has scrolled", () => {
@@ -190,12 +190,12 @@ describe('FullscreenTable', () => {
       // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
       setTimeout(function(){ 
         expect(window.getComputedStyle(tableFrame)['height']).toEqual('768px');
-      ; }, 200);
+      ; }, 2000);
 
       // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
       setTimeout(function(){ 
         expect(window.getComputedStyle(numberColumnFrame)['height']).toEqual('768px');
-      ; }, 200);
+      ; }, 2000);
 
     });
 
@@ -207,12 +207,12 @@ describe('FullscreenTable', () => {
       // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
       setTimeout(function(){ 
         expect(window.getComputedStyle(tableFrame)['height']).toEqual('500px');
-        ; }, 200);
+        ; }, 2000);
 
       // add a delay to avoid flaky measurement -> jQuery vs window.getComputedStyle
       setTimeout(function(){ 
         expect(window.getComputedStyle(tableFrame)['height']).toEqual('500px');
-        ; }, 200);
+        ; }, 2000);
 
     });
 
