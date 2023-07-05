@@ -33,7 +33,7 @@ export const defaultState = (
   data = {
     today: defaultToday,
     firstDay: defautFirstDay,
-  }
+  },
 ) => {
   let { today, firstDay } = data.defaultState ? data.defaultState : data;
 
@@ -47,7 +47,7 @@ export const defaultState = (
   const time_values = populateTimes(LOCALE === "en" ? "off" : "on");
   let timeValuesTodayLeft = timeValuesToday(
     [yearMonthDay(firstDay)],
-    time_values
+    time_values,
   );
 
   let selectedTimeValue = null;
@@ -129,14 +129,14 @@ export const StateProvider = ({ value, children }) => {
             : state.time;
           const isLastDay = dateIsLastAvailable(
             [action.payload],
-            state.lastAvailableDate
+            state.lastAvailableDate,
           );
           // If selecting the last day, make sure we don't select a
           // time after the latest valid datetime
           if (isLastDay) {
             const timeValuesForLastDay = timeValuesLastDay(
               action.payload,
-              state.time_values
+              state.time_values,
             );
             const validTime = timeValuesForLastDay
               .map((t) => t.val)
@@ -179,7 +179,7 @@ export const StateProvider = ({ value, children }) => {
         break;
       case "SELECT_PREVIOUS":
         const previousNewDate = yearMonthDay(
-          dayjs(state.date).subtract(1, "month")
+          dayjs(state.date).subtract(1, "month"),
         );
         newState = {
           ...state,
