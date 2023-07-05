@@ -10,7 +10,7 @@ window.formatAllDates = function () {
           day: "numeric",
           hour: "numeric",
           minute: "2-digit",
-        })
+        }),
       );
     }
   });
@@ -25,7 +25,7 @@ window.formatAllDates = function () {
           month: "short",
           day: "numeric",
           year: "numeric",
-        })
+        }),
       );
     }
   });
@@ -42,7 +42,7 @@ window.formatAllDates = function () {
       $(this).text(
         datetime.toLocaleDateString(locale, { dateStyle: "long" }) +
           ", " +
-          datetime.toLocaleTimeString(locale, { timeStyle: "short" })
+          datetime.toLocaleTimeString(locale, { timeStyle: "short" }),
       );
     }
   });
@@ -86,7 +86,7 @@ showHideContent.init();
 $(() => GOVUK.modules.start());
 
 $(() =>
-  $(".error-message").eq(0).parent("label").next("input").trigger("focus")
+  $(".error-message").eq(0).parent("label").next("input").trigger("focus"),
 );
 
 $(() => $(".banner-dangerous").eq(0).trigger("focus"));
@@ -183,7 +183,7 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
         // jshint ignore:line
         e.preventDefault();
         var target = document.getElementById(
-            this.getAttribute("href").substr(1)
+            this.getAttribute("href").substr(1),
           ),
           targetClass = target.getAttribute("class") || "",
           sourceClass = this.getAttribute("class") || "";
@@ -191,7 +191,7 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
         if (targetClass.indexOf("js-visible") !== -1) {
           target.setAttribute(
             "class",
-            targetClass.replace(/(^|\s)js-visible(\s|$)/, "")
+            targetClass.replace(/(^|\s)js-visible(\s|$)/, ""),
           );
         } else {
           target.setAttribute("class", targetClass + " js-visible");
@@ -199,18 +199,18 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
         if (sourceClass.indexOf("js-visible") !== -1) {
           this.setAttribute(
             "class",
-            sourceClass.replace(/(^|\s)js-visible(\s|$)/, "")
+            sourceClass.replace(/(^|\s)js-visible(\s|$)/, ""),
           );
         } else {
           this.setAttribute("class", sourceClass + " js-visible");
         }
         this.setAttribute(
           "aria-expanded",
-          this.getAttribute("aria-expanded") !== "true"
+          this.getAttribute("aria-expanded") !== "true",
         );
         target.setAttribute(
           "aria-hidden",
-          target.getAttribute("aria-hidden") === "false"
+          target.getAttribute("aria-hidden") === "false",
         );
       });
     }

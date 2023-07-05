@@ -41,19 +41,19 @@
             .clone()
             .addClass("fullscreen-fixed-table")
             .removeClass("fullscreen-scrollable-table")
-            .attr("aria-hidden", true)
+            .attr("aria-hidden", true),
         )
         .append('<div class="fullscreen-right-shadow" />')
         .after(
           $("<div class='fullscreen-shim'/>").css({
             height: this.nativeHeight,
             top: this.topOffset,
-          })
+          }),
         )
         .css("position", "absolute");
 
       this.$scrollableTable = this.$component.find(
-        ".fullscreen-scrollable-table"
+        ".fullscreen-scrollable-table",
       );
       this.$fixedTable = this.$component.find(".fullscreen-fixed-table");
     };
@@ -61,7 +61,7 @@
     this.maintainHeight = () => {
       let height = Math.min(
         $(window).height() - this.topOffset + $("html, body").scrollTop(),
-        this.nativeHeight
+        this.nativeHeight,
       );
 
       this.$scrollableTable.outerHeight(height);
@@ -84,7 +84,7 @@
     this.toggleShadows = () => {
       this.$fixedTable.toggleClass(
         "fullscreen-scrolled-table",
-        this.$scrollableTable.scrollLeft() > 0
+        this.$scrollableTable.scrollLeft() > 0,
       );
 
       this.$component
@@ -92,7 +92,7 @@
         .toggleClass(
           "visible",
           this.$scrollableTable.scrollLeft() <
-            this.$table.width() - this.$scrollableTable.width()
+            this.$table.width() - this.$scrollableTable.width(),
         );
 
       setTimeout(
@@ -100,7 +100,7 @@
           this.$component
             .find(".fullscreen-right-shadow")
             .addClass("with-transition"),
-        3000
+        3000,
       );
     };
   };
