@@ -70,17 +70,13 @@
                 </li>
             {% endfor %}
             <li>
-                    <a href="#">example@email.com</a>&nbsp;{{ _( "using template ‘{}’").format("template name")}}
+                    <a href="#">example@email.com</a> {{ _( "using template ‘{}’").format("template name")}}
                 </li>
                 <li>
-                        <a href="#">
-                                {{ _('{count} problem email addresses').format(count=5)}}
-                        </a>&nbsp; {{ _( 'in ‘{}’').format("file name") }}
+                        <a href="#">{{ _('{count} problem email addresses').format(count=5)}}</a> {{ _( 'in ‘{}’').format("file name") }}
                     </li>
                     <li>
-                        <a href="#">
-                                {{ _('1 problem email address')}}
-                        </a>&nbsp; {{ _( 'in ‘{}’').format("file name") }}
+                        <a href="#">{{ _('1 problem email address')}}</a> {{ _( 'in ‘{}’').format("file name") }}
                     </li>
             </ul>
             {{ show_more(
