@@ -26,7 +26,7 @@
         function (e) {
           callback(e, e.target);
         },
-        false
+        false,
       );
     } else if (node.attachEvent) {
       node.attachEvent("on" + type, function (e) {
@@ -162,7 +162,7 @@
 
       details.__summary.__twisty = details.__summary.insertBefore(
         twisty,
-        details.__summary.firstChild
+        details.__summary.firstChild,
       );
       details.__summary.__twisty.setAttribute("aria-hidden", "true");
     }
@@ -177,11 +177,11 @@
 
       summary.__details.__summary.setAttribute(
         "aria-expanded",
-        expanded ? "false" : "true"
+        expanded ? "false" : "true",
       );
       summary.__details.__content.setAttribute(
         "aria-hidden",
-        hidden ? "false" : "true"
+        hidden ? "false" : "true",
       );
       summary.__details.__interactive.forEach((element) => {
         element.setAttribute("tabIndex", hidden ? 0 : -1);
@@ -202,7 +202,7 @@
         summary.__twisty.firstChild.nodeValue = expanded ? "\u25ba" : "\u25bc";
         summary.__twisty.setAttribute(
           "class",
-          expanded ? "arrow arrow-closed" : "arrow arrow-open"
+          expanded ? "arrow arrow-closed" : "arrow arrow-open",
         );
       }
 

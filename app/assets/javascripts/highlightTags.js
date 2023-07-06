@@ -11,12 +11,12 @@
         .wrap(
           `
           <div class='textbox-highlight-wrapper' />
-        `
+        `,
         )
         .after(
           (this.$background = $(`
           <div class="textbox-highlight-background" aria-hidden="true" />
-        `))
+        `)),
         )
         .on("input", this.update);
 
@@ -32,7 +32,7 @@
 
     this.resize = () => {
       this.$textbox.height(
-        Math.max(this.initialHeight, this.$background.outerHeight())
+        Math.max(this.initialHeight, this.$background.outerHeight()),
       );
 
       if ("stickAtBottomWhenScrolling" in GOVUK) {
@@ -49,8 +49,8 @@
           (match, name, separator, value) =>
             value && separator
               ? `<span class='placeholder-conditional'>((${name}??</span>${value}))`
-              : `<span class='placeholder'>((${name}${value}))</span>`
-        )
+              : `<span class='placeholder'>((${name}${value}))</span>`,
+        ),
       );
 
     this.update = () => this.replacePlaceholders() && this.resize();

@@ -16,7 +16,6 @@ from tests.conftest import (
     create_active_user_with_permissions,
     create_notifications,
     normalize_spaces,
-    set_config,
 )
 
 
@@ -523,36 +522,18 @@ def test_html_contains_notification_id(
 def test_html_contains_links_for_failed_notifications(
     client_request, active_user_with_permissions, mock_get_service_statistics, mock_get_service_data_retention, mocker, app_
 ):
-    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
-        notifications = create_notifications(status="technical-failure")
-        mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
-        response = client_request.get(
-            "main.view_notifications",
-            service_id=SERVICE_ONE_ID,
-            message_type="sms",
-            status="sending%2Cdelivered%2Cfailed",
-        )
-        notifications = response.tbody.find_all("tr")
-        for tr in notifications:
-            link_text = tr.find("div", class_="table-field-status-error").find("a").text
-            assert normalize_spaces(link_text) == "Tech issue"
-
-    # -----------------
-    # remove the following code when FF_BOUNCE_RATE_V1 is removed
-    # -----------------
-    with set_config(app_, "FF_BOUNCE_RATE_V1", False):
-        notifications = create_notifications(status="technical-failure")
-        mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
-        response = client_request.get(
-            "main.view_notifications",
-            service_id=SERVICE_ONE_ID,
-            message_type="sms",
-            status="sending%2Cdelivered%2Cfailed",
-        )
-        notifications = response.tbody.find_all("tr")
-        for tr in notifications:
-            link_text = tr.find("div", class_="table-field-status-error").find("a").text
-            assert normalize_spaces(link_text) == "Technical failure"
+    notifications = create_notifications(status="technical-failure")
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
+    response = client_request.get(
+        "main.view_notifications",
+        service_id=SERVICE_ONE_ID,
+        message_type="sms",
+        status="sending%2Cdelivered%2Cfailed",
+    )
+    notifications = response.tbody.find_all("tr")
+    for tr in notifications:
+        link_text = tr.find("div", class_="table-field-status-error").find("a").text
+        assert normalize_spaces(link_text) == "Tech issue"
 
 
 @pytest.mark.parametrize(
@@ -622,104 +603,6 @@ def test_big_numbers_and_search_dont_show_for_letters(
 
     assert (len(page.select("nav.pill")) > 0) == tablist_visible
     assert (len(page.select("[type=search]")) > 0) == search_bar_visible
-
-
-# --------------------------------------------------------------------
-# remove the following test when FF_BOUNCE_RATE_V1 is removed
-# --------------------------------------------------------------------
-@freeze_time("2017-09-27 16:30:00.000000")
-@pytest.mark.parametrize(
-    "message_type, status, expected_hint_status, single_line",
-    [
-        ("email", "created", "Sending since 2017-09-27T16:30:00+00:00", True),
-        ("email", "sending", "Sending since 2017-09-27T16:30:00+00:00", True),
-        (
-            "email",
-            "temporary-failure",
-            "Inbox not accepting messages right now 16:31:00",
-            False,
-        ),
-        ("email", "permanent-failure", "Email address does not exist 16:31:00", False),
-        ("email", "delivered", "Delivered 16:31:00", True),
-        ("sms", "created", "Sending since 2017-09-27T16:30:00+00:00", True),
-        ("sms", "sending", "Sending since 2017-09-27T16:30:00+00:00", True),
-        (
-            "sms",
-            "temporary-failure",
-            "Phone number not accepting messages right now 16:31:00",
-            False,
-        ),
-        ("sms", "permanent-failure", "Phone number does not exist 16:31:00", False),
-        ("sms", "delivered", "Delivered 16:31:00", True),
-        ("letter", "created", "2017-09-27T16:30:00+00:00", True),
-        ("letter", "pending-virus-check", "2017-09-27T16:30:00+00:00", True),
-        ("letter", "sending", "2017-09-27T16:30:00+00:00", True),
-        ("letter", "delivered", "2017-09-27T16:30:00+00:00", True),
-        ("letter", "received", "2017-09-27T16:30:00+00:00", True),
-        ("letter", "accepted", "2017-09-27T16:30:00+00:00", True),
-        (
-            "letter",
-            "cancelled",
-            "2017-09-27T16:30:00+00:00",
-            False,
-        ),  # The API won’t return cancelled letters
-        (
-            "letter",
-            "permanent-failure",
-            "16:31:00",
-            False,
-        ),  # Deprecated for ‘cancelled’
-        (
-            "letter",
-            "temporary-failure",
-            "2017-09-27T16:30:00+00:00",
-            False,
-        ),  # Not currently a real letter status
-        (
-            "letter",
-            "virus-scan-failed",
-            "Virus detected 2017-09-27T16:30:00+00:00",
-            False,
-        ),
-        (
-            "letter",
-            "validation-failed",
-            "Validation failed 2017-09-27T16:30:00+00:00",
-            False,
-        ),
-        (
-            "letter",
-            "technical-failure",
-            "Technical failure 2017-09-27T16:30:00+00:00",
-            False,
-        ),
-    ],
-)
-def test_sending_status_hint_displays_correctly_on_notifications_page(
-    client_request,
-    service_one,
-    active_user_with_permissions,
-    mock_get_service_statistics,
-    mock_get_service_data_retention,
-    message_type,
-    status,
-    expected_hint_status,
-    single_line,
-    mocker,
-    app_,
-):
-    with set_config(app_, "FF_BOUNCE_RATE_V1", False):
-        notifications = create_notifications(template_type=message_type, status=status)
-        mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
-
-        page = client_request.get(
-            "main.view_notifications",
-            service_id=service_one["id"],
-            message_type=message_type,
-        )
-
-        assert normalize_spaces(page.select(".table-field-right-aligned")[0].text) == expected_hint_status
-        assert bool(page.select(".align-with-message-body")) is single_line
 
 
 @freeze_time("2017-09-27 16:30:00.000000")
@@ -803,18 +686,17 @@ def test_sending_status_hint_displays_correctly_on_notifications_page_new_status
     mocker,
     app_,
 ):
-    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
-        notifications = create_notifications(template_type=message_type, status=status)
-        mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
+    notifications = create_notifications(template_type=message_type, status=status)
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
 
-        page = client_request.get(
-            "main.view_notifications",
-            service_id=service_one["id"],
-            message_type=message_type,
-        )
+    page = client_request.get(
+        "main.view_notifications",
+        service_id=service_one["id"],
+        message_type=message_type,
+    )
 
-        assert normalize_spaces(page.select(".table-field-right-aligned")[0].text) == expected_hint_status
-        assert bool(page.select(".align-with-message-body")) is single_line
+    assert normalize_spaces(page.select(".table-field-right-aligned")[0].text) == expected_hint_status
+    assert bool(page.select(".align-with-message-body")) is single_line
 
 
 @pytest.mark.skip(reason="letters: unused functionality")

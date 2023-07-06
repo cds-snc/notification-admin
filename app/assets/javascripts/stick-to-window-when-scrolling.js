@@ -52,7 +52,7 @@
       var textarea = evt.target;
       var caretCoordinates = window.getCaretCoordinates(
         textarea,
-        textarea.selectionEnd
+        textarea.selectionEnd,
       );
       var focused = {
         top: $(textarea).offset().top + caretCoordinates.top,
@@ -288,7 +288,7 @@
   };
   StickyElement.prototype.removeStickyClasses = function (sticky) {
     this.$fixedEl.removeClass(
-      [this._initialFixedClass, this._fixedClass].join(" ")
+      [this._initialFixedClass, this._fixedClass].join(" "),
     );
   };
   StickyElement.prototype.isStuck = function () {
@@ -540,7 +540,7 @@
         if (
           self.windowNotPastScrolledFrom(
             windowPositions,
-            self.getScrolledFrom(el)
+            self.getScrolledFrom(el),
           )
         ) {
           self.reset(el);
@@ -549,7 +549,7 @@
           if (
             self.windowNotPastScrollingTo(
               windowPositions,
-              self.getScrollingTo(el)
+              self.getScrollingTo(el),
             )
           ) {
             self.stick(el);
@@ -884,13 +884,13 @@
   };
   stickAtTop.windowNotPastScrolledFrom = function (
     windowPositions,
-    scrolledFrom
+    scrolledFrom,
   ) {
     return scrolledFrom > windowPositions.top;
   };
   stickAtTop.windowNotPastScrollingTo = function (
     windowPositions,
-    scrollingTo
+    scrollingTo,
   ) {
     return windowPositions.top < scrollingTo;
   };
@@ -977,13 +977,13 @@
   };
   stickAtBottom.windowNotPastScrolledFrom = function (
     windowPositions,
-    scrolledFrom
+    scrolledFrom,
   ) {
     return scrolledFrom < windowPositions.bottom;
   };
   stickAtBottom.windowNotPastScrollingTo = function (
     windowPositions,
-    scrollingTo
+    scrollingTo,
   ) {
     return windowPositions.bottom > scrollingTo;
   };

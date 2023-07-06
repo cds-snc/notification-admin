@@ -57,7 +57,7 @@ describe("Time utils", function () {
     // this test will fail between midnight and 1 AM
     const culled_time_values = timeValuesToday(
       constructedToday,
-      state.time_values
+      state.time_values,
     );
     expect(culled_time_values).not.toHaveLength(6);
   });

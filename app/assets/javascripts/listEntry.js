@@ -43,10 +43,10 @@
       '{{removeTranslation}}<span class="visuallyhidden"> {{listItemName}} {{numberTranslation}} {{number}}</span>' +
       "</button>" +
       "{{/button}}" +
-      "</div>"
+      "</div>",
   );
   ListEntry.prototype.addButtonTemplate = Hogan.compile(
-    '<button type="button" class="button button-secondary list-entry-add m-0 mb-8 text-smaller leading-tight">{{addAnotherTranslation}} {{listItemName}} ({{entriesLeft}} {{remainingTranslation}})</button>'
+    '<button type="button" class="button button-secondary list-entry-add m-0 mb-8 text-smaller leading-tight">{{addAnotherTranslation}} {{listItemName}} ({{entriesLeft}} {{remainingTranslation}})</button>',
   );
   ListEntry.prototype.getSharedAttributes = function () {
     var $inputs = this.$wrapper.find("input"),
@@ -110,7 +110,7 @@
         var val = $(elm).val();
 
         this.entries.push(val);
-      }.bind(this)
+      }.bind(this),
     );
   };
   ListEntry.prototype.trimEntries = function () {
@@ -142,14 +142,14 @@
       ".list-entry-remove",
       function (e) {
         this.removeEntry($(e.target));
-      }.bind(this)
+      }.bind(this),
     );
     this.$wrapper.on(
       "click",
       ".list-entry-add",
       function (e) {
         this.addEntry();
-      }.bind(this)
+      }.bind(this),
     );
   };
   ListEntry.prototype.shiftFocus = function (opts) {
@@ -194,7 +194,7 @@
   ListEntry.prototype.removeEntry = function ($removeButton) {
     var entryNumber = parseInt(
       $removeButton.find("span").text().match(/\d+/)[0],
-      10
+      10,
     );
 
     this.getValues();
@@ -226,7 +226,7 @@
           dataObj.button = true;
         }
         this.$wrapper.append(this.entryTemplate.render(dataObj));
-      }.bind(this)
+      }.bind(this),
     );
     if (this.entries.length < this.maxEntries) {
       this.$wrapper.append(
@@ -237,7 +237,7 @@
           numberTranslation: window.polyglot.t("number"),
           removeTranslation: window.polyglot.t("remove"),
           remainingTranslation: window.polyglot.t("remaining"),
-        })
+        }),
       );
     }
   };
