@@ -16,7 +16,6 @@ from tests.conftest import (
     create_notification,
     mock_get_notification,
     normalize_spaces,
-    set_config,
 )
 
 
@@ -89,117 +88,24 @@ def test_notification_status_page_shows_details_new_statuses(
 ):
     mocker.patch("app.user_api_client.get_user", return_value=user)
 
-    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
-        notification = create_notification(
-            notification_status=notification_status,
-            notification_provider_response=provider_response,
-            key_type=key_type,
-        )
-        _mock_get_notification = mocker.patch("app.notification_api_client.get_notification", return_value=notification)
+    notification = create_notification(
+        notification_status=notification_status,
+        notification_provider_response=provider_response,
+        key_type=key_type,
+    )
+    _mock_get_notification = mocker.patch("app.notification_api_client.get_notification", return_value=notification)
 
-        page = client_request.get(
-            "main.view_notification",
-            service_id=service_one["id"],
-            notification_id=fake_uuid,
-        )
+    page = client_request.get(
+        "main.view_notification",
+        service_id=service_one["id"],
+        notification_id=fake_uuid,
+    )
 
-        assert normalize_spaces(page.select(".sms-message-recipient")[0].text) == ("To: 6502532222")
-        assert normalize_spaces(page.select(".sms-message-wrapper")[0].text) == ("service one: hello Jo")
-        assert normalize_spaces(page.select(".ajax-block-container p")[0].text) == (expected_status)
+    assert normalize_spaces(page.select(".sms-message-recipient")[0].text) == ("To: 6502532222")
+    assert normalize_spaces(page.select(".sms-message-wrapper")[0].text) == ("service one: hello Jo")
+    assert normalize_spaces(page.select(".ajax-block-container p")[0].text) == (expected_status)
 
-        _mock_get_notification.assert_called_with(service_one["id"], fake_uuid)
-
-
-# --------------------------------------------------------------------
-# remove the following test when FF_BOUNCE_RATE_V1 is removed
-# --------------------------------------------------------------------
-@pytest.mark.parametrize(
-    "key_type, notification_status, provider_response, expected_status",
-    [
-        (None, "created", None, "Sending"),
-        (None, "sending", None, "Sending"),
-        (None, "delivered", None, "Delivered"),
-        (None, "failed", None, "Failed"),
-        (
-            None,
-            "temporary-failure",
-            None,
-            "Phone number not accepting messages right now",
-        ),
-        (None, "permanent-failure", None, "Phone number does not exist"),
-        (None, "technical-failure", None, "Technical failure"),
-        (
-            None,
-            "technical-failure",
-            "Blocked as spam by phone carrier",
-            "Blocked as spam by phone carrier",
-        ),
-        (
-            None,
-            "permanent-failure",
-            "The email address is on the GC Notify suppression list",
-            "The email address is on the GC Notify suppression list",
-        ),
-        (
-            None,
-            "permanent-failure",
-            "Email address is on our email provider suppression list",
-            "Email address is on our email provider suppression list",
-        ),
-        (
-            None,
-            "temporary-failure",
-            "Email was rejected because of its attachments",
-            "Email was rejected because of its attachments",
-        ),
-        ("team", "delivered", None, "Delivered"),
-        ("live", "delivered", None, "Delivered"),
-        ("test", "sending", None, "Sending (test)"),
-        ("test", "delivered", None, "Delivered (test)"),
-        ("test", "permanent-failure", None, "Phone number does not exist (test)"),
-    ],
-)
-@pytest.mark.parametrize(
-    "user",
-    [
-        create_active_user_with_permissions(),
-        create_active_caseworking_user(),
-    ],
-)
-@freeze_time("2016-01-01 11:09:00.061258")
-def test_notification_status_page_shows_details(
-    client_request,
-    mocker,
-    mock_has_no_jobs,
-    service_one,
-    fake_uuid,
-    user,
-    key_type,
-    notification_status,
-    provider_response,
-    expected_status,
-    app_,
-):
-    mocker.patch("app.user_api_client.get_user", return_value=user)
-    with set_config(app_, "FF_BOUNCE_RATE_V1", False):
-        notification = create_notification(
-            notification_status=notification_status,
-            notification_provider_response=provider_response,
-            key_type=key_type,
-        )
-        _mock_get_notification = mocker.patch("app.notification_api_client.get_notification", return_value=notification)
-
-        page = client_request.get(
-            "main.view_notification",
-            service_id=service_one["id"],
-            notification_id=fake_uuid,
-        )
-
-        assert normalize_spaces(page.select(".sms-message-recipient")[0].text) == ("To: 6502532222")
-        assert normalize_spaces(page.select(".sms-message-wrapper")[0].text) == ("service one: hello Jo")
-        assert normalize_spaces(page.select(".ajax-block-container p")[0].text) == (expected_status)
-
-        _mock_get_notification.assert_called_with(service_one["id"], fake_uuid)
+    _mock_get_notification.assert_called_with(service_one["id"], fake_uuid)
 
 
 @pytest.mark.parametrize(

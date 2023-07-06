@@ -31,7 +31,7 @@
 	],
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
-			"version": "14.17.3"
+			"version": "16.20.0"
 		}
 	},
 	"forwardPorts": [
