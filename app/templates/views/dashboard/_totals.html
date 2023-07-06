@@ -70,13 +70,14 @@
         ) }}
       </div>
     {% endif %}
-    {% if config["FF_BOUNCE_RATE_V15"] %}
-      <div id="problem-email-addresses">
-        <h2 class="heading-medium mt-8">
-          {{ 'Problem email addresses' }}
-        </h2>
-        <div class="grid-row contains-floats">
-          <div id="problem-email-addresses" class="{{column_width}}">
+  </div>
+  {% if config["FF_BOUNCE_RATE_V15"] %}
+    <div>
+      <h2 class="heading-medium mt-8">
+        {{ 'Problem email addresses' }}
+      </h2>
+      <div class="grid-row contains-floats">
+        <div id="problem-email-addresses" class="{{column_width}}">
           {{ big_number_review_emails_with_status(
             number=bounce_rate["bounce_total"],
             label=problem_email_label(bounce_rate["bounce_total"]),
@@ -88,35 +89,33 @@
             smaller=smaller_font_size,
             failure_link_label=_("Review email addresses")
           ) }}
-          </div>
-          <div id="problem-email-guide-link" class="{{column_width}}">
-            {{ task_shortcut(
-              description=_("GC Notify’s email provider could suspend our services if we send too many problem emails."),
-              link_url=url_for('.create_template', service_id=current_service.id, source="dashboard"),
-              link_text=_("Guide: Keep accurate contact information."),
-              icon="arrow-up-right-from-square"
-            ) }}
-          </div>
+        </div>
+        <div id="problem-email-guide-link" class="{{column_width}}">
+          {{ task_shortcut(
+            description=_("GC Notify’s email provider could suspend our services if we send too many problem emails."),
+            link_url=url_for('.create_template', service_id=current_service.id, source="dashboard"),
+            link_text=_("Guide: Keep accurate contact information."),
+            icon="arrow-up-right-from-square"
+          ) }}
         </div>
       </div>
-    {% else %}
-      <div id="total-sms">
-        <h2 class="heading-medium mt-8">
-          {{ _('Text messages in the last 24 hours') }}
-        </h2>
-        {{ big_number_with_status(
-          statistics['sms']['requested'],
-          message_count_label(statistics['sms']['requested'], 'sms', suffix=sent_single, suffix_plural=sent_plural),
-          statistics['sms']['failed'],
-          statistics['sms']['failed_percentage'],
-          statistics['sms']['show_warning'],
-          failure_link=url_for(".view_notifications", service_id=service_id, message_type='sms', status='failed'),
-          link=url_for(".view_notifications", service_id=service_id, message_type='sms', status='sending,delivered,failed'),
-          smaller=smaller_font_size
-        ) }}
-      </div>
-    {% endif %}
     </div>
-
+  {% else %}
+    <div id="total-sms">
+      <h2 class="heading-medium mt-8">
+        {{ _('Text messages in the last 24 hours') }}
+      </h2>
+      {{ big_number_with_status(
+        statistics['sms']['requested'],
+        message_count_label(statistics['sms']['requested'], 'sms', suffix=sent_single, suffix_plural=sent_plural),
+        statistics['sms']['failed'],
+        statistics['sms']['failed_percentage'],
+        statistics['sms']['show_warning'],
+        failure_link=url_for(".view_notifications", service_id=service_id, message_type='sms', status='failed'),
+        link=url_for(".view_notifications", service_id=service_id, message_type='sms', status='sending,delivered,failed'),
+        smaller=smaller_font_size
+      ) }}
+    </div>
+  {% endif %}
   </div>
 </div>
