@@ -69,6 +69,19 @@
                     </span>
                 </li>
             {% endfor %}
+            <li>
+                    <a href="#">example@email.com</a>&nbsp;{{ _( "using template ‘{}’").format("template name")}}
+                </li>
+                <li>
+                        <a href="#">
+                                {{ _('{count} problem email addresses').format(count=5)}}
+                        </a>&nbsp; {{ _( 'in {}').format("file name") }}
+                    </li>
+                    <li>
+                        <a href="#">
+                                {{ _('1 problem email address')}}
+                        </a>&nbsp; {{ _( 'in {}').format("file name") }}
+                    </li>
             </ul>
             {{ show_more(
                 url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
