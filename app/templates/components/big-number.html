@@ -57,48 +57,30 @@
   <div class="big-number-with-status">
     {{ big_number(number, label, link=link, status=True, secondary_number=secondary_number, smaller=smaller, smallest=smallest, secondary_smaller=secondary_smaller, secondary_smallest=secondary_smallest) }}
     {% if show_failures %}
-      {% if not config["FF_BOUNCE_RATE_V1"] and not current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
-        <div class="big-number-status{% if danger_zone %} bg-red{% endif %}{% if not failures %} p-6{% endif %}">
-          {% if failures %}
-            {% if failure_link %}
-              <a class="p-6 big-number-status-link flex justify-between items-end border-0" href="{{ failure_link }}">
-                {{ failure_percentage + "%" if session["userlang"] == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{ _('failed') }}
-                <i aria-hidden="true" class="p-1 fa-solid fa-circle-question"></i>
-              </a>
-            {% else %}
-              {{ "{:,}".format(failures) }}
-              {{ _('failed') }} – {{ failure_percentage }}%
-            {% endif %}
+      {% if failure_link %}
+        <a class="big-number-link border-0 focus:border-b-0 " href="{{ failure_link }}">
+      {% endif %}
+      <div class="pb-4 big-number-status{% if danger_zone %} bg-red{% endif %}{% if not failures %} p-6{% endif %}">
+        {% if failures %}
+          {% if failure_link %}
+            <div class="p-6 flex justify-between items-end border-0 no-underline" href="{{ failure_link }}">
+              {{ failure_percentage + "%" if session["userlang"] == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{_('failed') }}
+              <i aria-hidden="true" class="p-1 fa-solid {% if danger_zone %}fa-triangle-exclamation{% else %}{% endif %}"></i>
+            </div>
+            <div class="px-6 flex justify-between items-end border-0">
+              <span class="underline font-bold">{{_('Review reports') }}</span>
+              <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i>
+            </div>
           {% else %}
-            {{ _('No failures') }}
+            {{ "{:,}".format(failures) }}
+            {{ _('failed') }} – {{ failure_percentage }}%
           {% endif %}
-        </div>
-      {% else %}
-        {% if failure_link %}
-          <a class="big-number-link border-0 focus:border-b-0 " href="{{ failure_link }}">
+        {% else %}
+          {{ _('No failures') }}
         {% endif %}
-        <div class="pb-4 big-number-status{% if danger_zone %} bg-red{% endif %}{% if not failures %} p-6{% endif %}">
-          {% if failures %}
-            {% if failure_link %}
-              <div class="p-6 flex justify-between items-end border-0 no-underline" href="{{ failure_link }}">
-                {{ failure_percentage + "%" if session["userlang"] == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{_('failed') }}
-                <i aria-hidden="true" class="p-1 fa-solid {% if danger_zone %}fa-triangle-exclamation{% else %}{% endif %}"></i>
-              </div>
-              <div class="px-6 flex justify-between items-end border-0">
-                <span class="underline font-bold">{{_('Review reports') }}</span>
-                <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i>
-              </div>
-            {% else %}
-              {{ "{:,}".format(failures) }}
-              {{ _('failed') }} – {{ failure_percentage }}%
-            {% endif %}
-          {% else %}
-            {{ _('No failures') }}
-          {% endif %}
-        </div>
-        {% if failure_link %}
-          </a>
-        {% endif %}
+      </div>
+      {% if failure_link %}
+        </a>
       {% endif %}
     {% endif %}
   </div>

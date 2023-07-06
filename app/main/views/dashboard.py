@@ -150,7 +150,7 @@ def template_usage(service_id):
             "name": month_name,
             "templates_used": [
                 {
-                    "id": stat["template_id"],
+                    "id": month_name + "_" + stat["template_id"],
                     "name": stat["name"],
                     "type": stat["type"],
                     "requested_count": stat["count"],
@@ -254,7 +254,8 @@ def get_dashboard_partials(service_id):
     all_statistics_weekly = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=7)
     template_statistics_weekly = aggregate_template_usage(all_statistics_weekly)
     notification_stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
-
+    dashboard_totals_weekly = (get_dashboard_totals(notification_stats_weekly),)
+    
     # Daily stats
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
 
@@ -263,19 +264,14 @@ def get_dashboard_partials(service_id):
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
         immediate_jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id)]
 
-
-
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
     )
-    dashboard_totals_weekly = (get_dashboard_totals(notification_stats_weekly),)
     bounce_rate_data = (
         get_bounce_rate_data_from_redis(service_id)
         if current_app.config["FF_BOUNCE_RATE_V15"]
         else calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily)
     )
-
-    bounce_rate = calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily)
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
@@ -296,7 +292,7 @@ def get_dashboard_partials(service_id):
             "views/dashboard/_problem_email_addresses.html",
             service_id=service_id,
             statistics=dashboard_totals_daily[0],
-            bounce_rate=bounce_rate,
+            bounce_rate=calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily),
             column_width=column_width,
         ),
         "template-statistics": render_template(
