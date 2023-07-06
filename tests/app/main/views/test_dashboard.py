@@ -1,4 +1,5 @@
 import copy
+import re
 
 import pytest
 from flask import url_for
@@ -1404,3 +1405,16 @@ def test_dashboard_page_a11y(
 
     assert response.status_code == 200
     a11y_test(url, response.data.decode("utf-8"))
+
+
+def test_a11y_template_usage_should_not_contain_duplicate_ids(
+    client_request,
+    mock_get_monthly_template_usage_with_multiple_months,
+):
+    page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID, year=2023)
+
+    list = []
+    for element in page.findAll("tr", {"id": re.compile(r".*")}):
+        list.append(element["id"])
+
+    assert len(list) == len(set(list))  # check for duplicates
