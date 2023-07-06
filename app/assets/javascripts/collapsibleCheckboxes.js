@@ -34,10 +34,10 @@
       ({
         folder: window.polyglot.t("no_folders_only_outside_folder"),
         "team member": window.polyglot.t("no_team_member_only_you"),
-      }[field] ||
+      })[field] ||
       window.polyglot.t("no_fields", {
         field: field,
-      })),
+      }),
   };
   Summary.prototype.addContent = function () {
     this.$text = $(`<p class="selection-summary__text" />`);
@@ -60,7 +60,7 @@
     }
 
     this.$text.html(
-      this.templates[template](selection, this.total, this.fieldLabel)
+      this.templates[template](selection, this.total, this.fieldLabel),
     );
   };
   Summary.prototype.bindEvents = function () {
@@ -85,9 +85,9 @@
     },
     done: (fieldLabel) =>
       `${window.polyglot.t(
-        "done"
+        "done",
       )}<span class='visuallyhidden'> ${window.polyglot.t(
-        `choosing ${fieldLabel}s`
+        `choosing ${fieldLabel}s`,
       )}</span>`,
   };
   Footer.prototype.getEl = function (expanded) {
@@ -123,7 +123,7 @@
     this.$formGroup = $(component);
     this.$fieldset = this.$formGroup.find("fieldset");
     this.$checkboxesDiv = this.$fieldset.find(
-      ".select-nested.checkboxes-nested, .multiple-choice"
+      ".select-nested.checkboxes-nested, .multiple-choice",
     );
     this.$checkboxes = this.$fieldset.find("input[type=checkbox]");
     this.fieldLabel = this.$formGroup.data("fieldLabel");

@@ -8,15 +8,15 @@
       keyVisible: (key, thing) => `
         <span class="api-key-key">${key}</span>
         <button type='button' class='js-api-key-button-copy absolute bottom-2 active:top-auto button button-secondary'>${window.polyglot.t(
-          "copy"
+          "copy",
         )} ${thing} ${window.polyglot.t("to_clipboard")}</button>
       `,
       keyCopied: (thing) => `
         <span class="api-key-key">${window.polyglot.t(
-          "copied_to_clipboard"
+          "copied_to_clipboard",
         )}</span>
         <button type='button' class='js-api-key-button-show absolute bottom-2 active:top-auto button button-secondary'>${window.polyglot.t(
-          "show"
+          "show",
         )} ${thing}</button>
       `,
     };
@@ -46,11 +46,11 @@
         .attr("aria-live", "polite")
         .on("click", ".js-api-key-button-copy", () =>
           this.copyKey($(".api-key-key", component)[0], () =>
-            $component.html(states.keyCopied(thing))
-          )
+            $component.html(states.keyCopied(thing)),
+          ),
         )
         .on("click", ".js-api-key-button-show", () =>
-          $component.html(states.keyVisible(key, thing))
+          $component.html(states.keyVisible(key, thing)),
         );
 
       if ("stickAtBottomWhenScrolling" in GOVUK) {

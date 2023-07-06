@@ -27,7 +27,7 @@
             body: CBOR.encode({
               credentialId: new Uint8Array(assertion.rawId),
               authenticatorData: new Uint8Array(
-                assertion.response.authenticatorData
+                assertion.response.authenticatorData,
               ),
               clientDataJSON: new Uint8Array(assertion.response.clientDataJSON),
               signature: new Uint8Array(assertion.response.signature),
@@ -77,7 +77,7 @@
           body: CBOR.encode({
             name: name,
             attestationObject: new Uint8Array(
-              attestation.response.attestationObject
+              attestation.response.attestationObject,
             ),
             clientDataJSON: new Uint8Array(attestation.response.clientDataJSON),
           }),
@@ -115,7 +115,7 @@
           body: CBOR.encode({
             credentialId: new Uint8Array(assertion.rawId),
             authenticatorData: new Uint8Array(
-              assertion.response.authenticatorData
+              assertion.response.authenticatorData,
             ),
             clientDataJSON: new Uint8Array(assertion.response.clientDataJSON),
             signature: new Uint8Array(assertion.response.signature),

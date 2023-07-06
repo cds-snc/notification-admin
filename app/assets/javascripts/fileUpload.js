@@ -21,7 +21,7 @@
       this.$form.on(
         "change",
         ".file-upload-field",
-        () => this.submit() && this.showCancelButton()
+        () => this.submit() && this.showCancelButton(),
       );
     };
   };

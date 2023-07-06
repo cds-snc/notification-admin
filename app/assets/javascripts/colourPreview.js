@@ -9,7 +9,7 @@
       this.$input = $("input", component);
 
       $(component).append(
-        (this.$preview = $('<span class="textbox-colour-preview"></span>'))
+        (this.$preview = $('<span class="textbox-colour-preview"></span>')),
       );
 
       this.$input.on("input", this.update).trigger("input");

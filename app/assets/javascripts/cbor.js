@@ -214,7 +214,7 @@
 
       tempDataView.setUint32(
         0,
-        (sign << 16) | (exponent << 13) | (fraction << 13)
+        (sign << 16) | (exponent << 13) | (fraction << 13),
       );
       return tempDataView.getFloat32(0);
     }
