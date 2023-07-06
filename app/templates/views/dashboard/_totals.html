@@ -8,11 +8,7 @@
 {% set address_plural = _('addresses') %}
 <div class="ajax-block-container">
   <h2 class="heading-medium mt-8">
-    {% if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
-      {{ _("Email in the last 24 hours") }}
-    {% else %}
-      {{ _("Sent in the last week") }}
-    {% endif %}
+    {{ _("Email in the last 24 hours") }}
   </h2>
   <div class="grid-row contain-floats">
     <div id="total-email" class="{{column_width}}">
@@ -29,30 +25,17 @@
     </div>
 
     <div id="problem-email-addresses" class="{{column_width}}">
-      {% if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
-        {{ big_number_review_emails_with_status(
-          number=bounce_rate["bounce_total"],
-          label=problem_email_label(bounce_rate["bounce_total"]),
-          problem_percentage=bounce_rate["bounce_percentage_display"],
-          bounce_status=bounce_rate["bounce_status"],
-          bounce_threshold=bounce_rate["below_threshold"],
-          failure_link=url_for('.problem_emails', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
-          link=None,
-          smaller=smaller_font_size,
-          failure_link_label=_("Review email addresses")
-        ) }}
-      {% else %}
-        {{ big_number_with_status(
-          statistics['sms']['requested'],
-          message_count_label(statistics['sms']['requested'], 'sms', suffix=sent_single, suffix_plural=sent_plural),
-          statistics['sms']['failed'],
-          statistics['sms']['failed_percentage'],
-          statistics['sms']['show_warning'],
-          failure_link=url_for(".view_notifications", service_id=service_id, message_type='sms', status='failed'),
-          link=url_for(".view_notifications", service_id=service_id, message_type='sms', status='sending,delivered,failed'),
-          smaller=smaller_font_size
-        ) }}
-      {% endif%}
+      {{ big_number_review_emails_with_status(
+        number=bounce_rate["bounce_total"],
+        label=problem_email_label(bounce_rate["bounce_total"]),
+        problem_percentage=bounce_rate["bounce_percentage_display"],
+        bounce_status=bounce_rate["bounce_status"],
+        bounce_threshold=bounce_rate["below_threshold"],
+        failure_link=url_for('.problem_emails', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
+        link=None,
+        smaller=smaller_font_size,
+        failure_link_label=_("Review email addresses")
+      ) }}
     </div>
 
     {% if current_service.has_permission('letter') %}
@@ -70,7 +53,6 @@
       </div>
     {% endif %}
     </div>
-    {% if config["FF_BOUNCE_RATE_V1"] or current_service.id in config["FF_ABTEST_SERVICE_ID"] %}
     <div id="total-sms">
     <h2 class="heading-medium mt-8">
       {{ _('Text messages in the last 24 hours') }}
@@ -86,6 +68,5 @@
         smaller=smaller_font_size
       ) }}
     </div>
-  {% endif %}
   </div>
 </div>
