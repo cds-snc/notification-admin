@@ -48,36 +48,22 @@
                 {% if job["bounce_count"] > 0 %}
                     <li>
                         <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
-                            {{ job["bounce_count"] }}
                             {% if job["bounce_count"] > 1 %}
-                                {{_(' problem email addresses')}}
+                                {{ _('{count} problem email addresses').format(count=5) }}
                             {%- else -%}
-                                {{_(' problem email address')}}
+                                {{ _('1 problem email address') }}
                             {%- endif -%}
-                        </a>
-                        <span>
-                            {{ _( ' in ')}} '{{ job.original_file_name }}'
-                        </span>
+                        </a>  {{ _( 'in ‘{}’').format(job.original_file_name) }}
                     </li>
                 {% endif %}
             {% endfor %}
             {% for notification in one_offs %}
                 <li>
-                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">{{notification["to"]}}</a>
-                    <span>
-                        {{ _( ' using template ')}} '{{ notification["template"]["name"] }}'
-                    </span>
+                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">
+                        {{ notification["to"] }}
+                    </a> {{ _( "using template ‘{}’").format(notification["template"]["name"]) }}
                 </li>
             {% endfor %}
-            <li>
-                    <a href="#">example@email.com</a> {{ _( "using template ‘{}’").format("template name")}}
-                </li>
-                <li>
-                        <a href="#">{{ _('{count} problem email addresses').format(count=5)}}</a> {{ _( 'in ‘{}’').format("file name") }}
-                    </li>
-                    <li>
-                        <a href="#">{{ _('1 problem email address')}}</a> {{ _( 'in ‘{}’').format("file name") }}
-                    </li>
             </ul>
             {{ show_more(
                 url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
