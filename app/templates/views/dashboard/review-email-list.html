@@ -33,9 +33,9 @@
                   {{ _('Less than {}').format( '0.1%' if session['userlang'] == 'en' else "0,1&nbsp;%") }}
                 {% else %}
                     {% if session['userlang'] == 'en' %}
-                        {{ ":.2%".format(bounce_rate["bounce_percentage_display"]|round(2)) }}
+                        {{ "{:.2%}".format(bounce_rate["bounce_percentage_display"]|round(2)) }}
                     {% else %}
-                        {{ ":.2 %".format(bounce_rate["bounce_percentage_display"]|round(2)).replace('.', ',') }}
+                        {{ "{:.2 %}".format(bounce_rate["bounce_percentage_display"]|round(2)).replace('.', ',') }}
                     {% endif %}
                 {% endif %}
                  {{ _('of email addresses need review') }}
