@@ -282,12 +282,12 @@ def test_should_show_recent_templates_on_dashboard(
     mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=1)
 
     headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
-    
+
     if app_.config["FF_BOUNCE_RATE_V15"]:
         assert "Sent in the last week" in headers
     else:
         assert "Email in the last 24 hours" in headers
-    
+
     table_rows = page.find_all("tbody")[1].find_all("tr")
 
     assert len(table_rows) == 4
@@ -479,7 +479,7 @@ def test_correct_columns_display_on_dashboard_v15(
         page = client_request.get("main.service_dashboard", service_id=service_one["id"])
         # first_row = page.select("#first-row")[0]
         assert len(page.select(column_name)) == expected_column_count
-    
+
 
 @pytest.mark.parametrize(
     "permissions, column_name, expected_column_count",
@@ -807,8 +807,8 @@ def test_dashboard_single_and_plural_v15(
             normalize_spaces(page.select(".big-number-with-status")[1].text),
             normalize_spaces(page.select(".big-number-with-status")[2].text),
         ) == expected_big_numbers_single_plural
-    
-    
+
+
 @freeze_time("2016-01-01 11:09:00.061258")
 # This test assumes EST
 def test_should_show_recent_jobs_on_dashboard(
