@@ -473,7 +473,7 @@ def test_correct_columns_display_on_dashboard_v15(
     column_name,
     app_,
 ):
-    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+    with set_config(app_, "FF_BOUNCE_RATE_V15", True):
         service_one["permissions"] = permissions
 
         page = client_request.get("main.service_dashboard", service_id=service_one["id"])
