@@ -35,7 +35,7 @@
                     {% if session['userlang'] == 'en' %}
                         {{ ":.2%".format(bounce_rate["bounce_percentage_display"]|round(2)) }}
                     {% else %}
-                        {{ ":.2%".format(bounce_rate["bounce_percentage_display"]|round(2)).replace('.', ',').replace('%', '&nbsp;%') }}
+                        {{ ":.2%".format(bounce_rate["bounce_percentage_display"]|round(2)).replace('.', ',').replace('%', '') }}&nbsp;%
                     {% endif %}
                 {% endif %}
                  {{ _('of email addresses need review') }}
