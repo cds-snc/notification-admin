@@ -349,7 +349,7 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
 
     # get total hard bounces
     for stat in all_statistics_daily:
-        if stat["status"] == "permanent-failure":
+        if stat["status"] == "permanent-failure" and stat["template_type"] == "email":
             bounce_rate.bounce_total += stat["count"]
 
     # calc bounce rate
