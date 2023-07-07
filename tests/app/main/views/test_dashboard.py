@@ -21,6 +21,7 @@ from tests.conftest import (
     create_active_caseworking_user,
     create_active_user_view_permissions,
     normalize_spaces,
+    set_config,
 )
 
 stub_template_stats = [
@@ -281,8 +282,12 @@ def test_should_show_recent_templates_on_dashboard(
     mock_template_stats.assert_any_call(SERVICE_ONE_ID, limit_days=1)
 
     headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
-    assert "Email in the last 24 hours" in headers
-
+    
+    if app_.config["FF_BOUNCE_RATE_V15"]:
+        assert "Sent in the last week" in headers
+    else:
+        assert "Email in the last 24 hours" in headers
+    
     table_rows = page.find_all("tbody")[1].find_all("tr")
 
     assert len(table_rows) == 4
@@ -451,13 +456,13 @@ def test_should_show_upcoming_jobs_on_dashboard(
 @pytest.mark.parametrize(
     "permissions, column_name, expected_column_count",
     [
-        (["email", "sms"], ".w-1\\/2", 2),
-        (["email", "letter"], ".md\\:w-1\\/3", 3),
-        (["email", "sms"], ".w-1\\/2", 2),
+        (["email", "sms"], ".w-1\\/2", 4),
+        (["email", "letter"], ".md\\:w-1\\/3", 5),
+        (["email", "sms"], ".w-1\\/2", 4),
     ],
 )
-def test_correct_columns_display_on_dashboard(
-    client_request,
+def test_correct_columns_display_on_dashboard_v15(
+    client_request: ClientRequest,
     mock_get_service_templates,
     mock_get_template_statistics,
     mock_get_service_statistics,
@@ -466,12 +471,42 @@ def test_correct_columns_display_on_dashboard(
     permissions,
     expected_column_count,
     column_name,
+    app_,
 ):
-    service_one["permissions"] = permissions
+    with set_config(app_, "FF_BOUNCE_RATE_V1", True):
+        service_one["permissions"] = permissions
 
-    page = client_request.get("main.service_dashboard", service_id=service_one["id"])
+        page = client_request.get("main.service_dashboard", service_id=service_one["id"])
+        # first_row = page.select("#first-row")[0]
+        assert len(page.select(column_name)) == expected_column_count
+    
 
-    assert len(page.select(column_name)) == expected_column_count
+@pytest.mark.parametrize(
+    "permissions, column_name, expected_column_count",
+    [
+        (["email", "sms"], ".w-1\\/2", 2),
+        (["email", "letter"], ".md\\:w-1\\/3", 3),
+        (["email", "sms"], ".w-1\\/2", 2),
+    ],
+)
+def test_correct_columns_display_on_dashboard(
+    client_request: ClientRequest,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    permissions,
+    expected_column_count,
+    column_name,
+    app_,
+):
+    with set_config(app_, "FF_BOUNCE_RATE_V15", False):
+        service_one["permissions"] = permissions
+
+        page = client_request.get("main.service_dashboard", service_id=service_one["id"])
+        # first_row = page.select("#first-row")[0]
+        assert len(page.select(column_name)) == expected_column_count
 
 
 @pytest.mark.parametrize(
