@@ -682,6 +682,7 @@ def test_correct_font_size_for_big_numbers_v15(
         assert expected_column_count == len(page.select(".big-number-with-status {}".format(big_number_class)))
 
 
+# TODO: remove this test when we remove the FF_BOUNCE_RATE_V15 feature flag
 @pytest.mark.parametrize(
     "permissions, totals, expected_big_numbers_single_plural, lang",
     [
@@ -767,19 +768,119 @@ def test_dashboard_single_and_plural(
     lang,
     app_,
 ):
-    service_one["permissions"] = permissions
+    with set_config(app_, "FF_BOUNCE_RATE_V15", False):
+        service_one["permissions"] = permissions
 
-    mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
+        mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
 
-    page = client_request.get("main.service_dashboard", service_id=service_one["id"], lang=lang)
+        page = client_request.get("main.service_dashboard", service_id=service_one["id"], lang=lang)
 
-    assert (
-        normalize_spaces(page.select(".big-number-with-status")[0].text),
-        normalize_spaces(page.select(".big-number-with-status")[1].text),
-        normalize_spaces(page.select(".big-number-with-status")[2].text),
-    ) == expected_big_numbers_single_plural
+        assert (
+            normalize_spaces(page.select(".big-number-with-status")[0].text),
+            normalize_spaces(page.select(".big-number-with-status")[1].text),
+            normalize_spaces(page.select(".big-number-with-status")[2].text),
+        ) == expected_big_numbers_single_plural
 
 
+@pytest.mark.parametrize(
+    "permissions, totals, expected_big_numbers_single_plural, lang",
+    [
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            },
+            ("0 emails sent No failures", "0 text messages sent No failures", "0 problem email addresses No problem addresses"),
+            "en",
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            },
+            (
+                "0 courriel envoyé Aucun échec",
+                "0 message texte envoyé Aucun échec",
+                "0 addresse courriel problématique Aucune adresse problématique",
+            ),
+            "fr",
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 1, "delivered": 1, "failed": 0},
+                "sms": {"requested": 1, "delivered": 1, "failed": 0},
+            },
+            ("1 email sent No failures", "1 text message sent No failures", "0 problem email addresses No problem addresses"),
+            "en",
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 1, "delivered": 1, "failed": 0},
+                "sms": {"requested": 1, "delivered": 1, "failed": 0},
+            },
+            (
+                "1 courriel envoyé Aucun échec",
+                "1 message texte envoyé Aucun échec",
+                "0 addresse courriel problématique Aucune adresse problématique",
+            ),
+            "fr",
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 2, "delivered": 2, "failed": 0},
+                "sms": {"requested": 2, "delivered": 2, "failed": 0},
+            },
+            ("2 emails sent No failures", "2 text messages sent No failures", "0 problem email addresses No problem addresses"),
+            "en",
+        ),
+        (
+            ["email", "sms"],
+            {
+                "email": {"requested": 2, "delivered": 2, "failed": 0},
+                "sms": {"requested": 2, "delivered": 2, "failed": 0},
+            },
+            (
+                "2 courriels envoyés Aucun échec",
+                "2 messages texte envoyés Aucun échec",
+                "0 addresse courriel problématique Aucune adresse problématique",
+            ),
+            "fr",
+        ),
+    ],
+)
+def test_dashboard_single_and_plural_v15(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    permissions,
+    totals,
+    expected_big_numbers_single_plural,
+    lang,
+    app_,
+):
+    with set_config(app_, "FF_BOUNCE_RATE_V15", True):
+        service_one["permissions"] = permissions
+
+        mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
+
+        page = client_request.get("main.service_dashboard", service_id=service_one["id"], lang=lang)
+
+        assert (
+            normalize_spaces(page.select(".big-number-with-status")[0].text),
+            normalize_spaces(page.select(".big-number-with-status")[1].text),
+            normalize_spaces(page.select(".big-number-with-status")[2].text),
+        ) == expected_big_numbers_single_plural
+    
+    
 @freeze_time("2016-01-01 11:09:00.061258")
 # This test assumes EST
 def test_should_show_recent_jobs_on_dashboard(

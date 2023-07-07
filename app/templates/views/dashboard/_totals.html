@@ -29,7 +29,7 @@
       ) }}
     </div>
     {% if config["FF_BOUNCE_RATE_V15"] %}
-      <div id="total-sms" class="{{column_width}}>
+      <div id="total-sms" class="{{column_width}}">
         {{ big_number_with_status(
           statistics['sms']['requested'],
           message_count_label(statistics['sms']['requested'], 'sms', suffix=sent_single, suffix_plural=sent_plural),
