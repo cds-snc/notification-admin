@@ -93,7 +93,7 @@
         <div id="problem-email-guide-link" class="{{column_width}}">
           {{ task_shortcut(
             description=_("GC Notify’s email provider could suspend our services if we send too many problem emails."),
-            link_url=url_for('.create_template', service_id=current_service.id, source="dashboard"),
+            link_url=url_for('.service_dashboard', service_id=service_id),
             link_text=_("Guide: Keep accurate contact information."),
             icon="arrow-up-right-from-square"
           ) }}
