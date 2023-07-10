@@ -105,10 +105,6 @@
     @apply bg-green-darker border-green-darker;
   }
 
-  /* .normal .review-email-link {
-    bg-green-darker border-green-darker;
-  } */
-
   .critical {
     @apply bg-red border-red;
   }

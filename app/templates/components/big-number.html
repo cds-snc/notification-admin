@@ -47,7 +47,6 @@
           {% if failure_link %}
             <div class="p-6 flex justify-between items-end border-0 no-underline" href="{{ failure_link }}">
               {{ failure_percentage + "%" if session["userlang"] == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{_('failed') }}
-              <i aria-hidden="true" class="p-1 fa-solid {% if danger_zone %}fa-triangle-exclamation{% else %}{% endif %}"></i>
             </div>
             <div class="px-6 flex justify-between items-end border-0">
               <span class="underline font-bold">{{_('Review reports') }}</span>
@@ -100,7 +99,6 @@
                 {% endif %}
                  {{ _('problem addresses') }}
               </span>
-              <i aria-hidden="true" class="p-1 {% if bounce_status == "warning" %}fa-solid fa-fas fa-circle-exclamation{% elif bounce_status== "critical" %}fa-solid fa-fas fa-triangle-exclamation{% endif %}"></i>
             </div>
             <div class="px-6 review-email-link flex justify-between items-end border-0">
               <span class="underline font-bold">{{ failure_link_label }}</span>
