@@ -482,8 +482,8 @@ def test_bounce_rate_widget_doesnt_change_when_under_threshold_v1(
             service_id=service_one["id"],
         )
 
-        assert len(page.find_all(class_="review-email-status-critical")) == 0
-        assert len(page.find_all(class_="review-email-status-neutral")) == 1
+        assert len(page.find_all(class_="critical")) == 0
+        assert len(page.find_all(class_="neutral")) == 1
 
 
 def test_bounce_rate_widget_doesnt_change_when_under_threshold_v15(
@@ -506,9 +506,9 @@ def test_bounce_rate_widget_doesnt_change_when_under_threshold_v15(
             service_id=service_one["id"],
         )
 
-        assert len(page.find_all(class_="review-email-status-critical")) == 0
-        assert len(page.find_all(class_="review-email-status-normal")) == 0
-        assert len(page.find_all(class_="review-email-status-neutral")) == 1
+        assert len(page.find_all(class_="critical")) == 0
+        assert len(page.find_all(class_="normal")) == 0
+        assert len(page.find_all(class_="neutral")) == 1
 
 
 @pytest.mark.parametrize("FF_BOUNCE_RATE_V15", [True, False])

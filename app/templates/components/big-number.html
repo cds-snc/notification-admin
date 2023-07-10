@@ -90,7 +90,7 @@
     <div class="pb-4 no-underline text-white block border-solid {% if below_volume_threshold %}neutral{% elif bounce_status == "critical" or bounce_status == "warning" %}critical{% else %}normal{% endif %} {% if problem_percentage == 0 %} p-6 {% endif %}">
       {% if number >= 1 %}
           {% if failure_link %}
-            <div class="p-6 flex justify-between items-end border-0">
+            <div class="review-email-label p-6 flex justify-between items-end border-0">
               <span>
                 {% if problem_percentage < 0.1 %}
                   {{ _('Less than')}} {{'0.1%' if session["userlang"] == 'en' else '0,1 %' }}

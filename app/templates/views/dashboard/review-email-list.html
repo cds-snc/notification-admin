@@ -19,7 +19,7 @@
         <p>{{ _("<a href='{}'>Keep accurate contact information</a>. Check email addresses are correct. If necessary confirm recipient’s email address using another contact method.").format(gca_url_for('bounce_guidance')) }}</p>
         <p>{{ _('Remove addresses you cannot correct.') }}</p>
 
-        <div class="{% if bounce_rate["bounce_status"] == "critical" %}review-email-status-critical{% elif bounce_rate["bounce_status"] == "warning"%}review-email-status-critical{% else%}review-email-status-normal{% endif %} px-5">
+        <div class="no-underline text-white block border-solid {% if bounce_rate["below_volume_threshold"] %}neutral{% elif bounce_rate["bounce_status"] == "critical" or bounce_rate["bounce_status"] == "warning" %}critical{% else %}normal{% endif %} px-5">
             <p class="text-title py-4">
                 <i aria-hidden="true" class="px-1 fa-solid fa-fas fa-circle-exclamation"></i>
                 <strong>
