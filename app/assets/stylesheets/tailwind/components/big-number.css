@@ -26,6 +26,7 @@
 
   .big-number-with-status {
     @apply relative mb-8;
+    display: block;
   }
 
   .big-number-link,
