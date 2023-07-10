@@ -334,7 +334,7 @@ def get_bounce_rate_data_from_redis(service_id):
     total_email_volume = bounce_rate_client.get_total_notifications(service_id)
     if total_email_volume < current_app.config["BR_DISPLAY_VOLUME_MINIMUM"]:
         bounce_rate.below_volume_threshold = True
-        
+
     return bounce_rate
 
 
@@ -358,7 +358,7 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
 
     if total_sent < current_app.config["BR_DISPLAY_VOLUME_MINIMUM"]:
         bounce_rate.below_volume_threshold = True
-        
+
     # compute bounce status
     if bounce_rate.bounce_percentage < bounce_rate_client._warning_threshold:
         bounce_rate.bounce_status = BounceRateStatus.NORMAL.value
