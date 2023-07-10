@@ -1,5 +1,6 @@
 {% from "components/big-number.html" import big_number_with_status, big_number_review_emails_with_status %}
 {% from "components/message-count-label.html" import message_count_label, problem_email_label %}
+{% from "components/show-more.html" import show_more %}
 {% from "components/task-shortcut.html" import task_shortcut %}
 
 {% set sent_single = _('sent-dashboard-single') %}
@@ -71,6 +72,12 @@
       </div>
     {% endif %}
   </div>
+  {% if config["FF_BOUNCE_RATE_V15"] %}
+    {{ show_more(
+      url_for('.monthly', service_id=current_service.id),
+      _('See all messages sent')
+    ) }}
+  {% endif %}
   {% if config["FF_BOUNCE_RATE_V15"] %}
     <div>
       <h2 class="heading-medium mt-8">

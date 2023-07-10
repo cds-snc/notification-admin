@@ -477,7 +477,6 @@ def test_correct_columns_display_on_dashboard_v15(
         service_one["permissions"] = permissions
 
         page = client_request.get("main.service_dashboard", service_id=service_one["id"])
-        # first_row = page.select("#first-row")[0]
         assert len(page.select(column_name)) == expected_column_count
 
 
@@ -505,7 +504,6 @@ def test_correct_columns_display_on_dashboard(
         service_one["permissions"] = permissions
 
         page = client_request.get("main.service_dashboard", service_id=service_one["id"])
-        # first_row = page.select("#first-row")[0]
         assert len(page.select(column_name)) == expected_column_count
 
 
