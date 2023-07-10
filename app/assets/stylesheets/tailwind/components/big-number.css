@@ -89,18 +89,6 @@
     @apply no-underline;
   }
 
-  .review-email-label {
-    @apply pb-4 text-white no-underline;
-  }
-
-  .review-email-status {
-    @apply no-underline text-white block border-solid;
-  }
-
-  .review-email-status .review-email-link {
-    @apply text-white border-solid;
-  }
-
   .normal {
     @apply bg-green-darker border-green-darker;
   }
