@@ -95,7 +95,7 @@
                 {% if problem_percentage < 0.1 %}
                   {{ _('Less than')}} {{'0.1%' if session["userlang"] == 'en' else '0,1 %' }}
                 {% else %}
-                  {{ problem_percentage|round(2)|string + "%" if session["userlang"] == 'en' else problem_percentage|round(2)|replace('.', ',')|string + " %"}}
+                  {{ problem_percentage|round(1)|string + "%" if session["userlang"] == 'en' else problem_percentage|round(1)|replace('.', ',')|string + " %"}}
                 {% endif %}
                  {{ _('problem addresses') }}
               </span>
