@@ -32,7 +32,7 @@
                 {% if bounce_rate["bounce_percentage_display"] < 0.1 %}
                   {{ _('Less than') }} 0.1%
                 {% else %}
-                  {{ bounce_rate["bounce_percentage_display"]|round(1) }}%
+                  {{ bounce_rate["bounce_percentage_display"]|round(1)|string + "%" if session["userlang"] == 'en' else bounce_rate["bounce_percentage_display"]|round(1)|replace('.', ',')|string + " %"}}
                 {% endif %}
                  {{ _('of email addresses need review') }}
             </p>
