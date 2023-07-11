@@ -47,10 +47,9 @@
           {% if failure_link %}
             <div class="p-6 flex justify-between items-end border-0 no-underline" href="{{ failure_link }}">
               {{ failure_percentage + "%" if session["userlang"] == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{_('failed') }}
-              <i aria-hidden="true" class="p-1 fa-solid {% if danger_zone %}fa-triangle-exclamation{% else %}{% endif %}"></i>
             </div>
             <div class="px-6 flex justify-between items-end border-0">
-              <span class="underline font-bold">{{_('Review reports') }}</span>
+              <span class="underline">{{_('Review reports') }}</span>
               <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i>
             </div>
           {% else %}
@@ -73,7 +72,7 @@
   label,
   problem_percentage,
   bounce_status="normal",
-  bounce_threshold=False,
+  below_volume_threshold=False,
   failure_link=None,
   failure_link_label=_("Review email addresses"),
   link=None,
@@ -88,10 +87,10 @@
     {% if failure_link %}
       <a class="big-number-link border-0 focus:border-b-0" href="{{ failure_link }}">
     {% endif %}
-    <div class="pb-4 {% if bounce_status == "critical" %}review-email-status-critical{% elif bounce_status == "warning" and bounce_threshold == True%}review-email-status-neutral{% elif bounce_status == "warning"%}review-email-status-critical{% else%}review-email-status-normal{% endif %} {% if problem_percentage == 0 %} p-6 {% endif %}">
+    <div class="pb-4 no-underline text-white block border-solid {% if below_volume_threshold %}neutral{% elif bounce_status == "critical" or bounce_status == "warning" %}critical{% else %}normal{% endif %} {% if problem_percentage == 0 %} p-6 {% endif %}">
       {% if number >= 1 %}
           {% if failure_link %}
-            <div class="p-6 review-email-label flex justify-between items-end border-0">
+            <div class="review-email-label p-6 flex justify-between items-end border-0">
               <span>
                 {% if problem_percentage < 0.1 %}
                   {{ _('Less than')}} {{'0.1%' if session["userlang"] == 'en' else '0,1 %' }}
@@ -100,10 +99,9 @@
                 {% endif %}
                  {{ _('problem addresses') }}
               </span>
-              <i aria-hidden="true" class="p-1 {% if bounce_status == "warning" %}fa-solid fa-fas fa-circle-exclamation{% elif bounce_status== "critical" %}fa-solid fa-fas fa-triangle-exclamation{% endif %}"></i>
             </div>
-            <div class="px-6 review-email-link flex justify-between items-end border-0">
-              <span class="underline font-bold">{{ failure_link_label }}</span>
+            <div class="px-6 flex justify-between items-end border-0">
+              <span class="underline">{{ failure_link_label }}</span>
               <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i>
             </div>
           {% else %}

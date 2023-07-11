@@ -32,10 +32,13 @@
     {% endif %}
 
     {{ ajax_block(partials, updates_url, 'weekly_totals', interval=5) }}
-    {{ show_more(
-      url_for('.monthly', service_id=current_service.id),
-      _('See all messages sent')
-    ) }}
+
+    {% if not config["FF_BOUNCE_RATE_V15"] %}
+      {{ show_more(
+        url_for('.monthly', service_id=current_service.id),
+        _('See all messages sent')
+      ) }}
+    {% endif %}
 
     {% if partials['has_template_statistics'] %}
       <h2 class="heading-medium mt-8">{{ _("Templates used") }}</h2>

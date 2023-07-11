@@ -89,46 +89,15 @@
     @apply no-underline;
   }
 
-  .review-email-label {
-    @apply pb-4 text-white no-underline;
+  .normal {
+    @apply bg-green-darker border-green-darker;
   }
 
-  .review-email-status-warning a .review-email-label {
-    @apply pb-4 text-black no-underline;
+  .critical {
+    @apply bg-red border-red;
   }
 
-  .review-email-status-normal {
-    @apply no-underline text-white block bg-green-darker border-green-darker border-solid;
-  }
-
-  .review-email-status-normal .review-email-link {
-    @apply text-white bg-green-darker border-green-darker border-solid;
-  }
-
-  .review-email-status-warning {
-    @apply no-underline text-black block bg-yellow border-yellow border-solid;
-  }
-
-  .review-email-status-warning .review-email-link {
-    @apply text-black bg-yellow border-yellow border-solid;
-  }
-
-  .review-email-status-critical {
-    @apply no-underline text-white block bg-red border-red border-solid;
-  }
-
-  .review-email-status-critical .review-email-link {
-    @apply text-white bg-red border-red border-solid;
-  }
-
-  .review-email-status-neutral {
-    @apply no-underline text-white block border-solid;
-    background: #49535d;
-    border-color: #49535d;
-  }
-
-  .review-email-status-neutral .review-email-link {
-    @apply text-white border-solid;
+  .neutral {
     background: #49535d;
     border-color: #49535d;
   }
