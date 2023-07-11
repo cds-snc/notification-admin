@@ -55,6 +55,7 @@ class Config(object):
     CRM_ORG_LIST_URL = os.getenv("CRM_ORG_LIST_URL")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT")
     DEBUG = False
+    DEBUG_KEY = os.environ.get("DEBUG_KEY", "")
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
         "central": 25_000,
         "local": 25_000,
@@ -149,6 +150,7 @@ class Config(object):
             "ANTIVIRUS_API_KEY",
             "CRM_GITHUB_PERSONAL_ACCESS_TOKEN",
             "DANGEROUS_SALT",
+            "DEBUG_KEY",
             "GC_ARTICLES_API_AUTH_PASSWORD",
             "GC_ARTICLES_API_AUTH_USERNAME",
             "ROUTE_SECRET_KEY_1",
