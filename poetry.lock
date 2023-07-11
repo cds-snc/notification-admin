@@ -1486,8 +1486,8 @@ werkzeug = "2.3.3"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "upgrade-flask"
-resolved_reference = "f1da679f1d5468acc42bbe7910d5be4ac115d5f7"
+reference = "52.0.0"
+resolved_reference = "72b30b85c30249d4676c68badc79a21052a210eb"
 
 [[package]]
 name = "openpyxl"
@@ -2514,4 +2514,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.8"
-content-hash = "3ef713da57d78fcab219e7134926b7c942b4eaae1627723b5a9030c2591cf9d2"
+content-hash = "a9a4e618cce62ba064112b0a966121a314e82594d708b200d3f86b56c9053986"
