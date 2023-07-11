@@ -4,7 +4,7 @@ from app.status import status
 
 
 @status.route("/_debug", methods=["GET"])
-def debug_endpoint():
+def debug():
     """A route we can hit to help us debug in AWS. Currently just raises an exception to test logging.
 
     Raises:

@@ -174,6 +174,7 @@ class Development(Config):
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
+    DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "notify.tools-mou"
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
@@ -191,6 +192,7 @@ class Test(Development):
     CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
+    DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = "test"
     SECRET_KEY = ["dev-notify-secret-key"]
