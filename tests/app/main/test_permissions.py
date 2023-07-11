@@ -62,7 +62,7 @@ def _test_permissions(
         decorated_index()
     else:
         try:
-            if decorated_index().location != "/sign-in?next=%2F" or decorated_index().status_code != 302:
+            if decorated_index().location != "/sign-in?next=/" or decorated_index().status_code != 302:
                 pytest.fail("Failed to throw a forbidden or unauthorised exception")
         except (Forbidden, Unauthorized):
             pass

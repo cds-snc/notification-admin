@@ -484,7 +484,7 @@ class TwoFactorForm(StripWhitespaceForm):
 
     two_factor_code = TwoFactorCode(_l("Please enter the security code."))
 
-    def validate(self):
+    def validate(self, extra_validators=None):
         if not self.two_factor_code.validate(self):
             return False
 
@@ -1057,7 +1057,7 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
     email_address = EmailField(_l("Email address"))
     phone_number = StringField(_l("Phone number"))
 
-    def validate(self):
+    def validate(self, extra_validators=None):
         if self.contact_details_type.data == "url":
             self.url.validators = [DataRequired(), URL(message="Must be a valid URL")]
 
@@ -1083,7 +1083,7 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
                 valid_phone_number,
             ]
 
-        return super().validate()
+        return super().validate(extra_validators)
 
 
 class SelectCsvFromS3Form(StripWhitespaceForm):
@@ -1376,8 +1376,8 @@ class ServiceInboundNumberForm(StripWhitespaceForm):
 
 
 class CallbackForm(StripWhitespaceForm):
-    def validate(self):
-        return super().validate() or self.url.data == ""
+    def validate(self, extra_validators=None):
+        return super().validate(extra_validators) or self.url.data == ""
 
 
 class ServiceReceiveMessagesCallbackForm(CallbackForm):
@@ -1639,7 +1639,7 @@ class TemplateAndFoldersSelectionForm(Form):
     def is_selected(self, template_folder_id):
         return template_folder_id in (self.templates_and_folders.data or [])
 
-    def validate(self):
+    def validate(self, extra_validators=None):
         self.op = request.form.get("operation")
 
         self.is_move_op = self.op in {"move-to-existing-folder", "move-to-new-folder"}
@@ -1648,7 +1648,7 @@ class TemplateAndFoldersSelectionForm(Form):
         if not (self.is_add_folder_op or self.is_move_op):
             return False
 
-        return super().validate()
+        return super().validate(extra_validators)
 
     def get_folder_name(self):
         if self.op == "add-new-folder":
