@@ -1053,6 +1053,7 @@
 "Copy an existing template","Copier un gabarit existant"
 "Delete this folder","Supprimer ce dossier"
 "Daily message limit","Limite d'envoi quotidienne"
+"Daily email limit","Limite quotidienne d'envoi par courriel"
 "Daily email message limit","Limite quotidienne d'envoi par courriel"
 "Daily text fragments limit","Limite quotidienne de fragments de message texte"
 "Last edited","Dernière modification&nbsp;: "
