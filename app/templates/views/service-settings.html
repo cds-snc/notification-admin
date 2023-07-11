@@ -95,7 +95,7 @@
           }}
         {% endcall %}
 
-        {%if config["FF_EMAIL_DAILY_LIMIT"] == false] %}
+        {%if config["FF_EMAIL_DAILY_LIMIT"] == false %}
           {% call row() %}
             {% set txt = _('Daily message limit') %}
             {{ text_field(txt)}}
@@ -208,9 +208,9 @@
         {% endcall %}
         {% if config["FF_EMAIL_DAILY_LIMIT"] %}
           {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
-            {% set txt = _('Daily message limit') %}
+            {% set txt = _('Daily email limit') %}
             {{ text_field(txt)}}
-            {% set message_limit = _('{} notifications').format(current_service.message_limit | format_number) %}
+            {% set message_limit = _('{} emails').format(current_service.message_limit | format_number) %}
             {{ text_field(message_limit) }}
             {{ text_field('') }}
             {% endcall %}
@@ -361,18 +361,20 @@
             ) }}
           {% endcall %}
 
-          {%if config["FF_EMAIL_DAILY_LIMIT"] == false %}
-            {% call row() %}
+          {% call row() %}
+            {%if config["FF_EMAIL_DAILY_LIMIT"] == false %}
               {% set txt = _('Daily message limit') %}
-              {{ text_field(txt)}}
-              {{ text_field(current_service.message_limit | format_number) }}
-              {{ edit_field(
-                change_txt,
-                url_for('.set_message_limit', service_id=current_service.id),
-                for=txt
-              ) }}
-            {% endcall %}
-          {% endif %}
+            {% else %}
+              {% set txt = _('Daily email limit') %}
+            {% endif %}
+            {{ text_field(txt)}}
+            {{ text_field(current_service.message_limit | format_number) }}
+            {{ edit_field(
+              change_txt,
+              url_for('.set_message_limit', service_id=current_service.id),
+              for=txt
+            ) }}
+          {% endcall %}
           
           {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
             {% call row() %}
