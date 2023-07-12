@@ -153,6 +153,8 @@ def test_should_show_overview(
         rows = page.select("tr")
         for index, row in enumerate(expected_rows):
             formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
+            if app_.config["FF_EMAIL_DAILY_LIMIT"] and formatted_row == "Daily message limit 1,000 notifications":
+                formatted_row = "Daily email limit 1,000 notifications"
             visible = rows[index]
             sr_only = visible.find("span", "sr-only")
             if sr_only:
