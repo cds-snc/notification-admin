@@ -272,18 +272,18 @@
           {{ text_field('')}}
         {% endcall %}
 
-        {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
         {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
-          {% set txt = _('Daily text fragments limit') %}
-          {{ text_field(txt)}}
-          {{ text_field(current_service.sms_daily_limit | format_number) }}
-          {{ edit_field(
-            change_txt,
-            url_for('.set_sms_message_limit', service_id=current_service.id),
-            for=txt
-          ) }}
+          {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
+            {% set txt = _('Daily text fragments limit') %}
+            {{ text_field(txt)}}
+            {{ text_field(current_service.sms_daily_limit | format_number) }}
+            {{ edit_field(
+              change_txt,
+              url_for('.set_sms_message_limit', service_id=current_service.id),
+              for=txt
+            ) }}
+          {% endcall %}
         {% endif %}
-        {% endcall %}
 
       {% endcall %}
 
