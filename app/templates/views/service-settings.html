@@ -95,7 +95,7 @@
           }}
         {% endcall %}
 
-        { %if config["FF_EMAIL_DAILY_LIMIT"] == false %}
+        {% if config["FF_EMAIL_DAILY_LIMIT"] == false %}
           {% call row() %}
             {% set txt = _('Daily message limit') %}
             {{ text_field(txt)}}
