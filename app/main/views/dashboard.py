@@ -151,7 +151,7 @@ def template_usage(service_id):
             "name": month_name,
             "templates_used": [
                 {
-                    "id": stat["template_id"],
+                    "id": month_name + "_" + stat["template_id"],
                     "name": stat["name"],
                     "type": stat["type"],
                     "requested_count": stat["count"],
@@ -260,14 +260,12 @@ def get_dashboard_partials(service_id):
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
         immediate_jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id)]
 
-    stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
     # get the daily stats
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
 
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
     )
-    dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     bounce_rate_data = (
         get_bounce_rate_data_from_redis(service_id)
         if current_app.config["FF_BOUNCE_RATE_V15"]
@@ -285,9 +283,7 @@ def get_dashboard_partials(service_id):
         "weekly_totals": render_template(
             "views/dashboard/_totals.html",
             service_id=service_id,
-            statistics=dashboard_totals_daily[0]
-            if current_app.config["FF_BOUNCE_RATE_V1"] or current_service.id in current_app.config["FF_ABTEST_SERVICE_ID"]
-            else dashboard_totals_weekly[0],
+            statistics=dashboard_totals_daily[0],
             column_width=column_width,
             smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
             bounce_rate=bounce_rate_data,
@@ -321,7 +317,7 @@ class BounceRate:
     bounce_percentage = 0.0
     bounce_percentage_display = 0.0
     bounce_status = BounceRateStatus.NORMAL.value
-    below_threshold = False
+    below_volume_threshold = False
 
 
 def get_bounce_rate_data_from_redis(service_id):
@@ -332,15 +328,15 @@ def get_bounce_rate_data_from_redis(service_id):
     bounce_rate.bounce_percentage = bounce_rate_client.get_bounce_rate(service_id)
     bounce_rate.bounce_percentage_display = 100.0 * bounce_rate.bounce_percentage
     bounce_rate.bounce_total = bounce_rate_client.get_total_hard_bounces(service_id)
-    bounce_status = bounce_rate_client.check_bounce_rate_status(service_id)
+    bounce_status = bounce_rate_client.check_bounce_rate_status(
+        service_id=service_id, volume_threshold=current_app.config["BR_DISPLAY_VOLUME_MINIMUM"]
+    )
+    bounce_rate.bounce_status = bounce_status
 
-    # We only want to show a neutral color on the dashboard if we are less than minimum volume
-    # but still over the warning threshold
-    if bounce_status == BounceRateStatus.NORMAL.value and bounce_rate.bounce_percentage > bounce_rate_client._warning_threshold:
-        bounce_rate.below_threshold = True
-        bounce_rate.bounce_status = BounceRateStatus.WARNING.value
-    else:
-        bounce_rate.bounce_status = bounce_status
+    total_email_volume = bounce_rate_client.get_total_notifications(service_id)
+    if total_email_volume < current_app.config["BR_DISPLAY_VOLUME_MINIMUM"]:
+        bounce_rate.below_volume_threshold = True
+
     return bounce_rate
 
 
@@ -355,27 +351,22 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
 
     # get total hard bounces
     for stat in all_statistics_daily:
-        if stat["status"] == "permanent-failure":
+        if stat["status"] == "permanent-failure" and stat["template_type"] == "email":
             bounce_rate.bounce_total += stat["count"]
 
     # calc bounce rate
     bounce_rate.bounce_percentage = (bounce_rate.bounce_total / total_sent) if total_sent > 0 else 0
     bounce_rate.bounce_percentage_display = 100.0 * bounce_rate.bounce_percentage
-    # compute bounce status
-    # if volume is less than the threshold, indicate NORMAL status
+
     if total_sent < current_app.config["BR_DISPLAY_VOLUME_MINIMUM"]:
-        # We only want to show a neutral color on the dashboard if we are less than minimum volume
-        # but still over the warning threshold
-        if bounce_rate.bounce_percentage >= bounce_rate_client._warning_threshold:
-            bounce_rate.below_threshold = True
-            bounce_rate.bounce_status = BounceRateStatus.WARNING.value
-        else:
-            bounce_rate.bounce_status = BounceRateStatus.NORMAL.value
-    # if bounce rate is above critical threshold, indicate CRITICAL status
+        bounce_rate.below_volume_threshold = True
+
+    # compute bounce status
+    if bounce_rate.bounce_percentage < bounce_rate_client._warning_threshold:
+        bounce_rate.bounce_status = BounceRateStatus.NORMAL.value
     elif bounce_rate.bounce_percentage >= bounce_rate_client._critical_threshold:
         bounce_rate.bounce_status = BounceRateStatus.CRITICAL.value
-    # if bounce rate is above warning threshold, indicate WARNING status
-    elif bounce_rate.bounce_percentage >= bounce_rate_client._warning_threshold:
+    else:
         bounce_rate.bounce_status = BounceRateStatus.WARNING.value
     return bounce_rate
 

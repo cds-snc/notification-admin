@@ -426,97 +426,48 @@ def format_notification_type(notification_type):
 
 
 def format_notification_status(status, template_type, provider_response=None, feedback_subtype=None):
-    if current_app.config["FF_BOUNCE_RATE_V1"] or current_service.id in current_app.config["FF_ABTEST_SERVICE_ID"]:
-        if template_type == "sms" and provider_response:
-            return _(provider_response)
-
-        def _getStatusByBounceSubtype():
-            """Return the status of a notification based on the bounce sub type"""
-            if feedback_subtype:
-                return {
-                    "email": {
-                        "suppressed": _("Blocked"),
-                        "on-account-suppression-list": _("Blocked"),
-                    },
-                }[
-                    template_type
-                ].get(feedback_subtype, _("No such address"))
-            else:
-                return _("No such address")
-
-        return {
-            "email": {
-                "failed": _("Failed"),
-                "technical-failure": _("Tech issue"),
-                "temporary-failure": _("Content or inbox issue"),
-                "virus-scan-failed": _("Virus in attachment"),
-                "permanent-failure": _getStatusByBounceSubtype(),
-                "delivered": _("Delivered"),
-                "sending": _("In transit"),
-                "created": _("In transit"),
-                "sent": _("Delivered"),
-                "pending": _("In transit"),
-                "pending-virus-check": _("In transit"),
-                "pii-check-failed": _("Exceeds Protected A"),
-            },
-            "sms": {
-                "failed": _("Failed"),
-                "technical-failure": _("Tech issue"),
-                "temporary-failure": _("Carrier issue"),
-                "permanent-failure": _("No such number"),
-                "delivered": _("Delivered"),
-                "sending": _("In transit"),
-                "created": _("In transit"),
-                "pending": _("In transit"),
-                "sent": _("In transit"),
-            },
-            "letter": {
-                "failed": "",
-                "technical-failure": "Technical failure",
-                "temporary-failure": "",
-                "permanent-failure": "",
-                "delivered": "",
-                "received": "",
-                "accepted": "",
-                "sending": "",
-                "created": "",
-                "sent": "",
-                "pending-virus-check": "",
-                "virus-scan-failed": "Virus detected",
-                "returned-letter": "",
-                "cancelled": "",
-                "validation-failed": "Validation failed",
-            },
-        }[template_type].get(status, status)
-
-    # -----------------
-    # remove this code when FF_BOUNCE_RATE_V1 is removed
-    # -----------------
-    if provider_response:
+    if template_type == "sms" and provider_response:
         return _(provider_response)
+
+    def _getStatusByBounceSubtype():
+        """Return the status of a notification based on the bounce sub type"""
+        if feedback_subtype:
+            return {
+                "email": {
+                    "suppressed": _("Blocked"),
+                    "on-account-suppression-list": _("Blocked"),
+                },
+            }[
+                template_type
+            ].get(feedback_subtype, _("No such address"))
+        else:
+            return _("No such address")
 
     return {
         "email": {
             "failed": _("Failed"),
-            "technical-failure": _("Technical failure"),
-            "temporary-failure": _("Inbox not accepting messages right now"),
-            "virus-scan-failed": _("Attachment has virus"),
-            "permanent-failure": _("Email address does not exist"),
+            "technical-failure": _("Tech issue"),
+            "temporary-failure": _("Content or inbox issue"),
+            "virus-scan-failed": _("Virus in attachment"),
+            "permanent-failure": _getStatusByBounceSubtype(),
             "delivered": _("Delivered"),
-            "sending": _("Sending"),
-            "created": _("Sending"),
+            "sending": _("In transit"),
+            "created": _("In transit"),
             "sent": _("Delivered"),
+            "pending": _("In transit"),
+            "pending-virus-check": _("In transit"),
+            "pii-check-failed": _("Exceeds Protected A"),
         },
         "sms": {
             "failed": _("Failed"),
-            "technical-failure": _("Technical failure"),
-            "temporary-failure": _("Phone number not accepting messages right now"),
-            "permanent-failure": _("Phone number does not exist"),
+            "technical-failure": _("Tech issue"),
+            "temporary-failure": _("Carrier issue"),
+            "permanent-failure": _("No such number"),
             "delivered": _("Delivered"),
-            "sending": _("Sending"),
-            "created": _("Sending"),
-            "pending": _("Sending"),
-            "sent": _("Sent"),
+            "sending": _("In transit"),
+            "created": _("In transit"),
+            "pending": _("In transit"),
+            "sent": _("In transit"),
         },
         "letter": {
             "failed": "",
@@ -584,11 +535,7 @@ def format_notification_status_as_field_status(status, notification_type):
 
 def format_notification_status_as_url(status, notification_type):
     def url(_anchor):
-        if current_app.config["FF_BOUNCE_RATE_V1"] or current_service.id in current_app.config["FF_ABTEST_SERVICE_ID"]:
-            return gca_url_for("delivery_failure") + "#" + _anchor
-        # remove this when FF_BOUNCE_RATE_V1 is removed
-        else:
-            return gca_url_for("message_delivery_status") + "#" + _anchor
+        return gca_url_for("delivery_failure") + "#" + _anchor
 
     if status not in {
         "technical-failure",
