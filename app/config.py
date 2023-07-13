@@ -33,9 +33,9 @@ class Config(object):
     ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET")
     ANTIVIRUS_API_HOST = os.environ.get("ANTIVIRUS_API_HOST")
     ANTIVIRUS_API_KEY = os.environ.get("ANTIVIRUS_API_KEY")
+    ALLOW_DEBUG_ROUTE = env.bool("ALLOW_DEBUG_ROUTE", False)
 
     # List of allowed service IDs that are allowed to send HTML through their templates.
-    ALLOW_DEBUG_ROUTE = False
     ALLOW_HTML_SERVICE_IDS: List[str] = [id.strip() for id in os.getenv("ALLOW_HTML_SERVICE_IDS", "").split(",")]
 
     API_HOST_NAME = os.environ.get("API_HOST_NAME")
@@ -171,7 +171,6 @@ class Config(object):
 
 class Development(Config):
     ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET", "dev-notify-secret-key")
-    ALLOW_DEBUG_ROUTE = True
     ANTIVIRUS_API_HOST = "http://localhost:6016"
     ANTIVIRUS_API_KEY = "test-key"
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
@@ -187,7 +186,6 @@ class Development(Config):
 
 class Test(Development):
     ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET", "dev-notify-secret-key")
-    ALLOW_DEBUG_ROUTE = True
     ANTIVIRUS_API_HOST = "https://test-antivirus"
     ANTIVIRUS_API_KEY = "test-antivirus-secret"
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
@@ -212,7 +210,6 @@ class Test(Development):
 
 
 class Production(Config):
-    ALLOW_DEBUG_ROUTE = False
     CHECK_PROXY_HEADER = False
     HTTP_PROTOCOL = "https"
     NOTIFY_ENVIRONMENT = "production"
@@ -220,13 +217,11 @@ class Production(Config):
 
 
 class Staging(Production):
-    ALLOW_DEBUG_ROUTE = True
     NOTIFY_ENVIRONMENT = "staging"
     NOTIFY_LOG_LEVEL = "INFO"
 
 
 class Scratch(Production):
-    ALLOW_DEBUG_ROUTE = True
     NOTIFY_ENVIRONMENT = "scratch"
     NOTIFY_LOG_LEVEL = "INFO"
 

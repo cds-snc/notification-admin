@@ -8,7 +8,7 @@ def debug():
     """A route we can hit to help us debug in AWS. Currently just raises an exception to test logging.
 
     Raises:
-        Exception: if you pass the correct key as a query param and you're in a non-production environment
+        Exception: if ALLOW_DEBUG_ROUTE is True and you pass the correct key as a query param
     """
     if (
         current_app.config["ALLOW_DEBUG_ROUTE"]
