@@ -264,6 +264,8 @@ def get_dashboard_partials(service_id):
     column_width, max_notifiction_count = get_column_properties(
         number_of_columns=(3 if current_service.has_permission("letter") else 2)
     )
+    stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
+    dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     bounce_rate_data = (
         get_bounce_rate_data_from_redis(service_id)
         if current_app.config["FF_BOUNCE_RATE_V15"]
@@ -281,7 +283,7 @@ def get_dashboard_partials(service_id):
         "weekly_totals": render_template(
             "views/dashboard/_totals.html",
             service_id=service_id,
-            statistics=dashboard_totals_daily[0],
+            statistics=dashboard_totals_weekly[0] if current_app.config["FF_BOUNCE_RATE_V15"] else dashboard_totals_daily[0],
             column_width=column_width,
             smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
             bounce_rate=bounce_rate_data,
