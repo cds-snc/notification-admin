@@ -58,7 +58,7 @@ jobs:
         echo "PYTHONPATH=/github/workspace/env/site-packages:${{ env.PYTHONPATH}}" >> $GITHUB_ENV
 
     - name: Checks for new endpoints against AWS WAF rules
-      uses: cds-snc/notification-utils/.github/actions/waffles@fbd73b322c7e868b6491bc07032af20550a12692 # 50.3.4
+      uses: cds-snc/notification-utils/.github/actions/waffles@11cea097d24c424b86478df7a42408e700bf675d # 52.0.1
       with:
         app-loc: '/github/workspace'
         app-libs: '/github/workspace/env/site-packages'
