@@ -225,22 +225,6 @@ Template files used in this repo: `sms_preview_template.jinja2, email_preview_te
 Note: Tests may break if `USE_LOCAL_JINJA_TEMPLATES` is set to `True` in your .env
 
 
-## Using Docker-compose
-
-A `docker-compose.yml` is provided to anyone that wants to leverage docker as for their setup. You can look at the [full documentation here](https://docs.docker.com/compose/).
-To run this project with docker-compose, you will also need to run [notification-api](https://github.com/cds-snc/notification-api) with docker-compose, as it relies on the postgres database set there.
-
-To start the project:
-
-```bash
-docker-compose up
-```
-
-That's it.
-
-Your site is now available on [http://localhost:6012](http://localhost:6012).
-
-
 ## Redis
 
 You need a [redis](https://redis.io/) server running to use certain parts of Notify, such as the "go live" flow. To use redis, add `REDIS_ENABLED=1` to your .env file and run the following command:
@@ -248,6 +232,19 @@ You need a [redis](https://redis.io/) server running to use certain parts of Not
 ```bash
 redis-server
 ```
+
+## Testing
+
+There are testing utilities available through the project.
+
+### Trigger an exception on purpose
+
+It is sometimes useful to trigger an exception for testing purposes (logger format,
+multiline log behavior, etc.). To do so, you can hit the `_debug?key=DEBUG_KEY` endpoint.
+The `DEBUG_KEY` should be defined in the environment's configuration, sourced at the
+application' startup. When that endpoint is reached with the proper `DEBUG_KEY` secret,
+a `500` HTTP error will be generated. With the wrong secret through, a classic `404` 
+not found error will get returned.
 
 =======
 
@@ -472,18 +469,15 @@ Fichiers de modèles utilisés dans ce dépôt : `sms_preview_template.jinja2, e
 
 Note : les tests peuvent échouer si `USE_LOCAL_JINJA_TEMPLATES` est réglé sur `True` dans votre `.env`
 
+## Tests
 
-## Docker-compose
+Il y a quelques utilitaires de tests qui sont disponibles dans le projet.
 
-Un fichier `docker-compose.yml` est disponible à la racine du projet, pour ceux qui veulent utiliser docker. La documentation complète est dispinible [ici](https://docs.docker.com/compose/).
-Pour faire fonctionner ce projet avec docker-compose, vous allez aussi avoir besoin du projet notification-api avec docker-compose. Le projet [notification-api](https://github.com/cds-snc/notification-api) a besoin de la base de données postgres qui est fournie par le projet notification-api.
+### Déclencher une erreur de façon intentionnelle
 
-Pour démarrer le projet:
-
-```bash
-docker-compose up
-```
-
-C'est tout.
-
-Le site est maintenant disponible à l'adresse [http://localhost:6012](http://localhost:6012).
+Il est quelques fois pratique de déclencher une erreur pour des buts de tests (format
+du log, comportement multiligne du log, etc.). Pour se faire, vous pouvez accéder à l'URL
+`_debug?key=DEBUG_KEY`. Le secret `DEBUG_KEY` devrait être défini dans la configuration
+de l'environnement lors du démarrage de l'application. Quand cet URL sera accédé avec
+le bon secret `DEBUG_KEY`, une erreur HTTP `500` sera générée. Sans ce secret ou avec
+une valeur invalide, une erreur `404` de page non-trouvée sera alors produite.
