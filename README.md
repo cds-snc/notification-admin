@@ -243,7 +243,7 @@ It is sometimes useful to trigger an exception for testing purposes (logger form
 multiline log behavior, etc.). To do so, you can hit the `_debug?key=DEBUG_KEY` endpoint.
 The `DEBUG_KEY` should be defined in the environment's configuration, sourced at the
 application' startup. When that endpoint is reached with the proper `DEBUG_KEY` secret,
-a `500` HTTP error will be generated. With the wrong secret through, a classic `404` 
+a `500` HTTP error will be generated. When an incorrect or empty secret is provided, a classic '404'
 not found error will get returned.
 
 =======
