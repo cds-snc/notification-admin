@@ -13,7 +13,10 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
-from notifications_utils.clients.redis import sms_daily_count_cache_key
+from notifications_utils.clients.redis import (
+    email_daily_count_cache_key,
+    sms_daily_count_cache_key,
+)
 from notifications_utils.recipients import RecipientCSV
 from notifications_utils.template import LetterImageTemplate, LetterPreviewTemplate
 from xlrd.biffh import XLRDError
@@ -56,6 +59,14 @@ def test_daily_sms_fragment_count(mocker, redis_value, expected_result):
         "app.extensions.redis_client.get", lambda x: redis_value if x == sms_daily_count_cache_key(SERVICE_ONE_ID) else None
     )
     assert daily_sms_fragment_count(SERVICE_ONE_ID) == expected_result
+
+
+@pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
+def test_daily_email_count(mocker, redis_value, expected_result):
+    mocker.patch(
+        "app.extensions.redis_client.get", lambda x: redis_value if x == email_daily_count_cache_key(SERVICE_ONE_ID) else None
+    )
+    assert email_daily_count_cache_key(SERVICE_ONE_ID) == expected_result
 
 
 @pytest.mark.parametrize(

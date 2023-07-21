@@ -18,7 +18,10 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils import SMS_CHAR_COUNT_LIMIT
-from notifications_utils.clients.redis import sms_daily_count_cache_key
+from notifications_utils.clients.redis import (
+    email_daily_count_cache_key,
+    sms_daily_count_cache_key,
+)
 from notifications_utils.columns import Columns
 from notifications_utils.recipients import (
     RecipientCSV,
@@ -71,6 +74,10 @@ from app.utils import (
 
 def daily_sms_fragment_count(service_id):
     return int(redis_client.get(sms_daily_count_cache_key(service_id)) or "0")
+
+
+def daily_email_count(service_id):
+    return int(redis_client.get(email_daily_count_cache_key(service_id)) or "0")
 
 
 def service_can_bulk_send(service_id):
@@ -638,7 +645,9 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
     statistics = service_api_client.get_service_statistics(service_id, today_only=True)
     remaining_messages = current_service.message_limit - sum(stat["requested"] for stat in statistics.values())
     sms_fragments_sent_today = daily_sms_fragment_count(service_id)
+    emails_sent_today = daily_email_count(service_id)
     remaining_sms_message_fragments = current_service.sms_daily_limit - sms_fragments_sent_today
+    remaining_email_messages = current_service.message_limit - emails_sent_today
 
     contents = s3download(service_id, upload_id)
 
@@ -677,7 +686,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         safelist=itertools.chain.from_iterable([user.name, user.mobile_number, user.email_address] for user in Users(service_id))
         if current_service.trial_mode
         else None,
-        remaining_messages=remaining_messages,
+        remaining_messages=remaining_email_messages if current_app.config["FF_EMAIL_DAILY_LIMIT"] else remaining_messages,
         international_sms=current_service.has_permission("international_sms"),
         max_rows=get_csv_max_rows(service_id),
     )
@@ -721,7 +730,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         original_file_name=request.args.get("original_file_name", ""),
         upload_id=upload_id,
         form=CsvUploadForm(),
-        remaining_messages=remaining_messages,
+        remaining_messages=remaining_email_messages if current_app.config["FF_EMAIL_DAILY_LIMIT"] else remaining_messages,
         remaining_sms_message_fragments=remaining_sms_message_fragments,
         sms_parts_to_send=sms_parts_to_send,
         is_sms_parts_estimated=is_sms_parts_estimated,
@@ -1052,6 +1061,8 @@ def get_template_error_dict(exception):
         error = "not-allowed-to-send-to"
     elif "Exceeded send limits" in exception.message:
         error = "too-many-messages"
+    elif "Exceeded email daily sending limit" in exception.message:
+        error = "too-many-email-messages"
     elif "Exceeded SMS daily sending limit" in exception.message:
         error = "too-many-sms-messages"
     elif "Content for template has a character count greater than the limit of" in exception.message:
