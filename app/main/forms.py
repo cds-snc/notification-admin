@@ -705,15 +705,16 @@ class NewOrganisationForm(
 
 class MessageLimit(StripWhitespaceForm):
     def validate_message_limit(self, field):
-        if field.data < current_service.sms_daily_limit:
+        if field.data < current_service.sms_daily_limit and current_app.config["FF_EMAIL_DAILY_LIMIT"] is False:
             raise ValidationError(
                 _l(
                     "Your daily limit for text fragments is {sms_daily_limit}. Enter a total number of daily messages that is {sms_daily_limit} or higher."
                 ).format(sms_daily_limit=format_number(current_service.sms_daily_limit))
             )
 
+    heading = _l("Daily email limit") if current_app.config["FF_EMAIL_DAILY_LIMIT"] else _l("Daily message limit")
     message_limit = IntegerField(
-        _l("Daily message limit"),
+        heading,
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validators.NumberRange(min=1),
@@ -733,13 +734,10 @@ class EmailMessageLimit(StripWhitespaceForm):
 
 class SMSMessageLimit(StripWhitespaceForm):
     def validate_message_limit(self, field):
-        check_limit = (
-            current_service.sms_daily_limit if current_app.config["FF_EMAIL_DAILY_LIMIT"] else current_service.message_limit
-        )
-        if field.data > check_limit:
+        if field.data > current_service.message_limit and current_app.config["FF_EMAIL_DAILY_LIMIT"] is False:
             raise ValidationError(
-                _l("You can send {check_limit} messages each day. Enter a number equal or less than {check_limit}.").format(
-                    check_limit=format_number(check_limit)
+                _l("You can send {message_limit} messages each day. Enter a number equal or less than {message_limit}.").format(
+                    message_limit=format_number(current_service.message_limit)
                 )
             )
 

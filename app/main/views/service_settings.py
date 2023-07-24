@@ -1083,7 +1083,7 @@ def set_message_limit(service_id):
     return render_template(
         "views/service-settings/set-message-limit.html",
         form=form,
-        heading=_("Daily message limit"),
+        heading=_("Daily email limit") if current_app.config["FF_EMAIL_DAILY_LIMIT"] else _("Daily message limit"),
     )
 
 
