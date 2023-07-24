@@ -22,7 +22,7 @@ from notifications_utils.template import LetterImageTemplate, LetterPreviewTempl
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
-from app.main.views.send import daily_sms_fragment_count
+from app.main.views.send import daily_email_count, daily_sms_fragment_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -66,7 +66,7 @@ def test_daily_email_count(mocker, redis_value, expected_result):
     mocker.patch(
         "app.extensions.redis_client.get", lambda x: redis_value if x == email_daily_count_cache_key(SERVICE_ONE_ID) else None
     )
-    assert email_daily_count_cache_key(SERVICE_ONE_ID) == expected_result
+    assert daily_email_count(SERVICE_ONE_ID) == expected_result
 
 
 @pytest.mark.parametrize(
