@@ -733,7 +733,9 @@ class EmailMessageLimit(StripWhitespaceForm):
 
 class SMSMessageLimit(StripWhitespaceForm):
     def validate_message_limit(self, field):
-        check_limit = current_service.sms_daily_limit if current_app.config["FF_DAILY_EMAIL_LIMIT"] else current_service.message_limit
+        check_limit = (
+            current_service.sms_daily_limit if current_app.config["FF_DAILY_EMAIL_LIMIT"] else current_service.message_limit
+        )
         if field.data > check_limit:
             raise ValidationError(
                 _l("You can send {check_limit} messages each day. Enter a number equal or less than {check_limit}.").format(
