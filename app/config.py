@@ -33,6 +33,7 @@ class Config(object):
     ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET")
     ANTIVIRUS_API_HOST = os.environ.get("ANTIVIRUS_API_HOST")
     ANTIVIRUS_API_KEY = os.environ.get("ANTIVIRUS_API_KEY")
+    ALLOW_DEBUG_ROUTE = env.bool("ALLOW_DEBUG_ROUTE", False)
 
     # List of allowed service IDs that are allowed to send HTML through their templates.
     ALLOW_HTML_SERVICE_IDS: List[str] = [id.strip() for id in os.getenv("ALLOW_HTML_SERVICE_IDS", "").split(",")]
@@ -55,6 +56,7 @@ class Config(object):
     CRM_ORG_LIST_URL = os.getenv("CRM_ORG_LIST_URL")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT")
     DEBUG = False
+    DEBUG_KEY = os.environ.get("DEBUG_KEY", "")
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
         "central": 25_000,
         "local": 25_000,
@@ -138,10 +140,9 @@ class Config(object):
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
     FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
-    FF_BOUNCE_RATE_V1 = env.bool("FF_BOUNCE_RATE_V1", False)
     FF_BOUNCE_RATE_V15 = env.bool("FF_BOUNCE_RATE_V15", False)
-    FF_ABTEST_SERVICE_ID = [x.strip() for x in os.environ.get("FF_ABTEST_SERVICE_ID", "").split(",")]
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
+    FF_EMAIL_DAILY_LIMIT = env.bool("FF_EMAIL_DAILY_LIMIT", False)
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
@@ -151,6 +152,7 @@ class Config(object):
             "ANTIVIRUS_API_KEY",
             "CRM_GITHUB_PERSONAL_ACCESS_TOKEN",
             "DANGEROUS_SALT",
+            "DEBUG_KEY",
             "GC_ARTICLES_API_AUTH_PASSWORD",
             "GC_ARTICLES_API_AUTH_USERNAME",
             "ROUTE_SECRET_KEY_1",
@@ -174,6 +176,7 @@ class Development(Config):
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
+    DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "notify.tools-mou"
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
@@ -191,6 +194,7 @@ class Test(Development):
     CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
+    DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = "test"
     SECRET_KEY = ["dev-notify-secret-key"]
@@ -202,6 +206,7 @@ class Test(Development):
     FF_SPIKE_SMS_DAILY_LIMIT = False
     FF_SMS_PARTS_UI = False
     FF_SALESFORCE_CONTACT = False
+    FF_EMAIL_DAILY_LIMIT = False
 
 
 class Production(Config):

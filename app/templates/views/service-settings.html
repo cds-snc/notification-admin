@@ -95,24 +95,16 @@
           }}
         {% endcall %}
 
-        {% call row() %}
-        
-          {% set txt = _('Daily message limit') %}
-          {{ text_field(txt)}}
-          {% set message_limit = _('{} notifications').format(current_service.message_limit | format_number) %}
-          {{ text_field(message_limit) }}
-          {{ text_field('') }}
-        {% endcall %}
-        
-        {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
+        {% if config["FF_EMAIL_DAILY_LIMIT"] == false %}
           {% call row() %}
-            {% set txt = _('Daily text fragments limit') %}
+            {% set txt = _('Daily message limit') %}
             {{ text_field(txt)}}
-            {% set sms_daily_limit = _('{} fragments').format(current_service.sms_daily_limit | format_number) %}
-            {{ text_field(sms_daily_limit) }}
+            {% set message_limit = _('{} notifications').format(current_service.message_limit | format_number) %}
+            {{ text_field(message_limit) }}
             {{ text_field('') }}
           {% endcall %}
         {% endif %}
+
         {% call row() %}
           {% set txt = _('API rate limit per minute') %}
           {{ text_field(txt) }}
@@ -205,6 +197,15 @@
           {{ text_field(annual_limit) }}
           {{ text_field('')}}
         {% endcall %}
+        {% if config["FF_EMAIL_DAILY_LIMIT"] %}
+          {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
+            {% set txt = _('Daily email limit') %}
+            {{ text_field(txt)}}
+            {% set message_limit = _('{} emails').format(current_service.message_limit | format_number) %}
+            {{ text_field(message_limit) }}
+            {{ text_field('') }}
+            {% endcall %}
+        {% endif %}
       {% endcall %}
 
       {% set caption = _('Text messages') %}
@@ -270,8 +271,21 @@
           {{ text_field(txt_msg_limit) }}
           {{ text_field('')}}
         {% endcall %}
-      {% endcall %}
 
+        {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
+          {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
+            {% set txt = _('Daily text fragments limit') %}
+            {{ text_field(txt)}}
+            {{ text_field(current_service.sms_daily_limit | format_number) }}
+            {{ edit_field(
+              change_txt,
+              url_for('.set_sms_message_limit', service_id=current_service.id),
+              for=txt
+            ) }}
+          {% endcall %}
+        {% endif %}
+
+      {% endcall %}
 
       <p class="mt-12">
         {{ _("Problems, questions, or comments? <a href='{}'>Contact us</a>.").format(url_for('.contact')) }}
@@ -352,28 +366,19 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Daily message limit') %}
+            {%if config["FF_EMAIL_DAILY_LIMIT"] == false %}
+              {% set txt = _('Daily message limit') %}
+            {% else %}
+              {% set txt = _('Daily email limit') %}
+            {% endif %}
             {{ text_field(txt)}}
             {{ text_field(current_service.message_limit | format_number) }}
             {{ edit_field(
-              change_txt, 
+              change_txt,
               url_for('.set_message_limit', service_id=current_service.id),
               for=txt
             ) }}
           {% endcall %}
-          
-          {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
-            {% call row() %}
-              {% set txt = _('Daily text fragments limit') %}
-              {{ text_field(txt)}}
-              {{ text_field(current_service.sms_daily_limit | format_number) }}
-              {{ edit_field(
-                change_txt, 
-                url_for('.set_sms_message_limit', service_id=current_service.id),
-                for=txt
-              ) }}
-            {% endcall %}
-          {% endif %}
 
           {% call row() %}
             {% set txt = _('API rate limit per minute') %}
