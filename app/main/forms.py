@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from itertools import chain
 
 import pytz
-from flask import request
+from flask import current_app, request
 from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
@@ -733,10 +733,11 @@ class EmailMessageLimit(StripWhitespaceForm):
 
 class SMSMessageLimit(StripWhitespaceForm):
     def validate_message_limit(self, field):
-        if field.data > current_service.message_limit:
+        check_limit = current_service.sms_daily_limit if current_app.config["FF_DAILY_EMAIL_LIMIT"] else current_service.message_limit
+        if field.data > check_limit:
             raise ValidationError(
-                _l("You can send {message_limit} messages each day. Enter a number equal or less than {message_limit}.").format(
-                    message_limit=format_number(current_service.message_limit)
+                _l("You can send {check_limit} messages each day. Enter a number equal or less than {check_limit}.").format(
+                    check_limit=format_number(check_limit)
                 )
             )
 

@@ -1707,7 +1707,7 @@
 "Blocked","Message bloqué"
 "No such number","Numéro inexistant"
 "Carrier issue","Problème du fournisseur"
-"You can send {message_limit} messages each day. Enter a number equal or less than {message_limit}.","Vous pouvez envoyer {message_limit} messages par jour. Saisissez un nombre inférieur ou égal à {message_limit}."
+"You can send {check_limit} messages each day. Enter a number equal or less than {check_limit}.","Vous pouvez envoyer {check_limit} messages par jour. Saisissez un nombre inférieur ou égal à {check_limit}."
 "Your daily limit for text fragments is {sms_daily_limit}. Enter a total number of daily messages that is {sms_daily_limit} or higher.","Le maximum de message quotidien doit être supérieur ou égal au maximum quotidien de fragments de message texte","Vous pouvez envoyer {sms_daily_limit} fragments de message texte par jour. Saisissez un nombre supérieur ou égal à {sms_daily_limit} pour la limite d’envoi quotidienne."
 "in transit","envoi en cours"
 "Email in the last 24 hours","Courriels dans les dernières 24 h"
