@@ -712,9 +712,8 @@ class MessageLimit(StripWhitespaceForm):
                 ).format(sms_daily_limit=format_number(current_service.sms_daily_limit))
             )
 
-    heading = _l("Daily email limit") if current_app.config["FF_EMAIL_DAILY_LIMIT"] else _l("Daily message limit")
     message_limit = IntegerField(
-        heading,
+        _l("Daily email limit"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validators.NumberRange(min=1),
