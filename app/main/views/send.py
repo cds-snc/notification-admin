@@ -764,7 +764,6 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     data = _check_messages(service_id, template_id, upload_id, row_index)
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
     data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily)
-
     if (
         data["recipients"].too_many_rows
         or not data["count_of_recipients"]
@@ -1045,6 +1044,7 @@ def _check_notification(service_id, template_id, exception=None):
         sms_parts_data["sms_parts_requested"] = stats_daily["sms"]["requested"]
         sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
         sms_parts_data["send_exceeds_daily_limit"] = sms_parts_data["sms_parts_to_send"] > sms_parts_data["sms_parts_remaining"]
+
     return dict(
         template=template,
         back_link=back_link,
