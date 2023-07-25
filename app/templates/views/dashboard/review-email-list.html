@@ -30,7 +30,7 @@
                     {% endif %}
                 </strong>
                 {% if bounce_rate["bounce_percentage_display"] < 0.1 %}
-                  {{ _('Less than {}').format( '0.1%' if session['userlang'] == 'en' else "0,1&nbsp;%") }}
+                  {{ _('Less than {}').format( '0.1%' if session['userlang'] == 'en' else "0,1&nbsp;%"|safe) }}
                 {% else %}
                   {{ bounce_rate["bounce_percentage_display"]|round(1)|string + "%" if session["userlang"] == 'en' else bounce_rate["bounce_percentage_display"]|round(1)|replace('.', ',')|string + " %"}}
                 {% endif %}
@@ -49,7 +49,7 @@
                     <li>
                         <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
                             {%- if job["bounce_count"] > 1 -%}
-                                {{ _('{count} problem email addresses').format(count=5) }}
+                                {{ _('{count} problem email addresses').format(count=job["bounce_count"]) }}
                             {%- else -%}
                                 {{ _('1 problem email address') }}
                             {%- endif -%}
