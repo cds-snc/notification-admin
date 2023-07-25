@@ -30,7 +30,7 @@
                     {% endif %}
                 </strong>
                 {% if bounce_rate["bounce_percentage_display"] < 0.1 %}
-                  {{ _('Less than {}').format( '0.1%' if session['userlang'] == 'en' else "0,1&nbsp;%") }}
+                  {{ _('Less than {}').format( '0.1%' if session['userlang'] == 'en' else "0,1&nbsp;%"|safe) }}
                 {% else %}
                   {{ bounce_rate["bounce_percentage_display"]|round(1)|string + "%" if session["userlang"] == 'en' else bounce_rate["bounce_percentage_display"]|round(1)|replace('.', ',')|string + " %"}}
                 {% endif %}
