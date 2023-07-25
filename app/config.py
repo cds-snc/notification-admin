@@ -138,7 +138,6 @@ class Config(object):
 
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
-    FF_SPIKE_SMS_DAILY_LIMIT = env.bool("FF_SPIKE_SMS_DAILY_LIMIT", False)
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
     FF_BOUNCE_RATE_V15 = env.bool("FF_BOUNCE_RATE_V15", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
@@ -203,7 +202,6 @@ class Test(Development):
     TESTING = True
     WTF_CSRF_ENABLED = False
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
-    FF_SPIKE_SMS_DAILY_LIMIT = False
     FF_SMS_PARTS_UI = False
     FF_SALESFORCE_CONTACT = False
     FF_EMAIL_DAILY_LIMIT = False

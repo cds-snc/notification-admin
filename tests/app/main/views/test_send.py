@@ -2502,7 +2502,7 @@ def test_check_messages_back_link(
     ],
     ids=["none_sent", "some_sent"],
 )
-def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAILY_LIMIT_true(
+def test_check_messages_shows_too_many_sms_messages_errors(
     app_,
     mocker,
     client_request,
@@ -2540,69 +2540,19 @@ def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAI
             }
         }
 
-    with set_config(app_, "FF_SPIKE_SMS_DAILY_LIMIT", True):
-        page = client_request.get(
-            "main.check_messages",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            original_file_name="valid.csv",
-            _test_page_title=False,
-        )
+    page = client_request.get(
+        "main.check_messages",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        upload_id=fake_uuid,
+        original_file_name="valid.csv",
+        _test_page_title=False,
+    )
 
     # remove excess whitespace from element
     details = page.find(role="alert").findAll("h2")[0]
     details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
     assert details == expected_msg
-
-
-def test_check_messages_does_not_show_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAILY_LIMIT_false(
-    app_,
-    mocker,
-    client_request,
-    mock_get_service,  # set message_limit to 50 and sms limit to 20
-    mock_get_users_by_service,
-    mock_get_service_template,
-    mock_get_template_statistics,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-    mock_s3_download,
-    mock_s3_set_metadata,
-    fake_uuid,
-):
-    # csv with 100 phone numbers
-    mocker.patch(
-        "app.main.views.send.s3download",
-        return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 30)),
-    )
-    mocker.patch(
-        "app.service_api_client.get_service_statistics",
-        return_value={
-            "sms": {"requested": 0, "delivered": 0, "failed": 0},
-            "email": {"requested": 0, "delivered": 0, "failed": 0},
-        },
-    )
-
-    with client_request.session_transaction() as session:
-        session["file_uploads"] = {
-            fake_uuid: {
-                "template_id": fake_uuid,
-                "notification_count": 1,
-                "valid": True,
-            }
-        }
-
-    with set_config(app_, "FF_SPIKE_SMS_DAILY_LIMIT", False):
-        page = client_request.get(
-            "main.check_messages",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            original_file_name="valid.csv",
-            _test_page_title=False,
-        )
-
-    assert page.find(role="alert") is None
 
 
 @pytest.mark.parametrize(
