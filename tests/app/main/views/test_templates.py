@@ -3,7 +3,7 @@ from functools import partial
 from unittest.mock import ANY, MagicMock, Mock
 
 import pytest
-from flask import url_for
+from flask import session, url_for
 from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 
@@ -2434,3 +2434,59 @@ def test_add_recipients_redirects_one_recipient(template_type, template_data, cl
             step_index=1,
         ),
     )
+
+
+def test_template_should_show_email_address_in_correct_language(
+    client_request,
+    mock_get_service_email_template,
+    mock_get_template_folders,
+    fake_uuid,
+):
+    # check english
+    page = client_request.get(
+        ".view_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+    assert "adresse courriel" not in page.text
+    assert "email address" in page.text
+
+    # check french
+    page = client_request.get(
+        ".view_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+        lang="fr",  # open the page in french
+    )
+    assert "email address" not in page.text
+    assert "adresse courriel" in page.text
+
+
+def test_template_should_show_phone_number_in_correct_language(
+    client_request,
+    mock_get_service_template,
+    mock_get_template_folders,
+    fake_uuid,
+):
+    # check english
+    page = client_request.get(
+        ".view_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+    assert "numéro de téléphone" not in page.text
+    assert "phone number" in page.text
+
+    # check french
+    page = client_request.get(
+        ".view_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+        lang="fr",  # open the page in french
+    )
+    assert "phone number" not in page.text
+    assert "numéro de téléphone" in page.text
