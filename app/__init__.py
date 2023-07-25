@@ -395,8 +395,8 @@ def translate_preview_template(_template_str):
             "Reply to": _("Reply to"),
             "From:": _("From:"),
             "To:": _("To:"),
-            "phone number": "phone number",
-            "email address": "email address",
+            "phone number": _("phone number"),
+            "email address": _("email address"),
             "hidden": _("hidden"),
         }.get(word, match)
 
