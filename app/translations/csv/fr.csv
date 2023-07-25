@@ -1730,6 +1730,7 @@
 ".contact",".etat-du-systeme"
 "Sign in to GC Notify","Se connecter à Notification GC"
 "Message must be less than {char_limit} characters","Le message doit comporter moins de {char_limit} caractères."
+"Template name must be less than {char_limit} characters, "Nom du gabarit doit comporter moins de {char limit} caractères"
 "GC Notify’s email provider could suspend our services if we send too many problem emails.","Le fournisseur de messagerie de Notification GC pourrait suspendre nos services si nous envoyons trop de courriels problématiques."
 "Guide: Keep accurate contact information.","Guide: Maintenez à jour les coordonnées"
 "Problem email addresses","Adresses courriel problématiques"
