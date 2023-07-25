@@ -1726,7 +1726,7 @@
 "Review Address","Réviser l’adresse"
 "Available until","Disponible jusqu’au"
 "Virus in attachment","Virus dans la pièce jointe"
-"Less than","Moins de"
+"Less than {}","Moins de {}"
 "See all problem email addresses","Voir toutes les adresses e-mail problématiques"
 ".contact",".etat-du-systeme"
 "Sign in to GC Notify","Se connecter à Notification GC"
