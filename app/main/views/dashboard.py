@@ -1,5 +1,5 @@
 import calendar
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
 
@@ -72,29 +72,70 @@ def problem_emails(service_id):
         if current_app.config["FF_BOUNCE_RATE_V15"]
         else calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily)
     )
-    one_off_notifications = notification_api_client.get_notifications_for_service(
-        service_id,
-        template_type=TemplateType.EMAIL.value,
-        status=NotificationStatuses.PERMANENT_FAILURE.value,
-        include_one_off=True,
-        include_jobs=False,
-        page_size=20,
+
+    get_notifications_args = {
+        "service_id": service_id,
+        "template_type": TemplateType.EMAIL.value,
+        "status": NotificationStatuses.PERMANENT_FAILURE.value,
+        "include_one_off": True,
+        "include_jobs": False,
+        "page_size": 20,
+    }
+    problem_one_off_notifications_7days = notification_api_client.get_notifications_for_service(
+        **get_notifications_args, limit_days=7
+    )["notifications"]
+    jobs_7days = get_jobs_and_calculate_hard_bounces(service_id, 7)
+
+    problem_jobs_7days = [job for job in jobs_7days if job["bounce_count"] > 0]
+    twenty_four_hours_ago_timestamp = (datetime.now() - timedelta(hours=24)).timestamp()
+
+    problem_jobs_within_24hrs = [
+        job for job in problem_jobs_7days if get_timestamp_from_iso(job["processing_started"]) >= twenty_four_hours_ago_timestamp
+    ]
+    problem_jobs_older_than_24hrs = [
+        job for job in problem_jobs_7days if get_timestamp_from_iso(job["processing_started"]) < twenty_four_hours_ago_timestamp
+    ]
+
+    problem_one_offs_within_24hrs = [
+        notification
+        for notification in problem_one_off_notifications_7days
+        if get_timestamp_from_iso(notification["created_at"]) >= twenty_four_hours_ago_timestamp
+    ]
+    problem_one_offs_older_than_24hrs = [
+        notification
+        for notification in problem_one_off_notifications_7days
+        if get_timestamp_from_iso(notification["created_at"]) < twenty_four_hours_ago_timestamp
+    ]
+
+    problem_count_within_24hrs = len(problem_one_offs_within_24hrs) + sum(
+        [job["bounce_count"] for job in problem_jobs_within_24hrs]
+    )
+    problem_count_older_than_24hrs = len(problem_one_offs_older_than_24hrs) + sum(
+        [job["bounce_count"] for job in problem_jobs_older_than_24hrs]
     )
 
     return render_template(
         "views/dashboard/review-email-list.html",
         bounce_status=BounceRateStatus.NORMAL,
-        jobs=get_jobs_and_calculate_hard_bounces(service_id),
+        jobs_7days=problem_jobs_older_than_24hrs,
+        jobs_24hrs=problem_jobs_within_24hrs,
         bounce_rate=bounce_rate_data,
-        one_offs=one_off_notifications["notifications"],
+        one_offs_7days=problem_one_offs_older_than_24hrs,
+        one_offs_24hrs=problem_one_offs_within_24hrs,
+        problem_count_within_24hrs=problem_count_within_24hrs,
+        problem_count_older_than_24hrs=problem_count_older_than_24hrs,
     )
 
 
-def get_jobs_and_calculate_hard_bounces(service_id):
+def get_timestamp_from_iso(iso_datetime_string):
+    return datetime.fromisoformat(iso_datetime_string).timestamp()
+
+
+def get_jobs_and_calculate_hard_bounces(service_id, limit_days):
     # get the jobs stats
     jobs = []
     if job_api_client.has_jobs(service_id):
-        jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id, limit_days=1)]
+        jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id, limit_days=limit_days)]
 
     # get the permanent failures
     for job in jobs:

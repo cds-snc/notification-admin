@@ -38,13 +38,11 @@
             </p>
         </div>
 
-        <h2 class="heading-medium mt-8">{{ _('Problem emails over the past 24 hours') }}</h2>
+        <h2 class="heading-medium mt-8">{{ _('{} problem emails over the past 24 hours').format(problem_count_within_24hrs) }}</h2>
 
-
-        {# {{ ajax_block(partials, updates_url, 'problem_emails', interval=5)}} #}
         <div class="ajax-block-container">
             <ul class="list list-bullet">
-            {% for job in jobs %}
+            {% for job in jobs_24hrs %}
                 {% if job["bounce_count"] > 0 %}
                     <li>
                         <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
@@ -57,7 +55,7 @@
                     </li>
                 {% endif %}
             {% endfor %}
-            {% for notification in one_offs %}
+            {% for notification in one_offs_24hrs %}
                 <li>
                     <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">
                         {{- notification["to"] -}}
@@ -65,12 +63,37 @@
                 </li>
             {% endfor %}
             </ul>
-            {{ show_more(
-                url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
-                _("See all problem email addresses")
-            ) }}
-            {# <p class="text-small">{{ _('Updated every 5 minutes. Last updated {}').format("2023-03-20")}}</p> #}
         </div>
+
+        <h2 class="heading-medium mt-8">{{ _('{} problem emails over the past 7 days').format(problem_count_older_than_24hrs) }}</h2>
+
+        <div class="ajax-block-container">
+            <ul class="list list-bullet">
+            {% for job in jobs_7days %}
+                <li>
+                    <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
+                        {%- if job["bounce_count"] > 1 -%}
+                            {{ _('{count} problems').format(count=job["bounce_count"]) }}
+                        {%- else -%}
+                            {{ _('1 problem') }}
+                        {%- endif -%}
+                    </a> {{ _( 'in ‘{}’').format(job.original_file_name) }}
+                </li>
+            {% endfor %}
+            {% for notification in one_offs_7days %}
+                <li>
+                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">
+                        {{- notification["to"] -}}
+                    </a> {{ _( "using template ‘{}’").format(notification["template"]["name"]) }}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        {{ show_more(
+            url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
+            _("See all problem email addresses")
+        ) }}
 
     </div>
 {% endblock %}
