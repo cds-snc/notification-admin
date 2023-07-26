@@ -93,7 +93,7 @@
             <div class="review-email-label p-6 flex justify-between items-end border-0">
               <span>
                 {% if problem_percentage < 0.1 %}
-                  {{ _('Less than')}} {{'0.1%' if session["userlang"] == 'en' else '0,1 %' }}
+                  {{ _('Less than {}').format( '0.1%' if session['userlang'] == 'en' else "0,1&nbsp;%"|safe) }}
                 {% else %}
                   {{ problem_percentage|round(1)|string + "%" if session["userlang"] == 'en' else problem_percentage|round(1)|replace('.', ',')|string + " %"}}
                 {% endif %}
