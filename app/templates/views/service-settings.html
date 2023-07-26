@@ -277,11 +277,7 @@
             {% set txt = _('Daily text fragments limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.sms_daily_limit | format_number) }}
-            {{ edit_field(
-              change_txt,
-              url_for('.set_sms_message_limit', service_id=current_service.id),
-              for=txt
-            ) }}
+            {{ text_field('') }}
           {% endcall %}
         {% endif %}
 
@@ -379,6 +375,19 @@
               for=txt
             ) }}
           {% endcall %}
+
+          {% if config["FF_SPIKE_SMS_DAILY_LIMIT"] %}
+            {% call row() %}
+              {% set txt = _('Daily text fragments limit') %}
+              {{ text_field(txt)}}
+              {{ text_field(current_service.sms_daily_limit | format_number) }}
+              {{ edit_field(
+                change_txt,
+                url_for('.set_sms_message_limit', service_id=current_service.id),
+                for=txt
+              ) }}
+            {% endcall %}
+          {% endif %}
 
           {% call row() %}
             {% set txt = _('API rate limit per minute') %}
