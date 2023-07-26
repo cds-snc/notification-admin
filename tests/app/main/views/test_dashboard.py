@@ -456,9 +456,9 @@ def test_should_show_upcoming_jobs_on_dashboard(
 @pytest.mark.parametrize(
     "permissions, column_name, expected_column_count",
     [
-        (["email", "sms"], ".w-1\\/2", 4),
-        (["email", "letter"], ".md\\:w-1\\/3", 5),
-        (["email", "sms"], ".w-1\\/2", 4),
+        (["email", "sms"], ".w-1\\/2", 6),
+        (["email", "letter"], ".md\\:w-1\\/3", 7),
+        (["email", "sms"], ".w-1\\/2", 6),
     ],
 )
 def test_correct_columns_display_on_dashboard_v15(
@@ -507,10 +507,7 @@ def test_correct_columns_display_on_dashboard(
         assert len(page.select(column_name)) == expected_column_count
 
 
-@pytest.mark.parametrize(
-    "feature_flag",
-    [True, False],
-)
+
 def test_daily_usage_section_shown(
     client_request,
     mocker,
@@ -520,9 +517,7 @@ def test_daily_usage_section_shown(
     mock_get_jobs,
     service_one,
     app_,
-    feature_flag,
 ):
-    app_.config["FF_SMS_PARTS_UI"] = feature_flag
 
     page = client_request.get(
         "main.service_dashboard",
@@ -531,13 +526,8 @@ def test_daily_usage_section_shown(
     headings = [element.text.strip() for element in page.find_all("h2")]
     big_number_labels = [element.text.strip() for element in page.select(".big-number-label")]
 
-    if feature_flag:
-        assert "Usage today" in headings
-        assert "text messages  left today" in big_number_labels
-    else:
-        assert "Usage today" not in headings
-        assert "text messages  left today" not in big_number_labels
-
+    assert "Usage today" in headings
+    assert "text messages  left today" in big_number_labels
 
 @pytest.mark.parametrize(
     "permissions, totals, big_number_class, expected_column_count",

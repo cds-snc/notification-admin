@@ -3645,14 +3645,9 @@ def test_s3_send_shows_available_files(
     assert multiple_choise_options == expected_filenames
 
 
-@pytest.mark.parametrize(
-    "feature_flag, expected",
-    [(True, 1), (False, 0)],
-)
 def test_sms_parts_section_is_visible_depending_on_ff(
-    feature_flag, expected, client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, app_
+    client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, app_
 ):
-    app_.config["FF_SMS_PARTS_UI"] = feature_flag
 
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
@@ -3662,4 +3657,4 @@ def test_sms_parts_section_is_visible_depending_on_ff(
 
     assert page.h1.text.strip() == "Review before sending"
     sms_count = page.select("#sms-count")
-    assert len(list(sms_count)) == expected
+    assert len(list(sms_count)) == 1
