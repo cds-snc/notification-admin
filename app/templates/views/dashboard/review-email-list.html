@@ -30,7 +30,7 @@
                     {% endif %}
                 </strong>
                 {% if bounce_rate["bounce_percentage_display"] < 0.1 %}
-                  {{ _('Less than') }} 0.1%
+                  {{ _('Less than {}').format( '0.1%' if session['userlang'] == 'en' else "0,1&nbsp;%"|safe) }}
                 {% else %}
                   {{ bounce_rate["bounce_percentage_display"]|round(1)|string + "%" if session["userlang"] == 'en' else bounce_rate["bounce_percentage_display"]|round(1)|replace('.', ',')|string + " %"}}
                 {% endif %}
@@ -48,25 +48,20 @@
                 {% if job["bounce_count"] > 0 %}
                     <li>
                         <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
-                            {{ job["bounce_count"] }}
-                            {% if job["bounce_count"] > 1 %}
-                                {{_(' problem email addresses')}}
+                            {%- if job["bounce_count"] > 1 -%}
+                                {{ _('{count} problems').format(count=job["bounce_count"]) }}
                             {%- else -%}
-                                {{_(' problem email address')}}
+                                {{ _('1 problem') }}
                             {%- endif -%}
-                        </a>
-                        <span>
-                            {{ _( ' in ')}} '{{ job.original_file_name }}'
-                        </span>
+                        </a> {{ _( 'in ‘{}’').format(job.original_file_name) }}
                     </li>
                 {% endif %}
             {% endfor %}
             {% for notification in one_offs %}
                 <li>
-                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">{{notification["to"]}}</a>
-                    <span>
-                        {{ _( ' using template ')}} '{{ notification["template"]["name"] }}'
-                    </span>
+                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">
+                        {{- notification["to"] -}}
+                    </a> {{ _( "using template ‘{}’").format(notification["template"]["name"]) }}
                 </li>
             {% endfor %}
             </ul>
