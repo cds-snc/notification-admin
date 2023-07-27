@@ -65,35 +65,37 @@
             </ul>
         </div>
 
-        <h2 class="heading-medium mt-8">{{ _('{} problem emails over the past 7 days').format(problem_count_older_than_24hrs) }}</h2>
+        {% if problem_count_older_than_24hrs > 0 %}
+            <h2 class="heading-medium mt-8">{{ _('More problem emails') }}</h2>
 
-        <div class="ajax-block-container">
-            <ul class="list list-bullet">
-            {% for job in jobs_7days %}
-                <li>
-                    <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
-                        {%- if job["bounce_count"] > 1 -%}
-                            {{ _('{count} problems').format(count=job["bounce_count"]) }}
-                        {%- else -%}
-                            {{ _('1 problem') }}
-                        {%- endif -%}
-                    </a> {{ _( 'in ‘{}’').format(job.original_file_name) }}
-                </li>
-            {% endfor %}
-            {% for notification in one_offs_7days %}
-                <li>
-                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">
-                        {{- notification["to"] -}}
-                    </a> {{ _( "using template ‘{}’").format(notification["template"]["name"]) }}
-                </li>
-            {% endfor %}
-            </ul>
+            <div class="ajax-block-container">
+                <ul class="list list-bullet">
+                {% for job in jobs_7days %}
+                    <li>
+                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
+                            {%- if job["bounce_count"] > 1 -%}
+                                {{ _('{count} problems').format(count=job["bounce_count"]) }}
+                            {%- else -%}
+                                {{ _('1 problem') }}
+                            {%- endif -%}
+                        </a> {{ _( 'in ‘{}’').format(job.original_file_name) }}
+                    </li>
+                {% endfor %}
+                {% for notification in one_offs_7days %}
+                    <li>
+                        <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">
+                            {{- notification["to"] -}}
+                        </a> {{ _( "using template ‘{}’").format(notification["template"]["name"]) }}
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <div class="mt-4">
+            {{ show_more(
+                url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
+                _("See all problem email addresses")
+            ) }}
         </div>
-
-        {{ show_more(
-            url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
-            _("See all problem email addresses")
-        ) }}
-
     </div>
 {% endblock %}
