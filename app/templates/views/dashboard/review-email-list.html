@@ -40,7 +40,7 @@
         <h2 class="heading-medium mt-8">{{ _('{} problem emails over the past 24 hours').format(problem_count_within_24hrs) }}</h2>
 
         <div class="ajax-block-container">
-            <ul class="list list-bullet">
+            <ul class="list list-bullet within_24hrs" id="within-24hrs">
             {% for job in problem_jobs_within_24hrs %}
                 <li>
                     <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
@@ -66,7 +66,7 @@
             <h2 class="heading-medium mt-8">{{ _('More problem emails') }}</h2>
 
             <div class="ajax-block-container">
-                <ul class="list list-bullet">
+                <ul class="list list-bullet" id="older-than-24hrs">
                 {% for job in problem_jobs_older_than_24hrs %}
                     <li>
                         <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
@@ -88,7 +88,7 @@
                 </ul>
             </div>
         {% endif %}
-        <div class="pt-4">
+        <div class="pt-4" id="see-more">
             {{ show_more(
                 url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
                 _("See all problem email addresses")
