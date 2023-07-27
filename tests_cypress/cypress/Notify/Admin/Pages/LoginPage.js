@@ -39,7 +39,7 @@ let Actions = {
             .its('html')
             .then((html) => {
                 cy.document({ log: false }).invoke({ log: false }, 'write', html)
-            })
+            });
 
         // ensure code is received and enter it
         cy.contains('p', "security code to log in").should('be.visible');

@@ -1,6 +1,3 @@
-const { recurse } = require('cypress-recurse')
-const ADMIN_COOKIE = "notify_admin_session";
-
 // Parts of the page a user can interact with
 let Components = {
     AddServiceButton: () => cy.get('a[href="/add-service"]'),

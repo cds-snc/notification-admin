@@ -22,8 +22,6 @@ const pages = [
     { en: "/why-gc-notify", fr: "/pourquoi-gc-notification" },
 ];
 
-const ADMIN_COOKIE = "notify_admin_session";
-
 describe('GCA static pages', () => {
     before(() => {
         Cypress.config('baseUrl', config.Hostnames.Admin); // use hostname for this environment

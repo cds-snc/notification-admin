@@ -3,8 +3,6 @@
 import config from "../../../config";
 import { LoginPage } from "../../Notify/Admin/Pages/all";
 
-
-const ADMIN_COOKIE = 'notify_admin_session';
 describe('Basic login', () => {
 
     // Login to notify before the test suite starts

@@ -3,9 +3,6 @@
 import config from "../../../config";
 import { LoginPage } from "../../Notify/Admin/Pages/all";
 
-const { recurse } = require('cypress-recurse')
-
-const ADMIN_COOKIE = 'notify_admin_session3';
 describe('Qualtrics', () => {
 
     // Login to notify before the test suite starts
