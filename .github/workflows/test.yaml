@@ -44,6 +44,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
     - run: /bin/bash -c "scripts/bootstrap.sh && poetry run make test"
-        env:
-          A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
-          MIXPANEL_PROJECT_TOKEN: <project_token>
+      env:
+        A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
+        MIXPANEL_PROJECT_TOKEN: <project_token>
