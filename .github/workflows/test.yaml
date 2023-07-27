@@ -37,7 +37,7 @@ jobs:
         # use quotes around the secret, as its value
         # is simply inserted as a string into the command
         run: |
-          echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json
+          echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json 
     - uses: cypress-io/github-action@d79d2d530a66e641eb4a5f227e13bc985c60b964 # v4.2.2
       with:
         working-directory: tests_cypress
