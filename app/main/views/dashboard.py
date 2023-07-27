@@ -117,11 +117,11 @@ def problem_emails(service_id):
     return render_template(
         "views/dashboard/review-email-list.html",
         bounce_status=BounceRateStatus.NORMAL,
-        jobs_7days=problem_jobs_older_than_24hrs,
-        jobs_24hrs=problem_jobs_within_24hrs,
+        problem_jobs_older_than_24hrs=problem_jobs_older_than_24hrs,
+        problem_jobs_within_24hrs=problem_jobs_within_24hrs,
         bounce_rate=bounce_rate_data,
-        one_offs_7days=problem_one_offs_older_than_24hrs,
-        one_offs_24hrs=problem_one_offs_within_24hrs,
+        problem_one_offs_older_than_24hrs=problem_one_offs_older_than_24hrs,
+        problem_one_offs_within_24hrs=problem_one_offs_within_24hrs,
         problem_count_within_24hrs=problem_count_within_24hrs,
         problem_count_older_than_24hrs=problem_count_older_than_24hrs,
     )

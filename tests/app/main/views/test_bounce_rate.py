@@ -544,20 +544,17 @@ def test_review_problem_emails_is_empty_when_no_probems(mocker, service_one, app
 
 
 @pytest.mark.parametrize(
-    "jobs, expected_problem_list_count, FF_BOUNCE_RATE_V15",
+    "jobs, expected_problem_list_count",
     [
-        (jobs_2_failures, 2, False),
-        (jobs_0_failures, 0, False),
-        (jobs_1_failure, 1, False),
-        (jobs_2_failures, 2, True),
-        (jobs_0_failures, 0, True),
-        (jobs_1_failure, 1, True),
+        (jobs_2_failures, 2),
+        (jobs_0_failures, 0),
+        (jobs_1_failure, 1),
     ],
 )
 def test_review_problem_emails_shows_csvs_when_problem_emails_exist(
-    mocker, service_one, app_, client_request, jobs, expected_problem_list_count, FF_BOUNCE_RATE_V15
+    mocker, service_one, app_, client_request, jobs, expected_problem_list_count
 ):
-    with set_config(app_, "FF_BOUNCE_RATE_V15", FF_BOUNCE_RATE_V15):
+    with set_config(app_, "FF_BOUNCE_RATE_V15", True):
         threshold = app_.config["BR_DISPLAY_VOLUME_MINIMUM"]
 
         mock_data = [

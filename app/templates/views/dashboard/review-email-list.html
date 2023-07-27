@@ -41,20 +41,18 @@
 
         <div class="ajax-block-container">
             <ul class="list list-bullet">
-            {% for job in jobs_24hrs %}
-                {% if job["bounce_count"] > 0 %}
-                    <li>
-                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
-                            {%- if job["bounce_count"] > 1 -%}
-                                {{ _('{count} problems').format(count=job["bounce_count"]) }}
-                            {%- else -%}
-                                {{ _('1 problem') }}
-                            {%- endif -%}
-                        </a> {{ _( 'in ‘{}’').format(job.original_file_name) }}
-                    </li>
-                {% endif %}
+            {% for job in problem_jobs_within_24hrs %}
+                <li>
+                    <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
+                        {%- if job["bounce_count"] > 1 -%}
+                            {{ _('{count} problems').format(count=job["bounce_count"]) }}
+                        {%- else -%}
+                            {{ _('1 problem') }}
+                        {%- endif -%}
+                    </a> {{ _( 'in ‘{}’').format(job.original_file_name) }}
+                </li>
             {% endfor %}
-            {% for notification in one_offs_24hrs %}
+            {% for notification in problem_one_offs_within_24hrs %}
                 <li>
                     <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">
                         {{- notification["to"] -}}
@@ -69,7 +67,7 @@
 
             <div class="ajax-block-container">
                 <ul class="list list-bullet">
-                {% for job in jobs_7days %}
+                {% for job in problem_jobs_older_than_24hrs %}
                     <li>
                         <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
                             {%- if job["bounce_count"] > 1 -%}
@@ -80,7 +78,7 @@
                         </a> {{ _( 'in ‘{}’').format(job.original_file_name) }}
                     </li>
                 {% endfor %}
-                {% for notification in one_offs_7days %}
+                {% for notification in problem_one_offs_older_than_24hrs %}
                     <li>
                         <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">
                             {{- notification["to"] -}}
@@ -90,7 +88,7 @@
                 </ul>
             </div>
         {% endif %}
-        <div class="mt-4">
+        <div class="pt-4">
             {{ show_more(
                 url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
                 _("See all problem email addresses")
