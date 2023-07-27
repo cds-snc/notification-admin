@@ -158,10 +158,13 @@ jobs:
         run: |
           echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json 
           export CYPRESS_baseUrl=${process.env.URL}
+      - name: The echo game
+        run: |
+          echo ${{ env.action_state }} TADA
       - name: Run the cypress tests
         uses: cypress-io/github-action@d79d2d530a6  6e641eb4a5f227e13bc985c60b964 # v4.2.2
         env:
-          CYPRESS_BASE_URL: ${process.env.URL.slice(1, -1)}
+          CYPRESS_BASE_URL: ${{ env.URL }}
         with:
           working-directory: tests_cypress
           spec: cypress/e2e/admin/a11y/app_pages.cy.js
