@@ -156,7 +156,7 @@ jobs:
         # is simply inserted as a string into the command
         run: |
           echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json 
-          export CYPRESS_baseUrl=${process.env.URL.slice(1, -1)}
+          export CYPRESS_baseUrl=${{ process.env.URL }}
       - name: Run the cypress tests
         uses: cypress-io/github-action@d79d2d530a66e641eb4a5f227e13bc985c60b964 # v4.2.2
         with:
