@@ -73,17 +73,16 @@ def problem_emails(service_id):
         else calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily)
     )
 
-    get_notifications_args = {
-        "service_id": service_id,
-        "template_type": TemplateType.EMAIL.value,
-        "status": NotificationStatuses.PERMANENT_FAILURE.value,
-        "include_one_off": True,
-        "include_jobs": False,
-        "page_size": 20,
-    }
     problem_one_off_notifications_7days = notification_api_client.get_notifications_for_service(
-        **get_notifications_args, limit_days=7
-    )["notifications"]
+        service_id=service_id,
+        template_type=TemplateType.EMAIL.value,
+        status=NotificationStatuses.PERMANENT_FAILURE.value,
+        include_one_off=True,
+        include_jobs=False,
+        page_size=20,
+        limit_days=7,
+    )
+
     jobs_7days = get_jobs_and_calculate_hard_bounces(service_id, 7)
 
     problem_jobs_7days = [job for job in jobs_7days if job["bounce_count"] > 0]
@@ -98,12 +97,12 @@ def problem_emails(service_id):
 
     problem_one_offs_within_24hrs = [
         notification
-        for notification in problem_one_off_notifications_7days
+        for notification in problem_one_off_notifications_7days["notifications"]
         if get_timestamp_from_iso(notification["created_at"]) >= twenty_four_hours_ago_timestamp
     ]
     problem_one_offs_older_than_24hrs = [
         notification
-        for notification in problem_one_off_notifications_7days
+        for notification in problem_one_off_notifications_7days["notifications"]
         if get_timestamp_from_iso(notification["created_at"]) < twenty_four_hours_ago_timestamp
     ]
 
