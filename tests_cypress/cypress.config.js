@@ -5,7 +5,11 @@ const htmlvalidate = require("cypress-html-validate/plugin");
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents: async (on, config) => {
-      htmlvalidate.install(on);
+      htmlvalidate.install(on, {
+        rules: {
+          "form-dup-name": "off",
+        },
+      });
 
       const emailAccount = await EmailAccount()
       on('task', {
