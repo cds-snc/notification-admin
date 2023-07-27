@@ -142,7 +142,7 @@ class Config(object):
     FF_SMS_PARTS_UI = env.bool("FF_SMS_PARTS_UI", False)
     FF_BOUNCE_RATE_V15 = env.bool("FF_BOUNCE_RATE_V15", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
-    FF_EMAIL_DAILY_LIMIT = env.bool("FF_EMAIL_DAILY_LIMIT", False)
+    FF_EMAIL_DAILY_LIMIT = True  # env.bool("FF_EMAIL_DAILY_LIMIT", False)
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
@@ -206,7 +206,7 @@ class Test(Development):
     FF_SPIKE_SMS_DAILY_LIMIT = False
     FF_SMS_PARTS_UI = False
     FF_SALESFORCE_CONTACT = False
-    FF_EMAIL_DAILY_LIMIT = False
+    FF_EMAIL_DAILY_LIMIT = True
 
 
 class Production(Config):

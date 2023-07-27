@@ -92,3 +92,6 @@ schedule-message.html
 jinja_templates/
 scripts/searchresults.csv
 dump.rdb
+
+cypress.env.json
+node_modules/

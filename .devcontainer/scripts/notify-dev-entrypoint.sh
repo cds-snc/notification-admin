@@ -45,3 +45,6 @@ make babel
 
 npm ci install
 npm run build
+
+# install npm deps (i.e. cypress)
+cd tests_cypress && npm install && npx cypress install && cd ..
