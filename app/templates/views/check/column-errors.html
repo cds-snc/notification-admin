@@ -160,6 +160,10 @@
         
           {% include "partials/check/too-many-sms-message-parts.html" %}
 
+        {% elif recipients.more_rows_than_can_send and config["FF_EMAIL_DAILY_LIMIT"]%}
+
+          {% include "partials/check/too-many-email-messages.html" %}
+        
         {% elif recipients.more_rows_than_can_send %}
 
           {% include "partials/check/too-many-messages.html" %}

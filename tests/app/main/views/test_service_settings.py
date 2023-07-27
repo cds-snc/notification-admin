@@ -3174,7 +3174,7 @@ def test_should_show_page_to_set_message_limit(
     response = platform_admin_client.get(url_for("main.set_message_limit", service_id=SERVICE_ONE_ID))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert normalize_spaces(page.select_one("label").text) == "Daily message limit"
+    assert normalize_spaces(page.select_one("label").text) == "Daily email limit"
 
 
 @freeze_time("2017-04-01 11:09:00.061258")

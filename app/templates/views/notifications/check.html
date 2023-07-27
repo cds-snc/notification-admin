@@ -52,6 +52,13 @@
         {% include "partials/check/too-many-messages.html" %}
       {% endcall %}
     </div>
+  {% elif error == 'too-many-email-messages' %}
+    {{ page_header(_('This message exceeds your daily email limit'), back_link=back_link) }}
+    <div class="mb-12 clear-both contain-floats">
+      {% call banner_wrapper(type='dangerous') %}
+        {% include "partials/check/too-many-email-messages.html" %}
+      {% endcall %}
+    </div>
   {% elif error == 'message-too-long' %}
     {# the only row_errors we can get when sending one off messages is that the message is too long #}
     {{ govuk_back_link(back_link) }}
