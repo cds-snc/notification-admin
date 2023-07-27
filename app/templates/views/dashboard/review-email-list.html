@@ -37,7 +37,13 @@
             </p>
         </div>
 
-        <h2 class="heading-medium mt-8">{{ _('{} problem emails over the past 24 hours').format(problem_count_within_24hrs) }}</h2>
+        <h2 class="heading-medium mt-8">
+            {% if problem_count_within_24hrs == 1 %}
+                {{ _('1 problem email over the past 24 hours') }}
+            {% else %}
+                {{ _('{} problem emails over the past 24 hours').format(problem_count_within_24hrs) }}
+            {% endif %}
+        </h2>
 
         <div class="ajax-block-container">
             <ul class="list list-bullet within_24hrs" id="within-24hrs">
