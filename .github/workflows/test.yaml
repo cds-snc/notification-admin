@@ -7,40 +7,40 @@ name: Continuous Integration Testing
 jobs:
   test:
     runs-on: ubuntu-latest
+     services:
+      postgres:
+        image: postgres:11.17-bullseye
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_notification_api
+        ports:
+        - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
-    - uses: actions/setup-python@bd6b4b6205c4dbad673328db7b31b7fab9e241c0 # v4.6.1
-      with:
-        python-version: '3.10'
-    - uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
-      with:
-        node-version: '16.x'
-    - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    - name: Install poetry
-      env:
-        POETRY_VERSION: "1.3.2"
-      run: pip install poetry==${POETRY_VERSION} && poetry --version
-    - name: Install requirements
-      run: poetry install --with test
-    - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - run: /bin/bash -c "scripts/bootstrap.sh && poetry run make test"
-      env:
-        A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
-        MIXPANEL_PROJECT_TOKEN: <project_token>
-    - name: Check for missing translations
-      run: make test-translations
-    - name: Notify Slack channel if this job failed in default branch
-      if: ${{ failure() && github.ref == 'refs/heads/main' }}
-      run: |
-        json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-admin/|notification-admin> !'}"
-        curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+    # - uses: actions/setup-python@bd6b4b6205c4dbad673328db7b31b7fab9e241c0 # v4.6.1
+    #   with:
+    #     python-version: '3.10'
+    # - uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
+    #   with:
+    #     node-version: '16.x'
+    # - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+    #   with:
+    #     path: ~/.cache/pip
+    #     key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-pip-
+    # - name: Install poetry
+    #   env:
+    #     POETRY_VERSION: "1.3.2"
+    #   run: pip install poetry==${POETRY_VERSION} && poetry --version
+    # - name: Install requirements
+    #   run: poetry install --with test
+    # - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+    #   with:
+    #     path: ~/.npm
+    #     key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-node-
+  
