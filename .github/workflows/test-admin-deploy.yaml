@@ -147,6 +147,9 @@ jobs:
   cypress-tests:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
+        with:
+          node-version: '16.x'
       - name: Write the cypress.env.json file
         # use quotes around the secret, as its value
         # is simply inserted as a string into the command
