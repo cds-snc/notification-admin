@@ -87,7 +87,9 @@ jobs:
         id: create-update-lambda
         run: |
           URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)"
-          echo THE URL IS $URL
+          echo DEBUG: URL: $URL
+          echo DEBUG: FUNCTION_NAME: $FUNCTION_NAME
+          echo DEBUG: PR_NUMBER: $PR_NUMBER
           echo "pr_url=$URL" >> $GITHUB_OUTPUT
       #   run: |
       #     if aws lambda get-function --function-name $FUNCTION_NAME-$PR_NUMBER > /dev/null 2>&1; then
