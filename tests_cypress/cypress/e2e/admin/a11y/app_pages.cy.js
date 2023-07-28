@@ -35,7 +35,7 @@ const pages = [
 describe(`A11Y - App pages [${config.CONFIG_NAME}]`, () => {
     before(() => {
         LoginPage.Login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
-        cy.log("Running against:" + Cypress.config('baseUrl'));
+        cy.task('log', "Running against:" + Cypress.config('baseUrl'))
     });
     
     // for (const viewport of config.viewports) {
