@@ -1,9 +1,12 @@
+var config = require('./config');
+
 const { defineConfig } = require("cypress");
-const EmailAccount = require('./cypress/plugins/email-account')
+const EmailAccount = require("./cypress/plugins/email-account")
 const htmlvalidate = require("cypress-html-validate/plugin");
 
 module.exports = defineConfig({
   e2e: {
+    baseUrl: config.Hostnames.Admin,
     setupNodeEvents: async (on, config) => {
       htmlvalidate.install(on, {
         rules: {
