@@ -44,6 +44,8 @@ jobs:
         run: |
           echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json 
       - uses: cypress-io/github-action@d79d2d530a66e641eb4a5f227e13bc985c60b964 # v4.2.2
+        env:
+          CYPRESS_BASE_URL: ${{needs.url-maker.outputs.URL}}
         with:
           working-directory: tests_cypress
           spec: cypress/e2e/admin/a11y/app_pages.cy.js
