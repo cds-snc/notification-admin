@@ -143,6 +143,7 @@ jobs:
               repo: context.repo.repo,
               body: `## :test_tube: Review environment\n${process.env.URL.slice(1, -1)}`
             })
+
       - name: Cypress 1
         - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         - uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
