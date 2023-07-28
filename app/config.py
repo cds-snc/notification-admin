@@ -206,7 +206,7 @@ class Test(Development):
     FF_SPIKE_SMS_DAILY_LIMIT = False
     FF_SMS_PARTS_UI = False
     FF_SALESFORCE_CONTACT = False
-    FF_EMAIL_DAILY_LIMIT = True
+    FF_EMAIL_DAILY_LIMIT = False
 
 
 class Production(Config):
