@@ -48,6 +48,7 @@ jobs:
           CYPRESS_BASE_URL: ${{needs.url-maker.outputs.URL}}
         with:
           working-directory: tests_cypress
+          build: npx cypress info
           spec: cypress/e2e/admin/a11y/app_pages.cy.js
 
      
