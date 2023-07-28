@@ -86,7 +86,7 @@ jobs:
       - name: Create/Update lambda function
         id: create-update-lambda
         run: |
-          URL="$(aws lambda get-function --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE --query 'Configuration.FunctionArn')"
+          URL="$(aws lambda get-function --function-name $FUNCTION_NAME-$PR_NUMBER --query 'Configuration.FunctionArn')"
           
           echo DEBUG: URL: $URL
           echo DEBUG: FUNCTION_NAME: $FUNCTION_NAME
