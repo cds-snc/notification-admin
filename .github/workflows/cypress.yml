@@ -38,7 +38,8 @@ jobs:
           # is simply inserted as a string into the command
         run: |
           echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json 
-          echo URL IS     ${{ env.BASE_URL }}  - uses: cypress-io/github-action@d79d2d530a66e641eb4a5f227e13bc985c60b964 # v4.2.2
+          echo hi ${{ env.BASE_URL }}
+      - uses: cypress-io/github-action@d79d2d530a66e641eb4a5f227e13bc985c60b964 # v4.2.2
         env:
           CYPRESS_BASE_URL: ${{ env.BASE_URL }}
         with:
