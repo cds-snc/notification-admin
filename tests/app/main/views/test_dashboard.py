@@ -507,7 +507,6 @@ def test_correct_columns_display_on_dashboard(
         assert len(page.select(column_name)) == expected_column_count
 
 
-
 def test_daily_usage_section_shown(
     client_request,
     mocker,
@@ -518,7 +517,6 @@ def test_daily_usage_section_shown(
     service_one,
     app_,
 ):
-
     page = client_request.get(
         "main.service_dashboard",
         service_id=service_one["id"],
@@ -528,6 +526,7 @@ def test_daily_usage_section_shown(
 
     assert "Usage today" in headings
     assert "text messages  left today" in big_number_labels
+
 
 @pytest.mark.parametrize(
     "permissions, totals, big_number_class, expected_column_count",
