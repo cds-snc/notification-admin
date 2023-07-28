@@ -7,7 +7,7 @@ const pages = [
     { name: "Landing page", route: "/accounts" }, 
     { name: "Your profile", route: "/user-profile" },
     { name: "Dashboard", route: `/services/${config.Services.Cypress}` },
-    { name: "Dashboard > Notification reports", route: `/services/${config.Services.Cypress}/notifications/email?email?status=sending,delivered,failed` },
+    { name: "Dashboard > Notification reports", route: `/services/${config.Services.Cypress}/notifications/email?status=sending,delivered,failed` },
     { name: "Dashboard > Problem emails", route: `/services/${config.Services.Cypress}/problem-emails` },
     { name: "Dashboard > Monthly usage", route: `/services/${config.Services.Cypress}/monthly` },
     { name: "Dashboard > Template usage", route: `/services/${config.Services.Cypress}/template-usage` },
@@ -43,6 +43,7 @@ describe(`A11Y - App pages [${config.CONFIG_NAME}]`, () => {
                 for (const page of pages) {
                     context(`${page.name}`, () => {                        
                         it('A11Y checks', () => {
+                            cy.log(page.route);
                             cy.visit(page.route);
                             cy.get('main').should('be.visible');
                             cy.log('Checking accessibility compliance...')
