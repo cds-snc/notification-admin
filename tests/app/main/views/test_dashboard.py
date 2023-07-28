@@ -483,9 +483,9 @@ def test_correct_columns_display_on_dashboard_v15(
 @pytest.mark.parametrize(
     "permissions, column_name, expected_column_count",
     [
-        (["email", "sms"], ".w-1\\/2", 2),
-        (["email", "letter"], ".md\\:w-1\\/3", 3),
-        (["email", "sms"], ".w-1\\/2", 2),
+        (["email", "sms"], ".w-1\\/2", 4),
+        (["email", "letter"], ".md\\:w-1\\/3", 5),
+        (["email", "sms"], ".w-1\\/2", 4),
     ],
 )
 def test_correct_columns_display_on_dashboard(
