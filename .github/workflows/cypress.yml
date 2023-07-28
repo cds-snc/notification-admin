@@ -9,9 +9,11 @@ on:
 jobs:
   url-maker:
     runs-on: ubuntu-latest
+    outputs:
+      URL: ${{ steps.step1.outputs.test }}
     steps:
-      - name: Set ENV VARS
-        run: echo "BASE_URL=https://ipcvji5lohipaep3lgjypxrlem0tmxax.lambda-url.ca-central-1.on.aws/" >> $GITHUB_ENV
+      - id: step1
+        run: echo "test=https://ipcvji5lohipaep3lgjypxrlem0tmxax.lambda-url.ca-central-1.on.aws/" >> $GITHUB_OUTPUT
 
   cypress-e2e:
     runs-on: ubuntu-latest
@@ -29,6 +31,9 @@ jobs:
     #   cypress:
     #     image: cypress/included:12.16.0 
     steps:
+      - env:
+          CYPRESS_BASE_URL: ${{needs.url-maker.outputs.URL}}
+        run: echo "$URL"
       - name: checkout repo
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: setup node
@@ -38,10 +43,7 @@ jobs:
           # is simply inserted as a string into the command
         run: |
           echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json 
-          echo hi ${{ env.BASE_URL }}
       - uses: cypress-io/github-action@d79d2d530a66e641eb4a5f227e13bc985c60b964 # v4.2.2
-        env:
-          CYPRESS_BASE_URL: ${{ env.BASE_URL }}
         with:
           working-directory: tests_cypress
           spec: cypress/e2e/admin/a11y/app_pages.cy.js
