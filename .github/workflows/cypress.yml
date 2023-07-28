@@ -31,9 +31,9 @@ jobs:
     #   cypress:
     #     image: cypress/included:12.16.0 
     steps:
-      - env:
-          CYPRESS_BASE_URL: ${{needs.url-maker.outputs.URL}}
-        run: echo HEY "$CYPRESS_BASE_URL"
+      # - env:
+      #     CYPRESS_BASE_URL: ${{needs.url-maker.outputs.URL}}
+      #   run: echo HEY "$CYPRESS_BASE_URL"
       - name: checkout repo
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: setup node
