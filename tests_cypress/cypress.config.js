@@ -13,6 +13,10 @@ module.exports = defineConfig({
 
       const emailAccount = await EmailAccount()
       on('task', {
+        log (message) { // for debugging
+          console.log(message)
+          return null
+        },
         getLastEmail() {
           return emailAccount.getLastEmail()
         },
