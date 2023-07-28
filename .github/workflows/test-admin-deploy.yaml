@@ -168,5 +168,6 @@ jobs:
         env:
           CYPRESS_BASE_URL: ${{needs.deploy-test-admin.outputs.LAMBDA_URL}}
         with:
+          build: npx cypress info
           working-directory: tests_cypress
           spec: cypress/e2e/admin/a11y/app_pages.cy.js
