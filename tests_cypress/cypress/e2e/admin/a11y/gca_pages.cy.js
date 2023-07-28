@@ -23,9 +23,6 @@ const pages = [
 ];
 
 describe('GCA static pages', () => {
-    before(() => {
-        Cypress.config('baseUrl', config.Hostnames.Admin); // use hostname for this environment
-    });
     afterEach(() => {
         // cy.get('main').htmlvalidate({
         //     rules: {

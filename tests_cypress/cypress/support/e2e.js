@@ -20,3 +20,5 @@ import 'cypress-html-validate/commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+console.log("config", Cypress.config('baseUrl'));

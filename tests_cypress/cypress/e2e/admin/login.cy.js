@@ -7,8 +7,6 @@ describe('Basic login', () => {
 
     // Login to notify before the test suite starts
     before(() => {
-        Cypress.config('baseUrl', config.Hostnames.Admin); // use hostname for this environment
-
         LoginPage.Login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
 
         // ensure we logged in correctly
