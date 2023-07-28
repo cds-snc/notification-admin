@@ -41,7 +41,6 @@ from tests.conftest import (
     mock_get_service_letter_template,
     mock_get_service_template,
     normalize_spaces,
-    set_config,
 )
 
 template_types = ["email", "sms"]
