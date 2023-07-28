@@ -8,6 +8,7 @@ on:
 
 jobs:
   url-maker:
+    runs-on: ubuntu-latest
     steps:
       - name: Set ENV VARS
         run: echo "BASE_URL=https://ipcvji5lohipaep3lgjypxrlem0tmxax.lambda-url.ca-central-1.on.aws/" >> $GITHUB_ENV
