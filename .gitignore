@@ -95,3 +95,4 @@ dump.rdb
 
 cypress.env.json
 node_modules/
+tests_cypress/cypress/videos/
