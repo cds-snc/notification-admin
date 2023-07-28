@@ -69,7 +69,7 @@ jobs:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'Renovate') }}
     runs-on: ubuntu-latest
     outputs:
-      LAMBDA_URL: ${{ steps.cypress-output.outputs.cypress_url }}
+      LAMBDA_URL: ${{ steps.create-update-lambda.outputs.pr_url }}
     needs: build-and-push-container
     steps:
       - name: Set envs
@@ -90,6 +90,8 @@ jobs:
             aws lambda update-function-code \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
               --image-uri $REGISTRY/$IMAGE:$PR_NUMBER > /dev/null 2>&1
+            URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)"
+            echo "pr_url=$URL" >> $GITHUB_OUTPUT
 
           else
             aws lambda create-function \
@@ -134,10 +136,6 @@ jobs:
           aws lambda put-function-concurrency \
             --function-name $FUNCTION_NAME-$PR_NUMBER \
             --reserved-concurrent-executions 5
-
-      - name: Output url to Cypress
-        id: cypress-output
-        run: echo "cypress_url=${{ env.URL }}" >> $GITHUB_OUTPUT
 
       - name: Update PR
         if: env.URL != ''
