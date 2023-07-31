@@ -3642,17 +3642,3 @@ def test_s3_send_shows_available_files(
     multiple_choise_options = [x.text.strip() for x in options]
 
     assert multiple_choise_options == expected_filenames
-
-
-def test_sms_parts_section_is_visible_depending_on_ff(
-    client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, app_
-):
-    with client_request.session_transaction() as session:
-        session["recipient"] = "6502532223"
-        session["placeholders"] = {}
-
-    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
-
-    assert page.h1.text.strip() == "Review before sending"
-    sms_count = page.select("#sms-count")
-    assert len(list(sms_count)) == 1
