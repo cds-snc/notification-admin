@@ -95,16 +95,6 @@
           }}
         {% endcall %}
 
-        {% if config["FF_EMAIL_DAILY_LIMIT"] == false %}
-          {% call row() %}
-            {% set txt = _('Daily message limit') %}
-            {{ text_field(txt)}}
-            {% set message_limit = _('{} notifications').format(current_service.message_limit | format_number) %}
-            {{ text_field(message_limit) }}
-            {{ text_field('') }}
-          {% endcall %}
-        {% endif %}
-
         {% call row() %}
           {% set txt = _('API rate limit per minute') %}
           {{ text_field(txt) }}
@@ -197,15 +187,15 @@
           {{ text_field(annual_limit) }}
           {{ text_field('')}}
         {% endcall %}
-        {% if config["FF_EMAIL_DAILY_LIMIT"] %}
-          {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
-            {% set txt = _('Daily email limit') %}
-            {{ text_field(txt)}}
-            {% set message_limit = _('{} emails').format(current_service.message_limit | format_number) %}
-            {{ text_field(message_limit) }}
-            {{ text_field('') }}
-            {% endcall %}
-        {% endif %}
+
+        {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
+          {% set txt = _('Daily email limit') %}
+          {{ text_field(txt)}}
+          {% set message_limit = _('{} emails').format(current_service.message_limit | format_number) %}
+          {{ text_field(message_limit) }}
+          {{ text_field('') }}
+          {% endcall %}
+
       {% endcall %}
 
       {% set caption = _('Text messages') %}
@@ -360,11 +350,7 @@
           {% endcall %}
 
           {% call row() %}
-            {%if config["FF_EMAIL_DAILY_LIMIT"] == false %}
-              {% set txt = _('Daily message limit') %}
-            {% else %}
-              {% set txt = _('Daily email limit') %}
-            {% endif %}
+            {% set txt = _('Daily email limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.message_limit | format_number) }}
             {{ edit_field(
