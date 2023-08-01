@@ -180,21 +180,22 @@
             for=txt
           )}}
         {% endcall %}
+
         {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
-          {% set txt = _('Yearly free maximum') %}
+          {% set txt = _('Daily maximum') %}
+          {{ text_field(txt)}}
+          {% set message_limit = _('{} emails').format(current_service.message_limit | format_number) %}
+          {{ text_field(message_limit) }}
+          {{ text_field('') }}
+        {% endcall %}
+
+        {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
+          {% set txt = _('Yearly maximum') %}
           {{ text_field(txt) }}
           {% set annual_limit = _('{} million emails').format((limits.free_yearly_email//1000000) | format_number) %}
           {{ text_field(annual_limit) }}
           {{ text_field('')}}
         {% endcall %}
-
-        {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
-          {% set txt = _('Daily email limit') %}
-          {{ text_field(txt)}}
-          {% set message_limit = _('{} emails').format(current_service.message_limit | format_number) %}
-          {{ text_field(message_limit) }}
-          {{ text_field('') }}
-          {% endcall %}
 
       {% endcall %}
 
@@ -255,18 +256,19 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
-          {% set txt = _('Yearly free maximum') %}
+          {% set txt = _('Daily maximum') %}
+          {{ text_field(txt)}}
+          {% set txt_msg_limit = _('{} text message fragments').format(current_service.sms_daily_limit | format_number) %}
+          {{ text_field(txt_msg_limit) }}
+          {{ text_field('') }}
+        {% endcall %}
+
+        {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
+          {% set txt = _('Yearly maximum') %}
           {{ text_field(txt) }}
           {% set txt_msg_limit = _('{} text messages').format(limits.free_yearly_sms | format_number) %}
           {{ text_field(txt_msg_limit) }}
           {{ text_field('')}}
-        {% endcall %}
-
-        {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
-          {% set txt = _('Daily text fragments limit') %}
-          {{ text_field(txt)}}
-          {{ text_field(current_service.sms_daily_limit | format_number) }}
-          {{ text_field('') }}
         {% endcall %}
 
       {% endcall %}
