@@ -3495,7 +3495,7 @@ def test_reply_to_is_previewed_if_chosen(
     [
         (
             "fr",
-            "De service one Répondre à test@example.com À email address Objet Template subject",
+            "De service one Répondre à test@example.com À adresse courriel Objet Template subject",
         ),
         (
             "en",
