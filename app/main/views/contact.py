@@ -1,6 +1,7 @@
 from flask import redirect, render_template, request, session, url_for
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
+from notifications_python_client.errors import HTTPError
 
 from app import user_api_client
 from app.main import main
@@ -11,7 +12,6 @@ from app.main.forms import (
     SetUpDemoPrimaryPurpose,
 )
 
-DEFAULT_STEP = "identity"
 SESSION_FORM_KEY = "contact_form"
 
 
@@ -43,10 +43,6 @@ def contact():
 @main.route("/contact/message", methods=["GET", "POST"])
 def contact_message():
     form = ContactMessageStep(data=_form_data())
-
-    if not form.data or form.support_type.data != "message":
-        return redirect(url_for("main.contact"))
-
     previous_step = "identity"
     current_step = "message"
     next_step = None
@@ -56,6 +52,8 @@ def contact_message():
         return render_template(
             "views/contact/thanks.html",
         )
+    if not _validate_fields_present(current_step, form.data) or form.support_type.data == "demo":
+        return redirect(url_for("main.contact"))
 
     return render_template(
         "views/contact/message.html",
@@ -70,12 +68,7 @@ def contact_message():
 
 @main.route("/contact/organization-details", methods=["GET", "POST"])
 def demo_org_details():
-    # TODO: validate prerequisite fields present via _validate_fields_present()
     form = SetUpDemoOrgDetails(data=_form_data())
-    if not _form_data():
-        return redirect(url_for("main.contact"))
-
-
     previous_step = "identity"
     current_step = "demo.org_details"
     next_step = "demo.primary_purpose"
@@ -83,6 +76,8 @@ def demo_org_details():
     if request.method == "POST" and form.validate_on_submit():
         session[SESSION_FORM_KEY] = form.data
         return redirect(url_for("main.demo_primary_purpose"))
+    if not _validate_fields_present(current_step, form.data):
+        return redirect(url_for("main.contact"))
 
     return render_template(
         "views/contact/demo-org-details.html",
@@ -99,24 +94,18 @@ def demo_org_details():
 
 @main.route("/contact/primary-purpose", methods=["GET", "POST"])
 def demo_primary_purpose():
-    # TODO: Encapsulate logic in _validate_fields_present instead
-    required_keys = [
-        "department_org_name",
-        "program_service_name",
-        "intended_recipients",
-    ]
-
-    if not set(required_keys).issubset(_form_data()):
-        return redirect(url_for("main.demo_org_details"))
-
     form = SetUpDemoPrimaryPurpose(data=_form_data())
     previous_step = "demo.org_details"
     current_step = "demo.primary_purpose"
     next_step = None
 
     if request.method == "POST" and form.validate_on_submit():
-        session.pop(SESSION_FORM_STEP, None)
         send_contact_request(form)
+        return render_template(
+            "views/contact/thanks.html",
+        )
+    if not _validate_fields_present(current_step, form.data):
+        return redirect(url_for("main.demo_org_details"))
 
     return render_template(
         "views/contact/demo-primary-purpose.html",
@@ -130,10 +119,15 @@ def demo_primary_purpose():
         **_labels(previous_step, current_step, form.support_type.data),
     )
 
-def _validate_fields_present(current_step, form_data):
-    # TODO: Using the current step, check the form_data for the presence of
-    #       prerequisite keys to cut down on code duplication in the above routes
-    return "todo"
+
+def _validate_fields_present(current_step: str, form_data: dict) -> bool:
+    base_requirement = {"name", "support_type", "email_address"}
+    primary_purpose_requirement = base_requirement.union({"department_org_name", "program_service_name", "intended_recipients"})
+    if current_step in ["message", "demo.org_details"]:
+        return base_requirement.issubset(form_data)
+    elif current_step == "demo.primary_purpose":
+        return primary_purpose_requirement.issubset(form_data)
+    return False
 
 
 def _form_data():
@@ -197,7 +191,13 @@ def send_contact_request(form: SetUpDemoPrimaryPurpose):
         data["user_profile"] = url_for(".user_information", user_id=current_user.id, _external=True)
 
     data["friendly_support_type"] = str(dict(form.support_type.choices)[form.support_type.data])
-    user_api_client.send_contact_request(data)
+
+    try:
+        user_api_client.send_contact_request(data)
+    except HTTPError as e:
+        pass
+    else:
+        session.pop(SESSION_FORM_KEY, None)
 
 
 @main.route("/support/ask-question-give-feedback", endpoint="redirect_contact")
