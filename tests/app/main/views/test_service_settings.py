@@ -54,7 +54,7 @@ def mock_get_service_settings_page_common(
 
 
 @pytest.mark.parametrize(
-    "user, sending_domain, expected_rows, email_limit_feature_flag",
+    "user, sending_domain, expected_rows",
     [
         (
             create_active_user_with_permissions(),
@@ -70,16 +70,15 @@ def mock_get_service_settings_page_common(
                 "Reply-to addresses Not set Manage",
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
-                "Yearly free maximum 10 million emails",
-                "Daily email limit 1,000 emails",
+                "Daily maximum 1,000 emails",
+                "Yearly maximum 10 million emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Yearly free maximum 25,000 text messages",
-                "Daily text fragments limit 1,000",
+                "Daily maximum 1,000 text message fragments",
+                "Yearly maximum 25,000 text messages",
             ],
-            True,
         ),
         (
             create_platform_admin_user(),
@@ -95,14 +94,14 @@ def mock_get_service_settings_page_common(
                 "Reply-to addresses Not set Manage",
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
-                "Yearly free maximum 10 million emails",
-                "Daily email limit 1,000 emails",
+                "Daily maximum 1,000 emails",
+                "Yearly maximum 10 million emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Yearly free maximum 25,000 text messages",
-                "Daily text fragments limit 1,000",
+                "Daily maximum 1,000 text message fragments",
+                "Yearly maximum 25,000 text messages",
                 "Label Value Action",
                 "Live On Change",
                 "Count in list of live services Yes Change",
@@ -119,72 +118,6 @@ def mock_get_service_settings_page_common(
                 "Receive inbound SMS Off Change",
                 "Email authentication Off Change",
             ],
-            True,
-        ),
-        (
-            create_active_user_with_permissions(),
-            None,
-            [
-                "Label Value Action",
-                "Service name Test Service Change",
-                "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Text message code Change",
-                "Daily message limit 1,000 notifications",
-                "API rate limit per minute 100 calls",
-                "Label Value Action",
-                "Send emails On Change",
-                "Reply-to addresses Not set Manage",
-                "Email branding English Government of Canada signature Change",
-                "Send files by email Off (API-only) Change",
-                "Yearly free maximum 10 million emails",
-                "Label Value Action",
-                "Send text messages On Change",
-                "Start text messages with service name On Change",
-                "Send international text messages Off Change",
-                "Yearly free maximum 25,000 text messages",
-                "Daily text fragments limit 1,000",
-            ],
-            False,
-        ),
-        (
-            create_platform_admin_user(),
-            "test.example.com",
-            [
-                "Label Value Action",
-                "Service name Test Service Change",
-                "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Text message code Change",
-                "Daily message limit 1,000 notifications",
-                "API rate limit per minute 100 calls",
-                "Label Value Action",
-                "Send emails On Change",
-                "Reply-to addresses Not set Manage",
-                "Email branding English Government of Canada signature Change",
-                "Send files by email Off (API-only) Change",
-                "Yearly free maximum 10 million emails",
-                "Label Value Action",
-                "Send text messages On Change",
-                "Start text messages with service name On Change",
-                "Send international text messages Off Change",
-                "Yearly free maximum 25,000 text messages",
-                "Daily text fragments limit 1,000",
-                "Label Value Action",
-                "Live On Change",
-                "Count in list of live services Yes Change",
-                "Organisation Test Organisation Government of Canada Change",
-                "Daily message limit 1,000 Change",
-                "Daily text fragments limit 1,000 Change",
-                "API rate limit per minute 100",
-                "Text message senders GOVUK Manage",
-                "Receive text messages Off Change",
-                "Free fragments per year 250,000 Change",
-                "Email branding English Government of Canada signature Change",
-                "Letter branding Not set Change",
-                "Data retention email Change",
-                "Receive inbound SMS Off Change",
-                "Email authentication Off Change",
-            ],
-            False,
         ),
     ],
 )
@@ -202,34 +135,32 @@ def test_should_show_overview_inc_sms_daily_limit(
     expected_rows,
     mock_get_service_settings_page_common,
     app_,
-    email_limit_feature_flag,
 ):
-    with set_config(app_, "FF_EMAIL_DAILY_LIMIT", email_limit_feature_flag):
-        service_one = service_json(
-            SERVICE_ONE_ID,
-            users=[api_user_active["id"]],
-            permissions=["sms", "email"],
-            organisation_id=ORGANISATION_ID,
-            restricted=False,
-            sending_domain=sending_domain,
-        )
-        mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
+    service_one = service_json(
+        SERVICE_ONE_ID,
+        users=[api_user_active["id"]],
+        permissions=["sms", "email"],
+        organisation_id=ORGANISATION_ID,
+        restricted=False,
+        sending_domain=sending_domain,
+    )
+    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
-        client.login(user, mocker, service_one)
-        response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
-        assert response.status_code == 200
-        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-        assert page.find("h1").text == "Settings"
-        rows = page.select("tr")
-        for index, row in enumerate(expected_rows):
-            formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
-            visible = rows[index]
-            sr_only = visible.find("span", "sr-only")
-            if sr_only:
-                sr_only.extract()
-                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-            assert formatted_row == " ".join(rows[index].text.split())
-        app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
+    client.login(user, mocker, service_one)
+    response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    assert page.find("h1").text == "Settings"
+    rows = page.select("tr")
+    for index, row in enumerate(expected_rows):
+        formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
+        visible = rows[index]
+        sr_only = visible.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
+            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+        assert formatted_row == " ".join(rows[index].text.split())
+    app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
 
 def test_no_go_live_link_for_service_without_organisation(
@@ -248,8 +179,8 @@ def test_no_go_live_link_for_service_without_organisation(
 
     assert page.find("h1").text == "Settings"
 
-    assert normalize_spaces(page.select("tr")[16].text) == ("Live No (organisation must be set first)")
-    assert normalize_spaces(page.select("tr")[18].text) == ("Organisation Not set Government of Canada Change Organisation")
+    assert normalize_spaces(page.select("tr")[15].text) == ("Live No (organisation must be set first)")
+    assert normalize_spaces(page.select("tr")[17].text) == ("Organisation Not set Government of Canada Change Organisation")
 
 
 def test_organisation_name_links_to_org_dashboard(
@@ -270,14 +201,14 @@ def test_organisation_name_links_to_org_dashboard(
     client_request.login(platform_admin_user, service_one)
     response = client_request.get("main.service_settings", service_id=SERVICE_ONE_ID)
 
-    org_row = response.select("tr")[18]
+    org_row = response.select("tr")[17]
 
     assert org_row.find("a")["href"] == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find("a").text) == "Test Organisation"
 
 
 @pytest.mark.parametrize(
-    "permissions, expected_rows, email_limit_feature_flag",
+    "permissions, expected_rows",
     [
         (
             ["email", "sms", "inbound_sms", "international_sms"],
@@ -285,7 +216,6 @@ def test_organisation_name_links_to_org_dashboard(
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "Sign-in method Text message code Change",
-                "Daily message limit 1,000 notifications",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
@@ -297,46 +227,6 @@ def test_organisation_name_links_to_org_dashboard(
                 "Start text messages with service name On Change",
                 "Send international text messages On Change",
             ],
-            False,
-        ),
-        (
-            ["email", "sms", "email_auth"],
-            [
-                "Service name service one Change",
-                "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Email code or text message code Change",
-                "Daily message limit 1,000 notifications",
-                "API rate limit per minute 100 calls",
-                "Label Value Action",
-                "Send emails On Change",
-                "Reply-to addresses test@example.com Manage",
-                "Email branding Your branding (Organisation name) Change",
-                "Send files by email Off (API-only) Change",
-                "Label Value Action",
-                "Send text messages On Change",
-                "Start text messages with service name On Change",
-                "Send international text messages Off Change",
-            ],
-            False,
-        ),
-        (
-            ["email", "sms", "inbound_sms", "international_sms"],
-            [
-                "Service name service one Change",
-                "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Text message code Change",
-                "API rate limit per minute 100 calls",
-                "Label Value Action",
-                "Send emails On Change",
-                "Reply-to addresses test@example.com Manage",
-                "Email branding Your branding (Organisation name) Change",
-                "Send files by email Off (API-only) Change",
-                "Label Value Action",
-                "Send text messages On Change",
-                "Start text messages with service name On Change",
-                "Send international text messages On Change",
-            ],
-            True,
         ),
         (
             ["email", "sms", "email_auth"],
@@ -355,7 +245,6 @@ def test_organisation_name_links_to_org_dashboard(
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
             ],
-            True,
         ),
     ],
 )
@@ -372,24 +261,22 @@ def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_lim
     mock_get_service_settings_page_common,
     permissions,
     expected_rows,
-    email_limit_feature_flag,
     app_,
 ):
-    with set_config(app_, "FF_EMAIL_DAILY_LIMIT", email_limit_feature_flag):
-        client.login(active_user_with_permissions, mocker, service_one)
-        service_one["permissions"] = permissions
-        service_one["email_branding"] = uuid4()
-        response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
-        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-        rows = page.find_all("tr")
-        for index, row in enumerate(expected_rows):
-            formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
-            visible = rows[index + 1]
-            sr_only = visible.find("span", "sr-only")
-            if sr_only:
-                sr_only.extract()
-                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-            assert formatted_row == " ".join(visible.text.split())
+    client.login(active_user_with_permissions, mocker, service_one)
+    service_one["permissions"] = permissions
+    service_one["email_branding"] = uuid4()
+    response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    rows = page.find_all("tr")
+    for index, row in enumerate(expected_rows):
+        formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
+        visible = rows[index + 1]
+        sr_only = visible.find("span", "sr-only")
+        if sr_only:
+            sr_only.extract()
+            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+        assert formatted_row == " ".join(visible.text.split())
 
 
 def test_if_cant_send_letters_then_cant_see_letter_contact_block(
@@ -1477,7 +1364,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
     def get_row(page, index):
         return normalize_spaces(page.select("tbody tr")[index].text)
 
-    assert get_row(page, 6) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
+    assert get_row(page, 5) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
 
 
 @pytest.mark.parametrize(
