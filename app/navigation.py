@@ -423,11 +423,7 @@ class MainNavigation(Navigation):
         "usage": {
             "usage",
         },
-        "contact": {
-            "message",
-            "demo_primary_purpose",
-            "demo_org_details"
-        },
+        "contact": {"message", "demo_primary_purpose", "demo_org_details"},
         "settings": {
             "branding_request",
             "link_service_to_organisation",

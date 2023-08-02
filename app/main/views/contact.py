@@ -14,10 +14,11 @@ from app.main.forms import (
 DEFAULT_STEP = "identity"
 SESSION_FORM_KEY = "contact_form"
 
+
 @main.route("/contact", methods=["GET", "POST"])
 def contact():
     form = ContactNotify(data=_form_data())
-    previous_step = None,
+    previous_step = (None,)
     current_step = "identity"
     next_step = ""
 
@@ -42,7 +43,7 @@ def contact():
 @main.route("/contact/message", methods=["GET", "POST"])
 def contact_message():
     form = ContactMessageStep(data=_form_data())
-    previous_step = "identity",
+    previous_step = ("identity",)
     current_step = "message"
     next_step = None
 
