@@ -24,13 +24,6 @@
       {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
     {% endif %}
 
-    {% if config["FF_SMS_PARTS_UI"] %}
-      <h2 class="heading-medium mt-8">
-        {{ _('Usage today') }}
-      </h2>
-      {{ ajax_block(partials, updates_url, 'daily_totals', interval=5) }}
-    {% endif %}
-
     {{ ajax_block(partials, updates_url, 'weekly_totals', interval=5) }}
 
     {% if not config["FF_BOUNCE_RATE_V15"] %}

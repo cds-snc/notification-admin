@@ -41,7 +41,6 @@ from tests.conftest import (
     mock_get_service_letter_template,
     mock_get_service_template,
     normalize_spaces,
-    set_config,
 )
 
 template_types = ["email", "sms"]
@@ -2502,7 +2501,7 @@ def test_check_messages_back_link(
     ],
     ids=["none_sent", "some_sent"],
 )
-def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAILY_LIMIT_true(
+def test_check_messages_shows_too_many_sms_messages_errors(
     app_,
     mocker,
     client_request,
@@ -2540,69 +2539,19 @@ def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAI
             }
         }
 
-    with set_config(app_, "FF_SPIKE_SMS_DAILY_LIMIT", True):
-        page = client_request.get(
-            "main.check_messages",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            original_file_name="valid.csv",
-            _test_page_title=False,
-        )
+    page = client_request.get(
+        "main.check_messages",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        upload_id=fake_uuid,
+        original_file_name="valid.csv",
+        _test_page_title=False,
+    )
 
     # remove excess whitespace from element
     details = page.find(role="alert").findAll("h2")[0]
     details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
     assert details == expected_msg
-
-
-def test_check_messages_does_not_show_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAILY_LIMIT_false(
-    app_,
-    mocker,
-    client_request,
-    mock_get_service,  # set message_limit to 50 and sms limit to 20
-    mock_get_users_by_service,
-    mock_get_service_template,
-    mock_get_template_statistics,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-    mock_s3_download,
-    mock_s3_set_metadata,
-    fake_uuid,
-):
-    # csv with 100 phone numbers
-    mocker.patch(
-        "app.main.views.send.s3download",
-        return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 30)),
-    )
-    mocker.patch(
-        "app.service_api_client.get_service_statistics",
-        return_value={
-            "sms": {"requested": 0, "delivered": 0, "failed": 0},
-            "email": {"requested": 0, "delivered": 0, "failed": 0},
-        },
-    )
-
-    with client_request.session_transaction() as session:
-        session["file_uploads"] = {
-            fake_uuid: {
-                "template_id": fake_uuid,
-                "notification_count": 1,
-                "valid": True,
-            }
-        }
-
-    with set_config(app_, "FF_SPIKE_SMS_DAILY_LIMIT", False):
-        page = client_request.get(
-            "main.check_messages",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            original_file_name="valid.csv",
-            _test_page_title=False,
-        )
-
-    assert page.find(role="alert") is None
 
 
 @pytest.mark.parametrize(
@@ -3495,7 +3444,7 @@ def test_reply_to_is_previewed_if_chosen(
     [
         (
             "fr",
-            "De service one Répondre à test@example.com À email address Objet Template subject",
+            "De service one Répondre à test@example.com À adresse courriel Objet Template subject",
         ),
         (
             "en",
@@ -3693,23 +3642,3 @@ def test_s3_send_shows_available_files(
     multiple_choise_options = [x.text.strip() for x in options]
 
     assert multiple_choise_options == expected_filenames
-
-
-@pytest.mark.parametrize(
-    "feature_flag, expected",
-    [(True, 1), (False, 0)],
-)
-def test_sms_parts_section_is_visible_depending_on_ff(
-    feature_flag, expected, client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, app_
-):
-    app_.config["FF_SMS_PARTS_UI"] = feature_flag
-
-    with client_request.session_transaction() as session:
-        session["recipient"] = "6502532223"
-        session["placeholders"] = {}
-
-    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
-
-    assert page.h1.text.strip() == "Review before sending"
-    sms_count = page.select("#sms-count")
-    assert len(list(sms_count)) == expected
