@@ -90,7 +90,7 @@ jobs:
             aws lambda update-function-code \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
               --image-uri $REGISTRY/$IMAGE:$PR_NUMBER > /dev/null 2>&1
-            URL="$(aws lambda get-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --query 'FunctionUrl' --output text)"
+            URL=$(aws lambda get-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --query 'FunctionUrl' --output text)
             echo "pr_url=$URL" >> $GITHUB_OUTPUT
 
           else
@@ -112,7 +112,7 @@ jobs:
               --principal "*" \
               --function-url-auth-type NONE > /dev/null 2>&1
 
-            URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)"
+            URL=$(aws lambda get-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --query 'FunctionUrl' --output text)
             echo "URL=$URL" >> $GITHUB_ENV
             echo "pr_url=$URL" >> $GITHUB_OUTPUT
 
