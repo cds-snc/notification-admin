@@ -151,6 +151,7 @@ def service_name_change_confirm(service_id):
                 raise e
         else:
             session.pop("service_name_change")
+            flash(_("Setting updated"), "default_with_tick")
             return redirect(url_for(".service_settings", service_id=service_id))
     return render_template(
         "views/service-settings/confirm.html",
@@ -206,6 +207,7 @@ def service_email_from_change_confirm(service_id):
                 raise e
         else:
             session.pop("service_email_from_change")
+            flash(_("Setting updated"), "default_with_tick")
             return redirect(url_for(".service_settings", service_id=service_id))
     return render_template(
         "views/service-settings/confirm.html",
@@ -842,6 +844,7 @@ def service_set_channel(service_id, channel):
             channel,
             on=form.enabled.data,
         )
+        flash(_("Setting updated"), "default_with_tick")
         return redirect(url_for(".service_settings", service_id=service_id))
 
     return render_template(
@@ -1339,6 +1342,7 @@ def branding_request(service_id):
                 email_branding=None,
                 default_branding_is_french=default_branding_is_french,
             )
+            flash(_("Setting updated"), "default_with_tick")
             return redirect(url_for(".service_settings", service_id=service_id))
 
     return render_template(
