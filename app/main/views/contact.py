@@ -18,7 +18,7 @@ SESSION_FORM_KEY = "contact_form"
 @main.route("/contact", methods=["GET", "POST"])
 def contact():
     form = ContactNotify(data=_form_data())
-    previous_step = (None,)
+    previous_step = None
     current_step = "identity"
     next_step = ""
 
@@ -43,7 +43,11 @@ def contact():
 @main.route("/contact/message", methods=["GET", "POST"])
 def contact_message():
     form = ContactMessageStep(data=_form_data())
-    previous_step = ("identity",)
+
+    if not form.data or form.support_type.data != "message":
+        return redirect(url_for("main.contact"))
+
+    previous_step = "identity"
     current_step = "message"
     next_step = None
 
@@ -66,7 +70,12 @@ def contact_message():
 
 @main.route("/contact/organization-details", methods=["GET", "POST"])
 def demo_org_details():
+    # TODO: validate prerequisite fields present via _validate_fields_present()
     form = SetUpDemoOrgDetails(data=_form_data())
+    if not _form_data():
+        return redirect(url_for("main.contact"))
+
+
     previous_step = "identity"
     current_step = "demo.org_details"
     next_step = "demo.primary_purpose"
@@ -90,6 +99,16 @@ def demo_org_details():
 
 @main.route("/contact/primary-purpose", methods=["GET", "POST"])
 def demo_primary_purpose():
+    # TODO: Encapsulate logic in _validate_fields_present instead
+    required_keys = [
+        "department_org_name",
+        "program_service_name",
+        "intended_recipients",
+    ]
+
+    if not set(required_keys).issubset(_form_data()):
+        return redirect(url_for("main.demo_org_details"))
+
     form = SetUpDemoPrimaryPurpose(data=_form_data())
     previous_step = "demo.org_details"
     current_step = "demo.primary_purpose"
@@ -110,6 +129,11 @@ def demo_primary_purpose():
         total_steps_hint=2,
         **_labels(previous_step, current_step, form.support_type.data),
     )
+
+def _validate_fields_present(current_step, form_data):
+    # TODO: Using the current step, check the form_data for the presence of
+    #       prerequisite keys to cut down on code duplication in the above routes
+    return "todo"
 
 
 def _form_data():
