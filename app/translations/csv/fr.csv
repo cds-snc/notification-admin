@@ -1743,3 +1743,6 @@
 "1 problem email over the past 24 hours","1 adresse problématique au cours des dernières 24 heures"
 "GC Notify's email provider could suspend our services if we send too many problem emails. Check email addresses are correct. If necessary, confirm recipients’ email address using another contact method. Remove addresses you cannot correct.","Si nous envoyons trop de courriels à des adresses problématiques, le fournisseur de messagerie de Notification GC risque de suspendre nos services. Vérifiez que les adresses courriel sont correctes. Si cela est nécessaire, confirmez l’adresse courriel du ou de la destinataire en contactant cette personne d’une autre façon. Supprimez les adresses que vous ne pouvez pas corriger."
 "To learn how, read the guide <a href='{}'>Updating contact information.</a>","Pour savoir comment faire, lisez le guide <a href='{}'>Maintenir à jour les coordonnées</a>"
+"Daily maximum","Maximum quotidien"
+"Yearly maximum","Maximum annuel"
+"{} text message fragments","{} fragments de message texte"

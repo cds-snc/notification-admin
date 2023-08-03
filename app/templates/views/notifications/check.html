@@ -75,9 +75,6 @@
   {% endif %}
 
   {{ template|string|translate_preview_template }}
-  {% if config["FF_SMS_PARTS_UI"] and template.template_type == 'sms'%}
-    {% include 'views/check/sms-parts.html' %}
-  {% endif %}
 
   <div class="js-stick-at-bottom-when-scrolling">
     <form method="post" enctype="multipart/form-data" action="{{url_for(
