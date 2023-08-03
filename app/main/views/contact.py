@@ -17,7 +17,8 @@ SESSION_FORM_KEY = "contact_form"
 
 @main.route("/contact", methods=["GET", "POST"])
 def contact():
-    form = ContactNotify(data=_form_data())
+    data = _form_data()
+    form = ContactNotify(data=data)
     previous_step = None
     current_step = "identity"
     next_step = ""
@@ -25,9 +26,9 @@ def contact():
     if request.method == "POST" and form.validate_on_submit():
         session[SESSION_FORM_KEY] = form.data
         if form.support_type.data == "demo":
-            return redirect(url_for("main.demo_org_details"))
+            return redirect(url_for(".demo_organization_details"))
         else:
-            return redirect(url_for("main.contact_message"))
+            return redirect(url_for(".message"))
 
     return render_template(
         "views/contact/contact-us.html",
@@ -41,8 +42,9 @@ def contact():
 
 
 @main.route("/contact/message", methods=["GET", "POST"])
-def contact_message():
-    form = ContactMessageStep(data=_form_data())
+def message():
+    data = _form_data()
+    form = ContactMessageStep(data=data)
     previous_step = "identity"
     current_step = "message"
     next_step = None
@@ -52,13 +54,13 @@ def contact_message():
         return render_template(
             "views/contact/thanks.html",
         )
-    if not _validate_fields_present(current_step, form.data) or form.support_type.data == "demo":
-        return redirect(url_for("main.contact"))
+    if not _validate_fields_present(current_step, data) or form.support_type.data == "demo":
+        return redirect(url_for(".contact"))
 
     return render_template(
         "views/contact/message.html",
         form=form,
-        url=url_for("main.contact_message"),
+        url=url_for("main.message"),
         current_step=current_step,
         next_step=next_step,
         previous_step=previous_step,
@@ -67,22 +69,23 @@ def contact_message():
 
 
 @main.route("/contact/organization-details", methods=["GET", "POST"])
-def demo_org_details():
-    form = SetUpDemoOrgDetails(data=_form_data())
+def demo_organization_details():
+    data = _form_data()
+    form = SetUpDemoOrgDetails(data=data)
     previous_step = "identity"
     current_step = "demo.org_details"
     next_step = "demo.primary_purpose"
 
+    if not _validate_fields_present(current_step, data):
+        return redirect(url_for(".contact"))
     if request.method == "POST" and form.validate_on_submit():
         session[SESSION_FORM_KEY] = form.data
-        return redirect(url_for("main.demo_primary_purpose"))
-    if not _validate_fields_present(current_step, form.data):
-        return redirect(url_for("main.contact"))
+        return redirect(url_for(".demo_primary_purpose"))
 
     return render_template(
         "views/contact/demo-org-details.html",
         form=form,
-        url=url_for("main.demo_org_details"),
+        url=url_for(".demo_organization_details"),
         current_step=current_step,
         next_step=next_step,
         previous_step=previous_step,
@@ -94,6 +97,7 @@ def demo_org_details():
 
 @main.route("/contact/primary-purpose", methods=["GET", "POST"])
 def demo_primary_purpose():
+    data = _form_data()
     form = SetUpDemoPrimaryPurpose(data=_form_data())
     previous_step = "demo.org_details"
     current_step = "demo.primary_purpose"
@@ -104,13 +108,13 @@ def demo_primary_purpose():
         return render_template(
             "views/contact/thanks.html",
         )
-    if not _validate_fields_present(current_step, form.data):
-        return redirect(url_for("main.demo_org_details"))
+    if not _validate_fields_present(current_step, data):
+        return redirect(url_for(".contact"))
 
     return render_template(
         "views/contact/demo-primary-purpose.html",
         form=form,
-        url=url_for("main.demo_primary_purpose"),
+        url=url_for(".demo_primary_purpose"),
         current_step=current_step,
         next_step=next_step,
         previous_step=previous_step,
@@ -123,10 +127,12 @@ def demo_primary_purpose():
 def _validate_fields_present(current_step: str, form_data: dict) -> bool:
     base_requirement = {"name", "support_type", "email_address"}
     primary_purpose_requirement = base_requirement.union({"department_org_name", "program_service_name", "intended_recipients"})
+
     if current_step in ["message", "demo.org_details"]:
-        return base_requirement.issubset(form_data)
+         return base_requirement.issubset(form_data)
     elif current_step == "demo.primary_purpose":
-        return primary_purpose_requirement.issubset(form_data)
+        return set(form_data).issuperset(primary_purpose_requirement)
+
     return False
 
 
@@ -147,7 +153,7 @@ def _labels(previous_step, current_step, support_type):
     if current_step in ["demo.org_details", "demo.primary_purpose"]:
         page_title = _l("Set up a demo")
         if current_step == "demo.primary_purpose":
-            back_link = url_for("main.demo_org_details")
+            back_link = url_for("main.demo_organization_details")
     elif current_step == "message":
         if support_type == "other":
             page_title = _l("Tell us more")
@@ -194,7 +200,7 @@ def send_contact_request(form: SetUpDemoPrimaryPurpose):
 
     try:
         user_api_client.send_contact_request(data)
-    except HTTPError as e:
+    except HTTPError:
         pass
     else:
         session.pop(SESSION_FORM_KEY, None)

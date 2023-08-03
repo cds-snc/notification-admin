@@ -30,15 +30,15 @@ def test_identity_step_logged_in(client_request, mocker):
     assert set(input["name"] for input in page.select("input")) == set(["support_type", "csrf_token"])
 
     # Select a contact reason and submit the form
-    page = client_request.post(".contact", _expected_status=200, _data={"support_type": "other"})
+    page = client_request.post(".contact", _expected_status=200, _follow_redirects=True, _data={"support_type": "other"})
 
     # On step 2, to type a message
     assert_has_back_link(page)
-    assert page.select_one(".back-link")["href"] == url_for(".contact", current_step="identity")
+    assert page.select_one(".back-link")["href"] == url_for(".contact")
     assert normalize_spaces(page.find("h1").text) == "Tell us more"
 
     # Message step
-    page = client_request.post(".contact", _expected_status=200, _data={"message": "My message"})
+    page = client_request.post("main.contact_message", _expected_status=200, _data={"message": "My message"})
 
     # Contact email has been sent
     assert_no_back_link(page)
@@ -69,6 +69,7 @@ def test_back_link_goes_to_previous_step(client_request):
     page = client_request.post(
         ".contact",
         _expected_status=200,
+        _follow_redirects=True,
         _data={
             "name": "John",
             "email_address": "john@example.com",
@@ -76,7 +77,7 @@ def test_back_link_goes_to_previous_step(client_request):
         },
     )
 
-    assert page.select_one(".back-link")["href"] == url_for(".contact", current_step="identity")
+    assert page.select_one(".back-link")["href"] == url_for(".contact")
 
     page = client_request.get_url(page.select_one(".back-link")["href"], _test_page_title=False)
 
@@ -88,22 +89,40 @@ def test_back_link_goes_to_previous_step(client_request):
     ]
 
 
-def test_invalid_step_name_redirects(client_request):
-    client_request.post(
-        ".contact",
-        _expected_status=200,
-        _data={
-            "name": "John",
-            "email_address": "john@example.com",
-            "support_type": "other",
-        },
-    )
+@pytest.mark.parametrize(
+    "view, expected_view, request_data",
+    [
+        (
+            ".demo_organization_details",
+            ".contact",
+            {}
+        ),
+        (
+            ".demo_primary_purpose",
+            ".contact",
+            {
+                "name": "John",
+                "email_address": "john@example.com",
+                "support_type": "demo",
+            }
+        ),
+        (
+            ".message",
+            ".contact",
+            {}
+        )
+    ]
+)
+def test_nav_to_invalid_step_redirects_to_contact(client_request, view, expected_view, request_data):
+        with client_request.session_transaction() as session:
+            session["contact_form"] = request_data
 
-    client_request.get_url(
-        url_for(".contact", current_step="nope"),
-        _expected_status=302,
-        _expected_redirect=url_for(".contact", current_step="identity"),
-    )
+        client_request.get_url(
+            url_for(view),
+            _expected_status=302,
+            _test_page_title=False,
+            _expected_redirect=url_for(".contact")
+        )
 
 
 @pytest.mark.parametrize("support_type", ["ask_question", "technical_support", "give_feedback", "other"])
