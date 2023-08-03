@@ -835,11 +835,11 @@ def test_should_redirect_after_service_email_from_confirmation(
             service_id=SERVICE_ONE_ID,
         ),
     )
-    
+
     # Ensure flash message is set
     with client_request.session_transaction() as session:
         assert session["_flashes"][0][1] == "Setting updated"
-        
+
     mock_update_service.assert_called_once_with(SERVICE_ONE_ID, email_from=email_safe(service_new_email_from))
     assert mock_verify_password.called is True
 
