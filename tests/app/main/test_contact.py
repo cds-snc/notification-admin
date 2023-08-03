@@ -38,7 +38,7 @@ def test_identity_step_logged_in(client_request, mocker):
     assert normalize_spaces(page.find("h1").text) == "Tell us more"
 
     # Message step
-    page = client_request.post("main.contact_message", _expected_status=200, _data={"message": "My message"})
+    page = client_request.post("main.message", _expected_status=200, _data={"message": "My message"})
 
     # Contact email has been sent
     assert_no_back_link(page)
@@ -92,37 +92,29 @@ def test_back_link_goes_to_previous_step(client_request):
 @pytest.mark.parametrize(
     "view, expected_view, request_data",
     [
-        (
-            ".demo_organization_details",
-            ".contact",
-            {}
-        ),
+        (".demo_organization_details", ".contact", [{}]),
         (
             ".demo_primary_purpose",
             ".contact",
-            {
-                "name": "John",
-                "email_address": "john@example.com",
-                "support_type": "demo",
-            }
+            [
+                {
+                    "name": "John",
+                    "email_address": "john@example.com",
+                    "support_type": "demo",
+                },
+                {},
+            ],
         ),
-        (
-            ".message",
-            ".contact",
-            {}
-        )
-    ]
+        (".message", ".contact", [{}]),
+    ],
 )
 def test_nav_to_invalid_step_redirects_to_contact(client_request, view, expected_view, request_data):
-        with client_request.session_transaction() as session:
-            session["contact_form"] = request_data
-
-        client_request.get_url(
-            url_for(view),
-            _expected_status=302,
-            _test_page_title=False,
-            _expected_redirect=url_for(".contact")
-        )
+    with client_request.session_transaction() as session:
+        for data in request_data:
+            session["contact_form"] = data
+            client_request.get_url(
+                url_for(view), _expected_status=302, _test_page_title=False, _expected_redirect=url_for(".contact")
+            )
 
 
 @pytest.mark.parametrize("support_type", ["ask_question", "technical_support", "give_feedback", "other"])
@@ -132,6 +124,7 @@ def test_message_step_validates(client_request, support_type, mocker):
     page = client_request.post(
         ".contact",
         _expected_status=200,
+        _follow_redirects=True,
         _data={
             "name": "John",
             "email_address": "john@example.com",
@@ -139,7 +132,7 @@ def test_message_step_validates(client_request, support_type, mocker):
         },
     )
 
-    page = client_request.post(".contact", _expected_status=200, _data={"message": ""})
+    page = client_request.post(".message", _expected_status=200, _follow_redirects=True, _data={"message": ""})
 
     assert_has_back_link(page)
 
@@ -153,16 +146,22 @@ def test_message_step_validates(client_request, support_type, mocker):
 def test_saves_form_to_session(client_request, mocker):
     mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
 
+    data = {
+        "name": "John",
+        "email_address": "john@example.com",
+        "support_type": "other",
+    }
+
     client_request.logout()
+
+    with client_request.session_transaction() as session:
+        session["contact_form"] = data
 
     client_request.post(
         ".contact",
         _expected_status=200,
-        _data={
-            "name": "",
-            "email_address": "john@example.com",
-            "support_type": "other",
-        },
+        _follow_redirects=True,
+        _data=data,
     )
 
     # Leaving form
@@ -174,7 +173,7 @@ def test_saves_form_to_session(client_request, mocker):
     # Fields have been saved and are filled
     assert page.select_one("input[checked]")["value"] == "other"
     assert [(input["name"], input["value"]) for input in page.select("input") if input["name"] in ["name", "email_address"]] == [
-        ("name", ""),
+        ("name", "John"),
         ("email_address", "john@example.com"),
     ]
 
@@ -182,6 +181,7 @@ def test_saves_form_to_session(client_request, mocker):
     client_request.post(
         ".contact",
         _expected_status=200,
+        _follow_redirects=True,
         _data={
             "name": "John",
             "email_address": "john@example.com",
@@ -193,11 +193,12 @@ def test_saves_form_to_session(client_request, mocker):
     client_request.get(".sign_in")
 
     # Going back
-    page = client_request.get(".contact", _test_page_title=False)
+    page = client_request.get(".message", _test_page_title=False)
     assert normalize_spaces(page.find("h1").text) == "Tell us more"
 
     # Filling a message
-    page = client_request.post(".contact", _expected_status=200, _data={"message": "My message"})
+    data.update({"message": "My message"})
+    page = client_request.post(".message", _expected_status=200, _follow_redirects=True, _data=data)
 
     assert_no_back_link(page)
     assert normalize_spaces(page.find("h1").text) == "Thank you for contacting us"
@@ -236,6 +237,7 @@ def test_all_reasons_message_step_success(
     page = client_request.post(
         ".contact",
         _expected_status=200,
+        _follow_redirects=True,
         _data={
             "name": "John",
             "support_type": support_type,
@@ -247,7 +249,7 @@ def test_all_reasons_message_step_success(
     assert normalize_spaces(page.find("h1").text) == expected_heading
 
     message = "This is my message"
-    page = client_request.post(".contact", _expected_status=200, _data={"message": message})
+    page = client_request.post(".message", _expected_status=200, _data={"message": message})
 
     assert_no_back_link(page)
     assert normalize_spaces(page.find("h1").text) == "Thank you for contacting us"
@@ -269,38 +271,43 @@ def test_all_reasons_message_step_success(
 def test_demo_steps_success(client_request, mocker):
     mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
 
-    data = {
-        "name": "John",
-        "email_address": "john@example.com",
-        "support_type": "demo",
+    identity_data = {"name": "John", "email_address": "john@example.com", "support_type": "demo"}
+    department_data = {
         "department_org_name": "My department",
         "program_service_name": "My service",
         "intended_recipients": "public",
+    }
+    department_data.update(identity_data)
+    complete_data = {
         "main_use_case": "status_updates",
         "main_use_case_details": "Password resets for our app",
     }
+    complete_data.update(department_data)
 
-    def submit_form(keys):
+    def submit_form(endpoint, keys):
+        with client_request.session_transaction() as session:
+            session["contact_form"] = keys
         return client_request.post(
-            ".contact",
+            endpoint,
             _expected_status=200,
-            _data={k: v for k, v in data.items() if k in keys},
+            _follow_redirects=True,
+            _data=keys,
         )
 
     # Identity step
-    page = submit_form(["name", "email_address", "support_type"])
+    page = submit_form(".contact", identity_data)
 
     # Department step
     assert_has_back_link(page)
     assert normalize_spaces(page.find("h1").text) == "Set up a demo"
     assert "Step 1 of 2" in page.text
-    page = submit_form(["department_org_name", "program_service_name", "intended_recipients"])
+    page = submit_form(".demo_organization_details", department_data)
 
     # Main use case step
     assert len(page.select(".back-link")) == 1
     assert normalize_spaces(page.find("h1").text) == "Set up a demo"
     assert "Step 2 of 2" in page.text
-    page = submit_form(["main_use_case", "main_use_case_details"])
+    page = submit_form(".demo_primary_purpose", complete_data)
 
     # Thank you page
     assert_no_back_link(page)
@@ -308,14 +315,14 @@ def test_demo_steps_success(client_request, mocker):
 
     mock_send_contact_request.assert_called_once_with(
         {
-            "intended_recipients": data["intended_recipients"],
-            "support_type": data["support_type"],
-            "email_address": data["email_address"],
-            "name": data["name"],
-            "main_use_case": data["main_use_case"],
-            "main_use_case_details": data["main_use_case_details"],
-            "program_service_name": data["program_service_name"],
-            "department_org_name": data["department_org_name"],
+            "intended_recipients": complete_data["intended_recipients"],
+            "support_type": complete_data["support_type"],
+            "email_address": complete_data["email_address"],
+            "name": complete_data["name"],
+            "main_use_case": complete_data["main_use_case"],
+            "main_use_case_details": complete_data["main_use_case_details"],
+            "program_service_name": complete_data["program_service_name"],
+            "department_org_name": complete_data["department_org_name"],
             "user_profile": url_for(".user_information", user_id=current_user.id, _external=True),
             "friendly_support_type": "Set up a demo to learn more about GC Notify",
         }
@@ -362,11 +369,12 @@ def test_demo_steps_validation(
         "main_use_case_details": "Password resets for our app",
     }
 
-    def submit_form(keys):
+    def submit_form(endpoint, keys):
         keys_to_use = [k for k in keys if k != input_name]
         default_data = {k: v for k, v in valid_data.items() if k in keys_to_use}
         return client_request.post(
-            ".contact",
+            endpoint,
+            _follow_redirects=True,
             _expected_status=200,
             _data={**default_data, **{input_name: input_value}},
         )
@@ -374,15 +382,15 @@ def test_demo_steps_validation(
     client_request.logout()
 
     fields_by_step = [
-        ["name", "email_address", "support_type"],
-        ["department_org_name", "program_service_name", "intended_recipients"],
-        ["main_use_case", "main_use_case_details"],
+        (".contact", ["name", "email_address", "support_type"]),
+        (".demo_organization_details", ["department_org_name", "program_service_name", "intended_recipients"]),
+        (".demo_primary_purpose", ["main_use_case", "main_use_case_details"]),
     ]
 
-    for fields_group in fields_by_step:
+    for endpoint, fields_group in fields_by_step:
         # Submit as many steps as we can until we encounter an error
         # caused by a custom input value
-        page = submit_form(fields_group)
+        page = submit_form(endpoint, fields_group)
 
         # Making sure that the error is flagged
         if input_name in fields_group and has_error:

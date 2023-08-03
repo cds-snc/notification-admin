@@ -129,7 +129,7 @@ def _validate_fields_present(current_step: str, form_data: dict) -> bool:
     primary_purpose_requirement = base_requirement.union({"department_org_name", "program_service_name", "intended_recipients"})
 
     if current_step in ["message", "demo.org_details"]:
-         return base_requirement.issubset(form_data)
+        return base_requirement.issubset(form_data)
     elif current_step == "demo.primary_purpose":
         return set(form_data).issuperset(primary_purpose_requirement)
 
@@ -200,10 +200,9 @@ def send_contact_request(form: SetUpDemoPrimaryPurpose):
 
     try:
         user_api_client.send_contact_request(data)
+        session.pop(SESSION_FORM_KEY, None)
     except HTTPError:
         pass
-    else:
-        session.pop(SESSION_FORM_KEY, None)
 
 
 @main.route("/support/ask-question-give-feedback", endpoint="redirect_contact")
