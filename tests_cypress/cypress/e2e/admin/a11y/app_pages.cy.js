@@ -50,6 +50,7 @@ describe(`A11Y - App pages [${config.CONFIG_NAME}]`, () => {
                             cy.log('Checking accessibility compliance...')
                             cy.injectAxe();
                             cy.checkA11y();
+                            cy.get('#thing-that-doesnt-exist').should('be.visible');
                         });
                         it('HTML validation', () => {
                             cy.log('Validating HTML...');
