@@ -676,6 +676,10 @@ def test_should_redirect_after_service_name_confirmation(
         ),
     )
 
+    # Ensure flash message is set
+    with client_request.session_transaction() as session:
+        assert session["_flashes"][0][1] == "Setting updated"
+
     mock_update_service.assert_called_once_with(
         SERVICE_ONE_ID,
         name=service_new_name,
@@ -718,6 +722,10 @@ def test_should_redirect_after_service_email_from_confirmation(
             service_id=SERVICE_ONE_ID,
         ),
     )
+
+    # Ensure flash message is set
+    with client_request.session_transaction() as session:
+        assert session["_flashes"][0][1] == "Setting updated"
 
     mock_update_service.assert_called_once_with(SERVICE_ONE_ID, email_from=email_safe(service_new_email_from))
     assert mock_verify_password.called is True
@@ -3195,6 +3203,11 @@ def test_switch_service_enable_letters(
         _data={"enabled": posted_value},
         _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
     )
+
+    # Ensure flash message is set
+    with client_request.session_transaction() as session:
+        assert session["_flashes"][0][1] == "Setting updated"
+
     assert set(mocked_fn.call_args[1]["permissions"]) == set(expected_updated_permissions)
     assert mocked_fn.call_args[0][0] == service_one["id"]
 
