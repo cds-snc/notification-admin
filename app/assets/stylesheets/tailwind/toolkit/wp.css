@@ -159,6 +159,11 @@
     @apply mt-0;
   }
 
+  .wp-block-columns.panel-container .panel-preview ul li+li,
+  .wp-block-columns.panel-container .panel-preview ol li+li {
+    @apply p-0;
+  }
+
   /* Semantic styling for content pages */
   .page-content ul {
     @apply list list-bullet pl-8;
