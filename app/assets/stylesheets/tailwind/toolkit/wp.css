@@ -1,5 +1,4 @@
 @layer components {
-
   /*! purgecss start ignore */
   /* Cover */
   .wp-block-cover {
@@ -24,7 +23,7 @@
     color: var(--interactive);
   }
 
-  .wp-block-cover>span {
+  .wp-block-cover > span {
     margin: 0 calc(50% - 50vw);
     max-width: 100vw;
     width: 100vw;
@@ -38,7 +37,10 @@
     @apply py-20;
   }
 
-  .wp-block-cover.flow .wp-block-cover__inner-container> :not(template)+ :not(template) {
+  .wp-block-cover.flow
+    .wp-block-cover__inner-container
+    > :not(template)
+    + :not(template) {
     @apply mt-doubleGutter;
   }
 
@@ -51,7 +53,7 @@
   }
 
   /* Gives some flow spacing for all columns when stacked */
-  .wp-block-columns> :not(template)+ :not(template) {
+  .wp-block-columns > :not(template) + :not(template) {
     @apply mt-gutter;
   }
 
@@ -64,25 +66,24 @@
   *   - remove the usual flow spacing on smaller screens
   *   - hide the image if it is the only child in a column
   */
-  .wp-block-columns.stack-swap> :not(template)+ :not(template) {
+  .wp-block-columns.stack-swap > :not(template) + :not(template) {
     @apply mt-0;
   }
 
   /* Gives space to columns when columns isn't first child */
-  .page-content>*+.wp-block-columns {
+  .page-content > * + .wp-block-columns {
     @apply mt-doubleGutter;
   }
 
   /* Single column */
 
-  .wp-block-column>h1:first-child,
-  .wp-block-column>h2:first-child,
-  .wp-block-column>h3:first-child {
+  .wp-block-column > h1:first-child,
+  .wp-block-column > h2:first-child,
+  .wp-block-column > h3:first-child {
     @apply mt-0;
   }
 
   @media (max-width: theme("screens.lg")) {
-
     /* Overwrite the flex basis when in a stacked layout */
     .wp-block-column[style*="flex-basis"] {
       flex-basis: 100% !important;
@@ -98,12 +99,11 @@
   }
 
   /* Hide wp-block-image if only child of a column */
-  .stack-swap .wp-block-column>.wp-block-image:only-child {
+  .stack-swap .wp-block-column > .wp-block-image:only-child {
     @apply hidden;
   }
 
   @screen lg {
-
     /* Columns plural */
     .wp-block-columns {
       display: flex;
@@ -112,7 +112,7 @@
       @apply -mx-gutterHalf;
     }
 
-    .wp-block-columns> :not(template)+ :not(template) {
+    .wp-block-columns > :not(template) + :not(template) {
       @apply mt-0;
     }
 
@@ -122,17 +122,17 @@
       @apply px-gutterHalf;
     }
 
-    .wp-block-column> :not(template)+ :not(template) {
+    .wp-block-column > :not(template) + :not(template) {
       @apply mt-gutter;
     }
 
     /* On lg screens: Show wp-block-image if only child of a column */
-    .stack-swap .wp-block-column>.wp-block-image:only-child {
+    .stack-swap .wp-block-column > .wp-block-image:only-child {
       @apply block;
     }
 
     /* On lg screens: Hide wp-block-image if it isn't the first child */
-    .stack-swap .wp-block-column *+.wp-block-image {
+    .stack-swap .wp-block-column * + .wp-block-image {
       @apply hidden;
     }
   }
@@ -146,7 +146,7 @@
     display: flex;
   }
 
-  .wp-block-buttons>*:not(:last-child) {
+  .wp-block-buttons > *:not(:last-child) {
     @apply mr-gutter;
   }
 
@@ -167,8 +167,8 @@
     @apply mt-0;
   }
 
-  .wp-block-columns.panel-container .panel-preview ul li+li,
-  .wp-block-columns.panel-container .panel-preview ol li+li {
+  .wp-block-columns.panel-container .panel-preview ul li + li,
+  .wp-block-columns.panel-container .panel-preview ol li + li {
     @apply p-0;
   }
 
@@ -185,8 +185,8 @@
     list-style-type: square;
   }
 
-  .page-content ul li+li,
-  .page-content ol li+li {
+  .page-content ul li + li,
+  .page-content ol li + li {
     @apply pt-4;
   }
 
@@ -207,7 +207,7 @@
     @apply text-base;
   }
 
-  .wp .page-content.home p+ul {
+  .wp .page-content.home p + ul {
     margin-top: -0.5rem;
   }
 
