@@ -111,7 +111,7 @@ jobs:
               --function-url-auth-type NONE > /dev/null 2>&1
 
             URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)"
-            echo "pr_url=$URL" >> $GITHUB_OUTPUT
+            echo "URL=$URL" >> $GITHUB_ENV
 
             aws lambda update-function-configuration \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
