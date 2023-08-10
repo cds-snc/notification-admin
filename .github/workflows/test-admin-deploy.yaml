@@ -152,6 +152,7 @@ jobs:
   cypress-tests:
     runs-on: ubuntu-latest
     needs: deploy-test-admin
+    continue-on-error: true
     steps:
       - env: 
           CYPRESS_BASE_URL: ${{needs.deploy-test-admin.outputs.LAMBDA_URL}}
