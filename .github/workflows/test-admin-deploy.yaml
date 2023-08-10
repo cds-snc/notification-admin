@@ -90,8 +90,6 @@ jobs:
             aws lambda update-function-code \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
               --image-uri $REGISTRY/$IMAGE:$PR_NUMBER > /dev/null 2>&1
-            URL=$(aws lambda get-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --query 'FunctionUrl' --output text)
-            echo "pr_url=$URL" >> $GITHUB_OUTPUT
 
           else
             aws lambda create-function \
@@ -112,9 +110,8 @@ jobs:
               --principal "*" \
               --function-url-auth-type NONE > /dev/null 2>&1
 
-            URL=$(aws lambda get-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --query 'FunctionUrl' --output text)
+            URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)"
             echo "URL=$URL" >> $GITHUB_ENV
-            echo "pr_url=$URL" >> $GITHUB_OUTPUT
 
             aws lambda update-function-configuration \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
@@ -137,6 +134,8 @@ jobs:
             --function-name $FUNCTION_NAME-$PR_NUMBER \
             --reserved-concurrent-executions 5
 
+          PR_URL=$(aws lambda get-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --query 'FunctionUrl' --output text)
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
       - name: Update PR
         if: env.URL != ''
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
