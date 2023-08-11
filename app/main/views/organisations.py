@@ -9,7 +9,6 @@ from werkzeug.exceptions import abort
 from app import (
     current_organisation,
     email_branding_client,
-    letter_branding_client,
     org_invite_api_client,
     organisations_client,
     user_api_client,
@@ -30,7 +29,6 @@ from app.main.forms import (
     SearchByNameForm,
     SearchUsersForm,
     SetEmailBranding,
-    SetLetterBranding,
 )
 from app.main.views.service_settings import get_branding_as_value_and_label
 from app.models.organisation import Organisation, Organisations
@@ -163,15 +161,9 @@ def organisation_settings(org_id):
             "name"
         ]
 
-    letter_branding = None
-
-    if current_organisation.letter_branding_id:
-        letter_branding = letter_branding_client.get_letter_branding(current_organisation.letter_branding_id)["name"]
-
     return render_template(
         "views/organisations/organisation/settings/index.html",
         email_branding=email_branding,
-        letter_branding=letter_branding,
     )
 
 
@@ -341,50 +333,6 @@ def organisation_preview_email_branding(org_id):
         "views/organisations/organisation/settings/preview-email-branding.html",
         form=form,
         action=url_for("main.organisation_preview_email_branding", org_id=org_id),
-    )
-
-
-@main.route("/organisations/<org_id>/settings/set-letter-branding", methods=["GET", "POST"])
-@user_is_platform_admin
-def edit_organisation_letter_branding(org_id):
-    letter_branding = letter_branding_client.get_all_letter_branding()
-
-    form = SetLetterBranding(
-        all_branding_options=get_branding_as_value_and_label(letter_branding),
-        current_branding=current_organisation.letter_branding_id,
-    )
-
-    if form.validate_on_submit():
-        return redirect(
-            url_for(
-                ".organisation_preview_letter_branding",
-                org_id=org_id,
-                branding_style=form.branding_style.data,
-            )
-        )
-
-    return render_template(
-        "views/organisations/organisation/settings/set-letter-branding.html",
-        form=form,
-        search_form=SearchByNameForm(),
-    )
-
-
-@main.route("/organisations/<org_id>/settings/preview-letter-branding", methods=["GET", "POST"])
-@user_is_platform_admin
-def organisation_preview_letter_branding(org_id):
-    branding_style = request.args.get("branding_style")
-
-    form = PreviewBranding(branding_style=branding_style)
-
-    if form.validate_on_submit():
-        organisations_client.update_organisation(org_id, letter_branding_id=form.branding_style.data)
-        return redirect(url_for(".organisation_settings", org_id=org_id))
-
-    return render_template(
-        "views/organisations/organisation/settings/preview-letter-branding.html",
-        form=form,
-        action=url_for("main.organisation_preview_letter_branding", org_id=org_id),
     )
 
 
