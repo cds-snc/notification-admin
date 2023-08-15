@@ -191,7 +191,7 @@ def preview_template(service_id, template_id=None):
                         error_message = get_char_limit_error_msg(template["template_type"])
                         flash(error_message)
                     elif "name" in e.message and any(["Template name must be less than" in x for x in e.message["name"]]):
-                        error_message = ((_("Template name must be less than {char_limit} characters"))).format(char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1)
+                        error_message = (_("Template name must be less than {char_limit} characters")).format(char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1)
                     else:
                         raise e
                 else:
@@ -754,7 +754,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 error_message = get_char_limit_error_msg(template_type)
                 form.template_content.errors.extend([error_message])
             elif "name" in e.message and any(["Template name must be less than" in x for x in e.message["name"]]):
-                error_message = _("Template name must be less than {char_limit} characters").format(char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1)
+                error_message = (_("Template name must be less than {char_limit} characters")).format(char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1)
                 form.name.errors.extend([error_message])
             else:
                 raise e
