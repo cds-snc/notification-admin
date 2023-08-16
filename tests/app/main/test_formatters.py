@@ -14,32 +14,32 @@ from app import format_notification_status, format_notification_status_as_url
         (
             "temporary-failure",
             "email",
-            "/delivery-and-failure#email-statuses",
+            "/understanding-delivery-and-failure#email-statuses",
         ),
         (
             "permanent-failure",
             "email",
-            "/delivery-and-failure#email-statuses",
+            "/understanding-delivery-and-failure#email-statuses",
         ),
         (
             "technical-failure",
             "email",
-            "/delivery-and-failure#email-statuses",
+            "/understanding-delivery-and-failure#email-statuses",
         ),
         (
             "temporary-failure",
             "sms",
-            "/delivery-and-failure#sms-statuses",
+            "/understanding-delivery-and-failure#sms-statuses",
         ),
         (
             "permanent-failure",
             "sms",
-            "/delivery-and-failure#sms-statuses",
+            "/understanding-delivery-and-failure#sms-statuses",
         ),
         (
             "technical-failure",
             "sms",
-            "/delivery-and-failure#sms-statuses",
+            "/understanding-delivery-and-failure#sms-statuses",
         ),
         # Letter statuses are never linked
         ("technical-failure", "letter", None),

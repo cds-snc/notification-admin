@@ -18,7 +18,6 @@ from app.main.views import (  # noqa isort:skip
     index,
     invites,
     jobs,
-    letter_branding,
     manage_users,
     new_password,
     notifications,
