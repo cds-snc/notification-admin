@@ -985,6 +985,62 @@ def mock_update_service_template(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_create_service_template_400_name_too_long(mocker):
+    def _update(
+        id_,
+        name,
+        type_,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        postage=None,
+    ):
+        json_mock = Mock(
+            return_value={
+                "message": {"name": ["Template name must be less than 256 characters"]},
+                "result": "error",
+            }
+        )
+        response_mock = Mock(status_code=400, json=json_mock)
+        http_error = HTTPError(
+            response=response_mock,
+            message={"name": ["Template name must be less than 256 characters"]}
+        )
+        raise http_error
+
+    return mocker.patch("app.service_api_client.update_service_template", side_effect=_update)
+
+
+@pytest.fixture(scope="function")
+def mock_update_service_template_400_name_too_long(mocker):
+    def _create(
+        id,
+        name,
+        type,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        postage=None,
+    ):
+        json_mock = Mock(
+            return_value={
+                "message": {"name": ["Template name must be less than 256 characters"]},
+                "result": "error",
+            }
+        )
+        response_mock = Mock(status_code=400, json=json_mock)
+        http_error = HTTPError(
+            response=response_mock,
+            message={"name": ["Template name must be less than 256 characters"]}
+        )
+        raise http_error
+
+    return mocker.patch("app.service_api_client.update_service_template", side_effect=_create)
+
+
+@pytest.fixture(scope="function")
 def mock_create_service_template_content_too_big(mocker):
     def _create(
         name,

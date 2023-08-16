@@ -769,8 +769,7 @@ class BaseTemplateForm(StripWhitespaceForm):
     name = StringField(
         _l("Template name"),
         validators=[
-            DataRequired(message=_l("This cannot be empty")),
-            Length(max=255),
+            DataRequired(message=_l("This cannot be empty"))
         ],
     )
 
