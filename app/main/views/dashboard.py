@@ -1,5 +1,5 @@
 import calendar
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
 
@@ -72,29 +72,69 @@ def problem_emails(service_id):
         if current_app.config["FF_BOUNCE_RATE_V15"]
         else calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily)
     )
-    one_off_notifications = notification_api_client.get_notifications_for_service(
-        service_id,
+
+    problem_one_off_notifications_7days = notification_api_client.get_notifications_for_service(
+        service_id=service_id,
         template_type=TemplateType.EMAIL.value,
         status=NotificationStatuses.PERMANENT_FAILURE.value,
         include_one_off=True,
         include_jobs=False,
         page_size=20,
+        limit_days=7,
+    )
+
+    jobs_7days = get_jobs_and_calculate_hard_bounces(service_id, 7)
+
+    problem_jobs_7days = [job for job in jobs_7days if job["bounce_count"] > 0]
+    twenty_four_hours_ago_timestamp = (datetime.now() - timedelta(hours=24)).timestamp()
+
+    problem_jobs_within_24hrs = [
+        job for job in problem_jobs_7days if get_timestamp_from_iso(job["processing_started"]) >= twenty_four_hours_ago_timestamp
+    ]
+    problem_jobs_older_than_24hrs = [
+        job for job in problem_jobs_7days if get_timestamp_from_iso(job["processing_started"]) < twenty_four_hours_ago_timestamp
+    ]
+
+    problem_one_offs_within_24hrs = [
+        notification
+        for notification in problem_one_off_notifications_7days["notifications"]
+        if get_timestamp_from_iso(notification["created_at"]) >= twenty_four_hours_ago_timestamp
+    ]
+    problem_one_offs_older_than_24hrs = [
+        notification
+        for notification in problem_one_off_notifications_7days["notifications"]
+        if get_timestamp_from_iso(notification["created_at"]) < twenty_four_hours_ago_timestamp
+    ]
+
+    problem_count_within_24hrs = len(problem_one_offs_within_24hrs) + sum(
+        [job["bounce_count"] for job in problem_jobs_within_24hrs]
+    )
+    problem_count_older_than_24hrs = len(problem_one_offs_older_than_24hrs) + sum(
+        [job["bounce_count"] for job in problem_jobs_older_than_24hrs]
     )
 
     return render_template(
         "views/dashboard/review-email-list.html",
         bounce_status=BounceRateStatus.NORMAL,
-        jobs=get_jobs_and_calculate_hard_bounces(service_id),
+        problem_jobs_older_than_24hrs=problem_jobs_older_than_24hrs,
+        problem_jobs_within_24hrs=problem_jobs_within_24hrs,
         bounce_rate=bounce_rate_data,
-        one_offs=one_off_notifications["notifications"],
+        problem_one_offs_older_than_24hrs=problem_one_offs_older_than_24hrs,
+        problem_one_offs_within_24hrs=problem_one_offs_within_24hrs,
+        problem_count_within_24hrs=problem_count_within_24hrs,
+        problem_count_older_than_24hrs=problem_count_older_than_24hrs,
     )
 
 
-def get_jobs_and_calculate_hard_bounces(service_id):
+def get_timestamp_from_iso(iso_datetime_string):
+    return datetime.fromisoformat(iso_datetime_string).timestamp()
+
+
+def get_jobs_and_calculate_hard_bounces(service_id, limit_days):
     # get the jobs stats
     jobs = []
     if job_api_client.has_jobs(service_id):
-        jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id, limit_days=1)]
+        jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id, limit_days=limit_days)]
 
     # get the permanent failures
     for job in jobs:
@@ -236,8 +276,7 @@ def aggregate_template_usage(template_statistics, sort_key="count"):
 def aggregate_notifications_stats(template_statistics):
     template_statistics = filter_out_cancelled_stats(template_statistics)
     notifications = {
-        template_type: {status: 0 for status in ("requested", "delivered", "failed")}
-        for template_type in ["sms", "email", "letter"]
+        template_type: {status: 0 for status in ("requested", "delivered", "failed")} for template_type in ["sms", "email"]
     }
     for stat in template_statistics:
         notifications[stat["template_type"]]["requested"] += stat["count"]
@@ -261,9 +300,7 @@ def get_dashboard_partials(service_id):
     # get the daily stats
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
 
-    column_width, max_notifiction_count = get_column_properties(
-        number_of_columns=(3 if current_service.has_permission("letter") else 2)
-    )
+    column_width, max_notifiction_count = get_column_properties(number_of_columns=2)
     stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     bounce_rate_data = (
@@ -389,14 +426,6 @@ def calculate_usage(usage, free_sms_fragment_limit):
     emails = [breakdown["billing_units"] for breakdown in usage if breakdown["notification_type"] == "email"]
     emails_sent = 0 if len(emails) == 0 else emails[0]
 
-    letters = [
-        (breakdown["billing_units"], breakdown["letter_total"])
-        for breakdown in usage
-        if breakdown["notification_type"] == "letter"
-    ]
-    letter_sent = sum(row[0] for row in letters)
-    letter_cost = sum(row[1] for row in letters)
-
     return {
         "emails_sent": emails_sent,
         "sms_free_allowance": sms_free_allowance,
@@ -404,8 +433,6 @@ def calculate_usage(usage, free_sms_fragment_limit):
         "sms_allowance_remaining": max(0, (sms_free_allowance - sms_sent)),
         "sms_chargeable": max(0, sms_sent - sms_free_allowance),
         "sms_rate": sms_rate,
-        "letter_sent": letter_sent,
-        "letter_cost": letter_cost,
     }
 
 
@@ -457,9 +484,7 @@ def get_sum_billing_units(billing_units, month=None):
 
 def get_free_paid_breakdown_for_billable_units(year, free_sms_fragment_limit, billing_units):
     cumulative = 0
-    letter_cumulative = 0
     sms_units = [x for x in billing_units if x["notification_type"] == "sms"]
-    letter_units = [x for x in billing_units if x["notification_type"] == "letter"]
     for month in get_months_for_financial_year(year):
         previous_cumulative = cumulative
         monthly_usage = get_sum_billing_units(sms_units, month)
@@ -470,31 +495,10 @@ def get_free_paid_breakdown_for_billable_units(year, free_sms_fragment_limit, bi
             previous_cumulative,
             [billing_month for billing_month in sms_units if billing_month["month"] == month],
         )
-        letter_billing = [
-            (
-                x["billing_units"],
-                x["rate"],
-                (x["billing_units"] * x["rate"]),
-                x["postage"],
-            )
-            for x in letter_units
-            if x["month"] == month
-        ]
-
-        if letter_billing:
-            letter_billing.sort(key=lambda x: (x[3], x[1]))
-
-        letter_total = 0
-        for x in letter_billing:
-            letter_total += x[2]
-            letter_cumulative += letter_total
         yield {
             "name": month,
-            "letter_total": letter_total,
-            "letter_cumulative": letter_cumulative,
             "paid": breakdown["paid"],
             "free": breakdown["free"],
-            "letters": letter_billing,
         }
 
 

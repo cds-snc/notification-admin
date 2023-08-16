@@ -1485,8 +1485,10 @@ statsd = "3.3.0"
 werkzeug = "2.3.3"
 
 [package.source]
-type = "file"
-url = "../../nutils/notifications_utils-52.0.4.tar.gz"
+type = "git"
+url = "https://github.com/cds-snc/notifier-utils.git"
+reference = "52.0.4"
+resolved_reference = "a6ed8d1bc1b70780a204912e4266b1981b330bae"
 
 [[package]]
 name = "openpyxl"
@@ -2497,4 +2499,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.8"
-content-hash = "c90884ac4dbf65ab90aa5976f7d4d199442a76213525a4631a5f548840588286"
+content-hash = "ff1ba28077e9ef2b54105ed6d0964f22800616f96adb1b9e23fd6a5827917f21"
