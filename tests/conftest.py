@@ -1003,10 +1003,7 @@ def mock_create_service_template_400_name_too_long(mocker):
             }
         )
         response_mock = Mock(status_code=400, json=json_mock)
-        http_error = HTTPError(
-            response=response_mock,
-            message={"name": ["Template name must be less than 256 characters"]}
-        )
+        http_error = HTTPError(response=response_mock, message={"name": ["Template name must be less than 256 characters"]})
         raise http_error
 
     return mocker.patch("app.service_api_client.update_service_template", side_effect=_update)
@@ -1031,10 +1028,7 @@ def mock_update_service_template_400_name_too_long(mocker):
             }
         )
         response_mock = Mock(status_code=400, json=json_mock)
-        http_error = HTTPError(
-            response=response_mock,
-            message={"name": ["Template name must be less than 256 characters"]}
-        )
+        http_error = HTTPError(response=response_mock, message={"name": ["Template name must be less than 256 characters"]})
         raise http_error
 
     return mocker.patch("app.service_api_client.update_service_template", side_effect=_create)

@@ -1520,15 +1520,10 @@ def test_removing_placeholders_is_not_a_breaking_change(
     )
     assert mock_update_service_template.called is True
 
-@pytest.mark.parametrize(
-    "template_type", ["sms", "email"]
-)
+
+@pytest.mark.parametrize("template_type", ["sms", "email"])
 def test_should_not_update_if_template_name_too_long(
-    client_request,
-    template_type,
-    fake_uuid,
-    mock_get_service_template,
-    mock_update_service_template_400_name_too_long
+    client_request, template_type, fake_uuid, mock_get_service_template, mock_update_service_template_400_name_too_long
 ):
     template_data = {
         "id": fake_uuid,
@@ -1550,13 +1545,10 @@ def test_should_not_update_if_template_name_too_long(
     )
     assert "Template name must be less than 256 characters" in page.text
 
-@pytest.mark.parametrize(
-    "template_type", ["sms", "email"]
-)
+
+@pytest.mark.parametrize("template_type", ["sms", "email"])
 def test_should_not_create_if_template_name_too_long(
-    client_request,
-    template_type,
-    mock_create_service_template_400_name_too_long
+    client_request, template_type, mock_create_service_template_400_name_too_long
 ):
     template_data = {
         "name": "new name",
@@ -1576,6 +1568,7 @@ def test_should_not_create_if_template_name_too_long(
         _expected_status=200,
     )
     assert "Template name must be less than 256 characters" in page.text
+
 
 def test_should_not_create_too_big_template(
     client_request,

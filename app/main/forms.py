@@ -768,9 +768,7 @@ class ConfirmPasswordForm(StripWhitespaceForm):
 class BaseTemplateForm(StripWhitespaceForm):
     name = StringField(
         _l("Template name"),
-        validators=[
-            DataRequired(message=_l("This cannot be empty"))
-        ],
+        validators=[DataRequired(message=_l("This cannot be empty"))],
     )
 
     template_content = TextAreaField(
