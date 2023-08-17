@@ -708,7 +708,7 @@ class MessageLimit(StripWhitespaceForm):
         if field.data < current_service.sms_daily_limit and current_app.config["FF_EMAIL_DAILY_LIMIT"] is False:
             raise ValidationError(
                 _l(
-                    "Your daily limit for text fragments is {sms_daily_limit}. Enter a total number of daily messages that is {sms_daily_limit} or higher."
+                    "Your daily limit for text messages is {sms_daily_limit}. Enter a total number of daily messages that is {sms_daily_limit} or higher."
                 ).format(sms_daily_limit=format_number(current_service.sms_daily_limit))
             )
 
@@ -741,14 +741,14 @@ class SMSMessageLimit(StripWhitespaceForm):
             )
 
     message_limit = IntegerField(
-        _l("Daily text fragments limit"),
+        _l("Daily text message limit"),
         validators=[DataRequired(message=_l("This cannot be empty")), validators.NumberRange(min=1)],
     )
 
 
 class FreeSMSAllowance(StripWhitespaceForm):
     free_sms_allowance = IntegerField(
-        _l("Numbers of text message fragments per year"),
+        _l("Numbers of text messages per year"),
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
 

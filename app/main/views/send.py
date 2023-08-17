@@ -65,6 +65,7 @@ from app.utils import (
     email_or_sms_not_enabled,
     get_errors_for_csv,
     get_help_argument,
+    get_limit_reset_time_et,
     get_template,
     should_skip_template_page,
     unicode_truncate,
@@ -648,6 +649,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
     emails_sent_today = daily_email_count(service_id)
     remaining_sms_message_fragments = current_service.sms_daily_limit - sms_fragments_sent_today
     remaining_email_messages = current_service.message_limit - emails_sent_today
+    recipients_remaining_messages = remaining_email_messages
 
     contents = s3download(service_id, upload_id)
 
@@ -655,6 +657,15 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     email_reply_to = None
     sms_sender = None
+
+    # base remaining messages on template type
+    if db_template["template_type"] == "email":
+        recipients_remaining_messages = (
+            remaining_email_messages if current_app.config["FF_EMAIL_DAILY_LIMIT"] else remaining_messages
+        )
+    else:
+        recipients_remaining_messages = remaining_sms_message_fragments
+
     if db_template["template_type"] == "email":
         email_reply_to = get_email_reply_to_address_from_session()
     elif db_template["template_type"] == "sms":
@@ -686,7 +697,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         safelist=itertools.chain.from_iterable([user.name, user.mobile_number, user.email_address] for user in Users(service_id))
         if current_service.trial_mode
         else None,
-        remaining_messages=remaining_email_messages if current_app.config["FF_EMAIL_DAILY_LIMIT"] else remaining_messages,
+        remaining_messages=recipients_remaining_messages,
         international_sms=current_service.has_permission("international_sms"),
         max_rows=get_csv_max_rows(service_id),
     )
@@ -764,6 +775,13 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     data = _check_messages(service_id, template_id, upload_id, row_index)
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
     data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily)
+    data["time_to_reset"] = get_limit_reset_time_et()
+
+    data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
+    data["sms_parts_requested"] = data["stats_daily"]["sms"]["requested"]
+    data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
+    data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
+
     if (
         data["recipients"].too_many_rows
         or not data["count_of_recipients"]
@@ -779,11 +797,6 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
 
     if data["errors"] or data["trying_to_send_letters_in_trial_mode"]:
         return render_template("views/check/column-errors.html", **data)
-
-    data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
-    data["sms_parts_requested"] = data["stats_daily"]["sms"]["requested"]
-    data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
-    data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > data["sms_parts_remaining"]
 
     if data["send_exceeds_daily_limit"]:
         return render_template("views/check/column-errors.html", **data)
@@ -1036,6 +1049,7 @@ def _check_notification(service_id, template_id, exception=None):
         raise PermanentRedirect(back_link)
 
     template.values = get_recipient_and_placeholders_from_session(template.template_type)
+    time_to_reset = get_limit_reset_time_et()
 
     sms_parts_data = {}
     if db_template["template_type"] == "sms":
@@ -1050,6 +1064,7 @@ def _check_notification(service_id, template_id, exception=None):
         back_link=back_link,
         help=get_help_argument(),
         stats_daily=stats_daily,
+        time_to_reset=time_to_reset,
         **sms_parts_data,
         **(get_template_error_dict(exception) if exception else {}),
     )
