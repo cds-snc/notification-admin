@@ -2496,8 +2496,8 @@ def test_check_messages_back_link(
 @pytest.mark.parametrize(
     "num_requested,expected_msg",
     [
-        (0, "You’ve sent too many text messages or too many long messages."),
-        (1, "You’ve sent too many text messages or too many long messages."),
+        (0, "You’ve sent too many text messages."),
+        (1, "You’ve sent too many text messages."),
     ],
     ids=["none_sent", "some_sent"],
 )

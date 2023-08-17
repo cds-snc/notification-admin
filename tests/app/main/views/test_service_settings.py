@@ -76,7 +76,7 @@ def mock_get_service_settings_page_common(
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Daily maximum 1,000 text message fragments",
+                "Daily maximum 1,000 text messages",
                 "Yearly maximum 25,000 text messages",
             ],
         ),
@@ -107,11 +107,11 @@ def mock_get_service_settings_page_common(
                 "Count in list of live services Yes Change",
                 "Organisation Test Organisation Government of Canada Change",
                 "Daily email limit 1,000 Change",
-                "Daily text fragments limit 1,000 Change",
+                "Daily text message limit 1,000 Change",
                 "API rate limit per minute 100",
                 "Text message senders GOVUK Manage",
                 "Receive text messages Off Change",
-                "Free fragments per year 250,000 Change",
+                "Free text messages per year 250,000 Change",
                 "Email branding English Government of Canada signature Change",
                 "Letter branding Not set Change",
                 "Data retention email Change",
@@ -3049,7 +3049,7 @@ def test_should_show_page_to_set_sms_allowance(platform_admin_client, mock_get_f
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    assert normalize_spaces(page.select_one("label").text) == "Numbers of text message fragments per year"
+    assert normalize_spaces(page.select_one("label").text) == "Numbers of text messages per year"
     mock_get_free_sms_fragment_limit.assert_called_once_with(SERVICE_ONE_ID)
 
 
