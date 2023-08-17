@@ -100,7 +100,7 @@ def mock_get_service_settings_page_common(
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Daily maximum 1,000 text message fragments",
+                "Daily maximum 1,000 text messages",
                 "Yearly maximum 25,000 text messages",
                 "Label Value Action",
                 "Live On Change",
