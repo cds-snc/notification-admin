@@ -198,6 +198,7 @@ def preview_template(service_id, template_id=None):
                         error_message = (_("Template name must be less than {char_limit} characters")).format(
                             char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1
                         )
+                        flash(error_message)
                     else:
                         raise e
                 else:
