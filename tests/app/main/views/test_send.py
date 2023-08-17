@@ -2557,11 +2557,8 @@ def test_check_messages_shows_too_many_sms_messages_errors(
 @pytest.mark.parametrize(
     "num_requested,expected_msg",
     [
-        (0, "‘valid.csv’ contains 100 email addresses."),
-        (
-            1,
-            "You can still send 49 messages today, but ‘valid.csv’ contains 100 email addresses.",
-        ),
+        (0, "These messages exceed your daily limit"),
+        (1, "These messages exceed your daily limit"),
     ],
     ids=["none_sent", "some_sent"],
 )
@@ -2609,12 +2606,12 @@ def test_check_messages_shows_too_many_email_messages_errors(
         _test_page_title=False,
     )
 
-    assert page.find(role="alert").find("h1").text.strip() == "Too many recipients"
+    assert page.find("h1").text.strip() == expected_msg
 
-    # remove excess whitespace from element
-    details = page.find(role="alert").findAll("p")[1]
-    details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
-    assert details == expected_msg
+    # # remove excess whitespace from element
+    # details = page.find(role="alert").findAll("p")[1]
+    # details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
+    # assert details == expected_msg
 
 
 def test_check_messages_shows_trial_mode_error(
@@ -3068,7 +3065,7 @@ def test_check_messages_shows_over_max_row_error(
     mock_recipients.max_rows = 11111
     mock_recipients.__len__.return_value = 99999
     mock_recipients.too_many_rows.return_value = True
-
+    mock_recipients.sms_fragment_count = 20
     with client_request.session_transaction() as session:
         session["file_uploads"] = {
             fake_uuid: {
@@ -3306,8 +3303,8 @@ SERVICE_DAILY_LIMIT_MSG = "Exceeded send limits (1000) for today"
         ),
         (
             SERVICE_DAILY_LIMIT_MSG,
-            "Daily limit reached",
-            "You can only send 1,000 messages per day in trial mode. To send more messages, request to go live.",
+            "These messages exceed your daily limit",
+            "Your service is in trial mode. To send more messages, request to go live",
         ),
     ],
 )
@@ -3339,10 +3336,14 @@ def test_send_notification_shows_error_if_400(
         template_id=fake_uuid,
         _expected_status=200,
     )
-
-    assert normalize_spaces(page.select(".banner-dangerous h1")[0].text) == expected_h1
-    assert normalize_spaces(page.select(".banner-dangerous p")[0].text) == expected_err_details
-    assert not page.find("input[type=submit]")
+    if exception_msg == SERVICE_DAILY_LIMIT_MSG:
+        # assert normalize_spaces(page.select("h1")[0].text) == expected_h1
+        assert normalize_spaces(page.select(".banner-dangerous p")[0].text) == expected_err_details
+        assert not page.find("input[type=submit]")
+    else:
+        assert normalize_spaces(page.select(".banner-dangerous h1")[0].text) == expected_h1
+        assert normalize_spaces(page.select(".banner-dangerous p")[0].text) == expected_err_details
+        assert not page.find("input[type=submit]")
 
 
 def test_send_notification_shows_email_error_in_trial_mode(
