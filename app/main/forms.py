@@ -704,14 +704,6 @@ class NewOrganisationForm(
 
 
 class MessageLimit(StripWhitespaceForm):
-    def validate_message_limit(self, field):
-        if field.data < current_service.sms_daily_limit and current_app.config["FF_EMAIL_DAILY_LIMIT"] is False:
-            raise ValidationError(
-                _l(
-                    "Your daily limit for text messages is {sms_daily_limit}. Enter a total number of daily messages that is {sms_daily_limit} or higher."
-                ).format(sms_daily_limit=format_number(current_service.sms_daily_limit))
-            )
-
     message_limit = IntegerField(
         _l("Daily email limit"),
         validators=[
