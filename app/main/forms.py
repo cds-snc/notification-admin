@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from itertools import chain
 
 import pytz
-from flask import current_app, request
+from flask import request
 from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
@@ -35,7 +35,7 @@ from wtforms.fields import EmailField, SearchField, TelField
 from wtforms.validators import URL, AnyOf, DataRequired, Length, Optional, Regexp
 from wtforms.widgets import CheckboxInput, ListWidget
 
-from app import current_service, format_number, format_thousands
+from app import format_thousands
 from app.main.validators import (
     Blocklist,
     CsvFileValidator,
@@ -724,14 +724,6 @@ class EmailMessageLimit(StripWhitespaceForm):
 
 
 class SMSMessageLimit(StripWhitespaceForm):
-    def validate_message_limit(self, field):
-        if field.data > current_service.message_limit and current_app.config["FF_EMAIL_DAILY_LIMIT"] is False:
-            raise ValidationError(
-                _l("You can send {message_limit} messages each day. Enter a number equal or less than {message_limit}.").format(
-                    message_limit=format_number(current_service.message_limit)
-                )
-            )
-
     message_limit = IntegerField(
         _l("Daily text message limit"),
         validators=[DataRequired(message=_l("This cannot be empty")), validators.NumberRange(min=1)],

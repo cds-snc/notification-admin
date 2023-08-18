@@ -643,8 +643,6 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         if e.status_code != 404:
             raise
 
-    statistics = service_api_client.get_service_statistics(service_id, today_only=True)
-    remaining_messages = current_service.message_limit - sum(stat["requested"] for stat in statistics.values())
     sms_fragments_sent_today = daily_sms_fragment_count(service_id)
     emails_sent_today = daily_email_count(service_id)
     remaining_sms_message_fragments = current_service.sms_daily_limit - sms_fragments_sent_today
@@ -735,7 +733,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         original_file_name=request.args.get("original_file_name", ""),
         upload_id=upload_id,
         form=CsvUploadForm(),
-        remaining_messages=remaining_email_messages if current_app.config["FF_EMAIL_DAILY_LIMIT"] else remaining_messages,
+        remaining_messages=remaining_email_messages,
         remaining_sms_message_fragments=remaining_sms_message_fragments,
         sms_parts_to_send=sms_parts_to_send,
         is_sms_parts_estimated=is_sms_parts_estimated,
