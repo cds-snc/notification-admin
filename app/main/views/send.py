@@ -649,22 +649,14 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
     emails_sent_today = daily_email_count(service_id)
     remaining_sms_message_fragments = current_service.sms_daily_limit - sms_fragments_sent_today
     remaining_email_messages = current_service.message_limit - emails_sent_today
-    recipients_remaining_messages = remaining_email_messages
-
+    
     contents = s3download(service_id, upload_id)
 
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
     email_reply_to = None
     sms_sender = None
-
-    # base remaining messages on template type
-    if db_template["template_type"] == "email":
-        recipients_remaining_messages = (
-            remaining_email_messages if current_app.config["FF_EMAIL_DAILY_LIMIT"] else remaining_messages
-        )
-    else:
-        recipients_remaining_messages = remaining_sms_message_fragments
+    recipients_remaining_messages = remaining_email_messages if db_template["template_type"] == "email" else remaining_sms_message_fragments
 
     if db_template["template_type"] == "email":
         email_reply_to = get_email_reply_to_address_from_session()
