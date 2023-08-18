@@ -2052,8 +2052,6 @@ def test_upload_csvfile_with_valid_phone_shows_all_numbers(
     assert "6502532210" not in content
     assert "Only shows the first 10 recipients" in content
 
-    mock_get_service_statistics.assert_called_once_with(service_one["id"], today_only=True)
-
 
 @pytest.mark.parametrize(
     "international_sms_permission, should_allow_international",

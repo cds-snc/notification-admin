@@ -2986,7 +2986,7 @@ def test_should_show_page_to_set_message_limit(
 @pytest.mark.parametrize(
     "given_limit, expected_limit",
     [
-        pytest.param("1", 1, marks=pytest.mark.xfail),  # this is less than the sms daily limit so will fail
+        pytest.param("2", 1, marks=pytest.mark.xfail),  # this is less than the sms daily limit so will fail
         ("1000", 1_000),
         ("10_000", 10_000),
         pytest.param("foo", "foo", marks=pytest.mark.xfail),
@@ -3019,7 +3019,7 @@ def test_should_set_message_limit(
     [
         ("1", 1),
         ("1000", 1_000),
-        pytest.param("10_000", 10_000, marks=pytest.mark.xfail),  # this is more than the daily message limit so will fail
+        pytest.param("10_001", 10_000, marks=pytest.mark.xfail),
         pytest.param("foo", "foo", marks=pytest.mark.xfail),
     ],
 )
