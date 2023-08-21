@@ -258,7 +258,7 @@
         {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
           {% set txt = _('Daily maximum') %}
           {{ text_field(txt)}}
-          {% set txt_msg_limit = _('{} text message fragments').format(current_service.sms_daily_limit | format_number) %}
+          {% set txt_msg_limit = _('{} text messages').format(current_service.sms_daily_limit | format_number) %}
           {{ text_field(txt_msg_limit) }}
           {{ text_field('') }}
         {% endcall %}
@@ -363,7 +363,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Daily text fragments limit') %}
+            {% set txt = _('Daily text message limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.sms_daily_limit | format_number) }}
             {{ edit_field(
@@ -417,7 +417,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Free fragments per year') %}
+            {% set txt = _('Free text messages per year') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.free_sms_fragment_limit | format_number) }}
             {{ edit_field(
