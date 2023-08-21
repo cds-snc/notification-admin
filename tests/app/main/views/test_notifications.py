@@ -239,6 +239,31 @@ def test_notification_status_page_shows_attachments_with_links(
 
     assert "Download it https://example.com/test.pdf" in page.select_one(".email-message-body").text
 
+@pytest.mark.parametrize(
+    "message_type, has_problem_address_filter",
+    [
+        ("sms", False),
+        ("email", True)
+    ]
+)
+def test_problem_email_address_filter_only_present_when_viewing_emails(
+    client_request,
+    message_type,
+    mock_get_notifications,
+    mock_get_service_statistics,
+    mock_get_service_data_retention,
+    mock_has_no_jobs, has_problem_address_filter
+):
+    client_request.login(create_active_user_with_permissions())
+    page = client_request.get(
+        "main.view_notifications",
+        service_id=SERVICE_ONE_ID,
+        message_type=message_type,
+        status='sending,delivered,failed',
+    )
+    problem_address_filter = page.select_one(".multiple-choice > #pe_filter")
+
+    assert (problem_address_filter is not None) == has_problem_address_filter
 
 @pytest.mark.parametrize(
     "extra_args, expected_back_link",
