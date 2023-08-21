@@ -113,7 +113,6 @@ def mock_get_service_settings_page_common(
                 "Receive text messages Off Change",
                 "Free fragments per year 250,000 Change",
                 "Email branding English Government of Canada signature Change",
-                "Letter branding Not set Change",
                 "Data retention email Change",
                 "Receive inbound SMS Off Change",
                 "Email authentication Off Change",
