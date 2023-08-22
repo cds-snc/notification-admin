@@ -341,7 +341,7 @@ def get_status_filters(service, message_type, statistics):
     filters = [
         # key, label, option
         ("requested", "total", "sending,delivered,failed"),
-        ("sending", "sending", "sending"),
+        ("sending", "in transit", "sending"),
         ("delivered", "delivered", "delivered"),
         ("failed", "failed", "failed"),
     ]
