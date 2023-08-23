@@ -1,5 +1,6 @@
 {% extends "admin_template.html" %}
 {% from "components/banner.html" import banner_wrapper %}
+{% from "components/links.html" import content_link %}
 {% from "components/message-count-label.html" import message_count_label %}
 {% from "components/page-header.html" import govuk_back_link, page_header %}
 
@@ -35,29 +36,33 @@
       {% endcall %}
     </div>
   {% elif error == 'too-many-sms-messages' %}
-    {% if sms_parts_remaining == 0 %}
-      {{ page_header(_('You’ve reached the daily limit'), back_link=back_link) }}
-    {% else %}
-      {{ page_header(_('This message exceeds your daily limit'), back_link=back_link) }}
-    {% endif %}
+    {{ page_header(_('This message exceeds your daily limit'), back_link=back_link) }}
     <div class="mb-12 clear-both contain-floats">
       {% call banner_wrapper(type='dangerous') %}
         {% include "partials/check/too-many-sms-message-parts.html" %}
       {% endcall %}
+      <h2 class="heading-medium">{{_('You cannot send this text message today') }}</h2>
+      <p class="mb-12">
+        {{ _("You can try sending this message after {} Eastern Time. Check {}.").format(time_to_reset[current_lang], content_link(_("your current local time"), 'https://nrc.canada.ca/en/web-clock/', is_external_link=true))}}
+      </p>
     </div>
   {% elif error == 'too-many-messages' %}
     {{ govuk_back_link(back_link) }}
     <div class="mb-12 clear-both contain-floats">
       {% call banner_wrapper(type='dangerous') %}
-        {% include "partials/check/too-many-messages.html" %}
+        {% include "partials/check/too-many-email-messages.html" %}
       {% endcall %}
     </div>
   {% elif error == 'too-many-email-messages' %}
-    {{ page_header(_('This message exceeds your daily email limit'), back_link=back_link) }}
+    {{ page_header(_('This message exceeds your daily limit'), back_link=back_link) }}
     <div class="mb-12 clear-both contain-floats">
       {% call banner_wrapper(type='dangerous') %}
         {% include "partials/check/too-many-email-messages.html" %}
       {% endcall %}
+      <h2 class="heading-medium">{{_('You cannot send this email message today') }}</h2>
+      <p class="mb-12">
+        {{ _("You can try sending this message after {} Eastern Time. Check {}.").format(time_to_reset[current_lang], content_link(_("your current local time"), 'https://nrc.canada.ca/en/web-clock/', is_external_link=true))}}
+      </p>
     </div>
   {% elif error == 'message-too-long' %}
     {# the only row_errors we can get when sending one off messages is that the message is too long #}

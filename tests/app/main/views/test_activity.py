@@ -473,7 +473,7 @@ def test_get_status_filters_calculates_stats(client):
 
     assert {label: count for label, _option, _link, count in ret} == {
         "total": 6,
-        "sending": 3,
+        "in transit": 3,
         "failed": 2,
         "delivered": 1,
     }
@@ -484,7 +484,7 @@ def test_get_status_filters_in_right_order(client):
 
     assert [label for label, _option, _link, _count in ret] == [
         "total",
-        "sending",
+        "in transit",
         "delivered",
         "failed",
     ]
