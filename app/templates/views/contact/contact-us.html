@@ -1,0 +1,9 @@
+{% extends "contact_template.html" %}
+
+{% block contact_form_content %}
+    {% if not current_user.is_authenticated %}
+        {{ textbox(form.name, width='md:w-2/3', autocomplete='name') }}
+        {{ textbox(form.email_address, width='md:w-2/3', autocomplete='email') }}
+    {% endif %}
+        {{ radios(form.support_type, use_aria_labelledby=False) }}
+{% endblock %}
