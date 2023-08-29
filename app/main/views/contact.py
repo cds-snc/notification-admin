@@ -72,11 +72,12 @@ def message():
 def demo_organization_details():
     data = _form_data()
     form = SetUpDemoOrgDetails(data=data)
+    support_type = session[SESSION_FORM_KEY].get("support_type")
     previous_step = "identity"
     current_step = "demo.org_details"
     next_step = "demo.primary_purpose"
 
-    if not _validate_fields_present(current_step, data):
+    if not _validate_fields_present(current_step, data) or support_type != "demo":
         return redirect(url_for(".contact"))
     if request.method == "POST" and form.validate_on_submit():
         session[SESSION_FORM_KEY] = form.data

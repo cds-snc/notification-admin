@@ -92,29 +92,31 @@ def test_back_link_goes_to_previous_step(client_request):
 @pytest.mark.parametrize(
     "view, expected_view, request_data",
     [
-        (".demo_organization_details", ".contact", [{}]),
+        (
+            ".demo_organization_details",
+            ".contact",
+            {
+                "name": "John",
+                "email_address": "john@example.com",
+                "support_type": "ask_question",
+            },
+        ),
         (
             ".demo_primary_purpose",
             ".contact",
-            [
-                {
-                    "name": "John",
-                    "email_address": "john@example.com",
-                    "support_type": "demo",
-                },
-                {},
-            ],
+            {
+                "name": "John",
+                "email_address": "john@example.com",
+                "support_type": "demo",
+            },
         ),
-        (".message", ".contact", [{}]),
+        (".message", ".contact", {}),
     ],
 )
 def test_nav_to_invalid_step_redirects_to_contact(client_request, view, expected_view, request_data):
     with client_request.session_transaction() as session:
-        for data in request_data:
-            session["contact_form"] = data
-            client_request.get_url(
-                url_for(view), _expected_status=302, _test_page_title=False, _expected_redirect=url_for(".contact")
-            )
+        session["contact_form"] = request_data
+    client_request.get_url(url_for(view), _expected_status=302, _test_page_title=False, _expected_redirect=url_for(".contact"))
 
 
 @pytest.mark.parametrize("support_type", ["ask_question", "technical_support", "give_feedback", "other"])
