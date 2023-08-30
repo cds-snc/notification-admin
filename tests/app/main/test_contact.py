@@ -93,6 +93,27 @@ def test_back_link_goes_to_previous_step(client_request):
     "view, expected_view, request_data",
     [
         (".demo_organization_details", ".contact", {}),
+        (".demo_organization_details", ".contact",
+            {
+                "name": "John",
+                "email_address": "john@example.com",
+                "support_type": "Bad_support_type",
+            },
+        ),
+        (".demo_organization_details", ".contact",
+            {
+                "name": "John",
+                "email_address": "john@example.com",
+                "support_type": "other",
+            },
+        ),
+        (".demo_organization_details", ".contact",
+            {
+                "name": "John",
+                "email_address": "john@example.com",
+                "support_type": "ask_question",
+            },
+        ),
         (
             ".demo_primary_purpose",
             ".contact",
