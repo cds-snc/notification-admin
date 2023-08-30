@@ -92,11 +92,7 @@ def test_back_link_goes_to_previous_step(client_request):
 @pytest.mark.parametrize(
     "view, expected_view, request_data",
     [
-        (
-            ".demo_organization_details",
-            ".contact",
-            {}
-        ),
+        (".demo_organization_details", ".contact", {}),
         (
             ".demo_primary_purpose",
             ".contact",
