@@ -72,7 +72,7 @@ def message():
 def demo_organization_details():
     data = _form_data()
     form = SetUpDemoOrgDetails(data=data)
-    support_type = session[SESSION_FORM_KEY].get("support_type")
+    support_type = session[SESSION_FORM_KEY].get("support_type") if SESSION_FORM_KEY in session else ""
     previous_step = "identity"
     current_step = "demo.org_details"
     next_step = "demo.primary_purpose"
