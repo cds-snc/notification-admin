@@ -72,12 +72,11 @@ def message():
 def demo_organization_details():
     data = _form_data()
     form = SetUpDemoOrgDetails(data=data)
-    support_type = session[SESSION_FORM_KEY].get("support_type") if SESSION_FORM_KEY in session else ""
     previous_step = "identity"
     current_step = "demo.org_details"
     next_step = "demo.primary_purpose"
 
-    if not _validate_fields_present(current_step, data) or support_type != "demo":
+    if not _validate_fields_present(current_step, data):
         return redirect(url_for(".contact"))
     if request.method == "POST" and form.validate_on_submit():
         session[SESSION_FORM_KEY] = form.data
@@ -129,6 +128,8 @@ def _validate_fields_present(current_step: str, form_data: dict) -> bool:
     base_requirement = {"name", "support_type", "email_address"}
     primary_purpose_requirement = base_requirement.union({"department_org_name", "program_service_name", "intended_recipients"})
 
+    if SESSION_FORM_KEY not in session:
+        return False
     if current_step in ["message", "demo.org_details"]:
         return base_requirement.issubset(form_data)
     elif current_step == "demo.primary_purpose":
