@@ -95,11 +95,7 @@ def test_back_link_goes_to_previous_step(client_request):
         (
             ".demo_organization_details",
             ".contact",
-            {
-                "name": "John",
-                "email_address": "john@example.com",
-                "support_type": "ask_question",
-            },
+            {}
         ),
         (
             ".demo_primary_purpose",
