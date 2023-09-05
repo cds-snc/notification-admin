@@ -176,10 +176,17 @@ def test_no_go_live_link_for_service_without_organisation(
     client_request.login(platform_admin_user)
     page = client_request.get("main.service_settings", service_id=SERVICE_ONE_ID)
 
+    live_row_text = normalize_spaces(page.css.select("tr:contains('No (organisation must be set first)')")[0].text)
+    org_row_text = normalize_spaces(page.css.select("tr > td > span:-soup-contains('Not set')")[0].text)
+    default_org = normalize_spaces(
+        page.css.select("tr:-soup-contains('Organisation') > td > div:-soup-contains('Government of Canada')")[0].text
+    )
+
     assert page.find("h1").text == "Settings"
 
-    assert normalize_spaces(page.select("tr")[15].text) == ("Live No (organisation must be set first)")
-    assert normalize_spaces(page.select("tr")[17].text) == ("Organisation Not set Government of Canada Change Organisation")
+    assert live_row_text == ("Live No (organisation must be set first)")
+    assert org_row_text == ("Not set")
+    assert default_org == ("Government of Canada")
 
 
 def test_organisation_name_links_to_org_dashboard(
@@ -200,7 +207,7 @@ def test_organisation_name_links_to_org_dashboard(
     client_request.login(platform_admin_user, service_one)
     response = client_request.get("main.service_settings", service_id=SERVICE_ONE_ID)
 
-    org_row = response.select("tr")[17]
+    org_row = response.css.select("tr:-soup-contains('Organisation')")[0]
 
     assert org_row.find("a")["href"] == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find("a").text) == "Test Organisation"
@@ -221,10 +228,14 @@ def test_organisation_name_links_to_org_dashboard(
                 "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
+                "Daily maximum 1,000 emails",
+                "Yearly maximum 10 million emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages On Change",
+                "Daily maximum 1,000 text messages",
+                "Yearly maximum 25,000 text messages",
             ],
         ),
         (
@@ -239,10 +250,14 @@ def test_organisation_name_links_to_org_dashboard(
                 "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
+                "Daily maximum 1,000 emails",
+                "Yearly maximum 10 million emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
+                "Daily maximum 1,000 text messages",
+                "Yearly maximum 25,000 text messages",
             ],
         ),
     ],
