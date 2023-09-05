@@ -128,10 +128,14 @@ def _validate_fields_present(current_step: str, form_data: dict) -> bool:
     base_requirement = {"name", "support_type", "email_address"}
     primary_purpose_requirement = base_requirement.union({"department_org_name", "program_service_name", "intended_recipients"})
 
-    if current_step in ["message", "demo.org_details"]:
+    if not form_data or SESSION_FORM_KEY not in session:
+        return False
+    if current_step == "message":
         return base_requirement.issubset(form_data)
+    elif current_step == "demo.org_details":
+        return base_requirement.issubset(form_data) and form_data.get("support_type") == "demo"
     elif current_step == "demo.primary_purpose":
-        return set(form_data).issuperset(primary_purpose_requirement)
+        return set(form_data).issuperset(primary_purpose_requirement) and form_data.get("support_type") == "demo"
 
     return False
 
