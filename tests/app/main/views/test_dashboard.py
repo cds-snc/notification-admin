@@ -1426,3 +1426,123 @@ def test_a11y_template_usage_should_not_contain_duplicate_ids(
         list.append(element["id"])
 
     assert len(list) == len(set(list))  # check for duplicates
+
+
+@pytest.mark.parametrize(
+    "totals, notification_type, expected_color, expected_sent, expected_limit, expect_accessible_message",
+    [
+        # With a service email limit of 1000, and 100 emails sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 100, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            },
+            "email",
+            "text-green-300",
+            "100",
+            "1,000",
+            False,
+        ),
+        # With a service SMS limit of 1000, and 10 sms sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 10, "delivered": 0, "failed": 0},
+            },
+            "sms",
+            "text-green-300",
+            "10",
+            "1,000",
+            False,
+        ),
+        # With a service email limit of 1000, and 800 emails sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 800, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            },
+            "email",
+            "text-red-300",
+            "800",
+            "1,000",
+            True,
+        ),
+        # With a service SMS limit of 1000, and 900 sms sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 900, "delivered": 0, "failed": 0},
+            },
+            "sms",
+            "text-red-300",
+            "900",
+            "1,000",
+            True,
+        ),
+        # With a service email limit of 1000, and 1000 emails sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 1000, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            },
+            "email",
+            "text-red-300",
+            "1,000",
+            "1,000",
+            True,
+        ),
+        # With a service SMS limit of 1000, and 1000 sms sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 1000, "delivered": 0, "failed": 0},
+            },
+            "sms",
+            "text-red-300",
+            "1,000",
+            "1,000",
+            True,
+        ),
+    ],
+)
+def test_dashboard_daily_limits(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    totals,
+    notification_type,
+    expected_color,
+    expected_sent,
+    expected_limit,
+    expect_accessible_message,
+    app_,
+):
+    with set_config(app_, "FF_BOUNCE_RATE_V15", True):
+        service_one["permissions"] = (["email", "sms"],)
+
+        mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
+
+        page = client_request.get("main.service_dashboard", service_id=service_one["id"])
+
+        component_index = 0 if notification_type == "email" else 1
+
+        assert page.find_all(class_="remaining-messages")[component_index].find(class_="rm-used").text == expected_sent
+        assert page.find_all(class_="remaining-messages")[component_index].find(class_="rm-total").text[3:] == expected_limit
+        assert (
+            expected_color
+            in page.find_all(class_="remaining-messages")[component_index].find(class_="rm-bar-usage").attrs["class"]
+        )
+
+        if expect_accessible_message:
+            assert (
+                len(
+                    page.find_all(class_="remaining-messages")[component_index]
+                    .find(class_="rm-bar-usage")
+                    .find(class_="visually-hidden")
+                )
+                == 1
+            )
