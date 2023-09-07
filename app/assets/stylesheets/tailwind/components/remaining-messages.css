@@ -1,11 +1,11 @@
 @layer components {
   /*! purgecss start ignore */
 
-  .remaining-messages { 
+  .remaining-messages {
     @apply bg-blue text-white p-gutterHalf;
   }
 
-  .rm-header { 
+  .rm-header {
     @apply text-smaller inline-block;
   }
 
@@ -18,17 +18,16 @@
   }
 
   .rm-bar {
-    box-shadow: inset 0 -10px #CFD5DD;
+    box-shadow: inset 0 -10px #cfd5dd;
     display: flex;
     align-items: flex-end;
   }
-  
+
   .rm-bar-usage {
     width: max(var(--usage), 4px);
     height: 30px;
     background: currentColor;
-  }  
-
+  }
 
   /*! purgecss end ignore */
 }
