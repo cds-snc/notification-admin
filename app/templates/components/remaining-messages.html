@@ -1,0 +1,18 @@
+{% macro remaining_messages(header, total, used) %}
+  {% set near_limit = ((used/total) >= 0.8) %}
+  <div class="remaining-messages">
+    <div class="rm-header mb-2">{{ header }}</div>
+    <div class="mb-2">
+      <span class="rm-used">{{ "{:,}".format(used) if session['userlang'] == 'en' else "{:,}".format(used).replace(',', ' ') }}</span>
+      <span class="rm-total">{{ _('of') }} {{ "{:,}".format(total) if session['userlang'] == 'en' else "{:,}".format(total).replace(',', ' ') }}</span>
+    </div>
+    
+    <div class="rm-bar">
+      <div class="rm-bar-usage {{ 'text-red-300' if near_limit else 'text-green-300' }}" style="--usage: {{ (used/total)*100 }}%;">
+        {% if near_limit %}
+          <span class="visually-hidden">{{ _('Near daily limit') }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>  
+{% endmacro %}
