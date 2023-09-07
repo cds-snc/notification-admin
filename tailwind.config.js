@@ -49,6 +49,7 @@ module.exports = {
         hover: "#990c1a",
         border: "#6a0812",
         mellow: "#df3034",
+        300: "#D74D42",
       },
       white: {
         default: "#FFF",
@@ -100,6 +101,7 @@ module.exports = {
         hover: "#00692f",
         border: "#003618",
         green: "#006435",
+        300: "#29A35A",
       },
       black: {
         default: "#000",
