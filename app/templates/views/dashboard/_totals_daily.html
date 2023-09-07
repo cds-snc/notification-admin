@@ -1,30 +1,22 @@
 {% from "components/big-number.html" import big_number %}
 {% from "components/message-count-label.html" import message_count_label %}
-
-{% set suffix = _("left today") %}
-{% if current_lang == "fr" %}
-    {% set suffix_plural = _("many left today") %}
-{% else %}
-    {% set suffix_plural = _("left today") %}
-{% endif %}
-{% set email_remaining = current_service.message_limit - statistics['email']['requested'] %}
-{% set sms_parts_remaining = current_service.sms_daily_limit - statistics['sms']['requested'] %}
+{% from 'components/remaining-messages.html' import remaining_messages %}
 
 <div class="ajax-block-container">
-  <div class="grid-row contain-floats">
-    <div id="total-email" class="{{column_width}}">
-      {{ big_number(
-        email_remaining,
-        message_count_label(email_remaining, 'email', suffix=suffix, suffix_plural=suffix_plural),
-        status=True,
-      ) }}
+    <h2 class="heading-medium mt-8">
+      <!-- {{ _('Daily usage') }}
+      <br />
+      <small class="text-gray-600 text-small font-normal" style="color: #5E6975">
+        {{ _('<b>Note:</b> Message limits reset each night at 7pm EST') }}
+      </small>  -->
+      {{ _('Sent since 7 pm Eastern Time') }}
+    </h2>
+    <div class="grid-row contain-floats">
+      <div class="{{column_width}}">
+        {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used= statistics['email']['requested']) }}
+      </div>
+      <div class="{{column_width}}">
+        {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested']) }}
+      </div>
     </div>
-    <div id="total-sms" class="{{column_width}}">
-      {{ big_number(
-        sms_parts_remaining,
-        message_count_label(sms_parts_remaining, 'sms', suffix=suffix, suffix_plural=suffix_plural),
-        status=True,
-      ) }}
-    </div>
-  </div>
 </div>

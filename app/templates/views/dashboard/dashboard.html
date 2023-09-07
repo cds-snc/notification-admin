@@ -25,6 +25,9 @@
     {% endif %}
 
     {{ ajax_block(partials, updates_url, 'weekly_totals', interval=5) }}
+    {{ ajax_block(partials, updates_url, 'daily_totals', interval=5) }}
+    
+    <hr />
 
     {% if not config["FF_BOUNCE_RATE_V15"] %}
       {{ show_more(
