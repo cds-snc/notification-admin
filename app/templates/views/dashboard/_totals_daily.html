@@ -4,16 +4,11 @@
 
 <div class="ajax-block-container">
     <h2 class="heading-medium mt-8">
-      <!-- {{ _('Daily usage') }}
-      <br />
-      <small class="text-gray-600 text-small font-normal" style="color: #5E6975">
-        {{ _('<b>Note:</b> Message limits reset each night at 7pm EST') }}
-      </small>  -->
       {{ _('Sent since 7 pm Eastern Time') }}
     </h2>
     <div class="grid-row contain-floats">
       <div class="{{column_width}}">
-        {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used= statistics['email']['requested']) }}
+        {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested']) }}
       </div>
       <div class="{{column_width}}">
         {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested']) }}
