@@ -1541,8 +1541,8 @@ def test_dashboard_daily_limits(
             assert (
                 len(
                     page.find_all(class_="remaining-messages")[component_index]
-                    .find(class_="rm-bar-usage")
-                    .find(class_="visually-hidden")
+                    .find(class_="rm-message")
+                    .find_all(class_="visually-hidden")
                 )
-                == 1
+                == 2
             )
