@@ -1,13 +1,8 @@
 {% extends  "admin_template.html" %}
 
-{% from "components/banner.html" import banner %}
-{% from "components/big-number.html" import big_number %}
-{% from "components/browse-list.html" import browse_list %}
-{% from "components/page-footer.html" import page_footer %}
-{% from "components/table.html" import mapping_table, list_table, row, field, text_field, boolean_field, right_aligned_field_heading %}
-{% from "components/textbox.html" import textbox %}
 {% from "components/file-upload.html" import file_upload %}
-{% from "components/api-key.html" import api_key %}
+{% from "components/page-header.html" import govuk_back_link, page_header %}
+
 
 {% block per_page_title %}
   Fable upload component test
@@ -21,6 +16,7 @@
   {% if not uploaded %}
     {{ file_upload(form.file_upload) }}
   {% else %}
+    {{ govuk_back_link(back_link) }}
     <div class="banner-default-with-tick" role="status">
       '{{ form.data.file_upload.filename }}' was uploaded.    
     </div>

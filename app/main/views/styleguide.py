@@ -1,6 +1,6 @@
 import json
 
-from flask import abort, current_app, render_template, request
+from flask import abort, current_app, render_template, request, url_for
 from flask_wtf import FlaskForm as Form
 from notifications_utils.template import Template
 from wtforms import FileField, PasswordField, StringField, TextAreaField, validators
@@ -38,9 +38,10 @@ def fable_test_1():
         file_upload = FileField("Upload file")
 
     form = FormExamples()
-
+    back_link = url_for('main.fable_test_1')
+    
     uploaded = True if request.method == "POST" else False
-    return render_template("views/fable_upload.html", form=form, uploaded=uploaded)
+    return render_template("views/fable_upload.html", form=form, uploaded=uploaded, back_link=back_link)
 
 
 @main.route("/_fable_dropdown_pill", methods=["GET", "POST"])
