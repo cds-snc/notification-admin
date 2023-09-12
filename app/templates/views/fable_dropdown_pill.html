@@ -3,6 +3,7 @@
 
 {% from "components/pill.html" import pill %}
 {% from "components/autocomplete.html" import autocomplete %}
+{% from "components/textbox.html" import textbox %}
 
 {% block per_page_title %}
   Fable pill and dropdown test
@@ -22,5 +23,24 @@
 
   <h2 class="heading-medium">Select your organization</h2>
   {{ autocomplete(formy.parent_organisation_name, org_data, hint=_("For example: Treasury Board of Canada Secretariat")) }}
+
+  <div class="live-search hidden js-header" data-module="live-search" data-targets="{{ target_selector }}">
+    <!-- 
+      field,
+      label=None,
+      hint=False,
+      highlight_tags=False,
+      autofocus=False,
+      colour_preview=False,
+      help_link=None,
+      help_link_text=None,
+      width='w-full md:w-3/6',
+      suffix=None,
+      safe_error_message=False,
+      rows=8,
+      required=true,
+      is_page_heading=false
+    -->
+    {{ textbox(formy.child_organisation_name, label="Comment", autocomplete="off") }}
 
 {% endblock %}

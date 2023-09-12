@@ -38,8 +38,8 @@ def fable_test_1():
         file_upload = FileField("Upload file")
 
     form = FormExamples()
-    back_link = url_for('main.fable_test_1')
-    
+    back_link = url_for("main.fable_test_1")
+
     uploaded = True if request.method == "POST" else False
     return render_template("views/fable_upload.html", form=form, uploaded=uploaded, back_link=back_link)
 
@@ -54,13 +54,14 @@ def fable_test_2():
         ("delivered", "delivered", "#", 312),
         ("failed", "failed", "#", 78),
     ]
-    CreateServiceStepCombinedOrganisationForm.parent_organisation_name.name = "my-name"
+    createForm = CreateServiceStepCombinedOrganisationForm()
+    createForm.parent_organisation_name.name = "my-name"
 
     english_org_data = [item["name_eng"] for item in json.loads(org_data)]
 
     return render_template(
         "views/fable_dropdown_pill.html",
-        formy=CreateServiceStepCombinedOrganisationForm,
+        formy=createForm,
         counts=counts,
         org_data=english_org_data,
     )
