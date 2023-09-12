@@ -138,7 +138,6 @@ class Config(object):
 
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
-    FF_BOUNCE_RATE_V15 = env.bool("FF_BOUNCE_RATE_V15", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
 
     @classmethod
