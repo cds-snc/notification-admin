@@ -1389,28 +1389,27 @@ def test_dashboard_daily_limits(
     expect_accessible_message,
     app_,
 ):
-    with set_config(app_, "FF_BOUNCE_RATE_V15", True):
-        service_one["permissions"] = (["email", "sms"],)
+    service_one["permissions"] = (["email", "sms"],)
 
-        mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
+    mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
 
-        page = client_request.get("main.service_dashboard", service_id=service_one["id"])
+    page = client_request.get("main.service_dashboard", service_id=service_one["id"])
 
-        component_index = 0 if notification_type == "email" else 1
+    component_index = 0 if notification_type == "email" else 1
 
-        assert page.find_all(class_="remaining-messages")[component_index].find(class_="rm-used").text == expected_sent
-        assert page.find_all(class_="remaining-messages")[component_index].find(class_="rm-total").text[3:] == expected_limit
+    assert page.find_all(class_="remaining-messages")[component_index].find(class_="rm-used").text == expected_sent
+    assert page.find_all(class_="remaining-messages")[component_index].find(class_="rm-total").text[3:] == expected_limit
+    assert (
+        expected_color
+        in page.find_all(class_="remaining-messages")[component_index].find(class_="rm-bar-usage").attrs["class"]
+    )
+
+    if expect_accessible_message:
         assert (
-            expected_color
-            in page.find_all(class_="remaining-messages")[component_index].find(class_="rm-bar-usage").attrs["class"]
-        )
-
-        if expect_accessible_message:
-            assert (
-                len(
-                    page.find_all(class_="remaining-messages")[component_index]
-                    .find(class_="rm-message")
-                    .find_all(class_="visually-hidden")
-                )
-                == 2
+            len(
+                page.find_all(class_="remaining-messages")[component_index]
+                .find(class_="rm-message")
+                .find_all(class_="visually-hidden")
             )
+            == 2
+        )
