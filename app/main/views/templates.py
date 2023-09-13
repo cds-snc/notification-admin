@@ -111,7 +111,7 @@ def delete_preview_data(service_id, template_id=None):
 
 def get_char_limit_error_msg(template_type):
     CHAR_LIMIT = SMS_CHAR_COUNT_LIMIT if template_type == "sms" else EMAIL_CHAR_COUNT_LIMIT
-    return (_("Message must be less than {char_limit} characters")).format(char_limit=CHAR_LIMIT + 1)
+    return _("Too many characters")
 
 
 @main.route("/services/<service_id>/templates/<uuid:template_id>")
