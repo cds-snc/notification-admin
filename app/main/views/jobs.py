@@ -430,7 +430,7 @@ def get_job_partials(job, template):
             "partials/jobs/notifications_header.html",
             notifications=list(add_preview_of_content_to_notifications(notifications["notifications"])),
             percentage_complete=0
-            if job["job_status"] == "scheduled"
+            if job["notification_count"] == 0
             else (job["notifications_requested"] / job["notification_count"] * 100),
             download_link=url_for(
                 ".view_job_csv",
@@ -451,7 +451,7 @@ def get_job_partials(job, template):
             notifications=list(add_preview_of_content_to_notifications(notifications["notifications"])),
             more_than_one_page=bool(notifications.get("links", {}).get("next")),
             percentage_complete=0
-            if job["job_status"] == "scheduled"
+            if job["notification_count"] == 0
             else (job["notifications_requested"] / job["notification_count"] * 100),
             download_link=url_for(
                 ".view_job_csv",
