@@ -35,7 +35,7 @@
         {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Choose a name that helps you find the template when you need to reuse it.')) }}
       </div>
       <div class="md:w-2/3 px-gutterHalf">
-        {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5) }}
+        {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5, hint=_('Maximum 612 characters. Some messages may be too long due to custom content.')) }}
         {% if current_user.platform_admin %}
           {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }}
         {% endif %}
