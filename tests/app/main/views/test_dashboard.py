@@ -1400,8 +1400,7 @@ def test_dashboard_daily_limits(
     assert page.find_all(class_="remaining-messages")[component_index].find(class_="rm-used").text == expected_sent
     assert page.find_all(class_="remaining-messages")[component_index].find(class_="rm-total").text[3:] == expected_limit
     assert (
-        expected_color
-        in page.find_all(class_="remaining-messages")[component_index].find(class_="rm-bar-usage").attrs["class"]
+        expected_color in page.find_all(class_="remaining-messages")[component_index].find(class_="rm-bar-usage").attrs["class"]
     )
 
     if expect_accessible_message:
