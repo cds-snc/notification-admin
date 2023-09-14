@@ -29,7 +29,7 @@
       {{ spark_bar_field(item.count, most_used_template_count, id=item.template_id) }}
     {% else %}
       {% call field() %}
-        <span id='{{item.template_id}}' class="heading-small">
+        <span id='a{{item.template_id}}' class="heading-small">
           {{ big_number(
             item.count,
             smallest=True
