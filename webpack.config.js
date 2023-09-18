@@ -15,6 +15,13 @@ module.exports = {
         type: 'window',
       },
     },
+    lexical: {
+      import: './app/assets/javascripts/lexical/index.js',
+      library: {
+        name: 'Lexical',
+        type: 'window',
+      },
+    }
   },
   watch: false,
   output: {
@@ -50,7 +57,19 @@ module.exports = {
           "postcss-loader"
         ]
       },
-      { test: /\.(png|svg|jpg|gif|ico)$/, use: ["file-loader"] },
+      { 
+        test: /\.(png|svg|jpg|gif|ico)$/, 
+        use: [
+          {
+            loader: 'file-loader', 
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'images/lexical',
+              esModule: false,
+            },
+          },
+        ],
+      },
       {
         test: /.(js|jsx)$/,
         include: [path.resolve(__dirname, "app/assets/javascripts")],

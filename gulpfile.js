@@ -118,6 +118,20 @@ const javascripts = () => {
     .pipe(dest(paths.dist + "javascripts/"));
 };
 
+const lexical = () => {
+  return src([
+    paths.src + "javascripts/lexical.min.js",
+  ])
+    .pipe(plugins.prettyerror())
+    .pipe(
+      plugins.babel({
+        presets: ["@babel/react"],
+      })
+    )
+    .pipe(plugins.uglify())
+    .pipe(dest(paths.dist + "javascripts/"));
+}
+
 // copy static css
 const static_css = () => {
   return src(paths.src + "/stylesheets/index.css")
@@ -162,6 +176,7 @@ const defaultTask = parallel(
   series(images),
   series(static_css),
   series(javascripts),
+  series(lexical),
   series(icons)
 );
 
