@@ -130,7 +130,7 @@ const lexical = () => {
     )
     .pipe(plugins.uglify())
     .pipe(dest(paths.dist + "javascripts/"));
-}
+};
 
 // copy static css
 const static_css = () => {
