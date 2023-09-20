@@ -26,6 +26,7 @@ GC_ARTICLES_ROUTES = {
     "terms": {"en": "/terms", "fr": "/conditions-dutilisation"},
     "whynotify": {"en": "/why-gc-notify", "fr": "/pourquoi-notification-gc"},
     "incidents": {"en": "/system-status", "fr": "/etat-du-systeme"},
+    "new_features": {"en": "/new-features", "fr": "/nouvelles-fonctionnalites"},
 }
 
 

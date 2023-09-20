@@ -23,6 +23,7 @@ const fullPageList = [
     { en: '/updating-contact-information', fr: '/maintenir-a-jour-les-coordonnees' },
     { en: '/using-a-spreadsheet', fr: '/utiliser-une-feuille-de-calcul' },
     { en: '/why-gc-notify', fr: '/pourquoi-notification-gc' },
+    { en: '/new-features', fr: '/nouvelles-fonctionnalites' },
 ];
 
 describe('GCA static pages', () => {

@@ -211,5 +211,29 @@
     margin-top: -0.5rem;
   }
 
+  /** Block
+      wp-block-post-template
+      after page-content
+    */
+  ul.wp-block-post-template {
+    @apply list-none p-0;
+  }
+
+  .wp-block-post-template > li {
+    @apply flex flex-col;
+  }
+
+  .wp-block-post-template h2.wp-block-post-title {
+    @apply mb-0;
+  }
+
+  .wp-block-post-date {
+    @apply mb-gutterHalf text-small text-gray-700;
+  }
+
+  .wp-block-post-content p + ul {
+    margin-top: -0.5rem;
+  }
+
   /*! purgecss end ignore */
 }
