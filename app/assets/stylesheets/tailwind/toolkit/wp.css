@@ -172,29 +172,6 @@
     @apply p-0;
   }
 
-  /** Block
-    latest-posts
-*/
-  .wp-block-latest-posts__list.wp-block-latest-posts {
-    @apply list-none p-0;
-  }
-
-  .wp-block-latest-posts__list.wp-block-latest-posts > li {
-    @apply flex flex-col;
-  }
-
-  .wp-block-latest-posts__post-title {
-    @apply font-sans text-base leading-tight font-bold mt-gutter block;
-  }
-
-  .wp-block-latest-posts__post-date {
-    @apply mb-gutterHalf text-small text-gray-700;
-  }
-
-  .wp-block-latest-posts__post-full-content p + ul {
-    margin-top: -0.5rem;
-  }
-
   /* Semantic styling for content pages */
   .page-content ul {
     @apply list list-bullet pl-8;
@@ -231,6 +208,30 @@
   }
 
   .wp .page-content.home p + ul {
+    margin-top: -0.5rem;
+  }
+
+  /** Block
+      wp-block-post-template
+      after page-content
+    */
+  ul.wp-block-post-template {
+    @apply list-none p-0;
+  }
+
+  .wp-block-post-template > li {
+    @apply flex flex-col;
+  }
+
+  .wp-block-post-template h2.wp-block-post-title {
+    @apply mb-0;
+  }
+
+  .wp-block-post-date {
+    @apply mb-gutterHalf text-small text-gray-700;
+  }
+
+  .wp-block-post-content p + ul {
     margin-top: -0.5rem;
   }
 
