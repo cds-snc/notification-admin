@@ -4,7 +4,6 @@ main = Blueprint("main", __name__)
 
 from app.main.views import (  # noqa isort:skip
     add_service,
-    agreement,
     api_keys,
     choose_account,
     code_not_received,
