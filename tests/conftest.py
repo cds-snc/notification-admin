@@ -3469,10 +3469,19 @@ class ClientRequest:
             assert resp.location == _expected_redirect
         page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
         if _test_page_title:
-            count_of_h1s = len(page.select("h1"))
+            page_title_el = page.find("title")
+            h1_el = page.find("h1")
+            if not page_title_el:
+                raise AssertionError("Title is missing from the page")
+            if not h1_el:
+                raise AssertionError("H1 is missing from the page")
+
+            count_of_h1s = len(h1_el)
             if count_of_h1s != 1:
                 raise AssertionError("Page should have one H1 ({} found)".format(count_of_h1s))
-            page_title, h1 = (normalize_spaces(page.find(selector).text) for selector in ("title", "h1"))
+
+            page_title = normalize_spaces(page_title_el.text)
+            h1 = normalize_spaces(h1_el.text)
 
             if not normalize_spaces(page_title).startswith(h1):
                 raise AssertionError("Page title ‘{}’ does not start with H1 ‘{}’".format(page_title, h1))
