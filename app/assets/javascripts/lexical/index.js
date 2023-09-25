@@ -1,12 +1,13 @@
-import { StrictMode } from "react";
+import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import App from "./App";
+import { RichTextEditor } from "./RichTextEditor";
+import "./styles.css";
 
 const rootElement = document.getElementById("root");
 
 createRoot(rootElement).render(
   <StrictMode>
-    <App />
+    <RichTextEditor path="path.to.content" content="" ariaLabel="AriaLabel" lang="en" />  
   </StrictMode>
 );
