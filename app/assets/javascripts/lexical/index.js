@@ -8,6 +8,11 @@ const rootElement = document.getElementById("root");
 
 createRoot(rootElement).render(
   <StrictMode>
-    <RichTextEditor path="path.to.content" content="" ariaLabel="AriaLabel" lang="en" />  
-  </StrictMode>
+    <RichTextEditor
+      path="path.to.content"
+      content=""
+      ariaLabel="AriaLabel"
+      lang="en"
+    />
+  </StrictMode>,
 );

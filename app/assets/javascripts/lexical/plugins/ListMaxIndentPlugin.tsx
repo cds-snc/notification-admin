@@ -24,7 +24,9 @@ type Props = Readonly<{
   maxDepth: number | null | undefined;
 }>;
 
-function getElementNodesInSelection(selection: RangeSelection): Set<ElementNode> {
+function getElementNodesInSelection(
+  selection: RangeSelection,
+): Set<ElementNode> {
   const nodesInSelection = selection.getNodes();
 
   if (nodesInSelection.length === 0) {
@@ -34,7 +36,9 @@ function getElementNodesInSelection(selection: RangeSelection): Set<ElementNode>
     ]);
   }
 
-  return new Set(nodesInSelection.map((n) => ($isElementNode(n) ? n : n.getParentOrThrow())));
+  return new Set(
+    nodesInSelection.map((n) => ($isElementNode(n) ? n : n.getParentOrThrow())),
+  );
 }
 
 function isIndentPermitted(maxDepth: number): boolean {
@@ -44,7 +48,8 @@ function isIndentPermitted(maxDepth: number): boolean {
     return false;
   }
 
-  const elementNodesInSelection: Set<ElementNode> = getElementNodesInSelection(selection);
+  const elementNodesInSelection: Set<ElementNode> =
+    getElementNodesInSelection(selection);
 
   let totalDepth = 0;
 
@@ -56,7 +61,7 @@ function isIndentPermitted(maxDepth: number): boolean {
 
       if (!$isListNode(parent)) {
         throw new Error(
-          "ListMaxIndentLevelPlugin: A ListItemNode must have a ListNode for a parent."
+          "ListMaxIndentLevelPlugin: A ListItemNode must have a ListNode for a parent.",
         );
       }
 
@@ -74,7 +79,7 @@ export default function ListMaxIndentLevelPlugin({ maxDepth }: Props): null {
     return editor.registerCommand(
       INDENT_CONTENT_COMMAND,
       () => !isIndentPermitted(maxDepth ?? 7),
-      COMMAND_PRIORITY_CRITICAL
+      COMMAND_PRIORITY_CRITICAL,
     );
   }, [editor, maxDepth]);
   return null;

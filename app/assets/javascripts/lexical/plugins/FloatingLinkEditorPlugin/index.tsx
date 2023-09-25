@@ -7,7 +7,11 @@
  */
 // import "./index.css";
 
-import { $isAutoLinkNode, $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
+import {
+  $isAutoLinkNode,
+  $isLinkNode,
+  TOGGLE_LINK_COMMAND,
+} from "@lexical/link";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $findMatchingParent, mergeRegister } from "@lexical/utils";
 import {
@@ -159,7 +163,7 @@ function FloatingLinkEditor({
           updateLinkEditor();
           return true;
         },
-        COMMAND_PRIORITY_LOW
+        COMMAND_PRIORITY_LOW,
       ),
       // Hide link editor by pressing escape
       editor.registerCommand(
@@ -171,7 +175,7 @@ function FloatingLinkEditor({
           }
           return false;
         },
-        COMMAND_PRIORITY_HIGH
+        COMMAND_PRIORITY_HIGH,
       ),
       // Hide link editor when editor loses focus
       editor.registerCommand(
@@ -184,7 +188,7 @@ function FloatingLinkEditor({
           popped.current = false;
           return false;
         },
-        COMMAND_PRIORITY_NORMAL
+        COMMAND_PRIORITY_NORMAL,
       ),
       // Don't hide link editor when tabbing into it
       editor.registerCommand(
@@ -196,8 +200,8 @@ function FloatingLinkEditor({
           }
           return false;
         },
-        COMMAND_PRIORITY_NORMAL
-      )
+        COMMAND_PRIORITY_NORMAL,
+      ),
     );
   }, [editor, updateLinkEditor, setIsLink, isLink, popped]);
 
@@ -224,11 +228,18 @@ function FloatingLinkEditor({
             setLinkUrl(event.target.value);
           }}
           onKeyDown={(event) => {
-            if (event.key === "Enter" || event.key === "Escape" || event.key === "Tab") {
+            if (
+              event.key === "Enter" ||
+              event.key === "Escape" ||
+              event.key === "Tab"
+            ) {
               event.preventDefault();
               if (lastSelection !== null) {
                 if (linkUrl !== "") {
-                  editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl(linkUrl));
+                  editor.dispatchCommand(
+                    TOGGLE_LINK_COMMAND,
+                    sanitizeUrl(linkUrl),
+                  );
                 }
                 setEditMode(false);
               }
@@ -270,7 +281,7 @@ function FloatingLinkEditor({
 
 function useFloatingLinkEditorToolbar(
   editor: LexicalEditor,
-  anchorElem: HTMLElement
+  anchorElem: HTMLElement,
 ): JSX.Element | null {
   const [activeEditor, setActiveEditor] = useState(editor);
   const [isLink, setIsLink] = useState(false);
@@ -299,7 +310,7 @@ function useFloatingLinkEditorToolbar(
         setActiveEditor(newEditor);
         return false;
       },
-      COMMAND_PRIORITY_CRITICAL
+      COMMAND_PRIORITY_CRITICAL,
     );
   }, [editor, updateToolbar]);
 
@@ -311,7 +322,7 @@ function useFloatingLinkEditorToolbar(
           anchorElem={anchorElem}
           setIsLink={setIsLink}
         />,
-        anchorElem
+        anchorElem,
       )
     : null;
 }

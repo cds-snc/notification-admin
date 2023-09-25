@@ -6,7 +6,7 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";;
+import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { $createParagraphNode, $getRoot } from "lexical";
 import { editorConfig } from "./config";
 import { Toolbar } from "./Toolbar";
@@ -34,9 +34,9 @@ export const Editor = ({
   ariaDescribedBy?: string;
   lang?: string;
 }) => {
-  const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | undefined>(
-    undefined
-  );
+  const [floatingAnchorElem, setFloatingAnchorElem] = useState<
+    HTMLDivElement | undefined
+  >(undefined);
 
   const editorId = "editor-" + Math.random().toString(36).substr(2, 9);
 
@@ -68,7 +68,11 @@ export const Editor = ({
         <Toolbar editorId={editorId} />
         <RichTextPlugin
           contentEditable={
-            <div className="editor relative" ref={onRef} {...(lang && { lang: lang })}>
+            <div
+              className="editor relative"
+              ref={onRef}
+              {...(lang && { lang: lang })}
+            >
               <ContentEditable
                 className="editor-input focus:outline-blue-focus"
                 id={editorId}
@@ -105,7 +109,7 @@ export const Editor = ({
         <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
         <ListPlugin />
         <ListMaxIndentPlugin maxDepth={5} />
-        <MarkdownShortcutPlugin transformers={TRANSFORMERS}  />
+        <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
       </LexicalComposer>
     </div>
   );

@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Editor } from "./Editor";
-import {
-  $convertToMarkdownString,
-  TRANSFORMERS,
-} from "@lexical/markdown";
+import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 
 type Language = "en" | "fr";
 
@@ -19,9 +16,9 @@ export const RichTextEditor = ({
   ariaLabel?: string;
   ariaDescribedBy?: string;
 }) => {
-  var textInput = React.createRef()
+  var textInput = React.createRef();
   const [value, setValue] = useState(content);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
 
   useEffect(() => {
     setValue(content);

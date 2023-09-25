@@ -15,9 +15,9 @@ export const useEditorFocus = () => {
           setFocus(false);
           return false;
         },
-        COMMAND_PRIORITY_LOW
+        COMMAND_PRIORITY_LOW,
       ),
-    [editor]
+    [editor],
   );
 
   useEffect(
@@ -28,9 +28,9 @@ export const useEditorFocus = () => {
           setFocus(true);
           return false;
         },
-        COMMAND_PRIORITY_LOW
+        COMMAND_PRIORITY_LOW,
       ),
-    [editor]
+    [editor],
   );
 
   return hasFocus;

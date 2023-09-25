@@ -1,6 +1,12 @@
 import React, { useId, Children } from "react";
 
-export const ToolTip = ({ children, text }: { children: React.ReactElement; text: string }) => {
+export const ToolTip = ({
+  children,
+  text,
+}: {
+  children: React.ReactElement;
+  text: string;
+}) => {
   const id = `tooltip-${useId()}`;
 
   return (

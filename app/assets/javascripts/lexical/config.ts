@@ -1,9 +1,9 @@
 import { HeadingNode } from "@lexical/rich-text";
 import { LinkNode } from "@lexical/link";
 import { ListItemNode, ListNode } from "@lexical/list";
-import { CodeNode } from '@lexical/code';
-import {  QuoteNode } from '@lexical/rich-text';
-import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
+import { CodeNode } from "@lexical/code";
+import { QuoteNode } from "@lexical/rich-text";
+import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 
 const theme = {
   ltr: "ltr",
@@ -82,5 +82,13 @@ export const editorConfig = {
     throw error;
   },
   // Any custom nodes go here
-  nodes: [HeadingNode, LinkNode, ListItemNode, ListNode, QuoteNode, HorizontalRuleNode, CodeNode],
+  nodes: [
+    HeadingNode,
+    LinkNode,
+    ListItemNode,
+    ListNode,
+    QuoteNode,
+    HorizontalRuleNode,
+    CodeNode,
+  ],
 };
