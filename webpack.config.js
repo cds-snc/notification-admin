@@ -17,10 +17,6 @@ module.exports = {
     },
     lexical: {
       import: './app/assets/javascripts/lexical/index.js',
-      library: {
-        name: 'Lexical',
-        type: 'window',
-      },
     }
   },
   watch: false,
@@ -87,6 +83,14 @@ module.exports = {
           ]
         }
       },
+      {
+        test: /.(ts|tsx)$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
     ]
   },
+  resolve: {
+    extensions: ['.ts', '.js', '.json', '.tsx']
+  }
 };
