@@ -14,6 +14,7 @@ from flask import (
 from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
+from wtforms import TextAreaField
 
 from app import email_branding_client, get_current_locale, letter_branding_client
 from app.articles import (
@@ -31,10 +32,10 @@ from app.articles.pages import (
 from app.articles.routing import gca_url_for
 from app.main import main
 from app.main.forms import (
+    EmailTemplateForm,
     FieldWithLanguageOptions,
     FieldWithNoneOption,
     SearchByNameForm,
-    EmailTemplateForm,
 )
 from app.utils import (
     Spreadsheet,
@@ -43,9 +44,7 @@ from app.utils import (
     get_logo_cdn_domain,
     user_is_logged_in,
 )
-from wtforms import (
-    TextAreaField,
-)
+
 
 @main.route("/")
 def index():
@@ -285,8 +284,10 @@ def welcome():
 
     template_content = FakeFormField()
     template_content.id = "testing"
-    
-    return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"], template_content=template_content)
+
+    return render_template(
+        "views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"], template_content=template_content
+    )
 
 
 @main.route("/activity", endpoint="activity")
