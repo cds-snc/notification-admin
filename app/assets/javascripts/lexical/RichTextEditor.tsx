@@ -7,12 +7,14 @@ type Language = "en" | "fr";
 export const RichTextEditor = ({
   path,
   content,
+  id,
   ariaLabel,
   ariaDescribedBy,
 }: {
   path: string;
   content: string;
   lang: Language;
+  id: string;
   ariaLabel?: string;
   ariaDescribedBy?: string;
 }) => {
@@ -36,7 +38,7 @@ export const RichTextEditor = ({
         ariaLabel={""}
         ariaDescribedBy={""}
       />
-      <input id="lexical_editor" value={text} type="hidden" />
+      <input id={id} name={id} value={text} type="hidden" />
     </div>
   );
 };

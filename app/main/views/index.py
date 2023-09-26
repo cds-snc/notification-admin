@@ -34,6 +34,7 @@ from app.main.forms import (
     FieldWithLanguageOptions,
     FieldWithNoneOption,
     SearchByNameForm,
+    EmailTemplateForm,
 )
 from app.utils import (
     Spreadsheet,
@@ -42,7 +43,9 @@ from app.utils import (
     get_logo_cdn_domain,
     user_is_logged_in,
 )
-
+from wtforms import (
+    TextAreaField,
+)
 
 @main.route("/")
 def index():
@@ -276,7 +279,14 @@ def features_letters():
 
 @main.route("/welcome", endpoint="welcome")
 def welcome():
-    return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"])
+    # fake a form field
+    class FakeFormField(object):
+        pass
+
+    template_content = FakeFormField()
+    template_content.id = "testing"
+    
+    return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"], template_content=template_content)
 
 
 @main.route("/activity", endpoint="activity")
