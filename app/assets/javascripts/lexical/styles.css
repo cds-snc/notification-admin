@@ -29,6 +29,9 @@ button.active.toolbar-item.peer {
   text-align: center;
   border-radius: 4px;
 }
+.toolbar-item:hover {
+  background: rgba(68,71,70,.08);
+}
 .double.toolbar-item .svg-inline--fa {
   transform: scale(0.85);
   padding: 0px;
