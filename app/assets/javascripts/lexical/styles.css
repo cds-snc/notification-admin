@@ -15,7 +15,7 @@
   padding: 10px;
 }
 button.active.toolbar-item.peer {
-  background: rgba(0, 0, 0, 0.1);
+  background: #d3e3fd;
 }
 .editor:focus-visible {
   outline: none;
@@ -23,13 +23,17 @@ button.active.toolbar-item.peer {
 }
 .toolbar-item {
   margin: 0.15rem;
-  border: 1px solid #ccc;
-  padding: 0.15rem;
+  padding: 0.5rem 0.15rem 0.15rem 0.15rem;
   width: 32px;
   display: inline-block;
   text-align: center;
+  border-radius: 4px;
 }
-
+.double.toolbar-item .svg-inline--fa {
+  transform: scale(0.85);
+  padding: 0px;
+  padding-bottom: 0.15rem
+}
 /* rendered markup */
 .editor p {
   margin: 0 0 1.5rem 0;

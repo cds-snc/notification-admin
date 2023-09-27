@@ -248,6 +248,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
       >
         <ToolTip text={t("tooltipFormatH2")}>
           <button
+            type="button"
             tabIndex={currentFocusIndex == 0 ? 0 : -1}
             ref={(el) => {
               const index = "button-0" as unknown as number;
@@ -259,19 +260,20 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
               formatHeading("h2");
             }}
             className={
-              "toolbar-item spaced " +
+              "toolbar-item spaced double " +
               (blockType === "h2" && editorHasFocus ? "active" : "")
             }
             aria-label={t("formatH2")}
             aria-pressed={blockType === "h2"}
             data-testid={`h2-button`}
           >
-            H2
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-heading"></i><i aria-hidden="true" className="p-1 fa-solid fa-fas fa-2"></i>
           </button>
         </ToolTip>
 
         <ToolTip text={t("tooltipFormatH3")}>
           <button
+            type="button"
             tabIndex={currentFocusIndex == 1 ? 0 : -1}
             ref={(el) => {
               const index = "button-1" as unknown as number;
@@ -283,19 +285,20 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
               formatHeading("h3");
             }}
             className={
-              "peer toolbar-item spaced " +
+              "peer toolbar-item spaced double " +
               (blockType === "h3" && editorHasFocus ? "active" : "")
             }
             aria-label={t("formatH3")}
             aria-pressed={blockType === "h3"}
             data-testid={`h3-button`}
           >
-            H3
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-heading"></i><i aria-hidden="true" className="p-1 fa-solid fa-fas fa-3"></i>
           </button>
         </ToolTip>
 
         <ToolTip text={t("tooltipFormatBold")}>
           <button
+            type="button"
             tabIndex={currentFocusIndex == 2 ? 0 : -1}
             ref={(el) => {
               const index = "button-2" as unknown as number;
@@ -313,12 +316,13 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             aria-pressed={isBold}
             data-testid={`bold-button`}
           >
-            B
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-bold"></i>
           </button>
         </ToolTip>
 
         <ToolTip text={t("tooltipFormatItalic")}>
           <button
+            type="button"
             tabIndex={currentFocusIndex == 3 ? 0 : -1}
             ref={(el) => {
               const index = "button-3" as unknown as number;
@@ -337,12 +341,13 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             aria-pressed={isItalic}
             data-testid={`italic-button`}
           >
-            I
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-italic"></i>
           </button>
         </ToolTip>
 
         <ToolTip text={t("tooltipFormatBulletList")}>
           <button
+            type="button"
             tabIndex={currentFocusIndex == 4 ? 0 : -1}
             ref={(el) => {
               const index = "button-4" as unknown as number;
@@ -359,12 +364,13 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             aria-pressed={blockType === "bullet"}
             data-testid={`bullet-list-button`}
           >
-            o
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-list-ul"></i>
           </button>
         </ToolTip>
 
         <ToolTip text={t("tooltipFormatNumberedList")}>
           <button
+            type="button"
             tabIndex={currentFocusIndex == 5 ? 0 : -1}
             ref={(el) => {
               const index = "button-5" as unknown as number;
@@ -381,12 +387,13 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             aria-pressed={blockType === "number"}
             data-testid={`numbered-list-button`}
           >
-            1.
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-list-ol"></i>
           </button>
         </ToolTip>
 
         <ToolTip text={t("tooltipInsertLink")}>
           <button
+            type="button"
             tabIndex={currentFocusIndex == 6 ? 0 : -1}
             ref={(el) => {
               const index = "button-6" as unknown as number;
@@ -403,7 +410,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             aria-pressed={isLink}
             data-testid={`link-button`}
           >
-            link
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-link"></i>
           </button>
         </ToolTip>
       </div>
