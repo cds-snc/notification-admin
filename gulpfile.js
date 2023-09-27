@@ -46,6 +46,14 @@ const icons = () => {
           "circle-question",
           "triangle-exclamation",
           "circle-exclamation",
+          "bold",
+          "italic",
+          "list-ol",
+          "list-ul",
+          "heading",
+          "2",
+          "3",
+          "link"
         ],
       })
     )
