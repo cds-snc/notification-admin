@@ -23,14 +23,11 @@
 {% else %}
   {% set display_checkboxes = current_user.has_permissions('manage_templates') and not sending_view %}
 
-  <nav id="template-list" class="{{ 'top-gutter-5px contain-floats' if (not show_template_nav and not show_search_box) else '' }}"  aria-label="{{ _('Templates and folders') }}">
-    {% if display_checkboxes %}
-      <fieldset>
-        <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
-    {% endif %}
+  <table id="template-list" role="grid" class="{{ 'top-gutter-5px contain-floats' if (not show_template_nav and not show_search_box) else '' }}" aria-label="{{ _('Templates and folders') }}">
     {% for item in template_list %}
-      <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}">
+      <tr class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}">
         {% if display_checkboxes %}
+          <td tabindex="-1">
           {{ unlabelled_checkbox(
             id='templates-or-folder-{}'.format(item.id),
             name='templates_and_folders',
@@ -38,30 +35,30 @@
             value=item.id,
             label=_("Select the {name} {type}").format(name=item.name, type=_("folder") if item.is_folder else item.hint)
           ) }}
+          </td>
         {% endif %}
-        <p class="message-name">
-          {% for ancestor in item.ancestors %}
-            <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=ancestor.id, view='sending' if sending_view else None) }}" class="template-list-folder">
-              {{- format_item_name(ancestor.name) -}}
-            </a> <span class="message-name-separator"></span>
-          {% endfor %}
-          {% if item.is_folder %}
-            <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=item.id, view='sending' if sending_view else None) }}" class="template-list-folder">
-              <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
-            </a>
-          {% else %}
-            <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=item.id) }}" class="template-list-template">
-              <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
-            </a>
-          {% endif %}
-        </p>
-        <p class="message-type">
-          {{ _(item.hint) }}
-        </p>
-      </div>
+        <td class="pl-gutter">
+          <p class="message-name">
+            {% for ancestor in item.ancestors %}
+              <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=ancestor.id, view='sending' if sending_view else None) }}" class="template-list-folder" tabindex="-1">
+                {{- format_item_name(ancestor.name) -}}
+              </a> <span class="message-name-separator"></span>
+            {% endfor %}
+            {% if item.is_folder %}
+              <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=item.id, view='sending' if sending_view else None) }}" class="template-list-folder" tabindex="-1">
+                <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
+              </a>
+            {% else %}
+              <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=item.id) }}" class="template-list-template" tabindex="-1">
+                <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
+              </a>
+            {% endif %}
+          </p>
+          <p class="message-type">
+            {{ _(item.hint) }}
+          </p>
+        </td>
+      </tr>
     {% endfor %}
-    {% if display_checkboxes %}
-      </fieldset>
-    {% endif %}
-  </nav>
+    </table>
 {% endif %}

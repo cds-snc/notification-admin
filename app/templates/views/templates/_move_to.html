@@ -1,7 +1,7 @@
 {% from "components/radios.html" import radios, radios_nested %}
 {% from "components/page-footer.html" import page_footer %}
 
-<div id="sticky_template_forms">
+<div id="sticky_template_forms" aria-live="assertive">
   <button type="submit" name="operation" value="unknown" hidden></button>
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
   {% if templates_and_folders_form.move_to.choices and template_list.templates_to_show %}
@@ -35,7 +35,7 @@
       </a>
     </div>
   </div>
-  <div class="selection-counter visuallyhidden" role="status" aria-live="polite">
+  <div class="selection-counter visuallyhidden" role="status">
     {{ _('Nothing selected') }}
   </div>
 </div>
