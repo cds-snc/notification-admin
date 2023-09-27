@@ -2124,37 +2124,6 @@ def test_test_message_can_only_be_sent_now(
     assert 'name="scheduled_for"' not in content
 
 
-def test_letter_can_only_be_sent_now(
-    client_request,
-    mocker,
-    mock_get_live_service,
-    mock_get_service_letter_template,
-    mock_get_users_by_service,
-    mock_get_service_statistics,
-    mock_get_template_statistics,
-    mock_s3_set_metadata,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-    fake_uuid,
-):
-    mocker.patch(
-        "app.main.views.send.s3download",
-        return_value="addressline1, addressline2, postcode\na,b,c",
-    )
-    mocker.patch("app.main.views.send.set_metadata_on_csv_upload")
-    mocker.patch("app.main.views.send.get_page_count_for_letter", return_value=1)
-
-    page = client_request.get(
-        "main.check_messages",
-        service_id=SERVICE_ONE_ID,
-        upload_id=fake_uuid,
-        template_id=fake_uuid,
-    )
-
-    assert 'name="scheduled_for"' not in page
-    assert normalize_spaces(page.select_one("[type=submit]").text) == ("Send all now")
-
-
 @pytest.mark.parametrize("when", ["", "2016-08-25T13:04:21.767198"])
 def test_create_job_should_call_api(
     client_request,
