@@ -31,7 +31,7 @@
 
 {% macro checkbox_input(id, name, data=None, value="y") %}
   <input
-    id="{{ id }}" name="{{ name }}" type="checkbox" value="{{ value }}" tabindex="-1"
+    id="{{ id }}" name="{{ name }}" type="checkbox" value="{{ value }}"
     {% if data %}
       checked
     {% endif %}
