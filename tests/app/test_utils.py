@@ -199,16 +199,18 @@ def test_generate_notifications_csv_without_job(
     created_by_name,
     expected_content,
 ):
-    mocker.patch(
-        "app.notification_api_client.get_notifications_for_service",
-        side_effect=_get_notifications_csv(
-            created_by_name=created_by_name,
-            created_by_email_address="sender@email.canada.ca",
-            job_id=None,
-            job_name=None,
-        ),
-    )
-    assert list(generate_notifications_csv(service_id=fake_uuid)) == expected_content
+    with app_.test_request_context():
+        mocker.patch.dict("app.current_app.config", values={"LANGUAGES": ["en", "fr"]})
+        mocker.patch(
+            "app.notification_api_client.get_notifications_for_service",
+            side_effect=_get_notifications_csv(
+                created_by_name=created_by_name,
+                created_by_email_address="sender@email.canada.ca",
+                job_id=None,
+                job_name=None,
+            ),
+        )
+        assert list(generate_notifications_csv(service_id=fake_uuid)) == expected_content
 
 
 @pytest.mark.parametrize(
@@ -219,7 +221,7 @@ def test_generate_notifications_csv_without_job(
             phone_number
             07700900123
         """,
-            ["Row number", "phone_number", "Template", "Type", "Job", "Status", "Time"],
+            ["Row number", "Phone number", "Template", "Type", "Job", "Status", "Time"],
             [
                 "1",
                 "07700900123",
@@ -237,7 +239,7 @@ def test_generate_notifications_csv_without_job(
         """,
             [
                 "Row number",
-                "phone_number",
+                "Phone number",
                 "a",
                 "b",
                 "c",
@@ -267,7 +269,7 @@ def test_generate_notifications_csv_without_job(
         """,
             [
                 "Row number",
-                "phone_number",
+                "Phone number",
                 "a",
                 "b",
                 "c",
@@ -300,23 +302,28 @@ def test_generate_notifications_csv_returns_correct_csv_file(
     expected_column_headers,
     expected_1st_row,
 ):
-    mocker.patch(
-        "app.s3_client.s3_csv_client.s3download",
-        return_value=original_file_contents,
-    )
-    csv_content = generate_notifications_csv(service_id="1234", job_id=fake_uuid, template_type="sms")
-    csv_file = DictReader(StringIO("\n".join(csv_content)))
-    assert csv_file.fieldnames == expected_column_headers
-    assert next(csv_file) == dict(zip(expected_column_headers, expected_1st_row))
+    with app_.test_request_context():
+        mocker.patch.dict("app.current_app.config", values={"LANGUAGES": ["en", "fr"]})
+        mocker.patch(
+            "app.s3_client.s3_csv_client.s3download",
+            return_value=original_file_contents,
+        )
+        csv_content = generate_notifications_csv(service_id="1234", job_id=fake_uuid, template_type="sms")
+        csv_file = DictReader(StringIO("\n".join(csv_content)))
+        assert csv_file.fieldnames == expected_column_headers
+        assert next(csv_file) == dict(zip(expected_column_headers, expected_1st_row))
 
 
 def test_generate_notifications_csv_only_calls_once_if_no_next_link(
     app_,
+    mocker,
     _get_notifications_csv_mock,
 ):
-    list(generate_notifications_csv(service_id="1234"))
+    with app_.test_request_context():
+        mocker.patch.dict("app.current_app.config", values={"LANGUAGES": ["en", "fr"]})
+        list(generate_notifications_csv(service_id="1234"))
 
-    assert _get_notifications_csv_mock.call_count == 1
+        assert _get_notifications_csv_mock.call_count == 1
 
 
 @pytest.mark.parametrize("job_id", ["some", None])
@@ -325,49 +332,52 @@ def test_generate_notifications_csv_calls_twice_if_next_link(
     mocker,
     job_id,
 ):
-    mocker.patch(
-        "app.s3_client.s3_csv_client.s3download",
-        return_value="""
-            phone_number
-            07700900000
-            07700900001
-            07700900002
-            07700900003
-            07700900004
-            07700900005
-            07700900006
-            07700900007
-            07700900008
-            07700900009
-        """,
-    )
+    with app_.test_request_context():
+        mocker.patch.dict("app.current_app.config", values={"LANGUAGES": ["en", "fr"]})
 
-    service_id = "1234"
-    response_with_links = _get_notifications_csv(rows=7, with_links=True)
-    response_with_no_links = _get_notifications_csv(rows=3, row_number=8, with_links=False)
+        mocker.patch(
+            "app.s3_client.s3_csv_client.s3download",
+            return_value="""
+                phone_number
+                07700900000
+                07700900001
+                07700900002
+                07700900003
+                07700900004
+                07700900005
+                07700900006
+                07700900007
+                07700900008
+                07700900009
+            """,
+        )
 
-    mock_get_notifications = mocker.patch(
-        "app.notification_api_client.get_notifications_for_service",
-        side_effect=[
-            response_with_links(service_id),
-            response_with_no_links(service_id),
-        ],
-    )
+        service_id = "1234"
+        response_with_links = _get_notifications_csv(rows=7, with_links=True)
+        response_with_no_links = _get_notifications_csv(rows=3, row_number=8, with_links=False)
 
-    csv_content = generate_notifications_csv(
-        service_id=service_id,
-        job_id=job_id or fake_uuid,
-        template_type="sms",
-    )
-    csv = list(DictReader(StringIO("\n".join(csv_content))))
+        mock_get_notifications = mocker.patch(
+            "app.notification_api_client.get_notifications_for_service",
+            side_effect=[
+                response_with_links(service_id),
+                response_with_no_links(service_id),
+            ],
+        )
 
-    assert len(csv) == 10
-    assert csv[0]["phone_number"] == "07700900000"
-    assert csv[9]["phone_number"] == "07700900009"
-    assert mock_get_notifications.call_count == 2
-    # mock_calls[0][2] is the kwargs from first call
-    assert mock_get_notifications.mock_calls[0][2]["page"] == 1
-    assert mock_get_notifications.mock_calls[1][2]["page"] == 2
+        csv_content = generate_notifications_csv(
+            service_id=service_id,
+            job_id=job_id or fake_uuid,
+            template_type="sms",
+        )
+        csv = list(DictReader(StringIO("\n".join(csv_content))))
+
+        assert len(csv) == 10
+        assert csv[0]["Phone number"] == "07700900000"
+        assert csv[9]["Phone number"] == "07700900009"
+        assert mock_get_notifications.call_count == 2
+        # mock_calls[0][2] is the kwargs from first call
+        assert mock_get_notifications.mock_calls[0][2]["page"] == 1
+        assert mock_get_notifications.mock_calls[1][2]["page"] == 2
 
 
 def test_get_cdn_domain_on_localhost(client, mocker):

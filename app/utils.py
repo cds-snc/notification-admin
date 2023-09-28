@@ -59,6 +59,22 @@ FAILURE_STATUSES = [
     "virus-scan-failed",
     "validation-failed",
 ]
+CSV_COLUMN_HEADER_MAPPINGS = [
+    {"original_heading": "email address", "en": "Email address", "fr": "Adresse courriel"},  #
+    {"original_heading": "email_address", "en": "Email address", "fr": "Adresse courriel"},
+    {"original_heading": "phone number", "en": "Phone number", "fr": "Numéro de téléphone"},
+    {"original_heading": "phone_number", "en": "Phone number", "fr": "Adresse courriel"},
+    {"original_heading": "Row number", "en": "Row number", "fr": "Numéro de ligne"},
+    {"original_heading": "Name", "en": "Name", "fr": "Nom"},
+    {"original_heading": "Recipient", "en": "Recipient", "fr": "Envoyer"},
+    {"original_heading": "Template", "en": "Template", "fr": "Gabarit"},
+    {"original_heading": "Type", "en": "Type", "fr": "Type"},
+    {"original_heading": "Sent by", "en": "Sent by", "fr": "Envoyé par"},
+    {"original_heading": "Sent by email", "en": "Sent by email", "fr": "Envoyé par email"},
+    {"original_heading": "Job", "en": "Job", "fr": "Job"},
+    {"original_heading": "Status", "en": "Status", "fr": "Ètat"},
+    {"original_heading": "Time", "en": "Time", "fr": "Heure d'envoi"},
+]
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
 
 with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))) as email_domains:
@@ -196,6 +212,17 @@ def get_errors_for_csv(recipients, template_type):
     return errors
 
 
+def localize_and_format_csv_headers(column_headers: list) -> list:
+    from app import get_current_locale
+
+    lang = get_current_locale(current_app)
+    localized_headers = []
+    for header in column_headers:
+        localized_header = [mapped for mapped in CSV_COLUMN_HEADER_MAPPINGS if mapped["original_heading"] == header]
+        localized_headers.append(localized_header[0][lang] if len(localized_header) >= 1 else header)
+    return localized_headers
+
+
 def generate_notifications_csv(**kwargs):
     from app import notification_api_client
     from app.s3_client.s3_csv_client import s3download
@@ -210,18 +237,22 @@ def generate_notifications_csv(**kwargs):
             template_type=kwargs["template_type"],
         )
         original_column_headers = original_upload.column_headers
-        fieldnames = ["Row number"] + original_column_headers + ["Template", "Type", "Job", "Status", "Time"]
+        fieldnames = localize_and_format_csv_headers(
+            ["Row number"] + original_column_headers + ["Template", "Type", "Job", "Status", "Time"]
+        )
     else:
-        fieldnames = [
-            "Recipient",
-            "Template",
-            "Type",
-            "Sent by",
-            "Sent by email",
-            "Job",
-            "Status",
-            "Time",
-        ]
+        fieldnames = localize_and_format_csv_headers(
+            [
+                "Recipient",
+                "Template",
+                "Type",
+                "Sent by",
+                "Sent by email",
+                "Job",
+                "Status",
+                "Time",
+            ]
+        )
 
     yield ",".join(fieldnames) + "\n"
 
