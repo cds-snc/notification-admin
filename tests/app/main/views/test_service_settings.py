@@ -76,7 +76,7 @@ def mock_get_service_settings_page_common(
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Daily maximum 1,000 text message fragments",
+                "Daily maximum 1,000 text messages",
                 "Yearly maximum 25,000 text messages",
             ],
         ),
@@ -100,20 +100,19 @@ def mock_get_service_settings_page_common(
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Daily maximum 1,000 text message fragments",
+                "Daily maximum 1,000 text messages",
                 "Yearly maximum 25,000 text messages",
                 "Label Value Action",
                 "Live On Change",
                 "Count in list of live services Yes Change",
                 "Organisation Test Organisation Government of Canada Change",
                 "Daily email limit 1,000 Change",
-                "Daily text fragments limit 1,000 Change",
+                "Daily text message limit 1,000 Change",
                 "API rate limit per minute 100",
                 "Text message senders GOVUK Manage",
                 "Receive text messages Off Change",
-                "Free fragments per year 250,000 Change",
+                "Free text messages per year 250,000 Change",
                 "Email branding English Government of Canada signature Change",
-                "Letter branding Not set Change",
                 "Data retention email Change",
                 "Receive inbound SMS Off Change",
                 "Email authentication Off Change",
@@ -177,10 +176,17 @@ def test_no_go_live_link_for_service_without_organisation(
     client_request.login(platform_admin_user)
     page = client_request.get("main.service_settings", service_id=SERVICE_ONE_ID)
 
+    live_row_text = normalize_spaces(page.css.select("tr:contains('No (organisation must be set first)')")[0].text)
+    org_row_text = normalize_spaces(page.css.select("tr > td > span:-soup-contains('Not set')")[0].text)
+    default_org = normalize_spaces(
+        page.css.select("tr:-soup-contains('Organisation') > td > div:-soup-contains('Government of Canada')")[0].text
+    )
+
     assert page.find("h1").text == "Settings"
 
-    assert normalize_spaces(page.select("tr")[15].text) == ("Live No (organisation must be set first)")
-    assert normalize_spaces(page.select("tr")[17].text) == ("Organisation Not set Government of Canada Change Organisation")
+    assert live_row_text == ("Live No (organisation must be set first)")
+    assert org_row_text == ("Not set")
+    assert default_org == ("Government of Canada")
 
 
 def test_organisation_name_links_to_org_dashboard(
@@ -201,7 +207,7 @@ def test_organisation_name_links_to_org_dashboard(
     client_request.login(platform_admin_user, service_one)
     response = client_request.get("main.service_settings", service_id=SERVICE_ONE_ID)
 
-    org_row = response.select("tr")[17]
+    org_row = response.css.select("tr:-soup-contains('Organisation')")[0]
 
     assert org_row.find("a")["href"] == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find("a").text) == "Test Organisation"
@@ -222,10 +228,14 @@ def test_organisation_name_links_to_org_dashboard(
                 "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
+                "Daily maximum 1,000 emails",
+                "Yearly maximum 10 million emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages On Change",
+                "Daily maximum 1,000 text messages",
+                "Yearly maximum 25,000 text messages",
             ],
         ),
         (
@@ -240,10 +250,14 @@ def test_organisation_name_links_to_org_dashboard(
                 "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
+                "Daily maximum 1,000 emails",
+                "Yearly maximum 10 million emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
+                "Daily maximum 1,000 text messages",
+                "Yearly maximum 25,000 text messages",
             ],
         ),
     ],
@@ -676,6 +690,10 @@ def test_should_redirect_after_service_name_confirmation(
         ),
     )
 
+    # Ensure flash message is set
+    with client_request.session_transaction() as session:
+        assert session["_flashes"][0][1] == "Setting updated"
+
     mock_update_service.assert_called_once_with(
         SERVICE_ONE_ID,
         name=service_new_name,
@@ -718,6 +736,10 @@ def test_should_redirect_after_service_email_from_confirmation(
             service_id=SERVICE_ONE_ID,
         ),
     )
+
+    # Ensure flash message is set
+    with client_request.session_transaction() as session:
+        assert session["_flashes"][0][1] == "Setting updated"
 
     mock_update_service.assert_called_once_with(SERVICE_ONE_ID, email_from=email_safe(service_new_email_from))
     assert mock_verify_password.called is True
@@ -2978,7 +3000,7 @@ def test_should_show_page_to_set_message_limit(
 @pytest.mark.parametrize(
     "given_limit, expected_limit",
     [
-        pytest.param("1", 1, marks=pytest.mark.xfail),  # this is less than the sms daily limit so will fail
+        pytest.param("2", 1, marks=pytest.mark.xfail),  # this is less than the sms daily limit so will fail
         ("1000", 1_000),
         ("10_000", 10_000),
         pytest.param("foo", "foo", marks=pytest.mark.xfail),
@@ -3011,7 +3033,7 @@ def test_should_set_message_limit(
     [
         ("1", 1),
         ("1000", 1_000),
-        pytest.param("10_000", 10_000, marks=pytest.mark.xfail),  # this is more than the daily message limit so will fail
+        pytest.param("10_001", 10_000, marks=pytest.mark.xfail),
         pytest.param("foo", "foo", marks=pytest.mark.xfail),
     ],
 )
@@ -3041,7 +3063,7 @@ def test_should_show_page_to_set_sms_allowance(platform_admin_client, mock_get_f
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    assert normalize_spaces(page.select_one("label").text) == "Numbers of text message fragments per year"
+    assert normalize_spaces(page.select_one("label").text) == "Numbers of text messages per year"
     mock_get_free_sms_fragment_limit.assert_called_once_with(SERVICE_ONE_ID)
 
 
@@ -3195,6 +3217,11 @@ def test_switch_service_enable_letters(
         _data={"enabled": posted_value},
         _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
     )
+
+    # Ensure flash message is set
+    with client_request.session_transaction() as session:
+        assert session["_flashes"][0][1] == "Setting updated"
+
     assert set(mocked_fn.call_args[1]["permissions"]) == set(expected_updated_permissions)
     assert mocked_fn.call_args[0][0] == service_one["id"]
 

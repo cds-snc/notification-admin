@@ -33,7 +33,9 @@
       url_for('.get_notifications_as_json', service_id=current_service.id, message_type=message_type, status=status),
       'counts'
     ) }}
-    {{ problem_email_checkbox() }}
+    {% if message_type == "email" %}
+      {{ problem_email_checkbox() }}
+    {% endif %}
 
     {% call form_wrapper(
       action=url_for('.view_notifications', service_id=current_service.id, message_type=message_type),
@@ -67,7 +69,7 @@
       <div class="mt-2 text-small leading-tight font-normal">{{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}</div>
     </div>
   {% endif %}
-  
+
   {{ ajax_block(
     partials,
     url_for('.get_notifications_as_json', service_id=current_service.id, message_type=message_type, status=status, page=page),

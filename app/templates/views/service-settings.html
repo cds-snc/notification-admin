@@ -181,7 +181,7 @@
           )}}
         {% endcall %}
 
-        {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
+        {% call settings_row(if_has_permission='email') %}
           {% set txt = _('Daily maximum') %}
           {{ text_field(txt)}}
           {% set message_limit = _('{} emails').format(current_service.message_limit | format_number) %}
@@ -189,7 +189,7 @@
           {{ text_field('') }}
         {% endcall %}
 
-        {% call settings_row(if_has_permission='email', alt_cond=current_service.live) %}
+        {% call settings_row(if_has_permission='email') %}
           {% set txt = _('Yearly maximum') %}
           {{ text_field(txt) }}
           {% set annual_limit = _('{} million emails').format((limits.free_yearly_email//1000000) | format_number) %}
@@ -255,15 +255,15 @@
           }}
         {% endcall %}
 
-        {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
+        {% call settings_row(if_has_permission='sms') %}
           {% set txt = _('Daily maximum') %}
           {{ text_field(txt)}}
-          {% set txt_msg_limit = _('{} text message fragments').format(current_service.sms_daily_limit | format_number) %}
+          {% set txt_msg_limit = _('{} text messages').format(current_service.sms_daily_limit | format_number) %}
           {{ text_field(txt_msg_limit) }}
           {{ text_field('') }}
         {% endcall %}
 
-        {% call settings_row(if_has_permission='sms', alt_cond=current_service.live) %}
+        {% call settings_row(if_has_permission='sms') %}
           {% set txt = _('Yearly maximum') %}
           {{ text_field(txt) }}
           {% set txt_msg_limit = _('{} text messages').format(limits.free_yearly_sms | format_number) %}
@@ -305,7 +305,7 @@
             {% else %}
               {{ boolean_field(not current_service.trial_mode) }}
               {{ edit_field(
-                change_txt, 
+                change_txt,
                 url_for('.service_switch_live', service_id=current_service.id),
                 for=txt
               ) }}
@@ -319,7 +319,7 @@
             {{ text_field(txt)}}
             {{ text_field(yes_txt if current_service.count_as_live else no_txt) }}
             {{ edit_field(
-              change_txt, 
+              change_txt,
               url_for('.service_switch_count_as_live', service_id=current_service.id),
               for=txt
             ) }}
@@ -344,8 +344,8 @@
               {% endif %}
             {% endcall %}
             {{ edit_field(
-              change_txt, 
-              url_for('.link_service_to_organisation', 
+              change_txt,
+              url_for('.link_service_to_organisation',
               service_id=current_service.id),
               for=txt
             ) }}
@@ -363,7 +363,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Daily text fragments limit') %}
+            {% set txt = _('Daily text message limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.sms_daily_limit | format_number) }}
             {{ edit_field(
@@ -417,11 +417,11 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Free fragments per year') %}
+            {% set txt = _('Free text messages per year') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.free_sms_fragment_limit | format_number) }}
             {{ edit_field(
-              change_txt, 
+              change_txt,
               url_for('.set_free_sms_allowance', service_id=current_service.id),
               for=txt
             ) }}
@@ -431,18 +431,8 @@
             {{ text_field(txt)}}
             {{ text_field(_(current_service.email_branding_name)) }}
             {{ edit_field(
-              change_txt, 
+              change_txt,
               url_for('.service_set_email_branding', service_id=current_service.id),
-              for=txt
-            ) }}
-          {% endcall %}
-          {% call row() %}
-            {% set txt = _('Letter branding') %}
-            {{ text_field(txt)}}
-            {{ optional_text_field(current_service.letter_branding.name) }}
-            {{ edit_field(
-              change_txt, 
-              url_for('.service_set_letter_branding', service_id=current_service.id),
               for=txt
             ) }}
           {% endcall %}
@@ -453,7 +443,7 @@
                 {{ current_service.data_retention | join(', ', attribute='notification_type') }}
             {% endcall %}
             {{ edit_field(
-              change_txt, 
+              change_txt,
               url_for('.data_retention', service_id=current_service.id),
               for=txt
             ) }}
@@ -465,8 +455,8 @@
                 {{ text_field(_(service_permissions[permission].title))}}
                 {{ boolean_field(current_service.has_permission(permission)) }}
                 {{ edit_field(
-                  change_txt, 
-                  url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, permission=permission if not service_permissions[permission].endpoint else None), 
+                  change_txt,
+                  url_for(service_permissions[permission].endpoint or '.service_set_permission', service_id=current_service.id, permission=permission if not service_permissions[permission].endpoint else None),
                   for=_(service_permissions[permission].title)
                 ) }}
               {% endcall %}

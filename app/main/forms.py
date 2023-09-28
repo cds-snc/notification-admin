@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from itertools import chain
 
 import pytz
-from flask import current_app, request
+from flask import request
 from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
@@ -35,7 +35,7 @@ from wtforms.fields import EmailField, SearchField, TelField
 from wtforms.validators import URL, AnyOf, DataRequired, Length, Optional, Regexp
 from wtforms.widgets import CheckboxInput, ListWidget
 
-from app import current_service, format_number, format_thousands
+from app import format_thousands
 from app.main.validators import (
     Blocklist,
     CsvFileValidator,
@@ -704,14 +704,6 @@ class NewOrganisationForm(
 
 
 class MessageLimit(StripWhitespaceForm):
-    def validate_message_limit(self, field):
-        if field.data < current_service.sms_daily_limit and current_app.config["FF_EMAIL_DAILY_LIMIT"] is False:
-            raise ValidationError(
-                _l(
-                    "Your daily limit for text fragments is {sms_daily_limit}. Enter a total number of daily messages that is {sms_daily_limit} or higher."
-                ).format(sms_daily_limit=format_number(current_service.sms_daily_limit))
-            )
-
     message_limit = IntegerField(
         _l("Daily email limit"),
         validators=[
@@ -732,23 +724,15 @@ class EmailMessageLimit(StripWhitespaceForm):
 
 
 class SMSMessageLimit(StripWhitespaceForm):
-    def validate_message_limit(self, field):
-        if field.data > current_service.message_limit and current_app.config["FF_EMAIL_DAILY_LIMIT"] is False:
-            raise ValidationError(
-                _l("You can send {message_limit} messages each day. Enter a number equal or less than {message_limit}.").format(
-                    message_limit=format_number(current_service.message_limit)
-                )
-            )
-
     message_limit = IntegerField(
-        _l("Daily text fragments limit"),
+        _l("Daily text message limit"),
         validators=[DataRequired(message=_l("This cannot be empty")), validators.NumberRange(min=1)],
     )
 
 
 class FreeSMSAllowance(StripWhitespaceForm):
     free_sms_allowance = IntegerField(
-        _l("Numbers of text message fragments per year"),
+        _l("Numbers of text messages per year"),
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
 

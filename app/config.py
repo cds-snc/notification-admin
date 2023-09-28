@@ -138,9 +138,7 @@ class Config(object):
 
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
-    FF_BOUNCE_RATE_V15 = env.bool("FF_BOUNCE_RATE_V15", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
-    FF_EMAIL_DAILY_LIMIT = env.bool("FF_EMAIL_DAILY_LIMIT", False)
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
@@ -202,7 +200,6 @@ class Test(Development):
     WTF_CSRF_ENABLED = False
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     FF_SALESFORCE_CONTACT = False
-    FF_EMAIL_DAILY_LIMIT = False
 
 
 class Production(Config):

@@ -80,18 +80,6 @@
           )
         }}
       {% endcall %}
-      {% call row() %}
-        {{ text_field('Default letter branding') }}
-        {{ optional_text_field(
-          letter_branding,
-          default='No branding'
-        ) }}
-        {{ edit_field(
-            'Change',
-            url_for('.edit_organisation_letter_branding', org_id=current_org.id)
-          )
-        }}
-      {% endcall %}
     {% endcall %}
   </div>
 {% endblock %}

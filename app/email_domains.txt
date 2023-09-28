@@ -22,4 +22,7 @@ gov.nt.ca
 gov.nu.ca
 nshealth.ca
 opp.ca
+oipc.bc.ca
+cfp-pcaf.ca
+surete.qc.ca
 invcanada.ca

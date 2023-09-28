@@ -21,7 +21,6 @@ from tests.conftest import (
     create_active_caseworking_user,
     create_active_user_view_permissions,
     normalize_spaces,
-    set_config,
 )
 
 stub_template_stats = [
@@ -50,43 +49,11 @@ stub_template_stats = [
         "is_precompiled_letter": False,
     },
     {
-        "template_type": "letter",
-        "template_name": "three",
-        "template_id": "id-3",
-        "status": "delivered",
-        "count": 300,
-        "is_precompiled_letter": False,
-    },
-    {
         "template_type": "sms",
         "template_name": "one",
         "template_id": "id-1",
         "status": "delivered",
         "count": 50,
-        "is_precompiled_letter": False,
-    },
-    {
-        "template_type": "letter",
-        "template_name": "four",
-        "template_id": "id-4",
-        "status": "delivered",
-        "count": 400,
-        "is_precompiled_letter": True,
-    },
-    {
-        "template_type": "letter",
-        "template_name": "four",
-        "template_id": "id-4",
-        "status": "cancelled",
-        "count": 5,
-        "is_precompiled_letter": True,
-    },
-    {
-        "template_type": "letter",
-        "template_name": "thirty-three",
-        "template_id": "id-33",
-        "status": "cancelled",
-        "count": 5,
         "is_precompiled_letter": False,
     },
 ]
@@ -99,9 +66,6 @@ def create_stats(
     sms_requested=0,
     sms_delivered=0,
     sms_failed=0,
-    letters_requested=0,
-    letters_delivered=0,
-    letters_failed=0,
 ):
     return {
         "sms": {
@@ -113,11 +77,6 @@ def create_stats(
             "requested": emails_requested,
             "delivered": emails_delivered,
             "failed": emails_failed,
-        },
-        "letter": {
-            "requested": letters_requested,
-            "delivered": letters_delivered,
-            "failed": letters_failed,
         },
     }
 
@@ -283,30 +242,19 @@ def test_should_show_recent_templates_on_dashboard(
 
     headers = [header.text.strip() for header in page.find_all("h2") + page.find_all("h1")]
 
-    if app_.config["FF_BOUNCE_RATE_V15"]:
-        assert "Sent in the last week" in headers
-    else:
-        assert "Email in the last 24 hours" in headers
+    assert "Sent in the last week" in headers
 
     table_rows = page.find_all("tbody")[1].find_all("tr")
 
-    assert len(table_rows) == 4
+    assert len(table_rows) == 2
 
-    assert "Provided as PDF" in table_rows[0].find_all("th")[0].text
-    assert "Letter" in table_rows[0].find_all("th")[0].text
-    assert "400" in table_rows[0].find_all("td")[0].text
+    assert "two" in table_rows[0].find_all("th")[0].text
+    assert "Email template" in table_rows[0].find_all("th")[0].text
+    assert "200" in table_rows[0].find_all("td")[0].text
 
-    assert "three" in table_rows[1].find_all("th")[0].text
-    assert "Letter template" in table_rows[1].find_all("th")[0].text
-    assert "300" in table_rows[1].find_all("td")[0].text
-
-    assert "two" in table_rows[2].find_all("th")[0].text
-    assert "Email template" in table_rows[2].find_all("th")[0].text
-    assert "200" in table_rows[2].find_all("td")[0].text
-
-    assert "one" in table_rows[3].find_all("th")[0].text
-    assert "Text message template" in table_rows[3].find_all("th")[0].text
-    assert "100" in table_rows[3].find_all("td")[0].text
+    assert "one" in table_rows[1].find_all("th")[0].text
+    assert "Text message template" in table_rows[1].find_all("th")[0].text
+    assert "100" in table_rows[1].find_all("td")[0].text
 
 
 @freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
@@ -456,9 +404,8 @@ def test_should_show_upcoming_jobs_on_dashboard(
 @pytest.mark.parametrize(
     "permissions, column_name, expected_column_count",
     [
-        (["email", "sms"], ".w-1\\/2", 4),
-        (["email", "letter"], ".md\\:w-1\\/3", 5),
-        (["email", "sms"], ".w-1\\/2", 4),
+        (["email", "sms"], ".w-1\\/2", 6),
+        (["email", "sms"], ".w-1\\/2", 6),
     ],
 )
 def test_correct_columns_display_on_dashboard_v15(
@@ -473,38 +420,10 @@ def test_correct_columns_display_on_dashboard_v15(
     column_name,
     app_,
 ):
-    with set_config(app_, "FF_BOUNCE_RATE_V15", True):
-        service_one["permissions"] = permissions
+    service_one["permissions"] = permissions
 
-        page = client_request.get("main.service_dashboard", service_id=service_one["id"])
-        assert len(page.select(column_name)) == expected_column_count
-
-
-@pytest.mark.parametrize(
-    "permissions, column_name, expected_column_count",
-    [
-        (["email", "sms"], ".w-1\\/2", 2),
-        (["email", "letter"], ".md\\:w-1\\/3", 3),
-        (["email", "sms"], ".w-1\\/2", 2),
-    ],
-)
-def test_correct_columns_display_on_dashboard(
-    client_request: ClientRequest,
-    mock_get_service_templates,
-    mock_get_template_statistics,
-    mock_get_service_statistics,
-    mock_get_jobs,
-    service_one,
-    permissions,
-    expected_column_count,
-    column_name,
-    app_,
-):
-    with set_config(app_, "FF_BOUNCE_RATE_V15", False):
-        service_one["permissions"] = permissions
-
-        page = client_request.get("main.service_dashboard", service_id=service_one["id"])
-        assert len(page.select(column_name)) == expected_column_count
+    page = client_request.get("main.service_dashboard", service_id=service_one["id"])
+    assert len(page.select(column_name)) == expected_column_count
 
 
 def test_daily_usage_section_shown(
@@ -549,26 +468,6 @@ def test_daily_usage_section_shown(
             ".big-number-dark",
             3,
         ),
-        (
-            ["email", "sms", "letter"],
-            {
-                "email": {"requested": 0, "delivered": 0, "failed": 0},
-                "sms": {"requested": 99999, "delivered": 0, "failed": 0},
-                "letter": {"requested": 99999, "delivered": 0, "failed": 0},
-            },
-            ".big-number",
-            4,
-        ),
-        (
-            ["email", "sms", "letter"],
-            {
-                "email": {"requested": 0, "delivered": 0, "failed": 0},
-                "sms": {"requested": 0, "delivered": 0, "failed": 0},
-                "letter": {"requested": 100000, "delivered": 0, "failed": 0},
-            },
-            ".big-number-dark",
-            4,
-        ),
     ],
 )
 def test_correct_font_size_for_big_numbers(
@@ -595,106 +494,6 @@ def test_correct_font_size_for_big_numbers(
     )
 
     assert expected_column_count == len(page.select(".big-number-with-status {}".format(big_number_class)))
-
-
-# TODO: remove this test when we remove the FF_BOUNCE_RATE_V15 feature flag
-@pytest.mark.parametrize(
-    "permissions, totals, expected_big_numbers_single_plural, lang",
-    [
-        (
-            ["email", "sms"],
-            {
-                "email": {"requested": 0, "delivered": 0, "failed": 0},
-                "sms": {"requested": 0, "delivered": 0, "failed": 0},
-            },
-            ("0 emails sent No failures", "0 problem email addresses No problem addresses", "0 text messages sent No failures"),
-            "en",
-        ),
-        (
-            ["email", "sms"],
-            {
-                "email": {"requested": 0, "delivered": 0, "failed": 0},
-                "sms": {"requested": 0, "delivered": 0, "failed": 0},
-            },
-            (
-                "0 courriel envoyé Aucun échec",
-                "0 addresse courriel problématique Aucune adresse problématique",
-                "0 message texte envoyé Aucun échec",
-            ),
-            "fr",
-        ),
-        (
-            ["email", "sms"],
-            {
-                "email": {"requested": 1, "delivered": 1, "failed": 0},
-                "sms": {"requested": 1, "delivered": 1, "failed": 0},
-            },
-            ("1 email sent No failures", "0 problem email addresses No problem addresses", "1 text message sent No failures"),
-            "en",
-        ),
-        (
-            ["email", "sms"],
-            {
-                "email": {"requested": 1, "delivered": 1, "failed": 0},
-                "sms": {"requested": 1, "delivered": 1, "failed": 0},
-            },
-            (
-                "1 courriel envoyé Aucun échec",
-                "0 addresse courriel problématique Aucune adresse problématique",
-                "1 message texte envoyé Aucun échec",
-            ),
-            "fr",
-        ),
-        (
-            ["email", "sms"],
-            {
-                "email": {"requested": 2, "delivered": 2, "failed": 0},
-                "sms": {"requested": 2, "delivered": 2, "failed": 0},
-            },
-            ("2 emails sent No failures", "0 problem email addresses No problem addresses", "2 text messages sent No failures"),
-            "en",
-        ),
-        (
-            ["email", "sms"],
-            {
-                "email": {"requested": 2, "delivered": 2, "failed": 0},
-                "sms": {"requested": 2, "delivered": 2, "failed": 0},
-            },
-            (
-                "2 courriels envoyés Aucun échec",
-                "0 addresse courriel problématique Aucune adresse problématique",
-                "2 messages texte envoyés Aucun échec",
-            ),
-            "fr",
-        ),
-    ],
-)
-def test_dashboard_single_and_plural(
-    client_request,
-    mocker,
-    mock_get_service_templates,
-    mock_get_template_statistics,
-    mock_get_service_statistics,
-    mock_get_jobs,
-    service_one,
-    permissions,
-    totals,
-    expected_big_numbers_single_plural,
-    lang,
-    app_,
-):
-    with set_config(app_, "FF_BOUNCE_RATE_V15", False):
-        service_one["permissions"] = permissions
-
-        mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
-
-        page = client_request.get("main.service_dashboard", service_id=service_one["id"], lang=lang)
-
-        assert (
-            normalize_spaces(page.select(".big-number-with-status")[0].text),
-            normalize_spaces(page.select(".big-number-with-status")[1].text),
-            normalize_spaces(page.select(".big-number-with-status")[2].text),
-        ) == expected_big_numbers_single_plural
 
 
 @pytest.mark.parametrize(
@@ -782,18 +581,17 @@ def test_dashboard_single_and_plural_v15(
     lang,
     app_,
 ):
-    with set_config(app_, "FF_BOUNCE_RATE_V15", True):
-        service_one["permissions"] = permissions
+    service_one["permissions"] = permissions
 
-        mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
+    mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
 
-        page = client_request.get("main.service_dashboard", service_id=service_one["id"], lang=lang)
+    page = client_request.get("main.service_dashboard", service_id=service_one["id"], lang=lang)
 
-        assert (
-            normalize_spaces(page.select(".big-number-with-status")[0].text),
-            normalize_spaces(page.select(".big-number-with-status")[1].text),
-            normalize_spaces(page.select(".big-number-with-status")[2].text),
-        ) == expected_big_numbers_single_plural
+    assert (
+        normalize_spaces(page.select(".big-number-with-status")[0].text),
+        normalize_spaces(page.select(".big-number-with-status")[1].text),
+        normalize_spaces(page.select(".big-number-with-status")[2].text),
+    ) == expected_big_numbers_single_plural
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -1231,30 +1029,21 @@ def test_route_for_service_permissions(
 
 def test_aggregate_template_stats():
     expected = aggregate_template_usage(copy.deepcopy(stub_template_stats))
-    assert len(expected) == 4
-    assert expected[0]["template_name"] == "four"
-    assert expected[0]["count"] == 400
-    assert expected[0]["template_id"] == "id-4"
-    assert expected[0]["template_type"] == "letter"
-    assert expected[1]["template_name"] == "three"
-    assert expected[1]["count"] == 300
-    assert expected[1]["template_id"] == "id-3"
-    assert expected[1]["template_type"] == "letter"
-    assert expected[2]["template_name"] == "two"
-    assert expected[2]["count"] == 200
-    assert expected[2]["template_id"] == "id-2"
-    assert expected[2]["template_type"] == "email"
-    assert expected[3]["template_name"] == "one"
-    assert expected[3]["count"] == 100
-    assert expected[3]["template_id"] == "id-1"
-    assert expected[3]["template_type"] == "sms"
+    assert len(expected) == 2
+    assert expected[0]["template_name"] == "two"
+    assert expected[0]["count"] == 200
+    assert expected[0]["template_id"] == "id-2"
+    assert expected[0]["template_type"] == "email"
+    assert expected[1]["template_name"] == "one"
+    assert expected[1]["count"] == 100
+    assert expected[1]["template_id"] == "id-1"
+    assert expected[1]["template_type"] == "sms"
 
 
 def test_aggregate_notifications_stats():
     expected = aggregate_notifications_stats(copy.deepcopy(stub_template_stats))
     assert expected == {
         "sms": {"requested": 100, "delivered": 50, "failed": 0},
-        "letter": {"requested": 700, "delivered": 700, "failed": 0},
         "email": {"requested": 200, "delivered": 0, "failed": 100},
     }
 
@@ -1412,97 +1201,61 @@ def test_get_free_paid_breakdown_for_billable_units(now, expected_number_of_mont
                     "free": 100000,
                     "name": "April",
                     "paid": 0,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 100000,
                     "name": "May",
                     "paid": 0,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 50000,
                     "name": "June",
                     "paid": 50000,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 0,
                     "name": "July",
                     "paid": 0,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 0,
                     "name": "August",
                     "paid": 0,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 0,
                     "name": "September",
                     "paid": 0,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 0,
                     "name": "October",
                     "paid": 0,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 0,
                     "name": "November",
                     "paid": 0,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 0,
                     "name": "December",
                     "paid": 0,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 0,
                     "name": "January",
                     "paid": 0,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 0,
                     "name": "February",
                     "paid": 2000,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
                 {
                     "free": 0,
                     "name": "March",
                     "paid": 0,
-                    "letter_total": 0,
-                    "letters": [],
-                    "letter_cumulative": 0,
                 },
             ][:expected_number_of_months]
         )
@@ -1541,3 +1294,121 @@ def test_a11y_template_usage_should_not_contain_duplicate_ids(
         list.append(element["id"])
 
     assert len(list) == len(set(list))  # check for duplicates
+
+
+@pytest.mark.parametrize(
+    "totals, notification_type, expected_color, expected_sent, expected_limit, expect_accessible_message",
+    [
+        # With a service email limit of 1000, and 100 emails sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 100, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            },
+            "email",
+            "text-green-300",
+            "100",
+            "1,000",
+            False,
+        ),
+        # With a service SMS limit of 1000, and 10 sms sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 10, "delivered": 0, "failed": 0},
+            },
+            "sms",
+            "text-green-300",
+            "10",
+            "1,000",
+            False,
+        ),
+        # With a service email limit of 1000, and 800 emails sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 800, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            },
+            "email",
+            "text-red-300",
+            "800",
+            "1,000",
+            True,
+        ),
+        # With a service SMS limit of 1000, and 900 sms sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 900, "delivered": 0, "failed": 0},
+            },
+            "sms",
+            "text-red-300",
+            "900",
+            "1,000",
+            True,
+        ),
+        # With a service email limit of 1000, and 1000 emails sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 1000, "delivered": 0, "failed": 0},
+                "sms": {"requested": 0, "delivered": 0, "failed": 0},
+            },
+            "email",
+            "text-red-300",
+            "1,000",
+            "1,000",
+            True,
+        ),
+        # With a service SMS limit of 1000, and 1000 sms sent in the past 24 hours
+        (
+            {
+                "email": {"requested": 0, "delivered": 0, "failed": 0},
+                "sms": {"requested": 1000, "delivered": 0, "failed": 0},
+            },
+            "sms",
+            "text-red-300",
+            "1,000",
+            "1,000",
+            True,
+        ),
+    ],
+)
+def test_dashboard_daily_limits(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    totals,
+    notification_type,
+    expected_color,
+    expected_sent,
+    expected_limit,
+    expect_accessible_message,
+    app_,
+):
+    service_one["permissions"] = (["email", "sms"],)
+
+    mocker.patch("app.main.views.dashboard.get_dashboard_totals", return_value=totals)
+
+    page = client_request.get("main.service_dashboard", service_id=service_one["id"])
+
+    component_index = 0 if notification_type == "email" else 1
+
+    assert page.find_all(class_="remaining-messages")[component_index].find(class_="rm-used").text == expected_sent
+    assert page.find_all(class_="remaining-messages")[component_index].find(class_="rm-total").text[3:] == expected_limit
+    assert (
+        expected_color in page.find_all(class_="remaining-messages")[component_index].find(class_="rm-bar-usage").attrs["class"]
+    )
+
+    if expect_accessible_message:
+        assert (
+            len(
+                page.find_all(class_="remaining-messages")[component_index]
+                .find(class_="rm-message")
+                .find_all(class_="visually-hidden")
+            )
+            == 2
+        )

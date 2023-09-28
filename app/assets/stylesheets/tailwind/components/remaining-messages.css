@@ -1,0 +1,33 @@
+@layer components {
+  /*! purgecss start ignore */
+
+  .remaining-messages {
+    @apply bg-blue text-white p-gutterHalf;
+  }
+
+  .rm-header {
+    @apply text-smaller inline-block;
+  }
+
+  .rm-used {
+    @apply .text-titlelarge pb-4 font-bold leading-none;
+  }
+
+  .rm-total {
+    float: right;
+  }
+
+  .rm-bar {
+    box-shadow: inset 0 -10px #cfd5dd;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .rm-bar-usage {
+    width: max(var(--usage), 4px);
+    height: 30px;
+    background: currentColor;
+  }
+
+  /*! purgecss end ignore */
+}

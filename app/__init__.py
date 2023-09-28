@@ -535,7 +535,7 @@ def format_notification_status_as_field_status(status, notification_type):
 
 def format_notification_status_as_url(status, notification_type):
     def url(_anchor):
-        return gca_url_for("delivery_failure") + "#" + _anchor
+        return gca_url_for("message_delivery_status") + "#" + _anchor
 
     if status not in {
         "technical-failure",

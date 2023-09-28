@@ -63,7 +63,7 @@
     "gulp-prettyerror": "1.2.1",
     "gulp-rename": "^2.0.0",
     "gulp-uglify": "3.0.2",
-    "jest": "29.5.0",
+    "jest": "29.6.4",
     "jest-environment-jsdom": "^29.5.0",
     "jshint": "2.13.6",
     "mini-css-extract-plugin": "^0.12.0",
