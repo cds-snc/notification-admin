@@ -60,12 +60,12 @@ FAILURE_STATUSES = [
     "validation-failed",
 ]
 CSV_COLUMN_HEADER_MAPPINGS = [
-    {"original_heading": "email address", "en": "Email address", "fr": "Adresse courriel"},  #
+    {"original_heading": "email address", "en": "Email address", "fr": "Adresse courriel"},
     {"original_heading": "email_address", "en": "Email address", "fr": "Adresse courriel"},
     {"original_heading": "phone number", "en": "Phone number", "fr": "Numéro de téléphone"},
     {"original_heading": "phone_number", "en": "Phone number", "fr": "Adresse courriel"},
     {"original_heading": "Row number", "en": "Row number", "fr": "Numéro de ligne"},
-    {"original_heading": "Name", "en": "Name", "fr": "Nom"},
+    {"original_heading": "name", "en": "Name", "fr": "Nom"},
     {"original_heading": "Recipient", "en": "Recipient", "fr": "Envoyer"},
     {"original_heading": "Template", "en": "Template", "fr": "Gabarit"},
     {"original_heading": "Type", "en": "Type", "fr": "Type"},
@@ -223,9 +223,15 @@ def localize_and_format_csv_headers(column_headers: list) -> list:
     return localized_headers
 
 
+def localize_column_value(csv: RecipientCSV):
+    pass
+
+
 def generate_notifications_csv(**kwargs):
-    from app import notification_api_client
+    from app import get_current_locale, notification_api_client
     from app.s3_client.s3_csv_client import s3download
+
+    lang = get_current_locale(current_app)
 
     if "page" not in kwargs:
         kwargs["page"] = 1
@@ -267,9 +273,9 @@ def generate_notifications_csv(**kwargs):
                     + [original_upload[notification["row_number"] - 1].get(header).data for header in original_column_headers]
                     + [
                         notification["template_name"],
-                        notification["template_type"],
+                        notification["template_type"] if lang == "en" else _l(notification["template_type"]),
                         notification["job_name"],
-                        notification["status"],
+                        notification["status"] if lang == "en" else _l(notification["status"]),
                         notification["created_at"],
                     ]
                 )
@@ -277,11 +283,11 @@ def generate_notifications_csv(**kwargs):
                 values = [
                     notification["recipient"],
                     notification["template_name"],
-                    notification["template_type"],
+                    notification["template_type"] if lang == "en" else _l(notification["template_type"]),
                     notification["created_by_name"] or "",
                     notification["created_by_email_address"] or "",
                     notification["job_name"] or "",
-                    notification["status"],
+                    notification["status"] if lang == "en" else _l(notification["status"]),
                     notification["created_at"],
                 ]
             yield Spreadsheet.from_rows([map(str, values)]).as_csv_data
