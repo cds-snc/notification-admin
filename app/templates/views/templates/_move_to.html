@@ -1,9 +1,10 @@
 {% from "components/radios.html" import radios, radios_nested %}
 {% from "components/page-footer.html" import page_footer %}
 
-<div id="sticky_template_forms" aria-live="assertive">
+<div id="sticky_template_forms">
   <button type="submit" name="operation" value="unknown" hidden></button>
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+  <fieldset>
   {% if templates_and_folders_form.move_to.choices and template_list.templates_to_show %}
     <div id="move_to_folder_radios">
       <div class="js-will-stick-at-bottom-when-scrolling">
@@ -14,19 +15,17 @@
       </div>
     </div>
     <div id="move_to_new_folder_form">
-      <fieldset class="js-will-stick-at-bottom-when-scrolling contain-floats w-full">
-        <legend class="visuallyhidden">{{ _('Add to new folder') }}</legend>
+      <div class="js-will-stick-at-bottom-when-scrolling contain-floats w-full">
         {{ textbox(templates_and_folders_form.move_to_new_folder_name, width='w-full') }}
         {{ page_footer(_('Add to new folder'), button_name='operation', button_value='move-to-new-folder') }}
-      </fieldset>
+      </div>
     </div>
   {% endif %}
   <div id="add_new_folder_form">
-    <fieldset class="js-will-stick-at-bottom-when-scrolling contain-floats w-full">
-      <legend class="visuallyhidden">{{ _('Add new folder') }}</legend>
+    <div class="js-will-stick-at-bottom-when-scrolling contain-floats w-full">
       {{ textbox(templates_and_folders_form.add_new_folder_name, width='w-full') }}
       {{ page_footer(_('Add new folder'), button_name='operation', button_value='add-new-folder') }}
-    </fieldset>
+    </div>
   </div>
   <div id="add_new_template_form">
     <div class="js-will-stick-at-bottom-when-scrolling">
@@ -35,7 +34,14 @@
       </a>
     </div>
   </div>
-  <div class="selection-counter visuallyhidden" role="status">
-    {{ _('Nothing selected') }}
-  </div>
+  <div class="aria-live-region visuallyhidden" aria-live="polite" role="status">
+      <div class="selection-counter">
+        {{ _('Nothing selected') }}
+      </div>
+      <legend id="aria-live-legend">
+        {{ _('Create and copy templates or create a new folder') }}
+      </legend>
+    </div>
+  </fieldset>
+
 </div>

@@ -10,9 +10,10 @@
       this.$form.find("button[value=unknown]").remove();
 
       this.$liveRegionCounter = this.$form.find(".selection-counter");
-
-      this.$liveRegionCounter.before(this.nothingSelectedButtons);
-      this.$liveRegionCounter.before(this.itemsSelectedButtons);
+      this.$legend = this.$form.find("#aria-live-legend");
+      this.$buttonContainer = this.$form.find(".aria-live-region");
+      this.$buttonContainer.before(this.nothingSelectedButtons);
+      this.$buttonContainer.before(this.itemsSelectedButtons);
 
       // all the diff states that we want to show or hide
       this.states = [
@@ -193,6 +194,7 @@
       // and then pretend a checkbox was clicked to work out whether to show zero or non-zero options.
       // This calls a render at the end
       this.currentState = "nothing-selected-buttons";
+      // this.legendText = window.polyglot.t("create_template_legend")
       this.templateFolderCheckboxChanged();
       if (targetSelector) {
         let setFocus = this.getFocusRoutine(targetSelector, false);
@@ -236,6 +238,24 @@
       },
     };
 
+    this.legendText = {
+      default: window.polyglot.t("create_template_legend"),
+      selected: (numSelected) => {
+        if (numSelected === 1) {
+          return window.polyglot.t("move_template_legend");
+        }
+        return window.polyglot.t("move_templates_legend");
+      },
+      update: (numSelected) => {
+        let message =
+          numSelected > 0
+            ? this.legendText.selected(numSelected)
+            : this.legendText.default;
+
+        this.$legend.html(message);
+      },
+    };
+
     this.templateFolderCheckboxChanged = function () {
       let numSelected = this.countSelectedCheckboxes();
 
@@ -257,6 +277,7 @@
         this.render();
       }
 
+      this.legendText.update(numSelected);
       this.selectionStatus.update(numSelected);
 
       $(".template-list-selected-counter").toggle(this.hasCheckboxes());
@@ -279,7 +300,7 @@
       // detach everything, unless they are the currentState
       this.states.forEach((state) =>
         state.key === this.currentState && state.key !== "add-new-template"
-          ? this.$liveRegionCounter.before(state.$el)
+          ? this.$buttonContainer.before(state.$el)
           : state.$el.detach(),
       );
 
