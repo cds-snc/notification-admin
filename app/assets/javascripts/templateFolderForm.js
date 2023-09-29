@@ -194,7 +194,6 @@
       // and then pretend a checkbox was clicked to work out whether to show zero or non-zero options.
       // This calls a render at the end
       this.currentState = "nothing-selected-buttons";
-      // this.legendText = window.polyglot.t("create_template_legend")
       this.templateFolderCheckboxChanged();
       if (targetSelector) {
         let setFocus = this.getFocusRoutine(targetSelector, false);
