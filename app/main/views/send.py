@@ -1148,7 +1148,7 @@ def get_spreadsheet_column_headings_from_template(template):
     current_lang = get_current_locale(current_app)
     column_headings = []
 
-    for column_heading in first_column_headings[current_lang][template.template_type]+ list(template.placeholders):
+    for column_heading in first_column_headings[current_lang][template.template_type] + list(template.placeholders):
         if column_heading not in Columns.from_keys(column_headings):
             column_headings.append(column_heading)
 
