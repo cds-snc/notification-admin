@@ -1,0 +1,15 @@
+{% from "components/table.html" import edit_field, text_field %}
+
+{% macro profile_item(label, value, action=None) %}
+  <div class="flex items-center border-b-1 border-gray-400 py-5">
+    <div class="w-3/4 flex-grow" tabindex="0">
+      <span class="text-small text-gray-600">{{ text_field(label) }}</span>
+      <span class="font-bold inline-block mt-2 break-word mr-5">{{ value }}</span>
+    </div>
+    <div class="w-1/4">
+      {% if action %}
+        <span class="mt-2">{{ edit_field(_('Change'), url_for(action), for="{} {}".format(_('your'), label.lower())) }}</span>
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}
