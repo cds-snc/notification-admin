@@ -63,7 +63,7 @@ CSV_COLUMN_HEADER_MAPPINGS = [
     {"original_heading": "email address", "en": "Email address", "fr": "Adresse courriel"},
     {"original_heading": "email_address", "en": "Email address", "fr": "Adresse courriel"},
     {"original_heading": "phone number", "en": "Phone number", "fr": "Numéro de téléphone"},
-    {"original_heading": "phone_number", "en": "Phone number", "fr": "Adresse courriel"},
+    {"original_heading": "phone_number", "en": "Phone number", "fr": "Numéro de téléphone"},
     {"original_heading": "Row number", "en": "Row number", "fr": "Numéro de ligne"},
     {"original_heading": "name", "en": "Name", "fr": "Nom"},
     {"original_heading": "Recipient", "en": "Recipient", "fr": "Envoyer"},
