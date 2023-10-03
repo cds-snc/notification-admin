@@ -648,8 +648,8 @@ def test_upload_valid_csv_shows_preview_and_table(
     for row_index, row in enumerate(
         [
             (
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="6502532223">6502532223</div> </td>',  # noqa: E501
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="A">A</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">6502532223</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">A</div> </td>',  # noqa: E501
                 (
                     '<td class="table-field-left-aligned"> '
                     '<div class="table-field-status-default"> '
@@ -661,8 +661,8 @@ def test_upload_valid_csv_shows_preview_and_table(
                 ),
             ),
             (
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="6502532224">6502532224</div> </td>',  # noqa: E501
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="B">B</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">6502532224</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">B</div> </td>',  # noqa: E501
                 (
                     '<td class="table-field-left-aligned"> '
                     '<div class="table-field-status-default"> '
@@ -674,8 +674,8 @@ def test_upload_valid_csv_shows_preview_and_table(
                 ),
             ),
             (
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="6502532225">6502532225</div> </td>',  # noqa: E501
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="C">C</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">6502532225</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">C</div> </td>',  # noqa: E501
                 (
                     '<td class="table-field-left-aligned"> '
                     '<div class="table-field-status-default"> '
