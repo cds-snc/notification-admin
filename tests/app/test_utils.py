@@ -180,14 +180,14 @@ def test_spreadsheet_checks_for_bad_arguments(args, kwargs):
         (
             None,
             [
-                "Recipient,Template,Type,Sent by,Sent by email,Job,Status,Time\n",
+                "Recipient,Template,Type,Sent by,Sent by email,Job,Status,Sent Time\n",
                 "foo@bar.com,foo,sms,,sender@email.canada.ca,,Delivered,1943-04-19 12:00:00\r\n",
             ],
         ),
         (
             "Anne Example",
             [
-                "Recipient,Template,Type,Sent by,Sent by email,Job,Status,Time\n",
+                "Recipient,Template,Type,Sent by,Sent by email,Job,Status,Sent Time\n",
                 "foo@bar.com,foo,sms,Anne Example,sender@email.canada.ca,,Delivered,1943-04-19 12:00:00\r\n",
             ],
         ),
@@ -221,7 +221,7 @@ def test_generate_notifications_csv_without_job(
             phone_number
             07700900123
         """,
-            ["Row number", "Phone number", "Template", "Type", "Job", "Status", "Time"],
+            ["Row number", "Phone number", "Template", "Type", "Job", "Status", "Sent Time"],
             [
                 "1",
                 "07700900123",
@@ -236,7 +236,7 @@ def test_generate_notifications_csv_without_job(
             """
             phone_number, a, b, c
             07700900123,  🐜,🐝,🦀
-        """,
+            """,
             [
                 "Row number",
                 "Phone number",
@@ -247,7 +247,7 @@ def test_generate_notifications_csv_without_job(
                 "Type",
                 "Job",
                 "Status",
-                "Time",
+                "Sent Time",
             ],
             [
                 "1",
@@ -277,7 +277,7 @@ def test_generate_notifications_csv_without_job(
                 "Type",
                 "Job",
                 "Status",
-                "Time",
+                "Sent Time",
             ],
             [
                 "1",

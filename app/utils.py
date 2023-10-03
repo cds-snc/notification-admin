@@ -60,20 +60,20 @@ FAILURE_STATUSES = [
     "validation-failed",
 ]
 CSV_COLUMN_HEADER_MAPPINGS = [
-    {"original_heading": "email address", "en": "Email address", "fr": "Adresse courriel"},
-    {"original_heading": "email_address", "en": "Email address", "fr": "Adresse courriel"},
-    {"original_heading": "phone number", "en": "Phone number", "fr": "Numéro de téléphone"},
-    {"original_heading": "phone_number", "en": "Phone number", "fr": "Numéro de téléphone"},
-    {"original_heading": "Row number", "en": "Row number", "fr": "Numéro de ligne"},
-    {"original_heading": "name", "en": "Name", "fr": "Nom"},
-    {"original_heading": "Recipient", "en": "Recipient", "fr": "Envoyer"},
-    {"original_heading": "Template", "en": "Template", "fr": "Gabarit"},
-    {"original_heading": "Type", "en": "Type", "fr": "Type"},
-    {"original_heading": "Sent by", "en": "Sent by", "fr": "Envoyé par"},
-    {"original_heading": "Sent by email", "en": "Sent by email", "fr": "Envoyé par email"},
-    {"original_heading": "Job", "en": "Job", "fr": "Job"},
-    {"original_heading": "Status", "en": "Status", "fr": "Ètat"},
-    {"original_heading": "Time", "en": "Time", "fr": "Heure d'envoi"},
+    {"original_heading": "email address", "en": "Email address", "fr": _l("Email address")},
+    {"original_heading": "email_address", "en": "Email address", "fr": _l("Email address")},
+    {"original_heading": "phone number", "en": "Phone number", "fr": _l("Phone number")},
+    {"original_heading": "phone_number", "en": "Phone number", "fr": _l("Phone number")},
+    {"original_heading": "Row number", "en": "Row number", "fr": _l("Row number")},
+    {"original_heading": "name", "en": "Name", "fr": _l("Name")},
+    {"original_heading": "Recipient", "en": "Recipient", "fr": _l("Recipient")},
+    {"original_heading": "Template", "en": "Template", "fr": _l("Template")},
+    {"original_heading": "Type", "en": "Type", "fr": _l("Type")},
+    {"original_heading": "Sent by", "en": "Sent by", "fr": _l("Sent by")},
+    {"original_heading": "Sent by email", "en": "Sent by email", "fr": _l("Sent by email")},
+    {"original_heading": "Job", "en": "Job", "fr": _l("Job")},
+    {"original_heading": "Status", "en": "Status", "fr": _l("Status")},
+    {"original_heading": "Time", "en": "Sent Time", "fr": _l("Sent Time")},
 ]
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
 
@@ -219,12 +219,8 @@ def localize_and_format_csv_headers(column_headers: list) -> list:
     localized_headers = []
     for header in column_headers:
         localized_header = [mapped for mapped in CSV_COLUMN_HEADER_MAPPINGS if mapped["original_heading"] == header]
-        localized_headers.append(localized_header[0][lang] if len(localized_header) >= 1 else header)
+        localized_headers.append(str(localized_header[0][lang]) if len(localized_header) >= 1 else header)
     return localized_headers
-
-
-def localize_column_value(csv: RecipientCSV):
-    pass
 
 
 def generate_notifications_csv(**kwargs):
