@@ -20,6 +20,7 @@ import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPl
 
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import ListMaxIndentPlugin from "./plugins/ListMaxIndentPlugin";
+import TabIndentationPlugin from "./plugins/TabIndentationPlugin";
 
 export const Editor = ({
   content,
@@ -109,6 +110,7 @@ export const Editor = ({
         <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
         <ListPlugin />
         <ListMaxIndentPlugin maxDepth={5} />
+        <TabIndentationPlugin />
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
       </LexicalComposer>
     </div>

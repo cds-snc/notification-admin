@@ -75,6 +75,9 @@ ul li.editor-listitem {
   padding-left: 0.5rem;
 }
 
+li.editor-nested-listitem {
+  list-style: none;
+}
 /* Link editor */
 .link-editor {
   position: absolute;
