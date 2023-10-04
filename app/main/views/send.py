@@ -35,6 +35,7 @@ from xlrd.xldate import XLDateError
 
 from app import (
     current_service,
+    get_current_locale,
     job_api_client,
     notification_api_client,
     redis_client,
@@ -628,7 +629,7 @@ def send_test_preview(service_id, template_id, filetype):
     return TemplatePreview.from_utils_template(template, filetype, page=request.args.get("page"))
 
 
-def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_pdf=False):
+def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_pdf=False, user_language="en"):
     try:
         # The happy path is that the job doesn’t already exist, so the
         # API will return a 404 and the client will raise HTTPError.
@@ -692,6 +693,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         remaining_messages=recipients_remaining_messages,
         international_sms=current_service.has_permission("international_sms"),
         max_rows=get_csv_max_rows(service_id),
+        user_language=user_language,
     )
 
     if request.args.get("from_test"):
@@ -764,7 +766,8 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 )
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def check_messages(service_id, template_id, upload_id, row_index=2):
-    data = _check_messages(service_id, template_id, upload_id, row_index)
+    current_lang = get_current_locale(current_app)
+    data = _check_messages(service_id, template_id, upload_id, row_index, user_language=current_lang)
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
     data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily)
     data["time_to_reset"] = get_limit_reset_time_et()
@@ -1142,9 +1145,10 @@ def get_sms_sender_from_session():
 
 
 def get_spreadsheet_column_headings_from_template(template):
+    current_lang = get_current_locale(current_app)
     column_headings = []
 
-    for column_heading in first_column_headings[template.template_type] + list(template.placeholders):
+    for column_heading in first_column_headings[current_lang][template.template_type] + list(template.placeholders):
         if column_heading not in Columns.from_keys(column_headings):
             column_headings.append(column_heading)
 
