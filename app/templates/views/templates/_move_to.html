@@ -4,7 +4,6 @@
 <div id="sticky_template_forms">
   <button type="submit" name="operation" value="unknown" hidden></button>
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-  <fieldset>
   {% if templates_and_folders_form.move_to.choices and template_list.templates_to_show %}
     <div id="move_to_folder_radios">
       <div class="js-will-stick-at-bottom-when-scrolling">
@@ -27,7 +26,7 @@
       {{ page_footer(_('Add new folder'), button_name='operation', button_value='add-new-folder') }}
     </div>
   </div>
-  <div id="add_new_template_form">
+  <div role='group' id="add_new_template_form">
     <div class="js-will-stick-at-bottom-when-scrolling">
       <a class="button" href="{{ url_for('main.create_template', service_id=current_service.id, template_type=template_type, template_folder_id=current_template_folder_id) }}">
         {{ _('Create template') }}
@@ -38,10 +37,8 @@
       <div class="selection-counter">
         {{ _('Nothing selected') }}
       </div>
-      <legend id="aria-live-legend">
-        {{ _('Create and copy templates or create a new folder') }}
-      </legend>
+      <div id="aria-live-legend">
+        {{ _('You are browsing templates. Create and copy template or add new folder.') }}
+      </div>
     </div>
-  </fieldset>
-
 </div>
