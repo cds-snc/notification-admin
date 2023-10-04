@@ -210,7 +210,7 @@ def test_generate_notifications_csv_without_job(
                 job_name=None,
             ),
         )
-        assert list(generate_notifications_csv(service_id=fake_uuid)) == expected_content
+        assert list(generate_notifications_csv(service_id=fake_uuid))[1::] == expected_content
 
 
 @pytest.mark.parametrize(
@@ -308,7 +308,8 @@ def test_generate_notifications_csv_returns_correct_csv_file(
             "app.s3_client.s3_csv_client.s3download",
             return_value=original_file_contents,
         )
-        csv_content = generate_notifications_csv(service_id="1234", job_id=fake_uuid, template_type="sms")
+        # Remove encoded BOM bytes before parsing
+        csv_content = list(generate_notifications_csv(service_id="1234", job_id=fake_uuid, template_type="sms"))[1::]
         csv_file = DictReader(StringIO("\n".join(csv_content)))
         assert csv_file.fieldnames == expected_column_headers
         assert next(csv_file) == dict(zip(expected_column_headers, expected_1st_row))
@@ -364,11 +365,14 @@ def test_generate_notifications_csv_calls_twice_if_next_link(
             ],
         )
 
-        csv_content = generate_notifications_csv(
-            service_id=service_id,
-            job_id=job_id or fake_uuid,
-            template_type="sms",
-        )
+        # Remove encoded BOM bytes before parsing
+        csv_content = list(
+            generate_notifications_csv(
+                service_id=service_id,
+                job_id=job_id or fake_uuid,
+                template_type="sms",
+            )
+        )[1::]
         csv = list(DictReader(StringIO("\n".join(csv_content))))
 
         assert len(csv) == 10
