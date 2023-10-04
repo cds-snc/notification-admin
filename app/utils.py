@@ -255,7 +255,8 @@ def generate_notifications_csv(**kwargs):
                 "Time",
             ]
         )
-
+    # Add encoded Byte Order Mark to the csv so MS Excel treats it as UTF-8 and properly renders accented FR characters.
+    yield u'\uFEFF'.encode('utf-8')
     yield ",".join(fieldnames) + "\n"
 
     while kwargs["page"]:
