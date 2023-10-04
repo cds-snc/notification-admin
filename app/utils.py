@@ -65,7 +65,6 @@ CSV_COLUMN_HEADER_MAPPINGS = [
     {"original_heading": "phone number", "en": "Phone number", "fr": _l("Phone number")},
     {"original_heading": "phone_number", "en": "Phone number", "fr": _l("Phone number")},
     {"original_heading": "Row number", "en": "Row number", "fr": _l("Row number")},
-    {"original_heading": "name", "en": "Name", "fr": _l("Name")},
     {"original_heading": "Recipient", "en": "Recipient", "fr": _l("Recipient")},
     {"original_heading": "Template", "en": "Template", "fr": _l("Template")},
     {"original_heading": "Type", "en": "Type", "fr": _l("Type")},
