@@ -34,11 +34,13 @@
     </div>
   </div>
   <div class="aria-live-region visuallyhidden" aria-live="polite" role="status">
+    {% if templates_and_folders_form.move_to.choices and template_list.templates_to_show %}
       <div class="selection-counter">
         {{ _('Nothing selected') }}
       </div>
       <div id="aria-live-legend">
         {{ _('You are browsing templates. Create and copy template or add new folder.') }}
       </div>
+    {% endif %}
     </div>
 </div>
