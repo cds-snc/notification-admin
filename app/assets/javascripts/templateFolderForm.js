@@ -241,9 +241,9 @@
       default: window.polyglot.t("create_template_legend"),
       selected: (numSelected) => {
         if (numSelected === 1) {
-          return window.polyglot.t("move_template_legend");
+          return window.polyglot.t("selecting_templates_legend");
         }
-        return window.polyglot.t("move_templates_legend");
+        return window.polyglot.t("move_template_legend");
       },
       update: (numSelected) => {
         let message =
