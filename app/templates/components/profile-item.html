@@ -1,14 +1,14 @@
 {% from "components/table.html" import edit_field, text_field %}
 
 {% macro profile_item(label, value, action=None) %}
-  <div class="flex items-end border-b-1 border-gray-400 py-5">
-    <div class="w-3/4" tabindex="0">
-      <div class="text-small text-gray-600">{{ text_field(label) }}</div>
+  <div class="flex flex-wrap md:flex-no-wrap items-end border-b-1 border-gray-400 py-5">
+    <div class="w-full sm:w-3/4" tabindex="0">
+      <div class="text-gray-600">{{ text_field(label) }}</div>
       <div class="font-bold inline-block mt-2 break-words mr-5 overflow-anywhere">{{ value }}</div>
     </div>
-    <div class="w-1/4 text-right">
+    <div class="w-full sm:w-1/4 sm:text-right">
       {% if action %}
-        <span class="text-small mt-2">{{ edit_field(_('Change'), url_for(action), for="{} {}".format(_('your'), label.lower())) }}</span>
+        <span class="mt-2">{{ edit_field(_('Change'), url_for(action), for="{} {}".format(_('your'), label.lower())) }}</span>
       {% endif %}
     </div>
   </div>
