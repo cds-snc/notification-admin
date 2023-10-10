@@ -262,7 +262,8 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
         allow_adding_letter_template=current_service.has_permission("letter"),
         allow_adding_copy_of_template=(current_service.all_templates or len(current_user.service_ids) > 1),
     )
-    option_hints = {template_folder_id: "current folder"}
+
+    option_hints = {template_folder_id if template_folder_id is not None else "__NONE__": "current folder"}
 
     if request.method == "POST" and templates_and_folders_form.validate_on_submit():
         if not current_user.has_permissions("manage_templates"):
