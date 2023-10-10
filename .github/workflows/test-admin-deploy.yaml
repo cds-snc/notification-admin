@@ -175,6 +175,7 @@ jobs:
           CYPRESS_BASE_URL: ${{needs.deploy-test-admin.outputs.LAMBDA_URL}}
         with:
           record: false
+          config: "video=false,screenshotOnRunFailure=false"
           build: npx cypress info
           working-directory: tests_cypress
           spec: |
