@@ -14,28 +14,33 @@
       </div>
     </div>
     <div id="move_to_new_folder_form">
-      <fieldset class="js-will-stick-at-bottom-when-scrolling contain-floats w-full">
-        <legend class="visuallyhidden">{{ _('Add to new folder') }}</legend>
+      <div class="js-will-stick-at-bottom-when-scrolling contain-floats w-full">
         {{ textbox(templates_and_folders_form.move_to_new_folder_name, width='w-full') }}
         {{ page_footer(_('Add to new folder'), button_name='operation', button_value='move-to-new-folder') }}
-      </fieldset>
+      </div>
     </div>
   {% endif %}
   <div id="add_new_folder_form">
-    <fieldset class="js-will-stick-at-bottom-when-scrolling contain-floats w-full">
-      <legend class="visuallyhidden">{{ _('Add new folder') }}</legend>
+    <div class="js-will-stick-at-bottom-when-scrolling contain-floats w-full">
       {{ textbox(templates_and_folders_form.add_new_folder_name, width='w-full') }}
       {{ page_footer(_('Add new folder'), button_name='operation', button_value='add-new-folder') }}
-    </fieldset>
+    </div>
   </div>
-  <div id="add_new_template_form">
+  <div role='group' id="add_new_template_form">
     <div class="js-will-stick-at-bottom-when-scrolling">
       <a class="button" href="{{ url_for('main.create_template', service_id=current_service.id, template_type=template_type, template_folder_id=current_template_folder_id) }}">
         {{ _('Create template') }}
       </a>
     </div>
   </div>
-  <div class="selection-counter visuallyhidden" role="status" aria-live="polite">
-    {{ _('Nothing selected') }}
-  </div>
+  <div class="aria-live-region visuallyhidden" aria-live="polite" role="status">
+    {% if templates_and_folders_form.move_to.choices and template_list.templates_to_show %}
+      <div class="selection-counter">
+        {{ _('Nothing selected') }}
+      </div>
+      <div id="aria-live-legend">
+        {{ _('You are browsing templates. Create and copy template or add new folder.') }}
+      </div>
+    {% endif %}
+    </div>
 </div>
