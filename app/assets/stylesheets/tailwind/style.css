@@ -357,4 +357,7 @@ label {
   }
 }
 
+.overflow-anywhere {
+  overflow-wrap: anywhere;
+}
 /*! purgecss end ignore */

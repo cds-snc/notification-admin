@@ -21,7 +21,7 @@
     {% endif %}
   </p>
 {% else %}
-  {% set display_checkboxes = current_user.has_permissions('manage_templates') and not sending_view %}
+  {% set display_checkboxes = current_user.has_permissions('manage_templates') and not sending_view and template_list.templates_to_show %}
 
   <nav id="template-list" class="{{ 'top-gutter-5px contain-floats' if (not show_template_nav and not show_search_box) else '' }}"  aria-label="{{ _('Templates and folders') }}">
     {% if display_checkboxes %}
