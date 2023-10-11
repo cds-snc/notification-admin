@@ -84,7 +84,7 @@
         {% endcall %}
       {% else %}
         {% call field(align='right', status='error') %}
-          <a href='{{ url_for('.revoke_api_key', service_id=current_service.id, key_id=item.id) }}'>{{ _('Revoke') }}</a>
+          <a href='{{ url_for('.revoke_api_key', service_id=current_service.id, key_id=item.id) }}'>{{ _('Revoke') }}<span class="sr-only"> {{_('API key') + ' ' + item.name }}</span></a>
         {% endcall %}
       {% endif %}
     {% endcall %}
