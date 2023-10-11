@@ -1022,8 +1022,8 @@ def test_should_show_radios_and_buttons_for_move_destination_if_correct_permissi
         FOLDER_ONE_TWO_ID,
         FOLDER_TWO_ID,
     ]
-    assert [x.text.strip() for x in radio_div.select("label")] == [
-        "Templates",
+    assert [normalize_spaces(x) for x in radio_div.select("label")] == [
+        "Templates current folder",
         "folder_one",
         "folder_one_one",
         "folder_one_two",
@@ -1160,28 +1160,6 @@ def test_move_folder_form_shows_current_folder_hint_when_in_a_folder(
     assert len(move_form_labels) == 3
     assert normalize_spaces(move_form_labels[0].text) == "Templates"
     assert normalize_spaces(move_form_labels[1].text) == "parent_folder current folder"
-    assert normalize_spaces(move_form_labels[2].text) == "child_folder"
-
-
-def test_move_folder_form_does_not_show_current_folder_hint_at_the_top_level(
-    client_request,
-    service_one,
-    mock_get_service_templates,
-    mock_get_template_folders,
-):
-    mock_get_template_folders.return_value = [
-        _folder("parent_folder", PARENT_FOLDER_ID, None),
-        _folder("child_folder", CHILD_FOLDER_ID, PARENT_FOLDER_ID),
-    ]
-    page = client_request.get("main.choose_template", service_id=SERVICE_ONE_ID, _test_page_title=False)
-
-    page.find("input", attrs={"name": "move_to", "value": PARENT_FOLDER_ID})
-
-    move_form_labels = page.find("div", id="move_to_folder_radios").find_all("label")
-
-    assert len(move_form_labels) == 3
-    assert normalize_spaces(move_form_labels[0].text) == "Templates"
-    assert normalize_spaces(move_form_labels[1].text) == "parent_folder"
     assert normalize_spaces(move_form_labels[2].text) == "child_folder"
 
 
