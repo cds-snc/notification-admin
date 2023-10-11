@@ -1,4 +1,4 @@
-{% if current_user.email_domain != 'cds-snc.ca' %}
+{% if config["NOTIFY_ENVIRONMENT"].lower() == 'production' and current_user.email_domain != 'cds-snc.ca' %}
     <!-- Google Tag Manager -->
     <script nonce='{{ request_nonce }}'>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
