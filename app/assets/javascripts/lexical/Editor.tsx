@@ -14,13 +14,14 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
-  TRANSFORMERS,
 } from "@lexical/markdown";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import TRANSFORMERS from './transformers';
 
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import ListMaxIndentPlugin from "./plugins/ListMaxIndentPlugin";
 import TabIndentationPlugin from "./plugins/TabIndentationPlugin";
+import HorizontalRulePlugin from "./plugins/HorizontalRulePlugin";
 
 export const Editor = ({
   content,
@@ -112,6 +113,7 @@ export const Editor = ({
         <ListMaxIndentPlugin maxDepth={5} />
         <TabIndentationPlugin />
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+        <HorizontalRulePlugin />
       </LexicalComposer>
     </div>
   );

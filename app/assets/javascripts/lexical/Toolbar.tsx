@@ -28,6 +28,8 @@ import {
   $createParagraphNode,
 } from "lexical";
 
+import {INSERT_HORIZONTAL_RULE_COMMAND} from '@lexical/react/LexicalHorizontalRuleNode';
+
 import { $wrapNodes } from "@lexical/selection";
 import { sanitizeUrl } from "./utils/url";
 import { useEditorFocus } from "./useEditorFocus";
@@ -69,6 +71,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     }
   }, [editor, isLink]);
+
+  const insertHR = useCallback(() => {
+    editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, null);
+  }, [editor]);
 
   const [items] = useState([
     { id: 1, txt: "heading2" },
@@ -411,6 +417,28 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             data-testid={`link-button`}
           >
             <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-link"></i>
+          </button>
+        </ToolTip>
+
+        <ToolTip text={t("tooltipInsertHR")}>
+          <button
+            type="button"
+            tabIndex={currentFocusIndex == 6 ? 0 : -1}
+            ref={(el) => {
+              const index = "button-6" as unknown as number;
+              if (el && itemsRef.current) {
+                itemsRef.current[index] = el;
+              }
+            }}
+            disabled={!isEditable}
+            onClick={insertHR}
+            className={
+              "peer toolbar-item "
+            }
+            aria-label={t("insertLink")}
+            data-testid={`link-button`}
+          >
+            HR
           </button>
         </ToolTip>
       </div>
