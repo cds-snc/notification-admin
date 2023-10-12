@@ -186,7 +186,7 @@ def test_should_show_api_keys_page(
 
     assert rows[0] == "API keys Action"
     assert "another key name Revoked" in rows[1]
-    assert rows[2] == "some key name Revoke"
+    assert rows[2] == "some key name Revoke API key some key name"
 
     mock_get_api_keys.assert_called_once_with(SERVICE_ONE_ID)
 

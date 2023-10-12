@@ -1446,6 +1446,39 @@ def active_user_with_permissions(fake_uuid):
 
 
 @pytest.fixture(scope="function")
+def active_cds_user_with_permissions(fake_uuid):
+    user_data = {
+        "id": fake_uuid,
+        "name": "Test User",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@cds-snc.ca",
+        "mobile_number": "6502532222",
+        "blocked": False,
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "send_texts",
+                "send_emails",
+                "send_letters",
+                "manage_users",
+                "manage_templates",
+                "manage_settings",
+                "manage_api_keys",
+                "view_activity",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "organisations": [ORGANISATION_ID],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+    }
+    return user_data
+
+
+@pytest.fixture(scope="function")
 def active_user_with_permission_to_two_services(fake_uuid):
     permissions = [
         "send_texts",
