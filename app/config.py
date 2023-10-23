@@ -218,9 +218,11 @@ class Scratch(Production):
     NOTIFY_ENVIRONMENT = "scratch"
     NOTIFY_LOG_LEVEL = "INFO"
 
+
 class Dev(Production):
     NOTIFY_ENVIRONMENT = "dev"
     NOTIFY_LOG_LEVEL = "INFO"
+
 
 configs = {
     "development": Development,
