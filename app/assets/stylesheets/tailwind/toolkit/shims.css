@@ -1,9 +1,0 @@
-@layer components {
-  /* apply 'contain-floats' class to an element with
-    floated children
-  */
-  .contain-floats:after {
-    content: "";
-    @apply block clear-both;
-  }
-}
