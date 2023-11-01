@@ -2,9 +2,10 @@
 {% from "components/previous-next-navigation.html" import previous_next_navigation %}
 {% from "components/table.html" import list_table, field, text_field, link_field, right_aligned_field_heading, hidden_field_heading, row_heading, notification_status_field %}
 {% from "components/is-problem-email.html" import is_probem_email %}
+{% from "components/empty-list.html" import empty_list  %}
 
 <div class="ajax-block-container" id='pill-selected-item'>
-  {% set empty_txt = _('No messages found &thinsp;(messages are kept for {} days)') %}
+  {% set empty_txt = empty_list("You haven’t sent messages recently", "Messages sent within the last {} days will show up here. Start with one of your templates to send messages.", "emptyFlower", url_for("main.choose_template", service_id=service_id), _('Go to your templates')) %}
   {% set heading_1 = _('Recipient') %}
   {% set heading_2 = _('Review Address') %}
   {% set heading_3 = right_aligned_field_heading(_('Status')) %}
