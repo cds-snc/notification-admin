@@ -30,6 +30,12 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "pr-gutter",
     "mt-0",
     "max-w-xl",
+    "bg-emptyBird",
+    "bg-emptyFlower",
+    "bg-emptyTruck",
+    "sm:bg-emptyBird",
+    "sm:bg-emptyFlower",
+    "sm:bg-emptyTruck",
   ],
   defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
 });
