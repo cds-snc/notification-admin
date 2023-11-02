@@ -323,7 +323,9 @@ def test_shows_message_when_no_notifications(
         message_type="sms",
     )
 
-    assert normalize_spaces(page.select("tbody tr")[0].text) == ("You haven’t sent messages recently Messages sent within the last 7 days will show up here. Start with one of your templates to send messages. Go to your templates")
+    assert normalize_spaces(page.select("tbody tr")[0].text) == (
+        "You haven’t sent messages recently Messages sent within the last 7 days will show up here. Start with one of your templates to send messages. Go to your templates"
+    )
 
 
 @pytest.mark.parametrize(
