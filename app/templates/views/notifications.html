@@ -27,13 +27,13 @@
     {{ page_title }}{{_(' in the past {} days').format(service_data_retention_days)}}
   </h1>
   {% if not message_type == "letter" %}
-
-    {{ ajax_block(
-      partials,
-      url_for('.get_notifications_as_json', service_id=current_service.id, message_type=message_type, status=status),
-      'counts'
-    ) }}
-    {% if total_notifications > 0 %}
+  {% if total_notifications > 0 %}
+      {{ ajax_block(
+        partials,
+        url_for('.get_notifications_as_json', service_id=current_service.id, message_type=message_type, status=status),
+        'counts'
+      ) }}
+    
       {% if message_type == "email" %}
         {{ problem_email_checkbox() }}
       {% endif %}

@@ -9,7 +9,7 @@
         scheduled_jobs,
         caption=_("Scheduled sends"),
         caption_visible=False,
-        empty_message=empty_list(_('You have no scheduled messages at the moment'), _('Send many messages at the right time using one of your templates.'), "emptyBird", url_for("main.choose_template", service_id=service_id), _('Go to your templates')),
+        empty_message=empty_list(_('You have no scheduled messages at the moment'), _('Use a template to send many messages at once.'), 'emptyBird', url_for('main.choose_template', service_id=current_service.id), _('Go to your templates')),
         field_headings=[
           _("List name"),
           _("Details")
