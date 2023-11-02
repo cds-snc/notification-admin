@@ -205,7 +205,9 @@
     padding-bottom: 0.5625em;
     @apply text-small leading-tight text-gray-grey1 px-0;
   }
-
+  td.table-empty-message {
+    border: none;
+  }
   .table-no-data {
     @apply mt-4 mb-16;
   }
