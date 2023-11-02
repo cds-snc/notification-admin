@@ -9,6 +9,7 @@ from freezegun import freeze_time
 
 from app.main.views.jobs import get_available_until_date, get_status_filters
 from app.models.service import Service
+from tests import notification_json
 from tests.conftest import (
     SERVICE_ONE_ID,
     create_active_caseworking_user,
@@ -699,6 +700,30 @@ def test_sending_status_hint_displays_correctly_on_notifications_page_new_status
 
     assert normalize_spaces(page.select(".table-field-right-aligned")[0].text) == expected_hint_status
     assert bool(page.select(".align-with-message-body")) is single_line
+
+
+@pytest.mark.parametrize("message_type", [("email"), ("sms")])
+def test_empty_message_display_on_notifications_report_when_none_sent(
+    client_request,
+    service_one,
+    active_user_with_permissions,
+    mock_get_service_statistics,
+    mock_get_service_data_retention,
+    mocker,
+    app_,
+    message_type,
+):
+    notifications = notification_json(service_id=service_one["id"], rows=0)
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
+
+    page = client_request.get(
+        "main.view_notifications",
+        service_id=service_one["id"],
+        message_type=message_type,
+    )
+
+    assert "You haven’t sent messages recently" in str(page.contents)
+    assert "Scheduled messages will be sent soon" in str(page.contents)
 
 
 @pytest.mark.skip(reason="letters: unused functionality")

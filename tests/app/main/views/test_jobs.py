@@ -58,6 +58,15 @@ def test_jobs_page_shows_scheduled_jobs(
         assert normalize_spaces(page.select("tr")[index].text) == row
 
 
+def test_jobs_page_shows_empty_message_when_no_jobs_scheduled(
+    client_request, service_one, active_user_with_permissions, mock_get_no_jobs, fake_uuid
+):
+    client_request.login(create_active_user_with_permissions())
+    page = client_request.get("main.view_jobs", service_id=service_one["id"])
+
+    assert "You have no scheduled messages at the moment" in str(page.contents)
+
+
 @pytest.mark.parametrize(
     "user",
     [
