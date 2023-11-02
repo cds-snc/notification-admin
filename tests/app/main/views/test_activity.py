@@ -187,7 +187,7 @@ def test_can_show_notifications_if_data_retention_not_available(
         service_id=SERVICE_ONE_ID,
         status="sending,delivered,failed",
     )
-    assert page.h1.text.strip() == "Messages   in the past week"
+    assert page.h1.text.strip() == "Messages   in the past 7 days"
 
 
 @pytest.mark.parametrize(
@@ -323,7 +323,7 @@ def test_shows_message_when_no_notifications(
         message_type="sms",
     )
 
-    assert normalize_spaces(page.select("tbody tr")[0].text) == ("No messages found (messages are kept for 7 days)")
+    assert normalize_spaces(page.select("tbody tr")[0].text) == ("You haven’t sent messages recently Messages sent within the last 7 days will show up here. Start with one of your templates to send messages. Go to your templates")
 
 
 @pytest.mark.parametrize(
