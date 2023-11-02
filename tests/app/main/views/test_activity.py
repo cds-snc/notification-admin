@@ -723,7 +723,6 @@ def test_empty_message_display_on_notifications_report_when_none_sent(
     )
 
     assert "You haven’t sent messages recently" in str(page.contents)
-    assert "Scheduled messages will be sent soon" in str(page.contents)
 
 
 @pytest.mark.skip(reason="letters: unused functionality")

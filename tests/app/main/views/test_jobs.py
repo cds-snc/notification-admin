@@ -65,6 +65,7 @@ def test_jobs_page_shows_empty_message_when_no_jobs_scheduled(
     page = client_request.get("main.view_jobs", service_id=service_one["id"])
 
     assert "You have no scheduled messages at the moment" in str(page.contents)
+    assert "Scheduled messages will be sent soon" in str(page.contents)
 
 
 @pytest.mark.parametrize(
