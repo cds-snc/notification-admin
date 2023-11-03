@@ -32,7 +32,7 @@ from tests.conftest import (
     set_config,
     template_json,
 )
-
+from urllib.parse import unquote
 
 def _get_notifications_csv(
     row_number=1,
@@ -690,6 +690,17 @@ def test_set_lang_bad_route(
     # The args in are in a dictionary because "from" is a reserved word :/
     page = client_request.get(
         **{"endpoint": "main.set_lang", "from": "/whatever", "_expected_status": 404, "_follow_redirects": True}
+    )
+    assert page.select_one("h1").text.strip() == "Page could not be found"
+
+def test_set_lang_bad_route_with_control_characters(
+    client_request,
+    mock_GCA_404,
+):
+    # test an invalid route redirects correctly
+    # The args in are in a dictionary because "from" is a reserved word :/
+    page = client_request.get(
+        **{"endpoint": "main.set_lang", "from": unquote("%2fservice-level-agreement7gknx%00%0a0l7u2"), "_expected_status": 404, "_follow_redirects": True}
     )
     assert page.select_one("h1").text.strip() == "Page could not be found"
 
