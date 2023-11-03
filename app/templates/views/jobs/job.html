@@ -13,30 +13,7 @@
     <h1 class="heading-large">
       Delivery report
     </h1>
-
-      <!-- <style>
-        span.chip {
-          display: inline-block;
-          
-          vertical-align: baseline;
-          margin: 0.1em 0.14285714em;
-          background-color: #e8e8e8;
-          background-image: none;
-          padding: 0.2833em 0.633em;
-          color: rgba(0,0,0,.6);
-          text-transform: none;
-          font-weight: 700;
-          border: 0 solid transparent;
-          border-radius: 0.28571429rem;
-          transition: background .1s ease;
-      }
-    </style>
-    <p>
-      <span class="chip">Sent asdby</span> {{ "API" if job.created_by.name == "Notify service user" else job.created_by.name }} <br />
-      <span class="chip">Started</span> <span class="local-datetime-short">{{ job.processing_started}}</span> <br />
-      <span class="chip">Origin</span> {{ uploaded_file_name }}
-    </p>
-  -->      
+   
     {% if just_sent %}
       {{ banner(just_sent_message, type='default', with_tick=True) }}
     {% else %}
