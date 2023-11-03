@@ -2,6 +2,7 @@
 .rich-text-wrapper {
   border: 2px solid #d9d9d9;
   border-radius: 0.25rem;
+  position: relative;
 }
 .editor-input {
   padding: 1rem;
@@ -13,6 +14,7 @@
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   padding: 10px;
+  position: sticky;
 }
 button.active.toolbar-item.peer {
   background: #d3e3fd;
@@ -42,11 +44,19 @@ button.active.toolbar-item.peer {
   margin: 0 0 1.5rem 0;
 }
 
-.editor-heading-h2 {
+.editor-heading-h1 {
   font-size: 27px;
   line-height: 35px;
   font-weight: bold;
-  color: #0b0c0c;
+  color: #0B0C0C;
+  margin: 0 0 1.5rem 0;
+
+}
+.editor-heading-h2 {
+  line-height: 26px;
+  color: #0B0C0C;
+  font-size: 24px;
+  font-weight: bold;
   margin: 0 0 1.5rem 0;
 }
 

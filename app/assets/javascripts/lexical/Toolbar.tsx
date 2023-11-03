@@ -52,7 +52,7 @@ const blockTypeToBlockName = {
 };
 
 const LowPriority = 1;
-type HeadingTagType = "h2" | "h3" | "h4" | "h5";
+type HeadingTagType = "h1" | "h2" | "h3" | "h4" | "h5";
 
 export const Toolbar = ({ editorId }: { editorId: string }) => {
   const [editor] = useLexicalComposerContext();
@@ -77,8 +77,8 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
   }, [editor]);
 
   const [items] = useState([
-    { id: 1, txt: "heading2" },
-    { id: 2, txt: "heading3" },
+    { id: 1, txt: "heading1" },
+    { id: 2, txt: "heading2" },
     { id: 3, txt: "bold" },
     { id: 4, txt: "italic" },
     { id: 5, txt: "bulletedList" },
@@ -252,7 +252,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
         onKeyDown={handleNav}
         data-testid="toolbar"
       >
-        <ToolTip text={t("tooltipFormatH2")}>
+        <ToolTip text="Heading level 1">
           <button
             type="button"
             tabIndex={currentFocusIndex == 0 ? 0 : -1}
@@ -263,21 +263,21 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
               }
             }}
             onClick={() => {
-              formatHeading("h2");
+              formatHeading("h1");
             }}
             className={
               "toolbar-item spaced double " +
-              (blockType === "h2" && editorHasFocus ? "active" : "")
+              (blockType === "h1" && editorHasFocus ? "active" : "")
             }
             aria-label={t("formatH2")}
-            aria-pressed={blockType === "h2"}
-            data-testid={`h2-button`}
+            aria-pressed={blockType === "h1"}
+            data-testid={`h1-button`}
           >
-            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-heading"></i><i aria-hidden="true" className="p-1 fa-solid fa-fas fa-2"></i>
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-heading"></i><i aria-hidden="true" className="p-1 fa-solid fa-fas fa-1"></i>
           </button>
         </ToolTip>
 
-        <ToolTip text={t("tooltipFormatH3")}>
+        <ToolTip text={t("tooltipFormatH2")}>
           <button
             type="button"
             tabIndex={currentFocusIndex == 1 ? 0 : -1}
@@ -288,17 +288,17 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
               }
             }}
             onClick={() => {
-              formatHeading("h3");
+              formatHeading("h2");
             }}
             className={
               "peer toolbar-item spaced double " +
-              (blockType === "h3" && editorHasFocus ? "active" : "")
+              (blockType === "h2" && editorHasFocus ? "active" : "")
             }
-            aria-label={t("formatH3")}
-            aria-pressed={blockType === "h3"}
-            data-testid={`h3-button`}
+            aria-label={t("formatH2")}
+            aria-pressed={blockType === "h2"}
+            data-testid={`h2-button`}
           >
-            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-heading"></i><i aria-hidden="true" className="p-1 fa-solid fa-fas fa-3"></i>
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-heading"></i><i aria-hidden="true" className="p-1 fa-solid fa-fas fa-2"></i>
           </button>
         </ToolTip>
 
