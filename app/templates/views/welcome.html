@@ -1,5 +1,3 @@
-{% from "components/empty-list.html" import empty_list with context %}
-
 {% extends  "admin_template.html" %}
 
 {% block per_page_title %}
@@ -19,8 +17,5 @@
         <p class="pt-10">{{ _("Once you've set up your team and tried out sending, you can request to go live in Settings.") }}</p>
         <a href="{{ url_for('main.add_service', first='first') }}" class="mt-4 button">{{ _('Create your first service') }}</a>
     </div>
-
-    {{ empty_list("You haven’t sent messages recently", "Messages sent within the last {retention period} days will show up here. Start with one of your templates to send messages.") }}
-
 
 {% endblock %}
