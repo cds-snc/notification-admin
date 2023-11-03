@@ -21,6 +21,6 @@ def set_lang():
         url = url_for("main.show_accounts_or_dashboard")
 
     # remove non-printable characters from url
-    url="".join(ch for ch in url if ch.isprintable())
-    
+    url = "".join(ch for ch in url if ch.isprintable())
+
     return redirect(url)
