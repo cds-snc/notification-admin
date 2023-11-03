@@ -2,6 +2,7 @@ from collections import OrderedDict
 from csv import DictReader
 from io import StringIO
 from pathlib import Path
+from urllib.parse import unquote
 
 import pytest
 from flask import current_app, request
@@ -32,7 +33,7 @@ from tests.conftest import (
     set_config,
     template_json,
 )
-from urllib.parse import unquote
+
 
 def _get_notifications_csv(
     row_number=1,
@@ -693,6 +694,7 @@ def test_set_lang_bad_route(
     )
     assert page.select_one("h1").text.strip() == "Page could not be found"
 
+
 def test_set_lang_bad_route_with_control_characters(
     client_request,
     mock_GCA_404,
@@ -700,7 +702,12 @@ def test_set_lang_bad_route_with_control_characters(
     # test an invalid route redirects correctly
     # The args in are in a dictionary because "from" is a reserved word :/
     page = client_request.get(
-        **{"endpoint": "main.set_lang", "from": unquote("%2fservice-level-agreement7gknx%00%0a0l7u2"), "_expected_status": 404, "_follow_redirects": True}
+        **{
+            "endpoint": "main.set_lang",
+            "from": unquote("%2fservice-level-agreement7gknx%00%0a0l7u2"),
+            "_expected_status": 404,
+            "_follow_redirects": True,
+        }
     )
     assert page.select_one("h1").text.strip() == "Page could not be found"
 
