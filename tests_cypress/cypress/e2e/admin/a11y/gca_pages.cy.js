@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 import config from "../../../../config";
+import Utils from "../../../Notify/Admin/utils";
 
 const langs = ['en', 'fr'];
 
@@ -27,23 +28,29 @@ const fullPageList = [
 ];
 
 describe('GCA static pages', () => {
+    context("check svg mime-types", () => {
+
+        for (const lang of langs) {
+            const currentLang = (lang === 'en' ? 'English' : 'Francais');
+            context(currentLang, () => {
+                for (const page of fullPageList) {
+                    it(`${page[lang]}`, () => {
+                        cy.visit(page[lang]);
+                        Utils.checkForBadSVGType();
+                    });
+                }
+            });
+        }
+    });
+
     context("Check for dead links", () => {
         for (const lang of langs) {
             const currentLang = (lang === 'en' ? 'English' : 'Francais');
             context(currentLang, () => {
                 for (const page of fullPageList) {
                     it(`${page[lang]} contains no dead links`, () => {
-                        if (lang === 'fr') {
-                            cy.visit('/set-lang');
-                        }
                         cy.visit(page[lang]);
-
-                        cy.get('body').within(() => {
-                            cy.get('a').each((link) => {
-                                if (link.prop('href').startsWith('mailto') || link.prop('href').startsWith('/set-lang') || link.prop('href').startsWith('#')) return;
-                                cy.request(link.prop('href'));
-                            });
-                        });
+                        Utils.checkForDeadLinks();
                     });
                 }
             });

@@ -2,6 +2,7 @@
 
 import config from "../../../../config";
 import { LoginPage } from "../../../Notify/Admin/Pages/all";
+import Utils from "../../../Notify/Admin/utils";
 
 const pages = [
     { name: "Landing page", route: "/accounts" }, 
@@ -64,4 +65,13 @@ describe(`A11Y - App pages [${config.CONFIG_NAME}]`, () => {
     //         });
     //     })
     // }
+
+    context("check svg mime-types", () => {
+        for (const page of pages) {
+            it(`${page.name}`, () => {
+                cy.visit(page.route);
+                Utils.checkForBadSVGType();
+            });
+        }
+    });
 });
