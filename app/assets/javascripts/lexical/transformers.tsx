@@ -5,7 +5,22 @@ import {
     $isHorizontalRuleNode,
     HorizontalRuleNode,
 } from '@lexical/react/LexicalHorizontalRuleNode';
-import { TRANSFORMERS as TRANSFORMERS_MD } from "@lexical/markdown";
+import { HEADING,
+    QUOTE,
+    CODE,
+    UNORDERED_LIST,
+    ORDERED_LIST,
+    INLINE_CODE,
+    BOLD_ITALIC_STAR,
+    BOLD_ITALIC_UNDERSCORE,
+    BOLD_STAR,
+    BOLD_UNDERSCORE,
+    HIGHLIGHT,
+    ITALIC_STAR,
+    ITALIC_UNDERSCORE,
+    STRIKETHROUGH,
+    LINK
+   } from "@lexical/markdown";
 
 const HR: ElementTransformer = {
     dependencies: [HorizontalRuleNode],
@@ -27,7 +42,27 @@ const HR: ElementTransformer = {
     },
     type: 'element',
 };
-  
-const TRANSFORMERS = [...TRANSFORMERS_MD, HR];
+
+// override the HEADING transformer to only allow 2 level's of headings (H1/H2)
+HEADING.regExp = /^(#{1,2})\s/;
+
+const TRANSFORMERS = [
+    HEADING,
+    QUOTE,
+    CODE,
+    UNORDERED_LIST,
+    ORDERED_LIST,
+    INLINE_CODE,
+    BOLD_ITALIC_STAR,
+    BOLD_ITALIC_UNDERSCORE,
+    BOLD_STAR,
+    BOLD_UNDERSCORE,
+    HIGHLIGHT,
+    ITALIC_STAR,
+    ITALIC_UNDERSCORE,
+    STRIKETHROUGH,
+    LINK,
+    HR
+];
 
 export default TRANSFORMERS;
