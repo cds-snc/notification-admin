@@ -10,9 +10,8 @@
     data-menu-overlay-content="account-menu-mobile"
     data-menu-overlay-close="account-close-mobile">
     <img
-      aria-hidden="false"
       src="{{ asset_url('images/account-icon.svg') }}"
-      alt="{{ _('Account menu') }}"
+      alt=""
       class="w-10 h-10"/>
   </button>
 
@@ -32,7 +31,7 @@
           <img
             aria-hidden="true"
             src="{{ asset_url('images/account-icon.svg') }}"
-            alt="{{ _('Account menu') }}"
+            alt=""
             class="float-left w-12 h-12"/>
         </div>
         <div class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-xs z-50">
@@ -40,9 +39,9 @@
             id="account-close-mobile"
             class="pt-1 px-1 justify-self-center focus:outline-none focus:bg-yellow focus:border-b-2 focus:border-blue">
             <img
-              role="presentation"
               src="{{ asset_url('images/close.svg') }}"
-              class="object-none object-center w-8 h-8 m-auto"/>
+              class="object-none object-center w-8 h-8 m-auto"
+              alt="" />
             <div id="account.menu.close">
               {{ _('close') }}
             </div>
