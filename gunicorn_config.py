@@ -2,13 +2,13 @@ import os
 import sys
 import traceback
 
-import gunicorn
+import gunicorn  # type: ignore
 
 import newrelic.agent  # See https://bit.ly/2xBVKBH
 
 newrelic.agent.initialize()  # noqa: E402
 
-# override the response server header
+# Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = 'Undisclosed'
 
 workers = 5
