@@ -620,7 +620,7 @@ def load_request_nonce():
     elif _request_ctx_stack.top is not None:
         token = secrets.token_urlsafe()
         _request_ctx_stack.top.nonce = token
-        current_app.logger.warning(f"Set request nonce to {token}")
+        current_app.logger.debug(f"Set request nonce to {token}")
 
 
 def save_service_or_org_after_request(response):
@@ -650,17 +650,17 @@ def useful_headers_after_request(response):
         "Content-Security-Policy",
         (
             "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
-            "default-src 'self' {asset_domain} 'unsafe-inline';"
+            f"default-src 'self' {asset_domain} 'unsafe-inline';"
             f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
             f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
             "connect-src 'self' *.google-analytics.com *.googletagmanager.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
             "object-src 'self';"
             "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
-            "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
-            "frame-src 'self' www.googletagmanager.com www.youtube.com https://cdssnc.qualtrics.com/;".format(
-                asset_domain=asset_domain
-            )
+            f"font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
+            f"img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+            "frame-ancestors 'self';"
+            "form-action 'self';"
+            "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"
         ),
     )
     if "Cache-Control" in response.headers:
