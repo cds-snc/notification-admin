@@ -41,6 +41,9 @@ def test_presence_of_security_headers(client, mocker, mock_calls_out_to_GCA):
     assert "Referrer-Policy" in response.headers
     assert response.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
 
+    assert "Permissions-Policy" in response.headers
+    assert response.headers["Permissions-Policy"] == "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), document-domain=(), encrypted-media=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()"
+
 
 def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisation_counts, mock_calls_out_to_GCA):
     # Given...
