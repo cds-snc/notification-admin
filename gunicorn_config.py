@@ -8,6 +8,7 @@ import newrelic.agent  # See https://bit.ly/2xBVKBH
 
 newrelic.agent.initialize()  # noqa: E402
 
+# override the response server header
 gunicorn.SERVER = 'Undisclosed'
 
 workers = 5
