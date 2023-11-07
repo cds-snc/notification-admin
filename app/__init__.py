@@ -620,7 +620,7 @@ def load_request_nonce():
     elif _request_ctx_stack.top is not None:
         token = secrets.token_urlsafe()
         _request_ctx_stack.top.nonce = token
-        current_app.logger.warning(f"Set request nonce to {token}")
+        current_app.logger.debug(f"Set request nonce to {token}")
 
 
 def save_service_or_org_after_request(response):
