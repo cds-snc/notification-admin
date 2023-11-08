@@ -61,8 +61,11 @@ def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisat
     assert response.headers["X-Frame-Options"] == "deny"
     assert response.headers["X-Content-Type-Options"] == "nosniff"
     assert response.headers["X-XSS-Protection"] == "1; mode=block"
+    assert (
+        response.headers["Report-To"]
+        == """{"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]"""
+    )
     assert response.headers["Content-Security-Policy"] == (
-        "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
         "default-src 'self' static.example.com 'unsafe-inline';"
         f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
         f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
@@ -74,6 +77,8 @@ def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisat
         "frame-ancestors 'self';"
         "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
         "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"
+        "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
+        "report-to default;"
     )
 
 
@@ -125,7 +130,6 @@ def test_headers_non_ascii_characters_are_replaced(
 
     assert response.status_code == 200
     assert response.headers["Content-Security-Policy"] == (
-        "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
         "default-src 'self' static.example.com 'unsafe-inline';"
         f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
         f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
@@ -137,4 +141,6 @@ def test_headers_non_ascii_characters_are_replaced(
         "frame-ancestors 'self';"
         "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
         "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"
+        "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
+        "report-to default;"
     )
