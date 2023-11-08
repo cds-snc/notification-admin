@@ -2,7 +2,6 @@ import Polyglot from "node-polyglot";
 //REVIEW: The app already has dayjs dep which is supposed to be a lightweight momentjs replacement. --jlr
 import Moment from "moment";
 import { DiffDOM } from "diff-dom";
-import Swal from "sweetalert2";
 
 if (!window.APP_PHRASES || typeof APP_PHRASES === "undefined") {
   window.APP_PHRASES = {
@@ -21,7 +20,6 @@ window.polyglot = new Polyglot({
   phrases: APP_PHRASES || {},
   locale: APP_LANG,
 });
-window.Swal = Swal;
 
 let nowLabel = "Now Label";
 

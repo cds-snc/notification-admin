@@ -34,7 +34,6 @@
     "query-command-supported": "1.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "sweetalert2": "^9.17.2",
     "textarea-caret": "3.1.0"
   },
   "devDependencies": {
