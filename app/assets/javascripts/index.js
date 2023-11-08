@@ -2,6 +2,9 @@ import Polyglot from "node-polyglot";
 //REVIEW: The app already has dayjs dep which is supposed to be a lightweight momentjs replacement. --jlr
 import Moment from "moment";
 import { DiffDOM } from "diff-dom";
+import FontAwesomeIconLoader from "./fontawesome";
+
+FontAwesomeIconLoader();
 
 if (!window.APP_PHRASES || typeof APP_PHRASES === "undefined") {
   window.APP_PHRASES = {

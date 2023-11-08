@@ -31,28 +31,6 @@ const paths = {
 // 3. TASKS
 // - - - - - - - - - - - - - - -
 
-// Build icon library and minify it
-
-const icons = () => {
-  return src(paths.src + "fontawesome/js/solid.js")
-    .pipe(
-      plugins.faMinify({
-        fas: [
-          "plus",
-          "arrow-right",
-          "angle-down",
-          "arrow-up-right-from-square",
-          "circle-question",
-          "triangle-exclamation",
-          "circle-exclamation",
-        ],
-      })
-    )
-    .pipe(plugins.uglify())
-    .pipe(plugins.rename({ suffix: ".min" }))
-    .pipe(dest(paths.dist + "javascripts/"));
-};
-
 // Move GOV.UK template resources
 
 const javascripts = () => {
@@ -111,7 +89,6 @@ const javascripts = () => {
       plugins.addSrc.prepend([
         paths.src + "javascripts/main.min.js",
         paths.src + "javascripts/scheduler.min.js",
-        paths.src + "fontawesome/js/fontawesome.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));
@@ -123,6 +100,7 @@ const static_css = () => {
   .pipe(
     plugins.addSrc.prepend([
       paths.npm + "accessible-autocomplete/dist/accessible-autocomplete.min.css",
+      paths.src + "stylesheets/fa-svg-with-js.css",
     ])
   )
   .pipe(plugins.concat("index.css"))
@@ -161,7 +139,6 @@ const defaultTask = parallel(
   series(images),
   series(static_css),
   series(javascripts),
-  series(icons)
 );
 
 // Watch for changes and re-run tasks
