@@ -3,7 +3,7 @@ import Polyglot from "node-polyglot";
 import Moment from "moment";
 import { DiffDOM } from "diff-dom";
 import Swal from "sweetalert2";
-import FontAwesomeIconLoader from "./fontawesome.js";
+import FontAwesomeIconLoader from "./fontawesome";
 
 FontAwesomeIconLoader();
 

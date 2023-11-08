@@ -14,18 +14,7 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons/faAngleDown";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons/faCircleExclamation";
-import {
-  fa0,
-  fa2,
-  faAppleWhole,
-  faArrowPointer,
-  faArrowRightLong,
-  faBox,
-  faBirthdayCake,
-  faBlender,
-  faBuilding,
-  faBookAtlas,
-} from "@fortawesome/free-solid-svg-icons/";
+
 let FontAwesomeIconLoader = () => {
   config.autoAddCss = false;
   library.add([
