@@ -1023,7 +1023,7 @@ def test_should_show_radios_and_buttons_for_move_destination_if_correct_permissi
         FOLDER_TWO_ID,
     ]
     assert [normalize_spaces(x) for x in radio_div.select("label")] == [
-        "Templates current folder",
+        "Templates Current folder",
         "folder_one",
         "folder_one_one",
         "folder_one_two",
@@ -1159,7 +1159,7 @@ def test_move_folder_form_shows_current_folder_hint_when_in_a_folder(
 
     assert len(move_form_labels) == 3
     assert normalize_spaces(move_form_labels[0].text) == "Templates"
-    assert normalize_spaces(move_form_labels[1].text) == "parent_folder current folder"
+    assert normalize_spaces(move_form_labels[1].text) == "parent_folder Current folder"
     assert normalize_spaces(move_form_labels[2].text) == "child_folder"
 
 
