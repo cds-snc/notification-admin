@@ -647,10 +647,10 @@ def useful_headers_after_request(response):
     response.headers.add("Upgrade-Insecure-Requests", "1")
     nonce = safe_get_request_nonce()
     asset_domain = current_app.config["ASSET_DOMAIN"]
+    response.headers.add("""Report-To: {"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]""")
     response.headers.add(
         "Content-Security-Policy",
         (
-            "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
             f"default-src 'self' {asset_domain} 'unsafe-inline';"
             f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
             f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
@@ -662,6 +662,8 @@ def useful_headers_after_request(response):
             "frame-ancestors 'self';"
             "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
             "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"
+            "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
+            "report-to default;"
         ),
     )
     if "Cache-Control" in response.headers:
