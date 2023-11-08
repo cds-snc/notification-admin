@@ -24,7 +24,7 @@ service = [
 ]
 
 
-def test_presence_of_security_headers(client, mocker, mock_calls_out_to_GCA):
+def test_presence_of_security_headers(client, mocker, mock_calls_out_to_GCA, app_):
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
@@ -42,10 +42,12 @@ def test_presence_of_security_headers(client, mocker, mock_calls_out_to_GCA):
     assert response.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
 
     assert "Permissions-Policy" in response.headers
-    assert (
-        response.headers["Permissions-Policy"]
-        == "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), encrypted-media=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()"
-    )
+    perm_policy = "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), encrypted-media=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()"
+
+    # if document-domain is diabled, ensure its in there too
+    if app_.config["PERMISSIONS_POLICY_DISABLE_DOCUMENT_DOMAIN"]:
+        perm_policy += ", document-domain=()"
+    assert response.headers["Permissions-Policy"] == perm_policy
 
 
 def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisation_counts, mock_calls_out_to_GCA):
