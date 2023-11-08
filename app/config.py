@@ -116,6 +116,7 @@ class Config(object):
     SESSION_COOKIE_NAME = "notify_admin_session"
     SESSION_COOKIE_SECURE = True
     SESSION_REFRESH_EACH_REQUEST = True
+    SESSION_COOKIE_SAMESITE = "Lax"
     SENSITIVE_SERVICES = os.environ.get("SENSITIVE_SERVICES", "")
     SHOW_STYLEGUIDE = env.bool("SHOW_STYLEGUIDE", True)
 

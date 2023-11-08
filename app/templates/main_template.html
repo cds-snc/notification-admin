@@ -26,10 +26,12 @@
   <link
     href="https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap"
     rel="stylesheet"
+    integrity="sha256-8UHCn8HdwwrFIG1pimLw1DpQRfkPvTq8jHZLXJwpPo4=" crossorigin="anonymous"
   />
   <link
     href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap"
     rel="stylesheet"
+    integrity="sha256-AueP75pGAtROGzX2BIyKoY/QBX+tH40az+OXhkTthKU=" crossorigin="anonymous"
   />
   <meta name="theme-color" content="#0b0c0c"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -96,7 +98,7 @@
     }
 
   </script>
-  <style title="CSS strings">
+  <style title="CSS strings" nonce="{{ request_nonce }}">
     :root {
       --opens-in-new-tab: "{{ _("Opens in a new tab") }}";
     }

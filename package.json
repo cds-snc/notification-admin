@@ -34,12 +34,11 @@
     "query-command-supported": "1.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "sweetalert2": "^9.17.2",
     "textarea-caret": "3.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.5",
-    "@babel/preset-env": "^7.15.6",
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
     "@babel/preset-react": "^7.14.5",
     "@fullhuman/postcss-purgecss": "^3.1.3",
     "@testing-library/jest-dom": "^5.14.1",
