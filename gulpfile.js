@@ -89,7 +89,6 @@ const javascripts = () => {
       plugins.addSrc.prepend([
         paths.src + "javascripts/main.min.js",
         paths.src + "javascripts/scheduler.min.js",
-        // paths.src + "fontawesome/js/fontawesome.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));
