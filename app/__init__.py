@@ -647,7 +647,9 @@ def useful_headers_after_request(response):
     response.headers.add("Upgrade-Insecure-Requests", "1")
     nonce = safe_get_request_nonce()
     asset_domain = current_app.config["ASSET_DOMAIN"]
-    response.headers.add("""Report-To: {"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]""")
+    response.headers.add(
+        """Report-To: {"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]"""
+    )
     response.headers.add(
         "Content-Security-Policy",
         (
