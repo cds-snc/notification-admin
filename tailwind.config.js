@@ -125,6 +125,7 @@ module.exports = {
         folderBlueHover: "url('/static/images/folder-blue-bold-hover.svg')",
         folderBlueHoverPng: "url('/static/images/folder-blue-bold-hover.png')",
         emptyBird: "url('/static/images/empty-bird.svg')",
+        emptyBirdHole: "url('/static/images/empty-bird-hole.svg')",
         emptyFlower: "url('/static/images/empty-flower.svg')",
         emptyTruck: "url('/static/images/empty-truck.svg')",
       },
