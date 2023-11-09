@@ -20,4 +20,7 @@ def set_lang():
         # redirect to main page in case of an invalid redirect
         url = url_for("main.show_accounts_or_dashboard")
 
+    # remove non-printable characters from url
+    url = "".join(ch for ch in url if ch.isprintable())
+
     return redirect(url)
