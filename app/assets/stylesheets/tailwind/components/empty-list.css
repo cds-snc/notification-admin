@@ -1,0 +1,17 @@
+@layer components {
+  /*! purgecss start ignore */
+
+  .bg-empty-state {
+    @apply bg-no-repeat bg-contain;
+    background-origin: content-box;
+    background-size: contain;
+    @screen sm {
+      background-size: auto 75%;
+    }
+    @screen lg {
+      background-size: contain;
+    }
+  }
+  
+  /*! purgecss end ignore */
+}
