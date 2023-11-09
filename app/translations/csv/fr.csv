@@ -1771,7 +1771,7 @@
 "Sent Time","Heure d’envoi"
 "Job","Tâche"
 "current folder","dossier actuel"
-"You haven’t sent messages recently","Vous n’avez envoyé aucun message récemment."
+"You have not sent messages recently","Vous n’avez envoyé aucun message récemment."
 "Messages sent within the last {} days will show up here. Start with one of your templates to send messages.","Les messages envoyés lors des {} derniers jours apparaîtront ici. Commencez par un de vos gabarits pour envoyer des messages."
 "Go to your templates","Explorer mes gabarits"
 "You have no scheduled messages at the moment","Vous n’avez pas de messages programmés"
