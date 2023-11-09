@@ -105,9 +105,11 @@ def view_job(service_id, job_id):
     )
     partials = get_job_partials(job, template)
     can_cancel_letter_job = partials["can_letter_job_be_cancelled"]
-    
+
     # get service retention
-    svc_retention_days = [dr['days_of_retention'] for dr in current_service.data_retention if dr['notification_type'] == template["template_type"]]
+    svc_retention_days = [
+        dr["days_of_retention"] for dr in current_service.data_retention if dr["notification_type"] == template["template_type"]
+    ]
     svc_retention_days = 7 if len(svc_retention_days) == 0 else svc_retention_days[0]
 
     return render_template(
