@@ -42,7 +42,7 @@ def test_presence_of_security_headers(client, mocker, mock_calls_out_to_GCA, app
     assert response.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
 
     assert "Permissions-Policy" in response.headers
-    perm_policy = "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), encrypted-media=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()"
+    perm_policy = "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), gamepad=(), geolocation=(), gyroscope=(), layout-animations=(self), legacy-image-formats=(self), magnetometer=(), microphone=(), midi=(), oversized-images=(self), payment=(), picture-in-picture=(), publickey-credentials-get=(), speaker-selection=(), sync-xhr=(self), unoptimized-images=(self), unsized-media=(self), usb=(), screen-wake-lock=(), web-share=(), xr-spatial-tracking=()"
 
     # if document-domain is diabled, ensure its in there too
     if app_.config["PERMISSIONS_POLICY_DISABLE_DOCUMENT_DOMAIN"]:

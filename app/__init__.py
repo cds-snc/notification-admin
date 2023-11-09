@@ -642,7 +642,7 @@ def useful_headers_after_request(response):
     response.headers.add("Referrer-Policy", "strict-origin-when-cross-origin")
     response.headers.add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
 
-    perm_policy = "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), encrypted-media=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()"
+    perm_policy = "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), gamepad=(), geolocation=(), gyroscope=(), layout-animations=(self), legacy-image-formats=(self), magnetometer=(), microphone=(), midi=(), oversized-images=(self), payment=(), picture-in-picture=(), publickey-credentials-get=(), speaker-selection=(), sync-xhr=(self), unoptimized-images=(self), unsized-media=(self), usb=(), screen-wake-lock=(), web-share=(), xr-spatial-tracking=()"
     if current_app.config["PERMISSIONS_POLICY_DISABLE_DOCUMENT_DOMAIN"]:
         perm_policy += ", document-domain=()"
     response.headers.add("Permissions-Policy", perm_policy)
