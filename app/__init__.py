@@ -665,8 +665,8 @@ def useful_headers_after_request(response):
             f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
             "connect-src 'self' *.google-analytics.com *.googletagmanager.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
             "object-src 'self';"
-            f"style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'nonce-{nonce}' 'unsafe-inline';"
-            f"font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
+            f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
+            f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
             f"img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
             "frame-ancestors 'self';"
             "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
