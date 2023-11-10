@@ -7,6 +7,9 @@ import gunicorn  # type: ignore
 import newrelic.agent  # See https://bit.ly/2xBVKBH
 
 newrelic.agent.initialize()  # noqa: E402
+# Disable NewRelic instrumentation on the browser-side
+# See: https://docs.newrelic.com/docs/apm/agents/python-agent/configuration/python-agent-configuration/#disable_browser_autorum
+newrelic.agent.disable_browser_autorum()
 
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = 'Undisclosed'
