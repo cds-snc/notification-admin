@@ -156,3 +156,65 @@ li.editor-nested-listitem {
   background-color: #00000013;
   border-radius: 4px;
 }
+
+/* TODO: Update tailwind.  These classes are here because they didn't exist in 1.9.6 */
+.text-sm {
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.peer:focus~.peer-focus\:visible, .peer:hover~.peer-hover\:visible {
+  visibility: visible;
+}
+.after\:content-\[\'\'\]:after {
+  --tw-content: "";
+  content: var(--tw-content);
+}
+.after\:border-t-gray-700:after {
+  --tw-border-opacity: 1;
+  border-top-color: rgb(74 85 104/var(--tw-border-opacity));
+  content: var(--tw-content);
+}
+.after\:border-b-transparent:after {
+  border-bottom-color: transparent;
+  content: var(--tw-content);
+}
+.after\:border-x-transparent:after {
+  border-left-color: transparent;
+  border-right-color: transparent;
+  content: var(--tw-content);
+}
+.after\:border-8:after {
+  border-width: 8px;
+  content: var(--tw-content);
+}
+.after\:-translate-x-1\/2:after {
+  --tw-translate-x: -50%;
+  content: var(--tw-content);
+  -webkit-transform: translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  transform: translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.after\:top-\[100\%\]:after {
+  content: var(--tw-content);
+  top: 100%;
+}
+.after\:left-1\/2:after {
+  content: var(--tw-content);
+  left: 50%;
+}
+.after\:absolute:after {
+  content: var(--tw-content);
+  position: absolute;
+}
+
+.-top-10 {
+  top: -4rem;
+}
+
+.-left-14 {
+  left: -5.5rem;
+}
+
+.w-36 {
+  width: 13rem;
+}
