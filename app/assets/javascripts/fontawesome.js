@@ -14,6 +14,16 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons/faAngleDown";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons/faCircleExclamation";
+import { faBold } from "@fortawesome/free-solid-svg-icons/faBold";
+import { faItalic } from "@fortawesome/free-solid-svg-icons/faItalic";
+import { faListOl } from "@fortawesome/free-solid-svg-icons/faListOl";
+import { faListUl } from "@fortawesome/free-solid-svg-icons/faListUl";
+import { faHeading } from "@fortawesome/free-solid-svg-icons/faHeading";
+import { fa1 } from "@fortawesome/free-solid-svg-icons/fa1";
+import { fa2 } from "@fortawesome/free-solid-svg-icons/fa2";
+import { fa3 } from "@fortawesome/free-solid-svg-icons/fa3";
+import { faLink } from "@fortawesome/free-solid-svg-icons/faLink";
+import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
 
 let FontAwesomeIconLoader = () => {
   config.autoAddCss = false;
@@ -26,6 +36,16 @@ let FontAwesomeIconLoader = () => {
     faCircleQuestion,
     faTriangleExclamation,
     faCircleExclamation,
+    faBold,
+    faItalic,
+    faListOl,
+    faListUl,
+    faHeading,
+    fa1,
+    fa2,
+    fa3,
+    faLink,
+    faPencil,
   ]);
   dom.watch();
 };
