@@ -54,7 +54,8 @@ const icons = () => {
           "1",
           "2",
           "3",
-          "link"
+          "link",
+          "pencil"
         ],
       })
     )
