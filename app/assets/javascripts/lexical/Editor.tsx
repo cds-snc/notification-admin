@@ -78,7 +78,9 @@ export const Editor = ({
               <ContentEditable
                 className="editor-input focus:outline-blue-focus"
                 id={editorId}
-                ariaLabel={ariaLabel && ariaLabel}
+                ariaLabel="Content editor: edit or create your content here. To apply formatting,
+                select the desired text and press shift+tab to return to the toolbar and select
+                an option.  You can also use markdown formatting directly in the editor."
                 ariaDescribedBy={ariaDescribedBy && ariaDescribedBy}
               />
             </div>
@@ -111,7 +113,7 @@ export const Editor = ({
         <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
         <ListPlugin />
         <ListMaxIndentPlugin maxDepth={5} />
-        <TabIndentationPlugin />
+        {/* <TabIndentationPlugin /> */}
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
         <HorizontalRulePlugin />
       </LexicalComposer>

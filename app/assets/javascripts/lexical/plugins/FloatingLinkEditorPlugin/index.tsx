@@ -250,8 +250,8 @@ function FloatingLinkEditor({
         <>
           <div className="link-input">
             <button
-              title={t("editLink")}
-              aria-label={t("editLink")}
+              title="Edit link"
+              aria-label="Edit link"
               className="relative w-full pr-5 truncate"
               onMouseDown={(event) => event.preventDefault()}
               onKeyDown={(event) => {
@@ -268,8 +268,7 @@ function FloatingLinkEditor({
                 setEditMode(true);
               }}
             >
-              {linkUrl}
-              EDIT
+              {linkUrl} <span className="underline inline-block float-right">Edit</span>
             </button>
           </div>
           {/* <LinkPreview url={linkUrl} /> */}

@@ -247,7 +247,9 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
       <div
         className="toolbar-container"
         role="toolbar"
-        aria-label={t("textFormatting")}
+        tabIndex={0} 
+        aria-label="Template toolbar: press the left and right arrow keys to see see 
+          the formatting options; press tab to enter the content area"
         aria-controls={editorId}
         onKeyDown={handleNav}
         data-testid="toolbar"
@@ -269,7 +271,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
               "toolbar-item spaced double " +
               (blockType === "h1" && editorHasFocus ? "active" : "")
             }
-            aria-label={t("formatH2")}
+            aria-label="Format heading level 1"
             aria-pressed={blockType === "h1"}
             data-testid={`h1-button`}
           >
@@ -294,7 +296,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
               "peer toolbar-item spaced double " +
               (blockType === "h2" && editorHasFocus ? "active" : "")
             }
-            aria-label={t("formatH2")}
+            aria-label="Format heading level 2"
             aria-pressed={blockType === "h2"}
             data-testid={`h2-button`}
           >
@@ -318,7 +320,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             className={
               "peer toolbar-item " + (isBold && editorHasFocus ? "active" : "")
             }
-            aria-label={t("formatBold")}
+            aria-label="Format bold"
             aria-pressed={isBold}
             data-testid={`bold-button`}
           >
@@ -343,7 +345,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
               "peer toolbar-item " +
               (isItalic && editorHasFocus ? "active" : "")
             }
-            aria-label={t("formatItalic")}
+            aria-label="Format italic"
             aria-pressed={isItalic}
             data-testid={`italic-button`}
           >
@@ -366,7 +368,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
               "peer toolbar-item " +
               (blockType === "bullet" && editorHasFocus ? "active" : "")
             }
-            aria-label={t("formatBulletList")}
+            aria-label="Format bulleted list"
             aria-pressed={blockType === "bullet"}
             data-testid={`bullet-list-button`}
           >
@@ -389,7 +391,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
               "peer toolbar-item " +
               (blockType === "number" && editorHasFocus ? "active" : "")
             }
-            aria-label={t("formatNumberedList")}
+            aria-label="Format numbered list"
             aria-pressed={blockType === "number"}
             data-testid={`numbered-list-button`}
           >
@@ -412,7 +414,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             className={
               "peer toolbar-item " + (isLink && editorHasFocus ? "active" : "")
             }
-            aria-label={t("insertLink")}
+            aria-label="Insert link"
             aria-pressed={isLink}
             data-testid={`link-button`}
           >
@@ -435,7 +437,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             className={
               "peer toolbar-item "
             }
-            aria-label={t("insertLink")}
+            aria-label="Insert a horizontal rule"
             data-testid={`link-button`}
           >
             HR
