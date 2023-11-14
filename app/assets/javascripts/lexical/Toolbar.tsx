@@ -54,6 +54,25 @@ const blockTypeToBlockName = {
 const LowPriority = 1;
 type HeadingTagType = "h1" | "h2" | "h3" | "h4" | "h5";
 
+interface TooltipsType {
+  [key: string]: string;
+}
+
+const TOOLTIPS: TooltipsType = {
+  "tooltipFormatH1": "Heading level 1",
+  "tooltipFormatH2": "Heading level 2",
+  "tooltipFormatBold": "Bold (⌘B)",
+  "tooltipFormatItalic": "Italic (⌘I)",
+  "tooltipFormatBulletList": "Bulleted list",
+  "tooltipFormatNumberedList": "Numbered list",
+  "tooltipInsertLink": "Insert link",
+  "tooltipInsertHR": "Insert horiz. rule",
+}
+
+function t(tooltip_name: string): string {
+  return TOOLTIPS[tooltip_name];
+}
+
 export const Toolbar = ({ editorId }: { editorId: string }) => {
   const [editor] = useLexicalComposerContext();
   const [isBold, setIsBold] = useState(false);
@@ -239,7 +258,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
     );
   }, [editor, updateToolbar]);
 
-  const { t } = useTranslation("form-builder");
+
   const editorHasFocus = useEditorFocus();
 
   return (
@@ -254,7 +273,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
         onKeyDown={handleNav}
         data-testid="toolbar"
       >
-        <ToolTip text="Heading level 1">
+        <ToolTip text={t("tooltipFormatH1")}>
           <button
             type="button"
             tabIndex={currentFocusIndex == 0 ? 0 : -1}
