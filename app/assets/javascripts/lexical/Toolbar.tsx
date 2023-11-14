@@ -59,15 +59,15 @@ interface TooltipsType {
 }
 
 const TOOLTIPS: TooltipsType = {
-  "tooltipFormatH1": "Heading level 1",
-  "tooltipFormatH2": "Heading level 2",
-  "tooltipFormatBold": "Bold (⌘B)",
-  "tooltipFormatItalic": "Italic (⌘I)",
-  "tooltipFormatBulletList": "Bulleted list",
-  "tooltipFormatNumberedList": "Numbered list",
-  "tooltipInsertLink": "Insert link",
-  "tooltipInsertHR": "Insert horiz. rule",
-}
+  tooltipFormatH1: "Heading level 1",
+  tooltipFormatH2: "Heading level 2",
+  tooltipFormatBold: "Bold (⌘B)",
+  tooltipFormatItalic: "Italic (⌘I)",
+  tooltipFormatBulletList: "Bulleted list",
+  tooltipFormatNumberedList: "Numbered list",
+  tooltipInsertLink: "Insert link",
+  tooltipInsertHR: "Insert horiz. rule",
+};
 
 function t(tooltip_name: string): string {
   return TOOLTIPS[tooltip_name];
@@ -257,7 +257,6 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
       ),
     );
   }, [editor, updateToolbar]);
-
 
   const editorHasFocus = useEditorFocus();
 

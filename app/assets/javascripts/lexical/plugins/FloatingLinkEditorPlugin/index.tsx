@@ -269,7 +269,10 @@ function FloatingLinkEditor({
               }}
             >
               {linkUrl}{" "}
-              <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-pencil float-right"></i>
+              <i
+                aria-hidden="true"
+                className="p-1 fa-solid fa-fas fa-pencil float-right"
+              ></i>
             </button>
           </div>
           {/* <LinkPreview url={linkUrl} /> */}

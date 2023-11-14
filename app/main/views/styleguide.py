@@ -55,7 +55,7 @@ To get started working with your team:
 - Create your team
 - Invite your teammates
 
-Visit [our website](https://www.example.com) to learn more
+Visit [our website](https://www.example.com) to learn more 🎉
 """,
     }
 
