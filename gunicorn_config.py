@@ -2,9 +2,14 @@ import os
 import sys
 import traceback
 
+import gunicorn  # type: ignore
+
 import newrelic.agent  # See https://bit.ly/2xBVKBH
 
 newrelic.agent.initialize()  # noqa: E402
+
+# Guincorn sets the server type on our app. We don't want to show it in the header in the response.
+gunicorn.SERVER = 'Undisclosed'
 
 workers = 5
 worker_class = "gevent"
@@ -16,7 +21,7 @@ accesslog = "-"
 # to be larger than the idle timeout configured for the load balancer.
 # > By default, Elastic Load Balancing sets the idle timeout value for your load balancer to 60 seconds.
 # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout
-on_aws = os.environ.get("NOTIFY_ENVIRONMENT", "") in ["production", "staging", "scratch"]
+on_aws = os.environ.get("NOTIFY_ENVIRONMENT", "") in ["production", "staging", "scratch", "dev"]
 if on_aws:
     keepalive = 75
 

@@ -116,6 +116,7 @@ class Config(object):
     SESSION_COOKIE_NAME = "notify_admin_session"
     SESSION_COOKIE_SECURE = True
     SESSION_REFRESH_EACH_REQUEST = True
+    SESSION_COOKIE_SAMESITE = "Lax"
     SENSITIVE_SERVICES = os.environ.get("SENSITIVE_SERVICES", "")
     SHOW_STYLEGUIDE = env.bool("SHOW_STYLEGUIDE", True)
 
@@ -219,10 +220,16 @@ class Scratch(Production):
     NOTIFY_LOG_LEVEL = "INFO"
 
 
+class Dev(Production):
+    NOTIFY_ENVIRONMENT = "dev"
+    NOTIFY_LOG_LEVEL = "INFO"
+
+
 configs = {
     "development": Development,
     "test": Test,
     "staging": Staging,
     "production": Production,
     "scratch": Scratch,
+    "dev": Dev,
 }

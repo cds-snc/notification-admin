@@ -1446,6 +1446,39 @@ def active_user_with_permissions(fake_uuid):
 
 
 @pytest.fixture(scope="function")
+def active_cds_user_with_permissions(fake_uuid):
+    user_data = {
+        "id": fake_uuid,
+        "name": "Test User",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@cds-snc.ca",
+        "mobile_number": "6502532222",
+        "blocked": False,
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "send_texts",
+                "send_emails",
+                "send_letters",
+                "manage_users",
+                "manage_templates",
+                "manage_settings",
+                "manage_api_keys",
+                "view_activity",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "organisations": [ORGANISATION_ID],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+    }
+    return user_data
+
+
+@pytest.fixture(scope="function")
 def active_user_with_permission_to_two_services(fake_uuid):
     permissions = [
         "send_texts",
@@ -3472,7 +3505,16 @@ class ClientRequest:
             count_of_h1s = len(page.select("h1"))
             if count_of_h1s != 1:
                 raise AssertionError("Page should have one H1 ({} found)".format(count_of_h1s))
-            page_title, h1 = (normalize_spaces(page.find(selector).text) for selector in ("title", "h1"))
+
+            page_title_el = page.find("title")
+            h1_el = page.find("h1")
+            if not page_title_el:
+                raise AssertionError("Title is missing from the page")
+            if not h1_el:
+                raise AssertionError("H1 is missing from the page")
+
+            page_title = normalize_spaces(page_title_el.text)
+            h1 = normalize_spaces(h1_el.text)
 
             if not normalize_spaces(page_title).startswith(h1):
                 raise AssertionError("Page title ‘{}’ does not start with H1 ‘{}’".format(page_title, h1))
