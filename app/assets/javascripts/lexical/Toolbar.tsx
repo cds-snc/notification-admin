@@ -266,7 +266,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
         className="toolbar-container"
         role="toolbar"
         tabIndex={0}
-        aria-label="Template toolbar: press the left and right arrow keys to see see 
+        aria-label="Template toolbar: press the left and right arrow keys to see 
           the formatting options; press tab to enter the content area"
         aria-controls={editorId}
         onKeyDown={handleNav}
