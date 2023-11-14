@@ -268,7 +268,8 @@ function FloatingLinkEditor({
                 setEditMode(true);
               }}
             >
-              {linkUrl} <span className="underline inline-block float-right">Edit</span>
+              {linkUrl}{" "}
+              <span className="underline inline-block float-right">Edit</span>
             </button>
           </div>
           {/* <LinkPreview url={linkUrl} /> */}

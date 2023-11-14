@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Editor } from "./Editor";
 import { $convertToMarkdownString } from "@lexical/markdown";
-import TRANSFORMERS from './transformers';
+import TRANSFORMERS from "./transformers";
 
 type Language = "en" | "fr";
 

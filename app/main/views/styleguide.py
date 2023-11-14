@@ -28,9 +28,10 @@ def styleguide():
 
     return render_template("views/styleguide.html", form=form, template=template)
 
+
 @main.route("/_rte")
 def rte():
-    template = { 
+    template = {
         "id": "fable_test",
         "data": """# 🚀 Get started with our platform
 

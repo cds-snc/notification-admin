@@ -28,7 +28,7 @@ import {
   $createParagraphNode,
 } from "lexical";
 
-import {INSERT_HORIZONTAL_RULE_COMMAND} from '@lexical/react/LexicalHorizontalRuleNode';
+import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode";
 
 import { $wrapNodes } from "@lexical/selection";
 import { sanitizeUrl } from "./utils/url";
@@ -247,7 +247,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
       <div
         className="toolbar-container"
         role="toolbar"
-        tabIndex={0} 
+        tabIndex={0}
         aria-label="Template toolbar: press the left and right arrow keys to see see 
           the formatting options; press tab to enter the content area"
         aria-controls={editorId}
@@ -275,7 +275,11 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             aria-pressed={blockType === "h1"}
             data-testid={`h1-button`}
           >
-            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-heading"></i><i aria-hidden="true" className="p-1 fa-solid fa-fas fa-1"></i>
+            <i
+              aria-hidden="true"
+              className="p-1 fa-solid fa-fas fa-heading"
+            ></i>
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-1"></i>
           </button>
         </ToolTip>
 
@@ -300,7 +304,11 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             aria-pressed={blockType === "h2"}
             data-testid={`h2-button`}
           >
-            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-heading"></i><i aria-hidden="true" className="p-1 fa-solid fa-fas fa-2"></i>
+            <i
+              aria-hidden="true"
+              className="p-1 fa-solid fa-fas fa-heading"
+            ></i>
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-2"></i>
           </button>
         </ToolTip>
 
@@ -372,7 +380,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             aria-pressed={blockType === "bullet"}
             data-testid={`bullet-list-button`}
           >
-            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-list-ul"></i>
+            <i
+              aria-hidden="true"
+              className="p-1 fa-solid fa-fas fa-list-ul"
+            ></i>
           </button>
         </ToolTip>
 
@@ -395,7 +406,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             aria-pressed={blockType === "number"}
             data-testid={`numbered-list-button`}
           >
-            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-list-ol"></i>
+            <i
+              aria-hidden="true"
+              className="p-1 fa-solid fa-fas fa-list-ol"
+            ></i>
           </button>
         </ToolTip>
 
@@ -434,9 +448,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             }}
             disabled={!isEditable}
             onClick={insertHR}
-            className={
-              "peer toolbar-item "
-            }
+            className={"peer toolbar-item "}
             aria-label="Insert a horizontal rule"
             data-testid={`link-button`}
           >

@@ -6,10 +6,13 @@
  *
  */
 
-import type {LexicalCommand, LexicalEditor, RangeSelection} from 'lexical';
+import type { LexicalCommand, LexicalEditor, RangeSelection } from "lexical";
 
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {$filter, $getNearestBlockElementAncestorOrThrow} from '@lexical/utils';
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import {
+  $filter,
+  $getNearestBlockElementAncestorOrThrow,
+} from "@lexical/utils";
 import {
   $createRangeSelection,
   $getSelection,
@@ -21,8 +24,8 @@ import {
   INSERT_TAB_COMMAND,
   KEY_TAB_COMMAND,
   OUTDENT_CONTENT_COMMAND,
-} from 'lexical';
-import {useEffect} from 'react';
+} from "lexical";
+import { useEffect } from "react";
 
 function indentOverTab(selection: RangeSelection): boolean {
   // const handled = new Set();
@@ -46,8 +49,8 @@ function indentOverTab(selection: RangeSelection): boolean {
   if (firstBlock.canIndent()) {
     const firstBlockKey = firstBlock.getKey();
     let selectionAtStart = $createRangeSelection();
-    selectionAtStart.anchor.set(firstBlockKey, 0, 'element');
-    selectionAtStart.focus.set(firstBlockKey, 0, 'element');
+    selectionAtStart.anchor.set(firstBlockKey, 0, "element");
+    selectionAtStart.focus.set(firstBlockKey, 0, "element");
     selectionAtStart = $normalizeSelection__EXPERIMENTAL(selectionAtStart);
     if (selectionAtStart.anchor.is(first)) {
       return true;

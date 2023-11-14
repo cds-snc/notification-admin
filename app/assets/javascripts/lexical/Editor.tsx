@@ -16,7 +16,7 @@ import {
   $convertToMarkdownString,
 } from "@lexical/markdown";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import TRANSFORMERS from './transformers';
+import TRANSFORMERS from "./transformers";
 
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import ListMaxIndentPlugin from "./plugins/ListMaxIndentPlugin";
