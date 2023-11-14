@@ -55,7 +55,8 @@ To get started working with your team:
 - Create your team
 - Invite your teammates
 
-[Click here to learn more](https://www.example.com)""",
+Visit [our website](https://www.example.com) to learn more
+""",
     }
 
     return render_template("views/rte.html", template=template)
