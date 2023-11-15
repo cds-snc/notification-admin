@@ -73,7 +73,7 @@ Add a divider
 
 Step 8
 
-Link
+Insert a hyperlink to Canada.ca
 """,
     }
 
