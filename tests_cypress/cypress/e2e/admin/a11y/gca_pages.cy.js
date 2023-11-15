@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 
 import config from "../../../../config";
-import Utils from "../../../Notify/Admin/utils";
 
 const langs = ['en', 'fr'];
 
@@ -27,61 +26,15 @@ const fullPageList = [
     { en: '/new-features', fr: '/nouvelles-fonctionnalites' },
 ];
 
-describe('GCA static pages', () => {
-    context("check svg mime-types", () => {
-
-        for (const lang of langs) {
-            const currentLang = (lang === 'en' ? 'English' : 'Francais');
-            context(currentLang, () => {
-                for (const page of fullPageList) {
-                    it(`${page[lang]}`, () => {
-                        cy.visit(page[lang]);
-                        Utils.checkForBadSVGType();
-                    });
-                }
-            });
-        }
-    });
-
-    context("Check for dead links", () => {
-        for (const lang of langs) {
-            const currentLang = (lang === 'en' ? 'English' : 'Francais');
-            context(currentLang, () => {
-                for (const page of fullPageList) {
-                    it(`${page[lang]} contains no dead links`, () => {
-                        cy.visit(page[lang]);
-                        Utils.checkForDeadLinks();
-                    });
-                }
-            });
-        }
-
-    });
-
-    for (const viewport of config.viewports) {
-        context('A11y and HTML validation test', () => {
-            context(`Viewport: ${viewport}px x 660px`, () => {
-                for (const lang of langs) {
-                    const currentLang = (lang === 'en' ? 'English' : 'Francais');
-                    context(currentLang, () => {
-                        for (const page of fullPageList) {
-                            it(`${page[lang]} passes a11y checks`, () => {
-                                // cy.viewport(viewport, 660);
-                                if (lang === 'fr') {
-                                    cy.visit('/set-lang');
-                                }
-                                cy.visit(page[lang]);
-
-                                cy.get('main').should('be.visible');
-
-                                // check for a11y compliance
-                                cy.injectAxe();
-                                cy.checkA11y();
-                            });
-                        }
-                    });
-                }
-            });
+describe(`GCA a11y tests [${config.CONFIG_NAME}]`, () => {
+    for (const lang of langs) {
+        const currentLang = (lang === 'en' ? 'English' : 'Francais');
+        context(currentLang, () => {
+            for (const page of fullPageList) {
+                it(`${page[lang]}`, () => {
+                    cy.a11yScan(page[lang]);
+                });
+            }
         });
     }
 });

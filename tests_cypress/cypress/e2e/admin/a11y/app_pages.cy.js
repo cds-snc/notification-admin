@@ -2,7 +2,7 @@
 
 import config from "../../../../config";
 import { LoginPage } from "../../../Notify/Admin/Pages/all";
-import Utils from "../../../Notify/Admin/utils";
+
 
 const pages = [
     { name: "Landing page", route: "/accounts" }, 
@@ -32,46 +32,15 @@ const pages = [
     { name: "Sign in", route: '/sign-in' },
 ];
 
-
 describe(`A11Y - App pages [${config.CONFIG_NAME}]`, () => {
     before(() => {
         LoginPage.Login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
         cy.task('log', "Running against:" + Cypress.config('baseUrl'))
     });
     
-    // for (const viewport of config.viewports) {
-    //     context(`Viewport: ${viewport}px x 660px`, () => {
-    //         context('English', () => {
-                for (const page of pages) {
-                    context(`${page.name}`, () => {                        
-                        it('A11Y checks', () => {
-                            cy.log(page.route);
-                            cy.visit(page.route);
-                            cy.get('main').should('be.visible');
-                            cy.log('Checking accessibility compliance...')
-                            cy.injectAxe();
-                            cy.checkA11y();
-                        });
-                        it('HTML validation', () => {
-                            cy.log('Validating HTML...');
-                            cy.get('main').htmlvalidate({
-                                rules: {
-                                    "no-redundant-role": "off",
-                                },
-                            });
-                        });
-                    });
-                }
-    //         });
-    //     })
-    // }
-
-    context("check svg mime-types", () => {
-        for (const page of pages) {
-            it(`${page.name}`, () => {
-                cy.visit(page.route);
-                Utils.checkForBadSVGType();
-            });
-        }
-    });
+    for (const page of pages) {
+        it(`${page.name}`, () => {
+            cy.a11yScan(page.route, { a11y: true, htmlValidate: true, mimeTypes: false, deadLinks: false });
+        });
+    }
 });
