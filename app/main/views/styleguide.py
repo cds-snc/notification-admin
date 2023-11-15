@@ -33,29 +33,47 @@ def styleguide():
 def rte():
     template = {
         "id": "fable_test",
-        "data": """# 🚀 Get started with our platform
+        "data": """Step 2
 
-Are you ready to revolutionize government processes? Introducing your all-in-one platform for streamlined government services. We understand the unique challenges faced by public institutions, and our platform is here to empower your agency with innovative solutions.
+This is a heading
 
-***
 
-## 🌐 What our platform Offers
+Step 3
 
-- **Centralized Citizen Services**: Simplify citizen engagement with a centralized platform for information, applications, and feedback.
-- **Effortless Collaboration**: Foster seamless communication and collaboration among government departments to enhance overall efficiency.
-- **Data Security**: Rest easy knowing that your sensitive data is protected by state-of-the-art security features.
+Bold
 
-***
 
-## 📚 Learn more
+Step 4
 
-To get started working with your team:
+Italicize
 
-- Register an account
-- Create your team
-- Invite your teammates
 
-Visit [our website](https://www.example.com) to learn more 🎉
+Step 5
+
+Bulleted list
+
+Bulleted list
+
+Bulleted list
+
+
+Step 6
+
+Numbered list
+
+Numbered list
+
+Numbered list
+
+
+Step 7
+
+Add a page break
+
+
+Step 8
+
+Link
 """,
     }
 
