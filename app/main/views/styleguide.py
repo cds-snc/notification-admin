@@ -68,7 +68,7 @@ Numbered list
 
 Step 7
 
-Add a page break
+Add a divider
 
 
 Step 8
