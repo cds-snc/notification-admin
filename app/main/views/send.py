@@ -31,6 +31,7 @@ from notifications_utils.recipients import (
 from notifications_utils.sanitise_text import SanitiseASCII
 from ordered_set import OrderedSet
 from xlrd.biffh import XLRDError
+from xlrd.compdoc import CompDocError
 from xlrd.xldate import XLDateError
 
 from app import (
@@ -207,6 +208,8 @@ def send_messages(service_id, template_id):
                     "Try formatting all columns as ‘text’ or export your file as CSV."
                 ).format(form.file.data.filename)
             )
+        except CompDocError:
+            flash(_("{} is password protected").format(form.file.data.filename))
 
     column_headings = get_spreadsheet_column_headings_from_template(template)
 
