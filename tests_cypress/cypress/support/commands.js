@@ -23,3 +23,37 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('scanForAccessibility', (url) => {
+    cy.visit(url)
+
+    // 1. validate a11y rules using axe dequeue
+    cy.injectAxe();
+    cy.checkA11y();
+
+    // 2. validate html
+    cy.get('body').htmlvalidate({
+        rules: {
+            "no-redundant-role": "off",
+            "no-dup-class": "off",  
+        },
+    });
+
+    // 3. check for dead links
+    cy.get('body').within(() => {
+        cy.get('a').each((link) => {
+            if (link.prop('href').startsWith('mailto') || link.prop('href').startsWith('/set-lang') || link.prop('href').startsWith('#')) return;
+            cy.request(link.prop('href'));
+        });
+    });
+
+    // 4. check for correct mime type on svg images (should be image/svg+xml)
+    const svg_mime_type = 'image/svg+xml';
+    cy.get('body').within(() => {
+        cy.get('img').each((link) => {
+            if (link.prop('src').endsWith('.svg')) {
+                cy.request(link.prop('src')).its('headers').its('content-type').should('include', svg_mime_type);
+            }
+        });
+    });
+ })

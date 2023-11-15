@@ -62,7 +62,7 @@
 
 {% block page_script %}
 {{ super() }}
-<script type="text/javascript" nonce="{{ request_nonce }}">
+<script  nonce="{{ request_nonce }}">
   const loadContent = templateId => {
     const callback = `/services/templates/${templateId}/get-data`;
 

@@ -1,6 +1,6 @@
 {% if current_user.is_authenticated %}
     <!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
-    <script type='text/javascript' nonce='{{ request_nonce }}'>
+    <script nonce='{{ request_nonce }}'>
         // Qualtrics expects upper case for the language, default to 'EN'.
         window.QUALTRICS_LANG = "{{ current_lang.upper() if current_lang else "EN" }}";
 
