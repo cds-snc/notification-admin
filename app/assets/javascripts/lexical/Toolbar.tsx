@@ -103,6 +103,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
     { id: 5, txt: "bulletedList" },
     { id: 6, txt: "numberedList" },
     { id: 7, txt: "link" },
+    { id: 8, txt: "hr" },
   ]);
 
   const itemsRef = useRef<[HTMLButtonElement] | []>([]);
@@ -457,9 +458,9 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
         <ToolTip text={t("tooltipInsertHR")}>
           <button
             type="button"
-            tabIndex={currentFocusIndex == 6 ? 0 : -1}
+            tabIndex={currentFocusIndex == 7 ? 0 : -1}
             ref={(el) => {
-              const index = "button-6" as unknown as number;
+              const index = "button-7" as unknown as number;
               if (el && itemsRef.current) {
                 itemsRef.current[index] = el;
               }
