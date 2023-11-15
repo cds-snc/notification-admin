@@ -287,7 +287,9 @@ def test_should_show_you_should_have_at_least_two_members_when_only_one_present_
     mock_get_security_keys,
 ):
     page = client_request.get("main.manage_users", service_id=service_one["id"])
-    assert len(page.find_all("p", text=lambda t: "You should have at least two team members who can manage settings" in t.text)) == 1
+    assert (
+        len(page.find_all("p", text=lambda t: "You should have at least two team members who can manage settings" in t.text)) == 1
+    )
 
 
 def test_does_not_show_you_should_have_at_least_two_members_only_when_two_members_present(
@@ -328,7 +330,7 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
 
     client_request.login(current_user)
     page = client_request.get("main.manage_users", service_id=service_one["id"])
-    
+
     page.find_all("p", text=lambda t: "You should have at least two team members who can manage settings" in t.text)
 
 
