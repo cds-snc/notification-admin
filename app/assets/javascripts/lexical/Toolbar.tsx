@@ -66,7 +66,7 @@ const TOOLTIPS: TooltipsType = {
   tooltipFormatBulletList: "Bulleted list",
   tooltipFormatNumberedList: "Numbered list",
   tooltipInsertLink: "Insert link",
-  tooltipInsertHR: "Insert horiz. rule",
+  tooltipInsertHR: "Insert divider",
 };
 
 function t(tooltip_name: string): string {
@@ -468,10 +468,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             disabled={!isEditable}
             onClick={insertHR}
             className={"peer toolbar-item "}
-            aria-label="Insert a horizontal rule"
+            aria-label="Insert a divider"
             data-testid={`link-button`}
           >
-            HR
+            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-grip-lines"></i>
           </button>
         </ToolTip>
       </div>
