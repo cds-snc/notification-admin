@@ -471,7 +471,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             aria-label="Insert a divider"
             data-testid={`link-button`}
           >
-            <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-grip-lines"></i>
+            <i
+              aria-hidden="true"
+              className="p-1 fa-solid fa-fas fa-grip-lines"
+            ></i>
           </button>
         </ToolTip>
       </div>

@@ -47,7 +47,7 @@ let FontAwesomeIconLoader = () => {
     fa3,
     faLink,
     faPencil,
-    faGripLines
+    faGripLines,
   ]);
   dom.watch();
 };
