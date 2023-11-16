@@ -325,7 +325,7 @@ def test_shows_message_when_no_notifications(
     )
 
     assert normalize_spaces(page.select("tbody tr")[0].text) == (
-        "You haven’t sent messages recently Messages sent within the last 7 days will show up here. Start with one of your templates to send messages. Go to your templates"
+        "You have not sent messages recently Messages sent within the last 7 days will show up here. Start with one of your templates to send messages. Go to your templates"
     )
 
 
@@ -722,7 +722,7 @@ def test_empty_message_display_on_notifications_report_when_none_sent(
         message_type=message_type,
     )
 
-    assert "You haven’t sent messages recently" in str(page.contents)
+    assert "You have not sent messages recently" in str(page.contents)
 
 
 @pytest.mark.skip(reason="letters: unused functionality")
