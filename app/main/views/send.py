@@ -209,7 +209,7 @@ def send_messages(service_id, template_id):
                 ).format(form.file.data.filename)
             )
         except CompDocError:
-            flash(_("{} is password protected").format(form.file.data.filename))
+            flash(_("Try creating {} in a different application").format(form.file.data.filename))
 
     column_headings = get_spreadsheet_column_headings_from_template(template)
 
