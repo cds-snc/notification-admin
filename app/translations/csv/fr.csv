@@ -1787,3 +1787,5 @@
 "Sending to:","Envoi à&nbsp;:"
 "API key '<a href='{}'>{}</a>'","Clé d'API '<a href='{}'>{}</a>'"
 "{} recipient(s)","{} destinataire(s)"
+"Current folder","Dossier actuel"
+"Try creating {} in a different application","Essayez de créer {} dans une application différente."
