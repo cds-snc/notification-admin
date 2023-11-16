@@ -96,7 +96,7 @@ class TestAssetFingerprint(object):
         assert fingerprinter.is_static_asset("https://example.com/static/image.png")
         assert not fingerprinter.is_static_asset("https://assets.example.com/image.png")
         assert not fingerprinter.is_static_asset("https://example.com/robots.txt")
-    
+
     def test_sris_are_consistent(self, mocker):
         get_file_content_mock = mocker.patch.object(AssetFingerprinter, "get_asset_file_contents")
         get_file_content_mock.return_value = """
@@ -107,9 +107,7 @@ class TestAssetFingerprint(object):
             "utf-8"
         )
         asset_fingerprinter = AssetFingerprinter()
-        assert asset_fingerprinter.get_asset_sri("application.css") == asset_fingerprinter.get_asset_sri(
-            "same_contents.css"
-        )
+        assert asset_fingerprinter.get_asset_sri("application.css") == asset_fingerprinter.get_asset_sri("same_contents.css")
 
     def test_sris_are_different_for_different_files(self, mocker):
         get_file_content_mock = mocker.patch.object(AssetFingerprinter, "get_asset_file_contents")
