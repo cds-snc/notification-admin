@@ -406,9 +406,10 @@ def test_should_show_scheduled_job(
         job_id=fake_uuid,
     )
 
-    assert normalize_spaces(page.select("main p")[0].text) == ("Uploaded by Test User on 2016-01-01T00:00:00.061258+0000")
-    assert normalize_spaces(page.select("main p")[1].text) == ("Sending Two week reminder 2016-01-02T00:00:00.061258")
-    assert page.select("main p a")[0]["href"] == url_for(
+    
+    assert normalize_spaces(page.select('main > div.flex >div:nth-child(2)')[0].text) == 'Test User'
+    assert normalize_spaces(page.select('main > div.flex >div:nth-child(4)')[0].text) == '2016-01-02T00:00:00.061258'
+    assert page.select('main > div.flex >div:nth-child(10) a')[0]["href"] == url_for(
         "main.view_template_version",
         service_id=SERVICE_ONE_ID,
         template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
@@ -452,22 +453,15 @@ def test_should_show_scheduled_job_with_api_key(
         job_id=fake_uuid,
     )
 
-    assert normalize_spaces(page.select("main p")[0].text) == (
-        f"'Two week reminder' scheduled from the API using the key '{JOB_API_KEY_NAME}'"
+    assert normalize_spaces(page.select('main > div.flex >div:nth-child(2)')[0].text) == f"API key '{JOB_API_KEY_NAME}'"
+    assert normalize_spaces(page.select('main > div.flex >div:nth-child(4)')[0].text) == '2016-01-02T00:00:00.061258'
+    assert page.select('main > div.flex >div:nth-child(10) a')[0]["href"] == url_for(
+        "main.view_template_version",
+        service_id=SERVICE_ONE_ID,
+        template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
+        version=1,
     )
-    assert normalize_spaces(page.select("main p")[1].text) == ("Sending Two week reminder 2016-01-02T00:00:00.061258")
-    assert [(a.text, a["href"]) for a in page.select("main p")[0].select("a")] == [
-        (
-            "Two week reminder",
-            url_for(
-                "main.view_template_version",
-                service_id=SERVICE_ONE_ID,
-                template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
-                version=1,
-            ),
-        ),
-        (JOB_API_KEY_NAME, url_for("main.api_keys", service_id=SERVICE_ONE_ID)),
-    ]
+
     assert page.select_one("button[type=submit]").text.strip() == "Cancel scheduled send"
 
 
