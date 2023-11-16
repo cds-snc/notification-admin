@@ -6,7 +6,12 @@
 {% from "components/empty-list.html" import empty_list  %}
 
 {% block service_page_title %}
-  Delivery report - {{ uploaded_file_name }}
+  {% if job.job_status == 'scheduled' %}
+    {{ _('Scheduled messages') }}
+  {% else %}
+    {{ _('Delivery report') }}
+  {% endif %}
+     - {{ uploaded_file_name }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -17,39 +22,39 @@
       </h1>
       <div class="flex flex-wrap mb-8">
         <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
-          {{ _('Sent by') }}
+          {{ _('Scheduled by:') }}
         </div>
-        <div class="w-full sm:w-3/4 border-dashed border-b-1 border-gray-600-1 pt-4 pb-4">
+        <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-600-1 pt-4 pb-4">
           {% if job.api_key %}
             {{ _("API key '<a href='{}'>{}</a>'").format(url_for('.api_keys', service_id=current_service.id), job.api_key.name) }}
           {% else %}
             {{ job.created_by.name }}
           {% endif %}
         </div>
-        <div class="w-full sm:w-1/4 border-dashed font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
-          {{ _('Scheduled for') }}
+        <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
+          {{ _('Scheduled for:') }}
         </div>
-        <div class="w-full sm:w-3/4 border-dashed border-b-1 border-gray-600-1 pt-4 pb-4">
+        <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-600-1 pt-4 pb-4">
           <span class="local-datetime-short">{{ job.scheduled_for }}</span>
         </div>
-        <div class="w-full sm:w-1/4 border-dashed font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
+        <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
           {% if job.api_key %}
-            {{ _('API request name')}} 
+            {{ _('API request name:')}} 
           {% else %}
-            {{ _('Spreadsheet') }}
+            {{ _('Spreadsheet:') }}
           {% endif %}
         </div>
-        <div class="w-full sm:w-3/4 border-dashed border-b-1 border-gray-400-1 pt-4 pb-4">
+        <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-400-1 pt-4 pb-4">
           {{ job.original_file_name }}
         </div>
-        <div class="w-full sm:w-1/4 border-dashed font-bold sm:font-normal sm:border-b-1 border-gray-400-1 pt-4 pb-4">
-          {{ _('Sending to') }}
+        <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-400-1 pt-4 pb-4">
+          {{ _('Sending to:') }}
         </div>
-        <div class="w-full sm:w-3/4 border-dashed border-b-1 border-gray-400-1 pt-4 pb-4">
+        <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-400-1 pt-4 pb-4">
           {{ _('{} recipient(s)').format(job.notification_count) }}
         </div>
-        <div class="w-full sm:w-1/4 border-dashed font-bold sm:font-normal sm:border-b-1 border-gray-400-1 pt-4 pb-4">
-          {{ _('Template') }}
+        <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-400-1 pt-4 pb-4">
+          {{ _('Template:') }}
         </div>
         <div class="w-full sm:w-3/4 border-dashed border-b-1 border-gray-400-1 pt-4 pb-4">
           <a href="{{ url_for('.view_template_version', service_id=current_service.id, template_id=template_id, version=job['template_version']) }}">{{ template_name }}</a>
