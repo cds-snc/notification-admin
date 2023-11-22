@@ -19,28 +19,29 @@
           {{ _("'<a href='{}'>{}</a>' scheduled from the API using the key '<a href='{}'>{}</a>'").format(url_for('.view_template_version', service_id=current_service.id, template_id=template.id, version=template_version), template.name, url_for('.api_keys', service_id=current_service.id), job.api_key.name) }}
         {% endif %}
       {% endif %}
-    {% else %}        
-      <div class="pb-4">
-        {{ _('Sent by:') }}
-        {% if job.api_key %}
-          {{ _("API key '<a href='{}'>{}</a>'").format(url_for('.api_keys', service_id=current_service.id), job.api_key.name) }}
-        {% else %}
-          {{ job.created_by.name }}
-        {% endif %}
-      </div>
-      <div class="pb-4">
-        {{ _('Started:') }}
-        <span class="local-datetime-short">{{ job.created_at }}</span>
-      </div>
-      <div class="pb-4">
-        {% if job.api_key %}
-          {{ _('API request name:')}} 
-        {% else %}
-          {{ _('Spreadsheet:') }}
-        {% endif %}
-        {{ job.original_file_name }}
-      </div>
-        
+    {% else %}
+      <div data-test-id="dr_header">
+        <div class="pb-4">
+          {{ _('Sent by:') }}
+          {% if job.api_key %}
+            {{ _("API key '<a href='{}'>{}</a>'").format(url_for('.api_keys', service_id=current_service.id), job.api_key.name) }}
+          {% else %}
+            {{ job.created_by.name }}
+          {% endif %}
+        </div>
+        <div class="pb-4">
+          {{ _('Started:') }}
+          <span class="local-datetime-short">{{ job.created_at }}</span>
+        </div>
+        <div class="pb-4">
+          {% if job.api_key %}
+            {{ _('API request name:')}} 
+          {% else %}
+            {{ _('Spreadsheet:') }}
+          {% endif %}
+          {{ job.original_file_name }}
+        </div>
+      </div>        
       
       
       {% if template_type == "letter" %}
