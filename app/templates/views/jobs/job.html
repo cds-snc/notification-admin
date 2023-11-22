@@ -22,7 +22,7 @@
       </h1>
       <div class="flex flex-wrap mb-8">
         <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
-          {{ _('Scheduled by:') }}
+          {{ _('Scheduled by') }}
         </div>
         <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-600-1 pt-4 pb-4">
           {% if job.api_key %}
@@ -32,29 +32,29 @@
           {% endif %}
         </div>
         <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
-          {{ _('Scheduled for:') }}
+          {{ _('Scheduled for') }}
         </div>
         <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-600-1 pt-4 pb-4">
           <span class="local-datetime-short">{{ job.scheduled_for }}</span>
         </div>
         <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
           {% if job.api_key %}
-            {{ _('API request name:')}} 
+            {{ _('API request name')}} 
           {% else %}
-            {{ _('Spreadsheet:') }}
+            {{ _('Spreadsheet') }}
           {% endif %}
         </div>
         <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-400-1 pt-4 pb-4">
           {{ job.original_file_name }}
         </div>
         <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-400-1 pt-4 pb-4">
-          {{ _('Sending to:') }}
+          {{ _('Sending to') }}
         </div>
         <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-400-1 pt-4 pb-4">
           {{ _('{} recipient(s)').format(job.notification_count) }}
         </div>
         <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-400-1 pt-4 pb-4">
-          {{ _('Template:') }}
+          {{ _('Template') }}
         </div>
         <div class="w-full sm:w-3/4 border-dashed border-b-1 border-gray-400-1 pt-4 pb-4">
           <a href="{{ url_for('.view_template_version', service_id=current_service.id, template_id=template_id, version=job['template_version']) }}">{{ template_name }}</a>
