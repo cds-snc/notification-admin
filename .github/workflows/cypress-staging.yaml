@@ -1,10 +1,8 @@
-name: Cypress a11y tests
-
+name: Cypress staging a11y tests
 
 on:
-  push:
   schedule:
-    - cron: "0 */3 * * *"
+    - cron: 0 */3 * * *
 defaults:
   run:
     shell: bash
@@ -18,7 +16,7 @@ jobs:
         uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       - uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
         with:
-          node-version: '16.x'
+          node-version: 16.x
 
       - name: Write the cypress.env.json file
         # use quotes around the secret, as its value
@@ -30,7 +28,7 @@ jobs:
         uses: cypress-io/github-action@d79d2d530a66e641eb4a5f227e13bc985c60b964 # v4.2.2
         with:
           record: false
-          config: "video=false,screenshotOnRunFailure=false"
+          config: video=false,screenshotOnRunFailure=false
           build: npx cypress info
           working-directory: tests_cypress
           spec: |
@@ -39,5 +37,5 @@ jobs:
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
-          json="{'text':'<!here> Staging a11y tests failed: <https://github.com/cds-snc/notification-admin/actions/runs/${GITHUB_RUN_ID}|GitHub actions> !'}"
+          json="{'text':'<!here> Staging a11y tests failed: <https://github.com/cds-snc/notification-admin/actions/runs/${GITHUB_RUN_ID}|see failure details> !'}"
           curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
