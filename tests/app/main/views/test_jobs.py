@@ -432,9 +432,8 @@ def test_should_show_job_from_api(
         job_id=fake_uuid,
     )
 
-    assert normalize_spaces(page.select("main p")[0].text) == (
-        f"'Two week reminder' sent from the API using the key '{JOB_API_KEY_NAME}' on 2016-01-01T00:00:00.061258+0000"
-    )
+    assert normalize_spaces(page.select("div[data-test-id='dr_header'] >div:nth-child(1)")[0].text) == f"Sent by: API key '{JOB_API_KEY_NAME}'"
+    assert normalize_spaces(page.select("div[data-test-id='dr_header'] >div:nth-child(2)")[0].text) == "Started: 2016-01-01T00:00:00.061258+0000"
 
 
 @freeze_time("2016-01-01T00:00:00.061258")
