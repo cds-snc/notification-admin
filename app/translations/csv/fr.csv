@@ -1788,3 +1788,5 @@
 "API key '<a href='{}'>{}</a>'","Clé d'API '<a href='{}'>{}</a>'"
 "{} recipient(s)","{} destinataire(s)"
 "Try creating {} in a different application","Essayez de créer {} dans une application différente."
+"Sent by:","Envoyé par&nbsp;:"
+"Started:","Début&nbsp;:"
