@@ -82,7 +82,7 @@
       {% else %}
       
       {{ empty_list(
-          _('GC Notify disposed of the information in this report on <span class="local-datetime-short">{}</span>').format(job.updated_at), 
+          _("GC Notify disposed of the information in this report on <span class='local-datetime-short'>{}</span>").format(job.updated_at), 
           _('After {} days, we keep only non-identifying statistics.').format(svc_retention_days), 
           'emptyBirdHole'
         ) 
