@@ -83,6 +83,7 @@ def view_jobs(service_id):
 @main.route("/services/<service_id>/jobs/<job_id>")
 @user_has_permissions()
 def view_job(service_id, job_id):
+    retention_default = current_app.config.get("ACTIVITY_STATS_LIMIT_DAYS", None)
     job = job_api_client.get_job(service_id, job_id)["data"]
     if job["job_status"] == "cancelled":
         abort(404)
@@ -110,7 +111,7 @@ def view_job(service_id, job_id):
     svc_retention_days = [
         dr["days_of_retention"] for dr in current_service.data_retention if dr["notification_type"] == template["template_type"]
     ]
-    svc_retention_days = 7 if len(svc_retention_days) == 0 else svc_retention_days[0]
+    svc_retention_days = retention_default if len(svc_retention_days) == 0 else svc_retention_days[0]
 
     return render_template(
         "views/jobs/job.html",
