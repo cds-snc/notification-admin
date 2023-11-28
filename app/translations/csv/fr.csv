@@ -1794,3 +1794,4 @@
 "API request name:","Nom de la requête API&nbsp;:"
 "GC Notify disposed of the information in this report on <span class='local-datetime-short'>{}</span>","Notification GC a supprimé les renseignements de ce rapport le <span class='local-datetime-short'>{}</span>"
 "After {} days, we keep only non-identifying statistics.","Après {} jours, nous ne conservons que des statistiques anonymes qui ne permettent pas d’identifier les destinataires."
+"{} is not on our list of government domains. If it’s a government email address, <a href='{}'>{}</a>.","{} ne figure pas sur notre liste de domaines gouvernementaux. S’il s’agit d’une adresse courriel gouvernementale, <a href='{}'>{}</a>."
