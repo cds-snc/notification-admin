@@ -1492,22 +1492,21 @@ version = "52.0.16"
 description = "Shared python code for Notification - Provides logging utils etc."
 category = "main"
 optional = false
-python-versions = ">=3.10,<3.11"
-files = [
-    {file = "notifications_utils-52.0.16.tar.gz", hash = "sha256:17c2233884072a20a5f54ea12c4bb333f674d709aa65f75e5585755c4a0f8305"},
-]
+python-versions = "~3.10"
+files = []
+develop = false
 
 [package.dependencies]
 awscli = "1.29.39"
 bleach = "6.0.0"
 boto3 = "1.28.39"
 cachetools = "4.2.4"
-certifi = ">=2023.7.22,<2024.0.0"
-cryptography = ">=41.0.2,<42.0.0"
+certifi = "^2023.7.22"
+cryptography = "^41.0.2"
 Flask = "2.3.3"
 Flask-Redis = "0.4.0"
 itsdangerous = "2.1.2"
-Jinja2 = ">=3.0.0,<4.0.0"
+Jinja2 = "^3.0.0"
 markupsafe = "2.1.3"
 mistune = "0.8.4"
 ordered-set = "4.1.0"
@@ -1523,8 +1522,10 @@ statsd = "3.3.0"
 werkzeug = "2.3.7"
 
 [package.source]
-type = "file"
-url = "../../nutils/notifications_utils-52.0.16.tar.gz"
+type = "git"
+url = "https://github.com/cds-snc/notifier-utils.git"
+reference = "52.0.16"
+resolved_reference = "f8de0602f5aa34ef1e62691c94b7d0764568f423"
 
 [[package]]
 name = "openpyxl"
@@ -2598,4 +2599,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.8"
-content-hash = "429984d10eaac252688c16e0d1274d9f2ceafea7b4075667ecdff89c6179d4da"
+content-hash = "5b7772f3af84d6b8351f877250361ec1b8197b3e43560ad15c545a86d099a4f4"
