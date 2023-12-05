@@ -39,17 +39,9 @@ describe(`A11Y - App pages [${config.CONFIG_NAME}]`, () => {
     });
 
     for (const page of pages) {
-        it(`${page.name}`,
-            {
-                retries: {
-                    runMode: 2,
-                    openMode: 1,
-                },
-            },
-            () => {
-                cy.a11yScan(page.route, { a11y: true, htmlValidate: true, mimeTypes: false, deadLinks: false });
-            }
-        );
+        it(`${page.name}`, () => {
+            cy.a11yScan(page.route, { a11y: true, htmlValidate: true, mimeTypes: false, deadLinks: false });
+        });
     }
 });
 
