@@ -98,7 +98,7 @@ poethepoet = "^0.24.4"
 help = "Runs a suite of tests through MonkeyType, generating a record of type annotation traces monkeytype.sqlite3"
 shell = """
     if [ -z "${method}" ]; then
-        monkeytpye run -m pytest '/tests/app/${test-path}::${method}'
+        monkeytype run -m pytest '/tests/app/${test-path}::${method}'
     else
         monkeytype run -m pytest '/tests/app/${test-path}'
     fi
