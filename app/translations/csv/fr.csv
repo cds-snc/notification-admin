@@ -1588,7 +1588,7 @@
 "Details","Détails"
 "Bulk send name","Nom de l'envoi de masse"
 "Bulk sends","Envois de masse"
-"Scheduled messages","Envois programmé"
+"Scheduled messages","Envoi programmé"
 "'<a href='{}'>{}</a>' sent from the API using the key '<a href='{}'>{}</a>'","'<a href='{}'>{}</a>' envoyé de l'API en utilisant la clé '<a href='{}'>{}</a>'"
 "'<a href='{}'>{}</a>' scheduled from the API using the key '<a href='{}'>{}</a>'","'<a href='{}'>{}</a>' programmé de l'API en utilisant la clé '<a href='{}'>{}</a>'"
 "Starting","Démarrant"
