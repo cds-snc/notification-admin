@@ -3,8 +3,9 @@
 import config from "../../../../config";
 import { LoginPage } from "../../../Notify/Admin/Pages/all";
 
+
 const pages = [
-    { name: "Landing page", route: "/accounts" }, 
+    { name: "Landing page", route: "/accounts" },
     { name: "Your profile", route: "/user-profile" },
     { name: "Dashboard", route: `/services/${config.Services.Cypress}` },
     { name: "Dashboard > Notification reports", route: `/services/${config.Services.Cypress}/notifications/email?status=sending,delivered,failed` },
@@ -31,37 +32,50 @@ const pages = [
     { name: "Sign in", route: '/sign-in' },
 ];
 
-
 describe(`A11Y - App pages [${config.CONFIG_NAME}]`, () => {
-    before(() => {
+    retryableBefore(() => {
         LoginPage.Login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
         cy.task('log', "Running against:" + Cypress.config('baseUrl'))
     });
-    
-    // for (const viewport of config.viewports) {
-    //     context(`Viewport: ${viewport}px x 660px`, () => {
-    //         context('English', () => {
-                for (const page of pages) {
-                    context(`${page.name}`, () => {                        
-                        it('A11Y checks', () => {
-                            cy.log(page.route);
-                            cy.visit(page.route);
-                            cy.get('main').should('be.visible');
-                            cy.log('Checking accessibility compliance...')
-                            cy.injectAxe();
-                            cy.checkA11y();
-                        });
-                        it('HTML validation', () => {
-                            cy.log('Validating HTML...');
-                            cy.get('main').htmlvalidate({
-                                rules: {
-                                    "no-redundant-role": "off",
-                                },
-                            });
-                        });
-                    });
-                }
-    //         });
-    //     })
-    // }
+
+    for (const page of pages) {
+        it(`${page.name}`, () => {
+            cy.a11yScan(page.route, { a11y: true, htmlValidate: true, mimeTypes: false, deadLinks: false });
+        });
+    }
 });
+
+
+/**
+ * A `before()` alternative that gets run when a failing test is retried.
+ *
+ * By default cypress `before()` isn't run when a test below it fails
+ * and is retried. Because we use `before()` as a place to setup state
+ * before running assertions inside `it()` this means we can't make use
+ * of cypress retry functionality to make our suites more reliable.
+ *
+ * https://github.com/cypress-io/cypress/issues/19458
+ * https://stackoverflow.com/questions/71285827/cypress-e2e-before-hook-not-working-on-retries
+ */
+function retryableBefore(fn) {
+    let shouldRun = true;
+
+    // we use beforeEach as cypress will run this on retry attempt
+    // we just abort early if we detected that it's already run
+    beforeEach(() => {
+      if (!shouldRun) return;
+      shouldRun = false;
+      fn();
+    });
+
+    // When a test fails we flip the `shouldRun` flag back to true
+    // so when cypress retries and runs the `beforeEach()` before
+    // the test that failed, we'll run the `fn()` logic once more.
+    Cypress.on('test:after:run', (result) => {
+      if (result.state === 'failed') {
+        if (result.currentRetry < result.retries) {
+          shouldRun = true;
+        }
+      }
+    });
+  };

@@ -5,8 +5,9 @@
   },
   "dependencies": {
     "cypress-axe": "^1.4.0",
-    "cypress-html-validate": "^5.1.2",
+    "cypress-html-validate": "^6.1.0",
     "cypress-recurse": "^1.23.0",
+    "html-validate": "^8.7.1",
     "imap-simple": "^5.1.0",
     "jsonwebtoken": "^8.5.1",
     "mailparser": "^3.5.0",
@@ -14,7 +15,6 @@
   },
   "devDependencies": {
     "axe-core": "^4.7.2",
-    "cypress": "^12.16.0",
-    "html-validate": "^7.7.1"
+    "cypress": "^12.16.0"
   }
 }
