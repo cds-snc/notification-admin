@@ -29,7 +29,7 @@ def test_valid_email_not_in_valid_domains(
 ):
     form = RegisterUserForm(email_address="test@test.com", mobile_number="16502532222")
     assert not form.validate()
-    assert "Enter a government email address" in form.errors["email_address"][0]
+    assert "not on our list of government domains" in form.errors["email_address"][0]
 
 
 def test_valid_email_in_valid_domains(client):

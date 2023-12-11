@@ -203,9 +203,11 @@
   .table-no-data {
     padding-top: 0.75em;
     padding-bottom: 0.5625em;
-    @apply text-small leading-tight text-gray-grey1 border-solid border-gray-grey2 border-0 border-t-1 border-b-1 px-0;
+    @apply text-small leading-tight text-gray-grey1 px-0;
   }
-
+  td.table-empty-message {
+    border: none;
+  }
   .table-no-data {
     @apply mt-4 mb-16;
   }

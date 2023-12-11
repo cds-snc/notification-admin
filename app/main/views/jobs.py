@@ -83,6 +83,7 @@ def view_jobs(service_id):
 @main.route("/services/<service_id>/jobs/<job_id>")
 @user_has_permissions()
 def view_job(service_id, job_id):
+    retention_default = current_app.config.get("ACTIVITY_STATS_LIMIT_DAYS", None)
     job = job_api_client.get_job(service_id, job_id)["data"]
     if job["job_status"] == "cancelled":
         abort(404)
@@ -106,11 +107,18 @@ def view_job(service_id, job_id):
     partials = get_job_partials(job, template)
     can_cancel_letter_job = partials["can_letter_job_be_cancelled"]
 
+    # get service retention
+    svc_retention_days = [
+        dr["days_of_retention"] for dr in current_service.data_retention if dr["notification_type"] == template["template_type"]
+    ]
+    svc_retention_days = retention_default if len(svc_retention_days) == 0 else svc_retention_days[0]
+
     return render_template(
         "views/jobs/job.html",
         finished=(total_notifications == processed_notifications),
         uploaded_file_name=job["original_file_name"],
         template_id=job["template"],
+        template_name=template["name"],
         job_id=job_id,
         status=request.args.get("status", ""),
         updates_url=url_for(
@@ -124,6 +132,8 @@ def view_job(service_id, job_id):
         just_sent=bool(request.args.get("just_sent") == "yes" and template["template_type"] == "letter"),
         just_sent_message=just_sent_message,
         can_cancel_letter_job=can_cancel_letter_job,
+        job=job,
+        svc_retention_days=svc_retention_days,
     )
 
 
@@ -215,6 +225,14 @@ def view_job_updates(service_id, job_id):
 @main.route("/services/<service_id>/notifications/<message_type>", methods=["GET", "POST"])
 @user_has_permissions()
 def view_notifications(service_id, message_type=None):
+    service_data_retention_days = current_app.config.get("ACTIVITY_STATS_LIMIT_DAYS", None)
+
+    if message_type is not None:
+        service_data_retention_days = current_service.get_days_of_retention(message_type)
+
+    notifications = notification_api_client.get_notifications_for_service(
+        service_id=service_id, template_type=[message_type] if message_type else [], limit_days=service_data_retention_days
+    )
     return render_template(
         "views/notifications.html",
         partials=get_notifications(service_id, message_type),
@@ -233,6 +251,9 @@ def view_notifications(service_id, message_type=None):
             message_type=message_type,
             status=request.args.get("status"),
         ),
+        total_notifications=notifications["total"],
+        service_data_retention_days=service_data_retention_days,
+        service_id=service_id,
     )
 
 
@@ -324,6 +345,7 @@ def get_notifications(service_id, message_type, status_override=None):
             status=request.args.get("status"),
             message_type=message_type,
             download_link=download_link,
+            service_id=service_id,
         ),
     }
 
