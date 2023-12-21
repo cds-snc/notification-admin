@@ -8,13 +8,17 @@
     <thead class="table-field-headings{% if field_headings_visible %}-visible{% endif %}">
       <tr>
         {% for field_heading in field_headings %}
-          <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}{% if not field_headings_visible %} border-0{% endif %}" {% if equal_length %}{{ 'style=\"width: {0}%\"'.format((100 / field_headings|length)|int)|safe }}{% endif %}>
-            {% if field_headings_visible %}
-              {{ field_heading }}
-            {% else %}
-              <span class="visuallyhidden">{{ field_heading }}</span>
-            {% endif %}
-          </th>
+          {% if field_heading == '' %} 
+          <td class="table-field-index"></td>
+          {% else %} 
+            <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}{% if not field_headings_visible %} border-0{% endif %}" {% if equal_length %}{{ 'style=\"width: {0}%\"'.format((100 / field_headings|length)|int)|safe }}{% endif %}>
+              {% if field_headings_visible %}
+                {{ field_heading }}
+              {% else %}
+                <span class="visuallyhidden">{{ field_heading }}</span>
+              {% endif %}
+            </th>
+          {% endif %}
         {% endfor %}
       </tr>
     </thead>
@@ -86,9 +90,9 @@
 {%- endmacro %}
 
 {% macro index_field(text=None) -%}
-  <td class="table-field-index">
+  <th class="table-field-index" scope="row">
     {{ text if text != None else caller()  }}
-  </td>
+  </th>
 {%- endmacro %}
 
 {% macro text_field(text, status='', truncate=false) -%}
