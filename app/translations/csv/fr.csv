@@ -1653,6 +1653,7 @@
 "Recipients can check the name and email address to confirm the message comes from your service.","Les destinataires peuvent vérifier le nom et l’adresse courriel pour confirmer que le message provient bel et bien de votre service."
 "In this example, a government service has chosen the name ’Renew your license’ and the email address ’renew@notification.canada.ca’:","Dans cet exemple, un service gouvernemental a choisi le nom « Renouveler votre permis » et l’adresse courriel « renouveler@notification.canada.ca » :"
 "Service name: <b>Renew your license | Renouveler votre permis</b>","Nom du service: <b>Renew your license | Renouveler votre permis</b>"
+"Service name: <b><span lang='en-CA'>Renew your license</span>&nbsp;|&nbsp;<span lang='fr-CA'>Renouveler votre permis</span></b>","Nom du service: <b><span lang='fr-CA'>Renouveler votre permis</span>&nbsp;|&nbsp;<span lang='en-CA'>Renew your license</span></b>"
 "Email address: <b>renew</b>@notification.canada.ca","Adresse courriel: <b>renouveler</b>@notification.canada.ca"
 "GC Notify also shows the service name at the start of every text message.","Notification GC indique également le nom du service au début de chaque message texte."
 "Use a name that recipients will recognize. Maximum 255 characters.","Utilisez un nom que les destinataires reconnaîtront. 255 caractères au maximum."
