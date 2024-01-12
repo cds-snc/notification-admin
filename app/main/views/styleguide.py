@@ -33,48 +33,31 @@ def styleguide():
 def rte():
     template = {
         "id": "fable_test",
-        "data": """Step 2
+        "data": """Annual newsletter
 
-This is a heading
+We hope this newsletter finds you well! As we dive into the new year, we want to ensure you're up to speed with the latest happenings. Here's a quick recap!
 
+Things You May Have Missed:
 
-Step 3
+Thing 1
 
-Bold
+Thing 2
 
+\r\n\r\n\r\n
 
-Step 4
+Steps to Sign Up:
 
-Italicize
+Visit our website at https://www.example.com
 
+Look for the &quot;Newsletter Sign-Up&quot; section on the homepage.
 
-Step 5
+Enter your email address in the provided field.
 
-Bulleted list
+Click &quot;Subscribe&quot; to start receiving our regular updates directly in your inbox.
 
-Bulleted list
+More Information:
 
-Bulleted list
-
-
-Step 6
-
-Numbered list
-
-Numbered list
-
-Numbered list
-
-
-Step 7
-
-Add a divider
-
-
-Step 8
-
-Insert a hyperlink to Canada.ca
-""",
+For more details on our products, services, or any other inquiries, feel free to reach out to our dedicated support team at [support-email] or visit our FAQ page [FAQ-link]. We value your feedback and are here to assist you in any way we can.""",
     }
 
     return render_template("views/rte.html", template=template)
