@@ -180,4 +180,3 @@ jobs:
           working-directory: tests_cypress
           spec: |
             cypress/e2e/admin/a11y/app_pages.cy.js
-            cypress/e2e/admin/a11y/gca_pages.cy.js

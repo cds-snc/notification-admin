@@ -66,12 +66,21 @@ class ValidGovEmail:
 
         from flask import url_for
 
-        gov_email = _("Enter a government email address.")
-        contact_url = url_for(".contact")
-        access_text = _("If you think you should have access")
-        contact_text = _("contact us")
+        # extract domain name from given email address
 
-        message = ('{} {} <a href="{}">{}</a>').format(gov_email, access_text, contact_url, contact_text)
+        domain = re.search(r"@(.*)$", field.data)
+
+        if domain:
+            domain = domain.group(1)
+        else:
+            domain = ""
+
+        contact_url = url_for(".contact")
+        contact_text = _("contact us")
+        message = _(
+            "{} is not on our list of government domains. If it’s a government email address, <a href='{}'>{}</a>."
+        ).format(domain, contact_url, contact_text)
+        # message = ('{}{} {} <a href="{}">{}</a>').format(domain, gov_email, access_text, contact_url, contact_text)
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
 

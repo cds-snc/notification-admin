@@ -1,0 +1,36 @@
+<svg width="136" height="76" viewBox="0 0 136 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="80" height="60" transform="translate(15)" fill="#6DA8D3"/>
+    <path d="M31 16H51" stroke="white"/>
+    <path d="M57 16H67" stroke="white"/>
+    <path d="M73 16H83" stroke="white"/>
+    <path d="M31 22H51" stroke="#304760"/>
+    <path d="M57 22H67" stroke="#304760"/>
+    <path d="M73 22H83" stroke="#304760"/>
+    <path d="M31 28H51" stroke="#304760"/>
+    <path d="M57 28H67" stroke="#304760"/>
+    <path d="M73 28H83" stroke="#304760"/>
+    <path d="M31 34H51" stroke="#304760"/>
+    <path d="M57 34H67" stroke="#304760"/>
+    <path d="M73 34H83" stroke="#304760"/>
+    <path d="M31 40H51" stroke="#304760"/>
+    <path d="M57 40H67" stroke="#304760"/>
+    <path d="M73 40H83" stroke="#304760"/>
+    <path d="M31 46H51" stroke="#304760"/>
+    <path d="M57 46H67" stroke="#304760"/>
+    <path d="M73 46H83" stroke="#304760"/>
+    <path d="M31 52H51" stroke="#304760"/>
+    <path d="M57 52H67" stroke="#304760"/>
+    <path d="M73 52H83" stroke="#304760"/>
+    <path d="M25 0V10H15L25 0Z" fill="#6DA8D3"/>
+    <rect x="25" width="70" height="10" fill="#4E7BA2"/>
+    <rect width="10" height="10" transform="matrix(-1 0 0 1 25 0)" fill="#304760"/>
+    <rect x="15" y="10" width="10" height="50" fill="#4E7BA2"/>
+    <path d="M100.5 18.8125L95 60H15L16.875 66.625L121.875 68.5C121.875 68.5 127.5 58.1875 127.5 48.8125C127.5 32.917 120 18.8125 120 18.8125H100.5Z" fill="#AFB9C3"/>
+    <circle cx="27.1875" cy="68.4375" r="6.0625" stroke="#304760"/>
+    <circle cx="42.1875" cy="68.4375" r="6.0625" stroke="#304760"/>
+    <circle cx="113.438" cy="68.4375" r="6.0625" stroke="#304760"/>
+    <path d="M12 16H0" stroke="#304760"/>
+    <path d="M18 22H5" stroke="#304760"/>
+    <path d="M23 28H11" stroke="#304760"/>
+    <path d="M1 75H136" stroke="#304760"/>
+</svg>

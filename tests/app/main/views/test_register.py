@@ -126,7 +126,7 @@ def test_should_return_200_when_email_is_not_gov_uk(
     )
 
     assert response.status_code == 200
-    assert "Enter a government email address" in response.get_data(as_text=True)
+    assert "is not on our list of government domains" in response.get_data(as_text=True)
 
 
 @pytest.mark.parametrize(

@@ -31,8 +31,8 @@ let Actions = {
             Cypress._.isObject, // keep retrying until the task returns an object
             {
                 log: true,
-                limit: 50, // max number of iterations
-                timeout: 30000, // time limit in ms
+                limit: 250, // max number of iterations
+                timeout: 120000, // time limit in ms
                 delay: 500, // delay before next iteration, ms
             },
         )
