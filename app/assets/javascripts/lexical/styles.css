@@ -1,22 +1,28 @@
 /* container / controls */
-.rich-text-wrapper {
-  border: 2px solid #d9d9d9;
-  border-radius: 0.25rem;
-}
 .editor-input {
   padding: 1rem;
-  padding-top: 8rem;
 }
 
 .toolbar-container {
-  background-color: #f7f7f7;
   border-bottom: 1px solid #ddd;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  padding: 10px;
+  border-top: 3rem solid white;
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+.toolbar-inner { 
+  border-left: 2px solid #d9d9d9;
+  border-right: 2px solid #d9d9d9;
+  border-top: 2px solid #d9d9d9;
+  background-color: #f7f7f7;
+  padding: 10px;
+}
+
+.editor { 
+  border-left: 2px solid #d9d9d9;
+  border-right: 2px solid #d9d9d9;
+  border-bottom: 2px solid #d9d9d9;
 }
 button.active.toolbar-item.peer {
   background: #d3e3fd;
