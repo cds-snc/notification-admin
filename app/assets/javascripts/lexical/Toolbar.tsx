@@ -30,7 +30,7 @@ import {
 
 import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode";
 
-import { $wrapNodes } from "@lexical/selection";
+import { $wrapNodes, $moveCaretSelection } from "@lexical/selection";
 import { sanitizeUrl } from "./utils/url";
 import { useEditorFocus } from "./useEditorFocus";
 import { getSelectedNode } from "./utils/getSelectedNode";
@@ -168,6 +168,12 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
   const formatBulletList = (evt: React.MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
     if (blockType !== "bullet") {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)){
+          $moveCaretSelection(selection, true, true, "character");
+        }
+    });
       editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
       return;
     }
@@ -259,24 +265,37 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
     );
   }, [editor, updateToolbar]);
 
-  var shortcutKey = '';
-  if (window.navigator.userAgent.includes('Mac')) {
-    shortcutKey = '⌘';
-  }
-  else {
-    shortcutKey = 'ctrl';
-  }
-
+  // customize shortcuts to OS
+  var shortcutKey = window.navigator.userAgent.includes('Mac') ? '⌘' : 'ctrl';
   const tooltipFormatBold = `Bold (${shortcutKey}+B)`;
   const tooltipFormatItalic = `Italic (${shortcutKey}+I)`;
+
+  // help-button focus
+  const handleFocus = (event: any) => {
+    console.log('Input field is focused', event);
+    console.log('ert', event.relatedTarget)
+    // if relatedTarget is '#help-button', tab again  
+    if (event.relatedTarget.dataset.lexicalEditor) {
+      document.querySelector<HTMLButtonElement>('#toolbar-container button[tabindex="0"]')?.focus();
+    }
+
+  };
+
   const editorHasFocus = useEditorFocus();
+
+  // @ts-expect-error
+  window.editor = editor;
+  // @ts-expect-error
+  window.moveSelection = $moveCaretSelection;
+
+  // window.getSelection = $getSelection;
+
 
   return (
     <>
       <div
         className="toolbar-container"
         role="toolbar"
-        tabIndex={0}
         aria-label="Template toolbar: press the left and right arrow keys to select a 
         formatting options; press tab to enter the content area"
         aria-controls={editorId}
@@ -284,210 +303,240 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
         data-testid="toolbar"
       >
         <div className="toolbar-inner">
-          <ToolTip text={t("tooltipFormatH1")}>
-            <button
-              type="button"
-              tabIndex={currentFocusIndex == 0 ? 0 : -1}
-              ref={(el) => {
-                const index = "button-0" as unknown as number;
-                if (el && itemsRef.current) {
-                  itemsRef.current[index] = el;
-                }
-              }}
-              onClick={() => {
-                formatHeading("h1");
-              }}
-              className={
-                "toolbar-item spaced double " +
-                (blockType === "h1" && editorHasFocus ? "active" : "")
-              }
-              aria-label="Format heading level 1"
-              aria-pressed={blockType === "h1"}
-              data-testid={`h1-button`}
-            >
-              <i
-                aria-hidden="true"
-                className="p-1 fa-solid fa-fas fa-heading"
-              ></i>
-              <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-1"></i>
-            </button>
-          </ToolTip>
+          <div className="flex">
+            <div className="flex-grow" id="toolbar-container">
+              <ToolTip text={t("tooltipFormatH1")}>
+                <button
+                  type="button"
+                  tabIndex={currentFocusIndex == 0 ? 0 : -1}
+                  ref={(el) => {
+                    const index = "button-0" as unknown as number;
+                    if (el && itemsRef.current) {
+                      itemsRef.current[index] = el;
+                    }
+                  }}
+                  onClick={() => {
+                    formatHeading("h1");
+                  }}
+                  className={
+                    "toolbar-item spaced double " +
+                    (blockType === "h1" && editorHasFocus ? "active" : "")
+                  }
+                  aria-label="Format heading level 1"
+                  aria-pressed={blockType === "h1"}
+                  data-testid={`h1-button`}
+                >
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-heading"
+                  ></i>
+                  <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-1"></i>
+                </button>
+              </ToolTip>
 
-          <ToolTip text={t("tooltipFormatH2")}>
-            <button
-              type="button"
-              tabIndex={currentFocusIndex == 1 ? 0 : -1}
-              ref={(el) => {
-                const index = "button-1" as unknown as number;
-                if (el && itemsRef.current) {
-                  itemsRef.current[index] = el;
-                }
-              }}
-              onClick={() => {
-                formatHeading("h2");
-              }}
-              className={
-                "peer toolbar-item spaced double " +
-                (blockType === "h2" && editorHasFocus ? "active" : "")
-              }
-              aria-label="Format heading level 2"
-              aria-pressed={blockType === "h2"}
-              data-testid={`h2-button`}
-            >
-              <i
-                aria-hidden="true"
-                className="p-1 fa-solid fa-fas fa-heading"
-              ></i>
-              <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-2"></i>
-            </button>
-          </ToolTip>
+              <ToolTip text={t("tooltipFormatH2")}>
+                <button
+                  type="button"
+                  tabIndex={currentFocusIndex == 1 ? 0 : -1}
+                  ref={(el) => {
+                    const index = "button-1" as unknown as number;
+                    if (el && itemsRef.current) {
+                      itemsRef.current[index] = el;
+                    }
+                  }}
+                  onClick={() => {
+                    formatHeading("h2");
+                  }}
+                  className={
+                    "peer toolbar-item spaced double " +
+                    (blockType === "h2" && editorHasFocus ? "active" : "")
+                  }
+                  aria-label="Format heading level 2"
+                  aria-pressed={blockType === "h2"}
+                  data-testid={`h2-button`}
+                >
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-heading"
+                  ></i>
+                  <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-2"></i>
+                </button>
+              </ToolTip>
 
-          <ToolTip text={tooltipFormatBold}>
-            <button
-              type="button"
-              tabIndex={currentFocusIndex == 2 ? 0 : -1}
-              ref={(el) => {
-                const index = "button-2" as unknown as number;
-                if (el && itemsRef.current) {
-                  itemsRef.current[index] = el;
-                }
-              }}
-              onClick={() => {
-                editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
-              }}
-              className={
-                "peer toolbar-item " + (isBold && editorHasFocus ? "active" : "")
-              }
-              aria-label="Format bold"
-              aria-pressed={isBold}
-              data-testid={`bold-button`}
-            >
-              <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-bold"></i>
-            </button>
-          </ToolTip>
+              <ToolTip text={tooltipFormatBold}>
+                <button
+                  type="button"
+                  tabIndex={currentFocusIndex == 2 ? 0 : -1}
+                  ref={(el) => {
+                    const index = "button-2" as unknown as number;
+                    if (el && itemsRef.current) {
+                      itemsRef.current[index] = el;
+                    }
+                  }}
+                  onClick={() => {
+                    editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+                  }}
+                  className={
+                    "peer toolbar-item " + (isBold && editorHasFocus ? "active" : "")
+                  }
+                  aria-label="Format bold"
+                  aria-pressed={isBold}
+                  data-testid={`bold-button`}
+                >
+                  <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-bold"></i>
+                </button>
+              </ToolTip>
 
-          <ToolTip text={tooltipFormatItalic}>
-            <button
-              type="button"
-              tabIndex={currentFocusIndex == 3 ? 0 : -1}
-              ref={(el) => {
-                const index = "button-3" as unknown as number;
-                if (el && itemsRef.current) {
-                  itemsRef.current[index] = el;
-                }
-              }}
-              onClick={() => {
-                editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
-              }}
-              className={
-                "peer toolbar-item " +
-                (isItalic && editorHasFocus ? "active" : "")
-              }
-              aria-label="Format italic"
-              aria-pressed={isItalic}
-              data-testid={`italic-button`}
-            >
-              <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-italic"></i>
-            </button>
-          </ToolTip>
+              <ToolTip text={tooltipFormatItalic}>
+                <button
+                  type="button"
+                  tabIndex={currentFocusIndex == 3 ? 0 : -1}
+                  ref={(el) => {
+                    const index = "button-3" as unknown as number;
+                    if (el && itemsRef.current) {
+                      itemsRef.current[index] = el;
+                    }
+                  }}
+                  onClick={() => {
+                    editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
+                  }}
+                  className={
+                    "peer toolbar-item " +
+                    (isItalic && editorHasFocus ? "active" : "")
+                  }
+                  aria-label="Format italic"
+                  aria-pressed={isItalic}
+                  data-testid={`italic-button`}
+                >
+                  <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-italic"></i>
+                </button>
+              </ToolTip>
 
-          <ToolTip text={t("tooltipFormatBulletList")}>
-            <button
-              type="button"
-              tabIndex={currentFocusIndex == 4 ? 0 : -1}
-              ref={(el) => {
-                const index = "button-4" as unknown as number;
-                if (el && itemsRef.current) {
-                  itemsRef.current[index] = el;
-                }
-              }}
-              onClick={formatBulletList}
-              className={
-                "peer toolbar-item " +
-                (blockType === "bullet" && editorHasFocus ? "active" : "")
-              }
-              aria-label="Format bulleted list"
-              aria-pressed={blockType === "bullet"}
-              data-testid={`bullet-list-button`}
-            >
-              <i
-                aria-hidden="true"
-                className="p-1 fa-solid fa-fas fa-list-ul"
-              ></i>
-            </button>
-          </ToolTip>
+              <ToolTip text={t("tooltipFormatBulletList")}>
+                <button
+                  type="button"
+                  tabIndex={currentFocusIndex == 4 ? 0 : -1}
+                  ref={(el) => {
+                    const index = "button-4" as unknown as number;
+                    if (el && itemsRef.current) {
+                      itemsRef.current[index] = el;
+                    }
+                  }}
+                  onClick={formatBulletList}
+                  className={
+                    "peer toolbar-item " +
+                    (blockType === "bullet" && editorHasFocus ? "active" : "")
+                  }
+                  aria-label="Format bulleted list"
+                  aria-pressed={blockType === "bullet"}
+                  data-testid={`bullet-list-button`}
+                >
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-list-ul"
+                  ></i>
+                </button>
+              </ToolTip>
 
-          <ToolTip text={t("tooltipFormatNumberedList")}>
-            <button
-              type="button"
-              tabIndex={currentFocusIndex == 5 ? 0 : -1}
-              ref={(el) => {
-                const index = "button-5" as unknown as number;
-                if (el && itemsRef.current) {
-                  itemsRef.current[index] = el;
-                }
-              }}
-              onClick={formatNumberedList}
-              className={
-                "peer toolbar-item " +
-                (blockType === "number" && editorHasFocus ? "active" : "")
-              }
-              aria-label="Format numbered list"
-              aria-pressed={blockType === "number"}
-              data-testid={`numbered-list-button`}
-            >
-              <i
-                aria-hidden="true"
-                className="p-1 fa-solid fa-fas fa-list-ol"
-              ></i>
-            </button>
-          </ToolTip>
+              <ToolTip text={t("tooltipFormatNumberedList")}>
+                <button
+                  type="button"
+                  tabIndex={currentFocusIndex == 5 ? 0 : -1}
+                  ref={(el) => {
+                    const index = "button-5" as unknown as number;
+                    if (el && itemsRef.current) {
+                      itemsRef.current[index] = el;
+                    }
+                  }}
+                  onClick={formatNumberedList}
+                  className={
+                    "peer toolbar-item " +
+                    (blockType === "number" && editorHasFocus ? "active" : "")
+                  }
+                  aria-label="Format numbered list"
+                  aria-pressed={blockType === "number"}
+                  data-testid={`numbered-list-button`}
+                >
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-list-ol"
+                  ></i>
+                </button>
+              </ToolTip>
 
-          <ToolTip text={t("tooltipInsertLink")}>
-            <button
-              type="button"
-              tabIndex={currentFocusIndex == 6 ? 0 : -1}
-              ref={(el) => {
-                const index = "button-6" as unknown as number;
-                if (el && itemsRef.current) {
-                  itemsRef.current[index] = el;
-                }
-              }}
-              disabled={!isEditable}
-              onClick={insertLink}
-              className={
-                "peer toolbar-item " + (isLink && editorHasFocus ? "active" : "")
-              }
-              aria-label="Insert link"
-              aria-pressed={isLink}
-              data-testid={`link-button`}
-            >
-              <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-link"></i>
-            </button>
-          </ToolTip>
+              <ToolTip text={t("tooltipInsertLink")}>
+                <button
+                  type="button"
+                  tabIndex={currentFocusIndex == 6 ? 0 : -1}
+                  ref={(el) => {
+                    const index = "button-6" as unknown as number;
+                    if (el && itemsRef.current) {
+                      itemsRef.current[index] = el;
+                    }
+                  }}
+                  disabled={!isEditable}
+                  onClick={insertLink}
+                  className={
+                    "peer toolbar-item " + (isLink && editorHasFocus ? "active" : "")
+                  }
+                  aria-label="Insert link"
+                  aria-pressed={isLink}
+                  data-testid={`link-button`}
+                >
+                  <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-link"></i>
+                </button>
+              </ToolTip>
 
-          <ToolTip text={t("tooltipInsertHR")}>
-            <button
-              type="button"
-              tabIndex={currentFocusIndex == 7 ? 0 : -1}
-              ref={(el) => {
-                const index = "button-7" as unknown as number;
-                if (el && itemsRef.current) {
-                  itemsRef.current[index] = el;
-                }
-              }}
-              disabled={!isEditable}
-              onClick={insertHR}
-              className={"peer toolbar-item "}
-              aria-label="Insert a divider"
-              data-testid={`link-button`}
-            >
-              <i
-                aria-hidden="true"
-                className="p-1 fa-solid fa-fas fa-grip-lines"
-              ></i>
-            </button>
-          </ToolTip>
+              <ToolTip text={t("tooltipInsertHR")}>
+                <button
+                  type="button"
+                  tabIndex={currentFocusIndex == 7 ? 0 : -1}
+                  ref={(el) => {
+                    const index = "button-7" as unknown as number;
+                    if (el && itemsRef.current) {
+                      itemsRef.current[index] = el;
+                    }
+                  }}
+                  disabled={!isEditable}
+                  onClick={insertHR}
+                  className={"peer toolbar-item "}
+                  aria-label="Insert a divider"
+                  data-testid={`link-button`}
+                >
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-grip-lines"
+                  ></i>
+                </button>
+              </ToolTip>
+            </div>
+            <div className="flex-grow-0">
+              <ToolTip text="Help">
+                <a id="help-button" onFocus={handleFocus} aria-label="Help" className="btn text-xs inline-block flex" href="#open-modal"><i aria-hidden="true" className="p-1 fa-solid fa-fas fa-circle-question mr-1"></i></a>
+              </ToolTip>
+            </div>
+          </div>
+        </div>
+        <div id="open-modal" className="modal-window">
+          <div>
+            <a href="#help-button" title="Close" className="modal-close">Close</a>
+            <h1 className="flex items-center">
+              <span className="inline-block mb-1 font-bold">Help</span>
+            </h1>
+            <h2 className="mb-4">Keyboard shortcuts</h2>
+            <ul className="list-disc ml-10 text-sm">
+              <li className="mb-2">From anywhere in the editor window, press <kbd>shift</kbd>+<kbd>tab</kbd> to focus on the toolbar </li>
+              <li className="mb-2">On the toolbar use the <kbd>←</kbd> and <kbd>→</kbd> arrow keys to choose an option</li>
+              {/* <li>Note: You can also use markdown for formatting</li> */}
+            </ul>
+            <h2 className="mt-6 mb-4">Formatting options</h2>
+            <ul className="list-disc ml-10 text-sm">
+              <li className="mb-2">Text formatting: heading level 1, heading level 2, bold, italics</li>
+              <li className="mb-2">List formatting: bulleted lists, numbered lists</li>
+              <li className="mb-2">Other: hyperlinks, dividers</li>
+              <li className="mb-2">Note: You can also use markdown</li>
+            </ul>
+          </div>
         </div>
       </div>
     </>

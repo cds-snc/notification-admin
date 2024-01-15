@@ -47,13 +47,13 @@ Thing 2
 
 Steps to Sign Up:
 
-Visit our website at https://www.example.com
+Visit our website 
 
-Look for the &quot;Newsletter Sign-Up&quot; section on the homepage.
+Look for the Newsletter Sign-Up section on the homepage.
 
 Enter your email address in the provided field.
 
-Click &quot;Subscribe&quot; to start receiving our regular updates directly in your inbox.
+Click Subscribeto start receiving our regular updates directly in your inbox.
 
 More Information:
 

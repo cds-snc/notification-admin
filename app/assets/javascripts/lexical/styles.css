@@ -62,7 +62,7 @@ button.active.toolbar-item.peer {
 .editor-heading-h2 {
   line-height: 26px;
   color: #0b0c0c;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   margin: 0 0 1.5rem 0;
 }
@@ -229,4 +229,91 @@ li.editor-nested-listitem {
 
 .w-36 {
   width: 13rem;
+}
+
+
+.modal-window {
+  position: fixed;
+  background-color: rgba(0,0,0,0.75);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+}
+.modal-window:target {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-window > div {
+  width: 750px;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.5em 2em 2em 2em;
+  background: white;
+}
+.modal-window header {
+  font-weight: bold;
+}
+.modal-window h1 {
+  font-size: 150%;
+  margin: 0 0 15px;
+}
+
+.modal-close {
+  color: #aaa;
+  line-height: 50px;
+  font-size: 80%;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  width: 70px;
+  text-decoration: none;
+}
+.modal-close:hover {
+  color: black;
+}
+
+.modal-window > div {
+  border-radius: 1rem;
+}
+
+.modal-window div:not(:last-of-type) {
+  margin-bottom: 15px;
+}
+
+.logo {
+  max-width: 150px;
+  display: block;
+}
+
+small {
+  color: lightgray;
+}
+
+.btn {
+  text-decoration: unset;
+  font-size: 2.75rem !important;
+  color: #8a8a8a !important;
+}
+.btn i {
+  padding-right: 0.3em;
+}
+kbd {
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0.1em 0.5em;
+    margin: 0 0.2em;
+    box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
+    background-color: #f7f7f7;
+    font-size: 75%;
 }
