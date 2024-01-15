@@ -44,6 +44,7 @@
             {% endfor %}
           {% else %}
             {{ nav_link_dark(id_key='nav-footer-primary-contact', label=_('Contact us'), href=url_for('main.contact'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-contact', label=_('System status'), href=config["SYSTEM_STATUS_URL"], class="-ml-2") }}
           {% endif %}
         </div>
       </div>
