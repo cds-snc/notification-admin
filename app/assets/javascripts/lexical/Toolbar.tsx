@@ -173,7 +173,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
         if ($isRangeSelection(selection)){
           $moveCaretSelection(selection, true, true, "character");
         }
-    });
+      });
       editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
       return;
     }
@@ -183,6 +183,12 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
   const formatNumberedList = (evt: React.MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
     if (blockType !== "number") {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)){
+          $moveCaretSelection(selection, true, true, "character");
+        }
+      });
       editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
       return;
     }
