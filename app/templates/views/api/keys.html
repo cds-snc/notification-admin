@@ -45,7 +45,7 @@
       {% call field() %}
         <div class="file-list">
           {{ item.name }}
-          {% if (current_user.platform_admin and
+          {% if (
               'total_sends' in item and
               'email_sends' in item and
               'sms_sends' in item )  %}
@@ -54,9 +54,7 @@
             </div>
           {% endif %}
           <div class="hint">
-            {% if current_user.platform_admin %}
-              {{ _('Key type:') }}
-            {% endif %}
+            {{ _('Key type:') }}
             {% if item.key_type == 'normal' %}
               {{ _('Live – sends to anyone') }}
             {% elif item.key_type == 'team' %}
@@ -65,7 +63,6 @@
               {{ _('Test – pretends to send messages') }}
             {% endif %}
           </div>
-          {% if current_user.platform_admin %}
             <div class="hint">
               {{ _('Created:') }} <span class="local-datetime-full">{{ item.created_at }}</span>
             </div>
@@ -75,7 +72,6 @@
             <div class="hint">
               {{ _('Last used:') }} <span class="local-datetime-full">{{ item.last_send }}</span>
             </div>
-          {% endif %}
         </div>
       {% endcall %}
       {% if item.expiry_date %}
