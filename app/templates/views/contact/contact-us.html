@@ -3,8 +3,7 @@
 {% block contact_form_content %}
     <p>{{_("To learn about our load time, delivery speed and delivery information, read our <a href='{}'>Service level objectives: What to expect from GC Notify.</a>").format(gca_url_for('service-level-objectives')) }}</p>
     {% with system_status_url=config['SYSTEM_STATUS_URL'] + ('/#fr' if current_lang == 'fr' else '') %}
-    <p>{{ system_status_url }}</p>
-    <p>{{_("To check our current operations, incidents, and service interruptions, visit <a href='{}'>System status</a>").format(system_status_url)}}</p>
+        <p>{{_("To check our current operations, incidents, and service interruptions, visit <a href='{}'>System status</a>").format(system_status_url)}}</p>
     {% endwith %}
     <p>{{_("For other questions about GC Notify, use this form.")}}</p>
     {% if not current_user.is_authenticated %}
