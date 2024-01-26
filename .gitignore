@@ -72,9 +72,8 @@ bower_components
 npm-debug.log
 
 environment.sh
-.env
-.envrc
 .env*
+!.env.example
 venv-freeze/
 
 # IDEs
