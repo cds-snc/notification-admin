@@ -74,6 +74,7 @@ npm-debug.log
 environment.sh
 .env
 .envrc
+.env*
 venv-freeze/
 
 # IDEs
