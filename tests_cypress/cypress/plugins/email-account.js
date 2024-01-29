@@ -6,11 +6,11 @@ const simpleParser = require('mailparser').simpleParser
 const env = require('../../cypress.env.json');
 const _ = require('lodash');
 
-const emailAccount = async () => {
+const emailAccount = async (user, password) => {
 
-    const emailConfig = {
+    let EMAIL_CONFIG = {
         imap: {
-            user:  env.NOTIFY_USER,
+            user: env.NOTIFY_USER,
             password: env.IMAP_PASSWORD,
             host: 'imap.gmail.com',
             port: 993,
@@ -29,9 +29,8 @@ const emailAccount = async () => {
          */
         async deleteAllEmails() {
             // console.debug('Purging the inbox...')
-
             try {
-                const connection = await imaps.connect(emailConfig)
+                const connection = await imaps.connect(EMAIL_CONFIG)
 
                 // grab up to 50 emails from the inbox
                 await connection.openBox('INBOX')
@@ -40,14 +39,14 @@ const emailAccount = async () => {
                     bodies: [''],
                 }
                 const messages = await connection.search(searchCriteria, fetchOptions)
-
+                const boxes = await connection.getBoxes()
                 if (!messages.length) {
-                    // console.log('Cannot find any emails')
+                    console.log('Cannot find any emails')
                     // and close the connection to avoid it hanging
                     connection.end()
                     return null
                 } else {
-                    // console.log('There are %d messages, deleting them...', messages.length)
+                    console.log('There are %d messages, deleting them...', messages.length)
                     // delete all messages
                     const uidsToDelete = messages
                         .filter(message => {
@@ -73,14 +72,14 @@ const emailAccount = async () => {
         },
         /**
          * Utility method for getting the last email
-         * for the Ethereal email account 
+         * for the Ethereal email account
          */
         async getLastEmail() {
             // makes debugging very simple
-            // console.log('Getting the last email')
-
+            console.log('Getting the last email')
+            console.log(`Config: ${JSON.stringify(EMAIL_CONFIG)}`)
             try {
-                const connection = await imaps.connect(emailConfig)
+                const connection = await imaps.connect(EMAIL_CONFIG)
 
                 // grab up to 50 emails from the inbox
                 await connection.openBox('INBOX')
@@ -96,13 +95,16 @@ const emailAccount = async () => {
                     // console.log('Cannot find any emails')
                     return null
                 } else {
-                    // console.log('There are %d messages', messages.length)
+                    console.log('There are %d messages', messages.length)
+                    const allMail = messages.map(async (item) => {
+                        await simpleParser(item.parts[0].body).text
+                    });
                     // grab the last email
                     const mail = await simpleParser(
                         messages[messages.length - 1].parts[0].body,
                     )
-                    // console.log(mail.subject)
-                    // console.log(mail.text)
+                    console.log(mail.subject)
+                    console.log(mail.text)
 
 
                     // and returns the main fields
@@ -120,11 +122,11 @@ const emailAccount = async () => {
                 return null
             }
         },
-        async fetchEmail(acct) {
+        async fetchEmail(username, password) {
             const _config = {
                 imap: {
-                    user: acct.user, 
-                    password: acct.pass,
+                    user: username,
+                    password: password,
                     host: "imap.ethereal.email", //'imap.gmail.com',
                     port: 993,
                     tls: true,
@@ -148,20 +150,20 @@ const emailAccount = async () => {
                 connection.end()
 
                 if (!messages.length) {
-                    // console.log('Cannot find any emails, retrying...')
+                    console.log('Cannot find any emails, retrying...')
                     return null
                 } else {
-                    // console.log('There are %d messages', messages.length)
-                    // messages.forEach(function (item) {
-                    //     var all = _.find(item.parts, { "which": "" })
-                    //     var id = item.attributes.uid;
-                    //     var idHeader = "Imap-Id: "+id+"\r\n";
-                    //     simpleParser(idHeader+all.body, (err, mail) => {
-                    //         // access to the whole mail object
-                    //         console.log(mail.subject)
-                    //         console.log(mail.html)
-                    //     });
-                    // });
+                    console.log('There are %d messages', messages.length)
+                    messages.forEach(function (item) {
+                        var all = _.find(item.parts, { "which": "" })
+                        var id = item.attributes.uid;
+                        var idHeader = "Imap-Id: " + id + "\r\n";
+                        simpleParser(idHeader + all.body, (err, mail) => {
+                            // access to the whole mail object
+                            console.log(mail.subject)
+                            console.log(mail.html)
+                        });
+                    });
 
                     // grab the last email
                     const mail = await simpleParser(
@@ -188,7 +190,7 @@ const emailAccount = async () => {
         },
         async createEmailAccount() {
             let testAccount = await nodemailer.createTestAccount();
-            // console.log("test account created: ", testAccount);
+            console.log("test account created: ", testAccount);
             return testAccount;
         }
     }
