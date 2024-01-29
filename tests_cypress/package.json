@@ -11,6 +11,7 @@
     "imap-simple": "^5.1.0",
     "jsrsasign": "^11.0.0",
     "mailparser": "^3.5.0",
+    "nanoid": "^5.0.4",
     "nodemailer": "^6.9.2"
   },
   "devDependencies": {
