@@ -1,5 +1,4 @@
 const { recurse } = require('cypress-recurse')
-const ADMIN_COOKIE = "notify_admin_session";
 
 
 let Components = {
