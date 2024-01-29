@@ -9,6 +9,11 @@ describe('Create Account Page', () => {
     CreateAccountPage.VisitPage();
   });
 
+  // Clear cookies for the next suite of tests
+  after(() => {
+    cy.clearCookie('notify_admin_session');
+  });
+
   it('Display the correct title', () => {
     cy.contains('h1', 'Create an account').should('be.visible');
   });
