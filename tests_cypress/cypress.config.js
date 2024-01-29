@@ -4,8 +4,6 @@ const { defineConfig } = require("cypress");
 const EmailAccount = require("./cypress/plugins/email-account")
 const htmlvalidate = require("cypress-html-validate/plugin");
 const env = require('./cypress.env.json');
-// const webpackPreprocessor = require('@cypress/webpack-preprocessor')
-// const webpack = require('webpack')
 
 
 module.exports = defineConfig({

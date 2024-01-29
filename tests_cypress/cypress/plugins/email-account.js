@@ -6,11 +6,11 @@ const simpleParser = require('mailparser').simpleParser
 const env = require('../../cypress.env.json');
 const _ = require('lodash');
 
-const emailAccount = async (user, password) => {
+const emailAccount = async () => {
 
-    let EMAIL_CONFIG = {
+    const emailConfig = {
         imap: {
-            user: env.NOTIFY_USER,
+            user:  env.NOTIFY_USER,
             password: env.IMAP_PASSWORD,
             host: 'imap.gmail.com',
             port: 993,
@@ -29,8 +29,9 @@ const emailAccount = async (user, password) => {
          */
         async deleteAllEmails() {
             // console.debug('Purging the inbox...')
+
             try {
-                const connection = await imaps.connect(EMAIL_CONFIG)
+                const connection = await imaps.connect(emailConfig)
 
                 // grab up to 50 emails from the inbox
                 await connection.openBox('INBOX')
@@ -39,14 +40,14 @@ const emailAccount = async (user, password) => {
                     bodies: [''],
                 }
                 const messages = await connection.search(searchCriteria, fetchOptions)
-                const boxes = await connection.getBoxes()
+
                 if (!messages.length) {
-                    console.log('Cannot find any emails')
+                    // console.log('Cannot find any emails')
                     // and close the connection to avoid it hanging
                     connection.end()
                     return null
                 } else {
-                    console.log('There are %d messages, deleting them...', messages.length)
+                    // console.log('There are %d messages, deleting them...', messages.length)
                     // delete all messages
                     const uidsToDelete = messages
                         .filter(message => {
@@ -72,14 +73,14 @@ const emailAccount = async (user, password) => {
         },
         /**
          * Utility method for getting the last email
-         * for the Ethereal email account
+         * for the Ethereal email account 
          */
         async getLastEmail() {
             // makes debugging very simple
-            console.log('Getting the last email')
-            console.log(`Config: ${JSON.stringify(EMAIL_CONFIG)}`)
+            // console.log('Getting the last email')
+
             try {
-                const connection = await imaps.connect(EMAIL_CONFIG)
+                const connection = await imaps.connect(emailConfig)
 
                 // grab up to 50 emails from the inbox
                 await connection.openBox('INBOX')
@@ -95,16 +96,13 @@ const emailAccount = async (user, password) => {
                     // console.log('Cannot find any emails')
                     return null
                 } else {
-                    console.log('There are %d messages', messages.length)
-                    const allMail = messages.map(async (item) => {
-                        await simpleParser(item.parts[0].body).text
-                    });
+                    // console.log('There are %d messages', messages.length)
                     // grab the last email
                     const mail = await simpleParser(
                         messages[messages.length - 1].parts[0].body,
                     )
-                    console.log(mail.subject)
-                    console.log(mail.text)
+                    // console.log(mail.subject)
+                    // console.log(mail.text)
 
 
                     // and returns the main fields
@@ -122,11 +120,11 @@ const emailAccount = async (user, password) => {
                 return null
             }
         },
-        async fetchEmail(username, password) {
+        async fetchEmail(acct) {
             const _config = {
                 imap: {
-                    user: username,
-                    password: password,
+                    user: acct.user, 
+                    password: acct.pass,
                     host: "imap.ethereal.email", //'imap.gmail.com',
                     port: 993,
                     tls: true,
@@ -150,20 +148,20 @@ const emailAccount = async (user, password) => {
                 connection.end()
 
                 if (!messages.length) {
-                    console.log('Cannot find any emails, retrying...')
+                    // console.log('Cannot find any emails, retrying...')
                     return null
                 } else {
-                    console.log('There are %d messages', messages.length)
-                    messages.forEach(function (item) {
-                        var all = _.find(item.parts, { "which": "" })
-                        var id = item.attributes.uid;
-                        var idHeader = "Imap-Id: " + id + "\r\n";
-                        simpleParser(idHeader + all.body, (err, mail) => {
-                            // access to the whole mail object
-                            console.log(mail.subject)
-                            console.log(mail.html)
-                        });
-                    });
+                    // console.log('There are %d messages', messages.length)
+                    // messages.forEach(function (item) {
+                    //     var all = _.find(item.parts, { "which": "" })
+                    //     var id = item.attributes.uid;
+                    //     var idHeader = "Imap-Id: "+id+"\r\n";
+                    //     simpleParser(idHeader+all.body, (err, mail) => {
+                    //         // access to the whole mail object
+                    //         console.log(mail.subject)
+                    //         console.log(mail.html)
+                    //     });
+                    // });
 
                     // grab the last email
                     const mail = await simpleParser(
@@ -190,7 +188,7 @@ const emailAccount = async (user, password) => {
         },
         async createEmailAccount() {
             let testAccount = await nodemailer.createTestAccount();
-            console.log("test account created: ", testAccount);
+            // console.log("test account created: ", testAccount);
             return testAccount;
         }
     }
