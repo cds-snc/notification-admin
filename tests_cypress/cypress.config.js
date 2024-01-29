@@ -3,8 +3,6 @@ var config = require('./config');
 const { defineConfig } = require("cypress");
 const EmailAccount = require("./cypress/plugins/email-account")
 const htmlvalidate = require("cypress-html-validate/plugin");
-const env = require('./cypress.env.json');
-
 
 module.exports = defineConfig({
   e2e: {
@@ -16,10 +14,9 @@ module.exports = defineConfig({
         },
       });
 
-      let emailAccount = await EmailAccount(env.NOTIFY_USER, env.NOTIFY_PASSWORD)
-
+      const emailAccount = await EmailAccount()
       on('task', {
-        log(message) { // for debugging
+        log (message) { // for debugging
           console.log(message)
           return null
         },
@@ -29,12 +26,11 @@ module.exports = defineConfig({
         deleteAllEmails() {
           return emailAccount.deleteAllEmails()
         },
-        fetchEmail() {
-          return emailAccount.fetchEmail(username, password)
+        fetchEmail(acct) {
+          return emailAccount.fetchEmail(acct)
         },
-        async createEmailAccount({ username, password }) {
-          emailAccount = await EmailAccount(username, password);
-          return emailAccount;
+        createEmailAccount() {
+          return emailAccount.createEmailAccount();
         }
       });
 
