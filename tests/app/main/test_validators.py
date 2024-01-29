@@ -20,7 +20,11 @@ def test_should_raise_validation_error_for_password(
     form.password.data = password
 
     form.validate()
-    assert "Choose a password that’s harder to guess" in form.errors["password"]
+
+    assert (
+        "A password that is hard to guess contains:<li>Uppercase and lowercase letters.</li><li>Numbers and special characters.</li><li>Words separated by a space.</li>"
+        in form.errors["password"]
+    )
 
 
 def test_valid_email_not_in_valid_domains(
