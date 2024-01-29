@@ -28,17 +28,7 @@ let Actions = {
         Components.SubmitButton().click();
     },
 
-    CreateAccount: (name, email, mobile, password) => {
-        cy.task('deleteAllEmails', {});
-        Components.FullName().type(name);
-        Components.EmailAddress().type(email);
-        Components.MobileNumber().type(mobile);
-        Components.Password().type(password);
-        Components.SubmitButton().click();
-
-        cy.contains('h1', 'Check your email').should('be.visible');
-        cy.contains('p', `An email has been sent to ${email}.`).should('be.visible');
-
+    WaitForConfirmationEmail: () => {
         recurse(
             () => cy.task('getLastEmail', {}), // Cypress commands to retry
             Cypress._.isObject,
@@ -53,7 +43,15 @@ let Actions = {
             .then((html) => (
                 cy.document({ log: false }).invoke({ log: false }, 'write', html)
             ));
+    },
 
+    CreateAccount: (name, email, mobile, password) => {
+        cy.task('deleteAllEmails', {});
+        Components.FullName().type(name);
+        Components.EmailAddress().type(email);
+        Components.MobileNumber().type(mobile);
+        Components.Password().type(password);
+        Components.SubmitButton().click();
     }
 };
 

@@ -1,4 +1,5 @@
 import config from "../../config";
+import { customAlphabet } from "nanoid";
 
 const BASE_URL = config.Hostnames.API
 
@@ -13,6 +14,10 @@ const Utilities = {
         const headers = { alg: "HS256", typ: "JWT" };
         return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), Cypress.env('ADMIN_SECRET'));
     },
+    GenerateID: (length = 10) => {
+        const nanoid = customAlphabet('1234567890abcdef-_', length)
+        return nanoid()
+    }
 };
 const Admin = {
     SendOneOff: ({ to, template_id }) => {

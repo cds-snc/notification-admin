@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import { CreateAccountPage } from "../../Notify/Admin/Pages/all";
-import { Admin } from "../../Notify/NotifyAPI";
+import { Utilities, Admin } from "../../Notify/NotifyAPI";
 
 describe('Create Account Page', () => {
 
@@ -44,21 +44,28 @@ describe('Create Account Page', () => {
   });
 
   it('Succeeds with a valid form', () => {
-    CreateAccountPage.CreateAccount("john doe", "notify-ui-tests+johndoe@cds-snc.ca", "16132532223", "BestPassword123!");
+    let email = `notify-ui-tests+${Utilities.GenerateID()}@cds-snc.ca`;
 
+    CreateAccountPage.CreateAccount("john doe", email, "16132532223", "BestPassword123!");
+    cy.contains('h1', 'Check your email').should('be.visible');
+    cy.contains('p', `An email has been sent to ${email}.`).should('be.visible');
+
+    CreateAccountPage.WaitForConfirmationEmail();
     // Ensure registration email is received and click registration link
     cy.contains('p', 'To complete your registration for GC Notify, please click the link:').should('be.visible');
-    cy.contains('p', 'To complete your registration for GC Notify, please click the link:').invoke('text').as('RegisterLink');
-
-    cy.get('@RegisterLink').then((text) => {
-      let link = text.slice(67, text.length);
-      cy.visit(link);
-      cy.contains('h1', 'Check your phone messages').should('be.visible')
-
-      Admin.GetUserByEmail({ email: 'notify-ui-tests+johndoe@cds-snc.ca' }).then((user) => {
-        // TODO: Ideally we'd want the ability to completely delete the test user rather than archive it.
-        Admin.ArchiveUser({ userId: user.body.data.id })
+    cy.get('a')
+      .should('have.attr', 'href')
+      .and('include', 'verify-email')
+      .then((href) => {
+        cy.visit(href);
       });
+
+    cy.contains('h1', 'Check your phone messages').should('be.visible')
+
+    Admin.GetUserByEmail({ email: email }).then((user) => {
+      // TODO: Ideally we'd want the ability to completely delete the test user rather than archive it.
+      Admin.ArchiveUser({ userId: user.body.data.id })
     });
   });
+
 });
