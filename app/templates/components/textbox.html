@@ -63,13 +63,13 @@
       class=field_class,
       data_module='highlight-tags' if highlight_tags else '',
       rows=rows|string if field.type == 'TextAreaField' else false,
-      invalid='' if field.errors else false,
+      aria_invalid='true' if field.errors else false,
       required='' if required != false else false,
       aria_required='true' if required != false else false,
       aria_describedby=describedby|trim if describedby != '' else false,
       **kwargs
     ) }}
-    
+
     {% if suffix %}
       <span>{{ suffix }}</span>
     {% endif %}
@@ -119,7 +119,7 @@
         </span>
       {% endif %}
     </div>
-    
+
     {% set field_class = '{}'.format(width) %}
 
     {% set field_class = 'form-control input focus:shadow-outline min-h-target ' + field_class + (

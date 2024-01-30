@@ -39,6 +39,7 @@
 @import "./components/back-link.css";
 @import "./components/preview-fullpage-border.css";
 @import "./components/remaining-messages.css";
+@import "./components/empty-list.css";
 
 /* views */
 @import "./views/dashboard.css";

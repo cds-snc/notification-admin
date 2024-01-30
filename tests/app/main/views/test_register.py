@@ -126,7 +126,7 @@ def test_should_return_200_when_email_is_not_gov_uk(
     )
 
     assert response.status_code == 200
-    assert "Enter a government email address" in response.get_data(as_text=True)
+    assert "is not on our list of government domains" in response.get_data(as_text=True)
 
 
 @pytest.mark.parametrize(
@@ -178,7 +178,10 @@ def test_should_return_200_if_password_is_blocked(
     )
 
     response.status_code == 200
-    assert "Choose a password that’s harder to guess" in response.get_data(as_text=True)
+    assert (
+        "A password that is hard to guess contains:<li>Uppercase and lowercase letters.</li><li>Numbers and special characters.</li><li>Words separated by a space.</li>"
+        in response.get_data(as_text=True)
+    )
 
 
 def test_register_with_existing_email_sends_emails(

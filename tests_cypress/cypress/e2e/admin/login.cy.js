@@ -19,6 +19,11 @@ describe('Basic login', () => {
         cy.intercept('GET', '**/dashboard.json', {});
     });
 
+    // Clear cookies for the next suite of tests
+    after(() => {
+        cy.clearCookie('notify_admin_session');
+    });
+
     it('succeeds and ADMIN displays accounts page', () => {
         cy.visit("/accounts");
 
