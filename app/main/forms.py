@@ -164,8 +164,12 @@ def password(label=_l("Password")):
         label,
         validators=[
             DataRequired(message=_l("This cannot be empty")),
-            Length(8, 255, message=_l("Must be at least 8 characters and hard to guess")),
-            Blocklist(message=_l("Choose a password that’s harder to guess")),
+            Length(8, 255, message=_l("Must be at least 8 characters")),
+            Blocklist(
+                message=_l(
+                    "A password that is hard to guess contains:<li>Uppercase and lowercase letters.</li><li>Numbers and special characters.</li><li>Words separated by a space.</li>"
+                )
+            ),
         ],
     )
 

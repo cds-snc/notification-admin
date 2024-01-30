@@ -13,22 +13,22 @@ files = [
 
 [[package]]
 name = "awscli"
-version = "1.29.39"
+version = "1.32.19"
 description = "Universal Command Line Environment for AWS."
 optional = false
-python-versions = ">= 3.7"
+python-versions = ">= 3.8"
 files = [
-    {file = "awscli-1.29.39-py3-none-any.whl", hash = "sha256:917a4e6d63cca96bfaafd8c680b2d0c5b046ffd2921d1b34b0ab5ab7b0006d2f"},
-    {file = "awscli-1.29.39.tar.gz", hash = "sha256:e027120aea449b34dad91773caf3357a8dae52abf54c406f062dd90158c97c14"},
+    {file = "awscli-1.32.19-py3-none-any.whl", hash = "sha256:1ce62c1db13cd20c876ebf497b6b4c3bc66697d49d21680b7ea88c6704809d90"},
+    {file = "awscli-1.32.19.tar.gz", hash = "sha256:c4255f546cfa3bea233efe78972d2ef173654f615dae6848b44ea0b52ffd94dd"},
 ]
 
 [package.dependencies]
-botocore = "1.31.39"
+botocore = "1.34.19"
 colorama = ">=0.2.5,<0.4.5"
 docutils = ">=0.10,<0.17"
 PyYAML = ">=3.10,<6.1"
 rsa = ">=3.1.2,<4.8"
-s3transfer = ">=0.6.0,<0.7.0"
+s3transfer = ">=0.10.0,<0.11.0"
 
 [[package]]
 name = "awscli-cwlogs"
@@ -151,41 +151,41 @@ files = [
 
 [[package]]
 name = "boto3"
-version = "1.28.39"
+version = "1.34.19"
 description = "The AWS SDK for Python"
 optional = false
-python-versions = ">= 3.7"
+python-versions = ">= 3.8"
 files = [
-    {file = "boto3-1.28.39-py3-none-any.whl", hash = "sha256:48d1ea0918088df0e59a37a88ce53de7f4500108638c81255f5b1cb8edea28f4"},
-    {file = "boto3-1.28.39.tar.gz", hash = "sha256:3ac38ad8afafc6ed6c8dd6cc58ddd22b6352c6a413b969aef928c6aacf555c56"},
+    {file = "boto3-1.34.19-py3-none-any.whl", hash = "sha256:4c76ef92af7dbdcea21b196a2699671e82e8814d4cfe570c48eda477dd1aeb19"},
+    {file = "boto3-1.34.19.tar.gz", hash = "sha256:95d2c2bde86a0934d4c461020c50fc1344b444f167654e215f1de549bc77fc0f"},
 ]
 
 [package.dependencies]
-botocore = ">=1.31.39,<1.32.0"
+botocore = ">=1.34.19,<1.35.0"
 jmespath = ">=0.7.1,<2.0.0"
-s3transfer = ">=0.6.0,<0.7.0"
+s3transfer = ">=0.10.0,<0.11.0"
 
 [package.extras]
 crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.31.39"
+version = "1.34.19"
 description = "Low-level, data-driven core of boto 3."
 optional = false
-python-versions = ">= 3.7"
+python-versions = ">= 3.8"
 files = [
-    {file = "botocore-1.31.39-py3-none-any.whl", hash = "sha256:8ce716925284c1c0d04c796016a1e0e9c29ca3e196afefacacc16bc4e80c978f"},
-    {file = "botocore-1.31.39.tar.gz", hash = "sha256:61aefac8b44f86a4581d4128cce30806f633357e8d8efc4f73367a8e62009e70"},
+    {file = "botocore-1.34.19-py3-none-any.whl", hash = "sha256:a4a39c7092960f5da2439efc5f6220730dab634aaff4c1444bbd1dfa43bc28cc"},
+    {file = "botocore-1.34.19.tar.gz", hash = "sha256:64352b2f05de5c6ab025c1d5232880c22775356dcc5a53d798a6f65db847e826"},
 ]
 
 [package.dependencies]
 jmespath = ">=0.7.1,<2.0.0"
 python-dateutil = ">=2.1,<3.0.0"
-urllib3 = ">=1.25.4,<1.27"
+urllib3 = {version = ">=1.25.4,<2.1", markers = "python_version >= \"3.10\""}
 
 [package.extras]
-crt = ["awscrt (==0.16.26)"]
+crt = ["awscrt (==0.19.19)"]
 
 [[package]]
 name = "cachelib"
@@ -1428,7 +1428,7 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "notifications-utils"
-version = "52.0.17"
+version = "52.0.18"
 description = "Shared python code for Notification - Provides logging utils etc."
 optional = false
 python-versions = "~3.10"
@@ -1436,9 +1436,9 @@ files = []
 develop = false
 
 [package.dependencies]
-awscli = "1.29.39"
+awscli = "1.32.19"
 bleach = "6.0.0"
-boto3 = "1.28.39"
+boto3 = "1.34.19"
 cachetools = "4.2.4"
 certifi = "^2023.7.22"
 cryptography = "^41.0.2"
@@ -1463,8 +1463,8 @@ werkzeug = "2.3.7"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "632b4ababb1e57822b876eb7845c88954637ea1d"
-resolved_reference = "632b4ababb1e57822b876eb7845c88954637ea1d"
+reference = "69b6eee0c715fa4c3fe9ac48e4ccd6e3d4c1e239"
+resolved_reference = "69b6eee0c715fa4c3fe9ac48e4ccd6e3d4c1e239"
 
 [[package]]
 name = "openpyxl"
@@ -1951,6 +1951,7 @@ files = [
     {file = "PyYAML-6.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:bf07ee2fef7014951eeb99f56f39c9bb4af143d8aa3c21b1677805985307da34"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:855fb52b0dc35af121542a76b9a84f8d1cd886ea97c84703eaa6d88e37a2ad28"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9"},
+    {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a08c6f0fe150303c1c6b71ebcd7213c2858041a7e01975da3a99aed1e7a378ef"},
     {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0"},
     {file = "PyYAML-6.0.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:8d4e9c88387b0f5c7d5f281e55304de64cf7f9c0021a3525bd3b1c542da3b0e4"},
     {file = "PyYAML-6.0.1-cp312-cp312-win32.whl", hash = "sha256:d483d2cdf104e7c9fa60c544d92981f12ad66a457afae824d146093b8c294c54"},
@@ -2055,20 +2056,20 @@ pyasn1 = ">=0.1.3"
 
 [[package]]
 name = "s3transfer"
-version = "0.6.2"
+version = "0.10.0"
 description = "An Amazon S3 Transfer Manager"
 optional = false
-python-versions = ">= 3.7"
+python-versions = ">= 3.8"
 files = [
-    {file = "s3transfer-0.6.2-py3-none-any.whl", hash = "sha256:b014be3a8a2aab98cfe1abc7229cc5a9a0cf05eb9c1f2b86b230fd8df3f78084"},
-    {file = "s3transfer-0.6.2.tar.gz", hash = "sha256:cab66d3380cca3e70939ef2255d01cd8aece6a4907a9528740f668c4b0611861"},
+    {file = "s3transfer-0.10.0-py3-none-any.whl", hash = "sha256:3cdb40f5cfa6966e812209d0994f2a4709b561c88e90cf00c2696d2df4e56b2e"},
+    {file = "s3transfer-0.10.0.tar.gz", hash = "sha256:d0c8bbf672d5eebbe4e57945e23b972d963f07d82f661cabf678a5c88831595b"},
 ]
 
 [package.dependencies]
-botocore = ">=1.12.36,<2.0a.0"
+botocore = ">=1.33.2,<2.0a.0"
 
 [package.extras]
-crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
+crt = ["botocore[crt] (>=1.33.2,<2.0a.0)"]
 
 [[package]]
 name = "setuptools"
@@ -2472,4 +2473,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.8"
-content-hash = "73f931632bcdd27ee9eefa46c518f4754e155ea60acc2557dbf6e36320feca22"
+content-hash = "196139c13d3dcc6cb3579ce3de916a87a7997f75045033731c641928e23fe6f9"
