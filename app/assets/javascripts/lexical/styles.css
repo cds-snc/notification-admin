@@ -11,7 +11,7 @@
   z-index: 100;
 }
 
-.toolbar-inner { 
+.toolbar-inner {
   border-left: 2px solid #d9d9d9;
   border-right: 2px solid #d9d9d9;
   border-top: 2px solid #d9d9d9;
@@ -19,7 +19,7 @@
   padding: 10px;
 }
 
-.editor { 
+.editor {
   border-left: 2px solid #d9d9d9;
   border-right: 2px solid #d9d9d9;
   border-bottom: 2px solid #d9d9d9;
@@ -231,10 +231,9 @@ li.editor-nested-listitem {
   width: 13rem;
 }
 
-
 .modal-window {
   position: fixed;
-  background-color: rgba(0,0,0,0.75);
+  background-color: rgba(0, 0, 0, 0.75);
   top: 0;
   right: 0;
   bottom: 0;
@@ -308,12 +307,14 @@ small {
   padding-right: 0.3em;
 }
 kbd {
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 0.1em 0.5em;
-    margin: 0 0.2em;
-    box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
-    background-color: #f7f7f7;
-    font-size: 75%;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.1em 0.5em;
+  margin: 0 0.2em;
+  box-shadow:
+    0 1px 0px rgba(0, 0, 0, 0.2),
+    0 0 0 2px #fff inset;
+  background-color: #f7f7f7;
+  font-size: 75%;
 }

@@ -1,5 +1,4 @@
 from flask import abort, current_app, render_template
-from flask_babel import _
 from flask_wtf import FlaskForm as Form
 from notifications_utils.template import Template
 from wtforms import FileField, PasswordField, StringField, TextAreaField, validators
@@ -33,7 +32,7 @@ def styleguide():
 @main.route("/_rte")
 def rte():
     from app import get_current_locale
-    
+
     lang = get_current_locale(current_app)
     template_content = "Annual newsletter\n\nWe hope this newsletter finds you well! As we dive into the new year, we want to ensure you're up to speed with the latest happenings. Here's a quick recap!\n\nThings You May Have Missed:\n\nThing 1\n\nThing 2\n\nSteps to Sign Up:\n\nVisit our website \n\nLook for the Newsletter Sign-Up section on the homepage.\n\nEnter your email address in the provided field.\n\nClick Subscribe to start receiving our regular updates directly in your inbox.\n\nMore Information:\n\nFor more details on our products, services, or any other inquiries, feel free to reach out to our dedicated support team at [support-email] or visit our FAQ page [FAQ-link]. We value your feedback and are here to assist you in any way we can."
 
