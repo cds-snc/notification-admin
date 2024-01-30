@@ -216,11 +216,16 @@ function FloatingLinkEditor({
       inputRef.current.focus();
     }
   }, [isEditMode]);
-
+  // focus on the input when the link editor is rendered
+  useEffect(() => {
+    popped.current = true;
+    setEditMode(true);
+  }, []);
   return (
     <div ref={editorRef} className="link-editor" data-testid="link-editor">
       {isEditMode ? (
         <input
+          aria-label="Link URL. Press escape or enter to return to the editor"
           ref={inputRef}
           className="link-input"
           value={linkUrl}
