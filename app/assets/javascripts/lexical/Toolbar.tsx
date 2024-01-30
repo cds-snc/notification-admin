@@ -80,14 +80,17 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
   const [isLink, setIsLink] = useState(false);
   const [, setSelectedElementKey] = useState("");
   const [blockType, setBlockType] = useState("paragraph");
-
   const [isEditable] = useState(() => editor.isEditable());
+  const [formattingInstruction, setformattingInstruction] = useState("");
 
   const insertLink = useCallback(() => {
     if (!isLink) {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl("https://"));
+      // announce to screen readers that formatting has been applied/removed
+      a11y_announce("Link", "inserted");
     } else {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+      a11y_announce("Link", "removed");
     }
   }, [editor, isLink]);
 
@@ -138,9 +141,20 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
     [items, setCurrentFocusIndex, setToolbarInit, toolbarInit],
   );
 
+  /* Announce formatting applied to screen reader users */
+  const a11y_announce = (
+    formatting: string,
+    action: "applied" | "removed" | "inserted",
+  ) => {
+    setformattingInstruction(`${formatting} ${action}`);
+  };
+
   const formatHeading = (level: HeadingTagType) => {
     if (blockType === level) {
       formatParagraph();
+
+      // announce to screen readers that formatting has been applied/removed
+      a11y_announce(level, "removed");
     }
 
     if (blockType !== level) {
@@ -149,6 +163,8 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
         if ($isRangeSelection(selection)) {
           $wrapNodes(selection, () => $createHeadingNode(level));
         }
+        // announce to screen readers that formatting has been applied/removed
+        a11y_announce(level, "applied");
       });
     }
   };
@@ -163,6 +179,9 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
         }
       });
     }
+
+    // announce to screen readers that formatting has been applied/removed
+    a11y_announce("Paragraph", "applied");
   };
 
   const formatBulletList = (evt: React.MouseEvent<HTMLButtonElement>) => {
@@ -170,14 +189,20 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
     if (blockType !== "bullet") {
       editor.update(() => {
         const selection = $getSelection();
-        if ($isRangeSelection(selection)){
+        if ($isRangeSelection(selection)) {
           $moveCaretSelection(selection, true, true, "character");
         }
       });
       editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+
+      // announce to screen readers that formatting has been applied/removed
+      a11y_announce("Bulleted list", "applied");
       return;
     }
     editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+
+    // announce to screen readers that formatting has been applied/removed
+    a11y_announce("Bulleted list", "removed");
   };
 
   const formatNumberedList = (evt: React.MouseEvent<HTMLButtonElement>) => {
@@ -185,14 +210,20 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
     if (blockType !== "number") {
       editor.update(() => {
         const selection = $getSelection();
-        if ($isRangeSelection(selection)){
+        if ($isRangeSelection(selection)) {
           $moveCaretSelection(selection, true, true, "character");
         }
       });
       editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+
+      // announce to screen readers that formatting has been applied/removed
+      a11y_announce("Numbered list", "applied");
       return;
     }
     editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+
+    // announce to screen readers that formatting has been applied/removed
+    a11y_announce("Numbered list", "removed");
   };
 
   const updateToolbar = useCallback(() => {
@@ -272,19 +303,20 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
   }, [editor, updateToolbar]);
 
   // customize shortcuts to OS
-  var shortcutKey = window.navigator.userAgent.includes('Mac') ? '⌘' : 'ctrl';
+  var shortcutKey = window.navigator.userAgent.includes("Mac") ? "⌘" : "ctrl";
   const tooltipFormatBold = `Bold (${shortcutKey}+B)`;
   const tooltipFormatItalic = `Italic (${shortcutKey}+I)`;
 
   // help-button focus
   const handleFocus = (event: any) => {
-    console.log('Input field is focused', event);
-    console.log('ert', event.relatedTarget)
-    // if relatedTarget is '#help-button', tab again  
+    // if relatedTarget is '#help-button', tab again
     if (event.relatedTarget.dataset.lexicalEditor) {
-      document.querySelector<HTMLButtonElement>('#toolbar-container button[tabindex="0"]')?.focus();
+      document
+        .querySelector<HTMLButtonElement>(
+          '#toolbar-container button[tabindex="0"]',
+        )
+        ?.focus();
     }
-
   };
 
   const editorHasFocus = useEditorFocus();
@@ -296,14 +328,11 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
 
   // window.getSelection = $getSelection;
 
-
   return (
     <>
       <div
         className="toolbar-container"
         role="toolbar"
-        aria-label="Template toolbar: press the left and right arrow keys to select a 
-        formatting options; press tab to enter the content area"
         aria-controls={editorId}
         onKeyDown={handleNav}
         data-testid="toolbar"
@@ -336,7 +365,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
                     aria-hidden="true"
                     className="p-1 fa-solid fa-fas fa-heading"
                   ></i>
-                  <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-1"></i>
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-1"
+                  ></i>
                 </button>
               </ToolTip>
 
@@ -365,7 +397,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
                     aria-hidden="true"
                     className="p-1 fa-solid fa-fas fa-heading"
                   ></i>
-                  <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-2"></i>
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-2"
+                  ></i>
                 </button>
               </ToolTip>
 
@@ -381,15 +416,23 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
                   }}
                   onClick={() => {
                     editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+
+                    // announce to screen readers that formatting has been applied/removed
+                    const action = isBold ? "removed" : "applied";
+                    a11y_announce("Bold", action);
                   }}
                   className={
-                    "peer toolbar-item " + (isBold && editorHasFocus ? "active" : "")
+                    "peer toolbar-item " +
+                    (isBold && editorHasFocus ? "active" : "")
                   }
                   aria-label="Format bold"
                   aria-pressed={isBold}
                   data-testid={`bold-button`}
                 >
-                  <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-bold"></i>
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-bold"
+                  ></i>
                 </button>
               </ToolTip>
 
@@ -405,6 +448,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
                   }}
                   onClick={() => {
                     editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
+
+                    // announce to screen readers that formatting has been applied/removed
+                    const action = isItalic ? "removed" : "applied";
+                    a11y_announce("Italic", action);
                   }}
                   className={
                     "peer toolbar-item " +
@@ -414,7 +461,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
                   aria-pressed={isItalic}
                   data-testid={`italic-button`}
                 >
-                  <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-italic"></i>
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-italic"
+                  ></i>
                 </button>
               </ToolTip>
 
@@ -483,13 +533,17 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
                   disabled={!isEditable}
                   onClick={insertLink}
                   className={
-                    "peer toolbar-item " + (isLink && editorHasFocus ? "active" : "")
+                    "peer toolbar-item " +
+                    (isLink && editorHasFocus ? "active" : "")
                   }
                   aria-label="Insert link"
                   aria-pressed={isLink}
                   data-testid={`link-button`}
                 >
-                  <i aria-hidden="true" className="p-1 fa-solid fa-fas fa-link"></i>
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-link"
+                  ></i>
                 </button>
               </ToolTip>
 
@@ -518,32 +572,58 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
             </div>
             <div className="flex-grow-0">
               <ToolTip text="Help">
-                <a id="help-button" onFocus={handleFocus} aria-label="Help" className="btn text-xs inline-block flex" href="#open-modal"><i aria-hidden="true" className="p-1 fa-solid fa-fas fa-circle-question mr-1"></i></a>
+                <a
+                  id="help-button"
+                  onFocus={handleFocus}
+                  aria-label="Help"
+                  className="btn text-xs inline-block flex"
+                  href="#open-modal"
+                >
+                  <i
+                    aria-hidden="true"
+                    className="p-1 fa-solid fa-fas fa-circle-question mr-1"
+                  ></i>
+                </a>
               </ToolTip>
             </div>
           </div>
         </div>
         <div id="open-modal" className="modal-window">
           <div>
-            <a href="#help-button" title="Close" className="modal-close">Close</a>
+            <a href="#help-button" title="Close" className="modal-close">
+              Close
+            </a>
             <h1 className="flex items-center">
               <span className="inline-block mb-1 font-bold">Help</span>
             </h1>
             <h2 className="mb-4">Keyboard shortcuts</h2>
             <ul className="list-disc ml-10 text-sm">
-              <li className="mb-2">From anywhere in the editor window, press <kbd>shift</kbd>+<kbd>tab</kbd> to focus on the toolbar </li>
-              <li className="mb-2">On the toolbar use the <kbd>←</kbd> and <kbd>→</kbd> arrow keys to choose an option</li>
+              <li className="mb-2">
+                From anywhere in the editor window, press <kbd>shift</kbd>+
+                <kbd>tab</kbd> to focus on the toolbar{" "}
+              </li>
+              <li className="mb-2">
+                On the toolbar use the <kbd>←</kbd> and <kbd>→</kbd> arrow keys
+                to choose an option
+              </li>
               {/* <li>Note: You can also use markdown for formatting</li> */}
             </ul>
             <h2 className="mt-6 mb-4">Formatting options</h2>
             <ul className="list-disc ml-10 text-sm">
-              <li className="mb-2">Text formatting: heading level 1, heading level 2, bold, italics</li>
-              <li className="mb-2">List formatting: bulleted lists, numbered lists</li>
+              <li className="mb-2">
+                Text formatting: heading level 1, heading level 2, bold, italics
+              </li>
+              <li className="mb-2">
+                List formatting: bulleted lists, numbered lists
+              </li>
               <li className="mb-2">Other: hyperlinks, dividers</li>
               <li className="mb-2">Note: You can also use markdown</li>
             </ul>
           </div>
         </div>
+      </div>
+      <div role="region" className="sr-only" aria-live="polite">
+        <span>{formattingInstruction}</span>
       </div>
     </>
   );

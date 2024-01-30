@@ -52,7 +52,11 @@ export const Editor = ({
     content = "";
   }
   return (
-    <div className="rich-text-wrapper">
+    <div
+      className="rich-text-wrapper"
+      aria-label="Rich text editor: the editor consists of a toolbar and a text area. From the toolbar, press the left and right arrow keys to select a formatting option; press tab to enter the content area.
+        To apply formatting from the text area, select the desired text and press shift+tab to return to the toolbar and select an option.  You can also use markdown formatting directly in the editor."
+    >
       <LexicalComposer
         initialConfig={{
           ...editorConfig,
@@ -78,9 +82,6 @@ export const Editor = ({
               <ContentEditable
                 className="editor-input focus:outline-blue-focus"
                 id={editorId}
-                ariaLabel="Content editor: edit or create your content here. To apply formatting,
-                select the desired text and press shift+tab to return to the toolbar and select
-                an option.  You can also use markdown formatting directly in the editor."
                 ariaDescribedBy={ariaDescribedBy && ariaDescribedBy}
               />
             </div>
