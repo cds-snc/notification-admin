@@ -27,7 +27,7 @@ import {
   $isRangeSelection,
   SELECTION_CHANGE_COMMAND,
   $createParagraphNode,
-  $setSelection
+  $setSelection,
 } from "lexical";
 
 import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode";
@@ -152,17 +152,21 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
   };
 
   /**
-       * Removes the last character from the selection to
-       * avoid a bug primarily with keyboard selection that would apply 
-       * formatting to the line above or below the current selection,
-       * depending on which direction the selection was made from
-       */
+   * Removes the last character from the selection to
+   * avoid a bug primarily with keyboard selection that would apply
+   * formatting to the line above or below the current selection,
+   * depending on which direction the selection was made from
+   */
   const removeLastCharacterFromSelection = () => {
-
     editor.update(() => {
       const selection = $getSelection();
-      if ($isRangeSelection(selection)){
-        $moveCaretSelection(selection, true, !selection.isBackward(), "character");
+      if ($isRangeSelection(selection)) {
+        $moveCaretSelection(
+          selection,
+          true,
+          !selection.isBackward(),
+          "character",
+        );
       }
     });
   };
@@ -174,7 +178,7 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
     editor.update(() => {
       const prevSelection = $getPreviousSelection();
       $setSelection(prevSelection);
-    })
+    });
   };
   const formatHeading = (level: HeadingTagType) => {
     if (blockType === level) {
