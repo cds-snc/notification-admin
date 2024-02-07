@@ -29,7 +29,7 @@ let STAGING = {
         Default: '24e5288d-8bfa-4ad4-93aa-592c11a694cd',
         Second: '797865c4-788b-4184-91ae-8e45eb07e40b'
     },
-    viewports: [320,375,640,768]
+    viewports: [320, 375, 640, 768]
 };
 
 let LOCAL = {
@@ -63,7 +63,7 @@ let LOCAL = {
         Default: '1bc45a34-f4de-4635-b36f-7da2e2d248ed',
         Second: 'aaa58593-fc0a-46b0-82b8-b303ae662a41'
     },
-    viewports: [320,375,640,768]
+    viewports: [320, 375, 640, 768]
 };
 
 const config = {

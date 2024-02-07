@@ -9,8 +9,9 @@
     "cypress-recurse": "^1.23.0",
     "html-validate": "^8.7.1",
     "imap-simple": "^5.1.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsrsasign": "^11.0.0",
     "mailparser": "^3.5.0",
+    "nanoid": "^5.0.4",
     "nodemailer": "^6.9.2"
   },
   "devDependencies": {

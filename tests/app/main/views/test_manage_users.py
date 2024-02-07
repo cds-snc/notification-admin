@@ -1295,7 +1295,7 @@ def test_edit_user_email_cannot_change_a_gov_email_address_to_a_non_gov_email_ad
         _data={"email_address": "new_email@example.com"},
         _expected_status=200,
     )
-    assert "Enter a government email address." in page.find("span", class_="error-message").text
+    assert "is not on our list of government domains" in page.find("span", class_="error-message").text
 
 
 def test_confirm_edit_user_email_page(
