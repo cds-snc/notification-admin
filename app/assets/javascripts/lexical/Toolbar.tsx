@@ -23,9 +23,11 @@ import {
 import {
   FORMAT_TEXT_COMMAND,
   $getSelection,
+  $getPreviousSelection,
   $isRangeSelection,
   SELECTION_CHANGE_COMMAND,
   $createParagraphNode,
+  $setSelection
 } from "lexical";
 
 import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode";
@@ -149,6 +151,31 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
     setformattingInstruction(`${formatting} ${action}`);
   };
 
+  /**
+       * Removes the last character from the selection to
+       * avoid a bug primarily with keyboard selection that would apply 
+       * formatting to the line above or below the current selection,
+       * depending on which direction the selection was made from
+       */
+  const removeLastCharacterFromSelection = () => {
+
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)){
+        $moveCaretSelection(selection, true, !selection.isBackward(), "character");
+      }
+    });
+  };
+
+  /**
+   * Undoes the last selection change
+   */
+  const undoSelectionChange = () => {
+    editor.update(() => {
+      const prevSelection = $getPreviousSelection();
+      $setSelection(prevSelection);
+    })
+  };
   const formatHeading = (level: HeadingTagType) => {
     if (blockType === level) {
       formatParagraph();
@@ -187,16 +214,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
   const formatBulletList = (evt: React.MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
     if (blockType !== "bullet") {
-      editor.update(() => {
-        const selection = $getSelection();
-        if ($isRangeSelection(selection)) {
-          $moveCaretSelection(selection, true, true, "character");
-        }
-      });
+      removeLastCharacterFromSelection();
+      removeLastCharacterFromSelection();
       editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
-
-      // announce to screen readers that formatting has been applied/removed
-      a11y_announce("Bulleted list", "applied");
+      undoSelectionChange();
       return;
     }
     editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
@@ -208,16 +229,10 @@ export const Toolbar = ({ editorId }: { editorId: string }) => {
   const formatNumberedList = (evt: React.MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
     if (blockType !== "number") {
-      editor.update(() => {
-        const selection = $getSelection();
-        if ($isRangeSelection(selection)) {
-          $moveCaretSelection(selection, true, true, "character");
-        }
-      });
+      removeLastCharacterFromSelection();
+      removeLastCharacterFromSelection();
       editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
-
-      // announce to screen readers that formatting has been applied/removed
-      a11y_announce("Numbered list", "applied");
+      undoSelectionChange();
       return;
     }
     editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
