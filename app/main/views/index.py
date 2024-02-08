@@ -281,7 +281,7 @@ def welcome():
 
 @main.route("/activity", endpoint="activity")
 def activity():
-    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app)))
+    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
 
 
 @main.route("/activity/download", endpoint="activity_download")
