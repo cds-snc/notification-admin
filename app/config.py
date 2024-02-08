@@ -179,7 +179,6 @@ class Development(Config):
     SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
-    PERMISSIONS_POLICY_DISABLE_DOCUMENT_DOMAIN = False
     SYSTEM_STATUS_URL = "https://localhost:3000"
 
 
@@ -203,7 +202,6 @@ class Test(Development):
     WTF_CSRF_ENABLED = False
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     FF_SALESFORCE_CONTACT = False
-    PERMISSIONS_POLICY_DISABLE_DOCUMENT_DOMAIN = False
     SYSTEM_STATUS_URL = "https://localhost:3000"
 
 
@@ -212,27 +210,23 @@ class Production(Config):
     HTTP_PROTOCOL = "https"
     NOTIFY_ENVIRONMENT = "production"
     NOTIFY_LOG_LEVEL = "INFO"
-    PERMISSIONS_POLICY_DISABLE_DOCUMENT_DOMAIN = True
     SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
 
 
 class Staging(Production):
     NOTIFY_ENVIRONMENT = "staging"
     NOTIFY_LOG_LEVEL = "INFO"
-    PERMISSIONS_POLICY_DISABLE_DOCUMENT_DOMAIN = False
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
 
 
 class Scratch(Production):
     NOTIFY_ENVIRONMENT = "scratch"
     NOTIFY_LOG_LEVEL = "INFO"
-    PERMISSIONS_POLICY_DISABLE_DOCUMENT_DOMAIN = False
 
 
 class Dev(Production):
     NOTIFY_ENVIRONMENT = "dev"
     NOTIFY_LOG_LEVEL = "INFO"
-    PERMISSIONS_POLICY_DISABLE_DOCUMENT_DOMAIN = False
 
 
 configs = {
