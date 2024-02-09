@@ -641,12 +641,6 @@ def save_service_or_org_after_request(response):
 def useful_headers_after_request(response):
     response.headers.add("Referrer-Policy", "strict-origin-when-cross-origin")
     response.headers.add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
-
-    perm_policy = "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), gamepad=(), geolocation=(), gyroscope=(), layout-animations=(self), legacy-image-formats=(self), magnetometer=(), microphone=(), midi=(), oversized-images=(self), payment=(), picture-in-picture=(), publickey-credentials-get=(), speaker-selection=(), sync-xhr=(self), unoptimized-images=(self), unsized-media=(self), usb=(), screen-wake-lock=(), web-share=(), xr-spatial-tracking=()"
-    if current_app.config["PERMISSIONS_POLICY_DISABLE_DOCUMENT_DOMAIN"]:
-        perm_policy += ", document-domain=()"
-    response.headers.add("Permissions-Policy", perm_policy)
-
     response.headers.add("X-Frame-Options", "deny")
     response.headers.add("X-Content-Type-Options", "nosniff")
     response.headers.add("X-XSS-Protection", "1; mode=block")
