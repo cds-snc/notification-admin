@@ -1,7 +1,0 @@
-{% extends "contact_template.html" %}
-
-{% block contact_form_content %}
-  {{ textbox(form.department_org_name, width='md:w-2/3') }}
-  {{ textbox(form.program_service_name, width='md:w-2/3') }}
-  {{ radios(form.intended_recipients, use_aria_labelledby=False) }}
-{% endblock %}
