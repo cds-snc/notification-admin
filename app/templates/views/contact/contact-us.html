@@ -19,7 +19,7 @@
         <div class="w-full md:w-1/3 px-2 flex flex-col mb-6">
             {{ task_shortcut(
                 description=_("Load time, delivery speed and delivery information"),
-                link_url=system_status_url,
+                link_url=gca_url_for('service-level-objectives'),
                 link_text=_("Visit Service level objectives"),
                 icon="arrow-right"
                 )
@@ -28,7 +28,7 @@
         <div class="w-full md:w-1/3 px-2 flex flex-col mb-6">
             {{ task_shortcut(
                 description=_("Scheduled demo dates for GC Notify"),
-                link_url=system_status_url,
+                link_url=gca_url_for('register_for_demo'),
                 link_text=_("Visit Register for a demo"),
                 icon="arrow-right"
                 )
