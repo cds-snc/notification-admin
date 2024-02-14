@@ -5,10 +5,7 @@ from notifications_python_client.errors import HTTPError
 
 from app import user_api_client
 from app.main import main
-from app.main.forms import (
-    ContactMessageStep,
-    ContactNotify,
-)
+from app.main.forms import ContactMessageStep, ContactNotify
 
 SESSION_FORM_KEY = "contact_form"
 
