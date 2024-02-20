@@ -281,7 +281,7 @@ def welcome():
 
 @main.route("/activity", endpoint="activity")
 def activity():
-    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app)))
+    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
 
 
 @main.route("/activity/download", endpoint="activity_download")
@@ -386,7 +386,7 @@ def _render_articles_page(response):
         nav_items=nav_items,
         slug=slug_en,
         lang_url=get_lang_url(response, bool(page_id)),
-        stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+        stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
     )
 
