@@ -1,7 +1,7 @@
 FROM python:3.10-alpine3.16@sha256:afe68972cc00883d70b3760ee0ffbb7375cf09706c122dda7063ffe64c5be21b
 
 ENV PYTHONDONTWRITEBYTECODE 1
-ENV POETRY_VERSION="1.3.2"
+ENV POETRY_VERSION="1.7.1"
 ENV POETRY_VIRTUALENVS_CREATE false
 
 RUN apk add --no-cache bash build-base libxml2-dev libxslt-dev git nodejs npm g++ make libffi-dev && rm -rf /var/cache/apk/*
