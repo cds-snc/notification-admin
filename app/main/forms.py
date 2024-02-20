@@ -934,7 +934,6 @@ class ContactNotify(StripWhitespaceForm):
             ("ask_question", _l("Ask a question")),
             ("technical_support", _l("Get technical support")),
             ("give_feedback", _l("Give feedback")),
-            ("demo", _l("Set up a demo to learn more about GC Notify")),
             ("other", _l("Other")),
         ],
     )
@@ -944,58 +943,6 @@ class ContactNotify(StripWhitespaceForm):
 class ContactMessageStep(ContactNotify):
     message = TextAreaField(
         _l("Message"),
-        validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
-    )
-
-
-class SetUpDemoOrgDetails(ContactNotify):
-    department_org_name = StringField(
-        _l("Name of department or organisation"),
-        validators=[DataRequired(message=_l("Enter the name of your department or organisation")), Length(max=500)],
-    )
-    program_service_name = StringField(
-        _l("Name of program or service"),
-        validators=[DataRequired(message=_l("Enter the name of your program or service")), Length(max=500)],
-    )
-    intended_recipients = RadioField(
-        _l("Who are the intended recipients of notifications?"),
-        choices=[
-            ("internal", _l("Colleagues within your department (internal)")),
-            ("external", _l("Partners from other organisations (external)")),
-            ("public", _l("Public")),
-        ],
-        validators=[DataRequired(message=_l("You need to choose an option"))],
-    )
-
-
-class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):
-    main_use_case = RadioField(
-        _l("Describe the primary purpose of the first messages you intend to send."),
-        choices=[
-            (
-                "status_updates",
-                _l(
-                    "Information specific for each recipient (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> status update)"
-                ),
-            ),
-            (
-                "transactional_messages",
-                _l(
-                    "Action required by each recipient (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> password reset)"
-                ),
-            ),
-            (
-                "newsletters",
-                _l(
-                    "News or information sent in bulk to many recipients (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> newsletter)"
-                ),
-            ),
-            ("other", _l("Other")),
-        ],
-        validators=[DataRequired(message=_l("You need to choose an option"))],
-    )
-    main_use_case_details = TextAreaField(
-        _l("What will messages be about?"),
         validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
     )
 

@@ -1,6 +1,0 @@
-{% extends "contact_template.html" %}
-
-{% block contact_form_content %}
-    {{ radios(form.main_use_case, use_aria_labelledby=False) }}
-    {{ textbox(form.main_use_case_details, width='md:w-2/3', rows=5) }}
-{% endblock %}
