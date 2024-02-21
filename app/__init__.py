@@ -1,4 +1,5 @@
 import itertools
+import logging as loging
 import os
 import re
 import secrets
@@ -119,7 +120,8 @@ def get_current_locale(application):
 
 def create_app(application):
     setup_commands(application)
-
+    application.debug = True
+    loging.basicConfig(level=loging.DEBUG)
     notify_environment = os.environ["NOTIFY_ENVIRONMENT"]
     config = configs[notify_environment]
 

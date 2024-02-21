@@ -654,7 +654,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     contents = s3download(service_id, upload_id)
 
-    db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+    db_template = current_service .get_template_with_user_permission_or_403(template_id, current_user)
 
     email_reply_to = None
     sms_sender = None

@@ -182,7 +182,7 @@ def redirect_to_sign_in(f):
 
 def get_errors_for_csv(recipients, template_type):
     errors = []
-
+    t = "Maximum 612 characters. Some messages may be too long due to custom content."
     if any(recipients.rows_with_bad_recipients):
         number_of_bad_recipients = len(list(recipients.rows_with_bad_recipients))
         if "sms" == template_type:
