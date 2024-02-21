@@ -18,7 +18,7 @@
       ) }}
       <p>
         {{ _('You can send up to') }}
-        {{ limits.free_yearly_sms | format_number }} {{ _('text messages each fiscal year.') }}
+        {{ limits.free_yearly_sms | format_number }} {{ _('text messages per fiscal year.') }}
       </p>
       {% call form_wrapper() %}
         {{ radios(form.enabled) }}
