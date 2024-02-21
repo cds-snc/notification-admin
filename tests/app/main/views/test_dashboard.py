@@ -257,7 +257,7 @@ def test_should_show_recent_templates_on_dashboard(
     assert "100" in table_rows[1].find_all("td")[0].text
 
 
-@freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
+@freeze_time("2016-07-01 12:00")  # 4 months into 2016 fiscal year
 @pytest.mark.parametrize(
     "extra_args",
     [
@@ -277,7 +277,7 @@ def test_should_show_redirect_from_template_history(
     )
 
 
-@freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
+@freeze_time("2016-07-01 12:00")  # 4 months into 2016 fiscal year
 @pytest.mark.parametrize(
     "extra_args, template_label",
     [
@@ -356,7 +356,7 @@ def test_stats_pages_show_last_3_years(
     )
 
     assert normalize_spaces(page.select_one(".pill").text) == (
-        "2012 to 2013 financial year " "2013 to 2014 financial year " "2014 to 2015 financial year"
+        "2012 to 2013 fiscal year " "2013 to 2014 fiscal year " "2014 to 2015 fiscal year"
     )
 
 
@@ -654,8 +654,8 @@ def test_usage_page(
     nav = page.find("ul", {"class": "pill", "role": "nav"})
     nav_links = nav.find_all("a")
 
-    assert normalize_spaces(nav_links[0].text) == "2010 to 2011 financial year"
-    assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 financial year"
+    assert normalize_spaces(nav_links[0].text) == "2010 to 2011 fiscal year"
+    assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 fiscal year"
     assert normalize_spaces(nav["aria-label"]) == "Filter by year"
     assert "252,190" in cols[1].text
     assert "Text messages" in cols[1].text
@@ -697,9 +697,9 @@ def test_usage_page_with_letters(
     nav = page.find("ul", {"class": "pill", "role": "nav"})
     nav_links = nav.find_all("a")
 
-    assert normalize_spaces(nav_links[0].text) == "2010 to 2011 financial year"
-    assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 financial year"
-    assert normalize_spaces(nav_links[1].text) == "2012 to 2013 financial year"
+    assert normalize_spaces(nav_links[0].text) == "2010 to 2011 fiscal year"
+    assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 fiscal year"
+    assert normalize_spaces(nav_links[1].text) == "2012 to 2013 fiscal year"
     assert normalize_spaces(nav["aria-label"]) == "Filter by year"
 
     assert "252,190" in cols[1].text
