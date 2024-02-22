@@ -14,6 +14,7 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons/faAngleDown";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons/faCircleExclamation";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 let FontAwesomeIconLoader = () => {
   config.autoAddCss = false;
@@ -26,6 +27,7 @@ let FontAwesomeIconLoader = () => {
     faCircleQuestion,
     faTriangleExclamation,
     faCircleExclamation,
+    faInfoCircle
   ]);
   dom.watch();
 };
