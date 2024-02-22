@@ -71,13 +71,13 @@ def mock_get_service_settings_page_common(
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Yearly maximum 10 million emails",
+                "Annual maximum(April 1 to March 31) 10 million emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
                 "Daily maximum 1,000 text messages",
-                "Yearly maximum 25,000 text messages",
+                "Annual maximum(April 1 to March 31) 25,000 text messages",
             ],
         ),
         (
@@ -95,13 +95,13 @@ def mock_get_service_settings_page_common(
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Yearly maximum 10 million emails",
+                "Annual maximum(April 1 to March 31) 10 million emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
                 "Daily maximum 1,000 text messages",
-                "Yearly maximum 25,000 text messages",
+                "Annual maximum(April 1 to March 31) 25,000 text messages",
                 "Label Value Action",
                 "Live On Change",
                 "Count in list of live services Yes Change",
@@ -111,7 +111,7 @@ def mock_get_service_settings_page_common(
                 "API rate limit per minute 100",
                 "Text message senders GOVUK Manage",
                 "Receive text messages Off Change",
-                "Free text messages per year 250,000 Change",
+                "Free text messages per fiscal year 250,000 Change",
                 "Email branding English Government of Canada signature Change",
                 "Data retention email Change",
                 "Receive inbound SMS Off Change",
@@ -229,13 +229,13 @@ def test_organisation_name_links_to_org_dashboard(
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Yearly maximum 10 million emails",
+                "Annual maximum(April 1 to March 31) 10 million emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages On Change",
                 "Daily maximum 1,000 text messages",
-                "Yearly maximum 25,000 text messages",
+                "Annual maximum(April 1 to March 31) 25,000 text messages",
             ],
         ),
         (
@@ -251,13 +251,13 @@ def test_organisation_name_links_to_org_dashboard(
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Yearly maximum 10 million emails",
+                "Annual maximum(April 1 to March 31) 10 million emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
                 "Daily maximum 1,000 text messages",
-                "Yearly maximum 25,000 text messages",
+                "Annual maximum(April 1 to March 31) 25,000 text messages",
             ],
         ),
     ],
@@ -3063,7 +3063,7 @@ def test_should_show_page_to_set_sms_allowance(platform_admin_client, mock_get_f
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    assert normalize_spaces(page.select_one("label").text) == "Numbers of text messages per year"
+    assert normalize_spaces(page.select_one("label").text) == "Numbers of text messages per fiscal year"
     mock_get_free_sms_fragment_limit.assert_called_once_with(SERVICE_ONE_ID)
 
 
@@ -3155,7 +3155,7 @@ def test_unknown_channel_404s(
         ),
         (
             "sms",
-            "You have a free allowance of 25,000 text messages each financial year.",
+            "You can send up to 25,000 text messages per fiscal year.",
             "Send text messages",
             [],
             "False",
@@ -3164,7 +3164,7 @@ def test_unknown_channel_404s(
         ),
         (
             "email",
-            "You can send up to 10 million emails per year for free.",
+            "You can send up to 10 million emails per fiscal year for free.",
             "Send emails",
             [],
             "False",
@@ -3173,7 +3173,7 @@ def test_unknown_channel_404s(
         ),
         (
             "email",
-            "You can send up to 10 million emails per year for free.",
+            "You can send up to 10 million emails per fiscal year for free.",
             "Send emails",
             ["email", "sms", "letter"],
             "True",

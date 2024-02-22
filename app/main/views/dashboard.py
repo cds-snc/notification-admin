@@ -533,7 +533,7 @@ def get_tuples_of_financial_years(
 ) -> list:
     return list(
         (
-            _l("financial year"),
+            _l("fiscal year"),
             year,
             partial_url(year=year),
             "{} {} {}".format(year, _("to"), year + 1),
