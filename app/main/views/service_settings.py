@@ -1284,6 +1284,7 @@ def link_service_to_organisation(service_id):
         search_form=SearchByNameForm(),
     )
 
+
 @main.route("/services/<service_id>/branding", methods=["GET"])
 @user_has_permissions("manage_service")
 def view_branding_settings(service_id):
@@ -1292,25 +1293,20 @@ def view_branding_settings(service_id):
         cdn_url = get_logo_cdn_domain()
         default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
         default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
-        
+
         if current_branding is None:
-            branding_image_path = (
-                default_fr_filename 
-                if current_service.default_branding_is_french
-                else default_en_filename
-            )
+            branding_image_path = default_fr_filename if current_service.default_branding_is_french else default_en_filename
         else:
             branding_image_path = "https://{}/{}".format(cdn_url, current_service.email_branding["logo"])
-        
-        return {
-            "branding_image_path": branding_image_path,
-            "branding_name": current_service.email_branding_name
-        }
-    
-    branding = _get_current_branding()
-    session["branding"] = branding    
 
-    return render_template("views/service-settings/branding/branding-settings.html", branding=branding, current_service=current_service)
+        return {"branding_image_path": branding_image_path, "branding_name": current_service.email_branding_name}
+
+    branding = _get_current_branding()
+    session["branding"] = branding
+
+    return render_template(
+        "views/service-settings/branding/branding-settings.html", branding=branding, current_service=current_service
+    )
 
 
 @main.route("/services/<service_id>/branding-request/email", methods=["GET", "POST"])

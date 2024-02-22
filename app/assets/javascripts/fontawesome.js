@@ -27,7 +27,7 @@ let FontAwesomeIconLoader = () => {
     faCircleQuestion,
     faTriangleExclamation,
     faCircleExclamation,
-    faInfoCircle
+    faInfoCircle,
   ]);
   dom.watch();
 };
