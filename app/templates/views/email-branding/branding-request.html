@@ -1,0 +1,22 @@
+{% extends "admin_template.html" %}
+{% from "components/file-upload.html" import file_upload %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/radios.html" import radios %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Update logo') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+    {{ page_header(
+      _('New branding request'),
+      back_link=url_for('main.service_settings', service_id=current_service.id)
+    ) }}
+
+    <div class="grid-row contain-floats">
+      <div class="py-0 px-0 px-gutterHalf box-border">
+      </div>
+    </div>
+{% endblock %}
