@@ -190,7 +190,7 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='email') %}
-          {% set txt = _('Yearly maximum') %}
+          {% set txt = _('Annual maximum</br>(April 1 to March 31)') %}
           {{ text_field(txt) }}
           {% set annual_limit = _('{} million emails').format((limits.free_yearly_email//1000000) | format_number) %}
           {{ text_field(annual_limit) }}
@@ -264,7 +264,7 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {% set txt = _('Yearly maximum') %}
+          {% set txt = _('Annual maximum</br>(April 1 to March 31)') %}
           {{ text_field(txt) }}
           {% set txt_msg_limit = _('{} text messages').format(limits.free_yearly_sms | format_number) %}
           {{ text_field(txt_msg_limit) }}
@@ -417,7 +417,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Free text messages per year') %}
+            {% set txt = _('Free text messages per fiscal year') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.free_sms_fragment_limit | format_number) }}
             {{ edit_field(

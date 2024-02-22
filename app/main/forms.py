@@ -736,7 +736,7 @@ class SMSMessageLimit(StripWhitespaceForm):
 
 class FreeSMSAllowance(StripWhitespaceForm):
     free_sms_allowance = IntegerField(
-        _l("Numbers of text messages per year"),
+        _l("Numbers of text messages per fiscal year"),
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
 
