@@ -1757,3 +1757,34 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
         ],
         validators=[DataRequired()],
     )
+
+
+class BrandingGOCForm(StripWhitespaceForm):
+    goc_branding = RadioField(
+        _l("Choose which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
+        choices=[  # Choices by default, override to get more refined options.
+            (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
+            (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
+        ],
+        validators=[
+            DataRequired(message=_l("You must make a selection")),
+            AnyOf(
+                [
+                    FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
+                    FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
+                ]
+            ),
+        ],
+    )
+
+    DEFAULT_EN = (
+        FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
+        "English Government of Canada signature",
+    )
+    DEFAULT_FR = (
+        FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
+        "French Government of Canada signature",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
