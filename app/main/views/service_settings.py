@@ -60,6 +60,7 @@ from app.main.forms import (
     SMSMessageLimit,
     SMSPrefixForm,
 )
+from app.main.views.email_branding import get_preview_template
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
     DELIVERED_STATUSES,
@@ -1287,12 +1288,12 @@ def link_service_to_organisation(service_id):
 
 @main.route("/services/<service_id>/branding", methods=["GET"])
 @user_has_permissions("manage_service")
-def view_branding_settings(service_id):
+def view_branding_settings(service_id, preview=False):
     def _get_current_branding():
         current_branding = current_service.email_branding_id
         cdn_url = get_logo_cdn_domain()
-        default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
-        default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
+        default_en_filename = "https://{}/gc-logo-en.png".format(cdn_url)
+        default_fr_filename = "https://{}/gc-logo-fr.png".format(cdn_url)
 
         if current_branding is None:
             branding_image_path = default_fr_filename if current_service.default_branding_is_french else default_en_filename
@@ -1302,10 +1303,13 @@ def view_branding_settings(service_id):
         return {"branding_image_path": branding_image_path, "branding_name": current_service.email_branding_name}
 
     branding = _get_current_branding()
-    session["branding"] = branding
 
     return render_template(
-        "views/service-settings/branding/branding-settings.html", branding=branding, current_service=current_service
+        "views/service-settings/branding/branding-settings.html",
+        branding=branding,
+        current_service=current_service,
+        template=get_preview_template(),
+        preview=request.args.get("preview"),
     )
 
 
@@ -1316,6 +1320,7 @@ def branding_request(service_id):
     cdn_url = get_logo_cdn_domain()
     default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
     default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
+
     choices = [
         ("__FIP-EN__", _("English-first") + "||" + default_en_filename),
         ("__FIP-FR__", _("French-first") + "||" + default_fr_filename),
