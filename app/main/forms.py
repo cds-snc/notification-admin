@@ -1766,15 +1766,7 @@ class BrandingGOCForm(StripWhitespaceForm):
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
         ],
-        validators=[
-            DataRequired(message=_l("You must make a selection")),
-            AnyOf(
-                [
-                    FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
-                    FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
-                ]
-            ),
-        ],
+        validators=[DataRequired()],
     )
 
     DEFAULT_EN = (
