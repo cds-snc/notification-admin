@@ -5,73 +5,19 @@
 {% from "components/radios.html" import radios %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/show-more.html" import show_more %}
+{% from "views/email-branding/_logo_radio.html" import branding_radio %}
 
 {% block service_page_title %}
   {{ _('Update logo') }}
 {% endblock %}
 
 {% block maincolumn_content %}
+  <div class="branding"></div>
     {{ page_header(
       _('Change your branding'),
       back_link=url_for('main.view_branding_settings', service_id=current_service.id)
     ) }}
-    <style>
-      label.branding-radio:hover  {
-        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1), 1px 0px 3px 0 rgb(0 0 0 / 0.1), 1px 0px 2px -1px rgb(0 0 0 / 0.1);;
-        background: #f9f9f9;
-      }
-      label.branding-radio {
-        outline: 4px solid #e3e3e3;
-        border-radius:5px;
-        background-color: #ffffff;
-      }
-      label.branding-radio:focus-within, label.branding-radio:has(input:checked)  {
-        outline: 4px solid #ffbf47;
-        border-radius:5px;
-      }
-      input[type="radio"] {
-        /* Add if not using autoprefixer */
-        -webkit-appearance: none;
-        /* Remove most all native input styles */
-        appearance: none;
-        /* For iOS < 15 */
-        background-color: var(--form-background);
-        /* Not removed via appearance */
-        margin: 0;
-        margin-right: 1.25rem;
-        font: inherit;
-        color: currentColor;
-        width: 45px;
-        height: 45px;
-        border: 0.15em solid currentColor;
-        border-radius: 50%;
-        transform: translateY(-0.075em);
-
-        display: grid;
-        place-content: center;
-      }
-
-      input[type="radio"]::before {
-        content: "";
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        transform: scale(0);
-        transition: 120ms transform ease-in-out;
-        box-shadow: inset 1em 1em var(--form-control-color);
-        /* Windows High Contrast Mode */
-        background-color: #000;
-      }
-
-      input[type="radio"]:checked::before {
-        transform: scale(1);
-      }
-      #what_type:focus-within {
-        /* outline: 2px solid #ffbf47; */
-        background-color: rgba(255, 191, 71, 0.25);
-        border-radius:5px;
-      }
-    </style>
+    
     <div class="grid-row contain-floats">
       <div class="py-0 px-0 px-gutterHalf box-border">
         <p>{{ _('Consistent branding helps instill trust in the email messages you send. GC Notify offers the Government of Canada signatures by default. These logos have high trust among Canadians.') }}</p>
@@ -86,24 +32,8 @@
                 </span>
               {% endif %}
               </legend>
-              <label class="rounded-sm flex branding-radio items-center px-12 py-8 cursor-pointer">
-                <input id="branding_en" name="goc_branding" type="radio" value="__FIP-EN__" class="mr-4 self-center cursor-pointer"/>
-                <div class="ml-4">
-                  <span class="font-bold">English-first</span>
-                  <div id="branding_style-1-img" class="mt-4">
-                      <img src="{{ choices[0] }}" alt="" style="width: 400px;">
-                  </div>
-                </div>
-              </label>
-              <label class="rounded-sm flex branding-radio items-center px-12 py-8 cursor-pointer mt-6">
-                <input id="branding_fr" name="goc_branding" type="radio" value="__FIP-FR__" class="mr-4 self-center cursor-pointer" />
-                <div class="ml-4">
-                  <span class="font-bold">French-first</span>
-                  <div id="branding_style-1-img" class="mt-4">
-                      <img src="{{ choices[1] }}" alt="" style="width: 400px;">
-                  </div>
-                </div>
-              </label>
+              {{ branding_radio(id='branding_en', name="goc_branding", value='__FIP-EN__', logo_name = _('English-first'), logo_url = choices[0], is_goc = True) }}
+              {{ branding_radio(id='branding_fr', name="goc_branding", value='__FIP-FR__', logo_name = _('French-first'), logo_url = choices[1], is_goc = True) }}
             </fieldset>
           </div>
           <div class="my-20 flex items-center">
@@ -123,4 +53,5 @@
         
       </div>
     </div>
+  </div>
 {% endblock %}
