@@ -1,5 +1,14 @@
-from flask import current_app, flash, redirect, render_template, session, url_for
+from flask import (
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_babel import _
+from notifications_utils.template import HTMLEmailTemplate
 
 from app import current_service, email_branding_client
 from app.main import main
@@ -138,13 +147,8 @@ def create_email_branding(logo=None):
 @main.route("/services/<service_id>/edit-branding", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def edit_branding_settings(service_id):
-    # redirect back to start if branding not in session
-    if not session.get("branding"):
-        return redirect(url_for("main.view_branding_settings", service_id=service_id))
-
-    cdn_url = get_logo_cdn_domain()
-    default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
-    default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
+    default_en_filename = "{}/gc-logo-en.png".format(get_logo_url())
+    default_fr_filename = "{}/gc-logo-fr.png".format(get_logo_url())
     choices = [
         (default_en_filename),
         (default_fr_filename),
@@ -164,7 +168,20 @@ def edit_branding_settings(service_id):
 @main.route("/services/<service_id>/review-pool", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def review_branding_pool(service_id):
-    return render_template("views/email-branding/branding-pool.html")
+    logos = email_branding_client.get_all_email_branding()
+    custom_logos = [logo for logo in logos if logo["brand_type"] in ["custom_logo", "custom_logo_with_background_colour"]]
+
+    form = BrandingGOCForm()
+    form.goc_branding.choices = [(logo["id"], logo["name"]) for logo in custom_logos]
+
+    if form.validate_on_submit():
+        # current_service.update(email_branding=form.goc_branding.data)
+        # save the logo they want to preview to session
+        session["branding_to_preview"] = [logo for logo in logos if logo["id"] in [form.goc_branding.data]][0]
+        # return render_template("views/email-branding/branding-preview.html", template=get_preview_template(branding_to_preview))
+        return redirect(url_for("main.preview_branding", service_id=service_id))
+
+    return render_template("views/email-branding/branding-pool.html", logos=custom_logos, url=get_logo_url(), form=form)
 
 
 @main.route("/services/<service_id>/branding-request", methods=["GET", "POST"])
@@ -176,4 +193,81 @@ def create_branding_request(service_id):
 @main.route("/services/<service_id>/preview-branding", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def preview_branding(service_id):
-    return render_template("views/email-branding/branding-preview.html")
+    # save branding on post
+    if request.method == "POST":
+        current_service.update(email_branding=session["branding_to_preview"]["id"])
+        session.pop("branding_to_preview")
+        flash(_("Setting updated"), "default_with_tick")
+        return redirect(url_for("main.view_branding_settings", service_id=service_id))
+
+    # show the branding in session if there is one
+    if session.get("branding_to_preview"):
+        branding_to_preview = session["branding_to_preview"]
+        return render_template("views/email-branding/branding-preview.html", template=get_preview_template(branding_to_preview))
+
+    # otherwise show them the branding saved in their service
+    return render_template("views/email-branding/branding-preview.html", template=get_preview_template())
+
+
+# Branding Utilities
+def get_logo_url():
+    return "https://{}".format(get_logo_cdn_domain())
+
+
+def get_preview_template(email_branding=None):
+    if email_branding:
+        branding_type = email_branding["brand_type"]
+        colour = email_branding["colour"]
+        brand_text = email_branding["text"]
+        brand_colour = colour
+        brand_logo = "https://{}/{}".format(get_logo_cdn_domain(), email_branding["logo"]) if email_branding["logo"] else None
+        fip_banner_english = branding_type in ["fip_english", "both_english"]
+        fip_banner_french = branding_type in ["fip_french", "both_french"]
+        logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
+        brand_name = email_branding["name"]
+    else:
+        if current_service.email_branding_id is None:
+            if current_service.default_branding_is_french:
+                brand_text = None
+                brand_colour = None
+                brand_logo = None
+                fip_banner_english = False
+                fip_banner_french = True
+                logo_with_background_colour = False
+                brand_name = None
+            else:
+                brand_text = None
+                brand_colour = None
+                brand_logo = None
+                fip_banner_english = True
+                fip_banner_french = False
+                logo_with_background_colour = False
+                brand_name = None
+        else:
+            email_branding = email_branding_client.get_email_branding(current_service.email_branding_id)["email_branding"]
+            branding_type = email_branding["brand_type"]
+            colour = email_branding["colour"]
+            brand_text = email_branding["text"]
+            brand_colour = colour
+            brand_logo = "https://{}/{}".format(get_logo_cdn_domain(), email_branding["logo"]) if email_branding["logo"] else None
+            fip_banner_english = branding_type in ["fip_english", "both_english"]
+            fip_banner_french = branding_type in ["fip_french", "both_french"]
+            logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
+            brand_name = email_branding["name"]
+
+    template = {"subject": "foo", "content": "# SAMPLE EMAIL\nThis message is to preview your branding settings"}
+
+    html_template = str(
+        HTMLEmailTemplate(
+            template,
+            fip_banner_english=fip_banner_english,
+            fip_banner_french=fip_banner_french,
+            brand_text=brand_text,
+            brand_colour=brand_colour,
+            brand_logo=brand_logo,
+            logo_with_background_colour=logo_with_background_colour,
+            brand_name=brand_name,
+        )
+    )
+
+    return html_template
