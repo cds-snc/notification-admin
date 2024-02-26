@@ -208,6 +208,13 @@ def get_errors_for_csv(recipients, template_type):
         else:
             errors.append(_("enter missing data in {} rows").format(number_of_rows_with_missing_data))
 
+    if any(recipients.rows_with_message_too_long):
+        num_rows_with_message_too_long:int = len(list(recipients.rows_with_message_too_long))
+        if num_rows_with_message_too_long == 1:
+            errors.append(_("fix message length in 1 row"))
+        else:
+            errors.append(_(f"fix message length in {num_rows_with_message_too_long} rows"))
+
     return errors
 
 

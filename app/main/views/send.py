@@ -686,6 +686,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
     )
     recipients = RecipientCSV(
         contents,
+        template=template,
         template_type=template.template_type,
         placeholders=template.placeholders,
         max_initial_rows_shown=int(request.args.get("show") or 10),

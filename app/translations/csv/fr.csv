@@ -1807,3 +1807,5 @@
 "For other questions about GC Notify, use this form.","Pour toute autre question, utilisez le formulaire ci-dessous."
 "We answer many questions on other GC Notify pages:","Nous répondons à de nombreuses questions sur les autres pages de Notification GC :"
 "Register for a demo","S’inscrire à une démo"
+"fix message length in 1 row","Corrigez la longueur du message en 1 ligne"
+"fix message length in {} rows","Corrigez la longueur du message en {} lignes"
