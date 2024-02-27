@@ -12,7 +12,7 @@ from notifications_utils.template import HTMLEmailTemplate
 
 from app import current_service, email_branding_client
 from app.main import main
-from app.main.forms import BrandingGOCForm, SearchByNameForm, ServiceUpdateEmailBranding
+from app.main.forms import BrandingGOCForm, BrandingRequestForm, SearchByNameForm, ServiceUpdateEmailBranding
 from app.s3_client.s3_logo_client import (
     TEMP_TAG,
     delete_email_temp_file,
@@ -187,7 +187,14 @@ def review_branding_pool(service_id):
 @main.route("/services/<service_id>/branding-request", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def create_branding_request(service_id):
-    return render_template("views/email-branding/branding-request.html")
+    form = BrandingRequestForm()
+
+    if form.validate_on_submit():
+        print('form valid')
+    else:
+        print('form invalid')
+        
+    return render_template("views/email-branding/branding-request.html", form=form)
 
 
 @main.route("/services/<service_id>/preview-branding", methods=["GET", "POST"])
