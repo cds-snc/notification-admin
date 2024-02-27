@@ -1780,3 +1780,17 @@ class BrandingGOCForm(StripWhitespaceForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+class BrandingRequestForm(StripWhitespaceForm):
+    name = StringField(
+        label=_l("Name of brand"),
+        validators=[DataRequired(message=_l("This cannot be empty"))]
+    )
+    file = FileField_wtf(
+        label=_l("Brand image (PNG)"), 
+        validators=[
+            DataRequired(message="You need to upload a file to submit"),
+            FileAllowed(["png"], "PNG Images only!"),
+        ]
+    )
+    
