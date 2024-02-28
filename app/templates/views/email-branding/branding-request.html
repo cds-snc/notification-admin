@@ -22,7 +22,7 @@
       <div class="py-0 px-0 px-gutterHalf box-border">
         <form method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
           <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
-            {{ textbox(form.name, hint=_('This is a name used internally only')) }}
+            {{ textbox(form.name, hint=_('This is a name used internally only'), testid="brand_name") }}
             
             <label class="file-upload-label" for="{{ form.file.name }}">
               <div id="file-upload-label" class="form-label">
@@ -38,88 +38,44 @@
                   {{ form.file.errors[0] }}
                 </span>
               {% endif %}
-              {{ form.file(**{ 'class': 'file-upload-field', 'accept': 'image/png'}) }}
+              {{ form.file(**{ 'class': 'file-upload-field', 'accept': 'image/png', 'data_testid': 'brand_image'}) }}
               <div aria-hidden="true" id="file-upload-button" class="button button-secondary font-normal"> {{ _('Choose file...') }} </div>
-              <div class="mt-6 ml-2 pl-6 border-l-4 border-gray-200 preview font-normal">
-              </div>
-              
+              <div class="mt-6 ml-2 pl-6 border-l-4 border-gray-200 preview font-normal relative" data-testid="brand_fileinfo">
+                <div class="message relative">No files currently selected</div>
+                <div class="relative">
+                  <div class="img relative"></div>
+                  <div class="image-placeholder absolute"></div>
+                </div>
+              </div>              
             </label>
+
+            <div class="hidden template_preview mb-10 mt-6" data-testid="brand_preview">
+              <h2 class="heading-medium mt-0">Branding preview</h2>
+              {% include 'views/email-branding/_preview.html' %}
+            </div>
             
-            <script nonce="{{ request_nonce }}">
-              const input = document.querySelector("input.file-upload-field");
-              const preview = document.querySelector(".preview");
-
-              input.style.opacity = 0;
-
-              input.addEventListener("change", updateImageDisplay);
-
-              function updateImageDisplay() {
-                while (preview.firstChild) {
-                  preview.removeChild(preview.firstChild);
-                }
-
-                const curFiles = input.files;
-                if (curFiles.length === 0) {
-                  const para = document.createElement("p");
-                  para.textContent = "No files currently selected for upload";
-                  preview.appendChild(para);
-                } else {
-                  for (const file of curFiles) {
-                    
-                    const span = document.createElement("span");
-                    if (validFileType(file)) {
-                      span.textContent = `File name: ${file.name}, file size: ${returnFileSize(
-                        file.size,
-                      )}.`;
-                      preview.appendChild(span);
-                      const image = document.createElement("img");
-                      image.src = URL.createObjectURL(file);
-                      image.alt = image.title = file.name;
-                      preview.appendChild(image);
-                    } else {
-                      span.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
-                      preview.appendChild(span);
-                    }
-                  }
-                }
-              }
-
-                  // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
-                  const fileTypes = [
-                    "image/png",
-                  ];
-
-                  function validFileType(file) {
-                    return fileTypes.includes(file.type);
-                  }
-
-                  function returnFileSize(number) {
-                    if (number < 1024) {
-                      return `${number} bytes`;
-                    } else if (number >= 1024 && number < 1048576) {
-                      return `${(number / 1024).toFixed(1)} KB`;
-                    } else if (number >= 1048576) {
-                      return `${(number / 1048576).toFixed(1)} MB`;
-                    }
-                  }
-
-            </script>
             
-            <!-- {{ file_upload(form.file, button_text=_('Upload logo')) }} -->
             <div class="mt-10">
               {{ show_more() }}
             </div>
-            <!-- <button
-              type="submit"
-              class="button text-base outline-none focus:shadow-outline"
-              id="branding_btn"
-            >
-              {{- button_text -}}
-            </button> -->
-            {{ page_footer(_('Save', button_id="brand_request_btn")) }}
+            <div class="mt-10">
+              <div class="js-stick-at-bottom-when-scrolling">
+                <div class="flex flex-row-reverse justify-end items-center">
+                  <div class="ml-10">
+                    <div class="flex justify-end items-center">
+                      <i aria-hidden="true" class="mr-4 text-titlelarge fa-solid fa-info-circle text-gray-visiteddark fill-current"></i> {{ _('Processing your branding request can take up to 3 days.  If there are issues with your logo you will be contacted by the GC Notify team.') }}
+                    </div>
+                  </div>
+                  <div class="" style="min-width: 300px">
+                    {{ page_footer(_('Submit branding request', button_id="brand_request_btn")) }}
+                  </div>
+                </div>
+              </div>      
+            </div>
           </div>
         </form>
       </div>
     </div>
   </div>
+  <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/branding_request.min.js') }}"></script>
 {% endblock %}
