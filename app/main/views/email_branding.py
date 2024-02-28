@@ -194,7 +194,7 @@ def create_branding_request(service_id):
     else:
         print('form invalid')
         
-    return render_template("views/email-branding/branding-request.html", form=form)
+    return render_template("views/email-branding/branding-request.html", form=form, template=get_preview_template_custom_placeholder())
 
 
 @main.route("/services/<service_id>/preview-branding", methods=["GET", "POST"])
@@ -274,6 +274,23 @@ def get_preview_template(email_branding=None):
             brand_logo=brand_logo,
             logo_with_background_colour=logo_with_background_colour,
             brand_name=brand_name,
+        )
+    )
+
+    return html_template
+
+def get_preview_template_custom_placeholder():
+    template = {"subject": "foo", "content": "# SAMPLE EMAIL\nThis message is to preview your branding settings"}
+    html_template = str(
+        HTMLEmailTemplate(
+            template,
+            fip_banner_english=False,
+            fip_banner_french=False,
+            brand_text=None,
+            brand_colour=None,
+            brand_logo="https://example.com",
+            logo_with_background_colour=False,
+            brand_name="example",
         )
     )
 
