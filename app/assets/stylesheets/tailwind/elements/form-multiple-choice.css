@@ -101,21 +101,22 @@
     }
   }
   /* When multiple choice has an image */
-  .multiple-choice {
-    --multiple-choice-img-padding: 1.5rem;
-  }
   fieldset:has(img) {
     @apply grid gap-gutterHalf;
   }
   fieldset:has(img):has(.multiple-choice:nth-of-type(5)) {
-    @apply grid grid-cols-2 gap-gutterHalf;
+    @apply grid gap-gutterHalf;
+  }
+  @screen md {
+    fieldset:has(img):has(.multiple-choice:nth-of-type(5)) {
+      @apply grid-cols-2;
+    }
   }
 
   .multiple-choice:has(img) {
-    padding-top: var(--multiple-choice-img-padding);
-    padding-right: var(--multiple-choice-img-padding);
-    padding-bottom: var(--multiple-choice-img-padding);
+    --multiple-choice-img-padding: 1.5rem;
     padding-left: calc(38px + var(--multiple-choice-img-padding));
+    padding-top: var(--multiple-choice-img-padding);
     max-width: 600px;
     @apply border-2 border-gray-300 m-0;
   }
@@ -128,6 +129,10 @@
     height: 100%;
     top: 0;
     left: 0;
+  }
+  .multiple-choice:has(img) [type="radio"] + label {
+    padding-bottom: var(--multiple-choice-img-padding);
+    padding-right: var(--multiple-choice-img-padding);
   }
 
   .multiple-choice:has(img) [type="radio"] + label::before {
@@ -151,9 +156,7 @@
   .multiple-choice:has(img) img {
     max-height: 108px;
     background-size: 10px 10px;
-    background-position:
-      0 0,
-      5px 5px;
+    background-position: 0 0, 5px 5px;
     background-image: linear-gradient(
         45deg,
         #cfd5dd 25%,
