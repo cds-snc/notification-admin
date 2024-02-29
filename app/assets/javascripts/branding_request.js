@@ -5,6 +5,7 @@
     const submit_button = document.querySelector("button[type=submit]");
     const message = document.querySelector(".preview .message");
     const image_slot = document.querySelector(".preview .img");
+    const preview_heading = document.querySelector("#preview_heading");
 
     // init UI
     input_img.style.opacity = 0;
@@ -29,16 +30,16 @@
             for (const file of curFiles) {
                 if (validFileType(file)) {
                     const img_src = URL.createObjectURL(file);
-                    const img = document.getElementById('template_preview').shadowRoot.querySelector('img')
+                    const img = document.getElementById('template_preview').shadowRoot.querySelector('img');
                     img.src = img_src;
 
                     img.onload = () => {
-                        message.innerHTML = `File name: <b>${file.name}</b>, file size: <b>${returnFileSize(file.size)}</b>, display size: <b>${img.naturalWidth} x ${img.naturalHeight}</b>`;
+                        message.textContent = `File name: ${file.name}, file size: ${returnFileSize(file.size)}, display size: ${img.naturalWidth} x ${img.naturalHeight}`;
                         document.querySelector('.template_preview').classList.remove('hidden');
+                        preview_heading.focus();
                     };
                     
                     enableSubmitButton();
-
                 } else {
                     message.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
                 }
