@@ -1,0 +1,26 @@
+{% extends "admin_template.html" %}
+{% from "components/file-upload.html" import file_upload %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/radios.html" import radios %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Update logo') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+  <div class="branding">
+    {{ page_header(h1=_('Your logo is being reviewed')) }}
+
+    <div>
+        <p>{{ _("We’ll review and implement your new logo. Expect to hear from our support team about the change shortly and in no more than 2 business days.") }}</p>
+    </div>
+    <h2 class="heading-medium">{{ _('Branding details') }}</h2>
+    <p>Brand name: {{ brand_name }} </p>
+    <p>Logo:</p>
+    <img alt="" src="{{ logo_url }}"/>
+  </div>
+{% endblock %}
+
+

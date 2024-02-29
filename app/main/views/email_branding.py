@@ -8,11 +8,17 @@ from flask import (
     url_for,
 )
 from flask_babel import _
+from flask_login import current_user
 from notifications_utils.template import HTMLEmailTemplate
 
 from app import current_service, email_branding_client
 from app.main import main
-from app.main.forms import BrandingGOCForm, BrandingRequestForm, SearchByNameForm, ServiceUpdateEmailBranding
+from app.main.forms import (
+    BrandingGOCForm,
+    BrandingRequestForm,
+    SearchByNameForm,
+    ServiceUpdateEmailBranding,
+)
 from app.s3_client.s3_logo_client import (
     TEMP_TAG,
     delete_email_temp_file,
@@ -150,11 +156,11 @@ def edit_branding_settings(service_id):
     default_en_filename = "{}/gc-logo-en.png".format(get_logo_url())
     default_fr_filename = "{}/gc-logo-fr.png".format(get_logo_url())
     choices = [
-        (default_en_filename),
-        (default_fr_filename),
+        ("__FIP-EN__", _("English-first") + "||" + default_en_filename),
+        ("__FIP-FR__", _("French-first") + "||" + default_fr_filename),
     ]
     form = BrandingGOCForm()
-
+    form.goc_branding.choices = choices
     if form.validate_on_submit():
         default_branding_is_french = form.data["goc_branding"] == BrandingGOCForm.DEFAULT_FR[0]
         current_service.update(email_branding=None, default_branding_is_french=default_branding_is_french)
@@ -172,7 +178,9 @@ def review_branding_pool(service_id):
     custom_logos = [logo for logo in logos if logo["brand_type"] in ["custom_logo", "custom_logo_with_background_colour"]]
 
     form = BrandingGOCForm()
-    form.goc_branding.choices = [(logo["id"], logo["name"]) for logo in custom_logos]
+    form.goc_branding.choices = [
+        (logo["id"], logo["name"] + "||" + "{}/{}".format(get_logo_url(), logo["logo"])) for logo in custom_logos
+    ]
 
     if form.validate_on_submit():
         # current_service.update(email_branding=form.goc_branding.data)
@@ -190,11 +198,20 @@ def create_branding_request(service_id):
     form = BrandingRequestForm()
 
     if form.validate_on_submit():
-        print('form valid')
-    else:
-        print('form invalid')
-        
-    return render_template("views/email-branding/branding-request.html", form=form, template=get_preview_template_custom_placeholder())
+        file_submitted = form.file.data
+        if file_submitted:
+            upload_filename = upload_email_logo(
+                file_submitted.filename,
+                file_submitted,
+                current_app.config["AWS_REGION"],
+                user_id=session["user_id"],
+            )
+            current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
+            return render_template("views/email-branding/branding-request-submitted.html", logo_url = '{}/{}'.format(get_logo_url(), upload_filename), brand_name=form.name.data)
+    
+    return render_template(
+        "views/email-branding/branding-request.html", form=form, template=get_preview_template_custom_placeholder()
+    )
 
 
 @main.route("/services/<service_id>/preview-branding", methods=["GET", "POST"])
@@ -278,6 +295,7 @@ def get_preview_template(email_branding=None):
     )
 
     return html_template
+
 
 def get_preview_template_custom_placeholder():
     template = {"subject": "foo", "content": "# SAMPLE EMAIL\nThis message is to preview your branding settings"}
