@@ -207,8 +207,12 @@ def create_branding_request(service_id):
                 user_id=session["user_id"],
             )
             current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
-            return render_template("views/email-branding/branding-request-submitted.html", logo_url = '{}/{}'.format(get_logo_url(), upload_filename), brand_name=form.name.data)
-    
+            return render_template(
+                "views/email-branding/branding-request-submitted.html",
+                logo_url="{}/{}".format(get_logo_url(), upload_filename),
+                brand_name=form.name.data,
+            )
+
     return render_template(
         "views/email-branding/branding-request.html", form=form, template=get_preview_template_custom_placeholder()
     )

@@ -120,7 +120,7 @@
     @apply border-2 border-gray-300 m-0;
   }
   .multiple-choice:has(img):hover {
-    @apply border-gray-500
+    @apply border-gray-500;
   }
 
   .multiple-choice:has(img) [type="radio"] {
@@ -129,13 +129,13 @@
     top: 0;
     left: 0;
   }
-  
+
   .multiple-choice:has(img) [type="radio"] + label::before {
     top: var(--multiple-choice-img-padding);
     left: var(--multiple-choice-img-padding);
     @apply bg-white;
   }
-  .multiple-choice:has(img) [type="radio"] +  label::after {
+  .multiple-choice:has(img) [type="radio"] + label::after {
     top: calc(9px + var(--multiple-choice-img-padding));
     left: calc(9px + var(--multiple-choice-img-padding));
   }
@@ -151,11 +151,27 @@
   .multiple-choice:has(img) img {
     max-height: 108px;
     background-size: 10px 10px;
-    background-position: 0 0, 5px 5px;
-    background-image: linear-gradient(45deg, #CFD5DD 25%, transparent 25%, transparent 75%, #CFD5DD 75%, #CFD5DD),
-                    linear-gradient(45deg, #CFD5DD 25%, transparent 25%, transparent 75%, #CFD5DD 75%, #CFD5DD);
+    background-position:
+      0 0,
+      5px 5px;
+    background-image: linear-gradient(
+        45deg,
+        #cfd5dd 25%,
+        transparent 25%,
+        transparent 75%,
+        #cfd5dd 75%,
+        #cfd5dd
+      ),
+      linear-gradient(
+        45deg,
+        #cfd5dd 25%,
+        transparent 25%,
+        transparent 75%,
+        #cfd5dd 75%,
+        #cfd5dd
+      );
     @apply border-1 border-gray-300 bg-white mt-gutterHalf;
   }
-  
+
   /*! purgecss end ignore */
 }
