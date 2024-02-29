@@ -2,6 +2,7 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/radios.html" import radios %}
 {% from "components/show-more.html" import show_more %}
 {% from "views/email-branding/_logo_radio.html" import branding_radio %}
 {% from "components/empty-list.html" import empty_list  %}
@@ -23,29 +24,7 @@
         {% else %}
           <p>{{ _('Choose one of the logos that are part of the <i>{}</i> organisation').format(current_service.organisation.name) }}</p>
           {% call form_wrapper() %}
-            <div class="form-group mb-20 {% if form.errors %}{{ 'form-group-error' }}{% endif %}">
-            
-              <fieldset id="what_type" class="contain-floats inline-block p-6 pt-0 pl-0 grid grid-cols-2 gap-12 auto-rows-min" role="radiogroup" aria-labelledby="radio_fieldset">
-                <legend>
-                  {% if form.errors %}
-                    <span class="error-message pb-8">
-                      {{ form.errors["goc_branding"][0] }}
-                    </span>
-                  {% endif %}
-                </legend>
-                {% set i = 0 %}
-                {% for logo in logos %}
-                  <div class="branding-radio h-full">
-                    {{ branding_radio(id='logo_{i}', name="goc_branding", value=logo.id, logo_name = logo.name, logo_url = '{}/{}'.format(url, logo.logo)) }}
-                  </div>
-                  {% set i = i + 1 %}
-                {% endfor %}
-              </fieldset>
-            </div>
-            <div class="my-20 flex items-center">
-              
-              
-            </div>
+            {{ radios(form.goc_branding, hide_legend=True) }}
             {{ show_more() }}
             <div class="mt-10">
               <div class="js-stick-at-bottom-when-scrolling">

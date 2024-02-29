@@ -23,32 +23,24 @@
         <p>{{ _('Consistent branding helps instill trust in the email messages you send. GC Notify offers the Government of Canada signatures by default. These logos have high trust among Canadians.') }}</p>
         <h2 class="heading-medium" id="radio_fieldset">{{ _('Change the default language of email branding') }}</h2>
         {% call form_wrapper() %}
-          <div class="form-group mb-20 {% if form.errors %}{{ 'form-group-error' }}{% endif %}">
-            <fieldset id="what_type" class="contain-floats inline-block p-6" role="radiogroup" aria-labelledby="radio_fieldset">
-              <legend>
-                {% if form.errors %}
-                <span class="error-message pb-8">
-                  {{ form.errors["goc_branding"][0] }}
-                </span>
-              {% endif %}
-              </legend>
-              {{ branding_radio(id='branding_en', name="goc_branding", value='__FIP-EN__', logo_name = _('English-first'), logo_url = choices[0], is_goc = True) }}
-              {{ branding_radio(id='branding_fr', name="goc_branding", value='__FIP-FR__', logo_name = _('French-first'), logo_url = choices[1], is_goc = True) }}
-            </fieldset>
-          </div>
-          <div class="my-20 flex items-center">
-            <i aria-hidden="true" class="pl-2 text-title fa-solid fa-info-circle text-gray-visiteddark fill-current"></i> 
-            <div class="ml-6">
-              {{ _('If you require alternate branding, you can <a href="{}">select another logo from {}').format(url_for('main.review_branding_pool', service_id=current_service.id), current_service.organisation.name) }}</a>.
+          {{ radios(form.goc_branding, hide_legend=True) }}
+          
+          {{ show_more() }}
+          <div class="flex flex-row-reverse justify-end items-center">
+            <div class="ml-10 flex items-center">
+              <i aria-hidden="true" class="pl-2 text-title fa-solid fa-info-circle text-gray-visiteddark fill-current"></i> 
+              <div class="ml-6">
+                {{ _('If you require alternate branding, you can <a href="{}">select another logo from {}').format(url_for('main.review_branding_pool', service_id=current_service.id), current_service.organisation.name) }}</a>.
+              </div>
+            </div>
+            <div class="mt-10">
+              {{ page_footer(
+                button_text=_('Save'),
+                button_name='operation',
+              ) }}
             </div>
           </div>
-          {{ show_more() }}
-          <div class="mt-10">
-            {{ page_footer(
-              button_text=_('Save'),
-              button_name='operation',
-            ) }}
-          </div>
+          
         {% endcall %}
       </div>
     </div>

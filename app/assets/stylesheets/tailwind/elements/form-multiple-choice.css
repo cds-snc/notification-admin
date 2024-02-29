@@ -100,5 +100,62 @@
       @apply mb-0 mr-gutter;
     }
   }
+  /* When multiple choice has an image */
+  .multiple-choice {
+    --multiple-choice-img-padding: 1.5rem;
+  }
+  fieldset:has(img) {
+    @apply grid gap-gutterHalf;
+  }
+  fieldset:has(img):has(.multiple-choice:nth-of-type(5)) {
+    @apply grid grid-cols-2 gap-gutterHalf;
+  }
+
+  .multiple-choice:has(img) {
+    padding-top: var(--multiple-choice-img-padding);
+    padding-right: var(--multiple-choice-img-padding);
+    padding-bottom: var(--multiple-choice-img-padding);
+    padding-left: calc(38px + var(--multiple-choice-img-padding));
+    max-width: 600px;
+    @apply border-2 border-gray-300 m-0;
+  }
+  .multiple-choice:has(img):hover {
+    @apply border-gray-500
+  }
+
+  .multiple-choice:has(img) [type="radio"] {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+  
+  .multiple-choice:has(img) [type="radio"] + label::before {
+    top: var(--multiple-choice-img-padding);
+    left: var(--multiple-choice-img-padding);
+    @apply bg-white;
+  }
+  .multiple-choice:has(img) [type="radio"] +  label::after {
+    top: calc(9px + var(--multiple-choice-img-padding));
+    left: calc(9px + var(--multiple-choice-img-padding));
+  }
+  .multiple-choice:has(img):focus-within {
+    box-shadow: 0 2px 0 0 black;
+    @apply bg-yellow border-yellow;
+  }
+  .multiple-choice:has(img):has(input:checked) {
+    box-shadow: none;
+    @apply border-black;
+  }
+
+  .multiple-choice:has(img) img {
+    max-height: 108px;
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+    background-image: linear-gradient(45deg, #CFD5DD 25%, transparent 25%, transparent 75%, #CFD5DD 75%, #CFD5DD),
+                    linear-gradient(45deg, #CFD5DD 25%, transparent 25%, transparent 75%, #CFD5DD 75%, #CFD5DD);
+    @apply border-1 border-gray-300 bg-white mt-gutterHalf;
+  }
+  
   /*! purgecss end ignore */
 }
