@@ -1170,7 +1170,7 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
             )
         ],
     )
-    file = FileField_wtf("Upload a PNG logo", validators=[FileAllowed(["png"], "PNG Images only!")])
+    file = FileField_wtf("Upload a PNG logo")
     brand_type = RadioField(
         "Brand type",
         choices=[
@@ -1788,6 +1788,5 @@ class BrandingRequestForm(StripWhitespaceForm):
         label=_l("Brand image (PNG)"),
         validators=[
             DataRequired(message="You need to upload a file to submit"),
-            FileAllowed(["png"], "PNG Images only!"),
         ],
     )

@@ -1,9 +1,10 @@
 {% extends "admin_template.html" %}
 {% from "components/file-upload.html" import file_upload %}
+{% from "components/form.html" import form_wrapper %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/radios.html" import radios %}
-{% from "components/form.html" import form_wrapper %}
+{% from "components/task-shortcut.html" import task_shortcut %}
 
 {% block service_page_title %}
   {{ _('Update logo') }}
@@ -11,15 +12,31 @@
 
 {% block maincolumn_content %}
   <div class="branding">
-    {{ page_header(h1=_('Your logo is being reviewed')) }}
+    {{ page_header(h1=_('🎉 Your logo is being reviewed')) }}
 
     <div>
         <p>{{ _("We’ll review and implement your new logo. Expect to hear from our support team about the change shortly and in no more than 2 business days.") }}</p>
     </div>
-    <h2 class="heading-medium">{{ _('Branding details') }}</h2>
-    <p>Brand name: {{ brand_name }} </p>
-    <p>Logo:</p>
-    <img alt="" src="{{ logo_url }}"/>
+
+    <div class="grid grid-cols-2 gap-6 w-full mt-20">
+      <div>
+        {{ task_shortcut(
+            description=_("Try writing a template"),
+            link_url=url_for('main.choose_template', service_id=current_service.id),
+            link_text=_("Go to your templates"),
+            icon="arrow-right"
+        )}}
+      </div>
+      <div>
+        {{ task_shortcut(
+          description=_("Explore other settings"),
+          link_url=url_for('main.service_settings', service_id=current_service.id),
+          link_text=_("Go to your Settings"),
+          icon="arrow-right"
+        )}}
+      </div>
+    </div>
+    
   </div>
 {% endblock %}
 
