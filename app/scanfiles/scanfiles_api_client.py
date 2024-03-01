@@ -39,7 +39,7 @@ class ScanFilesApiClient:
         try:
             response = requests.post(self.scanfiles_url, files=data, headers=headers, timeout=15)
         except Exception as e:
-            current_app.logger.debug("ScanFilesApiClient: Failed to scan file. Error: {}".format(str(e)))
+            current_app.logger.info("ScanFilesApiClient: Exception raised while scanning file. Error: {}".format(str(e)))
             return False
 
         if response.status_code == 200:
@@ -58,7 +58,7 @@ class ScanFilesApiClient:
             # all other verdicts
             return False
         else:
-            current_app.logger.debug("ScanFilesApiClient: Failed to scan file. Response {}".format(str(response)))
+            current_app.logger.info("ScanFilesApiClient: Failed to scan file [status code != 200]. Response {}".format(str(response)))
             return False
 
 
