@@ -22,35 +22,44 @@ class ScanFilesApiClient:
         self.auth_token = auth_token
 
     def is_unsafe(self, file):
-        data = {"file": file}
-        headers = {
-            "Authorization": self.auth_token,
-        }
+            """
+            Checks if a file is considered unsafe by sending it to the scanfiles API.
 
-        try:
-            response = requests.post(self.scanfiles_url, files=data, headers=headers, timeout=15)
-        except Exception as e:
-            current_app.logger.debug("ScanFilesApiClient: Failed to scan file. Error: {}".format(str(e)))
-            return False
+            Args:
+                file (bytes): The path to the file to be scanned.
 
-        if response.status_code == 200:
-            response_data = response.json()
-            verdict = response_data["verdict"]
+            Returns:
+                bool: True if the file is considered unsafe, False otherwise.
+            """
+            data = {"file": file}
+            headers = {
+                "Authorization": self.auth_token,
+            }
 
-            current_app.logger.debug(
-                "ScanFilesApiClient: request successful. Scan result: {}. Response data: {}".format(
-                    response_data["verdict"], response_data
+            try:
+                response = requests.post(self.scanfiles_url, files=data, headers=headers, timeout=15)
+            except Exception as e:
+                current_app.logger.debug("ScanFilesApiClient: Failed to scan file. Error: {}".format(str(e)))
+                return False
+
+            if response.status_code == 200:
+                response_data = response.json()
+                verdict = response_data["verdict"]
+
+                current_app.logger.debug(
+                    "ScanFilesApiClient: request successful. Scan result: {}. Response data: {}".format(
+                        response_data["verdict"], response_data
+                    )
                 )
-            )
 
-            if verdict == ScanVerdicts.SUSPICIOUS.value or verdict == ScanVerdicts.MALICIOUS.value:
-                return True
+                if verdict == ScanVerdicts.SUSPICIOUS.value or verdict == ScanVerdicts.MALICIOUS.value:
+                    return True
 
-            # all other verdicts
-            return False
-        else:
-            current_app.logger.debug("ScanFilesApiClient: Failed to scan file. Response {}".format(str(response)))
-            return False
+                # all other verdicts
+                return False
+            else:
+                current_app.logger.debug("ScanFilesApiClient: Failed to scan file. Response {}".format(str(response)))
+                return False
 
 
 scanfiles_api_client = ScanFilesApiClient()
