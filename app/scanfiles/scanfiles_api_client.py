@@ -58,7 +58,9 @@ class ScanFilesApiClient:
             # all other verdicts
             return False
         else:
-            current_app.logger.info("ScanFilesApiClient: Failed to scan file [status code != 200]. Response {}".format(str(response)))
+            current_app.logger.info(
+                "ScanFilesApiClient: Failed to scan file [status code != 200]. Response {}".format(str(response))
+            )
             return False
 
 
