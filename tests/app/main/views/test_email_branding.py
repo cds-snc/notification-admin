@@ -1,5 +1,6 @@
 from io import BytesIO
-from unittest.mock import call
+from unittest import mock
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 from bs4 import BeautifulSoup
@@ -385,3 +386,111 @@ def test_colour_regex_validation(
 
     response = platform_admin_client.post(url_for(".create_email_branding"), content_type="multipart/form-data", data=data)
     assert response.status_code == expected_status_code
+
+
+class TestBranding:
+    def test_edit_branding_settings_displays_stock_options(self, mocker, service_one, platform_admin_client):
+        mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
+        service_one["permissions"] = ["manage_service"]
+
+        response = platform_admin_client.get(
+            url_for(".edit_branding_settings", service_id=service_one["id"]),
+        )
+
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+
+        assert len(page.select("input[type=radio]")) == 2
+
+    def test_edit_branding_settings_displays_forces_selection(self, mocker, service_one, platform_admin_client):
+        mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
+        service_one["permissions"] = ["manage_service"]
+
+        response = platform_admin_client.post(
+            url_for(".edit_branding_settings", service_id=service_one["id"]),
+        )
+
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert "This field is required." in page.text
+
+    def test_edit_branding_moves_to_next_page(self, mocker, service_one, platform_admin_client):
+        mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
+        mocker.patch("app.models.service.Service.update", return_value=True)
+
+        service_one["permissions"] = ["manage_service"]
+
+        response = platform_admin_client.post(
+            url_for(".edit_branding_settings", service_id=service_one["id"]),
+            data={"goc_branding": "__FIP-EN__"},
+        )
+
+        assert response.status_code == 302
+        assert response.location == url_for(".view_branding_settings", service_id=service_one["id"])
+
+    def test_review_branding_pool_displays_choices(self, mocker, service_one, platform_admin_client):
+        mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
+        mocker.patch(
+            "app.notify_client.email_branding_client.EmailBrandingClient.get_all_email_branding",
+            return_value=[
+                {
+                    "id": "d51a41b2-c420-48a9-a8c5-e88444013020",
+                    "colour": None,
+                    "logo": "0b4ec2bd-e305-47c4-b910-6d9762ff6c1f-alb.png",
+                    "name": "AssemblyLine",
+                    "text": None,
+                    "brand_type": "custom_logo",
+                },
+                {
+                    "id": "d51a41b2-c420-48a9-a8c5-e88444013020",
+                    "colour": None,
+                    "logo": "0b4ec2bd-e305-47c4-b910-6d9762ff6c1f-alb.png",
+                    "name": "AssemblyLine",
+                    "text": None,
+                    "brand_type": "custom_logo",
+                },
+            ],
+        )
+        service_one["permissions"] = ["manage_service"]
+
+        response = platform_admin_client.get(
+            url_for(".review_branding_pool", service_id=service_one["id"]),
+        )
+
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+
+        assert len(page.select("input[type=radio]")) == 2
+
+    def test_review_branding_pool_forces_selection(self, mocker, service_one, platform_admin_client):
+        mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
+        mocker.patch(
+            "app.notify_client.email_branding_client.EmailBrandingClient.get_all_email_branding",
+            return_value=[
+                {
+                    "id": "d51a41b2-c420-48a9-a8c5-e88444013020",
+                    "colour": None,
+                    "logo": "0b4ec2bd-e305-47c4-b910-6d9762ff6c1f-alb.png",
+                    "name": "AssemblyLine",
+                    "text": None,
+                    "brand_type": "custom_logo",
+                },
+                {
+                    "id": "d51a41b2-c420-48a9-a8c5-e88444013020",
+                    "colour": None,
+                    "logo": "0b4ec2bd-e305-47c4-b910-6d9762ff6c1f-alb.png",
+                    "name": "AssemblyLine",
+                    "text": None,
+                    "brand_type": "custom_logo",
+                },
+            ],
+        )
+        service_one["permissions"] = ["manage_service"]
+
+        response = platform_admin_client.post(
+            url_for(".review_branding_pool", service_id=service_one["id"]),
+        )
+
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert "This field is required." in page.text
