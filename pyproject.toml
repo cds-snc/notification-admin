@@ -60,7 +60,6 @@ notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", b
 # Pinned dependencies
 rsa = "^4.1" # not directly required, pinned by Snyk to avoid a vulnerability
 certifi = "^2023.7.22" # Pinned for security reasons: https://github.com/cds-snc/notification-admin/security/dependabot/169
-cryptography = "^42.0.3" # Pinned for security reasons:
 redis = "3.5.3" # pinned for now
 xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; see https://github.com/pyexcel/pyexcel-xls/issues/53
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
