@@ -23,7 +23,7 @@ jobs:
           ${{ runner.os }}-pip-
     - name: Install poetry
       env:
-        POETRY_VERSION: "1.3.2"
+        POETRY_VERSION: "1.7.1"
       run: pip install poetry==${POETRY_VERSION} && poetry --version
     - name: Install requirements
       run: poetry install --with test

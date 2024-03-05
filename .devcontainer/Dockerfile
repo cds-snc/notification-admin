@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/vscode/devcontainers/python:1-3.10@sha256:2e49ea12dd89e55b83096f503220239f6f517eae70af4db3c1df5489b37aaa57
 
-ENV POETRY_VERSION="1.3.2"
+ENV POETRY_VERSION="1.7.1"
 
 ARG USERNAME=vscode
 
