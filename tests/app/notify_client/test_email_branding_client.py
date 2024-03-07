@@ -47,6 +47,28 @@ def test_get_all_email_branding(mocker):
     )
 
 
+def test_get_all_email_branding_filter_organisation(mocker):
+    mock_get = mocker.patch(
+        "app.notify_client.email_branding_client.EmailBrandingClient.get",
+        return_value={"email_branding": [1, 2, 3]},
+    )
+    mock_redis_get = mocker.patch(
+        "app.extensions.RedisClient.get",
+        return_value=None,
+    )
+    mock_redis_set = mocker.patch(
+        "app.extensions.RedisClient.set",
+    )
+    EmailBrandingClient().get_all_email_branding(organisation_id="org_1")
+    mock_get.assert_called_once_with(url="/email-branding", params={"organisation_id": "org_1"})
+    mock_redis_get.assert_called_once_with("email_branding")
+    mock_redis_set.assert_called_once_with(
+        "email_branding",
+        "[1, 2, 3]",
+        ex=604800,
+    )
+
+
 def test_create_email_branding(mocker):
     org_data = {
         "logo": "test.png",

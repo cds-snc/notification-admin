@@ -1128,10 +1128,10 @@ def set_free_sms_allowance(service_id):
 )
 @user_is_platform_admin
 def service_set_email_branding(service_id):
-    email_branding = email_branding_client.get_all_email_branding()
+    organisation_id = current_service.organisation_id
+    email_branding = email_branding_client.get_all_email_branding(organisation_id=organisation_id)
 
     current_branding = current_service.email_branding_id
-
     if current_branding is None:
         current_branding = (
             FieldWithLanguageOptions.FRENCH_OPTION_VALUE
