@@ -1,6 +1,5 @@
 from io import BytesIO
-from unittest import mock
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import call
 
 import pytest
 from bs4 import BeautifulSoup
