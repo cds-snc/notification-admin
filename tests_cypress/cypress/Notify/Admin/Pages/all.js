@@ -6,6 +6,7 @@ import Navigation from "./Navigation";
 import TemplatesPage from "./TemplatesPage";
 import AccountsPage from "./AccountsPage";
 import CreateAccountPage from "./CreateAccountPage";
+import RequestBranding from "./branding/RequestBranding";
 
 export default {
     LoginPage,
@@ -16,4 +17,5 @@ export default {
     TemplatesPage,
     AccountsPage,
     CreateAccountPage,
+    RequestBranding,
 }
