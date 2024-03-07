@@ -23,16 +23,16 @@
         {% else %}
           <p>{{ _('Choose one of the logos that are part of the <i>{}</i> organisation').format(current_service.organisation.name) }}</p>
           {% call form_wrapper() %}
-            {{ radios(form.goc_branding, hide_legend=True) }}
+            {{ radios(form.goc_branding, hide_legend=True, testid="pool_branding") }}
             {{ show_more() }}
             <div class="mt-10">
               <div class="js-stick-at-bottom-when-scrolling">
                 <div class="flex flex-row-reverse justify-end items-center">
                   <div class="ml-10">
-                    <i aria-hidden="true" class="pl-2 text-title fa-solid fa-info-circle text-gray-visiteddark fill-current"></i> {{ _('If you can\'t find the branding you are looking for, you can start the process to <a href="{}">request new branding</a>.').format(url_for('main.create_branding_request', service_id=current_service.id)) }}
+                    <i aria-hidden="true" class="pl-2 text-title fa-solid fa-info-circle text-gray-visiteddark fill-current"></i> {{ _('If you can\'t find the branding you are looking for, you can start the process to <a href="{}" data-testid="goto-request">request new branding</a>.').format(url_for('main.create_branding_request', service_id=current_service.id)) }}
                   </div>
                   <div class="">
-                    {{ page_footer('Preview') }}
+                    {{ page_footer('Preview', testid="preview") }}
                   </div>
                 </div>
               </div>      

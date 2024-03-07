@@ -22,20 +22,21 @@
         <p>{{ _('Consistent branding helps instill trust in the email messages you send. GC Notify offers the Government of Canada signatures by default. These logos have high trust among Canadians.') }}</p>
         <h2 class="heading-medium" id="radio_fieldset">{{ _('Change the default language of email branding') }}</h2>
         {% call form_wrapper() %}
-          {{ radios(form.goc_branding, hide_legend=True) }}
+          {{ radios(form.goc_branding, hide_legend=True, testid="goc_branding") }}
           
           {{ show_more() }}
           <div class="flex flex-row-reverse justify-end items-center">
             <div class="ml-10 flex items-center">
               <i aria-hidden="true" class="pl-2 text-title fa-solid fa-info-circle text-gray-visiteddark fill-current"></i> 
               <div class="ml-6">
-                {{ _('If you require alternate branding, you can <a href="{}">select another logo from {}').format(url_for('main.review_branding_pool', service_id=current_service.id), current_service.organisation.name) }}</a>.
+                {{ _('If you require alternate branding, you can <a data-testid="goto-pool" href="{}">select another logo from {}').format(url_for('main.review_branding_pool', service_id=current_service.id), current_service.organisation.name) }}</a>.
               </div>
             </div>
             <div class="mt-10">
               {{ page_footer(
                 button_text=_('Save'),
                 button_name='operation',
+                testid="submit"
               ) }}
             </div>
           </div>
