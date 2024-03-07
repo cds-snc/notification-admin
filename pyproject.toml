@@ -54,7 +54,7 @@ unidecode = "^1.3.6"
 # PaaS
 awscli-cwlogs = "^1.4.6"
 
-notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", rev = "52.1.4" }
+notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", rev = "46dffda819e9a8bd10b591ac4a1cb7e4804c3cb3" }
 
 # Pinned dependencies
 rsa = "^4.1" # not directly required, pinned by Snyk to avoid a vulnerability
