@@ -1,5 +1,4 @@
 import config from "../../../../config";
-import { LoginPage } from "../../../Notify/Admin/Pages/all";
 
 const BrandingRoutes = [
     '/edit-branding', '/branding-request', '/review-pool', '/preview-branding'

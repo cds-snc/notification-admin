@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import config from "../../../../config";
-import { RequestBranding, LoginPage } from "../../../Notify/Admin/Pages/all";
+import { RequestBranding } from "../../../Notify/Admin/Pages/all";
 
 
 describe('Branding request', () => {
