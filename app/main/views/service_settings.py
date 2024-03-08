@@ -1288,7 +1288,7 @@ def link_service_to_organisation(service_id):
 
 @main.route("/services/<service_id>/branding", methods=["GET"])
 @user_has_permissions("manage_service")
-def view_branding_settings(service_id, preview=False):
+def view_branding_settings(service_id):
     def _get_current_branding():
         current_branding = current_service.email_branding_id
         cdn_url = get_logo_cdn_domain()
@@ -1309,7 +1309,6 @@ def view_branding_settings(service_id, preview=False):
         branding=branding,
         current_service=current_service,
         template=get_preview_template(),
-        preview=request.args.get("preview"),
     )
 
 
