@@ -76,8 +76,9 @@
         <label class="block-label" for="{{ option.id }}">
           {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
           {% if '||' in option.label.text %}
-            <div id="{{ option.id }}-img">
-              <img src="{{ option.label.text.split('||')[1] }}" alt="{{ option.label.text.split('||')[2] }}"></div>
+            <span id="{{ option.id }}-img">
+              <img src="{{ option.label.text.split('||')[1] }}" alt="{{ option.label.text.split('||')[2] }}">
+            </span>
             {% endif %}
             {% if option_hints[option.data] %}
               <div class="block-label-hint max-w-80ch">
