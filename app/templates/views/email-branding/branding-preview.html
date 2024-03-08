@@ -12,11 +12,11 @@
 {% block maincolumn_content %}
   <div class="branding">
     {{ page_header(
-      _('Branding preview'),
+      _('Logo preview'),
       back_link='#'
     ) }}
 
-    <div class="grid-row contain-floats">
+    <div class="py-0 px-0 box-border">
       {% include 'views/email-branding/_preview.html' %}
     </div>
     {% call form_wrapper() %}
