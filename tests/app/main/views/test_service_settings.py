@@ -2759,15 +2759,17 @@ def test_service_preview_letter_branding_saves(
     ],
 )
 @pytest.mark.parametrize(
-    "endpoint, extra_args",
+    "endpoint, extra_args, organisation_id",
     (
         (
             "main.service_set_email_branding",
             {"service_id": SERVICE_ONE_ID},
+            None,
         ),
         (
             "main.edit_organisation_email_branding",
             {"org_id": ORGANISATION_ID},
+            ORGANISATION_ID,
         ),
     ),
 )
@@ -2782,6 +2784,7 @@ def test_should_show_branding_styles(
     expected_labels,
     endpoint,
     extra_args,
+    organisation_id,
 ):
     service_one["email_branding"] = current_branding
     mocker.patch(
@@ -2819,22 +2822,24 @@ def test_should_show_branding_styles(
     assert "checked" not in branding_style_choices[5].attrs
     assert "checked" not in branding_style_choices[6].attrs
 
-    app.email_branding_client.get_all_email_branding.assert_called_once_with()
+    app.email_branding_client.get_all_email_branding.assert_called_once_with(organisation_id=organisation_id)
     app.service_api_client.get_service.assert_called_once_with(service_one["id"])
 
 
 @pytest.mark.parametrize(
-    "endpoint, extra_args, expected_redirect",
+    "endpoint, extra_args, expected_redirect, organisation_id",
     (
         (
             "main.service_set_email_branding",
             {"service_id": SERVICE_ONE_ID},
             "main.service_preview_email_branding",
+            None,
         ),
         (
             "main.edit_organisation_email_branding",
             {"org_id": ORGANISATION_ID},
             "main.organisation_preview_email_branding",
+            ORGANISATION_ID,
         ),
     ),
 )
@@ -2848,6 +2853,7 @@ def test_should_send_branding_and_organisations_to_preview(
     endpoint,
     extra_args,
     expected_redirect,
+    organisation_id,
 ):
     client_request.login(platform_admin_user)
     client_request.post(
@@ -2858,7 +2864,7 @@ def test_should_send_branding_and_organisations_to_preview(
         **extra_args,
     )
 
-    mock_get_all_email_branding.assert_called_once_with()
+    mock_get_all_email_branding.assert_called_once_with(organisation_id=organisation_id)
 
 
 @pytest.mark.parametrize(
