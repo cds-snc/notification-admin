@@ -1766,26 +1766,27 @@ class BrandingGOCForm(StripWhitespaceForm):
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
         ],
-        validators=[DataRequired()],
-    )
-
-    DEFAULT_EN = (
-        FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
-        "English Government of Canada signature",
-    )
-    DEFAULT_FR = (
-        FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
-        "French Government of Canada signature",
+        validators=[DataRequired(message=_l('You need to choose an option'))],
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+class BrandingPoolForm(StripWhitespaceForm):
+    pool_branding = RadioField(
+        _l("Select alternate logo"),
+        choices=[  # Choices by default, override to get more refined options.
+        ],
+        validators=[DataRequired(message=_l('You need to choose an option'))],
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 class BrandingRequestForm(StripWhitespaceForm):
-    name = StringField(label=_l("Name of brand"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("This cannot be empty"))])
     file = FileField_wtf(
-        label=_l("Brand image (PNG)"),
+        label=_l("Prepare your logo"),
         validators=[
             DataRequired(message="You need to upload a file to submit"),
         ],
