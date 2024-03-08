@@ -1766,22 +1766,23 @@ class BrandingGOCForm(StripWhitespaceForm):
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
         ],
-        validators=[DataRequired(message=_l('You need to choose an option'))],
+        validators=[DataRequired(message=_l("You need to choose an option"))],
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
 
 class BrandingPoolForm(StripWhitespaceForm):
     pool_branding = RadioField(
         _l("Select alternate logo"),
-        choices=[  # Choices by default, override to get more refined options.
-        ],
-        validators=[DataRequired(message=_l('You need to choose an option'))],
+        choices=[],  # Choices by default, override to get more refined options.
+        validators=[DataRequired(message=_l("You need to choose an option"))],
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
 
 class BrandingRequestForm(StripWhitespaceForm):
     name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("This cannot be empty"))])
