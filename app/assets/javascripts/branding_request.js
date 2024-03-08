@@ -33,7 +33,7 @@
           const img = document
             .getElementById("template_preview")
             .shadowRoot.querySelector("img");
-          img.src = img_src;
+          img.src = encodeURI(img_src);
 
           img.onload = () => {
             message.textContent = `File name: ${
