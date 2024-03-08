@@ -1,16 +1,13 @@
 /// <reference types="cypress" />
 
-import config from "../../../config";
-import { RequestBranding, LoginPage } from "../../Notify/Admin/Pages/all";
+import config from "../../../../config";
+import { RequestBranding, LoginPage } from "../../../Notify/Admin/Pages/all";
+
 
 describe('Branding request', () => {
-
     // Login to notify before the test suite starts
     before(() => {
-        LoginPage.Login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
-
-        // ensure we logged in correctly
-        cy.contains('h1', 'Sign-in history').should('be.visible');
+        cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
     });
 
     beforeEach(() => {
@@ -19,10 +16,10 @@ describe('Branding request', () => {
         cy.visit(config.Hostnames.Admin + `/services/${config.Services.Cypress}/branding-request`);
     });
 
+    
     it('Loads request branding page', () => {
-        cy.contains('h1', 'New branding request').should('be.visible');
-    });
-
+        cy.contains('h1', 'Request a new logo').should('be.visible');
+    });    
     it('Disallows submission when there is no data', () => {
         RequestBranding.Components.SubmitButton().should('be.disabled');
     });
@@ -66,5 +63,5 @@ describe('Branding request', () => {
         RequestBranding.EnterBrandName('Test Brand');
         RequestBranding.UploadMalciousFile();
         RequestBranding.Components.SubmitButton().should('be.disabled');
-    });
+    });    
 });
