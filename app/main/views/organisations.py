@@ -272,7 +272,7 @@ def edit_organisation_agreement(org_id):
 @main.route("/organisations/<org_id>/settings/set-email-branding", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_email_branding(org_id):
-    email_branding = email_branding_client.get_all_email_branding()
+    email_branding = email_branding_client.get_all_email_branding(organisation_id=org_id)
 
     current_branding = current_organisation.email_branding_id
 
