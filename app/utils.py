@@ -215,9 +215,9 @@ def get_errors_for_csv(recipients, template_type):
             errors.append(_("added custom content exceeds the {} character limit in 1 row").format(SMS_CHAR_COUNT_LIMIT))
         else:
             errors.append(
-                _(
-                    "added custom content exceeds the {} character limit in {} rows"
-                ).format(SMS_CHAR_COUNT_LIMIT, num_rows_with_combined_content_too_long)
+                _("added custom content exceeds the {} character limit in {} rows").format(
+                    SMS_CHAR_COUNT_LIMIT, num_rows_with_combined_content_too_long
+                )
             )
         # TODO Update the inline cell error messages
 
