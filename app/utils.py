@@ -212,12 +212,12 @@ def get_errors_for_csv(recipients, template_type):
     if any(recipients.rows_with_combined_variable_content_too_long):
         num_rows_with_combined_content_too_long = len(list(recipients.rows_with_combined_variable_content_too_long))
         if num_rows_with_combined_content_too_long == 1:
-            errors.append(_(f"added custom content exceeds the {SMS_CHAR_COUNT_LIMIT} character limit in 1 row"))
+            errors.append(_("added custom content exceeds the {} character limit in 1 row").format(SMS_CHAR_COUNT_LIMIT))
         else:
             errors.append(
                 _(
-                    f"added custom content exceeds the {SMS_CHAR_COUNT_LIMIT} character limit in {num_rows_with_combined_content_too_long} rows"
-                )
+                    "added custom content exceeds the {} character limit in {} rows"
+                ).format(SMS_CHAR_COUNT_LIMIT, num_rows_with_combined_content_too_long)
             )
         # TODO Update the inline cell error messages
 
