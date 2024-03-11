@@ -15,6 +15,7 @@ from app import current_service, email_branding_client
 from app.main import main
 from app.main.forms import (
     BrandingGOCForm,
+    BrandingPoolForm,
     BrandingRequestForm,
     SearchByNameForm,
     ServiceUpdateEmailBranding,
@@ -177,15 +178,15 @@ def review_branding_pool(service_id):
     logos = email_branding_client.get_all_email_branding()
     custom_logos = [logo for logo in logos if logo["brand_type"] in ["custom_logo", "custom_logo_with_background_colour"]]
 
-    form = BrandingGOCForm()
-    form.goc_branding.choices = [
+    form = BrandingPoolForm()
+    form.pool_branding.choices = [
         (logo["id"], logo["name"] + "||" + "{}/{}".format(get_logo_url(), logo["logo"])) for logo in custom_logos
     ]
 
     if form.validate_on_submit():
         # current_service.update(email_branding=form.goc_branding.data)
         # save the logo they want to preview to session
-        session["branding_to_preview"] = [logo for logo in logos if logo["id"] in [form.goc_branding.data]][0]
+        session["branding_to_preview"] = [logo for logo in logos if logo["id"] in [form.pool_branding.data]][0]
         # return render_template("views/email-branding/branding-preview.html", template=get_preview_template(branding_to_preview))
         return redirect(url_for("main.preview_branding", service_id=service_id))
 

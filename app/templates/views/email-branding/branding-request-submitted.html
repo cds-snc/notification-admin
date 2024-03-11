@@ -12,16 +12,16 @@
 
 {% block maincolumn_content %}
   <div class="branding">
-    {{ page_header(h1=_('🎉 Your logo is being reviewed')) }}
+    {{ page_header(h1=_('We\'re reviewing your logo')) }}
 
     <div>
-        <p>{{ _("We’ll review and implement your new logo. Expect to hear from our support team about the change shortly and in no more than 2 business days.") }}</p>
+        <p>{{ _("We\'ll implement or request changes to your logo within 2 business days.") }}</p>
     </div>
 
     <div class="grid grid-cols-2 gap-6 w-full mt-20">
       <div>
         {{ task_shortcut(
-            description=_("Try writing a template"),
+            description=_("Try creating a template. "),
             link_url=url_for('main.choose_template', service_id=current_service.id),
             link_text=_("Go to your templates"),
             icon="arrow-right"
