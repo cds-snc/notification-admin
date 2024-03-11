@@ -93,7 +93,7 @@ jinja_templates/
 scripts/searchresults.csv
 dump.rdb
 
-cypress.env.json
+cypress*env*json*
 node_modules/
 tests_cypress/cypress/videos/
 tests_cypress/cypress/screenshots/
