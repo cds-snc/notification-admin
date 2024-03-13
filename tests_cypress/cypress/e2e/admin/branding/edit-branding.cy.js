@@ -1,14 +1,14 @@
 /// <reference types="cypress" />
 
+import { faHourglass1 } from "@fortawesome/free-solid-svg-icons";
 import config from "../../../../config";
-import { EditBranding, LoginPage } from "../../../Notify/Admin/Pages/all";
+import { EditBranding, BrandingSettings } from "../../../Notify/Admin/Pages/all";
+
 
 describe('Branding request', () => {
     // Login to notify before the test suite starts
     before(() => {
-        LoginPage.Login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
-        // ensure we logged in correctly
-        cy.contains('h1', 'Sign-in history').should('be.visible');
+        cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
     });
 
     beforeEach(() => {
@@ -17,20 +17,9 @@ describe('Branding request', () => {
         cy.visit(config.Hostnames.Admin + `/services/${config.Services.Cypress}/edit-branding`);
     });
 
-    it('Should save English-first logo when selected', () => {
-        EditBranding.SelectBrandGoc("en");
-        EditBranding.Submit();
-        cy.get('span').contains('English Government of Canada signature');
-    });
-
-    it('Should save French-first logo when selected', () => {
-        EditBranding.SelectBrandGoc("fr");
-        EditBranding.Submit();
-        cy.get('span').contains('French Government of Canada signature');
-    });
-
-    it('Loads edit branding page', () => {
-        cy.contains('h1', 'Change your branding').should('be.visible');
+    it('Loads branding settings page', () => {
+        cy.visit(config.Hostnames.Admin + `/services/${config.Services.Cypress}/branding`);
+        cy.get('h1').contains('Email logo').should('be.visible');
     });
 
     it('Shows images of the default EN and FR branding', () => {
@@ -44,13 +33,39 @@ describe('Branding request', () => {
         })
     });
 
+    it('Loads edit-branding when choose logo is clicked', () => {
+        cy.visit(config.Hostnames.Admin + `/services/${config.Services.Cypress}/branding`);
+        BrandingSettings.ChooseDifferentLogo();
+        cy.get('h1').contains('Change your branding').should('be.visible');
+    });
+
     it('Cannot submit when no selection was made', () => {
         EditBranding.Submit();
-        cy.contains('span', 'This field is required.').should('be.visible');
+        cy.contains('span', 'You need to choose an option').should('be.visible');
+    });
+
+    it('Saves English-first logo when selected', () => {
+        EditBranding.SelectDefaultBranding("en");
+        EditBranding.Submit();
+        BrandingSettings.Components.StatusBanner().should('be.visible').and('contain', 'Setting updated')
+        BrandingSettings.Components.TemplatePreview().first().should('have.attr', 'alt', 'Government of Canada / Gouvernement du Canada');
+    });
+
+    it('Saves French-first logo when selected', () => {
+        EditBranding.SelectDefaultBranding("fr");
+        EditBranding.Submit();
+        BrandingSettings.Components.StatusBanner().should('be.visible').and('contain', 'Setting updated')
+        BrandingSettings.Components.TemplatePreview().first().should('have.attr', 'alt', 'Gouvernement du Canada / Government of Canada');
     });
 
     it('Navigates to branding pool when select another logo from test link is clicked', () => {
         EditBranding.ClickBrandPool();
-        cy.contains('h1', 'Choose branding from pool').should("be.visible");
+        cy.contains('h1', 'Select alternate logo').should("be.visible");
+    })
+
+    it('Navigates to edit branding when go back is clicked from the branding pool page', () => {
+        EditBranding.ClickBrandPool();
+        BrandingSettings.GoBack();
+        cy.get('h1').contains('Change your branding').should('be.visible');
     })
 });

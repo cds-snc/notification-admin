@@ -8,6 +8,7 @@ import AccountsPage from "./AccountsPage";
 import CreateAccountPage from "./CreateAccountPage";
 import RequestBranding from "./branding/RequestBranding";
 import EditBranding from "./branding/EditBranding";
+import BrandingSettings from "./branding/BrandingSettings"
 
 export default {
     LoginPage,
@@ -20,4 +21,5 @@ export default {
     CreateAccountPage,
     RequestBranding,
     EditBranding,
+    BrandingSettings,
 }

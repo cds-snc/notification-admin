@@ -1769,6 +1769,15 @@ class BrandingGOCForm(StripWhitespaceForm):
         validators=[DataRequired(message=_l("You need to choose an option"))],
     )
 
+    DEFAULT_EN = (
+        FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
+        "English Government of Canada signature",
+    )
+    DEFAULT_FR = (
+        FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
+        "French Government of Canada signature",
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

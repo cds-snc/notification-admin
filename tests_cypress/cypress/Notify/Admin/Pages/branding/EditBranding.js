@@ -1,16 +1,15 @@
 // Parts of the page a user can interact with
 let Components = {
-    BrandGocEn: () => cy.get('input[value="\\_\\_FIP-EN\\_\\_"]'),
-    BrandGocFr: () => cy.get('input[value="\\_\\_FIP-FR\\_\\_"]'),
+    BrandGocEn: () => cy.getByTestId('__FIP-EN__'),
+    BrandGocFr: () => cy.getByTestId('__FIP-FR__'),
     BrandFieldset: () => cy.getByTestId('goc_branding'),
     BrandPoolLink: () => cy.getByTestId('goto-pool'),
-    BrandPreview: () => cy.getByTestId('brand_preview'),
     ChangeBranding: () => cy.getByTestId('change_branding'),
-    SubmitButton: () => cy.get('button[type="submit"]'),
+    SubmitButton: () => cy.getByTestId('submit'),
 };
 
 let Actions = {
-    SelectBrandGoc: (lang) => {
+    SelectDefaultBranding: (lang) => {
         lang === 'en' ? Components.BrandGocEn().check() : Components.BrandGocFr().check();
     },
     ClickBrandPool: () => {
