@@ -38,10 +38,10 @@ def test_get_all_email_branding(mocker):
         "app.extensions.RedisClient.set",
     )
     EmailBrandingClient().get_all_email_branding()
-    mock_get.assert_called_once_with(url="/email-branding")
-    mock_redis_get.assert_called_once_with("email_branding")
+    mock_get.assert_called_once_with(url="/email-branding", params={'organisation_id': None})
+    mock_redis_get.assert_called_once_with("email_branding-None")
     mock_redis_set.assert_called_once_with(
-        "email_branding",
+        "email_branding-None",
         "[1, 2, 3]",
         ex=604800,
     )
@@ -61,9 +61,9 @@ def test_get_all_email_branding_filter_organisation(mocker):
     )
     EmailBrandingClient().get_all_email_branding(organisation_id="org_1")
     mock_get.assert_called_once_with(url="/email-branding", params={"organisation_id": "org_1"})
-    mock_redis_get.assert_called_once_with("email_branding")
+    mock_redis_get.assert_called_once_with("email_branding-org_1")
     mock_redis_set.assert_called_once_with(
-        "email_branding",
+        "email_branding-org_1",
         "[1, 2, 3]",
         ex=604800,
     )
