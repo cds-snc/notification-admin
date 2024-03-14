@@ -203,7 +203,7 @@ class Test(Development):
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     FF_SALESFORCE_CONTACT = False
     SYSTEM_STATUS_URL = "https://localhost:3000"
-
+    EMAIL_BRANDING_NO_BRAND_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
 
 class Production(Config):
     CHECK_PROXY_HEADER = False
@@ -211,13 +211,13 @@ class Production(Config):
     NOTIFY_ENVIRONMENT = "production"
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
-
+    EMAIL_BRANDING_NO_BRAND_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
 
 class Staging(Production):
     NOTIFY_ENVIRONMENT = "staging"
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
-
+    EMAIL_BRANDING_NO_BRAND_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
 class Scratch(Production):
     NOTIFY_ENVIRONMENT = "scratch"
