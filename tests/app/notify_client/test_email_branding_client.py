@@ -38,7 +38,7 @@ def test_get_all_email_branding(mocker):
         "app.extensions.RedisClient.set",
     )
     EmailBrandingClient().get_all_email_branding()
-    mock_get.assert_called_once_with(url="/email-branding", params={'organisation_id': None})
+    mock_get.assert_called_once_with(url="/email-branding", params={"organisation_id": None})
     mock_redis_get.assert_called_once_with("email_branding-None")
     mock_redis_set.assert_called_once_with(
         "email_branding-None",
