@@ -17,6 +17,7 @@ from app.main.forms import (
     BrandingGOCForm,
     BrandingPoolForm,
     BrandingRequestForm,
+    FieldWithLanguageOptions,
     SearchByNameForm,
     ServiceUpdateEmailBranding,
 )
@@ -163,7 +164,7 @@ def edit_branding_settings(service_id):
     form = BrandingGOCForm()
     form.goc_branding.choices = choices
     if form.validate_on_submit():
-        default_branding_is_french = form.data["goc_branding"] == BrandingGOCForm.DEFAULT_FR[0]
+        default_branding_is_french = form.data["goc_branding"] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
         current_service.update(email_branding=None, default_branding_is_french=default_branding_is_french)
 
         flash(_("Setting updated"), "default_with_tick")
