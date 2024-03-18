@@ -243,6 +243,7 @@ def preview_branding(service_id):
 def get_logo_url():
     return "https://{}".format(get_logo_cdn_domain())
 
+
 def get_preview_template(email_branding=None):
     if email_branding:
         branding_type = email_branding["brand_type"]
@@ -285,8 +286,13 @@ def get_preview_template(email_branding=None):
             brand_name = _("custom brand logo")
 
     template = {
-        "subject": "foo", 
-        "content": "# Email preview\n{}\n{}".format(_("An example email showing the {} at the top left.").format(brand_name), "The canada wordmark is displayed at the bottom right" if current_service.email_branding_id is None and email_branding is None else "")
+        "subject": "foo",
+        "content": "# Email preview\n{}\n{}".format(
+            _("An example email showing the {} at the top left.").format(brand_name),
+            "The canada wordmark is displayed at the bottom right"
+            if current_service.email_branding_id is None and email_branding is None
+            else "",
+        ),
     }
 
     html_template = str(
@@ -306,7 +312,10 @@ def get_preview_template(email_branding=None):
 
 
 def get_preview_template_custom_placeholder():
-    template = {"subject": "foo", "content": "# SAMPLE EMAIL\nThis message is to preview your branding settings\nThis is a sample only. Real content will be shown here.\nThis is sample content"}
+    template = {
+        "subject": "foo",
+        "content": "# SAMPLE EMAIL\nThis message is to preview your branding settings\nThis is a sample only. Real content will be shown here.\nThis is sample content",
+    }
     html_template = str(
         HTMLEmailTemplate(
             template,

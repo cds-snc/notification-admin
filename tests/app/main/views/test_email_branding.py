@@ -5,8 +5,8 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
-from app.main.views.email_branding import get_preview_template
 
+from app.main.views.email_branding import get_preview_template
 from app.s3_client.s3_logo_client import EMAIL_LOGO_LOCATION_STRUCTURE, TEMP_TAG
 from app.utils import get_logo_cdn_domain
 from tests.conftest import create_email_branding, normalize_spaces
@@ -509,11 +509,10 @@ class TestBranding:
 
         mocker.patch("app.main.views.email_branding.email_branding_client.get_email_branding", return_value=email_branding)
         with app_.test_request_context():
-            mocker.patch('app.main.views.email_branding.current_service', new=MockService)
+            mocker.patch("app.main.views.email_branding.current_service", new=MockService)
             html_template = get_preview_template(email_branding)
-            assert "An example email showing the Example Brand at the top left" in html_template 
-            assert "The canada wordmark is displayed at the bottom right" not in html_template 
-
+            assert "An example email showing the Example Brand at the top left" in html_template
+            assert "The canada wordmark is displayed at the bottom right" not in html_template
 
     def test_get_preview_template_with_default_branding_is_french(self, mocker, app_):
         class MockService:
@@ -521,11 +520,10 @@ class TestBranding:
             default_branding_is_french = True
 
         with app_.test_request_context():
-            mocker.patch('app.main.views.email_branding.current_service', new=MockService)
+            mocker.patch("app.main.views.email_branding.current_service", new=MockService)
             html_template = get_preview_template(None)
-            assert "An example email showing the French-first government of Canada logo at the top left" in html_template 
-            assert "The canada wordmark is displayed at the bottom right" in html_template 
-
+            assert "An example email showing the French-first government of Canada logo at the top left" in html_template
+            assert "The canada wordmark is displayed at the bottom right" in html_template
 
     def test_get_preview_template_with_default_branding_is_english(self, mocker, app_):
         class MockService:
@@ -533,11 +531,10 @@ class TestBranding:
             default_branding_is_french = False
 
         with app_.test_request_context():
-            mocker.patch('app.main.views.email_branding.current_service', new=MockService)
+            mocker.patch("app.main.views.email_branding.current_service", new=MockService)
             html_template = get_preview_template(None)
-            assert "An example email showing the English-first government of Canada logo at the top left" in html_template 
-            assert "The canada wordmark is displayed at the bottom right" in html_template 
-
+            assert "An example email showing the English-first government of Canada logo at the top left" in html_template
+            assert "The canada wordmark is displayed at the bottom right" in html_template
 
     def test_get_preview_template_with_email_branding_and_custom_brand_logo(self, mocker, app_):
         email_branding = {
@@ -551,10 +548,13 @@ class TestBranding:
         class MockService:
             email_branding_id = 6
             default_branding_is_french = False
-        
+
         with app_.test_request_context():
-            mocker.patch("app.main.views.email_branding.email_branding_client.get_email_branding", return_value={"email_branding": email_branding})
-            mocker.patch('app.main.views.email_branding.current_service', new=MockService)
+            mocker.patch(
+                "app.main.views.email_branding.email_branding_client.get_email_branding",
+                return_value={"email_branding": email_branding},
+            )
+            mocker.patch("app.main.views.email_branding.current_service", new=MockService)
             html_template = get_preview_template(None)
-            assert "An example email showing the custom brand logo at the top left" in html_template 
-            assert "The canada wordmark is displayed at the bottom right" not in html_template 
+            assert "An example email showing the custom brand logo at the top left" in html_template
+            assert "The canada wordmark is displayed at the bottom right" not in html_template
