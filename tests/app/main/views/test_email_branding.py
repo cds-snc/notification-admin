@@ -411,7 +411,7 @@ class TestBranding:
 
         assert response.status_code == 200
         page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-        assert "This field is required." in page.text
+        assert "You need to choose an option" in page.text
 
     def test_edit_branding_moves_to_next_page(self, mocker, service_one, platform_admin_client):
         mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
@@ -492,4 +492,4 @@ class TestBranding:
 
         assert response.status_code == 200
         page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-        assert "This field is required." in page.text
+        assert "You need to choose an option" in page.text
