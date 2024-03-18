@@ -59,6 +59,20 @@ def test_client_gets_service_statistics(mocker, today_only, limit_days):
     )
 
 
+@pytest.mark.parametrize("filter_heartbeat", [True, False])
+def test_client_gets_stats_by_month(mocker, filter_heartbeat):
+    client = ServiceAPIClient()
+    mock_get = mocker.patch.object(client, "get", return_value={"data": {"a": "b"}})
+
+    ret = client.get_stats_by_month(filter_heartbeat)
+
+    assert ret["data"] == {"a": "b"}
+    mock_get.assert_called_once_with(
+        "/service/delivered-notifications-stats-by-month-data",
+        params={"filter_heartbeats": filter_heartbeat},
+    )
+
+
 def test_client_only_updates_allowed_attributes(mocker):
     mocker.patch("app.notify_client.current_user", id="1")
     with pytest.raises(TypeError) as error:
