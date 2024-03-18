@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import config from "../../../config";
-import { LoginPage } from "../../Notify/Admin/Pages/all";
+import { LoginPage } from "../../Notify/Admin/Pages/AllPages";
 
 describe('Basic login', () => {
 

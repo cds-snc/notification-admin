@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import config from "../../../config";
-import { LoginPage } from "../../Notify/Admin/Pages/all";
+import { LoginPage } from "../../Notify/Admin/Pages/AllPages";
 
 describe('Qualtrics', () => {
 
@@ -22,6 +22,6 @@ describe('Qualtrics', () => {
         cy.contains('h1', 'Dashboard').should('be.visible');
         cy.get('#QSIFeedbackButton-btn').should('be.visible'); // qualtrics survey button
         cy.get('#QSIFeedbackButton-btn').click(); // click the button
-        cy.get('#QSIFeedbackButton-survey-iframe').should('be.visible'); // 
+        cy.get('#QSIFeedbackButton-survey-iframe').should('be.visible'); //
     });
 });

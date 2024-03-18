@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import config from "../../../../config";
-import { RequestBranding } from "../../../Notify/Admin/Pages/all";
+import { RequestBranding } from "../../../Notify/Admin/Pages/AllPages";
 
 
 describe('Branding request', () => {
@@ -16,20 +16,20 @@ describe('Branding request', () => {
         cy.visit(config.Hostnames.Admin + `/services/${config.Services.Cypress}/branding-request`);
     });
 
-    
+
     it('Loads request branding page', () => {
         cy.contains('h1', 'Request a new logo').should('be.visible');
-    });    
+    });
     it('Disallows submission when there is no data', () => {
         RequestBranding.Components.SubmitButton().should('be.disabled');
     });
 
-    it('Disallows submission when there is no image', () => {      
+    it('Disallows submission when there is no image', () => {
         RequestBranding.EnterBrandName('Test Brand');
         RequestBranding.Components.SubmitButton().should('be.disabled');
     });
 
-    it('Disallows submission when there is no brand name', () => {      
+    it('Disallows submission when there is no brand name', () => {
         RequestBranding.UploadBrandImage('cds2.png', 'image/png');
         RequestBranding.Components.SubmitButton().should('be.disabled');
     });
@@ -39,29 +39,29 @@ describe('Branding request', () => {
 
         RequestBranding.UploadBrandImage('cds2.jpg', 'image/jpg');
         RequestBranding.Components.SubmitButton().should('be.disabled');
-        
+
         RequestBranding.UploadBrandImage('example.json', 'text/plain');
         RequestBranding.Components.SubmitButton().should('be.disabled');
-        
+
         RequestBranding.UploadBrandImage('cds2.jpg', 'image/png');
-        RequestBranding.Components.BrandPreview().should('be.visible');        
+        RequestBranding.Components.BrandPreview().should('be.visible');
         RequestBranding.Components.SubmitButton().should('be.enabled');
     });
-    
-    it('Allows submission when all valid data provided', () => {      
+
+    it('Allows submission when all valid data provided', () => {
         RequestBranding.UploadBrandImage('cds2.png', 'image/png');
         RequestBranding.EnterBrandName('Test Brand');
         RequestBranding.Components.SubmitButton().should('be.enabled');
     });
 
-    it('Displays branding preview', () => {      
+    it('Displays branding preview', () => {
         RequestBranding.UploadBrandImage('cds2.png', 'image/png');
-        RequestBranding.Components.BrandPreview().should('be.visible');        
+        RequestBranding.Components.BrandPreview().should('be.visible');
     });
 
     it('Rejects malicious files', () => {
         RequestBranding.EnterBrandName('Test Brand');
         RequestBranding.UploadMalciousFile();
         RequestBranding.Components.SubmitButton().should('be.disabled');
-    });    
+    });
 });

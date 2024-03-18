@@ -5,6 +5,7 @@ let Components = {
     BrandFieldset: () => cy.getByTestId('goc_branding'),
     BrandPoolLink: () => cy.getByTestId('goto-pool'),
     ChangeBranding: () => cy.getByTestId('change_branding'),
+    BackLink: () => cy.getByTestId('go-back'),
     SubmitButton: () => cy.getByTestId('submit'),
 };
 
@@ -14,6 +15,9 @@ let Actions = {
     },
     ClickBrandPool: () => {
         Components.BrandPoolLink().click();
+    },
+    ClickBackLink: () => {
+        Components.BackLink().click();
     },
     Submit: () => {
         Components.SubmitButton().click();

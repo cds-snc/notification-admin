@@ -1,11 +1,10 @@
 /// <reference types="cypress" />
 
-import { faHourglass1 } from "@fortawesome/free-solid-svg-icons";
 import config from "../../../../config";
-import { EditBranding, BrandingSettings } from "../../../Notify/Admin/Pages/all";
+import { EditBranding, BrandingSettings } from "../../../Notify/Admin/Pages/AllPages";
 
 
-describe('Branding request', () => {
+describe('Edit Branding', () => {
     // Login to notify before the test suite starts
     before(() => {
         cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));

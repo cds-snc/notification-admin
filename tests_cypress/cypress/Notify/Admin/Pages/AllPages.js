@@ -7,8 +7,10 @@ import TemplatesPage from "./TemplatesPage";
 import AccountsPage from "./AccountsPage";
 import CreateAccountPage from "./CreateAccountPage";
 import RequestBranding from "./branding/RequestBranding";
-import EditBranding from "./branding/EditBranding";
-import BrandingSettings from "./branding/BrandingSettings"
+import EditBranding from "./branding/EditBrandingPage";
+import BrandingSettings from "./branding/BrandingSettingsPage"
+import ServiceSettingsPage from "./ServiceSettingsPage";
+import ReviewPoolPage from "./branding/ReviewPoolPage"
 
 export default {
     LoginPage,
@@ -22,4 +24,6 @@ export default {
     RequestBranding,
     EditBranding,
     BrandingSettings,
+    ServiceSettingsPage,
+    ReviewPoolPage,
 }

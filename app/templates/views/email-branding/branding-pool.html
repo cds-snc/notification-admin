@@ -20,7 +20,7 @@
     <div class="grid-row contain-floats">
       <div class="py-0 px-0 px-gutterHalf box-border">
         {% if logos|length == 0 %}
-          {{ empty_list(_('There are no logos available for this organisation yet'), _('You can start the process now to request new branding.'), 'emptyFlower', url_for('main.create_branding_request', service_id=current_service.id), _('Begin branding request')) }}
+          {{ empty_list(_('There are no logos available for this organisation yet'), _('You can start the process now to request new branding.'), 'emptyFlower', url_for('main.create_branding_request', service_id=current_service.id), _('Begin branding request'), attributes="data-testid=goto-request")  }}
         {% else %}
           {% call form_wrapper() %}
             {{ radios(form.pool_branding, hide_legend=True, testid="pool_branding") }}
@@ -35,7 +35,7 @@
                     {{ page_footer('Preview', testid="preview") }}
                   </div>
                 </div>
-              </div>      
+              </div>
             </div>
           {% endcall %}
         {% endif %}
