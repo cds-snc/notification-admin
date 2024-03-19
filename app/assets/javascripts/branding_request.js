@@ -6,7 +6,9 @@
   const message = document.querySelector(".preview .message");
   const image_slot = document.querySelector(".preview .img");
   const preview_heading = document.querySelector("#preview_heading");
-  const brand_name_group = document.querySelector("#name").closest('.form-group');
+  const brand_name_group = document
+    .querySelector("#name")
+    .closest(".form-group");
   const image_label = document.getElementById("file-upload-label");
 
   // init UI
@@ -62,7 +64,7 @@
           validateLogo();
         } else {
           //remove file from input
-          input_img.value = '';
+          input_img.value = "";
         }
       }
     }
@@ -93,9 +95,8 @@
 
     validateBrand();
     validateLogo();
-    
-    if (!brandName || !image) {
 
+    if (!brandName || !image) {
       // set focus on the first input with an error
       if (!brandName) {
         input_brandname.focus();
@@ -105,21 +106,22 @@
       if (event) {
         event.preventDefault();
       }
-    } 
+    }
   }
 
   function validateBrand() {
     const brandName = input_brandname.value.trim();
-    
+
     if (!brandName) {
-      if (!brand_name_group.classList.contains('form-group-error')) { // dont display the error more than once
-        brand_name_group.classList.add('form-group-error');
-        input_brandname.insertAdjacentHTML('beforebegin', brand_error_html);
+      if (!brand_name_group.classList.contains("form-group-error")) {
+        // dont display the error more than once
+        brand_name_group.classList.add("form-group-error");
+        input_brandname.insertAdjacentHTML("beforebegin", brand_error_html);
       }
     } else {
-      if (brand_name_group.classList.contains('form-group-error')) {
-        brand_name_group.classList.remove('form-group-error');
-        document.getElementById('name-error-message').remove();
+      if (brand_name_group.classList.contains("form-group-error")) {
+        brand_name_group.classList.remove("form-group-error");
+        document.getElementById("name-error-message").remove();
       }
     }
   }
@@ -128,15 +130,15 @@
     const image = input_img.value.length > 0;
 
     if (!image) {
-      if (!image_label.classList.contains('form-group-error')) { // dont display the error more than once
-        image_label.classList.add('form-group-error');
-        image_label.insertAdjacentHTML('beforebegin', image_error_html);
+      if (!image_label.classList.contains("form-group-error")) {
+        // dont display the error more than once
+        image_label.classList.add("form-group-error");
+        image_label.insertAdjacentHTML("beforebegin", image_error_html);
       }
-    }
-    else {
-      if (image_label.classList.contains('form-group-error')) {
-        image_label.classList.remove('form-group-error');
-        document.getElementById('logo-error-message').remove();
+    } else {
+      if (image_label.classList.contains("form-group-error")) {
+        image_label.classList.remove("form-group-error");
+        document.getElementById("logo-error-message").remove();
       }
     }
   }
