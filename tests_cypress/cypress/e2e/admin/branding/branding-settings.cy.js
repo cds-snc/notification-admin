@@ -5,7 +5,7 @@ import ServiceSettingsPage from "../../../Notify/Admin/Pages/ServiceSettingsPage
 import { EditBranding, BrandingSettings } from "../../../Notify/Admin/Pages/AllPages";
 
 
-describe('Edit Branding', () => {
+describe('Branding settings', () => {
     // Login to notify before the test suite starts
     before(() => {
         cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));

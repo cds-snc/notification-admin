@@ -4,7 +4,7 @@ const BrandingRoutes = [
     '/edit-branding', '/branding-request', '/review-pool', '/preview-branding'
 ];
 
-describe('Branding request', () => {
+describe('Branding A11Y', () => {
     // Login to notify before the test suite starts
     before(() => {
         cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
