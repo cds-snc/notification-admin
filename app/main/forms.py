@@ -1766,7 +1766,7 @@ class BrandingGOCForm(StripWhitespaceForm):
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
         ],
-        validators=[DataRequired(message=_l("You need to choose an option"))],
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
     )
 
     def __init__(self, *args, **kwargs):
@@ -1777,7 +1777,7 @@ class BrandingPoolForm(StripWhitespaceForm):
     pool_branding = RadioField(
         _l("Select alternate logo"),
         choices=[],  # Choices by default, override to get more refined options.
-        validators=[DataRequired(message=_l("You need to choose an option"))],
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
     )
 
     def __init__(self, *args, **kwargs):
@@ -1785,10 +1785,10 @@ class BrandingPoolForm(StripWhitespaceForm):
 
 
 class BrandingRequestForm(StripWhitespaceForm):
-    name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
     file = FileField_wtf(
         label=_l("Prepare your logo"),
         validators=[
-            DataRequired(message="You need to upload a file to submit"),
+            DataRequired(message=_l("You must select a file to continue")),
         ],
     )

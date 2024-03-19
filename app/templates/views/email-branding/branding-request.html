@@ -25,11 +25,11 @@
             {{ textbox(form.name, hint=_('This will not show in messages. Choose a name that helps team members find the logo'), testid="brand_name") }}
             <h2 class="heading-medium">{{ _('Prepare your logo') }}</h2>
             <p>
-              Your logo must be compatible with GC Notify. Check logo is:
-              <ul class="list list-bullet">
-                <li class="ml-6">In PNG image format</li>
-                <li class="ml-6">Exactly 108 pixels tall </li>
-                <li class="ml-6">Maximum 600 pixels wide</li>
+              {{ _('Your logo must be compatible with GC Notify. Check logo is:') }}
+              <ul class="list list-bullet" id="file-description">
+                <li class="ml-6">{{ _('In PNG image format') }}</li>
+                <li class="ml-6">{{ _('Exactly 108 pixels tall') }}</li>
+                <li class="ml-6">{{ _('Maximum 600 pixels wide') }}</li>
               </ul>
             </p>
             <label class="file-upload-label">
@@ -47,12 +47,12 @@
                 </span>
               {% endif %}
               
-              {{ form.file(**{ 'class': 'file-upload-field', 'accept': 'image/png', 'data_testid': 'brand_image' }) }}
+              {{ form.file(**{ 'class': 'file-upload-field', 'accept': 'image/png', 'data_testid': 'brand_image', 'aria-labelledby': 'file-description' }) }}
               <span aria-hidden="true" id="file-upload-button" class="button button-secondary font-normal"> {{ _('Choose file...') }} </span>
             </label>         
             
             <div class="mt-6 ml-2 pl-6 border-l-4 border-gray-200 preview font-normal relative" data-testid="brand_fileinfo">
-              <div class="message relative">{{ _('No files currently selected') }}</div>
+              <div class="message relative">{{ _('No file currently selected') }}</div>
               <div class="relative">
                 <div class="img relative"></div>
                 <div class="image-placeholder absolute"></div>
