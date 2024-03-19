@@ -3,7 +3,9 @@ let Components = {
     BrandName: () => cy.getByTestId('brand_name'),
     BrandImage: () => cy.getByTestId('brand_image'),
     BrandPreview: () => cy.getByTestId('brand_preview'),
-    SubmitButton: () => cy.get('button[type="submit"]'), 
+    SubmitButton: () => cy.get('button[type="submit"]'),
+    BrandErrorMessage: () => cy.getByTestId('brand-error'), 
+    LogoErrorMessage: () => cy.getByTestId('logo-error'),
 };
 
 // Actions users can take on the page

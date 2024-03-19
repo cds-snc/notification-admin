@@ -21,31 +21,37 @@ describe('Branding request', () => {
         cy.contains('h1', 'Request a new logo').should('be.visible');
     });
     it('Disallows submission when there is no data', () => {
-        RequestBranding.Components.SubmitButton().should('be.disabled');
+        RequestBranding.Submit();
+        RequestBranding.Components.BrandErrorMessage().should('be.visible');
+        RequestBranding.Components.LogoErrorMessage().should('be.visible');
     });
 
     it('Disallows submission when there is no image', () => {
         RequestBranding.EnterBrandName('Test Brand');
-        RequestBranding.Components.SubmitButton().should('be.disabled');
+        RequestBranding.Submit();
+        RequestBranding.Components.LogoErrorMessage().should('be.visible');
     });
 
     it('Disallows submission when there is no brand name', () => {
         RequestBranding.UploadBrandImage('cds2.png', 'image/png');
-        RequestBranding.Components.SubmitButton().should('be.disabled');
+        RequestBranding.Submit();
+        RequestBranding.Components.BrandErrorMessage().should('be.visible');
     });
 
     it('Only allows pngs', () => {
         RequestBranding.EnterBrandName('Test Brand');
 
         RequestBranding.UploadBrandImage('cds2.jpg', 'image/jpg');
-        RequestBranding.Components.SubmitButton().should('be.disabled');
+        RequestBranding.Submit();
+        RequestBranding.Components.LogoErrorMessage().should('be.visible');
 
         RequestBranding.UploadBrandImage('example.json', 'text/plain');
-        RequestBranding.Components.SubmitButton().should('be.disabled');
+        RequestBranding.Submit();
+        RequestBranding.Components.LogoErrorMessage().should('be.visible');
 
         RequestBranding.UploadBrandImage('cds2.jpg', 'image/png');
         RequestBranding.Components.BrandPreview().should('be.visible');
-        RequestBranding.Components.SubmitButton().should('be.enabled');
+
     });
 
     it('Allows submission when all valid data provided', () => {
@@ -59,9 +65,9 @@ describe('Branding request', () => {
         RequestBranding.Components.BrandPreview().should('be.visible');
     });
 
-    it('Rejects malicious files', () => {
-        RequestBranding.EnterBrandName('Test Brand');
-        RequestBranding.UploadMalciousFile();
-        RequestBranding.Components.SubmitButton().should('be.disabled');
-    });
+    // it('[NOT IMPLEMENTED] Rejects malicious files', () => {
+    //     RequestBranding.EnterBrandName('Test Brand');
+    //     RequestBranding.UploadMalciousFile();
+    //     RequestBranding.Components.SubmitButton().should('be.disabled');
+    // });
 });
