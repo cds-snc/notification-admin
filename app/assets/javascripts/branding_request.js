@@ -6,12 +6,25 @@
   const message = document.querySelector(".preview .message");
   const image_slot = document.querySelector(".preview .img");
   const preview_heading = document.querySelector("#preview_heading");
+  const brand_name_group = document.querySelector("#name").closest('.form-group');
+  const image_label = document.getElementById("file-upload-label");
 
   // init UI
   input_img.style.opacity = 0;
-  setDisabled(submit_button, true);
   input_img.addEventListener("change", updateImageDisplay);
-  input_brandname.addEventListener("keyup", enableSubmitButton);
+  submit_button.addEventListener("click", validateForm);
+  input_brandname.addEventListener("change", validateBrand);
+  // strings
+  let file_error = window.APP_PHRASES.branding_request_error;
+  let file_name = window.APP_PHRASES.branding_request_file_name;
+  let file_size = window.APP_PHRASES.branding_request_file_size;
+  let display_size = window.APP_PHRASES.branding_request_display_size;
+  let brand_error = window.APP_PHRASES.branding_request_brand_error;
+  let logo_error = window.APP_PHRASES.branding_request_logo_error;
+
+  // error message html
+  let brand_error_html = `<span id="name-error-message" data-testid="brand-error" class="error-message" data-module="track-error" data-error-type="${brand_error}" data-error-label="name">${brand_error}</span>`;
+  let image_error_html = `<span id="logo-error-message" data-testid="logo-error" class="error-message">${logo_error}</span>`;
 
   /**
    * Update email template preview based on the selected file
@@ -36,9 +49,9 @@
           img.src = encodeURI(img_src);
 
           img.onload = () => {
-            message.textContent = `File name: ${
+            message.textContent = `${file_name} ${
               file.name
-            }, file size: ${returnFileSize(file.size)}, display size: ${
+            }, ${file_size} ${returnFileSize(file.size)}, ${display_size} ${
               img.naturalWidth
             } x ${img.naturalHeight}`;
             document
@@ -46,10 +59,10 @@
               .classList.remove("hidden");
             preview_heading.focus();
           };
-
-          enableSubmitButton();
+          validateLogo();
         } else {
-          message.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+          //remove file from input
+          input_img.value = '';
         }
       }
     }
@@ -74,23 +87,57 @@
     }
   }
 
-  function setDisabled(elem, bool) {
-    elem.disabled = bool;
-    if (bool) {
-      elem.classList.add("disabled");
+  function validateForm(event) {
+    const brandName = input_brandname.value.trim();
+    const image = input_img.value.length > 0;
+
+    validateBrand();
+    validateLogo();
+    
+    if (!brandName || !image) {
+
+      // set focus on the first input with an error
+      if (!brandName) {
+        input_brandname.focus();
+      } else {
+        input_img.focus();
+      }
+      if (event) {
+        event.preventDefault();
+      }
+    } 
+  }
+
+  function validateBrand() {
+    const brandName = input_brandname.value.trim();
+    
+    if (!brandName) {
+      if (!brand_name_group.classList.contains('form-group-error')) { // dont display the error more than once
+        brand_name_group.classList.add('form-group-error');
+        input_brandname.insertAdjacentHTML('beforebegin', brand_error_html);
+      }
     } else {
-      elem.classList.remove("disabled");
+      if (brand_name_group.classList.contains('form-group-error')) {
+        brand_name_group.classList.remove('form-group-error');
+        document.getElementById('name-error-message').remove();
+      }
     }
   }
 
-  function enableSubmitButton() {
-    const brandName = input_brandname.value.trim();
-    const image = input_img.files.length > 0;
+  function validateLogo() {
+    const image = input_img.value.length > 0;
 
-    if (brandName && image) {
-      setDisabled(submit_button, false);
-    } else {
-      setDisabled(submit_button, true);
+    if (!image) {
+      if (!image_label.classList.contains('form-group-error')) { // dont display the error more than once
+        image_label.classList.add('form-group-error');
+        image_label.insertAdjacentHTML('beforebegin', image_error_html);
+      }
+    }
+    else {
+      if (image_label.classList.contains('form-group-error')) {
+        image_label.classList.remove('form-group-error');
+        document.getElementById('logo-error-message').remove();
+      }
     }
   }
 })();
