@@ -17,7 +17,6 @@
   submit_button.addEventListener("click", validateForm);
   input_brandname.addEventListener("change", validateBrand);
   // strings
-  let file_error = window.APP_PHRASES.branding_request_error;
   let file_name = window.APP_PHRASES.branding_request_file_name;
   let file_size = window.APP_PHRASES.branding_request_file_size;
   let display_size = window.APP_PHRASES.branding_request_display_size;

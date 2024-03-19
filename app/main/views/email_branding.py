@@ -185,10 +185,8 @@ def review_branding_pool(service_id):
     ]
 
     if form.validate_on_submit():
-        # current_service.update(email_branding=form.goc_branding.data)
         # save the logo they want to preview to session
         session["branding_to_preview"] = [logo for logo in logos if logo["id"] in [form.pool_branding.data]][0]
-        # return render_template("views/email-branding/branding-preview.html", template=get_preview_template(branding_to_preview))
         return redirect(url_for("main.preview_branding", service_id=service_id))
 
     return render_template("views/email-branding/branding-pool.html", logos=custom_logos, url=get_logo_url(), form=form)
