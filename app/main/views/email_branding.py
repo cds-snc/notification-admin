@@ -289,7 +289,7 @@ def get_preview_template(email_branding=None):
         "subject": "foo",
         "content": "# Email preview\n{}\n{}".format(
             _("An example email showing the {} at the top left.").format(brand_name),
-            "The canada wordmark is displayed at the bottom right"
+            _("The canada wordmark is displayed at the bottom right")
             if current_service.email_branding_id is None and email_branding is None
             else "",
         ),
