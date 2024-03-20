@@ -137,6 +137,10 @@ class Config(object):
     # Bounce Rate parameters
     BR_DISPLAY_VOLUME_MINIMUM = 1000
 
+    # Scan files integration
+    SCANFILES_URL = os.environ.get("SCANFILES_URL", "")
+    SCANFILES_AUTH_TOKEN = os.environ.get("SCANFILES_AUTH_TOKEN", "")
+
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)

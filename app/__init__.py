@@ -83,6 +83,7 @@ from app.notify_client.template_folder_api_client import template_folder_api_cli
 from app.notify_client.template_statistics_api_client import template_statistics_client
 from app.notify_client.user_api_client import user_api_client
 from app.salesforce import salesforce_account
+from app.scanfiles.scanfiles_api_client import scanfiles_api_client
 from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
@@ -173,6 +174,9 @@ def create_app(application):
         bounce_rate_client,
     ):
         client.init_app(application)
+
+    # pass the scanfiles url and token
+    scanfiles_api_client.init_app(application.config["SCANFILES_URL"], application.config["SCANFILES_AUTH_TOKEN"])
 
     logging.init_app(application, statsd_client)
 
