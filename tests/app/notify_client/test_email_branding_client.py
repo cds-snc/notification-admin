@@ -54,7 +54,7 @@ def test_create_email_branding(mocker):
         "text": "test name",
         "colour": "red",
         "brand_type": "custom_logo",
-        "organisation_id": "org-id-123"
+        "organisation_id": "org-id-123",
     }
 
     mock_post = mocker.patch("app.notify_client.email_branding_client.EmailBrandingClient.post")
@@ -80,7 +80,7 @@ def test_update_email_branding(mocker, fake_uuid):
         "text": "test name",
         "colour": "red",
         "brand_type": "custom_logo",
-        "organisation_id": "org-id-123"
+        "organisation_id": "org-id-123",
     }
 
     mock_post = mocker.patch("app.notify_client.email_branding_client.EmailBrandingClient.post")

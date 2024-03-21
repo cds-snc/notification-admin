@@ -3267,7 +3267,7 @@ def create_email_branding(id, non_standard_values={}):
         "id": id,
         "colour": "#f00",
         "brand_type": "custom_logo",
-        "organisation_id": "organisation_id"
+        "organisation_id": "organisation_id",
     }
 
     if bool(non_standard_values):

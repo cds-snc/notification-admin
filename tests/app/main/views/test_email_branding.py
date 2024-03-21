@@ -41,7 +41,9 @@ def test_email_branding_page_shows_full_branding_list(platform_admin_client, moc
     ]
 
 
-def test_edit_email_branding_shows_the_correct_branding_info(platform_admin_client, mock_get_email_branding, mock_get_organisations, fake_uuid):
+def test_edit_email_branding_shows_the_correct_branding_info(
+    platform_admin_client, mock_get_email_branding, mock_get_organisations, fake_uuid
+):
     response = platform_admin_client.get(url_for(".update_email_branding", branding_id=fake_uuid))
 
     assert response.status_code == 200
@@ -53,7 +55,9 @@ def test_edit_email_branding_shows_the_correct_branding_info(platform_admin_clie
     assert page.select_one("#colour").attrs.get("value") == "#f00"
 
 
-def test_create_email_branding_does_not_show_any_branding_info(platform_admin_client, mock_no_email_branding, mock_get_organisations):
+def test_create_email_branding_does_not_show_any_branding_info(
+    platform_admin_client, mock_no_email_branding, mock_get_organisations
+):
     response = platform_admin_client.get(url_for(".create_email_branding"))
 
     assert response.status_code == 200
@@ -92,7 +96,7 @@ def test_create_new_email_branding_without_logo(
         text=data["text"],
         colour=data["colour"],
         brand_type=data["brand_type"],
-        organisation_id = None
+        organisation_id=None,
     )
     assert mock_persist.call_args_list == []
 
@@ -122,7 +126,9 @@ def test_create_email_branding_requires_a_name_when_submitting_logo_details(
     assert mock_create_email_branding.called is False
 
 
-def test_create_email_branding_does_not_require_a_name_when_uploading_a_file(client_request, mocker, platform_admin_user, mock_get_organisations):
+def test_create_email_branding_does_not_require_a_name_when_uploading_a_file(
+    client_request, mocker, platform_admin_user, mock_get_organisations
+):
     mocker.patch("app.main.views.email_branding.upload_email_logo", return_value="temp_filename")
     data = {
         "file": (BytesIO("".encode("utf-8")), "test.png"),
@@ -142,7 +148,9 @@ def test_create_email_branding_does_not_require_a_name_when_uploading_a_file(cli
     assert not page.find(".error-message")
 
 
-def test_create_new_email_branding_when_branding_saved(platform_admin_client, mocker, mock_create_email_branding, fake_uuid, mock_get_organisations):
+def test_create_new_email_branding_when_branding_saved(
+    platform_admin_client, mocker, mock_create_email_branding, fake_uuid, mock_get_organisations
+):
     with platform_admin_client.session_transaction() as session:
         user_id = session["user_id"]
 
@@ -172,7 +180,7 @@ def test_create_new_email_branding_when_branding_saved(platform_admin_client, mo
             "text": data["text"],
             "cdn_url": get_logo_cdn_domain(),
             "brand_type": data["brand_type"],
-            "organisation": "-1"
+            "organisation": "-1",
         },
     )
 
@@ -185,7 +193,7 @@ def test_create_new_email_branding_when_branding_saved(platform_admin_client, mo
         text=data["text"],
         colour=data["colour"],
         brand_type=data["brand_type"],
-        organisation_id = None
+        organisation_id=None,
     )
 
 
@@ -280,7 +288,7 @@ def test_update_existing_branding(
         text=data["text"],
         colour=data["colour"],
         brand_type=data["brand_type"],
-        organisation_id = "-1"
+        organisation_id="-1",
     )
 
 
@@ -314,7 +322,9 @@ def test_temp_logo_is_shown_after_uploading_logo(
     assert page.select_one("#logo-img > img").attrs["src"].endswith(temp_filename)
 
 
-def test_logo_persisted_when_organisation_saved(platform_admin_client, mock_create_email_branding, mocker, fake_uuid, mock_get_organisations):
+def test_logo_persisted_when_organisation_saved(
+    platform_admin_client, mock_create_email_branding, mocker, fake_uuid, mock_get_organisations
+):
     with platform_admin_client.session_transaction() as session:
         user_id = session["user_id"]
 
@@ -374,13 +384,7 @@ def test_logo_does_not_get_persisted_if_updating_email_branding_client_throws_an
     ],
 )
 def test_colour_regex_validation(
-    platform_admin_client,
-    mocker,
-    fake_uuid,
-    colour_hex,
-    expected_status_code,
-    mock_create_email_branding,
-    mock_get_organisations
+    platform_admin_client, mocker, fake_uuid, colour_hex, expected_status_code, mock_create_email_branding, mock_get_organisations
 ):
     data = {
         "logo": None,
@@ -396,7 +400,9 @@ def test_colour_regex_validation(
     assert response.status_code == expected_status_code
 
 
-def test_create_new_branding_with_no_org_works(platform_admin_client, mocker, fake_uuid, mock_create_email_branding, mock_get_organisations):
+def test_create_new_branding_with_no_org_works(
+    platform_admin_client, mocker, fake_uuid, mock_create_email_branding, mock_get_organisations
+):
     data = {
         "logo": None,
         "colour": "#ff0000",
@@ -421,17 +427,20 @@ def test_create_new_branding_with_no_org_works(platform_admin_client, mocker, fa
         text=data["text"],
         colour=data["colour"],
         brand_type=data["brand_type"],
-        organisation_id = None
+        organisation_id=None,
     )
 
-def test_create_new_branding_with_org_works(platform_admin_client, mocker, fake_uuid, mock_create_email_branding, mock_get_organisations):
+
+def test_create_new_branding_with_org_works(
+    platform_admin_client, mocker, fake_uuid, mock_create_email_branding, mock_get_organisations
+):
     data = {
         "logo": None,
         "colour": "#ff0000",
         "text": "new text",
         "name": "new name",
         "brand_type": "custom_logo",
-        "organisation": "123"
+        "organisation": "123",
     }
 
     mocker.patch("app.main.views.email_branding.persist_logo")
@@ -450,8 +459,9 @@ def test_create_new_branding_with_org_works(platform_admin_client, mocker, fake_
         text=data["text"],
         colour=data["colour"],
         brand_type=data["brand_type"],
-        organisation_id = data["organisation"]
+        organisation_id=data["organisation"],
     )
+
 
 class TestBranding:
     def test_edit_branding_settings_displays_stock_options(self, mocker, service_one, platform_admin_client):
