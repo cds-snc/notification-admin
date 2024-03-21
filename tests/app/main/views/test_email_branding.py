@@ -440,7 +440,7 @@ def test_create_new_branding_with_org_works(
         "text": "new text",
         "name": "new name",
         "brand_type": "custom_logo",
-        "organisation": "123",
+        "organisation": "7aa5d4e9-4385-4488-a489-07812ba13383",
     }
 
     mocker.patch("app.main.views.email_branding.persist_logo")
