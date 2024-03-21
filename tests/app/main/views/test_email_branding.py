@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
 
+from app.main.views.email_branding import get_preview_template
 from app.s3_client.s3_logo_client import EMAIL_LOGO_LOCATION_STRUCTURE, TEMP_TAG
 from app.utils import get_logo_cdn_domain
 from tests.conftest import create_email_branding, normalize_spaces
@@ -385,3 +386,175 @@ def test_colour_regex_validation(
 
     response = platform_admin_client.post(url_for(".create_email_branding"), content_type="multipart/form-data", data=data)
     assert response.status_code == expected_status_code
+
+
+class TestBranding:
+    def test_edit_branding_settings_displays_stock_options(self, mocker, service_one, platform_admin_client):
+        mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
+        service_one["permissions"] = ["manage_service"]
+
+        response = platform_admin_client.get(
+            url_for(".edit_branding_settings", service_id=service_one["id"]),
+        )
+
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+
+        assert len(page.select("input[type=radio]")) == 2
+
+    def test_edit_branding_settings_displays_forces_selection(self, mocker, service_one, platform_admin_client):
+        mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
+        service_one["permissions"] = ["manage_service"]
+
+        response = platform_admin_client.post(
+            url_for(".edit_branding_settings", service_id=service_one["id"]),
+        )
+
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert "You must select an option to continue" in page.text
+
+    def test_edit_branding_moves_to_next_page(self, mocker, service_one, platform_admin_client):
+        mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
+        mocker.patch("app.models.service.Service.update", return_value=True)
+
+        service_one["permissions"] = ["manage_service"]
+
+        response = platform_admin_client.post(
+            url_for(".edit_branding_settings", service_id=service_one["id"]),
+            data={"goc_branding": "__FIP-EN__"},
+        )
+
+        assert response.status_code == 302
+        assert response.location == url_for(".view_branding_settings", service_id=service_one["id"])
+
+    def test_review_branding_pool_displays_choices(self, mocker, service_one, platform_admin_client):
+        mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
+        mocker.patch(
+            "app.notify_client.email_branding_client.EmailBrandingClient.get_all_email_branding",
+            return_value=[
+                {
+                    "id": "d51a41b2-c420-48a9-a8c5-e88444013020",
+                    "colour": None,
+                    "logo": "0b4ec2bd-e305-47c4-b910-6d9762ff6c1f-alb.png",
+                    "name": "AssemblyLine",
+                    "text": None,
+                    "brand_type": "custom_logo",
+                },
+                {
+                    "id": "d51a41b2-c420-48a9-a8c5-e88444013020",
+                    "colour": None,
+                    "logo": "0b4ec2bd-e305-47c4-b910-6d9762ff6c1f-alb.png",
+                    "name": "AssemblyLine",
+                    "text": None,
+                    "brand_type": "custom_logo",
+                },
+            ],
+        )
+        service_one["permissions"] = ["manage_service"]
+
+        response = platform_admin_client.get(
+            url_for(".review_branding_pool", service_id=service_one["id"]),
+        )
+
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+
+        assert len(page.select("input[type=radio]")) == 2
+
+    def test_review_branding_pool_forces_selection(self, mocker, service_one, platform_admin_client):
+        mocker.patch("app.current_service", {"organisation": {"name": "Test org"}})
+        mocker.patch(
+            "app.notify_client.email_branding_client.EmailBrandingClient.get_all_email_branding",
+            return_value=[
+                {
+                    "id": "d51a41b2-c420-48a9-a8c5-e88444013020",
+                    "colour": None,
+                    "logo": "0b4ec2bd-e305-47c4-b910-6d9762ff6c1f-alb.png",
+                    "name": "AssemblyLine",
+                    "text": None,
+                    "brand_type": "custom_logo",
+                },
+                {
+                    "id": "d51a41b2-c420-48a9-a8c5-e88444013020",
+                    "colour": None,
+                    "logo": "0b4ec2bd-e305-47c4-b910-6d9762ff6c1f-alb.png",
+                    "name": "AssemblyLine",
+                    "text": None,
+                    "brand_type": "custom_logo",
+                },
+            ],
+        )
+        service_one["permissions"] = ["manage_service"]
+
+        response = platform_admin_client.post(
+            url_for(".review_branding_pool", service_id=service_one["id"]),
+        )
+
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert "You must select an option to continue" in page.text
+
+    def test_get_preview_template_with_email_branding(self, mocker, app_):
+        email_branding = {
+            "brand_type": "custom_logo_with_background_colour",
+            "colour": "#ff0000",
+            "text": "Example Text",
+            "logo": "example.png",
+            "name": "Example Brand",
+        }
+
+        class MockService:
+            email_branding_id = None
+
+        mocker.patch("app.main.views.email_branding.email_branding_client.get_email_branding", return_value=email_branding)
+        with app_.test_request_context():
+            mocker.patch("app.main.views.email_branding.current_service", new=MockService)
+            html_template = get_preview_template(email_branding)
+            assert "An example email showing the Example Brand at the top left" in html_template
+            assert "The canada wordmark is displayed at the bottom right" not in html_template
+
+    def test_get_preview_template_with_default_branding_is_french(self, mocker, app_):
+        class MockService:
+            email_branding_id = None
+            default_branding_is_french = True
+
+        with app_.test_request_context():
+            mocker.patch("app.main.views.email_branding.current_service", new=MockService)
+            html_template = get_preview_template(None)
+            assert "An example email showing the French-first government of Canada logo at the top left" in html_template
+            assert "The canada wordmark is displayed at the bottom right" in html_template
+
+    def test_get_preview_template_with_default_branding_is_english(self, mocker, app_):
+        class MockService:
+            email_branding_id = None
+            default_branding_is_french = False
+
+        with app_.test_request_context():
+            mocker.patch("app.main.views.email_branding.current_service", new=MockService)
+            html_template = get_preview_template(None)
+            assert "An example email showing the English-first government of Canada logo at the top left" in html_template
+            assert "The canada wordmark is displayed at the bottom right" in html_template
+
+    def test_get_preview_template_with_email_branding_and_custom_brand_logo(self, mocker, app_):
+        email_branding = {
+            "brand_type": "both_english",
+            "colour": "#ff0000",
+            "text": "Example Text",
+            "logo": "example.png",
+            "name": "Example Brand",
+        }
+
+        class MockService:
+            email_branding_id = 6
+            default_branding_is_french = False
+
+        with app_.test_request_context():
+            mocker.patch(
+                "app.main.views.email_branding.email_branding_client.get_email_branding",
+                return_value={"email_branding": email_branding},
+            )
+            mocker.patch("app.main.views.email_branding.current_service", new=MockService)
+            html_template = get_preview_template(None)
+            assert "An example email showing the custom brand logo at the top left" in html_template
+            assert "The canada wordmark is displayed at the bottom right" not in html_template

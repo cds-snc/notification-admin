@@ -12,7 +12,8 @@
   safe_error_message=False,
   rows=8,
   required=true,
-  is_page_heading=false
+  is_page_heading=false,
+  testid=None
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
@@ -67,6 +68,7 @@
       required='' if required != false else false,
       aria_required='true' if required != false else false,
       aria_describedby=describedby|trim if describedby != '' else false,
+      data_testid=testid,
       **kwargs
     ) }}
 

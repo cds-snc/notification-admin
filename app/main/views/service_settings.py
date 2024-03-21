@@ -60,6 +60,7 @@ from app.main.forms import (
     SMSMessageLimit,
     SMSPrefixForm,
 )
+from app.main.views.email_branding import get_preview_template
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
     DELIVERED_STATUSES,
@@ -1285,6 +1286,44 @@ def link_service_to_organisation(service_id):
     )
 
 
+@main.route("/services/<service_id>/branding", methods=["GET"])
+@user_has_permissions("manage_service")
+def view_branding_settings(service_id):
+    def _get_current_branding():
+        """
+        Get the current branding information for the service.
+
+        This function retrieves the current branding information for the service from the service table.
+        It checks if the default branding is set to French and constructs the branding image path accordingly.
+        If the current branding is not set, it uses the default branding image path based on the default language.
+
+        Returns:
+            dict: A dictionary containing the branding image path and branding name.
+                - branding_image_path (str): The URL of the branding image.
+                - branding_name (str): The name of the branding.
+        """
+        current_branding = current_service.email_branding_id
+        cdn_url = get_logo_cdn_domain()
+        default_en_filename = "https://{}/gc-logo-en.png".format(cdn_url)
+        default_fr_filename = "https://{}/gc-logo-fr.png".format(cdn_url)
+
+        if current_branding is None:
+            branding_image_path = default_fr_filename if current_service.default_branding_is_french else default_en_filename
+        else:
+            branding_image_path = "https://{}/{}".format(cdn_url, current_service.email_branding["logo"])
+
+        return {"branding_image_path": branding_image_path, "branding_name": current_service.email_branding_name}
+
+    branding = _get_current_branding()
+
+    return render_template(
+        "views/service-settings/branding/branding-settings.html",
+        branding=branding,
+        current_service=current_service,
+        template=get_preview_template(),
+    )
+
+
 @main.route("/services/<service_id>/branding-request/email", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def branding_request(service_id):
@@ -1292,6 +1331,7 @@ def branding_request(service_id):
     cdn_url = get_logo_cdn_domain()
     default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
     default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
+
     choices = [
         ("__FIP-EN__", _("English-first") + "||" + default_en_filename),
         ("__FIP-FR__", _("French-first") + "||" + default_fr_filename),
