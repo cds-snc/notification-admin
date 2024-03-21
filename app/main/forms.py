@@ -1760,6 +1760,13 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
 
 
 class BrandingGOCForm(StripWhitespaceForm):
+    """
+    Form for selecting logo from GOC options
+    
+    Attributes:
+        goc_branding (RadioField): Field for entering the the logo
+    """
+
     goc_branding = RadioField(
         _l("Choose which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
         choices=[  # Choices by default, override to get more refined options.
@@ -1774,6 +1781,13 @@ class BrandingGOCForm(StripWhitespaceForm):
 
 
 class BrandingPoolForm(StripWhitespaceForm):
+    """
+    Form for selecting alternate branding logo from a pool of options associated with the service's organisation.
+
+    Attributes:
+        pool_branding (RadioField): Field for entering the the logo
+    """
+
     pool_branding = RadioField(
         _l("Select alternate logo"),
         choices=[],  # Choices by default, override to get more refined options.
@@ -1785,6 +1799,13 @@ class BrandingPoolForm(StripWhitespaceForm):
 
 
 class BrandingRequestForm(StripWhitespaceForm):
+    """
+    Form for handling new branding requests.
+
+    Attributes:
+        name (StringField): Field for entering the name of the logo.
+        file (FileField_wtf): Field for uploading the logo file.
+    """
     name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
     file = FileField_wtf(
         label=_l("Prepare your logo"),
