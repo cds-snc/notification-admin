@@ -1,6 +1,14 @@
 from collections import OrderedDict
 
-from flask import flash, redirect, render_template, request, session, url_for
+from flask import (
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
@@ -273,6 +281,10 @@ def edit_organisation_agreement(org_id):
 @user_is_platform_admin
 def edit_organisation_email_branding(org_id):
     email_branding = email_branding_client.get_all_email_branding(organisation_id=org_id)
+    # As the user is a platform admin, we want the user to be able to get the no branding option
+    no_branding = email_branding_client.get_email_branding(current_app.config["NO_BRANDING_ID"])
+    if no_branding and "email_branding" in no_branding:
+        email_branding.append(no_branding["email_branding"])
 
     current_branding = current_organisation.email_branding_id
 

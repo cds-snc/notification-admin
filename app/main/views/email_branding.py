@@ -176,7 +176,8 @@ def edit_branding_settings(service_id):
 @main.route("/services/<service_id>/review-pool", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def review_branding_pool(service_id):
-    logos = email_branding_client.get_all_email_branding()
+    organisation_id = current_service.organisation_id
+    logos = email_branding_client.get_all_email_branding(organisation_id=organisation_id)
     custom_logos = [logo for logo in logos if logo["brand_type"] in ["custom_logo", "custom_logo_with_background_colour"]]
 
     form = BrandingPoolForm()

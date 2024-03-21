@@ -2733,6 +2733,7 @@ def test_service_preview_letter_branding_saves(
                 "org 3",
                 "org 4",
                 "org 5",
+                "Organisation name",
             ],
         ),
         (
@@ -2754,6 +2755,7 @@ def test_service_preview_letter_branding_saves(
                 "org 2",
                 "org 3",
                 "org 4",
+                "Organisation name",
             ],
         ),
     ],
@@ -2779,6 +2781,8 @@ def test_should_show_branding_styles(
     platform_admin_user,
     service_one,
     mock_get_all_email_branding,
+    mock_get_email_branding,
+    app_,
     current_branding,
     expected_values,
     expected_labels,
@@ -2805,8 +2809,7 @@ def test_should_show_branding_styles(
         page.find("label", attrs={"for": branding_style_choices[idx]["id"]}).get_text().strip()
         for idx, element in enumerate(branding_style_choices)
     ]
-
-    assert len(branding_style_choices) == 7
+    assert len(branding_style_choices) == 8
 
     for index, expected_value in enumerate(expected_values):
         assert branding_style_choices[index]["value"] == expected_value
@@ -2823,6 +2826,7 @@ def test_should_show_branding_styles(
     assert "checked" not in branding_style_choices[6].attrs
 
     app.email_branding_client.get_all_email_branding.assert_called_once_with(organisation_id=organisation_id)
+    app.email_branding_client.get_email_branding.assert_called_once_with(app_.config["NO_BRANDING_ID"])
     app.service_api_client.get_service.assert_called_once_with(service_one["id"])
 
 
