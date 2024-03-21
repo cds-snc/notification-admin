@@ -2853,6 +2853,8 @@ def test_should_send_branding_and_organisations_to_preview(
     service_one,
     mock_get_organisation,
     mock_get_all_email_branding,
+    mock_get_email_branding,
+    app_,
     mock_update_service,
     endpoint,
     extra_args,
@@ -2869,6 +2871,7 @@ def test_should_send_branding_and_organisations_to_preview(
     )
 
     mock_get_all_email_branding.assert_called_once_with(organisation_id=organisation_id)
+    mock_get_email_branding.assert_called_once_with(app_.config["NO_BRANDING_ID"])
 
 
 @pytest.mark.parametrize(
