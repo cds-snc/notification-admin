@@ -1129,10 +1129,14 @@ def set_free_sms_allowance(service_id):
 )
 @user_is_platform_admin
 def service_set_email_branding(service_id):
-    email_branding = email_branding_client.get_all_email_branding()
+    organisation_id = current_service.organisation_id
+    email_branding = email_branding_client.get_all_email_branding(organisation_id=organisation_id)
+    # As the user is a platform admin, we want the user to be able to get the no branding option
+    no_branding = email_branding_client.get_email_branding(current_app.config["NO_BRANDING_ID"])
+    if no_branding and "email_branding" in no_branding:
+        email_branding.append(no_branding["email_branding"])
 
     current_branding = current_service.email_branding_id
-
     if current_branding is None:
         current_branding = (
             FieldWithLanguageOptions.FRENCH_OPTION_VALUE
@@ -1290,6 +1294,18 @@ def link_service_to_organisation(service_id):
 @user_has_permissions("manage_service")
 def view_branding_settings(service_id):
     def _get_current_branding():
+        """
+        Get the current branding information for the service.
+
+        This function retrieves the current branding information for the service from the service table.
+        It checks if the default branding is set to French and constructs the branding image path accordingly.
+        If the current branding is not set, it uses the default branding image path based on the default language.
+
+        Returns:
+            dict: A dictionary containing the branding image path and branding name.
+                - branding_image_path (str): The URL of the branding image.
+                - branding_name (str): The name of the branding.
+        """
         current_branding = current_service.email_branding_id
         cdn_url = get_logo_cdn_domain()
         default_en_filename = "https://{}/gc-logo-en.png".format(cdn_url)

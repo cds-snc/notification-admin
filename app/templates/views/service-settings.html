@@ -157,7 +157,7 @@
           }}
         {% endcall %}
         {% call settings_row(if_has_permission='email') %}
-          {% set branding_route = '.view_branding_settings' if  config["FF_NEW_BRANDING"] else '.branding_request' %}
+          {% set branding_route = '.view_branding_settings' if  config["FF_NEW_BRANDING"] or current_user.platform_admin else '.branding_request' %}
           {% set txt = _('Email branding') %}
           {{ text_field(txt) }}
           {% set value = _('Your branding<br> ({})') %}

@@ -1760,22 +1760,20 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
 
 
 class BrandingGOCForm(StripWhitespaceForm):
+    """
+    Form for selecting logo from GOC options
+
+    Attributes:
+        goc_branding (RadioField): Field for entering the the logo
+    """
+
     goc_branding = RadioField(
         _l("Choose which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
         ],
-        validators=[DataRequired(message=_l("You need to choose an option"))],
-    )
-
-    DEFAULT_EN = (
-        FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
-        "English Government of Canada signature",
-    )
-    DEFAULT_FR = (
-        FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
-        "French Government of Canada signature",
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
     )
 
     def __init__(self, *args, **kwargs):
@@ -1783,10 +1781,17 @@ class BrandingGOCForm(StripWhitespaceForm):
 
 
 class BrandingPoolForm(StripWhitespaceForm):
+    """
+    Form for selecting alternate branding logo from a pool of options associated with the service's organisation.
+
+    Attributes:
+        pool_branding (RadioField): Field for entering the the logo
+    """
+
     pool_branding = RadioField(
         _l("Select alternate logo"),
         choices=[],  # Choices by default, override to get more refined options.
-        validators=[DataRequired(message=_l("You need to choose an option"))],
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
     )
 
     def __init__(self, *args, **kwargs):
@@ -1794,10 +1799,18 @@ class BrandingPoolForm(StripWhitespaceForm):
 
 
 class BrandingRequestForm(StripWhitespaceForm):
-    name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    """
+    Form for handling new branding requests.
+
+    Attributes:
+        name (StringField): Field for entering the name of the logo.
+        file (FileField_wtf): Field for uploading the logo file.
+    """
+
+    name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
     file = FileField_wtf(
         label=_l("Prepare your logo"),
         validators=[
-            DataRequired(message="You need to upload a file to submit"),
+            DataRequired(message=_l("You must select a file to continue")),
         ],
     )

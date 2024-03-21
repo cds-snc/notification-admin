@@ -13,18 +13,18 @@
 {% block maincolumn_content %}
   <div class="branding"></div>
     {{ page_header(
-      _('Change your branding'),
+      _('Change your logo'),
       back_link=url_for('main.view_branding_settings', service_id=current_service.id)
     ) }}
     
     <div class="grid-row contain-floats">
       <div class="py-0 px-0 px-gutterHalf box-border">
         <p>{{ _('Use one logo consistently so recipients trust your messages. GC Notify offers Government of Canada logos by default. Recipients are more likely to trust these logos.') }}</p>
-        <h2 class="heading-small" id="goc_branding-label">{{ _('Change the default language of email branding') }}</h2>
+        <h2 class="heading-small" id="goc_branding-label">{{ _('Change the default language of email logo') }}</h2>
         {% call form_wrapper() %}
           {{ radios(form.goc_branding, hide_legend=True, testid="goc_branding") }}
           
-          {{ _('<a class="-mt-12 block" data-testid="goto-pool" href="{}">Select alternate logo</a>').format(url_for('main.review_branding_pool', service_id=current_service.id)) }}
+          {{ _('<a class="-mt-12 block" data-testid="goto-pool" href="{}">{}</a>').format(url_for('main.review_branding_pool', service_id=current_service.id), _('Select alternate logo')) }}
           
           <div class="mt-10">
             {{ page_footer(

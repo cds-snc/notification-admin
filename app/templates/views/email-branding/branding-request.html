@@ -25,15 +25,15 @@
             {{ textbox(form.name, hint=_('This will not show in messages. Choose a name that helps team members find the logo'), testid="brand_name") }}
             <h2 class="heading-medium">{{ _('Prepare your logo') }}</h2>
             <p>
-              Your logo must be compatible with GC Notify. Check logo is:
-              <ul class="list list-bullet">
-                <li class="ml-6">In PNG image format</li>
-                <li class="ml-6">Exactly 108 pixels tall </li>
-                <li class="ml-6">Maximum 600 pixels wide</li>
+              {{ _('Your logo must be compatible with GC Notify. Check logo is:') }}
+              <ul class="list list-bullet" id="file-description">
+                <li class="ml-6">{{ _('In PNG image format') }}</li>
+                <li class="ml-6">{{ _('Exactly 108 pixels tall') }}</li>
+                <li class="ml-6">{{ _('Maximum 600 pixels wide') }}</li>
               </ul>
             </p>
-            <label class="file-upload-label">
-              <span id="file-upload-label" class="form-label sr-only">
+            <label class="file-upload-label" id="file-upload-label">
+              <span class="form-label sr-only">
                 {{ form.file.label.text }}
               </span>
               {% if hint %}
@@ -47,12 +47,12 @@
                 </span>
               {% endif %}
               
-              {{ form.file(**{ 'class': 'file-upload-field', 'accept': 'image/png', 'data_testid': 'brand_image' }) }}
+              {{ form.file(**{ 'class': 'file-upload-field', 'accept': 'image/png', 'data_testid': 'brand_image', 'aria-labelledby': 'file-description' }) }}
               <span aria-hidden="true" id="file-upload-button" class="button button-secondary font-normal"> {{ _('Choose file...') }} </span>
             </label>         
             
             <div class="mt-6 ml-2 pl-6 border-l-4 border-gray-200 preview font-normal relative" data-testid="brand_fileinfo">
-              <div class="message relative">{{ _('No files currently selected') }}</div>
+              <div class="message relative">{{ _('No file currently selected') }}</div>
               <div class="relative">
                 <div class="img relative"></div>
                 <div class="image-placeholder absolute"></div>
@@ -64,20 +64,16 @@
               {% include 'views/email-branding/_preview.html' %}
             </div>
             
-            
-            <div class="mt-10">
-              {{ show_more() }}
-            </div>
-            <div class="mt-10">
+            <div class="mt-20">
               <div class="js-stick-at-bottom-when-scrolling">
-                <div class="flex flex-row-reverse justify-end items-center">
-                  <div class="ml-10">
-                    <div class="flex justify-end items-center">
-                      <i aria-hidden="true" class="mr-4 text-titlelarge fa-solid fa-info-circle text-gray-visiteddark fill-current"></i> {{ _('Processing your branding request can take up to 3 days.  If there are issues with your logo you will be contacted by the GC Notify team.') }}
+                <div class="flex flex-col-reverse">
+                  <div class="mt-10">
+                    <div class="flex">
+                       {{ _('We’ll implement or request changes to your logo within 2 business days.') }}
                     </div>
                   </div>
                   <div class="" style="min-width: 300px">
-                    {{ page_footer(_('Submit branding request', button_id="brand_request_btn")) }}
+                    {{ page_footer(_('Submit request', button_id="brand_request_btn")) }}
                   </div>
                 </div>
               </div>      

@@ -1,6 +1,15 @@
 <div class="max-w-5xl mx-2">
   <div class="py-0 px-0 px-gutterHalf box-border border border-gray-300" data-testid="template_preview" id="template_preview">
     <template shadowrootmode="open">
+      
+      <style nonce="{{ request_nonce }}">
+        :host(#template_preview) h2, :host(#template_preview) p {
+          font-family: "Flow Block", system-ui !important;
+          font-weight: 400;
+          font-style: normal;
+          color: #49535D !important;
+        }
+      </style>
       <div class="w-full template-container">
         {{ template|safe }}
       </div>

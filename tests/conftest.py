@@ -3190,7 +3190,7 @@ def create_email_brandings(number_of_brandings, non_standard_values={}, shuffle=
 
 @pytest.fixture(scope="function")
 def mock_get_all_email_branding(mocker):
-    def _get_all_email_branding(sort_key=None):
+    def _get_all_email_branding(sort_key=None, organisation_id=None):
         non_standard_values = [
             {"idx": 1, "colour": "red"},
             {"idx": 2, "colour": "orange"},
