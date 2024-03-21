@@ -145,6 +145,7 @@ class Config(object):
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
     FF_NEW_BRANDING = env.bool("FF_NEW_BRANDING", False)
+    NO_BRANDING_ID = env.bool("NO_BRANDING_ID", "0af93cf1-2c49-485f-878f-f3e662e651ef")
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
@@ -185,6 +186,7 @@ class Development(Config):
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
+    NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
 
 class Test(Development):
