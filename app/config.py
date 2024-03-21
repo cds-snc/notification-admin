@@ -222,7 +222,6 @@ class Staging(Production):
     NOTIFY_ENVIRONMENT = "staging"
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
-    FF_NEW_BRANDING = True
 
 
 class Scratch(Production):
