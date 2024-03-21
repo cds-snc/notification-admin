@@ -1290,6 +1290,18 @@ def link_service_to_organisation(service_id):
 @user_has_permissions("manage_service")
 def view_branding_settings(service_id):
     def _get_current_branding():
+        """
+        Get the current branding information for the service.
+
+        This function retrieves the current branding information for the service from the service table.
+        It checks if the default branding is set to French and constructs the branding image path accordingly.
+        If the current branding is not set, it uses the default branding image path based on the default language.
+
+        Returns:
+            dict: A dictionary containing the branding image path and branding name.
+                - branding_image_path (str): The URL of the branding image.
+                - branding_name (str): The name of the branding.
+        """
         current_branding = current_service.email_branding_id
         cdn_url = get_logo_cdn_domain()
         default_en_filename = "https://{}/gc-logo-en.png".format(cdn_url)

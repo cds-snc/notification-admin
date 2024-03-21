@@ -1,3 +1,23 @@
+
+/**
+ * This script handles the functionality for the branding request form.
+ * It initializes the UI, updates the email template preview based on the selected file,
+ * and validates the form inputs (brand name and logo).
+ * 
+ * Client-side validation:
+ * ----------------------
+ * Normally with file uploads, when you post a file it doesnt get returned back with  the form, so if we want to display
+ * errors, we would have to either save the file temporarily (i.e. in s3) which is complex or force the user
+ * to upload it twice, which isn't great UX.
+ * 
+ * Instead, we do client-side validation so that the user can upload the file only once.
+ * 
+ * Localisation:
+ * ------------
+ * This module uses the window.APP_PHRASES object to get the strings for the error messages, following the pattern of other
+ * existing components.
+ * 
+ */
 (function () {
   "use strict";
   const input_img = document.querySelector("input.file-upload-field");

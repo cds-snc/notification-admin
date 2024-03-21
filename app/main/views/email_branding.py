@@ -189,6 +189,7 @@ def review_branding_pool(service_id):
         session["branding_to_preview"] = [logo for logo in logos if logo["id"] in [form.pool_branding.data]][0]
         return redirect(url_for("main.preview_branding", service_id=service_id))
 
+    # TODO: change logos to numberOfLogos
     return render_template("views/email-branding/branding-pool.html", logos=custom_logos, url=get_logo_url(), form=form)
 
 
@@ -207,6 +208,7 @@ def create_branding_request(service_id):
                 user_id=session["user_id"],
             )
             current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
+            # todo: remove unused params
             return render_template(
                 "views/email-branding/branding-request-submitted.html",
                 logo_url="{}/{}".format(get_logo_url(), upload_filename),
