@@ -1762,7 +1762,7 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
 class BrandingGOCForm(StripWhitespaceForm):
     """
     Form for selecting logo from GOC options
-    
+
     Attributes:
         goc_branding (RadioField): Field for entering the the logo
     """
@@ -1806,6 +1806,7 @@ class BrandingRequestForm(StripWhitespaceForm):
         name (StringField): Field for entering the name of the logo.
         file (FileField_wtf): Field for uploading the logo file.
     """
+
     name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
     file = FileField_wtf(
         label=_l("Prepare your logo"),
