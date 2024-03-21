@@ -1184,6 +1184,10 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
             ("no_branding", "No branding"),
         ],
     )
+    organisation = RadioField(
+        "Select an organisation",
+        choices=[]
+    )
 
     def validate_name(form, name):
         op = request.form.get("operation")

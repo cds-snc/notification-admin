@@ -32,7 +32,8 @@
           <div style='margin-top:15px;'>{{textbox(form.name)}}</div>
           <div style='margin-top:15px;'>{{textbox(form.text)}}</div>
           {{ textbox(form.colour, width='w-full md:w-1/4', colour_preview=True) }}
-           {{ radios(form.brand_type) }}
+          {{ radios(form.brand_type) }}
+          {{ radios(form.organisation) }}
           {{ page_footer(
             _('Save'),
             button_name='operation',
