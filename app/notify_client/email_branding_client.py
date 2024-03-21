@@ -6,9 +6,9 @@ class EmailBrandingClient(NotifyAdminAPIClient):
     def get_email_branding(self, branding_id):
         return self.get(url="/email-branding/{}".format(branding_id))
 
-    @cache.set("email_branding")
-    def get_all_email_branding(self, sort_key=None):
-        brandings = self.get(url="/email-branding")["email_branding"]
+    @cache.set("email_branding-{organisation_id}")
+    def get_all_email_branding(self, sort_key=None, organisation_id=None):
+        brandings = self.get(url="/email-branding", params={"organisation_id": organisation_id})["email_branding"]
 
         if len(brandings) > 0:
             if sort_key and sort_key in brandings[0]:
