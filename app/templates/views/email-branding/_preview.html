@@ -1,5 +1,8 @@
 <div class="max-w-5xl mx-2">
   <div class="py-0 px-0 px-gutterHalf box-border border border-gray-300" id="template_preview">
+    {% if '/_email' in request.base_url %}
+      <link href="https://fonts.googleapis.com/css?family=Flow+Block&display=swap" rel="stylesheet" />
+    {% endif %}
     <template shadowrootmode="open">
       
       <style nonce="{{ request_nonce }}">
