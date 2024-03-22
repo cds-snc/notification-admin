@@ -25,6 +25,7 @@
   const message = document.querySelector(".preview .message");
   const image_slot = document.querySelector(".preview .img");
   const preview_heading = document.querySelector("#preview_heading");
+  const preview_container = document.querySelector(".template_preview");
   const brand_name_group = document
     .querySelector("#name")
     .closest(".form-group");
@@ -35,6 +36,7 @@
   input_img.addEventListener("change", updateImageDisplay);
   submit_button.addEventListener("click", validateForm);
   input_brandname.addEventListener("change", validateBrand);
+
   // strings
   let file_name = window.APP_PHRASES.branding_request_file_name;
   let file_size = window.APP_PHRASES.branding_request_file_size;
@@ -57,8 +59,8 @@
 
     const curFiles = input_img.files;
     if (curFiles.length === 0) {
-      const message = document.createElement("p");
       message.textContent = "No files currently selected for upload";
+      preview_container.classList.add("hidden");
     } else {
       for (const file of curFiles) {
         if (validFileType(file)) {
@@ -74,9 +76,7 @@
             }, ${file_size} ${returnFileSize(file.size)}, ${display_size} ${
               img.naturalWidth
             } x ${img.naturalHeight}`;
-            document
-              .querySelector(".template_preview")
-              .classList.remove("hidden");
+            preview_container.classList.remove("hidden");
             preview_heading.focus();
           };
           validateLogo();
