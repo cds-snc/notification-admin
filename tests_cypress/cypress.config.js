@@ -3,6 +3,7 @@ var config = require('./config');
 const { defineConfig } = require("cypress");
 const EmailAccount = require("./cypress/plugins/email-account")
 const htmlvalidate = require("cypress-html-validate/plugin");
+const RedisClient = require("./cypress/plugins/RedisClient");
 
 module.exports = defineConfig({
   e2e: {
@@ -15,11 +16,13 @@ module.exports = defineConfig({
       });
 
       const emailAccount = await EmailAccount()
+      const redisClient = await RedisClient();
       on('task', {
-        log (message) { // for debugging
+        log(message) { // for debugging
           console.log(message)
           return null
         },
+        // Email Account ///
         getLastEmail() {
           return emailAccount.getLastEmail()
         },
@@ -31,6 +34,19 @@ module.exports = defineConfig({
         },
         createEmailAccount() {
           return emailAccount.createEmailAccount();
+        },
+        /// Redis Client ///
+        connectToRedis() {
+          return redisClient.connect();
+        },
+        disconnectFromRedis() {
+          return redisClient.disconnect();
+        },
+        deleteCacheKeysByPattern(cacheToClear) {
+          console.log("-------cacheToClear: " + cacheToClear);
+          console.log("-------cacheToClear Tyoe: " + typeof (cacheToClear));
+          ret = redisClient.DeleteCacheKeysByPattern(cacheToClear);
+          return ret;
         }
       });
 
