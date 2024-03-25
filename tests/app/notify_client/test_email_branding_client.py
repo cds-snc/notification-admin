@@ -76,6 +76,7 @@ def test_create_email_branding(mocker):
         "text": "test name",
         "colour": "red",
         "brand_type": "custom_logo",
+        "organisation_id": "org-id-123",
     }
 
     mock_post = mocker.patch("app.notify_client.email_branding_client.EmailBrandingClient.post")
@@ -86,11 +87,14 @@ def test_create_email_branding(mocker):
         text=org_data["text"],
         colour=org_data["colour"],
         brand_type="custom_logo",
+        organisation_id=org_data["organisation_id"],
     )
 
     mock_post.assert_called_once_with(url="/email-branding", data=org_data)
-
-    mock_redis_delete.assert_called_once_with("email_branding")
+    mock_redis_delete.call_args_list == [
+        call("email_branding-None"),
+        call("email_branding-org-id-123"),
+    ]
 
 
 def test_update_email_branding(mocker, fake_uuid):
@@ -100,6 +104,7 @@ def test_update_email_branding(mocker, fake_uuid):
         "text": "test name",
         "colour": "red",
         "brand_type": "custom_logo",
+        "organisation_id": "org-id-123",
     }
 
     mock_post = mocker.patch("app.notify_client.email_branding_client.EmailBrandingClient.post")
@@ -111,10 +116,12 @@ def test_update_email_branding(mocker, fake_uuid):
         text=org_data["text"],
         colour=org_data["colour"],
         brand_type="custom_logo",
+        organisation_id=org_data["organisation_id"],
     )
 
     mock_post.assert_called_once_with(url="/email-branding/{}".format(fake_uuid), data=org_data)
     assert mock_redis_delete.call_args_list == [
+        call("email_branding-None"),
+        call("email_branding-{}".format(org_data["organisation_id"])),
         call("email_branding-{}".format(fake_uuid)),
-        call("email_branding"),
     ]
