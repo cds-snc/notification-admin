@@ -91,8 +91,10 @@ def test_create_email_branding(mocker):
     )
 
     mock_post.assert_called_once_with(url="/email-branding", data=org_data)
-
-    mock_redis_delete.assert_called_once_with("email_branding")
+    mock_redis_delete.call_args_list == [
+        call("email_branding-None"),
+        call("email_branding-org-id-123"),
+    ]
 
 
 def test_update_email_branding(mocker, fake_uuid):
@@ -119,6 +121,7 @@ def test_update_email_branding(mocker, fake_uuid):
 
     mock_post.assert_called_once_with(url="/email-branding/{}".format(fake_uuid), data=org_data)
     assert mock_redis_delete.call_args_list == [
+        call("email_branding-None"),
+        call("email_branding-{}".format(org_data["organisation_id"])),
         call("email_branding-{}".format(fake_uuid)),
-        call("email_branding"),
     ]
