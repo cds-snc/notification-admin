@@ -10,7 +10,8 @@ import RequestBranding from "./branding/RequestBranding";
 import EditBranding from "./branding/EditBrandingPage";
 import BrandingSettings from "./branding/BrandingSettingsPage"
 import ServiceSettingsPage from "./ServiceSettingsPage";
-import ReviewPoolPage from "./branding/ReviewPoolPage"
+import ReviewPoolPage from "./branding/ReviewPoolPage";
+import PreviewBrandingPage from "./branding/PreviewBrandingPage";
 
 export default {
     LoginPage,
@@ -26,4 +27,5 @@ export default {
     BrandingSettings,
     ServiceSettingsPage,
     ReviewPoolPage,
+    PreviewBrandingPage,
 }

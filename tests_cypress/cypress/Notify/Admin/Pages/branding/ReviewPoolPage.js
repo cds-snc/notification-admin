@@ -1,7 +1,5 @@
 let Components = {
-    AvailableLogoRadios: () => cy.get('div[class="multiple-choice"]').within(() => {
-        return cy.get('input').debug().should('have.attr', 'name', 'pool_branding');
-    }),
+    AvailableLogoRadios: () => cy.get('input[id*="pool_branding-"]'),
     RequestNewLogoLink: () => cy.getByTestId('goto-request'),
     PreviewButton: () => cy.getByTestId('preview'),
     // Common components
@@ -9,8 +7,8 @@ let Components = {
 };
 
 let Actions = {
-    SelectLogoRadio: (testId) => {
-        cy.getByTestId(testId).click();
+    SelectLogoRadio: () => {
+        Components.AvailableLogoRadios().click();
     },
     ClickBackLink: () => {
         Components.BackLink().click();

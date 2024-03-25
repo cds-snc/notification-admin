@@ -44,9 +44,11 @@ module.exports = defineConfig({
         },
         deleteCacheKeysByPattern(cacheToClear) {
           console.log("-------cacheToClear: " + cacheToClear);
-          console.log("-------cacheToClear Tyoe: " + typeof (cacheToClear));
           ret = redisClient.DeleteCacheKeysByPattern(cacheToClear);
           return ret;
+        },
+        deleteKey(key) {
+          return redisClient.Delete(key);
         }
       });
 

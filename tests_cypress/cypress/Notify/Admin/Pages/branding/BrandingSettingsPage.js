@@ -15,9 +15,9 @@ let Actions = {
     }
 }
 
-let BrandingSettings = {
+let BrandingSettingsPage = {
     Components,
     ...Actions
 };
 
-export default BrandingSettings;
+export default BrandingSettingsPage;

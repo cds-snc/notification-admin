@@ -55,47 +55,34 @@ const redisClient = async () => {
 
     const redisClient = {
 
-        connect() {
-            return new Promise((resolve, reject) => {
-                client.connect((err) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                });
-            });
+        async connect() {
+            return await client.connect()
         },
 
-        disconnect() {
-            return new Promise((resolve, reject) => {
-                client.connect((err) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                });
-            });
+        async disconnect() {
+            return await client.disconnect();
         },
 
         async DeleteCacheKeysByPattern(cacheToClear) {
-            console.log(client.toString())
-            console.log('========CacheToClear: ' + cacheToClear);
             const keysToDelete = CACHE_KEYS[cacheToClear];
-            console.log("===========CAHCE_KEYS: " + CACHE_KEYS.toString())
-            console.log("===========patterns to delete: " + keysToDelete);
 
-            // return new Promise((resolve, reject) => {
-            return await client.del(keysToDelete, (err, numDeleted) => {
+            return await client.del(keysToDelete, (err, reply) => {
                 if (err) {
-                    console.log('Error:', err);
-                    reject(err);
+                    console.log(`Redis Error - DeleteCacheKeysByPattern: ${err}`)
+                } else {
+                    console.log(`Redis Reply - DeleteCacheKeysByPattern: ${reply}`)
                 }
-                console.log('Number of keys deleted:', numDeleted);
-                resolve(numDeleted);
             });
-            //});
+        },
+
+        async Delete(key) {
+            return await client.del(key, (err, reply) => {
+                if (err) {
+                    console.log(`Redis Error - Delete: ${err}`)
+                } else {
+                    console.log(`Redis Reply - Delete: ${reply}`)
+                }
+            });;
         }
     }
     return redisClient;
