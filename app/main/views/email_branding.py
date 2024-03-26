@@ -299,15 +299,17 @@ def get_preview_template(email_branding=None):
             logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
             brand_name = _("custom brand logo")
 
-    template = {
-        "subject": "foo",
-        "content": "# Email preview\n{}\n{}".format(
+    template_content = "# {}\n".format(_("Email preview"))
+
+    if email_branding is None and current_service.email_branding_id is None:
+        template_content += "{} {}".format(
             _("An example email showing the {} at the top left.").format(brand_name),
-            _("The canada wordmark is displayed at the bottom right")
-            if current_service.email_branding_id is None and email_branding is None
-            else "",
-        ),
-    }
+            _("The canada wordmark is displayed at the bottom right."),
+        )
+    else:
+        template_content += _("There's a custom logo at the top left and no logo at the bottom.")
+
+    template = {"subject": "foo", "content": template_content}
 
     html_template = str(
         HTMLEmailTemplate(
