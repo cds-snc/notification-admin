@@ -299,7 +299,7 @@ def get_preview_template(email_branding=None):
             logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
             brand_name = _("custom brand logo")
 
-    template_content = "# {}\n".format(_('Email preview'))
+    template_content = "# {}\n".format(_("Email preview"))
 
     if email_branding is None and current_service.email_branding_id is None:
         template_content += "{} {}".format(
