@@ -586,7 +586,7 @@ class TestBranding:
         with app_.test_request_context():
             mocker.patch("app.main.views.email_branding.current_service", new=MockService)
             html_template = get_preview_template(email_branding)
-            assert "An example email showing the Example Brand at the top left" in html_template
+            assert "There’s a custom logo at the top left and no logo at the bottom." in html_template
             assert "The canada wordmark is displayed at the bottom right" not in html_template
 
     def test_get_preview_template_with_default_branding_is_french(self, mocker, app_):
@@ -631,5 +631,5 @@ class TestBranding:
             )
             mocker.patch("app.main.views.email_branding.current_service", new=MockService)
             html_template = get_preview_template(None)
-            assert "An example email showing the custom brand logo at the top left" in html_template
+            assert "There’s a custom logo at the top left and no logo at the bottom." in html_template
             assert "The canada wordmark is displayed at the bottom right" not in html_template

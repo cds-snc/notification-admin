@@ -156,7 +156,7 @@ def email_template():
         "subject": "foo",
         "content": "# Email preview\n{}\n{}".format(
             _("An example email showing the {} at the top left.").format(brand_name),
-            _("The canada wordmark is displayed at the bottom right"),
+            _("The canada wordmark is displayed at the bottom right."),
         ),
     }
 
