@@ -1372,7 +1372,7 @@ def branding_request(service_id):
                 current_app.config["AWS_REGION"],
                 user_id=session["user_id"],
             )
-            current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
+            current_user.send_branding_request(current_service.id, current_service.name, current_service.organisation_id, current_service.organisation.name, upload_filename)
 
         default_branding_is_french = None
         branding_choice = form.branding_style.data

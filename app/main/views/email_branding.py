@@ -221,7 +221,7 @@ def create_branding_request(service_id):
                 current_app.config["AWS_REGION"],
                 user_id=session["user_id"],
             )
-            current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
+            current_user.send_branding_request(current_service.id, current_service.name, current_service.organisation_id, current_service.organisation.name, upload_filename)
             # todo: remove unused params
             return render_template(
                 "views/email-branding/branding-request-submitted.html",
