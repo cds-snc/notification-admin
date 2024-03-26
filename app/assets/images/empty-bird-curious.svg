@@ -1,0 +1,31 @@
+<svg width="203" height="114" viewBox="0 0 203 114" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="67.25" y="20.25" width="118.5" height="88.5" fill="white"/>
+    <rect x="67.25" y="20.25" width="118.5" height="88.5" stroke="#4E7BA2" stroke-width="1.5"/>
+    <rect x="66.5" y="19.5" width="120" height="24" fill="#4E7BA2"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M174.5 97.5H150.5V91.5H174.5V97.5Z" fill="#F7796E"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M87.5 58.5H75.5V52.5H87.5V58.5Z" fill="#F7796E"/>
+    <path d="M93.5 55.5H108.5" stroke="#304760" stroke-width="1.5"/>
+    <path d="M114.5 55.5H129.5" stroke="#304760" stroke-width="1.5"/>
+    <path d="M75.5 70.5H99.5" stroke="#304760" stroke-width="1.5"/>
+    <path d="M108.5 70.5H114.5" stroke="#304760" stroke-width="1.5"/>
+    <path d="M123.5 70.5H144.5" stroke="#304760" stroke-width="1.5"/>
+    <path d="M75.5 79.5H99.5" stroke="#304760" stroke-width="1.5"/>
+    <path d="M108.5 79.5H144.5" stroke="#304760" stroke-width="1.5"/>
+    <circle cx="78.5" cy="31.5" r="6" fill="#C1E8FA"/>
+    <path d="M90.5 28.5H129.5" stroke="#C1E8FA" stroke-width="1.5"/>
+    <path d="M90.5 34.5H129.5" stroke="#C1E8FA" stroke-width="1.5"/>
+    <line x1="191" y1="108.75" x2="203" y2="108.75" stroke="#304760" stroke-width="1.5"/>
+    <line x1="0.5" y1="108.75" x2="11" y2="108.75" stroke="#304760" stroke-width="1.5"/>
+    <path d="M14.8848 107.19L16.1165 110.31" stroke="#304760" stroke-width="1.5"/>
+    <path d="M35.5271 89.373L33.3145 108.75M33.3145 108.75L28.8145 108M33.3145 108.75L37.0645 111M33.3145 108.75L28.8145 112.5" stroke="#304760" stroke-width="1.5"/>
+    <path d="M46.1152 91.7549L52.8134 108.75M52.8134 108.75L55.0635 112.5M52.8134 108.75H60.3134M52.8134 108.75L49.0635 111.75" stroke="#304760" stroke-width="1.5"/>
+    <path d="M35.7032 61.7488C12.6334 61.0242 22.3079 91.4585 41.6567 94.3569C61.0056 97.2555 84.0754 55.2272 73.6568 47.981C65.6633 42.4214 61.1743 53.9237 49.0986 59.2524C45.435 60.869 41.0731 61.9175 35.7032 61.7488Z" fill="#AFB9C3"/>
+    <path d="M49.25 59.6992C33.3479 68.0415 23.671 82.6085 21.9532 86.6992C21.0452 85.1156 19.7741 80.6186 21.9532 75.2993" stroke="#304760" stroke-width="1.5"/>
+    <path d="M71.7504 61.5002L74.0004 57.7502L77.7503 61.5001L71.7504 61.5002Z" fill="#F6BE00"/>
+    <ellipse cx="75.1426" cy="55.5" rx="1.5" ry="3" fill="white"/>
+    <ellipse cx="75.8926" cy="55.5" rx="0.75" ry="1.5" fill="black"/>
+    <path d="M67.25 61.5L67.25 72.3686C76.4075 74.3008 89.3714 74.4477 72.7079 67.1808" stroke="#304760" stroke-width="1.5"/>
+    <path d="M74.75 54.75C74.75 58.4779 71.7279 61.5 68 61.5C64.2721 61.5 61.25 58.4779 61.25 54.75C61.25 51.0221 64.2721 48 68 48C71.7279 48 74.75 51.0221 74.75 54.75Z" fill="#AFB9C3" stroke="#304760" stroke-width="1.5"/>
+    <circle cx="68" cy="54.75" r="5.25" fill="white"/>
+    <circle cx="68.75" cy="55.5" r="3" fill="black"/>
+</svg>
