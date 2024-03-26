@@ -11,6 +11,7 @@ from flask import (
     request,
     url_for,
 )
+from flask_babel import _
 from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
@@ -153,61 +154,30 @@ def email_template():
 
     template = {
         "subject": "foo",
-        "content": (
-            "Lorem Ipsum is simply dummy text of the printing and typesetting "
-            "industry.\n\nLorem Ipsum has been the industry’s standard dummy "
-            "text ever since the 1500s, when an unknown printer took a galley "
-            "of type and scrambled it to make a type specimen book. "
-            "\n\n"
-            "# History"
-            "\n\n"
-            "It has "
-            "survived not only"
-            "\n\n"
-            "* five centuries"
-            "\n"
-            "* but also the leap into electronic typesetting"
-            "\n\n"
-            "It was "
-            "popularised in the 1960s with the release of Letraset sheets "
-            "containing Lorem Ipsum passages, and more recently with desktop "
-            "publishing software like Aldus PageMaker including versions of "
-            "Lorem Ipsum."
-            "\n\n"
-            "^ It is a long established fact that a reader will be distracted "
-            "by the readable content of a page when looking at its layout."
-            "\n\n"
-            "The point of using Lorem Ipsum is that it has a more-or-less "
-            "normal distribution of letters, as opposed to using ‘Content "
-            "here, content here’, making it look like readable English."
-            "\n\n\n"
-            "1. One"
-            "\n"
-            "2. Two"
-            "\n"
-            "10. Three"
-            "\n\n"
-            "This is an example of an email sent using Notification."
-            "\n\n"
-            "https://www.notifications.service.gov.uk"
+        "content": "# Email preview\n{}\n{}".format(
+            _("An example email showing the {} at the top left.").format(brand_name),
+            _("The canada wordmark is displayed at the bottom right"),
         ),
     }
 
     if not bool(request.args):
-        resp = make_response(str(HTMLEmailTemplate(template)))
+        resp = make_response(render_template("views/email-branding/_preview.html", template=str(HTMLEmailTemplate(template))))
     else:
         resp = make_response(
-            str(
-                HTMLEmailTemplate(
-                    template,
-                    fip_banner_english=fip_banner_english,
-                    fip_banner_french=fip_banner_french,
-                    brand_text=brand_text,
-                    brand_colour=brand_colour,
-                    brand_logo=brand_logo,
-                    logo_with_background_colour=logo_with_background_colour,
-                    brand_name=brand_name,
-                )
+            render_template(
+                "views/email-branding/_preview.html",
+                template=str(
+                    HTMLEmailTemplate(
+                        template,
+                        fip_banner_english=fip_banner_english,
+                        fip_banner_french=fip_banner_french,
+                        brand_text=brand_text,
+                        brand_colour=brand_colour,
+                        brand_logo=brand_logo,
+                        logo_with_background_colour=logo_with_background_colour,
+                        brand_name=brand_name,
+                    )
+                ),
             )
         )
 
