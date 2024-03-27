@@ -12,7 +12,8 @@
     "jsrsasign": "^11.0.0",
     "mailparser": "^3.5.0",
     "nanoid": "^5.0.4",
-    "nodemailer": "^6.9.2"
+    "nodemailer": "^6.9.2",
+    "redis": "^4.6.13"
   },
   "devDependencies": {
     "axe-core": "^4.7.2",

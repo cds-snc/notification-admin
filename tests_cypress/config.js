@@ -25,6 +25,10 @@ let STAGING = {
         Simulated: ['simulate-delivered-2@notification.canada.ca', 'simulate-delivered-3@notification.canada.ca', 'success@simulator.amazonses.com'],
         SimulatedPhone: ['+16132532222', '+16132532223', '+16132532224']
     },
+    Organisations: {
+        'DEFAULT_ORG_ID': '4eef762f-383d-4068-81ca-c2c5c186eb16',
+        'NO_CUSTOM_BRANDING_ORG_ID': '4eef762f-383d-4068-81ca-c2c5c186eb16'
+    },
     ReplyTos: {
         Default: '24e5288d-8bfa-4ad4-93aa-592c11a694cd',
         Second: '797865c4-788b-4184-91ae-8e45eb07e40b'
@@ -52,6 +56,10 @@ let LOCAL = {
         'SMOKE_TEST_EMAIL_ATTACH': '58db03d6-a9d8-4482-8621-26f473f3980a',
         'SMOKE_TEST_EMAIL_LINK': '2d52d997-42d3-4ac0-a597-7afc94d4339a',
         'SMOKE_TEST_SMS': '5945e2f0-3e37-4813-9a60-e0665e02e9c8'
+    },
+    Organisations: {
+        'DEFAULT_ORG_ID': '93cbc868-ac75-4d90-a089-14c40dfd86ab',
+        'NO_CUSTOM_BRANDING_ORG_ID': '4eef762f-383d-4068-81ca-c2c5c186eb16'
     },
     Users: {
         Team: ['andrew.leith+bannertest@cds-snc.ca'],

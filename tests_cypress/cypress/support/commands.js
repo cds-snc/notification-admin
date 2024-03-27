@@ -1,36 +1,11 @@
 import config from "../../config";
-
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+import { LoginPage } from "../Notify/Admin/Pages/AllPages";
 
 // keep track of what we test so we dont test the same thing twice
 let links_checked = [];
 let svgs_checked = [];
 
-Cypress.Commands.add('a11yScan', (url, options={ a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true }) => {
+Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true }) => {
     const current_hostname = config.Hostnames.Admin;
     // bypass rate limiting
     cy.intercept(`${current_hostname}/*`, (req) => {
@@ -114,4 +89,14 @@ Cypress.Commands.add('a11yScan', (url, options={ a11y: true, htmlValidate: true,
             });
         });
     }
- })
+})
+
+Cypress.Commands.add('getByTestId', (selector, ...args) => {
+    return cy.get(`[data-testid=${selector}]`, ...args)
+});
+
+Cypress.Commands.add('login', (username, password) => {
+    cy.session([username, password], () => {
+        LoginPage.Login(username, password);
+    });
+});

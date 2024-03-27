@@ -60,7 +60,21 @@ const Admin = {
                 "Content-Type": 'application/json'
             }
         })
-    }
+    },
+    LinkOrganisationToService: ({ orgId, serviceId }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            url: `${BASE_URL}/organisations/${orgId}/service`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+            body: {
+                "service_id": serviceId
+            }
+        })
+    },
 }
 // const Admin = {
 //     CreateService: () => {

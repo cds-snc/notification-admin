@@ -6,6 +6,12 @@ import Navigation from "./Navigation";
 import TemplatesPage from "./TemplatesPage";
 import AccountsPage from "./AccountsPage";
 import CreateAccountPage from "./CreateAccountPage";
+import RequestBranding from "./branding/RequestBranding";
+import EditBranding from "./branding/EditBrandingPage";
+import BrandingSettings from "./branding/BrandingSettingsPage"
+import ServiceSettingsPage from "./ServiceSettingsPage";
+import ReviewPoolPage from "./branding/ReviewPoolPage";
+import PreviewBrandingPage from "./branding/PreviewBrandingPage";
 
 export default {
     LoginPage,
@@ -16,4 +22,10 @@ export default {
     TemplatesPage,
     AccountsPage,
     CreateAccountPage,
+    RequestBranding,
+    EditBranding,
+    BrandingSettings,
+    ServiceSettingsPage,
+    ReviewPoolPage,
+    PreviewBrandingPage,
 }

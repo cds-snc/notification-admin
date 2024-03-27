@@ -166,7 +166,7 @@
             change_txt,
             url_for(branding_route, service_id=current_service.id),
             permissions=['manage_service'],
-            attributes="",
+            attributes="data-testid=edit-email-branding",
             for=txt
           )}}
         {% endcall %}
