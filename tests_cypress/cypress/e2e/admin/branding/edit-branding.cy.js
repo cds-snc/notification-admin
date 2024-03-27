@@ -2,6 +2,7 @@
 
 import config from "../../../../config";
 import { EditBranding, BrandingSettings } from "../../../Notify/Admin/Pages/AllPages";
+import EditBrandingPage from "../../../Notify/Admin/Pages/branding/EditBrandingPage";
 
 
 describe('Edit Branding', () => {
@@ -40,7 +41,7 @@ describe('Edit Branding', () => {
 
     it('Cannot submit when no selection was made', () => {
         EditBranding.Submit();
-        cy.contains('span', 'Change your logo').should('be.visible');
+        EditBrandingPage.Components.ErrorMessage().should('be.visible');
     });
 
     it('Saves English-first logo when selected', () => {
@@ -59,7 +60,7 @@ describe('Edit Branding', () => {
 
     it('Navigates to branding pool when select another logo from test link is clicked', () => {
         EditBranding.ClickBrandPool();
-        cy.contains('h1', 'Select alternate logo').should("be.visible");
+        cy.contains('h1', 'Select another logo').should("be.visible");
     })
 
     it('Navigates to edit branding when go back is clicked from the branding pool page', () => {

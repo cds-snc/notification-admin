@@ -5,6 +5,7 @@ let Components = {
     BrandFieldset: () => cy.getByTestId('goc_branding'),
     BrandPoolLink: () => cy.getByTestId('goto-pool'),
     ChangeBranding: () => cy.getByTestId('change_branding'),
+    ErrorMessage: () => cy.get('[class="error-message"]'),
     BackLink: () => cy.getByTestId('go-back'),
     SubmitButton: () => cy.getByTestId('submit'),
 };
