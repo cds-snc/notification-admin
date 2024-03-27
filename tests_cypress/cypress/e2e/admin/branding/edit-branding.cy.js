@@ -35,12 +35,12 @@ describe('Edit Branding', () => {
     it('Loads edit-branding when choose logo is clicked', () => {
         cy.visit(config.Hostnames.Admin + `/services/${config.Services.Cypress}/branding`);
         BrandingSettings.ChooseDifferentLogo();
-        cy.get('h1').contains('Change your branding').should('be.visible');
+        cy.get('h1').contains('Change your logo').should('be.visible');
     });
 
     it('Cannot submit when no selection was made', () => {
         EditBranding.Submit();
-        cy.contains('span', 'You need to choose an option').should('be.visible');
+        cy.contains('span', 'Change your logo').should('be.visible');
     });
 
     it('Saves English-first logo when selected', () => {
@@ -65,6 +65,6 @@ describe('Edit Branding', () => {
     it('Navigates to edit branding when go back is clicked from the branding pool page', () => {
         EditBranding.ClickBrandPool();
         BrandingSettings.GoBack();
-        cy.get('h1').contains('Change your branding').should('be.visible');
+        cy.get('h1').contains('Change your logo').should('be.visible');
     })
 });
