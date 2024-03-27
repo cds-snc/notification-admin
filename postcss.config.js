@@ -34,10 +34,12 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "bg-emptyBirdHole",
     "bg-emptyFlower",
     "bg-emptyTruck",
+    "bg-emptyBirdCurious",
     "sm:bg-emptyBird",
     "sm:bg-emptyBirdHole",
     "sm:bg-emptyFlower",
     "sm:bg-emptyTruck",
+    "sm:bg-emptyBirdCurious",
   ],
   defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
 });

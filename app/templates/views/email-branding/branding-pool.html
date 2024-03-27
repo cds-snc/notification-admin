@@ -13,14 +13,14 @@
 {% block maincolumn_content %}
   <div class="branding">
     {{ page_header(
-      _('Select alternate logo'),
+      _('Select another logo'),
       back_link=url_for('main.edit_branding_settings', service_id=current_service.id),
       id_text='pool_branding-label'
     ) }}
     <div class="grid-row contain-floats">
       <div class="py-0 px-0 px-gutterHalf box-border">
         {% if logos|length == 0 %}
-          {{ empty_list(_('There are no logos available for this organisation yet'), _('You can start the process now to request new branding.'), 'emptyFlower', url_for('main.create_branding_request', service_id=current_service.id), _('Begin branding request'), attributes="data-testid=goto-request") }}
+          {{ empty_list(_('There are no other logos yet'), _('To add another logo, make a request'), 'emptyBirdCurious', url_for('main.create_branding_request', service_id=current_service.id), _('Request a new logo'), attributes="data-testid=goto-request")) }}
         {% else %}
           {% call form_wrapper() %}
             {{ radios(form.pool_branding, hide_legend=True, testid="pool_branding") }}
