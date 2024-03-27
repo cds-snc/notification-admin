@@ -1,5 +1,6 @@
 let Components = {
     AvailableLogoRadios: () => cy.get('input[id*="pool_branding-"]'),
+    EmptyListContainer: () => cy.getByTestId('empty-list'),
     RequestNewLogoLink: () => cy.getByTestId('goto-request'),
     PreviewButton: () => cy.getByTestId('preview'),
     // Common components

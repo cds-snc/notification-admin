@@ -22,7 +22,7 @@ describe("Review Pool", () => {
 
     // / Navigation functionality ///
     it("Loads review pool page", () => {
-        cy.contains('h1', 'Select alternate logo').should('be.visible');
+        cy.contains('h1', 'Select another logo').should('be.visible');
     });
 
     it('Loads request branding page when [request a new logo] link is clicked', () => {
@@ -30,11 +30,10 @@ describe("Review Pool", () => {
         cy.get('h1').contains('Request a new logo').should('be.visible');
     });
 
-    // // BROKEN CURRENTLY
-    // // it('Returns to edit branding page when back link is clicked', () => {
-    // //     ReviewPoolPage.ClickBackLink();
-    // //     cy.get('h1').contains('Change your branding').should('be.visible');
-    // // });
+    it('Returns to edit branding page when back link is clicked', () => {
+        ReviewPoolPage.ClickBackLink();
+        cy.get('h1').contains('Request a new logo').should('be.visible');
+    });
 
     context("Service's org has no custom branding", () => {
 
@@ -47,9 +46,8 @@ describe("Review Pool", () => {
         });
 
         it('Displays a banner indicating there is no custom branding associated with their organisation and a link to request custom branding', () => {
-            // Change the org to one that has branding
-            cy.contains('There are no logos available for this organisation yet');
-            cy.contains('a', 'Begin branding request').should('be.visible');
+            ReviewPoolPage.Components.EmptyListContainer().should('be.visible');
+            cy.contains('a', 'Request a new logo').should('be.visible');
         });
     });
 
