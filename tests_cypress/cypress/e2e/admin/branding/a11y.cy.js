@@ -1,7 +1,7 @@
 import config from "../../../../config";
 
 const BrandingRoutes = [
-    '/edit-branding', '/branding-request', '/review-pool', '/preview-branding'
+    '/edit-branding', '/branding-request', '/review-pool', '/preview-branding', '/branding'
 ];
 
 describe('Branding A11Y', () => {
@@ -20,11 +20,11 @@ describe('Branding A11Y', () => {
     BrandingRoutes.forEach((page) => {
         it(`${page} is accessible and has valid HTML`, () => {
             cy.a11yScan(
-                config.Hostnames.Admin + `/services/${config.Services.Cypress}${page}`, 
-                { 
-                    a11y: true, 
-                    htmlValidate: true, 
-                    deadLinks: false, 
+                config.Hostnames.Admin + `/services/${config.Services.Cypress}${page}`,
+                {
+                    a11y: true,
+                    htmlValidate: true,
+                    deadLinks: false,
                     mimeTypes: false
                 }
             );
