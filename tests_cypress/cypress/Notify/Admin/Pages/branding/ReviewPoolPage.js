@@ -9,7 +9,7 @@ let Components = {
 
 let Actions = {
     SelectLogoRadio: () => {
-        Components.AvailableLogoRadios().click();
+        Components.AvailableLogoRadios().first().click();
     },
     ClickBackLink: () => {
         Components.BackLink().click();

@@ -2,46 +2,60 @@
 
 import config from "../../../../config";
 import { Admin } from "../../../Notify/NotifyAPI";
-import { ReviewPoolPage, PreviewBrandingPage, BrandingSettings } from "../../../Notify/Admin/Pages/AllPages";
-
+import { ReviewPoolPage, PreviewBrandingPage, BrandingSettings, ClearCachePage } from "../../../Notify/Admin/Pages/AllPages";
+const ADMIN_COOKIE = "notify_admin_session";
 
 describe("Review Pool", () => {
-
-    before(() => {
-        cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
-    });
-
-    beforeEach(() => {
-        cy.visit(config.Hostnames.Admin + `/services/${config.Services.Cypress}/review-pool`);
-    });
 
     after(() => {
         // Restore the test service's org to the default
         Admin.LinkOrganisationToService({ orgId: config.Organisations.DEFAULT_ORG_ID, serviceId: config.Services.Cypress });
     });
 
-    // / Navigation functionality ///
-    it("Loads review pool page", () => {
-        cy.contains('h1', 'Select another logo').should('be.visible');
+    context("General page functionality", () => {
+        before(() => {
+            cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
+        });
+
+        beforeEach(() => {
+            cy.visit(config.Hostnames.Admin + `/services/${config.Services.Cypress}/review-pool`);
+        });
+
+        it("Loads review pool page", () => {
+            cy.contains('h1', 'Select another logo').should('be.visible');
+        });
+
+        it('Loads request branding page when [request a new logo] link is clicked', () => {
+            ReviewPoolPage.ClickRequestNewLogoLink();
+            cy.get('h1').contains('Request a new logo').should('be.visible');
+        });
+
+        it('Returns to edit branding page when back link is clicked', () => {
+            ReviewPoolPage.ClickBackLink();
+            cy.get('h1').contains('Request a new logo').should('be.visible');
+        });
     });
 
-    it('Loads request branding page when [request a new logo] link is clicked', () => {
-        ReviewPoolPage.ClickRequestNewLogoLink();
-        cy.get('h1').contains('Request a new logo').should('be.visible');
-    });
-
-    it('Returns to edit branding page when back link is clicked', () => {
-        ReviewPoolPage.ClickBackLink();
-        cy.get('h1').contains('Request a new logo').should('be.visible');
-    });
 
     context("Service's org has no custom branding", () => {
 
+        // TODO: Move this functionality into the ClearCachePage as an action
+        //       or perhaps make it a cy.command that we just pass the cache
+        //       we want to clear to?
         before(() => {
-            // Set the service's org to one that has no branding
-            // Delete the cache key so the change is reflected
-            Admin.LinkOrganisationToService({ orgId: config.Organisations.NO_CUSTOM_BRANDING_ORG_ID, serviceId: config.Services.Cypress });
-            cy.task("deleteKey", `service-${config.Services.Cypress}`)
+            // Make sure we're logged out
+            cy.clearCookie(ADMIN_COOKIE);
+            // Link the test service to the org without branding
+            Admin.LinkOrganisationToService({ orgId: config.Organisations.NO_CUSTOM_BRANDING_ORG_ID, serviceId: config.Services.Cypress })
+            // Login as admin
+            cy.login('notify-ui-tests+admin@cds-snc.ca', Cypress.env('NOTIFY_PASSWORD'))
+            cy.visit('/platform-admin/clear-cache')
+            // Clear the Service cache via the admin panel
+            ClearCachePage.SelectCacheToClear('service');
+            ClearCachePage.ClickClearCacheButton();
+            // Logout and log back in as regular test user and nav to the review-pool page
+            cy.clearCookie(ADMIN_COOKIE);
+            cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
             cy.visit(config.Hostnames.Admin + `/services/${config.Services.Cypress}/review-pool`);
         });
 
@@ -54,9 +68,19 @@ describe("Review Pool", () => {
     context("Service's org has custom branding", () => {
 
         before(() => {
-            Admin.LinkOrganisationToService({ orgId: config.Organisations.DEFAULT_ORG_ID, serviceId: config.Services.Cypress }).then(() => {
-                cy.task("deleteKey", `service-${config.Services.Cypress}`)
-            })
+            // Make sure we're logged out
+            cy.clearCookie(ADMIN_COOKIE);
+            // Link the test service to the org without branding
+            Admin.LinkOrganisationToService({ orgId: config.Organisations.DEFAULT_ORG_ID, serviceId: config.Services.Cypress })
+            // Login as admin
+            cy.login('notify-ui-tests+admin@cds-snc.ca', Cypress.env('NOTIFY_PASSWORD'))
+            cy.visit('/platform-admin/clear-cache')
+            // Clear the Service cache via the admin panel
+            ClearCachePage.SelectCacheToClear('service');
+            ClearCachePage.ClickClearCacheButton();
+            // Logout and log back in as regular test user and nav to the review-pool page
+            cy.clearCookie(ADMIN_COOKIE);
+            cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
         });
 
         beforeEach(() => {
