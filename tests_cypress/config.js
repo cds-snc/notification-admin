@@ -45,17 +45,17 @@ let LOCAL = {
     },
     Services: {
         Notify: 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553',
-        Cypress: '4049c2d0-0cab-455c-8f4c-f356dff51810'
+        Cypress: '73209498-d078-42ff-82dc-57176c52ddde'
     },
     Templates: {
-        'FILE_ATTACH_TEMPLATE_ID': '7246c71e-3d60-458b-96af-af17a5b07659',
-        'SIMPLE_EMAIL_TEMPLATE_ID': 'b4692883-4182-4a23-b1b9-7b9df66a66e8',
-        'VARIABLES_EMAIL_TEMPLATE_ID': '258d8617-da88-4faa-ad28-46cc69f5a458',
-        'SMOKE_TEST_EMAIL': '136e951e-05c8-4db4-bc50-fe122d72fcaa',
-        'SMOKE_TEST_EMAIL_BULK': '48207d93-144d-4ebb-92c5-99ff1f1baead',
-        'SMOKE_TEST_EMAIL_ATTACH': '58db03d6-a9d8-4482-8621-26f473f3980a',
-        'SMOKE_TEST_EMAIL_LINK': '2d52d997-42d3-4ac0-a597-7afc94d4339a',
-        'SMOKE_TEST_SMS': '5945e2f0-3e37-4813-9a60-e0665e02e9c8'
+        'FILE_ATTACH_TEMPLATE_ID': 'e52acc48-dcb9-4f70-81cf-b87d0ceaef1b',
+        'SIMPLE_EMAIL_TEMPLATE_ID': '0894dc6c-1b07-465e-91f0-aa76f202a83f',
+        'VARIABLES_EMAIL_TEMPLATE_ID': 'fa00aa13-87fd-4bc7-9349-ba9270347055',
+        'SMOKE_TEST_EMAIL': '08673acf-fef1-408d-8ce7-7809907595b2',
+        'SMOKE_TEST_EMAIL_BULK': 'efbd319b-4de8-41c7-850f-93ec0490d3c2',
+        'SMOKE_TEST_EMAIL_ATTACH': 'cbd5307f-8662-4cea-9b8e-3bc672bf005c',
+        'SMOKE_TEST_EMAIL_LINK': '94cce202-b171-440f-b0c1-734368ca9494',
+        'SMOKE_TEST_SMS': 'a9fff158-a745-417a-b1ec-ceebcba6614f'
     },
     Organisations: {
         'DEFAULT_ORG_ID': '93cbc868-ac75-4d90-a089-14c40dfd86ab',
@@ -80,6 +80,6 @@ const config = {
 };
 
 // choose which config to use here
-const ConfigToUse = config.STAGING;
+const ConfigToUse = config.LOCAL;
 
 module.exports = ConfigToUse;

@@ -1,4 +1,3 @@
-
 /**
  * This script handles the functionality for the branding request form.
  * It initializes the UI, updates the email template preview based on the selected file,
