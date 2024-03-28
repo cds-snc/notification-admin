@@ -48,7 +48,7 @@ describe("Review Pool", () => {
             // Link the test service to the org without branding
             Admin.LinkOrganisationToService({ orgId: config.Organisations.NO_CUSTOM_BRANDING_ORG_ID, serviceId: config.Services.Cypress })
             // Login as admin
-            cy.login('notify-ui-tests+admin@cds-snc.ca', Cypress.env('NOTIFY_PASSWORD'))
+            cy.login(Cypress.env('NOTIFY_ADMIN_USER'), Cypress.env('NOTIFY_PASSWORD'))
             cy.visit('/platform-admin/clear-cache')
             // Clear the Service cache via the admin panel
             ClearCachePage.SelectCacheToClear('service');
@@ -73,7 +73,7 @@ describe("Review Pool", () => {
             // Link the test service to the org without branding
             Admin.LinkOrganisationToService({ orgId: config.Organisations.DEFAULT_ORG_ID, serviceId: config.Services.Cypress })
             // Login as admin
-            cy.login('notify-ui-tests+admin@cds-snc.ca', Cypress.env('NOTIFY_PASSWORD'))
+            cy.login(Cypress.env('NOTIFY_ADMIN_USER'), Cypress.env('NOTIFY_PASSWORD'))
             cy.visit('/platform-admin/clear-cache')
             // Clear the Service cache via the admin panel
             ClearCachePage.SelectCacheToClear('service');
