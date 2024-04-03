@@ -288,7 +288,7 @@ def test_should_show_you_should_have_at_least_two_members_when_only_one_present_
 ):
     page = client_request.get("main.manage_users", service_id=service_one["id"])
     assert "You should have at least two team members who can manage settings." in page.text
-    
+
 
 def test_does_not_show_you_should_have_at_least_two_members_only_when_two_members_present(
     active_user_with_permissions,
