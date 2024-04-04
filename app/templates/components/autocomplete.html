@@ -17,6 +17,8 @@
       <option value=""></option>
       {% for option in options %}
         <option value="{{ option }}">{{ option }}</option>
+      {% else %}
+        <option disabled>{{ _('No results found') }}</option>
       {% endfor %}
     </select>
   </div>  
