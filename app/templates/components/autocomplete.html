@@ -1,5 +1,5 @@
 {% macro autocomplete(field, options, hint=None) %}
-  <div class="w-full md:w-1/2 form-group contain-floats box-border {% if field.errors %} form-group-error{% endif %}">
+  <div class="w-full md:w-1 form-group contain-floats box-border {% if field.errors %} form-group-error{% endif %}">
     
     <label for="{{ field.name }}">
       <strong>{{ field.label }}</strong>
