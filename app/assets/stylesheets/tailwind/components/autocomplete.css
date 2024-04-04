@@ -1,0 +1,7 @@
+@layer components {
+    /*! purgecss start ignore */
+    .autocomplete__hint {
+        display: none;
+    }
+  }
+  
