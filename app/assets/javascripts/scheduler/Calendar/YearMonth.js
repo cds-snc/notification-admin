@@ -15,7 +15,7 @@ const prevNav = (date, firstAvailableDate) => {
   if (prevMonthEnabled(date, firstAvailableDate)) {
     return [];
   }
-  
+
   return ["Calendar-nav--button--unavailable"];
 };
 
@@ -33,7 +33,7 @@ const nextNav = (date, lastAvailableDate) => {
   if (nextMonthEnabled(date, lastAvailableDate)) {
     return [];
   }
-  
+
   return ["Calendar-nav--button--unavailable"];
 };
 
