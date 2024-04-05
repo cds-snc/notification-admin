@@ -2,24 +2,39 @@ import React, { useContext } from "react";
 import { store, I18nContext } from "./index";
 import dayjs from "dayjs";
 
-const prevNav = (date, firstAvailableDate) => {
+const prevMonthEnabled = (date, firstAvailableDate) => {
   const prevMonth = dayjs(date).subtract(1, "month").format("YYYY-MM-DD");
-
   if (dayjs(prevMonth).isBefore(firstAvailableDate, "month")) {
-    return ["Calendar-nav--button--unavailable"];
+    return false;
   }
 
-  return [];
+  return true;
 };
 
-const nextNav = (date, lastAvailableDate) => {
+const prevNav = (date, firstAvailableDate) => {
+  if (prevMonthEnabled(date, firstAvailableDate)) {
+    return [];
+  }
+  
+  return ["Calendar-nav--button--unavailable"];
+};
+
+const nextMonthEnabled = (date, lastAvailableDate) => {
   const nextMonth = dayjs(date).add(1, "month").date(1).format("YYYY-MM-DD");
 
   if (dayjs(nextMonth).isAfter(lastAvailableDate)) {
-    return ["Calendar-nav--button--unavailable"];
+    return false;
   }
 
-  return [];
+  return true;
+};
+
+const nextNav = (date, lastAvailableDate) => {
+  if (nextMonthEnabled(date, lastAvailableDate)) {
+    return [];
+  }
+  
+  return ["Calendar-nav--button--unavailable"];
 };
 
 export const YearMonth = () => {
@@ -44,6 +59,7 @@ export const YearMonth = () => {
             payload: "previous",
           });
         }}
+        disabled={prevMonthEnabled(date, firstAvailableDate) ? false : true}
       >
         &#10094;
       </button>
@@ -62,6 +78,7 @@ export const YearMonth = () => {
             payload: "next",
           });
         }}
+        disabled={nextMonthEnabled(date, lastAvailableDate) ? false : true}
       >
         &#10095;
       </button>
