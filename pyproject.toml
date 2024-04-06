@@ -65,6 +65,7 @@ redis = "3.5.3" # pinned for now
 xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; see https://github.com/pyexcel/pyexcel-xls/issues/53
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous = "2.1.2"  # pyup: <1.0.0
+monkeytype = "23.3.0"
 
 [tool.poetry.group.test.dependencies]
 isort = "5.12.0"
@@ -89,13 +90,18 @@ types-python-dateutil = "2.8.19.20240106"
 types-pytz = "2021.3.8"
 types-requests = "2.31.0.20240106"
 types-beautifulsoup4 = "^4.12.0.6"
-
-monkeytype = "^23.3.0"
 poethepoet = "^0.24.4"
 
+
 # Poe the Poet tasks
+[tool.poe.tasks.trace-app]
+help = "Runs the app with monkeytype type collection enabled."
+shell = """
+    monkeytype run -m flask run -p 6012 --host=0.0.0.0
+"""
+
 [tool.poe.tasks.trace-tests]
-help = "Runs a suite of tests through MonkeyType, generating a record of type annotation traces monkeytype.sqlite3"
+help = "Runs a test suite or single test through MonkeyType, generating a record of type annotation traces monkeytype.sqlite3"
 shell = """
     if [ -z "${method}" ]; then
         monkeytype run -m pytest '/tests/app/${test-path}::${method}'
@@ -118,7 +124,7 @@ shell = """
     default = ""
     required = false
 
-[tool.poe.tasks.list-traces]
+[tool.poe.tasks.list-modules]
 help = "Lists all files and modules that have trace data associated with them in monkeytype.sqlite3"
 cmd = "monkeytype list-modules"
 
