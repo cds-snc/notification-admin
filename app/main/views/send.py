@@ -670,16 +670,18 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         db_template,
         current_service,
         show_recipient=True,
-        letter_preview_url=url_for(
-            ".check_messages_preview",
-            service_id=service_id,
-            template_id=template_id,
-            upload_id=upload_id,
-            filetype="png",
-            row_index=preview_row,
-        )
-        if not letters_as_pdf
-        else None,
+        letter_preview_url=(
+            url_for(
+                ".check_messages_preview",
+                service_id=service_id,
+                template_id=template_id,
+                upload_id=upload_id,
+                filetype="png",
+                row_index=preview_row,
+            )
+            if not letters_as_pdf
+            else None
+        ),
         email_reply_to=email_reply_to,
         sms_sender=sms_sender,
         page_count=get_page_count_for_letter(db_template),
@@ -690,9 +692,11 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         placeholders=template.placeholders,
         max_initial_rows_shown=int(request.args.get("show") or 10),
         max_errors_shown=50,
-        safelist=itertools.chain.from_iterable([user.name, user.mobile_number, user.email_address] for user in Users(service_id))
-        if current_service.trial_mode
-        else None,
+        safelist=(
+            itertools.chain.from_iterable([user.name, user.mobile_number, user.email_address] for user in Users(service_id))
+            if current_service.trial_mode
+            else None
+        ),
         remaining_messages=recipients_remaining_messages,
         international_sms=current_service.has_permission("international_sms"),
         max_rows=get_csv_max_rows(service_id),
