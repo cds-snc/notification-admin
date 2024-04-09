@@ -80,7 +80,7 @@ flake8-print = "5.0.0"
 requests-mock = "1.12.1"
 # used for creating manifest file locally
 jinja2-cli = { version = "^0.8.2", extras = ["yaml"] }
-black = "23.12.1"
+black = "24.3.0"
 mypy = "1.9.0"
 
 # stubs libraries to keep mypy happy
