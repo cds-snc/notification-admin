@@ -99,7 +99,7 @@
                 ] %}
                   {% if notification[key] %}
                     <dt>{{ key }}:</dt>
-                    <dd class="api-notifications-item-data-item local-datetime-full">{{ notification[key] }}</dd>
+                    <dd class="api-notifications-item-data-item"><time class="local-datetime-full">{{ notification[key] }}</time></dd>
                   {% endif %}
                 {% endfor %}
                 {% if notification.status not in ('pending-virus-check', 'virus-scan-failed') %}

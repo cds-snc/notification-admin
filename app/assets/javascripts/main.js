@@ -1,37 +1,44 @@
 window.formatAllDates = function () {
   $(".local-datetime-short").each(function (index) {
-    let datetime = new Date($(this).text().trim());
+    let datetimeRaw = $(this).text().trim();
+    let datetime = new Date(datetimeRaw);
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
 
     if (datetime instanceof Date && !isNaN(datetime)) {
-      $(this).text(
-        datetime.toLocaleString(locale, {
-          month: "short",
-          day: "numeric",
-          hour: "numeric",
-          minute: "2-digit",
-        }),
-      );
+      $(this)
+        .attr("datetime", datetimeRaw)
+        .text(
+          datetime.toLocaleString(locale, {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+          }),
+        );
     }
   });
 
   $(".local-datetime-short-year").each(function (index) {
-    let datetime = new Date($(this).text().trim());
+    let datetimeRaw = $(this).text().trim();
+    let datetime = new Date(datetimeRaw);
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
 
     if (datetime instanceof Date && !isNaN(datetime)) {
-      $(this).text(
-        datetime.toLocaleString(locale, {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        }),
-      );
+      $(this)
+        .attr("datetime", datetimeRaw)
+        .text(
+          datetime.toLocaleString(locale, {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+        );
     }
   });
 
   $(".local-datetime-full").each(function (index) {
-    let datetime = new Date($(this).text().trim());
+    let datetimeRaw = $(this).text().trim();
+    let datetime = new Date(datetimeRaw);
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
 
     if ($(this).text().trim() === "None") {
@@ -39,11 +46,13 @@ window.formatAllDates = function () {
     }
 
     if (datetime instanceof Date && !isNaN(datetime)) {
-      $(this).text(
-        datetime.toLocaleDateString(locale, { dateStyle: "long" }) +
-          ", " +
-          datetime.toLocaleTimeString(locale, { timeStyle: "short" }),
-      );
+      $(this)
+        .attr("datetime", datetimeRaw)
+        .text(
+          datetime.toLocaleDateString(locale, { dateStyle: "long" }) +
+            ", " +
+            datetime.toLocaleTimeString(locale, { timeStyle: "short" }),
+        );
     }
   });
 

@@ -24,7 +24,7 @@
         {% else %}
           <a href="{{ download_link }}" download class="text-smaller leading-tight font-bold">{{ _('Download this report') }}</a>
           <div class="mt-2 text-small leading-tight font-normal">
-            {{ _("Available until") }} <span id="time-left" class="local-datetime-short-year">{{ available_until_date }}</span>
+            {{ _("Available until") }} <time id="time-left" class="local-datetime-short-year">{{ available_until_date }}</time>
           </div>
         {% endif %}
       </div>
