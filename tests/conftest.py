@@ -1168,9 +1168,11 @@ def create_service_templates(service_id, number_of_templates=6):
                 "{}_template_{}".format(template_type, template_number),
                 template_type,
                 "{} template {} content".format(template_type, template_number),
-                subject="{} template {} subject".format(template_type, template_number)
-                if template_type in ["email", "letter"]
-                else None,
+                subject=(
+                    "{} template {} subject".format(template_type, template_number)
+                    if template_type in ["email", "letter"]
+                    else None
+                ),
             )
         )
 
