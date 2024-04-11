@@ -4,7 +4,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/problem-email-checkbox.html" import problem_email_checkbox %}
 {% from "components/empty-list.html" import empty_list  %}
-{% from "components/table.html" import mapping_table, row, settings_row, text_field, link_field, optional_text_field, edit_field, field, boolean_field with context %}
+{% from "components/table.html" import mapping_table, row, row_heading, text_field, link_field, with context %}
 
 {% block service_page_title %}
   {% if job.job_status == 'scheduled' %}
@@ -22,24 +22,19 @@
           {{ _('Scheduled messages') }}
       </h1>
       <div class="flex flex-wrap mb-8">
-        {% set caption = _("Scheduled message") %}
-        {% set h_scheduled_by = _("Scheduled by") %}
-        {% set h_api_request_name = _("API request name") %}
-        {% set h_scheduled_for = _("Scheduled for") %}
-        {% set h_spreadsheet = _("Spreadsheet") %}
-        {% set h_sending_to = _("Sending to") %}
-        {% set h_template = _("Template") %}
+        {% set caption = _("Scheduled messages") %}
 
         {% call mapping_table(
           caption=caption,
-          field_headings=[h_scheduled_by, h_scheduled_for, h_spreadsheet, h_sending_to, h_template],
           field_headings_visible=False,
           caption_visible=False,
           font_size='table-font-small',
         ) %}
 
           {% call row() %}
-            {{ text_field(h_scheduled_by) }}
+            {% call row_heading(cell_width="sm:w-1/4") %}
+              {{ _("Scheduled by") }}
+            {% endcall %}
             {% if job.api_key %}
               {{ text_field(_("API key '<a href='{}'>{}</a>'").format(url_for('.api_keys', service_id=current_service.id), job.api_key.name)) }}
             {% else %}
@@ -48,26 +43,34 @@
           {% endcall %}
 
           {% call row() %}
-            {{ text_field(h_scheduled_for, cell_width="sm:w-1/4") }}
+            {% call row_heading(cell_width="sm:w-1/4") %}
+              {{_("Scheduled for")}}
+            {% endcall %}
             {{ text_field(text=job.scheduled_for, date_format="local-datetime-short") }}
           {% endcall %}
 
           {% call row() %}
-            {% if job.api_key %}
-              {{ text_field(h_api_request_name, cell_width="sm:w-1/4")}}
-            {% else %}
-              {{ text_field(h_spreadsheet, cell_width="sm:w-1/4") }}
-            {% endif %}
+            {% call row_heading(cell_width="sm:w-1/4") %}
+              {% if job.api_key %}
+                  {{ _("API request name")}}
+              {% else %}
+                {{ _("Spreadsheet")}}
+              {% endif %}
+            {% endcall %}
             {{ text_field(job.original_file_name) }}
           {% endcall %}
 
           {% call row() %}
-            {{ text_field(h_sending_to, cell_width="sm:w-1/4") }}
+            {% call row_heading(cell_width="sm:w-1/4") %}
+              {{ _("Sending to") }}
+            {% endcall %}
             {{ text_field(_('{} recipient(s)').format(job.notification_count)) }}
           {% endcall %}
 
           {% call row() %}
-            {{ text_field(h_template, cell_width="sm:w-1/4") }}
+            {% call row_heading(cell_width="sm:w-1/4") %}
+              {{ _("Template") }}
+            {% endcall %}
             {{ link_field(template_name, url_for('.view_template_version', service_id=current_service.id, template_id=template_id, version=job['template_version'])) }}
           {% endcall %}
 

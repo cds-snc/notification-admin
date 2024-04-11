@@ -83,8 +83,8 @@
     </td>
 {%- endmacro %}
 
-{% macro row_heading() -%}
-  <th class="table-field" scope="row">
+{% macro row_heading(cell_width=None) -%}
+  <th class="table-field {{ cell_width if cell_width}}" scope="row">
     {{ caller() }}
   </th>
 {%- endmacro %}
