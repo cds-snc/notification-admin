@@ -57,7 +57,7 @@
             {{ _('failed') }} – {{ failure_percentage }}%
           {% endif %}
         {% else %}
-          {{ _('No failures') }}
+          <span class="sr-only">{{ label }}:</span> {{ _('No failures') }}
         {% endif %}
       </div>
       {% if failure_link %}
