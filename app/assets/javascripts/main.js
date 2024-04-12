@@ -57,22 +57,23 @@ window.formatAllDates = function () {
   });
 
   $(".relative-time-past").each(function (index) {
-    let timeRaw = new Date($(this).text().trim());
+    let datetimeRaw = $(this).text().trim();
+    let datetime = new Date($(this).text().trim());
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
-    let time = moment(timeRaw);
+    let time = moment(datetime);
 
     if (time.isValid() && window.APP_LANG) {
       let isToday = moment().isSame(time, "day");
       let dayStr = "";
-      let timeStr = timeRaw.toLocaleTimeString(locale, { timeStyle: "short" });
+      let timeStr = datetime.toLocaleTimeString(locale, { timeStyle: "short" });
 
       if (isToday && window.APP_PHRASES) {
         dayStr = window.APP_PHRASES["today"];
       } else {
-        dayStr = timeRaw.toLocaleDateString(locale, { dateStyle: "long" });
+        dayStr = datetime.toLocaleDateString(locale, { dateStyle: "long" });
       }
 
-      $(this).text(`${dayStr}, ${timeStr}`);
+      $(this).attr("datetime", datetimeRaw).text(`${dayStr}, ${timeStr}`);
     }
   });
 };
