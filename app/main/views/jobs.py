@@ -69,14 +69,16 @@ def view_jobs(service_id):
         page=page,
         prev_page=prev_page,
         next_page=next_page,
-        scheduled_jobs=render_template(
-            "views/dashboard/_upcoming.html",
-            scheduled_jobs=job_api_client.get_scheduled_jobs(service_id),
-            hide_show_more=True,
-            title=_("Scheduled messages"),
-        )
-        if page == 1
-        else None,
+        scheduled_jobs=(
+            render_template(
+                "views/dashboard/_upcoming.html",
+                scheduled_jobs=job_api_client.get_scheduled_jobs(service_id),
+                hide_show_more=True,
+                title=_("Scheduled messages"),
+            )
+            if page == 1
+            else None
+        ),
     )
 
 
