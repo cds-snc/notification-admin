@@ -90,33 +90,34 @@
   }
 
   /* BEGINS or ENDS */
+  /* the `;` Ensures a pause on JAWS, NVDA and VO */
   [lang*="en"] mark[class*="placeholder"]::before {
-    content: " [" var(--name) " begins] ";
+    content: "; " var(--name) " begins; ";
   }
   [lang*="en"] mark[class*="placeholder"]::after {
-    content: " [" var(--name) " ends] ";
+    content: "; " var(--name) " ends; ";
   }
 
   [lang="fr"] mark[class*="placeholder"]::before {
-    content: " [ début du " var(--name) "] ";
+    content: "; début du " var(--name) "; ";
   }
   [lang="fr"] mark[class*="placeholder"]::after {
-    content: " [ fin du " var(--name) "] ";
+    content: "; fin du " var(--name) "; ";
   }
 
   /* IF...THEN */
   [lang*="en"] mark.placeholder-conditional .condition::before {
-    content: " [if] ";
+    content: "; if; ";
   }
   [lang*="en"] mark.placeholder-conditional .condition::after {
-    content: " [then] ";
+    content: "; then; ";
   }
 
   [lang="fr"] mark.placeholder-conditional .condition::before {
-    content: " [si] ";
+    content: "; si; ";
   }
   [lang="fr"] mark.placeholder-conditional .condition::after {
-    content: " [alors] ";
+    content: "; alors; ";
   }
 
   .autocomplete__input {
