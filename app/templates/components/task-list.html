@@ -1,17 +1,17 @@
 {% macro task_list_item(status, label, link) %}
-  <li class="task-list-item pb-3 md:pb-0">
+  <li class="task-list-item">
     <span aria-describedby="{{ label|id_safe }}"><a href="{{ link }}">{{ label }}</a></span>
     {% if status == "in-progress" %}
-      <strong class="static md:absolute task-list-indicator-not-completed" id="{{ label|id_safe }}">
+      <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}">
         {{ _('In progress') }}
       </strong>
     {% elif status %}
-      <strong class="static md:absolute task-list-indicator-completed" id="{{ label|id_safe }}">
+      <strong class="task-list-indicator-completed" id="{{ label|id_safe }}">
         <img aria-hidden="true" src="{{ asset_url('images/tick.svg') }}" class="w-6 h-6 inline-block mr-2 -mt-1" alt="">
         {{ _('Completed') }}
       </strong>
     {% else %}
-      <strong class="static md:absolute task-list-indicator-not-completed" id="{{ label|id_safe }}">
+      <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}">
         {{ _('Not completed') }}
       </strong>
     {% endif %}
