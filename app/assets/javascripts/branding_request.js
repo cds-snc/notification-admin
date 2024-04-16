@@ -32,7 +32,6 @@
   const image_label = document.getElementById("file-upload-label");
 
   // init UI
-  input_img.style.opacity = 0;
   input_img.addEventListener("change", updateImageDisplay);
   submit_button.addEventListener("click", validateForm);
   input_brandname.addEventListener("change", validateBrand);

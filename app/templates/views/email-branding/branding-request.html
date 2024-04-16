@@ -47,11 +47,10 @@
                 </span>
               {% endif %}
               
-              {{ form.file(**{ 'class': 'file-upload-field', 'accept': 'image/png', 'data_testid': 'brand_image', 'aria-labelledby': 'file-description' }) }}
-              <span aria-hidden="true" id="file-upload-button" class="button button-secondary font-normal"> {{ _('Select a file') }} </span>
-            </label>         
+              {{ form.file(**{ 'class': 'file-upload-field file-upload-field-secondary', 'accept': 'image/png', 'data_testid': 'brand_image', 'aria-labelledby': 'file-description' }) }}
+            </label>
             
-            <div class="mt-6 ml-2 pl-6 border-l-4 border-gray-200 preview font-normal relative" data-testid="brand_fileinfo">
+            <div class="file-upload-extra pt-4 preview font-normal relative" data-testid="brand_fileinfo">
               <div class="message relative">{{ _('No file currently selected') }}</div>
               <div class="relative">
                 <div class="img relative"></div>
