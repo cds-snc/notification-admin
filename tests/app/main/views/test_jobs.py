@@ -406,9 +406,11 @@ def test_should_show_scheduled_job(
         job_id=fake_uuid,
     )
 
-    scheduled_job = page.select("td > div[class~='do-not-truncate-text']")
-    assert normalize_spaces(scheduled_job[1].text) == "Test User"
-    assert normalize_spaces(scheduled_job[3]) == "2016-01-02T00:00:00.061258"
+    scheduled_job = page.select("td > [class~='do-not-truncate-text']")
+    assert normalize_spaces(scheduled_job[0]) == "Test User"
+    assert normalize_spaces(scheduled_job[1]) == "2016-01-02T00:00:00.061258"
+    assert normalize_spaces(scheduled_job[2]) == "thisisatest.csv"
+    assert normalize_spaces(scheduled_job[3]) == "1 recipient(s)"
     assert page.select("td > a")[0]["href"] == url_for(
         "main.view_template_version",
         service_id=SERVICE_ONE_ID,
@@ -458,9 +460,11 @@ def test_should_show_scheduled_job_with_api_key(
         service_id=SERVICE_ONE_ID,
         job_id=fake_uuid,
     )
-    scheduled_job = page.select("td > div[class~='do-not-truncate-text']")
-    assert normalize_spaces(scheduled_job[1].text) == f"API key '{JOB_API_KEY_NAME}'"
-    assert normalize_spaces(scheduled_job[3]) == "2016-01-02T00:00:00.061258"
+    scheduled_job = page.select("td > [class~='do-not-truncate-text']")
+    assert normalize_spaces(scheduled_job[0].text) == f"API key '{JOB_API_KEY_NAME}'"
+    assert normalize_spaces(scheduled_job[1]) == "2016-01-02T00:00:00.061258"
+    assert normalize_spaces(scheduled_job[2]) == "thisisatest.csv"
+    assert normalize_spaces(scheduled_job[3]) == "1 recipient(s)"
     assert page.select("td > a")[0]["href"] == url_for(
         "main.view_template_version",
         service_id=SERVICE_ONE_ID,
