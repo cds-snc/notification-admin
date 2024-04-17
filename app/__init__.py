@@ -496,8 +496,8 @@ def format_notification_status(status, template_type, provider_response=None, fe
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(
         {"created", "pending", "sending"},
-        " " + _("since") + ' <span class="local-datetime-short">{}</span>'.format(created),
-    ).get(status, '<span class="local-datetime-short">{}</span>'.format(updated))
+        " " + _("since") + ' <time class="local-datetime-short">{}</time>'.format(created),
+    ).get(status, '<time class="local-datetime-short">{}</time>'.format(updated))
 
 
 def format_notification_status_as_field_status(status, notification_type):

@@ -202,7 +202,7 @@ def test_should_show_page_for_one_job(
         status=status_argument,
     )
     assert csv_link.text == "Download this report"
-    assert page.find("span", {"id": "time-left"}).text.split(" ")[0] == "2016-01-09"
+    assert page.find("time", {"id": "time-left"}).text.split(" ")[0] == "2016-01-09"
 
     assert normalize_spaces(page.select_one("tbody tr").text) == normalize_spaces(
         "6502532222 " "template content " "No " "Delivered 11:10:00.061258"
@@ -231,7 +231,7 @@ def test_should_show_page_for_one_job_with_flexible_data_retention(
     mock_get_service_data_retention.side_effect = [[{"days_of_retention": 10, "notification_type": "sms"}]]
     page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=fake_uuid, status="delivered")
 
-    assert page.find("span", {"id": "time-left"}).text.split(" ")[0] == "2016-01-12"
+    assert page.find("time", {"id": "time-left"}).text.split(" ")[0] == "2016-01-12"
     assert "Cancel sending these letters" not in page
 
 
