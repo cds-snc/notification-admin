@@ -44,6 +44,13 @@ from app.utils import (
     user_is_logged_in,
 )
 
+from time import sleep
+
+@main.route("/timeout", methods=["GET", "POST"])
+def timeout():
+    sleep(60)
+    return """Hello world 60!"""
+
 
 @main.route("/")
 def index():
