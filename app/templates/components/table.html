@@ -107,9 +107,17 @@
       </ul>
     {% else %}
       {% if truncate %}
-        <div class="truncate-text {{date_format if date_format}}">{{text}}</div>
+        {% if date_format %}
+          <time class="truncate-text {{date_format if date_format}}">{{text}}</time>
+        {% else %}
+          <div class="truncate-text {{date_format if date_format}}">{{text}}</div>
+        {% endif %}
       {% else %}
-        <div class="do-not-truncate-text {{date_format if date_format}}">{{text}}</div>
+        {% if date_format %}
+          <time class="do-not-truncate-text {{date_format}}">{{text}}</time>
+        {% else %}
+          <div class="do-not-truncate-text">{{text}}</div>
+        {% endif %}
       {% endif %}
     {% endif %}
   {% endcall %}
