@@ -4,7 +4,8 @@
   is_selected=False,
   css_classes=None,
   id_key=None,
-  is_external_link=False
+  is_external_link=False,
+  is_active=False
 ) %}
   {% if url and localised_txt %}
     <li class="mb-4">
@@ -14,6 +15,7 @@
         href="{{ url }}"
         class="text-smaller no-underline hover:underline {% if is_selected %} menu--active {% endif %} {{ css_classes }}"
         {% if is_external_link %}target="_blank"{% endif %}
+        {% if is_active %}aria-current="page"{% endif %}
       >
         {{ localised_txt }}
         {% if is_external_link %}<i aria-hidden="true" class="pl-2 fa-solid fa-arrow-up-right-from-square"></i>{% endif %}

@@ -3,7 +3,8 @@
   localised_txt=None, 
   css_classes=None, 
   id_key=None, 
-  is_external_link=False
+  is_external_link=False,
+  is_active=False
 ) %}
   {% if url and localised_txt %}
     <div class="pr-10 flex-shrink-0">
@@ -14,7 +15,7 @@
           href="{{ url }}"
           class="text-smaller text-blue bg-gray py-5 font-bold no-underline self-center hover:underline line-under border-b-4 border-transparent visited:text-blue link:text-blue focus:border-b-4 focus:bg-yellow focus:border-blue focus:outline-none {{ css_classes }}"
           {% if is_external_link %}target="_blank"{% endif %}
-          {% if css_classes and "header--active" in css_classes %}aria-current="page"{% endif %}
+          {% if is_active %}aria-current="page"{% endif %}
         >{{ localised_txt }}
           {% if is_external_link %}<i aria-hidden="true" class="pl-2 fa-solid fa-arrow-up-right-from-square"></i>{% endif %}
         </a>
