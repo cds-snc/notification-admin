@@ -2,24 +2,19 @@
   /*! purgecss start ignore */
   .placeholder,
   .placeholder-no-brackets,
-  .placeholder-conditional {
+  .placeholder-conditional .condition {
     word-wrap: break-word;
     border-radius: 20px;
     box-shadow:
-      inset 0.47em 0 0 0 #fff,
-      inset -0.47em 0 0 0 #fff,
-      inset 0 -0.15em 0 0 #fff,
-      inset 0 0.15em 0 0 #fff;
+      inset 0.47em 0 0 0 var(--message-wrapper-bg, #fff),
+      inset var(--right-offset, -0.47em) 0 0 0 var(--message-wrapper-bg, #fff),
+      inset 0 -0.15em 0 0 var(--message-wrapper-bg, #fff),
+      inset 0 0.15em 0 0 var(--message-wrapper-bg, #fff);
     @apply inline bg-yellow text-black break-words;
   }
-  .sms-message-wrapper .placeholder,
-  .sms-message-wrapper .placeholder-no-brackets {
+  .sms-message-wrapper {
     /* theme gray.button */
-    box-shadow:
-      inset 0.47em 0 0 0 #dee0e2,
-      inset -0.47em 0 0 0 #dee0e2,
-      inset 0 -0.18em 0 0 #dee0e2,
-      inset 0 0.18em 0 0 #dee0e2;
+    --message-wrapper-bg: #dee0e2;
   }
 
   .placeholder-no-brackets {
@@ -27,28 +22,17 @@
     padding-right: 3px;
     border-radius: 1px;
     box-shadow:
-      inset 0 -0.1em 0 0 #fff,
-      inset 0 0.1em 0 0 #fff;
+      inset 0 -0.1em 0 0 var(--message-wrapper-bg, #fff),
+      inset 0 0.1em 0 0 var(--message-wrapper-bg, #fff);
   }
 
-  .placeholder-conditional {
+  .placeholder-conditional .condition {
     @apply rounded-none;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    box-shadow:
-      inset 0.47em 0 0 0 #fff,
-      inset -0.89em 0 0 0 #fff,
-      inset 0 -0.16em 0 0 #fff,
-      inset 0 0.16em 0 0 #fff;
-  }
-  .sms-message-wrapper .placeholder-conditional {
-    box-shadow:
-      inset 0.47em 0 0 0 #dee0e2,
-      inset -0.89em 0 0 0 #dee0e2,
-      inset 0 -0.18em 0 0 #dee0e2,
-      inset 0 0.18em 0 0 #dee0e2;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    --right-offset: -0.89em;
   }
 
   .placeholder-redacted {
@@ -57,16 +41,83 @@
     opacity: 0.8;
     top: 0.1em;
     background-color: currentColor;
-    box-shadow: inset 0 -0.35em 0 0 #fff;
+    box-shadow: inset 0 -0.35em 0 0 var(--message-wrapper-bg, #fff);
     @apply py-0 relative;
-  }
-  .sms-message-wrapper .placeholder-redacted {
-    box-shadow: inset 0 -0.35em 0 0 #dee0e2;
   }
 
   *:focus + p .sms-message-wrapper .placeholder-redacted {
     /* theme yellow */
     box-shadow: inset 0 -0.35em 0 0 #ffbf47;
+  }
+
+  /* Makes the content before and after MARK only audible to screen readers */
+  mark {
+    /* remove default styles for MARK element */
+    background: none;
+  }
+  mark::before,
+  mark::after,
+  mark .condition::before,
+  mark .condition::after {
+    clip-path: inset(100%);
+    clip: rect(1px, 1px, 1px, 1px);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  /* PLACEHOLDER TYPES */
+  [lang*="en"] mark.placeholder {
+    --name: "custom content";
+  }
+  [lang*="en"] mark.placeholder-conditional {
+    --name: "filtered content";
+  }
+  [lang*="en"] mark.placeholder-redacted {
+    --name: "redacted content";
+  }
+
+  [lang="fr"] mark.placeholder {
+    --name: "contenu personnalisé";
+  }
+  [lang="fr"] mark.placeholder-conditional {
+    --name: "contenu filtré";
+  }
+  [lang="fr"] mark.placeholder-redacted {
+    --name: "contenu rédigé";
+  }
+
+  /* BEGINS or ENDS */
+  /* the `;` Ensures a pause on JAWS, NVDA and VO */
+  [lang*="en"] mark[class*="placeholder"]::before {
+    content: "; " var(--name) " begins; ";
+  }
+  [lang*="en"] mark[class*="placeholder"]::after {
+    content: "; " var(--name) " ends; ";
+  }
+
+  [lang="fr"] mark[class*="placeholder"]::before {
+    content: "; début du " var(--name) "; ";
+  }
+  [lang="fr"] mark[class*="placeholder"]::after {
+    content: "; fin du " var(--name) "; ";
+  }
+
+  /* IF...THEN */
+  [lang*="en"] mark.placeholder-conditional .condition::before {
+    content: "; if; ";
+  }
+  [lang*="en"] mark.placeholder-conditional .condition::after {
+    content: "; then; ";
+  }
+
+  [lang="fr"] mark.placeholder-conditional .condition::before {
+    content: "; si; ";
+  }
+  [lang="fr"] mark.placeholder-conditional .condition::after {
+    content: "; alors; ";
   }
 
   .autocomplete__input {
