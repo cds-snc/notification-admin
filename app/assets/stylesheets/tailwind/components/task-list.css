@@ -4,11 +4,15 @@
     @apply border-t-1 border-solid border-gray-grey2 my-gutter mx-0;
   }
   .task-list-item {
-    @apply relative;
+    @apply relative border-b-1 border-solid border-gray-grey2 pb-3;
+
+    @screen md {
+      @apply pb-0;
+    }
   }
   .task-list-item a {
     padding-right: 20%;
-    @apply border-b-1 border-solid border-gray-grey2 block py-gutterHalf px-0 relative;
+    @apply block py-gutterHalf px-0 relative;
   }
   .task-list-item a:hover {
     @apply text-blue-lightblue;
@@ -30,9 +34,13 @@
     z-index: 2;
     min-width: 20%;
     margin-top: -15px;
-    padding: 3px 8px 1px 8px;
+    padding: 3px 8px 1px 0px;
     top: 28px; /* gutter - 2px */
-    @apply text-small leading-tight font-bold inline-block absolute right-0 pointer-events-none text-right;
+    @apply text-small leading-tight font-bold inline-block absolute right-0 pointer-events-none text-right static;
+
+    @screen md {
+      @apply absolute;
+    }
   }
 
   .task-list-indicator-completed {

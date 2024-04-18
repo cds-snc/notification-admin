@@ -183,7 +183,7 @@ class TwoFactorCode(StringField):
     ]
 
     def __call__(self, **kwargs):
-        return super().__call__(type="tel", pattern="[0-9]*", **kwargs)
+        return super().__call__(type="text", inputmode="numeric", autocomplete="one-time-code", pattern="[0-9]*", **kwargs)
 
 
 class ForgivingIntegerField(StringField):
