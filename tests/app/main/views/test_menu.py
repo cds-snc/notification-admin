@@ -13,7 +13,7 @@ from tests.conftest import SERVICE_ONE_ID, ClientRequest, create_notifications
         ("main.choose_template", "Templates"),
         ("main.api_integration", "API integration"),
         ("main.manage_users", "Team members"),
-        ("main.service_settings", "Settings")
+        ("main.service_settings", "Settings"),
     ],
 )
 def test_selected_menus(
@@ -55,10 +55,10 @@ def test_selected_menus(
         ],
     )
 
-    #mocks for api_integration
+    # mocks for api_integration
     notifications = create_notifications(template_type="EMAIL")
     mocker.patch("app.notification_api_client.get_api_notifications_for_service", return_value=notifications)
-    
+
     page = client_request.get(
         page_name,
         service_id=SERVICE_ONE_ID,
