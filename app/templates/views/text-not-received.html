@@ -16,7 +16,7 @@
     <p class="phone-confirm">{{ _('Check that your mobile phone number is correct and then re-send the security code.') }}</p>
     {% set txt = _('Re-send security code') %}
       {% call form_wrapper() %}
-        {{ textbox(form.mobile_number) }}
+        {{ textbox(form.mobile_number, autocomplete='tel') }}
         {{ page_footer(txt) }}
       {% endcall %}
   </div>
