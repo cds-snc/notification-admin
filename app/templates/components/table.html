@@ -1,7 +1,7 @@
 {% from "components/big-number.html" import big_number %}
 
 {% macro mapping_table(caption='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False) -%}
-  <div role="region" class="scrollable-table" tabindex="0">
+  <section class="scrollable-table" tabindex="0">
     <table class="table table-font-xsmall">
       <caption class="heading-medium table-heading{{ ' visuallyhidden' if not caption_visible}}">
         {{ caption }}
@@ -27,7 +27,7 @@
         {{ caller() }}
       </tbody>
     </table>
-  </div>
+  </section>
 {%- endmacro %}
 
 {% macro list_table(items, caption='', empty_message='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False) -%}
