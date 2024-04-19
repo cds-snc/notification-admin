@@ -7,9 +7,10 @@
     this.cancelText = window.polyglot.t("cancel_upload");
 
     this.showCancelButton = () =>
-      $("#file-upload-button", this.$form).replaceWith(`
-      <a href="" class='button button-red font-normal'>${this.cancelText}</a>
-    `);
+      $("#file-upload-button", this.$form)
+        .addClass("button-red")
+        .text(this.cancelText)
+        .attr("id", "#file-upload-button");
 
     this.start = function (component) {
       this.$form = $(component);
@@ -18,10 +19,8 @@
       $(window).on("pageshow", () => this.$form[0].reset());
 
       // Need to put the event on the container, not the input for it to work properly
-      this.$form.on(
-        "change",
-        ".file-upload-field",
-        () => this.submit() && this.showCancelButton(),
+      this.$form.on("change", ".file-upload-field", () =>
+        this.showCancelButton(),
       );
     };
   };
