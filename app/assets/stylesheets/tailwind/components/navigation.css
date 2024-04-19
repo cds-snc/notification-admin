@@ -122,7 +122,8 @@
     @apply border-blue !important;
   }
 
-  .menu--active, #mobile-menu-content [aria-current="page"] {
+  .menu--active,
+  #mobile-menu-content [aria-current="page"] {
     @apply font-bold;
   }
 
