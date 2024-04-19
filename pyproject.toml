@@ -97,7 +97,7 @@ poethepoet = "^0.24.4"
 [tool.poe.tasks.trace-app]
 help = "Runs the app with monkeytype type collection enabled."
 shell = """
-    monkeytype run -m flask run -p 6012 --host=0.0.0.0
+        monkeytype run -m flask run -p 6012 --host=0.0.0.0
 """
 
 [tool.poe.tasks.trace-tests]
@@ -128,7 +128,7 @@ shell = """
 help = "Lists all files and modules that have trace data associated with them in monkeytype.sqlite3"
 cmd = "monkeytype list-modules"
 
-# Composite task that uses list-traces to obtain a list of files and modules
+# Composite task that uses list-modules to obtain a list of files and modules
 [tool.poe.tasks.apply-annotations]
 help = "Applies ALL known type annotations stored in monkeytype.sqlite3"
 shell = """
@@ -137,5 +137,5 @@ shell = """
         monkeytype apply $trace
     done
 """
-deps = ["list-traces"]
-uses = { TRACES = "list-traces"}
+deps = ["list-modules"]
+uses = { TRACES = "list-modules"}
