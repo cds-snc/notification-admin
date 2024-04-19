@@ -84,6 +84,7 @@ from app.notify_client.template_folder_api_client import template_folder_api_cli
 from app.notify_client.template_statistics_api_client import template_statistics_client
 from app.notify_client.user_api_client import user_api_client
 from app.salesforce import salesforce_account
+from app.scanfiles.scanfiles_api_client import scanfiles_api_client
 from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
@@ -173,6 +174,9 @@ def create_app(application):
         bounce_rate_client,
     ):
         client.init_app(application)
+
+    # pass the scanfiles url and token
+    scanfiles_api_client.init_app(application.config["SCANFILES_URL"], application.config["SCANFILES_AUTH_TOKEN"])
 
     logging.init_app(application, statsd_client)
 
@@ -500,8 +504,8 @@ def format_notification_status(status, template_type, provider_response=None, fe
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(
         {"created", "pending", "sending"},
-        " " + _("since") + ' <span class="local-datetime-short">{}</span>'.format(created),
-    ).get(status, '<span class="local-datetime-short">{}</span>'.format(updated))
+        " " + _("since") + ' <time class="local-datetime-short">{}</time>'.format(created),
+    ).get(status, '<time class="local-datetime-short">{}</time>'.format(updated))
 
 
 def format_notification_status_as_field_status(status, notification_type):
@@ -669,7 +673,7 @@ def useful_headers_after_request(response):
             "object-src 'self';"
             f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
-            f"img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+            f"img-src 'self' blob: {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
             "frame-ancestors 'self';"
             "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
             "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"

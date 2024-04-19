@@ -7,7 +7,7 @@ from app.main.forms import FieldWithLanguageOptions
 from app.utils import documentation_url
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
 
-service = [
+services = [
     {
         "service_id": 1,
         "service_name": "jessie the oak tree",
@@ -25,12 +25,30 @@ service = [
         "email_totals": 1200,
         "letter_totals": 0,
         "free_sms_fragment_limit": 100,
-    }
+    },
+    {
+        "service_id": 2,
+        "service_name": "jessie the birch tree",
+        "organisation_name": "Forest",
+        "consent_to_research": True,
+        "contact_name": "Forest fairy",
+        "organisation_type": "Ecosystem",
+        "contact_email": "forest.fairy@digital.cabinet-office.canada.ca",
+        "contact_mobile": "+16132532223",
+        "live_date": "Sat, 29 Mar 2014 00:00:00 GMT",
+        "sms_volume_intent": 100,
+        "email_volume_intent": 50,
+        "letter_volume_intent": 20,
+        "sms_totals": 300,
+        "email_totals": 1200,
+        "letter_totals": 0,
+        "free_sms_fragment_limit": 100,
+    },
 ]
 
 
 def test_non_logged_in_user_can_see_homepage(mocker, client, mock_calls_out_to_GCA):
-    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
         return_value={"data": [("2020-11-01", "email", 20)]},
@@ -50,7 +68,7 @@ def test_non_logged_in_user_can_see_homepage(mocker, client, mock_calls_out_to_G
 
 @pytest.mark.skip(reason="TODO: a11y test")
 def test_home_page_a11y(mocker, client, mock_calls_out_to_GCA):
-    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
         return_value={"data": [("2020-11-01", "email", 20)]},
@@ -130,15 +148,72 @@ def test_static_pages(
     assert not page.select_one("meta[name=description]")
 
 
-def test_activity_page(mocker, client):
-    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
+@pytest.mark.parametrize(
+    "stats, services",
+    [
+        (
+            [  # Heartbeat's filtered
+                ("2020-11-01", "email", 20),
+                ("2020-11-01", "sms", 20),
+            ],
+            [
+                services[0],
+            ],
+        ),
+        (
+            [  # Heartbeat's not filtered
+                ("2020-11-01", "email", 170),
+                ("2020-11-01", "sms", 150),
+            ],
+            services,
+        ),
+    ],
+)
+def test_activity_page(mocker, client, stats, services):
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
-        return_value={"data": [("2020-11-01", "email", 20)]},
+        return_value={"data": stats},
     )
-
     response = client.get(url_for("main.activity"))
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert response.status_code == 200
+    assert page.select("div[class~='lg:text-xxl']")[0].text == str(sum(x[2] for x in stats))
+    assert page.select("div[class~='lg:text-xxl']")[1].text == str(len(services))
+
+
+@pytest.mark.parametrize(
+    "stats, services",
+    [
+        (
+            [  # Heartbeat's filtered
+                ("2020-11-01", "email", 20),
+                ("2020-11-01", "sms", 20),
+            ],
+            [
+                services[0],
+            ],
+        ),
+        (
+            [  # Heartbeat's not filtered
+                ("2020-11-01", "email", 170),
+                ("2020-11-01", "sms", 150),
+            ],
+            services,
+        ),
+    ],
+)
+def test_home_page_displays_activity(mocker, client, stats, services):
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": stats},
+    )
+    response = client.get(url_for("main.index"))
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    assert response.status_code == 200
+    assert page.select("span[class~='xs:text-lg']")[0].text == str(len(services))
+    assert page.select("span[class~='xs:text-lg']")[1].text == str(sum(x[2] for x in stats))
 
 
 @pytest.mark.parametrize(
@@ -269,7 +344,7 @@ def test_letter_template_preview_headers(
     ],
 )
 def test_query_params(client, query_key, query_value, heading, mocker, mock_calls_out_to_GCA):
-    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
         return_value={"data": [("2020-11-01", "email", 20)]},

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-export POETRY_VERSION="1.3.2"
+export POETRY_VERSION="1.7.1"
 
 # Define aliases
 echo -e "\n\n# User's Aliases" >> ~/.zshrc
