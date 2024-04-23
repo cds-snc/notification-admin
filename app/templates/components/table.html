@@ -1,36 +1,38 @@
 {% from "components/big-number.html" import big_number %}
 
 {% macro mapping_table(caption='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False) -%}
-  <table class="table table-font-xsmall">
-    <caption class="heading-medium table-heading{{ ' visuallyhidden' if not caption_visible}}">
-      {{ caption }}
-    </caption>
-    <thead class="table-field-headings{% if field_headings_visible %}-visible{% endif %}">
-      <tr>
-        {% for field_heading in field_headings %}
-          {% if field_heading == '' %} 
-          <td class="table-field-index"></td>
-          {% else %} 
-            <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}{% if not field_headings_visible %} border-0{% endif %}" {% if equal_length %}{{ 'style=\"width: {0}%\"'.format((100 / field_headings|length)|int)|safe }}{% endif %}>
-              {% if field_headings_visible %}
-                {{ field_heading }}
-              {% else %}
-                <span class="visuallyhidden">{{ field_heading }}</span>
-              {% endif %}
-            </th>
-          {% endif %}
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {{ caller() }}
-    </tbody>
-  </table>
+  <section class="scrollable-table" tabindex="0">
+    <table class="table table-font-xsmall">
+      <caption class="heading-medium table-heading{{ ' visuallyhidden' if not caption_visible}}">
+        {{ caption }}
+      </caption>
+      <thead class="table-field-headings{% if field_headings_visible %}-visible{% endif %}">
+        <tr>
+          {% for field_heading in field_headings %}
+            {% if field_heading == '' %} 
+            <td class="table-field-index"></td>
+            {% else %} 
+              <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}{% if not field_headings_visible %} border-0{% endif %}" {% if equal_length %}{{ 'style=\"width: {0}%\"'.format((100 / field_headings|length)|int)|safe }}{% endif %}>
+                {% if field_headings_visible %}
+                  {{ field_heading }}
+                {% else %}
+                  <span class="visuallyhidden">{{ field_heading }}</span>
+                {% endif %}
+              </th>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {{ caller() }}
+      </tbody>
+    </table>
+  </section>
 {%- endmacro %}
 
 {% macro list_table(items, caption='', empty_message='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False) -%}
   {% set parent_caller = caller %}
-
+  
   {% call mapping_table(caption, field_headings, field_headings_visible, caption_visible, equal_length) %}
     {% for item in items %}
       {% call row(item.id) %}
