@@ -63,28 +63,28 @@ redis = "3.5.3" # pinned for now
 xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; see https://github.com/pyexcel/pyexcel-xls/issues/53
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous = "2.1.2"  # pyup: <1.0.0
-newrelic = "8.10.0" # Pinned for now, 8.11.0 caused a performance regression: https://gcdigital.slack.com/archives/C012W5K734Y/p1709668046344929
+newrelic = "8.10.0" # Pinned to 8.10.0 for now, 8.11.0 caused a performance regression: https://gcdigital.slack.com/archives/C012W5K734Y/p1709668046344929
 
 [tool.poetry.group.test.dependencies]
 isort = "5.13.2"
 pytest = "7.4.4"
 pytest-env = "0.8.2"
 pytest-cov = "2.12.1"
-pytest-mock = "3.12.0"
+pytest-mock = "3.14.0"
 pytest-xdist = "2.5.0"
 coveralls = "1.11.1"
 beautifulsoup4 = "4.12.3"
 freezegun = "1.4.0"
 flake8 = "6.1.0"
 flake8-print = "5.0.0"
-requests-mock = "1.11.0"
+requests-mock = "1.12.1"
 # used for creating manifest file locally
 jinja2-cli = { version = "^0.8.2", extras = ["yaml"] }
-black = "23.12.1"
-mypy = "1.8.0"
+black = "24.3.0"
+mypy = "1.9.0"
 
 # stubs libraries to keep mypy happy
-types-python-dateutil = "2.8.19.20240106"
+types-python-dateutil = "2.9.0.20240316"
 types-pytz = "2021.3.8"
 types-requests = "2.31.0.20240106"
 types-beautifulsoup4 = "^4.12.0.6"

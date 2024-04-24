@@ -183,7 +183,7 @@ class TwoFactorCode(StringField):
     ]
 
     def __call__(self, **kwargs):
-        return super().__call__(type="tel", pattern="[0-9]*", **kwargs)
+        return super().__call__(type="text", inputmode="numeric", autocomplete="one-time-code", pattern="[0-9]*", **kwargs)
 
 
 class ForgivingIntegerField(StringField):
@@ -1170,7 +1170,7 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
             )
         ],
     )
-    file = FileField_wtf("Upload a PNG logo", validators=[FileAllowed(["png"], "PNG Images only!")])
+    file = FileField_wtf("Upload a PNG logo")
     brand_type = RadioField(
         "Brand type",
         choices=[
@@ -1184,6 +1184,7 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
             ("no_branding", "No branding"),
         ],
     )
+    organisation = RadioField("Select an organisation", choices=[])
 
     def validate_name(form, name):
         op = request.form.get("operation")
@@ -1756,4 +1757,61 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
             ("100k+", _l("More than 100,000 notifications")),
         ],
         validators=[DataRequired()],
+    )
+
+
+class BrandingGOCForm(StripWhitespaceForm):
+    """
+    Form for selecting logo from GOC options
+
+    Attributes:
+        goc_branding (RadioField): Field for entering the the logo
+    """
+
+    goc_branding = RadioField(
+        _l("Choose which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
+        choices=[  # Choices by default, override to get more refined options.
+            (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
+            (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
+        ],
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class BrandingPoolForm(StripWhitespaceForm):
+    """
+    Form for selecting alternate branding logo from a pool of options associated with the service's organisation.
+
+    Attributes:
+        pool_branding (RadioField): Field for entering the the logo
+    """
+
+    pool_branding = RadioField(
+        _l("Select alternate logo"),
+        choices=[],  # Choices by default, override to get more refined options.
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class BrandingRequestForm(StripWhitespaceForm):
+    """
+    Form for handling new branding requests.
+
+    Attributes:
+        name (StringField): Field for entering the name of the logo.
+        file (FileField_wtf): Field for uploading the logo file.
+    """
+
+    name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
+    file = FileField_wtf(
+        label=_l("Prepare your logo"),
+        validators=[
+            DataRequired(message=_l("You must select a file to continue")),
+        ],
     )

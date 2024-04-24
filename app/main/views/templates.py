@@ -389,15 +389,17 @@ def _view_template_version(service_id, template_id, version, letters_as_pdf=Fals
         template=get_template(
             current_service.get_template(template_id, version=version),
             current_service,
-            letter_preview_url=url_for(
-                ".view_template_version_preview",
-                service_id=service_id,
-                template_id=template_id,
-                version=version,
-                filetype="png",
-            )
-            if not letters_as_pdf
-            else None,
+            letter_preview_url=(
+                url_for(
+                    ".view_template_version_preview",
+                    service_id=service_id,
+                    template_id=template_id,
+                    version=version,
+                    filetype="png",
+                )
+                if not letters_as_pdf
+                else None
+            ),
         )
     )
 

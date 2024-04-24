@@ -16,6 +16,16 @@
     });
   }
 
+  /**
+   * Make branding links automatically go back to the previous page without keeping track of them
+   */
+  document
+    .querySelector(".branding .back-link")
+    ?.addEventListener("click", function (e) {
+      e.preventDefault();
+      window.history.back();
+    });
+
   global.utils = {
     registerKeyDownEscape: registerKeyDownEscape,
   };
