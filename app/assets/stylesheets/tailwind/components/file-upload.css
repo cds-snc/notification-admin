@@ -21,26 +21,26 @@
     z-index: -1;
     @apply absolute opacity-0;
   }
-  .file-upload-field::file-selector-button {
+  .file-upload-field__native::file-selector-button {
     padding: 0.55em 1em 0.45em;
     cursor: pointer;
     @apply border-0 border-solid border-b-2 border-blue-border no-underline text-white text-smaller leading-tight bg-blue min-h-target font-normal font-body mr-gutterHalf;
   }
-  .file-upload-field::file-selector-button:hover {
+  .file-upload-field__native::file-selector-button:hover {
     @apply bg-blue-slightlight;
   }
 
-  .file-upload-field.file-upload-field-secondary::file-selector-button {
+  .file-upload-field__native.file-upload-field-secondary::file-selector-button {
     @apply border-b-2 border-gray-border text-black bg-gray-button;
   }
-  .file-upload-field.file-upload-field-secondary::file-selector-button:hover {
+  .file-upload-field__native.file-upload-field-secondary::file-selector-button:hover {
     @apply bg-gray-hover;
   }
   .js-enabled .file-upload-field:focus {
     @apply bg-yellow outline-none;
   }
   .js-enabled .file-upload-field:focus,
-  .js-enabled .file-upload-field:focus + #file-upload-button {
+  .js-enabled .file-upload-field__native:focus + #file-upload-button {
     @apply outline-yellow;
   }
 
