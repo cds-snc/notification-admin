@@ -28,7 +28,7 @@
   </div>
   <div role='group' id="add_new_template_form">
     <div class="js-will-stick-at-bottom-when-scrolling">
-      <a class="button" href="{{ url_for('main.create_template', service_id=current_service.id, template_type=template_type, template_folder_id=current_template_folder_id) }}">
+      <a role="button" draggable="false" data-module="button" class="button" href="{{ url_for('main.create_template', service_id=current_service.id, template_type=template_type, template_folder_id=current_template_folder_id) }}">
         {{ _('Create template') }}
       </a>
     </div>

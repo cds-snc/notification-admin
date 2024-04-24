@@ -101,5 +101,14 @@
   a.button-link:focus {
     @apply bg-yellow text-blue outline-none border-white no-underline;
   }
+
+  /* Dealing properly with links that are buttons. sometimes, links are buttons... */
+  a[role="button"] {
+    user-select: none;
+  }
+  a[role="button"]:hover {
+    cursor: default;
+  }
+
   /*! purgecss end ignore */
 }

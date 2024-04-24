@@ -39,6 +39,8 @@
 <a
     {% if id_key %}id="{{ id_key }}"{% endif %}
     href="{{ href }}"
+    role="button"
+    draggable="false"
     class="button button-blue-lighter mr-10 {% if class %} {{ class }} {% endif %}">
     {{ label }}
 </a>
