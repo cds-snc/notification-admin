@@ -8,6 +8,7 @@ module.exports = {
   mode: "production",
   entry: {
     main: ["./app/assets/javascripts/index.js", "./app/assets/stylesheets/tailwind/style.css"],
+    branding_request: ["./app/assets/javascripts/branding_request.js"],
     scheduler: {
       import: './app/assets/javascripts/scheduler/scheduler.js',
       library: {

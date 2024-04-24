@@ -7,10 +7,10 @@
       {{ _("Version {}").format(template.get_raw('version', 1)) }}{{ _(": ")}}
     {% endif %}
     {% if template.get_raw('version', 1) > 1 %}
-      {{ _('Edit made') }} {% if template.get_raw('updated_at', None) %}<span class="local-datetime-full">{{ template.get_raw('updated_at') }}</span>{% endif %}
+      {{ _('Edit made') }} {% if template.get_raw('updated_at', None) %}<time class="local-datetime-full">{{ template.get_raw('updated_at') }}</time>{% endif %}
     {% else %}
       {{ _('Created') }}
-      {% if template.get_raw('created_at', None) %}<span class="local-datetime-full">{{ template.get_raw('created_at') }}</span>{% endif %}
+      {% if template.get_raw('created_at', None) %}<time class="local-datetime-full">{{ template.get_raw('created_at') }}</time>{% endif %}
     {% endif %}
     {{ _('by') }} {{ template.get_raw('created_by').name }}
   </p>

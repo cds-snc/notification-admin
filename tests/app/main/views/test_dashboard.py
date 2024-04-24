@@ -505,7 +505,11 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 0, "delivered": 0, "failed": 0},
                 "sms": {"requested": 0, "delivered": 0, "failed": 0},
             },
-            ("0 emails sent No failures", "0 text messages sent No failures", "0 problem email addresses No problem addresses"),
+            (
+                "0 emails sent emails sent: No failures",
+                "0 text messages sent text messages sent: No failures",
+                "0 problem email addresses No problem addresses",
+            ),
             "en",
         ),
         (
@@ -515,8 +519,8 @@ def test_correct_font_size_for_big_numbers(
                 "sms": {"requested": 0, "delivered": 0, "failed": 0},
             },
             (
-                "0 courriel envoyé Aucun échec",
-                "0 message texte envoyé Aucun échec",
+                "0 courriel envoyé courriel envoyé: Aucun échec",
+                "0 message texte envoyé message texte envoyé: Aucun échec",
                 "0 addresse courriel problématique Aucune adresse problématique",
             ),
             "fr",
@@ -527,7 +531,11 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 1, "delivered": 1, "failed": 0},
                 "sms": {"requested": 1, "delivered": 1, "failed": 0},
             },
-            ("1 email sent No failures", "1 text message sent No failures", "0 problem email addresses No problem addresses"),
+            (
+                "1 email sent email sent: No failures",
+                "1 text message sent text message sent: No failures",
+                "0 problem email addresses No problem addresses",
+            ),
             "en",
         ),
         (
@@ -537,8 +545,8 @@ def test_correct_font_size_for_big_numbers(
                 "sms": {"requested": 1, "delivered": 1, "failed": 0},
             },
             (
-                "1 courriel envoyé Aucun échec",
-                "1 message texte envoyé Aucun échec",
+                "1 courriel envoyé courriel envoyé: Aucun échec",
+                "1 message texte envoyé message texte envoyé: Aucun échec",
                 "0 addresse courriel problématique Aucune adresse problématique",
             ),
             "fr",
@@ -549,7 +557,11 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 2, "delivered": 2, "failed": 0},
                 "sms": {"requested": 2, "delivered": 2, "failed": 0},
             },
-            ("2 emails sent No failures", "2 text messages sent No failures", "0 problem email addresses No problem addresses"),
+            (
+                "2 emails sent emails sent: No failures",
+                "2 text messages sent text messages sent: No failures",
+                "0 problem email addresses No problem addresses",
+            ),
             "en",
         ),
         (
@@ -559,8 +571,8 @@ def test_correct_font_size_for_big_numbers(
                 "sms": {"requested": 2, "delivered": 2, "failed": 0},
             },
             (
-                "2 courriels envoyés Aucun échec",
-                "2 messages texte envoyés Aucun échec",
+                "2 courriels envoyés courriels envoyés: Aucun échec",
+                "2 messages texte envoyés messages texte envoyés: Aucun échec",
                 "0 addresse courriel problématique Aucune adresse problématique",
             ),
             "fr",
