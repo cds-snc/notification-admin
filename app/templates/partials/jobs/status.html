@@ -12,7 +12,7 @@
         </div>
         <div class="pb-4">
           {{ _('Started:') }}
-          <span class="local-datetime-short">{{ job.created_at }}</span>
+          <time class="local-datetime-short">{{ job.created_at }}</time>
         </div>
         <div class="pb-4">
           {% if job.api_key %}

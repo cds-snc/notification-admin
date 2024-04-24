@@ -887,19 +887,19 @@ def test_choose_a_template_to_copy(
 
     expected = [
         ("Service 1 " "6 templates"),
-        ("Service 1 sms_template_one " "Text message template"),
-        ("Service 1 sms_template_two " "Text message template"),
-        ("Service 1 email_template_one " "Email template"),
-        ("Service 1 email_template_two " "Email template"),
-        ("Service 1 letter_template_one " "Letter template"),
-        ("Service 1 letter_template_two " "Letter template"),
+        ("Service 1 Copy sms_template_one into service one " "Text message template"),
+        ("Service 1 Copy sms_template_two into service one " "Text message template"),
+        ("Service 1 Copy email_template_one into service one " "Email template"),
+        ("Service 1 Copy email_template_two into service one " "Email template"),
+        ("Service 1 Copy letter_template_one into service one " "Letter template"),
+        ("Service 1 Copy letter_template_two into service one " "Letter template"),
         ("Service 2 " "6 templates"),
-        ("Service 2 sms_template_one " "Text message template"),
-        ("Service 2 sms_template_two " "Text message template"),
-        ("Service 2 email_template_one " "Email template"),
-        ("Service 2 email_template_two " "Email template"),
-        ("Service 2 letter_template_one " "Letter template"),
-        ("Service 2 letter_template_two " "Letter template"),
+        ("Service 2 Copy sms_template_one into service one " "Text message template"),
+        ("Service 2 Copy sms_template_two into service one " "Text message template"),
+        ("Service 2 Copy email_template_one into service one " "Email template"),
+        ("Service 2 Copy email_template_two into service one " "Email template"),
+        ("Service 2 Copy letter_template_one into service one " "Letter template"),
+        ("Service 2 Copy letter_template_two into service one " "Letter template"),
     ]
     actual = page.select(".template-list-item")
 
@@ -941,12 +941,12 @@ def test_choose_a_template_to_copy_when_user_has_one_service(
     assert page.select(".folder-heading") == []
 
     expected = [
-        ("sms_template_one " "Text message template"),
-        ("sms_template_two " "Text message template"),
-        ("email_template_one " "Email template"),
-        ("email_template_two " "Email template"),
-        ("letter_template_one " "Letter template"),
-        ("letter_template_two " "Letter template"),
+        ("Copy sms_template_one into service one " "Text message template"),
+        ("Copy sms_template_two into service one " "Text message template"),
+        ("Copy email_template_one into service one " "Email template"),
+        ("Copy email_template_two into service one " "Email template"),
+        ("Copy letter_template_one into service one " "Letter template"),
+        ("Copy letter_template_two into service one " "Letter template"),
     ]
     actual = page.select(".template-list-item")
 
@@ -1015,8 +1015,8 @@ def test_choose_a_template_to_copy_from_folder_within_service(
     expected = [
         ("Child folder empty " "Empty"),
         ("Child folder non-empty " "1 template"),
-        ("Child folder non-empty Should appear in list (nested) " "Text message template"),
-        ("Should appear in list (at same level) " "Text message template"),
+        ("Child folder non-empty Copy Should appear in list (nested) into service one " "Text message template"),
+        ("Copy Should appear in list (at same level) into service one " "Text message template"),
     ]
     actual = page.select(".template-list-item")
 

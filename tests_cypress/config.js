@@ -57,19 +57,15 @@ let LOCAL = {
         'SMOKE_TEST_EMAIL_LINK': '94cce202-b171-440f-b0c1-734368ca9494',
         'SMOKE_TEST_SMS': 'a9fff158-a745-417a-b1ec-ceebcba6614f'
     },
-    Organisations: {
-        'DEFAULT_ORG_ID': '93cbc868-ac75-4d90-a089-14c40dfd86ab',
-        'NO_CUSTOM_BRANDING_ORG_ID': '4eef762f-383d-4068-81ca-c2c5c186eb16'
-    },
     Users: {
-        Team: ['andrew.leith+bannertest@cds-snc.ca'],
+        Team: ['william.banks+admin@cds-snc.ca'],
         NonTeam: ['person@example.com'],
         Simulated: ['simulate-delivered-2@notification.canada.ca', 'simulate-delivered-3@notification.canada.ca', 'success@simulator.amazonses.com'],
         SimulatedPhone: ['+16132532222', '+16132532223', '+16132532224']
     },
     ReplyTos: {
-        Default: '1bc45a34-f4de-4635-b36f-7da2e2d248ed',
-        Second: 'aaa58593-fc0a-46b0-82b8-b303ae662a41'
+        Default: '8c2a9b22-8fec-4ad9-bca8-658abbb7406e',
+        Second: 'fc4d2266-5594-47d0-8056-7bef62d59177'
     },
     viewports: [320, 375, 640, 768]
 };

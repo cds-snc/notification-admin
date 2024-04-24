@@ -117,12 +117,13 @@
     @apply text-black;
   }
 
-  .header--active {
+  #proposition-links [aria-current="page"] {
     @apply border-b-4 !important;
     @apply border-blue !important;
   }
 
-  .menu--active {
+  .menu--active,
+  #mobile-menu-content [aria-current="page"] {
     @apply font-bold;
   }
 

@@ -38,3 +38,16 @@ describe(`GCA a11y tests [${config.CONFIG_NAME}]`, () => {
         });
     }
 });
+
+describe('Language toggle works on all pages', () => {
+    for (const page of fullPageList) {
+        it(`${page.en}`, () => {
+            cy.visit(page.en);
+            cy.get('#header-lang').click();
+            cy.url().should('contain', page.fr);
+
+            cy.get('#header-lang').click();
+            cy.url().should('contain', page.en);
+        });
+    }
+});
