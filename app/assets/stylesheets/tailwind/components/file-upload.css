@@ -1,7 +1,7 @@
 @layer components {
   /*! purgecss start ignore */
   .js-enabled .file-upload-label {
-    @apply text-smaller leading-tight relative inline-flex flex-col items-start gap-4 py-0;
+    @apply text-smaller leading-tight flex flex-col items-start gap-4 py-0;
   }
   .file-upload-label,
   .file-upload-label + .file-upload-extra {
@@ -21,19 +21,19 @@
     z-index: -1;
     @apply absolute opacity-0;
   }
-  .file-upload-field__native::file-selector-button {
+  .file-upload-field::file-selector-button {
     padding: 0.55em 1em 0.45em;
     cursor: pointer;
     @apply border-0 border-solid border-b-2 border-blue-border no-underline text-white text-smaller leading-tight bg-blue min-h-target font-normal font-body mr-gutterHalf;
   }
-  .file-upload-field__native::file-selector-button:hover {
+  .file-upload-field::file-selector-button:hover {
     @apply bg-blue-slightlight;
   }
 
-  .file-upload-field__native.file-upload-field-secondary::file-selector-button {
+  .file-upload-field.file-upload-field-secondary::file-selector-button {
     @apply border-b-2 border-gray-border text-black bg-gray-button;
   }
-  .file-upload-field__native.file-upload-field-secondary::file-selector-button:hover {
+  .file-upload-field.file-upload-field-secondary::file-selector-button:hover {
     @apply bg-gray-hover;
   }
   .js-enabled .file-upload-field:focus {
