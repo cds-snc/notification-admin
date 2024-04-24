@@ -11,14 +11,12 @@
         .addClass("button-red")
         .text(this.cancelText)
         .attr("id", "#file-upload-button");
-
-    this.showFileName = () => {
-      let fileInput = document.querySelector("input#file_upload");
-      $("#file-description", this.$form).text(
-        `${window.polyglot.t("File name:")} ${fileInput.files[0].name}`,
-      );
-    };
-
+    
+        this.showFileName = () => { 
+          let fileInput = document.querySelector("input#file_upload")
+          $("#file-description", this.$form).text(`${window.polyglot.t("File name:")} ${fileInput.files[0].name}`);
+        }
+ 
     this.start = function (component) {
       this.$form = $(component);
 
@@ -26,10 +24,8 @@
       $(window).on("pageshow", () => this.$form[0].reset());
 
       // Need to put the event on the container, not the input for it to work properly
-      this.$form.on(
-        "change",
-        ".file-upload-field",
-        () => this.showCancelButton() && this.showFileName(),
+      this.$form.on("change", ".file-upload-field", () =>
+        this.showCancelButton() && this.showFileName(),
       );
     };
   };
