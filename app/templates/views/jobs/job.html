@@ -4,6 +4,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/problem-email-checkbox.html" import problem_email_checkbox %}
 {% from "components/empty-list.html" import empty_list  %}
+{% from "components/table.html" import mapping_table, row, row_heading, text_field, link_field, with context %}
 
 {% block service_page_title %}
   {% if job.job_status == 'scheduled' %}
@@ -15,59 +16,73 @@
 {% endblock %}
 
 {% block maincolumn_content %}
-  
+
     {% if job.job_status == 'scheduled' %}
       <h1 class="heading-large">
           {{ _('Scheduled messages') }}
       </h1>
       <div class="flex flex-wrap mb-8">
-        <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
-          {{ _('Scheduled by') }}
-        </div>
-        <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-600-1 pt-4 pb-4">
-          {% if job.api_key %}
-            {{ _("API key '<a href='{}'>{}</a>'").format(url_for('.api_keys', service_id=current_service.id), job.api_key.name) }}
-          {% else %}
-            {{ job.created_by.name }}
-          {% endif %}
-        </div>
-        <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
-          {{ _('Scheduled for') }}
-        </div>
-        <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-600-1 pt-4 pb-4">
-          <time class="local-datetime-short">{{ job.scheduled_for }}</time>
-        </div>
-        <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-600-1 pt-4 pb-4">
-          {% if job.api_key %}
-            {{ _('API request name')}} 
-          {% else %}
-            {{ _('Spreadsheet') }}
-          {% endif %}
-        </div>
-        <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-400-1 pt-4 pb-4">
-          {{ job.original_file_name }}
-        </div>
-        <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-400-1 pt-4 pb-4">
-          {{ _('Sending to') }}
-        </div>
-        <div class="w-full sm:w-3/4 border-solid border-b-1 border-gray-400-1 pt-4 pb-4">
-          {{ _('{} recipient(s)').format(job.notification_count) }}
-        </div>
-        <div class="w-full sm:w-1/4 border-solid font-bold sm:font-normal sm:border-b-1 border-gray-400-1 pt-4 pb-4">
-          {{ _('Template') }}
-        </div>
-        <div class="w-full sm:w-3/4 border-dashed border-b-1 border-gray-400-1 pt-4 pb-4">
-          <a href="{{ url_for('.view_template_version', service_id=current_service.id, template_id=template_id, version=job['template_version']) }}">{{ template_name }}</a>
-        </div>
-      </div>
+        {% set caption = _("Scheduled messages") %}
 
+        {% call mapping_table(
+          caption=caption,
+          field_headings_visible=False,
+          caption_visible=False,
+          font_size='table-font-small',
+        ) %}
+
+          {% call row() %}
+            {% call row_heading(cell_width="sm:w-1/4") %}
+              {{ _("Scheduled by") }}
+            {% endcall %}
+            {% if job.api_key %}
+              {{ text_field(_("API key '<a href='{}'>{}</a>'").format(url_for('.api_keys', service_id=current_service.id), job.api_key.name)) }}
+            {% else %}
+              {{ text_field(job.created_by.name) }}
+            {% endif %}
+          {% endcall %}
+
+          {% call row() %}
+            {% call row_heading(cell_width="sm:w-1/4") %}
+              {{_("Scheduled for")}}
+            {% endcall %}
+            {{ text_field(text=job.scheduled_for, date_format="local-datetime-short") }}
+          {% endcall %}
+
+          {% call row() %}
+            {% call row_heading(cell_width="sm:w-1/4") %}
+              {% if job.api_key %}
+                  {{ _("API request name")}}
+              {% else %}
+                {{ _("Spreadsheet")}}
+              {% endif %}
+            {% endcall %}
+            {{ text_field(job.original_file_name) }}
+          {% endcall %}
+
+          {% call row() %}
+            {% call row_heading(cell_width="sm:w-1/4") %}
+              {{ _("Sending to") }}
+            {% endcall %}
+            {{ text_field(_('{} recipient(s)').format(job.notification_count)) }}
+          {% endcall %}
+
+          {% call row() %}
+            {% call row_heading(cell_width="sm:w-1/4") %}
+              {{ _("Template") }}
+            {% endcall %}
+            {{ link_field(template_name, url_for('.view_template_version', service_id=current_service.id, template_id=template_id, version=job['template_version'])) }}
+          {% endcall %}
+
+        {% endcall %}
+      </div>
       {{ ajax_block(partials, updates_url, 'notifications_header', finished=finished) }}
 
     {% else %}
       <h1 class="heading-large">
         {{ _('Delivery report') }}
       </h1>
-      
+
       {% if just_sent %}
         {{ banner(just_sent_message, type='default', with_tick=True) }}
       {% else %}
@@ -80,18 +95,18 @@
         {{ ajax_block(partials, updates_url, 'notifications_header', finished=finished) }}
         {{ ajax_block(partials, updates_url, 'notifications', finished=finished) }}
       {% else %}
-      
+
       {{ empty_list(
           _("GC Notify disposed of the information in this report on <time class='local-datetime-short'>{}</time>").format(job.updated_at), 
           _('After {} days, we keep only non-identifying statistics.').format(svc_retention_days), 
           'emptyBirdHole'
-        ) 
+        )
       }}
       {% endif %}
-      
+
     {% endif %}
-    
-    
+
+
     {% if can_cancel_letter_job %}
       <div class="js-stick-at-bottom-when-scrolling">
         <div class="page-footer">
