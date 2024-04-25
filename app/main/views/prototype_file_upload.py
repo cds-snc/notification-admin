@@ -13,7 +13,10 @@ def prototype_file_upload_a():
     form = FormExamples()
     form.validate()
 
-    return render_template("views/prototype/file-upload-a.html", form=form, example=[["email address", "name", "reference_number"]])
+    return render_template(
+        "views/prototype/file-upload-a.html", form=form, example=[["email address", "name", "reference_number"]]
+    )
+
 
 @main.route("/_prototype-file-upload-b")
 def prototype_file_upload_b():
@@ -23,4 +26,6 @@ def prototype_file_upload_b():
     form = FormExamples()
     form.validate()
 
-    return render_template("views/prototype/file-upload-b.html", form=form, example=[["email address", "name", "reference_number"]])
+    return render_template(
+        "views/prototype/file-upload-b.html", form=form, example=[["email address", "name", "reference_number"]]
+    )
