@@ -12,11 +12,12 @@
   {{ page_title }}
 {% endblock %}
 {% block maincolumn_content %}
-
+  
+  <h1 class="heading-large">{{ _("Prepare spreadsheet") }}</h1>
     <p>
       {{ _('GC Notify can help create your spreadsheet or you can use a spreadsheet from your files.')}}
     </p>
-  
+
   <h2 class="heading-medium">{{ _('Use your own spreadsheet') }}</h2>
 
   {% macro acronym(acronym, expanded) %}
@@ -30,10 +31,11 @@
       acronym(_('TSV'), _('Tab Separated Values')), 
       acronym(_('ODS'), _('Open Document Spreadsheet'))
     ) }}</li>
-    <li>{{ _('Have column headings for {}.').format(example[0] | formatted_list(conjunction=_('and'))) }}</li>
-    <li>{{ _('Not have any blank rows.') }}</li>
   </ol>
 
   {{ form.file_upload(**{ 'class': 'file-upload-field__native', 'accept': ".csv,.tsv,.ods,.xls,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,text/tab-separated-values"}) }}
 
+
+  <h2 class="heading-medium">You are currently testing the file upload B</h2>
+  <a href="_prototype-file-upload-a">Try the other file upload prototype</a>
 {% endblock %}
