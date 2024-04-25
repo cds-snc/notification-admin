@@ -16,7 +16,7 @@
     this.showFileName = () => {
       let fileInput = document.querySelector("input#file_upload");
       $("#file-description", this.$form).text(
-        `${window.polyglot.t("File name:")} ${fileInput.files[0].name}`
+        `${window.polyglot.t("File name:")} ${fileInput.files[0].name}`,
       );
     };
 
@@ -28,7 +28,7 @@
 
       // Handle the clicking of the button. Clicking the button triggers a click on the label.
       this.$form.on("click", "#file-upload-button", () =>
-        $(".file-upload-field", this.$form).trigger("click")
+        $(".file-upload-field", this.$form).trigger("click"),
       );
 
       // Need to put the event on the container, not the input for it to work properly
