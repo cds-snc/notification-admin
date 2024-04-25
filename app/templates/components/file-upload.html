@@ -10,6 +10,7 @@
 
 ) %}
   <form method="post" enctype="multipart/form-data" {% if action %}action="{{ action }}"{% endif %} class="{% if field.errors %}form-group-error contain-floats{% endif %}" data-module="file-upload">
+    <div class="file-upload-group">
     <label class="file-upload-label" for="{{ field.name }}">
       <span id="file-upload-label" class="visually-hidden"> {{ field.label.text }} </span>
       {% if hint %}
@@ -22,9 +23,13 @@
           {{ field.errors[0] }}
         </span>
       {% endif %}
-      {{ field(**{ 'class': 'file-upload-field', 'accept': accept}) }}
+      {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description'}) }}
       <button class="button" type="button" id="file-upload-button">{{ button_text }}</button>
     </label>
+    <div class="file-upload-extra pt-4">
+      <p id="file-description">{{ _("No file currently selected") }}</p>
+    </div>
+    </div>
 
     {% if alternate_link and alternate_link_text %}
       <span class="file-upload-alternate-link">

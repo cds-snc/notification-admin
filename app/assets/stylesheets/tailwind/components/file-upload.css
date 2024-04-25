@@ -1,10 +1,9 @@
 @layer components {
   /*! purgecss start ignore */
   .js-enabled .file-upload-label {
-    @apply text-smaller leading-tight flex flex-col items-start gap-4 py-0;
+    @apply text-smaller leading-tight relative inline-flex flex-col items-start gap-4 py-0;
   }
-  .file-upload-label,
-  .file-upload-label + .file-upload-extra {
+  .file-upload-group {
     @apply pl-gutterHalf border-l-4 border-gray-300;
   }
 
@@ -46,7 +45,7 @@
 
   .js-enabled #file-upload-button,
   .js-enabled #file-upload-button-cancel {
-    @apply inline-block mr-2 pointer-events-none;
+    @apply inline-block pointer-events-none;
   }
 
   .js-enabled .file-upload-filename {
