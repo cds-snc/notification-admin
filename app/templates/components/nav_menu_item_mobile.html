@@ -1,5 +1,5 @@
 {% macro nav_menu_item_mobile(
-  url=None, 
+  url=None,
   localised_txt=None,
   css_classes=None,
   id_key=None,
@@ -7,7 +7,7 @@
   is_active=False
 ) %}
   {% if url and localised_txt %}
-    <li class="mb-4">
+    <li class="leading-none px-8 py-4 top-full content-end divide-gray min-h-target">
       <a
         {% if id_key %}id="{{ id_key }}"{% endif %}
         aria-label="{{ localised_txt }}"

@@ -1,8 +1,6 @@
 {% from "components/nav_menu_item_mobile.html" import nav_menu_item_mobile with context %}
 
-<div class="md:visible md:flex relative justify-end inline-block text-left text-blue visited:text-blue
-link:text-blue no-underline text-small">
-    <ul id="main-menu-nav" class="absolute flex flex-col content-end divide-y divide-gray right-0 top-full text-center rounded bg-white shadow hidden z-50">
+<ul id="main-menu-nav" class="hidden absolute mt-20 -ml-4 text-left flex flex-col content-end divide-y divide-gray rounded bg-white shadow z-50">
       {% if not current_user.is_authenticated %}
         <!-- service menu dropdown / signed out / mobile -->
         {% if nav_items %}
@@ -82,4 +80,3 @@ link:text-blue no-underline text-small">
         {% endif %}
       {% endif %}
     </ul>
-  </div>

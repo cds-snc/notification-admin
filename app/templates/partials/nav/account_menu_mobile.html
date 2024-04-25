@@ -1,5 +1,5 @@
 <!-- account menu dropdown / mobile -->
-<li class="md:visible md:flex relative justify-end inline-block text-left text-blue visited:text-blue
+<div class="md:hidden md:flex grid-flow-row relative justify-end inline-block text-left text-blue visited:text-blue
 link:text-blue no-underline text-small">
   <button
     aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
@@ -36,7 +36,7 @@ link:text-blue no-underline text-small">
               {{ _('Your services') }}
             </a>
           </li>
-          <li >
+          <li>
             <a
               aria-label="{{ _('Your profile') }}"
               href="{{ url_for('main.user_profile') }}"
@@ -53,6 +53,6 @@ link:text-blue no-underline text-small">
             </a>
           </li>
         </ul>
-</li>
+      </div>
 
 <!-- account menu dropdown / mobile / END -->
