@@ -23,6 +23,8 @@
         <form method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
           <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
             {{ textbox(form.name, hint=_('This will not show in messages. Choose a name that helps team members find the logo'), testid="brand_name") }}
+            {{ textbox(form.alt_text_en, hint=_('This is an english description of the logo for screenreaders'), testid="alt_text_en") }}
+            {{ textbox(form.alt_text_fr, hint=_('This is a french description of the logo for screenreaders'), testid="alt_text_fr") }}
             <h2 class="heading-medium">{{ _('Prepare your logo') }}</h2>
             <p>
               {{ _('Your logo must be compatible with GC Notify. Check logo is:') }}

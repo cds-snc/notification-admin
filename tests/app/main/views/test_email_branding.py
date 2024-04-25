@@ -53,6 +53,8 @@ def test_edit_email_branding_shows_the_correct_branding_info(
     assert page.select_one("#name").attrs.get("value") == "Organisation name"
     assert page.select_one("#text").attrs.get("value") == "Organisation text"
     assert page.select_one("#colour").attrs.get("value") == "#f00"
+    assert page.select_one("#alt_text_en").attrs.get("value") == "Alt text english"
+    assert page.select_one("#alt_text_fr").attrs.get("value") == "Alt text french"
 
 
 def test_create_email_branding_does_not_show_any_branding_info(
@@ -82,6 +84,8 @@ def test_create_new_email_branding_without_logo(
         "text": "new text",
         "name": "new name",
         "brand_type": "custom_logo",
+        "alt_text_en": "Alt text english",
+        "alt_text_fr": "Alt text french",
     }
 
     mock_persist = mocker.patch("app.main.views.email_branding.persist_logo")
@@ -97,6 +101,8 @@ def test_create_new_email_branding_without_logo(
         colour=data["colour"],
         brand_type=data["brand_type"],
         organisation_id=None,
+        alt_text_en=data["alt_text_en"],
+        alt_text_fr=data["alt_text_fr"],
     )
     assert mock_persist.call_args_list == []
 
@@ -160,6 +166,8 @@ def test_create_new_email_branding_when_branding_saved(
         "text": "new text",
         "name": "new name",
         "brand_type": "custom_logo_with_background_colour",
+        "alt_text_en": "Alt text english",
+        "alt_text_fr": "Alt text french",
     }
 
     temp_filename = EMAIL_LOGO_LOCATION_STRUCTURE.format(
@@ -181,6 +189,8 @@ def test_create_new_email_branding_when_branding_saved(
             "cdn_url": get_logo_cdn_domain(),
             "brand_type": data["brand_type"],
             "organisation": "-1",
+            "alt_text_en": data["alt_text_en"],
+            "alt_text_fr": data["alt_text_fr"],
         },
     )
 
@@ -194,6 +204,8 @@ def test_create_new_email_branding_when_branding_saved(
         colour=data["colour"],
         brand_type=data["brand_type"],
         organisation_id=None,
+        alt_text_en=data["alt_text_en"],
+        alt_text_fr=data["alt_text_fr"],
     )
 
 
@@ -255,6 +267,8 @@ def test_update_existing_branding(
         "text": "new text",
         "name": "new name",
         "brand_type": "both_english",
+        "alt_text_en": "Alt text english",
+        "alt_text_fr": "Alt text french",
     }
 
     temp_filename = EMAIL_LOGO_LOCATION_STRUCTURE.format(
@@ -275,6 +289,8 @@ def test_update_existing_branding(
             "text": data["text"],
             "cdn_url": get_logo_cdn_domain(),
             "brand_type": data["brand_type"],
+            "alt_text_en": data["alt_text_en"],
+            "alt_text_fr": data["alt_text_fr"],
         },
     )
 
@@ -289,6 +305,8 @@ def test_update_existing_branding(
         colour=data["colour"],
         brand_type=data["brand_type"],
         organisation_id="-1",
+        alt_text_en=data["alt_text_en"],
+        alt_text_fr=data["alt_text_fr"],
     )
 
 
@@ -409,6 +427,8 @@ def test_create_new_branding_with_no_org_works(
         "text": "new text",
         "name": "new name",
         "brand_type": "custom_logo",
+        "alt_text_en": "Alt text english",
+        "alt_text_fr": "Alt text french",
     }
 
     mocker.patch("app.main.views.email_branding.persist_logo")
@@ -428,6 +448,8 @@ def test_create_new_branding_with_no_org_works(
         colour=data["colour"],
         brand_type=data["brand_type"],
         organisation_id=None,
+        alt_text_en=data["alt_text_en"],
+        alt_text_fr=data["alt_text_fr"],
     )
 
 
@@ -441,6 +463,8 @@ def test_create_new_branding_with_org_works(
         "name": "new name",
         "brand_type": "custom_logo",
         "organisation": "7aa5d4e9-4385-4488-a489-07812ba13383",
+        "alt_text_en": "Alt text en",
+        "alt_text_fr": "Alt text fr",
     }
 
     mocker.patch("app.main.views.email_branding.persist_logo")
@@ -460,6 +484,8 @@ def test_create_new_branding_with_org_works(
         colour=data["colour"],
         brand_type=data["brand_type"],
         organisation_id=data["organisation"],
+        alt_text_en=data["alt_text_en"],
+        alt_text_fr=data["alt_text_fr"],
     )
 
 

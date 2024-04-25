@@ -1185,10 +1185,22 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
         ],
     )
     organisation = RadioField("Select an organisation", choices=[])
+    alt_text_en = StringField("Alternative text for English logo")
+    alt_text_fr = StringField("Alternative text for French logo")
 
     def validate_name(form, name):
         op = request.form.get("operation")
         if op == "email-branding-details" and not form.name.data:
+            raise ValidationError("This field is required")
+
+    def validate_alt_text_en(form, alt_text_en):
+        op = request.form.get("operation")
+        if op == "email-branding-details" and not form.alt_text_en.data:
+            raise ValidationError("This field is required")
+
+    def validate_alt_text_fr(form, alt_text_fr):
+        op = request.form.get("operation")
+        if op == "email-branding-details" and not form.alt_text_fr.data:
             raise ValidationError("This field is required")
 
 
@@ -1809,6 +1821,12 @@ class BrandingRequestForm(StripWhitespaceForm):
     """
 
     name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
+    alt_text_en = StringField(
+        label=_l("Alternative text in English"), validators=[DataRequired(message=_l("Enter the alternative text in English"))]
+    )
+    alt_text_fr = StringField(
+        label=_l("Alternative text in French"), validators=[DataRequired(message=_l("Enter the alternative text in French"))]
+    )
     file = FileField_wtf(
         label=_l("Prepare your logo"),
         validators=[
