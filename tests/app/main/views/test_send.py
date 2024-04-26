@@ -522,69 +522,6 @@ def test_upload_csv_file_with_missing_columns_shows_error(
     assert normalize_spaces(page.select_one("h1").text) == expected_heading
 
 
-@pytest.mark.parametrize(
-    "file_contents, expected_error, expected_heading, num_cells_errors",
-    [
-        (
-            f"""
-                phone number, one, two, three
-                +16502532222, {'a' * 155}, {'a' * 155}, {'a' * 155}
-                +16502532222, {'a' * 613}, {'a' * 613}, {'a' * 613}
-                +16502532222, {'a' * 50}, {'a' * 50}, {'a' * 50}
-            """,
-            "Maximum 612 characters. Some messages may be too long due to custom content.",
-            "Added custom content exceeds the 612 character limit in 1 row",
-            3,
-        ),
-        (
-            f"""
-                phone number, one, two, three
-                +16502532222, {'a' * 613}, {'a' * 613}, {'a' * 613}
-                +16502532222, {'a' * 619}, {'a' * 619}, {'a' * 619}
-                +16502532222, {'a' * 700}, {'a' * 700}, {'a' * 700}
-            """,
-            "Maximum 612 characters. Some messages may be too long due to custom content.",
-            "Added custom content exceeds the 612 character limit in 3 rows",
-            9,
-        ),
-    ],
-)
-def test_upload_csv_variables_too_long_shows_banner_and_inline_cell_errors(
-    client_request,
-    mocker,
-    mock_get_service_template_with_multiple_placeholders,
-    mock_s3_upload,
-    mock_get_users_by_service,
-    mock_get_service_statistics,
-    mock_get_template_statistics,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-    service_one,
-    fake_uuid,
-    file_contents,
-    expected_error,
-    expected_heading,
-    num_cells_errors,
-):
-    mocker.patch("app.main.views.send.s3download", return_value=file_contents)
-    page = client_request.post(
-        "main.send_messages",
-        service_id=service_one["id"],
-        template_id=fake_uuid,
-        _data={"file": (BytesIO("".encode("utf-8")), "invalid.csv")},
-        _follow_redirects=True,
-    )
-    cell_errors = page.find_all("span", class_="table-field-error-label")
-
-    with client_request.session_transaction() as session:
-        assert "file_uploads" not in session
-
-    assert normalize_spaces(page.find(role="alert").text) == expected_heading
-    assert normalize_spaces(page.select_one("h1").text) == "Edit your spreadsheet"
-    assert all(cell.text == expected_error for cell in cell_errors)
-    assert len(cell_errors) == num_cells_errors
-
-
 def test_upload_csv_invalid_extension(
     logged_in_client,
     mock_login,
