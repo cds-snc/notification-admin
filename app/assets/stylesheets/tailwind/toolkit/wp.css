@@ -94,8 +94,8 @@
   .wp-block-column[style*="3rem"] {
     box-sizing: content-box;
     display: flex;
-    height: 3rem;
     align-items: center;
+    @apply h-12;
   }
 
   /* Hide wp-block-image if only child of a column */
@@ -208,7 +208,7 @@
   }
 
   .wp .page-content.home p + ul {
-    margin-top: -0.5rem;
+    @apply -mt-2
   }
 
   /** Block
@@ -232,7 +232,7 @@
   }
 
   .wp-block-post-content p + ul {
-    margin-top: -0.5rem;
+    @apply -mt-2
   }
 
   /*! purgecss end ignore */
