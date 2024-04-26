@@ -14,12 +14,12 @@
       </div>
       <!-- Box 2-->
       <p class="space-y-gutterHalf">
-        <span class="text-lg md:text-xxl font-bold leading-none font-sans font-bold block">{{ stats.live_services | format_number }}</span>
+        <span data-testId="count-services" class="text-lg md:text-xxl font-bold leading-none font-sans font-bold block">{{ stats.live_services | format_number }}</span>
         <span class="block">{{ _("services using GC&nbsp;Notify") }}</span>
       </p>
       <!-- Box 3-->
       <p class="space-y-gutterHalf">
-        <span class="text-lg md:text-xxl ont-bold leading-none font-sans font-bold block">{{ stats.notifications_total | format_number }}</span>
+        <span data-testId="count-notifications" class="text-lg md:text-xxl ont-bold leading-none font-sans font-bold block">{{ stats.notifications_total | format_number }}</span>
         <span class="block">{{ _("messages sent") }}</span>
       </p>
       <!-- end -->
