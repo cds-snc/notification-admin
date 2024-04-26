@@ -178,8 +178,8 @@ def test_activity_page(mocker, client, stats, services):
     response = client.get(url_for("main.activity"))
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert response.status_code == 200
-    assert page.select("div[data-testId='totals']")[0].text == str(sum(x[2] for x in stats))
-    assert page.select("div[data-testId='services']")[0].text == str(len(services))
+    assert page.select("div[data-test-id='totals']")[0].text == str(sum(x[2] for x in stats))
+    assert page.select("div[data-test-id='services']")[0].text == str(len(services))
 
 
 @pytest.mark.parametrize(
@@ -212,8 +212,8 @@ def test_home_page_displays_activity(mocker, client, stats, services):
     response = client.get(url_for("main.index"))
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert response.status_code == 200
-    assert page.select("[data-testId='count-services']")[0].text == str(len(services))
-    assert page.select("[data-testId='count-notifications']")[0].text == str(sum(x[2] for x in stats))
+    assert page.select("[data-test-id='count-services']")[0].text == str(len(services))
+    assert page.select("[data-test-id='count-notifications']")[0].text == str(sum(x[2] for x in stats))
 
 
 @pytest.mark.parametrize(
