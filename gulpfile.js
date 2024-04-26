@@ -90,6 +90,7 @@ const javascripts = () => {
         paths.src + "javascripts/main.min.js",
         paths.src + "javascripts/scheduler.min.js",
         paths.src + "javascripts/branding_request.min.js",
+        paths.src + "javascripts/formValidateRequired.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));
