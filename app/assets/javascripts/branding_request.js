@@ -29,7 +29,7 @@
   // init UI
   input_img.style.opacity = 0;
   input_img.addEventListener("change", updateImageDisplay);
-    
+
   // strings
   let file_name = window.APP_PHRASES.branding_request_file_name;
   let file_size = window.APP_PHRASES.branding_request_file_size;
