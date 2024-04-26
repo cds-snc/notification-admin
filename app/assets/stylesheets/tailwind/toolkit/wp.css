@@ -208,7 +208,7 @@
   }
 
   .wp .page-content.home p + ul {
-    @apply -mt-2
+    @apply -mt-2;
   }
 
   /** Block
@@ -232,7 +232,7 @@
   }
 
   .wp-block-post-content p + ul {
-    @apply -mt-2
+    @apply -mt-2;
   }
 
   /*! purgecss end ignore */
