@@ -406,9 +406,12 @@ def test_should_show_scheduled_job(
         job_id=fake_uuid,
     )
 
-    assert normalize_spaces(page.select("main > div.flex >div:nth-child(2)")[0].text) == "Test User"
-    assert normalize_spaces(page.select("main > div.flex >div:nth-child(4)")[0].text) == "2016-01-02T00:00:00.061258"
-    assert page.select("main > div.flex >div:nth-child(10) a")[0]["href"] == url_for(
+    scheduled_job = page.select("td > [class~='do-not-truncate-text']")
+    assert normalize_spaces(scheduled_job[0]) == "Test User"
+    assert normalize_spaces(scheduled_job[1]) == "2016-01-02T00:00:00.061258"
+    assert normalize_spaces(scheduled_job[2]) == "thisisatest.csv"
+    assert normalize_spaces(scheduled_job[3]) == "1 recipient(s)"
+    assert page.select("td > a")[0]["href"] == url_for(
         "main.view_template_version",
         service_id=SERVICE_ONE_ID,
         template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
@@ -442,6 +445,7 @@ def test_should_show_job_from_api(
     )
 
 
+# TODO: This test could be migrated to Cypress instead
 @freeze_time("2016-01-01T00:00:00.061258")
 def test_should_show_scheduled_job_with_api_key(
     client_request,
@@ -456,10 +460,12 @@ def test_should_show_scheduled_job_with_api_key(
         service_id=SERVICE_ONE_ID,
         job_id=fake_uuid,
     )
-
-    assert normalize_spaces(page.select("main > div.flex >div:nth-child(2)")[0].text) == f"API key '{JOB_API_KEY_NAME}'"
-    assert normalize_spaces(page.select("main > div.flex >div:nth-child(4)")[0].text) == "2016-01-02T00:00:00.061258"
-    assert page.select("main > div.flex >div:nth-child(10) a")[0]["href"] == url_for(
+    scheduled_job = page.select("td > [class~='do-not-truncate-text']")
+    assert normalize_spaces(scheduled_job[0].text) == f"API key '{JOB_API_KEY_NAME}'"
+    assert normalize_spaces(scheduled_job[1]) == "2016-01-02T00:00:00.061258"
+    assert normalize_spaces(scheduled_job[2]) == "thisisatest.csv"
+    assert normalize_spaces(scheduled_job[3]) == "1 recipient(s)"
+    assert page.select("td > a")[0]["href"] == url_for(
         "main.view_template_version",
         service_id=SERVICE_ONE_ID,
         template_id="5d729fbd-239c-44ab-b498-75a985f3198f",

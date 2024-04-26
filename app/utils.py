@@ -24,6 +24,7 @@ from flask import abort, current_app, redirect, request, session, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_required
+from notifications_utils import SMS_CHAR_COUNT_LIMIT
 from notifications_utils.field import Field
 from notifications_utils.formatters import make_quotes_smart
 from notifications_utils.letter_timings import letter_can_be_cancelled
@@ -207,6 +208,18 @@ def get_errors_for_csv(recipients, template_type):
             errors.append(_("enter missing data in 1 row"))
         else:
             errors.append(_("enter missing data in {} rows").format(number_of_rows_with_missing_data))
+
+    if any(recipients.rows_with_combined_variable_content_too_long):
+        num_rows_with_combined_content_too_long = len(list(recipients.rows_with_combined_variable_content_too_long))
+        if num_rows_with_combined_content_too_long == 1:
+            errors.append(_("added custom content exceeds the {} character limit in 1 row").format(SMS_CHAR_COUNT_LIMIT))
+        else:
+            errors.append(
+                _("added custom content exceeds the {} character limit in {} rows").format(
+                    SMS_CHAR_COUNT_LIMIT, num_rows_with_combined_content_too_long
+                )
+            )
+        # TODO Update the inline cell error messages
 
     return errors
 
