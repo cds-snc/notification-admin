@@ -2,8 +2,9 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
-
 register_field_names = ("name", "email_address", "mobile_number", "password")
+
+
 @pytest.mark.parametrize(
     "data, expected_errors",
     [
@@ -42,7 +43,7 @@ def test_validation_summary(
     assert len(page.select("[data-testid='validation_summary'] li")) == expected_errors
 
     if expected_errors > 0:
-        # ensure each link in the validation summary point to an element that exists 
+        # ensure each link in the validation summary point to an element that exists
         for link in page.select("[data-testid='validation_summary'] li a"):
             assert len(page.select(f"[id={link['href'][1:]}]")) == 1
     else:
