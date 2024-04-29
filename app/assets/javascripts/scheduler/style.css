@@ -5,7 +5,7 @@
   --color-gray-800: #343c45;
   --selected-color: #26374a;
   --hover-color: #425a76;
-  --available-color: #d7e5f5;
+  --available-color: #7eb4f1;
   --color-focus: #f6be00;
   --dimension-gutterHalf: 0.9375rem;
   --dimension-gutter: 1.875rem;
@@ -62,9 +62,6 @@
 
 .Calendar-nav--button {
   cursor: pointer;
-}
-
-.Calendar-nav--button {
   color: var(--selected-color);
   font-size: 1.25rem;
   height: 45px;
@@ -75,7 +72,7 @@
 .Calendar-nav--button--unavailable {
   /* cursor: url("img/disableddates.ico") 20 20, not-allowed;*/
   pointer-events: none;
-  color: var(--color-gray-700);
+  color: var(--color-gray-300);
   outline: none;
   border: 0;
 }
