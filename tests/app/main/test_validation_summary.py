@@ -3,10 +3,7 @@ from bs4 import BeautifulSoup
 from flask import url_for
 
 
-# name
-# email_address
-# mobile_number
-# password
+register_field_names = ("name", "email_address", "mobile_number", "password")
 @pytest.mark.parametrize(
     "data, expected_errors",
     [
@@ -40,5 +37,14 @@ def test_validation_summary(
     response = client.post(url_for("main.register"), data=data, follow_redirects=True)
     assert response.status_code == 200
 
+    # ensure the validation summary is has as many items as expected
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert len(page.select("[data-testid='validation_summary'] li")) == expected_errors
+
+    if expected_errors > 0:
+        # ensure each link in the validation summary point to an element that exists 
+        for link in page.select("[data-testid='validation_summary'] li a"):
+            assert len(page.select(f"[id={link['href'][1:]}]")) == 1
+    else:
+        # ensure the validation summary is not present when no errors are expected
+        assert len(page.select("[data-testid='validation_summary']")) == 0
