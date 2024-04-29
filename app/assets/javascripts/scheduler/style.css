@@ -1,25 +1,38 @@
+:root {
+  --color-gray-100: #f0f2f5;
+  --color-gray-300: #afb9c3;
+  --color-gray-700: #49535d;
+  --color-gray-800: #343c45;
+  --selected-color: #26374a;
+  --hover-color: #425a76;
+  --available-color: #d7e5f5;
+  --color-focus: #f6be00;
+  --dimension-gutterHalf: 0.9375rem;
+  --dimension-gutter: 1.875rem;
+}
+
 .error-list {
-  font-size: 1.4rem;
-  padding: 15px;
+  font-size: 1rem;
+  padding: var(--dimension-gutterHalf);
   background: #f3e9e8;
   border-left: 4px solid #af3c43;
-  margin-top: 15px;
+  margin-top: var(--dimension-gutterHalf);
   margin: 0;
   margin-bottom: 1rem;
 }
 
 .error-list a {
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 .error-list__header {
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin-top: var(--dimension-gutterHalf);
+  margin-bottom: var(--dimension-gutterHalf);
 }
 
 .error-list ol,
 .error-list ul {
-  padding-left: 40px;
+  padding-left: var(--dimension-gutter);
 }
 
 .error-list li:not(:last-of-type) {
@@ -27,50 +40,42 @@
 }
 
 .Calendar {
-  border: 0.125rem solid #000;
+  border: 1px solid var(--color-gray-300);
   display: inline-block;
-  padding: 0.625rem;
-  position: relative;
-  width: 100%;
-  min-height: 24rem;
-  max-width: 35rem;
-  margin-bottom: 2rem;
+  padding: 2px;
+  max-width: 100%;
 }
 
 .Calendar-nav {
   display: flex;
-  padding: 0.125rem;
+  padding: 0;
   justify-content: space-between;
   align-items: center;
+  background-color: var(--color-gray-100);
 }
 
 .Nav--month {
   display: flex;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
 }
 
 .Calendar-nav--button {
-  background-color: #fff;
-  border: 0.063rem solid currentColor;
   cursor: pointer;
 }
 
 .Calendar-nav--button {
   color: var(--selected-color);
-  font-size: 2.4rem;
-  font-weight: bold;
-  height: 4rem;
-  width: 4rem;
+  font-size: 1.25rem;
+  height: 45px;
+  width: 45px;
   border: 0;
 }
 
 .Calendar-nav--button--unavailable {
   /* cursor: url("img/disableddates.ico") 20 20, not-allowed;*/
-  color: #000;
-  opacity: 0.2;
   pointer-events: none;
-  background-color: white;
+  color: var(--color-gray-700);
   outline: none;
   border: 0;
 }
@@ -80,15 +85,16 @@
 }
 
 .Calendar-nav--button:focus,
-.Calendar-item:hover:not(.Calendar-item--day):not(
-    .Calendar-item--unavailable
-  ):not(:empty),
 .Calendar-item:focus:not(.Calendar-item--day):not(
     .Calendar-item--unavailable
   ):not(:empty) {
-  outline: black inset;
-  outline-offset: -4px;
-  outline-offset: -4px;
+  outline: var(--color-focus) 3px solid;
+}
+.Calendar-item:hover:not(.Calendar-item--day):not(
+    .Calendar-item--unavailable
+  ):not(:empty) {
+  background-color: var(--hover-color);
+  color: white;
 }
 
 .Calendar-item.Calendar-item--day,
@@ -99,6 +105,8 @@
 .Calendar-row {
   display: flex;
   text-align: center;
+  gap: 4px;
+  padding: 2px;
 }
 
 .Calendar-item {
@@ -107,12 +115,10 @@
   outline: none;
   border-radius: 0;
   box-sizing: border-box;
-  font-size: 1.5rem;
-  font-weight: bold;
-  line-height: 200%;
+  font-size: 1.25rem;
   position: relative;
-  height: 5rem;
-  width: 5rem;
+  height: 45px;
+  width: 45px;
 }
 
 .Calendar-item[aria-pressed] {
@@ -123,9 +129,12 @@
   background-color: var(--selected-color);
   color: #fff;
 }
+.Calendar-item--active[aria-pressed="false"] {
+  border-bottom: 2px solid var(--selected-color);
+}
 
 .Calendar-days {
-  color: #666;
+  color: var(--color-gray-700);
 }
 
 .Calendar-item--unavailable {
@@ -153,103 +162,18 @@
 }
 
 .Calendar-item.Calendar-item--day {
-  height: 5rem;
-}
-
-.toggle-holder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0.4rem;
-  margin-bottom: 0.4rem;
-  border: 2px solid transparent;
-}
-
-.toggle-label {
-  padding: 0.8rem;
-  color: #000;
-}
-
-.toggle-label-active {
+  height: 45px;
   font-weight: bold;
 }
 
-.toggle-label:first-child {
-  padding-left: 0;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 8px;
-  background-color: var(--selected-color);
-  color: #a5bfaf;
-  -webkit-transition: all 0.6s;
-  transition: all 0.6s;
-  outline: none;
-  border: none;
-}
-
-.switch.off,
-.switch.on {
-  border-radius: 25px;
-  padding: 5px;
-  cursor: pointer;
-}
-
-.switch.off:before,
-.switch.off:after {
-  -webkit-transition: 0.3s;
-  transition: all 0.3s;
-}
-
-.switch.on:before,
-.switch.on:after {
-  -webkit-transition: 0.3s;
-  transition: all 0.3s;
-}
-
-.switch.off:before,
-.switch.on:before {
-  display: block;
-  position: absolute;
-  content: "";
-  height: 23px;
-  width: 23px;
-  left: 0px;
-  top: -6px;
-  background-color: #fff;
-  border: 1px solid #666666;
-  -webkit-transition: 0.6s;
-  transition: all 0.6s;
-  -webkit-transition-delay: 0.01s;
-  transition-delay: 0.01s;
-  border-radius: 50%;
-}
-
-.switch.on:before {
-  -webkit-transform: translateX(32px);
-  -ms-transform: translateX(32px);
-  transform: translateX(32px);
-}
-
-.toggle-holder-active {
-  border: 2px solid currentColor;
-}
-
-:root {
-  --selected-color: #005da5;
-  --hover-color: rgba(43, 139, 196, 0.5);
-  --available-color: #d5e8f3;
+.MessageTextStyle, .schedule {
+  margin-bottom: 0.1875rem;
 }
 
 .schedule {
   display: flex;
-}
-
-.column {
-  margin-left: 20px;
+  flex-wrap: wrap;
+  gap: var(--dimension-gutter) var(--dimension-gutterHalf);
 }
 
 .Nav--selects {
@@ -259,12 +183,13 @@
 }
 
 .Nav--select {
-  height: 2.75rem;
+  display: inline-flex;
   position: relative;
-  width: 100%;
 }
 
 .Nav--select::after {
+  border-bottom: 0;
+  border-left: 0;
   border-top: 0.063rem solid black;
   border-right: 0.063rem solid black;
   border-width: 0.188rem;
@@ -272,7 +197,7 @@
   display: block;
   height: 0.625rem;
   position: absolute;
-  right: 0.5rem;
+  right: 0.625rem;
   top: 50%;
   -webkit-transform: rotate(135deg);
   -moz-transform: rotate(135deg);
@@ -283,65 +208,29 @@
 
 .Nav--select select {
   -webkit-appearance: none;
-  background-image: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  height: 2.75rem;
-  padding: 0 0.5rem;
+  border: 2px solid black;
+  padding: 0.3125rem 0.1875rem;
+  padding-inline-end: var(--dimension-gutter);
   width: 100%;
 }
-
 .Nav--select select:focus {
-  outline: black inset;
-  outline-offset: -4px;
-  outline-offset: -4px;
-}
-
-.Nav--select select:focus {
-  outline: block inset;
-  outline-offset: -2px;
-  outline-offset: -2px;
-}
-
-.Nav--select {
-  background-color: #fff;
-  border: 0.063rem solid currentColor;
-  cursor: pointer;
-  margin-right: 0.5rem;
-}
-
-.date-display {
-  font-weight: bold;
-  padding-top: 0.3rem;
-  margin-bottom: 0.8rem;
-  width: 28rem;
+  outline: 3px solid var(--color-focus);
 }
 
 .selected-date-time-box {
-  display: inline-flex;
-  margin-top: 4rem;
-  margin-left: 1rem;
-  background-color: var(--available-color);
-  padding: 0.8rem 2rem 0px 2rem;
+  padding: 0 var(--dimension-gutterHalf);
+  border-left: 3px solid var(--color-gray-300);
 }
 
 .date-time-box {
-  margin-left: 1rem;
-  font-size: 1.8rem;
+  font-size: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-gutterHalf);
 }
 
-@media screen and (min-width: 48em) {
-  .selected-date-time-box .triangle {
-    width: 0px;
-    height: 0px;
-    margin-top: 1.3rem;
-    margin-left: -3.4rem;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
-    border-right: 25px solid var(--available-color);
-  }
+.date-time {
+  max-width: 100%;
 }
 
 .visually-hidden {
@@ -358,21 +247,24 @@
 }
 
 /* radios */
+
+.choice--radios {
+  display: flex;
+  gap: var(--dimension-gutter);
+}
 .choice__item {
-  font-size: 1.8rem;
-  line-height: 1.25;
-  display: inline-block;
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+  height: 38px;
   position: relative;
-  min-height: 30px;
-  margin-bottom: 10px;
-  padding-left: 30px;
 }
 
 .choice__item > input {
-  cursor: pointer;
-  position: absolute;
-  z-index: 1;
-  margin: 0;
+  width: 38px;
+  height: 38px;
+  flex-grow: 0;
+  flex-shrink: 0;
   opacity: 0;
 }
 
@@ -381,16 +273,15 @@
 }
 
 .choice__item > input:focus + label:before {
-  box-shadow: 0 0 0 1px #000;
+  box-shadow: 0 0 0 3px var(--color-focus);
 }
 
 .choice__item > input + label {
   display: inline-block;
   margin-bottom: 0;
-  padding: 2px 15px 5px 7px;
+  padding: 0.3125rem 0;
   cursor: pointer;
   touch-action: manipulation;
-  font-weight: 400;
 }
 
 .choice__item > input + label:before {
@@ -399,8 +290,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   border: 2px solid;
   background: transparent;
 }
@@ -411,15 +302,11 @@
   opacity: 0;
 }
 
-.choice--radios {
-  margin-top: 20px;
-}
-
 .choice--radios .choice__item > input[type="radio"] {
   top: 0;
   left: 0;
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
 }
 
 .choice--radios .choice__item > input[type="radio"] + label:before {
@@ -427,34 +314,46 @@
 }
 
 .choice--radios .choice__item > input[type="radio"] + label:after {
-  top: 6px;
-  left: 6px;
+  top: 9px;
+  left: 9px;
   width: 0;
   height: 0;
-  border: 9px solid;
+  border: 10px solid;
   border-radius: 50%;
   background: currentColor;
 }
 
-.messageTextStyle {
-  font-size: 20px;
-  line-height: 1.25;
-  color: #0b0c0c;
-  max-width: 706px;
-}
 .confirmationWrapper {
-  margin-bottom: 20px;
+  margin-top: var(--dimension-gutter);
+  margin-bottom: var(--dimension-gutter);
 }
 
-.confirmation {
-  padding: 0.75rem 1rem;
+.confirmationIcon {
+  padding: 0.5rem 0; 
+  color: var(--color-gray-800);
 }
-.confirmation > p {
+.confirmationMessage {
+  display: flex;
+  flex-direction: column;
+}
+.confirmationMessage > * + * {
+  margin-top: var(--dimension-gutterHalf);
+}
+.confirmationTime {
+  font-size: 1.5rem;
+}
+.confirmation {
+  padding: var(--dimension-gutterHalf);
+  display: flex;
+  gap: var(--dimension-gutterHalf);
+}
+.confirmation p {
   margin-top: 0;
+  margin-bottom: 0;
 }
 .confirmation.set {
-  background: rgba(255, 221, 0, 0.25);
-  border-left: 5px solid #ffdd00;
+  background: var(--color-gray-100);
+  border-left: 3px solid var(--color-gray-300);
 }
 .confirmation.unset {
   background: rgba(235, 87, 87, 0.35);
