@@ -134,6 +134,8 @@ def email_template():
         fip_banner_french = False
         logo_with_background_colour = False
         brand_name = None
+        alt_text_en = "The canada wordmark is displayed at the bottom right."
+        alt_text_fr = "Le mot-symbole canada est affiché en bas à droite."
     elif branding_type == "fip_french":
         brand_text = None
         brand_colour = None
@@ -142,6 +144,8 @@ def email_template():
         fip_banner_french = True
         logo_with_background_colour = False
         brand_name = None
+        alt_text_en = "The canada wordmark is displayed at the bottom right."
+        alt_text_fr = "Le mot-symbole canada est affiché en bas à droite."
     else:
         colour = email_branding["colour"]
         brand_text = email_branding["text"]
@@ -151,6 +155,8 @@ def email_template():
         fip_banner_french = branding_type in ["fip_french", "both_french"]
         logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
         brand_name = email_branding["name"]
+        alt_text_en = email_branding["alt_text_en"]
+        alt_text_fr = email_branding["alt_text_fr"]
 
     template = {
         "subject": "foo",
@@ -176,6 +182,8 @@ def email_template():
                         brand_logo=brand_logo,
                         logo_with_background_colour=logo_with_background_colour,
                         brand_name=brand_name,
+                        alt_text_en=alt_text_en,
+                        alt_text_fr=alt_text_fr,
                     )
                 ),
             )
