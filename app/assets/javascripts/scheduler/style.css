@@ -166,7 +166,8 @@
   font-weight: bold;
 }
 
-.MessageTextStyle, .schedule {
+.MessageTextStyle,
+.schedule {
   margin-bottom: 0.1875rem;
 }
 
@@ -329,7 +330,7 @@
 }
 
 .confirmationIcon {
-  padding: 0.5rem 0; 
+  padding: 0.5rem 0;
   color: var(--color-gray-800);
 }
 .confirmationMessage {
