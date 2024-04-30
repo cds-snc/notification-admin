@@ -1,3 +1,5 @@
+{% from "components/information-box.html" import information_box %}
+
 <p>{{ _("You can change the name and email address later in Settings.") }}</p>
 <p>{{ _("When GC Notify sends your emails, the ‘From’ field shows the name followed by the email address.") }}</p>
 
@@ -27,9 +29,10 @@
       {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt, width='1-2', maxlength=64) }}
 
       <span id="preview" style="display: none">
-        {{ _("Your service’s email address will be:") }}
-        <b><span id="fixed-email-address"></span>@notification.canada.ca</b>
+        <div>{{ information_box(_("Make sure we have formatted your email address correctly.")) }}</div>
+        <div>{{ information_box(_("Your service’s email address will be: "), "<b><span id='fixed-email-address'></span>@notification.canada.ca</b>") }}</div>
       </span>
+
   </p>
   <p>{{ _("This email address cannot receive replies. In Settings, you can enter a different email for replies. Currently your service is set to prevent replies.") }}</p>
 
