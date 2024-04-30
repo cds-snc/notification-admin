@@ -16,6 +16,13 @@
     });
   }
 
+  function registerKeyBasedMenuNavigation($selector, fn) {
+    $selector.keydown(function (e) {
+      var menuVisible = !!$selector.not(":hidden");
+      if (menuVisible) fn(e);
+    });
+  }
+
   /**
    * Make branding links automatically go back to the previous page without keeping track of them
    */
@@ -28,5 +35,6 @@
 
   global.utils = {
     registerKeyDownEscape: registerKeyDownEscape,
+    registerKeyBasedMenuNavigation: registerKeyBasedMenuNavigation,
   };
 })(window);
