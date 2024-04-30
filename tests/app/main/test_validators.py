@@ -21,10 +21,7 @@ def test_should_raise_validation_error_for_password(
 
     form.validate()
 
-    assert (
-        "A password that is hard to guess contains"
-        in form.errors["password"][0]
-    )
+    assert "A password that is hard to guess contains" in form.errors["password"][0]
 
 
 def test_valid_email_not_in_valid_domains(
