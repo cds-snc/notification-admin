@@ -5,7 +5,7 @@
       <ol class="list list-number list-outside m-0">
         {% for field in form.errors %}
           <li>
-            <a class="link:text-red text-red" href="#{{ field }}">
+            <a class="link:text-red text-red visited:text-red" href="#{{ field }}">
               <span class="font-bold">{{ form[field].label.text}}</span>: 
               {{ form.errors[field][0] }}
             </a>

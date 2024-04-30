@@ -167,7 +167,7 @@ def password(label=_l("Password")):
             Length(8, 255, message=_l("Must be at least 8 characters")),
             Blocklist(
                 message=_l(
-                    "A password that is hard to guess contains:<li>Uppercase and lowercase letters.</li><li>Numbers and special characters.</li><li>Words separated by a space.</li>"
+                    "A password that is hard to guess contains:<ul class='list list-bullet'><li>Uppercase and lowercase letters.</li><li>Numbers and special characters.</li><li>Words separated by a space.</li></ul>"
                 )
             ),
         ],
