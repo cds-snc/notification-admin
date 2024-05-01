@@ -1,4 +1,4 @@
-{% from "components/information-box.html" import information_box %}
+{% from "components/confirmation-preview.html" import confirmation_preview %}
 
 <p>{{ _("You can change the name and email address later in Settings.") }}</p>
 <p>{{ _("When GC Notify sends your emails, the ‘From’ field shows the name followed by the email address.") }}</p>
@@ -28,13 +28,14 @@
 
       {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt, width='1-2', maxlength=64) }}
 
-      <div id="preview" style="display: none" tabindex="0">
-        <div>
-          {{ information_box(_("Make sure we have formatted your email address correctly.")) }}
-        </div>
-        <div>
-          {{ information_box(_("Your service’s email address will be: "), "<b><span id='fixed-email-address'></span>@notification.canada.ca</b>") }}
-        </div>
+      <div id="preview" class="focus:outline-yellow" style="display: none" tabindex="0" >
+        {% call confirmation_preview() %}
+          <p class="m-0">{{_("Make sure we have formatted your email address correctly.")}}</p>
+          <p class="m-0">
+            {{_("Your service’s email address will be: ")}}
+            <b><span id='fixed-email-address'></span>@notification.canada.ca</b>
+          </p>
+        {% endcall %}
       </div>
 
   </p>
