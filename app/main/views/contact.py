@@ -1,9 +1,9 @@
-from flask import redirect, render_template, request, session, url_for
+from flask import current_app, redirect, render_template, request, session, url_for
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
-from app import user_api_client
+from app import get_current_locale, user_api_client
 from app.main import main
 from app.main.forms import ContactMessageStep, ContactNotify
 
@@ -12,6 +12,8 @@ SESSION_FORM_KEY = "contact_form"
 
 @main.route("/contact", methods=["GET", "POST"])
 def contact():
+    lang = get_current_locale(current_app)  # Get the selected language, default to 'en' if not provided
+    lang = request.args.get("lang", lang)
     data = _form_data()
     form = ContactNotify(data=data)
     previous_step = None
@@ -25,7 +27,7 @@ def contact():
     return render_template(
         "views/contact/contact-us.html",
         form=form,
-        url=url_for(".contact"),
+        url=url_for(".contact", lang=lang),  # Include the language in the URL
         current_step=current_step,
         next_step=next_step,
         previous_step=previous_step,
