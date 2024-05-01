@@ -52,7 +52,7 @@
   </div>
 
   <div class="js-stick-at-bottom-when-scrolling">
-    <a href="{{ url_for('.invite_org_user', org_id=current_org.id) }}" role="button" draggable="false" data-module="button" class="button button-secondary">Invite team member</a>
+    {{ link_button(href=url_for('.invite_org_user', org_id=current_org.id), label=_("Invite team member"), class="button-secondary") }}
   </div>
 
 {% endblock %}

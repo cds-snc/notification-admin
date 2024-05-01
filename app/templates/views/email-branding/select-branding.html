@@ -18,7 +18,7 @@
     </p>
   {% endfor %}
   <div class="js-stick-at-bottom-when-scrolling">
-    <a id="create_email_branding" href="{{ url_for('.create_email_branding') }}" role="button" draggable="false" data-module="button" class="button button-secondary">{{ _('New branding') }}</a>
+    {{ link_button(href=url_for('.create_email_branding'), label=_('New branding'), class="button-secondary", id="create_email_branding") }}
   </div>
 
 {% endblock %}
