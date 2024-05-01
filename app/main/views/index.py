@@ -248,6 +248,7 @@ def features_letters():
 def welcome():
     return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"])
 
+
 # TODO: finish hardcoding the links (or come up with some way to generate these from annotations)
 @main.route("/sitemap")
 def sitemap():
