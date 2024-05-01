@@ -64,12 +64,12 @@
 {% endmacro %}
 
 {% macro link_button(label, href, class, id=None, testid=None) %}
-    <a 
-        {% if id %} id="{{ id }}" {% endif %} 
-        {% if testid %} data-testid="{{ testid }}" {% endif %} 
-        href="{{ href }}" 
-        class="button{{ class and ' ' + class }}" 
-        role="button" draggable="false" data-module="button">
-            {{ label }}
-    </a>
+<a 
+    {% if id %} id="{{ id }}" {% endif %} 
+    {% if testid %} data-testid="{{ testid }}" {% endif %} 
+    href="{{ href }}" 
+    class="button{{ class and ' ' + class }}" 
+    role="button" draggable="false" data-module="button">
+    {{- label -}}
+</a>
 {% endmacro %}
