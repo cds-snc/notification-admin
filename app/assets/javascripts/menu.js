@@ -2,7 +2,8 @@
   "use strict";
 
   const registerKeyDownEscape = window.utils.registerKeyDownEscape;
-  const registerKeyBasedMenuNavigation = window.utils.registerKeyBasedMenuNavigation;
+  const registerKeyBasedMenuNavigation =
+    window.utils.registerKeyBasedMenuNavigation;
 
   function open($menu, $items) {
     // show menu if closed
@@ -40,7 +41,6 @@
       $menu.attr("aria-expanded", false);
       $menu.hasFocus = false;
       $menu.currentMenuItem = 0;
-      // TODO: return focus to the element that had focus prior to focusing the menu
 
       window.setTimeout(function () {
         $items.toggleClass("hidden", true);
@@ -64,25 +64,20 @@
     var menuItems = $items.children();
     if (event.key === "ArrowDown" || event.key === "ArrowRight") {
       event.preventDefault();
-      $menu.currentMenuItem = (
+      $menu.currentMenuItem =
         $menu.currentMenuItem == menuItems.length - 1
           ? 0
-          : Math.min(menuItems.length - 1, $menu.currentMenuItem + 1)
-      );
-    }
-    else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+          : Math.min(menuItems.length - 1, $menu.currentMenuItem + 1);
+    } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
       event.preventDefault();
-      $menu.currentMenuItem = (
+      $menu.currentMenuItem =
         $menu.currentMenuItem == 0
           ? menuItems.length - 1
-          : Math.max(0, $menu.currentMenuItem - 1)
-      );
-    }
-    else if (event.key == "Home") {
+          : Math.max(0, $menu.currentMenuItem - 1);
+    } else if (event.key == "Home") {
       event.preventDefault();
       $menu.currentMenuItem = 0;
-    }
-    else if (event.key == "End") {
+    } else if (event.key == "End") {
       event.preventDefault();
       $menu.currentMenuItem = menuItems.length - 1;
     }
@@ -100,11 +95,13 @@
     $menu.click(() => toggleMenu($menu, $items));
 
     $.each($items.children(), function (i, element) {
-      $(element.querySelector("a")).on("blur", () => close($menu, $items))
-    })
+      $(element.querySelector("a")).on("blur", () => close($menu, $items));
+    });
 
     // Keypress event so the user can use the arrow/home/end keys to navigate the drop down menu
-    registerKeyBasedMenuNavigation($(window), (event) => handleKeyBasedMenuNavigation(event, $menu, $items))
+    registerKeyBasedMenuNavigation($(window), (event) =>
+      handleKeyBasedMenuNavigation(event, $menu, $items),
+    );
 
     // Register Escape key from anywhere in the window to close the menu
     registerKeyDownEscape($(window), () => close($menu, $items));
