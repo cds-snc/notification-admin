@@ -16,7 +16,7 @@
 
 
       <p>
-      <a role="button" draggable="false" data-module="button" class="button" href="{{url_for('main.check_and_resend_verification_code')}}">{{ _('Re-send security code') }}</a>
+      {{ link_button(href=url_for('main.check_and_resend_verification_code'), label=_('Re-send security code')) }}
       </p>
   </div>
 </div>

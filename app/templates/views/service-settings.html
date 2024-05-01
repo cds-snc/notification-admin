@@ -26,7 +26,7 @@
               <p class="flex-1 mr-10 mb-0">
                 {{ _('To send notifications to more people, request to go live.') }}
               </p>
-              <a data-testid="golivebtn" href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}" role="button" draggable="false" data-module="button" class="button">{{ _('Request to go live') }}</a>
+              {{ link_button(href=url_for('main.request_to_go_live', service_id=current_service.id), label=_('Request to go live'), testid="golivebtn") }}
             </div>
           {% else %}
             <p>

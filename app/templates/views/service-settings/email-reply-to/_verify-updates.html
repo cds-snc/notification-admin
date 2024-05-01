@@ -19,12 +19,12 @@
     </p>
 
     <p class="js-hidden">
-      <a href="{{ url_for('main.service_verify_reply_to_address', service_id=service_id, notification_id=notification_id, is_default=is_default, replace=replace) }}">Refresh</a>
+      {{ link_button(href=url_for('main.service_verify_reply_to_address', service_id=service_id, notification_id=notification_id, is_default=is_default, replace=replace), label=_("Refresh")) }}
     </p>
   {% elif verification_status == "success" %}
     {{ banner("‘{}’ ".format(reply_to_email_address) + _('is ready to use'), type='default', with_tick=True) }}
     <div class="js-stick-at-bottom-when-scrolling">
-      <a href="{{ url_for('.service_email_reply_to', service_id=service_id) }}" role="button" draggable="false" data-module="button" class="button">{{ _('Continue') }}</a>
+      {{ link_button(href=url_for('.service_email_reply_to', service_id=service_id), label=_('Continue')) }}
     </div>
   {% elif verification_status == "failure" %}
     <div class="mb-12 clear-both contain-floats">
