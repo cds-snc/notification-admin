@@ -28,10 +28,14 @@
 
       {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt, width='1-2', maxlength=64) }}
 
-      <span id="preview" style="display: none">
-        <div>{{ information_box(_("Make sure we have formatted your email address correctly.")) }}</div>
-        <div>{{ information_box(_("Your service’s email address will be: "), "<b><span id='fixed-email-address'></span>@notification.canada.ca</b>") }}</div>
-      </span>
+      <div id="preview" style="display: none" tabindex="0">
+        <div>
+          {{ information_box(_("Make sure we have formatted your email address correctly.")) }}
+        </div>
+        <div>
+          {{ information_box(_("Your service’s email address will be: "), "<b><span id='fixed-email-address'></span>@notification.canada.ca</b>") }}
+        </div>
+      </div>
 
   </p>
   <p>{{ _("This email address cannot receive replies. In Settings, you can enter a different email for replies. Currently your service is set to prevent replies.") }}</p>
