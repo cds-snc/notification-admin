@@ -5,6 +5,7 @@ from app import get_current_locale
 from app.articles.routing import gca_url_for
 from app.utils import documentation_url
 
+
 def get_sitemap():
     lang = get_current_locale(current_app)
     return {
