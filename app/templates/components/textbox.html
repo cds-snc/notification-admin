@@ -147,3 +147,27 @@
 
   </div>
 {% endmacro %}
+
+
+{% macro textbox_localized(
+  name,
+  field,
+  legend,
+  hint=None,
+  describedby=""
+) %}
+  <fieldset class="localized-field">
+    <legend>{{ legend }}</legend>
+    {% if hint %}
+    {% set describedby = describedby + name + '-hint ' %}
+      <span id="{{ name }}-hint" class="form-hint">
+        {{ hint }}
+      </span>
+    {% endif %}
+    <div class="localized-field-fields flex w-full">
+      {% for localized_field in field %}
+        {{ textbox(localized_field, localized_field.label.text, width='w-full', data_error_msg=localized_field.validators[0].message) }}
+      {% endfor %}
+    </div>
+  </fieldset>
+{% endmacro %}
