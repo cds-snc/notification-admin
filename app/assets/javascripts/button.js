@@ -15,7 +15,7 @@
         let target = event.target;
 
         // If role is a button, and SPACE is pressed...
-        if (target.getAttribute("role") === "button" && event.which === 32) {
+        if (target.getAttribute("role") === "button" && event.key === " ") {
           // Prevent default (scroll down), and click the button.
           event.preventDefault();
           target.click();
