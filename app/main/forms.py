@@ -1821,12 +1821,8 @@ class BrandingRequestForm(StripWhitespaceForm):
     """
 
     name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
-    alt_text_en = StringField(
-        label=_l("Alternative text in English"), validators=[DataRequired(message=_l("Enter the alternative text in English"))]
-    )
-    alt_text_fr = StringField(
-        label=_l("Alternative text in French"), validators=[DataRequired(message=_l("Enter the alternative text in French"))]
-    )
+    alt_text_en = StringField(label=_l("English"), validators=[DataRequired(message=_l("Cannot be empty"))])
+    alt_text_fr = StringField(label=_l("French"), validators=[DataRequired(message=_l("Cannot be empty"))])
     file = FileField_wtf(
         label=_l("Prepare your logo"),
         validators=[

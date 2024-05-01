@@ -39,5 +39,27 @@
       @apply ml-2 inline-block align-top;
     }
   }
+
+  .localized-field:has(.form-group-error) {
+    @apply mr-4 pl-4 border-l-4 border-red;
+  }
+  .localized-field-fields .form-group {
+    @apply w-full mb-0 flex flex-col;
+  }
+  .localized-field-fields .form-group label,
+  .localized-field-fields .form-group .error-message {
+    padding: 0 4px;
+    @apply border-l-2 border-gray-300 m-0 flex-grow;
+  }
+  .localized-field-fields .form-group-error {
+    @apply border-0 pl-0 mr-0;
+  }
+  .localized-field-fields .form-group-error label,
+  .localized-field-fields .form-group-error .error-message {
+    @apply border-red border-l-2;
+  }
+  .localized-field-fields .form-group:not(:last-of-type) input {
+    @apply border-r-0;
+  }
   /*! purgecss end ignore */
 }

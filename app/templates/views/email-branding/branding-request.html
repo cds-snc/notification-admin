@@ -4,7 +4,7 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/show-more.html" import show_more %}
-{% from "components/textbox.html" import textbox %}
+{% from "components/textbox.html" import textbox, textbox_localized %}
 
 
 {% block service_page_title %}
@@ -24,8 +24,11 @@
           <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
             
             {{ textbox(form.name, hint=_('This will not show in messages. Choose a name that helps team members find the logo'), testid="brand_name", data_error_msg=_("Enter the name of the logo")) }}
-            {{ textbox(form.alt_text_en, hint=_('This is an english description of the logo for screenreaders'), testid="alt_text_en", data_error_msg=_("Enter the alternative text in English")) }}
-            {{ textbox(form.alt_text_fr, hint=_('This is a french description of the logo for screenreaders'), testid="alt_text_fr", data_error_msg=_("Enter the alternative text in French")) }}
+
+            {{ textbox_localized("alt", [form.alt_text_en, form.alt_text_fr], legend=_("Alternative text"), hint=_("Provide an accessible description of your logo")) }}
+            
+
+            
 
             <h2 class="heading-medium">{{ _('Prepare your logo') }}</h2>
             <p>
