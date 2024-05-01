@@ -249,6 +249,126 @@ def welcome():
     return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"])
 
 
+@main.route("/sitemap")
+def sitemap():
+    lang = get_current_locale(current_app)
+    sitemap = {
+        "groups": [
+            {
+                "title": "About GC Notify",
+                "pages": [
+                    {
+                        "href": url_for('main.activity'),
+                        "link_text": "Activity on GC Notify"
+                    },
+                    {
+                        "href": url_for('main.contact'),
+                        "link_text": "Contact us"
+                    },
+                    {
+                        "href": gca_url_for('features'),
+                        "link_text": "Features"
+                    },
+                    {
+                        "href": gca_url_for('new_features'),
+                        "link_text": "New features"
+                    },
+                    {
+                        "href": gca_url_for('register_for_demo'),
+                        "link_text": "Register for a demo"
+                    },
+                    {
+                        "href": gca_url_for('whynotify'),
+                        "link_text": "Why Notify"
+                    }
+                ]
+            },
+            {
+                "title": "Developers",
+                "pages": [
+                    {
+                        "href": documentation_url(),
+                        "link_text": "API documentation"
+                    },
+                    {
+                        "href": current_app.config['SYSTEM_STATUS_URL'] + ('/#fr' if lang == 'fr' else ''),
+                        "link_text": "System status"
+                    },                    
+                ]
+            },
+            {
+                "title": "Help and guidance",
+                "pages": [
+                    {
+                        "href": documentation_url(),
+                        "link_text": "API documentation"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Getting started"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Guidance overview"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Formatting emails"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Spreadsheet guide"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Sending custom content"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Understanding delivery and failure"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Updating contact information"
+                    },
+                                      
+                ]
+            },
+            {
+                "title": "Policy",
+                "pages": [
+                    {
+                        "href": "#",
+                        "link_text": "Accessibility"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "GC Notify terms of use"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Privacy notice for staff using GC Notify"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Security"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Service level agreement"
+                    },
+                    {
+                        "href": "#",
+                        "link_text": "Service level objectives"
+                    },       
+                ]
+            }
+        ]
+    } 
+
+    return render_template("views/sitemap.html", sitemap=sitemap)
+
+
 @main.route("/activity", endpoint="activity")
 def activity():
     return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
