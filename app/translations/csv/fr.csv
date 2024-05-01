@@ -1,6 +1,8 @@
 "source","target"
 "\!/\!/ HELLO DEVS, READ THIS FOR DOCUMENTATION \!/\!/","Read more about how translations work in scripts/generate_en_translations.py"
 ":"," :"
+"English","Anglais"
+"French","Français"
 "Your account and language","Votre compte et langue"
 "Sign-in and language","Connexion et langue"
 "Main menu","Menu principal"

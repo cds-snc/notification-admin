@@ -48,7 +48,7 @@
   }
   .localized-field-fields .form-group label,
   .localized-field-fields .form-group .error-message {
-    padding: 0 4px;
+    padding: 0 4px 4px;
     @apply border-l-2 border-gray-300 m-0 flex-grow;
   }
   .localized-field-fields .form-group-error {
