@@ -39,7 +39,7 @@
       @apply ml-2 inline-block align-top;
     }
   }
-  
+
   .localized-field-fields .form-group {
     @apply w-full mb-0 flex flex-col;
   }
