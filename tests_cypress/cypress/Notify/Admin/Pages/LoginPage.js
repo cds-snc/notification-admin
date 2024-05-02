@@ -43,7 +43,7 @@ let Actions = {
 
         // ensure code is received and enter it
         cy.get('blockquote').should('be.visible');
-        cy.get('blockquote p strong').invoke('text').as('MFACode');
+        cy.get('blockquote p').invoke('text').as('MFACode');
         cy.get('@MFACode').then((text) => {
             let code = text;
             cy.visit('/two-factor-email-sent');
