@@ -1666,7 +1666,7 @@
 "Enter bilingual service name","Saisissez le nom bilingue du service"
 "Maximum 64 characters with no spaces. Characters can include letters, numbers, dots, dashes, and underscores.","64 caractères au maximum, sans espaces. Les caractères peuvent comprendre des lettres, des chiffres, des points, des tirets et des traits de soulignement."
 "This email address cannot receive replies. In Settings, you can enter a different email for replies. Currently your service is set to prevent replies.","Cette adresse courriel ne peut pas recevoir de réponses. Vous pouvez saisir une adresse courriel différente pour les réponses via les paramètres. Votre service est actuellement configuré pour empêcher les réponses."
-"Your service’s email address will be:","L’adresse courriel de votre service sera&nbsp;:"
+"Your service’s email address will be: ","L’adresse courriel de votre service sera&nbsp;: "
 "You can change the order later in Settings.","Vous pourrez changer l’ordre ultérieurement via les paramètres."
 "The email address always ends with ‘@notification.canada.ca’.","L’adresse courriel se termine toujours par « @notification.canada.ca »."
 "Enter the part before ‘@notification.canada.ca’","Saisissez la partie précédant « @notification.canada.ca »."
@@ -1873,3 +1873,4 @@
 "Spreadsheet guide","FR: Spreadsheet guide"
 "You","FR: You"
 "Policy","FR: Policy"
+"Make sure we have formatted your email address correctly.","Assurez-vous que nous avons correctement formaté votre courriel."
