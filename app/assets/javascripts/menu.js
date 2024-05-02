@@ -92,7 +92,7 @@
     } else if (event.key === " ") {
       menuItems[$menu.currentMenuItem].querySelector("a").click();
     }
-
+    // Set the focus
     $items.children()[$menu.currentMenuItem].querySelector("a").focus();
   }
 
