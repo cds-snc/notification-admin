@@ -63,40 +63,43 @@
   function handleKeyBasedMenuNavigation(event, $menu, $items) {
     var menuItems = $items.children();
 
-    // Support for Home/End on Windows and Linux + Cmd + Arrows for Mac
-    if (event.key == "Home" || (event.metaKey && event.key == "ArrowLeft")) {
-      event.preventDefault();
-      $menu.currentMenuItem = 0;
-    } else if (
-      event.key == "End" ||
-      (event.metaKey && event.key == "ArrowRight")
-    ) {
-      event.preventDefault();
-      $menu.currentMenuItem = menuItems.length - 1;
-    } else if (
-      event.key === "ArrowUp" ||
-      event.key === "ArrowLeft" ||
-      (event.shiftKey && event.key === "Tab")
-    ) {
-      event.preventDefault();
-      $menu.currentMenuItem =
-        $menu.currentMenuItem == 0
-          ? menuItems.length - 1
-          : Math.max(0, $menu.currentMenuItem - 1);
-    } else if (
-      event.key === "ArrowDown" ||
-      event.key === "ArrowRight" ||
-      event.key === "Tab"
-    ) {
-      event.preventDefault();
-      $menu.currentMenuItem =
-        $menu.currentMenuItem == menuItems.length - 1
-          ? 0
-          : Math.min(menuItems.length - 1, $menu.currentMenuItem + 1);
-    } else if (event.key === " ") {
-      event.preventDefault();
-      menuItems[$menu.currentMenuItem].querySelector("a").click();
+    if ($menu.attr("aria-expanded") == "true") {
+      // Support for Home/End on Windows and Linux + Cmd + Arrows for Mac
+      if (event.key == "Home" || (event.metaKey && event.key == "ArrowLeft")) {
+        event.preventDefault();
+        $menu.currentMenuItem = 0;
+      } else if (
+        event.key == "End" ||
+        (event.metaKey && event.key == "ArrowRight")
+      ) {
+        event.preventDefault();
+        $menu.currentMenuItem = menuItems.length - 1;
+      } else if (
+        event.key === "ArrowUp" ||
+        event.key === "ArrowLeft" ||
+        (event.shiftKey && event.key === "Tab")
+      ) {
+        event.preventDefault();
+        $menu.currentMenuItem =
+          $menu.currentMenuItem == 0
+            ? menuItems.length - 1
+            : Math.max(0, $menu.currentMenuItem - 1);
+      } else if (
+        event.key === "ArrowDown" ||
+        event.key === "ArrowRight" ||
+        event.key === "Tab"
+      ) {
+        event.preventDefault();
+        $menu.currentMenuItem =
+          $menu.currentMenuItem == menuItems.length - 1
+            ? 0
+            : Math.min(menuItems.length - 1, $menu.currentMenuItem + 1);
+      } else if (event.key === " ") {
+        event.preventDefault();
+        menuItems[$menu.currentMenuItem].querySelector("a").click();
+      }
     }
+
     // Set the focus
     $items.children()[$menu.currentMenuItem].querySelector("a").focus();
   }
