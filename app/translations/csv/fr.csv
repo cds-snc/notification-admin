@@ -1801,7 +1801,7 @@
 "API request name:","Nom de la requête API&nbsp;:"
 "GC Notify disposed of the information in this report on <time class='local-datetime-short'>{}</time>","Notification GC a supprimé les renseignements de ce rapport le <time class='local-datetime-short'>{}</time>"
 "After {} days, we keep only non-identifying statistics.","Après {} jours, nous ne conservons que des statistiques anonymes qui ne permettent pas d’identifier les destinataires."
-"{} is not on our list of government domains. If it’s a government email address, <a href='{}'>{}</a>.","{} ne figure pas sur notre liste de domaines gouvernementaux. S’il s’agit d’une adresse courriel gouvernementale, <a href='{}'>{}</a>."
+"{} is not on our list of government domains. If it’s a government email address, {}.","{} ne figure pas sur notre liste de domaines gouvernementaux. S’il s’agit d’une adresse courriel gouvernementale, {}."
 "System status","État du système"
 "Current operations, incidents, and service interruptions","Opérations, incidents et interruptions de service en cours"
 "Visit System status","Visiter la page État du système"
