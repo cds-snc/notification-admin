@@ -39,10 +39,7 @@
       @apply ml-2 inline-block align-top;
     }
   }
-
-  .localized-field:has(.form-group-error) {
-    @apply mr-4 pl-4 border-l-4 border-red;
-  }
+  
   .localized-field-fields .form-group {
     @apply w-full mb-0 flex flex-col;
   }
