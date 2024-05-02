@@ -64,8 +64,6 @@ class ValidGovEmail:
         if not field.data:
             return
 
-        from flask import url_for
-
         # extract domain name from given email address
 
         domain = re.search(r"@(.*)$", field.data)
