@@ -18,13 +18,13 @@ def get_sitemap():
                     {"href": gca_url_for("features"), "link_text": _("Features")},
                     {"href": gca_url_for("new_features"), "link_text": _("New features")},
                     {"href": gca_url_for("register_for_demo"), "link_text": _("Register for a demo")},
-                    {"href": gca_url_for("whynotify"), "link_text": _("Why Notify")},
+                    {"href": gca_url_for("whynotify"), "link_text": _("Why GC Notify")},
                 ],
             },
             {
                 "title": _("Developers"),
                 "pages": [
-                    {"href": documentation_url(), "link_text": _("API documentation")},
+                    {"href": documentation_url(), "link_text": _("Integrate the API")},
                     {
                         "href": current_app.config["SYSTEM_STATUS_URL"] + ("/#fr" if lang == "fr" else ""),
                         "link_text": _("System status"),
@@ -35,10 +35,10 @@ def get_sitemap():
                 "title": _("Help and guidance"),
                 "pages": [
                     {"href": documentation_url(), "link_text": _("API documentation")},
-                    {"href": "#", "link_text": _("Getting started")},
-                    {"href": "#", "link_text": _("Guidance overview")},
+                    # {"href": "/#", "link_text": _("Getting started")},
+                    # {"href": "/#", "link_text": _("Guidance overview")},
                     {"href": gca_url_for("formatting_guide"), "link_text": _("Formatting emails")},
-                    {"href": gca_url_for("spreadsheets"), "link_text": _("Spreadsheet guide")},
+                    {"href": gca_url_for("spreadsheets"), "link_text": _("Using a spreadsheet")},
                     {"href": gca_url_for("personalisation_guide"), "link_text": _("Sending custom content")},
                     {"href": gca_url_for("message_delivery_status"), "link_text": _("Understanding delivery and failure")},
                     {"href": gca_url_for("bounce_guidance"), "link_text": _("Updating contact information")},
@@ -51,8 +51,8 @@ def get_sitemap():
                     {"href": gca_url_for("terms"), "link_text": _("GC Notify terms of use")},
                     {"href": gca_url_for("privacy"), "link_text": _("Privacy notice for staff using GC Notify")},
                     {"href": gca_url_for("security"), "link_text": _("Security")},
-                    {"href": gca_url_for("service-level-agreement"), "link_text": _("Service level agreement")},
-                    {"href": gca_url_for("service-level-objectives"), "link_text": _("Service level objectives")},
+                    {"href": gca_url_for("service-level-agreement"), "link_text": _("GC Notify service level agreement")},
+                    {"href": gca_url_for("service-level-objectives"), "link_text": _("Service level objectives: What to expect from GC Notify")},
                 ],
             },
             {
