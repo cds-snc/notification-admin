@@ -76,9 +76,9 @@ class ValidGovEmail:
             domain = ""
 
         contact_text = _("contact us")
-        message = _(
-            "{} is not on our list of government domains. If it’s a government email address, {}."
-        ).format(domain, contact_text)
+        message = _("{} is not on our list of government domains. If it’s a government email address, {}.").format(
+            domain, contact_text
+        )
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
 
