@@ -25,7 +25,7 @@
             
             {{ textbox(form.name, hint=_('This will not show in messages. Choose a name that helps team members find the logo'), testid="brand_name", data_error_msg=_("Enter the name of the logo")) }}
 
-            {{ textbox_localized("alt", [form.alt_text_en, form.alt_text_fr], legend=_("Alternative text"), hint=_("Provide an accessible description of your logo")) }}
+            {{ textbox_localized("alt", fields=({"en":form.alt_text_en, "fr":form.alt_text_fr}), legend=_("Alternative text"), hint=_("Provide an accessible description of your logo")) }}
             
 
             
