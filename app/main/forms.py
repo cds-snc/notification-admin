@@ -167,7 +167,7 @@ def password(label=_l("Password")):
             Length(8, 255, message=_l("Must be at least 8 characters")),
             Blocklist(
                 message=_l(
-                    "A password that is hard to guess contains:<li>Uppercase and lowercase letters.</li><li>Numbers and special characters.</li><li>Words separated by a space.</li>"
+                    "A password that is hard to guess contains: uppercase and lowercase letters, numbers and special characters, and words separated by a space."
                 )
             ),
         ],
@@ -671,7 +671,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         self.default_branding.choices = self._getSelectBilingualChoices()
 
     default_branding = RadioField(
-        _l("Choose which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
+        _l("Select which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
@@ -767,7 +767,7 @@ class BaseTemplateForm(StripWhitespaceForm):
         ],
     )
     process_type = RadioField(
-        _l("Choose a priority queue"),
+        _l("Select a priority queue"),
         choices=[
             ("bulk", _l("Bulk — Not time-sensitive")),
             ("normal", _l("Normal")),
@@ -1601,7 +1601,7 @@ class TemplateAndFoldersSelectionForm(Form):
     # this means '__NONE__' (self.ALL_TEMPLATES option) is selected when no form data has been submitted
     # set default to empty string so process_data method doesn't perform any transformation
     move_to = NestedRadioField(
-        _l("Choose a folder"),
+        _l("Select a folder"),
         default="",
         validators=[required_for_ops("move-to-existing-folder"), Optional()],
     )

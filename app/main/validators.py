@@ -64,8 +64,6 @@ class ValidGovEmail:
         if not field.data:
             return
 
-        from flask import url_for
-
         # extract domain name from given email address
 
         domain = re.search(r"@(.*)$", field.data)
@@ -75,12 +73,10 @@ class ValidGovEmail:
         else:
             domain = ""
 
-        contact_url = url_for(".contact")
         contact_text = _("contact us")
-        message = _(
-            "{} is not on our list of government domains. If it’s a government email address, <a href='{}'>{}</a>."
-        ).format(domain, contact_url, contact_text)
-        # message = ('{}{} {} <a href="{}">{}</a>').format(domain, gov_email, access_text, contact_url, contact_text)
+        message = _("{} is not on our list of government domains. If it’s a government email address, {}.").format(
+            domain, contact_text
+        )
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
 
@@ -149,7 +145,6 @@ def validate_email_from(form, field):
     if email_safe(field.data) != field.data.lower():
         # fix their data instead of only warning them
         field.data = email_safe(field.data)
-        raise ValidationError(_l("Make sure we formatted your email address correctly."))
     if len(field.data) > 64:
         raise ValidationError(_l("This cannot exceed 64 characters in length"))
     # this filler is used because service id is not available when validating a new service to be created
