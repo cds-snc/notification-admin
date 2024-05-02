@@ -63,3 +63,7 @@ format:
 	isort --check-only ./app ./tests
 	mypy ./
 	npx prettier --write app/assets/javascripts app/assets/stylesheets
+
+.PHONY: tailwind
+tailwind:
+	npm run tailwind
