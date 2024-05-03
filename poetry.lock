@@ -1445,22 +1445,21 @@ name = "notifications-utils"
 version = "52.2.3"
 description = "Shared python code for Notification - Provides logging utils etc."
 optional = false
-python-versions = ">=3.10.9,<3.11.0"
-files = [
-    {file = "notifications_utils-52.2.3.tar.gz", hash = "sha256:17887971aac409350f6eff64b3851d7d7624476e35e6bb093036fda906b9b721"},
-]
+python-versions = "~3.10.9"
+files = []
+develop = false
 
 [package.dependencies]
 awscli = "1.32.89"
 bleach = "6.1.0"
 boto3 = "1.34.89"
 cachetools = "4.2.4"
-certifi = ">=2023.7.22,<2024.0.0"
-cryptography = ">=42.0.3,<43.0.0"
+certifi = "^2023.7.22"
+cryptography = "^42.0.3"
 Flask = "2.3.3"
 Flask-Redis = "0.4.0"
 itsdangerous = "2.1.2"
-Jinja2 = ">=3.0.0,<4.0.0"
+Jinja2 = "^3.0.0"
 markupsafe = "2.1.5"
 mistune = "0.8.4"
 ordered-set = "4.1.0"
@@ -1476,8 +1475,10 @@ statsd = "3.3.0"
 werkzeug = "2.3.7"
 
 [package.source]
-type = "file"
-url = "../../nutils/notifications_utils-52.2.3.tar.gz"
+type = "git"
+url = "https://github.com/cds-snc/notifier-utils.git"
+reference = "reinstate-bulk-sms-limit"
+resolved_reference = "b89daceb96065599f7f6b689b91cfd88dad93aa9"
 
 [[package]]
 name = "openpyxl"
@@ -2474,4 +2475,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.9"
-content-hash = "006f45b07c69abd2012d4327b092e5be073ca3525468b9b1434dc2e3f8d41dee"
+content-hash = "990eeb51f7643a648aa93d118771366b6a2ec33395a363dbaf33dc28147da7ad"
