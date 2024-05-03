@@ -304,7 +304,7 @@ def test_update_existing_branding(
         text=data["text"],
         colour=data["colour"],
         brand_type=data["brand_type"],
-        organisation_id="-1",
+        organisation_id=data["organisation_id"],
         alt_text_en=data["alt_text_en"],
         alt_text_fr=data["alt_text_fr"],
     )
