@@ -52,7 +52,10 @@ def get_sitemap():
                     {"href": gca_url_for("privacy"), "link_text": _("Privacy notice for staff using GC Notify")},
                     {"href": gca_url_for("security"), "link_text": _("Security")},
                     {"href": gca_url_for("service-level-agreement"), "link_text": _("GC Notify service level agreement")},
-                    {"href": gca_url_for("service-level-objectives"), "link_text": _("Service level objectives: What to expect from GC Notify")},
+                    {
+                        "href": gca_url_for("service-level-objectives"),
+                        "link_text": _("Service level objectives: What to expect from GC Notify"),
+                    },
                 ],
             },
             {
