@@ -28,7 +28,9 @@
   </div>
   <div role='group' id="add_new_template_form">
     <div class="js-will-stick-at-bottom-when-scrolling">
-      {{ link_button(href=url_for('main.create_template', service_id=current_service.id, template_type=template_type, template_folder_id=current_template_folder_id), label=_('Create template')) }}
+      <a class="button" href="{{ url_for('main.create_template', service_id=current_service.id, template_type=template_type, template_folder_id=current_template_folder_id) }}">
+        {{ _('Create template') }}
+      </a>
     </div>
   </div>
   <div class="aria-live-region visuallyhidden" aria-live="polite" role="status">

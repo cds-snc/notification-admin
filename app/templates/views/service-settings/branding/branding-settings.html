@@ -19,7 +19,9 @@
       <div class="py-0 px-0 px-gutterHalf box-border">
         <p>{{ _('This preview shows how your logo will appear to recipients') }}</p>
         {% include 'views/email-branding/_preview.html' %}
-        {{ link_button(href=url_for('main.edit_branding_settings', service_id=current_service.id), label=_('Change logo'), class="mt-12") }}
+        <a href="{{ url_for('main.edit_branding_settings', service_id=current_service.id) }}" class="button mt-12">
+            {{ _('Change logo') }}
+        </a>
       </div>
     </div>
   </div>

@@ -1,5 +1,4 @@
 {% from "components/banner.html" import banner, banner_wrapper %}
-{% from "components/buttons.html" import link_button %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/checkbox.html" import checkbox %}
 {% from "components/page-header.html" import page_header %}
@@ -20,12 +19,12 @@
     </p>
 
     <p class="js-hidden">
-      {{ link_button(href=url_for('main.service_verify_reply_to_address', service_id=service_id, notification_id=notification_id, is_default=is_default, replace=replace), label=_("Refresh")) }}
+      <a href="{{ url_for('main.service_verify_reply_to_address', service_id=service_id, notification_id=notification_id, is_default=is_default, replace=replace) }}">Refresh</a>
     </p>
   {% elif verification_status == "success" %}
     {{ banner("‘{}’ ".format(reply_to_email_address) + _('is ready to use'), type='default', with_tick=True) }}
     <div class="js-stick-at-bottom-when-scrolling">
-      {{ link_button(href=url_for('.service_email_reply_to', service_id=service_id), label=_('Continue')) }}
+      <a href="{{ url_for('.service_email_reply_to', service_id=service_id) }}" class="button">{{ _('Continue') }}</a>
     </div>
   {% elif verification_status == "failure" %}
     <div class="mb-12 clear-both contain-floats">

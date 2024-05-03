@@ -22,7 +22,7 @@
     {% endfor %}
   </nav>
   <div class="js-stick-at-bottom-when-scrolling">
-    {{ link_button(href=url_for('.create_letter_branding'), label=_("New brand"), class="button-secondary", id="create_letter_branding") }}
+    <a id="create_letter_branding" href="{{ url_for('.create_letter_branding') }}" class="button button-secondary">New brand</a>
   </div>
 
 {% endblock %}

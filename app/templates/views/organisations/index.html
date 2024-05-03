@@ -38,7 +38,7 @@
       <div class="js-stick-at-bottom-when-scrolling">
         <div class="grid-row contain-floats">
           <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
-            {{ link_button(href=url_for('main.add_organisation'), label=_('New organisation'), class="button-secondary") }}
+            <a href="{{ url_for('main.add_organisation') }}" class="button button-secondary">{{ _('New organisation') }}</a>
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@
   </p>
 
   <div class="js-stick-at-bottom-when-scrolling">
-    {{ link_button(href=url_for('.create_api_key', service_id=current_service.id), label=_('Create API key'), class="button-secondary") }}
+    <a href="{{ url_for('.create_api_key', service_id=current_service.id) }}" class="button button-secondary">{{ _('Create API key') }}</a>
   </div>
 
   <h2 class="heading-small">

@@ -29,7 +29,7 @@
 
   {% if current_user.has_permissions('manage_service') %}
     <div>
-      {{ link_button(href=url_for('.invite_user', service_id=current_service.id), label=_('Invite someone to join your team'), class="button-secondary") }}
+      <a href="{{ url_for('.invite_user', service_id=current_service.id) }}" class="button button-secondary">{{ _('Invite someone to join your team') }}</a>
     </div>
   {% endif %}
 

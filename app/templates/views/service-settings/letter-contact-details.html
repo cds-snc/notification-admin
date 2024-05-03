@@ -52,7 +52,7 @@
     <div class="grid-row contain-floats">
       <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
         <div class="js-stick-at-bottom-when-scrolling">
-          {{ link_button(href=url_for('.service_add_letter_contact', service_id=current_service.id), label=_("Add a new address")) }}
+          <a href="{{ url_for('.service_add_letter_contact', service_id=current_service.id) }}" class="button">Add a new address</a>
         </div>
       </div>
     </div>

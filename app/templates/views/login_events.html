@@ -32,7 +32,7 @@
     <p>
     {{ _('If this is not correct, ') }}<a href="{{ url_for('main.contact') }}" target="_blank">{{ _('contact us') }}</a>.
     </p>
-    {{ link_button(href=next, label=_('Continue')) }}
+    <a href="{{next}}" class="button">{{ _('Continue') }}</a>
     {{ page_footer(
       secondary_link=url_for('main.email_not_received'),
       secondary_link_text=link_txt

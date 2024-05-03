@@ -16,7 +16,7 @@
 
 
       <p>
-      {{ link_button(href=url_for('main.check_and_resend_verification_code'), label=_('Re-send security code')) }}
+      <a class="button" href="{{url_for('main.check_and_resend_verification_code')}}" role="button">{{ _('Re-send security code') }}</a>
       </p>
   </div>
 </div>

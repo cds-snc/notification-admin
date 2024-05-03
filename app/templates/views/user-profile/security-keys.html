@@ -51,8 +51,8 @@
   <div class="js-stick-at-bottom-when-scrolling">
     <div class="grid-row contain-floats">
       <div class="md:w-3/4 flex flex-wrap gap-gutter py-0 px-gutterHalf box-border">
-        {{ link_button(href=url_for('main.user_profile_add_security_keys'), label=_('New security key'), class="button-secondary") }}
-        {{ link_button(href="#", label=_('Test keys'), class="button-secondary", id="test-fido2-keys") }}
+        <a href="{{ url_for('main.user_profile_add_security_keys') }}" class="button button-secondary">{{ _('New security key') }}</a>
+        <a id="test-fido2-keys" href="#" class="button button-secondary">{{ _('Test keys') }}</a>
       </div>
     </div>
   </div>
