@@ -21,6 +21,8 @@
   "use strict";
 
   const input_img = document.querySelector("input.file-upload-field");
+  const alt_en = document.getElementById("alt_text_en");
+  const alt_fr = document.getElementById("alt_text_fr");
   const message = document.querySelector(".preview .message");
   const image_slot = document.querySelector(".preview .img");
   const preview_heading = document.querySelector("#preview_heading");
@@ -56,7 +58,7 @@
             .getElementById("template_preview")
             .shadowRoot.querySelector("img");
           img.src = encodeURI(img_src);
-
+          img.alt = `${alt_en.value} / ${alt_fr.value}`;
           img.onload = () => {
             message.textContent = `${file_name} ${
               file.name
