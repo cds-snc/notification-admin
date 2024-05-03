@@ -603,6 +603,8 @@ class TestBranding:
             "text": "Example Text",
             "logo": "example.png",
             "name": "Example Brand",
+            "alt_text_en": "alt_text_en",
+            "alt_text_fr": "alt_text_fr",
         }
 
         class MockService:
@@ -644,6 +646,8 @@ class TestBranding:
             "text": "Example Text",
             "logo": "example.png",
             "name": "Example Brand",
+            "alt_text_en": "alt_text_en",
+            "alt_text_fr": "alt_text_fr",
         }
 
         class MockService:

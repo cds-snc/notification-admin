@@ -281,6 +281,8 @@ def get_preview_template(email_branding=None):
         fip_banner_french = branding_type in ["fip_french", "both_french"]
         logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
         brand_name = email_branding["name"]
+        alt_text_en = email_branding["alt_text_en"]
+        alt_text_fr = email_branding["alt_text_fr"]
     else:
         if current_service.email_branding_id is None:
             if current_service.default_branding_is_french:
@@ -291,6 +293,8 @@ def get_preview_template(email_branding=None):
                 fip_banner_french = True
                 logo_with_background_colour = False
                 brand_name = _("French-first government of Canada logo")
+                alt_text_en = None
+                alt_text_fr = _("French-first government of Canada logo")
             else:
                 brand_text = None
                 brand_colour = None
@@ -299,6 +303,8 @@ def get_preview_template(email_branding=None):
                 fip_banner_french = False
                 logo_with_background_colour = False
                 brand_name = _("English-first government of Canada logo")
+                alt_text_en = _("English-first government of Canada logo")
+                alt_text_fr = None
         else:
             email_branding = email_branding_client.get_email_branding(current_service.email_branding_id)["email_branding"]
             branding_type = email_branding["brand_type"]
@@ -310,6 +316,8 @@ def get_preview_template(email_branding=None):
             fip_banner_french = branding_type in ["fip_french", "both_french"]
             logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
             brand_name = _("custom brand logo")
+            alt_text_en = email_branding["alt_text_en"]
+            alt_text_fr = email_branding["alt_text_fr"]
 
     template_content = "# {}\n".format(_("Email preview"))
 
@@ -333,6 +341,8 @@ def get_preview_template(email_branding=None):
             brand_logo=brand_logo,
             logo_with_background_colour=logo_with_background_colour,
             brand_name=brand_name,
+            alt_text_en=alt_text_en,
+            alt_text_fr=alt_text_fr,
         )
     )
 
@@ -354,6 +364,8 @@ def get_preview_template_custom_placeholder():
             brand_logo="https://example.com",
             logo_with_background_colour=False,
             brand_name="example",
+            alt_text_en="alternative text in english",
+            alt_text_fr="alternative text in french",
         )
     )
 
