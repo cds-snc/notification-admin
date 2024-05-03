@@ -46,6 +46,7 @@ from werkzeug.datastructures import MultiDict
 from werkzeug.routing import RequestRedirect
 
 from app import cache
+from app.models.enum.template_types import TemplateType
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
 from app.types import EmailReplyTo
@@ -209,7 +210,7 @@ def get_errors_for_csv(recipients, template_type):
         else:
             errors.append(_("enter missing data in {} rows").format(number_of_rows_with_missing_data))
 
-    if any(recipients.rows_with_combined_variable_content_too_long):
+    if recipients.template_type == TemplateType.SMS and any(recipients.rows_with_combined_variable_content_too_long):
         num_rows_with_combined_content_too_long = len(list(recipients.rows_with_combined_variable_content_too_long))
         if num_rows_with_combined_content_too_long == 1:
             errors.append(_("added custom content exceeds the {} character limit in 1 row").format(SMS_CHAR_COUNT_LIMIT))
