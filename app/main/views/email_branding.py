@@ -56,7 +56,7 @@ def update_email_branding(branding_id, logo=None):
         text=email_branding["text"],
         colour=email_branding["colour"],
         brand_type=email_branding["brand_type"],
-        organisation="-1",
+        organisation=email_branding["organisation_id"] if email_branding["organisation_id"] != '' else "-1",
         alt_text_en=email_branding["alt_text_en"],
         alt_text_fr=email_branding["alt_text_fr"],
     )
@@ -96,7 +96,7 @@ def update_email_branding(branding_id, logo=None):
             text=form.text.data,
             colour=form.colour.data,
             brand_type=form.brand_type.data,
-            organisation_id=form.organisation.data,
+            organisation_id=form.organisation.data if form.organisation.data != "-1" else None,
             alt_text_en=form.alt_text_en.data,
             alt_text_fr=form.alt_text_fr.data,
         )
