@@ -1,6 +1,6 @@
 {% from "components/nav_menu_item_mobile.html" import nav_menu_item_mobile with context %}
 
-<ul id="main-menu-nav" class="hidden absolute mt-20 -ml-4 text-left flex flex-col content-end divide-y divide-gray rounded bg-white shadow z-50">
+<ul id="main-menu-nav" class="hidden absolute mt-20 text-left flex flex-col content-end divide-y divide-gray mobile-menu-container rounded bg-white shadow z-50">
       {% if not current_user.is_authenticated %}
         <!-- service menu dropdown / signed out / mobile -->
         {% if nav_items %}

@@ -1,0 +1,12 @@
+@layer components {
+
+    /*! purgecss start ignore */
+    .mobile-menu-container {
+        width: 20ch;
+        @apply text-left max-w-full;
+    }
+
+    .mt-3_4 {
+        margin-top: 3.35rem;
+    }
+}
