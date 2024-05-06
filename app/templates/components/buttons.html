@@ -39,9 +39,6 @@
 <a
     {% if id_key %}id="{{ id_key }}"{% endif %}
     href="{{ href }}"
-    role="button"
-    draggable="false"
-    data-module="button"
     class="button button-blue-lighter mr-10 {% if class %} {{ class }} {% endif %}">
     {{ label }}
 </a>
@@ -60,16 +57,5 @@
     aria-label="{{ label }}"
     >
     {{ label }}
-</a>
-{% endmacro %}
-
-{% macro link_button(label, href, class, id=None, testid=None) %}
-<a 
-    {% if id %} id="{{ id }}" {% endif %} 
-    {% if testid %} data-testid="{{ testid }}" {% endif %} 
-    href="{{ href }}" 
-    class="button{{ class and ' ' + class }}" 
-    role="button" draggable="false" data-module="button">
-    {{- label -}}
 </a>
 {% endmacro %}
