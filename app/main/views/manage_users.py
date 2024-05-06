@@ -1,4 +1,13 @@
-from flask import abort, flash, redirect, render_template, request, session, url_for
+from flask import (
+    abort,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
@@ -49,6 +58,7 @@ def invite_user(service_id):
     if not service_has_email_auth:
         form.login_authentication.data = "sms_auth"
 
+    current_app.logger.info("User {} attempting to invite user to service {}".format(current_user.id, service_id))
     if form.validate_on_submit():
         email_address = form.email_address.data
         invited_user = InvitedUser.create(
@@ -84,6 +94,9 @@ def edit_user_permissions(service_id, user_id):
     if user.mobile_number:
         mobile_number = redact_mobile_number(user.mobile_number, " ")
 
+    current_app.logger.info(
+        "User {} is changing permissions for user: {} for service: {}".format(current_user.id, user.id, current_service.id)
+    )
     form = PermissionsForm.from_user(
         user,
         service_id,
@@ -119,6 +132,9 @@ def edit_user_permissions(service_id, user_id):
 @user_has_permissions("manage_service")
 def remove_user_from_service(service_id, user_id):
     try:
+        current_app.logger.info(
+            "User {} is removing user: {} from service: {}".format(current_user.id, user_id, current_service.id)
+        )
         service_api_client.remove_user_from_service(service_id, user_id)
     except HTTPError as e:
         msg = "You cannot remove the only user for a service"
@@ -136,6 +152,10 @@ def remove_user_from_service(service_id, user_id):
 def edit_user_email(service_id, user_id):
     user = current_service.get_team_member(user_id)
     user_email = user.email_address
+
+    current_app.logger.info(
+        "User {} is changing email for user: {} for service: {}".format(current_user.id, user.id, current_service.id)
+    )
 
     if is_gov_user(user_email):
         form = ChangeEmailForm(User.already_registered, email_address=user_email)
@@ -196,6 +216,10 @@ def confirm_edit_user_email(service_id, user_id):
 def edit_user_mobile_number(service_id, user_id):
     user = current_service.get_team_member(user_id)
     user_mobile_number = redact_mobile_number(user.mobile_number)
+
+    current_app.logger.info(
+        "User {} is changing mobile number for user: {} for service: {}".format(current_user.id, user.id, current_service.id)
+    )
 
     form = ChangeMobileNumberForm(mobile_number=user_mobile_number)
     if form.mobile_number.data == user_mobile_number and request.method == "POST":
