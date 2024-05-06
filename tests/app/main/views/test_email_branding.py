@@ -1,4 +1,5 @@
 from io import BytesIO
+from unittest import mock
 from unittest.mock import call
 
 import pytest
@@ -254,7 +255,6 @@ def test_update_existing_branding(
     platform_admin_client,
     mocker,
     fake_uuid,
-    mock_get_email_branding,
     mock_update_email_branding,
     mock_get_organisations,
 ):
@@ -266,48 +266,64 @@ def test_update_existing_branding(
         "colour": "#0000ff",
         "text": "new text",
         "name": "new name",
+        "organisation_id": None,
         "brand_type": "both_english",
         "alt_text_en": "Alt text english",
-        "alt_text_fr": "Alt text french",
+        "alt_text_fr": "Alt text french yolo",
     }
 
-    temp_filename = EMAIL_LOGO_LOCATION_STRUCTURE.format(
-        temp=TEMP_TAG.format(user_id=user_id),
-        unique_id=fake_uuid,
-        filename=data["logo"],
-    )
+    with mock.patch("app.main.views.email_branding.email_branding_client.get_email_branding") as mock_get_email_branding:
+        mock_get_email_branding.return_value = {
+            "email_branding": {
+                "logo": "example.png",
+                "name": "Organisation name",
+                "text": "Organisation text",
+                "id": fake_uuid,
+                "colour": "#f00",
+                "brand_type": "custom_logo",
+                "organisation_id": "",  # Test that we can set alt text when no org is set
+                "alt_text_en": "Alt text english",
+                "alt_text_fr": "Alt text french",
+            }
+        }
 
-    mocker.patch("app.main.views.email_branding.persist_logo")
-    mocker.patch("app.main.views.email_branding.delete_email_temp_files_created_by")
+        temp_filename = EMAIL_LOGO_LOCATION_STRUCTURE.format(
+            temp=TEMP_TAG.format(user_id=user_id),
+            unique_id=fake_uuid,
+            filename=data["logo"],
+        )
 
-    platform_admin_client.post(
-        url_for(".update_email_branding", logo=temp_filename, branding_id=fake_uuid),
-        content_type="multipart/form-data",
-        data={
-            "colour": data["colour"],
-            "name": data["name"],
-            "text": data["text"],
-            "cdn_url": get_logo_cdn_domain(),
-            "brand_type": data["brand_type"],
-            "alt_text_en": data["alt_text_en"],
-            "alt_text_fr": data["alt_text_fr"],
-        },
-    )
+        mocker.patch("app.main.views.email_branding.persist_logo")
+        mocker.patch("app.main.views.email_branding.delete_email_temp_files_created_by")
 
-    updated_logo_name = "{}-{}".format(fake_uuid, data["logo"])
+        platform_admin_client.post(
+            url_for(".update_email_branding", logo=temp_filename, branding_id=fake_uuid),
+            content_type="multipart/form-data",
+            data={
+                "colour": data["colour"],
+                "name": data["name"],
+                "text": data["text"],
+                "cdn_url": get_logo_cdn_domain(),
+                "brand_type": data["brand_type"],
+                "alt_text_en": data["alt_text_en"],
+                "alt_text_fr": data["alt_text_fr"],
+            },
+        )
 
-    assert mock_update_email_branding.called
-    assert mock_update_email_branding.call_args == call(
-        branding_id=fake_uuid,
-        logo=updated_logo_name,
-        name=data["name"],
-        text=data["text"],
-        colour=data["colour"],
-        brand_type=data["brand_type"],
-        organisation_id="-1",
-        alt_text_en=data["alt_text_en"],
-        alt_text_fr=data["alt_text_fr"],
-    )
+        updated_logo_name = "{}-{}".format(fake_uuid, data["logo"])
+
+        assert mock_update_email_branding.called
+        assert mock_update_email_branding.call_args == call(
+            branding_id=fake_uuid,
+            logo=updated_logo_name,
+            name=data["name"],
+            text=data["text"],
+            colour=data["colour"],
+            brand_type=data["brand_type"],
+            organisation_id=data["organisation_id"],
+            alt_text_en=data["alt_text_en"],
+            alt_text_fr=data["alt_text_fr"],
+        )
 
 
 def test_temp_logo_is_shown_after_uploading_logo(
