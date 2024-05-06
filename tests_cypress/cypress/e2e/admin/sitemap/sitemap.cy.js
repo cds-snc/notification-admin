@@ -24,6 +24,7 @@ describe(`Sitemap`, () => {
         });
       });
     });
+
     context('Has links ordered alphabetically in each category', () => {
       ['en', 'fr'].forEach((lang) => {
           it(lang === 'en' ? 'English' : 'French', () => {
@@ -37,6 +38,19 @@ describe(`Sitemap`, () => {
                   });
               });
           });
+      });
+    
+      it("Does NOT display the 'You' group when logged out", () => {
+        cy.visit('/sitemap');
+        cy.getByTestId('sitemap-group').should('not.have.text', 'You');
+
+        LoginPage.Login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
+      });
+
+      it("Does display the 'You' group when logged in", () => {
+        LoginPage.Login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
+        cy.visit('/sitemap');
+        cy.getByTestId('sitemap-group').contains('You');
       });
   });
 });
