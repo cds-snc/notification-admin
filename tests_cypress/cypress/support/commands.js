@@ -115,3 +115,7 @@ Cypress.Commands.add('a11yScan', (url, options={ a11y: true, htmlValidate: true,
         });
     }
  })
+
+ Cypress.Commands.add('getByTestId', (selector, ...args) => {
+    return cy.get(`[data-testid=${selector}]`, ...args)
+});
