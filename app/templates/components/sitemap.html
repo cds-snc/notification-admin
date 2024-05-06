@@ -1,6 +1,6 @@
-{% macro site_map(pages=None)  %}
-  {% if pages %}
-    {% for group in pages.groups %}
+{% macro site_map(sitemap=None)  %}
+  {% if sitemap %}
+    {% for group in sitemap.groups %}
       {% if not group.must_be_logged_in or current_user.is_authenticated %}
         <ul>
           <li class="flex w-full border-t-4 border-gray pt-12 pb-12">
