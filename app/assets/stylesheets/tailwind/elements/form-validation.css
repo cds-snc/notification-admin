@@ -5,11 +5,13 @@
     @apply mb-4;
   }
 
-  .form-group-error {
+  .form-group-error,
+  .localized-field:has(.form-group-error) {
     @apply mr-4 pl-4 border-l-4 border-red;
   }
   @screen md {
-    .form-group-error {
+    .form-group-error,
+    .localized-field:has(.form-group-error) {
       border-left-width: 5px;
       @apply pl-gutterHalf;
     }

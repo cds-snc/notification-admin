@@ -131,6 +131,9 @@
   */
 
   legend {
-    @apply box-border max-w-full table overflow-hidden;
+    @apply box-border max-w-full table overflow-hidden float-left;
+  }
+  legend + * {
+    @apply clear-both;
   }
 }
