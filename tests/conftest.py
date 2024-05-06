@@ -3270,6 +3270,8 @@ def create_email_branding(id, non_standard_values={}):
         "colour": "#f00",
         "brand_type": "custom_logo",
         "organisation_id": "organisation_id",
+        "alt_text_en": "Alt text english",
+        "alt_text_fr": "Alt text french",
     }
 
     if bool(non_standard_values):
@@ -3323,7 +3325,7 @@ def mock_get_email_branding_without_brand_text(mocker, fake_uuid):
 
 @pytest.fixture(scope="function")
 def mock_create_email_branding(mocker):
-    def _create_email_branding(logo, name, text, colour, brand_type, organisation_id):
+    def _create_email_branding(logo, name, text, colour, brand_type, organisation_id, alt_text_en, alt_text_fr):
         return
 
     return mocker.patch(
@@ -3334,7 +3336,7 @@ def mock_create_email_branding(mocker):
 
 @pytest.fixture(scope="function")
 def mock_update_email_branding(mocker):
-    def _update_email_branding(branding_id, logo, name, text, colour, brand_type, organisation_id):
+    def _update_email_branding(branding_id, logo, name, text, colour, brand_type, organisation_id, alt_text_en, alt_text_fr):
         return
 
     return mocker.patch(

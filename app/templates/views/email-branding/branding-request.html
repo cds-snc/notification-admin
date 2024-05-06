@@ -4,7 +4,7 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/show-more.html" import show_more %}
-{% from "components/textbox.html" import textbox %}
+{% from "components/textbox.html" import textbox, textbox_localized %}
 
 
 {% block service_page_title %}
@@ -20,9 +20,16 @@
 
     <div class="grid-row contain-floats">
       <div class="py-0 px-0 px-gutterHalf box-border">
-        <form method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
+        <form method="post" enctype="multipart/form-data" autocomplete="off" novalidate data-validate-required>
           <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
-            {{ textbox(form.name, hint=_('This will not show in messages. Choose a name that helps team members find the logo'), testid="brand_name") }}
+            
+            {{ textbox(form.name, hint=_('This will not show in messages. Choose a name that helps team members find the logo'), testid="brand_name", data_error_msg=_("Enter the name of the logo")) }}
+
+            {{ textbox_localized("alt", fields=({"en":form.alt_text_en, "fr":form.alt_text_fr}), legend=_("Alternative text"), hint=_("Provide an accessible description of your logo")) }}
+            
+
+            
+
             <h2 class="heading-medium">{{ _('Prepare your logo') }}</h2>
             <p>
               {{ _('Your logo must be compatible with GC Notify. Check logo is:') }}
@@ -47,8 +54,11 @@
                 </span>
               {% endif %}
               
-              {{ form.file(**{ 'class': 'file-upload-field', 'accept': 'image/png', 'data_testid': 'brand_image', 'aria-labelledby': 'file-description' }) }}
-              <span aria-hidden="true" id="file-upload-button" class="button button-secondary font-normal"> {{ _('Select a file') }} </span>
+              <div class="form-group">
+                {{ form.file(**{ 'class': 'file-upload-field', 'accept': 'image/png', 'data_testid': 'brand_image', 'aria-labelledby': 'file-description', 'data-error-msg': _('You must select a file to continue') }) }}
+              
+                <span aria-hidden="true" id="file-upload-button" class="button button-secondary font-normal"> {{ _('Select a file') }} </span>
+              </div>
             </label>         
             
             <div class="mt-6 ml-2 pl-6 border-l-4 border-gray-200 preview font-normal relative" data-testid="brand_fileinfo">
@@ -84,4 +94,5 @@
     </div>
   </div>
   <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/branding_request.min.js') }}"></script>
+  <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/formValidateRequired.min.js') }}"></script>
 {% endblock %}
