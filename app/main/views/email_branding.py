@@ -62,6 +62,7 @@ def update_email_branding(branding_id, logo=None):
 
     form.organisation.choices = [(org["id"], org["name"]) for org in all_organisations]
     # add the option for no org
+    form.organisation.choices.append(("", "No organisation"))
     form.organisation.choices.append(("-1", "No organisation"))
 
     logo = logo if logo else email_branding.get("logo") if email_branding else None
