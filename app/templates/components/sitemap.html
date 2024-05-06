@@ -4,7 +4,7 @@
       {% if not group.must_be_logged_in or current_user.is_authenticated %}
         <ul>
           <li class="flex w-full border-t-4 border-gray pt-12 pb-12">
-            <h2 class="w-2/5 heading-medium m-0">{{ group.title }}</h2>
+            <h2 class="w-2/5 heading-medium m-0" data-testid="sitemap-group">{{ group.title }}</h2>
             <ul class="w-3/5 flex flex-wrap items-center">
               {% for page in group.pages|sort(attribute='link_text') %}
                 <li class="w-1/2 p-4">
