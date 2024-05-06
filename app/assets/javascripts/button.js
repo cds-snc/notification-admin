@@ -13,8 +13,8 @@
     button.setAttribute("role", "button");
     button.setAttribute("draggable", "false");
 
-    button.addEventListener('keydown', (event) => {
-      if (event.key === ' ') {
+    button.addEventListener("keydown", (event) => {
+      if (event.key === " ") {
         event.preventDefault();
         button.click();
       }
