@@ -50,13 +50,15 @@ def email_branding():
 def update_email_branding(branding_id, logo=None):
     all_organisations = organisations_client.get_organisations()
     email_branding = email_branding_client.get_email_branding(branding_id)["email_branding"]
+    import pdb
 
+    pdb.set_trace()
     form = ServiceUpdateEmailBranding(
         name=email_branding["name"],
         text=email_branding["text"],
         colour=email_branding["colour"],
         brand_type=email_branding["brand_type"],
-        organisation=email_branding["organisation_id"] if email_branding["organisation_id"] != '' else "-1",
+        organisation=email_branding["organisation_id"] if email_branding["organisation_id"] != "" else "-1"
         alt_text_en=email_branding["alt_text_en"],
         alt_text_fr=email_branding["alt_text_fr"],
     )
