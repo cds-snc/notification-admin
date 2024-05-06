@@ -233,6 +233,8 @@ def create_branding_request(service_id):
                 current_service.organisation_id,
                 current_service.organisation.name,
                 upload_filename,
+                alt_text_en=email_branding["alt_text_en"],
+                alt_text_fr=email_branding["alt_text_fr"],
             )
             # todo: remove unused params
             return render_template(
