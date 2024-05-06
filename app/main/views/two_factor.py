@@ -42,6 +42,32 @@ def two_factor_email_sent():
     )
 
 
+@main.route("/magic-login-link/<code>", methods=["GET"])
+@redirect_to_sign_in
+def magic_login_link(code):
+    if current_user.is_authenticated:
+        return redirect_when_logged_in(user=current_user, platform_admin=current_user.platform_admin)
+
+    user_id = session["user_details"]["id"]
+
+    # Check if a FIDO2 key exists, if yes, return template
+    user = User.from_id(user_id)
+
+    if len(user.security_keys):
+        return render_template("views/two-factor-fido.html")
+
+    isCodeValid = user_api_client.check_verify_code(user_id, code, "email")
+
+    if isCodeValid[0]:
+        return log_in_user(user_id)
+
+    title = _("Email re-sent") if request.args.get("email_resent") else _("Check your email")
+
+    return render_template(
+        "views/magic-link-expired.html",
+        title=title,
+    )
+
 @main.route("/two-factor-sms-sent", methods=["GET", "POST"])
 @redirect_to_sign_in
 def two_factor_sms_sent():
