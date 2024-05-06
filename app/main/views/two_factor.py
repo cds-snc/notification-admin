@@ -68,6 +68,7 @@ def magic_login_link(code):
         title=title,
     )
 
+
 @main.route("/two-factor-sms-sent", methods=["GET", "POST"])
 @redirect_to_sign_in
 def two_factor_sms_sent():
