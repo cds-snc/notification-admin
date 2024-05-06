@@ -50,19 +50,19 @@ def email_branding():
 def update_email_branding(branding_id, logo=None):
     all_organisations = organisations_client.get_organisations()
     email_branding = email_branding_client.get_email_branding(branding_id)["email_branding"]
-
     form = ServiceUpdateEmailBranding(
         name=email_branding["name"],
         text=email_branding["text"],
         colour=email_branding["colour"],
         brand_type=email_branding["brand_type"],
-        organisation="-1",
+        organisation=email_branding["organisation_id"] if email_branding["organisation_id"] != "" else "-1",
         alt_text_en=email_branding["alt_text_en"],
         alt_text_fr=email_branding["alt_text_fr"],
     )
 
     form.organisation.choices = [(org["id"], org["name"]) for org in all_organisations]
     # add the option for no org
+    form.organisation.choices.append(("", "No organisation"))
     form.organisation.choices.append(("-1", "No organisation"))
 
     logo = logo if logo else email_branding.get("logo") if email_branding else None
@@ -96,7 +96,7 @@ def update_email_branding(branding_id, logo=None):
             text=form.text.data,
             colour=form.colour.data,
             brand_type=form.brand_type.data,
-            organisation_id=form.organisation.data,
+            organisation_id=form.organisation.data if form.organisation.data != "-1" else None,
             alt_text_en=form.alt_text_en.data,
             alt_text_fr=form.alt_text_fr.data,
         )
