@@ -23,6 +23,15 @@
     });
   }
 
+  function registerDisclosureMenuBlur($selectors, fn) {
+    $selectors.forEach((selector) => {
+      selector.addEventListener("blur", function (e) {
+        fn(e);
+      });
+
+    })
+  }
+
   /**
    * Make branding links automatically go back to the previous page without keeping track of them
    */
@@ -36,5 +45,6 @@
   global.utils = {
     registerKeyDownEscape: registerKeyDownEscape,
     registerKeyBasedMenuNavigation: registerKeyBasedMenuNavigation,
+    registerDisclosureMenuBlur: registerDisclosureMenuBlur,
   };
 })(window);

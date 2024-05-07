@@ -4,6 +4,7 @@
   const registerKeyDownEscape = window.utils.registerKeyDownEscape;
   const registerKeyBasedMenuNavigation =
     window.utils.registerKeyBasedMenuNavigation;
+  const registerDisclosureMenuBlur = window.utils.registerDisclosureMenuBlur;
 
   function open($menu, $items) {
     // show menu if closed
@@ -28,36 +29,44 @@
   }
 
   function close($menu, $items) {
-    // hide menu if open
-    if ($menu.hasFocus || document.activeElement in $items.children()) {
-      $items.toggleClass("hidden", true);
-      $items.removeClass("opacity-100");
-      $items.addClass("opacity-0");
-      const $arrow = $menu.find(".arrow");
-      if ($arrow.length > 0) {
-        $arrow.toggleClass("flip", false);
-      }
-
-      $menu.attr("aria-expanded", false);
-      $menu.hasFocus = false;
-      $menu.currentMenuItem = 0;
-
-      window.setTimeout(function () {
-        $items.toggleClass("hidden", true);
-        $items.attr("hidden");
-      }, 1);
+    $items.toggleClass("hidden", true);
+    $items.removeClass("opacity-100");
+    $items.addClass("opacity-0");
+    const $arrow = $menu.find(".arrow");
+    if ($arrow.length > 0) {
+      $arrow.toggleClass("flip", false);
     }
+
+    $menu.attr("aria-expanded", false);
+    $menu.hasFocus = false;
+    $menu.currentMenuItem = 0;
+
+    window.setTimeout(function () {
+      $items.toggleClass("hidden", true);
+      $items.attr("hidden");
+    }, 1);
   }
 
   function toggleMenu($menu, $items) {
     // Show the menu..
     if (!$menu.hasFocus) {
+      // Before we open a new menu, check if there are any other open menus and close them
+      var menus = document.querySelectorAll("button[data-module='menu']");
+      menus.forEach((menu) => {
+        if (menu !== $menu && $(menu).attr("aria-expanded") == "true") {
+          close($(menu), $(document.querySelectorAll(`ul[id=${$(menu).attr("data-menu-items")}]`)));
+        }
+      });
       open($menu, $items);
     }
-    // Hide the menu..
-    else {
+    // Hide the menu if it's open
+    else if ($menu.hasFocus || document.activeElement in $items.children()) {
       close($menu, $items);
     }
+  }
+
+  function handleMenuBlur(event, $menu, $items) {
+    console.log(`${event} -- ${$menu} -- ${$items}`);
   }
 
   function handleKeyBasedMenuNavigation(event, $menu, $items) {
@@ -94,9 +103,6 @@
           $menu.currentMenuItem == menuItems.length - 1
             ? 0
             : Math.min(menuItems.length - 1, $menu.currentMenuItem + 1);
-      } else if (event.key === " ") {
-        event.preventDefault();
-        menuItems[$menu.currentMenuItem].querySelector("a").click();
       }
     }
 
@@ -117,6 +123,8 @@
     registerKeyBasedMenuNavigation($(window), (event) =>
       handleKeyBasedMenuNavigation(event, $menu, $items),
     );
+
+    registerDisclosureMenuBlur([...$items.children(), ...$menu], (event) => handleMenuBlur(event, $menu, $items));
 
     // Register Escape key from anywhere in the window to close the menu
     registerKeyDownEscape($(window), () => close($menu, $items));
