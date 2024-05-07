@@ -258,9 +258,24 @@ def welcome():
     return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"])
 
 
-# TODO: finish hardcoding the links (or come up with some way to generate these from annotations)
-@main.route("/sitemap")
+# TODO: refactor this out into a decorator
+@main.route("/plandesite", endpoint="plandesite", methods=["GET"])
+@main.route('/sitemap', methods=["GET"])
 def sitemap():
+    requested_lang = "en" if request.endpoint == "main.sitemap" else "fr"
+    current_lang = get_current_locale(current_app) 
+
+    # if the language is changing
+    if requested_lang != current_lang:
+        # if the user typed in the url:
+        if request.referrer is None:
+            route = "/plandesite" if requested_lang == "fr" else "/sitemap"
+            return redirect(url_for( **{"endpoint": "main.set_lang", "from": route }))
+        # if the user clicked the lang button:
+        else:
+            route = "main.sitemap" if requested_lang == "fr" else "main.plandesite"
+            return redirect(url_for(route))
+    
     return render_template("views/sitemap.html", sitemap=get_sitemap())
 
 
