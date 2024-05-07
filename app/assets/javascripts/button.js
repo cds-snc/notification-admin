@@ -9,7 +9,7 @@
    * Adds attributes and keydown listener
    * @param {HTMLElement} button - The button element.
    */
-  document.querySelectorAll("a.button").forEach((button) => {
+  document.querySelectorAll("a.button:not(.button-link)").forEach((button) => {
     button.setAttribute("role", "button");
     button.setAttribute("draggable", "false");
 
