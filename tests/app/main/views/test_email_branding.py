@@ -1,10 +1,11 @@
 from io import BytesIO
 from unittest import mock
-from unittest.mock import call
+from unittest.mock import call, patch
 
 import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
+from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
 from app.main.views.email_branding import get_preview_template
@@ -695,9 +696,6 @@ class TestBranding:
 
         mocker.patch("app.main.views.email_branding.upload_email_logo", return_value="temp_filename")
         mocker.patch("app.main.views.email_branding.current_service", new=MockService)
-        mock_create_branding_request = mocker.patch(
-            "app.main.views.email_branding.current_user.send_branding_request", return_value=""
-        )
 
         data = {
             "name": "test-logo",
@@ -706,18 +704,20 @@ class TestBranding:
             "alt_text_fr": "ALT_FR",
         }
 
-        platform_admin_client.post(
-            url_for(".create_branding_request", service_id="1234"),
-            data=data,
-        )
+        with patch.object(current_user, "send_branding_request", return_value="") as mock_create_branding_request:
 
-        assert mock_create_branding_request.called
-        assert mock_create_branding_request.call_args == call(
-            MockService.id,
-            MockService.name,
-            MockService.organisation_id,
-            MockService.organisation.name,
-            "temp_filename",
-            data["alt_text_en"],
-            data["alt_text_fr"],
-        )
+            platform_admin_client.post(
+                url_for(".create_branding_request", service_id="1234"),
+                data=data,
+            )
+
+            assert mock_create_branding_request.called
+            assert mock_create_branding_request.call_args == call(
+                MockService.id,
+                MockService.name,
+                MockService.organisation_id,
+                MockService.organisation.name,
+                "temp_filename",
+                data["alt_text_en"],
+                data["alt_text_fr"],
+            )
