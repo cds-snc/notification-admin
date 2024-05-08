@@ -42,10 +42,10 @@ let Actions = {
             });
 
         // ensure code is received and enter it
-        cy.contains('p', "security code to log in").should('be.visible');
-        cy.contains('p', 'security code to log in').invoke('text').as('MFACode');
+        cy.get('blockquote').should('be.visible');
+        cy.get('blockquote p').invoke('text').as('MFACode');
         cy.get('@MFACode').then((text) => {
-            let code = text.slice(0, 5);
+            let code = text;
             cy.visit('/two-factor-email-sent');
             Actions.EnterCode(code);
         });

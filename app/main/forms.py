@@ -167,7 +167,7 @@ def password(label=_l("Password")):
             Length(8, 255, message=_l("Must be at least 8 characters")),
             Blocklist(
                 message=_l(
-                    "A password that is hard to guess contains:<li>Uppercase and lowercase letters.</li><li>Numbers and special characters.</li><li>Words separated by a space.</li>"
+                    "A password that is hard to guess contains: uppercase and lowercase letters, numbers and special characters, and words separated by a space."
                 )
             ),
         ],
@@ -671,7 +671,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         self.default_branding.choices = self._getSelectBilingualChoices()
 
     default_branding = RadioField(
-        _l("Choose which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
+        _l("Select which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
@@ -767,7 +767,7 @@ class BaseTemplateForm(StripWhitespaceForm):
         ],
     )
     process_type = RadioField(
-        _l("Choose a priority queue"),
+        _l("Select a priority queue"),
         choices=[
             ("bulk", _l("Bulk — Not time-sensitive")),
             ("normal", _l("Normal")),
@@ -1185,10 +1185,22 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
         ],
     )
     organisation = RadioField("Select an organisation", choices=[])
+    alt_text_en = StringField("Alternative text for English logo")
+    alt_text_fr = StringField("Alternative text for French logo")
 
     def validate_name(form, name):
         op = request.form.get("operation")
         if op == "email-branding-details" and not form.name.data:
+            raise ValidationError("This field is required")
+
+    def validate_alt_text_en(form, alt_text_en):
+        op = request.form.get("operation")
+        if op == "email-branding-details" and not form.alt_text_en.data:
+            raise ValidationError("This field is required")
+
+    def validate_alt_text_fr(form, alt_text_fr):
+        op = request.form.get("operation")
+        if op == "email-branding-details" and not form.alt_text_fr.data:
             raise ValidationError("This field is required")
 
 
@@ -1601,7 +1613,7 @@ class TemplateAndFoldersSelectionForm(Form):
     # this means '__NONE__' (self.ALL_TEMPLATES option) is selected when no form data has been submitted
     # set default to empty string so process_data method doesn't perform any transformation
     move_to = NestedRadioField(
-        _l("Choose a folder"),
+        _l("Select a folder"),
         default="",
         validators=[required_for_ops("move-to-existing-folder"), Optional()],
     )
@@ -1809,6 +1821,8 @@ class BrandingRequestForm(StripWhitespaceForm):
     """
 
     name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
+    alt_text_en = StringField(label=_l("English"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    alt_text_fr = StringField(label=_l("French"), validators=[DataRequired(message=_l("This cannot be empty"))])
     file = FileField_wtf(
         label=_l("Prepare your logo"),
         validators=[
