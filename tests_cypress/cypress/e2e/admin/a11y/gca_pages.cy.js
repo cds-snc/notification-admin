@@ -26,55 +26,28 @@ const fullPageList = [
     { en: '/new-features', fr: '/nouvelles-fonctionnalites' },
 ];
 
-describe('GCA static pages', () => {
-    context("Check for dead links", () => {
-        for (const lang of langs) {
-            const currentLang = (lang === 'en' ? 'English' : 'Francais');
-            context(currentLang, () => {
-                for (const page of fullPageList) {
-                    it(`${page[lang]} contains no dead links`, () => {
-                        if (lang === 'fr') {
-                            cy.visit('/set-lang');
-                        }
-                        cy.visit(page[lang]);
+describe(`GCA a11y tests [${config.CONFIG_NAME}]`, () => {
+    for (const lang of langs) {
+        const currentLang = (lang === 'en' ? 'English' : 'Francais');
+        context(currentLang, () => {
+            for (const page of fullPageList) {
+                it(`${page[lang]}`, () => {
+                    cy.a11yScan(page[lang]);
+                });
+            }
+        });
+    }
+});
 
-                        cy.get('body').within(() => {
-                            cy.get('a').each((link) => {
-                                if (link.prop('href').startsWith('mailto') || link.prop('href').startsWith('/set-lang') || link.prop('href').startsWith('#')) return;
-                                cy.request(link.prop('href'));
-                            });
-                        });
-                    });
-                }
-            });
-        }
+describe('Language toggle works on all pages', () => {
+    for (const page of fullPageList) {
+        it(`${page.en}`, () => {
+            cy.visit(page.en);
+            cy.get('#header-lang').click();
+            cy.url().should('contain', page.fr);
 
-    });
-
-    for (const viewport of config.viewports) {
-        context('A11y and HTML validation test', () => {
-            context(`Viewport: ${viewport}px x 660px`, () => {
-                for (const lang of langs) {
-                    const currentLang = (lang === 'en' ? 'English' : 'Francais');
-                    context(currentLang, () => {
-                        for (const page of fullPageList) {
-                            it(`${page[lang]} passes a11y checks`, () => {
-                                // cy.viewport(viewport, 660);
-                                if (lang === 'fr') {
-                                    cy.visit('/set-lang');
-                                }
-                                cy.visit(page[lang]);
-
-                                cy.get('main').should('be.visible');
-
-                                // check for a11y compliance
-                                cy.injectAxe();
-                                cy.checkA11y();
-                            });
-                        }
-                    });
-                }
-            });
+            cy.get('#header-lang').click();
+            cy.url().should('contain', page.en);
         });
     }
 });

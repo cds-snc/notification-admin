@@ -1,20 +1,26 @@
-import jwt from "jsonwebtoken";
 import config from "../../config";
+import { customAlphabet } from "nanoid";
+
+const BASE_URL = config.Hostnames.API
 
 const Utilities = {
     CreateJWT: () => {
+        const jwt = require('jsrsasign');
         const claims = {
             'iss': Cypress.env('ADMIN_USERNAME'),
             'iat': Math.round(Date.now() / 1000)
         }
 
-        var token = jwt.sign(claims, Cypress.env('ADMIN_SECRET'));
-
-        return token;
+        const headers = { alg: "HS256", typ: "JWT" };
+        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), Cypress.env('ADMIN_SECRET'));
     },
+    GenerateID: (length = 10) => {
+        const nanoid = customAlphabet('1234567890abcdef-_', length)
+        return nanoid()
+    }
 };
 const Admin = {
-    SendOneOff: ({to, template_id}) => {
+    SendOneOff: ({ to, template_id }) => {
 
         var token = Utilities.CreateJWT();
         return cy.request({
@@ -29,6 +35,31 @@ const Admin = {
                 'created_by': Cypress.env('NOTIFY_USER_ID'),
             }
         });
+    },
+    ArchiveUser: ({ userId }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            failOnStatusCode: false,
+            url: `${BASE_URL}/user/${userId}/archive`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+        })
+    },
+    GetUserByEmail: ({ email }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            failOnStatusCode: true,
+            retryOnstatusCodeFailure: true,
+            url: `${BASE_URL}/user/email?email=${encodeURIComponent(email)}`,
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            }
+        })
     }
 }
 // const Admin = {
@@ -174,7 +205,6 @@ const API = {
             }
         });
     },
-
 }
 
 export default { API, Utilities, Admin };

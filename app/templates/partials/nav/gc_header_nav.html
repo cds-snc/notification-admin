@@ -8,7 +8,7 @@
   {% set long_lang_switch = 'Français' %}
 {% endif %}
 
-<hr class="m-0 md:hidden bg-blue" style="height: 4px"/>
+<hr class="m-0 md:hidden bg-blue h-2"/>
 <nav class="md:hidden" aria-label="{{ _('Main menu') }}">
   <div class="container px-gutterHalf">
     <!-- Mobile menu and nav bar -->
@@ -72,52 +72,52 @@
           {% if nav_items %}
             {% for i in nav_items %}
               {% if 'main' in i.description %}
-                {{ nav_menu_item(i.url, i.title, 'header--active' if i.active else '', is_external_link=i.target )}}
+                {{ nav_menu_item(i.url, i.title, is_external_link=i.target, is_active=i.active) }}
               {% endif %}
             {% endfor %}
           {% else %}
-            {{ nav_menu_item('/', _('Home'), 'pl-0 header--'+header_navigation.is_selected('home'), 'nav-head-home')}}
-            {{ nav_menu_item(gca_url_for('whynotify'), _('Why GC Notify'), 'header--'+header_navigation.is_selected('why-notify'), 'nav-head-why-notify') }}
-            {{ nav_menu_item(gca_url_for('features'), _('Features'), 'header--'+header_navigation.is_selected('features'), 'nav-head-features') }}
-            {{ nav_menu_item(documentation_url(), _('API documentation'), 'header--'+header_navigation.is_selected('documentation'), 'nav-head-doc', True) }}
-            {{ nav_menu_item(url_for('main.contact'),_('Contact us'),'header--'+header_navigation.is_selected('contact'), 'nav-head-contact') }}
+            {{ nav_menu_item(url='/', localised_txt=_('Home'), css_classes='pl-0 ', id_key='nav-head-home', is_active=header_navigation.is_selected('home')) }}
+            {{ nav_menu_item(url=gca_url_for('whynotify'), localised_txt=_('Why GC Notify'), id_key='nav-head-why-notify', is_active=header_navigation.is_selected('why-notify')) }}
+            {{ nav_menu_item(url=gca_url_for('features'), localised_txt=_('Features'), id_key='nav-head-features', is_active=header_navigation.is_selected('features')) }}
+            {{ nav_menu_item(url=documentation_url(), localised_txt=_('API documentation'), id_key='nav-head-doc', is_active=header_navigation.is_selected('documentation')) }}
+            {{ nav_menu_item(url=url_for('main.contact'), localised_txt=_('Contact us'), id_key='nav-head-contact', is_active=header_navigation.is_selected('contact')) }}
           {% endif %}
         {% else %}
           {% if not current_user.platform_admin %}
             {% if current_user.has_permissions() %}
               {% if current_user.has_permissions('view_activity') %}
-                {{ nav_menu_item(url_for('main.service_dashboard', service_id=current_service.id),_('Dashboard'),'pl-0 header--'+header_navigation.is_selected('dashboard')) }}
+                {{ nav_menu_item(url=url_for('main.service_dashboard', service_id=current_service.id),localised_txt=_('Dashboard'),css_classes='pl-0', is_active=header_navigation.is_selected('dashboard')) }}
               {% endif %}
-              {{ nav_menu_item( url_for('main.choose_template', service_id=current_service.id),_('Templates'),'header--'+header_navigation.is_selected('templates')) }}
+              {{ nav_menu_item(url= url_for('main.choose_template', service_id=current_service.id),localised_txt=_('Templates'), is_active=header_navigation.is_selected('templates')) }}
               {% if not current_user.has_permissions('view_activity') %}
-                {{ nav_menu_item(url_for('main.view_notifications', service_id=current_service.id, status='sending,delivered,failed'),_('Sent messages'),'header--'+header_navigation.is_selected('sent-messages')) }}
+                {{ nav_menu_item(url=url_for('main.view_notifications', service_id=current_service.id, status='sending,delivered,failed'),localised_txt=_('Sent messages'), is_active=header_navigation.is_selected('sent-messages')) }}
                 {% if current_service.has_jobs %}
-                  {{ nav_menu_item(url_for('main.view_jobs', service_id=current_service.id),_('Bulk sends'),'header--'+header_navigation.is_selected('bulk-sends')) }}
+                  {{ nav_menu_item(url=url_for('main.view_jobs', service_id=current_service.id),localised_txt=_('Bulk sends'), is_active=header_navigation.is_selected('bulk-sends')) }}
                 {% endif %}
               {% endif %}
               {% if current_user.has_permissions('manage_api_keys') %}
-                {{ nav_menu_item(url_for('main.api_integration', service_id=current_service.id),_('API integration'),'header--'+header_navigation.is_selected('api-integration')) }}
+                {{ nav_menu_item(url=url_for('main.api_integration', service_id=current_service.id),localised_txt=_('API integration'), is_active=header_navigation.is_selected('api-integration')) }}
               {% endif %}
-              {{ nav_menu_item(url_for('main.manage_users', service_id=current_service.id),_('Team members'),'header--'+header_navigation.is_selected('team-members')) }}
+              {{ nav_menu_item(url=url_for('main.manage_users', service_id=current_service.id),localised_txt=_('Team members'), is_active=header_navigation.is_selected('team-members')) }}
               {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
-                {{ nav_menu_item(url_for('main.service_settings', service_id=current_service.id),_('Settings'),'header--'+header_navigation.is_selected('settings')) }}
+                {{ nav_menu_item(url=url_for('main.service_settings', service_id=current_service.id),localised_txt=_('Settings'), is_active=header_navigation.is_selected('settings')) }}
               {% endif %}
             {% else %} {# not current_user.has_permissions, i.e. services not in context #}
-              {{ nav_menu_item(url_for('main.choose_account'),_('Your services'),'header--'+header_navigation.is_selected('choose_account'),id_key='choose_account') }}
-              {{ nav_menu_item(url_for('main.contact', service_id=current_service.id),_('Contact us'),'header--'+header_navigation.is_selected('contact')) }}
+              {{ nav_menu_item(url=url_for('main.choose_account'),localised_txt=_('Your services'),id_key='choose_account', is_active=header_navigation.is_selected('choose_account')) }}
+              {{ nav_menu_item(url=url_for('main.contact', service_id=current_service.id),localised_txt=_('Contact us'), is_active=header_navigation.is_selected('contact')) }}
             {% endif %}
           {% else %} {# current_user.platform_admin #}
             {% if not platform_admin_view_ind %}
               {% if current_user.has_permissions() %}
-                {{ nav_menu_item(url_for('main.live_services', service_id=current_service.id), _('Admin panel'), 'pl-0') }}
-                {{ nav_menu_item(url_for('main.service_dashboard', service_id=current_service.id),_('Dashboard'),'header--'+header_navigation.is_selected('dashboard')) }}
-                {{ nav_menu_item( url_for('main.choose_template', service_id=current_service.id),_('Templates'),'header--'+header_navigation.is_selected('templates')) }}
-                {{ nav_menu_item(url_for('main.api_integration', service_id=current_service.id),_('API integration'),'header--'+header_navigation.is_selected('api-integration')) }}
-                {{ nav_menu_item(url_for('main.manage_users', service_id=current_service.id),_('Team members'),'header--'+header_navigation.is_selected('team-members')) }}
-                {{ nav_menu_item(url_for('main.service_settings', service_id=current_service.id),_('Settings'),'header--'+header_navigation.is_selected('settings')) }}
+                {{ nav_menu_item(url=url_for('main.live_services', service_id=current_service.id), localised_txt=_('Admin panel'), css_classes='pl-0') }}
+                {{ nav_menu_item(url=url_for('main.service_dashboard', service_id=current_service.id),localised_txt=_('Dashboard'), is_active=header_navigation.is_selected('dashboard')) }}
+                {{ nav_menu_item(url= url_for('main.choose_template', service_id=current_service.id),localised_txt=_('Templates'), is_active=header_navigation.is_selected('templates')) }}
+                {{ nav_menu_item(url=url_for('main.api_integration', service_id=current_service.id),localised_txt=_('API integration'), is_active=header_navigation.is_selected('api-integration')) }}
+                {{ nav_menu_item(url=url_for('main.manage_users', service_id=current_service.id),localised_txt=_('Team members'), is_active=header_navigation.is_selected('team-members')) }}
+                {{ nav_menu_item(url=url_for('main.service_settings', service_id=current_service.id),localised_txt=_('Settings'), is_active=header_navigation.is_selected('settings')) }}
               {% else %} {# not current_user.has_permissions, i.e. services not in context #}
-                {{ nav_menu_item(url_for('main.choose_account'),_('Your services'),'pl-0 header--'+header_navigation.is_selected('choose_account'),id_key='choose_account') }}
-                {{ nav_menu_item(url_for('main.live_services', service_id=current_service.id),_('Admin panel')) }}
+                {{ nav_menu_item(url=url_for('main.choose_account'),localised_txt=_('Your services'),css_classes='pl-0',id_key='choose_account', is_active=header_navigation.is_selected('choose_account')) }}
+                {{ nav_menu_item(url=url_for('main.live_services', service_id=current_service.id),localised_txt=_('Admin panel')) }}
               {% endif %}
             {% endif %}
           {% endif %}

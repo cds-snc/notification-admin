@@ -12,7 +12,6 @@ plugins.addSrc = require("gulp-add-src");
 plugins.babel = require("gulp-babel");
 plugins.base64 = require("gulp-base64-inline");
 plugins.concat = require("gulp-concat");
-plugins.cssUrlAdjuster = require("gulp-css-url-adjuster");
 plugins.faMinify = require("gulp-fa-minify");
 plugins.jshint = require("gulp-jshint");
 plugins.prettyerror = require("gulp-prettyerror");
@@ -34,35 +33,35 @@ const paths = {
 
 // Build icon library and minify it
 
-const icons = () => {
-  return src(paths.src + "fontawesome/js/solid.js")
-    .pipe(
-      plugins.faMinify({
-        fas: [
-          "plus",
-          "arrow-right",
-          "angle-down",
-          "arrow-up-right-from-square",
-          "circle-question",
-          "triangle-exclamation",
-          "circle-exclamation",
-          "bold",
-          "italic",
-          "list-ol",
-          "list-ul",
-          "heading",
-          "1",
-          "2",
-          "3",
-          "link",
-          "pencil"
-        ],
-      })
-    )
-    .pipe(plugins.uglify())
-    .pipe(plugins.rename({ suffix: ".min" }))
-    .pipe(dest(paths.dist + "javascripts/"));
-};
+// const icons = () => {
+//   return src(paths.src + "fontawesome/js/solid.js")
+//     .pipe(
+//       plugins.faMinify({
+//         fas: [
+//           "plus",
+//           "arrow-right",
+//           "angle-down",
+//           "arrow-up-right-from-square",
+//           "circle-question",
+//           "triangle-exclamation",
+//           "circle-exclamation",
+//           "bold",
+//           "italic",
+//           "list-ol",
+//           "list-ul",
+//           "heading",
+//           "1",
+//           "2",
+//           "3",
+//           "link",
+//           "pencil"
+//         ],
+//       })
+//     )
+//     .pipe(plugins.uglify())
+//     .pipe(plugins.rename({ suffix: ".min" }))
+//     .pipe(dest(paths.dist + "javascripts/"));
+// };
 
 // Move GOV.UK template resources
 
@@ -122,7 +121,8 @@ const javascripts = () => {
       plugins.addSrc.prepend([
         paths.src + "javascripts/main.min.js",
         paths.src + "javascripts/scheduler.min.js",
-        paths.src + "fontawesome/js/fontawesome.min.js",
+        paths.src + "javascripts/branding_request.min.js",
+        paths.src + "javascripts/formValidateRequired.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));
@@ -148,6 +148,7 @@ const static_css = () => {
   .pipe(
     plugins.addSrc.prepend([
       paths.npm + "accessible-autocomplete/dist/accessible-autocomplete.min.css",
+      paths.src + "stylesheets/fa-svg-with-js.css",
     ])
   )
   .pipe(plugins.concat("index.css"))

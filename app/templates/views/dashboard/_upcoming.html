@@ -1,14 +1,15 @@
 {% from "components/table.html" import list_table, field, row_heading %}
 {% from "components/show-more.html" import show_more %}
+{% from "components/empty-list.html" import empty_list  %}
 
 <div class="ajax-block-container">
-  {% if scheduled_jobs %}
+  
     <div class='dashboard-table'>
       {% call(item, row_number) list_table(
         scheduled_jobs,
         caption=_("Scheduled sends"),
         caption_visible=False,
-        empty_message='Nothing to see here',
+        empty_message=empty_list(_('You have no scheduled messages at the moment'), _('Use a template to send many messages at once.'), 'emptyBird', url_for('main.choose_template', service_id=current_service.id), _('Go to your templates')),
         field_headings=[
           _("List name"),
           _("Details")
@@ -19,7 +20,7 @@
           <div class="file-list">
             <a class="file-list-filename" href="{{ url_for('.view_job', service_id=current_service.id, job_id=item.id) }}">{{ item.original_file_name }}</a>
             <span class="file-list-hint">
-              {{ _("Starting") }} <span class="local-datetime-short">{{ item.scheduled_for }}</span>
+              {{ _("Starting") }} <time class="local-datetime-short">{{ item.scheduled_for }}</time>
             </span>
           </div>
         {% endcall %}
@@ -38,5 +39,5 @@
         ) }}
       {% endif %}
     </div>
-  {% endif %}
+  
 </div>

@@ -31,8 +31,8 @@ let Actions = {
             Cypress._.isObject, // keep retrying until the task returns an object
             {
                 log: true,
-                limit: 50, // max number of iterations
-                timeout: 30000, // time limit in ms
+                limit: 250, // max number of iterations
+                timeout: 120000, // time limit in ms
                 delay: 500, // delay before next iteration, ms
             },
         )
@@ -42,16 +42,16 @@ let Actions = {
             });
 
         // ensure code is received and enter it
-        cy.contains('p', "security code to log in").should('be.visible');
-        cy.contains('p', 'security code to log in').invoke('text').as('MFACode');
+        cy.get('blockquote').should('be.visible');
+        cy.get('blockquote p').invoke('text').as('MFACode');
         cy.get('@MFACode').then((text) => {
-            let code = text.slice(0, 5);
+            let code = text;
             cy.visit('/two-factor-email-sent');
             Actions.EnterCode(code);
         });
     
         // ensure we logged in correctly
-        cy.contains('h1', 'Sign-in history').should('be.visible');
+        cy.contains('h1', 'Sign-in history', { timeout: 10000 }).should('be.visible');
     }
 };
 

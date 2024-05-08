@@ -1,6 +1,7 @@
 {% extends  "admin_template.html" %}
 {% from "components/table.html" import list_table, row, field %}
 {% from "components/table.html" import mapping_table, row, text_field, optional_text_field, edit_field, field, boolean_field with context %}
+{% from "components/profile-item.html" import profile_item %}
 
 {% block per_page_title %}
   {{ _('Your profile') }}
@@ -12,6 +13,18 @@
 
   <h1 class="heading-large">{{ _('Your profile') }}</h1>
 
+  
+  {{ profile_item(_('Name'), text_field(current_user.name), '.user_profile_name') }}  
+  {{ profile_item(_('Email address'), text_field(current_user.email_address), '.user_profile_email' if can_see_edit else None) }}
+  {{ profile_item(_('Mobile number'), optional_text_field(current_user.mobile_number), '.user_profile_mobile_number') }}
+  {{ profile_item(_('Password'), text_field(_('Last changed ') + " " + current_user.password_changed_at|format_delta ), '.user_profile_password') }}
+  {{ profile_item(_('Security keys'), text_field(num_keys), '.user_profile_security_keys') }}
+
+  {% if current_user.platform_admin or session.get('disable_platform_admin_view') %}
+    {{ profile_item(_('Use platform admin view'), text_field(_('Yes') if not session.get('disable_platform_admin_view') else _('No')), '.user_profile_disable_platform_admin_view') }} 
+  {% endif %}
+
+  <!--
   <div class="body-copy-table">
     {% set caption = _('Your profile') %}
     {% set heading_1 = _('Label') %}
@@ -79,6 +92,5 @@
 
 
     
-  </div>
-
+  </div> -->
 {% endblock %}

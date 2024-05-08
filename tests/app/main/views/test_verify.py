@@ -25,8 +25,7 @@ def test_should_return_verify_template(
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert page.h1.text == "Check your phone messages"
-    message = page.find_all("p")[1].text
-    assert message == "We’ve sent you a text message with a security code."
+    assert "We’ve sent you a text message with a security code." in page.text
 
 
 def test_should_redirect_to_welcome_screen_when_two_factor_code_is_correct(

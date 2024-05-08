@@ -39,6 +39,8 @@
 @import "./components/back-link.css";
 @import "./components/preview-fullpage-border.css";
 @import "./components/remaining-messages.css";
+@import "./components/empty-list.css";
+@import "./components/autocomplete.css";
 
 /* views */
 @import "./views/dashboard.css";
@@ -357,4 +359,7 @@ label {
   }
 }
 
+.overflow-anywhere {
+  overflow-wrap: anywhere;
+}
 /*! purgecss end ignore */

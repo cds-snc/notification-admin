@@ -221,7 +221,7 @@ def test_registration_from_org_invite_404s_if_user_not_in_session(
                 "mobile_number": "+4966921809",
                 "password": "password",
             },
-            "Choose a password that’s harder to guess",
+            "A password that is hard to guess contains",
         ],
     ],
 )

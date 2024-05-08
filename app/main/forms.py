@@ -164,8 +164,12 @@ def password(label=_l("Password")):
         label,
         validators=[
             DataRequired(message=_l("This cannot be empty")),
-            Length(8, 255, message=_l("Must be at least 8 characters and hard to guess")),
-            Blocklist(message=_l("Choose a password that’s harder to guess")),
+            Length(8, 255, message=_l("Must be at least 8 characters")),
+            Blocklist(
+                message=_l(
+                    "A password that is hard to guess contains: uppercase and lowercase letters, numbers and special characters, and words separated by a space."
+                )
+            ),
         ],
     )
 
@@ -179,7 +183,7 @@ class TwoFactorCode(StringField):
     ]
 
     def __call__(self, **kwargs):
-        return super().__call__(type="tel", pattern="[0-9]*", **kwargs)
+        return super().__call__(type="text", inputmode="numeric", autocomplete="one-time-code", pattern="[0-9]*", **kwargs)
 
 
 class ForgivingIntegerField(StringField):
@@ -667,7 +671,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
         self.default_branding.choices = self._getSelectBilingualChoices()
 
     default_branding = RadioField(
-        _l("Choose which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
+        _l("Select which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
         choices=[  # Choices by default, override to get more refined options.
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
@@ -732,7 +736,7 @@ class SMSMessageLimit(StripWhitespaceForm):
 
 class FreeSMSAllowance(StripWhitespaceForm):
     free_sms_allowance = IntegerField(
-        _l("Numbers of text messages per year"),
+        _l("Numbers of text messages per fiscal year"),
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
 
@@ -763,7 +767,7 @@ class BaseTemplateForm(StripWhitespaceForm):
         ],
     )
     process_type = RadioField(
-        _l("Choose a priority queue"),
+        _l("Select a priority queue"),
         choices=[
             ("bulk", _l("Bulk — Not time-sensitive")),
             ("normal", _l("Normal")),
@@ -930,7 +934,6 @@ class ContactNotify(StripWhitespaceForm):
             ("ask_question", _l("Ask a question")),
             ("technical_support", _l("Get technical support")),
             ("give_feedback", _l("Give feedback")),
-            ("demo", _l("Set up a demo to learn more about GC Notify")),
             ("other", _l("Other")),
         ],
     )
@@ -940,58 +943,6 @@ class ContactNotify(StripWhitespaceForm):
 class ContactMessageStep(ContactNotify):
     message = TextAreaField(
         _l("Message"),
-        validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
-    )
-
-
-class SetUpDemoOrgDetails(ContactNotify):
-    department_org_name = StringField(
-        _l("Name of department or organisation"),
-        validators=[DataRequired(message=_l("Enter the name of your department or organisation")), Length(max=500)],
-    )
-    program_service_name = StringField(
-        _l("Name of program or service"),
-        validators=[DataRequired(message=_l("Enter the name of your program or service")), Length(max=500)],
-    )
-    intended_recipients = RadioField(
-        _l("Who are the intended recipients of notifications?"),
-        choices=[
-            ("internal", _l("Colleagues within your department (internal)")),
-            ("external", _l("Partners from other organisations (external)")),
-            ("public", _l("Public")),
-        ],
-        validators=[DataRequired(message=_l("You need to choose an option"))],
-    )
-
-
-class SetUpDemoPrimaryPurpose(SetUpDemoOrgDetails):
-    main_use_case = RadioField(
-        _l("Describe the primary purpose of the first messages you intend to send."),
-        choices=[
-            (
-                "status_updates",
-                _l(
-                    "Information specific for each recipient (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> status update)"
-                ),
-            ),
-            (
-                "transactional_messages",
-                _l(
-                    "Action required by each recipient (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> password reset)"
-                ),
-            ),
-            (
-                "newsletters",
-                _l(
-                    "News or information sent in bulk to many recipients (<span aria-hidden='true'>e.g.</span><span class='sr-only'>For example: </span> newsletter)"
-                ),
-            ),
-            ("other", _l("Other")),
-        ],
-        validators=[DataRequired(message=_l("You need to choose an option"))],
-    )
-    main_use_case_details = TextAreaField(
-        _l("What will messages be about?"),
         validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
     )
 
@@ -1219,7 +1170,7 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
             )
         ],
     )
-    file = FileField_wtf("Upload a PNG logo", validators=[FileAllowed(["png"], "PNG Images only!")])
+    file = FileField_wtf("Upload a PNG logo")
     brand_type = RadioField(
         "Brand type",
         choices=[
@@ -1233,10 +1184,23 @@ class ServiceUpdateEmailBranding(StripWhitespaceForm):
             ("no_branding", "No branding"),
         ],
     )
+    organisation = RadioField("Select an organisation", choices=[])
+    alt_text_en = StringField("Alternative text for English logo")
+    alt_text_fr = StringField("Alternative text for French logo")
 
     def validate_name(form, name):
         op = request.form.get("operation")
         if op == "email-branding-details" and not form.name.data:
+            raise ValidationError("This field is required")
+
+    def validate_alt_text_en(form, alt_text_en):
+        op = request.form.get("operation")
+        if op == "email-branding-details" and not form.alt_text_en.data:
+            raise ValidationError("This field is required")
+
+    def validate_alt_text_fr(form, alt_text_fr):
+        op = request.form.get("operation")
+        if op == "email-branding-details" and not form.alt_text_fr.data:
             raise ValidationError("This field is required")
 
 
@@ -1649,7 +1613,7 @@ class TemplateAndFoldersSelectionForm(Form):
     # this means '__NONE__' (self.ALL_TEMPLATES option) is selected when no form data has been submitted
     # set default to empty string so process_data method doesn't perform any transformation
     move_to = NestedRadioField(
-        _l("Choose a folder"),
+        _l("Select a folder"),
         default="",
         validators=[required_for_ops("move-to-existing-folder"), Optional()],
     )
@@ -1805,4 +1769,63 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
             ("100k+", _l("More than 100,000 notifications")),
         ],
         validators=[DataRequired()],
+    )
+
+
+class BrandingGOCForm(StripWhitespaceForm):
+    """
+    Form for selecting logo from GOC options
+
+    Attributes:
+        goc_branding (RadioField): Field for entering the the logo
+    """
+
+    goc_branding = RadioField(
+        _l("Choose which language shows first <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>"),
+        choices=[  # Choices by default, override to get more refined options.
+            (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
+            (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
+        ],
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class BrandingPoolForm(StripWhitespaceForm):
+    """
+    Form for selecting alternate branding logo from a pool of options associated with the service's organisation.
+
+    Attributes:
+        pool_branding (RadioField): Field for entering the the logo
+    """
+
+    pool_branding = RadioField(
+        _l("Select alternate logo"),
+        choices=[],  # Choices by default, override to get more refined options.
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class BrandingRequestForm(StripWhitespaceForm):
+    """
+    Form for handling new branding requests.
+
+    Attributes:
+        name (StringField): Field for entering the name of the logo.
+        file (FileField_wtf): Field for uploading the logo file.
+    """
+
+    name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
+    alt_text_en = StringField(label=_l("English"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    alt_text_fr = StringField(label=_l("French"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    file = FileField_wtf(
+        label=_l("Prepare your logo"),
+        validators=[
+            DataRequired(message=_l("You must select a file to continue")),
+        ],
     )

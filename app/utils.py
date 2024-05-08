@@ -59,6 +59,21 @@ FAILURE_STATUSES = [
     "virus-scan-failed",
     "validation-failed",
 ]
+CSV_COLUMN_HEADER_MAPPINGS = [
+    {"original_heading": "email address", "en": "Email address", "fr": _l("Email address")},
+    {"original_heading": "email_address", "en": "Email address", "fr": _l("Email address")},
+    {"original_heading": "phone number", "en": "Phone number", "fr": _l("Phone number")},
+    {"original_heading": "phone_number", "en": "Phone number", "fr": _l("Phone number")},
+    {"original_heading": "Row number", "en": "Row number", "fr": _l("Row number")},
+    {"original_heading": "Recipient", "en": "Recipient", "fr": _l("Recipient")},
+    {"original_heading": "Template", "en": "Template", "fr": _l("Template")},
+    {"original_heading": "Type", "en": "Type", "fr": _l("Type")},
+    {"original_heading": "Sent by", "en": "Sent by", "fr": _l("Sent by")},
+    {"original_heading": "Sent by email", "en": "Sent by email", "fr": _l("Sent by email")},
+    {"original_heading": "Job", "en": "Job", "fr": _l("Job")},
+    {"original_heading": "Status", "en": "Status", "fr": _l("Status")},
+    {"original_heading": "Time", "en": "Sent Time", "fr": _l("Sent Time")},
+]
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
 
 with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))) as email_domains:
@@ -77,8 +92,8 @@ def from_lambda_api(line):
 
 
 @cache.memoize(timeout=3600)
-def get_latest_stats(lang):
-    results = service_api_client.get_stats_by_month()["data"]
+def get_latest_stats(lang, filter_heartbeats=None):
+    results = service_api_client.get_stats_by_month(filter_heartbeats=filter_heartbeats)["data"]
 
     monthly_stats = {}
     emails_total = 0
@@ -104,7 +119,7 @@ def get_latest_stats(lang):
         elif notification_type == "email":
             emails_total += count
 
-    live_services = len(service_api_client.get_live_services_data()["data"])
+    live_services = len(service_api_client.get_live_services_data({"filter_heartbeats": True})["data"])
 
     return {
         "monthly_stats": monthly_stats,
@@ -196,9 +211,22 @@ def get_errors_for_csv(recipients, template_type):
     return errors
 
 
+def localize_and_format_csv_headers(column_headers: list) -> list:
+    from app import get_current_locale
+
+    lang = get_current_locale(current_app)
+    localized_headers = []
+    for header in column_headers:
+        localized_header = [mapped for mapped in CSV_COLUMN_HEADER_MAPPINGS if mapped["original_heading"] == header]
+        localized_headers.append(str(localized_header[0][lang]) if len(localized_header) >= 1 else header)
+    return localized_headers
+
+
 def generate_notifications_csv(**kwargs):
-    from app import notification_api_client
+    from app import get_current_locale, notification_api_client
     from app.s3_client.s3_csv_client import s3download
+
+    lang = get_current_locale(current_app)
 
     if "page" not in kwargs:
         kwargs["page"] = 1
@@ -210,19 +238,24 @@ def generate_notifications_csv(**kwargs):
             template_type=kwargs["template_type"],
         )
         original_column_headers = original_upload.column_headers
-        fieldnames = ["Row number"] + original_column_headers + ["Template", "Type", "Job", "Status", "Time"]
+        fieldnames = localize_and_format_csv_headers(
+            ["Row number"] + original_column_headers + ["Template", "Type", "Job", "Status", "Time"]
+        )
     else:
-        fieldnames = [
-            "Recipient",
-            "Template",
-            "Type",
-            "Sent by",
-            "Sent by email",
-            "Job",
-            "Status",
-            "Time",
-        ]
-
+        fieldnames = localize_and_format_csv_headers(
+            [
+                "Recipient",
+                "Template",
+                "Type",
+                "Sent by",
+                "Sent by email",
+                "Job",
+                "Status",
+                "Time",
+            ]
+        )
+    # Add encoded Byte Order Mark to the csv so MS Excel treats it as UTF-8 and properly renders accented FR characters.
+    yield "\uFEFF".encode("utf-8")
     yield ",".join(fieldnames) + "\n"
 
     while kwargs["page"]:
@@ -236,9 +269,9 @@ def generate_notifications_csv(**kwargs):
                     + [original_upload[notification["row_number"] - 1].get(header).data for header in original_column_headers]
                     + [
                         notification["template_name"],
-                        notification["template_type"],
+                        notification["template_type"] if lang == "en" else _l(notification["template_type"]),
                         notification["job_name"],
-                        notification["status"],
+                        notification["status"] if lang == "en" else _l(notification["status"]),
                         notification["created_at"],
                     ]
                 )
@@ -246,11 +279,11 @@ def generate_notifications_csv(**kwargs):
                 values = [
                     notification["recipient"],
                     notification["template_name"],
-                    notification["template_type"],
+                    notification["template_type"] if lang == "en" else _l(notification["template_type"]),
                     notification["created_by_name"] or "",
                     notification["created_by_email_address"] or "",
                     notification["job_name"] or "",
-                    notification["status"],
+                    notification["status"] if lang == "en" else _l(notification["status"]),
                     notification["created_at"],
                 ]
             yield Spreadsheet.from_rows([map(str, values)]).as_csv_data
@@ -498,6 +531,8 @@ def get_email_logo_options(service):
             "asset_domain": get_logo_cdn_domain(),
             "fip_banner_english": not service.default_branding_is_french,
             "fip_banner_french": service.default_branding_is_french,
+            "alt_text_en": None,
+            "alt_text_fr": None,
         }
 
     return {
@@ -506,6 +541,8 @@ def get_email_logo_options(service):
         "brand_logo": email_branding["logo"],
         "brand_text": email_branding["text"],
         "brand_name": email_branding["name"],
+        "alt_text_en": email_branding["alt_text_en"],
+        "alt_text_fr": email_branding["alt_text_fr"],
     }
 
 

@@ -45,7 +45,7 @@ freeze-requirements:
 
 .PHONY: test-requirements
 test-requirements:
-	poetry lock --check
+	poetry check --lock
 
 .PHONY: coverage
 coverage: venv ## Create coverage report
@@ -63,3 +63,7 @@ format:
 	isort --check-only ./app ./tests
 	mypy ./
 	npx prettier --write app/assets/javascripts app/assets/stylesheets
+
+.PHONY: tailwind
+tailwind:
+	npm run tailwind

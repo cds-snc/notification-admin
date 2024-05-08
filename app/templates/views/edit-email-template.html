@@ -46,7 +46,7 @@
 
   <div class="grid-row contain-floats">
     <div class="md:w-2/3 px-gutterHalf">
-      {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Choose a name that helps you find the template when you need to reuse it.'), rows=10) }}
+      {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10) }}
 
       {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.")) }}
 
@@ -64,7 +64,7 @@
 
 {% block page_script %}
 {{ super() }}
-<script nonce="{{ request_nonce }}">
+<script type="text/javascript" nonce="{{ request_nonce }}">
   const loadContent = templateId => {
     const callback = `/services/templates/${templateId}/get-data`;
 
@@ -85,43 +85,5 @@
     });
   };
 </script>
-
-<style>
-  select {
-    box-sizing: "border-box";
-    width: 50%;
-    height: 33px;
-    padding: 5px 4px 4px;
-    border: 2px solid #000;
-    font-size: 1.5rem;
-  }
-
-  .confirm-container-class {
-    font-size: 2rem;
-  }
-
-  .confirm-container-class .swal2-title {
-    color: #000;
-    font-size: 2.5rem;
-  }
-
-  .confirm-container-class .swal2-content {
-    color: #000;
-    font-size: 1.8rem;
-  }
-
-  .confirm-container-class .swal2-actions {
-    font-size: 1.8rem;
-  }
-
-  .confirm-container-class button {
-    margin: 0 1.5rem 1rem;
-    line-height: 2rem;
-  }
-
-  .confirm-container-class .swal2-title strong {
-    font-weight: 900;
-  }
-</style>
 
 {% endblock %}

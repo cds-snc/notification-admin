@@ -116,6 +116,7 @@ class Config(object):
     SESSION_COOKIE_NAME = "notify_admin_session"
     SESSION_COOKIE_SECURE = True
     SESSION_REFRESH_EACH_REQUEST = True
+    SESSION_COOKIE_SAMESITE = "Lax"
     SENSITIVE_SERVICES = os.environ.get("SENSITIVE_SERVICES", "")
     SHOW_STYLEGUIDE = env.bool("SHOW_STYLEGUIDE", True)
 
@@ -136,9 +137,14 @@ class Config(object):
     # Bounce Rate parameters
     BR_DISPLAY_VOLUME_MINIMUM = 1000
 
+    # Scan files integration
+    SCANFILES_URL = os.environ.get("SCANFILES_URL", "")
+    SCANFILES_AUTH_TOKEN = os.environ.get("SCANFILES_AUTH_TOKEN", "")
+
     # FEATURE FLAGS
-    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
-    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", False)
+    FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
+    FF_NEW_BRANDING = env.bool("FF_NEW_BRANDING", False)
+    NO_BRANDING_ID = os.environ.get("NO_BRANDING_ID", "0af93cf1-2c49-485f-878f-f3e662e651ef")
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
@@ -178,6 +184,8 @@ class Development(Config):
     SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
+    SYSTEM_STATUS_URL = "https://localhost:3000"
+    NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
 
 class Test(Development):
@@ -200,6 +208,8 @@ class Test(Development):
     WTF_CSRF_ENABLED = False
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     FF_SALESFORCE_CONTACT = False
+    SYSTEM_STATUS_URL = "https://localhost:3000"
+    NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
 
 class Production(Config):
@@ -207,15 +217,24 @@ class Production(Config):
     HTTP_PROTOCOL = "https"
     NOTIFY_ENVIRONMENT = "production"
     NOTIFY_LOG_LEVEL = "INFO"
+    SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
+    NO_BRANDING_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
 
 
 class Staging(Production):
     NOTIFY_ENVIRONMENT = "staging"
     NOTIFY_LOG_LEVEL = "INFO"
+    SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
+    NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
 
 class Scratch(Production):
     NOTIFY_ENVIRONMENT = "scratch"
+    NOTIFY_LOG_LEVEL = "INFO"
+
+
+class Dev(Production):
+    NOTIFY_ENVIRONMENT = "dev"
     NOTIFY_LOG_LEVEL = "INFO"
 
 
@@ -225,4 +244,5 @@ configs = {
     "staging": Staging,
     "production": Production,
     "scratch": Scratch,
+    "dev": Dev,
 }

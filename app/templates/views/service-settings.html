@@ -157,13 +157,14 @@
           }}
         {% endcall %}
         {% call settings_row(if_has_permission='email') %}
+          {% set branding_route = '.view_branding_settings' if  config["FF_NEW_BRANDING"] or current_user.platform_admin else '.branding_request' %}
           {% set txt = _('Email branding') %}
           {{ text_field(txt) }}
           {% set value = _('Your branding<br> ({})') %}
           {{ text_field(value.format(current_service.email_branding_name)|safe if current_service.email_branding else _(current_service.email_branding_name)) }}
           {{ edit_field(
             change_txt,
-            url_for('.branding_request', service_id=current_service.id),
+            url_for(branding_route, service_id=current_service.id),
             permissions=['manage_service'],
             attributes="",
             for=txt
@@ -190,7 +191,7 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='email') %}
-          {% set txt = _('Yearly maximum') %}
+          {% set txt = _('Annual maximum</br>(April 1 to March 31)') %}
           {{ text_field(txt) }}
           {% set annual_limit = _('{} million emails').format((limits.free_yearly_email//1000000) | format_number) %}
           {{ text_field(annual_limit) }}
@@ -264,7 +265,7 @@
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
-          {% set txt = _('Yearly maximum') %}
+          {% set txt = _('Annual maximum</br>(April 1 to March 31)') %}
           {{ text_field(txt) }}
           {% set txt_msg_limit = _('{} text messages').format(limits.free_yearly_sms | format_number) %}
           {{ text_field(txt_msg_limit) }}
@@ -417,7 +418,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Free text messages per year') %}
+            {% set txt = _('Free text messages per fiscal year') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.free_sms_fragment_limit | format_number) }}
             {{ edit_field(

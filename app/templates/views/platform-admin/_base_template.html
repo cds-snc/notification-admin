@@ -26,8 +26,11 @@
             <a
               aria-label="{{ _(link_text) }}" 
               href="{{ url_for('main.'+view) }}"
-              class="no-underline text-blue visited:text-blue link:text-blue text-smaller">
+              class="no-underline text-blue visited:text-blue link:text-blue text-smaller"
+              {% if admin_navigation.is_selected(view) %}aria-current="page"{% endif %}
+              >
               {{ _(link_text) }}
+              
             </a>
           </div>
         {% endfor %}

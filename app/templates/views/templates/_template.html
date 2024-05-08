@@ -3,7 +3,7 @@
 <div>
   {% if template._template.archived %}
     <p class="hint">
-      {{ _('This template was deleted') }} <span class="relative-time-past">{{ template._template.updated_at }}</span>.
+      {{ _('This template was deleted') }} <time class="relative-time-past">{{ template._template.updated_at }}</time>.
     </p>
   {% elif not current_user.has_permissions('send_messages', 'manage_api_keys', 'manage_templates', 'manage_service') or not user_has_template_permission %}
     <p class="mt-4 block {% if template.template_type != 'sms' %}mb-12{% endif %}">

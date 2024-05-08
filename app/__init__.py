@@ -83,6 +83,7 @@ from app.notify_client.template_folder_api_client import template_folder_api_cli
 from app.notify_client.template_statistics_api_client import template_statistics_client
 from app.notify_client.user_api_client import user_api_client
 from app.salesforce import salesforce_account
+from app.scanfiles.scanfiles_api_client import scanfiles_api_client
 from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
@@ -173,6 +174,9 @@ def create_app(application):
         bounce_rate_client,
     ):
         client.init_app(application)
+
+    # pass the scanfiles url and token
+    scanfiles_api_client.init_app(application.config["SCANFILES_URL"], application.config["SCANFILES_AUTH_TOKEN"])
 
     logging.init_app(application, statsd_client)
 
@@ -492,8 +496,8 @@ def format_notification_status(status, template_type, provider_response=None, fe
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(
         {"created", "pending", "sending"},
-        " " + _("since") + ' <span class="local-datetime-short">{}</span>'.format(created),
-    ).get(status, '<span class="local-datetime-short">{}</span>'.format(updated))
+        " " + _("since") + ' <time class="local-datetime-short">{}</time>'.format(created),
+    ).get(status, '<time class="local-datetime-short">{}</time>'.format(updated))
 
 
 def format_notification_status_as_field_status(status, notification_type):
@@ -620,7 +624,7 @@ def load_request_nonce():
     elif _request_ctx_stack.top is not None:
         token = secrets.token_urlsafe()
         _request_ctx_stack.top.nonce = token
-        current_app.logger.warning(f"Set request nonce to {token}")
+        current_app.logger.debug(f"Set request nonce to {token}")
 
 
 def save_service_or_org_after_request(response):
@@ -644,23 +648,29 @@ def useful_headers_after_request(response):
     response.headers.add("X-Frame-Options", "deny")
     response.headers.add("X-Content-Type-Options", "nosniff")
     response.headers.add("X-XSS-Protection", "1; mode=block")
+    response.headers.add("Upgrade-Insecure-Requests", "1")
     nonce = safe_get_request_nonce()
     asset_domain = current_app.config["ASSET_DOMAIN"]
     response.headers.add(
+        "Report-To",
+        """{"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]""",
+    )
+    response.headers.add(
         "Content-Security-Policy",
         (
-            "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
-            "default-src 'self' {asset_domain} 'unsafe-inline';"
+            f"default-src 'self' {asset_domain} 'unsafe-inline';"
             f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            "connect-src 'self' *.google-analytics.com *.googletagmanager.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
+            f"script-src-elem 'self' https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            "connect-src 'self' *.google-analytics.com *.googletagmanager.com https://bam.nr-data.net *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
             "object-src 'self';"
-            "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
-            "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
-            "frame-src 'self' www.googletagmanager.com www.youtube.com https://cdssnc.qualtrics.com/;".format(
-                asset_domain=asset_domain
-            )
+            f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
+            f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
+            f"img-src 'self' blob: {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+            "frame-ancestors 'self';"
+            "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
+            "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"
+            "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
+            "report-to default;"
         ),
     )
     if "Cache-Control" in response.headers:
