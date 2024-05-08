@@ -1,10 +1,11 @@
 from io import BytesIO
 from unittest import mock
-from unittest.mock import call
+from unittest.mock import call, patch
 
 import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
+from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
 from app.main.views.email_branding import get_preview_template
@@ -656,6 +657,7 @@ class TestBranding:
             assert "The canada wordmark is displayed at the bottom right" in html_template
 
     def test_get_preview_template_with_email_branding_and_custom_brand_logo(self, mocker, app_):
+
         email_branding = {
             "brand_type": "both_english",
             "colour": "#ff0000",
@@ -679,3 +681,43 @@ class TestBranding:
             html_template = get_preview_template(None)
             assert "There’s a custom logo at the top left and no logo at the bottom." in html_template
             assert "The canada wordmark is displayed at the bottom right" not in html_template
+
+    def test_create_branding_request(self, mocker, platform_admin_client):
+        class MockOrg:
+            name = "Test org"
+
+        class MockService:
+            email_branding_id = None
+            default_branding_is_french = False
+            id = "1234"
+            name = "Awesome"
+            organisation_id = "1234"
+            organisation = MockOrg
+
+        mocker.patch("app.main.views.email_branding.upload_email_logo", return_value="temp_filename")
+        mocker.patch("app.main.views.email_branding.current_service", new=MockService)
+
+        data = {
+            "name": "test-logo",
+            "file": (BytesIO("".encode("utf-8")), "test.png"),
+            "alt_text_en": "ALT_EN",
+            "alt_text_fr": "ALT_FR",
+        }
+
+        with patch.object(current_user, "send_branding_request", return_value="") as mock_create_branding_request:
+
+            platform_admin_client.post(
+                url_for(".create_branding_request", service_id="1234"),
+                data=data,
+            )
+
+            assert mock_create_branding_request.called
+            assert mock_create_branding_request.call_args == call(
+                MockService.id,
+                MockService.name,
+                MockService.organisation_id,
+                MockService.organisation.name,
+                "temp_filename",
+                data["alt_text_en"],
+                data["alt_text_fr"],
+            )
