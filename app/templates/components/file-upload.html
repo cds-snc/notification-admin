@@ -11,7 +11,7 @@
 ) %}
   <form method="post" enctype="multipart/form-data" {% if action %}action="{{ action }}"{% endif %} class="{% if field.errors %}form-group-error contain-floats{% endif %}" data-module="file-upload">
     <div class="file-upload-group">
-    <label class="file-upload-label" for="{{ field.name }}">
+    <label class="file-upload-label" for="{{ field.name }}" role="link">
       <span id="file-upload-label" class="visually-hidden"> {{ field.label.text }} </span>
       {% if hint %}
         <span class="form-hint">
