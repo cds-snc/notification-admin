@@ -14,7 +14,7 @@ def sign_in():
     if request.args.get("timeout"):
         session.clear()
         logout_user()
-    
+
     if current_user and current_user.is_authenticated:
         return redirect(url_for("main.show_accounts_or_dashboard"))
 
@@ -66,7 +66,7 @@ def sign_in():
         form=form,
         again=bool(request.args.get("next")),
         other_device=other_device,
-        timeout=bool(request.args.get("timeout"))
+        timeout=bool(request.args.get("timeout")),
     )
 
 

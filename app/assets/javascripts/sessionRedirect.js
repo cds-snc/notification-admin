@@ -2,7 +2,7 @@
  * Redirects the user after a specified period of time.
  */
 (function () {
-  const REDIRECT_LOCATION = '/sign-in?timeout=true';
+  const REDIRECT_LOCATION = "/sign-in?timeout=true";
   const SESSION_TIMEOUT_MS = 7 * 60 * 60 * 1000 + 55 * 60 * 1000; // 7 hours 55 minutes
 
   redirectCountdown(REDIRECT_LOCATION, SESSION_TIMEOUT_MS); // 7 hours 55 minutes
