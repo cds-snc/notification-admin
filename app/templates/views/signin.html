@@ -27,6 +27,8 @@
       <p>
         {{ _('If you do not have an account, you can') }}
         <a href="{{ url_for('.register') }}">{{ _('create one now') }}</a>.
+        <br />
+        {{ _('Note: user sessions expire after 8 hours of inactivity.') }}
       </p>
     {% endif %}
     {% set forgot = _('Forgot your password?') %}
