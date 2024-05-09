@@ -387,9 +387,11 @@ class User(JSONModel, UserMixin):
     def send_already_registered_email(self):
         user_api_client.send_already_registered_email(self.id, self.email_address)
 
-    def send_branding_request(self, serviceID, service_name, org_id, org_name, filename, alt_text_en, alt_text_fr):
+    def send_branding_request(
+        self, serviceID, service_name, org_id, org_name, filename, alt_text_en, alt_text_fr, branding_logo_name
+    ):
         user_api_client.send_branding_request(
-            self.id, serviceID, service_name, org_id, org_name, filename, alt_text_en, alt_text_fr
+            self.id, serviceID, service_name, org_id, org_name, filename, alt_text_en, alt_text_fr, branding_logo_name
         )
 
     def refresh_session_id(self):
