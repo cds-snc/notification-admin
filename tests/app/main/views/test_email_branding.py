@@ -720,4 +720,5 @@ class TestBranding:
                 "temp_filename",
                 data["alt_text_en"],
                 data["alt_text_fr"],
+                data["name"],
             )

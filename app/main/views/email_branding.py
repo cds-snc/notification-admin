@@ -235,6 +235,7 @@ def create_branding_request(service_id):
                 upload_filename,
                 form.alt_text_en.data,
                 form.alt_text_fr.data,
+                form.name.data,
             )
             # todo: remove unused params
             return render_template(
