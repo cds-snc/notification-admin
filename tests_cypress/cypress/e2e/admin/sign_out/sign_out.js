@@ -31,6 +31,9 @@ describe('Sign out', () => {
 
   it('Displays banner on explicit logout', () => {
     cy.visit('/sign-out');
+
+    // asserts
+    cy.url().should('include', '/sign-in');
     cy.get('.banner-default-with-tick').should('be.visible');
   });
 
