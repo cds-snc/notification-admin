@@ -1,6 +1,6 @@
 from flask import abort, flash, redirect, render_template, request, session, url_for
 from flask_babel import _
-from flask_login import current_user
+from flask_login import current_user, logout_user
 
 from app import login_manager
 from app.main import main
@@ -11,6 +11,10 @@ from app.utils import _constructLoginData
 
 @main.route("/sign-in", methods=(["GET", "POST"]))
 def sign_in():
+    if request.args.get("timeout"):
+        session.clear()
+        logout_user()
+    
     if current_user and current_user.is_authenticated:
         return redirect(url_for("main.show_accounts_or_dashboard"))
 
@@ -62,6 +66,7 @@ def sign_in():
         form=form,
         again=bool(request.args.get("next")),
         other_device=other_device,
+        timeout=bool(request.args.get("timeout"))
     )
 
 

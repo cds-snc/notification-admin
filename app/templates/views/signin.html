@@ -11,8 +11,7 @@
 
 <div class="grid-row contain-floats">
   <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
-
-    {% if again %}
+    {% if again or timeout %}
       <h1 class="heading-large">{{ _('You need to sign in again') }}</h1>
       {% if other_device %}
         <p>
