@@ -10,9 +10,28 @@
 
 ) %}
   <form method="post" enctype="multipart/form-data" {% if action %}action="{{ action }}"{% endif %} class="{% if field.errors %}form-group-error contain-floats{% endif %}" data-module="file-upload">
-    <div class="file-upload-group">
-    <label class="file-upload-label" for="{{ field.name }}" role="link">
-      <span id="file-upload-label" class="visually-hidden"> {{ field.label.text }} </span>
+    
+    {{ file_upload_field(field, action, button_text, hint, accept) }}
+
+    {% if alternate_link and alternate_link_text %}
+      <span class="file-upload-alternate-link">
+        {{ _('or') }} <a href="{{ alternate_link }}">{{ alternate_link_text }}</a>
+      </span>
+    {% endif %}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <button type="submit" class="file-upload-submit">{{ _('Submit') }}</button>
+  </form>
+{% endmacro %}
+
+{% macro file_upload_field(
+  field,
+  action=None,
+  button_text=upload_txt,
+  hint=None,
+  accept=""
+) %}
+  <div class="file-upload-group">
+      <span id="file-upload-label" class="block"> {{ field.label.text }} </span>
       {% if hint %}
         <span class="form-hint">
           {{ hint }}
@@ -23,20 +42,12 @@
           {{ field.errors[0] }}
         </span>
       {% endif %}
+      <label class="file-upload-label button my-4" for="{{ field.name }}" role="link">
+        {{ button_text }}
+      </label>
       {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description',  'tabindex' : '-1'}) }}
-      <button class="button" type="button" id="file-upload-button">{{ button_text }}</button>
-    </label>
-    <div class="file-upload-extra pt-4">
-      <p id="file-description">{{ _("No file currently selected") }}</p>
+      <div class="file-upload-extra">
+        <p id="file-description">{{ _("No file currently selected") }}</p>
+      </div>
     </div>
-    </div>
-
-    {% if alternate_link and alternate_link_text %}
-      <span class="file-upload-alternate-link">
-        {{ _('or') }} <a href="{{ alternate_link }}">{{ alternate_link_text }}</a>
-      </span>
-    {% endif %}
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <button type="submit" class="file-upload-submit">{{ _('Submit') }}</button>
-  </form>
 {% endmacro %}

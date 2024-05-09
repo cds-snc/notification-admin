@@ -1,8 +1,6 @@
 @layer components {
   /*! purgecss start ignore */
-  .js-enabled .file-upload-label {
-    @apply text-smaller leading-tight relative inline-flex flex-col items-start gap-4 py-0;
-  }
+
   .file-upload-group {
     @apply pl-gutterHalf border-l-4 border-gray-300;
   }

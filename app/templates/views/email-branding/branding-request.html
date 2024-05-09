@@ -1,5 +1,5 @@
 {% extends "admin_template.html" %}
-{% from "components/file-upload.html" import file_upload %}
+{% from "components/file-upload.html" import file_upload_field %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
@@ -39,6 +39,7 @@
                 <li class="ml-6">{{ _('Maximum 600 pixels wide') }}</li>
               </ul>
             </p>
+            {{ form_file_field(form.file) }}
             <label class="file-upload-label" id="file-upload-label">
               <span class="form-label sr-only">
                 {{ form.file.label.text }}
