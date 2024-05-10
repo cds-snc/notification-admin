@@ -37,4 +37,10 @@ describe('Sign out', () => {
     cy.get('.banner-default-with-tick').should('be.visible');
   });
 
+  if('Displays session timeout info on login page', () => {
+    cy.visit('/sign-in');
+    
+    // asserts
+    cy.getByTestId('session_timeout_info').should('be.visible');
+  });
 });
