@@ -19,7 +19,7 @@ class EmailBrandingClient(NotifyAdminAPIClient):
 
     @cache.delete("email_branding-{organisation_id}")
     @cache.delete("email_branding-None")
-    def create_email_branding(self, logo, name, text, colour, brand_type, organisation_id):
+    def create_email_branding(self, logo, name, text, colour, brand_type, organisation_id, alt_text_en, alt_text_fr):
         data = {
             "logo": logo,
             "name": name,
@@ -27,13 +27,15 @@ class EmailBrandingClient(NotifyAdminAPIClient):
             "colour": colour,
             "brand_type": brand_type,
             "organisation_id": organisation_id,
+            "alt_text_en": alt_text_en,
+            "alt_text_fr": alt_text_fr,
         }
         return self.post(url="/email-branding", data=data)
 
     @cache.delete("email_branding-{branding_id}")
     @cache.delete("email_branding-{organisation_id}")
     @cache.delete("email_branding-None")
-    def update_email_branding(self, branding_id, logo, name, text, colour, brand_type, organisation_id):
+    def update_email_branding(self, branding_id, logo, name, text, colour, brand_type, organisation_id, alt_text_en, alt_text_fr):
         data = {
             "logo": logo,
             "name": name,
@@ -41,6 +43,8 @@ class EmailBrandingClient(NotifyAdminAPIClient):
             "colour": colour,
             "brand_type": brand_type,
             "organisation_id": organisation_id,
+            "alt_text_en": alt_text_en,
+            "alt_text_fr": alt_text_fr,
         }
         return self.post(url="/email-branding/{}".format(branding_id), data=data)
 

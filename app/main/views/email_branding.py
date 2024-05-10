@@ -50,17 +50,19 @@ def email_branding():
 def update_email_branding(branding_id, logo=None):
     all_organisations = organisations_client.get_organisations()
     email_branding = email_branding_client.get_email_branding(branding_id)["email_branding"]
-
     form = ServiceUpdateEmailBranding(
         name=email_branding["name"],
         text=email_branding["text"],
         colour=email_branding["colour"],
         brand_type=email_branding["brand_type"],
-        organisation="-1",
+        organisation=email_branding["organisation_id"] if email_branding["organisation_id"] != "" else "-1",
+        alt_text_en=email_branding["alt_text_en"],
+        alt_text_fr=email_branding["alt_text_fr"],
     )
 
     form.organisation.choices = [(org["id"], org["name"]) for org in all_organisations]
     # add the option for no org
+    form.organisation.choices.append(("", "No organisation"))
     form.organisation.choices.append(("-1", "No organisation"))
 
     logo = logo if logo else email_branding.get("logo") if email_branding else None
@@ -94,7 +96,9 @@ def update_email_branding(branding_id, logo=None):
             text=form.text.data,
             colour=form.colour.data,
             brand_type=form.brand_type.data,
-            organisation_id=form.organisation.data,
+            organisation_id=form.organisation.data if form.organisation.data != "-1" else None,
+            alt_text_en=form.alt_text_en.data,
+            alt_text_fr=form.alt_text_fr.data,
         )
 
         if logo:
@@ -147,6 +151,8 @@ def create_email_branding(logo=None):
             colour=form.colour.data,
             brand_type=form.brand_type.data,
             organisation_id=None if form.organisation.data == "-1" else form.organisation.data,
+            alt_text_en=form.alt_text_en.data,
+            alt_text_fr=form.alt_text_fr.data,
         )
 
         if logo:
@@ -227,6 +233,9 @@ def create_branding_request(service_id):
                 current_service.organisation_id,
                 current_service.organisation.name,
                 upload_filename,
+                form.alt_text_en.data,
+                form.alt_text_fr.data,
+                form.name.data,
             )
             # todo: remove unused params
             return render_template(
@@ -275,6 +284,8 @@ def get_preview_template(email_branding=None):
         fip_banner_french = branding_type in ["fip_french", "both_french"]
         logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
         brand_name = email_branding["name"]
+        alt_text_en = email_branding["alt_text_en"]
+        alt_text_fr = email_branding["alt_text_fr"]
     else:
         if current_service.email_branding_id is None:
             if current_service.default_branding_is_french:
@@ -285,6 +296,8 @@ def get_preview_template(email_branding=None):
                 fip_banner_french = True
                 logo_with_background_colour = False
                 brand_name = _("French-first government of Canada logo")
+                alt_text_en = None
+                alt_text_fr = _("French-first government of Canada logo")
             else:
                 brand_text = None
                 brand_colour = None
@@ -293,6 +306,8 @@ def get_preview_template(email_branding=None):
                 fip_banner_french = False
                 logo_with_background_colour = False
                 brand_name = _("English-first government of Canada logo")
+                alt_text_en = _("English-first government of Canada logo")
+                alt_text_fr = None
         else:
             email_branding = email_branding_client.get_email_branding(current_service.email_branding_id)["email_branding"]
             branding_type = email_branding["brand_type"]
@@ -304,6 +319,8 @@ def get_preview_template(email_branding=None):
             fip_banner_french = branding_type in ["fip_french", "both_french"]
             logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
             brand_name = _("custom brand logo")
+            alt_text_en = email_branding["alt_text_en"]
+            alt_text_fr = email_branding["alt_text_fr"]
 
     template_content = "# {}\n".format(_("Email preview"))
 
@@ -327,6 +344,8 @@ def get_preview_template(email_branding=None):
             brand_logo=brand_logo,
             logo_with_background_colour=logo_with_background_colour,
             brand_name=brand_name,
+            alt_text_en=alt_text_en,
+            alt_text_fr=alt_text_fr,
         )
     )
 
@@ -348,6 +367,8 @@ def get_preview_template_custom_placeholder():
             brand_logo="https://example.com",
             logo_with_background_colour=False,
             brand_name="example",
+            alt_text_en="alternative text in english",
+            alt_text_fr="alternative text in french",
         )
     )
 

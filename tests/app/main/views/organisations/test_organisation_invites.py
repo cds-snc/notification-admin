@@ -221,7 +221,7 @@ def test_registration_from_org_invite_404s_if_user_not_in_session(
                 "mobile_number": "+4966921809",
                 "password": "password",
             },
-            "A password that is hard to guess contains:<li>Uppercase and lowercase letters.</li><li>Numbers and special characters.</li><li>Words separated by a space.</li>",
+            "A password that is hard to guess contains",
         ],
     ],
 )

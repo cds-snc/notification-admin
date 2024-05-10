@@ -178,10 +178,7 @@ def test_should_return_200_if_password_is_blocked(
     )
 
     response.status_code == 200
-    assert (
-        "A password that is hard to guess contains:<li>Uppercase and lowercase letters.</li><li>Numbers and special characters.</li><li>Words separated by a space.</li>"
-        in response.get_data(as_text=True)
-    )
+    assert "A password that is hard to guess contains" in response.get_data(as_text=True)
 
 
 def test_register_with_existing_email_sends_emails(

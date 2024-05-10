@@ -13,7 +13,7 @@ const pages = [
     { name: "Dashboard > Monthly usage", route: `/services/${config.Services.Cypress}/monthly` },
     { name: "Dashboard > Template usage", route: `/services/${config.Services.Cypress}/template-usage` },
     { name: "Dashboard > Create template", route: `/services/${config.Services.Cypress}/templates/create?source=dashboard` },
-    { name: "Dashboard > Choose template", route: `/services/${config.Services.Cypress}/templates?view=sending` },
+    { name: "Dashboard > Select template", route: `/services/${config.Services.Cypress}/templates?view=sending` },
     { name: "API", route: `/services/${config.Services.Cypress}/api` },
     { name: "API > Keys", route: `/services/${config.Services.Cypress}/api/keys` },
     { name: "API > Keys > Create", route: `/services/${config.Services.Cypress}/api/keys/create` },

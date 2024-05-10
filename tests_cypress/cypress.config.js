@@ -12,6 +12,9 @@ module.exports = defineConfig({
       htmlvalidate.install(on, {
         rules: {
           "form-dup-name": "off",
+          "prefer-native-element": ["error", {
+            "exclude": ["button"]
+          }],
         },
       });
 

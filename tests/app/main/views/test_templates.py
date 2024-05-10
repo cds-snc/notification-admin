@@ -795,7 +795,7 @@ def test_should_show_page_template_with_priority_select_if_platform_admin(
 
     assert page.select_one("input[type=text]")["value"] == "Two week reminder"
     assert "Template &lt;em&gt;content&lt;/em&gt; with &amp; entity" in str(page.select_one("textarea"))
-    assert "Choose a priority queue" in str(page.select_one("main"))
+    assert "Select a priority queue" in str(page.select_one("main"))
     mock_get_service_template.assert_called_with(SERVICE_ONE_ID, template_id, None)
 
 
