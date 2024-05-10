@@ -1,7 +1,7 @@
 @layer components {
   /*! purgecss start ignore */
 
-  .file-upload-group {
+  .file-upload-group:not(.form-group-error) {
     @apply pl-gutterHalf border-l-4 border-gray-300;
   }
 

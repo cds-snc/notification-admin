@@ -4,7 +4,7 @@
 
 {% from "components/page-footer.html" import page_footer %}
 
-{% from "components/file-upload.html" import file_upload %}
+{% from "components/file-upload.html" import file_upload_field %}
 
 {% set page_title = _('Prepare spreadsheet') %}
 
@@ -32,7 +32,7 @@
       acronym(_('ODS'), _('Open Document Spreadsheet'))
     ) }}</li>
   </ol>
-  {{ file_upload( form.file_upload, button_text=_('Choose a file'), accept=".csv,.tsv,.ods,.xls,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,text/tab-separated-values") }}
+  {{ file_upload_field( form.file_upload, button_text=_('Choose a file'), accept=".csv,.tsv,.ods,.xls,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,text/tab-separated-values") }}
   
   <h2 class="heading-medium">You are currently testing the file upload A</h2>
   <a href="_prototype-file-upload-b">Try the other file upload prototype</a>

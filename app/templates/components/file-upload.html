@@ -9,7 +9,7 @@
   accept=""
 
 ) %}
-  <form method="post" enctype="multipart/form-data" {% if action %}action="{{ action }}"{% endif %} class="{% if field.errors %}form-group-error contain-floats{% endif %}" data-module="file-upload">
+  <form method="post" enctype="multipart/form-data" {% if action %}action="{{ action }}"{% endif %} data-module="file-upload">
     
     {{ file_upload_field(field, action, button_text, hint, accept) }}
 
@@ -30,8 +30,9 @@
   hint=None,
   accept=""
 ) %}
-  <div class="file-upload-group">
-      <span id="file-upload-label" class="block"> {{ field.label.text }} </span>
+  <div class="file-upload-group {% if field.errors %}form-group-error{% endif %}">
+      <label class="file-upload-label relative" for="{{ field.name }}" tabIndex="0" role="link">
+        <span id="file-upload-label" class="block"> {{ field.label.text }} </span>
       {% if hint %}
         <span class="form-hint">
           {{ hint }}
@@ -42,12 +43,14 @@
           {{ field.errors[0] }}
         </span>
       {% endif %}
-      <label class="file-upload-label button my-4" for="{{ field.name }}" role="link">
-        {{ button_text }}
+      <span class="file-upload-button button my-4">{{ button_text }}</span>
+        
+        {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description',  'tabindex' : '-1'}) }}
       </label>
-      {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description',  'tabindex' : '-1'}) }}
+      
       <div class="file-upload-extra">
-        <p id="file-description">{{ _("No file currently selected") }}</p>
+        <span id="file-description">{{ _("No file currently selected") }}</span>
+        <!-- Cancel upload ? -->
       </div>
     </div>
 {% endmacro %}

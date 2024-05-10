@@ -14,10 +14,12 @@
     };
 
     this.showFileName = () => {
-      let fileInput = document.querySelector("input#file_upload");
+      let fileInput = $("input[type='file']", this.$form)[0];
       $("#file-description", this.$form).text(
-        `${window.polyglot.t("File name:")} ${fileInput.files[0].name}`,
+        `${window.polyglot.t("File name:")} ${fileInput.files[0].name}`
       );
+      // $("#file-remove", this.$form).text(window.polyglot.t("cancel_upload"));
+
     };
 
     this.start = function (component) {
