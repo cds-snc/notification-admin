@@ -28,8 +28,7 @@
       selector.addEventListener("blur", function (e) {
         fn(e);
       });
-
-    })
+    });
   }
 
   /**

@@ -284,7 +284,6 @@ label {
 }
 
 @layer components {
-
   /* Hide, but not for screenreaders */
   .visually-hidden,
   .visuallyhidden {
