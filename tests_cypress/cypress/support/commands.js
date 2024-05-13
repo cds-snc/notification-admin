@@ -30,7 +30,7 @@ import config from "../../config";
 let links_checked = [];
 let svgs_checked = [];
 
-Cypress.Commands.add('a11yScan', (url, options={ a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true }) => {
+Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true }) => {
     const current_hostname = config.Hostnames.Admin;
     // bypass rate limiting
     cy.intercept(`${current_hostname}/*`, (req) => {
@@ -114,8 +114,14 @@ Cypress.Commands.add('a11yScan', (url, options={ a11y: true, htmlValidate: true,
             });
         });
     }
- })
+});
 
- Cypress.Commands.add('getByTestId', (selector, ...args) => {
+Cypress.Commands.add('getByTestId', (selector, ...args) => {
     return cy.get(`[data-testid=${selector}]`, ...args)
+});
+
+Cypress.Commands.add('login', (username, password) => {
+    cy.session([username, password], () => {
+        LoginPage.Login(username, password);
+    });
 });
