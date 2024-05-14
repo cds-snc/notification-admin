@@ -1,5 +1,3 @@
-import { LoginPage } from "../../../Notify/Admin/Pages/AllPages";
-
 const REDIRECT_LOCATION = '/sign-in?timeout=true';
 const SESSION_TIMEOUT_MS = 7 * 60 * 60 * 1000 + 55 * 60 * 1000; // 7 hours 55 minutes
 const vistPageAndFastForwardTime = (page = '/') => {
@@ -20,7 +18,7 @@ describe('Sign out', () => {
 
   it('Redirects to session timeout page when logged in (multiple pages)', () => {
     ['/home', '/features'].forEach((page) => {
-      LoginPage.Login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
+      cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
       vistPageAndFastForwardTime(page);
 
       // asserts
