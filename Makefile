@@ -62,7 +62,7 @@ format:
 	flake8 ./app ./tests
 	isort --check-only ./app ./tests
 	mypy ./
-	npx prettier --write app/assets/javascripts app/assets/stylesheets
+	npx prettier --write app/assets/javascripts app/assets/stylesheets tests_cypress/cypress/e2e
 
 .PHONY: tailwind
 tailwind:
