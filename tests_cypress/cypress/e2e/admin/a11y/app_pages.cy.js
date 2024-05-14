@@ -1,8 +1,6 @@
 /// <reference types="cypress" />
 
 import config from "../../../../config";
-import { LoginPage } from "../../../Notify/Admin/Pages/all";
-
 
 const pages = [
     { name: "Landing page", route: "/accounts" },
@@ -34,7 +32,7 @@ const pages = [
 
 describe(`A11Y - App pages [${config.CONFIG_NAME}]`, () => {
     retryableBefore(() => {
-        LoginPage.Login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
+        cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
         cy.task('log', "Running against:" + Cypress.config('baseUrl'))
     });
 
