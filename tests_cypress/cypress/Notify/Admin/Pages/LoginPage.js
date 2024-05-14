@@ -17,7 +17,6 @@ let Actions = {
     },
     Login: (email, password) => {
         cy.clearCookie(ADMIN_COOKIE); // clear auth cookie
-        cy.then(Cypress.session.clearCurrentSessionData)
         cy.task('deleteAllEmails'); // purge email inbox to make getting the 2fa code easier
 
         // login with username and password

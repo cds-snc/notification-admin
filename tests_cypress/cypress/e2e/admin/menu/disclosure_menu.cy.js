@@ -1,5 +1,4 @@
 import MainMenu from "../../../Notify/Admin/Pages/MainMenu";
-import { LoginPage } from "../../../Notify/Admin/Pages/all";
 
 /* test that the main menu works on mobile. will need to set viewport to 414x896 */
 describe("Mobile menu", () => {
@@ -122,7 +121,9 @@ describe("Mobile menu", () => {
   });
 
   it("Re-focus on the menu button when the menu closes (signed in)", () => {
-    LoginPage.Login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+
+    cy.visit("/");
     MainMenu.OpenMenu();
     MainMenu.Components.Menu().should("be.visible"); // menu should be visible
 
