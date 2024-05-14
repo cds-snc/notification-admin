@@ -126,3 +126,7 @@ Cypress.Commands.add('login', (username, password) => {
         LoginPage.Login(username, password);
     });
 });
+
+Cypress.Commands.add('logout', (username, password) => {
+    cy.visit('/sign-out');
+});
