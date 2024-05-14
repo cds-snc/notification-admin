@@ -36,7 +36,7 @@
 
     $menu.attr("aria-expanded", false);
     $menu.isExpanded = false;
-    $menu.focus();
+    $menu.selectedMenuItem = 0;
 
     window.setTimeout(function () {
       $items.toggleClass("hidden", true);
@@ -72,13 +72,14 @@
 
     // We're using aria-expanded to determine the open/close state of the menu.
     // The menu object's state does not get updated in time to use $menu.isExpanded
-    // Open the menu if it's closed.
+    // Open the menu if it's closed
     if ($menu.attr("aria-expanded") === "false") {
       open($menu, $items);
     }
     // Hide the menu if it's open
     else if ($menu.attr("aria-expanded") === "true") {
       close($menu, $items);
+      $menu[0].focus();
     }
   }
 
@@ -141,6 +142,10 @@
           $menu.selectedMenuItem == menuItems.length - 1
             ? 0
             : Math.min(menuItems.length - 1, $menu.selectedMenuItem + 1);
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        close($menu, $items);
+        $menu.focus();
       }
     }
 
