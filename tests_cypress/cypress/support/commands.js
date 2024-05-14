@@ -1,4 +1,5 @@
 import config from "../../config";
+import LoginPage from "../Notify/Admin/Pages/LoginPage";
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -116,6 +117,12 @@ Cypress.Commands.add('a11yScan', (url, options={ a11y: true, htmlValidate: true,
     }
  })
 
- Cypress.Commands.add('getByTestId', (selector, ...args) => {
+Cypress.Commands.add('getByTestId', (selector, ...args) => {
     return cy.get(`[data-testid=${selector}]`, ...args)
+});
+
+Cypress.Commands.add('login', (username, password) => {
+    cy.session([username, password], () => {
+        LoginPage.Login(username, password);
+    });
 });
