@@ -11,8 +11,7 @@
 
 <div class="grid-row contain-floats">
   <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
-
-    {% if again %}
+    {% if again or timeout %}
       <h1 class="heading-large">{{ _('You need to sign in again') }}</h1>
       {% if other_device %}
         <p>
@@ -35,8 +34,10 @@
     {% call form_wrapper(autocomplete=True) %}
       {{ textbox(form.email_address, width='w-2/3', autocomplete='username') }}
       {{ textbox(form.password, width='w-2/3', autocomplete='current-password') }}
+      <p data-testid="session_timeout_info">{{ _('Your session ends after 8 hours of inactivity') }}</p>
       {{ page_footer(btn, secondary_link=url_for('.forgot_password'), secondary_link_text=forgot) }}
     {% endcall %}
+    
   </div>
 </div>
 

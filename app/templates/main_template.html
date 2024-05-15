@@ -169,6 +169,11 @@
 {% block page_script %}
 <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/main.min.js') }}"></script>
 <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>
+
+{% if current_user.is_authenticated %}
+  <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/sessionRedirect.min.js') }}"></script>
+{% endif %}
+
 {% endblock %}
 </body>
 </html>

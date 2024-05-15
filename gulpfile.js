@@ -48,6 +48,7 @@ const javascripts = () => {
     paths.src + "javascripts/autofocus.js",
     paths.src + "javascripts/highlightTags.js",
     paths.src + "javascripts/fileUpload.js",
+    paths.src + "javascripts/button.js",
     paths.src + "javascripts/updateContent.js",
     paths.src + "javascripts/listEntry.js",
     paths.src + "javascripts/liveSearch.js",
@@ -80,7 +81,8 @@ const javascripts = () => {
         paths.npm + "query-command-supported/dist/queryCommandSupported.min.js",
         //paths.npm + "diff-dom/diffDOM.js",
         paths.npm + "textarea-caret/index.js",
-        paths.npm + "accessible-autocomplete/dist/accessible-autocomplete.min.js",
+        paths.npm +
+          "accessible-autocomplete/dist/accessible-autocomplete.min.js",
       ])
     )
     .pipe(plugins.uglify())
@@ -90,6 +92,8 @@ const javascripts = () => {
         paths.src + "javascripts/main.min.js",
         paths.src + "javascripts/scheduler.min.js",
         paths.src + "javascripts/branding_request.min.js",
+        paths.src + "javascripts/formValidateRequired.min.js",
+        paths.src + "javascripts/sessionRedirect.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));

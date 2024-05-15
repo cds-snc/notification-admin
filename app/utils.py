@@ -545,6 +545,8 @@ def get_email_logo_options(service):
             "asset_domain": get_logo_cdn_domain(),
             "fip_banner_english": not service.default_branding_is_french,
             "fip_banner_french": service.default_branding_is_french,
+            "alt_text_en": None,
+            "alt_text_fr": None,
         }
 
     return {
@@ -553,6 +555,8 @@ def get_email_logo_options(service):
         "brand_logo": email_branding["logo"],
         "brand_text": email_branding["text"],
         "brand_name": email_branding["name"],
+        "alt_text_en": email_branding["alt_text_en"],
+        "alt_text_fr": email_branding["alt_text_fr"],
     }
 
 
