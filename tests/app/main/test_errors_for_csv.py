@@ -5,7 +5,7 @@ import pytest
 from app.utils import get_errors_for_csv
 
 MockRecipients = namedtuple(
-    "MockRecipients", ["rows_with_bad_recipients", "rows_with_missing_data", "rows_with_combined_variable_content_too_long"]
+    "MockRecipients", ["rows_with_bad_recipients", "rows_with_missing_data", "rows_with_combined_variable_content_too_long", "template_type"]
 )
 
 
@@ -39,7 +39,7 @@ def test_get_errors_for_csv(
     with app_.test_request_context():
         assert (
             get_errors_for_csv(
-                MockRecipients(rows_with_bad_recipients, rows_with_missing_data, rows_with_combined_variable_content_too_long),
+                MockRecipients(rows_with_bad_recipients, rows_with_missing_data, rows_with_combined_variable_content_too_long, template_type),
                 template_type,
             )
             == expected_errors
