@@ -1,4 +1,5 @@
 import config from "../../config";
+import LoginPage from "../Notify/Admin/Pages/LoginPage";
 
 // ***********************************************
 // This example commands.js shows you how to
