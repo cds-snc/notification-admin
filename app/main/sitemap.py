@@ -60,7 +60,7 @@ def get_sitemap():
             },
             {
                 "must_be_logged_in": True,
-                "title": _("You"),
+                "title": _("Your GC Notify"),
                 "pages": [
                     {"href": url_for("main.user_profile"), "link_text": _("Your account")},
                     {"href": url_for("main.choose_account"), "link_text": _("Your services")},
