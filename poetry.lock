@@ -14,7 +14,6 @@ files = [
 [[package]]
 name = "awscli"
 version = "1.32.100"
-
 description = "Universal Command Line Environment for AWS."
 optional = false
 python-versions = ">=3.8"
@@ -1444,7 +1443,7 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "notifications-utils"
-version = "52.2.3"
+version = "52.2.4"
 description = "Shared python code for Notification - Provides logging utils etc."
 optional = false
 python-versions = "~3.10.9"
@@ -1479,8 +1478,8 @@ werkzeug = "2.3.7"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "52.2.3"
-resolved_reference = "fc02dace174f93072345160787b2e603b74a984b"
+reference = "reinstate-bulk-sms-limit"
+resolved_reference = "ba95e06caee3ff6c41149db8ac18dc3e5631721f"
 
 [[package]]
 name = "openpyxl"
@@ -2477,4 +2476,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.9"
-content-hash = "114413e9203ca1f70dc181ebae278b2aafa3c31e0c153508df9120c46ce5a5d2"
+content-hash = "362ec1ff69632dfa714b7c41c262fdd4c3aa01fc45713b2322273c0c6e7bb4c3"
