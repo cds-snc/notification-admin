@@ -6,9 +6,23 @@ describe("Mobile menu", () => {
     cy.viewport(414, 896);
     cy.visit("/");
   });
-  before(() => {
-    cy.logout();
+
+  const a11yCheck = () => {
+    cy.injectAxe();
+    cy.checkA11y();
+    cy.get("header").htmlvalidate();
+  };
+
+  it('Is accessible and has valid HTML', () => {
+
+    // check menu when its closed
+    a11yCheck();
+
+    // check menu when its open
+    MainMenu.OpenMenu();
+    a11yCheck();
   });
+
   it("Open and close the menu using ESC and clicking", () => {
     MainMenu.OpenMenu();
 
