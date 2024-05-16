@@ -1,5 +1,5 @@
 <!-- Large screen menu dropdown -->
-<div class="md:visible md:flex grid-flow-row relative justify-end inline-block w-full text-left text-blue visited:text-blue
+<li class="md:visible md:flex grid-flow-row relative justify-end inline-block w-full text-left text-blue visited:text-blue
 link:text-blue no-underline text-small">
   <button
     aria-controls="account-menu-options"
@@ -8,7 +8,8 @@ link:text-blue no-underline text-small">
       border-transparent focus:outline-none focus:bg-yellow focus:border-blue hover:bg-gray-50 hover:underline"
     id="account-menu"
     data-module="menu"
-    data-menu-items="account-menu-options">
+    data-menu-items="account-menu-options"
+    type="button>
       {{ _('Your account') }}
       <img alt="" aria-hidden="true" class="account-menu-arrow ml-2 inline arrow self-center" src="{{ asset_url('images/arrow-licorice.svg') }}" width="15"/>
   </button>
@@ -39,5 +40,5 @@ link:text-blue no-underline text-small">
       </a>
     </li>
   </ul>
-</div>
+</li>
 <!-- Large screen dropdown END -->

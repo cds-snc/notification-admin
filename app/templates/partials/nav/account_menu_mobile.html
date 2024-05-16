@@ -6,11 +6,11 @@ link:text-blue no-underline text-small">
   <button
     aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
     aria-expanded="false"
-    role="button"
     id="account-icon-mobile"
     class="inline-flex p-1 h-14 border-2 border-solid border-gray rounded-lg"
     data-module="menu"
-    data-menu-items="account-menu-mobile">
+    data-menu-items="account-menu-mobile"
+    type="button">
       <img
         src="{{ asset_url('images/account-icon.svg') }}"
         alt=""
