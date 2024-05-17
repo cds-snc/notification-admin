@@ -41,7 +41,7 @@ WORKDIR ${APP_DIR}
 # Install Poetry and isolate it from the project
 RUN python -m venv ${POETRY_HOME}
 RUN ${POETRY_HOME}/bin/pip3 install --upgrade pip
-    && ${POETRY_HOME}/bin/pip3 install poetry==${POETRY_VERSION}
+RUN ${POETRY_HOME}/bin/pip3 install poetry==${POETRY_VERSION}
 
 COPY pyproject.toml poetry.lock ${APP_DIR}/
 
