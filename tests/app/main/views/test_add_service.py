@@ -129,15 +129,29 @@ def test_wizard_flow_with_step_2_should_correct_invalid_email_from(
 ):
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
-    page = client_request.post(
+    client_request.post(
         "main.add_service",
         _data={"name": "testing the post", "email_from": "[Health Canada! - Sante&&Canada]"},
         current_step="choose_service_name",
-        _expected_status=200,
+        _expected_status=302,
+        _expected_redirect=url_for(
+            "main.service_dashboard",
+            service_id=101,
+        ),
     )
 
-    # ensure email has spaces and special characters removed
-    assert page.find(id="email_from")["value"] == "health.canada-santecanada"
+    assert mock_create_service.called is True
+    mock_create_service.assert_called_once_with(
+        service_name="testing the post",
+        organisation_type="central",
+        message_limit=50,
+        sms_daily_limit=50,
+        restricted=True,
+        user_id="6ce466d0-fd6a-11e5-82f5-e0accb9d11a6",
+        email_from="health.canada-santecanada",
+        default_branding_is_french=False,
+        organisation_notes=None,
+    )
 
 
 # TODO: remove this test after the CRM integration is released
