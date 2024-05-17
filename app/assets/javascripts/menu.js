@@ -62,11 +62,7 @@
     openMenus.forEach((menu) => {
       close(
         $(menu),
-        $(
-          document.querySelectorAll(
-            `ul[id=${$(menu).attr("data-menu-items")}]`,
-          ),
-        ),
+        $(`ul[id=${$(menu).attr("data-menu-items")}]`),
       );
     });
 
@@ -178,8 +174,6 @@
   }
 
   Modules.Menu = function () {
-    this.isExpanded;
-    this.selectedMenuItem;
 
     this.start = function (component) {
       let $component = $(component);
