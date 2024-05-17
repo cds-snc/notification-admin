@@ -48,7 +48,7 @@ COPY pyproject.toml poetry.lock ${APP_DIR}/
 RUN python -m venv ${APP_VENV} \
     && . ${APP_VENV}/bin/activate \
     && poetry install \
-    && poetry add wheel awslambdaric
+    && poetry add setuptools wheel awslambdaric
 
 COPY package.json package-lock.json ${APP_DIR}/
 RUN npm ci
