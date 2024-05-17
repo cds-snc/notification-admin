@@ -226,9 +226,8 @@ def create_app(application):
     # via the MONKEYTYPE_TRACE_MODULES environment variable. e.g:
     # MONKEYTYPE_TRACE_MODULES="app.,notifications_utils."
     if application.config["NOTIFY_ENVIRONMENT"] == "development":
-        packages_prefix = ['app.','notifications_utils.']
+        packages_prefix = ["app.", "notifications_utils."]
         application.monkeytype_config = MonkeytypeConfig(packages_prefix)
-
 
 
 def init_app(application):
