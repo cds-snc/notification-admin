@@ -28,6 +28,7 @@
 		"yzhang.markdown-all-in-one",
 		"ms-ossdata.vscode-postgresql",
 		"bungcip.better-toml",
+		"charliermarsh.ruff",
 	],
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
