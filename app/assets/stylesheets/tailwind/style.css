@@ -41,6 +41,7 @@
 @import "./components/remaining-messages.css";
 @import "./components/empty-list.css";
 @import "./components/autocomplete.css";
+@import "./components/touDialog.css";
 
 /* views */
 @import "./views/dashboard.css";

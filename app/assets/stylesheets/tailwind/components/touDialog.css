@@ -1,0 +1,29 @@
+@layer components {
+  /*! purgecss start ignore */
+  ::backdrop {
+    background: linear-gradient(to right, #140f16, #372e38);
+    opacity: 0.85;
+    transition: 1s all;
+  }
+
+  #tou-dialog {
+    max-width: 750px;
+    margin: 150px auto auto auto;
+    border: 5px solid #c2c2c2;
+  }
+
+  #tou-dialog svg {
+    transition: 0.5s all;
+  }
+
+  #tou-dialog svg {
+    transition: opacity 0.5s;
+    opacity: 0;
+  }
+
+  #tou-dialog svg:not(.hidden) {
+    opacity: 1;
+  }
+
+  /*! purgecss end ignore */
+}
