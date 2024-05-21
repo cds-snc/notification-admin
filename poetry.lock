@@ -1478,8 +1478,8 @@ werkzeug = "2.3.7"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "reinstate-bulk-sms-limit"
-resolved_reference = "ba95e06caee3ff6c41149db8ac18dc3e5631721f"
+reference = "52.2.4"
+resolved_reference = "1e2c279333ee1b86671b82d8f562bb3e98446500"
 
 [[package]]
 name = "openpyxl"
@@ -2476,4 +2476,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.9"
-content-hash = "362ec1ff69632dfa714b7c41c262fdd4c3aa01fc45713b2322273c0c6e7bb4c3"
+content-hash = "ddc978fe2f5c973e21db582949903fa3ba76a5f05f1ef363e4d2c4e4353e4aa1"
