@@ -50,7 +50,7 @@
               'email_sends' in item and
               'sms_sends' in item )  %}
             <div class="hint">
-              {{ "{:,}".format(item.total_sends) }} {{ _('total sends') }} ({{ "{:,}".format(item.email_sends) }} {{ _('email') }}, {{ "{:,}".format(item.sms_sends) }} {{ _('sms') }})
+              {{ "{:,}".format(item.total_sends) }} {{ _('total sends in the last 7 days') }} ({{ "{:,}".format(item.email_sends) }} {{ _('email') }}, {{ "{:,}".format(item.sms_sends) }} {{ _('sms') }})
             </div>
           {% endif %}
           <div class="hint">
