@@ -9,6 +9,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    session,
     url_for,
 )
 from flask_babel import _
@@ -36,6 +37,8 @@ from app.main.forms import (
     FieldWithNoneOption,
     SearchByNameForm,
 )
+from app.main.views.authenticator import Authenticator
+from app.main.views.two_factor import redirect_when_logged_in
 from app.utils import (
     Spreadsheet,
     documentation_url,
@@ -280,6 +283,20 @@ def activity_download():
             ),
         },
     )
+
+
+@main.route("/agree-terms", methods=["POST"])
+def agree_terms():
+    session["terms_agreed"] = True
+    return redirect(url_for("main.login_events"))
+
+
+@main.route("/login_events")
+def login_events():
+    user_id = session["user_id"]
+
+    with Authenticator(user_id) as user:
+        return redirect_when_logged_in(user=user, platform_admin=user.platform_admin)
 
 
 # --- Internal Redirects --- #
