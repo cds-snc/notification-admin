@@ -31,6 +31,7 @@
           {% else %}
             {{ nav_link_dark(id_key='nav-footer-primary-doc', label=_('API documentation'), href=documentation_url(), is_external_link=True, class="-ml-2") }}
             {{ nav_link_dark(id_key='nav-footer-primary-guidance', label=_('Guidance'), href=gca_url_for('guidance'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-sitemap', label=_('Sitemap'), href=url_for('main.sitemap'), class="-ml-2") }}
             {{ nav_link_dark(id_key='nav-footer-primary-slo', label=_('Service level objectives'), href=gca_url_for('service-level-objectives'), class="-ml-2") }}
           {% endif %}
         </div>
