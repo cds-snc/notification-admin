@@ -13,8 +13,7 @@ describe("Mobile menu", () => {
     cy.get("header").htmlvalidate();
   };
 
-  it('Is accessible and has valid HTML', () => {
-
+  it("Is accessible and has valid HTML", () => {
     // check menu when its closed
     a11yCheck();
 

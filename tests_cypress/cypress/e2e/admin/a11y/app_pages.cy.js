@@ -91,4 +91,3 @@ describe(`A11Y - App pages [${config.CONFIG_NAME}]`, () => {
     });
   }
 });
-

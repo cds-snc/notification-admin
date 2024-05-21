@@ -60,10 +60,7 @@
         menu.getAttribute("aria-expanded") == "true" && menu !== $menu[0],
     );
     openMenus.forEach((menu) => {
-      close(
-        $(menu),
-        $(`ul[id=${$(menu).attr("data-menu-items")}]`),
-      );
+      close($(menu), $(`ul[id=${$(menu).attr("data-menu-items")}]`));
     });
 
     // We're using aria-expanded to determine the open/close state of the menu.
@@ -174,7 +171,6 @@
   }
 
   Modules.Menu = function () {
-
     this.start = function (component) {
       let $component = $(component);
       init($component);
