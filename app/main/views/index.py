@@ -313,7 +313,7 @@ def agree_terms():
     return redirect(url_for("main.login_events"))
 
 
-@main.route("/login_events")
+@main.route("/login-events")
 def login_events():
     user_id = session["user_id"]
 
