@@ -7,16 +7,17 @@
   }
 
   #tou-dialog {
-    max-width: 750px;
-    margin: 150px auto auto auto;
     border: 5px solid #c2c2c2;
-  }
+    margin-top: 10%;    
+  } 
 
+  @screen lg {
+    #tou-dialog {
+        height: 60%;
+    }
+   }
   #tou-dialog svg {
     transition: 0.5s all;
-  }
-
-  #tou-dialog svg {
     transition: opacity 0.5s;
     opacity: 0;
   }
@@ -24,6 +25,16 @@
   #tou-dialog svg:not(.hidden) {
     opacity: 1;
   }
+  #tou-terms { 
+    height: 70%;
+    background: #fdfdfd;
+    border: 1px solid #a1a1a1;
+  }
 
+  #tou-terms ul li:before {
+    content: '✓';
+    @apply text-green-300;
+    margin-right: 1rem;
+  }
   /*! purgecss end ignore */
 }
