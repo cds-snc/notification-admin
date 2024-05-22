@@ -37,11 +37,9 @@ from app.main.forms import (
     FieldWithNoneOption,
     SearchByNameForm,
 )
-
+from app.main.sitemap import get_sitemap
 from app.main.views.authenticator import Authenticator
 from app.main.views.two_factor import redirect_when_logged_in
-from app.main.sitemap import get_sitemap
-
 from app.utils import (
     Spreadsheet,
     documentation_url,
