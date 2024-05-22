@@ -13,7 +13,7 @@
 
   @screen lg {
     #tou-dialog {
-      height: 60%;
+      max-height: 60%;
     }
   }
   #tou-dialog svg {
@@ -26,7 +26,7 @@
     opacity: 1;
   }
   #tou-terms {
-    height: 70%;
+    max-height: 70%;
     background: #fdfdfd;
     border: 1px solid #a1a1a1;
   }
