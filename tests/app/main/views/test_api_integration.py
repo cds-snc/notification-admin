@@ -534,7 +534,7 @@ def test_callback_forms_validation(
     response = client_request.post(endpoint, service_id=service_one["id"], _data=data, _expected_status=200)
     error_msgs = " ".join(msg.text.strip() for msg in response.select(".error-message"))
 
-    assert expected_errors in error_msgs 
+    assert expected_errors in error_msgs
 
 
 @pytest.mark.parametrize("bearer_token", ["", "some-bearer-token"])
