@@ -1,3 +1,5 @@
+import "cypress-real-events";
+
 import config from "../../config";
 import LoginPage from "../Notify/Admin/Pages/LoginPage";
 
