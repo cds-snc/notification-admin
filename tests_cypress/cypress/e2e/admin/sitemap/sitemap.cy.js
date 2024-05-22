@@ -2,42 +2,48 @@
 
 import config from "../../../../config";
 let sitemaplinks = [];
-const path = '/sitemap';
-const sitemap_footer_id = 'nav-footer-sitemap';
+const path = "/sitemap";
+const sitemap_footer_id = "nav-footer-sitemap";
 
 describe(`Sitemap`, () => {
-  it('Has link text that corresponds to page titles', () => {
-    cy.then(Cypress.session.clearCurrentSessionData)
+  it("Has link text that corresponds to page titles", () => {
+    cy.then(Cypress.session.clearCurrentSessionData);
     cy.visit(path);
-    cy.get('main').within(() => {
-      cy.get('a').each((link) => {
+    cy.get("main").within(() => {
+      cy.get("a").each((link) => {
         sitemaplinks.push({
-          url: link.prop('href'),
-          text: link.text().trim()
+          url: link.prop("href"),
+          text: link.text().trim(),
         });
-        const link_url = link.prop('href');
+        const link_url = link.prop("href");
         const link_text = link.text().trim();
 
         cy.log(`Checking sitemap link: ${link_text}/${link_url}`);
-        if (link_url.includes(config.Hostnames.Admin) && !link_url.includes('/#')) {
+        if (
+          link_url.includes(config.Hostnames.Admin) &&
+          !link_url.includes("/#")
+        ) {
           cy.visit(link_url);
-          cy.get('h1').should('contain', `${link_text}`);
+          cy.get("h1").should("contain", `${link_text}`);
         }
-
       });
     });
   });
 
-  context('Has links ordered alphabetically in each category', () => {
-    ['en', 'fr'].forEach((lang) => {
-      it(lang === 'en' ? 'English' : 'French', () => {
+  context("Has links ordered alphabetically in each category", () => {
+    ["en", "fr"].forEach((lang) => {
+      it(lang === "en" ? "English" : "French", () => {
         cy.visit(`/sitemap?lang=${lang}`);
-        cy.get('main').within(() => {
-          cy.get('h2').each((category) => {
-            const category_links = category.next('ul').find('a');
-            const category_links_text = category_links.map((i, el) => Cypress.$(el).text().trim()).get();
+        cy.get("main").within(() => {
+          cy.get("h2").each((category) => {
+            const category_links = category.next("ul").find("a");
+            const category_links_text = category_links
+              .map((i, el) => Cypress.$(el).text().trim())
+              .get();
             const category_links_text_sorted = [...category_links_text].sort();
-            expect(category_links_text).to.deep.equal(category_links_text_sorted);
+            expect(category_links_text).to.deep.equal(
+              category_links_text_sorted,
+            );
           });
         });
       });
@@ -45,44 +51,43 @@ describe(`Sitemap`, () => {
 
     it("Does NOT display the 'You' group when logged out", () => {
       cy.visit(path);
-      cy.getByTestId('sitemap-group').should('not.have.text', 'You');
+      cy.getByTestId("sitemap-group").should("not.have.text", "You");
 
-      cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
+      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
     });
 
     it("Does display the 'You' group when logged in", () => {
-      cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
+      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
       cy.visit(path);
 
-      cy.getByTestId('sitemap-group').contains('You');
+      cy.getByTestId("sitemap-group").contains("You");
     });
   });
 
-  context('Footer', () => {
-    it('Has the sitemap link on app pages when logged out', () => {
-      cy.then(Cypress.session.clearCurrentSessionData)
-      cy.visit('/activity');
+  context("Footer", () => {
+    it("Has the sitemap link on app pages when logged out", () => {
+      cy.then(Cypress.session.clearCurrentSessionData);
+      cy.visit("/activity");
 
-      cy.get(`#${sitemap_footer_id}`).should('be.visible');
+      cy.get(`#${sitemap_footer_id}`).should("be.visible");
     });
-    it('Has the sitemap link on GCA pages when logged out', () => {
-      cy.then(Cypress.session.clearCurrentSessionData)
-      cy.visit('/features');
+    it("Has the sitemap link on GCA pages when logged out", () => {
+      cy.then(Cypress.session.clearCurrentSessionData);
+      cy.visit("/features");
 
-      cy.get(`#${sitemap_footer_id}`).should('be.visible');
+      cy.get(`#${sitemap_footer_id}`).should("be.visible");
     });
-    it('Has the sitemap link on app pages when logged in', () => {
-      cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
-      cy.visit('/activity');
+    it("Has the sitemap link on app pages when logged in", () => {
+      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+      cy.visit("/activity");
 
-      cy.get(`#${sitemap_footer_id}`).should('be.visible');
+      cy.get(`#${sitemap_footer_id}`).should("be.visible");
     });
-    it('Has the sitemap link on GCA pages when logged in', () => {
-      cy.login(Cypress.env('NOTIFY_USER'), Cypress.env('NOTIFY_PASSWORD'));
-      cy.visit('/features');
+    it("Has the sitemap link on GCA pages when logged in", () => {
+      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+      cy.visit("/features");
 
-      cy.get(`#${sitemap_footer_id}`).should('be.visible');
+      cy.get(`#${sitemap_footer_id}`).should("be.visible");
     });
-
   });
 });
