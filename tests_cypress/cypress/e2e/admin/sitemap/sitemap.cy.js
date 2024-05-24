@@ -75,7 +75,7 @@ describe(`Sitemap`, () => {
       cy.then(Cypress.session.clearCurrentSessionData);
       cy.visit("/features");
 
-      cy.get(`#${sitemap_footer_id}`).should("be.visible");
+      cy.get('a[href="/sitemap"]').should("be.visible");
     });
     it("Has the sitemap link on app pages when logged in", () => {
       cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
@@ -87,7 +87,7 @@ describe(`Sitemap`, () => {
       cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
       cy.visit("/features");
 
-      cy.get(`#${sitemap_footer_id}`).should("be.visible");
+      cy.get('a[href="/sitemap"]').should("be.visible");
     });
   });
 });
