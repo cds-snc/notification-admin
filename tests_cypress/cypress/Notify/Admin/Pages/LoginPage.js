@@ -1,3 +1,5 @@
+import TouDialog from './TouDialog';
+
 const { recurse } = require('cypress-recurse')
 const ADMIN_COOKIE = "notify_admin_session";
 
@@ -52,6 +54,8 @@ let Actions = {
     
         // ensure we logged in correctly
         cy.contains('h1', 'Know your responsibilities', { timeout: 10000 }).should('be.visible');
+        TouDialog.AgreeToTerms();
+        cy.url().should('include', '/login-events');
     }
 };
 
