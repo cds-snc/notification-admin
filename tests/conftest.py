@@ -3431,6 +3431,9 @@ def mock_send_notification(mocker, fake_uuid):
 @pytest.fixture(scope="function")
 def client(app_):
     with app_.test_request_context(), app_.test_client() as client:
+        with client.session_transaction() as session:
+            # agree to the tou by default so other tests dont need to deal with this
+            session["terms_agreed"] = True
         yield client
 
 
