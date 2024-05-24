@@ -16,15 +16,15 @@
 
 {% block content %}
   <div id="main_content" class="container px-gutterHalf contain-floats flex-grow">
-    <div class="grid-row contain-floats">
-      <main role="main" class="w-full float-left {% block main_content_class %}py-10{% endblock %} px-gutterHalf box-border column-main">
-        {% include 'partials/flash_messages.html' %}
-        {% block maincolumn_content %}{% endblock %}
-      </main>
-    </div>
+      <div class="grid-row contain-floats">
+        <main role="main" class="w-full float-left {% block main_content_class %}py-10{% endblock %} px-gutterHalf box-border column-main">
+          {% if show_tou_dialog() %}
+            {{ tou_dialog() }}    
+          {% else %}
+            {% include 'partials/flash_messages.html' %}
+            {% block maincolumn_content %}{% endblock %}
+          {% endif %}
+        </main>
+      </div>
   </div>
-
-  {% if current_user.is_authenticated and not session['terms_agreed'] and '/contact' not in request.url %}
-    {{ tou_dialog() }}    
-  {% endif %}
 {% endblock %}

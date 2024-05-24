@@ -52,6 +52,7 @@ from app.extensions import (
     statsd_client,
     zendesk_client,
 )
+from app.tou import show_tou_dialog
 from app.models.organisation import Organisation
 from app.models.service import Service
 from app.models.user import AnonymousUser, User
@@ -215,6 +216,7 @@ def create_app(application):
     # allow gca_url_for to be called from any template
     application.jinja_env.globals["gca_url_for"] = gca_url_for
     application.jinja_env.globals["current_service"] = current_service
+    application.jinja_env.globals["show_tou_dialog"] = show_tou_dialog
 
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:
