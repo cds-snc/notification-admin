@@ -11,7 +11,6 @@ module.exports = {
     branding_request: ["./app/assets/javascripts/branding_request.js"],
     formValidateRequired: ["./app/assets/javascripts/formValidateRequired.js"],
     sessionRedirect: ["./app/assets/javascripts/sessionRedirect.js"],
-    touDialog: ["./app/assets/javascripts/touDialog.js"],
     scheduler: {
       import: './app/assets/javascripts/scheduler/scheduler.js',
       library: {
