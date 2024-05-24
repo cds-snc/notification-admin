@@ -50,13 +50,7 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
 
     // 2. validate html
     if (options.htmlValidate) {
-        cy.get('main').htmlvalidate({
-            rules: {
-                "no-redundant-role": "off",
-                "no-dup-class": "off",
-                "require-sri": "off",
-            },
-        });
+        cy.get('main').htmlvalidate();
     }
 
     // 3. check for dead links
@@ -123,8 +117,8 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
     return cy.get(`[data-testid=${selector}]`, ...args)
 });
 
-Cypress.Commands.add('login', (username, password) => {
+Cypress.Commands.add('login', (username, password, agreeToTerms = true) => {
     cy.session([username, password], () => {
-        LoginPage.Login(username, password);
+        LoginPage.Login(username, password, agreeToTerms);
     });
 });

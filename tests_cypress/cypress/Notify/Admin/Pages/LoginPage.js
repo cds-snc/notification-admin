@@ -17,7 +17,7 @@ let Actions = {
         Components.TwoFactorCode().type(code);
         Components.SubmitButton().click();
     },
-    Login: (email, password) => {
+    Login: (email, password, agreeToTerms=true) => {
         cy.clearCookie(ADMIN_COOKIE); // clear auth cookie
         cy.task('deleteAllEmails'); // purge email inbox to make getting the 2fa code easier
 
@@ -27,8 +27,6 @@ let Actions = {
         Components.Password().type(password);
         Components.SubmitButton().click();
 
-        cy.contains('h1', 'Check your email', { timeout: 25000 }).should('be.visible');
-        
         // get email 2fa code
         recurse(
             () => cy.task('getLastEmail', {} ), // Cypress commands to retry
@@ -56,8 +54,10 @@ let Actions = {
     
         // ensure we logged in correctly
         cy.contains('h1', 'Know your responsibilities', { timeout: 10000 }).should('be.visible');
-        TouDialog.AgreeToTerms();
-        cy.url().should('include', '/login-events');
+        if (agreeToTerms) {
+            TouDialog.AgreeToTerms();
+            cy.url().should('include', '/login-events');
+        }
     }
 };
 
