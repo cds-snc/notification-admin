@@ -51,7 +51,7 @@ let Actions = {
         });
     
         // ensure we logged in correctly
-        cy.contains('h1', 'Sign-in history', { timeout: 10000 }).should('be.visible');
+        cy.contains('h1', 'Know your responsibilities', { timeout: 10000 }).should('be.visible');
     }
 };
 
