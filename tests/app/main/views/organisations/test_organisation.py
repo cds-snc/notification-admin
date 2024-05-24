@@ -4,7 +4,6 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
-
 from tests import organisation_json, service_json
 from tests.conftest import (
     ORGANISATION_ID,

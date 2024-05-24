@@ -24,7 +24,7 @@
 		"visualstudioexptteam.vscodeintellicode",
 		"yzhang.markdown-all-in-one",
 		"ms-ossdata.vscode-postgresql",
-		"bungcip.better-toml",
+		"tamasfe.even-better-toml",
 		"charliermarsh.ruff",
 	],
 	"features": {
