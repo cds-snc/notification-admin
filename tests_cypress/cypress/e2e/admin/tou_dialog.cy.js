@@ -2,7 +2,6 @@ import TouDialog from "../../Notify/Admin/Pages/TouDialog";
 
 describe("TOU Dialog", () => {
   it("should display the modal when logged in", () => {
-    Cypress.session.clearAllSavedSessions();
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
     cy.visit("/");
 
@@ -12,7 +11,7 @@ describe("TOU Dialog", () => {
   });
 
   it("should not display the modal after being dismissed", () => {
-    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
     cy.visit("/");
 
     TouDialog.Components.Dialog().should("be.visible");
@@ -46,7 +45,6 @@ describe("TOU Dialog", () => {
   });
 
   it("should display the modal again when navigating to the page before modal is dismissed", () => {
-    Cypress.session.clearAllSavedSessions();
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
     cy.visit("/");
     TouDialog.Components.Dialog().should("be.visible");
