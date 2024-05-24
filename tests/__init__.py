@@ -47,13 +47,15 @@ class MockRedis:
 
 
 class TestClient(FlaskClient):
-    def login(self, user, mocker=None, service=None):
+    def login(self, user, mocker=None, service=None, agree_to_terms=True):
         # Skipping authentication here and just log them in
         model_user = User(user)
         with self.session_transaction() as session:
             session["current_session_id"] = model_user.current_session_id
             session["user_id"] = model_user.id
-            session[TERMS_KEY] = True
+
+            if agree_to_terms:
+                session[TERMS_KEY] = True
         if mocker:
             mocker.patch("app.user_api_client.get_user", return_value=user)
         if mocker and service:
