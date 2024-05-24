@@ -3,6 +3,8 @@ from flask_login import current_user
 
 from app.articles.routing import GC_ARTICLES_ROUTES
 
+TERMS_KEY = "terms_agreed"
+
 
 def show_tou_dialog():
     """Determine whether or not the TOU dialog should be shown.
@@ -21,3 +23,7 @@ def show_tou_dialog():
         return True
 
     return False
+
+
+def accept_terms():
+    session[TERMS_KEY] = True

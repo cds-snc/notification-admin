@@ -13,6 +13,7 @@ from flask_login import login_user
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.user import User
+from app.tou import TERMS_KEY
 
 # Add itsdangerous to the libraries which freezegun ignores to avoid errors.
 # In tests where we freeze time, the code in the test function will get the frozen time but the
@@ -52,7 +53,7 @@ class TestClient(FlaskClient):
         with self.session_transaction() as session:
             session["current_session_id"] = model_user.current_session_id
             session["user_id"] = model_user.id
-            session["terms_agreed"] = True
+            session[TERMS_KEY] = True
         if mocker:
             mocker.patch("app.user_api_client.get_user", return_value=user)
         if mocker and service:

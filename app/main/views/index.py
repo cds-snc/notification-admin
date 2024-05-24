@@ -40,6 +40,7 @@ from app.main.forms import (
 from app.main.sitemap import get_sitemap
 from app.main.views.authenticator import Authenticator
 from app.main.views.two_factor import redirect_when_logged_in
+from app.tou import accept_terms
 from app.utils import (
     Spreadsheet,
     documentation_url,
@@ -309,7 +310,7 @@ def activity_download():
 
 @main.route("/agree-terms", methods=["POST"])
 def agree_terms():
-    session["terms_agreed"] = True
+    accept_terms()
     return redirect(url_for("main.login_events"))
 
 
