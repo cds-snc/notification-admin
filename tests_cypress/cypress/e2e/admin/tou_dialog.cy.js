@@ -3,7 +3,12 @@ import TouDialog from "../../Notify/Admin/Pages/TouDialog";
 describe("TOU Dialog", () => {
   it("Is accessible and has valid HTML", () => {
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
-    cy.a11yScan("/", { a11y: true, htmlValidate: true, deadLinks: false, mimeTypes: false });
+    cy.a11yScan("/", {
+      a11y: true,
+      htmlValidate: true,
+      deadLinks: false,
+      mimeTypes: false,
+    });
   });
 
   it("should display the modal when logged in", () => {
@@ -41,7 +46,7 @@ describe("TOU Dialog", () => {
     TouDialog.Components.Dialog().should("not.exist");
 
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
-    
+
     cy.visit("/features");
     TouDialog.Components.Dialog().should("not.exist");
 
@@ -57,6 +62,4 @@ describe("TOU Dialog", () => {
     cy.visit("/accounts");
     TouDialog.Components.Dialog().should("be.visible");
   });
-
-
 });

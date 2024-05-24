@@ -52,7 +52,6 @@ from app.extensions import (
     statsd_client,
     zendesk_client,
 )
-from app.tou import show_tou_dialog
 from app.models.organisation import Organisation
 from app.models.service import Service
 from app.models.user import AnonymousUser, User
@@ -85,6 +84,7 @@ from app.notify_client.template_statistics_api_client import template_statistics
 from app.notify_client.user_api_client import user_api_client
 from app.salesforce import salesforce_account
 from app.scanfiles.scanfiles_api_client import scanfiles_api_client
+from app.tou import show_tou_dialog
 from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
