@@ -84,7 +84,7 @@ from app.notify_client.template_statistics_api_client import template_statistics
 from app.notify_client.user_api_client import user_api_client
 from app.salesforce import salesforce_account
 from app.scanfiles.scanfiles_api_client import scanfiles_api_client
-from app.tou import show_tou_dialog
+from app.tou import show_tou_prompt
 from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
@@ -216,7 +216,7 @@ def create_app(application):
     # allow gca_url_for to be called from any template
     application.jinja_env.globals["gca_url_for"] = gca_url_for
     application.jinja_env.globals["current_service"] = current_service
-    application.jinja_env.globals["show_tou_dialog"] = show_tou_dialog
+    application.jinja_env.globals["show_tou_prompt"] = show_tou_prompt
 
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:

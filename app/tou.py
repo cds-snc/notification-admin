@@ -6,7 +6,7 @@ from app.articles.routing import GC_ARTICLES_ROUTES
 TERMS_KEY = "terms_agreed"
 
 
-def show_tou_dialog():
+def show_tou_prompt():
     """Determine whether or not the TOU dialog should be shown.
 
     The TOU dialog should be displayed if the user is authenticated, has not already agreed to the terms, and is not on the contact page or a GCA route.
