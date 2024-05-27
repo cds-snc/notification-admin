@@ -118,7 +118,7 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
 });
 
 Cypress.Commands.add('login', (username, password, agreeToTerms = true) => {
-    cy.session([username, password], () => {
+    cy.session([username, password, agreeToTerms], () => {
         LoginPage.Login(username, password, agreeToTerms);
     });
 });

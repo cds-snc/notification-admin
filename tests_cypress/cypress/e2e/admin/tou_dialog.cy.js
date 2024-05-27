@@ -35,7 +35,7 @@ describe("TOU Dialog", () => {
     cy.visit("/security");
     TouDialog.Components.Dialog().should("not.exist");
 
-    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
 
     cy.visit("/features");
     TouDialog.Components.Dialog().should("not.exist");

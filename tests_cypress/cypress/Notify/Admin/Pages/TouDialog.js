@@ -12,6 +12,7 @@ let Actions = {
     AgreeToTerms: () => {
         TouDialog.Components.Terms().scrollTo('bottom', { ensureScrollable: false });
         Components.DismissButton().click();
+        cy.url().should('include', '/login-events');
     },
 };
 

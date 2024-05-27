@@ -56,7 +56,6 @@ let Actions = {
         cy.contains('h1', 'Know your responsibilities', { timeout: 10000 }).should('be.visible');
         if (agreeToTerms) {
             TouDialog.AgreeToTerms();
-            cy.url().should('include', '/login-events');
         }
     }
 };
