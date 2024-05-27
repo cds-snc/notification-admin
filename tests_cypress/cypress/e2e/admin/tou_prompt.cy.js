@@ -1,55 +1,55 @@
-import TouDialog from "../../Notify/Admin/Pages/TouDialog";
+import TouPrompt from "../../Notify/Admin/Pages/TouPrompt";
 
-describe("TOU Dialog", () => {
+describe("TOU Prompt", () => {
   it("should display the modal when logged in", () => {
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
     cy.visit("/");
 
-    TouDialog.Components.Dialog().should("be.visible");
+    TouPrompt.Components.Prompt().should("be.visible");
     // ensure the heading element has the autofocus attribute
-    TouDialog.Components.Heading().should("have.attr", "autofocus");
+    TouPrompt.Components.Heading().should("have.attr", "autofocus");
   });
 
   it("should not display the modal after being dismissed", () => {
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
     cy.visit("/");
 
-    TouDialog.Components.Dialog().should("be.visible");
-    TouDialog.AgreeToTerms();
-    TouDialog.Components.Dialog().should("not.exist");
+    TouPrompt.Components.Prompt().should("be.visible");
+    TouPrompt.AgreeToTerms();
+    TouPrompt.Components.Prompt().should("not.exist");
 
     cy.visit("/activity");
-    TouDialog.Components.Dialog().should("not.exist");
+    TouPrompt.Components.Prompt().should("not.exist");
   });
 
   it("should not display the modal when not logged in", () => {
     cy.visit("/");
 
-    TouDialog.Components.Dialog().should("not.exist");
+    TouPrompt.Components.Prompt().should("not.exist");
   });
 
   it("should not be displayed on any GCA page when logged in or out", () => {
     cy.visit("/features");
-    TouDialog.Components.Dialog().should("not.exist");
+    TouPrompt.Components.Prompt().should("not.exist");
 
     cy.visit("/security");
-    TouDialog.Components.Dialog().should("not.exist");
+    TouPrompt.Components.Prompt().should("not.exist");
 
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
 
     cy.visit("/features");
-    TouDialog.Components.Dialog().should("not.exist");
+    TouPrompt.Components.Prompt().should("not.exist");
 
     cy.visit("/security");
-    TouDialog.Components.Dialog().should("not.exist");
+    TouPrompt.Components.Prompt().should("not.exist");
   });
 
   it("should display the modal again when navigating to the page before modal is dismissed", () => {
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
     cy.visit("/");
-    TouDialog.Components.Dialog().should("be.visible");
+    TouPrompt.Components.Prompt().should("be.visible");
 
     cy.visit("/accounts");
-    TouDialog.Components.Dialog().should("be.visible");
+    TouPrompt.Components.Prompt().should("be.visible");
   });
 });

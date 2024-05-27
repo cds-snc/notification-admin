@@ -1,7 +1,7 @@
 @layer components {
   /*! purgecss start ignore */
 
-  body:has(#tou-dialog) {
+  body:has(#tou-prompt) {
     background: #f9f9f9;
   }
 

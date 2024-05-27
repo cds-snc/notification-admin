@@ -7,9 +7,9 @@ TERMS_KEY = "terms_agreed"
 
 
 def show_tou_prompt():
-    """Determine whether or not the TOU dialog should be shown.
+    """Determine whether or not the TOU prompt should be shown.
 
-    The TOU dialog should be displayed if the user is authenticated, has not already agreed to the terms, and is not on the contact page or a GCA route.
+    The TOU prompt should be displayed if the user is authenticated, has not already agreed to the terms, and is not on the contact page or a GCA route.
     """
 
     is_gca_route = False

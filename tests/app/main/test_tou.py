@@ -4,7 +4,7 @@ from app.articles.routing import GC_ARTICLES_ROUTES
 from app.tou import show_tou_prompt
 
 
-class TestShowTouDialog:
+class TestShowTouPrompt:
 
     @pytest.fixture(autouse=True)
     def setUp(self, app_, api_user_active):

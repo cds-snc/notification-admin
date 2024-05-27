@@ -19,7 +19,7 @@
       <div class="grid-row contain-floats">
         <main role="main" class="w-full float-left {% block main_content_class %}py-10{% endblock %} px-gutterHalf box-border column-main">
           {% if show_tou_prompt() %}
-            {{ tou_dialog() }}    
+            {{ tou_prompt() }}    
           {% else %}
             {% include 'partials/flash_messages.html' %}
             {% block maincolumn_content %}{% endblock %}
