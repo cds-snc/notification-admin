@@ -4,16 +4,15 @@
     <div id="tou-terms" class="p-4" data-testid="tou-terms">
       <p>{{ _('By using GC Notify, you agree to accept our terms of use, including to:') }}</p>
       <ul class="ml-8 p-4">
-        <li>Accept conditions, including those in our Privacy notice</li>
-        <li>Accept sending limits</li>
-        <li>Accept risks when sending text messages</li>
-        <li>Manage and protect personal information of your recipients</li>
-        <li>Get consent before sending messages</li>
-        <li>Keep accurate contact information</li>
-        <li>Send information that’s unclassified or Protected A only</li>
-        <li>Practice continuous security</li>
+        <li>{{ _('Accept conditions, including those in our Privacy notice') }}</li>
+        <li>{{ _('Accept sending limits') }}</li>
+        <li>{{ _('Accept risks when sending text messages') }}</li>
+        <li>{{ _('Manage and protect personal information of your recipients') }}</li>
+        <li>{{ _('Get consent before sending messages') }}</li>
+        <li>{{ _('Keep accurate contact information') }}</li>
+        <li>{{ _('Send information that’s unclassified or Protected A only') }}</li>
+        <li>{{ _('Practice continuous security') }}</li>
       </ul>
-      
     </div>
     <form action="/agree-terms" method="post" class="mt-10">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
