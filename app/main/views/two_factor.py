@@ -8,6 +8,7 @@ from app.main import main
 from app.main.forms import TwoFactorForm
 from app.main.views.authenticator import Authenticator
 from app.models.user import User
+from app.tou import EVENTS_KEY
 from app.utils import is_safe_redirect_url, redirect_to_sign_in
 
 
@@ -86,6 +87,8 @@ def redirect_when_logged_in(user, platform_admin):
         def parse_ua(ua):
             user_agent = parse(ua)
             return str(user_agent)
+
+        session[EVENTS_KEY] = user.login_events
 
         return render_template(
             "views/login_events.html",

@@ -4,6 +4,7 @@ from flask_login import current_user
 from app.articles.routing import GC_ARTICLES_ROUTES
 
 TERMS_KEY = "terms_agreed"
+EVENTS_KEY = "login_events"
 
 
 def show_tou_prompt():
@@ -27,3 +28,4 @@ def show_tou_prompt():
 
 def accept_terms():
     session[TERMS_KEY] = True
+    session.pop(EVENTS_KEY, None)

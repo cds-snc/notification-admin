@@ -42,7 +42,6 @@
 @import "./components/empty-list.css";
 @import "./components/autocomplete.css";
 @import "./components/menu.css";
-@import "./components/tou-prompt.css";
 
 /* views */
 @import "./views/dashboard.css";

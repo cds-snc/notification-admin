@@ -1,17 +1,47 @@
+{% from "components/links.html" import content_link %}
+
 {% macro tou_prompt(title) %}
-  <div id="tou-prompt" class="rounded-2xl border-1 border-[#D1D5DB] bg-white p-10 my-10" data-testid="tou-prompt">
-    <h1 class="heading-large mt-0 mb-4 p-4" tabindex="0" data-testid="tou-heading" autofocus>{{ _('Know your responsibilities') }}</h1>
-    <div id="tou-terms" class="p-4" data-testid="tou-terms">
+
+  <h1 class="heading-large mt-0 mb-4" tabindex="0" data-testid="tou-heading" autofocus>{{ _('Before you continue') }}</h1>
+  <div id="tou-prompt" data-testid="tou-prompt" class="mt-16 mb-10">
+    <h2 class="heading-medium">{{ _('Review your activity') }}</h1>
+    <p>{{ _('Our records show that these are the last 3 times you signed into this account:') }}</p>
+    <table>
+      <tbody>
+        {% for event in session[events_key] %}
+          <tr>
+            <td>
+              <strong style="font-weight:bold">
+                <time class="relative-time-past">{{ event.created_at }}</time>
+              </strong>
+            </td>
+            <td class="format-ua">
+              {{ parse_ua(event.data["user-agent"]) }}
+            </td>
+          </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p>
+    {{ _('If this is not correct, ') }}<a href="{{ url_for('main.contact') }}" target="_blank">{{ _('contact us') }}</a>.
+    </p>
+  </div>
+  <div id="tou-prompt" data-testid="tou-prompt" class="mt-16">
+    <h2 class="heading-medium mt-0 mb-6" data-testid="tou-heading">{{ _('Know your responsibilities') }}</h2>
+    <div id="tou-terms" data-testid="tou-terms">
       <p>{{ _('By using GC Notify, you accept our terms of use. This includes your agreement to:') }}</p>
-      <ul class="ml-8 p-4">
-        <li>{{ _('Accept conditions, including those in our Privacy notice') }}</li>
-        <li>{{ _('Accept sending limits') }}</li>
-        <li>{{ _('Accept risks when sending text messages') }}</li>
-        <li>{{ _('Manage and protect personal information of your recipients') }}</li>
-        <li>{{ _('Get consent before sending messages') }}</li>
-        <li>{{ _('Keep accurate contact information') }}</li>
-        <li>{{ _('Send information that’s unclassified or Protected A only') }}</li>
-        <li>{{ _('Practice continuous security') }}</li>
+      <ul class="list list-bullet ml-5">
+        
+        <li><a href="">{{ content_link(_('Accept conditions, including those in our Privacy notice'), gca_url_for('terms') + '#h-accept-conditions-including-those-in-our-privacy-notice-nbsp', is_external_link=True) }}</a></li>
+        <li>{{ content_link(_('Accept sending limits'), gca_url_for('terms') + "#h-accept-sending-limits", is_external_link=True) }}</a></li>
+        <li>{{ content_link(_('Accept risks when sending text messages'), gca_url_for('terms') + "#h-accept-risks", is_external_link=True) }}</a></li>
+        <li>{{ content_link(_('Manage and protect personal information of your recipients'), gca_url_for('terms') + "#h-manage-and-protect-personal-information-of-your-recipients", is_external_link=True) }}</a></li>
+        <li>{{ content_link(_('Get consent before sending messages'), gca_url_for('terms') + "#h-get-consent-before-sending-messages", is_external_link=True) }}</a></li>
+        <li>{{ content_link(_('Keep accurate contact information'), gca_url_for('terms') + "#h-keep-accurate-contact-information", is_external_link=True) }}</a></li>
+        <li>{{ content_link(_('Send information that’s unclassified or Protected A only'), gca_url_for('terms') + "#h-send-information-that-s-unclassified-or-protected-a-only", is_external_link=True) }}</a></li>
+        <li>{{ content_link(_('Practice continuous security'), gca_url_for('terms') + "#h-practice-continuous-security", is_external_link=True) }}</a></li>
+
+
       </ul>
     </div>
     <form action="/agree-terms" method="post" class="mt-10">
@@ -21,19 +51,22 @@
         {{ _('Read and accept GC Notify\'s terms of use to continue.') }}
       </div>
       <div class="flex">
-        <div class="w-1/5">
-          <button
-            type="submit"
-            class="button text-base outline-none focus:shadow-outline"
-            name="button_pressed"
-            value="agree"
-            data-testid="tou-agree-button"
-            id="tou-accept"
-          >
-            {{ _('Agree') }}
-            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current checkmark text-white ml-3" width="24" height="24" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/></svg>
-          </button>
-        </div>
+        <button
+          type="submit"
+          class="button text-base outline-none focus:shadow-outline"
+          name="button_pressed"
+          value="agree"
+          data-testid="tou-agree-button"
+          id="tou-accept"
+        >
+          {{ _('Agree and continue') }}
+        </button>
+        <!-- link that looks like a button to sign out -->
+        <a
+          href="{{ url_for('main.sign_out') }}"
+          class="button button-secondary text-base ml-5"
+          data-testid="tou-sign-out-button"
+          id="tou-sign-out">Sign out</a>
       </div>
     </form>
   </div>

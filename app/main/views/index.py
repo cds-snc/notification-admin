@@ -46,6 +46,7 @@ from app.utils import (
     documentation_url,
     get_latest_stats,
     get_logo_cdn_domain,
+    is_safe_redirect_url,
     user_is_logged_in,
 )
 
@@ -311,15 +312,14 @@ def activity_download():
 @main.route("/agree-terms", methods=["POST"])
 def agree_terms():
     accept_terms()
-    return redirect(url_for("main.login_events"))
 
+    next_url = request.form["next"]
+    if next_url and is_safe_redirect_url(next_url):
+        url = next_url
+    else:
+        url = url_for("main.show_accounts_or_dashboard")
 
-@main.route("/login-events")
-def login_events():
-    user_id = session["user_id"]
-
-    with Authenticator(user_id) as user:
-        return redirect_when_logged_in(user=user, platform_admin=user.platform_admin)
+    return redirect(url)
 
 
 # --- Internal Redirects --- #
