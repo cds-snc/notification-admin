@@ -9,7 +9,6 @@ from flask import (
     redirect,
     render_template,
     request,
-    session,
     url_for,
 )
 from flask_babel import _
@@ -38,8 +37,6 @@ from app.main.forms import (
     SearchByNameForm,
 )
 from app.main.sitemap import get_sitemap
-from app.main.views.authenticator import Authenticator
-from app.main.views.two_factor import redirect_when_logged_in
 from app.tou import accept_terms
 from app.utils import (
     Spreadsheet,
