@@ -48,7 +48,7 @@
       
       {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description',  'tabindex' : '-1', 'data-error-msg': field.validators and field.validators[0].message}) }}
       
-      <span class="file-upload-button button">{{ button_text }}</span>
+      <span id="file-upload-button" class="file-upload-button button">{{ button_text }}</span>
     </label>
       
     <div class="file-upload-extra">
