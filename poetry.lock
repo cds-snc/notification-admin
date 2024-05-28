@@ -1509,7 +1509,7 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "notifications-utils"
-version = "52.2.3"
+version = "52.2.4"
 description = "Shared python code for Notification - Provides logging utils etc."
 optional = false
 python-versions = "~3.10.9"
@@ -1544,8 +1544,8 @@ werkzeug = "2.3.7"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "52.2.3"
-resolved_reference = "fc02dace174f93072345160787b2e603b74a984b"
+reference = "52.2.4"
+resolved_reference = "1e2c279333ee1b86671b82d8f562bb3e98446500"
 
 [[package]]
 name = "openpyxl"
