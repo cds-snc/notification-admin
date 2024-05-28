@@ -53,7 +53,7 @@ let Actions = {
         });
     
         // ensure we logged in correctly
-        cy.contains('h1', 'Know your responsibilities', { timeout: 10000 }).should('be.visible');
+        TouPrompt.Components.Heading().should('be.visible');
         if (agreeToTerms) {
             TouPrompt.AgreeToTerms();
         }
