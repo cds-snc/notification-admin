@@ -25,6 +25,8 @@ let Actions = {
         Components.Password().type(password);
         Components.SubmitButton().click();
 
+        cy.contains('h1', 'Check your email', { timeout: 25000 }).should('be.visible');
+        
         // get email 2fa code
         recurse(
             () => cy.task('getLastEmail', {} ), // Cypress commands to retry
