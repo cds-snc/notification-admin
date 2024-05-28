@@ -176,7 +176,7 @@ jobs:
         with:
           record: false
           config: "video=false,screenshotOnRunFailure=false"
-          browser: chrome
+          browser: chromium
           build: npx cypress info
           working-directory: tests_cypress
           spec: |
