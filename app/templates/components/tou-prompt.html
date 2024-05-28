@@ -29,27 +29,29 @@
   <div id="tou-prompt" data-testid="tou-prompt" class="mt-16">
     <h2 class="heading-medium mt-0 mb-6" data-testid="tou-heading">{{ _('Know your responsibilities') }}</h2>
     <div id="tou-terms" data-testid="tou-terms">
-      <p>{{ _('By using GC Notify, you accept our terms of use. This includes your agreement to:') }}</p>
+      <p>
+        {{ _('By using GC Notify, you accept our ') }}
+        {{ content_link(_("terms of use"), gca_url_for('terms'), is_external_link=true) }}.
+        {{ _('This includes your agreement to:') }}
+      </p>
       <ul class="list list-bullet ml-5">
-        
-        <li><a href="">{{ content_link(_('Accept conditions, including those in our Privacy notice'), gca_url_for('terms') + '#h-accept-conditions-including-those-in-our-privacy-notice-nbsp', is_external_link=True) }}</a></li>
-        <li>{{ content_link(_('Accept sending limits'), gca_url_for('terms') + "#h-accept-sending-limits", is_external_link=True) }}</a></li>
-        <li>{{ content_link(_('Accept risks when sending text messages'), gca_url_for('terms') + "#h-accept-risks", is_external_link=True) }}</a></li>
-        <li>{{ content_link(_('Manage and protect personal information of your recipients'), gca_url_for('terms') + "#h-manage-and-protect-personal-information-of-your-recipients", is_external_link=True) }}</a></li>
-        <li>{{ content_link(_('Get consent before sending messages'), gca_url_for('terms') + "#h-get-consent-before-sending-messages", is_external_link=True) }}</a></li>
-        <li>{{ content_link(_('Keep accurate contact information'), gca_url_for('terms') + "#h-keep-accurate-contact-information", is_external_link=True) }}</a></li>
-        <li>{{ content_link(_('Send information that’s unclassified or Protected A only'), gca_url_for('terms') + "#h-send-information-that-s-unclassified-or-protected-a-only", is_external_link=True) }}</a></li>
-        <li>{{ content_link(_('Practice continuous security'), gca_url_for('terms') + "#h-practice-continuous-security", is_external_link=True) }}</a></li>
-
-
+        <li>
+          {{ _('Accept conditions, including those in our ') }} 
+          {{ content_link(_('Privacy notice'), gca_url_for('privacy'), is_external_link=true ) }}
+        </li>
+        <li>{{ _('Accept sending limits') }}</li>
+        <li>{{ _('Accept risks when sending text messages') }}</li>
+        <li>{{ _('Manage and protect personal information of your recipients') }}</li>
+        <li>{{ _('Get consent before sending messages') }}</li>
+        <li>{{ _('Keep accurate contact information') }}</li>
+        <li>{{ _('Send information that’s unclassified or Protected A only') }}</li>
+        <li>{{ _('Practice continuous security') }}</li>
       </ul>
     </div>
     <form action="/agree-terms" method="post" class="mt-10">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <input type="hidden" name="next" value="{{ request.path }}" />
-      <div id="terms-error" class="error-message hidden mb-5" tabindex="0" data-testid="tou-error-message">
-        {{ _('Read and accept GC Notify\'s terms of use to continue.') }}
-      </div>
+
       <div class="flex">
         <button
           type="submit"
