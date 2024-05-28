@@ -38,7 +38,7 @@
                 <li class="ml-6">{{ _('Exactly 108 pixels tall') }}</li>
                 <li class="ml-6">{{ _('Maximum 600 pixels wide') }}</li>
               </ul>
-            {% call file_upload_field(form.file, accept="image/png") %}
+            {% call file_upload_field(form.file, accept="image/png", button_class="button-secondary") %}
 
             <div class="preview relative" data-testid="brand_fileinfo">
               <div class="relative">
