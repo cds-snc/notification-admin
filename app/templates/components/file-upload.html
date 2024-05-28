@@ -1,8 +1,7 @@
-{% set upload_txt = _('Choose file') %}
 {% macro file_upload(
   field,
   action=None,
-  button_text=upload_txt,
+  button_text=_('Choose file'),
   alternate_link=None,
   alternate_link_text=None,
   hint=None,
@@ -26,7 +25,7 @@
 {% macro file_upload_field(
   field,
   action=None,
-  button_text=upload_txt,
+  button_text=_('Choose file'),
   hint=None,
   accept=""
 ) %}
