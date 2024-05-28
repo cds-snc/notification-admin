@@ -58,7 +58,7 @@
       `<span id="${id}-error-message" data-testid="${id}-error" class="error-message" data-module="track-error" data-error-type="${error}" data-error-label="${id}">${error}</span>`;
     const field = document.getElementById(id);
     const value = field.value.trim();
-    const group = field.closest(".form-group");
+    const group = field.closest(".form-group, .file-upload-group");
     const error_text = field.dataset.errorMsg;
 
     if (!value) {

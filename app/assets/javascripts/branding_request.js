@@ -23,12 +23,13 @@
   const input_img = document.querySelector("input.file-upload-field");
   const alt_en = document.getElementById("alt_text_en");
   const alt_fr = document.getElementById("alt_text_fr");
-  const message = document.querySelector(".preview .message");
+  const message = document.querySelector("#file-description");
   const image_slot = document.querySelector(".preview .img");
   const preview_heading = document.querySelector("#preview_heading");
   const preview_container = document.querySelector(".template_preview");
 
   // init UI
+  input_img.style.opacity = 0;
   input_img.addEventListener("change", updateImageDisplay);
 
   // strings
@@ -41,13 +42,13 @@
    */
   function updateImageDisplay() {
     // remove the last image
-    // while (image_slot.firstChild) {
-    //   image_slot.removeChild(image_slot.firstChild);
-    // }
+    while (image_slot.firstChild) {
+      image_slot.removeChild(image_slot.firstChild);
+    }
 
     const curFiles = input_img.files;
     if (curFiles.length === 0) {
-      // message.textContent = "No files currently selected for upload";
+      message.textContent = "No files currently selected for upload";
       preview_container.classList.add("hidden");
     } else {
       for (const file of curFiles) {
@@ -59,11 +60,11 @@
           img.src = encodeURI(img_src);
           img.alt = `${alt_en.value} / ${alt_fr.value}`;
           img.onload = () => {
-            // message.textContent = `${file_name} ${
-            //   file.name
-            // }, ${file_size} ${returnFileSize(file.size)}, ${display_size} ${
-            //   img.naturalWidth
-            // } x ${img.naturalHeight}`;
+            message.textContent = `${file_name} ${
+              file.name
+            }, ${file_size} ${returnFileSize(file.size)}, ${display_size} ${
+              img.naturalWidth
+            } x ${img.naturalHeight}`;
             preview_container.classList.remove("hidden");
             preview_heading.focus();
           };

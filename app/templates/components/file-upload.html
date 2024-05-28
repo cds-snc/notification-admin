@@ -31,26 +31,30 @@
   accept=""
 ) %}
   <div class="file-upload-group {% if field.errors %}form-group-error{% endif %}">
-      <label class="file-upload-label relative" for="{{ field.name }}" tabIndex="0" role="link">
-        <span id="file-upload-label" class="block"> {{ field.label.text }} </span>
+    <label class="file-upload-label relative" for="{{ field.name }}" tabIndex="0" role="link">
+      <span id="file-upload-label" class="visually-hidden"> {{ field.label.text }} </span>
+      
       {% if hint %}
         <span class="form-hint">
           {{ hint }}
         </span>
       {% endif %}
+      
       {% if field.errors %}
         <span class="error-message">
           {{ field.errors[0] }}
         </span>
       {% endif %}
-      <span class="file-upload-button button my-4">{{ button_text }}</span>
-        
-        {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description',  'tabindex' : '-1'}) }}
-      </label>
       
-      <div class="file-upload-extra">
-        <span id="file-description">{{ _("No file currently selected") }}</span>
-        <!-- Cancel upload ? -->
-      </div>
+      {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description',  'tabindex' : '-1', 'data-error-msg': field.validators and field.validators[0].message}) }}
+      
+      <span class="file-upload-button button">{{ button_text }}</span>
+    </label>
+      
+    <div class="file-upload-extra">
+      <span id="file-description">{{ _("No file currently selected") }}</span>
+      {# Caller allows this component to render any type of extra information on file selection #}
+      {{ caller() if caller }}
     </div>
+  </div>
 {% endmacro %}
