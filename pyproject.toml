@@ -197,6 +197,7 @@ help = "Updates the Poetry lock file. Prevents automatic version bumps by defaul
 cmd = "poetry lock --no-update"
 use_exec = true
 
+
 [tool.poe.tasks.check-lock]
 help = "Checks if the Poetry lock file is in sync with dependencies specified in pyproject.toml."
 cmd = "poetry check --lock"
