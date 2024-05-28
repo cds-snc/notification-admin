@@ -6,7 +6,7 @@ const path = "/sitemap";
 const sitemap_footer_id = "nav-footer-sitemap";
 
 describe(`Sitemap`, () => {
-  it.skip('Has link text that corresponds to page titles', () => {
+  it('Has link text that corresponds to page titles', () => {
     cy.visit(path);
     cy.get("main").within(() => {
       cy.get("a").each((link) => {
