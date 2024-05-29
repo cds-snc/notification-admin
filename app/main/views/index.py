@@ -36,6 +36,7 @@ from app.main.forms import (
     FieldWithNoneOption,
     SearchByNameForm,
 )
+from app.main.sitemap import get_sitemap
 from app.utils import (
     Spreadsheet,
     documentation_url,
@@ -134,6 +135,8 @@ def email_template():
         fip_banner_french = False
         logo_with_background_colour = False
         brand_name = None
+        alt_text_en = "The canada wordmark is displayed at the bottom right."
+        alt_text_fr = "Le mot-symbole canada est affiché en bas à droite."
     elif branding_type == "fip_french":
         brand_text = None
         brand_colour = None
@@ -142,6 +145,8 @@ def email_template():
         fip_banner_french = True
         logo_with_background_colour = False
         brand_name = None
+        alt_text_en = "The canada wordmark is displayed at the bottom right."
+        alt_text_fr = "Le mot-symbole canada est affiché en bas à droite."
     else:
         colour = email_branding["colour"]
         brand_text = email_branding["text"]
@@ -151,6 +156,8 @@ def email_template():
         fip_banner_french = branding_type in ["fip_french", "both_french"]
         logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
         brand_name = email_branding["name"]
+        alt_text_en = email_branding["alt_text_en"]
+        alt_text_fr = email_branding["alt_text_fr"]
 
     template = {
         "subject": "foo",
@@ -176,6 +183,8 @@ def email_template():
                         brand_logo=brand_logo,
                         logo_with_background_colour=logo_with_background_colour,
                         brand_name=brand_name,
+                        alt_text_en=alt_text_en,
+                        alt_text_fr=alt_text_fr,
                     )
                 ),
             )
@@ -247,6 +256,27 @@ def features_letters():
 @main.route("/welcome", endpoint="welcome")
 def welcome():
     return render_template("views/welcome.html", default_limit=current_app.config["DEFAULT_SERVICE_LIMIT"])
+
+
+# TODO: refactor this out into a decorator
+@main.route("/plandesite", endpoint="plandesite", methods=["GET"])
+@main.route("/sitemap", methods=["GET"])
+def sitemap():
+    requested_lang = "en" if request.endpoint == "main.sitemap" else "fr"
+    current_lang = get_current_locale(current_app)
+
+    # if the language is changing
+    if requested_lang != current_lang:
+        # if the user typed in the url:
+        if request.referrer is None:
+            route = "/plandesite" if requested_lang == "fr" else "/sitemap"
+            return redirect(url_for(**{"endpoint": "main.set_lang", "from": route}))
+        # if the user clicked the lang button:
+        else:
+            route = "main.sitemap" if requested_lang == "fr" else "main.plandesite"
+            return redirect(url_for(route))
+
+    return render_template("views/sitemap.html", sitemap=get_sitemap())
 
 
 @main.route("/activity", endpoint="activity")

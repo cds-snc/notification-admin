@@ -25,6 +25,8 @@ let Actions = {
         Components.Password().type(password);
         Components.SubmitButton().click();
 
+        cy.contains('h1', 'Check your email', { timeout: 25000 }).should('be.visible');
+        
         // get email 2fa code
         recurse(
             () => cy.task('getLastEmail', {} ), // Cypress commands to retry
@@ -43,7 +45,7 @@ let Actions = {
 
         // ensure code is received and enter it
         cy.get('blockquote').should('be.visible');
-        cy.get('blockquote p strong').invoke('text').as('MFACode');
+        cy.get('blockquote p').invoke('text').as('MFACode');
         cy.get('@MFACode').then((text) => {
             let code = text;
             cy.visit('/two-factor-email-sent');
@@ -51,7 +53,7 @@ let Actions = {
         });
     
         // ensure we logged in correctly
-        cy.contains('h1', 'Sign-in history').should('be.visible');
+        cy.contains('h1', 'Sign-in history', { timeout: 10000 }).should('be.visible');
     }
 };
 

@@ -11,6 +11,9 @@ module.exports = defineConfig({
       htmlvalidate.install(on, {
         rules: {
           "form-dup-name": "off",
+          "prefer-native-element": ["error", {
+            "exclude": ["button"]
+          }],
         },
       });
 
@@ -46,7 +49,7 @@ module.exports = defineConfig({
     blockHosts: ['*google-analytics.com', 'stats.g.doubleclick.net', 'bam.nr-data.net', '*newrelic.com'],
     viewportWidth: 1280,
     viewportHeight: 850,
-    testIsolation: false,
+    testIsolation: true,
     retries: 3
   },
 });

@@ -8,7 +8,6 @@
   a.button:active {
     padding: 0.55em 1em 0.45em;
     box-shadow: 0 2px 0 theme("colors.blue.border");
-    cursor: pointer;
     @apply no-underline inline-flex items-center text-white text-smaller leading-tight align-top bg-blue min-h-target;
   }
   .button.shadow-none,
@@ -86,6 +85,11 @@
     @apply opacity-50 cursor-default;
   }
 
+  a.button:not(.button-link) {
+    user-select: none;
+    cursor: default;
+  }
+
   .button-link,
   a.button-link,
   a.button-link:visited,
@@ -101,5 +105,6 @@
   a.button-link:focus {
     @apply bg-yellow text-blue outline-none border-white no-underline;
   }
+
   /*! purgecss end ignore */
 }

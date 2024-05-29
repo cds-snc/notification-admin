@@ -1,9 +1,11 @@
 from io import BytesIO
-from unittest.mock import call
+from unittest import mock
+from unittest.mock import call, patch
 
 import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
+from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
 from app.main.views.email_branding import get_preview_template
@@ -53,6 +55,8 @@ def test_edit_email_branding_shows_the_correct_branding_info(
     assert page.select_one("#name").attrs.get("value") == "Organisation name"
     assert page.select_one("#text").attrs.get("value") == "Organisation text"
     assert page.select_one("#colour").attrs.get("value") == "#f00"
+    assert page.select_one("#alt_text_en").attrs.get("value") == "Alt text english"
+    assert page.select_one("#alt_text_fr").attrs.get("value") == "Alt text french"
 
 
 def test_create_email_branding_does_not_show_any_branding_info(
@@ -82,6 +86,8 @@ def test_create_new_email_branding_without_logo(
         "text": "new text",
         "name": "new name",
         "brand_type": "custom_logo",
+        "alt_text_en": "Alt text english",
+        "alt_text_fr": "Alt text french",
     }
 
     mock_persist = mocker.patch("app.main.views.email_branding.persist_logo")
@@ -97,6 +103,8 @@ def test_create_new_email_branding_without_logo(
         colour=data["colour"],
         brand_type=data["brand_type"],
         organisation_id=None,
+        alt_text_en=data["alt_text_en"],
+        alt_text_fr=data["alt_text_fr"],
     )
     assert mock_persist.call_args_list == []
 
@@ -160,6 +168,8 @@ def test_create_new_email_branding_when_branding_saved(
         "text": "new text",
         "name": "new name",
         "brand_type": "custom_logo_with_background_colour",
+        "alt_text_en": "Alt text english",
+        "alt_text_fr": "Alt text french",
     }
 
     temp_filename = EMAIL_LOGO_LOCATION_STRUCTURE.format(
@@ -181,6 +191,8 @@ def test_create_new_email_branding_when_branding_saved(
             "cdn_url": get_logo_cdn_domain(),
             "brand_type": data["brand_type"],
             "organisation": "-1",
+            "alt_text_en": data["alt_text_en"],
+            "alt_text_fr": data["alt_text_fr"],
         },
     )
 
@@ -194,6 +206,8 @@ def test_create_new_email_branding_when_branding_saved(
         colour=data["colour"],
         brand_type=data["brand_type"],
         organisation_id=None,
+        alt_text_en=data["alt_text_en"],
+        alt_text_fr=data["alt_text_fr"],
     )
 
 
@@ -242,7 +256,6 @@ def test_update_existing_branding(
     platform_admin_client,
     mocker,
     fake_uuid,
-    mock_get_email_branding,
     mock_update_email_branding,
     mock_get_organisations,
 ):
@@ -254,42 +267,64 @@ def test_update_existing_branding(
         "colour": "#0000ff",
         "text": "new text",
         "name": "new name",
+        "organisation_id": None,
         "brand_type": "both_english",
+        "alt_text_en": "Alt text english",
+        "alt_text_fr": "Alt text french yolo",
     }
 
-    temp_filename = EMAIL_LOGO_LOCATION_STRUCTURE.format(
-        temp=TEMP_TAG.format(user_id=user_id),
-        unique_id=fake_uuid,
-        filename=data["logo"],
-    )
+    with mock.patch("app.main.views.email_branding.email_branding_client.get_email_branding") as mock_get_email_branding:
+        mock_get_email_branding.return_value = {
+            "email_branding": {
+                "logo": "example.png",
+                "name": "Organisation name",
+                "text": "Organisation text",
+                "id": fake_uuid,
+                "colour": "#f00",
+                "brand_type": "custom_logo",
+                "organisation_id": "",  # Test that we can set alt text when no org is set
+                "alt_text_en": "Alt text english",
+                "alt_text_fr": "Alt text french",
+            }
+        }
 
-    mocker.patch("app.main.views.email_branding.persist_logo")
-    mocker.patch("app.main.views.email_branding.delete_email_temp_files_created_by")
+        temp_filename = EMAIL_LOGO_LOCATION_STRUCTURE.format(
+            temp=TEMP_TAG.format(user_id=user_id),
+            unique_id=fake_uuid,
+            filename=data["logo"],
+        )
 
-    platform_admin_client.post(
-        url_for(".update_email_branding", logo=temp_filename, branding_id=fake_uuid),
-        content_type="multipart/form-data",
-        data={
-            "colour": data["colour"],
-            "name": data["name"],
-            "text": data["text"],
-            "cdn_url": get_logo_cdn_domain(),
-            "brand_type": data["brand_type"],
-        },
-    )
+        mocker.patch("app.main.views.email_branding.persist_logo")
+        mocker.patch("app.main.views.email_branding.delete_email_temp_files_created_by")
 
-    updated_logo_name = "{}-{}".format(fake_uuid, data["logo"])
+        platform_admin_client.post(
+            url_for(".update_email_branding", logo=temp_filename, branding_id=fake_uuid),
+            content_type="multipart/form-data",
+            data={
+                "colour": data["colour"],
+                "name": data["name"],
+                "text": data["text"],
+                "cdn_url": get_logo_cdn_domain(),
+                "brand_type": data["brand_type"],
+                "alt_text_en": data["alt_text_en"],
+                "alt_text_fr": data["alt_text_fr"],
+            },
+        )
 
-    assert mock_update_email_branding.called
-    assert mock_update_email_branding.call_args == call(
-        branding_id=fake_uuid,
-        logo=updated_logo_name,
-        name=data["name"],
-        text=data["text"],
-        colour=data["colour"],
-        brand_type=data["brand_type"],
-        organisation_id="-1",
-    )
+        updated_logo_name = "{}-{}".format(fake_uuid, data["logo"])
+
+        assert mock_update_email_branding.called
+        assert mock_update_email_branding.call_args == call(
+            branding_id=fake_uuid,
+            logo=updated_logo_name,
+            name=data["name"],
+            text=data["text"],
+            colour=data["colour"],
+            brand_type=data["brand_type"],
+            organisation_id=data["organisation_id"],
+            alt_text_en=data["alt_text_en"],
+            alt_text_fr=data["alt_text_fr"],
+        )
 
 
 def test_temp_logo_is_shown_after_uploading_logo(
@@ -409,6 +444,8 @@ def test_create_new_branding_with_no_org_works(
         "text": "new text",
         "name": "new name",
         "brand_type": "custom_logo",
+        "alt_text_en": "Alt text english",
+        "alt_text_fr": "Alt text french",
     }
 
     mocker.patch("app.main.views.email_branding.persist_logo")
@@ -428,6 +465,8 @@ def test_create_new_branding_with_no_org_works(
         colour=data["colour"],
         brand_type=data["brand_type"],
         organisation_id=None,
+        alt_text_en=data["alt_text_en"],
+        alt_text_fr=data["alt_text_fr"],
     )
 
 
@@ -441,6 +480,8 @@ def test_create_new_branding_with_org_works(
         "name": "new name",
         "brand_type": "custom_logo",
         "organisation": "7aa5d4e9-4385-4488-a489-07812ba13383",
+        "alt_text_en": "Alt text en",
+        "alt_text_fr": "Alt text fr",
     }
 
     mocker.patch("app.main.views.email_branding.persist_logo")
@@ -460,6 +501,8 @@ def test_create_new_branding_with_org_works(
         colour=data["colour"],
         brand_type=data["brand_type"],
         organisation_id=data["organisation"],
+        alt_text_en=data["alt_text_en"],
+        alt_text_fr=data["alt_text_fr"],
     )
 
 
@@ -577,6 +620,8 @@ class TestBranding:
             "text": "Example Text",
             "logo": "example.png",
             "name": "Example Brand",
+            "alt_text_en": "alt_text_en",
+            "alt_text_fr": "alt_text_fr",
         }
 
         class MockService:
@@ -612,12 +657,15 @@ class TestBranding:
             assert "The canada wordmark is displayed at the bottom right" in html_template
 
     def test_get_preview_template_with_email_branding_and_custom_brand_logo(self, mocker, app_):
+
         email_branding = {
             "brand_type": "both_english",
             "colour": "#ff0000",
             "text": "Example Text",
             "logo": "example.png",
             "name": "Example Brand",
+            "alt_text_en": "alt_text_en",
+            "alt_text_fr": "alt_text_fr",
         }
 
         class MockService:
@@ -633,3 +681,44 @@ class TestBranding:
             html_template = get_preview_template(None)
             assert "There’s a custom logo at the top left and no logo at the bottom." in html_template
             assert "The canada wordmark is displayed at the bottom right" not in html_template
+
+    def test_create_branding_request(self, mocker, platform_admin_client):
+        class MockOrg:
+            name = "Test org"
+
+        class MockService:
+            email_branding_id = None
+            default_branding_is_french = False
+            id = "1234"
+            name = "Awesome"
+            organisation_id = "1234"
+            organisation = MockOrg
+
+        mocker.patch("app.main.views.email_branding.upload_email_logo", return_value="temp_filename")
+        mocker.patch("app.main.views.email_branding.current_service", new=MockService)
+
+        data = {
+            "name": "test-logo",
+            "file": (BytesIO("".encode("utf-8")), "test.png"),
+            "alt_text_en": "ALT_EN",
+            "alt_text_fr": "ALT_FR",
+        }
+
+        with patch.object(current_user, "send_branding_request", return_value="") as mock_create_branding_request:
+
+            platform_admin_client.post(
+                url_for(".create_branding_request", service_id="1234"),
+                data=data,
+            )
+
+            assert mock_create_branding_request.called
+            assert mock_create_branding_request.call_args == call(
+                MockService.id,
+                MockService.name,
+                MockService.organisation_id,
+                MockService.organisation.name,
+                "temp_filename",
+                data["alt_text_en"],
+                data["alt_text_fr"],
+                data["name"],
+            )
