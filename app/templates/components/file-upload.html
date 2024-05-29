@@ -10,7 +10,7 @@
 ) %}
   <form method="post" enctype="multipart/form-data" {% if action %}action="{{ action }}"{% endif %} data-module="file-upload">
     
-    {{ file_upload_field(field, action, button_text, hint, accept) }}
+    {{ file_upload_field(field=field, action=action, button_text=button_text, hint=hint, accept=accept) }}
 
     {% if alternate_link and alternate_link_text %}
       <span class="file-upload-alternate-link">
@@ -24,6 +24,7 @@
 
 {% macro file_upload_field(
   field,
+  field_testid="test_" + field.name,
   action=None,
   button_text=_('Choose file'),
   button_class="",
@@ -31,7 +32,6 @@
   accept=""
 ) %}
   <div class="file-upload-group {% if field.errors %}form-group-error{% endif %}">
-    <label class="file-upload-label relative" for="{{ field.name }}" tabIndex="0" role="link">
       <span id="file-upload-label" class="visually-hidden"> {{ field.label.text }} </span>
       
       {% if hint %}
@@ -45,10 +45,12 @@
           {{ field.errors[0] }}
         </span>
       {% endif %}
+    <label class="file-upload-label relative" for="{{ field.name }}" role="link">
       
-      {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description',  'tabindex' : '-1', 'data-error-msg': field.validators and field.validators[0].message}) }}
+      {{ field(**{ 'class': 'file-upload-field absolute', 'accept': accept, 'aria-describedby': 'file-description', 'data-error-msg': field.validators and field.validators[0].message, 'data-testid': field_testid}) }}
       
       <span id="file-upload-button" class="file-upload-button button {{ button_class }}">{{ button_text }}</span>
+      
     </label>
       
     <div class="file-upload-extra pt-gutterHalf">

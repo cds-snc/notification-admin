@@ -23,7 +23,7 @@
     @apply absolute opacity-0;
   }
 
-  .js-enabled .file-upload-label:focus {
+  .js-enabled .file-upload-label:focus-within {
     @apply outline-yellow;
   }
 
