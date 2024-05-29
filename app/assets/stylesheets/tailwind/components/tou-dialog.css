@@ -1,0 +1,34 @@
+@layer components {
+    /*! purgecss start ignore */
+
+    #tou-dialog:not([open]) {
+      display: none;
+    }
+    
+    ::backdrop {
+      background: linear-gradient(to right, #140f16, #372e38);
+      opacity: 0.85;
+      transition: 1s all;
+    }
+    
+    #tou-dialog {
+      margin: 0;
+      max-height: 100%;
+
+      @screen lg {
+        margin: auto;
+        margin-top: 5%;
+        max-height: 80%;
+      }
+
+    }
+    
+    #tou-terms {
+      @apply bg-white border border-gray-200;
+      background-color: #f7f7f7;
+      max-height: 70%;
+    }
+
+    /*! purgecss end ignore */
+  }
+  
