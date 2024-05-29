@@ -21,6 +21,7 @@ from app.notify_client.api_key_api_client import (
     KEY_TYPE_TEST,
 )
 from app.utils import documentation_url, email_safe, user_has_permissions
+import validators
 
 dummy_bearer_token = "bearer_token_set"
 

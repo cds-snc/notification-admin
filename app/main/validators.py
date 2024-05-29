@@ -2,6 +2,8 @@ import re
 import time
 
 import pwnedpasswords
+import requests
+import validators
 from flask import current_app
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
@@ -11,7 +13,7 @@ from notifications_utils.sanitise_text import SanitiseSMS
 from wtforms import ValidationError
 from wtforms.validators import Email
 
-from app import formatted_list, service_api_client
+from app import current_service, formatted_list, service_api_client
 from app.main._blocked_passwords import blocked_passwords
 from app.utils import Spreadsheet, email_safe, email_safe_name, is_gov_user
 
@@ -139,6 +141,42 @@ class DoesNotStartWithDoubleZero:
     def __call__(self, form, field):
         if field.data and field.data.startswith("00"):
             raise ValidationError(self.message)
+
+
+class ValidCallbackUrl:
+    def __init__(self, message="Enter a valid URL"):
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data:
+            validate_callback_url(field.data, form.bearer_token.data)
+
+
+def validate_callback_url(service_callback_url, bearer_token):
+    if not validators.url(service_callback_url):
+        current_app.logger.warning(f"Invalid callback URL for service: {current_service.id}")
+        raise ValidationError(_l("URL is invalid"))
+
+    try:
+        response = requests.post(
+            url=service_callback_url,
+            allow_redirects=True,
+            data={"health_check": "true"},
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {bearer_token}"},
+            timeout=5,
+        )
+        if not response.status_code == 200:
+            current_app.logger.warning(
+                f"Callback URL for service: {current_service.id} was reachable but returned status code {response.status_code}."
+            )
+            raise ValidationError(_l(f"Callback endpoint response was unsuccessful: {response.status_code}"))
+    except requests.RequestException as e:
+        current_app.logger.warning(f"Callback URL not reachable for service: {current_service.id}. Exception: {e}")
+        raise ValidationError(
+            _l(
+                f"We were unable to reach {service_callback_url}. Please verify the service is running and can be reached and try again."
+            )
+        )
 
 
 def validate_email_from(form, field):

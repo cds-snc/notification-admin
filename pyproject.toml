@@ -64,6 +64,7 @@ xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; 
 itsdangerous = "2.1.2"  # pyup: <1.0.0
 newrelic = "8.10.0" # Pinned to 8.10.0 for now, 8.11.0 caused a performance regression: https://gcdigital.slack.com/archives/C012W5K734Y/p1709668046344929
 
+validators = "^0.28.3"
 [tool.poetry.group.test.dependencies]
 isort = "5.13.2"
 pytest = "7.4.4"
