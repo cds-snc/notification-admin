@@ -25,9 +25,9 @@
         <input class="visually-hidden" aria-hidden="true" tabindex="-1" id="defeat-chrome-autocomplete">
         {% set txt = _('Must be at least 8 characters and hard to guess') %}
         {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
-        <p>
-          {{ _("By creating an account, you agree to the ") }} {{ tou_dialog_trigger(_('terms of use')) }} {{ _('of') }} {{ _('GC Notify') }}
-        </p>
+
+        {{ tou_dialog_trigger(_('Review and agree to the terms of use')) }}
+
         {{form.auth_type}}
         {% set txt = _('Continue') %} 
         {{ page_footer(txt) }}

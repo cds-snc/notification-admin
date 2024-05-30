@@ -13,6 +13,7 @@
   const trigger = document.getElementById("tou-dialog-trigger");
   const form_agree = document.querySelector("input[name='tou_agreed']");
   const close_button = document.getElementById("tou-close");
+  const status = document.getElementById("tou-status");
 
   // Close the dialog when the user clicks outside of it
   // dialog.addEventListener('mousedown', function(event) {
@@ -39,6 +40,7 @@
   // Add agree button click listener that closes the modal and sets the form_agree value to true
   accept.addEventListener("click", function (e) {
     form_agree.value = "true";
+    status.querySelector("i").classList.remove('fa-x').add('fa-check');
     closeModal();
   });
 

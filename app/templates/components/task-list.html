@@ -1,6 +1,12 @@
 {% macro task_list_item(status, label, link) %}
   <li class="task-list-item">
-    <span aria-describedby="{{ label|id_safe }}"><a href="{{ link }}">{{ label }}</a></span>
+    <span aria-describedby="{{ label|id_safe }}">
+      {% if link %}
+        <a href="{{ link }}">{{ label }}</a>
+      {% else %}
+        {{ label }}
+      {% endif %}
+    </span>
     {% if status == "in-progress" %}
       <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}">
         {{ _('In progress') }}

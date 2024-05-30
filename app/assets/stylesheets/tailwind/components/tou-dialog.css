@@ -22,6 +22,12 @@
     }
   }
 
+  #tou-heading {
+    max-width: 85%;
+    @screen md {
+      max-width: 100%;
+    }
+  }
   #tou-terms {
     @apply bg-white border border-gray-200;
     background-color: #f7f7f7;

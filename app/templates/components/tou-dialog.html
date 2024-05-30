@@ -1,11 +1,10 @@
 {% macro tou_dialog() %}
   <dialog id="tou-dialog" class="max-w-screen-lg p-6 pt-6 md:pb-20 md:px-20 lg:rounded-xl flex flex-col w-full lg:border-4 lg:border-gray-300" data-testid="tou-dialog">
-    <button id="tou-close" class="absolute top-0 right-0 p-4 mr-10">
-      <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-gray-500" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+    <button id="tou-close" class="absolute top-0 right-0 p-4 mr-10 mt-4">
+      <i aria-hidden="true" class="mr-2 fa-solid fa-fas fa-x"></i> 
+      <span class="sr-only">{{ _('Close') }}</span>
     </button>
-    <h2 id="tou-heading" class="heading-medium md:heading-large mt-0 mb-4 py-4" data-testid="tou-heading">{{ _('Know your responsibilities') }}</h2>
+    <h2 id="tou-heading" class="heading-medium md:heading-large mt-0 mb-4 py-4" data-testid="tou-heading">{{ _('Review and agree to the terms of use') }}</h2>
     <div id="tou-terms" class="overflow-y-scroll overflow-x-hidden p-4 lg:p-8" tabindex="0" data-testid="tou-terms" aria-describedby="tou-heading">
       
         
@@ -188,37 +187,170 @@
     
       </div>
       
-    
+    {# <button
+      type="button"
+      class="button text-base outline-none focus:shadow-outline disabled mt-20"
+      name="button_pressed"
+      value="agree"
+      data-testid="tou-agree-button"
+      disabled
+      id="tou-accept"
+    >
+    <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white mr-3" width="24" height="24" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/></svg>
+    <svg class="animate-spin -ml-1 mr-3 h-8 w-8 fill-current text-white hidden text-lg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+      {{ _('Agree') }}
+    </button> #}
           
     </div>
+    
     <div class="mt-12 flex">
-      <div class="w-1/5">
-        <button
-          type="button"
-          class="button text-base outline-none focus:shadow-outline disabled"
-          name="button_pressed"
-          value="agree"
-          data-testid="tou-agree-button"
-          disabled
-          id="tou-accept"
-        >
-        <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white mr-3" width="24" height="24" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/></svg>
-        <svg class="animate-spin -ml-1 mr-3 h-8 w-8 fill-current text-white hidden text-lg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-          {{ _('Agree') }}
-        </button>
+      <button
+      type="button"
+      class="button text-base outline-none focus:shadow-outline disabled"
+      name="button_pressed"
+      value="agree"
+      data-testid="tou-agree-button"
+      disabled
+      id="tou-accept"
+    >
+      {{ _('Agree') }}
+    </button>
+    <button
+      type="button"
+      class="button button-secondary text-base outline-none focus:shadow-outline ml-6"
+      name="button_pressed"
+      value="agree"
+      data-testid="tou-agree-cancel"
+      id="tou-cancel"
+    >
+      {{ _('Cancel') }}
+    </button>
+    {#
+    <div class="w-full text-center">
+        <div class="scroll-text">
+          Scroll down to continue
+        </div>
+        <div class="arrowz"></div>
       </div>
-    </div>  
+    </div>
+    #}
   </dialog>
 
   {% block page_script %}
-    <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/touDialog.min.js') }}"></script>    
+    {#<script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/touDialog.min.js') }}"></script>    #}
+    <script nonce="{{ request_nonce }}">
+    /**
+ * Initializes the Terms of Use dialog and adds event listeners.
+ */
+(function () {
+  "use strict";
+
+  // HTML elements
+  const dialog = document.getElementById("tou-dialog");
+  const err_msg = document.getElementById("terms-error");
+  const terms = document.getElementById("tou-terms");
+  const accept = document.getElementById("tou-accept");
+  const form = document.querySelector("#tou-dialog form");
+  const trigger = document.getElementById("tou-dialog-trigger");
+  const form_agree = document.querySelector("input[name='tou_agreed']");
+  const close_button = document.getElementById("tou-close");
+  const status = document.getElementById("tou-status");
+
+  // Close the dialog when the user clicks outside of it
+  // dialog.addEventListener('mousedown', function(event) {
+  //   // Check if the click event's target is the dialog itself
+  //   if (event.target === dialog) {
+  //     // If it is, close the dialog
+  //     closeModal();
+  //   }
+  // });
+
+  // Show the dialog when the trigger button is clicked
+  trigger.addEventListener("click", function () {
+    openModal();
+  });
+
+  // If the user tries to close the dialog using the escape key, show a message
+  // that the terms must be accepted before dismissing the dialog
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      closeModal();
+    }
+  });
+
+  // Add agree button click listener that closes the modal and sets the form_agree value to true
+  accept.addEventListener("click", function (e) {
+    form_agree.value = "true";
+    // update icons
+    status.querySelector("svg").classList.remove('fa-x', 'text-red');
+    status.querySelector("svg").classList.add('fa-check','text-green-300');
+
+    // update text, add aria-hidden
+    status.querySelector("#tou-not-complete").classList.add('hidden');
+    status.querySelector("#tou-not-complete").setAttribute('aria-hidden', true);
+    status.querySelector("#tou-complete").classList.remove('hidden');
+    status.querySelector("#tou-complete").removeAttribute('aria-hidden');
+
+    closeModal();
+  });
+
+  // Add close button click listener that closes the modal
+  close_button.addEventListener("click", function (e) {
+    closeModal();
+  });
+
+  // add event handler that enables submit button when the user has scrolled to the bottom of #tou-terms
+  terms.addEventListener("scroll", function () {
+    // set disabled=true and remove class disabled when div is fully scrolled
+    if (terms.scrollHeight - terms.scrollTop <= terms.clientHeight + 5) {
+      accept.disabled = false;
+      accept.classList.remove("disabled");
+    }
+  });
+
+  function set_trigger_focus() {
+    trigger.focus();
+  }
+
+  function openModal() {
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+
+    // if the terms dont need to be scrolled, enable the submit button and remove the disabled class
+    if (
+      form_agree.value === "true" ||
+      terms.scrollHeight - terms.scrollTop <= terms.clientHeight + 5
+    ) {
+      accept.disabled = false;
+      accept.classList.remove("disabled");
+    } else {
+      accept.disabled = true;
+      accept.classList.add("disabled");
+    }
+
+    terms.focus();
+  }
+
+  function closeModal() {
+    document.body.style.overflow = "auto";
+    dialog.close();
+    set_trigger_focus();
+  }
+})();
+</script>
   {% endblock %}
 {% endmacro %}
 
 {% macro tou_dialog_trigger(button_text) %}
-  <a href="#" id="tou-dialog-trigger">{{ button_text }}</a>
+  <div class="flex md:items-center flex-col md:flex-row ">
+    <a href="#" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status">{{ button_text }}</a>
+    <span id="tou-status" class="mt-4 md:mt-0 md:ml-8 text-small font-bold flex items-center">
+      <i aria-hidden="true" class="mr-2 fa-solid fa-fas fa-x text-red"></i> 
+      <span id="tou-not-complete">{{ _('Not completed') }}</span>
+      <span id="tou-complete" class="hidden" aria-hidden="true">{{ _('Completed') }}</span>
+  </div>
   <input type="hidden" class="display-none" name="tou_agreed" value="false">
 {% endmacro %}
