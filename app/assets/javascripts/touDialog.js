@@ -41,14 +41,14 @@
   accept.addEventListener("click", function (e) {
     form_agree.value = "true";
     // update icons
-    status.querySelector("svg").classList.remove('fa-x', 'text-red');
-    status.querySelector("svg").classList.add('fa-check','text-green-300');
+    status.querySelector("svg").classList.remove("fa-x", "text-red");
+    status.querySelector("svg").classList.add("fa-check", "text-green-300");
 
     // update text, add aria-hidden
-    status.querySelector("#tou-not-complete").classList.add('hidden');
-    status.querySelector("#tou-not-complete").setAttribute('aria-hidden', true);
-    status.querySelector("#tou-complete").classList.remove('hidden');
-    status.querySelector("#tou-complete").removeAttribute('aria-hidden');
+    status.querySelector("#tou-not-complete").classList.add("hidden");
+    status.querySelector("#tou-not-complete").setAttribute("aria-hidden", true);
+    status.querySelector("#tou-complete").classList.remove("hidden");
+    status.querySelector("#tou-complete").removeAttribute("aria-hidden");
 
     closeModal();
   });
