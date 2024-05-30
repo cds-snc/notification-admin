@@ -151,7 +151,7 @@ class ValidCallbackUrl:
         if field.data:
             validate_callback_url(field.data, form.bearer_token.data)
 
-
+ 
 def validate_callback_url(service_callback_url, bearer_token):
     if not validators.url(service_callback_url):
         current_app.logger.warning(f"Invalid callback URL for service: {current_service.id}")
@@ -169,12 +169,12 @@ def validate_callback_url(service_callback_url, bearer_token):
             current_app.logger.warning(
                 f"Callback URL for service: {current_service.id} was reachable but returned status code {response.status_code}."
             )
-            raise ValidationError(_l(f"Callback endpoint response was unsuccessful: {response.status_code}"))
+            raise ValidationError(_l(f"We were able to reach your callback service but it's response indicated a failure code: {response.status_code}"))
     except requests.RequestException as e:
         current_app.logger.warning(f"Callback URL not reachable for service: {current_service.id}. Exception: {e}")
         raise ValidationError(
             _l(
-                f"We were unable to reach {service_callback_url}. Please verify the service is running and can be reached and try again."
+                f"We were unable to reach your callback service. Please verify that the service is running and can be reached and try again."
             )
         )
 

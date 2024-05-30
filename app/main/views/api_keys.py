@@ -180,6 +180,7 @@ def get_delivery_status_callback_details():
 def delivery_status_callback(service_id):
     delivery_status_callback = get_delivery_status_callback_details()
     back_link = ".api_callbacks" if current_service.has_permission("inbound_sms") else ".api_integration"
+    url_hint_txt = "Must start with https://"
 
     form = ServiceDeliveryStatusCallbackForm(
         url=delivery_status_callback.get("url") if delivery_status_callback else "",
@@ -215,10 +216,17 @@ def delivery_status_callback(service_id):
             pass
 
         return redirect(url_for(back_link, service_id=service_id))
+    elif form.errors:
+        url_error = form.errors["url"][0]
+        if "response indicated a failure code:" in url_error:
+            url_hint_txt = "Your service must be running. Try checking your service's logs for errors."
+        elif "unable to reach your callback service" in url_error:
+            url_hint_txt = "Your service must be running and reachable from the internet."
 
     return render_template(
         "views/api/callbacks/delivery-status-callback.html",
         back_link=back_link,
+        hint_text=url_hint_txt,
         form=form,
     )
 
