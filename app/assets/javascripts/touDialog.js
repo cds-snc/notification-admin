@@ -19,7 +19,7 @@
   const status_complete = document.getElementById("tou-complete");
   const status_not_complete = document.getElementById("tou-not-complete");
   const validation_summary = document.getElementById("validation-summary");
-  
+
   initUI();
 
   /**
