@@ -26,9 +26,9 @@
         {% set txt = _('Must be at least 8 characters and hard to guess') %}
         {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
 
-        {{ tou_dialog_trigger(_('Review and agree to the terms of use')) }}
-
-        {{form.auth_type}}
+        {{ tou_dialog_trigger(button_text=_('Review and agree to the terms of use'), is_in_error_state=(form.errors.get('tou_agreed') != None)) }}
+        {{ form.tou_agreed }}
+        {{ form.auth_type }}
         {% set txt = _('Continue') %} 
         {{ page_footer(txt) }}
       {% endcall %}
