@@ -35,11 +35,7 @@ def test_valid_email_not_in_valid_domains(
 
 def test_valid_email_in_valid_domains(client):
     form = RegisterUserForm(
-        name="test",
-        email_address="test@my.gc.ca",
-        mobile_number="6502532222",
-        password="an uncommon password",
-        tou_agreed="true"
+        name="test", email_address="test@my.gc.ca", mobile_number="6502532222", password="an uncommon password", tou_agreed="true"
     )
     form.validate()
     assert form.errors == {}
