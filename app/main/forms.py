@@ -369,6 +369,7 @@ class RegisterUserForm(StripWhitespaceForm):
     password = password()
     # always register as email type
     auth_type = HiddenField("auth_type", default="email_auth")
+    tou_agreed = HiddenField("tou_agreed", validators=[DataRequired("You must read and accept the terms to continue")])
 
 
 class RegisterUserFromInviteForm(RegisterUserForm):
