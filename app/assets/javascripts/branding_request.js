@@ -23,7 +23,7 @@
   const input_img = document.querySelector("input.file-upload-field");
   const alt_en = document.getElementById("alt_text_en");
   const alt_fr = document.getElementById("alt_text_fr");
-  const message = document.queryElementById("file-description");
+  const message = document.getElementById("file-description");
   const image_slot = document.querySelector(".preview .img");
   const preview_heading = document.querySelector("#preview_heading");
   const preview_container = document.querySelector(".template_preview");

@@ -23,12 +23,13 @@
     @apply absolute opacity-0;
   }
 
-  .js-enabled .file-upload-label:focus-within {
+  .js-enabled .file-upload-group:focus-within .file-upload-button {
     @apply outline-yellow;
   }
 
   .js-enabled #file-upload-button {
-    @apply inline-block pointer-events-none;
+    user-select: none;
+    @apply inline-block;
   }
 
   .js-enabled .file-upload-filename {

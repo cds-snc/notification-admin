@@ -31,8 +31,7 @@
   hint=None,
   accept=""
 ) %}
-  <div class="file-upload-group {% if field.errors %}form-group-error{% endif %}">
-      <span id="file-upload-label" class="visually-hidden"> {{ field.label.text }} </span>
+  <div class="file-upload-group {% if field.errors %}form-group-error{% endif %} relative inline-flex flex-col gap-2 items-start">
       
       {% if hint %}
         <span class="form-hint">
@@ -45,15 +44,12 @@
           {{ field.errors[0] }}
         </span>
       {% endif %}
-    <label class="file-upload-label relative" for="{{ field.name }}" role="link">
       
-      {{ field(**{ 'class': 'file-upload-field absolute', 'accept': accept, 'aria-describedby': 'file-description', 'data-error-msg': field.validators and field.validators[0].message, 'data-testid': field_testid}) }}
+      {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description', 'data-error-msg': field.validators and field.validators[0].message, 'data-testid': field_testid}) }}
       
-      <span id="file-upload-button" class="file-upload-button button {{ button_class }}">{{ button_text }}</span>
-      
-    </label>
-      
-    <div class="file-upload-extra pt-gutterHalf">
+      <label id="file-upload-button" class="file-upload-button button {{ button_class }}" for="{{ field.name }}" role="link">{{ button_text }}</label>
+
+    <div class="file-upload-extra pt-gutterHalf flex flex-col gap-4">
       <span id="file-description">{{ _("No file currently selected") }}</span>
       {# Caller allows this component to render any type of extra information on file selection #}
       {{ caller() if caller }}
