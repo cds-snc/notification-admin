@@ -1,74 +1,88 @@
 /**
- * Initializes the Terms of Use dialog and adds event listeners.
+ * Initializes the Terms of Use dialog and wires up its trigger to be used like a form field with validation.
  */
 (function () {
   "use strict";
 
   // HTML elements
   const dialog = document.getElementById("tou-dialog");
-  const err_msg = document.getElementById("terms-error");
   const terms = document.getElementById("tou-terms");
-  const accept = document.getElementById("tou-accept");
-  const form = document.querySelector("#tou-dialog form");
-  const trigger = document.getElementById("tou-dialog-trigger");
-  const form_agree = document.querySelector("input[name='tou_agreed']");
+
+  // buttons
+  const accept_button = document.getElementById("tou-accept");
   const close_button = document.getElementById("tou-close");
-  const status = document.getElementById("tou-status");
+  const cancel_button = document.getElementById("tou-cancel");
 
-  // Close the dialog when the user clicks outside of it
-  // dialog.addEventListener('mousedown', function(event) {
-  //   // Check if the click event's target is the dialog itself
-  //   if (event.target === dialog) {
-  //     // If it is, close the dialog
-  //     closeModal();
-  //   }
-  // });
+  // form elements
+  const trigger = document.getElementById("tou-dialog-trigger");
+  const form_agree = document.getElementById("tou_agreed");
+  const status_complete = document.getElementById("tou-complete");
+  const status_not_complete = document.getElementById("tou-not-complete");
+  const validation_summary = document.getElementById("validation-summary");
+  
+  initUI();
 
-  // Show the dialog when the trigger button is clicked
-  trigger.addEventListener("click", function () {
-    openModal();
-  });
+  /**
+   * Initializes the user interface for the terms of use dialog.
+   * This function sets up event listeners, hides/shows elements, and performs initial checks.
+   */
+  function initUI() {
+    // hide complete indicator by default
+    status_complete.classList.add("hidden");
+    status_complete.setAttribute("aria-hidden", true);
 
-  // If the user tries to close the dialog using the escape key, show a message
-  // that the terms must be accepted before dismissing the dialog
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-      closeModal();
+    // if form_agree is true on load, set status indcator
+    if (terms_agreed()) {
+      agreeToTerms();
     }
-  });
 
-  // Add agree button click listener that closes the modal and sets the form_agree value to true
-  accept.addEventListener("click", function (e) {
-    form_agree.value = "true";
-    // update icons
-    status.querySelector("svg").classList.remove("fa-x", "text-red");
-    status.querySelector("svg").classList.add("fa-check", "text-green-300");
-
-    // update text, add aria-hidden
-    status.querySelector("#tou-not-complete").classList.add("hidden");
-    status.querySelector("#tou-not-complete").setAttribute("aria-hidden", true);
-    status.querySelector("#tou-complete").classList.remove("hidden");
-    status.querySelector("#tou-complete").removeAttribute("aria-hidden");
-
-    closeModal();
-  });
-
-  // Add close button click listener that closes the modal
-  close_button.addEventListener("click", function (e) {
-    closeModal();
-  });
-
-  // add event handler that enables submit button when the user has scrolled to the bottom of #tou-terms
-  terms.addEventListener("scroll", function () {
-    // set disabled=true and remove class disabled when div is fully scrolled
-    if (terms.scrollHeight - terms.scrollTop <= terms.clientHeight + 5) {
-      accept.disabled = false;
-      accept.classList.remove("disabled");
+    // if errors are displayed, add the tou error to the validation summary
+    if (validation_summary && !terms_agreed()) {
+      const err_msg = dialog.dataset.errorMsg;
+      const err_prefix = dialog.dataset.errorPrefix;
+      const error = `<a class="link:text-red text-red visited:text-red" href="#${trigger.id}"><span class="font-bold">${err_prefix}</span> ${err_msg}</a>`;
+      const li = document.createElement("li");
+      li.innerHTML = error;
+      validation_summary.querySelector("ol").append(li);
     }
-  });
 
-  function set_trigger_focus() {
-    trigger.focus();
+    /**
+     * Event listeners
+     **/
+
+    // Show the dialog when the trigger button is clicked
+    trigger.addEventListener("click", function (e) {
+      e.preventDefault();
+      openModal();
+    });
+
+    // Close the dialog when the user presses ESC
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    });
+
+    // Update the form and close the modal when the user agrees
+    accept_button.addEventListener("click", function (e) {
+      e.preventDefault();
+      agreeToTerms();
+    });
+
+    // Close the modal when the user presses cancel or the X button
+    [close_button, cancel_button].forEach(function (button) {
+      button.addEventListener("click", function (e) {
+        closeModal();
+      });
+    });
+
+    // Enable the agree button when the user scrolls to the bottom
+    terms.addEventListener("scroll", function () {
+      if (terms.scrollHeight - terms.scrollTop <= terms.clientHeight + 5) {
+        accept_button.disabled = false;
+        accept_button.classList.remove("disabled");
+      }
+    });
   }
 
   function openModal() {
@@ -80,11 +94,11 @@
       form_agree.value === "true" ||
       terms.scrollHeight - terms.scrollTop <= terms.clientHeight + 5
     ) {
-      accept.disabled = false;
-      accept.classList.remove("disabled");
+      accept_button.disabled = false;
+      accept_button.classList.remove("disabled");
     } else {
-      accept.disabled = true;
-      accept.classList.add("disabled");
+      accept_button.disabled = true;
+      accept_button.classList.add("disabled");
     }
 
     terms.focus();
@@ -93,6 +107,25 @@
   function closeModal() {
     document.body.style.overflow = "auto";
     dialog.close();
-    set_trigger_focus();
+  }
+
+  function agreeToTerms() {
+    console.log("terms agreed, updating status");
+    form_agree.value = "true";
+
+    // update text, add aria-hidden
+    console.log("status_not_complete", status_not_complete);
+    console.log("status_complete", status_complete);
+
+    status_not_complete.classList.add("hidden");
+    status_not_complete.setAttribute("aria-hidden", true);
+    status_complete.classList.remove("hidden");
+    status_complete.removeAttribute("aria-hidden");
+
+    closeModal();
+  }
+
+  function terms_agreed() {
+    return form_agree.value === "true";
   }
 })();
