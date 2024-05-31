@@ -18,6 +18,7 @@ register_field_names = ("name", "email_address", "mobile_number", "password")
                 "email_address": "sdfdsfdsfdsf@cds-snc.ca",
                 "mobile_number": "9025555555",
                 "password": "very_SECURE_p4ssw0rd!",
+                "tou_agreed": "true",
             },
             0,
         ),
