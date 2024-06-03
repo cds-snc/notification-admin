@@ -230,9 +230,11 @@
     {% endif %}
     <ul class="task-list">
       <li class="task-list-item">
-        <a href="#" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status-1" data-testid="tou-dialog-trigger">{{ button_text }}</a>
-        {{ task_list_item_complete('tou-complete', testid='tou-complete') }}
-        {{ task_list_item_not_complete('tou-not-complete', testid='tou-not-complete') }}
+        <a href="#" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status" data-testid="tou-dialog-trigger">{{ button_text }}</a>
+        <span id="tou-status">
+          {{ task_list_item_complete('tou-complete', testid='tou-complete') }}
+          {{ task_list_item_not_complete('tou-not-complete', testid='tou-not-complete') }}
+        </span>
       </li>
     </ul>
   </div>

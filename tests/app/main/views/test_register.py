@@ -157,7 +157,7 @@ def test_should_add_user_details_to_session(
             "email_address": email_address,
             "mobile_number": "+16502532222",
             "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-            "tou_agreed": "true"
+            "tou_agreed": "true",
         },
     )
     with client_request.session_transaction() as session:
@@ -194,7 +194,7 @@ def test_register_with_existing_email_sends_emails(
         "email_address": api_user_active["email_address"],
         "mobile_number": "+16502532222",
         "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-        "tou_agreed": "true"
+        "tou_agreed": "true",
     }
 
     response = client.post(url_for("main.register"), data=user_data)
@@ -280,7 +280,7 @@ def test_register_from_invite(
             "service": str(invited_user.id),
             "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
             "auth_type": "sms_auth",
-            "tou_agreed": "true"
+            "tou_agreed": "true",
         },
     )
     assert response.status_code == 302
@@ -325,7 +325,7 @@ def test_register_from_invite_when_user_registers_in_another_browser(
             "service": str(api_user_active["id"]),
             "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
             "auth_type": "sms_auth",
-            "tou_agreed": "true"
+            "tou_agreed": "true",
         },
     )
     assert response.status_code == 302
@@ -361,7 +361,7 @@ def test_register_from_email_auth_invite(
         "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
         "service": sample_invite["service"],
         "auth_type": "email_auth",
-        "tou_agreed": "true"
+        "tou_agreed": "true",
     }
 
     resp = client.post(url_for("main.register_from_invite"), data=data)
@@ -373,11 +373,7 @@ def test_register_from_email_auth_invite(
     assert not mock_send_verify_code.called
     # creates user with email_auth set
     mock_register_user.assert_called_once_with(
-        data["name"],
-        data["email_address"],
-        data["mobile_number"],
-        data["password"],
-        data["auth_type"]
+        data["name"], data["email_address"], data["mobile_number"], data["password"], data["auth_type"]
     )
     mock_accept_invite.assert_called_once_with(sample_invite["service"], sample_invite["id"])
     # just logs them in
@@ -421,7 +417,7 @@ def test_can_register_email_auth_without_phone_number(
         "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
         "service": sample_invite["service"],
         "auth_type": "email_auth",
-        "tou_agreed": "true"
+        "tou_agreed": "true",
     }
 
     resp = client.post(url_for("main.register_from_invite"), data=data)
