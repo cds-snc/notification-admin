@@ -40,7 +40,7 @@
     if (validation_summary && !terms_agreed()) {
       const err_msg = dialog.dataset.errorMsg;
       const err_prefix = dialog.dataset.errorPrefix;
-      const error = `<a class="link:text-red text-red visited:text-red" href="#${trigger.id}"><span class="font-bold">${err_prefix}</span> ${err_msg}</a>`;
+      const error = `<a class="link:text-red text-red visited:text-red" href="#${trigger.id}" data-testid="tou-val-summ-err"><span class="font-bold">${err_prefix}</span> ${err_msg}</a>`;
       const li = document.createElement("li");
       li.innerHTML = error;
       validation_summary.querySelector("ol").append(li);

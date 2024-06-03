@@ -2,7 +2,7 @@
 
 {% macro tou_dialog() %}
   <dialog id="tou-dialog" class="max-w-screen-lg p-6 pt-6 md:pb-20 md:px-20 lg:rounded-xl flex flex-col w-full lg:border-4 lg:border-gray-300" data-testid="tou-dialog" data-error-prefix="{{ _('Terms of use:') }}" data-error-msg="{{ _('You must read and accept the terms to continue') }}">
-    <button id="tou-close" class="absolute top-0 right-0 p-4 mr-10 mt-6">
+    <button id="tou-close" class="absolute top-0 right-0 p-4 mr-10 mt-6" data-testid="tou-close-button">
       <i aria-hidden="true" class="mr-2 fa-solid fa-fas fa-x"></i> 
       <span class="sr-only">{{ _('Close') }}</span>
     </button>
@@ -209,7 +209,7 @@
       class="button button-secondary text-base outline-none focus:shadow-outline ml-6"
       name="button_pressed"
       value="agree"
-      data-testid="tou-agree-cancel"
+      data-testid="tou-cancel-button"
       id="tou-cancel"
     >
       {{ _('Cancel') }}
@@ -222,17 +222,17 @@
 {% endmacro %}
 
 {% macro tou_dialog_trigger(button_text, is_in_error_state=false) %}
-  <div id="tou_trigger_element" class="form-group {{ 'form-group-error' if is_in_error_state }}">
+  <div id="tou_trigger_element" class="form-group {{ 'form-group-error' if is_in_error_state }}" data-testid="tou_trigger_element">
     {% if is_in_error_state %}
-      <span id="tou-error-message" class="error-message">
+      <span id="tou-error-message" class="error-message" data-testid="tou-error-message">
         You must read and accept the terms to continue
       </span>
     {% endif %}
     <ul class="task-list">
       <li class="task-list-item">
-        <a href="#" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status-1">{{ button_text }}</a>
-        {{ task_list_item_complete('tou-complete') }}
-        {{ task_list_item_not_complete('tou-not-complete') }}
+        <a href="#" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status-1" data-testid="tou-dialog-trigger">{{ button_text }}</a>
+        {{ task_list_item_complete('tou-complete', testid='tou-complete') }}
+        {{ task_list_item_not_complete('tou-not-complete', testid='tou-not-complete') }}
       </li>
     </ul>
   </div>

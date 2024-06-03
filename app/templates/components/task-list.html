@@ -25,15 +25,15 @@
   </ul>
 {% endmacro %}
 
-{% macro task_list_item_complete(label) %}
-  <strong class="task-list-indicator-completed" id="{{ label|id_safe }}">
+{% macro task_list_item_complete(label, testid=None) %}
+  <strong class="task-list-indicator-completed" id="{{ label|id_safe }}"{%if testid %} data-testid="{{ testid }}"{% endif %}>
     <img aria-hidden="true" src="{{ asset_url('images/tick.svg') }}" class="w-6 h-6 inline-block mr-2 -mt-1" alt="">
     {{ _('Completed') }}
   </strong>
 {% endmacro %}
 
-{% macro task_list_item_not_complete(label) %}
-  <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}">
+{% macro task_list_item_not_complete(label, testid=None) %}
+  <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}"{%if testid %} data-testid="{{ testid }}"{% endif %}>
     {{ _('Not completed') }}
   </strong>
 {% endmacro %}
