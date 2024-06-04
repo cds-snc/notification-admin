@@ -26,8 +26,15 @@
         {% set txt = _('Must be at least 8 characters and hard to guess') %}
         {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
 
-        {{ tou_dialog_trigger(button_text=_('Review and agree to the terms of use'), is_in_error_state=(form.errors.get('tou_agreed') != None)) }}
-        {{ form.tou_agreed }}
+        {% if config['FF_TOU'] %}
+          {{ tou_dialog_trigger(button_text=_('Read and agree to the terms of use'), is_in_error_state=(form.errors.get('tou_agreed') != None)) }}
+          {{ form.tou_agreed }}
+        {% else %}
+          <p>
+            {{ _("By creating an account, you agree to the <a href='{}'>terms of use</a>.").format(gca_url_for('terms')) }}
+          </p>
+        {% endif %}
+
         {{ form.auth_type }}
         {% set txt = _('Continue') %} 
         {{ page_footer(txt) }}
@@ -36,6 +43,8 @@
   </div>
 {% endblock %}
 
-{% block body_end %}
-  {{ tou_dialog() }}
-{% endblock %}
+{% if config['FF_TOU'] %}
+  {% block body_end %}
+    {{ tou_dialog() }}
+  {% endblock %}
+{% endif %}
