@@ -373,8 +373,9 @@ class RegisterUserForm(StripWhitespaceForm):
 
     def validate_tou_agreed(self, field):
         if current_app.config["FF_TOU"]:
-            if field.data is not None and field.data.strip() == '':
+            if field.data is not None and field.data.strip() == "":
                 raise ValidationError(_l("You must read and accept the terms to continue"))
+
 
 class RegisterUserFromInviteForm(RegisterUserForm):
     def __init__(self, invited_user):

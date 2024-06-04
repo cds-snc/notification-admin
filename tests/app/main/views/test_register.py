@@ -63,7 +63,7 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         "auth_type": "sms_auth",
     }
 
-    if current_app.config['FF_TOU']:
+    if current_app.config["FF_TOU"]:
         user_data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register"), data=user_data, follow_redirects=True)
@@ -154,18 +154,15 @@ def test_should_add_user_details_to_session(
     client_request.logout()
     data = {
         "name": "Test Codes",
-            "email_address": email_address,
-            "mobile_number": "+16502532222",
-            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+        "email_address": email_address,
+        "mobile_number": "+16502532222",
+        "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
     }
 
-    if current_app.config['FF_TOU']:
+    if current_app.config["FF_TOU"]:
         data["tou_agreed"] = "true"
 
-    client_request.post(
-        "main.register",
-        _data=data
-    )
+    client_request.post("main.register", _data=data)
     with client_request.session_transaction() as session:
         assert session["user_details"]["email"] == email_address
 
@@ -202,7 +199,7 @@ def test_register_with_existing_email_sends_emails(
         "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
     }
 
-    if current_app.config['FF_TOU']:
+    if current_app.config["FF_TOU"]:
         user_data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register"), data=user_data)
@@ -279,7 +276,7 @@ def test_register_from_invite(
     )
     with client.session_transaction() as session:
         session["invited_user"] = invited_user.serialize()
-    data={
+    data = {
         "name": "Registered in another Browser",
         "email_address": invited_user.email_address,
         "mobile_number": "+16502532222",
@@ -288,13 +285,10 @@ def test_register_from_invite(
         "auth_type": "sms_auth",
     }
 
-    if current_app.config['FF_TOU']:
+    if current_app.config["FF_TOU"]:
         data["tou_agreed"] = "true"
 
-    response = client.post(
-        url_for("main.register_from_invite"),
-        data=data
-    )
+    response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
     assert response.location == url_for("main.verify")
     mock_register_user.assert_called_once_with(
@@ -329,7 +323,7 @@ def test_register_from_invite_when_user_registers_in_another_browser(
     with client.session_transaction() as session:
         session["invited_user"] = invited_user.serialize()
 
-    data={
+    data = {
         "name": "Registered in another Browser",
         "email_address": api_user_active["email_address"],
         "mobile_number": api_user_active["mobile_number"],
@@ -338,13 +332,10 @@ def test_register_from_invite_when_user_registers_in_another_browser(
         "auth_type": "sms_auth",
     }
 
-    if current_app.config['FF_TOU']:
+    if current_app.config["FF_TOU"]:
         data["tou_agreed"] = "true"
 
-    response = client.post(
-        url_for("main.register_from_invite"),
-        data=data
-    )
+    response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
     assert response.location == url_for("main.verify")
 
@@ -380,7 +371,7 @@ def test_register_from_email_auth_invite(
         "auth_type": "email_auth",
     }
 
-    if current_app.config['FF_TOU']:
+    if current_app.config["FF_TOU"]:
         data["tou_agreed"] = "true"
 
     resp = client.post(url_for("main.register_from_invite"), data=data)
@@ -438,7 +429,7 @@ def test_can_register_email_auth_without_phone_number(
         "auth_type": "email_auth",
     }
 
-    if current_app.config['FF_TOU']:
+    if current_app.config["FF_TOU"]:
         data["tou_agreed"] = "true"
     resp = client.post(url_for("main.register_from_invite"), data=data)
     assert resp.status_code == 302

@@ -35,7 +35,7 @@ def test_validation_summary(
     data,
     expected_errors,
 ):
-    if current_app.config['FF_TOU']:
+    if current_app.config["FF_TOU"]:
         data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register"), data=data, follow_redirects=True)
