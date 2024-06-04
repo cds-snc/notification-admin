@@ -5,8 +5,46 @@ describe("TOU Dialog", () => {
         cy.visit('/register');
     });
 
+    context('A11Y', () => {
+        it('Is accessible and has valid HTML', () => {
+            cy.a11yScan('/register', { a11y: true, htmlValidate: true, deadLinks: false, mimeTypes: false });
+        });
+
+        it('Has focus set to terms when dialog opens', () => {
+            RegisterPage.Components.TOUTrigger().click();
+            RegisterPage.Components.TOUTerms().should('have.focus');
+        });
+
+        it('Has a trigger that is described by its status', () => {
+            RegisterPage.Components.TOUTrigger().should('have.attr', 'aria-describedby').then((describedById) => {
+                cy.get('#' + describedById).should('be.visible');
+            });
+        });
+
+        it('Has terms that are described by the heading', () => {
+            RegisterPage.Components.TOUTrigger().click();
+            RegisterPage.Components.TOUTerms().should('have.attr', 'aria-describedby').then((labelledById) => {
+                cy.get('#' + labelledById).should('be.visible');
+            });
+        });
+
+        it('Closes when user presses ESC', () => {
+            RegisterPage.Components.TOUTrigger().click();
+            cy.get('body').type('{esc}');
+            RegisterPage.Components.TOUDialog().should('not.be.visible');
+            RegisterPage.Components.TOUTrigger().should('have.focus');
+        });
+
+        it('Has scrollable terms that are also focusable', () => {
+            RegisterPage.Components.TOUTrigger().click();
+            RegisterPage.Components.TOUTerms().should('have.focus');
+            RegisterPage.Components.TOUTerms().then(($el) => {
+                expect($el[0].scrollHeight).to.be.gt($el[0].clientHeight);
+            });
+        });
+    });
+
     context('Trigger', () => {
-        
         it('Shows as not-complete on initial load', () => {
             RegisterPage.Components.TOUStatusNotComplete().should('be.visible');
         });
@@ -52,8 +90,7 @@ describe("TOU Dialog", () => {
             RegisterPage.Components.TOUTrigger().should('be.visible');
         });
     });
-    
-    
+
     context('Dialog', () => {
         //     - Dialog opens when trigger is clicked
         it('Opens when trigger is clicked', () => {
@@ -61,12 +98,7 @@ describe("TOU Dialog", () => {
             RegisterPage.Components.TOUDialog().should('be.visible');
         });
 
-        it('has focus set to terms when dialog opens', () => {
-            RegisterPage.Components.TOUTrigger().click();
-            RegisterPage.Components.TOUTerms().should('have.focus');
-        });
-
-        it('has agree button disabled when dialog opens', () => {
+        it('Has agree button disabled when dialog opens', () => {
             RegisterPage.Components.TOUTrigger().click();
             RegisterPage.Components.TOUAgree().should('be.disabled');
         });
@@ -76,8 +108,8 @@ describe("TOU Dialog", () => {
             RegisterPage.ScrollTerms();
             RegisterPage.Components.TOUAgree().should('not.be.disabled');
         });
-        //     - Dialog closes if user clicks [cancel, ESC, close]
-        it('Closes when user clicks cancel', () => {
+
+        it('Closes when user clicks close/cancel', () => {
             RegisterPage.Components.TOUTrigger().click();
             RegisterPage.Cancel();
             RegisterPage.Components.TOUDialog().should('not.be.visible');
@@ -87,15 +119,6 @@ describe("TOU Dialog", () => {
             RegisterPage.Close();
             RegisterPage.Components.TOUDialog().should('not.be.visible');
             RegisterPage.Components.TOUTrigger().should('have.focus');
-
-            RegisterPage.Components.TOUTrigger().click();
-            cy.get('body').type('{esc}');
-            RegisterPage.Components.TOUDialog().should('not.be.visible');
-            RegisterPage.Components.TOUTrigger().should('have.focus');
         });
     });
-   
-    //     Accessibility
-    //     - Page is accessible
-    //     - Dialog is accessible via keyboard
 });
