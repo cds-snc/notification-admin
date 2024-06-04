@@ -184,6 +184,9 @@ module.exports = {
       minHeight: {
         target: "45px",
       },
+      minWidth: {
+        target: "45px",
+      },
       flex: {
         2: "2 2 0%",
       },
