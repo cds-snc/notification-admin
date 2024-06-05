@@ -13,7 +13,7 @@ def show_tou_prompt():
     The TOU prompt should be displayed if the user is authenticated, has not already agreed to the terms, and is not on the contact page or a GCA route.
     """
 
-    if current_app.config["FF_TOU"] == False:
+    if current_app.config["FF_TOU"] is False:
         return False
 
     is_gca_route = False
