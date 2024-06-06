@@ -10,7 +10,7 @@ describe("Edit Branding", () => {
   beforeEach(() => {
     // stop the recurring dashboard fetch requests
     cy.intercept("GET", "**/dashboard.json", {});
-    
+
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
 
     cy.visit(

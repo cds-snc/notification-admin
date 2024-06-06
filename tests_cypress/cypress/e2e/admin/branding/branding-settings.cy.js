@@ -2,9 +2,7 @@
 
 import config from "../../../../config";
 import ServiceSettingsPage from "../../../Notify/Admin/Pages/ServiceSettingsPage";
-import {
-  EditBrandingPage,
-} from "../../../Notify/Admin/Pages/all";
+import { EditBrandingPage } from "../../../Notify/Admin/Pages/all";
 
 describe("Branding settings", () => {
   beforeEach(() => {
