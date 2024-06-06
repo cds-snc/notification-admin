@@ -13,16 +13,11 @@ describe("Edit Branding", () => {
 
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
 
-    cy.visit(
-      config.Hostnames.Admin +
-        `/services/${config.Services.Cypress}/edit-branding`,
-    );
+    cy.visit(`/services/${config.Services.Cypress}/edit-branding`);
   });
 
   it("Loads branding settings page", () => {
-    cy.visit(
-      config.Hostnames.Admin + `/services/${config.Services.Cypress}/branding`,
-    );
+    cy.visit(`/services/${config.Services.Cypress}/branding`);
     cy.get("h1").contains("Email logo").should("be.visible");
   });
 
@@ -44,9 +39,7 @@ describe("Edit Branding", () => {
   });
 
   it("Loads edit-branding when choose logo is clicked", () => {
-    cy.visit(
-      config.Hostnames.Admin + `/services/${config.Services.Cypress}/branding`,
-    );
+    cy.visit(`/services/${config.Services.Cypress}/branding`);
     BrandingSettingsPage.ChooseDifferentLogo();
     cy.get("h1").contains("Change your logo").should("be.visible");
   });
