@@ -11,6 +11,7 @@ import EditBrandingPage from "./branding/EditBrandingPage";
 import PreviewBrandingPage from "./branding/PreviewBrandingPage";
 import RequestBrandingPage from "./branding/RequestBrandingPage";
 import ReviewPoolPage from "./branding/ReviewPoolPage";
+import ServiceSettingsPage from "./ServiceSettingsPage";
 
 export default {
     LoginPage,
@@ -26,4 +27,5 @@ export default {
     PreviewBrandingPage,
     RequestBrandingPage,
     ReviewPoolPage,
+    ServiceSettingsPage,
 }

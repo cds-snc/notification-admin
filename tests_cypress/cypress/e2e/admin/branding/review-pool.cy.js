@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import config from "../../../../config";
-import { Admin } from "../../../Notify/NotifyAPI";
+
 import {
   ReviewPoolPage,
   EditBrandingPage,
