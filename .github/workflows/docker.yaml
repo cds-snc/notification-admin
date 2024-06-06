@@ -60,7 +60,7 @@ jobs:
 
     - name: Rollout in Kubernetes
       env:
-        WORKFLOW_PA T: ${{ steps.sre_app_token.outputs.token }}
+        WORKFLOW_PAT: ${{ steps.sre_app_token.outputs.token }}
       run: |
         ./scripts/callManifestsRollout.sh ${GITHUB_SHA::7}
 
