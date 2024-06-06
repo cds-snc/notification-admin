@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import config from "../../../../config";
-import { RequestBranding } from "../../../Notify/Admin/Pages/AllPages";
+import { RequestBranding } from "../../../Notify/Admin/Pages/all";
 
 describe("Branding request", () => {
   // Login to notify before the test suite starts

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import config from "../../../config";
-import { ServiceSettingsPage } from "../../Notify/Admin/Pages/AllPages";
+import { ServiceSettingsPage } from "../../Notify/Admin/Pages/all";
 
 describe("Service Settings", () => {
   // Login to notify before the test suite starts

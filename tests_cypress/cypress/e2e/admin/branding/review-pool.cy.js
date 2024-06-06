@@ -4,11 +4,7 @@ import config from "../../../../config";
 import { Admin } from "../../../Notify/NotifyAPI";
 import {
   ReviewPoolPage,
-  PreviewBrandingPage,
-  BrandingSettings,
-  ClearCachePage,
-} from "../../../Notify/Admin/Pages/AllPages";
-const ADMIN_COOKIE = "notify_admin_session";
+} from "../../../Notify/Admin/Pages/all";
 
 describe("Review Pool", () => {
   after(() => {

@@ -1,6 +1,6 @@
 import config from "../../config";
 
-import { LoginPage } from "../Notify/Admin/Pages/AllPages";
+import LoginPage from "../Notify/Admin/Pages/LoginPage";
 
 // keep track of what we test so we dont test the same thing twice
 let links_checked = [];

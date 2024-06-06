@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { CreateAccountPage } from "../../Notify/Admin/Pages/AllPages";
+import { CreateAccountPage } from "../../Notify/Admin/Pages/all";
 import { Utilities, Admin } from "../../Notify/NotifyAPI";
 
 describe("Create Account Page", () => {

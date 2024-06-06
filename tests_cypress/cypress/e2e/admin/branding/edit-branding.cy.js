@@ -4,7 +4,7 @@ import config from "../../../../config";
 import {
   EditBranding,
   BrandingSettings,
-} from "../../../Notify/Admin/Pages/AllPages";
+} from "../../../Notify/Admin/Pages/all";
 import EditBrandingPage from "../../../Notify/Admin/Pages/branding/EditBrandingPage";
 
 describe("Edit Branding", () => {

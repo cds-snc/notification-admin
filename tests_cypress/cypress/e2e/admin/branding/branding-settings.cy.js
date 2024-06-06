@@ -4,8 +4,7 @@ import config from "../../../../config";
 import ServiceSettingsPage from "../../../Notify/Admin/Pages/ServiceSettingsPage";
 import {
   EditBranding,
-  BrandingSettings,
-} from "../../../Notify/Admin/Pages/AllPages";
+} from "../../../Notify/Admin/Pages/all";
 
 describe("Branding settings", () => {
   // Login to notify before the test suite starts
