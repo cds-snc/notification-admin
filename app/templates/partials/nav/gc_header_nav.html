@@ -8,32 +8,32 @@
   {% set long_lang_switch = 'Français' %}
 {% endif %}
 
-<hr class="m-0 md:hidden bg-blue h-2"/>
-<nav class="md:hidden" aria-label="{{ _('Main menu') }}">
+<hr class="m-0 md:hidden bg-blue border-blue border-0 border-b-2"/>
+<nav class="md:hidden" aria-label="{{ _('Main menu - mobile') }}">
   <div class="container px-gutterHalf">
     <!-- Mobile menu and nav bar -->
     <div class="grid grid-cols-2">
       <div class="flex">
-        <div class="mr-5 p-4 bg-blue flex-shrink">
-          <a
+          <button
             aria-expanded="false"
             aria-haspopup="true"
             href="#"
             id="menu"
-            data-module="menu-overlay"
-            data-menu-overlay-content="mobile-menu-content"
-            data-menu-overlay-close="mobile-menu-close"
-            class="text-white text-smaller visited:text-white link:text-white no-underline focus:outline-none">
+            data-module="menu"
+            data-menu-items="main-menu-nav"
+            class="mr-5 p-4 bg-blue flex-shrink text-white text-smaller focus:outline-yellow visited:text-white link:text-white no-underline"
+            type="button">
             {{ _('Menu') }}
-          </a>
-        </div>
+            <img alt="" aria-hidden="true" class="account-menu-arrow ml-2 inline arrow self-center" src="{{ asset_url('images/arrow-white.svg') }}" width="15"/>
+          </button>
       </div>
+
       {# This include of mobile popup overlay needs to be here for the HTML natural ordering #}
       {# to be determined properly for tab navigating and accessibility purposes. #}
       <!--  start mobile navigation -->
       {% include 'partials/nav/gc_header_nav_mobile.html' %}
       <!--  end mobile navigation -->
-      <div class="flex justify-end self-center">
+      <div class="flex justify-end self-start gap-4">
         {% if current_user.is_authenticated %}
           {% include 'partials/nav/account_menu_mobile.html' %}
         {% else %}
@@ -41,23 +41,19 @@
             <a
               id="nav-sign-in-desktop"
               href="{{ url_for('main.sign_in' ) }}"
-              class="px-5 line-under leading-none inline-block text-blue visited:text-blue link:text-blue text-smaller underline hover:no-underline">
+              class="min-h-target px-4 line-under leading-none inline-flex items-center text-blue visited:text-blue link:text-blue text-smaller underline hover:no-underline">
               {{ _('Sign in') }}
             </a>
           </div>
         {% endif %}
-        <div class="pl-5">
-          <div class="h-14 p-1 border-2 border-solid border-gray rounded-lg">
             <a
               id="nav-lang"
-              class="px-1 block line-under leading-none text-blue visited:text-blue link:text-blue text-smaller underline hover:no-underline"
+              class="p-2 min-w-target min-h-target border-2 border-solid border-gray flex items-center justify-center line-under leading-none text-blue visited:text-blue link:text-blue text-smaller underline hover:no-underline focus:outline-yellow focus:border-gray focus:bg-white"
               href="{{ url_for('main.set_lang') }}?from={{ lang_url or request.path }}"
               lang="{{ 'fr-CA' if lang_switch == 'FR' else 'en-CA' }}">
               <span class="sr-only">{{ long_lang_switch }}</span>
               <span role="presentation" aria-hidden="true">{{ lang_switch }}</span>
             </a>
-          </div>
-        </div>
       </div>
       <!-- Mobile menu and nav bar END -->
       <!-- MD-LG menu and nav bar -->

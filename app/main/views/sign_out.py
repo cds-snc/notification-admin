@@ -1,4 +1,5 @@
-from flask import current_app, redirect, session, url_for
+from flask import current_app, flash, redirect, session, url_for
+from flask_babel import _
 from flask_login import logout_user
 
 from app import get_current_locale
@@ -12,4 +13,5 @@ def sign_out():
     logout_user()
     session["userlang"] = currentlang
 
-    return redirect(url_for("main.index"))
+    flash(_("You have been signed out."), "default_with_tick")
+    return redirect(url_for("main.sign_in"))
