@@ -6,12 +6,13 @@ import Navigation from "./Navigation";
 import TemplatesPage from "./TemplatesPage";
 import AccountsPage from "./AccountsPage";
 import CreateAccountPage from "./CreateAccountPage";
-import BrandingSettingsPage from "./branding/BrandingSettingsPage";
-import EditBrandingPage from "./branding/EditBrandingPage";
-import PreviewBrandingPage from "./branding/PreviewBrandingPage";
-import RequestBrandingPage from "./branding/RequestBrandingPage";
-import ReviewPoolPage from "./branding/ReviewPoolPage";
+import RequestBranding from "./branding/RequestBranding";
+import EditBranding from "./branding/EditBrandingPage";
+import BrandingSettings from "./branding/BrandingSettingsPage"
 import ServiceSettingsPage from "./ServiceSettingsPage";
+import ReviewPoolPage from "./branding/ReviewPoolPage";
+import PreviewBrandingPage from "./branding/PreviewBrandingPage";
+import ClearCachePage from "./admin/ClearCachePage";
 
 export default {
     LoginPage,
@@ -22,10 +23,11 @@ export default {
     TemplatesPage,
     AccountsPage,
     CreateAccountPage,
-    BrandingSettingsPage,
-    EditBrandingPage,
-    PreviewBrandingPage,
-    RequestBrandingPage,
-    ReviewPoolPage,
+    RequestBranding,
+    EditBranding,
+    BrandingSettings,
     ServiceSettingsPage,
+    ReviewPoolPage,
+    PreviewBrandingPage,
+    ClearCachePage,
 }
