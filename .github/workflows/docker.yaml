@@ -8,8 +8,6 @@ env:
   AWS_REGION: ca-central-1
   DOCKER_ORG: public.ecr.aws/v6b8u5o6
   DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-admin
-  WORKFLOW_PAT: ${{ secrets.WORKFLOW_GITHUB_PAT }}
-
 
 permissions:
   id-token: write   # This is required for requesting the OIDC JWT
@@ -54,7 +52,15 @@ jobs:
       run: |
         docker push $DOCKER_SLUG:latest && docker push $DOCKER_SLUG:${GITHUB_SHA::7}
 
+    - uses: actions/create-github-app-token@a0de6af83968303c8c955486bf9739a57d23c7f1 # v1.10.0
+      id: sre_app_token
+      with:
+        app-id: ${{ secrets.SRE_APP_ID }}
+        private-key: ${{ secrets.SRE_APP_PRIVATE_KEY }}
+
     - name: Rollout in Kubernetes
+      env:
+        WORKFLOW_PAT: ${{ steps.sre_app_token.outputs.token }}
       run: |
         ./scripts/callManifestsRollout.sh ${GITHUB_SHA::7}
 
