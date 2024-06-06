@@ -45,7 +45,7 @@ let LOCAL = {
     },
     Services: {
         Notify: 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553',
-        Cypress: '73209498-d078-42ff-82dc-57176c52ddde'
+        Cypress: '5c8a0501-2aa8-433a-ba51-cefb8063ab93'
     },
     Templates: {
         'FILE_ATTACH_TEMPLATE_ID': 'e52acc48-dcb9-4f70-81cf-b87d0ceaef1b',
@@ -62,6 +62,10 @@ let LOCAL = {
         NonTeam: ['person@example.com'],
         Simulated: ['simulate-delivered-2@notification.canada.ca', 'simulate-delivered-3@notification.canada.ca', 'success@simulator.amazonses.com'],
         SimulatedPhone: ['+16132532222', '+16132532223', '+16132532224']
+    },
+    Organisations: {
+        'DEFAULT_ORG_ID': 'ff9e5ddd-926f-4ae2-bc87-f5104262ca17',
+        'NO_CUSTOM_BRANDING_ORG_ID': '39b3230e-300a-42f4-bfb7-40b20b704d44'
     },
     ReplyTos: {
         Default: '8c2a9b22-8fec-4ad9-bca8-658abbb7406e',
