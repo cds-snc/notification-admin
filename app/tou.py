@@ -23,7 +23,7 @@ def show_tou_prompt():
             is_gca_route = True
             break
 
-    if current_user.is_authenticated and not session.get("terms_agreed") and "/contact" not in request.url and not is_gca_route:
+    if current_user.is_authenticated and not session.get(TERMS_KEY) and "/contact" not in request.url and not is_gca_route:
         return True
 
     return False
