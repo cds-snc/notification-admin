@@ -31,7 +31,7 @@ class TestShowTouPrompt:
     )
     def test_show_tou_prompt(self, route, login, agree_to_terms, expected, app_):
         with self.app.test_request_context(), self.app.test_client() as client:
-            with set_config(app_, "FF_TOU", True): # remove this line when FF is removed
+            with set_config(app_, "FF_TOU", True):  # remove this line when FF is removed
                 if login:
                     client.login(self.api_user_active, agree_to_terms=agree_to_terms)
                 client.get(route)
