@@ -2,6 +2,7 @@ import pytest
 
 from app.articles.routing import GC_ARTICLES_ROUTES
 from app.tou import show_tou_prompt
+from tests.conftest import set_config
 
 
 class TestShowTouPrompt:
@@ -28,9 +29,10 @@ class TestShowTouPrompt:
             ("/contact", True, False, False),
         ],
     )
-    def test_show_tou_prompt(self, route, login, agree_to_terms, expected):
+    def test_show_tou_prompt(self, route, login, agree_to_terms, expected, app_):
         with self.app.test_request_context(), self.app.test_client() as client:
-            if login:
-                client.login(self.api_user_active, agree_to_terms=agree_to_terms)
-            client.get(route)
-            assert show_tou_prompt() == expected
+            with set_config(app_, "FF_TOU", True): # remove this line when FF is removed
+                if login:
+                    client.login(self.api_user_active, agree_to_terms=agree_to_terms)
+                client.get(route)
+                assert show_tou_prompt() == expected
