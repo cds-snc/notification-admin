@@ -229,6 +229,7 @@ class Staging(Production):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     FF_TOU = True
 
+
 class Scratch(Production):
     NOTIFY_ENVIRONMENT = "scratch"
     NOTIFY_LOG_LEVEL = "INFO"
