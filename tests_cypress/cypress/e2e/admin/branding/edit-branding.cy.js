@@ -2,20 +2,17 @@
 
 import config from "../../../../config";
 import {
-  EditBranding,
-  BrandingSettings,
+  EditBrandingPage,
+  BrandingSettingsPage,
 } from "../../../Notify/Admin/Pages/all";
-import EditBrandingPage from "../../../Notify/Admin/Pages/branding/EditBrandingPage";
 
 describe("Edit Branding", () => {
-  // Login to notify before the test suite starts
-  before(() => {
-    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
-  });
-
   beforeEach(() => {
     // stop the recurring dashboard fetch requests
     cy.intercept("GET", "**/dashboard.json", {});
+    
+    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+
     cy.visit(
       config.Hostnames.Admin +
         `/services/${config.Services.Cypress}/edit-branding`,
@@ -30,7 +27,7 @@ describe("Edit Branding", () => {
   });
 
   it("Shows images of the default EN and FR branding", () => {
-    EditBranding.Components.BrandFieldset().within(() => {
+    EditBrandingPage.Components.BrandFieldset().within(() => {
       cy.get("img")
         .first()
         .should("have.attr", "src")
@@ -50,22 +47,22 @@ describe("Edit Branding", () => {
     cy.visit(
       config.Hostnames.Admin + `/services/${config.Services.Cypress}/branding`,
     );
-    BrandingSettings.ChooseDifferentLogo();
+    BrandingSettingsPage.ChooseDifferentLogo();
     cy.get("h1").contains("Change your logo").should("be.visible");
   });
 
   it("Cannot submit when no selection was made", () => {
-    EditBranding.Submit();
+    EditBrandingPage.Submit();
     EditBrandingPage.Components.ErrorMessage().should("be.visible");
   });
 
   it("Saves English-first logo when selected", () => {
-    EditBranding.SelectDefaultBranding("en");
-    EditBranding.Submit();
-    BrandingSettings.Components.StatusBanner()
+    EditBrandingPage.SelectDefaultBranding("en");
+    EditBrandingPage.Submit();
+    BrandingSettingsPage.Components.StatusBanner()
       .should("be.visible")
       .and("contain", "Setting updated");
-    BrandingSettings.Components.TemplatePreview()
+    BrandingSettingsPage.Components.TemplatePreview()
       .first()
       .should(
         "have.attr",
@@ -75,12 +72,12 @@ describe("Edit Branding", () => {
   });
 
   it("Saves French-first logo when selected", () => {
-    EditBranding.SelectDefaultBranding("fr");
-    EditBranding.Submit();
-    BrandingSettings.Components.StatusBanner()
+    EditBrandingPage.SelectDefaultBranding("fr");
+    EditBrandingPage.Submit();
+    BrandingSettingsPage.Components.StatusBanner()
       .should("be.visible")
       .and("contain", "Setting updated");
-    BrandingSettings.Components.TemplatePreview()
+    BrandingSettingsPage.Components.TemplatePreview()
       .first()
       .should(
         "have.attr",
@@ -90,13 +87,13 @@ describe("Edit Branding", () => {
   });
 
   it("Navigates to branding pool when select another logo from test link is clicked", () => {
-    EditBranding.ClickBrandPool();
+    EditBrandingPage.ClickBrandPool();
     cy.contains("h1", "Select another logo").should("be.visible");
   });
 
   it("Navigates to edit branding when go back is clicked from the branding pool page", () => {
-    EditBranding.ClickBrandPool();
-    BrandingSettings.GoBack();
+    EditBrandingPage.ClickBrandPool();
+    BrandingSettingsPage.GoBack();
     cy.get("h1").contains("Change your logo").should("be.visible");
   });
 });

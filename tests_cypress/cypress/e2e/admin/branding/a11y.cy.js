@@ -9,14 +9,11 @@ const BrandingRoutes = [
 ];
 
 describe("Branding A11Y", () => {
-  // Login to notify before the test suite starts
-  before(() => {
-    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
-  });
-
   beforeEach(() => {
     // stop the recurring dashboard fetch requests
     cy.intercept("GET", "**/dashboard.json", {});
+
+    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
   });
 
   // perform a11yScan on all pages in the branding_pages array

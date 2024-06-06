@@ -4,28 +4,16 @@ import config from "../../../../config";
 import { Admin } from "../../../Notify/NotifyAPI";
 import {
   ReviewPoolPage,
+  EditBrandingPage,
 } from "../../../Notify/Admin/Pages/all";
 
 describe("Review Pool", () => {
-  after(() => {
-    // Restore the test service's org to the default
-    Admin.LinkOrganisationToService({
-      orgId: config.Organisations.DEFAULT_ORG_ID,
-      serviceId: config.Services.Cypress,
-    });
+  
+  beforeEach(() => {
+    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    cy.visit(`/services/${config.Services.Cypress}/review-pool`);
   });
-
   context("General page functionality", () => {
-    before(() => {
-      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
-    });
-
-    beforeEach(() => {
-      cy.visit(
-        config.Hostnames.Admin +
-          `/services/${config.Services.Cypress}/review-pool`,
-      );
-    });
 
     it("Loads review pool page", () => {
       cy.contains("h1", "Select another logo").should("be.visible");
@@ -37,8 +25,10 @@ describe("Review Pool", () => {
     });
 
     it("Returns to edit branding page when back link is clicked", () => {
+      cy.visit(`/services/${config.Services.Cypress}/edit-branding`);
+      EditBrandingPage.ClickBrandPool();
       ReviewPoolPage.ClickBackLink();
-      cy.get("h1").contains("Request a new logo").should("be.visible");
+      cy.get("h1").contains("Change your logo").should("be.visible");
     });
   });
 
