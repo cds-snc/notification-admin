@@ -16,11 +16,11 @@ describe("Qualtrics", () => {
     cy.intercept("GET", "**/dashboard.json", {});
   });
 
-  it('survey button appears and survey opens', () => {
-      cy.visit(`/services/${config.Services.Notify}`);
-      cy.contains('h1', 'Dashboard').should('be.visible');
-      cy.get('#QSIFeedbackButton-btn').should('be.visible'); // qualtrics survey button
-      cy.get('#QSIFeedbackButton-btn').click(); // click the button
-      cy.get('#QSIFeedbackButton-survey-iframe').should('be.visible'); //
+  it("survey button appears and survey opens", () => {
+    cy.visit(`/services/${config.Services.Notify}`);
+    cy.contains("h1", "Dashboard").should("be.visible");
+    cy.get("#QSIFeedbackButton-btn").should("be.visible"); // qualtrics survey button
+    cy.get("#QSIFeedbackButton-btn").click(); // click the button
+    cy.get("#QSIFeedbackButton-survey-iframe").should("be.visible"); //
   });
 });
