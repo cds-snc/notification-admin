@@ -8,7 +8,6 @@
   ::backdrop {
     background: linear-gradient(to right, #140f16, #372e38);
     opacity: 0.85;
-    transition: 1s all;
   }
 
   #tou-dialog {
