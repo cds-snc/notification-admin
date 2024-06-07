@@ -4,9 +4,9 @@
 {% set error_msg = _('You must read and accept the terms to continue') %}
 
 {% macro tou_dialog() %}  
-  <dialog id="tou-dialog" class="max-w-screen-lg p-6 pt-6 md:pb-20 md:px-20 lg:rounded-xl flex flex-col w-full lg:border-4 lg:border-gray-300" data-testid="tou-dialog" data-error-prefix="{{ _('Terms of use:') }}" data-error-msg="{{ error_msg }}">
+  <dialog id="tou-dialog" class="max-w-screen-lg p-6 pt-6 md:pb-20 md:px-20 flex flex-col w-full" data-testid="tou-dialog" data-error-prefix="{{ _('Terms of use:') }}" data-error-msg="{{ error_msg }}">
     <button id="tou-close" class="absolute top-0 right-0 p-4 mr-10 mt-6" data-testid="tou-close-button">
-      <i aria-hidden="true" class="mr-2 fa-solid fa-fas fa-x"></i> 
+      <i aria-hidden="true" class="mr-2 fa-solid fa-fas fa-xmark"></i> 
       <span class="sr-only">{{ _('Close') }}</span>
     </button>
     <h2 id="tou-heading" class="heading-medium md:heading-large mt-0 mb-4 py-4" data-testid="tou-heading">{{ _('Read and agree to the terms of use') }}</h2>
@@ -49,7 +49,7 @@
         {{ error_msg }}
       </span>
     {% endif %}
-    <ul class="task-list">
+    <ul class="task-list mt-6">
       <li class="task-list-item">
         <a href="#" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status" data-testid="tou-dialog-trigger">{{ button_text }}</a>
         <span id="tou-status">

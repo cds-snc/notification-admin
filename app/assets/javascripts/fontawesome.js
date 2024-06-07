@@ -15,7 +15,7 @@ import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQues
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons/faCircleExclamation";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { faX } from "@fortawesome/free-solid-svg-icons/faX";
+import { faXmark } from "@fortawesome/free-solid-svg-icons/faXMark";
 
 let FontAwesomeIconLoader = () => {
   config.autoAddCss = false;
@@ -29,7 +29,7 @@ let FontAwesomeIconLoader = () => {
     faTriangleExclamation,
     faCircleExclamation,
     faInfoCircle,
-    faX,
+    faXmark,
   ]);
   dom.watch();
 };
