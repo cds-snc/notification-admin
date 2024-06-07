@@ -1,6 +1,6 @@
 import uuid
 from collections import OrderedDict
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 import pytest
 from bs4 import BeautifulSoup
@@ -507,11 +507,22 @@ def test_should_validate_safelist_items(
     ],
 )
 @pytest.mark.parametrize(
-    "url, bearer_token, expected_errors",
+    "url, bearer_token, response, expected_errors",
     [
-        ("https://example.com", "", "This cannot be empty"),
-        ("http://not_https.com", "1234567890", "Must be a valid https URL"),
-        ("https://test.com", "123456789", "Must be at least 10 characters"),
+        ("https://example.com", "", None, "This cannot be empty"),
+        ("http://not_https.com", "1234567890", None, "Enter a URL that starts with https://"),
+        (
+            "https://test.com",
+            "123456789",
+            {"content": "a", "status_code": 500, "headers": {"a": "a"}},
+            "Check your service log for errors Must be at least 10 characters",
+        ),
+        (
+            "https://test.ee",
+            "1234567890",
+            {"content": "a", "status_code": 404, "headers": {"a": "a"}},
+            "Check your service is running and not using a proxy we cannot access",
+        ),
     ],
 )
 def test_callback_forms_validation(
@@ -521,7 +532,9 @@ def test_callback_forms_validation(
     endpoint,
     url,
     bearer_token,
+    response,
     expected_errors,
+    mocker,
 ):
     if endpoint == "main.received_text_messages_callback":
         service_one["permissions"] = ["inbound_sms"]
@@ -530,6 +543,9 @@ def test_callback_forms_validation(
         "url": url,
         "bearer_token": bearer_token,
     }
+    if response:
+        resp = Mock(content=response["content"], status_code=response["status_code"], headers=response["headers"])
+        mocker.patch("app.main.validators.requests.post", return_value=resp)
 
     response = client_request.post(endpoint, service_id=service_one["id"], _data=data, _expected_status=200)
     error_msgs = " ".join(msg.text.strip() for msg in response.select(".error-message"))

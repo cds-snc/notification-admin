@@ -144,18 +144,20 @@ class DoesNotStartWithDoubleZero:
 
 
 class ValidCallbackUrl:
-    def __init__(self, message="Enter a valid URL"):
+    def __init__(self, message="Enter a URL that starts with https://"):
         self.message = message
 
     def __call__(self, form, field):
         if field.data:
             validate_callback_url(field.data, form.bearer_token.data)
 
- 
+
 def validate_callback_url(service_callback_url, bearer_token):
     if not validators.url(service_callback_url):
-        current_app.logger.warning(f"Invalid callback URL for service: {current_service.id}")
-        raise ValidationError(_l("URL is invalid"))
+        current_app.logger.warning(
+            f"Unable to create callback for service: {current_service.id}. Error: Invalid callback URL format: URL: {service_callback_url}"
+        )
+        raise ValidationError(_l("Enter a URL that starts with https://"))
 
     try:
         response = requests.post(
@@ -165,18 +167,22 @@ def validate_callback_url(service_callback_url, bearer_token):
             headers={"Content-Type": "application/json", "Authorization": f"Bearer {bearer_token}"},
             timeout=5,
         )
-        if not response.status_code == 200:
+
+        if response.status_code >= 500:
             current_app.logger.warning(
-                f"Callback URL for service: {current_service.id} was reachable but returned status code {response.status_code}."
+                f"Unable to create callback for service: {current_service.id} Error: URL was reachable but returned status code {response.status_code} URL: {service_callback_url}"
             )
-            raise ValidationError(_l(f"We were able to reach your callback service but it's response indicated a failure code: {response.status_code}"))
+            raise ValidationError(_l("Check your service log for errors"))
+        elif response.status_code < 500 and response.status_code >= 400:
+            current_app.logger.warning(
+                f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url}"
+            )
+            raise ValidationError(_l("Check your service is running and not using a proxy we cannot access"))
     except requests.RequestException as e:
-        current_app.logger.warning(f"Callback URL not reachable for service: {current_service.id}. Exception: {e}")
-        raise ValidationError(
-            _l(
-                f"We were unable to reach your callback service. Please verify that the service is running and can be reached and try again."
-            )
+        current_app.logger.warning(
+            f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url} Exception: {e}"
         )
+        raise ValidationError(_l("Check your service is running and not using a proxy we cannot access"))
 
 
 def validate_email_from(form, field):

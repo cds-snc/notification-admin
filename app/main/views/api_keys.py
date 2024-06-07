@@ -21,7 +21,6 @@ from app.notify_client.api_key_api_client import (
     KEY_TYPE_TEST,
 )
 from app.utils import documentation_url, email_safe, user_has_permissions
-import validators
 
 dummy_bearer_token = "bearer_token_set"
 
@@ -217,11 +216,7 @@ def delivery_status_callback(service_id):
 
         return redirect(url_for(back_link, service_id=service_id))
     elif form.errors:
-        url_error = form.errors["url"][0]
-        if "response indicated a failure code:" in url_error:
-            url_hint_txt = "Your service must be running. Try checking your service's logs for errors."
-        elif "unable to reach your callback service" in url_error:
-            url_hint_txt = "Your service must be running and reachable from the internet."
+        url_hint_txt = "Your service must be running and reachable from the internet."
 
     return render_template(
         "views/api/callbacks/delivery-status-callback.html",
@@ -250,6 +245,7 @@ def received_text_messages_callback(service_id):
         url=received_text_messages_callback.get("url") if received_text_messages_callback else "",
         bearer_token=dummy_bearer_token if received_text_messages_callback else "",
     )
+    url_hint_txt = "Must start with https://"
 
     if form.validate_on_submit():
         if received_text_messages_callback and form.url.data:
@@ -273,8 +269,11 @@ def received_text_messages_callback(service_id):
                 bearer_token=form.bearer_token.data,
                 user_id=current_user.id,
             )
-        return redirect(url_for(".api_callbacks", service_id=service_id))
+            return redirect(url_for(".api_callbacks", service_id=service_id))
+        elif form.errors:
+            url_hint_txt = "Your service must be running and reachable from the internet."
     return render_template(
         "views/api/callbacks/received-text-messages-callback.html",
         form=form,
+        hint_text=url_hint_txt,
     )
