@@ -1,10 +1,10 @@
 {% from "components/task-list.html" import task_list_item_complete, task_list_item_not_complete with context %}
-{% from "components/terms.html" import terms_of_use%}
+{% from "components/terms.html" import terms_of_use %}
 
 {% set error_msg = _('You must read and accept the terms to continue') %}
 
 {% macro tou_dialog() %}  
-  <dialog id="tou-dialog" class="max-w-screen-lg p-6 pt-6 md:pb-20 md:px-20 flex flex-col w-full" data-testid="tou-dialog" data-error-prefix="{{ _('Terms of use:') }}" data-error-msg="{{ error_msg }}">
+  <dialog id="tou-dialog" class="max-w-screen-lg p-gutter flex flex-col w-full" data-testid="tou-dialog" data-error-prefix="{{ _('Terms of use:') }}" data-error-msg="{{ error_msg }}">
     <button id="tou-close" class="absolute top-0 right-0 p-4 mr-10 mt-6" data-testid="tou-close-button">
       <i aria-hidden="true" class="mr-2 fa-solid fa-fas fa-xmark"></i> 
       <span class="sr-only">{{ _('Close') }}</span>

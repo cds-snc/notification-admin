@@ -29,7 +29,10 @@
   #tou-terms {
     @apply bg-white border border-gray-200;
     background-color: #f7f7f7;
-  }
 
+    h3:first-of-type {
+      @apply mt-0;
+    }
+  }
   /*! purgecss end ignore */
 }
