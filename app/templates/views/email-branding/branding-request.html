@@ -33,11 +33,11 @@
             <p>
               {{ _('Your logo must be compatible with GC Notify. Check logo is:') }}
             </p>
-              <ul class="list list-bullet" id="file-requirements">
-                <li class="ml-6">{{ _('In PNG image format') }}</li>
-                <li class="ml-6">{{ _('Exactly 108 pixels tall') }}</li>
-                <li class="ml-6">{{ _('Maximum 600 pixels wide') }}</li>
-              </ul>
+            <ul class="list list-bullet" id="file-requirements">
+              <li class="ml-6">{{ _('In PNG image format') }}</li>
+              <li class="ml-6">{{ _('Exactly 108 pixels tall') }}</li>
+              <li class="ml-6">{{ _('Maximum 600 pixels wide') }}</li>
+            </ul>
             {% call file_upload_field(form.file, accept="image/png", button_class="button-secondary", field_testid="brand_image") %}
 
             <div class="preview relative" data-testid="brand_fileinfo">
