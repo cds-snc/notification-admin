@@ -19,8 +19,7 @@ describe("Branding A11Y", () => {
   // perform a11yScan on all pages in the branding_pages array
   BrandingRoutes.forEach((page) => {
     it(`${page} is accessible and has valid HTML`, () => {
-      cy.a11yScan(
-        config.Hostnames.Admin + `/services/${config.Services.Cypress}${page}`,
+      cy.a11yScan(`/services/${config.Services.Cypress}${page}`,
         {
           a11y: true,
           htmlValidate: true,
