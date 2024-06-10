@@ -1,30 +1,17 @@
-{% set upload_txt = _('Choose file') %}
 {% macro file_upload(
   field,
   action=None,
-  button_text=upload_txt,
+  button_text=_('Choose file'),
   alternate_link=None,
   alternate_link_text=None,
   hint=None,
   accept=""
 
 ) %}
-  <form method="post" enctype="multipart/form-data" {% if action %}action="{{ action }}"{% endif %} class="{% if field.errors %}form-group-error contain-floats{% endif %}" data-module="file-upload">
-    <label class="file-upload-label" for="{{ field.name }}">
-      <span id="file-upload-label" class="visually-hidden"> {{ field.label.text }} </span>
-      {% if hint %}
-        <span class="form-hint">
-          {{ hint }}
-        </span>
-      {% endif %}
-      {% if field.errors %}
-        <span class="error-message">
-          {{ field.errors[0] }}
-        </span>
-      {% endif %}
-      {{ field(**{ 'class': 'file-upload-field', 'accept': accept}) }}
-      <span aria-hidden="true" id="file-upload-button" class="button font-normal"> {{ button_text }} </span>
-    </label>
+  <form method="post" enctype="multipart/form-data" {% if action %}action="{{ action }}"{% endif %} data-module="file-upload">
+    
+    {{ file_upload_field(field=field, action=action, button_text=button_text, hint=hint, accept=accept) }}
+
     {% if alternate_link and alternate_link_text %}
       <span class="file-upload-alternate-link">
         {{ _('or') }} <a href="{{ alternate_link }}">{{ alternate_link_text }}</a>
@@ -33,4 +20,39 @@
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <button type="submit" class="file-upload-submit">{{ _('Submit') }}</button>
   </form>
+{% endmacro %}
+
+{% macro file_upload_field(
+  field,
+  field_testid="test_" + field.name,
+  action=None,
+  button_text=_('Choose file'),
+  button_class="",
+  hint=None,
+  accept=""
+) %}
+  <div class="file-upload-group {% if field.errors %}form-group-error{% endif %} relative inline-flex flex-col gap-2 items-start">
+      
+      {% if hint %}
+        <span class="form-hint">
+          {{ hint }}
+        </span>
+      {% endif %}
+      
+      {% if field.errors %}
+        <span class="error-message">
+          {{ field.errors[0] }}
+        </span>
+      {% endif %}
+      
+      {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description', 'data-error-msg': field.validators and field.validators[0].message, 'data-testid': field_testid}) }}
+      
+      <label id="file-upload-button" class="file-upload-button button {{ button_class }}" for="{{ field.name }}" role="link">{{ button_text }}</label>
+
+    <div class="file-upload-extra pt-gutterHalf flex flex-col gap-4">
+      <span id="file-description">{{ _("No file currently selected") }}</span>
+      {# Caller allows this component to render any type of extra information on file selection #}
+      {{ caller() if caller }}
+    </div>
+  </div>
 {% endmacro %}
