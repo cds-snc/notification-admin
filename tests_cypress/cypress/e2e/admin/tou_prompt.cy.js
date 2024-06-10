@@ -1,7 +1,7 @@
 import TouPrompt from "../../Notify/Admin/Pages/TouPrompt";
 
 describe("TOU Prompt", () => {
-  it("should display the modal when logged in", () => {
+  it("should display the prompt when logged in", () => {
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
     cy.visit("/");
 
@@ -10,7 +10,7 @@ describe("TOU Prompt", () => {
     TouPrompt.Components.Heading().should("have.attr", "autofocus");
   });
 
-  it("should not display the modal after being dismissed", () => {
+  it("should not display the prompt after being dismissed", () => {
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
     cy.visit("/");
 
@@ -22,7 +22,7 @@ describe("TOU Prompt", () => {
     TouPrompt.Components.Prompt().should("not.exist");
   });
 
-  it("should not display the modal when not logged in", () => {
+  it("should not display the prompt when not logged in", () => {
     cy.visit("/");
 
     TouPrompt.Components.Prompt().should("not.exist");
@@ -44,7 +44,7 @@ describe("TOU Prompt", () => {
     TouPrompt.Components.Prompt().should("not.exist");
   });
 
-  it("should display the modal again when navigating to the page before modal is dismissed", () => {
+  it("should display the prompt again when navigating to the page before prompt is dismissed", () => {
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"), false);
     cy.visit("/");
     TouPrompt.Components.Prompt().should("be.visible");
