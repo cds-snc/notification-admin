@@ -269,9 +269,9 @@ def received_text_messages_callback(service_id):
                 bearer_token=form.bearer_token.data,
                 user_id=current_user.id,
             )
-            return redirect(url_for(".api_callbacks", service_id=service_id))
         elif form.errors:
             url_hint_txt = "Your service must be running and reachable from the internet."
+        return redirect(url_for(".api_callbacks", service_id=service_id))
     return render_template(
         "views/api/callbacks/received-text-messages-callback.html",
         form=form,

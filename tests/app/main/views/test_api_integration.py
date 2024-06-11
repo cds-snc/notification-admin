@@ -723,6 +723,7 @@ def test_create_delivery_status_and_receive_text_message_callbacks(
     mock_create_service_callback_api,
     endpoint,
     fake_uuid,
+    mock_validate_callback_url,
 ):
     if endpoint == "main.received_text_messages_callback":
         service_one["permissions"] = ["inbound_sms"]
@@ -761,6 +762,7 @@ def test_update_delivery_status_callback_details(
     mock_update_service_callback_api,
     mock_get_valid_service_callback_api,
     fake_uuid,
+    mock_validate_callback_url,
 ):
     service_one["service_callback_api"] = [fake_uuid]
 
@@ -787,6 +789,7 @@ def test_update_receive_text_message_callback_details(
     mock_update_service_inbound_api,
     mock_get_valid_service_inbound_api,
     fake_uuid,
+    mock_validate_callback_url,
 ):
     service_one["inbound_api"] = [fake_uuid]
     service_one["permissions"] = ["inbound_sms"]
@@ -814,6 +817,7 @@ def test_update_delivery_status_callback_without_changes_does_not_update(
     mock_update_service_callback_api,
     fake_uuid,
     mock_get_valid_service_callback_api,
+    mock_validate_callback_url,
 ):
     service_one["service_callback_api"] = [fake_uuid]
     data = {"user_id": fake_uuid, "url": "https://hello2.canada.ca", "bearer_token": "bearer_token_set"}
@@ -833,6 +837,7 @@ def test_update_receive_text_message_callback_without_changes_does_not_update(
     mock_update_service_inbound_api,
     fake_uuid,
     mock_get_valid_service_inbound_api,
+    mock_validate_callback_url,
 ):
     service_one["inbound_api"] = [fake_uuid]
     service_one["permissions"] = ["inbound_sms"]
