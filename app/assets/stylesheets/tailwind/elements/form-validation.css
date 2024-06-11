@@ -23,7 +23,7 @@
 
   .error-message {
     padding: 2px 0;
-    @apply text-smaller font-bold leading-tight block text-red text-base clear-both m-0;
+    @apply text-smaller font-bold leading-tight block text-red clear-both m-0;
   }
   .form-label .error-message,
   .form-label-bold .error-message {
