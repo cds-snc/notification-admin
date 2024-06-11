@@ -28,6 +28,7 @@ GC_ARTICLES_ROUTES = {
     "incidents": {"en": "/system-status", "fr": "/etat-du-systeme"},
     "new_features": {"en": "/new-features", "fr": "/nouvelles-fonctionnalites"},
     "register_for_demo": {"en": "/register-for-a-demo", "fr": "/sinscrire-a-une-demo"},
+    "getting_started": {"en": "/getting-started", "fr": "/decouvrir-notification-gc"},
 }
 
 
