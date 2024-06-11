@@ -1,4 +1,5 @@
 {% from "components/links.html" import content_link %}
+{% from "components/terms.html" import tou_heading_list %}
 
 {% macro tou_prompt() %}
 
@@ -35,17 +36,7 @@
         {{ _('This includes your agreement to:') }}
       </p>
       <ul class="list list-bullet ml-5">
-        <li>
-          {{ _('Accept conditions, including those in our ') }} 
-          {{ content_link(_('Privacy notice'), gca_url_for('privacy'), is_external_link=true ) }}
-        </li>
-        <li>{{ _('Accept sending limits') }}</li>
-        <li>{{ _('Accept risks when sending text messages') }}</li>
-        <li>{{ _('Manage and protect personal information of your recipients') }}</li>
-        <li>{{ _('Get consent before sending messages') }}</li>
-        <li>{{ _('Keep accurate contact information') }}</li>
-        <li>{{ _('Send information that’s unclassified or Protected A only') }}</li>
-        <li>{{ _('Practice continuous security') }}</li>
+        {{ tou_heading_list() }}
       </ul>
     </div>
     <form action="/agree-terms" method="post" class="mt-10">
