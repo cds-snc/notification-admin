@@ -1,19 +1,31 @@
+{% from "components/links.html" import content_link %}
 
+{% set headings = [
+    {
+        "title": 'Accept conditions, including those in our {}',
+        "link": content_link(_('Privacy notice'), gca_url_for('privacy'), is_external_link=true)
+    },
+    { "title": 'Accept sending limits' },
+    { "title": 'Accept risks when sending text messages' },
+    { "title": 'Manage and protect personal information of your recipients' },
+    { "title": 'Get consent before sending messages' },
+    { "title": 'Keep accurate contact information' },
+    { "title": 'Send information that’s unclassified or Protected A only' },
+    { "title": 'Practice continuous security' },
+] %}
+
+{% macro tou_heading_list() %}
+    {% for heading in headings %}
+        {% if heading.link %}
+            <li>{{ _(heading.title).format(heading.link) }}</li>
+        {% else %}
+            <li>{{ _(heading.title) }}</li>
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
 
 {% macro terms_of_use() %}
-    {% set headings = [
-        'Your responsibilities',
-        'Accept conditions, including those in our <a href="https://notification.canada.ca/privacy">Privacy notice</a>',
-        'Accept sending limits',
-        'Accept risks when sending text messages',
-        'Manage and protect personal information of your recipients',
-        'Get consent before sending messages',
-        'Keep accurate contact information',
-        'Send information that’s unclassified or Protected A only',
-        'Practice continuous security',
-    ] %}
-
-    <h3 class="heading-medium">{{ headings[0] }}</h3>
+    <h3 class="heading-medium">{{ _('Your responsibilities') }}</h3>
     <p>
     <em>For CDS responsibilities, read GC Notify’s </em
     ><a href="https://notification.canada.ca/service-level-agreement"
@@ -21,14 +33,14 @@
     ><em>.</em>
     </p>
 
-    <h3 class="heading-medium">{{ headings[1] | safe }}</h3>
+    <h3 class="heading-medium">{{ _(headings[0].title.format(headings[0].link))  }}</h3>
     <p>
     We may suspend your account or service if you break these terms or misuse GC
     Notify. Misuse includes creating duplicate services or services incompatible
     with your original purpose.
     </p>
 
-    <h3 class="heading-medium">{{ headings[2] }}</h3>
+    <h3 class="heading-medium">{{ _(headings[1].title) }}</h3>
     <p>
     We apply limits to maintain our
     <a href="https://notification.canada.ca/service-level-objectives"
@@ -63,7 +75,7 @@
     </div>
     </div>
 
-    <h3 class="heading-medium">{{ headings[3] }}</h3>
+    <h3 class="heading-medium">{{ _(headings[2].title) }}</h3>
     <p>Texts are:</p>
     <ul class="list list-bullet ml-10">
     <li>
@@ -82,7 +94,7 @@
     </li>
     </ul>
 
-    <h3 class="heading-medium">{{ headings[4] }}</h3>
+    <h3 class="heading-medium">{{ _(headings[3].title) }}</h3>
     <p>
     GC Notify holds information temporarily but your organization is responsible
     for that information.&nbsp;
@@ -114,7 +126,7 @@
     </li>
     </ul>
 
-    <h3 class="heading-medium">{{ headings[5] }}</h3>
+    <h3 class="heading-medium">{{ _(headings[4].title) }}</h3>
     <ul class="list list-bullet ml-10">
     <li>
         Follow your organization’s policies and check messages are:<br />(a) Within
@@ -134,7 +146,7 @@
     </li>
     </ul>
 
-    <h3 class="heading-medium">{{ headings[6] }}</h3>
+    <h3 class="heading-medium">{{ _(headings[5].title) }}</h3>
     <ul class="list list-bullet ml-10">
     <li>
         Use<strong> </strong>accurate, in-use email addresses. We may suspend your
@@ -144,7 +156,7 @@
     <li>Use accurate, in-use mobile phone numbers. Do not send to landlines.</li>
     </ul>
 
-    <h3 class="heading-medium">{{ headings[7] }}</h3>
+    <h3 class="heading-medium">{{ _(headings[6].title) }}</h3>
     <ul class="list list-bullet ml-10">
     <li>
         Assess context to decide what
@@ -164,7 +176,7 @@
     </li>
     </ul>
 
-    <h3 class="heading-medium">{{ headings[8] }}</h3>
+    <h3 class="heading-medium">{{ _(headings[7].title) }}</h3>
     <ul class="list list-bullet ml-10">
     <li>
         Use a valid government email and a mobile device with a Canadian phone
