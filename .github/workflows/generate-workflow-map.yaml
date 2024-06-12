@@ -1,0 +1,36 @@
+name: Build, push to AWS ECR, and deploy
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main  
+    paths:
+      - ".github/workflows/**"
+
+env:
+ BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      # generate .md file
+      - uses: KhudaDad414/workflows2md-action@v0.1.1
+        id: workflows2md
+      
+      # save the changes with the action of your liking
+      - uses: EndBug/add-and-commit@v9
+        with:
+          cwd: ${{env.GITHUB_WORKSPACE}}
+          add: ${{ steps.workflows2md.outputs.path }}
+          new_branch: ${{ env.BRANCH_NAME }}
+
+      # - name: Notify Slack channel if this job failed
+      #   if: ${{ failure() }}
+      #   run: |
+      #     json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-admin/|notification-admin> !'}"
+      #     curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
