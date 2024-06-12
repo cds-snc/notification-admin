@@ -22,12 +22,12 @@ jobs:
       - uses: KhudaDad414/workflows2md-action@v0.1.1
         id: workflows2md
       
-      # save the changes with the action of your liking
-      - uses: EndBug/add-and-commit@v9
-        with:
-          cwd: ${{env.GITHUB_WORKSPACE}}
-          add: ${{ steps.workflows2md.outputs.path }}
-          new_branch: ${{ env.BRANCH_NAME }}
+      # # save the changes with the action of your liking
+      # - uses: EndBug/add-and-commit@v9
+      #   with:
+      #     cwd: ${{env.GITHUB_WORKSPACE}}
+      #     add: ${{ steps.workflows2md.outputs.path }}
+      #     new_branch: ${{ env.BRANCH_NAME }}
 
       # - name: Notify Slack channel if this job failed
       #   if: ${{ failure() }}
