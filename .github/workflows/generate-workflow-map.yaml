@@ -8,6 +8,9 @@ on:
     paths:
       - ".github/workflows/**"
 
+env:
+ BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -24,9 +27,10 @@ jobs:
         with:
           cwd: ${{env.GITHUB_WORKSPACE}}
           add: ${{ steps.workflows2md.outputs.path }}
+          push: origin ${{ env.BRANCH_NAME }} --force
 
-      - name: Notify Slack channel if this job failed
-        if: ${{ failure() }}
-        run: |
-          json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-admin/|notification-admin> !'}"
-          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+      # - name: Notify Slack channel if this job failed
+      #   if: ${{ failure() }}
+      #   run: |
+      #     json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-admin/|notification-admin> !'}"
+      #     curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
