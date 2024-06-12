@@ -37,7 +37,7 @@ jobs:
         with:
           cwd: ${{env.GITHUB_WORKSPACE}}
           add: ${{ steps.workflows2md.outputs.path }}
-          push: origin main
+          new_branch: main
 
 
       # - name: Notify Slack channel if this job failed
