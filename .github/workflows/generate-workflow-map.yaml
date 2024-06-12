@@ -1,4 +1,4 @@
-name: Build, push to AWS ECR, and deploy
+name: Generate Workflow Map
 
 on:
   workflow_dispatch:
