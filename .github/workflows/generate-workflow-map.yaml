@@ -28,6 +28,11 @@ jobs:
       - uses: KhudaDad414/workflows2md-action@v0.1.1
         id: workflows2md
 
+      - name: setup git config
+        run: |
+          git config user.name "Notify PR Bot"
+          git config user.email "action@github.com"        
+
       - name: commit
         run: |
           git add ${{ steps.workflows2md.outputs.path }}
