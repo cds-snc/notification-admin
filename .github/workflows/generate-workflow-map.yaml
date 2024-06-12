@@ -33,14 +33,10 @@ jobs:
           git config user.name "Workflow Update"
           git config user.email "action@github.com"
 
-      - name: commit
-        env:
-          NEW_VERSION: ${{ steps.tag_version.outputs.new_tag }}
-          CURRENT_VERSION: ${{ env.CURRENT_VERSION }}
-        run: |
-          git add ${{ steps.workflows2md.outputs.path }}
-          git commit -m "Updating workflows map file"
-          git push origin main
+      - uses: EndBug/add-and-commit@v9
+        with:
+        cwd: ${{env.GITHUB_WORKSPACE}}
+        add: ${{ steps.workflows2md.outputs.path }}
 
 
       # - name: Notify Slack channel if this job failed
