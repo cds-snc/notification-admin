@@ -374,7 +374,7 @@ class RegisterUserForm(StripWhitespaceForm):
     def validate_tou_agreed(self, field):
         if current_app.config["FF_TOU"]:
             if field.data is not None and field.data.strip() == "":
-                raise ValidationError(_l("You must read and accept the terms to continue"))
+                raise ValidationError(_l("Read and agree to continue"))
 
 
 class RegisterUserFromInviteForm(RegisterUserForm):
