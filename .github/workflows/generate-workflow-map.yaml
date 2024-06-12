@@ -27,18 +27,47 @@ jobs:
       # generate .md file
       - uses: KhudaDad414/workflows2md-action@v0.1.1
         id: workflows2md
-
-      - name: setup git config
-        run: |
-          git config user.name "Workflow Update"
-          git config user.email "action@github.com"
+      
+      - name: Branch protection OFF
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/:repository/branches/main/protection
+          repository: ${{ github.repository }}
+          required_status_checks: | 
+            null
+          required_linear_history: |
+            null
+          enforce_admins: |
+            null
+          required_pull_request_reviews: |
+            null
+          restrictions: | 
+            null 
 
       - uses: EndBug/add-and-commit@v9
         with:
           cwd: ${{env.GITHUB_WORKSPACE}}
           add: ${{ steps.workflows2md.outputs.path }}
+          new_branch: main
 
-
+      - name: Branch protection ON
+        if: always()
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/:repository/branches/main/protection
+          repository: ${{ github.repository }}
+          required_status_checks: | 
+            strict: true
+            checks:
+              - context: testing_manifest
+          required_linear_history: |
+            true
+          enforce_admins: |
+            true
+          required_pull_request_reviews: |
+            required_approving_review_count: 1
+          restrictions: | 
+            null 
       # - name: Notify Slack channel if this job failed
       #   if: ${{ failure() }}
       #   run: |
