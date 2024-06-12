@@ -22,8 +22,8 @@ jobs:
       # save the changes with the action of your liking
       - uses: EndBug/add-and-commit@v9
         with:
-        cwd: ${{env.GITHUB_WORKSPACE}}
-        add: ${{ steps.workflows2md.outputs.path }}
+          cwd: ${{env.GITHUB_WORKSPACE}}
+          add: ${{ steps.workflows2md.outputs.path }}
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
