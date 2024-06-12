@@ -16,9 +16,14 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       # generate .md file
-      - uses: khudadad414@workflows2md-action
+      - uses: KhudaDad414/workflows2md-action@v0.1.1
         id: workflows2md
       
+      # save the changes with the action of your liking
+      - uses: EndBug/add-and-commit@v9
+        with:
+        cwd: ${{env.GITHUB_WORKSPACE}}
+        add: ${{ steps.workflows2md.outputs.path }}
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
