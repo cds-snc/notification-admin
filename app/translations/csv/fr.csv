@@ -784,6 +784,7 @@
 "When you send an email or text message, find out if GC Notify was able to deliver it with callbacks. Learn more in the <a href='{}'>callbacks documentation</a>.","Lorsque vous envoyez un courriel ou un message texte, vérifiez si Notification GC a réussi à le livrer avec des fonctions de rappel. Pour en savoir plus, consultez la <a href='{}'>documentation sur les fonctions de rappel</a>."
 "Add an endpoint where GC Notify should send POST requests","Ajouter un point de terminaison où Notification GC peut envoyer les requêtes ‘POST’"
 "Must start with https://","Doit commencer par https://"
+"Enter a URL that starts with https://","Entrez une URL qui commence par https://"
 "Add a secret value for authentication","Ajouter une valeur secrète pour l’authentification"
 "At least 10 characters","Au moins 10 caractères"
 "Callbacks for received text messages","Fonctions de rappel pour les messages texte reçus"
@@ -1891,3 +1892,5 @@
 "Your session ends after 8 hours of inactivity","Votre session se termine au bout de 8 heures d’inactivité"
 "total sends in the last 7 days","total des envois au cours des 7 derniers jours"
 "Getting started","Découvrez comment fonctionne Notification GC"
+"Check your service log for errors","Vérifiez le journal de service pour les erreurs"
+"Check your service is running and not using a proxy we cannot access","Vérifiez que votre service est en cours d'exécution et n'utilise pas un proxy auquel nous ne pouvons pas accéder"

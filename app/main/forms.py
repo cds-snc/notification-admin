@@ -43,6 +43,7 @@ from app.main.validators import (
     LettersNumbersAndFullStopsOnly,
     NoCommasInPlaceHolders,
     OnlySMSCharacters,
+    ValidCallbackUrl,
     ValidEmail,
     ValidGovEmail,
     validate_email_from,
@@ -1333,7 +1334,8 @@ class ServiceReceiveMessagesCallbackForm(CallbackForm):
         "URL",
         validators=[
             DataRequired(message=_l("This cannot be empty")),
-            Regexp(regex="^https.*", message=_l("Must be a valid https URL")),
+            Regexp(regex="^https.*", message=_l("Enter a URL that starts with https://")),
+            ValidCallbackUrl(),
         ],
     )
     bearer_token = PasswordFieldShowHasContent(
@@ -1350,7 +1352,8 @@ class ServiceDeliveryStatusCallbackForm(CallbackForm):
         "URL",
         validators=[
             DataRequired(message=_l("This cannot be empty")),
-            Regexp(regex="^https.*", message=_l("Must be a valid https URL")),
+            Regexp(regex="^https.*", message=_l("Enter a URL that starts with https://")),
+            ValidCallbackUrl(),
         ],
     )
     bearer_token = PasswordFieldShowHasContent(

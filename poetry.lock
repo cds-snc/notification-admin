@@ -2342,6 +2342,17 @@ files = [
 ua-parser = ">=0.10.0"
 
 [[package]]
+name = "validators"
+version = "0.28.3"
+description = "Python Data Validation for Humans™"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "validators-0.28.3-py3-none-any.whl", hash = "sha256:53cafa854f13850156259d9cc479b864ee901f6a96e6b109e6fc33f98f37d99f"},
+    {file = "validators-0.28.3.tar.gz", hash = "sha256:c6c79840bcde9ba77b19f6218f7738188115e27830cbaff43264bc4ed24c429d"},
+]
+
+[[package]]
 name = "webencodings"
 version = "0.5.1"
 description = "Character encoding aliases for legacy web content"
@@ -2476,4 +2487,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.9"
-content-hash = "ddc978fe2f5c973e21db582949903fa3ba76a5f05f1ef363e4d2c4e4353e4aa1"
+content-hash = "0dc6a85b517860088c4ef6882e9b27e5b5667a15804c0da071ebe833f4e1c8f8"
