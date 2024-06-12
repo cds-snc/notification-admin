@@ -2,7 +2,7 @@ name: Generate Workflow Map
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     branches:
       - main  
     paths:
@@ -37,7 +37,6 @@ jobs:
         with:
           cwd: ${{env.GITHUB_WORKSPACE}}
           add: ${{ steps.workflows2md.outputs.path }}
-          new_branch: main
 
 
       # - name: Notify Slack channel if this job failed
