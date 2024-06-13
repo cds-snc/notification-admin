@@ -200,6 +200,9 @@ module.exports = {
         12: "1.875rem",
         target: "45px",
       },
+      minWidth: {
+        target: "45px",
+      },
       flex: {
         2: "2 2 0%",
       },

@@ -1,37 +1,12 @@
 import config from "../../config";
-import LoginPage from "../Notify/Admin/Pages/LoginPage";
 
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+import LoginPage from "../Notify/Admin/Pages/LoginPage";
 
 // keep track of what we test so we dont test the same thing twice
 let links_checked = [];
 let svgs_checked = [];
 
-Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true }) => {
+Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
     const current_hostname = config.Hostnames.Admin;
     // bypass rate limiting
     cy.intercept(`${current_hostname}/*`, (req) => {
@@ -43,7 +18,10 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
     // 1. validate a11y rules using axe dequeue
     if (options.a11y) {
         cy.injectAxe();
-        cy.checkA11y();
+
+        if (options.axeConfig) {
+            cy.configureAxe({ rules: options.axeConfig });
+        }
     }
 
     // 2. validate html
