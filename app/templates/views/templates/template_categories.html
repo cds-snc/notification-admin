@@ -8,11 +8,11 @@
 
 {% block platform_admin_content %}
 
-  <div id="sticky-banner" tabindex="-1" class="z-50 flex justify-between w-full p-4 border-b border-gray-200 bg-red text-white rounded-lg">
+  <!-- <div id="sticky-banner" tabindex="-1" class="z-50 flex justify-between w-full p-4 border-b border-gray-200 bg-red text-white rounded-lg">
     <div class="flex items-center mx-auto">
       <span>This page is being tested and is not yet functional.</span>
     </div>
-  </div>
+  </div> -->
   {{ page_header(_('Template categories'), id_text='template_cats') }}
   {{ live_search(target_selector='.template-cat', show=True, form=search_form) }}
 
