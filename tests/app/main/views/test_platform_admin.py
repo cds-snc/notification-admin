@@ -1423,3 +1423,10 @@ class TestTemplateCategory:
         page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
         # find an anchor tag with the text "Template categories"
         assert page.find("a", href="/template-categories")
+    
+    def test_categories_route_is_accessible(self, platform_admin_client, platform_admin_user, mocker):
+        resp = platform_admin_client.get(url_for("main.template_categories"))
+        page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
+        # find an anchor tag with the text "Template categories"
+        
+        assert len(page.select("[data-testid='template-categories-table']")) == 1
