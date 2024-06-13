@@ -23,10 +23,11 @@
 
     {% call(item, row_number) list_table(
       template_categories,
-      caption='Messages',
+      caption=_('Template categories'),
       field_headings=['Category name', 'Email Priority', 'SMS Priority', 'Hidden?'],
       field_headings_visible=True,
-      caption_visible=False
+      caption_visible=False,
+      testid="template-categories-table"
     ) %}
       {% call field() %}
         <a class="template-cat" href="{{ url_for('main.template_category', template_category_id=item.id)}}">
