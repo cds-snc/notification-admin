@@ -49,6 +49,9 @@ class AdminNavigation(Navigation):
         "email_branding": {
             "email_branding",
         },
+        "template_categories": {
+            "template_categories",
+        },
         "find_services_by_name": {
             "find_services_by_name",
         },
@@ -499,6 +502,7 @@ class MainNavigation(Navigation):
         "create_email_branding",
         "create_letter_branding",
         "email_branding",
+        "template_categories",
         "find_services_by_name",
         "find_users_by_email",
         "letter_branding",
@@ -613,6 +617,7 @@ class OrgNavigation(Navigation):
         "edit_user_mobile_number",
         "edit_user_permissions",
         "email_branding",
+        "template_categories",
         "email_not_received",
         "email_template",
         "error",

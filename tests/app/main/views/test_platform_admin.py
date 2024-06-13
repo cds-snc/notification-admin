@@ -18,6 +18,7 @@ from app.main.views.platform_admin import (
     is_over_threshold,
     sum_service_usage,
 )
+from app.notify_client.platform_stats_api_client import PlatformStatsAPIClient
 from tests import service_json
 from tests.conftest import SERVICE_ONE_ID, SERVICE_TWO_ID, normalize_spaces
 
@@ -1415,3 +1416,11 @@ def test_send_method_stats_by_service(platform_admin_client, mocker):
         + "Fake Service ID,My service,Org name,email,admin,5\r\n"
     )
     mock.assert_called_once_with(datetime.date(2020, 11, 1), datetime.date(2020, 12, 1))
+
+
+class TestTemplateCategory:
+    def test_item_displays_in_admin_menu(self, platform_admin_client, platform_admin_user, mocker):
+        resp = platform_admin_client.get(url_for('main.live_services'))
+        page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
+        # find an anchor tag with the text "Template categories"
+        assert page.find('a', href='/template-categories')

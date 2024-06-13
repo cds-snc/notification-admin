@@ -26,6 +26,7 @@ from app import (
     current_service,
     service_api_client,
     template_api_prefill_client,
+    template_category_api_client,
     template_folder_api_client,
     template_statistics_client,
 )
@@ -1165,4 +1166,27 @@ def add_recipients(service_id, template_id):
         disabled_options={},
         option_hints=option_hints,
         option_conditionals=option_conditionals,
+    )
+
+ 
+@main.route("/template-categories", methods=["GET", "POST"])
+@user_is_platform_admin
+def template_categories():   
+    template_category_list = template_category_api_client.get_all_template_categories()
+
+    return render_template(
+        "views/templates/template_categories.html",
+        search_form=SearchByNameForm(),
+        template_categories=template_category_list
+    )
+
+
+@main.route("/template-categories/<template_category_id>", methods=["GET", "POST"])
+@user_is_platform_admin
+def template_category(template_category_id):
+    template_category = template_category_api_client.get_template_category(template_category_id)
+    return render_template(
+        "views/templates/template_category.html",
+        search_form=SearchByNameForm(),
+        template_category=template_category
     )

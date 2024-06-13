@@ -1,0 +1,24 @@
+{% extends "views/platform-admin/_base_template.html" %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/live-search.html" import live_search %}
+
+{% block per_page_title %}
+  {{ _('Template categories') }}
+{% endblock %}
+
+{% block platform_admin_content %}
+
+  <div id="sticky-banner" tabindex="-1" class="z-50 flex justify-between w-full p-4 border-b border-gray-200 bg-red text-white rounded-lg">
+    <div class="flex items-center mx-auto">
+      <span>This page is being tested and is not yet functional.</span>
+    </div>
+  </div>
+  {{ page_header(_('Template category'), id_text='template_cats') }}
+
+  <p>This is a template category #{{ template_category.id }}</p>
+
+  <div class="js-stick-at-bottom-when-scrolling">
+    <a href="#" class="mt-6 button button">{{ _('Save') }}</a>
+  </div>
+
+{% endblock %}
