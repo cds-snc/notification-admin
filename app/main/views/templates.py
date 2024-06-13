@@ -1168,16 +1168,14 @@ def add_recipients(service_id, template_id):
         option_conditionals=option_conditionals,
     )
 
- 
+
 @main.route("/template-categories", methods=["GET", "POST"])
 @user_is_platform_admin
-def template_categories():   
+def template_categories():
     template_category_list = template_category_api_client.get_all_template_categories()
 
     return render_template(
-        "views/templates/template_categories.html",
-        search_form=SearchByNameForm(),
-        template_categories=template_category_list
+        "views/templates/template_categories.html", search_form=SearchByNameForm(), template_categories=template_category_list
     )
 
 
@@ -1186,7 +1184,5 @@ def template_categories():
 def template_category(template_category_id):
     template_category = template_category_api_client.get_template_category(template_category_id)
     return render_template(
-        "views/templates/template_category.html",
-        search_form=SearchByNameForm(),
-        template_category=template_category
+        "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category
     )

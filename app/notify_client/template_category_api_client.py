@@ -44,6 +44,7 @@ cats = [
     },
 ]
 
+
 class TemplateCategoryClient(NotifyAdminAPIClient):
     def create_template_category(self, template_category):
         # TODO: Implement the creation logic
@@ -55,8 +56,8 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
 
     def get_all_template_categories(self):
         # TODO: Implement retrieval logic
-        return  cats
-    
+        return cats
+
     def update_template_category(self, template_category_id, template_category):
         # TODO: Implement the update logic
         pass
@@ -64,5 +65,6 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
     def delete_template_category(self, template_category_id):
         # TODO: Implement the deletion logic
         pass
+
 
 template_category_api_client = TemplateCategoryClient()
