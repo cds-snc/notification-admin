@@ -43,6 +43,7 @@ from app.main.forms import (
     SetTemplateSenderForm,
     SMSTemplateForm,
     TemplateAndFoldersSelectionForm,
+    TemplateCategoryForm,
     TemplateFolderForm,
 )
 from app.main.views.send import get_example_csv_rows, get_sender_details
@@ -1183,6 +1184,15 @@ def template_categories():
 @user_is_platform_admin
 def template_category(template_category_id):
     template_category = template_category_api_client.get_template_category(template_category_id)
+    form = TemplateCategoryForm(
+        name_en=template_category["name_en"],
+        name_fr=template_category["name_fr"],
+        desc_en=template_category["desc_en"],
+        desc_fr=template_category["desc_fr"],
+        hidden=template_category["hidden"],
+        email_priority=template_category["email_priority"],
+        sms_priority=template_category["sms_priority"],
+    )
     return render_template(
-        "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category
+        "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form
     )

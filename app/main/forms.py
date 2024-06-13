@@ -1829,3 +1829,27 @@ class BrandingRequestForm(StripWhitespaceForm):
             DataRequired(message=_l("You must select a file to continue")),
         ],
     )
+
+
+class TemplateCategoryForm(StripWhitespaceForm):
+    name_en = StringField("Name EN", validators=[DataRequired(message="You need to upload a file to submit")])
+    name_fr = StringField("Name FR", validators=[DataRequired(message="You need to upload a file to submit")])
+    desc_en = StringField("Desc EN", validators=[DataRequired(message="You need to upload a file to submit")])
+    desc_fr = StringField("Desc FR", validators=[DataRequired(message="You need to upload a file to submit")])
+    hidden = RadioField("Hidden", choices=[("True", "Yes"), ("False", "No")])
+    email_priority = RadioField(
+        "Email Priority",
+        choices=[
+            ("bulk", "Bulk"),
+            ("normal", "Normal"),
+            ("normal", "High"),
+        ],
+    )
+    sms_priority = RadioField(
+        "SMS Priority",
+        choices=[
+            ("bulk", "Bulk"),
+            ("normal", "Normal"),
+            ("normal", "High"),
+        ],
+    )
