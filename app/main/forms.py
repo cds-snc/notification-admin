@@ -1840,16 +1840,16 @@ class TemplateCategoryForm(StripWhitespaceForm):
     email_priority = RadioField(
         "Email Priority",
         choices=[
-            ("bulk", "Bulk"),
-            ("normal", "Normal"),
-            ("normal", "High"),
+            ("high", _l("High")),
+            ("medium", _l("Medium")),
+            ("low", _l("Low")),
         ],
     )
     sms_priority = RadioField(
         "SMS Priority",
         choices=[
-            ("bulk", "Bulk"),
-            ("normal", "Normal"),
-            ("normal", "High"),
+            ("high", _l("High")),
+            ("medium", _l("Medium")),
+            ("low", _l("Low")),
         ],
     )
