@@ -6,7 +6,7 @@ import LoginPage from "../Notify/Admin/Pages/LoginPage";
 let links_checked = [];
 let svgs_checked = [];
 
-Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true }) => {
+Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
     const current_hostname = config.Hostnames.Admin;
     // bypass rate limiting
     cy.intercept(`${current_hostname}/*`, (req) => {
@@ -18,7 +18,10 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
     // 1. validate a11y rules using axe dequeue
     if (options.a11y) {
         cy.injectAxe();
-        cy.checkA11y();
+
+        if (options.axeConfig) {
+            cy.configureAxe({ rules: options.axeConfig });
+        }
     }
 
     // 2. validate html

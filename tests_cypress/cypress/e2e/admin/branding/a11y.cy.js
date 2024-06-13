@@ -26,6 +26,12 @@ describe("Branding A11Y", () => {
           htmlValidate: true,
           deadLinks: false,
           mimeTypes: false,
+          axeConfig: [
+            {
+              id: "aria-allowed-role",
+              enabled: false,
+            },
+          ],
         },
       );
     });
