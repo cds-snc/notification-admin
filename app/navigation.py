@@ -51,6 +51,7 @@ class AdminNavigation(Navigation):
         },
         "template_categories": {
             "template_categories",
+            "template_category",
         },
         "find_services_by_name": {
             "find_services_by_name",
