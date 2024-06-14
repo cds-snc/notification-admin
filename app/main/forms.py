@@ -1844,14 +1844,14 @@ class TemplateCategoryForm(StripWhitespaceForm):
             ("medium", _l("Medium")),
             ("low", _l("Low")),
         ],
-        validators=[DataRequired(message=_l("This cannot be empty"))]
+        validators=[DataRequired(message=_l("This cannot be empty"))],
     )
     sms_priority = RadioField(
-    _l("Text message priority"),
+        _l("Text message priority"),
         choices=[
             ("high", _l("High")),
             ("medium", _l("Medium")),
             ("low", _l("Low")),
         ],
-        validators=[DataRequired(message=_l("This cannot be empty"))]
+        validators=[DataRequired(message=_l("This cannot be empty"))],
     )
