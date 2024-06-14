@@ -1832,24 +1832,26 @@ class BrandingRequestForm(StripWhitespaceForm):
 
 
 class TemplateCategoryForm(StripWhitespaceForm):
-    name_en = StringField("Name EN", validators=[DataRequired(message="You need to upload a file to submit")])
-    name_fr = StringField("Name FR", validators=[DataRequired(message="You need to upload a file to submit")])
-    desc_en = StringField("Desc EN", validators=[DataRequired(message="You need to upload a file to submit")])
-    desc_fr = StringField("Desc FR", validators=[DataRequired(message="You need to upload a file to submit")])
-    hidden = RadioField("Hidden", choices=[("True", "Yes"), ("False", "No")])
+    name_en = StringField("Name EN", validators=[DataRequired(message=_l("This cannot be empty"))])
+    name_fr = StringField("Name FR", validators=[DataRequired(message=_l("This cannot be empty"))])
+    desc_en = StringField("Desc EN", validators=[DataRequired(message=_l("This cannot be empty"))])
+    desc_fr = StringField("Desc FR", validators=[DataRequired(message=_l("This cannot be empty"))])
+    hidden = RadioField(_l("Hide category"), choices=[("True", _l("Hide")), ("False", _l("Show"))])
     email_priority = RadioField(
-        "Email Priority",
+        _l("Email Priority"),
         choices=[
             ("high", _l("High")),
             ("medium", _l("Medium")),
             ("low", _l("Low")),
         ],
+        validators=[DataRequired(message=_l("This cannot be empty"))]
     )
     sms_priority = RadioField(
-        "SMS Priority",
+    _l("Text message priority"),
         choices=[
             ("high", _l("High")),
             ("medium", _l("Medium")),
             ("low", _l("Low")),
         ],
+        validators=[DataRequired(message=_l("This cannot be empty"))]
     )

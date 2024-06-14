@@ -1193,6 +1193,9 @@ def template_category(template_category_id):
         email_priority=template_category["email_priority"],
         sms_priority=template_category["sms_priority"],
     )
+
+    form.validate_on_submit()
+
     return render_template(
         "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form
     )
