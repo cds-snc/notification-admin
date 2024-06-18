@@ -32,7 +32,15 @@ from wtforms import (
     widgets,
 )
 from wtforms.fields import EmailField, SearchField, TelField
-from wtforms.validators import URL, AnyOf, DataRequired, InputRequired, Length, Optional, Regexp
+from wtforms.validators import (
+    URL,
+    AnyOf,
+    DataRequired,
+    InputRequired,
+    Length,
+    Optional,
+    Regexp,
+)
 from wtforms.widgets import CheckboxInput, ListWidget
 
 from app import format_thousands
@@ -834,19 +842,10 @@ class RequiredIf(InputRequired):
 
 
 class BaseTemplateFormWithCategory(BaseTemplateForm):
-    template_category = RadioField(
-        _l("Select category"),
-        validators=[
-            DataRequired(message=_l("This cannot be empty"))
-        ]
-    )
+    template_category = RadioField(_l("Select category"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
-    template_category_other = StringField(
-        _l("Category label"),
-        validators=[
-            RequiredIf('template_category')
-        ]
-    )
+    template_category_other = StringField(_l("Category label"), validators=[RequiredIf("template_category")])
+
 
 class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
     def validate_template_content(self, field):
@@ -871,6 +870,7 @@ class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
             NoCommasInPlaceHolders(),
         ],
     )
+
 
 class LetterTemplateFormWithCategory(EmailTemplateFormWithCategory):
     subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])

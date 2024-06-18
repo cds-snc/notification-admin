@@ -34,17 +34,21 @@ from app import (
 from app.extensions import redis_client
 from app.main import main
 from app.main.forms import (
+    EmailTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
+)
+from app.main.forms import (
+    SMSTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
+)
+from app.main.forms import (
     AddEmailRecipientsForm,
     AddSMSRecipientsForm,
     CreateTemplateForm,
-    EmailTemplateForm, # remove when FF_TEMPLATE_CATEGORY is removed
     EmailTemplateFormWithCategory,
     LetterTemplateForm,
     LetterTemplateFormWithCategory,
     LetterTemplatePostageForm,
     SearchByNameForm,
     SetTemplateSenderForm,
-    SMSTemplateForm, # remove when FF_TEMPLATE_CATEGORY is removed
     SMSTemplateFormWithCategory,
     TemplateAndFoldersSelectionForm,
     TemplateCategoryForm,
@@ -568,11 +572,11 @@ def copy_template(service_id, template_id):
 
     template["template_content"] = template["content"]
     template["name"] = _get_template_copy_name(template, current_service.all_templates)
-    
-    if current_app.config["FF_TEMPLATE_CATEGORY"]: # TODO: remove when FF_TEMPLATE_CATEGORY removed
+
+    if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
         form = form_objects_with_category[template["template_type"]](**template)
     else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        form = form_objects[template["template_type"]](**template) # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form = form_objects[template["template_type"]](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
 
     return render_template(
         f"views/edit-{template['template_type']}-template.html",
@@ -733,7 +737,6 @@ def add_service_template(service_id, template_type, template_folder_id=None):
     template = get_preview_data(service_id)
     if template.get("process_type") is None:
         template["process_type"] = TemplateProcessTypes.BULK.value
-
 
     if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
         form = form_objects_with_category[template["template_type"]](**template)
@@ -922,7 +925,7 @@ def edit_service_template(service_id, template_id):
     if template.get("process_type") is None:
         template["process_type"] = TemplateProcessTypes.BULK.value
 
-    if current_app.config["FF_TEMPLATE_CATEGORY"]: # TODO: remove when FF_TEMPLATE_CATEGORY removed
+    if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
         form = form_objects_with_category[template["template_type"]](**template)
         # alphabetize choices
         cats = sorted(cats, key=lambda x: x["name_en"])
@@ -932,10 +935,10 @@ def edit_service_template(service_id, template_id):
         form.template_category.choices.append(("other", "Other"))
         other_category = {"other": form.template_category_other}
         template_category_hints = {cat["id"]: cat["desc_en"] for cat in cats}
-    else: # TODO: remove when FF_TEMPLATE_CATEGORY removed
+    else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
         other_category = None  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        template_category_hints = None # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        form = form_objects[template["template_type"]](**template)   # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        template_category_hints = None  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form = form_objects[template["template_type"]](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
 
     if form.validate_on_submit():
         if form.process_type.data != template["process_type"]:
@@ -1032,7 +1035,7 @@ def edit_service_template(service_id, template_id):
             template=template,
             heading=_l("Edit reusable template"),
             template_category_hints=template_category_hints,
-            other_category=other_category
+            other_category=other_category,
         )
 
 
