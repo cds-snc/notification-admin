@@ -1,8 +1,8 @@
 {% from "components/big-number.html" import big_number %}
 
-{% macro mapping_table(caption='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False, font_size="table-font-xsmall") -%}
+{% macro mapping_table(caption='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False, font_size="table-font-xsmall", testid=None) -%}
   <section class="scrollable-table" tabindex="0">
-   <table class="table {{fontsize}}">
+   <table class="table {{fontsize}}"{% if testid %} data-testid="{{ testid }}"{% endif %}>
     <caption class="heading-medium table-heading{{ ' visuallyhidden' if not caption_visible }}">
       {{ caption }}
     </caption>
@@ -32,10 +32,10 @@
   </section>
 {%- endmacro %}
 
-{% macro list_table(items, caption='', empty_message='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False) -%}
+{% macro list_table(items, caption='', empty_message='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False, testid=None) -%}
   {% set parent_caller = caller %}
-  
-  {% call mapping_table(caption, field_headings, field_headings_visible, caption_visible, equal_length) %}
+
+  {% call mapping_table(caption, field_headings, field_headings_visible, caption_visible, equal_length, testid=testid) %}
     {% for item in items %}
       {% call row(item.id) %}
         {{ parent_caller(item, loop.index + 1) }}
