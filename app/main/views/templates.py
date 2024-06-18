@@ -5,6 +5,7 @@ from string import ascii_uppercase
 from dateutil.parser import parse
 from flask import (
     abort,
+    current_app,
     flash,
     jsonify,
     redirect,
@@ -36,12 +37,15 @@ from app.main.forms import (
     AddEmailRecipientsForm,
     AddSMSRecipientsForm,
     CreateTemplateForm,
-    EmailTemplateForm,
+    EmailTemplateForm, # remove when FF_TEMPLATE_CATEGORY is removed
+    EmailTemplateFormWithCategory,
     LetterTemplateForm,
+    LetterTemplateFormWithCategory,
     LetterTemplatePostageForm,
     SearchByNameForm,
     SetTemplateSenderForm,
-    SMSTemplateForm,
+    SMSTemplateForm, # remove when FF_TEMPLATE_CATEGORY is removed
+    SMSTemplateFormWithCategory,
     TemplateAndFoldersSelectionForm,
     TemplateCategoryForm,
     TemplateFolderForm,
@@ -59,10 +63,17 @@ from app.utils import (
     user_is_platform_admin,
 )
 
+# TODO: Remove `form_objects` when FF_TEMPLATE_CATEGORY IS REMOVED
 form_objects = {
     "email": EmailTemplateForm,
     "sms": SMSTemplateForm,
     "letter": LetterTemplateForm,
+}
+
+form_objects_with_category = {
+    "email": EmailTemplateFormWithCategory,
+    "sms": SMSTemplateFormWithCategory,
+    "letter": LetterTemplateFormWithCategory,
 }
 
 
@@ -557,7 +568,11 @@ def copy_template(service_id, template_id):
 
     template["template_content"] = template["content"]
     template["name"] = _get_template_copy_name(template, current_service.all_templates)
-    form = form_objects[template["template_type"]](**template)
+    
+    if current_app.config["FF_TEMPLATE_CATEGORY"]: # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form = form_objects_with_category[template["template_type"]](**template)
+    else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form = form_objects[template["template_type"]](**template) # TODO: remove when FF_TEMPLATE_CATEGORY removed
 
     return render_template(
         f"views/edit-{template['template_type']}-template.html",
@@ -718,7 +733,12 @@ def add_service_template(service_id, template_type, template_folder_id=None):
     template = get_preview_data(service_id)
     if template.get("process_type") is None:
         template["process_type"] = TemplateProcessTypes.BULK.value
-    form = form_objects[template_type](**template)
+
+
+    if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form = form_objects_with_category[template["template_type"]](**template)
+    else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form = form_objects[template["template_type"]](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
 
     if form.validate_on_submit():
         if form.process_type.data != TemplateProcessTypes.BULK.value:
@@ -808,6 +828,89 @@ def abort_403_if_not_admin_user():
 @main.route("/services/<service_id>/templates/<template_id>/edit", methods=["GET", "POST"])
 @user_has_permissions("manage_templates")
 def edit_service_template(service_id, template_id):
+    cats = [
+        {
+            "name_en": "Status updates",
+            "name_fr": "FR: Status updates",
+            "desc_en": "Notice of change in status, progress of a submission",
+            "desc_fr": "FR: Notice of change in status, progress of a submission",
+            "id": "1",
+            "email_priority": "high",
+            "sms_priority": "low",
+            "hidden": "false",
+        },
+        {
+            "name_en": "Promotional call to action",
+            "name_fr": "FR: Promotional call to action",
+            "desc_en": "Surveys, general apply now, learn more",
+            "desc_fr": "FR: Surveys, general apply now, learn more",
+            "id": "2",
+            "email_priority": "high",
+            "sms_priority": "low",
+            "hidden": "false",
+        },
+        {
+            "name_en": "Service related requests",
+            "name_fr": "FR: Service related requests",
+            "desc_en": "Submit additional documents, follow up to move a process forward",
+            "desc_fr": "FR: Submit additional documents, follow up to move a process forward",
+            "id": "3",
+            "email_priority": "high",
+            "sms_priority": "low",
+            "hidden": "false",
+        },
+        {
+            "name_en": "Fulfillment with attachments - email only",
+            "name_fr": "FR: Fulfillment with attachments - email only",
+            "desc_en": "Here’s your permit",
+            "desc_fr": "FR: Here’s your permit",
+            "id": "4",
+            "email_priority": "high",
+            "sms_priority": "low",
+            "hidden": "false",
+        },
+        {
+            "name_en": "Broadcast messages",
+            "name_fr": "FR: Broadcast messages",
+            "desc_en": "General information, not related to transactions such as COVID 19 information",
+            "desc_fr": "FR: General information, not related to transactions such as COVID 19 information",
+            "id": "5",
+            "email_priority": "high",
+            "sms_priority": "low",
+            "hidden": "false",
+        },
+        {
+            "name_en": "Auto-reply",
+            "name_fr": "FR: Auto-reply",
+            "desc_en": "No-reply messages, acknowledgements, response wait times",
+            "desc_fr": "FR: No-reply messages, acknowledgements, response wait times",
+            "id": "6",
+            "email_priority": "high",
+            "sms_priority": "low",
+            "hidden": "false",
+        },
+        {
+            "name_en": "Verification message",
+            "name_fr": "FR: Verification message",
+            "desc_en": "Authentication codes, confirming an account change",
+            "desc_fr": "FR: Authentication codes, confirming an account change",
+            "id": "7",
+            "email_priority": "high",
+            "sms_priority": "low",
+            "hidden": "false",
+        },
+        {
+            "name_en": "Confirmation / Receipts",
+            "name_fr": "FR: Confirmation / Receipts",
+            "desc_en": "Record of transaction, approvals",
+            "desc_fr": "FR: Record of transaction, approvals",
+            "id": "8",
+            "email_priority": "high",
+            "sms_priority": "low",
+            "hidden": "false",
+        },
+    ]
+
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
     new_template_data = get_preview_data(service_id, template_id)
 
@@ -818,7 +921,21 @@ def edit_service_template(service_id, template_id):
     template["template_content"] = template["content"]
     if template.get("process_type") is None:
         template["process_type"] = TemplateProcessTypes.BULK.value
-    form = form_objects[template["template_type"]](**template)
+
+    if current_app.config["FF_TEMPLATE_CATEGORY"]: # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form = form_objects_with_category[template["template_type"]](**template)
+        # alphabetize choices
+        cats = sorted(cats, key=lambda x: x["name_en"])
+        form.template_category.choices = [(cat["id"], cat["name_en"]) for cat in cats]
+
+        # add "other" category to choices
+        form.template_category.choices.append(("other", "Other"))
+        other_category = {"other": form.template_category_other}
+        template_category_hints = {cat["id"]: cat["desc_en"] for cat in cats}
+    else: # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        other_category = None  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        template_category_hints = None # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form = form_objects[template["template_type"]](**template)   # TODO: remove when FF_TEMPLATE_CATEGORY removed
 
     if form.validate_on_submit():
         if form.process_type.data != template["process_type"]:
@@ -914,6 +1031,8 @@ def edit_service_template(service_id, template_id):
             form=form,
             template=template,
             heading=_l("Edit reusable template"),
+            template_category_hints=template_category_hints,
+            other_category=other_category
         )
 
 
