@@ -4,12 +4,14 @@
       <h2 class="heading-medium m-0">{{ _('There was a problem') }}</h2>
       <ol class="list list-number list-outside m-0">
         {% for field in form.errors %}
-          <li>
-            <a class="link:text-red text-red visited:text-red" href="#{{ field }}">
-              <span class="font-bold">{{ form[field].label.text}}</span>: 
-              {{ form.errors[field][0] }}
-            </a>
-          </li>
+          {% if form[field].type != 'HiddenField' %}
+            <li>
+              <a class="link:text-red text-red visited:text-red" href="#{{ field }}">
+                <span class="font-bold">{{ form[field].label.text}}</span>: 
+                {{ form.errors[field][0] }}
+              </a>
+            </li>
+          {% endif %}
         {% endfor %}
       </ul>
     </div>
