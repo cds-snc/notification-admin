@@ -829,22 +829,23 @@ class RequiredIf(InputRequired):
     # a validator which makes a field required if
     # another field is set and has a truthy value
 
-    def __init__(self, other_field_name, *args, **kwargs):
+    def __init__(self, other_field_name, other_field_value, *args, **kwargs):
         self.other_field_name = other_field_name
+        self.other_field_value = other_field_value
         super(RequiredIf, self).__init__(*args, **kwargs)
 
     def __call__(self, form, field):
         other_field = form._fields.get(self.other_field_name)
         if other_field is None:
             raise Exception('no field named "%s" in form' % self.other_field_name)
-        if bool(other_field.data):
+        if bool(other_field.data and other_field.data == self.other_field_value):
             super(RequiredIf, self).__call__(form, field)
 
 
 class BaseTemplateFormWithCategory(BaseTemplateForm):
     template_category = RadioField(_l("Select category"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
-    template_category_other = StringField(_l("Category label"), validators=[RequiredIf("template_category")])
+    template_category_other = StringField(_l("Category label"), validators=[RequiredIf("template_category", "other")])
 
 
 class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
