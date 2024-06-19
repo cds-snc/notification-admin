@@ -1,0 +1,10 @@
+{% macro template_category(field, expanded=false) %}
+    {% set field_text = dict(field.choices).get(field.data) %}
+    <div id="tc_button_container" class="mb-gutter {% if expanded %}hidden{% endif %}">
+        <p>{{ field_text }}</p>
+        <button type="button" class="button button-secondary">{{ _('Change category') }}</button>
+    </div>
+    <div id="tc_radios" class="{% if not expanded %}hidden{% endif %}">
+        {{ caller() }}
+    </div>
+{% endmacro %}

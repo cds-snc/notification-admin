@@ -6,6 +6,7 @@
 {% from "components/select-input.html" import select %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/task-shortcut.html" import task_shortcut %}
+{% from "components/template.html" import template_category %}
 
 {% block service_page_title %}
   {{ heading }}
@@ -40,8 +41,9 @@
       
         {% if config["FF_TEMPLATE_CATEGORY"] %}
           <h2 class="heading-medium">{{ _('Template category') }}</h2>
-
-          {{ select(form.template_category, hint=_('Template categories help improve delivery of your messages'), option_hints=template_category_hints, option_conditionals=other_category) }}
+          {% call template_category(form.template_category, true if template_category_mode == 'create' else false) %}
+            {{ select(form.template_category, hint=_('Template categories help improve delivery of your messages'), option_hints=template_category_hints, option_conditionals=other_category) }}
+          {% endcall %}
         {% endif %}
 
         {% if current_user.platform_admin %}
