@@ -61,7 +61,7 @@ certifi = "^2023.7.22" # Pinned for security reasons: https://github.com/cds-snc
 redis = "3.5.3" # pinned for now
 xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; see https://github.com/pyexcel/pyexcel-xls/issues/53
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
-itsdangerous = "2.2.0"  # pyup: <1.0.0
+itsdangerous = "2.1.2"  # pyup: <1.0.0
 newrelic = "8.11.0" # Pinned to 8.10.0 for now, 8.11.0 caused a performance regression: https://gcdigital.slack.com/archives/C012W5K734Y/p1709668046344929
 
 [tool.poetry.group.test.dependencies]
