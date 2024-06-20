@@ -575,11 +575,11 @@ def copy_template(service_id, template_id):
     template["name"] = _get_template_copy_name(template, current_service.all_templates)
 
     if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        form = form_objects_with_category[template["template_type"]](**template)
         form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template["template_type"])
     else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        other_category = None
+        template_category_hints = None
         form = form_objects[template["template_type"]](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-
     return render_template(
         f"views/edit-{template['template_type']}-template.html",
         form=form,
@@ -743,7 +743,6 @@ def add_service_template(service_id, template_type, template_folder_id=None):
         template["process_type"] = TemplateProcessTypes.BULK.value
 
     if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        form = form_objects_with_category[template_type](**template)
         form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template_type)
     else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
         other_category = None
