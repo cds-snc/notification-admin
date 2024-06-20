@@ -42,7 +42,7 @@
         {% if config["FF_TEMPLATE_CATEGORY"] %}
           <h2 class="heading-medium">{{ _('Template category') }}</h2>
           {% call template_category(form.template_category, true if template_category_mode == 'expand' else false) %}
-            {{ select(form.template_category, hint=_('Template categories help improve delivery of your messages'), option_hints=template_category_hints, option_conditionals=other_category) }}
+            {{ select(form.template_category, hint=_('Template categories help improve delivery of your messages'), option_hints=template_category_hints, option_conditionals=other_category, testid="template-categories") }}
           {% endcall %}
         {% endif %}
 
