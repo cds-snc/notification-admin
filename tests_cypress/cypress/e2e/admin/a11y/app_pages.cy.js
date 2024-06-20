@@ -76,6 +76,7 @@ const pages = [
   { name: "Contact us", route: "/contact" },
   { name: "Create an account", route: "/register" },
   { name: "Sign in", route: "/sign-in" },
+  { name: "Terms of use", route: "/terms" },
 ];
 
 describe(`A11Y - App pages [${config.CONFIG_NAME}]`, () => {
