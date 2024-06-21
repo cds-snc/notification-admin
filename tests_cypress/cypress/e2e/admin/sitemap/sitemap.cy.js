@@ -7,7 +7,6 @@ const sitemap_footer_id = "nav-footer-sitemap";
 
 describe(`Sitemap`, () => {
   it("Has link text that corresponds to page titles", () => {
-    cy.then(Cypress.session.clearCurrentSessionData);
     cy.visit(path);
     cy.get("main").within(() => {
       cy.get("a").each((link) => {
@@ -51,8 +50,7 @@ describe(`Sitemap`, () => {
 
     it("Does NOT display the 'You' group when logged out", () => {
       cy.visit(path);
-      cy.getByTestId("sitemap-group").should("not.have.text", "You");
-
+      cy.getByTestId("sitemap-group").should("not.have.text", "Your GC Notify");
       cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
     });
 
@@ -60,7 +58,7 @@ describe(`Sitemap`, () => {
       cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
       cy.visit(path);
 
-      cy.getByTestId("sitemap-group").contains("You");
+      cy.getByTestId("sitemap-group").contains("Your GC Notify");
     });
   });
 

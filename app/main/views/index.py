@@ -105,6 +105,11 @@ def pricing():
     )
 
 
+@main.route("/terms")
+def terms():
+    return render_template("views/terms.html")
+
+
 @main.route("/design-patterns-content-guidance")
 def design_content():
     return render_template("views/design-patterns-content-guidance.html")

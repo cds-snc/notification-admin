@@ -12,17 +12,19 @@ module.exports = defineConfig({
         rules: {
           "form-dup-name": "off",
           "prefer-native-element": ["error", {
-            "exclude": ["button"]
+            "exclude": ["button", "link"]
           }],
         },
       });
 
       const emailAccount = await EmailAccount()
+
       on('task', {
-        log (message) { // for debugging
+        log(message) { // for debugging
           console.log(message)
           return null
         },
+        // Email Account ///
         getLastEmail() {
           return emailAccount.getLastEmail()
         },
@@ -34,7 +36,7 @@ module.exports = defineConfig({
         },
         createEmailAccount() {
           return emailAccount.createEmailAccount();
-        }
+        },
       });
 
       on('before:browser:launch', (browser = {}, launchOptions) => {

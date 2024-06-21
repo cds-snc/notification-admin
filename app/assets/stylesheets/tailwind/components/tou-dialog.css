@@ -1,0 +1,38 @@
+@layer components {
+  /*! purgecss start ignore */
+
+  #tou-dialog:not([open]) {
+    display: none;
+  }
+
+  ::backdrop {
+    @apply bg-gray-900;
+    opacity: 0.85;
+  }
+
+  #tou-dialog {
+    margin: 0;
+    max-height: 100vh;
+
+    @screen lg {
+      margin: auto;
+      max-height: calc(100vh - 6rem);
+    }
+  }
+
+  #tou-heading {
+    max-width: 85%;
+    @screen md {
+      max-width: 100%;
+    }
+  }
+  #tou-terms {
+    @apply bg-white border border-gray-200;
+    background-color: #f7f7f7;
+
+    h3:first-of-type {
+      @apply mt-0;
+    }
+  }
+  /*! purgecss end ignore */
+}
