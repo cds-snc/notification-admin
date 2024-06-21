@@ -22,6 +22,17 @@ describe("Template categories", () => {
 
   templates.forEach((template) => {
     context(`${template.type}`, () => {
+      it("Passes a11y checks", () => {      
+        TemplatesPage.SelectTemplate(template.name);
+        cy.a11yScan(false, { a11y: true, htmlValidate: true, deadLinks: false, mimeTypes: false, axeConfig: false });
+
+        TemplatesPage.EditCurrentTemplate();
+        cy.a11yScan(false, { a11y: true, htmlValidate: true, deadLinks: false, mimeTypes: false, axeConfig: false });
+
+        TemplatesPage.ExpandTemplateCategories();
+        cy.a11yScan(false, { a11y: true, htmlValidate: true, deadLinks: false, mimeTypes: false, axeConfig: false });
+      });
+
       it("Shows collapsed or expanded when editing a template", () => {
         TemplatesPage.SelectTemplate(template.name);
         TemplatesPage.EditCurrentTemplate();
