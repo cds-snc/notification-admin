@@ -8,7 +8,6 @@ const vistPageAndFastForwardTime = (page = "/") => {
 
 describe("Sign out", () => {
   it("Does not redirect to session timeout page when logged out", () => {
-    cy.clearCookie("notify_admin_session");
     vistPageAndFastForwardTime();
 
     // asserts

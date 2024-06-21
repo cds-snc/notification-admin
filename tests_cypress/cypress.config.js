@@ -55,6 +55,6 @@ module.exports = defineConfig({
     viewportWidth: 1280,
     viewportHeight: 850,
     testIsolation: true,
-    // retries: 3
+    retries: 3
   },
 });
