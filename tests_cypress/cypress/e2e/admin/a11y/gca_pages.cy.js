@@ -9,7 +9,6 @@ const fullPageList = [
   { en: "/features", fr: "/fonctionnalites" },
   { en: "/formatting-emails", fr: "/guide-mise-en-forme" },
   { en: "/service-level-agreement", fr: "/accord-niveaux-de-service" },
-  { en: "/terms", fr: "/conditions-dutilisation" },
   { en: "/guidance", fr: "/guides-reference" },
   { en: "/home", fr: "/accueil" },
   { en: "/message-delivery-status", fr: "/etat-livraison-messages" },

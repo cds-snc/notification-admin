@@ -26,6 +26,7 @@ from app import (
     current_service,
     service_api_client,
     template_api_prefill_client,
+    template_category_api_client,
     template_folder_api_client,
     template_statistics_client,
 )
@@ -42,6 +43,7 @@ from app.main.forms import (
     SetTemplateSenderForm,
     SMSTemplateForm,
     TemplateAndFoldersSelectionForm,
+    TemplateCategoryForm,
     TemplateFolderForm,
 )
 from app.main.views.send import get_example_csv_rows, get_sender_details
@@ -1165,4 +1167,35 @@ def add_recipients(service_id, template_id):
         disabled_options={},
         option_hints=option_hints,
         option_conditionals=option_conditionals,
+    )
+
+
+@main.route("/template-categories", methods=["GET", "POST"])
+@user_is_platform_admin
+def template_categories():
+    template_category_list = template_category_api_client.get_all_template_categories()
+
+    return render_template(
+        "views/templates/template_categories.html", search_form=SearchByNameForm(), template_categories=template_category_list
+    )
+
+
+@main.route("/template-categories/<template_category_id>", methods=["GET", "POST"])
+@user_is_platform_admin
+def template_category(template_category_id):
+    template_category = template_category_api_client.get_template_category(template_category_id)
+    form = TemplateCategoryForm(
+        name_en=template_category["name_en"],
+        name_fr=template_category["name_fr"],
+        desc_en=template_category["desc_en"],
+        desc_fr=template_category["desc_fr"],
+        hidden=template_category["hidden"],
+        email_priority=template_category["email_priority"],
+        sms_priority=template_category["sms_priority"],
+    )
+
+    form.validate_on_submit()
+
+    return render_template(
+        "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form
     )

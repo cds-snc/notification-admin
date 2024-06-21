@@ -3,7 +3,7 @@ from unittest.mock import ANY
 
 import pytest
 from bs4 import BeautifulSoup
-from flask import url_for
+from flask import current_app, url_for
 
 from app.models.user import InvitedUser, User
 
@@ -62,6 +62,9 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         "password": password,
         "auth_type": "sms_auth",
     }
+
+    if current_app.config["FF_TOU"]:
+        user_data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register"), data=user_data, follow_redirects=True)
     assert response.status_code == 200
@@ -149,15 +152,17 @@ def test_should_add_user_details_to_session(
     email_address,
 ):
     client_request.logout()
-    client_request.post(
-        "main.register",
-        _data={
-            "name": "Test Codes",
-            "email_address": email_address,
-            "mobile_number": "+16502532222",
-            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-        },
-    )
+    data = {
+        "name": "Test Codes",
+        "email_address": email_address,
+        "mobile_number": "+16502532222",
+        "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+    }
+
+    if current_app.config["FF_TOU"]:
+        data["tou_agreed"] = "true"
+
+    client_request.post("main.register", _data=data)
     with client_request.session_transaction() as session:
         assert session["user_details"]["email"] == email_address
 
@@ -193,6 +198,9 @@ def test_register_with_existing_email_sends_emails(
         "mobile_number": "+16502532222",
         "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
     }
+
+    if current_app.config["FF_TOU"]:
+        user_data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register"), data=user_data)
     assert response.status_code == 302
@@ -268,17 +276,19 @@ def test_register_from_invite(
     )
     with client.session_transaction() as session:
         session["invited_user"] = invited_user.serialize()
-    response = client.post(
-        url_for("main.register_from_invite"),
-        data={
-            "name": "Registered in another Browser",
-            "email_address": invited_user.email_address,
-            "mobile_number": "+16502532222",
-            "service": str(invited_user.id),
-            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-            "auth_type": "sms_auth",
-        },
-    )
+    data = {
+        "name": "Registered in another Browser",
+        "email_address": invited_user.email_address,
+        "mobile_number": "+16502532222",
+        "service": str(invited_user.id),
+        "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+        "auth_type": "sms_auth",
+    }
+
+    if current_app.config["FF_TOU"]:
+        data["tou_agreed"] = "true"
+
+    response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
     assert response.location == url_for("main.verify")
     mock_register_user.assert_called_once_with(
@@ -312,17 +322,20 @@ def test_register_from_invite_when_user_registers_in_another_browser(
     )
     with client.session_transaction() as session:
         session["invited_user"] = invited_user.serialize()
-    response = client.post(
-        url_for("main.register_from_invite"),
-        data={
-            "name": "Registered in another Browser",
-            "email_address": api_user_active["email_address"],
-            "mobile_number": api_user_active["mobile_number"],
-            "service": str(api_user_active["id"]),
-            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-            "auth_type": "sms_auth",
-        },
-    )
+
+    data = {
+        "name": "Registered in another Browser",
+        "email_address": api_user_active["email_address"],
+        "mobile_number": api_user_active["mobile_number"],
+        "service": str(api_user_active["id"]),
+        "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+        "auth_type": "sms_auth",
+    }
+
+    if current_app.config["FF_TOU"]:
+        data["tou_agreed"] = "true"
+
+    response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
     assert response.location == url_for("main.verify")
 
@@ -358,6 +371,9 @@ def test_register_from_email_auth_invite(
         "auth_type": "email_auth",
     }
 
+    if current_app.config["FF_TOU"]:
+        data["tou_agreed"] = "true"
+
     resp = client.post(url_for("main.register_from_invite"), data=data)
     assert resp.status_code == 302
     assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"])
@@ -367,11 +383,7 @@ def test_register_from_email_auth_invite(
     assert not mock_send_verify_code.called
     # creates user with email_auth set
     mock_register_user.assert_called_once_with(
-        data["name"],
-        data["email_address"],
-        data["mobile_number"],
-        data["password"],
-        data["auth_type"],
+        data["name"], data["email_address"], data["mobile_number"], data["password"], data["auth_type"]
     )
     mock_accept_invite.assert_called_once_with(sample_invite["service"], sample_invite["id"])
     # just logs them in
@@ -417,6 +429,8 @@ def test_can_register_email_auth_without_phone_number(
         "auth_type": "email_auth",
     }
 
+    if current_app.config["FF_TOU"]:
+        data["tou_agreed"] = "true"
     resp = client.post(url_for("main.register_from_invite"), data=data)
     assert resp.status_code == 302
     assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"])
