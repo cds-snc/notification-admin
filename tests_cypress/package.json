@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "axe-core": "^4.7.2",
-    "cypress": "^13.8.1"
+    "cypress": "^13.8.1",
+    "cypress-real-events": "^1.12.0"
   }
 }

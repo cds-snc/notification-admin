@@ -1,0 +1,66 @@
+{% from "components/links.html" import content_link %}
+{% from "components/terms.html" import tou_heading_list %}
+
+{% macro tou_prompt() %}
+
+  <h1 class="heading-large mt-0 mb-4" tabindex="0" data-testid="tou-heading" autofocus>{{ _('Before you continue') }}</h1>
+  <div id="tou-prompt" data-testid="tou-prompt" class="mt-16 mb-10">
+    <h2 class="heading-medium">{{ _('Review your activity') }}</h1>
+    <p>{{ _('Our records show that these are the last 3 times you signed into this account:') }}</p>
+    <table>
+      <tbody>
+        {% for event in session[events_key] %}
+          <tr>
+            <td>
+              <strong style="font-weight:bold">
+                <time class="relative-time-past">{{ event.created_at }}</time>
+              </strong>
+            </td>
+            <td class="format-ua">
+              {{ parse_ua(event.data["user-agent"]) }}
+            </td>
+          </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p>
+    {{ _('If this is not correct, ') }}<a href="{{ url_for('main.contact') }}" target="_blank">{{ _('contact us') }}</a>.
+    </p>
+  </div>
+  <div id="tou-prompt" data-testid="tou-prompt" class="mt-16">
+    <h2 class="heading-medium mt-0 mb-6" data-testid="tou-heading">{{ _('Know your responsibilities') }}</h2>
+    <div id="tou-terms" data-testid="tou-terms">
+      <p>
+        {{ _('By using GC Notify, you accept our ') }}
+        {{ content_link(_("terms of use"), gca_url_for('terms'), is_external_link=true) }}.
+        {{ _('This includes your agreement to:') }}
+      </p>
+      <ul class="list list-bullet ml-5">
+        {{ tou_heading_list() }}
+      </ul>
+    </div>
+    <form action="/agree-terms" method="post" class="mt-10">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="next" value="{{ request.path }}" />
+
+      <div class="flex">
+        <button
+          type="submit"
+          class="button text-base outline-none focus:shadow-outline"
+          name="button_pressed"
+          value="agree"
+          data-testid="tou-agree-button"
+          id="tou-accept"
+        >
+          {{ _('Agree and continue') }}
+        </button>
+        <!-- link that looks like a button to sign out -->
+        <a
+          href="{{ url_for('main.sign_out') }}"
+          class="button button-secondary text-base ml-5"
+          data-testid="tou-sign-out-button"
+          id="tou-sign-out">{{ _('Sign out') }}</a>
+      </div>
+    </form>
+  </div>
+{% endmacro %}
