@@ -2,7 +2,7 @@
   /*! purgecss start ignore */
 
   dialog {
-    @apply text-smaller
+    @apply text-smaller;
   }
 
   .dialog-sticky-footer {
