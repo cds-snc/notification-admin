@@ -13,6 +13,7 @@ from flask_login import login_user
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.user import User
+from app.tou import TERMS_KEY
 
 # Add itsdangerous to the libraries which freezegun ignores to avoid errors.
 # In tests where we freeze time, the code in the test function will get the frozen time but the
@@ -46,12 +47,15 @@ class MockRedis:
 
 
 class TestClient(FlaskClient):
-    def login(self, user, mocker=None, service=None):
+    def login(self, user, mocker=None, service=None, agree_to_terms=True):
         # Skipping authentication here and just log them in
         model_user = User(user)
         with self.session_transaction() as session:
             session["current_session_id"] = model_user.current_session_id
             session["user_id"] = model_user.id
+
+            if agree_to_terms:
+                session[TERMS_KEY] = True
         if mocker:
             mocker.patch("app.user_api_client.get_user", return_value=user)
         if mocker and service:

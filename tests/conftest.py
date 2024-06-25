@@ -15,6 +15,7 @@ from notifications_utils.url_safe_token import generate_token
 from pytest_mock import MockerFixture
 
 from app import create_app
+from app.tou import TERMS_KEY
 from app.types import EmailReplyTo
 
 from . import (
@@ -3431,6 +3432,9 @@ def mock_send_notification(mocker, fake_uuid):
 @pytest.fixture(scope="function")
 def client(app_):
     with app_.test_request_context(), app_.test_client() as client:
+        with client.session_transaction() as session:
+            # agree to the tou by default so other tests dont need to deal with this
+            session[TERMS_KEY] = True
         yield client
 
 

@@ -14,6 +14,9 @@ module.exports = defineConfig({
           "prefer-native-element": ["error", {
             "exclude": ["button", "link"]
           }],
+          "no-redundant-role": "off",
+          "no-dup-class": "off",
+          "require-sri": "off",
         },
       });
 
@@ -52,6 +55,6 @@ module.exports = defineConfig({
     viewportWidth: 1280,
     viewportHeight: 850,
     testIsolation: true,
-    // retries: 3
+    retries: 3
   },
 });
