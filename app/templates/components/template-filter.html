@@ -16,7 +16,7 @@
 {% macro template_filter(row_selector, notification_types, template_categories, notification_type_data_attribue, template_category_data_attribute) %}
     {# TODO: move these to a CSS file #}
     <style>
-        .template_filter .active {
+        .template_filter .active:not(:focus) {
             background-color: #425A76;
             color: white;
         }
