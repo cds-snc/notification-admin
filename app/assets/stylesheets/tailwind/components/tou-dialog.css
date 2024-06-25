@@ -1,6 +1,19 @@
 @layer components {
   /*! purgecss start ignore */
 
+  dialog {
+    @apply text-smaller;
+  }
+
+  .dialog-content:focus {
+    box-shadow: inset 0 0 0 3px theme("colors.yellow.default");
+  }
+
+  .dialog-sticky-footer {
+    bottom: theme("spacing.gutterHalf");
+    @apply font-bold mx-gutter p-4 border-4 border-blue-700 bg-white text-blue-700 sticky;
+  }
+
   #tou-dialog:not([open]) {
     display: none;
   }
@@ -17,21 +30,6 @@
     @screen lg {
       margin: auto;
       max-height: calc(100vh - 6rem);
-    }
-  }
-
-  #tou-heading {
-    max-width: 85%;
-    @screen md {
-      max-width: 100%;
-    }
-  }
-  #tou-terms {
-    @apply bg-white border border-gray-200;
-    background-color: #f7f7f7;
-
-    h3:first-of-type {
-      @apply mt-0;
     }
   }
   /*! purgecss end ignore */
