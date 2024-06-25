@@ -1,4 +1,16 @@
-{# This macro creates a filterable template list based on specified criteria. #}
+{# 
+    This macro creates a filterable template list based on specified criteria. 
+    The macro requires three parameters:
+        - row_selector: A CSS selector for the rows to filter, i.e '.template-row'
+        - notification_type_data_attribue: The data attribute to filter by notification type, i.e 'data-notification-type'  
+        - template_category_data_attribute: The data attribute to filter by template category, i.e 'data-template-category'
+    
+    NOTE: the data attributes need to be present on the rows indicated by `row-selector` for the filtering to work.  Example
+    of a complete row:
+    ```
+    <div class="template-row" data-notification-type="email" data-template-category="status-update">
+    ```
+#}
 {% macro template_filter(row_selector, notification_type_data_attribue, template_category_data_attribute) %}
     {# TODO: move these to a CSS file #}
     <style>
