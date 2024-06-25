@@ -37,11 +37,13 @@ from app.main.forms import (
     SearchByNameForm,
 )
 from app.main.sitemap import get_sitemap
+from app.tou import accept_terms
 from app.utils import (
     Spreadsheet,
     documentation_url,
     get_latest_stats,
     get_logo_cdn_domain,
+    is_safe_redirect_url,
     user_is_logged_in,
 )
 
@@ -307,6 +309,19 @@ def activity_download():
             ),
         },
     )
+
+
+@main.route("/agree-terms", methods=["POST"])
+def agree_terms():
+    accept_terms()
+
+    next_url = request.form["next"]
+    if next_url and is_safe_redirect_url(next_url):
+        url = next_url
+    else:
+        url = url_for("main.show_accounts_or_dashboard")
+
+    return redirect(url)
 
 
 # --- Internal Redirects --- #

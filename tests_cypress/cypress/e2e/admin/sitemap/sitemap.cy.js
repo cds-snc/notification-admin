@@ -51,7 +51,6 @@ describe(`Sitemap`, () => {
     it("Does NOT display the 'You' group when logged out", () => {
       cy.visit(path);
       cy.getByTestId("sitemap-group").should("not.have.text", "Your GC Notify");
-      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
     });
 
     it("Does display the 'You' group when logged in", () => {

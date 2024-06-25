@@ -37,7 +37,7 @@ display_result $? 1 "Import order check"
 mypy ./
 display_result $? 1 "Type check"
 
-npx prettier --check app/assets/javascripts app/assets/stylesheets
+npx prettier --check app/assets/javascripts app/assets/stylesheets tests_cypress/cypress/e2e
 display_result $? 1 "JS/CSS code style check"
 
 npm test
