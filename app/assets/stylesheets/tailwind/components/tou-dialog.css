@@ -6,7 +6,8 @@
   }
 
   .dialog-sticky-footer {
-    @apply py-gutterHalf bg-white sticky bottom-0 border-0 border-t-1 border-gray-300;
+    bottom: theme("spacing.gutterHalf");
+    @apply font-bold mx-gutter p-4 border-4 border-blue-700 bg-white text-blue-700 sticky;
   }
 
   #tou-dialog:not([open]) {

@@ -5,7 +5,7 @@
 
 {% macro tou_dialog() %}
 <dialog id="tou-dialog"
-  class="focus:outline-yellow overflow-y-scroll max-w-screen-lg p-0 flex flex-col w-full border-1 border-gray-300"
+  class="focus:outline-yellow overflow-y-scroll max-w-screen-lg p-0 flex flex-col w-full border-4 border-gray-300"
   data-testid="tou-dialog" data-error-prefix="{{ _('Terms of use:') }}" data-error-msg="{{ error_msg }}">
   <div class="dialog-header bg-gray-200 flex items-baseline gap-gutter p-gutter py-2">
     <button id="tou-close"
@@ -19,15 +19,16 @@
     aria-describedby="tou-heading">
     {{ terms_of_use() }}
   </div>
-  <div class="dialog-sticky-footer px-gutter py-gutterHalf">
-    <span>Read the terms and accept below</span>
+  <div class="dialog-sticky-footer p-gutterHalf items-baseline">
+    <i aria-hidden="true" class="fa-solid fa-lg fa-circle-info"></i>
+    <span class="font-bold">Read the terms and accept below</span>
   </div>
-  <div class="dialog-footer pb-gutter pt-2 px-gutter">
+  <div class="dialog-footer p-gutter flex flex-wrap gap-6">
     <button type="button" class="button text-base outline-none focus:shadow-outline disabled" name="button_pressed"
       value="agree" data-testid="tou-agree-button" disabled id="tou-accept">
       {{ _('Agree') }}
     </button>
-    <button type="button" class="button button-secondary text-base outline-none focus:shadow-outline ml-6"
+    <button type="button" class="button button-secondary text-base outline-none focus:shadow-outline"
       name="button_pressed" value="agree" data-testid="tou-cancel-button" id="tou-cancel">
       {{ _('Cancel') }}
     </button>
