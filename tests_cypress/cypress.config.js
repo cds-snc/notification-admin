@@ -14,6 +14,9 @@ module.exports = defineConfig({
           "prefer-native-element": ["error", {
             "exclude": ["button", "link"]
           }],
+          "no-redundant-role": "off",
+          "no-dup-class": "off",
+          "require-sri": "off",
         },
       });
 

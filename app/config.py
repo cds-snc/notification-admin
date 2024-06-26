@@ -146,7 +146,6 @@ class Config(object):
     FF_NEW_BRANDING = env.bool("FF_NEW_BRANDING", False)
     FF_TEMPLATE_CATEGORY = env.bool("FF_NEW_BRANDING", False)
     FF_TOU = env.bool("FF_TOU", False)
-
     NO_BRANDING_ID = os.environ.get("NO_BRANDING_ID", "0af93cf1-2c49-485f-878f-f3e662e651ef")
 
     @classmethod
