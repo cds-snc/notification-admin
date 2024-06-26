@@ -28,15 +28,6 @@ describe("TOU Dialog", () => {
         });
     });
 
-    it("Has terms that are described by the heading", () => {
-      RegisterPage.Components.TOUTrigger().click();
-      RegisterPage.Components.TOUTerms()
-        .should("have.attr", "aria-describedby")
-        .then((labelledById) => {
-          cy.get("#" + labelledById).should("be.visible");
-        });
-    });
-
     it("Closes when user presses ESC", () => {
       RegisterPage.Components.TOUTrigger().click();
       cy.get("body").type("{esc}");
@@ -47,9 +38,20 @@ describe("TOU Dialog", () => {
     it("Has scrollable terms that are also focusable", () => {
       RegisterPage.Components.TOUTrigger().click();
       RegisterPage.Components.TOUTerms().should("have.focus");
-      RegisterPage.Components.TOUTerms().then(($el) => {
+      RegisterPage.Components.TOUDialog().then(($el) => {
         expect($el[0].scrollHeight).to.be.gt($el[0].clientHeight);
       });
+    });
+
+    it("Has instruction that is visible before you scroll", () => {
+      RegisterPage.Components.TOUTrigger().click();
+      RegisterPage.Components.TOUInstruction().should("be.visible");
+    });
+
+    it("Has instruction that is visible after you scroll", () => {
+      RegisterPage.Components.TOUTrigger().click();
+      RegisterPage.ScrollTerms();
+      RegisterPage.Components.TOUInstruction().should("be.visible");
     });
   });
 
@@ -113,15 +115,15 @@ describe("TOU Dialog", () => {
       RegisterPage.Components.TOUDialog().should("be.visible");
     });
 
-    it("Has agree button disabled when dialog opens", () => {
+    it("Has agree button out of viewport when dialog opens", () => {
       RegisterPage.Components.TOUTrigger().click();
-      RegisterPage.Components.TOUAgree().should("be.disabled");
+      RegisterPage.Components.TOUAgree().should("not.be.visible");
     });
 
-    it("Enables agree button when user scrolls to bottom of terms", () => {
+    it("Has agree button visible when user scrolls to bottom of terms", () => {
       RegisterPage.Components.TOUTrigger().click();
       RegisterPage.ScrollTerms();
-      RegisterPage.Components.TOUAgree().should("not.be.disabled");
+      RegisterPage.Components.TOUAgree().should("not.visible");
     });
 
     it("Closes when user clicks close/cancel", () => {

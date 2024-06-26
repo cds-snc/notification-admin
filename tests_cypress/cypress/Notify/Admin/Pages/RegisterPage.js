@@ -10,7 +10,8 @@ let Components = {
     TOUStatusComplete: () => cy.getByTestId('tou-complete'),
     TOUStatusNotComplete: () => cy.getByTestId('tou-not-complete'),
     TOUErrorMessage: () => cy.getByTestId('tou-error-message'),
-    TOUValidationSummaryErrorMessage: () => cy.getByTestId('tou-val-summ-err')
+    TOUValidationSummaryErrorMessage: () => cy.getByTestId('tou-val-summ-err'),
+    TOUInstruction: () => cy.getByTestId('tou-instruction')
 };
 
 // Actions users can take on the page
