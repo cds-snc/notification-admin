@@ -69,7 +69,7 @@ jobs:
         op read op://4eyyuwddp6w4vxlabrr2i2duxm/"Staging Github Actions VPN"/notesPlain > /var/tmp/staging.ovpn
 
     - name: Connect to VPN
-      uses: "kota65535/github-openvpn-connect-action@v2"
+      uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5"
       with:
         config_file: /var/tmp/staging.ovpn
         client_key: ${{ secrets.STAGING_OVPN_CLIENT_KEY }}
