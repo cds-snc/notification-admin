@@ -3,8 +3,8 @@
 {% set headings = [
     {
         "title": 'Accept conditions, including those in our {}',
-        "link": content_link(_('Privacy notice'), gca_url_for('privacy'), is_external_link=true),
-        "link_text": _('Privacy notice')
+        "link": 'privacy',
+        "link_text": 'Privacy notice'
     },
     { "title": 'Accept sending limits' },
     { "title": 'Accept risks when sending text messages' },
@@ -18,7 +18,7 @@
 {% macro tou_heading_list() %}
     {% for heading in headings %}
         {% if heading.link %}
-            <li>{{ _(heading.title).format(heading.link) }}</li>
+            <li>{{ _(heading.title).format(content_link(_(heading.link_text), gca_url_for(heading.link), is_external_link=true)) }}</li>
         {% else %}
             <li>{{ _(heading.title) }}</li>
         {% endif %}
