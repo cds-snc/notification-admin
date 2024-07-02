@@ -92,8 +92,7 @@
   .folder-heading-folder {
     background-size: auto 19px;
     background-position: 0px 4px;
-    min-height: 3rem;
-    @apply inline bg-no-repeat align-top text-smaller;
+    @apply inline bg-no-repeat align-top text-smaller min-h-12;
   }
   .folder-heading-folder {
     @apply p-0 pl-gutter bg-folderBlackPng bg-folderBlack;
@@ -125,8 +124,7 @@
     @apply text-blue-lightblue;
   }
   .folder-heading-manage-link {
-    min-height: 3rem;
-    @apply block text-right;
+    @apply block text-right min-h-12;
   }
 
   .message-name-separator,

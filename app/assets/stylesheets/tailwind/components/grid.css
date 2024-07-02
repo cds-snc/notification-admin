@@ -1,9 +1,7 @@
 @layer components {
   /*! purgecss start ignore */
   .grid-row {
-    margin-left: -1.5rem;
-    margin-right: -1.5rem;
-    @apply my-0;
+    @apply my-0 -mx-gutterHalf;
   }
 
   .align-with-heading {
