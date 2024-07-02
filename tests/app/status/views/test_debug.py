@@ -1,6 +1,5 @@
 import pytest
 from flask import url_for
-
 from tests.conftest import set_config_values
 
 

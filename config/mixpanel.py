@@ -7,7 +7,6 @@ from app.models.user import User
 
 
 class NotifyMixpanel:
-
     enabled = False
 
     def __init__(self) -> None:

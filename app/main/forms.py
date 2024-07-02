@@ -20,9 +20,6 @@ from wtforms import (
     HiddenField,
     IntegerField,
     PasswordField,
-)
-from wtforms import RadioField as WTFormsRadioField
-from wtforms import (
     SelectField,
     SelectMultipleField,
     StringField,
@@ -31,6 +28,7 @@ from wtforms import (
     validators,
     widgets,
 )
+from wtforms import RadioField as WTFormsRadioField
 from wtforms.fields import EmailField, SearchField, TelField
 from wtforms.validators import URL, AnyOf, DataRequired, Length, Optional, Regexp
 from wtforms.widgets import CheckboxInput, ListWidget
