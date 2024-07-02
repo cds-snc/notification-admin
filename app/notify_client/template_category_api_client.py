@@ -1,4 +1,4 @@
-from app.notify_client import NotifyAdminAPIClient
+from app.notify_client import NotifyAdminAPIClient, cache
 
 # TODO: remove this and call the API
 cats = [
@@ -86,25 +86,50 @@ cats = [
 
 
 class TemplateCategoryClient(NotifyAdminAPIClient):
-    def create_template_category(self, template_category):
-        # TODO: Implement the creation logic
-        pass
+    @cache.set("template_category-{template_category_id}")
+    def create_template_category(self, name_en, name_fr, description_en, description_fr, sms_process_type, email_process_type, hidden):
+        data = {
+            "name_en": name_en,
+            "name_fr": name_fr,
+            "description_en": description_en,
+            "description_fr": description_fr,
+            "sms_process_type": sms_process_type,
+            "email_process_type": email_process_type,
+            "hidden": hidden,
+        }
+        return self.post(url="/template-category", data=data)
 
+    @cache.set("template_category-{template_category_id}")
     def get_template_category(self, template_category_id):
-        # TODO: Implement the retrieval logic
-        return next((category for category in cats if category["id"] == template_category_id), None)
+        return self.get(url="/template-category/{}".format(template_category_id))
 
-    def get_all_template_categories(self):
-        # TODO: Implement retrieval logic
-        return cats
+    @cache.set("template_categories")
+    def get_all_template_categories(self, template_type=None, hidden=None, sort_key=None):
+        categories = self.get(url="/template-category")["template_categories"]
 
-    def update_template_category(self, template_category_id, template_category):
-        # TODO: Implement the update logic
-        pass
+        if len(categories) > 0:
+            if sort_key and sort_key in categories[0]:
+                categories.sort(key=lambda category: category[sort_key].lower())
+            return categories
+        else:
+            return []
 
-    def delete_template_category(self, template_category_id):
-        # TODO: Implement the deletion logic
-        pass
+    @cache.set("template_category-{template_category_id}")
+    def update_template_category(self, template_category_id, name_en, name_fr, description_en, description_fr, sms_process_type, email_process_type, hidden):
+        data = {
+            "name_en": name_en,
+            "name_fr": name_fr,
+            "description_en": description_en,
+            "description_fr": description_fr,
+            "sms_process_type": sms_process_type,
+            "email_process_type": email_process_type,
+            "hidden": hidden,
+        }
+        return self.post(url="/template-category/{}".format(template_category_id), data=data)
+
+    @cache.delete("template_category-{template_category_id}")
+    def delete_template_category(self, template_category_id, cascade=False):
+        return self.delete(url="/template-category/{}".format(template_category_id), data=cascade)
 
 
 template_category_api_client = TemplateCategoryClient()
