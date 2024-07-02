@@ -4,7 +4,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV POETRY_VERSION="1.7.1"
 ENV POETRY_VIRTUALENVS_CREATE false
 
-RUN apk add --no-cache bash build-base libxml2-dev libxslt-dev git nodejs npm g++ make libffi-dev && rm -rf /var/cache/apk/*
+RUN apk add --no-cache bash build-base libxml2-dev libxslt-dev git nodejs npm g++ make libffi-dev rust cargo && rm -rf /var/cache/apk/*
 
 # update pip
 RUN python -m pip install wheel poetry==${POETRY_VERSION}
