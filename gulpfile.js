@@ -64,6 +64,7 @@ const javascripts = () => {
     paths.src + "javascripts/url-typer.js",
     paths.src + "javascripts/notificationsReports.js",
     paths.src + "javascripts/main.js",
+    paths.src + "javascripts/templateCategories.js",
   ])
     .pipe(plugins.prettyerror())
     .pipe(

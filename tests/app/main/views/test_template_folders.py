@@ -376,6 +376,7 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         "subject": "Food incoming!",
         "template_content": "here's a burrito 🌯",
         "template_type": "email",
+        "template_category": "1",
         "service": SERVICE_ONE_ID,
         "process_type": TemplateProcessTypes.BULK.value,
         "parent_folder_id": PARENT_FOLDER_ID,
