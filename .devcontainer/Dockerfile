@@ -59,4 +59,4 @@ RUN chmod -R 765 /usr/local/bin/installations.sh
 # Set the default user, which is remoteUser as defined in the devcontainer.json file.
 USER $USERNAME
 
-EXPOSE 6012
+EXPOSE 6015

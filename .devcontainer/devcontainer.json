@@ -35,7 +35,7 @@
 		}
 	},
 	"forwardPorts": [
-		6012
+		6015
 	],
 	"postCreateCommand": "notify-dev-entrypoint.sh",
 	"remoteUser": "vscode"

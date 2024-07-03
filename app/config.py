@@ -22,6 +22,14 @@ if os.environ.get("VCAP_APPLICATION"):
 
 class Config(object):
     ACTIVITY_STATS_LIMIT_DAYS = 7
+    if os.environ.get("HEROKU_APP_NAME", "") != "":
+        ADMIN_BASE_URL = "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"
+    else:
+        ADMIN_BASE_URL = os.environ.get("ADMIN_BASE_URL", "http://localhost:6015")
+    ADMIN_CLIENT_USER_NAME = "notify-admin"
+    ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET")
+    ANTIVIRUS_API_HOST = os.environ.get("ANTIVIRUS_API_HOST")
+    ANTIVIRUS_API_KEY = os.environ.get("ANTIVIRUS_API_KEY")
     ALLOW_DEBUG_ROUTE = env.bool("ALLOW_DEBUG_ROUTE", False)
 
     # List of allowed service IDs that are allowed to send HTML through their templates.

@@ -53,7 +53,7 @@ coverage: venv ## Create coverage report
 
 .PHONY: run-dev
 run-dev:
-	poetry run flask run -p 6012 --host=localhost
+	poetry run flask run -p 6015 --host=localhost
 
 .PHONY: format
 format:
