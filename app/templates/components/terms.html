@@ -3,7 +3,8 @@
 {% set headings = [
     {
         "title": 'Accept conditions, including those in our {}',
-        "link": content_link(_('Privacy notice'), gca_url_for('privacy'), is_external_link=true)
+        "link": 'privacy',
+        "link_text": 'Privacy notice'
     },
     { "title": 'Accept sending limits' },
     { "title": 'Accept risks when sending text messages' },
@@ -17,7 +18,7 @@
 {% macro tou_heading_list() %}
     {% for heading in headings %}
         {% if heading.link %}
-            <li>{{ _(heading.title).format(heading.link) }}</li>
+            <li>{{ _(heading.title).format(content_link(_(heading.link_text), gca_url_for(heading.link), is_external_link=true)) }}</li>
         {% else %}
             <li>{{ _(heading.title) }}</li>
         {% endif %}
@@ -25,38 +26,34 @@
 {% endmacro %}
 
 {% macro terms_of_use() %}
-    <h2 class="heading-medium">{{ _('Your responsibilities') }}</h2>
+    <h2 class="heading-medium mt-0">{{ _('Your responsibilities') }}</h2>
     <p>
-    <em>For CDS responsibilities, read GC Notify’s </em
-    ><a href="https://notification.canada.ca/service-level-agreement"
-        ><em>service level agreement</em></a
+    <em>{{ _('For CDS responsibilities, read GC Notify’s ') }} </em
+    ><a href="{{ gca_url_for('service-level-agreement') }}"
+        ><em>{{ _('service level agreement') }}</em></a
     ><em>.</em>
     </p>
 
-    <h2 class="heading-medium">{{ _(headings[0].title.format(headings[0].link))  }}</h2>
+    <h2 class="heading-medium">{{ _(headings[0].title).format(content_link(_('Privacy notice'), gca_url_for('privacy'), is_external_link=true))  }}</h2>
     <p>
-    We may suspend your account or service if you break these terms or misuse GC
-    Notify. Misuse includes creating duplicate services or services incompatible
-    with your original purpose.
+    {{ _('We may suspend your account or service if you break these terms or misuse GC Notify. Misuse includes creating duplicate services or services incompatible with your original purpose.') }}
     </p>
 
     <h2 class="heading-medium">{{ _(headings[1].title) }}</h2>
     <p>
-    We apply limits to maintain our
-    <a href="https://notification.canada.ca/service-level-objectives"
-        >service level objectives</a
-    >. To discuss these limits,
-    <a href="https://notification.canada.ca/contact">contact us</a>.
+    {{ _('We apply limits to maintain our ') }}
+    <a href="{{ gca_url_for('service-level-objectives') }}">{{ _('service level objectives') }}</a>. {{ _('To discuss these limits, ') }}
+    <a href="https://notification.canada.ca/contact">{{ _('contact us') }}</a>.
     </p>
 
     <div
     class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-1 wp-block-columns-is-layout-flex"
     >
     <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
-        <p><strong>Daily limit per service:</strong></p>
+        <p><strong>{{ _('Daily limit per service:') }}</strong></p>
     </div>
     <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
-        <p>10,000 emails<br />1000 text messages</p>
+        <p>{{ _('10,000 emails<br />1000 text messages') }}</p>
     </div>
     </div>
 
@@ -65,145 +62,62 @@
     >
     <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
         <p>
-        <strong>Annual limit per service </strong>(April 1 to March 31)<strong
-            >:</strong
-        >
+            {{ _('<strong>Annual limit per service </strong>(April 1 to March 31)<strong>:</strong>') }}
         </p>
     </div>
     <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
-        <p>10 million emails<br />25,000 text messages</p>
+        <p>{{ _('10 million emails<br />25,000 text messages') }}</p>
     </div>
     </div>
 
     <h2 class="heading-medium">{{ _(headings[2].title) }}</h2>
-    <p>Texts are:</p>
+    <p>{{ _('Texts are:') }}</p>
     <ul class="list list-bullet ml-10">
-    <li>
-        Unencrypted, and have other
-        <a href="https://datatracker.ietf.org/doc/html/rfc5724#section-4"
-        >security issues</a
-        >. Bad actors may be able to impersonate your service.&nbsp;
-    </li>
-    <li>
-        At higher risk than email for delay, delivery failure, or lack of
-        information about delivery status.&nbsp;
-    </li>
-    <li>
-        Unreliable for phone numbers outside Canada. We cannot show delivery status
-        for international texts.
-    </li>
+        <li>
+            {{ _("Unencrypted, and have other <a href='https://datatracker.ietf.org/doc/html/rfc5724#section-4'>security issues</a>. Bad actors may be able to impersonate your service.") }}
+        </li>
+        <li>{{ _('At higher risk than email for delay, delivery failure, or lack ofinformation about delivery status.') }}</li>
+        <li>{{ _('Unreliable for phone numbers outside Canada. We cannot show delivery status for international texts.') }}</li>
     </ul>
 
     <h2 class="heading-medium">{{ _(headings[3].title) }}</h2>
-    <p>
-    GC Notify holds information temporarily but your organization is responsible
-    for that information.&nbsp;
-    </p>
+    <p>{{ _('GC Notify holds information temporarily but your organization is responsible for that information.') }}</p>
     <ul class="list list-bullet ml-10">
-    <li>
-        Communicate with recipients about incidents involving personal information.
-        Contact your
-        <a href="https://www.tbs-sct.canada.ca/ap/atip-aiprp/coord-eng.asp"
-        >privacy office</a
-        >
-        and follow their policies.&nbsp;
-    </li>
-    <li>
-        Respond to requests under the
-        <a href="https://laws-lois.justice.gc.ca/eng/acts/A-1/index.html"
-        ><em>Access to Information Act</em></a
-        >
-        and
-        <a href="https://laws-lois.justice.gc.ca/eng/ACTS/P-21/index.html"
-        ><em>Privacy Act</em></a
-        >
-        or similar requests under your jurisdiction’s legislation. For support,
-        <a href="https://notification.canada.ca/contact">contact us</a>.
-    </li>
-    <li>
-        Follow your jurisdiction’s legislation and policies, including for branding,
-        language or privacy.
-    </li>
+        <li>
+            {{ _("Communicate with recipients about incidents involving personal information. Contact your <a href='https://www.tbs-sct.canada.ca/ap/atip-aiprp/coord-eng.asp'>privacy office</a> and follow their policies.") }}
+        </li>
+        <li>
+            {{ _("Respond to requests under the <a href='https://laws-lois.justice.gc.ca/eng/acts/A-1/index.html'><em>Access to Information Act</em></a> and <a href='https://laws-lois.justice.gc.ca/eng/ACTS/P-21/index.html'><em>Privacy Act</em></a> or similar requests under your jurisdiction’s legislation. For support, <a href='https://notification.canada.ca/contact'>contact us</a>.") }}
+        </li>
+        <li>{{ _('Follow your jurisdiction’s legislation and policies, including for branding, language or privacy.') }}</li>
     </ul>
 
     <h2 class="heading-medium">{{ _(headings[4].title) }}</h2>
     <ul class="list list-bullet ml-10">
-    <li>
-        Follow your organization’s policies and check messages are:<br />(a) Within
-        scope of the consent; for example, if recipient consented to communications
-        about their application, or<br />(b) If there’s no explicit consent,
-        consistent with the purpose for which recipient gave contact information
-        under
-        <a
-        href="https://laws-lois.justice.gc.ca/eng/ACTS/P-21/page-1.html#h-397260:~:text=Sch.%20II%20%E2%80%9C6%E2%80%9D-,Protection,-of%20Personal%20Information"
-        ><em>Privacy Act,</em> s.7</a
-        >. You may be able to email or text recipients who consented to mail or
-        phone calls.
-    </li>
-    <li>
-        Check phone numbers can receive texts for free or that the owner understands
-        they may be charged.
-    </li>
+        <li>
+            {{ _("Follow your organization’s policies and check messages are:<br /> (a) Within scope of the consent; for example, if recipient consented to communications about their application, or<br />(b) If there’s no explicit consent, consistent with the purpose for which recipient gave contact information under <a href='https://laws-lois.justice.gc.ca/eng/ACTS/P-21/page-1.html#h-397260'><em>Privacy Act,</em> s.7</a>. You may be able to email or text recipients who consented to mail or phone calls.") }}
+        </li>
+        <li>{{ _('Check phone numbers can receive texts for free or that the owner understands they may be charged.') }}</li>
     </ul>
 
     <h2 class="heading-medium">{{ _(headings[5].title) }}</h2>
     <ul class="list list-bullet ml-10">
-    <li>
-        Use<strong> </strong>accurate, in-use email addresses. We may suspend your
-        service if, in a 24 hour period, you send 10% or more of your email messages
-        to problem addresses.
-    </li>
-    <li>Use accurate, in-use mobile phone numbers. Do not send to landlines.</li>
+        <li>{{ _('Use accurate, in-use email addresses. We may suspend your service if, in a 24 hour period, you send 10%% or more of your email messages to problem addresses.') }}</li>
+        <li>{{ _('Use accurate, in-use mobile phone numbers. Do not send to landlines.') }}</li>
     </ul>
 
     <h2 class="heading-medium">{{ _(headings[6].title) }}</h2>
     <ul class="list list-bullet ml-10">
-    <li>
-        Assess context to decide what
-        <a
-        href="https://www.tbs-sct.canada.ca/pol/doc-eng.aspx?id=32614&amp;section=html"
-        >degree of injury</a
-        >
-        could result from release of personal information, either accidentally or by
-        a bad actor.
-    </li>
-    <li>
-        Use GC Notify for
-        <a
-        href="https://www.tpsgc-pwgsc.gc.ca/esc-src/protection-safeguarding/niveaux-levels-eng.html#s2"
-        >low-sensitivity personal information</a
-        >.&nbsp;
-    </li>
+        <li>{{ _("Assess context to decide what <a href='https://www.tbs-sct.canada.ca/pol/doc-eng.aspx?id=32614&amp;section=html'>degree of injury</a> could result from release of personal information, either accidentally or by a bad actor.") }}</li>
+        <li>{{ _("Use GC Notify for <a href='https://www.tpsgc-pwgsc.gc.ca/esc-src/protection-safeguarding/niveaux-levels-eng.html#s2'>low-sensitivity personal information</a>.") }}</li>
     </ul>
 
     <h2 class="heading-medium">{{ _(headings[7].title) }}</h2>
     <ul class="list list-bullet ml-10">
-    <li>
-        Use a valid government email and a mobile device with a Canadian phone
-        number to create your account and for 2-factor authentication.
-    </li>
-    <li>
-        Create your GC Notify account with a work email address only you can access.
-        Do not share inboxes, account information or passwords, even among staff.
-    </li>
-    <li>
-        Follow the
-        <a href="https://notification.canada.ca/security"
-        >steps in our Security notice</a
-        >
-        and report any security breach or vulnerability using the
-        <a href="https://digital.canada.ca/security-notice/">CDS process</a>.
-    </li>
-    <li>
-        Follow 11.4 and 11.6 of Amazon Web Service (AWS)
-        <a href="https://aws.amazon.com/service-terms/">Service Terms</a>.
-    </li>
-    <li>
-        Secure your API keys and follow our rules for
-        <a
-        href="https://documentation.notification.canada.ca/en/send.html#check-status-repair-and-resend-messages"
-        >API calls and unprocessed requests</a
-        >.
-    </li>
+        <li>{{ _('Use a valid government email and a mobile device with a Canadian phone number to create your account and for 2-factor authentication.') }}</li>
+        <li>{{ _('Create your GC Notify account with a work email address only you can access. Do not share inboxes, account information or passwords, even among staff.') }}</li>
+        <li>{{ _("Follow the <a href='https://notification.canada.ca/security'>steps in our Security notice</a> and report any security breach or vulnerability using the <a href='https://digital.canada.ca/security-notice/'>CDS process</a>.") }}</li>
+        <li>{{ _("Follow 11.4 and 11.6 of Amazon Web Service (AWS) <a href='https://aws.amazon.com/service-terms/'>Service Terms</a>.") }}</li>
+        <li>{{ _("Secure your API keys and follow our rules for <a href='https://documentation.notification.canada.ca/en/send.html#check-status-repair-and-resend-messages'>API calls and unprocessed requests</a>.") }}</li>
     </ul>
 {% endmacro %}

@@ -35,6 +35,7 @@ from notifications_utils.recipients import (
 )
 from notifications_utils.sanitise_text import SanitiseASCII
 from notifications_utils.timezones import utc_string_to_aware_gmt_datetime
+from user_agents import parse
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 from werkzeug.exceptions import abort
 from werkzeug.local import LocalProxy
@@ -85,6 +86,7 @@ from app.notify_client.template_statistics_api_client import template_statistics
 from app.notify_client.user_api_client import user_api_client
 from app.salesforce import salesforce_account
 from app.scanfiles.scanfiles_api_client import scanfiles_api_client
+from app.tou import EVENTS_KEY, show_tou_prompt
 from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
@@ -217,6 +219,11 @@ def create_app(application):
     # allow gca_url_for to be called from any template
     application.jinja_env.globals["gca_url_for"] = gca_url_for
     application.jinja_env.globals["current_service"] = current_service
+
+    # cross-cutting concerns for TOU/login events
+    application.jinja_env.globals["show_tou_prompt"] = show_tou_prompt
+    application.jinja_env.globals["parse_ua"] = parse
+    application.jinja_env.globals["events_key"] = EVENTS_KEY
 
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:
