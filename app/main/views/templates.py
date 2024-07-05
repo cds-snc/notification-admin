@@ -1180,6 +1180,26 @@ def template_categories():
     )
 
 
+@main.route("/template-categories/add", methods=["GET", "POST"])
+def add_template_category():
+    form = TemplateCategoryForm()
+
+    if form.validate_on_submit():
+        template_category_api_client.create_template_category(
+            name_en=form.data["name_en"],
+            name_fr=form.data["name_fr"],
+            desc_en=form.data["desc_en"],
+            desc_fr=form.data["desc_fr"],
+            hidden=form.data["hidden"],
+            email_process_type=form.data["email_process_type"],
+            sms_process_type=form.data["sms_process_type"],
+        )
+
+        return redirect(url_for(".template_categories"))
+
+    return render_template("views/templates/template_category.html", search_form=SearchByNameForm(), form=form)
+
+
 @main.route("/template-categories/<template_category_id>", methods=["GET", "POST"])
 @user_is_platform_admin
 def template_category(template_category_id):
@@ -1187,14 +1207,26 @@ def template_category(template_category_id):
     form = TemplateCategoryForm(
         name_en=template_category["name_en"],
         name_fr=template_category["name_fr"],
-        desc_en=template_category["desc_en"],
-        desc_fr=template_category["desc_fr"],
+        description_en=template_category["description_en"],
+        description_fr=template_category["description_fr"],
         hidden=template_category["hidden"],
-        email_priority=template_category["email_priority"],
-        sms_priority=template_category["sms_priority"],
+        email_process_type=template_category["email_process_type"],
+        sms_process_type=template_category["sms_process_type"],
     )
 
-    form.validate_on_submit()
+    if form.validate_on_submit():
+        template_category_api_client.update_template_category(
+            template_category_id,
+            name_en=form.data["name_en"],
+            name_fr=form.data["name_fr"],
+            description_en=form.data["description_en"],
+            description_fr=form.data["description_en"],
+            hidden=form.data["hidden"],
+            email_process_type=form.data["email_process_type"],
+            sms_process_type=form.data["sms_process_type"],
+        )
+
+        return redirect(url_for(".template_categories"))
 
     return render_template(
         "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form

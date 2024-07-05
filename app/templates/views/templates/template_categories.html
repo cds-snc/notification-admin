@@ -31,14 +31,14 @@
     ) %}
       {% call field() %}
         <a class="template-cat" href="{{ url_for('main.template_category', template_category_id=item.id)}}">
-          {{ item.name_en }} 
+          {{ item.name_en }}
         </a>
       {% endcall %}
       {% call field() %}
-        {{ item.email_priority }}
+        {{ item.email_process_type }}
       {% endcall %}
       {% call field() %}
-        {{ item.sms_priority }}
+        {{ item.sms_process_type }}
       {% endcall %}
       {% call field() %}
         {{ item.hidden }}
@@ -46,8 +46,8 @@
     {% endcall %}
 
     <div class="js-stick-at-bottom-when-scrolling">
-      <a href="#" class="mt-gutter button button">{{ _('New category') }}</a>
+      <a href="{{url_for('.add_template_category')}}" class="mt-gutter button button">{{ _('New category') }}</a>
     </div>
   </div>
-  
+
 {% endblock %}
