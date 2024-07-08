@@ -230,7 +230,6 @@ class Staging(Production):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-    FF_TEMPLATE_CATEGORY = True
     FF_TOU = True
 
 
