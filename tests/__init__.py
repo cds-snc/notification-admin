@@ -284,9 +284,33 @@ def organisation_json(
     }
 
 
+def template_category_json(
+    id_,
+    name_en="name_en",
+    name_fr="name_fr",
+    description_en="description_en",
+    description_fr="description_fr",
+    hidden=False,
+    sms_process_type="bulk",
+    email_process_type="bulk",
+):
+    template_category = {
+        "id": id_,
+        "name_en": name_en,
+        "name_fr": name_fr,
+        "description_en": description_en,
+        "description_fr": description_fr,
+        "hidden": hidden,
+        "sms_process_type": sms_process_type,
+        "email_process_type": email_process_type,
+    }
+    return template_category
+
+
 def template_json(
     service_id,
     id_,
+    template_category=None,
     name="sample template",
     type_=None,
     content=None,
@@ -304,6 +328,7 @@ def template_json(
 ):
     template = {
         "id": id_,
+        "template_category_id": template_category,
         "name": name,
         "template_type": type_ or "sms",
         "content": content,

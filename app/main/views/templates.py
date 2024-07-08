@@ -847,10 +847,6 @@ def abort_403_if_not_admin_user():
 def _get_categories_and_prepare_form(template, template_type):
     categories = template_category_api_client.get_all_template_categories()
 
-    # TODO: Remove this, this will come from the DB
-    if "/edit" in request.path:
-        template["template_category"] = "1"
-
     form = form_objects_with_category[template_type](**template)
 
     # alphabetize choices

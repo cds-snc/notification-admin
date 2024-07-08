@@ -9,7 +9,7 @@ from uuid import UUID, uuid4
 import pytest
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, template_rendered, url_for
+from flask import Flask, template_rendered, url_for, current_app
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 from pytest_mock import MockerFixture
@@ -31,6 +31,7 @@ from . import (
     sample_uuid,
     service_json,
     single_notification_json,
+    template_category_json,
     template_json,
     template_version_json,
     user_json,
@@ -746,6 +747,10 @@ TEMPLATE_ONE_ID = "b22d7d94-2197-4a7d-a8e7-fd5f9770bf48"
 USER_ONE_ID = "7b395b52-c6c1-469c-9d61-54166461c1ab"
 JOB_API_KEY_NAME = "API key name"
 
+DEFAULT_TEMPLATE_CATEGORY_LOW = "0dda24c2-982a-4f44-9749-0e38b2607e89"
+DEFAULT_TEMPLATE_CATEGORY_MEDIUM = "f75d6706-21b7-437e-b93a-2c0ab771e28e"
+DEFAULT_TEMPLATE_CATEGORY_HIGH = "c4f87d7c-a55b-4c0f-91fe-e56c65bb1871"
+
 
 @pytest.fixture(scope="function")
 def mock_get_services(mocker, fake_uuid, user=None):
@@ -1097,6 +1102,7 @@ def create_template(
     name="sample template",
     content="Template content",
     subject="Template subject",
+    template_category_id=DEFAULT_TEMPLATE_CATEGORY_LOW,
     redact_personalisation=False,
     postage=None,
     folder=None,
@@ -1112,6 +1118,7 @@ def create_template(
             redact_personalisation=redact_personalisation,
             postage=postage,
             folder=folder,
+            template_category=template_category_id,
         )
     }
 
@@ -1122,6 +1129,7 @@ def create_email_template():
         template_type="email",
         content="Your vehicle tax expires on ((date))",
         subject="Your ((thing)) is due soon",
+
     )
 
 
@@ -1166,6 +1174,7 @@ def create_service_templates(service_id, number_of_templates=6):
             template_json(
                 service_id,
                 TEMPLATE_ONE_ID if _ == 1 else str(generate_uuid()),
+                DEFAULT_TEMPLATE_CATEGORY_LOW,
                 "{}_template_{}".format(template_type, template_number),
                 template_type,
                 "{} template {} content".format(template_type, template_number),
@@ -2863,6 +2872,14 @@ def mock_set_user_permissions(mocker):
 @pytest.fixture(scope="function")
 def mock_remove_user_from_service(mocker):
     return mocker.patch("app.service_api_client.remove_user_from_service", return_value=None)
+
+
+@pytest.fixture(scope="function")
+def mock_get_template_categories(mocker):
+    def _get():
+        return [template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_LOW)]
+
+    return mocker.patch("app.template_category_api_client.get_all_template_categories", side_effect=_get)
 
 
 @pytest.fixture(scope="function")

@@ -30,6 +30,7 @@ from tests.app.main.views.test_template_folders import (
     _template,
 )
 from tests.conftest import (
+    DEFAULT_TEMPLATE_CATEGORY_LOW,
     SERVICE_ONE_ID,
     SERVICE_TWO_ID,
     TEMPLATE_ONE_ID,
@@ -785,6 +786,7 @@ def test_should_show_page_template_with_priority_select_if_platform_admin(
     fake_uuid,
 ):
     mocker.patch("app.user_api_client.get_users_for_service", return_value=[platform_admin_user])
+    mocker.patch("app.template_category_api_client.get_all_template_categories")
     template_id = fake_uuid
     client_request.login(platform_admin_user)
     page = client_request.get(
@@ -1080,6 +1082,7 @@ def test_load_edit_template_with_copy_of_template(
     mock_get_service_templates,
     mock_get_service_email_template,
     mock_get_non_empty_organisations_and_services_for_user,
+    mock_get_template_categories,
     existing_template_names,
     expected_name,
 ):
@@ -1196,6 +1199,7 @@ def test_should_not_allow_creation_of_a_template_without_correct_permission(
     client_request,
     service_one,
     mocker,
+    mock_get_template_categories,
     type_of_template,
 ):
     service_one["permissions"] = []
@@ -1287,6 +1291,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
     client_request,
     mocker,
     mock_update_service_template,
+    mock_get_template_categories,
     fake_uuid,
     process_type,
 ):
@@ -1387,6 +1392,7 @@ def test_should_403_when_create_template_with_non_default_process_type_for_non_p
     mocker,
     mock_get_service_template,
     mock_update_service_template,
+    mock_get_template_categories,
     fake_uuid,
     process_type,
     service_one,
@@ -1442,6 +1448,7 @@ def test_should_show_interstitial_when_making_breaking_change(
     client_request,
     mock_update_service_template,
     mock_get_user_by_email,
+    mock_get_template_categories,
     fake_uuid,
     mocker,
     template_data,
@@ -1457,6 +1464,7 @@ def test_should_show_interstitial_when_making_breaking_change(
         "template_type": template_type,
         "subject": "reminder '\" <span> & ((name))",
         "service": SERVICE_ONE_ID,
+        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "process_type": DEFAULT_PROCESS_TYPE,
     }
 
@@ -2087,6 +2095,7 @@ def test_route_permissions(
     mock_get_service_template,
     mock_get_template_folders,
     mock_get_template_statistics_for_template,
+    mock_get_template_categories,
     fake_uuid,
 ):
     validate_route_permission(
