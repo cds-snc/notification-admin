@@ -65,6 +65,13 @@ form_objects = {
     "letter": LetterTemplateForm,
 }
 
+# Todo: Remove this once the process_types in the backend are updated to use low/med/high
+category_mapping = {
+    "bulk": "low",
+    "normal": "medium",
+    "priority": "high",
+}
+
 
 def get_email_preview_template(template, template_id, service_id):
     if template_id and service_id:
@@ -1174,6 +1181,15 @@ def add_recipients(service_id, template_id):
 @user_is_platform_admin
 def template_categories():
     template_category_list = template_category_api_client.get_all_template_categories()
+
+    # Todo: Remove this once the process_types in the backend are updated to use low/med/high
+    # Maps bulk/normal/priority to low/med/high for display in the front end.
+    for cat in template_category_list:
+        if cat["sms_process_type"] in category_mapping:
+            cat["sms_process_type"] = category_mapping[cat["sms_process_type"]]
+
+        if cat["email_process_type"] in category_mapping:
+            cat["email_process_type"] = category_mapping[cat["email_process_type"]]
 
     return render_template(
         "views/templates/template_categories.html", search_form=SearchByNameForm(), template_categories=template_category_list
