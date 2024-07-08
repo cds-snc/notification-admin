@@ -2,6 +2,7 @@ from app.notify_client import NotifyAdminAPIClient, cache
 
 
 class TemplateCategoryClient(NotifyAdminAPIClient):
+    @cache.delete("template_categories")
     def create_template_category(
         self, name_en, name_fr, description_en, description_fr, sms_process_type, email_process_type, hidden
     ):
