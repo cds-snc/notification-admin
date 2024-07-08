@@ -32,6 +32,7 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
             return []
 
     @cache.delete("template_category-{template_category_id}")
+    @cache.delete("template_categories")
     def update_template_category(
         self, template_category_id, name_en, name_fr, description_en, description_fr, sms_process_type, email_process_type, hidden
     ):
@@ -47,6 +48,7 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
         return self.post(url="/template-category/{}".format(template_category_id), data=data)
 
     @cache.delete("template_category-{template_category_id}")
+    @cache.delete("template_categories")
     def delete_template_category(self, template_category_id, cascade=False):
         return self.delete(url="/template-category/{}".format(template_category_id), data=cascade)
 
