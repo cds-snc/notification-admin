@@ -787,6 +787,7 @@ def mock_get_service_template(mocker):
         template = template_json(
             service_id,
             template_id,
+            DEFAULT_TEMPLATE_CATEGORY_LOW,
             "Two week reminder",
             "sms",
             "Template <em>content</em> with & entity",
@@ -803,6 +804,7 @@ def mock_get_service_template_with_process_type(mocker, process_type):
         template = template_json(
             service_id,
             template_id,
+            DEFAULT_TEMPLATE_CATEGORY_LOW,
             "Two week reminder",
             "sms",
             "Template <em>content</em> with & entity",
@@ -821,6 +823,7 @@ def mock_get_deleted_template(mocker):
         template = template_json(
             service_id,
             template_id,
+            DEFAULT_TEMPLATE_CATEGORY_LOW,
             "Two week reminder",
             "sms",
             "Template <em>content</em> with & entity",
@@ -857,6 +860,7 @@ def mock_get_service_template_with_placeholders(mocker):
         template = template_json(
             service_id,
             template_id,
+            DEFAULT_TEMPLATE_CATEGORY_LOW,
             "Two week reminder",
             "sms",
             "((name)), Template <em>content</em> with & entity",
@@ -936,6 +940,7 @@ def mock_get_service_letter_template(mocker, content=None, subject=None, postage
         template = template_json(
             service_id,
             template_id,
+            DEFAULT_TEMPLATE_CATEGORY_LOW,
             "Two week reminder",
             "letter",
             content or "Template <em>content</em> with & entity",

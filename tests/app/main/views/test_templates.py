@@ -1918,7 +1918,7 @@ def test_should_show_delete_template_page_with_time_block(
     fake_uuid,
 ):
     with freeze_time("2012-01-01 12:00:00"):
-        template = template_json("1234", "1234", "Test template", "sms", "Something very interesting")
+        template = template_json("1234", "1234", DEFAULT_TEMPLATE_CATEGORY_LOW, "Test template", "sms", "Something very interesting")
         notification = single_notification_json("1234", template=template)
 
         mocker.patch(
@@ -2204,6 +2204,7 @@ def test_can_create_email_template_with_emoji(
     mock_create_service_template,
     mock_get_template_folders,
     mock_get_service_template_when_no_template_exists,
+    mock_get_template_categories,
 ):
     page = client_request.post(
         ".add_service_template",
@@ -2214,7 +2215,7 @@ def test_can_create_email_template_with_emoji(
             "subject": "Food incoming!",
             "template_content": "here's a burrito 🌯",
             "template_type": "email",
-            "template_category": "1",
+            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
             "button_pressed": "save",
@@ -2231,6 +2232,7 @@ def test_should_not_create_sms_template_with_emoji(
     client_request,
     service_one,
     mock_create_service_template,
+    mock_get_template_categories,
 ):
     page = client_request.post(
         ".add_service_template",
@@ -2240,7 +2242,7 @@ def test_should_not_create_sms_template_with_emoji(
             "name": "new name",
             "template_content": "here are some noodles 🍜",
             "template_type": "sms",
-            "template_category": "1",
+            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
@@ -2254,6 +2256,7 @@ def test_should_not_update_sms_template_with_emoji(
     client_request,
     mock_get_service_template,
     mock_update_service_template,
+    mock_get_template_categories,
     fake_uuid,
 ):
     page = client_request.post(
@@ -2266,6 +2269,7 @@ def test_should_not_update_sms_template_with_emoji(
             "template_content": "here's a burger 🍔",
             "service": SERVICE_ONE_ID,
             "template_type": "sms",
+            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
         _expected_status=200,
