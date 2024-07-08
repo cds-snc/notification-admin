@@ -855,7 +855,7 @@ def _get_categories_and_prepare_form(template, template_type):
 
     # alphabetize choices
     name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
-    desc_col = "desc_en" if get_current_locale(current_app) == "en" else "desc_fr"
+    desc_col = "description_en" if get_current_locale(current_app) == "en" else "description_fr"
     categories = sorted(categories, key=lambda x: x[name_col])
     form.template_category.choices = [(cat["id"], cat[name_col]) for cat in categories]
 
