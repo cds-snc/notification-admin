@@ -48,7 +48,7 @@
   <div class="flex mb-16 -mt-8{% if template.template_type != 'email' %} flex-col{% endif %}">
       <div class="{% if template.template_type == 'email' %}w-1/4{% else %}mb-6{% endif %}">
         {% if current_user.has_permissions('manage_templates') and not template._template.archived %}
-          <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}">
+          <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}" data-testid="edit-template">
             {{ _('Edit this template') }}
           </a>
         {% endif %}

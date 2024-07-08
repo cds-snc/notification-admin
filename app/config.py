@@ -144,6 +144,7 @@ class Config(object):
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
     FF_NEW_BRANDING = env.bool("FF_NEW_BRANDING", False)
+    FF_TEMPLATE_CATEGORY = env.bool("FF_TEMPLATE_CATEGORY", False)
     FF_TOU = env.bool("FF_TOU", False)
     NO_BRANDING_ID = os.environ.get("NO_BRANDING_ID", "0af93cf1-2c49-485f-878f-f3e662e651ef")
 
@@ -187,6 +188,7 @@ class Development(Config):
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+    FF_TEMPLATE_CATEGORY = True
 
 
 class Test(Development):
@@ -211,6 +213,7 @@ class Test(Development):
     FF_SALESFORCE_CONTACT = False
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+    FF_TEMPLATE_CATEGORY = True
 
 
 class Production(Config):
