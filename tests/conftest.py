@@ -9,7 +9,7 @@ from uuid import UUID, uuid4
 import pytest
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, template_rendered, url_for, current_app
+from flask import Flask, template_rendered, url_for
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 from pytest_mock import MockerFixture
@@ -747,10 +747,7 @@ TEMPLATE_ONE_ID = "b22d7d94-2197-4a7d-a8e7-fd5f9770bf48"
 USER_ONE_ID = "7b395b52-c6c1-469c-9d61-54166461c1ab"
 JOB_API_KEY_NAME = "API key name"
 
-DEFAULT_TEMPLATE_CATEGORY_LOW = "0dda24c2-982a-4f44-9749-0e38b2607e89"
-DEFAULT_TEMPLATE_CATEGORY_MEDIUM = "f75d6706-21b7-437e-b93a-2c0ab771e28e"
-DEFAULT_TEMPLATE_CATEGORY_HIGH = "c4f87d7c-a55b-4c0f-91fe-e56c65bb1871"
-
+from . import DEFAULT_TEMPLATE_CATEGORY_LOW, DEFAULT_TEMPLATE_CATEGORY_MEDIUM, DEFAULT_TEMPLATE_CATEGORY_HIGH
 
 @pytest.fixture(scope="function")
 def mock_get_services(mocker, fake_uuid, user=None):
@@ -787,7 +784,6 @@ def mock_get_service_template(mocker):
         template = template_json(
             service_id,
             template_id,
-            DEFAULT_TEMPLATE_CATEGORY_LOW,
             "Two week reminder",
             "sms",
             "Template <em>content</em> with & entity",
@@ -795,6 +791,11 @@ def mock_get_service_template(mocker):
         if version:
             template.update({"version": version})
         return {"data": template}
+
+    def _get_tc():
+        return [template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_LOW)]
+
+    mocker.patch("app.template_category_api_client.get_all_template_categories", side_effect=_get_tc)
 
     return mocker.patch("app.service_api_client.get_service_template", side_effect=_get)
 
@@ -804,7 +805,6 @@ def mock_get_service_template_with_process_type(mocker, process_type):
         template = template_json(
             service_id,
             template_id,
-            DEFAULT_TEMPLATE_CATEGORY_LOW,
             "Two week reminder",
             "sms",
             "Template <em>content</em> with & entity",
@@ -823,7 +823,6 @@ def mock_get_deleted_template(mocker):
         template = template_json(
             service_id,
             template_id,
-            DEFAULT_TEMPLATE_CATEGORY_LOW,
             "Two week reminder",
             "sms",
             "Template <em>content</em> with & entity",
@@ -860,7 +859,6 @@ def mock_get_service_template_with_placeholders(mocker):
         template = template_json(
             service_id,
             template_id,
-            DEFAULT_TEMPLATE_CATEGORY_LOW,
             "Two week reminder",
             "sms",
             "((name)), Template <em>content</em> with & entity",
@@ -940,7 +938,6 @@ def mock_get_service_letter_template(mocker, content=None, subject=None, postage
         template = template_json(
             service_id,
             template_id,
-            DEFAULT_TEMPLATE_CATEGORY_LOW,
             "Two week reminder",
             "letter",
             content or "Template <em>content</em> with & entity",
@@ -1134,7 +1131,6 @@ def create_email_template():
         template_type="email",
         content="Your vehicle tax expires on ((date))",
         subject="Your ((thing)) is due soon",
-
     )
 
 
@@ -1179,7 +1175,6 @@ def create_service_templates(service_id, number_of_templates=6):
             template_json(
                 service_id,
                 TEMPLATE_ONE_ID if _ == 1 else str(generate_uuid()),
-                DEFAULT_TEMPLATE_CATEGORY_LOW,
                 "{}_template_{}".format(template_type, template_number),
                 template_type,
                 "{} template {} content".format(template_type, template_number),

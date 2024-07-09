@@ -26,7 +26,11 @@ class Config(object):
 
     # List of allowed service IDs that are allowed to send HTML through their templates.
     ALLOW_HTML_SERVICE_IDS: List[str] = [id.strip() for id in os.getenv("ALLOW_HTML_SERVICE_IDS", "").split(",")]
-    ADMIN_BASE_URL = "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com" if os.environ.get("HEROKU_APP_NAME", "") != "" else os.environ.get("ADMIN_BASE_URL", "http://localhost:6012")
+    ADMIN_BASE_URL = (
+        "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"
+        if os.environ.get("HEROKU_APP_NAME", "") != ""
+        else os.environ.get("ADMIN_BASE_URL", "http://localhost:6012")
+    )
     ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET")
     ADMIN_CLIENT_USER_NAME = "notify-admin"
     ANTIVIRUS_API_HOST = os.environ.get("ANTIVIRUS_API_HOST")
@@ -145,7 +149,6 @@ class Config(object):
     NOTIFY_USER_ID = "6af522d0-2915-4e52-83a3-3690455a5fe6"
     NOTIFY_SERVICE_ID = "d6aa2c68-a2d9-4437-ab19-3ae8eb202553"
     NO_BRANDING_ID = os.environ.get("NO_BRANDING_ID", "0af93cf1-2c49-485f-878f-f3e662e651ef")
-
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
