@@ -1,99 +1,31 @@
+{% from "components/nav_menu_item_mobile.html" import nav_menu_item_mobile with context %}
+
 <!-- account menu dropdown / mobile -->
-<div class="md:hidden">
+<div class="md:hidden md:flex">
   <button
     aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
     aria-expanded="false"
-    aria-haspopup="true"
     id="account-icon-mobile"
-    class="p-1 h-14 border-2 border-solid border-gray rounded-lg"
-    data-module="menu-overlay"
-    data-menu-overlay-content="account-menu-mobile"
-    data-menu-overlay-close="account-close-mobile">
-    <img
-      src="{{ asset_url('images/account-icon.svg') }}"
-      alt=""
-      class="w-10 h-10"/>
+    class="p-2 min-w-target min-h-target border-2 border-solid border-gray flex items-center justify-center line-under leading-none text-blue text-smaller underline hover:no-underline focus:outline-yellow"
+    data-module="menu"
+    data-menu-items="account-menu-mobile"
+    type="button">
+      <img
+        src="{{ asset_url('images/account-icon.svg') }}"
+        alt=""
+        class="w-10 h-10"/>
+      <img alt="" aria-hidden="true" class="account-menu-arrow ml-2 inline arrow self-center" src="{{ asset_url('images/arrow-licorice.svg') }}" width="15"/>
   </button>
-
-  <div
-    role="dialog"
-    aria-modal="true"
-    id="account-menu-mobile"
-    data-module="scope-tab-navigation"
-    class="modal fixed w-full h-full top-0 left-0 z-50 pointer-events-auto transition duration-150 ease-in-out transition-opacity opacity-0 hidden">
-
-    <div class="modal-overlay absolute w-full h-full bg-white opacity-95"></div>
-
-    <div
-      class="modal-container grid grid-flow-row auto-rows-min grid-cols-1 fixed w-full h-full overflow-y-auto z-50 p-10">
-      <div>
-        <div class="float-left">
-          <img
-            aria-hidden="true"
-            src="{{ asset_url('images/account-icon.svg') }}"
-            alt=""
-            class="float-left w-12 h-12"/>
-        </div>
-        <div class="modal-close float-right grid grid-cols-1 cursor-pointer text-black text-xs z-50">
-          <button
-            id="account-close-mobile"
-            class="pt-1 px-1 justify-self-center focus:outline-none focus:bg-yellow focus:border-b-2 focus:border-blue">
-            <img
-              src="{{ asset_url('images/close.svg') }}"
-              class="object-none object-center w-8 h-8 m-auto"
-              alt="" />
-            <span id="account.menu.close">
-              {{ _('close') }}
-            </span>
-            <span class="sr-only"> {{ _('navigation')}}</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="modal-content text-left h-auto p-0 mt-8 mb-4 mx-0">
-
-        <ul>
-          {% if current_user.platform_admin %}
-            <li class="mb-4">
-              <a
-                aria-label="{{ _('Admin panel') }}"
-                href="{{ url_for('main.live_services') }}"
-                class="p-2 text-smaller no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:bg-yellow {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}">
-                {{ _('Admin panel') }}
-              </a>
-            </li>
-          {% endif %}
-          <li class="mb-4">
-            <a
-              aria-label="{{ _('Your services') }}"
-              href="{{ url_for('main.choose_account') }}"
-              class="p-2 text-smaller no-underline focus:outline-none focus:border-b-2 focus:border-blue !focus:bg-yellow {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}">
-              {{ _('Your services') }}
-            </a>
-          </li>
-          <li class="mb-4">
-            <a
-              aria-label="{{ _('Your profile') }}"
-              href="{{ url_for('main.user_profile') }}"
-              class="p-2 text-smaller no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:bg-yellow {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}">
-              {{ _('Your profile') }}
-            </a>
-          </li>
-          <li class="mb-4">
-            <a
-              aria-label="{{ _('Sign out') }}"
-              href="{{ url_for('main.sign_out') }}"
-              class="p-2 text-smaller no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:bg-yellow {% if main_navigation.is_selected('sign_out') %} menu--active {% endif %}">
-              {{ _('Sign out') }}
-            </a>
-          </li>
-        </ul>
-
-      </div>
-    </div>
-
-  </div>
-
 </div>
+  <ul
+    id="account-menu-mobile"
+    class="absolute flex flex-col mt-3_4 content-end divide-y divide-gray mobile-menu-container text-left rounded bg-white shadow hidden z-50">
+          {% if current_user.platform_admin %}
+            {{ nav_menu_item_mobile(url=url_for('main.live_services'), localised_txt=_('Admin panel'), is_active=main_navigation.is_selected('live_services')) }}
+          {% endif %}
+          {{ nav_menu_item_mobile(url=url_for('main.choose_account'), localised_txt=_('Your services'), is_active=main_navigation.is_selected('choose_account')) }}
+          {{ nav_menu_item_mobile(url=url_for('main.user_profile'), localised_txt=_('Your profile'), is_active=main_navigation.is_selected('user_profile')) }}
+          {{ nav_menu_item_mobile(url=url_for('main.sign_out'), localised_txt=_('Sign out'), is_active=main_navigation.is_selected('sign_out')) }}
+    </ul>
 
 <!-- account menu dropdown / mobile / END -->

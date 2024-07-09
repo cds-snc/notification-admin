@@ -1,0 +1,13 @@
+{% extends "content_template.html" %}
+{% from "components/terms.html" import terms_of_use%}
+
+{% block per_page_title %}
+  {{ _('Terms of use') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  <h1 class="heading-large">{{ _('GC Notify terms of use') }}</h1>
+
+  {{ terms_of_use() }}
+{% endblock %}

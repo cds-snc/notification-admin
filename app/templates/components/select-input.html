@@ -5,7 +5,7 @@
     field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style, input, is_page_heading, use_aria_labelledby, testid
   ) %}
   {% for option in field %}
-    {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals) }}
+    {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals, testid=option.data) }}
   {% endfor %}
   {% endcall %}
 {% endmacro %}
@@ -65,14 +65,14 @@
     </fieldset>
   </div>
 {% endmacro %}
-{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio", option_conditionals={}) %}
+{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio", option_conditionals={}, testid=None) %}
   {% set has_conditional = option_conditionals[option.data] %}
   {% if as_list_item %}
     <li class="multiple-choice" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
     {% else %}
       <div class="multiple-choice{{ ' has-conditional' if has_conditional}}" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
       {% endif %}
-      <input id="{{ option.id }}" name="{{ option.name }}" type="{{ input }}" value="{{ option.data }}" {% if option.data in disable %} disabled {% endif %} {% if option.checked %} checked {% endif %}>
+      <input id="{{ option.id }}" name="{{ option.name }}" type="{{ input }}" value="{{ option.data }}" {% if testid %} data-testid="{{ testid }}" {% endif %} {% if option.data in disable %} disabled {% endif %} {% if option.checked %} checked {% endif %}>
         <label class="block-label" for="{{ option.id }}">
           {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
           {% if '||' in option.label.text %}
@@ -81,18 +81,18 @@
             </span>
             {% endif %}
             {% if option_hints[option.data] %}
-              <div class="block-label-hint max-w-80ch">
+              <span class="block block-label-hint max-w-80ch">
                 {{ option_hints[option.data] }}
-              </div>
+              </span>
             {% endif %}
           </label>
           {% if has_conditional %}
               <div class="conditional">
-              {{ textbox( 
+              {{ textbox(
                   option_conditionals[option.data],
-                  label=_(option_conditionals[option.data].label.text)|capitalize, 
-                  hint=hint_txt if optional_placeholder else None, 
-                  width='w-full', 
+                  label=_(option_conditionals[option.data].label.text)|capitalize,
+                  hint=hint_txt if optional_placeholder else None,
+                  width='w-full',
                 ) }}
               </div>
             {% endif %}

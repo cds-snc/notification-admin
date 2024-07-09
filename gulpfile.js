@@ -16,7 +16,7 @@ plugins.faMinify = require("gulp-fa-minify");
 plugins.jshint = require("gulp-jshint");
 plugins.prettyerror = require("gulp-prettyerror");
 plugins.rename = require("gulp-rename");
-plugins.uglify = require("gulp-uglify");
+//plugins.uglify = require("gulp-uglify");
 
 // 2. CONFIGURATION
 // - - - - - - - - - - - - - - -
@@ -60,11 +60,11 @@ const javascripts = () => {
     paths.src + "javascripts/collapsibleCheckboxes.js",
     paths.src + "javascripts/moreMenu.js",
     paths.src + "javascripts/menu.js",
-    paths.src + "javascripts/menuOverlay.js",
     paths.src + "javascripts/scopeTabNavigation.js",
     paths.src + "javascripts/url-typer.js",
     paths.src + "javascripts/notificationsReports.js",
     paths.src + "javascripts/main.js",
+    paths.src + "javascripts/templateCategories.js",
   ])
     .pipe(plugins.prettyerror())
     .pipe(
@@ -85,7 +85,7 @@ const javascripts = () => {
           "accessible-autocomplete/dist/accessible-autocomplete.min.js",
       ])
     )
-    .pipe(plugins.uglify())
+    //.pipe(plugins.uglify())
     .pipe(plugins.concat("all.min.js"))
     .pipe(
       plugins.addSrc.prepend([
@@ -94,6 +94,7 @@ const javascripts = () => {
         paths.src + "javascripts/branding_request.min.js",
         paths.src + "javascripts/formValidateRequired.min.js",
         paths.src + "javascripts/sessionRedirect.min.js",
+        paths.src + "javascripts/touDialog.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));
@@ -102,16 +103,16 @@ const javascripts = () => {
 // copy static css
 const static_css = () => {
   return src(paths.src + "/stylesheets/index.css")
-  .pipe(
-    plugins.addSrc.prepend([
-      paths.npm + "accessible-autocomplete/dist/accessible-autocomplete.min.css",
-      paths.src + "stylesheets/fa-svg-with-js.css",
-    ])
-  )
-  .pipe(plugins.concat("index.css"))
-  .pipe(
-    dest(paths.dist + "stylesheets/")
-  );
+    .pipe(
+      plugins.addSrc.prepend([
+        paths.npm + "accessible-autocomplete/dist/accessible-autocomplete.min.css",
+        paths.src + "stylesheets/fa-svg-with-js.css",
+      ])
+    )
+    .pipe(plugins.concat("index.css"))
+    .pipe(
+      dest(paths.dist + "stylesheets/")
+    );
 };
 
 // Copy images
@@ -141,9 +142,9 @@ const watchFiles = {
 
 // Default: compile everything
 const defaultTask = parallel(
+  series(javascripts),
   series(images),
   series(static_css),
-  series(javascripts),
 );
 
 // Watch for changes and re-run tasks

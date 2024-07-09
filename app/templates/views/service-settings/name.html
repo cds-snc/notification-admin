@@ -16,8 +16,6 @@
     back_link=url_for('main.service_settings', service_id=current_service.id)
   ) }}
 
-  <p>{{ _('Name your service something people would search for in their inbox.') }}</p>
-  
   <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
     {% if current_service.prefix_sms %}
       <p>{{ _('Users will see your service name:') }}</p>
@@ -33,7 +31,9 @@
 
   {% call form_wrapper() %}
     {% set save_txt = _('Save') %}
-    {{ textbox(form.name) }}
+    {% set hint_txt = _('Use a name that recipients will recognize. Maximum 255 characters.') %}
+
+    {{ textbox(form.name, hint=hint_txt, maxlength=255) }}
     {{ page_footer(save_txt) }}
   {% endcall %}
 

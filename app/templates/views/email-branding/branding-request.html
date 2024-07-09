@@ -1,5 +1,5 @@
 {% extends "admin_template.html" %}
-{% from "components/file-upload.html" import file_upload %}
+{% from "components/file-upload.html" import file_upload_field %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
@@ -21,7 +21,6 @@
     <div class="grid-row contain-floats">
       <div class="py-0 px-0 px-gutterHalf box-border">
         <form method="post" enctype="multipart/form-data" autocomplete="off" novalidate data-validate-required>
-          <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
             
             {{ textbox(form.name, hint=_('This will not show in messages. Choose a name that helps team members find the logo'), testid="brand_name", data_error_msg=_("Enter the name of the logo")) }}
 
@@ -33,44 +32,25 @@
             <h2 class="heading-medium">{{ _('Prepare your logo') }}</h2>
             <p>
               {{ _('Your logo must be compatible with GC Notify. Check logo is:') }}
-              <ul class="list list-bullet" id="file-description">
-                <li class="ml-6">{{ _('In PNG image format') }}</li>
-                <li class="ml-6">{{ _('Exactly 108 pixels tall') }}</li>
-                <li class="ml-6">{{ _('Maximum 600 pixels wide') }}</li>
-              </ul>
             </p>
-            <label class="file-upload-label" id="file-upload-label">
-              <span class="form-label sr-only">
-                {{ form.file.label.text }}
-              </span>
-              {% if hint %}
-                <span class="form-hint">
-                  {{ hint }}
-                </span>
-              {% endif %}
-              {% if form.file.errors %}
-                <span class="error-message">
-                  {{ form.file.errors[0] }}
-                </span>
-              {% endif %}
-              
-              <div class="form-group">
-                {{ form.file(**{ 'class': 'file-upload-field', 'accept': 'image/png', 'data_testid': 'brand_image', 'aria-labelledby': 'file-description', 'data-error-msg': _('You must select a file to continue') }) }}
-              
-                <span aria-hidden="true" id="file-upload-button" class="button button-secondary font-normal"> {{ _('Select a file') }} </span>
-              </div>
-            </label>         
-            
-            <div class="mt-6 ml-2 pl-6 border-l-4 border-gray-200 preview font-normal relative" data-testid="brand_fileinfo">
-              <div class="message relative">{{ _('No file currently selected') }}</div>
+            <ul class="list list-bullet" id="file-requirements">
+              <li class="ml-6">{{ _('In PNG image format') }}</li>
+              <li class="ml-6">{{ _('Exactly 108 pixels tall') }}</li>
+              <li class="ml-6">{{ _('Maximum 600 pixels wide') }}</li>
+            </ul>
+            {% call file_upload_field(form.file, accept="image/png", button_class="button-secondary", field_testid="brand_image") %}
+
+            <div class="preview relative" data-testid="brand_fileinfo">
               <div class="relative">
                 <div class="img relative"></div>
                 <div class="image-placeholder absolute"></div>
               </div>
-            </div>              
+            </div> 
+
+            {% endcall %}
 
             <div class="hidden template_preview mb-10 mt-6" data-testid="brand_preview">
-              <h2 class="heading-medium mt-0" tabindex="0" id="preview_heading">{{ _('Logo preview') }}</h2>
+              <h2 class="heading-medium mt-0 focus:outline-yellow" tabindex="0" id="preview_heading">{{ _('Logo preview') }}</h2>
               {% include 'views/email-branding/_preview.html' %}
             </div>
             
@@ -88,7 +68,6 @@
                 </div>
               </div>      
             </div>
-          </div>
         </form>
       </div>
     </div>

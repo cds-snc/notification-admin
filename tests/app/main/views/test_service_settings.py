@@ -355,7 +355,10 @@ def test_should_show_service_name(
     page = client_request.get("main.service_name_change", service_id=SERVICE_ONE_ID)
     assert page.find("h1").text == "Change your service name"
     assert page.find("input", attrs={"type": "text"})["value"] == "service one"
-    assert page.select_one("main p").text == "Name your service something people would search for in their inbox."
+    assert (
+        normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text)
+        == "Use a name that recipients will recognize. Maximum 255 characters."
+    )
     assert normalize_spaces(page.select_one("main ul").text) == ("as your email sender name. at the start of every text message.")
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
@@ -367,7 +370,10 @@ def test_should_show_service_name_with_no_prefixing(
     service_one["prefix_sms"] = False
     page = client_request.get("main.service_name_change", service_id=SERVICE_ONE_ID)
     assert page.find("h1").text == "Change your service name"
-    assert page.select_one("main p").text == "Name your service something people would search for in their inbox."
+    assert (
+        normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text)
+        == "Use a name that recipients will recognize. Maximum 255 characters."
+    )
 
 
 def test_should_redirect_after_change_service_name(

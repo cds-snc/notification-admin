@@ -1,0 +1,88 @@
+name: Build, push to AWS ECR, and deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main  
+    paths:
+      - ".github/workflows/**"
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      # Generate a bot token that will be used for all workflow actions.
+      # This is required as the default repo GITHUB_TOKEN does not trigger new workflow runs.
+      - name: Obtain a Notify PR Bot GitHub App Installation Access Token
+        run: |
+          TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.GH_APP_CREDENTIALS_TOKEN }})"
+          echo "::add-mask::$TOKEN"
+          echo "GITHUB_TOKEN=$TOKEN" >> $GITHUB_ENV
+
+      # generate .md file
+      - uses: KhudaDad414/workflows2md-action@v0.1.1
+        id: workflows2md
+
+      - name: setup git config
+        run: |
+          git config user.name "Workflow Update"
+          git config user.email "action@github.com"
+
+      - name: Branch protection OFF
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/:repository/branches/main/protection
+          repository: ${{ github.repository }}
+          required_status_checks: | 
+            null
+          required_linear_history: |
+            null
+          enforce_admins: |
+            null
+          required_pull_request_reviews: |
+            null
+          restrictions: | 
+            null 
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          
+      - name: commit
+        env:
+          NEW_VERSION: ${{ steps.tag_version.outputs.new_tag }}
+          CURRENT_VERSION: ${{ env.CURRENT_VERSION }}
+        run: |
+          git add ${{ steps.workflows2md.outputs.path }}
+          git commit -m "Updating workflows map file"
+          git push origin main
+
+      - name: Branch protection ON
+        if: always()
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/:repository/branches/main/protection
+          repository: ${{ github.repository }}
+          required_status_checks: | 
+            strict: true
+            checks:
+              - context: testing_manifest
+          required_linear_history: |
+            true
+          enforce_admins: |
+            true
+          required_pull_request_reviews: |
+            required_approving_review_count: 1
+          restrictions: | 
+            null 
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}        
+      
+      # - name: Notify Slack channel if this job failed
+      #   if: ${{ failure() }}
+      #   run: |
+      #     json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-admin/|notification-admin> !'}"
+      #     curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

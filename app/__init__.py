@@ -35,6 +35,7 @@ from notifications_utils.recipients import (
 )
 from notifications_utils.sanitise_text import SanitiseASCII
 from notifications_utils.timezones import utc_string_to_aware_gmt_datetime
+from user_agents import parse
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 from werkzeug.exceptions import abort
 from werkzeug.local import LocalProxy
@@ -79,11 +80,13 @@ from app.notify_client.provider_client import provider_client
 from app.notify_client.service_api_client import service_api_client
 from app.notify_client.status_api_client import status_api_client
 from app.notify_client.template_api_prefill_client import template_api_prefill_client
+from app.notify_client.template_category_api_client import template_category_api_client
 from app.notify_client.template_folder_api_client import template_folder_api_client
 from app.notify_client.template_statistics_api_client import template_statistics_client
 from app.notify_client.user_api_client import user_api_client
 from app.salesforce import salesforce_account
 from app.scanfiles.scanfiles_api_client import scanfiles_api_client
+from app.tou import EVENTS_KEY, show_tou_prompt
 from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
@@ -162,6 +165,7 @@ def create_app(application):
         provider_client,
         service_api_client,
         status_api_client,
+        template_category_api_client,
         template_folder_api_client,
         template_statistics_client,
         template_api_prefill_client,
@@ -215,6 +219,11 @@ def create_app(application):
     # allow gca_url_for to be called from any template
     application.jinja_env.globals["gca_url_for"] = gca_url_for
     application.jinja_env.globals["current_service"] = current_service
+
+    # cross-cutting concerns for TOU/login events
+    application.jinja_env.globals["show_tou_prompt"] = show_tou_prompt
+    application.jinja_env.globals["parse_ua"] = parse
+    application.jinja_env.globals["events_key"] = EVENTS_KEY
 
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:
@@ -666,6 +675,7 @@ def useful_headers_after_request(response):
             f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
             f"img-src 'self' blob: {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+            "media-src 'self' *.alpha.canada.ca;"
             "frame-ancestors 'self';"
             "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
             "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"

@@ -12,17 +12,22 @@ module.exports = defineConfig({
         rules: {
           "form-dup-name": "off",
           "prefer-native-element": ["error", {
-            "exclude": ["button"]
+            "exclude": ["button", "link"]
           }],
+          "no-redundant-role": "off",
+          "no-dup-class": "off",
+          "require-sri": "off",
         },
       });
 
       const emailAccount = await EmailAccount()
+
       on('task', {
-        log (message) { // for debugging
+        log(message) { // for debugging
           console.log(message)
           return null
         },
+        // Email Account ///
         getLastEmail() {
           return emailAccount.getLastEmail()
         },
@@ -34,7 +39,7 @@ module.exports = defineConfig({
         },
         createEmailAccount() {
           return emailAccount.createEmailAccount();
-        }
+        },
       });
 
       on('before:browser:launch', (browser = {}, launchOptions) => {
@@ -46,10 +51,10 @@ module.exports = defineConfig({
     },
     specPattern: '**/e2e/**/*.cy.js',
     watchForFileChanges: false,
-    blockHosts: ['*google-analytics.com', 'stats.g.doubleclick.net', 'bam.nr-data.net', '*newrelic.com'],
+    blockHosts: ['*google-analytics.com', 'stats.g.doubleclick.net', 'bam.nr-data.net', '*newrelic.com', '*qualtrics.com'],
     viewportWidth: 1280,
     viewportHeight: 850,
-    testIsolation: false,
+    testIsolation: true,
     retries: 3
   },
 });
