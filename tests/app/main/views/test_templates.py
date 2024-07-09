@@ -1470,7 +1470,6 @@ def test_should_show_interstitial_when_making_breaking_change(
         "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "subject": "reminder '\" <span> & ((name))",
         "service": SERVICE_ONE_ID,
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "process_type": DEFAULT_PROCESS_TYPE,
     }
 

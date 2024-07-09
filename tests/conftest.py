@@ -747,7 +747,7 @@ TEMPLATE_ONE_ID = "b22d7d94-2197-4a7d-a8e7-fd5f9770bf48"
 USER_ONE_ID = "7b395b52-c6c1-469c-9d61-54166461c1ab"
 JOB_API_KEY_NAME = "API key name"
 
-from . import DEFAULT_TEMPLATE_CATEGORY_LOW, DEFAULT_TEMPLATE_CATEGORY_MEDIUM, DEFAULT_TEMPLATE_CATEGORY_HIGH
+from . import DEFAULT_TEMPLATE_CATEGORY_LOW
 
 @pytest.fixture(scope="function")
 def mock_get_services(mocker, fake_uuid, user=None):
