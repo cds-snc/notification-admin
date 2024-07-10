@@ -38,7 +38,8 @@
           {{ page_footer(
             _('Save'),
             button_name='operation',
-            button_value='email-branding-details'
+            button_value='email-branding-details',
+            delete_link=url_for('.delete_template_category', template_category_id=template_category.id)
           ) }}
         </div>
       </div>

@@ -1237,7 +1237,8 @@ def add_recipients(service_id, template_id):
     )
 
 
-@main.route("/template-categories", methods=["GET", "POST"])
+@main.route("/template-categories", methods=["GET"])
+@main.route('/template-categories/<template_category_id>', methods=["POST"])
 @user_is_platform_admin
 def template_categories():
     template_category_list = template_category_api_client.get_all_template_categories()
@@ -1256,7 +1257,38 @@ def template_categories():
     )
 
 
+@main.route("/template-categories/<template_category_id>/delete", methods=["GET", "POST"])
+@user_is_platform_admin
+def delete_template_category(template_category_id):
+    template_category = template_category_api_client.get_template_category(template_category_id)
+
+    if request.method == "POST":
+        template_category_api_client.delete_template_category(template_category_id)
+        return redirect(url_for(".template_categories"))
+
+    flash(
+        [
+            "{} ‘{}’?".format(_l("Are you sure you want to delete"), (template_category["name_en"] if session["userlang"] == "en" else template_category["name_fr"])),
+        ],
+        "delete",
+    )
+
+    form = TemplateCategoryForm(
+        name_en=template_category["name_en"],
+        name_fr=template_category["name_fr"],
+        description_en=template_category["description_en"],
+        description_fr=template_category["description_fr"],
+        hidden=template_category["hidden"],
+        email_process_type=template_category["email_process_type"],
+        sms_process_type=template_category["sms_process_type"],
+    )
+
+    return render_template("views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form)
+
+
+@main.route("/template-categories")
 @main.route("/template-categories/add", methods=["GET", "POST"])
+@user_is_platform_admin
 def add_template_category():
     form = TemplateCategoryForm()
 
@@ -1273,7 +1305,7 @@ def add_template_category():
 
         return redirect(url_for(".template_categories"))
 
-    return render_template("views/templates/template_category.html", search_form=SearchByNameForm(), form=form)
+    return render_template("views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form)
 
 
 @main.route("/template-categories/<template_category_id>", methods=["GET", "POST"])

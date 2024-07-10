@@ -24,7 +24,7 @@
     {% call(item, row_number) list_table(
       template_categories,
       caption=_('Template categories'),
-      field_headings=['Category name', 'Email Priority', 'SMS Priority', 'Hidden?'],
+      field_headings=['Category name', 'Email Priority', 'SMS Priority', 'Visibility'],
       field_headings_visible=True,
       caption_visible=False,
       testid="template-categories-table"
@@ -40,11 +40,16 @@
       {% call field() %}
         {{ item.sms_process_type }}
       {% endcall %}
-      {% call field() %}
-        {{ item.hidden }}
-      {% endcall %}
+      {% if item.hidden %}
+        {% call field(status='error') %}
+          {{ "Hide" }}
+        {% endcall %}
+      {% else %}
+        {% call field() %}
+          {{ "Visible" }}
+        {% endcall %}
+      {% endif %}
     {% endcall %}
-
     <div class="js-stick-at-bottom-when-scrolling">
       <a href="{{url_for('.add_template_category')}}" class="mt-gutter button button">{{ _('New category') }}</a>
     </div>
