@@ -1,6 +1,10 @@
-import pytest
-
 from app.notify_client.template_category_api_client import TemplateCategoryClient
+import pytest
+from unittest.mock import call
+<< << << < HEAD
+== == == =
+
+>>>>>> > origin / main
 
 
 @pytest.fixture
@@ -77,6 +81,10 @@ def test_get_all_template_categories(template_category_client, mocker, fake_uuid
 
 def test_update_template_category(template_category_client, mocker):
     mock_post = mocker.patch("app.notify_client.template_category_api_client.TemplateCategoryClient.post", return_value=None)
+    mock_redis_delete = mocker.patch(
+        "app.extensions.RedisClient.delete",
+    )
+
     template_category_client.update_template_category(
         template_category_id="template_category_id",
         name_en="Test Name EN",
@@ -97,11 +105,16 @@ def test_update_template_category(template_category_client, mocker):
         "hidden": "hidden",
     }
     mock_post.assert_called_once_with(url="/template-category/template_category_id", data=data)
+    assert call("template_categories") in mock_redis_delete.call_args_list
+    assert call("template_category-template_category_id") in mock_redis_delete.call_args_list
+    assert len(mock_redis_delete.call_args_list) == 2
 
 
 def test_delete_template_category(template_category_client, mocker):
     mock_delete = mocker.patch("app.notify_client.template_category_api_client.TemplateCategoryClient.delete")
     mock_redis_delete = mocker.patch("app.extensions.RedisClient.delete", return_value=None)
+
     template_category_client.delete_template_category(template_category_id="template_category_id", cascade=False)
+
     mock_delete.assert_called_once_with(url="/template-category/template_category_id", data=False)
-    mock_redis_delete.assert_called_once_with("template_category-template_category_id")
+    assert [call("template_categories"), call("template_category-template_category_id")] in mock_redis_delete.call_args_list

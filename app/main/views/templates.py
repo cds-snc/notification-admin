@@ -75,6 +75,13 @@ form_objects = {
     "letter": LetterTemplateForm,
 }
 
+# Todo: Remove this once the process_types in the backend are updated to use low/med/high
+category_mapping = {
+    "bulk": "low",
+    "normal": "medium",
+    "priority": "high",
+}
+
 form_objects_with_category = {
     "email": EmailTemplateFormWithCategory,
     "sms": SMSTemplateFormWithCategory,
@@ -840,15 +847,11 @@ def abort_403_if_not_admin_user():
 def _get_categories_and_prepare_form(template, template_type):
     categories = template_category_api_client.get_all_template_categories()
 
-    # TODO: Remove this, this will come from the DB
-    if "/edit" in request.path:
-        template["template_category"] = "1"
-
     form = form_objects_with_category[template_type](**template)
 
     # alphabetize choices
     name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
-    desc_col = "desc_en" if get_current_locale(current_app) == "en" else "desc_fr"
+    desc_col = "description_en" if get_current_locale(current_app) == "en" else "description_fr"
     categories = sorted(categories, key=lambda x: x[name_col])
     form.template_category.choices = [(cat["id"], cat[name_col]) for cat in categories]
 
@@ -1239,6 +1242,15 @@ def add_recipients(service_id, template_id):
 def template_categories():
     template_category_list = template_category_api_client.get_all_template_categories()
 
+    # Todo: Remove this once the process_types in the backend are updated to use low/med/high
+    # Maps bulk/normal/priority to low/med/high for display in the front end.
+    for cat in template_category_list:
+        if cat["sms_process_type"] in category_mapping:
+            cat["sms_process_type"] = category_mapping[cat["sms_process_type"]]
+
+        if cat["email_process_type"] in category_mapping:
+            cat["email_process_type"] = category_mapping[cat["email_process_type"]]
+
     return render_template(
         "views/templates/template_categories.html", search_form=SearchByNameForm(), template_categories=template_category_list
     )
@@ -1252,8 +1264,8 @@ def add_template_category():
         template_category_api_client.create_template_category(
             name_en=form.data["name_en"],
             name_fr=form.data["name_fr"],
-            desc_en=form.data["desc_en"],
-            desc_fr=form.data["desc_fr"],
+            description_en=form.data["description_en"],
+            description_fr=form.data["description_fr"],
             hidden=form.data["hidden"],
             email_process_type=form.data["email_process_type"],
             sms_process_type=form.data["sms_process_type"],
@@ -1284,7 +1296,7 @@ def template_category(template_category_id):
             name_en=form.data["name_en"],
             name_fr=form.data["name_fr"],
             description_en=form.data["description_en"],
-            description_fr=form.data["description_en"],
+            description_fr=form.data["description_fr"],
             hidden=form.data["hidden"],
             email_process_type=form.data["email_process_type"],
             sms_process_type=form.data["sms_process_type"],
