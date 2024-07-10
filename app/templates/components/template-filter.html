@@ -13,18 +13,8 @@
     <div class="template-row" data-notification-type="email" data-template-category="status-update">
     ```
 #}
-{% macro template_filter(row_selector, notification_types, template_categories, notification_type_data_attribue, template_category_data_attribute) %}
-    {# TODO: move these to a CSS file #}
-    <style>
-        .template_filter .active:not(:focus) {
-            background-color: #425A76;
-            color: white;
-        }
-        .template_filter details >div {
-            padding-left: 5px !important;
-            box-shadow: none !important;
-        }
-    </style>
+{% macro template_filter(row_selector, notification_types, template_categories, notification_type_data_attribue,
+template_category_data_attribute) %}
     {# Ensure all required parameters are provided #}
     {% if not row_selector or not notification_type_data_attribue or not template_category_data_attribute %}
         <div class="text-red font-bold my-4">
@@ -32,28 +22,28 @@
         </div>
     {% else %}
         {# Main filter container with data attributes for dynamic filtering #}
-        <div class="template_filter" data-row-selector="{{ row_selector }}">
+        <div class="template-filter" data-row-selector="{{ row_selector }}">
             <details>
-                <summary class="cursor-pointer text-small">Apply filters</summary>
+                <summary>Apply filters</summary>
                 <div class="flex p-0 gap-gutter pl-gutter mt-2">
                     {# Filter group for notification types #}
-                    <div class="filters mr-10 border-l-4 border-gray-border" data-target="{{ notification_type_data_attribue }}">
-                        <h3 class="font-medium px-4 text-small text-gray-700 mb-2">Type</h3>
+                    <div class="filter-list" data-target="{{ notification_type_data_attribue }}">
+                        <h3 class="filter-heading">Type</h3>
                         <div class="space-y-1">
-                            <a href="#" class="p-4 block active" data-target="all">All</a>
+                            <a href="#" class="filter-item active" data-target="all">All</a>
                             {% for notification_type in notification_types %}
-                                <a href="#" class="p-4 block" data-target="{{ notification_type.code }}">{{ notification_type.text }}</a>
+                                <a href="#" class="filter-item" data-target="{{ notification_type.code }}">{{ notification_type.text }}</a>
                             {% endfor %}
                         </div>
                     </div>
                     {# Filter group for template categories #}
-                    <div class="filters border-l-4 border-gray-border" data-target="{{ template_category_data_attribute }}">
-                        <h3 class="font-medium text-small px-4 text-gray-700 mb-2">Category</h3>
+                    <div class="filter-list" data-target="{{ template_category_data_attribute }}">
+                        <h3 class="filter-heading">Category</h3>
                         <div class="space-y-1">
-                            <a href="#" class="p-4 block active" data-target="all">All</a>
+                            <a href="#" class="filter-item active" data-target="all">All</a>
                             {# Loop through template categories and create a filter link for each #}
                             {% for template_category in template_categories %}
-                                <a href="#" class="p-4 block" data-target="{{ template_category.code }}">{{ template_category.text }}</a>
+                                <a href="#" class="filter-item" data-target="{{ template_category.code }}">{{ template_category.text }}</a>
                             {% endfor %}
                         </div>
                     </div>
@@ -63,7 +53,7 @@
     
         {# TODO: Move this script to a separate JS file #}
         <script nonce="{{ request_nonce }}">
-            const templateFilter = document.querySelector('.template_filter');
+                                        const templateFilter = document.querySelector('.template-filter');
             const rowSelector = templateFilter.dataset.rowSelector;
         
             // Function to initialize event listeners on filter links

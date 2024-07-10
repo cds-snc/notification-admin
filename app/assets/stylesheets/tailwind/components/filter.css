@@ -1,0 +1,23 @@
+@layer components {
+    /*! purgecss start ignore */
+
+.template-filter .filter-list:nth-child(n+2) {
+    @apply pl-gutter border-l-4 border-gray-border;
+}
+
+.template-filter .filter-heading {
+    @apply font-medium text-small text-gray-700 mb-2;
+}
+
+.template-filter .filter-item {
+    @apply block p-2;
+}
+
+
+.template-filter .filter-item.active:not(:focus) {
+    @apply bg-blue-700 text-white;
+}
+
+      /*! purgecss end ignore */
+
+}

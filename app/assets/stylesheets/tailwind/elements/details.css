@@ -4,9 +4,8 @@
   }
 
   details summary {
-    padding-left: 25px;
     border-color: theme("colors.blue.default");
-    @apply mb-gutterHalf underline inline-block text-blue cursor-pointer relative;
+    @apply pl-gutter mb-gutterHalf underline inline-block text-blue cursor-pointer relative;
   }
   details summary:before {
     content: "";
@@ -52,7 +51,7 @@
   }
 
   details [id^="details-content"] {
-    padding-left: 25px;
     box-shadow: inset 5px 0 0 theme("colors.gray.border");
+    @apply pl-gutter;
   }
 }

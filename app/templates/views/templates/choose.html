@@ -1,5 +1,6 @@
 {% from "components/folder-path.html" import folder_path, page_title_folder_path %}
 {% from "components/pill.html" import pill %}
+{% from "components/template-filter.html" import template_filter %}
 {% from "components/message-count-label.html" import message_count_label %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/live-search.html" import live_search %}
@@ -77,6 +78,22 @@
     {% if show_template_nav %}
       <div class="mb-12 clear-both contain-floats">
         {{ pill(template_nav_items, current_value=template_type, show_count=False, label=_("Filter by template type")) }}
+        {{
+        template_filter(
+        ".template-list-item",
+        [
+        { "code": "email", "text": "Email" },
+        { "code": "sms", "text": "SMS" }
+        ],
+        [
+        { "code": "info-request", "text": "Information request" },
+        { "code": "status-update", "text": "Status update" },
+        { "code": "uncategorized", "text": "Uncategorized" }
+        ],
+        "data-notification-type",
+        "data-template-category"
+        )
+        }}
       </div>
     {% endif %}
 
