@@ -849,9 +849,9 @@ class RequiredIf(InputRequired):
 
 
 class BaseTemplateFormWithCategory(BaseTemplateForm):
-    template_category = RadioField(_l("Select category"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    template_category_id = RadioField(_l("Select category"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
-    template_category_other = StringField(_l("Category label"), validators=[RequiredIf("template_category", "other")])
+    template_category_other = StringField(_l("Category label"), validators=[RequiredIf("template_category_id", "other")])
 
 
 class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
@@ -1911,8 +1911,8 @@ class BrandingRequestForm(StripWhitespaceForm):
 class TemplateCategoryForm(StripWhitespaceForm):
     name_en = StringField("Name EN", validators=[DataRequired(message=_l("This cannot be empty"))])
     name_fr = StringField("Name FR", validators=[DataRequired(message=_l("This cannot be empty"))])
-    description_en = StringField("Desc EN", validators=[DataRequired(message=_l("This cannot be empty"))])
-    description_fr = StringField("Desc FR", validators=[DataRequired(message=_l("This cannot be empty"))])
+    description_en = StringField("Desc EN")
+    description_fr = StringField("Desc FR")
     hidden = RadioField(_l("Hide category"), choices=[("True", _l("Hide")), ("False", _l("Show"))])
     email_process_type = RadioField(
         _l("Email Priority"),

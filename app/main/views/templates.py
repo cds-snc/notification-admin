@@ -787,6 +787,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 subject,
                 form.process_type.data,
                 template_folder_id,
+                template_category_id=form.template_category_id.data,
             )
         except HTTPError as e:
             if (
@@ -853,10 +854,10 @@ def _get_categories_and_prepare_form(template, template_type):
     name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
     desc_col = "description_en" if get_current_locale(current_app) == "en" else "description_fr"
     categories = sorted(categories, key=lambda x: x[name_col])
-    form.template_category.choices = [(cat["id"], cat[name_col]) for cat in categories]
+    form.template_category_id.choices = [(cat["id"], cat[name_col]) for cat in categories]
 
     # add "other" category to choices
-    form.template_category.choices.append(("other", "Other"))
+    form.template_category_id.choices.append(("other", "Other"))
     other_category = {"other": form.template_category_other}
     template_category_hints = {cat["id"]: cat[desc_col] for cat in categories}
 
@@ -937,6 +938,7 @@ def edit_service_template(service_id, template_id):
                         service_id,
                         subject,
                         form.process_type.data,
+                        template_category_id=form.template_category_id.data,
                     )
                     flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
                     return redirect(
@@ -1271,6 +1273,7 @@ def add_template_category():
             sms_process_type=form.data["sms_process_type"],
         )
 
+        flash(_("Template category added."), "default_with_tick")
         return redirect(url_for(".template_categories"))
 
     return render_template("views/templates/template_category.html", search_form=SearchByNameForm(), form=form)
@@ -1302,6 +1305,7 @@ def template_category(template_category_id):
             sms_process_type=form.data["sms_process_type"],
         )
 
+        flash("Template category saved.", "default_with_tick")
         return redirect(url_for(".template_categories"))
 
     return render_template(
