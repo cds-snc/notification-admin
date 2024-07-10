@@ -43,7 +43,7 @@
     <p>
     {{ _('We apply limits to maintain our ') }}
     <a href="{{ gca_url_for('service-level-objectives') }}">{{ _('service level objectives') }}</a>. {{ _('To discuss these limits, ') }}
-    <a href="https://notification.canada.ca/contact">{{ _('contact us') }}</a>.
+    <a href="{{ url_for('main.contact') }}">{{ _('contact us') }}</a>.
     </p>
 
     <div
@@ -87,7 +87,10 @@
             {{ _("Communicate with recipients about incidents involving personal information. Contact your <a href='https://www.tbs-sct.canada.ca/ap/atip-aiprp/coord-eng.asp'>privacy office</a> and follow their policies.") }}
         </li>
         <li>
-            {{ _("Respond to requests under the <a href='https://laws-lois.justice.gc.ca/eng/acts/A-1/index.html'><em>Access to Information Act</em></a> and <a href='https://laws-lois.justice.gc.ca/eng/ACTS/P-21/index.html'><em>Privacy Act</em></a> or similar requests under your jurisdiction’s legislation. For support, <a href='https://notification.canada.ca/contact'>contact us</a>.") }}
+            {{ _("Respond to requests under the <a href='https://laws-lois.justice.gc.ca/eng/acts/A-1/index.html'><em>Access to
+                    Information Act</em></a> and <a href='https://laws-lois.justice.gc.ca/eng/ACTS/P-21/index.html'><em>Privacy
+                    Act</em></a> or similar requests under your jurisdiction’s legislation. For support, <a href='/contact'>contact
+                us</a>.") }}
         </li>
         <li>{{ _('Follow your jurisdiction’s legislation and policies, including for branding, language or privacy.') }}</li>
     </ul>
@@ -116,7 +119,8 @@
     <ul class="list list-bullet ml-10">
         <li>{{ _('Use a valid government email and a mobile device with a Canadian phone number to create your account and for 2-factor authentication.') }}</li>
         <li>{{ _('Create your GC Notify account with a work email address only you can access. Do not share inboxes, account information or passwords, even among staff.') }}</li>
-        <li>{{ _("Follow the <a href='https://notification.canada.ca/security'>steps in our Security notice</a> and report any security breach or vulnerability using the <a href='https://digital.canada.ca/security-notice/'>CDS process</a>.") }}</li>
+        <li>{{ _("Follow the <a href='/security'>steps in our Security notice</a> and report any security breach or
+            vulnerability using the <a href='https://digital.canada.ca/security-notice/'>CDS process</a>.") }}</li>
         <li>{{ _("Follow 11.4 and 11.6 of Amazon Web Service (AWS) <a href='https://aws.amazon.com/service-terms/'>Service Terms</a>.") }}</li>
         <li>{{ _("Secure your API keys and follow our rules for <a href='https://documentation.notification.canada.ca/en/send.html#check-status-repair-and-resend-messages'>API calls and unprocessed requests</a>.") }}</li>
     </ul>

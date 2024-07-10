@@ -19,6 +19,7 @@ from app.tou import TERMS_KEY
 from app.types import EmailReplyTo
 
 from . import (
+    DEFAULT_TEMPLATE_CATEGORY_LOW,
     TestClient,
     api_key_json,
     assert_url_expected,
@@ -31,6 +32,7 @@ from . import (
     sample_uuid,
     service_json,
     single_notification_json,
+    template_category_json,
     template_json,
     template_version_json,
     user_json,
@@ -790,6 +792,11 @@ def mock_get_service_template(mocker):
             template.update({"version": version})
         return {"data": template}
 
+    def _get_tc():
+        return [template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_LOW)]
+
+    mocker.patch("app.template_category_api_client.get_all_template_categories", side_effect=_get_tc)
+
     return mocker.patch("app.service_api_client.get_service_template", side_effect=_get)
 
 
@@ -1097,6 +1104,7 @@ def create_template(
     name="sample template",
     content="Template content",
     subject="Template subject",
+    template_category_id=DEFAULT_TEMPLATE_CATEGORY_LOW,
     redact_personalisation=False,
     postage=None,
     folder=None,
@@ -1112,6 +1120,7 @@ def create_template(
             redact_personalisation=redact_personalisation,
             postage=postage,
             folder=folder,
+            template_category=template_category_id,
         )
     }
 
@@ -2863,6 +2872,14 @@ def mock_set_user_permissions(mocker):
 @pytest.fixture(scope="function")
 def mock_remove_user_from_service(mocker):
     return mocker.patch("app.service_api_client.remove_user_from_service", return_value=None)
+
+
+@pytest.fixture(scope="function")
+def mock_get_template_categories(mocker):
+    def _get():
+        return [template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_LOW)]
+
+    return mocker.patch("app.template_category_api_client.get_all_template_categories", side_effect=_get)
 
 
 @pytest.fixture(scope="function")
