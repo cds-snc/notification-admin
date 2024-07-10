@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block platform_admin_content %}
-
   <div class="p-gutterHalf">
     {# TODO: remove when feature goes live #}
     <div id="sticky-banner" tabindex="-1" class="flex justify-between w-full p-4 border-b border-gray-200 bg-red text-white rounded-lg">
@@ -17,6 +16,7 @@
         <span>This page is under development and is not yet functional.</span>
       </div>
     </div>
+    {% include 'partials/flash_messages.html' %}
     {{ page_header(_('Template categories'), id_text='template_cats') }}
     {{ live_search(target_selector='.table-row', show=True, form=search_form) }}
 
@@ -31,7 +31,11 @@
     ) %}
       {% call field() %}
         <a class="template-cat" href="{{ url_for('main.template_category', template_category_id=item.id)}}">
-          {{ item.name_en }}
+          {% if current_lang == "en" %}
+            {{ item.name_en }}
+          {% else %}
+            {{ item.name_fr }}
+          {% endif %}
         </a>
       {% endcall %}
       {% call field() %}
