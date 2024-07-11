@@ -328,11 +328,11 @@ def template_json(
     is_precompiled_letter=False,
     postage=None,
     folder=None,
-    template_category=DEFAULT_TEMPLATE_CATEGORY_LOW,
+    template_category_id=DEFAULT_TEMPLATE_CATEGORY_LOW,
 ):
     template = {
         "id": id_,
-        "template_category_id": template_category,
+        "template_category_id": template_category_id,
         "name": name,
         "template_type": type_ or "sms",
         "content": content,
@@ -347,7 +347,6 @@ def template_json(
         "is_precompiled_letter": is_precompiled_letter,
         "folder": folder,
         "postage": postage,
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
     }
     if content is None:
         template["content"] = "template content"

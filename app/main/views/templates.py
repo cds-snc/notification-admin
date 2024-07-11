@@ -787,7 +787,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 subject,
                 form.process_type.data,
                 template_folder_id,
-                template_category_id=form.template_category_id.data,
+                form.template_category_id.data,
             )
         except HTTPError as e:
             if (
@@ -938,7 +938,7 @@ def edit_service_template(service_id, template_id):
                         service_id,
                         subject,
                         form.process_type.data,
-                        template_category_id=form.template_category_id.data,
+                        form.template_category_id.data,
                     )
                     flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
                     return redirect(
