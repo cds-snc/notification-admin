@@ -1,10 +1,6 @@
 from app.notify_client.template_category_api_client import TemplateCategoryClient
 import pytest
 from unittest.mock import call
-<< << << < HEAD
-== == == =
-
->>>>>> > origin / main
 
 
 @pytest.fixture
