@@ -1257,7 +1257,7 @@ def template_categories():
     )
 
 
-@main.route("/template-categories/<template_category_id>/delete", methods=["GET", "POST"])
+@main.route("/template-category/<template_category_id>/delete", methods=["GET", "POST"])
 @user_is_platform_admin
 def delete_template_category(template_category_id):
     template_category = template_category_api_client.get_template_category(template_category_id)
@@ -1292,7 +1292,7 @@ def delete_template_category(template_category_id):
 
 
 @main.route("/template-categories")
-@main.route("/template-categories/add", methods=["GET", "POST"])
+@main.route("/template-category/add", methods=["GET", "POST"])
 @user_is_platform_admin
 def add_template_category():
     form = TemplateCategoryForm()
@@ -1307,7 +1307,14 @@ def add_template_category():
             email_process_type=form.data["email_process_type"],
             sms_process_type=form.data["sms_process_type"],
         )
-
+        flash(
+            [
+                _l("Template category ‘{}’ created").format(
+                    form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]
+                ),
+            ],
+            "default_with_tick",
+        )
         return redirect(url_for(".template_categories"))
 
     return render_template(
@@ -1315,7 +1322,7 @@ def add_template_category():
     )
 
 
-@main.route("/template-categories/<template_category_id>", methods=["GET", "POST"])
+@main.route("/template-category/<template_category_id>", methods=["GET", "POST"])
 @user_is_platform_admin
 def template_category(template_category_id):
     template_category = template_category_api_client.get_template_category(template_category_id)
@@ -1340,7 +1347,14 @@ def template_category(template_category_id):
             email_process_type=form.data["email_process_type"],
             sms_process_type=form.data["sms_process_type"],
         )
-
+        flash(
+            [
+                _l("Template category ‘{}’ updated").format(
+                    form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]
+                ),
+            ],
+            "default_with_tick",
+        )
         return redirect(url_for(".template_categories"))
 
     return render_template(
