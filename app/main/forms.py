@@ -851,7 +851,7 @@ class RequiredIf(InputRequired):
 class BaseTemplateFormWithCategory(BaseTemplateForm):
     template_category_id = RadioField(_l("Select category"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
-    template_category_other = StringField(_l("Category label"), validators=[RequiredIf("template_category_id", "other")])
+    template_category_other = StringField(_l("Describe category"), validators=[RequiredIf("template_category_id", "other")])
 
 
 class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):

@@ -857,7 +857,7 @@ def _get_categories_and_prepare_form(template, template_type):
     form.template_category_id.choices = [(cat["id"], cat[name_col]) for cat in categories]
 
     # add "other" category to choices
-    form.template_category_id.choices.append(("other", "Other"))
+    form.template_category_id.choices.append(("other", _("Other")))
     other_category = {"other": form.template_category_other}
     template_category_hints = {cat["id"]: cat[desc_col] for cat in categories}
 
