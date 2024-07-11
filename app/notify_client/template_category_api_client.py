@@ -54,10 +54,11 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
     @cache.delete("template_categories")
     def delete_template_category(self, template_category_id, cascade=False):
         try:
-            response = self.delete(url="/template-category/{}".format(template_category_id), data=cascade)
+            self.delete(url="/template-category/{}".format(template_category_id), data=cascade)
         except Exception as e:
             if e.response.status_code == 400:
                 raise e
+        
 
 
 template_category_api_client = TemplateCategoryClient()

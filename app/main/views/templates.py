@@ -1271,7 +1271,7 @@ def delete_template_category(template_category_id):
                     (template_category["name_en"] if session["userlang"] == "en" else template_category["name_fr"])
                 )
             ])
-            return redirect(url_for(".template_categories"))
+        return redirect(url_for(".template_categories"))
 
     flash(
         [
