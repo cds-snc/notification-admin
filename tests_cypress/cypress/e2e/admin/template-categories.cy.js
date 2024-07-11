@@ -21,7 +21,7 @@ describe("Template categories", () => {
   ];
 
   templates.forEach((template) => {
-    context(`${template.type}`, () => {
+    context(`Template categories - ${template.type}`, () => {
       it("Passes a11y checks", () => {
         TemplatesPage.SelectTemplate(template.name);
         cy.a11yScan(false, {
@@ -56,6 +56,10 @@ describe("Template categories", () => {
         TemplatesPage.EditCurrentTemplate();
         TemplatesPage.Components.TemplateCategoryButtonContainer().should(
           "be.visible",
+        );
+        TemplatesPage.Components.SelectedTemplateCategoryCollapsed().should(
+          "not.have.text",
+          "",
         );
         TemplatesPage.Components.TemplateCategoryRadiosContainer().should(
           "not.be.visible",
@@ -99,6 +103,51 @@ describe("Template categories", () => {
         TemplatesPage.SaveTemplate();
         TemplatesPage.Components.TemplateCategories()
           .find(".error-message")
+          .should("be.visible");
+      });
+
+      it("Can be updated", () => {
+        TemplatesPage.SelectTemplate(template.name);
+        TemplatesPage.EditCurrentTemplate();
+        TemplatesPage.ExpandTemplateCategories();
+        TemplatesPage.SelectTemplateCategory("Automatic reply");
+        TemplatesPage.SaveTemplate();
+
+        // ensure update happened
+        TemplatesPage.EditCurrentTemplate();
+        TemplatesPage.ExpandTemplateCategories();
+        TemplatesPage.Components.SelectedTemplateCategory()
+          .find("label")
+          .contains("Automatic reply")
+          .should("be.visible");
+
+        // re-set it
+        cy.visit(`/services/${config.Services.Cypress}/templates`);
+        TemplatesPage.SelectTemplate(template.name);
+        TemplatesPage.EditCurrentTemplate();
+        TemplatesPage.ExpandTemplateCategories();
+        TemplatesPage.SelectTemplateCategory("Authentication");
+        TemplatesPage.SaveTemplate();
+
+        // ensure update happened
+        TemplatesPage.EditCurrentTemplate();
+        TemplatesPage.ExpandTemplateCategories();
+        TemplatesPage.Components.SelectedTemplateCategory()
+          .find("label")
+          .contains("Authentication")
+          .should("be.visible");
+      });
+
+      it.only("Can be set when creating a new template", () => {
+        TemplatesPage.CreateTemplate();
+        TemplatesPage.SelectTemplateType(template.type);
+        TemplatesPage.Continue();
+        TemplatesPage.ExpandTemplateCategories();
+        TemplatesPage.SelectTemplateCategory("Automatic reply");
+        
+        TemplatesPage.Components.SelectedTemplateCategory()
+          .find("label")
+          .contains("Automatic reply")
           .should("be.visible");
       });
     });

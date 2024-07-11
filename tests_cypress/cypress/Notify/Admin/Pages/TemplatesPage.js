@@ -5,6 +5,8 @@ let Components = {
     TemplateCategoryButtonContainer: () => cy.getByTestId('tc_button_container'),
     TemplateCategoryRadiosContainer: () => cy.getByTestId('tc_radios'),
     TemplateCategories: () => cy.getByTestId('template-categories'),
+    SelectedTemplateCategory: () => Components.TemplateCategories().find('input:checked').parent(),
+    SelectedTemplateCategoryCollapsed: () => Components.TemplateCategoryButtonContainer().find('p'),
     TCExpandBytton: () => cy.getByTestId('tc_expand_button'),
     // this is the first submit button in the form
     SaveTemplateButton: () => cy.get('button[type="submit"]').first(),
@@ -12,7 +14,10 @@ let Components = {
     TemplateTypeRadio: () => cy.getByTestId('template-type'),
     ContinueButton: () => cy.contains('button', 'Continue'),
     EmailRadio: () => cy.getByTestId('email'),
-    SMSRadio: () => cy.getByTestId('sms')
+    SMSRadio: () => cy.getByTestId('sms'),
+    TemplateName: () => cy.getByTestId('template-name'),
+    TemplateContent: () => cy.getByTestId('template-content'),
+    TemplateSubject: () => cy.getByTestId('template-subject'),
 };
 
 // Actions users can take on the page
@@ -55,6 +60,11 @@ let Actions = {
     },
     SelectTemplateCategory: (category) => {
         Components.TemplateCategories().contains('label', category).click();
+    },
+    SetTemplateContent: (name, subject, content) => {
+        Components.TemplateName().type(name);
+        Components.TemplateSubject().type(subject);
+        Components.TemplateContent().type(content);
     }
 };
 
