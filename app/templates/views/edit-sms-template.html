@@ -34,10 +34,10 @@
 
     <div class="grid-row contain-floats">
       <div class="md:w-2/3 px-gutterHalf">
-        {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.')) }}
+        {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), testid="template-name") }}
       </div>
       <div class="md:w-2/3 px-gutterHalf">
-        {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5, hint=_('Maximum 612 characters. Some messages may be too long due to custom content.')) }}
+        {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5, hint=_('Maximum 612 characters. Some messages may be too long due to custom content.'), testid="template-content") }}
       
         {% if config["FF_TEMPLATE_CATEGORY"] %}
           <h2 class="heading-medium">{{ _('Template category') }}</h2>

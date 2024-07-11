@@ -47,11 +47,11 @@
 
   <div class="grid-row contain-floats">
     <div class="md:w-2/3 px-gutterHalf">
-      {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10) }}
+      {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10, testid="template-name") }}
 
-      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.")) }}
+      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
 
-      {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=8 ) }}
+      {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=8, testid="template-content" ) }}
 
       {% if config["FF_TEMPLATE_CATEGORY"] %}
         <h2 class="heading-medium">{{ _('Template category') }}</h2>
