@@ -1238,7 +1238,7 @@ def add_recipients(service_id, template_id):
 
 
 @main.route("/template-categories", methods=["GET"])
-@main.route('/template-categories/<template_category_id>', methods=["POST"])
+@main.route("/template-categories/<template_category_id>", methods=["POST"])
 @user_is_platform_admin
 def template_categories():
     template_category_list = template_category_api_client.get_all_template_categories()
@@ -1268,7 +1268,10 @@ def delete_template_category(template_category_id):
 
     flash(
         [
-            "{} ‘{}’?".format(_l("Are you sure you want to delete"), (template_category["name_en"] if session["userlang"] == "en" else template_category["name_fr"])),
+            "{} ‘{}’?".format(
+                _l("Are you sure you want to delete"),
+                (template_category["name_en"] if session["userlang"] == "en" else template_category["name_fr"]),
+            ),
         ],
         "delete",
     )
@@ -1283,7 +1286,9 @@ def delete_template_category(template_category_id):
         sms_process_type=template_category["sms_process_type"],
     )
 
-    return render_template("views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form)
+    return render_template(
+        "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form
+    )
 
 
 @main.route("/template-categories")
@@ -1305,7 +1310,9 @@ def add_template_category():
 
         return redirect(url_for(".template_categories"))
 
-    return render_template("views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form)
+    return render_template(
+        "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form
+    )
 
 
 @main.route("/template-categories/<template_category_id>", methods=["GET", "POST"])
