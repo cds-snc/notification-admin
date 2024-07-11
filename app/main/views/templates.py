@@ -1259,6 +1259,7 @@ def template_categories():
 
 
 @main.route("/template-categories/add", methods=["GET", "POST"])
+@user_is_platform_admin
 def add_template_category():
     form = TemplateCategoryForm()
 
