@@ -194,7 +194,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         subject=None,
         process_type="normal",
         parent_folder_id=None,
-        template_category_id=None
+        template_category_id=None,
     ):
         """
         Create a service template.
@@ -205,7 +205,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "content": content,
             "service": service_id,
             "process_type": process_type,
-            "template_category_id": template_category_id
+            "template_category_id": template_category_id,
         }
         if subject:
             data.update({"subject": subject})
@@ -218,7 +218,9 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     @cache.delete("service-{service_id}-templates")
     @cache.delete("template-{id_}-version-None")
     @cache.delete("template-{id_}-versions")
-    def update_service_template(self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None):
+    def update_service_template(
+        self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None
+    ):
         """
         Update a service template.
         """
@@ -228,7 +230,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "template_type": type_,
             "content": content,
             "service": service_id,
-            "template_category_id" : template_category_id
+            "template_category_id": template_category_id,
         }
         if subject:
             data.update({"subject": subject})
