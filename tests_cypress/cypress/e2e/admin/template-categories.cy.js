@@ -144,7 +144,7 @@ describe("Template categories", () => {
         TemplatesPage.Continue();
         TemplatesPage.ExpandTemplateCategories();
         TemplatesPage.SelectTemplateCategory("Automatic reply");
-        
+
         TemplatesPage.Components.SelectedTemplateCategory()
           .find("label")
           .contains("Automatic reply")
