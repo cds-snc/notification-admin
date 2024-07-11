@@ -379,7 +379,7 @@ def test_can_create_email_template_with_parent_folder(
         "subject": "Food incoming!",
         "template_content": "here's a burrito 🌯",
         "template_type": "email",
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "service": SERVICE_ONE_ID,
         "process_type": TemplateProcessTypes.BULK.value,
         "parent_folder_id": PARENT_FOLDER_ID,
@@ -400,6 +400,7 @@ def test_can_create_email_template_with_parent_folder(
         data["subject"],
         data["process_type"],
         data["parent_folder_id"],
+        data["template_category_id"],
     )
 
 
