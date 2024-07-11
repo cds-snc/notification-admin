@@ -1,5 +1,3 @@
-from http.client import HTTPException
-from requests import HTTPError
 from app.notify_client import NotifyAdminAPIClient, cache
 
 
@@ -58,7 +56,6 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
         except Exception as e:
             if e.response.status_code == 400:
                 raise e
-        
 
 
 template_category_api_client = TemplateCategoryClient()
