@@ -1865,7 +1865,7 @@
 "Email preview","Aperçu du courriel"
 "navigation","la navigation"
 "No results found","Aucun résultat trouvé"
-"Select a priority queue","Sélectionnez une file de sécurité"
+"Select a priority queue","Niveau de priorité"
 "Select a folder","Sélectionnez un dossier"
 "Select template","Sélectionner un gabarit"
 "Updating contact information","Maintenir à jour les coordonnées"
@@ -1954,3 +1954,4 @@
 "Template categories help improve delivery of your messages","Les catégories de gabarits nous aident à améliorer Notification GC"
 "Explain purpose of message","Expliquez l’objectif du message"
 "Describe category","Décrivez la catégorie"
+"Use template category","Selon la catégorie"
