@@ -1263,8 +1263,15 @@ def delete_template_category(template_category_id):
     template_category = template_category_api_client.get_template_category(template_category_id)
 
     if request.method == "POST":
-        template_category_api_client.delete_template_category(template_category_id)
-        return redirect(url_for(".template_categories"))
+        try:
+            template_category_api_client.delete_template_category(template_category_id)
+        except HTTPError as e:
+            flash([
+                _l("Cannot delete template category. ‘{}’, category is associated with templates").format(
+                    (template_category["name_en"] if session["userlang"] == "en" else template_category["name_fr"])
+                )
+            ])
+            return redirect(url_for(".template_categories"))
 
     flash(
         [

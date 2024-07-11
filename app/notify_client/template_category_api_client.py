@@ -1,3 +1,5 @@
+from http.client import HTTPException
+from requests import HTTPError
 from app.notify_client import NotifyAdminAPIClient, cache
 
 
@@ -51,7 +53,11 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
     @cache.delete("template_category-{template_category_id}")
     @cache.delete("template_categories")
     def delete_template_category(self, template_category_id, cascade=False):
-        self.delete(url="/template-category/{}".format(template_category_id), data=cascade)
+        try:
+            response = self.delete(url="/template-category/{}".format(template_category_id), data=cascade)
+        except Exception as e:
+            if e.response.status_code == 400:
+                raise e
 
 
 template_category_api_client = TemplateCategoryClient()
