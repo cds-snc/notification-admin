@@ -995,9 +995,10 @@ def test_clear_cache_shows_form(client_request, platform_admin_user, mocker):
     assert page.select("input[type=radio]")[0]["value"] == "user"
     assert page.select("input[type=radio]")[1]["value"] == "service"
     assert page.select("input[type=radio]")[2]["value"] == "template"
-    assert page.select("input[type=radio]")[3]["value"] == "email_branding"
-    assert page.select("input[type=radio]")[4]["value"] == "letter_branding"
-    assert page.select("input[type=radio]")[5]["value"] == "organisation"
+    assert page.select("input[type=radio]")[3]["value"] == "template_category"
+    assert page.select("input[type=radio]")[4]["value"] == "email_branding"
+    assert page.select("input[type=radio]")[5]["value"] == "letter_branding"
+    assert page.select("input[type=radio]")[6]["value"] == "organisation"
     assert not redis.delete_cache_keys_by_pattern.called
 
 
