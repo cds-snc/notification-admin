@@ -1343,6 +1343,7 @@ def template_category(template_category_id):
         hidden=template_category["hidden"],
         email_process_type=template_category["email_process_type"],
         sms_process_type=template_category["sms_process_type"],
+        sms_sending_vehicle=template_category["sms_sending_vehicle"],
     )
 
     if form.validate_on_submit():
@@ -1355,6 +1356,7 @@ def template_category(template_category_id):
             hidden=form.data["hidden"],
             email_process_type=form.data["email_process_type"],
             sms_process_type=form.data["sms_process_type"],
+            sms_sending_vehicle=form.data["sms_sending_vehicle"],
         )
         flash(
             [
