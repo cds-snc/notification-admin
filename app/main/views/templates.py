@@ -77,9 +77,9 @@ form_objects = {
 
 # Todo: Remove this once the process_types in the backend are updated to use low/med/high
 category_mapping = {
-    "bulk": "low",
-    "normal": "medium",
-    "priority": "high",
+    "bulk": "Low",
+    "normal": "Medium",
+    "priority": "High",
 }
 
 form_objects_with_category = {
@@ -1268,7 +1268,7 @@ def delete_template_category(template_category_id):
         except HTTPError:
             flash(
                 [
-                    _l("Cannot delete template category. ‘{}’, category is associated with templates").format(
+                    _l("Cannot delete template category, ‘{}’, is associated with templates").format(
                         (template_category["name_en"] if session["userlang"] == "en" else template_category["name_fr"])
                     )
                 ]
