@@ -1,7 +1,15 @@
 {% macro template_category(field, expanded=false) %}
     {% set field_text = dict(field.choices).get(field.data) %}
+    {% if field_text == None %}
+        {% set field_text = _('Other') %}
+    {% endif %}
     <div id="tc_button_container" class="mb-gutter {% if expanded %}hidden{% endif %}" data-testid="tc_button_container">
-        <p>{{ field_text }}</p>
+        <div>
+            <p class="inline-flex items-center rounded-full bg-lime-100 px-4 py-2">
+                <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-tag mr-4 text-lime-700"></i> {{ field_text }}
+            </p>
+        </div>
+        <h3 class=" mt-0 pt-0 heading-small">{{ _('Does the category still apply?') }}</h3>
         <button type="button" class="button button-secondary" data-testid="tc_expand_button">{{ _('Change category') }}</button>
     </div>
     <div id="tc_radios" class="{% if not expanded %}hidden{% endif %}" data-testid="tc_radios">
