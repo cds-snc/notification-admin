@@ -29,7 +29,7 @@
         <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
     {% endif %}
     {% for item in template_list %}
-      <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}">
+      <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}" data-notification-type="{{ item.hint }}" data-template-category="{{ item.template_category[template_category_name_col] }}">
         {% if display_checkboxes %}
           {{ unlabelled_checkbox(
             id='templates-or-folder-{}'.format(item.id),
@@ -60,7 +60,7 @@
           {{ _(item.hint) }}
         </span>
         <span id="sr-{{ item.id }}" class="message-meta message-category">
-          {{ _(item.hint) }}
+          {{ item.template_category[template_category_name_col] }}
         </span>
       </div>
     {% endfor %}
