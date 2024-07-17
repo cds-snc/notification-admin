@@ -1950,6 +1950,7 @@
 "Secure your API keys and follow our rules for <a href='https://documentation.notification.canada.ca/en/send.html#check-status-repair-and-resend-messages'>API calls and unprocessed requests</a>.","Sécurisez vos clés API et suivez nos règles concernant <a href='https://documentation.notification.canada.ca/fr/envoyer.html#verifiez-l-etat-du-message-corrigez-et-envoyez-a-nouveau'>les appels d’API et les demandes non traitées</a>."
 "Agree and continue","Accepter et continuer"
 "Before you continue","Avant d’aller plus loin"
+<<<<<<< HEAD
 "Template category","Catégorie de gabarit"
 "Template categories help improve delivery of your messages","Les catégories de gabarits nous aident à améliorer Notification GC"
 "Explain purpose of message","Expliquez l’objectif du message"
@@ -1957,3 +1958,8 @@
 "Use template category","Selon la catégorie"
 "Change category","Changer de catégorie"
 "Template category added.","Catégorie de gabarit ajoutée."
+=======
+"Name of parent organization","Nom de l'organisme parent"
+"Alternative text","Texte de remplacement"
+"Provide an accessible description of your logo","Fournissez une description accessible de votre logo"
+>>>>>>> c504f135f (Fix french translations)
