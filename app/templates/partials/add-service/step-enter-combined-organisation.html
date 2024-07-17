@@ -7,7 +7,7 @@
   {% call form_wrapper() %}
 
     <div class="mb-gutterAndAHalf">
-      <label for="parent_organisation_name">{{ _("Parent Organization Name") }}</label>
+      <label for="parent_organisation_name">{{ _("Name of parent organisation") }}</label>
       {{ autocomplete(form.parent_organisation_name, autocomplete_items_combined[current_lang], hint=_("For example: Treasury Board of Canada Secretariat")) }}
       <a href="{{ url_for('.add_service', current_step='choose_organisation', government_type='other') }}" aria-label="{{ _("Not on the list? Add your organization") }}">
         {{ _("Not on list?") }}
