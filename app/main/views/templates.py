@@ -31,6 +31,7 @@ from app import (
     template_category_api_client,
     template_folder_api_client,
     template_statistics_client,
+    user_api_client,
 )
 from app.extensions import redis_client
 from app.main import main
@@ -816,6 +817,20 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                     template_id=new_template["data"]["id"],
                 )
             )
+
+        # Send the information in form's template_category_other field to Freshdesk
+        if form.template_category_other.data:
+            is_english = get_current_locale(current_app) == "en"
+            try:
+                current_user.send_new_template_category_request(
+                    current_user.id,
+                    current_service.id,
+                    form.template_category_other.data if is_english else None,
+                    form.template_category_other.data if not is_english else None,
+                    new_template.id,
+                )
+            except HTTPError as e:
+                current_app.logger.error(f"Failed to send new template category request to Freshdesk: {e}")
 
     if email_or_sms_not_enabled(template_type, current_service.permissions):
         return redirect(
