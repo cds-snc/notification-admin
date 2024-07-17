@@ -22,6 +22,7 @@ from . import (
     DEFAULT_TEMPLATE_CATEGORY_HIGH,
     DEFAULT_TEMPLATE_CATEGORY_LOW,
     DEFAULT_TEMPLATE_CATEGORY_MEDIUM,
+    TESTING_TEMPLATE_CATEGORY,
     TestClient,
     api_key_json,
     assert_url_expected,
@@ -2860,6 +2861,7 @@ def mock_get_template_categories(mocker):
             template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_LOW),
             template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_MEDIUM),
             template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_HIGH),
+            template_category_json(id_=TESTING_TEMPLATE_CATEGORY),
         ]
 
     return mocker.patch("app.template_category_api_client.get_all_template_categories", side_effect=_get)

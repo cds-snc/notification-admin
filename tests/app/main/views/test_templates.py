@@ -16,6 +16,7 @@ from app.main.views.templates import (
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from tests import (
+    TESTING_TEMPLATE_CATEGORY,
     MockRedis,
     sample_uuid,
     single_notification_json,
@@ -1302,7 +1303,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
             "name": "new name",
             "template_content": "new template <em>content</em> with & entity",
             "template_type": "sms",
-            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": process_type,
             "button_pressed": "save",
@@ -1322,7 +1323,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
         SERVICE_ONE_ID,
         None,
         process_type,
-        DEFAULT_TEMPLATE_CATEGORY_LOW,
+        TESTING_TEMPLATE_CATEGORY,
     )
 
 
@@ -1409,7 +1410,7 @@ def test_should_403_when_create_template_with_non_default_process_type_for_non_p
         "name": "new name",
         "template_content": "template <em>content</em> with & entity",
         "template_type": "sms",
-        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": service["id"],
         "process_type": process_type,
     }
@@ -1566,7 +1567,7 @@ def test_should_not_create_if_template_name_too_long(
         "name": "new name",
         "template_content": "template content",
         "template_type": template_type,
-        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": SERVICE_ONE_ID,
         "process_type": DEFAULT_PROCESS_TYPE,
     }
@@ -1587,6 +1588,7 @@ def test_should_not_create_too_big_template(
     client_request,
     mock_get_service_template,
     mock_create_service_template_content_too_big,
+    mock_get_template_categories,
     fake_uuid,
 ):
     page = client_request.post(
@@ -1597,7 +1599,7 @@ def test_should_not_create_too_big_template(
             "name": "new name",
             "template_content": "template content",
             "template_type": "sms",
-            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
@@ -2218,7 +2220,7 @@ def test_can_create_email_template_with_emoji(
             "subject": "Food incoming!",
             "template_content": "here's a burrito 🌯",
             "template_type": "email",
-            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
             "button_pressed": "save",
@@ -2296,7 +2298,7 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(
             "template_type": "sms",
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
-            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
         },
         expected_status=302,
     )

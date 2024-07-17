@@ -954,7 +954,7 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
                         service_id,
                         subject,
                         None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
-                        template_category_id=form.template_category_id.data,
+                        form.template_category_id.data,
                     )
                     flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
                     return redirect(
