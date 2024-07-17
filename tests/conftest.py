@@ -19,7 +19,9 @@ from app.tou import TERMS_KEY
 from app.types import EmailReplyTo
 
 from . import (
+    DEFAULT_TEMPLATE_CATEGORY_HIGH,
     DEFAULT_TEMPLATE_CATEGORY_LOW,
+    DEFAULT_TEMPLATE_CATEGORY_MEDIUM,
     TestClient,
     api_key_json,
     assert_url_expected,
@@ -2854,7 +2856,11 @@ def mock_remove_user_from_service(mocker):
 @pytest.fixture(scope="function")
 def mock_get_template_categories(mocker):
     def _get():
-        return [template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_LOW)]
+        return [
+            template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_LOW),
+            template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_MEDIUM),
+            template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_HIGH),
+        ]
 
     return mocker.patch("app.template_category_api_client.get_all_template_categories", side_effect=_get)
 
