@@ -7,7 +7,7 @@ from notifications_python_client.errors import HTTPError
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.user import User
-from tests import sample_uuid
+from tests import TESTING_TEMPLATE_CATEGORY, sample_uuid
 from tests.conftest import (
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
@@ -370,12 +370,15 @@ def test_should_show_templates_folder_page(
     mock_get_service_templates.assert_called_once_with(SERVICE_ONE_ID)
 
 
-def test_can_create_email_template_with_parent_folder(client_request, mock_create_service_template, fake_uuid):
+def test_can_create_email_template_with_parent_folder(
+    client_request, mock_create_service_template, mock_get_template_categories, fake_uuid
+):
     data = {
         "name": "new name",
         "subject": "Food incoming!",
         "template_content": "here's a burrito 🌯",
         "template_type": "email",
+        "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": SERVICE_ONE_ID,
         "process_type": TemplateProcessTypes.BULK.value,
         "parent_folder_id": PARENT_FOLDER_ID,
@@ -396,6 +399,7 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         data["subject"],
         data["process_type"],
         data["parent_folder_id"],
+        data["template_category_id"],
     )
 
 

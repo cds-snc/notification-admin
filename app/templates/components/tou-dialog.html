@@ -3,60 +3,58 @@
 
 {% set error_msg = _('Read and agree to continue') %}
 
-{% macro tou_dialog() %}  
-  <dialog id="tou-dialog" class="max-w-screen-lg p-gutter flex flex-col w-full" data-testid="tou-dialog" data-error-prefix="{{ _('Terms of use:') }}" data-error-msg="{{ error_msg }}">
-    <button id="tou-close" class="absolute top-0 right-0 p-4 mr-10 mt-6" data-testid="tou-close-button">
-      <i aria-hidden="true" class="mr-2 fa-solid fa-fas fa-xmark"></i> 
-      <span class="sr-only">{{ _('Close') }}</span>
+{% macro tou_dialog() %}
+<dialog id="tou-dialog"
+  class="focus:outline-yellow overflow-y-scroll max-w-screen-lg p-0 flex flex-col w-full border-4 border-gray-300"
+  data-testid="tou-dialog" data-error-prefix="{{ _('Terms of use:') }}" data-error-msg="{{ error_msg }}" tabindex="0">
+  <div class="dialog-header bg-gray-200 flex items-baseline gap-gutter p-gutter py-2">
+    <button id="tou-close"
+      class="focus:bg-yellow focus:outline-yellow focus:text-black flex gap-2 items-center min-h-target min-w-target text-blue"
+      data-testid="tou-close-button">
+      <i aria-hidden="true" class="fa-solid fa-xmark"></i>
+      {{ _('Close') }}
     </button>
-    <h2 id="tou-heading" class="heading-medium md:heading-large mt-0 mb-4 py-4" data-testid="tou-heading">{{ _('Read and agree to the terms of use') }}</h2>
-    <div id="tou-terms" class="overflow-y-scroll overflow-x-hidden p-4 lg:p-8" tabindex="0" data-testid="tou-terms" aria-describedby="tou-heading">
-      {{ terms_of_use() }}
+  </div>
+  <div id="tou-terms" class="dialog-content p-gutter mb-4 focus:outline-none" tabindex="0" data-testid="tou-terms">
+    {{ terms_of_use() }}
+  </div>
+  <div class="dialog-sticky-footer p-gutterHalf items-baseline" data-testid="tou-instruction">
+    <i aria-hidden="true" class="fa-solid fa-lg fa-circle-info"></i>
+    <span class="font-bold">{{ _("Read and agree to the terms of use")}}</span>
+  </div>
+  <div class="dialog-footer p-gutter flex flex-wrap gap-6">
+    <button type="button" class="button text-base outline-none focus:shadow-outline disabled" name="button_pressed"
+      value="agree" data-testid="tou-agree-button" disabled id="tou-accept">
+      {{ _('Agree') }}
+    </button>
+    <button type="button" class="button button-secondary text-base outline-none focus:shadow-outline"
+      name="button_pressed" value="agree" data-testid="tou-cancel-button" id="tou-cancel">
+      {{ _('Cancel') }}
+    </button>
     </div>
-    <div class="mt-12 flex">
-      <button
-        type="button"
-        class="button text-base outline-none focus:shadow-outline disabled"
-        name="button_pressed"
-        value="agree"
-        data-testid="tou-agree-button"
-        disabled
-        id="tou-accept"
-      >
-        {{ _('Agree') }}
-      </button>
-      <button
-        type="button"
-        class="button button-secondary text-base outline-none focus:shadow-outline ml-6"
-        name="button_pressed"
-        value="agree"
-        data-testid="tou-cancel-button"
-        id="tou-cancel"
-      >
-        {{ _('Cancel') }}
-      </button>
-    </div>
-  </dialog>
-  {% block page_script %}
+    </dialog>
+    {% block page_script %}
     <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/touDialog.min.js') }}"></script>
-  {% endblock %}
+    {% endblock %}
 {% endmacro %}
 
 {% macro tou_dialog_trigger(button_text, is_in_error_state=false) %}
-  <div id="tou_trigger_element" class="form-group {{ 'form-group-error' if is_in_error_state }}" data-testid="tou_trigger_element">
-    {% if is_in_error_state %}
-      <span id="tou-error-message" class="error-message" data-testid="tou-error-message">
-        {{ error_msg }}
+<div id="tou_trigger_element" class="form-group {{ 'form-group-error' if is_in_error_state }}"
+  data-testid="tou_trigger_element">
+  {% if is_in_error_state %}
+  <span id="tou-error-message" class="error-message" data-testid="tou-error-message">
+    {{ error_msg }}
+  </span>
+  {% endif %}
+  <ul class="task-list mt-6">
+    <li class="task-list-item">
+      <a href="#" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status"
+        data-testid="tou-dialog-trigger">{{ button_text }}</a>
+      <span id="tou-status">
+        {{ task_list_item_complete('tou-complete', testid='tou-complete') }}
+        {{ task_list_item_not_complete('tou-not-complete', testid='tou-not-complete') }}
       </span>
-    {% endif %}
-    <ul class="task-list mt-6">
-      <li class="task-list-item">
-        <a href="#" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status" data-testid="tou-dialog-trigger">{{ button_text }}</a>
-        <span id="tou-status">
-          {{ task_list_item_complete('tou-complete', testid='tou-complete') }}
-          {{ task_list_item_not_complete('tou-not-complete', testid='tou-not-complete') }}
-        </span>
-      </li>
+    </li>
     </ul>
-  </div>
+    </div>
 {% endmacro %}

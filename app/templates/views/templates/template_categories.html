@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block platform_admin_content %}
-
   <div class="p-gutterHalf">
     {# TODO: remove when feature goes live #}
     <div id="sticky-banner" tabindex="-1" class="flex justify-between w-full p-4 border-b border-gray-200 bg-red text-white rounded-lg">
@@ -31,14 +30,18 @@
     ) %}
       {% call field() %}
         <a class="template-cat" href="{{ url_for('main.template_category', template_category_id=item.id)}}">
-          {{ item.name_en }} 
+          {% if current_lang == "en" %}
+            {{ item.name_en }}
+          {% else %}
+            {{ item.name_fr }}
+          {% endif %}
         </a>
       {% endcall %}
       {% call field() %}
-        {{ item.email_priority }}
+        {{ item.email_process_type }}
       {% endcall %}
       {% call field() %}
-        {{ item.sms_priority }}
+        {{ item.sms_process_type }}
       {% endcall %}
       {% call field() %}
         {{ item.hidden }}
@@ -46,8 +49,8 @@
     {% endcall %}
 
     <div class="js-stick-at-bottom-when-scrolling">
-      <a href="#" class="mt-gutter button button">{{ _('New category') }}</a>
+      <a href="{{url_for('.add_template_category')}}" class="mt-gutter button button">{{ _('New category') }}</a>
     </div>
   </div>
-  
+
 {% endblock %}
