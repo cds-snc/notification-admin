@@ -1951,6 +1951,7 @@
 "Agree and continue","Accepter et continuer"
 "Before you continue","Avant d’aller plus loin"
 <<<<<<< HEAD
+<<<<<<< HEAD
 "Template category","Catégorie de gabarit"
 "Template categories help improve delivery of your messages","Les catégories de gabarits nous aident à améliorer Notification GC"
 "Explain purpose of message","Expliquez l’objectif du message"
@@ -1960,6 +1961,9 @@
 "Template category added.","Catégorie de gabarit ajoutée."
 =======
 "Name of parent organization","Nom de l'organisme parent"
+=======
+"Name of parent organisation","Nom de l'organisme parent"
+>>>>>>> 2553a28ca (fix)
 "Alternative text","Texte de remplacement"
 "Provide an accessible description of your logo","Fournissez une description accessible de votre logo"
 >>>>>>> c504f135f (Fix french translations)
