@@ -231,11 +231,11 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "content": content,
             "service": service_id,
             "template_category_id": template_category_id,
+            "process_type": process_type,
         }
         if subject:
             data.update({"subject": subject})
-        if process_type:
-            data.update({"process_type": process_type})
+
         data = _attach_current_user(data)
         endpoint = "/service/{0}/template/{1}".format(service_id, id_)
         return self.post(endpoint, data)

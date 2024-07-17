@@ -56,6 +56,7 @@ from app.main.validators import (
     validate_email_from,
     validate_service_name,
 )
+from app.models.enum.template_categories import DefaultTemplateCategories
 from app.models.organisation import Organisation
 from app.models.roles_and_permissions import permissions, roles
 from app.utils import get_logo_cdn_domain, guess_name_from_email_address, is_blank
@@ -767,6 +768,9 @@ class ConfirmPasswordForm(StripWhitespaceForm):
             raise ValidationError(_l("Invalid password"))
 
 
+TC_PRIORITY_VALUE = "__use_tc"
+
+
 class BaseTemplateForm(StripWhitespaceForm):
     name = StringField(
         _l("Template name"),
@@ -786,8 +790,9 @@ class BaseTemplateForm(StripWhitespaceForm):
             ("bulk", _l("Bulk — Not time-sensitive")),
             ("normal", _l("Normal")),
             ("priority", _l("Priority — Time-sensitive")),
+            (TC_PRIORITY_VALUE, _l("Use template category")),
         ],
-        default="normal",
+        default=TC_PRIORITY_VALUE,
     )
 
 
@@ -851,7 +856,9 @@ class RequiredIf(InputRequired):
 class BaseTemplateFormWithCategory(BaseTemplateForm):
     template_category_id = RadioField(_l("Select category"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
-    template_category_other = StringField(_l("Describe category"), validators=[RequiredIf("template_category_id", "other")])
+    template_category_other = StringField(
+        _l("Describe category"), validators=[RequiredIf("template_category_id", DefaultTemplateCategories.LOW.value)]
+    )
 
 
 class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):

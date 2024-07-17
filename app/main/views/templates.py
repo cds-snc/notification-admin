@@ -41,6 +41,7 @@ from app.main.forms import (
     SMSTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
 )
 from app.main.forms import (
+    TC_PRIORITY_VALUE,
     AddEmailRecipientsForm,
     AddSMSRecipientsForm,
     CreateTemplateForm,
@@ -56,6 +57,7 @@ from app.main.forms import (
     TemplateFolderForm,
 )
 from app.main.views.send import get_example_csv_rows, get_sender_details
+from app.models.enum.template_categories import DefaultTemplateCategories
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.template_list import TemplateList, TemplateLists
@@ -746,12 +748,12 @@ def add_service_template(service_id, template_type, template_folder_id=None):
         abort(403)
 
     template = get_preview_data(service_id)
-    if template.get("process_type") is None:
-        template["process_type"] = TemplateProcessTypes.BULK.value
 
     if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
         form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template_type)
     else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        if template.get("process_type") is None:
+            template["process_type"] = TemplateProcessTypes.BULK.value
         other_category = None
         template_category_hints = None
         form = form_objects[template_type](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
@@ -785,7 +787,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 form.template_content.data,
                 service_id,
                 subject,
-                form.process_type.data,
+                None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data,
             )
@@ -854,11 +856,21 @@ def _get_categories_and_prepare_form(template, template_type):
     name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
     desc_col = "description_en" if get_current_locale(current_app) == "en" else "description_fr"
     categories = sorted(categories, key=lambda x: x[name_col])
-    form.template_category_id.choices = [(cat["id"], cat[name_col]) for cat in categories]
+    form.template_category_id.choices = [(cat["id"], cat[name_col]) for cat in categories if not cat.get("hidden", False)]
 
-    # add "other" category to choices
-    form.template_category_id.choices.append(("other", _("Other")))
-    other_category = {"other": form.template_category_other}
+    # add "other" category to choices, default to the low priority template category
+    form.template_category_id.choices.append((DefaultTemplateCategories.LOW.value, _("Other")))
+    # if the template is already in one of the default categories, then dont show the other
+    if template.get("template_category_id", "") in [
+        DefaultTemplateCategories.LOW.value,
+        DefaultTemplateCategories.MEDIUM.value,
+        DefaultTemplateCategories.HIGH.value,
+    ]:
+        other_category = None
+        form.template_category_other.validators = []
+    else:
+        other_category = {DefaultTemplateCategories.LOW.value: form.template_category_other}
+
     template_category_hints = {cat["id"]: cat[desc_col] for cat in categories}
 
     return form, other_category, template_category_hints
@@ -866,7 +878,7 @@ def _get_categories_and_prepare_form(template, template_type):
 
 @main.route("/services/<service_id>/templates/<template_id>/edit", methods=["GET", "POST"])
 @user_has_permissions("manage_templates")
-def edit_service_template(service_id, template_id):
+def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove this comment when FF_TEMPLATE_CATEGORY removed
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
     new_template_data = get_preview_data(service_id, template_id)
 
@@ -875,8 +887,12 @@ def edit_service_template(service_id, template_id):
         template["name"] = new_template_data["name"]
         template["subject"] = new_template_data["subject"]
     template["template_content"] = template["content"]
+
     if template.get("process_type") is None:
-        template["process_type"] = TemplateProcessTypes.BULK.value
+        if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+            template["process_type"] = TC_PRIORITY_VALUE
+        else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+            template["process_type"] = TemplateProcessTypes.BULK.value  # TODO: remove when FF_TEMPLATE_CATEGORY removed
 
     if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
         form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template["template_type"])
@@ -937,8 +953,8 @@ def edit_service_template(service_id, template_id):
                         form.template_content.data,
                         service_id,
                         subject,
-                        form.process_type.data,
-                        form.template_category_id.data,
+                        None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
+                        template_category_id=form.template_category_id.data,
                     )
                     flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
                     return redirect(
