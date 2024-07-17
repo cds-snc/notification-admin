@@ -9,7 +9,6 @@ from app.models.service import Service
 from app.models.user import User
 from tests import TESTING_TEMPLATE_CATEGORY, sample_uuid
 from tests.conftest import (
-    DEFAULT_TEMPLATE_CATEGORY_LOW,
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
     ClientRequest,
