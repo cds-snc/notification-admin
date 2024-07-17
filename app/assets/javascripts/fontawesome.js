@@ -16,6 +16,7 @@ import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTrian
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons/faCircleExclamation";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXMark";
+import { faTag } from "@fortawesome/free-solid-svg-icons/faTag";
 
 let FontAwesomeIconLoader = () => {
   config.autoAddCss = false;
@@ -30,6 +31,7 @@ let FontAwesomeIconLoader = () => {
     faCircleExclamation,
     faInfoCircle,
     faXmark,
+    faTag,
   ]);
   dom.watch();
 };

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import config from "../../../config";
-import { TemplatesPage } from "../../Notify/Admin/Pages/all";
+import { TemplatesPage as Page } from "../../Notify/Admin/Pages/all";
 
 describe("Template categories", () => {
   beforeEach(() => {
@@ -19,11 +19,16 @@ describe("Template categories", () => {
       name: "SMOKE_TEST_SMS",
     },
   ];
+  const categories = {
+    OTHER: "Other",
+    AUTH: "Authentication",
+    AUTOREPLY: "Automatic reply",
+  };
 
   templates.forEach((template) => {
-    context(`${template.type}`, () => {
+    context(`Template categories - ${template.type}`, () => {
       it("Passes a11y checks", () => {
-        TemplatesPage.SelectTemplate(template.name);
+        Page.SelectTemplate(template.name);
         cy.a11yScan(false, {
           a11y: true,
           htmlValidate: true,
@@ -32,7 +37,7 @@ describe("Template categories", () => {
           axeConfig: false,
         });
 
-        TemplatesPage.EditCurrentTemplate();
+        Page.EditCurrentTemplate();
         cy.a11yScan(false, {
           a11y: true,
           htmlValidate: true,
@@ -41,7 +46,7 @@ describe("Template categories", () => {
           axeConfig: false,
         });
 
-        TemplatesPage.ExpandTemplateCategories();
+        Page.ExpandTemplateCategories();
         cy.a11yScan(false, {
           a11y: true,
           htmlValidate: true,
@@ -52,54 +57,128 @@ describe("Template categories", () => {
       });
 
       it("Shows collapsed or expanded when editing a template", () => {
-        TemplatesPage.SelectTemplate(template.name);
-        TemplatesPage.EditCurrentTemplate();
-        TemplatesPage.Components.TemplateCategoryButtonContainer().should(
-          "be.visible",
+        Page.SelectTemplate(template.name);
+        Page.EditCurrentTemplate();
+        Page.Components.TemplateCategoryButtonContainer().should("be.visible");
+        Page.Components.SelectedTemplateCategoryCollapsed().should(
+          "not.have.text",
+          "",
         );
-        TemplatesPage.Components.TemplateCategoryRadiosContainer().should(
+        Page.Components.TemplateCategoryRadiosContainer().should(
           "not.be.visible",
         );
 
-        TemplatesPage.ExpandTemplateCategories();
-        TemplatesPage.Components.TemplateCategories().should("be.visible");
+        Page.ExpandTemplateCategories();
+        Page.Components.TemplateCategories().should("be.visible");
       });
 
       it("Template can be saved when category is collapsed", () => {
-        TemplatesPage.SelectTemplate(template.name);
-        TemplatesPage.EditCurrentTemplate();
-        TemplatesPage.SaveTemplate();
+        Page.SelectTemplate(template.name);
+        Page.EditCurrentTemplate();
+        Page.SaveTemplate();
       });
 
       it("Category shows as full list when creating a new template", () => {
-        TemplatesPage.CreateTemplate();
-        TemplatesPage.SelectTemplateType(template.type);
-        TemplatesPage.Continue();
+        Page.CreateTemplate();
+        Page.SelectTemplateType(template.type);
+        Page.Continue();
 
-        TemplatesPage.Components.TemplateCategories().should("be.visible");
+        Page.Components.TemplateCategories().should("be.visible");
       });
 
       it("Template category must be provided for template to be saved", () => {
-        TemplatesPage.CreateTemplate();
-        TemplatesPage.SelectTemplateType(template.type);
-        TemplatesPage.Continue();
+        Page.CreateTemplate();
+        Page.SelectTemplateType(template.type);
+        Page.Continue();
 
-        TemplatesPage.SaveTemplate();
-        TemplatesPage.Components.TemplateCategories()
+        Page.SaveTemplate(true);
+        Page.Components.TemplateCategories()
           .find(".error-message")
           .should("be.visible");
       });
 
-      it("Category label must be provided when “other” template category selected in order to save template ", () => {
-        TemplatesPage.SelectTemplate(template.name);
-        TemplatesPage.EditCurrentTemplate();
-        TemplatesPage.ExpandTemplateCategories();
-        TemplatesPage.SelectTemplateCategory("Other");
+      it("Can be updated", () => {
+        Page.SelectTemplate(template.name);
+        Page.EditCurrentTemplate();
+        Page.ExpandTemplateCategories();
+        Page.SelectTemplateCategory(categories.AUTOREPLY);
+        Page.SaveTemplate();
 
-        TemplatesPage.SaveTemplate();
-        TemplatesPage.Components.TemplateCategories()
-          .find(".error-message")
+        // ensure update happened
+        Page.EditCurrentTemplate();
+        Page.ExpandTemplateCategories();
+        Page.Components.SelectedTemplateCategory()
+          .find("label")
+          .contains(categories.AUTOREPLY)
           .should("be.visible");
+
+        // re-set it
+        cy.visit(`/services/${config.Services.Cypress}/templates`);
+        Page.SelectTemplate(template.name);
+        Page.EditCurrentTemplate();
+        Page.ExpandTemplateCategories();
+        Page.SelectTemplateCategory(categories.AUTH);
+        Page.SaveTemplate();
+
+        // ensure update happened
+        Page.EditCurrentTemplate();
+        Page.ExpandTemplateCategories();
+        Page.Components.SelectedTemplateCategory()
+          .find("label")
+          .contains(categories.AUTH)
+          .should("be.visible");
+      });
+
+      it("Can be set when creating a new template", () => {
+        Page.CreateTemplate();
+        Page.SelectTemplateType(template.type);
+        Page.Continue();
+        Page.SelectTemplateCategory(categories.AUTOREPLY);
+
+        Page.Components.SelectedTemplateCategory()
+          .find("label")
+          .contains(categories.AUTOREPLY)
+          .should("be.visible");
+      });
+
+      context("Other/specify", () => {
+        it("Category label must be provided when “other” template category selected in order to save template ", () => {
+          // Start with the authentication category
+          Page.SelectTemplate(template.name);
+          Page.EditCurrentTemplate();
+          Page.ExpandTemplateCategories();
+          Page.SelectTemplateCategory(categories.AUTH);
+          Page.SaveTemplate();
+
+          Page.EditCurrentTemplate();
+          Page.ExpandTemplateCategories();
+          Page.SelectTemplateCategory(categories.OTHER);
+          Page.SaveTemplate(true);
+
+          Page.Components.TemplateCategories()
+            .find(".error-message")
+            .should("be.visible");
+        });
+        it("If category is already set to Other in the db, no specify field should be shown/required", () => {
+          // Start with the authentication category
+          Page.SelectTemplate(template.name);
+          Page.EditCurrentTemplate();
+          Page.ExpandTemplateCategories();
+          Page.SelectTemplateCategory(categories.AUTH);
+          Page.SaveTemplate();
+
+          Page.EditCurrentTemplate();
+          Page.ExpandTemplateCategories();
+          Page.SelectTemplateCategory(categories.OTHER);
+          Page.Components.TemplateCategoryOther().type("testing");
+          Page.SaveTemplate();
+
+          // Do it again without specifying the other field, it should still save
+          Page.EditCurrentTemplate();
+          Page.ExpandTemplateCategories();
+          Page.SelectTemplateCategory(categories.OTHER);
+          Page.SaveTemplate();
+        });
       });
     });
   });
