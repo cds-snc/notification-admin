@@ -1428,6 +1428,7 @@ class TestTemplateCategory:
         "email_process_type": "email_priority-123",
         "sms_process_type": "sms_priority-123",
         "hidden": "hidden-123",
+        "sms_sending_vehicle": "long_code",
     }
 
     def test_item_displays_in_admin_menu(self, platform_admin_client, platform_admin_user, mocker):

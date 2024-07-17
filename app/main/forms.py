@@ -1914,7 +1914,9 @@ class TemplateCategoryForm(StripWhitespaceForm):
     description_en = StringField("EN", validators=[DataRequired(message=_l("This cannot be empty"))])
     description_fr = StringField("FR", validators=[DataRequired(message=_l("This cannot be empty"))])
     hidden = RadioField(_l("Category visibility"), choices=[("True", _l("Hide")), ("False", _l("Show"))])
-    sms_sending_vehicle = RadioField(_l("Sending method for text message"), choices=[("long_code", _l("Long code")), ("short_code", _l("Short code"))])
+    sms_sending_vehicle = RadioField(
+        _l("Sending method for text message"), choices=[("long_code", _l("Long code")), ("short_code", _l("Short code"))]
+    )
 
     email_process_type = RadioField(
         _l("Email Priority"),

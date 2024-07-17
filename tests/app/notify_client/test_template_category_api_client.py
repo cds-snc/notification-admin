@@ -21,6 +21,7 @@ def test_create_template_category(template_category_client, mocker):
         sms_process_type="sms_process",
         email_process_type="email_process",
         hidden="True",
+        sms_sending_vehicle="long_code",
     )
     data = {
         "name_en": "Test Name EN",
@@ -30,6 +31,7 @@ def test_create_template_category(template_category_client, mocker):
         "sms_process_type": "sms_process",
         "email_process_type": "email_process",
         "hidden": True,
+        "sms_sending_vehicle": "long_code",
     }
     mock_post.assert_called_once_with(url="/template-category", data=data)
 
@@ -93,6 +95,7 @@ def test_update_template_category(template_category_client, mocker):
         sms_process_type="sms_process",
         email_process_type="email_process",
         hidden="hidden",
+        sms_sending_vehicle="long_code",
     )
     data = {
         "name_en": "Test Name EN",
@@ -102,6 +105,7 @@ def test_update_template_category(template_category_client, mocker):
         "sms_process_type": "sms_process",
         "email_process_type": "email_process",
         "hidden": "hidden",
+        "sms_sending_vehicle": "long_code",
     }
     mock_post.assert_called_once_with(url="/template-category/template_category_id", data=data)
     assert call("template_categories") in mock_redis_delete.call_args_list

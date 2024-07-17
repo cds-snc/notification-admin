@@ -75,6 +75,70 @@ const Admin = {
             }
         })
     },
+    GetTemplateCategory: ({ templateCategoryId }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            url: `${BASE_URL}/template-category/${templateCategoryId}`,
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            }
+        });
+    },
+    CreateTemplateCategory: ({ name_en, name_fr, desc_en, desc_fr, hidden, email_priority, sms_priority, sms_sending_vehicle }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            url: `${BASE_URL}/template-category`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+            body: {
+                "name_en": name_en,
+                "name_fr": name_fr,
+                "description_en": desc_en,
+                "description_fr": desc_fr,
+                "hidden": hidden,
+                "email_process_type": email_priority,
+                "sms_process_type": sms_priority,
+                "sms_sending_vehicle": sms_sending_vehicle
+            }
+        });
+    },
+    UpdateTemplateCategory: ({ templateCategoryId, name_en, name_fr, desc_en, desc_fr, hidden, email_priority, sms_priority, sms_sending_vehicle }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            url: `${BASE_URL}/template-category/${templateCategoryId}`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+            body: {
+                "name_en": name_en,
+                "name_fr": name_fr,
+                "description_en": desc_en,
+                "description_fr": desc_fr,
+                "hidden": hidden,
+                "email_process_type": email_priority,
+                "sms_process_type": sms_priority,
+                "sms_sending_vehicle": sms_sending_vehicle
+            }
+        });
+    },
+    DeleteTemplateCategory: ({ templateCategoryId, cascade = false }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            url: `${BASE_URL}/template-category/${templateCategoryId}?cascade=${cascade}`,
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            }
+        })
+    }
 }
 // const Admin = {
 //     CreateService: () => {

@@ -1315,6 +1315,7 @@ def add_template_category():
             hidden=form.data["hidden"],
             email_process_type=form.data["email_process_type"],
             sms_process_type=form.data["sms_process_type"],
+            sms_sending_vehicle=form.data["sms_sending_vehicle"],
         )
         flash(
             [
@@ -1326,9 +1327,7 @@ def add_template_category():
         )
         return redirect(url_for(".template_categories"))
 
-    return render_template(
-        "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form
-    )
+    return render_template("views/templates/template_category.html", search_form=SearchByNameForm(), form=form)
 
 
 @main.route("/template-category/<template_category_id>", methods=["GET", "POST"])

@@ -1,4 +1,5 @@
 from requests import HTTPError
+
 from app.notify_client import NotifyAdminAPIClient, cache
 
 
@@ -37,7 +38,16 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
     @cache.delete("template_category-{template_category_id}")
     @cache.delete("template_categories")
     def update_template_category(
-        self, template_category_id, name_en, name_fr, description_en, description_fr, sms_process_type, email_process_type, hidden, sms_sending_vehicle
+        self,
+        template_category_id,
+        name_en,
+        name_fr,
+        description_en,
+        description_fr,
+        sms_process_type,
+        email_process_type,
+        hidden,
+        sms_sending_vehicle,
     ):
         data = {
             "name_en": name_en,
