@@ -309,8 +309,6 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
 
     sending_view = request.args.get("view") == "sending"
 
-
-    
     template_category_name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
 
     return render_template(
@@ -320,7 +318,9 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         template_list=template_list,
         template_types=list({template.hint for template in template_list}),
-        template_categories=list({template.template_category[template_category_name_col] for template in template_list if template.template_category}),
+        template_categories=list(
+            {template.template_category[template_category_name_col] for template in template_list if template.template_category}
+        ),
         template_category_name_col=template_category_name_col,
         show_search_box=current_service.count_of_templates_and_folders > 7,
         show_template_nav=(current_service.has_multiple_template_types and (len(current_service.all_templates) > 2)),
