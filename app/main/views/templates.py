@@ -829,7 +829,9 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                         new_template["data"]["id"],
                     )
                 except HTTPError as e:
-                    current_app.logger.error(f"Failed to send new template category request to Freshdesk: {e}")
+                    current_app.logger.error(
+                        f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                    )
 
     if email_or_sms_not_enabled(template_type, current_service.permissions):
         return redirect(
@@ -1006,7 +1008,9 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
                 new_template.id,
             )
         except HTTPError as e:
-            current_app.logger.error(f"Failed to send new template category request to Freshdesk: {e}")
+            current_app.logger.error(
+                f"Failed to send new template category request to Freshdesk: {e} for template {new_template.id}, data is {form.template_category_other.data}"
+            )
 
     if email_or_sms_not_enabled(template["template_type"], current_service.permissions):
         return redirect(
