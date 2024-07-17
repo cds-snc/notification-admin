@@ -1335,7 +1335,10 @@ def add_template_category():
             sms_process_type=form.data["sms_process_type"],
             sms_sending_vehicle=form.data["sms_sending_vehicle"],
         )
-        flash(_("Template category added."), "default_with_tick")
+        flash(
+            _("Template category '{}' added.").format(form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]),
+            "default_with_tick",
+        )
         return redirect(url_for(".template_categories"))
 
     return render_template("views/templates/template_category.html", search_form=SearchByNameForm(), form=form)
@@ -1368,7 +1371,10 @@ def template_category(template_category_id):
             sms_process_type=form.data["sms_process_type"],
             sms_sending_vehicle=form.data["sms_sending_vehicle"],
         )
-        flash("Template category saved.", "default_with_tick")
+        flash(
+            _("Template category '{}' saved.").format(form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]),
+            "default_with_tick",
+        )
         return redirect(url_for(".template_categories"))
 
     return render_template(
