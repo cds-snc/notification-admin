@@ -16,6 +16,7 @@ from app.main.views.templates import (
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from tests import (
+    TESTING_TEMPLATE_CATEGORY,
     MockRedis,
     sample_uuid,
     single_notification_json,
@@ -1268,7 +1269,7 @@ def test_should_redirect_when_saving_a_template(
             "name": name,
             "template_content": content,
             "template_type": "sms",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
@@ -1279,13 +1280,7 @@ def test_should_redirect_when_saving_a_template(
     assert flash_banner == f"'{name}' template saved"
 
     mock_update_service_template.assert_called_with(
-        fake_uuid,
-        name,
-        "sms",
-        content,
-        SERVICE_ONE_ID,
-        None,
-        DEFAULT_PROCESS_TYPE,
+        fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, DEFAULT_PROCESS_TYPE, DEFAULT_TEMPLATE_CATEGORY_LOW
     )
 
 
@@ -1308,7 +1303,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
             "name": "new name",
             "template_content": "new template <em>content</em> with & entity",
             "template_type": "sms",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": process_type,
             "button_pressed": "save",
@@ -1328,6 +1323,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
         SERVICE_ONE_ID,
         None,
         process_type,
+        TESTING_TEMPLATE_CATEGORY,
     )
 
 
@@ -1378,7 +1374,7 @@ def test_should_403_when_edit_template_with_non_default_process_type_for_non_pla
         "name": "new name",
         "template_content": "template <em>content</em> with & entity",
         "template_type": "sms",
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "service": service["id"],
         "process_type": process_type,
     }
@@ -1414,7 +1410,7 @@ def test_should_403_when_create_template_with_non_default_process_type_for_non_p
         "name": "new name",
         "template_content": "template <em>content</em> with & entity",
         "template_type": "sms",
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": service["id"],
         "process_type": process_type,
     }
@@ -1467,7 +1463,7 @@ def test_should_show_interstitial_when_making_breaking_change(
         "name": "new name",
         "template_content": "hello lets talk about ((thing))",
         "template_type": template_type,
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "subject": "reminder '\" <span> & ((name))",
         "service": SERVICE_ONE_ID,
         "process_type": DEFAULT_PROCESS_TYPE,
@@ -1523,7 +1519,7 @@ def test_removing_placeholders_is_not_a_breaking_change(
         _data={
             "name": existing_template["name"],
             "template_content": "no placeholders",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "subject": existing_template["subject"],
             "button_pressed": "save",
         },
@@ -1547,7 +1543,7 @@ def test_should_not_update_if_template_name_too_long(
         "name": "new name",
         "template_content": "template content!!",
         "template_type": template_type,
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "process_type": DEFAULT_PROCESS_TYPE,
     }
     if template_type == "email":
@@ -1571,7 +1567,7 @@ def test_should_not_create_if_template_name_too_long(
         "name": "new name",
         "template_content": "template content",
         "template_type": template_type,
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": SERVICE_ONE_ID,
         "process_type": DEFAULT_PROCESS_TYPE,
     }
@@ -1592,6 +1588,7 @@ def test_should_not_create_too_big_template(
     client_request,
     mock_get_service_template,
     mock_create_service_template_content_too_big,
+    mock_get_template_categories,
     fake_uuid,
 ):
     page = client_request.post(
@@ -1602,7 +1599,7 @@ def test_should_not_create_too_big_template(
             "name": "new name",
             "template_content": "template content",
             "template_type": "sms",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
@@ -1627,7 +1624,7 @@ def test_should_not_update_too_big_template(
             "template_content": "template content",
             "service": SERVICE_ONE_ID,
             "template_type": "sms",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
         _expected_status=200,
@@ -1655,7 +1652,7 @@ def test_should_redirect_when_saving_a_template_email(
             "name": name,
             "template_content": content,
             "template_type": "email",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "subject": subject,
             "process_type": DEFAULT_PROCESS_TYPE,
@@ -1669,13 +1666,7 @@ def test_should_redirect_when_saving_a_template_email(
         ),
     )
     mock_update_service_template.assert_called_with(
-        fake_uuid,
-        name,
-        "email",
-        content,
-        SERVICE_ONE_ID,
-        subject,
-        DEFAULT_PROCESS_TYPE,
+        fake_uuid, name, "email", content, SERVICE_ONE_ID, subject, DEFAULT_PROCESS_TYPE, DEFAULT_TEMPLATE_CATEGORY_LOW
     )
 
 
@@ -1699,7 +1690,7 @@ def test_should_redirect_when_previewing_a_template_email(
             "name": name,
             "template_content": content,
             "template_type": "email",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "subject": subject,
             "process_type": DEFAULT_PROCESS_TYPE,
@@ -1789,7 +1780,7 @@ def test_preview_edit_button_should_redirect_to_add_page(
         "content": "hi there",
         "subject": "test subject",
         "template_type": "email",
-        "template_category": "1",
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "folder": "",
         "id": None,
     }
@@ -1825,7 +1816,7 @@ def test_preview_has_correct_back_link(
         "subject": "test subject",
         "content": "test content",
         "template_type": "email",
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "folder": "",
         "id": id,
     }
@@ -2229,7 +2220,7 @@ def test_can_create_email_template_with_emoji(
             "subject": "Food incoming!",
             "template_content": "here's a burrito 🌯",
             "template_type": "email",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
             "button_pressed": "save",
@@ -2256,7 +2247,7 @@ def test_should_not_create_sms_template_with_emoji(
             "name": "new name",
             "template_content": "here are some noodles 🍜",
             "template_type": "sms",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
@@ -2283,7 +2274,7 @@ def test_should_not_update_sms_template_with_emoji(
             "template_content": "here's a burger 🍔",
             "service": SERVICE_ONE_ID,
             "template_type": "sms",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
         _expected_status=200,
@@ -2305,9 +2296,9 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(
             "name": "new name",
             "template_content": msg,
             "template_type": "sms",
-            "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
         },
         expected_status=302,
     )
@@ -2320,6 +2311,7 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(
         ANY,  # subject
         ANY,  # process_type
         ANY,  # parent_folder_id
+        ANY,  # template_category_id
     )
 
 

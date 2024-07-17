@@ -7,9 +7,8 @@ from notifications_python_client.errors import HTTPError
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.user import User
-from tests import sample_uuid
+from tests import TESTING_TEMPLATE_CATEGORY, sample_uuid
 from tests.conftest import (
-    DEFAULT_TEMPLATE_CATEGORY_LOW,
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
     ClientRequest,
@@ -379,7 +378,7 @@ def test_can_create_email_template_with_parent_folder(
         "subject": "Food incoming!",
         "template_content": "here's a burrito 🌯",
         "template_type": "email",
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": SERVICE_ONE_ID,
         "process_type": TemplateProcessTypes.BULK.value,
         "parent_folder_id": PARENT_FOLDER_ID,
@@ -400,6 +399,7 @@ def test_can_create_email_template_with_parent_folder(
         data["subject"],
         data["process_type"],
         data["parent_folder_id"],
+        data["template_category_id"],
     )
 
 

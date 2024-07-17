@@ -18,6 +18,7 @@ from app.tou import TERMS_KEY
 DEFAULT_TEMPLATE_CATEGORY_LOW = "0dda24c2-982a-4f44-9749-0e38b2607e89"
 DEFAULT_TEMPLATE_CATEGORY_MEDIUM = "f75d6706-21b7-437e-b93a-2c0ab771e28e"
 DEFAULT_TEMPLATE_CATEGORY_HIGH = "c4f87d7c-a55b-4c0f-91fe-e56c65bb1871"
+TESTING_TEMPLATE_CATEGORY = "f3b8a8d1-6e3f-4b93-bb7b-3a8d3f625f17"
 
 # Add itsdangerous to the libraries which freezegun ignores to avoid errors.
 # In tests where we freeze time, the code in the test function will get the frozen time but the
@@ -328,11 +329,11 @@ def template_json(
     is_precompiled_letter=False,
     postage=None,
     folder=None,
-    template_category=DEFAULT_TEMPLATE_CATEGORY_LOW,
+    template_category_id=DEFAULT_TEMPLATE_CATEGORY_LOW,
 ):
     template = {
         "id": id_,
-        "template_category_id": template_category,
+        "template_category_id": template_category_id,
         "name": name,
         "template_type": type_ or "sms",
         "content": content,
@@ -347,7 +348,6 @@ def template_json(
         "is_precompiled_letter": is_precompiled_letter,
         "folder": folder,
         "postage": postage,
-        "template_category": DEFAULT_TEMPLATE_CATEGORY_LOW,
     }
     if content is None:
         template["content"] = "template content"
