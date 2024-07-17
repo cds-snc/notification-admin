@@ -99,6 +99,7 @@ class TemplateListItem:
         self.id = template_or_folder["id"]
         self.name = template_or_folder["name"]
         self.ancestors = ancestors
+        self.template_category = template_or_folder.get("template_category", None)
 
 
 class TemplateListTemplate(TemplateListItem):
