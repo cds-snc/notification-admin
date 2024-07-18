@@ -12,7 +12,7 @@ import PreviewBrandingPage from "./branding/PreviewBrandingPage";
 import RequestBrandingPage from "./branding/RequestBrandingPage";
 import ReviewPoolPage from "./branding/ReviewPoolPage";
 import ServiceSettingsPage from "./ServiceSettingsPage";
-
+import TemplateFiltersPage from "./TemplateFiltersPage";
 export default {
     LoginPage,
     TwoFactorPage,
@@ -28,4 +28,5 @@ export default {
     RequestBrandingPage,
     ReviewPoolPage,
     ServiceSettingsPage,
+    TemplateFiltersPage,
 }
