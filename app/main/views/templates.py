@@ -938,24 +938,6 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
         new_template = get_template(new_template_data, current_service)
         template_change = get_template(template, current_service).compare_to(new_template)
 
-        # Send the information in form's template_category_other field to Freshdesk
-        # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
-
-        if form.template_category_other.data:
-            is_english = get_current_locale(current_app) == "en"
-            try:
-                current_user.send_new_template_category_request(
-                    current_user.id,
-                    current_service.id,
-                    form.template_category_other.data if is_english else None,
-                    form.template_category_other.data if not is_english else None,
-                    new_template.id,
-                )
-            except HTTPError as e:
-                current_app.logger.error(
-                    f"Failed to send new template category request to Freshdesk: {e} for template {new_template.id}, data is {form.template_category_other.data}"
-                )
-
         if template_change.placeholders_added and not request.form.get("confirm"):
             example_column_headings = first_column_headings[new_template.template_type] + list(new_template.placeholders)
             return render_template(
@@ -991,6 +973,25 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
                         None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                         form.template_category_id.data if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
                     )
+
+                    # Send the information in form's template_category_other field to Freshdesk
+                    # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
+
+                    if form.template_category_other.data:
+                        is_english = get_current_locale(current_app) == "en"
+                        try:
+                            current_user.send_new_template_category_request(
+                                current_user.id,
+                                current_service.id,
+                                form.template_category_other.data if is_english else None,
+                                form.template_category_other.data if not is_english else None,
+                                template_id,
+                            )
+                        except HTTPError as e:
+                            current_app.logger.error(
+                                f"Failed to send new template category request to Freshdesk: {e} for template {template_id}, data is {form.template_category_other.data}"
+                            )
+
                     flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
                     return redirect(
                         url_for(
@@ -1014,22 +1015,6 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
                             raise e
                     else:
                         raise e
-
-    # Send the information in form's template_category_other field to Freshdesk
-    if form.template_category_other.data:
-        is_english = get_current_locale(current_app) == "en"
-        try:
-            current_user.send_new_template_category_request(
-                current_user.id,
-                current_service.id,
-                form.template_category_other.data if is_english else None,
-                form.template_category_other.data if not is_english else None,
-                new_template.id,
-            )
-        except HTTPError as e:
-            current_app.logger.error(
-                f"Failed to send new template category request to Freshdesk: {e} for template {new_template.id}, data is {form.template_category_other.data}"
-            )
 
     if email_or_sms_not_enabled(template["template_type"], current_service.permissions):
         return redirect(
