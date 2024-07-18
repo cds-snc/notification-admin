@@ -22,13 +22,13 @@
     {% else %}
         {# Main filter container with data attributes for dynamic filtering #}
         <div class="template-filter" data-row-selector="{{ row_selector }}">
-            <details>
-                <summary>Apply filters</summary>
-                <div class="flex p-0 gap-gutter pl-gutter mt-2">
+            <details data-testid="filter">
+                <summary data-testid="filter-toggle">Apply filters</summary>
+                <div class="flex p-0 gap-gutter pl-gutter mt-2" data-testid="filter-content">
                     {# Filter group for notification types #}
                     <div class="filter-list" data-target="{{ notification_type_data_attribue }}">
                         <h2 class="filter-heading">Type</h2>
-                        <div class="space-y-1">
+                        <div class="space-y-1" data-testid="filter-types">
                             <a href="#" class="filter-item active" data-target="all">All</a>
                             {% for notification_type in notification_types %}
                                 <a href="#" class="filter-item" data-target="{{ notification_type }}">{{ notification_type }}</a>
@@ -38,7 +38,7 @@
                     {# Filter group for template categories #}
                     <div class="filter-list" data-target="{{ template_category_data_attribute }}">
                         <h2 class="filter-heading">Category</h2>
-                        <div class="space-y-1">
+                        <div class="space-y-1" data-testid="filter-categories">
                             <a href="#" class="filter-item active" data-target="all">All</a>
                             {# Loop through template categories and create a filter link for each #}
                             {% for template_category in template_categories %}
