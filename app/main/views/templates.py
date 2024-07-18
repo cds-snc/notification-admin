@@ -60,7 +60,11 @@ from app.main.views.send import get_example_csv_rows, get_sender_details
 from app.models.enum.template_categories import DefaultTemplateCategories
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
-from app.models.template_list import TemplateList, TemplateLists
+from app.models.template_list import (
+    TEMPLATE_TYPES_NO_LETTER,
+    TemplateList,
+    TemplateLists,
+)
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
@@ -317,7 +321,7 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
         current_template_folder=current_service.get_template_folder_path(template_folder_id)[-1],
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         template_list=template_list,
-        template_types=list({template.hint for template in template_list}),
+        template_types=list(TEMPLATE_TYPES_NO_LETTER.values()),
         template_categories=list(
             {template.template_category[template_category_name_col] for template in template_list if template.template_category}
         ),
