@@ -100,10 +100,20 @@
             // Apply active filters to rows, showing or hiding them as necessary
             function filterRows(activeFilters) {
                 document.querySelectorAll(rowSelector).forEach(row => {
+                    const resetFilter = activeFilters.every(filter => filter.value === 'all');
                     const shouldShow = activeFilters.every(filter => {
                         return filter.value === 'all' || row.getAttribute(filter.target) === filter.value;
                     });
-                    row.style.display = shouldShow ? 'grid' : 'none';
+
+                    if (resetFilter) {
+                        row.style.display = '';
+                    } else {
+                        if (shouldShow) {
+                            row.style.display = 'grid';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
                 });
             }
         
