@@ -9,7 +9,7 @@ const types = {
 };
 
 const categories = {
-  en: ["Testing"],
+  en: ["Test"],
   fr: ["Test"],
 };
 
