@@ -398,7 +398,7 @@ class User(JSONModel, UserMixin):
         self, user_id, service_id, template_category_name_en, template_category_name_fr, template_id
     ):
         user_api_client.send_new_template_category_request(
-            self.user_id, service_id, template_category_name_en, template_category_name_fr, template_id
+            user_id, service_id, template_category_name_en, template_category_name_fr, template_id
         )
 
     def refresh_session_id(self):
