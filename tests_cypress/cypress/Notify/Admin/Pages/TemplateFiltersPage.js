@@ -1,5 +1,3 @@
-import { Templates } from "../../../../config";
-
 // Parts of the page a user can interact with
 let Components = {
     Filter: () => cy.getByTestId('filter'),
