@@ -21,9 +21,9 @@ describe("Template filters", () => {
   // Filters should be set to all by default
   it("should be collapsed and set to all by default", () => {
     cy.visit(`/services/${config.Services.Cypress}/templates`);
-    //localhost:6012/set-lang?from=/services/5c8a0501-2aa8-433a-ba51-cefb8063ab93/templates
+
     // ensure the first type filter is active by default and no others are
-    http: Page.Components.TypeFilter()
+    Page.Components.TypeFilter()
       .find("a")
       .first()
       .should("have.class", "active");
@@ -73,11 +73,10 @@ describe("Template filters", () => {
                 const emailRows = templates.length;
 
                 Page.ToggleFilters();
-                Page.Components.TypeFilter().find("a").contains(type).click();
-                Page.Components.CategoryFilter()
-                  .find("a")
-                  .contains("All")
-                  .click();
+                Page.ApplyTypeFilter(type);
+                Page.ApplyCategoryFilter("All");
+
+                // ensure the same number of rows from the start is shown
                 Page.Components.Templates()
                   .filter(":visible")
                   .should("have.length", emailRows);
@@ -98,11 +97,10 @@ describe("Template filters", () => {
                 const emailRows = templates.length;
 
                 Page.ToggleFilters();
-                Page.Components.CategoryFilter()
-                  .find("a")
-                  .contains(type)
-                  .click();
-                Page.Components.TypeFilter().find("a").contains("All").click();
+                Page.ApplyCategoryFilter(type);
+                Page.ApplyTypeFilter("All");
+
+                // ensure the same number of rows from the start is shown
                 Page.Components.Templates()
                   .filter(":visible")
                   .should("have.length", emailRows);
@@ -120,18 +118,12 @@ describe("Template filters", () => {
 
             // Filter rows
             Page.ToggleFilters();
-            Page.Components.TypeFilter()
-              .find("a")
-              .contains(types[lang][0])
-              .click();
-            Page.Components.CategoryFilter()
-              .find("a")
-              .contains(categories[lang][0])
-              .click();
+            Page.ApplyTypeFilter(types[lang][0]);
+            Page.ApplyCategoryFilter(categories[lang][0]);
 
             // Clear filters
-            Page.Components.TypeFilter().find("a").contains("All").click();
-            Page.Components.CategoryFilter().find("a").contains("All").click();
+            Page.ApplyTypeFilter("All");
+            Page.ApplyCategoryFilter("All");
 
             Page.Components.Templates()
               .filter(":visible")

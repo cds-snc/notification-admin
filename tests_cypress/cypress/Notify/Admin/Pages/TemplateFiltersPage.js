@@ -11,7 +11,13 @@ let Components = {
 let Actions = {
     ToggleFilters: () => {
         Components.FilterToggle().click();
-    }
+    },
+    ApplyTypeFilter: (filter) => {
+        Components.TypeFilter().find("a").contains(filter).click();
+    },
+    ApplyCategoryFilter: (filter) => {
+        Components.CategoryFilter().find("a").contains(filter).click();
+    },
 };
 
 let TemplateFiltersPage = {
