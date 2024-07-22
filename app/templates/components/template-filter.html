@@ -115,6 +115,10 @@
                         }
                     }
                 });
+                // reset the sticky footer buttons as the height of the list may have changed
+                if ("stickAtBottomWhenScrolling" in GOVUK) {
+                    GOVUK.stickAtBottomWhenScrolling.recalculate();
+                }
             }
         
             // Initialize the script
