@@ -189,10 +189,10 @@ def test_client_returns_count_of_service_templates(
             service_api_client.get_service,
             [SERVICE_ONE_ID],
             [call("service-{}".format(SERVICE_ONE_ID))],
-            b'{"data_from": "cache"}',
+            b'{"data": "cache"}',
             [],
             [],
-            {"data_from": "cache"},
+            {"data": "cache"},
         ),
         (
             service_api_client.get_service,
@@ -203,20 +203,20 @@ def test_client_returns_count_of_service_templates(
             [
                 call(
                     "service-{}".format(SERVICE_ONE_ID),
-                    '{"data_from": "api"}',
+                    '{"data": "api"}',
                     ex=604800,
                 )
             ],
-            {"data_from": "api"},
+            {"data": "api"},
         ),
         (
             service_api_client.get_service_template,
             [SERVICE_ONE_ID, FAKE_TEMPLATE_ID],
             [call("template-{}-version-None".format(FAKE_TEMPLATE_ID))],
-            b'{"data_from": "cache"}',
+            b'{"data": "cache"}',
             [],
             [],
-            {"data_from": "cache"},
+            {"data": "cache"},
         ),
         (
             service_api_client.get_service_template,
@@ -227,20 +227,20 @@ def test_client_returns_count_of_service_templates(
             [
                 call(
                     "template-{}-version-None".format(FAKE_TEMPLATE_ID),
-                    '{"data_from": "api"}',
+                    '{"data": "api"}',
                     ex=604800,
                 )
             ],
-            {"data_from": "api"},
+            {"data": "api"},
         ),
         (
             service_api_client.get_service_template,
             [SERVICE_ONE_ID, FAKE_TEMPLATE_ID, 1],
             [call("template-{}-version-1".format(FAKE_TEMPLATE_ID))],
-            b'{"data_from": "cache"}',
+            b'{"data": "cache"}',
             [],
             [],
-            {"data_from": "cache"},
+            {"data": "cache"},
         ),
         (
             service_api_client.get_service_template,
@@ -251,20 +251,20 @@ def test_client_returns_count_of_service_templates(
             [
                 call(
                     "template-{}-version-1".format(FAKE_TEMPLATE_ID),
-                    '{"data_from": "api"}',
+                    '{"data": "api"}',
                     ex=604800,
                 )
             ],
-            {"data_from": "api"},
+            {"data": "api"},
         ),
         (
             service_api_client.get_service_templates,
             [SERVICE_ONE_ID],
             [call("service-{}-templates".format(SERVICE_ONE_ID))],
-            b'{"data_from": "cache"}',
+            b'{"data": "cache"}',
             [],
             [],
-            {"data_from": "cache"},
+            {"data": "cache"},
         ),
         (
             service_api_client.get_service_templates,
@@ -275,20 +275,20 @@ def test_client_returns_count_of_service_templates(
             [
                 call(
                     "service-{}-templates".format(SERVICE_ONE_ID),
-                    '{"data_from": "api"}',
+                    '{"data": "api"}',
                     ex=604800,
                 )
             ],
-            {"data_from": "api"},
+            {"data": "api"},
         ),
         (
             service_api_client.get_service_template_versions,
             [SERVICE_ONE_ID, FAKE_TEMPLATE_ID],
             [call("template-{}-versions".format(FAKE_TEMPLATE_ID))],
-            b'{"data_from": "cache"}',
+            b'{"data": "cache"}',
             [],
             [],
-            {"data_from": "cache"},
+            {"data": "cache"},
         ),
         (
             service_api_client.get_service_template_versions,
@@ -299,11 +299,11 @@ def test_client_returns_count_of_service_templates(
             [
                 call(
                     "template-{}-versions".format(FAKE_TEMPLATE_ID),
-                    '{"data_from": "api"}',
+                    '{"data": "api"}',
                     ex=604800,
                 )
             ],
-            {"data_from": "api"},
+            {"data": "api"},
         ),
     ],
 )
@@ -323,7 +323,7 @@ def test_returns_value_from_cache(
     )
     mock_api_get = mocker.patch(
         "app.notify_client.NotifyAdminAPIClient.get",
-        return_value={"data_from": "api"},
+        return_value={"data": "api"},
     )
     mock_redis_set = mocker.patch(
         "app.extensions.RedisClient.set",
