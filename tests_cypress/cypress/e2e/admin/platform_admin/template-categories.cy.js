@@ -36,7 +36,7 @@ describe("Template Categories", () => {
     before(() => {
       // Use a static category_id so we can reliably clean up the DB state before we run the tests
       cy.intercept('POST', `/template-category/add`, (request) => {
-        t = request.body.concat(Cypress.env('TEMPLATE_CATEGORY_ID'))
+        request.body.concat(Cypress.env('TEMPLATE_CATEGORY_ID'))
       });
     })
 
