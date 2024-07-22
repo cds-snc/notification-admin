@@ -268,7 +268,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             _attach_current_user({"postage": postage}),
         )
 
-    @cache.set("template-{template_id}-version-{version}")
+    @cache.set_service_template("template-{template_id}-version-{version}")
     def get_service_template(self, service_id, template_id, version=None):
         """
         Retrieve a service template.
