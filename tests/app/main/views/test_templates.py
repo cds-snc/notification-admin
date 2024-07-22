@@ -150,7 +150,7 @@ class TestSendOtherCategoryInfo:
     ):
         name = "new name"
         content = "template <em>content</em> with & entity"
-        page = client_request.post(
+        client_request.post(
             ".edit_service_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
