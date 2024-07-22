@@ -29,7 +29,7 @@
                     <div class="filter-list" data-target="{{ notification_type_data_attribue }}">
                         <h2 class="filter-heading">Type</h2>
                         <div class="space-y-1" data-testid="filter-types">
-                            <a href="#" class="filter-item active" data-target="all">All</a>
+                            <a href="#" class="filter-item active" data-target="all">{{ _("All") }}</a>
                             {% for notification_type in notification_types %}
                                 <a href="#" class="filter-item" data-target="{{ notification_type }}">{{ notification_type }}</a>
                             {% endfor %}
