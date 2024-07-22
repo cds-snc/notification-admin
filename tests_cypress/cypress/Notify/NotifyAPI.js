@@ -86,7 +86,7 @@ const Admin = {
             }
         });
     },
-    CreateTemplateCategory: ({ name_en, name_fr, desc_en, desc_fr, hidden, email_priority, sms_priority, sms_sending_vehicle }) => {
+    CreateTemplateCategory: ({ id = null, name_en, name_fr, desc_en, desc_fr, hidden, email_priority, sms_priority, sms_sending_vehicle }) => {
         var token = Utilities.CreateJWT();
         return cy.request({
             url: `${BASE_URL}/template-category`,
@@ -96,6 +96,7 @@ const Admin = {
                 "Content-Type": 'application/json'
             },
             body: {
+                "id": id,
                 "name_en": name_en,
                 "name_fr": name_fr,
                 "description_en": desc_en,
@@ -107,7 +108,7 @@ const Admin = {
             }
         });
     },
-    UpdateTemplateCategory: ({ templateCategoryId, name_en, name_fr, desc_en, desc_fr, hidden, email_priority, sms_priority, sms_sending_vehicle }) => {
+    UpdateTemplateCategory: ({ id, name_en, name_fr, desc_en, desc_fr, hidden, email_priority, sms_priority, sms_sending_vehicle }) => {
         var token = Utilities.CreateJWT();
         return cy.request({
             url: `${BASE_URL}/template-category/${templateCategoryId}`,
@@ -117,6 +118,7 @@ const Admin = {
                 "Content-Type": 'application/json'
             },
             body: {
+                "id": id,
                 "name_en": name_en,
                 "name_fr": name_fr,
                 "description_en": desc_en,
@@ -128,11 +130,12 @@ const Admin = {
             }
         });
     },
-    DeleteTemplateCategory: ({ templateCategoryId, cascade = false }) => {
+    DeleteTemplateCategory: ({ id, cascade = false }) => {
         var token = Utilities.CreateJWT();
         return cy.request({
-            url: `${BASE_URL}/template-category/${templateCategoryId}?cascade=${cascade}`,
+            url: `${BASE_URL}/template-category/${id}?cascade=${cascade}`,
             method: 'DELETE',
+            failOnStatusCode: false,
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": 'application/json'

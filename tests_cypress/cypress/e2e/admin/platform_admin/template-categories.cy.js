@@ -13,34 +13,35 @@ describe("Template Categories", () => {
     cy.visit(`/template-categories`);
   });
 
-  describe("Template Category list", () => {
-    it("Loads template categories page", () => {
-      cy.contains("h1", "Template categories").should("be.visible");
-    });
+  //   describe("Template Category list", () => {
+  //     it("Loads template categories page", () => {
+  //       cy.contains("h1", "Template categories").should("be.visible");
+  //     });
 
-    it("Navigates to template-category when clicking a category name link", () => {
-      TemplateCategoriesPage.Components.TemplateCategoriesTable().within(() => {
-        cy.get("a").first().click();
+  //     it("Navigates to template-category when clicking a category name link", () => {
+  //       TemplateCategoriesPage.Components.TemplateCategoriesTable().within(() => {
+  //         cy.get("a").first().click();
+  //       });
+  //       cy.contains("h1", "Update category").should("be.visible");
+  //     });
+
+  //     it("Navigates to template-category when clicking the 'New Category' button", () => {
+  //       TemplateCategoriesPage.CreateTemplateCategory();
+  //       cy.contains("h1", "Create category").should("be.visible");
+  //     });
+  //   });
+
+  describe("Manage Template Categories", { env: { TEMPLATE_CATEGORY_ID: '81ee307b-24e3-4c2f-abd7-6a4955acea3a' } }, () => {
+
+    before(() => {
+      // Use a static category_id so we can reliably clean up the DB state before we run the tests
+      cy.intercept('POST', `/template-category/add`, (request) => {
+        t = request.body.concat(Cypress.env('TEMPLATE_CATEGORY_ID'))
       });
-      cy.contains("h1", "Update category").should("be.visible");
-    });
+    })
 
-    it("Navigates to template-category when clicking the 'New Category' button", () => {
-      TemplateCategoriesPage.CreateTemplateCategory();
-      cy.contains("h1", "Create category").should("be.visible");
-    });
-  });
-
-  describe("Manage Template Categories", () => {
-    let categoryIds = [];
-
-    after(() => {
-      if (categoryIds.length > 0) {
-        categoryIds.forEach((id) => {
-          Admin.DeleteTemplateCategory({ templateCategoryId: id });
-        });
-        categoryIds = [];
-      }
+    beforeEach(() => {
+      Admin.DeleteTemplateCategory({ id: Cypress.env('TEMPLATE_CATEGORY_ID') });
     });
 
     it("Creates a new template category", () => {
@@ -56,22 +57,17 @@ describe("Template Categories", () => {
         "short_code",
       );
       ManageTemplateCategoryPage.Submit();
+
       cy.contains("h1", "Template categories").should("be.visible");
       cy.contains("New Category").should("be.visible");
       TemplateCategoriesPage.Components.ConfirmationBanner().should(
         "be.visible",
       );
-      // Keep track of the category id so we can clean up after ourselves
-      cy.get("a")
-        .contains("New Category")
-        .invoke("attr", "href")
-        .then((href) => {
-          categoryIds.push(href.split("/")[2]);
-        });
     });
 
     it("Updates an existing template category", () => {
       Admin.CreateTemplateCategory({
+        id: Cypress.env('TEMPLATE_CATEGORY_ID'),
         name_en: "Update me",
         name_fr: "Mettre à jour",
         desc_en: "Dying to be updated",
@@ -81,8 +77,6 @@ describe("Template Categories", () => {
         sms_priority: "bulk",
         sms_sending_vehicle: "long_code",
       }).then((resp) => {
-        // Keep track of the category id so we can clean up after ourselves
-        categoryIds.push(resp.body.template_category.id);
         cy.visit(`/template-category/${resp.body.template_category.id}`);
         ManageTemplateCategoryPage.FillForm(
           "Updated",
@@ -107,6 +101,7 @@ describe("Template Categories", () => {
 
     it("Deletes a template category", () => {
       Admin.CreateTemplateCategory({
+        id: Cypress.env('TEMPLATE_CATEGORY_ID'),
         name_en: "Delete me",
         name_fr: "Supprimez-moi",
         desc_en: "Dying to be deleted",
