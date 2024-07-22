@@ -979,7 +979,6 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
                     )
                     # Send the information in form's template_category_other field to Freshdesk
                     # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
-
                     if form.template_category_other.data:
                         is_english = get_current_locale(current_app) == "en"
                         try:

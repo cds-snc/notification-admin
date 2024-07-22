@@ -138,6 +138,43 @@ class TestSendOtherCategoryInfo:
             active_user_with_permissions["id"], SERVICE_ONE_ID, "hello", None, fake_uuid
         )
 
+    def test_edit_email_template_cat_other_to_freshdesk(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_service_template,
+        mock_update_service_template,
+        mock_send_other_category_to_freshdesk,
+        active_user_with_permissions,
+        fake_uuid,
+    ):
+        name = "new name"
+        content = "template <em>content</em> with & entity"
+        page = client_request.post(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _data={
+                "id": fake_uuid,
+                "name": name,
+                "template_content": content,
+                "template_type": "sms",
+                "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+                "service": SERVICE_ONE_ID,
+                "template_category_other": "hello",
+                "reply_to_text": "reply@go.com",
+            },
+            _follow_redirects=True,
+        )
+
+        mock_update_service_template.assert_called_with(
+            fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, DEFAULT_PROCESS_TYPE, DEFAULT_TEMPLATE_CATEGORY_LOW
+        )
+        assert mock_send_other_category_to_freshdesk.called is True
+        mock_send_other_category_to_freshdesk.assert_called_once_with(
+            active_user_with_permissions["id"], SERVICE_ONE_ID, "hello", None, fake_uuid
+        )
+
 
 def test_should_show_empty_page_when_no_templates(
     client_request,
