@@ -24,7 +24,7 @@
         <div class="template-filter" data-row-selector="{{ row_selector }}">
             <details data-testid="filter">
                 <summary data-testid="filter-toggle">{{ _("Apply filters") }}</summary>
-                <div class="flex p-0 gap-gutter pl-gutter mt-2" data-testid="filter-content">
+                <nav class="flex p-0 gap-gutter pl-gutter mt-2" aria-label="{{ _('Filter by template type and category') }}" data-testid="filter-content">
                     {# Filter group for notification types #}
                     <div class="filter-list" data-target="{{ notification_type_data_attribue }}">
                         <h2 class="filter-heading">{{ _("Type") }}</h2>
@@ -46,7 +46,7 @@
                             {% endfor %}
                         </div>
                     </div>
-                </div>
+                </nav>
             </details>
         </div>
     
@@ -68,12 +68,14 @@
                 const clickedLink = event.target;
                 const filterGroup = clickedLink.closest('.filter-list');
 
-                // Remove 'active' class from all links in the current filter group
+                // Remove 'active' class and aria-current=true from all links in the current filter group
                 filterGroup.querySelectorAll('a').forEach(link => link.classList.remove('active'));
+                filterGroup.querySelectorAll('a').forEach(link => link.removeAttribute('aria-current'));
         
                 // Add 'active' class to the clicked link
                 clickedLink.classList.add('active');
-        
+                clickedLink.setAttribute('aria-current', 'true');
+
                 // Apply filters based on the active selections
                 applyFilters();
             }
