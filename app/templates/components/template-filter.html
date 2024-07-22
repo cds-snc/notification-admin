@@ -27,7 +27,7 @@
                 <div class="flex p-0 gap-gutter pl-gutter mt-2" data-testid="filter-content">
                     {# Filter group for notification types #}
                     <div class="filter-list" data-target="{{ notification_type_data_attribue }}">
-                        <h2 class="filter-heading">Type</h2>
+                        <h2 class="filter-heading">{{ _("Type") }}</h2>
                         <div class="space-y-1" data-testid="filter-types">
                             <a href="#" class="filter-item active" data-target="all">{{ _("All") }}</a>
                             {% for notification_type in notification_types %}
@@ -39,7 +39,7 @@
                     <div class="filter-list" data-target="{{ template_category_data_attribute }}">
                         <h2 class="filter-heading">{{ _("Category") }}</h2>
                         <div class="space-y-1" data-testid="filter-categories">
-                            <a href="#" class="filter-item active" data-target="all">All</a>
+                            <a href="#" class="filter-item active" data-target="all">{{ _("All") }}</a>
                             {# Loop through template categories and create a filter link for each #}
                             {% for template_category in template_categories %}
                                 <a href="#" class="filter-item" data-target="{{ template_category }}">{{ template_category }}</a>
