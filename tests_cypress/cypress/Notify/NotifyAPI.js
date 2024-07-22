@@ -15,7 +15,7 @@ const Utilities = {
         return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), Cypress.env('ADMIN_SECRET'));
     },
     GenerateID: (length = 10) => {
-        const nanoid = customAlphabet('1234567890abcdef-_', length)
+        const nanoid = customAlphabet('1234567890abcdef', length)
         return nanoid()
     }
 };
@@ -74,6 +74,22 @@ const Admin = {
                 "service_id": serviceId
             }
         })
+    },
+    CreateUITestUser: () => {
+        var token = Utilities.CreateJWT();
+        // generate random 10 char string
+        var username = Utilities.GenerateID(10);
+        return cy.request({
+            failOnStatusCode: false,
+            url: `${BASE_URL}/cypress/create_user/${username}`,
+            method: 'GET',
+            // headers: {
+            //     Authorization: `Bearer ${token}`,
+            //     "Content-Type": 'application/json'
+            // },
+        }).then((resp) => {
+            cy.wrap(resp.body.email_address).as('username');
+        });
     },
 }
 // const Admin = {
