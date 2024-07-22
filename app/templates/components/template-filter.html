@@ -23,7 +23,7 @@
         {# Main filter container with data attributes for dynamic filtering #}
         <div class="template-filter" data-row-selector="{{ row_selector }}">
             <details data-testid="filter">
-                <summary data-testid="filter-toggle">Apply filters</summary>
+                <summary data-testid="filter-toggle">{{ _("Apply filters") }}</summary>
                 <div class="flex p-0 gap-gutter pl-gutter mt-2" data-testid="filter-content">
                     {# Filter group for notification types #}
                     <div class="filter-list" data-target="{{ notification_type_data_attribue }}">
