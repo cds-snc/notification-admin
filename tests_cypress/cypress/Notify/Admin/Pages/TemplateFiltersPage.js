@@ -5,6 +5,8 @@ let Components = {
     Templates: () => cy.getByTestId('template-row'),
     TypeFilter: () => cy.getByTestId('filter-types'),
     CategoryFilter: () => cy.getByTestId('filter-categories'),
+    CategoryAll: () => cy.getByTestId('filter-category-all'),
+    TypeAll: () => cy.getByTestId('filter-type-all'),
 };
 
 // Actions users can take on the page
@@ -17,6 +19,12 @@ let Actions = {
     },
     ApplyCategoryFilter: (filter) => {
         Components.CategoryFilter().find("a").contains(filter).click();
+    },
+    ApplyTypeFilterAll: () => {
+        Components.TypeAll().click();
+    },
+    ApplyCategoryFilterAll: () => {
+        Components.CategoryAll().click();
     },
 };
 

@@ -73,7 +73,7 @@ describe("Template filters", () => {
 
                 Page.ToggleFilters();
                 Page.ApplyTypeFilter(type);
-                Page.ApplyCategoryFilter("All");
+                Page.ApplyCategoryFilterAll();
 
                 // ensure the same number of rows from the start is shown
                 Page.Components.Templates()
@@ -97,7 +97,7 @@ describe("Template filters", () => {
 
                 Page.ToggleFilters();
                 Page.ApplyCategoryFilter(type);
-                Page.ApplyTypeFilter("All");
+                Page.ApplyTypeFilterAll();
 
                 // ensure the same number of rows from the start is shown
                 Page.Components.Templates()
@@ -121,8 +121,8 @@ describe("Template filters", () => {
             Page.ApplyCategoryFilter(categories[lang][0]);
 
             // Clear filters
-            Page.ApplyTypeFilter("All");
-            Page.ApplyCategoryFilter("All");
+            Page.ApplyTypeFilterAll();
+            Page.ApplyCategoryFilterAll();
 
             Page.Components.Templates()
               .filter(":visible")
