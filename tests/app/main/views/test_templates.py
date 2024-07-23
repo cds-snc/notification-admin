@@ -115,9 +115,9 @@ class TestSendOtherCategoryInfo:
         mock_send_other_category_to_freshdesk,
         active_user_with_permissions,
         fake_uuid,
-        app_
+        app_,
     ):
-        with set_config(app_, "FF_TEMPLATE_CATEGORY", True): 
+        with set_config(app_, "FF_TEMPLATE_CATEGORY", True):
             client_request.post(
                 ".add_service_template",
                 service_id=SERVICE_ONE_ID,
@@ -150,9 +150,9 @@ class TestSendOtherCategoryInfo:
         mock_send_other_category_to_freshdesk,
         active_user_with_permissions,
         fake_uuid,
-        app_
+        app_,
     ):
-        with set_config(app_, "FF_TEMPLATE_CATEGORY", True): 
+        with set_config(app_, "FF_TEMPLATE_CATEGORY", True):
             name = "new name"
             content = "template <em>content</em> with & entity"
             client_request.post(
@@ -1330,12 +1330,7 @@ def test_should_redirect_to_one_off_if_template_type_is_letter(
 
 
 def test_should_redirect_when_saving_a_template(
-    client_request,
-    mock_get_template_categories,
-    mock_get_service_template,
-    mock_update_service_template,
-    fake_uuid,
-    app_
+    client_request, mock_get_template_categories, mock_get_service_template, mock_update_service_template, fake_uuid, app_
 ):
     name = "new name"
     content = "template <em>content</em> with & entity"
@@ -1359,19 +1354,20 @@ def test_should_redirect_when_saving_a_template(
     assert flash_banner == f"'{name}' template saved"
 
     mock_update_service_template.assert_called_with(
-        fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, DEFAULT_PROCESS_TYPE, DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None
+        fake_uuid,
+        name,
+        "sms",
+        content,
+        SERVICE_ONE_ID,
+        None,
+        DEFAULT_PROCESS_TYPE,
+        DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 
 @pytest.mark.parametrize("process_type", [TemplateProcessTypes.NORMAL.value, TemplateProcessTypes.PRIORITY.value])
 def test_should_edit_content_when_process_type_is_set_not_platform_admin(
-    client_request,
-    mocker,
-    mock_update_service_template,
-    mock_get_template_categories,
-    fake_uuid,
-    process_type,
-    app_
+    client_request, mocker, mock_update_service_template, mock_get_template_categories, fake_uuid, process_type, app_
 ):
     mock_get_service_template_with_process_type(mocker, process_type)
     client_request.post(
@@ -1719,7 +1715,7 @@ def test_should_redirect_when_saving_a_template_email(
     mock_get_template_categories,
     mock_get_user_by_email,
     fake_uuid,
-    app_
+    app_,
 ):
     name = "new name"
     content = "template <em>content</em> with & entity ((thing)) ((date))"
@@ -1747,7 +1743,14 @@ def test_should_redirect_when_saving_a_template_email(
         ),
     )
     mock_update_service_template.assert_called_with(
-        fake_uuid, name, "email", content, SERVICE_ONE_ID, subject, DEFAULT_PROCESS_TYPE, DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config['FF_TEMPLATE_CATEGORY'] else None
+        fake_uuid,
+        name,
+        "email",
+        content,
+        SERVICE_ONE_ID,
+        subject,
+        DEFAULT_PROCESS_TYPE,
+        DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 
