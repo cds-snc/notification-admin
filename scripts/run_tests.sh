@@ -43,6 +43,9 @@ display_result $? 1 "JS/CSS code style check"
 npm test
 display_result $? 1 "npm test"
 
+# echo config.py contents
+cat app/config.py
+
 ## Code coverage
 py.test -n4 --maxfail=1 tests/ --strict -p no:warnings
 display_result $? 1 "Code coverage"
