@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    {{ page_header(_('Update category'), id_text='template_cats') }}
+    {{ page_header(_('Update category') if template_category else _('Create category'), id_text='template_cats') }}
     {% call form_wrapper() %}
       <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
 
@@ -33,12 +33,14 @@
         {{ radios(form.hidden) }}
         {{ radios(form.email_process_type) }}
         {{ radios(form.sms_process_type) }}
+        {{ radios(form.sms_sending_vehicle)}}
 
         <div class="js-stick-at-bottom-when-scrolling">
           {{ page_footer(
             _('Save'),
             button_name='operation',
-            button_value='email-branding-details'
+            button_value='email-branding-details',
+            delete_link=url_for('.delete_template_category', template_category_id=template_category.id) if template_category else None,
           ) }}
         </div>
       </div>

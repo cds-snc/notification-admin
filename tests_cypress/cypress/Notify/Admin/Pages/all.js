@@ -13,6 +13,9 @@ import RequestBrandingPage from "./branding/RequestBrandingPage";
 import ReviewPoolPage from "./branding/ReviewPoolPage";
 import ServiceSettingsPage from "./ServiceSettingsPage";
 import TemplateFiltersPage from "./TemplateFiltersPage";
+import TemplateCategoriesPage from "./admin/TemplateCategoriesPage";
+import ManageTemplateCategoryPage from "./admin/ManageTemplateCategoryPage";
+
 export default {
     LoginPage,
     TwoFactorPage,
@@ -29,4 +32,6 @@ export default {
     ReviewPoolPage,
     ServiceSettingsPage,
     TemplateFiltersPage,
+    TemplateCategoriesPage,
+    ManageTemplateCategoryPage,
 }
