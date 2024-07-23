@@ -62,7 +62,7 @@ redis = "3.5.3" # pinned for now
 xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; see https://github.com/pyexcel/pyexcel-xls/issues/53
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous = "2.2.0"  # pyup: <1.0.0
-newrelic = "~9.12.0"
+newrelic = "9.12.0"
 
 [tool.poetry.group.test.dependencies]
 isort = "5.13.2"
