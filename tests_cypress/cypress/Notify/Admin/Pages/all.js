@@ -12,6 +12,8 @@ import PreviewBrandingPage from "./branding/PreviewBrandingPage";
 import RequestBrandingPage from "./branding/RequestBrandingPage";
 import ReviewPoolPage from "./branding/ReviewPoolPage";
 import ServiceSettingsPage from "./ServiceSettingsPage";
+import TemplateCategoriesPage from "./admin/TemplateCategoriesPage";
+import ManageTemplateCategoryPage from "./admin/ManageTemplateCategoryPage";
 
 export default {
     LoginPage,
@@ -28,4 +30,6 @@ export default {
     RequestBrandingPage,
     ReviewPoolPage,
     ServiceSettingsPage,
+    TemplateCategoriesPage,
+    ManageTemplateCategoryPage,
 }

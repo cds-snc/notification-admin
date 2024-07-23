@@ -995,9 +995,10 @@ def test_clear_cache_shows_form(client_request, platform_admin_user, mocker):
     assert page.select("input[type=radio]")[0]["value"] == "user"
     assert page.select("input[type=radio]")[1]["value"] == "service"
     assert page.select("input[type=radio]")[2]["value"] == "template"
-    assert page.select("input[type=radio]")[3]["value"] == "email_branding"
-    assert page.select("input[type=radio]")[4]["value"] == "letter_branding"
-    assert page.select("input[type=radio]")[5]["value"] == "organisation"
+    assert page.select("input[type=radio]")[3]["value"] == "template_category"
+    assert page.select("input[type=radio]")[4]["value"] == "email_branding"
+    assert page.select("input[type=radio]")[5]["value"] == "letter_branding"
+    assert page.select("input[type=radio]")[6]["value"] == "organisation"
     assert not redis.delete_cache_keys_by_pattern.called
 
 
@@ -1427,6 +1428,7 @@ class TestTemplateCategory:
         "email_process_type": "email_priority-123",
         "sms_process_type": "sms_priority-123",
         "hidden": "hidden-123",
+        "sms_sending_vehicle": "long_code",
     }
 
     def test_item_displays_in_admin_menu(self, platform_admin_client, platform_admin_user, mocker):

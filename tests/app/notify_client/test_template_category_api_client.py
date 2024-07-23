@@ -1,6 +1,7 @@
 from unittest.mock import call
 
 import pytest
+from requests import HTTPError
 
 from app.notify_client.template_category_api_client import TemplateCategoryClient
 
@@ -20,6 +21,7 @@ def test_create_template_category(template_category_client, mocker):
         sms_process_type="sms_process",
         email_process_type="email_process",
         hidden="True",
+        sms_sending_vehicle="long_code",
     )
     data = {
         "name_en": "Test Name EN",
@@ -29,6 +31,7 @@ def test_create_template_category(template_category_client, mocker):
         "sms_process_type": "sms_process",
         "email_process_type": "email_process",
         "hidden": True,
+        "sms_sending_vehicle": "long_code",
     }
     mock_post.assert_called_once_with(url="/template-category", data=data)
 
@@ -92,6 +95,7 @@ def test_update_template_category(template_category_client, mocker):
         sms_process_type="sms_process",
         email_process_type="email_process",
         hidden="hidden",
+        sms_sending_vehicle="long_code",
     )
     data = {
         "name_en": "Test Name EN",
@@ -101,6 +105,7 @@ def test_update_template_category(template_category_client, mocker):
         "sms_process_type": "sms_process",
         "email_process_type": "email_process",
         "hidden": "hidden",
+        "sms_sending_vehicle": "long_code",
     }
     mock_post.assert_called_once_with(url="/template-category/template_category_id", data=data)
     assert call("template_categories") in mock_redis_delete.call_args_list
@@ -116,3 +121,13 @@ def test_delete_template_category(template_category_client, mocker):
 
     mock_delete.assert_called_once_with(url="/template-category/template_category_id", data=False)
     assert [call("template_categories"), call("template_category-template_category_id")] in mock_redis_delete.call_args_list
+
+
+def test_delete_template_category_returns_raises_exception_if_status_code_is_400(template_category_client, mocker):
+    mock_delete = mocker.patch("app.notify_client.template_category_api_client.TemplateCategoryClient.delete")
+    mock_delete.side_effect = HTTPError(response=type("Response", (object,), {"status_code": 400}))
+
+    with pytest.raises(HTTPError):
+        template_category_client.delete_template_category(template_category_id="template_category_id", cascade=False)
+
+    mock_delete.assert_called_once_with(url="/template-category/template_category_id", data=False)
