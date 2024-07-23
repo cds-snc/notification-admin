@@ -300,7 +300,7 @@ def test_should_show_templates_folder_page(
         },
     )
 
-    expected_nav_links = ["All", "Email", "Text message", "Letter"]
+    expected_nav_links = ["All", "Email template", "Text message template", "All"]
     service_one["permissions"] += ["letter"]
 
     page = client_request.get(
@@ -313,7 +313,7 @@ def test_should_show_templates_folder_page(
     assert normalize_spaces(page.select_one("title").text) == expected_title_tag
     assert normalize_spaces(page.select_one("h1").text) == expected_page_title
 
-    links_in_page = page.select(".pill a")
+    links_in_page = page.select('nav[data-testid="filter-content"] a')
 
     assert len(links_in_page) == len(expected_nav_links)
 
