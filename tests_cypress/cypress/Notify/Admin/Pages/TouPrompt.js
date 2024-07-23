@@ -12,7 +12,7 @@ let Actions = {
     AgreeToTerms: () => {
         TouPrompt.Components.Terms().scrollTo('bottom', { ensureScrollable: false });
         Components.DismissButton().click();
-        cy.url().should('include', '/accounts');
+        cy.url().should('include', '/services');
     },
 };
 
