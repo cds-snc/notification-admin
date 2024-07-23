@@ -790,7 +790,27 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
-            )
+            )            # Send the information in form's template_category_other field to Freshdesk
+            # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
+            if current_app.config["FF_TEMPLATE_CATEGORY"]:
+                if form.template_category_other.data:
+                    is_english = get_current_locale(current_app) == "en"
+                    try:
+                        current_user.send_new_template_category_request(
+                            current_user.id,
+                            current_service.id,
+                            form.template_category_other.data if is_english else None,
+                            form.template_category_other.data if not is_english else None,
+                            new_template["data"]["id"],
+                        )
+                    except HTTPError as e:
+                        current_app.logger.error(
+                            f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                        )
+                    except AttributeError as e:
+                        current_app.logger.error(
+                            f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                        )
         except HTTPError as e:
             if (
                 e.status_code == 400
@@ -956,6 +976,23 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
                         None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                         form.template_category_id.data if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
                     )
+                    # Send the information in form's template_category_other field to Freshdesk
+                    # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
+                    if current_app.config["FF_TEMPLATE_CATEGORY"]:
+                        if form.template_category_other.data:
+                            is_english = get_current_locale(current_app) == "en"
+                            try:
+                                current_user.send_new_template_category_request(
+                                    current_user.id,
+                                    current_service.id,
+                                    form.template_category_other.data if is_english else None,
+                                    form.template_category_other.data if not is_english else None,
+                                    template_id,
+                                )
+                            except HTTPError as e:
+                                current_app.logger.error(
+                                    f"Failed to send new template category request to Freshdesk: {e} for template {template_id}, data is {form.template_category_other.data}"
+                                )
                     flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
                     return redirect(
                         url_for(
