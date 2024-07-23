@@ -741,7 +741,7 @@ def get_template_data(template_id):
     methods=["GET", "POST"],
 )
 @user_has_permissions("manage_templates")
-def add_service_template(service_id, template_type, template_folder_id=None):
+def add_service_template(service_id, template_type, template_folder_id=None):  # noqa: C901
     if template_type not in ["sms", "email", "letter"]:
         abort(404)
     if not current_service.has_permission("letter") and template_type == "letter":
@@ -790,7 +790,8 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
-            )            # Send the information in form's template_category_other field to Freshdesk
+            )
+            # Send the information in form's template_category_other field to Freshdesk
             # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
             if current_app.config["FF_TEMPLATE_CATEGORY"]:
                 if form.template_category_other.data:
