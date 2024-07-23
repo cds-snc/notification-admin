@@ -95,6 +95,7 @@ const javascripts = () => {
         paths.src + "javascripts/formValidateRequired.min.js",
         paths.src + "javascripts/sessionRedirect.min.js",
         paths.src + "javascripts/touDialog.min.js",
+        paths.src + "javascripts/templateFilters.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));
