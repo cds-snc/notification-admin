@@ -371,7 +371,7 @@ def test_should_show_templates_folder_page(
 
 
 def test_can_create_email_template_with_parent_folder(
-    client_request, mock_create_service_template, mock_get_template_categories, fake_uuid
+    client_request, mock_create_service_template, mock_get_template_categories, fake_uuid, app_
 ):
     data = {
         "name": "new name",
@@ -399,7 +399,7 @@ def test_can_create_email_template_with_parent_folder(
         data["subject"],
         data["process_type"],
         data["parent_folder_id"],
-        data["template_category_id"],
+        data["template_category_id"] if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 
