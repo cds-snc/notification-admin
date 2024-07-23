@@ -10,15 +10,17 @@
     NOTE: the data attributes need to be present on the rows indicated by `row-selector` for the filtering to work.  Example
     of a complete row:
     ```
-    <div class="template-row" data-notification-type="email" data-template-category="status-update">
+    <div class="template-row" data-notification-type="Email" data-template-category="Status Update">
     ```
 #}
 {% macro template_filter(row_selector, notification_types, template_categories, notification_type_data_attribue, template_category_data_attribute) %}
     {# Ensure all required parameters are provided #}
     {% if not row_selector or not notification_type_data_attribue or not template_category_data_attribute %}
-        <div class="text-red font-bold my-4">
-            Missing required parameters: <code>row_selector</code>, <code>notification_type_attribute</code>, and <code>template_category_attribute</code>. Please verify your code and try again.
-        </div>
+        {% if current_user.platform_admin %}
+            <div class="text-red font-bold my-4">
+                Missing required parameters: <code>row_selector</code>, <code>notification_type_attribute</code>, and <code>template_category_attribute</code>. Please verify your code and try again.
+            </div>
+        {% endif %}
     {% else %}
         {# Main filter container with data attributes for dynamic filtering #}
         <div class="template-filter" data-row-selector="{{ row_selector }}">
